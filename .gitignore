@@ -1,0 +1,40 @@
+# Environment / secrets
+.env
+.env.*
+*.key
+*.pem
+*.p12
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+.next/
+dist/
+build/
+
+# Runtime data
+uploads/
+storage/
+artifacts/
+tmp/
+.cache/
+
+# Local databases
+*.sqlite
+*.db
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Keep design docs and persistent planning files tracked.
+# docs/
+# persistent/

@@ -1,0 +1,94 @@
+# PROJECT_BRIEF
+
+## 项目名称
+
+材料数据智能分析与可视化平台
+
+## 一句话目标
+
+通过自然语言输入和材料数据文件上传，自动完成材料数据解析、智能分析规划、交互式 Plotly 图表和 MatterViz / pymatviz 3D 材料模型生成，并展示可审计执行过程、工具调用、参数、代码、日志、Artifact 和报告。
+
+## 核心定位
+
+本系统不是 pymatviz 的简单套壳，而是面向材料科学、材料机器学习、晶体结构分析、科研复现和数据集探索的智能分析与可视化平台。
+
+## 独立系统定义
+
+本项目应作为一个可独立运行的系统建设，也可以后续作为 LabPilot / ResearchOps 平台中的材料数据子系统集成。系统主流程是：
+
+```text
+自然语言分析需求 + 材料数据文件
+  -> 数据解析与材料对象标准化
+  -> Data Profile
+  -> Agent 生成可校验分析计划
+  -> Tool Registry 调用 pymatviz / MatterViz / Plotly 等白名单工具
+  -> 交互式图表、3D 结构模型、Artifact、Recipe、报告和执行过程展示
+```
+
+核心产品不是“LLM 写 Python 调 pymatviz”，而是一个受控、可审计、可复现的材料数据分析工作台。
+
+## 核心能力
+
+- 多格式材料数据上传与解析。
+- 材料对象标准化。
+- Data Profile 自动生成。
+- LLM Agent 分析计划。
+- Tool Registry + JSON Plan 安全工具调用。
+- pymatviz / MatterViz / Plotly 图表和 3D 模型生成。
+- 异步任务和高并发 Worker。
+- Artifact / Recipe / Report 管理。
+- 用户配置、LLM Key、权限和安全。
+- 专业材料领域插件化扩展。
+- 共享 Schema 基线，统一前端、后端、Worker、Agent 与 Tool Registry 的核心类型。
+
+## MVP 边界快照
+
+- 数据输入：CIF、POSCAR/CONTCAR、CSV、ZIP 容器、JSON limited、XYZ/EXTXYZ 基础支持。
+- JSON limited：pymatgen Structure JSON、Materials Project-like structure dict、simple table JSON。
+- plain XYZ：作为非周期 `Atoms` / molecule-like 对象；只有带 lattice 的 EXTXYZ 才可进入周期结构工具。
+- MVP 工具：composition/structure/ml 的 10 个核心工具，包含 density scatter、error distribution、basic metrics 和 outlier table。
+- V1 扩展：parity plot、uncertainty calibration、error by element/chemical system、phonon、trajectory、RDF/XRD、composition clustering。
+- MatterViz：MVP 必需 `viewer.html` + `metadata.json` + `recipe.json`，snapshot 为可选。
+
+## pymatviz / MatterViz 的角色
+
+- pymatviz：材料信息学可视化工具层，负责周期表图、组成聚类、结构 2D/3D、RDF、XRD、配位、声子、机器学习评估图等。
+- MatterViz：浏览器端材料科学交互 UI 和 3D / trajectory viewer 能力来源。
+- Plotly：交互式图表、HTML、JSON 和图片导出的主要图表载体。
+- pymatgen / ASE / phonopy / pandas：材料对象、结构对象、轨迹、声子和表格数据的语义基础。
+- 平台自身：负责上传、解析、Profile、Agent Plan、工具校验、任务队列、Artifact、Recipe、权限、安全和前端工作台。
+
+## 不做什么
+
+- 不做 DFT / MD 计算引擎。
+- 不做无限制任意代码执行平台。
+- 不让 LLM 绕过 Tool Registry 直接运行系统命令。
+- 不展示模型原始隐藏思维链。
+- 不把平台降级为单一可视化库的 Web UI。
+
+## 默认技术栈
+
+| 层 | 默认选择 |
+|---|---|
+| 前端 | Next.js、React、TypeScript、Tailwind CSS、shadcn/ui、Plotly.js、MatterViz、TanStack Query、Zustand/Jotai、WebSocket/SSE |
+| 后端 | FastAPI 或 NestJS、PostgreSQL、Redis、S3/MinIO、Celery/Dramatiq/Temporal |
+| Python 材料服务 | pymatviz、pymatgen、ASE、phonopy、matminer、pandas、numpy、scikit-learn、plotly |
+| Agent / LLM | OpenAI-compatible API、BYOK、Tool Calling、JSON Schema Validation、内部工具文档 RAG |
+
+## 长期约束
+
+- Agent 只生成结构化 JSON Plan，系统校验后执行。
+- 所有工具调用必须经过 Tool Registry 和 Schema 校验。
+- 所有耗时任务必须异步执行。
+- Artifact、Recipe、日志、参数和报告必须可追踪、可审计、可复现。
+- 用户配置、Secret、权限和审计从平台第一版设计开始纳入。
+- 材料领域扩展必须通过稳定工具接口和 Adapter 接入。
+- 不 fork 大改 pymatviz；优先通过 `pymatviz-agent-adapter` 和 Visualization Service 隔离上游变化。
+- 实现阶段以 `docs/13_SHARED_SCHEMA_SPEC.md` 作为类型基线，未来 `packages/schemas/` 从该文件拆分 JSON Schema、TypeScript 类型和 Python Pydantic model。
+- 新会话应优先阅读 `README.md`、`AGENTS.md`、`MASTER_PROMPT.md`、`docs/index.md` 和 `persistent/` 文件。
+
+## 当前阶段
+
+Phase 0-11 核心设计阶段已完成，`docs/11_MATERIAL_DOMAIN_EXTENSIONS.md` 作为专业材料领域扩展补充文件已补齐；Design Review Fixes 已补充共享 Schema、前端组件/状态规格和实现前一致性修正。
+
+下一阶段：按 `docs/12_MVP_ROADMAP.md` 进入代码实现准备。
