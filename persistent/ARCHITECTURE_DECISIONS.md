@@ -240,7 +240,7 @@ MVP 部署采用 FastAPI 模块化单体 + 独立 Celery Worker Pool。逻辑服
 
 ### Decision
 
-MVP 使用 Celery + Redis：Redis 作为 broker/result/cache，Celery workers 按任务类型分队列。系统通过 `jobs`、`job_events`、`tool_calls` 和 `artifacts` 表持久化真实状态，不依赖 Redis 作为唯一状态源。长流程、补偿、可恢复编排和跨服务 saga 后续可迁移 Temporal。
+MVP 使用 Celery + Redis：Redis 作为 broker/cache/transient state，Celery workers 按任务类型分队列。若 Celery result backend 被启用，也只作为 Celery 技术实现细节，不作为业务事实源。系统通过 `jobs`、`job_events`、`tool_calls` 和 `artifacts` 表持久化真实状态。长流程、补偿、可恢复编排和跨服务 saga 后续可迁移 Temporal。
 
 ### Consequences
 
@@ -552,7 +552,7 @@ MVP 为白名单工具手写 Tool Schema，并用测试覆盖参数校验和 Ada
 - 自动暴露全部 pymatviz 函数：风险高且对 Agent 不友好。
 - 只硬编码 UI，不建 Schema：无法支撑 Agent 和 Recipe。
 
-## ADR-026：Plotly 工具必须输出 figure.json，HTML/PNG 为派生产物
+## ADR-026：Plotly 工具必须输出 figure.json，并保证 MVP 交互展示路径
 
 ### Context
 
@@ -560,7 +560,7 @@ Plotly HTML 适合展示，但不利于后续重渲染、样式调整、复现�
 
 ### Decision
 
-所有 Plotly Adapter 必须输出 `figure.json`。MVP 中 `figure.html`、`preview.png` 是基于 Figure JSON 和导出配置生成的派生产物；`svg/pdf` 进入 V1 论文图导出链路。
+所有 Plotly Adapter 必须输出 `figure.json`。每个需要在前端交互展示的 MVP Plotly Adapter，必须至少提供一种交互展示产物：优先 `figure.html`，或由前端直接渲染 `plotly_json`。MVP 推荐同时生成 `figure.html` 和 `preview.png`；`svg/pdf` 进入 V1 论文图导出链路。
 
 ### Consequences
 
@@ -749,7 +749,7 @@ Redis 适合作为 broker 和缓存，但不应承担长期可审计状态。平
 
 ### Decision
 
-`jobs`、`job_events`、`tool_calls`、`artifacts` 写 PostgreSQL。Redis 用于 Celery broker/result、短期 cache、rate limit counters 和热状态。
+`jobs`、`job_events`、`tool_calls`、`artifacts` 写 PostgreSQL。Redis 用于 Celery broker、短期 cache、rate limit counters 和 transient worker state。若 Celery result backend 被启用，也不作为业务事实源。
 
 ### Consequences
 
@@ -1040,7 +1040,7 @@ Agent、Tool Registry、Artifact Service 和前端曾分别定义 `html`、`plot
 
 ### Decision
 
-新增 `docs/13_SHARED_SCHEMA_SPEC.md` 作为跨模块类型基线。`ArtifactType`、`DisplayTarget`、`ToolCategory`、`ToolDomain` 等共享枚举都以该文件为准。
+新增 `docs/13_SHARED_SCHEMA_SPEC.md` 作为跨模块类型基线。`ArtifactType`、`DisplayTarget`、`ToolCategory`、`ToolDomain`、`InputRef`、`DataProfile` 子类型、`ToolExecutionRequest`、`VisualizationRecipe` 等共享类型都以该文件为准。产物字段统一命名为 `artifactTypes`，不再使用“format”语义表达业务产物。
 
 ### Consequences
 

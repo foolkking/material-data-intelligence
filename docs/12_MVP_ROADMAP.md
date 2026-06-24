@@ -32,7 +32,7 @@
 | Tools | 10 个 MVP 工具：ptable_heatmap、elements_hist、chem_sys_treemap、structure_3d、viewer_3d、coordination_hist、density_scatter、error_distribution、basic_metrics、outlier_table |
 | Queue | FastAPI + Celery + Redis + SSE JobEvent |
 | Storage | PostgreSQL + S3/MinIO + Redis |
-| Artifact | Plotly JSON/HTML/PNG、MatterViz HTML/metadata、metrics JSON、table JSON/CSV、quality issues JSON、Recipe JSON、Report MD/HTML；MatterViz snapshot 可选 |
+| Artifact | Plotly JSON、交互展示产物、PNG preview、MatterViz HTML/metadata、metrics JSON、table JSON/CSV、quality issues JSON、Recipe JSON、Report MD/HTML；MatterViz snapshot 可选 |
 | Security | Docker Worker sandbox、用户级 BYOK、Secret 加密、审计、Prompt Guard |
 
 ### 明确不做
@@ -113,7 +113,7 @@
 
 - 实现 Tool Registry。
 - 实现 Tool Schema 校验。
-- 实现 8 个 MVP Adapter。
+- 实现 10 个 MVP Tool Executor / Adapter：`ptable_heatmap`、`elements_hist`、`chem_sys_treemap`、`structure_3d`、`viewer_3d`、`coordination_hist`、`density_scatter`、`error_distribution`、`basic_metrics`、`outlier_table`。
 - 实现 Artifact Exporter。
 - 实现 ToolError 标准化和缓存 key。
 
@@ -171,7 +171,9 @@
 - 用户可以输入自然语言分析需求。
 - Agent 生成 JSON Plan，并展示 Plan Summary。
 - Plan Validator 阻止非法工具、非法参数和无效输入。
-- 系统执行 10 个 MVP 工具中的至少 6 个，并能生成 metrics/table 类 Artifact。
+- 10 个 MVP 工具均已注册、可通过 Tool Registry 校验并可被 Worker 执行。
+- 端到端演示至少覆盖 6 个核心工具，并包含 composition、structure、ml 三类能力。
+- metrics/table 类 Artifact 必须在端到端演示中出现。
 - 前端通过 SSE 展示 JobEvent 和 Agent Timeline。
 - 图表卡片能展示 Plotly Artifact。
 - Structure Tab 能展示 3D Viewer Artifact。

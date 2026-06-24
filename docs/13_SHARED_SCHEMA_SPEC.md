@@ -76,6 +76,7 @@ type MaterialObjectType =
   | "Composition"
   | "Structure"
   | "Atoms"
+  | "Molecule"
   | "DataFrame"
   | "PhononBand"
   | "PhononDos"
@@ -95,6 +96,12 @@ type StructurePeriodicityRequirement =
   | "periodic_required"
   | "non_periodic_allowed"
   | "any";
+
+type ObjectPeriodicity =
+  | "periodic"
+  | "non_periodic"
+  | "mixed"
+  | "unknown";
 ```
 
 ## 4. Data Asset 与 Normalized Object
@@ -134,7 +141,19 @@ type NormalizedObject = {
 };
 ```
 
-## 5. Data Profile
+## 5. Shared References
+
+```ts
+type InputRef = {
+  refType: "dataset" | "profile" | "normalized_object" | "dataframe_column" | "artifact";
+  ref: string;
+  fieldRole?: FieldRole;
+  columnName?: string;
+  objectType?: MaterialObjectType;
+};
+```
+
+## 6. Data Profile
 
 ```ts
 type DataProfile = {
@@ -158,6 +177,49 @@ type DataProfile = {
   qualityIssues: QualityIssue[];
   recommendedTasks: RecommendedTask[];
   createdAt: string;
+};
+
+type FileProfile = {
+  fileId: string;
+  fileName: string;
+  detectedFormat: string;
+  parseStatus: "success" | "partial" | "failed" | "unsupported";
+  errorCode?: string;
+  errorMessage?: string;
+};
+
+type ObjectProfile = {
+  objectId: string;
+  objectType: MaterialObjectType;
+  count: number;
+  sourceFileIds: string[];
+  periodicity?: ObjectPeriodicity;
+};
+
+type QualityIssue = {
+  severity: "info" | "warning" | "error";
+  code: string;
+  message: string;
+  refs: Array<{
+    type: "file" | "object" | "row" | "column" | "artifact";
+    id: string;
+  }>;
+};
+
+type RecommendedTask = {
+  taskId: string;
+  label: string;
+  stage: "mvp" | "v1" | "v2";
+  taskType:
+    | "composition_overview"
+    | "structure_quality"
+    | "ml_evaluation"
+    | "phonon_analysis"
+    | "trajectory_viewer"
+    | "domain_extension";
+  availableNow: boolean;
+  requiredTools: string[];
+  reason: string;
 };
 
 type StructureSummary = {
@@ -195,7 +257,7 @@ type TableSummary = {
 };
 ```
 
-## 6. Tool Registry
+## 7. Tool Registry
 
 ```ts
 type ToolInputSchema = {
@@ -276,7 +338,7 @@ Example:
 }
 ```
 
-## 7. Analysis Plan
+## 8. Analysis Plan
 
 ```ts
 type AnalysisPlan = {
@@ -296,10 +358,7 @@ type AnalysisStep = {
   toolId: string;
   purpose: string;
   reason: string;
-  inputRefs: Array<{
-    refType: "dataset" | "profile" | "normalized_object" | "dataframe_column" | "artifact";
-    ref: string;
-  }>;
+  inputRefs: InputRef[];
   params: Record<string, unknown>;
   output: {
     artifactTypes: ArtifactType[];
@@ -320,7 +379,7 @@ type ExpectedArtifact = {
 };
 ```
 
-## 8. Job 与事件
+## 9. Job 与事件
 
 ```ts
 type JobStatus =
@@ -346,7 +405,20 @@ type JobEvent = {
 };
 ```
 
-## 9. Artifact、Recipe 与 Report
+## 10. ToolCall 与执行请求
+
+```ts
+type ToolExecutionRequest = {
+  jobId: string;
+  stepId: string;
+  toolId: string;
+  inputRefs: InputRef[];
+  params: Record<string, unknown>;
+  artifactTypes: ArtifactType[];
+};
+```
+
+## 11. Artifact、Recipe 与 Report
 
 ```ts
 type Artifact = {
@@ -392,8 +464,17 @@ type VisualizationRecipe = {
     fieldRole?: string;
     required: boolean;
   }>;
-  steps: AnalysisStep[];
+  steps: RecipeStep[];
   environment: RecipeEnvironment;
+};
+
+type RecipeStep = {
+  stepId: string;
+  toolId: string;
+  toolVersion: string;
+  inputBindings: Record<string, string>;
+  params: Record<string, unknown>;
+  artifactTypes: ArtifactType[];
 };
 
 type RecipeEnvironment = {
@@ -408,7 +489,7 @@ type RecipeEnvironment = {
 };
 ```
 
-## 10. Config 与 Secret
+## 12. Config 与 Secret
 
 ```ts
 type LlmExecutionProfile = {

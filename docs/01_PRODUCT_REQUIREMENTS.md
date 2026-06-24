@@ -113,7 +113,7 @@ MVP 项目创建字段：
 | project_name | 项目名称 |
 | project_type | `structure_dataset` / `ml_results` / `mixed_material_dataset` |
 | default_units | energy、length、pressure 等默认单位 |
-| default_export_formats | HTML、JSON、PNG、Markdown |
+| default_download_formats | HTML、JSON、PNG、Markdown |
 | llm_config_ref | 用户或项目级 LLM 配置引用 |
 
 ### 6.2 上传数据流程
@@ -289,7 +289,7 @@ Analysis Plan
 | message | 简短解释 |
 | payload | 结构化数据，不含 Secret |
 | timestamp | 事件时间 |
-| status | pending / running / success / warning / error |
+| status | info / running / success / warning / error |
 
 ### 6.8 Artifact / Recipe / Report 流程
 
@@ -372,7 +372,7 @@ type CreateProjectRequest = {
   name: string;
   projectType: "structure_dataset" | "ml_results" | "mixed_material_dataset" | "phonon" | "trajectory";
   defaultUnits?: Record<string, string>;
-  defaultExportFormats?: Array<"html" | "json" | "png" | "md">;
+  defaultDownloadFormats?: Array<"html" | "json" | "png" | "markdown">;
 };
 
 type UploadSession = {
@@ -405,10 +405,11 @@ type AnalysisPlanSummary = {
 type AgentTimelineEvent = {
   id: string;
   jobId: string;
+  seq?: number;
   eventType: string;
   title: string;
   message: string;
-  status: "pending" | "running" | "success" | "warning" | "error";
+  status: "info" | "running" | "success" | "warning" | "error";
   payload?: Record<string, unknown>;
   createdAt: string;
 };
@@ -552,12 +553,14 @@ V1/V2 增加：
 
 ### MVP 验收标准
 
-- 用户能创建项目并上传 CIF/CSV/ZIP。
+- 用户能创建项目并上传 CIF、POSCAR/CONTCAR、CSV、ZIP 容器，并支持 JSON limited 与 XYZ/EXTXYZ 基础解析边界。
 - 系统能生成结构数据和预测结果表格的 Data Profile。
 - 用户能输入自然语言并得到 Analysis Plan 摘要。
-- 系统能执行至少 6 个核心工具：`ptable_heatmap`、`elements_hist`、`chem_sys_treemap`、`structure_3d`、`coordination_hist`、`density_scatter`。
+- 10 个 MVP 工具均已注册、可通过 Tool Registry 校验，并可由 Worker 执行。
+- 端到端演示至少覆盖 6 个核心工具，并包含 composition、structure、ml 三类能力。
+- 端到端演示中必须出现 metrics/table 类 Artifact。
 - 前端能展示 Agent Timeline、图表卡片、3D Viewer、日志、Artifact 和 Recipe。
-- 生成的 Artifact 至少包含 Plotly HTML/JSON、PNG preview、metrics/table JSON、Markdown/HTML report。
+- 生成的 Artifact 至少包含 Plotly JSON、交互展示产物、PNG preview、metrics/table JSON、Markdown/HTML report。
 - 所有耗时任务通过 Job 事件流展示进度。
 
 ## 13. 本阶段产出的目标文件

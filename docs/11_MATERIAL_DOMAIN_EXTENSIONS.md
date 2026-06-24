@@ -108,8 +108,8 @@ Phonon 工具进入 V1，MVP 只保留识别和 Schema 扩展点。
 
 | Tool ID | 阶段 | 输入 | 输出 |
 |---|---|---|---|
-| `phonon.band` | V1 | `PhononBand` | Plotly JSON/HTML/PNG |
-| `phonon.dos` | V1 | `PhononDos` | Plotly JSON/HTML/PNG |
+| `phonon.band` | V1 | `PhononBand` | Plotly JSON + 交互展示产物 + PNG preview |
+| `phonon.dos` | V1 | `PhononDos` | Plotly JSON + 交互展示产物 + PNG preview |
 | `phonon.band_dos` | V1 | `PhononBand` + `PhononDos` | combined figure |
 
 ### Electronic Structure
@@ -193,7 +193,7 @@ type MaterialPluginManifest = {
     implementationSource: "plugin";
     inputSchema: ToolInputSchema;
     paramsSchema: Record<string, unknown>;
-    outputArtifactTypes: ArtifactType[];
+    artifactTypes: ArtifactType[];
     timeoutSec: number;
     costLevel: "low" | "medium" | "high";
   }>;

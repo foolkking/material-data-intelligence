@@ -62,7 +62,7 @@ system defaults
   "language": "zh-CN",
   "default_llm_provider": "openai-compatible",
   "default_model": "project-default",
-  "default_export_formats": ["html", "json", "png"],
+  "default_download_formats": ["html", "json", "png"],
   "max_cost_per_job": 2.0
 }
 ```
@@ -319,14 +319,18 @@ GET /me/config
 PATCH /me/config
 GET /projects/{project_id}/config
 PATCH /projects/{project_id}/config
-GET /projects/{project_id}/secrets
-POST /secrets
-DELETE /secrets/{secret_id}
+GET /projects/{project_id}/llm-policy
+PATCH /projects/{project_id}/llm-policy
+GET /me/secrets
+POST /me/secrets
+DELETE /me/secrets/{secret_id}
 GET /projects/{project_id}/audit-logs
 GET /plugins
 POST /projects/{project_id}/plugins/{plugin_id}/enable
 POST /projects/{project_id}/plugins/{plugin_id}/disable
 ```
+
+MVP Secret API 只管理当前用户 BYOK。项目配置只保存 provider policy、模型类别、预算和 system-hosted provider 开关；项目级共享 Secret API 推迟到 V1。
 
 ```ts
 type ProjectSecurityConfig = {

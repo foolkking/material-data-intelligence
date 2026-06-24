@@ -10,9 +10,10 @@
 
 - 人工确认 `.gitignore` 已允许 `docs/` 和 `persistent/` 进入 Git，并在本轮提交中包含这些核心设计文件。
 - 人工确认 `docs/13_SHARED_SCHEMA_SPEC.md` 作为实现阶段类型基线，后续 `packages/schemas/` 从该文件派生。
-- 人工确认 MVP / V1 工具范围：MVP 为 10 个核心工具，V1 才加入 parity、uncertainty、error-by-domain、phonon、trajectory、RDF/XRD。
+- 人工确认 MVP / V1 工具范围：MVP 为 10 个核心工具，10 个均需注册、校验并可由 Worker 执行；端到端 Demo 至少覆盖 6 个并包含 composition、structure、ml。
 - 人工确认 MatterViz snapshot、SVG/PDF high-resolution export 不作为 MVP 阻塞项。
 - 人工确认 BYOK 多人项目规则：用户级 Secret 按 job runner 解析，Recipe 不保存具体 SecretRef。
+- 人工确认 MVP Secret API 使用 `/me/secrets`，项目级共享 Secret API 推迟到 V1。
 
 ## Done
 
@@ -33,6 +34,10 @@
 - 逐文件审核：修正 MVP/V1 工具表述并新增文档索引
 - Phase 11：MVP Roadmap
 - Design Review Fixes：修正 `.gitignore`、新增入口文件、统一共享 Schema、修正 MVP/V1 范围、补充前端组件/状态规格、更新 ADR。
+- Implementation Readiness Fixes 2：补全共享 Schema 缺失类型、统一 `artifactTypes`、修正 10 个 MVP 工具冲突、删除 Phase 0 旧 Schema、补充 `job_events.seq`、修正推荐任务阶段标记和 Redis 事实源表述。
+- Implementation Readiness Fixes 3：统一 JobEvent status、移除 retry 专用 JobStatus、修正下载格式命名、更新 RecommendedTask 字段、明确 Plotly MVP 推荐输出，并复核 Tool Registry 执行流/Markdown 代码块。
+- Implementation Readiness Fixes 4：拆分 MVP 工具实现标准与演示标准、统一 Plotly 交互展示产物口径、对齐 Phase 2 JobEvent/ArtifactRecord、补齐 Phase 4 时间字段和 BYOK API、修正 AgentTimelineEvent status。
+- Implementation Readiness Fixes 5：对齐 Phase 1 与 Phase 12 的 MVP 验收和上传格式范围，移除 Phase 6 / Phase 9 Artifact Schema 重复定义，复核 Phase 6 缓存 refresh 条目无重复。
 
 ## Next Implementation Backlog
 

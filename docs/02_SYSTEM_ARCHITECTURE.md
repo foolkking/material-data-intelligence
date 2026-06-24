@@ -146,16 +146,21 @@ workers/llm_worker
 
 ### 异步任务
 
-必须异步执行：
+MVP 必须异步执行：
 
 - ZIP 解压和批量文件识别。
-- CIF / POSCAR / XYZ / CSV / phonopy / trajectory 解析。
+- CIF / POSCAR / CSV / JSON limited / XYZ/EXTXYZ 基础解析。
 - Data Profile 和数据质量检查。
 - LLM Analysis Plan 生成。
-- pymatviz / MatterViz / Plotly 图表生成。
-- RDF、XRD、coordination、composition embedding、UMAP/t-SNE。
-- 3D Viewer HTML / optional snapshot / PNG preview；SVG/PDF 进入 V1。
+- MVP Tool Set 图表、指标和表格结果生成。
+- 3D Viewer HTML / optional snapshot / PNG preview。
 - Report 和 Recipe 生成。
+
+V1 必须异步执行：
+
+- phonopy / trajectory 深度解析。
+- RDF、XRD、composition embedding、UMAP/t-SNE。
+- SVG/PDF high-resolution export。
 
 ### 任务状态机
 
@@ -271,9 +276,11 @@ POST /recipes/{recipe_id}/run
 type JobEvent = {
   id: string;
   jobId: string;
+  seq: number;
   eventType: string;
-  status: "pending" | "running" | "success" | "warning" | "error";
+  status: "info" | "running" | "success" | "warning" | "error";
   message: string;
+  progress?: number;
   payload?: Record<string, unknown>;
   createdAt: string;
 };
@@ -282,23 +289,15 @@ type ToolExecutionRequest = {
   jobId: string;
   toolCallId: string;
   toolId: string;
-  inputRefs: string[];
+  inputRefs: InputRef[];
   params: Record<string, unknown>;
   projectConfigRef: string;
-  artifactFormats: string[];
+  artifactTypes: ArtifactType[];
 };
 
-type ArtifactRecord = {
-  id: string;
-  projectId: string;
-  datasetId?: string;
-  jobId: string;
-  toolCallId?: string;
-  type: string;
-  storageKey: string;
-  previewStorageKey?: string;
-  metadata: Record<string, unknown>;
-};
+// ArtifactRecord 不在 Phase 2 单独维护正式结构。
+// 正式字段以 docs/13_SHARED_SCHEMA_SPEC.md 的 Artifact 为准。
+type ArtifactRecord = Artifact;
 ```
 
 ## 9. 数据库表草案
@@ -311,16 +310,16 @@ Phase 4 会细化字段、索引、约束和迁移。本阶段按架构层分组
 | Project | `projects`、`project_configs`、`user_configs` |
 | Data | `datasets`、`files`、`data_profiles`、`field_mappings`、`normalized_objects` |
 | Agent | `sessions`、`messages`、`analysis_requests`、`analysis_plans` |
-| Jobs | `jobs`、`job_events`、`worker_runs` |
+| Jobs | MVP: `jobs`、`job_events`; V1: `worker_runs` |
 | Tools | `tool_calls`、`tool_registry_versions` |
-| Artifacts | `artifacts`、`artifact_versions`、`visualization_recipes`、`reports` |
-| Security | `secrets`、`audit_logs`、`rate_limit_events` |
-| Plugins | `plugins`、`plugin_tools`、`plugin_versions` |
+| Artifacts | MVP: `artifacts`、`visualization_recipes`、`reports`; V1: `artifact_versions` |
+| Security | MVP: `secrets`、`audit_logs`; V1: `rate_limit_events` |
+| Plugins | V2: `plugins`、`plugin_tools`、`plugin_versions` |
 
 ### 数据库存储原则
 
 - PostgreSQL 存可查询元数据、状态、权限、索引和审计。
-- 对象存储存 raw files、normalized payloads、Plotly JSON、HTML、PNG、SVG/PDF、MatterViz HTML、report files。
+- 对象存储存 raw files、normalized payloads、Plotly JSON、HTML、PNG preview、MatterViz HTML、metrics/table、report files；SVG/PDF high-resolution export 进入 V1。
 - Redis 存短期状态、队列、缓存、rate limit counters，不作为唯一持久化来源。
 - Celery result backend 不作为任务事实源；Worker 完成状态必须写入 PostgreSQL `jobs`、`tool_calls`、`job_events` 和 `artifacts`。
 

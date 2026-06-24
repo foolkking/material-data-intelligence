@@ -8,15 +8,22 @@
 
 ### 为什么必须异步
 
-以下操作不能同步阻塞 API 请求：
+MVP 以下操作不能同步阻塞 API 请求：
 
-- ZIP 解压和批量 CIF 解析。
+- ZIP 解压和批量文件识别。
+- CIF / POSCAR / CSV / JSON limited / XYZ/EXTXYZ 基础解析。
 - Data Profile 构建和结构异常检查。
 - LLM 计划和报告生成。
-- pymatviz 图表生成。
-- RDF、XRD、coordination、embedding、UMAP/t-SNE。
+- MVP Tool Set 图表、指标和表格结果生成。
 - MatterViz / Plotly 3D 渲染。
 - PNG 导出；SVG/PDF 进入 V1 论文图导出链路。
+
+V1 以下操作也必须异步：
+
+- phonopy / trajectory 深度解析。
+- RDF、XRD、composition embedding、UMAP/t-SNE。
+- stable MatterViz snapshot。
+- SVG/PDF high-resolution export。
 
 ### Phase 8 决策
 
@@ -72,10 +79,10 @@
 created -> queued -> running -> partial_success -> completed
 created -> queued -> running -> failed
 running -> cancel_requested -> cancelled
-running -> retrying -> running
+failed -> queued -> running
 ```
 
-`partial_success` 用于批量任务：部分文件或工具失败，但已有 Artifact 可用。
+`partial_success` 用于批量任务：部分文件或工具失败，但已有 Artifact 可用。Retry 不新增专门的 JobStatus；ToolCall retry 创建新的 attempt record，Job 状态回到 `queued` / `running`。
 
 ## 6. Worker Pool
 
@@ -437,10 +444,16 @@ Phase 9：Artifact、Recipe 与报告系统。
 
 需要定义：
 
-- Plotly JSON / HTML / PNG / SVG / PDF。
-- MatterViz HTML / snapshot。
+MVP：
+
+- Plotly JSON / HTML / PNG preview。
+- MatterViz HTML / metadata。
+- Metrics JSON、table JSON/CSV、quality issues JSON。
 - Report Markdown / HTML。
 - Recipe JSON。
-- 版本管理。
-- 复现流程。
-- 分享和导出。
+
+V1：
+
+- SVG / PDF high-resolution export。
+- stable MatterViz snapshot。
+- 分享、版本对比和高级导出。

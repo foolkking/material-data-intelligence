@@ -153,11 +153,15 @@ POST /recipes/{recipe_id}/run
 ```http
 GET /projects/{project_id}/config
 PATCH /projects/{project_id}/config
-GET /projects/{project_id}/secrets
-POST /projects/{project_id}/secrets
-DELETE /secrets/{secret_id}
+GET /projects/{project_id}/llm-policy
+PATCH /projects/{project_id}/llm-policy
+GET /me/secrets
+POST /me/secrets
+DELETE /me/secrets/{secret_id}
 GET /projects/{project_id}/audit-logs
 ```
+
+MVP 不支持项目级共享 BYOK。项目只能配置允许的 provider policy、模型类别、预算和是否允许 system-hosted provider。V1 再增加 `GET /projects/{project_id}/secrets` 和 `POST /projects/{project_id}/secrets`。
 
 ## 7. 核心 Schema 草案
 
@@ -204,14 +208,14 @@ type Permission = {
 | `users` | `id`、`email`、`display_name`、`status`、`created_at` |
 | `organizations` | `id`、`name`、`plan`、`created_at` |
 | `organization_members` | `org_id`、`user_id`、`role` |
-| `projects` | `id`、`org_id`、`name`、`type`、`status`、`created_by` |
+| `projects` | `id`、`org_id`、`name`、`type`、`status`、`created_by`、`created_at` |
 | `project_members` | `project_id`、`user_id`、`role` |
 
 ### Data
 
 | 表 | 关键字段 |
 |---|---|
-| `datasets` | `id`、`project_id`、`name`、`dataset_type`、`status`、`profile_id` |
+| `datasets` | `id`、`project_id`、`name`、`dataset_type`、`status`、`profile_id`、`created_at` |
 | `files` | `id`、`dataset_id`、`storage_key`、`file_name`、`detected_format`、`status`、`sha256`、`size_bytes` |
 | `upload_sessions` | `id`、`dataset_id`、`status`、`expires_at`、`created_by` |
 | `data_profiles` | `id`、`dataset_id`、`profile_json`、`n_files`、`n_valid`、`n_failed` |
@@ -224,18 +228,18 @@ type Permission = {
 |---|---|
 | `sessions` | `id`、`project_id`、`dataset_id`、`created_by` |
 | `messages` | `id`、`session_id`、`role`、`content`、`metadata_json` |
-| `analysis_requests` | `id`、`project_id`、`dataset_id`、`prompt`、`status` |
+| `analysis_requests` | `id`、`project_id`、`dataset_id`、`prompt`、`status`、`created_at` |
 | `analysis_plans` | `id`、`request_id`、`plan_json`、`validated_at`、`version` |
-| `jobs` | `id`、`project_id`、`dataset_id`、`user_id`、`status`、`priority`、`resource_usage_json` |
-| `job_events` | `id`、`job_id`、`event_type`、`status`、`message`、`payload_json` |
-| `tool_calls` | `id`、`job_id`、`tool_id`、`input_json`、`params_json`、`status`、`output_artifact_id` |
+| `jobs` | `id`、`project_id`、`dataset_id`、`user_id`、`status`、`priority`、`resource_usage_json`、`created_at`、`started_at`、`finished_at` |
+| `job_events` | `id`、`job_id`、`seq`、`event_type`、`status`、`message`、`progress`、`payload_json`、`created_at` |
+| `tool_calls` | `id`、`job_id`、`step_id`、`tool_id`、`input_json`、`params_json`、`status`、`output_artifact_id`、`error_message`、`started_at`、`finished_at`、`created_at` |
 | `tool_registry_versions` | `id`、`version`、`registry_json`、`created_at` |
 
 ### Artifacts / Recipes / Reports
 
 | 表 | 关键字段 |
 |---|---|
-| `artifacts` | `id`、`project_id`、`job_id`、`tool_call_id`、`type`、`name`、`version`、`storage_key`、`preview_key`、`metadata_json` |
+| `artifacts` | `id`、`project_id`、`dataset_id`、`job_id`、`tool_call_id`、`type`、`name`、`version`、`storage_key`、`preview_key`、`metadata_json`、`created_at` |
 | `visualization_recipes` | `id`、`project_id`、`dataset_id`、`name`、`version`、`recipe_json`、`created_by` |
 | `reports` | `id`、`project_id`、`job_id`、`version`、`markdown_key`、`html_key` |
 
@@ -246,7 +250,7 @@ type Permission = {
 | `user_configs` | `user_id`、`config_json` |
 | `project_configs` | `project_id`、`config_json` |
 | `secrets` | `id`、`scope_type`、`scope_id`、`provider`、`encrypted_ref`、`status`、`last_used_at` |
-| `audit_logs` | `id`、`org_id`、`project_id`、`actor_id`、`action`、`target_type`、`target_id`、`metadata_json` |
+| `audit_logs` | `id`、`org_id`、`project_id`、`actor_id`、`action`、`target_type`、`target_id`、`metadata_json`、`created_at` |
 
 ## 9. 权限模型与数据隔离
 
@@ -254,7 +258,7 @@ type Permission = {
 
 | Role | 能力 |
 |---|---|
-| owner | 项目删除、成员管理、Secret 管理、配置、全部读写 |
+| owner | 项目删除、成员管理、项目配置、全部读写；MVP Secret 管理仅限本人 BYOK |
 | admin | 成员管理外的大部分项目读写、运行任务、导出 |
 | researcher | 上传数据、运行分析、保存 Recipe、导出自己有权限的 Artifact |
 | viewer | 查看 Data Profile、图表、报告和 Artifact，不运行高成本任务 |
@@ -308,6 +312,8 @@ SSE 事件必须支持断线重连：
 GET /jobs/{job_id}/events?cursor=evt_xxx
 ```
 
+同一 job 内 `seq` 单调递增，用于 SSE cursor、断线补齐和事件回放；事件 ID 可以映射为 `{job_id}:{seq}` 或独立 UUID + seq 组合。
+
 ## 12. 高并发、安全、扩展性考虑
 
 ### 高并发
@@ -358,4 +364,3 @@ Phase 5：Agent 编排设计。
 - Tool Calling 约束。
 - 可审计过程展示。
 - 不展示原始隐藏思维链的替代方案。
-

@@ -135,7 +135,7 @@ type RegisteredTool = {
   adapter: string;
   inputSchema: ToolInputSchema; // uses inputOptions OR semantics
   paramsSchema: Record<string, unknown>;
-  outputArtifactTypes: ArtifactType[];
+  artifactTypes: ArtifactType[];
   costLevel: "low" | "medium" | "high";
   timeoutSec: number;
   cachePolicy: "reuse" | "refresh" | "no_cache";

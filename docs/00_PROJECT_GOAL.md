@@ -147,59 +147,21 @@ Frontend
 
 ## 6. API / Schema 草案
 
-本阶段不定义正式外部 API，只固定概念边界。字段会在 Phase 4、5、6、7、9 细化。
+本阶段只定义概念边界，不维护正式 Schema。正式共享 Schema 以 `docs/13_SHARED_SCHEMA_SPEC.md` 为准，包括：
 
-```ts
-type DataAsset = {
-  id: string;
-  projectId: string;
-  fileName: string;
-  mediaType: string;
-  detectedFormat: "cif" | "poscar" | "xyz" | "csv" | "json" | "phonopy" | "trajectory" | "archive" | "unknown";
-  storageUri: string;
-  status: "uploaded" | "parsing" | "profile_ready" | "failed";
-};
+- `DataAsset`
+- `NormalizedObject`
+- `DataProfile`
+- `InputRef`
+- `AnalysisPlan`
+- `RegisteredTool`
+- `ToolCall` / `ToolExecutionRequest` 相关引用结构
+- `Artifact`
+- `VisualizationRecipe`
+- `JobEvent`
+- `LlmExecutionProfile`
 
-type DataProfile = {
-  assetIds: string[];
-  objectTypes: Array<"Structure" | "Composition" | "Atoms" | "DataFrame" | "PhononBand" | "PhononDos" | "Trajectory">;
-  summary: Record<string, unknown>;
-  fields?: Array<{ name: string; inferredRole: string; dtype: string }>;
-  qualityIssues: Array<{ severity: "info" | "warning" | "error"; message: string }>;
-};
-
-type AnalysisPlan = {
-  id: string;
-  userGoal: string;
-  requiredInputs: string[];
-  steps: ToolCall[];
-  expectedArtifacts: string[];
-  warnings: string[];
-};
-
-type ToolCall = {
-  toolId: string;
-  inputRefs: string[];
-  params: Record<string, unknown>;
-  timeoutSec: number;
-  cachePolicy: "reuse" | "refresh" | "no_cache";
-};
-
-type Artifact = {
-  id: string;
-  kind: "plotly_json" | "html" | "png" | "svg" | "pdf" | "matterviz_html" | "report_markdown" | "recipe_json";
-  storageUri: string;
-  metadata: Record<string, unknown>;
-};
-
-type Recipe = {
-  id: string;
-  version: string;
-  planId: string;
-  toolCalls: ToolCall[];
-  environment: Record<string, string>;
-};
-```
+后续实现不得从 Phase 0 复制旧草案类型；应从 `docs/13_SHARED_SCHEMA_SPEC.md` 派生 JSON Schema、TypeScript 类型和 Python Pydantic model。
 
 ## 7. 数据库表草案
 

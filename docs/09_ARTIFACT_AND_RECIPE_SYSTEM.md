@@ -102,53 +102,9 @@ org/{org_id}/project/{project_id}/dataset/{dataset_id}/
 
 ## 7. Artifact 元数据
 
-```ts
-type Artifact = {
-  id: string;
-  projectId: string;
-  datasetId?: string;
-  jobId: string;
-  toolCallId?: string;
-  type:
-    | "plotly_json"
-    | "plotly_html"
-    | "preview_png"
-    | "figure_svg"
-    | "figure_pdf"
-    | "matterviz_html"
-    | "matterviz_snapshot_png"
-    | "structure_json"
-    | "metrics_json"
-    | "table_json"
-    | "table_csv"
-    | "quality_issues_json"
-    | "summary_md"
-    | "report_md"
-    | "report_html"
-    | "recipe_json"
-    | "analysis_plan_json";
-  name: string;
-  version: string;
-  storageKey: string;
-  previewKey?: string;
-  sizeBytes: number;
-  contentHash: string;
-  metadata: ArtifactMetadata;
-};
+Artifact 的正式字段以 `docs/13_SHARED_SCHEMA_SPEC.md` 中的 `Artifact` 和 `ArtifactMetadata` 为准。
 
-type ArtifactMetadata = {
-  toolId?: string;
-  toolVersion?: string;
-  adapterVersion?: string;
-  inputHashes: string[];
-  paramsHash?: string;
-  profileId?: string;
-  recipeId?: string;
-  reportId?: string;
-  createdAt: string;
-  provenance: Record<string, unknown>;
-};
-```
+本阶段只补充 Artifact Service 的存储路径、导出策略、权限策略和生命周期管理，避免和共享 Schema 重复维护。
 
 ## 8. Recipe JSON
 
@@ -175,7 +131,7 @@ type VisualizationRecipe = {
     toolVersion: string;
     inputBindings: Record<string, string>;
     params: Record<string, unknown>;
-    artifactFormats: string[];
+    artifactTypes: ArtifactType[];
   }>;
   style?: Record<string, unknown>;
   environment: {

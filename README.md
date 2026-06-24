@@ -38,3 +38,13 @@ After each design or implementation phase, update:
 ## Current Status
 
 The repository is currently documentation-first. The next engineering step is to follow `docs/12_MVP_ROADMAP.md` and create the implementation scaffold.
+
+## Sharing Archive
+
+When sharing this design outside the local Git workspace, do not include `.git/`. Prefer:
+
+```bash
+git archive --format=zip HEAD -o material-data-intelligence-design.zip
+```
+
+For manual zipping, exclude `.git/*`, `node_modules/*`, `.venv/*`, and runtime storage directories.

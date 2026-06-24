@@ -16,7 +16,7 @@ Tool Registry 是系统唯一允许执行材料分析与可视化工具的入口
 |---|---|
 | pymatviz 函数 Schema 如何维护 | MVP 采用手写 Schema + 单元测试；后续评估半自动提取函数签名。 |
 | MatterViz Widget 如何保存 | MVP 必须输出 `viewer.html` + `metadata.json` + `recipe.json`；`snapshot.png` 和 `structure.json` 为可选输出，通过 sandboxed iframe 展示。 |
-| Plotly JSON 与 HTML 如何统一 | 每个 Plotly 工具必须输出 `figure.json`，可选 `figure.html` 和 `preview.png`。 |
+| Plotly JSON 与 HTML 如何统一 | 每个 Plotly 工具必须输出 `figure.json`；需要前端交互展示的 MVP 工具必须提供 `figure.html` 或可直接渲染的 `plotly_json`。 |
 | 大型 3D 结构如何降级 | Adapter 根据 atom count / frame count 自动设置 LOD、关闭 bonds 或抽帧。 |
 | 工具错误如何标准化 | 统一 `ToolError`，区分 validation/runtime/resource/export/cache 错误。 |
 | MVP 是否支持 phonon | Phonon 工具进入 V1；MVP 只保留 Schema 和扩展点。 |
@@ -41,7 +41,7 @@ Tool Registry 是系统唯一允许执行材料分析与可视化工具的入口
 | Input Resolver | 根据 `inputRefs` 读取 Data Profile、normalized objects、DataFrame columns、Artifact |
 | Param Validator | JSON Schema 校验参数、默认值、范围和枚举 |
 | Execution Wrapper | 超时、资源限制、日志、异常捕获、cache lookup |
-| Artifact Exporter | 输出 Plotly JSON/HTML/PNG、MatterViz HTML、metrics/table、summary、recipe；snapshot/SVG/PDF 按阶段启用 |
+| Artifact Exporter | 输出 Plotly JSON、交互展示产物、PNG preview、MatterViz HTML、metrics/table、summary、recipe；snapshot/SVG/PDF 按阶段启用 |
 | Error Normalizer | 将 Python/library 异常转成标准 ToolError |
 | Plugin Loader | 加载专业扩展工具定义和 Adapter |
 
@@ -62,7 +62,7 @@ type RegisteredTool = {
   inputSchema: ToolInputSchema;
   paramsSchema: Record<string, unknown>;
   outputSchema: ToolOutputSchema;
-  artifactFormats: ArtifactType[];
+  artifactTypes: ArtifactType[];
   costLevel: "low" | "medium" | "high";
   defaultTimeoutSec: number;
   maxTimeoutSec: number;
@@ -129,14 +129,14 @@ type ToolOutputSchema = {
 
 | Tool ID | Adapter | 输入 | 输出 |
 |---|---|---|---|
-| `composition.ptable_heatmap` | `PTableHeatmapAdapter` | formulas / Composition[] / element values | Plotly JSON/HTML/PNG |
-| `composition.elements_hist` | `ElementsHistAdapter` | formulas / Composition[] | Plotly JSON/HTML/PNG |
-| `composition.chem_sys_treemap` | `ChemSysTreemapAdapter` | formulas / Structure[] / Composition[] | Plotly JSON/HTML/PNG |
-| `structure.structure_3d` | `Structure3DAdapter` | Structure / Structure[] | Plotly JSON/HTML/PNG |
+| `composition.ptable_heatmap` | `PTableHeatmapAdapter` | formulas / Composition[] / element values | Plotly JSON + 交互展示产物 + PNG preview |
+| `composition.elements_hist` | `ElementsHistAdapter` | formulas / Composition[] | Plotly JSON + 交互展示产物 + PNG preview |
+| `composition.chem_sys_treemap` | `ChemSysTreemapAdapter` | formulas / Structure[] / Composition[] | Plotly JSON + 交互展示产物 + PNG preview |
+| `structure.structure_3d` | `Structure3DAdapter` | Structure / Structure[] | Plotly JSON + 交互展示产物 + PNG preview |
 | `structure.viewer_3d` | `MatterVizStructureAdapter` | Structure | MatterViz HTML/metadata，snapshot 可选 |
-| `structure.coordination_hist` | `CoordinationHistAdapter` | Structure[] | Plotly JSON/HTML/PNG |
-| `ml.density_scatter` | `DensityScatterAdapter` | DataFrame with target/prediction | Plotly JSON/HTML/PNG |
-| `ml.error_distribution` | `ErrorDistributionAdapter` | DataFrame with target/prediction | Plotly JSON/HTML/PNG + metrics JSON + outlier table |
+| `structure.coordination_hist` | `CoordinationHistAdapter` | Structure[] | Plotly JSON + 交互展示产物 + PNG preview |
+| `ml.density_scatter` | `DensityScatterAdapter` | DataFrame with target/prediction | Plotly JSON + 交互展示产物 + PNG preview |
+| `ml.error_distribution` | `ErrorDistributionAdapter` | DataFrame with target/prediction | Plotly JSON + 交互展示产物 + PNG preview + metrics JSON + outlier table |
 | `ml.basic_metrics` | `BasicMetricsAdapter` | DataFrame with target/prediction | metrics JSON + summary |
 | `ml.outlier_table` | `OutlierTableAdapter` | DataFrame with target/prediction | table JSON/CSV |
 
@@ -165,7 +165,7 @@ interface ToolAdapter {
   toolId: string;
   prepare(inputRefs: InputRef[], params: Record<string, unknown>): PreparedInput;
   run(input: PreparedInput, params: Record<string, unknown>): ToolResult;
-  export(result: ToolResult, formats: ArtifactType[]): ArtifactDraft[];
+  export(result: ToolResult, artifactTypes: ArtifactType[]): ArtifactDraft[];
 }
 ```
 
@@ -177,7 +177,7 @@ class BaseToolAdapter:
 
     def prepare(self, context, input_refs, params): ...
     def run(self, prepared, params): ...
-    def export(self, result, formats): ...
+    def export(self, result, artifact_types): ...
 ```
 
 ## 8. 输入校验
@@ -215,7 +215,7 @@ class BaseToolAdapter:
 
 ## 9. Artifact 输出标准
 
-### Plotly 工具
+### Plotly 工具 MVP 输出标准
 
 每个 Plotly Adapter 必须输出：
 
@@ -225,11 +225,21 @@ summary.md
 recipe.json
 ```
 
-可选输出：
+每个需要在前端交互展示的 Plotly Adapter，MVP 必须至少提供一种交互展示产物：
+
+- 优先：`figure.html`
+- 或：前端可直接渲染的 `plotly_json`
+
+MVP 推荐输出：
 
 ```text
 figure.html
 preview.png
+```
+
+V1 输出：
+
+```text
 figure.svg
 figure.pdf
 ```
@@ -255,19 +265,9 @@ structure.json
 
 ### Artifact metadata
 
-```ts
-type ArtifactMetadata = {
-  toolId: string;
-  toolVersion: string;
-  adapterVersion: string;
-  inputHashes: string[];
-  paramsHash: string;
-  pymatvizVersion?: string;
-  mattervizVersion?: string;
-  plotlyVersion?: string;
-  createdAt: string;
-};
-```
+Artifact metadata 的正式字段以 `docs/13_SHARED_SCHEMA_SPEC.md` 中的 `ArtifactMetadata` 为准。
+
+Tool Adapter 必须至少写入 `toolId`、`toolVersion`、`adapterVersion`、`inputHashes`、`paramsHash` 和 `createdAt`；库版本信息写入 `provenance`。
 
 ## 10. 错误标准化
 
@@ -371,7 +371,7 @@ Viewer metadata：
 - tool schema。
 - adapter class。
 - version。
-- artifact formats。
+- artifact types。
 - resource limits。
 - security declaration。
 
@@ -426,7 +426,7 @@ type ToolExecutionRequest = {
   toolId: string;
   inputRefs: InputRef[];
   params: Record<string, unknown>;
-  artifactFormats: ArtifactType[];
+  artifactTypes: ArtifactType[];
 };
 ```
 

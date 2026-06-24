@@ -107,6 +107,7 @@ type NormalizedObject = {
     | "Structure"
     | "Composition"
     | "Atoms"
+    | "Molecule"
     | "DataFrame"
     | "Trajectory"
     | "PhononBand"
@@ -160,13 +161,15 @@ type FileProfile = {
   detectedFormat: string;
   parseStatus: "success" | "partial" | "failed" | "unsupported";
   errorCode?: string;
+  errorMessage?: string;
 };
 
 type ObjectProfile = {
   objectId: string;
-  objectType: string;
+  objectType: MaterialObjectType;
   count: number;
   sourceFileIds: string[];
+  periodicity?: "periodic" | "non_periodic" | "mixed" | "unknown";
 };
 ```
 
@@ -206,11 +209,31 @@ type TableSummary = {
   columns: Array<{
     name: string;
     dtype: "string" | "number" | "boolean" | "category" | "datetime" | "unknown";
-    inferredRole?: "formula" | "target" | "prediction" | "uncertainty" | "label" | "structure_id";
+    inferredRole?: FieldRole;
     missingCount: number;
     uniqueCount?: number;
   }>;
   inferredTask?: "regression" | "classification" | "unknown";
+};
+```
+
+### RecommendedTask
+
+```ts
+type RecommendedTask = {
+  taskId: string;
+  label: string;
+  stage: "mvp" | "v1" | "v2";
+  taskType:
+    | "composition_overview"
+    | "structure_quality"
+    | "ml_evaluation"
+    | "phonon_analysis"
+    | "trajectory_viewer"
+    | "domain_extension";
+  availableNow: boolean;
+  requiredTools: string[];
+  reason: string;
 };
 ```
 
@@ -236,7 +259,7 @@ type QualityIssue = {
   severity: "info" | "warning" | "error";
   code: string;
   message: string;
-  refs: Array<{ type: "file" | "object" | "row" | "column"; id: string }>;
+  refs: Array<{ type: "file" | "object" | "row" | "column" | "artifact"; id: string }>;
 };
 ```
 
@@ -272,17 +295,31 @@ V1 使用组成 embedding / 聚类选择代表点。
 
 ## 12. 推荐任务生成
 
-| Profile 条件 | 推荐任务 |
-|---|---|
-| formulas / Composition 可用 | composition overview |
-| Structure[] 可用 | structure quality / 3D viewer |
-| Structure[] + enough count | spacegroup distribution |
-| DataFrame 含 target/prediction | ml evaluation |
-| DataFrame 含 uncertainty | uncertainty calibration |
-| phonon object available | phonon band/DOS |
-| trajectory available | trajectory viewer |
+| Profile 条件 | 推荐任务 | Stage | MVP 行为 |
+|---|---|---|---|
+| formulas / Composition 可用 | composition overview | MVP | 可自动规划 |
+| Structure[] 可用 | structure quality / 3D viewer | MVP | 可自动规划 |
+| Structure[] + enough count | spacegroup distribution | MVP/V1 | MVP 从 Data Profile 展示；V1 可升级为工具 |
+| DataFrame 含 target/prediction | ml evaluation | MVP | 可自动规划 |
+| DataFrame 含 uncertainty | uncertainty calibration | V1 | MVP 中只显示为后续能力，不自动规划 |
+| phonon object available | phonon band/DOS | V1 | MVP 中提示“已识别，V1 支持” |
+| trajectory available | trajectory viewer | V1 | MVP 中只展示首末帧/抽样帧 |
 
-推荐任务只作为 Agent planning context，不自动执行。
+推荐任务只作为 Agent planning context，不自动执行。MVP Planner 只能选择 `availableNow = true` 的任务；V1/V2 任务可在 UI 中显示为 planned capability，并用 `reason` 说明当前不可运行原因。
+
+示例：
+
+```json
+{
+  "taskId": "structure.spacegroup_distribution",
+  "label": "Space group distribution",
+  "stage": "v1",
+  "taskType": "structure_quality",
+  "availableNow": false,
+  "requiredTools": ["structure.spacegroup_bar"],
+  "reason": "Structure[] is available, but spacegroup visualization is planned for V1."
+}
+```
 
 ## 13. 数据流 / 控制流
 

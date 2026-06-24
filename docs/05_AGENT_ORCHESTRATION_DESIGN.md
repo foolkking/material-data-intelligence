@@ -117,10 +117,7 @@ type AnalysisStep = {
   toolId: string;
   purpose: string;
   reason: string;
-  inputRefs: Array<{
-    refType: "dataset" | "profile" | "normalized_object" | "dataframe_column" | "artifact";
-    ref: string;
-  }>;
+  inputRefs: InputRef[];
   params: Record<string, unknown>;
   output: {
     artifactTypes: ArtifactType[];
@@ -193,18 +190,22 @@ Execution Controller 必须执行以下校验：
 
 ```ts
 type AgentTimelineEvent = {
+  id: string;
+  jobId: string;
+  seq?: number;
   eventType: string;
   title: string;
   message: string;
-  status: "running" | "success" | "warning" | "error";
+  status: "info" | "running" | "success" | "warning" | "error";
   visibleReason?: string;
   toolId?: string;
   artifactId?: string;
   payload?: Record<string, unknown>;
+  createdAt: string;
 };
 ```
 
-`visibleReason` 是产品化解释，例如“数据包含 formula 列，因此选择周期表热力图”，不是模型原始推理。
+`AgentTimelineEvent` 是 `JobEvent` 的前端投影视图，`status` 继承 `docs/13_SHARED_SCHEMA_SPEC.md` 的 `JobEvent.status`。`visibleReason` 是产品化解释，例如“数据包含 formula 列，因此选择周期表热力图”，不是模型原始推理。
 
 ## 9. Prompt injection 防护
 

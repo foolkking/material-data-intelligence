@@ -12,6 +12,7 @@
 - 创建 `docs/03A_FRONTEND_COMPONENT_SPEC.md`。
 - 创建 `docs/03B_FRONTEND_STATE_AND_INTERACTION.md`。
 - 创建 `docs/13_SHARED_SCHEMA_SPEC.md`。
+- 在共享 Schema 中补充 `FileProfile`、`ObjectProfile`、`QualityIssue`、`RecommendedTask`、`InputRef`、`ToolExecutionRequest` 和 `Molecule`。
 - 新增 ADR-041：MVP Worker 沙箱采用 Docker/容器隔离，进程级隔离不足。
 - 新增 ADR-042：MVP 支持用户级 BYOK，组织级共享 Key 推迟到 V1。
 - 新增 ADR-043：Secret 使用 envelope encryption，明文不进入日志、prompt、Artifact 或导出包。
@@ -50,6 +51,29 @@
 - 调整 MatterViz snapshot、SVG/PDF high-resolution export 的阶段归属。
 - 补充 JobEvent 数据库索引、事件保留和日志保留策略。
 - 修改 BYOK 规则：用户级 Secret 按 job runner 解析，Recipe 只保存 provider 能力需求。
+- 统一 `artifactTypes` 命名，移除旧的 format 语义残留。
+- 将 Phase 0 旧 Schema 草案替换为共享 Schema 引用。
+- 修正 Phase 3 `activeTab` 为 `DisplayTarget`。
+- 修正 Phase 4 `job_events` 表字段，增加 `seq`、`progress`、`created_at`，并说明同一 job 内 seq 单调递增。
+- 修正 Phase 12 Milestone 3 的工具数量冲突，统一为 10 个 MVP Tool Executor / Adapter。
+- 将 Phase 7 推荐任务补充 `stage`、`availableNow`、`requiredTools` 和 `reason` 语义。
+- 将 Phase 2 / Phase 8 的异步任务列表拆分为 MVP 与 V1。
+- 统一 Redis 表述为 broker/cache/transient state；Celery result backend 不作为业务事实源。
+- 在 `README.md` 增加对外交付压缩包排除 `.git/` 的说明。
+- 统一 JobEvent status 为 `info/running/success/warning/error`，移除产品/架构草案中的 `pending`。
+- 移除 retry 专用 JobStatus，改为 ToolCall retry 创建新的 attempt record。
+- 将用户配置中的导出偏好改为 `defaultDownloadFormats` / `default_download_formats`，避免和内部 `ArtifactType` 混淆。
+- 明确 Plotly Adapter MVP 推荐输出 `figure.html` 与 `preview.png`，SVG/PDF 进入 V1。
+- 拆分 MVP 工具实现标准与端到端演示标准：10 个 MVP 工具均需注册、校验并可执行，Demo 至少覆盖 6 个核心工具且包含 composition、structure、ml。
+- 统一 Plotly MVP 输出口径：`figure.json` 为必需；需要前端交互展示的 Adapter 必须提供 `figure.html` 或可直接渲染的 `plotly_json`，`preview.png` 为 MVP 推荐输出。
+- 修正 Phase 2 `JobEvent`，补齐 `seq` 和 `progress`；`ArtifactRecord` 改为引用共享 `Artifact`。
+- 补齐 Phase 4 数据库表字段：`jobs`、`tool_calls`、`artifacts`、`audit_logs` 等加入索引依赖的时间字段。
+- 修正 MVP Secret API：使用 `/me/secrets` 管理用户级 BYOK，项目级共享 Secret API 推迟到 V1；项目只配置 LLM provider policy。
+- 修正 Agent Timeline 事件结构，加入 `info` status、`id`、`jobId`、`seq` 和 `createdAt`，并声明其为 `JobEvent` 前端投影视图。
+- 修正 Phase 1 MVP 验收标准，使其与 Phase 12 一致：10 个 MVP 工具均需注册、校验并可执行，端到端演示至少覆盖 6 个并包含 composition、structure、ml，且必须出现 metrics/table Artifact。
+- 修正 Phase 1 上传格式验收范围，补齐 POSCAR/CONTCAR、ZIP 容器、JSON limited 与 XYZ/EXTXYZ 基础解析边界。
+- 将 Phase 6 / Phase 9 Artifact 元数据从重复 Schema 定义改为引用 `docs/13_SHARED_SCHEMA_SPEC.md` 的正式 `Artifact` / `ArtifactMetadata`。
+- 复核 Phase 6 缓存策略，确认 `用户要求 refresh 的工具` 条目无重复。
 
 ### Decisions
 
@@ -183,7 +207,7 @@
 - MVP 使用项目默认模型，不做自动多模型路由。
 - MVP 不做完整工具文档 RAG，先使用版本化 Tool Registry 摘要。
 - Tool Registry 是 Agent 可执行能力的唯一白名单。
-- MVP Tool Set 固定为 composition / structure / ml 的核心 8 个工具。
+- MVP Tool Set 固定为 composition / structure / ml 的核心 10 个工具。
 - Adapter 负责输入校验、上游调用、Artifact 输出、错误标准化和缓存。
 - Agent 规划必须基于 Data Profile，不能直接猜文件内容。
 - MVP 数据解析聚焦结构文件、CSV/JSON 和 ZIP；phonon/trajectory 深度支持后移。
@@ -194,3 +218,4 @@
 - Plotly `figure.json`、MatterViz `viewer.html + metadata.json`、Report Markdown、Recipe JSON 是 canonical 产物。
 - MVP 不支持公开分享，导出包异步生成且必须脱敏。
 - 共享 Schema 是实现阶段的类型基线，未来 `packages/schemas/` 应从该文件拆分 JSON Schema、TypeScript 类型和 Python Pydantic model。
+- `artifactTypes` 是统一产物类型字段名；不再使用 format 语义表达业务产物。

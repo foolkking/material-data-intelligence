@@ -332,7 +332,7 @@ type WorkspaceState = {
   projectId: string;
   activeDatasetId?: string;
   activeJobId?: string;
-  activeTab: "overview" | "composition" | "structure" | "ml" | "artifacts";
+  activeTab: DisplayTarget;
   panels: {
     leftCollapsed: boolean;
     rightCollapsed: boolean;
@@ -360,7 +360,7 @@ type DataPanelView = {
   profileSummary: Record<string, unknown>;
   fieldMappings: Record<string, string>;
   qualityIssues: Array<{ severity: "info" | "warning" | "error"; message: string; ref?: string }>;
-  recommendedTasks: Array<{ id: string; label: string; promptTemplate: string }>;
+  recommendedTasks: RecommendedTask[];
 };
 ```
 
