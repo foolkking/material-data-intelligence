@@ -1,0 +1,259 @@
+version_baseline:
+  pymatviz: "0.18.x"
+  python: ">=3.11"
+
+tools:
+  - tool_id: composition.ptable_heatmap
+    source_package: pymatviz
+    source_function: ptable_heatmap
+    implementation_source: pymatviz
+    stage: mvp
+    adapter: PTableHeatmapAdapter
+    display_target: composition
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: composition.elements_hist
+    source_package: pymatviz
+    source_function: elements_hist
+    implementation_source: pymatviz
+    stage: mvp
+    adapter: ElementsHistAdapter
+    display_target: composition
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: composition.chem_sys_treemap
+    source_package: pymatviz
+    source_function: chem_sys_treemap
+    implementation_source: pymatviz
+    stage: mvp
+    adapter: ChemSysTreemapAdapter
+    display_target: composition
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.structure_3d
+    source_package: pymatviz
+    source_function: structure_3d
+    implementation_source: pymatviz
+    stage: mvp
+    adapter: Structure3DAdapter
+    display_target: structure
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.coordination_hist
+    source_package: pymatviz
+    source_function: coordination_hist
+    implementation_source: pymatviz
+    stage: mvp
+    adapter: CoordinationHistAdapter
+    display_target: structure
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: ml.density_scatter
+    source_package: pymatviz
+    source_function: density_scatter
+    implementation_source: pymatviz
+    stage: mvp
+    adapter: DensityScatterAdapter
+    display_target: ml
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: composition.ptable_hists
+    source_package: pymatviz
+    source_function: ptable_hists
+    implementation_source: pymatviz
+    stage: v1
+    adapter: PTableHistsAdapter
+    display_target: composition
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: composition.ptable_scatter
+    source_package: pymatviz
+    source_function: ptable_scatter
+    implementation_source: pymatviz
+    stage: v1
+    adapter: PTableScatterAdapter
+    display_target: composition
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: composition.ptable_heatmap_splits
+    source_package: pymatviz
+    source_function: ptable_heatmap_splits
+    implementation_source: pymatviz
+    stage: v1
+    adapter: PTableHeatmapSplitsAdapter
+    display_target: composition
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: composition.cluster_2d
+    source_package: pymatviz
+    source_function: cluster_compositions
+    implementation_source: pymatviz_composed
+    stage: v1
+    adapter: CompositionClusterAdapter
+    display_target: composition
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: composition.cluster_3d
+    source_package: pymatviz
+    source_function: cluster_compositions
+    implementation_source: pymatviz_composed
+    stage: v1
+    adapter: CompositionClusterAdapter
+    display_target: composition
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.structure_2d
+    source_package: pymatviz
+    source_function: structure_2d
+    implementation_source: pymatviz
+    stage: v1
+    adapter: Structure2DAdapter
+    display_target: structure
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: phonon.band
+    source_package: pymatviz
+    source_function: phonon_bands
+    implementation_source: pymatviz
+    stage: v1
+    adapter: PhononBandAdapter
+    display_target: phonon
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: phonon.dos
+    source_package: pymatviz
+    source_function: phonon_dos
+    implementation_source: pymatviz
+    stage: v1
+    adapter: PhononDosAdapter
+    display_target: phonon
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: phonon.band_dos
+    source_package: pymatviz
+    source_function: phonon_bands_and_dos
+    implementation_source: pymatviz
+    stage: v1
+    adapter: PhononBandDosAdapter
+    display_target: phonon
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.xrd
+    source_package: pymatviz
+    source_function: xrd_pattern
+    implementation_source: pymatviz
+    stage: v1
+    adapter: XrdPatternAdapter
+    display_target: structure
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.rdf
+    source_package: pymatviz
+    source_function: element_pair_rdfs
+    source_alternatives:
+      - full_rdf
+    implementation_source: pymatviz
+    stage: v1
+    adapter: RdfAdapter
+    display_target: structure
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.chem_env_sunburst
+    source_package: pymatviz
+    source_function: chem_env_sunburst
+    implementation_source: pymatviz
+    stage: v2
+    adapter: ChemEnvSunburstAdapter
+    display_target: structure
+    notes: "Can be explored in late V1, but default planned stage is V2 due to local environment analysis complexity."
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json

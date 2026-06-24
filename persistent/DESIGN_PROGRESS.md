@@ -2,7 +2,7 @@
 
 ## 当前阶段
 
-Design Review Fixes 完成，等待人工确认后进入代码实现准备
+Design Review Fixes 完成；新增 pymatviz Capability Inventory & Adapter Baseline，进入代码实现准备前的工具能力基线锁定
 
 ## 已完成阶段
 
@@ -26,6 +26,15 @@ Design Review Fixes 完成，等待人工确认后进入代码实现准备
 - [x] `docs/03A_FRONTEND_COMPONENT_SPEC.md`：前端组件规格
 - [x] `docs/03B_FRONTEND_STATE_AND_INTERACTION.md`：前端状态与交互规格
 - [x] `docs/13_SHARED_SCHEMA_SPEC.md`：共享 Schema 基线
+- [x] `docs/14_PYMATVIZ_CAPABILITY_INVENTORY.md`：pymatviz 能力清单与平台 Tool ID 映射
+- [x] `docs/15_ADAPTER_IMPLEMENTATION_PLAN.md`：Adapter 实现计划
+- [x] `tool_registry/pymatviz_manifest.yaml`：pymatviz 原生能力 manifest
+- [x] `tool_registry/matterviz_manifest.yaml`：MatterViz / widget 能力 manifest
+- [x] `tool_registry/platform_builtin_manifest.yaml`：平台内置与自定义 Plotly 能力 manifest
+
+当前新增设计重点：
+
+本项目进一步明确为“以 pymatviz 为 primary visualization kernel 的材料数据智能分析与可视化平台”。当前补充了 pymatviz capability inventory、manifest-based tool registry 和 adapter implementation plan。
 
 ## 本轮完成
 
@@ -111,13 +120,17 @@ Design Review Fixes 完成，等待人工确认后进入代码实现准备
 - 完成第三轮一致性修正：统一 JobEvent status 为 `info/running/success/warning/error`，移除 retry 专用 JobStatus，修正用户配置导出格式为 download format，确认 Phase 0 只引用共享 Schema，确认 Tool Registry 执行流和 Markdown 代码块无重复/破损。
 - 完成第四轮实现前一致性修正：拆分 MVP 10 个工具实现标准与 6 个工具端到端演示标准；统一 Plotly MVP 交互展示产物口径；Phase 2 `JobEvent` 补齐 `seq/progress` 并让 `ArtifactRecord` 引用共享 `Artifact`；Phase 4 表字段补齐索引依赖的时间字段；MVP Secret API 改为用户级 `/me/secrets`，项目级共享 Secret 推迟到 V1；Agent Timeline 状态与共享 `JobEvent.status` 对齐。
 - 完成第五轮实现前小修：Phase 1 MVP 验收标准与 Phase 12 完全对齐；Phase 1 上传范围补齐 POSCAR/CONTCAR、JSON limited、XYZ/EXTXYZ 基础解析；Phase 6 / Phase 9 Artifact 元数据改为引用 `docs/13_SHARED_SCHEMA_SPEC.md` 的正式 `Artifact` / `ArtifactMetadata`；复核 Phase 6 缓存策略中 `refresh` 条目无重复。
+- 完成 pymatviz 能力抽象基线补充：新增 `docs/14_PYMATVIZ_CAPABILITY_INVENTORY.md`，明确 Level 0-5 能力分层、9 类 pymatviz/MatterViz/Plotly 能力、原始函数到平台 Tool ID 的映射表，以及 3 个 MVP capability 完整示例。
+- 新增 `tool_registry/pymatviz_manifest.yaml`、`tool_registry/matterviz_manifest.yaml`、`tool_registry/platform_builtin_manifest.yaml`，将 10 个 MVP 工具来源拆分为 pymatviz、MatterViz、plotly_custom 和 platform_builtin。
+- 新增 `docs/15_ADAPTER_IMPLEMENTATION_PLAN.md`，明确 BaseToolAdapter 接口、执行流程、MVP Adapter 实现顺序和测试要求。
+- 更新 `docs/06_TOOL_REGISTRY_AND_ADAPTER.md` 与 `docs/12_MVP_ROADMAP.md`，把 manifest-based Tool Registry 和 Milestone 0 纳入正式实现顺序。
 
 ## 当前阻塞
 
-无架构方向阻塞。当前设计基线已完成一致性修正，进入代码实现前仍建议人工确认 `TASK_BOARD.md` 的 Review Needed 清单。
+无架构方向阻塞。当前设计基线已完成一致性修正，并补齐 pymatviz capability inventory 与 manifest-based Tool Registry 基线；本轮已清理本地快捷方式、统一 `structure.chem_env_sunburst` 为 V2、同步 ADR-046 实现顺序。进入代码实现前仍建议人工确认 `TASK_BOARD.md` 的 Review Needed 清单。
 
 ## 下一步
 
 完成人工确认后进入代码实现准备。
 
-下一步可按 `docs/12_MVP_ROADMAP.md` 的实现顺序建立代码仓库结构、数据库 schema、上传解析链路、Tool Registry、Job Queue、前端工作台和 Agent Plan 流程。
+下一步可按 `docs/12_MVP_ROADMAP.md` 的更新后实现顺序，先实现 manifest loader、BaseToolAdapter 和前 3 个 MVP Adapter，再建立数据管线、Job Queue、Artifact Service、前端工作台和 Agent Plan 流程。

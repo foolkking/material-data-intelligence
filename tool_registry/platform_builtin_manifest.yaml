@@ -1,0 +1,86 @@
+tools:
+  - tool_id: ml.basic_metrics
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: BasicMetricsAdapter
+    display_target: ml
+    artifact_types:
+      - metrics_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: ml.outlier_table
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: OutlierTableAdapter
+    display_target: ml
+    artifact_types:
+      - table_json
+      - table_csv
+      - summary_md
+      - recipe_json
+
+  - tool_id: ml.error_distribution
+    implementation_source: plotly_custom
+    stage: mvp
+    adapter: ErrorDistributionAdapter
+    display_target: ml
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - metrics_json
+      - table_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: ml.parity_plot
+    implementation_source: plotly_custom
+    stage: v1
+    adapter: ParityPlotAdapter
+    display_target: ml
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: ml.uncertainty_calibration
+    implementation_source: plotly_custom
+    stage: v1
+    adapter: UncertaintyCalibrationAdapter
+    display_target: ml
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - metrics_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: ml.error_by_element
+    implementation_source: platform_builtin
+    stage: v1
+    adapter: ErrorByElementAdapter
+    display_target: ml
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - table_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: ml.error_by_chem_sys
+    implementation_source: platform_builtin
+    stage: v1
+    adapter: ErrorByChemSysAdapter
+    display_target: ml
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - table_json
+      - summary_md
+      - recipe_json

@@ -52,6 +52,7 @@
 
 ## pymatviz / MatterViz 的角色
 
+- 本项目是一个以 `janosh/pymatviz` 为 primary visualization kernel，以 MatterViz 为 3D / widget 展示内核，以 pymatgen / ASE / phonopy 为材料对象解析内核，以 Tool Registry + Adapter 为 LLM-friendly 能力抽象层，以 Agent JSON Plan 为自然语言规划层，以 Artifact / Recipe / Report 为可复现分析资产层，以三栏式前端工作台为用户交互层的材料数据智能分析与可视化平台。
 - pymatviz：材料信息学可视化工具层，负责周期表图、组成聚类、结构 2D/3D、RDF、XRD、配位、声子、机器学习评估图等。
 - MatterViz：浏览器端材料科学交互 UI 和 3D / trajectory viewer 能力来源。
 - Plotly：交互式图表、HTML、JSON 和图片导出的主要图表载体。

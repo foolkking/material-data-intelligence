@@ -92,6 +92,20 @@
 
 ## 7. 开发任务拆解
 
+### Milestone 0：pymatviz Capability Inventory & Adapter Baseline
+
+目标：在正式实现 API、前端和 Agent 之前，先锁定 pymatviz 能力抽象边界。
+
+任务：
+
+- 新增 `docs/14_PYMATVIZ_CAPABILITY_INVENTORY.md`。
+- 新增 `docs/15_ADAPTER_IMPLEMENTATION_PLAN.md`。
+- 新增 `tool_registry/pymatviz_manifest.yaml`。
+- 新增 `tool_registry/matterviz_manifest.yaml`。
+- 新增 `tool_registry/platform_builtin_manifest.yaml`。
+- 明确 10 个 MVP 工具分别来自 pymatviz / MatterViz / Plotly custom / platform builtin。
+- 明确每个工具的 source function、adapter、artifactTypes、displayTarget、stage。
+
 ### Milestone 1：项目骨架与基础设施
 
 - 建立 monorepo 或双仓结构：`apps/web`、`apps/api`、`workers`、`packages/schemas`。
@@ -185,21 +199,28 @@
 
 建议顺序：
 
-1. 建立 repo scaffold 和基础 infra。
-2. 实现数据库 schema 和 API skeleton。
-3. 实现上传、解析、Data Profile。
-4. 实现 Tool Registry 和 2-3 个最小 Adapter。
-5. 实现 Job Queue、SSE 和 Artifact Service。
-6. 实现前端工作台基础布局。
-7. 实现 Agent Plan + Validator。
-8. 扩展到完整 MVP Tool Set。
-9. 实现 Recipe / Report / Security。
-10. 做端到端样例：CIF ZIP + predictions.csv。
+0. pymatviz Capability Inventory & Adapter Baseline。
+1. repo scaffold。
+2. packages/schemas。
+3. Tool Registry manifest loader。
+4. BaseToolAdapter。
+5. MVP 前 3 个 Adapter。
+6. Data Pipeline。
+7. Job Queue + SSE。
+8. Artifact Service。
+9. Agent JSON Plan + Validator。
+10. 前端三栏工作台。
+11. 补齐 10 个 MVP 工具。
 
 ## 12. 本阶段产出的目标文件
 
 ```text
 docs/12_MVP_ROADMAP.md
+docs/14_PYMATVIZ_CAPABILITY_INVENTORY.md
+docs/15_ADAPTER_IMPLEMENTATION_PLAN.md
+tool_registry/pymatviz_manifest.yaml
+tool_registry/matterviz_manifest.yaml
+tool_registry/platform_builtin_manifest.yaml
 persistent/DESIGN_PROGRESS.md
 persistent/TASK_BOARD.md
 persistent/ARCHITECTURE_DECISIONS.md

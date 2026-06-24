@@ -12,6 +12,9 @@
 - 创建 `docs/03A_FRONTEND_COMPONENT_SPEC.md`。
 - 创建 `docs/03B_FRONTEND_STATE_AND_INTERACTION.md`。
 - 创建 `docs/13_SHARED_SCHEMA_SPEC.md`。
+- 创建 `docs/14_PYMATVIZ_CAPABILITY_INVENTORY.md`。
+- 创建 `docs/15_ADAPTER_IMPLEMENTATION_PLAN.md`。
+- 创建 `tool_registry/pymatviz_manifest.yaml`、`tool_registry/matterviz_manifest.yaml`、`tool_registry/platform_builtin_manifest.yaml`。
 - 在共享 Schema 中补充 `FileProfile`、`ObjectProfile`、`QualityIssue`、`RecommendedTask`、`InputRef`、`ToolExecutionRequest` 和 `Molecule`。
 - 新增 ADR-041：MVP Worker 沙箱采用 Docker/容器隔离，进程级隔离不足。
 - 新增 ADR-042：MVP 支持用户级 BYOK，组织级共享 Key 推迟到 V1。
@@ -30,6 +33,7 @@
 - 新增 ADR-055：用户级 BYOK 按 job runner 解析，不写入 Recipe。
 - 新增 ADR-056：V1 phonon 优先支持 phonopy.yaml + band.yaml，DOS 第二批。
 - 新增 ADR-057：V1 composition clustering 默认 Magpie + PCA baseline，UMAP 可选。
+- 新增 ADR-058：pymatviz 作为 primary visualization kernel。
 
 ### Changed
 
@@ -74,6 +78,14 @@
 - 修正 Phase 1 上传格式验收范围，补齐 POSCAR/CONTCAR、ZIP 容器、JSON limited 与 XYZ/EXTXYZ 基础解析边界。
 - 将 Phase 6 / Phase 9 Artifact 元数据从重复 Schema 定义改为引用 `docs/13_SHARED_SCHEMA_SPEC.md` 的正式 `Artifact` / `ArtifactMetadata`。
 - 复核 Phase 6 缓存策略，确认 `用户要求 refresh 的工具` 条目无重复。
+- 补充 pymatviz capability inventory，明确 Level 0-5 能力分层、9 类能力分类、原始 pymatviz 函数/类到平台 Tool ID 的映射表，以及 `composition.ptable_heatmap`、`structure.structure_3d`、`structure.viewer_3d` 的完整 capability 示例。
+- 补充 manifest-based Tool Registry 基线，将首批工具来源拆分为 pymatviz、MatterViz/widget、platform_builtin 和 plotly_custom。
+- 新增 Adapter implementation plan，明确 BaseToolAdapter 接口、Adapter 执行流程、MVP Adapter 实现顺序和测试要求。
+- 更新 Phase 6 Tool Registry 文档，声明初始工具来源于 `tool_registry/*.yaml`，并要求每个工具可追溯 source package / source function / implementationSource。
+- 更新 Phase 11 Roadmap，加入 Milestone 0：pymatviz Capability Inventory & Adapter Baseline，并调整代码实现顺序为 manifest loader -> BaseToolAdapter -> MVP 前 3 个 Adapter -> Data Pipeline。
+- 清理 `tool_registry/1project.lnk` 本地快捷方式，并在 `.gitignore` 增加 `*.lnk`、`desktop.ini`、`Thumbs.db`。
+- 修正 `structure.chem_env_sunburst` 阶段标记：manifest 与 capability inventory 统一为 `v2`，late V1 仅作为 exploratory 备注。
+- 更新 ADR-046，使 MVP 实现顺序与 `docs/12_MVP_ROADMAP.md` 的 Milestone 0 和新版实现路线一致。
 
 ### Decisions
 
@@ -83,6 +95,7 @@
 - 插件默认最小权限，并通过 Tool Registry 和沙箱执行。
 - 明确 MVP / V1 / V2 范围、开发里程碑、优先级、风险和验收标准。
 - 明确领域扩展阶段：V1 支持 phonon band/DOS 与 trajectory viewer，V2 支持 VASP/LAMMPS、电子结构、生成材料评估和外部生态插件。
+- 明确 pymatviz 是 primary visualization kernel，MatterViz 是 3D/widget 展示内核，Tool Registry + Adapter 是 LLM-friendly 能力抽象层。
 
 ## 2026-06-23
 

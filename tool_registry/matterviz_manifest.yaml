@@ -1,0 +1,33 @@
+version_baseline:
+  matterviz: "current-compatible"
+  pymatviz_widgets: "from pymatviz"
+
+tools:
+  - tool_id: structure.viewer_3d
+    source_package: pymatviz
+    source_class: StructureWidget
+    implementation_source: matterviz
+    stage: mvp
+    adapter: StructureViewer3DAdapter
+    display_target: structure
+    artifact_types:
+      - matterviz_html
+      - structure_json
+      - summary_md
+      - recipe_json
+    optional_artifact_types:
+      - matterviz_snapshot_png
+
+  - tool_id: trajectory.viewer
+    source_package: pymatviz
+    source_class: TrajectoryWidget
+    implementation_source: matterviz
+    stage: v1
+    adapter: TrajectoryViewerAdapter
+    display_target: trajectory
+    artifact_types:
+      - matterviz_html
+      - summary_md
+      - recipe_json
+    optional_artifact_types:
+      - matterviz_snapshot_png

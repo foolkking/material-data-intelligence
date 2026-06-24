@@ -982,7 +982,7 @@ MVP 使用规则检测、上下文隔离和 Plan Validator 防护 prompt injecti
 
 ### Decision
 
-MVP 实现顺序固定为：基础设施与 schema -> 上传解析与 Data Profile -> Tool Registry 与最小 Adapter -> Job Queue 与 Artifact -> 前端工作台 -> Agent Plan + Validator -> Recipe / Report / Security。
+MVP 实现顺序固定为：pymatviz Capability Inventory & Adapter Baseline -> repo scaffold -> packages/schemas -> Tool Registry manifest loader -> BaseToolAdapter -> MVP 前 3 个 Adapter -> Data Pipeline -> Job Queue + SSE -> Artifact Service -> Agent JSON Plan + Validator -> 前端三栏工作台 -> 补齐 10 个 MVP 工具。
 
 ### Consequences
 
@@ -1175,3 +1175,34 @@ V1 composition clustering 默认 `Magpie + PCA baseline`，UMAP 作为高级可�
 - 默认结果稳定、可复现、速度快。
 - 高级用户仍可选择 UMAP。
 - Data Profile 和 Recipe 可记录 embedding/projection 参数。
+
+## ADR-058：pymatviz 作为 primary visualization kernel
+
+### Context
+
+当前项目的核心目标是“pymatviz 能力抽象 + 材料数据智能分析 + 交互式可视化工作台”。已有架构定义了 Tool Registry、Adapter、Artifact、Recipe、Agent JSON Plan 和前端三栏工作台，但缺少一份明确的 pymatviz 原始能力到平台工具 ID 的能力清单与 manifest 基线。
+
+### Decision
+
+本项目以 `janosh/pymatviz` 作为材料可视化主内核，不 fork 修改 pymatviz，而是通过 Tool Registry + Adapter 抽象其能力。
+
+正式实现时，首批 Tool Registry 来源为：
+
+- `tool_registry/pymatviz_manifest.yaml`
+- `tool_registry/matterviz_manifest.yaml`
+- `tool_registry/platform_builtin_manifest.yaml`
+
+所有 pymatviz / MatterViz / Plotly custom / platform builtin 能力必须先进入 capability inventory 或 manifest，再被 Agent 通过 `tool_id` 选择。Agent 只能生成 JSON Analysis Plan，不直接执行任意 Python 或调用原始 pymatviz 函数。
+
+### Reasons
+
+- pymatviz 已经覆盖材料信息学中的周期表、组成、结构、声子、RDF/XRD、ML 评估等可视化能力。
+- 平台需要让 LLM 安全调用这些能力，因此必须引入 manifest、schema、adapter 和 artifact 标准化。
+- 直接暴露 pymatviz 函数给 LLM 不安全、不稳定、不可审计。
+
+### Consequences
+
+- 所有 pymatviz 能力必须先进入 capability inventory。
+- 所有可执行能力必须注册到 manifest。
+- Agent 只能选择 Tool Registry 中的 tool_id。
+- Adapter 实现必须记录 source package、source function/class、implementationSource、版本和 Artifact provenance。

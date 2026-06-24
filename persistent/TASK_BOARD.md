@@ -14,6 +14,7 @@
 - 人工确认 MatterViz snapshot、SVG/PDF high-resolution export 不作为 MVP 阻塞项。
 - 人工确认 BYOK 多人项目规则：用户级 Secret 按 job runner 解析，Recipe 不保存具体 SecretRef。
 - 人工确认 MVP Secret API 使用 `/me/secrets`，项目级共享 Secret API 推迟到 V1。
+- 人工确认 `tool_registry/*.yaml` 作为首批 Tool Registry manifest 来源，并在代码实现阶段优先实现 manifest loader。
 
 ## Done
 
@@ -38,14 +39,24 @@
 - Implementation Readiness Fixes 3：统一 JobEvent status、移除 retry 专用 JobStatus、修正下载格式命名、更新 RecommendedTask 字段、明确 Plotly MVP 推荐输出，并复核 Tool Registry 执行流/Markdown 代码块。
 - Implementation Readiness Fixes 4：拆分 MVP 工具实现标准与演示标准、统一 Plotly 交互展示产物口径、对齐 Phase 2 JobEvent/ArtifactRecord、补齐 Phase 4 时间字段和 BYOK API、修正 AgentTimelineEvent status。
 - Implementation Readiness Fixes 5：对齐 Phase 1 与 Phase 12 的 MVP 验收和上传格式范围，移除 Phase 6 / Phase 9 Artifact Schema 重复定义，复核 Phase 6 缓存 refresh 条目无重复。
+- [x] 新增 pymatviz capability inventory。
+- [x] 新增 pymatviz / matterviz / platform builtin manifest。
+- [x] 新增 Adapter implementation plan。
+- [x] 更新 MVP roadmap，加入 Milestone 0。
+- [x] 清理 `tool_registry/1project.lnk` 并忽略 Windows 快捷方式/系统缩略图文件。
+- [x] 将 `structure.chem_env_sunburst` 的 manifest 阶段统一为 `v2`，late V1 仅保留为探索备注。
+- [x] 更新 ADR-046，使实现顺序与 Milestone 0 一致。
 
 ## Next Implementation Backlog
 
 - 建立 repo scaffold：`apps/web`、`apps/api`、`workers`、`packages/schemas`。
+- 从 `docs/13_SHARED_SCHEMA_SPEC.md` 建立 `packages/schemas`。
+- 实现 Tool Registry manifest loader，加载 `tool_registry/pymatviz_manifest.yaml`、`tool_registry/matterviz_manifest.yaml`、`tool_registry/platform_builtin_manifest.yaml`。
+- 实现 `BaseToolAdapter`、Input Resolver、Param Validator、Artifact Exporter 和 Error Normalizer。
+- 实现 MVP 前 3 个 Adapter：`composition.ptable_heatmap`、`structure.structure_3d`、`structure.viewer_3d`。
 - 建立 PostgreSQL / Redis / MinIO 本地开发环境。
 - 实现 Auth / Project / Dataset 基础 schema。
 - 实现上传、解析和 Data Profile MVP。
-- 实现 Tool Registry 与首批 Adapter。
 - 实现 Job Queue、SSE 和 Artifact Service。
 - 实现三栏式前端工作台基础布局。
 

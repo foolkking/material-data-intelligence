@@ -32,6 +32,9 @@ tmp/
 
 # OS / editor
 .DS_Store
+*.lnk
+desktop.ini
+Thumbs.db
 .idea/
 .vscode/
 

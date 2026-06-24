@@ -1,5 +1,17 @@
 # Phase 6：工具注册表与 Adapter 设计
 
+本项目的 Tool Registry 不只是通用工具注册表，而是对 `janosh/pymatviz` 能力进行 LLM-friendly 抽象的核心层。
+
+正式实现时，Tool Registry 的初始工具来源于：
+
+- `tool_registry/pymatviz_manifest.yaml`
+- `tool_registry/matterviz_manifest.yaml`
+- `tool_registry/platform_builtin_manifest.yaml`
+
+每个工具必须能追溯到其 source package / source function / implementationSource。不是所有平台工具都来自 pymatviz：pymatviz 原生能力使用 `implementationSource=pymatviz`，MatterViz/widget 能力使用 `implementationSource=matterviz`，平台补充分析能力使用 `implementationSource=platform_builtin`，自定义 Plotly 图使用 `implementationSource=plotly_custom`。
+
+完整 pymatviz 能力清单见 `docs/14_PYMATVIZ_CAPABILITY_INVENTORY.md`；Adapter 实现计划见 `docs/15_ADAPTER_IMPLEMENTATION_PLAN.md`。
+
 ## 1. 本阶段目标
 
 定义 Tool Registry、Tool Schema、Adapter 层、输入校验、输出 Artifact、错误标准化、缓存策略、pymatviz 函数封装、MatterViz 3D Viewer 封装和专业材料工具扩展机制。该设计是 Agent JSON Plan 能安全执行的核心边界。
@@ -133,7 +145,7 @@ type ToolOutputSchema = {
 | `composition.elements_hist` | `ElementsHistAdapter` | formulas / Composition[] | Plotly JSON + 交互展示产物 + PNG preview |
 | `composition.chem_sys_treemap` | `ChemSysTreemapAdapter` | formulas / Structure[] / Composition[] | Plotly JSON + 交互展示产物 + PNG preview |
 | `structure.structure_3d` | `Structure3DAdapter` | Structure / Structure[] | Plotly JSON + 交互展示产物 + PNG preview |
-| `structure.viewer_3d` | `MatterVizStructureAdapter` | Structure | MatterViz HTML/metadata，snapshot 可选 |
+| `structure.viewer_3d` | `StructureViewer3DAdapter` | Structure | MatterViz HTML/metadata，snapshot 可选 |
 | `structure.coordination_hist` | `CoordinationHistAdapter` | Structure[] | Plotly JSON + 交互展示产物 + PNG preview |
 | `ml.density_scatter` | `DensityScatterAdapter` | DataFrame with target/prediction | Plotly JSON + 交互展示产物 + PNG preview |
 | `ml.error_distribution` | `ErrorDistributionAdapter` | DataFrame with target/prediction | Plotly JSON + 交互展示产物 + PNG preview + metrics JSON + outlier table |
@@ -476,6 +488,11 @@ type ToolExecutionRequest = {
 
 ```text
 docs/06_TOOL_REGISTRY_AND_ADAPTER.md
+docs/14_PYMATVIZ_CAPABILITY_INVENTORY.md
+docs/15_ADAPTER_IMPLEMENTATION_PLAN.md
+tool_registry/pymatviz_manifest.yaml
+tool_registry/matterviz_manifest.yaml
+tool_registry/platform_builtin_manifest.yaml
 persistent/DESIGN_PROGRESS.md
 persistent/TASK_BOARD.md
 persistent/ARCHITECTURE_DECISIONS.md

@@ -8,6 +8,45 @@
 - pymatviz 输出以 Plotly Figure、HTML、图片、widget/export 为核心。
 - MatterViz / anywidget 路线用于更接近浏览器原生的 3D 结构、轨迹和交互材料 UI。
 - 平台不直接暴露 pymatviz 原始函数给 Agent；必须通过 Tool Registry + Adapter。
+- `docs/14_PYMATVIZ_CAPABILITY_INVENTORY.md` 是 pymatviz 原始能力到平台 Tool ID 的能力清单。
+- `docs/15_ADAPTER_IMPLEMENTATION_PLAN.md` 是 Adapter 实现顺序、接口和测试要求基线。
+
+## Manifest-based Registry Baseline
+
+正式实现时，Tool Registry 的首批工具来源为：
+
+| Manifest | 作用 |
+|---|---|
+| `tool_registry/pymatviz_manifest.yaml` | pymatviz 原生 Plotly 能力，例如 `ptable_heatmap`、`structure_3d`、`coordination_hist`、`density_scatter` |
+| `tool_registry/matterviz_manifest.yaml` | MatterViz / widget 能力，例如 `StructureWidget` 和 `TrajectoryWidget` |
+| `tool_registry/platform_builtin_manifest.yaml` | 平台内置分析和自定义 Plotly 能力，例如 `basic_metrics`、`outlier_table`、`error_distribution` |
+
+每个 manifest tool entry 必须能映射到共享 Schema 中的 `RegisteredTool`，并保留：
+
+- `tool_id`
+- `implementation_source`
+- `adapter`
+- `display_target`
+- `artifact_types`
+- `stage`
+- source package / source function / source class，如适用
+
+`stage` 必须使用共享 Schema 允许的值：`mvp`、`v1`、`v2`。跨阶段探索能力不得写成组合枚举；例如 `structure.chem_env_sunburst` 默认登记为 `v2`，late V1 exploratory 只写入 `notes`。
+
+## MVP Tool Source Split
+
+| MVP Tool ID | Source |
+|---|---|
+| `composition.ptable_heatmap` | pymatviz `ptable_heatmap` |
+| `composition.elements_hist` | pymatviz `elements_hist` |
+| `composition.chem_sys_treemap` | pymatviz `chem_sys_treemap` |
+| `structure.structure_3d` | pymatviz `structure_3d` |
+| `structure.viewer_3d` | MatterViz / pymatviz `StructureWidget` |
+| `structure.coordination_hist` | pymatviz `coordination_hist` |
+| `ml.density_scatter` | pymatviz `density_scatter` |
+| `ml.error_distribution` | platform `plotly_custom` |
+| `ml.basic_metrics` | platform builtin |
+| `ml.outlier_table` | platform builtin |
 
 ## Initial Categories
 
