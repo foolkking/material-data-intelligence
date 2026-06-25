@@ -325,14 +325,7 @@ def build_phase1_plan(
         ],
         warnings=warnings,
         steps=steps,
-        expectedArtifacts=[
-            {
-                "stepId": step.stepId,
-                "toolId": step.toolId,
-                "artifactTypes": step.output["artifactTypes"],
-            }
-            for step in steps
-        ],
+        expectedArtifacts=_expected_artifacts_for_steps(steps),
     )
 
 
@@ -352,6 +345,14 @@ def summarize_plan(plan: AnalysisPlan, registry: ToolRegistry) -> dict[str, Any]
         ],
         "warnings": plan.warnings,
     }
+
+
+def _expected_artifacts_for_steps(steps: list[AnalysisStep]) -> list[dict[str, str]]:
+    return [
+        {"name": f"{step.stepId}:{artifact_type}", "type": artifact_type, "fromStepId": step.stepId}
+        for step in steps
+        for artifact_type in step.output["artifactTypes"]
+    ]
 
 
 def remember_phase1_result(result: Phase1DemoResult) -> None:

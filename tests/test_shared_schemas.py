@@ -21,8 +21,10 @@ CORE_SCHEMA_EXPORTS = {
     "Artifact",
     "AnalysisPlan",
     "AnalysisStep",
+    "ExpectedArtifact",
     "DataProfile",
     "VisualizationRecipe",
+    "VisualizationRecipeStep",
 }
 
 

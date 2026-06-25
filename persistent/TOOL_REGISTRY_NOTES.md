@@ -1,5 +1,16 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-06-25 Phase 2 Acceptance Audit Notes
+
+- Re-verified manifest loading from `tool_registry/pymatviz_manifest.yaml`, `tool_registry/matterviz_manifest.yaml`, and `tool_registry/platform_builtin_manifest.yaml`.
+- The merged registry reports version `0.1.0` and 10 MVP tools.
+- Phase 2 deterministic planning still uses only registered MVP tools:
+  `composition.ptable_heatmap`, `composition.chem_sys_treemap`, `structure.viewer_3d`, `ml.basic_metrics`, and `ml.outlier_table`.
+- Phase 2 generated `AnalysisPlan.expectedArtifacts` now follows the shared schema `{name, type, fromStepId}`.
+- Phase 2 generated Recipe steps now include `toolVersion` and `inputBindings: Record<string, string>`.
+- Shared Python/TypeScript schemas now expose named `ExpectedArtifact` and `VisualizationRecipeStep` types.
+- No V1/V2 tool execution, direct pymatviz exposure, or LLM-directed executable action was introduced.
+
 ## 2026-06-25 Phase 2 Product Loop Notes
 
 - The Phase 2 deterministic planner uses only registered MVP tools and does not introduce any V1/V2 tool execution.

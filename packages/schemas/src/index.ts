@@ -202,6 +202,12 @@ export type AnalysisStep = {
   };
 };
 
+export type ExpectedArtifact = {
+  name: string;
+  type: ArtifactType;
+  fromStepId?: string;
+};
+
 export type AnalysisPlan = {
   schemaVersion: "0.1";
   goal: string;
@@ -211,7 +217,7 @@ export type AnalysisPlan = {
   assumptions: string[];
   warnings: string[];
   steps: AnalysisStep[];
-  expectedArtifacts: Array<{ name: string; type: ArtifactType; fromStepId?: string }>;
+  expectedArtifacts: ExpectedArtifact[];
 };
 
 export type DataProfile = {
@@ -237,6 +243,15 @@ export type DataProfile = {
   createdAt: string;
 };
 
+export type VisualizationRecipeStep = {
+  stepId: string;
+  toolId: string;
+  toolVersion: string;
+  inputBindings: Record<string, string>;
+  params: Record<string, unknown>;
+  artifactTypes: ArtifactType[];
+};
+
 export type VisualizationRecipe = {
   schemaVersion: "0.1";
   recipeId: string;
@@ -246,13 +261,6 @@ export type VisualizationRecipe = {
   sourceJobId?: string;
   sourcePlanId?: string;
   inputRequirements: Array<Record<string, unknown>>;
-  steps: Array<{
-    stepId: string;
-    toolId: string;
-    toolVersion: string;
-    inputBindings: Record<string, string>;
-    params: Record<string, unknown>;
-    artifactTypes: ArtifactType[];
-  }>;
+  steps: VisualizationRecipeStep[];
   environment: Record<string, unknown>;
 };

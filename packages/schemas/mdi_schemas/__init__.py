@@ -8,6 +8,7 @@ from .models import (
     ArtifactType,
     DataProfile,
     DisplayTarget,
+    ExpectedArtifact,
     ImplementationSource,
     InputRef,
     JobEvent,
@@ -23,6 +24,7 @@ from .models import (
     ToolInputSchema,
     ToolOutputSchema,
     VisualizationRecipe,
+    VisualizationRecipeStep,
 )
 
 __all__ = [
@@ -33,6 +35,7 @@ __all__ = [
     "ArtifactType",
     "DataProfile",
     "DisplayTarget",
+    "ExpectedArtifact",
     "ImplementationSource",
     "InputRef",
     "JobEvent",
@@ -48,4 +51,5 @@ __all__ = [
     "ToolInputSchema",
     "ToolOutputSchema",
     "VisualizationRecipe",
+    "VisualizationRecipeStep",
 ]

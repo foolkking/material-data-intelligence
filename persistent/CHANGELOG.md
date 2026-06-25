@@ -2,6 +2,29 @@
 
 ## 2026-06-25
 
+### Phase 2 Acceptance Hardening Update
+
+#### Changed
+
+- Aligned generated `AnalysisPlan.expectedArtifacts` with the shared schema shape `{name, type, fromStepId}`.
+- Aligned Phase 2 job-level Recipe JSON with `VisualizationRecipe.steps`: each step now includes `toolVersion` and `inputBindings` as a string-to-string map.
+- Added named shared schema types for `ExpectedArtifact` and `VisualizationRecipeStep` in Python and TypeScript.
+- Local-path dataset uploads now parse the copied raw file under the Phase 2 artifact root instead of the caller's original path.
+- Updated stale schema/status documentation in `docs/01_PRODUCT_REQUIREMENTS.md` and `README.md`.
+
+#### Added
+
+- Added Phase 2 regression assertions for planner expected artifacts and Recipe step shape.
+
+#### Verification
+
+- `python -m pytest -q`: 48 passed, 45 third-party deprecation warnings.
+- `npm ci`: passed.
+- `npm run typecheck`: passed.
+- `npm run build`: passed.
+- Manifest audit: registry version `0.1.0`, 10 MVP tools.
+- Phase 2 loop audit: completed with 5 tool calls and 25 artifacts.
+
 ### Phase 2 Local Product Loop Update
 
 #### Added

@@ -397,7 +397,7 @@ type AnalysisPlanSummary = {
     purpose: string;
     inputSummary: string;
     keyParams: Record<string, unknown>;
-    expectedArtifacts: string[];
+    expectedArtifacts: Array<{ name: string; type: ArtifactType; fromStepId?: string }>;
   }>;
   warnings: string[];
 };

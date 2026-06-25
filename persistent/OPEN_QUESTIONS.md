@@ -1,5 +1,11 @@
 # OPEN_QUESTIONS
 
+## 2026-06-25 Phase 2 Acceptance Audit Follow-ups
+
+- No new P0 blocker is open after the Phase 2 acceptance hardening pass.
+- Phase 2 Recipe and AnalysisPlan schema shape is now aligned with the shared schema. Future schema changes should update `docs/13_SHARED_SCHEMA_SPEC.md`, Python schemas, TypeScript schemas, runtime emitters, and tests together.
+- Ignored verification outputs (`node_modules`, `.next`, pytest cache/temp directories, Python bytecode, and TypeScript build info) are intentionally not part of Git or archive handoffs and should be cleaned before packaging.
+
 ## 2026-06-25 Phase 2 Follow-ups
 
 - Phase 2 now proves the repository/API shape with in-memory state. A later phase still needs to decide the exact PostgreSQL repository interfaces and migration path for projects, datasets, jobs, tool calls, events, artifacts, recipes, and reports.

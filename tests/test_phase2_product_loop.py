@@ -64,6 +64,10 @@ def test_phase2_deterministic_planner_selects_three_to_five_mvp_tools(tmp_path, 
     assert planned_tools == list(PHASE2_TOOL_ORDER)
     assert 3 <= len(planned_tools) <= 5
     assert {"composition", "structure", "ml"} == {tool_id.split(".", 1)[0] for tool_id in planned_tools}
+    assert plan.expectedArtifacts
+    expected_artifacts = [item.model_dump(mode="json") for item in plan.expectedArtifacts]
+    assert all(set(item) == {"name", "type", "fromStepId"} for item in expected_artifacts)
+    assert {item["fromStepId"] for item in expected_artifacts} == {step.stepId for step in plan.steps}
 
 
 def test_phase2_local_worker_runtime_records_job_events_and_tool_calls(tmp_path, repo_root):
@@ -119,6 +123,11 @@ def test_phase2_local_file_artifact_store_returns_report_and_recipe_content(tmp_
     recipe_detail = runtime.get_artifact(recipe["id"])
     assert recipe_detail["contentEncoding"] == "json"
     assert recipe_detail["content"]["sourceJobId"] == job["id"]
+    assert recipe_detail["content"]["sourcePlanId"] == "system_plan-analysis_plan_json"
+    first_recipe_step = recipe_detail["content"]["steps"][0]
+    assert first_recipe_step["toolVersion"] == runtime.registry.get_tool_by_id(first_recipe_step["toolId"]).version
+    assert isinstance(first_recipe_step["inputBindings"], dict)
+    assert first_recipe_step["inputBindings"] == {"input_1": "formulas"}
 
 
 def test_phase2_api_routes_query_upload_profile_job_tool_calls_and_artifacts(tmp_path, repo_root):

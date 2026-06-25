@@ -219,6 +219,12 @@ class AnalysisStep(BaseModel):
     constraints: dict[str, Any] | None = None
 
 
+class ExpectedArtifact(BaseModel):
+    name: str
+    type: ArtifactType
+    fromStepId: str | None = None
+
+
 class AnalysisPlan(BaseModel):
     schemaVersion: Literal["0.1"] = "0.1"
     goal: str
@@ -228,7 +234,7 @@ class AnalysisPlan(BaseModel):
     assumptions: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     steps: list[AnalysisStep]
-    expectedArtifacts: list[dict[str, Any]] = Field(default_factory=list)
+    expectedArtifacts: list[ExpectedArtifact] = Field(default_factory=list)
 
 
 class DataProfile(BaseModel):
@@ -248,6 +254,15 @@ class DataProfile(BaseModel):
     createdAt: str
 
 
+class VisualizationRecipeStep(BaseModel):
+    stepId: str
+    toolId: str
+    toolVersion: str
+    inputBindings: dict[str, str] = Field(default_factory=dict)
+    params: dict[str, Any] = Field(default_factory=dict)
+    artifactTypes: list[ArtifactType] = Field(default_factory=list)
+
+
 class VisualizationRecipe(BaseModel):
     schemaVersion: Literal["0.1"] = "0.1"
     recipeId: str
@@ -257,5 +272,5 @@ class VisualizationRecipe(BaseModel):
     sourceJobId: str | None = None
     sourcePlanId: str | None = None
     inputRequirements: list[dict[str, Any]] = Field(default_factory=list)
-    steps: list[dict[str, Any]] = Field(default_factory=list)
+    steps: list[VisualizationRecipeStep] = Field(default_factory=list)
     environment: dict[str, Any] = Field(default_factory=dict)

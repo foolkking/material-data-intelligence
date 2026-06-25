@@ -1,5 +1,22 @@
 # DESIGN_PROGRESS
 
+## 2026-06-25 Phase 2 Acceptance Hardening Update
+
+- Re-ran the Phase 2 acceptance audit against the current worktree after the local product loop implementation.
+- Fixed a shared-schema alignment issue in generated `AnalysisPlan.expectedArtifacts`: Phase 1 and Phase 2 planners now emit `{name, type, fromStepId}` entries instead of step-level grouped artifact summaries.
+- Fixed Phase 2 job-level Recipe generation to include per-step `toolVersion` and `inputBindings` as `Record<string, string>`, matching `docs/13_SHARED_SCHEMA_SPEC.md` and `packages/schemas/src/index.ts`.
+- Added shared Python/TypeScript schema types for `ExpectedArtifact` and `VisualizationRecipeStep`, and validated Phase 2 Recipe JSON with the Pydantic `VisualizationRecipe` model before export.
+- Changed Phase 2 local-path uploads to parse the copied raw file under the runtime artifact root, keeping the accepted dataset path independent from the caller's original local path.
+- Updated `docs/01_PRODUCT_REQUIREMENTS.md` and `README.md` to remove stale schema/status wording.
+- Verification:
+  - `python -m pytest -q`: 48 passed, 45 third-party deprecation warnings.
+  - `npm ci`: passed from `apps/web/package-lock.json`.
+  - `npm run typecheck`: passed.
+  - `npm run build`: passed.
+  - Manifest audit: 3 manifests load, registry version `0.1.0`, 10 MVP tools.
+  - Phase 2 loop audit: project -> dataset upload -> profile -> plan -> job -> 5 tool calls -> 25 artifacts completed.
+- Scope guard remains unchanged: no real LLM execution, no V1/V2 tool execution, no Celery/PostgreSQL/MinIO runtime persistence, and no frontend expansion this round.
+
 ## 2026-06-25 Phase 2 Local Product Loop Update
 
 - Added `apps/api/mdi_api/phase2_runtime.py` as the Phase 2 in-memory product loop.

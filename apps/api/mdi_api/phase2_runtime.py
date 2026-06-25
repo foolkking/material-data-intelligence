@@ -25,6 +25,7 @@ from mdi_schemas import (
     JobStatus,
     MaterialObjectType,
     ToolExecutionRequest,
+    VisualizationRecipe,
 )
 from mdi_tool_registry import ToolRegistry, load_manifests
 from mdi_workers import InMemoryJobStore, WorkerToolExecutionError, run_tool_call_job
@@ -455,10 +456,11 @@ class Phase2ProductRuntime:
             path = Path(file_path)
             if not path.exists():
                 raise FileNotFoundError(f"Upload file does not exist: {file_path}")
-            paths.append(path)
-            target = raw_dir / f"file_{len(paths):03d}" / path.name
+            file_id = f"file_{len(paths) + 1:03d}"
+            target = raw_dir / file_id / path.name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(path, target)
+            paths.append(target)
         for inline_file in request.files:
             file_id = f"file_{len(paths) + 1:03d}"
             target = raw_dir / file_id / Path(inline_file.fileName).name
@@ -527,13 +529,14 @@ class Phase2ProductRuntime:
             "version": "1",
             "projectId": project_id,
             "sourceJobId": job_id,
-            "sourcePlanId": plan.profileId,
+            "sourcePlanId": "system_plan-analysis_plan_json",
             "inputRequirements": _recipe_input_requirements(plan),
             "steps": [
                 {
                     "stepId": step.stepId,
                     "toolId": step.toolId,
-                    "inputBindings": [ref.model_dump(mode="json") for ref in step.inputRefs],
+                    "toolVersion": self.registry.get_tool_by_id(step.toolId).version,
+                    "inputBindings": {f"input_{index}": ref.ref for index, ref in enumerate(step.inputRefs, start=1)},
                     "params": step.params,
                     "artifactTypes": step.output["artifactTypes"],
                 }
@@ -541,8 +544,9 @@ class Phase2ProductRuntime:
             ],
             "environment": {"toolRegistryVersion": self.registry.version, "planner": "phase2_deterministic"},
         }
+        recipe_payload = VisualizationRecipe.model_validate(recipe).model_dump(mode="json")
         return exporter.export_payloads(
-            payloads=[ArtifactPayload(ArtifactType.recipe_json, "recipe.json", recipe, "application/json")],
+            payloads=[ArtifactPayload(ArtifactType.recipe_json, "recipe.json", recipe_payload, "application/json")],
             project_id=project_id,
             dataset_id=dataset_id,
             job_id=job_id,
@@ -645,10 +649,7 @@ def build_phase2_plan(
         ],
         warnings=warnings,
         steps=steps,
-        expectedArtifacts=[
-            {"stepId": step.stepId, "toolId": step.toolId, "artifactTypes": step.output["artifactTypes"]}
-            for step in steps
-        ],
+        expectedArtifacts=_expected_artifacts_for_steps(steps),
     )
 
 
@@ -670,6 +671,14 @@ def summarize_plan(plan: AnalysisPlan, registry: ToolRegistry) -> dict[str, Any]
         ],
         "warnings": plan.warnings,
     }
+
+
+def _expected_artifacts_for_steps(steps: list[AnalysisStep]) -> list[dict[str, str]]:
+    return [
+        {"name": f"{step.stepId}:{artifact_type}", "type": artifact_type, "fromStepId": step.stepId}
+        for step in steps
+        for artifact_type in step.output["artifactTypes"]
+    ]
 
 
 def build_object_store(objects: list[NormalizedObjectDraft]) -> tuple[dict[str, Any], dict[str, str]]:
