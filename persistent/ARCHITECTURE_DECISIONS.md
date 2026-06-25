@@ -1,5 +1,49 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-069: Phase 2 uses an in-memory local product runtime before durable infrastructure
+
+### Context
+
+Phase 2 needs an executable product loop across dataset upload, parsing,
+DataProfile generation, deterministic planning, Job/ToolCall execution,
+Artifact export, JobEvents, Recipe, Report, and API query routes. The goal is
+to prove the workflow boundary without prematurely adding PostgreSQL, Redis,
+Celery, MinIO, real LLM providers, full auth, or V1/V2 tools.
+
+### Decision
+
+Add `apps/api/mdi_api/phase2_runtime.py` as the Phase 2 runtime. It uses:
+
+- `InMemoryJobStore` for jobs, tool calls, and events.
+- `LocalFileArtifactStore` over `LocalArtifactExporter` output for artifact
+  metadata and content lookup.
+- The existing parser/profile library for dataset understanding.
+- A deterministic planner that emits an `AnalysisPlan` with 3-5 MVP tool calls.
+- The existing controlled execution path:
+  `ToolExecutionRequest` -> Tool Registry validation -> Adapter -> Artifact.
+
+The Phase 2 API routes read and write this local runtime state. The route
+contract is intentionally shaped so a later repository-backed implementation
+can replace the in-memory store without changing the product flow.
+
+### Consequences
+
+- Phase 2 can be accepted with real local API calls and real adapter artifacts.
+- No secrets, arbitrary code execution, or direct LLM tool execution are added.
+- The runtime is not a production state store and must be replaced by durable
+  repositories, queue workers, object storage, and access-control checks in a
+  later phase.
+- Frontend work remains out of scope for this round; API and tests prove the
+  backend product loop.
+
+### Alternatives Considered
+
+- Add PostgreSQL/Celery/MinIO immediately: rejected for this round because the
+  user explicitly requested the local in-memory runtime boundary first.
+- Extend the Phase 1 demo runtime directly: rejected because Phase 2 needs API
+  queryable project/dataset/job/artifact state, while Phase 1 remains an
+  acceptance/demo fixture.
+
 ## ADR-068: Phase 1 acceptance uses a deterministic product-flow runtime
 
 ### Context

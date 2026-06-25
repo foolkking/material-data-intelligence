@@ -1,5 +1,23 @@
 # TASK_BOARD
 
+## 2026-06-25 Phase 2 Local Product Loop Status
+
+### Done This Round
+
+- [x] Added Phase 2 `InMemoryJobStore`-backed product runtime for project -> dataset upload -> parse -> profile -> plan -> job -> tool calls -> artifacts -> report.
+- [x] Added `/datasets/upload`, `/datasets/{dataset_id}/profile`, `/jobs`, `/jobs/{job_id}`, `/jobs/{job_id}/tool-calls`, and `/artifacts/{artifact_id}` API boundaries.
+- [x] Added local artifact lookup through `LocalFileArtifactStore`, including report/recipe/plan content queries.
+- [x] Added deterministic planner coverage for the five-tool MVP mixed-dataset path.
+- [x] Added tests for data pipeline, planner, job runtime, artifact store, API routes, and end-to-end product flow.
+- [x] Ran `python -m pytest -q`: 48 passed.
+- [x] Kept Phase 2 scoped away from real LLM API, full auth, V1/V2 tools, Celery, PostgreSQL, MinIO, and frontend expansion.
+
+### Handoff Notes
+
+- The Phase 2 loop is intentionally in-memory and local-file-backed. It proves API/state semantics before durable repositories and distributed workers are introduced.
+- Frontend checks were not rerun this round because no frontend files changed and `apps/web/node_modules` is not present.
+- The Phase 1 handoff archive is ignored via `material-data-intelligence-*.zip` and should not be committed.
+
 ## 2026-06-25 Phase 1 Engineering Hardening Status
 
 ### Done This Round

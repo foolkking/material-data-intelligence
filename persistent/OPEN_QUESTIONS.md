@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-06-25 Phase 2 Follow-ups
+
+- Phase 2 now proves the repository/API shape with in-memory state. A later phase still needs to decide the exact PostgreSQL repository interfaces and migration path for projects, datasets, jobs, tool calls, events, artifacts, recipes, and reports.
+- Phase 2 artifact lookup reads local files directly. A later phase still needs to map the same API contract to MinIO/S3 signed URLs and access-control checks.
+- Phase 2 job creation drains the LocalWorkerRuntime immediately for deterministic acceptance. A later phase still needs durable queue semantics, retry/cancel behavior, and SSE cursor persistence.
+- Phase 2 supports local file paths and inline small text uploads for acceptance. Production upload sessions, object-storage direct upload, and file security limits remain future work.
+
 ## 2026-06-25 Phase 1 Acceptance Follow-ups
 
 - Phase 1 now accepts `preview_png` as a required artifact family, but the MVP implementation may use a minimal valid PNG fallback when Kaleido/Chromium is unavailable. V1 still needs a decision on whether render workers must install and manage Kaleido/Chromium for real chart snapshots.

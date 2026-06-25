@@ -1,5 +1,31 @@
 # DESIGN_PROGRESS
 
+## 2026-06-25 Phase 2 Local Product Loop Update
+
+- Added `apps/api/mdi_api/phase2_runtime.py` as the Phase 2 in-memory product loop.
+- The runtime now covers project creation, dataset upload from local paths or inline small files, deterministic parsing, `DataProfile` generation, deterministic `AnalysisPlan` generation, local Worker execution, Adapter invocation, Artifact export, JobEvent recording, job-level Recipe generation, Markdown/HTML report generation, and API result queries.
+- Added Phase 2 API routes:
+  - `POST /projects`
+  - `POST /datasets/upload`
+  - `GET /datasets/{dataset_id}/profile`
+  - `POST /jobs`
+  - `GET /jobs/{job_id}`
+  - `GET /jobs/{job_id}/events`
+  - `GET /jobs/{job_id}/tool-calls`
+  - `GET /jobs/{job_id}/artifacts`
+  - `GET /artifacts/{artifact_id}`
+- The deterministic Phase 2 planner selects 3-5 MVP tools and currently chooses this five-tool mixed-dataset path when structures and an ML table are present:
+  `composition.ptable_heatmap`, `composition.chem_sys_treemap`, `structure.viewer_3d`, `ml.basic_metrics`, and `ml.outlier_table`.
+- Added `LocalFileArtifactStore` over `LocalArtifactExporter` output so API routes can return artifact metadata and text/JSON content without introducing MinIO.
+- Kept execution inside the existing validated boundary:
+  `AnalysisPlan` -> `ToolExecutionRequest` -> Tool Registry lookup -> paramsSchema validation -> Adapter -> Artifact.
+- Explicitly did not add real LLM API calls, full auth, V1/V2 tools, Celery, PostgreSQL, MinIO, or frontend feature expansion.
+- Added `tests/test_phase2_product_loop.py` with coverage for data pipeline upload/profile, deterministic planner, local worker runtime, artifact store, API routes, and end-to-end product flow.
+- Verification:
+  - `python -m pytest -q`: 48 passed, 45 third-party deprecation warnings.
+  - Frontend typecheck/build were not rerun because no frontend files changed in this Phase 2 implementation.
+- `.gitignore` now ignores `material-data-intelligence-*.zip`, so the Phase 1 handoff archive can stay in the workspace without entering commits.
+
 ## 2026-06-25 Phase 1 Engineering Hardening Update
 
 - Froze Python dependencies with `uv.lock`.

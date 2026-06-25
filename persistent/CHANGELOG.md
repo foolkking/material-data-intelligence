@@ -2,6 +2,39 @@
 
 ## 2026-06-25
 
+### Phase 2 Local Product Loop Update
+
+#### Added
+
+- Added `apps/api/mdi_api/phase2_runtime.py`, a deterministic in-memory product runtime for Phase 2.
+- Added local runtime support for:
+  - project creation
+  - dataset upload from local paths or inline small text files
+  - parser/profile execution
+  - deterministic AnalysisPlan generation
+  - LocalWorkerRuntime ToolCall execution
+  - Artifact export and lookup
+  - JobEvent recording
+  - job-level Recipe JSON generation
+  - Markdown/HTML report generation
+- Added Phase 2 API routes for dataset upload/profile, job create/query, job events, tool calls, job artifacts, and artifact detail lookup.
+- Added `LocalFileArtifactStore` for local-file-backed artifact metadata/content retrieval.
+- Added `tests/test_phase2_product_loop.py`, covering data pipeline, deterministic planner, job runtime, artifact store, API routes, and end-to-end product flow.
+
+#### Changed
+
+- `POST /projects`, `GET /projects`, and `GET /datasets` now read from the Phase 2 in-memory runtime instead of static stubs.
+- `.gitignore` now ignores `material-data-intelligence-*.zip` handoff archives.
+
+#### Scope Guard
+
+- Did not add real LLM API calls, full auth, V1/V2 tools, Celery, PostgreSQL, MinIO, or frontend feature expansion.
+
+#### Verification
+
+- `python -m pytest -q`: 48 passed, 45 third-party deprecation warnings.
+- Frontend typecheck/build were not rerun because no frontend files changed in this Phase 2 round.
+
 ### Phase 1 Engineering Hardening Update
 
 #### Added

@@ -29,6 +29,7 @@ storage/
 artifacts/
 tmp/
 .cache/
+material-data-intelligence-*.zip
 
 # Local databases
 *.sqlite
