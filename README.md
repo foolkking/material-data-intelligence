@@ -37,7 +37,7 @@ After each design or implementation phase, update:
 
 ## Current Status
 
-The repository is currently documentation-first. The next engineering step is to follow `docs/12_MVP_ROADMAP.md` and create the implementation scaffold.
+Milestone 0 and Milestone 1 are implemented at scaffold level. The repo has a Python packages-first core, shared schemas, Tool Registry manifest loading, `BaseToolAdapter`, 10 MVP adapters, local Artifact export, Data Pipeline basics, a FastAPI API boundary, local PostgreSQL/Redis/MinIO compose config, basic Auth/Project/Dataset table metadata, and a Next.js three-column workspace shell. Current verification: `python -m pytest -q`, `npm run typecheck`, and `npm run build` pass.
 
 ## Sharing Archive
 

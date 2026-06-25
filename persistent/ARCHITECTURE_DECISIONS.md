@@ -1,5 +1,43 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-068: Phase 1 acceptance uses a deterministic product-flow runtime
+
+### Context
+
+The docs/01 Phase 1 MVP acceptance criteria require an end-to-end product flow:
+project creation, upload parsing, Data Profile, natural-language analysis request,
+Analysis Plan summary, registry-approved Worker execution, artifacts, Recipe,
+Report, and JobEvent progress display. The project does not yet have production
+repositories, Celery workers, object-storage upload sessions, or a real LLM
+planner wired into the API.
+
+### Decision
+
+Add a deterministic local Phase 1 runtime in `apps/api/mdi_api/phase1_demo.py`.
+It is an acceptance/demo boundary, not a production shortcut. The planner reads
+Data Profile + Tool Registry and emits an `AnalysisPlan`; it does not call a
+real LLM and does not execute arbitrary Python. Tool execution still flows
+through `run_tool_call_job()` -> `execute_tool_request()` -> Tool Registry
+validation -> Adapter execution.
+
+### Consequences
+
+- Phase 1 product acceptance is now executable and covered by tests.
+- The Agent contract remains intact: structured JSON plan only, no direct
+  pymatviz/Python/shell execution.
+- The runtime proves event and artifact semantics before durable repositories
+  are implemented.
+- Next-phase work must replace in-memory/demo storage with PostgreSQL,
+  object storage, Celery, and durable SSE cursors.
+
+### Alternatives Considered
+
+- Mark Phase 1 as scaffold-only: rejected because docs/01 requires product-flow
+  acceptance evidence.
+- Wire a real LLM/API immediately: rejected for MVP acceptance because the
+  planning boundary can be proven deterministically without adding secrets,
+  provider variability, or network dependency.
+
 ## ADR-001：LLM 不直接执行任意代码
 
 ### Context
@@ -1206,3 +1244,214 @@ V1 composition clustering 默认 `Magpie + PCA baseline`，UMAP 作为高级可�
 - 所有可执行能力必须注册到 manifest。
 - Agent 只能选择 Tool Registry 中的 tool_id。
 - Adapter 实现必须记录 source package、source function/class、implementationSource、版本和 Artifact provenance。
+
+## ADR-059：Milestone 0/1 代码采用 packages-first 共享库结构
+
+### Context
+
+当前阶段需要先打通 Tool Registry、共享 Schema、Adapter 和 Artifact Exporter。API、Worker 和前端尚未进入完整实现；若把 Adapter 直接放入某个 Worker 目录，后续 API 校验、测试、Job Worker 和 Recipe 重跑都会重复依赖封装。
+
+### Decision
+
+Milestone 0/1 采用 packages-first 结构：
+
+- `packages/schemas` 保存 JSON Schema、TypeScript 类型和 Python/Pydantic 类型。
+- `packages/tool-registry` 保存 manifest loader 和 Registry 查询 API。
+- `packages/adapters` 保存 `BaseToolAdapter`、adapter registry 和 pymatviz/MatterViz adapter。
+- `packages/artifact-core` 保存本地 Artifact Exporter。
+- `apps/api`、`apps/web`、`services/workers` 先作为服务壳，后续从这些共享包导入能力。
+
+### Consequences
+
+- Tool Registry -> Adapter -> Artifact 的核心链路可以先被单元测试覆盖。
+- 后续 API、Worker 和前端不会各自复制 schema/adapter 逻辑。
+- 与 Roadmap 的建议目录保持一致，但将可复用代码放在 `packages/`，服务运行入口留给下一阶段。
+
+## ADR-060：Data Pipeline 先实现库层闭环，再接上传服务和异步 Job
+
+### Context
+
+Data Profile 必须在 Agent 规划前由确定性程序生成。当前尚未实现上传服务、对象存储、Job Queue 和 Worker，但 Adapter 测试已经需要真实结构和表格对象作为输入。
+
+### Decision
+
+Milestone 2 先在 `packages/material-parsers` 实现本地库层：
+
+- `detect_format()` 负责格式识别。
+- `parse_file()` / `parse_dataset()` 负责将本地文件解析为 normalized object draft。
+- `build_data_profile()` 负责生成轻量 `DataProfile`、quality issues 和 recommended tasks。
+- CIF/POSCAR/CSV/JSON limited 首批可解析；plain XYZ 先识别为非周期边界但不进入周期结构工具；ZIP 和完整 EXTXYZ 标准化推迟到下一步。
+
+### Consequences
+
+- 后续 API、Worker 和测试可以复用同一套确定性解析逻辑。
+- Agent 仍只读取 DataProfile，不直接猜测文件内容。
+- 本阶段不声称完成生产上传/对象存储链路；normalized object 当前是 draft，后续由 Artifact/Object Storage 服务持久化。
+- plain XYZ 的 MVP 库层语义是解析为非周期 `Atoms`，并以 quality warning 标记其不能进入 `periodic_required` 结构工具；它不是周期 `Structure`，也不应被 `structure.structure_3d` 等工具误用。
+
+## ADR-062：EXTXYZ with lattice 通过 ASE 解析后转 pymatgen Structure
+
+### Context
+
+MVP 需要支持基础 XYZ/EXTXYZ 边界。plain XYZ 没有 lattice，必须保持非周期；但包含 `Lattice=` 的 EXTXYZ 文件应尽量复用成熟解析器，而不是手写轻量 parser。
+
+### Decision
+
+`detect_format()` 先识别 `.extxyz` 扩展名；`parse_file()` 使用 ASE 读取 EXTXYZ，再在 cell volume 有效时通过 `AseAtomsAdaptor` 转成 `pymatgen.Structure`。ZIP 容器解包采用路径安全检查，非法 member 进入 partial 结果而不是写出危险路径。
+
+### Consequences
+
+- EXTXYZ 周期转换复用成熟库。
+- plain XYZ / EXTXYZ 的语义边界清晰。
+- ZIP 解包的安全策略和解析结果状态有确定性测试覆盖。
+
+## ADR-061：10 个 MVP Adapter 先完成库层覆盖，再接 Worker 编排
+
+### Context
+
+Milestone 0/1 已打通 `composition.ptable_heatmap`、`structure.structure_3d` 和 `structure.viewer_3d` 的 Tool Registry -> Adapter -> Artifact 本地闭环。Roadmap 要求 10 个 MVP 工具最终都能注册、校验并由 Worker 执行，但当前尚未实现 Job Queue、ToolCall 状态表、SSE 和生产 Artifact Service。
+
+### Decision
+
+先在 `packages/adapters` 完成全部 10 个 MVP Adapter 的库层覆盖，并全部注册到 `ADAPTER_CLASSES`：
+
+- `composition.ptable_heatmap`
+- `composition.elements_hist`
+- `composition.chem_sys_treemap`
+- `structure.structure_3d`
+- `structure.viewer_3d`
+- `structure.coordination_hist`
+- `ml.density_scatter`
+- `ml.error_distribution`
+- `ml.basic_metrics`
+- `ml.outlier_table`
+
+每个 Adapter 通过 `ToolExecutionRequest`、`ToolExecutionContext` 和本地 `LocalArtifactExporter` 生成标准 Artifact。该阶段只声明库层 smoke path 完成，不声明异步 Worker、数据库状态机或前端端到端完成。
+
+### Consequences
+
+- Tool Registry 中所有 MVP adapter class name 都能实际实例化，减少后续 Worker 接入风险。
+- ML adapter 先共享 DataFrame target/prediction 校验和指标/outlier 计算，避免每个工具重复实现字段推断。
+- 下一步 Job Queue / SSE / ToolCall 持久化可直接复用这些 Adapter，而不是再设计工具执行边界。
+- V1/V2 manifest 中未实现 adapter 仍只校验为 registerable class name，待对应阶段实现。
+
+## ADR-063：共享 Schema 必须同时暴露 Python 与 TypeScript 核心类型
+
+### Context
+
+Milestone 0/1 需要先打通 Python Adapter 和本地 Artifact 闭环，但后续 API、Worker、Agent Plan Validator 和前端工作台都会复用同一套类型。若 `packages/schemas` 只在 Python 侧完整、TypeScript 侧只覆盖 `RegisteredTool` 子集，前端和 API 合约容易再次分叉。
+
+### Decision
+
+`packages/schemas` 的阶段基线必须同时暴露 Python/Pydantic 与 TypeScript 核心类型，包括 `ArtifactType`、`DisplayTarget`、`ToolCategory`、`ToolDomain`、`ImplementationSource`、`MaterialObjectType`、`JobStatus`、`JobEventStatus`、`RegisteredTool`、`ToolExecutionRequest`、`ToolCall`、`Artifact`、`AnalysisPlan`、`AnalysisStep`、`DataProfile` 和 `VisualizationRecipe`。Python 侧补充 `JobEvent`，供后续 SSE / Agent Timeline 复用；JSON Schema 当前先覆盖 `RegisteredTool`，后续随 API/Plan Validator 扩展更多 schema 文件。
+
+### Consequences
+
+- 前端和 Worker 对 Tool Registry、Artifact、Plan、Recipe 的字段命名有同一入口。
+- 共享 Schema 覆盖面由测试检查，避免后续只补一侧语言类型。
+- 当前仍不声明完整 API 合约已完成；Job Queue、SSE、数据库持久化和前端集成进入下一阶段。
+
+## ADR-064：库层 Tool Executor 先承担 Registry 校验与 Adapter 路由
+
+### Context
+
+`BaseToolAdapter` 已能执行单个 adapter 生命周期，但如果测试或后续 Worker 直接实例化 adapter，会绕过 Tool Registry lookup 和 manifest `paramsSchema` 校验，削弱“所有可执行能力必须经过 Tool Registry”的约束。完整 Job Queue、ToolCall 状态表、SSE 和数据库事务尚未进入当前实现阶段。
+
+### Decision
+
+先在 `packages/adapters` 提供库层 `execute_tool_request()` 作为受控执行入口。它接收 `ToolExecutionRequest` 和 `ToolExecutionContext`，按以下顺序执行：
+
+```text
+Tool Registry lookup
+  -> input resolution / cache key
+  -> paramsSchema validation
+  -> optional in-memory cache lookup
+  -> adapter class lookup from registry adapter name
+  -> Adapter.execute()
+  -> ToolExecutionResult
+```
+
+当前 cache 是可选内存映射，只作为后续 Redis / Artifact cache 的接口占位；当前结果不写数据库，不生成 JobEvent，不声明完整 Worker 编排完成。
+
+### Consequences
+
+- 后续 Worker 可以统一调用 `execute_tool_request()`，避免直接绕过 Registry 实例化 Adapter。
+- manifest 中的 `paramsSchema` 开始有真实运行时约束。
+- cache key 先稳定下来，后续可以接入 Redis / Artifact Service。
+- ToolCall 状态更新、JobEvent `artifact.ready` 和持久化仍属于下一阶段。
+
+## ADR-065：先用内存 Worker runtime 固化 JobEvent 与 ToolCall 语义
+
+### Context
+
+下一阶段需要 Celery、PostgreSQL、SSE、ToolCall 状态表和 Artifact ready 事件。如果直接进入完整基础设施，容易把队列、数据库事务和事件语义混在一起。当前已有 `execute_tool_request()` 可以安全执行单个 ToolCall，但尚未把结果投射为 JobEvent 和 ToolCall 状态。
+
+### Decision
+
+先在 `services/workers` 建立最小库层 runtime：
+
+- `run_tool_call_job()` 调用 `execute_tool_request()`。
+- `InMemoryJobStore` 记录开发环境下的 Job、ToolCall 和 JobEvent。
+- 成功路径输出 `tool.started`、每个 Artifact 的 `artifact.ready`、`tool.completed`。
+- 失败路径输出 `tool.failed`，并将 Job / ToolCall 标记为 failed。
+- ToolCall params 在记录前对 secret-like keys 脱敏。
+
+该 runtime 只作为语义基线和测试夹具，不替代后续 PostgreSQL repository、Celery task、SSE publisher 或 retry/cancel 状态机。
+
+### Consequences
+
+- 后续接数据库时可以按已有事件序列和 ToolCall 状态测试迁移。
+- Artifact ready 事件 payload 的最小字段先稳定下来。
+- Secret/BYOK 不进入 ToolCall 状态记录的规则已有测试覆盖。
+- 仍需实现真实队列、持久化、SSE cursor、幂等重试和取消。
+
+## ADR-066：MVP 工具参数必须使用白名单 paramsSchema
+
+### Context
+
+Agent 只能生成 JSON Analysis Plan，但如果已注册工具的 `paramsSchema` 允许任意 additional properties，合法 `tool_id` 仍可能携带未批准的上游 kwargs 或平台外参数，削弱 Tool Registry 作为执行白名单的边界。
+
+### Decision
+
+10 个 MVP 工具的 `paramsSchema` 必须使用 `additionalProperties=false`，只允许平台批准参数。当前已覆盖：
+
+- `composition.ptable_heatmap`
+- `composition.elements_hist`
+- `composition.chem_sys_treemap`
+- `structure.structure_3d`
+- `structure.viewer_3d`
+- `structure.coordination_hist`
+- `ml.density_scatter`
+- `ml.error_distribution`
+- `ml.basic_metrics`
+- `ml.outlier_table`
+
+V1/V2 工具在进入可执行阶段前也必须补齐白名单 paramsSchema；在此之前只能作为 manifest/register-only 能力存在。
+
+### Consequences
+
+- Agent Plan 即使引用合法工具，也不能传未注册参数。
+- Adapter 参数映射与 manifest schema 需要同步维护。
+- 上游 pymatviz API 差异必须记录到 `persistent/TOOL_REGISTRY_NOTES.md`，不能通过开放 kwargs 临时绕过。
+
+## ADR-067：Milestone 1 先完成可验证 scaffold，不提前实现生产仓储
+
+### Context
+
+Roadmap 的 Milestone 1 要求完成项目骨架与基础设施：monorepo 结构、PostgreSQL / Redis / MinIO 配置、FastAPI 模块边界、Next.js 工作台 shell，以及基础 Auth / Project / Dataset 表。当前核心 Tool Registry / Adapter / Data Pipeline 库层已经先行完成，但 API、Web 和基础设施仍需要一个可测试的边界，供后续 Milestone 2 / 4 接入。
+
+### Decision
+
+Milestone 1 的完成标准定义为 scaffold 级可验证实现：
+
+- `docker-compose.yml` 配置本地 PostgreSQL、Redis、MinIO。
+- `apps/api/mdi_api` 提供 FastAPI app factory、配置加载、路由边界和 SQLAlchemy Core metadata。
+- 基础表先定义为 metadata：`users`、`organizations`、`projects`、`project_members`、`datasets`、`files`。
+- `apps/web` 提供 Next.js App Router 三栏式工作台 shell。
+- 当前 API route 可返回 stub 或 Tool Registry 数据，但不声称已完成真实登录、项目仓储、上传服务、数据库迁移或 SSE。
+
+### Consequences
+
+- Phase 1 可以被 `python -m pytest -q`、`npm run typecheck` 和 `npm run build` 验证。
+- 后续可以在不改边界的情况下接入 PostgreSQL repository、Celery worker、SSE publisher 和对象存储。
+- 本阶段不把 stub route 误标为生产业务能力，避免与 Roadmap 后续 Milestone 混淆。

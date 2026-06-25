@@ -1,6 +1,7 @@
 # Environment / secrets
 .env
 .env.*
+!.env.example
 *.key
 *.pem
 *.p12
@@ -8,14 +9,17 @@
 # Python
 __pycache__/
 *.pyc
+*.egg-info/
 .venv/
 venv/
 .pytest_cache/
+.pytest_tmp/
 .ruff_cache/
 
 # Node
 node_modules/
 .next/
+*.tsbuildinfo
 dist/
 build/
 

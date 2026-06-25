@@ -1,8 +1,45 @@
 # DESIGN_PROGRESS
 
+## 2026-06-25 Phase 1 Engineering Hardening Update
+
+- Froze Python dependencies with `uv.lock`.
+- Verified the Python test suite from an isolated uv-managed `.venv` using:
+  `python -m pytest -q` -> 42 passed.
+- Froze frontend dependencies with `apps/web/package-lock.json` because `pnpm` is not installed in the current environment.
+- Verified frontend reproducibility from the lockfile with:
+  - `npm ci`
+  - `npm run typecheck`: passed
+  - `npm run build`: passed
+- Confirmed `.gitignore` covers generated dependency/build/cache outputs:
+  `.venv/`, `*.egg-info/`, `node_modules/`, `.next/`, `.pytest_cache/`, `.pytest_tmp/`,
+  `__pycache__/`, `*.pyc`, and `*.tsbuildinfo`.
+- Phase 1 is now ready for a Git baseline commit and `git archive` handoff package after final cleanup.
+
+## 2026-06-25 Phase 1 Product Acceptance Update
+
+- Completed a docs/01 Phase 1 MVP acceptance pass against the current implementation.
+- Added a deterministic Phase 1 product-flow runtime in `apps/api/mdi_api/phase1_demo.py`.
+- The runtime covers: create project, parse upload set, Data Profile, natural-language request boundary, structured `AnalysisPlan`, registry-approved Worker execution, Artifact/Recipe generation, Markdown/HTML report, and JobEvent timeline.
+- The demo flow validates all 10 MVP tools through Tool Registry + Adapter:
+  `composition.ptable_heatmap`, `composition.elements_hist`, `composition.chem_sys_treemap`,
+  `structure.structure_3d`, `structure.viewer_3d`, `structure.coordination_hist`,
+  `ml.density_scatter`, `ml.error_distribution`, `ml.basic_metrics`, `ml.outlier_table`.
+- Added API boundary routes for project creation, upload sessions, analysis requests, job events, event streaming, and artifact summaries.
+- Expanded Phase 1 SQLAlchemy metadata to include the product-flow entities listed in docs/01: data profiles, field mappings, sessions/messages, jobs/events/tool calls/artifacts, recipes, configs, secrets, and audit logs.
+- Updated the frontend shell so Agent Timeline, chart cards, 3D Viewer, Logs, Artifacts, Recipe, and Report surfaces are visible in the Phase 1 workspace.
+- Verification passed:
+  - `python -m pytest -q`: 42 passed, 25 third-party deprecation warnings.
+  - `npm run typecheck`: passed.
+  - `npm run build`: passed.
+- Current Phase 1 caveats:
+  - The product-flow runtime is deterministic/in-memory and intended for acceptance/demo, not a production repository or Celery deployment.
+  - `preview_png` now has a minimal PNG fallback when Kaleido/Chromium is unavailable.
+  - `structure.viewer_3d` may still emit a MatterViz-safe fallback HTML if widget rendering is unavailable.
+  - Real object storage upload sessions, PostgreSQL repositories, Celery workers, and durable SSE cursors remain next-phase implementation work.
+
 ## 当前阶段
 
-Design Review Fixes 完成；新增 pymatviz Capability Inventory & Adapter Baseline，进入代码实现准备前的工具能力基线锁定
+Milestone 0 / Milestone 1 scaffold 已完成，Milestone 2 最小 Data Pipeline 库层已可用，并已补齐 Milestone 3 的 10 个 MVP Adapter 库层覆盖：所有 MVP manifest adapter class 均可注册、实例化并通过 smoke tests 生成标准 Artifact。Job Queue / Worker / SSE 持久化编排尚未接入。
 
 ## 已完成阶段
 
@@ -37,6 +74,98 @@ Design Review Fixes 完成；新增 pymatviz Capability Inventory & Adapter Base
 本项目进一步明确为“以 pymatviz 为 primary visualization kernel 的材料数据智能分析与可视化平台”。当前补充了 pymatviz capability inventory、manifest-based tool registry 和 adapter implementation plan。
 
 ## 本轮完成
+
+- 建立代码工程骨架：`apps/web`、`apps/api`、`services/workers`、`packages/schemas`、`packages/tool-registry`、`packages/adapters`、`packages/material-parsers`、`packages/artifact-core`、`tests/fixtures`。
+- 新增根级 `pyproject.toml`，配置 Python 包发现、pytest 路径和核心材料依赖声明。
+- 在 `packages/schemas` 中实现共享类型基线：
+  - Python/Pydantic：`mdi_schemas.models`
+  - JSON Schema：`packages/schemas/json/registered-tool.schema.json`
+  - TypeScript 类型：`packages/schemas/src/index.ts`
+- 在 `packages/tool-registry` 中实现 manifest loader：
+  - `loadManifests()` / `load_manifests()`
+  - `validateManifest()` / `validate_manifest()`
+  - `getToolById()`、`listTools()`、`listToolsByStage()`、`listToolsByDomain()`、`listMvpTools()`
+  - 校验 `tool_id` 唯一、`stage`、`implementation_source`、`display_target`、`artifact_types` 和 adapter class name。
+- 在 `packages/artifact-core` 中实现本地文件系统 `LocalArtifactExporter`，输出稳定 storage key、content hash、Artifact metadata 和 provenance。
+- 在 `packages/adapters` 中实现：
+  - `BaseToolAdapter`
+  - `ToolExecutionContext`
+  - `ToolExecutionError` / error normalizer
+  - Adapter class registry
+  - Plotly export helper
+- 实现 MVP 前 3 个 Adapter：
+  - `composition.ptable_heatmap` -> `PTableHeatmapAdapter`
+  - `structure.structure_3d` -> `Structure3DAdapter`
+  - `structure.viewer_3d` -> `StructureViewer3DAdapter`
+- 为 fixture 和测试补齐：
+  - `tests/fixtures/structures/si.cif`
+  - `tests/fixtures/tables/formulas.csv`
+  - manifest loader、BaseToolAdapter、三个 Adapter、Artifact metadata/recipe 的最小测试。
+- 真实环境核对并安装/升级运行依赖：`pymatviz 0.18.0`、`pymatgen 2026.5.4`、`ase 3.29.0`、`plotly 6.8.0`；为兼容 NumPy 2.x 同步升级 `xarray`、`pyarrow`、`numexpr`、`bottleneck`、`shapely`、`scikit-image`。
+- 测试结果：`python -m pytest`，11 passed。
+- 继续实现 Data Pipeline 最小库层：
+  - 新增 `packages/material-parsers/mdi_material_parsers/detector.py`，支持 CIF、POSCAR/CONTCAR、CSV、JSON limited、ZIP、XYZ/EXTXYZ 的格式识别。
+  - 新增 `packages/material-parsers/mdi_material_parsers/parsers.py`，支持 CIF/POSCAR -> `Structure`、CSV -> `DataFrame`、JSON limited -> `Structure` 或 simple table。
+  - 新增 `packages/material-parsers/mdi_material_parsers/profile.py`，从 parse results 构建轻量 `DataProfile`、`structureSummary`、`tableSummary`、quality issues 和 recommended tasks。
+  - 新增 normalized object draft 数据模型，记录 object id、object type、source file ids、storage key、metadata、hash 和 payload。
+  - 补充 `tests/test_data_pipeline.py` 与 fixtures：`POSCAR`、`plain.xyz`、`ml_results.csv`。
+  - 更新共享 `DataProfile` Pydantic model，补齐 `structureSummary`、`tableSummary`、`phononSummary`、`trajectorySummary` 可选字段。
+  - 更新 `pyproject.toml`，显式加入 `pandas>=2.2`。
+- 最新测试结果：`python -m pytest`，17 passed。
+- 继续补齐剩余 7 个 MVP Adapter，并将 10 个 MVP 工具全部接入 adapter class registry：
+  - `composition.elements_hist` -> `ElementsHistAdapter`
+  - `composition.chem_sys_treemap` -> `ChemSysTreemapAdapter`
+  - `structure.coordination_hist` -> `CoordinationHistAdapter`
+  - `ml.density_scatter` -> `DensityScatterAdapter`
+  - `ml.error_distribution` -> `ErrorDistributionAdapter`
+  - `ml.basic_metrics` -> `BasicMetricsAdapter`
+  - `ml.outlier_table` -> `OutlierTableAdapter`
+- 新增 ML adapter 共用校验层，支持 DataFrame / records 输入、target/prediction 字段推断、数值列校验、metrics 和 outlier 计算。
+- 新增测试覆盖全部 10 个 MVP Adapter，新增 manifest MVP adapter class registry 校验。
+- 最新测试结果：`python -m pytest`，25 passed。
+- 继续核验 Milestone 0/1 + 已实现库层闭环：
+  - 将 pytest 临时目录固定到仓库内 `.pytest_tmp`，避免受限 sandbox 访问系统临时目录失败。
+  - 将 plain XYZ Data Pipeline 语义对齐设计：解析为非周期 `Atoms` normalized object，并在 `DataProfile.qualityIssues` 中记录 `NON_PERIODIC_ATOMS` warning；它仍不会进入 `periodic_required` 的结构工具。
+  - 新增 `.extxyz` 检测与 ASE->pymatgen 周期结构转换测试。
+  - 新增 ZIP 安全解包回归测试，验证路径穿越 member 会被拒绝，保留 safe member 解析为 partial。
+  - 新增 normalized object 稳定落盘 helper 测试，路径固定为 `projects/{project}/datasets/{dataset}/normalized/...`。
+  - 最新测试结果：`python -m pytest`，25 passed。
+- 继续核验共享 Schema 覆盖面：
+  - 补齐 `packages/schemas/src/index.ts` 中的 TypeScript 核心类型导出：`JobStatus`、`JobEventStatus`、`ToolExecutionRequest`、`ToolCall`、`Artifact`、`AnalysisPlan`、`AnalysisStep`、`DataProfile`、`VisualizationRecipe` 等。
+  - 在 Python/Pydantic schema 中新增 `JobEvent`，为后续 SSE / Agent Timeline 事件流复用同一共享类型。
+  - 新增 `tests/test_shared_schemas.py`，校验 Python 和 TypeScript schema 入口暴露用户要求的核心类型。
+  - 最新测试结果：`python -m pytest -q`，30 passed，20 warnings；warnings 来自当前 Anaconda 环境中的 matplotlib/Jupyter/ipywidgets 依赖弃用提示，不影响本阶段功能。
+- 继续补齐受控执行库层入口：
+  - 新增 `packages/adapters/mdi_adapters/executor.py`，提供 `execute_tool_request()`，执行顺序为 Tool Registry lookup -> input resolution / cache key -> paramsSchema validation -> optional in-memory cache lookup -> adapter instantiation -> adapter execution。
+  - 新增 `ToolExecutionResult`，记录 `tool`、`artifacts`、`cache_key`、`cache_hit`，为后续 ToolCall 状态表和 JobEvent 持久化留出结构化结果。
+  - 新增 `tests/test_tool_executor.py`，覆盖 registry 路由、非法参数拒绝、未注册 tool 拒绝和 cache hit。
+  - 最新测试结果：`python -m pytest -q`，34 passed，20 warnings；warnings 仍为当前 Anaconda 第三方依赖弃用提示。
+- 继续补齐 Worker 语义基线：
+  - 新增 `services/workers/mdi_workers/runtime.py`，提供 `run_tool_call_job()` 和开发用 `InMemoryJobStore`。
+  - `run_tool_call_job()` 会记录 Job status、ToolCall status、`tool.started`、`artifact.ready`、`tool.completed` / `tool.failed` JobEvent，并保留事件 `seq` 单调递增语义。
+  - ToolCall 记录会对 secret-like params 做脱敏，失败路径不会保存明文 API key / BYOK。
+  - 新增 `tests/test_worker_runtime.py`，覆盖成功事件流和失败脱敏路径。
+  - 最新测试结果：`python -m pytest -q`，36 passed，20 warnings；warnings 仍为当前 Anaconda 第三方依赖弃用提示。
+- 本轮恢复核验：
+  - 已按新会话要求重新读取 `README.md`、`AGENTS.md`、`MASTER_PROMPT.md`、核心 `docs/`、3 个 manifest 和 `persistent/` 状态文件。
+  - 已检查 `git status --short`，确认上一轮代码与文档仍处于未提交工作区中；本轮继续在该状态上增量推进，未回退既有变更。
+  - 已检查配置，当前仅存在 Python `pyproject.toml` 测试配置，未发现前端 `package.json` / `pnpm-workspace.yaml`。
+  - 已运行基线测试：`python -m pytest -q`，36 passed，20 warnings。
+- 本轮补强 Tool Registry paramsSchema：
+  - 将剩余 MVP 工具的 `paramsSchema` 从宽松 `additionalProperties: true` 收紧为平台批准参数白名单：
+    `composition.elements_hist`、`composition.chem_sys_treemap`、`structure.coordination_hist`、`ml.density_scatter`、`ml.error_distribution`、`ml.basic_metrics`、`ml.outlier_table`。
+  - 新增 `tests/test_manifest_loader.py::test_mvp_tools_reject_unregistered_params`，确保 10 个 MVP 工具均拒绝未注册参数。
+  - 最新测试结果：`python -m pytest -q`，37 passed，20 warnings；warnings 仍为当前 Anaconda 第三方依赖弃用提示。
+- 本轮完成 Milestone 1 scaffold：
+  - 新增 `docker-compose.yml`，配置本地 PostgreSQL、Redis、MinIO 服务；新增 `.env.example` 并只保留占位符，不写入真实 Secret。
+  - 新增 `apps/api/mdi_api` FastAPI app factory、配置加载、模块路由边界和 SQLAlchemy Core metadata。
+  - 建立基础 Auth / Project / Dataset 表元数据：`users`、`organizations`、`projects`、`project_members`、`datasets`、`files`。
+  - 新增 `/health`、`/auth/me`、`/projects`、`/datasets`、`/tools`、`/tools/mvp` API 边界，其中工具路由读取 Tool Registry。
+  - 新增 `apps/web` Next.js App Router shell、三栏式工作台页面、底部面板、`package.json`、`tsconfig.json`、`next.config.mjs` 和 `pnpm-workspace.yaml`。
+  - 更新 `pyproject.toml`，纳入 `apps/api` 包发现和 `fastapi`、`sqlalchemy`、`uvicorn`、`starlette>=0.40,<0.47` 依赖边界。
+  - 修正当前 Anaconda 环境中 `starlette 1.0.0` 与 `fastapi 0.115.12` 不兼容的问题，将 Starlette 降级到 `0.46.2`。
+  - 新增 `tests/test_phase1_scaffold.py`，验证 API route 边界、数据库表元数据、compose 服务和前端 shell 文件。
+  - 最新测试结果：`python -m pytest -q`，41 passed，20 warnings；`npm run typecheck` passed；`npm run build` passed。
 
 - 创建 `docs/00_PROJECT_GOAL.md`。
 - 创建 `persistent/PROJECT_BRIEF.md`。
@@ -127,10 +256,8 @@ Design Review Fixes 完成；新增 pymatviz Capability Inventory & Adapter Base
 
 ## 当前阻塞
 
-无架构方向阻塞。当前设计基线已完成一致性修正，并补齐 pymatviz capability inventory 与 manifest-based Tool Registry 基线；本轮已清理本地快捷方式、统一 `structure.chem_env_sunburst` 为 V2、同步 ADR-046 实现顺序。进入代码实现前仍建议人工确认 `TASK_BOARD.md` 的 Review Needed 清单。
+无架构方向阻塞。Milestone 1 scaffold 已完成：本地 infra 配置、FastAPI API 边界、基础 Auth/Project/Dataset 表元数据和 Next.js 工作台 shell 均已有测试或构建证据。当前仍有工程化后续项：建议建立隔离虚拟环境/锁文件，避免继续修改全局 Anaconda 环境；`preview_png` 因 Kaleido/Chromium 依赖仍按 MVP optional 处理；ZIP 解包已具备最小安全解析但仍需补更多安全测试；EXTXYZ with lattice 需要继续验证；当前 Worker runtime 仍是内存语义基线，尚未接入 Celery / PostgreSQL / SSE。
 
 ## 下一步
 
-完成人工确认后进入代码实现准备。
-
-下一步可按 `docs/12_MVP_ROADMAP.md` 的更新后实现顺序，先实现 manifest loader、BaseToolAdapter 和前 3 个 MVP Adapter，再建立数据管线、Job Queue、Artifact Service、前端工作台和 Agent Plan 流程。
+下一步按 Roadmap 继续进入 Milestone 2 / Milestone 4 的交界：建立隔离依赖/锁文件，补齐 parser artifact storage、上传/对象存储边界、更多 ZIP / EXTXYZ 回归测试；随后接 Celery Job Queue、PostgreSQL ToolCall/Artifact 状态持久化和 SSE 事件流。

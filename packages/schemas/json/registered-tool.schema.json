@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://material-data-intelligence.local/schemas/registered-tool.schema.json",
+  "title": "RegisteredTool",
+  "type": "object",
+  "required": [
+    "toolId",
+    "name",
+    "category",
+    "domain",
+    "implementationSource",
+    "description",
+    "version",
+    "adapter",
+    "inputSchema",
+    "paramsSchema",
+    "outputSchema",
+    "artifactTypes",
+    "costLevel",
+    "defaultTimeoutSec",
+    "maxTimeoutSec",
+    "cachePolicy",
+    "permissions",
+    "resourceLimits"
+  ],
+  "properties": {
+    "toolId": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$" },
+    "name": { "type": "string" },
+    "category": { "enum": ["visualization", "analysis", "parser", "report", "utility"] },
+    "domain": {
+      "enum": [
+        "composition",
+        "structure",
+        "trajectory",
+        "phonon",
+        "electronic",
+        "simulation",
+        "ml",
+        "generation",
+        "external"
+      ]
+    },
+    "implementationSource": {
+      "enum": [
+        "pymatviz",
+        "pymatviz_composed",
+        "matterviz",
+        "plotly_custom",
+        "platform_builtin",
+        "plugin"
+      ]
+    },
+    "description": { "type": "string" },
+    "version": { "type": "string" },
+    "adapter": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9_]*Adapter$" },
+    "stage": { "enum": ["mvp", "v1", "v2"] },
+    "inputSchema": {
+      "type": "object",
+      "required": ["inputOptions"],
+      "properties": {
+        "inputOptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "description"],
+            "properties": {
+              "name": { "type": "string" },
+              "requiredObjectTypes": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "Composition",
+                    "Structure",
+                    "Atoms",
+                    "Molecule",
+                    "DataFrame",
+                    "PhononBand",
+                    "PhononDos",
+                    "Trajectory",
+                    "ElementValueMap",
+                    "RawUnsupported"
+                  ]
+                }
+              },
+              "requiredFields": { "type": "array", "items": { "type": "object" } },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "periodicity": {
+          "anyOf": [
+            { "enum": ["periodic_required", "non_periodic_allowed", "any"] },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "paramsSchema": { "type": "object" },
+    "outputSchema": {
+      "type": "object",
+      "required": ["primaryArtifactType", "secondaryArtifactTypes", "displayTarget"],
+      "properties": {
+        "primaryArtifactType": { "$ref": "#/$defs/artifactType" },
+        "secondaryArtifactTypes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/artifactType" }
+        },
+        "displayTarget": {
+          "enum": ["overview", "composition", "structure", "trajectory", "phonon", "ml", "artifacts", "report"]
+        }
+      }
+    },
+    "artifactTypes": { "type": "array", "items": { "$ref": "#/$defs/artifactType" } },
+    "costLevel": { "enum": ["low", "medium", "high"] },
+    "defaultTimeoutSec": { "type": "integer", "minimum": 1 },
+    "maxTimeoutSec": { "type": "integer", "minimum": 1 },
+    "cachePolicy": { "enum": ["reuse", "refresh", "no_cache"] },
+    "permissions": { "type": "array", "items": { "type": "string" } },
+    "resourceLimits": { "type": "object" },
+    "source": { "type": "object" }
+  },
+  "$defs": {
+    "artifactType": {
+      "enum": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "figure_svg",
+        "figure_pdf",
+        "matterviz_html",
+        "matterviz_snapshot_png",
+        "structure_json",
+        "metrics_json",
+        "table_json",
+        "table_csv",
+        "quality_issues_json",
+        "summary_md",
+        "report_md",
+        "report_html",
+        "recipe_json",
+        "analysis_plan_json"
+      ]
+    }
+  }
+}

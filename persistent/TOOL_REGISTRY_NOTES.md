@@ -1,5 +1,16 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-06-25 Phase 1 Acceptance Notes
+
+- All 10 MVP tools are now exercised in the Phase 1 product-flow acceptance test through Tool Registry + Adapter + Worker runtime.
+- No new pymatviz API signature mismatch was found during this round.
+- `preview_png` behavior changed from optional omission to deterministic artifact generation:
+  when Plotly/Kaleido image export is unavailable, the adapter export helper writes a minimal valid PNG fallback.
+- `structure.viewer_3d` keeps the existing graceful fallback contract:
+  if `pymatviz.StructureWidget.to_html()` is unavailable or fails, the adapter writes sandbox-safe `matterviz_html` fallback content and records fallback provenance.
+- The Phase 1 demo planner requests only registered artifact types from each tool manifest and uses the same `paramsSchema` validation path as normal execution.
+- The runtime-generated Analysis Plan is deterministic and local; it is not a real LLM output and does not bypass the "Agent JSON Plan only" rule.
+
 ## External Capability Baseline
 
 官方来源核对基线：
@@ -224,3 +235,86 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - V1 phonon、trajectory 工具的首批 Tool ID 如何排序？
 - V2 VASP、LAMMPS 工具的首批 Tool ID 如何排序？
 - Expert 模式是否允许用户编辑 Recipe 和受限 Python 代码片段？
+
+## Implementation Notes 2026-06-25
+
+### Verified Runtime Versions
+
+本轮以当前可安装运行版本核对前三个 Adapter：
+
+| Package | Version |
+|---|---|
+| `pymatviz` | `0.18.0` |
+| `pymatgen` | `2026.5.4` |
+| `ase` | `3.29.0` |
+| `plotly` | `6.8.0` |
+
+为兼容当前全局环境的 NumPy 2.x，还升级了 `xarray`、`pyarrow`、`numexpr`、`bottleneck`、`shapely` 和 `scikit-image`。后续建议改为项目专用 virtualenv/lockfile。
+
+### API Signature Mapping
+
+| Tool ID | Verified source | Observed signature note | Adapter mapping |
+|---|---|---|---|
+| `composition.ptable_heatmap` | `pymatviz.ptable_heatmap` | `values` 为首参，真实参数为 `count_mode`、`colorscale`、`heat_mode` 等 | 平台参数 `colorScale` -> `colorscale`；`countMode` 和 `normalize` 先由 adapter 侧聚合/归一化元素值，再调用 `ptable_heatmap(values)` |
+| `composition.elements_hist` | `pymatviz.elements_hist` | 首参为 `formulas`；`fig_kwargs` 会直接传给 `go.Figure(**fig_kwargs)`，不能用 `{"title": ...}` | 平台参数 `countMode` -> `count_mode`、`keepTop` -> `keep_top`、`logY` -> `log_y`、`showValues` -> `show_values`；标题通过 `fig.update_layout(title_text=...)` 设置 |
+| `composition.chem_sys_treemap` | `pymatviz.chem_sys_treemap` | 接受 formula、Composition、Structure 序列；参数为 `show_counts`、`max_cells` 等 | 平台参数 `showCounts` -> `show_counts`、`maxCells` -> `max_cells`；Adapter 负责从 Structure 派生 composition 输入 |
+| `structure.structure_3d` | `pymatviz.structure_3d` | 支持 `Structure`、`dict[str, Structure]`、`Sequence[Structure]`；参数为 `show_cell`、`show_bonds` 等 | 平台参数 `showCell` -> `show_cell`；`showBonds: "auto"` 在 MVP 映射为 `False`；先校验周期 lattice 和 atom limit |
+| `structure.coordination_hist` | `pymatviz.coordination_hist` | 支持单个 Structure、dict 或序列；`strategy` 可为 float cutoff，`split_mode` 接受 `"by element"` | 平台参数 `cutoff` -> `strategy`、`splitMode` -> `split_mode`、`barMode` -> `bar_mode`、`annotateBars` -> `annotate_bars`；先校验周期 lattice 和 atom limit |
+| `structure.viewer_3d` | `pymatviz.StructureWidget` | 构造函数为 `(structure=None, **kwargs)`，实例提供 `to_html()` | 优先输出 `StructureWidget.to_html()`；如 widget 渲染失败，输出 sandbox-safe fallback HTML 并在 provenance 中标记 `mattervizFallback=true` |
+| `ml.density_scatter` | `pymatviz.density_scatter` | 参数为 `x`、`y` 和可选 `df`；`n_bins=False` 可用于小型 smoke test 禁用分箱 | 平台参数 `targetColumn` / `predictionColumn` 解析到 DataFrame 列名，`nBins` -> `n_bins`、`identityLine` -> `identity_line`、`bestFitLine` -> `best_fit_line` |
+| `ml.error_distribution` | `plotly.express.histogram` | 平台自定义 Plotly 工具，无 pymatviz 原生函数依赖 | Adapter 计算 `prediction - target` 的 error 列，输出 histogram、metrics_json 和 top outlier table_json |
+| `ml.basic_metrics` | platform builtin | 平台内置计算 MAE、RMSE、R2、meanError、maxAbsError | Adapter 使用 DataFrame target/prediction 列，输出 canonical `metrics_json` |
+| `ml.outlier_table` | platform builtin | 平台内置按 `abs_error` 降序生成 top-k 表 | Adapter 输出 `table_json` 和 `table_csv`，不依赖 Plotly |
+
+### Optional / Fallback Notes
+
+- `preview_png` 仍按 MVP optional 处理；当前 exporter 仅在请求 `preview_png` 且 Plotly/Kaleido 可用时生成，不作为测试阻塞项。
+- `structure.viewer_3d` 已输出 `matterviz_html`、`structure_json`、`summary_md`、`recipe_json`；snapshot 仍推迟到 V1 或后续 render-worker。
+- 10 个 MVP manifest adapter 现在均已注册到 `ADAPTER_CLASSES` 并有 smoke tests；V1/V2 adapter 仍通过 registerable class name 校验，待对应阶段实现。
+
+### Data Pipeline Contract Notes
+
+- `packages/material-parsers` 现在可产生 `MaterialObjectType.Structure` 和 `MaterialObjectType.DataFrame` normalized object draft，字段与 Tool Registry inputOptions 对齐。
+- `structure.structure_3d` 仍要求 periodic `Structure`；plain XYZ 当前会解析为非周期 `Atoms` normalized object，并生成 `NON_PERIODIC_ATOMS` quality warning，不会被误路由到周期结构工具。
+- `.extxyz` 文件现在按扩展名直接识别为 `extxyz`，由 ASE 解析并在具备 lattice 时转换成周期 `Structure`。
+- ZIP 容器解析已具备安全 member path 过滤：`../`、绝对路径和过深路径会被拒绝，保留安全 member 继续解析并标记 partial。
+- `DataFrame` parser 会推断 `formula`、`target`、`prediction`、`uncertainty`、`structure_id` 字段角色，为后续 ML MVP tools 的 Tool Registry 校验做准备。
+
+### Shared Schema Verification Notes
+
+- Python/Pydantic 入口 `mdi_schemas` 已导出本阶段要求的核心类型；本轮补充了 `JobEvent` 以对齐 SSE / Timeline 设计。
+- TypeScript 入口 `packages/schemas/src/index.ts` 已补齐 `JobStatus`、`JobEventStatus`、`ToolExecutionRequest`、`ToolCall`、`Artifact`、`AnalysisPlan`、`AnalysisStep`、`DataProfile`、`VisualizationRecipe` 等核心类型。
+- 新增 `tests/test_shared_schemas.py`，防止 Python 与 TypeScript schema 入口再次出现核心类型覆盖差异。
+- 当前未发现新的 pymatviz API 签名差异；`preview_png` 仍因 Kaleido/Chromium 作为 optional artifact 处理。
+
+### Tool Executor Notes
+
+- 新增 `mdi_adapters.execute_tool_request()` 作为库层受控执行入口，后续 Worker 不应直接实例化 adapter 跳过 Registry。
+- 当前执行入口会校验 tool 是否存在于 manifest、请求 artifact type 是否属于 `RegisteredTool.artifactTypes`、`params` 是否符合 `paramsSchema`，再通过 adapter registry 创建 Adapter。
+- cache key 由 `toolId`、tool version、adapter name、input hashes、params 和 artifact types 计算；当前仅支持可选 in-memory cache，占位后续 Redis / Artifact cache。
+- 当前尚未接入 ToolCall 数据库状态更新和 JobEvent `artifact.ready`；这属于 Job Queue / SSE 阶段。
+
+### Worker Runtime Notes
+
+- 新增 `mdi_workers.run_tool_call_job()`，将 `execute_tool_request()` 的结果投射为 ToolCall 状态和 JobEvent 事件序列。
+- 成功路径事件顺序为 `tool.started` -> `artifact.ready`* -> `tool.completed`，每个 Artifact 单独产生 `artifact.ready`。
+- 失败路径事件顺序为 `tool.started` -> `tool.failed`，Job 和 ToolCall 均标记为 failed。
+- 当前 `InMemoryJobStore` 仅用于开发和测试；生产仍需 PostgreSQL 状态源、SSE publisher、Worker retry/cancel 和幂等写入。
+- ToolCall params 在写入状态前会脱敏 secret-like keys，避免 BYOK/API key 进入状态记录。
+
+### MVP Params Schema Notes
+
+- 本轮恢复核验后，将全部 10 个 MVP 工具的 `paramsSchema` 收紧为白名单，统一使用 `additionalProperties=false`。
+- 受控执行入口 `execute_tool_request()` 现在可对所有 MVP 工具拒绝未注册参数，而不只覆盖前三个 Adapter。
+- 当前已显式声明的平台批准参数包括：
+  - composition：`countMode`、`colorScale`、`normalize`、`keepTop`、`logY`、`showValues`、`showCounts`、`maxCells`、`title`
+  - structure：`showCell`、`showBonds`、`selectedStructureIds`、`selectedStructureId`、`cameraPreset`、`maxStructures`、`cutoff`、`strategy`、`splitMode`、`barMode`、`annotateBars`
+  - ml：`targetColumn`、`predictionColumn`、`nBins`、`density`、`xLabel`、`yLabel`、`identityLine`、`bestFitLine`、`stats`、`topK`、`title`
+- 新增测试确保 MVP 工具未知参数会触发 JSON Schema `Additional properties are not allowed`。
+- 未发现新的 pymatviz API 与 manifest 差异；`preview_png` 继续作为 optional/fallback artifact 处理。
+
+### Phase 1 API Boundary Notes
+
+- `apps/api/mdi_api` 已提供 FastAPI app factory，并通过 `/tools` 与 `/tools/mvp` 暴露 Tool Registry 的只读查询边界。
+- 工具查询 route 只返回 manifest-normalized registry view，不执行 adapter，不绕过 `execute_tool_request()`。
+- 后续执行类 API 必须继续走 Tool Registry lookup、paramsSchema 校验和 adapter registry，不允许 API route 直接实例化 pymatviz 函数。

@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "material-data-intelligence"
+version = "0.1.0"
+description = "Controlled material data analysis adapters for pymatviz and MatterViz."
+requires-python = ">=3.11"
+dependencies = [
+  "ase>=3.29",
+  "fastapi>=0.115",
+  "jsonschema>=4",
+  "pandas>=2.2",
+  "plotly>=6.4",
+  "pydantic>=2",
+  "pymatgen>=2026.5",
+  "pymatviz>=0.18",
+  "pyyaml>=6",
+  "sqlalchemy>=2.0",
+  "starlette>=0.40,<0.47",
+  "uvicorn>=0.30",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = [
+  "apps/api",
+  "packages/schemas",
+  "packages/tool-registry",
+  "packages/adapters",
+  "packages/artifact-core",
+  "packages/material-parsers",
+  "services/workers",
+]
+
+[tool.pytest.ini_options]
+addopts = "--basetemp=.pytest_tmp"
+testpaths = ["tests"]
+pythonpath = [
+  "apps/api",
+  "packages/schemas",
+  "packages/tool-registry",
+  "packages/adapters",
+  "packages/artifact-core",
+  "packages/material-parsers",
+  "services/workers",
+]
