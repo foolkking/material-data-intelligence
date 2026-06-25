@@ -159,6 +159,10 @@ jobs = Table(
     Column("created_by", String(64), ForeignKey("users.id"), nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint(
+        "status in ('created', 'queued', 'running', 'partial_success', 'completed', 'failed', 'cancel_requested', 'cancelled')",
+        name="job_status",
+    ),
 )
 
 job_events = Table(
@@ -183,11 +187,17 @@ tool_calls = Table(
     Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False),
     Column("step_id", String(64), nullable=False),
     Column("tool_id", String(160), nullable=False),
-    Column("status", String(32), nullable=False, server_default="created"),
+    Column("idempotency_key", String(160), nullable=True),
+    Column("attempt", Integer, nullable=False, server_default="1"),
+    Column("status", String(32), nullable=False, server_default="planned"),
     Column("params_json", JSON, nullable=False, server_default="{}"),
     Column("error_json", JSON, nullable=True),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("job_id", "step_id", name="uq_tool_calls_job_step"),
+    UniqueConstraint("job_id", "idempotency_key", name="uq_tool_calls_job_idempotency_key"),
+    CheckConstraint("attempt >= 1", name="tool_call_attempt_positive"),
+    CheckConstraint("status in ('planned', 'running', 'completed', 'failed', 'skipped')", name="tool_call_status"),
 )
 
 artifacts = Table(
@@ -211,6 +221,9 @@ artifacts = Table(
     Column("sha256", String(64), nullable=False, server_default=""),
     Column("metadata_json", JSON, nullable=False, server_default="{}"),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("job_id", "storage_key", "sha256", name="uq_artifacts_job_storage_sha"),
+    CheckConstraint("size_bytes >= 0", name="artifact_size_non_negative"),
+    CheckConstraint("storage_provider in ('local', 's3', 'minio')", name="artifact_storage_provider"),
 )
 
 visualization_recipes = Table(

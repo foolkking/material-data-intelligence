@@ -2,6 +2,38 @@
 
 ## 2026-06-26
 
+### Phase 4 Production Persistence Hardening Update
+
+#### Added
+
+- Added Alembic baseline files under `apps/api/alembic` and a Phase 4 migration baseline SQL string.
+- Added `RepositorySession`, `UnitOfWork`, and `RepositoryFactory` for explicit transaction boundaries.
+- Added centralized Job and ToolCall status transition validation.
+- Added Phase 4 persistence tests for migration smoke coverage, SQLAlchemy CRUD, rollback, status transitions, idempotent writes, concurrent JobEvent seq allocation, and stable `after_seq` ordering.
+
+#### Changed
+
+- Added `alembic` to Python dependencies and refreshed `uv.lock`.
+- Hardened SQLAlchemy metadata with Job/ToolCall status constraints, ToolCall `idempotency_key` and `attempt`, `uq_tool_calls_job_step`, `uq_tool_calls_job_idempotency_key`, artifact storage-provider checks, and `uq_artifacts_job_storage_sha`.
+- Made SQLAlchemy and InMemory ToolCall writes idempotent by stable job step/idempotency key.
+- Made SQLAlchemy and InMemory Artifact metadata writes idempotent by stable job/storage/sha identity.
+- Updated Python and TypeScript shared schemas with `ToolCallStatus`, `idempotencyKey`, and `attempt`.
+- Updated worker runtime ToolCall status writes to use the shared enum.
+
+#### Scope Guard
+
+- Did not add real LLM API calls, V1/V2 tool execution, Celery/Ray/Kubernetes, full auth, live PostgreSQL runtime wiring, live S3/MinIO clients, or frontend rewrites.
+
+#### Verification
+
+- `python -m pytest tests/test_phase4_persistence_hardening.py -q`: 8 passed.
+- `uv lock --check`: passed.
+- `python -m pytest -q`: 61 passed, 50 third-party warnings.
+- `npm ci`: passed.
+- `npm run typecheck`: passed.
+- `npm run build`: passed.
+- `git diff --check`: passed with Windows line-ending notices only.
+
 ### Phase 3 Acceptance Hardening Update
 
 #### Added

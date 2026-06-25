@@ -98,6 +98,14 @@ class JobEventStatus(str, Enum):
     error = "error"
 
 
+class ToolCallStatus(str, Enum):
+    planned = "planned"
+    running = "running"
+    completed = "completed"
+    failed = "failed"
+    skipped = "skipped"
+
+
 class JobEvent(BaseModel):
     id: str
     jobId: str
@@ -173,10 +181,12 @@ class ToolCall(BaseModel):
     jobId: str
     stepId: str
     toolId: str
-    status: Literal["created", "running", "completed", "failed"]
+    status: ToolCallStatus
     params: dict[str, Any] = Field(default_factory=dict)
     artifactIds: list[str] = Field(default_factory=list)
     error: dict[str, Any] | None = None
+    idempotencyKey: str | None = None
+    attempt: int = 1
 
 
 class ArtifactMetadata(BaseModel):

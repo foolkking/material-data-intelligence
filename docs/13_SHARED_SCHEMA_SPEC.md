@@ -522,3 +522,26 @@ MVP LLM Secret resolution:
 3. `system_hosted_key`
 
 Recipe must not save a concrete `SecretRef`; it only stores provider/model requirements.
+
+## Phase 4 Addendum: persistence hardening schema
+
+- `JobStatus` is fixed to `created`, `queued`, `running`, `partial_success`,
+  `completed`, `failed`, `cancel_requested`, and `cancelled`.
+- The production transition validator allows `created -> queued -> running`,
+  `created -> running` for the local synchronous worker path,
+  `running -> partial_success/completed/failed/cancel_requested`,
+  `partial_success -> completed/failed`, `failed -> queued`, and
+  `cancel_requested -> cancelled`.
+- `ToolCallStatus` is fixed to `planned`, `running`, `completed`, `failed`,
+  and `skipped`. Legacy `created` ToolCall inputs are normalized to `planned`
+  at the repository boundary.
+- `tool_calls` now carries `idempotency_key` and `attempt`; `(job_id, step_id)`
+  is unique, and `(job_id, idempotency_key)` is unique when the key is present.
+- `job_events` keeps `(job_id, seq)` as the SSE resume cursor. Repository
+  append operations assign monotonic per-job `seq`; SQLite tests use an
+  in-process lock, while PostgreSQL runtime should use transaction-level row
+  locking or an equivalent sequence allocation strategy.
+- `artifacts` must carry `storage_provider`, `bucket`, `storage_key`,
+  `content_type`, `size_bytes`, `sha256`, `preview_key`, and `created_at`.
+  Local artifacts use `storage_provider = "local"` and may omit `bucket`;
+  S3/MinIO mappings require a bucket.

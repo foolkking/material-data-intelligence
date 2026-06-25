@@ -6,7 +6,7 @@ from threading import Lock
 from typing import Any
 
 from mdi_adapters import ToolExecutionContext, ToolExecutionError, ToolExecutionResult, execute_tool_request
-from mdi_schemas import JobEvent, JobEventStatus, JobStatus, ToolCall, ToolExecutionRequest
+from mdi_schemas import JobEvent, JobEventStatus, JobStatus, ToolCall, ToolCallStatus, ToolExecutionRequest
 from mdi_tool_registry import ToolRegistry
 
 
@@ -96,7 +96,7 @@ class InMemoryJobStore:
             jobId=context.job_id,
             stepId=request.stepId,
             toolId=request.toolId,
-            status="running",
+            status=ToolCallStatus.running,
             params=_redact_secret_params(request.params),
         )
         job.tool_calls[tool_call.id] = tool_call
@@ -105,14 +105,14 @@ class InMemoryJobStore:
 
     def complete_tool_call(self, job_id: str, tool_call_id: str, artifact_ids: list[str]) -> ToolCall:
         tool_call = self.jobs[job_id].tool_calls[tool_call_id]
-        updated = tool_call.model_copy(update={"status": "completed", "artifactIds": artifact_ids})
+        updated = tool_call.model_copy(update={"status": ToolCallStatus.completed, "artifactIds": artifact_ids})
         self.jobs[job_id].tool_calls[tool_call_id] = updated
         self.jobs[job_id].updated_at = _utc_now()
         return updated
 
     def fail_tool_call(self, job_id: str, tool_call_id: str, error: ToolExecutionError) -> ToolCall:
         tool_call = self.jobs[job_id].tool_calls[tool_call_id]
-        updated = tool_call.model_copy(update={"status": "failed", "error": error.to_dict()})
+        updated = tool_call.model_copy(update={"status": ToolCallStatus.failed, "error": error.to_dict()})
         self.jobs[job_id].tool_calls[tool_call_id] = updated
         self.jobs[job_id].updated_at = _utc_now()
         return updated

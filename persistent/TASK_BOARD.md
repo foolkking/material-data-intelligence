@@ -1,5 +1,26 @@
 # TASK_BOARD
 
+## 2026-06-26 Phase 4 Production Persistence Hardening Status
+
+### Done This Round
+
+- [x] Re-read the required Phase 4 docs and persistent files before implementation.
+- [x] Rechecked the Phase 3 baseline: `git status --short`, `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, and `npm run build` passed before Phase 4 edits.
+- [x] Added Alembic baseline files under `apps/api/alembic` plus a Phase 4 PostgreSQL-oriented baseline SQL string.
+- [x] Added `alembic` to Python dependencies and refreshed `uv.lock`.
+- [x] Added repository transaction boundaries through `RepositorySession`, `UnitOfWork`, and `RepositoryFactory`.
+- [x] Added centralized Job and ToolCall status transition validation.
+- [x] Added ToolCall idempotency fields and repository behavior for stable `(job_id, step_id)` retries.
+- [x] Added Artifact metadata consistency validation and idempotent `(job_id, storage_key, sha256)` handling.
+- [x] Added Phase 4 tests for migration coverage, SQLAlchemy CRUD, rollback, status transitions, idempotent writes, concurrent JobEvent seq allocation, and `after_seq` ordering.
+- [x] Re-ran final verification: `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, `npm run build`, and `git diff --check` passed.
+
+### Handoff Notes
+
+- PostgreSQL runtime connection settings, pool sizing, and multi-process seq allocation are still future deployment work.
+- S3/MinIO signed URLs remain placeholder behavior; live object-storage clients and access-control checks are later work.
+- No new Tool Registry manifests, adapters, V1/V2 tools, real LLM calls, or frontend features were added.
+
 ## 2026-06-26 Phase 3 Acceptance Hardening Status
 
 ### Done This Round

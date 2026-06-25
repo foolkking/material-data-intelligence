@@ -457,3 +457,21 @@ V1：
 - SVG / PDF high-resolution export。
 - stable MatterViz snapshot。
 - 分享、版本对比和高级导出。
+## Phase 4 Addendum: production persistence hardening
+
+- Phase 4 keeps the Phase 2/3 local worker path, but adds a production-oriented
+  persistence baseline: Alembic entrypoint, SQLAlchemy metadata constraints,
+  repository transaction boundaries, and idempotent write semantics.
+- Repository session management is centralized through `RepositorySession`,
+  `UnitOfWork`, and `RepositoryFactory`. Business code should use these
+  transaction boundaries instead of creating ad hoc sessions.
+- Job status validation is centralized. The local synchronous worker may move
+  `created -> running`; queued production workers should prefer
+  `created -> queued -> running`.
+- ToolCall status validation is centralized with
+  `planned -> running -> completed/failed/skipped`. Retry can reuse a stable
+  `(job_id, step_id)` or `(job_id, idempotency_key)` record without generating
+  unbounded duplicate rows.
+- `job_events.seq` is the SSE resume cursor. SQLite tests guard allocation with
+  an in-process lock; PostgreSQL runtime should use transactional locking or an
+  equivalent allocation strategy before multi-worker deployment.

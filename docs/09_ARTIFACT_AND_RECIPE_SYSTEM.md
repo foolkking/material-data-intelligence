@@ -353,3 +353,16 @@ Phase 10：用户配置、安全与专业扩展。
 - Prompt injection 防护。
 - 权限与审计。
 - 插件化材料领域扩展。
+## Phase 4 Addendum: artifact metadata consistency
+
+- Artifact repository writes now validate the storage provider before metadata
+  is persisted. `local` may omit `bucket`; `s3` and `minio` require `bucket`.
+- Artifact metadata must include `storage_provider`, `bucket`, `storage_key`,
+  `content_type`, `size_bytes`, `sha256`, `preview_key`, and `created_at`
+  whenever the field is applicable to the provider.
+- Duplicate artifact metadata writes are idempotent for the same
+  `(job_id, storage_key, sha256)` tuple. Repeated worker attempts should return
+  the stable artifact row instead of creating uncontrolled duplicates.
+- `signed_url()` for the S3/MinIO mapping remains a placeholder in this phase;
+  live client calls and presigned URL generation are reserved for the next
+  storage-runtime phase.

@@ -75,6 +75,8 @@ export type JobStatus =
 
 export type JobEventStatus = "info" | "running" | "success" | "warning" | "error";
 
+export type ToolCallStatus = "planned" | "running" | "completed" | "failed" | "skipped";
+
 export type JobEvent = {
   id: string;
   jobId: string;
@@ -148,10 +150,12 @@ export type ToolCall = {
   jobId: string;
   stepId: string;
   toolId: string;
-  status: "created" | "running" | "completed" | "failed";
+  status: ToolCallStatus;
   params: Record<string, unknown>;
   artifactIds: string[];
   error?: Record<string, unknown>;
+  idempotencyKey?: string;
+  attempt?: number;
 };
 
 export type ArtifactMetadata = {

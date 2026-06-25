@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Controlled material data analysis adapters for pymatviz and MatterViz."
 requires-python = ">=3.11"
 dependencies = [
+  "alembic>=1.13",
   "ase>=3.29",
   "fastapi>=0.115",
   "jsonschema>=4",

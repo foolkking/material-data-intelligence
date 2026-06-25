@@ -1,5 +1,62 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-071: Phase 4 hardens persistence with transactions, status machines, and idempotent writes
+
+### Context
+
+Phase 3 introduced repository abstractions, SQLAlchemy persistence smoke tests,
+JobEvent seq cursors, SSE smoke streaming, and artifact storage mapping. The
+next step is to make that foundation production-migration-ready without adding
+real LLM calls, V1/V2 tools, Celery/Ray/Kubernetes, full auth, frontend rewrites,
+or live S3/MinIO clients.
+
+### Decision
+
+Add an Alembic baseline entrypoint and a PostgreSQL-oriented Phase 4 baseline
+revision while keeping SQLAlchemy Core metadata compatible with SQLite tests.
+
+Add `RepositorySession`, `UnitOfWork`, and `RepositoryFactory` as the explicit
+transaction boundary for SQLAlchemy repositories. A unit of work owns one
+connection and one transaction; commit, rollback, and close are explicit and
+covered by tests.
+
+Centralize Job and ToolCall status validation. Job supports `created`, `queued`,
+`running`, `partial_success`, `completed`, `failed`, `cancel_requested`, and
+`cancelled`. The queued production path is `created -> queued -> running`; the
+local synchronous worker may continue to use `created -> running` to preserve
+Phase 2/3 behavior. ToolCall supports `planned`, `running`, `completed`,
+`failed`, and `skipped`; legacy `created` ToolCall inputs normalize to
+`planned` at repository boundaries.
+
+Make worker-facing writes idempotent at the repository layer. ToolCalls reuse a
+stable row by `(job_id, step_id)` or `(job_id, idempotency_key)`. Artifacts reuse
+a stable row by `(job_id, storage_key, sha256)`. JobEvents keep `(job_id, seq)`
+as the SSE resume cursor; SQLite tests use an in-process lock, and production
+PostgreSQL must use row/advisory locking or an equivalent per-job allocation
+strategy before multi-worker deployment.
+
+### Consequences
+
+- Phase 4 can be handed off as a migration-ready persistence baseline while the
+  existing Phase 2/3 local loop remains stable.
+- Failed transactions roll back repository writes without corrupting committed
+  Artifact metadata.
+- Worker retries can converge on stable ToolCall and Artifact records instead
+  of producing uncontrolled duplicates.
+- The next runtime phase must wire these boundaries into real PostgreSQL
+  sessions, queue workers, and object-storage clients.
+
+### Alternatives Considered
+
+- Introduce Celery/PostgreSQL/MinIO runtime wiring now: rejected because this
+  phase is limited to production persistence hardening, not infrastructure
+  rollout.
+- Keep status changes ad hoc in each repository: rejected because legal
+  transitions need one auditable implementation and consistent tests.
+- Use only database unique constraints for idempotency: rejected because
+  repository behavior should return stable records and remain testable before
+  production database deployment.
+
 ## ADR-070: Phase 3 introduces repository and artifact-storage abstractions before production infrastructure
 
 ### Context

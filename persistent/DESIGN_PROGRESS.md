@@ -1,5 +1,23 @@
 # DESIGN_PROGRESS
 
+## 2026-06-26 Phase 4 Production Persistence Hardening Update
+
+- Re-read the required project docs and persistent state, then verified the Phase 3 baseline before changes: clean Git status, `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, and `npm run build` all passed.
+- Added an Alembic migration entrypoint and Phase 4 baseline revision for the PostgreSQL-oriented persistence schema while keeping SQLite-compatible SQLAlchemy metadata for tests.
+- Hardened SQLAlchemy metadata for `jobs`, `tool_calls`, and `artifacts` with status checks, ToolCall idempotency fields, `(job_id, step_id)` uniqueness, artifact duplicate metadata detection, and storage-provider constraints.
+- Added centralized `RepositorySession`, `UnitOfWork`, and `RepositoryFactory` transaction boundaries with rollback coverage.
+- Added centralized Job/ToolCall status transition validation. The local synchronous worker keeps `created -> running` compatibility, while queued production flow can use `created -> queued -> running`.
+- Added idempotent ToolCall and Artifact repository writes so repeated worker attempts reuse stable records instead of generating uncontrolled duplicates.
+- Kept the Phase 2/3 product loop unchanged in scope: no real LLM, no V1/V2 tools, no Celery/Ray/Kubernetes, no production PostgreSQL runtime, no live MinIO/S3 client, and no frontend redesign.
+- Verification after fixes:
+  - `python -m pytest tests/test_phase4_persistence_hardening.py -q`: 8 passed.
+  - `uv lock --check`: passed.
+  - `python -m pytest -q`: 61 passed, 50 third-party warnings.
+  - `npm ci`: passed.
+  - `npm run typecheck`: passed.
+  - `npm run build`: passed.
+  - `git diff --check`: passed with Windows line-ending notices only.
+
 ## 2026-06-26 Phase 3 Acceptance Hardening Update
 
 - Re-ran Phase 3 acceptance against the stricter handoff checklist: Phase 2 regression, repository coverage, database schema/indexes, JobEvent cursor semantics, SSE stream, ArtifactStorage mapping, API event/artifact routes, and reproducible frontend checks.

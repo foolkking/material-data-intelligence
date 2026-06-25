@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-06-26 Phase 4 Follow-ups
+
+- No P0 blocker is open after the Phase 4 production persistence hardening pass.
+- Alembic baseline files and SQLAlchemy metadata now exist, but the runtime still needs a real PostgreSQL database URL, migration execution policy, pool sizing, and deployment runbook.
+- Repository transaction boundaries are available through `RepositorySession` / `UnitOfWork`; application services still need to adopt them when the local Phase 2 runtime is replaced by durable workers.
+- JobEvent seq allocation is concurrency-tested with repository-level in-process locking. Before multi-process workers, PostgreSQL should use row locking, advisory locking, or a per-job sequence allocation strategy.
+- ToolCall and Artifact writes have idempotent repository behavior. A later queue phase still needs explicit worker attempt records, retry policy, crash recovery policy, and dead-letter handling.
+- S3/MinIO metadata mapping remains clear, but live presigned URL generation, bucket policy, retention/lifecycle rules, and access-control checks remain future work.
+
 ## 2026-06-26 Phase 3 Follow-ups
 
 - No new P0 blocker is open after the Phase 3 persistence foundation pass.

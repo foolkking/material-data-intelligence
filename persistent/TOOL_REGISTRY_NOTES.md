@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-06-26 Phase 4 Production Persistence Hardening Notes
+
+- No Tool Registry manifest, adapter implementation, MVP tool scope, V1/V2 tool scope, or pymatviz API mapping changed in Phase 4.
+- The controlled execution path remains:
+  `AnalysisPlan` -> `ToolExecutionRequest` -> Tool Registry lookup -> paramsSchema validation -> Adapter -> Artifact.
+- Phase 4 only hardens persistence around the existing ToolCall and Artifact records: status validation, idempotent ToolCall writes, idempotent Artifact metadata writes, and transaction rollback behavior.
+- The Phase 2 deterministic product loop still proves the same five registered MVP tools for the mixed CIF/POSCAR/CSV path; no real LLM output or direct executable action was introduced.
+- Future queue workers must keep Tool Registry validation before writing ToolCall state and must not use the new repository idempotency hooks as a bypass around manifest validation.
+
 ## 2026-06-26 Phase 3 Persistence Foundation Notes
 
 - No Tool Registry manifest, adapter class, MVP tool scope, V1/V2 tool scope, or pymatviz API mapping changed in Phase 3.

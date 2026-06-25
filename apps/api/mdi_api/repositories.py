@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from threading import Lock
 from typing import Any, Mapping, Protocol
 
-from sqlalchemy import delete, func, insert, select
+from sqlalchemy import and_, delete, func, insert, or_, select
 from sqlalchemy.engine import Connection, Engine
 
 from mdi_api.db import (
@@ -23,6 +23,13 @@ from mdi_api.db import (
     visualization_recipes,
 )
 from mdi_schemas import Artifact, DataProfile, JobEvent, JobEventStatus, JobStatus, ToolCall, VisualizationRecipe
+
+from mdi_api.state_machine import (
+    validate_job_status,
+    validate_job_transition,
+    validate_tool_call_status,
+    validate_tool_call_transition,
+)
 
 
 class ProjectRepository(Protocol):
@@ -240,14 +247,16 @@ class InMemoryDataProfileRepository(_InMemoryRecordRepository):
 
 class InMemoryJobRepository(_InMemoryRecordRepository):
     def save(self, job: Mapping[str, Any]) -> dict[str, Any]:
-        return self._save(job, record_id=_required_id(job, "jobId"))
+        record = _json_copy(job)
+        record["status"] = validate_job_status(record.get("status") or JobStatus.created.value)
+        return self._save(record, record_id=_required_id(record, "jobId"))
 
     def get(self, job_id: str) -> dict[str, Any]:
         return self._get(job_id)
 
     def set_status(self, job_id: str, status: JobStatus | str) -> dict[str, Any]:
         record = self._get(job_id)
-        record["status"] = _enum_value(status)
+        record["status"] = validate_job_transition(record.get("status") or JobStatus.created.value, status)
         record["updatedAt"] = _utc_now()
         self.records[job_id] = record
         return _json_copy(record)
@@ -314,7 +323,19 @@ class InMemoryJobEventRepository:
 class InMemoryToolCallRepository(_InMemoryRecordRepository):
     def save(self, tool_call: ToolCall | Mapping[str, Any]) -> dict[str, Any]:
         record = _model_to_record(tool_call)
-        return self._save(record, record_id=_required_id(record))
+        record_id = _required_id(record)
+        record["status"] = validate_tool_call_status(record.get("status") or "planned")
+        record["attempt"] = int(record.get("attempt") or 1)
+        record["idempotencyKey"] = str(record.get("idempotencyKey") or record.get("idempotency_key") or f"{record['jobId']}:{record['stepId']}")
+        existing_id = self._find_existing_id(record_id, record)
+        if existing_id:
+            current = self.records[existing_id]
+            record["id"] = existing_id
+            record["status"] = validate_tool_call_transition(current.get("status") or "planned", record["status"])
+            record["attempt"] = max(int(current.get("attempt") or 1), record["attempt"])
+            self.records[existing_id] = {**_json_copy(current), **_json_copy(record)}
+            return _json_copy(self.records[existing_id])
+        return self._save(record, record_id=record_id)
 
     def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
         return [_json_copy(record) for record in self.records.values() if record.get("jobId") == job_id]
@@ -322,11 +343,33 @@ class InMemoryToolCallRepository(_InMemoryRecordRepository):
     def list_by_job(self, job_id: str) -> list[dict[str, Any]]:
         return self.list_for_job(job_id)
 
+    def _find_existing_id(self, record_id: str, record: Mapping[str, Any]) -> str | None:
+        if record_id in self.records:
+            return record_id
+        for existing_id, existing in self.records.items():
+            if existing.get("jobId") == record.get("jobId") and existing.get("stepId") == record.get("stepId"):
+                return existing_id
+            if (
+                existing.get("jobId") == record.get("jobId")
+                and existing.get("idempotencyKey")
+                and existing.get("idempotencyKey") == record.get("idempotencyKey")
+            ):
+                return existing_id
+        return None
+
 
 class InMemoryArtifactRepository(_InMemoryRecordRepository):
     def save(self, artifact: Artifact | Mapping[str, Any]) -> dict[str, Any]:
         record = _model_to_record(artifact)
-        return self._save(record, record_id=_required_id(record, "artifactId"))
+        artifact_id = _required_id(record, "artifactId")
+        _validate_artifact_storage_record(record)
+        existing_id = self._find_existing_id(artifact_id, record)
+        if existing_id:
+            current = self.records[existing_id]
+            record["id"] = existing_id
+            self.records[existing_id] = {**_json_copy(current), **_json_copy(record)}
+            return _json_copy(self.records[existing_id])
+        return self._save(record, record_id=artifact_id)
 
     def get(self, artifact_id: str) -> dict[str, Any]:
         return self._get(artifact_id)
@@ -339,6 +382,17 @@ class InMemoryArtifactRepository(_InMemoryRecordRepository):
 
     def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
         return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
+
+    def _find_existing_id(self, artifact_id: str, record: Mapping[str, Any]) -> str | None:
+        if artifact_id in self.records:
+            return artifact_id
+        storage_key = record.get("storageKey")
+        sha256 = record.get("sha256") or record.get("contentHash")
+        for existing_id, existing in self.records.items():
+            existing_sha = existing.get("sha256") or existing.get("contentHash")
+            if existing.get("jobId") == record.get("jobId") and existing.get("storageKey") == storage_key and existing_sha == sha256:
+                return existing_id
+        return None
 
 
 class InMemoryRecipeRepository(_InMemoryRecordRepository):
@@ -536,12 +590,13 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
     def save(self, job: Mapping[str, Any]) -> dict[str, Any]:
         job_id = _required_id(job, "jobId")
         created_by = str(job.get("createdBy") or job.get("created_by") or "user_local")
+        status = validate_job_status(job.get("status") or JobStatus.created.value)
         values = {
             "id": job_id,
             "project_id": str(job["projectId"]),
             "dataset_id": job.get("datasetId"),
             "kind": str(job.get("kind") or "analysis"),
-            "status": str(job.get("status") or JobStatus.created.value),
+            "status": status,
             "created_by": created_by,
         }
 
@@ -558,7 +613,11 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
 
     def set_status(self, job_id: str, status: JobStatus | str) -> dict[str, Any]:
         def run(connection: Connection) -> None:
-            connection.execute(jobs.update().where(jobs.c.id == job_id).values(status=_enum_value(status), updated_at=func.now()))
+            current = connection.execute(select(jobs.c.status).where(jobs.c.id == job_id)).scalar_one_or_none()
+            if current is None:
+                raise LookupError(f"Unknown job id: {job_id}")
+            next_status = validate_job_transition(current, status)
+            connection.execute(jobs.update().where(jobs.c.id == job_id).values(status=next_status, updated_at=func.now()))
 
         self._with_connection(run)
         return self.get(job_id)
@@ -625,22 +684,44 @@ class SqlAlchemyToolCallRepository(_SqlAlchemyRepository):
     def save(self, tool_call: ToolCall | Mapping[str, Any]) -> dict[str, Any]:
         record = _model_to_record(tool_call)
         tool_call_id = _required_id(record)
+        job_id = str(record["jobId"])
+        step_id = str(record["stepId"])
+        idempotency_key = str(record.get("idempotencyKey") or record.get("idempotency_key") or f"{job_id}:{step_id}")
+        status = validate_tool_call_status(record.get("status") or "planned")
         values = {
             "id": tool_call_id,
-            "job_id": str(record["jobId"]),
-            "step_id": str(record["stepId"]),
+            "job_id": job_id,
+            "step_id": step_id,
             "tool_id": str(record["toolId"]),
-            "status": str(record.get("status") or "created"),
+            "idempotency_key": idempotency_key,
+            "attempt": int(record.get("attempt") or 1),
+            "status": status,
             "params_json": _json_copy(record.get("params") or {}),
             "error_json": _json_copy(record.get("error")) if record.get("error") else None,
         }
 
-        def run(connection: Connection) -> None:
-            connection.execute(delete(tool_calls).where(tool_calls.c.id == tool_call_id))
-            connection.execute(insert(tool_calls).values(**values))
+        def run(connection: Connection) -> str:
+            existing = connection.execute(
+                select(tool_calls).where(
+                    or_(
+                        tool_calls.c.id == tool_call_id,
+                        and_(tool_calls.c.job_id == job_id, tool_calls.c.step_id == step_id),
+                        and_(tool_calls.c.job_id == job_id, tool_calls.c.idempotency_key == idempotency_key),
+                    )
+                )
+            ).mappings().first()
+            if existing is None:
+                connection.execute(insert(tool_calls).values(**values))
+                return tool_call_id
+            existing_row = _row_to_json_dict(existing)
+            existing_id = str(existing_row["id"])
+            next_status = validate_tool_call_transition(existing_row.get("status") or "planned", status)
+            update_values = {**values, "id": existing_id, "status": next_status, "attempt": max(int(existing_row.get("attempt") or 1), values["attempt"])}
+            connection.execute(tool_calls.update().where(tool_calls.c.id == existing_id).values(**update_values, updated_at=func.now()))
+            return existing_id
 
-        self._with_connection(run)
-        return self.get(tool_call_id)
+        stored_id = self._with_connection(run)
+        return self.get(stored_id)
 
     def get(self, tool_call_id: str) -> dict[str, Any]:
         return _tool_call_from_row(self._fetch_one_dict(select(tool_calls).where(tool_calls.c.id == tool_call_id)))
@@ -657,6 +738,7 @@ class SqlAlchemyArtifactRepository(_SqlAlchemyRepository):
     def save(self, artifact: Artifact | Mapping[str, Any]) -> dict[str, Any]:
         record = _model_to_record(artifact)
         artifact_id = _required_id(record, "artifactId")
+        _validate_artifact_storage_record(record)
         metadata = _json_copy(record.get("metadata") or {})
         content_type = str(record.get("contentType") or metadata.get("provenance", {}).get("mediaType") or "application/octet-stream")
         sha256 = str(record.get("sha256") or record.get("contentHash") or "")
@@ -682,12 +764,29 @@ class SqlAlchemyArtifactRepository(_SqlAlchemyRepository):
             "metadata_json": metadata,
         }
 
-        def run(connection: Connection) -> None:
-            connection.execute(delete(artifacts).where(artifacts.c.id == artifact_id))
-            connection.execute(insert(artifacts).values(**values))
+        def run(connection: Connection) -> str:
+            existing = connection.execute(
+                select(artifacts).where(
+                    or_(
+                        artifacts.c.id == artifact_id,
+                        and_(
+                            artifacts.c.job_id == values["job_id"],
+                            artifacts.c.storage_key == values["storage_key"],
+                            artifacts.c.sha256 == values["sha256"],
+                        ),
+                    )
+                )
+            ).mappings().first()
+            if existing is None:
+                connection.execute(insert(artifacts).values(**values))
+                return artifact_id
+            existing_row = _row_to_json_dict(existing)
+            existing_id = str(existing_row["id"])
+            connection.execute(artifacts.update().where(artifacts.c.id == existing_id).values(**{**values, "id": existing_id}))
+            return existing_id
 
-        self._with_connection(run)
-        return self.get(artifact_id)
+        stored_id = self._with_connection(run)
+        return self.get(stored_id)
 
     def get(self, artifact_id: str) -> dict[str, Any]:
         return _artifact_from_row(self._fetch_one_dict(select(artifacts).where(artifacts.c.id == artifact_id)))
@@ -888,6 +987,8 @@ def _tool_call_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
         "stepId": row["step_id"],
         "toolId": row["tool_id"],
         "status": row["status"],
+        "idempotencyKey": row.get("idempotency_key"),
+        "attempt": row.get("attempt") or 1,
         "params": _json_copy(row.get("params_json") or {}),
         "error": _json_copy(row.get("error_json")) if row.get("error_json") else None,
     }
@@ -943,6 +1044,29 @@ def _report_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
     report["createdBy"] = report.get("createdBy") or row["created_by"]
     report["createdAt"] = report.get("createdAt") or _iso(row["created_at"])
     return report
+
+
+def _validate_artifact_storage_record(record: Mapping[str, Any]) -> None:
+    metadata = record.get("metadata") or {}
+    if hasattr(metadata, "model_dump"):
+        metadata = metadata.model_dump(mode="json")
+    provider = str(
+        record.get("storageProvider")
+        or record.get("storage_provider")
+        or metadata.get("storageProvider")
+        or metadata.get("storage_provider")
+        or "local"
+    )
+    if provider not in {"local", "s3", "minio"}:
+        raise ValueError(f"Unknown artifact storage provider: {provider}")
+    bucket = record.get("bucket") or metadata.get("bucket")
+    if provider in {"s3", "minio"} and not bucket:
+        raise ValueError(f"Artifact storage provider {provider} requires bucket")
+    size_bytes = int(record.get("sizeBytes") or record.get("size_bytes") or 0)
+    if size_bytes < 0:
+        raise ValueError("Artifact sizeBytes must be non-negative")
+    if not (record.get("storageKey") or record.get("storage_key")):
+        raise ValueError("Artifact record is missing storageKey")
 
 
 def _required_id(record: Mapping[str, Any], alias: str = "id") -> str:
