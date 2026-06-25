@@ -83,6 +83,9 @@ class InMemoryJobStore:
         job.updated_at = event.createdAt
         return event
 
+    def list_events_after_seq(self, job_id: str, after_seq: int) -> list[JobEvent]:
+        return [event for event in self.jobs[job_id].events if event.seq > after_seq]
+
     def start_tool_call(self, context: ToolExecutionContext, request: ToolExecutionRequest) -> ToolCall:
         job = self.jobs[context.job_id]
         tool_call = ToolCall(

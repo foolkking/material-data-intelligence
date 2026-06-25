@@ -1,5 +1,40 @@
 # CHANGELOG
 
+## 2026-06-26
+
+### Phase 3 Persistence Foundation Update
+
+#### Added
+
+- Added `apps/api/mdi_api/repositories.py` with Project, Dataset, Job, JobEvent, ToolCall, Artifact, and Recipe repository interfaces.
+- Added InMemory repository implementations and SQLAlchemy Core repository implementations for SQLite-compatible tests and PostgreSQL-oriented persistence.
+- Added `apps/api/mdi_api/artifact_storage.py` with local filesystem storage and S3/MinIO-compatible mapping interface.
+- Added `apps/api/mdi_api/migrations.py` with Phase 3 SQL migration draft for projects, datasets, data_profiles, jobs, job_events, tool_calls, artifacts, visualization_recipes, and reports.
+- Added `GET /jobs/{job_id}/stream` SSE smoke endpoint.
+- Added `GET /artifacts/{artifact_id}/download` local signed-url/download placeholder.
+- Added `tests/test_phase3_persistence.py` for repository, cursor, SSE, storage mapping, and Phase 2 regression coverage.
+
+#### Changed
+
+- Extended `job_events` metadata with `progress` and preserved unique `(job_id, seq)` cursor semantics.
+- Extended `artifacts` metadata with storage mapping fields: `version`, `preview_key`, `size_bytes`, `content_type`, and `sha256`.
+- Added `reports` metadata table and Phase 3 table list coverage.
+- `GET /jobs/{job_id}/events` now supports `after_seq=N`.
+- Phase 2 artifact summaries now point download links to `/artifacts/{artifact_id}/download`.
+- `InMemoryJobStore` now supports `list_events_after_seq(job_id, after_seq)`.
+- `npm run typecheck` now disables incremental cache reuse to avoid stale `.next/types` references from prior builds.
+
+#### Scope Guard
+
+- Did not add real LLM API calls, V1/V2 tools, Celery/Ray/Kubernetes, full auth, production PostgreSQL wiring, live S3/MinIO clients, or frontend rewrites.
+
+#### Verification
+
+- `uv lock --check`: passed.
+- `python -m pytest -q`: 52 passed, 50 third-party deprecation warnings.
+- `npm run typecheck`: passed.
+- `npm run build`: passed.
+
 ## 2026-06-25
 
 ### Phase 2 Acceptance Hardening Update

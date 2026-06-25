@@ -6,6 +6,7 @@ from sqlalchemy import (
     Column,
     DateTime,
     ForeignKey,
+    Float,
     Index,
     Integer,
     JSON,
@@ -169,6 +170,7 @@ job_events = Table(
     Column("event_type", String(80), nullable=False),
     Column("status", String(32), nullable=False),
     Column("message", Text, nullable=False),
+    Column("progress", Float, nullable=True),
     Column("payload_json", JSON, nullable=False, server_default="{}"),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     UniqueConstraint("job_id", "seq", name="uq_job_events_job_seq"),
@@ -198,8 +200,13 @@ artifacts = Table(
     Column("tool_call_id", String(64), ForeignKey("tool_calls.id"), nullable=True),
     Column("type", String(64), nullable=False),
     Column("name", String(255), nullable=False),
+    Column("version", String(32), nullable=False, server_default="1"),
     Column("storage_key", Text, nullable=False),
+    Column("preview_key", Text, nullable=True),
+    Column("size_bytes", Integer, nullable=False, server_default="0"),
+    Column("content_type", String(160), nullable=False, server_default="application/octet-stream"),
     Column("content_hash", String(64), nullable=False),
+    Column("sha256", String(64), nullable=False, server_default=""),
     Column("metadata_json", JSON, nullable=False, server_default="{}"),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
@@ -212,6 +219,22 @@ visualization_recipes = Table(
     Column("source_job_id", String(64), ForeignKey("jobs.id"), nullable=True),
     Column("name", String(160), nullable=False),
     Column("recipe_json", JSON, nullable=False),
+    Column("created_by", String(64), ForeignKey("users.id"), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+reports = Table(
+    "reports",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id"), nullable=False),
+    Column("dataset_id", String(64), ForeignKey("datasets.id"), nullable=True),
+    Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False),
+    Column("version", String(32), nullable=False, server_default="1"),
+    Column("title", String(255), nullable=False),
+    Column("markdown_key", Text, nullable=True),
+    Column("html_key", Text, nullable=True),
+    Column("report_json", JSON, nullable=False, server_default="{}"),
     Column("created_by", String(64), ForeignKey("users.id"), nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
@@ -267,6 +290,9 @@ Index("idx_jobs_project_created", jobs.c.project_id, jobs.c.created_at)
 Index("idx_job_events_job_seq", job_events.c.job_id, job_events.c.seq)
 Index("idx_tool_calls_job", tool_calls.c.job_id)
 Index("idx_artifacts_job", artifacts.c.job_id)
+Index("idx_artifacts_project_created", artifacts.c.project_id, artifacts.c.created_at)
+Index("idx_recipes_project_created", visualization_recipes.c.project_id, visualization_recipes.c.created_at)
+Index("idx_reports_job", reports.c.job_id)
 Index("idx_audit_logs_project_created", audit_logs.c.project_id, audit_logs.c.created_at)
 
 
@@ -286,8 +312,11 @@ PHASE1_TABLES = (
     "tool_calls",
     "artifacts",
     "visualization_recipes",
+    "reports",
     "user_configs",
     "project_configs",
     "secrets",
     "audit_logs",
 )
+
+PHASE3_TABLES = PHASE1_TABLES

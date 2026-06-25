@@ -9,6 +9,7 @@ from mdi_api.phase2_runtime import (
     create_phase2_job,
     create_phase2_project,
     get_phase2_artifact,
+    get_phase2_artifact_download,
     get_phase2_dataset_profile,
     get_phase2_job,
     get_phase2_job_artifacts,
@@ -16,6 +17,7 @@ from mdi_api.phase2_runtime import (
     get_phase2_job_tool_calls,
     list_phase2_datasets,
     list_phase2_projects,
+    stream_phase2_job_events,
     upload_phase2_dataset,
 )
 from mdi_api.routers.auth import CurrentUser, get_current_user_stub
@@ -55,9 +57,11 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/jobs/{job_id}", get_phase2_job, ("GET",), ("jobs",)),
     RouteSpec("/jobs/{job_id}/events", get_phase2_job_events, ("GET",), ("jobs",)),
     RouteSpec("/jobs/{job_id}/events/stream", stream_phase1_job_events, ("GET",), ("jobs",)),
+    RouteSpec("/jobs/{job_id}/stream", stream_phase2_job_events, ("GET",), ("jobs",)),
     RouteSpec("/jobs/{job_id}/tool-calls", get_phase2_job_tool_calls, ("GET",), ("jobs",)),
     RouteSpec("/jobs/{job_id}/artifacts", get_phase2_job_artifacts, ("GET",), ("jobs",)),
     RouteSpec("/artifacts/{artifact_id}", get_phase2_artifact, ("GET",), ("artifacts",)),
+    RouteSpec("/artifacts/{artifact_id}/download", get_phase2_artifact_download, ("GET",), ("artifacts",)),
     RouteSpec("/tools", list_tools, ("GET",), ("tools",)),
     RouteSpec("/tools/mvp", list_mvp_tools, ("GET",), ("tools",)),
 )

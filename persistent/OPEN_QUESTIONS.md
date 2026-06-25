@@ -1,5 +1,13 @@
 # OPEN_QUESTIONS
 
+## 2026-06-26 Phase 3 Follow-ups
+
+- No new P0 blocker is open after the Phase 3 persistence foundation pass.
+- Repository interfaces and SQLite-testable SQLAlchemy implementations now exist. A later phase still needs production transaction boundaries, Alembic adoption, PostgreSQL connection/session lifecycle, and idempotent worker writes.
+- JobEvent seq cursor semantics are implemented for the local runtime and repository layer. A later phase still needs production SSE backpressure, heartbeat, auth checks, and reconnect/load behavior under concurrent workers.
+- Artifact storage mapping now covers local files and S3/MinIO-compatible metadata. A later phase still needs a live object-storage client, presigned URL policy, access-control checks, retention/lifecycle policy, and preview generation strategy.
+- `reports` now exists in schema/migration draft, but report repository/query APIs remain future work beyond the Phase 3 acceptance target.
+
 ## 2026-06-25 Phase 2 Acceptance Audit Follow-ups
 
 - No new P0 blocker is open after the Phase 2 acceptance hardening pass.

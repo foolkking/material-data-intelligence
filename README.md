@@ -37,9 +37,9 @@ After each design or implementation phase, update:
 
 ## Current Status
 
-Phase 1 is reproducible and Phase 2 has an in-memory/local-file product loop for acceptance. The repo has a Python packages-first core, shared schemas, Tool Registry manifest loading, `BaseToolAdapter`, 10 MVP adapters, local Artifact export, Data Pipeline coverage, deterministic `AnalysisPlan` generation, local Worker execution, JobEvent/ToolCall/Artifact query APIs, Recipe/Report artifacts, a FastAPI API boundary, local PostgreSQL/Redis/MinIO compose config, basic Auth/Project/Dataset table metadata, and a Next.js three-column workspace shell. Current verification: `python -m pytest -q`, `npm run typecheck`, and `npm run build` pass.
+Phase 1 is reproducible, Phase 2 has an in-memory/local-file product loop for acceptance, and Phase 3 has a persistence foundation for repository abstractions, job event seq cursors, SSE smoke streaming, and artifact storage mapping. The repo has a Python packages-first core, shared schemas, Tool Registry manifest loading, `BaseToolAdapter`, 10 MVP adapters, local Artifact export, Data Pipeline coverage, deterministic `AnalysisPlan` generation, local Worker execution, JobEvent/ToolCall/Artifact query APIs, Recipe/Report artifacts, a FastAPI API boundary, local PostgreSQL/Redis/MinIO compose config, SQLAlchemy metadata/migration drafts, basic Auth/Project/Dataset table metadata, and a Next.js three-column workspace shell. Current verification: `python -m pytest -q`, `npm run typecheck`, and `npm run build` pass.
 
-Current scope guard: no real LLM execution, no V1/V2 tool execution, no Celery/PostgreSQL/MinIO persistence for runtime state, and no frontend feature expansion beyond the existing shell.
+Current scope guard: no real LLM execution, no V1/V2 tool execution, no Celery/Ray/Kubernetes orchestration, no live PostgreSQL/MinIO runtime deployment, no full auth system, and no frontend feature expansion beyond the existing shell.
 
 ## Sharing Archive
 

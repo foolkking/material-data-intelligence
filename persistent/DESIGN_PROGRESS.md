@@ -1,5 +1,23 @@
 # DESIGN_PROGRESS
 
+## 2026-06-26 Phase 3 Persistence Foundation Update
+
+- Added Phase 3 persistence foundation without adding real LLM execution, V1/V2 tools, Celery/Ray/Kubernetes, full auth, or frontend expansion.
+- Added repository abstraction for `ProjectRepository`, `DatasetRepository`, `JobRepository`, `JobEventRepository`, `ToolCallRepository`, `ArtifactRepository`, and `RecipeRepository`.
+- Kept the Phase 2 local product loop on its InMemory path, while adding SQLAlchemy Core repositories that are SQLite-testable and PostgreSQL-oriented.
+- Extended SQLAlchemy metadata and migration draft coverage for `projects`, `datasets`, `data_profiles`, `jobs`, `job_events`, `tool_calls`, `artifacts`, `visualization_recipes`, and `reports`.
+- Added durable cursor semantics to job events: seq remains monotonic per job, `list_events_after_seq(job_id, after_seq)` exists, and `GET /jobs/{job_id}/events?after_seq=N` filters by cursor.
+- Added `GET /jobs/{job_id}/stream` as an SSE smoke endpoint using the existing local runtime event stream.
+- Added `ArtifactStorage` abstraction with local filesystem storage and an S3/MinIO-compatible mapping interface, including `storage_key`, `content_type`, `sha256`, `size_bytes`, and `preview_key` metadata.
+- Added `GET /artifacts/{artifact_id}/download` as a local signed-url/download placeholder while preserving `GET /artifacts/{artifact_id}` for artifact detail.
+- Added Phase 3 tests for repository interfaces, SQLAlchemy schema/cursor behavior, SSE smoke streaming, artifact storage mapping, and Phase 2 loop regression.
+- Hardened frontend typecheck reproducibility by disabling stale incremental `tsconfig.tsbuildinfo` reuse in `npm run typecheck`.
+- Verification:
+  - `uv lock --check`: passed.
+  - `python -m pytest -q`: 52 passed, 50 third-party deprecation warnings.
+  - `npm run typecheck`: passed.
+  - `npm run build`: passed.
+
 ## 2026-06-25 Phase 2 Acceptance Hardening Update
 
 - Re-ran the Phase 2 acceptance audit against the current worktree after the local product loop implementation.

@@ -11,6 +11,7 @@ from typing import Any, Iterable
 import pandas as pd
 from pydantic import BaseModel, Field, model_validator
 
+from mdi_api.artifact_storage import LocalFileArtifactStorage
 from mdi_adapters import ToolExecutionContext
 from mdi_artifact_core import ArtifactPayload, LocalArtifactExporter, content_hash, stable_json_dumps
 from mdi_material_parsers import NormalizedObjectDraft, ParseResult, build_data_profile, parse_file
@@ -168,7 +169,7 @@ class LocalFileArtifactStore:
         path = self.root_dir / artifact.storageKey
         payload = artifact.model_dump(mode="json")
         payload["artifactId"] = artifact.id
-        payload["downloadUrl"] = f"/artifacts/{artifact.id}"
+        payload["downloadUrl"] = f"/artifacts/{artifact.id}/download"
         payload["exists"] = path.exists()
         payload["contentEncoding"] = "missing"
         if path.exists():
@@ -202,6 +203,7 @@ class Phase2ProductRuntime:
         self.jobs: dict[str, JobRunRecord] = {}
         self.job_store = InMemoryJobStore()
         self.artifact_store = LocalFileArtifactStore(self.artifact_root)
+        self.artifact_storage = LocalFileArtifactStorage(self.artifact_root)
         self._project_seq = 0
         self._dataset_seq = 0
         self._job_seq = 0
@@ -433,9 +435,14 @@ class Phase2ProductRuntime:
             "reportArtifactIds": [artifact.id for artifact in artifacts if artifact.type in {ArtifactType.report_md, ArtifactType.report_html}],
         }
 
-    def get_job_events(self, job_id: str) -> list[dict[str, Any]]:
+    def get_job_events(self, job_id: str, after_seq: int = 0) -> list[dict[str, Any]]:
         self._require_job(job_id)
-        return [event.model_dump(mode="json") for event in self.job_store.jobs[job_id].events]
+        return [event.model_dump(mode="json") for event in self.job_store.list_events_after_seq(job_id, after_seq)]
+
+    async def iter_job_sse_events(self, job_id: str, after_seq: int = 0) -> Any:
+        self._require_job(job_id)
+        for event in self.job_store.list_events_after_seq(job_id, after_seq):
+            yield _sse_event(event.model_dump(mode="json"))
 
     def get_job_tool_calls(self, job_id: str) -> list[dict[str, Any]]:
         self._require_job(job_id)
@@ -447,6 +454,23 @@ class Phase2ProductRuntime:
 
     def get_artifact(self, artifact_id: str) -> dict[str, Any]:
         return self.artifact_store.detail(artifact_id)
+
+    def get_artifact_download(self, artifact_id: str) -> dict[str, Any]:
+        artifact = self.artifact_store.get(artifact_id)
+        content_type = artifact.metadata.provenance.get("mediaType") or _content_type_for_name(artifact.name)
+        signed = self.artifact_storage.signed_url(artifact.storageKey, content_type=content_type)
+        return {
+            "artifactId": artifact.id,
+            "storageKey": artifact.storageKey,
+            "previewKey": artifact.previewKey,
+            "contentType": content_type,
+            "sha256": artifact.contentHash,
+            "contentHash": artifact.contentHash,
+            "sizeBytes": artifact.sizeBytes,
+            "signedUrl": signed.url,
+            "signedUrlStatus": signed.status,
+            "expiresInSec": signed.expires_in_sec,
+        }
 
     def _materialize_uploads(self, request: DatasetUploadRequest, dataset_id: str) -> list[Path]:
         raw_dir = self.artifact_root / "projects" / request.projectId / "datasets" / dataset_id / "raw"
@@ -735,8 +759,23 @@ def get_phase2_job(job_id: str) -> dict[str, Any]:
     return _api_call(lambda: get_phase2_runtime().get_job(job_id))
 
 
-def get_phase2_job_events(job_id: str) -> list[dict[str, Any]]:
-    return _api_call(lambda: get_phase2_runtime().get_job_events(job_id))
+def get_phase2_job_events(job_id: str, after_seq: int = 0) -> list[dict[str, Any]]:
+    return _api_call(lambda: get_phase2_runtime().get_job_events(job_id, after_seq=after_seq))
+
+
+def stream_phase2_job_events(job_id: str, after_seq: int = 0) -> Any:
+    def make_response() -> Any:
+        try:
+            from fastapi.responses import StreamingResponse
+
+            return StreamingResponse(
+                get_phase2_runtime().iter_job_sse_events(job_id, after_seq=after_seq),
+                media_type="text/event-stream",
+            )
+        except ImportError:
+            return get_phase2_runtime().get_job_events(job_id, after_seq=after_seq)
+
+    return _api_call(make_response)
 
 
 def get_phase2_job_tool_calls(job_id: str) -> list[dict[str, Any]]:
@@ -749,6 +788,10 @@ def get_phase2_job_artifacts(job_id: str) -> list[dict[str, Any]]:
 
 def get_phase2_artifact(artifact_id: str) -> dict[str, Any]:
     return _api_call(lambda: get_phase2_runtime().get_artifact(artifact_id))
+
+
+def get_phase2_artifact_download(artifact_id: str) -> dict[str, Any]:
+    return _api_call(lambda: get_phase2_runtime().get_artifact_download(artifact_id))
 
 
 def reset_phase2_runtime(artifact_root: str | Path | None = None, registry: ToolRegistry | None = None) -> Phase2ProductRuntime:
@@ -873,12 +916,35 @@ def _artifact_summary(artifact: Artifact) -> dict[str, Any]:
         "artifactId": artifact.id,
         "type": artifact.type.value,
         "name": artifact.name,
-        "downloadUrl": f"/artifacts/{artifact.id}",
+        "downloadUrl": f"/artifacts/{artifact.id}/download",
         "storageKey": artifact.storageKey,
         "toolCallId": artifact.toolCallId,
         "sizeBytes": artifact.sizeBytes,
         "contentHash": artifact.contentHash,
     }
+
+
+def _sse_event(event: dict[str, Any]) -> str:
+    event_name = str(event["eventType"])
+    event_id = str(event["seq"])
+    data = json.dumps(event, separators=(",", ":"), sort_keys=True)
+    return f"id: {event_id}\nevent: {event_name}\ndata: {data}\n\n"
+
+
+def _content_type_for_name(name: str) -> str:
+    if name.endswith(".json"):
+        return "application/json"
+    if name.endswith(".html"):
+        return "text/html"
+    if name.endswith(".md"):
+        return "text/markdown"
+    if name.endswith(".png"):
+        return "image/png"
+    if name.endswith(".csv"):
+        return "text/csv"
+    if name.endswith(".svg"):
+        return "image/svg+xml"
+    return "application/octet-stream"
 
 
 def _default_params_for(tool_id: str) -> dict[str, Any]:

@@ -1,5 +1,15 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-06-26 Phase 3 Persistence Foundation Notes
+
+- No Tool Registry manifest, adapter class, MVP tool scope, V1/V2 tool scope, or pymatviz API mapping changed in Phase 3.
+- Phase 3 repository and storage work preserves the controlled execution path:
+  `AnalysisPlan` -> `ToolExecutionRequest` -> Tool Registry lookup -> paramsSchema validation -> Adapter -> Artifact.
+- The Phase 2 deterministic product loop still selects the same five registered MVP tools for the mixed CIF/POSCAR/CSV path:
+  `composition.ptable_heatmap`, `composition.chem_sys_treemap`, `structure.viewer_3d`, `ml.basic_metrics`, and `ml.outlier_table`.
+- Artifact persistence now has storage metadata and signed-url placeholder mapping, but registered visualization/analysis tools still produce artifacts through the existing adapter/exporter path.
+- No V1/V2 tool execution, direct pymatviz exposure, real LLM tool execution, or bypass around Tool Registry validation was introduced.
+
 ## 2026-06-25 Phase 2 Acceptance Audit Notes
 
 - Re-verified manifest loading from `tool_registry/pymatviz_manifest.yaml`, `tool_registry/matterviz_manifest.yaml`, and `tool_registry/platform_builtin_manifest.yaml`.

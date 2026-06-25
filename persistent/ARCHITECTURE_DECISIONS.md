@@ -1,5 +1,55 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-070: Phase 3 introduces repository and artifact-storage abstractions before production infrastructure
+
+### Context
+
+Phase 2 proved the local product loop with in-memory state and local files. The
+next backend layer needs durable semantics for projects, datasets, jobs, job
+events, tool calls, artifacts, recipes, reports, SSE resume cursors, and
+object-storage mapping. The user explicitly excluded real LLM integration,
+V1/V2 tool expansion, Celery/Ray/Kubernetes, full auth, production PostgreSQL
+wiring, live S3/MinIO clients, and frontend rewrites from this phase.
+
+### Decision
+
+Add repository interfaces for Project, Dataset, Job, JobEvent, ToolCall,
+Artifact, and Recipe records. Keep InMemory implementations for the existing
+Phase 2 runtime, and add SQLAlchemy Core implementations that can run against
+SQLite tests while remaining oriented toward PostgreSQL metadata and migration
+drafts.
+
+`job_events` keeps `(job_id, seq)` as the resume cursor. Every append assigns a
+monotonic per-job seq, and query APIs expose `list_events_after_seq(job_id,
+after_seq)` plus `GET /jobs/{job_id}/events?after_seq=N`. Add
+`GET /jobs/{job_id}/stream` as a plain FastAPI `StreamingResponse` SSE smoke
+endpoint over the current local event store.
+
+Add `ArtifactStorage` as a separate boundary from artifact metadata. The local
+implementation maps storage keys to files and computes content metadata. The
+S3/MinIO-compatible implementation is a metadata/signed-url placeholder until
+the project adopts a live object-storage client and access-control policy.
+
+### Consequences
+
+- Phase 3 creates a migration-ready persistence boundary without destabilizing
+  the accepted Phase 2 loop.
+- Cursor semantics can be tested before concurrent workers and production SSE
+  backpressure are introduced.
+- Artifact metadata can carry storage keys, content type, sha256, size, and
+  preview mapping independently from the current local file store.
+- Future Celery/PostgreSQL/MinIO work must wire these interfaces with real
+  transactions, idempotent worker writes, auth checks, and live signed URLs.
+
+### Alternatives Considered
+
+- Wire Celery, PostgreSQL, and MinIO immediately: rejected because this phase
+  only asks for the persistence abstraction and handoff foundation.
+- Replace Phase 2 InMemory runtime wholesale: rejected because Phase 2
+  acceptance must remain stable while durable repositories are introduced.
+- Add an SSE dependency: deferred because the current FastAPI/Starlette lock can
+  smoke-test streaming with `StreamingResponse` without widening dependencies.
+
 ## ADR-069: Phase 2 uses an in-memory local product runtime before durable infrastructure
 
 ### Context

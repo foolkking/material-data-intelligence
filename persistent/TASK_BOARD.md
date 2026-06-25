@@ -1,5 +1,31 @@
 # TASK_BOARD
 
+## 2026-06-26 Phase 3 Persistence Foundation Status
+
+### Done This Round
+
+- [x] Re-read the Phase 3 entry docs and persistent project state before implementation.
+- [x] Rechecked the Phase 2 baseline: clean Git status, `uv lock --check`, `python -m pytest -q`, `npm run typecheck`, and `npm run build` all passed before Phase 3 edits.
+- [x] Added repository interfaces for Project, Dataset, Job, JobEvent, ToolCall, Artifact, and Recipe records.
+- [x] Added InMemory repository implementations and SQLAlchemy Core implementations for the Phase 3 persistence boundary.
+- [x] Added a Phase 3 migration draft covering projects, datasets, data_profiles, jobs, job_events, tool_calls, artifacts, visualization_recipes, and reports.
+- [x] Added `job_events.progress`, artifact storage mapping fields, and `reports` metadata to SQLAlchemy table metadata.
+- [x] Added per-job seq cursor support through `list_events_after_seq(job_id, after_seq)` and `GET /jobs/{job_id}/events?after_seq=N`.
+- [x] Added `GET /jobs/{job_id}/stream` SSE smoke endpoint for local-runtime event replay.
+- [x] Added `ArtifactStorage`, `LocalFileArtifactStorage`, and S3/MinIO-compatible storage mapping interface.
+- [x] Added `GET /artifacts/{artifact_id}/download` signed-url/download placeholder metadata.
+- [x] Added tests for repository behavior, seq cursor, SSE stream, artifact storage mapping, and Phase 2 product-loop regression.
+- [x] Ran targeted Phase 3 verification: `python -m pytest tests/test_phase3_persistence.py -q` passed.
+- [x] Hardened `npm run typecheck` against stale `tsconfig.tsbuildinfo` cache by disabling incremental reuse.
+- [x] Ran final verification: `uv lock --check`, `python -m pytest -q`, `npm run typecheck`, and `npm run build` all passed.
+
+### Handoff Notes
+
+- Phase 3 still does not run Celery, PostgreSQL, MinIO, a real LLM provider, or V1/V2 tools.
+- The SQLAlchemy repositories are a migration-ready boundary; the Phase 2 runtime remains local/in-memory until a later queue/persistence phase wires production transactions.
+- The S3/MinIO implementation is a mapping interface and signed-url placeholder, not a live object-storage client.
+- Git baseline commit remains the final step for this round.
+
 ## 2026-06-25 Phase 2 Acceptance Hardening Status
 
 ### Done This Round
