@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now()
 );
+CREATE INDEX IF NOT EXISTS idx_jobs_project_created ON jobs(project_id, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS job_events (
     id varchar(64) PRIMARY KEY,
@@ -83,6 +84,8 @@ CREATE TABLE IF NOT EXISTS artifacts (
     name varchar(255) NOT NULL,
     version varchar(32) NOT NULL DEFAULT '1',
     storage_key text NOT NULL,
+    storage_provider varchar(32) NOT NULL DEFAULT 'local',
+    bucket varchar(160),
     preview_key text,
     size_bytes integer NOT NULL DEFAULT 0,
     content_type varchar(160) NOT NULL DEFAULT 'application/octet-stream',
@@ -92,6 +95,7 @@ CREATE TABLE IF NOT EXISTS artifacts (
     created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_artifacts_job ON artifacts(job_id);
+CREATE INDEX IF NOT EXISTS idx_artifacts_project_created ON artifacts(project_id, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS visualization_recipes (
     id varchar(64) PRIMARY KEY,

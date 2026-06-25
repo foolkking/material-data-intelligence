@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import hashlib
-from dataclasses import asdict, dataclass
+import json
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from typing import Protocol
+from typing import Any, Protocol
 from urllib.parse import quote
 
 
@@ -14,9 +16,15 @@ class ArtifactStorageMetadata:
     sha256: str
     size_bytes: int
     preview_key: str | None = None
-    backend: str = "local"
+    storage_provider: str = "local"
     bucket: str | None = None
     endpoint_url: str | None = None
+    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    backend: str = "local"
+
+    def __post_init__(self) -> None:
+        if self.storage_provider == "local" and self.backend != "local":
+            object.__setattr__(self, "storage_provider", self.backend)
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
@@ -47,6 +55,34 @@ class ArtifactStorage(Protocol):
         ...
 
     def get_bytes(self, storage_key: str) -> bytes:
+        ...
+
+    def put_text(
+        self,
+        storage_key: str,
+        content: str,
+        *,
+        content_type: str = "text/plain",
+        preview_key: str | None = None,
+    ) -> ArtifactStorageMetadata:
+        ...
+
+    def get_text(self, storage_key: str) -> str:
+        ...
+
+    def put_json(
+        self,
+        storage_key: str,
+        content: Any,
+        *,
+        preview_key: str | None = None,
+    ) -> ArtifactStorageMetadata:
+        ...
+
+    def get_json(self, storage_key: str) -> Any:
+        ...
+
+    def exists(self, storage_key: str) -> bool:
         ...
 
     def signed_url(
@@ -83,11 +119,50 @@ class LocalFileArtifactStorage:
             sha256=_sha256(content),
             size_bytes=len(content),
             preview_key=preview_key,
+            storage_provider="local",
             backend="local",
         )
 
     def get_bytes(self, storage_key: str) -> bytes:
         return self._resolve(storage_key).read_bytes()
+
+    def put_text(
+        self,
+        storage_key: str,
+        content: str,
+        *,
+        content_type: str = "text/plain",
+        preview_key: str | None = None,
+    ) -> ArtifactStorageMetadata:
+        return self.put_bytes(
+            storage_key,
+            content.encode("utf-8"),
+            content_type=content_type,
+            preview_key=preview_key,
+        )
+
+    def get_text(self, storage_key: str) -> str:
+        return self.get_bytes(storage_key).decode("utf-8")
+
+    def put_json(
+        self,
+        storage_key: str,
+        content: Any,
+        *,
+        preview_key: str | None = None,
+    ) -> ArtifactStorageMetadata:
+        return self.put_text(
+            storage_key,
+            json.dumps(content, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
+            content_type="application/json",
+            preview_key=preview_key,
+        )
+
+    def get_json(self, storage_key: str) -> Any:
+        return json.loads(self.get_text(storage_key))
+
+    def exists(self, storage_key: str) -> bool:
+        return self._resolve(storage_key).exists()
 
     def describe_existing(
         self,
@@ -103,6 +178,7 @@ class LocalFileArtifactStorage:
             sha256=_sha256(content),
             size_bytes=len(content),
             preview_key=preview_key,
+            storage_provider="local",
             backend="local",
         )
 
@@ -165,6 +241,44 @@ class S3CompatibleArtifactStorage:
     def get_bytes(self, storage_key: str) -> bytes:
         raise NotImplementedError("S3/MinIO reads require a configured object-storage client.")
 
+    def put_text(
+        self,
+        storage_key: str,
+        content: str,
+        *,
+        content_type: str = "text/plain",
+        preview_key: str | None = None,
+    ) -> ArtifactStorageMetadata:
+        return self.put_bytes(
+            storage_key,
+            content.encode("utf-8"),
+            content_type=content_type,
+            preview_key=preview_key,
+        )
+
+    def get_text(self, storage_key: str) -> str:
+        return self.get_bytes(storage_key).decode("utf-8")
+
+    def put_json(
+        self,
+        storage_key: str,
+        content: Any,
+        *,
+        preview_key: str | None = None,
+    ) -> ArtifactStorageMetadata:
+        return self.put_text(
+            storage_key,
+            json.dumps(content, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
+            content_type="application/json",
+            preview_key=preview_key,
+        )
+
+    def get_json(self, storage_key: str) -> Any:
+        return json.loads(self.get_text(storage_key))
+
+    def exists(self, storage_key: str) -> bool:
+        raise NotImplementedError("S3/MinIO existence checks require a configured object-storage client.")
+
     def map_object(
         self,
         storage_key: str,
@@ -180,6 +294,7 @@ class S3CompatibleArtifactStorage:
             sha256=sha256,
             size_bytes=size_bytes,
             preview_key=self._full_key(preview_key) if preview_key else None,
+            storage_provider="s3",
             backend="s3",
             bucket=self.bucket,
             endpoint_url=self.endpoint_url,

@@ -3,10 +3,11 @@
 ## 2026-06-26 Phase 3 Follow-ups
 
 - No new P0 blocker is open after the Phase 3 persistence foundation pass.
-- Repository interfaces and SQLite-testable SQLAlchemy implementations now exist. A later phase still needs production transaction boundaries, Alembic adoption, PostgreSQL connection/session lifecycle, and idempotent worker writes.
-- JobEvent seq cursor semantics are implemented for the local runtime and repository layer. A later phase still needs production SSE backpressure, heartbeat, auth checks, and reconnect/load behavior under concurrent workers.
+- Repository interfaces and SQLite-testable SQLAlchemy implementations now cover Project, Dataset, DataProfile, Job, JobEvent, ToolCall, Artifact, Recipe, and Report. A later phase still needs production transaction boundaries, Alembic adoption, PostgreSQL connection/session lifecycle, and idempotent worker writes.
+- JobEvent seq cursor semantics are implemented for the local runtime and repository layer, including in-process duplicate-seq protection. A later phase still needs database-level multi-process locking strategy, production SSE backpressure, heartbeat, auth checks, and reconnect/load behavior under concurrent workers.
 - Artifact storage mapping now covers local files and S3/MinIO-compatible metadata. A later phase still needs a live object-storage client, presigned URL policy, access-control checks, retention/lifecycle policy, and preview generation strategy.
-- `reports` now exists in schema/migration draft, but report repository/query APIs remain future work beyond the Phase 3 acceptance target.
+- `reports` now has repository coverage and migration metadata. Report-specific API list/detail routes beyond artifact/report downloads remain future work.
+- `S3CompatibleArtifactStorage.signed_url()` intentionally returns a `not_implemented` placeholder until live credentials, bucket policy, and signed URL expiry rules are decided.
 
 ## 2026-06-25 Phase 2 Acceptance Audit Follow-ups
 

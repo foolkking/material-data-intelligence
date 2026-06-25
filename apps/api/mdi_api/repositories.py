@@ -3,13 +3,26 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from threading import Lock
 from typing import Any, Mapping, Protocol
 
 from sqlalchemy import delete, func, insert, select
 from sqlalchemy.engine import Connection, Engine
 
-from mdi_api.db import artifacts, datasets, job_events, jobs, organizations, projects, tool_calls, users, visualization_recipes
-from mdi_schemas import Artifact, JobEvent, JobEventStatus, JobStatus, ToolCall, VisualizationRecipe
+from mdi_api.db import (
+    artifacts,
+    data_profiles,
+    datasets,
+    job_events,
+    jobs,
+    organizations,
+    projects,
+    reports,
+    tool_calls,
+    users,
+    visualization_recipes,
+)
+from mdi_schemas import Artifact, DataProfile, JobEvent, JobEventStatus, JobStatus, ToolCall, VisualizationRecipe
 
 
 class ProjectRepository(Protocol):
@@ -31,6 +44,20 @@ class DatasetRepository(Protocol):
         ...
 
     def list_for_project(self, project_id: str) -> list[dict[str, Any]]:
+        ...
+
+
+class DataProfileRepository(Protocol):
+    def save(self, profile: DataProfile | Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def get(self, profile_id: str) -> dict[str, Any]:
+        ...
+
+    def list_for_dataset(self, dataset_id: str) -> list[dict[str, Any]]:
+        ...
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
         ...
 
 
@@ -95,26 +122,45 @@ class RecipeRepository(Protocol):
         ...
 
 
+class ReportRepository(Protocol):
+    def save(self, report: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def get(self, report_id: str) -> dict[str, Any]:
+        ...
+
+    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
+        ...
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        ...
+
+
 @dataclass
 class InMemoryRepositoryBundle:
     projects: "InMemoryProjectRepository"
     datasets: "InMemoryDatasetRepository"
+    data_profiles: "InMemoryDataProfileRepository"
     jobs: "InMemoryJobRepository"
     job_events: "InMemoryJobEventRepository"
     tool_calls: "InMemoryToolCallRepository"
     artifacts: "InMemoryArtifactRepository"
     recipes: "InMemoryRecipeRepository"
+    reports: "InMemoryReportRepository"
 
     @classmethod
     def create(cls) -> "InMemoryRepositoryBundle":
+        datasets = InMemoryDatasetRepository()
         return cls(
             projects=InMemoryProjectRepository(),
-            datasets=InMemoryDatasetRepository(),
+            datasets=datasets,
+            data_profiles=InMemoryDataProfileRepository(datasets),
             jobs=InMemoryJobRepository(),
             job_events=InMemoryJobEventRepository(),
             tool_calls=InMemoryToolCallRepository(),
             artifacts=InMemoryArtifactRepository(),
             recipes=InMemoryRecipeRepository(),
+            reports=InMemoryReportRepository(),
         )
 
 
@@ -133,6 +179,12 @@ class _InMemoryRecordRepository:
             return _json_copy(self.records[record_id])
         except KeyError as exc:
             raise LookupError(f"Unknown record id: {record_id}") from exc
+
+    def create(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        return self.save(record)  # type: ignore[attr-defined]
+
+    def get_by_id(self, record_id: str) -> dict[str, Any]:
+        return self.get(record_id)  # type: ignore[attr-defined]
 
 
 class InMemoryProjectRepository(_InMemoryRecordRepository):
@@ -156,6 +208,35 @@ class InMemoryDatasetRepository(_InMemoryRecordRepository):
     def list_for_project(self, project_id: str) -> list[dict[str, Any]]:
         return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
 
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        return self.list_for_project(project_id)
+
+
+class InMemoryDataProfileRepository(_InMemoryRecordRepository):
+    def __init__(self, datasets: InMemoryDatasetRepository | None = None) -> None:
+        super().__init__()
+        self.datasets = datasets
+
+    def save(self, profile: DataProfile | Mapping[str, Any]) -> dict[str, Any]:
+        record = _model_to_record(profile)
+        return self._save(record, record_id=_required_id(record, "profileId"))
+
+    def get(self, profile_id: str) -> dict[str, Any]:
+        return self._get(profile_id)
+
+    def list_for_dataset(self, dataset_id: str) -> list[dict[str, Any]]:
+        return [_json_copy(record) for record in self.records.values() if record.get("datasetId") == dataset_id]
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        if self.datasets is None:
+            return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
+        dataset_ids = {
+            record.get("datasetId") or record.get("id")
+            for record in self.datasets.list_for_project(project_id)
+            if record.get("datasetId") or record.get("id")
+        }
+        return [_json_copy(record) for record in self.records.values() if record.get("datasetId") in dataset_ids]
+
 
 class InMemoryJobRepository(_InMemoryRecordRepository):
     def save(self, job: Mapping[str, Any]) -> dict[str, Any]:
@@ -171,10 +252,17 @@ class InMemoryJobRepository(_InMemoryRecordRepository):
         self.records[job_id] = record
         return _json_copy(record)
 
+    def update_status(self, job_id: str, status: JobStatus | str) -> dict[str, Any]:
+        return self.set_status(job_id, status)
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
+
 
 class InMemoryJobEventRepository:
     def __init__(self) -> None:
         self.events_by_job: dict[str, list[JobEvent]] = {}
+        self._lock = Lock()
 
     def append_event(
         self,
@@ -186,33 +274,38 @@ class InMemoryJobEventRepository:
         payload: Mapping[str, Any] | None = None,
         progress: float | None = None,
     ) -> JobEvent:
-        events = self.events_by_job.setdefault(job_id, [])
-        seq = len(events) + 1
-        event = JobEvent(
-            id=f"evt_{job_id}_{seq:04d}",
-            jobId=job_id,
-            seq=seq,
-            eventType=event_type,
-            status=JobEventStatus(_enum_value(status)),
-            message=message,
-            progress=progress,
-            payload=dict(payload or {}),
-            createdAt=_utc_now(),
-        )
-        events.append(event)
-        return event
+        with self._lock:
+            events = self.events_by_job.setdefault(job_id, [])
+            seq = len(events) + 1
+            event = JobEvent(
+                id=f"evt_{job_id}_{seq:04d}",
+                jobId=job_id,
+                seq=seq,
+                eventType=event_type,
+                status=JobEventStatus(_enum_value(status)),
+                message=message,
+                progress=progress,
+                payload=dict(payload or {}),
+                createdAt=_utc_now(),
+            )
+            events.append(event)
+            return event
 
     def save_event(self, event: JobEvent) -> JobEvent:
-        events = self.events_by_job.setdefault(event.jobId, [])
-        if any(existing.seq == event.seq for existing in events):
-            raise ValueError(f"Duplicate job event seq {event.seq} for job {event.jobId}")
-        if events and event.seq <= events[-1].seq:
-            raise ValueError(f"Job event seq must increase for job {event.jobId}")
-        events.append(event)
-        return event
+        with self._lock:
+            events = self.events_by_job.setdefault(event.jobId, [])
+            if any(existing.seq == event.seq for existing in events):
+                raise ValueError(f"Duplicate job event seq {event.seq} for job {event.jobId}")
+            if events and event.seq <= events[-1].seq:
+                raise ValueError(f"Job event seq must increase for job {event.jobId}")
+            events.append(event)
+            return event
 
     def list_for_job(self, job_id: str) -> list[JobEvent]:
         return list(self.events_by_job.get(job_id, []))
+
+    def list_events(self, job_id: str) -> list[JobEvent]:
+        return self.list_for_job(job_id)
 
     def list_events_after_seq(self, job_id: str, after_seq: int) -> list[JobEvent]:
         return [event for event in self.events_by_job.get(job_id, []) if event.seq > after_seq]
@@ -226,6 +319,9 @@ class InMemoryToolCallRepository(_InMemoryRecordRepository):
     def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
         return [_json_copy(record) for record in self.records.values() if record.get("jobId") == job_id]
 
+    def list_by_job(self, job_id: str) -> list[dict[str, Any]]:
+        return self.list_for_job(job_id)
+
 
 class InMemoryArtifactRepository(_InMemoryRecordRepository):
     def save(self, artifact: Artifact | Mapping[str, Any]) -> dict[str, Any]:
@@ -237,6 +333,12 @@ class InMemoryArtifactRepository(_InMemoryRecordRepository):
 
     def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
         return [_json_copy(record) for record in self.records.values() if record.get("jobId") == job_id]
+
+    def list_artifacts_by_job(self, job_id: str) -> list[dict[str, Any]]:
+        return self.list_for_job(job_id)
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
 
 
 class InMemoryRecipeRepository(_InMemoryRecordRepository):
@@ -250,27 +352,52 @@ class InMemoryRecipeRepository(_InMemoryRecordRepository):
     def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
         return [_json_copy(record) for record in self.records.values() if record.get("sourceJobId") == job_id]
 
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
+
+
+class InMemoryReportRepository(_InMemoryRecordRepository):
+    def save(self, report: Mapping[str, Any]) -> dict[str, Any]:
+        return self._save(report, record_id=_required_id(report, "reportId"))
+
+    def get(self, report_id: str) -> dict[str, Any]:
+        return self._get(report_id)
+
+    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
+        return [
+            _json_copy(record)
+            for record in self.records.values()
+            if record.get("jobId") == job_id or record.get("sourceJobId") == job_id
+        ]
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
+
 
 @dataclass
 class SqlAlchemyRepositoryBundle:
     projects: "SqlAlchemyProjectRepository"
     datasets: "SqlAlchemyDatasetRepository"
+    data_profiles: "SqlAlchemyDataProfileRepository"
     jobs: "SqlAlchemyJobRepository"
     job_events: "SqlAlchemyJobEventRepository"
     tool_calls: "SqlAlchemyToolCallRepository"
     artifacts: "SqlAlchemyArtifactRepository"
     recipes: "SqlAlchemyRecipeRepository"
+    reports: "SqlAlchemyReportRepository"
 
     @classmethod
     def create(cls, bind: Engine | Connection) -> "SqlAlchemyRepositoryBundle":
         return cls(
             projects=SqlAlchemyProjectRepository(bind),
             datasets=SqlAlchemyDatasetRepository(bind),
+            data_profiles=SqlAlchemyDataProfileRepository(bind),
             jobs=SqlAlchemyJobRepository(bind),
             job_events=SqlAlchemyJobEventRepository(bind),
             tool_calls=SqlAlchemyToolCallRepository(bind),
             artifacts=SqlAlchemyArtifactRepository(bind),
             recipes=SqlAlchemyRecipeRepository(bind),
+            reports=SqlAlchemyReportRepository(bind),
         )
 
 
@@ -298,6 +425,12 @@ class _SqlAlchemyRepository:
             return [_row_to_json_dict(row) for row in connection.execute(statement).mappings().all()]
 
         return self._with_connection(run)
+
+    def create(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        return self.save(record)  # type: ignore[attr-defined]
+
+    def get_by_id(self, record_id: str) -> dict[str, Any]:
+        return self.get(record_id)  # type: ignore[attr-defined]
 
 
 class SqlAlchemyProjectRepository(_SqlAlchemyRepository):
@@ -356,6 +489,48 @@ class SqlAlchemyDatasetRepository(_SqlAlchemyRepository):
         statement = select(datasets).where(datasets.c.project_id == project_id).order_by(datasets.c.created_at, datasets.c.id)
         return [_dataset_from_row(row) for row in self._fetch_all_dicts(statement)]
 
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        return self.list_for_project(project_id)
+
+
+class SqlAlchemyDataProfileRepository(_SqlAlchemyRepository):
+    def save(self, profile: DataProfile | Mapping[str, Any]) -> dict[str, Any]:
+        record = _model_to_record(profile)
+        profile_id = _required_id(record, "profileId")
+        values = {
+            "id": profile_id,
+            "dataset_id": str(record["datasetId"]),
+            "version": str(record.get("version") or "1"),
+            "profile_json": _json_copy(record),
+        }
+
+        def run(connection: Connection) -> None:
+            connection.execute(delete(data_profiles).where(data_profiles.c.id == profile_id))
+            connection.execute(insert(data_profiles).values(**values))
+
+        self._with_connection(run)
+        return self.get(profile_id)
+
+    def get(self, profile_id: str) -> dict[str, Any]:
+        return _data_profile_from_row(self._fetch_one_dict(select(data_profiles).where(data_profiles.c.id == profile_id)))
+
+    def list_for_dataset(self, dataset_id: str) -> list[dict[str, Any]]:
+        statement = (
+            select(data_profiles)
+            .where(data_profiles.c.dataset_id == dataset_id)
+            .order_by(data_profiles.c.created_at, data_profiles.c.id)
+        )
+        return [_data_profile_from_row(row) for row in self._fetch_all_dicts(statement)]
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        statement = (
+            select(data_profiles)
+            .select_from(data_profiles.join(datasets, data_profiles.c.dataset_id == datasets.c.id))
+            .where(datasets.c.project_id == project_id)
+            .order_by(data_profiles.c.created_at, data_profiles.c.id)
+        )
+        return [_data_profile_from_row(row) for row in self._fetch_all_dicts(statement)]
+
 
 class SqlAlchemyJobRepository(_SqlAlchemyRepository):
     def save(self, job: Mapping[str, Any]) -> dict[str, Any]:
@@ -388,8 +563,19 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
         self._with_connection(run)
         return self.get(job_id)
 
+    def update_status(self, job_id: str, status: JobStatus | str) -> dict[str, Any]:
+        return self.set_status(job_id, status)
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        statement = select(jobs).where(jobs.c.project_id == project_id).order_by(jobs.c.created_at.desc(), jobs.c.id)
+        return [_job_from_row(row) for row in self._fetch_all_dicts(statement)]
+
 
 class SqlAlchemyJobEventRepository(_SqlAlchemyRepository):
+    def __init__(self, bind: Engine | Connection) -> None:
+        super().__init__(bind)
+        self._event_lock = Lock()
+
     def append_event(
         self,
         job_id: str,
@@ -417,10 +603,14 @@ class SqlAlchemyJobEventRepository(_SqlAlchemyRepository):
             connection.execute(insert(job_events).values(**_job_event_values(event)))
             return event
 
-        return self._with_connection(run)
+        with self._event_lock:
+            return self._with_connection(run)
 
     def list_for_job(self, job_id: str) -> list[JobEvent]:
         return self.list_events_after_seq(job_id, 0)
+
+    def list_events(self, job_id: str) -> list[JobEvent]:
+        return self.list_for_job(job_id)
 
     def list_events_after_seq(self, job_id: str, after_seq: int) -> list[JobEvent]:
         statement = (
@@ -459,6 +649,9 @@ class SqlAlchemyToolCallRepository(_SqlAlchemyRepository):
         statement = select(tool_calls).where(tool_calls.c.job_id == job_id).order_by(tool_calls.c.created_at, tool_calls.c.id)
         return [_tool_call_from_row(row) for row in self._fetch_all_dicts(statement)]
 
+    def list_by_job(self, job_id: str) -> list[dict[str, Any]]:
+        return self.list_for_job(job_id)
+
 
 class SqlAlchemyArtifactRepository(_SqlAlchemyRepository):
     def save(self, artifact: Artifact | Mapping[str, Any]) -> dict[str, Any]:
@@ -467,6 +660,8 @@ class SqlAlchemyArtifactRepository(_SqlAlchemyRepository):
         metadata = _json_copy(record.get("metadata") or {})
         content_type = str(record.get("contentType") or metadata.get("provenance", {}).get("mediaType") or "application/octet-stream")
         sha256 = str(record.get("sha256") or record.get("contentHash") or "")
+        storage_provider = str(record.get("storageProvider") or record.get("storage_provider") or metadata.get("storageProvider") or metadata.get("storage_provider") or "local")
+        bucket = record.get("bucket") or metadata.get("bucket")
         values = {
             "id": artifact_id,
             "project_id": str(record["projectId"]),
@@ -477,6 +672,8 @@ class SqlAlchemyArtifactRepository(_SqlAlchemyRepository):
             "name": str(record.get("name") or artifact_id),
             "version": str(record.get("version") or "1"),
             "storage_key": str(record["storageKey"]),
+            "storage_provider": storage_provider,
+            "bucket": str(bucket) if bucket else None,
             "preview_key": record.get("previewKey"),
             "size_bytes": int(record.get("sizeBytes") or 0),
             "content_type": content_type,
@@ -497,6 +694,13 @@ class SqlAlchemyArtifactRepository(_SqlAlchemyRepository):
 
     def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
         statement = select(artifacts).where(artifacts.c.job_id == job_id).order_by(artifacts.c.created_at, artifacts.c.id)
+        return [_artifact_from_row(row) for row in self._fetch_all_dicts(statement)]
+
+    def list_artifacts_by_job(self, job_id: str) -> list[dict[str, Any]]:
+        return self.list_for_job(job_id)
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        statement = select(artifacts).where(artifacts.c.project_id == project_id).order_by(artifacts.c.created_at.desc(), artifacts.c.id)
         return [_artifact_from_row(row) for row in self._fetch_all_dicts(statement)]
 
 
@@ -533,6 +737,56 @@ class SqlAlchemyRecipeRepository(_SqlAlchemyRepository):
             .order_by(visualization_recipes.c.created_at, visualization_recipes.c.id)
         )
         return [_recipe_from_row(row) for row in self._fetch_all_dicts(statement)]
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        statement = (
+            select(visualization_recipes)
+            .where(visualization_recipes.c.project_id == project_id)
+            .order_by(visualization_recipes.c.created_at.desc(), visualization_recipes.c.id)
+        )
+        return [_recipe_from_row(row) for row in self._fetch_all_dicts(statement)]
+
+
+class SqlAlchemyReportRepository(_SqlAlchemyRepository):
+    def save(self, report: Mapping[str, Any]) -> dict[str, Any]:
+        record = _json_copy(report)
+        report_id = _required_id(record, "reportId")
+        created_by = str(record.get("createdBy") or record.get("created_by") or "user_local")
+        job_id_value = record.get("jobId") or record.get("sourceJobId")
+        if not job_id_value:
+            raise ValueError("Report record is missing jobId/sourceJobId")
+        job_id = str(job_id_value)
+        values = {
+            "id": report_id,
+            "project_id": str(record["projectId"]),
+            "dataset_id": record.get("datasetId"),
+            "job_id": job_id,
+            "version": str(record.get("version") or "1"),
+            "title": str(record.get("title") or record.get("name") or report_id),
+            "markdown_key": record.get("markdownKey") or record.get("markdownArtifactKey"),
+            "html_key": record.get("htmlKey") or record.get("htmlArtifactKey"),
+            "report_json": record,
+            "created_by": created_by,
+        }
+
+        def run(connection: Connection) -> None:
+            _ensure_user(connection, user_id=created_by)
+            connection.execute(delete(reports).where(reports.c.id == report_id))
+            connection.execute(insert(reports).values(**values))
+
+        self._with_connection(run)
+        return self.get(report_id)
+
+    def get(self, report_id: str) -> dict[str, Any]:
+        return _report_from_row(self._fetch_one_dict(select(reports).where(reports.c.id == report_id)))
+
+    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
+        statement = select(reports).where(reports.c.job_id == job_id).order_by(reports.c.created_at, reports.c.id)
+        return [_report_from_row(row) for row in self._fetch_all_dicts(statement)]
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        statement = select(reports).where(reports.c.project_id == project_id).order_by(reports.c.created_at.desc(), reports.c.id)
+        return [_report_from_row(row) for row in self._fetch_all_dicts(statement)]
 
 
 def _ensure_actor_and_org(connection: Connection, *, user_id: str, organization_id: str) -> None:
@@ -603,6 +857,16 @@ def _dataset_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def _data_profile_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
+    profile = _json_copy(row.get("profile_json") or {})
+    profile.setdefault("id", row["id"])
+    profile.setdefault("profileId", row["id"])
+    profile.setdefault("datasetId", row["dataset_id"])
+    profile.setdefault("version", row["version"])
+    profile["createdAt"] = profile.get("createdAt") or _iso(row["created_at"])
+    return profile
+
+
 def _job_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "id": row["id"],
@@ -641,6 +905,8 @@ def _artifact_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
         "name": row["name"],
         "version": row["version"],
         "storageKey": row["storage_key"],
+        "storageProvider": row.get("storage_provider") or "local",
+        "bucket": row.get("bucket"),
         "previewKey": row["preview_key"],
         "sizeBytes": row["size_bytes"],
         "contentType": row["content_type"],
@@ -660,6 +926,23 @@ def _recipe_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
     recipe.setdefault("name", row["name"])
     recipe["createdAt"] = _iso(row["created_at"])
     return recipe
+
+
+def _report_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
+    report = _json_copy(row.get("report_json") or {})
+    report.setdefault("id", row["id"])
+    report.setdefault("reportId", row["id"])
+    report.setdefault("projectId", row["project_id"])
+    report.setdefault("datasetId", row["dataset_id"])
+    report.setdefault("jobId", row["job_id"])
+    report.setdefault("sourceJobId", row["job_id"])
+    report.setdefault("version", row["version"])
+    report.setdefault("title", row["title"])
+    report.setdefault("markdownKey", row["markdown_key"])
+    report.setdefault("htmlKey", row["html_key"])
+    report["createdBy"] = report.get("createdBy") or row["created_by"]
+    report["createdAt"] = report.get("createdAt") or _iso(row["created_at"])
+    return report
 
 
 def _required_id(record: Mapping[str, Any], alias: str = "id") -> str:

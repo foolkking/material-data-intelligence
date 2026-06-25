@@ -431,9 +431,14 @@ type Artifact = {
   name: string;
   version: string;
   storageKey: string;
+  storageProvider?: "local" | "s3" | "minio";
+  bucket?: string;
   previewKey?: string;
   sizeBytes: number;
+  contentType?: string;
   contentHash: string;
+  sha256?: string;
+  createdAt?: string;
   metadata: ArtifactMetadata;
 };
 

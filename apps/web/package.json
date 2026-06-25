@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit --incremental false"
+    "typecheck": "tsc --project tsconfig.typecheck.json --noEmit --incremental false"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.80.0",

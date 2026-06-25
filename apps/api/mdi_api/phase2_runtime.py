@@ -170,6 +170,10 @@ class LocalFileArtifactStore:
         payload = artifact.model_dump(mode="json")
         payload["artifactId"] = artifact.id
         payload["downloadUrl"] = f"/artifacts/{artifact.id}/download"
+        payload["storageProvider"] = payload.get("storageProvider") or "local"
+        payload["contentType"] = payload.get("contentType") or artifact.metadata.provenance.get("mediaType") or _content_type_for_name(artifact.name)
+        payload["sha256"] = payload.get("sha256") or artifact.contentHash
+        payload["createdAt"] = payload.get("createdAt") or artifact.metadata.createdAt
         payload["exists"] = path.exists()
         payload["contentEncoding"] = "missing"
         if path.exists():
@@ -911,6 +915,7 @@ def _uploaded_file_summary(result: ParseResult) -> dict[str, Any]:
 
 
 def _artifact_summary(artifact: Artifact) -> dict[str, Any]:
+    content_type = artifact.contentType or artifact.metadata.provenance.get("mediaType") or _content_type_for_name(artifact.name)
     return {
         "id": artifact.id,
         "artifactId": artifact.id,
@@ -918,16 +923,27 @@ def _artifact_summary(artifact: Artifact) -> dict[str, Any]:
         "name": artifact.name,
         "downloadUrl": f"/artifacts/{artifact.id}/download",
         "storageKey": artifact.storageKey,
+        "storageProvider": artifact.storageProvider or "local",
+        "bucket": artifact.bucket,
         "toolCallId": artifact.toolCallId,
         "sizeBytes": artifact.sizeBytes,
+        "contentType": content_type,
         "contentHash": artifact.contentHash,
+        "sha256": artifact.sha256 or artifact.contentHash,
+        "createdAt": artifact.createdAt or artifact.metadata.createdAt,
     }
 
 
 def _sse_event(event: dict[str, Any]) -> str:
     event_name = str(event["eventType"])
     event_id = str(event["seq"])
-    data = json.dumps(event, separators=(",", ":"), sort_keys=True)
+    data_event = {
+        **event,
+        "job_id": event.get("jobId"),
+        "event_type": event.get("eventType"),
+        "created_at": event.get("createdAt"),
+    }
+    data = json.dumps(data_event, separators=(",", ":"), sort_keys=True)
     return f"id: {event_id}\nevent: {event_name}\ndata: {data}\n\n"
 
 

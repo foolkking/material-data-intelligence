@@ -1,5 +1,28 @@
 # TASK_BOARD
 
+## 2026-06-26 Phase 3 Acceptance Hardening Status
+
+### Done This Round
+
+- [x] Re-read the required project docs and persistent files before validation.
+- [x] Rechecked Git status and baseline commands before hardening.
+- [x] Confirmed Phase 2 product loop did not regress.
+- [x] Added missing `DataProfileRepository` and `ReportRepository` abstractions and InMemory/SQLAlchemy implementations.
+- [x] Added repository aliases required by the handoff checklist: `create`, `get_by_id`, `list_by_project`, `update_status`, and `list_artifacts_by_job` where applicable.
+- [x] Hardened `JobEventRepository.append_event` and worker `InMemoryJobStore.append_event` with in-process seq locks.
+- [x] Expanded database metadata and migration draft with artifact `storage_provider` and `bucket`, while preserving required Job/Event/ToolCall/Artifact indexes.
+- [x] Expanded `ArtifactStorage` with `put_text`, `put_json`, `get_text`, `get_json`, `exists`, and explicit signed-url placeholder behavior.
+- [x] Added storage mapping fields to shared Artifact schemas and Phase 2 artifact API summaries.
+- [x] Fixed frontend typecheck reproducibility by moving source-only checking to `tsconfig.typecheck.json`.
+- [x] Added Phase 3 tests for DataProfile/Report repositories, concurrent JobEvent seq cursor, storage local/json helpers, S3/MinIO mapping metadata, SSE payload shape, and API/artifact regression.
+- [x] Ran final verification: `npm ci`, `uv lock --check`, `python -m pytest -q`, `npm run typecheck`, and `npm run build` passed.
+
+### Handoff Notes
+
+- The S3/MinIO class remains a mapping interface; live client writes, reads, and presigned URLs are later work.
+- SQLAlchemy repositories are SQLite-tested and PostgreSQL-oriented; production transaction/session lifecycle and Alembic migrations remain later work.
+- Phase 3 is ready for Git baseline after final generated-output cleanup.
+
 ## 2026-06-26 Phase 3 Persistence Foundation Status
 
 ### Done This Round

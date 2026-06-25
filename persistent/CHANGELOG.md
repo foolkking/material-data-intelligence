@@ -2,6 +2,34 @@
 
 ## 2026-06-26
 
+### Phase 3 Acceptance Hardening Update
+
+#### Added
+
+- Added `DataProfileRepository` and `ReportRepository` to InMemory and SQLAlchemy repository bundles.
+- Added repository acceptance coverage for DataProfile, Report, concurrent JobEvent seq appends, ArtifactStorage helpers, S3/MinIO mapping metadata, SSE payload aliases, and API artifact routes.
+- Added `apps/web/tsconfig.typecheck.json` so frontend typecheck no longer depends on `.next/types` being present.
+
+#### Changed
+
+- Hardened JobEvent seq allocation with in-process locks for repository and local worker append paths.
+- Expanded artifact storage metadata with `storage_provider`, `bucket`, `content_type`, `sha256`, `size_bytes`, `preview_key`, and `created_at` coverage.
+- Updated SQLAlchemy metadata, migration draft, Python/TypeScript schemas, and `docs/13_SHARED_SCHEMA_SPEC.md` for storage mapping fields.
+- Phase 2 artifact summaries/details now expose local storage provider, content type, sha256, and created time metadata.
+
+#### Fixed
+
+- Fixed a frontend P0 where `npm run typecheck` failed in clean environments without pre-existing `.next/types`.
+- Fixed an InMemory DataProfile project-listing gap when datasets were stored with `id` but no `datasetId` alias.
+
+#### Verification
+
+- `npm ci`: passed.
+- `uv lock --check`: passed.
+- `python -m pytest -q`: 53 passed, 50 third-party deprecation warnings.
+- `npm run typecheck`: passed from clean `.next` state.
+- `npm run build`: passed.
+
 ### Phase 3 Persistence Foundation Update
 
 #### Added

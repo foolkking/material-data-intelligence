@@ -202,6 +202,8 @@ artifacts = Table(
     Column("name", String(255), nullable=False),
     Column("version", String(32), nullable=False, server_default="1"),
     Column("storage_key", Text, nullable=False),
+    Column("storage_provider", String(32), nullable=False, server_default="local"),
+    Column("bucket", String(160), nullable=True),
     Column("preview_key", Text, nullable=True),
     Column("size_bytes", Integer, nullable=False, server_default="0"),
     Column("content_type", String(160), nullable=False, server_default="application/octet-stream"),

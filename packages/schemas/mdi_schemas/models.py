@@ -202,9 +202,14 @@ class Artifact(BaseModel):
     name: str
     version: str
     storageKey: str
+    storageProvider: str | None = None
+    bucket: str | None = None
     previewKey: str | None = None
     sizeBytes: int
+    contentType: str | None = None
     contentHash: str
+    sha256: str | None = None
+    createdAt: str | None = None
     metadata: ArtifactMetadata
 
 

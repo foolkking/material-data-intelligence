@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from threading import Lock
 from typing import Any
 
 from mdi_adapters import ToolExecutionContext, ToolExecutionError, ToolExecutionResult, execute_tool_request
@@ -41,6 +42,7 @@ class InMemoryJobStore:
 
     def __init__(self) -> None:
         self.jobs: dict[str, JobRecord] = {}
+        self._event_lock = Lock()
 
     def ensure_job(self, context: ToolExecutionContext) -> JobRecord:
         if context.job_id not in self.jobs:
@@ -66,22 +68,23 @@ class InMemoryJobStore:
         payload: dict[str, Any] | None = None,
         progress: float | None = None,
     ) -> JobEvent:
-        job = self.jobs[job_id]
-        seq = len(job.events) + 1
-        event = JobEvent(
-            id=f"evt_{job_id}_{seq:04d}",
-            jobId=job_id,
-            seq=seq,
-            eventType=event_type,
-            status=status,
-            message=message,
-            progress=progress,
-            payload=payload,
-            createdAt=_utc_now(),
-        )
-        job.events.append(event)
-        job.updated_at = event.createdAt
-        return event
+        with self._event_lock:
+            job = self.jobs[job_id]
+            seq = len(job.events) + 1
+            event = JobEvent(
+                id=f"evt_{job_id}_{seq:04d}",
+                jobId=job_id,
+                seq=seq,
+                eventType=event_type,
+                status=status,
+                message=message,
+                progress=progress,
+                payload=payload,
+                createdAt=_utc_now(),
+            )
+            job.events.append(event)
+            job.updated_at = event.createdAt
+            return event
 
     def list_events_after_seq(self, job_id: str, after_seq: int) -> list[JobEvent]:
         return [event for event in self.jobs[job_id].events if event.seq > after_seq]

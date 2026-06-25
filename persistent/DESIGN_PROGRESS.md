@@ -1,5 +1,20 @@
 # DESIGN_PROGRESS
 
+## 2026-06-26 Phase 3 Acceptance Hardening Update
+
+- Re-ran Phase 3 acceptance against the stricter handoff checklist: Phase 2 regression, repository coverage, database schema/indexes, JobEvent cursor semantics, SSE stream, ArtifactStorage mapping, API event/artifact routes, and reproducible frontend checks.
+- Found and fixed P1 repository coverage gaps by adding `DataProfileRepository` and `ReportRepository` to both InMemory and SQLAlchemy repository bundles.
+- Found and fixed a JobEvent cursor hardening gap by adding in-process append locks to the repository layer and `InMemoryJobStore`; tests now cover concurrent appends without duplicate seq values.
+- Found and fixed P1 storage schema gaps by adding `storage_provider`, `bucket`, `content_type`, `sha256`, `size_bytes`, `preview_key`, and `created_at` metadata coverage across storage mapping, SQL metadata, migration draft, shared schemas, and artifact API summaries.
+- Found and fixed a frontend P0 reproducibility issue where `npm run typecheck` depended on existing `.next/types`; added `apps/web/tsconfig.typecheck.json` so typecheck passes from a clean `.next` state.
+- Kept scope unchanged: no real LLM, no V1/V2 tools, no Celery/Ray/Kubernetes, no production PostgreSQL/MinIO wiring, and no frontend feature expansion.
+- Verification after fixes:
+  - `npm ci`: passed.
+  - `uv lock --check`: passed.
+  - `python -m pytest -q`: 53 passed, 50 third-party deprecation warnings.
+  - `npm run typecheck`: passed from a clean `.next` state.
+  - `npm run build`: passed.
+
 ## 2026-06-26 Phase 3 Persistence Foundation Update
 
 - Added Phase 3 persistence foundation without adding real LLM execution, V1/V2 tools, Celery/Ray/Kubernetes, full auth, or frontend expansion.
