@@ -6,14 +6,14 @@
 - Verified the Phase 5 baseline: clean Git status, `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, and `npm run build` all passed.
 - Added 18 service-backed integration smoke tests in `tests/test_phase6_integration.py` covering:
   - Docker compose services reachability (PostgreSQL, Redis, MinIO).
-  - Alembic `metadata.create_all` live table creation verification against PostgreSQL.
+  - Alembic live migration: real `alembic.command.upgrade(alembic_cfg, "head")` against PostgreSQL, plus downgrade+reupgrade cycle and index existence checks.
   - PostgreSQL repository live CRUD: Project, Dataset, Job, ToolCall, Artifact, Recipe, Report.
   - Transaction rollback and status transition rejection at repository boundary.
   - PostgreSQL JobEvent seq live: monotonic seq, advisory lock strategy, 30-event concurrent append correctness.
   - Redis queue live: enqueue/dequeue, QueueWorkerRuntime with PG repos + Redis backend.
   - Queue retry idempotency: duplicate job handle, crash+retry persistence.
   - MinIO live: put/get/exists/signed-url for json/text/bytes, signed URL structure validation.
-  - Service-backed product-loop smoke: PG repos + Redis queue + MinIO storage + MVP Adapter.
+  - Service-backed product-loop smoke: PG repos + Redis queue + MinIO storage + real Tool Registry + BasicMetricsAdapter (not fake executor).
 - All 18 integration tests are gated with `@pytest.mark.integration` and skip cleanly when `MDI_RUN_INTEGRATION != 1` or Docker services are unreachable.
 - Fixed `docker-compose.yml` MinIO healthcheck to use `mc ready local` for reliability.
 - Updated `docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md` with integration test guide (sections 11-12), environment variables, category table, and troubleshooting for connection refused, migration failed, bucket not found, and signed URL invalid.
@@ -26,6 +26,7 @@
   - `npm ci`: passed.
   - `npm run typecheck`: passed.
   - `npm run build`: passed.
+- **Final acceptance**: CONDITIONAL PASS. Docker is not available on this machine; all 18 integration tests skip cleanly. Alembic test calls real `alembic.command.upgrade()`, service-backed loop test uses real Tool Registry + BasicMetricsAdapter, and git is clean at commit `e3c7a73`. Cannot enter Phase 7 until live Docker-backed integration is verified.
 
 ## 2026-06-26 Phase 5 PostgreSQL Runtime + Queue Worker + MinIO Integration Update
 
@@ -180,7 +181,7 @@
 
 ## 当前阶段
 
-Phase 6: Service-backed Runtime Smoke & Integration Hardening 已完成。18 个 integration tests 可 opt-in 运行在手头硬件环境 Docker-backed PostgreSQL / Redis / MinIO 上。默认 unit tests 保持 Docker-free。
+Phase 6: Service-backed Runtime Smoke & Integration Hardening — **条件通过**。18 个 integration tests 已编写并 committed，Alembic test 调用真实 `alembic.command.upgrade()`，service-backed loop test 使用真实 Tool Registry + BasicMetricsAdapter。因本机无 Docker，所有 18 个 integration tests 在设计预期内 skip。非 Docker 环境的所有验证（68 unit tests、typecheck、build、uv lock）通过，git clean。**不能进入 Phase 7** 直到在有 Docker 的机器上补跑 `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration` 并通过。
 
 ## 已完成阶段
 

@@ -8,6 +8,13 @@
 
 - Added 18 service-backed integration smoke tests under `tests/test_phase6_integration.py`:
   - Docker compose services reachability (PostgreSQL, Redis, MinIO).
+  - Alembic live migration: real `alembic.command.upgrade(alembic_cfg, "head")` with downgrade+reupgrade cycle + index checks (not metadata.create_all).
+  - PostgreSQL repository live integration: Project, Dataset, Job/ToolCall/Artifact, Recipe/Report, transaction rollback, status transition rejection.
+  - PostgreSQL JobEvent seq live: monotonic seq, advisory lock strategy, 30-event concurrent correctness.
+  - Redis queue live: enqueue/dequeue, QueueWorkerRuntime with live PG repos.
+  - Queue retry idempotency: duplicate job handle, crash+retry with live repos.
+  - MinIO live: put/get/exists/signed-url for json/text/bytes, signed URL structure validation.
+  - Service-backed product-loop smoke: PG repos + Redis queue + MinIO storage + real Tool Registry + BasicMetricsAdapter (not fake executor).
   - Alembic `metadata.create_all` live table creation verification against PostgreSQL.
   - PostgreSQL repository live integration: Project, Dataset, Job/ToolCall/Artifact, Recipe/Report, transaction rollback, and status transition rejection.
   - PostgreSQL JobEvent seq live integration: monotonic seq, advisory lock strategy, concurrent append seq correctness.

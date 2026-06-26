@@ -12,13 +12,13 @@ Add 18 integration smoke tests under `tests/test_phase6_integration.py` gated be
 
 Integration test categories:
 - Docker compose services reachability (1 test): verify PG/Redis/MinIO are alive.
-- Alembic live migration (1 test): `metadata.create_all()` against live PG.
+- Alembic live migration (1 test): real `alembic.command.upgrade(alembic_cfg, "head")` against live PG with downgrade+reupgrade cycle and index existence checks.
 - PostgreSQL repository live (6 tests): CRUD, rollback, status transitions.
 - PostgreSQL JobEvent seq live (3 tests): monotonic, advisory lock, concurrent seq.
 - Redis queue live (2 tests): enqueue/dequeue, worker runtime with live repos.
 - Queue retry idempotency (2 tests): duplicate job handle, crash+retry.
 - MinIO live (2 tests): put/get/exists/signed-url.
-- Service-backed product-loop (1 test): PG repos + queue + storage + adapter.
+- Service-backed product-loop (1 test): PG repos + queue + storage + real Tool Registry + BasicMetricsAdapter.
 
 Keep default unit tests Docker-free. Integration tests can be run with:
 ```bash

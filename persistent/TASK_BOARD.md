@@ -9,25 +9,27 @@
 - [x] Fixed `docker-compose.yml` MinIO healthcheck: `mc ready local` instead of `curl`.
 - [x] Added 18 service-backed integration smoke tests in `tests/test_phase6_integration.py`:
   - Docker compose services reachability.
-  - Alembic `metadata.create_all` live table verification.
+  - Alembic live migration: real `alembic.command.upgrade(alembic_cfg, "head")` with downgrade+reupgrade cycle + index checks.
   - PostgreSQL repository live CRUD for Project, Dataset, Job/ToolCall/Artifact, Recipe/Report.
   - Transaction rollback and status transition rejection.
   - PostgreSQL JobEvent seq live: monotonic, advisory lock, 30-event concurrent correctness.
   - Redis queue live: enqueue/dequeue, QueueWorkerRuntime with live repos.
   - Queue retry idempotency: duplicate job, crash+retry with live repos.
   - MinIO live: put/get/exists/signed-url, signed URL validation.
-  - Service-backed product-loop smoke: PG repos + Redis queue + MinIO storage + Adapter.
+  - Service-backed product-loop smoke: PG repos + Redis queue + MinIO storage + real Tool Registry + BasicMetricsAdapter.
 - [x] Updated `docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md` with integration test guide, category table, MinIO bucket commands, and troubleshooting (sections 11-12).
 - [x] Updated `.env.example` with `MDI_RUN_INTEGRATION` and `MDI_TEST_DATABASE_URL`.
 - [x] Re-ran verification: `uv lock --check`, `python -m pytest -q`, `python -m pytest -q -m integration`, `npm ci`, `npm run typecheck`, and `npm run build` passed or skipped as expected.
 
 ### Handoff Notes
 
-- All 18 integration tests skip cleanly when Docker services are not available or `MDI_RUN_INTEGRATION` is not set to `1`.
+- **Acceptance: CONDITIONAL PASS.** Docker is not available on this machine; all 18 integration tests skip cleanly by design.
+- All P0 issues fixed: Alembic test uses real `alembic.command.upgrade()`, service-backed loop uses real Tool Registry + BasicMetricsAdapter, git status is clean at commit `e3c7a73`.
+- **Cannot enter Phase 7** until live Docker-backed integration tests are run and passed on a Docker-capable machine.
 - Default unit tests remain Docker-free: `python -m pytest -q` passes 68 tests with 19 skipped.
-- Integration tests are opt-in with: `MDI_RUN_INTEGRATION=1 DATABASE_URL=... python -m pytest -q -m integration`.
+- Integration tests are opt-in with: `MDI_RUN_INTEGRATION=1 DATABASE_URL=... REDIS_URL=... python -m pytest -q -m integration`.
 - Queue execution still has no real LLM and no V1/V2 tool expansion.
-- Multi-process PostgreSQL JobEvent seq stress, worker process supervision, dead-letter policy, and bucket lifecycle remain later production-deployment work.
+- To verify live: `docker compose up -d postgres redis minio` then `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration`.
 
 ## 2026-06-26 Phase 5 PostgreSQL Runtime + Queue Worker + MinIO Status
 

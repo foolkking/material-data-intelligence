@@ -2,13 +2,15 @@
 
 ## 2026-06-26 Phase 6 Follow-ups
 
-- No P0 blocker is open after the Phase 6 service-backed runtime smoke and integration hardening pass.
-- 18 integration tests exist and skip cleanly when Docker is unavailable or `MDI_RUN_INTEGRATION` is not set to `1`. On a machine with Docker, they can verify PostgreSQL, Redis, and MinIO live interactions.
-- The integration test suite currently uses `metadata.create_all()` for table creation. A future phase could add a live `alembic upgrade head` test that exercises the actual migration path.
-- Concurrent JobEvent seq test uses `ThreadPoolExecutor(max_workers=6)` with 30 concurrent appends. This is sufficient for unit-level concurrency smoke; true multi-process/container stress testing remains a production-readiness task.
-- Queue integration tests use a synchronous `handle_job()` call after enqueue (simulating a worker process fetching and executing). Real RQ multi-worker deployment with separate worker processes and `rq worker` process supervision remains later work.
-- MinIO integration tests verify put/get/exists/signed-url at the boto3 API level. Full end-to-end signed URL validation (actual HTTP GET on the URL) requires the caller to be on the Docker network or use localhost.
-- CI pipeline still needs a service-backed job that starts `docker compose up -d postgres redis minio`, waits for healthy, and runs `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration`.
+- **Acceptance: CONDITIONAL PASS.** No P0 blocker in the code or test design. All 18 integration tests skip cleanly because Docker is not available on this machine. Git is clean at commit `e3c7a73`.
+- P0-2 (integration tests all skipped) is unresolved at the infrastructure level: Docker must be installed and services started before live tests can run. This is by design — tests skip rather than fail on missing infrastructure.
+- P0-3 (Alembic test) is resolved: the committed test calls real `alembic.command.upgrade(alembic_cfg, "head")` with downgrade+reupgrade cycle and index existence verification.
+- P0-4 (service-backed loop) is resolved: the committed test uses real Tool Registry + BasicMetricsAdapter through `execute_tool_request()`, not a fake executor.
+- **Cannot enter Phase 7** until: (1) Docker is installed, (2) `docker compose up -d postgres redis minio` succeeds with all services healthy, (3) `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration` passes with zero skipped tests.
+- Concurrent JobEvent seq test uses `ThreadPoolExecutor(max_workers=6)` with 30 concurrent appends — unit-level concurrency smoke; true multi-process/container stress testing remains a production-readiness task.
+- Queue integration tests use synchronous `handle_job()` after enqueue (simulating worker process fetch). Real RQ multi-worker deployment remains later work.
+- MinIO presigned URL HTTP GET verification requires the caller on the Docker network or localhost. The API-level test (URL contains bucket/key, expires, content_type) is in place.
+- CI pipeline needs a service-backed job: `docker compose up -d postgres redis minio` → wait healthy → `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration`.
 
 ## 2026-06-26 Phase 5 Follow-ups
 
