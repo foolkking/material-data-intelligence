@@ -1,5 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-06-26 Phase 6 Follow-ups
+
+- No P0 blocker is open after the Phase 6 service-backed runtime smoke and integration hardening pass.
+- 18 integration tests exist and skip cleanly when Docker is unavailable or `MDI_RUN_INTEGRATION` is not set to `1`. On a machine with Docker, they can verify PostgreSQL, Redis, and MinIO live interactions.
+- The integration test suite currently uses `metadata.create_all()` for table creation. A future phase could add a live `alembic upgrade head` test that exercises the actual migration path.
+- Concurrent JobEvent seq test uses `ThreadPoolExecutor(max_workers=6)` with 30 concurrent appends. This is sufficient for unit-level concurrency smoke; true multi-process/container stress testing remains a production-readiness task.
+- Queue integration tests use a synchronous `handle_job()` call after enqueue (simulating a worker process fetching and executing). Real RQ multi-worker deployment with separate worker processes and `rq worker` process supervision remains later work.
+- MinIO integration tests verify put/get/exists/signed-url at the boto3 API level. Full end-to-end signed URL validation (actual HTTP GET on the URL) requires the caller to be on the Docker network or use localhost.
+- CI pipeline still needs a service-backed job that starts `docker compose up -d postgres redis minio`, waits for healthy, and runs `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration`.
+
 ## 2026-06-26 Phase 5 Follow-ups
 
 - No P0 blocker is open after the Phase 5 PostgreSQL runtime, queue worker, and MinIO integration pass.

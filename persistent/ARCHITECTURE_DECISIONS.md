@@ -1,5 +1,43 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-073: Phase 6 uses opt-in integration markers for live service verification
+
+### Context
+
+Phase 5 wired PostgreSQL/Redis/MinIO runtime configuration, but the actual live service smoke was not yet integrated into the test suite. Phase 6 needs to verify that the PostgreSQL repository, Redis queue backend, and MinIO artifact storage work against real Docker-backed services without breaking the Docker-free unit test baseline or adding mandatory infrastructure dependencies.
+
+### Decision
+
+Add 18 integration smoke tests under `tests/test_phase6_integration.py` gated behind `@pytest.mark.integration`. All tests skip cleanly when `MDI_RUN_INTEGRATION` is not set to `1` or when individual services (PostgreSQL, Redis, MinIO) are not reachable. Each test uses helper functions (`_pg_url()`, `_live_redis_client()`, `_minio_storage()`) that call `pytest.skip()` on connection failure.
+
+Integration test categories:
+- Docker compose services reachability (1 test): verify PG/Redis/MinIO are alive.
+- Alembic live migration (1 test): `metadata.create_all()` against live PG.
+- PostgreSQL repository live (6 tests): CRUD, rollback, status transitions.
+- PostgreSQL JobEvent seq live (3 tests): monotonic, advisory lock, concurrent seq.
+- Redis queue live (2 tests): enqueue/dequeue, worker runtime with live repos.
+- Queue retry idempotency (2 tests): duplicate job handle, crash+retry.
+- MinIO live (2 tests): put/get/exists/signed-url.
+- Service-backed product-loop (1 test): PG repos + queue + storage + adapter.
+
+Keep default unit tests Docker-free. Integration tests can be run with:
+```bash
+MDI_RUN_INTEGRATION=1 DATABASE_URL=... REDIS_URL=... python -m pytest -q -m integration
+```
+
+### Consequences
+
+- Phase 6 can verify live service interaction on any machine with Docker without breaking the existing CI/development workflow of `python -m pytest -q`.
+- Each integration test is individually skippable, so partial infrastructure failures don't block the entire suite.
+- The `MDI_RUN_INTEGRATION` flag and per-service health checks provide clear error messages instead of opaque connection errors.
+- CI pipeline must eventually add a service-backed job that starts Docker services and runs the integration suite.
+
+### Alternatives Considered
+
+- Make Docker mandatory for all tests: rejected because ordinary development and CI smoke tests must remain reproducible without external services.
+- Use testcontainers-python: rejected to keep dependency surface minimal and avoid Python testcontainer provisioning complexity.
+- Skip only on `MDI_RUN_INTEGRATION` flag without per-service checks: rejected because individual service failures (e.g., Redis down but PG up) would produce confusing errors.
+
 ## ADR-072: Phase 5 wires production runtime infrastructure without changing tool scope
 
 ### Context

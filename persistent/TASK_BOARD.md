@@ -1,5 +1,34 @@
 # TASK_BOARD
 
+## 2026-06-26 Phase 6 Service-backed Runtime Smoke & Integration Hardening Status
+
+### Done This Round
+
+- [x] Re-read required Phase 6 docs, Alembic baseline, persistent files, and docker-compose config.
+- [x] Verified Phase 5 baseline: `git status --short`, `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, and `npm run build` passed.
+- [x] Fixed `docker-compose.yml` MinIO healthcheck: `mc ready local` instead of `curl`.
+- [x] Added 18 service-backed integration smoke tests in `tests/test_phase6_integration.py`:
+  - Docker compose services reachability.
+  - Alembic `metadata.create_all` live table verification.
+  - PostgreSQL repository live CRUD for Project, Dataset, Job/ToolCall/Artifact, Recipe/Report.
+  - Transaction rollback and status transition rejection.
+  - PostgreSQL JobEvent seq live: monotonic, advisory lock, 30-event concurrent correctness.
+  - Redis queue live: enqueue/dequeue, QueueWorkerRuntime with live repos.
+  - Queue retry idempotency: duplicate job, crash+retry with live repos.
+  - MinIO live: put/get/exists/signed-url, signed URL validation.
+  - Service-backed product-loop smoke: PG repos + Redis queue + MinIO storage + Adapter.
+- [x] Updated `docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md` with integration test guide, category table, MinIO bucket commands, and troubleshooting (sections 11-12).
+- [x] Updated `.env.example` with `MDI_RUN_INTEGRATION` and `MDI_TEST_DATABASE_URL`.
+- [x] Re-ran verification: `uv lock --check`, `python -m pytest -q`, `python -m pytest -q -m integration`, `npm ci`, `npm run typecheck`, and `npm run build` passed or skipped as expected.
+
+### Handoff Notes
+
+- All 18 integration tests skip cleanly when Docker services are not available or `MDI_RUN_INTEGRATION` is not set to `1`.
+- Default unit tests remain Docker-free: `python -m pytest -q` passes 68 tests with 19 skipped.
+- Integration tests are opt-in with: `MDI_RUN_INTEGRATION=1 DATABASE_URL=... python -m pytest -q -m integration`.
+- Queue execution still has no real LLM and no V1/V2 tool expansion.
+- Multi-process PostgreSQL JobEvent seq stress, worker process supervision, dead-letter policy, and bucket lifecycle remain later production-deployment work.
+
 ## 2026-06-26 Phase 5 PostgreSQL Runtime + Queue Worker + MinIO Status
 
 ### Done This Round
@@ -264,13 +293,10 @@
 
 ## Next Implementation Backlog
 
-- 为当前 Python 依赖建立隔离虚拟环境或锁文件，避免依赖全局 Anaconda 状态。
-- 为 V1/V2 工具补完整 paramsSchema，或在未启用阶段保持 register-only 并显式标记不可执行。
-- 补齐 parser artifact storage、上传服务边界和对象存储 presigned URL 设计/实现。
-- 将当前 `InMemoryJobStore` 迁移到 PostgreSQL repository，并实现 ToolCall / Artifact 状态持久化。
-- 实现 Celery Queue Router、parse/profile/viz/render/export 队列入口和 Redis broker 配置。
-- 实现 SSE `/jobs/{job_id}/events` cursor 查询和前端 Agent Timeline 数据接入。
-- 将 FastAPI stub route 接入真实项目/数据集 repository。
+- Phase 6 integration tests need Docker-backed PostgreSQL/Redis/MinIO on the test machine. CI pipeline should include a service-backed job that starts services and runs `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration`.
+- Multi-process PostgreSQL JobEvent seq stress testing, worker process supervision, dead-letter policy, and bucket lifecycle/access policy remain later production-deployment work.
+- Live Celery/RQ worker process orchestration and SSE cursor production backpressure remain later work.
+- Real LLM JSON Planner, BYOK Secret management API, frontend API integration, and V1/V2 tool implementation remain future phases.
 
 ## Deferred
 

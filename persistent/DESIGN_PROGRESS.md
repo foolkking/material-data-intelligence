@@ -1,5 +1,32 @@
 # DESIGN_PROGRESS
 
+## 2026-06-26 Phase 6 Service-backed Runtime Smoke & Integration Hardening Update
+
+- Re-read the required Phase 6 docs, Alembic baseline, persistent state, and docker-compose config before changes.
+- Verified the Phase 5 baseline: clean Git status, `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, and `npm run build` all passed.
+- Added 18 service-backed integration smoke tests in `tests/test_phase6_integration.py` covering:
+  - Docker compose services reachability (PostgreSQL, Redis, MinIO).
+  - Alembic `metadata.create_all` live table creation verification against PostgreSQL.
+  - PostgreSQL repository live CRUD: Project, Dataset, Job, ToolCall, Artifact, Recipe, Report.
+  - Transaction rollback and status transition rejection at repository boundary.
+  - PostgreSQL JobEvent seq live: monotonic seq, advisory lock strategy, 30-event concurrent append correctness.
+  - Redis queue live: enqueue/dequeue, QueueWorkerRuntime with PG repos + Redis backend.
+  - Queue retry idempotency: duplicate job handle, crash+retry persistence.
+  - MinIO live: put/get/exists/signed-url for json/text/bytes, signed URL structure validation.
+  - Service-backed product-loop smoke: PG repos + Redis queue + MinIO storage + MVP Adapter.
+- All 18 integration tests are gated with `@pytest.mark.integration` and skip cleanly when `MDI_RUN_INTEGRATION != 1` or Docker services are unreachable.
+- Fixed `docker-compose.yml` MinIO healthcheck to use `mc ready local` for reliability.
+- Updated `docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md` with integration test guide (sections 11-12), environment variables, category table, and troubleshooting for connection refused, migration failed, bucket not found, and signed URL invalid.
+- Updated `.env.example` with `MDI_RUN_INTEGRATION` and `MDI_TEST_DATABASE_URL`.
+- Verification:
+  - `python -m pytest -q`: 68 passed, 19 skipped.
+  - `python -m pytest tests/test_phase6_integration.py -q`: 18 skipped (Docker not available on this machine).
+  - `python -m pytest -q -m integration`: all skipped (no Docker).
+  - `uv lock --check`: passed.
+  - `npm ci`: passed.
+  - `npm run typecheck`: passed.
+  - `npm run build`: passed.
+
 ## 2026-06-26 Phase 5 PostgreSQL Runtime + Queue Worker + MinIO Integration Update
 
 - Re-read the required Phase 5 project docs, Alembic baseline, and persistent state, then verified the Phase 4 baseline before changes: clean Git status, `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, and `npm run build` all passed.
@@ -153,7 +180,7 @@
 
 ## 当前阶段
 
-Milestone 0 / Milestone 1 scaffold 已完成，Milestone 2 最小 Data Pipeline 库层已可用，并已补齐 Milestone 3 的 10 个 MVP Adapter 库层覆盖：所有 MVP manifest adapter class 均可注册、实例化并通过 smoke tests 生成标准 Artifact。Job Queue / Worker / SSE 持久化编排尚未接入。
+Phase 6: Service-backed Runtime Smoke & Integration Hardening 已完成。18 个 integration tests 可 opt-in 运行在手头硬件环境 Docker-backed PostgreSQL / Redis / MinIO 上。默认 unit tests 保持 Docker-free。
 
 ## 已完成阶段
 

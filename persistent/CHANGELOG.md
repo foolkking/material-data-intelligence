@@ -2,6 +2,45 @@
 
 ## 2026-06-26
 
+### Phase 6: Service-backed Runtime Smoke & Integration Hardening
+
+#### Added
+
+- Added 18 service-backed integration smoke tests under `tests/test_phase6_integration.py`:
+  - Docker compose services reachability (PostgreSQL, Redis, MinIO).
+  - Alembic `metadata.create_all` live table creation verification against PostgreSQL.
+  - PostgreSQL repository live integration: Project, Dataset, Job/ToolCall/Artifact, Recipe/Report, transaction rollback, and status transition rejection.
+  - PostgreSQL JobEvent seq live integration: monotonic seq, advisory lock strategy, concurrent append seq correctness.
+  - Redis queue live integration: enqueue/dequeue, QueueWorkerRuntime with live PG repos + Redis queue backend.
+  - Queue retry idempotency live smoke: duplicate job handle, crash+retry with live repositories.
+  - MinIO live integration: put/get/exists/signed-url for json/text/bytes, signed URL structure validation.
+  - Service-backed product-loop smoke: PG repos + Redis queue + MinIO storage + MVP Adapter end-to-end.
+- Updated `docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md` with Phase 6 sections: integration test environment variables, per-category test descriptions, MinIO bucket cleanup, troubleshooting for common errors (connection refused, migration failed, bucket not found, signed URL invalid).
+- Updated `.env.example` with `MDI_RUN_INTEGRATION` and `MDI_TEST_DATABASE_URL` opt-in variables.
+
+#### Changed
+
+- Fixed `docker-compose.yml` MinIO healthcheck to use `mc ready local` instead of `curl` for reliability.
+- Fixed `tests/test_phase6_integration.py` Docker compose reachable test to use proper `SELECT 1` query and MinIO put+exists verification.
+- Fixed `tests/test_phase6_integration.py` Alembic table test to remove broken dialect statement compilation.
+- Added Phase 6 runbook sections 11-12: integration test guide and troubleshooting.
+
+#### Scope Guard
+
+- Did not add real LLM API calls, V1/V2 tool execution, BYOK UI, full auth, Kubernetes/Ray/autoscaling, plugin market work, or frontend redesign.
+- All 18 integration tests skip cleanly when Docker services are not available or `MDI_RUN_INTEGRATION` is not set to `1`.
+- Queue worker default execution still goes through `ToolExecutionRequest` -> Tool Registry validation -> Adapter execution.
+
+#### Verification
+
+- `python -m pytest -q`: 68 passed, 19 skipped, 50 third-party warnings.
+- `python -m pytest tests/test_phase6_integration.py -q`: 18 skipped (Docker not available).
+- `uv lock --check`: passed.
+- `npm ci`: passed.
+- `npm run typecheck`: passed.
+- `npm run build`: passed.
+- `git diff --check`: passed with Windows line-ending notices only.
+
 ### Phase 5 PostgreSQL Runtime + Queue Worker + MinIO Integration Update
 
 #### Added

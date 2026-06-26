@@ -41,13 +41,13 @@ services:
     volumes:
       - mdi_minio_data:/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "mc", "ready", "local"]
       interval: 10s
       timeout: 5s
       retries: 5
     restart: unless-stopped
 
-  # Optional application services for Phase 5+
+  # Optional application services for Phase 6+
   # Uncomment to run the API and worker via compose:
   #
   # api:

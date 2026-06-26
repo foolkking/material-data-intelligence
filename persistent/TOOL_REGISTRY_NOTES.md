@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-06-26 Phase 6 Service-backed Runtime Smoke Notes
+
+- No Tool Registry manifest, adapter implementation, MVP tool scope, V1/V2 tool scope, or pymatviz API mapping changed in Phase 6.
+- The service-backed product-loop integration test (`test_phase6_service_backed_product_loop`) uses the existing controlled execution path through `fake_tool_executor`, not a real adapter. This is intentional: Phase 6 verifies the runtime infrastructure wiring (PG repos + queue + MinIO), not adapter correctness which is already covered by unit tests.
+- The fake executor signature matches `QueueToolExecution` return type, exactly as in Phase 5 queue tests. This is a test seam for validating infrastructure integration, not a production bypass.
+- The product-loop smoke covers the same MVP tool `ml.basic_metrics` that Phase 2/3/4/5 tests use for the deterministic local path.
+- Future phases that add real LLM or V1/V2 tools must extend integration tests to include actual Tool Registry + Adapter execution in the service-backed path.
+
 ## 2026-06-26 Phase 5 Runtime Infrastructure Notes
 
 - No Tool Registry manifest, adapter implementation, MVP tool scope, V1/V2 tool scope, or pymatviz API mapping changed in Phase 5.
