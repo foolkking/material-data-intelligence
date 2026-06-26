@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from threading import Lock
 from typing import Any, Mapping, Protocol
 
-from sqlalchemy import and_, delete, func, insert, or_, select
+from sqlalchemy import and_, delete, func, insert, or_, select, text
 from sqlalchemy.engine import Connection, Engine
 
 from mdi_api.db import (
@@ -631,6 +631,8 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
 
 
 class SqlAlchemyJobEventRepository(_SqlAlchemyRepository):
+    POSTGRES_ADVISORY_LOCK_SQL = "SELECT pg_advisory_xact_lock(hashtext('mdi_job_events'), hashtext(:job_id))"
+
     def __init__(self, bind: Engine | Connection) -> None:
         super().__init__(bind)
         self._event_lock = Lock()
@@ -646,6 +648,7 @@ class SqlAlchemyJobEventRepository(_SqlAlchemyRepository):
         progress: float | None = None,
     ) -> JobEvent:
         def run(connection: Connection) -> JobEvent:
+            _lock_job_event_sequence(connection, job_id)
             max_seq = connection.execute(select(func.max(job_events.c.seq)).where(job_events.c.job_id == job_id)).scalar()
             seq = int(max_seq or 0) + 1
             event = JobEvent(
@@ -678,6 +681,11 @@ class SqlAlchemyJobEventRepository(_SqlAlchemyRepository):
             .order_by(job_events.c.seq)
         )
         return [_job_event_from_row(row) for row in self._fetch_all_dicts(statement)]
+
+
+def _lock_job_event_sequence(connection: Connection, job_id: str) -> None:
+    if connection.dialect.name.startswith("postgresql"):
+        connection.execute(text(SqlAlchemyJobEventRepository.POSTGRES_ADVISORY_LOCK_SQL), {"job_id": job_id})
 
 
 class SqlAlchemyToolCallRepository(_SqlAlchemyRepository):

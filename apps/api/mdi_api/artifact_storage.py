@@ -223,10 +223,20 @@ class S3CompatibleArtifactStorage:
         bucket: str,
         endpoint_url: str | None = None,
         prefix: str = "",
+        region_name: str = "us-east-1",
+        access_key_id: str | None = None,
+        secret_access_key: str | None = None,
+        secure: bool = False,
+        client: Any | None = None,
     ) -> None:
         self.bucket = bucket
         self.endpoint_url = endpoint_url
         self.prefix = prefix.strip("/")
+        self.region_name = region_name
+        self.secure = secure
+        self._client = client
+        self._access_key_id = access_key_id
+        self._secret_access_key = secret_access_key
 
     def put_bytes(
         self,
@@ -236,10 +246,27 @@ class S3CompatibleArtifactStorage:
         content_type: str,
         preview_key: str | None = None,
     ) -> ArtifactStorageMetadata:
-        raise NotImplementedError("S3/MinIO writes require a configured object-storage client.")
+        client = self._require_client()
+        key = self._full_key(storage_key)
+        client.put_object(Bucket=self.bucket, Key=key, Body=content, ContentType=content_type)
+        return ArtifactStorageMetadata(
+            storage_key=key,
+            content_type=content_type,
+            sha256=_sha256(content),
+            size_bytes=len(content),
+            preview_key=self._full_key(preview_key) if preview_key else None,
+            storage_provider="s3",
+            backend="s3",
+            bucket=self.bucket,
+            endpoint_url=self.endpoint_url,
+        )
 
     def get_bytes(self, storage_key: str) -> bytes:
-        raise NotImplementedError("S3/MinIO reads require a configured object-storage client.")
+        client = self._require_client()
+        response = client.get_object(Bucket=self.bucket, Key=self._full_key(storage_key))
+        body = response["Body"]
+        data = body.read()
+        return data if isinstance(data, bytes) else bytes(data)
 
     def put_text(
         self,
@@ -277,7 +304,16 @@ class S3CompatibleArtifactStorage:
         return json.loads(self.get_text(storage_key))
 
     def exists(self, storage_key: str) -> bool:
-        raise NotImplementedError("S3/MinIO existence checks require a configured object-storage client.")
+        client = self._client
+        if client is None and self._can_create_client():
+            client = self._require_client()
+        if client is None:
+            raise NotImplementedError("S3/MinIO existence checks require a configured object-storage client.")
+        try:
+            client.head_object(Bucket=self.bucket, Key=self._full_key(storage_key))
+        except Exception:
+            return False
+        return True
 
     def map_object(
         self,
@@ -308,6 +344,23 @@ class S3CompatibleArtifactStorage:
         content_type: str | None = None,
     ) -> ArtifactSignedUrl:
         key = self._full_key(storage_key)
+        client = self._client
+        if client is None and self._can_create_client():
+            client = self._require_client()
+        if client is not None:
+            url = client.generate_presigned_url(
+                ClientMethod="get_object",
+                Params={"Bucket": self.bucket, "Key": key},
+                ExpiresIn=expires_in_sec,
+                HttpMethod="GET",
+            )
+            return ArtifactSignedUrl(
+                storage_key=key,
+                url=str(url),
+                expires_in_sec=expires_in_sec,
+                status="ok",
+                content_type=content_type,
+            )
         return ArtifactSignedUrl(
             storage_key=key,
             url=f"s3://{self.bucket}/{key}",
@@ -320,7 +373,43 @@ class S3CompatibleArtifactStorage:
         if storage_key is None:
             raise ValueError("storage_key is required")
         LocalFileArtifactStorage._validate_key(storage_key)
+        if self.prefix and (storage_key == self.prefix or storage_key.startswith(f"{self.prefix}/")):
+            return storage_key
         return f"{self.prefix}/{storage_key}".strip("/")
+
+    def _can_create_client(self) -> bool:
+        return bool(self._access_key_id and self._secret_access_key)
+
+    def _require_client(self) -> Any:
+        if self._client is None and self._can_create_client():
+            try:
+                import boto3
+            except ImportError as exc:
+                raise NotImplementedError("S3/MinIO live storage requires boto3 to be installed.") from exc
+            self._client = boto3.client(
+                "s3",
+                endpoint_url=self.endpoint_url,
+                aws_access_key_id=self._access_key_id,
+                aws_secret_access_key=self._secret_access_key,
+                region_name=self.region_name,
+                use_ssl=self.secure,
+            )
+        if self._client is None:
+            raise NotImplementedError("S3/MinIO operations require a configured object-storage client.")
+        return self._client
+
+
+def create_minio_artifact_storage_from_settings(settings: Any, *, client: Any | None = None, prefix: str = "") -> S3CompatibleArtifactStorage:
+    return S3CompatibleArtifactStorage(
+        bucket=settings.minio_bucket,
+        endpoint_url=settings.minio_endpoint,
+        prefix=prefix,
+        region_name=getattr(settings, "s3_region", "us-east-1"),
+        access_key_id=settings.minio_access_key,
+        secret_access_key=settings.minio_secret_key,
+        secure=settings.minio_secure,
+        client=client,
+    )
 
 
 def _sha256(content: bytes) -> str:

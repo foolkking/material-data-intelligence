@@ -1,0 +1,438 @@
+from __future__ import annotations
+
+import hashlib
+import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Callable, Mapping, Protocol
+
+from mdi_adapters import ToolExecutionContext, execute_tool_request
+from mdi_api.artifact_storage import ArtifactStorage, ArtifactStorageMetadata, LocalFileArtifactStorage
+from mdi_api.repositories import InMemoryRepositoryBundle
+from mdi_api.unit_of_work import RepositoryFactory
+from mdi_schemas import JobStatus, ToolExecutionRequest
+from mdi_tool_registry import ToolRegistry
+
+
+ToolExecutor = Callable[[ToolExecutionRequest, "QueueWorkerContext"], Any]
+
+
+class QueueBackend(Protocol):
+    def enqueue_job(self, job_id: str) -> "QueueSubmitResult":
+        ...
+
+
+@dataclass(frozen=True)
+class QueueSubmitResult:
+    job_id: str
+    enqueued: bool
+    backend: str
+    message: str
+
+
+@dataclass(frozen=True)
+class QueueWorkerContext:
+    job_id: str
+    project_id: str
+    dataset_id: str | None
+    tool_call_id: str
+    artifact_storage: ArtifactStorage
+
+
+@dataclass(frozen=True)
+class QueueToolExecution:
+    artifacts: list[Any]
+    cache_hit: bool = False
+    cache_key: str | None = None
+
+
+@dataclass(frozen=True)
+class QueueWorkerResult:
+    job_id: str
+    status: str
+    tool_call_count: int
+    artifact_count: int
+    event_count: int
+    message: str
+
+
+class InMemoryQueueBackend:
+    """Deterministic queue adapter for unit tests and local no-Redis runs."""
+
+    def __init__(self) -> None:
+        self._queued: list[str] = []
+        self._known: set[str] = set()
+
+    def enqueue_job(self, job_id: str) -> QueueSubmitResult:
+        if job_id in self._known:
+            return QueueSubmitResult(job_id=job_id, enqueued=False, backend="memory", message="job already queued")
+        self._known.add(job_id)
+        self._queued.append(job_id)
+        return QueueSubmitResult(job_id=job_id, enqueued=True, backend="memory", message="job queued")
+
+    def pop_next(self) -> str | None:
+        if not self._queued:
+            return None
+        return self._queued.pop(0)
+
+
+class RedisRQQueueBackend:
+    """Redis/RQ-backed enqueue adapter.
+
+    The import is lazy so regular unit tests do not require a running Redis
+    service or the optional RQ runtime to be imported at module load time.
+    """
+
+    def __init__(self, *, redis_url: str, queue_name: str = "mdi-jobs") -> None:
+        self.redis_url = redis_url
+        self.queue_name = queue_name
+
+    def enqueue_job(self, job_id: str) -> QueueSubmitResult:
+        try:
+            from redis import Redis
+            from rq import Queue
+        except ImportError as exc:
+            raise RuntimeError("RedisRQQueueBackend requires redis and rq dependencies.") from exc
+
+        connection = Redis.from_url(self.redis_url)
+        queue = Queue(self.queue_name, connection=connection)
+        if queue.fetch_job(job_id) is not None:
+            return QueueSubmitResult(job_id=job_id, enqueued=False, backend="rq", message=f"job already queued on {self.queue_name}")
+        queue.enqueue("mdi_workers.queue_runtime.run_queued_job", job_id, job_id=job_id)
+        return QueueSubmitResult(job_id=job_id, enqueued=True, backend="rq", message=f"job queued on {self.queue_name}")
+
+
+class QueueWorkerRuntime:
+    """Queue-oriented worker that persists status, events, tool calls, and artifacts."""
+
+    def __init__(
+        self,
+        *,
+        repositories: InMemoryRepositoryBundle | None = None,
+        repository_factory: RepositoryFactory | None = None,
+        artifact_storage: ArtifactStorage | None = None,
+        queue_backend: QueueBackend | None = None,
+        tool_executor: ToolExecutor | None = None,
+        registry: ToolRegistry | None = None,
+        artifact_root: str | Path = ".artifacts/phase5",
+    ) -> None:
+        if repositories is None and repository_factory is None:
+            repositories = InMemoryRepositoryBundle.create()
+        self.repositories = repositories
+        self.repository_factory = repository_factory
+        self.artifact_storage = artifact_storage or LocalFileArtifactStorage(artifact_root)
+        self.queue_backend = queue_backend or InMemoryQueueBackend()
+        self.tool_executor = tool_executor
+        self.registry = registry
+
+    def submit_job(self, job_id: str) -> QueueSubmitResult:
+        repos = self._repositories()
+        job = repos.jobs.get(job_id)
+        if job.get("status") == JobStatus.created.value:
+            repos.jobs.set_status(job_id, JobStatus.queued)
+        return self.queue_backend.enqueue_job(job_id)
+
+    def handle_job(self, job_id: str, *, plan: Mapping[str, Any] | None = None, object_store: dict[str, list[Any]] | None = None) -> QueueWorkerResult:
+        repos = self._repositories()
+        job = repos.jobs.get(job_id)
+        status = str(job.get("status") or JobStatus.created.value)
+        if status == JobStatus.completed.value:
+            return self._result(repos, job_id, message="job already completed")
+
+        job = self._start_job(repos, job)
+        steps = list((plan or {}).get("steps") or [])
+        if not steps:
+            repos.job_events.append_event(job_id, event_type="job.completed", status="success", message="Job completed with no tool steps.", progress=1.0)
+            repos.jobs.set_status(job_id, JobStatus.completed)
+            return self._result(repos, job_id, message="job completed")
+
+        try:
+            for index, step in enumerate(steps, start=1):
+                self._run_step(repos, job, step, index=index, object_store=object_store)
+        except Exception as exc:
+            repos.job_events.append_event(
+                job_id,
+                event_type="job.failed",
+                status="error",
+                message=str(exc),
+                payload={"errorType": type(exc).__name__},
+                progress=1.0,
+            )
+            repos.jobs.set_status(job_id, JobStatus.failed)
+            return self._result(repos, job_id, message=f"job failed: {exc}")
+
+        repos.job_events.append_event(job_id, event_type="job.completed", status="success", message="Job completed.", progress=1.0)
+        repos.jobs.set_status(job_id, JobStatus.completed)
+        return self._result(repos, job_id, message="job completed")
+
+    def _repositories(self) -> Any:
+        if self.repository_factory is not None:
+            return self.repository_factory.create_repositories()
+        if self.repositories is None:
+            raise RuntimeError("QueueWorkerRuntime is missing repositories.")
+        return self.repositories
+
+    def _start_job(self, repos: Any, job: Mapping[str, Any]) -> dict[str, Any]:
+        job_id = str(job.get("jobId") or job["id"])
+        status = str(job.get("status") or JobStatus.created.value)
+        if status == JobStatus.created.value:
+            repos.jobs.set_status(job_id, JobStatus.queued)
+            status = JobStatus.queued.value
+        if status == JobStatus.failed.value:
+            repos.jobs.set_status(job_id, JobStatus.queued)
+            status = JobStatus.queued.value
+        if status == JobStatus.queued.value:
+            repos.jobs.set_status(job_id, JobStatus.running)
+        repos.job_events.append_event(job_id, event_type="job.running", status="running", message="Queue worker started job.", progress=0.0)
+        return repos.jobs.get(job_id)
+
+    def _run_step(self, repos: Any, job: Mapping[str, Any], step: Mapping[str, Any], *, index: int, object_store: dict[str, list[Any]] | None) -> None:
+        job_id = str(job.get("jobId") or job["id"])
+        project_id = str(job.get("projectId") or job["project_id"])
+        dataset_id = job.get("datasetId")
+        step_id = str(step.get("stepId") or f"step_{index:02d}")
+        tool_id = str(step["toolId"])
+        tool_call_id = _safe_id(f"call_{job_id}_{step_id}")
+        existing = _find_tool_call(repos, job_id=job_id, step_id=step_id)
+        if existing and existing.get("status") == "completed":
+            return
+
+        request = ToolExecutionRequest(
+            jobId=job_id,
+            stepId=step_id,
+            toolId=tool_id,
+            inputRefs=list(step.get("inputRefs") or []),
+            params=dict(step.get("params") or {}),
+            artifactTypes=list((step.get("output") or {}).get("artifactTypes") or step.get("artifactTypes") or []),
+        )
+        if existing is None:
+            repos.tool_calls.save(
+                {
+                    "id": tool_call_id,
+                    "jobId": job_id,
+                    "stepId": step_id,
+                    "toolId": tool_id,
+                    "status": "planned",
+                    "idempotencyKey": f"{job_id}:{step_id}",
+                    "params": request.params,
+                }
+            )
+        repos.tool_calls.save(
+            {
+                "id": tool_call_id,
+                "jobId": job_id,
+                "stepId": step_id,
+                "toolId": tool_id,
+                "status": "running",
+                "idempotencyKey": f"{job_id}:{step_id}",
+                "params": request.params,
+            }
+        )
+        repos.job_events.append_event(
+            job_id,
+            event_type="tool.started",
+            status="running",
+            message=f"Started tool {tool_id}.",
+            payload={"toolCallId": tool_call_id, "toolId": tool_id, "stepId": step_id},
+            progress=0.0,
+        )
+
+        try:
+            execution = self._execute_tool(
+                request,
+                QueueWorkerContext(
+                    job_id=job_id,
+                    project_id=project_id,
+                    dataset_id=str(dataset_id) if dataset_id else None,
+                    tool_call_id=tool_call_id,
+                    artifact_storage=self.artifact_storage,
+                ),
+                object_store=object_store,
+            )
+        except Exception as exc:
+            repos.tool_calls.save(
+                {
+                    "id": tool_call_id,
+                    "jobId": job_id,
+                    "stepId": step_id,
+                    "toolId": tool_id,
+                    "status": "failed",
+                    "idempotencyKey": f"{job_id}:{step_id}",
+                    "params": request.params,
+                    "error": {"message": str(exc), "type": type(exc).__name__},
+                }
+            )
+            repos.job_events.append_event(
+                job_id,
+                event_type="tool.failed",
+                status="error",
+                message=str(exc),
+                payload={"toolCallId": tool_call_id, "toolId": tool_id, "stepId": step_id},
+                progress=1.0,
+            )
+            raise
+
+        artifact_ids: list[str] = []
+        for artifact in _execution_artifacts(execution):
+            record = self._persist_artifact_metadata(
+                artifact,
+                project_id=project_id,
+                dataset_id=str(dataset_id) if dataset_id else None,
+                job_id=job_id,
+                tool_call_id=tool_call_id,
+                tool_id=tool_id,
+            )
+            repos.artifacts.save(record)
+            artifact_ids.append(str(record["id"]))
+            repos.job_events.append_event(
+                job_id,
+                event_type="artifact.ready",
+                status="success",
+                message=f"Artifact ready: {record['name']}",
+                payload={"toolCallId": tool_call_id, "artifactId": record["id"], "storageKey": record["storageKey"]},
+            )
+
+        repos.tool_calls.save(
+            {
+                "id": tool_call_id,
+                "jobId": job_id,
+                "stepId": step_id,
+                "toolId": tool_id,
+                "status": "completed",
+                "idempotencyKey": f"{job_id}:{step_id}",
+                "params": request.params,
+                "artifactIds": artifact_ids,
+            }
+        )
+        repos.job_events.append_event(
+            job_id,
+            event_type="tool.completed",
+            status="success",
+            message=f"Completed tool {tool_id}.",
+            payload={"toolCallId": tool_call_id, "artifactIds": artifact_ids},
+            progress=1.0,
+        )
+
+    def _execute_tool(self, request: ToolExecutionRequest, context: QueueWorkerContext, *, object_store: dict[str, list[Any]] | None) -> Any:
+        if self.tool_executor is not None:
+            return self.tool_executor(request, context)
+        adapter_context = ToolExecutionContext(
+            job_id=context.job_id,
+            project_id=context.project_id,
+            dataset_id=context.dataset_id or "",
+            tool_call_id=context.tool_call_id,
+            artifact_root=Path(".artifacts/phase5"),
+            object_store=object_store or {},
+        )
+        return execute_tool_request(adapter_context, request, registry=self.registry)
+
+    def _persist_artifact_metadata(
+        self,
+        artifact: Any,
+        *,
+        project_id: str,
+        dataset_id: str | None,
+        job_id: str,
+        tool_call_id: str,
+        tool_id: str,
+    ) -> dict[str, Any]:
+        record = _artifact_record(artifact)
+        artifact_id = str(record.get("id") or record.get("artifactId") or _safe_id(f"artifact_{tool_call_id}_{record.get('name') or 'output'}"))
+        content = record.get("content")
+        content_type = str(record.get("contentType") or record.get("content_type") or "application/json")
+        storage_key = str(record.get("storageKey") or f"projects/{project_id}/jobs/{job_id}/tool_calls/{tool_call_id}/{artifact_id}.json")
+        if content is not None:
+            encoded = _encode_content(content)
+            metadata = self.artifact_storage.put_bytes(storage_key, encoded, content_type=content_type, preview_key=record.get("previewKey"))
+        else:
+            metadata = _metadata_from_record(record, storage_key=storage_key, content_type=content_type)
+        return {
+            "id": artifact_id,
+            "projectId": project_id,
+            "datasetId": dataset_id,
+            "jobId": job_id,
+            "toolCallId": tool_call_id,
+            "type": str(record.get("type") or "metrics_json"),
+            "name": str(record.get("name") or f"{artifact_id}.json"),
+            "version": str(record.get("version") or "1"),
+            "storageKey": metadata.storage_key,
+            "storageProvider": metadata.storage_provider,
+            "bucket": metadata.bucket,
+            "previewKey": metadata.preview_key,
+            "sizeBytes": metadata.size_bytes,
+            "contentType": metadata.content_type,
+            "contentHash": str(record.get("contentHash") or metadata.sha256),
+            "sha256": metadata.sha256,
+            "metadata": {
+                **dict(record.get("metadata") or {}),
+                "storageProvider": metadata.storage_provider,
+                "bucket": metadata.bucket,
+                "createdAt": metadata.created_at,
+                "provenance": {"toolId": tool_id, "toolCallId": tool_call_id},
+            },
+        }
+
+    def _result(self, repos: Any, job_id: str, *, message: str) -> QueueWorkerResult:
+        job = repos.jobs.get(job_id)
+        return QueueWorkerResult(
+            job_id=job_id,
+            status=str(job.get("status")),
+            tool_call_count=len(repos.tool_calls.list_for_job(job_id)),
+            artifact_count=len(repos.artifacts.list_for_job(job_id)),
+            event_count=len(repos.job_events.list_for_job(job_id)),
+            message=message,
+        )
+
+
+def run_queued_job(job_id: str) -> QueueWorkerResult:
+    return QueueWorkerRuntime().handle_job(job_id)
+
+
+def _find_tool_call(repos: Any, *, job_id: str, step_id: str) -> dict[str, Any] | None:
+    for tool_call in repos.tool_calls.list_for_job(job_id):
+        if tool_call.get("stepId") == step_id:
+            return tool_call
+    return None
+
+
+def _execution_artifacts(execution: Any) -> list[Any]:
+    if isinstance(execution, QueueToolExecution):
+        return execution.artifacts
+    if isinstance(execution, Mapping):
+        return list(execution.get("artifacts") or [])
+    return list(getattr(execution, "artifacts", []) or [])
+
+
+def _artifact_record(artifact: Any) -> dict[str, Any]:
+    if hasattr(artifact, "model_dump"):
+        return artifact.model_dump(mode="json")
+    return dict(artifact)
+
+
+def _metadata_from_record(record: Mapping[str, Any], *, storage_key: str, content_type: str) -> ArtifactStorageMetadata:
+    content_hash = str(record.get("sha256") or record.get("contentHash") or _sha256(_encode_content(record)))
+    return ArtifactStorageMetadata(
+        storage_key=storage_key,
+        content_type=content_type,
+        sha256=content_hash,
+        size_bytes=int(record.get("sizeBytes") or 0),
+        preview_key=record.get("previewKey"),
+        storage_provider=str(record.get("storageProvider") or "local"),
+        bucket=record.get("bucket"),
+    )
+
+
+def _encode_content(content: Any) -> bytes:
+    if isinstance(content, bytes):
+        return content
+    if isinstance(content, str):
+        return content.encode("utf-8")
+    return json.dumps(content, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def _sha256(content: bytes) -> str:
+    return hashlib.sha256(content).hexdigest()
+
+
+def _safe_id(value: str) -> str:
+    return "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in value)

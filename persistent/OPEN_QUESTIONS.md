@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-06-26 Phase 5 Follow-ups
+
+- No P0 blocker is open after the Phase 5 PostgreSQL runtime, queue worker, and MinIO integration pass.
+- PostgreSQL runtime configuration, Alembic env override, Docker Compose infrastructure, and runbook now exist. A later deployment pass still needs pool sizing, migration rollback policy, backup/restore policy, and production secret injection.
+- QueueWorkerRuntime now supports repository-backed job handling, duplicate enqueue stability, and retry idempotency tests. Later work still needs worker process supervision, dead-letter queues, exponential backoff policy, visibility timeout policy, and operational metrics.
+- PostgreSQL JobEvent seq allocation now uses a transaction-scoped advisory lock keyed by `job_id`. Multi-process/container stress testing remains a production-readiness task beyond the default unit suite.
+- S3/MinIO storage now supports live put/get/exists/presigned-url behavior when a boto3-compatible client or credentials are configured. Bucket creation policy, bucket lifecycle rules, object retention, access-control checks, and preview object policy remain open.
+- Integration tests are intentionally opt-in with `MDI_RUN_INTEGRATION=1`; CI still needs a service-backed job that starts PostgreSQL, Redis, and MinIO and runs the integration marker.
+
 ## 2026-06-26 Phase 4 Follow-ups
 
 - No P0 blocker is open after the Phase 4 production persistence hardening pass.

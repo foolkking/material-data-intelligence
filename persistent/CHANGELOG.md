@@ -2,6 +2,40 @@
 
 ## 2026-06-26
 
+### Phase 5 PostgreSQL Runtime + Queue Worker + MinIO Integration Update
+
+#### Added
+
+- Added runtime config support for `DATABASE_URL`, `POSTGRES_*`, `REDIS_URL`, and `MINIO_*` variables while preserving existing `MDI_*` aliases.
+- Added `apps/api/mdi_api/database.py` with SQLAlchemy engine and repository-factory helpers.
+- Added `docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md` for PostgreSQL, Redis/RQ, MinIO, Alembic, and integration-test operations.
+- Added `QueueWorkerRuntime`, `InMemoryQueueBackend`, and `RedisRQQueueBackend` under `services/workers/mdi_workers`.
+- Added Phase 5 tests for config parsing, Alembic/runbook presence, PostgreSQL JobEvent advisory-lock strategy, queue retry idempotency, S3/MinIO live-client behavior, signed URLs, and `after_seq` regression.
+
+#### Changed
+
+- Updated `.env.example` and `docker-compose.yml` for local PostgreSQL, Redis, and MinIO runtime services.
+- Updated Alembic env handling so configured runtime database URLs can drive `alembic upgrade head`.
+- Extended `S3CompatibleArtifactStorage` from metadata mapping only to optional live boto3-compatible object operations and presigned URL generation.
+- Hardened SQLAlchemy JobEvent seq allocation with a PostgreSQL transaction-scoped advisory lock while keeping SQLite tests on the existing local lock path.
+- Refreshed `uv.lock` after adding Phase 5 runtime dependencies: boto3, psycopg, redis, and rq.
+
+#### Scope Guard
+
+- Did not add real LLM API calls, V1/V2 tool execution, BYOK UI, full auth, Kubernetes/Ray/autoscaling, plugin market work, or frontend redesign.
+- Queue worker default execution still goes through `ToolExecutionRequest` -> Tool Registry validation -> Adapter execution.
+
+#### Verification
+
+- `python -m pytest tests/test_phase5_runtime_infrastructure.py -q`: 7 passed, 1 skipped.
+- `python -m pytest -q`: 68 passed, 1 skipped, 50 third-party warnings.
+- `python -m pytest -q -m integration`: 1 skipped because Docker-backed services were not enabled.
+- `uv lock --check`: passed.
+- `npm ci`: passed.
+- `npm run typecheck`: passed.
+- `npm run build`: passed.
+- `git diff --check`: passed with Windows line-ending notices only.
+
 ### Phase 4 Production Persistence Hardening Update
 
 #### Added

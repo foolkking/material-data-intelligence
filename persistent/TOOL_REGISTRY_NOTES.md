@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-06-26 Phase 5 Runtime Infrastructure Notes
+
+- No Tool Registry manifest, adapter implementation, MVP tool scope, V1/V2 tool scope, or pymatviz API mapping changed in Phase 5.
+- The new `QueueWorkerRuntime` default execution path still constructs a `ToolExecutionRequest` and calls `execute_tool_request`, preserving:
+  `AnalysisPlan` -> `ToolExecutionRequest` -> Tool Registry lookup -> paramsSchema validation -> Adapter -> Artifact.
+- Phase 5 queue tests use an injected fake executor only to validate queue retry/idempotency behavior without requiring real object inputs or rendering. This is a test seam, not a production bypass.
+- Runtime infrastructure changes are limited to PostgreSQL configuration, queue dispatch/handler shape, JobEvent seq locking, and MinIO/S3 artifact object storage.
+- No real LLM output, direct arbitrary Python/shell/filesystem/network execution by the Agent, V1/V2 tool execution, or direct pymatviz wrapper surface was introduced.
+
 ## 2026-06-26 Phase 4 Production Persistence Hardening Notes
 
 - No Tool Registry manifest, adapter implementation, MVP tool scope, V1/V2 tool scope, or pymatviz API mapping changed in Phase 4.

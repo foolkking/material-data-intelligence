@@ -1,5 +1,69 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-072: Phase 5 wires production runtime infrastructure without changing tool scope
+
+### Context
+
+Phase 4 hardened repository persistence with Alembic metadata, transaction
+boundaries, status machines, idempotent ToolCall writes, idempotent Artifact
+metadata writes, and per-job JobEvent seq cursors. Phase 5 needs to connect
+that foundation to real runtime infrastructure while keeping the project out of
+real LLM execution, V1/V2 tool expansion, full auth, frontend redesign, and
+Kubernetes/Ray/autoscaling.
+
+### Decision
+
+Support standard runtime variables (`DATABASE_URL`, `POSTGRES_*`, `REDIS_URL`,
+and `MINIO_*`) while preserving the existing `MDI_*` aliases. Alembic uses the
+configured runtime database URL when present and keeps the SQLite ini fallback
+when no runtime database is configured.
+
+Keep PostgreSQL as the fact source for Job, ToolCall, Artifact metadata, and
+JobEvent state. Add a small SQLAlchemy engine/repository-factory helper for
+runtime wiring instead of letting services create ad hoc engines.
+
+Use Redis/RQ as the first queue-backed runtime adapter, but keep an
+`InMemoryQueueBackend` for deterministic tests and no-Redis local runs.
+`QueueWorkerRuntime` receives `job_id`, loads repository state, executes tool
+steps through the existing Tool Registry + Adapter path by default, writes
+ToolCall status, appends JobEvents, records Artifact metadata, and converges on
+stable records under duplicate enqueue or retry.
+
+For PostgreSQL JobEvent seq allocation, use a transaction-scoped advisory lock
+keyed by `job_id` before calculating `seq = max(seq) + 1`. SQLite keeps the
+existing in-process lock for unit tests. The unique `(job_id, seq)` constraint
+remains the final data-integrity guard.
+
+Extend `S3CompatibleArtifactStorage` so it remains a Phase 4 metadata mapping
+when no client is configured, but becomes a live MinIO/S3 client when a
+boto3-compatible client or credentials are supplied. Artifact bytes live in
+MinIO/S3; metadata remains in PostgreSQL.
+
+### Consequences
+
+- Phase 5 can run default unit tests without Docker while exposing opt-in
+  PostgreSQL/Redis/MinIO integration points.
+- Worker retries can be tested without a real broker and can later be dispatched
+  through Redis/RQ with the same handler semantics.
+- SSE resume semantics remain based on `(job_id, seq)` and are compatible with
+  PostgreSQL multi-worker allocation.
+- Live signed URLs are available for configured MinIO/S3 storage, while local
+  and placeholder mapping behavior remains stable for no-client environments.
+
+### Alternatives Considered
+
+- Make Docker services mandatory for all tests: rejected because ordinary
+  development and CI smoke tests must remain reproducible without external
+  services.
+- Adopt Celery immediately: deferred because Phase 5 only needs a minimal
+  queue-backed worker and the docs already allow lightweight Redis-backed
+  choices before production orchestration.
+- Store artifact bytes in PostgreSQL: rejected because the architecture keeps
+  object bytes in MinIO/S3 and only metadata/provenance in PostgreSQL.
+- Use only a unique constraint and retry loop for JobEvent seq allocation:
+  deferred in favor of an explicit per-job transaction lock, which is easier to
+  reason about for SSE cursor monotonicity.
+
 ## ADR-071: Phase 4 hardens persistence with transactions, status machines, and idempotent writes
 
 ### Context

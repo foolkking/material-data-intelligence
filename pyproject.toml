@@ -10,14 +10,18 @@ requires-python = ">=3.11"
 dependencies = [
   "alembic>=1.13",
   "ase>=3.29",
+  "boto3>=1.34",
   "fastapi>=0.115",
   "jsonschema>=4",
   "pandas>=2.2",
   "plotly>=6.4",
+  "psycopg[binary]>=3.2",
   "pydantic>=2",
   "pymatgen>=2026.5",
   "pymatviz>=0.18",
   "pyyaml>=6",
+  "redis>=5",
+  "rq>=2",
   "sqlalchemy>=2.0",
   "starlette>=0.40,<0.47",
   "uvicorn>=0.30",
@@ -48,4 +52,7 @@ pythonpath = [
   "packages/artifact-core",
   "packages/material-parsers",
   "services/workers",
+]
+markers = [
+  "integration: requires Docker-backed PostgreSQL, Redis, or MinIO services",
 ]

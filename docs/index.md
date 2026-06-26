@@ -38,3 +38,9 @@
 | `TOOL_REGISTRY_NOTES.md` | 工具注册表持续记录 |
 | `OPEN_QUESTIONS.md` | 未决产品/架构/安全问题 |
 | `CHANGELOG.md` | 文档变更记录 |
+
+## Runtime Runbooks
+
+| File | Topic |
+|---|---|
+| [`16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md`](16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md) | Phase 5 PostgreSQL, Redis/RQ, MinIO, Alembic, and integration-test operations |

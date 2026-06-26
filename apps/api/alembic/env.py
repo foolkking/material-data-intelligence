@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import os
 from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from mdi_api.config import load_settings
 from mdi_api.db import metadata
 
 
@@ -12,6 +14,10 @@ config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
+runtime_database_url = load_settings().database_url
+if os.getenv("DATABASE_URL") or os.getenv("MDI_DATABASE_URL") or os.getenv("POSTGRES_HOST"):
+    config.set_main_option("sqlalchemy.url", runtime_database_url)
 
 target_metadata = metadata
 

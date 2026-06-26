@@ -2,18 +2,19 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: mdi
-      POSTGRES_USER: mdi
-      POSTGRES_PASSWORD: ${MDI_POSTGRES_PASSWORD:?Set MDI_POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-mdi}
+      POSTGRES_USER: ${POSTGRES_USER:-mdi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mdi-local-dev}
     ports:
       - "5432:5432"
     volumes:
       - mdi_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U mdi -d mdi"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-mdi} -d $${POSTGRES_DB:-mdi}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
@@ -26,18 +27,68 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   minio:
     image: quay.io/minio/minio:latest
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER in .env}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-mdi-local}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-mdi-local-dev}
     ports:
       - "9000:9000"
       - "9001:9001"
     volumes:
       - mdi_minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Optional application services for Phase 5+
+  # Uncomment to run the API and worker via compose:
+  #
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/api/Dockerfile
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     DATABASE_URL: postgresql+psycopg://mdi:mdi-local-dev@postgres:5432/mdi
+  #     REDIS_URL: redis://redis:6379/0
+  #     MINIO_ENDPOINT: http://minio:9000
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #
+  # worker:
+  #   build:
+  #     context: .
+  #     dockerfile: services/workers/Dockerfile
+  #   environment:
+  #     DATABASE_URL: postgresql+psycopg://mdi:mdi-local-dev@postgres:5432/mdi
+  #     REDIS_URL: redis://redis:6379/0
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/web/Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - api
 
 volumes:
   mdi_postgres_data:

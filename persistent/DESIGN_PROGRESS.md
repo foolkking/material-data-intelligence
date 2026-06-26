@@ -1,5 +1,25 @@
 # DESIGN_PROGRESS
 
+## 2026-06-26 Phase 5 PostgreSQL Runtime + Queue Worker + MinIO Integration Update
+
+- Re-read the required Phase 5 project docs, Alembic baseline, and persistent state, then verified the Phase 4 baseline before changes: clean Git status, `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, and `npm run build` all passed.
+- Added Phase 5 runtime configuration support for standard `DATABASE_URL`, `POSTGRES_*`, `REDIS_URL`, and `MINIO_*` variables while keeping existing `MDI_*` aliases.
+- Added `mdi_api.database` engine/repository-factory helpers and made Alembic honor configured runtime database URLs while preserving the local SQLite fallback when no runtime DB env is set.
+- Added `docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md` with Docker, Alembic, repository smoke, queue, MinIO, and integration-test operating notes.
+- Extended `docker-compose.yml` and `.env.example` for one-command local infrastructure: PostgreSQL, Redis, and MinIO.
+- Added live-capable `S3CompatibleArtifactStorage` behavior with optional boto3-compatible client support for `put_*`, `get_*`, `exists`, and real presigned URL generation; mapping/placeholder behavior remains unchanged when no client is configured.
+- Added `QueueWorkerRuntime`, `InMemoryQueueBackend`, and `RedisRQQueueBackend`. The queue handler receives `job_id`, loads repository state, writes ToolCall status, JobEvents, Artifact metadata, and preserves idempotent retry behavior.
+- Hardened SQLAlchemy JobEvent seq allocation for PostgreSQL with a transaction-scoped advisory lock keyed by `job_id`; SQLite/local tests continue to use the existing in-process lock.
+- Verification:
+  - `python -m pytest tests/test_phase5_runtime_infrastructure.py -q`: 7 passed, 1 skipped.
+  - `python -m pytest -q`: 68 passed, 1 skipped, 50 third-party warnings.
+  - `python -m pytest -q -m integration`: 1 skipped because external services were not enabled.
+  - `uv lock --check`: passed.
+  - `npm ci`: passed.
+  - `npm run typecheck`: passed.
+  - `npm run build`: passed.
+  - `git diff --check`: passed with Windows line-ending notices only.
+
 ## 2026-06-26 Phase 4 Production Persistence Hardening Update
 
 - Re-read the required project docs and persistent state, then verified the Phase 3 baseline before changes: clean Git status, `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, and `npm run build` all passed.

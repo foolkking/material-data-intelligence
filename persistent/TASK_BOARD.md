@@ -1,5 +1,29 @@
 # TASK_BOARD
 
+## 2026-06-26 Phase 5 PostgreSQL Runtime + Queue Worker + MinIO Status
+
+### Done This Round
+
+- [x] Re-read the required Phase 5 docs, Alembic files, and persistent files before implementation.
+- [x] Rechecked the Phase 4 baseline: `git status --short`, `uv lock --check`, `python -m pytest -q`, `npm ci`, `npm run typecheck`, and `npm run build` passed before Phase 5 edits.
+- [x] Added standard PostgreSQL/Redis/MinIO runtime environment support while keeping existing `MDI_*` aliases.
+- [x] Added SQLAlchemy engine and repository-factory helpers for runtime database wiring.
+- [x] Updated Alembic env handling so `DATABASE_URL` / configured PostgreSQL env can drive `alembic upgrade head`.
+- [x] Added `docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md` and linked it from `docs/index.md`.
+- [x] Updated `.env.example` and `docker-compose.yml` for `postgres`, `redis`, and `minio` infrastructure.
+- [x] Added live-capable S3/MinIO object storage behavior with optional boto3-compatible client support and real presigned URL generation.
+- [x] Added `QueueWorkerRuntime`, `InMemoryQueueBackend`, and `RedisRQQueueBackend`.
+- [x] Added queue retry/idempotency coverage for duplicate enqueue, repeated handler invocation, failed worker retry, artifact metadata stability, and one ToolCall per job step.
+- [x] Added PostgreSQL JobEvent advisory-lock strategy and tests for strategy exposure plus SQLite `after_seq` regression.
+- [x] Added integration marker coverage that skips cleanly when external PostgreSQL/MinIO services are not explicitly enabled.
+- [x] Re-ran verification: `uv lock --check`, `python -m pytest -q`, `python -m pytest -q -m integration`, `npm ci`, `npm run typecheck`, and `npm run build` passed or skipped as expected.
+
+### Handoff Notes
+
+- Live PostgreSQL/Redis/MinIO integration tests are opt-in with `MDI_RUN_INTEGRATION=1`; default unit tests remain Docker-free.
+- Queue execution still has no real LLM and no V1/V2 tool expansion. The default queue worker execution path calls Tool Registry + Adapter.
+- Multi-process PostgreSQL JobEvent seq stress testing, queue dead-letter policy, worker supervision, and bucket lifecycle/access policy remain later production-deployment work.
+
 ## 2026-06-26 Phase 4 Production Persistence Hardening Status
 
 ### Done This Round
