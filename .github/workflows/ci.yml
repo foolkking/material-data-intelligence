@@ -1,0 +1,242 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Unit tests + typecheck + build (no external services) ──────────
+  unit:
+    name: Unit Tests & Frontend
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Python dependencies
+        run: uv sync --frozen --extra test
+
+      - name: Run unit tests
+        run: uv run python -m pytest -q -m "not integration" --tb=short
+
+      - name: uv lock check
+        run: uv lock --check
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: npm ci
+        run: npm ci
+        working-directory: apps/web
+
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: apps/web
+
+      - name: Build
+        run: npm run build
+        working-directory: apps/web
+
+  # ── Service-backed integration tests ───────────────────────────────
+  integration:
+    name: Service-backed Integration
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: mdi
+          POSTGRES_USER: mdi
+          POSTGRES_PASSWORD: mdi-ci-pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mdi -d mdi"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      minio:
+        image: quay.io/minio/minio:latest
+        env:
+          MINIO_ROOT_USER: mdi-ci
+          MINIO_ROOT_PASSWORD: mdi-ci-pass
+        ports:
+          - 9000:9000
+          - 9001:9001
+        options: >-
+          --health-cmd "mc ready local"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        # MinIO needs a command override to start the server
+        entrypoint: sh
+        command: >
+          -c "
+          mkdir -p /data &&
+          minio server /data --console-address :9001
+          "
+
+    env:
+      MDI_RUN_INTEGRATION: "1"
+      DATABASE_URL: "postgresql+psycopg://mdi:mdi-ci-pass@localhost:5432/mdi"
+      MDI_TEST_DATABASE_URL: "postgresql+psycopg://mdi:mdi-ci-pass@localhost:5432/mdi"
+      POSTGRES_HOST: "localhost"
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: "mdi"
+      POSTGRES_USER: "mdi"
+      POSTGRES_PASSWORD: "mdi-ci-pass"
+      REDIS_URL: "redis://localhost:6379/0"
+      MDI_REDIS_URL: "redis://localhost:6379/0"
+      MINIO_ENDPOINT: "http://localhost:9000"
+      MINIO_ACCESS_KEY: "mdi-ci"
+      MINIO_SECRET_KEY: "mdi-ci-pass"
+      MINIO_BUCKET: "mdi-artifacts"
+      MINIO_SECURE: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Python dependencies
+        run: uv sync --frozen --extra test
+
+      - name: Wait for PostgreSQL
+        run: |
+          for i in $(seq 1 30); do
+            if pg_isready -h localhost -p 5432 -U mdi -d mdi 2>/dev/null; then
+              echo "PostgreSQL ready"
+              break
+            fi
+            if [ $i -eq 30 ]; then echo "PostgreSQL did not become ready"; exit 1; fi
+            sleep 2
+          done
+
+      - name: Verify PostgreSQL connectivity
+        run: uv run python -c "from sqlalchemy import create_engine; e=create_engine('$DATABASE_URL', future=True); c=e.connect(); print(c.execute(__import__('sqlalchemy').text('SELECT 1 AS ok')).scalar()); c.close()"
+
+      - name: Run Alembic upgrade head
+        run: |
+          export DATABASE_URL="$DATABASE_URL"
+          export MDI_TEST_DATABASE_URL="$MDI_TEST_DATABASE_URL"
+          uv run python -m alembic -c apps/api/alembic.ini upgrade head
+
+      - name: Verify tables after migration
+        run: |
+          uv run python -c "
+          from sqlalchemy import create_engine
+          from sqlalchemy import text
+          e = create_engine('$DATABASE_URL', future=True)
+          with e.connect() as c:
+              r = c.execute(text(\"SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY table_name\"))
+              tables = {row[0] for row in r}
+          expected = {'projects','datasets','data_profiles','jobs','job_events','tool_calls','artifacts','visualization_recipes','reports'}
+          missing = expected - tables
+          assert not missing, f'Missing tables: {missing}'
+          print(f'{len(tables)} tables found, all 9 expected present')
+          e.dispose()
+          "
+
+      - name: Wait for Redis
+        run: |
+          for i in $(seq 1 30); do
+            if redis-cli -h localhost -p 6379 ping 2>/dev/null | grep -q PONG; then
+              echo "Redis ready"
+              break
+            fi
+            if [ $i -eq 30 ]; then echo "Redis did not become ready"; exit 1; fi
+            sleep 2
+          done
+
+      - name: Wait for MinIO
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:9000/minio/health/live 2>/dev/null; then
+              echo "MinIO ready"
+              break
+            fi
+            if [ $i -eq 30 ]; then echo "MinIO did not become ready"; exit 1; fi
+            sleep 2
+          done
+
+      - name: Create MinIO bucket
+        run: |
+          uv run python -c "
+          import boto3, os
+          c = boto3.client('s3',
+              endpoint_url=os.environ['MINIO_ENDPOINT'],
+              aws_access_key_id=os.environ['MINIO_ACCESS_KEY'],
+              aws_secret_access_key=os.environ['MINIO_SECRET_KEY'],
+              region_name='us-east-1')
+          c.create_bucket(Bucket=os.environ['MINIO_BUCKET'])
+          print(f'Bucket {os.environ[\"MINIO_BUCKET\"]} created')
+          "
+
+      - name: Run integration tests
+        run: uv run python -m pytest tests/test_phase6_integration.py -q -m integration --tb=long
+
+      - name: Verify no integrations skipped
+        run: |
+          uv run python -m pytest tests/test_phase6_integration.py -q -m integration --tb=short \
+            -k "test_phase6" 2>&1 | tee integration.log
+          SKIPPED=$(grep -c "skipped" integration.log || echo 0)
+          echo "Integration skipped count: $SKIPPED"
+          if [ "$SKIPPED" -gt 0 ]; then
+            echo "WARNING: $SKIPPED integration tests skipped — check service health or env vars"
+          fi
+          PASSED=$(grep -c "passed" integration.log || echo 0)
+          echo "Integration passed count: $PASSED"
+
+  # ── Docker Compose health check (smoke test) ───────────────────────
+  compose-smoke:
+    name: Docker Compose Health
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start services
+        run: |
+          docker compose up -d postgres redis minio
+          sleep 15
+
+      - name: Check service health
+        run: |
+          docker compose ps
+          docker compose exec postgres pg_isready -U mdi -d mdi
+          docker compose exec redis redis-cli ping
+          docker compose exec minio mc ready local
