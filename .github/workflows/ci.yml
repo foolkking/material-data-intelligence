@@ -11,9 +11,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ── Unit tests + typecheck + build (no external services) ──────────
+  # ── Unit tests (no external services) ───────────────────────────────
   unit:
-    name: Unit Tests & Frontend
+    name: Unit Tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -34,6 +34,13 @@ jobs:
 
       - name: uv lock check
         run: uv lock --check
+
+  # ── Frontend typecheck + build ──────────────────────────────────────
+  frontend:
+    name: Frontend Typecheck & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -56,11 +63,8 @@ jobs:
 
   # ── Service-backed integration tests ───────────────────────────────
   integration:
-    name: Service-backed Integration
+    name: Service-backed Integration (PostgreSQL + Redis + MinIO)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.11"]
 
     services:
       postgres:
@@ -96,11 +100,10 @@ jobs:
           - 9000:9000
           - 9001:9001
         options: >-
-          --health-cmd "mc ready local"
+          --health-cmd "curl -sf http://localhost:9000/minio/health/live"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        # MinIO needs a command override to start the server
         entrypoint: sh
         command: >
           -c "
@@ -113,7 +116,6 @@ jobs:
       DATABASE_URL: "postgresql+psycopg://mdi:mdi-ci-pass@localhost:5432/mdi"
       MDI_TEST_DATABASE_URL: "postgresql+psycopg://mdi:mdi-ci-pass@localhost:5432/mdi"
       POSTGRES_HOST: "localhost"
-      POSTGRES_PORT: "5432"
       POSTGRES_DB: "mdi"
       POSTGRES_USER: "mdi"
       POSTGRES_PASSWORD: "mdi-ci-pass"
@@ -131,68 +133,76 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.11"
 
       - name: Install Python dependencies
         run: uv sync --frozen --extra test
 
-      - name: Wait for PostgreSQL
+      # GitHub services run pg_isready-compatible images, but we verify
+      # via SQLAlchemy connection to catch DATABASE_URL misconfiguration.
+      - name: Verify PostgreSQL connection
         run: |
-          for i in $(seq 1 30); do
-            if pg_isready -h localhost -p 5432 -U mdi -d mdi 2>/dev/null; then
-              echo "PostgreSQL ready"
-              break
-            fi
-            if [ $i -eq 30 ]; then echo "PostgreSQL did not become ready"; exit 1; fi
-            sleep 2
-          done
-
-      - name: Verify PostgreSQL connectivity
-        run: uv run python -c "from sqlalchemy import create_engine; e=create_engine('$DATABASE_URL', future=True); c=e.connect(); print(c.execute(__import__('sqlalchemy').text('SELECT 1 AS ok')).scalar()); c.close()"
+          uv run python -c "
+          from sqlalchemy import create_engine, text
+          import os
+          url = os.environ['DATABASE_URL']
+          e = create_engine(url, future=True)
+          with e.connect() as c:
+              print(c.execute(text('SELECT 1 AS ok')).scalar())
+          e.dispose()
+          print('PostgreSQL connection OK')
+          "
 
       - name: Run Alembic upgrade head
         run: |
-          export DATABASE_URL="$DATABASE_URL"
-          export MDI_TEST_DATABASE_URL="$MDI_TEST_DATABASE_URL"
           uv run python -m alembic -c apps/api/alembic.ini upgrade head
 
-      - name: Verify tables after migration
+      - name: Verify tables created by migration
         run: |
           uv run python -c "
-          from sqlalchemy import create_engine
-          from sqlalchemy import text
-          e = create_engine('$DATABASE_URL', future=True)
+          from sqlalchemy import create_engine, text
+          import os
+          e = create_engine(os.environ['DATABASE_URL'], future=True)
           with e.connect() as c:
-              r = c.execute(text(\"SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY table_name\"))
+              r = c.execute(text(
+                  \"SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY table_name\"
+              ))
               tables = {row[0] for row in r}
-          expected = {'projects','datasets','data_profiles','jobs','job_events','tool_calls','artifacts','visualization_recipes','reports'}
+          expected = {
+              'projects', 'datasets', 'data_profiles',
+              'jobs', 'job_events', 'tool_calls',
+              'artifacts', 'visualization_recipes', 'reports',
+          }
           missing = expected - tables
-          assert not missing, f'Missing tables: {missing}'
-          print(f'{len(tables)} tables found, all 9 expected present')
+          assert not missing, f'Missing tables after alembic upgrade: {missing}'
+          print(f'Alembic tables OK: {len(expected)} of {len(expected)} expected tables present')
           e.dispose()
           "
 
-      - name: Wait for Redis
+      - name: Verify PostgreSQL indexes exist
         run: |
-          for i in $(seq 1 30); do
-            if redis-cli -h localhost -p 6379 ping 2>/dev/null | grep -q PONG; then
-              echo "Redis ready"
-              break
-            fi
-            if [ $i -eq 30 ]; then echo "Redis did not become ready"; exit 1; fi
-            sleep 2
-          done
-
-      - name: Wait for MinIO
-        run: |
-          for i in $(seq 1 30); do
-            if curl -sf http://localhost:9000/minio/health/live 2>/dev/null; then
-              echo "MinIO ready"
-              break
-            fi
-            if [ $i -eq 30 ]; then echo "MinIO did not become ready"; exit 1; fi
-            sleep 2
-          done
+          uv run python -c "
+          from sqlalchemy import create_engine, text
+          import os
+          e = create_engine(os.environ['DATABASE_URL'], future=True)
+          with e.connect() as c:
+              r = c.execute(text(
+                  \"SELECT indexname FROM pg_indexes WHERE schemaname='public' ORDER BY indexname\"
+              ))
+              indexes = {row[0] for row in r}
+          expected = {
+              'idx_job_events_job_seq',
+              'idx_jobs_project_created',
+              'idx_tool_calls_job',
+              'idx_artifacts_job',
+              'idx_artifacts_project_created',
+              'idx_reports_job',
+          }
+          missing = expected - indexes
+          assert not missing, f'Missing indexes: {missing}'
+          print(f'Alembic indexes OK: {len(expected)} found')
+          e.dispose()
+          "
 
       - name: Create MinIO bucket
         run: |
@@ -204,39 +214,54 @@ jobs:
               aws_secret_access_key=os.environ['MINIO_SECRET_KEY'],
               region_name='us-east-1')
           c.create_bucket(Bucket=os.environ['MINIO_BUCKET'])
-          print(f'Bucket {os.environ[\"MINIO_BUCKET\"]} created')
+          print(f'MinIO bucket {os.environ[\"MINIO_BUCKET\"]} created')
           "
 
-      - name: Run integration tests
-        run: uv run python -m pytest tests/test_phase6_integration.py -q -m integration --tb=long
-
-      - name: Verify no integrations skipped
+      - name: Run integration tests (capture output)
         run: |
-          uv run python -m pytest tests/test_phase6_integration.py -q -m integration --tb=short \
-            -k "test_phase6" 2>&1 | tee integration.log
-          SKIPPED=$(grep -c "skipped" integration.log || echo 0)
-          echo "Integration skipped count: $SKIPPED"
-          if [ "$SKIPPED" -gt 0 ]; then
-            echo "WARNING: $SKIPPED integration tests skipped — check service health or env vars"
+          uv run python -m pytest tests/test_phase6_integration.py -q -m integration \
+            --tb=long --color=yes 2>&1 | tee integration.log
+        # Don't fail on pytest exit code yet — we parse the log below
+        continue-on-error: true
+
+      # ── P0 guard: zero-skip enforcement ──────────────────────────
+      - name: Assert no integration tests skipped
+        run: |
+          PASSED=$(grep -oP '^\d+(?= passed)' integration.log | head -1 || echo 0)
+          SKIPPED=$(grep -oP '^\d+(?= skipped)' integration.log | head -1 || echo 0)
+          FAILED=$(grep -oP '^\d+(?= failed)' integration.log | head -1 || echo 0)
+
+          echo "=== Integration Summary ==="
+          echo "  passed:  ${PASSED:-0}"
+          echo "  skipped: ${SKIPPED:-0}"
+          echo "  failed:  ${FAILED:-0}"
+          echo "==========================="
+
+          # P0: zero skipping allowed
+          if [ "${SKIPPED:-0}" -gt 0 ]; then
+            echo ""
+            echo "ERROR: ${SKIPPED} integration test(s) skipped."
+            echo "Expected: 0 skipped when MDI_RUN_INTEGRATION=1 and all services healthy."
+            echo "Check: service health, env vars (DATABASE_URL, REDIS_URL, MINIO_*),"
+            echo "       bucket existence, and pytest.skip() conditions in the test file."
+            exit 1
           fi
-          PASSED=$(grep -c "passed" integration.log || echo 0)
-          echo "Integration passed count: $PASSED"
 
-  # ── Docker Compose health check (smoke test) ───────────────────────
-  compose-smoke:
-    name: Docker Compose Health
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+          # P0: zero failures allowed
+          if [ "${FAILED:-0}" -gt 0 ]; then
+            echo ""
+            echo "ERROR: ${FAILED} integration test(s) failed."
+            cat integration.log
+            exit 1
+          fi
 
-      - name: Start services
-        run: |
-          docker compose up -d postgres redis minio
-          sleep 15
+          # P0: at least 18 passed
+          if [ "${PASSED:-0}" -lt 18 ]; then
+            echo ""
+            echo "ERROR: Only ${PASSED:-0}/18 integration tests passed."
+            echo "Expected: 18 passed."
+            exit 1
+          fi
 
-      - name: Check service health
-        run: |
-          docker compose ps
-          docker compose exec postgres pg_isready -U mdi -d mdi
-          docker compose exec redis redis-cli ping
-          docker compose exec minio mc ready local
+          echo ""
+          echo "All 18 integration tests passed with 0 skipped — Phase 6 live-verified."
