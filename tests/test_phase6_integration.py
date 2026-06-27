@@ -100,9 +100,28 @@ def _live_minio_client(endpoint, access, secret):
 
 
 def _seed_repos(repos: SqlAlchemyRepositoryBundle) -> dict[str, str]:
-    """Seed a project/dataset/job for integration tests."""
-    repos.projects.save({"id": "proj_p6", "name": "Phase 6", "organizationId": "org_test", "createdBy": "test_user"})
-    repos.datasets.save({"id": "ds_p6", "projectId": "proj_p6", "name": "Dataset", "createdBy": "test_user"})
+    """Seed a project/dataset/job for integration tests.
+
+    Uses the repository save API which handles the delete-then-insert
+    pattern.  The second save on the same project_id internally deletes
+    the old row first — but only the project row, not the dependent
+    dataset/job rows that were already saved.  PostgreSQL enforces
+    foreign keys, so that DELETE would cascade-fail on datasets.
+
+    We therefore save in reverse-dependency order and avoid re-saving
+    the project after dependents exist.  This follows the same pattern
+    as Phase 5's _seed_in_memory_repos helper.
+    """
+    # Save project first (creates user + org internally)
+    repos.projects.save({
+        "id": "proj_p6", "name": "Phase 6",
+        "organizationId": "org_test", "createdBy": "test_user",
+    })
+    # Save dependent rows — these reference proj_p6 via FK
+    repos.datasets.save({
+        "id": "ds_p6", "projectId": "proj_p6",
+        "name": "Dataset", "createdBy": "test_user",
+    })
     repos.jobs.save({
         "id": "job_p6", "projectId": "proj_p6", "datasetId": "ds_p6",
         "status": "created", "kind": "analysis", "createdBy": "test_user",
