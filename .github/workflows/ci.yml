@@ -227,9 +227,9 @@ jobs:
       # ── P0 guard: zero-skip enforcement ──────────────────────────
       - name: Assert no integration tests skipped
         run: |
-          PASSED=$(grep -oP '^\d+(?= passed)' integration.log | head -1 || echo 0)
-          SKIPPED=$(grep -oP '^\d+(?= skipped)' integration.log | head -1 || echo 0)
-          FAILED=$(grep -oP '^\d+(?= failed)' integration.log | head -1 || echo 0)
+          PASSED=$(grep -o '[0-9]\+ passed' integration.log | head -1 | grep -o '[0-9]\+' || echo 0)
+          SKIPPED=$(grep -o '[0-9]\+ skipped' integration.log | head -1 | grep -o '[0-9]\+' || echo 0)
+          FAILED=$(grep -o '[0-9]\+ failed' integration.log | head -1 | grep -o '[0-9]\+' || echo 0)
 
           echo "=== Integration Summary ==="
           echo "  passed:  ${PASSED:-0}"
