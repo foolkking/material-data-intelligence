@@ -1,5 +1,23 @@
 # DESIGN_PROGRESS
 
+## 2026-06-27 Phase 6B Live Integration Closeout Update
+
+- GitHub Actions CI run [#28286885004](https://github.com/foolkking/material-data-intelligence/actions/runs/28286885004) completed with **full success**:
+  - Unit Tests (Python 3.11): passed
+  - Frontend Typecheck & Build: passed
+  - Service-backed Integration (PostgreSQL + Redis + MinIO): **18 passed, 0 skipped, 0 failed**
+- Alembic upgrade head ran against live PostgreSQL (CI service container) — 9 tables + 6 indexes verified
+- MinIO bucket `mdi-artifacts` created and live-tested with put/get/exists/signed-url
+- Redis queue live enqueue/handle tested against real Redis service container
+- PostgreSQL repository live CRUD tested for all 9 entity types
+- JobEvent seq monotonic/concurrent correctness verified on PostgreSQL with advisory lock strategy
+- Service-backed product loop tested with real Tool Registry + BasicMetricsAdapter through execute_tool_request()
+- CI workflow includes zero-skip enforcement: if any integration test skips, the job fails
+- Added `httpx` to pyproject.toml dependencies (required by starlette.testclient)
+- Fixed multiple P0 integration bugs: FK violations from shared project IDs, invalid job state transitions, ToolRegistry constructor mismatch
+- **Final acceptance: PASS.** All 18 integration tests ran and passed on live Docker-backed PostgreSQL/Redis/MinIO via GitHub Actions. Phase 6 is live-verified.
+- **Phase 6B closeout complete. Phase 7 may proceed.**
+
 ## 2026-06-26 Phase 6 Service-backed Runtime Smoke & Integration Hardening Update
 
 - Re-read the required Phase 6 docs, Alembic baseline, persistent state, and docker-compose config before changes.
@@ -181,7 +199,7 @@
 
 ## 当前阶段
 
-Phase 6: Service-backed Runtime Smoke & Integration Hardening — **条件通过**。18 个 integration tests 已编写并 committed，Alembic test 调用真实 `alembic.command.upgrade()`，service-backed loop test 使用真实 Tool Registry + BasicMetricsAdapter。因本机无 Docker，所有 18 个 integration tests 在设计预期内 skip。非 Docker 环境的所有验证（68 unit tests、typecheck、build、uv lock）通过，git clean。**不能进入 Phase 7** 直到在有 Docker 的机器上补跑 `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration` 并通过。
+Phase 6: Service-backed Runtime Smoke & Integration Hardening — **通过 (PASS)**。GitHub Actions CI run `28286885004` 全绿：Unit Tests passed，Frontend passed，Service-backed Integration **18 passed, 0 skipped, 0 failed**。Phase 6 live-verified。可以进入 Phase 7。
 
 ## 已完成阶段
 

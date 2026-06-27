@@ -1,5 +1,28 @@
 # TASK_BOARD
 
+## 2026-06-27 Phase 6B Live Integration Closeout Update
+
+### Done This Round
+
+- [x] GitHub Actions CI workflow created with 3 jobs: unit, frontend, service-backed integration
+- [x] Integration job validated via live Docker-backed services: PostgreSQL, Redis, MinIO
+- [x] **18 integration tests passed, 0 skipped, 0 failed** (CI run `28286885004`)
+- [x] Alembic upgrade head ran on live PostgreSQL — 9 tables + 6 indexes verified
+- [x] MinIO bucket created and live-tested (put/get/exists/signed-url)
+- [x] Redis queue enqueue/handle tested against real Redis
+- [x] Service-backed product loop ran with real Tool Registry + BasicMetricsAdapter
+- [x] CI zero-skip enforcement in place (skipped > 0 → exit 1)
+- [x] Added httpx to pyproject.toml (starlette.testclient dependency)
+- [x] Fixed P0 bugs: FK violations (unique project IDs), invalid job state transitions, ToolRegistry constructor
+- [x] Unit tests: 68 passed, 19 skipped (local); Frontend: typecheck + build passed
+
+### Handoff Notes
+
+- **Acceptance: PASS.** Phase 6 is live-verified through GitHub Actions.
+- CI run: https://github.com/foolkking/material-data-intelligence/actions/runs/28286885004
+- **Phase 7 may proceed.**
+- Every future push to master/main will re-run the full suite, guarding against regression.
+
 ## 2026-06-26 Phase 6 Service-backed Runtime Smoke & Integration Hardening Status
 
 ### Done This Round
