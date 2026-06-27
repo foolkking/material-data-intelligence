@@ -387,7 +387,11 @@ def test_phase6_failed_job_status_transition_rejected_live() -> None:
     metadata.create_all(engine)
     repos = SqlAlchemyRepositoryBundle.create(engine)
     ids = _seed_repos(repos)
+    # Must transition through valid states: created -> queued -> running -> completed
+    repos.jobs.set_status(ids["job"], "queued")
+    repos.jobs.set_status(ids["job"], "running")
     repos.jobs.set_status(ids["job"], "completed")
+    # completed -> running is rejected by the state machine
     with pytest.raises(InvalidStatusTransition):
         repos.jobs.set_status(ids["job"], "running")
     engine.dispose()
@@ -686,7 +690,7 @@ def test_phase6_service_backed_product_loop(repo_root: Path) -> None:
     from mdi_schemas import ToolExecutionRequest
     from mdi_tool_registry import ToolRegistry, load_manifests
 
-    _reg = ToolRegistry(load_manifests())
+    _reg = ToolRegistry(version="0.1.0", tools=tuple(load_manifests().tools))
     df = pd.DataFrame({
         "formula": ["SiO2", "Al2O3", "CaO", "MgO", "Fe2O3"],
         "y_true": [2.1, 3.4, 1.8, 4.2, 2.9],
