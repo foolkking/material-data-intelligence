@@ -40,6 +40,7 @@ where = [
   "packages/artifact-core",
   "packages/material-parsers",
   "services/workers",
+  "services/llm",
 ]
 
 [tool.pytest.ini_options]
@@ -53,6 +54,7 @@ pythonpath = [
   "packages/artifact-core",
   "packages/material-parsers",
   "services/workers",
+  "services/llm",
 ]
 markers = [
   "integration: requires Docker-backed PostgreSQL, Redis, or MinIO services",

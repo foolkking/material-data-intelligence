@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2026-06-27
+
+### Phase 7 LLM JSON Planner + BYOK Secret Management
+
+#### Added
+
+- LLMPlannerProvider abstraction + MockLLMProvider + OpenAICompatibleProvider + DeterministicPlannerAdapter
+- Planner prompt template (JSON-only, tool-aware, DataProfile context)
+- PlanValidator (strict mode, 10 rules, structured errors)
+- Planner API: POST /planner/preview, /planner/validate, /planner/jobs
+- SecretStore abstraction + InMemorySecretStore + EncryptedSecretStore placeholder
+- Secrets API: POST/GET/DELETE /me/secrets
+- Secret redaction helpers (credential detection, value scrubbing)
+- 19 Phase 7 tests (no real LLM key required)
+
+#### Verification
+
+- `python -m pytest -q`: 87 passed, 19 skipped
+- Frontend typecheck/build: passed
+- `uv lock --check`: passed
+
 ## 2026-06-26
 
 ### Phase 6: Service-backed Runtime Smoke & Integration Hardening

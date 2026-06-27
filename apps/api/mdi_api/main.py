@@ -23,7 +23,22 @@ from mdi_api.phase2_runtime import (
 from mdi_api.routers.auth import CurrentUser, get_current_user_stub
 from mdi_api.routers.datasets import DatasetSummary, create_upload_session_stub
 from mdi_api.routers.health import health
+from mdi_api.routers.planner import (
+    PlannerJobsRequest,
+    PlannerPreviewRequest,
+    PlannerValidateRequest,
+    planner_jobs,
+    planner_preview,
+    planner_validate,
+)
 from mdi_api.routers.projects import ProjectSummary
+from mdi_api.routers.secrets import (
+    CreateSecretRequest,
+    SecretSummary,
+    create_secret,
+    delete_secret,
+    list_secrets,
+)
 from mdi_api.routers.tools import list_mvp_tools, list_tools
 
 
@@ -64,6 +79,14 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/artifacts/{artifact_id}/download", get_phase2_artifact_download, ("GET",), ("artifacts",)),
     RouteSpec("/tools", list_tools, ("GET",), ("tools",)),
     RouteSpec("/tools/mvp", list_mvp_tools, ("GET",), ("tools",)),
+    # Phase 7: Planner API
+    RouteSpec("/planner/preview", planner_preview, ("POST",), ("planner",)),
+    RouteSpec("/planner/validate", planner_validate, ("POST",), ("planner",)),
+    RouteSpec("/planner/jobs", planner_jobs, ("POST",), ("planner",)),
+    # Phase 7: Secrets API
+    RouteSpec("/me/secrets", create_secret, ("POST",), ("secrets",)),
+    RouteSpec("/me/secrets", list_secrets, ("GET",), ("secrets",), list[SecretSummary]),
+    RouteSpec("/me/secrets/{secret_id}", delete_secret, ("DELETE",), ("secrets",)),
 )
 
 

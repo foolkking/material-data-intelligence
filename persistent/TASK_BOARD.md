@@ -1,5 +1,28 @@
 # TASK_BOARD
 
+## 2026-06-27 Phase 7 LLM JSON Planner + BYOK Secret Management Status
+
+### Done This Round
+
+- [x] LLMPlannerProvider abstraction + MockLLMProvider + OpenAICompatibleProvider + DeterministicPlannerAdapter
+- [x] Planner prompt template (JSON-only, tool-aware, no markdown)
+- [x] PlanValidator (strict mode, 10 validation rules, no auto-repair)
+- [x] Planner API: POST /planner/preview, /planner/validate, /planner/jobs
+- [x] SecretStore abstraction + InMemorySecretStore + EncryptedSecretStore placeholder
+- [x] Secrets API: POST/GET/DELETE /me/secrets
+- [x] Secret redaction helpers (credential key detection, value scrub)
+- [x] 19 Phase 7 tests covering all validation rules + safety guards + API behavior
+- [x] Existing Phase 1-6 tests all pass (87 passed, 19 skipped)
+- [x] Security enforced: no LLM code execution, no Tool Registry bypass, secrets never in plaintext
+- [x] Default pytest does NOT require a real LLM key
+
+### Handoff Notes
+
+- Real OpenAI/DeepSeek calls are optional; fake transport + MockLLMProvider cover all tests
+- EncryptedSecretStore is a placeholder; production envelope encryption needs KMS/key-management infra
+- Planner API currently uses Phase2ProductRuntime (in-memory) for job creation; production should use PostgreSQL repo + Redis queue
+- CI workflow unchanged — Phase 6 service-backed integration still runs on push
+
 ## 2026-06-27 Phase 6B Live Integration Closeout Update
 
 ### Done This Round

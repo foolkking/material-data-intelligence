@@ -1,5 +1,32 @@
 # DESIGN_PROGRESS
 
+## 2026-06-27 Phase 7 LLM JSON Planner + BYOK Secret Management Update
+
+- Implemented LLMPlannerProvider abstraction with 3 implementations:
+  - MockLLMProvider: deterministic, no API key, returns valid AnalysisPlan for testing
+  - OpenAICompatibleProvider: OpenAI/DeepSeek compatible with fake-transport support for testing
+  - DeterministicPlannerAdapter: wraps existing build_phase2_plan() as fallback
+- Added PlanValidator (strict mode, no auto-repair) in `packages/tool-registry/mdi_tool_registry/plan_validator.py`
+  - Validates: JSON schema, step_id uniqueness, tool_id in ToolRegistry, MVP-only stage, no credentials in params, known artifact types, empty steps rejection, V1/V2 tool rejection
+- Added planner prompt template in `services/llm/mdi_llm/planner_prompt.py` (JSON-only output, tool-aware system prompt)
+- Added Planner API routes: POST /planner/preview, /planner/validate, /planner/jobs
+  - /planner/preview: generates plan without creating job
+  - /planner/validate: validates existing plan without creating job
+  - /planner/jobs: plan → validate → create job (rejects invalid plans before job creation)
+- Added SecretStore abstraction + InMemorySecretStore + EncryptedSecretStore placeholder
+  - Secret list API never returns plaintext values
+  - SecretStore creates/gets/deletes secrets internally
+- Added secrets API routes: POST/GET/DELETE /me/secrets
+- Added redaction helpers: credential key detection, secret value replacement in logs/params
+- Added 19 Phase 7 tests: mock provider, schema validation, unknown tool rejection, V1/V2 rejection, duplicate step_id, empty steps, credential param rejection, preview no job, validate no job, plan→job flow, secret list no plaintext, secret CRUD, redaction, deterministic planner regression, OpenAI fake transport
+- Security boundaries enforced:
+  - LLM cannot execute Python/Shell, cannot bypass Tool Registry, cannot access secrets
+  - Secret values never enter prompts, logs, JobEvents, Artifacts, Recipe, or Reports
+  - params containing api_key/token/password are rejected at PlanValidator level
+  - Preview and validate endpoints do not create jobs or enqueue work
+- Verification: 87 passed, 19 skipped; frontend typecheck+build passed; git clean pending commit
+- No real LLM key required for default pytest; MockLLMProvider + fake transport cover all test paths
+
 ## 2026-06-27 Phase 6B Live Integration Closeout Update
 
 - GitHub Actions CI run [#28286885004](https://github.com/foolkking/material-data-intelligence/actions/runs/28286885004) completed with **full success**:
@@ -199,7 +226,7 @@
 
 ## 当前阶段
 
-Phase 6: Service-backed Runtime Smoke & Integration Hardening — **通过 (PASS)**。GitHub Actions CI run `28286885004` 全绿：Unit Tests passed，Frontend passed，Service-backed Integration **18 passed, 0 skipped, 0 failed**。Phase 6 live-verified。可以进入 Phase 7。
+Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。87 passed, 19 skipped, 0 failed（19 个 Phase 7 tests + 68 个现有 tests）。MockLLMProvider + PlanValidator + SecretStore + Planner API 全链路可测，deterministic planner 回归测试通过。Git 待 commit。
 
 ## 已完成阶段
 
