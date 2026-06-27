@@ -99,34 +99,38 @@ def _live_minio_client(endpoint, access, secret):
     return client
 
 
+_shared_project_counter = 0
+
+
 def _seed_repos(repos: SqlAlchemyRepositoryBundle) -> dict[str, str]:
     """Seed a project/dataset/job for integration tests.
 
-    Uses the repository save API which handles the delete-then-insert
-    pattern.  The second save on the same project_id internally deletes
-    the old row first — but only the project row, not the dependent
-    dataset/job rows that were already saved.  PostgreSQL enforces
-    foreign keys, so that DELETE would cascade-fail on datasets.
-
-    We therefore save in reverse-dependency order and avoid re-saving
-    the project after dependents exist.  This follows the same pattern
-    as Phase 5's _seed_in_memory_repos helper.
+    Each call uses a unique project_id to avoid FK violations.
+    SqlAlchemyProjectRepository.save() does DELETE-then-INSERT per
+    project_id.  If two _seed_repos calls in the same test file used
+    the same ID, the second DELETE would cascade-fail because datasets
+    and jobs still reference the old project row.
     """
-    # Save project first (creates user + org internally)
+    global _shared_project_counter
+    _shared_project_counter += 1
+    n = _shared_project_counter
+    proj_id = f"proj_p6_{n}"
+    ds_id = f"ds_p6_{n}"
+    job_id = f"job_p6_{n}"
+
     repos.projects.save({
-        "id": "proj_p6", "name": "Phase 6",
-        "organizationId": "org_test", "createdBy": "test_user",
+        "id": proj_id, "name": f"Phase 6 #{n}",
+        "organizationId": f"org_test_{n}", "createdBy": "test_user",
     })
-    # Save dependent rows — these reference proj_p6 via FK
     repos.datasets.save({
-        "id": "ds_p6", "projectId": "proj_p6",
-        "name": "Dataset", "createdBy": "test_user",
+        "id": ds_id, "projectId": proj_id,
+        "name": f"Dataset #{n}", "createdBy": "test_user",
     })
     repos.jobs.save({
-        "id": "job_p6", "projectId": "proj_p6", "datasetId": "ds_p6",
+        "id": job_id, "projectId": proj_id, "datasetId": ds_id,
         "status": "created", "kind": "analysis", "createdBy": "test_user",
     })
-    return {"project": "proj_p6", "dataset": "ds_p6", "job": "job_p6"}
+    return {"project": proj_id, "dataset": ds_id, "job": job_id}
 
 
 # ===================================================================
