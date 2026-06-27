@@ -162,7 +162,7 @@ class OpenAICompatibleProvider:
 
         choice = response["choices"][0]
         content = choice["message"]["content"]
-        parsed = _json.loads(content) if isinstance(content, str) else content
+        parsed = _parse_llm_json(content) if isinstance(content, str) else content
         return PlannerRawResponse(
             raw_json=parsed,
             raw_text=content if isinstance(content, str) else _json.dumps(content),
@@ -177,6 +177,37 @@ class OpenAICompatibleProvider:
             name="openai_compatible",
             model=os.environ.get("OPENAI_MODEL", "gpt-4o"),
         )
+
+
+def _parse_llm_json(content: str) -> dict[str, Any] | None:
+    """Parse an LLM completion into a JSON object.
+
+    Handles two non-ideal cases gracefully (returns None rather than raising):
+      1. Plain non-JSON text (e.g. an apology or explanation).
+      2. Markdown-fenced JSON (```json ... ``` or ``` ... ```).
+
+    Returning None lets the planner layer + PlanValidator reject the output
+    with a structured error instead of an unhandled exception.
+    """
+    import json as _json
+    import re as _re
+
+    if not isinstance(content, str):
+        return None
+
+    text = content.strip()
+
+    # Strip markdown code fences if present.
+    fence = _re.match(r"^```(?:json)?\s*(.*?)\s*```$", text, _re.DOTALL)
+    if fence:
+        text = fence.group(1).strip()
+
+    try:
+        result = _json.loads(text)
+    except (ValueError, TypeError):
+        return None
+
+    return result if isinstance(result, dict) else None
 
 
 def _mock_basic_metrics_plan(request: PlannerRequest, tools: list[RegisteredTool]) -> dict[str, Any]:

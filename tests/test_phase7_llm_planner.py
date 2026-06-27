@@ -428,3 +428,78 @@ def test_openai_provider_request_with_fake_transport() -> None:
     assert resp.raw_json is not None
     assert resp.finish_reason == "stop"
     assert resp.model == "gpt-4o"
+
+
+# ── 15. Non-JSON completion is rejected gracefully (no exception) ────
+
+def test_openai_provider_non_json_completion_returns_none() -> None:
+    def bad_transport(*, model, messages, temperature, max_tokens):
+        return {"choices": [{"message": {"content": "I'm sorry, I cannot help with that."}, "finish_reason": "stop"}]}
+
+    provider = OpenAICompatibleProvider(transport=bad_transport)
+    reg = _registry()
+    req = PlannerRequest(user_prompt="test", dataset_id="ds1", profile_id="p1", tool_registry_version=reg.version)
+    resp = provider.generate_plan(req, tools=list(reg.tools), data_profile=_data_profile())
+
+    # Non-JSON content must NOT raise; raw_json is None so validator can reject.
+    assert resp.raw_json is None
+    assert resp.raw_text == "I'm sorry, I cannot help with that."
+
+
+# ── 16. Markdown-fenced JSON is extracted and parsed ────────────────
+
+def test_openai_provider_markdown_fenced_json_is_extracted() -> None:
+    plan_json = {
+        "schemaVersion": "0.1",
+        "goal": "fenced",
+        "datasetId": "ds1",
+        "profileId": "p1",
+        "toolRegistryVersion": "0.1.0",
+        "steps": [
+            {
+                "stepId": "s1",
+                "toolId": "ml.basic_metrics",
+                "purpose": "x",
+                "reason": "x",
+                "inputRefs": [],
+                "params": {"targetColumn": "y", "predictionColumn": "p"},
+                "output": {"artifactTypes": ["metrics_json"]},
+            }
+        ],
+        "expectedArtifacts": [],
+    }
+
+    def fenced_transport(*, model, messages, temperature, max_tokens):
+        wrapped = "```json\n" + json.dumps(plan_json) + "\n```"
+        return {"choices": [{"message": {"content": wrapped}, "finish_reason": "stop"}]}
+
+    provider = OpenAICompatibleProvider(transport=fenced_transport)
+    reg = _registry()
+    req = PlannerRequest(user_prompt="test", dataset_id="ds1", profile_id="p1", tool_registry_version=reg.version)
+    resp = provider.generate_plan(req, tools=list(reg.tools), data_profile=_data_profile())
+
+    assert resp.raw_json is not None
+    assert resp.raw_json["goal"] == "fenced"
+    # And it must pass validation
+    result = validate_plan(resp.raw_json, registry=reg)
+    assert result.ok
+
+
+# ── 17. Planner jobs rejects a non-JSON LLM completion ──────────────
+
+def test_planner_jobs_rejects_non_json_llm_output() -> None:
+    from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
+
+    class _NonJsonProvider:
+        def generate_plan(self, request, *, tools, data_profile, user_config=None):
+            from mdi_llm import PlannerRawResponse
+            return PlannerRawResponse(raw_json=None, raw_text="not json", model="mock", finish_reason="stop")
+
+    result = planner_jobs(
+        PlannerJobsRequest(userPrompt="test", datasetId="ds_test", profileId="p_test"),
+        provider=_NonJsonProvider(),
+        registry=_registry(),
+    )
+    assert not result.ok
+    assert result.job_id is None
+    assert any(e["code"] == "PLAN_EMPTY" for e in result.validation_errors)

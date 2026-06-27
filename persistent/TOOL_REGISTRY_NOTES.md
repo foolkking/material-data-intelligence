@@ -1,5 +1,15 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-06-27 Phase 7 LLM Planner — Tool Registry as Execution Gate
+
+- The LLM JSON Planner can ONLY select tools that exist in the Tool Registry. `PlanValidator` (in `packages/tool-registry/mdi_tool_registry/plan_validator.py`) rejects any `step.toolId` not present in `registry.tools` with `UNKNOWN_TOOL`.
+- The LLM planner is restricted to **MVP-stage tools only**. `PlanValidator` rejects any tool whose `stage != "mvp"` with `NON_MVP_TOOL`. V1/V2 tools cannot be planned even if they exist in the registry.
+- The planner prompt (`services/llm/mdi_llm/planner_prompt.py`) only lists MVP tools to the LLM, but the prompt is advisory — the Tool Registry + PlanValidator are the enforced execution gate, not the prompt.
+- No new Tool Registry manifest, adapter, MVP/V1/V2 tool scope, or pymatviz API mapping changed in Phase 7. The planner is a new caller of the existing registry, not a registry change.
+- The controlled execution path is unchanged and still mandatory:
+  `LLM AnalysisPlan` -> `PlanValidator` -> (job creation) -> `ToolExecutionRequest` -> Tool Registry lookup -> paramsSchema validation -> Adapter -> Artifact.
+- `params` containing credential-like keys (api_key/token/password/secret/credential/authorization) are rejected at the validator level (`CREDENTIAL_IN_PARAMS`) before any tool runs.
+
 ## 2026-06-26 Phase 6 Service-backed Runtime Smoke Notes (Final)
 
 - No Tool Registry manifest, adapter implementation, MVP tool scope, V1/V2 tool scope, or pymatviz API mapping changed in Phase 6.

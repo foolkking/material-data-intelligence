@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-06-27 Phase 7 Follow-ups (LLM Planner + BYOK)
+
+- **Production envelope encryption is NOT implemented.** `EncryptedSecretStore` is a placeholder that raises `NotImplementedError`. Only `InMemorySecretStore` works, and it is for dev/test ONLY — it holds plaintext values in memory and must never be used in production. A real backend (KMS, Fernet, or HashiCorp Vault) is required before any production BYOK use.
+- **LLM → execution closed loop is NOT complete.** `POST /planner/jobs` generates an LLM plan, validates it, and then creates a job via `Phase2ProductRuntime.create_job()`. However, that runtime internally regenerates its own **deterministic** plan (`build_phase2_plan`) — the validated LLM plan is currently NOT the plan that executes. The job status returned is "created" (in-memory Phase 2 path), not a real enqueue onto Redis/PostgreSQL. Wiring the validated LLM plan into the real QueueWorkerRuntime + Tool Registry + Adapter execution path is deferred to a later phase.
+- **Real OpenAI/DeepSeek integration tests are optional and not in the default suite.** All Phase 7 tests use `MockLLMProvider` or a fake transport. A real LLM integration test (gated behind an env var like `MDI_RUN_LLM_INTEGRATION=1` + `OPENAI_API_KEY`) is future work; it must never run in the default `pytest -q`.
+- **Prompt / completion logging policy is undecided.** Currently no prompt or completion is logged. If debug logging is added later, it MUST pass through `redact_credential_values()` and default to off. A formal policy (what to log, retention, redaction guarantees) is open.
+- **Runtime full-chain secret-leak audit is not yet done.** Phase 7 has unit-level redaction tests and a secret-list-no-plaintext test, but no end-to-end audit proving secrets never reach JobEvent / Artifact metadata / Recipe / Report in the live runtime. The current code has no path that writes secrets to those sinks, but an explicit audit test is future work.
+- **Plan auto-repair is intentionally not implemented.** PlanValidator is strict — invalid plans are rejected, not repaired. Auto-repair (ask the LLM to fix its own invalid plan) is deferred to avoid silently executing mutated plans.
+
 ## 2026-06-26 Phase 6 Follow-ups
 
 - **Acceptance: CONDITIONAL PASS.** No P0 blocker in the code or test design. All 18 integration tests skip cleanly because Docker is not available on this machine. Git is clean at commit `e3c7a73`.

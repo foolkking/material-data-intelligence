@@ -1,5 +1,86 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-074: Phase 7 LLM Planner emits AnalysisPlan JSON only; never executes
+
+### Context
+
+Phase 7 introduces an LLM-backed planner that converts a natural-language
+request into an executable analysis plan. Letting the LLM execute Python,
+shell, or call pymatviz directly would break the security, auditability, and
+reproducibility guarantees the platform is built on.
+
+### Decision
+
+The LLM may ONLY emit a structured `AnalysisPlan` JSON object. It cannot
+execute code, cannot call pymatviz/MatterViz directly, and cannot bypass the
+Tool Registry. The `LLMPlannerProvider` protocol returns a
+`PlannerRawResponse` (raw JSON / text only). The plan must pass `PlanValidator`
+before any job is created. Execution still flows through the existing
+`ToolExecutionRequest` -> Tool Registry -> Adapter path.
+
+### Consequences
+
+- The LLM is a planner, not an executor. All executable capability remains
+  behind the Tool Registry + Adapter boundary.
+- Non-JSON or markdown-wrapped completions are parsed defensively
+  (`_parse_llm_json` strips fences, returns None on failure) so a bad
+  completion is rejected with a structured error, never an unhandled exception.
+- A deterministic planner (`build_phase2_plan`) is preserved as a
+  fallback/test baseline.
+
+## ADR-075: Phase 7 PlanValidator is strict — no auto-repair
+
+### Context
+
+An LLM can produce plans that are malformed, reference unknown tools, use
+V1/V2 tools, duplicate step IDs, or smuggle credentials into params. A planner
+that auto-repairs and then executes such plans would silently run mutated,
+unreviewed instructions.
+
+### Decision
+
+`PlanValidator.validate_plan()` runs in strict mode only. It rejects:
+non-dict input, schema-invalid plans, empty steps, duplicate step IDs, unknown
+tool IDs, non-MVP tools, unknown artifact types, unknown input ref types, and
+credential-like keys in params. On any failure it returns structured errors
+and the caller MUST NOT create a job, enqueue work, or run an adapter.
+Automatic repair is explicitly deferred (recorded in OPEN_QUESTIONS).
+
+### Consequences
+
+- Invalid plans never reach execution.
+- `/planner/preview` and `/planner/validate` never create jobs.
+- `/planner/jobs` only creates a job after validation succeeds.
+- Note: in Phase 7 the created job currently runs the deterministic plan, not
+  the validated LLM plan (the LLM→execution wiring is deferred — see
+  OPEN_QUESTIONS). This is an honest boundary, not a completed closed loop.
+
+## ADR-076: BYOK Secret uses a SecretStore abstraction; InMemory only for dev/test
+
+### Context
+
+BYOK requires storing user LLM API keys. Plaintext keys must never leak into
+prompts, logs, JobEvents, Artifacts, Recipes, Reports, or API responses.
+Production needs envelope encryption, but the encryption infrastructure (KMS /
+key management) is not available in this phase.
+
+### Decision
+
+Introduce a `SecretStore` protocol with three implementations:
+`InMemorySecretStore` (dev/test only — holds plaintext in memory),
+`EncryptedSecretStore` (placeholder, raises NotImplementedError). The list API
+returns only metadata (id, provider, created_at) — never the plaintext value.
+`get_secret` returns the value only for internal use (e.g. constructing an LLM
+request). Redaction helpers scrub credential keys/values from any text or
+params destined for logs.
+
+### Consequences
+
+- The API surface never returns plaintext secret values.
+- Production deployment is blocked on implementing real envelope encryption in
+  `EncryptedSecretStore` (recorded in OPEN_QUESTIONS).
+- Tests use `InMemorySecretStore`; no real API key is required.
+
 ## ADR-073: Phase 6 uses opt-in integration markers for live service verification
 
 ### Context

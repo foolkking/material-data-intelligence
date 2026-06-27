@@ -226,7 +226,7 @@
 
 ## 当前阶段
 
-Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。87 passed, 19 skipped, 0 failed（19 个 Phase 7 tests + 68 个现有 tests）。MockLLMProvider + PlanValidator + SecretStore + Planner API 全链路可测，deterministic planner 回归测试通过。Git 待 commit。
+Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 passed, 19 skipped, 0 failed（22 个 Phase 7 tests + 68 个现有 tests）。MockLLMProvider + PlanValidator（严格，10 规则）+ SecretStore + Planner API 全部可测。**边界说明**：`/planner/jobs` 在 validate 成功后创建 job，但当前 job 实际运行的是 deterministic plan（`build_phase2_plan`），验证过的 LLM plan 尚未接入真实执行——「LLM→执行」闭环未打通，属已记录的后续工作（见 OPEN_QUESTIONS / ADR-075）。Secret 仅 InMemoryStore，生产 envelope encryption 未实现。
 
 ## 已完成阶段
 
