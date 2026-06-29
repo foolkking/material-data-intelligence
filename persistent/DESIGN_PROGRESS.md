@@ -9,13 +9,14 @@
 - MockLLMProvider's plan now references the conventional `ml_table` normalized object so the validated plan is executable end-to-end (no plan mutation/auto-repair by the bridge).
 - Deterministic `build_phase2_plan` preserved as fallback: when no `analysis_plan` is provided, create_job uses it (Phase 2/3 product loop unchanged).
 - **Key acceptance evidence**: `test_runtime_executes_exact_provided_plan_one_tool_call` proves a 1-step LLM plan produces EXACTLY 1 ToolCall (`ml.basic_metrics`, stepId `llm_step_1`), NOT the deterministic 5 ToolCalls. `test_runtime_deterministic_fallback_when_no_plan` proves fallback still works.
-- Added `tests/test_phase8a_plan_execution.py` (7 tests). All execution still goes through Tool Registry + Adapter; unknown/V1/V2/invalid plans still rejected before job creation (Phase 7 validator unchanged).
-- Verification: backend 97 passed, 19 skipped, 0 failed; Phase 7 targeted 22 passed; frontend typecheck+build passed; uv lock + git diff clean.
+- Added `tests/test_phase8a_plan_execution.py` (11 tests). All execution still goes through Tool Registry + Adapter; unknown/V1/V2/invalid plans still rejected before job creation (Phase 7 validator unchanged).
+- Baseline-freeze hardening added 4 tests covering exact-plan execution side effects: produces a `metrics_json` artifact, emits `tool.started`/`tool.completed`/`artifact.ready`/`plan.generated` events, job status reaches `completed`, and `execute=False` yields zero ToolCalls + no tool artifact + no tool events.
+- Verification: backend 101 passed, 19 skipped, 0 failed; Phase 7 targeted 22 passed; frontend typecheck+build passed; uv lock + git diff clean.
 - **Remaining boundary**: execution uses the in-memory `Phase2ProductRuntime` (synchronous local loop). Wiring the validated plan into the Redis `QueueWorkerRuntime` + PostgreSQL plan persistence is still future work (recorded in OPEN_QUESTIONS).
 
 ## 当前阶段
 
-Phase 8A: LLM Plan Execution Bridge — **通过 (PASS)**。validated LLM plan 现在真正执行（1-step → 恰好 1 ToolCall，非 deterministic 5）。deterministic fallback 保留。backend 97 passed / 19 skipped / 0 failed。剩余边界：QueueWorkerRuntime + PostgreSQL plan persistence 待后续。
+Phase 8A: LLM Plan Execution Bridge — **通过 (PASS) / baseline frozen**。validated LLM plan 现在真正执行（1-step → 恰好 1 ToolCall，非 deterministic 5），并验证了 Artifact/JobEvent/completed status 副作用 + execute=False 零 ToolCall。deterministic fallback 保留。backend 101 passed / 19 skipped / 0 failed。剩余边界：QueueWorkerRuntime + PostgreSQL plan persistence 待后续。
 
 ## 2026-06-27 Phase 7 LLM JSON Planner + BYOK Secret Management Update
 

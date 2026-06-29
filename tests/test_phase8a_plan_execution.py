@@ -73,6 +73,68 @@ def test_runtime_executes_exact_provided_plan_one_tool_call() -> None:
     assert tool_calls[0]["stepId"] == "llm_step_1"
 
 
+# ── Artifact / JobEvent / Status of exact plan execution ───────────
+
+def test_exact_plan_execution_produces_metrics_artifact() -> None:
+    rt, project_id, dataset_id = _runtime_with_ml_dataset()
+    plan = _one_step_llm_plan(dataset_id)
+    job = rt.create_job(
+        {"projectId": project_id, "datasetId": dataset_id, "userPrompt": "metrics"},
+        analysis_plan=plan,
+        execute=True,
+    )
+    artifacts = rt.get_job_artifacts(job["id"])
+    types = {a.get("type") for a in artifacts}
+    # The ml.basic_metrics step must have produced a metrics_json artifact.
+    assert any("metrics" in (t or "") for t in types), f"no metrics artifact in {types}"
+
+
+def test_exact_plan_execution_emits_tool_events() -> None:
+    rt, project_id, dataset_id = _runtime_with_ml_dataset()
+    plan = _one_step_llm_plan(dataset_id)
+    job = rt.create_job(
+        {"projectId": project_id, "datasetId": dataset_id, "userPrompt": "metrics"},
+        analysis_plan=plan,
+        execute=True,
+    )
+    events = rt.get_job_events(job["id"])
+    event_types = {e["eventType"] for e in events}
+    assert "tool.started" in event_types
+    assert "tool.completed" in event_types
+    assert "artifact.ready" in event_types
+    assert "plan.generated" in event_types
+
+
+def test_exact_plan_execution_job_status_completed() -> None:
+    rt, project_id, dataset_id = _runtime_with_ml_dataset()
+    plan = _one_step_llm_plan(dataset_id)
+    job = rt.create_job(
+        {"projectId": project_id, "datasetId": dataset_id, "userPrompt": "metrics"},
+        analysis_plan=plan,
+        execute=True,
+    )
+    assert job["status"] == "completed"
+
+
+def test_planned_only_zero_tool_calls_and_no_tool_artifact() -> None:
+    rt, project_id, dataset_id = _runtime_with_ml_dataset()
+    plan = _one_step_llm_plan(dataset_id)
+    job = rt.create_job(
+        {"projectId": project_id, "datasetId": dataset_id, "userPrompt": "metrics"},
+        analysis_plan=plan,
+        execute=False,
+    )
+    assert len(rt.get_job_tool_calls(job["id"])) == 0
+    # System plan/recipe artifacts may exist, but NO tool-produced metrics artifact.
+    artifacts = rt.get_job_artifacts(job["id"])
+    types = {a.get("type") for a in artifacts}
+    assert not any(t == "metrics_json" for t in types), f"unexpected tool artifact in planned-only: {types}"
+    # No tool.started/completed events fired.
+    event_types = {e["eventType"] for e in rt.get_job_events(job["id"])}
+    assert "tool.started" not in event_types
+    assert "tool.completed" not in event_types
+
+
 def test_runtime_executed_plan_is_the_provided_plan() -> None:
     rt, project_id, dataset_id = _runtime_with_ml_dataset()
     plan = _one_step_llm_plan(dataset_id)

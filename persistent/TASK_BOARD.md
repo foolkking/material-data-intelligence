@@ -10,8 +10,8 @@
 - [x] Response includes plan_source + executed flags
 - [x] MockLLMProvider plan references ml_table so it executes end-to-end
 - [x] Deterministic build_phase2_plan preserved as fallback (no analysis_plan → deterministic)
-- [x] 7 Phase 8A tests; core proves 1-step LLM plan → exactly 1 ToolCall (not 5)
-- [x] backend 97 passed / 19 skipped / 0 failed; Phase 7 22 passed; frontend ✓
+- [x] 11 Phase 8A tests; core proves 1-step LLM plan → exactly 1 ToolCall (not 5); freeze added artifact/event/status/execute=False coverage
+- [x] backend 101 passed / 19 skipped / 0 failed; Phase 7 22 passed; frontend ✓; CI HEAD success — baseline frozen
 - [x] All execution still through Tool Registry + Adapter; invalid/unknown/V1-V2 rejected before job
 
 ### Handoff Notes
