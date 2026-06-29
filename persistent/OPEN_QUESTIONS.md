@@ -1,5 +1,13 @@
 # OPEN_QUESTIONS
 
+## 2026-06-27 Phase 8A Follow-ups (Plan Execution Bridge)
+
+- **LLM→execution closed loop is now CLOSED at the local-runtime level.** `/planner/jobs` (execute=True) runs the EXACT validated LLM plan through `Phase2ProductRuntime` → Tool Registry → Adapter, proven by `test_runtime_executes_exact_provided_plan_one_tool_call` (1 step → 1 ToolCall, not deterministic 5).
+- **Remaining: QueueWorkerRuntime + PostgreSQL plan persistence.** Execution currently uses the in-memory synchronous `Phase2ProductRuntime`. The validated plan is NOT yet persisted to PostgreSQL nor enqueued onto the Redis `QueueWorkerRuntime`. Wiring `analysis_plan` into the queue worker + a `persisted_plans` table (Alembic migration) is the next integration step.
+- **Multi-step dependency graph deferred.** The bridge executes steps in plan order; there is no inter-step data-dependency resolution beyond the existing inputRefs/object_store mechanism. A real DAG executor is future work.
+- **Plan input binding is still conventional.** The LLM plan must reference the conventional `ml_table` (or `formulas`/`structures`) normalized object refs. A general field-mapping/resolution layer between LLM logical refs and dataset objects is future work.
+- Real LLM integration, production envelope encryption, frontend Planner UX, and plan auto-repair remain deferred (unchanged from Phase 7 records).
+
 ## 2026-06-27 Phase 7 Follow-ups (LLM Planner + BYOK)
 
 - **Production envelope encryption is NOT implemented.** `EncryptedSecretStore` is a placeholder that raises `NotImplementedError`. Only `InMemorySecretStore` works, and it is for dev/test ONLY — it holds plaintext values in memory and must never be used in production. A real backend (KMS, Fernet, or HashiCorp Vault) is required before any production BYOK use.

@@ -211,14 +211,17 @@ def _parse_llm_json(content: str) -> dict[str, Any] | None:
 
 
 def _mock_basic_metrics_plan(request: PlannerRequest, tools: list[RegisteredTool]) -> dict[str, Any]:
-    """Generate a minimal valid plan with a single ml.basic_metrics step."""
-    import os as _os
+    """Generate a minimal valid plan with a single ml.basic_metrics step.
+
+    The step references the conventional ``ml_table`` normalized object so the
+    plan is executable end-to-end through the runtime + Tool Registry + Adapter.
+    """
     step = {
         "stepId": "step_001",
         "toolId": "ml.basic_metrics",
         "purpose": "Compute regression metrics",
         "reason": "User requested basic regression evaluation",
-        "inputRefs": [],
+        "inputRefs": [{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
         "params": {"targetColumn": "y_true", "predictionColumn": "y_pred"},
         "output": {"artifactTypes": ["metrics_json"]},
     }

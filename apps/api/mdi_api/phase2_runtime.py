@@ -264,7 +264,13 @@ class Phase2ProductRuntime:
     def get_dataset_profile(self, dataset_id: str) -> dict[str, Any]:
         return self._require_dataset(dataset_id).profile.model_dump(mode="json")
 
-    def create_job(self, request: CreateJobRequest | dict[str, Any]) -> dict[str, Any]:
+    def create_job(
+        self,
+        request: CreateJobRequest | dict[str, Any],
+        *,
+        analysis_plan: AnalysisPlan | None = None,
+        execute: bool = True,
+    ) -> dict[str, Any]:
         request = request if isinstance(request, CreateJobRequest) else CreateJobRequest.model_validate(request)
         self._require_project(request.projectId)
         dataset = self._require_dataset(request.datasetId)
@@ -319,12 +325,19 @@ class Phase2ProductRuntime:
             progress=0.2,
         )
 
-        plan = build_phase2_plan(
-            user_prompt=request.userPrompt,
-            data_profile=dataset.profile,
-            registry=self.registry,
-            object_refs=dataset.object_refs,
-        )
+        if analysis_plan is not None:
+            # Phase 8A: execute the EXACT validated plan (e.g. from the LLM
+            # planner). Never overwrite it with the deterministic planner.
+            plan = analysis_plan
+            plan_source = "provided"
+        else:
+            plan = build_phase2_plan(
+                user_prompt=request.userPrompt,
+                data_profile=dataset.profile,
+                registry=self.registry,
+                object_refs=dataset.object_refs,
+            )
+            plan_source = "deterministic"
         plan_summary = summarize_plan(plan, self.registry)
         record = JobRunRecord(
             id=job_id,
@@ -339,8 +352,8 @@ class Phase2ProductRuntime:
             job_id,
             event_type="plan.generated",
             status=JobEventStatus.success,
-            message=f"Generated deterministic plan with {len(plan.steps)} MVP tool call(s).",
-            payload={"planSummary": plan_summary},
+            message=f"Loaded {plan_source} plan with {len(plan.steps)} MVP tool call(s).",
+            payload={"planSummary": plan_summary, "planSource": plan_source},
             progress=0.3,
         )
 
@@ -348,6 +361,23 @@ class Phase2ProductRuntime:
         system_artifacts.extend(self._export_plan_artifact(plan=plan, project_id=request.projectId, dataset_id=request.datasetId, job_id=job_id))
         system_artifacts.extend(self._export_recipe_artifact(plan=plan, project_id=request.projectId, dataset_id=request.datasetId, job_id=job_id))
         self._register_artifacts(job_id, system_artifacts, event_progress=0.35)
+
+        if not execute:
+            # Phase 8A: planned-only mode. The validated plan is persisted and
+            # the plan artifact is exported, but no ToolCalls run. The job
+            # stays in a queued/planned state for later execution.
+            self.job_store.append_event(
+                job_id,
+                event_type="job.planned",
+                status=JobEventStatus.info,
+                message="Planned job created; execution deferred (execute=False).",
+                payload={"planSource": plan_source, "toolCount": len(plan.steps)},
+                progress=0.4,
+            )
+            self.job_store.set_job_status(job_id, JobStatus.queued)
+            record.artifact_ids = [artifact.id for artifact in self.artifact_store.list_for_job(job_id)]
+            record.updated_at = _utc_now()
+            return self.get_job(job_id)
 
         cache: dict[str, list[Artifact]] = {}
         tool_artifacts: list[Artifact] = []

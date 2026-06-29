@@ -2,6 +2,32 @@
 
 ## 2026-06-27
 
+### Phase 8A LLM Plan Execution Bridge
+
+#### Added
+
+- `tests/test_phase8a_plan_execution.py` (7 tests) — core proof: 1-step LLM plan → exactly 1 ToolCall (not deterministic 5).
+
+#### Changed
+
+- `Phase2ProductRuntime.create_job` accepts `analysis_plan` (execute this exact validated plan) and `execute` (False = planned-only) parameters.
+- `POST /planner/jobs` executes the EXACT validated LLM plan when execute=True; planned-only when execute=False. Response now includes plan_source + executed.
+- `MockLLMProvider` plan references the `ml_table` normalized object so the validated plan is executable end-to-end.
+
+#### Preserved
+
+- Deterministic `build_phase2_plan` remains the fallback when no analysis_plan is provided (Phase 2/3 loop unchanged).
+- All execution still flows through Tool Registry + Adapter; PlanValidator unchanged (invalid/unknown/V1-V2 rejected before job).
+
+#### Verification
+
+- backend: 97 passed, 19 skipped, 0 failed
+- Phase 7 targeted: 22 passed
+- frontend typecheck/build: passed
+- uv lock + git diff --check: clean
+
+## 2026-06-27
+
 ### Phase 7 LLM JSON Planner + BYOK Secret Management
 
 #### Added

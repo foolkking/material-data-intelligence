@@ -1,5 +1,25 @@
 # TASK_BOARD
 
+## 2026-06-27 Phase 8A LLM Plan Execution Bridge Status
+
+### Done This Round
+
+- [x] `Phase2ProductRuntime.create_job` accepts `analysis_plan` + `execute` params
+- [x] `/planner/jobs` executes the EXACT validated LLM plan (not deterministic) when execute=True
+- [x] `/planner/jobs` execute=False = planned-only (job + persisted plan, no ToolCalls)
+- [x] Response includes plan_source + executed flags
+- [x] MockLLMProvider plan references ml_table so it executes end-to-end
+- [x] Deterministic build_phase2_plan preserved as fallback (no analysis_plan → deterministic)
+- [x] 7 Phase 8A tests; core proves 1-step LLM plan → exactly 1 ToolCall (not 5)
+- [x] backend 97 passed / 19 skipped / 0 failed; Phase 7 22 passed; frontend ✓
+- [x] All execution still through Tool Registry + Adapter; invalid/unknown/V1-V2 rejected before job
+
+### Handoff Notes
+
+- **Acceptance: PASS.** Validated LLM plan now executes; deterministic fallback intact.
+- Remaining boundary: Redis QueueWorkerRuntime + PostgreSQL plan persistence integration is future work (execution currently in-memory Phase2ProductRuntime).
+- No real LLM, no frontend, no Secret encryption, no V1/V2 tools added this round.
+
 ## 2026-06-27 Phase 7 LLM JSON Planner + BYOK Secret Management Status
 
 ### Done This Round

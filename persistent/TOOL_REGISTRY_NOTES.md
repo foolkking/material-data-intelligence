@@ -1,5 +1,11 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-06-27 Phase 8A — validated plan executes through the same Registry gate
+
+- No Tool Registry manifest, adapter, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 8A.
+- Phase 8A only changed the *source* of the plan executed by `create_job`: a validated LLM AnalysisPlan can now be the execution plan instead of the deterministic one. The execution path is unchanged — every step still goes through `run_tool_call_job` → Tool Registry lookup → paramsSchema validation → Adapter.
+- The validated LLM plan still cannot reference unknown or non-MVP tools: `PlanValidator` (Phase 7) rejects them before any job is created. The Tool Registry remains the single execution gate.
+
 ## 2026-06-27 Phase 7 LLM Planner — Tool Registry as Execution Gate
 
 - The LLM JSON Planner can ONLY select tools that exist in the Tool Registry. `PlanValidator` (in `packages/tool-registry/mdi_tool_registry/plan_validator.py`) rejects any `step.toolId` not present in `registry.tools` with `UNKNOWN_TOOL`.

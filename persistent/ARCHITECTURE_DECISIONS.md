@@ -1,5 +1,37 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-077: Phase 8A — the validated LLM plan becomes the job's execution plan
+
+### Context
+
+Phase 7 validated LLM AnalysisPlans but discarded them: `/planner/jobs`
+created a job that ran the deterministic `build_phase2_plan`, not the LLM
+plan. This was honestly documented but left the core "LLM → execution" loop
+open.
+
+### Decision
+
+`Phase2ProductRuntime.create_job` accepts an optional `analysis_plan`. When
+provided, that EXACT validated plan becomes the job's execution plan — the
+runtime iterates its `steps` through the unchanged Tool Registry + Adapter
+path (`run_tool_call_job`). The deterministic `build_phase2_plan` is used only
+as a fallback when no plan is provided. A separate `execute` flag supports
+planned-only job creation (persist plan, run nothing).
+
+The bridge does NOT mutate or auto-repair the validated plan. If the plan's
+steps are not runnable (e.g. unresolvable inputRefs), the ToolCall fails
+honestly — the bridge never silently rewrites the plan.
+
+### Consequences
+
+- A 1-step LLM plan produces exactly 1 ToolCall, not the deterministic 5
+  (proven by `test_runtime_executes_exact_provided_plan_one_tool_call`).
+- The deterministic planner remains a valid fallback/test baseline.
+- Execution is still local/in-memory; Redis QueueWorkerRuntime + PostgreSQL
+  plan persistence is the next integration step (OPEN_QUESTIONS).
+- Tool Registry + Adapter remain the only execution gate; PlanValidator still
+  rejects invalid/unknown/V1-V2 plans before any job is created.
+
 ## ADR-074: Phase 7 LLM Planner emits AnalysisPlan JSON only; never executes
 
 ### Context

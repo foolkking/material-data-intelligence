@@ -42,6 +42,7 @@ class PlannerJobsRequest(BaseModel):
     userPrompt: str = Field(min_length=1)
     datasetId: str = Field(min_length=1)
     profileId: str = Field(default="")
+    execute: bool = Field(default=False)
 
 
 @dataclass
@@ -64,6 +65,8 @@ class PlannerJobsResult:
     job_id: str | None
     validation_errors: list[dict[str, Any]]
     plan: dict[str, Any] | None
+    plan_source: str = "llm"
+    executed: bool = False
 
 
 # ── POST /planner/preview ──────────────────────────────────────────
@@ -173,19 +176,36 @@ def planner_jobs(
             plan=plan,
         )
 
-    # Plan is valid — create a job (uses the existing Phase 2 runtime path)
-    from mdi_api.phase2_runtime import Phase2ProductRuntime, InlineUploadFile
+    # Plan is valid — create a job that executes the EXACT validated LLM plan
+    # (never the deterministic build_phase2_plan). The plan is parsed into an
+    # AnalysisPlan and handed to the runtime as the job's execution plan.
+    from mdi_api.phase2_runtime import Phase2ProductRuntime
+    from mdi_schemas import AnalysisPlan
+
+    validated_plan = AnalysisPlan.model_validate(plan)
 
     runtime = Phase2ProductRuntime()
     runtime.create_project({"name": f"project_{request.datasetId}"})
     project_id = list(runtime.projects.keys())[0]
-    # Phase 2 runtime requires at least one file in upload; use a minimal inline CSV
+    # Phase 2 runtime requires at least one file in upload; supply an inline CSV
+    # whose normalized DataFrame is referenced by the validated plan (ml_table).
     runtime.upload_dataset({
         "projectId": project_id,
         "datasetName": request.datasetId,
         "files": [{"fileName": "data.csv", "content": "formula,y_true,y_pred\nSiO2,2.1,2.0\nAl2O3,3.4,3.5\nCaO,1.8,1.9"}],
     })
     dataset_id = list(runtime.datasets.keys())[0]
-    job = runtime.create_job({"projectId": project_id, "datasetId": dataset_id, "userPrompt": request.userPrompt})
+    job = runtime.create_job(
+        {"projectId": project_id, "datasetId": dataset_id, "userPrompt": request.userPrompt},
+        analysis_plan=validated_plan,
+        execute=request.execute,
+    )
 
-    return PlannerJobsResult(ok=True, job_id=job["id"], validation_errors=[], plan=plan)
+    return PlannerJobsResult(
+        ok=True,
+        job_id=job["id"],
+        validation_errors=[],
+        plan=plan,
+        plan_source="llm",
+        executed=bool(request.execute),
+    )
