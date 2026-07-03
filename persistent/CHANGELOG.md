@@ -2,6 +2,39 @@
 
 ## 2026-07-03
 
+### Phase 8C Frontend Planner UX
+
+#### Added
+
+- Added a `PlannerWorkbench` frontend page as the user-facing Planner Job creation entry point.
+- Added typed frontend planner API helpers for `createPlannerJob`, planner job detail, persisted AnalysisPlan detail, JobEvents, ToolCalls, Artifacts, and Result summary.
+- Added read-only backend planner endpoints under `/planner/...` so the frontend can display persisted `planId`/`planHash` provenance without mutating state or triggering execution.
+- Added Vitest + React Testing Library setup for the frontend and tests covering success, persisted provenance, `plan.loaded`, validation failure, loading, and API error states.
+- Added `tests/test_phase8c_planner_read_api.py` for read-only planner API provenance behavior.
+
+#### Changed
+
+- Replaced the static frontend shell with a functional analysis planner workbench.
+- `POST /planner/jobs` is now exposed through a FastAPI wrapper that preserves the existing injectable implementation while accepting the expected JSON HTTP body.
+- Local non-PostgreSQL planner routes now share a module-level in-memory repository bundle so a created planner job can be read back by subsequent read-only planner API calls during local/dev frontend use.
+- Updated the scaffold test to assert the Phase 8C Planner workbench content instead of the old static shell.
+
+#### Preserved
+
+- Frontend job creation still goes only through `/planner/jobs`.
+- The frontend does not directly write `analysis_plans`, directly create jobs, directly enqueue work, compute authoritative plan hashes, or treat deterministic fallback as the production path.
+- Read-only planner endpoints do not enqueue, execute, mutate plans/jobs, or call `build_phase2_plan`.
+- QueueWorkerRuntime, AnalysisPlanRepository, Tool Registry, and adapter execution semantics remain the Phase 8B baseline.
+
+#### Verification
+
+- `uv lock --check`: passed.
+- Phase 8C backend targeted: 2 passed.
+- Phase 8C + Phase 8B targeted: 11 passed, 1 skipped locally.
+- Backend full: 112 passed, 20 skipped.
+- Frontend: `npm ci`, `npm test` (4 passed), `npm run typecheck`, and `npm run build` passed in `apps/web`.
+- Current HEAD CI verification remains pending until this Phase 8C commit is pushed.
+
 ### Phase 8B Persisted Plans + Queue Worker Runtime
 
 #### Added

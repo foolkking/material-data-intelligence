@@ -1,5 +1,19 @@
 # DESIGN_PROGRESS
 
+## 2026-07-03 Phase 8C Frontend Planner UX Update
+
+- Phase 8B is the frozen baseline for this work: final freeze commit `03d1915` (`Record phase 8B acceptance freeze`) after Phase 8B code commits `75386cf`, `9b62fa1`, `336fd8b`, and `962c429`; GitHub Actions run `28637798200` succeeded.
+- Added a real frontend Planner workbench entry point instead of the previous static shell. Users can enter `projectId`, dataset/profile identifiers, a natural-language analysis request, and choose whether to enqueue the planner job.
+- Added a typed frontend planner API client for `POST /planner/jobs` plus read-only planner detail endpoints for persisted AnalysisPlan, job detail, JobEvents, ToolCalls, Artifacts, and result summary.
+- Added minimal read-only backend planner endpoints under `/planner/...` so the frontend can display persisted-plan provenance without mutating plans/jobs, enqueueing work, or triggering execution.
+- The success UI now shows the validated persisted plan preview, `job_id`, `plan_id`, backend `plan_hash`, `job.plan_id -> analysis_plans.id`, step count, `stepId`, `toolId`, validation status, and plan source.
+- The provenance UI now displays persisted-plan binding, `plan.loaded` JobEvent when present, ToolCall `planId`/`planHash`, Artifact `planId`/`planHash`, Result `planId`/`planHash`, and the statements "Loaded from persisted AnalysisPlan", "Executed through Tool Registry + Adapter", and "No deterministic fallback used" only when backed by returned API data.
+- The validation failure UI now clearly states: "Plan validation failed", "No AnalysisPlan was saved", "No Job was created", "Nothing was enqueued", and "Please fix the request and try again"; it clears job state and does not start status polling.
+- No true LLM integration, multi-step DAG execution, production secret encryption, QueueWorkerRuntime redesign, AnalysisPlanRepository redesign, or Tool Registry redesign was introduced.
+- Local verification for the Phase 8C implementation: `uv lock --check` passed; `python -m pytest tests/test_phase8c_planner_read_api.py -q` passed with 2 tests; `python -m pytest tests/test_phase8c_planner_read_api.py tests/test_phase8b_persisted_plan_queue.py -q` passed with 11 passed / 1 skipped; `python -m pytest -q` passed with 112 passed / 20 skipped; `npm ci`, `npm test`, `npm run typecheck`, and `npm run build` passed in `apps/web`.
+- Phase 8C status: local baseline complete and ready for commit/push/CI validation; do not mark frozen until the current HEAD CI succeeds.
+- Remaining boundaries after this update: true LLM integration, advanced multi-step DAG/data-dependency execution, production secret encryption, worker process supervision/dead-letter policy, and deeper material-specific viewer polish.
+
 ## 2026-07-03 Phase 8B Persisted Plans + Queue Worker Update
 
 - Added PostgreSQL-backed `analysis_plans` persistence and `jobs.plan_id` linkage through Alembic revision `0002_phase8b_plans`.

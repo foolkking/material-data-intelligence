@@ -1,5 +1,39 @@
 # TASK_BOARD
 
+## 2026-07-03 Phase 8C Frontend Planner UX Status
+
+### Done This Round
+
+- [x] Confirmed Phase 8B as the frozen baseline: final freeze commit `03d1915`, GitHub Actions run `28637798200` success.
+- [x] Added a `PlannerWorkbench` frontend entry point for creating persisted AnalysisPlan-backed planner jobs through `/planner/jobs`.
+- [x] Added a typed frontend planner API client for planner job creation and read-only persisted-plan/job/event/tool-call/artifact/result reads.
+- [x] Added validated plan preview with `jobId`, `planId`, `planHash`, `projectId`, step count, `stepId`, `toolId`, input summary, and validation status.
+- [x] Added a Plan Provenance panel showing `job.plan_id -> analysis_plans.id`, backend `planHash`, persisted source, `plan.loaded`, ToolCall provenance, Artifact provenance, and Result provenance.
+- [x] Added Agent Timeline, Tool Calls, Artifacts / Result, job status, loading, empty, retry/error, and terminal polling behavior.
+- [x] Added validation-failure UX that explicitly states no AnalysisPlan was saved, no Job was created, and nothing was enqueued.
+- [x] Added read-only backend planner endpoints needed by the frontend; these do not mutate plans/jobs, enqueue, execute, or trigger deterministic fallback.
+- [x] Added frontend Vitest/React Testing Library coverage for successful persisted-plan UX, `plan.loaded`, ToolCall/Artifact provenance, validation failure no-polling behavior, loading state, and API error state.
+- [x] Added backend tests for read-only planner APIs exposing persisted plan/job provenance and for read-only calls not mutating recorded JobEvents/ToolCalls/Artifacts.
+
+### Verification
+
+- [x] `uv lock --check`
+- [x] `python -m pytest tests/test_phase8c_planner_read_api.py -q` -> 2 passed
+- [x] `python -m pytest tests/test_phase8c_planner_read_api.py tests/test_phase8b_persisted_plan_queue.py -q` -> 11 passed, 1 skipped
+- [x] `python -m pytest -q` -> 112 passed, 20 skipped
+- [x] `npm ci` in `apps/web`
+- [x] `npm test` in `apps/web` -> 4 passed
+- [x] `npm run typecheck` in `apps/web`
+- [x] `npm run build` in `apps/web`
+- [ ] Current HEAD GitHub Actions verification after Phase 8C push
+
+### Handoff Notes
+
+- Phase 8C local baseline is complete but not frozen until the post-push CI run succeeds.
+- The frontend still relies on the backend `/planner/jobs` validator and never writes `analysis_plans`, creates jobs directly, enqueues queue messages directly, or computes its own authoritative plan hash.
+- QueueWorkerRuntime, AnalysisPlanRepository, and the Phase 8B persisted execution path were not redesigned in Phase 8C.
+- Remaining boundaries: true LLM integration, multi-step DAG/data binding, production secret encryption, worker supervision/dead-letter queue, and advanced material viewer polish.
+
 ## 2026-07-03 Phase 8B Persisted Plans + Redis QueueWorkerRuntime Status
 
 ### Done This Round

@@ -1,5 +1,16 @@
 # OPEN_QUESTIONS
 
+## 2026-07-03 Phase 8C Follow-ups (Frontend Planner UX)
+
+- **Frontend Planner UX local baseline is implemented, but freeze is pending CI.** The frontend can create Planner Jobs through `/planner/jobs`, display the validated persisted plan, show `planId`/`planHash`, display `job.plan_id -> analysis_plans.id`, surface `plan.loaded`, and show ToolCall/Artifact/Result plan provenance.
+- **Validation-failure UX is closed at the baseline level.** The frontend now clearly states that no AnalysisPlan was saved, no Job was created, and nothing was enqueued; it does not poll job status or show fake IDs after validation failure.
+- **Phase 8C CI gate remains open until the current HEAD is pushed and GitHub Actions succeeds.** Do not mark Phase 8C frozen before that run is green.
+- **True LLM integration remains deferred.** The frontend uses the existing backend planner provider path; production real-provider enablement and live LLM tests remain future work.
+- **Advanced multi-step DAG/data-dependency execution remains deferred.** The UI previews steps and provenance, but it is not a drag/drop DAG editor and does not add scheduler semantics.
+- **Production secret encryption remains deferred.** Phase 8C displays provenance and validation errors; it does not implement KMS/envelope encryption.
+- **Worker process supervision and dead-letter policy remain deferred.** Phase 8C did not alter worker operations.
+- **Advanced material viewer polish remains deferred.** Artifact display is provenance-oriented and does not yet implement a full material 3D viewer workflow.
+
 ## 2026-07-03 Phase 8B Follow-ups (Persisted Plans + Queue Runtime)
 
 - **Closed/frozen: QueueWorkerRuntime + persisted AnalysisPlan execution.** The main worker path now loads `job.plan_id`, fetches the persisted `AnalysisPlan`, reconstructs it, and executes exact `steps`; tests prove a persisted 1-step plan creates exactly 1 ToolCall, not the deterministic 5-tool fallback.

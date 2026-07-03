@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-03 Phase 8C - frontend displays Registry-gated execution provenance
+
+- No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 8C.
+- The Planner workbench displays "Executed through Tool Registry + Adapter" as provenance text for persisted-plan jobs; it does not introduce a frontend execution path.
+- Read-only planner APIs expose recorded ToolCall, Artifact, JobEvent, and Result provenance so the UI can show `planId`/`planHash` without bypassing registry validation.
+- The frontend still creates work only through `/planner/jobs`; validation remains server-side and must pass before any plan is persisted or any job is created.
+- The validation-failure UI explicitly states that no AnalysisPlan was saved, no Job was created, and nothing was enqueued.
+- Deterministic fallback remains a dev/test fallback only for jobs without a persisted plan; Phase 8C does not reclassify fallback as a normal product path.
+
 ## 2026-07-03 Phase 8B - persisted plan execution still uses the Registry gate
 
 - No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 8B.

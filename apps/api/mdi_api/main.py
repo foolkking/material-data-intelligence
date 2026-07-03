@@ -27,9 +27,15 @@ from mdi_api.routers.planner import (
     PlannerJobsRequest,
     PlannerPreviewRequest,
     PlannerValidateRequest,
-    planner_jobs,
-    planner_preview,
-    planner_validate,
+    get_planner_analysis_plan,
+    get_planner_job,
+    get_planner_job_artifacts,
+    get_planner_job_events,
+    get_planner_job_result,
+    get_planner_job_tool_calls,
+    planner_jobs_route,
+    planner_preview_route,
+    planner_validate_route,
 )
 from mdi_api.routers.projects import ProjectSummary
 from mdi_api.routers.secrets import (
@@ -80,9 +86,15 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/tools", list_tools, ("GET",), ("tools",)),
     RouteSpec("/tools/mvp", list_mvp_tools, ("GET",), ("tools",)),
     # Phase 7: Planner API
-    RouteSpec("/planner/preview", planner_preview, ("POST",), ("planner",)),
-    RouteSpec("/planner/validate", planner_validate, ("POST",), ("planner",)),
-    RouteSpec("/planner/jobs", planner_jobs, ("POST",), ("planner",)),
+    RouteSpec("/planner/preview", planner_preview_route, ("POST",), ("planner",)),
+    RouteSpec("/planner/validate", planner_validate_route, ("POST",), ("planner",)),
+    RouteSpec("/planner/jobs", planner_jobs_route, ("POST",), ("planner",)),
+    RouteSpec("/planner/jobs/{job_id}", get_planner_job, ("GET",), ("planner",)),
+    RouteSpec("/planner/jobs/{job_id}/events", get_planner_job_events, ("GET",), ("planner",)),
+    RouteSpec("/planner/jobs/{job_id}/tool-calls", get_planner_job_tool_calls, ("GET",), ("planner",)),
+    RouteSpec("/planner/jobs/{job_id}/artifacts", get_planner_job_artifacts, ("GET",), ("planner",)),
+    RouteSpec("/planner/jobs/{job_id}/result", get_planner_job_result, ("GET",), ("planner",)),
+    RouteSpec("/planner/analysis-plans/{plan_id}", get_planner_analysis_plan, ("GET",), ("planner",)),
     # Phase 7: Secrets API
     RouteSpec("/me/secrets", create_secret, ("POST",), ("secrets",)),
     RouteSpec("/me/secrets", list_secrets, ("GET",), ("secrets",), list[SecretSummary]),

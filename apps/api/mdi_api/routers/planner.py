@@ -27,6 +27,12 @@ from mdi_tool_registry.plan_validator import PlanValidationResult, validate_plan
 
 _LLM_PROVIDER = MockLLMProvider()
 _SECRET_STORE = InMemorySecretStore()
+_IN_MEMORY_REPOSITORIES = InMemoryRepositoryBundle.create()
+_IN_MEMORY_QUEUE_BACKEND = InMemoryQueueBackend()
+_IN_MEMORY_QUEUE_RUNTIME = QueueWorkerRuntime(
+    repositories=_IN_MEMORY_REPOSITORIES,
+    queue_backend=_IN_MEMORY_QUEUE_BACKEND,
+)
 
 
 def _get_registry() -> ToolRegistry:
@@ -273,6 +279,121 @@ def planner_jobs(
     )
 
 
+def planner_preview_route(request: PlannerPreviewRequest) -> PlannerPreviewResult:
+    return planner_preview(request)
+
+
+def planner_validate_route(request: PlannerValidateRequest) -> PlannerValidateResult:
+    return planner_validate(request)
+
+
+def planner_jobs_route(request: PlannerJobsRequest) -> PlannerJobsResult:
+    return planner_jobs(request)
+
+
+def get_planner_analysis_plan(plan_id: str, *, repositories: Any = None) -> dict[str, Any]:
+    """Read a persisted AnalysisPlan without mutating or executing anything."""
+    repos = _planner_read_repositories(repositories)
+    return _analysis_plan_response(repos.analysis_plans.get_plan(plan_id))
+
+
+def get_planner_job(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
+    """Read a planner-created job and its persisted plan binding."""
+    repos = _planner_read_repositories(repositories)
+    job = repos.jobs.get(job_id)
+    plan = _try_get_job_plan(repos, job)
+    events = repos.job_events.list_for_job(job_id)
+    tool_calls = repos.tool_calls.list_for_job(job_id)
+    artifacts = repos.artifacts.list_for_job(job_id)
+    plan_hash = _plan_hash(plan)
+    return {
+        **job,
+        "jobId": job.get("jobId") or job.get("id"),
+        "planId": job.get("planId") or job.get("plan_id") or (plan or {}).get("planId"),
+        "planHash": plan_hash,
+        "planSource": (plan or {}).get("planSource"),
+        "analysisPlan": (plan or {}).get("analysisPlan"),
+        "validationStatus": (plan or {}).get("validationStatus"),
+        "toolCallCount": len(tool_calls),
+        "artifactCount": len(artifacts),
+        "eventCount": len(events),
+        "provenance": _planner_job_provenance(job, plan),
+    }
+
+
+def get_planner_job_events(job_id: str, after_seq: int = 0, *, repositories: Any = None) -> list[dict[str, Any]]:
+    """Read persisted planner job events without touching execution state."""
+    repos = _planner_read_repositories(repositories)
+    repos.jobs.get(job_id)
+    events = repos.job_events.list_events_after_seq(job_id, after_seq)
+    return [_event_to_dict(event) for event in events]
+
+
+def get_planner_job_tool_calls(job_id: str, *, repositories: Any = None) -> list[dict[str, Any]]:
+    """Read ToolCalls and expose persisted-plan provenance for the UI."""
+    repos = _planner_read_repositories(repositories)
+    job = repos.jobs.get(job_id)
+    plan = _try_get_job_plan(repos, job)
+    provenance = _planner_job_provenance(job, plan)
+    return [
+        {
+            **tool_call,
+            "planId": provenance.get("planId"),
+            "planHash": provenance.get("planHash"),
+            "inputSummary": _params_summary(tool_call.get("params")),
+            "outputSummary": _tool_call_output_summary(tool_call),
+        }
+        for tool_call in repos.tool_calls.list_for_job(job_id)
+    ]
+
+
+def get_planner_job_artifacts(job_id: str, *, repositories: Any = None) -> list[dict[str, Any]]:
+    """Read artifacts and surface artifact-level plan provenance when present."""
+    repos = _planner_read_repositories(repositories)
+    job = repos.jobs.get(job_id)
+    plan = _try_get_job_plan(repos, job)
+    fallback = _planner_job_provenance(job, plan)
+    artifacts = []
+    for artifact in repos.artifacts.list_for_job(job_id):
+        provenance = _artifact_plan_provenance(artifact) or fallback
+        artifacts.append(
+            {
+                **artifact,
+                "planId": provenance.get("planId"),
+                "planHash": provenance.get("planHash"),
+                "provenance": provenance,
+            }
+        )
+    return artifacts
+
+
+def get_planner_job_result(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
+    """Read a compact result summary for a planner job."""
+    repos = _planner_read_repositories(repositories)
+    job = repos.jobs.get(job_id)
+    plan = _try_get_job_plan(repos, job)
+    provenance = _planner_job_provenance(job, plan)
+    tool_calls = repos.tool_calls.list_for_job(job_id)
+    artifacts = get_planner_job_artifacts(job_id, repositories=repos)
+    status = str(job.get("status") or "unknown")
+    summary = (
+        f"Job completed with {len(tool_calls)} ToolCall(s) and {len(artifacts)} Artifact(s)."
+        if status == "completed"
+        else "Result not available yet."
+    )
+    return {
+        "jobId": job.get("jobId") or job.get("id"),
+        "status": status,
+        "planId": provenance.get("planId"),
+        "planHash": provenance.get("planHash"),
+        "summary": summary,
+        "toolCallCount": len(tool_calls),
+        "artifactCount": len(artifacts),
+        "artifacts": artifacts,
+        "provenance": provenance,
+    }
+
+
 def _planner_repositories_and_runtime(*, repositories: Any, queue_runtime: QueueWorkerRuntime | None) -> tuple[Any, QueueWorkerRuntime]:
     if repositories is not None:
         runtime = queue_runtime or QueueWorkerRuntime(repositories=repositories, queue_backend=InMemoryQueueBackend())
@@ -290,9 +411,13 @@ def _planner_repositories_and_runtime(*, repositories: Any, queue_runtime: Queue
         )
         return repos, runtime
 
-    repos = InMemoryRepositoryBundle.create()
-    runtime = queue_runtime or QueueWorkerRuntime(repositories=repos, queue_backend=InMemoryQueueBackend())
-    return repos, runtime
+    runtime = queue_runtime or _IN_MEMORY_QUEUE_RUNTIME
+    return _IN_MEMORY_REPOSITORIES, runtime
+
+
+def _planner_read_repositories(repositories: Any) -> Any:
+    repos, _runtime = _planner_repositories_and_runtime(repositories=repositories, queue_runtime=None)
+    return repos
 
 
 def _ensure_planner_project_dataset(repos: Any, *, project_id: str, dataset_id: str, created_by: str) -> None:
@@ -314,3 +439,74 @@ def _provider_name(provider: Any) -> str:
 
 def _should_use_redis_queue(settings: Any) -> bool:
     return settings.queue_backend == "redis" or bool(os.getenv("REDIS_URL") or os.getenv("MDI_REDIS_URL"))
+
+
+def _try_get_job_plan(repos: Any, job: dict[str, Any]) -> dict[str, Any] | None:
+    plan_id = job.get("planId") or job.get("plan_id")
+    if plan_id:
+        return repos.analysis_plans.get_plan(str(plan_id))
+    try:
+        return repos.analysis_plans.get_plan_for_job(str(job.get("jobId") or job["id"]))
+    except LookupError:
+        return None
+
+
+def _analysis_plan_response(plan: dict[str, Any]) -> dict[str, Any]:
+    return {
+        **plan,
+        "analysisPlan": plan.get("analysisPlan"),
+        "planId": plan.get("planId") or plan.get("id"),
+        "planHash": _plan_hash(plan),
+    }
+
+
+def _planner_job_provenance(job: dict[str, Any], plan: dict[str, Any] | None) -> dict[str, Any]:
+    plan_id = (plan or {}).get("planId") or (plan or {}).get("id") or job.get("planId") or job.get("plan_id")
+    plan_hash = _plan_hash(plan)
+    return {
+        "planId": plan_id,
+        "planHash": plan_hash,
+        "planSource": (plan or {}).get("planSource"),
+        "loadedFrom": "persisted_analysis_plan" if plan_id else None,
+        "binding": "jobs.plan_id -> analysis_plans.id" if plan_id else None,
+        "toolPath": "Tool Registry + Adapter" if plan_id else None,
+        "fallbackUsed": False if plan_id else None,
+    }
+
+
+def _artifact_plan_provenance(artifact: dict[str, Any]) -> dict[str, Any] | None:
+    metadata = artifact.get("metadata") if isinstance(artifact, dict) else None
+    provenance = (metadata or {}).get("provenance") if isinstance(metadata, dict) else None
+    if isinstance(provenance, dict) and (provenance.get("planId") or provenance.get("planHash")):
+        return provenance
+    return None
+
+
+def _event_to_dict(event: Any) -> dict[str, Any]:
+    if hasattr(event, "model_dump"):
+        return event.model_dump(mode="json")
+    return dict(event)
+
+
+def _params_summary(params: Any) -> str:
+    if not isinstance(params, dict) or not params:
+        return "No params"
+    keys = ", ".join(sorted(str(key) for key in params.keys()))
+    return f"Params: {keys}"
+
+
+def _tool_call_output_summary(tool_call: dict[str, Any]) -> str:
+    artifact_ids = tool_call.get("artifactIds") or tool_call.get("artifact_ids") or []
+    if artifact_ids:
+        return f"{len(artifact_ids)} artifact(s)"
+    error = tool_call.get("error")
+    if error:
+        return str(error.get("message") or error)
+    return "Not available yet"
+
+
+def _plan_hash(plan: dict[str, Any] | None) -> str | None:
+    if not plan:
+        return None
+    value = plan.get("planHash") or plan.get("plan_hash")
+    return str(value) if value else None

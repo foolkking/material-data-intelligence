@@ -68,10 +68,13 @@ def test_phase1_next_workspace_shell_files_exist(repo_root):
     assert (web_root / "app" / "globals.css").exists()
 
     page = (web_root / "app" / "page.tsx").read_text(encoding="utf-8")
-    assert "Agent Timeline" in page
-    assert "Data assets" in page
-    assert "Visualization canvas" in page
-    assert "3D Viewer" in page
-    assert "metrics/table JSON" in page
-    assert "Recipe JSON" in page
-    assert "Markdown/HTML report" in page
+    workbench = (web_root / "app" / "components" / "PlannerWorkbench.tsx").read_text(encoding="utf-8")
+    combined = f"{page}\n{workbench}"
+    assert "PlannerWorkbench" in page
+    assert "Analysis Planner" in combined
+    assert "Validated Plan Preview" in combined
+    assert "Plan Provenance" in combined
+    assert "Agent Timeline" in combined
+    assert "Tool Calls" in combined
+    assert "Artifacts / Result" in combined
+    assert "No deterministic fallback used" in combined

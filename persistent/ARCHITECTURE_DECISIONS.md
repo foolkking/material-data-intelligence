@@ -1,5 +1,46 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-079: Phase 8C exposes persisted plan provenance through the Planner UX
+
+### Context
+
+Phase 8B made persisted AnalysisPlans executable by the queue runtime, but the
+frontend still did not expose the product workflow. Users could not create a
+Planner Job from the UI, inspect the validated persisted plan, or see evidence
+that the worker loaded `job.plan_id` instead of a request-body or deterministic
+fallback plan.
+
+### Decision
+
+Phase 8C adds a Planner workbench as the frontend entry point for persisted
+AnalysisPlan jobs. The frontend creates jobs only through `POST /planner/jobs`
+and displays backend-returned `jobId`, `planId`, and `planHash`; it does not
+write `analysis_plans`, enqueue queue messages, or compute an authoritative
+plan hash client-side.
+
+Read-only planner endpoints were added for persisted AnalysisPlan, planner job
+detail, JobEvents, ToolCalls, Artifacts, and result summary. These endpoints are
+display APIs only: they do not mutate plans/jobs, enqueue work, trigger
+execution, or call deterministic fallback planning.
+
+The UI treats `plan.loaded` as the primary runtime evidence for persisted-plan
+execution. It displays `job.plan_id -> analysis_plans.id`, Tool Registry +
+Adapter execution text, ToolCall/Artifact/Result plan provenance, and explicit
+validation-failure messaging that no plan, job, or queue message was created.
+
+### Consequences
+
+- Phase 8B remains the execution baseline; QueueWorkerRuntime and
+  AnalysisPlanRepository were not redesigned.
+- Users can now inspect the persisted AnalysisPlan binding and plan provenance
+  from the frontend.
+- Validation failure no longer looks like a created or queued job in the UI.
+- True LLM integration, DAG scheduling, production secret encryption, worker
+  supervision/dead-letter policy, and advanced material viewer polish remain
+  future phases.
+- Phase 8C is locally verified but should not be marked frozen until the
+  post-push GitHub Actions run for the current HEAD succeeds.
+
 ## ADR-078: Phase 8B persists validated plans and queue workers load by job_id
 
 ### Context
