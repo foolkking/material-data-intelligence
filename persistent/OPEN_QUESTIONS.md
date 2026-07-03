@@ -2,9 +2,9 @@
 
 ## 2026-07-03 Phase 8C Follow-ups (Frontend Planner UX)
 
-- **Frontend Planner UX local baseline is implemented, but freeze is pending CI.** The frontend can create Planner Jobs through `/planner/jobs`, display the validated persisted plan, show `planId`/`planHash`, display `job.plan_id -> analysis_plans.id`, surface `plan.loaded`, and show ToolCall/Artifact/Result plan provenance.
+- **Frontend Planner UX baseline is closed/frozen.** The frontend can create Planner Jobs through `/planner/jobs`, display the validated persisted plan, show `planId`/`planHash`, display `job.plan_id -> analysis_plans.id`, surface `plan.loaded`, and show ToolCall/Artifact/Result plan provenance. Implementation commit `9967c5b` passed GitHub Actions run `28646226271`.
 - **Validation-failure UX is closed at the baseline level.** The frontend now clearly states that no AnalysisPlan was saved, no Job was created, and nothing was enqueued; it does not poll job status or show fake IDs after validation failure.
-- **Phase 8C CI gate remains open until the current HEAD is pushed and GitHub Actions succeeds.** Do not mark Phase 8C frozen before that run is green.
+- **Phase 8C CI gate is closed for the implementation commit.** GitHub Actions run `28646226271` succeeded, including service-backed PostgreSQL + Redis + MinIO integration with 19 passed, 0 skipped, 0 failed.
 - **True LLM integration remains deferred.** The frontend uses the existing backend planner provider path; production real-provider enablement and live LLM tests remain future work.
 - **Advanced multi-step DAG/data-dependency execution remains deferred.** The UI previews steps and provenance, but it is not a drag/drop DAG editor and does not add scheduler semantics.
 - **Production secret encryption remains deferred.** Phase 8C displays provenance and validation errors; it does not implement KMS/envelope encryption.

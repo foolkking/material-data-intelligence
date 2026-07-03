@@ -38,8 +38,9 @@ validation-failure messaging that no plan, job, or queue message was created.
 - True LLM integration, DAG scheduling, production secret encryption, worker
   supervision/dead-letter policy, and advanced material viewer polish remain
   future phases.
-- Phase 8C is locally verified but should not be marked frozen until the
-  post-push GitHub Actions run for the current HEAD succeeds.
+- Phase 8C is accepted/frozen after implementation commit `9967c5b` passed
+  GitHub Actions run `28646226271`; the service-backed integration job reported
+  19 passed, 0 skipped, and 0 failed.
 
 ## ADR-078: Phase 8B persists validated plans and queue workers load by job_id
 

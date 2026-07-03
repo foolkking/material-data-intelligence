@@ -25,11 +25,11 @@
 - [x] `npm test` in `apps/web` -> 4 passed
 - [x] `npm run typecheck` in `apps/web`
 - [x] `npm run build` in `apps/web`
-- [ ] Current HEAD GitHub Actions verification after Phase 8C push
+- [x] GitHub Actions run `28646226271` on Phase 8C implementation commit `9967c5b`: Unit Tests, Frontend Typecheck & Build, and Service-backed Integration all succeeded; integration summary was 19 passed, 0 skipped, 0 failed.
 
 ### Handoff Notes
 
-- Phase 8C local baseline is complete but not frozen until the post-push CI run succeeds.
+- Phase 8C acceptance: PASS / baseline frozen after implementation commit `9967c5b` and CI run `28646226271`.
 - The frontend still relies on the backend `/planner/jobs` validator and never writes `analysis_plans`, creates jobs directly, enqueues queue messages directly, or computes its own authoritative plan hash.
 - QueueWorkerRuntime, AnalysisPlanRepository, and the Phase 8B persisted execution path were not redesigned in Phase 8C.
 - Remaining boundaries: true LLM integration, multi-step DAG/data binding, production secret encryption, worker supervision/dead-letter queue, and advanced material viewer polish.

@@ -33,7 +33,7 @@
 - Phase 8C + Phase 8B targeted: 11 passed, 1 skipped locally.
 - Backend full: 112 passed, 20 skipped.
 - Frontend: `npm ci`, `npm test` (4 passed), `npm run typecheck`, and `npm run build` passed in `apps/web`.
-- Current HEAD CI verification remains pending until this Phase 8C commit is pushed.
+- GitHub Actions run `28646226271` on Phase 8C implementation commit `9967c5b`: Unit Tests, Frontend Typecheck & Build, and Service-backed Integration all passed. Integration summary: 19 passed, 0 skipped, 0 failed.
 
 ### Phase 8B Persisted Plans + Queue Worker Runtime
 

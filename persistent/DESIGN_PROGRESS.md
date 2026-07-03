@@ -11,7 +11,8 @@
 - The validation failure UI now clearly states: "Plan validation failed", "No AnalysisPlan was saved", "No Job was created", "Nothing was enqueued", and "Please fix the request and try again"; it clears job state and does not start status polling.
 - No true LLM integration, multi-step DAG execution, production secret encryption, QueueWorkerRuntime redesign, AnalysisPlanRepository redesign, or Tool Registry redesign was introduced.
 - Local verification for the Phase 8C implementation: `uv lock --check` passed; `python -m pytest tests/test_phase8c_planner_read_api.py -q` passed with 2 tests; `python -m pytest tests/test_phase8c_planner_read_api.py tests/test_phase8b_persisted_plan_queue.py -q` passed with 11 passed / 1 skipped; `python -m pytest -q` passed with 112 passed / 20 skipped; `npm ci`, `npm test`, `npm run typecheck`, and `npm run build` passed in `apps/web`.
-- Phase 8C status: local baseline complete and ready for commit/push/CI validation; do not mark frozen until the current HEAD CI succeeds.
+- Phase 8C implementation commit `9967c5b` passed GitHub Actions run `28646226271`: Unit Tests, Frontend Typecheck & Build, and Service-backed Integration all succeeded. The integration job reported 19 passed, 0 skipped, 0 failed.
+- Phase 8C status: PASS / baseline frozen after CI-backed verification.
 - Remaining boundaries after this update: true LLM integration, advanced multi-step DAG/data-dependency execution, production secret encryption, worker process supervision/dead-letter policy, and deeper material-specific viewer polish.
 
 ## 2026-07-03 Phase 8B Persisted Plans + Queue Worker Update
