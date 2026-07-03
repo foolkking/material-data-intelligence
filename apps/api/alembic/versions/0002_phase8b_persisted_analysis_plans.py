@@ -4,7 +4,7 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision = "0002_phase8b_persisted_analysis_plans"
+revision = "0002_phase8b_plans"
 down_revision = "0001_phase4_persistence_baseline"
 branch_labels = None
 depends_on = None

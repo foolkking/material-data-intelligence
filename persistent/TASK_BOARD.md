@@ -4,7 +4,7 @@
 
 ### Done This Round
 
-- [x] Added Alembic migration `0002_phase8b_persisted_analysis_plans` for `analysis_plans` and nullable `jobs.plan_id`.
+- [x] Added Alembic migration `0002_phase8b_plans` for `analysis_plans` and nullable `jobs.plan_id`.
 - [x] Added indexes: `idx_analysis_plans_project_created`, `idx_analysis_plans_job`, `idx_analysis_plans_plan_hash`, and `idx_jobs_plan_id`.
 - [x] Added `AnalysisPlanRepository` to in-memory and SQLAlchemy repository bundles.
 - [x] Added stable canonical SHA-256 `plan_hash` and AnalysisPlan JSON round-trip tests.

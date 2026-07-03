@@ -3,7 +3,7 @@
 ## 2026-07-03 Phase 8B Follow-ups (Persisted Plans + Queue Runtime)
 
 - **Closed locally: QueueWorkerRuntime + persisted AnalysisPlan execution.** The main worker path now loads `job.plan_id`, fetches the persisted `AnalysisPlan`, reconstructs it, and executes exact `steps`; tests prove a persisted 1-step plan creates exactly 1 ToolCall, not the deterministic 5-tool fallback.
-- **Closed locally: PostgreSQL persisted plan schema.** Alembic revision `0002_phase8b_persisted_analysis_plans` adds `analysis_plans`, `jobs.plan_id`, and required indexes. CI now verifies these through Alembic upgrade head against PostgreSQL.
+- **Closed locally: PostgreSQL persisted plan schema.** Alembic revision `0002_phase8b_plans` adds `analysis_plans`, `jobs.plan_id`, and required indexes. CI now verifies these through Alembic upgrade head against PostgreSQL.
 - **Service-backed freeze gate remains open until CI current HEAD passes.** This local machine has no Docker CLI, so the PostgreSQL + Redis + MinIO Phase 8B integration test cannot be run locally. The CI integration job is configured to run Phase 6 + Phase 8B tests with zero skipped tests and at least 19 passes.
 - **Frontend Planner UX remains deferred to Phase 8C.** Do not start Phase 8C until Phase 8B is frozen by CI-backed service integration.
 - **Multi-step dependency graph remains deferred.** Phase 8B executes persisted steps in order and preserves the existing `inputRefs`/`object_store` mechanism; it does not add DAG scheduling or inter-step artifact binding.

@@ -6,7 +6,7 @@
 
 #### Added
 
-- Added Alembic revision `0002_phase8b_persisted_analysis_plans` for `analysis_plans` and nullable `jobs.plan_id`.
+- Added Alembic revision `0002_phase8b_plans` for `analysis_plans` and nullable `jobs.plan_id`.
 - Added `AnalysisPlanRepository` implementations for in-memory tests and SQLAlchemy/PostgreSQL runtime.
 - Added stable canonical SHA-256 `plan_hash` for validated `AnalysisPlan` JSON.
 - Added `tests/test_phase8b_persisted_plan_queue.py` covering repository round-trip/hash, planner persistence/enqueue behavior, validation-failure no-op, worker persisted-plan loading, exact 1-step execution, fallback behavior, and service-backed PostgreSQL + Redis + MinIO integration.
