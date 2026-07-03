@@ -17,6 +17,7 @@
 - Valid `/planner/jobs` requests now persist the exact validated plan, create a Job linked by `plan_id`, return `plan_id`/`plan_hash`, and enqueue only `job_id` when requested.
 - `QueueWorkerRuntime.handle_job(job_id)` now loads `job.plan_id` / `analysis_plans[plan_id]`, reconstructs `AnalysisPlan`, and executes exact persisted `steps`.
 - Worker JobEvents, Artifact metadata, and `QueueWorkerResult` now include persisted plan provenance where available.
+- QueueWorkerRuntime now initializes real adapter execution context from Tool Registry metadata for persisted-plan jobs, so the service-backed path can execute `ml.basic_metrics` without a fake executor.
 - CI service-backed integration now runs Phase 6 plus Phase 8B integration and requires at least 19 passes with 0 skips.
 
 #### Preserved
@@ -28,13 +29,13 @@
 #### Verification
 
 - `uv lock --check`: passed.
-- Phase 8B targeted: 8 passed, 1 skipped locally (integration gated).
+- Phase 8B targeted: 9 passed, 1 skipped locally (integration gated).
 - Phase 8A targeted: 11 passed.
 - Phase 7 targeted: 22 passed.
-- Backend full: 109 passed, 20 skipped.
+- Backend full: 110 passed, 20 skipped.
 - Frontend: `npm ci`, `npm run typecheck`, `npm run build` passed in `apps/web`.
 - Local service-backed integration: not run because Docker CLI is unavailable on this machine.
-- CI service-backed integration: configured for PostgreSQL + Redis + MinIO zero-skip verification; current HEAD success is required before Phase 8B freeze.
+- CI run `28631817086` on Phase 8B code acceptance commit `962c429`: Unit Tests, Frontend Typecheck & Build, and Service-backed Integration all passed. Integration summary: 19 passed, 0 skipped, 0 failed.
 
 ## 2026-06-27
 

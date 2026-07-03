@@ -6,6 +6,7 @@
 - Phase 8B changed where the validated plan is stored and loaded from: `/planner/jobs` persists the exact validated `AnalysisPlan`, and `QueueWorkerRuntime` loads it by `job.plan_id`.
 - Execution is still controlled by the same path: persisted `AnalysisPlan` -> `ToolExecutionRequest` -> Tool Registry lookup -> paramsSchema validation -> Adapter -> Artifact.
 - The persisted 1-step test proves `toolId=ml.basic_metrics` and `stepId=llm_step_1` come from the persisted plan and produce exactly 1 ToolCall, not the deterministic 5-tool fallback.
+- The Phase 8B targeted suite now includes a real adapter regression for persisted-plan execution, and CI run `28631817086` proved the same path against PostgreSQL + Redis + MinIO with 19 integration tests passed and 0 skipped.
 - Unknown tools, V1/V2/non-MVP tools, duplicate steps, empty steps, and credential-like params are still rejected by PlanValidator before the plan can be saved or enqueued.
 - Explicit worker fallback with caller-provided `plan` remains only for dev/test jobs that have no persisted `plan_id`; it is not the Phase 8B service-backed acceptance path.
 

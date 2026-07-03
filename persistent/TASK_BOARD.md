@@ -12,24 +12,25 @@
 - [x] Upgraded `QueueWorkerRuntime.handle_job(job_id)` to load `job.plan_id` and execute exact persisted `AnalysisPlan.steps`.
 - [x] Added plan provenance to worker events/artifact metadata/result (`planId`, `planHash`, `planSource`).
 - [x] Proved persisted 1-step plan -> exactly 1 ToolCall with `toolId`/`stepId` from the persisted plan, Artifact generated, and Job completed.
+- [x] Proved the persisted-plan worker path also executes through the real `ml.basic_metrics` Tool Registry + Adapter path, not only a fake unit-test executor.
 - [x] Preserved explicit fallback only when a job has no persisted plan.
 - [x] Updated CI integration job to include Phase 8B service-backed test and enforce zero skips / at least 19 integration passes.
 
 ### Verification
 
 - [x] `uv lock --check`
-- [x] `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` -> 8 passed, 1 skipped locally (integration gated)
+- [x] `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` -> 9 passed, 1 skipped locally (integration gated)
 - [x] `python -m pytest tests/test_phase8a_plan_execution.py -q` -> 11 passed
 - [x] `python -m pytest tests/test_phase7_llm_planner.py -q` -> 22 passed
-- [x] `python -m pytest -q` -> 109 passed, 20 skipped
+- [x] `python -m pytest -q` -> 110 passed, 20 skipped
 - [x] `npm ci`, `npm run typecheck`, `npm run build` in `apps/web`
 - [ ] `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration` on this machine (blocked: Docker CLI unavailable)
-- [ ] GitHub Actions current HEAD service-backed integration success (required before Phase 8B freeze)
+- [x] GitHub Actions run `28631817086` on Phase 8B code acceptance commit `962c429`: Unit Tests, Frontend Typecheck & Build, and Service-backed Integration all succeeded; integration summary was 19 passed, 0 skipped, 0 failed.
 
 ### Handoff Notes
 
-- Phase 8B is locally complete but not frozen until CI proves PostgreSQL + Redis + MinIO service-backed integration with zero skipped tests.
-- Phase 8C frontend Planner UX must not start before the CI-backed Phase 8B freeze.
+- Phase 8B is frozen at commit `962c429` after CI proved PostgreSQL + Redis + MinIO service-backed integration with zero skipped tests.
+- Phase 8C frontend Planner UX may start after this frozen baseline.
 - Remaining boundaries: true LLM integration, frontend Planner UX, multi-step DAG/data binding, production secret encryption, worker process supervision/dead-letter queue.
 
 ## 2026-06-27 Phase 8A LLM Plan Execution Bridge Status

@@ -36,9 +36,10 @@ dev/test fallback only for jobs without a persisted plan.
   `stepId` copied from the persisted plan.
 - `build_phase2_plan` is not used when a job already has `plan_id`.
 - Tool Registry + Adapter remain the only execution path.
-- Phase 8B is not frozen until the CI service-backed job proves PostgreSQL +
-  Redis + MinIO integration with zero skipped tests.
-- Phase 8C frontend Planner UX must wait for that freeze.
+- Phase 8B was frozen at commit `962c429` after GitHub Actions run
+  `28631817086` proved PostgreSQL + Redis + MinIO integration with 19 passed,
+  0 skipped, and 0 failed.
+- Phase 8C frontend Planner UX may start after that frozen baseline.
 
 ## ADR-077: Phase 8A — the validated LLM plan becomes the job's execution plan
 
