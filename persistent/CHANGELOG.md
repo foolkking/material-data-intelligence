@@ -32,7 +32,7 @@
 - Phase 8B persisted-plan targeted: 9 passed, 1 skipped locally.
 - Backend full: 112 passed, 20 skipped.
 - Frontend: `npm test` (5 passed), `npm run typecheck`, and `npm run build` passed in `apps/web`.
-- CI: pending current closure commit push.
+- GitHub Actions run `28664159687` on Phase 8C-P1 implementation commit `4d0c241`: Unit Tests, Frontend Typecheck & Build, and Service-backed Integration all passed. Integration summary: 19 passed, 0 skipped, 0 failed.
 
 ### Phase 8C Frontend Planner UX
 

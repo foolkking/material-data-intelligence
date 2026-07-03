@@ -23,11 +23,11 @@
 - [x] `npm test` in `apps/web` -> 5 passed
 - [x] `npm run typecheck` in `apps/web`
 - [x] `npm run build` in `apps/web`
-- [ ] CI for this closure -> pending push/current HEAD run
+- [x] GitHub Actions run `28664159687` on Phase 8C-P1 implementation commit `4d0c241`: Unit Tests, Frontend Typecheck & Build, and Service-backed Integration all succeeded; integration summary was 19 passed, 0 skipped, 0 failed.
 
 ### Handoff Notes
 
-- Phase 8C-P1 local closure: PASS pending CI confirmation after push.
+- Phase 8C-P1 compliance closure: PASS after implementation commit `4d0c241` and CI run `28664159687`.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs` core semantics, Tool Registry manifests, and adapter execution were not changed.
 - Remaining boundaries: true LLM integration, multi-step DAG/data binding, production secret encryption, worker supervision/dead-letter queue, and advanced material viewer polish.
 

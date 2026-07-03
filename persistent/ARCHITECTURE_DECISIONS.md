@@ -35,6 +35,9 @@ unavailable. The UI does not invent fake dataset/profile records.
   validation, persistence, job creation, and enqueue semantics.
 - The frontend has a docs-compliant SSE timeline path while retaining a robust
   fallback for local/dev environments.
+- Phase 8C-P1 is accepted after implementation commit `4d0c241` passed GitHub
+  Actions run `28664159687`; the service-backed integration job reported 19
+  passed, 0 skipped, and 0 failed.
 - True LLM integration, multi-step DAG scheduling, production secret encryption,
   and worker supervision/dead-letter policy remain future work.
 

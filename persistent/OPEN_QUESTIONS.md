@@ -5,7 +5,7 @@
 - **SSE/EventSource timeline P1 is locally closed.** The Planner workbench now opens an EventSource path for persisted JobEvents through `/planner/jobs/{job_id}/events/stream`, and polling remains only as fallback.
 - **Report/Recipe Summary P1 is locally closed.** The UI now has a separate report/recipe summary area instead of relying on the artifact/result list alone.
 - **Dataset/Profile selector P1 is locally closed.** The UI now offers API-backed dataset/profile selection using existing read endpoints and retains manual ID fallback when discovery/profile reads are unavailable.
-- **CI for this closure is pending until push.** Current local verification passed; GitHub Actions must still confirm the pushed HEAD and service-backed integration remains non-skipped.
+- **Phase 8C-P1 CI gate is closed for the implementation commit.** GitHub Actions run `28664159687` on commit `4d0c241` succeeded, including service-backed PostgreSQL + Redis + MinIO integration with 19 passed, 0 skipped, 0 failed.
 - **True LLM integration remains deferred.** No production LLM provider enablement or live LLM test gate was added.
 - **Advanced multi-step DAG/data-dependency execution remains deferred.** No scheduler or DAG editor semantics were added.
 - **Production secret encryption remains deferred.** No KMS/envelope encryption work was done.

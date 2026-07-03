@@ -9,7 +9,8 @@
 - Added read-only SSE replay support for planner JobEvents. The endpoint replays persisted events only; it does not mutate jobs/plans, enqueue work, execute tools, or call deterministic fallback planning.
 - Frontend tests now cover EventSource/SSE timeline behavior, Report/Recipe Summary rendering, Dataset/Profile selector behavior, validation-failure no-save/no-job/no-enqueue semantics, loading state, and API error state.
 - Local verification for this closure: `uv lock --check` passed; `python -m pytest tests/test_phase8c_planner_read_api.py -q` passed with 2 tests; `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` passed with 9 passed / 1 skipped; `python -m pytest -q` passed with 112 passed / 20 skipped; `npm test` passed with 5 frontend tests; `npm run typecheck` and `npm run build` passed in `apps/web`.
-- CI for this closure is pending until the implementation is committed and pushed. The latest frozen Phase 8C baseline before this work remains commit `69ae5f1`.
+- Phase 8C-P1 implementation commit `4d0c241` passed GitHub Actions run `28664159687`: Unit Tests, Frontend Typecheck & Build, and Service-backed Integration all succeeded. The integration job reported 19 passed, 0 skipped, 0 failed.
+- Phase 8C-P1 status: PASS / compliance closure accepted after CI-backed verification.
 - Remaining boundaries are unchanged: true LLM integration, advanced multi-step DAG/data-dependency execution, production secret encryption, worker supervision/dead-letter policy, and advanced material viewer polish.
 
 ## 2026-07-03 Phase 8C Frontend Planner UX Update
