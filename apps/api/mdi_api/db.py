@@ -127,7 +127,7 @@ analysis_plans = Table(
     Column("analysis_plan_json", JSON, nullable=False),
     Column("plan_hash", String(64), nullable=False),
     Column("validation_status", String(32), nullable=False),
-    Column("created_by", String(64), ForeignKey("users.id"), nullable=False),
+    Column("created_by", String(64), nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     CheckConstraint("validation_status in ('validated', 'rejected')", name="analysis_plan_validation_status"),

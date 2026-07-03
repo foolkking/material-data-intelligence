@@ -23,7 +23,7 @@ def upgrade() -> None:
         sa.Column("analysis_plan_json", sa.JSON(), nullable=False),
         sa.Column("plan_hash", sa.String(length=64), nullable=False),
         sa.Column("validation_status", sa.String(length=32), nullable=False),
-        sa.Column("created_by", sa.String(length=64), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column("created_by", sa.String(length=64), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.func.now()),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.func.now()),
         sa.CheckConstraint("validation_status in ('validated', 'rejected')", name="analysis_plan_validation_status"),
