@@ -1,5 +1,43 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-080: Phase 8C-P1 uses read-only SSE and data-context selection to close UX compliance gaps
+
+### Context
+
+The Phase-by-phase code acceptance audit found no Phase 8C P0 blocker, but it
+identified P1 gaps against the frontend workspace docs: the timeline needed a
+primary SSE/EventSource path, report/recipe summary needed its own panel, and
+dataset/profile entry needed a selectable data-context workflow rather than raw
+ID fields only.
+
+### Decision
+
+Phase 8C-P1 adds a read-only planner JobEvent SSE replay endpoint and makes the
+Planner workbench use EventSource as the primary timeline transport. Polling is
+kept as a fallback only. The SSE endpoint replays persisted JobEvents and does
+not mutate plans/jobs, enqueue work, execute tools, or call deterministic
+fallback planning.
+
+The UI now separates `Artifact Gallery` from `Report / Recipe Summary`. The
+Report/Recipe panel presents result summary, report artifacts, recipe artifacts,
+artifact references, `planId`, `planHash`, and persisted-plan provenance.
+
+The Planner workbench now includes an API-backed Dataset/Profile selector using
+the existing `/datasets` and `/datasets/{dataset_id}/profile` read endpoints.
+Manual ID fallback remains available when discovery/profile reads are
+unavailable. The UI does not invent fake dataset/profile records.
+
+### Consequences
+
+- Phase 8B execution semantics remain unchanged: persisted plans still execute
+  through QueueWorkerRuntime, Tool Registry, and Adapter paths.
+- `/planner/jobs` remains the only frontend job-creation path and still owns
+  validation, persistence, job creation, and enqueue semantics.
+- The frontend has a docs-compliant SSE timeline path while retaining a robust
+  fallback for local/dev environments.
+- True LLM integration, multi-step DAG scheduling, production secret encryption,
+  and worker supervision/dead-letter policy remain future work.
+
 ## ADR-079: Phase 8C exposes persisted plan provenance through the Planner UX
 
 ### Context

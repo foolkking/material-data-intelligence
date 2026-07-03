@@ -56,6 +56,14 @@ def test_planner_read_routes_return_persisted_job_and_plan_from_same_repository(
     assert plan["validationStatus"] == "validated"
     assert plan["analysisPlan"]["steps"][0]["toolId"] == "ml.basic_metrics"
 
+    stream = client.get(f"/planner/jobs/{created['job_id']}/events/stream")
+    assert stream.status_code == 200
+    assert stream.headers["content-type"].startswith("text/event-stream")
+    assert "event: job.created" in stream.text
+    assert "event: plan.persisted" in stream.text
+    assert created["plan_id"] in stream.text
+    assert created["plan_hash"] in stream.text
+
 
 def test_planner_read_endpoints_expose_execution_provenance_without_mutating() -> None:
     repos, ids, plan_hash = _seed_persisted_plan_repos()

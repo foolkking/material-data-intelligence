@@ -1,5 +1,16 @@
 # OPEN_QUESTIONS
 
+## 2026-07-03 Phase 8C-P1 Follow-ups (UX Compliance Closure)
+
+- **SSE/EventSource timeline P1 is locally closed.** The Planner workbench now opens an EventSource path for persisted JobEvents through `/planner/jobs/{job_id}/events/stream`, and polling remains only as fallback.
+- **Report/Recipe Summary P1 is locally closed.** The UI now has a separate report/recipe summary area instead of relying on the artifact/result list alone.
+- **Dataset/Profile selector P1 is locally closed.** The UI now offers API-backed dataset/profile selection using existing read endpoints and retains manual ID fallback when discovery/profile reads are unavailable.
+- **CI for this closure is pending until push.** Current local verification passed; GitHub Actions must still confirm the pushed HEAD and service-backed integration remains non-skipped.
+- **True LLM integration remains deferred.** No production LLM provider enablement or live LLM test gate was added.
+- **Advanced multi-step DAG/data-dependency execution remains deferred.** No scheduler or DAG editor semantics were added.
+- **Production secret encryption remains deferred.** No KMS/envelope encryption work was done.
+- **Worker process supervision and dead-letter policy remain deferred.** Worker runtime semantics were not changed.
+
 ## 2026-07-03 Phase 8C Follow-ups (Frontend Planner UX)
 
 - **Frontend Planner UX baseline is closed/frozen.** The frontend can create Planner Jobs through `/planner/jobs`, display the validated persisted plan, show `planId`/`planHash`, display `job.plan_id -> analysis_plans.id`, surface `plan.loaded`, and show ToolCall/Artifact/Result plan provenance. Implementation commit `9967c5b` passed GitHub Actions run `28646226271`.

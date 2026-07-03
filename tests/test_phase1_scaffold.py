@@ -76,5 +76,6 @@ def test_phase1_next_workspace_shell_files_exist(repo_root):
     assert "Plan Provenance" in combined
     assert "Agent Timeline" in combined
     assert "Tool Calls" in combined
-    assert "Artifacts / Result" in combined
+    assert "Artifact Gallery" in combined
+    assert "Report / Recipe Summary" in combined
     assert "No deterministic fallback used" in combined

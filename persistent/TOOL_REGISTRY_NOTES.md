@@ -1,5 +1,12 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-03 Phase 8C-P1 - UX closure keeps Registry-gated execution unchanged
+
+- No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 8C-P1.
+- The new EventSource timeline only replays persisted JobEvents; it does not create an execution path and does not bypass Tool Registry validation.
+- The new Report/Recipe Summary panel displays existing ToolCall/Artifact/Result provenance (`planId`/`planHash`) and does not synthesize execution records.
+- The Dataset/Profile selector only improves data-context entry. It does not allow the frontend to create or mutate persisted AnalysisPlans.
+
 ## 2026-07-03 Phase 8C - frontend displays Registry-gated execution provenance
 
 - No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 8C.

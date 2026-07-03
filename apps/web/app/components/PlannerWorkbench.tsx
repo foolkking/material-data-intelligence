@@ -1,11 +1,13 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   AnalysisPlan,
   AnalysisPlanRecord,
   Artifact,
+  DataProfileSummary,
+  DatasetOption,
   JobEvent,
   JobResult,
   PlannerApiError,
@@ -14,12 +16,15 @@ import {
   ToolCall,
   ValidationError,
   createPlannerJob,
+  getDatasetProfile,
   getAnalysisPlan,
   getPlannerJob,
   getPlannerJobArtifacts,
   getPlannerJobEvents,
+  getPlannerJobEventsStreamUrl,
   getPlannerJobResult,
-  getPlannerJobToolCalls
+  getPlannerJobToolCalls,
+  listDatasets
 } from "../lib/planner-api";
 
 type Snapshot = {
@@ -32,6 +37,27 @@ type Snapshot = {
 };
 
 const terminalStatuses = new Set(["completed", "failed", "cancelled"]);
+const terminalEventTypes = new Set(["job.completed", "job.failed", "job.cancelled"]);
+const sseEventTypes = [
+  "job.created",
+  "job.queued",
+  "job.running",
+  "plan.generated",
+  "plan.persisted",
+  "plan.loaded",
+  "tool.started",
+  "tool.completed",
+  "tool.failed",
+  "artifact.ready",
+  "artifact.created",
+  "report.ready",
+  "result.created",
+  "job.completed",
+  "job.failed",
+  "job.cancelled"
+];
+
+type TimelineTransport = "idle" | "SSE/EventSource" | "Polling fallback";
 
 const emptySnapshot: Snapshot = {
   job: null,
@@ -46,11 +72,15 @@ export function PlannerWorkbench() {
   const [projectId, setProjectId] = useState("project_local");
   const [datasetId, setDatasetId] = useState("dataset_demo");
   const [profileId, setProfileId] = useState("profile_demo");
+  const [datasetOptions, setDatasetOptions] = useState<DatasetOption[]>([]);
+  const [profileOptions, setProfileOptions] = useState<DataProfileSummary[]>([]);
+  const [dataContextStatus, setDataContextStatus] = useState("Loading API data context");
   const [userPrompt, setUserPrompt] = useState("Compute basic metrics for y_true vs y_pred.");
   const [enqueue, setEnqueue] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [shouldPoll, setShouldPoll] = useState(false);
+  const [timelineTransport, setTimelineTransport] = useState<TimelineTransport>("idle");
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [currentPlanId, setCurrentPlanId] = useState<string | null>(null);
   const [createResult, setCreateResult] = useState<PlannerJobCreateResult | null>(null);
@@ -67,26 +97,73 @@ export function PlannerWorkbench() {
   const planLoadedEvent = snapshot.events.find((event) => event.eventType === "plan.loaded");
   const status = snapshot.job?.status || (createResult?.enqueued ? "queued" : createResult?.ok ? "created" : "unknown");
   const terminal = terminalStatuses.has(status);
+  const datasetSelectValue = datasetOptions.some((dataset) => dataset.id === datasetId) ? datasetId : "__manual";
+  const profileSelectValue = profileOptions.some((profile) => profile.profileId === profileId || profile.id === profileId) ? profileId : "__manual";
 
-  async function refreshSnapshot(jobIdValue: string, planIdValue: string | null, fallbackPlan?: AnalysisPlan | null) {
+  const loadProfileForDataset = useCallback(async (nextDatasetId: string) => {
+    if (!nextDatasetId) {
+      setProfileOptions([]);
+      return;
+    }
+    try {
+      const profile = await getDatasetProfile(nextDatasetId);
+      const nextProfileId = profile.profileId || profile.id || nextDatasetId;
+      const normalizedProfile = { ...profile, profileId: nextProfileId, datasetId: profile.datasetId || nextDatasetId };
+      setProfileOptions([normalizedProfile]);
+      setProfileId(nextProfileId);
+      setDataContextStatus("Dataset/profile loaded from API");
+    } catch {
+      setProfileOptions([]);
+      setDataContextStatus("No API profile found; manual profile ID fallback is active");
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    listDatasets()
+      .then((datasets) => {
+        if (cancelled) {
+          return;
+        }
+        setDatasetOptions(datasets);
+        setDataContextStatus(datasets.length ? "Dataset list loaded from API" : "No API datasets found; manual ID fallback is active");
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setDatasetOptions([]);
+          setDataContextStatus("Dataset discovery unavailable; manual ID fallback is active");
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function refreshSnapshot(
+    jobIdValue: string,
+    planIdValue: string | null,
+    fallbackPlan?: AnalysisPlan | null,
+    options: { includeEvents?: boolean } = {}
+  ) {
+    const includeEvents = options.includeEvents ?? true;
     setRefreshing(true);
     try {
       const [job, events, toolCalls, artifacts, result, analysisPlan] = await Promise.all([
         getPlannerJob(jobIdValue),
-        getPlannerJobEvents(jobIdValue),
+        includeEvents ? getPlannerJobEvents(jobIdValue) : Promise.resolve([]),
         getPlannerJobToolCalls(jobIdValue),
         getPlannerJobArtifacts(jobIdValue),
         getPlannerJobResult(jobIdValue),
         planIdValue ? getAnalysisPlan(planIdValue) : Promise.resolve(null)
       ]);
-      setSnapshot({
+      setSnapshot((current) => ({
         job: fallbackPlan && !job.analysisPlan ? { ...job, analysisPlan: fallbackPlan } : job,
         analysisPlan,
-        events,
+        events: includeEvents ? events : current.events,
         toolCalls,
         artifacts,
         result
-      });
+      }));
     } catch (error) {
       setApiError(error instanceof PlannerApiError ? error.message : "Unable to load planner job state.");
     } finally {
@@ -104,6 +181,7 @@ export function PlannerWorkbench() {
     setCurrentJobId(null);
     setCurrentPlanId(null);
     setShouldPoll(false);
+    setTimelineTransport("idle");
     try {
       const created = await createPlannerJob({
         projectId,
@@ -132,15 +210,74 @@ export function PlannerWorkbench() {
     }
   }
 
+  function onDatasetSelect(value: string) {
+    if (value === "__manual") {
+      setDataContextStatus("Manual dataset/profile ID fallback is active");
+      return;
+    }
+    setDatasetId(value);
+    void loadProfileForDataset(value);
+  }
+
+  function onProfileSelect(value: string) {
+    if (value === "__manual") {
+      setDataContextStatus("Manual profile ID fallback is active");
+      return;
+    }
+    setProfileId(value);
+  }
+
+  function appendTimelineEvent(event: JobEvent) {
+    setSnapshot((current) => ({
+      ...current,
+      events: mergeEvents(current.events, [event])
+    }));
+  }
+
+  useEffect(() => {
+    if (!currentJobId || !createResult?.ok || !createResult.enqueued) {
+      return;
+    }
+    if (typeof window === "undefined" || !("EventSource" in window)) {
+      setTimelineTransport("Polling fallback");
+      return;
+    }
+
+    const source = new window.EventSource(getPlannerJobEventsStreamUrl(currentJobId, maxEventSeq(snapshot.events)));
+    setTimelineTransport("SSE/EventSource");
+
+    const handleEvent = (message: MessageEvent) => {
+      const event = parseEventSourceEvent(message.data);
+      if (!event) {
+        return;
+      }
+      appendTimelineEvent(event);
+      if (event.eventType && terminalEventTypes.has(event.eventType)) {
+        void refreshSnapshot(currentJobId, currentPlanId, undefined, { includeEvents: false });
+      }
+    };
+
+    source.onmessage = handleEvent;
+    source.onerror = () => {
+      setTimelineTransport("Polling fallback");
+      source.close();
+    };
+    sseEventTypes.forEach((eventType) => source.addEventListener(eventType, handleEvent as EventListener));
+
+    return () => {
+      source.close();
+    };
+  }, [currentJobId, createResult?.ok, createResult?.enqueued]);
+
   useEffect(() => {
     if (!currentJobId || !shouldPoll || terminal) {
       return;
     }
     const interval = window.setInterval(() => {
-      void refreshSnapshot(currentJobId, currentPlanId);
+      void refreshSnapshot(currentJobId, currentPlanId, undefined, { includeEvents: timelineTransport !== "SSE/EventSource" });
     }, 2500);
     return () => window.clearInterval(interval);
-  }, [currentJobId, currentPlanId, shouldPoll, terminal]);
+  }, [currentJobId, currentPlanId, shouldPoll, terminal, timelineTransport]);
 
   return (
     <main className="planner-shell">
@@ -152,6 +289,15 @@ export function PlannerWorkbench() {
         </header>
 
         <form className="planner-form" data-testid="planner-form" onSubmit={onSubmit}>
+          <DataContextSelector
+            datasetOptions={datasetOptions}
+            profileOptions={profileOptions}
+            datasetSelectValue={datasetSelectValue}
+            profileSelectValue={profileSelectValue}
+            status={dataContextStatus}
+            onDatasetSelect={onDatasetSelect}
+            onProfileSelect={onProfileSelect}
+          />
           <label>
             Project ID
             <input value={projectId} onChange={(event) => setProjectId(event.target.value)} required />
@@ -201,12 +347,66 @@ export function PlannerWorkbench() {
             result={snapshot.result}
           />
           <JobStatusPanel job={snapshot.job} result={snapshot.result} refreshing={refreshing} />
-          <JobTimeline events={snapshot.events} />
+          <JobTimeline events={snapshot.events} transport={timelineTransport} />
           <ToolCallsPanel toolCalls={snapshot.toolCalls} />
-          <ArtifactsResultPanel artifacts={snapshot.artifacts} result={snapshot.result} />
+          <ArtifactsResultPanel artifacts={snapshot.artifacts} />
+          <ReportRecipePanel artifacts={snapshot.artifacts} result={snapshot.result} analysisPlan={snapshot.analysisPlan} />
         </section>
       </section>
     </main>
+  );
+}
+
+function DataContextSelector({
+  datasetOptions,
+  profileOptions,
+  datasetSelectValue,
+  profileSelectValue,
+  status,
+  onDatasetSelect,
+  onProfileSelect
+}: {
+  datasetOptions: DatasetOption[];
+  profileOptions: DataProfileSummary[];
+  datasetSelectValue: string;
+  profileSelectValue: string;
+  status: string;
+  onDatasetSelect: (value: string) => void;
+  onProfileSelect: (value: string) => void;
+}) {
+  return (
+    <section className="data-context-panel" aria-label="Dataset/Profile selection" data-testid="data-context-selector">
+      <div className="compact-heading">
+        <strong>Data Context</strong>
+        <span>API-backed selector</span>
+      </div>
+      <label>
+        Dataset selector
+        <select aria-label="Dataset selector" value={datasetSelectValue} onChange={(event) => onDatasetSelect(event.target.value)}>
+          <option value="__manual">Manual dataset ID fallback</option>
+          {datasetOptions.map((dataset) => (
+            <option key={dataset.id} value={dataset.id}>
+              {display(dataset.name || dataset.id)} ({display(dataset.status || "unknown")})
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        Profile selector
+        <select aria-label="Profile selector" value={profileSelectValue} onChange={(event) => onProfileSelect(event.target.value)} disabled={!profileOptions.length}>
+          <option value="__manual">Manual profile ID fallback</option>
+          {profileOptions.map((profile) => {
+            const value = profile.profileId || profile.id || "";
+            return (
+              <option key={value} value={value}>
+                {display(value)} ({display(profile.datasetType || "profile")})
+              </option>
+            );
+          })}
+        </select>
+      </label>
+      <p className="selector-status">{status}</p>
+    </section>
   );
 }
 
@@ -358,7 +558,7 @@ function PlanProvenance({
         <strong>{display(planLoadedEvent?.eventType)}</strong>
         <span>{display(planLoadedEvent?.createdAt)}</span>
         <small>
-          planId {display(planLoadedEvent?.payload?.planId)} · planHash {display(planLoadedEvent?.payload?.planHash)}
+          planId {display(planLoadedEvent?.payload?.planId)} / planHash {display(planLoadedEvent?.payload?.planHash)}
         </small>
       </div>
     </section>
@@ -395,12 +595,12 @@ function JobStatusPanel({ job, result, refreshing }: { job: PlannerJobDetail | n
   );
 }
 
-function JobTimeline({ events }: { events: JobEvent[] }) {
+function JobTimeline({ events, transport }: { events: JobEvent[]; transport: TimelineTransport }) {
   return (
     <section className="surface timeline-panel" aria-label="Agent timeline">
       <div className="section-heading">
         <h2>Agent Timeline</h2>
-        <span>{events.length ? `${events.length} event(s)` : "Not available yet"}</span>
+        <span>{transport === "idle" ? (events.length ? `${events.length} event(s)` : "Not available yet") : transport}</span>
       </div>
       <ol className="timeline-list" data-testid="job-timeline">
         {events.length ? (
@@ -449,7 +649,7 @@ function ToolCallsPanel({ toolCalls }: { toolCalls: ToolCall[] }) {
                   <dd>{display(toolCall.planHash)}</dd>
                 </div>
               </dl>
-              <small>{display(toolCall.inputSummary)} · {display(toolCall.outputSummary)}</small>
+              <small>{display(toolCall.inputSummary)} / {display(toolCall.outputSummary)}</small>
             </article>
           ))
         ) : (
@@ -460,11 +660,11 @@ function ToolCallsPanel({ toolCalls }: { toolCalls: ToolCall[] }) {
   );
 }
 
-function ArtifactsResultPanel({ artifacts, result }: { artifacts: Artifact[]; result: JobResult | null }) {
+function ArtifactsResultPanel({ artifacts }: { artifacts: Artifact[] }) {
   return (
-    <section className="surface artifacts-panel" data-testid="artifacts-panel" aria-label="Artifacts and result">
+    <section className="surface artifacts-panel" data-testid="artifacts-panel" aria-label="Artifact gallery">
       <div className="section-heading">
-        <h2>Artifacts / Result</h2>
+        <h2>Artifact Gallery</h2>
         <span>{artifacts.length ? `${artifacts.length} artifact(s)` : "Not available yet"}</span>
       </div>
       <div className="list-stack">
@@ -496,12 +696,60 @@ function ArtifactsResultPanel({ artifacts, result }: { artifacts: Artifact[]; re
           <p className="empty-state">Not available yet</p>
         )}
       </div>
+    </section>
+  );
+}
+
+function ReportRecipePanel({
+  artifacts,
+  result,
+  analysisPlan
+}: {
+  artifacts: Artifact[];
+  result: JobResult | null;
+  analysisPlan: AnalysisPlanRecord | null;
+}) {
+  const reportArtifacts = artifacts.filter((artifact) => {
+    const type = String(artifact.type || "");
+    return type === "report_md" || type === "report_html" || type === "summary_md";
+  });
+  const recipeArtifacts = artifacts.filter((artifact) => String(artifact.type || "") === "recipe_json" || String(artifact.name || "").toLowerCase().includes("recipe"));
+  const artifactRefs = artifacts.map((artifact) => artifact.artifactId || artifact.id || artifact.name).filter(Boolean);
+  const planId = result?.planId || analysisPlan?.planId || analysisPlan?.id;
+  const planHash = result?.planHash || analysisPlan?.planHash;
+
+  return (
+    <section className="surface report-recipe-panel" data-testid="report-recipe-panel" aria-label="Report and recipe summary">
+      <div className="section-heading">
+        <h2>Report / Recipe Summary</h2>
+        <span>{result?.status === "completed" ? "completed" : "Not available yet"}</span>
+      </div>
       <div className="result-box">
-        <strong>Result summary</strong>
+        <strong>Report summary</strong>
         <p>{display(result?.summary)}</p>
-        <small>
-          planId {display(result?.planId)} · planHash {display(result?.planHash)}
-        </small>
+      </div>
+      <dl className="detail-grid">
+        <div>
+          <dt>planId</dt>
+          <dd>{display(planId)}</dd>
+        </div>
+        <div>
+          <dt>planHash</dt>
+          <dd>{display(planHash)}</dd>
+        </div>
+        <div>
+          <dt>report artifacts</dt>
+          <dd>{display(reportArtifacts.map((artifact) => artifact.name || artifact.artifactId || artifact.id).join(", "))}</dd>
+        </div>
+        <div>
+          <dt>recipe artifacts</dt>
+          <dd>{display(recipeArtifacts.map((artifact) => artifact.name || artifact.artifactId || artifact.id).join(", "))}</dd>
+        </div>
+      </dl>
+      <div className="result-box">
+        <strong>Recipe provenance</strong>
+        <p>{planId ? "Recipe/result context is tied to the persisted AnalysisPlan and Tool Registry + Adapter execution path." : "Not available yet"}</p>
+        <small>artifact references: {display(artifactRefs.join(", "))}</small>
       </div>
     </section>
   );
@@ -555,4 +803,29 @@ function joinPair(first: string | null | undefined, second: string | null | unde
     return null;
   }
   return `${display(first)} / ${display(second)}`;
+}
+
+function maxEventSeq(events: JobEvent[]): number {
+  return events.reduce((max, event) => Math.max(max, Number(event.seq || 0)), 0);
+}
+
+function mergeEvents(current: JobEvent[], incoming: JobEvent[]): JobEvent[] {
+  const byKey = new Map<string, JobEvent>();
+  [...current, ...incoming].forEach((event) => {
+    const key = event.id || `${event.jobId || "job"}-${event.seq || event.eventType || byKey.size}`;
+    byKey.set(key, event);
+  });
+  return Array.from(byKey.values()).sort((left, right) => Number(left.seq || 0) - Number(right.seq || 0));
+}
+
+function parseEventSourceEvent(value: unknown): JobEvent | null {
+  if (!value || typeof value !== "string") {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(value) as JobEvent;
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
 }

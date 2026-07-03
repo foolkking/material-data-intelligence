@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import json
 import os
 from typing import Any
 import uuid
@@ -329,6 +330,22 @@ def get_planner_job_events(job_id: str, after_seq: int = 0, *, repositories: Any
     return [_event_to_dict(event) for event in events]
 
 
+def stream_planner_job_events(job_id: str, after_seq: int = 0, *, repositories: Any = None) -> Any:
+    """Replay persisted planner JobEvents as SSE without mutating execution state."""
+    events = get_planner_job_events(job_id, after_seq=after_seq, repositories=repositories)
+
+    def body() -> Any:
+        for event in events:
+            yield _planner_sse_event(event)
+
+    try:
+        from fastapi.responses import StreamingResponse
+
+        return StreamingResponse(body(), media_type="text/event-stream")
+    except Exception:
+        return events
+
+
 def get_planner_job_tool_calls(job_id: str, *, repositories: Any = None) -> list[dict[str, Any]]:
     """Read ToolCalls and expose persisted-plan provenance for the UI."""
     repos = _planner_read_repositories(repositories)
@@ -486,6 +503,13 @@ def _event_to_dict(event: Any) -> dict[str, Any]:
     if hasattr(event, "model_dump"):
         return event.model_dump(mode="json")
     return dict(event)
+
+
+def _planner_sse_event(event: dict[str, Any]) -> str:
+    event_id = str(event.get("seq") or event.get("id") or "")
+    event_name = str(event.get("eventType") or event.get("event_type") or "message")
+    data = json.dumps(event, separators=(",", ":"), sort_keys=True)
+    return f"id: {event_id}\nevent: {event_name}\ndata: {data}\n\n"
 
 
 def _params_summary(params: Any) -> str:

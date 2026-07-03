@@ -146,6 +146,22 @@ export type JobResult = {
   provenance?: PlanProvenance;
 };
 
+export type DatasetOption = {
+  id: string;
+  projectId?: string;
+  name?: string;
+  status?: string;
+};
+
+export type DataProfileSummary = {
+  id?: string;
+  profileId?: string;
+  datasetId?: string;
+  datasetType?: string;
+  version?: string;
+  createdAt?: string;
+};
+
 export class PlannerApiError extends Error {
   status: number;
   details: unknown;
@@ -176,6 +192,11 @@ export async function getPlannerJobEvents(jobId: string, afterSeq = 0): Promise<
   return apiFetch<JobEvent[]>(`/planner/jobs/${encodeURIComponent(jobId)}/events${query}`);
 }
 
+export function getPlannerJobEventsStreamUrl(jobId: string, afterSeq = 0): string {
+  const query = afterSeq > 0 ? `?after_seq=${encodeURIComponent(String(afterSeq))}` : "";
+  return `${API_BASE}/planner/jobs/${encodeURIComponent(jobId)}/events/stream${query}`;
+}
+
 export async function getPlannerJobToolCalls(jobId: string): Promise<ToolCall[]> {
   return apiFetch<ToolCall[]>(`/planner/jobs/${encodeURIComponent(jobId)}/tool-calls`);
 }
@@ -190,6 +211,14 @@ export async function getPlannerJobResult(jobId: string): Promise<JobResult> {
 
 export async function getAnalysisPlan(planId: string): Promise<AnalysisPlanRecord> {
   return apiFetch<AnalysisPlanRecord>(`/planner/analysis-plans/${encodeURIComponent(planId)}`);
+}
+
+export async function listDatasets(): Promise<DatasetOption[]> {
+  return apiFetch<DatasetOption[]>("/datasets");
+}
+
+export async function getDatasetProfile(datasetId: string): Promise<DataProfileSummary> {
+  return apiFetch<DataProfileSummary>(`/datasets/${encodeURIComponent(datasetId)}/profile`);
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {

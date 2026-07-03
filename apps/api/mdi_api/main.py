@@ -36,6 +36,7 @@ from mdi_api.routers.planner import (
     planner_jobs_route,
     planner_preview_route,
     planner_validate_route,
+    stream_planner_job_events,
 )
 from mdi_api.routers.projects import ProjectSummary
 from mdi_api.routers.secrets import (
@@ -91,6 +92,7 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/planner/jobs", planner_jobs_route, ("POST",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}", get_planner_job, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/events", get_planner_job_events, ("GET",), ("planner",)),
+    RouteSpec("/planner/jobs/{job_id}/events/stream", stream_planner_job_events, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/tool-calls", get_planner_job_tool_calls, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/artifacts", get_planner_job_artifacts, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/result", get_planner_job_result, ("GET",), ("planner",)),

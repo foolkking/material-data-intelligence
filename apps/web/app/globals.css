@@ -34,6 +34,7 @@ body {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -120,6 +121,7 @@ small {
 }
 
 .planner-form input,
+.planner-form select,
 .planner-form textarea {
   width: 100%;
   min-width: 0;
@@ -131,9 +133,44 @@ small {
   font-weight: 500;
 }
 
+.planner-form select {
+  min-height: 40px;
+}
+
 .planner-form textarea {
   min-height: 126px;
   resize: vertical;
+}
+
+.data-context-panel {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  padding: 12px;
+}
+
+.compact-heading {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.compact-heading strong {
+  font-size: 14px;
+}
+
+.compact-heading span,
+.selector-status {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.selector-status {
+  margin: 0;
 }
 
 .toggle-row {

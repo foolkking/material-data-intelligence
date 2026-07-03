@@ -1,5 +1,17 @@
 # DESIGN_PROGRESS
 
+## 2026-07-03 Phase 8C-P1 Frontend Planner UX Compliance Closure
+
+- Closed the Phase 8C P1 docs-compliance gaps without entering Phase 9 and without changing QueueWorkerRuntime, AnalysisPlanRepository, or the core `/planner/jobs` validate/persist/enqueue semantics.
+- Added an EventSource-backed planner timeline path using the read-only SSE endpoint `/planner/jobs/{job_id}/events/stream`. The UI still keeps polling as a fallback, but the primary timeline transport now uses persisted JobEvents and highlights `plan.loaded`.
+- Added an independent `Report / Recipe Summary` panel. Artifact gallery is now separate from report/result/recipe summary; the summary panel displays result summary, report artifacts, recipe artifacts, artifact references, `planId`, `planHash`, and persisted-plan provenance.
+- Upgraded the Planner workbench data context entry from raw IDs only to an API-backed Dataset/Profile selector using existing `/datasets` and `/datasets/{dataset_id}/profile` reads, while preserving manual ID fallback and avoiding fake dataset/profile records.
+- Added read-only SSE replay support for planner JobEvents. The endpoint replays persisted events only; it does not mutate jobs/plans, enqueue work, execute tools, or call deterministic fallback planning.
+- Frontend tests now cover EventSource/SSE timeline behavior, Report/Recipe Summary rendering, Dataset/Profile selector behavior, validation-failure no-save/no-job/no-enqueue semantics, loading state, and API error state.
+- Local verification for this closure: `uv lock --check` passed; `python -m pytest tests/test_phase8c_planner_read_api.py -q` passed with 2 tests; `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` passed with 9 passed / 1 skipped; `python -m pytest -q` passed with 112 passed / 20 skipped; `npm test` passed with 5 frontend tests; `npm run typecheck` and `npm run build` passed in `apps/web`.
+- CI for this closure is pending until the implementation is committed and pushed. The latest frozen Phase 8C baseline before this work remains commit `69ae5f1`.
+- Remaining boundaries are unchanged: true LLM integration, advanced multi-step DAG/data-dependency execution, production secret encryption, worker supervision/dead-letter policy, and advanced material viewer polish.
+
 ## 2026-07-03 Phase 8C Frontend Planner UX Update
 
 - Phase 8B is the frozen baseline for this work: final freeze commit `03d1915` (`Record phase 8B acceptance freeze`) after Phase 8B code commits `75386cf`, `9b62fa1`, `336fd8b`, and `962c429`; GitHub Actions run `28637798200` succeeded.

@@ -2,6 +2,38 @@
 
 ## 2026-07-03
 
+### Phase 8C-P1 UX Compliance Closure
+
+#### Added
+
+- Added read-only SSE replay for planner JobEvents at `/planner/jobs/{job_id}/events/stream`.
+- Added EventSource-backed Agent Timeline behavior in the Planner workbench, with polling retained as a fallback.
+- Added an independent `Report / Recipe Summary` frontend panel showing result summary, report artifacts, recipe artifacts, artifact references, `planId`, `planHash`, and persisted-plan provenance.
+- Added an API-backed Dataset/Profile selector that uses existing `/datasets` and `/datasets/{dataset_id}/profile` reads while preserving manual ID fallback.
+- Added frontend test coverage for SSE/EventSource timeline behavior, Report/Recipe Summary rendering, Dataset/Profile selector behavior, validation failure no-save/no-job/no-enqueue, loading state, and API error state.
+- Added backend test coverage for the planner JobEvent SSE endpoint.
+
+#### Changed
+
+- Split the old combined artifact/result area into an `Artifact Gallery` plus a separate Report/Recipe summary area.
+- Updated scaffold acceptance checks to assert the Phase 8C-P1 UI structure.
+
+#### Preserved
+
+- `/planner/jobs` still owns validation, plan persistence, job creation, and enqueue semantics.
+- QueueWorkerRuntime and AnalysisPlanRepository were not changed.
+- The frontend still never writes `analysis_plans`, directly creates jobs, directly enqueues work, computes authoritative plan hashes, or treats deterministic fallback as the normal path.
+- Read-only planner APIs do not execute tools or mutate persisted plans/jobs.
+
+#### Verification
+
+- `uv lock --check`: passed.
+- Phase 8C read API targeted: 2 passed.
+- Phase 8B persisted-plan targeted: 9 passed, 1 skipped locally.
+- Backend full: 112 passed, 20 skipped.
+- Frontend: `npm test` (5 passed), `npm run typecheck`, and `npm run build` passed in `apps/web`.
+- CI: pending current closure commit push.
+
 ### Phase 8C Frontend Planner UX
 
 #### Added

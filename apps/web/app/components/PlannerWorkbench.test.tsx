@@ -100,6 +100,30 @@ const artifacts = [
     storageProvider: "local",
     planId: "plan_1",
     planHash: "hash_1"
+  },
+  {
+    artifactId: "artifact_recipe",
+    id: "artifact_recipe",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "recipe_json",
+    name: "recipe.json",
+    storageKey: "projects/project_local/jobs/job_1/recipe.json",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1"
+  },
+  {
+    artifactId: "artifact_report",
+    id: "artifact_report",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "report_md",
+    name: "report.md",
+    storageKey: "projects/project_local/jobs/job_1/report.md",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1"
   }
 ];
 
@@ -115,10 +139,13 @@ const result = {
 };
 
 let fetchMock: ReturnType<typeof vi.fn>;
+let eventSources: MockEventSource[];
 
 beforeEach(() => {
+  eventSources = [];
   fetchMock = vi.fn(mockPlannerFetch);
   vi.stubGlobal("fetch", fetchMock);
+  vi.stubGlobal("EventSource", MockEventSource);
 });
 
 afterEach(() => {
@@ -131,9 +158,13 @@ describe("PlannerWorkbench", () => {
 
     expect(screen.getByTestId("planner-form")).not.toBeNull();
     expect(screen.getByLabelText("Project ID")).not.toBeNull();
+    expect(screen.getByTestId("data-context-selector")).not.toBeNull();
+    expect(screen.getByLabelText("Dataset selector")).not.toBeNull();
+    expect(screen.getByLabelText("Profile selector")).not.toBeNull();
     expect(screen.getByLabelText("Dataset ID")).not.toBeNull();
     expect(screen.getByLabelText("Analysis intent")).not.toBeNull();
     expect(screen.getByText("Validated Plan Preview")).not.toBeNull();
+    expect(screen.getByText("Report / Recipe Summary")).not.toBeNull();
     expect(screen.getAllByText("Not available yet").length).toBeGreaterThan(0);
   });
 
@@ -155,6 +186,19 @@ describe("PlannerWorkbench", () => {
     expect(screen.getAllByText("hash_1").length).toBeGreaterThan(0);
     expect(screen.getAllByText("llm_step_1").length).toBeGreaterThan(0);
     expect(screen.getAllByText("ml.basic_metrics").length).toBeGreaterThan(0);
+    await waitFor(() => expect(eventSources[0]?.url).toBe("http://localhost:8000/planner/jobs/job_1/events/stream?after_seq=4"));
+    expect(screen.getByText("SSE/EventSource")).not.toBeNull();
+    eventSources[0].emit("artifact.ready", {
+      id: "evt_5",
+      jobId: "job_1",
+      seq: 5,
+      eventType: "artifact.ready",
+      status: "success",
+      message: "Artifact ready from SSE.",
+      payload: { planId: "plan_1", planHash: "hash_1" },
+      createdAt: "2026-07-03T00:00:04Z"
+    });
+    await screen.findByText("artifact.ready");
     expect(screen.getByText("Loaded from persisted AnalysisPlan")).not.toBeNull();
     expect(screen.getByText("Executed through Tool Registry + Adapter")).not.toBeNull();
     expect(screen.getByText("No deterministic fallback used")).not.toBeNull();
@@ -162,22 +206,47 @@ describe("PlannerWorkbench", () => {
     expect(within(screen.getByTestId("toolcalls-panel")).getByText("llm_step_1")).not.toBeNull();
     expect(within(screen.getByTestId("toolcalls-panel")).getByText("plan_1")).not.toBeNull();
     expect(within(screen.getByTestId("artifacts-panel")).getByText("metrics.json")).not.toBeNull();
-    expect(within(screen.getByTestId("artifacts-panel")).getByText("Job completed with 1 ToolCall(s) and 1 Artifact(s).")).not.toBeNull();
+    expect(within(screen.getByTestId("report-recipe-panel")).getByText("Report summary")).not.toBeNull();
+    expect(within(screen.getByTestId("report-recipe-panel")).getByText("recipe.json")).not.toBeNull();
+    expect(within(screen.getByTestId("report-recipe-panel")).getByText("report.md")).not.toBeNull();
+    expect(within(screen.getByTestId("report-recipe-panel")).getByText("Job completed with 1 ToolCall(s) and 1 Artifact(s).")).not.toBeNull();
+    expect(within(screen.getByTestId("report-recipe-panel")).getByText(/persisted AnalysisPlan/)).not.toBeNull();
+  });
+
+  it("uses API-backed dataset/profile selectors while preserving manual ID fallback", async () => {
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+
+    await screen.findByText("Demo metrics dataset (profile_ready)");
+    await user.selectOptions(screen.getByLabelText("Dataset selector"), "dataset_api");
+
+    await waitFor(() => {
+      expect((screen.getByLabelText("Dataset ID") as HTMLInputElement).value).toBe("dataset_api");
+      expect((screen.getByLabelText("Profile ID") as HTMLInputElement).value).toBe("profile_api");
+    });
+    expect(screen.getByText("Dataset/profile loaded from API")).not.toBeNull();
+
+    await user.selectOptions(screen.getByLabelText("Dataset selector"), "__manual");
+    expect(screen.getByText("Manual dataset/profile ID fallback is active")).not.toBeNull();
   });
 
   it("shows validation failure semantics and does not poll job state", async () => {
-    fetchMock.mockImplementationOnce(() =>
-      jsonResponse({
-        ok: false,
-        job_id: null,
-        plan_id: null,
-        plan_hash: null,
-        validation_errors: [{ code: "UNKNOWN_TOOL", message: "Unknown tool", detail: { toolId: "bad.tool" } }],
-        plan: { steps: [] },
-        enqueued: false,
-        executed: false
-      })
-    );
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
+        return jsonResponse({
+          ok: false,
+          job_id: null,
+          plan_id: null,
+          plan_hash: null,
+          validation_errors: [{ code: "UNKNOWN_TOOL", message: "Unknown tool", detail: { toolId: "bad.tool" } }],
+          plan: { steps: [] },
+          enqueued: false,
+          executed: false
+        });
+      }
+      return mockPlannerFetch(input, init);
+    });
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
@@ -189,17 +258,23 @@ describe("PlannerWorkbench", () => {
     expect(screen.getByText("Nothing was enqueued")).not.toBeNull();
     expect(screen.getByText("Please fix the request and try again")).not.toBeNull();
     expect(screen.getByText("UNKNOWN_TOOL")).not.toBeNull();
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).not.toHaveBeenCalledWith(expect.stringContaining("/planner/jobs/job_1"), expect.anything());
+    expect(eventSources).toHaveLength(0);
   });
 
   it("shows loading and API error states", async () => {
     let resolvePost: (value: Response) => void = () => {};
-    fetchMock.mockImplementationOnce(
-      () =>
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
+        return (
         new Promise<Response>((resolve) => {
           resolvePost = resolve;
         })
-    );
+        );
+      }
+      return mockPlannerFetch(input, init);
+    });
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
@@ -213,6 +288,12 @@ describe("PlannerWorkbench", () => {
 
 function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   const url = String(input);
+  if (url.endsWith("/datasets")) {
+    return jsonResponse([{ id: "dataset_api", projectId: "project_local", name: "Demo metrics dataset", status: "profile_ready" }]);
+  }
+  if (url.endsWith("/datasets/dataset_api/profile")) {
+    return jsonResponse({ profileId: "profile_api", datasetId: "dataset_api", datasetType: "ml", version: "0.1", createdAt: "2026-07-03T00:00:00Z" });
+  }
   if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
     return jsonResponse(createdJob);
   }
@@ -244,4 +325,32 @@ function jsonResponse(body: unknown, status = 200): Promise<Response> {
       headers: { "Content-Type": "application/json" }
     })
   );
+}
+
+class MockEventSource {
+  url: string;
+  onmessage: ((event: MessageEvent) => void) | null = null;
+  onerror: (() => void) | null = null;
+  listeners = new Map<string, Array<(event: MessageEvent) => void>>();
+
+  constructor(url: string) {
+    this.url = url;
+    eventSources.push(this);
+  }
+
+  addEventListener(type: string, listener: EventListener) {
+    const current = this.listeners.get(type) || [];
+    current.push(listener as (event: MessageEvent) => void);
+    this.listeners.set(type, current);
+  }
+
+  close() {
+    // no-op for tests
+  }
+
+  emit(type: string, payload: unknown) {
+    const message = new MessageEvent(type, { data: JSON.stringify(payload) });
+    this.onmessage?.(message);
+    (this.listeners.get(type) || []).forEach((listener) => listener(message));
+  }
 }

@@ -27,6 +27,7 @@ build/
 uploads/
 storage/
 artifacts/
+.artifacts/
 tmp/
 .cache/
 material-data-intelligence-*.zip

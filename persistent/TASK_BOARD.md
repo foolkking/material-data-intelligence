@@ -1,5 +1,36 @@
 # TASK_BOARD
 
+## 2026-07-03 Phase 8C-P1 UX Compliance Closure Status
+
+### Done This Round
+
+- [x] Added an EventSource-backed Planner timeline path via `/planner/jobs/{job_id}/events/stream`.
+- [x] Preserved polling as a fallback when EventSource is unavailable or errors.
+- [x] Added an independent `Report / Recipe Summary` panel for result summary, report artifacts, recipe artifacts, artifact references, `planId`, `planHash`, and persisted-plan provenance.
+- [x] Split Artifact Gallery from the report/result/recipe summary area.
+- [x] Added an API-backed Dataset/Profile selector using existing dataset/profile read endpoints.
+- [x] Preserved manual dataset/profile ID fallback and avoided fake data-context records.
+- [x] Added frontend tests for SSE/EventSource timeline behavior, Report/Recipe Summary, Dataset/Profile selector behavior, validation failure no-save/no-job/no-enqueue, loading state, and API error state.
+- [x] Added backend coverage for the read-only planner JobEvent SSE endpoint.
+- [x] Updated the scaffold acceptance assertion for the new Artifact Gallery plus Report/Recipe Summary layout.
+
+### Verification
+
+- [x] `uv lock --check`
+- [x] `python -m pytest tests/test_phase8c_planner_read_api.py -q` -> 2 passed
+- [x] `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` -> 9 passed, 1 skipped locally
+- [x] `python -m pytest -q` -> 112 passed, 20 skipped
+- [x] `npm test` in `apps/web` -> 5 passed
+- [x] `npm run typecheck` in `apps/web`
+- [x] `npm run build` in `apps/web`
+- [ ] CI for this closure -> pending push/current HEAD run
+
+### Handoff Notes
+
+- Phase 8C-P1 local closure: PASS pending CI confirmation after push.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs` core semantics, Tool Registry manifests, and adapter execution were not changed.
+- Remaining boundaries: true LLM integration, multi-step DAG/data binding, production secret encryption, worker supervision/dead-letter queue, and advanced material viewer polish.
+
 ## 2026-07-03 Phase 8C Frontend Planner UX Status
 
 ### Done This Round
