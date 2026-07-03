@@ -189,6 +189,7 @@ def test_phase6_alembic_upgrade_head_creates_all_tables(tmp_path: Path) -> None:
         "projects",
         "datasets",
         "data_profiles",
+        "analysis_plans",
         "jobs",
         "job_events",
         "tool_calls",
@@ -210,7 +211,11 @@ def test_phase6_alembic_upgrade_head_creates_all_tables(tmp_path: Path) -> None:
     # 3. Verify key indexes exist
     expected_indexes = {
         "idx_job_events_job_seq",
+        "idx_analysis_plans_project_created",
+        "idx_analysis_plans_job",
+        "idx_analysis_plans_plan_hash",
         "idx_jobs_project_created",
+        "idx_jobs_plan_id",
         "idx_tool_calls_job",
         "idx_artifacts_job",
         "idx_artifacts_project_created",

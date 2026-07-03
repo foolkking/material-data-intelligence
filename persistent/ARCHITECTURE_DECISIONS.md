@@ -1,5 +1,45 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-078: Phase 8B persists validated plans and queue workers load by job_id
+
+### Context
+
+Phase 8A proved exact LLM plan execution only inside the in-memory
+`Phase2ProductRuntime`. The remaining production gap was durable handoff:
+there was no `analysis_plans` table, no `jobs.plan_id`, and the Redis-capable
+`QueueWorkerRuntime` could not reconstruct the plan from `job_id` alone.
+
+### Decision
+
+Validated `AnalysisPlan` JSON is persisted before job creation in a new
+`analysis_plans` table. Jobs reference it with nullable `jobs.plan_id`.
+`plan_hash` is `sha256(canonical_json(AnalysisPlan))`; raw prompts and raw
+LLM completions are not stored by default, and credential-like params are
+rejected before persistence.
+
+`POST /planner/jobs` now follows:
+
+`provider -> PlanValidator -> save AnalysisPlan -> create Job(plan_id) -> optional enqueue(job_id)`
+
+Validation failure is an all-or-nothing no-op: no plan, no job, no enqueue.
+The route does not synchronously execute production work.
+
+`QueueWorkerRuntime.handle_job(job_id)` now treats persisted plan loading as
+the main path: load Job, read `plan_id`, load the persisted plan, reconstruct
+`AnalysisPlan`, execute exact `steps`, and write ToolCall, JobEvent, Artifact,
+and final Job status with plan provenance. Caller-supplied `plan` remains a
+dev/test fallback only for jobs without a persisted plan.
+
+### Consequences
+
+- A persisted 1-step plan produces exactly 1 ToolCall, with `toolId` and
+  `stepId` copied from the persisted plan.
+- `build_phase2_plan` is not used when a job already has `plan_id`.
+- Tool Registry + Adapter remain the only execution path.
+- Phase 8B is not frozen until the CI service-backed job proves PostgreSQL +
+  Redis + MinIO integration with zero skipped tests.
+- Phase 8C frontend Planner UX must wait for that freeze.
+
 ## ADR-077: Phase 8A — the validated LLM plan becomes the job's execution plan
 
 ### Context

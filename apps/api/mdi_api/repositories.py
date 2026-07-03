@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -10,6 +11,7 @@ from sqlalchemy import and_, delete, func, insert, or_, select, text
 from sqlalchemy.engine import Connection, Engine
 
 from mdi_api.db import (
+    analysis_plans,
     artifacts,
     data_profiles,
     datasets,
@@ -22,7 +24,7 @@ from mdi_api.db import (
     users,
     visualization_recipes,
 )
-from mdi_schemas import Artifact, DataProfile, JobEvent, JobEventStatus, JobStatus, ToolCall, VisualizationRecipe
+from mdi_schemas import AnalysisPlan, Artifact, DataProfile, JobEvent, JobEventStatus, JobStatus, ToolCall, VisualizationRecipe
 
 from mdi_api.state_machine import (
     validate_job_status,
@@ -65,6 +67,20 @@ class DataProfileRepository(Protocol):
         ...
 
     def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        ...
+
+
+class AnalysisPlanRepository(Protocol):
+    def save_plan(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def get_plan(self, plan_id: str) -> dict[str, Any]:
+        ...
+
+    def get_plan_for_job(self, job_id: str) -> dict[str, Any]:
+        ...
+
+    def attach_plan_to_job(self, plan_id: str, job_id: str) -> dict[str, Any]:
         ...
 
 
@@ -148,6 +164,7 @@ class InMemoryRepositoryBundle:
     projects: "InMemoryProjectRepository"
     datasets: "InMemoryDatasetRepository"
     data_profiles: "InMemoryDataProfileRepository"
+    analysis_plans: "InMemoryAnalysisPlanRepository"
     jobs: "InMemoryJobRepository"
     job_events: "InMemoryJobEventRepository"
     tool_calls: "InMemoryToolCallRepository"
@@ -158,11 +175,13 @@ class InMemoryRepositoryBundle:
     @classmethod
     def create(cls) -> "InMemoryRepositoryBundle":
         datasets = InMemoryDatasetRepository()
+        jobs = InMemoryJobRepository()
         return cls(
             projects=InMemoryProjectRepository(),
             datasets=datasets,
             data_profiles=InMemoryDataProfileRepository(datasets),
-            jobs=InMemoryJobRepository(),
+            analysis_plans=InMemoryAnalysisPlanRepository(jobs),
+            jobs=jobs,
             job_events=InMemoryJobEventRepository(),
             tool_calls=InMemoryToolCallRepository(),
             artifacts=InMemoryArtifactRepository(),
@@ -243,6 +262,47 @@ class InMemoryDataProfileRepository(_InMemoryRecordRepository):
             if record.get("datasetId") or record.get("id")
         }
         return [_json_copy(record) for record in self.records.values() if record.get("datasetId") in dataset_ids]
+
+
+class InMemoryAnalysisPlanRepository(_InMemoryRecordRepository):
+    def __init__(self, jobs: "InMemoryJobRepository | None" = None) -> None:
+        super().__init__()
+        self.jobs = jobs
+
+    def save_plan(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        normalized = _normalize_analysis_plan_record(record)
+        return _analysis_plan_from_record(self._save(normalized, record_id=_required_id(normalized, "planId")))
+
+    def get_plan(self, plan_id: str) -> dict[str, Any]:
+        return _analysis_plan_from_record(self._get(plan_id))
+
+    def get_plan_for_job(self, job_id: str) -> dict[str, Any]:
+        if self.jobs is not None:
+            try:
+                job = self.jobs.get(job_id)
+            except LookupError:
+                job = {}
+            plan_id = job.get("planId") or job.get("plan_id")
+            if plan_id:
+                return self.get_plan(str(plan_id))
+        for record in self.records.values():
+            if record.get("jobId") == job_id or record.get("job_id") == job_id:
+                return _analysis_plan_from_record(record)
+        raise LookupError(f"Unknown analysis plan for job id: {job_id}")
+
+    def attach_plan_to_job(self, plan_id: str, job_id: str) -> dict[str, Any]:
+        record = self._get(plan_id)
+        record["jobId"] = job_id
+        record["job_id"] = job_id
+        record["updatedAt"] = _utc_now()
+        self.records[plan_id] = record
+        if self.jobs is not None:
+            job = self.jobs.get(job_id)
+            job["planId"] = plan_id
+            job["plan_id"] = plan_id
+            job["updatedAt"] = _utc_now()
+            self.jobs.records[job_id] = job
+        return _analysis_plan_from_record(record)
 
 
 class InMemoryJobRepository(_InMemoryRecordRepository):
@@ -433,6 +493,7 @@ class SqlAlchemyRepositoryBundle:
     projects: "SqlAlchemyProjectRepository"
     datasets: "SqlAlchemyDatasetRepository"
     data_profiles: "SqlAlchemyDataProfileRepository"
+    analysis_plans: "SqlAlchemyAnalysisPlanRepository"
     jobs: "SqlAlchemyJobRepository"
     job_events: "SqlAlchemyJobEventRepository"
     tool_calls: "SqlAlchemyToolCallRepository"
@@ -446,6 +507,7 @@ class SqlAlchemyRepositoryBundle:
             projects=SqlAlchemyProjectRepository(bind),
             datasets=SqlAlchemyDatasetRepository(bind),
             data_profiles=SqlAlchemyDataProfileRepository(bind),
+            analysis_plans=SqlAlchemyAnalysisPlanRepository(bind),
             jobs=SqlAlchemyJobRepository(bind),
             job_events=SqlAlchemyJobEventRepository(bind),
             tool_calls=SqlAlchemyToolCallRepository(bind),
@@ -586,6 +648,61 @@ class SqlAlchemyDataProfileRepository(_SqlAlchemyRepository):
         return [_data_profile_from_row(row) for row in self._fetch_all_dicts(statement)]
 
 
+class SqlAlchemyAnalysisPlanRepository(_SqlAlchemyRepository):
+    def save_plan(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        normalized = _normalize_analysis_plan_record(record)
+        plan_id = _required_id(normalized, "planId")
+        values = _analysis_plan_values(normalized)
+
+        def run(connection: Connection) -> None:
+            _ensure_user(connection, user_id=values["created_by"])
+            existing = connection.execute(select(analysis_plans.c.id).where(analysis_plans.c.id == plan_id)).scalar_one_or_none()
+            if existing is None:
+                connection.execute(insert(analysis_plans).values(**values))
+            else:
+                connection.execute(
+                    analysis_plans.update()
+                    .where(analysis_plans.c.id == plan_id)
+                    .values(**{**values, "updated_at": func.now()})
+                )
+
+        self._with_connection(run)
+        return self.get_plan(plan_id)
+
+    def get_plan(self, plan_id: str) -> dict[str, Any]:
+        return _analysis_plan_from_row(self._fetch_one_dict(select(analysis_plans).where(analysis_plans.c.id == plan_id)))
+
+    def get_plan_for_job(self, job_id: str) -> dict[str, Any]:
+        def run(connection: Connection) -> str:
+            plan_id = connection.execute(select(jobs.c.plan_id).where(jobs.c.id == job_id)).scalar_one_or_none()
+            if plan_id:
+                return str(plan_id)
+            fallback = connection.execute(select(analysis_plans.c.id).where(analysis_plans.c.job_id == job_id)).scalar_one_or_none()
+            if fallback is None:
+                raise LookupError(f"Unknown analysis plan for job id: {job_id}")
+            return str(fallback)
+
+        return self.get_plan(self._with_connection(run))
+
+    def attach_plan_to_job(self, plan_id: str, job_id: str) -> dict[str, Any]:
+        def run(connection: Connection) -> None:
+            exists = connection.execute(select(analysis_plans.c.id).where(analysis_plans.c.id == plan_id)).scalar_one_or_none()
+            if exists is None:
+                raise LookupError(f"Unknown analysis plan id: {plan_id}")
+            job_exists = connection.execute(select(jobs.c.id).where(jobs.c.id == job_id)).scalar_one_or_none()
+            if job_exists is None:
+                raise LookupError(f"Unknown job id: {job_id}")
+            connection.execute(
+                analysis_plans.update()
+                .where(analysis_plans.c.id == plan_id)
+                .values(job_id=job_id, updated_at=func.now())
+            )
+            connection.execute(jobs.update().where(jobs.c.id == job_id).values(plan_id=plan_id, updated_at=func.now()))
+
+        self._with_connection(run)
+        return self.get_plan(plan_id)
+
+
 class SqlAlchemyJobRepository(_SqlAlchemyRepository):
     def save(self, job: Mapping[str, Any]) -> dict[str, Any]:
         job_id = _required_id(job, "jobId")
@@ -595,6 +712,7 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
             "id": job_id,
             "project_id": str(job["projectId"]),
             "dataset_id": job.get("datasetId"),
+            "plan_id": job.get("planId") or job.get("plan_id"),
             "kind": str(job.get("kind") or "analysis"),
             "status": status,
             "created_by": created_by,
@@ -974,12 +1092,110 @@ def _data_profile_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
     return profile
 
 
+def canonical_analysis_plan_json(plan: AnalysisPlan | Mapping[str, Any]) -> str:
+    parsed = plan if isinstance(plan, AnalysisPlan) else AnalysisPlan.model_validate(plan)
+    return json.dumps(parsed.model_dump(mode="json"), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def compute_plan_hash(plan: AnalysisPlan | Mapping[str, Any]) -> str:
+    return hashlib.sha256(canonical_analysis_plan_json(plan).encode("utf-8")).hexdigest()
+
+
+def _normalize_analysis_plan_record(record: Mapping[str, Any]) -> dict[str, Any]:
+    source = _json_copy(record)
+    plan_json = (
+        source.get("analysisPlan")
+        or source.get("analysisPlanJson")
+        or source.get("analysis_plan_json")
+        or source.get("plan")
+    )
+    if plan_json is None:
+        raise ValueError("AnalysisPlan record is missing analysis_plan_json")
+    parsed_plan = AnalysisPlan.model_validate(plan_json)
+    plan_payload = parsed_plan.model_dump(mode="json")
+    _reject_credential_keys(plan_payload)
+    computed_hash = compute_plan_hash(parsed_plan)
+    provided_hash = source.get("planHash") or source.get("plan_hash")
+    if provided_hash and str(provided_hash) != computed_hash:
+        raise ValueError("AnalysisPlan planHash does not match canonical AnalysisPlan JSON")
+    plan_hash = computed_hash
+    plan_id = str(source.get("id") or source.get("planId") or source.get("plan_id") or f"plan_{plan_hash[:24]}")
+    validation_status = str(source.get("validationStatus") or source.get("validation_status") or "validated")
+    if validation_status != "validated":
+        raise ValueError("Only validated AnalysisPlan records may be persisted")
+    return {
+        "id": plan_id,
+        "planId": plan_id,
+        "projectId": str(source.get("projectId") or source.get("project_id") or ""),
+        "datasetId": source.get("datasetId") or source.get("dataset_id") or parsed_plan.datasetId,
+        "profileId": source.get("profileId") or source.get("profile_id") or parsed_plan.profileId,
+        "jobId": source.get("jobId") or source.get("job_id"),
+        "planSource": str(source.get("planSource") or source.get("plan_source") or "llm"),
+        "plannerProvider": source.get("plannerProvider") or source.get("planner_provider"),
+        "analysisPlan": plan_payload,
+        "analysisPlanJson": plan_payload,
+        "analysis_plan_json": plan_payload,
+        "planHash": plan_hash,
+        "plan_hash": plan_hash,
+        "validationStatus": validation_status,
+        "createdBy": str(source.get("createdBy") or source.get("created_by") or "user_local"),
+        "createdAt": source.get("createdAt") or source.get("created_at") or _utc_now(),
+        "updatedAt": source.get("updatedAt") or source.get("updated_at") or _utc_now(),
+    }
+
+
+def _analysis_plan_values(record: Mapping[str, Any]) -> dict[str, Any]:
+    normalized = _normalize_analysis_plan_record(record)
+    if not normalized["projectId"]:
+        raise ValueError("AnalysisPlan record is missing projectId")
+    return {
+        "id": normalized["id"],
+        "project_id": normalized["projectId"],
+        "dataset_id": normalized.get("datasetId"),
+        "profile_id": normalized.get("profileId"),
+        "job_id": normalized.get("jobId"),
+        "plan_source": normalized["planSource"],
+        "planner_provider": normalized.get("plannerProvider"),
+        "analysis_plan_json": _json_copy(normalized["analysisPlan"]),
+        "plan_hash": normalized["planHash"],
+        "validation_status": normalized["validationStatus"],
+        "created_by": normalized["createdBy"],
+    }
+
+
+def _analysis_plan_from_record(record: Mapping[str, Any]) -> dict[str, Any]:
+    normalized = _normalize_analysis_plan_record(record)
+    return _json_copy(normalized)
+
+
+def _analysis_plan_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
+    plan_payload = _json_copy(row.get("analysis_plan_json") or {})
+    return _analysis_plan_from_record(
+        {
+            "id": row["id"],
+            "projectId": row["project_id"],
+            "datasetId": row.get("dataset_id"),
+            "profileId": row.get("profile_id"),
+            "jobId": row.get("job_id"),
+            "planSource": row["plan_source"],
+            "plannerProvider": row.get("planner_provider"),
+            "analysisPlan": plan_payload,
+            "planHash": row["plan_hash"],
+            "validationStatus": row["validation_status"],
+            "createdBy": row["created_by"],
+            "createdAt": _iso(row["created_at"]),
+            "updatedAt": _iso(row["updated_at"]),
+        }
+    )
+
+
 def _job_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "id": row["id"],
         "jobId": row["id"],
         "projectId": row["project_id"],
         "datasetId": row["dataset_id"],
+        "planId": row.get("plan_id"),
         "kind": row["kind"],
         "status": row["status"],
         "createdBy": row["created_by"],
@@ -1075,6 +1291,19 @@ def _validate_artifact_storage_record(record: Mapping[str, Any]) -> None:
         raise ValueError("Artifact sizeBytes must be non-negative")
     if not (record.get("storageKey") or record.get("storage_key")):
         raise ValueError("Artifact record is missing storageKey")
+
+
+def _reject_credential_keys(value: Any) -> None:
+    credential_keys = {"api_key", "apikey", "api-key", "token", "password", "secret", "credential", "authorization"}
+    if isinstance(value, Mapping):
+        for key, nested in value.items():
+            normalized = str(key).lower().replace("_", "").replace("-", "")
+            if normalized in credential_keys:
+                raise ValueError(f"AnalysisPlan JSON contains credential-like key: {key}")
+            _reject_credential_keys(nested)
+    elif isinstance(value, list):
+        for item in value:
+            _reject_credential_keys(item)
 
 
 def _required_id(record: Mapping[str, Any], alias: str = "id") -> str:

@@ -180,17 +180,20 @@ def test_runtime_planned_only_does_not_execute() -> None:
     assert job["plan"]["steps"][0]["toolId"] == "ml.basic_metrics"
 
 
-# ── planner_jobs API: execute flag ─────────────────────────────────
+# ── planner_jobs API: Phase 8B persisted-plan bridge ───────────────
 
-def test_planner_jobs_execute_true_runs_llm_plan() -> None:
+def test_planner_jobs_execute_true_enqueues_without_sync_execution() -> None:
     result = planner_jobs(
         PlannerJobsRequest(userPrompt="metrics", datasetId="ds8a", profileId="p8a", execute=True),
         registry=load_manifests(),
     )
     assert result.ok
     assert result.job_id is not None
+    assert result.plan_id is not None
+    assert result.plan_hash is not None
     assert result.plan_source == "llm"
-    assert result.executed is True
+    assert result.enqueued is True
+    assert result.executed is False
     # The returned plan is the validated LLM plan (1 step), not deterministic 5
     assert len(result.plan["steps"]) == 1
     assert result.plan["steps"][0]["toolId"] == "ml.basic_metrics"
@@ -203,7 +206,9 @@ def test_planner_jobs_execute_false_is_planned_only() -> None:
     )
     assert result.ok
     assert result.job_id is not None
+    assert result.plan_id is not None
     assert result.executed is False
+    assert result.enqueued is False
     assert result.plan_source == "llm"
 
 

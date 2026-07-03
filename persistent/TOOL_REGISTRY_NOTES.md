@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-03 Phase 8B - persisted plan execution still uses the Registry gate
+
+- No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 8B.
+- Phase 8B changed where the validated plan is stored and loaded from: `/planner/jobs` persists the exact validated `AnalysisPlan`, and `QueueWorkerRuntime` loads it by `job.plan_id`.
+- Execution is still controlled by the same path: persisted `AnalysisPlan` -> `ToolExecutionRequest` -> Tool Registry lookup -> paramsSchema validation -> Adapter -> Artifact.
+- The persisted 1-step test proves `toolId=ml.basic_metrics` and `stepId=llm_step_1` come from the persisted plan and produce exactly 1 ToolCall, not the deterministic 5-tool fallback.
+- Unknown tools, V1/V2/non-MVP tools, duplicate steps, empty steps, and credential-like params are still rejected by PlanValidator before the plan can be saved or enqueued.
+- Explicit worker fallback with caller-provided `plan` remains only for dev/test jobs that have no persisted `plan_id`; it is not the Phase 8B service-backed acceptance path.
+
 ## 2026-06-27 Phase 8A — validated plan executes through the same Registry gate
 
 - No Tool Registry manifest, adapter, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 8A.

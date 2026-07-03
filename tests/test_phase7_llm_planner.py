@@ -289,9 +289,11 @@ def test_planner_jobs_creates_job_only_after_valid_plan() -> None:
     )
     assert result.ok
     assert result.job_id is not None
+    assert result.plan_id is not None
+    assert result.plan_hash is not None
     assert result.validation_errors == []
-    # Job ID is deterministic from Phase2ProductRuntime (0001)
-    assert "0001" in result.job_id
+    assert result.enqueued is False
+    assert result.executed is False
 
 
 def test_planner_jobs_rejects_invalid_plan() -> None:

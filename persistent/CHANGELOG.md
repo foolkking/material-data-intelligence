@@ -1,5 +1,41 @@
 # CHANGELOG
 
+## 2026-07-03
+
+### Phase 8B Persisted Plans + Queue Worker Runtime
+
+#### Added
+
+- Added Alembic revision `0002_phase8b_persisted_analysis_plans` for `analysis_plans` and nullable `jobs.plan_id`.
+- Added `AnalysisPlanRepository` implementations for in-memory tests and SQLAlchemy/PostgreSQL runtime.
+- Added stable canonical SHA-256 `plan_hash` for validated `AnalysisPlan` JSON.
+- Added `tests/test_phase8b_persisted_plan_queue.py` covering repository round-trip/hash, planner persistence/enqueue behavior, validation-failure no-op, worker persisted-plan loading, exact 1-step execution, fallback behavior, and service-backed PostgreSQL + Redis + MinIO integration.
+
+#### Changed
+
+- `POST /planner/jobs` now validates first; invalid plans save no plan, create no job, and enqueue nothing.
+- Valid `/planner/jobs` requests now persist the exact validated plan, create a Job linked by `plan_id`, return `plan_id`/`plan_hash`, and enqueue only `job_id` when requested.
+- `QueueWorkerRuntime.handle_job(job_id)` now loads `job.plan_id` / `analysis_plans[plan_id]`, reconstructs `AnalysisPlan`, and executes exact persisted `steps`.
+- Worker JobEvents, Artifact metadata, and `QueueWorkerResult` now include persisted plan provenance where available.
+- CI service-backed integration now runs Phase 6 plus Phase 8B integration and requires at least 19 passes with 0 skips.
+
+#### Preserved
+
+- LLM provider still only emits JSON plans and never executes code.
+- PlanValidator remains the safety gate for unknown tools, non-MVP/V1/V2 tools, duplicate steps, empty steps, and credential-like params before persistence.
+- Tool execution still goes through Tool Registry + Adapter; the deterministic fallback remains available only when no persisted plan is attached.
+
+#### Verification
+
+- `uv lock --check`: passed.
+- Phase 8B targeted: 8 passed, 1 skipped locally (integration gated).
+- Phase 8A targeted: 11 passed.
+- Phase 7 targeted: 22 passed.
+- Backend full: 109 passed, 20 skipped.
+- Frontend: `npm ci`, `npm run typecheck`, `npm run build` passed in `apps/web`.
+- Local service-backed integration: not run because Docker CLI is unavailable on this machine.
+- CI service-backed integration: configured for PostgreSQL + Redis + MinIO zero-skip verification; current HEAD success is required before Phase 8B freeze.
+
 ## 2026-06-27
 
 ### Phase 8A LLM Plan Execution Bridge

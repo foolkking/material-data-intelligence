@@ -141,6 +141,11 @@ The `QueueWorkerRuntime` uses RQ to enqueue jobs. Workers load the Job from
 PostgreSQL repository, execute ToolCalls through Tool Registry + Adapter, and
 write ToolCall/Artifact/JobEvent state back.
 
+For persisted planner jobs, the worker must load `job.plan_id`, fetch the
+matching `analysis_plans` record, reconstruct the `AnalysisPlan`, and execute
+the persisted `steps`. Caller-provided in-memory plans are only a dev/test
+fallback when a job has no persisted plan.
+
 ## 8. MinIO / S3 Live Client
 
 ### Configuration
@@ -187,6 +192,7 @@ This ensures `python -m pytest -q` always works without Docker.
 | Alembic upgrade (PG) | `python -m alembic -c apps/api/alembic.ini upgrade head` |
 | Run unit tests | `python -m pytest -q` |
 | Run integration tests | `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration` |
+| Run Phase 8B persisted-plan integration | `MDI_RUN_INTEGRATION=1 python -m pytest tests/test_phase8b_persisted_plan_queue.py -q -m integration` |
 | Downgrade | `python -m alembic -c apps/api/alembic.ini downgrade -1` |
 | MinIO console | http://localhost:9001 |
 | Reset PostgreSQL | `docker compose down -v postgres && docker compose up -d postgres` |
@@ -253,6 +259,35 @@ python -m pytest tests/test_phase6_integration.py -q -m integration
 python -m pytest -q                    # 68 passed, 19 skipped
 python -m pytest -q -m "not integration"  # Only unit tests
 ```
+
+## 11A. Phase 8B Persisted Plan Queue Integration
+
+Phase 8B adds one service-backed integration test to the Phase 6 suite. It
+requires the same PostgreSQL, Redis, and MinIO environment variables as above.
+
+The acceptance chain is:
+
+```text
+validated AnalysisPlan
+  -> analysis_plans row with plan_hash
+  -> jobs.plan_id
+  -> Redis enqueue(job_id)
+  -> QueueWorkerRuntime.handle_job(job_id)
+  -> load persisted AnalysisPlan
+  -> Tool Registry + Adapter
+  -> exactly 1 ToolCall
+  -> MinIO Artifact + PostgreSQL JobEvent + completed Job
+```
+
+Run it directly with:
+
+```bash
+MDI_RUN_INTEGRATION=1 python -m pytest tests/test_phase8b_persisted_plan_queue.py -q -m integration
+```
+
+CI runs it together with the Phase 6 integration file and fails if any
+integration test skips. The expected CI service-backed minimum is now 19
+passed tests: 18 Phase 6 tests plus 1 Phase 8B persisted-plan queue test.
 
 ## 12. Troubleshooting
 

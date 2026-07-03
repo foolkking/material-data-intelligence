@@ -169,7 +169,7 @@ jobs:
               ))
               tables = {row[0] for row in r}
           expected = {
-              'projects', 'datasets', 'data_profiles',
+              'projects', 'datasets', 'data_profiles', 'analysis_plans',
               'jobs', 'job_events', 'tool_calls',
               'artifacts', 'visualization_recipes', 'reports',
           }
@@ -192,7 +192,11 @@ jobs:
               indexes = {row[0] for row in r}
           expected = {
               'idx_job_events_job_seq',
+              'idx_analysis_plans_project_created',
+              'idx_analysis_plans_job',
+              'idx_analysis_plans_plan_hash',
               'idx_jobs_project_created',
+              'idx_jobs_plan_id',
               'idx_tool_calls_job',
               'idx_artifacts_job',
               'idx_artifacts_project_created',
@@ -219,7 +223,7 @@ jobs:
 
       - name: Run integration tests (capture output)
         run: |
-          uv run python -m pytest tests/test_phase6_integration.py -q -m integration \
+          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py -q -m integration \
             --tb=long --color=yes 2>&1 | tee integration.log
         # Don't fail on pytest exit code yet — we parse the log below
         continue-on-error: true
@@ -255,13 +259,13 @@ jobs:
             exit 1
           fi
 
-          # P0: at least 18 passed
-          if [ "${PASSED:-0}" -lt 18 ]; then
+          # P0: at least 19 passed (18 Phase 6 + 1 Phase 8B)
+          if [ "${PASSED:-0}" -lt 19 ]; then
             echo ""
-            echo "ERROR: Only ${PASSED:-0}/18 integration tests passed."
-            echo "Expected: 18 passed."
+            echo "ERROR: Only ${PASSED:-0}/19 integration tests passed."
+            echo "Expected: at least 19 passed."
             exit 1
           fi
 
           echo ""
-          echo "All 18 integration tests passed with 0 skipped — Phase 6 live-verified."
+          echo "All service-backed integration tests passed with 0 skipped."

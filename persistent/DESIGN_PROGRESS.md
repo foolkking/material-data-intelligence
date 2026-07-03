@@ -1,5 +1,17 @@
 # DESIGN_PROGRESS
 
+## 2026-07-03 Phase 8B Persisted Plans + Queue Worker Update
+
+- Added PostgreSQL-backed `analysis_plans` persistence and `jobs.plan_id` linkage through Alembic revision `0002_phase8b_persisted_analysis_plans`.
+- Added `AnalysisPlanRepository` to both in-memory and SQLAlchemy repository bundles, including `save_plan`, `get_plan`, `get_plan_for_job`, `attach_plan_to_job`, AnalysisPlan JSON round-trip, canonical SHA-256 `plan_hash`, and credential-key rejection before persistence.
+- Upgraded `POST /planner/jobs` to validate first, persist the exact validated `AnalysisPlan`, create a Job linked by `plan_id`, and optionally enqueue only `job_id`; it no longer synchronously executes in the planner route.
+- Upgraded `QueueWorkerRuntime.handle_job(job_id)` so the main path loads `job.plan_id`, reconstructs the persisted `AnalysisPlan`, executes exactly `plan.steps`, and writes ToolCall, JobEvent, Artifact, and completed Job status with `planId`/`planHash` provenance.
+- Preserved explicit fallback only for dev/test jobs without a persisted plan. When `plan_id` exists, persisted plan loading wins and `build_phase2_plan` is not used.
+- Core local evidence: `tests/test_phase8b_persisted_plan_queue.py` proves persisted 1-step plan -> exactly 1 ToolCall, `toolId=ml.basic_metrics`, `stepId=llm_step_1`, Artifact generated, `plan.loaded` JobEvent includes `planId`/`planHash`, and Job reaches `completed`.
+- Verification so far: `uv lock --check` passed; Phase 8B targeted 8 passed / 1 skipped; Phase 8A 11 passed; Phase 7 22 passed; backend full 109 passed / 20 skipped; frontend `npm ci`, `npm run typecheck`, and `npm run build` passed.
+- Local machine has no Docker CLI, so service-backed Phase 8B integration could not be run locally. CI is configured to run Phase 6 + Phase 8B integration against PostgreSQL + Redis + MinIO with zero skipped tests and at least 19 passes before Phase 8B can be considered frozen.
+- Remaining boundaries after Phase 8B: true LLM integration, frontend Planner UX (Phase 8C), multi-step DAG/data-dependency execution, production secret encryption, worker process supervision/dead-letter policy.
+
 ## 2026-06-27 Phase 8A LLM Plan Execution Bridge Update
 
 - Closed the largest Phase 7 boundary: validated LLM AnalysisPlans now actually execute, instead of being discarded in favor of the deterministic plan.

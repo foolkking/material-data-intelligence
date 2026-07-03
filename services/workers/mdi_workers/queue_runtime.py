@@ -10,7 +10,7 @@ from mdi_adapters import ToolExecutionContext, execute_tool_request
 from mdi_api.artifact_storage import ArtifactStorage, ArtifactStorageMetadata, LocalFileArtifactStorage
 from mdi_api.repositories import InMemoryRepositoryBundle
 from mdi_api.unit_of_work import RepositoryFactory
-from mdi_schemas import JobStatus, ToolExecutionRequest
+from mdi_schemas import AnalysisPlan, JobStatus, ToolExecutionRequest
 from mdi_tool_registry import ToolRegistry
 
 
@@ -54,6 +54,8 @@ class QueueWorkerResult:
     artifact_count: int
     event_count: int
     message: str
+    plan_id: str | None = None
+    plan_hash: str | None = None
 
 
 class InMemoryQueueBackend:
@@ -121,6 +123,7 @@ class QueueWorkerRuntime:
         self.repositories = repositories
         self.repository_factory = repository_factory
         self.artifact_storage = artifact_storage or LocalFileArtifactStorage(artifact_root)
+        self.artifact_root = Path(artifact_root)
         self.queue_backend = queue_backend or InMemoryQueueBackend()
         self.tool_executor = tool_executor
         self.registry = registry
@@ -140,15 +143,16 @@ class QueueWorkerRuntime:
             return self._result(repos, job_id, message="job already completed")
 
         job = self._start_job(repos, job)
-        steps = list((plan or {}).get("steps") or [])
+        plan_payload, plan_record = self._load_execution_plan(repos, job, explicit_plan=plan)
+        steps = list((plan_payload or {}).get("steps") or [])
         if not steps:
             repos.job_events.append_event(job_id, event_type="job.completed", status="success", message="Job completed with no tool steps.", progress=1.0)
             repos.jobs.set_status(job_id, JobStatus.completed)
-            return self._result(repos, job_id, message="job completed")
+            return self._result(repos, job_id, message="job completed", plan_record=plan_record)
 
         try:
             for index, step in enumerate(steps, start=1):
-                self._run_step(repos, job, step, index=index, object_store=object_store)
+                self._run_step(repos, job, step, index=index, object_store=object_store, plan_record=plan_record)
         except Exception as exc:
             repos.job_events.append_event(
                 job_id,
@@ -159,11 +163,18 @@ class QueueWorkerRuntime:
                 progress=1.0,
             )
             repos.jobs.set_status(job_id, JobStatus.failed)
-            return self._result(repos, job_id, message=f"job failed: {exc}")
+            return self._result(repos, job_id, message=f"job failed: {exc}", plan_record=plan_record)
 
-        repos.job_events.append_event(job_id, event_type="job.completed", status="success", message="Job completed.", progress=1.0)
+        repos.job_events.append_event(
+            job_id,
+            event_type="job.completed",
+            status="success",
+            message="Job completed.",
+            payload=_plan_provenance(plan_record),
+            progress=1.0,
+        )
         repos.jobs.set_status(job_id, JobStatus.completed)
-        return self._result(repos, job_id, message="job completed")
+        return self._result(repos, job_id, message="job completed", plan_record=plan_record)
 
     def _repositories(self) -> Any:
         if self.repository_factory is not None:
@@ -186,7 +197,68 @@ class QueueWorkerRuntime:
         repos.job_events.append_event(job_id, event_type="job.running", status="running", message="Queue worker started job.", progress=0.0)
         return repos.jobs.get(job_id)
 
-    def _run_step(self, repos: Any, job: Mapping[str, Any], step: Mapping[str, Any], *, index: int, object_store: dict[str, list[Any]] | None) -> None:
+    def _load_execution_plan(
+        self,
+        repos: Any,
+        job: Mapping[str, Any],
+        *,
+        explicit_plan: Mapping[str, Any] | None,
+    ) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+        job_id = str(job.get("jobId") or job["id"])
+        plan_id = job.get("planId") or job.get("plan_id")
+        if plan_id:
+            plan_record = repos.analysis_plans.get_plan(str(plan_id))
+            plan_payload = AnalysisPlan.model_validate(plan_record["analysisPlan"]).model_dump(mode="json")
+            repos.job_events.append_event(
+                job_id,
+                event_type="plan.loaded",
+                status="success",
+                message=f"Loaded persisted AnalysisPlan with {len(plan_payload['steps'])} step(s).",
+                payload=_plan_provenance(plan_record),
+                progress=0.05,
+            )
+            return plan_payload, plan_record
+
+        if explicit_plan is not None:
+            try:
+                plan_payload = AnalysisPlan.model_validate(explicit_plan).model_dump(mode="json")
+            except Exception:
+                plan_payload = dict(explicit_plan)
+            repos.job_events.append_event(
+                job_id,
+                event_type="plan.loaded",
+                status="info",
+                message=f"Loaded explicit fallback AnalysisPlan with {len(plan_payload['steps'])} step(s).",
+                payload={"planSource": "explicit_fallback", "toolCount": len(plan_payload["steps"])},
+                progress=0.05,
+            )
+            return plan_payload, None
+
+        try:
+            plan_record = repos.analysis_plans.get_plan_for_job(job_id)
+        except (AttributeError, LookupError):
+            return None, None
+        plan_payload = AnalysisPlan.model_validate(plan_record["analysisPlan"]).model_dump(mode="json")
+        repos.job_events.append_event(
+            job_id,
+            event_type="plan.loaded",
+            status="success",
+            message=f"Loaded persisted AnalysisPlan with {len(plan_payload['steps'])} step(s).",
+            payload=_plan_provenance(plan_record),
+            progress=0.05,
+        )
+        return plan_payload, plan_record
+
+    def _run_step(
+        self,
+        repos: Any,
+        job: Mapping[str, Any],
+        step: Mapping[str, Any],
+        *,
+        index: int,
+        object_store: dict[str, list[Any]] | None,
+        plan_record: Mapping[str, Any] | None,
+    ) -> None:
         job_id = str(job.get("jobId") or job["id"])
         project_id = str(job.get("projectId") or job["project_id"])
         dataset_id = job.get("datasetId")
@@ -233,7 +305,7 @@ class QueueWorkerRuntime:
             event_type="tool.started",
             status="running",
             message=f"Started tool {tool_id}.",
-            payload={"toolCallId": tool_call_id, "toolId": tool_id, "stepId": step_id},
+            payload={"toolCallId": tool_call_id, "toolId": tool_id, "stepId": step_id, **_plan_provenance(plan_record)},
             progress=0.0,
         )
 
@@ -281,6 +353,7 @@ class QueueWorkerRuntime:
                 job_id=job_id,
                 tool_call_id=tool_call_id,
                 tool_id=tool_id,
+                plan_record=plan_record,
             )
             repos.artifacts.save(record)
             artifact_ids.append(str(record["id"]))
@@ -289,7 +362,7 @@ class QueueWorkerRuntime:
                 event_type="artifact.ready",
                 status="success",
                 message=f"Artifact ready: {record['name']}",
-                payload={"toolCallId": tool_call_id, "artifactId": record["id"], "storageKey": record["storageKey"]},
+                payload={"toolCallId": tool_call_id, "artifactId": record["id"], "storageKey": record["storageKey"], **_plan_provenance(plan_record)},
             )
 
         repos.tool_calls.save(
@@ -309,7 +382,7 @@ class QueueWorkerRuntime:
             event_type="tool.completed",
             status="success",
             message=f"Completed tool {tool_id}.",
-            payload={"toolCallId": tool_call_id, "artifactIds": artifact_ids},
+            payload={"toolCallId": tool_call_id, "artifactIds": artifact_ids, **_plan_provenance(plan_record)},
             progress=1.0,
         )
 
@@ -321,7 +394,7 @@ class QueueWorkerRuntime:
             project_id=context.project_id,
             dataset_id=context.dataset_id or "",
             tool_call_id=context.tool_call_id,
-            artifact_root=Path(".artifacts/phase5"),
+            artifact_root=self.artifact_root,
             object_store=object_store or {},
         )
         return execute_tool_request(adapter_context, request, registry=self.registry)
@@ -335,6 +408,7 @@ class QueueWorkerRuntime:
         job_id: str,
         tool_call_id: str,
         tool_id: str,
+        plan_record: Mapping[str, Any] | None,
     ) -> dict[str, Any]:
         record = _artifact_record(artifact)
         artifact_id = str(record.get("id") or record.get("artifactId") or _safe_id(f"artifact_{tool_call_id}_{record.get('name') or 'output'}"))
@@ -344,6 +418,13 @@ class QueueWorkerRuntime:
         if content is not None:
             encoded = _encode_content(content)
             metadata = self.artifact_storage.put_bytes(storage_key, encoded, content_type=content_type, preview_key=record.get("previewKey"))
+        elif (self.artifact_root / storage_key).exists():
+            metadata = self.artifact_storage.put_bytes(
+                storage_key,
+                (self.artifact_root / storage_key).read_bytes(),
+                content_type=content_type,
+                preview_key=record.get("previewKey"),
+            )
         else:
             metadata = _metadata_from_record(record, storage_key=storage_key, content_type=content_type)
         return {
@@ -368,11 +449,11 @@ class QueueWorkerRuntime:
                 "storageProvider": metadata.storage_provider,
                 "bucket": metadata.bucket,
                 "createdAt": metadata.created_at,
-                "provenance": {"toolId": tool_id, "toolCallId": tool_call_id},
+                "provenance": {"toolId": tool_id, "toolCallId": tool_call_id, **_plan_provenance(plan_record)},
             },
         }
 
-    def _result(self, repos: Any, job_id: str, *, message: str) -> QueueWorkerResult:
+    def _result(self, repos: Any, job_id: str, *, message: str, plan_record: Mapping[str, Any] | None = None) -> QueueWorkerResult:
         job = repos.jobs.get(job_id)
         return QueueWorkerResult(
             job_id=job_id,
@@ -381,6 +462,8 @@ class QueueWorkerRuntime:
             artifact_count=len(repos.artifacts.list_for_job(job_id)),
             event_count=len(repos.job_events.list_for_job(job_id)),
             message=message,
+            plan_id=str(plan_record.get("id") or plan_record.get("planId")) if plan_record else None,
+            plan_hash=str(plan_record.get("planHash") or plan_record.get("plan_hash")) if plan_record else None,
         )
 
 
@@ -407,6 +490,16 @@ def _artifact_record(artifact: Any) -> dict[str, Any]:
     if hasattr(artifact, "model_dump"):
         return artifact.model_dump(mode="json")
     return dict(artifact)
+
+
+def _plan_provenance(plan_record: Mapping[str, Any] | None) -> dict[str, Any]:
+    if not plan_record:
+        return {}
+    return {
+        "planId": plan_record.get("id") or plan_record.get("planId"),
+        "planHash": plan_record.get("planHash") or plan_record.get("plan_hash"),
+        "planSource": plan_record.get("planSource") or plan_record.get("plan_source"),
+    }
 
 
 def _metadata_from_record(record: Mapping[str, Any], *, storage_key: str, content_type: str) -> ArtifactStorageMetadata:

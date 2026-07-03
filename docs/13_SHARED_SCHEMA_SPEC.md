@@ -353,6 +353,22 @@ type AnalysisPlan = {
   expectedArtifacts: ExpectedArtifact[];
 };
 
+type PersistedAnalysisPlan = {
+  id: string;
+  projectId: string;
+  datasetId?: string;
+  profileId?: string;
+  jobId?: string;
+  planSource: "llm" | "deterministic" | "imported" | string;
+  plannerProvider?: string;
+  analysisPlan: AnalysisPlan;
+  planHash: string; // sha256(canonical_json(AnalysisPlan))
+  validationStatus: "validated" | "rejected";
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 type AnalysisStep = {
   stepId: string;
   toolId: string;
@@ -391,6 +407,18 @@ type JobStatus =
   | "failed"
   | "cancel_requested"
   | "cancelled";
+
+type Job = {
+  id: string;
+  projectId: string;
+  datasetId?: string;
+  planId?: string;
+  kind: "analysis" | "parse" | "render" | "export" | string;
+  status: JobStatus;
+  createdBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
 
 type JobEvent = {
   id: string;

@@ -114,6 +114,25 @@ data_profiles = Table(
     UniqueConstraint("dataset_id", "version", name="uq_data_profiles_dataset_version"),
 )
 
+analysis_plans = Table(
+    "analysis_plans",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id"), nullable=False),
+    Column("dataset_id", String(64), ForeignKey("datasets.id"), nullable=True),
+    Column("profile_id", String(64), nullable=True),
+    Column("job_id", String(64), nullable=True),
+    Column("plan_source", String(64), nullable=False),
+    Column("planner_provider", String(80), nullable=True),
+    Column("analysis_plan_json", JSON, nullable=False),
+    Column("plan_hash", String(64), nullable=False),
+    Column("validation_status", String(32), nullable=False),
+    Column("created_by", String(64), ForeignKey("users.id"), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("validation_status in ('validated', 'rejected')", name="analysis_plan_validation_status"),
+)
+
 field_mappings = Table(
     "field_mappings",
     metadata,
@@ -154,6 +173,7 @@ jobs = Table(
     Column("id", String(64), primary_key=True),
     Column("project_id", String(64), ForeignKey("projects.id"), nullable=False),
     Column("dataset_id", String(64), ForeignKey("datasets.id"), nullable=True),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=True),
     Column("kind", String(64), nullable=False),
     Column("status", String(32), nullable=False, server_default="created"),
     Column("created_by", String(64), ForeignKey("users.id"), nullable=False),
@@ -301,7 +321,11 @@ Index("idx_project_members_user", project_members.c.user_id)
 Index("idx_datasets_project_created", datasets.c.project_id, datasets.c.created_at)
 Index("idx_files_dataset_created", files.c.dataset_id, files.c.created_at)
 Index("idx_data_profiles_dataset_created", data_profiles.c.dataset_id, data_profiles.c.created_at)
+Index("idx_analysis_plans_project_created", analysis_plans.c.project_id, analysis_plans.c.created_at)
+Index("idx_analysis_plans_job", analysis_plans.c.job_id)
+Index("idx_analysis_plans_plan_hash", analysis_plans.c.plan_hash)
 Index("idx_jobs_project_created", jobs.c.project_id, jobs.c.created_at)
+Index("idx_jobs_plan_id", jobs.c.plan_id)
 Index("idx_job_events_job_seq", job_events.c.job_id, job_events.c.seq)
 Index("idx_tool_calls_job", tool_calls.c.job_id)
 Index("idx_artifacts_job", artifacts.c.job_id)
@@ -319,6 +343,7 @@ PHASE1_TABLES = (
     "datasets",
     "files",
     "data_profiles",
+    "analysis_plans",
     "field_mappings",
     "sessions",
     "messages",

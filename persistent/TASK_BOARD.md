@@ -1,5 +1,37 @@
 # TASK_BOARD
 
+## 2026-07-03 Phase 8B Persisted Plans + Redis QueueWorkerRuntime Status
+
+### Done This Round
+
+- [x] Added Alembic migration `0002_phase8b_persisted_analysis_plans` for `analysis_plans` and nullable `jobs.plan_id`.
+- [x] Added indexes: `idx_analysis_plans_project_created`, `idx_analysis_plans_job`, `idx_analysis_plans_plan_hash`, and `idx_jobs_plan_id`.
+- [x] Added `AnalysisPlanRepository` to in-memory and SQLAlchemy repository bundles.
+- [x] Added stable canonical SHA-256 `plan_hash` and AnalysisPlan JSON round-trip tests.
+- [x] Upgraded `/planner/jobs`: invalid plans persist nothing; valid plans persist exact validated JSON, create Job with `plan_id`, return `plan_id`/`plan_hash`, and optionally enqueue only `job_id`.
+- [x] Upgraded `QueueWorkerRuntime.handle_job(job_id)` to load `job.plan_id` and execute exact persisted `AnalysisPlan.steps`.
+- [x] Added plan provenance to worker events/artifact metadata/result (`planId`, `planHash`, `planSource`).
+- [x] Proved persisted 1-step plan -> exactly 1 ToolCall with `toolId`/`stepId` from the persisted plan, Artifact generated, and Job completed.
+- [x] Preserved explicit fallback only when a job has no persisted plan.
+- [x] Updated CI integration job to include Phase 8B service-backed test and enforce zero skips / at least 19 integration passes.
+
+### Verification
+
+- [x] `uv lock --check`
+- [x] `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` -> 8 passed, 1 skipped locally (integration gated)
+- [x] `python -m pytest tests/test_phase8a_plan_execution.py -q` -> 11 passed
+- [x] `python -m pytest tests/test_phase7_llm_planner.py -q` -> 22 passed
+- [x] `python -m pytest -q` -> 109 passed, 20 skipped
+- [x] `npm ci`, `npm run typecheck`, `npm run build` in `apps/web`
+- [ ] `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration` on this machine (blocked: Docker CLI unavailable)
+- [ ] GitHub Actions current HEAD service-backed integration success (required before Phase 8B freeze)
+
+### Handoff Notes
+
+- Phase 8B is locally complete but not frozen until CI proves PostgreSQL + Redis + MinIO service-backed integration with zero skipped tests.
+- Phase 8C frontend Planner UX must not start before the CI-backed Phase 8B freeze.
+- Remaining boundaries: true LLM integration, frontend Planner UX, multi-step DAG/data binding, production secret encryption, worker process supervision/dead-letter queue.
+
 ## 2026-06-27 Phase 8A LLM Plan Execution Bridge Status
 
 ### Done This Round
