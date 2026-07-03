@@ -1,5 +1,40 @@
 # TASK_BOARD
 
+## 2026-07-03 Phase 9A True LLM Provider Gated Integration Status
+
+### Done This Round
+
+- [x] Added an OpenAI-compatible planner provider path gated by explicit provider selection/configuration.
+- [x] Kept the default planner provider on the mock/deterministic-safe path; default tests and default CI do not require real LLM credentials.
+- [x] Added `MDI_LLM_PROVIDER`, `MDI_LLM_BASE_URL`, `MDI_LLM_API_KEY`, `MDI_LLM_MODEL`, `MDI_LLM_TIMEOUT_SECONDS`, `MDI_LLM_MAX_TOKENS`, and `MDI_LLM_TEMPERATURE` configuration support.
+- [x] Added safe provider errors for missing keys, unsupported providers, HTTP 401/429/5xx, network errors, timeouts, and invalid provider responses.
+- [x] Preserved JSON parsing for pure JSON and fenced JSON; non-JSON and schema-invalid responses fail validation.
+- [x] Preserved PlanValidator as the enforced boundary before any plan persistence, job creation, or enqueue.
+- [x] Proved valid OpenAI-compatible fake-transport output enters the Phase 8B persisted AnalysisPlan path.
+- [x] Proved invalid true-provider plans and provider failures persist no plan, create no job, and enqueue nothing.
+- [x] Added a gated `llm_integration` pytest marker and live-provider smoke test that only runs with `MDI_RUN_LLM_INTEGRATION=1` plus required LLM env.
+- [x] Left QueueWorkerRuntime, AnalysisPlanRepository, and the Phase 8B persisted-plan worker semantics unchanged.
+
+### Verification
+
+- [x] `uv lock --check`
+- [x] `python -m pytest tests/test_phase7_llm_planner.py -q` -> 32 passed
+- [x] `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` -> 9 passed, 1 skipped locally
+- [x] `python -m pytest tests/test_phase8c_planner_read_api.py -q` -> 2 passed
+- [x] `python -m pytest -q` -> 122 passed, 21 skipped
+- [x] `npm ci` in `apps/web`
+- [x] `npm test` in `apps/web` -> 5 passed
+- [x] `npm run typecheck` in `apps/web`
+- [x] `npm run build` in `apps/web`
+- [x] `python -m pytest -q -m llm_integration` -> 1 skipped locally because live LLM env is not configured.
+
+### Handoff Notes
+
+- Phase 9A local result before CI: CONDITIONAL PASS. The gated provider path is implemented and fake-transport tested; live LLM verification is not claimed because no real LLM env is configured locally.
+- This local machine still has no Docker CLI, so service-backed PostgreSQL + Redis + MinIO integration remains CI-backed for this phase.
+- Default CI must remain real-LLM-free. The `llm_integration` marker is opt-in only.
+- Remaining boundaries: production secret encryption/KMS, multi-step DAG/data-dependency execution, worker supervision/dead-letter policy, and advanced material viewer polish.
+
 ## 2026-07-03 Phase 8C-P1 UX Compliance Closure Status
 
 ### Done This Round

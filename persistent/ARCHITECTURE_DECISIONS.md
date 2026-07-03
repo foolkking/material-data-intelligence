@@ -1,5 +1,55 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-081: Phase 9A real LLM provider is gated and cannot bypass validation or persistence
+
+### Context
+
+Phase 8B and Phase 8C completed persisted-plan execution and frontend
+provenance display using mock/deterministic-safe planner providers. The next
+increment needs a real OpenAI-compatible provider path without making default
+tests or CI depend on external LLM services and without weakening the Phase 8B
+validation/persistence/queue boundary.
+
+### Decision
+
+Phase 9A adds a gated OpenAI-compatible planner provider. The default provider
+remains mock/deterministic-safe. The real provider is selected only through an
+explicit provider request or `MDI_LLM_PROVIDER=openai_compatible` and is
+configured by `MDI_LLM_BASE_URL`, `MDI_LLM_API_KEY`, `MDI_LLM_MODEL`,
+`MDI_LLM_TIMEOUT_SECONDS`, `MDI_LLM_MAX_TOKENS`, and
+`MDI_LLM_TEMPERATURE`.
+
+The provider uses an OpenAI-compatible chat completion request and asks for a
+JSON object response. Raw prompts and raw completions are not persisted by
+default. Missing API keys, unsupported providers, HTTP errors, network errors,
+timeouts, and malformed responses are converted to safe provider failures that
+do not include API keys.
+
+All provider output still passes through JSON parsing, `AnalysisPlan` schema
+construction, and PlanValidator. `/planner/jobs` only persists the exact
+validated plan, creates a job, and optionally enqueues `job_id` after validation
+success. Provider failure or validation failure remains an all-or-nothing
+no-op: no plan, no job, no enqueue.
+
+A `llm_integration` pytest marker covers live provider smoke testing, but it is
+skipped unless `MDI_RUN_LLM_INTEGRATION=1` and required provider env are set.
+
+### Consequences
+
+- Default unit tests and default CI remain real-LLM-free.
+- Fake-transport tests prove the OpenAI-compatible provider success/failure
+  contract without external network calls.
+- Phase 8B execution semantics are preserved: valid plans still flow through
+  persisted AnalysisPlan storage, QueueWorkerRuntime, Tool Registry, and
+  Adapter execution.
+- API keys must not appear in AnalysisPlans, JobEvents, Artifacts, Results,
+  provider errors, or test output.
+- Live LLM verification is optional/gated and was not claimed locally without
+  configured provider env.
+- Production secret encryption/KMS, multi-step DAG execution, worker
+  supervision/dead-letter policy, and advanced material viewer polish remain
+  future work.
+
 ## ADR-080: Phase 8C-P1 uses read-only SSE and data-context selection to close UX compliance gaps
 
 ### Context

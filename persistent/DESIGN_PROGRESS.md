@@ -1,5 +1,19 @@
 # DESIGN_PROGRESS
 
+## 2026-07-03 Phase 9A True LLM Provider Gated Integration
+
+- Added a gated OpenAI-compatible LLM provider path for planner generation. The default planner path remains `MockLLMProvider`; real network calls require explicit `provider="openai_compatible"` or `MDI_LLM_PROVIDER=openai_compatible`.
+- OpenAI-compatible provider configuration is resolved at call time from `MDI_LLM_BASE_URL`, `MDI_LLM_API_KEY`, `MDI_LLM_MODEL`, `MDI_LLM_TIMEOUT_SECONDS`, `MDI_LLM_MAX_TOKENS`, and `MDI_LLM_TEMPERATURE` (with legacy `OPENAI_*` fallbacks for compatibility).
+- Provider outputs still parse to JSON first and then pass through the existing strict `PlanValidator`; invalid schema, non-JSON completion, unknown/non-MVP tools, duplicate/empty steps, and credential-like params remain rejected before any plan/job/queue mutation.
+- `/planner/jobs` keeps the Phase 8B persisted-plan contract: validation success persists the exact validated `AnalysisPlan`, creates a `job.plan_id` binding, and optionally enqueues only `job_id`; validation/provider failure returns no `plan_id`, no `job_id`, and no enqueue.
+- Safe provider errors now cover missing key, timeout, network failure, HTTP 401/429/5xx, and malformed provider response without exposing API keys or raw environment details. Raw prompt/completion is not persisted to `analysis_plans`, JobEvents, Artifacts, or Results.
+- Added fake-transport tests for OpenAI-compatible success, markdown-fenced JSON, non-JSON completion, HTTP errors, timeout, missing key, default no-network behavior, provider validation failure no-op, and valid provider output entering the persisted-plan path.
+- Added a gated `llm_integration` pytest marker and live test. It only runs when `MDI_RUN_LLM_INTEGRATION=1` and required `MDI_LLM_*` env vars are present; otherwise it skips with a clear reason. Default CI does not require or call a real LLM.
+- Local verification: `uv lock --check` passed; `python -m pytest tests/test_phase7_llm_planner.py -q` passed with 32 tests; `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` passed with 9 passed / 1 skipped; `python -m pytest tests/test_phase8c_planner_read_api.py -q` passed with 2 tests; `python -m pytest -q` passed with 122 passed / 21 skipped; `npm ci`, `npm test`, `npm run typecheck`, and `npm run build` passed in `apps/web`.
+- Local live LLM verification was not run because `MDI_RUN_LLM_INTEGRATION` and provider credentials are not configured. `python -m pytest -q -m llm_integration` skipped 1 test and made no external LLM call.
+- Local machine has no Docker CLI, so service-backed PostgreSQL + Redis + MinIO integration remains CI-backed for this phase until the Phase 9A commit is pushed.
+- Remaining boundaries after Phase 9A: production secret encryption/KMS, multi-step DAG/data-dependency execution, worker supervision/dead-letter policy, and advanced material viewer polish.
+
 ## 2026-07-03 Phase 8C-P1 Frontend Planner UX Compliance Closure
 
 - Closed the Phase 8C P1 docs-compliance gaps without entering Phase 9 and without changing QueueWorkerRuntime, AnalysisPlanRepository, or the core `/planner/jobs` validate/persist/enqueue semantics.

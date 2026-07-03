@@ -4,15 +4,18 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import urllib.error
 
 import pytest
 
 from mdi_api.secrets import InMemorySecretStore
-from mdi_llm import MockLLMProvider, OpenAICompatibleProvider, PlannerRequest, PlannerUserConfig, redact_params_for_log
+from mdi_api.repositories import InMemoryRepositoryBundle
+from mdi_llm import LLMProviderError, MockLLMProvider, OpenAICompatibleProvider, PlannerRequest, PlannerRawResponse, PlannerUserConfig, redact_params_for_log
 from mdi_llm.planner_prompt import build_planner_prompt
 from mdi_schemas import AnalysisPlan, AnalysisStep, ArtifactType, DataProfile
 from mdi_tool_registry import ToolRegistry, load_manifests
 from mdi_tool_registry.plan_validator import PlanValidationError, validate_plan
+from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime
 
 
 # ── helpers ─────────────────────────────────────────────────────────
@@ -29,6 +32,28 @@ def _data_profile() -> DataProfile:
         datasetType="ml",
         createdAt="2026-06-27T00:00:00+00:00",
     )
+
+
+def _valid_openai_plan(dataset_id: str = "ds1", profile_id: str = "p1") -> dict[str, object]:
+    return {
+        "schemaVersion": "0.1",
+        "goal": "test from fake OpenAI-compatible provider",
+        "datasetId": dataset_id,
+        "profileId": profile_id,
+        "toolRegistryVersion": _registry().version,
+        "steps": [
+            {
+                "stepId": "llm_step_1",
+                "toolId": "ml.basic_metrics",
+                "purpose": "x",
+                "reason": "x",
+                "inputRefs": [{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+                "params": {"targetColumn": "y_true", "predictionColumn": "y_pred"},
+                "output": {"artifactTypes": ["metrics_json"]},
+            }
+        ],
+        "expectedArtifacts": [{"name": "metrics.json", "type": "metrics_json", "fromStepId": "llm_step_1"}],
+    }
 
 
 # ── 1. MockLLMProvider returns valid JSON plan ─────────────────────
@@ -505,3 +530,228 @@ def test_planner_jobs_rejects_non_json_llm_output() -> None:
     assert not result.ok
     assert result.job_id is None
     assert any(e["code"] == "PLAN_EMPTY" for e in result.validation_errors)
+
+
+# ── Phase 9A. OpenAI-compatible provider is gated and safe by default ──
+
+def test_openai_provider_uses_mdi_env_config_with_fake_transport(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, object] = {}
+
+    monkeypatch.setenv("MDI_LLM_BASE_URL", "https://llm.example.test/v1")
+    monkeypatch.setenv("MDI_LLM_API_KEY", "sk-phase9a-secret-value-000000")
+    monkeypatch.setenv("MDI_LLM_MODEL", "phase9a-model")
+    monkeypatch.setenv("MDI_LLM_TIMEOUT_SECONDS", "12.5")
+    monkeypatch.setenv("MDI_LLM_MAX_TOKENS", "321")
+    monkeypatch.setenv("MDI_LLM_TEMPERATURE", "0.05")
+
+    def fake_transport(**kwargs):
+        captured.update(kwargs)
+        return {"choices": [{"message": {"content": json.dumps(_valid_openai_plan())}, "finish_reason": "stop"}]}
+
+    provider = OpenAICompatibleProvider(transport=fake_transport)
+    reg = _registry()
+    req = PlannerRequest(user_prompt="test", dataset_id="ds1", profile_id="p1", tool_registry_version=reg.version)
+    resp = provider.generate_plan(req, tools=list(reg.tools), data_profile=_data_profile())
+
+    assert resp.raw_json is not None
+    assert resp.model == "phase9a-model"
+    assert captured["model"] == "phase9a-model"
+    assert captured["timeout_seconds"] == 12.5
+    assert captured["max_tokens"] == 321
+    assert captured["temperature"] == 0.05
+    assert captured["response_format"] == {"type": "json_object"}
+    assert "sk-phase9a-secret" not in json.dumps(captured["messages"])
+
+
+def test_openai_provider_missing_api_key_fails_safely(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("MDI_LLM_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    provider = OpenAICompatibleProvider()
+    reg = _registry()
+    req = PlannerRequest(user_prompt="test", dataset_id="ds1", profile_id="p1", tool_registry_version=reg.version)
+
+    with pytest.raises(LLMProviderError) as exc:
+        provider.generate_plan(req, tools=list(reg.tools), data_profile=_data_profile())
+
+    assert exc.value.code == "LLM_API_KEY_MISSING"
+    assert "sk-phase9a-secret" not in str(exc.value)
+    assert "MDI_LLM_API_KEY" not in str(exc.value)
+
+
+@pytest.mark.parametrize("status_code", [401, 429, 500])
+def test_openai_provider_http_errors_are_redacted(status_code: int) -> None:
+    def failing_transport(**kwargs):
+        raise urllib.error.HTTPError(
+            url="https://llm.example.test/v1/chat/completions",
+            code=status_code,
+            msg="server said sk-phase9a-secret-value-000000",
+            hdrs=None,
+            fp=None,
+        )
+
+    provider = OpenAICompatibleProvider(transport=failing_transport)
+    reg = _registry()
+    req = PlannerRequest(user_prompt="test", dataset_id="ds1", profile_id="p1", tool_registry_version=reg.version)
+
+    with pytest.raises(LLMProviderError) as exc:
+        provider.generate_plan(req, tools=list(reg.tools), data_profile=_data_profile())
+
+    assert exc.value.code == "LLM_HTTP_ERROR"
+    assert exc.value.status_code == status_code
+    assert "sk-phase9a-secret" not in str(exc.value)
+
+
+def test_openai_provider_timeout_error_is_redacted() -> None:
+    def timeout_transport(**kwargs):
+        raise TimeoutError("timeout with sk-phase9a-secret-value-000000")
+
+    provider = OpenAICompatibleProvider(transport=timeout_transport)
+    reg = _registry()
+    req = PlannerRequest(user_prompt="test", dataset_id="ds1", profile_id="p1", tool_registry_version=reg.version)
+
+    with pytest.raises(LLMProviderError) as exc:
+        provider.generate_plan(req, tools=list(reg.tools), data_profile=_data_profile())
+
+    assert exc.value.code == "LLM_TIMEOUT"
+    assert "sk-phase9a-secret" not in str(exc.value)
+
+
+def test_default_planner_jobs_uses_mock_provider_without_openai_network(monkeypatch: pytest.MonkeyPatch) -> None:
+    import mdi_api.routers.planner as planner_router
+
+    def forbidden_openai_provider():
+        raise AssertionError("OpenAICompatibleProvider must not be instantiated by default")
+
+    monkeypatch.delenv("MDI_LLM_PROVIDER", raising=False)
+    monkeypatch.setattr(planner_router, "OpenAICompatibleProvider", forbidden_openai_provider)
+
+    result = planner_router.planner_jobs(
+        planner_router.PlannerJobsRequest(userPrompt="run metrics", projectId="project_9a", datasetId="dataset_9a"),
+        repositories=InMemoryRepositoryBundle.create(),
+        registry=_registry(),
+    )
+
+    assert result.ok
+    assert result.planner_provider == "mock"
+
+
+def test_planner_jobs_openai_compatible_valid_plan_enters_persisted_plan_path(monkeypatch: pytest.MonkeyPatch) -> None:
+    import mdi_api.routers.planner as planner_router
+
+    class FakeOpenAIProvider:
+        def generate_plan(self, request, *, tools, data_profile, user_config=None):
+            return PlannerRawResponse(
+                raw_json=_valid_openai_plan(dataset_id=request.dataset_id, profile_id=request.profile_id),
+                raw_text=None,
+                model="phase9a-fake-model",
+                finish_reason="stop",
+            )
+
+        @property
+        def meta(self):
+            return type("Meta", (), {"name": "openai_compatible", "model": "phase9a-fake-model"})()
+
+    repos = InMemoryRepositoryBundle.create()
+    queue = InMemoryQueueBackend()
+    runtime = QueueWorkerRuntime(repositories=repos, queue_backend=queue)
+    monkeypatch.setattr(planner_router, "OpenAICompatibleProvider", lambda: FakeOpenAIProvider())
+
+    result = planner_router.planner_jobs(
+        planner_router.PlannerJobsRequest(
+            userPrompt="run metrics",
+            projectId="project_9a",
+            datasetId="dataset_9a",
+            profileId="profile_9a",
+            provider="openai_compatible",
+            enqueue=True,
+        ),
+        repositories=repos,
+        queue_runtime=runtime,
+        registry=_registry(),
+    )
+
+    assert result.ok
+    assert result.planner_provider == "openai_compatible"
+    assert result.job_id is not None
+    assert result.plan_id is not None
+    assert result.plan_hash is not None
+    assert queue.pop_next() == result.job_id
+    job = repos.jobs.get(result.job_id)
+    plan = repos.analysis_plans.get_plan(result.plan_id)
+    assert job["planId"] == result.plan_id
+    assert plan["plannerProvider"] == "openai_compatible"
+    assert plan["analysisPlan"]["steps"][0]["toolId"] == "ml.basic_metrics"
+
+
+def test_planner_jobs_openai_compatible_invalid_plan_persists_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
+    import mdi_api.routers.planner as planner_router
+
+    class FakeOpenAIProvider:
+        def generate_plan(self, request, *, tools, data_profile, user_config=None):
+            plan = _valid_openai_plan(dataset_id=request.dataset_id, profile_id=request.profile_id)
+            plan["steps"][0]["params"]["api_key"] = "sk-phase9a-secret-value-000000"  # type: ignore[index]
+            return PlannerRawResponse(raw_json=plan, raw_text=None, model="phase9a-fake-model", finish_reason="stop")
+
+        @property
+        def meta(self):
+            return type("Meta", (), {"name": "openai_compatible", "model": "phase9a-fake-model"})()
+
+    repos = InMemoryRepositoryBundle.create()
+    queue = InMemoryQueueBackend()
+    runtime = QueueWorkerRuntime(repositories=repos, queue_backend=queue)
+    monkeypatch.setattr(planner_router, "OpenAICompatibleProvider", lambda: FakeOpenAIProvider())
+
+    result = planner_router.planner_jobs(
+        planner_router.PlannerJobsRequest(
+            userPrompt="run metrics",
+            projectId="project_9a",
+            datasetId="dataset_9a",
+            provider="openai_compatible",
+            enqueue=True,
+        ),
+        repositories=repos,
+        queue_runtime=runtime,
+        registry=_registry(),
+    )
+
+    assert not result.ok
+    assert result.job_id is None
+    assert result.plan_id is None
+    assert result.enqueued is False
+    assert any(error["code"] == "CREDENTIAL_IN_PARAMS" for error in result.validation_errors)
+    assert repos.analysis_plans.records == {}
+    assert repos.jobs.records == {}
+    assert queue.pop_next() is None
+    assert "sk-phase9a-secret" not in json.dumps(result.validation_errors)
+
+
+def test_planner_jobs_openai_provider_error_persists_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
+    import mdi_api.routers.planner as planner_router
+
+    monkeypatch.delenv("MDI_LLM_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    repos = InMemoryRepositoryBundle.create()
+    queue = InMemoryQueueBackend()
+    runtime = QueueWorkerRuntime(repositories=repos, queue_backend=queue)
+
+    result = planner_router.planner_jobs(
+        planner_router.PlannerJobsRequest(
+            userPrompt="run metrics",
+            projectId="project_9a",
+            datasetId="dataset_9a",
+            provider="openai_compatible",
+            enqueue=True,
+        ),
+        repositories=repos,
+        queue_runtime=runtime,
+        registry=_registry(),
+    )
+
+    assert not result.ok
+    assert result.job_id is None
+    assert result.plan_id is None
+    assert result.enqueued is False
+    assert any(error["code"] == "LLM_API_KEY_MISSING" for error in result.validation_errors)
+    assert repos.analysis_plans.records == {}
+    assert repos.jobs.records == {}
+    assert queue.pop_next() is None

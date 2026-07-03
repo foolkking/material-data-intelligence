@@ -15,7 +15,9 @@ from mdi_api.database import create_repository_factory
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
 from mdi_api.secrets import InMemorySecretStore
 from mdi_llm import (
+    LLMProviderError,
     MockLLMProvider,
+    OpenAICompatibleProvider,
     PlannerRawResponse,
     PlannerRequest,
     PlannerUserConfig,
@@ -23,7 +25,7 @@ from mdi_llm import (
 )
 from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime, RedisRQQueueBackend
 from mdi_tool_registry import ToolRegistry, load_manifests
-from mdi_tool_registry.plan_validator import PlanValidationResult, validate_plan
+from mdi_tool_registry.plan_validator import PlanValidationError, PlanValidationResult, validate_plan
 
 
 _LLM_PROVIDER = MockLLMProvider()
@@ -44,6 +46,7 @@ class PlannerPreviewRequest(BaseModel):
     userPrompt: str = Field(min_length=1)
     datasetId: str = Field(min_length=1)
     profileId: str = Field(default="")
+    provider: str | None = Field(default=None)
 
 
 class PlannerValidateRequest(BaseModel):
@@ -57,6 +60,7 @@ class PlannerJobsRequest(BaseModel):
     profileId: str = Field(default="")
     enqueue: bool = Field(default=False)
     execute: bool = Field(default=False)
+    provider: str | None = Field(default=None)
 
 
 @dataclass
@@ -65,6 +69,7 @@ class PlannerPreviewResult:
     raw_response: str | None
     validation: PlanValidationResult | None
     model: str
+    planner_provider: str | None = None
 
 
 @dataclass
@@ -82,6 +87,7 @@ class PlannerJobsResult:
     validation_errors: list[dict[str, Any]]
     plan: dict[str, Any] | None
     plan_source: str = "llm"
+    planner_provider: str | None = None
     enqueued: bool = False
     executed: bool = False
 
@@ -96,7 +102,16 @@ def planner_preview(
 ) -> PlannerPreviewResult:
     """Generate an AnalysisPlan preview without creating a job."""
     reg = registry or _get_registry()
-    llm = provider or _LLM_PROVIDER
+    try:
+        llm = _select_planner_provider(request.provider, provider=provider)
+    except LLMProviderError as exc:
+        return PlannerPreviewResult(
+            plan=None,
+            raw_response=None,
+            validation=_provider_error_validation(exc),
+            model="unavailable",
+            planner_provider=request.provider,
+        )
     tools = [t for t in reg.tools if t.stage == "mvp"]
 
     planner_req = PlannerRequest(
@@ -117,16 +132,26 @@ def planner_preview(
         createdAt="2026-06-27T00:00:00+00:00",
     )
 
-    resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp)
+    try:
+        resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp)
+    except LLMProviderError as exc:
+        return PlannerPreviewResult(
+            plan=None,
+            raw_response=None,
+            validation=_provider_error_validation(exc),
+            model=_provider_model(llm),
+            planner_provider=_provider_name(llm),
+        )
 
     plan = resp.raw_json if resp.raw_json else None
-    validation = validate_plan(plan, registry=reg) if plan else None
+    validation = validate_plan(plan, registry=reg) if plan else _empty_plan_validation()
 
     return PlannerPreviewResult(
         plan=plan,
         raw_response=resp.raw_text,
         validation=validation,
         model=resp.model,
+        planner_provider=_provider_name(llm),
     )
 
 
@@ -163,7 +188,10 @@ def planner_jobs(
     by job_id.
     """
     reg = registry or _get_registry()
-    llm = provider or _LLM_PROVIDER
+    try:
+        llm = _select_planner_provider(request.provider, provider=provider)
+    except LLMProviderError as exc:
+        return _planner_jobs_provider_error(exc, planner_provider=request.provider)
     tools = [t for t in reg.tools if t.stage == "mvp"]
 
     planner_req = PlannerRequest(
@@ -182,7 +210,10 @@ def planner_jobs(
         createdAt="2026-06-27T00:00:00+00:00",
     )
 
-    resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp)
+    try:
+        resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp)
+    except LLMProviderError as exc:
+        return _planner_jobs_provider_error(exc, planner_provider=_provider_name(llm))
 
     plan = resp.raw_json
     if plan is None:
@@ -193,6 +224,7 @@ def planner_jobs(
             plan_hash=None,
             validation_errors=[{"code": "PLAN_EMPTY", "message": "LLM returned no plan.", "detail": None}],
             plan=None,
+            planner_provider=_provider_name(llm),
         )
 
     validation = validate_plan(plan, registry=reg)
@@ -204,6 +236,7 @@ def planner_jobs(
             plan_hash=None,
             validation_errors=[{"code": e.code, "message": e.message, "detail": e.detail} for e in validation.errors],
             plan=plan,
+            planner_provider=_provider_name(llm),
         )
 
     from mdi_schemas import AnalysisPlan
@@ -275,6 +308,7 @@ def planner_jobs(
         validation_errors=[],
         plan=validated_plan.model_dump(mode="json"),
         plan_source="llm",
+        planner_provider=planner_provider,
         enqueued=enqueued,
         executed=False,
     )
@@ -452,6 +486,70 @@ def _provider_name(provider: Any) -> str:
     meta = getattr(provider, "meta", None)
     name = getattr(meta, "name", None)
     return str(name or provider.__class__.__name__)
+
+
+def _provider_model(provider: Any) -> str:
+    meta = getattr(provider, "meta", None)
+    model = getattr(meta, "model", None)
+    return str(model or "unavailable")
+
+
+def _select_planner_provider(requested_provider: str | None, *, provider: Any = None) -> Any:
+    if provider is not None:
+        return provider
+    provider_name = (requested_provider or os.getenv("MDI_LLM_PROVIDER") or "mock").strip().lower()
+    if provider_name in {"", "mock", "mock_llm", "deterministic", "safe_mock"}:
+        return _LLM_PROVIDER
+    if provider_name == "openai_compatible":
+        return OpenAICompatibleProvider()
+    raise LLMProviderError(
+        f"Unsupported planner provider '{provider_name}'.",
+        code="LLM_PROVIDER_UNSUPPORTED",
+    )
+
+
+def _provider_error_validation(error: LLMProviderError) -> PlanValidationResult:
+    return PlanValidationResult(
+        ok=False,
+        errors=[
+            PlanValidationError(
+                code=error.code,
+                message=error.safe_message,
+                detail={"statusCode": error.status_code} if error.status_code else None,
+            )
+        ],
+    )
+
+
+def _provider_error_payload(error: LLMProviderError) -> list[dict[str, Any]]:
+    return [
+        {
+            "code": error.code,
+            "message": error.safe_message,
+            "detail": {"statusCode": error.status_code} if error.status_code else None,
+        }
+    ]
+
+
+def _planner_jobs_provider_error(error: LLMProviderError, *, planner_provider: str | None) -> PlannerJobsResult:
+    return PlannerJobsResult(
+        ok=False,
+        job_id=None,
+        plan_id=None,
+        plan_hash=None,
+        validation_errors=_provider_error_payload(error),
+        plan=None,
+        planner_provider=planner_provider,
+        enqueued=False,
+        executed=False,
+    )
+
+
+def _empty_plan_validation() -> PlanValidationResult:
+    return PlanValidationResult(
+        ok=False,
+        errors=[PlanValidationError(code="PLAN_EMPTY", message="LLM returned no plan.", detail=None)],
+    )
 
 
 def _should_use_redis_queue(settings: Any) -> bool:

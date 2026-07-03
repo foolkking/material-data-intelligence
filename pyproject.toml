@@ -58,4 +58,5 @@ pythonpath = [
 ]
 markers = [
   "integration: requires Docker-backed PostgreSQL, Redis, or MinIO services",
+  "llm_integration: requires explicit MDI_RUN_LLM_INTEGRATION=1 and OpenAI-compatible LLM env",
 ]

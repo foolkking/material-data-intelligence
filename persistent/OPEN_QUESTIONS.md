@@ -1,5 +1,17 @@
 # OPEN_QUESTIONS
 
+## 2026-07-03 Phase 9A Follow-ups (Gated True LLM Provider)
+
+- **Gated OpenAI-compatible provider path is implemented locally.** The provider can be selected explicitly and configured by `MDI_LLM_*` environment variables while the default provider remains mock/deterministic-safe.
+- **Live LLM verification is not claimed locally.** The gated `llm_integration` test exists, but local env does not include the required live provider settings, so `python -m pytest -q -m llm_integration` skips by design.
+- **Default CI must remain real-LLM-free.** No default workflow should require `MDI_LLM_API_KEY` or call an external provider.
+- **Service-backed runtime verification for this commit is pending CI.** This local machine has no Docker CLI; PostgreSQL + Redis + MinIO integration must be confirmed by GitHub Actions for the Phase 9A commit.
+- **Prompt/completion debug logging remains deferred.** Raw prompts and completions are not persisted by default; any future debug path must be opt-in and redacted.
+- **Production secret encryption/KMS remains deferred.** Phase 9A reads keys from env/config and preserves no-leak boundaries, but it does not implement production BYOK encryption.
+- **Multi-step DAG/data-dependency execution remains deferred.** Phase 9A changes provider selection only; execution semantics remain Phase 8B persisted sequential plan execution.
+- **Worker process supervision and dead-letter policy remain deferred.** Queue worker core behavior was not changed.
+- **Advanced material viewer polish remains deferred.** No frontend visualization redesign was included.
+
 ## 2026-07-03 Phase 8C-P1 Follow-ups (UX Compliance Closure)
 
 - **SSE/EventSource timeline P1 is locally closed.** The Planner workbench now opens an EventSource path for persisted JobEvents through `/planner/jobs/{job_id}/events/stream`, and polling remains only as fallback.

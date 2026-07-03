@@ -2,6 +2,40 @@
 
 ## 2026-07-03
 
+### Phase 9A True LLM Provider Gated Integration
+
+#### Added
+
+- Added a gated OpenAI-compatible planner provider path using `MDI_LLM_PROVIDER=openai_compatible` or explicit request provider selection.
+- Added environment-driven provider configuration for `MDI_LLM_BASE_URL`, `MDI_LLM_API_KEY`, `MDI_LLM_MODEL`, `MDI_LLM_TIMEOUT_SECONDS`, `MDI_LLM_MAX_TOKENS`, and `MDI_LLM_TEMPERATURE`.
+- Added safe provider error handling for missing API keys, unsupported providers, HTTP 401/429/5xx, network failures, timeouts, and malformed provider responses.
+- Added fake-transport tests for OpenAI-compatible success, invalid/credential-bearing plans, provider failures, redaction, and persisted-plan handoff.
+- Added `llm_integration` pytest marker and a gated live-provider smoke test that only runs when `MDI_RUN_LLM_INTEGRATION=1` and required provider env are present.
+
+#### Changed
+
+- `/planner/preview` and `/planner/jobs` can select the gated OpenAI-compatible provider while keeping mock/deterministic-safe behavior as the default.
+- Provider failures are returned as validation-style safe failures; they do not persist plans, create jobs, or enqueue work.
+- Valid provider output still passes through JSON parsing, schema construction, and PlanValidator before entering Phase 8B plan persistence.
+
+#### Preserved
+
+- Default unit tests and default CI do not call real external LLM services.
+- QueueWorkerRuntime, AnalysisPlanRepository, Tool Registry, and Adapter execution semantics remain unchanged.
+- Raw prompts and raw completions are not persisted by default.
+- API keys are not included in provider errors, AnalysisPlans, JobEvents, Artifacts, Results, or test assertions.
+- Validation failure remains an all-or-nothing no-op: no plan, no job, no enqueue.
+
+#### Verification
+
+- `uv lock --check`: passed.
+- Phase 7 targeted: 32 passed.
+- Phase 8B persisted-plan targeted: 9 passed, 1 skipped locally.
+- Phase 8C read API targeted: 2 passed.
+- Backend full: 122 passed, 21 skipped.
+- Frontend: `npm ci`, `npm test` (5 passed), `npm run typecheck`, and `npm run build` passed in `apps/web`.
+- `python -m pytest -q -m llm_integration`: 1 skipped locally because live LLM env is not configured.
+
 ### Phase 8C-P1 UX Compliance Closure
 
 #### Added

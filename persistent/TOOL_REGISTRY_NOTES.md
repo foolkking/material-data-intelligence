@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-03 Phase 9A - true provider still stops at PlanValidator and Registry gate
+
+- No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 9A.
+- The OpenAI-compatible provider only returns structured planner JSON. It cannot execute Python, shell, filesystem, network, or adapter actions.
+- Provider output must parse as JSON and construct an `AnalysisPlan`, then pass PlanValidator before `/planner/jobs` can persist a plan, create a job, or enqueue work.
+- Unknown tools, V1/V2/non-MVP tools, duplicate steps, empty steps, and credential-like params remain rejected before persistence and before any Tool Registry/Adapter execution.
+- A valid true-provider plan still follows the Phase 8B path: persisted `AnalysisPlan` -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> Artifact/Result provenance.
+- Provider failures and validation failures return safe errors and create no ToolCall, Artifact, JobEvent execution record, or queue message.
+
 ## 2026-07-03 Phase 8C-P1 - UX closure keeps Registry-gated execution unchanged
 
 - No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 8C-P1.

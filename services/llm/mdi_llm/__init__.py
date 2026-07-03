@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from .planner_prompt import build_planner_prompt
 from .providers import (
+    LLMProviderError,
     LLMPlannerProvider,
     MockLLMProvider,
     OpenAICompatibleProvider,
@@ -16,6 +17,7 @@ from .redaction import is_credential_key, redact_credential_values, redact_param
 __all__ = [
     "build_planner_prompt",
     "is_credential_key",
+    "LLMProviderError",
     "LLMPlannerProvider",
     "MockLLMProvider",
     "OpenAICompatibleProvider",
