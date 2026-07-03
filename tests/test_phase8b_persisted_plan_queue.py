@@ -160,6 +160,29 @@ def test_worker_loads_persisted_plan_by_job_id_and_executes_exact_one_step(monke
     assert plan_loaded[0].payload["planHash"] == plan_hash
 
 
+def test_worker_persisted_plan_executes_through_real_adapter(tmp_path: Path) -> None:
+    repos, ids, plan_hash = _seed_persisted_plan_repos()
+    runtime = QueueWorkerRuntime(repositories=repos, registry=load_manifests(), artifact_root=tmp_path / "artifacts")
+
+    result = runtime.handle_job(ids["job"], object_store=_object_store())
+
+    tool_calls = repos.tool_calls.list_for_job(ids["job"])
+    artifacts = repos.artifacts.list_for_job(ids["job"])
+    events = repos.job_events.list_for_job(ids["job"])
+
+    assert result.status == "completed"
+    assert result.plan_id == ids["plan"]
+    assert result.plan_hash == plan_hash
+    assert len(tool_calls) == 1
+    assert tool_calls[0]["toolId"] == "ml.basic_metrics"
+    assert tool_calls[0]["stepId"] == "llm_step_1"
+    assert tool_calls[0]["status"] == "completed"
+    assert len(artifacts) == 1
+    assert artifacts[0]["type"] == "metrics_json"
+    assert artifacts[0]["storageProvider"] == "local"
+    assert not [event for event in events if event.eventType in {"tool.failed", "job.failed"}]
+
+
 def test_worker_explicit_fallback_works_only_when_no_persisted_plan() -> None:
     repos = InMemoryRepositoryBundle.create()
     repos.projects.save({"id": "project_8b", "name": "Project 8B"})

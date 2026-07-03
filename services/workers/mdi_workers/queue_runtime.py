@@ -389,13 +389,19 @@ class QueueWorkerRuntime:
     def _execute_tool(self, request: ToolExecutionRequest, context: QueueWorkerContext, *, object_store: dict[str, list[Any]] | None) -> Any:
         if self.tool_executor is not None:
             return self.tool_executor(request, context)
+        tool = self.registry.get_tool_by_id(request.toolId)
         adapter_context = ToolExecutionContext(
             job_id=context.job_id,
             project_id=context.project_id,
             dataset_id=context.dataset_id or "",
+            tool_id=tool.toolId,
+            tool_version=tool.version,
+            adapter_version="0.1.0",
+            registry_version=self.registry.version,
             tool_call_id=context.tool_call_id,
             artifact_root=self.artifact_root,
             object_store=object_store or {},
+            resource_limits=tool.resourceLimits,
         )
         return execute_tool_request(adapter_context, request, registry=self.registry)
 
