@@ -123,11 +123,19 @@ def create_app() -> Any:
     settings = load_settings()
     try:
         from fastapi import FastAPI
+        from fastapi.middleware.cors import CORSMiddleware
 
         app = FastAPI(
             title=settings.app_name,
             version="0.1.0",
             description="Controlled API boundary for material data intelligence workflows.",
+        )
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=list(settings.cors_origins),
+            allow_credentials=False,
+            allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+            allow_headers=["*"],
         )
         for route in ROUTES:
             app.add_api_route(

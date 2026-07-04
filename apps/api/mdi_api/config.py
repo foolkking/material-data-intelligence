@@ -29,6 +29,15 @@ class ApiSettings:
     artifact_backend: str = "local"  # "local" | "minio"
     # -- Test database for integration tests --
     test_database_url: str | None = None
+    # -- Browser access for local/demo web workspaces --
+    cors_origins: tuple[str, ...] = (
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    )
 
 
 def load_settings() -> ApiSettings:
@@ -80,6 +89,7 @@ def load_settings() -> ApiSettings:
         queue_backend=os.getenv("MDI_QUEUE_BACKEND", "local").lower(),
         artifact_backend=os.getenv("MDI_ARTIFACT_BACKEND", "local").lower(),
         test_database_url=test_database_url,
+        cors_origins=_parse_csv(_env("MDI_CORS_ORIGINS", "CORS_ORIGINS", default=",".join(ApiSettings.cors_origins))),
     )
 
 
@@ -98,3 +108,7 @@ def _build_postgres_url(*, host: str, port: int, database: str, user: str, passw
 
 def _parse_bool(value: str | None) -> bool:
     return str(value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _parse_csv(value: str | None) -> tuple[str, ...]:
+    return tuple(item.strip() for item in str(value or "").split(",") if item.strip())

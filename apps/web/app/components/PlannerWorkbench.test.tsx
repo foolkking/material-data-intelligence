@@ -180,6 +180,9 @@ describe("Phase 9B PlannerWorkbench", () => {
     await user.click(screen.getByRole("button", { name: "English" }));
     expect(screen.getByText("Materials Data Intelligence Planner")).not.toBeNull();
     expect(screen.getAllByText("No analysis plan has been generated").length).toBeGreaterThan(0);
+    expect(document.body.textContent).not.toContain("数据上下文");
+    expect(document.body.textContent).not.toContain("API 服务");
+    expect(document.body.textContent).not.toContain("自定义 OpenAI-compatible");
   });
 
   it("loads backend demo dataset, selects profile, and shows profile summary", async () => {

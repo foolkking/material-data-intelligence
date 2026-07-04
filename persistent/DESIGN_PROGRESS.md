@@ -1,5 +1,15 @@
 # DESIGN_PROGRESS
 
+## 2026-07-04 Phase 9B Frontend/API Follow-up
+
+- Re-audited the Planner workspace API calls against backend route registration after browser logs showed `OPTIONS ... 405 Method Not Allowed`.
+- Confirmed the affected API routes existed; the failure was missing CORS preflight handling for cross-port browser access, not missing GET/POST implementations.
+- Added FastAPI `CORSMiddleware` with configurable local/demo origins and coverage for the Phase 9B workspace routes.
+- Hardened `/health/runtime` so runtime status is based on safe light probes where configured instead of static configuration inference only. Failed database, Redis, or MinIO probes return `unknown` with class-level safe reasons and no credential-bearing URLs or keys.
+- Tightened `/planner/jobs` validation-failure behavior so rejected raw plans are not returned in the response. Invalid plans still create no AnalysisPlan, no Job, and no enqueue, and now also avoid echoing credential-like params.
+- Completed the Phase 9B i18n cleanup follow-up by moving remaining user-facing Chinese labels from `PlannerWorkbench.tsx` into message dictionaries and adding English-mode assertions.
+- Verification after the follow-up: `python -m pytest tests/test_phase9b_demo_workspace_api.py -q` passed with 10 tests; Phase 7 targeted passed with 32 tests; Phase 8B targeted passed with 9 passed / 1 skipped locally; Phase 8C targeted passed with 2 tests; backend full passed with 132 passed / 21 skipped; frontend `npm test` passed with 6 tests; frontend `npm run typecheck` and `npm run build` passed.
+
 ## 2026-07-04 Phase 9B Demo-ready AI Planner Workspace
 
 - Upgraded the Planner workspace from an engineering/debug view into a demo-ready product workspace while preserving the Phase 8B persisted-plan execution contract and the Phase 9A gated provider safety boundary.

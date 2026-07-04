@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-04 Phase 9B Frontend/API Follow-up
+
+- **Closed: browser preflight 405 for Phase 9B workspace APIs.** The affected routes were implemented, but the FastAPI app lacked CORS middleware. Local/demo origins are now configured by default and overrideable through `MDI_CORS_ORIGINS` / `CORS_ORIGINS`.
+- **Closed: invalid plan response echo for `/planner/jobs`.** Validation failure now returns no raw rejected plan, so credential-like params rejected by PlanValidator are not echoed to the frontend/API caller.
+- **Closed: runtime health config-only reporting.** `/health/runtime` now runs safe light probes where a backend is configured and returns redacted `unknown` component status on probe failure.
+- **Closed: full Planner workbench i18n string extraction for user-facing labels.** Remaining hard-coded Chinese labels in `PlannerWorkbench.tsx` were moved into the `zh-CN` / `en-US` message files, and English-mode regression assertions cover key labels.
+
 ## 2026-07-04 Phase 9B Follow-ups (Demo-ready AI Planner Workspace)
 
 - **Phase 9B product workspace is implemented locally.** The Planner UI now has default Chinese i18n, provider settings, Secret UX, dataset/profile/demo workflow, region-specific empty states, error explanations, grouped artifacts, report/recipe summary, and user/developer mode layering.

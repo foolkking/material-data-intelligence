@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import socket
 import urllib.error
+from pathlib import Path
 
 from fastapi.testclient import TestClient
 
@@ -48,6 +49,70 @@ def test_runtime_health_endpoint_reports_workspace_dependencies() -> None:
     body = response.json()
     assert body["api"]["status"] == "ok"
     assert {"database", "redis", "artifactStorage", "worker", "llmProvider"}.issubset(body)
+
+
+def test_runtime_health_sqlite_missing_db_is_unknown_without_creating_file(monkeypatch, tmp_path: Path) -> None:
+    missing_db = tmp_path / "not_initialized.db"
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{missing_db.as_posix()}")
+    client = TestClient(create_app())
+
+    response = client.get("/health/runtime")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["database"]["status"] == "unknown"
+    assert body["database"]["reason"] == "not initialized"
+    assert not missing_db.exists()
+
+
+def test_runtime_health_probe_failures_are_redacted(monkeypatch) -> None:
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://mdi:db-secret@127.0.0.1:9/mdi")
+    monkeypatch.setenv("MDI_QUEUE_BACKEND", "redis")
+    monkeypatch.setenv("REDIS_URL", "redis://:redis-secret@127.0.0.1:9/0")
+    monkeypatch.setenv("MDI_ARTIFACT_BACKEND", "minio")
+    monkeypatch.setenv("MINIO_ENDPOINT", "http://127.0.0.1:9")
+    monkeypatch.setenv("MINIO_ACCESS_KEY", "minio-access")
+    monkeypatch.setenv("MINIO_SECRET_KEY", "minio-secret")
+    client = TestClient(create_app())
+
+    response = client.get("/health/runtime")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["database"]["status"] == "unknown"
+    assert body["redis"]["status"] == "unknown"
+    assert body["artifactStorage"]["status"] == "unknown"
+    dumped = json.dumps(body, ensure_ascii=False)
+    assert "db-secret" not in dumped
+    assert "redis-secret" not in dumped
+    assert "minio-secret" not in dumped
+    assert "minio-access" not in dumped
+
+
+def test_browser_cors_preflight_allows_planner_workspace_routes() -> None:
+    client = TestClient(create_app())
+    routes = [
+        ("/health/runtime", "GET"),
+        ("/planner/providers", "GET"),
+        ("/datasets", "GET"),
+        ("/planner/providers/status", "GET"),
+        ("/me/secrets", "POST"),
+        ("/datasets/demo", "POST"),
+        ("/planner/providers/test", "POST"),
+    ]
+
+    for path, method in routes:
+        response = client.options(
+            path,
+            headers={
+                "Origin": "http://localhost:3000",
+                "Access-Control-Request-Method": method,
+                "Access-Control-Request-Headers": "content-type",
+            },
+        )
+
+        assert response.status_code == 200
+        assert response.headers["access-control-allow-origin"] == "http://localhost:3000"
 
 
 def test_demo_dataset_detail_and_profile_are_backend_generated() -> None:
@@ -188,5 +253,7 @@ def test_validation_failure_still_persists_no_plan_job_or_enqueue() -> None:
     assert result.ok is False
     assert result.job_id is None
     assert result.plan_id is None
+    assert result.plan is None
+    assert "sk-must-not-persist" not in json.dumps(result.__dict__, ensure_ascii=False)
     assert repos.jobs.records == {}
     assert repos.analysis_plans.records == {}

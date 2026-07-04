@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { createTranslator, type Locale } from "../lib/i18n";
+import { createTranslator, type Locale, type MessageKey } from "../lib/i18n";
 import {
   type AnalysisPlan,
   type Artifact,
@@ -53,12 +53,7 @@ type WorkspaceSnapshot = {
 
 type ProviderPreset = "openai" | "deepseek" | "custom";
 
-const examplePrompts = [
-  "请计算 y_true 和 y_pred 的基础误差指标，并生成报告摘要。",
-  "请统计材料组成中的元素分布。",
-  "请找出预测误差最大的样本。",
-  "请基于当前结构数据生成 3D 可视化。"
-];
+const examplePromptKeys: MessageKey[] = ["examplePromptMetrics", "examplePromptElements", "examplePromptOutliers", "examplePromptStructure"];
 
 const presetDefaults: Record<ProviderPreset, { baseUrl: string; model: string }> = {
   openai: { baseUrl: "https://api.openai.com/v1", model: "gpt-4o" },
@@ -69,6 +64,7 @@ const presetDefaults: Record<ProviderPreset, { baseUrl: string; model: string }>
 export function PlannerWorkbench() {
   const [locale, setLocale] = useState<Locale>("zh-CN");
   const t = useMemo(() => createTranslator(locale), [locale]);
+  const examplePrompts = useMemo(() => examplePromptKeys.map((key) => t(key)), [t]);
   const [developerMode, setDeveloperMode] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>("overview");
 
@@ -95,7 +91,7 @@ export function PlannerWorkbench() {
   const [secrets, setSecrets] = useState<SecretSummary[]>([]);
   const [selectedSecretId, setSelectedSecretId] = useState("");
 
-  const [prompt, setPrompt] = useState(examplePrompts[0]);
+  const [prompt, setPrompt] = useState(() => createTranslator("zh-CN")("examplePromptMetrics"));
   const [createdResult, setCreatedResult] = useState<PlannerJobCreateResult | null>(null);
   const [snapshot, setSnapshot] = useState<WorkspaceSnapshot>({ events: [], toolCalls: [], artifacts: [] });
   const [validationFailure, setValidationFailure] = useState<ValidationError[] | null>(null);
@@ -178,10 +174,10 @@ export function PlannerWorkbench() {
       const nextProfile = await getDatasetProfile(nextId);
       setProfile(nextProfile);
       setProfileId(nextProfile.profileId || nextId);
-      setDataMessage(locale === "zh-CN" ? "已从后端加载 Dataset/Profile" : "Dataset/profile loaded from API");
+      setDataMessage(t("datasetProfileLoaded"));
     } catch (error) {
       setProfile(null);
-      setDataMessage(locale === "zh-CN" ? "Profile 尚未生成，可手动输入或点击生成。" : "Profile is not ready. Use manual fallback or generate it.");
+      setDataMessage(t("profileNotReady"));
     } finally {
       setDataBusy(false);
     }
@@ -198,7 +194,7 @@ export function PlannerWorkbench() {
       setProfileId(demo.profile.profileId || nextDatasetId);
       setPrompt(examplePrompts[0]);
       setProviderMode("mock");
-      setDataMessage(locale === "zh-CN" ? "已加载服务端 Demo 数据。" : "Backend demo dataset loaded.");
+      setDataMessage(t("demoLoaded"));
       await refreshDatasets();
     } catch (error) {
       setSubmitError(error as Error);
@@ -217,7 +213,7 @@ export function PlannerWorkbench() {
       const nextProfile = await createDatasetProfile(datasetId);
       setProfile(nextProfile);
       setProfileId(nextProfile.profileId || datasetId);
-      setDataMessage(locale === "zh-CN" ? "Profile 已生成。" : "Profile generated.");
+      setDataMessage(t("profileGenerated"));
     } catch (error) {
       setSubmitError(error as Error);
     } finally {
@@ -243,7 +239,7 @@ export function PlannerWorkbench() {
         setProfile(uploaded.profile);
         setProfileId(uploaded.profile.profileId || nextDatasetId);
       }
-      setDataMessage(locale === "zh-CN" ? "上传完成并生成 Profile。" : "Upload completed and Profile generated.");
+      setDataMessage(t("uploadCompleted"));
       await refreshDatasets();
     } catch (error) {
       setSubmitError(error as Error);
@@ -721,7 +717,7 @@ function LLMProviderSettingsPanel(props: {
         <select aria-label={t("preset")} value={props.providerPreset} onChange={(event) => props.onPresetChange(event.target.value as ProviderPreset)}>
           <option value="openai">OpenAI</option>
           <option value="deepseek">DeepSeek</option>
-          <option value="custom">自定义 OpenAI-compatible</option>
+          <option value="custom">{t("customOpenAI")}</option>
         </select>
       </label>
       <label>
@@ -831,10 +827,10 @@ function PlanPreviewPanel({ t, plan, planId, planHash, developerMode }: { t: Ret
         {steps.map((step, index) => (
           <article key={step.stepId} className="step-row">
             <div>
-              <strong>步骤 {index + 1}：{step.purpose || step.reason || step.stepId}</strong>
-              <span>{toolDisplayName(step.toolId)}</span>
+              <strong>{t("step")} {index + 1}: {step.purpose || step.reason || step.stepId}</strong>
+              <span>{toolDisplayName(step.toolId, t)}</span>
             </div>
-            <p>输入：当前数据表 · 输出：{step.output?.artifactTypes?.join(", ") || "artifact"}</p>
+            <p>{t("inputCurrentTable")} · {t("output")}: {step.output?.artifactTypes?.join(", ") || "artifact"}</p>
             {developerMode ? (
               <dl className="mini-grid">
                 <Field label="stepId" value={step.stepId} />
@@ -899,10 +895,10 @@ function RunControls(props: { t: ReturnType<typeof createTranslator>; jobId: str
 function SystemHealthPanel({ t, health, providerStatus }: { t: ReturnType<typeof createTranslator>; health: RuntimeHealth | null; providerStatus: ProviderStatus | null }) {
   const entries = health
     ? [
-        ["API 服务", health.api],
-        ["数据库", health.database],
-        ["Redis 队列", health.redis],
-        ["Artifact 存储", health.artifactStorage],
+        [t("apiService"), health.api],
+        [t("database"), health.database],
+        [t("redisQueue"), health.redis],
+        [t("artifactStorage"), health.artifactStorage],
         ["Worker", health.worker],
         ["LLM Provider", health.llmProvider]
       ]
@@ -958,7 +954,7 @@ function TimelinePanel({ t, events, mode }: { t: ReturnType<typeof createTransla
         {events.map((event) => (
           <li key={event.id || event.seq} className={`timeline-item ${event.eventType === "plan.loaded" ? "important" : ""}`}>
             <time>{formatTime(event.createdAt)}</time>
-            <span>{timelineLabel(event.eventType)}</span>
+            <span>{timelineLabel(event.eventType, t)}</span>
             <strong>{event.status}</strong>
             <p>{event.message}</p>
             <details>
@@ -1003,8 +999,8 @@ function ArtifactGallery({ t, artifacts, developerMode }: { t: ReturnType<typeof
                 <span>{artifact.type}</span>
                 <small>{artifact.toolCallId || "system"}</small>
                 <div className="button-row">
-                  <button type="button" className="secondary">预览</button>
-                  <button type="button" className="secondary">下载</button>
+                  <button type="button" className="secondary">{t("preview")}</button>
+                  <button type="button" className="secondary">{t("download")}</button>
                 </div>
                 {developerMode ? (
                   <dl className="mini-grid">
@@ -1030,17 +1026,17 @@ function ReportRecipeSummaryPanel(props: { t: ReturnType<typeof createTranslator
     <section className="panel" data-testid="report-recipe-panel">
       <PanelHeading title={props.t("reportRecipe")} badge={props.t("systemGeneratedSummary")} />
       <div className="summary-box">
-        <h3>报告摘要</h3>
+        <h3>{props.t("reportSummaryTitle")}</h3>
         <p>{props.result?.summary || props.t("emptyReport")}</p>
         <ul>
-          <li>本次分析做了什么：执行 persisted AnalysisPlan 绑定的工具步骤。</li>
-          <li>生成了哪些结果：{props.artifacts.length} 个 Artifact，{props.result?.toolCallCount ?? 0} 个 ToolCall。</li>
-          <li>关键指标：由 metrics_json / report artifact 提供。</li>
-          <li>异常/注意事项：真实 LLM 报告未启用时显示系统生成摘要。</li>
+          <li>{props.t("reportDidWhat")}</li>
+          <li>{props.t("reportGeneratedPrefix")} {props.artifacts.length} {props.t("artifactCountUnit")}, {props.result?.toolCallCount ?? 0} {props.t("toolCallCountUnit")}.</li>
+          <li>{props.t("reportKeyMetrics")}</li>
+          <li>{props.t("reportNotes")}</li>
         </ul>
       </div>
       <div className="summary-box">
-        <h3>复现配方</h3>
+        <h3>{props.t("recipeTitle")}</h3>
         <dl className="mini-grid">
           <Field label="Dataset" value={props.datasetId || props.t("emptyDataset")} />
           <Field label="Profile" value={props.profileId || props.t("emptyDataset")} />
@@ -1084,7 +1080,7 @@ function DeveloperAuditPanel(props: { t: ReturnType<typeof createTranslator>; de
   return (
     <section className="panel" data-testid="developer-audit-panel">
       <PanelHeading title={props.t("developerAudit")} badge={props.developerMode ? "open" : "closed"} />
-      {!props.developerMode ? <p className="empty-state">打开开发者模式后显示 raw events、AnalysisPlan JSON 和 provenance chain。</p> : null}
+      {!props.developerMode ? <p className="empty-state">{props.t("developerAuditClosed")}</p> : null}
       {props.developerMode ? (
         <pre>
           {JSON.stringify(
@@ -1180,19 +1176,20 @@ function formatTime(value?: string) {
   return value ? new Date(value).toLocaleTimeString() : "";
 }
 
-function timelineLabel(type?: string) {
-  const labels: Record<string, string> = {
-    "plan.generated": "分析计划已生成",
-    "plan.persisted": "分析计划已保存",
-    "job.queued": "任务已入队",
-    "plan.loaded": "Worker 已加载分析计划",
-    "tool.started": "工具开始执行",
-    "tool.completed": "工具执行完成",
-    "artifact.ready": "结果产物已生成",
-    "job.completed": "任务完成",
-    "job.failed": "任务失败"
+function timelineLabel(type: string | undefined, t: ReturnType<typeof createTranslator>) {
+  const labels: Record<string, MessageKey> = {
+    "plan.generated": "timelinePlanGenerated",
+    "plan.persisted": "timelinePlanPersisted",
+    "job.queued": "timelineJobQueued",
+    "plan.loaded": "timelinePlanLoaded",
+    "tool.started": "timelineToolStarted",
+    "tool.completed": "timelineToolCompleted",
+    "artifact.ready": "timelineArtifactReady",
+    "job.completed": "timelineJobCompleted",
+    "job.failed": "timelineJobFailed"
   };
-  return labels[type || ""] || type || "event";
+  const key = labels[type || ""];
+  return key ? t(key) : type || "event";
 }
 
 function statusLabel(status: string | undefined, t: ReturnType<typeof createTranslator>) {
@@ -1227,15 +1224,15 @@ function statusText(status: string | undefined, t: ReturnType<typeof createTrans
   return status || t("unknown");
 }
 
-function toolDisplayName(toolId: string) {
+function toolDisplayName(toolId: string, t: ReturnType<typeof createTranslator>) {
   if (toolId === "ml.basic_metrics") {
-    return "基础指标计算";
+    return t("toolBasicMetrics");
   }
   if (toolId === "composition.ptable_heatmap") {
-    return "元素分布热图";
+    return t("toolElementHeatmap");
   }
   if (toolId === "structure.viewer_3d") {
-    return "3D 结构查看器";
+    return t("toolStructureViewer");
   }
   return toolId;
 }

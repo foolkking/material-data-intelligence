@@ -249,7 +249,7 @@ def planner_jobs(
             plan_id=None,
             plan_hash=None,
             validation_errors=[{"code": e.code, "message": e.message, "detail": e.detail} for e in validation.errors],
-            plan=plan,
+            plan=None,
             planner_provider=_provider_name(llm),
         )
 

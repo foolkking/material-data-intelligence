@@ -23,12 +23,18 @@ runtime health, dataset detail/demo/profile support, provider catalog/status,
 provider test, and Secret UX metadata. Provider tests resolve credentials by
 `secretId` on the server and return redacted results. They do not persist raw
 prompts or completions, execute tools, enqueue jobs, or write artifacts.
+Browser access is enabled through an explicit CORS allow-list for local/demo
+web origins. Runtime health is a read-only observability surface: configured
+database, Redis, and MinIO/S3 backends are checked with light probes, and
+failures are reported as redacted component status rather than as raw
+connection strings or credential-bearing provider errors.
 
 Planner job creation remains owned by `/planner/jobs`: provider output must
 parse as JSON, construct an `AnalysisPlan`, and pass PlanValidator before any
 plan can be persisted, job created, or queue message sent. The frontend does
 not write `analysis_plans`, compute authoritative plan hashes, directly
-enqueue work, or treat deterministic fallback as the normal product path.
+enqueue work, or treat deterministic fallback as the normal product path. If
+validation fails, the rejected raw plan is not echoed back to the caller.
 
 ### Consequences
 
@@ -40,6 +46,9 @@ enqueue work, or treat deterministic fallback as the normal product path.
   real-LLM-free and live LLM verification is still gated by Phase 9A env.
 - The demo dataset/profile path is backend-generated through the Phase2
   runtime; it is labeled as demo data and is not a fake frontend success path.
+- Phase 9B follow-up keeps CORS, runtime health, and i18n cleanup as
+  product-readiness/support changes; they do not move execution authority to
+  the frontend or weaken the Tool Registry boundary.
 - Production secret encryption/KMS, multi-step DAG/data-dependency execution,
   worker supervision/dead-letter policy, and advanced material viewer polish
   remain future work.

@@ -2,6 +2,16 @@
 
 ## 2026-07-04
 
+### Phase 9B Follow-up: Frontend/API CORS and Validation-Failure Redaction
+
+- Added FastAPI CORS middleware so the browser workspace can complete `OPTIONS` preflight for runtime health, dataset, planner provider, demo dataset, provider test, and Secret UX APIs.
+- Added configurable CORS origins through `MDI_CORS_ORIGINS` / `CORS_ORIGINS`, with local Next/Vite defaults for `localhost` and `127.0.0.1`.
+- Upgraded `/health/runtime` from config-only reporting to light, read-only probes: SQLite/PostgreSQL `SELECT 1`, Redis `PING` when configured, and MinIO/S3 bucket reachability when configured. Probe failures return safe `unknown` component status instead of leaking URLs, passwords, or object-storage credentials.
+- Closed the validation-failure response leak: `/planner/jobs` no longer returns the invalid raw plan when PlanValidator rejects it, preventing credential-like params from being echoed back to the frontend/API caller.
+- Completed the Planner workbench i18n extraction follow-up: remaining user-facing Chinese labels in `PlannerWorkbench.tsx` were moved into `zh-CN` / `en-US` message files, and English mode now has regression assertions for key labels.
+- Added Phase 9B tests proving browser preflight succeeds, health probe failures are redacted, missing SQLite databases are not created by health checks, and rejected credential-bearing plans still persist no plan, create no job, enqueue nothing, and do not echo the rejected secret value.
+- Follow-up verification: Phase 9B API targeted 10 passed; Phase 7 targeted 32 passed; Phase 8B targeted 9 passed / 1 skipped locally; Phase 8C targeted 2 passed; backend full 132 passed / 21 skipped; frontend `npm test` 6 passed, `npm run typecheck` passed, and `npm run build` passed.
+
 ### Phase 9B Demo-ready AI Planner Workspace
 
 #### Added

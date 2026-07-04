@@ -1,5 +1,36 @@
 # TASK_BOARD
 
+## 2026-07-04 Phase 9B Frontend/API Follow-up
+
+### Done This Round
+
+- [x] Audited frontend `planner-api.ts` calls against backend `RouteSpec` registrations.
+- [x] Confirmed `/health/runtime`, `/planner/providers`, `/datasets`, `/planner/providers/status`, `/me/secrets`, `/datasets/demo`, and `/planner/providers/test` were implemented but failed browser preflight because CORS middleware was missing.
+- [x] Added configurable CORS middleware for local/demo web origins.
+- [x] Added CORS preflight regression coverage for the routes shown in browser/API logs.
+- [x] Replaced config-only `/health/runtime` component status with safe light probes for configured database, Redis, and MinIO/S3 backends.
+- [x] Added redaction coverage proving health probe failures do not return DB passwords, Redis passwords, or MinIO credentials.
+- [x] Finished the i18n cleanup follow-up by moving remaining hard-coded Planner workbench Chinese UI labels into `zh-CN` / `en-US` message files.
+- [x] Stopped `/planner/jobs` from echoing rejected invalid plans on validation failure.
+- [x] Added regression coverage proving credential-like rejected plan params are not returned, persisted, job-created, or enqueued.
+
+### Verification
+
+- [x] `python -m pytest tests/test_phase9b_demo_workspace_api.py -q` -> 10 passed
+- [x] `python -m pytest tests/test_phase8c_planner_read_api.py -q` -> 2 passed
+- [x] `python -m pytest tests/test_phase7_llm_planner.py -q` -> 32 passed
+- [x] `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` -> 9 passed, 1 skipped locally
+- [x] `python -m pytest -q` -> 132 passed, 21 skipped
+- [x] `npm test` in `apps/web` -> 6 passed
+- [x] `npm run typecheck` in `apps/web`
+- [x] `npm run build` in `apps/web`
+- [x] `git diff --check`
+
+### Handoff Notes
+
+- Restart the API server after this patch; CORS middleware is installed at app creation time.
+- If the web dev server runs on a non-default origin, set `MDI_CORS_ORIGINS` to a comma-separated allow-list before starting the API.
+
 ## 2026-07-04 Phase 9B Demo-ready AI Planner Workspace Status
 
 ### Done This Round

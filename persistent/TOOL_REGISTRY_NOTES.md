@@ -9,6 +9,8 @@
 - Demo dataset/profile support feeds the existing Phase2 runtime data/profile path. It does not allow the frontend to fabricate successful persisted plans or execution results.
 - A valid planner job still follows the existing path: JSON AnalysisPlan -> PlanValidator -> persisted AnalysisPlan -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> Artifact/Result provenance.
 - API keys are resolved server-side by `secretId` for provider tests and planner calls; they must never appear in ToolCall params, JobEvents, Artifacts, Recipes, Reports, or exported provenance.
+- The Phase 9B follow-up only added browser CORS handling, safe runtime health probes, i18n cleanup, and invalid-plan response redaction. It did not change Tool Registry manifests, adapter routing, tool scope, or the persisted-plan execution gate.
+- When PlanValidator rejects a credential-bearing plan, `/planner/jobs` now omits the rejected raw plan from the response, so credential-like params do not leak back to the browser or become pseudo-provenance.
 
 ## 2026-07-03 Phase 9A - true provider still stops at PlanValidator and Registry gate
 
