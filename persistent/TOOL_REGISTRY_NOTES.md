@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-04 Phase 9B - runtime data binding still preserves the Registry gate
+
+- No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in this follow-up.
+- Dataset object-store resolution is an input-binding step before tool execution. It supplies normalized objects such as `ml_table`, `structures`, and `formulas` to the worker; it does not select tools, mutate the persisted plan, or execute outside the registry.
+- The local in-memory auto-drain path still calls `QueueWorkerRuntime.handle_job(job_id)`, which loads `job.plan_id`, reconstructs the persisted `AnalysisPlan`, emits `plan.loaded`, then executes each step through Tool Registry lookup and Adapter execution.
+- The new inputRef validation rejects missing or unresolved uploaded-dataset references before AnalysisPlan persistence, Job creation, or enqueue. It strengthens the existing PlanValidator boundary for executable dataset binding.
+- The uploaded CSV regression proves the persisted one-step `ml.basic_metrics` plan produces exactly one ToolCall through the adapter path, with `data.loaded` and `plan.loaded` provenance.
+- Production Redis/service-backed execution remains the authoritative Phase 8B path; this follow-up only adds a local development/demo auto-run behavior and a resolver seam for dataset objects.
+
 ## 2026-07-04 Phase 9B - demo workspace still routes execution through Planner validation and Registry gate
 
 - No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 9B.

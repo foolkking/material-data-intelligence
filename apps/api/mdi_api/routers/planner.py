@@ -35,6 +35,7 @@ _IN_MEMORY_QUEUE_BACKEND = InMemoryQueueBackend()
 _IN_MEMORY_QUEUE_RUNTIME = QueueWorkerRuntime(
     repositories=_IN_MEMORY_REPOSITORIES,
     queue_backend=_IN_MEMORY_QUEUE_BACKEND,
+    object_store_resolver=lambda dataset_id: _phase2_object_store_for_dataset(dataset_id),
 )
 
 
@@ -136,14 +137,7 @@ def planner_preview(
 
     # We use a minimal data profile stub — in production the caller
     # would pass a real profile via the API request.
-    from mdi_schemas import DataProfile
-    dp = DataProfile(
-        profileId=request.profileId or request.datasetId,
-        datasetId=request.datasetId,
-        version="0.1",
-        datasetType="ml",
-        createdAt="2026-06-27T00:00:00+00:00",
-    )
+    dp = _planner_data_profile(request.datasetId, request.profileId or request.datasetId)
 
     try:
         resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp, user_config=user_config)
@@ -215,14 +209,7 @@ def planner_jobs(
         tool_registry_version=reg.version,
     )
 
-    from mdi_schemas import DataProfile
-    dp = DataProfile(
-        profileId=request.profileId or request.datasetId,
-        datasetId=request.datasetId,
-        version="0.1",
-        datasetType="ml",
-        createdAt="2026-06-27T00:00:00+00:00",
-    )
+    dp = _planner_data_profile(request.datasetId, request.profileId or request.datasetId)
 
     try:
         resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp, user_config=user_config)
@@ -256,6 +243,18 @@ def planner_jobs(
     from mdi_schemas import AnalysisPlan
 
     validated_plan = AnalysisPlan.model_validate(plan)
+    input_ref_errors = _validate_executable_input_refs(validated_plan, request.datasetId)
+    if input_ref_errors:
+        return PlannerJobsResult(
+            ok=False,
+            job_id=None,
+            plan_id=None,
+            plan_hash=None,
+            validation_errors=input_ref_errors,
+            plan=None,
+            planner_provider=_provider_name(llm),
+        )
+
     plan_hash = compute_plan_hash(validated_plan)
     repos, runtime = _planner_repositories_and_runtime(repositories=repositories, queue_runtime=queue_runtime)
     created_by = "user_local"
@@ -311,8 +310,15 @@ def planner_jobs(
     )
 
     enqueued = False
+    executed = False
     if request.enqueue or request.execute:
         enqueued = runtime.submit_job(job_id).enqueued
+        executed = _maybe_execute_local_memory_job(
+            runtime,
+            job_id,
+            repositories=repositories,
+            queue_runtime=queue_runtime,
+        )
 
     return PlannerJobsResult(
         ok=True,
@@ -324,7 +330,7 @@ def planner_jobs(
         plan_source="llm",
         planner_provider=planner_provider,
         enqueued=enqueued,
-        executed=False,
+        executed=executed,
     )
 
 
@@ -485,6 +491,18 @@ def _planner_read_repositories(repositories: Any) -> Any:
     return repos
 
 
+def reset_planner_runtime() -> None:
+    """Reset the local in-memory planner repository/queue runtime for tests."""
+    global _IN_MEMORY_REPOSITORIES, _IN_MEMORY_QUEUE_BACKEND, _IN_MEMORY_QUEUE_RUNTIME
+    _IN_MEMORY_REPOSITORIES = InMemoryRepositoryBundle.create()
+    _IN_MEMORY_QUEUE_BACKEND = InMemoryQueueBackend()
+    _IN_MEMORY_QUEUE_RUNTIME = QueueWorkerRuntime(
+        repositories=_IN_MEMORY_REPOSITORIES,
+        queue_backend=_IN_MEMORY_QUEUE_BACKEND,
+        object_store_resolver=lambda dataset_id: _phase2_object_store_for_dataset(dataset_id),
+    )
+
+
 def _ensure_planner_project_dataset(repos: Any, *, project_id: str, dataset_id: str, created_by: str) -> None:
     try:
         repos.projects.get(project_id)
@@ -494,6 +512,91 @@ def _ensure_planner_project_dataset(repos: Any, *, project_id: str, dataset_id: 
         repos.datasets.get(dataset_id)
     except LookupError:
         repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": dataset_id, "createdBy": created_by})
+
+
+def _planner_data_profile(dataset_id: str, profile_id: str) -> Any:
+    try:
+        from mdi_api.phase2_runtime import get_phase2_dataset_profile_model
+
+        return get_phase2_dataset_profile_model(dataset_id)
+    except Exception:
+        from mdi_schemas import DataProfile
+
+        return DataProfile(
+            profileId=profile_id or dataset_id,
+            datasetId=dataset_id,
+            version="0.1",
+            datasetType="ml",
+            createdAt="2026-06-27T00:00:00+00:00",
+        )
+
+
+def _phase2_object_store_for_dataset(dataset_id: str) -> dict[str, Any] | None:
+    try:
+        from mdi_api.phase2_runtime import get_phase2_dataset_object_store
+
+        return get_phase2_dataset_object_store(dataset_id)
+    except Exception:
+        return None
+
+
+def _validate_executable_input_refs(plan: Any, dataset_id: str) -> list[dict[str, Any]]:
+    object_store = _phase2_object_store_for_dataset(dataset_id)
+    if not object_store:
+        return []
+
+    available = set(str(key) for key in object_store.keys())
+    errors: list[dict[str, Any]] = []
+    required_ref_by_domain = {
+        "composition.": "formulas",
+        "structure.": "structures",
+        "ml.": "ml_table",
+    }
+    for step in plan.steps:
+        input_refs = list(step.inputRefs or [])
+        expected_ref = None
+        for prefix, ref in required_ref_by_domain.items():
+            if step.toolId.startswith(prefix) and ref in available:
+                expected_ref = ref
+                break
+        if expected_ref and not input_refs:
+            errors.append(
+                {
+                    "code": "INPUT_REF_MISSING",
+                    "message": f"Step '{step.stepId}' must reference dataset object '{expected_ref}'.",
+                    "detail": {"stepId": step.stepId, "toolId": step.toolId, "availableRefs": sorted(available), "expectedRef": expected_ref},
+                }
+            )
+            continue
+        for input_ref in input_refs:
+            ref = str(input_ref.ref)
+            if ref not in available:
+                errors.append(
+                    {
+                        "code": "INPUT_REF_UNRESOLVED",
+                        "message": f"Step '{step.stepId}' references unavailable dataset object '{ref}'.",
+                        "detail": {"stepId": step.stepId, "toolId": step.toolId, "ref": ref, "availableRefs": sorted(available)},
+                    }
+                )
+    return errors
+
+
+def _maybe_execute_local_memory_job(
+    runtime: QueueWorkerRuntime,
+    job_id: str,
+    *,
+    repositories: Any,
+    queue_runtime: QueueWorkerRuntime | None,
+) -> bool:
+    if repositories is not None or queue_runtime is not None:
+        return False
+    settings = load_settings()
+    if _should_use_redis_queue(settings):
+        return False
+    if not isinstance(getattr(runtime, "queue_backend", None), InMemoryQueueBackend):
+        return False
+    result = runtime.handle_job(job_id)
+    return result.status == "completed"
 
 
 def _provider_name(provider: Any) -> str:

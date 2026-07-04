@@ -1,5 +1,49 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-083: Local planner demo jobs may auto-drain only on the in-memory queue path
+
+### Context
+
+Phase 8B established the production contract: `/planner/jobs` persists the
+validated `AnalysisPlan`, creates a `jobs.plan_id` binding, and enqueues only
+`job_id`; a worker later loads the persisted plan and executes it through Tool
+Registry and Adapter. Phase 9B productized the workspace, but full local demo
+testing exposed two practical gaps: default in-memory dev jobs could remain
+queued without a separate worker process, and uploaded dataset objects were not
+available to the default queue worker by `dataset_id`.
+
+### Decision
+
+The default in-memory planner runtime may auto-drain a just-enqueued job only
+when all of the following are true: the default in-memory repositories are in
+use, the default in-memory queue backend is in use, no custom planner runtime
+was injected, and no Redis queue URL is configured. In that case, the route
+still creates the persisted plan/job first and then calls
+`QueueWorkerRuntime.handle_job(job_id)`, so execution still flows through the
+worker path rather than through a frontend shortcut or deterministic fallback.
+
+`QueueWorkerRuntime` now accepts an object-store resolver. The default local
+resolver loads uploaded/demo dataset objects from the Phase2 runtime by
+`dataset_id`, emits a `data.loaded` JobEvent, then loads `job.plan_id` and the
+persisted `AnalysisPlan`. Planner preview/jobs also prefer the real Phase2
+`DataProfile` when available, and uploaded dataset plans are rejected before
+persistence when required normalized inputRefs are missing or unresolved.
+
+### Consequences
+
+- Local demos can complete an enqueued planner job without requiring a second
+  worker process, which makes the Phase 9B workspace demonstrable from a single
+  API process.
+- The production Redis path is preserved: when a Redis queue is configured, the
+  route enqueues only `job_id` and does not auto-run the worker.
+- Injected test runtimes keep their previous behavior, preserving Phase 8B
+  regression tests for enqueue semantics and persisted-plan execution.
+- Dataset binding is explicit and auditable through `data.loaded`,
+  `plan.loaded`, ToolCall, Artifact, and Result provenance.
+- Out-of-process Redis workers still need durable normalized-object loading for
+  uploaded datasets; the resolver seam creates the extension point but does not
+  replace future production storage hardening.
+
 ## ADR-082: Phase 9B productizes Planner UX without moving execution authority to the frontend
 
 ### Context

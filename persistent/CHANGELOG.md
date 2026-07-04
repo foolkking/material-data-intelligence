@@ -2,6 +2,18 @@
 
 ## 2026-07-04
 
+### Phase 9B Follow-up: Planner Runtime Data Binding and Local Demo Execution
+
+- Added Phase2 runtime accessors for real uploaded dataset profiles and normalized object stores.
+- Updated Planner preview/jobs to prefer the real Phase2 `DataProfile` for an existing dataset instead of relying on a minimal synthetic profile.
+- Added executable inputRef validation for uploaded datasets so ML, structure, and composition plans must bind the available normalized objects (`ml_table`, `structures`, `formulas`) before an AnalysisPlan can be persisted or a Job can be created/enqueued.
+- Added a `QueueWorkerRuntime` object-store resolver hook and a `data.loaded` JobEvent. The default local planner worker can now load uploaded/demo dataset objects by `dataset_id` before executing the persisted plan.
+- Added a local-only in-memory auto-run path for `/planner/jobs` when no Redis queue is configured and no custom repository/runtime injection is active. This closes the demo case where `enqueue=true` stayed queued without a separate worker process, while preserving the Redis/worker production path.
+- Updated the planner prompt with normalized inputRef conventions for `ml_table`, `structures`, and `formulas`.
+- Added regression tests proving uploaded CSV planner jobs execute through the persisted-plan worker path with exactly one `ml.basic_metrics` ToolCall and proving missing inputRefs reject before plan/job/enqueue.
+- Reorganized four supported pymatviz sample cases under `C:\Users\86182\Desktop\pymatviz-web-test-cases`, each with `raw_data/` and `results/`, and generated platform results for MatPES CSV metrics plus three structure JSON/CIF cases.
+- Verification: Phase 9B API targeted 12 passed; Phase 8B targeted 9 passed / 1 skipped locally; Phase 7 + Phase 8C + Phase 9B targeted 46 passed; backend full 134 passed / 21 skipped; frontend `npm test` 6 passed; frontend typecheck and build passed.
+
 ### Phase 9B Follow-up: Frontend/API CORS and Validation-Failure Redaction
 
 - Added FastAPI CORS middleware so the browser workspace can complete `OPTIONS` preflight for runtime health, dataset, planner provider, demo dataset, provider test, and Secret UX APIs.

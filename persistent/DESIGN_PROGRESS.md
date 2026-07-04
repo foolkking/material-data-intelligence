@@ -1,5 +1,20 @@
 # DESIGN_PROGRESS
 
+## 2026-07-04 Phase 9B Runtime Data Binding Follow-up
+
+- Closed the practical demo gap found during full Planner workspace testing: in the local in-memory development path, `enqueue=true` created and enqueued a planner job but no separate worker drained the queue, so the UI could remain in the queued state even though the plan/job APIs were valid.
+- Added a narrow local-only auto-drain path for `/planner/jobs`: when the app is using the default in-memory repositories/runtime and no Redis queue URL is configured, the planner route enqueues the job and then immediately runs `QueueWorkerRuntime.handle_job(job_id)`. This does not affect the PostgreSQL/Redis production path, injected test runtimes, or Phase 8B service-backed queue semantics.
+- Added dataset object binding from the Phase2 runtime into `QueueWorkerRuntime`. The worker can now resolve uploaded/demo dataset objects by `dataset_id`, inject them as the execution `object_store`, and emit a `data.loaded` JobEvent before loading the persisted plan.
+- Added Phase2 runtime accessors for the real uploaded `DataProfile` and normalized dataset object store. Planner preview/jobs now prefer the real Phase2 profile instead of a minimal synthetic profile when the dataset exists.
+- Tightened planner validation for executable uploaded datasets: ML plans must bind `ml_table`, structure plans must bind `structures`, and composition plans must bind `formulas` when those normalized objects exist. Missing or unresolved inputRefs are rejected before any AnalysisPlan persistence, Job creation, or enqueue.
+- Updated the planner prompt to describe the normalized inputRef conventions (`ml_table`, `structures`, `formulas`) so real OpenAI-compatible providers are steered toward executable plans without relying on prompt text as a security boundary.
+- Added regression coverage proving an uploaded CSV dataset can create an enqueued local planner job, auto-run through the persisted AnalysisPlan path, produce exactly one `ml.basic_metrics` ToolCall, emit `data.loaded`/`plan.loaded`, create an artifact/result, and reach `completed`.
+- Added regression coverage proving a valid-looking plan with missing `inputRefs` is rejected for an uploaded dataset and creates no plan, no job, and no enqueue.
+- Reorganized supported pymatviz sample cases under `C:\Users\86182\Desktop\pymatviz-web-test-cases`, with each case split into `raw_data/` and `results/`. Four true data samples were evaluated successfully through the platform path: MatPES CSV metrics, MP structure JSON, experimental Bi2Zr2O7 CIF, and MP Zr2Bi2O7 CIF.
+- Verification for this follow-up: Phase 9B API targeted passed with 12 tests; Phase 8B targeted passed with 9 passed / 1 skipped locally; Phase 7 + Phase 8C + Phase 9B targeted passed with 46 tests; backend full passed with 134 passed / 21 skipped; frontend `npm test` passed with 6 tests; frontend typecheck and build passed after restarting the old dev server that held `.next/trace`.
+- Post-restart API smoke verified CORS preflight, `/health/runtime`, provider APIs, demo dataset creation, and `/planner/jobs` local enqueue execution. A demo planner job returned `enqueued=true`, `executed=true`, status `completed`, exactly one ToolCall, one artifact, and a completed result.
+- Browser plugin control was unavailable in this Codex environment after restart, so the final UI click-through was not claimed. Verification is based on API E2E, frontend tests, and backend tests.
+
 ## 2026-07-04 Phase 9B Frontend/API Follow-up
 
 - Re-audited the Planner workspace API calls against backend route registration after browser logs showed `OPTIONS ... 405 Method Not Allowed`.

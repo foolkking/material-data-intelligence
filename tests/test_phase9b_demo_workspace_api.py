@@ -9,7 +9,17 @@ from fastapi.testclient import TestClient
 
 from mdi_api.main import create_app
 from mdi_api.repositories import InMemoryRepositoryBundle
-from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
+from mdi_api.phase2_runtime import reset_phase2_runtime
+from mdi_api.routers.planner import (
+    PlannerJobsRequest,
+    get_planner_job,
+    get_planner_job_artifacts,
+    get_planner_job_events,
+    get_planner_job_result,
+    get_planner_job_tool_calls,
+    planner_jobs,
+    reset_planner_runtime,
+)
 from mdi_api.routers.planner_providers import ProviderTestRequest, test_planner_provider as run_provider_test
 from mdi_llm import MockLLMProvider
 from mdi_tool_registry import load_manifests
@@ -38,6 +48,14 @@ def _valid_plan() -> dict[str, object]:
         ],
         "expectedArtifacts": [{"name": "metrics.json", "type": "metrics_json", "fromStepId": "llm_step_1"}],
     }
+
+
+def _valid_metrics_plan(dataset_id: str, profile_id: str) -> dict[str, object]:
+    plan = _valid_plan()
+    plan["datasetId"] = dataset_id
+    plan["profileId"] = profile_id
+    plan["steps"][0]["params"] = {"targetColumn": "y_true", "predictionColumn": "y_pred"}  # type: ignore[index]
+    return plan
 
 
 def test_runtime_health_endpoint_reports_workspace_dependencies() -> None:
@@ -257,3 +275,89 @@ def test_validation_failure_still_persists_no_plan_job_or_enqueue() -> None:
     assert "sk-must-not-persist" not in json.dumps(result.__dict__, ensure_ascii=False)
     assert repos.jobs.records == {}
     assert repos.analysis_plans.records == {}
+
+
+def test_local_planner_enqueue_executes_uploaded_dataset_through_worker(tmp_path: Path) -> None:
+    phase2 = reset_phase2_runtime(tmp_path / "phase2")
+    phase2.ensure_project("project_local")
+    uploaded = phase2.upload_dataset(
+        {
+            "projectId": "project_local",
+            "datasetName": "Uploaded metrics",
+            "files": [
+                {
+                    "fileName": "metrics.csv",
+                    "content": "formula,y_true,y_pred\nSiO2,2.1,2.0\nAl2O3,3.4,3.5\nCaO,1.8,1.9\n",
+                }
+            ],
+        }
+    )
+    dataset_id = uploaded["datasetId"]
+    profile_id = uploaded["profile"]["profileId"]
+    reset_planner_runtime()
+
+    result = planner_jobs(
+        PlannerJobsRequest(
+            userPrompt="run uploaded metrics",
+            projectId="project_local",
+            datasetId=dataset_id,
+            profileId=profile_id,
+            enqueue=True,
+        ),
+        provider=MockLLMProvider(fixed_plan=_valid_metrics_plan(dataset_id, profile_id)),
+        registry=load_manifests(),
+    )
+
+    assert result.ok is True
+    assert result.enqueued is True
+    assert result.executed is True
+    assert result.job_id is not None
+    job = get_planner_job(result.job_id)
+    events = get_planner_job_events(result.job_id)
+    tool_calls = get_planner_job_tool_calls(result.job_id)
+    artifacts = get_planner_job_artifacts(result.job_id)
+    summary = get_planner_job_result(result.job_id)
+
+    assert job["status"] == "completed"
+    assert job["toolCallCount"] == 1
+    assert tool_calls[0]["toolId"] == "ml.basic_metrics"
+    assert tool_calls[0]["stepId"] == "llm_step_1"
+    assert {event["eventType"] for event in events} >= {"data.loaded", "plan.loaded", "tool.completed", "job.completed"}
+    assert any(artifact["type"] == "metrics_json" for artifact in artifacts)
+    assert summary["status"] == "completed"
+    assert summary["artifactCount"] >= 1
+
+
+def test_uploaded_dataset_plan_with_missing_input_refs_is_rejected_before_persistence(tmp_path: Path) -> None:
+    phase2 = reset_phase2_runtime(tmp_path / "phase2")
+    phase2.ensure_project("project_local")
+    uploaded = phase2.upload_dataset(
+        {
+            "projectId": "project_local",
+            "datasetName": "Uploaded metrics",
+            "files": [{"fileName": "metrics.csv", "content": "formula,y_true,y_pred\nSiO2,2.1,2.0\n"}],
+        }
+    )
+    dataset_id = uploaded["datasetId"]
+    profile_id = uploaded["profile"]["profileId"]
+    reset_planner_runtime()
+    bad_plan = _valid_metrics_plan(dataset_id, profile_id)
+    bad_plan["steps"][0]["inputRefs"] = []  # type: ignore[index]
+
+    result = planner_jobs(
+        PlannerJobsRequest(
+            userPrompt="run uploaded metrics",
+            projectId="project_local",
+            datasetId=dataset_id,
+            profileId=profile_id,
+            enqueue=True,
+        ),
+        provider=MockLLMProvider(fixed_plan=bad_plan),
+        registry=load_manifests(),
+    )
+
+    assert result.ok is False
+    assert result.job_id is None
+    assert result.plan_id is None
+    assert result.enqueued is False
+    assert any(error["code"] == "INPUT_REF_MISSING" for error in result.validation_errors)

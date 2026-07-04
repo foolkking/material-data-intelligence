@@ -33,6 +33,12 @@ def _profile_summary(profile: DataProfile) -> str:
         t = profile.tableSummary
         cols = [c.get("name", "?") for c in t.get("columns", [])]
         parts.append(f"columns: {cols}")
+        if cols:
+            parts.append('table inputRef: {"refType":"normalized_object","ref":"ml_table","objectType":"DataFrame"}')
+    if profile.structureSummary:
+        parts.append('structure inputRef: {"refType":"normalized_object","ref":"structures","objectType":"Structure"}')
+    if profile.structureSummary or profile.tableSummary:
+        parts.append('composition/formula inputRef: {"refType":"normalized_object","ref":"formulas","objectType":"Composition"}')
     if profile.qualityIssues:
         parts.append(f"qualityIssues: {len(profile.qualityIssues)} issue(s)")
     return "\n".join(parts)
@@ -83,6 +89,9 @@ RULES:
 8. NEVER invent tool IDs that are not in the list.
 9. NEVER include V1/V2 tool IDs (ends-with-v1, -v2, or stage v1/v2).
 10. Every expectedArtifact.type must be one of the tool's artifactTypes.
+11. For ml.* tools, include inputRefs with {"refType":"normalized_object","ref":"ml_table","objectType":"DataFrame"} when the DataProfile has table columns.
+12. For structure.* tools, include inputRefs with {"refType":"normalized_object","ref":"structures","objectType":"Structure"} when structures are available.
+13. For composition.* tools, include inputRefs with {"refType":"normalized_object","ref":"formulas","objectType":"Composition"} when formulas or compositions are available.
 """
 
 _USER_PROMPT_TEMPLATE = """User prompt: {user_prompt}

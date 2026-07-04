@@ -11,10 +11,11 @@ from mdi_api.artifact_storage import ArtifactStorage, ArtifactStorageMetadata, L
 from mdi_api.repositories import InMemoryRepositoryBundle
 from mdi_api.unit_of_work import RepositoryFactory
 from mdi_schemas import AnalysisPlan, JobStatus, ToolExecutionRequest
-from mdi_tool_registry import ToolRegistry
+from mdi_tool_registry import ToolRegistry, load_manifests
 
 
 ToolExecutor = Callable[[ToolExecutionRequest, "QueueWorkerContext"], Any]
+ObjectStoreResolver = Callable[[str], Mapping[str, Any] | None]
 
 
 class QueueBackend(Protocol):
@@ -115,6 +116,7 @@ class QueueWorkerRuntime:
         artifact_storage: ArtifactStorage | None = None,
         queue_backend: QueueBackend | None = None,
         tool_executor: ToolExecutor | None = None,
+        object_store_resolver: ObjectStoreResolver | None = None,
         registry: ToolRegistry | None = None,
         artifact_root: str | Path = ".artifacts/phase5",
     ) -> None:
@@ -126,7 +128,8 @@ class QueueWorkerRuntime:
         self.artifact_root = Path(artifact_root)
         self.queue_backend = queue_backend or InMemoryQueueBackend()
         self.tool_executor = tool_executor
-        self.registry = registry
+        self.object_store_resolver = object_store_resolver
+        self.registry = registry or load_manifests()
 
     def submit_job(self, job_id: str) -> QueueSubmitResult:
         repos = self._repositories()
@@ -135,7 +138,7 @@ class QueueWorkerRuntime:
             repos.jobs.set_status(job_id, JobStatus.queued)
         return self.queue_backend.enqueue_job(job_id)
 
-    def handle_job(self, job_id: str, *, plan: Mapping[str, Any] | None = None, object_store: dict[str, list[Any]] | None = None) -> QueueWorkerResult:
+    def handle_job(self, job_id: str, *, plan: Mapping[str, Any] | None = None, object_store: Mapping[str, Any] | None = None) -> QueueWorkerResult:
         repos = self._repositories()
         job = repos.jobs.get(job_id)
         status = str(job.get("status") or JobStatus.created.value)
@@ -150,9 +153,10 @@ class QueueWorkerRuntime:
             repos.jobs.set_status(job_id, JobStatus.completed)
             return self._result(repos, job_id, message="job completed", plan_record=plan_record)
 
+        effective_object_store = dict(object_store or self._resolve_object_store(repos, job))
         try:
             for index, step in enumerate(steps, start=1):
-                self._run_step(repos, job, step, index=index, object_store=object_store, plan_record=plan_record)
+                self._run_step(repos, job, step, index=index, object_store=effective_object_store, plan_record=plan_record)
         except Exception as exc:
             repos.job_events.append_event(
                 job_id,
@@ -196,6 +200,23 @@ class QueueWorkerRuntime:
             repos.jobs.set_status(job_id, JobStatus.running)
         repos.job_events.append_event(job_id, event_type="job.running", status="running", message="Queue worker started job.", progress=0.0)
         return repos.jobs.get(job_id)
+
+    def _resolve_object_store(self, repos: Any, job: Mapping[str, Any]) -> Mapping[str, Any]:
+        dataset_id = job.get("datasetId") or job.get("dataset_id")
+        if not dataset_id or self.object_store_resolver is None:
+            return {}
+        job_id = str(job.get("jobId") or job["id"])
+        resolved = self.object_store_resolver(str(dataset_id)) or {}
+        if resolved:
+            repos.job_events.append_event(
+                job_id,
+                event_type="data.loaded",
+                status="success",
+                message="Loaded dataset objects for queued tool execution.",
+                payload={"datasetId": str(dataset_id), "objectRefs": sorted(str(key) for key in resolved.keys())},
+                progress=0.08,
+            )
+        return resolved
 
     def _load_execution_plan(
         self,
@@ -256,7 +277,7 @@ class QueueWorkerRuntime:
         step: Mapping[str, Any],
         *,
         index: int,
-        object_store: dict[str, list[Any]] | None,
+        object_store: Mapping[str, Any] | None,
         plan_record: Mapping[str, Any] | None,
     ) -> None:
         job_id = str(job.get("jobId") or job["id"])
@@ -386,7 +407,7 @@ class QueueWorkerRuntime:
             progress=1.0,
         )
 
-    def _execute_tool(self, request: ToolExecutionRequest, context: QueueWorkerContext, *, object_store: dict[str, list[Any]] | None) -> Any:
+    def _execute_tool(self, request: ToolExecutionRequest, context: QueueWorkerContext, *, object_store: Mapping[str, Any] | None) -> Any:
         if self.tool_executor is not None:
             return self.tool_executor(request, context)
         tool = self.registry.get_tool_by_id(request.toolId)

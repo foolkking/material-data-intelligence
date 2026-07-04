@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-07-04 Phase 9B Runtime Data Binding Follow-up
+
+- **Closed: local demo planner jobs staying queued without a worker process.** In the default in-memory development path, `/planner/jobs` now enqueues and auto-drains the job through `QueueWorkerRuntime.handle_job(job_id)` only when no Redis queue is configured and no custom repos/runtime are injected.
+- **Closed: uploaded dataset objects not reaching the local queue worker.** `QueueWorkerRuntime` now supports an object-store resolver, and the default planner runtime resolves Phase2 uploaded/demo dataset objects by `dataset_id` before executing the persisted plan.
+- **Closed: planner prompt/profile context did not expose real uploaded columns.** Planner preview/jobs now use the real Phase2 `DataProfile` when available, and the prompt describes normalized inputRef conventions.
+- **Closed: executable plans could omit dataset inputRefs for uploaded data.** Uploaded dataset plans now fail before persistence/job/enqueue when their steps require an available normalized object but omit or misname the required inputRef.
+- **Remaining: durable normalized-object loading for out-of-process Redis workers.** The current follow-up closes the local in-memory demo path and adds a resolver seam. Production Redis workers that run in a separate process still need durable normalized object storage/loading for uploaded datasets instead of relying on process-local Phase2 memory.
+- **Remaining: browser automation after restart.** API E2E and frontend tests passed, but final browser click-through after restart could not be automated because the browser plugin native bridge was unavailable in this environment.
+
 ## 2026-07-04 Phase 9B Frontend/API Follow-up
 
 - **Closed: browser preflight 405 for Phase 9B workspace APIs.** The affected routes were implemented, but the FastAPI app lacked CORS middleware. Local/demo origins are now configured by default and overrideable through `MDI_CORS_ORIGINS` / `CORS_ORIGINS`.

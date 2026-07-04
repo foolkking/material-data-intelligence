@@ -1,5 +1,38 @@
 # TASK_BOARD
 
+## 2026-07-04 Phase 9B Runtime Data Binding Follow-up
+
+### Done This Round
+
+- [x] Audited the local Planner workspace execution path after API/UI testing showed enqueued demo jobs could remain queued without a worker process.
+- [x] Added a default in-memory `QueueWorkerRuntime` object-store resolver that loads uploaded/demo dataset objects from the Phase2 runtime by `dataset_id`.
+- [x] Added Phase2 runtime accessors for the real dataset `DataProfile` and normalized object store.
+- [x] Updated planner preview/jobs to use the real Phase2 `DataProfile` when available.
+- [x] Added executable inputRef validation for uploaded datasets before persistence, job creation, or enqueue.
+- [x] Added a local-only auto-drain path for the default in-memory planner queue when no Redis queue is configured.
+- [x] Preserved Phase 8B production semantics: Redis-backed jobs still enqueue `job_id` for a worker, injected runtimes are not auto-drained, and persisted plan loading remains the worker execution source.
+- [x] Updated the planner prompt with normalized object inputRef guidance for `ml_table`, `structures`, and `formulas`.
+- [x] Added targeted tests for uploaded CSV local planner execution and missing inputRef rejection.
+- [x] Rebuilt clean supported pymatviz test cases on the Desktop with `raw_data/` and `results/` folders, excluding unsupported example code.
+
+### Verification
+
+- [x] `python -m pytest tests/test_phase9b_demo_workspace_api.py -q` -> 12 passed
+- [x] `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` -> 9 passed, 1 skipped locally
+- [x] `python -m pytest tests/test_phase7_llm_planner.py tests/test_phase8c_planner_read_api.py tests/test_phase9b_demo_workspace_api.py -q` -> 46 passed
+- [x] `uv lock --check`
+- [x] `python -m pytest -q` -> 134 passed, 21 skipped
+- [x] `npm test` in `apps/web` -> 6 passed
+- [x] `npm run typecheck` in `apps/web`
+- [x] `npm run build` in `apps/web`
+- [x] Post-restart API smoke: CORS preflight ok, demo dataset created, `/planner/jobs` returned `enqueued=true` and `executed=true`, job completed with exactly one ToolCall and one artifact.
+
+### Handoff Notes
+
+- The local dev API is running on `http://127.0.0.1:8000` and the web app is running on `http://127.0.0.1:3000`; logs are under `C:\Users\86182\Desktop\pymatviz-web-test-cases\service-logs`.
+- Browser automation was unavailable because the in-app/Chrome browser plugin native bridge was not trusted in this environment; final browser click-through after restart is therefore not claimed.
+- Production Redis workers still need a durable normalized-object resolver for uploaded datasets when the worker runs out of process. The local in-memory demo path is closed; this is a production hardening item, not a Phase 8B regression.
+
 ## 2026-07-04 Phase 9B Frontend/API Follow-up
 
 ### Done This Round

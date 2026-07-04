@@ -280,6 +280,12 @@ class Phase2ProductRuntime:
     def get_dataset_profile(self, dataset_id: str) -> dict[str, Any]:
         return self._require_dataset(dataset_id).profile.model_dump(mode="json")
 
+    def get_dataset_profile_model(self, dataset_id: str) -> DataProfile:
+        return self._require_dataset(dataset_id).profile
+
+    def get_dataset_object_store(self, dataset_id: str) -> dict[str, Any]:
+        return dict(self._require_dataset(dataset_id).object_store)
+
     def create_dataset_profile(self, dataset_id: str) -> dict[str, Any]:
         dataset = self._require_dataset(dataset_id)
         return {
@@ -868,6 +874,14 @@ def upload_phase2_dataset(request: DatasetUploadRequest) -> dict[str, Any]:
 
 def get_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
     return _api_call(lambda: get_phase2_runtime().get_dataset_profile(dataset_id))
+
+
+def get_phase2_dataset_object_store(dataset_id: str) -> dict[str, Any]:
+    return get_phase2_runtime().get_dataset_object_store(dataset_id)
+
+
+def get_phase2_dataset_profile_model(dataset_id: str) -> DataProfile:
+    return get_phase2_runtime().get_dataset_profile_model(dataset_id)
 
 
 def create_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
