@@ -27,6 +27,7 @@ class ApiSettings:
     runtime_backend: str = "local"  # "local" | "postgresql"
     queue_backend: str = "local"    # "local" | "redis"
     artifact_backend: str = "local"  # "local" | "minio"
+    artifact_root: str = ".artifacts/phase2"
     # -- Test database for integration tests --
     test_database_url: str | None = None
     # -- Browser access for local/demo web workspaces --
@@ -88,6 +89,7 @@ def load_settings() -> ApiSettings:
         runtime_backend=os.getenv("MDI_RUNTIME_BACKEND", "local").lower(),
         queue_backend=os.getenv("MDI_QUEUE_BACKEND", "local").lower(),
         artifact_backend=os.getenv("MDI_ARTIFACT_BACKEND", "local").lower(),
+        artifact_root=os.getenv("MDI_ARTIFACT_ROOT", ApiSettings.artifact_root),
         test_database_url=test_database_url,
         cors_origins=_parse_csv(_env("MDI_CORS_ORIGINS", "CORS_ORIGINS", default=",".join(ApiSettings.cors_origins))),
     )

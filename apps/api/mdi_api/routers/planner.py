@@ -11,6 +11,7 @@ import uuid
 from pydantic import BaseModel, Field
 
 from mdi_api.config import load_settings
+from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.database import create_repository_factory
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
 from mdi_api.secrets import InMemorySecretStore
@@ -24,6 +25,7 @@ from mdi_llm import (
     redact_params_for_log,
 )
 from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime, RedisRQQueueBackend
+from mdi_workers.object_store import DurableObjectStoreResolver
 from mdi_tool_registry import ToolRegistry, load_manifests
 from mdi_tool_registry.plan_validator import PlanValidationError, PlanValidationResult, validate_plan
 
@@ -474,11 +476,18 @@ def _planner_repositories_and_runtime(*, repositories: Any, queue_runtime: Queue
     if "postgres" in settings.database_url:
         factory = create_repository_factory(settings)
         repos = factory.create_repositories()
+        artifact_storage = create_artifact_storage_from_settings(settings)
         runtime = queue_runtime or QueueWorkerRuntime(
             repository_factory=factory,
+            artifact_storage=artifact_storage,
             queue_backend=RedisRQQueueBackend(redis_url=settings.redis_url)
             if _should_use_redis_queue(settings)
             else InMemoryQueueBackend(),
+            object_store_resolver=DurableObjectStoreResolver(
+                repository_factory=factory,
+                artifact_storage=artifact_storage,
+            ),
+            artifact_root=getattr(settings, "artifact_root", ".artifacts/phase2"),
         )
         return repos, runtime
 

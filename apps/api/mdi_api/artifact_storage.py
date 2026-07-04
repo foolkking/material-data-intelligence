@@ -412,5 +412,12 @@ def create_minio_artifact_storage_from_settings(settings: Any, *, client: Any | 
     )
 
 
+def create_artifact_storage_from_settings(settings: Any, *, client: Any | None = None, prefix: str = "") -> ArtifactStorage:
+    backend = str(getattr(settings, "artifact_backend", "local") or "local").lower()
+    if backend == "minio":
+        return create_minio_artifact_storage_from_settings(settings, client=client, prefix=prefix)
+    return LocalFileArtifactStorage(getattr(settings, "artifact_root", ".artifacts/phase2"))
+
+
 def _sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()

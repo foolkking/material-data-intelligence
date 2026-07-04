@@ -1,5 +1,19 @@
 # DESIGN_PROGRESS
 
+## 2026-07-04 Phase 9B Browser + Durable Worker Resolver Closure
+
+- Completed the browser click-through that was previously blocked by the browser native bridge. The in-app browser now loaded `http://127.0.0.1:3000`, loaded the backend demo dataset, created and ran a Mock Planner job, and showed `completed` status with persisted-plan provenance.
+- Browser evidence: the UI displayed `Demo metrics dataset`, profile columns `formula, y_true, y_pred`, `planId`, `planHash`, `jobs.plan_id -> analysis_plans.id`, `Loaded from persisted AnalysisPlan`, `Executed through Tool Registry + Adapter`, `No deterministic fallback used`, `plan.loaded`, `data.loaded`, `tool.started`, `artifact.ready`, `tool.completed`, and `job.completed`.
+- Browser result panels were verified: Artifact Gallery showed one `metrics.json` artifact, Report / Recipe Summary showed a system-generated summary and reproducibility fields, and Tool Calls showed one completed `ml.basic_metrics` call with `stepId=llm_step_1` and plan provenance.
+- Added a durable worker object-store resolver for out-of-process queue workers. It rebuilds `ml_table`, `structures`, and `formulas` from persisted dataset `metadata.normalizedExports` plus ArtifactStorage, instead of relying on API-process memory.
+- Added settings-driven worker runtime construction for `run_queued_job(job_id)`: it now builds SQLAlchemy repositories from `DATABASE_URL`, artifact storage from `MDI_ARTIFACT_BACKEND` / `MDI_ARTIFACT_ROOT`, and the durable resolver before executing `QueueWorkerRuntime.handle_job(job_id)`.
+- Connected the same durable resolver into the PostgreSQL planner runtime path so local PostgreSQL/in-memory-queue development and Redis enqueue paths use the same dataset-object loading seam.
+- Added `MDI_ARTIFACT_ROOT` config support and a shared `create_artifact_storage_from_settings()` helper.
+- Added a regression proving `run_queued_job(job_id)` can run as a separate settings-driven worker against a persisted SQLite repository and local ArtifactStorage: it reconstructs `ml_table` from normalized exports, loads the persisted AnalysisPlan, executes exactly one real `ml.basic_metrics` adapter call, emits `data.loaded` / `plan.loaded`, writes one artifact, and completes the job.
+- Verification: browser UI assertions passed with no console errors and no `Not available yet` in the rendered page; Phase 9B targeted passed with 13 tests; Phase 9B + Phase 8B targeted passed with 22 passed / 1 skipped; Phase 7 + Phase 8C targeted passed with 34 tests; backend full passed with 135 passed / 21 skipped; frontend `npm test` passed with 6 tests; frontend typecheck and build passed.
+- Live true-LLM verification is still not claimed; no API key was entered during the browser run and no external LLM call was made.
+- Remaining production boundary is narrowed: worker-side durable loading is implemented, but a fully production upload service that writes normalized exports directly through SQL/MinIO rather than the Phase2 in-memory runtime remains future hardening.
+
 ## 2026-07-04 Phase 9B Runtime Data Binding Follow-up
 
 - Closed the practical demo gap found during full Planner workspace testing: in the local in-memory development path, `enqueue=true` created and enqueued a planner job but no separate worker drained the queue, so the UI could remain in the queued state even though the plan/job APIs were valid.

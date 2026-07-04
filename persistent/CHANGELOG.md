@@ -2,6 +2,16 @@
 
 ## 2026-07-04
 
+### Phase 9B Closure: Browser Verification and Durable Worker Object Loading
+
+- Completed the previously missing browser click-through on the local Planner workspace. The browser loaded demo data, created and ran a Mock Planner job, reached completed status, displayed persisted-plan provenance, and showed one metrics artifact plus one completed `ml.basic_metrics` ToolCall.
+- Added `MDI_ARTIFACT_ROOT` configuration and a shared `create_artifact_storage_from_settings()` helper.
+- Added `DurableObjectStoreResolver`, which reconstructs worker `object_store` values from dataset `metadata.normalizedExports` and ArtifactStorage. It restores conventional refs such as `ml_table`, `structures`, and `formulas` without relying on API-process memory.
+- Updated `run_queued_job(job_id)` so RQ workers construct repositories from settings, use configured artifact storage, and install the durable object-store resolver before calling `QueueWorkerRuntime.handle_job(job_id)`.
+- Updated the PostgreSQL planner runtime path to use configured artifact storage and the same durable resolver.
+- Added a regression that seeds a persisted dataset, normalized exports, persisted AnalysisPlan, and queued job, then calls `run_queued_job(job_id)` as a settings-driven worker. The test proves `ml.basic_metrics` executes exactly once through the real adapter and writes `data.loaded`, `plan.loaded`, ToolCall, Artifact, and completed job state.
+- Verification: Phase 9B targeted 13 passed; Phase 9B + Phase 8B targeted 22 passed / 1 skipped locally; Phase 7 + Phase 8C targeted 34 passed; backend full 135 passed / 21 skipped; frontend tests/typecheck/build passed.
+
 ### Phase 9B Follow-up: Planner Runtime Data Binding and Local Demo Execution
 
 - Added Phase2 runtime accessors for real uploaded dataset profiles and normalized object stores.

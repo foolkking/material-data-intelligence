@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-04 Phase 9B - durable worker object loading keeps execution registry-gated
+
+- No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in this closure.
+- `DurableObjectStoreResolver` reconstructs dataset objects only. It does not select tools, alter persisted AnalysisPlans, bypass PlanValidator, or execute code.
+- The settings-driven `run_queued_job(job_id)` path still calls `QueueWorkerRuntime.handle_job(job_id)`, loads `job.plan_id`, reconstructs the persisted `AnalysisPlan`, and executes each step through Tool Registry lookup and Adapter execution.
+- The new regression proves an out-of-process-style worker can load `ml_table` from persisted normalized exports and execute exactly one `ml.basic_metrics` ToolCall through the real adapter.
+- Browser verification showed the UI provenance chain still reports `Loaded from persisted AnalysisPlan`, `Executed through Tool Registry + Adapter`, and `No deterministic fallback used`.
+
 ## 2026-07-04 Phase 9B - runtime data binding still preserves the Registry gate
 
 - No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in this follow-up.

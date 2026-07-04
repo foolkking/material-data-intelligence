@@ -1,5 +1,37 @@
 # TASK_BOARD
 
+## 2026-07-04 Phase 9B Browser + Durable Worker Resolver Closure
+
+### Done This Round
+
+- [x] Re-ran the browser verification after the previous native bridge issue. The in-app browser connection succeeded.
+- [x] Verified the demo workspace in the browser with Mock Planner only: load demo data, create/run planner job, observe completed status, inspect timeline, inspect result tabs.
+- [x] Verified rendered page assertions: completed job, `data.loaded`, `plan.loaded`, `ml.basic_metrics`, `No deterministic fallback used`, and no `Not available yet` in the page body.
+- [x] Added `MDI_ARTIFACT_ROOT` setting and shared artifact storage factory.
+- [x] Added `DurableObjectStoreResolver` for worker-side reconstruction from persisted normalized exports and ArtifactStorage.
+- [x] Changed `run_queued_job(job_id)` from default in-memory runtime construction to settings-driven SQLAlchemy repositories + artifact storage + durable object resolver.
+- [x] Connected durable object-store resolution into the PostgreSQL planner runtime construction path.
+- [x] Added a regression proving an out-of-process-style `run_queued_job(job_id)` can load dataset objects from persisted normalized exports and execute the exact persisted plan through the real adapter.
+
+### Verification
+
+- [x] Browser click-through on `http://127.0.0.1:3000`
+- [x] `python -m pytest tests/test_phase9b_demo_workspace_api.py -q` -> 13 passed
+- [x] `python -m pytest tests/test_phase9b_demo_workspace_api.py tests/test_phase8b_persisted_plan_queue.py -q` -> 22 passed, 1 skipped locally
+- [x] `python -m pytest tests/test_phase7_llm_planner.py tests/test_phase8c_planner_read_api.py -q` -> 34 passed
+- [x] `uv lock --check`
+- [x] `python -m pytest -q` -> 135 passed, 21 skipped
+- [x] `npm test` in `apps/web` -> 6 passed
+- [x] `npm run typecheck` in `apps/web`
+- [x] `npm run build` in `apps/web`
+
+### Handoff Notes
+
+- The web dev server was restarted after build and is listening on `http://127.0.0.1:3000`.
+- API remains available on `http://127.0.0.1:8000`.
+- True LLM live verification is still not claimed.
+- Worker-side durable normalized-object loading is implemented. A production upload service that persists normalized exports through the SQL/MinIO path remains future hardening.
+
 ## 2026-07-04 Phase 9B Runtime Data Binding Follow-up
 
 ### Done This Round

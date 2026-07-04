@@ -2,6 +2,7 @@
 
 from .runtime import InMemoryJobStore, JobRecord, WorkerRunResult, WorkerToolExecutionError, run_tool_call_job
 from .queue_runtime import (
+    create_queue_worker_runtime_from_settings,
     InMemoryQueueBackend,
     QueueSubmitResult,
     QueueToolExecution,
@@ -9,6 +10,7 @@ from .queue_runtime import (
     QueueWorkerResult,
     QueueWorkerRuntime,
     RedisRQQueueBackend,
+    run_queued_job,
 )
 
 __all__ = [
@@ -21,6 +23,8 @@ __all__ = [
     "QueueWorkerResult",
     "QueueWorkerRuntime",
     "RedisRQQueueBackend",
+    "create_queue_worker_runtime_from_settings",
+    "run_queued_job",
     "WorkerRunResult",
     "WorkerToolExecutionError",
     "run_tool_call_job",

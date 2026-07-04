@@ -6,9 +6,12 @@ import urllib.error
 from pathlib import Path
 
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
 
+from mdi_artifact_core import LocalArtifactExporter
+from mdi_api.db import metadata
 from mdi_api.main import create_app
-from mdi_api.repositories import InMemoryRepositoryBundle
+from mdi_api.repositories import InMemoryRepositoryBundle, SqlAlchemyRepositoryBundle
 from mdi_api.phase2_runtime import reset_phase2_runtime
 from mdi_api.routers.planner import (
     PlannerJobsRequest,
@@ -22,7 +25,9 @@ from mdi_api.routers.planner import (
 )
 from mdi_api.routers.planner_providers import ProviderTestRequest, test_planner_provider as run_provider_test
 from mdi_llm import MockLLMProvider
+from mdi_schemas import DataProfile
 from mdi_tool_registry import load_manifests
+from mdi_workers import run_queued_job
 
 
 def _valid_plan() -> dict[str, object]:
@@ -361,3 +366,122 @@ def test_uploaded_dataset_plan_with_missing_input_refs_is_rejected_before_persis
     assert result.plan_id is None
     assert result.enqueued is False
     assert any(error["code"] == "INPUT_REF_MISSING" for error in result.validation_errors)
+
+
+def test_run_queued_job_rebuilds_object_store_from_persisted_normalized_exports(monkeypatch, tmp_path: Path) -> None:
+    db_path = tmp_path / "worker.sqlite"
+    artifact_root = tmp_path / "artifacts"
+    engine = create_engine(f"sqlite:///{db_path.as_posix()}", future=True, connect_args={"check_same_thread": False})
+    metadata.create_all(engine)
+    repos = SqlAlchemyRepositoryBundle.create(engine)
+
+    exported = LocalArtifactExporter(artifact_root).export_normalized_object(
+        object_id="obj_dataframe_metrics",
+        storage_key="normalized/obj_dataframe_metrics/data.json",
+        payload=[
+            {"formula": "LiFePO4", "y_true": 3.45, "y_pred": 3.40},
+            {"formula": "NaCl", "y_true": 1.20, "y_pred": 1.25},
+            {"formula": "SiO2", "y_true": 2.10, "y_pred": 2.00},
+        ],
+        metadata={
+            "nRows": 3,
+            "nColumns": 3,
+            "columns": [
+                {"name": "formula", "dtype": "string", "inferredRole": "formula"},
+                {"name": "y_true", "dtype": "number", "inferredRole": "target"},
+                {"name": "y_pred", "dtype": "number", "inferredRole": "prediction"},
+            ],
+        },
+        project_id="project_worker",
+        dataset_id="dataset_worker",
+        provenance={"phase": "test", "objectType": "DataFrame"},
+    )
+    normalized_exports = [
+        {
+            "objectId": exported.object_id,
+            "storageKey": exported.storage_key,
+            "metadataKey": exported.metadata_key,
+            "contentHash": exported.content_hash,
+        }
+    ]
+
+    repos.projects.save({"id": "project_worker", "name": "Worker Project"})
+    repos.datasets.save(
+        {
+            "id": "dataset_worker",
+            "projectId": "project_worker",
+            "name": "Persisted Dataset",
+            "status": "profile_ready",
+            "metadata": {"normalizedExports": normalized_exports},
+        }
+    )
+    repos.data_profiles.save(
+        DataProfile(
+            profileId="profile_worker",
+            datasetId="dataset_worker",
+            version="1",
+            datasetType="ml_results",
+            files=[],
+            objects=[],
+            tableSummary={"nRows": 3, "columns": [{"name": "y_true"}, {"name": "y_pred"}]},
+            structureSummary={"nStructures": 0},
+            qualityIssues=[],
+            createdAt="2026-07-04T00:00:00Z",
+        )
+    )
+    repos.analysis_plans.save_plan(
+        {
+            "id": "plan_worker",
+            "projectId": "project_worker",
+            "datasetId": "dataset_worker",
+            "profileId": "profile_worker",
+            "planSource": "mock",
+            "plannerProvider": "mock",
+            "analysisPlan": _valid_metrics_plan("dataset_worker", "profile_worker"),
+            "validationStatus": "validated",
+            "createdBy": "user_local",
+        }
+    )
+    repos.jobs.save(
+        {
+            "id": "job_worker",
+            "projectId": "project_worker",
+            "datasetId": "dataset_worker",
+            "planId": "plan_worker",
+            "kind": "planner",
+            "status": "queued",
+        }
+    )
+    repos.analysis_plans.attach_plan_to_job("plan_worker", "job_worker")
+    engine.dispose()
+
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{db_path.as_posix()}")
+    monkeypatch.setenv("MDI_ARTIFACT_BACKEND", "local")
+    monkeypatch.setenv("MDI_ARTIFACT_ROOT", str(artifact_root))
+
+    result = run_queued_job("job_worker")
+
+    verify_engine = create_engine(f"sqlite:///{db_path.as_posix()}", future=True, connect_args={"check_same_thread": False})
+    verification_repos = SqlAlchemyRepositoryBundle.create(verify_engine)
+    events = verification_repos.job_events.list_for_job("job_worker")
+    tool_calls = verification_repos.tool_calls.list_for_job("job_worker")
+    artifacts = verification_repos.artifacts.list_for_job("job_worker")
+    job = verification_repos.jobs.get("job_worker")
+
+    assert result.status == "completed"
+    assert job["status"] == "completed"
+    assert [event.eventType for event in events] == [
+        "job.running",
+        "plan.loaded",
+        "data.loaded",
+        "tool.started",
+        "artifact.ready",
+        "tool.completed",
+        "job.completed",
+    ]
+    assert len(tool_calls) == 1
+    assert tool_calls[0]["toolId"] == "ml.basic_metrics"
+    assert tool_calls[0]["stepId"] == "llm_step_1"
+    assert len(artifacts) == 1
+    assert artifacts[0]["type"] == "metrics_json"
+    verify_engine.dispose()

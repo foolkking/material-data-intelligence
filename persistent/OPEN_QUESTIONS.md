@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-07-04 Phase 9B Browser + Durable Worker Resolver Closure
+
+- **Closed: browser verification after API/Web restart.** The in-app browser loaded the local workspace, ran the demo workflow with Mock Planner, showed completed status, plan provenance, timeline events, artifact gallery, report/recipe summary, and ToolCall details. No real API key was entered.
+- **Closed: worker-side durable object-store resolver.** `run_queued_job(job_id)` now builds a settings-driven SQLAlchemy repository factory, configured ArtifactStorage, and `DurableObjectStoreResolver`, so an out-of-process worker can rebuild `ml_table`/`structures`/`formulas` from persisted normalized exports.
+- **Closed: PostgreSQL planner runtime missing durable object resolver.** The PostgreSQL planner runtime construction path now installs the same artifact storage and resolver.
+- **Still open: true LLM live verification.** The gated provider path remains implemented, but no live provider run was executed in this closure.
+- **Still open: production upload service hardening.** The worker can now read persisted normalized exports, but the current demo upload path still goes through the Phase2 local runtime. A production upload path should persist dataset/profile/normalized exports directly through SQL and MinIO/S3.
+- **Still open: production secret encryption/KMS, multi-step DAG/data-dependency execution, worker supervision/dead-letter, and advanced material viewer polish.**
+
 ## 2026-07-04 Phase 9B Runtime Data Binding Follow-up
 
 - **Closed: local demo planner jobs staying queued without a worker process.** In the default in-memory development path, `/planner/jobs` now enqueues and auto-drains the job through `QueueWorkerRuntime.handle_job(job_id)` only when no Redis queue is configured and no custom repos/runtime are injected.

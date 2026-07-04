@@ -7,11 +7,15 @@ from pathlib import Path
 from typing import Any, Callable, Mapping, Protocol
 
 from mdi_adapters import ToolExecutionContext, execute_tool_request
-from mdi_api.artifact_storage import ArtifactStorage, ArtifactStorageMetadata, LocalFileArtifactStorage
+from mdi_api.artifact_storage import ArtifactStorage, ArtifactStorageMetadata, LocalFileArtifactStorage, create_artifact_storage_from_settings
+from mdi_api.config import load_settings
+from mdi_api.database import create_repository_factory
 from mdi_api.repositories import InMemoryRepositoryBundle
 from mdi_api.unit_of_work import RepositoryFactory
 from mdi_schemas import AnalysisPlan, JobStatus, ToolExecutionRequest
 from mdi_tool_registry import ToolRegistry, load_manifests
+
+from .object_store import DurableObjectStoreResolver
 
 
 ToolExecutor = Callable[[ToolExecutionRequest, "QueueWorkerContext"], Any]
@@ -153,8 +157,8 @@ class QueueWorkerRuntime:
             repos.jobs.set_status(job_id, JobStatus.completed)
             return self._result(repos, job_id, message="job completed", plan_record=plan_record)
 
-        effective_object_store = dict(object_store or self._resolve_object_store(repos, job))
         try:
+            effective_object_store = dict(object_store or self._resolve_object_store(repos, job))
             for index, step in enumerate(steps, start=1):
                 self._run_step(repos, job, step, index=index, object_store=effective_object_store, plan_record=plan_record)
         except Exception as exc:
@@ -494,8 +498,24 @@ class QueueWorkerRuntime:
         )
 
 
+def create_queue_worker_runtime_from_settings() -> QueueWorkerRuntime:
+    settings = load_settings()
+    repository_factory = create_repository_factory(settings)
+    artifact_storage = create_artifact_storage_from_settings(settings)
+    resolver = DurableObjectStoreResolver(
+        repository_factory=repository_factory,
+        artifact_storage=artifact_storage,
+    )
+    return QueueWorkerRuntime(
+        repository_factory=repository_factory,
+        artifact_storage=artifact_storage,
+        object_store_resolver=resolver,
+        artifact_root=getattr(settings, "artifact_root", ".artifacts/phase2"),
+    )
+
+
 def run_queued_job(job_id: str) -> QueueWorkerResult:
-    return QueueWorkerRuntime().handle_job(job_id)
+    return create_queue_worker_runtime_from_settings().handle_job(job_id)
 
 
 def _find_tool_call(repos: Any, *, job_id: str, step_id: str) -> dict[str, Any] | None:

@@ -1,5 +1,48 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-084: Queue workers load normalized dataset objects from persisted exports
+
+### Context
+
+ADR-083 closed the local in-memory demo gap by letting the API process auto-run
+the default in-memory queue. That did not fully address out-of-process queue
+workers: a Redis/RQ worker receives only `job_id`, so it cannot rely on the API
+process' in-memory Phase2 dataset object store. The worker must be able to load
+normalized dataset inputs from persisted metadata and artifact storage.
+
+### Decision
+
+Add a durable worker object-store resolver. `DurableObjectStoreResolver` reads
+dataset `metadata.normalizedExports` from the repository, loads each exported
+object and its metadata from configured ArtifactStorage, and reconstructs the
+conventional execution refs used by plans and adapters: `ml_table`,
+`structures`, and `formulas`.
+
+`run_queued_job(job_id)` is now settings-driven. It creates SQLAlchemy
+repositories from `DATABASE_URL`, artifact storage from
+`MDI_ARTIFACT_BACKEND` / `MDI_ARTIFACT_ROOT`, installs the durable resolver,
+and then calls `QueueWorkerRuntime.handle_job(job_id)`. The PostgreSQL planner
+runtime construction path uses the same resolver and storage configuration.
+
+The resolver is input binding only. It does not modify the persisted
+AnalysisPlan, select tools, enqueue work, or execute outside the Tool Registry
+and Adapter path.
+
+### Consequences
+
+- A Redis/RQ worker running in a separate process can execute persisted plans
+  for datasets whose normalized exports are stored in repository metadata and
+  ArtifactStorage.
+- Worker execution remains auditable through `data.loaded`, `plan.loaded`,
+  ToolCall, Artifact, Result, and JobEvent provenance.
+- Local and service-backed Phase 8B semantics remain intact: persisted
+  `job.plan_id` is still the execution source and one-step persisted plans still
+  execute as exactly one ToolCall.
+- The remaining production hardening item is the upload service boundary: the
+  worker can consume persisted normalized exports, but the upload path still
+  needs a production implementation that writes dataset/profile/export metadata
+  directly through SQL and MinIO/S3 instead of the Phase2 local runtime.
+
 ## ADR-083: Local planner demo jobs may auto-drain only on the in-memory queue path
 
 ### Context
