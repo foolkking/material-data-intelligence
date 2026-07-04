@@ -6,10 +6,13 @@ from typing import Any, Callable
 from mdi_api.config import load_settings
 from mdi_api.phase1_demo import stream_phase1_job_events, submit_analysis_request_stub
 from mdi_api.phase2_runtime import (
+    create_phase2_dataset_profile,
+    create_phase2_demo_dataset,
     create_phase2_job,
     create_phase2_project,
     get_phase2_artifact,
     get_phase2_artifact_download,
+    get_phase2_dataset,
     get_phase2_dataset_profile,
     get_phase2_job,
     get_phase2_job_artifacts,
@@ -22,7 +25,7 @@ from mdi_api.phase2_runtime import (
 )
 from mdi_api.routers.auth import CurrentUser, get_current_user_stub
 from mdi_api.routers.datasets import DatasetSummary, create_upload_session_stub
-from mdi_api.routers.health import health
+from mdi_api.routers.health import health, runtime_health
 from mdi_api.routers.planner import (
     PlannerJobsRequest,
     PlannerPreviewRequest,
@@ -37,6 +40,11 @@ from mdi_api.routers.planner import (
     planner_preview_route,
     planner_validate_route,
     stream_planner_job_events,
+)
+from mdi_api.routers.planner_providers import (
+    list_planner_providers,
+    planner_provider_status,
+    test_planner_provider_route,
 )
 from mdi_api.routers.projects import ProjectSummary
 from mdi_api.routers.secrets import (
@@ -67,12 +75,16 @@ class AppSpec:
 
 ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/health", health, ("GET",), ("health",)),
+    RouteSpec("/health/runtime", runtime_health, ("GET",), ("health",)),
     RouteSpec("/auth/me", get_current_user_stub, ("GET",), ("auth",), CurrentUser),
     RouteSpec("/projects", list_phase2_projects, ("GET",), ("projects",), list[ProjectSummary]),
     RouteSpec("/projects", create_phase2_project, ("POST",), ("projects",)),
     RouteSpec("/datasets", list_phase2_datasets, ("GET",), ("datasets",), list[DatasetSummary]),
+    RouteSpec("/datasets/demo", create_phase2_demo_dataset, ("POST",), ("datasets",)),
     RouteSpec("/datasets/upload", upload_phase2_dataset, ("POST",), ("datasets",)),
+    RouteSpec("/datasets/{dataset_id}", get_phase2_dataset, ("GET",), ("datasets",)),
     RouteSpec("/datasets/{dataset_id}/profile", get_phase2_dataset_profile, ("GET",), ("datasets",)),
+    RouteSpec("/datasets/{dataset_id}/profile", create_phase2_dataset_profile, ("POST",), ("datasets",)),
     RouteSpec("/projects/{project_id}/upload-sessions", create_upload_session_stub, ("POST",), ("datasets",)),
     RouteSpec("/analysis-requests", submit_analysis_request_stub, ("POST",), ("analysis",)),
     RouteSpec("/jobs", create_phase2_job, ("POST",), ("jobs",)),
@@ -90,6 +102,9 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/planner/preview", planner_preview_route, ("POST",), ("planner",)),
     RouteSpec("/planner/validate", planner_validate_route, ("POST",), ("planner",)),
     RouteSpec("/planner/jobs", planner_jobs_route, ("POST",), ("planner",)),
+    RouteSpec("/planner/providers", list_planner_providers, ("GET",), ("planner",)),
+    RouteSpec("/planner/providers/status", planner_provider_status, ("GET",), ("planner",)),
+    RouteSpec("/planner/providers/test", test_planner_provider_route, ("POST",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}", get_planner_job, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/events", get_planner_job_events, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/events/stream", stream_planner_job_events, ("GET",), ("planner",)),

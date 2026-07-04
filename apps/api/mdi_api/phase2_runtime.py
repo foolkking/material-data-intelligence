@@ -232,6 +232,18 @@ class Phase2ProductRuntime:
     def list_datasets(self) -> list[dict[str, Any]]:
         return [dataset.summary() for dataset in self.datasets.values()]
 
+    def ensure_project(self, project_id: str, *, name: str = "Local Demo Project") -> dict[str, Any]:
+        if project_id not in self.projects:
+            self.projects[project_id] = ProjectRecord(
+                id=project_id,
+                name=name,
+                project_type="mixed_material_dataset",
+                default_units={},
+                default_download_formats=["html", "json", "png", "markdown"],
+                llm_config_ref=None,
+            )
+        return self.projects[project_id].summary()
+
     def upload_dataset(self, request: DatasetUploadRequest | dict[str, Any]) -> dict[str, Any]:
         request = request if isinstance(request, DatasetUploadRequest) else DatasetUploadRequest.model_validate(request)
         self._require_project(request.projectId)
@@ -261,8 +273,73 @@ class Phase2ProductRuntime:
         self.datasets[dataset_id] = record
         return {**record.summary(), "files": record.files, "profile": profile.model_dump(mode="json")}
 
+    def get_dataset(self, dataset_id: str) -> dict[str, Any]:
+        dataset = self._require_dataset(dataset_id)
+        return {**dataset.summary(), "files": dataset.files, "demo": dataset.id == "dataset_demo"}
+
     def get_dataset_profile(self, dataset_id: str) -> dict[str, Any]:
         return self._require_dataset(dataset_id).profile.model_dump(mode="json")
+
+    def create_dataset_profile(self, dataset_id: str) -> dict[str, Any]:
+        dataset = self._require_dataset(dataset_id)
+        return {
+            **dataset.profile.model_dump(mode="json"),
+            "status": dataset.status,
+            "profileGenerated": True,
+        }
+
+    def ensure_demo_dataset(self, project_id: str = "project_local") -> dict[str, Any]:
+        self.ensure_project(project_id, name="Demo Materials Analysis Project")
+        dataset_id = "dataset_demo"
+        if dataset_id in self.datasets:
+            dataset = self.datasets[dataset_id]
+            return {
+                **dataset.summary(),
+                "demo": True,
+                "files": dataset.files,
+                "profile": dataset.profile.model_dump(mode="json"),
+            }
+
+        request = DatasetUploadRequest(
+            projectId=project_id,
+            datasetName="Demo metrics dataset",
+            files=[
+                InlineUploadFile(
+                    fileName="demo_metrics.csv",
+                    content=(
+                        "formula,y_true,y_pred\n"
+                        "LiFePO4,3.45,3.40\n"
+                        "NaCl,1.20,1.25\n"
+                        "SiO2,2.10,2.00\n"
+                        "Al2O3,2.80,2.95\n"
+                        "MgO,1.85,1.78\n"
+                    ),
+                )
+            ],
+        )
+        paths = self._materialize_uploads(request, dataset_id)
+        parse_results: list[ParseResult] = []
+        for index, path in enumerate(paths, start=1):
+            parse_results.append(parse_file(path, dataset_id=dataset_id, file_id=f"file_{index:03d}"))
+
+        objects = [obj for result in parse_results for obj in result.objects]
+        profile = build_data_profile(dataset_id=dataset_id, parse_results=parse_results)
+        object_store, object_refs = build_object_store(objects)
+        normalized_exports = self._export_normalized_objects(project_id, dataset_id, objects)
+        record = DatasetRecord(
+            id=dataset_id,
+            project_id=project_id,
+            name=request.datasetName,
+            files=[_uploaded_file_summary(result) for result in parse_results],
+            parse_results=parse_results,
+            objects=objects,
+            profile=profile,
+            object_store=object_store,
+            object_refs=object_refs,
+            normalized_exports=normalized_exports,
+        )
+        self.datasets[dataset_id] = record
+        return {**record.summary(), "demo": True, "files": record.files, "profile": profile.model_dump(mode="json")}
 
     def create_job(
         self,
@@ -777,12 +854,24 @@ def list_phase2_datasets() -> list[dict[str, Any]]:
     return get_phase2_runtime().list_datasets()
 
 
+def get_phase2_dataset(dataset_id: str) -> dict[str, Any]:
+    return _api_call(lambda: get_phase2_runtime().get_dataset(dataset_id))
+
+
+def create_phase2_demo_dataset() -> dict[str, Any]:
+    return _api_call(lambda: get_phase2_runtime().ensure_demo_dataset())
+
+
 def upload_phase2_dataset(request: DatasetUploadRequest) -> dict[str, Any]:
     return _api_call(lambda: get_phase2_runtime().upload_dataset(request))
 
 
 def get_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
     return _api_call(lambda: get_phase2_runtime().get_dataset_profile(dataset_id))
+
+
+def create_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
+    return _api_call(lambda: get_phase2_runtime().create_dataset_profile(dataset_id))
 
 
 def create_phase2_job(request: CreateJobRequest) -> dict[str, Any]:

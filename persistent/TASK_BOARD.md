@@ -1,5 +1,43 @@
 # TASK_BOARD
 
+## 2026-07-04 Phase 9B Demo-ready AI Planner Workspace Status
+
+### Done This Round
+
+- [x] Reworked the Planner workspace into a demo-ready product interface with top status, left controls, central prompt/plan/run surface, right health/provenance/timeline, and bottom result tabs.
+- [x] Added minimal i18n with default `zh-CN` and an English toggle, without using localStorage/sessionStorage.
+- [x] Replaced broad `Not available yet` UI with region-specific empty states for plan, job, timeline, tool calls, artifacts, report summary, provenance, provider, dataset, and health.
+- [x] Added backend runtime health support through `/health/runtime`.
+- [x] Added dataset detail, demo dataset/profile, and idempotent profile generation support for the frontend data-context flow.
+- [x] Added provider catalog/status/test APIs for mock and OpenAI-compatible provider modes.
+- [x] Extended Secret UX shape so secret lists expose alias/provider/status/masked preview/timestamps and never plaintext.
+- [x] Added safe provider test behavior that resolves API keys server-side by `secretId`, returns redacted errors, and does not persist raw prompt/completion.
+- [x] Added LLM Provider Settings UI with mock/real provider mode, OpenAI/DeepSeek/custom presets, Secret save/delete/select, and connection test feedback.
+- [x] Added Data Context and Demo Workflow panels backed by real API calls.
+- [x] Added Chinese Error Explainer and validation-failure no plan/no job/no enqueue messaging.
+- [x] Added user/developer mode layering so raw IDs and JSON are not default user-facing noise.
+- [x] Added grouped Artifact Gallery and independent Report/Recipe Summary.
+- [x] Preserved SSE/EventSource timeline as the main path with polling fallback.
+- [x] Preserved Phase 8B and Phase 9A core semantics: no QueueWorkerRuntime redesign, no AnalysisPlanRepository redesign, no `/planner/jobs` validation/persistence/enqueue bypass, no default true-LLM CI path.
+
+### Verification
+
+- [x] `uv lock --check`
+- [x] `python -m pytest tests/test_phase7_llm_planner.py -q` -> 32 passed
+- [x] `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` -> 9 passed, 1 skipped locally
+- [x] `python -m pytest tests/test_phase8c_planner_read_api.py -q` -> 2 passed
+- [x] `python -m pytest tests/test_phase9b_demo_workspace_api.py -q` -> 7 passed
+- [x] `python -m pytest -q` -> 129 passed, 21 skipped
+- [x] `npm test` in `apps/web` -> 6 passed
+- [x] `npm run typecheck` in `apps/web`
+- [x] `npm run build` in `apps/web`
+
+### Handoff Notes
+
+- Phase 9B local result before CI: CONDITIONAL PASS candidate. Product UX, backend support APIs, and tests are implemented; service-backed integration still needs GitHub Actions confirmation for this commit because local Docker is not available.
+- Live true-LLM verification is not claimed in Phase 9B.
+- Remaining boundaries: production secret encryption/KMS, multi-step DAG/data-dependency execution, worker supervision/dead-letter policy, advanced material viewer polish, and optional live LLM verification under the Phase 9A gate.
+
 ## 2026-07-03 Phase 9A True LLM Provider Gated Integration Status
 
 ### Done This Round

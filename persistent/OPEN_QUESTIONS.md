@@ -1,5 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-07-04 Phase 9B Follow-ups (Demo-ready AI Planner Workspace)
+
+- **Phase 9B product workspace is implemented locally.** The Planner UI now has default Chinese i18n, provider settings, Secret UX, dataset/profile/demo workflow, region-specific empty states, error explanations, grouped artifacts, report/recipe summary, and user/developer mode layering.
+- **Service-backed runtime verification for this commit is pending CI.** This local machine has no Docker CLI; PostgreSQL + Redis + MinIO integration must be confirmed by GitHub Actions for the Phase 9B commit. Local integration skips must not be treated as passed integration.
+- **Live LLM verification is still not claimed.** Phase 9B did not run a live provider test. The Phase 9A gated path remains available only when explicit `MDI_RUN_LLM_INTEGRATION=1` and provider env are configured.
+- **Production secret encryption/KMS remains deferred.** Phase 9B improves Secret UX and no-plaintext response shape, but does not implement production envelope encryption.
+- **Multi-step DAG/data-dependency execution remains deferred.** The workbench previews steps and provenance but does not implement DAG scheduling, node editing, or data-dependency execution.
+- **Worker process supervision and dead-letter policy remain deferred.** Phase 9B does not change queue worker core semantics.
+- **Advanced material viewer polish remains deferred.** Artifact display is grouped and productized, but full material 3D viewer polish remains future work.
+
 ## 2026-07-03 Phase 9A Follow-ups (Gated True LLM Provider)
 
 - **Gated OpenAI-compatible provider path is implemented locally.** The provider can be selected explicitly and configured by `MDI_LLM_*` environment variables while the default provider remains mock/deterministic-safe.

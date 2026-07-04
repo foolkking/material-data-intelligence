@@ -5,9 +5,13 @@ from pydantic import BaseModel, Field
 
 class DatasetSummary(BaseModel):
     id: str
+    datasetId: str | None = None
     projectId: str
     name: str
     status: str
+    fileCount: int | None = None
+    objectCount: int | None = None
+    profileId: str | None = None
 
 
 class UploadSessionRequest(BaseModel):

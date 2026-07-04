@@ -47,6 +47,12 @@ class PlannerPreviewRequest(BaseModel):
     datasetId: str = Field(min_length=1)
     profileId: str = Field(default="")
     provider: str | None = Field(default=None)
+    baseUrl: str | None = None
+    model: str | None = None
+    secretId: str | None = None
+    temperature: float | None = None
+    maxTokens: int | None = None
+    timeoutSeconds: float | None = None
 
 
 class PlannerValidateRequest(BaseModel):
@@ -61,6 +67,12 @@ class PlannerJobsRequest(BaseModel):
     enqueue: bool = Field(default=False)
     execute: bool = Field(default=False)
     provider: str | None = Field(default=None)
+    baseUrl: str | None = None
+    model: str | None = None
+    secretId: str | None = None
+    temperature: float | None = None
+    maxTokens: int | None = None
+    timeoutSeconds: float | None = None
 
 
 @dataclass
@@ -104,6 +116,7 @@ def planner_preview(
     reg = registry or _get_registry()
     try:
         llm = _select_planner_provider(request.provider, provider=provider)
+        user_config = _planner_user_config_from_request(request)
     except LLMProviderError as exc:
         return PlannerPreviewResult(
             plan=None,
@@ -133,7 +146,7 @@ def planner_preview(
     )
 
     try:
-        resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp)
+        resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp, user_config=user_config)
     except LLMProviderError as exc:
         return PlannerPreviewResult(
             plan=None,
@@ -190,6 +203,7 @@ def planner_jobs(
     reg = registry or _get_registry()
     try:
         llm = _select_planner_provider(request.provider, provider=provider)
+        user_config = _planner_user_config_from_request(request)
     except LLMProviderError as exc:
         return _planner_jobs_provider_error(exc, planner_provider=request.provider)
     tools = [t for t in reg.tools if t.stage == "mvp"]
@@ -211,7 +225,7 @@ def planner_jobs(
     )
 
     try:
-        resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp)
+        resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp, user_config=user_config)
     except LLMProviderError as exc:
         return _planner_jobs_provider_error(exc, planner_provider=_provider_name(llm))
 
@@ -505,6 +519,37 @@ def _select_planner_provider(requested_provider: str | None, *, provider: Any = 
     raise LLMProviderError(
         f"Unsupported planner provider '{provider_name}'.",
         code="LLM_PROVIDER_UNSUPPORTED",
+    )
+
+
+def _planner_user_config_from_request(request: Any) -> PlannerUserConfig | None:
+    fields = ("baseUrl", "model", "secretId", "temperature", "maxTokens", "timeoutSeconds")
+    provider_name = (getattr(request, "provider", None) or os.getenv("MDI_LLM_PROVIDER") or "mock").strip().lower()
+    has_explicit_config = any(getattr(request, field, None) not in (None, "") for field in fields)
+    if provider_name not in {"openai_compatible"} and not has_explicit_config:
+        return None
+
+    api_key = None
+    secret_id = getattr(request, "secretId", None)
+    if secret_id:
+        from mdi_api.routers.secrets import get_secret_value, mark_secret_used
+
+        api_key = get_secret_value(secret_id)
+        if not api_key:
+            raise LLMProviderError(
+                "OpenAI-compatible LLM provider is not configured: missing API key.",
+                code="LLM_API_KEY_MISSING",
+            )
+        mark_secret_used(secret_id)
+
+    return PlannerUserConfig(
+        provider="openai_compatible",
+        model=getattr(request, "model", None) or "gpt-4o",
+        base_url=getattr(request, "baseUrl", None),
+        api_key=api_key,
+        timeout_seconds=float(getattr(request, "timeoutSeconds", None) or 30.0),
+        temperature=float(getattr(request, "temperature", None) if getattr(request, "temperature", None) is not None else 0.2),
+        max_tokens=int(getattr(request, "maxTokens", None) or 4096),
     )
 
 

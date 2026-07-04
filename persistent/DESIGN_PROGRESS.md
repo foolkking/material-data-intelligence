@@ -1,5 +1,21 @@
 # DESIGN_PROGRESS
 
+## 2026-07-04 Phase 9B Demo-ready AI Planner Workspace
+
+- Upgraded the Planner workspace from an engineering/debug view into a demo-ready product workspace while preserving the Phase 8B persisted-plan execution contract and the Phase 9A gated provider safety boundary.
+- Added a default `zh-CN` frontend i18n layer with an English toggle. The main workspace now uses localized labels, empty states, error guidance, timeline labels, provider/health labels, artifact labels, and report/recipe labels instead of broad `Not available yet` placeholders.
+- Added a productized Planner layout: top runtime/status strip, left data/provider controls, central prompt/plan/run area, right health/provenance/timeline area, and bottom tabs for result overview, artifact gallery, report/recipe summary, tool calls, and developer audit.
+- Added API-backed runtime health, dataset detail, demo dataset/profile, provider catalog/status/test, and extended Secret UX support. The demo dataset/profile path is generated through the backend Phase2 runtime, not faked in the frontend.
+- Added `LLMProviderSettingsPanel` behavior for mock vs OpenAI-compatible modes, OpenAI/DeepSeek/custom presets, Secret save/list/delete, and safe provider connection tests that use `secretId` server-side. API keys are not stored in localStorage/sessionStorage and are cleared from the input after save.
+- Added a Chinese Error Explainer and validation failure UX that clearly states: no AnalysisPlan was saved, no Job was created, and nothing was enqueued.
+- Added user/developer mode layering. User mode shows task-oriented plan/result summaries; developer mode exposes raw AnalysisPlan JSON, JobEvents, ToolCalls, Artifacts, API responses, `planId`, `planHash`, and storage/provenance identifiers.
+- Productized results: Artifact Gallery is grouped by chart, JSON metrics, table, structure, report file, and other; Report/Recipe Summary is a separate system-generated summary tied to dataset/profile/AnalysisPlan/tool calls/artifacts/provenance.
+- Added Phase 9B backend tests for runtime health, demo dataset/profile, provider catalog/status/test, Secret list no plaintext, provider error redaction, and planner validation failure no plan/job/enqueue.
+- Added Phase 9B frontend tests for default Chinese rendering, language switch, region-specific empty states, demo dataset loading, profile summary, provider settings, Secret UX no key leakage, provider test success/failure, SSE timeline, artifact grouping, report/recipe summary, developer audit, and validation-failure no plan/job/enqueue.
+- Local verification before commit: `uv lock --check` passed; Phase 7 targeted 32 passed; Phase 8B targeted 9 passed / 1 skipped locally; Phase 8C read API targeted 2 passed; Phase 9B API targeted 7 passed; backend full 129 passed / 21 skipped; frontend `npm test` 6 passed; `npm run typecheck` passed; `npm run build` passed.
+- Live LLM verification is still not claimed; no `MDI_RUN_LLM_INTEGRATION=1` live-provider run was executed in this Phase 9B work.
+- Remaining boundaries after Phase 9B: production secret encryption/KMS, multi-step DAG/data-dependency execution, worker supervision/dead-letter policy, advanced material viewer polish, and live true-LLM verification when env is explicitly configured.
+
 ## 2026-07-03 Phase 9A True LLM Provider Gated Integration
 
 - Added a gated OpenAI-compatible LLM provider path for planner generation. The default planner path remains `MockLLMProvider`; real network calls require explicit `provider="openai_compatible"` or `MDI_LLM_PROVIDER=openai_compatible`.

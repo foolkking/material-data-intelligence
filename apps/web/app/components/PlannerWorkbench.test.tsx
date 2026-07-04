@@ -15,12 +15,31 @@ const plan = {
       stepId: "llm_step_1",
       toolId: "ml.basic_metrics",
       purpose: "Compute basic metrics",
+      reason: "Use y_true and y_pred.",
       inputRefs: [{ refType: "normalized_object", ref: "ml_table", objectType: "DataFrame" }],
       params: { targetColumn: "y_true", predictionColumn: "y_pred" },
       output: { artifactTypes: ["metrics_json"] }
     }
   ],
   expectedArtifacts: [{ name: "metrics.json", type: "metrics_json", fromStepId: "llm_step_1" }]
+};
+
+const demoProfile = {
+  profileId: "profile_demo",
+  datasetId: "dataset_demo",
+  datasetType: "ml",
+  version: "0.1",
+  createdAt: "2026-07-04T00:00:00Z",
+  tableSummary: {
+    nRows: 5,
+    nColumns: 3,
+    columns: [
+      { name: "formula", dtype: "string", inferredRole: "formula" },
+      { name: "y_true", dtype: "number", inferredRole: "target" },
+      { name: "y_pred", dtype: "number", inferredRole: "prediction" }
+    ]
+  },
+  structureSummary: { nStructures: 0, elements: [], formulaStats: { total: 5, uniqueCount: 5 } }
 };
 
 const createdJob = {
@@ -31,6 +50,7 @@ const createdJob = {
   validation_errors: [],
   plan,
   plan_source: "llm",
+  planner_provider: "mock",
   enqueued: true,
   executed: false
 };
@@ -46,7 +66,7 @@ const jobDetail = {
   analysisPlan: plan,
   validationStatus: "validated",
   toolCallCount: 1,
-  artifactCount: 1,
+  artifactCount: 3,
   eventCount: 4,
   provenance: {
     planId: "plan_1",
@@ -59,19 +79,10 @@ const jobDetail = {
 };
 
 const events = [
-  { id: "evt_1", jobId: "job_1", seq: 1, eventType: "job.created", status: "info", message: "Created.", payload: {}, createdAt: "2026-07-03T00:00:00Z" },
-  {
-    id: "evt_2",
-    jobId: "job_1",
-    seq: 2,
-    eventType: "plan.loaded",
-    status: "success",
-    message: "Loaded persisted AnalysisPlan.",
-    payload: { planId: "plan_1", planHash: "hash_1", planSource: "llm" },
-    createdAt: "2026-07-03T00:00:01Z"
-  },
-  { id: "evt_3", jobId: "job_1", seq: 3, eventType: "tool.completed", status: "success", message: "Completed ml.basic_metrics.", payload: {}, createdAt: "2026-07-03T00:00:02Z" },
-  { id: "evt_4", jobId: "job_1", seq: 4, eventType: "job.completed", status: "success", message: "Job completed.", payload: {}, createdAt: "2026-07-03T00:00:03Z" }
+  { id: "evt_1", jobId: "job_1", seq: 1, eventType: "job.created", status: "info", message: "Created.", payload: {}, createdAt: "2026-07-04T00:00:00Z" },
+  { id: "evt_2", jobId: "job_1", seq: 2, eventType: "plan.persisted", status: "success", message: "Persisted plan.", payload: { planId: "plan_1", planHash: "hash_1" }, createdAt: "2026-07-04T00:00:01Z" },
+  { id: "evt_3", jobId: "job_1", seq: 3, eventType: "plan.loaded", status: "success", message: "Loaded persisted AnalysisPlan.", payload: { planId: "plan_1", planHash: "hash_1" }, createdAt: "2026-07-04T00:00:02Z" },
+  { id: "evt_4", jobId: "job_1", seq: 4, eventType: "job.completed", status: "success", message: "Job completed.", payload: {}, createdAt: "2026-07-04T00:00:03Z" }
 ];
 
 const toolCalls = [
@@ -132,17 +143,21 @@ const result = {
   status: "completed",
   planId: "plan_1",
   planHash: "hash_1",
-  summary: "Job completed with 1 ToolCall(s) and 1 Artifact(s).",
+  summary: "Job completed with 1 ToolCall(s) and 3 Artifact(s).",
   toolCallCount: 1,
-  artifactCount: 1,
+  artifactCount: 3,
   artifacts
 };
 
 let fetchMock: ReturnType<typeof vi.fn>;
 let eventSources: MockEventSource[];
+let savedSecrets: Array<Record<string, unknown>>;
 
 beforeEach(() => {
   eventSources = [];
+  savedSecrets = [];
+  window.localStorage.clear();
+  window.sessionStorage.clear();
   fetchMock = vi.fn(mockPlannerFetch);
   vi.stubGlobal("fetch", fetchMock);
   vi.stubGlobal("EventSource", MockEventSource);
@@ -152,40 +167,71 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("PlannerWorkbench", () => {
-  it("renders the planner job form and empty planner state", () => {
-    render(<PlannerWorkbench />);
-
-    expect(screen.getByTestId("planner-form")).not.toBeNull();
-    expect(screen.getByLabelText("Project ID")).not.toBeNull();
-    expect(screen.getByTestId("data-context-selector")).not.toBeNull();
-    expect(screen.getByLabelText("Dataset selector")).not.toBeNull();
-    expect(screen.getByLabelText("Profile selector")).not.toBeNull();
-    expect(screen.getByLabelText("Dataset ID")).not.toBeNull();
-    expect(screen.getByLabelText("Analysis intent")).not.toBeNull();
-    expect(screen.getByText("Validated Plan Preview")).not.toBeNull();
-    expect(screen.getByText("Report / Recipe Summary")).not.toBeNull();
-    expect(screen.getAllByText("Not available yet").length).toBeGreaterThan(0);
-  });
-
-  it("submits a valid request and displays persisted plan provenance", async () => {
+describe("Phase 9B PlannerWorkbench", () => {
+  it("renders Chinese by default, switches language, and replaces broad Not available yet states", async () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
-    await user.click(screen.getByRole("button", { name: "Create and enqueue" }));
+    expect(await screen.findByText("材料数据智能分析工作台")).not.toBeNull();
+    expect(screen.queryByText("Not available yet")).toBeNull();
+    expect(screen.getAllByText("尚未生成分析计划").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("尚未创建任务").length).toBeGreaterThan(0);
 
-    expect((await screen.findAllByText("job_1")).length).toBeGreaterThan(0);
-    expect(fetchMock).toHaveBeenCalledWith(
-      "http://localhost:8000/planner/jobs",
-      expect.objectContaining({
-        method: "POST",
-        body: expect.stringContaining("\"datasetId\":\"dataset_demo\"")
-      })
-    );
+    await user.click(screen.getByRole("button", { name: "English" }));
+    expect(screen.getByText("Materials Data Intelligence Planner")).not.toBeNull();
+    expect(screen.getAllByText("No analysis plan has been generated").length).toBeGreaterThan(0);
+  });
+
+  it("loads backend demo dataset, selects profile, and shows profile summary", async () => {
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+
+    await user.click(screen.getAllByRole("button", { name: "加载演示数据" })[0]);
+
+    await waitFor(() => {
+      expect((screen.getByLabelText("数据集 ID") as HTMLInputElement).value).toBe("dataset_demo");
+      expect((screen.getByLabelText("Profile ID") as HTMLInputElement).value).toBe("profile_demo");
+    });
+    expect(within(screen.getByTestId("profile-summary")).getByText("Rows")).not.toBeNull();
+    expect(within(screen.getByTestId("profile-summary")).getByText("5")).not.toBeNull();
+
+    await user.selectOptions(screen.getByLabelText("数据集选择"), "dataset_api");
+    await waitFor(() => {
+      expect((screen.getByLabelText("数据集 ID") as HTMLInputElement).value).toBe("dataset_api");
+      expect((screen.getByLabelText("Profile ID") as HTMLInputElement).value).toBe("profile_api");
+    });
+  });
+
+  it("supports provider settings, Secret UX, and does not leak API key to storage or UI", async () => {
+    const user = userEvent.setup();
+    const apiKey = "sk-ui-secret-value";
+    render(<PlannerWorkbench />);
+
+    await user.selectOptions(screen.getByLabelText("规划器模式"), "openai_compatible");
+    await user.clear(screen.getByLabelText("API Key"));
+    await user.type(screen.getByLabelText("API Key"), apiKey);
+    await user.click(screen.getByRole("button", { name: "保存密钥" }));
+
+    await waitFor(() => expect((screen.getByLabelText("API Key") as HTMLInputElement).value).toBe(""));
+    expect(document.body.textContent).not.toContain(apiKey);
+    expect(JSON.stringify(window.localStorage)).not.toContain(apiKey);
+    expect(JSON.stringify(window.sessionStorage)).not.toContain(apiKey);
+    expect(await screen.findByText(/Demo LLM Key/)).not.toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "测试模型连接" }));
+    expect(await screen.findByText("模型连接成功，并成功返回可解析的 AnalysisPlan。")).not.toBeNull();
+  });
+
+  it("creates a persisted planner job and shows SSE timeline, provenance, tool calls, artifacts, and report summary", async () => {
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+
+    await user.click(screen.getAllByRole("button", { name: "加载演示数据" })[0]);
+    await user.click(primaryRunButton());
+
+    expect(await screen.findByText("基础指标计算")).not.toBeNull();
     expect(screen.getAllByText("plan_1").length).toBeGreaterThan(0);
     expect(screen.getAllByText("hash_1").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("llm_step_1").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("ml.basic_metrics").length).toBeGreaterThan(0);
     await waitFor(() => expect(eventSources[0]?.url).toBe("http://localhost:8000/planner/jobs/job_1/events/stream?after_seq=4"));
     expect(screen.getByText("SSE/EventSource")).not.toBeNull();
     eventSources[0].emit("artifact.ready", {
@@ -196,41 +242,35 @@ describe("PlannerWorkbench", () => {
       status: "success",
       message: "Artifact ready from SSE.",
       payload: { planId: "plan_1", planHash: "hash_1" },
-      createdAt: "2026-07-03T00:00:04Z"
+      createdAt: "2026-07-04T00:00:04Z"
     });
-    await screen.findByText("artifact.ready");
+    await screen.findByText("结果产物已生成");
     expect(screen.getByText("Loaded from persisted AnalysisPlan")).not.toBeNull();
     expect(screen.getByText("Executed through Tool Registry + Adapter")).not.toBeNull();
     expect(screen.getByText("No deterministic fallback used")).not.toBeNull();
-    expect(within(screen.getByTestId("job-timeline")).getByText("plan.loaded")).not.toBeNull();
-    expect(within(screen.getByTestId("toolcalls-panel")).getByText("llm_step_1")).not.toBeNull();
-    expect(within(screen.getByTestId("toolcalls-panel")).getByText("plan_1")).not.toBeNull();
+    expect(within(screen.getByTestId("job-timeline")).getByText("Worker 已加载分析计划")).not.toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "Artifact Gallery" }));
+    expect(within(screen.getByTestId("artifacts-panel")).getByText("JSON 指标")).not.toBeNull();
     expect(within(screen.getByTestId("artifacts-panel")).getByText("metrics.json")).not.toBeNull();
-    expect(within(screen.getByTestId("report-recipe-panel")).getByText("Report summary")).not.toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "Report / Recipe Summary" }));
+    expect(within(screen.getByTestId("report-recipe-panel")).getByText("报告摘要")).not.toBeNull();
     expect(within(screen.getByTestId("report-recipe-panel")).getByText("recipe.json")).not.toBeNull();
     expect(within(screen.getByTestId("report-recipe-panel")).getByText("report.md")).not.toBeNull();
-    expect(within(screen.getByTestId("report-recipe-panel")).getByText("Job completed with 1 ToolCall(s) and 1 Artifact(s).")).not.toBeNull();
     expect(within(screen.getByTestId("report-recipe-panel")).getByText(/persisted AnalysisPlan/)).not.toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "Tool Calls" }));
+    expect(within(screen.getByTestId("toolcalls-panel")).getByText("ml.basic_metrics")).not.toBeNull();
+    expect(within(screen.getByTestId("toolcalls-panel")).getByText("llm_step_1")).not.toBeNull();
+    expect(within(screen.getByTestId("toolcalls-panel")).getByText("plan_1")).not.toBeNull();
+
+    await user.click(screen.getByRole("checkbox"));
+    await user.click(screen.getByRole("button", { name: "Developer Audit" }));
+    expect(within(screen.getByTestId("developer-audit-panel")).getByText(/raw events|analysisPlan|toolCalls/i)).not.toBeNull();
   });
 
-  it("uses API-backed dataset/profile selectors while preserving manual ID fallback", async () => {
-    const user = userEvent.setup();
-    render(<PlannerWorkbench />);
-
-    await screen.findByText("Demo metrics dataset (profile_ready)");
-    await user.selectOptions(screen.getByLabelText("Dataset selector"), "dataset_api");
-
-    await waitFor(() => {
-      expect((screen.getByLabelText("Dataset ID") as HTMLInputElement).value).toBe("dataset_api");
-      expect((screen.getByLabelText("Profile ID") as HTMLInputElement).value).toBe("profile_api");
-    });
-    expect(screen.getByText("Dataset/profile loaded from API")).not.toBeNull();
-
-    await user.selectOptions(screen.getByLabelText("Dataset selector"), "__manual");
-    expect(screen.getByText("Manual dataset/profile ID fallback is active")).not.toBeNull();
-  });
-
-  it("shows validation failure semantics and does not poll job state", async () => {
+  it("explains validation failure and does not create job, save plan, enqueue, poll, or open SSE", async () => {
     fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
@@ -250,7 +290,8 @@ describe("PlannerWorkbench", () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
-    await user.click(screen.getByRole("button", { name: "Create and enqueue" }));
+    await user.click(screen.getAllByRole("button", { name: "加载演示数据" })[0]);
+    await user.click(primaryRunButton());
 
     await screen.findByText("Plan validation failed");
     expect(screen.getByText("No AnalysisPlan was saved")).not.toBeNull();
@@ -262,15 +303,20 @@ describe("PlannerWorkbench", () => {
     expect(eventSources).toHaveLength(0);
   });
 
-  it("shows loading and API error states", async () => {
-    let resolvePost: (value: Response) => void = () => {};
+  it("shows a Chinese error explainer for API failures", async () => {
     fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
-        return (
-        new Promise<Response>((resolve) => {
-          resolvePost = resolve;
-        })
+        return jsonResponse(
+          {
+            ok: false,
+            errorType: "provider_auth_failed",
+            message: "模型认证失败，请检查 API Key。",
+            safeDetails: "HTTP 401 from provider",
+            suggestions: ["检查模型配置"],
+            redacted: true
+          },
+          401
         );
       }
       return mockPlannerFetch(input, init);
@@ -278,23 +324,77 @@ describe("PlannerWorkbench", () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
-    await user.click(screen.getByRole("button", { name: "Create and enqueue" }));
-    expect(screen.getByRole("button", { name: "Submitting" })).not.toBeNull();
+    await user.click(screen.getAllByRole("button", { name: "加载演示数据" })[0]);
+    await user.click(primaryRunButton());
 
-    resolvePost(new Response(JSON.stringify({ detail: "Planner unavailable" }), { status: 503 }));
-    await screen.findByText("Planner unavailable");
+    expect(await screen.findByText("无法创建分析任务")).not.toBeNull();
+    expect(screen.getByText("模型认证失败，请检查 API Key。")).not.toBeNull();
+    expect(screen.getByText("检查模型配置")).not.toBeNull();
   });
 });
 
 function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   const url = String(input);
+  const method = init?.method || "GET";
+  if (url.endsWith("/health/runtime")) {
+    return jsonResponse({
+      api: { status: "ok" },
+      database: { status: "ok", backend: "sqlite" },
+      redis: { status: "unknown", reason: "not configured" },
+      artifactStorage: { status: "ok", backend: "local" },
+      worker: { status: "ok", backend: "local" },
+      llmProvider: { status: "ok", provider: "mock", model: "mock" }
+    });
+  }
+  if (url.endsWith("/planner/providers")) {
+    return jsonResponse({
+      providers: [
+        { id: "mock", label: "Mock Planner", provider: "mock", requiresSecret: false },
+        { id: "deepseek", label: "DeepSeek", provider: "openai_compatible", baseUrl: "https://api.deepseek.com/v1", defaultModel: "deepseek-chat", requiresSecret: true }
+      ]
+    });
+  }
+  if (url.endsWith("/planner/providers/status")) {
+    return jsonResponse({ ok: true, provider: "mock", model: "mock", status: "ready", message: "Mock Planner is active." });
+  }
+  if (method === "POST" && url.endsWith("/planner/providers/test")) {
+    const body = JSON.parse(String(init?.body || "{}"));
+    expect(JSON.stringify(body)).not.toContain("sk-ui-secret-value");
+    return jsonResponse({ ok: true, provider: body.provider, model: body.model || "mock", latencyMs: 9, validated: true, message: "模型连接成功，并成功返回可解析的 AnalysisPlan。", redacted: true });
+  }
+  if (url.endsWith("/me/secrets") && method === "GET") {
+    return jsonResponse(savedSecrets);
+  }
+  if (url.endsWith("/me/secrets") && method === "POST") {
+    const body = JSON.parse(String(init?.body || "{}"));
+    const secret = {
+      id: "secret_1",
+      secret_id: "secret_1",
+      alias: body.alias,
+      provider: body.provider,
+      createdAt: "2026-07-04T00:00:00Z",
+      status: "active",
+      maskedPreview: "••••••••"
+    };
+    savedSecrets = [secret];
+    return jsonResponse(secret);
+  }
+  if (url.includes("/me/secrets/") && method === "DELETE") {
+    savedSecrets = [];
+    return jsonResponse(true);
+  }
   if (url.endsWith("/datasets")) {
-    return jsonResponse([{ id: "dataset_api", projectId: "project_local", name: "Demo metrics dataset", status: "profile_ready" }]);
+    return jsonResponse([{ id: "dataset_api", datasetId: "dataset_api", projectId: "project_local", name: "Demo metrics dataset", status: "profile_ready", profileId: "profile_api" }]);
   }
-  if (url.endsWith("/datasets/dataset_api/profile")) {
-    return jsonResponse({ profileId: "profile_api", datasetId: "dataset_api", datasetType: "ml", version: "0.1", createdAt: "2026-07-03T00:00:00Z" });
+  if (method === "POST" && url.endsWith("/datasets/demo")) {
+    return jsonResponse({ id: "dataset_demo", datasetId: "dataset_demo", projectId: "project_local", name: "Demo metrics dataset", status: "profile_ready", demo: true, profileId: "profile_demo", profile: demoProfile });
   }
-  if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
+  if (url.endsWith("/datasets/dataset_demo/profile") || url.endsWith("/datasets/dataset_api/profile")) {
+    return jsonResponse(url.includes("dataset_api") ? { ...demoProfile, datasetId: "dataset_api", profileId: "profile_api" } : demoProfile);
+  }
+  if (method === "POST" && url.endsWith("/planner/jobs")) {
+    const body = JSON.parse(String(init?.body || "{}"));
+    expect(JSON.stringify(body)).not.toContain("sk-ui-secret-value");
     return jsonResponse(createdJob);
   }
   if (url.endsWith("/planner/jobs/job_1")) {
@@ -311,9 +411,6 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
   }
   if (url.endsWith("/planner/jobs/job_1/result")) {
     return jsonResponse(result);
-  }
-  if (url.endsWith("/planner/analysis-plans/plan_1")) {
-    return jsonResponse({ planId: "plan_1", planHash: "hash_1", validationStatus: "validated", analysisPlan: plan });
   }
   return jsonResponse({ detail: "not found" }, 404);
 }
@@ -353,4 +450,8 @@ class MockEventSource {
     this.onmessage?.(message);
     (this.listeners.get(type) || []).forEach((listener) => listener(message));
   }
+}
+
+function primaryRunButton() {
+  return within(screen.getByTestId("planner-form")).getByRole("button", { name: "创建并运行" });
 }

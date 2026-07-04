@@ -1,5 +1,15 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-04 Phase 9B - demo workspace still routes execution through Planner validation and Registry gate
+
+- No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 9B.
+- The new UI surfaces provider settings, dataset/profile selection, demo workflow, error explanations, artifacts, reports, and developer audit data; it does not create a frontend execution path.
+- Planner jobs are still created only through `/planner/jobs`, and invalid plans still fail before AnalysisPlan persistence, Job creation, or queue enqueue.
+- Provider connection tests may parse and validate a sample AnalysisPlan, but they do not execute tools, write ToolCalls, create Artifacts, or bypass PlanValidator.
+- Demo dataset/profile support feeds the existing Phase2 runtime data/profile path. It does not allow the frontend to fabricate successful persisted plans or execution results.
+- A valid planner job still follows the existing path: JSON AnalysisPlan -> PlanValidator -> persisted AnalysisPlan -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> Artifact/Result provenance.
+- API keys are resolved server-side by `secretId` for provider tests and planner calls; they must never appear in ToolCall params, JobEvents, Artifacts, Recipes, Reports, or exported provenance.
+
 ## 2026-07-03 Phase 9A - true provider still stops at PlanValidator and Registry gate
 
 - No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in Phase 9A.

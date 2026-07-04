@@ -1,5 +1,49 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-082: Phase 9B productizes Planner UX without moving execution authority to the frontend
+
+### Context
+
+Phase 8B/8C/8C-P1 proved persisted-plan execution and frontend provenance, and
+Phase 9A added a gated OpenAI-compatible provider path. The Planner page was
+still too close to an engineering debug panel for demos: English labels,
+developer fields, broad empty placeholders, limited data-context entry, and no
+product-level provider/secret/error/result workflow.
+
+### Decision
+
+Phase 9B moves the Planner workspace to a demo-ready product interface while
+keeping execution authority in the backend. The frontend now has a default
+Chinese i18n layer with an English toggle, productized data/provider/prompt/run
+panels, runtime health display, SSE timeline, grouped artifacts, report/recipe
+summary, error explanations, and user/developer mode layering.
+
+The backend adds only support/read APIs and safe provider-test helpers:
+runtime health, dataset detail/demo/profile support, provider catalog/status,
+provider test, and Secret UX metadata. Provider tests resolve credentials by
+`secretId` on the server and return redacted results. They do not persist raw
+prompts or completions, execute tools, enqueue jobs, or write artifacts.
+
+Planner job creation remains owned by `/planner/jobs`: provider output must
+parse as JSON, construct an `AnalysisPlan`, and pass PlanValidator before any
+plan can be persisted, job created, or queue message sent. The frontend does
+not write `analysis_plans`, compute authoritative plan hashes, directly
+enqueue work, or treat deterministic fallback as the normal product path.
+
+### Consequences
+
+- Phase 9B improves demo readiness and operator clarity without weakening the
+  Phase 8B persisted-plan execution contract.
+- API keys remain out of localStorage/sessionStorage, Secret list responses,
+  JobEvents, Artifacts, AnalysisPlans, Results, and provider-test errors.
+- The UI can present mock and OpenAI-compatible modes, but default CI remains
+  real-LLM-free and live LLM verification is still gated by Phase 9A env.
+- The demo dataset/profile path is backend-generated through the Phase2
+  runtime; it is labeled as demo data and is not a fake frontend success path.
+- Production secret encryption/KMS, multi-step DAG/data-dependency execution,
+  worker supervision/dead-letter policy, and advanced material viewer polish
+  remain future work.
+
 ## ADR-081: Phase 9A real LLM provider is gated and cannot bypass validation or persistence
 
 ### Context

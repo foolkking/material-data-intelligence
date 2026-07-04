@@ -1,5 +1,47 @@
 # CHANGELOG
 
+## 2026-07-04
+
+### Phase 9B Demo-ready AI Planner Workspace
+
+#### Added
+
+- Added runtime health support at `/health/runtime` for API/database/Redis/artifact storage/worker/LLM provider status display.
+- Added demo-ready dataset/profile support: dataset detail, demo dataset creation, and idempotent profile generation backed by the Phase2 runtime.
+- Added planner provider catalog/status/test APIs for mock and OpenAI-compatible provider modes.
+- Added a safer Secret UX response shape with alias/provider/status/masked preview/timestamps and no plaintext return.
+- Added frontend i18n with default Chinese (`zh-CN`) and English toggle.
+- Added LLM Provider Settings UI with mock/real mode, OpenAI/DeepSeek/custom presets, Secret save/delete/select, and provider connection test feedback.
+- Added Data Context, Demo Workflow, Prompt Composer, System Health, Error Explainer, grouped Artifact Gallery, Report/Recipe Summary, and Developer Audit workspace surfaces.
+- Added backend Phase 9B API tests in `tests/test_phase9b_demo_workspace_api.py`.
+- Expanded frontend Vitest coverage for Chinese/default rendering, language switch, empty states, dataset/demo/profile flow, provider settings, Secret no-leak behavior, provider test success/failure, SSE timeline, grouped artifacts, report/recipe summary, developer audit, and validation failure no plan/job/enqueue.
+
+#### Changed
+
+- Reworked `PlannerWorkbench` from an engineering debug surface into a product-oriented four-zone workspace with bottom result tabs.
+- Replaced broad `Not available yet` placeholders with region-specific localized empty states.
+- Layered normal user mode and developer mode so raw IDs, plan hashes, raw JSON, and API responses are mostly hidden until developer mode is enabled.
+- `/planner/preview` and `/planner/jobs` can accept provider configuration fields resolved through server-side Secret lookup by `secretId`; validation and persistence semantics remain unchanged.
+
+#### Preserved
+
+- QueueWorkerRuntime, AnalysisPlanRepository, and Phase 8B persisted-plan exact execution were not redesigned.
+- `/planner/jobs` still validates first; invalid plans create no AnalysisPlan, no Job, and no enqueue.
+- The frontend still creates work only through `/planner/jobs`; it never writes `analysis_plans`, directly enqueues work, or treats deterministic fallback as a product path.
+- API keys are not stored in localStorage/sessionStorage, not returned by Secret lists, and not included in provider test responses.
+- Raw prompt/completion is not persisted by default.
+- Default CI remains real-LLM-free.
+
+#### Verification
+
+- `uv lock --check`: passed.
+- Phase 7 targeted: 32 passed.
+- Phase 8B persisted-plan targeted: 9 passed, 1 skipped locally.
+- Phase 8C read API targeted: 2 passed.
+- Phase 9B API targeted: 7 passed.
+- Backend full: 129 passed, 21 skipped.
+- Frontend: `npm test` (6 passed), `npm run typecheck`, and `npm run build` passed in `apps/web`.
+
 ## 2026-07-03
 
 ### Phase 9A True LLM Provider Gated Integration

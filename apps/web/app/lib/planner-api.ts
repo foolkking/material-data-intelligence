@@ -4,6 +4,13 @@ export type PlannerJobRequest = {
   datasetId: string;
   profileId?: string;
   enqueue: boolean;
+  provider?: string;
+  baseUrl?: string;
+  model?: string;
+  secretId?: string;
+  temperature?: number;
+  maxTokens?: number;
+  timeoutSeconds?: number;
 };
 
 export type ValidationError = {
@@ -23,6 +30,7 @@ export type AnalysisStep = {
   params?: Record<string, unknown>;
   output?: {
     artifactTypes?: string[];
+    displayTarget?: string;
   };
 };
 
@@ -32,6 +40,8 @@ export type AnalysisPlan = {
   datasetId?: string;
   profileId?: string;
   toolRegistryVersion?: string;
+  assumptions?: string[];
+  warnings?: string[];
   steps?: AnalysisStep[];
   expectedArtifacts?: Array<Record<string, unknown>>;
 };
@@ -44,6 +54,7 @@ export type PlannerJobCreateResult = {
   validation_errors?: ValidationError[];
   plan?: AnalysisPlan | null;
   plan_source?: string;
+  planner_provider?: string | null;
   enqueued?: boolean;
   executed?: boolean;
 };
@@ -148,9 +159,18 @@ export type JobResult = {
 
 export type DatasetOption = {
   id: string;
+  datasetId?: string;
   projectId?: string;
   name?: string;
   status?: string;
+  fileCount?: number;
+  objectCount?: number;
+  profileId?: string;
+};
+
+export type DatasetDetail = DatasetOption & {
+  demo?: boolean;
+  files?: Array<Record<string, unknown>>;
 };
 
 export type DataProfileSummary = {
@@ -160,17 +180,126 @@ export type DataProfileSummary = {
   datasetType?: string;
   version?: string;
   createdAt?: string;
+  status?: string;
+  profileGenerated?: boolean;
+  tableSummary?: {
+    nRows?: number;
+    nColumns?: number;
+    columns?: Array<{ name?: string; inferredRole?: string; dtype?: string }>;
+    inferredTask?: string;
+  };
+  structureSummary?: {
+    nStructures?: number;
+    elements?: string[];
+    formulaStats?: { total?: number; uniqueCount?: number };
+  };
+  objects?: Array<{ objectType?: string; count?: number }>;
+};
+
+export type DemoDatasetResult = DatasetDetail & {
+  demo: boolean;
+  profile: DataProfileSummary;
+};
+
+export type RuntimeHealth = Record<
+  "api" | "database" | "redis" | "artifactStorage" | "worker" | "llmProvider",
+  { status?: string; reason?: string; provider?: string; model?: string; backend?: string; service?: string }
+>;
+
+export type ProviderOption = {
+  id: string;
+  label: string;
+  provider: string;
+  baseUrl?: string;
+  defaultModel?: string;
+  requiresSecret?: boolean;
+  description?: string;
+};
+
+export type ProviderStatus = {
+  ok?: boolean;
+  provider?: string;
+  model?: string;
+  status?: string;
+  message?: string;
+  redacted?: boolean;
+};
+
+export type ProviderTestRequest = {
+  provider: string;
+  baseUrl?: string;
+  model?: string;
+  secretId?: string;
+  temperature?: number;
+  maxTokens?: number;
+  timeoutSeconds?: number;
+};
+
+export type ProviderTestResult = {
+  ok: boolean;
+  provider?: string;
+  model?: string;
+  latencyMs?: number;
+  validated?: boolean;
+  message?: string;
+  errorType?: string;
+  safeDetails?: string;
+  suggestions?: string[];
+  redacted?: boolean;
+};
+
+export type SecretSummary = {
+  id: string;
+  secret_id?: string;
+  alias?: string;
+  provider?: string;
+  created_at?: string;
+  createdAt?: string;
+  lastUsedAt?: string | null;
+  status?: string;
+  maskedPreview?: string;
+};
+
+export type CreateSecretRequest = {
+  provider: string;
+  alias?: string;
+  value: string;
+  type?: "api_key" | "base_url" | "custom";
+};
+
+export type UploadDatasetRequest = {
+  projectId: string;
+  datasetName: string;
+  files: Array<{ fileName: string; content: string }>;
+};
+
+export type SafeErrorPayload = {
+  ok?: false;
+  errorType?: string;
+  message?: string;
+  safeDetails?: string;
+  suggestions?: string[];
+  redacted?: boolean;
+  detail?: unknown;
 };
 
 export class PlannerApiError extends Error {
   status: number;
-  details: unknown;
+  details: SafeErrorPayload | unknown;
+  errorType?: string;
+  safeDetails?: string;
+  suggestions: string[];
+  redacted?: boolean;
 
-  constructor(message: string, status: number, details: unknown) {
+  constructor(message: string, status: number, details: SafeErrorPayload | unknown) {
     super(message);
     this.name = "PlannerApiError";
     this.status = status;
     this.details = details;
+    this.errorType = isSafeErrorPayload(details) ? details.errorType : undefined;
+    this.safeDetails = isSafeErrorPayload(details) ? details.safeDetails : undefined;
+    this.suggestions = isSafeErrorPayload(details) ? details.suggestions || [] : [];
+    this.redacted = isSafeErrorPayload(details) ? details.redacted : undefined;
   }
 }
 
@@ -213,12 +342,65 @@ export async function getAnalysisPlan(planId: string): Promise<AnalysisPlanRecor
   return apiFetch<AnalysisPlanRecord>(`/planner/analysis-plans/${encodeURIComponent(planId)}`);
 }
 
+export async function getRuntimeHealth(): Promise<RuntimeHealth> {
+  return apiFetch<RuntimeHealth>("/health/runtime");
+}
+
 export async function listDatasets(): Promise<DatasetOption[]> {
   return apiFetch<DatasetOption[]>("/datasets");
 }
 
+export async function getDataset(datasetId: string): Promise<DatasetDetail> {
+  return apiFetch<DatasetDetail>(`/datasets/${encodeURIComponent(datasetId)}`);
+}
+
+export async function loadDemoDataset(): Promise<DemoDatasetResult> {
+  return apiFetch<DemoDatasetResult>("/datasets/demo", { method: "POST" });
+}
+
+export async function uploadDataset(payload: UploadDatasetRequest): Promise<DatasetDetail & { profile?: DataProfileSummary }> {
+  return apiFetch<DatasetDetail & { profile?: DataProfileSummary }>("/datasets/upload", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
 export async function getDatasetProfile(datasetId: string): Promise<DataProfileSummary> {
   return apiFetch<DataProfileSummary>(`/datasets/${encodeURIComponent(datasetId)}/profile`);
+}
+
+export async function createDatasetProfile(datasetId: string): Promise<DataProfileSummary> {
+  return apiFetch<DataProfileSummary>(`/datasets/${encodeURIComponent(datasetId)}/profile`, { method: "POST" });
+}
+
+export async function listPlannerProviders(): Promise<{ providers: ProviderOption[] }> {
+  return apiFetch<{ providers: ProviderOption[] }>("/planner/providers");
+}
+
+export async function getPlannerProviderStatus(): Promise<ProviderStatus> {
+  return apiFetch<ProviderStatus>("/planner/providers/status");
+}
+
+export async function testPlannerProvider(payload: ProviderTestRequest): Promise<ProviderTestResult> {
+  return apiFetch<ProviderTestResult>("/planner/providers/test", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
+export async function createSecret(payload: CreateSecretRequest): Promise<SecretSummary> {
+  return apiFetch<SecretSummary>("/me/secrets", {
+    method: "POST",
+    body: JSON.stringify({ ...payload, type: payload.type || "api_key" })
+  });
+}
+
+export async function listSecrets(): Promise<SecretSummary[]> {
+  return apiFetch<SecretSummary[]>("/me/secrets");
+}
+
+export async function deleteSecret(secretId: string): Promise<boolean> {
+  return apiFetch<boolean>(`/me/secrets/${encodeURIComponent(secretId)}`, { method: "DELETE" });
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
@@ -251,8 +433,11 @@ function safeParseJson(value: string): unknown {
 }
 
 function errorMessage(value: unknown): string | null {
-  if (value && typeof value === "object" && "detail" in value) {
-    const detail = (value as { detail?: unknown }).detail;
+  if (isSafeErrorPayload(value)) {
+    if (typeof value.message === "string") {
+      return value.message;
+    }
+    const detail = value.detail;
     if (typeof detail === "string") {
       return detail;
     }
@@ -261,4 +446,8 @@ function errorMessage(value: unknown): string | null {
     }
   }
   return null;
+}
+
+function isSafeErrorPayload(value: unknown): value is SafeErrorPayload {
+  return Boolean(value && typeof value === "object");
 }
