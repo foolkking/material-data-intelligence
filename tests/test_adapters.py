@@ -12,6 +12,7 @@ from mdi_adapters import (
     DensityScatterAdapter,
     ElementsHistAdapter,
     ErrorDistributionAdapter,
+    NumericSummaryAdapter,
     OutlierTableAdapter,
     PTableHeatmapAdapter,
     Structure3DAdapter,
@@ -242,6 +243,37 @@ def test_basic_metrics_generates_metrics_artifact(tmp_path):
     )
 
     assert artifact_types(artifacts) == {ArtifactType.metrics_json, ArtifactType.summary_md, ArtifactType.recipe_json}
+
+
+def test_numeric_summary_generates_table_summary_artifact(tmp_path):
+    dataframe = pd.DataFrame(
+        {
+            "composition": ["Ag20Al25La55", "Cu50Zr50", "Zr60Cu30Al10"],
+            "gfa_type": ["Ribbon", "Bulk", "Bulk"],
+            "D_max": [0.2, 5.0, 8.0],
+            "dTx": [None, 55.5, 75.0],
+        }
+    )
+    request = ToolExecutionRequest(
+        jobId="job_adapter",
+        stepId="step_summary",
+        toolId="table.numeric_summary",
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"numericColumns": ["D_max", "dTx"], "categoricalColumns": ["gfa_type"], "maxCategories": 5},
+        artifactTypes=["table_json", "summary_md", "recipe_json"],
+    )
+
+    artifacts = NumericSummaryAdapter().execute(
+        make_context(tmp_path, "table.numeric_summary", {"ml_table": dataframe}, "call_summary"),
+        request,
+    )
+
+    assert artifact_types(artifacts) == {ArtifactType.table_json, ArtifactType.summary_md, ArtifactType.recipe_json}
+    table_artifact = next(artifact for artifact in artifacts if artifact.type == ArtifactType.table_json)
+    payload = (tmp_path / "artifacts" / table_artifact.storageKey).read_text(encoding="utf-8")
+    assert '"D_max"' in payload
+    assert '"dTx"' in payload
+    assert '"gfa_type"' in payload
 
 
 def test_outlier_table_generates_table_artifacts(tmp_path):

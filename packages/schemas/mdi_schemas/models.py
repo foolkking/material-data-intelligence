@@ -46,6 +46,7 @@ class ToolCategory(str, Enum):
 
 
 class ToolDomain(str, Enum):
+    table = "table"
     composition = "composition"
     structure = "structure"
     trajectory = "trajectory"

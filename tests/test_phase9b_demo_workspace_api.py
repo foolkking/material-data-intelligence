@@ -333,6 +333,126 @@ def test_local_planner_enqueue_executes_uploaded_dataset_through_worker(tmp_path
     assert summary["artifactCount"] >= 1
 
 
+def test_mock_planner_binds_numeric_profile_columns_for_official_matpes_csv(tmp_path: Path) -> None:
+    phase2 = reset_phase2_runtime(tmp_path / "phase2")
+    phase2.ensure_project("project_local")
+    uploaded = phase2.upload_dataset(
+        {
+            "projectId": "project_local",
+            "datasetName": "MatPES atomic energies",
+            "files": [
+                {
+                    "fileName": "matpes_atomic_energies.csv",
+                    "content": (
+                        "element,PBE,r2SCAN\n"
+                        "Ac,-0.24210133,-65.08565284\n"
+                        "Ag,-0.19840574,-18.47864697\n"
+                        "Al,-0.18845328,-2.33409173\n"
+                    ),
+                }
+            ],
+        }
+    )
+    dataset_id = uploaded["datasetId"]
+    profile_id = uploaded["profile"]["profileId"]
+    reset_planner_runtime()
+
+    result = planner_jobs(
+        PlannerJobsRequest(
+            userPrompt="请基于当前数据表计算基础统计或误差指标，并生成结果摘要。",
+            projectId="project_local",
+            datasetId=dataset_id,
+            profileId=profile_id,
+            enqueue=True,
+        ),
+        provider=MockLLMProvider(),
+        registry=load_manifests(),
+    )
+
+    assert result.ok is True
+    assert result.enqueued is True
+    assert result.executed is True
+    assert result.job_id is not None
+    assert result.plan is not None
+    params = result.plan["steps"][0]["params"]  # type: ignore[index]
+    assert params == {"targetColumn": "PBE", "predictionColumn": "r2SCAN"}
+
+    job = get_planner_job(result.job_id)
+    events = get_planner_job_events(result.job_id)
+    tool_calls = get_planner_job_tool_calls(result.job_id)
+    artifacts = get_planner_job_artifacts(result.job_id)
+    summary = get_planner_job_result(result.job_id)
+
+    assert job["status"] == "completed"
+    assert tool_calls[0]["status"] == "completed"
+    assert tool_calls[0]["params"] == {"targetColumn": "PBE", "predictionColumn": "r2SCAN"}
+    assert {event["eventType"] for event in events} >= {"data.loaded", "plan.loaded", "tool.completed", "job.completed"}
+    assert any(artifact["type"] == "metrics_json" for artifact in artifacts)
+    assert summary["status"] == "completed"
+    assert summary["artifactCount"] >= 1
+
+
+def test_mock_planner_generates_numeric_summary_for_ward_csv(tmp_path: Path) -> None:
+    phase2 = reset_phase2_runtime(tmp_path / "phase2")
+    phase2.ensure_project("project_local")
+    uploaded = phase2.upload_dataset(
+        {
+            "projectId": "project_local",
+            "datasetName": "Ward metallic glasses",
+            "files": [
+                {
+                    "fileName": "ward_metallic_glasses.csv",
+                    "content": (
+                        "material_id,composition,gfa_type,D_max,dTx,Unnamed: 4,comment\n"
+                        "ward-1,Ag20Al25La55,Ribbon,0.2,,,\n"
+                        "ward-2,Ag15Al10Mg75,Ribbon,0.2,,,\n"
+                        "ward-3,Ag10Al20La70,Bulk,2.0,40.0,,\n"
+                        "ward-4,Cu50Zr50,Bulk,5.0,55.5,,\n"
+                        "ward-5,Zr60Cu30Al10,Bulk,8.0,75.0,,\n"
+                    ),
+                }
+            ],
+        }
+    )
+    dataset_id = uploaded["datasetId"]
+    profile_id = uploaded["profile"]["profileId"]
+    columns = {column["name"]: column for column in uploaded["profile"]["tableSummary"]["columns"]}
+    assert columns["dTx"]["dtype"] == "number"
+    reset_planner_runtime()
+
+    result = planner_jobs(
+        PlannerJobsRequest(
+            userPrompt="Please summarize Ward metallic glasses numeric columns, composition fields, and categorical fields.",
+            projectId="project_local",
+            datasetId=dataset_id,
+            profileId=profile_id,
+            enqueue=True,
+        ),
+        provider=MockLLMProvider(),
+        registry=load_manifests(),
+    )
+
+    assert result.ok is True
+    assert result.executed is True
+    assert result.plan is not None
+    step = result.plan["steps"][0]  # type: ignore[index]
+    assert step["toolId"] == "table.numeric_summary"
+    params = step["params"]
+    assert "D_max" in params["numericColumns"]
+    assert "dTx" in params["numericColumns"]
+    assert "gfa_type" in params["categoricalColumns"]
+
+    assert result.job_id is not None
+    job = get_planner_job(result.job_id)
+    tool_calls = get_planner_job_tool_calls(result.job_id)
+    artifacts = get_planner_job_artifacts(result.job_id)
+    assert job["status"] == "completed"
+    assert tool_calls[0]["status"] == "completed"
+    assert tool_calls[0]["toolId"] == "table.numeric_summary"
+    assert tool_calls[0]["params"] == params
+    assert any(artifact["type"] == "table_json" and artifact["name"] == "numeric_summary.json" for artifact in artifacts)
+
+
 def test_uploaded_dataset_plan_with_missing_input_refs_is_rejected_before_persistence(tmp_path: Path) -> None:
     phase2 = reset_phase2_runtime(tmp_path / "phase2")
     phase2.ensure_project("project_local")

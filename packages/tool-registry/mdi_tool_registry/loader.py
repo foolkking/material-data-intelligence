@@ -108,6 +108,8 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
         return {"maxStructures": 8, "maxAtomsPerStructure": 5000, "maxFrames": 200}
     if tool_id.startswith("ml."):
         return {"maxRows": 500000}
+    if tool_id.startswith("table."):
+        return {"maxRows": 500000}
     return {"maxRows": 100000, "maxStructures": 10000}
 
 
@@ -187,6 +189,16 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
                         {"role": "prediction", "dtype": "number"},
                     ],
                     description="Use a DataFrame with target and prediction columns.",
+                )
+            ]
+        )
+    if tool_id.startswith("table."):
+        return ToolInputSchema(
+            inputOptions=[
+                ToolInputOption(
+                    name="table_dataframe",
+                    requiredObjectTypes=[MaterialObjectType.DataFrame],
+                    description="Use a DataFrame or table records for descriptive statistics.",
                 )
             ]
         )
@@ -301,6 +313,16 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             "properties": {
                 "targetColumn": {"type": "string"},
                 "predictionColumn": {"type": "string"},
+            },
+        }
+    if tool_id == "table.numeric_summary":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "numericColumns": {"type": "array", "items": {"type": "string"}},
+                "categoricalColumns": {"type": "array", "items": {"type": "string"}},
+                "maxCategories": {"type": "integer", "minimum": 1},
             },
         }
     if tool_id == "ml.outlier_table":

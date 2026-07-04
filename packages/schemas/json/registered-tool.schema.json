@@ -29,6 +29,7 @@
     "category": { "enum": ["visualization", "analysis", "parser", "report", "utility"] },
     "domain": {
       "enum": [
+        "table",
         "composition",
         "structure",
         "trajectory",

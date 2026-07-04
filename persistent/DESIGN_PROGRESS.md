@@ -1,5 +1,23 @@
 # DESIGN_PROGRESS
 
+## 2026-07-05 Phase 9B Official Direct Examples Semantic Refinement
+
+- Added a minimal `table.numeric_summary` MVP tool and adapter for semantically correct table statistics on official direct-uploadable tabular examples.
+- Ward metallic glasses now routes through `table.numeric_summary` for independent numeric column summaries (`D_max`, `dTx`) plus categorical summaries (`material_id`, `composition`, `gfa_type`) instead of treating `D_max` and `dTx` as target/prediction regression columns.
+- MatPES remains routed through `ml.basic_metrics` with DataProfile-bound `targetColumn=PBE` and `predictionColumn=r2SCAN`; fresh browser evidence no longer contains the stale `y_true` / `y_pred` prompt.
+- Re-generated fresh browser evidence for `matpes_atomic_energies_csv` and `ward_metallic_glasses_csv_xz` after deleting each case's old `results/` directory. Both runs used Mock Planner only, created fresh persisted AnalysisPlans, loaded plans through QueueWorkerRuntime, emitted `plan.loaded` / `data.loaded` / `tool.completed` / `job.completed`, and saved API responses, artifacts, screenshots, and summaries.
+- Phase 8B/9A boundaries remain unchanged: no QueueWorkerRuntime redesign, no AnalysisPlanRepository change, no `/planner/jobs` persistence/enqueue bypass, no real LLM call, and no execution outside Tool Registry + Adapter.
+
+## 2026-07-04 Phase 9B Official MatPES Example Blocker Repair
+
+- Fixed the blocker found by the official pymatviz examples evidence pack: `matpes_atomic_energies_csv` uploaded and profiled correctly, but Mock Planner hard-coded `targetColumn=y_true` / `predictionColumn=y_pred`, causing `ml.basic_metrics` to fail for the official MatPES columns `element`, `PBE`, and `r2SCAN`.
+- Updated `MockLLMProvider` so default mock plans bind `ml.basic_metrics` params from the real `DataProfile`: target/prediction role columns win first, and tables with no explicit roles fall back to the first two numeric columns. The provider still emits only structured AnalysisPlan JSON; it does not execute code or bypass validation.
+- Added a regression proving a MatPES-style uploaded CSV (`element,PBE,r2SCAN`) goes through `/planner/jobs`, persists an AnalysisPlan with `targetColumn=PBE` and `predictionColumn=r2SCAN`, runs through QueueWorkerRuntime, executes one real `ml.basic_metrics` ToolCall, creates one metrics artifact, and reaches `completed`.
+- Re-ran the failed browser evidence case with the full official MatPES CSV: 89 rows, columns `element`, `PBE`, `r2SCAN`, `job_b81c14bde6c3479599e19312`, `plan_4117360927074c8fad3ec8f3`, `planHash=ce6322d32f52b25913e9d4ae14aa535eb91704648eb5ea3ca684db0e8620bef8`, one completed ToolCall, one `metrics_json` artifact, and timeline events `plan.loaded`, `data.loaded`, `tool.started`, `artifact.ready`, `tool.completed`, `job.completed`.
+- Evidence pack updated under `C:\Users\86182\Desktop\pymatviz_official_examples_test_suite`: `matpes_atomic_energies_csv` now has four browser screenshots and `platform_result_summary.md` is PASS. The full 61-case official suite is still not claimed complete; this repair verifies the previously failed blocker.
+- Verification: `uv lock --check` passed; Phase 7 targeted 32 passed; Phase 8B targeted 9 passed / 1 skipped locally; Phase 8C targeted 2 passed; Phase 9B targeted 14 passed; backend full 136 passed / 21 skipped; frontend `npm test` 6 passed; frontend typecheck passed; frontend build passed after stopping the old dev server that held `.next/trace`.
+- Remaining follow-up: continue the rest of the official examples suite separately.
+
 ## 2026-07-04 Phase 9B Browser + Durable Worker Resolver Closure
 
 - Completed the browser click-through that was previously blocked by the browser native bridge. The in-app browser now loaded `http://127.0.0.1:3000`, loaded the backend demo dataset, created and ran a Mock Planner job, and showed `completed` status with persisted-plan provenance.
@@ -576,3 +594,21 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 ## 下一步
 
 下一步按 Roadmap 继续进入 Milestone 2 / Milestone 4 的交界：建立隔离依赖/锁文件，补齐 parser artifact storage、上传/对象存储边界、更多 ZIP / EXTXYZ 回归测试；随后接 Celery Job Queue、PostgreSQL ToolCall/Artifact 状态持久化和 SSE 事件流。
+## 2026-07-04 Phase 9B Official pymatviz Examples Evidence Pack
+
+- Generated a global evidence pack for `C:\Users\86182\Desktop\pymatviz_official_examples_test_suite`.
+- Audited all 61 manifest cases and wrote `GLOBAL_CASE_AUDIT.md`.
+- Updated `OFFICIAL_BROWSER_VERIFICATION_SUMMARY.md` with honest verdicts:
+  - 22 `PASS_WITH_CURRENT_PLATFORM_SCOPE`
+  - 30 `PARTIAL_PASS`
+  - 9 `FUTURE_SCOPE`
+- Browser-verified the two direct-uploadable cases with Mock Planner only:
+  - `matpes_atomic_energies_csv`
+  - `ward_metallic_glasses_csv_xz`
+- Both direct cases now have real upload/profile/job/event/tool-call/artifact/result API evidence, downloaded artifact files, and 4 required browser screenshots.
+- Current direct evidence scope is metrics only: persisted AnalysisPlan -> `ml.basic_metrics` -> `metrics_json` artifact -> system-generated report/recipe summary.
+- Official richer outputs such as histograms, composition plots, classification plots, phonon, Brillouin zone, and advanced widgets are preserved under `future_expected_*`; they are not claimed as completed.
+- Platform fixes made during evidence repair:
+  - CSV parser now coerces numeric-looking string columns when safe.
+  - Mock Planner now ignores sparse `Unnamed:` columns for metrics selection and uses DataProfile numeric columns instead of hard-coded `y_true/y_pred`.
+- True LLM was not used. This remains Mock Planner demo evidence, not live LLM verification.

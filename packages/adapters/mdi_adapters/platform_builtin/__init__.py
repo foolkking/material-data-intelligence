@@ -2,6 +2,7 @@
 
 from .basic_metrics import BasicMetricsAdapter
 from .error_distribution import ErrorDistributionAdapter
+from .numeric_summary import NumericSummaryAdapter
 from .outlier_table import OutlierTableAdapter
 
-__all__ = ["BasicMetricsAdapter", "ErrorDistributionAdapter", "OutlierTableAdapter"]
+__all__ = ["BasicMetricsAdapter", "ErrorDistributionAdapter", "NumericSummaryAdapter", "OutlierTableAdapter"]

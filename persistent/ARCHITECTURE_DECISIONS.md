@@ -1,5 +1,73 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-086: Ward-style tabular summaries use table.numeric_summary instead of regression metrics
+
+### Context
+
+The official Ward metallic glasses CSV can be uploaded and profiled as a table.
+The previous demo path selected the first two numeric columns (`D_max` and
+`dTx`) for `ml.basic_metrics`. That proved the execution chain but was not
+semantically correct: those columns are independent material properties, not a
+natural target/prediction pair.
+
+### Decision
+
+Add `table.numeric_summary` as a minimal MVP platform builtin tool. It accepts a
+normalized DataFrame and emits descriptive table statistics as `table_json`
+(`numeric_summary.json`), plus `summary_md` and `recipe_json` when requested.
+
+Mock Planner may route explicit table-summary/Ward prompts to
+`table.numeric_summary`; regression/comparison prompts such as MatPES PBE vs
+r2SCAN still route to `ml.basic_metrics`.
+
+### Consequences
+
+- Ward browser evidence now summarizes `D_max` and `dTx` independently and
+  reports categorical summaries for fields such as `composition` and
+  `gfa_type`.
+- The Phase 8B execution contract remains unchanged: plans are validated,
+  persisted, bound through `jobs.plan_id`, loaded by QueueWorkerRuntime, and
+  executed through Tool Registry + Adapter.
+- Richer Ward visualizations such as composition heatmaps, element
+  distributions, histograms/scatter plots, and richer report generation remain
+  future work.
+
+## ADR-085: Mock Planner may bind metric params from DataProfile but cannot execute or repair plans
+
+### Context
+
+The official pymatviz examples evidence pack exposed a Phase 9B demo blocker.
+`matpes_atomic_energies_csv` uploaded and profiled successfully, but the Mock
+Planner generated `ml.basic_metrics` params for `y_true` and `y_pred`. The
+official CSV columns are `element`, `PBE`, and `r2SCAN`, so adapter execution
+failed even though the plan passed schema and registry validation.
+
+### Decision
+
+Allow `MockLLMProvider` to use the supplied `DataProfile` when generating its
+structured AnalysisPlan JSON. For `ml.basic_metrics`, it now selects explicit
+target/prediction role columns first. If roles are absent but the table has at
+least two numeric columns, it uses the first two numeric columns. Otherwise it
+falls back to the previous `y_true` / `y_pred` defaults.
+
+This is planner-side parameter selection, not execution repair. The provider
+still returns JSON only. `/planner/jobs` still validates the plan before
+persistence, stores the exact validated AnalysisPlan, binds it through
+`jobs.plan_id`, and lets QueueWorkerRuntime load and execute it through Tool
+Registry and Adapter.
+
+### Consequences
+
+- MatPES-style role-less numeric tables can complete in the demo workspace
+  without requiring a special frontend override or deterministic fallback.
+- The Phase 8B persisted-plan execution contract remains intact: the worker
+  executes the persisted plan and still emits `plan.loaded`, `data.loaded`,
+  ToolCall, Artifact, and JobEvent provenance.
+- No Tool Registry manifest or adapter behavior changed.
+- Future work remains for richer domain routing: composition/formula tables
+  should steer to composition tools, and structure inputs should steer to
+  structure tools when the profile and user intent indicate those domains.
+
 ## ADR-084: Queue workers load normalized dataset objects from persisted exports
 
 ### Context
@@ -2138,3 +2206,18 @@ Milestone 1 的完成标准定义为 scaffold 级可验证实现：
 - Phase 1 可以被 `python -m pytest -q`、`npm run typecheck` 和 `npm run build` 验证。
 - 后续可以在不改边界的情况下接入 PostgreSQL repository、Celery worker、SSE publisher 和对象存储。
 - 本阶段不把 stub route 误标为生产业务能力，避免与 Roadmap 后续 Milestone 混淆。
+## ADR-09B-EVIDENCE: Official pymatviz examples evidence pack is demo evidence, not CI gate
+
+### Context
+
+Phase 9B needs teacher/demo evidence showing how the platform handles official pymatviz example data, while avoiding false claims for script-only, notebook-only, phonon, advanced widget, and richer visualization examples.
+
+### Decision
+
+Keep the official examples evidence pack outside the project repository and outside default CI. Treat it as presentation/demo evidence only. Direct-uploadable cases may be browser-verified through the Phase 9B workspace with Mock Planner. Script/notebook cases must be documented as partial unless they are converted into real uploadable platform inputs. Unsupported official capabilities must be marked `FUTURE_SCOPE`.
+
+### Consequences
+
+- The evidence pack can include screenshots, API responses, downloaded artifacts, and per-case summaries without bloating the repository.
+- Default CI remains focused on unit, frontend, and service-backed integration tests and does not run browser evidence or real LLM calls.
+- Current direct evidence proves persisted plan execution for `ml.basic_metrics`; richer official visualization coverage needs future Planner routing and adapter work.

@@ -54,6 +54,7 @@ type ToolCategory =
   | "utility";
 
 type ToolDomain =
+  | "table"
   | "composition"
   | "structure"
   | "trajectory"

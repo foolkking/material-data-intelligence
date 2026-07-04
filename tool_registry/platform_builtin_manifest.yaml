@@ -1,4 +1,14 @@
 tools:
+  - tool_id: table.numeric_summary
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: NumericSummaryAdapter
+    display_target: overview
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
   - tool_id: ml.basic_metrics
     implementation_source: platform_builtin
     stage: mvp

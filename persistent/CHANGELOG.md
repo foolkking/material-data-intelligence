@@ -2,6 +2,25 @@
 
 ## 2026-07-04
 
+### Phase 9B Official Direct Examples Semantic Refinement
+
+- Added `table.numeric_summary`, a minimal MVP platform builtin adapter that summarizes DataFrame row counts, column metadata, numeric column statistics, categorical value counts, and exports `numeric_summary.json`, `summary.md`, and `recipe.json`.
+- Registered `table.numeric_summary` in Tool Registry and added `table` to shared `ToolDomain`.
+- Updated Mock Planner routing so Ward metallic glass table-summary prompts generate a `table.numeric_summary` AnalysisPlan instead of incorrectly treating `D_max` and `dTx` as target/prediction columns for `ml.basic_metrics`.
+- Preserved MatPES behavior: the official MatPES CSV still creates an `ml.basic_metrics` plan with `targetColumn=PBE` and `predictionColumn=r2SCAN`.
+- Regenerated fresh browser evidence for `matpes_atomic_energies_csv` and `ward_metallic_glasses_csv_xz` after deleting old results. MatPES produced `metrics.json`; Ward produced `numeric_summary.json`, `summary.md`, and `recipe.json`.
+- Updated each case's `expected_artifacts_schema.json`, platform summary, screenshots index, execution log, and the global official browser verification summary.
+- Added regression coverage for `NumericSummaryAdapter` and Ward Mock Planner semantic routing.
+
+### Phase 9B Official MatPES Example Blocker Repair
+
+- Fixed the official MatPES evidence-pack blocker where Mock Planner produced `ml.basic_metrics` params for `y_true` / `y_pred` even when the real DataProfile columns were `element`, `PBE`, and `r2SCAN`.
+- Mock Planner now selects `ml.basic_metrics` target/prediction params from DataProfile columns: explicit target/prediction roles first, then the first two numeric columns for role-less numeric tables.
+- Added a Phase 9B regression for a MatPES-style uploaded CSV proving `/planner/jobs` persists a plan with `targetColumn=PBE` and `predictionColumn=r2SCAN`, executes through QueueWorkerRuntime and the real `ml.basic_metrics` adapter, creates one metrics artifact, and completes the job.
+- Re-ran the failed browser evidence case with the full official MatPES CSV. The run completed with `job_b81c14bde6c3479599e19312`, `plan_4117360927074c8fad3ec8f3`, one completed ToolCall, one `metrics_json` artifact, and four screenshots under the Desktop evidence pack.
+- Preserved Phase 8B/9A boundaries: no QueueWorkerRuntime redesign, no AnalysisPlanRepository change, no `/planner/jobs` persistence/enqueue bypass, no real LLM call, and no direct tool execution outside Tool Registry + Adapter.
+- Verification: `uv lock --check` passed; Phase 7 targeted 32 passed; Phase 8B targeted 9 passed / 1 skipped locally; Phase 8C targeted 2 passed; Phase 9B targeted 14 passed; backend full 136 passed / 21 skipped; frontend `npm test` 6 passed; typecheck passed; build passed after stopping the old dev server that held `.next/trace`.
+
 ### Phase 9B Closure: Browser Verification and Durable Worker Object Loading
 
 - Completed the previously missing browser click-through on the local Planner workspace. The browser loaded demo data, created and ran a Mock Planner job, reached completed status, displayed persisted-plan provenance, and showed one metrics artifact plus one completed `ml.basic_metrics` ToolCall.
@@ -874,3 +893,21 @@
 - MVP 不支持公开分享，导出包异步生成且必须脱敏。
 - 共享 Schema 是实现阶段的类型基线，未来 `packages/schemas/` 应从该文件拆分 JSON Schema、TypeScript 类型和 Python Pydantic model。
 - `artifactTypes` 是统一产物类型字段名；不再使用 format 语义表达业务产物。
+## 2026-07-04
+
+### Added
+
+- Added global official pymatviz example evidence outputs under `C:\Users\86182\Desktop\pymatviz_official_examples_test_suite`.
+- Added API/artifact/browser evidence for `matpes_atomic_energies_csv` and `ward_metallic_glasses_csv_xz`.
+- Added regression coverage for DataProfile-driven Mock Planner column selection and Ward CSV sparse-column handling.
+
+### Changed
+
+- CSV parsing now coerces numeric-looking string columns when at least 95 percent of non-null values are numeric.
+- Mock Planner metrics column selection now filters sparse `Unnamed:` columns and no longer falls back to hard-coded `y_true/y_pred` when usable numeric DataProfile columns exist.
+- Official example expected schemas now separate current verified outputs from richer `future_expected_*` outputs.
+
+### Verification
+
+- `python -m pytest tests/test_phase9b_demo_workspace_api.py -q`: 15 passed.
+- Direct browser evidence generated with Mock Planner only; no real LLM was used.

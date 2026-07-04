@@ -34,7 +34,7 @@ def parse_file(path: str | Path, *, dataset_id: str, file_id: str | None = None)
                 objects=[_structure_object(structure, dataset_id, resolved_file_id, detected_format.value)],
             )
         if detected_format == DetectedFormat.csv:
-            dataframe = pd.read_csv(file_path)
+            dataframe = _coerce_numeric_like_columns(pd.read_csv(file_path))
             return ParseResult(
                 file_id=resolved_file_id,
                 file_path=file_path,
@@ -281,6 +281,21 @@ def _dataframe_object(dataframe: pd.DataFrame, dataset_id: str, file_id: str, de
         hash=digest,
         payload=payload,
     )
+
+
+def _coerce_numeric_like_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
+    converted = dataframe.copy()
+    for column in converted.columns:
+        series = converted[column]
+        if not (pd.api.types.is_object_dtype(series) or pd.api.types.is_string_dtype(series)):
+            continue
+        non_null = series.dropna()
+        if non_null.empty:
+            continue
+        numeric = pd.to_numeric(non_null, errors="coerce")
+        if float(numeric.notna().mean()) >= 0.95:
+            converted[column] = pd.to_numeric(series, errors="coerce")
+    return converted
 
 
 def _column_metadata(dataframe: pd.DataFrame, column: str) -> dict[str, Any]:

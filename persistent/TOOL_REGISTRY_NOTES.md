@@ -1,5 +1,20 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-05 Phase 9B - table.numeric_summary added for semantic table summaries
+
+- Added `table.numeric_summary` as an MVP platform builtin tool with `NumericSummaryAdapter`.
+- The tool accepts a normalized DataFrame (`ml_table`) and emits `table_json`, `summary_md`, and `recipe_json` artifacts. The primary browser evidence artifact is `numeric_summary.json`.
+- This tool is for descriptive table statistics. It prevents non-regression tables such as Ward metallic glasses from being forced through `ml.basic_metrics` with arbitrary target/prediction columns.
+- Execution remains registry-gated: Mock Planner emits AnalysisPlan JSON, PlanValidator validates the registered tool and params schema, QueueWorkerRuntime loads the persisted plan by `job.plan_id`, and Adapter execution writes ToolCall/Artifact/Result provenance.
+- MatPES remains a valid `ml.basic_metrics` case because the request is explicitly PBE vs r2SCAN numeric comparison.
+
+## 2026-07-04 Phase 9B - MatPES blocker repair keeps execution registry-gated
+
+- No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in this repair.
+- The fix only changes Mock Planner parameter binding for `ml.basic_metrics`: it derives target/prediction params from the real DataProfile when available, then emits normal AnalysisPlan JSON.
+- PlanValidator remains the enforced boundary before persistence; the plan is still persisted as an AnalysisPlan, bound by `jobs.plan_id`, loaded by QueueWorkerRuntime, and executed through Tool Registry lookup plus the `ml.basic_metrics` adapter.
+- The repaired browser evidence proves `matpes_atomic_energies_csv` now executes one registry-approved `ml.basic_metrics` ToolCall with params `targetColumn=PBE` and `predictionColumn=r2SCAN`, creates one `metrics_json` artifact, and reaches `job.completed`.
+
 ## 2026-07-04 Phase 9B - durable worker object loading keeps execution registry-gated
 
 - No Tool Registry manifest, adapter implementation, MVP/V1/V2 tool scope, or pymatviz mapping changed in this closure.
@@ -458,3 +473,10 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - `apps/api/mdi_api` 已提供 FastAPI app factory，并通过 `/tools` 与 `/tools/mvp` 暴露 Tool Registry 的只读查询边界。
 - 工具查询 route 只返回 manifest-normalized registry view，不执行 adapter，不绕过 `execute_tool_request()`。
 - 后续执行类 API 必须继续走 Tool Registry lookup、paramsSchema 校验和 adapter registry，不允许 API route 直接实例化 pymatviz 函数。
+## 2026-07-04 Official Example Evidence Notes
+
+- Direct official browser evidence currently validates the Tool Registry + Adapter path for `ml.basic_metrics` only.
+- MatPES evidence selected `PBE` and `r2SCAN` from the DataProfile and produced a `metrics_json` artifact.
+- Ward metallic glasses evidence selected `D_max` and `dTx` after parser numeric coercion and planner filtering of sparse `Unnamed:` columns.
+- Official richer tools such as `plotly_custom.histogram`, `composition.ptable_heatmap`, `composition.elements_hist`, classification curves, phonon tools, Brillouin zone, and MatterViz widgets were not downgraded into current PASS. They are preserved as future expected tools in the evidence pack.
+- No evidence path bypassed Tool Registry or Adapter execution.

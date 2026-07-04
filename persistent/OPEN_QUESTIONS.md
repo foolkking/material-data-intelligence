@@ -1,5 +1,18 @@
 # OPEN_QUESTIONS
 
+## 2026-07-05 Phase 9B Official Direct Examples Semantic Refinement
+
+- **Closed: Ward direct-uploadable semantic blocker.** Ward metallic glass evidence no longer treats `D_max` and `dTx` as target/prediction regression columns. It now uses `table.numeric_summary` for independent numeric and categorical summaries.
+- **Closed: MatPES stale prompt evidence.** Fresh MatPES browser evidence now uses the PBE vs r2SCAN prompt and no longer contains the stale `y_true` / `y_pred` request in the captured browser text.
+- **Still open: richer official visualization coverage.** Ward composition/element distributions, periodic-table heatmaps, histograms/scatter plots, and richer reports remain future adapter/report work. MatPES histogram/table/report outputs also remain future work.
+- **Still open: full official examples suite.** This pass only regenerated the two direct-uploadable cases requested by the user.
+
+## 2026-07-04 Phase 9B Official MatPES Example Blocker Repair
+
+- **Closed: MatPES official CSV metrics blocker.** The evidence-pack failure for `matpes_atomic_energies_csv` is fixed. Mock Planner now uses DataProfile columns and selected `PBE` / `r2SCAN` for `ml.basic_metrics`; the browser rerun completed with one ToolCall and one artifact.
+- **Still open: complete official examples suite execution.** Only the previously failed MatPES direct-uploadable case was rerun in this repair pass. The remaining official examples, including `ward_metallic_glasses_csv_xz`, script/notebook cases, MVP/V1 mapped README demos, and future-scope cases still require separate evidence-pack execution.
+- **Still open: richer non-ML prompt/tool routing.** The current fix handles metric plans for role-less numeric tables. Composition/structure datasets should later steer to composition or structure tools when the profile and user intent indicate those domains.
+
 ## 2026-07-04 Phase 9B Browser + Durable Worker Resolver Closure
 
 - **Closed: browser verification after API/Web restart.** The in-app browser loaded the local workspace, ran the demo workflow with Mock Planner, showed completed status, plan provenance, timeline events, artifact gallery, report/recipe summary, and ToolCall details. No real API key was entered.
@@ -206,3 +219,9 @@
 - EXTXYZ with lattice：已决定优先通过 ASE 解析后转 pymatgen Structure，不再单独实现轻量 parser。
 - V1/V2 manifest 工具在进入可执行阶段前，是否要求先补齐与 MVP 同等级的 `additionalProperties=false` paramsSchema？
 - 下一阶段实现 SSE 时需要选择与 `fastapi 0.115.x` / `starlette 0.46.x` 兼容的 SSE 方案；当前全局环境中的 `sse-starlette 3.4.1` 要求 `starlette>=0.49.1`，不能直接作为项目依赖锁定。
+## 2026-07-04 Official pymatviz Examples Evidence Pack Follow-ups
+
+- Source provenance still needs official commit pinning for a final publication-quality report. Current evidence marks `source_commit: unresolved` and `source_commit_status: TODO_PIN_BEFORE_FINAL_REPORT`.
+- Official examples that require script/notebook execution remain `PARTIAL_PASS`; decide whether a future phase should build a controlled script/notebook import path or keep them as reference-only mappings.
+- Composition and structure adapters exist, but Planner tool routing for official example workflows is not yet productized. Decide whether Phase 10 should add prompt/profile-based routing beyond `ml.basic_metrics`.
+- Phonon, Brillouin zone, advanced MatterViz widgets, classification curves, and richer Plotly/table/report outputs remain future adapter/tool work.

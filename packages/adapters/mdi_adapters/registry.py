@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from .base import BaseToolAdapter
 from .matterviz.structure_viewer_3d import StructureViewer3DAdapter
-from .platform_builtin import BasicMetricsAdapter, ErrorDistributionAdapter, OutlierTableAdapter
+from .platform_builtin import BasicMetricsAdapter, ErrorDistributionAdapter, NumericSummaryAdapter, OutlierTableAdapter
 from .pymatviz import ChemSysTreemapAdapter, CoordinationHistAdapter, DensityScatterAdapter, ElementsHistAdapter
 from .pymatviz.ptable_heatmap import PTableHeatmapAdapter
 from .pymatviz.structure_3d import Structure3DAdapter
@@ -15,6 +15,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     DensityScatterAdapter.__name__: DensityScatterAdapter,
     ElementsHistAdapter.__name__: ElementsHistAdapter,
     ErrorDistributionAdapter.__name__: ErrorDistributionAdapter,
+    NumericSummaryAdapter.__name__: NumericSummaryAdapter,
     OutlierTableAdapter.__name__: OutlierTableAdapter,
     PTableHeatmapAdapter.__name__: PTableHeatmapAdapter,
     Structure3DAdapter.__name__: Structure3DAdapter,
