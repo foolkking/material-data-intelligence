@@ -14,6 +14,7 @@ import {
   type PlannerJobCreateResult,
   type PlannerJobDetail,
   type ProviderOption,
+  type ProviderResolveResult,
   type ProviderStatus,
   type ProviderTestResult,
   type RuntimeHealth,
@@ -37,6 +38,7 @@ import {
   listPlannerProviders,
   listSecrets,
   loadDemoDataset,
+  resolvePlannerProvider,
   testPlannerProvider,
   uploadDataset
 } from "../lib/planner-api";
@@ -97,6 +99,7 @@ export function PlannerWorkbench() {
   const [providerPreset, setProviderPreset] = useState<ProviderPreset>("deepseek");
   const [providerOptions, setProviderOptions] = useState<ProviderOption[]>([]);
   const [providerStatus, setProviderStatus] = useState<ProviderStatus | null>(null);
+  const [providerResolution, setProviderResolution] = useState<ProviderResolveResult | null>(null);
   const [providerResult, setProviderResult] = useState<ProviderTestResult | null>(null);
   const [baseUrl, setBaseUrl] = useState(presetDefaults.deepseek.baseUrl);
   const [model, setModel] = useState(presetDefaults.deepseek.model);
@@ -125,7 +128,12 @@ export function PlannerWorkbench() {
   const jobStatus = snapshot.job?.status || (jobId ? "queued" : "");
   const isTerminal = ["completed", "failed", "cancelled"].includes(String(jobStatus));
   const selectedDataset = datasets.find((dataset) => (dataset.datasetId || dataset.id) === datasetId);
-  const providerLabel = providerMode === "mock" ? t("mockPlanner") : `${providerPreset} / ${model || t("notConfigured")}`;
+  const providerLabel =
+    providerMode === "mock"
+      ? t("mockPlanner")
+      : providerResolution?.willUseLiveProvider
+        ? `Live LLM / ${providerResolution.model || model || t("notConfigured")}`
+        : `${providerPreset} / ${model || t("notConfigured")} / ${providerResolution?.status || t("notConfigured")}`;
   const chunks = useMemo(
     () =>
       buildConversationChunks({
@@ -153,6 +161,10 @@ export function PlannerWorkbench() {
       eventSourceRef.current?.close();
     };
   }, []);
+
+  useEffect(() => {
+    void refreshProviderResolution();
+  }, [providerMode, baseUrl, model, selectedSecretId, temperature, maxTokens, timeoutSeconds]);
 
   useEffect(() => {
     if (!jobId || timelineMode !== "polling" || isTerminal) {
@@ -308,6 +320,23 @@ export function PlannerWorkbench() {
       timeoutSeconds
     });
     setProviderResult(result);
+  }
+
+  async function refreshProviderResolution() {
+    try {
+      const result = await resolvePlannerProvider({
+        provider: providerMode,
+        baseUrl: providerMode === "openai_compatible" ? baseUrl : undefined,
+        model: providerMode === "openai_compatible" ? model : undefined,
+        secretId: providerMode === "openai_compatible" ? selectedSecretId : undefined,
+        temperature,
+        maxTokens,
+        timeoutSeconds
+      });
+      setProviderResolution(result);
+    } catch {
+      setProviderResolution(null);
+    }
   }
 
   async function handleSubmit() {
@@ -558,6 +587,7 @@ export function PlannerWorkbench() {
           onPresetChange={handlePresetChange}
           providerOptions={providerOptions}
           providerStatus={providerStatus}
+          providerResolution={providerResolution}
           providerResult={providerResult}
           baseUrl={baseUrl}
           setBaseUrl={setBaseUrl}
@@ -838,6 +868,7 @@ function ModelProviderDialog(props: {
   onPresetChange: (value: ProviderPreset) => void;
   providerOptions: ProviderOption[];
   providerStatus: ProviderStatus | null;
+  providerResolution: ProviderResolveResult | null;
   providerResult: ProviderTestResult | null;
   baseUrl: string;
   setBaseUrl: (value: string) => void;
@@ -905,7 +936,10 @@ function ModelProviderDialog(props: {
                 <input type="number" value={props.timeoutSeconds} onChange={(event) => props.setTimeoutSeconds(Number(event.target.value))} />
               </label>
             </div>
-            <p className="selector-status">{props.providerStatus?.message || t("emptyProvider")}</p>
+            <p className="selector-status">{props.providerResolution?.message || t("emptyProvider")}</p>
+            <small>
+              Default service provider: {props.providerStatus?.provider || "unknown"} / {props.providerStatus?.status || "unknown"}
+            </small>
           </div>
           <div className="panel compact-panel">
             <PanelHeading title={t("savedSecret")} badge={t("providerNotice")} />

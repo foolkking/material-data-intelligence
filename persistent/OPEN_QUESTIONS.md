@@ -1,5 +1,13 @@
 # OPEN_QUESTIONS
 
+## 2026-07-05 Phase 9D LLM Configuration Path Repair
+
+- **Closed: UI provider config looked disconnected from planner jobs.** The UI already passed provider config into `/planner/jobs`; this repair adds an explicit no-network resolve API so the UI can show the current task provider status without relying on env-default status.
+- **Closed: env settings could override explicit UI model/timeout settings.** Explicit `PlannerUserConfig` now wins when supplied; env remains the source for env-only live tests.
+- **Still open: true live LLM verification.** The gated full-chain test exists but was not run because live LLM env is not configured in the current shell.
+- **Still open: UI SecretStore and CLI env are separate paths.** This is acceptable for Phase 9D, but a later production config flow may unify operator-managed provider config and user BYOK secrets.
+- **Still open: production secret encryption/KMS.** Secret UX remains dev/test in-memory and redacted, not production envelope encryption.
+
 ## 2026-07-05 Phase 9C UI/UX Redesign Docs Baseline
 
 - **Closed: independent right-side Result Inspector.** The Phase 9C design explicitly does not use a persistent right result panel. Results belong to the main `结果与导出` tab.

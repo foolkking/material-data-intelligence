@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-05 Phase 9D LLM config repair keeps execution registry-gated
+
+- The Phase 9D repair changes provider configuration resolution, provider status reporting, UI status display, and gated live test coverage only.
+- No Tool Registry manifest, adapter, PlanValidator rule, QueueWorkerRuntime behavior, or `/planner/jobs` persistence/enqueue semantics changed.
+- Live provider output still must be JSON AnalysisPlan, then PlanValidator must approve it before persistence.
+- Valid jobs still follow: provider JSON AnalysisPlan -> PlanValidator -> persisted AnalysisPlan -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> ToolCall/Artifact/Result provenance.
+- Secret/API key values remain prohibited in prompts, plans, JobEvents, Artifacts, Reports, Recipes, UI browser storage, and test output.
+
 ## 2026-07-05 Phase 9C UI redesign does not change the Registry gate
 
 - The Phase 9C docs update changes frontend information architecture only.

@@ -116,8 +116,9 @@ class MockLLMProvider:
 class OpenAICompatibleProvider:
     """OpenAI-compatible provider for gated Phase 9A planner integration.
 
-    Configuration is resolved at call time. MDI_LLM_* environment variables
-    are preferred; OPENAI_* fallbacks are accepted for compatibility. The
+    Configuration is resolved at call time. Explicit per-request
+    PlannerUserConfig values win when provided; otherwise MDI_LLM_* and
+    OPENAI_* environment variables are used for gated integration tests. The
     default test path still uses MockLLMProvider, so this class contacts the
     network only when explicitly selected and no fake transport is injected.
     """
@@ -134,7 +135,7 @@ class OpenAICompatibleProvider:
         user_config: PlannerUserConfig | None = None,
     ) -> PlannerRawResponse:
         config = user_config or PlannerUserConfig()
-        resolved = _resolve_openai_config(config)
+        resolved = _resolve_openai_config(config, prefer_config=user_config is not None)
 
         from .planner_prompt import build_planner_prompt
         system_prompt, user_prompt_str = build_planner_prompt(request, tools=tools, data_profile=data_profile)
@@ -189,7 +190,16 @@ class OpenAICompatibleProvider:
         )
 
 
-def _resolve_openai_config(config: PlannerUserConfig) -> dict[str, Any]:
+def _resolve_openai_config(config: PlannerUserConfig, *, prefer_config: bool = False) -> dict[str, Any]:
+    if prefer_config:
+        return {
+            "api_key": config.api_key or os.environ.get("MDI_LLM_API_KEY") or os.environ.get("OPENAI_API_KEY"),
+            "base_url": (config.base_url or os.environ.get("MDI_LLM_BASE_URL") or os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com/v1").rstrip("/"),
+            "model": config.model or os.environ.get("MDI_LLM_MODEL") or os.environ.get("OPENAI_MODEL") or "gpt-4o",
+            "timeout_seconds": config.timeout_seconds,
+            "max_tokens": config.max_tokens,
+            "temperature": config.temperature,
+        }
     return {
         "api_key": config.api_key or os.environ.get("MDI_LLM_API_KEY") or os.environ.get("OPENAI_API_KEY"),
         "base_url": (config.base_url or os.environ.get("MDI_LLM_BASE_URL") or os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com/v1").rstrip("/"),

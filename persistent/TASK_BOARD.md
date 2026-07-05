@@ -1,5 +1,29 @@
 # TASK_BOARD
 
+## 2026-07-05 Phase 9D LLM Configuration Path Repair
+
+### Done This Round
+
+- [x] Repaired OpenAI-compatible provider config precedence so explicit request/UI config wins over env when `user_config` is supplied.
+- [x] Preserved env-only live test behavior when no `user_config` is supplied.
+- [x] Added no-network provider resolve API for current UI provider config.
+- [x] Updated PlannerWorkbench to display the current task provider resolution separately from the default env provider status.
+- [x] Added backend tests for provider resolve and provider config precedence.
+- [x] Added frontend test coverage for resolved live provider status and no plaintext API key propagation.
+- [x] Added gated live full-chain test coverage for provider -> `/planner/jobs` -> persisted AnalysisPlan -> worker -> artifact/result.
+
+### Verification
+
+- [x] `python -m pytest tests/test_phase7_llm_planner.py tests/test_phase9b_demo_workspace_api.py -q` -> 49 passed
+- [x] `npm test` in `apps/web` -> 6 passed
+- [x] `python -m pytest tests/test_phase9a_llm_integration.py -q` -> 2 skipped because live LLM env is not configured
+
+### Remaining
+
+- [ ] Run the gated full-chain live LLM test with real `MDI_LLM_*` env.
+- [ ] Capture Phase 9D browser live evidence after live env is configured.
+- [ ] Consider a later UTF-8 documentation cleanup for existing mojibake in persistent/docs.
+
 ## 2026-07-05 Phase 9C Browser QA and Baseline Closure
 
 ### Done This Round

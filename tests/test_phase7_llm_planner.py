@@ -563,6 +563,48 @@ def test_openai_provider_uses_mdi_env_config_with_fake_transport(monkeypatch: py
     assert "sk-phase9a-secret" not in json.dumps(captured["messages"])
 
 
+def test_openai_provider_request_config_overrides_env_with_fake_transport(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, object] = {}
+
+    monkeypatch.setenv("MDI_LLM_BASE_URL", "https://env-llm.example.test/v1")
+    monkeypatch.setenv("MDI_LLM_API_KEY", "sk-phase9a-env-secret-value-000000")
+    monkeypatch.setenv("MDI_LLM_MODEL", "env-model")
+    monkeypatch.setenv("MDI_LLM_TIMEOUT_SECONDS", "12.5")
+    monkeypatch.setenv("MDI_LLM_MAX_TOKENS", "321")
+    monkeypatch.setenv("MDI_LLM_TEMPERATURE", "0.05")
+
+    def fake_transport(**kwargs):
+        captured.update(kwargs)
+        return {"choices": [{"message": {"content": json.dumps(_valid_openai_plan())}, "finish_reason": "stop"}]}
+
+    provider = OpenAICompatibleProvider(transport=fake_transport)
+    reg = _registry()
+    req = PlannerRequest(user_prompt="test", dataset_id="ds1", profile_id="p1", tool_registry_version=reg.version)
+    resp = provider.generate_plan(
+        req,
+        tools=list(reg.tools),
+        data_profile=_data_profile(),
+        user_config=PlannerUserConfig(
+            provider="openai_compatible",
+            model="request-model",
+            base_url="https://request-llm.example.test/v1",
+            api_key="sk-phase9a-request-secret-value-000000",
+            timeout_seconds=44.0,
+            temperature=0.17,
+            max_tokens=777,
+        ),
+    )
+
+    assert resp.raw_json is not None
+    assert resp.model == "request-model"
+    assert captured["model"] == "request-model"
+    assert captured["timeout_seconds"] == 44.0
+    assert captured["max_tokens"] == 777
+    assert captured["temperature"] == 0.17
+    assert "sk-phase9a-env-secret" not in json.dumps(captured["messages"])
+    assert "sk-phase9a-request-secret" not in json.dumps(captured["messages"])
+
+
 def test_openai_provider_missing_api_key_fails_safely(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("MDI_LLM_API_KEY", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)

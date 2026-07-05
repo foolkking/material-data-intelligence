@@ -44,6 +44,7 @@ from mdi_api.routers.planner import (
 from mdi_api.routers.planner_providers import (
     list_planner_providers,
     planner_provider_status,
+    resolve_planner_provider_route,
     test_planner_provider_route,
 )
 from mdi_api.routers.projects import ProjectSummary
@@ -104,6 +105,7 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/planner/jobs", planner_jobs_route, ("POST",), ("planner",)),
     RouteSpec("/planner/providers", list_planner_providers, ("GET",), ("planner",)),
     RouteSpec("/planner/providers/status", planner_provider_status, ("GET",), ("planner",)),
+    RouteSpec("/planner/providers/resolve", resolve_planner_provider_route, ("POST",), ("planner",)),
     RouteSpec("/planner/providers/test", test_planner_provider_route, ("POST",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}", get_planner_job, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/events", get_planner_job_events, ("GET",), ("planner",)),

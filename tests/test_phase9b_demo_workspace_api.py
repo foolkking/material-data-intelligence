@@ -23,7 +23,12 @@ from mdi_api.routers.planner import (
     planner_jobs,
     reset_planner_runtime,
 )
-from mdi_api.routers.planner_providers import ProviderTestRequest, test_planner_provider as run_provider_test
+from mdi_api.routers.planner_providers import (
+    ProviderResolveRequest,
+    ProviderTestRequest,
+    resolve_planner_provider,
+    test_planner_provider as run_provider_test,
+)
 from mdi_llm import MockLLMProvider
 from mdi_schemas import DataProfile
 from mdi_tool_registry import load_manifests
@@ -175,6 +180,42 @@ def test_provider_catalog_status_and_mock_test_endpoint() -> None:
     result = client.post("/planner/providers/test", json={"provider": "mock"}).json()
     assert result["ok"] is True
     assert result["validated"] is True
+
+
+def test_provider_resolve_reflects_current_ui_config_without_network() -> None:
+    client = TestClient(create_app())
+    secret_value = "sk-provider-resolve"
+
+    mock_result = client.post("/planner/providers/resolve", json={"provider": "mock"}).json()
+    assert mock_result["ok"] is True
+    assert mock_result["provider"] == "mock"
+    assert mock_result["willUseLiveProvider"] is False
+
+    live_result = resolve_planner_provider(
+        ProviderResolveRequest(
+            provider="openai_compatible",
+            baseUrl="https://api.deepseek.com/v1",
+            model="deepseek-chat",
+            secretId="secret_resolve",
+        ),
+        secret_resolver=lambda secret_id: secret_value if secret_id == "secret_resolve" else None,
+    )
+    assert live_result["ok"] is True
+    assert live_result["provider"] == "openai_compatible"
+    assert live_result["model"] == "deepseek-chat"
+    assert live_result["willUseLiveProvider"] is True
+    assert live_result["secretConfigured"] is True
+    assert live_result["source"] == "secret"
+    assert secret_value not in json.dumps(live_result, ensure_ascii=False)
+
+    missing = resolve_planner_provider(
+        ProviderResolveRequest(provider="openai_compatible", model="deepseek-chat", secretId="missing"),
+        secret_resolver=lambda _: None,
+    )
+    assert missing["ok"] is False
+    assert missing["status"] == "not_configured"
+    assert missing["willUseLiveProvider"] is False
+    assert missing["redacted"] is True
 
 
 def test_secret_list_never_returns_plaintext_key() -> None:

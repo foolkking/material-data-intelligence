@@ -1,5 +1,39 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-088: Explicit planner provider config wins over environment defaults
+
+### Context
+
+Phase 9A introduced a gated OpenAI-compatible provider. Phase 9C added UI
+provider configuration and Secret selection. The audit for Phase 9D found that
+the UI correctly passed provider config to `/planner/jobs`, but the provider
+resolver could let env model/timeout/token/temperature values override explicit
+request config. The UI also showed the env-default provider status, which could
+be confused with the current task provider selection.
+
+### Decision
+
+When a `PlannerUserConfig` is explicitly supplied by a request/UI path, its
+model, timeout, max token, and temperature values win over env defaults. When
+no `user_config` is supplied, the env-only path keeps reading `MDI_LLM_*` /
+`OPENAI_*` for gated local live tests.
+
+Add a no-network provider resolve API for the current UI/task configuration.
+It reports whether the selected planner mode would use Mock Planner or a live
+OpenAI-compatible provider, whether a selected secret exists, and the effective
+model, without returning API keys or contacting the provider.
+
+### Consequences
+
+- UI-selected provider settings now match the provider used by `/planner/jobs`.
+- The default env provider status remains available, but it is no longer the
+  only status shown in the model dialog.
+- Default CI remains safe because live LLM tests still require
+  `MDI_RUN_LLM_INTEGRATION=1` and provider env.
+- The execution boundary is unchanged: live provider output is still JSON
+  AnalysisPlan only, validated before persistence and executed through
+  QueueWorkerRuntime plus Tool Registry/Adapter.
+
 ## ADR-087: Phase 9C frontend baseline uses a top/left/main-tab AI assistant workspace
 
 ### Context

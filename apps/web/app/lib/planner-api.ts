@@ -225,6 +225,24 @@ export type ProviderStatus = {
   redacted?: boolean;
 };
 
+export type ProviderResolveRequest = {
+  provider: string;
+  baseUrl?: string;
+  model?: string;
+  secretId?: string;
+  temperature?: number;
+  maxTokens?: number;
+  timeoutSeconds?: number;
+};
+
+export type ProviderResolveResult = ProviderStatus & {
+  willUseLiveProvider?: boolean;
+  secretConfigured?: boolean;
+  source?: string;
+  errorType?: string;
+  safeDetails?: string | null;
+};
+
 export type ProviderTestRequest = {
   provider: string;
   baseUrl?: string;
@@ -379,6 +397,13 @@ export async function listPlannerProviders(): Promise<{ providers: ProviderOptio
 
 export async function getPlannerProviderStatus(): Promise<ProviderStatus> {
   return apiFetch<ProviderStatus>("/planner/providers/status");
+}
+
+export async function resolvePlannerProvider(payload: ProviderResolveRequest): Promise<ProviderResolveResult> {
+  return apiFetch<ProviderResolveResult>("/planner/providers/resolve", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
 }
 
 export async function testPlannerProvider(payload: ProviderTestRequest): Promise<ProviderTestResult> {

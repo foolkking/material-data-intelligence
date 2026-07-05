@@ -1,5 +1,14 @@
 # DESIGN_PROGRESS
 
+## 2026-07-05 Phase 9D LLM Configuration Path Repair
+
+- Implemented the Phase 9D configuration-chain repair without running a live LLM: explicit UI/request `PlannerUserConfig` now wins over environment model/timeout/token/temperature settings, while env-only integration tests still read `MDI_LLM_*` / `OPENAI_*`.
+- Added a no-network provider resolve path for the current UI configuration. It reports whether the current planner job configuration will use Mock Planner or an OpenAI-compatible live provider, whether the selected secret exists, the effective model, and a redacted status message.
+- Updated the Planner workspace model status to use the current UI provider resolution instead of treating the default env provider status as the selected task provider.
+- Added a gated full-chain live LLM test path that, when env is configured, uploads a tiny metrics CSV, requests a live OpenAI-compatible plan, persists the validated AnalysisPlan, runs the queued job, and verifies ToolCall/Artifact/Result provenance.
+- The live test was not executed locally because live LLM env is not configured; the default run correctly skips it.
+- No QueueWorkerRuntime, AnalysisPlanRepository, Tool Registry manifest, adapter implementation, migration, or `/planner/jobs` persistence/enqueue semantics changed.
+
 ## 2026-07-05 Phase 9C Browser Visual QA and Official Direct Re-verification
 
 - Ran a real browser-controlled Phase 9C visual QA against the local workspace at `http://127.0.0.1:3000` with API `http://127.0.0.1:8000`, local SQLite/runtime queue, local ArtifactStorage, and Mock Planner only.

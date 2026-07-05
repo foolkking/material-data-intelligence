@@ -2,6 +2,15 @@
 
 ## 2026-07-05
 
+### Phase 9D LLM Configuration Path Repair
+
+- Fixed OpenAI-compatible provider config resolution so explicit request/UI config is not overwritten by env model/timeout/token/temperature settings.
+- Added `/planner/providers/resolve`, a no-network redacted status path for the current UI provider configuration.
+- Updated the Planner workspace model status to show the current task provider resolution while keeping the default env provider status visible in the model dialog.
+- Replaced corrupted provider-test messages in `planner_providers.py` with safe readable messages and kept response bodies redacted.
+- Added a gated full-chain live LLM test that can verify live provider -> PlanValidator -> persisted AnalysisPlan -> queued worker execution -> ToolCall/Artifact/Result when `MDI_RUN_LLM_INTEGRATION=1` and required provider env are configured.
+- No real LLM was called locally; the live integration file currently skips without env.
+
 ### Phase 9C Browser Visual QA and Official Direct Re-verification
 
 - Ran browser-controlled visual QA for the Phase 9C workspace and saved six QA screenshots under `docs/ui-redesign/phase9c_browser_qa/`.

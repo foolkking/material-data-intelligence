@@ -223,9 +223,10 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(JSON.stringify(window.localStorage)).not.toContain(apiKey);
     expect(JSON.stringify(window.sessionStorage)).not.toContain(apiKey);
     expect(await screen.findByText(/Demo LLM Key/)).not.toBeNull();
+    expect((await screen.findAllByText("Live LLM / deepseek-chat")).length).toBeGreaterThan(0);
 
     await user.click(screen.getByRole("button", { name: "测试模型连接" }));
-    expect(await screen.findByText("模型连接成功，并成功返回可解析的 AnalysisPlan。")).not.toBeNull();
+    expect(await screen.findByText("Provider connection succeeded and returned a valid AnalysisPlan.")).not.toBeNull();
   });
 
   it("keeps main tabs mutually exclusive and routes job evidence into Agent process and Results/export", async () => {
@@ -341,10 +342,51 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
   if (url.endsWith("/planner/providers/status")) {
     return jsonResponse({ ok: true, provider: "mock", model: "mock", status: "ready", message: "Mock Planner is active." });
   }
+  if (method === "POST" && url.endsWith("/planner/providers/resolve")) {
+    const body = JSON.parse(String(init?.body || "{}"));
+    expect(JSON.stringify(body)).not.toContain("sk-ui-secret-value");
+    if (body.provider === "openai_compatible" && body.secretId) {
+      return jsonResponse({
+        ok: true,
+        provider: "openai_compatible",
+        model: body.model || "deepseek-chat",
+        status: "ready",
+        willUseLiveProvider: true,
+        secretConfigured: true,
+        source: "secret",
+        message: "Current planner job configuration will use an OpenAI-compatible LLM.",
+        redacted: true
+      });
+    }
+    if (body.provider === "openai_compatible") {
+      return jsonResponse({
+        ok: false,
+        provider: "openai_compatible",
+        model: body.model || "deepseek-chat",
+        status: "not_configured",
+        willUseLiveProvider: false,
+        secretConfigured: false,
+        source: "missing_secret",
+        message: "Current planner job configuration needs a saved API key before it can use a live LLM.",
+        redacted: true
+      });
+    }
+    return jsonResponse({
+      ok: true,
+      provider: "mock",
+      model: "mock",
+      status: "ready",
+      willUseLiveProvider: false,
+      secretConfigured: false,
+      source: "request",
+      message: "Current planner job configuration will use Mock Planner.",
+      redacted: true
+    });
+  }
   if (method === "POST" && url.endsWith("/planner/providers/test")) {
     const body = JSON.parse(String(init?.body || "{}"));
     expect(JSON.stringify(body)).not.toContain("sk-ui-secret-value");
-    return jsonResponse({ ok: true, provider: body.provider, model: body.model || "mock", latencyMs: 9, validated: true, message: "模型连接成功，并成功返回可解析的 AnalysisPlan。", redacted: true });
+    return jsonResponse({ ok: true, provider: body.provider, model: body.model || "mock", latencyMs: 9, validated: true, message: "Provider connection succeeded and returned a valid AnalysisPlan.", redacted: true });
   }
   if (url.endsWith("/me/secrets") && method === "GET") {
     return jsonResponse(savedSecrets);
