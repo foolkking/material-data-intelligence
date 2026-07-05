@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-07-05 Phase 9C UI/UX Redesign Docs Baseline
+
+- **Closed: independent right-side Result Inspector.** The Phase 9C design explicitly does not use a persistent right result panel. Results belong to the main `结果与导出` tab.
+- **Closed: old three-column frontend baseline as recommended direction.** The old right Agent panel and bottom result tabs are legacy context. The recommended direction is top global context bar, left data-context viewer, and main three-tab workspace.
+- **Closed: where Agent process vs conversation vs results live.** All three live inside the main workspace as mutually exclusive tabs: `Agent 过程`, `对话与 Plan`, `结果与导出`.
+- **Closed at baseline level: resize/collapse and main-tab implementation.** `PlannerWorkbench` now includes a collapsible/resizable left data-context viewer and mutually exclusive main tabs with tests.
+- **Still open: responsive drawer polish.** The baseline is responsive, but a dedicated mobile drawer interaction can be refined later.
+- **Still open: exact visual styling.** This docs baseline fixes information architecture, not final colors, typography, spacing, or component library details.
+
 ## 2026-07-05 Phase 9B Official Direct Examples Semantic Refinement
 
 - **Closed: Ward direct-uploadable semantic blocker.** Ward metallic glass evidence no longer treats `D_max` and `dTx` as target/prediction regression columns. It now uses `table.numeric_summary` for independent numeric and categorical summaries.

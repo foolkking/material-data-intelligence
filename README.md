@@ -11,6 +11,7 @@ Core capabilities:
 - Execute only Tool Registry approved pymatviz / MatterViz / Plotly / pymatgen / ASE / phonopy adapters.
 - Generate interactive charts, 3D material viewers, Artifacts, Recipes, and Reports.
 - Show Agent Timeline, tool calls, parameters, logs, reproducible code snippets, and results.
+- Provide an AI assistant style workspace with a global dataset/model bar, a collapsible data-context viewer, and a main three-tab work area for Agent process, conversation/Plan Preview, and results/export.
 - Design for asynchronous jobs, BYOK, permissions, audit logs, sandboxing, and domain extension.
 
 ## New Session Startup
@@ -37,9 +38,9 @@ After each design or implementation phase, update:
 
 ## Current Status
 
-Phase 1 is reproducible, Phase 2 has an in-memory/local-file product loop for acceptance, and Phase 3 has a persistence foundation for repository abstractions, job event seq cursors, SSE smoke streaming, and artifact storage mapping. The repo has a Python packages-first core, shared schemas, Tool Registry manifest loading, `BaseToolAdapter`, 10 MVP adapters, local Artifact export, Data Pipeline coverage, deterministic `AnalysisPlan` generation, local Worker execution, JobEvent/ToolCall/Artifact query APIs, Recipe/Report artifacts, a FastAPI API boundary, local PostgreSQL/Redis/MinIO compose config, SQLAlchemy metadata/migration drafts, basic Auth/Project/Dataset table metadata, and a Next.js three-column workspace shell. Current verification: `python -m pytest -q`, `npm run typecheck`, and `npm run build` pass.
+The codebase has progressed beyond the early shell: Phase 8B persisted AnalysisPlans and queue-worker exact execution are frozen, Phase 8C exposes planner provenance in the frontend, Phase 9A adds a gated OpenAI-compatible provider path without default real-LLM CI calls, and Phase 9B productizes the demo Planner workspace plus official direct-example evidence. Phase 9C updates the frontend design baseline to an AI assistant workspace: top global dataset/model context, resizable/collapsible left data viewer, and a main three-tab area for Agent process, conversation/Plan Preview, and results/export. Current verification remains based on the committed backend/frontend suites and service-backed CI integration from the frozen phase commits.
 
-Current scope guard: no real LLM execution, no V1/V2 tool execution, no Celery/Ray/Kubernetes orchestration, no live PostgreSQL/MinIO runtime deployment, no full auth system, and no frontend feature expansion beyond the existing shell.
+Current scope guard: live LLM verification is still gated and not default; production Secret encryption/KMS, multi-step DAG/data-dependency execution, worker supervision/dead-letter policy, advanced material viewer polish, and richer official example routing remain future work.
 
 ## Sharing Archive
 

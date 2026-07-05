@@ -23,5 +23,6 @@ Core constraints:
 - Data Profiles are deterministic inputs to Agent planning.
 - Artifacts, Recipes, Reports, metrics, tables, logs, and parameters must be auditable and reproducible.
 - BYOK / Secret values must never be written to prompts, logs, Artifacts, Recipes, Reports, or export packages.
+- The frontend is an AI assistant workspace, but this does not move execution authority to the browser: the UI uses a top dataset/model context bar, a collapsible data-context viewer, and a main three-tab work area for Agent process, conversation/Plan Preview, and results/export.
 
 After meaningful design or implementation work, update the relevant `persistent/*.md` files.

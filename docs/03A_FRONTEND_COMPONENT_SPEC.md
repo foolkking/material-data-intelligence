@@ -1,190 +1,219 @@
-# Phase 3A：前端组件规格
+# Phase 3A / Phase 9C：前端组件规格
 
-## 1. 本阶段目标
+## 1. 目标
 
-把 Phase 3 的工作台布局进一步拆成可实现的 React 组件树、组件职责、输入输出和关键交互。本文面向后续 `apps/web` 实现，和 `docs/03_FRONTEND_WORKSPACE_DESIGN.md`、`docs/03B_FRONTEND_STATE_AND_INTERACTION.md` 配套使用。
-
-## 2. 本阶段解决的问题
-
-- 避免前端只停留在三栏布局说明，缺少组件边界。
-- 明确 Data Asset、Visualization、Agent、Bottom Panel 四个区域之间的数据流。
-- 明确图表、3D Viewer、Artifact、日志和 Recipe 的加载入口。
-- 为大图表懒加载、错误重试、全屏查看和 Artifact 下载预留组件位置。
-
-## 3. 设计原则
-
-- 工作台组件优先承载任务状态，不把自然语言聊天作为唯一主界面。
-- 卡片只用于单个图表、Artifact、质量问题、工具调用等重复实体。
-- 大图、3D Viewer、报告、Recipe 通过 Artifact Loader 懒加载。
-- 所有危险或失败状态必须有明确可见位置：Timeline、Warnings、Chart Card、Bottom Panel。
-- 组件不直接拼接对象存储路径，只使用 API 返回的 Artifact URL 或签名 URL。
-
-## 4. 核心组件树
+本文定义 Phase 9C 之后的前端组件基线。组件树必须匹配新的 AI 分析助手式工作台：
 
 ```text
-WorkspacePage
-├── TopBar
-│   ├── ProjectSwitcher
-│   ├── DatasetSelector
-│   ├── RunStatusBadge
-│   ├── BudgetMeter
-│   └── ExportMenu
-├── WorkspaceLayout
-│   ├── DataAssetPanel
-│   │   ├── FileTree
-│   │   ├── UploadDropzone
-│   │   ├── ProfileSummary
-│   │   ├── FieldMappingEditor
-│   │   ├── QualityIssueList
-│   │   └── RecommendedTaskList
-│   ├── VisualizationCanvas
-│   │   ├── WorkspaceTabs
-│   │   ├── OverviewDashboard
-│   │   ├── CompositionTab
-│   │   ├── StructureTab
-│   │   ├── MLEvaluationTab
-│   │   ├── TrajectoryTabPlaceholder
-│   │   ├── PhononTabPlaceholder
-│   │   └── ArtifactDetailDrawer
-│   ├── AgentPanel
-│   │   ├── ChatInput
-│   │   ├── PlanSummary
-│   │   ├── ToolCallList
-│   │   ├── Timeline
-│   │   ├── ExplanationPanel
-│   │   └── NextStepSuggestions
-│   └── BottomPanel
-│       ├── LogsTab
-│       ├── CodeTab
-│       ├── ArtifactsTab
-│       ├── RecipeTab
-│       └── WarningsTab
-└── GlobalOverlays
-    ├── ChartFullscreenModal
-    ├── ViewerFullscreenModal
-    ├── ArtifactPreviewModal
-    └── RetryToolCallDialog
+顶部 Global Context Bar
+左侧 Data Context Viewer
+主体 Main Workspace Tabs
+  - Agent 过程
+  - 对话与 Plan
+  - 结果与导出
 ```
 
-## 5. 主要组件职责
+旧 `AgentPanel`、`VisualizationCanvas`、`BottomPanel` 作为历史概念保留，不再是新实现的顶层布局边界。
+
+## 2. 组件原则
+
+- 顶部只放全局上下文、数据集/模型配置入口和系统设置入口。
+- 左侧只做数据上下文查看，不承载结果查看和 Agent 执行过程。
+- 主体内同一时刻只渲染一个 Tab。
+- 结果、报告、3D 材料图、metrics、Artifact、Recipe、导出都归入 `ResultsExportTab`。
+- Developer 信息默认隐藏，放入 `DeveloperAuditDrawer` 或开发者模式折叠区。
+- 组件不得创建绕过 `/planner/jobs`、PlanValidator、QueueWorkerRuntime 或 Tool Registry 的执行入口。
+
+## 3. 核心组件树
+
+```text
+AIPlannerWorkspace
+├── GlobalContextBar
+│   ├── CurrentDatasetButton
+│   ├── ModelStatusButton
+│   ├── JobStatusBadge
+│   └── GlobalSettingsMenu
+│       ├── LanguageToggle
+│       ├── ThemeToggle
+│       ├── UserSettingsEntry
+│       ├── HelpEntry
+│       └── DeveloperModeToggle
+├── DatasetCommandDialog
+│   ├── DatasetList
+│   ├── UploadDatasetAction
+│   ├── DemoDatasetAction
+│   ├── DatasetDetailSummary
+│   └── ProfilePreview
+├── ModelProviderDialog
+│   ├── ProviderModeSelector
+│   ├── ProviderPresetSelector
+│   ├── ProviderConfigForm
+│   ├── SecretSelector
+│   ├── SecretCreateForm
+│   └── ProviderTestResult
+├── WorkspaceBody
+│   ├── ResizableDataContextShell
+│   │   ├── DataContextCollapseButton
+│   │   ├── DataContextResizeHandle
+│   │   └── DataContextViewer
+│   │       ├── TableDatasetViewer
+│   │       ├── StructureDatasetViewer
+│   │       ├── CompositionDatasetViewer
+│   │       ├── ArchiveDatasetViewer
+│   │       └── UnsupportedDatasetNotice
+│   └── MainWorkspaceTabs
+│       ├── AgentProcessTab
+│       │   ├── AgentEventTimeline
+│       │   ├── EventPayloadDisclosure
+│       │   └── ProvenanceStatusStrip
+│       ├── ConversationPlanTab
+│       │   ├── PromptComposer
+│       │   ├── ConversationChunkList
+│       │   │   ├── UserRequestChunk
+│       │   │   ├── SystemResponseChunk
+│       │   │   ├── PlanPreviewChunk
+│       │   │   ├── ValidationResultChunk
+│       │   │   └── RunStatusChunk
+│       │   └── PlanPreviewPanel
+│       └── ResultsExportTab
+│           ├── SelectedResultContextHeader
+│           ├── MaterialResultRenderer
+│           ├── MetricsResultRenderer
+│           ├── TableSummaryRenderer
+│           ├── ArtifactGallery
+│           ├── ReportRecipeRenderer
+│           ├── ExportControls
+│           └── EmptyResultState
+├── DeveloperAuditDrawer
+│   ├── RawAnalysisPlanView
+│   ├── RawJobEventsView
+│   ├── RawToolCallsView
+│   ├── RawArtifactsView
+│   └── ApiResponseView
+└── SharedOverlays
+    ├── ErrorExplainer
+    ├── ArtifactPreviewModal
+    └── FullscreenResultModal
+```
+
+## 4. 顶部组件职责
 
 | 组件 | 职责 | 主要数据 |
 |---|---|---|
-| `WorkspacePage` | 读取 route params，装配 workspace providers | projectId、datasetId |
-| `TopBar` | 项目/数据集切换、运行状态、预算、导出入口 | project、dataset、activeJob |
-| `DataAssetPanel` | 数据文件、Data Profile、字段映射和质量问题 | files、profile、fieldMappings |
-| `VisualizationCanvas` | Tab 化图表与 3D Viewer 展示 | chartCards、artifacts、activeTab |
-| `AgentPanel` | 自然语言输入、计划摘要、工具调用、Timeline | messages、analysisPlan、jobEvents |
-| `BottomPanel` | 日志、代码、Artifact、Recipe、Warnings | logs、codeSnippets、artifacts、recipe |
+| `GlobalContextBar` | 显示当前数据集、模型状态、任务状态和系统设置入口 | dataset, profile, provider, job |
+| `CurrentDatasetButton` | 打开数据集弹窗，展示当前 dataset 简要状态 | datasetId, profileStatus |
+| `ModelStatusButton` | 打开模型配置弹窗，展示 Mock/real provider 状态 | providerMode, model, status |
+| `GlobalSettingsMenu` | 语言、主题、用户、帮助、开发者模式 | ui preferences |
+| `DatasetCommandDialog` | 数据集选择、上传、demo 数据、profile 摘要 | datasets, profiles |
+| `ModelProviderDialog` | provider 选择、Secret 选择/保存、连接测试 | providers, secrets |
 
-## 6. 图表卡片规格
+## 5. 左侧组件职责
+
+`DataContextViewer` 是 format-adaptive viewer。
+
+| 子组件 | 数据类型 | 展示内容 |
+|---|---|---|
+| `TableDatasetViewer` | CSV/table | 行数、字段数、数值列、类别列、字段角色、表格预览 |
+| `StructureDatasetViewer` | CIF/POSCAR/Structure JSON | formula、元素、原子数、结构摘要、解析 warning |
+| `CompositionDatasetViewer` | composition/formula | 组成字段、元素分布、化学体系 |
+| `ArchiveDatasetViewer` | ZIP/archive | 文件树、解析状态、normalized objects |
+| `UnsupportedDatasetNotice` | unsupported/partial | 原因、可用对象、推荐下一步 |
+
+左侧 shell 必须提供：
+
+- `leftPanelWidth`
+- `leftPanelCollapsed`
+- drag resize
+- collapse/expand
+- responsive drawer fallback
+
+## 6. 主体组件职责
+
+### AgentProcessTab
+
+展示 JobEvent 和执行 provenance。
+
+| 子组件 | 职责 |
+|---|---|
+| `AgentEventTimeline` | 渲染 `plan.generated`、`plan.persisted`、`plan.loaded`、`data.loaded`、`tool.completed` 等事件 |
+| `EventPayloadDisclosure` | 展开安全 payload，不展示 Secret 或 raw prompt/completion |
+| `ProvenanceStatusStrip` | 显示 persisted plan、Tool Registry + Adapter、no fallback 等状态 |
+
+### ConversationPlanTab
+
+承载自然语言对话和 Plan Preview。
+
+| 子组件 | 职责 |
+|---|---|
+| `PromptComposer` | 用户输入中文/英文分析需求，展示当前 dataset/provider 状态 |
+| `ConversationChunkList` | 统一渲染 user/system/plan/validation/run chunks |
+| `PlanPreviewPanel` | 普通用户看自然语言步骤；开发者模式看 stepId/toolId/raw JSON |
+
+Chunk 必须可选中，选中后更新结果上下文。
+
+### ResultsExportTab
+
+根据 `selectedChunkId`、`selectedResultArtifactId`、active job 和 artifacts 展示结果。
+
+| 子组件 | 职责 |
+|---|---|
+| `SelectedResultContextHeader` | 显示当前结果来源 chunk/job/tool/artifact |
+| `MaterialResultRenderer` | 展示 3D 材料图或 sandboxed structure viewer |
+| `MetricsResultRenderer` | 展示 metrics_json |
+| `TableSummaryRenderer` | 展示 table_json / numeric_summary_json |
+| `ArtifactGallery` | 按类型分组展示 Artifact |
+| `ReportRecipeRenderer` | 展示系统摘要、Recipe、provenance |
+| `ExportControls` | 报告导出、artifact 下载 |
+
+## 7. ErrorExplainer
+
+`ErrorExplainer` 可被三个主体 Tab 和两个顶部 Dialog 复用。
 
 ```ts
-type ChartCardProps = {
-  cardId: string;
+type ErrorExplainerProps = {
   title: string;
-  displayTarget: DisplayTarget;
-  state: ChartCardState;
-  toolId?: string;
-  artifactIds: string[];
-  warningCount: number;
-  errorMessage?: string;
-  onOpenDetail: (artifactId: string) => void;
-  onFullscreen: (artifactId: string) => void;
-  onRetry?: (toolCallId: string) => void;
+  message: string;
+  errorType?: string;
+  safeDetails?: string;
+  suggestions: string[];
+  redacted: boolean;
 };
 ```
 
-卡片区域：
+错误文案必须描述用户下一步，例如重新选择数据集、生成 Profile、检查模型配置、重试任务。不得把 provider raw error、API key、Authorization header 或内部绝对路径显示给普通用户。
 
-- Header：标题、工具 ID、状态图标、更多菜单。
-- Body：skeleton、Plotly renderer、iframe、image preview 或 table preview。
-- Footer：输入摘要、关键参数、导出按钮、重试按钮。
-- Warning Strip：展示降采样、LOD、解析失败、字段缺失等提示。
+## 8. Artifact 渲染策略
 
-## 7. Artifact Loader
-
-`ArtifactLoader` 根据 `ArtifactType` 选择加载策略：
-
-| ArtifactType | Loader |
+| ArtifactType | Component |
 |---|---|
-| `plotly_json` | React Plotly renderer，必要时 Web Worker 预处理 |
-| `plotly_html` | sandboxed iframe |
-| `preview_png` | image preview |
-| `matterviz_html` | sandboxed iframe |
-| `metrics_json` | MetricsGrid |
-| `table_json` | VirtualizedTable preview |
-| `table_csv` | 下载入口 + 预览摘要 |
-| `quality_issues_json` | QualityIssueList |
-| `report_html` | sandboxed report viewer |
-| `recipe_json` | RecipeViewer |
+| `plotly_json` / `plotly_html` | `ArtifactGallery` + `FullscreenResultModal` |
+| `matterviz_html` | `MaterialResultRenderer` sandboxed iframe |
+| `metrics_json` | `MetricsResultRenderer` |
+| `table_json` / `table_csv` | `TableSummaryRenderer` |
+| `quality_issues_json` | `DataContextViewer` 或 `ResultsExportTab` |
+| `report_markdown` / `report_html` | `ReportRecipeRenderer` |
+| `recipe_json` | `ReportRecipeRenderer` |
 
-Artifact Loader 必须处理：
+大对象不进入前端全局 store，只通过 Artifact URL/API 懒加载。
 
-- `loading`
-- `loaded`
-- `failed`
-- `expired_url`
-- `permission_denied`
-- `too_large_preview`
+## 9. 安全边界
 
-## 8. 3D Viewer 组件
+- `ModelProviderDialog` 不能把明文 key 写入 localStorage/sessionStorage。
+- Secret 保存后必须清空输入框。
+- Secret list 只能展示 alias/provider/status/masked preview。
+- Provider test 只显示 redacted 结果。
+- `DeveloperAuditDrawer` 不展示 Secret、raw completion、内部临时路径。
+- 所有执行仍由后端 `/planner/jobs` 创建 persisted AnalysisPlan 和 job；前端组件不能绕过。
 
-```text
-StructureTab
-├── RepresentativeStructureList
-├── StructureViewerPanel
-│   ├── MatterVizIframeViewer
-│   ├── Structure3DPlotlyFallback
-│   └── ViewerLoadingOverlay
-├── StructureMetadataPanel
-└── ViewerControls
-    ├── BondsToggle
-    ├── CellToggle
-    ├── SiteLabelToggle
-    ├── LODBadge
-    └── FullscreenButton
-```
+## 10. Legacy 组件映射
 
-MVP 中 `MatterVizIframeViewer` 以 `viewer.html` 为 canonical。`snapshot.png` 只作为可选预览，不作为首版必需依赖。
-
-## 9. 空状态、错误态与重试态
-
-| 场景 | 组件行为 |
+| Legacy | Phase 9C 替代 |
 |---|---|
-| 无数据 | 中央显示上传入口，右侧 Agent 输入禁用 |
-| 正在解析 | 左侧和中央显示 skeleton，Timeline 显示解析事件 |
-| 部分解析失败 | 左侧 QualityIssueList 可定位失败文件，成功对象仍可分析 |
-| 计划校验失败 | AgentPanel 显示失败步骤、原因和修复建议 |
-| 单个工具失败 | 对应 ChartCard 显示 retry，不影响其他 Artifact |
-| Artifact URL 过期 | ArtifactLoader 重新请求签名 URL |
-| 权限不足 | 显示项目权限错误，不暴露存储路径 |
+| `TopBar` | `GlobalContextBar` |
+| `DataAssetPanel` | `DataContextViewer` |
+| `VisualizationCanvas` | `MainWorkspaceTabs` |
+| `AgentPanel` | `ConversationPlanTab` + `AgentProcessTab` |
+| `BottomPanel` | `ResultsExportTab` + `DeveloperAuditDrawer` |
+| `ArtifactDetailDrawer` | `ResultsExportTab` / `ArtifactPreviewModal` |
 
-## 10. 数据流 / 控制流
-
-```text
-Route projectId/datasetId
-  -> TanStack Query loads workspace metadata
-  -> SSE subscribes active job events
-  -> WorkspaceStore updates timeline and card states
-  -> Artifact events invalidate artifact queries
-  -> ArtifactLoader fetches signed preview/download URL
-```
-
-## 11. 高并发、安全、扩展性考虑
-
-- 图表和 3D Viewer 进入视口或 Tab 激活后再加载。
-- `table_json` 只加载 preview window，大表走分页或虚拟列表。
-- HTML Artifact 一律 sandboxed iframe + CSP，不允许访问父窗口。
-- Plotly 大图优先加载后端预聚合 Artifact，不在前端直接渲染百万点。
-- `TrajectoryTab` 和 `PhononTab` 在 MVP 可显示能力占位和已识别数据摘要，完整执行工具进入 V1。
-
-## 12. 本阶段产出的目标文件
-
-```text
-docs/03A_FRONTEND_COMPONENT_SPEC.md
-```
-
-## 13. 下一阶段任务
-
-结合 `docs/03B_FRONTEND_STATE_AND_INTERACTION.md` 实现前端状态切片、事件流 reducer、Artifact Loader 和 Chart Card 状态机。
+后续实现不得重新引入独立右侧 Result Inspector 作为主布局。

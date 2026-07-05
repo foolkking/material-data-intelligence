@@ -13,6 +13,7 @@ Start by reading `persistent/PROJECT_BRIEF.md`, `persistent/DESIGN_PROGRESS.md`,
 7. Every Artifact, Recipe, and Report must be auditable and reproducible.
 8. User Secret / BYOK values must never enter prompts, logs, Artifacts, Recipes, Reports, or export packages.
 9. Update persistent files after every meaningful design or implementation change.
+10. Frontend UI redesigns must not move execution authority into the browser; Planner jobs still flow through validated/persisted AnalysisPlans, QueueWorkerRuntime, Tool Registry, and Adapter execution.
 
 ## Documentation Rules
 
@@ -20,3 +21,4 @@ Start by reading `persistent/PROJECT_BRIEF.md`, `persistent/DESIGN_PROGRESS.md`,
 - Prefer updating existing design files over creating duplicate notes.
 - Add new shared schemas to `docs/13_SHARED_SCHEMA_SPEC.md`.
 - Keep MVP / V1 / V2 scope consistent across docs.
+- Keep the Phase 9C frontend baseline consistent: top global context bar, collapsible/resizable left data-context viewer, and one active main workspace tab among Agent process, conversation/Plan, and results/export.

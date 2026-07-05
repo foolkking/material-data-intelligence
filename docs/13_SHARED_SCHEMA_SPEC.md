@@ -574,3 +574,92 @@ Recipe must not save a concrete `SecretRef`; it only stores provider/model requi
   `content_type`, `size_bytes`, `sha256`, `preview_key`, and `created_at`.
   Local artifacts use `storage_provider = "local"` and may omit `bucket`;
   S3/MinIO mappings require a bucket.
+
+## Phase 9C Addendum: UI-only workspace view models
+
+Phase 9C adds frontend-only view model names for the AI assistant workspace.
+These types do not change the persisted backend schema, Alembic migrations,
+AnalysisPlan JSON, Tool Registry manifests, or JobEvent database contract.
+
+```ts
+type MainWorkspaceTab =
+  | "agent_process"
+  | "conversation_plan"
+  | "results_export";
+
+type ConversationChunkKind =
+  | "user_request"
+  | "system_response"
+  | "plan_preview"
+  | "validation_result"
+  | "run_status"
+  | "result_reference";
+
+type ConversationChunkView = {
+  id: string;
+  kind: ConversationChunkKind;
+  title: string;
+  summary: string;
+  createdAt: string;
+  status: "idle" | "running" | "success" | "warning" | "error";
+  relatedJobId?: string;
+  relatedPlanId?: string;
+  relatedStepId?: string;
+  relatedToolCallId?: string;
+  relatedArtifactIds: string[];
+  userVisiblePayload: Record<string, unknown>;
+  developerPayload?: Record<string, unknown>;
+};
+
+type DataContextViewerState = {
+  datasetId?: string;
+  profileId?: string;
+  status:
+    | "empty"
+    | "loading"
+    | "profiling"
+    | "ready"
+    | "partial_error"
+    | "unsupported";
+  detectedKind?: "table" | "structure" | "composition" | "archive" | "mixed" | "unsupported";
+  summary: Record<string, unknown>;
+  qualityIssues: Array<{
+    severity: "info" | "warning" | "error";
+    message: string;
+    ref?: string;
+  }>;
+};
+
+type SelectedResultContext = {
+  chunkId?: string;
+  jobId?: string;
+  planId?: string;
+  planHash?: string;
+  stepId?: string;
+  toolCallId?: string;
+  artifactId?: string;
+  resultKind?:
+    | "report"
+    | "material_3d"
+    | "metrics"
+    | "table_summary"
+    | "artifact_gallery"
+    | "recipe"
+    | "export";
+};
+```
+
+Phase 9C UI state also includes `leftPanelWidth`, `leftPanelCollapsed`,
+`activeMainTab`, `selectedChunkId`, `selectedResultArtifactId`,
+`datasetDialogOpen`, `modelDialogOpen`, and `developerMode`. These fields are
+frontend interaction state only. They must not be treated as server-side
+business facts.
+
+Security constraints still apply:
+
+- API keys and Secret values must not enter UI persistence, JobEvents,
+  Artifacts, Reports, Recipes, or export packages.
+- Raw provider prompts and raw completions are not part of these UI view
+  models.
+- Chunk selection only changes frontend presentation context; execution
+  remains controlled by validated and persisted AnalysisPlans.

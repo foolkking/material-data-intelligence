@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## 2026-07-05
+
+### Phase 9C Browser Visual QA and Official Direct Re-verification
+
+- Ran browser-controlled visual QA for the Phase 9C workspace and saved six QA screenshots under `docs/ui-redesign/phase9c_browser_qa/`.
+- Re-ran the two official direct-uploadable pymatviz examples through the Phase 9C UI after deleting old Desktop `results/` directories.
+- MatPES fresh run: `dataset_0004`, `job_c6e8034a138f469da0d72f2e`, `plan_202acca0e0c74d5fa7a0f794`, `ml.basic_metrics`, `metrics.json`, verdict `PASS_WITH_CURRENT_PLATFORM_SCOPE`.
+- Ward fresh run: `dataset_0005`, `job_3c6b5797a14e4732bf19c64d`, `plan_017cf930f0224728bb3850b5`, `table.numeric_summary`, `numeric_summary.json` / `summary.md` / `recipe.json`, verdict `PASS_WITH_CURRENT_PLATFORM_SCOPE`.
+- Updated the Desktop official examples evidence pack only; no Desktop evidence files are intended for the project Git commit.
+- No real LLM was used and no API key was entered or captured.
+
+### Phase 9C UI/UX Redesign Implementation
+
+- Reworked `PlannerWorkbench` to the Phase 9C layout: top global context bar, collapsible/resizable left data-context viewer, and main workspace tabs.
+- Added top-bar dataset/profile and model/provider dialogs instead of keeping those controls in a permanent left control column.
+- Replaced the old independent right status column and bottom result tabs with three mutually exclusive main tabs: `Agent 过程`, `对话与 Plan`, and `结果与导出`.
+- Added conversation chunk selection and result-context routing into `结果与导出`.
+- Moved report/recipe summary, 3D material result placeholder, metrics, table/numeric summary, Artifact Gallery, ToolCalls, and export controls into the main results tab.
+- Updated i18n dictionaries and CSS for the new layout.
+- Updated frontend tests to cover the Phase 9C layout, top dialogs, left data viewer, Secret no-leak behavior, mutually exclusive tabs, Agent event evidence, results/export content, and validation failure no plan/job/enqueue.
+- No backend API, worker runtime, PlanValidator, AnalysisPlanRepository, Tool Registry, Adapter, migration, or real-LLM CI path changed.
+- Verification: `uv lock --check` passed; Phase 7 targeted 32 passed; Phase 8B targeted 9 passed / 1 skipped locally; Phase 8C targeted 2 passed; Phase 9B API targeted 15 passed; backend full 138 passed / 21 skipped; frontend `npm test` 6 passed; typecheck passed; build passed; `git diff --check` passed with line-ending warnings only.
+
+### Phase 9C UI/UX Redesign Docs Baseline
+
+- Updated frontend design docs to make the AI assistant workspace the canonical UI direction.
+- Replaced the old recommended three-column/right-panel/bottom-panel layout with a top global context bar, a collapsible/resizable left data-context viewer, and a main workspace with three mutually exclusive tabs.
+- Documented the three main tabs: `Agent 过程`, `对话与 Plan`, and `结果与导出`.
+- Documented that all results, including reports, 3D material views, metrics, table summaries, Artifacts, Recipe/provenance, exports, and downloads, belong to `结果与导出` rather than a separate right panel.
+- Added UI-only view model notes to the shared schema spec for main tab, conversation chunk, data-context viewer, and selected result context.
+- Updated README, MASTER_PROMPT, AGENTS, docs index, product requirements, and persistent files to keep future sessions aligned.
+- No application code, backend API, worker runtime, Tool Registry, Adapter, migration, test, or CI behavior changed in this docs-only update.
+
 ## 2026-07-04
 
 ### Phase 9B Official Direct Examples Semantic Refinement

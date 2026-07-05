@@ -1,5 +1,66 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-087: Phase 9C frontend baseline uses a top/left/main-tab AI assistant workspace
+
+### Context
+
+Phase 9B productized the Planner workspace, but its layout still carried the
+old engineering lineage: left controls, central prompt/plan area, right
+health/provenance/timeline, and bottom result tabs. The desired product
+direction is an AI analysis assistant workspace that keeps context visible
+without splitting execution process, conversation, and results across fixed
+page columns.
+
+The user explicitly rejected an independent right-side Result Inspector. Agent
+process, conversation/Plan, and results must all live inside the main workspace
+and be selected by tabs.
+
+### Decision
+
+The canonical frontend layout is now:
+
+```text
+Top global context bar:
+  current dataset + model status + dataset/model dialogs + system settings
+
+Left data-context viewer:
+  resizable, collapsible, format-adaptive dataset/profile viewer
+
+Main workspace:
+  tabs = Agent 过程 / 对话与 Plan / 结果与导出
+  only one main tab is visible at a time
+```
+
+`结果与导出` owns report summaries, 3D material views, metrics, table/numeric
+summaries, Artifact Gallery, Recipe/provenance, report export, and artifact
+downloads. These are not implemented as a persistent right-side panel.
+
+`对话与 Plan` owns natural-language conversation chunks, Plan Preview,
+validation chunks, and run-status chunks. Chunk selection drives the context
+shown later in `结果与导出`.
+
+`Agent 过程` owns structured JobEvent/ToolCall timeline display and safe
+payload disclosure. It must not show hidden chain-of-thought, raw completions,
+or secrets.
+
+### Consequences
+
+- Old right Agent panel and bottom result panel designs are legacy background,
+  not the preferred Phase 9C implementation target.
+- Frontend implementation should migrate toward `AIPlannerWorkspace`,
+  `GlobalContextBar`, `DataContextViewer`, `MainWorkspaceTabs`,
+  `AgentProcessTab`, `ConversationPlanTab`, and `ResultsExportTab`.
+- The initial implementation baseline now applies this in `PlannerWorkbench`:
+  dataset/model controls moved into top dialogs, the left panel is a
+  resizable/collapsible viewer, and results are rendered only through the main
+  `结果与导出` tab.
+- This is a UI information-architecture decision only. It does not change
+  AnalysisPlan schema, persisted plan loading, queue-worker semantics, Tool
+  Registry, Adapter behavior, or provider security.
+- Execution authority remains backend-owned:
+  `/planner/jobs` -> PlanValidator -> persisted AnalysisPlan -> job.plan_id ->
+  QueueWorkerRuntime -> Tool Registry -> Adapter.
+
 ## ADR-086: Ward-style tabular summaries use table.numeric_summary instead of regression metrics
 
 ### Context

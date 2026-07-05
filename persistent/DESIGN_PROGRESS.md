@@ -1,5 +1,52 @@
 # DESIGN_PROGRESS
 
+## 2026-07-05 Phase 9C Browser Visual QA and Official Direct Re-verification
+
+- Ran a real browser-controlled Phase 9C visual QA against the local workspace at `http://127.0.0.1:3000` with API `http://127.0.0.1:8000`, local SQLite/runtime queue, local ArtifactStorage, and Mock Planner only.
+- Saved Phase 9C browser QA screenshots under `docs/ui-redesign/phase9c_browser_qa/`:
+  `01_workspace_default.png`, `02_data_context_viewer.png`, `03_agent_process_tab.png`,
+  `04_chat_plan_tab.png`, `05_results_export_tab.png`, and `06_developer_mode.png`.
+- Verified the UI visually follows the Phase 9C baseline: top global dataset/model/job bar, left data-context viewer, and exactly one active main tab among `Agent 过程`, `对话与 Plan`, and `结果与导出`. No independent right result panel, right Agent panel, or bottom result tabs were used.
+- Re-deleted and regenerated fresh Desktop evidence for the two official direct-uploadable pymatviz cases using the Phase 9C UI:
+  - `matpes_atomic_energies_csv`: dataset `dataset_0004`, profile `profile_dataset_0004_v1`, job `job_c6e8034a138f469da0d72f2e`, plan `plan_202acca0e0c74d5fa7a0f794`, planHash `a205a4de5017e47c47358d1f97ca919d5d5db926920520a3430468c7867e0dfe`, tool `ml.basic_metrics`, artifact `metrics.json`, verdict `PASS_WITH_CURRENT_PLATFORM_SCOPE`.
+  - `ward_metallic_glasses_csv_xz`: dataset `dataset_0005`, profile `profile_dataset_0005_v1`, job `job_3c6b5797a14e4732bf19c64d`, plan `plan_017cf930f0224728bb3850b5`, planHash `4c16e617ea4c6efc727f81d7b0915fe6ee6e92191b98ae41a558713c1bbde9c2`, tool `table.numeric_summary`, artifacts `numeric_summary.json`, `summary.md`, and `recipe.json`, verdict `PASS_WITH_CURRENT_PLATFORM_SCOPE`.
+- The official example evidence pack was updated at `C:\Users\86182\Desktop\pymatviz_official_examples_test_suite`, but that Desktop evidence pack is not part of the project Git commit. Only the Phase 9C QA screenshots under `docs/ui-redesign/phase9c_browser_qa/` are intended for commit.
+- True LLM was not used; no API key was entered or captured.
+
+## 2026-07-05 Phase 9C UI/UX Redesign Implementation Baseline
+
+- Implemented the Phase 9C frontend layout in `apps/web/app/components/PlannerWorkbench.tsx`: top `GlobalContextBar`, resizable/collapsible left `DataContextViewer`, and a main workspace with exactly three mutually exclusive tabs.
+- Top bar now opens dataset/profile and model/provider dialogs. Dataset dialog supports dataset selection, manual IDs, demo dataset loading, upload, and profile generation. Model dialog supports Mock/OpenAI-compatible mode, provider preset/config fields, Secret selection/creation/deletion, and safe provider test.
+- Left `DataContextViewer` is now a viewer rather than a control column. It adapts rendered profile content for table, structure, archive/object, and unsupported/partial states, and supports collapse plus drag resize.
+- Main workspace tabs are `Agent 过程`, `对话与 Plan`, and `结果与导出`; only the active tab is rendered. There is no independent right status/result column and no bottom result tab strip in the Phase 9C implementation.
+- Conversation uses selectable chunks for user request, Plan Preview, validation, run status, and result references. Chunk selection drives the result context used by `结果与导出`.
+- Results/export tab now owns report/recipe summary, 3D material result placeholder, metrics result, table/numeric summary, Artifact Gallery, ToolCalls, and export/download controls. It shows `请选择一个分析步骤或结果 chunk` when no chunk is selected.
+- Agent process tab shows structured JobEvents including `plan.loaded`, `data.loaded`, `tool.started`, `tool.completed`, and `job.completed`, with safe payload disclosure and persisted-plan/Tool Registry/no-fallback provenance.
+- Updated frontend tests to cover the strict top/left/main-tab layout, dataset/model top dialogs, Secret no-leak behavior, left data viewer, mutually exclusive main tabs, Agent process evidence, results/export evidence, validation-failure no plan/job/enqueue, and no broad `Not available yet` UI.
+- Phase 8B/9A execution boundaries remain unchanged: no backend route, QueueWorkerRuntime, AnalysisPlanRepository, Tool Registry, Adapter, provider security, migration, or CI behavior was changed.
+
+Verification so far:
+
+- `npm run typecheck` in `apps/web`: passed.
+- `npm test` in `apps/web`: 6 passed.
+- `npm run build` in `apps/web`: passed.
+- `uv lock --check`: passed.
+- `python -m pytest tests/test_phase7_llm_planner.py -q`: 32 passed.
+- `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q`: 9 passed / 1 skipped locally.
+- `python -m pytest tests/test_phase8c_planner_read_api.py -q`: 2 passed.
+- `python -m pytest tests/test_phase9b_demo_workspace_api.py -q`: 15 passed.
+- `python -m pytest -q`: 138 passed / 21 skipped.
+- `git diff --check`: passed with Windows line-ending warnings only.
+
+## 2026-07-05 Phase 9C UI/UX Redesign Docs Baseline
+
+- Updated the frontend design baseline to the user-specified AI assistant workspace layout: top global dataset/model context bar, collapsible/resizable left data-context viewer, and a main workspace with exactly three mutually exclusive tabs.
+- The three main tabs are now canonical: `Agent 过程`, `对话与 Plan`, and `结果与导出`. The independent right-side Result Inspector, legacy right Agent panel, and bottom result panel are no longer recommended implementation targets.
+- Results are now documented as part of the main `结果与导出` tab: report summary, 3D material view, metrics, table/numeric summary, Artifact Gallery, Recipe/provenance, report export, and artifact download all live there.
+- Added UI-only view model names for `MainWorkspaceTab`, `ConversationChunkView`, `DataContextViewerState`, and `SelectedResultContext` in the shared schema document without changing backend persistence schema.
+- Preserved core execution boundaries: LLMs still produce JSON AnalysisPlans only; valid plans still pass PlanValidator, persist as AnalysisPlans, bind through jobs, load in QueueWorkerRuntime, and execute through Tool Registry + Adapter.
+- This round is docs-only. No API, Worker, Tool Registry, Adapter, frontend implementation code, tests, migrations, or CI configuration were changed.
+
 ## 2026-07-05 Phase 9B Official Direct Examples Semantic Refinement
 
 - Added a minimal `table.numeric_summary` MVP tool and adapter for semantically correct table statistics on official direct-uploadable tabular examples.

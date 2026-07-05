@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-05 Phase 9C UI redesign does not change the Registry gate
+
+- The Phase 9C docs update changes frontend information architecture only.
+- The Phase 9C implementation also changes frontend information architecture only: top dataset/model dialogs, left data-context viewer, and main Agent/conversation/results tabs.
+- No Tool Registry manifest, adapter implementation, tool scope, PlanValidator rule, QueueWorkerRuntime behavior, provider behavior, or `/planner/jobs` persistence/enqueue semantics changed.
+- The new UI may show Agent process, conversation/Plan, and results/export as main workspace tabs, but it must not create a browser-side execution path.
+- Valid jobs still follow: provider JSON AnalysisPlan -> PlanValidator -> persisted AnalysisPlan -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> ToolCall/Artifact/Result provenance.
+- Developer mode may reveal tool IDs, step IDs, plan IDs, plan hash, raw AnalysisPlan JSON, safe JobEvent payloads, and API responses, but Secret/API key values remain prohibited in UI storage, prompts, JobEvents, Artifacts, Reports, Recipes, and export packages.
+
 ## 2026-07-05 Phase 9B - table.numeric_summary added for semantic table summaries
 
 - Added `table.numeric_summary` as an MVP platform builtin tool with `NumericSummaryAdapter`.
@@ -477,6 +486,6 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 
 - Direct official browser evidence currently validates the Tool Registry + Adapter path for `ml.basic_metrics` only.
 - MatPES evidence selected `PBE` and `r2SCAN` from the DataProfile and produced a `metrics_json` artifact.
-- Ward metallic glasses evidence selected `D_max` and `dTx` after parser numeric coercion and planner filtering of sparse `Unnamed:` columns.
+- Ward metallic glasses evidence now routes to `table.numeric_summary`; `D_max` and `dTx` are summarized as independent numeric properties instead of being treated as target/prediction metrics columns.
 - Official richer tools such as `plotly_custom.histogram`, `composition.ptable_heatmap`, `composition.elements_hist`, classification curves, phonon tools, Brillouin zone, and MatterViz widgets were not downgraded into current PASS. They are preserved as future expected tools in the evidence pack.
 - No evidence path bypassed Tool Registry or Adapter execution.

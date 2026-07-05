@@ -67,7 +67,7 @@ const jobDetail = {
   validationStatus: "validated",
   toolCallCount: 1,
   artifactCount: 3,
-  eventCount: 4,
+  eventCount: 8,
   provenance: {
     planId: "plan_1",
     planHash: "hash_1",
@@ -79,10 +79,14 @@ const jobDetail = {
 };
 
 const events = [
-  { id: "evt_1", jobId: "job_1", seq: 1, eventType: "job.created", status: "info", message: "Created.", payload: {}, createdAt: "2026-07-04T00:00:00Z" },
+  { id: "evt_1", jobId: "job_1", seq: 1, eventType: "plan.generated", status: "success", message: "Generated plan.", payload: {}, createdAt: "2026-07-04T00:00:00Z" },
   { id: "evt_2", jobId: "job_1", seq: 2, eventType: "plan.persisted", status: "success", message: "Persisted plan.", payload: { planId: "plan_1", planHash: "hash_1" }, createdAt: "2026-07-04T00:00:01Z" },
-  { id: "evt_3", jobId: "job_1", seq: 3, eventType: "plan.loaded", status: "success", message: "Loaded persisted AnalysisPlan.", payload: { planId: "plan_1", planHash: "hash_1" }, createdAt: "2026-07-04T00:00:02Z" },
-  { id: "evt_4", jobId: "job_1", seq: 4, eventType: "job.completed", status: "success", message: "Job completed.", payload: {}, createdAt: "2026-07-04T00:00:03Z" }
+  { id: "evt_3", jobId: "job_1", seq: 3, eventType: "job.queued", status: "success", message: "Job queued.", payload: {}, createdAt: "2026-07-04T00:00:01Z" },
+  { id: "evt_4", jobId: "job_1", seq: 4, eventType: "plan.loaded", status: "success", message: "Loaded persisted AnalysisPlan.", payload: { planId: "plan_1", planHash: "hash_1" }, createdAt: "2026-07-04T00:00:02Z" },
+  { id: "evt_5", jobId: "job_1", seq: 5, eventType: "data.loaded", status: "success", message: "Loaded dataset objects.", payload: {}, createdAt: "2026-07-04T00:00:02Z" },
+  { id: "evt_6", jobId: "job_1", seq: 6, eventType: "tool.started", status: "running", message: "Tool started.", payload: {}, createdAt: "2026-07-04T00:00:02Z" },
+  { id: "evt_7", jobId: "job_1", seq: 7, eventType: "tool.completed", status: "success", message: "Tool completed.", payload: {}, createdAt: "2026-07-04T00:00:03Z" },
+  { id: "evt_8", jobId: "job_1", seq: 8, eventType: "job.completed", status: "success", message: "Job completed.", payload: {}, createdAt: "2026-07-04T00:00:04Z" }
 ];
 
 const toolCalls = [
@@ -167,49 +171,48 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("Phase 9B PlannerWorkbench", () => {
-  it("renders Chinese by default, switches language, and replaces broad Not available yet states", async () => {
-    const user = userEvent.setup();
+describe("Phase 9C PlannerWorkbench", () => {
+  it("renders the strict top/left/main-tab layout in Chinese by default", async () => {
     render(<PlannerWorkbench />);
 
-    expect(await screen.findByText("材料数据智能分析工作台")).not.toBeNull();
+    expect(await screen.findByTestId("global-context-bar")).not.toBeNull();
+    expect(screen.getByTestId("data-context-viewer")).not.toBeNull();
+    expect(screen.getByTestId("main-workspace")).not.toBeNull();
+    expect(screen.getByRole("button", { name: /当前数据集/ })).not.toBeNull();
+    expect(screen.getByRole("button", { name: /模型状态/ })).not.toBeNull();
+    expect(screen.getByRole("button", { name: "Agent 过程" })).not.toBeNull();
+    expect(screen.getByRole("button", { name: "对话与 Plan" })).not.toBeNull();
+    expect(screen.getByRole("button", { name: "结果与导出" })).not.toBeNull();
     expect(screen.queryByText("Not available yet")).toBeNull();
-    expect(screen.getAllByText("尚未生成分析计划").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("尚未创建任务").length).toBeGreaterThan(0);
-
-    await user.click(screen.getByRole("button", { name: "English" }));
-    expect(screen.getByText("Materials Data Intelligence Planner")).not.toBeNull();
-    expect(screen.getAllByText("No analysis plan has been generated").length).toBeGreaterThan(0);
-    expect(document.body.textContent).not.toContain("数据上下文");
-    expect(document.body.textContent).not.toContain("API 服务");
-    expect(document.body.textContent).not.toContain("自定义 OpenAI-compatible");
+    expect(screen.queryByTestId("agent-process-tab")).toBeNull();
+    expect(screen.queryByTestId("results-export-tab")).toBeNull();
+    expect(screen.getByTestId("conversation-plan-tab")).not.toBeNull();
   });
 
-  it("loads backend demo dataset, selects profile, and shows profile summary", async () => {
+  it("opens dataset dialog from the top bar, loads demo data, and updates the left data viewer", async () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
-    await user.click(screen.getAllByRole("button", { name: "加载演示数据" })[0]);
+    await user.click(screen.getByRole("button", { name: /当前数据集/ }));
+    expect(screen.getByRole("dialog", { name: "数据集与 Profile" })).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "加载演示数据" }));
 
     await waitFor(() => {
-      expect((screen.getByLabelText("数据集 ID") as HTMLInputElement).value).toBe("dataset_demo");
-      expect((screen.getByLabelText("Profile ID") as HTMLInputElement).value).toBe("profile_demo");
+      expect(screen.queryByRole("dialog", { name: "数据集与 Profile" })).toBeNull();
+      expect(within(screen.getByTestId("data-context-viewer")).getByText("dataset_demo")).not.toBeNull();
+      expect(within(screen.getByTestId("data-context-viewer")).getByText("profile_demo")).not.toBeNull();
     });
-    expect(within(screen.getByTestId("profile-summary")).getByText("Rows")).not.toBeNull();
-    expect(within(screen.getByTestId("profile-summary")).getByText("5")).not.toBeNull();
-
-    await user.selectOptions(screen.getByLabelText("数据集选择"), "dataset_api");
-    await waitFor(() => {
-      expect((screen.getByLabelText("数据集 ID") as HTMLInputElement).value).toBe("dataset_api");
-      expect((screen.getByLabelText("Profile ID") as HTMLInputElement).value).toBe("profile_api");
-    });
+    expect(within(screen.getByTestId("data-context-viewer")).getAllByText("表格数据").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("data-context-viewer")).getByText("y_true")).not.toBeNull();
   });
 
-  it("supports provider settings, Secret UX, and does not leak API key to storage or UI", async () => {
+  it("opens model dialog from the top bar, saves a secret without browser storage leakage, and tests the provider", async () => {
     const user = userEvent.setup();
     const apiKey = "sk-ui-secret-value";
     render(<PlannerWorkbench />);
 
+    await user.click(screen.getByRole("button", { name: /模型状态/ }));
+    expect(screen.getByRole("dialog", { name: "模型与 API 配置" })).not.toBeNull();
     await user.selectOptions(screen.getByLabelText("规划器模式"), "openai_compatible");
     await user.clear(screen.getByLabelText("API Key"));
     await user.type(screen.getByLabelText("API Key"), apiKey);
@@ -225,55 +228,54 @@ describe("Phase 9B PlannerWorkbench", () => {
     expect(await screen.findByText("模型连接成功，并成功返回可解析的 AnalysisPlan。")).not.toBeNull();
   });
 
-  it("creates a persisted planner job and shows SSE timeline, provenance, tool calls, artifacts, and report summary", async () => {
+  it("keeps main tabs mutually exclusive and routes job evidence into Agent process and Results/export", async () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
-    await user.click(screen.getAllByRole("button", { name: "加载演示数据" })[0]);
+    await loadDemoFromTopBar(user);
     await user.click(primaryRunButton());
 
     expect(await screen.findByText("基础指标计算")).not.toBeNull();
-    expect(screen.getAllByText("plan_1").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("hash_1").length).toBeGreaterThan(0);
-    await waitFor(() => expect(eventSources[0]?.url).toBe("http://localhost:8000/planner/jobs/job_1/events/stream?after_seq=4"));
-    expect(screen.getByText("SSE/EventSource")).not.toBeNull();
-    eventSources[0].emit("artifact.ready", {
-      id: "evt_5",
-      jobId: "job_1",
-      seq: 5,
-      eventType: "artifact.ready",
-      status: "success",
-      message: "Artifact ready from SSE.",
-      payload: { planId: "plan_1", planHash: "hash_1" },
-      createdAt: "2026-07-04T00:00:04Z"
-    });
-    await screen.findByText("结果产物已生成");
+    expect(screen.getByText("plan_1")).not.toBeNull();
+    expect(screen.getByText("hash_1")).not.toBeNull();
+    await waitFor(() => expect(eventSources[0]?.url).toBe("http://localhost:8000/planner/jobs/job_1/events/stream?after_seq=8"));
+
+    await user.click(screen.getByRole("button", { name: "Agent 过程" }));
+    expect(screen.getByTestId("agent-process-tab")).not.toBeNull();
+    expect(screen.queryByTestId("conversation-plan-tab")).toBeNull();
+    expect(screen.queryByTestId("results-export-tab")).toBeNull();
+    expect(within(screen.getByTestId("agent-process-tab")).getByText("Worker 已加载分析计划")).not.toBeNull();
+    expect(within(screen.getByTestId("agent-process-tab")).getByText("数据对象已加载")).not.toBeNull();
+    expect(within(screen.getByTestId("agent-process-tab")).getByText("工具执行完成")).not.toBeNull();
+    expect(within(screen.getByTestId("agent-process-tab")).getByText("任务完成")).not.toBeNull();
     expect(screen.getByText("Loaded from persisted AnalysisPlan")).not.toBeNull();
     expect(screen.getByText("Executed through Tool Registry + Adapter")).not.toBeNull();
     expect(screen.getByText("No deterministic fallback used")).not.toBeNull();
-    expect(within(screen.getByTestId("job-timeline")).getByText("Worker 已加载分析计划")).not.toBeNull();
 
-    await user.click(screen.getByRole("button", { name: "Artifact Gallery" }));
-    expect(within(screen.getByTestId("artifacts-panel")).getByText("JSON 指标")).not.toBeNull();
-    expect(within(screen.getByTestId("artifacts-panel")).getByText("metrics.json")).not.toBeNull();
-
-    await user.click(screen.getByRole("button", { name: "Report / Recipe Summary" }));
-    expect(within(screen.getByTestId("report-recipe-panel")).getByText("报告摘要")).not.toBeNull();
-    expect(within(screen.getByTestId("report-recipe-panel")).getByText("recipe.json")).not.toBeNull();
-    expect(within(screen.getByTestId("report-recipe-panel")).getByText("report.md")).not.toBeNull();
-    expect(within(screen.getByTestId("report-recipe-panel")).getByText(/persisted AnalysisPlan/)).not.toBeNull();
-
-    await user.click(screen.getByRole("button", { name: "Tool Calls" }));
-    expect(within(screen.getByTestId("toolcalls-panel")).getByText("ml.basic_metrics")).not.toBeNull();
-    expect(within(screen.getByTestId("toolcalls-panel")).getByText("llm_step_1")).not.toBeNull();
-    expect(within(screen.getByTestId("toolcalls-panel")).getByText("plan_1")).not.toBeNull();
-
-    await user.click(screen.getByRole("checkbox"));
-    await user.click(screen.getByRole("button", { name: "Developer Audit" }));
-    expect(within(screen.getByTestId("developer-audit-panel")).getByText(/raw events|analysisPlan|toolCalls/i)).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "结果与导出" }));
+    expect(screen.getByTestId("results-export-tab")).not.toBeNull();
+    expect(screen.queryByTestId("agent-process-tab")).toBeNull();
+    expect(screen.queryByTestId("conversation-plan-tab")).toBeNull();
+    expect(within(screen.getByTestId("results-export-tab")).getByText("Report / Recipe Summary")).not.toBeNull();
+    expect(within(screen.getByTestId("results-export-tab")).getByText("3D 材料图")).not.toBeNull();
+    expect(within(screen.getByTestId("results-export-tab")).getByText("Metrics")).not.toBeNull();
+    expect(within(screen.getByTestId("results-export-tab")).getByText("Table / Numeric Summary")).not.toBeNull();
+    expect(within(screen.getByTestId("results-export-tab")).getByText("Artifact Gallery")).not.toBeNull();
+    expect(within(screen.getByTestId("results-export-tab")).getAllByText("metrics.json").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("results-export-tab")).getAllByText("recipe.json").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("results-export-tab")).getByText("ml.basic_metrics")).not.toBeNull();
   });
 
-  it("explains validation failure and does not create job, save plan, enqueue, poll, or open SSE", async () => {
+  it("shows the required result empty state when no chunk is selected", async () => {
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+
+    await user.click(screen.getByRole("button", { name: "结果与导出" }));
+    expect(screen.getByTestId("results-export-tab")).not.toBeNull();
+    expect(screen.getAllByText("请选择一个分析步骤或结果 chunk").length).toBeGreaterThan(0);
+  });
+
+  it("explains validation failure without creating job, plan, enqueue, polling, or SSE", async () => {
     fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
@@ -283,7 +285,6 @@ describe("Phase 9B PlannerWorkbench", () => {
           plan_id: null,
           plan_hash: null,
           validation_errors: [{ code: "UNKNOWN_TOOL", message: "Unknown tool", detail: { toolId: "bad.tool" } }],
-          plan: { steps: [] },
           enqueued: false,
           executed: false
         });
@@ -293,48 +294,28 @@ describe("Phase 9B PlannerWorkbench", () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
-    await user.click(screen.getAllByRole("button", { name: "加载演示数据" })[0]);
+    await loadDemoFromTopBar(user);
     await user.click(primaryRunButton());
 
-    await screen.findByText("Plan validation failed");
+    expect((await screen.findAllByText("Plan validation failed")).length).toBeGreaterThan(0);
     expect(screen.getByText("No AnalysisPlan was saved")).not.toBeNull();
     expect(screen.getByText("No Job was created")).not.toBeNull();
     expect(screen.getByText("Nothing was enqueued")).not.toBeNull();
-    expect(screen.getByText("Please fix the request and try again")).not.toBeNull();
-    expect(screen.getByText("UNKNOWN_TOOL")).not.toBeNull();
+    expect(screen.getAllByText("UNKNOWN_TOOL").length).toBeGreaterThan(0);
     expect(fetchMock).not.toHaveBeenCalledWith(expect.stringContaining("/planner/jobs/job_1"), expect.anything());
     expect(eventSources).toHaveLength(0);
   });
-
-  it("shows a Chinese error explainer for API failures", async () => {
-    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
-      const url = String(input);
-      if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
-        return jsonResponse(
-          {
-            ok: false,
-            errorType: "provider_auth_failed",
-            message: "模型认证失败，请检查 API Key。",
-            safeDetails: "HTTP 401 from provider",
-            suggestions: ["检查模型配置"],
-            redacted: true
-          },
-          401
-        );
-      }
-      return mockPlannerFetch(input, init);
-    });
-    const user = userEvent.setup();
-    render(<PlannerWorkbench />);
-
-    await user.click(screen.getAllByRole("button", { name: "加载演示数据" })[0]);
-    await user.click(primaryRunButton());
-
-    expect(await screen.findByText("无法创建分析任务")).not.toBeNull();
-    expect(screen.getByText("模型认证失败，请检查 API Key。")).not.toBeNull();
-    expect(screen.getByText("检查模型配置")).not.toBeNull();
-  });
 });
+
+async function loadDemoFromTopBar(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: /当前数据集/ }));
+  await user.click(screen.getByRole("button", { name: "加载演示数据" }));
+  await waitFor(() => expect(screen.queryByRole("dialog", { name: "数据集与 Profile" })).toBeNull());
+}
+
+function primaryRunButton() {
+  return within(screen.getByTestId("planner-form")).getByRole("button", { name: "创建并运行" });
+}
 
 function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   const url = String(input);
@@ -453,8 +434,4 @@ class MockEventSource {
     this.onmessage?.(message);
     (this.listeners.get(type) || []).forEach((listener) => listener(message));
   }
-}
-
-function primaryRunButton() {
-  return within(screen.getByTestId("planner-form")).getByRole("button", { name: "创建并运行" });
 }

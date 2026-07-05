@@ -25,13 +25,25 @@
 创建项目
   -> 上传数据
   -> 系统生成 Data Profile
-  -> 用户自然语言提出目标
-  -> Agent 生成结构化 Analysis Plan
-  -> 用户查看计划摘要
+  -> 顶部选择当前数据集和模型配置
+  -> 左侧查看数据上下文
+  -> 主体输入自然语言目标并查看 Plan Preview
+  -> Agent 生成结构化 AnalysisPlan
+  -> 用户审查计划摘要和校验结果
   -> 系统异步执行工具
-  -> 前端渐进展示图表、3D 模型、日志和 Artifact
-  -> 系统生成 Recipe 和 Report
+  -> 主体 Agent 过程 Tab 展示结构化执行事件
+  -> 主体结果与导出 Tab 展示 Artifact / 3D / metrics / Recipe / Report
 ```
+
+### Phase 9C 前端交互基线
+
+Phase 9C 之后，主工作台采用 AI 分析助手式布局：
+
+- 顶部显示当前数据集、Profile 状态、模型状态、Job 状态，并通过弹窗完成数据集选择/上传和模型配置。
+- 左侧是可拉伸、可收起的 Data Context Viewer，用于查看当前数据集，而不是运行控制面板。
+- 主体只有三个互斥 Tab：`Agent 过程`、`对话与 Plan`、`结果与导出`。用户切换 Tab 后，同一时刻只展示其中一种主体内容。
+- 结果报告、3D 材料图、metrics、table summary、Artifact Gallery、Recipe 和导出入口都属于 `结果与导出` Tab，不再放在独立右侧栏或底部面板。
+- 普通用户默认不看 raw IDs、plan hash、raw AnalysisPlan JSON；这些信息仅在开发者模式和审计视图中展示。
 
 ### Phase 1 明确的产品决策
 
@@ -84,14 +96,15 @@
 
 | 模块 | 产品职责 |
 |---|---|
-| Project Workspace | 项目入口，承载数据集、会话、Job、Artifact、Recipe 和报告 |
-| Data Asset Panel | 文件树、解析状态、Data Profile、字段映射、异常列表和推荐任务 |
-| Visualization Canvas | 多 Tab 图表和 3D 模型展示区 |
-| Agent Panel | 自然语言输入、计划摘要、工具调用 Timeline、解释和下一步建议 |
-| Bottom Panel | Logs、Code、Artifacts、Recipe、Warnings |
+| AI Planner Workspace | 顶部全局栏 + 左侧数据上下文 + 主体三 Tab 的材料分析工作台 |
+| Global Context Bar | 当前数据集、Profile 状态、模型状态、Job 状态、数据集/模型配置弹窗和系统设置入口 |
+| Data Context Viewer | 可拉伸、可收起的数据集查看器，按 table / structure / composition / archive / unsupported 适配 |
+| Agent 过程 Tab | JobEvent、ToolCall、persisted plan provenance、Tool Registry + Adapter 执行过程 |
+| 对话与 Plan Tab | 自然语言需求、系统响应、Plan Preview、Validation、Run chunk |
+| 结果与导出 Tab | 报告摘要、3D 材料图、metrics、table summary、Artifact、Recipe、导出和下载 |
 | Upload Flow | 文件/压缩包上传、类型识别、解析进度和失败反馈 |
 | Data Profile Flow | 结构、组成、表格、声子、轨迹的摘要和质量检查 |
-| Analysis Plan Flow | 用户需求 + Data Profile + Tool Registry -> JSON Plan |
+| Analysis Plan Flow | 用户需求 + Data Profile + Tool Registry -> JSON AnalysisPlan |
 | Artifact / Recipe Flow | 结果保存、预览、导出、复现和应用到新数据集 |
 
 ## 6. 用户流程
@@ -467,36 +480,29 @@ Phase 4 会细化字段、索引和权限。本阶段增加产品流程所需实
 
 ```text
 ┌────────────────────────────────────────────────────────────┐
-│ 顶部：项目 / 数据集 / 模型配置 / 运行状态 / 导出 / 分享     │
-├───────────────┬───────────────────────────┬────────────────┤
-│ 左侧数据区     │ 中央可视化画布              │ 右侧 Agent 区   │
-│ 文件树         │ Overview Dashboard         │ Chat            │
-│ Data Profile   │ Composition Tab            │ Plan            │
-│ 字段映射       │ Structure Tab              │ Tool Calls      │
-│ 异常列表       │ ML Evaluation Tab          │ Explanation     │
-│ 推荐任务       │ Artifact Detail            │ Next Steps      │
-├───────────────┴───────────────────────────┴────────────────┤
-│ 底部：Logs / Code / Artifacts / Recipe / Warnings           │
+│ 顶部：当前数据集 / Profile / 模型状态 / Job 状态 / 设置入口 │
+├───────────────┬────────────────────────────────────────────┤
+│ 左侧数据上下文 │ 主体工作区                                  │
+│ 可拉伸/可收起  │ Tabs: Agent过程 / 对话与Plan / 结果与导出    │
+│ 格式适配查看器 │ 同一时刻只显示一个 Tab                      │
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Tab 需求
+顶部点击数据集区域打开数据集/上传/Profile 弹窗；点击模型状态打开 provider/Secret 配置弹窗。顶部最右侧仅保留语言、主题、用户设置、帮助和开发者模式等系统级入口。
+
+### 主体 Tab 需求
 
 | Tab | MVP 内容 |
 |---|---|
-| Overview | 数据集摘要、质量卡片、推荐任务、关键 warning |
-| Composition | 周期表热力图、元素直方图、化学体系 treemap |
-| Structure | 3D Viewer、配位数分布、代表结构列表 |
-| ML Evaluation | density scatter、误差分布、basic metrics、outlier table；parity 和 error-by-domain 进入 V1 |
-| Artifacts | 全部生成产物、下载、预览、Recipe 链接 |
+| Agent 过程 | JobEvent timeline、plan.loaded、data.loaded、tool.started/tool.completed、artifact.ready、job.completed、safe payload |
+| 对话与 Plan | 用户自然语言需求、系统响应、Plan Preview、Validation、Run chunk |
+| 结果与导出 | 报告摘要、3D 材料图、metrics、table/numeric summary、Artifact Gallery、Recipe/provenance、导出和下载 |
 
 V1/V2 增加：
 
-- Trajectory Tab。
-- Phonon Tab。
-- RDF / XRD 专区。
-- 可拖拽 Dashboard。
-- Expert Recipe editor。
+- 更丰富的结果 renderer，例如 trajectory、phonon、RDF/XRD 和高级 MatterViz widgets。
+- 更强的 result chunk 过滤、报告排版、批量导出和版本对比。
+- Expert Recipe editor，但仍不得让用户绕过 PlanValidator 和 Tool Registry 执行边界。
 
 ### 交互状态
 
@@ -504,13 +510,13 @@ V1/V2 增加：
 |---|---|
 | No data | 显示上传引导和支持格式 |
 | Uploading | 显示文件级进度 |
-| Profiling | 左侧显示 skeleton，右侧禁用 Run |
-| Profile ready | 显示推荐任务和自然语言输入 |
-| Plan generated | 显示计划摘要和 Run / Regenerate / Cancel |
-| Running | 图表卡片 skeleton，Timeline 实时更新 |
-| Partial artifacts ready | 单个图表完成即展示 |
-| Completed | 展示报告、Recipe、导出入口 |
-| Failed | 展示错误、可重试步骤和日志 |
+| Profiling | 左侧 Data Context Viewer 显示 skeleton，主体禁用运行 |
+| Profile ready | 左侧显示 Profile，主体对话区可输入自然语言需求 |
+| Plan generated | `对话与 Plan` 显示计划摘要和 Run / Regenerate / Cancel |
+| Running | `Agent 过程` 实时展示结构化 JobEvent |
+| Partial artifacts ready | `结果与导出` 可展示已完成 Artifact |
+| Completed | `结果与导出` 展示报告、Recipe、导出入口 |
+| Failed | 在对应 Tab 显示 ErrorExplainer、可重试步骤和安全日志 |
 
 ## 11. 高并发、安全、扩展性考虑
 

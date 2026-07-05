@@ -1,216 +1,292 @@
-# Phase 3B：前端状态与交互规格
+# Phase 3B / Phase 9C：前端状态与交互规格
 
-## 1. 本阶段目标
+## 1. 目标
 
-定义前端工作台的状态切片、事件更新规则、Tab/卡片/Artifact 交互状态机和错误恢复策略，确保后续 Next.js + React + TanStack Query + Zustand/Jotai 实现时有稳定边界。
+本文定义 Phase 9C AI 分析助手工作台的前端状态边界。新的状态模型服务于：
 
-## 2. 本阶段解决的问题
+- 顶部全局数据集/模型/任务状态。
+- 左侧可拉伸、可收起的数据上下文查看器。
+- 主体三个互斥 Tab：`Agent 过程`、`对话与 Plan`、`结果与导出`。
+- chunk selection 驱动结果展示。
+- SSE JobEvent 驱动 Agent 过程和 Plan/Result 状态。
 
-- 明确哪些数据由服务端事实源管理，哪些是前端临时 UI 状态。
-- 将 JobEvent 映射到 Timeline、Chart Card、Artifact List 和 Warnings。
-- 为 SSE 断线重连、Artifact 懒加载、图表全屏、工具重试预留统一状态。
-- 避免前端把 Agent Plan、ToolCall、Artifact 各自维护成互相冲突的状态。
+## 2. 状态原则
 
-## 3. 设计原则
+- 服务端事实源优先：Dataset、Profile、AnalysisPlan、Job、ToolCall、Artifact、Result、Recipe 以 API/DB 为准。
+- 前端 store 只保存 UI 选择、展开状态、布局状态和事件投影。
+- 主体同一时刻只渲染一个 Tab；切换 Tab 不会停止 SSE 或丢失状态。
+- Chunk 是对话、计划、校验、运行和结果的统一 UI 投影，不是后端执行事实源。
+- Secret/API key 不进入 UI store、localStorage、sessionStorage、JobEvent、Artifact、Report 或 Recipe。
 
-- 服务端事实源优先：Job、ToolCall、Artifact、Recipe、Profile 以 API/DB 为准。
-- 前端 Store 只保存 UI 选择、局部缓存和事件投影。
-- JobEvent 是增量 UI 更新的主通道，但完整数据仍通过 Query 重新拉取。
-- 所有状态转换可重复应用，支持 SSE 断线后按 cursor 补齐。
-- Error 和 Warning 是一等状态，不只写入日志。
-
-## 4. 核心状态类型
+## 3. 核心 UI 状态类型
 
 ```ts
-type ChartCardState =
-  | "planned"
-  | "queued"
-  | "running"
-  | "artifact_ready"
-  | "rendered"
-  | "warning"
-  | "failed";
+type MainWorkspaceTab =
+  | "agent_process"
+  | "conversation_plan"
+  | "results_export";
 
-type WorkspaceTab =
-  | "overview"
-  | "composition"
-  | "structure"
-  | "trajectory"
-  | "phonon"
-  | "ml"
-  | "artifacts"
-  | "report";
-
-type WorkspaceStore = {
+type WorkspaceUiState = {
   activeProjectId: string;
   activeDatasetId?: string;
+  activeProfileId?: string;
   activeJobId?: string;
-  activeTab: WorkspaceTab;
-  selectedArtifactId?: string;
+  activePlanId?: string;
+  activeMainTab: MainWorkspaceTab;
+  leftPanelWidth: number;
+  leftPanelCollapsed: boolean;
+  selectedChunkId?: string;
+  selectedResultArtifactId?: string;
   selectedToolCallId?: string;
-  selectedStructureId?: string;
-  bottomPanelTab: "logs" | "code" | "artifacts" | "recipe" | "warnings";
-  chartCards: Record<string, ChartCardView>;
-  timelineEvents: JobEvent[];
-  warningIndex: Record<string, WorkspaceWarning>;
-  artifactLoadStates: Record<string, ArtifactLoadState>;
+  datasetDialogOpen: boolean;
+  modelDialogOpen: boolean;
+  developerMode: boolean;
   fullscreen:
-    | { kind: "chart"; artifactId: string }
-    | { kind: "viewer"; artifactId: string }
+    | { kind: "artifact"; artifactId: string }
+    | { kind: "material_viewer"; artifactId: string }
     | null;
 };
-
-type ChartCardView = {
-  cardId: string;
-  stepId?: string;
-  toolCallId?: string;
-  toolId?: string;
-  title: string;
-  displayTarget: WorkspaceTab;
-  state: ChartCardState;
-  artifactIds: string[];
-  warnings: string[];
-  errorMessage?: string;
-  updatedAt: string;
-};
-
-type ArtifactLoadState =
-  | { status: "idle" }
-  | { status: "loading" }
-  | { status: "loaded"; loadedAt: string }
-  | { status: "failed"; message: string; retryable: boolean }
-  | { status: "expired_url" }
-  | { status: "permission_denied" };
 ```
 
-`DisplayTarget`、`ArtifactType`、`JobEvent` 的实现基线见 `docs/13_SHARED_SCHEMA_SPEC.md`。
+`activeMainTab` 是主体渲染开关。它只能是三个值之一；不得出现独立 right panel tab 或 bottom panel tab 作为主布局状态。
 
-## 5. Query 与 Store 边界
+## 4. Conversation Chunk View
+
+```ts
+type ConversationChunkKind =
+  | "user_request"
+  | "system_response"
+  | "plan_preview"
+  | "validation_result"
+  | "run_status"
+  | "result_reference";
+
+type ConversationChunkView = {
+  id: string;
+  kind: ConversationChunkKind;
+  title: string;
+  summary: string;
+  createdAt: string;
+  status: "idle" | "running" | "success" | "warning" | "error";
+  relatedJobId?: string;
+  relatedPlanId?: string;
+  relatedStepId?: string;
+  relatedToolCallId?: string;
+  relatedArtifactIds: string[];
+  userVisiblePayload: Record<string, unknown>;
+  developerPayload?: Record<string, unknown>;
+};
+```
+
+用户点击 chunk 后：
+
+```text
+selectedChunkId = chunk.id
+if chunk.relatedArtifactIds has item:
+  selectedResultArtifactId = first related artifact
+```
+
+如果用户切换到 `results_export`，结果 Tab 按 `selectedChunkId` / `selectedResultArtifactId` 决定展示内容。
+
+## 5. Data Context Viewer State
+
+```ts
+type DataContextViewerState = {
+  datasetId?: string;
+  profileId?: string;
+  status: "empty" | "loading" | "profiling" | "ready" | "partial_error" | "unsupported";
+  detectedKind?: "table" | "structure" | "composition" | "archive" | "mixed" | "unsupported";
+  summary: {
+    rowCount?: number;
+    columnCount?: number;
+    numericColumns?: string[];
+    categoricalColumns?: string[];
+    formulaColumns?: string[];
+    structureCount?: number;
+    formulaCount?: number;
+    elementCount?: number;
+    archiveFileCount?: number;
+  };
+  qualityIssues: Array<{
+    severity: "info" | "warning" | "error";
+    message: string;
+    ref?: string;
+  }>;
+};
+```
+
+左侧 resize/collapse 只影响布局，不影响 dataset/profile 事实源。
+
+## 6. Selected Result Context
+
+```ts
+type SelectedResultContext = {
+  chunkId?: string;
+  jobId?: string;
+  planId?: string;
+  planHash?: string;
+  stepId?: string;
+  toolCallId?: string;
+  artifactId?: string;
+  resultKind?:
+    | "report"
+    | "material_3d"
+    | "metrics"
+    | "table_summary"
+    | "artifact_gallery"
+    | "recipe"
+    | "export";
+};
+```
+
+`ResultsExportTab` 的空状态必须基于该上下文判断：
+
+- 无 chunk：请选择一个分析步骤或结果 chunk。
+- 有 chunk 但无 artifact：当前步骤尚未生成结果产物。
+- 有 artifact 但无法预览：当前结果类型暂不支持预览，可下载原始 Artifact。
+
+## 7. Query 与 Store 边界
 
 | 数据 | 来源 | 前端管理方式 |
 |---|---|---|
-| project/dataset/profile | REST | TanStack Query |
-| files/quality issues | REST | TanStack Query + 左侧筛选 UI |
-| analysis plan | REST | TanStack Query，summary 投影到 AgentPanel |
-| job_events | SSE + REST cursor | Store append + cursor checkpoint |
-| tool_calls | REST | Query invalidation on event |
-| artifacts | REST | Query invalidation on `artifact.ready` |
-| chart card state | JobEvent 投影 | Zustand/Jotai |
-| selected tab/modal/fullscreen | 用户交互 | Zustand/Jotai |
+| datasets/profile | REST | TanStack Query |
+| provider catalog/status | REST | TanStack Query |
+| secrets metadata | REST | TanStack Query，不缓存 plaintext |
+| planner preview/jobs | REST | Mutation + Query invalidation |
+| job_events | SSE + REST fallback | Store append + cursor checkpoint |
+| tool_calls | REST | Query invalidation on `tool.completed` |
+| artifacts/results | REST | Query invalidation on `artifact.ready` / `job.completed` |
+| active tab/chunk/layout | UI | Zustand/Jotai 或 React state |
 
-## 6. JobEvent 到 UI 的映射
+## 8. JobEvent 到 UI 的映射
 
-| Event | Timeline | ChartCard | Artifact/Panel |
+| Event | AgentProcessTab | ConversationPlanTab | ResultsExportTab |
 |---|---|---|---|
-| `job.created` | append | no-op | show task card |
-| `plan.generated` | append | create planned cards | show PlanSummary |
-| `tool.started` | append | state -> `running` | select toolCall optional |
-| `tool.warning` | append warning | state -> `warning` | WarningsTab add item |
-| `artifact.ready` | append | add artifactId, state -> `artifact_ready` | invalidate artifacts query |
-| `report.ready` | append | no-op | enable Report/Artifacts tab |
-| `job.completed` | append | unresolved cards stay rendered/warning | show completed state |
-| `job.failed` | append error | affected cards -> `failed` | show retry actions |
+| `plan.generated` | append event | add/update PlanPreviewChunk | no-op |
+| `plan.persisted` | append event | attach planId/planHash | provenance available |
+| `job.queued` | append event | add RunStatusChunk | no-op |
+| `plan.loaded` | highlight persisted plan load | mark run chunk running | provenance available |
+| `data.loaded` | append event | dataset-bound status | no-op |
+| `tool.started` | append event | mark related chunk running | selected result loading |
+| `artifact.ready` | append event | attach artifact to chunk | invalidate artifacts |
+| `tool.completed` | append event | mark related chunk success | enable result render |
+| `job.completed` | append event | mark run chunk success | show summary/export |
+| `job.failed` | append error | add ErrorExplainer chunk | show safe failure state |
 
-事件 payload 不包含大图表数据和 Secret。前端只把 `artifactId`、`toolCallId`、`stepId` 等引用存进 Store。
+事件 payload 不包含大图表数据、Secret、API key、raw prompt 或 raw completion。前端只保存 ID 引用和安全摘要。
 
-## 7. 关键交互
+## 9. 主体 Tab 切换规则
+
+```text
+User clicks Agent 过程
+  -> activeMainTab = "agent_process"
+  -> render AgentProcessTab only
+
+User clicks 对话与 Plan
+  -> activeMainTab = "conversation_plan"
+  -> render ConversationPlanTab only
+
+User clicks 结果与导出
+  -> activeMainTab = "results_export"
+  -> render ResultsExportTab only
+  -> derive SelectedResultContext from selectedChunkId / selectedResultArtifactId
+```
+
+不得在主体旁边同时固定显示结果 Inspector。结果只能通过 `results_export` Tab 或 fullscreen modal 查看。
+
+## 10. 关键交互
+
+### 数据集选择
+
+```text
+Top dataset button
+  -> datasetDialogOpen = true
+  -> user selects/uploads/demo dataset
+  -> activeDatasetId set
+  -> DataContextViewer loads profile
+```
+
+### 模型配置
+
+```text
+Top model button
+  -> modelDialogOpen = true
+  -> user selects Mock Planner or OpenAI-compatible
+  -> optional secret save/test via backend
+  -> model status updates
+```
+
+明文 API key 只能停留在受控输入框中；保存/测试后清空，不进 store persistence。
 
 ### 自然语言分析
 
 ```text
-ChatInput submit
-  -> POST /analysis-requests
-  -> activeJobId set
-  -> SSE subscribe
-  -> PlanSummary appears on plan.generated
-  -> user Run / Regenerate / Cancel
+Prompt submit
+  -> add UserRequestChunk
+  -> POST planner preview/validate/jobs
+  -> add PlanPreviewChunk / ValidationChunk / RunChunk
+  -> activeJobId set on success
+  -> SSE subscribe to job events
 ```
 
-### 图表详情
+### 结果查看
 
 ```text
-ChartCard click
-  -> selectedArtifactId set
-  -> ArtifactDetailDrawer open
-  -> ArtifactLoader fetches signed URL
-  -> user can fullscreen / download / inspect params
+User selects chunk
+  -> selectedChunkId set
+  -> optional selectedResultArtifactId set
+  -> user switches to ResultsExportTab
+  -> ResultsExportTab renders selected context
 ```
 
-### 3D Viewer 全屏
-
-```text
-Structure card fullscreen
-  -> fullscreen = { kind: "viewer", artifactId }
-  -> ViewerFullscreenModal loads matterviz_html
-  -> controls update iframe config through allowed message protocol
-```
-
-### 工具重试
-
-```text
-RetryToolCallDialog confirm
-  -> POST /tool-calls/{tool_call_id}/retry
-  -> new toolCallId or retry attempt created
-  -> affected ChartCard state -> queued
-```
-
-## 8. 空状态、错误态与恢复
+## 11. 错误态与恢复
 
 ```ts
-type WorkspaceEmptyState =
-  | "no_project"
-  | "no_dataset"
-  | "no_files"
-  | "profile_pending"
-  | "profile_failed"
-  | "plan_required";
-
-type RetryAction =
-  | "retry_upload"
-  | "retry_parse"
-  | "regenerate_plan"
-  | "retry_tool_call"
-  | "refresh_artifact_url"
-  | "contact_project_owner";
+type WorkspaceErrorType =
+  | "network_error"
+  | "api_unavailable"
+  | "dataset_not_found"
+  | "profile_not_found"
+  | "provider_not_configured"
+  | "provider_auth_failed"
+  | "provider_timeout"
+  | "plan_validation_failed"
+  | "queue_enqueue_failed"
+  | "worker_failed"
+  | "artifact_unavailable"
+  | "unknown_error";
 ```
 
-UI 必须把错误落在最接近用户操作的位置：
+| 错误位置 | UI 落点 |
+|---|---|
+| dataset/profile | 顶部数据集弹窗 + 左侧 DataContextViewer |
+| provider/secret | 顶部模型弹窗 |
+| plan validation | ConversationPlanTab 的 ValidationChunk / ErrorExplainer |
+| worker/tool | AgentProcessTab + ResultsExportTab |
+| artifact preview/download | ResultsExportTab |
 
-- 上传/解析错误在 Data Asset Panel。
-- Plan 错误在 Agent Panel。
-- Tool 错误在 Chart Card 和 Timeline。
-- Artifact URL/权限错误在 Artifact Loader。
-- 系统级错误在 Bottom Logs/Warn 面板。
+Validation failure 必须明确显示：
 
-## 9. Artifact 加载策略
+- No AnalysisPlan was saved.
+- No Job was created.
+- Nothing was enqueued.
 
-- Tab 首次激活后加载该 Tab 的 Artifact metadata。
-- 卡片进入 viewport 后加载 preview。
-- 全屏或详情打开后加载完整 Artifact。
-- URL 过期时只刷新 URL，不重跑工具。
-- 下载操作必须走 `/artifacts/{id}/download-url`，不暴露对象存储 key。
+## 12. 性能与安全
 
-## 10. 性能策略
+- 左侧表格预览分页/虚拟滚动。
+- 结果 Artifact 懒加载，避免把大型 Plotly JSON 或结构坐标放入全局 store。
+- SSE 使用 cursor/seq 去重和补拉。
+- HTML Artifact 使用 sandboxed iframe。
+- Developer payload 默认不渲染。
+- 前端不缓存 Secret、临时明文 key、内部绝对路径。
 
-- Timeline 虚拟列表，默认只渲染最近事件。
-- Artifact table preview 使用虚拟滚动和分页。
-- Plotly 大图优先使用 `plotly_html` iframe 或后端预聚合 `plotly_json`。
-- Store 中不保存大型 Plotly JSON、表格全量数据或结构坐标数组。
-- 3D Viewer 通过 LOD metadata 决定默认 controls，不在前端猜测。
+## 13. Legacy 状态字段
 
-## 11. 高并发、安全、扩展性考虑
+以下字段来自旧三栏/底部面板设计，后续不应作为 Phase 9C 主布局状态继续扩展：
 
-- SSE 使用 `cursor` 断线重连，重复事件按 `event.id` 去重。
-- 前端永不缓存 Secret、临时明文 key、内部绝对路径。
-- 多用户协作进入 V1 WebSocket 后，仍以 PostgreSQL JobEvent 为事实源。
-- Guided/Expert 模式进入 V1 后可复用 `PlanSummary`、`ToolCallList` 和 `RecipeTab`。
+- `rightCollapsed`
+- `bottomOpen`
+- `bottomPanelTab`
+- `activeTab: WorkspaceTab` 用于 overview/composition/structure/ml/artifacts/report 的全局画布 Tab
 
-## 12. 本阶段产出的目标文件
-
-```text
-docs/03B_FRONTEND_STATE_AND_INTERACTION.md
-```
-
-## 13. 下一阶段任务
-
-代码实现阶段应先建立 `WorkspaceStore`、SSE event reducer、Artifact Loader 和 Chart Card 状态机，再扩展各 Tab 的具体可视化组件。
+如代码中仍有这些字段，应在实现阶段迁移到 `activeMainTab`、`selectedChunkId` 和 `ResultsExportTab` 内部局部状态。

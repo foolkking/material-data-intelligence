@@ -1,5 +1,88 @@
 # TASK_BOARD
 
+## 2026-07-05 Phase 9C Browser QA and Baseline Closure
+
+### Done This Round
+
+- [x] Started local Phase 9C workspace with API on `127.0.0.1:8000`, web on `127.0.0.1:3000`, local runtime queue/worker, local ArtifactStorage, and Mock Planner.
+- [x] Confirmed runtime health: API ok, SQLite database ok, local ArtifactStorage ok, local worker ok, LLM provider mock; Redis was `unknown/not configured` as expected for local runtime.
+- [x] Completed Phase 9C browser visual QA and saved six screenshots under `docs/ui-redesign/phase9c_browser_qa/`.
+- [x] Deleted and regenerated `matpes_atomic_energies_csv/results` through Phase 9C UI fresh browser flow.
+- [x] Deleted and regenerated `ward_metallic_glasses_csv_xz/results` through Phase 9C UI fresh browser flow.
+- [x] Saved required API evidence, real artifact files, browser screenshots, execution logs, platform summaries, and screenshots indexes for both scoped Desktop cases.
+- [x] Updated `OFFICIAL_BROWSER_VERIFICATION_SUMMARY.md` in the Desktop evidence pack for the two scoped direct cases only.
+- [x] Confirmed MatPES uses `PBE` / `r2SCAN` and does not use the stale `y_true` / `y_pred` prompt or plan.
+- [x] Confirmed Ward uses `table.numeric_summary` and does not use `D_max` vs `dTx` regression metrics.
+
+### Pending Before Commit
+
+- [x] Re-run regression commands after browser QA.
+- [x] Review `git diff --stat` and confirm Desktop evidence pack is not staged.
+- [ ] Commit and push Phase 9C baseline.
+- [ ] Confirm GitHub Actions current HEAD success, including non-skipped service-backed integration.
+
+### Verification
+
+- [x] `uv lock --check`
+- [x] `python -m pytest tests/test_phase7_llm_planner.py -q` -> 32 passed
+- [x] `python -m pytest tests/test_phase8b_persisted_plan_queue.py -q` -> 9 passed / 1 skipped locally
+- [x] `python -m pytest tests/test_phase8c_planner_read_api.py -q` -> 2 passed
+- [x] `python -m pytest tests/test_phase9b_demo_workspace_api.py -q` -> 15 passed
+- [x] `python -m pytest -q` -> 138 passed / 21 skipped
+- [x] `npm test` in `apps/web` -> 6 passed
+- [x] `npm run typecheck` in `apps/web`
+- [x] `npm run build` in `apps/web`
+- [x] `git diff --check` -> passed with Windows line-ending warnings only
+
+## 2026-07-05 Phase 9C UI/UX Redesign Implementation
+
+### Done This Round
+
+- [x] Replaced the Phase 9B four-zone/bottom-tabs Planner layout with the Phase 9C top/left/main-tabs layout.
+- [x] Added top dataset/profile dialog path for dataset list, demo data, upload, profile generation, and manual ID fallback.
+- [x] Added top model/provider dialog path for Mock/OpenAI-compatible mode, provider presets, config fields, Secret UX, and provider testing.
+- [x] Converted the left side into a resizable/collapsible Data Context Viewer with table/structure/archive/unsupported profile rendering.
+- [x] Implemented mutually exclusive main tabs: `Agent 过程`, `对话与 Plan`, `结果与导出`.
+- [x] Implemented conversation chunks and chunk-driven results context.
+- [x] Moved result surfaces into `结果与导出`: report/recipe summary, 3D placeholder, metrics, table/numeric summary, Artifact Gallery, ToolCalls, and export/download controls.
+- [x] Preserved validation failure no plan/no job/no enqueue UI.
+- [x] Added Phase 9C frontend tests for the new layout and core UX semantics.
+
+### Verification
+
+- [x] `npm run typecheck` in `apps/web`
+- [x] `npm test` in `apps/web` -> 6 passed
+- [x] `npm run build` in `apps/web`
+- [x] `git diff --check`
+- [x] `python -m pytest -q` -> 138 passed / 21 skipped
+
+### Remaining
+
+- [ ] Optional visual polish after browser review: final spacing, icons, keyboard focus affordances, and responsive drawer polish.
+- [x] Backend/frontend regression suite final run completed before freeze.
+
+## 2026-07-05 Phase 9C UI/UX Redesign Docs Baseline
+
+### Done This Round
+
+- [x] Reframed the canonical frontend layout as top global context bar + left data-context viewer + main workspace tabs.
+- [x] Documented that there is no independent right-side result panel and no bottom result panel in the new recommended design.
+- [x] Defined the three main tabs: `Agent 过程`, `对话与 Plan`, and `结果与导出`; only one tab is visible at a time.
+- [x] Documented chunk selection from the conversation/plan surface as the context for the results/export tab.
+- [x] Updated component and state specs with `AIPlannerWorkspace`, `GlobalContextBar`, `DataContextViewer`, `MainWorkspaceTabs`, `AgentProcessTab`, `ConversationPlanTab`, `ResultsExportTab`, and `DeveloperAuditDrawer`.
+- [x] Updated shared schema docs with UI-only view model addendum.
+- [x] Preserved the Phase 8B/9A execution boundaries in docs.
+
+### Verification
+
+- [x] Docs-only patch prepared.
+- [x] `git diff --check`
+
+### Remaining
+
+- [ ] Implement the Phase 9C UI redesign in `apps/web` in a separate code phase.
+- [ ] Add frontend tests for the new top/left/main-tab layout during implementation.
+
 ## 2026-07-05 Phase 9B Official Direct Examples Semantic Refinement
 
 ### Done This Round
