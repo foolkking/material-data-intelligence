@@ -1,0 +1,265 @@
+{
+  "jobId": "job_c08de488c4c84104916f3733",
+  "status": "completed",
+  "planId": "plan_740983fe2df64d8b84576dc8",
+  "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+  "summary": "Job completed with 2 ToolCall(s) and 5 Artifact(s).",
+  "toolCallCount": 2,
+  "artifactCount": 5,
+  "artifacts": [
+    {
+      "id": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter-plotly_json",
+      "projectId": "project_0002",
+      "datasetId": "dataset_0002",
+      "jobId": "job_c08de488c4c84104916f3733",
+      "toolCallId": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+      "type": "plotly_json",
+      "name": "figure.json",
+      "version": "1",
+      "storageKey": "projects/project_0002/jobs/job_c08de488c4c84104916f3733/tool_calls/call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter/figure.json",
+      "storageProvider": "local",
+      "bucket": null,
+      "previewKey": null,
+      "sizeBytes": 25474,
+      "contentType": "application/json",
+      "contentHash": "a7a66a0ffc4de33cfdafc8879504ea4492b0d3be0bfb56eb00cafc4d91bfa357",
+      "sha256": "a7a66a0ffc4de33cfdafc8879504ea4492b0d3be0bfb56eb00cafc4d91bfa357",
+      "metadata": {
+        "toolId": "ml.density_scatter",
+        "toolVersion": "0.1.0",
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "dcde75fea1a81a2d5d4a18f84064dc106fad349af1e6487425921f08a799397c"
+        ],
+        "paramsHash": "55755aa1940ae999fbdea36a70c9769a4e8627a731d94c5a4e3ce6810d090bfe",
+        "profileId": null,
+        "recipeId": null,
+        "reportId": null,
+        "createdAt": "2026-07-05T09:43:45.730072+00:00",
+        "provenance": {
+          "toolId": "ml.density_scatter",
+          "toolCallId": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+          "planId": "plan_740983fe2df64d8b84576dc8",
+          "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+          "planSource": "llm"
+        },
+        "storageProvider": "local",
+        "bucket": null
+      },
+      "planId": "plan_740983fe2df64d8b84576dc8",
+      "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+      "provenance": {
+        "toolId": "ml.density_scatter",
+        "toolCallId": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+        "planId": "plan_740983fe2df64d8b84576dc8",
+        "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+        "planSource": "llm"
+      }
+    },
+    {
+      "id": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter-preview_png",
+      "projectId": "project_0002",
+      "datasetId": "dataset_0002",
+      "jobId": "job_c08de488c4c84104916f3733",
+      "toolCallId": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+      "type": "preview_png",
+      "name": "preview.png",
+      "version": "1",
+      "storageKey": "projects/project_0002/jobs/job_c08de488c4c84104916f3733/tool_calls/call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter/preview.png",
+      "storageProvider": "local",
+      "bucket": null,
+      "previewKey": null,
+      "sizeBytes": 69,
+      "contentType": "application/json",
+      "contentHash": "ad6bc0025a798fe0ebe49f41f1aaaaaeadb5c8bb081b1bf9dac341bdf680b57c",
+      "sha256": "ad6bc0025a798fe0ebe49f41f1aaaaaeadb5c8bb081b1bf9dac341bdf680b57c",
+      "metadata": {
+        "toolId": "ml.density_scatter",
+        "toolVersion": "0.1.0",
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "dcde75fea1a81a2d5d4a18f84064dc106fad349af1e6487425921f08a799397c"
+        ],
+        "paramsHash": "55755aa1940ae999fbdea36a70c9769a4e8627a731d94c5a4e3ce6810d090bfe",
+        "profileId": null,
+        "recipeId": null,
+        "reportId": null,
+        "createdAt": "2026-07-05T09:43:45.738071+00:00",
+        "provenance": {
+          "toolId": "ml.density_scatter",
+          "toolCallId": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+          "planId": "plan_740983fe2df64d8b84576dc8",
+          "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+          "planSource": "llm"
+        },
+        "storageProvider": "local",
+        "bucket": null
+      },
+      "planId": "plan_740983fe2df64d8b84576dc8",
+      "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+      "provenance": {
+        "toolId": "ml.density_scatter",
+        "toolCallId": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+        "planId": "plan_740983fe2df64d8b84576dc8",
+        "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+        "planSource": "llm"
+      }
+    },
+    {
+      "id": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter-summary_md",
+      "projectId": "project_0002",
+      "datasetId": "dataset_0002",
+      "jobId": "job_c08de488c4c84104916f3733",
+      "toolCallId": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+      "type": "summary_md",
+      "name": "summary.md",
+      "version": "1",
+      "storageKey": "projects/project_0002/jobs/job_c08de488c4c84104916f3733/tool_calls/call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter/summary.md",
+      "storageProvider": "local",
+      "bucket": null,
+      "previewKey": null,
+      "sizeBytes": 123,
+      "contentType": "application/json",
+      "contentHash": "f2e20790e36c23e381c6ac6204ef23c9a03434028e37738782711161f41f7057",
+      "sha256": "f2e20790e36c23e381c6ac6204ef23c9a03434028e37738782711161f41f7057",
+      "metadata": {
+        "toolId": "ml.density_scatter",
+        "toolVersion": "0.1.0",
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "dcde75fea1a81a2d5d4a18f84064dc106fad349af1e6487425921f08a799397c"
+        ],
+        "paramsHash": "55755aa1940ae999fbdea36a70c9769a4e8627a731d94c5a4e3ce6810d090bfe",
+        "profileId": null,
+        "recipeId": null,
+        "reportId": null,
+        "createdAt": "2026-07-05T09:43:45.747070+00:00",
+        "provenance": {
+          "toolId": "ml.density_scatter",
+          "toolCallId": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+          "planId": "plan_740983fe2df64d8b84576dc8",
+          "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+          "planSource": "llm"
+        },
+        "storageProvider": "local",
+        "bucket": null
+      },
+      "planId": "plan_740983fe2df64d8b84576dc8",
+      "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+      "provenance": {
+        "toolId": "ml.density_scatter",
+        "toolCallId": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+        "planId": "plan_740983fe2df64d8b84576dc8",
+        "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+        "planSource": "llm"
+      }
+    },
+    {
+      "id": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics-metrics_json",
+      "projectId": "project_0002",
+      "datasetId": "dataset_0002",
+      "jobId": "job_c08de488c4c84104916f3733",
+      "toolCallId": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics",
+      "type": "metrics_json",
+      "name": "metrics.json",
+      "version": "1",
+      "storageKey": "projects/project_0002/jobs/job_c08de488c4c84104916f3733/tool_calls/call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics/metrics.json",
+      "storageProvider": "local",
+      "bucket": null,
+      "previewKey": null,
+      "sizeBytes": 255,
+      "contentType": "application/json",
+      "contentHash": "e795ba743c10d032f065bcef9b63adb3469e82045d4a06fa4cba14e23b1c7b61",
+      "sha256": "e795ba743c10d032f065bcef9b63adb3469e82045d4a06fa4cba14e23b1c7b61",
+      "metadata": {
+        "toolId": "ml.basic_metrics",
+        "toolVersion": "0.1.0",
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "dcde75fea1a81a2d5d4a18f84064dc106fad349af1e6487425921f08a799397c"
+        ],
+        "paramsHash": "e6fcb731165d3c03556e42344bbe59d4e9dd46ed12b1b9be7028ca16b342dc3c",
+        "profileId": null,
+        "recipeId": null,
+        "reportId": null,
+        "createdAt": "2026-07-05T09:43:45.774069+00:00",
+        "provenance": {
+          "toolId": "ml.basic_metrics",
+          "toolCallId": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics",
+          "planId": "plan_740983fe2df64d8b84576dc8",
+          "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+          "planSource": "llm"
+        },
+        "storageProvider": "local",
+        "bucket": null
+      },
+      "planId": "plan_740983fe2df64d8b84576dc8",
+      "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+      "provenance": {
+        "toolId": "ml.basic_metrics",
+        "toolCallId": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics",
+        "planId": "plan_740983fe2df64d8b84576dc8",
+        "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+        "planSource": "llm"
+      }
+    },
+    {
+      "id": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics-summary_md",
+      "projectId": "project_0002",
+      "datasetId": "dataset_0002",
+      "jobId": "job_c08de488c4c84104916f3733",
+      "toolCallId": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics",
+      "type": "summary_md",
+      "name": "summary.md",
+      "version": "1",
+      "storageKey": "projects/project_0002/jobs/job_c08de488c4c84104916f3733/tool_calls/call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics/summary.md",
+      "storageProvider": "local",
+      "bucket": null,
+      "previewKey": null,
+      "sizeBytes": 112,
+      "contentType": "application/json",
+      "contentHash": "a8b83a84ee071f607baedd1055aa488bf17dfb6af424af1c297981f7d038d498",
+      "sha256": "a8b83a84ee071f607baedd1055aa488bf17dfb6af424af1c297981f7d038d498",
+      "metadata": {
+        "toolId": "ml.basic_metrics",
+        "toolVersion": "0.1.0",
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "dcde75fea1a81a2d5d4a18f84064dc106fad349af1e6487425921f08a799397c"
+        ],
+        "paramsHash": "e6fcb731165d3c03556e42344bbe59d4e9dd46ed12b1b9be7028ca16b342dc3c",
+        "profileId": null,
+        "recipeId": null,
+        "reportId": null,
+        "createdAt": "2026-07-05T09:43:45.782073+00:00",
+        "provenance": {
+          "toolId": "ml.basic_metrics",
+          "toolCallId": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics",
+          "planId": "plan_740983fe2df64d8b84576dc8",
+          "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+          "planSource": "llm"
+        },
+        "storageProvider": "local",
+        "bucket": null
+      },
+      "planId": "plan_740983fe2df64d8b84576dc8",
+      "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+      "provenance": {
+        "toolId": "ml.basic_metrics",
+        "toolCallId": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics",
+        "planId": "plan_740983fe2df64d8b84576dc8",
+        "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+        "planSource": "llm"
+      }
+    }
+  ],
+  "provenance": {
+    "planId": "plan_740983fe2df64d8b84576dc8",
+    "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+    "planSource": "llm",
+    "loadedFrom": "persisted_analysis_plan",
+    "binding": "jobs.plan_id -> analysis_plans.id",
+    "toolPath": "Tool Registry + Adapter",
+    "fallbackUsed": false
+  }
+}

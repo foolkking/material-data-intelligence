@@ -283,28 +283,40 @@ def _post_chat_completion(
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}",
     }
-    body = json.dumps(
-        {
-            "model": model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-            "response_format": {"type": "json_object"},
-        }
-    ).encode("utf-8")
+    payload = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+    }
 
-    req = urllib.request.Request(url, data=body, headers=headers, method="POST")
-    try:
-        with urllib.request.urlopen(req, timeout=timeout_seconds) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except (TimeoutError, socket.timeout) as exc:
-        raise LLMProviderError("OpenAI-compatible LLM request timed out.", code="LLM_TIMEOUT") from None
-    except urllib.error.HTTPError as exc:
-        raise _http_error(exc) from None
-    except urllib.error.URLError as exc:
-        raise LLMProviderError("OpenAI-compatible LLM request failed before a response was received.", code="LLM_NETWORK_ERROR") from None
-    except ValueError as exc:
-        raise LLMProviderError("OpenAI-compatible LLM response was not valid JSON.", code="LLM_RESPONSE_INVALID") from None
+    response_format_attempts = (False,) if _base_url_disables_response_format(base_url) else (True, False)
+    for include_response_format in response_format_attempts:
+        body_payload = dict(payload)
+        if include_response_format:
+            body_payload["response_format"] = {"type": "json_object"}
+        body = json.dumps(body_payload).encode("utf-8")
+
+        req = urllib.request.Request(url, data=body, headers=headers, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=timeout_seconds) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except (TimeoutError, socket.timeout) as exc:
+            raise LLMProviderError("OpenAI-compatible LLM request timed out.", code="LLM_TIMEOUT") from None
+        except urllib.error.HTTPError as exc:
+            if include_response_format and int(getattr(exc, "code", 0) or 0) == 400:
+                continue
+            raise _http_error(exc) from None
+        except urllib.error.URLError as exc:
+            raise LLMProviderError("OpenAI-compatible LLM request failed before a response was received.", code="LLM_NETWORK_ERROR") from None
+        except ValueError as exc:
+            raise LLMProviderError("OpenAI-compatible LLM response was not valid JSON.", code="LLM_RESPONSE_INVALID") from None
+
+    raise LLMProviderError("OpenAI-compatible LLM request failed.", code="LLM_PROVIDER_ERROR")
+
+
+def _base_url_disables_response_format(base_url: str) -> bool:
+    return "generativelanguage.googleapis.com" in base_url.lower()
 
 
 def _http_error(exc: urllib.error.HTTPError) -> LLMProviderError:

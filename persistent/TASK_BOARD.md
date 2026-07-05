@@ -1,5 +1,36 @@
 # TASK_BOARD
 
+## 2026-07-05 Phase 9D True LLM Live Verification
+
+### Done This Round
+
+- [x] Configured the gated OpenAI-compatible Gemini path from environment without printing or persisting the API key.
+- [x] Ran the live provider through JSON parsing, PlanValidator, persisted AnalysisPlan, `/planner/jobs`, QueueWorkerRuntime, Tool Registry + Adapter, Artifact/Result generation.
+- [x] Captured Phase 9C browser live evidence and redacted API evidence under `docs/llm-live-verification/phase9d/`.
+- [x] Enforced Tool Registry `paramsSchema` validation in PlanValidator so live LLM parameter aliases are rejected before persistence.
+- [x] Updated planner prompt tool summaries with allowed parameter names.
+- [x] Added Gemini/OpenAI-compatible request compatibility by omitting `response_format` for `generativelanguage.googleapis.com`.
+- [x] Final gated full-chain live verification passed with Gemini 3 Flash Preview: `python -m pytest -q -m llm_integration` -> 1 passed.
+- [x] Recorded that Gemini 2.5 Flash Lite was reachable but hit a provider-side HTTP 503 during a full-chain attempt; Gemini 3 Flash Preview is the verified Phase 9D model.
+- [x] Checked `antigravity-preview-05-2026`; it is not compatible with the current OpenAI-compatible chat/completions path because the provider reports it only supports Interactions API.
+- [x] Ran redaction scans over Phase 9D evidence and found no API key/token leakage.
+
+### Verification
+
+- [x] Redacted API/browser evidence captured a completed live job before the final compatibility rerun.
+- [x] Final `python -m pytest -q -m llm_integration` with live env and Gemini 3 Flash Preview -> 1 passed.
+- [x] Browser live job completed with `ml.basic_metrics`, `metrics.json`, and `summary.md`.
+- [ ] Final regression suite before commit.
+- [ ] Confirm GitHub Actions current HEAD after push.
+
+### Remaining
+
+- [ ] Freeze Phase 9D baseline tag after CI success.
+- [ ] Production KMS/envelope encryption.
+- [ ] Multi-step DAG/data-dependency scheduling.
+- [ ] Worker supervision/dead-letter policy.
+- [ ] Broader official pymatviz adapter coverage.
+
 ## 2026-07-05 Phase 9D LLM Configuration Path Repair
 
 ### Done This Round

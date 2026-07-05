@@ -1,0 +1,17 @@
+{
+  "id": "project_0002",
+  "projectId": "project_0002",
+  "name": "Phase 9D Live Verification Project",
+  "role": "owner",
+  "projectType": "mixed_material_dataset",
+  "defaultUnits": {},
+  "defaultDownloadFormats": [
+    "html",
+    "json",
+    "png",
+    "markdown"
+  ],
+  "llmConfigRef": null,
+  "status": "created",
+  "createdAt": "2026-07-05T09:43:09.386359+00:00"
+}

@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-05 Phase 9D live provider validation tightened params schema enforcement
+
+- Phase 9D live verification showed that real provider output can select an allowed tool but still use invalid parameter aliases.
+- PlanValidator now validates every step's `params` against the selected RegisteredTool `paramsSchema` before persistence, job creation, or enqueue.
+- This is a Tool Registry boundary, not prompt trust: the planner prompt now lists allowed param names to guide models, but schema validation is the enforced rule.
+- Valid live jobs still follow the registry-gated path: provider JSON AnalysisPlan -> PlanValidator -> persisted AnalysisPlan -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> ToolCall/Artifact/Result provenance.
+- The Phase 9D evidence confirms a live Gemini plan executed through `ml.basic_metrics` and produced `metrics.json` / `summary.md` without secrets in JobEvent, Artifact, AnalysisPlan, or evidence files. The final gated full-chain verification passed with Gemini 3 Flash Preview.
+
 ## 2026-07-05 Phase 9D LLM config repair keeps execution registry-gated
 
 - The Phase 9D repair changes provider configuration resolution, provider status reporting, UI status display, and gated live test coverage only.

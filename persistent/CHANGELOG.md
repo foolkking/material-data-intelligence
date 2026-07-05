@@ -2,6 +2,20 @@
 
 ## 2026-07-05
 
+### Phase 9D True LLM Live Verification
+
+- Captured redacted evidence for the gated OpenAI-compatible Gemini provider path without recording the API key.
+- Captured redacted API evidence and Phase 9C browser screenshots under `docs/llm-live-verification/phase9d/`.
+- Verified live provider output can become a validated persisted AnalysisPlan, bind through `jobs.plan_id`, load in QueueWorkerRuntime, and execute through Tool Registry + Adapter to produce ToolCalls, Artifacts, and Result provenance.
+- Hardened PlanValidator to validate `AnalysisStep.params` against the selected registered tool `paramsSchema` before persistence.
+- Updated planner prompt tool summaries with allowed parameter names so live providers are less likely to emit invalid aliases such as snake_case params for camelCase tool schemas.
+- Omitted `response_format` for Gemini AI Studio's OpenAI-compatible endpoint, which returned HTTP 400 for that field.
+- Checked the Antigravity model requested by the user; Gemini reports it only supports Interactions API, so it cannot satisfy the current OpenAI-compatible chat/completions provider contract without a future provider implementation.
+- Fixed frontend API list handling for response envelopes that return `{ "value": [...] }` for datasets/secrets.
+- Final gated live rerun passed with Gemini 3 Flash Preview: `python -m pytest -q -m llm_integration` -> 1 passed / 165 deselected.
+- Gemini 2.5 Flash Lite was reachable but hit a provider-side HTTP 503 during one full-chain attempt; Gemini 3 Flash Preview is the verified model for Phase 9D evidence.
+- Default CI remains real-LLM-free; live tests are still gated by `MDI_RUN_LLM_INTEGRATION=1`.
+
 ### Phase 9D LLM Configuration Path Repair
 
 - Fixed OpenAI-compatible provider config resolution so explicit request/UI config is not overwritten by env model/timeout/token/temperature settings.

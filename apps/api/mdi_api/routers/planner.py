@@ -638,7 +638,9 @@ def _planner_user_config_from_request(request: Any) -> PlannerUserConfig | None:
     fields = ("baseUrl", "model", "secretId", "temperature", "maxTokens", "timeoutSeconds")
     provider_name = (getattr(request, "provider", None) or os.getenv("MDI_LLM_PROVIDER") or "mock").strip().lower()
     has_explicit_config = any(getattr(request, field, None) not in (None, "") for field in fields)
-    if provider_name not in {"openai_compatible"} and not has_explicit_config:
+    if not has_explicit_config:
+        return None
+    if provider_name not in {"openai_compatible"}:
         return None
 
     api_key = None

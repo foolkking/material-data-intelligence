@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "provider": "openai_compatible",
+  "model": "gemini-2.5-flash",
+  "status": "ready",
+  "willUseLiveProvider": true,
+  "secretConfigured": "[REDACTED]",
+  "source": "secret",
+  "message": "Current planner job configuration will use an OpenAI-compatible LLM.",
+  "safeDetails": null,
+  "redacted": true
+}

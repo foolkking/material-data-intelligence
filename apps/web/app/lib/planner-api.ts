@@ -365,7 +365,8 @@ export async function getRuntimeHealth(): Promise<RuntimeHealth> {
 }
 
 export async function listDatasets(): Promise<DatasetOption[]> {
-  return apiFetch<DatasetOption[]>("/datasets");
+  const result = await apiFetch<DatasetOption[] | { value: DatasetOption[] }>("/datasets");
+  return Array.isArray(result) ? result : result.value;
 }
 
 export async function getDataset(datasetId: string): Promise<DatasetDetail> {
@@ -421,7 +422,8 @@ export async function createSecret(payload: CreateSecretRequest): Promise<Secret
 }
 
 export async function listSecrets(): Promise<SecretSummary[]> {
-  return apiFetch<SecretSummary[]>("/me/secrets");
+  const result = await apiFetch<SecretSummary[] | { value: SecretSummary[] }>("/me/secrets");
+  return Array.isArray(result) ? result : result.value;
 }
 
 export async function deleteSecret(secretId: string): Promise<boolean> {
@@ -442,7 +444,7 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
     const message = errorMessage(body) || `Request failed with status ${response.status}`;
     throw new PlannerApiError(message, response.status, body);
   }
-  return body as T;
+  return unwrapFastApiListResponse(body) as T;
 }
 
 function normalizeBaseUrl(value: string): string {
@@ -455,6 +457,20 @@ function safeParseJson(value: string): unknown {
   } catch {
     return value;
   }
+}
+
+function unwrapFastApiListResponse(value: unknown): unknown {
+  if (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    "value" in value &&
+    !("ok" in value) &&
+    Array.isArray((value as { value?: unknown }).value)
+  ) {
+    return (value as { value: unknown[] }).value;
+  }
+  return value;
 }
 
 function errorMessage(value: unknown): string | null {

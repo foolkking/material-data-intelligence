@@ -1,0 +1,78 @@
+{
+  "id": "job_96fbd9a69eb645ac9d0cd441",
+  "projectId": "project_local",
+  "datasetId": "dataset_0002",
+  "planId": "plan_ba087d8b351d43ddbeae6019",
+  "status": "completed",
+  "kind": "analysis",
+  "createdBy": "user_local",
+  "plan_id": "plan_ba087d8b351d43ddbeae6019",
+  "updatedAt": "2026-07-05T10:26:54.411838+00:00",
+  "jobId": "job_96fbd9a69eb645ac9d0cd441",
+  "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+  "planSource": "llm",
+  "analysisPlan": {
+    "schemaVersion": "0.1",
+    "goal": "Compare PBE and r2SCAN atomic energy data, calculate basic error metrics, and generate a summary of results.",
+    "datasetId": "dataset_0002",
+    "profileId": "profile_dataset_0002_v1",
+    "toolRegistryVersion": "0.1.0",
+    "assumptions": [
+      "The 'PBE' and 'r2SCAN' columns contain numeric atomic energy data suitable for direct comparison and error calculation."
+    ],
+    "warnings": [],
+    "steps": [
+      {
+        "stepId": "calculate_error_metrics_001",
+        "toolId": "ml.basic_metrics",
+        "purpose": "Calculate fundamental error metrics (e.g., MAE, RMSE, R2) to quantify the difference between PBE and r2SCAN atomic energy data.",
+        "reason": "The user explicitly requested to compare PBE and r2SCAN data and calculate basic error metrics. This tool is designed for this purpose and provides a summary of the results.",
+        "inputRefs": [
+          {
+            "refType": "normalized_object",
+            "ref": "ml_table",
+            "fieldRole": null,
+            "columnName": null,
+            "objectType": "DataFrame"
+          }
+        ],
+        "params": {
+          "targetColumn": "PBE",
+          "predictionColumn": "r2SCAN"
+        },
+        "output": {
+          "artifactTypes": [
+            "metrics_json",
+            "summary_md"
+          ]
+        },
+        "constraints": null
+      }
+    ],
+    "expectedArtifacts": [
+      {
+        "name": "Basic Error Metrics for PBE vs r2SCAN",
+        "type": "metrics_json",
+        "fromStepId": "calculate_error_metrics_001"
+      },
+      {
+        "name": "Summary of PBE vs r2SCAN Comparison",
+        "type": "summary_md",
+        "fromStepId": "calculate_error_metrics_001"
+      }
+    ]
+  },
+  "validationStatus": "validated",
+  "toolCallCount": 1,
+  "artifactCount": 2,
+  "eventCount": 10,
+  "provenance": {
+    "planId": "plan_ba087d8b351d43ddbeae6019",
+    "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+    "planSource": "llm",
+    "loadedFrom": "persisted_analysis_plan",
+    "binding": "jobs.plan_id -> analysis_plans.id",
+    "toolPath": "Tool Registry + Adapter",
+    "fallbackUsed": false
+  }
+}

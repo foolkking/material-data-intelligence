@@ -8,6 +8,7 @@ import urllib.error
 
 import pytest
 
+import mdi_llm.providers as provider_module
 from mdi_api.secrets import InMemorySecretStore
 from mdi_api.repositories import InMemoryRepositoryBundle
 from mdi_llm import LLMProviderError, MockLLMProvider, OpenAICompatibleProvider, PlannerRequest, PlannerRawResponse, PlannerUserConfig, redact_params_for_log
@@ -255,6 +256,33 @@ def test_validate_rejects_credential_in_params() -> None:
     )
     assert not result.ok
     assert any("CREDENTIAL_IN_PARAMS" in e.code for e in result.errors)
+
+
+def test_validate_rejects_params_that_do_not_match_manifest_schema() -> None:
+    result = validate_plan(
+        {
+            "schemaVersion": "0.1",
+            "goal": "test",
+            "datasetId": "ds1",
+            "profileId": "p1",
+            "toolRegistryVersion": "0.1.0",
+            "steps": [
+                {
+                    "stepId": "s1",
+                    "toolId": "ml.density_scatter",
+                    "purpose": "x",
+                    "reason": "x",
+                    "inputRefs": [],
+                    "params": {"x_col": "PBE", "y_col": "r2SCAN"},
+                    "output": {"artifactTypes": ["plotly_json"]},
+                }
+            ],
+            "expectedArtifacts": [],
+        },
+        registry=_registry(),
+    )
+    assert not result.ok
+    assert any(error.code == "PARAMS_SCHEMA_INVALID" for error in result.errors)
 
 
 # ── 8. Planner preview does not create job ─────────────────────────
@@ -658,6 +686,103 @@ def test_openai_provider_timeout_error_is_redacted() -> None:
     assert "sk-phase9a-secret" not in str(exc.value)
 
 
+def test_openai_provider_retries_without_response_format_on_400(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[dict[str, object]] = []
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self) -> bytes:
+            return json.dumps(
+                {
+                    "choices": [
+                        {
+                            "message": {"content": json.dumps(_valid_openai_plan())},
+                            "finish_reason": "stop",
+                        }
+                    ]
+                }
+            ).encode("utf-8")
+
+    def fake_urlopen(req, timeout):
+        body = json.loads(req.data.decode("utf-8"))
+        calls.append(body)
+        if len(calls) == 1:
+            raise urllib.error.HTTPError(
+                url=req.full_url,
+                code=400,
+                msg="Bad Request",
+                hdrs={},
+                fp=None,
+            )
+        return FakeResponse()
+
+    monkeypatch.setattr(provider_module.urllib.request, "urlopen", fake_urlopen)
+
+    response = provider_module._post_chat_completion(
+        base_url="https://llm.example.test/v1",
+        api_key="sk-phase9d-secret-value-000000",
+        model="phase9d-model",
+        messages=[{"role": "user", "content": "return json"}],
+        temperature=0.1,
+        max_tokens=128,
+        timeout_seconds=30.0,
+    )
+
+    assert len(calls) == 2
+    assert calls[0]["response_format"] == {"type": "json_object"}
+    assert "response_format" not in calls[1]
+    assert response["choices"][0]["finish_reason"] == "stop"
+    assert "sk-phase9d-secret" not in json.dumps(calls)
+
+
+def test_openai_provider_omits_response_format_for_gemini_openai_endpoint(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[dict[str, object]] = []
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self) -> bytes:
+            return json.dumps(
+                {
+                    "choices": [
+                        {
+                            "message": {"content": json.dumps(_valid_openai_plan())},
+                            "finish_reason": "stop",
+                        }
+                    ]
+                }
+            ).encode("utf-8")
+
+    def fake_urlopen(req, timeout):
+        calls.append(json.loads(req.data.decode("utf-8")))
+        return FakeResponse()
+
+    monkeypatch.setattr(provider_module.urllib.request, "urlopen", fake_urlopen)
+
+    response = provider_module._post_chat_completion(
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai",
+        api_key="sk-phase9d-secret-value-000000",
+        model="gemini-2.0-flash",
+        messages=[{"role": "user", "content": "return json"}],
+        temperature=0.1,
+        max_tokens=128,
+        timeout_seconds=30.0,
+    )
+
+    assert len(calls) == 1
+    assert "response_format" not in calls[0]
+    assert response["choices"][0]["finish_reason"] == "stop"
+
+
 def test_default_planner_jobs_uses_mock_provider_without_openai_network(monkeypatch: pytest.MonkeyPatch) -> None:
     import mdi_api.routers.planner as planner_router
 
@@ -723,6 +848,46 @@ def test_planner_jobs_openai_compatible_valid_plan_enters_persisted_plan_path(mo
     assert job["planId"] == result.plan_id
     assert plan["plannerProvider"] == "openai_compatible"
     assert plan["analysisPlan"]["steps"][0]["toolId"] == "ml.basic_metrics"
+
+
+def test_planner_jobs_provider_only_openai_compatible_keeps_env_config_path(monkeypatch: pytest.MonkeyPatch) -> None:
+    import mdi_api.routers.planner as planner_router
+
+    captured: dict[str, object] = {}
+
+    class FakeOpenAIProvider:
+        def generate_plan(self, request, *, tools, data_profile, user_config=None):
+            captured["user_config"] = user_config
+            return PlannerRawResponse(
+                raw_json=_valid_openai_plan(dataset_id=request.dataset_id, profile_id=request.profile_id),
+                raw_text=None,
+                model="env-selected-model",
+                finish_reason="stop",
+            )
+
+        @property
+        def meta(self):
+            return type("Meta", (), {"name": "openai_compatible", "model": "env-selected-model"})()
+
+    monkeypatch.setenv("MDI_LLM_PROVIDER", "openai_compatible")
+    monkeypatch.setenv("MDI_LLM_MODEL", "env-selected-model")
+    monkeypatch.setattr(planner_router, "OpenAICompatibleProvider", lambda: FakeOpenAIProvider())
+
+    result = planner_router.planner_jobs(
+        planner_router.PlannerJobsRequest(
+            userPrompt="run metrics",
+            projectId="project_9a",
+            datasetId="dataset_9a",
+            profileId="profile_9a",
+            provider="openai_compatible",
+        ),
+        repositories=InMemoryRepositoryBundle.create(),
+        registry=_registry(),
+    )
+
+    assert result.ok
+    assert result.planner_provider == "openai_compatible"
+    assert captured["user_config"] is None
 
 
 def test_planner_jobs_openai_compatible_invalid_plan_persists_nothing(monkeypatch: pytest.MonkeyPatch) -> None:

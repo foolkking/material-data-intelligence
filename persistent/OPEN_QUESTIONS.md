@@ -1,5 +1,17 @@
 # OPEN_QUESTIONS
 
+## 2026-07-05 Phase 9D True LLM Live Verification
+
+- **Closed: true live LLM full-chain evidence captured.** The Gemini OpenAI-compatible path produced redacted evidence from live provider output through PlanValidator, persisted AnalysisPlan, `jobs.plan_id`, QueueWorkerRuntime, Tool Registry + Adapter, Artifact/Result generation, and Phase 9C UI display.
+- **Closed: final gated live rerun passed.** `python -m pytest -q -m llm_integration` passed with Gemini 3 Flash Preview, proving the current OpenAI-compatible Gemini path can run the full persisted planner job chain.
+- **Open: Antigravity model requires a different provider contract.** Gemini reports `antigravity-preview-05-2026` only supports Interactions API, not OpenAI-compatible chat/completions. Supporting it would be a future provider path, not Phase 9D OpenAI-compatible verification.
+- **Closed: live LLM parameter aliases could pass persistence and fail only at adapter runtime.** PlanValidator now validates each step's params against the registered tool `paramsSchema` before persistence.
+- **Closed: Phase 9D evidence redaction.** The local evidence pack under `docs/llm-live-verification/phase9d/` was scanned for key/token strings and did not contain the API key or auth token header.
+- **Still open: production secret encryption/KMS.** Phase 9D used env/SecretStore safely but does not implement production envelope encryption.
+- **Still open: multi-step DAG/data-dependency execution.** Live verification covered a simple executable plan path, not DAG scheduling.
+- **Still open: worker process supervision/dead-letter policy.** Queue semantics remain the existing Phase 8B/9C path.
+- **Still open: broader pymatviz adapter coverage.** The live run verified metrics/report artifacts, not the full official visualization inventory.
+
 ## 2026-07-05 Phase 9D LLM Configuration Path Repair
 
 - **Closed: UI provider config looked disconnected from planner jobs.** The UI already passed provider config into `/planner/jobs`; this repair adds an explicit no-network resolve API so the UI can show the current task provider status without relying on env-default status.

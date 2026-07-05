@@ -1,5 +1,18 @@
 # DESIGN_PROGRESS
 
+## 2026-07-05 Phase 9D True LLM Live Verification
+
+- Captured redacted live-provider evidence for the OpenAI-compatible Gemini path under `docs/llm-live-verification/phase9d/`: the provider returned AnalysisPlan JSON, the plan passed PlanValidator, persisted as an AnalysisPlan, bound through `jobs.plan_id`, loaded through QueueWorkerRuntime, and executed through Tool Registry + Adapter.
+- Browser evidence shows the Phase 9C UI using the live OpenAI-compatible provider, a completed job, `plan.loaded` / `data.loaded` / `tool.completed` / `job.completed`, and metrics/report artifacts. The API key was read from user environment / SecretStore only and was not recorded in docs, events, artifacts, plans, or test output.
+- Live testing found that LLM output can use wrong parameter aliases even when the selected tool is valid. PlanValidator now validates each step's `params` against the registered tool `paramsSchema` before persistence; prompt tool summaries now list allowed parameter names.
+- Gemini/OpenAI-compatible compatibility was tightened by omitting `response_format` for `generativelanguage.googleapis.com`, because the endpoint returned HTTP 400 for that field.
+- Final gated full-chain rerun passed with Gemini 3 Flash Preview through the OpenAI-compatible Gemini endpoint: `python -m pytest -q -m llm_integration` -> `1 passed, 165 deselected`. This verified live provider JSON -> PlanValidator -> persisted AnalysisPlan -> queued worker execution -> ToolCall/Artifact/Result.
+- Gemini 2.5 Flash Lite was reachable but the full-chain test returned a safe provider-side HTTP 503 during one attempt; Gemini 3 Flash Preview is the Phase 9D verified Gemini model for the current evidence.
+- The user-requested Antigravity model was checked through the same Gemini AI Studio OpenAI-compatible chat/completions path. The provider returned HTTP 400 with safe message "This model only supports Interactions API", so it is not usable for the current OpenAI-compatible provider path.
+- Default CI remains real-LLM-free because it does not set `MDI_RUN_LLM_INTEGRATION`.
+- Redaction scans over the Phase 9D evidence found no API key, auth token header, provider key env name, or key prefix leakage.
+- Remaining boundaries: production KMS/envelope encryption, multi-step DAG/data-dependency scheduling, worker supervision/dead-letter policy, and broader pymatviz adapter coverage.
+
 ## 2026-07-05 Phase 9D LLM Configuration Path Repair
 
 - Implemented the Phase 9D configuration-chain repair without running a live LLM: explicit UI/request `PlannerUserConfig` now wins over environment model/timeout/token/temperature settings, while env-only integration tests still read `MDI_LLM_*` / `OPENAI_*`.

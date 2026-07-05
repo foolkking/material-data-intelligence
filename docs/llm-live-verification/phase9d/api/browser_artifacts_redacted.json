@@ -1,0 +1,100 @@
+[
+  {
+    "id": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001-metrics_json",
+    "projectId": "project_local",
+    "datasetId": "dataset_0002",
+    "jobId": "job_96fbd9a69eb645ac9d0cd441",
+    "toolCallId": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001",
+    "type": "metrics_json",
+    "name": "metrics.json",
+    "version": "1",
+    "storageKey": "projects/project_local/jobs/job_96fbd9a69eb645ac9d0cd441/tool_calls/call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001/metrics.json",
+    "storageProvider": "local",
+    "bucket": null,
+    "previewKey": null,
+    "sizeBytes": 255,
+    "contentType": "application/json",
+    "contentHash": "e795ba743c10d032f065bcef9b63adb3469e82045d4a06fa4cba14e23b1c7b61",
+    "sha256": "e795ba743c10d032f065bcef9b63adb3469e82045d4a06fa4cba14e23b1c7b61",
+    "metadata": {
+      "toolId": "ml.basic_metrics",
+      "toolVersion": "0.1.0",
+      "adapterVersion": "0.1.0",
+      "inputHashes": [
+        "dcde75fea1a81a2d5d4a18f84064dc106fad349af1e6487425921f08a799397c"
+      ],
+      "paramsHash": "e6fcb731165d3c03556e42344bbe59d4e9dd46ed12b1b9be7028ca16b342dc3c",
+      "profileId": null,
+      "recipeId": null,
+      "reportId": null,
+      "createdAt": "2026-07-05T10:26:54.408839+00:00",
+      "provenance": {
+        "toolId": "ml.basic_metrics",
+        "toolCallId": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001",
+        "planId": "plan_ba087d8b351d43ddbeae6019",
+        "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+        "planSource": "llm"
+      },
+      "storageProvider": "local",
+      "bucket": null
+    },
+    "planId": "plan_ba087d8b351d43ddbeae6019",
+    "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+    "provenance": {
+      "toolId": "ml.basic_metrics",
+      "toolCallId": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001",
+      "planId": "plan_ba087d8b351d43ddbeae6019",
+      "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+      "planSource": "llm"
+    }
+  },
+  {
+    "id": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001-summary_md",
+    "projectId": "project_local",
+    "datasetId": "dataset_0002",
+    "jobId": "job_96fbd9a69eb645ac9d0cd441",
+    "toolCallId": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001",
+    "type": "summary_md",
+    "name": "summary.md",
+    "version": "1",
+    "storageKey": "projects/project_local/jobs/job_96fbd9a69eb645ac9d0cd441/tool_calls/call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001/summary.md",
+    "storageProvider": "local",
+    "bucket": null,
+    "previewKey": null,
+    "sizeBytes": 112,
+    "contentType": "application/json",
+    "contentHash": "a8b83a84ee071f607baedd1055aa488bf17dfb6af424af1c297981f7d038d498",
+    "sha256": "a8b83a84ee071f607baedd1055aa488bf17dfb6af424af1c297981f7d038d498",
+    "metadata": {
+      "toolId": "ml.basic_metrics",
+      "toolVersion": "0.1.0",
+      "adapterVersion": "0.1.0",
+      "inputHashes": [
+        "dcde75fea1a81a2d5d4a18f84064dc106fad349af1e6487425921f08a799397c"
+      ],
+      "paramsHash": "e6fcb731165d3c03556e42344bbe59d4e9dd46ed12b1b9be7028ca16b342dc3c",
+      "profileId": null,
+      "recipeId": null,
+      "reportId": null,
+      "createdAt": "2026-07-05T10:26:54.411838+00:00",
+      "provenance": {
+        "toolId": "ml.basic_metrics",
+        "toolCallId": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001",
+        "planId": "plan_ba087d8b351d43ddbeae6019",
+        "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+        "planSource": "llm"
+      },
+      "storageProvider": "local",
+      "bucket": null
+    },
+    "planId": "plan_ba087d8b351d43ddbeae6019",
+    "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+    "provenance": {
+      "toolId": "ml.basic_metrics",
+      "toolCallId": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001",
+      "planId": "plan_ba087d8b351d43ddbeae6019",
+      "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+      "planSource": "llm"
+    }
+  }
+]

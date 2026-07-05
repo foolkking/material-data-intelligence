@@ -1,0 +1,89 @@
+{
+  "id": "dataset_0002",
+  "datasetId": "dataset_0002",
+  "projectId": "project_0002",
+  "name": "Phase 9D MatPES live Gemini",
+  "status": "profile_ready",
+  "fileCount": 1,
+  "objectCount": 1,
+  "profileId": "profile_dataset_0002_v1",
+  "normalizedExports": [
+    {
+      "objectId": "obj_dataframe_534dcd0221d7",
+      "storageKey": "projects/project_0002/datasets/dataset_0002/normalized/obj_dataframe_534dcd0221d7/data.json",
+      "metadataKey": "projects/project_0002/datasets/dataset_0002/normalized/obj_dataframe_534dcd0221d7/metadata.json",
+      "contentHash": "6a8f83d1759e4fd5f5db9b5576b752748f81ae35af5337d883425e6dfae38c0d"
+    }
+  ],
+  "createdAt": "2026-07-05T09:43:09.425964+00:00",
+  "files": [
+    {
+      "fileId": "file_001",
+      "name": "2024-10-30-MatPES-atomic-energies.csv",
+      "detectedFormat": "csv",
+      "status": "success",
+      "objectCount": 1,
+      "errorCode": null
+    }
+  ],
+  "profile": {
+    "schemaVersion": "0.1",
+    "profileId": "profile_dataset_0002_v1",
+    "datasetId": "dataset_0002",
+    "version": "1",
+    "datasetType": "unknown",
+    "files": [
+      {
+        "fileId": "file_001",
+        "fileName": "2024-10-30-MatPES-atomic-energies.csv",
+        "detectedFormat": "csv",
+        "parseStatus": "success"
+      }
+    ],
+    "objects": [
+      {
+        "objectId": "obj_dataframe_534dcd0221d7",
+        "objectType": "DataFrame",
+        "count": 1,
+        "sourceFileIds": [
+          "file_001"
+        ],
+        "periodicity": null
+      }
+    ],
+    "structureSummary": null,
+    "tableSummary": {
+      "nRows": 89,
+      "nColumns": 3,
+      "columns": [
+        {
+          "name": "element",
+          "dtype": "string",
+          "inferredRole": null,
+          "missingCount": 0,
+          "uniqueCount": 89
+        },
+        {
+          "name": "PBE",
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 0,
+          "uniqueCount": 89
+        },
+        {
+          "name": "r2SCAN",
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 0,
+          "uniqueCount": 89
+        }
+      ],
+      "inferredTask": "unknown"
+    },
+    "phononSummary": null,
+    "trajectorySummary": null,
+    "qualityIssues": [],
+    "recommendedTasks": [],
+    "createdAt": "2026-07-05T09:43:09.423966+00:00"
+  }
+}

@@ -23,12 +23,52 @@ from mdi_tool_registry import load_manifests
 from mdi_tool_registry.plan_validator import validate_plan
 
 
-@pytest.mark.llm_integration
-def test_openai_compatible_llm_live_gated_plan_validation() -> None:
-    _require_live_llm_env()
-
+def test_openai_compatible_llm_plan_validation_with_fake_transport() -> None:
     registry = load_manifests()
-    provider = OpenAICompatibleProvider()
+    provider = OpenAICompatibleProvider(
+        transport=lambda **kwargs: {
+            "choices": [
+                {
+                    "message": {
+                        "content": json.dumps(
+                            {
+                                "schemaVersion": "0.1",
+                                "goal": "fake provider validation",
+                                "datasetId": "dataset_llm_live",
+                                "profileId": "profile_llm_live",
+                                "toolRegistryVersion": registry.version,
+                                "steps": [
+                                    {
+                                        "stepId": "calculate_basic_metrics",
+                                        "toolId": "ml.basic_metrics",
+                                        "purpose": "Calculate metrics",
+                                        "reason": "Use y_true and y_pred",
+                                        "inputRefs": [
+                                            {
+                                                "refType": "normalized_object",
+                                                "ref": "ml_table",
+                                                "objectType": "DataFrame",
+                                            }
+                                        ],
+                                        "params": {"targetColumn": "y_true", "predictionColumn": "y_pred"},
+                                        "output": {"artifactTypes": ["metrics_json"]},
+                                    }
+                                ],
+                                "expectedArtifacts": [
+                                    {
+                                        "name": "metrics.json",
+                                        "type": "metrics_json",
+                                        "fromStepId": "calculate_basic_metrics",
+                                    }
+                                ],
+                            }
+                        )
+                    },
+                    "finish_reason": "stop",
+                }
+            ]
+        }
+    )
     request = PlannerRequest(
         user_prompt="Create one safe AnalysisPlan step using ml.basic_metrics for y_true and y_pred.",
         dataset_id="dataset_llm_live",

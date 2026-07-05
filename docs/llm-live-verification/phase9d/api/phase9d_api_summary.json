@@ -1,0 +1,71 @@
+{
+  "projectId": "project_0002",
+  "datasetId": "dataset_0002",
+  "profileId": "profile_dataset_0002_v1",
+  "jobId": "job_c08de488c4c84104916f3733",
+  "planId": "plan_740983fe2df64d8b84576dc8",
+  "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+  "provider": "openai_compatible",
+  "baseUrl": "https://generativelanguage.googleapis.com/v1beta/openai",
+  "model": "gemini-2.5-flash",
+  "rawSha256": "974d73a330837ac41a66fe844764dff9fbf59d346bbd33b5ae513dfc6da7404d",
+  "prompt": "请比较 PBE 与 r2SCAN 两列原子能量数据，计算基础误差指标，并生成结果摘要。",
+  "eventTypes": [
+    "job.created",
+    "plan.persisted",
+    "job.running",
+    "plan.loaded",
+    "data.loaded",
+    "tool.started",
+    "artifact.ready",
+    "artifact.ready",
+    "artifact.ready",
+    "tool.completed",
+    "tool.started",
+    "artifact.ready",
+    "artifact.ready",
+    "tool.completed",
+    "job.completed"
+  ],
+  "toolCalls": [
+    {
+      "toolId": "ml.density_scatter",
+      "stepId": "compare_pbe_r2scan_scatter",
+      "status": "completed"
+    },
+    {
+      "toolId": "ml.basic_metrics",
+      "stepId": "calculate_pbe_r2scan_metrics",
+      "status": "completed"
+    }
+  ],
+  "artifactCount": 5,
+  "artifacts": [
+    {
+      "id": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter-plotly_json",
+      "type": "plotly_json",
+      "name": "figure.json"
+    },
+    {
+      "id": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter-preview_png",
+      "type": "preview_png",
+      "name": "preview.png"
+    },
+    {
+      "id": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter-summary_md",
+      "type": "summary_md",
+      "name": "summary.md"
+    },
+    {
+      "id": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics-metrics_json",
+      "type": "metrics_json",
+      "name": "metrics.json"
+    },
+    {
+      "id": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics-summary_md",
+      "type": "summary_md",
+      "name": "summary.md"
+    }
+  ],
+  "resultStatus": "completed"
+}

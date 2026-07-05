@@ -1,5 +1,43 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-089: Live LLM params must satisfy Tool Registry paramsSchema before persistence
+
+### Context
+
+Phase 9D live verification proved that a real OpenAI-compatible provider can
+return a syntactically valid AnalysisPlan with a valid tool ID but invalid
+parameter names for that tool. In the observed live run, the provider selected
+a registry-approved plotting tool but emitted aliases that did not match the
+registered params schema. Letting such a plan persist would move the failure
+from the planner boundary to adapter runtime.
+
+### Decision
+
+PlanValidator must validate each `AnalysisStep.params` object against the
+selected registered tool's `paramsSchema` before any AnalysisPlan can be
+persisted, bound to a job, or enqueued. Prompt guidance may list allowed
+parameter names, but prompt wording is advisory only; the registry schema is
+the enforcement boundary.
+
+The live provider still only returns JSON AnalysisPlan. It does not execute
+code, enqueue work directly, or call adapters. Valid plans continue to flow:
+
+```text
+Live provider JSON -> PlanValidator -> persisted AnalysisPlan -> jobs.plan_id
+-> QueueWorkerRuntime -> Tool Registry -> Adapter -> Artifact/Result
+```
+
+### Consequences
+
+- Invalid live-provider params fail before persistence/job/enqueue.
+- Adapter runtime no longer has to be the first place that catches invalid
+  step params for known tools.
+- Tool Registry manifests remain the source of executable parameter contracts.
+- Default CI remains real-LLM-free; live verification remains gated by
+  `MDI_RUN_LLM_INTEGRATION=1`.
+- Secret/API key values remain forbidden in prompts, plans, JobEvents,
+  Artifacts, Reports, Recipes, screenshots, and exported evidence.
+
 ## ADR-088: Explicit planner provider config wins over environment defaults
 
 ### Context

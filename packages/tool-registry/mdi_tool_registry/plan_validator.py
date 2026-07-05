@@ -11,6 +11,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from jsonschema import Draft202012Validator
+from jsonschema.exceptions import ValidationError
+
 from mdi_schemas import AnalysisPlan, ArtifactType
 from mdi_tool_registry import ToolRegistry
 
@@ -117,5 +120,22 @@ def validate_plan(plan: dict[str, Any] | AnalysisPlan, *, registry: ToolRegistry
         for key in step.params:
             if key.lower().replace("_", "").replace("-", "") in _credential_keys:
                 errors.append(_error("CREDENTIAL_IN_PARAMS", f"Param '{key}' looks like a credential in step '{step.stepId}'.", {"stepId": step.stepId, "key": key}))
+
+    # 10. params must match the registered tool schema before persistence.
+    for step in parsed.steps:
+        tool = tool_by_id.get(step.toolId)
+        if tool is None:
+            continue
+        schema = tool.paramsSchema or {"type": "object", "additionalProperties": True}
+        try:
+            Draft202012Validator(schema).validate(dict(step.params))
+        except ValidationError as exc:
+            errors.append(
+                _error(
+                    "PARAMS_SCHEMA_INVALID",
+                    f"Params for tool '{step.toolId}' do not match the registered paramsSchema.",
+                    {"stepId": step.stepId, "toolId": step.toolId, "detail": exc.message},
+                )
+            )
 
     return PlanValidationResult(ok=len(errors) == 0, errors=errors)

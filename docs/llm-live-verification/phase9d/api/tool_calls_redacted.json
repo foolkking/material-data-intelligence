@@ -1,0 +1,51 @@
+[
+  {
+    "id": "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter",
+    "jobId": "job_c08de488c4c84104916f3733",
+    "stepId": "compare_pbe_r2scan_scatter",
+    "toolId": "ml.density_scatter",
+    "status": "completed",
+    "idempotencyKey": "job_c08de488c4c84104916f3733:compare_pbe_r2scan_scatter",
+    "params": {
+      "targetColumn": "PBE",
+      "predictionColumn": "r2SCAN",
+      "xLabel": "PBE",
+      "yLabel": "r2SCAN",
+      "title": "PBE vs r2SCAN Density Scatter Plot",
+      "identityLine": true,
+      "bestFitLine": true,
+      "stats": true
+    },
+    "attempt": 1,
+    "artifactIds": [
+      "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter-plotly_json",
+      "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter-preview_png",
+      "call_job_c08de488c4c84104916f3733_compare_pbe_r2scan_scatter-summary_md"
+    ],
+    "planId": "plan_740983fe2df64d8b84576dc8",
+    "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+    "inputSummary": "Params: bestFitLine, identityLine, predictionColumn, stats, targetColumn, title, xLabel, yLabel",
+    "outputSummary": "3 artifact(s)"
+  },
+  {
+    "id": "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics",
+    "jobId": "job_c08de488c4c84104916f3733",
+    "stepId": "calculate_pbe_r2scan_metrics",
+    "toolId": "ml.basic_metrics",
+    "status": "completed",
+    "idempotencyKey": "job_c08de488c4c84104916f3733:calculate_pbe_r2scan_metrics",
+    "params": {
+      "targetColumn": "PBE",
+      "predictionColumn": "r2SCAN"
+    },
+    "attempt": 1,
+    "artifactIds": [
+      "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics-metrics_json",
+      "call_job_c08de488c4c84104916f3733_calculate_pbe_r2scan_metrics-summary_md"
+    ],
+    "planId": "plan_740983fe2df64d8b84576dc8",
+    "planHash": "fb1ee2c9d98e3fc27af9444a52e63a0ab8f85359e7604d098348a53a0773e938",
+    "inputSummary": "Params: predictionColumn, targetColumn",
+    "outputSummary": "2 artifact(s)"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "command": "python -m pytest -q -m llm_integration",
+  "provider": "openai_compatible",
+  "baseUrl": "https://generativelanguage.googleapis.com/v1beta/openai",
+  "model": "gemini-3-flash-preview",
+  "result": "1 passed, 165 deselected",
+  "usedRealLLM": true,
+  "apiKey": "configured; not persisted",
+  "defaultCIUsesRealLLM": false,
+  "validatedPath": [
+    "live provider JSON",
+    "PlanValidator",
+    "persisted AnalysisPlan",
+    "jobs.plan_id",
+    "QueueWorkerRuntime",
+    "Tool Registry + Adapter",
+    "Artifact / Result"
+  ],
+  "redacted": true
+}

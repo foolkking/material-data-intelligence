@@ -20,6 +20,9 @@ def _tool_summary(tools: list[RegisteredTool]) -> str:
         lines.append(f"- {tool.toolId}: {tool.description}")
         if tool.artifactTypes:
             lines.append(f"  artifactTypes: {[a.value for a in tool.artifactTypes]}")
+        properties = (tool.paramsSchema or {}).get("properties", {})
+        if properties:
+            lines.append(f"  allowedParams: {list(properties)}")
     return "\n".join(lines)
 
 
@@ -92,6 +95,8 @@ RULES:
 11. For ml.* tools, include inputRefs with {"refType":"normalized_object","ref":"ml_table","objectType":"DataFrame"} when the DataProfile has table columns.
 12. For structure.* tools, include inputRefs with {"refType":"normalized_object","ref":"structures","objectType":"Structure"} when structures are available.
 13. For composition.* tools, include inputRefs with {"refType":"normalized_object","ref":"formulas","objectType":"Composition"} when formulas or compositions are available.
+14. For metric, error metric, MAE/RMSE/R2, target-vs-prediction, or two-column numeric comparison requests, prefer toolId "ml.basic_metrics" with params {"targetColumn":"<column>","predictionColumn":"<column>"}.
+15. Use the exact allowed parameter names shown in Available tools. Do not use snake_case aliases such as x_col or y_col when the manifest lists camelCase names.
 """
 
 _USER_PROMPT_TEMPLATE = """User prompt: {user_prompt}

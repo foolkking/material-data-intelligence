@@ -1,0 +1,23 @@
+[
+  {
+    "id": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001",
+    "jobId": "job_96fbd9a69eb645ac9d0cd441",
+    "stepId": "calculate_error_metrics_001",
+    "toolId": "ml.basic_metrics",
+    "status": "completed",
+    "idempotencyKey": "job_96fbd9a69eb645ac9d0cd441:calculate_error_metrics_001",
+    "params": {
+      "targetColumn": "PBE",
+      "predictionColumn": "r2SCAN"
+    },
+    "attempt": 1,
+    "artifactIds": [
+      "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001-metrics_json",
+      "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001-summary_md"
+    ],
+    "planId": "plan_ba087d8b351d43ddbeae6019",
+    "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+    "inputSummary": "Params: predictionColumn, targetColumn",
+    "outputSummary": "2 artifact(s)"
+  }
+]

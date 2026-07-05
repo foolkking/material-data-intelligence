@@ -1,0 +1,51 @@
+{
+  "datasetId": "dataset_0002",
+  "profileId": "profile_dataset_0002_v1",
+  "prompt": "请比较 PBE 与 r2SCAN 两列原子能量数据，计算基础误差指标，并生成结果摘要。",
+  "provider": "openai_compatible",
+  "baseUrl": "https://generativelanguage.googleapis.com/v1beta/openai",
+  "model": "gemini-2.5-flash",
+  "jobId": "job_96fbd9a69eb645ac9d0cd441",
+  "planIdFromUiText": "plan_ba087d8b351d43ddbeae6019",
+  "screenshots": [
+    "01_provider_status.png",
+    "02_live_plan_preview.png",
+    "03_agent_process_completed.png",
+    "04_results_export.png",
+    "05_developer_audit_redacted.png"
+  ],
+  "eventTypes": [
+    "job.created",
+    "plan.persisted",
+    "job.running",
+    "plan.loaded",
+    "data.loaded",
+    "tool.started",
+    "artifact.ready",
+    "artifact.ready",
+    "tool.completed",
+    "job.completed"
+  ],
+  "toolCalls": [
+    {
+      "toolId": "ml.basic_metrics",
+      "stepId": "calculate_error_metrics_001",
+      "status": "completed"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001-metrics_json",
+      "type": "metrics_json",
+      "name": "metrics.json"
+    },
+    {
+      "id": "call_job_96fbd9a69eb645ac9d0cd441_calculate_error_metrics_001-summary_md",
+      "type": "summary_md",
+      "name": "summary.md"
+    }
+  ],
+  "planId": "plan_ba087d8b351d43ddbeae6019",
+  "planHash": "971c66ba0a4fb8616a867d9928ab54e0480c79ed2528ed375e5762dbe2da4db7",
+  "jobStatus": "completed"
+}
