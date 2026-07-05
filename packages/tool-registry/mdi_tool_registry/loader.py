@@ -110,6 +110,8 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
         return {"maxRows": 500000}
     if tool_id.startswith("table."):
         return {"maxRows": 500000}
+    if tool_id.startswith("viz."):
+        return {"maxRows": 500000, "maxPoints": 50000}
     return {"maxRows": 100000, "maxStructures": 10000}
 
 
@@ -199,6 +201,16 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
                     name="table_dataframe",
                     requiredObjectTypes=[MaterialObjectType.DataFrame],
                     description="Use a DataFrame or table records for descriptive statistics.",
+                )
+            ]
+        )
+    if tool_id.startswith("viz."):
+        return ToolInputSchema(
+            inputOptions=[
+                ToolInputOption(
+                    name="table_dataframe",
+                    requiredObjectTypes=[MaterialObjectType.DataFrame],
+                    description="Use a DataFrame or table records for visualization artifacts.",
                 )
             ]
         )
@@ -323,6 +335,64 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "numericColumns": {"type": "array", "items": {"type": "string"}},
                 "categoricalColumns": {"type": "array", "items": {"type": "string"}},
                 "maxCategories": {"type": "integer", "minimum": 1},
+            },
+        }
+    if tool_id == "table.distribution_summary":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "numericColumns": {"type": "array", "items": {"type": "string"}},
+                "categoricalColumns": {"type": "array", "items": {"type": "string"}},
+                "quantiles": {
+                    "type": "array",
+                    "items": {"type": "number", "minimum": 0, "maximum": 1},
+                },
+                "maxCategories": {"type": "integer", "minimum": 1},
+            },
+        }
+    if tool_id == "viz.scatter":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "xColumn": {"type": "string"},
+                "yColumn": {"type": "string"},
+                "colorColumn": {"type": "string"},
+                "hoverColumns": {"type": "array", "items": {"type": "string"}},
+                "title": {"type": "string"},
+            },
+        }
+    if tool_id == "viz.histogram":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "column": {"type": "string"},
+                "bins": {"type": "integer", "minimum": 1},
+                "groupBy": {"type": "string"},
+                "title": {"type": "string"},
+            },
+        }
+    if tool_id == "viz.correlation":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "numericColumns": {"type": "array", "items": {"type": "string"}},
+                "method": {"enum": ["pearson", "spearman"]},
+                "minNonNullCount": {"type": "integer", "minimum": 1},
+                "title": {"type": "string"},
+            },
+        }
+    if tool_id == "composition.summary":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "formulaColumn": {"type": "string"},
+                "compositionColumn": {"type": "string"},
+                "maxSystems": {"type": "integer", "minimum": 1},
             },
         }
     if tool_id == "ml.outlier_table":

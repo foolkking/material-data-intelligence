@@ -1,5 +1,35 @@
 # TASK_BOARD
 
+## 2026-07-06 Phase 10A-1 First Batch Adapter Implementation
+
+### Done This Round
+
+- [x] Added design note `docs/phase10a/phase10a1_first_batch_adapter_design.md`.
+- [x] Added `table.distribution_summary` adapter with `distribution_summary.json`, `summary.md`, and `recipe.json` outputs.
+- [x] Added `viz.scatter` adapter with `scatter.json`, optional `scatter.html`, `summary.md`, and `recipe.json` outputs.
+- [x] Added `viz.histogram` adapter with `histogram.json`, optional `histogram.html`, `summary.md`, and `recipe.json` outputs.
+- [x] Added `viz.correlation` adapter with `correlation_matrix.json`, `correlation_heatmap.json`, optional `correlation_heatmap.html`, `summary.md`, and `recipe.json` outputs.
+- [x] Added safe `composition.summary` adapter for formula/composition fields.
+- [x] Registered all five tools in Tool Registry and params schemas.
+- [x] Updated Mock Planner routing for MatPES scatter/histogram and Ward distribution/correlation/composition prompts.
+- [x] Updated Phase 9C results rendering for new plot/table/composition artifact types.
+- [x] Added adapter, manifest, planner-routing, persisted execution, and frontend result tests.
+
+### Verification
+
+- [x] Targeted adapter/manifest/Phase 10A-1 tests passed locally before full regression.
+- [x] Generate Phase 10A-1 official examples evidence under `docs/phase10a/official_examples_evidence/`.
+- [x] Captured direct adapter evidence for MatPES scatter, MatPES histogram, Ward distribution summary, Ward correlation, and Ward composition summary.
+- [ ] Run full backend/frontend regression.
+- [ ] Commit, push, and confirm CI current HEAD.
+
+### Remaining
+
+- [ ] Browser-click evidence for new visualization/table adapters.
+- [ ] Official extraction-required, mapping-only, and future-scope cases remain out of this phase.
+- [ ] Multi-step DAG/data-dependency execution remains future work.
+- [ ] Broader pymatviz adapters such as phonon, Brillouin zone, advanced widgets, XRD/RDF, classification curves, and richer reports remain future work.
+
 ## 2026-07-05 Phase 9D True LLM Live Verification
 
 ### Done This Round

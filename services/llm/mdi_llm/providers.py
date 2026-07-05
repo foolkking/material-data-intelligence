@@ -97,6 +97,16 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_scatter(request, tools, data_profile):
+            plan = _mock_scatter_plan(request, tools, data_profile=data_profile)
+        elif _should_generate_correlation(request, tools, data_profile):
+            plan = _mock_correlation_plan(request, tools, data_profile=data_profile)
+        elif _should_generate_distribution_summary(request, tools, data_profile):
+            plan = _mock_distribution_summary_plan(request, tools, data_profile=data_profile)
+        elif _should_generate_histogram(request, tools, data_profile):
+            plan = _mock_histogram_plan(request, tools, data_profile=data_profile)
+        elif _should_generate_composition_summary(request, tools, data_profile):
+            plan = _mock_composition_summary_plan(request, tools, data_profile=data_profile)
         elif _should_generate_numeric_summary(request, tools, data_profile):
             plan = _mock_numeric_summary_plan(request, tools, data_profile=data_profile)
         else:
@@ -457,6 +467,186 @@ def _mock_numeric_summary_plan(
     }
 
 
+def _mock_distribution_summary_plan(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    *,
+    data_profile: DataProfile,
+) -> dict[str, Any]:
+    params = _numeric_summary_params(data_profile)
+    params["maxCategories"] = params.get("maxCategories", 12)
+    step = {
+        "stepId": "step_001",
+        "toolId": "table.distribution_summary",
+        "purpose": "Summarize table distributions",
+        "reason": "The request asks for numeric/categorical distribution statistics.",
+        "inputRefs": [{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        "params": params,
+        "output": {"artifactTypes": ["table_json", "summary_md", "recipe_json"]},
+    }
+    return _single_step_plan(
+        request,
+        step,
+        [{"name": "distribution_summary.json", "type": "table_json", "fromStepId": "step_001"}],
+    )
+
+
+def _mock_scatter_plan(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    *,
+    data_profile: DataProfile,
+) -> dict[str, Any]:
+    x_column, y_column = _select_scatter_columns(data_profile)
+    step = {
+        "stepId": "step_001",
+        "toolId": "viz.scatter",
+        "purpose": "Generate a scatter plot",
+        "reason": f"The request asks to compare numeric columns {x_column} and {y_column}.",
+        "inputRefs": [{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        "params": {"xColumn": x_column, "yColumn": y_column, "title": f"{x_column} vs {y_column}"},
+        "output": {"artifactTypes": ["plotly_json", "plotly_html", "summary_md", "recipe_json"]},
+    }
+    return _single_step_plan(
+        request,
+        step,
+        [{"name": "scatter.json", "type": "plotly_json", "fromStepId": "step_001"}],
+    )
+
+
+def _mock_histogram_plan(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    *,
+    data_profile: DataProfile,
+) -> dict[str, Any]:
+    column = _select_histogram_column(request, data_profile)
+    step = {
+        "stepId": "step_001",
+        "toolId": "viz.histogram",
+        "purpose": "Generate a histogram",
+        "reason": f"The request asks for the distribution of numeric column {column}.",
+        "inputRefs": [{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        "params": {"column": column, "bins": 20, "title": f"{column} distribution"},
+        "output": {"artifactTypes": ["plotly_json", "plotly_html", "summary_md", "recipe_json"]},
+    }
+    return _single_step_plan(
+        request,
+        step,
+        [{"name": "histogram.json", "type": "plotly_json", "fromStepId": "step_001"}],
+    )
+
+
+def _mock_correlation_plan(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    *,
+    data_profile: DataProfile,
+) -> dict[str, Any]:
+    columns = _numeric_columns(data_profile)[:12]
+    step = {
+        "stepId": "step_001",
+        "toolId": "viz.correlation",
+        "purpose": "Generate a numeric correlation matrix",
+        "reason": "The request asks for correlations between numeric fields.",
+        "inputRefs": [{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        "params": {"numericColumns": columns, "method": "pearson", "minNonNullCount": 2},
+        "output": {"artifactTypes": ["table_json", "plotly_json", "plotly_html", "summary_md", "recipe_json"]},
+    }
+    return _single_step_plan(
+        request,
+        step,
+        [{"name": "correlation_matrix.json", "type": "table_json", "fromStepId": "step_001"}],
+    )
+
+
+def _mock_composition_summary_plan(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    *,
+    data_profile: DataProfile,
+) -> dict[str, Any]:
+    formula_column = _formula_column(data_profile)
+    params = {"formulaColumn": formula_column} if formula_column else {}
+    step = {
+        "stepId": "step_001",
+        "toolId": "composition.summary",
+        "purpose": "Summarize formula compositions",
+        "reason": f"The request asks for element composition statistics from {formula_column or 'formula data'}.",
+        "inputRefs": [{"refType": "normalized_object", "ref": "formulas", "objectType": "Composition"}],
+        "params": params,
+        "output": {"artifactTypes": ["table_json", "summary_md", "recipe_json"]},
+    }
+    return _single_step_plan(
+        request,
+        step,
+        [{"name": "composition_summary.json", "type": "table_json", "fromStepId": "step_001"}],
+    )
+
+
+def _single_step_plan(
+    request: PlannerRequest,
+    step: dict[str, Any],
+    expected_artifacts: list[dict[str, Any]],
+) -> dict[str, Any]:
+    return {
+        "schemaVersion": "0.1",
+        "goal": request.user_prompt,
+        "datasetId": request.dataset_id,
+        "profileId": request.profile_id,
+        "toolRegistryVersion": request.tool_registry_version,
+        "assumptions": ["Generated by MockLLMProvider for testing."],
+        "warnings": [],
+        "steps": [step],
+        "expectedArtifacts": expected_artifacts,
+    }
+
+
+def _should_generate_scatter(request: PlannerRequest, tools: list[RegisteredTool], data_profile: DataProfile) -> bool:
+    if not _has_tool(tools, "viz.scatter"):
+        return False
+    prompt = request.user_prompt.lower()
+    return any(marker in prompt for marker in ("scatter", "散点", "比较", "compare")) and len(_numeric_columns(data_profile)) >= 2
+
+
+def _should_generate_histogram(request: PlannerRequest, tools: list[RegisteredTool], data_profile: DataProfile) -> bool:
+    if not _has_tool(tools, "viz.histogram"):
+        return False
+    prompt = request.user_prompt.lower()
+    return any(marker in prompt for marker in ("histogram", "distribution", "分布", "直方图")) and len(_numeric_columns(data_profile)) >= 1
+
+
+def _should_generate_correlation(request: PlannerRequest, tools: list[RegisteredTool], data_profile: DataProfile) -> bool:
+    if not _has_tool(tools, "viz.correlation"):
+        return False
+    prompt = request.user_prompt.lower()
+    return any(marker in prompt for marker in ("correlation", "相关", "相关性")) and len(_numeric_columns(data_profile)) >= 2
+
+
+def _should_generate_distribution_summary(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "table.distribution_summary"):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = ("distribution summary", "distribution statistics", "数值分布", "类别字段", "分布统计")
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_composition_summary(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "composition.summary"):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = ("composition summary", "element composition", "元素组成", "组成", "formula")
+    return any(marker in prompt for marker in markers) and bool(_formula_column(data_profile))
+
+
 def _should_generate_numeric_summary(
     request: PlannerRequest,
     tools: list[RegisteredTool],
@@ -490,13 +680,7 @@ def _has_tool(tools: list[RegisteredTool], tool_id: str) -> bool:
 
 def _numeric_summary_params(data_profile: DataProfile) -> dict[str, Any]:
     columns = _table_columns(data_profile)
-    numeric_columns = [
-        name
-        for column in columns
-        if (name := _column_name(column))
-        and _is_numeric_column(column)
-        and _is_candidate_metric_column(column, data_profile)
-    ]
+    numeric_columns = _numeric_columns(data_profile)
     categorical_columns = [
         name
         for column in columns
@@ -510,6 +694,45 @@ def _numeric_summary_params(data_profile: DataProfile) -> dict[str, Any]:
     if categorical_columns:
         params["categoricalColumns"] = categorical_columns
     return params
+
+
+def _select_scatter_columns(data_profile: DataProfile) -> tuple[str, str]:
+    names = _table_column_names(data_profile)
+    by_lower = {name.lower(): name for name in names}
+    if "pbe" in by_lower and "r2scan" in by_lower:
+        return by_lower["pbe"], by_lower["r2scan"]
+    numeric_columns = _numeric_columns(data_profile)
+    if len(numeric_columns) >= 2:
+        return numeric_columns[0], numeric_columns[1]
+    return "x", "y"
+
+
+def _select_histogram_column(request: PlannerRequest, data_profile: DataProfile) -> str:
+    prompt = request.user_prompt.lower()
+    names = _table_column_names(data_profile)
+    for name in names:
+        if name.lower() in prompt and name in _numeric_columns(data_profile):
+            return name
+    numeric_columns = _numeric_columns(data_profile)
+    return numeric_columns[0] if numeric_columns else "value"
+
+
+def _numeric_columns(data_profile: DataProfile) -> list[str]:
+    return [
+        name
+        for column in _table_columns(data_profile)
+        if (name := _column_name(column))
+        and _is_numeric_column(column)
+        and _is_candidate_metric_column(column, data_profile)
+    ]
+
+
+def _formula_column(data_profile: DataProfile) -> str:
+    by_lower = {name.lower(): name for name in _table_column_names(data_profile)}
+    for candidate in ("formula", "composition", "reduced_formula", "pretty_formula", "formula_pretty"):
+        if candidate in by_lower:
+            return by_lower[candidate]
+    return ""
 
 
 def _select_regression_columns(data_profile: DataProfile) -> tuple[str, str, str | None]:

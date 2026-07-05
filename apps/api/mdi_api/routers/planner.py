@@ -560,6 +560,8 @@ def _validate_executable_input_refs(plan: Any, dataset_id: str) -> list[dict[str
         "composition.": "formulas",
         "structure.": "structures",
         "ml.": "ml_table",
+        "table.": "ml_table",
+        "viz.": "ml_table",
     }
     for step in plan.steps:
         input_refs = list(step.inputRefs or [])

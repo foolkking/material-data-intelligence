@@ -1,0 +1,65 @@
+{
+  "evidence_id": "ward_distribution",
+  "case_id": "ward_metallic_glasses_csv_xz",
+  "generated_at": "2026-07-05T16:26:55.199926+00:00",
+  "source_raw_path": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\ward_metallic_glasses_csv_xz\\raw_data\\ward-metallic-glasses.csv",
+  "source_raw_sha256": "1f4ee74082456c2458be257918fc515d63dcc481790d31eada6dbfeb954f3c89",
+  "tool_id": "table.distribution_summary",
+  "prompt": "Please analyze Ward metallic glasses table numeric distribution statistics.",
+  "params": {
+    "numericColumns": [
+      "D_max",
+      "dTx"
+    ],
+    "categoricalColumns": [
+      "composition",
+      "gfa_type",
+      "comment"
+    ],
+    "maxCategories": 10
+  },
+  "artifact_types_requested": [
+    "table_json",
+    "summary_md",
+    "recipe_json"
+  ],
+  "execution_path": "direct adapter execution through Tool Registry manifest and BaseToolAdapter, not browser/API evidence",
+  "artifacts": [
+    {
+      "artifact_id": "ward_distribution-table_json",
+      "type": "table_json",
+      "name": "distribution_summary.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_distribution/tool_calls/ward_distribution/distribution_summary.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_distribution\\tool_calls\\ward_distribution\\distribution_summary.json",
+      "size_bytes": 1801,
+      "content_hash": "029eb447e731c219d7f34e63c6c7c4c4e481bebcdbdb27a22cd55608b563155f",
+      "tool_id": "table.distribution_summary",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "ward_distribution-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_distribution/tool_calls/ward_distribution/summary.md",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_distribution\\tool_calls\\ward_distribution\\summary.md",
+      "size_bytes": 171,
+      "content_hash": "6712fe804fa3c111f07db0348cdaa9577eb68968c62a9c5ec569fa1d132a88fd",
+      "tool_id": "table.distribution_summary",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "ward_distribution-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_distribution/tool_calls/ward_distribution/recipe.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_distribution\\tool_calls\\ward_distribution\\recipe.json",
+      "size_bytes": 666,
+      "content_hash": "2d6e8dca53e38fca16235dca65a459e141309510f48b25991338c59d2ff8b27c",
+      "tool_id": "table.distribution_summary",
+      "adapter_version": "0.1.0",
+      "verified": true
+    }
+  ]
+}

@@ -1,5 +1,51 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-090: Phase 10A-1 official examples add single-step table and visualization adapters
+
+### Context
+
+The official pymatviz benchmark pack has two `DIRECT_VERIFIED` direct-uploadable
+cases: MatPES atomic energies and Ward metallic glasses. Phase 9B/9C evidence
+proved the persisted execution path for `ml.basic_metrics` and
+`table.numeric_summary`, but the benchmark contract preserves richer first
+batch expectations such as scatter plots, histograms, distribution summaries,
+correlation heatmaps, and safe composition summaries.
+
+### Decision
+
+Add first-batch tools as single-step registry-gated adapters:
+
+- `table.distribution_summary`
+- `viz.scatter`
+- `viz.histogram`
+- `viz.correlation`
+- `composition.summary`
+
+`viz` is a shared ToolDomain for general visualization artifacts that are not
+specific to ML, composition, structure, or phonon domains. These adapters accept
+normalized objects such as `ml_table`, emit named artifacts plus `summary.md`
+and `recipe.json`, and expose strict params schemas through Tool Registry.
+
+Mock Planner may route MatPES scatter/histogram prompts and Ward
+distribution/correlation/composition prompts to these tools, but it still only
+produces structured AnalysisPlan JSON. PlanValidator remains the boundary before
+persistence, job creation, and enqueue.
+
+### Consequences
+
+- MatPES can be verified beyond metrics with `viz.scatter` and `viz.histogram`
+  while preserving `ml.basic_metrics` for explicit PBE vs r2SCAN metric prompts.
+- Ward can use table distribution and correlation tools without treating
+  independent material properties as regression target/prediction pairs.
+- `composition.summary` is safe partial support: it runs only when a stable
+  formula/composition field exists and must not fabricate missing composition
+  data.
+- The Phase 8B persisted-plan execution contract is unchanged. QueueWorkerRuntime
+  still loads persisted plans by `job.plan_id` and executes via Tool Registry +
+  Adapter.
+- The Phase 9D live LLM path is unchanged and remains gated outside default CI.
+- Multi-step DAG workflows and broader official examples remain future phases.
+
 ## ADR-089: Live LLM params must satisfy Tool Registry paramsSchema before persistence
 
 ### Context

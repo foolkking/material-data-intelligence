@@ -1,0 +1,87 @@
+{
+  "evidence_id": "ward_correlation",
+  "case_id": "ward_metallic_glasses_csv_xz",
+  "generated_at": "2026-07-05T16:26:55.199926+00:00",
+  "source_raw_path": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\ward_metallic_glasses_csv_xz\\raw_data\\ward-metallic-glasses.csv",
+  "source_raw_sha256": "1f4ee74082456c2458be257918fc515d63dcc481790d31eada6dbfeb954f3c89",
+  "tool_id": "viz.correlation",
+  "prompt": "Please analyze correlations in the Ward metallic glasses numeric fields.",
+  "params": {
+    "numericColumns": [
+      "D_max",
+      "dTx"
+    ],
+    "method": "pearson",
+    "title": "Ward numeric correlation"
+  },
+  "artifact_types_requested": [
+    "table_json",
+    "plotly_json",
+    "plotly_html",
+    "summary_md",
+    "recipe_json"
+  ],
+  "execution_path": "direct adapter execution through Tool Registry manifest and BaseToolAdapter, not browser/API evidence",
+  "artifacts": [
+    {
+      "artifact_id": "ward_correlation-table_json",
+      "type": "table_json",
+      "name": "correlation_matrix.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_correlation/tool_calls/ward_correlation/correlation_matrix.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_correlation\\tool_calls\\ward_correlation\\correlation_matrix.json",
+      "size_bytes": 169,
+      "content_hash": "3d0af4aa1bb397053a502451ba05c8d637c56d5393551aaacbb1a3ce3ce070fa",
+      "tool_id": "viz.correlation",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "ward_correlation-plotly_json",
+      "type": "plotly_json",
+      "name": "correlation_heatmap.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_correlation/tool_calls/ward_correlation/correlation_heatmap.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_correlation\\tool_calls\\ward_correlation\\correlation_heatmap.json",
+      "size_bytes": 18659,
+      "content_hash": "b064069a4fb227fe9870840307e20e44d80a637d3cedd234ba69f998802607c3",
+      "tool_id": "viz.correlation",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "ward_correlation-plotly_html",
+      "type": "plotly_html",
+      "name": "correlation_heatmap.html",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_correlation/tool_calls/ward_correlation/correlation_heatmap.html",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_correlation\\tool_calls\\ward_correlation\\correlation_heatmap.html",
+      "size_bytes": 8075,
+      "content_hash": "602d9f4508da532cc726f282661a5577713aa5c3478dd4fe4bc88eab826124e7",
+      "tool_id": "viz.correlation",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "ward_correlation-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_correlation/tool_calls/ward_correlation/summary.md",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_correlation\\tool_calls\\ward_correlation\\summary.md",
+      "size_bytes": 87,
+      "content_hash": "62f31a08b1d56fe1f446066dcb6f79229c15c1a1398f7c28e3da211ac70a0533",
+      "tool_id": "viz.correlation",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "ward_correlation-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_correlation/tool_calls/ward_correlation/recipe.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_correlation\\tool_calls\\ward_correlation\\recipe.json",
+      "size_bytes": 650,
+      "content_hash": "9f5d78acff1ec2faf6e97f32051d5f100c63916bb47bf014f7d8e7fc8e9005a1",
+      "tool_id": "viz.correlation",
+      "adapter_version": "0.1.0",
+      "verified": true
+    }
+  ]
+}

@@ -8,13 +8,18 @@ from pymatgen.core import Structure
 from mdi_adapters import (
     BasicMetricsAdapter,
     ChemSysTreemapAdapter,
+    CompositionSummaryAdapter,
+    CorrelationAdapter,
     CoordinationHistAdapter,
     DensityScatterAdapter,
+    DistributionSummaryAdapter,
     ElementsHistAdapter,
     ErrorDistributionAdapter,
+    HistogramAdapter,
     NumericSummaryAdapter,
     OutlierTableAdapter,
     PTableHeatmapAdapter,
+    ScatterAdapter,
     Structure3DAdapter,
     StructureViewer3DAdapter,
     ToolExecutionContext,
@@ -274,6 +279,136 @@ def test_numeric_summary_generates_table_summary_artifact(tmp_path):
     assert '"D_max"' in payload
     assert '"dTx"' in payload
     assert '"gfa_type"' in payload
+
+
+def test_distribution_summary_generates_distribution_artifacts(tmp_path):
+    dataframe = pd.DataFrame(
+        {
+            "composition": ["Ag20Al25La55", "Cu50Zr50", "Zr60Cu30Al10"],
+            "gfa_type": ["Ribbon", "Bulk", "Bulk"],
+            "D_max": [0.2, 5.0, 8.0],
+            "dTx": [None, 55.5, 75.0],
+        }
+    )
+    request = ToolExecutionRequest(
+        jobId="job_adapter",
+        stepId="step_distribution",
+        toolId="table.distribution_summary",
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"numericColumns": ["D_max", "dTx"], "categoricalColumns": ["gfa_type"], "maxCategories": 5},
+        artifactTypes=["table_json", "summary_md", "recipe_json"],
+    )
+
+    artifacts = DistributionSummaryAdapter().execute(
+        make_context(tmp_path, "table.distribution_summary", {"ml_table": dataframe}, "call_distribution"),
+        request,
+    )
+
+    assert artifact_types(artifacts) == {ArtifactType.table_json, ArtifactType.summary_md, ArtifactType.recipe_json}
+    table_artifact = next(artifact for artifact in artifacts if artifact.type == ArtifactType.table_json)
+    payload = (tmp_path / "artifacts" / table_artifact.storageKey).read_text(encoding="utf-8")
+    assert '"recommendedVisualizations"' in payload
+    assert '"p25"' in payload
+    assert '"topValues"' in payload
+
+
+def test_scatter_generates_named_plotly_artifacts(tmp_path):
+    dataframe = pd.DataFrame({"element": ["Li", "Na", "K"], "PBE": [1.0, 2.0, 3.0], "r2SCAN": [1.1, 1.9, 3.2]})
+    request = ToolExecutionRequest(
+        jobId="job_adapter",
+        stepId="step_scatter",
+        toolId="viz.scatter",
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"xColumn": "PBE", "yColumn": "r2SCAN"},
+        artifactTypes=["plotly_json", "plotly_html", "summary_md", "recipe_json"],
+    )
+
+    artifacts = ScatterAdapter().execute(
+        make_context(tmp_path, "viz.scatter", {"ml_table": dataframe}, "call_scatter"),
+        request,
+    )
+
+    assert artifact_types(artifacts) == {
+        ArtifactType.plotly_json,
+        ArtifactType.plotly_html,
+        ArtifactType.summary_md,
+        ArtifactType.recipe_json,
+    }
+    plot = next(artifact for artifact in artifacts if artifact.type == ArtifactType.plotly_json)
+    assert plot.name == "scatter.json"
+
+
+def test_histogram_generates_named_plotly_artifacts(tmp_path):
+    dataframe = pd.DataFrame({"PBE": [1.0, 2.0, 3.0, 4.0]})
+    request = ToolExecutionRequest(
+        jobId="job_adapter",
+        stepId="step_histogram",
+        toolId="viz.histogram",
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"column": "PBE", "bins": 3},
+        artifactTypes=["plotly_json", "plotly_html", "summary_md", "recipe_json"],
+    )
+
+    artifacts = HistogramAdapter().execute(
+        make_context(tmp_path, "viz.histogram", {"ml_table": dataframe}, "call_histogram"),
+        request,
+    )
+
+    plot = next(artifact for artifact in artifacts if artifact.type == ArtifactType.plotly_json)
+    assert plot.name == "histogram.json"
+    assert ArtifactType.summary_md in artifact_types(artifacts)
+
+
+def test_correlation_generates_matrix_and_heatmap_artifacts(tmp_path):
+    dataframe = pd.DataFrame({"D_max": [0.2, 5.0, 8.0], "dTx": [40.0, 55.5, 75.0], "Tg": [350, 420, 510]})
+    request = ToolExecutionRequest(
+        jobId="job_adapter",
+        stepId="step_correlation",
+        toolId="viz.correlation",
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"numericColumns": ["D_max", "dTx", "Tg"], "method": "pearson"},
+        artifactTypes=["table_json", "plotly_json", "plotly_html", "summary_md", "recipe_json"],
+    )
+
+    artifacts = CorrelationAdapter().execute(
+        make_context(tmp_path, "viz.correlation", {"ml_table": dataframe}, "call_correlation"),
+        request,
+    )
+
+    assert artifact_types(artifacts) == {
+        ArtifactType.table_json,
+        ArtifactType.plotly_json,
+        ArtifactType.plotly_html,
+        ArtifactType.summary_md,
+        ArtifactType.recipe_json,
+    }
+    table = next(artifact for artifact in artifacts if artifact.type == ArtifactType.table_json)
+    assert table.name == "correlation_matrix.json"
+    plot = next(artifact for artifact in artifacts if artifact.type == ArtifactType.plotly_json)
+    assert plot.name == "correlation_heatmap.json"
+
+
+def test_composition_summary_generates_composition_artifacts(tmp_path):
+    dataframe = pd.DataFrame({"composition": ["Ag20Al25La55", "Cu50Zr50", "Zr60Cu30Al10"]})
+    request = ToolExecutionRequest(
+        jobId="job_adapter",
+        stepId="step_composition",
+        toolId="composition.summary",
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"compositionColumn": "composition"},
+        artifactTypes=["table_json", "summary_md", "recipe_json"],
+    )
+
+    artifacts = CompositionSummaryAdapter().execute(
+        make_context(tmp_path, "composition.summary", {"ml_table": dataframe}, "call_composition_summary"),
+        request,
+    )
+
+    assert artifact_types(artifacts) == {ArtifactType.table_json, ArtifactType.summary_md, ArtifactType.recipe_json}
+    table = next(artifact for artifact in artifacts if artifact.type == ArtifactType.table_json)
+    payload = (tmp_path / "artifacts" / table.storageKey).read_text(encoding="utf-8")
+    assert '"elementCounts"' in payload
+    assert '"Ag"' in payload
 
 
 def test_outlier_table_generates_table_artifacts(tmp_path):

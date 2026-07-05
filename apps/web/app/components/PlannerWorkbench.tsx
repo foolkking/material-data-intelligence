@@ -1188,7 +1188,7 @@ function ResultsExportTab(props: {
       <ReportRecipeSummaryPanel t={t} result={props.result} artifacts={props.artifacts} datasetId={props.datasetId} profileId={props.profileId} planId={props.planId} planHash={props.planHash} />
       <MaterialResultRenderer t={t} artifacts={props.artifacts} />
       <MetricsResultRenderer t={t} artifact={props.artifacts.find((artifact) => artifact.type === "metrics_json")} />
-      <TableSummaryRenderer t={t} artifact={props.artifacts.find((artifact) => String(artifact.type).includes("table") || String(artifact.type).includes("summary"))} />
+      <TableSummaryRenderer t={t} artifact={props.artifacts.find(isTableSummaryArtifact)} />
       <ArtifactGallery t={t} artifacts={props.artifacts} developerMode={props.developerMode} selectedArtifact={props.selectedArtifact} />
       <ToolCallList t={t} toolCalls={props.toolCalls} developerMode={props.developerMode} />
       <ExportControls t={t} artifacts={props.artifacts} />
@@ -1641,6 +1641,11 @@ function statusText(status: string | undefined, t: ReturnType<typeof createTrans
 function toolDisplayName(toolId: string, t: ReturnType<typeof createTranslator>) {
   if (toolId === "ml.basic_metrics") return t("toolBasicMetrics");
   if (toolId === "table.numeric_summary") return t("toolNumericSummary");
+  if (toolId === "table.distribution_summary") return "Distribution summary";
+  if (toolId === "viz.scatter") return "Scatter plot";
+  if (toolId === "viz.histogram") return "Histogram";
+  if (toolId === "viz.correlation") return "Correlation matrix";
+  if (toolId === "composition.summary") return "Composition summary";
   if (toolId === "composition.ptable_heatmap") return t("toolElementHeatmap");
   if (toolId === "structure.viewer_3d") return t("toolStructureViewer");
   return toolId;
@@ -1665,14 +1670,20 @@ function groupArtifacts(artifacts: Artifact[], t: ReturnType<typeof createTransl
   };
   for (const artifact of artifacts) {
     const type = String(artifact.type || "");
-    if (type.includes("plot") || type.includes("figure") || type.includes("png") || type.includes("svg")) groups[t("charts")].push(artifact);
+    if (type.includes("plot") || type.includes("plotly") || type.includes("figure") || type.includes("png") || type.includes("svg")) groups[t("charts")].push(artifact);
     else if (type === "metrics_json") groups[t("jsonMetrics")].push(artifact);
-    else if (type.includes("table") || type.includes("summary")) groups[t("tables")].push(artifact);
+    else if (isTableSummaryArtifact(artifact)) groups[t("tables")].push(artifact);
     else if (type.includes("structure") || type.includes("matterviz")) groups[t("structures")].push(artifact);
-    else if (type.includes("report") || type.includes("recipe")) groups[t("reports")].push(artifact);
+    else if (type.includes("summary") || type.includes("report") || type.includes("recipe")) groups[t("reports")].push(artifact);
     else groups[t("other")].push(artifact);
   }
   return Object.entries(groups)
     .filter(([, items]) => items.length)
     .map(([label, items]) => ({ label, items }));
+}
+
+function isTableSummaryArtifact(artifact: Artifact) {
+  const type = String(artifact.type || "");
+  const name = String(artifact.name || "");
+  return type === "table_json" || name.includes("distribution_summary") || name.includes("numeric_summary") || name.includes("correlation_matrix") || name.includes("composition_summary");
 }

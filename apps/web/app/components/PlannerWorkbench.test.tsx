@@ -139,6 +139,78 @@ const artifacts = [
     storageProvider: "local",
     planId: "plan_1",
     planHash: "hash_1"
+  },
+  {
+    artifactId: "artifact_scatter_json",
+    id: "artifact_scatter_json",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "plotly_json",
+    name: "scatter.json",
+    storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/scatter.json",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1"
+  },
+  {
+    artifactId: "artifact_scatter_html",
+    id: "artifact_scatter_html",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "plotly_html",
+    name: "scatter.html",
+    storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/scatter.html",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1"
+  },
+  {
+    artifactId: "artifact_histogram_json",
+    id: "artifact_histogram_json",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "plotly_json",
+    name: "histogram.json",
+    storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/histogram.json",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1"
+  },
+  {
+    artifactId: "artifact_correlation_matrix",
+    id: "artifact_correlation_matrix",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "table_json",
+    name: "correlation_matrix.json",
+    storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/correlation_matrix.json",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1"
+  },
+  {
+    artifactId: "artifact_distribution_summary",
+    id: "artifact_distribution_summary",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "table_json",
+    name: "distribution_summary.json",
+    storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/distribution_summary.json",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1"
+  },
+  {
+    artifactId: "artifact_summary",
+    id: "artifact_summary",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "summary_md",
+    name: "summary.md",
+    storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/summary.md",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1"
   }
 ];
 
@@ -147,9 +219,9 @@ const result = {
   status: "completed",
   planId: "plan_1",
   planHash: "hash_1",
-  summary: "Job completed with 1 ToolCall(s) and 3 Artifact(s).",
+  summary: "Job completed with 1 ToolCall(s) and 9 Artifact(s).",
   toolCallCount: 1,
-  artifactCount: 3,
+  artifactCount: 9,
   artifacts
 };
 
@@ -264,7 +336,13 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(within(screen.getByTestId("results-export-tab")).getByText("Artifact Gallery")).not.toBeNull();
     expect(within(screen.getByTestId("results-export-tab")).getAllByText("metrics.json").length).toBeGreaterThan(0);
     expect(within(screen.getByTestId("results-export-tab")).getAllByText("recipe.json").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("results-export-tab")).getAllByText("scatter.json").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("results-export-tab")).getAllByText("histogram.json").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("results-export-tab")).getAllByText("correlation_matrix.json").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("results-export-tab")).getAllByText("distribution_summary.json").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("results-export-tab")).getAllByText("summary.md").length).toBeGreaterThan(0);
     expect(within(screen.getByTestId("results-export-tab")).getByText("ml.basic_metrics")).not.toBeNull();
+    expect(within(screen.getByTestId("results-export-tab")).queryByText("storage URI")).toBeNull();
   });
 
   it("shows the required result empty state when no chunk is selected", async () => {

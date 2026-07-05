@@ -1,0 +1,71 @@
+{
+  "evidence_id": "matpes_histogram",
+  "case_id": "matpes_atomic_energies_csv",
+  "generated_at": "2026-07-05T16:26:55.199926+00:00",
+  "source_raw_path": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\matpes_atomic_energies_csv\\raw_data\\2024-10-30-MatPES-atomic-energies.csv",
+  "source_raw_sha256": "974d73a330837ac41a66fe844764dff9fbf59d346bbd33b5ae513dfc6da7404d",
+  "tool_id": "viz.histogram",
+  "prompt": "Please view the PBE distribution as a histogram.",
+  "params": {
+    "column": "PBE",
+    "bins": 12,
+    "title": "PBE atomic energy distribution"
+  },
+  "artifact_types_requested": [
+    "plotly_json",
+    "plotly_html",
+    "summary_md",
+    "recipe_json"
+  ],
+  "execution_path": "direct adapter execution through Tool Registry manifest and BaseToolAdapter, not browser/API evidence",
+  "artifacts": [
+    {
+      "artifact_id": "matpes_histogram-plotly_json",
+      "type": "plotly_json",
+      "name": "histogram.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_matpes_histogram/tool_calls/matpes_histogram/histogram.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_matpes_histogram\\tool_calls\\matpes_histogram\\histogram.json",
+      "size_bytes": 19486,
+      "content_hash": "196692d81fc32e78851ac3b58af44d7d893c1183e2fa6945b73932532d7c04ef",
+      "tool_id": "viz.histogram",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "matpes_histogram-plotly_html",
+      "type": "plotly_html",
+      "name": "histogram.html",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_matpes_histogram/tool_calls/matpes_histogram/histogram.html",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_matpes_histogram\\tool_calls\\matpes_histogram\\histogram.html",
+      "size_bytes": 9238,
+      "content_hash": "da7664230777543be6becdc62ec4b4c033a7934bba382dc5925fd75520f4844b",
+      "tool_id": "viz.histogram",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "matpes_histogram-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_matpes_histogram/tool_calls/matpes_histogram/summary.md",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_matpes_histogram\\tool_calls\\matpes_histogram\\summary.md",
+      "size_bytes": 61,
+      "content_hash": "2896527a2496a44ba13d65715566de1c20f5dda6b4ea098119310111ccecb8fb",
+      "tool_id": "viz.histogram",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "matpes_histogram-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_matpes_histogram/tool_calls/matpes_histogram/recipe.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_matpes_histogram\\tool_calls\\matpes_histogram\\recipe.json",
+      "size_bytes": 605,
+      "content_hash": "f256b7b5ffa4a25c739560cde27b0e0da8a40d9025e0783324817181dac10bc5",
+      "tool_id": "viz.histogram",
+      "adapter_version": "0.1.0",
+      "verified": true
+    }
+  ]
+}

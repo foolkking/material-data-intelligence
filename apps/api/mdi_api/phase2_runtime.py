@@ -831,8 +831,9 @@ def build_object_store(objects: list[NormalizedObjectDraft]) -> tuple[dict[str, 
     ]
     dataframes = [pd.DataFrame(obj.payload) for obj in objects if obj.object_type == MaterialObjectType.DataFrame]
     for dataframe in dataframes:
-        if "formula" in dataframe.columns:
-            formulas.extend(str(value) for value in dataframe["formula"].dropna().tolist())
+        for formula_column in ("formula", "composition"):
+            if formula_column in dataframe.columns:
+                formulas.extend(str(value) for value in dataframe[formula_column].dropna().tolist())
 
     object_store: dict[str, Any] = {}
     object_refs: dict[str, str] = {}
@@ -953,6 +954,10 @@ def _phase2_step(
         return None
     if tool_id.startswith("ml.") and "ml_table" not in object_refs:
         return None
+    if tool_id.startswith("table.") and "ml_table" not in object_refs:
+        return None
+    if tool_id.startswith("viz.") and "ml_table" not in object_refs:
+        return None
 
     tool = registry.get_tool_by_id(tool_id)
     artifact_types = [artifact_type.value for artifact_type in tool.artifactTypes]
@@ -982,7 +987,7 @@ def _recipe_input_requirements(plan: AnalysisPlan) -> list[dict[str, Any]]:
             requirements["formulas"] = {"role": "formulas", "objectType": "Composition", "required": True}
         elif step.toolId.startswith("structure."):
             requirements["structures"] = {"role": "structures", "objectType": "Structure", "required": True}
-        elif step.toolId.startswith("ml."):
+        elif step.toolId.startswith(("ml.", "table.", "viz.")):
             requirements["dataframe"] = {"role": "dataframe", "objectType": "DataFrame", "required": True}
     return list(requirements.values())
 

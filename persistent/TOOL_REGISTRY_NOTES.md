@@ -1,5 +1,17 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-06 Phase 10A-1 first official table/viz adapter batch
+
+- Added five registry-gated tools for the first two `DIRECT_VERIFIED` official pymatviz cases:
+  `table.distribution_summary`, `viz.scatter`, `viz.histogram`, `viz.correlation`, and `composition.summary`.
+- `table.distribution_summary` accepts a normalized DataFrame (`ml_table`) and emits `table_json`, `summary_md`, and `recipe_json` artifacts. It reports quantile distribution summaries, missing rates, categorical top values, recommended visualizations, and warnings.
+- `viz.scatter` and `viz.histogram` use deterministic Plotly exports and emit named `plotly_json` / optional `plotly_html` artifacts plus summary and recipe artifacts.
+- `viz.correlation` emits both `correlation_matrix.json` (`table_json`) and Plotly heatmap artifacts for numeric correlation analysis.
+- `composition.summary` safely summarizes formula/composition columns only when such a column is present; it records parsed/failed formula counts and element/system summaries.
+- Tool Registry manifests and params schemas are the enforcement boundary. The Mock Planner may route prompts to these tools, but PlanValidator still validates tool ID and params before persistence.
+- Execution remains: AnalysisPlan JSON -> PlanValidator -> persisted AnalysisPlan -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> ToolCall/Artifact/Result provenance.
+- No adapter executes shell, Python snippets, network calls, or arbitrary filesystem paths. No real LLM call is needed for these tools.
+
 ## 2026-07-05 Phase 9D live provider validation tightened params schema enforcement
 
 - Phase 9D live verification showed that real provider output can select an allowed tool but still use invalid parameter aliases.

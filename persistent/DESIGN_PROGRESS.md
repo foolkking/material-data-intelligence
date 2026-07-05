@@ -1,5 +1,17 @@
 # DESIGN_PROGRESS
 
+## 2026-07-06 Phase 10A-1 First Batch Adapter Implementation
+
+- Implemented the first adapter batch for the two `DIRECT_VERIFIED` official pymatviz direct cases only: `matpes_atomic_energies_csv` and `ward_metallic_glasses_csv_xz`.
+- Added registry-gated tools and adapters for `table.distribution_summary`, `viz.scatter`, `viz.histogram`, `viz.correlation`, and `composition.summary`.
+- MatPES routing can now produce `viz.scatter` for PBE vs r2SCAN scatter prompts and `viz.histogram` for PBE/r2SCAN distribution prompts. MatPES `ml.basic_metrics` remains unchanged for explicit numeric comparison/error-metric prompts.
+- Ward routing can now produce `table.distribution_summary`, `viz.histogram`, and `viz.correlation`. `composition.summary` is available only when a stable formula/composition field is present; it must not fabricate composition results.
+- Updated shared schemas to include the `viz` ToolDomain and updated frontend results rendering so new plot/table/composition artifacts appear in the Phase 9C `结果与导出` tab without changing the top/left/main-tab layout.
+- Added Phase 10A-1 adapter, manifest, planner-routing, persisted-plan execution, and frontend result-display tests.
+- Phase 8B persisted AnalysisPlan execution, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs` validate/persist/enqueue semantics, and Phase 9D live LLM gating remain unchanged.
+- Default CI still does not call a real LLM. No API keys or external network access are introduced by these adapters.
+- Remaining boundaries: browser evidence for the new tools, full official suite execution, extraction-required examples, richer report generation, multi-step DAG/data-dependency scheduling, and additional pymatviz adapters.
+
 ## 2026-07-05 Phase 9D True LLM Live Verification
 
 - Captured redacted live-provider evidence for the OpenAI-compatible Gemini path under `docs/llm-live-verification/phase9d/`: the provider returned AnalysisPlan JSON, the plan passed PlanValidator, persisted as an AnalysisPlan, bound through `jobs.plan_id`, loaded through QueueWorkerRuntime, and executed through Tool Registry + Adapter.

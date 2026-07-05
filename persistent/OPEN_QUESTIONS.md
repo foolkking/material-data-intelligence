@@ -1,5 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-07-06 Phase 10A-1 First Batch Adapter Implementation
+
+- **Closed: MatPES richer first-batch plot/table tools.** The platform now has registry-gated `viz.scatter`, `viz.histogram`, and `table.distribution_summary` tools that can serve MatPES scatter/distribution/table-summary prompts within the current single-step execution model.
+- **Closed: Ward first-batch distribution/correlation tools.** The platform now has registry-gated `table.distribution_summary`, `viz.histogram`, and `viz.correlation` tools for Ward-style tabular distribution and numeric correlation prompts.
+- **Closed at adapter level: safe composition summary.** `composition.summary` can summarize a stable formula/composition field when present, including Ward's `composition` column; it must not infer or fabricate composition results when no formula-like field exists.
+- **Still open: browser evidence for new tools.** This phase adds adapters and tests; full browser-click evidence for scatter/histogram/correlation/distribution-summary outputs should be captured before freezing a demo evidence baseline for these new outputs.
+- **Still open: multi-step DAG/data-dependency execution.** The new tools are single-step executable plans. Combined workflows such as metrics plus scatter plus report still require DAG/data-dependency scheduling or explicit multi-step support.
+- **Still open: remaining official examples.** The 27 extraction-required, 20 mapping-only, and 12 future-scope official examples remain outside this phase.
+- **Still open: broader visualization adapters.** Phonon, Brillouin zone, advanced widgets, XRD/RDF, classification curves, and richer report/table/export workflows remain future adapter phases.
+
 ## 2026-07-05 Phase 9D True LLM Live Verification
 
 - **Closed: true live LLM full-chain evidence captured.** The Gemini OpenAI-compatible path produced redacted evidence from live provider output through PlanValidator, persisted AnalysisPlan, `jobs.plan_id`, QueueWorkerRuntime, Tool Registry + Adapter, Artifact/Result generation, and Phase 9C UI display.

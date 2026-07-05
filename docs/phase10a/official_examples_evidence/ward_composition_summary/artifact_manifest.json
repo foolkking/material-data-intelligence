@@ -1,0 +1,57 @@
+{
+  "evidence_id": "ward_composition_summary",
+  "case_id": "ward_metallic_glasses_csv_xz",
+  "generated_at": "2026-07-05T16:28:07.300884+00:00",
+  "source_raw_path": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\ward_metallic_glasses_csv_xz\\raw_data\\ward-metallic-glasses.csv",
+  "source_raw_sha256": "1f4ee74082456c2458be257918fc515d63dcc481790d31eada6dbfeb954f3c89",
+  "tool_id": "composition.summary",
+  "prompt": "Please summarize element composition from the Ward composition field.",
+  "params": {
+    "formulaColumn": "composition",
+    "maxSystems": 20
+  },
+  "artifact_types_requested": [
+    "table_json",
+    "summary_md",
+    "recipe_json"
+  ],
+  "execution_path": "direct adapter execution through Tool Registry manifest and BaseToolAdapter, not browser/API evidence",
+  "artifacts": [
+    {
+      "artifact_id": "ward_composition_summary-table_json",
+      "type": "table_json",
+      "name": "composition_summary.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_composition_summary/tool_calls/ward_composition_summary/composition_summary.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_composition_summary\\tool_calls\\ward_composition_summary\\composition_summary.json",
+      "size_bytes": 2667,
+      "content_hash": "e16d42b223a3ef0e5dc1ba32eaff11e5e1872bcf3397540abc7bd4919bef88da",
+      "tool_id": "composition.summary",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "ward_composition_summary-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_composition_summary/tool_calls/ward_composition_summary/summary.md",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_composition_summary\\tool_calls\\ward_composition_summary\\summary.md",
+      "size_bytes": 131,
+      "content_hash": "4308c1d90b18452e95d98f6cde3005bbe8bd452f0d6c5e0dbea7d2845ce122e0",
+      "tool_id": "composition.summary",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "ward_composition_summary-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_ward_composition_summary/tool_calls/ward_composition_summary/recipe.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_ward_composition_summary\\tool_calls\\ward_composition_summary\\recipe.json",
+      "size_bytes": 602,
+      "content_hash": "5c9e8558c0a77d746d63658c3a58e2c4a0500e63a6e5a755a48f6786ec21afdf",
+      "tool_id": "composition.summary",
+      "adapter_version": "0.1.0",
+      "verified": true
+    }
+  ]
+}

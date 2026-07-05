@@ -30,6 +30,7 @@
     "domain": {
       "enum": [
         "table",
+        "viz",
         "composition",
         "structure",
         "trajectory",

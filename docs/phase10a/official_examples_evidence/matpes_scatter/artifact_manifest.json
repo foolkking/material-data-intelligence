@@ -1,0 +1,71 @@
+{
+  "evidence_id": "matpes_scatter",
+  "case_id": "matpes_atomic_energies_csv",
+  "generated_at": "2026-07-05T16:26:55.199926+00:00",
+  "source_raw_path": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\matpes_atomic_energies_csv\\raw_data\\2024-10-30-MatPES-atomic-energies.csv",
+  "source_raw_sha256": "974d73a330837ac41a66fe844764dff9fbf59d346bbd33b5ae513dfc6da7404d",
+  "tool_id": "viz.scatter",
+  "prompt": "Please compare PBE and r2SCAN with a scatter plot.",
+  "params": {
+    "xColumn": "PBE",
+    "yColumn": "r2SCAN",
+    "title": "PBE vs r2SCAN"
+  },
+  "artifact_types_requested": [
+    "plotly_json",
+    "plotly_html",
+    "summary_md",
+    "recipe_json"
+  ],
+  "execution_path": "direct adapter execution through Tool Registry manifest and BaseToolAdapter, not browser/API evidence",
+  "artifacts": [
+    {
+      "artifact_id": "matpes_scatter-plotly_json",
+      "type": "plotly_json",
+      "name": "scatter.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_matpes_scatter/tool_calls/matpes_scatter/scatter.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_matpes_scatter\\tool_calls\\matpes_scatter\\scatter.json",
+      "size_bytes": 20475,
+      "content_hash": "b99f3d7608819b9e1c0f4daded6cbb5b37bbb62441dedd0f3ae3c4d767918208",
+      "tool_id": "viz.scatter",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "matpes_scatter-plotly_html",
+      "type": "plotly_html",
+      "name": "scatter.html",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_matpes_scatter/tool_calls/matpes_scatter/scatter.html",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_matpes_scatter\\tool_calls\\matpes_scatter\\scatter.html",
+      "size_bytes": 10227,
+      "content_hash": "1ebc4db88b631b857794696f7db95e59334c9855a920b492fa5d724cda2c940e",
+      "tool_id": "viz.scatter",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "matpes_scatter-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_matpes_scatter/tool_calls/matpes_scatter/summary.md",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_matpes_scatter\\tool_calls\\matpes_scatter\\summary.md",
+      "size_bytes": 86,
+      "content_hash": "9e9345ce2c79d579638ad64b3f57e2d010f67ea11e801be2d94d76c0ff9862ae",
+      "tool_id": "viz.scatter",
+      "adapter_version": "0.1.0",
+      "verified": true
+    },
+    {
+      "artifact_id": "matpes_scatter-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storage_key": "projects/project_phase10a1/jobs/job_phase10a1_matpes_scatter/tool_calls/matpes_scatter/recipe.json",
+      "local_path": "artifacts\\projects\\project_phase10a1\\jobs\\job_phase10a1_matpes_scatter\\tool_calls\\matpes_scatter\\recipe.json",
+      "size_bytes": 595,
+      "content_hash": "79c6bb19ad2376de469db4c5681508fe9c424d0ecd1d7fe1dcc35b5a5c468af4",
+      "tool_id": "viz.scatter",
+      "adapter_version": "0.1.0",
+      "verified": true
+    }
+  ]
+}

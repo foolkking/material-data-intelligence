@@ -9,6 +9,60 @@ tools:
       - summary_md
       - recipe_json
 
+  - tool_id: table.distribution_summary
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: DistributionSummaryAdapter
+    display_target: overview
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: viz.scatter
+    implementation_source: plotly_custom
+    stage: mvp
+    adapter: ScatterAdapter
+    display_target: ml
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - summary_md
+      - recipe_json
+
+  - tool_id: viz.histogram
+    implementation_source: plotly_custom
+    stage: mvp
+    adapter: HistogramAdapter
+    display_target: ml
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - summary_md
+      - recipe_json
+
+  - tool_id: viz.correlation
+    implementation_source: plotly_custom
+    stage: mvp
+    adapter: CorrelationAdapter
+    display_target: ml
+    artifact_types:
+      - table_json
+      - plotly_json
+      - plotly_html
+      - summary_md
+      - recipe_json
+
+  - tool_id: composition.summary
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: CompositionSummaryAdapter
+    display_target: composition
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
   - tool_id: ml.basic_metrics
     implementation_source: platform_builtin
     stage: mvp

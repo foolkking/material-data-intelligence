@@ -1,0 +1,37 @@
+[
+  {
+    "evidence_id": "matpes_scatter",
+    "case_id": "matpes_atomic_energies_csv",
+    "tool_id": "viz.scatter",
+    "artifact_count": 4,
+    "manifest": "matpes_scatter\\artifact_manifest.json"
+  },
+  {
+    "evidence_id": "matpes_histogram",
+    "case_id": "matpes_atomic_energies_csv",
+    "tool_id": "viz.histogram",
+    "artifact_count": 4,
+    "manifest": "matpes_histogram\\artifact_manifest.json"
+  },
+  {
+    "evidence_id": "ward_distribution",
+    "case_id": "ward_metallic_glasses_csv_xz",
+    "tool_id": "table.distribution_summary",
+    "artifact_count": 3,
+    "manifest": "ward_distribution\\artifact_manifest.json"
+  },
+  {
+    "evidence_id": "ward_correlation",
+    "case_id": "ward_metallic_glasses_csv_xz",
+    "tool_id": "viz.correlation",
+    "artifact_count": 5,
+    "manifest": "ward_correlation\\artifact_manifest.json"
+  },
+  {
+    "evidence_id": "ward_composition_summary",
+    "case_id": "ward_metallic_glasses_csv_xz",
+    "tool_id": "composition.summary",
+    "artifact_count": 3,
+    "manifest": "ward_composition_summary\\artifact_manifest.json"
+  }
+]

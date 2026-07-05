@@ -55,6 +55,7 @@ type ToolCategory =
 
 type ToolDomain =
   | "table"
+  | "viz"
   | "composition"
   | "structure"
   | "trajectory"

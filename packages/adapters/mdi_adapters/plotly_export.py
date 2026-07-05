@@ -15,14 +15,14 @@ _FALLBACK_PREVIEW_PNG = (
 )
 
 
-def plotly_payloads(fig: Any, artifact_types: list[ArtifactType]) -> list[ArtifactPayload]:
+def plotly_payloads(fig: Any, artifact_types: list[ArtifactType], *, stem: str = "figure") -> list[ArtifactPayload]:
     payloads: list[ArtifactPayload] = []
     requested = set(artifact_types)
     if ArtifactType.plotly_json in requested:
         payloads.append(
             ArtifactPayload(
                 artifact_type=ArtifactType.plotly_json,
-                file_name="figure.json",
+                file_name=f"{stem}.json",
                 content=pio.to_json(fig, validate=False, pretty=True),
                 media_type="application/json",
             )
@@ -31,7 +31,7 @@ def plotly_payloads(fig: Any, artifact_types: list[ArtifactType]) -> list[Artifa
         payloads.append(
             ArtifactPayload(
                 artifact_type=ArtifactType.plotly_html,
-                file_name="figure.html",
+                file_name=f"{stem}.html",
                 content=fig.to_html(include_plotlyjs="cdn", full_html=True),
                 media_type="text/html",
             )

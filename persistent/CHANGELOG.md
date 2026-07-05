@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-07-06
+
+### Phase 10A-1 First Batch Adapter Implementation
+
+- Added the first official-examples adapter batch for the two `DIRECT_VERIFIED` direct cases only: MatPES and Ward metallic glasses.
+- Added platform builtin adapters and registry entries for `table.distribution_summary`, `viz.scatter`, `viz.histogram`, `viz.correlation`, and `composition.summary`.
+- Added `viz` to the shared ToolDomain definitions and registered strict params schemas for the new tools.
+- Updated Mock Planner routing so MatPES scatter/distribution prompts and Ward distribution/correlation/composition prompts select semantically appropriate tools instead of forcing unrelated regression metrics.
+- Updated runtime inputRef validation so `table.*` and `viz.*` tools require the normalized `ml_table` object.
+- Updated Phase 9C result rendering and frontend tests so scatter, histogram, correlation, distribution summary, summary, and recipe artifacts are visible in the `结果与导出` tab while developer-only details remain hidden by default.
+- Added adapter, manifest, planner-routing, persisted-plan execution, and frontend tests for the new tools.
+- No QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs` persistence/enqueue semantics, live LLM gating, or default CI LLM behavior changed.
+
 ## 2026-07-05
 
 ### Phase 9D True LLM Live Verification
