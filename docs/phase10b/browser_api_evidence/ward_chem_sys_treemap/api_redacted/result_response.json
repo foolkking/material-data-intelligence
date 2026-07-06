@@ -1,0 +1,216 @@
+{
+  "artifactCount": 4,
+  "artifacts": [
+    {
+      "bucket": null,
+      "contentHash": "3cd86a6e77c97a682b7b07af4dd50f94e56252bcb84cd121427ec0850944301f",
+      "contentType": "application/json",
+      "datasetId": "dataset_0008",
+      "id": "call_job_bb10b26cbd8146d7bced8af0_step_001-plotly_json",
+      "jobId": "job_bb10b26cbd8146d7bced8af0",
+      "metadata": {
+        "adapterVersion": "0.2.0",
+        "bucket": null,
+        "createdAt": "2026-07-06T11:54:55.304846+00:00",
+        "inputHashes": [
+          "44478dc51f50a5de74d429948b8a59fb770c9bfb2ea800194ca52463dcf6bd3f"
+        ],
+        "paramsHash": "889dab07641ec3f67102ed1661ffbedcbed0946e2bcc4dc3aaccc1fdb9ead673",
+        "profileId": null,
+        "provenance": {
+          "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+          "planId": "plan_5e57f6c947bb4b6894e07ef4",
+          "planSource": "llm",
+          "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+          "toolId": "composition.chem_sys_treemap"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "composition.chem_sys_treemap",
+        "toolVersion": "0.1.0"
+      },
+      "name": "chem_sys_treemap.json",
+      "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+      "planId": "plan_5e57f6c947bb4b6894e07ef4",
+      "previewKey": null,
+      "projectId": "project_local",
+      "provenance": {
+        "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+        "planId": "plan_5e57f6c947bb4b6894e07ef4",
+        "planSource": "llm",
+        "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+        "toolId": "composition.chem_sys_treemap"
+      },
+      "sha256": "3cd86a6e77c97a682b7b07af4dd50f94e56252bcb84cd121427ec0850944301f",
+      "sizeBytes": 36728,
+      "storageKey": "projects/project_local/jobs/job_bb10b26cbd8146d7bced8af0/tool_calls/call_job_bb10b26cbd8146d7bced8af0_step_001/chem_sys_treemap.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+      "type": "plotly_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "contentHash": "c007699c7887a7d22572df9068d166494d21d42486c7ed869558702a04c73c74",
+      "contentType": "application/json",
+      "datasetId": "dataset_0008",
+      "id": "call_job_bb10b26cbd8146d7bced8af0_step_001-plotly_html",
+      "jobId": "job_bb10b26cbd8146d7bced8af0",
+      "metadata": {
+        "adapterVersion": "0.2.0",
+        "bucket": null,
+        "createdAt": "2026-07-06T11:54:55.348385+00:00",
+        "inputHashes": [
+          "44478dc51f50a5de74d429948b8a59fb770c9bfb2ea800194ca52463dcf6bd3f"
+        ],
+        "paramsHash": "889dab07641ec3f67102ed1661ffbedcbed0946e2bcc4dc3aaccc1fdb9ead673",
+        "profileId": null,
+        "provenance": {
+          "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+          "planId": "plan_5e57f6c947bb4b6894e07ef4",
+          "planSource": "llm",
+          "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+          "toolId": "composition.chem_sys_treemap"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "composition.chem_sys_treemap",
+        "toolVersion": "0.1.0"
+      },
+      "name": "chem_sys_treemap.html",
+      "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+      "planId": "plan_5e57f6c947bb4b6894e07ef4",
+      "previewKey": null,
+      "projectId": "project_local",
+      "provenance": {
+        "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+        "planId": "plan_5e57f6c947bb4b6894e07ef4",
+        "planSource": "llm",
+        "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+        "toolId": "composition.chem_sys_treemap"
+      },
+      "sha256": "c007699c7887a7d22572df9068d166494d21d42486c7ed869558702a04c73c74",
+      "sizeBytes": 34344,
+      "storageKey": "projects/project_local/jobs/job_bb10b26cbd8146d7bced8af0/tool_calls/call_job_bb10b26cbd8146d7bced8af0_step_001/chem_sys_treemap.html",
+      "storageProvider": "local",
+      "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+      "type": "plotly_html",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "contentHash": "76aa426380cd167819436f52ee161af06986fd4d8ceb417ce2ac4aecb7281a1a",
+      "contentType": "application/json",
+      "datasetId": "dataset_0008",
+      "id": "call_job_bb10b26cbd8146d7bced8af0_step_001-summary_md",
+      "jobId": "job_bb10b26cbd8146d7bced8af0",
+      "metadata": {
+        "adapterVersion": "0.2.0",
+        "bucket": null,
+        "createdAt": "2026-07-06T11:54:55.360388+00:00",
+        "inputHashes": [
+          "44478dc51f50a5de74d429948b8a59fb770c9bfb2ea800194ca52463dcf6bd3f"
+        ],
+        "paramsHash": "889dab07641ec3f67102ed1661ffbedcbed0946e2bcc4dc3aaccc1fdb9ead673",
+        "profileId": null,
+        "provenance": {
+          "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+          "planId": "plan_5e57f6c947bb4b6894e07ef4",
+          "planSource": "llm",
+          "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+          "toolId": "composition.chem_sys_treemap"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "composition.chem_sys_treemap",
+        "toolVersion": "0.1.0"
+      },
+      "name": "summary.md",
+      "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+      "planId": "plan_5e57f6c947bb4b6894e07ef4",
+      "previewKey": null,
+      "projectId": "project_local",
+      "provenance": {
+        "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+        "planId": "plan_5e57f6c947bb4b6894e07ef4",
+        "planSource": "llm",
+        "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+        "toolId": "composition.chem_sys_treemap"
+      },
+      "sha256": "76aa426380cd167819436f52ee161af06986fd4d8ceb417ce2ac4aecb7281a1a",
+      "sizeBytes": 376,
+      "storageKey": "projects/project_local/jobs/job_bb10b26cbd8146d7bced8af0/tool_calls/call_job_bb10b26cbd8146d7bced8af0_step_001/summary.md",
+      "storageProvider": "local",
+      "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+      "type": "summary_md",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "contentHash": "807a21e11e6cb9f6753a0396e23efa93a9b51bf0343a53693b66e152f673dfe3",
+      "contentType": "application/json",
+      "datasetId": "dataset_0008",
+      "id": "call_job_bb10b26cbd8146d7bced8af0_step_001-recipe_json",
+      "jobId": "job_bb10b26cbd8146d7bced8af0",
+      "metadata": {
+        "adapterVersion": "0.2.0",
+        "bucket": null,
+        "createdAt": "2026-07-06T11:54:55.374393+00:00",
+        "inputHashes": [
+          "44478dc51f50a5de74d429948b8a59fb770c9bfb2ea800194ca52463dcf6bd3f"
+        ],
+        "paramsHash": "889dab07641ec3f67102ed1661ffbedcbed0946e2bcc4dc3aaccc1fdb9ead673",
+        "profileId": null,
+        "provenance": {
+          "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+          "planId": "plan_5e57f6c947bb4b6894e07ef4",
+          "planSource": "llm",
+          "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+          "toolId": "composition.chem_sys_treemap"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "composition.chem_sys_treemap",
+        "toolVersion": "0.1.0"
+      },
+      "name": "recipe.json",
+      "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+      "planId": "plan_5e57f6c947bb4b6894e07ef4",
+      "previewKey": null,
+      "projectId": "project_local",
+      "provenance": {
+        "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+        "planId": "plan_5e57f6c947bb4b6894e07ef4",
+        "planSource": "llm",
+        "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+        "toolId": "composition.chem_sys_treemap"
+      },
+      "sha256": "807a21e11e6cb9f6753a0396e23efa93a9b51bf0343a53693b66e152f673dfe3",
+      "sizeBytes": 656,
+      "storageKey": "projects/project_local/jobs/job_bb10b26cbd8146d7bced8af0/tool_calls/call_job_bb10b26cbd8146d7bced8af0_step_001/recipe.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+      "type": "recipe_json",
+      "version": "1"
+    }
+  ],
+  "jobId": "job_bb10b26cbd8146d7bced8af0",
+  "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+  "planId": "plan_5e57f6c947bb4b6894e07ef4",
+  "provenance": {
+    "binding": "jobs.plan_id -> analysis_plans.id",
+    "fallbackUsed": false,
+    "loadedFrom": "persisted_analysis_plan",
+    "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+    "planId": "plan_5e57f6c947bb4b6894e07ef4",
+    "planSource": "llm",
+    "toolPath": "Tool Registry + Adapter"
+  },
+  "status": "completed",
+  "summary": "Job completed with 1 ToolCall(s) and 4 Artifact(s).",
+  "toolCallCount": 1
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "artifactIds": [
+      "call_job_093c6525e2f64bf4bb1e3555_step_001-plotly_json",
+      "call_job_093c6525e2f64bf4bb1e3555_step_001-plotly_html",
+      "call_job_093c6525e2f64bf4bb1e3555_step_001-summary_md",
+      "call_job_093c6525e2f64bf4bb1e3555_step_001-recipe_json"
+    ],
+    "attempt": 1,
+    "id": "call_job_093c6525e2f64bf4bb1e3555_step_001",
+    "idempotencyKey": "job_093c6525e2f64bf4bb1e3555:step_001",
+    "inputSummary": "Params: countMode, formulaColumn, topN",
+    "jobId": "job_093c6525e2f64bf4bb1e3555",
+    "outputSummary": "4 artifact(s)",
+    "params": {
+      "countMode": "occurrence",
+      "formulaColumn": "composition",
+      "topN": 30
+    },
+    "planHash": "5fadd977a8a8b5b99e614bb3f5e154e1cbb810432fd9f6515c03714d5379f6ab",
+    "planId": "plan_6dd9ebd46c5c4c169f3e3cac",
+    "status": "completed",
+    "stepId": "step_001",
+    "toolId": "composition.elements_hist"
+  }
+]

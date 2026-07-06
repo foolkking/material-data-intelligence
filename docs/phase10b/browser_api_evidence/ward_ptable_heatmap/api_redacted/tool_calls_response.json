@@ -1,0 +1,26 @@
+[
+  {
+    "artifactIds": [
+      "call_job_841bc2df41664841bb0b03b9_step_001-plotly_json",
+      "call_job_841bc2df41664841bb0b03b9_step_001-plotly_html",
+      "call_job_841bc2df41664841bb0b03b9_step_001-summary_md",
+      "call_job_841bc2df41664841bb0b03b9_step_001-recipe_json"
+    ],
+    "attempt": 1,
+    "id": "call_job_841bc2df41664841bb0b03b9_step_001",
+    "idempotencyKey": "job_841bc2df41664841bb0b03b9:step_001",
+    "inputSummary": "Params: countMode, formulaColumn, log",
+    "jobId": "job_841bc2df41664841bb0b03b9",
+    "outputSummary": "4 artifact(s)",
+    "params": {
+      "countMode": "occurrence",
+      "formulaColumn": "composition",
+      "log": false
+    },
+    "planHash": "1da4c51abfafc55f0b85fef9771d2ed42ec69e2e19a99a2c2baba85e0f0c26f6",
+    "planId": "plan_1117ff42703e4bfbb16442f8",
+    "status": "completed",
+    "stepId": "step_001",
+    "toolId": "composition.ptable_heatmap"
+  }
+]

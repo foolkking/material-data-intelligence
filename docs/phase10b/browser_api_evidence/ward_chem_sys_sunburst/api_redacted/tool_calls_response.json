@@ -1,0 +1,30 @@
+[
+  {
+    "artifactIds": [
+      "call_job_252b33ce80264dffb8675c97_step_001-plotly_json",
+      "call_job_252b33ce80264dffb8675c97_step_001-plotly_html",
+      "call_job_252b33ce80264dffb8675c97_step_001-summary_md",
+      "call_job_252b33ce80264dffb8675c97_step_001-recipe_json"
+    ],
+    "attempt": 1,
+    "id": "call_job_252b33ce80264dffb8675c97_step_001",
+    "idempotencyKey": "job_252b33ce80264dffb8675c97:step_001",
+    "inputSummary": "Params: formulaColumn, hierarchy, maxLeafNodes",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "outputSummary": "4 artifact(s)",
+    "params": {
+      "formulaColumn": "composition",
+      "hierarchy": [
+        "arity",
+        "chem_sys",
+        "reduced_formula"
+      ],
+      "maxLeafNodes": 100
+    },
+    "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+    "planId": "plan_6abb9ef60df54905921988c1",
+    "status": "completed",
+    "stepId": "step_001",
+    "toolId": "composition.chem_sys_sunburst"
+  }
+]

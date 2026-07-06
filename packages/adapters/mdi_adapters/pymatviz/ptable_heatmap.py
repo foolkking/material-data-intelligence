@@ -79,7 +79,7 @@ class PTableHeatmapAdapter(BaseToolAdapter):
             figure=result.figure,
             params=result.params,
             artifact_types=artifact_types,
-            json_name="figure.json",
+            json_name="ptable_heatmap.json",
             title="Periodic Table Heatmap",
             provenance={
                 "sourceFunction": "pymatviz.ptable_heatmap",

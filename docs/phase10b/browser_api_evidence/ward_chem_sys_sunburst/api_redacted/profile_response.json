@@ -1,0 +1,90 @@
+{
+  "createdAt": "2026-07-06T11:54:57.222199+00:00",
+  "datasetId": "dataset_0009",
+  "datasetType": "unknown",
+  "files": [
+    {
+      "detectedFormat": "csv",
+      "fileId": "file_001",
+      "fileName": "ward-metallic-glasses.csv",
+      "parseStatus": "success"
+    }
+  ],
+  "objects": [
+    {
+      "count": 1,
+      "objectId": "obj_dataframe_dd5037828e27",
+      "objectType": "DataFrame",
+      "periodicity": null,
+      "sourceFileIds": [
+        "file_001"
+      ]
+    }
+  ],
+  "phononSummary": null,
+  "profileGenerated": true,
+  "profileId": "profile_dataset_0009_v1",
+  "qualityIssues": [],
+  "recommendedTasks": [],
+  "schemaVersion": "0.1",
+  "status": "profile_ready",
+  "structureSummary": null,
+  "tableSummary": {
+    "columns": [
+      {
+        "dtype": "string",
+        "inferredRole": "structure_id",
+        "missingCount": 0,
+        "name": "material_id",
+        "uniqueCount": 8415
+      },
+      {
+        "dtype": "string",
+        "inferredRole": "formula",
+        "missingCount": 0,
+        "name": "composition",
+        "uniqueCount": 6839
+      },
+      {
+        "dtype": "string",
+        "inferredRole": null,
+        "missingCount": 1971,
+        "name": "gfa_type",
+        "uniqueCount": 2
+      },
+      {
+        "dtype": "number",
+        "inferredRole": null,
+        "missingCount": 968,
+        "name": "D_max",
+        "uniqueCount": 40
+      },
+      {
+        "dtype": "number",
+        "inferredRole": null,
+        "missingCount": 7669,
+        "name": "dTx",
+        "uniqueCount": 142
+      },
+      {
+        "dtype": "number",
+        "inferredRole": null,
+        "missingCount": 8142,
+        "name": "Unnamed: 4",
+        "uniqueCount": 187
+      },
+      {
+        "dtype": "string",
+        "inferredRole": null,
+        "missingCount": 8408,
+        "name": "comment",
+        "uniqueCount": 2
+      }
+    ],
+    "inferredTask": "unknown",
+    "nColumns": 7,
+    "nRows": 8415
+  },
+  "trajectorySummary": null,
+  "version": "1"
+}

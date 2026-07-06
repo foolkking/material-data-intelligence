@@ -36,7 +36,7 @@ def test_artifact_paths_metadata_and_recipe_are_stable(tmp_path):
     storage_keys = {artifact.type: artifact.storageKey for artifact in artifacts}
 
     assert storage_keys[ArtifactType.plotly_json] == (
-        "projects/project_artifact/jobs/job_artifact/tool_calls/call_artifact/figure.json"
+        "projects/project_artifact/jobs/job_artifact/tool_calls/call_artifact/ptable_heatmap.json"
     )
     assert storage_keys[ArtifactType.recipe_json] == (
         "projects/project_artifact/jobs/job_artifact/tool_calls/call_artifact/recipe.json"

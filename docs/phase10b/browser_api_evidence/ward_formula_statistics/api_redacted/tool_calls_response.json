@@ -1,0 +1,25 @@
+[
+  {
+    "artifactIds": [
+      "call_job_d7ea3329fd43450299654b30_step_001-table_json",
+      "call_job_d7ea3329fd43450299654b30_step_001-summary_md",
+      "call_job_d7ea3329fd43450299654b30_step_001-recipe_json"
+    ],
+    "attempt": 1,
+    "id": "call_job_d7ea3329fd43450299654b30_step_001",
+    "idempotencyKey": "job_d7ea3329fd43450299654b30:step_001",
+    "inputSummary": "Params: formulaColumn, maxExamples, strict",
+    "jobId": "job_d7ea3329fd43450299654b30",
+    "outputSummary": "3 artifact(s)",
+    "params": {
+      "formulaColumn": "composition",
+      "maxExamples": 20,
+      "strict": false
+    },
+    "planHash": "97300d4564eb90696f13a45955f9f50f52d16dac6119c6cb83e93c13ba6fc976",
+    "planId": "plan_04377825309f47d49bbb1397",
+    "status": "completed",
+    "stepId": "step_001",
+    "toolId": "composition.formula_statistics"
+  }
+]

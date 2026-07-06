@@ -1,0 +1,204 @@
+[
+  {
+    "createdAt": "2026-07-06T11:55:03.154401+00:00",
+    "eventType": "job.created",
+    "id": "evt_job_252b33ce80264dffb8675c97_0001",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Planner job created with persisted AnalysisPlan.",
+    "payload": {
+      "datasetId": "dataset_0009",
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "projectId": "project_local"
+    },
+    "progress": 0.0,
+    "seq": 1,
+    "status": "info"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:03.154401+00:00",
+    "eventType": "plan.persisted",
+    "id": "evt_job_252b33ce80264dffb8675c97_0002",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Persisted validated AnalysisPlan with 1 step(s).",
+    "payload": {
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "planSource": "llm",
+      "plannerProvider": "mock"
+    },
+    "progress": 0.0,
+    "seq": 2,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:03.154401+00:00",
+    "eventType": "job.running",
+    "id": "evt_job_252b33ce80264dffb8675c97_0003",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Queue worker started job.",
+    "payload": {},
+    "progress": 0.0,
+    "seq": 3,
+    "status": "running"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:03.154401+00:00",
+    "eventType": "plan.loaded",
+    "id": "evt_job_252b33ce80264dffb8675c97_0004",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+    "payload": {
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "planSource": "llm"
+    },
+    "progress": 0.05,
+    "seq": 4,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:03.154401+00:00",
+    "eventType": "data.loaded",
+    "id": "evt_job_252b33ce80264dffb8675c97_0005",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Loaded dataset objects for queued tool execution.",
+    "payload": {
+      "datasetId": "dataset_0009",
+      "objectRefs": [
+        "formulas",
+        "ml_table"
+      ]
+    },
+    "progress": 0.08,
+    "seq": 5,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:03.154401+00:00",
+    "eventType": "tool.started",
+    "id": "evt_job_252b33ce80264dffb8675c97_0006",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Started tool composition.chem_sys_sunburst.",
+    "payload": {
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "planSource": "llm",
+      "stepId": "step_001",
+      "toolCallId": "call_job_252b33ce80264dffb8675c97_step_001",
+      "toolId": "composition.chem_sys_sunburst"
+    },
+    "progress": 0.0,
+    "seq": 6,
+    "status": "running"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:15.022072+00:00",
+    "eventType": "artifact.ready",
+    "id": "evt_job_252b33ce80264dffb8675c97_0007",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Artifact ready: chem_sys_sunburst.json",
+    "payload": {
+      "artifactId": "call_job_252b33ce80264dffb8675c97_step_001-plotly_json",
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "planSource": "llm",
+      "storageKey": "projects/project_local/jobs/job_252b33ce80264dffb8675c97/tool_calls/call_job_252b33ce80264dffb8675c97_step_001/chem_sys_sunburst.json",
+      "toolCallId": "call_job_252b33ce80264dffb8675c97_step_001"
+    },
+    "progress": null,
+    "seq": 7,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:15.063582+00:00",
+    "eventType": "artifact.ready",
+    "id": "evt_job_252b33ce80264dffb8675c97_0008",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Artifact ready: chem_sys_sunburst.html",
+    "payload": {
+      "artifactId": "call_job_252b33ce80264dffb8675c97_step_001-plotly_html",
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "planSource": "llm",
+      "storageKey": "projects/project_local/jobs/job_252b33ce80264dffb8675c97/tool_calls/call_job_252b33ce80264dffb8675c97_step_001/chem_sys_sunburst.html",
+      "toolCallId": "call_job_252b33ce80264dffb8675c97_step_001"
+    },
+    "progress": null,
+    "seq": 8,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:15.072580+00:00",
+    "eventType": "artifact.ready",
+    "id": "evt_job_252b33ce80264dffb8675c97_0009",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Artifact ready: summary.md",
+    "payload": {
+      "artifactId": "call_job_252b33ce80264dffb8675c97_step_001-summary_md",
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "planSource": "llm",
+      "storageKey": "projects/project_local/jobs/job_252b33ce80264dffb8675c97/tool_calls/call_job_252b33ce80264dffb8675c97_step_001/summary.md",
+      "toolCallId": "call_job_252b33ce80264dffb8675c97_step_001"
+    },
+    "progress": null,
+    "seq": 9,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:15.081582+00:00",
+    "eventType": "artifact.ready",
+    "id": "evt_job_252b33ce80264dffb8675c97_0010",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Artifact ready: recipe.json",
+    "payload": {
+      "artifactId": "call_job_252b33ce80264dffb8675c97_step_001-recipe_json",
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "planSource": "llm",
+      "storageKey": "projects/project_local/jobs/job_252b33ce80264dffb8675c97/tool_calls/call_job_252b33ce80264dffb8675c97_step_001/recipe.json",
+      "toolCallId": "call_job_252b33ce80264dffb8675c97_step_001"
+    },
+    "progress": null,
+    "seq": 10,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:15.081582+00:00",
+    "eventType": "tool.completed",
+    "id": "evt_job_252b33ce80264dffb8675c97_0011",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Completed tool composition.chem_sys_sunburst.",
+    "payload": {
+      "artifactIds": [
+        "call_job_252b33ce80264dffb8675c97_step_001-plotly_json",
+        "call_job_252b33ce80264dffb8675c97_step_001-plotly_html",
+        "call_job_252b33ce80264dffb8675c97_step_001-summary_md",
+        "call_job_252b33ce80264dffb8675c97_step_001-recipe_json"
+      ],
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "planSource": "llm",
+      "toolCallId": "call_job_252b33ce80264dffb8675c97_step_001"
+    },
+    "progress": 1.0,
+    "seq": 11,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-06T11:55:15.081582+00:00",
+    "eventType": "job.completed",
+    "id": "evt_job_252b33ce80264dffb8675c97_0012",
+    "jobId": "job_252b33ce80264dffb8675c97",
+    "message": "Job completed.",
+    "payload": {
+      "planHash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+      "planId": "plan_6abb9ef60df54905921988c1",
+      "planSource": "llm"
+    },
+    "progress": 1.0,
+    "seq": 12,
+    "status": "success"
+  }
+]

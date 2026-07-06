@@ -1,0 +1,86 @@
+{
+  "adapter": "composition.chem_sys_sunburst",
+  "api_captures": [
+    "artifacts_response.json",
+    "events_response.json",
+    "job_response.json",
+    "planner_preview_response.json",
+    "planner_validate_response.json",
+    "profile_response.json",
+    "provider_resolve_response.json",
+    "result_response.json",
+    "tool_calls_response.json",
+    "upload_or_dataset_response.json"
+  ],
+  "artifacts": [
+    {
+      "exists": true,
+      "name": "chem_sys_sunburst.json",
+      "type": "plotly_json"
+    },
+    {
+      "exists": true,
+      "name": "chem_sys_sunburst.html",
+      "type": "plotly_html"
+    },
+    {
+      "exists": true,
+      "name": "summary.md",
+      "type": "summary_md"
+    },
+    {
+      "exists": true,
+      "name": "recipe.json",
+      "type": "recipe_json"
+    }
+  ],
+  "assertions": {
+    "failed": [],
+    "passed": [
+      "dataset/profile generated",
+      "planner preview selected composition.chem_sys_sunburst",
+      "plan validation ok",
+      "persisted planner job completed",
+      "tool call composition.chem_sys_sunburst completed",
+      "expected artifacts copied from platform storage",
+      "browser screenshots captured",
+      "API captures saved and redacted"
+    ]
+  },
+  "case_id": "ward_chem_sys_sunburst",
+  "dataset": {
+    "dataset_id": "dataset_0009",
+    "name": "Phase 10B-2 ward_chem_sys_sunburst Ward composition evidence",
+    "profile_id": "profile_dataset_0009_v1",
+    "source": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\ward_metallic_glasses_csv_xz\\raw_data\\ward-metallic-glasses.csv"
+  },
+  "evidence_level": "browser_api_artifact",
+  "evidence_level_detail": "Browser + API + Artifact",
+  "job": {
+    "job_id": "job_252b33ce80264dffb8675c97",
+    "status": "completed"
+  },
+  "phase": "10B-2",
+  "planner": {
+    "plan_hash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+    "plan_id": "plan_6abb9ef60df54905921988c1",
+    "provider": "mock"
+  },
+  "redaction_status": "passed",
+  "screenshots": [
+    "01_dataset_profile.png",
+    "02_plan_preview.png",
+    "03_agent_process_completed.png",
+    "04_results_artifacts.png",
+    "05_developer_audit_redacted.png"
+  ],
+  "tool_calls": [
+    {
+      "status": "completed",
+      "tool_id": "composition.chem_sys_sunburst"
+    }
+  ],
+  "uses_mock_planner": true,
+  "uses_real_llm": false,
+  "verdict": "PASS"
+}

@@ -947,3 +947,25 @@
 - [ ] Lightweight structure adapters: `structure.summary`, `structure.spacegroup_summary`, `structure.lattice_summary`.
 - [ ] Advanced structure/physics adapters: 3D viewer polish, XRD, RDF, coordination distribution, Brillouin zone, phonon bands/DOS.
 - [ ] Notebook/script extraction remains out of scope.
+
+## 2026-07-06 Phase 10B-2 Browser/API Evidence for Composition Visualization Adapters
+
+### Done
+
+- [x] Browser/API/artifact evidence generated for `composition.formula_statistics`.
+- [x] Browser/API/artifact evidence generated for `composition.elements_hist`.
+- [x] Browser/API/artifact evidence generated for `composition.ptable_heatmap`.
+- [x] Browser/API/artifact evidence generated for `composition.chem_sys_treemap`.
+- [x] Browser/API/artifact evidence generated for `composition.chem_sys_sunburst`.
+- [x] Saved 50 redacted API captures.
+- [x] Saved 25 browser screenshots.
+- [x] Saved 19 artifact files.
+- [x] Saved 5 evidence manifests.
+- [x] Added global Phase 10B-2 evidence summary and security scan.
+- [x] Confirmed evidence uses Mock Planner only and no real LLM.
+- [x] Confirmed no unsupported official examples are claimed as verified.
+
+### Still Open
+
+- [ ] Phase 10C lightweight structure adapter planning.
+- [ ] Structure viewer polish, XRD, RDF, phonon, Brillouin zone, and notebook/script extraction.

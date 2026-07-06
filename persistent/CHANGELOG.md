@@ -1020,3 +1020,27 @@
 
 - Added or updated adapter, manifest, planner-routing, and persisted execution coverage for the five Phase 10B-1 tools.
 - Real LLM was not used; browser/API evidence remains deferred to Phase 10B-2.
+
+## 2026-07-06 Phase 10B-2
+
+### Added
+
+- Added `docs/phase10b/browser_api_evidence/` with browser/API/artifact evidence for the five composition visualization adapters.
+- Added per-case evidence manifests, execution logs, platform summaries, security scan files, API captures, screenshots, and artifact copies for:
+  - `ward_formula_statistics`
+  - `ward_elements_hist`
+  - `ward_ptable_heatmap`
+  - `ward_chem_sys_treemap`
+  - `ward_chem_sys_sunburst`
+
+### Changed
+
+- Updated `composition.ptable_heatmap` artifact naming from generic `figure.json` to contract-specific `ptable_heatmap.json`.
+- Updated adapter test coverage to require `ptable_heatmap.json`, `ptable_heatmap.html`, `summary.md`, and `recipe.json`.
+
+### Verification
+
+- Evidence totals: 50 redacted API captures, 25 browser screenshots, 19 artifact files, and 5 manifests.
+- Security scan: `NO_SECRET_PATTERN_HITS`.
+- Evidence uses Mock Planner only; no real LLM was used.
+- Runtime main semantics were not changed.

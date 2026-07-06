@@ -94,6 +94,7 @@ def test_ptable_heatmap_generates_plotly_artifacts(tmp_path):
     assert payload["chartType"] == "periodic_table_heatmap"
     assert payload["formulaColumn"] == "composition"
     assert {"Fe", "O"}.issubset(payload["elementValues"])
+    assert {artifact.name for artifact in artifacts} >= {"ptable_heatmap.json", "ptable_heatmap.html", "summary.md", "recipe.json"}
 
 
 def test_structure_3d_generates_plotly_artifacts_from_cif_fixture(tmp_path, repo_root):

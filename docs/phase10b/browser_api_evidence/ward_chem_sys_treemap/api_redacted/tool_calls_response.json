@@ -1,0 +1,26 @@
+[
+  {
+    "artifactIds": [
+      "call_job_bb10b26cbd8146d7bced8af0_step_001-plotly_json",
+      "call_job_bb10b26cbd8146d7bced8af0_step_001-plotly_html",
+      "call_job_bb10b26cbd8146d7bced8af0_step_001-summary_md",
+      "call_job_bb10b26cbd8146d7bced8af0_step_001-recipe_json"
+    ],
+    "attempt": 1,
+    "id": "call_job_bb10b26cbd8146d7bced8af0_step_001",
+    "idempotencyKey": "job_bb10b26cbd8146d7bced8af0:step_001",
+    "inputSummary": "Params: formulaColumn, groupMode, maxGroups",
+    "jobId": "job_bb10b26cbd8146d7bced8af0",
+    "outputSummary": "4 artifact(s)",
+    "params": {
+      "formulaColumn": "composition",
+      "groupMode": "chem_sys",
+      "maxGroups": 50
+    },
+    "planHash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+    "planId": "plan_5e57f6c947bb4b6894e07ef4",
+    "status": "completed",
+    "stepId": "step_001",
+    "toolId": "composition.chem_sys_treemap"
+  }
+]

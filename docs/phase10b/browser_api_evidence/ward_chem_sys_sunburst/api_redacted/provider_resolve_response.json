@@ -1,0 +1,11 @@
+{
+  "message": "Current planner job configuration will use Mock Planner.",
+  "model": "mock",
+  "ok": true,
+  "provider": "mock",
+  "redacted": true,
+  "secretConfigured": false,
+  "source": "request",
+  "status": "ready",
+  "willUseLiveProvider": false
+}

@@ -1,0 +1,117 @@
+{
+  "createdAt": "2026-07-06T11:54:39.470332+00:00",
+  "datasetId": "dataset_0007",
+  "fileCount": 1,
+  "files": [
+    {
+      "detectedFormat": "csv",
+      "errorCode": null,
+      "fileId": "file_001",
+      "name": "ward-metallic-glasses.csv",
+      "objectCount": 1,
+      "status": "success"
+    }
+  ],
+  "id": "dataset_0007",
+  "name": "Phase 10B-2 ward_ptable_heatmap Ward composition evidence",
+  "normalizedExports": [
+    {
+      "contentHash": "809afc34f77d4e944732565ec714cbd88e2007c5e65c1bae84ed8b108be61ef2",
+      "metadataKey": "projects/project_0001/datasets/dataset_0007/normalized/obj_dataframe_dd5037828e27/metadata.json",
+      "objectId": "obj_dataframe_dd5037828e27",
+      "storageKey": "projects/project_0001/datasets/dataset_0007/normalized/obj_dataframe_dd5037828e27/data.json"
+    }
+  ],
+  "objectCount": 1,
+  "profile": {
+    "createdAt": "2026-07-06T11:54:39.368805+00:00",
+    "datasetId": "dataset_0007",
+    "datasetType": "unknown",
+    "files": [
+      {
+        "detectedFormat": "csv",
+        "fileId": "file_001",
+        "fileName": "ward-metallic-glasses.csv",
+        "parseStatus": "success"
+      }
+    ],
+    "objects": [
+      {
+        "count": 1,
+        "objectId": "obj_dataframe_dd5037828e27",
+        "objectType": "DataFrame",
+        "periodicity": null,
+        "sourceFileIds": [
+          "file_001"
+        ]
+      }
+    ],
+    "phononSummary": null,
+    "profileId": "profile_dataset_0007_v1",
+    "qualityIssues": [],
+    "recommendedTasks": [],
+    "schemaVersion": "0.1",
+    "structureSummary": null,
+    "tableSummary": {
+      "columns": [
+        {
+          "dtype": "string",
+          "inferredRole": "structure_id",
+          "missingCount": 0,
+          "name": "material_id",
+          "uniqueCount": 8415
+        },
+        {
+          "dtype": "string",
+          "inferredRole": "formula",
+          "missingCount": 0,
+          "name": "composition",
+          "uniqueCount": 6839
+        },
+        {
+          "dtype": "string",
+          "inferredRole": null,
+          "missingCount": 1971,
+          "name": "gfa_type",
+          "uniqueCount": 2
+        },
+        {
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 968,
+          "name": "D_max",
+          "uniqueCount": 40
+        },
+        {
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 7669,
+          "name": "dTx",
+          "uniqueCount": 142
+        },
+        {
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 8142,
+          "name": "Unnamed: 4",
+          "uniqueCount": 187
+        },
+        {
+          "dtype": "string",
+          "inferredRole": null,
+          "missingCount": 8408,
+          "name": "comment",
+          "uniqueCount": 2
+        }
+      ],
+      "inferredTask": "unknown",
+      "nColumns": 7,
+      "nRows": 8415
+    },
+    "trajectorySummary": null,
+    "version": "1"
+  },
+  "profileId": "profile_dataset_0007_v1",
+  "projectId": "project_0001",
+  "status": "profile_ready"
+}

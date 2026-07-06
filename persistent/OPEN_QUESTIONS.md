@@ -289,3 +289,10 @@
 - Current formula parsing intentionally supports common formula strings and reports warnings for malformed, unsupported, or unknown-element inputs. Complex formula grammar remains a future hardening area.
 - HTML artifacts are generated when Plotly export is available; JSON, summary, and recipe remain the required deterministic evidence.
 - Structure viewer polish, XRD, RDF, phonon, Brillouin zone, and notebook/script extraction remain out of scope for this phase.
+
+## 2026-07-06 Phase 10B-2 Follow-ups
+
+- Phase 10B-2 closes browser/API/artifact evidence for the five composition visualization adapters on the Ward direct-uploadable case.
+- Formula parsing hardening remains open for complex formulas, malformed values, and unknown-element edge cases beyond current warning behavior.
+- Remaining material-domain questions now move to structure and physics planning: lightweight structure summaries, 3D viewer polish, XRD, RDF, phonon, Brillouin zone, and notebook/script extraction.
+- Browser/API evidence still does not claim Matbench, MP, CAMD, WBM, notebook-only, script-only, or external-data official examples are verified.

@@ -550,3 +550,17 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Required artifacts are deterministic JSON plus `summary.md` and `recipe.json`; Plotly HTML is produced when supported.
 - Adapter execution does not access network, execute shell, read arbitrary paths, or use a real LLM.
 - Mock Planner routing now checks explicit composition keywords before generic histogram/correlation/table routing to avoid misrouting composition prompts.
+
+## 2026-07-06 Phase 10B-2 Composition Browser/API Evidence Notes
+
+- Browser/API evidence confirms all five composition visualization tools execute through persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, and adapter execution.
+- Verified tools:
+  - `composition.formula_statistics`
+  - `composition.elements_hist`
+  - `composition.ptable_heatmap`
+  - `composition.chem_sys_treemap`
+  - `composition.chem_sys_sunburst`
+- Evidence artifacts live under `docs/phase10b/browser_api_evidence/` and include redacted API captures, screenshots, copied artifact files, manifests, and platform summaries.
+- `composition.ptable_heatmap` now emits `ptable_heatmap.json` to match the registered artifact contract and evidence expectations.
+- No tool execution path was allowed to bypass Tool Registry or Adapter execution.
+- No new adapter was added in Phase 10B-2.

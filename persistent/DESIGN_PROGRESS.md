@@ -731,3 +731,20 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Generated lightweight Ward official-example adapter evidence under `docs/phase10b/adapter_evidence/`.
 - This phase did not run real LLM, did not create browser/API evidence, and did not modify QueueWorkerRuntime, AnalysisPlanRepository, or `/planner/jobs` semantics.
 - Remaining next step: Phase 10B-2 browser/API/artifact evidence for these composition adapters.
+
+## 2026-07-06 Phase 10B-2 Browser/API Evidence for Composition Visualization Adapters
+
+- Generated end-to-end browser/API/artifact evidence for the five Phase 10B-1 composition adapters under `docs/phase10b/browser_api_evidence/`.
+- Verified Ward direct-uploadable composition workflows through Phase 9C UI, Mock Planner, persisted AnalysisPlan, queue worker execution, Tool Registry, adapters, artifacts, reports, and recipes.
+- Covered:
+  - `ward_formula_statistics` -> `composition.formula_statistics`
+  - `ward_elements_hist` -> `composition.elements_hist`
+  - `ward_ptable_heatmap` -> `composition.ptable_heatmap`
+  - `ward_chem_sys_treemap` -> `composition.chem_sys_treemap`
+  - `ward_chem_sys_sunburst` -> `composition.chem_sys_sunburst`
+- Evidence totals: 50 redacted API captures, 25 browser screenshots, 19 artifact files, and 5 evidence manifests.
+- Security scan result: `NO_SECRET_PATTERN_HITS`.
+- Made one evidence-contract fix: `composition.ptable_heatmap` now emits `ptable_heatmap.json` instead of a generic `figure.json`, matching the Phase 10B-1/10B-2 artifact contract.
+- No real LLM was used, and default CI remains gated away from live LLM calls.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, and PlanValidator semantics were not changed.
+- Remaining work: Phase 10C lightweight structure planning, structure viewer polish, XRD, RDF, phonon, Brillouin zone, and notebook/script extraction.

@@ -1,0 +1,437 @@
+{
+  "apiCaptures": 50,
+  "artifactFiles": 19,
+  "browserScreenshots": 25,
+  "cases": [
+    {
+      "adapter": "composition.formula_statistics",
+      "api_captures": [
+        "artifacts_response.json",
+        "events_response.json",
+        "job_response.json",
+        "planner_preview_response.json",
+        "planner_validate_response.json",
+        "profile_response.json",
+        "provider_resolve_response.json",
+        "result_response.json",
+        "tool_calls_response.json",
+        "upload_or_dataset_response.json"
+      ],
+      "artifacts": [
+        {
+          "exists": true,
+          "name": "formula_statistics.json",
+          "type": "table_json"
+        },
+        {
+          "exists": true,
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "exists": true,
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "assertions": {
+        "failed": [],
+        "passed": [
+          "dataset/profile generated",
+          "planner preview selected composition.formula_statistics",
+          "plan validation ok",
+          "persisted planner job completed",
+          "tool call composition.formula_statistics completed",
+          "expected artifacts copied from platform storage",
+          "browser screenshots captured",
+          "API captures saved and redacted"
+        ]
+      },
+      "case_id": "ward_formula_statistics",
+      "dataset": {
+        "dataset_id": "dataset_0005",
+        "name": "Phase 10B-2 ward_formula_statistics Ward composition evidence",
+        "profile_id": "profile_dataset_0005_v1",
+        "source": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\ward_metallic_glasses_csv_xz\\raw_data\\ward-metallic-glasses.csv"
+      },
+      "evidence_level": "browser_api_artifact",
+      "evidence_level_detail": "Browser + API + Artifact",
+      "job": {
+        "job_id": "job_d7ea3329fd43450299654b30",
+        "status": "completed"
+      },
+      "phase": "10B-2",
+      "planner": {
+        "plan_hash": "97300d4564eb90696f13a45955f9f50f52d16dac6119c6cb83e93c13ba6fc976",
+        "plan_id": "plan_04377825309f47d49bbb1397",
+        "provider": "mock"
+      },
+      "redaction_status": "passed",
+      "screenshots": [
+        "01_dataset_profile.png",
+        "02_plan_preview.png",
+        "03_agent_process_completed.png",
+        "04_results_artifacts.png",
+        "05_developer_audit_redacted.png"
+      ],
+      "tool_calls": [
+        {
+          "status": "completed",
+          "tool_id": "composition.formula_statistics"
+        }
+      ],
+      "uses_mock_planner": true,
+      "uses_real_llm": false,
+      "verdict": "PASS"
+    },
+    {
+      "adapter": "composition.elements_hist",
+      "api_captures": [
+        "artifacts_response.json",
+        "events_response.json",
+        "job_response.json",
+        "planner_preview_response.json",
+        "planner_validate_response.json",
+        "profile_response.json",
+        "provider_resolve_response.json",
+        "result_response.json",
+        "tool_calls_response.json",
+        "upload_or_dataset_response.json"
+      ],
+      "artifacts": [
+        {
+          "exists": true,
+          "name": "elements_hist.json",
+          "type": "plotly_json"
+        },
+        {
+          "exists": true,
+          "name": "elements_hist.html",
+          "type": "plotly_html"
+        },
+        {
+          "exists": true,
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "exists": true,
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "assertions": {
+        "failed": [],
+        "passed": [
+          "dataset/profile generated",
+          "planner preview selected composition.elements_hist",
+          "plan validation ok",
+          "persisted planner job completed",
+          "tool call composition.elements_hist completed",
+          "expected artifacts copied from platform storage",
+          "browser screenshots captured",
+          "API captures saved and redacted"
+        ]
+      },
+      "case_id": "ward_elements_hist",
+      "dataset": {
+        "dataset_id": "dataset_0006",
+        "name": "Phase 10B-2 ward_elements_hist Ward composition evidence",
+        "profile_id": "profile_dataset_0006_v1",
+        "source": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\ward_metallic_glasses_csv_xz\\raw_data\\ward-metallic-glasses.csv"
+      },
+      "evidence_level": "browser_api_artifact",
+      "evidence_level_detail": "Browser + API + Artifact",
+      "job": {
+        "job_id": "job_093c6525e2f64bf4bb1e3555",
+        "status": "completed"
+      },
+      "phase": "10B-2",
+      "planner": {
+        "plan_hash": "5fadd977a8a8b5b99e614bb3f5e154e1cbb810432fd9f6515c03714d5379f6ab",
+        "plan_id": "plan_6dd9ebd46c5c4c169f3e3cac",
+        "provider": "mock"
+      },
+      "redaction_status": "passed",
+      "screenshots": [
+        "01_dataset_profile.png",
+        "02_plan_preview.png",
+        "03_agent_process_completed.png",
+        "04_results_artifacts.png",
+        "05_developer_audit_redacted.png"
+      ],
+      "tool_calls": [
+        {
+          "status": "completed",
+          "tool_id": "composition.elements_hist"
+        }
+      ],
+      "uses_mock_planner": true,
+      "uses_real_llm": false,
+      "verdict": "PASS"
+    },
+    {
+      "adapter": "composition.ptable_heatmap",
+      "api_captures": [
+        "artifacts_response.json",
+        "events_response.json",
+        "job_response.json",
+        "planner_preview_response.json",
+        "planner_validate_response.json",
+        "profile_response.json",
+        "provider_resolve_response.json",
+        "result_response.json",
+        "tool_calls_response.json",
+        "upload_or_dataset_response.json"
+      ],
+      "artifacts": [
+        {
+          "exists": true,
+          "name": "ptable_heatmap.json",
+          "type": "plotly_json"
+        },
+        {
+          "exists": true,
+          "name": "ptable_heatmap.html",
+          "type": "plotly_html"
+        },
+        {
+          "exists": true,
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "exists": true,
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "assertions": {
+        "failed": [],
+        "passed": [
+          "dataset/profile generated",
+          "planner preview selected composition.ptable_heatmap",
+          "plan validation ok",
+          "persisted planner job completed",
+          "tool call composition.ptable_heatmap completed",
+          "expected artifacts copied from platform storage",
+          "browser screenshots captured",
+          "API captures saved and redacted"
+        ]
+      },
+      "case_id": "ward_ptable_heatmap",
+      "dataset": {
+        "dataset_id": "dataset_0007",
+        "name": "Phase 10B-2 ward_ptable_heatmap Ward composition evidence",
+        "profile_id": "profile_dataset_0007_v1",
+        "source": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\ward_metallic_glasses_csv_xz\\raw_data\\ward-metallic-glasses.csv"
+      },
+      "evidence_level": "browser_api_artifact",
+      "evidence_level_detail": "Browser + API + Artifact",
+      "job": {
+        "job_id": "job_841bc2df41664841bb0b03b9",
+        "status": "completed"
+      },
+      "phase": "10B-2",
+      "planner": {
+        "plan_hash": "1da4c51abfafc55f0b85fef9771d2ed42ec69e2e19a99a2c2baba85e0f0c26f6",
+        "plan_id": "plan_1117ff42703e4bfbb16442f8",
+        "provider": "mock"
+      },
+      "redaction_status": "passed",
+      "screenshots": [
+        "01_dataset_profile.png",
+        "02_plan_preview.png",
+        "03_agent_process_completed.png",
+        "04_results_artifacts.png",
+        "05_developer_audit_redacted.png"
+      ],
+      "tool_calls": [
+        {
+          "status": "completed",
+          "tool_id": "composition.ptable_heatmap"
+        }
+      ],
+      "uses_mock_planner": true,
+      "uses_real_llm": false,
+      "verdict": "PASS"
+    },
+    {
+      "adapter": "composition.chem_sys_treemap",
+      "api_captures": [
+        "artifacts_response.json",
+        "events_response.json",
+        "job_response.json",
+        "planner_preview_response.json",
+        "planner_validate_response.json",
+        "profile_response.json",
+        "provider_resolve_response.json",
+        "result_response.json",
+        "tool_calls_response.json",
+        "upload_or_dataset_response.json"
+      ],
+      "artifacts": [
+        {
+          "exists": true,
+          "name": "chem_sys_treemap.json",
+          "type": "plotly_json"
+        },
+        {
+          "exists": true,
+          "name": "chem_sys_treemap.html",
+          "type": "plotly_html"
+        },
+        {
+          "exists": true,
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "exists": true,
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "assertions": {
+        "failed": [],
+        "passed": [
+          "dataset/profile generated",
+          "planner preview selected composition.chem_sys_treemap",
+          "plan validation ok",
+          "persisted planner job completed",
+          "tool call composition.chem_sys_treemap completed",
+          "expected artifacts copied from platform storage",
+          "browser screenshots captured",
+          "API captures saved and redacted"
+        ]
+      },
+      "case_id": "ward_chem_sys_treemap",
+      "dataset": {
+        "dataset_id": "dataset_0008",
+        "name": "Phase 10B-2 ward_chem_sys_treemap Ward composition evidence",
+        "profile_id": "profile_dataset_0008_v1",
+        "source": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\ward_metallic_glasses_csv_xz\\raw_data\\ward-metallic-glasses.csv"
+      },
+      "evidence_level": "browser_api_artifact",
+      "evidence_level_detail": "Browser + API + Artifact",
+      "job": {
+        "job_id": "job_bb10b26cbd8146d7bced8af0",
+        "status": "completed"
+      },
+      "phase": "10B-2",
+      "planner": {
+        "plan_hash": "128982f6d564e691db1fdfc1a546a86a5ec2ae5f4c4623a7bd707e70babc1952",
+        "plan_id": "plan_5e57f6c947bb4b6894e07ef4",
+        "provider": "mock"
+      },
+      "redaction_status": "passed",
+      "screenshots": [
+        "01_dataset_profile.png",
+        "02_plan_preview.png",
+        "03_agent_process_completed.png",
+        "04_results_artifacts.png",
+        "05_developer_audit_redacted.png"
+      ],
+      "tool_calls": [
+        {
+          "status": "completed",
+          "tool_id": "composition.chem_sys_treemap"
+        }
+      ],
+      "uses_mock_planner": true,
+      "uses_real_llm": false,
+      "verdict": "PASS"
+    },
+    {
+      "adapter": "composition.chem_sys_sunburst",
+      "api_captures": [
+        "artifacts_response.json",
+        "events_response.json",
+        "job_response.json",
+        "planner_preview_response.json",
+        "planner_validate_response.json",
+        "profile_response.json",
+        "provider_resolve_response.json",
+        "result_response.json",
+        "tool_calls_response.json",
+        "upload_or_dataset_response.json"
+      ],
+      "artifacts": [
+        {
+          "exists": true,
+          "name": "chem_sys_sunburst.json",
+          "type": "plotly_json"
+        },
+        {
+          "exists": true,
+          "name": "chem_sys_sunburst.html",
+          "type": "plotly_html"
+        },
+        {
+          "exists": true,
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "exists": true,
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "assertions": {
+        "failed": [],
+        "passed": [
+          "dataset/profile generated",
+          "planner preview selected composition.chem_sys_sunburst",
+          "plan validation ok",
+          "persisted planner job completed",
+          "tool call composition.chem_sys_sunburst completed",
+          "expected artifacts copied from platform storage",
+          "browser screenshots captured",
+          "API captures saved and redacted"
+        ]
+      },
+      "case_id": "ward_chem_sys_sunburst",
+      "dataset": {
+        "dataset_id": "dataset_0009",
+        "name": "Phase 10B-2 ward_chem_sys_sunburst Ward composition evidence",
+        "profile_id": "profile_dataset_0009_v1",
+        "source": "C:\\Users\\86182\\Desktop\\pymatviz_official_examples_test_suite\\cases\\ward_metallic_glasses_csv_xz\\raw_data\\ward-metallic-glasses.csv"
+      },
+      "evidence_level": "browser_api_artifact",
+      "evidence_level_detail": "Browser + API + Artifact",
+      "job": {
+        "job_id": "job_252b33ce80264dffb8675c97",
+        "status": "completed"
+      },
+      "phase": "10B-2",
+      "planner": {
+        "plan_hash": "18ae8f4c1f205a65d3bf8cabe5365e893dccae5d1d95a51c4c9acf8d3d571c40",
+        "plan_id": "plan_6abb9ef60df54905921988c1",
+        "provider": "mock"
+      },
+      "redaction_status": "passed",
+      "screenshots": [
+        "01_dataset_profile.png",
+        "02_plan_preview.png",
+        "03_agent_process_completed.png",
+        "04_results_artifacts.png",
+        "05_developer_audit_redacted.png"
+      ],
+      "tool_calls": [
+        {
+          "status": "completed",
+          "tool_id": "composition.chem_sys_sunburst"
+        }
+      ],
+      "uses_mock_planner": true,
+      "uses_real_llm": false,
+      "verdict": "PASS"
+    }
+  ],
+  "conclusion": "PASS",
+  "evidenceManifests": 5,
+  "phase": "10B-2",
+  "securityScan": "NO_SECRET_PATTERN_HITS",
+  "totalCases": 5
+}

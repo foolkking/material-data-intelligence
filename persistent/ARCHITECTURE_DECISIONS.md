@@ -2501,3 +2501,23 @@ Implement `composition.formula_statistics`, `composition.elements_hist`, `compos
 - Partial formula parsing failures become warnings unless no formula can be parsed.
 - Browser/API evidence is a separate Phase 10B-2 task; Phase 10B-1 evidence is adapter-level only.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, and the Phase 9D live LLM gate remain unchanged.
+
+## ADR-10B-2-COMPOSITION-EVIDENCE: Browser/API evidence validates composition adapters without expanding runtime authority
+
+### Context
+
+Phase 10B-1 implemented five composition visualization adapters. Phase 10B-2 needed to prove those adapters work through the real product path, not just direct adapter unit tests, while preserving the existing execution boundary and avoiding live LLM calls.
+
+### Decision
+
+Treat Phase 10B-2 as evidence-only validation. The evidence path uses the Phase 9C workspace, Mock Planner, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry, and Adapter execution to generate Ward composition artifacts. Captured evidence is stored under `docs/phase10b/browser_api_evidence/` with redacted API responses, browser screenshots, artifact copies, manifests, summaries, and a security scan.
+
+The only code change accepted in this phase is an artifact-contract correction: `composition.ptable_heatmap` emits `ptable_heatmap.json` instead of generic `figure.json`.
+
+### Consequences
+
+- Composition browser/API evidence now covers `formula_statistics`, `elements_hist`, `ptable_heatmap`, `chem_sys_treemap`, and `chem_sys_sunburst`.
+- Evidence does not claim unsupported official examples are verified.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and the live LLM gate remain unchanged.
+- Default CI still does not call real LLM providers.
+- Structure and physics adapters remain future phases.
