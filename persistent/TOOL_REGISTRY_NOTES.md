@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-06 Phase 10A-2 first-batch browser/API evidence notes
+
+- The six Phase 10A-2 evidence scenarios all execute through the existing registry-gated path: AnalysisPlan JSON -> PlanValidator -> persisted AnalysisPlan -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> ToolCall/Artifact/Result provenance.
+- `viz.scatter` and `viz.histogram` now export Plotly JSON artifacts with benchmark-facing metadata at the top level and the raw Plotly figure under `figure`. This keeps artifacts renderable while making evidence assertions deterministic.
+- Mock Planner routing now checks composition-intent prompts before the generic histogram/distribution route, so Ward composition prompts select `composition.summary` instead of `viz.histogram`.
+- No adapter executes shell, arbitrary Python, network calls, or uncontrolled filesystem writes.
+- No real LLM is required for this evidence path, and default CI still does not call live providers.
+- The official browser/API evidence is scoped to MatPES and Ward first-batch adapter scenarios. It must not be read as verification for extraction-required, mapping-only, or future-scope official examples.
+
 ## 2026-07-06 Phase 10A-1 first official table/viz adapter batch
 
 - Added five registry-gated tools for the first two `DIRECT_VERIFIED` official pymatviz cases:

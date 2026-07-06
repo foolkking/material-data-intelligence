@@ -1,5 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-07-06 Phase 10A-2 Browser/API Evidence for First Batch Adapters
+
+- **Closed: browser/API/artifact evidence for first-batch tools.** MatPES scatter, MatPES histogram, Ward distribution summary, Ward histogram, Ward correlation, and Ward composition summary now have project-local redacted API captures, artifacts, screenshots, summaries, and manifests.
+- **Closed: first-batch Plotly JSON evidence contract.** `viz.scatter` and `viz.histogram` now write top-level chart metadata required by the benchmark evidence while keeping the nested Plotly figure for rendering.
+- **Closed: composition prompt routing ambiguity.** Composition distribution prompts now route to `composition.summary` before generic histogram/distribution routing.
+- **Still open: remaining official examples.** The other 59 official examples remain outside this browser/API evidence phase and keep their benchmark statuses from Phase 10A-0.
+- **Still open: multi-step DAG/data-dependency execution.** The evidence verifies single-step adapter execution; combined workflows remain future work.
+- **Still open: CI/browser evidence policy.** Browser/API evidence is committed as documentation evidence but is not a default CI gate.
+- **Still open: broader adapter coverage.** Phonon, Brillouin zone, advanced widgets, XRD/RDF, classification curves, and richer report/export workflows remain future phases.
+
 ## 2026-07-06 Phase 10A-1 First Batch Adapter Implementation
 
 - **Closed: MatPES richer first-batch plot/table tools.** The platform now has registry-gated `viz.scatter`, `viz.histogram`, and `table.distribution_summary` tools that can serve MatPES scatter/distribution/table-summary prompts within the current single-step execution model.

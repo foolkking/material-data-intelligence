@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -336,6 +337,12 @@ def test_scatter_generates_named_plotly_artifacts(tmp_path):
     }
     plot = next(artifact for artifact in artifacts if artifact.type == ArtifactType.plotly_json)
     assert plot.name == "scatter.json"
+    payload = json.loads((tmp_path / "artifacts" / plot.storageKey).read_text(encoding="utf-8"))
+    assert payload["chartType"] == "scatter"
+    assert payload["xColumn"] == "PBE"
+    assert payload["yColumn"] == "r2SCAN"
+    assert payload["pointCount"] == 3
+    assert payload["figure"]["data"][0]["type"] == "scatter"
 
 
 def test_histogram_generates_named_plotly_artifacts(tmp_path):
@@ -356,6 +363,13 @@ def test_histogram_generates_named_plotly_artifacts(tmp_path):
 
     plot = next(artifact for artifact in artifacts if artifact.type == ArtifactType.plotly_json)
     assert plot.name == "histogram.json"
+    payload = json.loads((tmp_path / "artifacts" / plot.storageKey).read_text(encoding="utf-8"))
+    assert payload["chartType"] == "histogram"
+    assert payload["column"] == "PBE"
+    assert payload["count"] == 4
+    assert payload["bins"] == 3
+    assert len(payload["binCounts"]) == 3
+    assert payload["figure"]["data"][0]["type"] == "histogram"
     assert ArtifactType.summary_md in artifact_types(artifacts)
 
 

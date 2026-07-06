@@ -1,5 +1,33 @@
 # TASK_BOARD
 
+## 2026-07-06 Phase 10A-2 Browser/API Evidence for First Batch Adapters
+
+### Done This Round
+
+- [x] Created `docs/phase10a/browser_api_evidence/` with README, Markdown index, JSON index, and one evidence directory per scoped scenario.
+- [x] Captured MatPES scatter evidence for `viz.scatter` with `xColumn=PBE`, `yColumn=r2SCAN`, completed job, `scatter.json`, `summary.md`, and `recipe.json`.
+- [x] Captured MatPES histogram evidence for `viz.histogram` with `column=r2SCAN`, completed job, `histogram.json`, `summary.md`, and `recipe.json`.
+- [x] Captured Ward distribution evidence for `table.distribution_summary`, completed job, `distribution_summary.json`, `summary.md`, and `recipe.json`.
+- [x] Captured Ward histogram evidence for `viz.histogram` with `column=D_max`, completed job, `histogram.json`, `summary.md`, and `recipe.json`.
+- [x] Captured Ward correlation evidence for `viz.correlation`, completed job, `correlation_matrix.json`, `correlation_heatmap.json`, `summary.md`, and `recipe.json`.
+- [x] Captured Ward composition evidence for `composition.summary`, completed job, `composition_summary.json`, `summary.md`, and `recipe.json`.
+- [x] Generated 60 redacted API capture JSON files, 30 PNG screenshots, 23 artifact files, per-scenario evidence manifests, platform summaries, and artifact manifests.
+- [x] Ran evidence security/encoding/JSON validation and found no secret-pattern hits, no mojibake hits, and no JSON parse errors.
+- [x] Fixed first-batch Plotly JSON artifacts to expose benchmark metadata at the top level while preserving nested Plotly figure data.
+- [x] Fixed Mock Planner composition routing so composition distribution requests do not fall through to `viz.histogram`.
+
+### Verification
+
+- [x] Evidence validation script over `docs/phase10a/browser_api_evidence/`: JSON ok, UTF-8/mojibake ok, secret scan ok.
+- [ ] Full backend/frontend regression.
+- [ ] Commit, push, and confirm CI current HEAD.
+
+### Remaining
+
+- [ ] This evidence covers only the 2 direct verified benchmark cases and 6 scoped first-batch scenarios.
+- [ ] The other 59 official examples remain extraction-required, mapping-only, or future-scope according to the benchmark pack.
+- [ ] Browser evidence remains documentation/demo evidence, not a default CI gate.
+
 ## 2026-07-06 Phase 10A-1 First Batch Adapter Implementation
 
 ### Done This Round

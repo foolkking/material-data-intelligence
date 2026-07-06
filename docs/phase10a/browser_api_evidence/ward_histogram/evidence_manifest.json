@@ -1,0 +1,134 @@
+{
+  "case_name": "ward_histogram",
+  "source_case_id": "ward_metallic_glasses_csv_xz",
+  "benchmark_case_type": "direct_uploadable_data",
+  "benchmark_verification_status": "DIRECT_VERIFIED",
+  "adapter": "viz.histogram",
+  "prompt": "请查看 Ward metallic glasses 表格中 D_max 数值列的分布，并生成直方图 histogram。",
+  "dataset_id": "dataset_0010",
+  "profile_id": "profile_dataset_0010_v1",
+  "plan_id": "plan_334f21237d9b4dcc842c54b2",
+  "plan_hash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+  "job_id": "job_e4b44a680fb24fb6bab9c69b",
+  "job_status": "completed",
+  "plan_params": {
+    "column": "D_max",
+    "bins": 20,
+    "title": "D_max distribution"
+  },
+  "tool_calls": [
+    {
+      "id": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "jobId": "job_e4b44a680fb24fb6bab9c69b",
+      "stepId": "step_001",
+      "toolId": "viz.histogram",
+      "status": "completed",
+      "idempotencyKey": "job_e4b44a680fb24fb6bab9c69b:step_001",
+      "params": {
+        "column": "D_max",
+        "bins": 20,
+        "title": "D_max distribution"
+      },
+      "attempt": 1,
+      "artifactIds": [
+        "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_json",
+        "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_html",
+        "call_job_e4b44a680fb24fb6bab9c69b_step_001-summary_md",
+        "call_job_e4b44a680fb24fb6bab9c69b_step_001-recipe_json"
+      ],
+      "planId": "plan_334f21237d9b4dcc842c54b2",
+      "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+      "inputSummary": "Params: bins, column, title",
+      "outputSummary": "4 artifact(s)"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_json",
+      "name": "histogram.json",
+      "localPath": "artifacts/histogram.json",
+      "type": "plotly_json",
+      "sourceTool": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/histogram.json",
+      "sha256": "1675cd2d3c6cd2f9fa3af869206fef34da5a72437e2f7403cd71ccd7ec9c54ac",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_html",
+      "name": "histogram.html",
+      "localPath": "artifacts/histogram.html",
+      "type": "plotly_html",
+      "sourceTool": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/histogram.html",
+      "sha256": "e94ccad3a860c969f82323e463c5f847dfda0ec27a93e5e863b97f25c2374aca",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_e4b44a680fb24fb6bab9c69b_step_001-summary_md",
+      "name": "summary.md",
+      "localPath": "artifacts/summary.md",
+      "type": "summary_md",
+      "sourceTool": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/summary.md",
+      "sha256": "1cef2b97d5d210f119de0ff57e393cbaad28f70664e896dfdd217ee8c16ab194",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_e4b44a680fb24fb6bab9c69b_step_001-recipe_json",
+      "name": "recipe.json",
+      "localPath": "artifacts/recipe.json",
+      "type": "recipe_json",
+      "sourceTool": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/recipe.json",
+      "sha256": "dd98a73a1a85b8d163791ccb72c22c43744c9fd7a5f8a71ecf8680531d1841ee",
+      "verified": true
+    }
+  ],
+  "screenshots": [
+    "screenshots/01_upload_profile.png",
+    "screenshots/02_chat_plan_preview.png",
+    "screenshots/03_agent_process_completed.png",
+    "screenshots/04_results_export.png",
+    "screenshots/05_developer_audit_redacted.png"
+  ],
+  "api_captures": [
+    "api_redacted/upload_response.json",
+    "api_redacted/profile_response.json",
+    "api_redacted/provider_resolve_response.json",
+    "api_redacted/planner_preview_response.json",
+    "api_redacted/planner_validate_response.json",
+    "api_redacted/planner_job_response.json",
+    "api_redacted/events_response.json",
+    "api_redacted/tool_calls_response.json",
+    "api_redacted/artifacts_response.json",
+    "api_redacted/result_response.json"
+  ],
+  "assertions": {
+    "passed": [
+      "prompt does not contain y_true/y_pred",
+      "Plan Preview tool is viz.histogram",
+      "toolCall viz.histogram completed",
+      "params.column == D_max",
+      "job completed",
+      "timeline has plan.loaded",
+      "timeline has data.loaded",
+      "timeline has tool.completed",
+      "timeline has job.completed",
+      "does not call ml.basic_metrics",
+      "no D_max vs dTx regression metrics",
+      "histogram.json artifact exists",
+      "histogram.json.chartType == histogram",
+      "histogram.json.column == D_max",
+      "histogram.json.count > 0",
+      "histogram.json.binCounts exists",
+      "summary.md artifact exists",
+      "recipe.json artifact exists"
+    ],
+    "failed": []
+  },
+  "evidence_level": "browser_api_artifact",
+  "uses_real_llm": false,
+  "uses_mock_planner": true,
+  "redaction_status": "passed",
+  "verdict": "PASS"
+}

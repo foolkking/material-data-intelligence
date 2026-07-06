@@ -1,0 +1,26 @@
+[
+  {
+    "id": "call_job_d287f0004848447681c53e42_step_001",
+    "jobId": "job_d287f0004848447681c53e42",
+    "stepId": "step_001",
+    "toolId": "viz.histogram",
+    "status": "completed",
+    "idempotencyKey": "job_d287f0004848447681c53e42:step_001",
+    "params": {
+      "column": "r2SCAN",
+      "bins": 20,
+      "title": "r2SCAN distribution"
+    },
+    "attempt": 1,
+    "artifactIds": [
+      "call_job_d287f0004848447681c53e42_step_001-plotly_json",
+      "call_job_d287f0004848447681c53e42_step_001-plotly_html",
+      "call_job_d287f0004848447681c53e42_step_001-summary_md",
+      "call_job_d287f0004848447681c53e42_step_001-recipe_json"
+    ],
+    "planId": "plan_5715df36c22b4a2c8ad298b4",
+    "planHash": "f57a525f860fca5d2a147b100a2ac92ff19a44dea4c591f5600daabb44d12763",
+    "inputSummary": "Params: bins, column, title",
+    "outputSummary": "4 artifact(s)"
+  }
+]

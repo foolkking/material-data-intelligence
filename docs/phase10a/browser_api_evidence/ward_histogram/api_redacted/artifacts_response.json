@@ -1,0 +1,198 @@
+[
+  {
+    "id": "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_json",
+    "projectId": "project_0001",
+    "datasetId": "dataset_0010",
+    "jobId": "job_e4b44a680fb24fb6bab9c69b",
+    "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+    "type": "plotly_json",
+    "name": "histogram.json",
+    "version": "1",
+    "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/histogram.json",
+    "storageProvider": "local",
+    "bucket": null,
+    "previewKey": null,
+    "sizeBytes": 97252,
+    "contentType": "application/json",
+    "contentHash": "1675cd2d3c6cd2f9fa3af869206fef34da5a72437e2f7403cd71ccd7ec9c54ac",
+    "sha256": "1675cd2d3c6cd2f9fa3af869206fef34da5a72437e2f7403cd71ccd7ec9c54ac",
+    "metadata": {
+      "toolId": "viz.histogram",
+      "toolVersion": "0.1.0",
+      "adapterVersion": "0.1.0",
+      "inputHashes": [
+        "44478dc51f50a5de74d429948b8a59fb770c9bfb2ea800194ca52463dcf6bd3f"
+      ],
+      "paramsHash": "7bc535117b4e5827821267b7b7440ed76c38ee57bf1dda28b5107078b1270c78",
+      "profileId": null,
+      "recipeId": null,
+      "reportId": null,
+      "createdAt": "2026-07-06T04:36:05.015707+00:00",
+      "provenance": {
+        "toolId": "viz.histogram",
+        "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+        "planId": "plan_334f21237d9b4dcc842c54b2",
+        "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+        "planSource": "llm"
+      },
+      "storageProvider": "local",
+      "bucket": null
+    },
+    "planId": "plan_334f21237d9b4dcc842c54b2",
+    "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+    "provenance": {
+      "toolId": "viz.histogram",
+      "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "planId": "plan_334f21237d9b4dcc842c54b2",
+      "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+      "planSource": "llm"
+    }
+  },
+  {
+    "id": "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_html",
+    "projectId": "project_0001",
+    "datasetId": "dataset_0010",
+    "jobId": "job_e4b44a680fb24fb6bab9c69b",
+    "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+    "type": "plotly_html",
+    "name": "histogram.html",
+    "version": "1",
+    "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/histogram.html",
+    "storageProvider": "local",
+    "bucket": null,
+    "previewKey": null,
+    "sizeBytes": 107798,
+    "contentType": "application/json",
+    "contentHash": "e94ccad3a860c969f82323e463c5f847dfda0ec27a93e5e863b97f25c2374aca",
+    "sha256": "e94ccad3a860c969f82323e463c5f847dfda0ec27a93e5e863b97f25c2374aca",
+    "metadata": {
+      "toolId": "viz.histogram",
+      "toolVersion": "0.1.0",
+      "adapterVersion": "0.1.0",
+      "inputHashes": [
+        "44478dc51f50a5de74d429948b8a59fb770c9bfb2ea800194ca52463dcf6bd3f"
+      ],
+      "paramsHash": "7bc535117b4e5827821267b7b7440ed76c38ee57bf1dda28b5107078b1270c78",
+      "profileId": null,
+      "recipeId": null,
+      "reportId": null,
+      "createdAt": "2026-07-06T04:36:05.054733+00:00",
+      "provenance": {
+        "toolId": "viz.histogram",
+        "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+        "planId": "plan_334f21237d9b4dcc842c54b2",
+        "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+        "planSource": "llm"
+      },
+      "storageProvider": "local",
+      "bucket": null
+    },
+    "planId": "plan_334f21237d9b4dcc842c54b2",
+    "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+    "provenance": {
+      "toolId": "viz.histogram",
+      "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "planId": "plan_334f21237d9b4dcc842c54b2",
+      "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+      "planSource": "llm"
+    }
+  },
+  {
+    "id": "call_job_e4b44a680fb24fb6bab9c69b_step_001-summary_md",
+    "projectId": "project_0001",
+    "datasetId": "dataset_0010",
+    "jobId": "job_e4b44a680fb24fb6bab9c69b",
+    "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+    "type": "summary_md",
+    "name": "summary.md",
+    "version": "1",
+    "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/summary.md",
+    "storageProvider": "local",
+    "bucket": null,
+    "previewKey": null,
+    "sizeBytes": 65,
+    "contentType": "application/json",
+    "contentHash": "1cef2b97d5d210f119de0ff57e393cbaad28f70664e896dfdd217ee8c16ab194",
+    "sha256": "1cef2b97d5d210f119de0ff57e393cbaad28f70664e896dfdd217ee8c16ab194",
+    "metadata": {
+      "toolId": "viz.histogram",
+      "toolVersion": "0.1.0",
+      "adapterVersion": "0.1.0",
+      "inputHashes": [
+        "44478dc51f50a5de74d429948b8a59fb770c9bfb2ea800194ca52463dcf6bd3f"
+      ],
+      "paramsHash": "7bc535117b4e5827821267b7b7440ed76c38ee57bf1dda28b5107078b1270c78",
+      "profileId": null,
+      "recipeId": null,
+      "reportId": null,
+      "createdAt": "2026-07-06T04:36:05.063629+00:00",
+      "provenance": {
+        "toolId": "viz.histogram",
+        "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+        "planId": "plan_334f21237d9b4dcc842c54b2",
+        "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+        "planSource": "llm"
+      },
+      "storageProvider": "local",
+      "bucket": null
+    },
+    "planId": "plan_334f21237d9b4dcc842c54b2",
+    "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+    "provenance": {
+      "toolId": "viz.histogram",
+      "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "planId": "plan_334f21237d9b4dcc842c54b2",
+      "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+      "planSource": "llm"
+    }
+  },
+  {
+    "id": "call_job_e4b44a680fb24fb6bab9c69b_step_001-recipe_json",
+    "projectId": "project_0001",
+    "datasetId": "dataset_0010",
+    "jobId": "job_e4b44a680fb24fb6bab9c69b",
+    "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+    "type": "recipe_json",
+    "name": "recipe.json",
+    "version": "1",
+    "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/recipe.json",
+    "storageProvider": "local",
+    "bucket": null,
+    "previewKey": null,
+    "sizeBytes": 614,
+    "contentType": "application/json",
+    "contentHash": "dd98a73a1a85b8d163791ccb72c22c43744c9fd7a5f8a71ecf8680531d1841ee",
+    "sha256": "dd98a73a1a85b8d163791ccb72c22c43744c9fd7a5f8a71ecf8680531d1841ee",
+    "metadata": {
+      "toolId": "viz.histogram",
+      "toolVersion": "0.1.0",
+      "adapterVersion": "0.1.0",
+      "inputHashes": [
+        "44478dc51f50a5de74d429948b8a59fb770c9bfb2ea800194ca52463dcf6bd3f"
+      ],
+      "paramsHash": "7bc535117b4e5827821267b7b7440ed76c38ee57bf1dda28b5107078b1270c78",
+      "profileId": null,
+      "recipeId": null,
+      "reportId": null,
+      "createdAt": "2026-07-06T04:36:05.072963+00:00",
+      "provenance": {
+        "toolId": "viz.histogram",
+        "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+        "planId": "plan_334f21237d9b4dcc842c54b2",
+        "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+        "planSource": "llm"
+      },
+      "storageProvider": "local",
+      "bucket": null
+    },
+    "planId": "plan_334f21237d9b4dcc842c54b2",
+    "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+    "provenance": {
+      "toolId": "viz.histogram",
+      "toolCallId": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "planId": "plan_334f21237d9b4dcc842c54b2",
+      "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+      "planSource": "llm"
+    }
+  }
+]

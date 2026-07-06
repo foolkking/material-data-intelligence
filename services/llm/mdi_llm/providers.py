@@ -103,10 +103,10 @@ class MockLLMProvider:
             plan = _mock_correlation_plan(request, tools, data_profile=data_profile)
         elif _should_generate_distribution_summary(request, tools, data_profile):
             plan = _mock_distribution_summary_plan(request, tools, data_profile=data_profile)
-        elif _should_generate_histogram(request, tools, data_profile):
-            plan = _mock_histogram_plan(request, tools, data_profile=data_profile)
         elif _should_generate_composition_summary(request, tools, data_profile):
             plan = _mock_composition_summary_plan(request, tools, data_profile=data_profile)
+        elif _should_generate_histogram(request, tools, data_profile):
+            plan = _mock_histogram_plan(request, tools, data_profile=data_profile)
         elif _should_generate_numeric_summary(request, tools, data_profile):
             plan = _mock_numeric_summary_plan(request, tools, data_profile=data_profile)
         else:

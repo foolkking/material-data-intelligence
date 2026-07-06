@@ -1,0 +1,242 @@
+{
+  "schemaVersion": "0.1",
+  "phase": "10A-2",
+  "generatedAt": "2026-07-06T05:15:33.768374+00:00",
+  "stats": {
+    "total_cases": 6,
+    "pass": 6,
+    "partial": 0,
+    "fail": 0,
+    "uses_real_llm": false,
+    "uses_mock_planner": true
+  },
+  "cases": [
+    {
+      "case_name": "matpes_histogram",
+      "source_case_id": "matpes_atomic_energies_csv",
+      "adapter": "viz.histogram",
+      "verdict": "PASS",
+      "dataset_id": "dataset_0008",
+      "job_id": "job_d287f0004848447681c53e42",
+      "plan_id": "plan_5715df36c22b4a2c8ad298b4",
+      "plan_hash": "f57a525f860fca5d2a147b100a2ac92ff19a44dea4c591f5600daabb44d12763",
+      "screenshots": [
+        "screenshots/01_upload_profile.png",
+        "screenshots/02_chat_plan_preview.png",
+        "screenshots/03_agent_process_completed.png",
+        "screenshots/04_results_export.png",
+        "screenshots/05_developer_audit_redacted.png"
+      ],
+      "api_captures": [
+        "api_redacted/upload_response.json",
+        "api_redacted/profile_response.json",
+        "api_redacted/provider_resolve_response.json",
+        "api_redacted/planner_preview_response.json",
+        "api_redacted/planner_validate_response.json",
+        "api_redacted/planner_job_response.json",
+        "api_redacted/events_response.json",
+        "api_redacted/tool_calls_response.json",
+        "api_redacted/artifacts_response.json",
+        "api_redacted/result_response.json"
+      ],
+      "evidence_level": "browser_api_artifact",
+      "uses_real_llm": false,
+      "uses_mock_planner": true,
+      "artifacts": [
+        "histogram.json",
+        "histogram.html",
+        "summary.md",
+        "recipe.json"
+      ]
+    },
+    {
+      "case_name": "matpes_scatter",
+      "source_case_id": "matpes_atomic_energies_csv",
+      "adapter": "viz.scatter",
+      "verdict": "PASS",
+      "dataset_id": "dataset_0007",
+      "job_id": "job_67db9db18f044a638f580f41",
+      "plan_id": "plan_be9e1d0fdd524972bf6b68c8",
+      "plan_hash": "b01da1ccc125511100c15812f4d22f1545af08c935cdbd9f37527cddcb20712b",
+      "screenshots": [
+        "screenshots/01_upload_profile.png",
+        "screenshots/02_chat_plan_preview.png",
+        "screenshots/03_agent_process_completed.png",
+        "screenshots/04_results_export.png",
+        "screenshots/05_developer_audit_redacted.png"
+      ],
+      "api_captures": [
+        "api_redacted/upload_response.json",
+        "api_redacted/profile_response.json",
+        "api_redacted/provider_resolve_response.json",
+        "api_redacted/planner_preview_response.json",
+        "api_redacted/planner_validate_response.json",
+        "api_redacted/planner_job_response.json",
+        "api_redacted/events_response.json",
+        "api_redacted/tool_calls_response.json",
+        "api_redacted/artifacts_response.json",
+        "api_redacted/result_response.json"
+      ],
+      "evidence_level": "browser_api_artifact",
+      "uses_real_llm": false,
+      "uses_mock_planner": true,
+      "artifacts": [
+        "scatter.json",
+        "scatter.html",
+        "summary.md",
+        "recipe.json"
+      ]
+    },
+    {
+      "case_name": "ward_composition_summary",
+      "source_case_id": "ward_metallic_glasses_csv_xz",
+      "adapter": "composition.summary",
+      "verdict": "PASS",
+      "dataset_id": "dataset_0001",
+      "job_id": "job_b7d2f69b76e7431f96e3d85e",
+      "plan_id": "plan_f6c98d2d2835438689364ddf",
+      "plan_hash": "4379e3b712e24b182f3d601b7ac58990da7dd74d461cb656570fb751ce5a77c0",
+      "screenshots": [
+        "screenshots/01_upload_profile.png",
+        "screenshots/02_chat_plan_preview.png",
+        "screenshots/03_agent_process_completed.png",
+        "screenshots/04_results_export.png",
+        "screenshots/05_developer_audit_redacted.png"
+      ],
+      "api_captures": [
+        "api_redacted/upload_response.json",
+        "api_redacted/profile_response.json",
+        "api_redacted/provider_resolve_response.json",
+        "api_redacted/planner_preview_response.json",
+        "api_redacted/planner_validate_response.json",
+        "api_redacted/planner_job_response.json",
+        "api_redacted/events_response.json",
+        "api_redacted/tool_calls_response.json",
+        "api_redacted/artifacts_response.json",
+        "api_redacted/result_response.json"
+      ],
+      "evidence_level": "browser_api_artifact",
+      "uses_real_llm": false,
+      "uses_mock_planner": true,
+      "artifacts": [
+        "composition_summary.json",
+        "summary.md",
+        "recipe.json"
+      ]
+    },
+    {
+      "case_name": "ward_correlation",
+      "source_case_id": "ward_metallic_glasses_csv_xz",
+      "adapter": "viz.correlation",
+      "verdict": "PASS",
+      "dataset_id": "dataset_0011",
+      "job_id": "job_f3faed1162134846b4c8c48f",
+      "plan_id": "plan_b97cba0c2fd249cfac00cfca",
+      "plan_hash": "f4334204fd416cfdffbd0d81130575369819d6725f99a999fc69801856d13a4a",
+      "screenshots": [
+        "screenshots/01_upload_profile.png",
+        "screenshots/02_chat_plan_preview.png",
+        "screenshots/03_agent_process_completed.png",
+        "screenshots/04_results_export.png",
+        "screenshots/05_developer_audit_redacted.png"
+      ],
+      "api_captures": [
+        "api_redacted/upload_response.json",
+        "api_redacted/profile_response.json",
+        "api_redacted/provider_resolve_response.json",
+        "api_redacted/planner_preview_response.json",
+        "api_redacted/planner_validate_response.json",
+        "api_redacted/planner_job_response.json",
+        "api_redacted/events_response.json",
+        "api_redacted/tool_calls_response.json",
+        "api_redacted/artifacts_response.json",
+        "api_redacted/result_response.json"
+      ],
+      "evidence_level": "browser_api_artifact",
+      "uses_real_llm": false,
+      "uses_mock_planner": true,
+      "artifacts": [
+        "correlation_matrix.json",
+        "correlation_heatmap.json",
+        "correlation_heatmap.html",
+        "summary.md",
+        "recipe.json"
+      ]
+    },
+    {
+      "case_name": "ward_distribution",
+      "source_case_id": "ward_metallic_glasses_csv_xz",
+      "adapter": "table.distribution_summary",
+      "verdict": "PASS",
+      "dataset_id": "dataset_0009",
+      "job_id": "job_bcaab519b99f43159f09cef0",
+      "plan_id": "plan_ad845d07ccf04029943512e7",
+      "plan_hash": "29975b163e08a59ee0eb16f45963230efd61cb80a44f4f16ea3e3d32af0bd00e",
+      "screenshots": [
+        "screenshots/01_upload_profile.png",
+        "screenshots/02_chat_plan_preview.png",
+        "screenshots/03_agent_process_completed.png",
+        "screenshots/04_results_export.png",
+        "screenshots/05_developer_audit_redacted.png"
+      ],
+      "api_captures": [
+        "api_redacted/upload_response.json",
+        "api_redacted/profile_response.json",
+        "api_redacted/provider_resolve_response.json",
+        "api_redacted/planner_preview_response.json",
+        "api_redacted/planner_validate_response.json",
+        "api_redacted/planner_job_response.json",
+        "api_redacted/events_response.json",
+        "api_redacted/tool_calls_response.json",
+        "api_redacted/artifacts_response.json",
+        "api_redacted/result_response.json"
+      ],
+      "evidence_level": "browser_api_artifact",
+      "uses_real_llm": false,
+      "uses_mock_planner": true,
+      "artifacts": [
+        "distribution_summary.json",
+        "summary.md",
+        "recipe.json"
+      ]
+    },
+    {
+      "case_name": "ward_histogram",
+      "source_case_id": "ward_metallic_glasses_csv_xz",
+      "adapter": "viz.histogram",
+      "verdict": "PASS",
+      "dataset_id": "dataset_0010",
+      "job_id": "job_e4b44a680fb24fb6bab9c69b",
+      "plan_id": "plan_334f21237d9b4dcc842c54b2",
+      "plan_hash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+      "screenshots": [
+        "screenshots/01_upload_profile.png",
+        "screenshots/02_chat_plan_preview.png",
+        "screenshots/03_agent_process_completed.png",
+        "screenshots/04_results_export.png",
+        "screenshots/05_developer_audit_redacted.png"
+      ],
+      "api_captures": [
+        "api_redacted/upload_response.json",
+        "api_redacted/profile_response.json",
+        "api_redacted/provider_resolve_response.json",
+        "api_redacted/planner_preview_response.json",
+        "api_redacted/planner_validate_response.json",
+        "api_redacted/planner_job_response.json",
+        "api_redacted/events_response.json",
+        "api_redacted/tool_calls_response.json",
+        "api_redacted/artifacts_response.json",
+        "api_redacted/result_response.json"
+      ],
+      "evidence_level": "browser_api_artifact",
+      "uses_real_llm": false,
+      "uses_mock_planner": true,
+      "artifacts": [
+        "histogram.json",
+        "histogram.html",
+        "summary.md",
+        "recipe.json"
+      ]
+    }
+  ]
+}

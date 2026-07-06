@@ -1,0 +1,58 @@
+{
+  "case_name": "ward_correlation",
+  "job_id": "job_f3faed1162134846b4c8c48f",
+  "plan_id": "plan_b97cba0c2fd249cfac00cfca",
+  "plan_hash": "f4334204fd416cfdffbd0d81130575369819d6725f99a999fc69801856d13a4a",
+  "artifacts": [
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-table_json",
+      "name": "correlation_matrix.json",
+      "localPath": "artifacts/correlation_matrix.json",
+      "type": "table_json",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/correlation_matrix.json",
+      "sha256": "3d0af4aa1bb397053a502451ba05c8d637c56d5393551aaacbb1a3ce3ce070fa",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-plotly_json",
+      "name": "correlation_heatmap.json",
+      "localPath": "artifacts/correlation_heatmap.json",
+      "type": "plotly_json",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/correlation_heatmap.json",
+      "sha256": "abf09f667044f3104edc60da2eead51d4b28f1ee37fabdbc17990d4c2215a4ca",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-plotly_html",
+      "name": "correlation_heatmap.html",
+      "localPath": "artifacts/correlation_heatmap.html",
+      "type": "plotly_html",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/correlation_heatmap.html",
+      "sha256": "d3b576a690bb34241183709ca918c2ffa2445aac58abbfb4c03eb8224e7aaa4d",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-summary_md",
+      "name": "summary.md",
+      "localPath": "artifacts/summary.md",
+      "type": "summary_md",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/summary.md",
+      "sha256": "62f31a08b1d56fe1f446066dcb6f79229c15c1a1398f7c28e3da211ac70a0533",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-recipe_json",
+      "name": "recipe.json",
+      "localPath": "artifacts/recipe.json",
+      "type": "recipe_json",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/recipe.json",
+      "sha256": "360f570f28fe193ed50b39abc51df7350c33027ce023ab8aa26fb0fa07a2ef66",
+      "verified": true
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "case_name": "matpes_histogram",
+  "source_case_id": "matpes_atomic_energies_csv",
+  "benchmark_case_type": "direct_uploadable_data",
+  "benchmark_verification_status": "DIRECT_VERIFIED",
+  "adapter": "viz.histogram",
+  "prompt": "请查看 MatPES 表格中 r2SCAN 原子能量数据的分布，并生成直方图 histogram。",
+  "dataset_id": "dataset_0008",
+  "profile_id": "profile_dataset_0008_v1",
+  "plan_id": "plan_5715df36c22b4a2c8ad298b4",
+  "plan_hash": "f57a525f860fca5d2a147b100a2ac92ff19a44dea4c591f5600daabb44d12763",
+  "job_id": "job_d287f0004848447681c53e42",
+  "job_status": "completed",
+  "plan_params": {
+    "column": "r2SCAN",
+    "bins": 20,
+    "title": "r2SCAN distribution"
+  },
+  "tool_calls": [
+    {
+      "id": "call_job_d287f0004848447681c53e42_step_001",
+      "jobId": "job_d287f0004848447681c53e42",
+      "stepId": "step_001",
+      "toolId": "viz.histogram",
+      "status": "completed",
+      "idempotencyKey": "job_d287f0004848447681c53e42:step_001",
+      "params": {
+        "column": "r2SCAN",
+        "bins": 20,
+        "title": "r2SCAN distribution"
+      },
+      "attempt": 1,
+      "artifactIds": [
+        "call_job_d287f0004848447681c53e42_step_001-plotly_json",
+        "call_job_d287f0004848447681c53e42_step_001-plotly_html",
+        "call_job_d287f0004848447681c53e42_step_001-summary_md",
+        "call_job_d287f0004848447681c53e42_step_001-recipe_json"
+      ],
+      "planId": "plan_5715df36c22b4a2c8ad298b4",
+      "planHash": "f57a525f860fca5d2a147b100a2ac92ff19a44dea4c591f5600daabb44d12763",
+      "inputSummary": "Params: bins, column, title",
+      "outputSummary": "4 artifact(s)"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_d287f0004848447681c53e42_step_001-plotly_json",
+      "name": "histogram.json",
+      "localPath": "artifacts/histogram.json",
+      "type": "plotly_json",
+      "sourceTool": "call_job_d287f0004848447681c53e42_step_001",
+      "storageKey": "projects/project_0001/jobs/job_d287f0004848447681c53e42/tool_calls/call_job_d287f0004848447681c53e42_step_001/histogram.json",
+      "sha256": "0f45731643efb8f42893ea679754965f772e442bcc3f1d65c0d480bc7386d675",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_d287f0004848447681c53e42_step_001-plotly_html",
+      "name": "histogram.html",
+      "localPath": "artifacts/histogram.html",
+      "type": "plotly_html",
+      "sourceTool": "call_job_d287f0004848447681c53e42_step_001",
+      "storageKey": "projects/project_0001/jobs/job_d287f0004848447681c53e42/tool_calls/call_job_d287f0004848447681c53e42_step_001/histogram.html",
+      "sha256": "40ca279a7d7db3a05107df4557465905267c4bcd26d71a6cd9e957176c4b805c",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_d287f0004848447681c53e42_step_001-summary_md",
+      "name": "summary.md",
+      "localPath": "artifacts/summary.md",
+      "type": "summary_md",
+      "sourceTool": "call_job_d287f0004848447681c53e42_step_001",
+      "storageKey": "projects/project_0001/jobs/job_d287f0004848447681c53e42/tool_calls/call_job_d287f0004848447681c53e42_step_001/summary.md",
+      "sha256": "a020372096bfd3fd30b328800ca57b7b833641ade5fd260345d8f68ec7ad93d8",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_d287f0004848447681c53e42_step_001-recipe_json",
+      "name": "recipe.json",
+      "localPath": "artifacts/recipe.json",
+      "type": "recipe_json",
+      "sourceTool": "call_job_d287f0004848447681c53e42_step_001",
+      "storageKey": "projects/project_0001/jobs/job_d287f0004848447681c53e42/tool_calls/call_job_d287f0004848447681c53e42_step_001/recipe.json",
+      "sha256": "37291af93d435044efd1e9681d3f28ca382dd67f6f0216048bb9d0086f23adbe",
+      "verified": true
+    }
+  ],
+  "screenshots": [
+    "screenshots/01_upload_profile.png",
+    "screenshots/02_chat_plan_preview.png",
+    "screenshots/03_agent_process_completed.png",
+    "screenshots/04_results_export.png",
+    "screenshots/05_developer_audit_redacted.png"
+  ],
+  "api_captures": [
+    "api_redacted/upload_response.json",
+    "api_redacted/profile_response.json",
+    "api_redacted/provider_resolve_response.json",
+    "api_redacted/planner_preview_response.json",
+    "api_redacted/planner_validate_response.json",
+    "api_redacted/planner_job_response.json",
+    "api_redacted/events_response.json",
+    "api_redacted/tool_calls_response.json",
+    "api_redacted/artifacts_response.json",
+    "api_redacted/result_response.json"
+  ],
+  "assertions": {
+    "passed": [
+      "prompt does not contain y_true/y_pred",
+      "Plan Preview tool is viz.histogram",
+      "toolCall viz.histogram completed",
+      "params.column == r2SCAN",
+      "job completed",
+      "timeline has plan.loaded",
+      "timeline has data.loaded",
+      "timeline has tool.completed",
+      "timeline has job.completed",
+      "histogram.json artifact exists",
+      "histogram.json.chartType == histogram",
+      "histogram.json.column == r2SCAN",
+      "histogram.json.count > 0",
+      "histogram.json.binCounts exists",
+      "summary.md artifact exists",
+      "recipe.json artifact exists"
+    ],
+    "failed": []
+  },
+  "evidence_level": "browser_api_artifact",
+  "uses_real_llm": false,
+  "uses_mock_planner": true,
+  "redaction_status": "passed",
+  "verdict": "PASS"
+}

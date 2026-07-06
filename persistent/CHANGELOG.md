@@ -2,6 +2,17 @@
 
 ## 2026-07-06
 
+### Phase 10A-2 Browser/API Evidence for First Batch Adapters
+
+- Added project evidence under `docs/phase10a/browser_api_evidence/` for six scoped first-batch adapter scenarios: MatPES scatter, MatPES histogram, Ward distribution summary, Ward histogram, Ward correlation, and Ward composition summary.
+- Each scenario includes redacted API captures, actual downloaded artifacts, Phase 9C UI screenshots, execution logs, platform result summaries, artifact manifests, and evidence manifests.
+- Evidence totals: 6 PASS scenarios, 60 API capture JSON files, 30 PNG screenshots, and 23 artifact files.
+- Security scan over the evidence directory found no `sk-`, `Bearer`, `Authorization`, `MDI_LLM_API_KEY`, `api_key`, `access_token`, or `refresh_token` hits.
+- Updated `viz.scatter` and `viz.histogram` artifact JSON output so benchmark metadata such as `chartType`, `xColumn`, `yColumn`, `pointCount`, `column`, and `binCounts` is present at the top level, with the Plotly figure retained under `figure`.
+- Updated Mock Planner routing so composition distribution prompts route to `composition.summary` before the broader histogram/distribution route.
+- No real LLM was used; Mock Planner remained the evidence path and default CI remains real-LLM-free.
+- No QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs` persistence/enqueue semantics, PlanValidator bypass, or Tool Registry execution boundary changed.
+
 ### Phase 10A-1 First Batch Adapter Implementation
 
 - Added the first official-examples adapter batch for the two `DIRECT_VERIFIED` direct cases only: MatPES and Ward metallic glasses.

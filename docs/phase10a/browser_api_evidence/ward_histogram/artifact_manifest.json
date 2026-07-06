@@ -1,0 +1,48 @@
+{
+  "case_name": "ward_histogram",
+  "job_id": "job_e4b44a680fb24fb6bab9c69b",
+  "plan_id": "plan_334f21237d9b4dcc842c54b2",
+  "plan_hash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+  "artifacts": [
+    {
+      "artifactId": "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_json",
+      "name": "histogram.json",
+      "localPath": "artifacts/histogram.json",
+      "type": "plotly_json",
+      "sourceTool": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/histogram.json",
+      "sha256": "1675cd2d3c6cd2f9fa3af869206fef34da5a72437e2f7403cd71ccd7ec9c54ac",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_html",
+      "name": "histogram.html",
+      "localPath": "artifacts/histogram.html",
+      "type": "plotly_html",
+      "sourceTool": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/histogram.html",
+      "sha256": "e94ccad3a860c969f82323e463c5f847dfda0ec27a93e5e863b97f25c2374aca",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_e4b44a680fb24fb6bab9c69b_step_001-summary_md",
+      "name": "summary.md",
+      "localPath": "artifacts/summary.md",
+      "type": "summary_md",
+      "sourceTool": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/summary.md",
+      "sha256": "1cef2b97d5d210f119de0ff57e393cbaad28f70664e896dfdd217ee8c16ab194",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_e4b44a680fb24fb6bab9c69b_step_001-recipe_json",
+      "name": "recipe.json",
+      "localPath": "artifacts/recipe.json",
+      "type": "recipe_json",
+      "sourceTool": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+      "storageKey": "projects/project_0001/jobs/job_e4b44a680fb24fb6bab9c69b/tool_calls/call_job_e4b44a680fb24fb6bab9c69b_step_001/recipe.json",
+      "sha256": "dd98a73a1a85b8d163791ccb72c22c43744c9fd7a5f8a71ecf8680531d1841ee",
+      "verified": true
+    }
+  ]
+}

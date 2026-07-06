@@ -1,0 +1,149 @@
+{
+  "case_name": "ward_correlation",
+  "source_case_id": "ward_metallic_glasses_csv_xz",
+  "benchmark_case_type": "direct_uploadable_data",
+  "benchmark_verification_status": "DIRECT_VERIFIED",
+  "adapter": "viz.correlation",
+  "prompt": "请分析 Ward metallic glasses 表格中数值字段之间的相关性，并生成相关矩阵 correlation matrix。",
+  "dataset_id": "dataset_0011",
+  "profile_id": "profile_dataset_0011_v1",
+  "plan_id": "plan_b97cba0c2fd249cfac00cfca",
+  "plan_hash": "f4334204fd416cfdffbd0d81130575369819d6725f99a999fc69801856d13a4a",
+  "job_id": "job_f3faed1162134846b4c8c48f",
+  "job_status": "completed",
+  "plan_params": {
+    "numericColumns": [
+      "D_max",
+      "dTx"
+    ],
+    "method": "pearson",
+    "minNonNullCount": 2
+  },
+  "tool_calls": [
+    {
+      "id": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "jobId": "job_f3faed1162134846b4c8c48f",
+      "stepId": "step_001",
+      "toolId": "viz.correlation",
+      "status": "completed",
+      "idempotencyKey": "job_f3faed1162134846b4c8c48f:step_001",
+      "params": {
+        "numericColumns": [
+          "D_max",
+          "dTx"
+        ],
+        "method": "pearson",
+        "minNonNullCount": 2
+      },
+      "attempt": 1,
+      "artifactIds": [
+        "call_job_f3faed1162134846b4c8c48f_step_001-table_json",
+        "call_job_f3faed1162134846b4c8c48f_step_001-plotly_json",
+        "call_job_f3faed1162134846b4c8c48f_step_001-plotly_html",
+        "call_job_f3faed1162134846b4c8c48f_step_001-summary_md",
+        "call_job_f3faed1162134846b4c8c48f_step_001-recipe_json"
+      ],
+      "planId": "plan_b97cba0c2fd249cfac00cfca",
+      "planHash": "f4334204fd416cfdffbd0d81130575369819d6725f99a999fc69801856d13a4a",
+      "inputSummary": "Params: method, minNonNullCount, numericColumns",
+      "outputSummary": "5 artifact(s)"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-table_json",
+      "name": "correlation_matrix.json",
+      "localPath": "artifacts/correlation_matrix.json",
+      "type": "table_json",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/correlation_matrix.json",
+      "sha256": "3d0af4aa1bb397053a502451ba05c8d637c56d5393551aaacbb1a3ce3ce070fa",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-plotly_json",
+      "name": "correlation_heatmap.json",
+      "localPath": "artifacts/correlation_heatmap.json",
+      "type": "plotly_json",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/correlation_heatmap.json",
+      "sha256": "abf09f667044f3104edc60da2eead51d4b28f1ee37fabdbc17990d4c2215a4ca",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-plotly_html",
+      "name": "correlation_heatmap.html",
+      "localPath": "artifacts/correlation_heatmap.html",
+      "type": "plotly_html",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/correlation_heatmap.html",
+      "sha256": "d3b576a690bb34241183709ca918c2ffa2445aac58abbfb4c03eb8224e7aaa4d",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-summary_md",
+      "name": "summary.md",
+      "localPath": "artifacts/summary.md",
+      "type": "summary_md",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/summary.md",
+      "sha256": "62f31a08b1d56fe1f446066dcb6f79229c15c1a1398f7c28e3da211ac70a0533",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_f3faed1162134846b4c8c48f_step_001-recipe_json",
+      "name": "recipe.json",
+      "localPath": "artifacts/recipe.json",
+      "type": "recipe_json",
+      "sourceTool": "call_job_f3faed1162134846b4c8c48f_step_001",
+      "storageKey": "projects/project_0001/jobs/job_f3faed1162134846b4c8c48f/tool_calls/call_job_f3faed1162134846b4c8c48f_step_001/recipe.json",
+      "sha256": "360f570f28fe193ed50b39abc51df7350c33027ce023ab8aa26fb0fa07a2ef66",
+      "verified": true
+    }
+  ],
+  "screenshots": [
+    "screenshots/01_upload_profile.png",
+    "screenshots/02_chat_plan_preview.png",
+    "screenshots/03_agent_process_completed.png",
+    "screenshots/04_results_export.png",
+    "screenshots/05_developer_audit_redacted.png"
+  ],
+  "api_captures": [
+    "api_redacted/upload_response.json",
+    "api_redacted/profile_response.json",
+    "api_redacted/provider_resolve_response.json",
+    "api_redacted/planner_preview_response.json",
+    "api_redacted/planner_validate_response.json",
+    "api_redacted/planner_job_response.json",
+    "api_redacted/events_response.json",
+    "api_redacted/tool_calls_response.json",
+    "api_redacted/artifacts_response.json",
+    "api_redacted/result_response.json"
+  ],
+  "assertions": {
+    "passed": [
+      "prompt does not contain y_true/y_pred",
+      "Plan Preview tool is viz.correlation",
+      "toolCall viz.correlation completed",
+      "job completed",
+      "timeline has plan.loaded",
+      "timeline has data.loaded",
+      "timeline has tool.completed",
+      "timeline has job.completed",
+      "does not call ml.basic_metrics",
+      "no D_max vs dTx regression metrics",
+      "correlation_matrix.json artifact exists",
+      "correlation_matrix.json.columns >= 2",
+      "correlation_matrix.json.matrix exists",
+      "correlation_heatmap.json artifact exists",
+      "summary.md artifact exists",
+      "recipe.json artifact exists"
+    ],
+    "failed": []
+  },
+  "evidence_level": "browser_api_artifact",
+  "uses_real_llm": false,
+  "uses_mock_planner": true,
+  "redaction_status": "passed",
+  "verdict": "PASS"
+}

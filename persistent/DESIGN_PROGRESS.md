@@ -1,5 +1,17 @@
 # DESIGN_PROGRESS
 
+## 2026-07-06 Phase 10A-2 Browser/API Evidence for First Batch Adapters
+
+- Added project-local evidence under `docs/phase10a/browser_api_evidence/` for the Phase 10A-1 first-batch adapters.
+- Verified six scoped official direct-case scenarios with evidence level `browser_api_artifact`: MatPES scatter, MatPES histogram, Ward distribution summary, Ward histogram, Ward correlation, and Ward composition summary.
+- Each scenario has redacted API captures, downloaded platform artifacts, browser-rendered Phase 9C UI screenshots, execution logs, platform summaries, artifact manifests, and evidence manifests.
+- Evidence totals: 6 PASS scenarios, 60 redacted API capture JSON files, 30 PNG screenshots, and 23 artifact files. Security scanning found no `sk-`, `Bearer`, `Authorization`, `MDI_LLM_API_KEY`, `api_key`, `access_token`, or `refresh_token` hits in the evidence directory.
+- Fixed the `viz.scatter` and `viz.histogram` Plotly JSON artifact contract so `scatter.json` / `histogram.json` include top-level chart metadata required by the benchmark evidence while retaining nested Plotly figure payloads.
+- Tightened Mock Planner routing so composition distribution prompts route to `composition.summary` before the generic histogram/distribution branch.
+- No real LLM was used for Phase 10A-2 evidence. The default CI path remains real-LLM-free.
+- Phase 8B persisted-plan exact execution, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs` validate/persist/enqueue semantics, and Phase 9D live LLM gating remain unchanged.
+- Remaining boundaries: the other 59 official examples are not verified by this evidence phase; browser evidence is presentation/demo evidence and is not a default CI gate; multi-step DAG/data-dependency scheduling remains future work.
+
 ## 2026-07-06 Phase 10A-1 First Batch Adapter Implementation
 
 - Implemented the first adapter batch for the two `DIRECT_VERIFIED` official pymatviz direct cases only: `matpes_atomic_energies_csv` and `ward_metallic_glasses_csv_xz`.

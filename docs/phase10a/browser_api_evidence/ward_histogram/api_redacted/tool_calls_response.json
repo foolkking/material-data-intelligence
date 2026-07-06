@@ -1,0 +1,26 @@
+[
+  {
+    "id": "call_job_e4b44a680fb24fb6bab9c69b_step_001",
+    "jobId": "job_e4b44a680fb24fb6bab9c69b",
+    "stepId": "step_001",
+    "toolId": "viz.histogram",
+    "status": "completed",
+    "idempotencyKey": "job_e4b44a680fb24fb6bab9c69b:step_001",
+    "params": {
+      "column": "D_max",
+      "bins": 20,
+      "title": "D_max distribution"
+    },
+    "attempt": 1,
+    "artifactIds": [
+      "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_json",
+      "call_job_e4b44a680fb24fb6bab9c69b_step_001-plotly_html",
+      "call_job_e4b44a680fb24fb6bab9c69b_step_001-summary_md",
+      "call_job_e4b44a680fb24fb6bab9c69b_step_001-recipe_json"
+    ],
+    "planId": "plan_334f21237d9b4dcc842c54b2",
+    "planHash": "9188c6c8098fe2bc5253040f1959228eb99c9a2403cade6af7b00ca67ae2681f",
+    "inputSummary": "Params: bins, column, title",
+    "outputSummary": "4 artifact(s)"
+  }
+]

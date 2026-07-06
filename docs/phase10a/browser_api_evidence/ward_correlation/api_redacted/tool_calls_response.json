@@ -1,0 +1,30 @@
+[
+  {
+    "id": "call_job_f3faed1162134846b4c8c48f_step_001",
+    "jobId": "job_f3faed1162134846b4c8c48f",
+    "stepId": "step_001",
+    "toolId": "viz.correlation",
+    "status": "completed",
+    "idempotencyKey": "job_f3faed1162134846b4c8c48f:step_001",
+    "params": {
+      "numericColumns": [
+        "D_max",
+        "dTx"
+      ],
+      "method": "pearson",
+      "minNonNullCount": 2
+    },
+    "attempt": 1,
+    "artifactIds": [
+      "call_job_f3faed1162134846b4c8c48f_step_001-table_json",
+      "call_job_f3faed1162134846b4c8c48f_step_001-plotly_json",
+      "call_job_f3faed1162134846b4c8c48f_step_001-plotly_html",
+      "call_job_f3faed1162134846b4c8c48f_step_001-summary_md",
+      "call_job_f3faed1162134846b4c8c48f_step_001-recipe_json"
+    ],
+    "planId": "plan_b97cba0c2fd249cfac00cfca",
+    "planHash": "f4334204fd416cfdffbd0d81130575369819d6725f99a999fc69801856d13a4a",
+    "inputSummary": "Params: method, minNonNullCount, numericColumns",
+    "outputSummary": "5 artifact(s)"
+  }
+]

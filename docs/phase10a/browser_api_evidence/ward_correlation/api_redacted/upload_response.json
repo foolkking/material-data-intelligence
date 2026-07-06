@@ -1,0 +1,117 @@
+{
+  "id": "dataset_0011",
+  "datasetId": "dataset_0011",
+  "projectId": "project_0001",
+  "name": "phase10a2_ward_correlation_1783312565296",
+  "status": "profile_ready",
+  "fileCount": 1,
+  "objectCount": 1,
+  "profileId": "profile_dataset_0011_v1",
+  "normalizedExports": [
+    {
+      "objectId": "obj_dataframe_dd5037828e27",
+      "storageKey": "projects/project_0001/datasets/dataset_0011/normalized/obj_dataframe_dd5037828e27/data.json",
+      "metadataKey": "projects/project_0001/datasets/dataset_0011/normalized/obj_dataframe_dd5037828e27/metadata.json",
+      "contentHash": "809afc34f77d4e944732565ec714cbd88e2007c5e65c1bae84ed8b108be61ef2"
+    }
+  ],
+  "createdAt": "2026-07-06T04:36:05.509121+00:00",
+  "files": [
+    {
+      "fileId": "file_001",
+      "name": "ward-metallic-glasses.csv",
+      "detectedFormat": "csv",
+      "status": "success",
+      "objectCount": 1,
+      "errorCode": null
+    }
+  ],
+  "profile": {
+    "schemaVersion": "0.1",
+    "profileId": "profile_dataset_0011_v1",
+    "datasetId": "dataset_0011",
+    "version": "1",
+    "datasetType": "unknown",
+    "files": [
+      {
+        "fileId": "file_001",
+        "fileName": "ward-metallic-glasses.csv",
+        "detectedFormat": "csv",
+        "parseStatus": "success"
+      }
+    ],
+    "objects": [
+      {
+        "objectId": "obj_dataframe_dd5037828e27",
+        "objectType": "DataFrame",
+        "count": 1,
+        "sourceFileIds": [
+          "file_001"
+        ],
+        "periodicity": null
+      }
+    ],
+    "structureSummary": null,
+    "tableSummary": {
+      "nRows": 8415,
+      "nColumns": 7,
+      "columns": [
+        {
+          "name": "material_id",
+          "dtype": "string",
+          "inferredRole": "structure_id",
+          "missingCount": 0,
+          "uniqueCount": 8415
+        },
+        {
+          "name": "composition",
+          "dtype": "string",
+          "inferredRole": "formula",
+          "missingCount": 0,
+          "uniqueCount": 6839
+        },
+        {
+          "name": "gfa_type",
+          "dtype": "string",
+          "inferredRole": null,
+          "missingCount": 1971,
+          "uniqueCount": 2
+        },
+        {
+          "name": "D_max",
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 968,
+          "uniqueCount": 40
+        },
+        {
+          "name": "dTx",
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 7669,
+          "uniqueCount": 142
+        },
+        {
+          "name": "Unnamed: 4",
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 8142,
+          "uniqueCount": 187
+        },
+        {
+          "name": "comment",
+          "dtype": "string",
+          "inferredRole": null,
+          "missingCount": 8408,
+          "uniqueCount": 2
+        }
+      ],
+      "inferredTask": "unknown"
+    },
+    "phononSummary": null,
+    "trajectorySummary": null,
+    "qualityIssues": [],
+    "recommendedTasks": [],
+    "createdAt": "2026-07-06T04:36:05.411126+00:00"
+  }
+}

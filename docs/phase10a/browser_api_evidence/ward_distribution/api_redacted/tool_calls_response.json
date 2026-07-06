@@ -1,0 +1,32 @@
+[
+  {
+    "id": "call_job_bcaab519b99f43159f09cef0_step_001",
+    "jobId": "job_bcaab519b99f43159f09cef0",
+    "stepId": "step_001",
+    "toolId": "table.distribution_summary",
+    "status": "completed",
+    "idempotencyKey": "job_bcaab519b99f43159f09cef0:step_001",
+    "params": {
+      "maxCategories": 12,
+      "numericColumns": [
+        "D_max",
+        "dTx"
+      ],
+      "categoricalColumns": [
+        "material_id",
+        "composition",
+        "gfa_type"
+      ]
+    },
+    "attempt": 1,
+    "artifactIds": [
+      "call_job_bcaab519b99f43159f09cef0_step_001-table_json",
+      "call_job_bcaab519b99f43159f09cef0_step_001-summary_md",
+      "call_job_bcaab519b99f43159f09cef0_step_001-recipe_json"
+    ],
+    "planId": "plan_ad845d07ccf04029943512e7",
+    "planHash": "29975b163e08a59ee0eb16f45963230efd61cb80a44f4f16ea3e3d32af0bd00e",
+    "inputSummary": "Params: categoricalColumns, maxCategories, numericColumns",
+    "outputSummary": "3 artifact(s)"
+  }
+]

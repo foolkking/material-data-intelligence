@@ -1,5 +1,46 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-091: Phase 10A-2 evidence commits browser/API/artifact proof without making it a CI gate
+
+### Context
+
+Phase 10A-1 implemented the first table and visualization adapter batch for the
+two `DIRECT_VERIFIED` official pymatviz cases. Unit, registry, planner-routing,
+persisted execution, and frontend tests proved the adapters, but the phase did
+not yet provide presentation-grade browser/API/artifact evidence for the new
+outputs.
+
+### Decision
+
+Commit a project-local evidence pack under `docs/phase10a/browser_api_evidence/`
+for the scoped first-batch scenarios:
+
+- MatPES `viz.scatter`
+- MatPES `viz.histogram`
+- Ward `table.distribution_summary`
+- Ward `viz.histogram`
+- Ward `viz.correlation`
+- Ward `composition.summary`
+
+Each scenario stores redacted API captures, downloaded artifacts, screenshots,
+execution logs, result summaries, artifact manifests, and an evidence manifest.
+The evidence pack is documentation/demo evidence and is not a default CI gate.
+Default CI continues to run unit, frontend, and service-backed integration tests
+without real LLM calls.
+
+### Consequences
+
+- First-batch official direct-case adapter outputs now have auditable evidence
+  beyond unit tests.
+- Evidence remains scoped: it does not imply the other 59 official examples are
+  verified.
+- Secret scanning is required before commit; the evidence must not contain API
+  keys, Authorization headers, bearer tokens, or raw secrets.
+- The execution architecture remains unchanged: persisted AnalysisPlans still
+  load through QueueWorkerRuntime and execute through Tool Registry + Adapter.
+- Browser/API evidence can support demos and reports, but CI should not become
+  dependent on screenshots or local browser state.
+
 ## ADR-090: Phase 10A-1 official examples add single-step table and visualization adapters
 
 ### Context

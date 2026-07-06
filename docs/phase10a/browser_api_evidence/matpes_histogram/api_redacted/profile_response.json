@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "0.1",
+  "profileId": "profile_dataset_0008_v1",
+  "datasetId": "dataset_0008",
+  "version": "1",
+  "datasetType": "unknown",
+  "files": [
+    {
+      "fileId": "file_001",
+      "fileName": "2024-10-30-MatPES-atomic-energies.csv",
+      "detectedFormat": "csv",
+      "parseStatus": "success"
+    }
+  ],
+  "objects": [
+    {
+      "objectId": "obj_dataframe_534dcd0221d7",
+      "objectType": "DataFrame",
+      "count": 1,
+      "sourceFileIds": [
+        "file_001"
+      ],
+      "periodicity": null
+    }
+  ],
+  "structureSummary": null,
+  "tableSummary": {
+    "nRows": 89,
+    "nColumns": 3,
+    "columns": [
+      {
+        "name": "element",
+        "dtype": "string",
+        "inferredRole": null,
+        "missingCount": 0,
+        "uniqueCount": 89
+      },
+      {
+        "name": "PBE",
+        "dtype": "number",
+        "inferredRole": null,
+        "missingCount": 0,
+        "uniqueCount": 89
+      },
+      {
+        "name": "r2SCAN",
+        "dtype": "number",
+        "inferredRole": null,
+        "missingCount": 0,
+        "uniqueCount": 89
+      }
+    ],
+    "inferredTask": "unknown"
+  },
+  "phononSummary": null,
+  "trajectorySummary": null,
+  "qualityIssues": [],
+  "recommendedTasks": [],
+  "createdAt": "2026-07-06T04:36:03.400604+00:00"
+}

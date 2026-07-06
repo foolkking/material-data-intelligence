@@ -50,6 +50,16 @@ def test_mock_planner_routes_composition_summary_when_formula_column_exists() ->
     assert plan["steps"][0]["params"]["formulaColumn"] == "composition"
 
 
+def test_mock_planner_routes_composition_distribution_before_histogram() -> None:
+    plan = _mock_plan(
+        "Please summarize the element composition distribution from the composition field.",
+        _ward_profile(),
+    )
+
+    assert plan["steps"][0]["toolId"] == "composition.summary"
+    assert plan["steps"][0]["params"]["formulaColumn"] == "composition"
+
+
 def test_persisted_scatter_plan_executes_exactly_one_tool_call(tmp_path: Path) -> None:
     repos = InMemoryRepositoryBundle.create()
     provider = MockLLMProvider(fixed_plan=_valid_scatter_plan().model_dump(mode="json"))

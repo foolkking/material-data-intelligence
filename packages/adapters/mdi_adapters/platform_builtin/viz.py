@@ -282,7 +282,23 @@ def _export_chart(
         ArtifactType.summary_md,
         ArtifactType.recipe_json,
     }
-    payloads = plotly_payloads(result.figure, list(requested), stem=stem)
+    payloads: list[ArtifactPayload] = []
+    if ArtifactType.plotly_json in requested:
+        payloads.append(
+            ArtifactPayload(
+                artifact_type=ArtifactType.plotly_json,
+                file_name=f"{stem}.json",
+                content=stable_json_dumps({**result.metadata, "figure": result.figure.to_plotly_json()}),
+                media_type="application/json",
+            )
+        )
+    payloads.extend(
+        plotly_payloads(
+            result.figure,
+            [artifact_type for artifact_type in requested if artifact_type != ArtifactType.plotly_json],
+            stem=stem,
+        )
+    )
     payloads.extend(_summary_and_recipe_payloads(adapter, result, requested, title=title))
     return adapter.export_payloads(
         payloads,

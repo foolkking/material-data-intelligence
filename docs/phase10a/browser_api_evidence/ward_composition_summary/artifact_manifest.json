@@ -1,0 +1,38 @@
+{
+  "case_name": "ward_composition_summary",
+  "job_id": "job_b7d2f69b76e7431f96e3d85e",
+  "plan_id": "plan_f6c98d2d2835438689364ddf",
+  "plan_hash": "4379e3b712e24b182f3d601b7ac58990da7dd74d461cb656570fb751ce5a77c0",
+  "artifacts": [
+    {
+      "artifactId": "call_job_b7d2f69b76e7431f96e3d85e_step_001-table_json",
+      "name": "composition_summary.json",
+      "localPath": "artifacts/composition_summary.json",
+      "type": "table_json",
+      "sourceTool": "call_job_b7d2f69b76e7431f96e3d85e_step_001",
+      "storageKey": "projects/project_0001/jobs/job_b7d2f69b76e7431f96e3d85e/tool_calls/call_job_b7d2f69b76e7431f96e3d85e_step_001/composition_summary.json",
+      "sha256": "e16d42b223a3ef0e5dc1ba32eaff11e5e1872bcf3397540abc7bd4919bef88da",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_b7d2f69b76e7431f96e3d85e_step_001-summary_md",
+      "name": "summary.md",
+      "localPath": "artifacts/summary.md",
+      "type": "summary_md",
+      "sourceTool": "call_job_b7d2f69b76e7431f96e3d85e_step_001",
+      "storageKey": "projects/project_0001/jobs/job_b7d2f69b76e7431f96e3d85e/tool_calls/call_job_b7d2f69b76e7431f96e3d85e_step_001/summary.md",
+      "sha256": "4308c1d90b18452e95d98f6cde3005bbe8bd452f0d6c5e0dbea7d2845ce122e0",
+      "verified": true
+    },
+    {
+      "artifactId": "call_job_b7d2f69b76e7431f96e3d85e_step_001-recipe_json",
+      "name": "recipe.json",
+      "localPath": "artifacts/recipe.json",
+      "type": "recipe_json",
+      "sourceTool": "call_job_b7d2f69b76e7431f96e3d85e_step_001",
+      "storageKey": "projects/project_0001/jobs/job_b7d2f69b76e7431f96e3d85e/tool_calls/call_job_b7d2f69b76e7431f96e3d85e_step_001/recipe.json",
+      "sha256": "2bae2623f60e00f0e92323cbb4c59d4a626fcbe983921c3e6074feead4a4fdb7",
+      "verified": true
+    }
+  ]
+}
