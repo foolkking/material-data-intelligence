@@ -1,5 +1,45 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-093: Phase 10C should add lightweight structure summaries before 3D and physics adapters
+
+### Context
+
+Phase 10A established evidence-grade table and general visualization adapters,
+and Phase 10B established evidence-grade composition visualization adapters.
+The remaining official pymatviz structure-related examples are currently
+mapping-only or future-scope rather than direct verified benchmark cases. The
+advanced structure and physics surface includes 3D viewers, XRD, RDF,
+coordination analysis, phonon bands/DOS, and Brillouin zone rendering, all of
+which carry higher dependency, rendering, artifact-size, and screenshot
+stability risk.
+
+### Decision
+
+Use Phase 10C as a docs-only planning phase and recommend Phase 10C-1 for
+lightweight structure adapters:
+
+- `structure.summary`
+- `structure.lattice_summary`
+- `structure.spacegroup_summary`
+- `structure.composition_from_structure`
+- `structure.preview_metadata`
+
+Defer `structure.viewer_3d`, XRD, RDF, coordination histograms, phonon
+bands/DOS, Brillouin zone rendering, notebook extraction, and script execution
+to later phases.
+
+### Consequences
+
+- The next implementation phase can add material-structure value while keeping
+  artifacts deterministic and CI-stable.
+- Parser and optional dependency policy can be handled before browser-heavy
+  rendering work.
+- Structure-derived composition can reuse the completed composition adapter
+  family without creating a browser-side execution path.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator,
+  live LLM gating, and Tool Registry execution boundaries remain unchanged in
+  Phase 10C planning.
+
 ## ADR-092: Phase 10B should productize composition visualization before structure/physics adapters
 
 ### Context

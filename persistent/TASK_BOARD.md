@@ -1,5 +1,30 @@
 # TASK_BOARD
 
+## 2026-07-06 Phase 10C Lightweight Structure Adapter Planning
+
+### Done This Round
+
+- [x] Confirmed Phase 10B-2 baseline and current composition evidence state.
+- [x] Reviewed project docs, persistent state, Phase 10A/10B adapter evidence, and official benchmark pack audit.
+- [x] Added `docs/phase10c/phase10c_lightweight_structure_adapter_planning.md`.
+- [x] Added `docs/phase10c/phase10c_candidate_adapter_matrix.md`.
+- [x] Added `docs/phase10c/phase10c1_lightweight_structure_adapter_implementation_prompt.md`.
+- [x] Recommended Phase 10C-1 scope as lightweight structure adapters: `structure.summary`, `structure.lattice_summary`, `structure.spacegroup_summary`, `structure.composition_from_structure`, and `structure.preview_metadata`.
+- [x] Explicitly deferred structure viewer, XRD, RDF, coordination histograms, phonon bands/DOS, Brillouin zone, notebook extraction, and script execution.
+
+### Verification
+
+- [ ] `git diff --check`.
+- [ ] Optional docs-only smoke checks before commit: `uv lock --check` and frontend `npm run typecheck`.
+- [ ] Commit, push, and confirm CI current HEAD if this planning pass is committed.
+
+### Remaining
+
+- [ ] Phase 10C-1 implementation for lightweight structure adapters.
+- [ ] Phase 10C-2 browser/API/artifact evidence for lightweight structure adapters.
+- [ ] Phase 10D advanced structure visualization planning.
+- [ ] Notebook/script extraction remains future work.
+
 ## 2026-07-06 Phase 10B Second Batch pymatviz Adapter Planning
 
 ### Done This Round

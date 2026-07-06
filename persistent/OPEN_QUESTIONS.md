@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-07-06 Phase 10C Lightweight Structure Adapter Planning
+
+- **Closed for planning: structure direction.** Phase 10C recommends lightweight structure summary adapters before 3D viewer, XRD/RDF, coordination, phonon, or Brillouin zone work.
+- **Closed for planning: Phase 10C-1 recommended scope.** The next implementation prompt is scoped to `structure.summary`, `structure.lattice_summary`, `structure.spacegroup_summary`, `structure.composition_from_structure`, and `structure.preview_metadata`.
+- **Still open: structure fixture and parser policy.** Phase 10C-1 must confirm which CIF, POSCAR, pymatgen Structure JSON, or ASE-like JSON fixtures are stable enough for adapter and API execution tests.
+- **Still open: optional dependency boundary.** `structure.spacegroup_summary` needs a concrete `pymatgen`/`spglib` availability and tolerance policy before implementation.
+- **Still open: advanced structure and physics adapters.** 3D viewer, XRD, RDF, coordination histograms, phonon bands/DOS, and Brillouin zone rendering need separate Phase 10D+ planning.
+- **Still open: notebook/script extraction.** Structure-related notebook/script official examples remain outside the current direct benchmark scope.
+
 ## 2026-07-06 Phase 10B Second Batch pymatviz Adapter Planning
 
 - **Closed for planning: second-batch direction.** Phase 10B recommends composition visualization as the next implementation area rather than jumping directly to structure viewer, XRD/RDF, phonon, or Brillouin zone work.

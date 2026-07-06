@@ -1,5 +1,16 @@
 # DESIGN_PROGRESS
 
+## 2026-07-06 Phase 10C Lightweight Structure Adapter Planning
+
+- Completed a docs-only planning pass for lightweight structure adapters on top of the Phase 10B-2 baseline (`4a5e780`).
+- Added `docs/phase10c/phase10c_lightweight_structure_adapter_planning.md` as the canonical Phase 10C planning document.
+- Added `docs/phase10c/phase10c_candidate_adapter_matrix.md` to separate lightweight structure summaries from advanced structure, physics, phonon, and Brillouin zone candidates.
+- Added `docs/phase10c/phase10c1_lightweight_structure_adapter_implementation_prompt.md` as the follow-on implementation prompt for Phase 10C-1.
+- Recommendation: Phase 10C-1 should implement `structure.summary`, `structure.lattice_summary`, `structure.spacegroup_summary`, `structure.composition_from_structure`, and `structure.preview_metadata`.
+- Reasoning: lightweight structure metadata and summaries are lower risk than 3D viewers, XRD/RDF, coordination analysis, phonon plots, and Brillouin zone rendering because they can be deterministic JSON/Markdown/recipe artifacts with bounded parser dependencies and stable CI behavior.
+- Official benchmark pack remains scoped: 61 total cases, 2 `DIRECT_VERIFIED`, 27 `EXTRACTION_REQUIRED`, 20 `MAPPING_ONLY`, 12 `FUTURE_SCOPE`, audit ok with 0 issues / 0 warnings. Structure-related official examples are currently mapping-only or future-scope, not direct PASS evidence.
+- No adapter implementation, runtime behavior, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator security boundary, Tool Registry execution boundary, or live LLM behavior changed in this planning phase.
+
 ## 2026-07-06 Phase 10B Second Batch pymatviz Adapter Planning
 
 - Completed a docs-only planning pass for the second pymatviz adapter batch on top of the Phase 10A-2 baseline (`65d0c80` / `phase10a2-browser-api-evidence-baseline`).

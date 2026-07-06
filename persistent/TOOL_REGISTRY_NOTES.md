@@ -1,5 +1,15 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-06 Phase 10C lightweight structure planning notes
+
+- Phase 10C is planning-only and does not add, remove, or modify Tool Registry entries.
+- Current evidence-grade adapter coverage includes table/viz first-batch tools and composition visualization tools. Structure tools remain a planning target until Phase 10C-1 implements and tests them.
+- Recommended Phase 10C-1 tool scope: `structure.summary`, `structure.lattice_summary`, `structure.spacegroup_summary`, `structure.composition_from_structure`, and `structure.preview_metadata`.
+- Planned structure tools must use the `structure` domain, strict params schemas, bounded resource limits, deterministic artifact names, and the existing registry-gated execution path.
+- Planned outputs should be JSON + `summary.md` + `recipe.json`; 3D HTML viewers and physics plots are deferred.
+- No future structure adapter may execute shell, arbitrary Python, network calls, uncontrolled filesystem reads/writes, or browser-side execution.
+- Mapping-only README structure demos and future-scope phonon/Brillouin/XRD/RDF examples must not be marked as PASS until real inputs and evidence exist.
+
 ## 2026-07-06 Phase 10B composition visualization planning notes
 
 - Phase 10B is planning-only and does not add, remove, or modify Tool Registry entries.

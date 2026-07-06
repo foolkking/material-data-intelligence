@@ -2,6 +2,15 @@
 
 ## 2026-07-06
 
+### Phase 10C Lightweight Structure Adapter Planning
+
+- Added `docs/phase10c/phase10c_lightweight_structure_adapter_planning.md` to define the lightweight structure adapter strategy after Phase 10B-2.
+- Added `docs/phase10c/phase10c_candidate_adapter_matrix.md` with prioritized candidates across lightweight structure summaries, advanced structure visualization, XRD/RDF, coordination, phonon, and Brillouin zone work.
+- Added `docs/phase10c/phase10c1_lightweight_structure_adapter_implementation_prompt.md` for the future Phase 10C-1 implementation pass.
+- Recommended Phase 10C-1 focus: `structure.summary`, `structure.lattice_summary`, `structure.spacegroup_summary`, `structure.composition_from_structure`, and `structure.preview_metadata`.
+- Documented that Phase 10C planning does not implement adapters, does not modify runtime semantics, and does not claim mapping-only or future-scope official structure examples as PASS.
+- Confirmed the benchmark-pack basis: 61 official cases, 2 direct verified, 27 extraction required, 20 mapping only, 12 future scope, audit ok.
+
 ### Phase 10B Second Batch pymatviz Adapter Planning
 
 - Added `docs/phase10b/phase10b_second_batch_adapter_planning.md` to define the second-batch adapter strategy after Phase 10A-2.
