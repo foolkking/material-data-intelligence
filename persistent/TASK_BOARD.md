@@ -1,5 +1,30 @@
 # TASK_BOARD
 
+## 2026-07-06 Phase 10B Second Batch pymatviz Adapter Planning
+
+### Done This Round
+
+- [x] Confirmed Phase 10A-2 baseline and current registry/evidence state.
+- [x] Reviewed project docs, persistent state, Phase 10A design/evidence, and official benchmark pack audit.
+- [x] Added `docs/phase10b/phase10b_second_batch_adapter_planning.md`.
+- [x] Added `docs/phase10b/phase10b_candidate_adapter_matrix.md`.
+- [x] Added `docs/phase10b/phase10b1_composition_adapter_implementation_prompt.md`.
+- [x] Recommended Phase 10B-1 scope as composition visualization: `composition.ptable_heatmap`, `composition.elements_hist`, `composition.chem_sys_treemap`, `composition.chem_sys_sunburst`, and `composition.formula_statistics`.
+- [x] Explicitly deferred structure viewer, XRD, RDF, phonon, Brillouin zone, notebook extraction, and script execution.
+
+### Verification
+
+- [x] `git diff --check`.
+- [x] Optional docs-only smoke checks before commit: `uv lock --check` and frontend `npm run typecheck`.
+- [ ] Commit, push, and confirm CI current HEAD if this planning pass is committed.
+
+### Remaining
+
+- [ ] Phase 10B-1 implementation for composition visualization adapters.
+- [ ] Phase 10B-2 browser/API/artifact evidence for composition adapters.
+- [ ] Phase 10C lightweight structure adapter planning.
+- [ ] Notebook/script extraction remains future work.
+
 ## 2026-07-06 Phase 10A-2 Browser/API Evidence for First Batch Adapters
 
 ### Done This Round
@@ -19,8 +44,8 @@
 ### Verification
 
 - [x] Evidence validation script over `docs/phase10a/browser_api_evidence/`: JSON ok, UTF-8/mojibake ok, secret scan ok.
-- [ ] Full backend/frontend regression.
-- [ ] Commit, push, and confirm CI current HEAD.
+- [x] Full backend/frontend regression.
+- [x] Commit, push, and confirm CI current HEAD.
 
 ### Remaining
 

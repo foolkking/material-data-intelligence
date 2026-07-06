@@ -1,5 +1,16 @@
 # DESIGN_PROGRESS
 
+## 2026-07-06 Phase 10B Second Batch pymatviz Adapter Planning
+
+- Completed a docs-only planning pass for the second pymatviz adapter batch on top of the Phase 10A-2 baseline (`65d0c80` / `phase10a2-browser-api-evidence-baseline`).
+- Added `docs/phase10b/phase10b_second_batch_adapter_planning.md` as the canonical Phase 10B planning document.
+- Added `docs/phase10b/phase10b_candidate_adapter_matrix.md` to separate composition, lightweight structure, advanced structure/physics, phonon, Brillouin zone, and later ML/materials adapter candidates.
+- Added `docs/phase10b/phase10b1_composition_adapter_implementation_prompt.md` as the follow-on implementation prompt for Phase 10B-1.
+- Recommendation: Phase 10B-1 should focus on composition visualization adapters: `composition.ptable_heatmap`, `composition.elements_hist`, `composition.chem_sys_treemap`, `composition.chem_sys_sunburst`, and `composition.formula_statistics`.
+- Reasoning: composition visualization is closer to pymatviz's materials-informatics identity than the Phase 10A table/viz batch, while remaining lower risk than WebGL structure viewers, XRD/RDF, phonon, Brillouin zone, notebook extraction, or external API workflows.
+- Official benchmark pack remains `PARTIAL_BENCHMARK_READY`: 61 total cases, 2 `DIRECT_VERIFIED`, 27 `EXTRACTION_REQUIRED`, 20 `MAPPING_ONLY`, 12 `FUTURE_SCOPE`, audit ok with 0 issues / 0 warnings.
+- No adapter implementation, runtime behavior, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, Tool Registry execution boundary, or live LLM behavior changed in this planning phase.
+
 ## 2026-07-06 Phase 10A-2 Browser/API Evidence for First Batch Adapters
 
 - Added project-local evidence under `docs/phase10a/browser_api_evidence/` for the Phase 10A-1 first-batch adapters.

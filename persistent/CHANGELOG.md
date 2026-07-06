@@ -2,6 +2,15 @@
 
 ## 2026-07-06
 
+### Phase 10B Second Batch pymatviz Adapter Planning
+
+- Added `docs/phase10b/phase10b_second_batch_adapter_planning.md` to define the second-batch adapter strategy after Phase 10A-2.
+- Added `docs/phase10b/phase10b_candidate_adapter_matrix.md` with prioritized candidates across composition, structure, phonon, Brillouin zone, and later ML/materials plot work.
+- Added `docs/phase10b/phase10b1_composition_adapter_implementation_prompt.md` for the future Phase 10B-1 implementation pass.
+- Recommended Phase 10B-1 focus: `composition.ptable_heatmap`, `composition.elements_hist`, `composition.chem_sys_treemap`, `composition.chem_sys_sunburst`, and `composition.formula_statistics`.
+- Documented that Phase 10B planning does not implement adapters, does not modify runtime semantics, and does not claim unsupported official examples as PASS.
+- Confirmed the benchmark-pack basis: 61 official cases, 2 direct verified, 27 extraction required, 20 mapping only, 12 future scope, audit ok.
+
 ### Phase 10A-2 Browser/API Evidence for First Batch Adapters
 
 - Added project evidence under `docs/phase10a/browser_api_evidence/` for six scoped first-batch adapter scenarios: MatPES scatter, MatPES histogram, Ward distribution summary, Ward histogram, Ward correlation, and Ward composition summary.

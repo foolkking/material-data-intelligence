@@ -1,5 +1,15 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-06 Phase 10B composition visualization planning notes
+
+- Phase 10B is planning-only and does not add, remove, or modify Tool Registry entries.
+- Current registry already contains several composition and structure/physics tools beyond the Phase 10A evidence baseline. Phase 10B separates registered tools from evidence-grade tools.
+- Phase 10A evidence-grade tools remain `table.distribution_summary`, `viz.scatter`, `viz.histogram`, `viz.correlation`, and `composition.summary`.
+- Phase 10B-1 is recommended to harden/productize composition visualization tools through the same registry-gated path: AnalysisPlan JSON -> PlanValidator -> persisted AnalysisPlan -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> ToolCall/Artifact/Result provenance.
+- Recommended Phase 10B-1 tool scope: `composition.ptable_heatmap`, `composition.elements_hist`, `composition.chem_sys_treemap`, `composition.chem_sys_sunburst`, and `composition.formula_statistics`.
+- No future adapter may execute shell, arbitrary Python, network calls, uncontrolled filesystem reads/writes, or direct browser-side execution.
+- Mapping-only README demos and extraction-required notebooks/scripts must not be marked as PASS until they have real inputs and evidence.
+
 ## 2026-07-06 Phase 10A-2 first-batch browser/API evidence notes
 
 - The six Phase 10A-2 evidence scenarios all execute through the existing registry-gated path: AnalysisPlan JSON -> PlanValidator -> persisted AnalysisPlan -> `jobs.plan_id` -> QueueWorkerRuntime -> Tool Registry lookup -> Adapter -> ToolCall/Artifact/Result provenance.

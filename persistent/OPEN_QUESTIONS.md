@@ -1,5 +1,13 @@
 # OPEN_QUESTIONS
 
+## 2026-07-06 Phase 10B Second Batch pymatviz Adapter Planning
+
+- **Closed for planning: second-batch direction.** Phase 10B recommends composition visualization as the next implementation area rather than jumping directly to structure viewer, XRD/RDF, phonon, or Brillouin zone work.
+- **Closed for planning: Phase 10B-1 recommended scope.** The next implementation prompt is scoped to `composition.ptable_heatmap`, `composition.elements_hist`, `composition.chem_sys_treemap`, `composition.chem_sys_sunburst`, and `composition.formula_statistics`.
+- **Still open: evidence-grade composition adapters.** Existing registry entries for some composition tools need Phase 10B-1 hardening and Phase 10B-2 browser/API/artifact evidence before they can be treated as official direct-case evidence.
+- **Still open: structure/physics adapters.** `structure.viewer_3d`, XRD, RDF, phonon, Brillouin zone, and related physics workflows need a separate Phase 10C+ planning/evidence strategy.
+- **Still open: notebook/script extraction.** Extraction-required official examples remain outside the current direct benchmark scope.
+
 ## 2026-07-06 Phase 10A-2 Browser/API Evidence for First Batch Adapters
 
 - **Closed: browser/API/artifact evidence for first-batch tools.** MatPES scatter, MatPES histogram, Ward distribution summary, Ward histogram, Ward correlation, and Ward composition summary now have project-local redacted API captures, artifacts, screenshots, summaries, and manifests.

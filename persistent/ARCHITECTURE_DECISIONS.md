@@ -1,5 +1,48 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-092: Phase 10B should productize composition visualization before structure/physics adapters
+
+### Context
+
+Phase 10A-1 and Phase 10A-2 established a first official-example baseline for
+table, general visualization, and safe composition summary adapters. The
+official pymatviz benchmark pack is still only partially benchmark-ready: two
+direct verified cases exist, while the remaining cases are extraction-required,
+mapping-only, or future-scope.
+
+The Tool Registry already contains broader composition, structure, and phonon
+tool IDs, but registered tools are not equivalent to official browser/API
+evidence. The next adapter phase needs a scope that is material-specific,
+deterministic, and small enough to verify without new external dependencies or
+fragile browser rendering.
+
+### Decision
+
+Use Phase 10B as a docs-only planning phase and recommend Phase 10B-1 for
+composition visualization adapters:
+
+- `composition.ptable_heatmap`
+- `composition.elements_hist`
+- `composition.chem_sys_treemap`
+- `composition.chem_sys_sunburst`
+- `composition.formula_statistics`
+
+Defer `structure.viewer_3d`, XRD, RDF, phonon, Brillouin zone, notebook
+extraction, script execution, and external API workflows to later phases.
+
+### Consequences
+
+- The next implementation phase can deepen pymatviz-specific value without
+  changing QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, live LLM
+  gating, or frontend execution authority.
+- Existing MVP composition tools can be hardened in place instead of duplicated
+  under new tool IDs.
+- Ward's direct verified composition column is the best first source of browser
+  and API evidence; README periodic-table examples remain mapping references
+  until real input data is available.
+- Structure and physics adapters still matter, but require separate dependency,
+  fixture, tolerance, and screenshot-stability planning.
+
 ## ADR-091: Phase 10A-2 evidence commits browser/API/artifact proof without making it a CI gate
 
 ### Context
