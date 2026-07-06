@@ -2484,3 +2484,20 @@ Keep the official examples evidence pack outside the project repository and outs
 - The evidence pack can include screenshots, API responses, downloaded artifacts, and per-case summaries without bloating the repository.
 - Default CI remains focused on unit, frontend, and service-backed integration tests and does not run browser evidence or real LLM calls.
 - Current direct evidence proves persisted plan execution for `ml.basic_metrics`; richer official visualization coverage needs future Planner routing and adapter work.
+
+## ADR-10B-1-COMPOSITION-ADAPTERS: Composition visualizations are deterministic adapters, not LLM-rendered plots
+
+### Context
+
+Phase 10B planning selected composition visualization as the next pymatviz-focused adapter batch because it is closer to material-informatics workflows than generic table plots while remaining lower risk than 3D structure, XRD, RDF, phonon, or Brillouin-zone rendering.
+
+### Decision
+
+Implement `composition.formula_statistics`, `composition.elements_hist`, `composition.ptable_heatmap`, `composition.chem_sys_treemap`, and `composition.chem_sys_sunburst` as deterministic Tool Registry + Adapter capabilities. Formula parsing, element counts, chemical systems, arity grouping, Plotly metadata, summaries, and recipes are generated inside adapters from validated table input. The LLM or Mock Planner may only select a structured tool call; it does not generate plot data directly and does not execute code.
+
+### Consequences
+
+- Composition artifacts are reproducible and auditable through JSON, `summary.md`, and `recipe.json`.
+- Partial formula parsing failures become warnings unless no formula can be parsed.
+- Browser/API evidence is a separate Phase 10B-2 task; Phase 10B-1 evidence is adapter-level only.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, and the Phase 9D live LLM gate remain unchanged.

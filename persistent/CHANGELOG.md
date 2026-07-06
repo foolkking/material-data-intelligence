@@ -1000,3 +1000,23 @@
 
 - `python -m pytest tests/test_phase9b_demo_workspace_api.py -q`: 15 passed.
 - Direct browser evidence generated with Mock Planner only; no real LLM was used.
+
+## 2026-07-06
+
+### Added
+
+- Added deterministic composition parsing/statistics helper module for adapter reuse.
+- Added `composition.formula_statistics` adapter.
+- Added `composition.chem_sys_sunburst` adapter.
+- Added lightweight Ward adapter evidence for formula statistics, elements histogram, periodic-table heatmap, chemical-system treemap, and chemical-system sunburst under `docs/phase10b/adapter_evidence/`.
+
+### Changed
+
+- Upgraded `composition.elements_hist`, `composition.ptable_heatmap`, and `composition.chem_sys_treemap` to use table/formula-column input and structured top-level artifact metadata.
+- Extended Tool Registry schemas and manifests for the Phase 10B-1 composition visualization tools.
+- Extended Mock Planner routing so explicit composition prompts are handled before generic visualization routing.
+
+### Verification
+
+- Added or updated adapter, manifest, planner-routing, and persisted execution coverage for the five Phase 10B-1 tools.
+- Real LLM was not used; browser/API evidence remains deferred to Phase 10B-2.

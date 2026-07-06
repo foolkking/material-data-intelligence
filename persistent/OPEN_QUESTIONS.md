@@ -282,3 +282,10 @@
 - Official examples that require script/notebook execution remain `PARTIAL_PASS`; decide whether a future phase should build a controlled script/notebook import path or keep them as reference-only mappings.
 - Composition and structure adapters exist, but Planner tool routing for official example workflows is not yet productized. Decide whether Phase 10 should add prompt/profile-based routing beyond `ml.basic_metrics`.
 - Phonon, Brillouin zone, advanced MatterViz widgets, classification curves, and richer Plotly/table/report outputs remain future adapter/tool work.
+
+## 2026-07-06 Phase 10B-1 Follow-ups
+
+- Phase 10B-1 closes adapter-level implementation for the first composition visualization batch, but browser/API evidence is still required in Phase 10B-2.
+- Current formula parsing intentionally supports common formula strings and reports warnings for malformed, unsupported, or unknown-element inputs. Complex formula grammar remains a future hardening area.
+- HTML artifacts are generated when Plotly export is available; JSON, summary, and recipe remain the required deterministic evidence.
+- Structure viewer polish, XRD, RDF, phonon, Brillouin zone, and notebook/script extraction remain out of scope for this phase.

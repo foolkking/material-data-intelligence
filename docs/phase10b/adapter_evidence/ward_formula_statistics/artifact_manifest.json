@@ -1,0 +1,42 @@
+{
+  "case": "ward_formula_statistics",
+  "sourceCaseId": "ward_metallic_glasses_csv_xz",
+  "evidenceLevel": "Tool Registry + Adapter execution only",
+  "toolId": "composition.formula_statistics",
+  "params": {
+    "formulaColumn": "composition",
+    "maxExamples": 20,
+    "strict": false
+  },
+  "rowCount": 8415,
+  "artifactCount": 3,
+  "artifacts": [
+    {
+      "artifactId": "tool_call_ward_formula_statistics-table_json",
+      "type": "table_json",
+      "name": "formula_statistics.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_formula_statistics/tool_calls/tool_call_ward_formula_statistics/formula_statistics.json",
+      "localPath": "sample_artifacts/formula_statistics.json",
+      "contentHash": "c7453f7b6e33e6275b81a4c52e546b2cc2f86e77a8d250cf8d0893022e07cb61",
+      "bytes": 16224
+    },
+    {
+      "artifactId": "tool_call_ward_formula_statistics-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_formula_statistics/tool_calls/tool_call_ward_formula_statistics/summary.md",
+      "localPath": "sample_artifacts/summary.md",
+      "contentHash": "355de9db49599591f82936c69f498ad7400c1e2103d7c1f592642f67cbeaccc9",
+      "bytes": 242
+    },
+    {
+      "artifactId": "tool_call_ward_formula_statistics-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_formula_statistics/tool_calls/tool_call_ward_formula_statistics/recipe.json",
+      "localPath": "sample_artifacts/recipe.json",
+      "contentHash": "e5b3307bc53103c6f331b266c3aaf07e2db72815cde0a1ab1a2ca143b91a4334",
+      "bytes": 636
+    }
+  ]
+}

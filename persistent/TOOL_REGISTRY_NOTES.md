@@ -536,3 +536,17 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Ward metallic glasses evidence now routes to `table.numeric_summary`; `D_max` and `dTx` are summarized as independent numeric properties instead of being treated as target/prediction metrics columns.
 - Official richer tools such as `plotly_custom.histogram`, `composition.ptable_heatmap`, `composition.elements_hist`, classification curves, phonon tools, Brillouin zone, and MatterViz widgets were not downgraded into current PASS. They are preserved as future expected tools in the evidence pack.
 - No evidence path bypassed Tool Registry or Adapter execution.
+
+## 2026-07-06 Phase 10B-1 Composition Visualization Tool Notes
+
+- Registered or upgraded the executable composition visualization set:
+  - `composition.formula_statistics`
+  - `composition.elements_hist`
+  - `composition.ptable_heatmap`
+  - `composition.chem_sys_treemap`
+  - `composition.chem_sys_sunburst`
+- These tools use DataFrame input with deterministic formula column resolution. Explicit `formulaColumn` takes priority; otherwise the resolver checks `formula`, `composition`, `reduced_formula`, `pretty_formula`, `material_formula`, and `chemical_formula`.
+- `paramsSchema` remains a whitelist. Unknown params are rejected through Tool Registry validation before adapter execution.
+- Required artifacts are deterministic JSON plus `summary.md` and `recipe.json`; Plotly HTML is produced when supported.
+- Adapter execution does not access network, execute shell, read arbitrary paths, or use a real LLM.
+- Mock Planner routing now checks explicit composition keywords before generic histogram/correlation/table routing to avoid misrouting composition prompts.

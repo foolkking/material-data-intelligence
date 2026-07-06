@@ -1,0 +1,51 @@
+{
+  "case": "ward_elements_hist",
+  "sourceCaseId": "ward_metallic_glasses_csv_xz",
+  "evidenceLevel": "Tool Registry + Adapter execution only",
+  "toolId": "composition.elements_hist",
+  "params": {
+    "formulaColumn": "composition",
+    "countMode": "occurrence",
+    "topN": 30
+  },
+  "rowCount": 8415,
+  "artifactCount": 4,
+  "artifacts": [
+    {
+      "artifactId": "tool_call_ward_elements_hist-plotly_json",
+      "type": "plotly_json",
+      "name": "elements_hist.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_elements_hist/tool_calls/tool_call_ward_elements_hist/elements_hist.json",
+      "localPath": "sample_artifacts/elements_hist.json",
+      "contentHash": "4bf34ed4c7f5fcdca200dab24efbbbfd9d71259b023ff555f03d6c1b67aa823c",
+      "bytes": 9739
+    },
+    {
+      "artifactId": "tool_call_ward_elements_hist-plotly_html",
+      "type": "plotly_html",
+      "name": "elements_hist.html",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_elements_hist/tool_calls/tool_call_ward_elements_hist/elements_hist.html",
+      "localPath": "sample_artifacts/elements_hist.html",
+      "contentHash": "9fd4648c52d8612d6a7712ccd90e9ac15246a06fc923cd36ed8762f5b13e83dd",
+      "bytes": 8505
+    },
+    {
+      "artifactId": "tool_call_ward_elements_hist-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_elements_hist/tool_calls/tool_call_ward_elements_hist/summary.md",
+      "localPath": "sample_artifacts/summary.md",
+      "contentHash": "1003c5c9094857d00dff1f83326994891f141cac3bc79c6dde29d874cc330ec2",
+      "bytes": 317
+    },
+    {
+      "artifactId": "tool_call_ward_elements_hist-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_elements_hist/tool_calls/tool_call_ward_elements_hist/recipe.json",
+      "localPath": "sample_artifacts/recipe.json",
+      "contentHash": "528c5a02594af773e5e6b6f6fa61a322d5c7468c1bace083f029d52576e6b0fd",
+      "bytes": 638
+    }
+  ]
+}

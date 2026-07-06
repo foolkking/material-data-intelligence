@@ -716,3 +716,18 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   - CSV parser now coerces numeric-looking string columns when safe.
   - Mock Planner now ignores sparse `Unnamed:` columns for metrics selection and uses DataProfile numeric columns instead of hard-coded `y_true/y_pred`.
 - True LLM was not used. This remains Mock Planner demo evidence, not live LLM verification.
+
+## 2026-07-06 Phase 10B-1 Composition Visualization Adapter Implementation
+
+- Implemented the second-batch composition visualization adapter set:
+  - `composition.formula_statistics`
+  - `composition.elements_hist`
+  - `composition.ptable_heatmap`
+  - `composition.chem_sys_treemap`
+  - `composition.chem_sys_sunburst`
+- Added shared deterministic composition parsing/statistics helpers for formula column detection, pymatgen-backed parsing, partial-failure warnings, element counts, chemical systems, arity labels, Plotly metadata, summaries, and recipes.
+- Registered all five tools through the Tool Registry and adapter registry. Execution remains Tool Registry -> params schema -> adapter -> artifact exporter.
+- Updated Mock Planner routing so explicit composition prompts route before generic histogram/correlation/table routing.
+- Generated lightweight Ward official-example adapter evidence under `docs/phase10b/adapter_evidence/`.
+- This phase did not run real LLM, did not create browser/API evidence, and did not modify QueueWorkerRuntime, AnalysisPlanRepository, or `/planner/jobs` semantics.
+- Remaining next step: Phase 10B-2 browser/API/artifact evidence for these composition adapters.

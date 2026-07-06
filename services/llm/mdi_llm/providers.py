@@ -97,6 +97,56 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_ptable_heatmap(request, tools, data_profile):
+            plan = _mock_composition_visual_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="composition.ptable_heatmap",
+                purpose="Create a periodic table heatmap of element occurrence.",
+                params=_composition_params(data_profile, {"countMode": "occurrence", "log": False}),
+                artifact_name="ptable_heatmap.json",
+            )
+        elif _should_generate_elements_hist(request, tools, data_profile):
+            plan = _mock_composition_visual_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="composition.elements_hist",
+                purpose="Create an element frequency histogram.",
+                params=_composition_params(data_profile, {"countMode": "occurrence", "topN": 30}),
+                artifact_name="elements_hist.json",
+            )
+        elif _should_generate_chem_sys_sunburst(request, tools, data_profile):
+            plan = _mock_composition_visual_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="composition.chem_sys_sunburst",
+                purpose="Create a chemical system sunburst hierarchy.",
+                params=_composition_params(
+                    data_profile,
+                    {"hierarchy": ["arity", "chem_sys", "reduced_formula"], "maxLeafNodes": 100},
+                ),
+                artifact_name="chem_sys_sunburst.json",
+            )
+        elif _should_generate_chem_sys_treemap(request, tools, data_profile):
+            plan = _mock_composition_visual_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="composition.chem_sys_treemap",
+                purpose="Create a chemical system treemap.",
+                params=_composition_params(data_profile, {"groupMode": "chem_sys", "maxGroups": 50}),
+                artifact_name="chem_sys_treemap.json",
+            )
+        elif _should_generate_formula_statistics(request, tools, data_profile):
+            plan = _mock_composition_visual_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="composition.formula_statistics",
+                purpose="Summarize formula statistics.",
+                params=_composition_params(data_profile, {"maxExamples": 20, "strict": False}),
+                artifact_name="formula_statistics.json",
+                artifact_type="table_json",
+                artifact_types=["table_json", "summary_md", "recipe_json"],
+            )
         elif _should_generate_scatter(request, tools, data_profile):
             plan = _mock_scatter_plan(request, tools, data_profile=data_profile)
         elif _should_generate_correlation(request, tools, data_profile):
@@ -573,7 +623,7 @@ def _mock_composition_summary_plan(
         "toolId": "composition.summary",
         "purpose": "Summarize formula compositions",
         "reason": f"The request asks for element composition statistics from {formula_column or 'formula data'}.",
-        "inputRefs": [{"refType": "normalized_object", "ref": "formulas", "objectType": "Composition"}],
+        "inputRefs": [{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
         "params": params,
         "output": {"artifactTypes": ["table_json", "summary_md", "recipe_json"]},
     }
@@ -582,6 +632,38 @@ def _mock_composition_summary_plan(
         step,
         [{"name": "composition_summary.json", "type": "table_json", "fromStepId": "step_001"}],
     )
+
+
+def _mock_composition_visual_plan(
+    request: PlannerRequest,
+    *,
+    data_profile: DataProfile,
+    tool_id: str,
+    purpose: str,
+    params: dict[str, Any],
+    artifact_name: str,
+    artifact_type: str = "plotly_json",
+    artifact_types: list[str] | None = None,
+) -> dict[str, Any]:
+    output_types = artifact_types or ["plotly_json", "plotly_html", "summary_md", "recipe_json"]
+    formula_column = params.get("formulaColumn") or _formula_column(data_profile)
+    step = {
+        "stepId": "step_001",
+        "toolId": tool_id,
+        "purpose": purpose,
+        "reason": f"The request asks for composition analysis using {formula_column or 'the detected formula column'}.",
+        "inputRefs": [{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        "params": params,
+        "output": {"artifactTypes": output_types},
+    }
+    expected = [{"name": artifact_name, "type": artifact_type, "fromStepId": "step_001"}]
+    expected.extend(
+        {"name": name, "type": artifact_type_name, "fromStepId": "step_001"}
+        for name, artifact_type_name in (("summary.md", "summary_md"), ("recipe.json", "recipe_json"))
+    )
+    if "plotly_html" in output_types:
+        expected.append({"name": artifact_name.replace(".json", ".html"), "type": "plotly_html", "fromStepId": "step_001"})
+    return _single_step_plan(request, step, expected)
 
 
 def _single_step_plan(
@@ -632,6 +714,90 @@ def _should_generate_distribution_summary(
         return False
     prompt = request.user_prompt.lower()
     markers = ("distribution summary", "distribution statistics", "数值分布", "类别字段", "分布统计")
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_ptable_heatmap(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "composition.ptable_heatmap") or not _formula_column(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = ("periodic table", "ptable", "periodic heatmap", "周期表", "周期表热力图")
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_elements_hist(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "composition.elements_hist") or not _formula_column(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = (
+        "elements histogram",
+        "element histogram",
+        "element frequency",
+        "element distribution",
+        "composition distribution",
+        "元素分布",
+        "元素出现频率",
+        "元素直方图",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_chem_sys_sunburst(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "composition.chem_sys_sunburst") or not _formula_column(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = ("sunburst", "chemical system sunburst", "chem sys sunburst", "化学体系 sunburst", "sunburst 图")
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_chem_sys_treemap(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "composition.chem_sys_treemap") or not _formula_column(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = (
+        "chemical system treemap",
+        "chem sys treemap",
+        "chemical system distribution",
+        "chem_sys",
+        "treemap",
+        "化学体系分布",
+        "化学体系 treemap",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_formula_statistics(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "composition.formula_statistics") or not _formula_column(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = (
+        "formula statistics",
+        "formula stats",
+        "formula summary",
+        "chemical formula statistics",
+        "化学式统计",
+        "formula 基础信息",
+    )
     return any(marker in prompt for marker in markers)
 
 
@@ -693,6 +859,13 @@ def _numeric_summary_params(data_profile: DataProfile) -> dict[str, Any]:
         params["numericColumns"] = numeric_columns
     if categorical_columns:
         params["categoricalColumns"] = categorical_columns
+    return params
+
+
+def _composition_params(data_profile: DataProfile, defaults: dict[str, Any] | None = None) -> dict[str, Any]:
+    params = dict(defaults or {})
+    if formula_column := _formula_column(data_profile):
+        params.setdefault("formulaColumn", formula_column)
     return params
 
 

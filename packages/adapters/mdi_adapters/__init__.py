@@ -16,7 +16,14 @@ from .platform_builtin import (
     OutlierTableAdapter,
     ScatterAdapter,
 )
-from .pymatviz import ChemSysTreemapAdapter, CoordinationHistAdapter, DensityScatterAdapter, ElementsHistAdapter
+from .pymatviz import (
+    ChemSysSunburstAdapter,
+    ChemSysTreemapAdapter,
+    CoordinationHistAdapter,
+    DensityScatterAdapter,
+    ElementsHistAdapter,
+    FormulaStatisticsAdapter,
+)
 from .pymatviz.ptable_heatmap import PTableHeatmapAdapter
 from .pymatviz.structure_3d import Structure3DAdapter
 from .registry import ADAPTER_CLASSES, create_adapter, get_adapter_class
@@ -25,6 +32,7 @@ __all__ = [
     "ADAPTER_CLASSES",
     "BaseToolAdapter",
     "BasicMetricsAdapter",
+    "ChemSysSunburstAdapter",
     "ChemSysTreemapAdapter",
     "CompositionSummaryAdapter",
     "CorrelationAdapter",
@@ -32,6 +40,7 @@ __all__ = [
     "DensityScatterAdapter",
     "ElementsHistAdapter",
     "ErrorDistributionAdapter",
+    "FormulaStatisticsAdapter",
     "DistributionSummaryAdapter",
     "HistogramAdapter",
     "NumericSummaryAdapter",

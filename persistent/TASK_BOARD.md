@@ -926,3 +926,24 @@
 - [ ] Source commit pinning for official pymatviz sources remains unresolved before publication-quality reporting.
 - [ ] Composition/structure/classification/plot tool routing from Planner remains future work for official examples beyond metrics scope.
 - [ ] Phonon, Brillouin zone, advanced widgets, RDF/XRD, and richer report/table/plot outputs remain future scope.
+
+## 2026-07-06 Phase 10B-1 Composition Visualization Adapter Implementation
+
+### Done
+
+- [x] Added `composition.formula_statistics`.
+- [x] Upgraded `composition.elements_hist` to DataFrame/formula-column execution with deterministic metadata artifacts.
+- [x] Upgraded `composition.ptable_heatmap` to DataFrame/formula-column execution with deterministic metadata artifacts.
+- [x] Upgraded `composition.chem_sys_treemap` to DataFrame/formula-column execution with deterministic metadata artifacts.
+- [x] Added `composition.chem_sys_sunburst`.
+- [x] Registered the new composition tools in Tool Registry manifests, params schemas, adapter exports, and adapter class registry.
+- [x] Added Mock Planner routing for formula statistics, element distribution, periodic-table heatmap, chemical-system treemap, and chemical-system sunburst prompts.
+- [x] Added adapter, registry, planner-routing, and persisted execution tests.
+- [x] Generated lightweight adapter evidence in `docs/phase10b/adapter_evidence/`.
+
+### Still Open
+
+- [ ] Phase 10B-2 browser/API/artifact evidence for the five composition visualization adapters.
+- [ ] Lightweight structure adapters: `structure.summary`, `structure.spacegroup_summary`, `structure.lattice_summary`.
+- [ ] Advanced structure/physics adapters: 3D viewer polish, XRD, RDF, coordination distribution, Brillouin zone, phonon bands/DOS.
+- [ ] Notebook/script extraction remains out of scope.

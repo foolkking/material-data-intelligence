@@ -8,6 +8,7 @@ from pymatgen.core import Structure
 
 from mdi_adapters import (
     BasicMetricsAdapter,
+    ChemSysSunburstAdapter,
     ChemSysTreemapAdapter,
     CompositionSummaryAdapter,
     CorrelationAdapter,
@@ -21,10 +22,12 @@ from mdi_adapters import (
     OutlierTableAdapter,
     PTableHeatmapAdapter,
     ScatterAdapter,
+    FormulaStatisticsAdapter,
     Structure3DAdapter,
     StructureViewer3DAdapter,
     ToolExecutionContext,
 )
+from mdi_adapters.errors import ToolExecutionError
 from mdi_schemas import ArtifactType, ToolExecutionRequest
 from mdi_tool_registry import load_manifests
 
@@ -50,18 +53,32 @@ def artifact_types(artifacts):
     return {artifact.type for artifact in artifacts}
 
 
+def read_artifact_json(tmp_path, artifacts, artifact_type: ArtifactType):
+    artifact = next(item for item in artifacts if item.type == artifact_type)
+    return json.loads((tmp_path / "artifacts" / artifact.storageKey).read_text(encoding="utf-8"))
+
+
+def composition_frame() -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "composition": ["Fe2O3", "LiFePO4", "Si", "not_a_formula"],
+            "group": ["oxide", "phosphate", "element", "bad"],
+        }
+    )
+
+
 def test_ptable_heatmap_generates_plotly_artifacts(tmp_path):
     request = ToolExecutionRequest(
         jobId="job_adapter",
         stepId="step_ptable",
         toolId="composition.ptable_heatmap",
-        inputRefs=[{"refType": "normalized_object", "ref": "formulas", "objectType": "Composition"}],
-        params={"colorScale": "viridis", "title": "Composition overview"},
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"formulaColumn": "composition", "countMode": "occurrence", "colorScale": "viridis", "title": "Composition overview"},
         artifactTypes=["plotly_json", "plotly_html", "summary_md", "recipe_json"],
     )
 
     artifacts = PTableHeatmapAdapter().execute(
-        make_context(tmp_path, "composition.ptable_heatmap", {"formulas": ["Fe2O3", "LiFePO4", "Si"]}, "call_ptable"),
+        make_context(tmp_path, "composition.ptable_heatmap", {"ml_table": composition_frame()}, "call_ptable"),
         request,
     )
 
@@ -72,6 +89,11 @@ def test_ptable_heatmap_generates_plotly_artifacts(tmp_path):
         ArtifactType.recipe_json,
     }
     assert all((tmp_path / "artifacts" / artifact.storageKey).exists() for artifact in artifacts)
+    payload = read_artifact_json(tmp_path, artifacts, ArtifactType.plotly_json)
+    assert payload["artifactType"] == "composition.ptable_heatmap"
+    assert payload["chartType"] == "periodic_table_heatmap"
+    assert payload["formulaColumn"] == "composition"
+    assert {"Fe", "O"}.issubset(payload["elementValues"])
 
 
 def test_structure_3d_generates_plotly_artifacts_from_cif_fixture(tmp_path, repo_root):
@@ -126,13 +148,13 @@ def test_elements_hist_generates_plotly_artifacts(tmp_path):
         jobId="job_adapter",
         stepId="step_elements",
         toolId="composition.elements_hist",
-        inputRefs=[{"refType": "normalized_object", "ref": "formulas", "objectType": "Composition"}],
-        params={"countMode": "composition"},
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"countMode": "stoichiometric", "topN": 5},
         artifactTypes=["plotly_json", "plotly_html", "summary_md", "recipe_json"],
     )
 
     artifacts = ElementsHistAdapter().execute(
-        make_context(tmp_path, "composition.elements_hist", {"formulas": ["Fe2O3", "LiFePO4", "Si"]}, "call_elements"),
+        make_context(tmp_path, "composition.elements_hist", {"ml_table": composition_frame()}, "call_elements"),
         request,
     )
 
@@ -142,6 +164,12 @@ def test_elements_hist_generates_plotly_artifacts(tmp_path):
         ArtifactType.summary_md,
         ArtifactType.recipe_json,
     }
+    payload = read_artifact_json(tmp_path, artifacts, ArtifactType.plotly_json)
+    assert payload["artifactType"] == "composition.elements_hist"
+    assert payload["chartType"] == "bar"
+    assert payload["countMode"] == "stoichiometric"
+    assert payload["bars"]
+    assert payload["warnings"]
 
 
 def test_chem_sys_treemap_generates_plotly_artifacts(tmp_path):
@@ -149,19 +177,102 @@ def test_chem_sys_treemap_generates_plotly_artifacts(tmp_path):
         jobId="job_adapter",
         stepId="step_chem_sys",
         toolId="composition.chem_sys_treemap",
-        inputRefs=[{"refType": "normalized_object", "ref": "formulas", "objectType": "Composition"}],
-        params={"showCounts": "value"},
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"groupMode": "chem_sys", "showCounts": "value"},
         artifactTypes=["plotly_json", "plotly_html", "summary_md", "recipe_json"],
     )
 
     artifacts = ChemSysTreemapAdapter().execute(
-        make_context(tmp_path, "composition.chem_sys_treemap", {"formulas": ["Fe2O3", "LiFePO4", "Si"]}, "call_chem_sys"),
+        make_context(tmp_path, "composition.chem_sys_treemap", {"ml_table": composition_frame()}, "call_chem_sys"),
         request,
     )
 
     assert ArtifactType.plotly_json in artifact_types(artifacts)
     assert ArtifactType.plotly_html in artifact_types(artifacts)
     assert ArtifactType.recipe_json in artifact_types(artifacts)
+    payload = read_artifact_json(tmp_path, artifacts, ArtifactType.plotly_json)
+    assert payload["artifactType"] == "composition.chem_sys_treemap"
+    assert payload["chartType"] == "treemap"
+    assert any(group["label"] == "Fe-O" for group in payload["groups"])
+
+
+def test_formula_statistics_generates_table_summary_and_recipe(tmp_path):
+    request = ToolExecutionRequest(
+        jobId="job_adapter",
+        stepId="step_formula_stats",
+        toolId="composition.formula_statistics",
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"maxExamples": 5},
+        artifactTypes=["table_json", "summary_md", "recipe_json"],
+    )
+
+    artifacts = FormulaStatisticsAdapter().execute(
+        make_context(tmp_path, "composition.formula_statistics", {"ml_table": composition_frame()}, "call_formula_stats"),
+        request,
+    )
+
+    assert artifact_types(artifacts) == {ArtifactType.table_json, ArtifactType.summary_md, ArtifactType.recipe_json}
+    payload = read_artifact_json(tmp_path, artifacts, ArtifactType.table_json)
+    assert payload["artifactType"] == "composition.formula_statistics"
+    assert payload["formulaColumn"] == "composition"
+    assert payload["parsedFormulaCount"] == 3
+    assert payload["failedFormulaCount"] == 1
+    assert {"Fe", "O"}.issubset(payload["elements"])
+
+
+def test_chem_sys_sunburst_generates_plotly_artifacts(tmp_path):
+    request = ToolExecutionRequest(
+        jobId="job_adapter",
+        stepId="step_sunburst",
+        toolId="composition.chem_sys_sunburst",
+        inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+        params={"hierarchy": ["arity", "chem_sys", "reduced_formula"], "maxLeafNodes": 10},
+        artifactTypes=["plotly_json", "plotly_html", "summary_md", "recipe_json"],
+    )
+
+    artifacts = ChemSysSunburstAdapter().execute(
+        make_context(tmp_path, "composition.chem_sys_sunburst", {"ml_table": composition_frame()}, "call_sunburst"),
+        request,
+    )
+
+    assert artifact_types(artifacts) == {
+        ArtifactType.plotly_json,
+        ArtifactType.plotly_html,
+        ArtifactType.summary_md,
+        ArtifactType.recipe_json,
+    }
+    payload = read_artifact_json(tmp_path, artifacts, ArtifactType.plotly_json)
+    assert payload["artifactType"] == "composition.chem_sys_sunburst"
+    assert payload["chartType"] == "sunburst"
+    assert payload["nodes"]
+    assert payload["warnings"]
+
+
+def test_composition_adapters_reject_missing_formula_column(tmp_path):
+    dataframe = pd.DataFrame({"value": [1, 2, 3]})
+    adapters = [
+        ("composition.formula_statistics", FormulaStatisticsAdapter(), ArtifactType.table_json),
+        ("composition.elements_hist", ElementsHistAdapter(), ArtifactType.plotly_json),
+        ("composition.ptable_heatmap", PTableHeatmapAdapter(), ArtifactType.plotly_json),
+        ("composition.chem_sys_treemap", ChemSysTreemapAdapter(), ArtifactType.plotly_json),
+        ("composition.chem_sys_sunburst", ChemSysSunburstAdapter(), ArtifactType.plotly_json),
+    ]
+
+    for tool_id, adapter, artifact_type in adapters:
+        request = ToolExecutionRequest(
+            jobId="job_adapter",
+            stepId=f"step_{tool_id}",
+            toolId=tool_id,
+            inputRefs=[{"refType": "normalized_object", "ref": "ml_table", "objectType": "DataFrame"}],
+            params={},
+            artifactTypes=[artifact_type],
+        )
+        try:
+            adapter.execute(make_context(tmp_path, tool_id, {"ml_table": dataframe}, f"call_{tool_id}"), request)
+        except ToolExecutionError as exc:
+            assert exc.details["errorType"] == "missing_formula_column"
+        else:
+            raise AssertionError(f"{tool_id} accepted a table without formula/composition column")
 
 
 def test_coordination_hist_generates_plotly_artifacts(tmp_path, repo_root):

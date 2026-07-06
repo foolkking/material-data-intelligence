@@ -121,6 +121,7 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
         options = [
             ToolInputOption(
                 name="formula_column",
+                requiredObjectTypes=[MaterialObjectType.DataFrame],
                 requiredFields=[{"role": "formula", "dtype": "string"}],
                 description="Use formulas from a table column.",
             ),
@@ -141,7 +142,7 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
             inputOptions=[
                 ToolInputOption(
                     name="formula_or_composition_collection",
-                    requiredObjectTypes=[MaterialObjectType.Composition, MaterialObjectType.Structure],
+                    requiredObjectTypes=[MaterialObjectType.DataFrame, MaterialObjectType.Composition, MaterialObjectType.Structure],
                     requiredFields=[{"role": "formula", "dtype": "string"}],
                     description="Use formulas, Composition objects, or structures with compositions.",
                 )
@@ -219,13 +220,30 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    composition_count_mode = {"enum": ["occurrence", "stoichiometric", "fractional", "composition"]}
+    formula_column_props = {
+        "formulaColumn": {"type": "string"},
+        "compositionColumn": {"type": "string"},
+    }
+    if tool_id == "composition.formula_statistics":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                **formula_column_props,
+                "maxExamples": {"type": "integer", "minimum": 1},
+                "strict": {"type": "boolean"},
+            },
+        }
     if tool_id == "composition.ptable_heatmap":
         return {
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "countMode": {"enum": ["composition", "occurrence"]},
+                **formula_column_props,
+                "countMode": composition_count_mode,
                 "colorScale": {"type": "string"},
+                "log": {"type": "boolean"},
                 "normalize": {"type": "boolean"},
                 "title": {"type": "string"},
             },
@@ -235,7 +253,9 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "countMode": {"enum": ["composition", "occurrence"]},
+                **formula_column_props,
+                "countMode": composition_count_mode,
+                "topN": {"type": "integer", "minimum": 1},
                 "keepTop": {"type": "integer", "minimum": 1},
                 "logY": {"type": "boolean"},
                 "showValues": {"anyOf": [{"type": "string"}, {"type": "boolean"}]},
@@ -247,8 +267,26 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             "type": "object",
             "additionalProperties": False,
             "properties": {
+                **formula_column_props,
+                "groupMode": {"enum": ["chem_sys", "arity", "reduced_formula"]},
+                "maxGroups": {"type": "integer", "minimum": 1},
                 "showCounts": {"anyOf": [{"type": "string"}, {"type": "boolean"}]},
                 "maxCells": {"type": "integer", "minimum": 1},
+                "title": {"type": "string"},
+            },
+        }
+    if tool_id == "composition.chem_sys_sunburst":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                **formula_column_props,
+                "hierarchy": {
+                    "type": "array",
+                    "items": {"enum": ["arity", "chem_sys", "reduced_formula"]},
+                    "minItems": 1,
+                },
+                "maxLeafNodes": {"type": "integer", "minimum": 1},
                 "title": {"type": "string"},
             },
         }

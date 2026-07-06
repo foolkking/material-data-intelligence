@@ -1,0 +1,51 @@
+{
+  "case": "ward_ptable_heatmap",
+  "sourceCaseId": "ward_metallic_glasses_csv_xz",
+  "evidenceLevel": "Tool Registry + Adapter execution only",
+  "toolId": "composition.ptable_heatmap",
+  "params": {
+    "formulaColumn": "composition",
+    "countMode": "occurrence",
+    "log": false
+  },
+  "rowCount": 8415,
+  "artifactCount": 4,
+  "artifacts": [
+    {
+      "artifactId": "tool_call_ward_ptable_heatmap-plotly_json",
+      "type": "plotly_json",
+      "name": "ptable_heatmap.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_ptable_heatmap/tool_calls/tool_call_ward_ptable_heatmap/ptable_heatmap.json",
+      "localPath": "sample_artifacts/ptable_heatmap.json",
+      "contentHash": "430619eac915df9bef96cb5e7674baa609660b15f7f05de9a7266bba1bd8c86e",
+      "bytes": 42692
+    },
+    {
+      "artifactId": "tool_call_ward_ptable_heatmap-plotly_html",
+      "type": "plotly_html",
+      "name": "ptable_heatmap.html",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_ptable_heatmap/tool_calls/tool_call_ward_ptable_heatmap/ptable_heatmap.html",
+      "localPath": "sample_artifacts/ptable_heatmap.html",
+      "contentHash": "c9328f428921913b251831d7e863e20d596ac6ed84a4ead8838bbb84dc2984eb",
+      "bytes": 48050
+    },
+    {
+      "artifactId": "tool_call_ward_ptable_heatmap-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_ptable_heatmap/tool_calls/tool_call_ward_ptable_heatmap/summary.md",
+      "localPath": "sample_artifacts/summary.md",
+      "contentHash": "2dc8e6f54b01344dd903f89b372f5261703184aa69b8bb17858129c3c2d2ff8f",
+      "bytes": 296
+    },
+    {
+      "artifactId": "tool_call_ward_ptable_heatmap-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_ptable_heatmap/tool_calls/tool_call_ward_ptable_heatmap/recipe.json",
+      "localPath": "sample_artifacts/recipe.json",
+      "contentHash": "9111b5dc5a18fbe8386841d30a9a766fe8a1439e7cb9159e6c1ab021f3d22121",
+      "bytes": 648
+    }
+  ]
+}

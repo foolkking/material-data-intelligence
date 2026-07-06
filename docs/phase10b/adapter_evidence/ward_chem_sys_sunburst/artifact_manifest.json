@@ -1,0 +1,55 @@
+{
+  "case": "ward_chem_sys_sunburst",
+  "sourceCaseId": "ward_metallic_glasses_csv_xz",
+  "evidenceLevel": "Tool Registry + Adapter execution only",
+  "toolId": "composition.chem_sys_sunburst",
+  "params": {
+    "formulaColumn": "composition",
+    "hierarchy": [
+      "arity",
+      "chem_sys",
+      "reduced_formula"
+    ],
+    "maxLeafNodes": 100
+  },
+  "rowCount": 8415,
+  "artifactCount": 4,
+  "artifacts": [
+    {
+      "artifactId": "tool_call_ward_chem_sys_sunburst-plotly_json",
+      "type": "plotly_json",
+      "name": "chem_sys_sunburst.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_chem_sys_sunburst/tool_calls/tool_call_ward_chem_sys_sunburst/chem_sys_sunburst.json",
+      "localPath": "sample_artifacts/chem_sys_sunburst.json",
+      "contentHash": "2e05939298b6413d5d0d8dd71b784789474c4b12dedbdb4e267a1bbb3e6a083f",
+      "bytes": 141287
+    },
+    {
+      "artifactId": "tool_call_ward_chem_sys_sunburst-plotly_html",
+      "type": "plotly_html",
+      "name": "chem_sys_sunburst.html",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_chem_sys_sunburst/tool_calls/tool_call_ward_chem_sys_sunburst/chem_sys_sunburst.html",
+      "localPath": "sample_artifacts/chem_sys_sunburst.html",
+      "contentHash": "2511551a24a678790f33f00ee0cc6aa4005acd05d53e19507c61d366e6a1e103",
+      "bytes": 74291
+    },
+    {
+      "artifactId": "tool_call_ward_chem_sys_sunburst-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_chem_sys_sunburst/tool_calls/tool_call_ward_chem_sys_sunburst/summary.md",
+      "localPath": "sample_artifacts/summary.md",
+      "contentHash": "8a2d0e3d3926d1318b1e3d524a78f922237d34de81f935c01c9d7d1dbef6166a",
+      "bytes": 273
+    },
+    {
+      "artifactId": "tool_call_ward_chem_sys_sunburst-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_chem_sys_sunburst/tool_calls/tool_call_ward_chem_sys_sunburst/recipe.json",
+      "localPath": "sample_artifacts/recipe.json",
+      "contentHash": "f342f082a9c2c69ac174875940cadd9d0b2f2802fda96e3c088e58e78fad7a1a",
+      "bytes": 692
+    }
+  ]
+}

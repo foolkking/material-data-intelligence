@@ -1,0 +1,51 @@
+{
+  "case": "ward_chem_sys_treemap",
+  "sourceCaseId": "ward_metallic_glasses_csv_xz",
+  "evidenceLevel": "Tool Registry + Adapter execution only",
+  "toolId": "composition.chem_sys_treemap",
+  "params": {
+    "formulaColumn": "composition",
+    "groupMode": "chem_sys",
+    "maxGroups": 50
+  },
+  "rowCount": 8415,
+  "artifactCount": 4,
+  "artifacts": [
+    {
+      "artifactId": "tool_call_ward_chem_sys_treemap-plotly_json",
+      "type": "plotly_json",
+      "name": "chem_sys_treemap.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_chem_sys_treemap/tool_calls/tool_call_ward_chem_sys_treemap/chem_sys_treemap.json",
+      "localPath": "sample_artifacts/chem_sys_treemap.json",
+      "contentHash": "3cd86a6e77c97a682b7b07af4dd50f94e56252bcb84cd121427ec0850944301f",
+      "bytes": 36728
+    },
+    {
+      "artifactId": "tool_call_ward_chem_sys_treemap-plotly_html",
+      "type": "plotly_html",
+      "name": "chem_sys_treemap.html",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_chem_sys_treemap/tool_calls/tool_call_ward_chem_sys_treemap/chem_sys_treemap.html",
+      "localPath": "sample_artifacts/chem_sys_treemap.html",
+      "contentHash": "05d8c6a6c6b3b787b8ead3f079659036354eb151ddab5e4d2c8d5ee4bdc9adb8",
+      "bytes": 34344
+    },
+    {
+      "artifactId": "tool_call_ward_chem_sys_treemap-summary_md",
+      "type": "summary_md",
+      "name": "summary.md",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_chem_sys_treemap/tool_calls/tool_call_ward_chem_sys_treemap/summary.md",
+      "localPath": "sample_artifacts/summary.md",
+      "contentHash": "76aa426380cd167819436f52ee161af06986fd4d8ceb417ce2ac4aecb7281a1a",
+      "bytes": 376
+    },
+    {
+      "artifactId": "tool_call_ward_chem_sys_treemap-recipe_json",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "storageKey": "projects/project_phase10b1/jobs/job_phase10b1_ward_chem_sys_treemap/tool_calls/tool_call_ward_chem_sys_treemap/recipe.json",
+      "localPath": "sample_artifacts/recipe.json",
+      "contentHash": "35db4e96ad098d73939d6f52ee5c9e900458aa10267c3f9bc84702a413f45332",
+      "bytes": 656
+    }
+  ]
+}

@@ -3,6 +3,18 @@ version_baseline:
   python: ">=3.11"
 
 tools:
+  - tool_id: composition.formula_statistics
+    source_package: pymatviz
+    source_function: Composition
+    implementation_source: pymatviz_composed
+    stage: mvp
+    adapter: FormulaStatisticsAdapter
+    display_target: composition
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
   - tool_id: composition.ptable_heatmap
     source_package: pymatviz
     source_function: ptable_heatmap
@@ -37,6 +49,20 @@ tools:
     implementation_source: pymatviz
     stage: mvp
     adapter: ChemSysTreemapAdapter
+    display_target: composition
+    artifact_types:
+      - plotly_json
+      - plotly_html
+      - preview_png
+      - summary_md
+      - recipe_json
+
+  - tool_id: composition.chem_sys_sunburst
+    source_package: pymatviz
+    source_function: chem_sys_sunburst
+    implementation_source: pymatviz
+    stage: mvp
+    adapter: ChemSysSunburstAdapter
     display_target: composition
     artifact_types:
       - plotly_json
