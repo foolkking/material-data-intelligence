@@ -29,7 +29,13 @@ def test_fixture_cif_poscar_and_normalized_structure_parse(repo_root: Path) -> N
     fixture_dir = repo_root / "tests" / "fixtures" / "structures"
 
     cif_structure = Structure.from_file(fixture_dir / "simple_cubic.cif")
-    poscar_structure = Structure.from_file(fixture_dir / "nacl.poscar")
+    poscar_text = (fixture_dir / "nacl.poscar").read_text(encoding="utf-8")
+    poscar_artifacts = _execute_adapter(
+        StructureSummaryAdapter(),
+        "structure.summary",
+        object_store={"structures": poscar_text},
+        artifact_types=[ArtifactType.structure_json, ArtifactType.summary_md, ArtifactType.recipe_json],
+    )
     normalized = json.loads((fixture_dir / "structure_collection.json").read_text(encoding="utf-8"))
     normalized_artifacts = _execute_adapter(
         StructureSummaryAdapter(),
@@ -39,7 +45,7 @@ def test_fixture_cif_poscar_and_normalized_structure_parse(repo_root: Path) -> N
     )
 
     assert cif_structure.composition.reduced_formula == "Si"
-    assert poscar_structure.composition.reduced_formula == "NaCl"
+    assert _artifact_payload(poscar_artifacts, "structure_summary.json")["structures"][0]["reducedFormula"] == "NaCl"
     assert _artifact_payload(normalized_artifacts, "structure_summary.json")["structures"][0]["formula"] == "Si1"
 
 
