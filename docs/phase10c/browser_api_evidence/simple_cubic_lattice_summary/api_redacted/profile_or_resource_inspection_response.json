@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "0.1",
+  "profileId": "profile_dataset_0002_v1",
+  "datasetId": "dataset_0002",
+  "version": "1",
+  "datasetType": "structure_collection",
+  "files": [
+    {
+      "fileId": "file_001",
+      "fileName": "simple_cubic_lattice_summary.cif",
+      "detectedFormat": "cif",
+      "parseStatus": "success"
+    }
+  ],
+  "objects": [
+    {
+      "objectId": "obj_structure_72a5ab29a949",
+      "objectType": "Structure",
+      "count": 1,
+      "sourceFileIds": [
+        "file_001"
+      ],
+      "periodicity": "periodic"
+    }
+  ],
+  "structureSummary": {
+    "nStructures": 1,
+    "formulaStats": {
+      "total": 1,
+      "uniqueCount": 1,
+      "topFormulas": [
+        {
+          "formula": "Si",
+          "count": 1
+        }
+      ]
+    },
+    "elements": [
+      "Si"
+    ],
+    "chemicalSystemStats": {
+      "uniqueCount": 1,
+      "topChemicalSystems": [
+        {
+          "chemSys": "Si",
+          "count": 1
+        }
+      ]
+    },
+    "atomCountStats": {
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    "hasForces": false,
+    "hasMagmoms": false,
+    "representativeStructureIds": [
+      "obj_structure_72a5ab29a949"
+    ]
+  },
+  "tableSummary": null,
+  "phononSummary": null,
+  "trajectorySummary": null,
+  "qualityIssues": [],
+  "recommendedTasks": [
+    {
+      "taskId": "composition.overview",
+      "label": "Composition overview",
+      "stage": "mvp",
+      "taskType": "composition_overview",
+      "availableNow": true,
+      "requiredTools": [
+        "composition.ptable_heatmap"
+      ],
+      "reason": "Periodic structures contain composition information."
+    },
+    {
+      "taskId": "structure.viewer",
+      "label": "Representative structure viewer",
+      "stage": "mvp",
+      "taskType": "structure_quality",
+      "availableNow": true,
+      "requiredTools": [
+        "structure.structure_3d",
+        "structure.viewer_3d"
+      ],
+      "reason": "Periodic Structure objects are available."
+    }
+  ],
+  "createdAt": "2026-07-07T01:25:17.609495+00:00"
+}

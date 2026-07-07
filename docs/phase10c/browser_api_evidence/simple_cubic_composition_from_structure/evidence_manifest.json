@@ -1,0 +1,89 @@
+{
+  "case_id": "simple_cubic_composition_from_structure",
+  "phase": "10C-2",
+  "adapter": "structure.composition_from_structure",
+  "evidence_level": "browser_api_artifact",
+  "resource": {
+    "name": "Phase 10C-2 simple_cubic_composition_from_structure",
+    "source": "tests/fixtures/structures/simple_cubic.cif via inline API upload",
+    "format": "cif",
+    "resource_id": "dataset_0004"
+  },
+  "planner": {
+    "provider": "mock",
+    "plan_id": "plan_9fba3e40c4fe442a97f0162a",
+    "plan_hash": "3e219d8fa32646f45093d4337cb29271015703beea1a3d43996a8bdead46b66d"
+  },
+  "job": {
+    "job_id": "job_1a7d1f82ff354506a99e9de7",
+    "status": "completed"
+  },
+  "tool_calls": [
+    {
+      "tool_id": "structure.composition_from_structure",
+      "status": "completed"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_1a7d1f82ff354506a99e9de7_step_001-table_json",
+      "name": "structure_composition.json",
+      "path": "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\artifacts\\structure_composition.json",
+      "type": "json",
+      "sizeBytes": 469,
+      "sha256": "6842e541b553afbe3f2a8c8ad284de63fac0191eea197358b86a014ab2d6d1c9",
+      "exists": true
+    },
+    {
+      "artifactId": "call_job_1a7d1f82ff354506a99e9de7_step_001-summary_md",
+      "name": "summary.md",
+      "path": "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\artifacts\\summary.md",
+      "type": "md",
+      "sizeBytes": 243,
+      "sha256": "0bf6755a068840e9eb4a0969c4afb44545730cd757255564bfc2417990bee89f",
+      "exists": true
+    },
+    {
+      "artifactId": "call_job_1a7d1f82ff354506a99e9de7_step_001-recipe_json",
+      "name": "recipe.json",
+      "path": "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\artifacts\\recipe.json",
+      "type": "json",
+      "sizeBytes": 630,
+      "sha256": "d74094384cad16f0c904978d9cd4f02d56bda61c25ee4093f6ada6a23b125103",
+      "exists": true
+    }
+  ],
+  "api_captures": [
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\api_redacted\\artifacts_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\api_redacted\\events_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\api_redacted\\job_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\api_redacted\\planner_preview_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\api_redacted\\planner_validate_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\api_redacted\\profile_or_resource_inspection_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\api_redacted\\result_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\api_redacted\\tool_calls_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\api_redacted\\upload_or_resource_response.json"
+  ],
+  "screenshots": [
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\browser_screenshots\\01_structure_resource_profile.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\browser_screenshots\\02_plan_preview.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\browser_screenshots\\03_agent_process_completed.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\browser_screenshots\\04_results_artifacts.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_composition_from_structure\\browser_screenshots\\05_developer_audit_redacted.png"
+  ],
+  "security": {
+    "redacted": true,
+    "secret_pattern_hits": "[REDACTED]"
+  },
+  "assertions": {
+    "passed": [
+      "job completed",
+      "tool call structure.composition_from_structure completed",
+      "expected artifacts present",
+      "browser screenshots captured",
+      "API captures saved"
+    ],
+    "failed": []
+  },
+  "verdict": "PASS"
+}

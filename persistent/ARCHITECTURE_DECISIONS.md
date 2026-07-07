@@ -2604,3 +2604,23 @@ The only code change accepted in this phase is an artifact-contract correction: 
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and the live LLM gate remain unchanged.
 - Default CI still does not call real LLM providers.
 - Structure and physics adapters remain future phases.
+
+## ADR-10C-2-STRUCTURE-EVIDENCE: Browser/API evidence validates lightweight structure adapters without claiming advanced structure visualization
+
+### Context
+
+Phase 10C-1 implemented five lightweight structure adapters. Phase 10C-2 needed to prove those adapters work through the real product path, not just direct adapter tests, while preserving runtime authority boundaries and avoiding live LLM calls.
+
+### Decision
+
+Treat Phase 10C-2 as evidence-only validation. The evidence path uses the Phase 9C workspace, Mock Planner, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry, and Adapter execution to generate simple cubic structure artifacts. Captured evidence is stored under `docs/phase10c/browser_api_evidence/` with redacted API responses, browser screenshots, artifact copies, manifests, summaries, and a security scan.
+
+No Phase 10C-2 evidence claim extends to `structure.viewer_3d`, XRD, RDF, coordination histogram, phonon, Brillouin zone, notebook extraction, script execution, or unsupported official examples.
+
+### Consequences
+
+- Browser/API evidence now covers `structure.summary`, `structure.lattice_summary`, `structure.spacegroup_summary`, `structure.composition_from_structure`, and `structure.preview_metadata`.
+- Lightweight structure artifacts remain reproducible through JSON, `summary.md`, and `recipe.json`.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Phase 10A/10B adapters, and the live LLM gate remain unchanged.
+- Default CI still does not call real LLM providers.
+- Advanced structure visualization and physics adapters remain future phases.

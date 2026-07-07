@@ -330,3 +330,10 @@
 - Formula parsing hardening remains open for complex formulas, malformed values, and unknown-element edge cases beyond current warning behavior.
 - Remaining material-domain questions now move to structure and physics planning: lightweight structure summaries, 3D viewer polish, XRD, RDF, phonon, Brillouin zone, and notebook/script extraction.
 - Browser/API evidence still does not claim Matbench, MP, CAMD, WBM, notebook-only, script-only, or external-data official examples are verified.
+
+## 2026-07-07 Phase 10C-2 Follow-ups
+
+- Phase 10C-2 closes browser/API/artifact evidence for the five lightweight structure adapters on deterministic simple cubic fixtures.
+- Spacegroup handling was verified through the available symmetry path; future work should still harden tolerance policy and dependency diagnostics across malformed or lower-symmetry structures.
+- Remaining material-domain questions now move to advanced structure and physics planning: 3D viewer, XRD, RDF, coordination histogram, phonon, Brillouin zone, and notebook/script extraction.
+- Browser/API evidence still does not claim unsupported official structure examples, notebook-only cases, script-only cases, or external-data cases are verified.

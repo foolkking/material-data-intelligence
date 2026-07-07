@@ -1079,3 +1079,23 @@
 - Security scan: `NO_SECRET_PATTERN_HITS`.
 - Evidence uses Mock Planner only; no real LLM was used.
 - Runtime main semantics were not changed.
+
+## 2026-07-07 Phase 10C-2
+
+### Added
+
+- Added `docs/phase10c/browser_api_evidence/` with browser/API/artifact evidence for the five lightweight structure adapters.
+- Added per-case evidence manifests, execution logs, platform summaries, security scan files, API captures, screenshots, and artifact copies for:
+  - `simple_cubic_structure_summary`
+  - `simple_cubic_lattice_summary`
+  - `simple_cubic_spacegroup_summary`
+  - `simple_cubic_composition_from_structure`
+  - `simple_cubic_preview_metadata`
+
+### Verification
+
+- Evidence totals: 45 redacted API captures, 25 browser screenshots, 15 artifact files, and 5 manifests.
+- Security scan: `NO_SECRET_PATTERN_HITS`.
+- Evidence uses Mock Planner only; no real LLM was used.
+- Runtime main semantics were not changed.
+- No 3D viewer, XRD, RDF, phonon, Brillouin zone, or unsupported official example support is claimed.

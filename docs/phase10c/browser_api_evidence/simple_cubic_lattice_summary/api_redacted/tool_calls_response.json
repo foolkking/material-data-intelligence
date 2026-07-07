@@ -1,0 +1,24 @@
+[
+  {
+    "id": "call_job_4b744a7a37fe4eda8c85c2b6_step_001",
+    "jobId": "job_4b744a7a37fe4eda8c85c2b6",
+    "stepId": "step_001",
+    "toolId": "structure.lattice_summary",
+    "status": "completed",
+    "idempotencyKey": "job_4b744a7a37fe4eda8c85c2b6:step_001",
+    "params": {
+      "maxStructures": 100,
+      "detectOutliers": true
+    },
+    "attempt": 1,
+    "artifactIds": [
+      "call_job_4b744a7a37fe4eda8c85c2b6_step_001-table_json",
+      "call_job_4b744a7a37fe4eda8c85c2b6_step_001-summary_md",
+      "call_job_4b744a7a37fe4eda8c85c2b6_step_001-recipe_json"
+    ],
+    "planId": "plan_5829d23775274b0a9d8dd326",
+    "planHash": "e1a9f3674f32f8710213f26e10aace99d944dea4420d97fe7d298eb830304ed7",
+    "inputSummary": "Params: detectOutliers, maxStructures",
+    "outputSummary": "3 artifact(s)"
+  }
+]

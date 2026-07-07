@@ -1,0 +1,89 @@
+{
+  "case_id": "simple_cubic_structure_summary",
+  "phase": "10C-2",
+  "adapter": "structure.summary",
+  "evidence_level": "browser_api_artifact",
+  "resource": {
+    "name": "Phase 10C-2 simple_cubic_structure_summary",
+    "source": "tests/fixtures/structures/simple_cubic.cif via inline API upload",
+    "format": "cif",
+    "resource_id": "dataset_0001"
+  },
+  "planner": {
+    "provider": "mock",
+    "plan_id": "plan_5601a2225c4c4065acb89bac",
+    "plan_hash": "6eae2985518ea1e7868ae3fe9cc1adf9609be6af8c46cd688d1420ff4b688054"
+  },
+  "job": {
+    "job_id": "job_6a441926ca7b4235896e3d42",
+    "status": "completed"
+  },
+  "tool_calls": [
+    {
+      "tool_id": "structure.summary",
+      "status": "completed"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_6a441926ca7b4235896e3d42_step_001-structure_json",
+      "name": "structure_summary.json",
+      "path": "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\artifacts\\structure_summary.json",
+      "type": "json",
+      "sizeBytes": 553,
+      "sha256": "d6a3ff8a7d3fc8afab7806b3c8da4172d609292ea2594620a0a89b3b59204a7a",
+      "exists": true
+    },
+    {
+      "artifactId": "call_job_6a441926ca7b4235896e3d42_step_001-summary_md",
+      "name": "summary.md",
+      "path": "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\artifacts\\summary.md",
+      "type": "md",
+      "sizeBytes": 118,
+      "sha256": "0a4f8da8ed9a714ed8834a7a008a22d0cceba851587f0a80d3657f6f6c2baea8",
+      "exists": true
+    },
+    {
+      "artifactId": "call_job_6a441926ca7b4235896e3d42_step_001-recipe_json",
+      "name": "recipe.json",
+      "path": "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\artifacts\\recipe.json",
+      "type": "json",
+      "sizeBytes": 627,
+      "sha256": "4a0680b606ea8c8f2f09d123fe5d63fb12133bff64f54c729ed93bb58b31d612",
+      "exists": true
+    }
+  ],
+  "api_captures": [
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\api_redacted\\artifacts_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\api_redacted\\events_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\api_redacted\\job_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\api_redacted\\planner_preview_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\api_redacted\\planner_validate_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\api_redacted\\profile_or_resource_inspection_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\api_redacted\\result_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\api_redacted\\tool_calls_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\api_redacted\\upload_or_resource_response.json"
+  ],
+  "screenshots": [
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\browser_screenshots\\01_structure_resource_profile.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\browser_screenshots\\02_plan_preview.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\browser_screenshots\\03_agent_process_completed.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\browser_screenshots\\04_results_artifacts.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_structure_summary\\browser_screenshots\\05_developer_audit_redacted.png"
+  ],
+  "security": {
+    "redacted": true,
+    "secret_pattern_hits": "[REDACTED]"
+  },
+  "assertions": {
+    "passed": [
+      "job completed",
+      "tool call structure.summary completed",
+      "expected artifacts present",
+      "browser screenshots captured",
+      "API captures saved"
+    ],
+    "failed": []
+  },
+  "verdict": "PASS"
+}

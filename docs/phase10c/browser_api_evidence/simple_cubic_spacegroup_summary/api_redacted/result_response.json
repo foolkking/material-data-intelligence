@@ -1,0 +1,167 @@
+{
+  "jobId": "job_c6158f33e2464c12a533e0a0",
+  "status": "completed",
+  "planId": "plan_8954940bda354467a47f78aa",
+  "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+  "summary": "Job completed with 1 ToolCall(s) and 3 Artifact(s).",
+  "toolCallCount": 1,
+  "artifactCount": 3,
+  "artifacts": [
+    {
+      "id": "call_job_c6158f33e2464c12a533e0a0_step_001-table_json",
+      "projectId": "project_local",
+      "datasetId": "dataset_0003",
+      "jobId": "job_c6158f33e2464c12a533e0a0",
+      "toolCallId": "call_job_c6158f33e2464c12a533e0a0_step_001",
+      "type": "table_json",
+      "name": "spacegroup_summary.json",
+      "version": "1",
+      "storageKey": "projects/project_local/jobs/job_c6158f33e2464c12a533e0a0/tool_calls/call_job_c6158f33e2464c12a533e0a0_step_001/spacegroup_summary.json",
+      "storageProvider": "local",
+      "bucket": null,
+      "previewKey": null,
+      "sizeBytes": 289,
+      "contentType": "application/json",
+      "contentHash": "a55ffd51e7a14191f3d4b58b3cf9f8781408967e660c2de4aabccbb186283350",
+      "sha256": "a55ffd51e7a14191f3d4b58b3cf9f8781408967e660c2de4aabccbb186283350",
+      "metadata": {
+        "toolId": "structure.spacegroup_summary",
+        "toolVersion": "0.1.0",
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "fc31647337b6f7acd7e9b579fc42d054e40ec18fae6b51562e08b1950c206988"
+        ],
+        "paramsHash": "f6a1597a328d0a466b29a21c1b667b3c64c88de45a7eaee200b6353db34265f6",
+        "profileId": null,
+        "recipeId": null,
+        "reportId": null,
+        "createdAt": "2026-07-07T01:49:47.051553+00:00",
+        "provenance": {
+          "toolId": "structure.spacegroup_summary",
+          "toolCallId": "call_job_c6158f33e2464c12a533e0a0_step_001",
+          "planId": "plan_8954940bda354467a47f78aa",
+          "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+          "planSource": "llm"
+        },
+        "storageProvider": "local",
+        "bucket": null
+      },
+      "planId": "plan_8954940bda354467a47f78aa",
+      "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+      "provenance": {
+        "toolId": "structure.spacegroup_summary",
+        "toolCallId": "call_job_c6158f33e2464c12a533e0a0_step_001",
+        "planId": "plan_8954940bda354467a47f78aa",
+        "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+        "planSource": "llm"
+      }
+    },
+    {
+      "id": "call_job_c6158f33e2464c12a533e0a0_step_001-summary_md",
+      "projectId": "project_local",
+      "datasetId": "dataset_0003",
+      "jobId": "job_c6158f33e2464c12a533e0a0",
+      "toolCallId": "call_job_c6158f33e2464c12a533e0a0_step_001",
+      "type": "summary_md",
+      "name": "summary.md",
+      "version": "1",
+      "storageKey": "projects/project_local/jobs/job_c6158f33e2464c12a533e0a0/tool_calls/call_job_c6158f33e2464c12a533e0a0_step_001/summary.md",
+      "storageProvider": "local",
+      "bucket": null,
+      "previewKey": null,
+      "sizeBytes": 166,
+      "contentType": "application/json",
+      "contentHash": "4e7461fdbbc01456e2a04b556db186b95f1ad54374118b407bcd851031010d6b",
+      "sha256": "4e7461fdbbc01456e2a04b556db186b95f1ad54374118b407bcd851031010d6b",
+      "metadata": {
+        "toolId": "structure.spacegroup_summary",
+        "toolVersion": "0.1.0",
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "fc31647337b6f7acd7e9b579fc42d054e40ec18fae6b51562e08b1950c206988"
+        ],
+        "paramsHash": "f6a1597a328d0a466b29a21c1b667b3c64c88de45a7eaee200b6353db34265f6",
+        "profileId": null,
+        "recipeId": null,
+        "reportId": null,
+        "createdAt": "2026-07-07T01:49:47.062574+00:00",
+        "provenance": {
+          "toolId": "structure.spacegroup_summary",
+          "toolCallId": "call_job_c6158f33e2464c12a533e0a0_step_001",
+          "planId": "plan_8954940bda354467a47f78aa",
+          "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+          "planSource": "llm"
+        },
+        "storageProvider": "local",
+        "bucket": null
+      },
+      "planId": "plan_8954940bda354467a47f78aa",
+      "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+      "provenance": {
+        "toolId": "structure.spacegroup_summary",
+        "toolCallId": "call_job_c6158f33e2464c12a533e0a0_step_001",
+        "planId": "plan_8954940bda354467a47f78aa",
+        "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+        "planSource": "llm"
+      }
+    },
+    {
+      "id": "call_job_c6158f33e2464c12a533e0a0_step_001-recipe_json",
+      "projectId": "project_local",
+      "datasetId": "dataset_0003",
+      "jobId": "job_c6158f33e2464c12a533e0a0",
+      "toolCallId": "call_job_c6158f33e2464c12a533e0a0_step_001",
+      "type": "recipe_json",
+      "name": "recipe.json",
+      "version": "1",
+      "storageKey": "projects/project_local/jobs/job_c6158f33e2464c12a533e0a0/tool_calls/call_job_c6158f33e2464c12a533e0a0_step_001/recipe.json",
+      "storageProvider": "local",
+      "bucket": null,
+      "previewKey": null,
+      "sizeBytes": 622,
+      "contentType": "application/json",
+      "contentHash": "11f48d00b8073f214acbbdab6b9986ae949201cdb035bc8e151c188627d9f6e5",
+      "sha256": "11f48d00b8073f214acbbdab6b9986ae949201cdb035bc8e151c188627d9f6e5",
+      "metadata": {
+        "toolId": "structure.spacegroup_summary",
+        "toolVersion": "0.1.0",
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "fc31647337b6f7acd7e9b579fc42d054e40ec18fae6b51562e08b1950c206988"
+        ],
+        "paramsHash": "f6a1597a328d0a466b29a21c1b667b3c64c88de45a7eaee200b6353db34265f6",
+        "profileId": null,
+        "recipeId": null,
+        "reportId": null,
+        "createdAt": "2026-07-07T01:49:47.071570+00:00",
+        "provenance": {
+          "toolId": "structure.spacegroup_summary",
+          "toolCallId": "call_job_c6158f33e2464c12a533e0a0_step_001",
+          "planId": "plan_8954940bda354467a47f78aa",
+          "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+          "planSource": "llm"
+        },
+        "storageProvider": "local",
+        "bucket": null
+      },
+      "planId": "plan_8954940bda354467a47f78aa",
+      "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+      "provenance": {
+        "toolId": "structure.spacegroup_summary",
+        "toolCallId": "call_job_c6158f33e2464c12a533e0a0_step_001",
+        "planId": "plan_8954940bda354467a47f78aa",
+        "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+        "planSource": "llm"
+      }
+    }
+  ],
+  "provenance": {
+    "planId": "plan_8954940bda354467a47f78aa",
+    "planHash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3",
+    "planSource": "llm",
+    "loadedFrom": "persisted_analysis_plan",
+    "binding": "jobs.plan_id -> analysis_plans.id",
+    "toolPath": "Tool Registry + Adapter",
+    "fallbackUsed": false
+  }
+}

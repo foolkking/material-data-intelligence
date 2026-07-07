@@ -601,3 +601,17 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - `composition.ptable_heatmap` now emits `ptable_heatmap.json` to match the registered artifact contract and evidence expectations.
 - No tool execution path was allowed to bypass Tool Registry or Adapter execution.
 - No new adapter was added in Phase 10B-2.
+
+## 2026-07-07 Phase 10C-2 Structure Browser/API Evidence Notes
+
+- Browser/API evidence confirms all five lightweight structure tools execute through persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, and adapter execution.
+- Verified tools:
+  - `structure.summary`
+  - `structure.lattice_summary`
+  - `structure.spacegroup_summary`
+  - `structure.composition_from_structure`
+  - `structure.preview_metadata`
+- Evidence artifacts live under `docs/phase10c/browser_api_evidence/` and include redacted API captures, screenshots, copied artifact files, manifests, and platform summaries.
+- No tool execution path was allowed to bypass Tool Registry or Adapter execution.
+- No new adapter was added in Phase 10C-2.
+- Phase 10C-2 does not claim support for `structure.viewer_3d`, XRD, RDF, coordination histogram, phonon, or Brillouin zone tools.

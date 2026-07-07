@@ -1,0 +1,89 @@
+{
+  "case_id": "simple_cubic_spacegroup_summary",
+  "phase": "10C-2",
+  "adapter": "structure.spacegroup_summary",
+  "evidence_level": "browser_api_artifact",
+  "resource": {
+    "name": "Phase 10C-2 simple_cubic_spacegroup_summary",
+    "source": "tests/fixtures/structures/simple_cubic.cif via inline API upload",
+    "format": "cif",
+    "resource_id": "dataset_0003"
+  },
+  "planner": {
+    "provider": "mock",
+    "plan_id": "plan_8954940bda354467a47f78aa",
+    "plan_hash": "0f4a154e0e57dbe9299478fcae8b23feb9c54233fc3c7c047fec11b96218aae3"
+  },
+  "job": {
+    "job_id": "job_c6158f33e2464c12a533e0a0",
+    "status": "completed"
+  },
+  "tool_calls": [
+    {
+      "tool_id": "structure.spacegroup_summary",
+      "status": "completed"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_c6158f33e2464c12a533e0a0_step_001-table_json",
+      "name": "spacegroup_summary.json",
+      "path": "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\artifacts\\spacegroup_summary.json",
+      "type": "json",
+      "sizeBytes": 289,
+      "sha256": "a55ffd51e7a14191f3d4b58b3cf9f8781408967e660c2de4aabccbb186283350",
+      "exists": true
+    },
+    {
+      "artifactId": "call_job_c6158f33e2464c12a533e0a0_step_001-summary_md",
+      "name": "summary.md",
+      "path": "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\artifacts\\summary.md",
+      "type": "md",
+      "sizeBytes": 166,
+      "sha256": "4e7461fdbbc01456e2a04b556db186b95f1ad54374118b407bcd851031010d6b",
+      "exists": true
+    },
+    {
+      "artifactId": "call_job_c6158f33e2464c12a533e0a0_step_001-recipe_json",
+      "name": "recipe.json",
+      "path": "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\artifacts\\recipe.json",
+      "type": "json",
+      "sizeBytes": 622,
+      "sha256": "11f48d00b8073f214acbbdab6b9986ae949201cdb035bc8e151c188627d9f6e5",
+      "exists": true
+    }
+  ],
+  "api_captures": [
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\api_redacted\\artifacts_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\api_redacted\\events_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\api_redacted\\job_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\api_redacted\\planner_preview_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\api_redacted\\planner_validate_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\api_redacted\\profile_or_resource_inspection_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\api_redacted\\result_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\api_redacted\\tool_calls_response.json",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\api_redacted\\upload_or_resource_response.json"
+  ],
+  "screenshots": [
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\browser_screenshots\\01_structure_resource_profile.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\browser_screenshots\\02_plan_preview.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\browser_screenshots\\03_agent_process_completed.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\browser_screenshots\\04_results_artifacts.png",
+    "docs\\phase10c\\browser_api_evidence\\simple_cubic_spacegroup_summary\\browser_screenshots\\05_developer_audit_redacted.png"
+  ],
+  "security": {
+    "redacted": true,
+    "secret_pattern_hits": "[REDACTED]"
+  },
+  "assertions": {
+    "passed": [
+      "job completed",
+      "tool call structure.spacegroup_summary completed",
+      "expected artifacts present",
+      "browser screenshots captured",
+      "API captures saved"
+    ],
+    "failed": []
+  },
+  "verdict": "PASS"
+}

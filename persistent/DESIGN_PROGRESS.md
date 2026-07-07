@@ -792,3 +792,20 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - No real LLM was used, and default CI remains gated away from live LLM calls.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, and PlanValidator semantics were not changed.
 - Remaining work: Phase 10C lightweight structure planning, structure viewer polish, XRD, RDF, phonon, Brillouin zone, and notebook/script extraction.
+
+## 2026-07-07 Phase 10C-2 Browser/API Evidence for Lightweight Structure Adapters
+
+- Generated end-to-end browser/API/artifact evidence for the five Phase 10C-1 lightweight structure adapters under `docs/phase10c/browser_api_evidence/`.
+- Verified simple cubic structure workflows through Phase 9C UI, Mock Planner, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry, adapters, artifacts, reports, and recipes.
+- Covered:
+  - `simple_cubic_structure_summary` -> `structure.summary`
+  - `simple_cubic_lattice_summary` -> `structure.lattice_summary`
+  - `simple_cubic_spacegroup_summary` -> `structure.spacegroup_summary`
+  - `simple_cubic_composition_from_structure` -> `structure.composition_from_structure`
+  - `simple_cubic_preview_metadata` -> `structure.preview_metadata`
+- Evidence totals: 45 redacted API captures, 25 browser screenshots, 15 artifact files, and 5 evidence manifests.
+- Security scan result: `NO_SECRET_PATTERN_HITS`.
+- Spacegroup evidence used the actual available symmetry path and did not fabricate fallback symmetry.
+- No real LLM was used, and default CI remains gated away from live LLM calls.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and existing Phase 10A/10B adapter semantics were not changed.
+- Remaining work: Phase 10D advanced structure visualization planning, 3D viewer, XRD, RDF, coordination histogram, phonon, Brillouin zone, and notebook/script extraction.

@@ -1,0 +1,1 @@
+{"angleTolerance":5.0,"artifactType":"structure.spacegroup_summary","crystalSystemCounts":{"cubic":1},"failedStructures":[],"spacegroups":[{"count":1,"crystalSystem":"cubic","number":221,"symbol":"Pm-3m"}],"structureCount":1,"symmetryEngine":"pymatgen/spglib","symprec":0.01,"warnings":[]}

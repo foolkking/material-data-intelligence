@@ -1,0 +1,25 @@
+[
+  {
+    "id": "call_job_470ef3b66d8f48b0a45e9c46_step_001",
+    "jobId": "job_470ef3b66d8f48b0a45e9c46",
+    "stepId": "step_001",
+    "toolId": "structure.preview_metadata",
+    "status": "completed",
+    "idempotencyKey": "job_470ef3b66d8f48b0a45e9c46:step_001",
+    "params": {
+      "maxPreviewSites": 100,
+      "includeCartesian": true,
+      "includeFractional": true
+    },
+    "attempt": 1,
+    "artifactIds": [
+      "call_job_470ef3b66d8f48b0a45e9c46_step_001-structure_json",
+      "call_job_470ef3b66d8f48b0a45e9c46_step_001-summary_md",
+      "call_job_470ef3b66d8f48b0a45e9c46_step_001-recipe_json"
+    ],
+    "planId": "plan_bf57aadafcca41369732f7c4",
+    "planHash": "6a5c687049571943a0037ca27762898a4b2cceae1ea24caeb51480b16eeb5d3d",
+    "inputSummary": "Params: includeCartesian, includeFractional, maxPreviewSites",
+    "outputSummary": "3 artifact(s)"
+  }
+]

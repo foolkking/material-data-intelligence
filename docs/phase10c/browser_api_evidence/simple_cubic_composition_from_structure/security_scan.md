@@ -1,0 +1,3 @@
+# Security Scan
+
+NO_SECRET_PATTERN_HITS

@@ -1,0 +1,120 @@
+{
+  "id": "dataset_0004",
+  "datasetId": "dataset_0004",
+  "projectId": "project_0005",
+  "name": "Phase 10C-2 simple_cubic_composition_from_structure",
+  "status": "profile_ready",
+  "fileCount": 1,
+  "objectCount": 1,
+  "profileId": "profile_dataset_0004_v1",
+  "normalizedExports": [
+    {
+      "objectId": "obj_structure_72a5ab29a949",
+      "storageKey": "projects/project_0005/datasets/dataset_0004/normalized/obj_structure_72a5ab29a949/structure.json",
+      "metadataKey": "projects/project_0005/datasets/dataset_0004/normalized/obj_structure_72a5ab29a949/metadata.json",
+      "contentHash": "067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6"
+    }
+  ],
+  "createdAt": "2026-07-07T01:25:17.911537+00:00",
+  "files": [
+    {
+      "fileId": "file_001",
+      "name": "simple_cubic_composition_from_structure.cif",
+      "detectedFormat": "cif",
+      "status": "success",
+      "objectCount": 1,
+      "errorCode": null
+    }
+  ],
+  "profile": {
+    "schemaVersion": "0.1",
+    "profileId": "profile_dataset_0004_v1",
+    "datasetId": "dataset_0004",
+    "version": "1",
+    "datasetType": "structure_collection",
+    "files": [
+      {
+        "fileId": "file_001",
+        "fileName": "simple_cubic_composition_from_structure.cif",
+        "detectedFormat": "cif",
+        "parseStatus": "success"
+      }
+    ],
+    "objects": [
+      {
+        "objectId": "obj_structure_72a5ab29a949",
+        "objectType": "Structure",
+        "count": 1,
+        "sourceFileIds": [
+          "file_001"
+        ],
+        "periodicity": "periodic"
+      }
+    ],
+    "structureSummary": {
+      "nStructures": 1,
+      "formulaStats": {
+        "total": 1,
+        "uniqueCount": 1,
+        "topFormulas": [
+          {
+            "formula": "Si",
+            "count": 1
+          }
+        ]
+      },
+      "elements": [
+        "Si"
+      ],
+      "chemicalSystemStats": {
+        "uniqueCount": 1,
+        "topChemicalSystems": [
+          {
+            "chemSys": "Si",
+            "count": 1
+          }
+        ]
+      },
+      "atomCountStats": {
+        "min": 1,
+        "median": 1,
+        "max": 1
+      },
+      "hasForces": false,
+      "hasMagmoms": false,
+      "representativeStructureIds": [
+        "obj_structure_72a5ab29a949"
+      ]
+    },
+    "tableSummary": null,
+    "phononSummary": null,
+    "trajectorySummary": null,
+    "qualityIssues": [],
+    "recommendedTasks": [
+      {
+        "taskId": "composition.overview",
+        "label": "Composition overview",
+        "stage": "mvp",
+        "taskType": "composition_overview",
+        "availableNow": true,
+        "requiredTools": [
+          "composition.ptable_heatmap"
+        ],
+        "reason": "Periodic structures contain composition information."
+      },
+      {
+        "taskId": "structure.viewer",
+        "label": "Representative structure viewer",
+        "stage": "mvp",
+        "taskType": "structure_quality",
+        "availableNow": true,
+        "requiredTools": [
+          "structure.structure_3d",
+          "structure.viewer_3d"
+        ],
+        "reason": "Periodic Structure objects are available."
+      }
+    ],
+    "createdAt": "2026-07-07T01:25:17.908307+00:00"
+  }
+}

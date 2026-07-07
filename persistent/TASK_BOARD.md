@@ -1032,3 +1032,25 @@
 
 - [ ] Phase 10C lightweight structure adapter planning.
 - [ ] Structure viewer polish, XRD, RDF, phonon, Brillouin zone, and notebook/script extraction.
+
+## 2026-07-07 Phase 10C-2 Browser/API Evidence for Lightweight Structure Adapters
+
+### Done
+
+- [x] Browser/API/artifact evidence generated for `structure.summary`.
+- [x] Browser/API/artifact evidence generated for `structure.lattice_summary`.
+- [x] Browser/API/artifact evidence generated for `structure.spacegroup_summary`.
+- [x] Browser/API/artifact evidence generated for `structure.composition_from_structure`.
+- [x] Browser/API/artifact evidence generated for `structure.preview_metadata`.
+- [x] Saved 45 redacted API captures.
+- [x] Saved 25 browser screenshots.
+- [x] Saved 15 artifact files.
+- [x] Saved 5 evidence manifests.
+- [x] Added global Phase 10C-2 evidence summary and security scan.
+- [x] Confirmed evidence uses Mock Planner only and no real LLM.
+- [x] Confirmed no 3D viewer, XRD, RDF, phonon, Brillouin zone, or unsupported official example support is claimed.
+
+### Still Open
+
+- [ ] Phase 10D advanced structure visualization planning.
+- [ ] Structure 3D viewer, XRD, RDF, coordination histogram, phonon, Brillouin zone, and notebook/script extraction.
