@@ -2648,3 +2648,22 @@ Phase 10D-1 should implement viewer scene metadata and export package artifacts 
 - Browser/API evidence for metadata artifacts can remain deterministic and reproducible.
 - Full 3D viewer, XRD/RDF, coordination histograms, Brillouin-zone 3D, phonon tools, notebook extraction, and script execution remain deferred until their dependency and evidence contracts are explicit.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and default CI real-LLM gates remain unchanged.
+
+## ADR-10D-1-VIEWER-SCENE-METADATA: Static viewer scene artifacts precede renderer implementation
+
+### Context
+
+Phase 10D selected a metadata-first strategy for advanced structure visualization. The platform needed a concrete scene/export artifact contract before adding any full interactive 3D viewer, WebGL renderer, Brillouin-zone renderer, static physics plot, or phonon visualization.
+
+### Decision
+
+Implement `structure.viewer_scene_metadata` and `structure.viewer_export_package` as deterministic structure adapters. They produce static `viewer_scene.json`, `viewer_assets_manifest.json`, `summary.md`, and `recipe.json` artifacts. The artifacts are designed for future renderer consumption but contain no executable JavaScript, no external URLs, no renderer bundle, and no WebGL code.
+
+Do not implement optional `structure.viewer_3d_contract` in this phase. The scene contract is carried by `viewer_scene.json` and can be promoted to a separate schema-only tool later if product needs justify it.
+
+### Consequences
+
+- Future 3D viewer work can consume a stable scene/export package contract.
+- Phase 10D-2 can collect browser/API evidence for metadata artifacts without claiming full 3D viewer support.
+- Full `structure.viewer_3d`, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, and script execution remain deferred.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and the live LLM gate remain unchanged.

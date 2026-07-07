@@ -1118,3 +1118,23 @@
 
 - Planning-only phase; no adapters or runtime semantics were changed.
 - Default CI remains gated away from real LLM calls.
+
+## 2026-07-07 Phase 10D-1
+
+### Added
+
+- Added `structure.viewer_scene_metadata`.
+- Added `structure.viewer_export_package`.
+- Added `docs/phase10d/phase10d1_viewer_scene_metadata_implementation.md`.
+- Added adapter-level evidence under `docs/phase10d/adapter_evidence/`.
+
+### Changed
+
+- Extended Tool Registry manifest, strict params schema generation, adapter exports, adapter registry, and Mock Planner routing for static viewer scene metadata/export package tools.
+- Added frontend tool labels for the two new static viewer metadata tools.
+
+### Verification
+
+- Added tests for artifact contracts, no JavaScript / no external URL assertions, registry schemas, planner routing, deferred prompt boundaries, and persisted execution.
+- Browser/API evidence remains deferred to Phase 10D-2.
+- No full 3D viewer, WebGL renderer, XRD, RDF, coordination histogram, Brillouin-zone, phonon, notebook extraction, or script execution was added.

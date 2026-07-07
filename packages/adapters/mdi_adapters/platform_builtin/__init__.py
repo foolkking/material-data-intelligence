@@ -11,6 +11,8 @@ from .structure import (
     StructureCompositionAdapter,
     StructurePreviewMetadataAdapter,
     StructureSummaryAdapter,
+    StructureViewerExportPackageAdapter,
+    StructureViewerSceneMetadataAdapter,
 )
 from .table_distribution import DistributionSummaryAdapter
 from .viz import CorrelationAdapter, HistogramAdapter, ScatterAdapter
@@ -30,4 +32,6 @@ __all__ = [
     "StructureCompositionAdapter",
     "StructurePreviewMetadataAdapter",
     "StructureSummaryAdapter",
+    "StructureViewerExportPackageAdapter",
+    "StructureViewerSceneMetadataAdapter",
 ]

@@ -104,6 +104,14 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
+    if tool_id in {"structure.viewer_scene_metadata", "structure.viewer_export_package"}:
+        return {
+            "maxStructures": 8,
+            "maxAtomsPerStructure": 5000,
+            "maxSites": 5000,
+            "maxBonds": 20000,
+            "maxPackageBytes": 5_000_000,
+        }
     if tool_id.startswith("structure.") or tool_id.startswith("trajectory."):
         return {"maxStructures": 8, "maxAtomsPerStructure": 5000, "maxFrames": 200}
     if tool_id.startswith("ml."):
@@ -313,6 +321,31 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "cameraPreset": {"type": "string"},
             },
         }
+    if tool_id == "structure.viewer_scene_metadata":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": _viewer_scene_params_schema(),
+        }
+    if tool_id == "structure.viewer_export_package":
+        properties = {
+            **_viewer_scene_params_schema(),
+            "includeScene": {"type": "boolean"},
+            "include_scene": {"type": "boolean"},
+            "includeManifest": {"type": "boolean"},
+            "include_manifest": {"type": "boolean"},
+            "includeSummary": {"type": "boolean"},
+            "include_summary": {"type": "boolean"},
+            "includeRecipe": {"type": "boolean"},
+            "include_recipe": {"type": "boolean"},
+            "maxPackageBytes": {"type": "integer", "minimum": 1, "maximum": 50_000_000},
+            "max_package_bytes": {"type": "integer", "minimum": 1, "maximum": 50_000_000},
+        }
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": properties,
+        }
     if tool_id == "structure.coordination_hist":
         return {
             "type": "object",
@@ -497,6 +530,27 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             },
         }
     return {"type": "object", "additionalProperties": True, "properties": {}}
+
+
+def _viewer_scene_params_schema() -> dict[str, Any]:
+    return {
+        "inferBonds": {"type": "boolean"},
+        "infer_bonds": {"type": "boolean"},
+        "bondTolerance": {"type": "number", "minimum": 0, "maximum": 1},
+        "bond_tolerance": {"type": "number", "minimum": 0, "maximum": 1},
+        "maxSites": {"type": "integer", "minimum": 1, "maximum": 5000},
+        "max_sites": {"type": "integer", "minimum": 1, "maximum": 5000},
+        "maxBonds": {"type": "integer", "minimum": 0, "maximum": 20000},
+        "max_bonds": {"type": "integer", "minimum": 0, "maximum": 20000},
+        "includeCartCoords": {"type": "boolean"},
+        "include_cart_coords": {"type": "boolean"},
+        "includeFracCoords": {"type": "boolean"},
+        "include_frac_coords": {"type": "boolean"},
+        "stylePreset": {"enum": ["default"]},
+        "style_preset": {"enum": ["default"]},
+        "cameraPreset": {"enum": ["auto"]},
+        "camera_preset": {"enum": ["auto"]},
+    }
 
 
 def _source_for(entry: dict[str, Any], manifest_path: Path) -> dict[str, Any]:

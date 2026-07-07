@@ -1652,6 +1652,8 @@ function toolDisplayName(toolId: string, t: ReturnType<typeof createTranslator>)
   if (toolId === "structure.spacegroup_summary") return "Space group summary";
   if (toolId === "structure.composition_from_structure") return "Structure composition";
   if (toolId === "structure.preview_metadata") return "Structure preview metadata";
+  if (toolId === "structure.viewer_scene_metadata") return "Viewer scene metadata";
+  if (toolId === "structure.viewer_export_package") return "Viewer export package";
   if (toolId === "structure.viewer_3d") return t("toolStructureViewer");
   return toolId;
 }

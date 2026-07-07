@@ -594,6 +594,8 @@ def _default_params_for(tool_id: str) -> dict[str, Any]:
         "composition.elements_hist": {"countMode": "composition", "keepTop": 20, "title": "Element distribution"},
         "composition.chem_sys_treemap": {"showCounts": "value", "maxCells": 20, "title": "Chemical systems"},
         "structure.structure_3d": {"showCell": True, "showBonds": False, "maxStructures": 1},
+        "structure.viewer_scene_metadata": {"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
+        "structure.viewer_export_package": {"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
         "structure.viewer_3d": {"showCell": True, "showBonds": "auto", "cameraPreset": "isometric"},
         "structure.coordination_hist": {"cutoff": 3.0, "splitMode": "by element", "maxStructures": 4},
         "ml.density_scatter": {
@@ -616,6 +618,8 @@ def _purpose_for(tool_id: str) -> str:
         "composition.elements_hist": "Summarize element counts across formulas.",
         "composition.chem_sys_treemap": "Show chemical-system distribution.",
         "structure.structure_3d": "Render a representative periodic structure.",
+        "structure.viewer_scene_metadata": "Generate static scene metadata for future structure viewer rendering.",
+        "structure.viewer_export_package": "Generate a static structure viewer export package without a renderer.",
         "structure.viewer_3d": "Create an interactive 3D viewer artifact.",
         "structure.coordination_hist": "Check local coordination environments.",
         "ml.density_scatter": "Compare predicted and target values.",

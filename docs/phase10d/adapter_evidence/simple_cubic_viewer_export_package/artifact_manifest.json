@@ -1,0 +1,56 @@
+{
+  "artifacts": [
+    {
+      "containsForbiddenExternalUrl": false,
+      "containsJavascriptScheme": false,
+      "containsScriptTag": false,
+      "name": "viewer_scene.json",
+      "sha256": "699c6bb718b44bd52d66cd3c81329e54d67e637125b6dfa186eba783128462f0",
+      "sizeBytes": 3979,
+      "storageKey": "projects/project_10d1/jobs/job_simple_cubic_viewer_export_package/tool_calls/tool_call_local/viewer_scene.json",
+      "type": "structure_json"
+    },
+    {
+      "containsForbiddenExternalUrl": false,
+      "containsJavascriptScheme": false,
+      "containsScriptTag": false,
+      "name": "viewer_assets_manifest.json",
+      "sha256": "9b7a28a5f3cc5dd2f507b00dc6c42d4cb596afee5a1132924dbc17d2de730428",
+      "sizeBytes": 1007,
+      "storageKey": "projects/project_10d1/jobs/job_simple_cubic_viewer_export_package/tool_calls/tool_call_local/viewer_assets_manifest.json",
+      "type": "table_json"
+    },
+    {
+      "containsForbiddenExternalUrl": false,
+      "containsJavascriptScheme": false,
+      "containsScriptTag": false,
+      "name": "summary.md",
+      "sha256": "cf47388fe51aabd6eff8e0b47d2a66dfb45a77b0f46eeda42944ff57ff6433e8",
+      "sizeBytes": 539,
+      "storageKey": "projects/project_10d1/jobs/job_simple_cubic_viewer_export_package/tool_calls/tool_call_local/summary.md",
+      "type": "summary_md"
+    },
+    {
+      "containsForbiddenExternalUrl": false,
+      "containsJavascriptScheme": false,
+      "containsScriptTag": false,
+      "name": "recipe.json",
+      "sha256": "b73de6b2748d715a94c77c84c1de4f46557f22d50debe305f55530dfe160f63d",
+      "sizeBytes": 1145,
+      "storageKey": "projects/project_10d1/jobs/job_simple_cubic_viewer_export_package/tool_calls/tool_call_local/recipe.json",
+      "type": "recipe_json"
+    }
+  ],
+  "browser_api_evidence": "not included in Phase 10D-1",
+  "case_id": "simple_cubic_viewer_export_package",
+  "evidence_level": "Tool Registry + Adapter execution only",
+  "expected_artifacts": [
+    "viewer_scene.json",
+    "viewer_assets_manifest.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "phase": "10D-1",
+  "tool_id": "structure.viewer_export_package",
+  "verdict": "PASS"
+}

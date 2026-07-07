@@ -20,6 +20,8 @@ from .platform_builtin import (
     StructureCompositionAdapter,
     StructurePreviewMetadataAdapter,
     StructureSummaryAdapter,
+    StructureViewerExportPackageAdapter,
+    StructureViewerSceneMetadataAdapter,
 )
 from .pymatviz import (
     ChemSysSunburstAdapter,
@@ -57,6 +59,8 @@ __all__ = [
     "StructureCompositionAdapter",
     "StructurePreviewMetadataAdapter",
     "StructureSummaryAdapter",
+    "StructureViewerExportPackageAdapter",
+    "StructureViewerSceneMetadataAdapter",
     "StructureViewer3DAdapter",
     "ScatterAdapter",
     "ToolExecutionContext",

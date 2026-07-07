@@ -1,0 +1,45 @@
+{
+  "artifacts": [
+    {
+      "containsForbiddenExternalUrl": false,
+      "containsJavascriptScheme": false,
+      "containsScriptTag": false,
+      "name": "viewer_scene.json",
+      "sha256": "699c6bb718b44bd52d66cd3c81329e54d67e637125b6dfa186eba783128462f0",
+      "sizeBytes": 3979,
+      "storageKey": "projects/project_10d1/jobs/job_simple_cubic_viewer_scene_metadata/tool_calls/tool_call_local/viewer_scene.json",
+      "type": "structure_json"
+    },
+    {
+      "containsForbiddenExternalUrl": false,
+      "containsJavascriptScheme": false,
+      "containsScriptTag": false,
+      "name": "summary.md",
+      "sha256": "f41d1a806b8c60c8dffa8f493d0bf70f7a7bfc4d0059455c654c6d57bb434631",
+      "sizeBytes": 539,
+      "storageKey": "projects/project_10d1/jobs/job_simple_cubic_viewer_scene_metadata/tool_calls/tool_call_local/summary.md",
+      "type": "summary_md"
+    },
+    {
+      "containsForbiddenExternalUrl": false,
+      "containsJavascriptScheme": false,
+      "containsScriptTag": false,
+      "name": "recipe.json",
+      "sha256": "d6fc5cd4de48f981510e9ca473f8dc6b351d5088a6a693ff0db7d6cc5c162513",
+      "sizeBytes": 1102,
+      "storageKey": "projects/project_10d1/jobs/job_simple_cubic_viewer_scene_metadata/tool_calls/tool_call_local/recipe.json",
+      "type": "recipe_json"
+    }
+  ],
+  "browser_api_evidence": "not included in Phase 10D-1",
+  "case_id": "simple_cubic_viewer_scene_metadata",
+  "evidence_level": "Tool Registry + Adapter execution only",
+  "expected_artifacts": [
+    "viewer_scene.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "phase": "10D-1",
+  "tool_id": "structure.viewer_scene_metadata",
+  "verdict": "PASS"
+}

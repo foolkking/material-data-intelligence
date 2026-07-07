@@ -1073,3 +1073,23 @@
 - [ ] Phase 10D-2 browser/API evidence for viewer scene metadata.
 - [ ] Static physics plot planning/implementation for coordination histogram, XRD, and RDF.
 - [ ] Full interactive 3D viewer, Brillouin-zone 3D, phonon visualization, notebook extraction, and script execution remain future work.
+
+## 2026-07-07 Phase 10D-1 Viewer Scene Metadata / Export Package Implementation
+
+### Done
+
+- [x] Implemented `structure.viewer_scene_metadata`.
+- [x] Implemented `structure.viewer_export_package`.
+- [x] Registered both tools in Tool Registry manifests and adapter registry.
+- [x] Added strict params schemas for viewer scene metadata and export package.
+- [x] Added Mock Planner routing for scene metadata and export package prompts.
+- [x] Added deferred routing tests so full viewer, XRD, RDF, coordination, Brillouin-zone, and phonon prompts do not route to Phase 10D-1 tools.
+- [x] Added adapter, registry, planner, artifact contract, and persisted execution tests.
+- [x] Generated adapter-level evidence under `docs/phase10d/adapter_evidence/`.
+- [x] Added `docs/phase10d/phase10d1_viewer_scene_metadata_implementation.md`.
+
+### Still Open
+
+- [ ] Phase 10D-2 browser/API evidence for `structure.viewer_scene_metadata` and `structure.viewer_export_package`.
+- [ ] Optional schema-only `structure.viewer_3d_contract` decision.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon, notebook extraction, and script execution.

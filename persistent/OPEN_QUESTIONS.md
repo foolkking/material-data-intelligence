@@ -346,3 +346,11 @@
 - Full interactive viewer work still needs renderer choice, WebGL fallback, screenshot determinism, sandboxing, and artifact-size policy.
 - Phonon tools still need input data contracts, unit policy, phonopy/pymatgen dependency policy, and direct-uploadable fixtures.
 - Official advanced structure examples remain mapping or future-scope references; no new official examples are verified by Phase 10D.
+
+## 2026-07-07 Phase 10D-1 Follow-ups
+
+- Phase 10D-1 closes implementation of static viewer scene metadata and export package artifacts.
+- Browser/API evidence for these two tools remains open for Phase 10D-2.
+- Optional `structure.viewer_3d_contract` remains open; it was not needed to ship the static `viewer_scene.json` contract.
+- Bond inference is intentionally simple and deterministic; future full viewer work should revisit bond policy and element styling before interactive rendering.
+- Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon, notebook extraction, and script execution remain open.

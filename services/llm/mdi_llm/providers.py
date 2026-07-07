@@ -97,6 +97,29 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_viewer_export_package(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.viewer_export_package",
+                purpose="Create a static structure viewer export package without a renderer.",
+                params={"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
+                artifact_name="viewer_scene.json",
+                artifact_type="structure_json",
+                artifact_types=["structure_json", "table_json", "summary_md", "recipe_json"],
+                extra_expected_artifacts=[{"name": "viewer_assets_manifest.json", "type": "table_json", "fromStepId": "step_001"}],
+            )
+        elif _should_generate_viewer_scene_metadata(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.viewer_scene_metadata",
+                purpose="Create static viewer scene metadata for future renderer consumption.",
+                params={"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
+                artifact_name="viewer_scene.json",
+                artifact_type="structure_json",
+                artifact_types=["structure_json", "summary_md", "recipe_json"],
+            )
         elif _should_generate_structure_spacegroup(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -731,6 +754,7 @@ def _mock_structure_plan(
     artifact_name: str,
     artifact_type: str,
     artifact_types: list[str],
+    extra_expected_artifacts: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     step = {
         "stepId": "step_001",
@@ -742,11 +766,52 @@ def _mock_structure_plan(
         "output": {"artifactTypes": artifact_types},
     }
     expected = [{"name": artifact_name, "type": artifact_type, "fromStepId": "step_001"}]
+    expected.extend(extra_expected_artifacts or [])
     expected.extend(
         {"name": name, "type": artifact_type_name, "fromStepId": "step_001"}
         for name, artifact_type_name in (("summary.md", "summary_md"), ("recipe.json", "recipe_json"))
     )
     return _single_step_plan(request, step, expected)
+
+
+def _should_generate_viewer_export_package(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.viewer_export_package") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = (
+        "viewer export package",
+        "export package",
+        "viewer package",
+        "viewer_assets_manifest",
+        "package this structure for future 3d viewer",
+        "static viewer export",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_viewer_scene_metadata(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.viewer_scene_metadata") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = (
+        "viewer scene metadata",
+        "viewer_scene",
+        "viewer scene contract",
+        "scene contract",
+        "static structure viewer scene",
+        "structure viewer metadata",
+        "create viewer scene metadata",
+        "build a static structure viewer scene contract",
+    )
+    return any(marker in prompt for marker in markers)
 
 
 def _single_step_plan(

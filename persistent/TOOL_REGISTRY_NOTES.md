@@ -626,3 +626,14 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
   - optional schema-only `structure.viewer_3d_contract`
 - Full `structure.viewer_3d`, `structure.brillouin_zone_3d`, `structure.xrd`, `structure.rdf`, `phonon.bands`, `phonon.dos`, and `phonon.band_dos` remain unregistered future-scope tools until their schemas, dependencies, and evidence plans are approved.
 - Viewer artifacts must be static and deterministic. Artifact-provided JavaScript execution, external URL loading, arbitrary local file reads, notebook execution, and script execution remain forbidden.
+
+## 2026-07-07 Phase 10D-1 Viewer Scene Metadata Tool Notes
+
+- Registered executable tools:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+- Both tools use domain `structure`, strict params schemas, Tool Registry validation, and Adapter execution.
+- `structure.viewer_scene_metadata` emits `viewer_scene.json`, `summary.md`, and `recipe.json`.
+- `structure.viewer_export_package` emits `viewer_scene.json`, `viewer_assets_manifest.json`, `summary.md`, and `recipe.json`.
+- Artifacts are static JSON/Markdown only. They do not include renderer bundles, artifact-supplied JavaScript, external URLs, or WebGL code.
+- Mock Planner routing for full interactive viewer, XRD, RDF, coordination, Brillouin-zone, and phonon prompts remains deferred and does not route to Phase 10D-1 tools.

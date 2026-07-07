@@ -822,3 +822,14 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Recommended Phase 10D-1 scope is `structure.viewer_scene_metadata` and `structure.viewer_export_package`, with optional schema-only `structure.viewer_3d_contract`.
 - Explicitly deferred full interactive `structure.viewer_3d`, WebGL renderer work, Brillouin-zone 3D, XRD/RDF implementation, phonon tools, notebook extraction, and script execution.
 - No adapter, Tool Registry, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, or PlanValidator implementation was changed in this planning phase.
+
+## 2026-07-07 Phase 10D-1 Viewer Scene Metadata / Export Package Implementation
+
+- Implemented `structure.viewer_scene_metadata` and `structure.viewer_export_package`.
+- Did not implement optional `structure.viewer_3d_contract`; the current contract is carried by `viewer_scene.json`.
+- Added deterministic static artifacts: `viewer_scene.json`, `viewer_assets_manifest.json`, `summary.md`, and `recipe.json`.
+- Registered both tools through Tool Registry with strict params validation and structure resource limits.
+- Added Mock Planner routing for viewer scene metadata and static export package prompts.
+- Full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, and script execution remain deferred.
+- Browser/API evidence is deferred to Phase 10D-2; Phase 10D-1 evidence is adapter-level only under `docs/phase10d/adapter_evidence/`.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and the default real-LLM gate were not changed.
