@@ -1,0 +1,6 @@
+data_malformed
+_cell_length_a not-a-number
+loop_
+ _atom_site_label
+ _atom_site_type_symbol
+Broken1 Xx

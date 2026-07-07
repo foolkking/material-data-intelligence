@@ -1,0 +1,38 @@
+{
+  "case": "simple_cubic_lattice_summary",
+  "phase": "10C-1",
+  "tool_id": "structure.lattice_summary",
+  "dataset": "simple cubic Si pymatgen Structure fixture",
+  "evidence_level": "Tool Registry + Adapter execution only",
+  "browser_api_evidence": "not included in Phase 10C-1",
+  "verdict": "PASS",
+  "artifacts": [
+    {
+      "artifact_id": "tool_call_local-table_json",
+      "name": "lattice_summary.json",
+      "type": "table_json",
+      "contentHash": "f890adf74df42534057b921ca44bd74d2f2a3bc1fb010db1dd94493215cbec0e",
+      "local_path": "sample_artifacts/lattice_summary.json",
+      "sizeBytes": 569
+    },
+    {
+      "artifact_id": "tool_call_local-summary_md",
+      "name": "summary.md",
+      "type": "summary_md",
+      "contentHash": "471e7b5a774aa7ece008d7095f057a2db1164e1c97a46d1c327c5aa18886bab9",
+      "local_path": "sample_artifacts/summary.md",
+      "sizeBytes": 124
+    },
+    {
+      "artifact_id": "tool_call_local-recipe_json",
+      "name": "recipe.json",
+      "type": "recipe_json",
+      "contentHash": "40bcad5c3c0c47e1cbb007673b5b58de510bf611e43c943c907d118b3c6a8e12",
+      "local_path": "sample_artifacts/recipe.json",
+      "sizeBytes": 565
+    }
+  ],
+  "params": {
+    "detectOutliers": true
+  }
+}

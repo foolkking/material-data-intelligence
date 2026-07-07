@@ -1,5 +1,38 @@
 # DESIGN_PROGRESS
 
+## 2026-07-07 Phase 10C-1 Lightweight Structure Adapter Implementation
+
+- Implemented the lightweight structure adapter batch recommended by Phase 10C:
+  `structure.summary`, `structure.lattice_summary`, `structure.spacegroup_summary`,
+  `structure.composition_from_structure`, and `structure.preview_metadata`.
+- Registered all five tools through the Tool Registry manifest, params schemas,
+  adapter exports, and adapter class registry. Execution remains
+  AnalysisPlan -> PlanValidator -> persisted plan/job -> QueueWorkerRuntime ->
+  Tool Registry -> Adapter -> Artifact/Result provenance.
+- Dependency decision: `pymatgen`, `spglib`, and `ase` are available in the
+  current environment. Structure parsing uses pymatgen `Structure` where
+  possible; space-group detection uses pymatgen/spglib when available and
+  returns typed dependency/detection errors instead of fabricating symmetry.
+- Supported input/resource forms for this phase are bounded to platform-passed
+  structure objects or text/dict payloads: pymatgen Structure, pymatgen
+  Structure dict/JSON, normalized structure dict, CIF text, POSCAR/CONTCAR text,
+  and small structure collections. Adapters do not read arbitrary local paths.
+- Added deterministic small structure fixtures and tests for CIF, POSCAR,
+  normalized dict, malformed input, missing/invalid structure handling,
+  deterministic artifacts, registry schemas, planner routing, persisted job
+  execution, and the 3D-viewer future-scope boundary.
+- Mock Planner now routes structure prompts before generic composition/table/viz
+  routing, including summary, lattice, space group, composition extraction, and
+  preview metadata prompts. Explicit 3D viewer prompts are not falsely routed to
+  an implemented `structure.viewer_3d`; they use preview metadata with a future
+  scope rationale when appropriate.
+- Generated lightweight adapter evidence under `docs/phase10c/adapter_evidence/`.
+  Evidence level is Tool Registry + Adapter execution only; browser/API evidence
+  is intentionally deferred to Phase 10C-2.
+- No real LLM was used. No QueueWorkerRuntime main semantics,
+  AnalysisPlanRepository semantics, `/planner/jobs` main semantics, or Phase 9D
+  live LLM gating behavior were changed.
+
 ## 2026-07-06 Phase 10C Lightweight Structure Adapter Planning
 
 - Completed a docs-only planning pass for lightweight structure adapters on top of the Phase 10B-2 baseline (`4a5e780`).

@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 2026-07-07
+
+### Phase 10C-1 Lightweight Structure Adapter Implementation
+
+- Added five registry-gated lightweight structure adapters:
+  `structure.summary`, `structure.lattice_summary`,
+  `structure.spacegroup_summary`, `structure.composition_from_structure`, and
+  `structure.preview_metadata`.
+- Added bounded structure resource loading for pymatgen Structure objects,
+  pymatgen Structure dict/JSON, normalized structure dicts, CIF text,
+  POSCAR/CONTCAR text, and small structure collections.
+- Added deterministic JSON artifacts plus `summary.md` and `recipe.json` for
+  the new structure tools.
+- Added strict Tool Registry params schemas and registered all five tools in the
+  platform builtin manifest and adapter registry.
+- Updated Mock Planner routing so explicit structure prompts select structure
+  tools before generic composition/table/viz routing, while 3D viewer prompts
+  remain future-scope and do not claim `structure.viewer_3d` support.
+- Added small structure fixtures and tests for parser/resource support, adapter
+  output contracts, registry schema validation, planner routing, persisted job
+  execution, and invalid-plan rejection.
+- Generated adapter-level evidence under `docs/phase10c/adapter_evidence/`.
+  Browser/API evidence is not included in Phase 10C-1.
+- No real LLM was used. No QueueWorkerRuntime, AnalysisPlanRepository,
+  `/planner/jobs` main semantics, or live LLM gate behavior changed.
+
 ## 2026-07-06
 
 ### Phase 10C Lightweight Structure Adapter Planning

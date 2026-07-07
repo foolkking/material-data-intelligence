@@ -5,6 +5,13 @@ from .composition_summary import CompositionSummaryAdapter
 from .error_distribution import ErrorDistributionAdapter
 from .numeric_summary import NumericSummaryAdapter
 from .outlier_table import OutlierTableAdapter
+from .structure import (
+    LatticeSummaryAdapter,
+    SpacegroupSummaryAdapter,
+    StructureCompositionAdapter,
+    StructurePreviewMetadataAdapter,
+    StructureSummaryAdapter,
+)
 from .table_distribution import DistributionSummaryAdapter
 from .viz import CorrelationAdapter, HistogramAdapter, ScatterAdapter
 
@@ -15,7 +22,12 @@ __all__ = [
     "DistributionSummaryAdapter",
     "ErrorDistributionAdapter",
     "HistogramAdapter",
+    "LatticeSummaryAdapter",
     "NumericSummaryAdapter",
     "OutlierTableAdapter",
     "ScatterAdapter",
+    "SpacegroupSummaryAdapter",
+    "StructureCompositionAdapter",
+    "StructurePreviewMetadataAdapter",
+    "StructureSummaryAdapter",
 ]

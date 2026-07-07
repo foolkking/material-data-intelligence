@@ -1,0 +1,39 @@
+{
+  "case": "simple_cubic_spacegroup_summary",
+  "phase": "10C-1",
+  "tool_id": "structure.spacegroup_summary",
+  "dataset": "simple cubic Si pymatgen Structure fixture",
+  "evidence_level": "Tool Registry + Adapter execution only",
+  "browser_api_evidence": "not included in Phase 10C-1",
+  "verdict": "PASS",
+  "artifacts": [
+    {
+      "artifact_id": "tool_call_local-table_json",
+      "name": "spacegroup_summary.json",
+      "type": "table_json",
+      "contentHash": "a55ffd51e7a14191f3d4b58b3cf9f8781408967e660c2de4aabccbb186283350",
+      "local_path": "sample_artifacts/spacegroup_summary.json",
+      "sizeBytes": 289
+    },
+    {
+      "artifact_id": "tool_call_local-summary_md",
+      "name": "summary.md",
+      "type": "summary_md",
+      "contentHash": "4e7461fdbbc01456e2a04b556db186b95f1ad54374118b407bcd851031010d6b",
+      "local_path": "sample_artifacts/summary.md",
+      "sizeBytes": 166
+    },
+    {
+      "artifact_id": "tool_call_local-recipe_json",
+      "name": "recipe.json",
+      "type": "recipe_json",
+      "contentHash": "33a395b8f1fc0e4b975819f5ef23a7ea6b743d9712a77beec873c94b06ed8f05",
+      "local_path": "sample_artifacts/recipe.json",
+      "sizeBytes": 587
+    }
+  ],
+  "params": {
+    "symprec": 0.01,
+    "angleTolerance": 5
+  }
+}

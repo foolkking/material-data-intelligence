@@ -1105,6 +1105,11 @@ def _default_params_for(tool_id: str) -> dict[str, Any]:
     defaults: dict[str, dict[str, Any]] = {
         "composition.ptable_heatmap": {"countMode": "composition", "colorScale": "viridis", "title": "Element coverage"},
         "composition.chem_sys_treemap": {"showCounts": "value", "maxCells": 20, "title": "Chemical systems"},
+        "structure.summary": {"maxStructures": 50, "includeSitesPreview": True, "maxPreviewSites": 20},
+        "structure.lattice_summary": {"maxStructures": 100, "detectOutliers": True},
+        "structure.spacegroup_summary": {"symprec": 0.01, "angleTolerance": 5, "maxStructures": 50},
+        "structure.composition_from_structure": {"maxStructures": 100, "includeRecommendedTools": True},
+        "structure.preview_metadata": {"maxPreviewSites": 100, "includeCartesian": True, "includeFractional": True},
         "structure.viewer_3d": {"showCell": True, "showBonds": "auto", "cameraPreset": "isometric"},
         "ml.basic_metrics": {"targetColumn": "y_true", "predictionColumn": "y_pred"},
         "ml.outlier_table": {"targetColumn": "y_true", "predictionColumn": "y_pred", "topK": 5},
@@ -1116,6 +1121,11 @@ def _purpose_for(tool_id: str) -> str:
     purposes = {
         "composition.ptable_heatmap": "Inspect element coverage and frequency.",
         "composition.chem_sys_treemap": "Show chemical-system distribution.",
+        "structure.summary": "Summarize structure formula, elements, sites, and lattice.",
+        "structure.lattice_summary": "Summarize lattice parameters and volumes.",
+        "structure.spacegroup_summary": "Detect space group and crystal system distribution.",
+        "structure.composition_from_structure": "Extract composition statistics from structures.",
+        "structure.preview_metadata": "Generate lightweight structure preview metadata.",
         "structure.viewer_3d": "Create an interactive 3D viewer artifact.",
         "ml.basic_metrics": "Compute regression quality metrics.",
         "ml.outlier_table": "List highest-error rows for review.",

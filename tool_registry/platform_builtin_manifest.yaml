@@ -63,6 +63,56 @@ tools:
       - summary_md
       - recipe_json
 
+  - tool_id: structure.summary
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: StructureSummaryAdapter
+    display_target: structure
+    artifact_types:
+      - structure_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.lattice_summary
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: LatticeSummaryAdapter
+    display_target: structure
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.spacegroup_summary
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: SpacegroupSummaryAdapter
+    display_target: structure
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.composition_from_structure
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: StructureCompositionAdapter
+    display_target: structure
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: structure.preview_metadata
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: StructurePreviewMetadataAdapter
+    display_target: structure
+    artifact_types:
+      - structure_json
+      - summary_md
+      - recipe_json
+
   - tool_id: ml.basic_metrics
     implementation_source: platform_builtin
     stage: mvp

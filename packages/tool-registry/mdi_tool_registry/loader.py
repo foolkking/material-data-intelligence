@@ -327,6 +327,59 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "title": {"type": "string"},
             },
         }
+    if tool_id == "structure.summary":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "structureColumn": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+                "maxStructures": {"type": "integer", "minimum": 1},
+                "includeSitesPreview": {"type": "boolean"},
+                "maxPreviewSites": {"type": "integer", "minimum": 1},
+            },
+        }
+    if tool_id == "structure.lattice_summary":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "structureColumn": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+                "maxStructures": {"type": "integer", "minimum": 1},
+                "detectOutliers": {"type": "boolean"},
+            },
+        }
+    if tool_id == "structure.spacegroup_summary":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "structureColumn": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+                "symprec": {"type": "number", "exclusiveMinimum": 0},
+                "angleTolerance": {"type": "number"},
+                "maxStructures": {"type": "integer", "minimum": 1},
+            },
+        }
+    if tool_id == "structure.composition_from_structure":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "structureColumn": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+                "maxStructures": {"type": "integer", "minimum": 1},
+                "includeRecommendedTools": {"type": "boolean"},
+            },
+        }
+    if tool_id == "structure.preview_metadata":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "structureColumn": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+                "maxPreviewSites": {"type": "integer", "minimum": 1},
+                "includeCartesian": {"type": "boolean"},
+                "includeFractional": {"type": "boolean"},
+            },
+        }
     if tool_id == "ml.density_scatter":
         return {
             "type": "object",

@@ -1,0 +1,38 @@
+{
+  "case": "simple_cubic_composition_from_structure",
+  "phase": "10C-1",
+  "tool_id": "structure.composition_from_structure",
+  "dataset": "simple cubic Si pymatgen Structure fixture",
+  "evidence_level": "Tool Registry + Adapter execution only",
+  "browser_api_evidence": "not included in Phase 10C-1",
+  "verdict": "PASS",
+  "artifacts": [
+    {
+      "artifact_id": "tool_call_local-table_json",
+      "name": "structure_composition.json",
+      "type": "table_json",
+      "contentHash": "6842e541b553afbe3f2a8c8ad284de63fac0191eea197358b86a014ab2d6d1c9",
+      "local_path": "sample_artifacts/structure_composition.json",
+      "sizeBytes": 469
+    },
+    {
+      "artifact_id": "tool_call_local-summary_md",
+      "name": "summary.md",
+      "type": "summary_md",
+      "contentHash": "0bf6755a068840e9eb4a0969c4afb44545730cd757255564bfc2417990bee89f",
+      "local_path": "sample_artifacts/summary.md",
+      "sizeBytes": 243
+    },
+    {
+      "artifact_id": "tool_call_local-recipe_json",
+      "name": "recipe.json",
+      "type": "recipe_json",
+      "contentHash": "55039445eb09d0e86cbe3d8e7773d66dd80970ceda6aca508376967dec0566cd",
+      "local_path": "sample_artifacts/recipe.json",
+      "sizeBytes": 602
+    }
+  ],
+  "params": {
+    "includeRecommendedTools": true
+  }
+}

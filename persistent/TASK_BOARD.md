@@ -1,5 +1,43 @@
 # TASK_BOARD
 
+## 2026-07-07 Phase 10C-1 Lightweight Structure Adapter Implementation
+
+### Done This Round
+
+- [x] Implemented `structure.summary`.
+- [x] Implemented `structure.lattice_summary`.
+- [x] Implemented `structure.spacegroup_summary`.
+- [x] Implemented `structure.composition_from_structure`.
+- [x] Implemented `structure.preview_metadata`.
+- [x] Registered all five tools in Tool Registry manifest, params schemas,
+      adapter exports, and adapter class registry.
+- [x] Added Mock Planner routing for structure summary, lattice, space group,
+      composition-from-structure, and preview-metadata prompts.
+- [x] Preserved the 3D viewer boundary: prompts asking for 3D rendering are not
+      marked as supported by `structure.viewer_3d` in this phase.
+- [x] Added deterministic small structure fixtures for CIF, POSCAR, malformed
+      input, and structure collection tests.
+- [x] Added adapter, parser, registry, planner-routing, and persisted execution
+      tests for the Phase 10C-1 tools.
+- [x] Generated lightweight adapter evidence under
+      `docs/phase10c/adapter_evidence/`.
+
+### Verification
+
+- [x] Targeted Phase 10C-1 adapter/manifest tests passed locally.
+- [x] Phase 10A-1 first-batch regression passed locally after the structure
+      changes.
+- [ ] Full backend/frontend regression before commit.
+- [ ] Commit, push, and confirm CI current HEAD.
+
+### Remaining
+
+- [ ] Phase 10C-2 browser/API/artifact evidence for the five lightweight
+      structure adapters.
+- [ ] `structure.viewer_3d`, XRD, RDF, coordination histogram, phonon, and
+      Brillouin zone remain future phases.
+- [ ] Notebook/script extraction remains out of scope.
+
 ## 2026-07-06 Phase 10C Lightweight Structure Adapter Planning
 
 ### Done This Round

@@ -1647,6 +1647,11 @@ function toolDisplayName(toolId: string, t: ReturnType<typeof createTranslator>)
   if (toolId === "viz.correlation") return "Correlation matrix";
   if (toolId === "composition.summary") return "Composition summary";
   if (toolId === "composition.ptable_heatmap") return t("toolElementHeatmap");
+  if (toolId === "structure.summary") return "Structure summary";
+  if (toolId === "structure.lattice_summary") return "Lattice summary";
+  if (toolId === "structure.spacegroup_summary") return "Space group summary";
+  if (toolId === "structure.composition_from_structure") return "Structure composition";
+  if (toolId === "structure.preview_metadata") return "Structure preview metadata";
   if (toolId === "structure.viewer_3d") return t("toolStructureViewer");
   return toolId;
 }
@@ -1685,5 +1690,14 @@ function groupArtifacts(artifacts: Artifact[], t: ReturnType<typeof createTransl
 function isTableSummaryArtifact(artifact: Artifact) {
   const type = String(artifact.type || "");
   const name = String(artifact.name || "");
-  return type === "table_json" || name.includes("distribution_summary") || name.includes("numeric_summary") || name.includes("correlation_matrix") || name.includes("composition_summary");
+  return (
+    type === "table_json" ||
+    name.includes("distribution_summary") ||
+    name.includes("numeric_summary") ||
+    name.includes("correlation_matrix") ||
+    name.includes("composition_summary") ||
+    name.includes("lattice_summary") ||
+    name.includes("spacegroup_summary") ||
+    name.includes("structure_composition")
+  );
 }

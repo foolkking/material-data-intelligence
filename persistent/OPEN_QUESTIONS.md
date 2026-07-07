@@ -1,5 +1,30 @@
 # OPEN_QUESTIONS
 
+## 2026-07-07 Phase 10C-1 Follow-ups
+
+- **Closed at adapter level: lightweight structure tools.** The platform now has
+  registry-gated implementations for `structure.summary`,
+  `structure.lattice_summary`, `structure.spacegroup_summary`,
+  `structure.composition_from_structure`, and `structure.preview_metadata`.
+- **Closed: dependency policy for Phase 10C-1.** The current environment has
+  `pymatgen`, `spglib`, and `ase`; symmetry detection uses pymatgen/spglib when
+  available and must report typed dependency/detection errors rather than fake
+  a space group.
+- **Closed: 3D viewer boundary for routing.** Prompts that ask for true 3D
+  rendering are not treated as supported `structure.viewer_3d` evidence in this
+  phase. Preview metadata may be offered only with an explicit future-scope
+  rationale.
+- **Still open: Phase 10C-2 evidence.** The new structure adapters need
+  browser/API/artifact evidence before becoming presentation-grade evidence.
+- **Still open: parser hardening.** Complex CIF/POSCAR variants, disordered
+  structures, partial occupancies, very large structures, and symmetry tolerance
+  behavior need broader fixtures and acceptance criteria.
+- **Still open: advanced structure and physics adapters.** 3D viewer, XRD, RDF,
+  coordination histograms, phonon bands/DOS, and Brillouin zone rendering remain
+  future phases.
+- **Still open: notebook/script extraction.** Structure-related notebook/script
+  official examples remain outside the current direct benchmark scope.
+
 ## 2026-07-06 Phase 10C Lightweight Structure Adapter Planning
 
 - **Closed for planning: structure direction.** Phase 10C recommends lightweight structure summary adapters before 3D viewer, XRD/RDF, coordination, phonon, or Brillouin zone work.

@@ -1,5 +1,32 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-07 Phase 10C-1 Lightweight Structure Tool Notes
+
+- Registered the Phase 10C-1 lightweight structure tool set:
+  - `structure.summary`
+  - `structure.lattice_summary`
+  - `structure.spacegroup_summary`
+  - `structure.composition_from_structure`
+  - `structure.preview_metadata`
+- All five tools use the `structure` domain, platform builtin implementation
+  source, strict params schemas, bounded resource limits, deterministic artifact
+  names, and JSON + `summary.md` + `recipe.json` outputs.
+- Structure inputs are resolved only from platform-passed resources: pymatgen
+  Structure objects, pymatgen Structure dict/JSON, normalized structure dicts,
+  CIF text, POSCAR/CONTCAR text, or small collections of those resources.
+  Adapters do not read arbitrary filesystem paths.
+- `structure.spacegroup_summary` uses pymatgen/spglib when available. If the
+  symmetry stack is unavailable or detection fails, the adapter reports typed
+  dependency/detection errors or warnings; it must not fabricate `P1`,
+  `Fm-3m`, or any other space group.
+- Mock Planner structure routing runs before generic composition/table/viz
+  routing. Explicit 3D viewer requests remain future-scope and are not treated
+  as support for `structure.viewer_3d`.
+- Phase 10C-1 evidence under `docs/phase10c/adapter_evidence/` is adapter-level
+  only. Browser/API evidence is deferred to Phase 10C-2.
+- No new tool may bypass AnalysisPlan validation, Tool Registry lookup, params
+  schema validation, QueueWorkerRuntime, or Adapter execution.
+
 ## 2026-07-06 Phase 10C lightweight structure planning notes
 
 - Phase 10C is planning-only and does not add, remove, or modify Tool Registry entries.

@@ -97,6 +97,61 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_structure_spacegroup(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.spacegroup_summary",
+                purpose="Detect space group and crystal system information.",
+                params={"symprec": 0.01, "angleTolerance": 5, "maxStructures": 50},
+                artifact_name="spacegroup_summary.json",
+                artifact_type="table_json",
+                artifact_types=["table_json", "summary_md", "recipe_json"],
+            )
+        elif _should_generate_structure_lattice(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.lattice_summary",
+                purpose="Summarize lattice parameters and volumes.",
+                params={"maxStructures": 100, "detectOutliers": True},
+                artifact_name="lattice_summary.json",
+                artifact_type="table_json",
+                artifact_types=["table_json", "summary_md", "recipe_json"],
+            )
+        elif _should_generate_structure_composition(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.composition_from_structure",
+                purpose="Extract composition information from structure objects.",
+                params={"maxStructures": 100, "includeRecommendedTools": True},
+                artifact_name="structure_composition.json",
+                artifact_type="table_json",
+                artifact_types=["table_json", "summary_md", "recipe_json"],
+            )
+        elif _should_generate_structure_preview(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.preview_metadata",
+                purpose="Generate lightweight structure preview metadata.",
+                params={"maxPreviewSites": 100, "includeCartesian": True, "includeFractional": True},
+                artifact_name="structure_preview_metadata.json",
+                artifact_type="structure_json",
+                artifact_types=["structure_json", "summary_md", "recipe_json"],
+            )
+        elif _should_generate_structure_summary(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.summary",
+                purpose="Summarize structure formula, elements, sites, and lattice.",
+                params={"maxStructures": 50, "includeSitesPreview": True, "maxPreviewSites": 20},
+                artifact_name="structure_summary.json",
+                artifact_type="structure_json",
+                artifact_types=["structure_json", "summary_md", "recipe_json"],
+            )
         elif _should_generate_ptable_heatmap(request, tools, data_profile):
             plan = _mock_composition_visual_plan(
                 request,
@@ -666,6 +721,34 @@ def _mock_composition_visual_plan(
     return _single_step_plan(request, step, expected)
 
 
+def _mock_structure_plan(
+    request: PlannerRequest,
+    *,
+    data_profile: DataProfile,
+    tool_id: str,
+    purpose: str,
+    params: dict[str, Any],
+    artifact_name: str,
+    artifact_type: str,
+    artifact_types: list[str],
+) -> dict[str, Any]:
+    step = {
+        "stepId": "step_001",
+        "toolId": tool_id,
+        "purpose": purpose,
+        "reason": _structure_reason(request, data_profile, tool_id),
+        "inputRefs": [{"refType": "normalized_object", "ref": "structures", "objectType": "Structure"}],
+        "params": params,
+        "output": {"artifactTypes": artifact_types},
+    }
+    expected = [{"name": artifact_name, "type": artifact_type, "fromStepId": "step_001"}]
+    expected.extend(
+        {"name": name, "type": artifact_type_name, "fromStepId": "step_001"}
+        for name, artifact_type_name in (("summary.md", "summary_md"), ("recipe.json", "recipe_json"))
+    )
+    return _single_step_plan(request, step, expected)
+
+
 def _single_step_plan(
     request: PlannerRequest,
     step: dict[str, Any],
@@ -682,6 +765,83 @@ def _single_step_plan(
         "steps": [step],
         "expectedArtifacts": expected_artifacts,
     }
+
+
+def _should_generate_structure_spacegroup(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.spacegroup_summary") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = ("space group", "spacegroup", "crystal system", "symmetry", "空间群", "晶系", "对称")
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_structure_lattice(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.lattice_summary") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    if any(marker in prompt for marker in ("summarize", "summary", "basic", "基本信息", "总结")):
+        return False
+    markers = ("lattice", "cell", "volume", "angle", "晶格", "晶胞", "体积", "角度")
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_structure_composition(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.composition_from_structure") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    structure_markers = ("structure", "cif", "poscar", "crystal", "结构", "晶体")
+    composition_markers = ("composition", "formula", "element", "元素组成", "组成", "化学式")
+    return any(marker in prompt for marker in structure_markers) and any(
+        marker in prompt for marker in composition_markers
+    )
+
+
+def _should_generate_structure_preview(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.preview_metadata") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = (
+        "preview metadata",
+        "preview",
+        "metadata",
+        "sites preview",
+        "bounding box",
+        "coordinates",
+        "坐标范围",
+        "预览",
+        "元数据",
+    )
+    return any(marker in prompt for marker in markers) or _is_3d_viewer_request(prompt)
+
+
+def _should_generate_structure_summary(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.summary") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    if _is_3d_viewer_request(prompt):
+        return False
+    markers = ("structure", "cif", "poscar", "crystal", "结构", "晶体结构", "基本信息", "原子数")
+    return any(marker in prompt for marker in markers)
 
 
 def _should_generate_scatter(request: PlannerRequest, tools: list[RegisteredTool], data_profile: DataProfile) -> bool:
@@ -842,6 +1002,42 @@ def _should_generate_numeric_summary(
 
 def _has_tool(tools: list[RegisteredTool], tool_id: str) -> bool:
     return any(tool.toolId == tool_id for tool in tools)
+
+
+def _has_structure_input(data_profile: DataProfile) -> bool:
+    summary = getattr(data_profile, "structureSummary", None)
+    if isinstance(summary, dict):
+        try:
+            if int(summary.get("nStructures") or summary.get("structureCount") or 0) > 0:
+                return True
+        except (TypeError, ValueError):
+            pass
+    for obj in getattr(data_profile, "objects", None) or []:
+        if isinstance(obj, dict):
+            object_type = str(obj.get("objectType") or obj.get("object_type") or "").lower()
+            if "structure" in object_type:
+                return True
+    dataset_type = str(getattr(data_profile, "datasetType", "") or "").lower()
+    return "structure" in dataset_type or "cif" in dataset_type or "poscar" in dataset_type
+
+
+def _is_3d_viewer_request(prompt: str) -> bool:
+    markers = ("3d", "3-d", "viewer", "render", "渲染", "三维", "3维", "structure viewer")
+    return any(marker in prompt for marker in markers)
+
+
+def _structure_reason(request: PlannerRequest, data_profile: DataProfile, tool_id: str) -> str:
+    count = 0
+    summary = getattr(data_profile, "structureSummary", None)
+    if isinstance(summary, dict):
+        try:
+            count = int(summary.get("nStructures") or summary.get("structureCount") or 0)
+        except (TypeError, ValueError):
+            count = 0
+    base = f"The request asks for lightweight structure analysis using {count or 'the available'} structure input(s)."
+    if tool_id == "structure.preview_metadata" and _is_3d_viewer_request(request.user_prompt.lower()):
+        return base + " Full 3D rendering is future scope; this plan only creates preview metadata."
+    return base
 
 
 def _numeric_summary_params(data_profile: DataProfile) -> dict[str, Any]:

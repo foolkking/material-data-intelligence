@@ -1,5 +1,48 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-094: Phase 10C-1 implements lightweight structure adapters without adding 3D or physics execution
+
+### Context
+
+Phase 10C planning selected lightweight structure summaries as the next
+materials-domain capability after table/viz and composition adapters. The
+project needs structure-aware outputs that can be tested deterministically
+before entering browser-heavy 3D viewers, XRD/RDF calculations, coordination
+analysis, phonon plots, or Brillouin zone rendering.
+
+### Decision
+
+Implement the Phase 10C-1 structure tools as registry-gated deterministic
+adapters:
+
+- `structure.summary`
+- `structure.lattice_summary`
+- `structure.spacegroup_summary`
+- `structure.composition_from_structure`
+- `structure.preview_metadata`
+
+The adapters accept only platform-passed structure resources or structure text /
+dict payloads and emit bounded JSON artifacts plus `summary.md` and
+`recipe.json`. `pymatgen` is used for parsing when available, and
+`pymatgen`/`spglib` is used for space-group detection when available. Missing or
+failed symmetry detection is represented as a typed error or warning, never as a
+fake space-group result.
+
+Mock Planner may route structure prompts to these tools, but 3D viewer prompts
+must not be represented as implemented `structure.viewer_3d` support. The
+acceptable Phase 10C-1 fallback is preview metadata with an explicit
+future-scope rationale.
+
+### Consequences
+
+- Structure users now get auditable metadata, lattice, symmetry,
+  structure-derived composition, and preview metadata artifacts without a
+  browser-side execution path.
+- Browser/API evidence remains a separate Phase 10C-2 task.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator
+  safety boundaries, and the Phase 9D live LLM gate are not expanded.
+- Advanced structure visualization and physics tools remain future phases.
+
 ## ADR-093: Phase 10C should add lightweight structure summaries before 3D and physics adapters
 
 ### Context
