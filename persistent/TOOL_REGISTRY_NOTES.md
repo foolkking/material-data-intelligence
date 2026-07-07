@@ -615,3 +615,14 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - No tool execution path was allowed to bypass Tool Registry or Adapter execution.
 - No new adapter was added in Phase 10C-2.
 - Phase 10C-2 does not claim support for `structure.viewer_3d`, XRD, RDF, coordination histogram, phonon, or Brillouin zone tools.
+
+## 2026-07-07 Phase 10D Advanced Structure Planning Notes
+
+- Phase 10D is planning-only and does not register new tools.
+- Future advanced structure tools must still enter through Tool Registry validation, whitelist params schemas, resource limits, and Adapter execution.
+- Recommended Phase 10D-1 executable candidates are:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+  - optional schema-only `structure.viewer_3d_contract`
+- Full `structure.viewer_3d`, `structure.brillouin_zone_3d`, `structure.xrd`, `structure.rdf`, `phonon.bands`, `phonon.dos`, and `phonon.band_dos` remain unregistered future-scope tools until their schemas, dependencies, and evidence plans are approved.
+- Viewer artifacts must be static and deterministic. Artifact-provided JavaScript execution, external URL loading, arbitrary local file reads, notebook execution, and script execution remain forbidden.

@@ -1054,3 +1054,22 @@
 
 - [ ] Phase 10D advanced structure visualization planning.
 - [ ] Structure 3D viewer, XRD, RDF, coordination histogram, phonon, Brillouin zone, and notebook/script extraction.
+
+## 2026-07-07 Phase 10D Advanced Structure Visualization Planning
+
+### Done
+
+- [x] Added `docs/phase10d/phase10d_advanced_structure_visualization_planning.md`.
+- [x] Added `docs/phase10d/phase10d_candidate_adapter_matrix.md`.
+- [x] Added `docs/phase10d/phase10d1_viewer_scene_metadata_implementation_prompt.md`.
+- [x] Recorded the Phase 10C-2 evidence baseline as the current structure capability baseline.
+- [x] Split advanced structure capability planning into viewer metadata, static physics plots, interactive 3D, and phonon layers.
+- [x] Recommended Phase 10D-1 as viewer scene metadata / export package implementation, not full 3D viewer implementation.
+- [x] Confirmed this phase adds planning docs only and does not change runtime semantics.
+
+### Still Open
+
+- [ ] Phase 10D-1 viewer scene metadata / export package implementation.
+- [ ] Phase 10D-2 browser/API evidence for viewer scene metadata.
+- [ ] Static physics plot planning/implementation for coordination histogram, XRD, and RDF.
+- [ ] Full interactive 3D viewer, Brillouin-zone 3D, phonon visualization, notebook extraction, and script execution remain future work.

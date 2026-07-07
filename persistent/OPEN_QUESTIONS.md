@@ -337,3 +337,12 @@
 - Spacegroup handling was verified through the available symmetry path; future work should still harden tolerance policy and dependency diagnostics across malformed or lower-symmetry structures.
 - Remaining material-domain questions now move to advanced structure and physics planning: 3D viewer, XRD, RDF, coordination histogram, phonon, Brillouin zone, and notebook/script extraction.
 - Browser/API evidence still does not claim unsupported official structure examples, notebook-only cases, script-only cases, or external-data cases are verified.
+
+## 2026-07-07 Phase 10D Follow-ups
+
+- Phase 10D closes the planning decision that advanced structure visualization should start with viewer scene metadata and export packages, not full interactive 3D.
+- Open implementation question: should `structure.viewer_3d_contract` be implemented as a schema-only optional tool in Phase 10D-1, or remain documentation-only until renderer work begins?
+- Static physics tools still need dependency and numeric policy decisions: coordination neighbor strategy, XRD wavelength/tolerance, RDF cutoff/binning/normalization.
+- Full interactive viewer work still needs renderer choice, WebGL fallback, screenshot determinism, sandboxing, and artifact-size policy.
+- Phonon tools still need input data contracts, unit policy, phonopy/pymatgen dependency policy, and direct-uploadable fixtures.
+- Official advanced structure examples remain mapping or future-scope references; no new official examples are verified by Phase 10D.

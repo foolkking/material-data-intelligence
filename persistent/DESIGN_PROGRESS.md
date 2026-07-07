@@ -809,3 +809,16 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - No real LLM was used, and default CI remains gated away from live LLM calls.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and existing Phase 10A/10B adapter semantics were not changed.
 - Remaining work: Phase 10D advanced structure visualization planning, 3D viewer, XRD, RDF, coordination histogram, phonon, Brillouin zone, and notebook/script extraction.
+
+## 2026-07-07 Phase 10D Advanced Structure Visualization Planning
+
+- Added Phase 10D planning docs under `docs/phase10d/`.
+- Current confirmed structure baseline is Phase 10C-2: lightweight structure browser/API/artifact evidence is complete at commit `a20afb3`.
+- Defined a four-layer advanced structure roadmap:
+  - Layer 1: viewer scene metadata and static export package.
+  - Layer 2: static physics plots such as XRD, RDF, and coordination histogram.
+  - Layer 3: interactive 3D viewer and Brillouin-zone 3D.
+  - Layer 4: phonon bands, DOS, and combined band/DOS.
+- Recommended Phase 10D-1 scope is `structure.viewer_scene_metadata` and `structure.viewer_export_package`, with optional schema-only `structure.viewer_3d_contract`.
+- Explicitly deferred full interactive `structure.viewer_3d`, WebGL renderer work, Brillouin-zone 3D, XRD/RDF implementation, phonon tools, notebook extraction, and script execution.
+- No adapter, Tool Registry, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, or PlanValidator implementation was changed in this planning phase.

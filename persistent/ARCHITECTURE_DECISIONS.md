@@ -2624,3 +2624,27 @@ No Phase 10C-2 evidence claim extends to `structure.viewer_3d`, XRD, RDF, coordi
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Phase 10A/10B adapters, and the live LLM gate remain unchanged.
 - Default CI still does not call real LLM providers.
 - Advanced structure visualization and physics adapters remain future phases.
+
+## ADR-10D-ADVANCED-STRUCTURE-PLANNING: Advanced structure visualization is metadata-first before interactive 3D
+
+### Context
+
+Phase 10C-2 validated lightweight structure adapters through browser/API/artifact evidence, but the platform still does not support full interactive 3D structure viewing, XRD, RDF, coordination histograms, Brillouin-zone 3D, or phonon visualization. These capabilities have higher frontend, dependency, artifact-size, CI-runtime, and security risk than the current JSON/report/recipe adapter path.
+
+### Decision
+
+Plan advanced structure visualization as a layered roadmap:
+
+- Layer 1: `structure.viewer_scene_metadata`, `structure.viewer_export_package`, and optional schema-only `structure.viewer_3d_contract`.
+- Layer 2: static physics plots such as `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Layer 3: full interactive `structure.viewer_3d` and `structure.brillouin_zone_3d`.
+- Layer 4: phonon bands, DOS, and combined band/DOS visualization.
+
+Phase 10D-1 should implement viewer scene metadata and export package artifacts first. It must not implement a full WebGL/MatterViz/Three.js viewer, execute artifact JavaScript, load external URLs, or expand runtime authority.
+
+### Consequences
+
+- Future viewer rendering receives a stable scene contract before UI renderer work begins.
+- Browser/API evidence for metadata artifacts can remain deterministic and reproducible.
+- Full 3D viewer, XRD/RDF, coordination histograms, Brillouin-zone 3D, phonon tools, notebook extraction, and script execution remain deferred until their dependency and evidence contracts are explicit.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and default CI real-LLM gates remain unchanged.

@@ -1099,3 +1099,22 @@
 - Evidence uses Mock Planner only; no real LLM was used.
 - Runtime main semantics were not changed.
 - No 3D viewer, XRD, RDF, phonon, Brillouin zone, or unsupported official example support is claimed.
+
+## 2026-07-07 Phase 10D
+
+### Added
+
+- Added `docs/phase10d/phase10d_advanced_structure_visualization_planning.md`.
+- Added `docs/phase10d/phase10d_candidate_adapter_matrix.md`.
+- Added `docs/phase10d/phase10d1_viewer_scene_metadata_implementation_prompt.md`.
+
+### Planning Decisions
+
+- Advanced structure capability is split into viewer metadata/export package, static physics plots, interactive 3D, and phonon layers.
+- Recommended next phase is `structure.viewer_scene_metadata` and `structure.viewer_export_package`, with optional schema-only `structure.viewer_3d_contract`.
+- Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, XRD/RDF implementation, phonon tools, notebook extraction, and script execution remain deferred.
+
+### Verification
+
+- Planning-only phase; no adapters or runtime semantics were changed.
+- Default CI remains gated away from real LLM calls.
