@@ -27,6 +27,7 @@ from .pymatviz import (
     DensityScatterAdapter,
     ElementsHistAdapter,
     FormulaStatisticsAdapter,
+    RdfAdapter,
     XrdPatternAdapter,
 )
 from .pymatviz.ptable_heatmap import PTableHeatmapAdapter
@@ -50,6 +51,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     NumericSummaryAdapter.__name__: NumericSummaryAdapter,
     OutlierTableAdapter.__name__: OutlierTableAdapter,
     PTableHeatmapAdapter.__name__: PTableHeatmapAdapter,
+    RdfAdapter.__name__: RdfAdapter,
     Structure3DAdapter.__name__: Structure3DAdapter,
     SpacegroupSummaryAdapter.__name__: SpacegroupSummaryAdapter,
     StructureCompositionAdapter.__name__: StructureCompositionAdapter,

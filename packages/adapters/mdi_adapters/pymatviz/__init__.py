@@ -7,6 +7,7 @@ from .density_scatter import DensityScatterAdapter
 from .elements_hist import ElementsHistAdapter
 from .formula_statistics import FormulaStatisticsAdapter
 from .ptable_heatmap import PTableHeatmapAdapter
+from .rdf import RdfAdapter
 from .structure_3d import Structure3DAdapter
 from .xrd import XrdPatternAdapter
 
@@ -18,6 +19,7 @@ __all__ = [
     "ElementsHistAdapter",
     "FormulaStatisticsAdapter",
     "PTableHeatmapAdapter",
+    "RdfAdapter",
     "Structure3DAdapter",
     "XrdPatternAdapter",
 ]

@@ -1,5 +1,16 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10E-7 RDF Implementation
+
+- Implemented `structure.rdf` as the third Phase 10E static structure physics adapter after coordination histogram and XRD.
+- The adapter uses periodic `pymatgen Structure.get_all_neighbors(r_max)` distances, fixed radial bins, `number_density` shell-volume normalization, and ordered partial RDF pairs.
+- Registered strict Tool Registry params for `r_max_angstrom`, `bin_width_angstrom`, `normalization`, `include_partial_pairs`, `max_partial_pairs`, `max_sites`, `max_bins`, `max_neighbors_total`, and `plot_kind`.
+- Artifacts are static and deterministic: `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`.
+- Mock Planner now routes RDF / radial-distribution / pair-distribution prompts to `structure.rdf`; XRD prompts remain `structure.xrd`, coordination prompts remain `structure.coordination_hist`, and full viewer / WebGL / phonon / fitting prompts remain deferred.
+- Added unit, fixture, registry, planner-routing, artifact-contract, persisted execution, and safety tests for the adapter.
+- No browser/API evidence was added; Phase 10E-8 remains responsible for end-to-end evidence.
+- No full 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, advanced local environment classification, experimental fitting, notebook/script extraction, external API workflow, QueueWorkerRuntime semantic change, AnalysisPlanRepository semantic change, `/planner/jobs` semantic change, PlanValidator boundary change, new dependency, real LLM path, artifact JS, or external URL loading was added.
+
 ## 2026-07-08 Phase 10E-1 Coordination Histogram Implementation
 
 - Implemented `structure.coordination_hist` as the first static structure physics adapter from Phase 10E planning.

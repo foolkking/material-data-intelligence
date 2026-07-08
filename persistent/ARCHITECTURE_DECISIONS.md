@@ -2878,3 +2878,22 @@ The planned artifacts are static only: `rdf.json`, `rdf_plot.json`, `summary.md`
 - Browser/API evidence remains deferred to Phase 10E-8 after implementation.
 - Official RDF README gallery examples remain mapping references only and are not PASS evidence.
 - Full interactive 3D viewer, WebGL/Three.js renderer, Brillouin-zone 3D, phonon tools, trajectory RDF, experimental PDF fitting, notebook extraction, script execution, external API workflows, and runtime authority changes remain deferred.
+
+## ADR-10E-7-RDF: Static RDF uses periodic neighbors and number-density normalization
+
+### Context
+
+Phase 10E-6 fixed the RDF policies needed for implementation: periodic-only inputs, bounded neighbor search, fixed radial bins, number-density normalization, ordered partial RDF pairs, and explicit resource caps. The implementation needed to add `structure.rdf` without expanding browser rendering authority, installing dependencies, or changing runtime semantics.
+
+### Decision
+
+Implement `structure.rdf` as a static RDF adapter over existing pymatgen structure parsing and periodic neighbor search. The adapter emits static JSON/Markdown artifacts only: `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`. It rejects non-periodic structures, invalid lattice volume, excessive sites, excessive bins, and excessive neighbor records. It serializes bins, counts, normalization metadata, partial RDF records, warnings, limits, and security flags deterministically.
+
+Do not implement full interactive 3D viewer, WebGL/Three.js renderer, Brillouin-zone 3D, phonon tools, advanced local environment classification, trajectory RDF, experimental PDF fitting, neutron scattering refinement, notebook/script extraction, external API workflows, or browser/API evidence in Phase 10E-7.
+
+### Consequences
+
+- RDF outputs are reproducible and suitable for Phase 10E-8 browser/API evidence.
+- `rdf_plot.json` follows the existing static chart JSON pattern and does not require a browser chart renderer.
+- Mock Planner can route RDF prompts to `structure.rdf`, while XRD, coordination histogram, full viewer, WebGL, phonon, and fitting prompts remain bounded to their correct existing or deferred behavior.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution boundaries, and the live LLM gate remain unchanged.

@@ -701,3 +701,42 @@ Required artifacts:
 - deterministic series values
 - source/result metadata
 - the same no-JavaScript and no-external-URL security flags
+
+## Phase 10E-7 Addendum: static RDF artifact contracts
+
+Phase 10E-7 adds the executable `structure.rdf` adapter. It emits static,
+deterministic artifacts only and does not introduce renderer authority,
+external URL loading, notebook/script execution, trajectory RDF, experimental
+PDF fitting, scattering refinement, phonon DOS, or local-environment
+classification.
+
+Required artifacts:
+
+- `rdf.json`: numeric radial distribution function contract.
+- `rdf_plot.json`: static line-chart JSON contract.
+- `summary.md`: human-readable method/result/security summary.
+- `recipe.json`: reproducible deterministic execution recipe.
+
+`rdf.json` must include:
+
+- `schema_version: "phase10e7.rdf.v1"`
+- `tool_id: "structure.rdf"`
+- source metadata
+- periodic structure summary including PBC and volume
+- normalized parameters
+- global `rdf.r_angstrom`, `rdf.g_r`, `rdf.counts`, and `rdf.bin_edges_angstrom`
+- `rdf.normalization.method: "number_density"`
+- optional ordered `partial_rdf` records
+- limits / truncation metadata
+- warnings
+- security flags with `contains_javascript: false`, `external_urls: []`, and `external_urls_allowed: false`
+
+`rdf_plot.json` must include:
+
+- `schema_version: "phase10e7.static_chart.v1"`
+- `tool_id: "structure.rdf"`
+- `chart_type: "line"`
+- x/y axis metadata
+- deterministic series values
+- source/result metadata
+- the same no-JavaScript and no-external-URL security flags

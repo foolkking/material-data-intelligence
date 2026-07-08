@@ -125,6 +125,15 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxAtomsPerStructure": 5000,
             "maxPeaks": 5000,
         }
+    if tool_id == "structure.rdf":
+        return {
+            "maxStructures": 8,
+            "maxAtomsPerStructure": 5000,
+            "maxSites": 5000,
+            "maxBins": 5000,
+            "maxNeighborsTotal": 2_000_000,
+            "maxPartialPairs": 256,
+        }
     if tool_id.startswith("structure.") or tool_id.startswith("trajectory."):
         return {"maxStructures": 8, "maxAtomsPerStructure": 5000, "maxFrames": 200}
     if tool_id.startswith("ml."):
@@ -387,6 +396,22 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "max_peaks": {"type": "integer", "minimum": 1, "maximum": 5000},
                 "include_hkl": {"type": "boolean"},
                 "plot_kind": {"enum": ["stem"]},
+            },
+        }
+    if tool_id == "structure.rdf":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "r_max_angstrom": {"type": "number", "minimum": 0.5, "maximum": 30.0},
+                "bin_width_angstrom": {"type": "number", "minimum": 0.01, "maximum": 1.0},
+                "normalization": {"enum": ["number_density"]},
+                "include_partial_pairs": {"type": "boolean"},
+                "max_partial_pairs": {"type": "integer", "minimum": 1, "maximum": 256},
+                "max_sites": {"type": "integer", "minimum": 1, "maximum": 5000},
+                "max_bins": {"type": "integer", "minimum": 1, "maximum": 5000},
+                "max_neighbors_total": {"type": "integer", "minimum": 1, "maximum": 2000000},
+                "plot_kind": {"enum": ["line"]},
             },
         }
     if tool_id == "structure.summary":

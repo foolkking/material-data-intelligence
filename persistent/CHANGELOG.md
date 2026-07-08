@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-07-09
+
+### Phase 10E-7 RDF Implementation
+
+- Implemented `structure.rdf` as a deterministic static physics adapter for periodic crystalline structures.
+- Added `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`.
+- Updated the Tool Registry manifest and params schema for fixed `r_max_angstrom`, `bin_width_angstrom`, `number_density` normalization, ordered partial RDF pairs, and explicit resource caps.
+- Updated Mock Planner routing for RDF / radial-distribution / pair-distribution prompts.
+- Added tests for numeric artifact contracts, fixture support, deterministic bins, global and partial RDF behavior, resource caps, registry schema, planner routing, persisted execution, and no-JS/no-external-URL safety.
+- Added `docs/phase10e/phase10e7_rdf_implementation.md`.
+- Browser/API evidence is deferred to Phase 10E-8.
+- No full 3D viewer, WebGL renderer, Three.js, Brillouin-zone, phonon, advanced local environment classification, experimental fitting, notebook/script execution, external API workflow, new dependency, real LLM path, or runtime main semantic change was added.
+
 ## 2026-07-08
 
 ### Phase 10E-1 Coordination Histogram Implementation

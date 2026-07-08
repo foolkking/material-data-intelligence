@@ -1,5 +1,30 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10E-7 RDF Implementation
+
+### Done
+
+- [x] Implemented `structure.rdf`.
+- [x] Added periodic-only RDF calculation with fixed bins and `number_density` normalization.
+- [x] Added optional ordered partial RDF pairs with `max_partial_pairs` cap and warning.
+- [x] Registered strict Tool Registry params and resource limits.
+- [x] Added Mock Planner routing for RDF / radial-distribution / pair-distribution prompts.
+- [x] Preserved routing boundaries for XRD, coordination histogram, full viewer, WebGL, Brillouin-zone, phonon, and experimental fitting prompts.
+- [x] Added tests for unit behavior, fixtures, registry schema, planner routing, artifact contracts, persisted execution, deterministic output, warnings/errors, and no-JS/no-external-URL safety.
+- [x] Added `docs/phase10e/phase10e7_rdf_implementation.md`.
+
+### Verification
+
+- [x] `uv run python -m pytest tests/test_phase10e7_rdf.py -q`.
+- [x] Targeted regression for manifest, coordination histogram, XRD, and Phase 10D viewer-scene tests.
+- [x] Full backend/frontend regression before commit.
+- [ ] Commit, push, and confirm CI current HEAD.
+
+### Remaining
+
+- [ ] Phase 10E-8 browser/API evidence for `structure.rdf`.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, advanced local environment classification, notebook/script extraction, and external API workflows remain future work.
+
 ## 2026-07-08 Phase 10E-1 Coordination Histogram Implementation
 
 ### Done

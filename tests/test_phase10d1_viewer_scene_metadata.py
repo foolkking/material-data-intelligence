@@ -167,7 +167,6 @@ def test_mock_planner_keeps_deferred_prompts_out_of_phase10d1_tools(prompt: str)
         "structure.viewer_export_package",
         "structure.viewer_3d",
         "structure.brillouin_zone_3d",
-        "structure.rdf",
         "phonon.bands",
         "phonon.dos",
     }

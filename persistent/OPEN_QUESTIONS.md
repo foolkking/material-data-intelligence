@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10E-7 Follow-ups
+
+- **Closed at adapter level: RDF.** `structure.rdf` now emits deterministic `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json` artifacts for periodic crystalline structures.
+- **Closed: RDF numeric policy.** Phase 10E-7 implements fixed radial bins, `number_density` shell-volume normalization, ordered partial RDF pairs, and explicit site/bin/neighbor/partial-pair caps.
+- **Still open: Phase 10E-8 evidence.** Browser/API/artifact evidence is still required for `structure.rdf`.
+- **Still open: RDF scope extensions.** Trajectory RDF, time-averaged RDF, experimental PDF fitting, neutron scattering refinement, and X-ray total scattering analysis remain out of scope.
+- **Still open: advanced local environments.** Voronoi, CrystalNN, bond valence, and oxidation-state-aware environment classification remain future planning items.
+- **Still open: advanced visualization / phonon.** Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook/script extraction, and external API workflows remain future work.
+
 ## 2026-07-08 Phase 10E-1 Follow-ups
 
 - **Closed at adapter level: coordination histogram.** `structure.coordination_hist` now emits deterministic `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json` artifacts.

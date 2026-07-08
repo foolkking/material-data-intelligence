@@ -120,6 +120,30 @@ class MockLLMProvider:
                 artifact_type="structure_json",
                 artifact_types=["structure_json", "summary_md", "recipe_json"],
             )
+        elif _should_generate_rdf(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.rdf",
+                purpose="Compute a static radial distribution function using periodic neighbors and number-density normalization.",
+                params={
+                    "r_max_angstrom": 8.0,
+                    "bin_width_angstrom": 0.1,
+                    "normalization": "number_density",
+                    "include_partial_pairs": True,
+                    "max_partial_pairs": 64,
+                    "max_sites": 500,
+                    "max_bins": 1000,
+                    "max_neighbors_total": 200000,
+                    "plot_kind": "line",
+                },
+                artifact_name="rdf.json",
+                artifact_type="table_json",
+                artifact_types=["table_json", "plotly_json", "summary_md", "recipe_json"],
+                extra_expected_artifacts=[
+                    {"name": "rdf_plot.json", "type": "plotly_json", "fromStepId": "step_001"}
+                ],
+            )
         elif _should_generate_xrd(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -893,6 +917,44 @@ def _should_generate_xrd(
         "powder xrd",
         "powder diffraction",
         "diffraction peaks",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_rdf(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.rdf") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    deferred_markers = (
+        "xrd",
+        "diffraction",
+        "coordination",
+        "neighbor count",
+        "3d viewer",
+        "webgl",
+        "brillouin",
+        "phonon",
+        "pdf fitting",
+        "experimental pdf",
+        "neutron scattering",
+        "rietveld",
+        "refinement",
+        "experimental",
+        "fitting",
+    )
+    if any(marker in prompt for marker in deferred_markers):
+        return False
+    markers = (
+        "rdf",
+        "radial distribution",
+        "pair distribution g(r)",
+        "pair distribution",
+        "g(r)",
+        "径向分布函数",
     )
     return any(marker in prompt for marker in markers)
 

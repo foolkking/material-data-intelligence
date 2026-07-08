@@ -30,6 +30,7 @@ from .pymatviz import (
     DensityScatterAdapter,
     ElementsHistAdapter,
     FormulaStatisticsAdapter,
+    RdfAdapter,
     XrdPatternAdapter,
 )
 from .pymatviz.ptable_heatmap import PTableHeatmapAdapter
@@ -56,6 +57,7 @@ __all__ = [
     "NumericSummaryAdapter",
     "OutlierTableAdapter",
     "PTableHeatmapAdapter",
+    "RdfAdapter",
     "Structure3DAdapter",
     "SpacegroupSummaryAdapter",
     "StructureCompositionAdapter",

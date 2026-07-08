@@ -757,3 +757,17 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Planned params schema is strict and RDF-specific: `r_max_angstrom`, `bin_width_angstrom`, `normalization`, `include_partial_pairs`, `max_partial_pairs`, `max_sites`, `max_bins`, `max_neighbors_total`, and `plot_kind`.
 - Planned description must state static RDF only and must not claim trajectory RDF, experimental PDF fitting, phonon, full 3D viewer, WebGL, or advanced local environment classification.
 - Phase 10E-7 may register `structure.rdf` only if it implements the policy fixed in `docs/phase10e/phase10e6_rdf_policy_hardening.md`.
+
+## 2026-07-09 Phase 10E-7 RDF Tool Notes
+
+- `structure.rdf` is now implemented and executable through Tool Registry + Adapter.
+- The adapter uses periodic `pymatgen Structure.get_all_neighbors(r_max)` records with deterministic radial bins and `number_density` shell-volume normalization.
+- Registered artifacts are:
+  - `rdf.json` as `table_json`
+  - `rdf_plot.json` as `plotly_json`
+  - `summary.md` as `summary_md`
+  - `recipe.json` as `recipe_json`
+- The strict params schema allows only `r_max_angstrom`, `bin_width_angstrom`, `normalization`, `include_partial_pairs`, `max_partial_pairs`, `max_sites`, `max_bins`, `max_neighbors_total`, and `plot_kind`.
+- The tool does not emit HTML, executable JavaScript, external URLs, WebGL renderer assets, full 3D viewer artifacts, phonon artifacts, experimental PDF fitting artifacts, or local-environment classification artifacts.
+- Browser/API evidence for RDF is deferred to Phase 10E-8.
+- Full viewer, WebGL, Brillouin-zone, phonon, notebook/script, external API workflows, trajectory RDF, experimental fitting, and scattering refinement remain out of scope.

@@ -254,20 +254,18 @@ tools:
     notes: Static simulated XRD pattern for periodic crystalline structures using CuKa radiation; excludes experimental fitting and Rietveld refinement.
 
   - tool_id: structure.rdf
-    source_package: pymatviz
-    source_function: element_pair_rdfs
-    source_alternatives:
-      - full_rdf
-    implementation_source: pymatviz
-    stage: v1
+    source_package: pymatgen
+    source_function: Structure.get_all_neighbors
+    implementation_source: pymatviz_composed
+    stage: mvp
     adapter: RdfAdapter
     display_target: structure
     artifact_types:
+      - table_json
       - plotly_json
-      - plotly_html
-      - preview_png
       - summary_md
       - recipe_json
+    notes: Static radial distribution function for periodic crystalline structures using fixed bins and number-density normalization; excludes trajectory RDF, experimental PDF fitting, phonon DOS, 3D viewer, and local environment classification.
 
   - tool_id: structure.chem_env_sunburst
     source_package: pymatviz
