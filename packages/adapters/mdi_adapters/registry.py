@@ -27,6 +27,7 @@ from .pymatviz import (
     DensityScatterAdapter,
     ElementsHistAdapter,
     FormulaStatisticsAdapter,
+    XrdPatternAdapter,
 )
 from .pymatviz.ptable_heatmap import PTableHeatmapAdapter
 from .pymatviz.structure_3d import Structure3DAdapter
@@ -57,6 +58,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     StructureViewerExportPackageAdapter.__name__: StructureViewerExportPackageAdapter,
     StructureViewerSceneMetadataAdapter.__name__: StructureViewerSceneMetadataAdapter,
     StructureViewer3DAdapter.__name__: StructureViewer3DAdapter,
+    XrdPatternAdapter.__name__: XrdPatternAdapter,
     ScatterAdapter.__name__: ScatterAdapter,
 }
 

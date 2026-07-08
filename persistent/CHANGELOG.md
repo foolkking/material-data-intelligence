@@ -1265,3 +1265,22 @@
 ### Verification
 
 - Planning-only phase; no adapter, Tool Registry semantic change, runtime semantic change, browser/API evidence, frontend runtime change, dependency change, or real LLM path was added.
+
+## 2026-07-08 Phase 10E-4
+
+### Added
+
+- Added `structure.xrd`.
+- Added `docs/phase10e/phase10e4_xrd_implementation.md`.
+- Added deterministic artifacts for the adapter: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
+
+### Changed
+
+- Extended Tool Registry manifest, adapter exports, adapter registry, and Mock Planner routing for `structure.xrd`.
+- Added a Phase 10E-4 shared schema addendum for static XRD artifacts.
+
+### Verification
+
+- Added tests for CIF/POSCAR/Structure dict fixtures, deterministic peak ordering, numeric rounding, range filtering, intensity filtering, peak limits, HKL include/exclude behavior, params validation, artifact contracts, no JavaScript / no external URL assertions, registry schemas, planner routing, deferred prompt boundaries, and persisted execution.
+- Browser/API evidence remains deferred to Phase 10E-5.
+- No RDF, full 3D viewer, WebGL renderer, Three.js, Brillouin-zone, phonon, notebook/script workflow, experimental fitting, Rietveld refinement, unsupported official example claim, runtime semantic change, or real LLM path was added.

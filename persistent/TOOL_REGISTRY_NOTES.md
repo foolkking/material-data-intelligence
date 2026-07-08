@@ -713,3 +713,16 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Future `structure.xrd` registration should declare static artifacts only: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
 - Future `structure.xrd` description must not claim RDF, full 3D viewer, WebGL rendering, phonon support, Rietveld refinement, experimental fitting, or database lookup.
 - Full viewer, WebGL, Brillouin-zone, phonon, notebook/script, and external API workflows remain outside executable Tool Registry scope.
+
+## 2026-07-08 Phase 10E-4 XRD Tool Notes
+
+- `structure.xrd` is now implemented and executable through Tool Registry + Adapter.
+- The adapter uses `pymatgen.analysis.diffraction.xrd.XRDCalculator` with a CuKa-only deterministic static pattern policy.
+- Registered artifacts are:
+  - `xrd_pattern.json` as `table_json`
+  - `xrd_plot.json` as `plotly_json`
+  - `summary.md` as `summary_md`
+  - `recipe.json` as `recipe_json`
+- The strict params schema allows only `radiation`, `two_theta_min`, `two_theta_max`, `intensity_threshold`, `peak_merge_tolerance`, `max_peaks`, `include_hkl`, and `plot_kind`.
+- The tool does not emit HTML, executable JavaScript, external URLs, WebGL renderer assets, full 3D viewer artifacts, RDF artifacts, phonon artifacts, experimental fitting artifacts, or Rietveld refinement artifacts.
+- RDF, full viewer, WebGL, Brillouin-zone, phonon, notebook/script, external API workflows, experimental fitting, and Rietveld refinement remain out of scope.

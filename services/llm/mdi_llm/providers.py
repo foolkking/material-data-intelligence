@@ -120,6 +120,29 @@ class MockLLMProvider:
                 artifact_type="structure_json",
                 artifact_types=["structure_json", "summary_md", "recipe_json"],
             )
+        elif _should_generate_xrd(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.xrd",
+                purpose="Generate a static simulated XRD peak list using deterministic CuKa defaults.",
+                params={
+                    "radiation": "CuKa",
+                    "two_theta_min": 0.0,
+                    "two_theta_max": 90.0,
+                    "intensity_threshold": 0.0,
+                    "peak_merge_tolerance": 0.05,
+                    "max_peaks": 500,
+                    "include_hkl": True,
+                    "plot_kind": "stem",
+                },
+                artifact_name="xrd_pattern.json",
+                artifact_type="table_json",
+                artifact_types=["table_json", "plotly_json", "summary_md", "recipe_json"],
+                extra_expected_artifacts=[
+                    {"name": "xrd_plot.json", "type": "plotly_json", "fromStepId": "step_001"}
+                ],
+            )
         elif _should_generate_coordination_hist(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -833,6 +856,43 @@ def _should_generate_viewer_scene_metadata(
         "structure viewer metadata",
         "create viewer scene metadata",
         "build a static structure viewer scene contract",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_xrd(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.xrd") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    deferred_markers = (
+        "rdf",
+        "radial distribution",
+        "coordination",
+        "neighbor count",
+        "3d viewer",
+        "webgl",
+        "brillouin",
+        "phonon",
+        "rietveld",
+        "refinement",
+        "experimental",
+        "fitting",
+        "peak broadening",
+        "profile fitting",
+    )
+    if any(marker in prompt for marker in deferred_markers):
+        return False
+    markers = (
+        "xrd",
+        "x-ray diffraction",
+        "x ray diffraction",
+        "powder xrd",
+        "powder diffraction",
+        "diffraction peaks",
     )
     return any(marker in prompt for marker in markers)
 

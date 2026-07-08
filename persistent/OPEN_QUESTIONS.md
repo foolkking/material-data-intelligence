@@ -406,3 +406,13 @@
 - Official XRD/RDF examples remain mapping references only; direct-uploadable benchmark evidence is absent.
 - XRD/RDF browser/API evidence remains future work after implementation.
 - Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and unsupported official example verification remain open.
+
+## 2026-07-08 Phase 10E-4 Follow-ups
+
+- Phase 10E-4 closes implementation of `structure.xrd` with a deterministic CuKa-only XRD policy.
+- Browser/API/artifact evidence for `structure.xrd` remains open for Phase 10E-5.
+- XRD fixture tolerance can be broadened later, but Phase 10E-4 pins deterministic sorting, rounding, intensity filtering, two-theta filtering, and peak limits.
+- RDF remains open until normalization, periodic-image handling, cutoff, binning, finite-size warning, and partial-pair policy are fixed.
+- Experimental XRD fitting, Rietveld refinement, profile broadening, texture correction, and database lookup remain out of scope.
+- Official XRD/RDF examples remain mapping references only; direct-uploadable PASS evidence is absent.
+- Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and unsupported official example verification remain open.

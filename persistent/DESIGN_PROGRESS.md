@@ -919,3 +919,15 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Official examples remain mapping references only; no XRD/RDF official example is claimed as PASS evidence.
 - No adapter, Tool Registry, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, frontend runtime, browser/API evidence, or real LLM path was changed.
 - Full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, phonon tools, notebook extraction, script execution, and external API workflows remain deferred.
+
+## 2026-07-08 Phase 10E-4 XRD Implementation
+
+- Implemented `structure.xrd` as the second static physics adapter.
+- The adapter uses existing `pymatgen.analysis.diffraction.xrd.XRDCalculator` with a deterministic CuKa-only policy.
+- Generated deterministic artifacts: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
+- Registered the tool through Tool Registry and added strict params validation for radiation, two-theta range, intensity threshold, peak tolerance metadata, peak limit, HKL inclusion, and stem plot output.
+- Added Mock Planner routing for XRD / powder diffraction / diffraction peak prompts.
+- Added negative routing coverage so RDF, coordination histogram, full 3D viewer, WebGL, Brillouin-zone, phonon, Rietveld, fitting, and broadening prompts do not route to `structure.xrd`.
+- Added adapter, fixture, registry, planner routing, artifact contract, security, and persisted execution tests.
+- Browser/API evidence remains deferred to Phase 10E-5.
+- No RDF, full interactive 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, notebook/script extraction, external API workflow, experimental XRD fitting, Rietveld refinement, or advanced local environment classification was implemented.

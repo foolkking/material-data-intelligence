@@ -40,7 +40,7 @@ def test_registry_filters_and_lookup():
     registry = load_manifests()
 
     assert registry.get_tool_by_id("composition.ptable_heatmap").adapter == "PTableHeatmapAdapter"
-    assert len(registry.list_tools_by_stage("mvp")) == 25
+    assert len(registry.list_tools_by_stage("mvp")) == 26
     assert {tool.toolId for tool in registry.list_tools_by_domain("structure")} >= {
         "structure.summary",
         "structure.lattice_summary",
@@ -49,6 +49,7 @@ def test_registry_filters_and_lookup():
         "structure.preview_metadata",
         "structure.viewer_scene_metadata",
         "structure.viewer_export_package",
+        "structure.xrd",
         "structure.structure_3d",
         "structure.viewer_3d",
     }
@@ -67,6 +68,7 @@ def test_registry_filters_and_lookup():
         "structure.preview_metadata",
         "structure.viewer_scene_metadata",
         "structure.viewer_export_package",
+        "structure.xrd",
         "table.numeric_summary",
         "table.distribution_summary",
         "viz.scatter",

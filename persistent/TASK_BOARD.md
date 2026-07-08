@@ -1238,3 +1238,23 @@
 - [ ] Phase 10E-5 browser/API evidence for `structure.xrd` after implementation.
 - [ ] RDF normalization, cutoff, binning, finite-size warning, and partial-pair policy hardening before implementation.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
+
+## 2026-07-08 Phase 10E-4 XRD Implementation
+
+### Done
+
+- [x] Implemented `structure.xrd`.
+- [x] Registered `structure.xrd` in Tool Registry.
+- [x] Added strict params validation for the deterministic CuKa-only XRD policy.
+- [x] Added Mock Planner routing for XRD prompts.
+- [x] Added negative routing coverage for RDF, coordination, full viewer, WebGL, Brillouin-zone, phonon, Rietveld, fitting, and broadening prompts.
+- [x] Added deterministic artifacts: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
+- [x] Added adapter, fixture, registry, planner, artifact contract, and persisted execution tests.
+- [x] Added `docs/phase10e/phase10e4_xrd_implementation.md`.
+
+### Still Open
+
+- [ ] Phase 10E-5 browser/API evidence for `structure.xrd`.
+- [ ] `structure.rdf` remains planned but unimplemented.
+- [ ] Experimental XRD fitting and Rietveld refinement remain deferred.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.

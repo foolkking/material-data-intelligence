@@ -216,7 +216,6 @@ def test_mock_planner_does_not_route_deferred_physics_to_coordination(prompt: st
 
     assert plan["steps"][0]["toolId"] != "structure.coordination_hist"
     assert plan["steps"][0]["toolId"] not in {
-        "structure.xrd",
         "structure.rdf",
         "structure.viewer_3d",
         "structure.brillouin_zone_3d",

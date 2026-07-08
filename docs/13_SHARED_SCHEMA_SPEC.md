@@ -664,3 +664,40 @@ Security constraints still apply:
   models.
 - Chunk selection only changes frontend presentation context; execution
   remains controlled by validated and persisted AnalysisPlans.
+
+## Phase 10E-4 Addendum: static XRD artifact contracts
+
+Phase 10E-4 adds the executable `structure.xrd` adapter. It emits static,
+deterministic artifacts only and does not introduce renderer authority,
+external URL loading, notebook/script execution, experimental fitting, or
+Rietveld refinement.
+
+Required artifacts:
+
+- `xrd_pattern.json`: numeric XRD pattern contract.
+- `xrd_plot.json`: static stem-chart JSON contract.
+- `summary.md`: human-readable method/result/security summary.
+- `recipe.json`: reproducible deterministic execution recipe.
+
+`xrd_pattern.json` must include:
+
+- `schema_version: "phase10e4.xrd_pattern.v1"`
+- `tool_id: "structure.xrd"`
+- source metadata
+- structure summary
+- normalized parameters
+- radiation and two-theta range
+- sorted peak records with rounded two-theta, intensity, d-spacing, and optional HKL metadata
+- limits / truncation metadata
+- warnings
+- security flags with `contains_javascript: false`, `external_urls: []`, and `external_urls_allowed: false`
+
+`xrd_plot.json` must include:
+
+- `schema_version: "phase10e4.static_chart.v1"`
+- `tool_id: "structure.xrd"`
+- `chart_type: "stem"`
+- x/y axis metadata
+- deterministic series values
+- source/result metadata
+- the same no-JavaScript and no-external-URL security flags

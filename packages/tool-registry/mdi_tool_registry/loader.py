@@ -119,6 +119,12 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxSites": 5000,
             "maxNeighborsPerSite": 1000,
         }
+    if tool_id == "structure.xrd":
+        return {
+            "maxStructures": 8,
+            "maxAtomsPerStructure": 5000,
+            "maxPeaks": 5000,
+        }
     if tool_id.startswith("structure.") or tool_id.startswith("trajectory."):
         return {"maxStructures": 8, "maxAtomsPerStructure": 5000, "maxFrames": 200}
     if tool_id.startswith("ml."):
@@ -366,6 +372,21 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "group_by_element": {"type": "boolean"},
                 "include_pair_counts": {"type": "boolean"},
                 "plot_kind": {"enum": ["bar"]},
+            },
+        }
+    if tool_id == "structure.xrd":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "radiation": {"enum": ["CuKa"]},
+                "two_theta_min": {"type": "number", "minimum": 0.0, "maximum": 180.0},
+                "two_theta_max": {"type": "number", "minimum": 1.0, "maximum": 180.0},
+                "intensity_threshold": {"type": "number", "minimum": 0.0, "maximum": 100.0},
+                "peak_merge_tolerance": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+                "max_peaks": {"type": "integer", "minimum": 1, "maximum": 5000},
+                "include_hkl": {"type": "boolean"},
+                "plot_kind": {"enum": ["stem"]},
             },
         }
     if tool_id == "structure.summary":

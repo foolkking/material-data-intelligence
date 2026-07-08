@@ -8,6 +8,7 @@ from .elements_hist import ElementsHistAdapter
 from .formula_statistics import FormulaStatisticsAdapter
 from .ptable_heatmap import PTableHeatmapAdapter
 from .structure_3d import Structure3DAdapter
+from .xrd import XrdPatternAdapter
 
 __all__ = [
     "ChemSysSunburstAdapter",
@@ -18,4 +19,5 @@ __all__ = [
     "FormulaStatisticsAdapter",
     "PTableHeatmapAdapter",
     "Structure3DAdapter",
+    "XrdPatternAdapter",
 ]

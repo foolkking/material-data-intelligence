@@ -2802,3 +2802,22 @@ Do not implement RDF, full interactive 3D viewer, WebGL/Three.js renderer, Brill
 - RDF remains a planning/hardening item until normalization and periodic RDF semantics are explicit.
 - Official XRD/RDF examples remain mapping references only and are not PASS evidence.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged in Phase 10E-3.
+
+## ADR-10E-4-XRD: Static XRD uses pymatgen XRDCalculator with deterministic serialization
+
+### Context
+
+Phase 10E-3 marked `structure.xrd` ready for implementation because existing local dependencies include pymatgen XRD support and small crystalline fixtures. RDF remains policy-deferred. The implementation needed static physics output without adding browser renderer authority, external dependencies, or experimental fitting scope.
+
+### Decision
+
+Implement `structure.xrd` with `pymatgen.analysis.diffraction.xrd.XRDCalculator` and a CuKa-only deterministic policy. The adapter emits static JSON/Markdown artifacts only: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`. Peaks are filtered, sorted, rounded, and truncated deterministically.
+
+Do not implement RDF, full interactive 3D viewer, WebGL/Three.js renderer, Brillouin-zone 3D, phonon tools, notebook/script extraction, external API workflows, experimental XRD fitting, profile broadening, Rietveld refinement, texture correction, or database lookup in Phase 10E-4.
+
+### Consequences
+
+- XRD outputs are reproducible and suitable for Phase 10E-5 browser/API evidence.
+- `xrd_plot.json` follows the existing static chart JSON pattern and does not require a browser chart renderer.
+- RDF remains deferred until normalization, cutoff/binning, periodic-image, finite-size warning, and partial-pair policies are explicit.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.
