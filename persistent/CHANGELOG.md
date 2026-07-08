@@ -1301,3 +1301,19 @@
 - Negative routing confirms RDF, coordination histogram, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, CrystalNN, experimental fitting, Rietveld, and broadening prompts do not route to `structure.xrd`.
 - Browser screenshot capture is blocked in this environment because no browser-control Node REPL tool is exposed and no Chrome/Edge/Firefox/Playwright/Puppeteer runtime is installed. No browser screenshot was fabricated.
 - No new adapter, RDF, full 3D viewer, WebGL renderer, Three.js, phonon, notebook/script workflow, unsupported official example claim, runtime semantic change, or real LLM path was added.
+
+## 2026-07-08 Phase 10E-5R2
+
+### Changed
+
+- Upgraded Phase 10E-5 XRD browser/API evidence from `PARTIAL_PASS` to `PASS`.
+- Added six real browser-rendered frontend screenshots under `docs/phase10e/browser_api_evidence/phase10e5_xrd/screenshots/`.
+- Updated `browser_preview_audit.md`, `README.md`, `evidence_manifest.json`, and `evidence_manifest.csv` with system Chrome / Playwright capture metadata.
+
+### Verification
+
+- Browser executable: `C:/Program Files (x86)/Google/Chrome/Application/chrome.exe`.
+- Browser version: `149.0.7827.201`.
+- Automation: existing Playwright package with system Chrome `executablePath`; no managed browser download.
+- External request audit: `NO_EXTERNAL_REQUESTS`.
+- No RDF, full viewer, WebGL renderer, Three.js renderer, phonon, experimental fitting, Rietveld refinement, runtime semantic change, or real LLM path was added.

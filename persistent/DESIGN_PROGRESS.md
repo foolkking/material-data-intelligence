@@ -943,3 +943,13 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Negative routing evidence confirms RDF, coordination histogram, full 3D viewer, WebGL, Brillouin-zone, phonon, experimental fitting, Rietveld, Voronoi, and CrystalNN prompts do not route to `structure.xrd`.
 - Browser screenshot capture is blocked in this local environment because no in-app browser Node REPL tool is exposed and no Chrome/Edge/Firefox/Playwright/Puppeteer runtime is installed. No screenshot was fabricated.
 - No new adapter was implemented, and no runtime main semantics or Phase 10E-4 XRD calculation policy were changed.
+
+## 2026-07-08 Phase 10E-5R2 XRD Browser Screenshot Repair
+
+- Repaired the Phase 10E-5 screenshot gap and upgraded Phase 10E-5 from `PARTIAL_PASS` to `PASS`.
+- Detected system Chrome at `C:/Program Files (x86)/Google/Chrome/Application/chrome.exe` and launched it through Playwright `executablePath`.
+- Captured six real browser-rendered frontend screenshots under `docs/phase10e/browser_api_evidence/phase10e5_xrd/screenshots/`.
+- Browser audit confirms completed job display, artifact list, `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json` previews.
+- `xrd_plot.json` remains a static JSON / static chart metadata preview; rendered stem chart UI is deferred.
+- No RDF, full viewer, WebGL renderer, Three.js, phonon, experimental fitting, or Rietveld refinement was implemented.
+- No `structure.xrd` core semantics, schema version, runtime authority, Tool Registry semantics, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, or PlanValidator boundary was changed.

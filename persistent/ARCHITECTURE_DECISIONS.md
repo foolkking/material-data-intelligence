@@ -2842,3 +2842,20 @@ The evidence is limited to static previews of `xrd_pattern.json`, `xrd_plot.json
 - No new adapter or runtime authority was introduced.
 - `structure.rdf`, full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, phonon tools, notebook extraction, script execution, experimental fitting, Rietveld refinement, and unsupported official example claims remain deferred.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.
+
+## ADR-10E-5R2-XRD-BROWSER-SCREENSHOTS: System Chrome repairs the XRD screenshot evidence gap
+
+### Context
+
+Phase 10E-5 completed API, artifact, security, and negative-routing evidence for `structure.xrd`, but it remained `PARTIAL_PASS` because real browser screenshots were unavailable in the first repair attempt. That attempt only checked PATH and Playwright-managed browser availability, which missed system Chrome / Edge installations.
+
+### Decision
+
+Repair the evidence by launching system Chrome from its Windows install path with Playwright `executablePath`. Capture real browser-rendered frontend screenshots for the existing XRD evidence without downloading managed browsers, adding dependencies, changing adapter semantics, or expanding physics/rendering scope.
+
+### Consequences
+
+- Phase 10E-5 is upgraded from `PARTIAL_PASS` to `PASS`.
+- Evidence now includes six browser-rendered screenshots for job completion, artifact list, `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
+- The screenshots validate static frontend presentation only. `xrd_plot.json` remains a static JSON / static chart metadata preview; rendered stem chart UI is deferred.
+- No RDF, full 3D viewer, WebGL/Three.js renderer, phonon, experimental fitting, Rietveld refinement, runtime semantic change, or live LLM path was introduced.

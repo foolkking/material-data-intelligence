@@ -38,6 +38,7 @@
 ## 5. Browser Evidence
 
 - static preview pages: `docs/phase10e/browser_api_evidence/phase10e5_xrd/browser_pages/`
+- real browser screenshots: `docs/phase10e/browser_api_evidence/phase10e5_xrd/screenshots/`
 - preview pages generated:
   - `01_job_completed.html`
   - `02_artifact_list.html`
@@ -45,9 +46,16 @@
   - `04_xrd_plot_preview.html`
   - `05_summary_preview.html`
   - `06_recipe_preview.html`
-- preview behavior: `xrd_plot.json` is displayed as a static chart JSON preview; rendered stem chart UI is deferred.
-- screenshot status: blocked in this environment. The in-app browser and Computer Use plugins require a Node REPL tool that is not exposed in this turn, and the local machine has no Chrome, Edge, Firefox, Playwright, or Puppeteer executable/package available. No screenshot was fabricated.
-- console/network audit: static preview pages contain no external URLs, active script tags, JavaScript URLs, inline event handlers, or dynamic loader hooks.
+- preview behavior: the real frontend screenshots show the completed job, artifact gallery, static result-page preview, summary preview, and recipe preview. `xrd_plot.json` remains static chart JSON / metadata; rendered stem chart UI and a dedicated single-artifact viewer are deferred.
+- screenshot status: repaired in Phase 10E-5R2. System Chrome was launched with Playwright `executablePath` and captured real browser-rendered frontend screenshots.
+- screenshots captured:
+  - `01_job_completed.png`
+  - `02_artifact_list.png`
+  - `03_xrd_pattern_json_preview.png`
+  - `04_xrd_plot_preview.png`
+  - `05_summary_preview.png`
+  - `06_recipe_preview.png`
+- console/network audit: static preview pages and browser-rendered frontend screenshots contain no external artifact loads, active script tags, JavaScript URLs, inline event handlers, or dynamic loader hooks. Browser network audit recorded local frontend/API requests only.
 
 ## 6. Security Evidence
 
@@ -97,6 +105,6 @@
 
 ## 10. Conclusion
 
-PARTIAL_PASS.
+PASS.
 
-API evidence, artifact evidence, security evidence, and negative routing evidence are complete. Browser static preview pages are complete, but real browser screenshot capture is blocked by the current environment lacking an exposed browser-control tool or installed browser automation runtime. No browser/API evidence was fabricated.
+API evidence, artifact evidence, security evidence, negative routing evidence, and real browser-rendered frontend screenshots are complete. Phase 10E-5 was originally `PARTIAL_PASS` because real browser screenshots were blocked; Phase 10E-5R2 repaired the gap using system Chrome / Playwright `executablePath`. No browser/API evidence was fabricated.

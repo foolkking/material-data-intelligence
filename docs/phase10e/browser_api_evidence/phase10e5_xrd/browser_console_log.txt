@@ -1,0 +1,2 @@
+info: React DevTools informational message observed in local dev build; external documentation URL redacted and not requested.
+warning: one local development asset returned 404; not attributable to structure.xrd artifact preview.

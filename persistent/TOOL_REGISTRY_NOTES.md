@@ -739,3 +739,10 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
   - `recipe.json`
 - Negative routing evidence confirms RDF, coordination histogram, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, CrystalNN, experimental fitting, Rietveld, and broadening prompts do not route to `structure.xrd`.
 - The evidence confirms static XRD behavior only. It does not register or claim `structure.rdf`, `structure.viewer_3d`, `structure.brillouin_zone_3d`, `phonon.bands`, `phonon.dos`, experimental fitting, or Rietveld refinement.
+
+## 2026-07-08 Phase 10E-5R2 XRD Browser Screenshot Notes
+
+- No Tool Registry changes were made in Phase 10E-5R2.
+- The existing `structure.xrd` registry entry and artifact contract remain unchanged.
+- Browser screenshots now confirm the frontend can display the XRD job, artifact list, `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json` evidence.
+- The screenshots do not add or claim RDF, full viewer, WebGL, Three.js, phonon, experimental fitting, or Rietveld refinement support.

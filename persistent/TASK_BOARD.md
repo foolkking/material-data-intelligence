@@ -1278,3 +1278,20 @@
 - [ ] `structure.rdf` remains planned but unimplemented.
 - [ ] Experimental XRD fitting and Rietveld refinement remain deferred.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
+
+## 2026-07-08 Phase 10E-5R2 XRD Browser Screenshot Repair
+
+### Done
+
+- [x] Detected system Chrome through Windows default install path.
+- [x] Launched system Chrome through Playwright `executablePath` without downloading managed browsers.
+- [x] Captured 6 real browser-rendered frontend screenshots for XRD evidence.
+- [x] Updated Phase 10E-5 status from `PARTIAL_PASS` to `PASS`.
+- [x] Confirmed no external browser requests and no WebGL / Three.js / full viewer execution.
+
+### Still Open
+
+- [ ] Phase 10E-6 RDF policy hardening or static physics closure planning.
+- [ ] `structure.rdf` remains planned but unimplemented.
+- [ ] Experimental XRD fitting and Rietveld refinement remain deferred.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.

@@ -426,3 +426,11 @@
 - Experimental XRD fitting, Rietveld refinement, profile broadening, texture correction, and database lookup remain out of scope.
 - Official XRD/RDF examples remain mapping references only; direct-uploadable PASS evidence is absent.
 - Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and unsupported official example verification remain open.
+
+## 2026-07-08 Phase 10E-5R2 Follow-ups
+
+- Phase 10E-5R2 closes the XRD browser screenshot blocker with real browser-rendered frontend screenshots.
+- `xrd_plot.json` is still verified as static JSON / static chart metadata preview; rendered stem chart UI remains deferred.
+- RDF remains open until normalization, periodic-image handling, cutoff, binning, finite-size warning, and partial-pair policy are fixed.
+- Experimental XRD fitting, Rietveld refinement, profile broadening, texture correction, and database lookup remain out of scope.
+- Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and unsupported official example verification remain open.

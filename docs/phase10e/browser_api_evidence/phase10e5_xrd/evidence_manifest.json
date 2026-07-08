@@ -1,6 +1,6 @@
 {
   "baseline_head": "507d12432e3238ffd51453866ac4c9f1614c3511",
-  "browser_screenshot_status": "blocked_missing_browser_runtime_no_screenshot_fabricated",
+  "browser_screenshot_status": "captured_phase10e5r2_system_chrome",
   "cases": [
     {
       "artifact_names": [
@@ -720,10 +720,104 @@
       "redacted": true,
       "result": "PASS",
       "tool_id": "structure.xrd"
+    },
+    {
+      "capture_type": "browser_screenshot",
+      "case_id": "simple_cubic_cif",
+      "file_path": "docs/phase10e/browser_api_evidence/phase10e5_xrd/screenshots/01_job_completed.png",
+      "input_type": "browser-rendered frontend evidence",
+      "notes": "Captured from real Next.js frontend rendered in system Chrome via Playwright executablePath.",
+      "phase": "10E-5R2",
+      "redacted": true,
+      "result": "PASS",
+      "screenshot_kind": "01_job_completed",
+      "sha256": "2ceb5d70d55e8c6cafcc620ab1e33c638fe1245827027268c1d2574200a87f40",
+      "tool_id": "structure.xrd"
+    },
+    {
+      "capture_type": "browser_screenshot",
+      "case_id": "simple_cubic_cif",
+      "file_path": "docs/phase10e/browser_api_evidence/phase10e5_xrd/screenshots/02_artifact_list.png",
+      "input_type": "browser-rendered frontend evidence",
+      "notes": "Captured from real Next.js frontend rendered in system Chrome via Playwright executablePath.",
+      "phase": "10E-5R2",
+      "redacted": true,
+      "result": "PASS",
+      "screenshot_kind": "02_artifact_list",
+      "sha256": "1308af49556397846e2f7edb1293380f69b38f1a6ebe28e08e7b388f7ba817c3",
+      "tool_id": "structure.xrd"
+    },
+    {
+      "capture_type": "browser_screenshot",
+      "case_id": "simple_cubic_cif",
+      "file_path": "docs/phase10e/browser_api_evidence/phase10e5_xrd/screenshots/03_xrd_pattern_json_preview.png",
+      "input_type": "browser-rendered frontend evidence",
+      "notes": "Captured from real Next.js frontend rendered in system Chrome via Playwright executablePath.",
+      "phase": "10E-5R2",
+      "redacted": true,
+      "result": "PASS",
+      "screenshot_kind": "03_xrd_pattern_json_preview",
+      "sha256": "0ed9296a76753c59c0c4af298ea07b98d4af7f8107bc01ca1f0138d3cd6eac03",
+      "tool_id": "structure.xrd"
+    },
+    {
+      "capture_type": "browser_screenshot",
+      "case_id": "simple_cubic_cif",
+      "file_path": "docs/phase10e/browser_api_evidence/phase10e5_xrd/screenshots/04_xrd_plot_preview.png",
+      "input_type": "browser-rendered frontend evidence",
+      "notes": "Captured from real Next.js frontend rendered in system Chrome via Playwright executablePath.",
+      "phase": "10E-5R2",
+      "redacted": true,
+      "result": "PASS",
+      "screenshot_kind": "04_xrd_plot_preview",
+      "sha256": "0ed9296a76753c59c0c4af298ea07b98d4af7f8107bc01ca1f0138d3cd6eac03",
+      "tool_id": "structure.xrd"
+    },
+    {
+      "capture_type": "browser_screenshot",
+      "case_id": "simple_cubic_cif",
+      "file_path": "docs/phase10e/browser_api_evidence/phase10e5_xrd/screenshots/05_summary_preview.png",
+      "input_type": "browser-rendered frontend evidence",
+      "notes": "Captured from real Next.js frontend rendered in system Chrome via Playwright executablePath.",
+      "phase": "10E-5R2",
+      "redacted": true,
+      "result": "PASS",
+      "screenshot_kind": "05_summary_preview",
+      "sha256": "1ae1ff18b01c118f401c08e82bc0deef5390969622d93b9916d2a3bd77e38f7a",
+      "tool_id": "structure.xrd"
+    },
+    {
+      "capture_type": "browser_screenshot",
+      "case_id": "simple_cubic_cif",
+      "file_path": "docs/phase10e/browser_api_evidence/phase10e5_xrd/screenshots/06_recipe_preview.png",
+      "input_type": "browser-rendered frontend evidence",
+      "notes": "Captured from real Next.js frontend rendered in system Chrome via Playwright executablePath.",
+      "phase": "10E-5R2",
+      "redacted": true,
+      "result": "PASS",
+      "screenshot_kind": "06_recipe_preview",
+      "sha256": "1ae1ff18b01c118f401c08e82bc0deef5390969622d93b9916d2a3bd77e38f7a",
+      "tool_id": "structure.xrd"
     }
   ],
   "generated_at": "2026-07-08T11:26:11+00:00",
   "phase": "10E-5",
+  "phase10e5_final_status": "PASS",
+  "phase10e5r2_repair": {
+    "automation_tool": "Playwright using existing E:/mdi-playwright-runner package and system Chrome executablePath",
+    "backend_url": "<BACKEND_URL>",
+    "browser_executable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "browser_version": "149.0.7827.201",
+    "console_audit": "No console error attributable to structure.xrd; local dev React informational message sanitized.",
+    "external_requests": "NO_EXTERNAL_REQUESTS",
+    "frontend_url": "<FRONTEND_URL>",
+    "job_id": "job_9fe50c27dfb44879938d57ac",
+    "repaired_at": "2026-07-08T12:34:12+00:00",
+    "viewport": {
+      "height": 1000,
+      "width": 1440
+    }
+  },
   "security_scan": "NO_SECRET_PATTERN_HITS",
   "tool_id": "structure.xrd"
 }
