@@ -953,3 +953,20 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - `xrd_plot.json` remains a static JSON / static chart metadata preview; rendered stem chart UI is deferred.
 - No RDF, full viewer, WebGL renderer, Three.js, phonon, experimental fitting, or Rietveld refinement was implemented.
 - No `structure.xrd` core semantics, schema version, runtime authority, Tool Registry semantics, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, or PlanValidator boundary was changed.
+
+## 2026-07-09 Phase 10E-6 RDF Policy Hardening
+
+- Added Phase 10E-6 RDF policy hardening docs under `docs/phase10e/`.
+- Retained Phase 10E-5 final status as `PASS` after Phase 10E-5R2 screenshot repair at commit `4c7e392`.
+- Fixed the first RDF implementation policy:
+  - periodic structures only with `pbc == [true, true, true]`;
+  - `r_max_angstrom = 8.0` default, bounded `0.5..30.0`;
+  - `bin_width_angstrom = 0.1` default, bounded `0.01..1.0`;
+  - `normalization = number_density`;
+  - ordered center-element to neighbor-element partial RDF pairs;
+  - site, bin, neighbor, and partial-pair caps;
+  - deterministic sorting and 6-decimal rounding.
+- Planned RDF artifacts: `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`.
+- RDF readiness decision: `READY` for a single-scope Phase 10E-7 implementation using existing pymatgen periodic neighbor APIs and small periodic fixtures.
+- This phase did not implement `structure.rdf`, did not modify `structure.xrd` or `structure.coordination_hist`, and did not change runtime semantics.
+- Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, trajectory RDF, experimental fitting, notebook extraction, script execution, and external API workflows remain deferred.

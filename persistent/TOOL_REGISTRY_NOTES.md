@@ -746,3 +746,14 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - The existing `structure.xrd` registry entry and artifact contract remain unchanged.
 - Browser screenshots now confirm the frontend can display the XRD job, artifact list, `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json` evidence.
 - The screenshots do not add or claim RDF, full viewer, WebGL, Three.js, phonon, experimental fitting, or Rietveld refinement support.
+
+## 2026-07-09 Phase 10E-6 RDF Policy Notes
+
+- No Tool Registry changes were made in Phase 10E-6.
+- Planned future tool: `structure.rdf`.
+- Planned domain: `structure`.
+- Planned artifact types: `table_json`, `plotly_json`, `summary_md`, and `recipe_json`.
+- Planned filenames: `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`.
+- Planned params schema is strict and RDF-specific: `r_max_angstrom`, `bin_width_angstrom`, `normalization`, `include_partial_pairs`, `max_partial_pairs`, `max_sites`, `max_bins`, `max_neighbors_total`, and `plot_kind`.
+- Planned description must state static RDF only and must not claim trajectory RDF, experimental PDF fitting, phonon, full 3D viewer, WebGL, or advanced local environment classification.
+- Phase 10E-7 may register `structure.rdf` only if it implements the policy fixed in `docs/phase10e/phase10e6_rdf_policy_hardening.md`.

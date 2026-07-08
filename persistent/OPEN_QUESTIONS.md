@@ -434,3 +434,11 @@
 - RDF remains open until normalization, periodic-image handling, cutoff, binning, finite-size warning, and partial-pair policy are fixed.
 - Experimental XRD fitting, Rietveld refinement, profile broadening, texture correction, and database lookup remain out of scope.
 - Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and unsupported official example verification remain open.
+
+## 2026-07-09 Phase 10E-6 Follow-ups
+
+- Phase 10E-6 closes the RDF policy blocker: periodic-image, cutoff, binning, number-density normalization, partial-pair, finite-size/resource cap, and deterministic ordering policies are now fixed.
+- RDF implementation is still not complete; Phase 10E-7 is the recommended single-scope implementation phase.
+- RDF browser/API evidence remains deferred until after implementation, expected as Phase 10E-8.
+- Official RDF examples remain mapping references only; no official RDF case is direct-upload PASS evidence.
+- Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, trajectory RDF, experimental fitting, notebook extraction, script execution, and external API workflows remain open.

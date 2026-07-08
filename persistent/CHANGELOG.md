@@ -1265,6 +1265,8 @@
 ### Verification
 
 - Planning-only phase; no adapter, Tool Registry semantic change, runtime semantic change, browser/API evidence, frontend runtime change, dependency change, or real LLM path was added.
+- Local checks: `git diff --check` passed with line-ending warnings only, `uv lock --check` passed, `npm --prefix apps/web run typecheck` passed, and `uv run python -m pytest -q` passed with 254 passed / 21 skipped / 9 warnings.
+- Security scan: `NO_SECRET_PATTERN_HITS`.
 
 ## 2026-07-08 Phase 10E-4
 
@@ -1317,3 +1319,23 @@
 - Automation: existing Playwright package with system Chrome `executablePath`; no managed browser download.
 - External request audit: `NO_EXTERNAL_REQUESTS`.
 - No RDF, full viewer, WebGL renderer, Three.js renderer, phonon, experimental fitting, Rietveld refinement, runtime semantic change, or real LLM path was added.
+
+## 2026-07-09 Phase 10E-6
+
+### Added
+
+- Added `docs/phase10e/phase10e6_rdf_policy_hardening.md`.
+- Added `docs/phase10e/phase10e6_rdf_policy_matrix.md`.
+- Added `docs/phase10e/phase10e7_rdf_next_scope_prompt.md`.
+
+### Planning Decisions
+
+- Fixed RDF as periodic-crystalline-only for the first implementation.
+- Fixed `number_density` normalization with shell-volume scaling, all-site global RDF, exact zero-distance self-pair exclusion, ordered partial pairs, and deterministic binning.
+- Fixed params schema and artifact contracts for `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`.
+- Marked `structure.rdf` READY for Phase 10E-7 implementation, with browser/API evidence deferred to Phase 10E-8.
+- Official RDF README gallery examples remain mapping references only and are not PASS evidence.
+
+### Verification
+
+- Planning-only phase; no adapter, Tool Registry semantic change, runtime semantic change, browser/API evidence, frontend runtime change, dependency change, or real LLM path was added.

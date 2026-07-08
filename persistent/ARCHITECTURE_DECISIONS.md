@@ -2859,3 +2859,22 @@ Repair the evidence by launching system Chrome from its Windows install path wit
 - Evidence now includes six browser-rendered screenshots for job completion, artifact list, `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
 - The screenshots validate static frontend presentation only. `xrd_plot.json` remains a static JSON / static chart metadata preview; rendered stem chart UI is deferred.
 - No RDF, full 3D viewer, WebGL/Three.js renderer, phonon, experimental fitting, Rietveld refinement, runtime semantic change, or live LLM path was introduced.
+
+## ADR-10E-6-RDF-POLICY: RDF implementation requires fixed periodic, binning, normalization, and cap policy
+
+### Context
+
+After coordination histogram and XRD were implemented and evidenced, RDF remained the only Phase 10E static physics candidate without an implementation. Phase 10E-3 deferred RDF because cutoff/binning, periodic-image handling, normalization, finite-size handling, and partial-pair policy were not fixed.
+
+### Decision
+
+Fix RDF policy before implementation. The first RDF adapter must support only periodic crystalline `pymatgen Structure` inputs with valid lattice volume and full periodic boundary conditions. It must use bounded periodic neighbor search, deterministic radial bins, number-density shell-volume normalization, ordered center-element to neighbor-element partial pairs, and explicit site/bin/neighbor/partial-pair caps.
+
+The planned artifacts are static only: `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`. They must contain no artifact JavaScript, no external URLs, no renderer bundle, no WebGL, and no notebook/script execution path.
+
+### Consequences
+
+- `structure.rdf` is READY for a single-scope Phase 10E-7 implementation.
+- Browser/API evidence remains deferred to Phase 10E-8 after implementation.
+- Official RDF README gallery examples remain mapping references only and are not PASS evidence.
+- Full interactive 3D viewer, WebGL/Three.js renderer, Brillouin-zone 3D, phonon tools, trajectory RDF, experimental PDF fitting, notebook extraction, script execution, external API workflows, and runtime authority changes remain deferred.

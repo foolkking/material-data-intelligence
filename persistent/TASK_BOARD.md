@@ -1279,6 +1279,34 @@
 - [ ] Experimental XRD fitting and Rietveld refinement remain deferred.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
 
+## 2026-07-09 Phase 10E-6 RDF Policy Hardening
+
+### Done
+
+- [x] Added `docs/phase10e/phase10e6_rdf_policy_hardening.md`.
+- [x] Added `docs/phase10e/phase10e6_rdf_policy_matrix.md`.
+- [x] Added `docs/phase10e/phase10e7_rdf_next_scope_prompt.md`.
+- [x] Recorded Phase 10E-5 final status as PASS after Phase 10E-5R2.
+- [x] Fixed RDF periodic-image, cutoff, bin, normalization, partial-pair, resource cap, deterministic ordering, warning/error, params schema, and artifact contract policies.
+- [x] Classified RDF as READY for a single-scope Phase 10E-7 implementation.
+- [x] Confirmed official RDF README examples remain mapping references only, not PASS evidence.
+- [x] Confirmed Phase 10E-6 does not implement RDF, full viewer, WebGL, Three.js, or phonon.
+
+### Verification
+
+- [x] `git diff --check` passed with line-ending warnings only.
+- [x] `uv lock --check` passed.
+- [x] `npm --prefix apps/web run typecheck` passed.
+- [x] `uv run python -m pytest -q` passed with 254 passed / 21 skipped / 9 warnings.
+- [x] Security scan reported `NO_SECRET_PATTERN_HITS`.
+- [ ] Commit, push, and confirm CI current HEAD.
+
+### Remaining
+
+- [ ] Phase 10E-7 `structure.rdf` implementation, if approved.
+- [ ] Phase 10E-8 RDF browser/API evidence after implementation.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, advanced local environment classification, notebook extraction, and script execution remain future work.
+
 ## 2026-07-08 Phase 10E-5R2 XRD Browser Screenshot Repair
 
 ### Done
