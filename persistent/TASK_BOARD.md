@@ -1218,3 +1218,23 @@
 - [ ] `structure.xrd` implementation.
 - [ ] `structure.rdf` implementation.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
+
+## 2026-07-08 Phase 10E-3 XRD / RDF Readiness Decision
+
+### Done
+
+- [x] Added `docs/phase10e/phase10e3_xrd_rdf_readiness_decision.md`.
+- [x] Added `docs/phase10e/phase10e3_static_physics_next_scope_matrix.md`.
+- [x] Added `docs/phase10e/phase10e4_static_physics_adapter_implementation_prompt.md`.
+- [x] Confirmed `structure.xrd` dependency readiness through existing `pymatgen` / `XRDCalculator` availability.
+- [x] Confirmed `structure.rdf` is not ready for immediate implementation because normalization and periodic RDF policy remain unresolved.
+- [x] Recommended Phase 10E-4 implement `structure.xrd` only.
+- [x] Confirmed official XRD/RDF examples are mapping/future references only, not PASS evidence.
+- [x] Confirmed this phase does not implement XRD, RDF, full 3D viewer, WebGL, or phonon.
+
+### Still Open
+
+- [ ] Phase 10E-4 implementation of `structure.xrd`.
+- [ ] Phase 10E-5 browser/API evidence for `structure.xrd` after implementation.
+- [ ] RDF normalization, cutoff, binning, finite-size warning, and partial-pair policy hardening before implementation.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.

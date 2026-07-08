@@ -397,3 +397,12 @@
 - RDF remains open until normalization, cutoff, binning, finite-size warning, and species-pair policy are fixed.
 - Advanced local environment classification remains deferred; current evidence only covers deterministic distance-cutoff coordination counts.
 - Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and unsupported official example verification remain open.
+
+## 2026-07-08 Phase 10E-3 Follow-ups
+
+- Phase 10E-3 recommends `structure.xrd` as the Phase 10E-4 implementation target.
+- XRD implementation still needs pinned CuKa defaults, two-theta range, peak merge tolerance, intensity threshold, peak sorting, rounding, and fixture peak windows.
+- RDF remains open until normalization, periodic-image handling, cutoff, binning, finite-size warning, and partial-pair policy are fixed.
+- Official XRD/RDF examples remain mapping references only; direct-uploadable benchmark evidence is absent.
+- XRD/RDF browser/API evidence remains future work after implementation.
+- Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and unsupported official example verification remain open.

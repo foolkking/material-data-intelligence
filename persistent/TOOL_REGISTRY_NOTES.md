@@ -703,3 +703,13 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
   - `recipe.json`
 - Negative routing evidence confirms XRD, RDF, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, and CrystalNN prompts do not route to `structure.coordination_hist`.
 - The evidence confirms static coordination histogram behavior only. It does not register or claim `structure.xrd`, `structure.rdf`, `structure.viewer_3d`, `structure.brillouin_zone_3d`, `phonon.bands`, `phonon.dos`, or advanced local environment classification.
+
+## 2026-07-08 Phase 10E-3 XRD / RDF Readiness Notes
+
+- No new Tool Registry tools were added in Phase 10E-3.
+- `structure.xrd` is recommended as the single Phase 10E-4 implementation target.
+- `structure.rdf` remains deferred until normalization, cutoff/binning, periodic-image, finite-size warning, and partial-pair policies are fixed.
+- Existing manifest entries for XRD/RDF are still planning/inventory references until executable adapters, strict params schemas, registry tests, planner routing, and artifact contracts are implemented.
+- Future `structure.xrd` registration should declare static artifacts only: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
+- Future `structure.xrd` description must not claim RDF, full 3D viewer, WebGL rendering, phonon support, Rietveld refinement, experimental fitting, or database lookup.
+- Full viewer, WebGL, Brillouin-zone, phonon, notebook/script, and external API workflows remain outside executable Tool Registry scope.

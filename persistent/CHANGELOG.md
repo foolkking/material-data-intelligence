@@ -1246,3 +1246,22 @@
 - Artifact scan: no script, JavaScript URL, external URL, CDN, Three.js, or eval patterns.
 - Negative routing confirms XRD, RDF, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, and CrystalNN prompts do not route to `structure.coordination_hist`.
 - No new adapter, XRD, RDF, full 3D viewer, WebGL renderer, phonon, notebook/script workflow, unsupported official example claim, runtime semantic change, or real LLM path was added.
+
+## 2026-07-08 Phase 10E-3
+
+### Added
+
+- Added `docs/phase10e/phase10e3_xrd_rdf_readiness_decision.md`.
+- Added `docs/phase10e/phase10e3_static_physics_next_scope_matrix.md`.
+- Added `docs/phase10e/phase10e4_static_physics_adapter_implementation_prompt.md`.
+
+### Planning Decisions
+
+- Recommended Phase 10E-4 implement `structure.xrd` only.
+- Marked XRD ready for a single-scope implementation because existing dependencies, fixtures, artifact contracts, and evidence flow are sufficient if peak tolerances are pinned in implementation.
+- Marked RDF not ready for immediate implementation because normalization, cutoff/binning, periodic image, finite-size warning, and partial RDF policies remain unresolved.
+- Official examples for XRD/RDF remain mapping references only and are not PASS evidence.
+
+### Verification
+
+- Planning-only phase; no adapter, Tool Registry semantic change, runtime semantic change, browser/API evidence, frontend runtime change, dependency change, or real LLM path was added.

@@ -2783,3 +2783,22 @@ The browser evidence is limited to static previews of `coordination_hist.json`, 
 - No new adapter or runtime authority was introduced.
 - `structure.xrd`, `structure.rdf`, full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, phonon tools, notebook extraction, script execution, and unsupported official example claims remain deferred.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.
+
+## ADR-10E-3-XRD-RDF-READINESS: XRD is the next static physics target, RDF remains policy-deferred
+
+### Context
+
+After Phase 10E-2, `structure.coordination_hist` has implementation and browser/API evidence. The remaining static physics candidates are XRD and RDF. XRD has available local dependencies and small crystalline fixtures, while RDF still has unresolved normalization, cutoff/binning, periodic-image, and partial-pair policy choices.
+
+### Decision
+
+Recommend Phase 10E-4 implement `structure.xrd` only. Treat RDF as not ready for implementation until its numeric policy is pinned. Phase 10E-4 should use existing dependencies, especially `pymatgen.analysis.diffraction.xrd.XRDCalculator`, and generate static JSON/Markdown artifacts only: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
+
+Do not implement RDF, full interactive 3D viewer, WebGL/Three.js renderer, Brillouin-zone 3D, phonon tools, notebook/script extraction, external API workflows, experimental XRD fitting, Rietveld refinement, or crystallographic database lookup in Phase 10E-4.
+
+### Consequences
+
+- XRD proceeds as the next bounded static physics adapter with fixture-tolerance pinning in implementation.
+- RDF remains a planning/hardening item until normalization and periodic RDF semantics are explicit.
+- Official XRD/RDF examples remain mapping references only and are not PASS evidence.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged in Phase 10E-3.

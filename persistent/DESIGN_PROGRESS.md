@@ -906,3 +906,16 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Security scan result: `NO_SECRET_PATTERN_HITS`; artifact scan found no script, JavaScript URL, external URL, CDN, Three.js, or eval patterns.
 - Negative routing evidence confirms XRD, RDF, full 3D viewer, WebGL, Brillouin-zone, phonon, Voronoi, and CrystalNN prompts do not route to `structure.coordination_hist`.
 - No new adapter was implemented, and no runtime main semantics or Phase 10E-1 coordination policy were changed.
+
+## 2026-07-08 Phase 10E-3 XRD / RDF Readiness Decision
+
+- Added Phase 10E-3 readiness docs under `docs/phase10e/`.
+- Confirmed `structure.coordination_hist` implementation and browser/API evidence are the current static physics baseline.
+- Assessed `structure.xrd` and `structure.rdf` across dependency, fixture, determinism, tolerance, artifact contract, routing, evidence, CI, security, and official-example readiness gates.
+- Local dependency check confirms `pymatgen`, `pymatviz`, `numpy`, `scipy`, `plotly`, `spglib`, `ase`, and `pymatgen.analysis.diffraction.xrd.XRDCalculator` are available without adding dependencies.
+- Decision: recommend Phase 10E-4 implement `structure.xrd` only.
+- Rationale: XRD has available dependencies, small crystalline fixtures, clear static JSON/chart artifact contracts, and manageable tolerance pinning work.
+- RDF remains deferred because normalization, cutoff/binning, periodic-image handling, finite-size warnings, and partial-pair policy are not ready.
+- Official examples remain mapping references only; no XRD/RDF official example is claimed as PASS evidence.
+- No adapter, Tool Registry, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, frontend runtime, browser/API evidence, or real LLM path was changed.
+- Full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, phonon tools, notebook extraction, script execution, and external API workflows remain deferred.
