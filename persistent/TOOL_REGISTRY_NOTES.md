@@ -664,3 +664,16 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
   - `recipe.json`
 - Preview hardening does not change adapter execution, Tool Registry validation, PlanValidator, QueueWorkerRuntime, or `/planner/jobs`.
 - Static previews must not be interpreted as support for `structure.viewer_3d`, WebGL rendering, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon, notebook extraction, or script execution.
+
+## 2026-07-08 Phase 10E Static Physics Planning Notes
+
+- No new Tool Registry tools were added in Phase 10E.
+- Planned future tool ids:
+  - `structure.coordination_hist`
+  - `structure.xrd`
+  - `structure.rdf`
+- Planned domain for all three is `structure`.
+- Planned outputs follow existing artifact boundaries: deterministic numeric JSON, optional static Plotly-compatible chart JSON/HTML, `summary.md`, and `recipe.json`.
+- Recommended first implementation is `structure.coordination_hist`; it must require periodic structures and a strict params schema.
+- `structure.xrd` and `structure.rdf` must not be registered until numeric tolerance and fixture policies are pinned.
+- Full `structure.viewer_3d`, Brillouin-zone 3D, phonon tools, notebook/script execution, external API workflows, and experimental fitting remain outside Tool Registry scope.

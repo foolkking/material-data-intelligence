@@ -2704,3 +2704,21 @@ Add schema-aware static previews for `viewer_scene.json` and `viewer_assets_mani
 - Phase 10D-3 improves frontend usability while preserving the Phase 10D-1 artifact contract.
 - Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, and script execution remain deferred.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.
+
+## ADR-10E-STATIC-PHYSICS-PLANNING: Coordination histogram is the first static physics candidate
+
+### Context
+
+After Phase 10D-3, the platform can statically preview viewer scene and export package artifacts, but it still lacks static structure physics plots. Candidate tools are XRD, RDF, and coordination histograms. These tools have higher numeric policy risk than previous summary adapters because small changes in tolerance, cutoff, normalization, or neighbor strategy can change outputs.
+
+### Decision
+
+Plan static physics tools before implementation. Recommend `structure.coordination_hist` as the first Phase 10E-1 implementation target because it can use the existing structure parser and a conservative deterministic distance-cutoff neighbor policy. Treat `structure.xrd` as a second candidate after fixture peak windows and tolerances are pinned. Defer `structure.rdf` until normalization, cutoff, binning, and periodic-boundary policies are explicit.
+
+### Consequences
+
+- Phase 10E remains planning-only and does not register or implement XRD, RDF, or coordination tools.
+- Official widget/script examples remain mapping references, not PASS evidence.
+- Future static physics adapters must use deterministic numeric JSON artifacts, static chart artifacts, `summary.md`, and `recipe.json`.
+- Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon tools, trajectory RDF, experimental XRD fitting, notebook extraction, script execution, and external API workflows remain deferred.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.

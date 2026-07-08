@@ -1180,3 +1180,22 @@
 - Added frontend tests asserting no canvas/WebGL renderer, no script node, no Three.js label, and no `structure.viewer_3d` claim.
 - Phase 10D-3 evidence includes 10 browser-rendered static preview screenshots.
 - No new adapter, Tool Registry semantic change, runtime authority change, full 3D viewer, WebGL renderer, XRD, RDF, coordination histogram, phonon, notebook extraction, script execution, or unsupported official example support was added.
+
+## 2026-07-08 Phase 10E
+
+### Added
+
+- Added `docs/phase10e/phase10e_static_structure_physics_plot_planning.md`.
+- Added `docs/phase10e/phase10e_candidate_adapter_matrix.md`.
+- Added `docs/phase10e/phase10e1_static_physics_adapter_implementation_prompt.md`.
+
+### Planning Decisions
+
+- Recommended Phase 10E-1 start with `structure.coordination_hist` using a deterministic distance-cutoff neighbor policy.
+- `structure.xrd` is the second candidate once fixture peak windows and numeric tolerances are pinned.
+- `structure.rdf` is deferred until normalization and cutoff policy are explicit.
+- Official XRD/RDF widget examples remain mapping-only/future-scope references and are not PASS evidence.
+
+### Verification
+
+- Planning-only phase; no adapter, registry, runtime, planner execution semantics, browser/API evidence, or real LLM path was changed.

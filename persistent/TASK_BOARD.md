@@ -1133,3 +1133,24 @@
 - [ ] Phase 10E static structure physics plot planning for XRD, RDF, and coordination histogram.
 - [ ] Optional schema-only `structure.viewer_3d_contract` decision.
 - [ ] Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
+
+## 2026-07-08 Phase 10E Static Structure Physics Plot Planning
+
+### Done
+
+- [x] Added `docs/phase10e/phase10e_static_structure_physics_plot_planning.md`.
+- [x] Added `docs/phase10e/phase10e_candidate_adapter_matrix.md`.
+- [x] Added `docs/phase10e/phase10e1_static_physics_adapter_implementation_prompt.md`.
+- [x] Planned `structure.xrd`, `structure.rdf`, and `structure.coordination_hist` boundaries.
+- [x] Recorded dependency policy and local dependency availability.
+- [x] Recorded numeric tolerance open questions for XRD/RDF/coordination.
+- [x] Confirmed official static physics examples are mapping/future-scope only, not PASS evidence.
+- [x] Recommended Phase 10E-1 begin with `structure.coordination_hist`.
+
+### Still Open
+
+- [ ] Implement `structure.coordination_hist`.
+- [ ] Pin optional `structure.xrd` fixture peak windows and tolerances.
+- [ ] Resolve RDF normalization / cutoff / binning policy.
+- [ ] Browser/API evidence for implemented static physics tools.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.

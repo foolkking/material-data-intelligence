@@ -370,3 +370,11 @@
 - Optional `structure.viewer_3d_contract` remains open; current frontend preview consumes the `viewer_scene.json` and `viewer_assets_manifest.json` contracts directly.
 - Next material-domain planning should move to Phase 10E static structure physics plot planning for XRD, RDF, and coordination histogram policies.
 - Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, and unsupported official example verification remain open.
+
+## 2026-07-08 Phase 10E Follow-ups
+
+- Coordination histogram implementation still needs final cutoff defaults, tolerance defaults, and expected counts for simple cubic / NaCl fixtures.
+- XRD implementation still needs pinned radiation source defaults, peak merge tolerance, and fixture peak windows before coding.
+- RDF remains open until normalization, cutoff, binning, finite-size warnings, and species-pair policy are fixed.
+- Official widget/script examples for XRD/RDF remain mapping references only; direct-uploadable benchmark evidence is still absent.
+- Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, trajectory RDF, experimental XRD fitting, notebook extraction, script execution, and external API workflows remain open.
