@@ -1,0 +1,151 @@
+phase,case_id,tool_id,input_type,capture_type,file_path,redacted,secret_scan,artifact_kind,screenshot_kind,result,notes
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/artifacts_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/events_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/job_request.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/job_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/job_status_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/planner_request.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/planner_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/planner_validate_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/profile_or_resource_inspection_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/recipe_json_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/result_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/summary_md_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/tool_calls_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/upload_or_resource_request.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/upload_or_resource_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,api,scene_metadata_cif/api_redacted/viewer_scene_json_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,artifact,scene_metadata_cif/artifacts/viewer_scene.json,n/a,passed,viewer_scene.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,artifact,scene_metadata_cif/artifacts/summary.md,n/a,passed,summary.md,,PASS,actual platform artifact copied from planner job storage
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,artifact,scene_metadata_cif/artifacts/recipe.json,n/a,passed,recipe.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,screenshot,scene_metadata_cif/browser_screenshots/01_structure_resource_profile.png,true,passed,,01_structure_resource_profile.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,screenshot,scene_metadata_cif/browser_screenshots/02_plan_preview.png,true,passed,,02_plan_preview.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,screenshot,scene_metadata_cif/browser_screenshots/03_agent_process_completed.png,true,passed,,03_agent_process_completed.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,screenshot,scene_metadata_cif/browser_screenshots/04_results_artifacts.png,true,passed,,04_results_artifacts.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_cif,structure.viewer_scene_metadata,CIF,screenshot,scene_metadata_cif/browser_screenshots/05_developer_audit_redacted.png,true,passed,,05_developer_audit_redacted.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/artifacts_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/events_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/job_request.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/job_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/job_status_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/planner_request.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/planner_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/planner_validate_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/profile_or_resource_inspection_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/recipe_json_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/result_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/summary_md_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/tool_calls_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/upload_or_resource_request.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/upload_or_resource_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,api,scene_metadata_poscar/api_redacted/viewer_scene_json_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,artifact,scene_metadata_poscar/artifacts/viewer_scene.json,n/a,passed,viewer_scene.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,artifact,scene_metadata_poscar/artifacts/summary.md,n/a,passed,summary.md,,PASS,actual platform artifact copied from planner job storage
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,artifact,scene_metadata_poscar/artifacts/recipe.json,n/a,passed,recipe.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,screenshot,scene_metadata_poscar/browser_screenshots/01_structure_resource_profile.png,true,passed,,01_structure_resource_profile.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,screenshot,scene_metadata_poscar/browser_screenshots/02_plan_preview.png,true,passed,,02_plan_preview.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,screenshot,scene_metadata_poscar/browser_screenshots/03_agent_process_completed.png,true,passed,,03_agent_process_completed.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,screenshot,scene_metadata_poscar/browser_screenshots/04_results_artifacts.png,true,passed,,04_results_artifacts.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_poscar,structure.viewer_scene_metadata,POSCAR,screenshot,scene_metadata_poscar/browser_screenshots/05_developer_audit_redacted.png,true,passed,,05_developer_audit_redacted.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/artifacts_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/events_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/job_request.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/job_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/job_status_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/planner_request.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/planner_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/planner_validate_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/profile_or_resource_inspection_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/recipe_json_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/result_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/summary_md_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/tool_calls_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/upload_or_resource_request.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/upload_or_resource_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,api,scene_metadata_structure_json/api_redacted/viewer_scene_json_response.redacted.json,true,passed,,,PASS,
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,artifact,scene_metadata_structure_json/artifacts/viewer_scene.json,n/a,passed,viewer_scene.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,artifact,scene_metadata_structure_json/artifacts/summary.md,n/a,passed,summary.md,,PASS,actual platform artifact copied from planner job storage
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,artifact,scene_metadata_structure_json/artifacts/recipe.json,n/a,passed,recipe.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,screenshot,scene_metadata_structure_json/browser_screenshots/01_structure_resource_profile.png,true,passed,,01_structure_resource_profile.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,screenshot,scene_metadata_structure_json/browser_screenshots/02_plan_preview.png,true,passed,,02_plan_preview.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,screenshot,scene_metadata_structure_json/browser_screenshots/03_agent_process_completed.png,true,passed,,03_agent_process_completed.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,screenshot,scene_metadata_structure_json/browser_screenshots/04_results_artifacts.png,true,passed,,04_results_artifacts.png,PASS,generated from static no-JS evidence preview page
+10D-2,scene_metadata_structure_json,structure.viewer_scene_metadata,Pymatgen Structure JSON,screenshot,scene_metadata_structure_json/browser_screenshots/05_developer_audit_redacted.png,true,passed,,05_developer_audit_redacted.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/artifacts_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/events_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/job_request.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/job_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/job_status_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/planner_request.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/planner_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/planner_validate_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/profile_or_resource_inspection_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/recipe_json_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/result_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/summary_md_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/tool_calls_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/upload_or_resource_request.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/upload_or_resource_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/viewer_assets_manifest_json_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,api,export_package_cif/api_redacted/viewer_scene_json_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_cif,structure.viewer_export_package,CIF,artifact,export_package_cif/artifacts/viewer_scene.json,n/a,passed,viewer_scene.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_cif,structure.viewer_export_package,CIF,artifact,export_package_cif/artifacts/viewer_assets_manifest.json,n/a,passed,viewer_assets_manifest.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_cif,structure.viewer_export_package,CIF,artifact,export_package_cif/artifacts/summary.md,n/a,passed,summary.md,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_cif,structure.viewer_export_package,CIF,artifact,export_package_cif/artifacts/recipe.json,n/a,passed,recipe.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_cif,structure.viewer_export_package,CIF,screenshot,export_package_cif/browser_screenshots/01_structure_resource_profile.png,true,passed,,01_structure_resource_profile.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_cif,structure.viewer_export_package,CIF,screenshot,export_package_cif/browser_screenshots/02_plan_preview.png,true,passed,,02_plan_preview.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_cif,structure.viewer_export_package,CIF,screenshot,export_package_cif/browser_screenshots/03_agent_process_completed.png,true,passed,,03_agent_process_completed.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_cif,structure.viewer_export_package,CIF,screenshot,export_package_cif/browser_screenshots/04_results_artifacts.png,true,passed,,04_results_artifacts.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_cif,structure.viewer_export_package,CIF,screenshot,export_package_cif/browser_screenshots/05_developer_audit_redacted.png,true,passed,,05_developer_audit_redacted.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/artifacts_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/events_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/job_request.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/job_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/job_status_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/planner_request.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/planner_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/planner_validate_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/profile_or_resource_inspection_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/recipe_json_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/result_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/summary_md_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/tool_calls_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/upload_or_resource_request.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/upload_or_resource_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/viewer_assets_manifest_json_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,api,export_package_poscar/api_redacted/viewer_scene_json_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,artifact,export_package_poscar/artifacts/viewer_scene.json,n/a,passed,viewer_scene.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,artifact,export_package_poscar/artifacts/viewer_assets_manifest.json,n/a,passed,viewer_assets_manifest.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,artifact,export_package_poscar/artifacts/summary.md,n/a,passed,summary.md,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,artifact,export_package_poscar/artifacts/recipe.json,n/a,passed,recipe.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,screenshot,export_package_poscar/browser_screenshots/01_structure_resource_profile.png,true,passed,,01_structure_resource_profile.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,screenshot,export_package_poscar/browser_screenshots/02_plan_preview.png,true,passed,,02_plan_preview.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,screenshot,export_package_poscar/browser_screenshots/03_agent_process_completed.png,true,passed,,03_agent_process_completed.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,screenshot,export_package_poscar/browser_screenshots/04_results_artifacts.png,true,passed,,04_results_artifacts.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_poscar,structure.viewer_export_package,POSCAR,screenshot,export_package_poscar/browser_screenshots/05_developer_audit_redacted.png,true,passed,,05_developer_audit_redacted.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/artifacts_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/events_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/job_request.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/job_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/job_status_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/planner_request.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/planner_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/planner_validate_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/profile_or_resource_inspection_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/recipe_json_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/result_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/summary_md_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/tool_calls_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/upload_or_resource_request.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/upload_or_resource_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/viewer_assets_manifest_json_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,api,export_package_structure_json/api_redacted/viewer_scene_json_response.redacted.json,true,passed,,,PASS,
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,artifact,export_package_structure_json/artifacts/viewer_scene.json,n/a,passed,viewer_scene.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,artifact,export_package_structure_json/artifacts/viewer_assets_manifest.json,n/a,passed,viewer_assets_manifest.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,artifact,export_package_structure_json/artifacts/summary.md,n/a,passed,summary.md,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,artifact,export_package_structure_json/artifacts/recipe.json,n/a,passed,recipe.json,,PASS,actual platform artifact copied from planner job storage
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,screenshot,export_package_structure_json/browser_screenshots/01_structure_resource_profile.png,true,passed,,01_structure_resource_profile.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,screenshot,export_package_structure_json/browser_screenshots/02_plan_preview.png,true,passed,,02_plan_preview.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,screenshot,export_package_structure_json/browser_screenshots/03_agent_process_completed.png,true,passed,,03_agent_process_completed.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,screenshot,export_package_structure_json/browser_screenshots/04_results_artifacts.png,true,passed,,04_results_artifacts.png,PASS,generated from static no-JS evidence preview page
+10D-2,export_package_structure_json,structure.viewer_export_package,Pymatgen Structure JSON,screenshot,export_package_structure_json/browser_screenshots/05_developer_audit_redacted.png,true,passed,,05_developer_audit_redacted.png,PASS,generated from static no-JS evidence preview page

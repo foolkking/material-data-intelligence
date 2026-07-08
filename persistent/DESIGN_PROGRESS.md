@@ -833,3 +833,18 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, and script execution remain deferred.
 - Browser/API evidence is deferred to Phase 10D-2; Phase 10D-1 evidence is adapter-level only under `docs/phase10d/adapter_evidence/`.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and the default real-LLM gate were not changed.
+
+## 2026-07-08 Phase 10D-2 Browser/API Evidence for Viewer Scene Metadata
+
+- Generated Browser/API/artifact evidence for the Phase 10D-1 static viewer metadata tools under `docs/phase10d/browser_api_evidence/`.
+- Covered both registered tools:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+- Covered three lightweight input forms: small CIF, small POSCAR, and generated pymatgen Structure JSON.
+- Evidence totals: 99 redacted API captures, 30 browser-rendered static preview screenshots, 21 artifact files, and 6 case manifests.
+- Verified each case through upload/profile, Mock Planner preview, PlanValidator, persisted AnalysisPlan, `/planner/jobs`, QueueWorkerRuntime, Tool Registry, Adapter execution, artifact generation, result readback, and static artifact preview.
+- Security scan result: `NO_SECRET_PATTERN_HITS`.
+- Artifacts remain static JSON/Markdown only: `viewer_scene.json`, `viewer_assets_manifest.json`, `summary.md`, and `recipe.json`.
+- No real LLM was used, and default CI remains gated away from live LLM calls.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Phase 10A/10B/10C adapters, and the Phase 10D-1 artifact contract were not changed.
+- Full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, script execution, and unsupported official example claims remain deferred.

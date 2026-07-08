@@ -354,3 +354,11 @@
 - Optional `structure.viewer_3d_contract` remains open; it was not needed to ship the static `viewer_scene.json` contract.
 - Bond inference is intentionally simple and deterministic; future full viewer work should revisit bond policy and element styling before interactive rendering.
 - Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon, notebook extraction, and script execution remain open.
+
+## 2026-07-08 Phase 10D-2 Follow-ups
+
+- Phase 10D-2 closes Browser/API/artifact evidence for `structure.viewer_scene_metadata` and `structure.viewer_export_package`.
+- Browser screenshots currently validate static artifact preview pages and generated artifacts; a future Phase 10D-3 can harden the product Artifact Gallery preview before any WebGL renderer work.
+- Optional `structure.viewer_3d_contract` remains open; it was still not required for the static `viewer_scene.json` / `viewer_assets_manifest.json` evidence contract.
+- The generated pymatgen Structure JSON input fixture is a small Phase 10D-2 evidence fixture, not an official benchmark claim.
+- Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon, notebook extraction, script execution, and unsupported official example verification remain open.

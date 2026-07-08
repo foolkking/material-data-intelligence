@@ -2667,3 +2667,23 @@ Do not implement optional `structure.viewer_3d_contract` in this phase. The scen
 - Phase 10D-2 can collect browser/API evidence for metadata artifacts without claiming full 3D viewer support.
 - Full `structure.viewer_3d`, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, and script execution remain deferred.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and the live LLM gate remain unchanged.
+
+## ADR-10D-2-VIEWER-SCENE-EVIDENCE: Browser/API evidence validates static viewer scene metadata without renderer claims
+
+### Context
+
+Phase 10D-1 implemented static viewer scene metadata and export package tools. The next validation step was to prove these tools work through the product execution path without adding a full interactive viewer, WebGL renderer, JavaScript artifacts, external URL loading, or new runtime authority.
+
+### Decision
+
+Treat Phase 10D-2 as evidence-only validation for `structure.viewer_scene_metadata` and `structure.viewer_export_package`. Evidence is captured under `docs/phase10d/browser_api_evidence/` from upload/profile, Mock Planner preview, PlanValidator, persisted AnalysisPlan, `/planner/jobs`, QueueWorkerRuntime, Tool Registry, Adapter execution, artifact generation, result readback, and browser-rendered static artifact preview.
+
+The browser evidence is limited to static previews of generated artifact data and redacted provenance. It must not claim an interactive 3D renderer, execute artifact JavaScript, load external URLs, or use a real LLM provider.
+
+### Consequences
+
+- Static viewer metadata and export packages now have Browser/API/artifact evidence.
+- The evidence covers small CIF, small POSCAR, and generated pymatgen Structure JSON inputs.
+- The evidence does not claim support for full `structure.viewer_3d`, WebGL rendering, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, script execution, or unsupported official examples.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Phase 10A/10B/10C adapters, and the live LLM gate remain unchanged.
+- A future Phase 10D-3 may harden frontend static artifact preview before any interactive renderer implementation.

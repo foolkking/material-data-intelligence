@@ -1,0 +1,8 @@
+{
+  "datasetId": "dataset_0006",
+  "enqueue": true,
+  "profileId": "profile_dataset_0006_v1",
+  "projectId": "project_0001",
+  "provider": "mock",
+  "userPrompt": "Create a static viewer export package for this structure JSON."
+}

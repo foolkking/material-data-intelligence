@@ -1,0 +1,107 @@
+{
+  "artifact": {
+    "bucket": null,
+    "contentHash": "f226f030d3cd2a97eabda807a0af2609a6839537c815633ebbb01327653b81ce",
+    "contentType": "application/json",
+    "datasetId": "dataset_0005",
+    "id": "call_job_cb1a4fa3bb9c4e2082372ac1_step_001-table_json",
+    "jobId": "job_cb1a4fa3bb9c4e2082372ac1",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-07T07:06:31.054072+00:00",
+      "inputHashes": [
+        "b13e4201e8d7da9d889eff06be6af9ff0f1e67d4c8d252044d0078002d949223"
+      ],
+      "paramsHash": "abf4bbb552ed45cb500fa28ca70d663d3c17d2910f0101914e6fc94faa0a99f1",
+      "profileId": null,
+      "provenance": {
+        "planHash": "861008ff848bad61470fc5be5cb682cca0f65c2d7ade06139a3a3dffdce06985",
+        "planId": "plan_bead36f61b1b48c5ad2cea01",
+        "planSource": "llm",
+        "toolCallId": "call_job_cb1a4fa3bb9c4e2082372ac1_step_001",
+        "toolId": "structure.viewer_export_package"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.viewer_export_package",
+      "toolVersion": "0.1.0"
+    },
+    "name": "viewer_assets_manifest.json",
+    "planHash": "861008ff848bad61470fc5be5cb682cca0f65c2d7ade06139a3a3dffdce06985",
+    "planId": "plan_bead36f61b1b48c5ad2cea01",
+    "previewKey": null,
+    "projectId": "project_0001",
+    "provenance": {
+      "planHash": "861008ff848bad61470fc5be5cb682cca0f65c2d7ade06139a3a3dffdce06985",
+      "planId": "plan_bead36f61b1b48c5ad2cea01",
+      "planSource": "llm",
+      "toolCallId": "call_job_cb1a4fa3bb9c4e2082372ac1_step_001",
+      "toolId": "structure.viewer_export_package"
+    },
+    "sha256": "f226f030d3cd2a97eabda807a0af2609a6839537c815633ebbb01327653b81ce",
+    "sizeBytes": 1007,
+    "storageKey": "projects/project_0001/jobs/job_cb1a4fa3bb9c4e2082372ac1/tool_calls/call_job_cb1a4fa3bb9c4e2082372ac1_step_001/viewer_assets_manifest.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_cb1a4fa3bb9c4e2082372ac1_step_001",
+    "type": "table_json",
+    "version": "1"
+  },
+  "content": {
+    "artifactType": "structure.viewer_export_package",
+    "artifacts": [
+      {
+        "kind": "scene",
+        "media_type": "application/json",
+        "path": "viewer_scene.json",
+        "required": true,
+        "sha256": "9cecd8aadf0b54faeb9690827be6262cb353c4dee856c593950ac5d1db3f40e8",
+        "size_bytes": 3846
+      },
+      {
+        "kind": "summary",
+        "media_type": "text/markdown",
+        "path": "summary.md",
+        "required": true
+      },
+      {
+        "kind": "recipe",
+        "media_type": "application/json",
+        "path": "recipe.json",
+        "required": true
+      }
+    ],
+    "entry_artifact": "viewer_scene.json",
+    "limits": {
+      "max_bonds": 2000,
+      "max_sites": 500,
+      "truncated": false
+    },
+    "package_type": "structure_viewer_static_export",
+    "renderer": {
+      "future_renderer_contract": "viewer_scene.json",
+      "included": false,
+      "renderer_type": "none"
+    },
+    "sceneContractVersion": "1.0",
+    "schema_version": "phase10d1.viewer_assets_manifest.v1",
+    "security": {
+      "artifact_supplied_js_allowed": false,
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "tool_id": "structure.viewer_export_package",
+    "warnings": [
+      "VIEWER_RENDERER_NOT_INCLUDED: package contains static metadata only."
+    ]
+  },
+  "fetch": {
+    "content_sha256": "f226f030d3cd2a97eabda807a0af2609a6839537c815633ebbb01327653b81ce",
+    "content_size_bytes": 1007,
+    "redacted": true,
+    "source": "planner_artifact_storage",
+    "status_code": 200
+  }
+}

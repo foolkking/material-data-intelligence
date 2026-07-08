@@ -1,0 +1,6 @@
+{
+  "datasetId": "dataset_0006",
+  "profileId": "profile_dataset_0006_v1",
+  "provider": "mock",
+  "userPrompt": "Create a static viewer export package for this structure JSON."
+}

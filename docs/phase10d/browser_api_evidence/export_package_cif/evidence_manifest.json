@@ -1,0 +1,84 @@
+{
+  "adapter": "structure.viewer_export_package",
+  "api_captures": [
+    "api_redacted/artifacts_response.redacted.json",
+    "api_redacted/events_response.redacted.json",
+    "api_redacted/job_request.redacted.json",
+    "api_redacted/job_response.redacted.json",
+    "api_redacted/job_status_response.redacted.json",
+    "api_redacted/planner_request.redacted.json",
+    "api_redacted/planner_response.redacted.json",
+    "api_redacted/planner_validate_response.redacted.json",
+    "api_redacted/profile_or_resource_inspection_response.redacted.json",
+    "api_redacted/recipe_json_response.redacted.json",
+    "api_redacted/result_response.redacted.json",
+    "api_redacted/summary_md_response.redacted.json",
+    "api_redacted/tool_calls_response.redacted.json",
+    "api_redacted/upload_or_resource_request.redacted.json",
+    "api_redacted/upload_or_resource_response.redacted.json",
+    "api_redacted/viewer_assets_manifest_json_response.redacted.json",
+    "api_redacted/viewer_scene_json_response.redacted.json"
+  ],
+  "artifacts": [
+    {
+      "exists": true,
+      "name": "viewer_scene.json",
+      "type": "json"
+    },
+    {
+      "exists": true,
+      "name": "viewer_assets_manifest.json",
+      "type": "json"
+    },
+    {
+      "exists": true,
+      "name": "summary.md",
+      "type": "markdown"
+    },
+    {
+      "exists": true,
+      "name": "recipe.json",
+      "type": "json"
+    }
+  ],
+  "case_id": "export_package_cif",
+  "evidence_level": "browser_api_artifact",
+  "job": {
+    "job_id": "job_637b2df5f9364d6990bc3ead",
+    "status": "completed"
+  },
+  "phase": "10D-2",
+  "planner": {
+    "plan_hash": "ad09a3226281437d56b2fee4b221b709d85d49aa2797d8b962bac513036b2528",
+    "plan_id": "plan_8b662cd32b61447eafa892d9",
+    "provider": "mock"
+  },
+  "resource": {
+    "format": "CIF",
+    "name": "simple_cubic.cif",
+    "profile_id": "profile_dataset_0004_v1",
+    "resource_id": "dataset_0004",
+    "source": "tests/fixtures/structures"
+  },
+  "screenshots": [
+    "browser_screenshots/01_structure_resource_profile.png",
+    "browser_screenshots/02_plan_preview.png",
+    "browser_screenshots/03_agent_process_completed.png",
+    "browser_screenshots/04_results_artifacts.png",
+    "browser_screenshots/05_developer_audit_redacted.png"
+  ],
+  "security": {
+    "artifact_javascript": false,
+    "external_urls": false,
+    "redacted": true,
+    "renderer_bundle": false,
+    "secret_pattern_hits": "<redacted>"
+  },
+  "tool_calls": [
+    {
+      "status": "completed",
+      "tool_id": "structure.viewer_export_package"
+    }
+  ],
+  "verdict": "PASS"
+}

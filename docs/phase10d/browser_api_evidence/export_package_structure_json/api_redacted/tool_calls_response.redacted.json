@@ -1,0 +1,30 @@
+{
+  "body": [
+    {
+      "artifactIds": [
+        "call_job_da8c296960bc4e71b366d95c_step_001-structure_json",
+        "call_job_da8c296960bc4e71b366d95c_step_001-table_json",
+        "call_job_da8c296960bc4e71b366d95c_step_001-summary_md",
+        "call_job_da8c296960bc4e71b366d95c_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_da8c296960bc4e71b366d95c_step_001",
+      "idempotencyKey": "job_da8c296960bc4e71b366d95c:step_001",
+      "inputSummary": "Params: cameraPreset, inferBonds, maxBonds, maxSites",
+      "jobId": "job_da8c296960bc4e71b366d95c",
+      "outputSummary": "4 artifact(s)",
+      "params": {
+        "cameraPreset": "auto",
+        "inferBonds": true,
+        "maxBonds": 2000,
+        "maxSites": 500
+      },
+      "planHash": "fbd39b9095fa238b45c4a364ba9e144cc0db0cd56b247dee93ef36bcc1f74fa8",
+      "planId": "plan_e047ef74b5674171ab816924",
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "structure.viewer_export_package"
+    }
+  ],
+  "status_code": 200
+}

@@ -1,0 +1,6 @@
+{
+  "datasetId": "dataset_0004",
+  "profileId": "profile_dataset_0004_v1",
+  "provider": "mock",
+  "userPrompt": "Create a static viewer export package for this CIF."
+}

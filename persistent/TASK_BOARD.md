@@ -1093,3 +1093,25 @@
 - [ ] Phase 10D-2 browser/API evidence for `structure.viewer_scene_metadata` and `structure.viewer_export_package`.
 - [ ] Optional schema-only `structure.viewer_3d_contract` decision.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon, notebook extraction, and script execution.
+
+## 2026-07-08 Phase 10D-2 Browser/API Evidence for Viewer Scene Metadata
+
+### Done
+
+- [x] Browser/API/artifact evidence generated for `structure.viewer_scene_metadata`.
+- [x] Browser/API/artifact evidence generated for `structure.viewer_export_package`.
+- [x] Covered small CIF, small POSCAR, and generated pymatgen Structure JSON input cases.
+- [x] Saved 99 redacted API captures.
+- [x] Saved 30 browser-rendered static preview screenshots.
+- [x] Saved 21 artifact files.
+- [x] Saved 6 evidence manifests.
+- [x] Added global Phase 10D-2 evidence summary, evidence manifest, CSV index, and security scan.
+- [x] Confirmed evidence uses Mock Planner only and no real LLM.
+- [x] Confirmed no full 3D viewer, WebGL renderer, XRD, RDF, coordination, phonon, notebook/script, or unsupported official example support is claimed.
+
+### Still Open
+
+- [ ] Decide whether Phase 10D-3 should harden static artifact preview UI before any renderer work.
+- [ ] Phase 10E static structure physics plot planning for XRD, RDF, and coordination histogram.
+- [ ] Optional schema-only `structure.viewer_3d_contract` decision.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.

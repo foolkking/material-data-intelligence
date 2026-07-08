@@ -1138,3 +1138,26 @@
 - Added tests for artifact contracts, no JavaScript / no external URL assertions, registry schemas, planner routing, deferred prompt boundaries, and persisted execution.
 - Browser/API evidence remains deferred to Phase 10D-2.
 - No full 3D viewer, WebGL renderer, XRD, RDF, coordination histogram, Brillouin-zone, phonon, notebook extraction, or script execution was added.
+
+## 2026-07-08 Phase 10D-2
+
+### Added
+
+- Added `docs/phase10d/browser_api_evidence/` with Browser/API/artifact evidence for:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+- Added per-case redacted API captures, browser-rendered static preview screenshots, copied artifact files, evidence manifests, execution logs, platform summaries, and security scan files for:
+  - `scene_metadata_cif`
+  - `scene_metadata_poscar`
+  - `scene_metadata_structure_json`
+  - `export_package_cif`
+  - `export_package_poscar`
+  - `export_package_structure_json`
+
+### Verification
+
+- Evidence totals: 99 redacted API captures, 30 browser-rendered static preview screenshots, 21 artifact files, and 6 manifests.
+- Security scan: `NO_SECRET_PATTERN_HITS`.
+- Evidence uses Mock Planner only; no real LLM was used.
+- Runtime main semantics and the Phase 10D-1 artifact contract were not changed.
+- No full 3D viewer, WebGL renderer, XRD, RDF, coordination histogram, Brillouin-zone, phonon, notebook extraction, script execution, or unsupported official example support is claimed.

@@ -1,0 +1,7 @@
+{
+  "datasetName": "Phase 10D-2 scene_metadata_cif",
+  "filePaths": [
+    "<workspace>\\tests\\fixtures\\structures\\simple_cubic.cif"
+  ],
+  "projectId": "project_0001"
+}

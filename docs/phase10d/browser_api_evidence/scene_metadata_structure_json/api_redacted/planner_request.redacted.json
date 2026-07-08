@@ -1,0 +1,6 @@
+{
+  "datasetId": "dataset_0003",
+  "profileId": "profile_dataset_0003_v1",
+  "provider": "mock",
+  "userPrompt": "Build a static structure viewer scene contract for this structure JSON."
+}

@@ -1,0 +1,433 @@
+{
+  "artifact": {
+    "bucket": null,
+    "contentHash": "40c9ff2462cf80ec1fb21c44fc2a0268daa84f0d307ee7a3696688be00869e7a",
+    "contentType": "application/json",
+    "datasetId": "dataset_0002",
+    "id": "call_job_e69593ca5e264325a542ff79_step_001-structure_json",
+    "jobId": "job_e69593ca5e264325a542ff79",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-07T07:06:30.077178+00:00",
+      "inputHashes": [
+        "b13e4201e8d7da9d889eff06be6af9ff0f1e67d4c8d252044d0078002d949223"
+      ],
+      "paramsHash": "abf4bbb552ed45cb500fa28ca70d663d3c17d2910f0101914e6fc94faa0a99f1",
+      "profileId": null,
+      "provenance": {
+        "planHash": "033829d42aedf9a969dd16c93168202e5df2a1bd9b502dd3d83364cc9fec5ce3",
+        "planId": "plan_5e14272cf17c4c24869751d8",
+        "planSource": "llm",
+        "toolCallId": "call_job_e69593ca5e264325a542ff79_step_001",
+        "toolId": "structure.viewer_scene_metadata"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.viewer_scene_metadata",
+      "toolVersion": "0.1.0"
+    },
+    "name": "viewer_scene.json",
+    "planHash": "033829d42aedf9a969dd16c93168202e5df2a1bd9b502dd3d83364cc9fec5ce3",
+    "planId": "plan_5e14272cf17c4c24869751d8",
+    "previewKey": null,
+    "projectId": "project_0001",
+    "provenance": {
+      "planHash": "033829d42aedf9a969dd16c93168202e5df2a1bd9b502dd3d83364cc9fec5ce3",
+      "planId": "plan_5e14272cf17c4c24869751d8",
+      "planSource": "llm",
+      "toolCallId": "call_job_e69593ca5e264325a542ff79_step_001",
+      "toolId": "structure.viewer_scene_metadata"
+    },
+    "sha256": "40c9ff2462cf80ec1fb21c44fc2a0268daa84f0d307ee7a3696688be00869e7a",
+    "sizeBytes": 3846,
+    "storageKey": "projects/project_0001/jobs/job_e69593ca5e264325a542ff79/tool_calls/call_job_e69593ca5e264325a542ff79_step_001/viewer_scene.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_e69593ca5e264325a542ff79_step_001",
+    "type": "structure_json",
+    "version": "1"
+  },
+  "content": {
+    "artifactType": "structure.viewer_scene_metadata",
+    "atoms": [
+      {
+        "cart_coords": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "display_color": "#ab5cf2",
+        "display_radius": 1.0,
+        "element": "Na",
+        "frac_coords": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "index": 0,
+        "label": "Na1",
+        "occupancy": 1.0,
+        "species_string": "Na"
+      },
+      {
+        "cart_coords": [
+          2.8201,
+          2.8201,
+          2.8201
+        ],
+        "display_color": "#1ff01f",
+        "display_radius": 1.0,
+        "element": "Cl",
+        "frac_coords": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "index": 1,
+        "label": "Cl1",
+        "occupancy": 1.0,
+        "species_string": "Cl"
+      }
+    ],
+    "bonds": [],
+    "boundingBox": {
+      "x": [
+        0.0,
+        2.8201
+      ],
+      "y": [
+        0.0,
+        2.8201
+      ],
+      "z": [
+        0.0,
+        2.8201
+      ]
+    },
+    "camera": {
+      "position": [
+        8.4603,
+        8.4603,
+        8.4603
+      ],
+      "projection": "perspective",
+      "target": [
+        1.41005,
+        1.41005,
+        1.41005
+      ],
+      "up": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "zoom": 1.0
+    },
+    "created_by": "Material Data Intelligence",
+    "display": {
+      "background": "transparent",
+      "camera_preset": "auto",
+      "representation": "ball_and_stick",
+      "show_axes": true,
+      "show_bonds": true,
+      "show_labels": false,
+      "show_unit_cell": true,
+      "style_preset": "default"
+    },
+    "elementStyles": {
+      "Cl": {
+        "color": "#1ff01f",
+        "radius": 1.0
+      },
+      "Na": {
+        "color": "#ab5cf2",
+        "radius": 1.0
+      }
+    },
+    "latticeVectors": [
+      [
+        5.6402,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        5.6402,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        5.6402
+      ]
+    ],
+    "limits": {
+      "bond_count_before_truncation": 0,
+      "max_bonds": 2000,
+      "max_sites": 500,
+      "site_count_before_truncation": 2,
+      "truncated": false
+    },
+    "resourceCaps": {
+      "bond_count_before_truncation": 0,
+      "max_bonds": 2000,
+      "max_sites": 500,
+      "site_count_before_truncation": 2,
+      "truncated": false
+    },
+    "sceneContractVersion": "1.0",
+    "scene_type": "structure_viewer_scene",
+    "schema_version": "phase10d1.viewer_scene.v1",
+    "security": {
+      "artifact_supplied_js_allowed": false,
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "source": {
+      "dataset_id": "dataset_0002",
+      "filename": "structures",
+      "parser": "pymatgen.Structure",
+      "parser_version": "2026.5.4",
+      "project_id": "project_0001",
+      "resource_id": "dataset_0002",
+      "resource_type": "normalized_object"
+    },
+    "structure": {
+      "atoms": [
+        {
+          "cart_coords": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "display_color": "#ab5cf2",
+          "display_radius": 1.0,
+          "element": "Na",
+          "frac_coords": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "index": 0,
+          "label": "Na1",
+          "occupancy": 1.0,
+          "species_string": "Na"
+        },
+        {
+          "cart_coords": [
+            2.8201,
+            2.8201,
+            2.8201
+          ],
+          "display_color": "#1ff01f",
+          "display_radius": 1.0,
+          "element": "Cl",
+          "frac_coords": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "index": 1,
+          "label": "Cl1",
+          "occupancy": 1.0,
+          "species_string": "Cl"
+        }
+      ],
+      "bonds": [],
+      "boundingBox": {
+        "x": [
+          0.0,
+          2.8201
+        ],
+        "y": [
+          0.0,
+          2.8201
+        ],
+        "z": [
+          0.0,
+          2.8201
+        ]
+      },
+      "formula": "NaCl",
+      "lattice": {
+        "a": 5.6402,
+        "alpha": 90.0,
+        "b": 5.6402,
+        "beta": 90.0,
+        "c": 5.6402,
+        "gamma": 90.0,
+        "matrix": [
+          [
+            5.6402,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            5.6402,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            5.6402
+          ]
+        ],
+        "pbc": [
+          true,
+          true,
+          true
+        ],
+        "units": "angstrom",
+        "volume": 179.42523
+      },
+      "limits": {
+        "bond_count_before_truncation": 0,
+        "max_bonds": 2000,
+        "max_sites": 500,
+        "site_count_before_truncation": 2,
+        "truncated": false
+      },
+      "reducedFormula": "NaCl",
+      "siteCount": 2,
+      "site_count": 2,
+      "species": [
+        "Cl",
+        "Na"
+      ],
+      "structureId": "structure_1",
+      "warnings": []
+    },
+    "structureCount": 1,
+    "structures": [
+      {
+        "atoms": [
+          {
+            "cart_coords": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "display_color": "#ab5cf2",
+            "display_radius": 1.0,
+            "element": "Na",
+            "frac_coords": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "index": 0,
+            "label": "Na1",
+            "occupancy": 1.0,
+            "species_string": "Na"
+          },
+          {
+            "cart_coords": [
+              2.8201,
+              2.8201,
+              2.8201
+            ],
+            "display_color": "#1ff01f",
+            "display_radius": 1.0,
+            "element": "Cl",
+            "frac_coords": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "index": 1,
+            "label": "Cl1",
+            "occupancy": 1.0,
+            "species_string": "Cl"
+          }
+        ],
+        "bonds": [],
+        "boundingBox": {
+          "x": [
+            0.0,
+            2.8201
+          ],
+          "y": [
+            0.0,
+            2.8201
+          ],
+          "z": [
+            0.0,
+            2.8201
+          ]
+        },
+        "formula": "NaCl",
+        "lattice": {
+          "a": 5.6402,
+          "alpha": 90.0,
+          "b": 5.6402,
+          "beta": 90.0,
+          "c": 5.6402,
+          "gamma": 90.0,
+          "matrix": [
+            [
+              5.6402,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              5.6402,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              5.6402
+            ]
+          ],
+          "pbc": [
+            true,
+            true,
+            true
+          ],
+          "units": "angstrom",
+          "volume": 179.42523
+        },
+        "limits": {
+          "bond_count_before_truncation": 0,
+          "max_bonds": 2000,
+          "max_sites": 500,
+          "site_count_before_truncation": 2,
+          "truncated": false
+        },
+        "reducedFormula": "NaCl",
+        "siteCount": 2,
+        "site_count": 2,
+        "species": [
+          "Cl",
+          "Na"
+        ],
+        "structureId": "structure_1",
+        "warnings": []
+      }
+    ],
+    "style": {
+      "element_colors": {
+        "Cl": "#1ff01f",
+        "Na": "#ab5cf2"
+      },
+      "element_radii": {
+        "Cl": 1.0,
+        "Na": 1.0
+      }
+    },
+    "tool_id": "structure.viewer_scene_metadata",
+    "truncated": false,
+    "warnings": []
+  },
+  "fetch": {
+    "content_sha256": "40c9ff2462cf80ec1fb21c44fc2a0268daa84f0d307ee7a3696688be00869e7a",
+    "content_size_bytes": 3846,
+    "redacted": true,
+    "source": "planner_artifact_storage",
+    "status_code": 200
+  }
+}

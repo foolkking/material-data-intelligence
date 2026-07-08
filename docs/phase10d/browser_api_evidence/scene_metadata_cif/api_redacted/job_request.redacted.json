@@ -1,0 +1,8 @@
+{
+  "datasetId": "dataset_0001",
+  "enqueue": true,
+  "profileId": "profile_dataset_0001_v1",
+  "projectId": "project_0001",
+  "provider": "mock",
+  "userPrompt": "Create viewer scene metadata for this CIF."
+}

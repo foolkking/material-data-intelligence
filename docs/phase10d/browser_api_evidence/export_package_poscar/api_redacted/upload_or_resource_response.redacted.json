@@ -1,0 +1,124 @@
+{
+  "body": {
+    "createdAt": "2026-07-07T07:06:30.881267+00:00",
+    "datasetId": "dataset_0005",
+    "fileCount": 1,
+    "files": [
+      {
+        "detectedFormat": "poscar",
+        "errorCode": null,
+        "fileId": "file_001",
+        "name": "nacl.poscar",
+        "objectCount": 1,
+        "status": "success"
+      }
+    ],
+    "id": "dataset_0005",
+    "name": "Phase 10D-2 export_package_poscar",
+    "normalizedExports": [
+      {
+        "contentHash": "23efcaeb959114bca335b535e6899795f49d229c08f2b32ef35069ef2d083f20",
+        "metadataKey": "projects/project_0001/datasets/dataset_0005/normalized/obj_structure_9126e1731c5a/metadata.json",
+        "objectId": "obj_structure_9126e1731c5a",
+        "storageKey": "projects/project_0001/datasets/dataset_0005/normalized/obj_structure_9126e1731c5a/structure.json"
+      }
+    ],
+    "objectCount": 1,
+    "profile": {
+      "createdAt": "2026-07-07T07:06:30.880264+00:00",
+      "datasetId": "dataset_0005",
+      "datasetType": "structure_collection",
+      "files": [
+        {
+          "detectedFormat": "poscar",
+          "fileId": "file_001",
+          "fileName": "nacl.poscar",
+          "parseStatus": "success"
+        }
+      ],
+      "objects": [
+        {
+          "count": 1,
+          "objectId": "obj_structure_9126e1731c5a",
+          "objectType": "Structure",
+          "periodicity": "periodic",
+          "sourceFileIds": [
+            "file_001"
+          ]
+        }
+      ],
+      "phononSummary": null,
+      "profileId": "profile_dataset_0005_v1",
+      "qualityIssues": [],
+      "recommendedTasks": [
+        {
+          "availableNow": true,
+          "label": "Composition overview",
+          "reason": "Periodic structures contain composition information.",
+          "requiredTools": [
+            "composition.ptable_heatmap"
+          ],
+          "stage": "mvp",
+          "taskId": "composition.overview",
+          "taskType": "composition_overview"
+        },
+        {
+          "availableNow": true,
+          "label": "Representative structure viewer",
+          "reason": "Periodic Structure objects are available.",
+          "requiredTools": [
+            "structure.structure_3d",
+            "structure.viewer_3d"
+          ],
+          "stage": "mvp",
+          "taskId": "structure.viewer",
+          "taskType": "structure_quality"
+        }
+      ],
+      "schemaVersion": "0.1",
+      "structureSummary": {
+        "atomCountStats": {
+          "max": 2,
+          "median": 2,
+          "min": 2
+        },
+        "chemicalSystemStats": {
+          "topChemicalSystems": [
+            {
+              "chemSys": "Cl-Na",
+              "count": 1
+            }
+          ],
+          "uniqueCount": 1
+        },
+        "elements": [
+          "Cl",
+          "Na"
+        ],
+        "formulaStats": {
+          "topFormulas": [
+            {
+              "count": 1,
+              "formula": "NaCl"
+            }
+          ],
+          "total": 1,
+          "uniqueCount": 1
+        },
+        "hasForces": false,
+        "hasMagmoms": false,
+        "nStructures": 1,
+        "representativeStructureIds": [
+          "obj_structure_9126e1731c5a"
+        ]
+      },
+      "tableSummary": null,
+      "trajectorySummary": null,
+      "version": "1"
+    },
+    "profileId": "profile_dataset_0005_v1",
+    "projectId": "project_0001",
+    "status": "profile_ready"
+  },
+  "status_code": 200
+}

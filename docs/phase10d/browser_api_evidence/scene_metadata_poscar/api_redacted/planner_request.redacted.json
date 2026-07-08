@@ -1,0 +1,6 @@
+{
+  "datasetId": "dataset_0002",
+  "profileId": "profile_dataset_0002_v1",
+  "provider": "mock",
+  "userPrompt": "Create viewer scene metadata for this POSCAR."
+}

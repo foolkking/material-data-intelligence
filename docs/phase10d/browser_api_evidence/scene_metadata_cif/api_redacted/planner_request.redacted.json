@@ -1,0 +1,6 @@
+{
+  "datasetId": "dataset_0001",
+  "profileId": "profile_dataset_0001_v1",
+  "provider": "mock",
+  "userPrompt": "Create viewer scene metadata for this CIF."
+}

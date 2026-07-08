@@ -1,0 +1,170 @@
+{
+  "body": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "bucket": null,
+        "contentHash": "0975e869b29ca1ce647b8a2d035a9f0c242157b5a0b8d843bcd46523abf9d166",
+        "contentType": "application/json",
+        "datasetId": "dataset_0001",
+        "id": "call_job_b9a586e03c47407abdebd3f2_step_001-structure_json",
+        "jobId": "job_b9a586e03c47407abdebd3f2",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-07T07:06:29.703412+00:00",
+          "inputHashes": [
+            "fc31647337b6f7acd7e9b579fc42d054e40ec18fae6b51562e08b1950c206988"
+          ],
+          "paramsHash": "abf4bbb552ed45cb500fa28ca70d663d3c17d2910f0101914e6fc94faa0a99f1",
+          "profileId": null,
+          "provenance": {
+            "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+            "planId": "plan_80637e205f1f4403bdc4b1ea",
+            "planSource": "llm",
+            "toolCallId": "call_job_b9a586e03c47407abdebd3f2_step_001",
+            "toolId": "structure.viewer_scene_metadata"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_scene_metadata",
+          "toolVersion": "0.1.0"
+        },
+        "name": "viewer_scene.json",
+        "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+        "planId": "plan_80637e205f1f4403bdc4b1ea",
+        "previewKey": null,
+        "projectId": "project_0001",
+        "provenance": {
+          "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+          "planId": "plan_80637e205f1f4403bdc4b1ea",
+          "planSource": "llm",
+          "toolCallId": "call_job_b9a586e03c47407abdebd3f2_step_001",
+          "toolId": "structure.viewer_scene_metadata"
+        },
+        "sha256": "0975e869b29ca1ce647b8a2d035a9f0c242157b5a0b8d843bcd46523abf9d166",
+        "sizeBytes": 3090,
+        "storageKey": "projects/project_0001/jobs/job_b9a586e03c47407abdebd3f2/tool_calls/call_job_b9a586e03c47407abdebd3f2_step_001/viewer_scene.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_b9a586e03c47407abdebd3f2_step_001",
+        "type": "structure_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "contentHash": "fbafd74c604fc1c0eb75b8c852cdc9d34fe8d7aa57b3e3bf85911b61031cafe0",
+        "contentType": "application/json",
+        "datasetId": "dataset_0001",
+        "id": "call_job_b9a586e03c47407abdebd3f2_step_001-summary_md",
+        "jobId": "job_b9a586e03c47407abdebd3f2",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-07T07:06:29.705411+00:00",
+          "inputHashes": [
+            "fc31647337b6f7acd7e9b579fc42d054e40ec18fae6b51562e08b1950c206988"
+          ],
+          "paramsHash": "abf4bbb552ed45cb500fa28ca70d663d3c17d2910f0101914e6fc94faa0a99f1",
+          "profileId": null,
+          "provenance": {
+            "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+            "planId": "plan_80637e205f1f4403bdc4b1ea",
+            "planSource": "llm",
+            "toolCallId": "call_job_b9a586e03c47407abdebd3f2_step_001",
+            "toolId": "structure.viewer_scene_metadata"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_scene_metadata",
+          "toolVersion": "0.1.0"
+        },
+        "name": "summary.md",
+        "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+        "planId": "plan_80637e205f1f4403bdc4b1ea",
+        "previewKey": null,
+        "projectId": "project_0001",
+        "provenance": {
+          "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+          "planId": "plan_80637e205f1f4403bdc4b1ea",
+          "planSource": "llm",
+          "toolCallId": "call_job_b9a586e03c47407abdebd3f2_step_001",
+          "toolId": "structure.viewer_scene_metadata"
+        },
+        "sha256": "fbafd74c604fc1c0eb75b8c852cdc9d34fe8d7aa57b3e3bf85911b61031cafe0",
+        "sizeBytes": 539,
+        "storageKey": "projects/project_0001/jobs/job_b9a586e03c47407abdebd3f2/tool_calls/call_job_b9a586e03c47407abdebd3f2_step_001/summary.md",
+        "storageProvider": "local",
+        "toolCallId": "call_job_b9a586e03c47407abdebd3f2_step_001",
+        "type": "summary_md",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "contentHash": "7676cac5f03e1e898531b1877eb011d3bb34188d79c40dfcfffe2f2f2345e7d7",
+        "contentType": "application/json",
+        "datasetId": "dataset_0001",
+        "id": "call_job_b9a586e03c47407abdebd3f2_step_001-recipe_json",
+        "jobId": "job_b9a586e03c47407abdebd3f2",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-07T07:06:29.714411+00:00",
+          "inputHashes": [
+            "fc31647337b6f7acd7e9b579fc42d054e40ec18fae6b51562e08b1950c206988"
+          ],
+          "paramsHash": "abf4bbb552ed45cb500fa28ca70d663d3c17d2910f0101914e6fc94faa0a99f1",
+          "profileId": null,
+          "provenance": {
+            "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+            "planId": "plan_80637e205f1f4403bdc4b1ea",
+            "planSource": "llm",
+            "toolCallId": "call_job_b9a586e03c47407abdebd3f2_step_001",
+            "toolId": "structure.viewer_scene_metadata"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_scene_metadata",
+          "toolVersion": "0.1.0"
+        },
+        "name": "recipe.json",
+        "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+        "planId": "plan_80637e205f1f4403bdc4b1ea",
+        "previewKey": null,
+        "projectId": "project_0001",
+        "provenance": {
+          "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+          "planId": "plan_80637e205f1f4403bdc4b1ea",
+          "planSource": "llm",
+          "toolCallId": "call_job_b9a586e03c47407abdebd3f2_step_001",
+          "toolId": "structure.viewer_scene_metadata"
+        },
+        "sha256": "7676cac5f03e1e898531b1877eb011d3bb34188d79c40dfcfffe2f2f2345e7d7",
+        "sizeBytes": 1121,
+        "storageKey": "projects/project_0001/jobs/job_b9a586e03c47407abdebd3f2/tool_calls/call_job_b9a586e03c47407abdebd3f2_step_001/recipe.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_b9a586e03c47407abdebd3f2_step_001",
+        "type": "recipe_json",
+        "version": "1"
+      }
+    ],
+    "jobId": "job_b9a586e03c47407abdebd3f2",
+    "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+    "planId": "plan_80637e205f1f4403bdc4b1ea",
+    "provenance": {
+      "binding": "jobs.plan_id -> analysis_plans.id",
+      "fallbackUsed": false,
+      "loadedFrom": "persisted_analysis_plan",
+      "planHash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+      "planId": "plan_80637e205f1f4403bdc4b1ea",
+      "planSource": "llm",
+      "toolPath": "Tool Registry + Adapter"
+    },
+    "status": "completed",
+    "summary": "Job completed with 1 ToolCall(s) and 3 Artifact(s).",
+    "toolCallCount": 1
+  },
+  "status_code": 200
+}

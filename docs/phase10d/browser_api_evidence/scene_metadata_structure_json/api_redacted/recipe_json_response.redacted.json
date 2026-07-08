@@ -1,0 +1,114 @@
+{
+  "artifact": {
+    "bucket": null,
+    "contentHash": "9b60897acb1cf7324b3c9d26c6646b3f509fa116c177fb2bca5a8c2ff73bcbdf",
+    "contentType": "application/json",
+    "datasetId": "dataset_0003",
+    "id": "call_job_e3725d10abb14542afec6463_step_001-recipe_json",
+    "jobId": "job_e3725d10abb14542afec6463",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-07T07:06:30.415474+00:00",
+      "inputHashes": [
+        "1d0ce25e1f2c87ffb7e89e1a7e3363e8907c15d7fdbda331deaacdc008af8be2"
+      ],
+      "paramsHash": "abf4bbb552ed45cb500fa28ca70d663d3c17d2910f0101914e6fc94faa0a99f1",
+      "profileId": null,
+      "provenance": {
+        "planHash": "8a9afb9bc57de74b47a403758d0a4b210ab5b97b4e22b13a3e688ae095cd7b19",
+        "planId": "plan_0ceb7958dc9240049442f10c",
+        "planSource": "llm",
+        "toolCallId": "call_job_e3725d10abb14542afec6463_step_001",
+        "toolId": "structure.viewer_scene_metadata"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.viewer_scene_metadata",
+      "toolVersion": "0.1.0"
+    },
+    "name": "recipe.json",
+    "planHash": "8a9afb9bc57de74b47a403758d0a4b210ab5b97b4e22b13a3e688ae095cd7b19",
+    "planId": "plan_0ceb7958dc9240049442f10c",
+    "previewKey": null,
+    "projectId": "project_0001",
+    "provenance": {
+      "planHash": "8a9afb9bc57de74b47a403758d0a4b210ab5b97b4e22b13a3e688ae095cd7b19",
+      "planId": "plan_0ceb7958dc9240049442f10c",
+      "planSource": "llm",
+      "toolCallId": "call_job_e3725d10abb14542afec6463_step_001",
+      "toolId": "structure.viewer_scene_metadata"
+    },
+    "sha256": "9b60897acb1cf7324b3c9d26c6646b3f509fa116c177fb2bca5a8c2ff73bcbdf",
+    "sizeBytes": 1121,
+    "storageKey": "projects/project_0001/jobs/job_e3725d10abb14542afec6463/tool_calls/call_job_e3725d10abb14542afec6463_step_001/recipe.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_e3725d10abb14542afec6463_step_001",
+    "type": "recipe_json",
+    "version": "1"
+  },
+  "content": {
+    "artifactTypes": [
+      "recipe_json",
+      "structure_json",
+      "summary_md"
+    ],
+    "artifacts": [
+      "viewer_scene.json",
+      "summary.md",
+      "recipe.json"
+    ],
+    "dependencies": {
+      "aseVersion": "3.29.0",
+      "new_dependencies_added": false,
+      "plotlyVersion": "6.8.0",
+      "pymatgenVersion": "2026.5.4",
+      "pymatvizVersion": "0.18.0"
+    },
+    "deterministic": true,
+    "inputs": {
+      "dataset_id": "dataset_0003",
+      "input_hashes": [
+        "1d0ce25e1f2c87ffb7e89e1a7e3363e8907c15d7fdbda331deaacdc008af8be2"
+      ]
+    },
+    "name": "Structure Viewer Scene Metadata",
+    "params": {
+      "bondTolerance": 0.2,
+      "cameraPreset": "auto",
+      "includeCartCoords": true,
+      "includeFracCoords": true,
+      "includeManifest": true,
+      "includeRecipe": true,
+      "includeScene": true,
+      "includeSummary": true,
+      "inferBonds": true,
+      "maxBonds": 2000,
+      "maxPackageBytes": 5000000,
+      "maxSites": 500,
+      "stylePreset": "default"
+    },
+    "recipeId": "recipe_call_job_e3725d10abb14542afec6463_step_001",
+    "schemaVersion": "0.1",
+    "schema_version": "phase10d1.recipe.v1",
+    "steps": [
+      "parse_structure",
+      "normalize_lattice",
+      "normalize_sites",
+      "infer_or_skip_bonds",
+      "build_display_metadata",
+      "build_camera_metadata",
+      "write_viewer_scene_json"
+    ],
+    "toolId": "structure.viewer_scene_metadata",
+    "tool_id": "structure.viewer_scene_metadata"
+  },
+  "fetch": {
+    "content_sha256": "9b60897acb1cf7324b3c9d26c6646b3f509fa116c177fb2bca5a8c2ff73bcbdf",
+    "content_size_bytes": 1121,
+    "redacted": true,
+    "source": "planner_artifact_storage",
+    "status_code": 200
+  }
+}

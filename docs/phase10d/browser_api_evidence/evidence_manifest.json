@@ -1,0 +1,118 @@
+{
+  "baseline": {
+    "phase10d1_commit": "b5fed28 Implement structure viewer scene metadata",
+    "phase10d1_head": "b5fed28c25bc7ff0081baa04c1c5fefc6d6221f8"
+  },
+  "cases": [
+    {
+      "api_capture_count": 16,
+      "artifact_count": 3,
+      "case_id": "scene_metadata_cif",
+      "dataset_id": "dataset_0001",
+      "input_type": "CIF",
+      "job_id": "job_b9a586e03c47407abdebd3f2",
+      "job_status": "completed",
+      "plan_hash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+      "plan_id": "plan_80637e205f1f4403bdc4b1ea",
+      "profile_id": "profile_dataset_0001_v1",
+      "screenshot_count": 5,
+      "tool_id": "structure.viewer_scene_metadata",
+      "verdict": "PASS"
+    },
+    {
+      "api_capture_count": 16,
+      "artifact_count": 3,
+      "case_id": "scene_metadata_poscar",
+      "dataset_id": "dataset_0002",
+      "input_type": "POSCAR",
+      "job_id": "job_e69593ca5e264325a542ff79",
+      "job_status": "completed",
+      "plan_hash": "033829d42aedf9a969dd16c93168202e5df2a1bd9b502dd3d83364cc9fec5ce3",
+      "plan_id": "plan_5e14272cf17c4c24869751d8",
+      "profile_id": "profile_dataset_0002_v1",
+      "screenshot_count": 5,
+      "tool_id": "structure.viewer_scene_metadata",
+      "verdict": "PASS"
+    },
+    {
+      "api_capture_count": 16,
+      "artifact_count": 3,
+      "case_id": "scene_metadata_structure_json",
+      "dataset_id": "dataset_0003",
+      "input_type": "Pymatgen Structure JSON",
+      "job_id": "job_e3725d10abb14542afec6463",
+      "job_status": "completed",
+      "plan_hash": "8a9afb9bc57de74b47a403758d0a4b210ab5b97b4e22b13a3e688ae095cd7b19",
+      "plan_id": "plan_0ceb7958dc9240049442f10c",
+      "profile_id": "profile_dataset_0003_v1",
+      "screenshot_count": 5,
+      "tool_id": "structure.viewer_scene_metadata",
+      "verdict": "PASS"
+    },
+    {
+      "api_capture_count": 17,
+      "artifact_count": 4,
+      "case_id": "export_package_cif",
+      "dataset_id": "dataset_0004",
+      "input_type": "CIF",
+      "job_id": "job_637b2df5f9364d6990bc3ead",
+      "job_status": "completed",
+      "plan_hash": "ad09a3226281437d56b2fee4b221b709d85d49aa2797d8b962bac513036b2528",
+      "plan_id": "plan_8b662cd32b61447eafa892d9",
+      "profile_id": "profile_dataset_0004_v1",
+      "screenshot_count": 5,
+      "tool_id": "structure.viewer_export_package",
+      "verdict": "PASS"
+    },
+    {
+      "api_capture_count": 17,
+      "artifact_count": 4,
+      "case_id": "export_package_poscar",
+      "dataset_id": "dataset_0005",
+      "input_type": "POSCAR",
+      "job_id": "job_cb1a4fa3bb9c4e2082372ac1",
+      "job_status": "completed",
+      "plan_hash": "861008ff848bad61470fc5be5cb682cca0f65c2d7ade06139a3a3dffdce06985",
+      "plan_id": "plan_bead36f61b1b48c5ad2cea01",
+      "profile_id": "profile_dataset_0005_v1",
+      "screenshot_count": 5,
+      "tool_id": "structure.viewer_export_package",
+      "verdict": "PASS"
+    },
+    {
+      "api_capture_count": 17,
+      "artifact_count": 4,
+      "case_id": "export_package_structure_json",
+      "dataset_id": "dataset_0006",
+      "input_type": "Pymatgen Structure JSON",
+      "job_id": "job_da8c296960bc4e71b366d95c",
+      "job_status": "completed",
+      "plan_hash": "fbd39b9095fa238b45c4a364ba9e144cc0db0cd56b247dee93ef36bcc1f74fa8",
+      "plan_id": "plan_e047ef74b5674171ab816924",
+      "profile_id": "profile_dataset_0006_v1",
+      "screenshot_count": 5,
+      "tool_id": "structure.viewer_export_package",
+      "verdict": "PASS"
+    }
+  ],
+  "generated_at": "2026-07-07T07:06:31.535551+00:00",
+  "phase": "10D-2",
+  "security": {
+    "contains_artifact_javascript": false,
+    "external_urls": false,
+    "real_llm": false,
+    "redacted": true,
+    "renderer_bundle": false
+  },
+  "statistics": {
+    "api_captures": 99,
+    "artifact_files": 21,
+    "browser_screenshots": 30,
+    "cases": 6,
+    "secret_pattern_hits": "<redacted>"
+  },
+  "tools": [
+    "structure.viewer_scene_metadata",
+    "structure.viewer_export_package"
+  ]
+}

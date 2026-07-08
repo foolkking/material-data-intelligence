@@ -1,0 +1,29 @@
+{
+  "body": [
+    {
+      "artifactIds": [
+        "call_job_e69593ca5e264325a542ff79_step_001-structure_json",
+        "call_job_e69593ca5e264325a542ff79_step_001-summary_md",
+        "call_job_e69593ca5e264325a542ff79_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_e69593ca5e264325a542ff79_step_001",
+      "idempotencyKey": "job_e69593ca5e264325a542ff79:step_001",
+      "inputSummary": "Params: cameraPreset, inferBonds, maxBonds, maxSites",
+      "jobId": "job_e69593ca5e264325a542ff79",
+      "outputSummary": "3 artifact(s)",
+      "params": {
+        "cameraPreset": "auto",
+        "inferBonds": true,
+        "maxBonds": 2000,
+        "maxSites": 500
+      },
+      "planHash": "033829d42aedf9a969dd16c93168202e5df2a1bd9b502dd3d83364cc9fec5ce3",
+      "planId": "plan_5e14272cf17c4c24869751d8",
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "structure.viewer_scene_metadata"
+    }
+  ],
+  "status_code": 200
+}

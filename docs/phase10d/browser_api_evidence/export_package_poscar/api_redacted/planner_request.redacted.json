@@ -1,0 +1,6 @@
+{
+  "datasetId": "dataset_0005",
+  "profileId": "profile_dataset_0005_v1",
+  "provider": "mock",
+  "userPrompt": "Create a static viewer export package for this POSCAR."
+}

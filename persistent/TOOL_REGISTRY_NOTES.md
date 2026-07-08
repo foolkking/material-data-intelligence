@@ -637,3 +637,16 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - `structure.viewer_export_package` emits `viewer_scene.json`, `viewer_assets_manifest.json`, `summary.md`, and `recipe.json`.
 - Artifacts are static JSON/Markdown only. They do not include renderer bundles, artifact-supplied JavaScript, external URLs, or WebGL code.
 - Mock Planner routing for full interactive viewer, XRD, RDF, coordination, Brillouin-zone, and phonon prompts remains deferred and does not route to Phase 10D-1 tools.
+
+## 2026-07-08 Phase 10D-2 Viewer Scene Evidence Notes
+
+- No new Tool Registry tools were added in Phase 10D-2.
+- Browser/API evidence confirms the existing `structure.viewer_scene_metadata` and `structure.viewer_export_package` tools execute through Mock Planner, PlanValidator, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, and adapter execution.
+- Evidence artifacts live under `docs/phase10d/browser_api_evidence/` and include redacted API captures, browser-rendered static preview screenshots, copied artifact files, manifests, and platform summaries.
+- Verified artifacts:
+  - `viewer_scene.json`
+  - `viewer_assets_manifest.json`
+  - `summary.md`
+  - `recipe.json`
+- The evidence confirms static metadata/export package behavior only. It does not register or claim `structure.viewer_3d`, `structure.brillouin_zone_3d`, `structure.xrd`, `structure.rdf`, `structure.coordination_hist`, `phonon.bands`, or `phonon.dos`.
+- No tool execution path was allowed to bypass Tool Registry or Adapter execution.

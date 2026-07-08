@@ -1,0 +1,78 @@
+{
+  "adapter": "structure.viewer_scene_metadata",
+  "api_captures": [
+    "api_redacted/artifacts_response.redacted.json",
+    "api_redacted/events_response.redacted.json",
+    "api_redacted/job_request.redacted.json",
+    "api_redacted/job_response.redacted.json",
+    "api_redacted/job_status_response.redacted.json",
+    "api_redacted/planner_request.redacted.json",
+    "api_redacted/planner_response.redacted.json",
+    "api_redacted/planner_validate_response.redacted.json",
+    "api_redacted/profile_or_resource_inspection_response.redacted.json",
+    "api_redacted/recipe_json_response.redacted.json",
+    "api_redacted/result_response.redacted.json",
+    "api_redacted/summary_md_response.redacted.json",
+    "api_redacted/tool_calls_response.redacted.json",
+    "api_redacted/upload_or_resource_request.redacted.json",
+    "api_redacted/upload_or_resource_response.redacted.json",
+    "api_redacted/viewer_scene_json_response.redacted.json"
+  ],
+  "artifacts": [
+    {
+      "exists": true,
+      "name": "viewer_scene.json",
+      "type": "json"
+    },
+    {
+      "exists": true,
+      "name": "summary.md",
+      "type": "markdown"
+    },
+    {
+      "exists": true,
+      "name": "recipe.json",
+      "type": "json"
+    }
+  ],
+  "case_id": "scene_metadata_cif",
+  "evidence_level": "browser_api_artifact",
+  "job": {
+    "job_id": "job_b9a586e03c47407abdebd3f2",
+    "status": "completed"
+  },
+  "phase": "10D-2",
+  "planner": {
+    "plan_hash": "a23b90baacf3b4ffca7162b61e80bb62f572f67f16010fe4615fb5a6696c5c80",
+    "plan_id": "plan_80637e205f1f4403bdc4b1ea",
+    "provider": "mock"
+  },
+  "resource": {
+    "format": "CIF",
+    "name": "simple_cubic.cif",
+    "profile_id": "profile_dataset_0001_v1",
+    "resource_id": "dataset_0001",
+    "source": "tests/fixtures/structures"
+  },
+  "screenshots": [
+    "browser_screenshots/01_structure_resource_profile.png",
+    "browser_screenshots/02_plan_preview.png",
+    "browser_screenshots/03_agent_process_completed.png",
+    "browser_screenshots/04_results_artifacts.png",
+    "browser_screenshots/05_developer_audit_redacted.png"
+  ],
+  "security": {
+    "artifact_javascript": false,
+    "external_urls": false,
+    "redacted": true,
+    "renderer_bundle": false,
+    "secret_pattern_hits": "<redacted>"
+  },
+  "tool_calls": [
+    {
+      "status": "completed",
+      "tool_id": "structure.viewer_scene_metadata"
+    }
+  ],
+  "verdict": "PASS"
+}

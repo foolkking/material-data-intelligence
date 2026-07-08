@@ -1,0 +1,94 @@
+{
+  "body": {
+    "createdAt": "2026-07-07T07:06:30.221203+00:00",
+    "datasetId": "dataset_0003",
+    "datasetType": "structure_collection",
+    "files": [
+      {
+        "detectedFormat": "json_limited",
+        "fileId": "file_001",
+        "fileName": "pymatgen_si_structure.json",
+        "parseStatus": "success"
+      }
+    ],
+    "objects": [
+      {
+        "count": 1,
+        "objectId": "obj_structure_e49de8a0940d",
+        "objectType": "Structure",
+        "periodicity": "periodic",
+        "sourceFileIds": [
+          "file_001"
+        ]
+      }
+    ],
+    "phononSummary": null,
+    "profileId": "profile_dataset_0003_v1",
+    "qualityIssues": [],
+    "recommendedTasks": [
+      {
+        "availableNow": true,
+        "label": "Composition overview",
+        "reason": "Periodic structures contain composition information.",
+        "requiredTools": [
+          "composition.ptable_heatmap"
+        ],
+        "stage": "mvp",
+        "taskId": "composition.overview",
+        "taskType": "composition_overview"
+      },
+      {
+        "availableNow": true,
+        "label": "Representative structure viewer",
+        "reason": "Periodic Structure objects are available.",
+        "requiredTools": [
+          "structure.structure_3d",
+          "structure.viewer_3d"
+        ],
+        "stage": "mvp",
+        "taskId": "structure.viewer",
+        "taskType": "structure_quality"
+      }
+    ],
+    "schemaVersion": "0.1",
+    "structureSummary": {
+      "atomCountStats": {
+        "max": 1,
+        "median": 1,
+        "min": 1
+      },
+      "chemicalSystemStats": {
+        "topChemicalSystems": [
+          {
+            "chemSys": "Si",
+            "count": 1
+          }
+        ],
+        "uniqueCount": 1
+      },
+      "elements": [
+        "Si"
+      ],
+      "formulaStats": {
+        "topFormulas": [
+          {
+            "count": 1,
+            "formula": "Si"
+          }
+        ],
+        "total": 1,
+        "uniqueCount": 1
+      },
+      "hasForces": false,
+      "hasMagmoms": false,
+      "nStructures": 1,
+      "representativeStructureIds": [
+        "obj_structure_e49de8a0940d"
+      ]
+    },
+    "tableSummary": null,
+    "trajectorySummary": null,
+    "version": "1"
+  },
+  "status_code": 200
+}
