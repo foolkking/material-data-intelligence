@@ -103,6 +103,60 @@ const toolCalls = [
   }
 ];
 
+const viewerSceneContent = {
+  schema_version: "phase10d1.viewer_scene.v1",
+  tool_id: "structure.viewer_scene_metadata",
+  scene_type: "structure_viewer_scene",
+  structure: {
+    formula: "Si",
+    site_count: 2,
+    species: ["Si"],
+    lattice: {
+      a: 4,
+      b: 4,
+      c: 4,
+      alpha: 90,
+      beta: 90,
+      gamma: 90,
+      volume: 64,
+      units: "angstrom",
+      matrix: [
+        [4, 0, 0],
+        [0, 4, 0],
+        [0, 0, 4]
+      ]
+    },
+    atoms: [
+      { index: 0, element: "Si", frac_coords: [0, 0, 0], cart_coords: [0, 0, 0] },
+      { index: 1, element: "Si", frac_coords: [0.25, 0.25, 0.25], cart_coords: [1, 1, 1] }
+    ],
+    bonds: [{ from: 0, to: 1, distance: 1.732, policy: "covalent_radius_sum_with_tolerance" }],
+    limits: { max_sites: 500, max_bonds: 2000, truncated: false },
+    warnings: []
+  },
+  display: { representation: "ball_and_stick", show_unit_cell: true },
+  camera: { projection: "perspective", zoom: 1 },
+  limits: { max_sites: 500, max_bonds: 2000, truncated: false },
+  security: { contains_javascript: false, external_urls_allowed: false, artifact_supplied_js_allowed: false },
+  warnings: []
+};
+
+const viewerManifestContent = {
+  schema_version: "phase10d1.viewer_assets_manifest.v1",
+  package_type: "structure_viewer_static_export",
+  tool_id: "structure.viewer_export_package",
+  entry_artifact: "viewer_scene.json",
+  artifacts: [
+    { path: "viewer_scene.json", kind: "scene", media_type: "application/json", required: true },
+    { path: "summary.md", kind: "summary", media_type: "text/markdown", required: true },
+    { path: "recipe.json", kind: "recipe", media_type: "application/json", required: true }
+  ],
+  renderer: { included: false, renderer_type: "none", future_renderer_contract: "viewer_scene.json" },
+  security: { contains_javascript: false, external_urls_allowed: false, artifact_supplied_js_allowed: false },
+  limits: { max_sites: 500, max_bonds: 2000, truncated: false },
+  warnings: ["VIEWER_RENDERER_NOT_INCLUDED"]
+};
+
 const artifacts = [
   {
     artifactId: "artifact_metrics",
@@ -126,7 +180,13 @@ const artifacts = [
     storageKey: "projects/project_local/jobs/job_1/recipe.json",
     storageProvider: "local",
     planId: "plan_1",
-    planHash: "hash_1"
+    planHash: "hash_1",
+    content: {
+      schema_version: "phase10d1.recipe.v1",
+      tool_id: "structure.viewer_scene_metadata",
+      deterministic: true,
+      steps: ["parse_structure", "write_viewer_scene_json"]
+    }
   },
   {
     artifactId: "artifact_report",
@@ -210,7 +270,34 @@ const artifacts = [
     storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/summary.md",
     storageProvider: "local",
     planId: "plan_1",
-    planHash: "hash_1"
+    planHash: "hash_1",
+    content: "Structure Viewer Scene Metadata\n\nNo WebGL renderer included.\nNo artifact JavaScript.\nNo external URLs."
+  },
+  {
+    artifactId: "artifact_viewer_scene",
+    id: "artifact_viewer_scene",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "structure_json",
+    name: "viewer_scene.json",
+    storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/viewer_scene.json",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1",
+    content: viewerSceneContent
+  },
+  {
+    artifactId: "artifact_viewer_manifest",
+    id: "artifact_viewer_manifest",
+    jobId: "job_1",
+    toolCallId: "call_1",
+    type: "table_json",
+    name: "viewer_assets_manifest.json",
+    storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/viewer_assets_manifest.json",
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1",
+    content: viewerManifestContent
   }
 ];
 
@@ -219,9 +306,9 @@ const result = {
   status: "completed",
   planId: "plan_1",
   planHash: "hash_1",
-  summary: "Job completed with 1 ToolCall(s) and 9 Artifact(s).",
+  summary: "Job completed with 1 ToolCall(s) and 11 Artifact(s).",
   toolCallCount: 1,
-  artifactCount: 9,
+  artifactCount: 11,
   artifacts
 };
 
@@ -330,7 +417,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(screen.queryByTestId("agent-process-tab")).toBeNull();
     expect(screen.queryByTestId("conversation-plan-tab")).toBeNull();
     expect(within(screen.getByTestId("results-export-tab")).getByText("Report / Recipe Summary")).not.toBeNull();
-    expect(within(screen.getByTestId("results-export-tab")).getByText("3D 材料图")).not.toBeNull();
+    expect(within(screen.getByTestId("results-export-tab")).getByText("Structure artifact preview")).not.toBeNull();
     expect(within(screen.getByTestId("results-export-tab")).getByText("Metrics")).not.toBeNull();
     expect(within(screen.getByTestId("results-export-tab")).getByText("Table / Numeric Summary")).not.toBeNull();
     expect(within(screen.getByTestId("results-export-tab")).getByText("Artifact Gallery")).not.toBeNull();
@@ -340,9 +427,52 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(within(screen.getByTestId("results-export-tab")).getAllByText("histogram.json").length).toBeGreaterThan(0);
     expect(within(screen.getByTestId("results-export-tab")).getAllByText("correlation_matrix.json").length).toBeGreaterThan(0);
     expect(within(screen.getByTestId("results-export-tab")).getAllByText("distribution_summary.json").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("results-export-tab")).getAllByText("viewer_scene.json").length).toBeGreaterThan(0);
+    expect(within(screen.getByTestId("results-export-tab")).getAllByText("viewer_assets_manifest.json").length).toBeGreaterThan(0);
     expect(within(screen.getByTestId("results-export-tab")).getAllByText("summary.md").length).toBeGreaterThan(0);
     expect(within(screen.getByTestId("results-export-tab")).getByText("ml.basic_metrics")).not.toBeNull();
     expect(within(screen.getByTestId("results-export-tab")).queryByText("storage URI")).toBeNull();
+  });
+
+  it("renders Phase 10D-3 viewer scene and manifest static previews without a 3D renderer", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await screen.findByText("基础指标计算");
+    await user.click(screen.getByRole("button", { name: "结果与导出" }));
+
+    const results = screen.getByTestId("results-export-tab");
+    expect(within(results).getByTestId("viewer-static-preview-panel")).not.toBeNull();
+    expect(within(results).getByTestId("viewer-scene-preview")).not.toBeNull();
+    expect(within(results).getByText("Scene overview")).not.toBeNull();
+    expect(within(results).getByText("Lattice")).not.toBeNull();
+    expect(within(results).getByText("Atoms preview (2)")).not.toBeNull();
+    expect(within(results).getByText("Bonds preview (1)")).not.toBeNull();
+    expect(within(results).getByText("Display / camera")).not.toBeNull();
+    expect(within(results).getAllByText("Si").length).toBeGreaterThan(0);
+    expect(within(results).getByText("ball_and_stick")).not.toBeNull();
+    expect(within(results).getByText("phase10d1.viewer_scene.v1")).not.toBeNull();
+
+    expect(within(results).getByTestId("viewer-manifest-preview")).not.toBeNull();
+    expect(within(results).getByText("Export package manifest")).not.toBeNull();
+    expect(within(results).getByText("Renderer status")).not.toBeNull();
+    expect(within(results).getAllByText("none").length).toBeGreaterThan(0);
+    expect(within(results).getAllByText(/Renderer included: false/).length).toBeGreaterThan(0);
+    expect(within(results).getAllByText(/Artifact JS: false/).length).toBeGreaterThan(0);
+    expect(within(results).getAllByText(/External URLs: false/).length).toBeGreaterThan(0);
+    expect(within(results).getAllByText("Raw JSON fallback").length).toBeGreaterThan(0);
+
+    expect(within(results).getByTestId("summary-static-preview")).not.toBeNull();
+    expect(within(results).getByText(/No WebGL renderer included/)).not.toBeNull();
+    expect(within(results).getByTestId("recipe-static-preview")).not.toBeNull();
+    expect(within(results).getAllByText("true").length).toBeGreaterThan(0);
+
+    expect(container.querySelector("canvas")).toBeNull();
+    expect(container.querySelector("script")).toBeNull();
+    expect(screen.queryByText(/Three\.js/i)).toBeNull();
+    expect(screen.queryByText("structure.viewer_3d")).toBeNull();
   });
 
   it("shows the required result empty state when no chunk is selected", async () => {

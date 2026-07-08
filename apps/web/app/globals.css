@@ -324,6 +324,7 @@ small {
 
 .results-export-tab > .selected-result-header,
 .results-export-tab > .panel[data-testid="report-recipe-panel"],
+.results-export-tab > .panel[data-testid="viewer-static-preview-panel"],
 .results-export-tab > .panel[data-testid="artifacts-panel"],
 .results-export-tab > .panel[data-testid="toolcalls-panel"] {
   grid-column: 1 / -1;
@@ -631,6 +632,114 @@ pre {
   gap: 8px;
 }
 
+.viewer-static-preview {
+  overflow: hidden;
+}
+
+.viewer-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.viewer-preview-card {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  padding: 12px;
+}
+
+.viewer-preview-section {
+  display: grid;
+  gap: 8px;
+}
+
+.viewer-preview-section h4 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.compact-table-wrap {
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--panel);
+}
+
+.compact-table {
+  width: 100%;
+  min-width: 420px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.compact-table th,
+.compact-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 7px 8px;
+  overflow-wrap: anywhere;
+  text-align: left;
+  vertical-align: top;
+}
+
+.compact-table th {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.compact-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.security-badges,
+.warning-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.security-badge {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 8px;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.security-badge.secure {
+  border-color: #92d3b0;
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.security-badge.attention {
+  border-color: #efa19b;
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.security-badge.unknown {
+  border-color: #f7d070;
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.warning-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--warning);
+}
+
 .summary-box {
   display: grid;
   gap: 8px;
@@ -684,6 +793,7 @@ pre {
 
   .agent-process-tab,
   .results-export-tab,
+  .viewer-preview-grid,
   .dialog-grid {
     grid-template-columns: 1fr;
   }
@@ -691,6 +801,7 @@ pre {
   .agent-process-tab > .panel:first-child,
   .results-export-tab > .selected-result-header,
   .results-export-tab > .panel[data-testid="report-recipe-panel"],
+  .results-export-tab > .panel[data-testid="viewer-static-preview-panel"],
   .results-export-tab > .panel[data-testid="artifacts-panel"],
   .results-export-tab > .panel[data-testid="toolcalls-panel"] {
     grid-column: auto;

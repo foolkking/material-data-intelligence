@@ -650,3 +650,17 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
   - `recipe.json`
 - The evidence confirms static metadata/export package behavior only. It does not register or claim `structure.viewer_3d`, `structure.brillouin_zone_3d`, `structure.xrd`, `structure.rdf`, `structure.coordination_hist`, `phonon.bands`, or `phonon.dos`.
 - No tool execution path was allowed to bypass Tool Registry or Adapter execution.
+
+## 2026-07-08 Phase 10D-3 Static Preview Notes
+
+- No new Tool Registry tools were added in Phase 10D-3.
+- Existing registered tools remain:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+- Frontend artifact preview now recognizes the static artifact contracts emitted by those tools:
+  - `viewer_scene.json`
+  - `viewer_assets_manifest.json`
+  - `summary.md`
+  - `recipe.json`
+- Preview hardening does not change adapter execution, Tool Registry validation, PlanValidator, QueueWorkerRuntime, or `/planner/jobs`.
+- Static previews must not be interpreted as support for `structure.viewer_3d`, WebGL rendering, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon, notebook extraction, or script execution.

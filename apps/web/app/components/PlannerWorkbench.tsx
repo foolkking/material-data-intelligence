@@ -65,6 +65,8 @@ type ConversationChunk = {
   relatedArtifactIds: string[];
 };
 
+type JsonRecord = Record<string, unknown>;
+
 const examplePromptKeys: MessageKey[] = ["examplePromptMetrics", "examplePromptElements", "examplePromptOutliers", "examplePromptStructure"];
 
 const presetDefaults: Record<ProviderPreset, { baseUrl: string; model: string }> = {
@@ -1189,6 +1191,7 @@ function ResultsExportTab(props: {
       <MaterialResultRenderer t={t} artifacts={props.artifacts} />
       <MetricsResultRenderer t={t} artifact={props.artifacts.find((artifact) => artifact.type === "metrics_json")} />
       <TableSummaryRenderer t={t} artifact={props.artifacts.find(isTableSummaryArtifact)} />
+      <ViewerStaticPreviewPanel artifacts={props.artifacts} />
       <ArtifactGallery t={t} artifacts={props.artifacts} developerMode={props.developerMode} selectedArtifact={props.selectedArtifact} />
       <ToolCallList t={t} toolCalls={props.toolCalls} developerMode={props.developerMode} />
       <ExportControls t={t} artifacts={props.artifacts} />
@@ -1307,7 +1310,7 @@ function MaterialResultRenderer({ t, artifacts }: { t: ReturnType<typeof createT
   const structureArtifact = artifacts.find((artifact) => String(artifact.type).includes("matterviz") || String(artifact.type).includes("structure"));
   return (
     <section className="panel" data-testid="material-result-renderer">
-      <PanelHeading title={t("materialResult")} badge={structureArtifact?.name || t("emptyMaterialResult")} />
+      <PanelHeading title="Structure artifact preview" badge={structureArtifact?.name || t("emptyMaterialResult")} />
       <p className="empty-state">{structureArtifact ? t("materialResultReady") : t("emptyMaterialResult")}</p>
     </section>
   );
@@ -1328,6 +1331,210 @@ function TableSummaryRenderer({ t, artifact }: { t: ReturnType<typeof createTran
       <PanelHeading title={t("tableSummaryResult")} badge={artifact?.name || t("emptyTableSummary")} />
       <p className="empty-state">{artifact ? t("tableSummaryReady") : t("emptyTableSummary")}</p>
     </section>
+  );
+}
+
+function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
+  const viewerScene = artifacts.find(isViewerSceneArtifact);
+  const viewerManifest = artifacts.find(isViewerManifestArtifact);
+  if (!viewerScene && !viewerManifest) return null;
+  return (
+    <section className="panel viewer-static-preview" data-testid="viewer-static-preview-panel">
+      <PanelHeading title="Viewer static preview" badge="No renderer included" />
+      <div className="viewer-preview-grid">
+        {viewerScene ? <ViewerScenePreview artifact={viewerScene} /> : <ViewerMissingPreview title="viewer_scene.json" />}
+        {viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : <ViewerMissingPreview title="viewer_assets_manifest.json" />}
+      </div>
+    </section>
+  );
+}
+
+function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
+  const payload = artifactPayload(artifact);
+  if (!payload) {
+    return <ViewerFallbackPreview artifact={artifact} title="viewer_scene.json" description="Static scene metadata artifact. Payload preview is not attached to this API response." />;
+  }
+  const structure = asRecord(payload.structure) || payload;
+  const lattice = asRecord(structure.lattice) || asRecord(payload.lattice) || {};
+  const atoms = arrayOfRecords(structure.atoms) || arrayOfRecords(payload.atoms) || [];
+  const bonds = arrayOfRecords(structure.bonds) || arrayOfRecords(payload.bonds) || [];
+  const display = asRecord(payload.display) || {};
+  const camera = asRecord(payload.camera) || {};
+  const limits = asRecord(payload.limits) || asRecord(structure.limits) || {};
+  const security = asRecord(payload.security) || {};
+  const warnings = arrayOfText(payload.warnings) || arrayOfText(structure.warnings) || [];
+  return (
+    <article className="viewer-preview-card" data-testid="viewer-scene-preview">
+      <h3>Scene overview</h3>
+      <dl className="mini-grid">
+        <Field label="schema" value={text(payload.schema_version)} />
+        <Field label="tool" value={text(payload.tool_id || payload.artifactType)} />
+        <Field label="formula" value={text(structure.formula)} />
+        <Field label="sites" value={text(structure.site_count || structure.siteCount || atoms.length)} />
+        <Field label="species" value={textList(structure.species)} />
+        <Field label="atoms / bonds" value={`${atoms.length} / ${bonds.length}`} />
+      </dl>
+      <PreviewSubsection title="Lattice">
+        <dl className="mini-grid">
+          <Field label="a b c" value={[lattice.a, lattice.b, lattice.c].map(text).join(" / ")} />
+          <Field label="alpha beta gamma" value={[lattice.alpha, lattice.beta, lattice.gamma].map(text).join(" / ")} />
+          <Field label="volume" value={text(lattice.volume)} />
+          <Field label="units" value={text(lattice.units || "unknown")} />
+        </dl>
+        <CompactTable columns={["v1", "v2", "v3"]} rows={matrixRows(lattice.matrix)} emptyLabel="No lattice matrix attached" />
+      </PreviewSubsection>
+      <PreviewSubsection title={`Atoms preview (${atoms.length})`}>
+        <CompactTable columns={["index", "element", "frac", "cart"]} rows={atoms.slice(0, 8).map(atomRow)} emptyLabel="No atoms attached" />
+        {atoms.length > 8 ? <p className="empty-state">Preview truncated to 8 atoms.</p> : null}
+      </PreviewSubsection>
+      <PreviewSubsection title={`Bonds preview (${bonds.length})`}>
+        <CompactTable columns={["from", "to", "distance", "policy"]} rows={bonds.slice(0, 8).map(bondRow)} emptyLabel="No inferred bonds attached" />
+        {bonds.length > 8 ? <p className="empty-state">Preview truncated to 8 bonds.</p> : null}
+      </PreviewSubsection>
+      <PreviewSubsection title="Display / camera">
+        <dl className="mini-grid">
+          <Field label="representation" value={text(display.representation)} />
+          <Field label="unit cell" value={flagText(display.show_unit_cell)} />
+          <Field label="projection" value={text(camera.projection)} />
+          <Field label="zoom" value={text(camera.zoom)} />
+        </dl>
+      </PreviewSubsection>
+      <ViewerLimitsSecurity limits={limits} warnings={warnings} security={security} />
+      <RawJsonDetails payload={payload} />
+    </article>
+  );
+}
+
+function ViewerManifestPreview({ artifact }: { artifact: Artifact }) {
+  const payload = artifactPayload(artifact);
+  if (!payload) {
+    return <ViewerFallbackPreview artifact={artifact} title="viewer_assets_manifest.json" description="Static export manifest artifact. Payload preview is not attached to this API response." />;
+  }
+  const renderer = asRecord(payload.renderer) || {};
+  const security = asRecord(payload.security) || {};
+  const limits = asRecord(payload.limits) || {};
+  const warnings = arrayOfText(payload.warnings) || [];
+  const manifestArtifacts = arrayOfRecords(payload.artifacts) || [];
+  return (
+    <article className="viewer-preview-card" data-testid="viewer-manifest-preview">
+      <h3>Export package manifest</h3>
+      <dl className="mini-grid">
+        <Field label="schema" value={text(payload.schema_version)} />
+        <Field label="package" value={text(payload.package_type)} />
+        <Field label="tool" value={text(payload.tool_id || payload.artifactType)} />
+        <Field label="entry" value={text(payload.entry_artifact)} />
+      </dl>
+      <PreviewSubsection title="Artifacts">
+        <CompactTable columns={["path", "kind", "media", "required"]} rows={manifestArtifacts.map(manifestArtifactRow)} emptyLabel="No artifact list attached" />
+      </PreviewSubsection>
+      <PreviewSubsection title="Renderer status">
+        <dl className="mini-grid">
+          <Field label="renderer included" value={flagText(renderer.included)} />
+          <Field label="renderer type" value={text(renderer.renderer_type)} />
+          <Field label="future contract" value={text(renderer.future_renderer_contract)} />
+          <Field label="static package" value={renderer.included === false ? "yes" : "unknown"} />
+        </dl>
+      </PreviewSubsection>
+      <ViewerLimitsSecurity limits={limits} warnings={warnings} security={security} />
+      <RawJsonDetails payload={payload} />
+    </article>
+  );
+}
+
+function ViewerMissingPreview({ title }: { title: string }) {
+  return (
+    <article className="viewer-preview-card">
+      <h3>{title}</h3>
+      <p className="empty-state">Artifact not present in this result.</p>
+    </article>
+  );
+}
+
+function ViewerFallbackPreview({ artifact, title, description }: { artifact: Artifact; title: string; description: string }) {
+  return (
+    <article className="viewer-preview-card" data-testid="viewer-fallback-preview">
+      <h3>{title}</h3>
+      <p className="empty-state">{description}</p>
+      <dl className="mini-grid">
+        <Field label="artifact" value={artifact.name || artifact.artifactId || artifact.id || "unknown"} />
+        <Field label="type" value={artifact.type || "unknown"} />
+        <Field label="size" value={text((artifact as { sizeBytes?: unknown }).sizeBytes)} />
+        <Field label="hash" value={text((artifact as { sha256?: unknown; contentHash?: unknown }).sha256 || (artifact as { contentHash?: unknown }).contentHash)} />
+      </dl>
+      <RawJsonDetails payload={artifact as unknown as JsonRecord} />
+    </article>
+  );
+}
+
+function ViewerLimitsSecurity({ limits, warnings, security }: { limits: JsonRecord; warnings: string[]; security: JsonRecord }) {
+  return (
+    <>
+      <PreviewSubsection title="Limits / warnings">
+        <dl className="mini-grid">
+          <Field label="max sites" value={text(limits.max_sites || limits.maxSites)} />
+          <Field label="max bonds" value={text(limits.max_bonds || limits.maxBonds)} />
+          <Field label="truncated" value={flagText(limits.truncated)} />
+          <Field label="warnings" value={warnings.length ? String(warnings.length) : "none"} />
+        </dl>
+        {warnings.length ? <ul className="warning-list">{warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul> : null}
+      </PreviewSubsection>
+      <PreviewSubsection title="Security">
+        <div className="security-badges">
+          <SecurityBadge label="Renderer included" value={false} />
+          <SecurityBadge label="Artifact JS" value={security.artifact_supplied_js_allowed === false ? false : security.contains_javascript} />
+          <SecurityBadge label="External URLs" value={security.external_urls_allowed} />
+          <SecurityBadge label="Executable bundle" value={false} />
+        </div>
+      </PreviewSubsection>
+    </>
+  );
+}
+
+function PreviewSubsection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="viewer-preview-section">
+      <h4>{title}</h4>
+      {children}
+    </div>
+  );
+}
+
+function CompactTable({ columns, rows, emptyLabel }: { columns: string[]; rows: string[][]; emptyLabel: string }) {
+  if (!rows.length) return <p className="empty-state">{emptyLabel}</p>;
+  return (
+    <div className="compact-table-wrap">
+      <table className="compact-table">
+        <thead>
+          <tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr>
+        </thead>
+        <tbody>
+          {rows.map((row, rowIndex) => (
+            <tr key={`${row.join("-")}-${rowIndex}`}>
+              {columns.map((column, index) => <td key={column}>{row[index] || ""}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function SecurityBadge({ label, value }: { label: string; value: unknown }) {
+  const known = typeof value === "boolean";
+  const secure = value === false;
+  return (
+    <span className={`security-badge ${secure ? "secure" : known ? "attention" : "unknown"}`}>
+      {label}: {known ? (secure ? "false" : "true") : "unknown"}
+    </span>
+  );
+}
+
+function RawJsonDetails({ payload }: { payload: JsonRecord }) {
+  return (
+    <details className="raw-json">
+      <summary>Raw JSON fallback</summary>
+      <pre>{JSON.stringify(payload, null, 2)}</pre>
+    </details>
   );
 }
 
@@ -1374,6 +1581,8 @@ function ArtifactGallery({ t, artifacts, developerMode, selectedArtifact }: { t:
 function ReportRecipeSummaryPanel(props: { t: ReturnType<typeof createTranslator>; result?: JobResult; artifacts: Artifact[]; datasetId: string; profileId: string; planId: string; planHash: string }) {
   const reportArtifacts = props.artifacts.filter((artifact) => ["summary_md", "report_md", "report_html"].includes(String(artifact.type)));
   const recipeArtifacts = props.artifacts.filter((artifact) => artifact.type === "recipe_json");
+  const reportPreview = reportArtifacts.map((artifact) => artifactText(artifact)).find(Boolean);
+  const recipePreview = recipeArtifacts.map((artifact) => artifactPayload(artifact)).find(Boolean);
   return (
     <section className="panel" data-testid="report-recipe-panel">
       <PanelHeading title={props.t("reportRecipe")} badge={props.t("systemGeneratedSummary")} />
@@ -1400,6 +1609,24 @@ function ReportRecipeSummaryPanel(props: { t: ReturnType<typeof createTranslator
           <Field label="Recipes" value={recipeArtifacts.map((artifact) => artifact.name).join(", ") || props.t("emptyReport")} />
         </dl>
       </div>
+      {reportPreview ? (
+        <div className="summary-box" data-testid="summary-static-preview">
+          <h3>Summary preview</h3>
+          <pre>{reportPreview}</pre>
+        </div>
+      ) : null}
+      {recipePreview ? (
+        <div className="summary-box" data-testid="recipe-static-preview">
+          <h3>Recipe preview</h3>
+          <dl className="mini-grid">
+            <Field label="tool" value={text(recipePreview.tool_id)} />
+            <Field label="deterministic" value={flagText(recipePreview.deterministic)} />
+            <Field label="steps" value={Array.isArray(recipePreview.steps) ? String(recipePreview.steps.length) : "unknown"} />
+            <Field label="schema" value={text(recipePreview.schema_version || recipePreview.schemaVersion)} />
+          </dl>
+          <RawJsonDetails payload={recipePreview} />
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -1664,6 +1891,87 @@ function datasetKind(profile: DataProfileSummary | null, t: ReturnType<typeof cr
   if (profile.structureSummary?.nStructures) return t("structureData");
   if (profile.objects?.length) return t("archiveData");
   return profile.datasetType || t("unknown");
+}
+
+function isViewerSceneArtifact(artifact: Artifact) {
+  return String(artifact.name || "").toLowerCase() === "viewer_scene.json" || artifactPayload(artifact)?.schema_version === "phase10d1.viewer_scene.v1";
+}
+
+function isViewerManifestArtifact(artifact: Artifact) {
+  return String(artifact.name || "").toLowerCase() === "viewer_assets_manifest.json" || artifactPayload(artifact)?.schema_version === "phase10d1.viewer_assets_manifest.v1";
+}
+
+function artifactPayload(artifact: Artifact): JsonRecord | null {
+  const metadata = asRecord(artifact.metadata);
+  const candidates = [
+    artifact.content,
+    artifact.payload,
+    metadata?.content,
+    metadata?.payload,
+    metadata?.preview,
+    metadata?.previewContent,
+    metadata?.artifactPreview
+  ];
+  for (const candidate of candidates) {
+    const record = asRecord(candidate);
+    if (record) return record;
+  }
+  return null;
+}
+
+function artifactText(artifact: Artifact): string | null {
+  const metadata = asRecord(artifact.metadata);
+  const candidates = [artifact.content, artifact.payload, metadata?.content, metadata?.payload, metadata?.preview, metadata?.previewContent];
+  for (const candidate of candidates) {
+    if (typeof candidate === "string") return candidate;
+  }
+  return null;
+}
+
+function asRecord(value: unknown): JsonRecord | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as JsonRecord) : null;
+}
+
+function arrayOfRecords(value: unknown): JsonRecord[] | null {
+  return Array.isArray(value) ? value.map(asRecord).filter((entry): entry is JsonRecord => Boolean(entry)) : null;
+}
+
+function arrayOfText(value: unknown): string[] | null {
+  return Array.isArray(value) ? value.map((entry) => String(entry)) : null;
+}
+
+function text(value: unknown): string {
+  if (value === undefined || value === null || value === "") return "unknown";
+  if (typeof value === "number") return Number.isFinite(value) ? String(Math.round(value * 1_000_000) / 1_000_000) : "unknown";
+  if (typeof value === "boolean") return value ? "true" : "false";
+  if (Array.isArray(value)) return value.map(text).join(", ");
+  return String(value);
+}
+
+function textList(value: unknown): string {
+  if (!Array.isArray(value) || !value.length) return "unknown";
+  return value.map(text).join(", ");
+}
+
+function flagText(value: unknown): string {
+  return typeof value === "boolean" ? (value ? "true" : "false") : "unknown";
+}
+
+function matrixRows(value: unknown): string[][] {
+  if (!Array.isArray(value)) return [];
+  return value.map((row) => (Array.isArray(row) ? row.map(text) : [text(row)]));
+}
+
+function atomRow(atom: JsonRecord): string[] {
+  return [text(atom.index), text(atom.element || atom.species_string), text(atom.frac_coords), text(atom.cart_coords)];
+}
+
+function bondRow(bond: JsonRecord): string[] {
+  return [text(bond.from), text(bond.to), text(bond.distance), text(bond.policy || bond.bond_type)];
+}
+
+function manifestArtifactRow(artifact: JsonRecord): string[] {
+  return [text(artifact.path), text(artifact.kind), text(artifact.media_type), text(artifact.required)];
 }
 
 function groupArtifacts(artifacts: Artifact[], t: ReturnType<typeof createTranslator>) {

@@ -1115,3 +1115,21 @@
 - [ ] Phase 10E static structure physics plot planning for XRD, RDF, and coordination histogram.
 - [ ] Optional schema-only `structure.viewer_3d_contract` decision.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
+
+## 2026-07-08 Phase 10D-3 Viewer Static Preview Hardening
+
+### Done
+
+- [x] Added schema-aware static preview for `viewer_scene.json`.
+- [x] Added schema-aware static preview for `viewer_assets_manifest.json`.
+- [x] Hardened `summary.md` and `recipe.json` previews.
+- [x] Preserved raw JSON fallback for recognized and generic JSON artifacts.
+- [x] Added frontend tests for viewer scene overview, lattice/atoms/bonds, display/camera, limits/warnings, security flags, manifest renderer status, no canvas/WebGL, no script, and no `structure.viewer_3d` claim.
+- [x] Added Phase 10D-3 evidence summary and 10 browser-rendered static preview screenshots.
+- [x] Confirmed this phase adds no new adapters and no full 3D viewer.
+
+### Still Open
+
+- [ ] Phase 10E static structure physics plot planning for XRD, RDF, and coordination histogram.
+- [ ] Optional schema-only `structure.viewer_3d_contract` decision.
+- [ ] Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.

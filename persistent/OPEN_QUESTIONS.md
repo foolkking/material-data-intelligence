@@ -362,3 +362,11 @@
 - Optional `structure.viewer_3d_contract` remains open; it was still not required for the static `viewer_scene.json` / `viewer_assets_manifest.json` evidence contract.
 - The generated pymatgen Structure JSON input fixture is a small Phase 10D-2 evidence fixture, not an official benchmark claim.
 - Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon, notebook extraction, script execution, and unsupported official example verification remain open.
+
+## 2026-07-08 Phase 10D-3 Follow-ups
+
+- Phase 10D-3 closes static frontend preview hardening for `viewer_scene.json` and `viewer_assets_manifest.json`.
+- Static preview evidence now covers desktop and mobile screenshots, but it still does not validate any WebGL renderer because no renderer exists.
+- Optional `structure.viewer_3d_contract` remains open; current frontend preview consumes the `viewer_scene.json` and `viewer_assets_manifest.json` contracts directly.
+- Next material-domain planning should move to Phase 10E static structure physics plot planning for XRD, RDF, and coordination histogram policies.
+- Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, and unsupported official example verification remain open.

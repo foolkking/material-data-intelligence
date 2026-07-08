@@ -848,3 +848,14 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - No real LLM was used, and default CI remains gated away from live LLM calls.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Phase 10A/10B/10C adapters, and the Phase 10D-1 artifact contract were not changed.
 - Full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, script execution, and unsupported official example claims remain deferred.
+
+## 2026-07-08 Phase 10D-3 Viewer Static Preview Hardening
+
+- Hardened the frontend artifact preview for static viewer metadata/export package artifacts.
+- Added schema-aware static preview coverage for `viewer_scene.json`, including scene overview, lattice, atoms, bonds, display/camera metadata, limits, warnings, security badges, and raw JSON fallback.
+- Added schema-aware static preview coverage for `viewer_assets_manifest.json`, including package overview, artifact list, renderer status, limits, warnings, security badges, and raw JSON fallback.
+- Hardened `summary.md` and `recipe.json` previews so static text, deterministic recipe fields, steps, and raw JSON fallback are visible.
+- Added browser-rendered Phase 10D-3 static preview evidence under `docs/phase10d/browser_api_evidence/phase10d3_static_preview_hardening/`.
+- Evidence totals for this hardening phase: 10 browser-rendered static preview screenshots and 10 committed static browser pages; no new API captures because Phase 10D-2 already covered the API path.
+- No new adapter was added, no Tool Registry semantics changed, and QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, and the Phase 10D-1 artifact contract were not changed.
+- Full interactive `structure.viewer_3d`, WebGL renderer, Three.js, canvas-based rendering, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, script execution, and unsupported official example claims remain deferred.

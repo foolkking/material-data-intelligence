@@ -2687,3 +2687,20 @@ The browser evidence is limited to static previews of generated artifact data an
 - The evidence does not claim support for full `structure.viewer_3d`, WebGL rendering, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, script execution, or unsupported official examples.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Phase 10A/10B/10C adapters, and the live LLM gate remain unchanged.
 - A future Phase 10D-3 may harden frontend static artifact preview before any interactive renderer implementation.
+
+## ADR-10D-3-STATIC-PREVIEW-HARDENING: Schema-aware static previews are separate from renderer implementation
+
+### Context
+
+Phase 10D-1 produced static viewer metadata/export package artifacts, and Phase 10D-2 validated them through Browser/API evidence. The frontend still needed a clearer static artifact preview experience so users could inspect scene metadata, manifests, warnings, limits, and security flags without mistaking the platform for a full 3D viewer.
+
+### Decision
+
+Add schema-aware static previews for `viewer_scene.json` and `viewer_assets_manifest.json`, plus hardened static previews for `summary.md` and `recipe.json`. These previews render artifact fields as text, cards, tables, and badges only. They must not execute artifact JavaScript, load external URLs, use canvas/WebGL, introduce Three.js, or claim `structure.viewer_3d` support.
+
+### Consequences
+
+- Users can inspect scene metadata, lattice, atoms, bonds, renderer status, limits, warnings, and security flags before any renderer work begins.
+- Phase 10D-3 improves frontend usability while preserving the Phase 10D-1 artifact contract.
+- Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, XRD, RDF, coordination histogram, phonon tools, notebook extraction, and script execution remain deferred.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.

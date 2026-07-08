@@ -143,6 +143,8 @@ export type Artifact = {
   planHash?: string | null;
   metadata?: Record<string, unknown>;
   provenance?: PlanProvenance | Record<string, unknown>;
+  content?: unknown;
+  payload?: unknown;
 };
 
 export type JobResult = {

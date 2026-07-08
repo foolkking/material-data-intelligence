@@ -1161,3 +1161,22 @@
 - Evidence uses Mock Planner only; no real LLM was used.
 - Runtime main semantics and the Phase 10D-1 artifact contract were not changed.
 - No full 3D viewer, WebGL renderer, XRD, RDF, coordination histogram, Brillouin-zone, phonon, notebook extraction, script execution, or unsupported official example support is claimed.
+
+## 2026-07-08 Phase 10D-3
+
+### Added
+
+- Added schema-aware static frontend previews for `viewer_scene.json` and `viewer_assets_manifest.json`.
+- Added frontend coverage for viewer scene overview, lattice, atoms, bonds, display/camera metadata, limits, warnings, security badges, manifest artifact list, renderer status, and raw JSON fallback.
+- Added Phase 10D-3 static preview evidence under `docs/phase10d/browser_api_evidence/phase10d3_static_preview_hardening/`.
+
+### Changed
+
+- Hardened `summary.md` and `recipe.json` previews so static report text and deterministic recipe fields are visible without executing artifact content.
+- Renamed the material artifact result panel title to avoid implying a full 3D viewer.
+
+### Verification
+
+- Added frontend tests asserting no canvas/WebGL renderer, no script node, no Three.js label, and no `structure.viewer_3d` claim.
+- Phase 10D-3 evidence includes 10 browser-rendered static preview screenshots.
+- No new adapter, Tool Registry semantic change, runtime authority change, full 3D viewer, WebGL renderer, XRD, RDF, coordination histogram, phonon, notebook extraction, script execution, or unsupported official example support was added.
