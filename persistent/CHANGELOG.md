@@ -1212,3 +1212,37 @@
 ### Verification
 
 - Planning-only phase; no adapter, registry, runtime, planner execution semantics, browser/API evidence, or real LLM path was changed.
+
+## 2026-07-08 Phase 10E-1
+
+### Added
+
+- Added `structure.coordination_hist`.
+- Added `docs/phase10e/phase10e1_coordination_hist_implementation.md`.
+- Added deterministic artifacts for the adapter: `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json`.
+
+### Changed
+
+- Extended Tool Registry manifest, adapter exports, adapter registry, frontend tool labels, and Mock Planner routing for `structure.coordination_hist`.
+
+### Verification
+
+- Added tests for fixtures, deterministic coordination bins, by-element aggregation, pair counts, site details, params validation, artifact contracts, no JavaScript / no external URL assertions, registry schemas, planner routing, deferred prompt boundaries, and persisted execution.
+- Browser/API evidence remains deferred to Phase 10E-2.
+- No XRD, RDF, full 3D viewer, WebGL renderer, Brillouin-zone, phonon, notebook extraction, script execution, or advanced local environment classification was added.
+
+## 2026-07-08 Phase 10E-2
+
+### Added
+
+- Added `docs/phase10e/browser_api_evidence/phase10e2_coordination_hist/` with redacted API captures, copied artifacts, static browser preview pages, screenshots, audits, and evidence manifest.
+- Added `docs/phase10e/phase10e2_coordination_hist_browser_api_evidence.md`.
+
+### Verification
+
+- Evidence totals: 43 redacted API captures, 6 browser-rendered static preview screenshots, and 12 artifact capture files.
+- Verified small CIF, small POSCAR, and generated pymatgen Structure JSON cases.
+- Security scan: `NO_SECRET_PATTERN_HITS`.
+- Artifact scan: no script, JavaScript URL, external URL, CDN, Three.js, or eval patterns.
+- Negative routing confirms XRD, RDF, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, and CrystalNN prompts do not route to `structure.coordination_hist`.
+- No new adapter, XRD, RDF, full 3D viewer, WebGL renderer, phonon, notebook/script workflow, unsupported official example claim, runtime semantic change, or real LLM path was added.

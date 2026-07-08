@@ -1,0 +1,15 @@
+{
+  "baseUrl": null,
+  "datasetId": "dataset_simple_cubic_cif",
+  "enqueue": true,
+  "execute": false,
+  "maxTokens": "<redacted>",
+  "model": null,
+  "profileId": "profile_simple_cubic_cif",
+  "projectId": "project_local",
+  "provider": "mock",
+  "secretId": "<redacted>",
+  "temperature": null,
+  "timeoutSeconds": null,
+  "userPrompt": "??????? coordination histogram"
+}

@@ -1,0 +1,187 @@
+[
+  {
+    "createdAt": "2026-07-08T07:56:38.325862+00:00",
+    "eventType": "job.created",
+    "id": "evt_job_d4e76f547f19475393abeca4_0001",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Planner job created with persisted AnalysisPlan.",
+    "payload": {
+      "datasetId": "dataset_nacl_poscar",
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "projectId": "project_local"
+    },
+    "progress": 0.0,
+    "seq": 1,
+    "status": "info"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.325862+00:00",
+    "eventType": "plan.persisted",
+    "id": "evt_job_d4e76f547f19475393abeca4_0002",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Persisted validated AnalysisPlan with 1 step(s).",
+    "payload": {
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm",
+      "plannerProvider": "mock"
+    },
+    "progress": 0.0,
+    "seq": 2,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.328857+00:00",
+    "eventType": "job.running",
+    "id": "evt_job_d4e76f547f19475393abeca4_0003",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Queue worker started job.",
+    "payload": {},
+    "progress": 0.0,
+    "seq": 3,
+    "status": "running"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.329855+00:00",
+    "eventType": "plan.loaded",
+    "id": "evt_job_d4e76f547f19475393abeca4_0004",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+    "payload": {
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm"
+    },
+    "progress": 0.05,
+    "seq": 4,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.329855+00:00",
+    "eventType": "tool.started",
+    "id": "evt_job_d4e76f547f19475393abeca4_0005",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Started tool structure.coordination_hist.",
+    "payload": {
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm",
+      "stepId": "step_001",
+      "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001",
+      "toolId": "structure.coordination_hist"
+    },
+    "progress": 0.0,
+    "seq": 5,
+    "status": "running"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.601233+00:00",
+    "eventType": "artifact.ready",
+    "id": "evt_job_d4e76f547f19475393abeca4_0006",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Artifact ready: coordination_hist.json",
+    "payload": {
+      "artifactId": "call_job_d4e76f547f19475393abeca4_step_001-table_json",
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm",
+      "storageKey": "projects/project_local/jobs/job_d4e76f547f19475393abeca4/tool_calls/call_job_d4e76f547f19475393abeca4_step_001/coordination_hist.json",
+      "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001"
+    },
+    "progress": null,
+    "seq": 6,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.612230+00:00",
+    "eventType": "artifact.ready",
+    "id": "evt_job_d4e76f547f19475393abeca4_0007",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Artifact ready: coordination_hist_plot.json",
+    "payload": {
+      "artifactId": "call_job_d4e76f547f19475393abeca4_step_001-plotly_json",
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm",
+      "storageKey": "projects/project_local/jobs/job_d4e76f547f19475393abeca4/tool_calls/call_job_d4e76f547f19475393abeca4_step_001/coordination_hist_plot.json",
+      "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001"
+    },
+    "progress": null,
+    "seq": 7,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.622229+00:00",
+    "eventType": "artifact.ready",
+    "id": "evt_job_d4e76f547f19475393abeca4_0008",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Artifact ready: summary.md",
+    "payload": {
+      "artifactId": "call_job_d4e76f547f19475393abeca4_step_001-summary_md",
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm",
+      "storageKey": "projects/project_local/jobs/job_d4e76f547f19475393abeca4/tool_calls/call_job_d4e76f547f19475393abeca4_step_001/summary.md",
+      "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001"
+    },
+    "progress": null,
+    "seq": 8,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.630897+00:00",
+    "eventType": "artifact.ready",
+    "id": "evt_job_d4e76f547f19475393abeca4_0009",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Artifact ready: recipe.json",
+    "payload": {
+      "artifactId": "call_job_d4e76f547f19475393abeca4_step_001-recipe_json",
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm",
+      "storageKey": "projects/project_local/jobs/job_d4e76f547f19475393abeca4/tool_calls/call_job_d4e76f547f19475393abeca4_step_001/recipe.json",
+      "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001"
+    },
+    "progress": null,
+    "seq": 9,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.630897+00:00",
+    "eventType": "tool.completed",
+    "id": "evt_job_d4e76f547f19475393abeca4_0010",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Completed tool structure.coordination_hist.",
+    "payload": {
+      "artifactIds": [
+        "call_job_d4e76f547f19475393abeca4_step_001-table_json",
+        "call_job_d4e76f547f19475393abeca4_step_001-plotly_json",
+        "call_job_d4e76f547f19475393abeca4_step_001-summary_md",
+        "call_job_d4e76f547f19475393abeca4_step_001-recipe_json"
+      ],
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm",
+      "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001"
+    },
+    "progress": 1.0,
+    "seq": 10,
+    "status": "success"
+  },
+  {
+    "createdAt": "2026-07-08T07:56:38.630897+00:00",
+    "eventType": "job.completed",
+    "id": "evt_job_d4e76f547f19475393abeca4_0011",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "message": "Job completed.",
+    "payload": {
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm"
+    },
+    "progress": 1.0,
+    "seq": 11,
+    "status": "success"
+  }
+]

@@ -690,3 +690,16 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - The strict params schema allows only `neighbor_policy`, `cutoff_angstrom`, `max_sites`, `max_neighbors_per_site`, `include_site_details`, `group_by_element`, `include_pair_counts`, and `plot_kind`.
 - The tool does not emit HTML, executable JavaScript, external URLs, WebGL renderer assets, or full 3D viewer artifacts.
 - XRD, RDF, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, CrystalNN, bond-valence, notebook/script, and external API workflows remain out of scope.
+
+## 2026-07-08 Phase 10E-2 Coordination Histogram Evidence Notes
+
+- No new Tool Registry tools were added in Phase 10E-2.
+- Browser/API evidence confirms the existing `structure.coordination_hist` tool executes through Mock Planner, PlanValidator, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, and adapter execution.
+- Evidence artifacts live under `docs/phase10e/browser_api_evidence/phase10e2_coordination_hist/` and include redacted API captures, browser-rendered static preview screenshots, copied artifact files, audits, and evidence manifest.
+- Verified artifacts:
+  - `coordination_hist.json`
+  - `coordination_hist_plot.json`
+  - `summary.md`
+  - `recipe.json`
+- Negative routing evidence confirms XRD, RDF, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, and CrystalNN prompts do not route to `structure.coordination_hist`.
+- The evidence confirms static coordination histogram behavior only. It does not register or claim `structure.xrd`, `structure.rdf`, `structure.viewer_3d`, `structure.brillouin_zone_3d`, `phonon.bands`, `phonon.dos`, or advanced local environment classification.

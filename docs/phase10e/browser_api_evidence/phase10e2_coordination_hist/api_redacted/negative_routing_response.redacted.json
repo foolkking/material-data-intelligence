@@ -1,0 +1,49 @@
+{
+  "negative_routing": [
+    {
+      "prompt": "Generate XRD pattern",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "?? RDF",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "????? 3D viewer",
+      "result": "not_coordination_hist",
+      "selected_tool": "structure.preview_metadata"
+    },
+    {
+      "prompt": "? WebGL ??????",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "?? Brillouin zone 3D",
+      "result": "not_coordination_hist",
+      "selected_tool": "structure.preview_metadata"
+    },
+    {
+      "prompt": "? phonon bands",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "? phonon DOS",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "? Voronoi local environment analysis",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "? CrystalNN chemical environment classification",
+      "result": "not_coordination_hist",
+      "selected_tool": "structure.summary"
+    }
+  ]
+}

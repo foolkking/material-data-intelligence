@@ -1,0 +1,182 @@
+{
+  "artifact": {
+    "bucket": null,
+    "contentHash": "b64527b9a974d77355a1df701524c8693fd1179369710fde7afc5846fac4c12c",
+    "contentType": "application/json",
+    "datasetId": "dataset_simple_cubic_cif",
+    "id": "call_job_91bf10c6d6bc4a38a342b34c_step_001-table_json",
+    "jobId": "job_91bf10c6d6bc4a38a342b34c",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T07:56:37.952069+00:00",
+      "inputHashes": [
+        "6d6d4aefc77a7d57c7b9a4ee4880d8d5b2548274fd0fb6b93ea43d01242a0505"
+      ],
+      "paramsHash": "a23ca3a316bac7573fdf6add58d67659b0cc12e89b3775eab461a4102bdc2a2b",
+      "profileId": null,
+      "provenance": {
+        "planHash": "9ef0b56019182db8b9e075a69c9d727517f6b9434900e8554704b3abdd18b654",
+        "planId": "plan_24bf784b17df485581752308",
+        "planSource": "llm",
+        "toolCallId": "call_job_91bf10c6d6bc4a38a342b34c_step_001",
+        "toolId": "structure.coordination_hist"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.coordination_hist",
+      "toolVersion": "0.1.0"
+    },
+    "name": "coordination_hist.json",
+    "planHash": "9ef0b56019182db8b9e075a69c9d727517f6b9434900e8554704b3abdd18b654",
+    "planId": "plan_24bf784b17df485581752308",
+    "previewKey": null,
+    "projectId": "project_local",
+    "provenance": {
+      "planHash": "9ef0b56019182db8b9e075a69c9d727517f6b9434900e8554704b3abdd18b654",
+      "planId": "plan_24bf784b17df485581752308",
+      "planSource": "llm",
+      "toolCallId": "call_job_91bf10c6d6bc4a38a342b34c_step_001",
+      "toolId": "structure.coordination_hist"
+    },
+    "sha256": "b64527b9a974d77355a1df701524c8693fd1179369710fde7afc5846fac4c12c",
+    "sizeBytes": 1718,
+    "storageKey": "projects/project_local/jobs/job_91bf10c6d6bc4a38a342b34c/tool_calls/call_job_91bf10c6d6bc4a38a342b34c_step_001/coordination_hist.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_91bf10c6d6bc4a38a342b34c_step_001",
+    "type": "table_json",
+    "version": "1"
+  },
+  "content": {
+    "artifactType": "structure.coordination_hist",
+    "by_element": [
+      {
+        "bins": [
+          {
+            "coordination_number": 6,
+            "count": 1,
+            "fraction": 1.0
+          }
+        ],
+        "element": "Si",
+        "total_sites": 1
+      }
+    ],
+    "histogram": {
+      "bins": [
+        {
+          "coordination_number": 6,
+          "count": 1,
+          "fraction": 1.0
+        }
+      ],
+      "total_sites": 1
+    },
+    "limits": {
+      "max_neighbors_per_site": 128,
+      "max_sites": 500,
+      "site_count_before_truncation": 1,
+      "truncated": false
+    },
+    "pair_counts": [
+      {
+        "center_element": "Si",
+        "count": 6,
+        "neighbor_element": "Si"
+      }
+    ],
+    "parameters": {
+      "cutoff_angstrom": 3.0,
+      "group_by_element": true,
+      "include_pair_counts": true,
+      "include_site_details": true,
+      "max_neighbors_per_site": 128,
+      "max_sites": 500,
+      "neighbor_policy": "distance_cutoff",
+      "plot_kind": "bar"
+    },
+    "schema_version": "phase10e1.coordination_hist.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "site_details": [
+      {
+        "coordination_number": 6,
+        "element": "Si",
+        "neighbor_count_before_truncation": 6,
+        "neighbor_distances_angstrom": [
+          3.0,
+          3.0,
+          3.0,
+          3.0,
+          3.0,
+          3.0
+        ],
+        "neighbor_elements": [
+          "Si",
+          "Si",
+          "Si",
+          "Si",
+          "Si",
+          "Si"
+        ],
+        "neighbor_indices": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "site_index": 0,
+        "structureId": "structure_1"
+      }
+    ],
+    "source": {
+      "dataset_id": "dataset_simple_cubic_cif",
+      "filename": "structures",
+      "parser": "pymatgen.Structure",
+      "parser_version": "2026.5.4",
+      "project_id": "project_local",
+      "resource_id": "dataset_simple_cubic_cif",
+      "resource_type": "normalized_object"
+    },
+    "structure": {
+      "formula": "Si",
+      "pbc": [
+        true,
+        true,
+        true
+      ],
+      "site_count": 1,
+      "species": [
+        "Si"
+      ]
+    },
+    "structureCount": 1,
+    "structures": [
+      {
+        "formula": "Si",
+        "pbc": [
+          true,
+          true,
+          true
+        ],
+        "site_count": 1,
+        "species": [
+          "Si"
+        ],
+        "structureId": "structure_1"
+      }
+    ],
+    "tool_id": "structure.coordination_hist",
+    "warnings": [
+      "COORDINATION_NEIGHBOR_POLICY_DISTANCE_CUTOFF_ONLY",
+      "COORDINATION_CUTOFF_SENSITIVE",
+      "COORDINATION_ADVANCED_ENVIRONMENT_CLASSIFICATION_NOT_PERFORMED"
+    ]
+  }
+}

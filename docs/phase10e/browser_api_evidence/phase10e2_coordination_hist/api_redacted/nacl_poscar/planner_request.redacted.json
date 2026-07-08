@@ -1,0 +1,6 @@
+{
+  "dataset_id": "dataset_nacl_poscar",
+  "profile_id": "profile_nacl_poscar",
+  "tool_registry_version": "0.1.0",
+  "user_prompt": "Create a coordination number histogram for this structure"
+}

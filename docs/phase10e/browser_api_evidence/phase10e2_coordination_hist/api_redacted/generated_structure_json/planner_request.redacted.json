@@ -1,0 +1,6 @@
+{
+  "dataset_id": "dataset_generated_structure_json",
+  "profile_id": "profile_generated_structure_json",
+  "tool_registry_version": "0.1.0",
+  "user_prompt": "Count neighbors and plot coordination histogram"
+}

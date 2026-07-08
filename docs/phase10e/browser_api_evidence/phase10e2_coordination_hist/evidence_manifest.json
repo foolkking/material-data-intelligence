@@ -1,0 +1,247 @@
+{
+  "api_capture_count": 43,
+  "artifact_file_count": 12,
+  "browser_preview": {
+    "artifact_javascript_executed": false,
+    "external_urls_loaded": false,
+    "interactive_chart_runtime": false,
+    "mode": "static_artifact_preview",
+    "webgl_renderer": false
+  },
+  "cases": [
+    {
+      "artifacts": [
+        {
+          "artifact_type": "table_json",
+          "content_type": "application/json",
+          "name": "coordination_hist.json",
+          "sha256": "b64527b9a974d77355a1df701524c8693fd1179369710fde7afc5846fac4c12c",
+          "size_bytes": 1718
+        },
+        {
+          "artifact_type": "plotly_json",
+          "content_type": "application/json",
+          "name": "coordination_hist_plot.json",
+          "sha256": "0a595462eddb86b474ef9aba7ca17d78abc6d388c85fd67a8f55cf67aaeaeb0d",
+          "size_bytes": 563
+        },
+        {
+          "artifact_type": "summary_md",
+          "content_type": "application/json",
+          "name": "summary.md",
+          "sha256": "c819a8f94c9963a46cb6cbba7c2302124669fa3b7685df5166da0eee98b31625",
+          "size_bytes": 688
+        },
+        {
+          "artifact_type": "recipe_json",
+          "content_type": "application/json",
+          "name": "recipe.json",
+          "sha256": "86f9a991037d29e77363a6732da824055f782ae7e655d49881f2e4233980561d",
+          "size_bytes": 1363
+        }
+      ],
+      "case_id": "simple_cubic_cif",
+      "histogram_bins": [
+        {
+          "coordination_number": 6,
+          "count": 1,
+          "fraction": 1.0
+        }
+      ],
+      "input_type": "small CIF",
+      "job_id": "job_91bf10c6d6bc4a38a342b34c",
+      "job_status": "completed",
+      "prompt": "??????? coordination histogram",
+      "resource": "simple_cubic.cif",
+      "selected_tool": "structure.coordination_hist",
+      "warnings": [
+        "COORDINATION_NEIGHBOR_POLICY_DISTANCE_CUTOFF_ONLY",
+        "COORDINATION_CUTOFF_SENSITIVE",
+        "COORDINATION_ADVANCED_ENVIRONMENT_CLASSIFICATION_NOT_PERFORMED"
+      ]
+    },
+    {
+      "artifacts": [
+        {
+          "artifact_type": "table_json",
+          "content_type": "application/json",
+          "name": "coordination_hist.json",
+          "sha256": "533d4430527cd0d486d7d7a87b59d604f889e0cc75f4b957f3dfe40231cbb165",
+          "size_bytes": 1894
+        },
+        {
+          "artifact_type": "plotly_json",
+          "content_type": "application/json",
+          "name": "coordination_hist_plot.json",
+          "sha256": "b48f0577b0989fad35c80c99d0d908e47c42d8d08f7f6d55ba36abc021c3cacf",
+          "size_bytes": 595
+        },
+        {
+          "artifact_type": "summary_md",
+          "content_type": "application/json",
+          "name": "summary.md",
+          "sha256": "d764a8a2fed33b46e51780b6e9be762854e6beb11bdb6652b8e6b40df5d199e4",
+          "size_bytes": 690
+        },
+        {
+          "artifact_type": "recipe_json",
+          "content_type": "application/json",
+          "name": "recipe.json",
+          "sha256": "e77eb834d1f8070b4afd2b31f8b88a79e925d2bebecccb53c2cec780a06ffbf1",
+          "size_bytes": 1358
+        }
+      ],
+      "case_id": "nacl_poscar",
+      "histogram_bins": [
+        {
+          "coordination_number": 0,
+          "count": 2,
+          "fraction": 1.0
+        }
+      ],
+      "input_type": "small POSCAR",
+      "job_id": "job_d4e76f547f19475393abeca4",
+      "job_status": "completed",
+      "prompt": "Create a coordination number histogram for this structure",
+      "resource": "nacl.poscar",
+      "selected_tool": "structure.coordination_hist",
+      "warnings": [
+        "COORDINATION_NEIGHBOR_POLICY_DISTANCE_CUTOFF_ONLY",
+        "COORDINATION_CUTOFF_SENSITIVE",
+        "COORDINATION_ADVANCED_ENVIRONMENT_CLASSIFICATION_NOT_PERFORMED"
+      ]
+    },
+    {
+      "artifacts": [
+        {
+          "artifact_type": "table_json",
+          "content_type": "application/json",
+          "name": "coordination_hist.json",
+          "sha256": "112719f9866f3850c7cee88a4b867f583765a78e62cbd20a7d16384a92834386",
+          "size_bytes": 2246
+        },
+        {
+          "artifact_type": "plotly_json",
+          "content_type": "application/json",
+          "name": "coordination_hist_plot.json",
+          "sha256": "d1ee2ab2f128e0e51cd30e21aeca365b1c3a4e73b368cb3e49fe1b7ffce68053",
+          "size_bytes": 575
+        },
+        {
+          "artifact_type": "summary_md",
+          "content_type": "application/json",
+          "name": "summary.md",
+          "sha256": "84d27196c6c32e83fe7a18e3541ac833698e477ab97471080e19422e78b8f8c1",
+          "size_bytes": 755
+        },
+        {
+          "artifact_type": "recipe_json",
+          "content_type": "application/json",
+          "name": "recipe.json",
+          "sha256": "e8217d4ee48ab77ff6edeceda6e34cc6a99a96a8307d7e7add01394e462d7bbb",
+          "size_bytes": 1371
+        }
+      ],
+      "case_id": "generated_structure_json",
+      "histogram_bins": [
+        {
+          "coordination_number": 1,
+          "count": 2,
+          "fraction": 0.666667
+        },
+        {
+          "coordination_number": 2,
+          "count": 1,
+          "fraction": 0.333333
+        }
+      ],
+      "input_type": "pymatgen Structure JSON",
+      "job_id": "job_de32d4c37f224e4a8d04d771",
+      "job_status": "completed",
+      "prompt": "Count neighbors and plot coordination histogram",
+      "resource": "generated_si_structure.json",
+      "selected_tool": "structure.coordination_hist",
+      "warnings": [
+        "COORDINATION_NEIGHBOR_POLICY_DISTANCE_CUTOFF_ONLY",
+        "COORDINATION_CUTOFF_SENSITIVE",
+        "COORDINATION_ADVANCED_ENVIRONMENT_CLASSIFICATION_NOT_PERFORMED"
+      ]
+    }
+  ],
+  "deferred_scope": [
+    "structure.xrd",
+    "structure.rdf",
+    "full structure.viewer_3d",
+    "WebGL renderer",
+    "Brillouin zone 3D",
+    "phonon bands / DOS",
+    "advanced local environment classification"
+  ],
+  "evidence_level": "browser_api_artifact",
+  "negative_routing": [
+    {
+      "prompt": "Generate XRD pattern",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "?? RDF",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "????? 3D viewer",
+      "result": "not_coordination_hist",
+      "selected_tool": "structure.preview_metadata"
+    },
+    {
+      "prompt": "? WebGL ??????",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "?? Brillouin zone 3D",
+      "result": "not_coordination_hist",
+      "selected_tool": "structure.preview_metadata"
+    },
+    {
+      "prompt": "? phonon bands",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "? phonon DOS",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "? Voronoi local environment analysis",
+      "result": "not_coordination_hist",
+      "selected_tool": "ml.basic_metrics"
+    },
+    {
+      "prompt": "? CrystalNN chemical environment classification",
+      "result": "not_coordination_hist",
+      "selected_tool": "structure.summary"
+    }
+  ],
+  "phase": "10E-2",
+  "screenshot_count": 6,
+  "screenshots": [
+    "01_job_completed.png",
+    "02_artifact_list.png",
+    "03_coordination_hist_json_preview.png",
+    "04_coordination_hist_plot_preview.png",
+    "05_summary_preview.png",
+    "06_recipe_preview.png"
+  ],
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "real_llm": false,
+    "renderer_bundle": false,
+    "webgl_renderer": false
+  },
+  "tool_id": "structure.coordination_hist"
+}

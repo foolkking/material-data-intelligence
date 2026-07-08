@@ -1,0 +1,212 @@
+{
+  "artifact": {
+    "bucket": null,
+    "contentHash": "112719f9866f3850c7cee88a4b867f583765a78e62cbd20a7d16384a92834386",
+    "contentType": "application/json",
+    "datasetId": "dataset_generated_structure_json",
+    "id": "call_job_de32d4c37f224e4a8d04d771_step_001-table_json",
+    "jobId": "job_de32d4c37f224e4a8d04d771",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T07:56:39.046068+00:00",
+      "inputHashes": [
+        "f99e3b3bf2cf048b66ba92ef131b243a7e87fbe7443e49e76a2e94edaa220e5a"
+      ],
+      "paramsHash": "a23ca3a316bac7573fdf6add58d67659b0cc12e89b3775eab461a4102bdc2a2b",
+      "profileId": null,
+      "provenance": {
+        "planHash": "7254ff4cae73f19111271e6767963404d1986fb9366d855b2994905c648186ff",
+        "planId": "plan_af58662b08e64b9baa7701c2",
+        "planSource": "llm",
+        "toolCallId": "call_job_de32d4c37f224e4a8d04d771_step_001",
+        "toolId": "structure.coordination_hist"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.coordination_hist",
+      "toolVersion": "0.1.0"
+    },
+    "name": "coordination_hist.json",
+    "planHash": "7254ff4cae73f19111271e6767963404d1986fb9366d855b2994905c648186ff",
+    "planId": "plan_af58662b08e64b9baa7701c2",
+    "previewKey": null,
+    "projectId": "project_local",
+    "provenance": {
+      "planHash": "7254ff4cae73f19111271e6767963404d1986fb9366d855b2994905c648186ff",
+      "planId": "plan_af58662b08e64b9baa7701c2",
+      "planSource": "llm",
+      "toolCallId": "call_job_de32d4c37f224e4a8d04d771_step_001",
+      "toolId": "structure.coordination_hist"
+    },
+    "sha256": "112719f9866f3850c7cee88a4b867f583765a78e62cbd20a7d16384a92834386",
+    "sizeBytes": 2246,
+    "storageKey": "projects/project_local/jobs/job_de32d4c37f224e4a8d04d771/tool_calls/call_job_de32d4c37f224e4a8d04d771_step_001/coordination_hist.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_de32d4c37f224e4a8d04d771_step_001",
+    "type": "table_json",
+    "version": "1"
+  },
+  "content": {
+    "artifactType": "structure.coordination_hist",
+    "by_element": [
+      {
+        "bins": [
+          {
+            "coordination_number": 1,
+            "count": 2,
+            "fraction": 0.666667
+          },
+          {
+            "coordination_number": 2,
+            "count": 1,
+            "fraction": 0.333333
+          }
+        ],
+        "element": "Si",
+        "total_sites": 3
+      }
+    ],
+    "histogram": {
+      "bins": [
+        {
+          "coordination_number": 1,
+          "count": 2,
+          "fraction": 0.666667
+        },
+        {
+          "coordination_number": 2,
+          "count": 1,
+          "fraction": 0.333333
+        }
+      ],
+      "total_sites": 3
+    },
+    "limits": {
+      "max_neighbors_per_site": 128,
+      "max_sites": 500,
+      "site_count_before_truncation": 3,
+      "truncated": false
+    },
+    "pair_counts": [
+      {
+        "center_element": "Si",
+        "count": 4,
+        "neighbor_element": "Si"
+      }
+    ],
+    "parameters": {
+      "cutoff_angstrom": 3.0,
+      "group_by_element": true,
+      "include_pair_counts": true,
+      "include_site_details": true,
+      "max_neighbors_per_site": 128,
+      "max_sites": 500,
+      "neighbor_policy": "distance_cutoff",
+      "plot_kind": "bar"
+    },
+    "schema_version": "phase10e1.coordination_hist.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "site_details": [
+      {
+        "coordination_number": 1,
+        "element": "Si",
+        "neighbor_count_before_truncation": 1,
+        "neighbor_distances_angstrom": [
+          2.351259
+        ],
+        "neighbor_elements": [
+          "Si"
+        ],
+        "neighbor_indices": [
+          1
+        ],
+        "site_index": 0,
+        "structureId": "structure_1"
+      },
+      {
+        "coordination_number": 2,
+        "element": "Si",
+        "neighbor_count_before_truncation": 2,
+        "neighbor_distances_angstrom": [
+          2.351259,
+          2.351259
+        ],
+        "neighbor_elements": [
+          "Si",
+          "Si"
+        ],
+        "neighbor_indices": [
+          0,
+          2
+        ],
+        "site_index": 1,
+        "structureId": "structure_1"
+      },
+      {
+        "coordination_number": 1,
+        "element": "Si",
+        "neighbor_count_before_truncation": 1,
+        "neighbor_distances_angstrom": [
+          2.351259
+        ],
+        "neighbor_elements": [
+          "Si"
+        ],
+        "neighbor_indices": [
+          1
+        ],
+        "site_index": 2,
+        "structureId": "structure_1"
+      }
+    ],
+    "source": {
+      "dataset_id": "dataset_generated_structure_json",
+      "filename": "structures",
+      "parser": "pymatgen.Structure",
+      "parser_version": "2026.5.4",
+      "project_id": "project_local",
+      "resource_id": "dataset_generated_structure_json",
+      "resource_type": "normalized_object"
+    },
+    "structure": {
+      "formula": "Si",
+      "pbc": [
+        true,
+        true,
+        true
+      ],
+      "site_count": 3,
+      "species": [
+        "Si"
+      ]
+    },
+    "structureCount": 1,
+    "structures": [
+      {
+        "formula": "Si",
+        "pbc": [
+          true,
+          true,
+          true
+        ],
+        "site_count": 3,
+        "species": [
+          "Si"
+        ],
+        "structureId": "structure_1"
+      }
+    ],
+    "tool_id": "structure.coordination_hist",
+    "warnings": [
+      "COORDINATION_NEIGHBOR_POLICY_DISTANCE_CUTOFF_ONLY",
+      "COORDINATION_CUTOFF_SENSITIVE",
+      "COORDINATION_ADVANCED_ENVIRONMENT_CLASSIFICATION_NOT_PERFORMED"
+    ]
+  }
+}

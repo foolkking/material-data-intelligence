@@ -1,0 +1,178 @@
+{
+  "artifact": {
+    "bucket": null,
+    "contentHash": "533d4430527cd0d486d7d7a87b59d604f889e0cc75f4b957f3dfe40231cbb165",
+    "contentType": "application/json",
+    "datasetId": "dataset_nacl_poscar",
+    "id": "call_job_d4e76f547f19475393abeca4_step_001-table_json",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T07:56:38.601233+00:00",
+      "inputHashes": [
+        "b4a3f463f3b9f9ef1808daeb4f2f6b9e8a05db708acea4c102deb0bdcd08473f"
+      ],
+      "paramsHash": "a23ca3a316bac7573fdf6add58d67659b0cc12e89b3775eab461a4102bdc2a2b",
+      "profileId": null,
+      "provenance": {
+        "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+        "planId": "plan_825cc1f081b745388889a07c",
+        "planSource": "llm",
+        "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001",
+        "toolId": "structure.coordination_hist"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.coordination_hist",
+      "toolVersion": "0.1.0"
+    },
+    "name": "coordination_hist.json",
+    "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+    "planId": "plan_825cc1f081b745388889a07c",
+    "previewKey": null,
+    "projectId": "project_local",
+    "provenance": {
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm",
+      "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001",
+      "toolId": "structure.coordination_hist"
+    },
+    "sha256": "533d4430527cd0d486d7d7a87b59d604f889e0cc75f4b957f3dfe40231cbb165",
+    "sizeBytes": 1894,
+    "storageKey": "projects/project_local/jobs/job_d4e76f547f19475393abeca4/tool_calls/call_job_d4e76f547f19475393abeca4_step_001/coordination_hist.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001",
+    "type": "table_json",
+    "version": "1"
+  },
+  "content": {
+    "artifactType": "structure.coordination_hist",
+    "by_element": [
+      {
+        "bins": [
+          {
+            "coordination_number": 0,
+            "count": 1,
+            "fraction": 1.0
+          }
+        ],
+        "element": "Cl",
+        "total_sites": 1
+      },
+      {
+        "bins": [
+          {
+            "coordination_number": 0,
+            "count": 1,
+            "fraction": 1.0
+          }
+        ],
+        "element": "Na",
+        "total_sites": 1
+      }
+    ],
+    "histogram": {
+      "bins": [
+        {
+          "coordination_number": 0,
+          "count": 2,
+          "fraction": 1.0
+        }
+      ],
+      "total_sites": 2
+    },
+    "limits": {
+      "max_neighbors_per_site": 128,
+      "max_sites": 500,
+      "site_count_before_truncation": 2,
+      "truncated": false
+    },
+    "pair_counts": [],
+    "parameters": {
+      "cutoff_angstrom": 3.0,
+      "group_by_element": true,
+      "include_pair_counts": true,
+      "include_site_details": true,
+      "max_neighbors_per_site": 128,
+      "max_sites": 500,
+      "neighbor_policy": "distance_cutoff",
+      "plot_kind": "bar"
+    },
+    "schema_version": "phase10e1.coordination_hist.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "site_details": [
+      {
+        "coordination_number": 0,
+        "element": "Na",
+        "neighbor_count_before_truncation": 0,
+        "neighbor_distances_angstrom": [],
+        "neighbor_elements": [],
+        "neighbor_indices": [],
+        "site_index": 0,
+        "structureId": "structure_1"
+      },
+      {
+        "coordination_number": 0,
+        "element": "Cl",
+        "neighbor_count_before_truncation": 0,
+        "neighbor_distances_angstrom": [],
+        "neighbor_elements": [],
+        "neighbor_indices": [],
+        "site_index": 1,
+        "structureId": "structure_1"
+      }
+    ],
+    "source": {
+      "dataset_id": "dataset_nacl_poscar",
+      "filename": "structures",
+      "parser": "pymatgen.Structure",
+      "parser_version": "2026.5.4",
+      "project_id": "project_local",
+      "resource_id": "dataset_nacl_poscar",
+      "resource_type": "normalized_object"
+    },
+    "structure": {
+      "formula": "NaCl",
+      "pbc": [
+        true,
+        true,
+        true
+      ],
+      "site_count": 2,
+      "species": [
+        "Cl",
+        "Na"
+      ]
+    },
+    "structureCount": 1,
+    "structures": [
+      {
+        "formula": "NaCl",
+        "pbc": [
+          true,
+          true,
+          true
+        ],
+        "site_count": 2,
+        "species": [
+          "Cl",
+          "Na"
+        ],
+        "structureId": "structure_1"
+      }
+    ],
+    "tool_id": "structure.coordination_hist",
+    "warnings": [
+      "COORDINATION_NEIGHBOR_POLICY_DISTANCE_CUTOFF_ONLY",
+      "COORDINATION_CUTOFF_SENSITIVE",
+      "COORDINATION_ADVANCED_ENVIRONMENT_CLASSIFICATION_NOT_PERFORMED"
+    ]
+  }
+}

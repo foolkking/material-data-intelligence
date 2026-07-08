@@ -1,0 +1,116 @@
+{
+  "artifact": {
+    "bucket": null,
+    "contentHash": "e8217d4ee48ab77ff6edeceda6e34cc6a99a96a8307d7e7add01394e462d7bbb",
+    "contentType": "application/json",
+    "datasetId": "dataset_generated_structure_json",
+    "id": "call_job_de32d4c37f224e4a8d04d771_step_001-recipe_json",
+    "jobId": "job_de32d4c37f224e4a8d04d771",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T07:56:39.080244+00:00",
+      "inputHashes": [
+        "f99e3b3bf2cf048b66ba92ef131b243a7e87fbe7443e49e76a2e94edaa220e5a"
+      ],
+      "paramsHash": "a23ca3a316bac7573fdf6add58d67659b0cc12e89b3775eab461a4102bdc2a2b",
+      "profileId": null,
+      "provenance": {
+        "planHash": "7254ff4cae73f19111271e6767963404d1986fb9366d855b2994905c648186ff",
+        "planId": "plan_af58662b08e64b9baa7701c2",
+        "planSource": "llm",
+        "toolCallId": "call_job_de32d4c37f224e4a8d04d771_step_001",
+        "toolId": "structure.coordination_hist"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.coordination_hist",
+      "toolVersion": "0.1.0"
+    },
+    "name": "recipe.json",
+    "planHash": "7254ff4cae73f19111271e6767963404d1986fb9366d855b2994905c648186ff",
+    "planId": "plan_af58662b08e64b9baa7701c2",
+    "previewKey": null,
+    "projectId": "project_local",
+    "provenance": {
+      "planHash": "7254ff4cae73f19111271e6767963404d1986fb9366d855b2994905c648186ff",
+      "planId": "plan_af58662b08e64b9baa7701c2",
+      "planSource": "llm",
+      "toolCallId": "call_job_de32d4c37f224e4a8d04d771_step_001",
+      "toolId": "structure.coordination_hist"
+    },
+    "sha256": "e8217d4ee48ab77ff6edeceda6e34cc6a99a96a8307d7e7add01394e462d7bbb",
+    "sizeBytes": 1371,
+    "storageKey": "projects/project_local/jobs/job_de32d4c37f224e4a8d04d771/tool_calls/call_job_de32d4c37f224e4a8d04d771_step_001/recipe.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_de32d4c37f224e4a8d04d771_step_001",
+    "type": "recipe_json",
+    "version": "1"
+  },
+  "content": {
+    "artifactTypes": [
+      "table_json",
+      "plotly_json",
+      "summary_md",
+      "recipe_json"
+    ],
+    "artifacts": [
+      "coordination_hist.json",
+      "coordination_hist_plot.json",
+      "summary.md",
+      "recipe.json"
+    ],
+    "dependencies": {
+      "aseVersion": "3.29.0",
+      "new_dependencies_added": false,
+      "plotlyVersion": "6.8.0",
+      "pymatgenVersion": "2026.5.4",
+      "pymatvizVersion": "0.18.0"
+    },
+    "deterministic": true,
+    "inputs": {
+      "dataset_id": "dataset_generated_structure_json",
+      "input_hashes": [
+        "f99e3b3bf2cf048b66ba92ef131b243a7e87fbe7443e49e76a2e94edaa220e5a"
+      ]
+    },
+    "limits": {
+      "max_neighbors_per_site": 128,
+      "max_sites": 500,
+      "site_count_before_truncation": 3,
+      "truncated": false
+    },
+    "name": "Coordination Histogram",
+    "numericTolerance": {
+      "distance_rounding_decimals": 6,
+      "neighbor_comparison": "distance <= cutoff_angstrom"
+    },
+    "params": {
+      "cutoff_angstrom": 3.0,
+      "group_by_element": true,
+      "include_pair_counts": true,
+      "include_site_details": true,
+      "max_neighbors_per_site": 128,
+      "max_sites": 500,
+      "neighbor_policy": "distance_cutoff",
+      "plot_kind": "bar"
+    },
+    "recipeId": "recipe_call_job_de32d4c37f224e4a8d04d771_step_001",
+    "schemaVersion": "0.1",
+    "schema_version": "phase10e1.recipe.v1",
+    "steps": [
+      "parse_structure",
+      "normalize_sites",
+      "apply_distance_cutoff_neighbor_policy",
+      "count_neighbors_per_site",
+      "aggregate_histogram",
+      "aggregate_by_element",
+      "write_coordination_hist_json",
+      "write_static_chart_json",
+      "write_summary"
+    ],
+    "toolId": "structure.coordination_hist",
+    "tool_id": "structure.coordination_hist"
+  }
+}

@@ -2746,3 +2746,40 @@ Plan static physics tools before implementation. Recommend `structure.coordinati
 - Future static physics adapters must use deterministic numeric JSON artifacts, static chart artifacts, `summary.md`, and `recipe.json`.
 - Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon tools, trajectory RDF, experimental XRD fitting, notebook extraction, script execution, and external API workflows remain deferred.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.
+
+## ADR-10E-1-COORDINATION-HISTOGRAM: Static coordination histogram uses deterministic distance-cutoff counting
+
+### Context
+
+Phase 10E selected `structure.coordination_hist` as the lowest-risk static physics adapter because it can reuse existing structure parsing and deterministic artifact infrastructure. More advanced local environment methods such as VoronoiNN, CrystalNN, bond-valence analysis, XRD, RDF, and phonon workflows still need separate numeric policy and evidence decisions.
+
+### Decision
+
+Implement `structure.coordination_hist` with a conservative deterministic `distance_cutoff` neighbor policy. The adapter emits static JSON/Markdown artifacts only: `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json`. It does not emit HTML apps, artifact JavaScript, external URLs, WebGL renderer assets, full 3D viewer artifacts, or advanced chemistry environment labels.
+
+### Consequences
+
+- Coordination histogram outputs are reproducible and suitable for browser/API evidence without adding renderer authority.
+- Phase 10E-2 can validate API execution and static artifact preview for the implemented adapter.
+- XRD, RDF, advanced local environment classification, full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon tools, notebook extraction, and script execution remain deferred.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.
+
+## ADR-10E-2-COORDINATION-HISTOGRAM-EVIDENCE: Evidence validates static coordination artifacts without expanding physics scope
+
+### Context
+
+After Phase 10E-1 implemented `structure.coordination_hist`, the platform needed evidence that the adapter works through the product execution path and that its static artifacts can be inspected safely in the frontend without implementing XRD, RDF, full 3D viewer, WebGL, or phonon workflows.
+
+### Decision
+
+Treat Phase 10E-2 as evidence-only validation for `structure.coordination_hist`. Evidence is captured under `docs/phase10e/browser_api_evidence/phase10e2_coordination_hist/` from Mock Planner request/response, PlanValidator, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, adapter execution, artifact generation, result readback, and browser-rendered static artifact preview.
+
+The browser evidence is limited to static previews of `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json`. It must not claim interactive chart execution, full 3D viewing, WebGL rendering, XRD, RDF, phonon support, or advanced local environment classification.
+
+### Consequences
+
+- `structure.coordination_hist` now has Browser/API/artifact evidence over small CIF, POSCAR, and generated Structure JSON inputs.
+- The evidence records 43 redacted API captures, 6 browser-rendered screenshots, 12 artifact captures, negative routing evidence, and `NO_SECRET_PATTERN_HITS`.
+- No new adapter or runtime authority was introduced.
+- `structure.xrd`, `structure.rdf`, full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, phonon tools, notebook extraction, script execution, and unsupported official example claims remain deferred.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.

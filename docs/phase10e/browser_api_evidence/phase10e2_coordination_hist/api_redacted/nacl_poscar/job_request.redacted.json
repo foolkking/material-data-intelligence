@@ -1,0 +1,15 @@
+{
+  "baseUrl": null,
+  "datasetId": "dataset_nacl_poscar",
+  "enqueue": true,
+  "execute": false,
+  "maxTokens": "<redacted>",
+  "model": null,
+  "profileId": "profile_nacl_poscar",
+  "projectId": "project_local",
+  "provider": "mock",
+  "secretId": "<redacted>",
+  "temperature": null,
+  "timeoutSeconds": null,
+  "userPrompt": "Create a coordination number histogram for this structure"
+}

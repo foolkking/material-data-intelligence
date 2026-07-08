@@ -885,3 +885,24 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Official examples for XRD/RDF are future-scope widget/script mappings, not direct-uploadable PASS evidence.
 - No adapter, Tool Registry, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, frontend runtime, browser/API evidence, or real LLM path was changed.
 - Full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, phonon tools, trajectory RDF, experimental XRD fitting, notebook extraction, script execution, and external API workflows remain deferred.
+
+## 2026-07-08 Phase 10E-1 Coordination Histogram Implementation
+
+- Implemented `structure.coordination_hist` as the first low-risk static physics adapter.
+- The adapter uses a deterministic `distance_cutoff` neighbor policy with strict params validation.
+- Generated deterministic artifacts: `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json`.
+- Registered the tool through Tool Registry and added Mock Planner routing for coordination histogram prompts.
+- Added adapter, fixture, registry, planner routing, artifact contract, security, and persisted execution tests.
+- Browser/API evidence remains deferred to Phase 10E-2.
+- No XRD, RDF, full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook/script extraction, external API workflow, or advanced local environment classification was implemented.
+
+## 2026-07-08 Phase 10E-2 Coordination Histogram Browser/API Evidence
+
+- Added Browser/API/artifact evidence for `structure.coordination_hist` under `docs/phase10e/browser_api_evidence/phase10e2_coordination_hist/`.
+- Covered three bounded structure inputs: small CIF, small POSCAR, and generated pymatgen Structure JSON.
+- Evidence totals: 43 redacted API captures, 6 browser-rendered static preview screenshots, and 12 artifact capture files.
+- Verified API/job flow through Mock Planner, PlanValidator, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry, adapter execution, artifact generation, result readback, and static browser preview.
+- Verified artifacts: `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json`.
+- Security scan result: `NO_SECRET_PATTERN_HITS`; artifact scan found no script, JavaScript URL, external URL, CDN, Three.js, or eval patterns.
+- Negative routing evidence confirms XRD, RDF, full 3D viewer, WebGL, Brillouin-zone, phonon, Voronoi, and CrystalNN prompts do not route to `structure.coordination_hist`.
+- No new adapter was implemented, and no runtime main semantics or Phase 10E-1 coordination policy were changed.

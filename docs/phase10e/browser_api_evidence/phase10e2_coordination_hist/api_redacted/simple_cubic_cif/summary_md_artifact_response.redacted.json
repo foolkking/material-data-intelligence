@@ -1,0 +1,52 @@
+{
+  "artifact": {
+    "bucket": null,
+    "contentHash": "c819a8f94c9963a46cb6cbba7c2302124669fa3b7685df5166da0eee98b31625",
+    "contentType": "application/json",
+    "datasetId": "dataset_simple_cubic_cif",
+    "id": "call_job_91bf10c6d6bc4a38a342b34c_step_001-summary_md",
+    "jobId": "job_91bf10c6d6bc4a38a342b34c",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T07:56:37.958370+00:00",
+      "inputHashes": [
+        "6d6d4aefc77a7d57c7b9a4ee4880d8d5b2548274fd0fb6b93ea43d01242a0505"
+      ],
+      "paramsHash": "a23ca3a316bac7573fdf6add58d67659b0cc12e89b3775eab461a4102bdc2a2b",
+      "profileId": null,
+      "provenance": {
+        "planHash": "9ef0b56019182db8b9e075a69c9d727517f6b9434900e8554704b3abdd18b654",
+        "planId": "plan_24bf784b17df485581752308",
+        "planSource": "llm",
+        "toolCallId": "call_job_91bf10c6d6bc4a38a342b34c_step_001",
+        "toolId": "structure.coordination_hist"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.coordination_hist",
+      "toolVersion": "0.1.0"
+    },
+    "name": "summary.md",
+    "planHash": "9ef0b56019182db8b9e075a69c9d727517f6b9434900e8554704b3abdd18b654",
+    "planId": "plan_24bf784b17df485581752308",
+    "previewKey": null,
+    "projectId": "project_local",
+    "provenance": {
+      "planHash": "9ef0b56019182db8b9e075a69c9d727517f6b9434900e8554704b3abdd18b654",
+      "planId": "plan_24bf784b17df485581752308",
+      "planSource": "llm",
+      "toolCallId": "call_job_91bf10c6d6bc4a38a342b34c_step_001",
+      "toolId": "structure.coordination_hist"
+    },
+    "sha256": "c819a8f94c9963a46cb6cbba7c2302124669fa3b7685df5166da0eee98b31625",
+    "sizeBytes": 688,
+    "storageKey": "projects/project_local/jobs/job_91bf10c6d6bc4a38a342b34c/tool_calls/call_job_91bf10c6d6bc4a38a342b34c_step_001/summary.md",
+    "storageProvider": "local",
+    "toolCallId": "call_job_91bf10c6d6bc4a38a342b34c_step_001",
+    "type": "summary_md",
+    "version": "1"
+  },
+  "content": "# Coordination Histogram\n\n## Input\n- source: normalized_object\n- parser: pymatgen.Structure\n- formula: Si\n- site count: 1\n\n## Method\n- neighbor policy: distance_cutoff\n- cutoff: 3.0 angstrom\n- max sites: 500\n- max neighbors per site: 128\n\n## Results\n- histogram: [{'coordination_number': 6, 'count': 1, 'fraction': 1.0}]\n- dominant coordination number: 6 (1 site(s))\n- element groups: 1\n- pair counts: 1\n\n## Limits\n- truncated: False\n- warnings: COORDINATION_NEIGHBOR_POLICY_DISTANCE_CUTOFF_ONLY, COORDINATION_CUTOFF_SENSITIVE, COORDINATION_ADVANCED_ENVIRONMENT_CLASSIFICATION_NOT_PERFORMED\n\n## Security\n- no artifact JavaScript\n- no external URLs\n- no WebGL renderer\n- no full 3D viewer\n"
+}

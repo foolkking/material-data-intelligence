@@ -1,0 +1,31 @@
+[
+  {
+    "artifactIds": [
+      "call_job_91bf10c6d6bc4a38a342b34c_step_001-table_json",
+      "call_job_91bf10c6d6bc4a38a342b34c_step_001-plotly_json",
+      "call_job_91bf10c6d6bc4a38a342b34c_step_001-summary_md",
+      "call_job_91bf10c6d6bc4a38a342b34c_step_001-recipe_json"
+    ],
+    "attempt": 1,
+    "id": "call_job_91bf10c6d6bc4a38a342b34c_step_001",
+    "idempotencyKey": "job_91bf10c6d6bc4a38a342b34c:step_001",
+    "inputSummary": "Params: cutoff_angstrom, group_by_element, include_pair_counts, include_site_details, max_neighbors_per_site, max_sites, neighbor_policy, plot_kind",
+    "jobId": "job_91bf10c6d6bc4a38a342b34c",
+    "outputSummary": "4 artifact(s)",
+    "params": {
+      "cutoff_angstrom": 3.0,
+      "group_by_element": true,
+      "include_pair_counts": true,
+      "include_site_details": true,
+      "max_neighbors_per_site": 128,
+      "max_sites": 500,
+      "neighbor_policy": "distance_cutoff",
+      "plot_kind": "bar"
+    },
+    "planHash": "9ef0b56019182db8b9e075a69c9d727517f6b9434900e8554704b3abdd18b654",
+    "planId": "plan_24bf784b17df485581752308",
+    "status": "completed",
+    "stepId": "step_001",
+    "toolId": "structure.coordination_hist"
+  }
+]

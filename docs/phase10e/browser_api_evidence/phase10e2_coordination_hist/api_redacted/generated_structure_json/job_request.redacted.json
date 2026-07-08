@@ -1,0 +1,15 @@
+{
+  "baseUrl": null,
+  "datasetId": "dataset_generated_structure_json",
+  "enqueue": true,
+  "execute": false,
+  "maxTokens": "<redacted>",
+  "model": null,
+  "profileId": "profile_generated_structure_json",
+  "projectId": "project_local",
+  "provider": "mock",
+  "secretId": "<redacted>",
+  "temperature": null,
+  "timeoutSeconds": null,
+  "userPrompt": "Count neighbors and plot coordination histogram"
+}

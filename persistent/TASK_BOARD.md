@@ -1180,3 +1180,41 @@
 - [ ] Resolve RDF normalization / cutoff / binning policy.
 - [ ] Browser/API evidence for implemented static physics tools.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
+
+## 2026-07-08 Phase 10E-1 Coordination Histogram Implementation
+
+### Done
+
+- [x] Implemented `structure.coordination_hist`.
+- [x] Registered `structure.coordination_hist` in Tool Registry.
+- [x] Added strict params validation for deterministic `distance_cutoff` coordination counting.
+- [x] Added Mock Planner routing for coordination histogram prompts.
+- [x] Added negative routing coverage for XRD, RDF, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, and CrystalNN prompts.
+- [x] Added deterministic artifacts: `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json`.
+- [x] Added adapter, fixture, registry, planner, artifact contract, and persisted execution tests.
+
+### Still Open
+
+- [ ] Phase 10E-2 browser/API evidence for `structure.coordination_hist`.
+- [ ] `structure.xrd` and `structure.rdf` remain planned but unimplemented.
+- [ ] Advanced local environment classification remains deferred.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
+
+## 2026-07-08 Phase 10E-2 Coordination Histogram Browser/API Evidence
+
+### Done
+
+- [x] Added browser/API evidence for `structure.coordination_hist`.
+- [x] Captured 43 redacted API responses across small CIF, small POSCAR, and generated Structure JSON cases.
+- [x] Captured 12 artifact files: `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json` for each case.
+- [x] Captured 6 browser-rendered static preview screenshots.
+- [x] Verified artifact contract fields, deterministic ordering, limits, warnings, and security flags.
+- [x] Verified negative routing does not send XRD, RDF, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, or CrystalNN prompts to `structure.coordination_hist`.
+- [x] Recorded `NO_SECRET_PATTERN_HITS`.
+
+### Still Open
+
+- [ ] Phase 10E-3 XRD / RDF readiness decision or static physics next-scope planning.
+- [ ] `structure.xrd` implementation.
+- [ ] `structure.rdf` implementation.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.

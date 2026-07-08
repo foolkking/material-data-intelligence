@@ -388,3 +388,12 @@
 - RDF remains open until normalization, cutoff, binning, finite-size warnings, and species-pair policy are fixed.
 - Official widget/script examples for XRD/RDF remain mapping references only; direct-uploadable benchmark evidence is still absent.
 - Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, trajectory RDF, experimental XRD fitting, notebook extraction, script execution, and external API workflows remain open.
+
+## 2026-07-08 Phase 10E-2 Follow-ups
+
+- Phase 10E-2 closes browser/API/artifact evidence for `structure.coordination_hist` on bounded small CIF, POSCAR, and generated Structure JSON cases.
+- `coordination_hist_plot.json` is currently verified as static chart JSON / static preview evidence; richer chart rendering can be considered later without changing the adapter contract.
+- XRD remains open until radiation source defaults, peak merge tolerance, and fixture peak windows are pinned.
+- RDF remains open until normalization, cutoff, binning, finite-size warning, and species-pair policy are fixed.
+- Advanced local environment classification remains deferred; current evidence only covers deterministic distance-cutoff coordination counts.
+- Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and unsupported official example verification remain open.

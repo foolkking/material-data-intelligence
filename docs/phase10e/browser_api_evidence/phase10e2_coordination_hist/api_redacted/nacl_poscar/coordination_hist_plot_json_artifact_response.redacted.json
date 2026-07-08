@@ -1,0 +1,110 @@
+{
+  "artifact": {
+    "bucket": null,
+    "contentHash": "b48f0577b0989fad35c80c99d0d908e47c42d8d08f7f6d55ba36abc021c3cacf",
+    "contentType": "application/json",
+    "datasetId": "dataset_nacl_poscar",
+    "id": "call_job_d4e76f547f19475393abeca4_step_001-plotly_json",
+    "jobId": "job_d4e76f547f19475393abeca4",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T07:56:38.612230+00:00",
+      "inputHashes": [
+        "b4a3f463f3b9f9ef1808daeb4f2f6b9e8a05db708acea4c102deb0bdcd08473f"
+      ],
+      "paramsHash": "a23ca3a316bac7573fdf6add58d67659b0cc12e89b3775eab461a4102bdc2a2b",
+      "profileId": null,
+      "provenance": {
+        "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+        "planId": "plan_825cc1f081b745388889a07c",
+        "planSource": "llm",
+        "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001",
+        "toolId": "structure.coordination_hist"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.coordination_hist",
+      "toolVersion": "0.1.0"
+    },
+    "name": "coordination_hist_plot.json",
+    "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+    "planId": "plan_825cc1f081b745388889a07c",
+    "previewKey": null,
+    "projectId": "project_local",
+    "provenance": {
+      "planHash": "d5015217ac1fbc45c6c9d0293b5b24b4bc7d55d926929651fee540f94cb65bc2",
+      "planId": "plan_825cc1f081b745388889a07c",
+      "planSource": "llm",
+      "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001",
+      "toolId": "structure.coordination_hist"
+    },
+    "sha256": "b48f0577b0989fad35c80c99d0d908e47c42d8d08f7f6d55ba36abc021c3cacf",
+    "sizeBytes": 595,
+    "storageKey": "projects/project_local/jobs/job_d4e76f547f19475393abeca4/tool_calls/call_job_d4e76f547f19475393abeca4_step_001/coordination_hist_plot.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_d4e76f547f19475393abeca4_step_001",
+    "type": "plotly_json",
+    "version": "1"
+  },
+  "content": {
+    "artifactType": "structure.coordination_hist_plot",
+    "chart_type": "bar",
+    "metadata": {
+      "cutoff_angstrom": 3.0,
+      "formula": "NaCl",
+      "neighbor_policy": "distance_cutoff",
+      "site_count": 2
+    },
+    "schema_version": "phase10e1.static_chart.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "series": [
+      {
+        "name": "All sites",
+        "x": [
+          0
+        ],
+        "y": [
+          2
+        ]
+      },
+      {
+        "name": "Cl",
+        "x": [
+          0
+        ],
+        "y": [
+          1
+        ]
+      },
+      {
+        "name": "Na",
+        "x": [
+          0
+        ],
+        "y": [
+          1
+        ]
+      }
+    ],
+    "title": "Coordination Number Histogram",
+    "tool_id": "structure.coordination_hist",
+    "x_axis": {
+      "label": "Coordination Number",
+      "values": [
+        0
+      ]
+    },
+    "y_axis": {
+      "label": "Site Count",
+      "values": [
+        2
+      ]
+    }
+  }
+}
