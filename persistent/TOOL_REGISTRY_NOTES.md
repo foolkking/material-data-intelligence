@@ -276,7 +276,7 @@
 
 | Manifest | 作用 |
 |---|---|
-| `tool_registry/pymatviz_manifest.yaml` | pymatviz 原生 Plotly 能力，例如 `ptable_heatmap`、`structure_3d`、`coordination_hist`、`density_scatter` |
+| `tool_registry/pymatviz_manifest.yaml` | pymatviz / pymatviz-composed capabilities such as `ptable_heatmap`, `structure_3d`, `coordination_hist`, and `density_scatter` |
 | `tool_registry/matterviz_manifest.yaml` | MatterViz / widget 能力，例如 `StructureWidget` 和 `TrajectoryWidget` |
 | `tool_registry/platform_builtin_manifest.yaml` | 平台内置分析和自定义 Plotly 能力，例如 `basic_metrics`、`outlier_table`、`error_distribution` |
 
@@ -301,7 +301,7 @@
 | `composition.chem_sys_treemap` | pymatviz `chem_sys_treemap` |
 | `structure.structure_3d` | pymatviz `structure_3d` |
 | `structure.viewer_3d` | MatterViz / pymatviz `StructureWidget` |
-| `structure.coordination_hist` | pymatviz `coordination_hist` |
+| `structure.coordination_hist` | deterministic distance-cutoff static coordination histogram |
 | `ml.density_scatter` | pymatviz `density_scatter` |
 | `ml.error_distribution` | platform `plotly_custom` |
 | `ml.basic_metrics` | platform builtin |
@@ -507,7 +507,7 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 | `composition.elements_hist` | `pymatviz.elements_hist` | 首参为 `formulas`；`fig_kwargs` 会直接传给 `go.Figure(**fig_kwargs)`，不能用 `{"title": ...}` | 平台参数 `countMode` -> `count_mode`、`keepTop` -> `keep_top`、`logY` -> `log_y`、`showValues` -> `show_values`；标题通过 `fig.update_layout(title_text=...)` 设置 |
 | `composition.chem_sys_treemap` | `pymatviz.chem_sys_treemap` | 接受 formula、Composition、Structure 序列；参数为 `show_counts`、`max_cells` 等 | 平台参数 `showCounts` -> `show_counts`、`maxCells` -> `max_cells`；Adapter 负责从 Structure 派生 composition 输入 |
 | `structure.structure_3d` | `pymatviz.structure_3d` | 支持 `Structure`、`dict[str, Structure]`、`Sequence[Structure]`；参数为 `show_cell`、`show_bonds` 等 | 平台参数 `showCell` -> `show_cell`；`showBonds: "auto"` 在 MVP 映射为 `False`；先校验周期 lattice 和 atom limit |
-| `structure.coordination_hist` | `pymatviz.coordination_hist` | 支持单个 Structure、dict 或序列；`strategy` 可为 float cutoff，`split_mode` 接受 `"by element"` | 平台参数 `cutoff` -> `strategy`、`splitMode` -> `split_mode`、`barMode` -> `bar_mode`、`annotateBars` -> `annotate_bars`；先校验周期 lattice 和 atom limit |
+| `structure.coordination_hist` | deterministic distance-cutoff coordination count | Supports platform-passed periodic Structure objects, Structure dicts, CIF/POSCAR text, and bounded structure sequences through the Phase 10C parser | Emits `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json`; params are `neighbor_policy`, `cutoff_angstrom`, `max_sites`, `max_neighbors_per_site`, `include_site_details`, `group_by_element`, `include_pair_counts`, and `plot_kind`; no HTML, no artifact JS, no advanced local-environment classification |
 | `structure.viewer_3d` | `pymatviz.StructureWidget` | 构造函数为 `(structure=None, **kwargs)`，实例提供 `to_html()` | 优先输出 `StructureWidget.to_html()`；如 widget 渲染失败，输出 sandbox-safe fallback HTML 并在 provenance 中标记 `mattervizFallback=true` |
 | `ml.density_scatter` | `pymatviz.density_scatter` | 参数为 `x`、`y` 和可选 `df`；`n_bins=False` 可用于小型 smoke test 禁用分箱 | 平台参数 `targetColumn` / `predictionColumn` 解析到 DataFrame 列名，`nBins` -> `n_bins`、`identityLine` -> `identity_line`、`bestFitLine` -> `best_fit_line` |
 | `ml.error_distribution` | `plotly.express.histogram` | 平台自定义 Plotly 工具，无 pymatviz 原生函数依赖 | Adapter 计算 `prediction - target` 的 error 列，输出 histogram、metrics_json 和 top outlier table_json |
@@ -556,7 +556,7 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - 受控执行入口 `execute_tool_request()` 现在可对所有 MVP 工具拒绝未注册参数，而不只覆盖前三个 Adapter。
 - 当前已显式声明的平台批准参数包括：
   - composition：`countMode`、`colorScale`、`normalize`、`keepTop`、`logY`、`showValues`、`showCounts`、`maxCells`、`title`
-  - structure：`showCell`、`showBonds`、`selectedStructureIds`、`selectedStructureId`、`cameraPreset`、`maxStructures`、`cutoff`、`strategy`、`splitMode`、`barMode`、`annotateBars`
+  - structure: `showCell`, `showBonds`, `selectedStructureIds`, `selectedStructureId`, `cameraPreset`, `maxStructures`, `neighbor_policy`, `cutoff_angstrom`, `max_sites`, `max_neighbors_per_site`, `include_site_details`, `group_by_element`, `include_pair_counts`, `plot_kind`
   - ml：`targetColumn`、`predictionColumn`、`nBins`、`density`、`xLabel`、`yLabel`、`identityLine`、`bestFitLine`、`stats`、`topK`、`title`
 - 新增测试确保 MVP 工具未知参数会触发 JSON Schema `Additional properties are not allowed`。
 - 未发现新的 pymatviz API 与 manifest 差异；`preview_png` 继续作为 optional/fallback artifact 处理。
@@ -677,3 +677,16 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Recommended first implementation is `structure.coordination_hist`; it must require periodic structures and a strict params schema.
 - `structure.xrd` and `structure.rdf` must not be registered until numeric tolerance and fixture policies are pinned.
 - Full `structure.viewer_3d`, Brillouin-zone 3D, phonon tools, notebook/script execution, external API workflows, and experimental fitting remain outside Tool Registry scope.
+
+## 2026-07-08 Phase 10E-1 Coordination Histogram Tool Notes
+
+- `structure.coordination_hist` is now implemented and executable through Tool Registry + Adapter.
+- The adapter uses a deterministic `distance_cutoff` neighbor policy and does not call `pymatviz.coordination_hist` directly.
+- Registered artifacts are:
+  - `coordination_hist.json` as `table_json`
+  - `coordination_hist_plot.json` as `plotly_json`
+  - `summary.md` as `summary_md`
+  - `recipe.json` as `recipe_json`
+- The strict params schema allows only `neighbor_policy`, `cutoff_angstrom`, `max_sites`, `max_neighbors_per_site`, `include_site_details`, `group_by_element`, `include_pair_counts`, and `plot_kind`.
+- The tool does not emit HTML, executable JavaScript, external URLs, WebGL renderer assets, or full 3D viewer artifacts.
+- XRD, RDF, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, CrystalNN, bond-valence, notebook/script, and external API workflows remain out of scope.

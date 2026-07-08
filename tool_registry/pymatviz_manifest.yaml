@@ -86,16 +86,16 @@ tools:
       - recipe_json
 
   - tool_id: structure.coordination_hist
-    source_package: pymatviz
-    source_function: coordination_hist
-    implementation_source: pymatviz
+    source_package: platform
+    source_function: deterministic_distance_cutoff_coordination_hist
+    implementation_source: pymatviz_composed
     stage: mvp
     adapter: CoordinationHistAdapter
     display_target: structure
+    notes: "Static coordination-number histogram using deterministic distance-cutoff neighbors; not an advanced local-environment classifier."
     artifact_types:
+      - table_json
       - plotly_json
-      - plotly_html
-      - preview_png
       - summary_md
       - recipe_json
 

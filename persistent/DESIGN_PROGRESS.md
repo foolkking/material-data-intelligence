@@ -1,5 +1,16 @@
 # DESIGN_PROGRESS
 
+## 2026-07-08 Phase 10E-1 Coordination Histogram Implementation
+
+- Implemented `structure.coordination_hist` as the first static structure physics adapter from Phase 10E planning.
+- The adapter uses the existing Phase 10C/10D structure parsing path and a conservative deterministic `distance_cutoff` neighbor policy.
+- Registered the tool through Tool Registry with a strict params schema for `neighbor_policy`, `cutoff_angstrom`, `max_sites`, `max_neighbors_per_site`, `include_site_details`, `group_by_element`, `include_pair_counts`, and `plot_kind`.
+- Artifacts are static and deterministic: `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json`.
+- Mock Planner now routes coordination-number / neighbor-count prompts to `structure.coordination_hist`; XRD, RDF, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, and CrystalNN prompts remain deferred.
+- Added unit, fixture, registry, planner-routing, artifact-contract, persisted execution, and safety tests for the adapter.
+- No browser/API evidence was added; Phase 10E-2 remains responsible for end-to-end evidence.
+- No XRD, RDF, full 3D viewer, WebGL renderer, Three.js, Brillouin-zone, phonon, notebook/script extraction, external API workflow, QueueWorkerRuntime semantic change, AnalysisPlanRepository semantic change, `/planner/jobs` semantic change, PlanValidator boundary change, new dependency, real LLM path, artifact JS, or external URL loading was added.
+
 ## 2026-07-07 Phase 10C-1 Lightweight Structure Adapter Implementation
 
 - Implemented the lightweight structure adapter batch recommended by Phase 10C:

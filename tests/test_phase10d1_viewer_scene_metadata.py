@@ -155,7 +155,6 @@ def test_mock_planner_routes_phase10d1_prompts(prompt: str, expected_tool: str) 
         "Generate Brillouin zone 3D.",
         "Compute XRD pattern.",
         "Compute RDF.",
-        "Compute coordination histogram.",
         "Plot phonon bands.",
         "Plot phonon DOS.",
     ],
@@ -170,7 +169,6 @@ def test_mock_planner_keeps_deferred_prompts_out_of_phase10d1_tools(prompt: str)
         "structure.brillouin_zone_3d",
         "structure.xrd",
         "structure.rdf",
-        "structure.coordination_hist",
         "phonon.bands",
         "phonon.dos",
     }

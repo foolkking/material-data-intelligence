@@ -597,7 +597,16 @@ def _default_params_for(tool_id: str) -> dict[str, Any]:
         "structure.viewer_scene_metadata": {"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
         "structure.viewer_export_package": {"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
         "structure.viewer_3d": {"showCell": True, "showBonds": "auto", "cameraPreset": "isometric"},
-        "structure.coordination_hist": {"cutoff": 3.0, "splitMode": "by element", "maxStructures": 4},
+        "structure.coordination_hist": {
+            "neighbor_policy": "distance_cutoff",
+            "cutoff_angstrom": 3.0,
+            "max_sites": 500,
+            "max_neighbors_per_site": 128,
+            "include_site_details": True,
+            "group_by_element": True,
+            "include_pair_counts": True,
+            "plot_kind": "bar",
+        },
         "ml.density_scatter": {
             "targetColumn": "y_true",
             "predictionColumn": "y_pred",

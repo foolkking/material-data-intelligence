@@ -146,7 +146,7 @@ type ToolOutputSchema = {
 | `composition.chem_sys_treemap` | `ChemSysTreemapAdapter` | formulas / Structure[] / Composition[] | Plotly JSON + 交互展示产物 + PNG preview |
 | `structure.structure_3d` | `Structure3DAdapter` | Structure / Structure[] | Plotly JSON + 交互展示产物 + PNG preview |
 | `structure.viewer_3d` | `StructureViewer3DAdapter` | Structure | MatterViz HTML/metadata，snapshot 可选 |
-| `structure.coordination_hist` | `CoordinationHistAdapter` | Structure[] | Plotly JSON + 交互展示产物 + PNG preview |
+| `structure.coordination_hist` | `CoordinationHistAdapter` | Structure[] | deterministic numeric JSON + static chart JSON + summary + recipe |
 | `ml.density_scatter` | `DensityScatterAdapter` | DataFrame with target/prediction | Plotly JSON + 交互展示产物 + PNG preview |
 | `ml.error_distribution` | `ErrorDistributionAdapter` | DataFrame with target/prediction | Plotly JSON + 交互展示产物 + PNG preview + metrics JSON + outlier table |
 | `ml.basic_metrics` | `BasicMetricsAdapter` | DataFrame with target/prediction | metrics JSON + summary |
@@ -345,8 +345,11 @@ tool:{tool_id}:{tool_version}:{adapter_version}:{input_hash}:{params_hash}:{styl
 {
   "tool_id": "structure.coordination_hist",
   "params": {
-    "neighborStrategy": "CrystalNN",
-    "splitMode": "by_element"
+    "neighbor_policy": "distance_cutoff",
+    "cutoff_angstrom": 3.0,
+    "max_sites": 500,
+    "max_neighbors_per_site": 128,
+    "plot_kind": "bar"
   }
 }
 ```

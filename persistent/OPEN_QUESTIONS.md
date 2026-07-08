@@ -1,5 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-07-08 Phase 10E-1 Follow-ups
+
+- **Closed at adapter level: coordination histogram.** `structure.coordination_hist` now emits deterministic `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json` artifacts.
+- **Closed: initial neighbor policy.** Phase 10E-1 uses a conservative `distance_cutoff` policy with deterministic ordering and rounded distances.
+- **Still open: Phase 10E-2 evidence.** Browser/API/artifact evidence is still required for `structure.coordination_hist`.
+- **Still open: XRD.** `structure.xrd` needs pinned radiation source defaults, peak merge tolerance, and fixture peak windows before implementation.
+- **Still open: RDF.** `structure.rdf` needs normalization, cutoff, binning, finite-size warning, and species-pair policy before implementation.
+- **Still open: advanced local environments.** Voronoi, CrystalNN, bond valence, and oxidation-state-aware environment classification remain future planning items.
+- **Still open: advanced visualization / phonon.** Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, trajectory RDF, notebook/script extraction, and external API workflows remain future work.
+
 ## 2026-07-07 Phase 10C-1 Follow-ups
 
 - **Closed at adapter level: lightweight structure tools.** The platform now has

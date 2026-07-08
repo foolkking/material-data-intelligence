@@ -142,7 +142,7 @@ load manifests
 | `structure.viewer_3d` | `matterviz` | `StructureViewer3DAdapter` | `Structure` | `matterviz_html`、`structure_json`、`summary_md`、`recipe_json` |
 | `composition.elements_hist` | `pymatviz` | `ElementsHistAdapter` | formula / `Composition[]` | `plotly_json`、`plotly_html`、`preview_png`、`summary_md`、`recipe_json` |
 | `composition.chem_sys_treemap` | `pymatviz` | `ChemSysTreemapAdapter` | formula / `Composition[]` / `Structure[]` | `plotly_json`、`plotly_html`、`preview_png`、`summary_md`、`recipe_json` |
-| `structure.coordination_hist` | `pymatviz` | `CoordinationHistAdapter` | periodic `Structure[]` | `plotly_json`、`plotly_html`、`preview_png`、`summary_md`、`recipe_json` |
+| `structure.coordination_hist` | `pymatviz_composed` | `CoordinationHistAdapter` | periodic `Structure[]` | `table_json`、`plotly_json`、`summary_md`、`recipe_json` |
 | `ml.density_scatter` | `pymatviz` | `DensityScatterAdapter` | DataFrame target/prediction | `plotly_json`、`plotly_html`、`preview_png`、`summary_md`、`recipe_json` |
 | `ml.error_distribution` | `plotly_custom` | `ErrorDistributionAdapter` | DataFrame target/prediction | `plotly_json`、`plotly_html`、`preview_png`、`metrics_json`、`table_json`、`summary_md`、`recipe_json` |
 | `ml.basic_metrics` | `platform_builtin` | `BasicMetricsAdapter` | DataFrame target/prediction | `metrics_json`、`summary_md`、`recipe_json` |

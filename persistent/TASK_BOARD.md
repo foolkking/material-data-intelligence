@@ -1,5 +1,31 @@
 # TASK_BOARD
 
+## 2026-07-08 Phase 10E-1 Coordination Histogram Implementation
+
+### Done
+
+- [x] Implemented `structure.coordination_hist`.
+- [x] Replaced the older pymatviz/HTML-style coordination adapter path with deterministic numeric JSON and static chart artifacts.
+- [x] Registered strict Tool Registry params for `neighbor_policy`, `cutoff_angstrom`, `max_sites`, `max_neighbors_per_site`, `include_site_details`, `group_by_element`, `include_pair_counts`, and `plot_kind`.
+- [x] Added Mock Planner routing for coordination histogram / coordination number / neighbor count prompts.
+- [x] Added deferred-routing coverage for XRD, RDF, full 3D viewer, WebGL, Brillouin-zone, phonon, Voronoi, and CrystalNN prompts.
+- [x] Added tests for unit behavior, fixtures, registry schema, planner routing, artifact contracts, persisted execution, deterministic output, warnings, and no-JS/no-external-URL safety.
+- [x] Added `docs/phase10e/phase10e1_coordination_hist_implementation.md`.
+
+### Verification
+
+- [x] `python -m pytest tests/test_phase10e1_coordination_hist.py -q`.
+- [x] Targeted regression for adapter, registry, Phase 10C structure, and Phase 10D viewer-scene tests.
+- [ ] Full backend/frontend regression before commit.
+- [ ] Commit, push, and confirm CI current HEAD.
+
+### Remaining
+
+- [ ] Phase 10E-2 browser/API evidence for `structure.coordination_hist`.
+- [ ] Pin `structure.xrd` fixture peak windows and tolerances before implementation.
+- [ ] Resolve `structure.rdf` normalization, cutoff, binning, and periodic-boundary policy before implementation.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook/script extraction, and external API workflows remain future work.
+
 ## 2026-07-07 Phase 10C-1 Lightweight Structure Adapter Implementation
 
 ### Done This Round

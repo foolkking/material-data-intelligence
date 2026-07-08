@@ -276,15 +276,15 @@ def test_composition_adapters_reject_missing_formula_column(tmp_path):
             raise AssertionError(f"{tool_id} accepted a table without formula/composition column")
 
 
-def test_coordination_hist_generates_plotly_artifacts(tmp_path, repo_root):
+def test_coordination_hist_generates_static_physics_artifacts(tmp_path, repo_root):
     structure = Structure.from_file(repo_root / "tests" / "fixtures" / "structures" / "si.cif")
     request = ToolExecutionRequest(
         jobId="job_adapter",
         stepId="step_coordination",
         toolId="structure.coordination_hist",
         inputRefs=[{"refType": "normalized_object", "ref": "si_structure", "objectType": "Structure"}],
-        params={"cutoff": 3.0, "splitMode": "by element"},
-        artifactTypes=["plotly_json", "plotly_html", "summary_md", "recipe_json"],
+        params={"neighbor_policy": "distance_cutoff", "cutoff_angstrom": 3.0},
+        artifactTypes=["table_json", "plotly_json", "summary_md", "recipe_json"],
     )
 
     artifacts = CoordinationHistAdapter().execute(
@@ -292,9 +292,28 @@ def test_coordination_hist_generates_plotly_artifacts(tmp_path, repo_root):
         request,
     )
 
-    assert ArtifactType.plotly_json in artifact_types(artifacts)
-    assert ArtifactType.plotly_html in artifact_types(artifacts)
-    assert ArtifactType.recipe_json in artifact_types(artifacts)
+    assert artifact_types(artifacts) == {
+        ArtifactType.table_json,
+        ArtifactType.plotly_json,
+        ArtifactType.summary_md,
+        ArtifactType.recipe_json,
+    }
+    assert {artifact.name for artifact in artifacts} == {
+        "coordination_hist.json",
+        "coordination_hist_plot.json",
+        "summary.md",
+        "recipe.json",
+    }
+    payload = read_artifact_json(tmp_path, artifacts, ArtifactType.table_json)
+    plot_payload = read_artifact_json(tmp_path, artifacts, ArtifactType.plotly_json)
+    assert payload["artifactType"] == "structure.coordination_hist"
+    assert payload["schema_version"] == "phase10e1.coordination_hist.v1"
+    assert payload["parameters"]["neighbor_policy"] == "distance_cutoff"
+    assert payload["histogram"]["bins"]
+    assert payload["security"]["contains_javascript"] is False
+    assert payload["security"]["external_urls"] == []
+    assert plot_payload["schema_version"] == "phase10e1.static_chart.v1"
+    assert plot_payload["chart_type"] == "bar"
 
 
 def test_density_scatter_generates_plotly_artifacts(tmp_path):

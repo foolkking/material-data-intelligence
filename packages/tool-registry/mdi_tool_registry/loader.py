@@ -112,6 +112,13 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxBonds": 20000,
             "maxPackageBytes": 5_000_000,
         }
+    if tool_id == "structure.coordination_hist":
+        return {
+            "maxStructures": 8,
+            "maxAtomsPerStructure": 5000,
+            "maxSites": 5000,
+            "maxNeighborsPerSite": 1000,
+        }
     if tool_id.startswith("structure.") or tool_id.startswith("trajectory."):
         return {"maxStructures": 8, "maxAtomsPerStructure": 5000, "maxFrames": 200}
     if tool_id.startswith("ml."):
@@ -351,13 +358,14 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "cutoff": {"type": "number", "exclusiveMinimum": 0},
-                "strategy": {"anyOf": [{"type": "number", "exclusiveMinimum": 0}, {"type": "string"}]},
-                "splitMode": {"type": "string"},
-                "barMode": {"type": "string"},
-                "annotateBars": {"type": "boolean"},
-                "maxStructures": {"type": "integer", "minimum": 1},
-                "title": {"type": "string"},
+                "neighbor_policy": {"enum": ["distance_cutoff"]},
+                "cutoff_angstrom": {"type": "number", "minimum": 0.1, "maximum": 10.0},
+                "max_sites": {"type": "integer", "minimum": 1, "maximum": 5000},
+                "max_neighbors_per_site": {"type": "integer", "minimum": 0, "maximum": 1000},
+                "include_site_details": {"type": "boolean"},
+                "group_by_element": {"type": "boolean"},
+                "include_pair_counts": {"type": "boolean"},
+                "plot_kind": {"enum": ["bar"]},
             },
         }
     if tool_id == "structure.summary":

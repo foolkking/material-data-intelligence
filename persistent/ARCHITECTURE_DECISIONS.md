@@ -1,5 +1,29 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10E-1-COORDINATION-HIST: Coordination histogram uses deterministic cutoff counts, not advanced environment classification
+
+### Context
+
+Phase 10E planned static structure physics plots and recommended `structure.coordination_hist` as the first implementation target. It has lower dependency risk than XRD/RDF because it can reuse the existing structure parser and a fixed geometric neighbor policy.
+
+### Decision
+
+Implement `structure.coordination_hist` as a registry-gated deterministic adapter. The tool uses `neighbor_policy=distance_cutoff`, a bounded `cutoff_angstrom`, site/neighbor limits, stable ordering, and rounded distances. It emits static artifacts only:
+
+- `coordination_hist.json`
+- `coordination_hist_plot.json`
+- `summary.md`
+- `recipe.json`
+
+The adapter does not call external APIs, execute scripts or notebooks, emit HTML/JavaScript, load external URLs, or claim advanced local environment classification. Voronoi, CrystalNN, bond-valence, oxidation-state-aware environments, XRD, RDF, phonon, Brillouin-zone, and full 3D viewer behavior remain separate future phases.
+
+### Consequences
+
+- The platform now has one static structure physics adapter with deterministic numeric JSON and static chart artifacts.
+- Mock Planner may route coordination-number / neighbor-count prompts to this tool, while XRD/RDF/full-viewer/phonon prompts remain deferred.
+- Browser/API evidence remains Phase 10E-2 work.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, and the default real-LLM gate remain unchanged.
+
 ## ADR-094: Phase 10C-1 implements lightweight structure adapters without adding 3D or physics execution
 
 ### Context

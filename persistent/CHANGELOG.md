@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-07-08
+
+### Phase 10E-1 Coordination Histogram Implementation
+
+- Implemented `structure.coordination_hist` as a deterministic static physics adapter.
+- Added `coordination_hist.json`, `coordination_hist_plot.json`, `summary.md`, and `recipe.json`.
+- Updated the Tool Registry manifest and params schema for a conservative `distance_cutoff` neighbor policy.
+- Updated Mock Planner routing for coordination histogram / coordination number / neighbor count prompts.
+- Added tests for numeric artifact contracts, fixture support, deterministic output, cutoff sensitivity, limits/warnings, registry schema, planner routing, persisted execution, and no-JS/no-external-URL safety.
+- Added `docs/phase10e/phase10e1_coordination_hist_implementation.md`.
+- Browser/API evidence is deferred to Phase 10E-2.
+- No XRD, RDF, full 3D viewer, WebGL renderer, Three.js, Brillouin-zone, phonon, notebook/script execution, external API workflow, new dependency, real LLM path, or runtime main semantic change was added.
+
 ## 2026-07-07
 
 ### Phase 10C-1 Lightweight Structure Adapter Implementation

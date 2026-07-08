@@ -120,6 +120,29 @@ class MockLLMProvider:
                 artifact_type="structure_json",
                 artifact_types=["structure_json", "summary_md", "recipe_json"],
             )
+        elif _should_generate_coordination_hist(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.coordination_hist",
+                purpose="Compute a static coordination-number histogram using deterministic distance-cutoff neighbors.",
+                params={
+                    "neighbor_policy": "distance_cutoff",
+                    "cutoff_angstrom": 3.0,
+                    "max_sites": 500,
+                    "max_neighbors_per_site": 128,
+                    "include_site_details": True,
+                    "group_by_element": True,
+                    "include_pair_counts": True,
+                    "plot_kind": "bar",
+                },
+                artifact_name="coordination_hist.json",
+                artifact_type="table_json",
+                artifact_types=["table_json", "plotly_json", "summary_md", "recipe_json"],
+                extra_expected_artifacts=[
+                    {"name": "coordination_hist_plot.json", "type": "plotly_json", "fromStepId": "step_001"}
+                ],
+            )
         elif _should_generate_structure_spacegroup(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -810,6 +833,46 @@ def _should_generate_viewer_scene_metadata(
         "structure viewer metadata",
         "create viewer scene metadata",
         "build a static structure viewer scene contract",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_coordination_hist(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.coordination_hist") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    deferred_markers = (
+        "xrd",
+        "diffraction",
+        "rdf",
+        "radial distribution",
+        "pair distribution",
+        "3d viewer",
+        "webgl",
+        "brillouin",
+        "phonon",
+        "voronoi",
+        "crystalnn",
+        "local environment classification",
+        "chemical environment classification",
+    )
+    if any(marker in prompt for marker in deferred_markers):
+        return False
+    markers = (
+        "coordination histogram",
+        "coordination number histogram",
+        "coordination number",
+        "coordination distribution",
+        "neighbor count",
+        "count neighbors",
+        "fixed cutoff",
+        "配位数",
+        "配位数直方图",
+        "邻居数",
     )
     return any(marker in prompt for marker in markers)
 
