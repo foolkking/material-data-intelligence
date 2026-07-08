@@ -2821,3 +2821,24 @@ Do not implement RDF, full interactive 3D viewer, WebGL/Three.js renderer, Brill
 - `xrd_plot.json` follows the existing static chart JSON pattern and does not require a browser chart renderer.
 - RDF remains deferred until normalization, cutoff/binning, periodic-image, finite-size warning, and partial-pair policies are explicit.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.
+
+## ADR-10E-5-XRD-EVIDENCE: XRD evidence validates static artifacts without extending physics or rendering scope
+
+### Context
+
+After Phase 10E-4 implemented `structure.xrd`, the platform needed evidence that the adapter works through the product execution path and that static XRD artifacts can be inspected safely without implementing RDF, full 3D viewing, WebGL, phonon, or experimental fitting workflows.
+
+### Decision
+
+Treat Phase 10E-5 as evidence-only validation for `structure.xrd`. Evidence is captured under `docs/phase10e/browser_api_evidence/phase10e5_xrd/` from Mock Planner request/response, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, adapter execution, artifact generation, result readback, artifact contract audit, and static preview pages.
+
+The evidence is limited to static previews of `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`. It must not claim rendered interactive charts, RDF, full 3D viewing, WebGL rendering, phonon support, experimental XRD fitting, Rietveld refinement, or official example reproduction.
+
+### Consequences
+
+- `structure.xrd` now has API/artifact/security/negative-routing evidence over small CIF, POSCAR, and generated Structure JSON inputs.
+- The evidence records 40 redacted API captures, 12 artifact captures, 6 local static preview pages, negative routing evidence, and `NO_SECRET_PATTERN_HITS`.
+- Browser screenshot capture remains an environment blocker for this phase because no browser-control Node REPL tool or local browser automation runtime was available; no screenshot was fabricated.
+- No new adapter or runtime authority was introduced.
+- `structure.rdf`, full interactive `structure.viewer_3d`, WebGL renderer, Brillouin-zone 3D, phonon tools, notebook extraction, script execution, experimental fitting, Rietveld refinement, and unsupported official example claims remain deferred.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution, and the live LLM gate remain unchanged.

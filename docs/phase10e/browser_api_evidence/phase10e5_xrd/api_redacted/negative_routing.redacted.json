@@ -1,0 +1,69 @@
+{
+  "negative_routing": [
+    {
+      "prompt": "Generate radial distribution function",
+      "result": "PASS",
+      "selected_tool_id": "ml.basic_metrics"
+    },
+    {
+      "prompt": "Create a coordination histogram for this structure",
+      "result": "PASS",
+      "selected_tool_id": "structure.coordination_hist"
+    },
+    {
+      "prompt": "Count neighbors and plot coordination histogram",
+      "result": "PASS",
+      "selected_tool_id": "structure.coordination_hist"
+    },
+    {
+      "prompt": "Open an interactive 3D viewer",
+      "result": "PASS",
+      "selected_tool_id": "structure.preview_metadata"
+    },
+    {
+      "prompt": "Use WebGL to display this crystal",
+      "result": "PASS",
+      "selected_tool_id": "structure.summary"
+    },
+    {
+      "prompt": "Generate Brillouin zone 3D",
+      "result": "PASS",
+      "selected_tool_id": "structure.preview_metadata"
+    },
+    {
+      "prompt": "Plot phonon bands",
+      "result": "PASS",
+      "selected_tool_id": "ml.basic_metrics"
+    },
+    {
+      "prompt": "Plot phonon DOS",
+      "result": "PASS",
+      "selected_tool_id": "ml.basic_metrics"
+    },
+    {
+      "prompt": "do Rietveld refinement",
+      "result": "PASS",
+      "selected_tool_id": "ml.basic_metrics"
+    },
+    {
+      "prompt": "fit experimental XRD data",
+      "result": "PASS",
+      "selected_tool_id": "ml.basic_metrics"
+    },
+    {
+      "prompt": "do peak broadening and profile fitting",
+      "result": "PASS",
+      "selected_tool_id": "ml.basic_metrics"
+    },
+    {
+      "prompt": "do Voronoi local environment analysis",
+      "result": "PASS",
+      "selected_tool_id": "ml.basic_metrics"
+    },
+    {
+      "prompt": "do CrystalNN chemical environment classification",
+      "result": "PASS",
+      "selected_tool_id": "structure.summary"
+    }
+  ]
+}

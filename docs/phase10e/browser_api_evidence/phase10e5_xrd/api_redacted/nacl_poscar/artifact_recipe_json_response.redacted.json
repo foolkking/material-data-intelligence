@@ -1,0 +1,77 @@
+{
+  "content_type": null,
+  "filename": "recipe.json",
+  "preview": {
+    "artifactTypes": [
+      "table_json",
+      "plotly_json",
+      "summary_md",
+      "recipe_json"
+    ],
+    "artifacts": [
+      "xrd_pattern.json",
+      "xrd_plot.json",
+      "summary.md",
+      "recipe.json"
+    ],
+    "dependencies": {
+      "aseVersion": "3.29.0",
+      "new_dependencies_added": false,
+      "plotlyVersion": "6.8.0",
+      "pymatgenVersion": "2026.5.4",
+      "pymatvizVersion": "0.18.0"
+    },
+    "deterministic": true,
+    "inputs": {
+      "dataset_id": "dataset_structure",
+      "input_hashes": [
+        "b4a3f463f3b9f9ef1808daeb4f2f6b9e8a05db708acea4c102deb0bdcd08473f"
+      ]
+    },
+    "limits": {
+      "max_peaks": 500,
+      "peak_count_before_limit": 23,
+      "truncated": false
+    },
+    "name": "XRD Pattern",
+    "numericTolerance": {
+      "d_spacing_rounding_decimals": 6,
+      "intensity_rounding_decimals": 6,
+      "peak_merge_tolerance": 0.05,
+      "two_theta_rounding_decimals": 6
+    },
+    "params": {
+      "include_hkl": true,
+      "intensity_threshold": 0.0,
+      "max_peaks": 500,
+      "peak_merge_tolerance": 0.05,
+      "plot_kind": "stem",
+      "radiation": "CuKa",
+      "two_theta_max": 90.0,
+      "two_theta_min": 0.0
+    },
+    "recipeId": "recipe_call_job_93f51bf2b4dc44c395a39bb2_step_001",
+    "schemaVersion": "0.1",
+    "schema_version": "phase10e4.recipe.v1",
+    "steps": [
+      "parse_structure",
+      "validate_periodic_crystalline_structure",
+      "initialize_xrd_calculator",
+      "generate_xrd_pattern",
+      "filter_two_theta_range",
+      "apply_intensity_threshold",
+      "apply_peak_limit",
+      "round_numeric_values",
+      "write_xrd_pattern_json",
+      "write_static_chart_json",
+      "write_summary"
+    ],
+    "toolId": "structure.xrd",
+    "tool_id": "structure.xrd"
+  },
+  "schema_version": "phase10e4.recipe.v1",
+  "security": {},
+  "sha256": "53920df947fa353afb1ed4b3d9160e765a2af6b3b9d8c913654a043fc2dd43d9",
+  "size_bytes": 1325,
+  "tool_id": "structure.xrd"
+}

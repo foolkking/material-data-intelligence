@@ -1,0 +1,526 @@
+{
+  "content_type": null,
+  "filename": "xrd_pattern.json",
+  "preview": {
+    "artifactType": "structure.xrd",
+    "limits": {
+      "max_peaks": 500,
+      "peak_count_before_limit": 23,
+      "truncated": false
+    },
+    "parameters": {
+      "include_hkl": true,
+      "intensity_threshold": 0.0,
+      "max_peaks": 500,
+      "peak_merge_tolerance": 0.05,
+      "plot_kind": "stem",
+      "radiation": "CuKa",
+      "two_theta_max": 90.0,
+      "two_theta_min": 0.0
+    },
+    "pattern": {
+      "intensity_scale": "relative_100",
+      "peak_count": 23,
+      "peaks": [
+        {
+          "d_spacing_angstrom": 5.6402,
+          "hkls": [
+            {
+              "hkl": [
+                1,
+                0,
+                0
+              ],
+              "multiplicity": 6
+            }
+          ],
+          "intensity": 5.75318,
+          "structureId": "structure_1",
+          "two_theta_deg": 15.711913
+        },
+        {
+          "d_spacing_angstrom": 3.988224,
+          "hkls": [
+            {
+              "hkl": [
+                1,
+                1,
+                0
+              ],
+              "multiplicity": 12
+            }
+          ],
+          "intensity": 100.0,
+          "structureId": "structure_1",
+          "two_theta_deg": 22.290756
+        },
+        {
+          "d_spacing_angstrom": 3.256371,
+          "hkls": [
+            {
+              "hkl": [
+                1,
+                1,
+                1
+              ],
+              "multiplicity": 8
+            }
+          ],
+          "intensity": 1.53833,
+          "structureId": "structure_1",
+          "two_theta_deg": 27.388668
+        },
+        {
+          "d_spacing_angstrom": 2.8201,
+          "hkls": [
+            {
+              "hkl": [
+                2,
+                0,
+                0
+              ],
+              "multiplicity": 6
+            }
+          ],
+          "intensity": 19.044599,
+          "structureId": "structure_1",
+          "two_theta_deg": 31.729347
+        },
+        {
+          "d_spacing_angstrom": 2.522374,
+          "hkls": [
+            {
+              "hkl": [
+                2,
+                1,
+                0
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 1.78165,
+          "structureId": "structure_1",
+          "two_theta_deg": 35.592465
+        },
+        {
+          "d_spacing_angstrom": 2.302602,
+          "hkls": [
+            {
+              "hkl": [
+                2,
+                1,
+                1
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 40.479718,
+          "structureId": "structure_1",
+          "two_theta_deg": 39.12122
+        },
+        {
+          "d_spacing_angstrom": 1.994112,
+          "hkls": [
+            {
+              "hkl": [
+                2,
+                2,
+                0
+              ],
+              "multiplicity": 12
+            }
+          ],
+          "intensity": 12.498648,
+          "structureId": "structure_1",
+          "two_theta_deg": 45.485986
+        },
+        {
+          "d_spacing_angstrom": 1.880067,
+          "hkls": [
+            {
+              "hkl": [
+                2,
+                2,
+                1
+              ],
+              "multiplicity": 24
+            },
+            {
+              "hkl": [
+                3,
+                0,
+                0
+              ],
+              "multiplicity": 6
+            }
+          ],
+          "intensity": 0.682293,
+          "structureId": "structure_1",
+          "two_theta_deg": 48.415862
+        },
+        {
+          "d_spacing_angstrom": 1.783588,
+          "hkls": [
+            {
+              "hkl": [
+                3,
+                1,
+                0
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 16.886895,
+          "structureId": "structure_1",
+          "two_theta_deg": 51.218318
+        },
+        {
+          "d_spacing_angstrom": 1.700584,
+          "hkls": [
+            {
+              "hkl": [
+                3,
+                1,
+                1
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 0.370589,
+          "structureId": "structure_1",
+          "two_theta_deg": 53.914626
+        },
+        {
+          "d_spacing_angstrom": 1.628185,
+          "hkls": [
+            {
+              "hkl": [
+                2,
+                2,
+                2
+              ],
+              "multiplicity": 8
+            }
+          ],
+          "intensity": 4.041957,
+          "structureId": "structure_1",
+          "two_theta_deg": 56.521396
+        },
+        {
+          "d_spacing_angstrom": 1.56431,
+          "hkls": [
+            {
+              "hkl": [
+                3,
+                2,
+                0
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 0.276727,
+          "structureId": "structure_1",
+          "two_theta_deg": 59.051927
+        },
+        {
+          "d_spacing_angstrom": 1.507407,
+          "hkls": [
+            {
+              "hkl": [
+                3,
+                2,
+                1
+              ],
+              "multiplicity": 48
+            }
+          ],
+          "intensity": 18.221803,
+          "structureId": "structure_1",
+          "two_theta_deg": 61.517099
+        },
+        {
+          "d_spacing_angstrom": 1.41005,
+          "hkls": [
+            {
+              "hkl": [
+                4,
+                0,
+                0
+              ],
+              "multiplicity": 6
+            }
+          ],
+          "intensity": 1.774622,
+          "structureId": "structure_1",
+          "two_theta_deg": 66.286257
+        },
+        {
+          "d_spacing_angstrom": 1.367949,
+          "hkls": [
+            {
+              "hkl": [
+                3,
+                2,
+                2
+              ],
+              "multiplicity": 24
+            },
+            {
+              "hkl": [
+                4,
+                1,
+                0
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 0.3834,
+          "structureId": "structure_1",
+          "two_theta_deg": 68.604549
+        },
+        {
+          "d_spacing_angstrom": 1.329408,
+          "hkls": [
+            {
+              "hkl": [
+                3,
+                3,
+                0
+              ],
+              "multiplicity": 12
+            },
+            {
+              "hkl": [
+                4,
+                1,
+                1
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 8.556621,
+          "structureId": "structure_1",
+          "two_theta_deg": 70.886634
+        },
+        {
+          "d_spacing_angstrom": 1.293951,
+          "hkls": [
+            {
+              "hkl": [
+                3,
+                3,
+                1
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 0.172933,
+          "structureId": "structure_1",
+          "two_theta_deg": 73.137627
+        },
+        {
+          "d_spacing_angstrom": 1.261187,
+          "hkls": [
+            {
+              "hkl": [
+                4,
+                2,
+                0
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 4.713191,
+          "structureId": "structure_1",
+          "two_theta_deg": 75.36211
+        },
+        {
+          "d_spacing_angstrom": 1.230793,
+          "hkls": [
+            {
+              "hkl": [
+                4,
+                2,
+                1
+              ],
+              "multiplicity": 48
+            }
+          ],
+          "intensity": 0.324271,
+          "structureId": "structure_1",
+          "two_theta_deg": 77.564249
+        },
+        {
+          "d_spacing_angstrom": 1.202495,
+          "hkls": [
+            {
+              "hkl": [
+                3,
+                3,
+                2
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 3.996108,
+          "structureId": "structure_1",
+          "two_theta_deg": 79.747867
+        },
+        {
+          "d_spacing_angstrom": 1.151301,
+          "hkls": [
+            {
+              "hkl": [
+                4,
+                2,
+                2
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 3.472455,
+          "structureId": "structure_1",
+          "two_theta_deg": 84.073586
+        },
+        {
+          "d_spacing_angstrom": 1.12804,
+          "hkls": [
+            {
+              "hkl": [
+                4,
+                3,
+                0
+              ],
+              "multiplicity": 24
+            },
+            {
+              "hkl": [
+                5,
+                0,
+                0
+              ],
+              "multiplicity": 6
+            }
+          ],
+          "intensity": 0.193731,
+          "structureId": "structure_1",
+          "two_theta_deg": 86.222242
+        },
+        {
+          "d_spacing_angstrom": 1.106134,
+          "hkls": [
+            {
+              "hkl": [
+                4,
+                3,
+                1
+              ],
+              "multiplicity": 48
+            },
+            {
+              "hkl": [
+                5,
+                1,
+                0
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 9.269148,
+          "structureId": "structure_1",
+          "two_theta_deg": 88.365587
+        }
+      ]
+    },
+    "radiation": {
+      "name": "CuKa",
+      "wavelength_angstrom": 1.54184
+    },
+    "schema_version": "phase10e4.xrd_pattern.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "source": {
+      "dataset_id": "dataset_structure",
+      "filename": "structures",
+      "parser": "pymatgen.Structure",
+      "parser_version": "2026.5.4",
+      "project_id": "project_10e5",
+      "resource_id": "dataset_structure",
+      "resource_type": "normalized_object"
+    },
+    "structure": {
+      "formula": "NaCl",
+      "lattice": {
+        "a": 5.6402,
+        "alpha": 90.0,
+        "b": 5.6402,
+        "beta": 90.0,
+        "c": 5.6402,
+        "gamma": 90.0,
+        "volume": 179.42523
+      },
+      "pbc": [
+        true,
+        true,
+        true
+      ],
+      "site_count": 2,
+      "species": [
+        "Cl",
+        "Na"
+      ]
+    },
+    "structureCount": 1,
+    "structures": [
+      {
+        "formula": "NaCl",
+        "lattice": {
+          "a": 5.6402,
+          "alpha": 90.0,
+          "b": 5.6402,
+          "beta": 90.0,
+          "c": 5.6402,
+          "gamma": 90.0,
+          "volume": 179.42523
+        },
+        "pbc": [
+          true,
+          true,
+          true
+        ],
+        "peak_count": 23,
+        "site_count": 2,
+        "species": [
+          "Cl",
+          "Na"
+        ],
+        "structureId": "structure_1"
+      }
+    ],
+    "tool_id": "structure.xrd",
+    "two_theta_range": [
+      0.0,
+      90.0
+    ],
+    "warnings": [
+      "XRD_CUKA_ONLY",
+      "XRD_SYNTHETIC_PATTERN_NOT_EXPERIMENTAL",
+      "XRD_PEAK_TOLERANCE_PINNED",
+      "XRD_NO_PROFILE_BROADENING",
+      "XRD_NO_RIETVELD_REFINEMENT",
+      "XRD_BROWSER_EVIDENCE_DEFERRED"
+    ]
+  },
+  "schema_version": "phase10e4.xrd_pattern.v1",
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false
+  },
+  "sha256": "971115c21d3757507d658eaa2badb5bc3529e8c61d20a82297d17e67643bfc48",
+  "size_bytes": 5071,
+  "tool_id": "structure.xrd"
+}

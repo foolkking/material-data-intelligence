@@ -726,3 +726,16 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - The strict params schema allows only `radiation`, `two_theta_min`, `two_theta_max`, `intensity_threshold`, `peak_merge_tolerance`, `max_peaks`, `include_hkl`, and `plot_kind`.
 - The tool does not emit HTML, executable JavaScript, external URLs, WebGL renderer assets, full 3D viewer artifacts, RDF artifacts, phonon artifacts, experimental fitting artifacts, or Rietveld refinement artifacts.
 - RDF, full viewer, WebGL, Brillouin-zone, phonon, notebook/script, external API workflows, experimental fitting, and Rietveld refinement remain out of scope.
+
+## 2026-07-08 Phase 10E-5 XRD Evidence Notes
+
+- No new Tool Registry tools were added in Phase 10E-5.
+- Browser/API evidence confirms the existing `structure.xrd` tool executes through Mock Planner, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, and adapter execution.
+- Evidence artifacts live under `docs/phase10e/browser_api_evidence/phase10e5_xrd/` and include redacted API captures, copied artifact files, local static preview pages, audits, and evidence manifest.
+- Verified artifacts:
+  - `xrd_pattern.json`
+  - `xrd_plot.json`
+  - `summary.md`
+  - `recipe.json`
+- Negative routing evidence confirms RDF, coordination histogram, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, CrystalNN, experimental fitting, Rietveld, and broadening prompts do not route to `structure.xrd`.
+- The evidence confirms static XRD behavior only. It does not register or claim `structure.rdf`, `structure.viewer_3d`, `structure.brillouin_zone_3d`, `phonon.bands`, `phonon.dos`, experimental fitting, or Rietveld refinement.

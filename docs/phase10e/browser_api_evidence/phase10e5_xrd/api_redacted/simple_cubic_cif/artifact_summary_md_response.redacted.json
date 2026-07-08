@@ -1,0 +1,7 @@
+{
+  "content_type": null,
+  "filename": "summary.md",
+  "preview": "# XRD Pattern\n\n## Input\n- source: normalized_object\n- parser: pymatgen.Structure\n- formula: Si\n- site count: 1\n- periodic: True\n\n## Method\n- calculator: pymatgen XRDCalculator\n- radiation: CuKa\n- two-theta range: 0.0 to 90.0 degrees\n- intensity threshold: 0.0\n- peak limit: 500\n- rounding policy: two-theta, d-spacing, and intensity rounded to 6 decimals\n\n## Results\n- peak count: 6\n- strongest peak: {'structureId': 'structure_1', 'two_theta_deg': 29.781092, 'intensity': 100.0, 'd_spacing_angstrom': 3.0, 'hkls': [{'hkl': [1, 0, 0], 'multiplicity': 6}]}\n- first peaks: [{'two_theta_deg': 29.781092, 'intensity': 100.0}, {'two_theta_deg': 42.620165, 'intensity': 69.543199}, {'two_theta_deg': 52.858305, 'intensity': 24.062157}, {'two_theta_deg': 61.854149, 'intensity': 11.239146}, {'two_theta_deg': 70.144628, 'intensity': 31.260765}]\n\n## Limits\n- truncated: False\n- warnings: XRD_CUKA_ONLY, XRD_SYNTHETIC_PATTERN_NOT_EXPERIMENTAL, XRD_PEAK_TOLERANCE_PINNED, XRD_NO_PROFILE_BROADENING, XRD_NO_RIETVELD_REFINEMENT, XRD_BROWSER_EVIDENCE_DEFERRED\n\n## Security\n- no artifact JavaScript\n- no external URLs\n- no WebGL renderer\n- no full 3D viewer\n",
+  "sha256": "5d666a8380c1ce0ade303740359ae63faadae4e61be621bae86f1735fe3d9991",
+  "size_bytes": 1144
+}

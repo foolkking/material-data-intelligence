@@ -1,0 +1,6 @@
+{
+  "dataset_id": "dataset_structure",
+  "profile_id": "profile_structure",
+  "tool_registry_version": "0.1.0",
+  "user_prompt": "Create an XRD pattern for this structure"
+}

@@ -1,0 +1,78 @@
+{
+  "enqueued": true,
+  "executed": false,
+  "job_id": "job_f90cb1c843304aabb19eb1ab",
+  "ok": true,
+  "plan": {
+    "assumptions": [],
+    "datasetId": "dataset_structure",
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_001",
+        "name": "xrd_pattern.json",
+        "type": "table_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "xrd_plot.json",
+        "type": "plotly_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "goal": "xrd pattern",
+    "profileId": "profile_structure",
+    "schemaVersion": "0.1",
+    "steps": [
+      {
+        "constraints": null,
+        "inputRefs": [
+          {
+            "columnName": null,
+            "fieldRole": null,
+            "objectType": "Structure",
+            "ref": "structures",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "table_json",
+            "plotly_json",
+            "summary_md",
+            "recipe_json"
+          ]
+        },
+        "params": {
+          "include_hkl": true,
+          "intensity_threshold": 0.0,
+          "max_peaks": 500,
+          "peak_merge_tolerance": 0.05,
+          "plot_kind": "stem",
+          "radiation": "CuKa",
+          "two_theta_max": 90.0,
+          "two_theta_min": 0.0
+        },
+        "purpose": "xrd pattern",
+        "reason": "Phase 10E-5 evidence",
+        "stepId": "step_001",
+        "toolId": "structure.xrd"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "plan_hash": "0beef0723107fd289b816718a8ab9167a42459861d55ed0626abf4c3fba45fb0",
+  "plan_id": "plan_4c542c1dd6a54b189a0cda73",
+  "plan_source": "llm",
+  "planner_provider": "mock",
+  "validation_errors": []
+}

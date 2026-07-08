@@ -1258,3 +1258,23 @@
 - [ ] `structure.rdf` remains planned but unimplemented.
 - [ ] Experimental XRD fitting and Rietveld refinement remain deferred.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
+
+## 2026-07-08 Phase 10E-5 XRD Browser/API Evidence
+
+### Done
+
+- [x] Added API/job evidence for `structure.xrd`.
+- [x] Captured 40 redacted API responses across small CIF, small POSCAR, generated Structure JSON, and negative routing cases.
+- [x] Captured 12 artifact files: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json` for each successful case.
+- [x] Added 6 local static preview pages for job, artifact list, XRD pattern JSON, XRD plot JSON, summary, and recipe previews.
+- [x] Verified artifact contract fields, deterministic peak ordering, limits, warnings, and security flags.
+- [x] Verified negative routing does not send RDF, coordination, full viewer, WebGL, Brillouin-zone, phonon, fitting, Rietveld, Voronoi, or CrystalNN prompts to `structure.xrd`.
+- [x] Recorded `NO_SECRET_PATTERN_HITS`.
+
+### Still Open
+
+- [ ] Real browser screenshot capture remains blocked in this local environment; no screenshots were fabricated.
+- [ ] Phase 10E-6 RDF policy hardening or static physics closure planning.
+- [ ] `structure.rdf` remains planned but unimplemented.
+- [ ] Experimental XRD fitting and Rietveld refinement remain deferred.
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.

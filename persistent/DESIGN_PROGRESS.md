@@ -931,3 +931,15 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added adapter, fixture, registry, planner routing, artifact contract, security, and persisted execution tests.
 - Browser/API evidence remains deferred to Phase 10E-5.
 - No RDF, full interactive 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, notebook/script extraction, external API workflow, experimental XRD fitting, Rietveld refinement, or advanced local environment classification was implemented.
+
+## 2026-07-08 Phase 10E-5 XRD Browser/API Evidence
+
+- Added API/artifact/security/negative-routing evidence for `structure.xrd` under `docs/phase10e/browser_api_evidence/phase10e5_xrd/`.
+- Covered three bounded crystalline inputs: small CIF, small POSCAR, and generated pymatgen Structure JSON.
+- Evidence generated: 40 redacted API captures, 12 artifact capture files, 6 local static preview pages, and an evidence manifest.
+- Verified API/job flow through Mock Planner, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, adapter execution, artifact generation, result readback, and copied artifact audit.
+- Verified artifacts: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
+- Security scan result: `NO_SECRET_PATTERN_HITS`; generated artifacts and preview pages contain no artifact JavaScript, active script tags, external URLs, WebGL renderer, Three.js renderer, or renderer bundle.
+- Negative routing evidence confirms RDF, coordination histogram, full 3D viewer, WebGL, Brillouin-zone, phonon, experimental fitting, Rietveld, Voronoi, and CrystalNN prompts do not route to `structure.xrd`.
+- Browser screenshot capture is blocked in this local environment because no in-app browser Node REPL tool is exposed and no Chrome/Edge/Firefox/Playwright/Puppeteer runtime is installed. No screenshot was fabricated.
+- No new adapter was implemented, and no runtime main semantics or Phase 10E-4 XRD calculation policy were changed.

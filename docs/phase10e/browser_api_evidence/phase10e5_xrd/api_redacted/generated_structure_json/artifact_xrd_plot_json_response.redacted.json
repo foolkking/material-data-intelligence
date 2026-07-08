@@ -1,0 +1,123 @@
+{
+  "content_type": null,
+  "filename": "xrd_plot.json",
+  "preview": {
+    "artifactType": "structure.xrd_plot",
+    "chart_type": "stem",
+    "metadata": {
+      "formula": "Si",
+      "radiation": "CuKa",
+      "site_count": 2,
+      "two_theta_max": 90.0,
+      "two_theta_min": 0.0
+    },
+    "schema_version": "phase10e4.static_chart.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "series": [
+      {
+        "name": "XRD peaks",
+        "x": [
+          16.324204,
+          23.165368,
+          28.47083,
+          37.019255,
+          40.701272,
+          47.351942,
+          50.418157,
+          53.354199,
+          56.182246,
+          61.580317,
+          64.175693,
+          69.207396,
+          71.65893,
+          74.076147,
+          76.464593,
+          81.174856,
+          83.505597,
+          88.138738
+        ],
+        "y": [
+          100.0,
+          80.994546,
+          30.51397,
+          42.733368,
+          32.186027,
+          20.336034,
+          20.988563,
+          14.128844,
+          12.078276,
+          9.172886,
+          16.244813,
+          3.268698,
+          11.865513,
+          8.131926,
+          4.986139,
+          8.591524,
+          4.02237,
+          7.173431
+        ]
+      }
+    ],
+    "title": "XRD Pattern",
+    "tool_id": "structure.xrd",
+    "x_axis": {
+      "label": "2theta (degrees)",
+      "values": [
+        16.324204,
+        23.165368,
+        28.47083,
+        37.019255,
+        40.701272,
+        47.351942,
+        50.418157,
+        53.354199,
+        56.182246,
+        61.580317,
+        64.175693,
+        69.207396,
+        71.65893,
+        74.076147,
+        76.464593,
+        81.174856,
+        83.505597,
+        88.138738
+      ]
+    },
+    "y_axis": {
+      "label": "Relative Intensity",
+      "values": [
+        100.0,
+        80.994546,
+        30.51397,
+        42.733368,
+        32.186027,
+        20.336034,
+        20.988563,
+        14.128844,
+        12.078276,
+        9.172886,
+        16.244813,
+        3.268698,
+        11.865513,
+        8.131926,
+        4.986139,
+        8.591524,
+        4.02237,
+        7.173431
+      ]
+    }
+  },
+  "schema_version": "phase10e4.static_chart.v1",
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false
+  },
+  "sha256": "31ecfccb82390107c8b3e5c949c36ce4c5d4c3eb85019609da73548750ef2391",
+  "size_bytes": 1177,
+  "tool_id": "structure.xrd"
+}

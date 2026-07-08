@@ -1,0 +1,212 @@
+{
+  "content_type": null,
+  "filename": "xrd_pattern.json",
+  "preview": {
+    "artifactType": "structure.xrd",
+    "limits": {
+      "max_peaks": 500,
+      "peak_count_before_limit": 6,
+      "truncated": false
+    },
+    "parameters": {
+      "include_hkl": true,
+      "intensity_threshold": 0.0,
+      "max_peaks": 500,
+      "peak_merge_tolerance": 0.05,
+      "plot_kind": "stem",
+      "radiation": "CuKa",
+      "two_theta_max": 90.0,
+      "two_theta_min": 0.0
+    },
+    "pattern": {
+      "intensity_scale": "relative_100",
+      "peak_count": 6,
+      "peaks": [
+        {
+          "d_spacing_angstrom": 3.0,
+          "hkls": [
+            {
+              "hkl": [
+                1,
+                0,
+                0
+              ],
+              "multiplicity": 6
+            }
+          ],
+          "intensity": 100.0,
+          "structureId": "structure_1",
+          "two_theta_deg": 29.781092
+        },
+        {
+          "d_spacing_angstrom": 2.12132,
+          "hkls": [
+            {
+              "hkl": [
+                1,
+                1,
+                0
+              ],
+              "multiplicity": 12
+            }
+          ],
+          "intensity": 69.543199,
+          "structureId": "structure_1",
+          "two_theta_deg": 42.620165
+        },
+        {
+          "d_spacing_angstrom": 1.732051,
+          "hkls": [
+            {
+              "hkl": [
+                1,
+                1,
+                1
+              ],
+              "multiplicity": 8
+            }
+          ],
+          "intensity": 24.062157,
+          "structureId": "structure_1",
+          "two_theta_deg": 52.858305
+        },
+        {
+          "d_spacing_angstrom": 1.5,
+          "hkls": [
+            {
+              "hkl": [
+                2,
+                0,
+                0
+              ],
+              "multiplicity": 6
+            }
+          ],
+          "intensity": 11.239146,
+          "structureId": "structure_1",
+          "two_theta_deg": 61.854149
+        },
+        {
+          "d_spacing_angstrom": 1.341641,
+          "hkls": [
+            {
+              "hkl": [
+                2,
+                1,
+                0
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 31.260765,
+          "structureId": "structure_1",
+          "two_theta_deg": 70.144628
+        },
+        {
+          "d_spacing_angstrom": 1.224745,
+          "hkls": [
+            {
+              "hkl": [
+                2,
+                1,
+                1
+              ],
+              "multiplicity": 24
+            }
+          ],
+          "intensity": 23.51634,
+          "structureId": "structure_1",
+          "two_theta_deg": 78.019635
+        }
+      ]
+    },
+    "radiation": {
+      "name": "CuKa",
+      "wavelength_angstrom": 1.54184
+    },
+    "schema_version": "phase10e4.xrd_pattern.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "source": {
+      "dataset_id": "dataset_structure",
+      "filename": "structures",
+      "parser": "pymatgen.Structure",
+      "parser_version": "2026.5.4",
+      "project_id": "project_10e5",
+      "resource_id": "dataset_structure",
+      "resource_type": "normalized_object"
+    },
+    "structure": {
+      "formula": "Si",
+      "lattice": {
+        "a": 3.0,
+        "alpha": 90.0,
+        "b": 3.0,
+        "beta": 90.0,
+        "c": 3.0,
+        "gamma": 90.0,
+        "volume": 27.0
+      },
+      "pbc": [
+        true,
+        true,
+        true
+      ],
+      "site_count": 1,
+      "species": [
+        "Si"
+      ]
+    },
+    "structureCount": 1,
+    "structures": [
+      {
+        "formula": "Si",
+        "lattice": {
+          "a": 3.0,
+          "alpha": 90.0,
+          "b": 3.0,
+          "beta": 90.0,
+          "c": 3.0,
+          "gamma": 90.0,
+          "volume": 27.0
+        },
+        "pbc": [
+          true,
+          true,
+          true
+        ],
+        "peak_count": 6,
+        "site_count": 1,
+        "species": [
+          "Si"
+        ],
+        "structureId": "structure_1"
+      }
+    ],
+    "tool_id": "structure.xrd",
+    "two_theta_range": [
+      0.0,
+      90.0
+    ],
+    "warnings": [
+      "XRD_CUKA_ONLY",
+      "XRD_SYNTHETIC_PATTERN_NOT_EXPERIMENTAL",
+      "XRD_PEAK_TOLERANCE_PINNED",
+      "XRD_NO_PROFILE_BROADENING",
+      "XRD_NO_RIETVELD_REFINEMENT",
+      "XRD_BROWSER_EVIDENCE_DEFERRED"
+    ]
+  },
+  "schema_version": "phase10e4.xrd_pattern.v1",
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false
+  },
+  "sha256": "c3d59a5531903ec4e6bd762d89b2bde7eeb9c63ac0a91e8da8836468e4f453a1",
+  "size_bytes": 2312,
+  "tool_id": "structure.xrd"
+}

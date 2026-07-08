@@ -1284,3 +1284,20 @@
 - Added tests for CIF/POSCAR/Structure dict fixtures, deterministic peak ordering, numeric rounding, range filtering, intensity filtering, peak limits, HKL include/exclude behavior, params validation, artifact contracts, no JavaScript / no external URL assertions, registry schemas, planner routing, deferred prompt boundaries, and persisted execution.
 - Browser/API evidence remains deferred to Phase 10E-5.
 - No RDF, full 3D viewer, WebGL renderer, Three.js, Brillouin-zone, phonon, notebook/script workflow, experimental fitting, Rietveld refinement, unsupported official example claim, runtime semantic change, or real LLM path was added.
+
+## 2026-07-08 Phase 10E-5
+
+### Added
+
+- Added `docs/phase10e/browser_api_evidence/phase10e5_xrd/` with redacted API captures, copied artifacts, local static preview pages, audits, and evidence manifest for `structure.xrd`.
+- Added `docs/phase10e/phase10e5_xrd_browser_api_evidence.md`.
+
+### Verification
+
+- Evidence totals: 40 redacted API captures, 12 artifact capture files, 6 local static preview pages, and no fabricated screenshots.
+- Verified small CIF, small POSCAR, and generated pymatgen Structure JSON cases.
+- Verified artifacts: `xrd_pattern.json`, `xrd_plot.json`, `summary.md`, and `recipe.json`.
+- Security scan: `NO_SECRET_PATTERN_HITS`.
+- Negative routing confirms RDF, coordination histogram, full viewer, WebGL, Brillouin-zone, phonon, Voronoi, CrystalNN, experimental fitting, Rietveld, and broadening prompts do not route to `structure.xrd`.
+- Browser screenshot capture is blocked in this environment because no browser-control Node REPL tool is exposed and no Chrome/Edge/Firefox/Playwright/Puppeteer runtime is installed. No browser screenshot was fabricated.
+- No new adapter, RDF, full 3D viewer, WebGL renderer, Three.js, phonon, notebook/script workflow, unsupported official example claim, runtime semantic change, or real LLM path was added.

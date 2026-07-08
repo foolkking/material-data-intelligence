@@ -1,0 +1,199 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>xrd_pattern.json preview</title><style>body{font-family:system-ui,sans-serif;margin:0;background:#f7f8fa;color:#18202a}main{max-width:1120px;margin:0 auto;padding:28px}h1{font-size:28px;margin:0 0 16px}h2{font-size:18px;margin-top:24px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.card{background:white;border:1px solid #d8dde5;border-radius:8px;padding:14px}.label{color:#657080;font-size:12px;text-transform:uppercase}.value{font-weight:650;margin-top:4px;overflow-wrap:anywhere}table{width:100%;border-collapse:collapse;background:white;border:1px solid #d8dde5}th,td{border-bottom:1px solid #e5e8ee;padding:8px;text-align:left;font-size:13px}pre{background:#101820;color:#edf2f7;padding:16px;border-radius:8px;overflow:auto;max-height:560px}.badge{display:inline-block;border:1px solid #abc3d7;border-radius:999px;padding:4px 9px;background:#eaf4fb;margin:2px 4px 2px 0;font-size:12px}@media(max-width:640px){main{padding:16px}table{display:block;overflow-x:auto}}</style></head><body><main><h1>xrd_pattern.json Static Preview</h1><div class="grid"><div class="card"><div class="label">Schema</div><div class="value">phase10e4.xrd_pattern.v1</div></div><div class="card"><div class="label">Tool</div><div class="value">structure.xrd</div></div><div class="card"><div class="label">Radiation</div><div class="value">CuKa</div></div><div class="card"><div class="label">Peak count</div><div class="value">6</div></div></div><h2>First Peaks</h2><table><thead><tr><th>2 theta</th><th>Intensity</th><th>d-spacing</th><th>HKL metadata</th></tr></thead><tbody><tr><td>29.781092</td><td>100.0</td><td>3.0</td><td>[{&#x27;hkl&#x27;: [1, 0, 0], &#x27;multiplicity&#x27;: 6}]</td></tr><tr><td>42.620165</td><td>69.543199</td><td>2.12132</td><td>[{&#x27;hkl&#x27;: [1, 1, 0], &#x27;multiplicity&#x27;: 12}]</td></tr><tr><td>52.858305</td><td>24.062157</td><td>1.732051</td><td>[{&#x27;hkl&#x27;: [1, 1, 1], &#x27;multiplicity&#x27;: 8}]</td></tr><tr><td>61.854149</td><td>11.239146</td><td>1.5</td><td>[{&#x27;hkl&#x27;: [2, 0, 0], &#x27;multiplicity&#x27;: 6}]</td></tr><tr><td>70.144628</td><td>31.260765</td><td>1.341641</td><td>[{&#x27;hkl&#x27;: [2, 1, 0], &#x27;multiplicity&#x27;: 24}]</td></tr><tr><td>78.019635</td><td>23.51634</td><td>1.224745</td><td>[{&#x27;hkl&#x27;: [2, 1, 1], &#x27;multiplicity&#x27;: 24}]</td></tr></tbody></table><h2>Raw JSON</h2><pre>{
+  &quot;artifactType&quot;: &quot;structure.xrd&quot;,
+  &quot;limits&quot;: {
+    &quot;max_peaks&quot;: 500,
+    &quot;peak_count_before_limit&quot;: 6,
+    &quot;truncated&quot;: false
+  },
+  &quot;parameters&quot;: {
+    &quot;include_hkl&quot;: true,
+    &quot;intensity_threshold&quot;: 0.0,
+    &quot;max_peaks&quot;: 500,
+    &quot;peak_merge_tolerance&quot;: 0.05,
+    &quot;plot_kind&quot;: &quot;stem&quot;,
+    &quot;radiation&quot;: &quot;CuKa&quot;,
+    &quot;two_theta_max&quot;: 90.0,
+    &quot;two_theta_min&quot;: 0.0
+  },
+  &quot;pattern&quot;: {
+    &quot;intensity_scale&quot;: &quot;relative_100&quot;,
+    &quot;peak_count&quot;: 6,
+    &quot;peaks&quot;: [
+      {
+        &quot;d_spacing_angstrom&quot;: 3.0,
+        &quot;hkls&quot;: [
+          {
+            &quot;hkl&quot;: [
+              1,
+              0,
+              0
+            ],
+            &quot;multiplicity&quot;: 6
+          }
+        ],
+        &quot;intensity&quot;: 100.0,
+        &quot;structureId&quot;: &quot;structure_1&quot;,
+        &quot;two_theta_deg&quot;: 29.781092
+      },
+      {
+        &quot;d_spacing_angstrom&quot;: 2.12132,
+        &quot;hkls&quot;: [
+          {
+            &quot;hkl&quot;: [
+              1,
+              1,
+              0
+            ],
+            &quot;multiplicity&quot;: 12
+          }
+        ],
+        &quot;intensity&quot;: 69.543199,
+        &quot;structureId&quot;: &quot;structure_1&quot;,
+        &quot;two_theta_deg&quot;: 42.620165
+      },
+      {
+        &quot;d_spacing_angstrom&quot;: 1.732051,
+        &quot;hkls&quot;: [
+          {
+            &quot;hkl&quot;: [
+              1,
+              1,
+              1
+            ],
+            &quot;multiplicity&quot;: 8
+          }
+        ],
+        &quot;intensity&quot;: 24.062157,
+        &quot;structureId&quot;: &quot;structure_1&quot;,
+        &quot;two_theta_deg&quot;: 52.858305
+      },
+      {
+        &quot;d_spacing_angstrom&quot;: 1.5,
+        &quot;hkls&quot;: [
+          {
+            &quot;hkl&quot;: [
+              2,
+              0,
+              0
+            ],
+            &quot;multiplicity&quot;: 6
+          }
+        ],
+        &quot;intensity&quot;: 11.239146,
+        &quot;structureId&quot;: &quot;structure_1&quot;,
+        &quot;two_theta_deg&quot;: 61.854149
+      },
+      {
+        &quot;d_spacing_angstrom&quot;: 1.341641,
+        &quot;hkls&quot;: [
+          {
+            &quot;hkl&quot;: [
+              2,
+              1,
+              0
+            ],
+            &quot;multiplicity&quot;: 24
+          }
+        ],
+        &quot;intensity&quot;: 31.260765,
+        &quot;structureId&quot;: &quot;structure_1&quot;,
+        &quot;two_theta_deg&quot;: 70.144628
+      },
+      {
+        &quot;d_spacing_angstrom&quot;: 1.224745,
+        &quot;hkls&quot;: [
+          {
+            &quot;hkl&quot;: [
+              2,
+              1,
+              1
+            ],
+            &quot;multiplicity&quot;: 24
+          }
+        ],
+        &quot;intensity&quot;: 23.51634,
+        &quot;structureId&quot;: &quot;structure_1&quot;,
+        &quot;two_theta_deg&quot;: 78.019635
+      }
+    ]
+  },
+  &quot;radiation&quot;: {
+    &quot;name&quot;: &quot;CuKa&quot;,
+    &quot;wavelength_angstrom&quot;: 1.54184
+  },
+  &quot;schema_version&quot;: &quot;phase10e4.xrd_pattern.v1&quot;,
+  &quot;security&quot;: {
+    &quot;contains_javascript&quot;: false,
+    &quot;external_urls&quot;: [],
+    &quot;external_urls_allowed&quot;: false
+  },
+  &quot;source&quot;: {
+    &quot;dataset_id&quot;: &quot;dataset_structure&quot;,
+    &quot;filename&quot;: &quot;structures&quot;,
+    &quot;parser&quot;: &quot;pymatgen.Structure&quot;,
+    &quot;parser_version&quot;: &quot;2026.5.4&quot;,
+    &quot;project_id&quot;: &quot;project_10e5&quot;,
+    &quot;resource_id&quot;: &quot;dataset_structure&quot;,
+    &quot;resource_type&quot;: &quot;normalized_object&quot;
+  },
+  &quot;structure&quot;: {
+    &quot;formula&quot;: &quot;Si&quot;,
+    &quot;lattice&quot;: {
+      &quot;a&quot;: 3.0,
+      &quot;alpha&quot;: 90.0,
+      &quot;b&quot;: 3.0,
+      &quot;beta&quot;: 90.0,
+      &quot;c&quot;: 3.0,
+      &quot;gamma&quot;: 90.0,
+      &quot;volume&quot;: 27.0
+    },
+    &quot;pbc&quot;: [
+      true,
+      true,
+      true
+    ],
+    &quot;site_count&quot;: 1,
+    &quot;species&quot;: [
+      &quot;Si&quot;
+    ]
+  },
+  &quot;structureCount&quot;: 1,
+  &quot;structures&quot;: [
+    {
+      &quot;formula&quot;: &quot;Si&quot;,
+      &quot;lattice&quot;: {
+        &quot;a&quot;: 3.0,
+        &quot;alpha&quot;: 90.0,
+        &quot;b&quot;: 3.0,
+        &quot;beta&quot;: 90.0,
+        &quot;c&quot;: 3.0,
+        &quot;gamma&quot;: 90.0,
+        &quot;volume&quot;: 27.0
+      },
+      &quot;pbc&quot;: [
+        true,
+        true,
+        true
+      ],
+      &quot;peak_count&quot;: 6,
+      &quot;site_count&quot;: 1,
+      &quot;species&quot;: [
+        &quot;Si&quot;
+      ],
+      &quot;structureId&quot;: &quot;structure_1&quot;
+    }
+  ],
+  &quot;tool_id&quot;: &quot;structure.xrd&quot;,
+  &quot;two_theta_range&quot;: [
+    0.0,
+    90.0
+  ],
+  &quot;warnings&quot;: [
+    &quot;XRD_CUKA_ONLY&quot;,
+    &quot;XRD_SYNTHETIC_PATTERN_NOT_EXPERIMENTAL&quot;,
+    &quot;XRD_PEAK_TOLERANCE_PINNED&quot;,
+    &quot;XRD_NO_PROFILE_BROADENING&quot;,
+    &quot;XRD_NO_RIETVELD_REFINEMENT&quot;,
+    &quot;XRD_BROWSER_EVIDENCE_DEFERRED&quot;
+  ]
+}</pre></main></body></html>

@@ -1,0 +1,15 @@
+{
+  "baseUrl": null,
+  "datasetId": "dataset_structure",
+  "enqueue": true,
+  "execute": false,
+  "maxTokens": null,
+  "model": null,
+  "profileId": "profile_structure",
+  "projectId": "project_10e5",
+  "provider": null,
+  "secretId": null,
+  "temperature": null,
+  "timeoutSeconds": null,
+  "userPrompt": "Create an XRD pattern for this structure"
+}

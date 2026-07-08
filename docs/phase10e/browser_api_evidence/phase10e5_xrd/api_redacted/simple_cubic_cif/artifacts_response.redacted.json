@@ -1,0 +1,162 @@
+[
+  {
+    "bucket": null,
+    "contentHash": "c3d59a5531903ec4e6bd762d89b2bde7eeb9c63ac0a91e8da8836468e4f453a1",
+    "contentType": "application/json",
+    "datasetId": "dataset_structure",
+    "id": "call_job_9fe50c27dfb44879938d57ac_step_001-table_json",
+    "jobId": "job_9fe50c27dfb44879938d57ac",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T11:26:11.300403+00:00",
+      "inputHashes": [
+        "6d6d4aefc77a7d57c7b9a4ee4880d8d5b2548274fd0fb6b93ea43d01242a0505"
+      ],
+      "paramsHash": "4a54ccb17ebe09bec8442d8e1c7dfced09f7ee9bd5df4b503f1c1ae0bfa34c14",
+      "profileId": null,
+      "provenance": {
+        "planHash": "0beef0723107fd289b816718a8ab9167a42459861d55ed0626abf4c3fba45fb0",
+        "planId": "plan_193fd7ceb30640cdb84a760f",
+        "planSource": "llm",
+        "toolCallId": "call_job_9fe50c27dfb44879938d57ac_step_001",
+        "toolId": "structure.xrd"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.xrd",
+      "toolVersion": "0.1.0"
+    },
+    "name": "xrd_pattern.json",
+    "previewKey": null,
+    "projectId": "project_10e5",
+    "sha256": "c3d59a5531903ec4e6bd762d89b2bde7eeb9c63ac0a91e8da8836468e4f453a1",
+    "sizeBytes": 2312,
+    "storageKey": "projects/project_10e5/jobs/job_9fe50c27dfb44879938d57ac/tool_calls/call_job_9fe50c27dfb44879938d57ac_step_001/xrd_pattern.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_9fe50c27dfb44879938d57ac_step_001",
+    "type": "table_json",
+    "version": "1"
+  },
+  {
+    "bucket": null,
+    "contentHash": "233bcd0d67a23fad8cdd86e39818b8e17fd88f7254277c864176b6dc8760f0d9",
+    "contentType": "application/json",
+    "datasetId": "dataset_structure",
+    "id": "call_job_9fe50c27dfb44879938d57ac_step_001-plotly_json",
+    "jobId": "job_9fe50c27dfb44879938d57ac",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T11:26:11.311404+00:00",
+      "inputHashes": [
+        "6d6d4aefc77a7d57c7b9a4ee4880d8d5b2548274fd0fb6b93ea43d01242a0505"
+      ],
+      "paramsHash": "4a54ccb17ebe09bec8442d8e1c7dfced09f7ee9bd5df4b503f1c1ae0bfa34c14",
+      "profileId": null,
+      "provenance": {
+        "planHash": "0beef0723107fd289b816718a8ab9167a42459861d55ed0626abf4c3fba45fb0",
+        "planId": "plan_193fd7ceb30640cdb84a760f",
+        "planSource": "llm",
+        "toolCallId": "call_job_9fe50c27dfb44879938d57ac_step_001",
+        "toolId": "structure.xrd"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.xrd",
+      "toolVersion": "0.1.0"
+    },
+    "name": "xrd_plot.json",
+    "previewKey": null,
+    "projectId": "project_10e5",
+    "sha256": "233bcd0d67a23fad8cdd86e39818b8e17fd88f7254277c864176b6dc8760f0d9",
+    "sizeBytes": 717,
+    "storageKey": "projects/project_10e5/jobs/job_9fe50c27dfb44879938d57ac/tool_calls/call_job_9fe50c27dfb44879938d57ac_step_001/xrd_plot.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_9fe50c27dfb44879938d57ac_step_001",
+    "type": "plotly_json",
+    "version": "1"
+  },
+  {
+    "bucket": null,
+    "contentHash": "5d666a8380c1ce0ade303740359ae63faadae4e61be621bae86f1735fe3d9991",
+    "contentType": "application/json",
+    "datasetId": "dataset_structure",
+    "id": "call_job_9fe50c27dfb44879938d57ac_step_001-summary_md",
+    "jobId": "job_9fe50c27dfb44879938d57ac",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T11:26:11.321403+00:00",
+      "inputHashes": [
+        "6d6d4aefc77a7d57c7b9a4ee4880d8d5b2548274fd0fb6b93ea43d01242a0505"
+      ],
+      "paramsHash": "4a54ccb17ebe09bec8442d8e1c7dfced09f7ee9bd5df4b503f1c1ae0bfa34c14",
+      "profileId": null,
+      "provenance": {
+        "planHash": "0beef0723107fd289b816718a8ab9167a42459861d55ed0626abf4c3fba45fb0",
+        "planId": "plan_193fd7ceb30640cdb84a760f",
+        "planSource": "llm",
+        "toolCallId": "call_job_9fe50c27dfb44879938d57ac_step_001",
+        "toolId": "structure.xrd"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.xrd",
+      "toolVersion": "0.1.0"
+    },
+    "name": "summary.md",
+    "previewKey": null,
+    "projectId": "project_10e5",
+    "sha256": "5d666a8380c1ce0ade303740359ae63faadae4e61be621bae86f1735fe3d9991",
+    "sizeBytes": 1144,
+    "storageKey": "projects/project_10e5/jobs/job_9fe50c27dfb44879938d57ac/tool_calls/call_job_9fe50c27dfb44879938d57ac_step_001/summary.md",
+    "storageProvider": "local",
+    "toolCallId": "call_job_9fe50c27dfb44879938d57ac_step_001",
+    "type": "summary_md",
+    "version": "1"
+  },
+  {
+    "bucket": null,
+    "contentHash": "50c55258ed6a160f8773c9bafbb7e16a0feabe5daf40b9b707e45d2ebcbdd757",
+    "contentType": "application/json",
+    "datasetId": "dataset_structure",
+    "id": "call_job_9fe50c27dfb44879938d57ac_step_001-recipe_json",
+    "jobId": "job_9fe50c27dfb44879938d57ac",
+    "metadata": {
+      "adapterVersion": "0.1.0",
+      "bucket": null,
+      "createdAt": "2026-07-08T11:26:11.332414+00:00",
+      "inputHashes": [
+        "6d6d4aefc77a7d57c7b9a4ee4880d8d5b2548274fd0fb6b93ea43d01242a0505"
+      ],
+      "paramsHash": "4a54ccb17ebe09bec8442d8e1c7dfced09f7ee9bd5df4b503f1c1ae0bfa34c14",
+      "profileId": null,
+      "provenance": {
+        "planHash": "0beef0723107fd289b816718a8ab9167a42459861d55ed0626abf4c3fba45fb0",
+        "planId": "plan_193fd7ceb30640cdb84a760f",
+        "planSource": "llm",
+        "toolCallId": "call_job_9fe50c27dfb44879938d57ac_step_001",
+        "toolId": "structure.xrd"
+      },
+      "recipeId": null,
+      "reportId": null,
+      "storageProvider": "local",
+      "toolId": "structure.xrd",
+      "toolVersion": "0.1.0"
+    },
+    "name": "recipe.json",
+    "previewKey": null,
+    "projectId": "project_10e5",
+    "sha256": "50c55258ed6a160f8773c9bafbb7e16a0feabe5daf40b9b707e45d2ebcbdd757",
+    "sizeBytes": 1324,
+    "storageKey": "projects/project_10e5/jobs/job_9fe50c27dfb44879938d57ac/tool_calls/call_job_9fe50c27dfb44879938d57ac_step_001/recipe.json",
+    "storageProvider": "local",
+    "toolCallId": "call_job_9fe50c27dfb44879938d57ac_step_001",
+    "type": "recipe_json",
+    "version": "1"
+  }
+]

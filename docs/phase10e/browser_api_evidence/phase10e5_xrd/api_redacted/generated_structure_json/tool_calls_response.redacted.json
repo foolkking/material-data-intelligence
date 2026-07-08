@@ -1,0 +1,29 @@
+{
+  "tool_calls": [
+    {
+      "artifactIds": [
+        "call_job_f90cb1c843304aabb19eb1ab_step_001-table_json",
+        "call_job_f90cb1c843304aabb19eb1ab_step_001-plotly_json",
+        "call_job_f90cb1c843304aabb19eb1ab_step_001-summary_md",
+        "call_job_f90cb1c843304aabb19eb1ab_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_f90cb1c843304aabb19eb1ab_step_001",
+      "idempotencyKey": "job_f90cb1c843304aabb19eb1ab:step_001",
+      "jobId": "job_f90cb1c843304aabb19eb1ab",
+      "params": {
+        "include_hkl": true,
+        "intensity_threshold": 0.0,
+        "max_peaks": 500,
+        "peak_merge_tolerance": 0.05,
+        "plot_kind": "stem",
+        "radiation": "CuKa",
+        "two_theta_max": 90.0,
+        "two_theta_min": 0.0
+      },
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "structure.xrd"
+    }
+  ]
+}

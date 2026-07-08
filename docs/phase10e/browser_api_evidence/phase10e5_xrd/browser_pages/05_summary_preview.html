@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>summary.md preview</title><style>body{font-family:system-ui,sans-serif;margin:0;background:#f7f8fa;color:#18202a}main{max-width:1120px;margin:0 auto;padding:28px}h1{font-size:28px;margin:0 0 16px}h2{font-size:18px;margin-top:24px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.card{background:white;border:1px solid #d8dde5;border-radius:8px;padding:14px}.label{color:#657080;font-size:12px;text-transform:uppercase}.value{font-weight:650;margin-top:4px;overflow-wrap:anywhere}table{width:100%;border-collapse:collapse;background:white;border:1px solid #d8dde5}th,td{border-bottom:1px solid #e5e8ee;padding:8px;text-align:left;font-size:13px}pre{background:#101820;color:#edf2f7;padding:16px;border-radius:8px;overflow:auto;max-height:560px}.badge{display:inline-block;border:1px solid #abc3d7;border-radius:999px;padding:4px 9px;background:#eaf4fb;margin:2px 4px 2px 0;font-size:12px}@media(max-width:640px){main{padding:16px}table{display:block;overflow-x:auto}}</style></head><body><main><h1>summary.md Static Preview</h1><pre># XRD Pattern
+
+## Input
+- source: normalized_object
+- parser: pymatgen.Structure
+- formula: Si
+- site count: 1
+- periodic: True
+
+## Method
+- calculator: pymatgen XRDCalculator
+- radiation: CuKa
+- two-theta range: 0.0 to 90.0 degrees
+- intensity threshold: 0.0
+- peak limit: 500
+- rounding policy: two-theta, d-spacing, and intensity rounded to 6 decimals
+
+## Results
+- peak count: 6
+- strongest peak: {&#x27;structureId&#x27;: &#x27;structure_1&#x27;, &#x27;two_theta_deg&#x27;: 29.781092, &#x27;intensity&#x27;: 100.0, &#x27;d_spacing_angstrom&#x27;: 3.0, &#x27;hkls&#x27;: [{&#x27;hkl&#x27;: [1, 0, 0], &#x27;multiplicity&#x27;: 6}]}
+- first peaks: [{&#x27;two_theta_deg&#x27;: 29.781092, &#x27;intensity&#x27;: 100.0}, {&#x27;two_theta_deg&#x27;: 42.620165, &#x27;intensity&#x27;: 69.543199}, {&#x27;two_theta_deg&#x27;: 52.858305, &#x27;intensity&#x27;: 24.062157}, {&#x27;two_theta_deg&#x27;: 61.854149, &#x27;intensity&#x27;: 11.239146}, {&#x27;two_theta_deg&#x27;: 70.144628, &#x27;intensity&#x27;: 31.260765}]
+
+## Limits
+- truncated: False
+- warnings: XRD_CUKA_ONLY, XRD_SYNTHETIC_PATTERN_NOT_EXPERIMENTAL, XRD_PEAK_TOLERANCE_PINNED, XRD_NO_PROFILE_BROADENING, XRD_NO_RIETVELD_REFINEMENT, XRD_BROWSER_EVIDENCE_DEFERRED
+
+## Security
+- no artifact JavaScript
+- no external URLs
+- no WebGL renderer
+- no full 3D viewer
+</pre></main></body></html>

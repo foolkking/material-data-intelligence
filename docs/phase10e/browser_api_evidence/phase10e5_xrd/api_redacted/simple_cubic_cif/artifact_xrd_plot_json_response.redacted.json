@@ -1,0 +1,75 @@
+{
+  "content_type": null,
+  "filename": "xrd_plot.json",
+  "preview": {
+    "artifactType": "structure.xrd_plot",
+    "chart_type": "stem",
+    "metadata": {
+      "formula": "Si",
+      "radiation": "CuKa",
+      "site_count": 1,
+      "two_theta_max": 90.0,
+      "two_theta_min": 0.0
+    },
+    "schema_version": "phase10e4.static_chart.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "series": [
+      {
+        "name": "XRD peaks",
+        "x": [
+          29.781092,
+          42.620165,
+          52.858305,
+          61.854149,
+          70.144628,
+          78.019635
+        ],
+        "y": [
+          100.0,
+          69.543199,
+          24.062157,
+          11.239146,
+          31.260765,
+          23.51634
+        ]
+      }
+    ],
+    "title": "XRD Pattern",
+    "tool_id": "structure.xrd",
+    "x_axis": {
+      "label": "2theta (degrees)",
+      "values": [
+        29.781092,
+        42.620165,
+        52.858305,
+        61.854149,
+        70.144628,
+        78.019635
+      ]
+    },
+    "y_axis": {
+      "label": "Relative Intensity",
+      "values": [
+        100.0,
+        69.543199,
+        24.062157,
+        11.239146,
+        31.260765,
+        23.51634
+      ]
+    }
+  },
+  "schema_version": "phase10e4.static_chart.v1",
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false
+  },
+  "sha256": "233bcd0d67a23fad8cdd86e39818b8e17fd88f7254277c864176b6dc8760f0d9",
+  "size_bytes": 717,
+  "tool_id": "structure.xrd"
+}
