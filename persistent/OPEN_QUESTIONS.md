@@ -1,5 +1,13 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F-1 Follow-ups
+
+- **Closed: benchmark pack audit.** The local official examples benchmark pack was present and audited for static physics direct verification.
+- **Closed: direct-uploadable gate.** Phase 10F-1 fixed the gate for official static physics PASS claims: local uploadable input, no notebook/script/API/network/new dependency, bounded input, deterministic artifact comparison, and mapping to `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`.
+- **Still open: official static physics coverage gap.** No current official direct-uploadable case maps to the three completed static physics tools, so Phase 10F-1 made no official static physics PASS claim.
+- **Recommended next: coverage gap closure.** Phase 10F-2 should plan how to curate or approve direct-uploadable official/static-physics fixtures without executing notebooks/scripts or implementing new adapters.
+- **Still open: advanced structure.** Full interactive 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future readiness/planning items.
+
 ## 2026-07-09 Phase 10F Follow-ups
 
 - **Closed: static physics family.** `structure.coordination_hist`, `structure.xrd`, and `structure.rdf` now have implementation, browser/API evidence, deterministic static artifacts, registry/planner coverage, and CI closure.

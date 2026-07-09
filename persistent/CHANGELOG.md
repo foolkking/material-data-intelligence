@@ -2,6 +2,17 @@
 
 ## 2026-07-09
 
+### Phase 10F-1 Official Examples Direct Verification
+
+- Added `docs/phase10f/phase10f1_official_examples_direct_verification.md`.
+- Added `docs/phase10f/official_examples_direct_verification/` with case selection, verification matrix, API/no-execution transcript, artifact comparison report, and security audit.
+- Added `docs/phase10f/phase10f2_next_scope_prompt.md`.
+- Audited the local official examples benchmark pack: 61 cases, 2 `DIRECT_VERIFIED`, 20 `MAPPING_ONLY`, 27 `EXTRACTION_REQUIRED`, 12 `FUTURE_SCOPE`, audit ok.
+- Applied the direct-uploadable gate and found no direct-uploadable official static physics case for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`.
+- Made no official static physics PASS claim; MatPES and Ward remain direct verified for table/ML/composition scopes only.
+- Recommended Phase 10F-2: Official Examples Coverage Gap Closure.
+- No new adapter, runtime semantic change, full viewer, WebGL renderer, Three.js, phonon, notebook/script execution, external API workflow, real LLM path, or unsupported official PASS claim was added.
+
 ### Phase 10F Static Structure Physics Closure
 
 - Added `docs/phase10f/phase10f_static_structure_physics_closure.md`.

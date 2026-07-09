@@ -1,5 +1,17 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10F-1 Official Examples Direct Verification
+
+- Audited the local official examples benchmark pack for direct static structure physics verification of `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Benchmark pack status: present, 61 total cases, 2 `DIRECT_VERIFIED`, 20 `MAPPING_ONLY`, 27 `EXTRACTION_REQUIRED`, and 12 `FUTURE_SCOPE`; audit status `ok: true`.
+- Applied a strict direct-uploadable gate requiring local uploadable input, no notebook/script/API/network/new dependency, bounded input size, deterministic artifact comparison, and a tool mapping to one of the three completed static physics tools.
+- Found no direct-uploadable official example case for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`; no official static physics PASS claim was made.
+- Recorded the two existing direct-verified official cases (`matpes_atomic_energies_csv` and `ward_metallic_glasses_csv_xz`) as unsupported for Phase 10F-1 because they are table/ML/composition cases, not static structure physics.
+- Recorded structure-adjacent README/widget/Brillouin/phonon cases as mapping/future/extraction references only, not PASS.
+- Added Phase 10F-1 verification docs under `docs/phase10f/official_examples_direct_verification/` and generated the Phase 10F-2 coverage-gap prompt.
+- Recommended Phase 10F-2 scope: Official Examples Coverage Gap Closure.
+- No new adapter, adapter semantic change, Tool Registry semantic change, Planner semantic change, QueueWorkerRuntime change, AnalysisPlanRepository change, `/planner/jobs` change, PlanValidator relaxation, full viewer, WebGL renderer, Three.js, phonon, notebook/script execution, external API workflow, real LLM path, artifact JS, or external URL loading was added.
+
 ## 2026-07-09 Phase 10F Static Structure Physics Closure
 
 - Closed the Phase 10E static structure physics family at the implementation + browser/API evidence level.

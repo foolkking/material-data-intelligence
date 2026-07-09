@@ -1,5 +1,18 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-09 Phase 10F-1 Official Verification Notes
+
+- No Tool Registry entries were added, removed, or modified in Phase 10F-1.
+- Existing static physics tools remain:
+  - `structure.coordination_hist`
+  - `structure.xrd`
+  - `structure.rdf`
+- The official examples benchmark pack currently has no direct-uploadable case that maps to these three tools, so no official static physics PASS evidence was claimed.
+- The two existing direct-verified official cases are table/ML/composition cases and do not alter static physics registry status.
+- Structure-adjacent README/widget/Brillouin/phonon cases remain mapping/future/extraction references only.
+- Future official PASS evidence for static physics must still execute through AnalysisPlan validation, `/planner/jobs`, QueueWorkerRuntime, Tool Registry lookup, params schema validation, adapter execution, artifact generation, and security checks.
+- No Tool Registry main semantics, runtime authority, full viewer, WebGL renderer, Three.js, phonon, or unsupported official example PASS claim was added.
+
 ## 2026-07-09 Phase 10F Static Physics Closure Notes
 
 - The static structure physics family is closed at the registry/evidence level for:

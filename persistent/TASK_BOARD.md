@@ -1,5 +1,32 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10F-1 Official Examples Direct Verification
+
+### Done
+
+- [x] Audited the local official examples benchmark pack.
+- [x] Applied the direct-uploadable gate for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- [x] Confirmed no current official direct-uploadable static physics cases exist in the benchmark pack.
+- [x] Recorded that no Phase 10F-1 official static physics PASS claims were made.
+- [x] Added `docs/phase10f/phase10f1_official_examples_direct_verification.md`.
+- [x] Added `docs/phase10f/official_examples_direct_verification/`.
+- [x] Added `docs/phase10f/phase10f2_next_scope_prompt.md`.
+
+### Recommended Next Scope
+
+- [x] Recommend Phase 10F-2: Official Examples Coverage Gap Closure.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, or phonon implementation without a later readiness phase.
+
+### Remaining
+
+- [ ] Curate or approve direct-uploadable official/static-physics fixtures before any official PASS claim for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`.
+- [ ] Official examples coverage gap closure.
+- [ ] Full interactive 3D viewer readiness planning.
+- [ ] Brillouin-zone 3D planning.
+- [ ] Phonon bands/DOS planning.
+- [ ] Advanced local environment classification planning.
+- [ ] Rendered static chart UI enhancement.
+
 ## 2026-07-09 Phase 10F Static Structure Physics Closure
 
 ### Done

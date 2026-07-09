@@ -44,3 +44,14 @@
 | File | Topic |
 |---|---|
 | [`16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md`](16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md) | Phase 5 PostgreSQL, Redis/RQ, MinIO, Alembic, and integration-test operations |
+
+## Phase 10F Static Structure Physics Closure
+
+| File | Topic |
+|---|---|
+| [`phase10f/phase10f_static_structure_physics_closure.md`](phase10f/phase10f_static_structure_physics_closure.md) | Static structure physics closure for coordination histogram, XRD, and RDF |
+| [`phase10f/phase10f_next_scope_decision_matrix.md`](phase10f/phase10f_next_scope_decision_matrix.md) | Phase 10F next-scope decision matrix |
+| [`phase10f/phase10f1_next_scope_prompt.md`](phase10f/phase10f1_next_scope_prompt.md) | Copyable Phase 10F-1 prompt |
+| [`phase10f/phase10f1_official_examples_direct_verification.md`](phase10f/phase10f1_official_examples_direct_verification.md) | Phase 10F-1 official examples direct verification audit |
+| [`phase10f/official_examples_direct_verification/`](phase10f/official_examples_direct_verification/) | Phase 10F-1 case-selection, verification matrix, artifact, API, and security evidence |
+| [`phase10f/phase10f2_next_scope_prompt.md`](phase10f/phase10f2_next_scope_prompt.md) | Copyable Phase 10F-2 coverage-gap prompt |

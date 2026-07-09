@@ -1,5 +1,37 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-1-OFFICIAL-STATIC-PHYSICS-GATE: Do not promote mapping-only static physics examples to PASS
+
+### Context
+
+Phase 10E completed `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`, and Phase 10F closed the static structure physics family at the platform evidence level. Phase 10F-1 audited the local official examples benchmark pack to determine whether any official cases could directly verify these completed static physics tools.
+
+The benchmark pack exists and is internally audit-clean, but the only direct-verified cases are table/ML/composition cases. Structure-adjacent official examples are README function demos, widget examples, Brillouin-zone examples, phonon examples, script/notebook cases, or future-scope mappings rather than direct-uploadable static physics inputs.
+
+### Decision
+
+Phase 10F-1 does not mark any static physics official example as PASS.
+
+A future official static physics PASS claim must satisfy the direct-uploadable gate:
+
+- local uploadable input artifact;
+- no notebook execution;
+- no external script execution;
+- no external API;
+- no network;
+- no new dependency;
+- bounded input size;
+- deterministic artifact comparison;
+- exact mapping to `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`;
+- execution through the existing validated `/planner/jobs` and Tool Registry path.
+
+### Consequences
+
+- Phase 10F-1 is `PARTIAL_PASS` because it strengthens traceability and records the coverage gap without fabricating PASS evidence.
+- Phase 10F-2 should address official examples coverage-gap planning before any static physics official PASS expansion.
+- Full `structure.viewer_3d`, WebGL, Three.js, Brillouin-zone 3D, phonon, advanced local environment classification, notebook/script extraction, and external API workflows remain future planning items.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, and the default real-LLM gate remain unchanged.
+
 ## ADR-10F-STATIC-PHYSICS-CLOSURE: Close static structure physics before advanced viewer implementation
 
 ### Context
