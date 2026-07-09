@@ -1,5 +1,53 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-6-FIXTURE-EVIDENCE-CLOSURE: Close fixture-pack evidence without official PASS promotion
+
+### Context
+
+Phase 10F-5 replayed the Phase 10F-4 static physics fixture pack for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`. All three cases passed replay and candidate expected values were added to expected contracts. The cases are `internal_regression`, so they cannot become official examples PASS evidence.
+
+### Decision
+
+Phase 10F-6 closes the fixture-pack evidence stack and records the boundary:
+
+- fixture-pack replay PASS is accepted for internal regression evidence;
+- official examples PASS remains none;
+- all `official_pass_claim` / `official_pass_claims` fields remain `false`;
+- official PASS still requires `official_direct` or approved `official_derived_manual` provenance plus direct platform replay and expected-contract comparison;
+- the recommended next phase is Advanced Structure Viewer Readiness Planning, not full viewer implementation.
+
+### Consequences
+
+- Static physics now has implementation evidence, browser/API evidence, and fixture-pack replay evidence for all three completed tools.
+- The project can move to viewer readiness planning without claiming official static physics PASS.
+- Official-derived fixture approval remains a later optional path if official PASS evidence becomes a priority.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, adapter semantics, and the default real-LLM gate remain unchanged.
+- Full `structure.viewer_3d`, WebGL, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future planning items.
+
+## ADR-10F-5-FIXTURE-PACK-REPLAY: Treat internal regression replay as fixture-pack PASS only
+
+### Context
+
+Phase 10F-4 constructed a candidate direct-uploadable fixture pack with three `internal_regression` cases. Phase 10F-5 replayed those cases through the validated platform/job flow and generated candidate expected values.
+
+### Decision
+
+Phase 10F-5 accepts replay success as fixture-pack PASS only:
+
+- `coordination_hist_small_crystal` selects `structure.coordination_hist`;
+- `xrd_small_crystal` selects `structure.xrd`;
+- `rdf_small_crystal` selects `structure.rdf`;
+- all expected artifacts and security fields are verified;
+- replay-generated candidate values may be stored in expected contracts;
+- official PASS claims remain false.
+
+### Consequences
+
+- The fixture pack is suitable for regression replay.
+- It is not official examples PASS evidence.
+- Future official PASS requires eligible provenance and direct replay.
+- Runtime and adapter semantics remain unchanged.
+
 ## ADR-10F-4-STATIC-PHYSICS-FIXTURE-PACK: Construct candidate fixtures without official PASS claims
 
 ### Context

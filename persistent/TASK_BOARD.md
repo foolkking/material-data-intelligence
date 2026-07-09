@@ -1,5 +1,56 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10F-6 Static Physics Fixture Pack Evidence Closure
+
+### Done
+
+- [x] Kept Phase 10F-5 status as `PASS`.
+- [x] Closed fixture-pack replay evidence for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- [x] Confirmed all three replay cases remain `internal_regression`.
+- [x] Confirmed candidate replay values are present in expected contracts.
+- [x] Confirmed every `official_pass_claim` / `official_pass_claims` field remains `false`.
+- [x] Added `docs/phase10f/phase10f6_static_physics_fixture_pack_evidence_closure.md`.
+- [x] Added `docs/phase10f/phase10f6_evidence_boundary_matrix.md`.
+- [x] Added `docs/phase10f/phase10f6_next_scope_decision_matrix.md`.
+- [x] Added `docs/phase10f/phase10f7_next_scope_prompt.md`.
+
+### Recommended Next Scope
+
+- [x] Recommend Phase 10F-7: Advanced Structure Viewer Readiness Planning.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, or phonon implementation.
+
+### Remaining
+
+- [ ] Official PASS evidence remains unavailable until `official_direct` or approved `official_derived_manual` cases are replayed.
+- [ ] Advanced structure viewer readiness planning.
+- [ ] Renderer security and artifact-loading policy.
+- [ ] Rendered static chart UI polish.
+- [ ] Brillouin-zone 3D planning.
+- [ ] Phonon bands/DOS planning.
+
+## 2026-07-09 Phase 10F-5 Static Physics Fixture Pack Replay Verification
+
+### Done
+
+- [x] Replayed the Phase 10F-4 fixture pack.
+- [x] Verified `coordination_hist_small_crystal` selected `structure.coordination_hist` and generated expected artifacts.
+- [x] Verified `xrd_small_crystal` selected `structure.xrd` and generated expected artifacts.
+- [x] Verified `rdf_small_crystal` selected `structure.rdf` and generated expected artifacts.
+- [x] Updated expected contracts with candidate replay values.
+- [x] Kept fixture-pack PASS separate from official PASS.
+- [x] Kept official PASS claims false for all cases.
+
+### Recommended Next Scope
+
+- [x] Recommend Phase 10F-6: Static Physics Fixture Pack Evidence Closure.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, or phonon implementation.
+
+### Remaining
+
+- [ ] Close the fixture-pack replay evidence boundary.
+- [ ] Decide whether next phase should be advanced viewer readiness or official-derived fixture approval planning.
+- [ ] Official static physics PASS evidence remains unavailable.
+
 ## 2026-07-09 Phase 10F-4 Static Physics Direct-Uploadable Fixture Pack Construction
 
 ### Done

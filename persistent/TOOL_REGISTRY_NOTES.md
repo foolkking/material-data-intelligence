@@ -1,5 +1,28 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-09 Phase 10F-6 Fixture Evidence Closure Notes
+
+- No Tool Registry entries were added, removed, or modified in Phase 10F-6.
+- Existing static physics tools remain:
+  - `structure.coordination_hist`
+  - `structure.xrd`
+  - `structure.rdf`
+- Phase 10F-6 closes fixture-pack replay evidence only. It does not change registry schemas, planner routing, adapter behavior, or runtime authority.
+- Fixture-pack PASS remains distinct from official PASS; all replayed cases use `internal_regression` provenance and all official PASS claims remain false.
+- Recommended Phase 10F-7 registry-related work is readiness planning for a future viewer capability, not registering or implementing a new viewer tool.
+- No Tool Registry main semantics, runtime authority, full viewer, WebGL renderer, Three.js, phonon, or unsupported official example PASS claim was added.
+
+## 2026-07-09 Phase 10F-5 Fixture Replay Notes
+
+- No Tool Registry entries were added, removed, or modified in Phase 10F-5.
+- Fixture-pack replay validated the existing registry-gated tools:
+  - `structure.coordination_hist`
+  - `structure.xrd`
+  - `structure.rdf`
+- Replay selected the expected tool for each fixture and generated the expected artifacts.
+- Candidate replay values were added to expected contracts without promoting any case to official PASS.
+- No Tool Registry main semantics, runtime authority, full viewer, WebGL renderer, Three.js, phonon, or unsupported official example PASS claim was added.
+
 ## 2026-07-09 Phase 10F-4 Fixture Pack Construction Notes
 
 - No Tool Registry entries were added, removed, or modified in Phase 10F-4.

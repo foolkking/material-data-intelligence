@@ -2,6 +2,26 @@
 
 ## 2026-07-09
 
+### Phase 10F-6 Static Physics Fixture Pack Evidence Closure
+
+- Added `docs/phase10f/phase10f6_static_physics_fixture_pack_evidence_closure.md`.
+- Added `docs/phase10f/phase10f6_evidence_boundary_matrix.md`.
+- Added `docs/phase10f/phase10f6_next_scope_decision_matrix.md`.
+- Added `docs/phase10f/phase10f7_next_scope_prompt.md`.
+- Updated `docs/index.md` with the Phase 10F-6 closure docs and Phase 10F-7 prompt.
+- Closed the fixture-pack replay evidence boundary: fixture-pack PASS is stable, official PASS remains none.
+- Recommended Phase 10F-7: Advanced Structure Viewer Readiness Planning.
+- No official PASS verification, notebook/script execution, benchmark extraction script, external API workflow, new adapter, runtime semantic change, full viewer, WebGL renderer, Three.js, phonon, real LLM path, dependency, or unsupported official PASS claim was added.
+
+### Phase 10F-5 Static Physics Fixture Pack Replay Verification
+
+- Replayed the Phase 10F-4 fixture pack for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Confirmed all three cases selected the expected tools and generated expected artifacts.
+- Added replay-generated candidate numeric values to each case's expected contract.
+- Kept all official PASS claims false because the replayed cases use `internal_regression` provenance.
+- Recorded fixture-pack replay result as `PASS`.
+- No official PASS verification, notebook/script execution, benchmark extraction script, external API workflow, new adapter, runtime semantic change, full viewer, WebGL renderer, Three.js, phonon, real LLM path, dependency, or unsupported official PASS claim was added.
+
 ### Phase 10F-4 Static Physics Direct-Uploadable Fixture Pack Construction
 
 - Added `docs/phase10f/static_physics_fixture_pack/`.

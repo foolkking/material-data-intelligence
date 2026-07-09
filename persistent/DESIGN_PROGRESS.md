@@ -1,5 +1,28 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10F-6 Static Physics Fixture Pack Evidence Closure
+
+- Closed the Phase 10F-5 fixture-pack replay evidence for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Retained fixture-pack replay result as `PASS`: `coordination_hist_small_crystal`, `xrd_small_crystal`, and `rdf_small_crystal` all replayed successfully through the platform/job flow.
+- Confirmed candidate replay values are present in the expected contracts for selected coordination histogram, XRD, and RDF numeric checks.
+- Documented the evidence boundary: fixture-pack PASS is allowed, but official examples PASS remains none because all replayed cases have `internal_regression` provenance.
+- Added Phase 10F-6 closure docs, evidence boundary matrix, next-scope decision matrix, and Phase 10F-7 next-scope prompt.
+- Recommended Phase 10F-7 scope: Advanced Structure Viewer Readiness Planning.
+- No official PASS verification, official PASS claim, notebook execution, external script, benchmark extraction script, external API, network workflow, real LLM path, dependency installation, new adapter, adapter semantic change, Tool Registry semantic change, QueueWorkerRuntime change, AnalysisPlanRepository change, `/planner/jobs` change, PlanValidator relaxation, full viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, or advanced local environment classification was added.
+
+## 2026-07-09 Phase 10F-5 Static Physics Fixture Pack Replay Verification
+
+- Replayed the Phase 10F-4 static physics fixture pack through the validated platform/job flow.
+- Confirmed selected tools:
+  - `coordination_hist_small_crystal` -> `structure.coordination_hist`
+  - `xrd_small_crystal` -> `structure.xrd`
+  - `rdf_small_crystal` -> `structure.rdf`
+- Verified all expected artifacts and static no-JS/no-external-URL security fields.
+- Generated candidate replay values in the expected contracts while keeping every `official_pass_claim` false.
+- Recorded fixture-pack replay result as `PASS`.
+- Retained official PASS claims as none because all cases are `internal_regression`.
+- No official PASS verification, official PASS claim, notebook execution, external script, benchmark extraction script, external API, network workflow, real LLM path, dependency installation, new adapter, adapter semantic change, Tool Registry semantic change, QueueWorkerRuntime change, AnalysisPlanRepository change, `/planner/jobs` change, PlanValidator relaxation, full viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, or advanced local environment classification was added.
+
 ## 2026-07-09 Phase 10F-4 Static Physics Direct-Uploadable Fixture Pack Construction
 
 - Constructed a small candidate direct-uploadable fixture pack for future replay of `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.

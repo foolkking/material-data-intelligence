@@ -1,5 +1,22 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F-6 Follow-ups
+
+- **Closed: fixture-pack replay evidence.** Phase 10F-6 records that the Phase 10F-5 replay PASS is complete for all three static physics fixture cases.
+- **Closed: expected-contract replay values.** Candidate replay values are present for the selected coordination histogram, XRD, and RDF numeric checks.
+- **Closed: fixture-pack vs official PASS boundary.** Fixture-pack PASS is valid; official PASS remains none because all cases have `internal_regression` provenance.
+- **Still open: official PASS evidence.** Official static physics PASS still requires `official_direct` or approved `official_derived_manual` provenance plus direct platform replay.
+- **Recommended next: advanced viewer readiness planning.** Phase 10F-7 should plan viewer security, renderer choice, artifact contracts, caps, screenshots, and routing before any implementation.
+- **Still open: advanced structure.** Full interactive 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future readiness/planning items.
+
+## 2026-07-09 Phase 10F-5 Follow-ups
+
+- **Closed: fixture-pack replay.** Phase 10F-5 replayed `coordination_hist_small_crystal`, `xrd_small_crystal`, and `rdf_small_crystal` through the platform/job flow.
+- **Closed: selected tools.** Replayed cases selected `structure.coordination_hist`, `structure.xrd`, and `structure.rdf` respectively.
+- **Closed: candidate expected values.** Expected contracts now contain replay-generated candidate values for the selected numeric checks.
+- **Still open: official PASS evidence.** The replay is fixture-pack evidence only; all cases remain `internal_regression`.
+- **Recommended next: evidence closure.** Phase 10F-6 should close the boundary and decide whether to move to viewer readiness or official-derived fixture approval planning.
+
 ## 2026-07-09 Phase 10F-4 Follow-ups
 
 - **Closed: fixture-pack construction.** Phase 10F-4 constructs `docs/phase10f/static_physics_fixture_pack/` with three bounded candidate cases for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.

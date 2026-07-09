@@ -73,3 +73,7 @@
 | [`phase10f/phase10f5_static_physics_fixture_pack_replay_verification.md`](phase10f/phase10f5_static_physics_fixture_pack_replay_verification.md) | Phase 10F-5 static physics fixture pack replay verification |
 | [`phase10f/static_physics_fixture_pack_replay/`](phase10f/static_physics_fixture_pack_replay/) | Phase 10F-5 fixture-pack validation, replay, artifact, numeric, and security evidence |
 | [`phase10f/phase10f6_next_scope_prompt.md`](phase10f/phase10f6_next_scope_prompt.md) | Copyable Phase 10F-6 fixture-pack evidence closure prompt |
+| [`phase10f/phase10f6_static_physics_fixture_pack_evidence_closure.md`](phase10f/phase10f6_static_physics_fixture_pack_evidence_closure.md) | Phase 10F-6 fixture-pack evidence closure |
+| [`phase10f/phase10f6_evidence_boundary_matrix.md`](phase10f/phase10f6_evidence_boundary_matrix.md) | Phase 10F-6 fixture-pack vs official PASS boundary matrix |
+| [`phase10f/phase10f6_next_scope_decision_matrix.md`](phase10f/phase10f6_next_scope_decision_matrix.md) | Phase 10F-6 next-scope decision matrix |
+| [`phase10f/phase10f7_next_scope_prompt.md`](phase10f/phase10f7_next_scope_prompt.md) | Copyable Phase 10F-7 advanced viewer readiness planning prompt |
