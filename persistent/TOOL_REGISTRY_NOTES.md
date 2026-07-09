@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-09 Phase 10E-8 RDF Evidence Notes
+
+- `structure.rdf` remains registered as an MVP `structure` tool with static artifacts only.
+- Evidence lives under `docs/phase10e/browser_api_evidence/phase10e8_rdf/`.
+- Evidence confirms registry-gated execution and static artifact generation for `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`.
+- Browser evidence confirms real frontend static viewing through Artifact Gallery and report/recipe previews. `rdf_plot.json` remains static chart JSON; rendered line chart UI is deferred.
+- No Tool Registry main semantics, runtime authority, full viewer, WebGL renderer, Three.js, phonon, experimental fitting, or official example PASS claim was added.
+
 ## 2026-07-07 Phase 10C-1 Lightweight Structure Tool Notes
 
 - Registered the Phase 10C-1 lightweight structure tool set:

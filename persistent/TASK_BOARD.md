@@ -1,5 +1,27 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10E-8 RDF Browser/API Evidence
+
+### Done
+
+- [x] Added API/job evidence for `structure.rdf`.
+- [x] Verified `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`.
+- [x] Captured real browser-rendered frontend screenshots with system Chrome / Playwright.
+- [x] Added artifact contract, security, browser preview, and negative-routing audits.
+- [x] Added `docs/phase10e/phase10e8_rdf_browser_api_evidence.md`.
+
+### Verification
+
+- [x] Evidence generation harness completed for CIF and POSCAR fixtures.
+- [x] Browser screenshot capture completed.
+- [x] Generated evidence scan recorded `NO_SECRET_PATTERN_HITS`.
+- [ ] Full regression checks before commit.
+- [ ] Commit, push, and confirm CI current HEAD.
+
+### Remaining
+
+- [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, advanced local environment classification, notebook/script extraction, external API workflows, and official examples direct verification remain future work.
+
 ## 2026-07-09 Phase 10E-7 RDF Implementation
 
 ### Done
@@ -22,7 +44,7 @@
 
 ### Remaining
 
-- [ ] Phase 10E-8 browser/API evidence for `structure.rdf`.
+- [x] Phase 10E-8 browser/API evidence for `structure.rdf`.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, advanced local environment classification, notebook/script extraction, and external API workflows remain future work.
 
 ## 2026-07-08 Phase 10E-1 Coordination Histogram Implementation

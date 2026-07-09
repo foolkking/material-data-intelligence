@@ -1,0 +1,9 @@
+{
+  "datasetId": "dataset_0002",
+  "enqueue": true,
+  "execute": true,
+  "profileId": "profile_dataset_0002_v1",
+  "projectId": "project_0002",
+  "provider": "mock",
+  "userPrompt": "计算 RDF"
+}

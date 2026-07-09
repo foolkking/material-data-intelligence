@@ -1,0 +1,32 @@
+# Radial Distribution Function
+
+## Input
+- source: normalized_object
+- parser: pymatgen.Structure
+- formula: Si
+- site count: 1
+- periodic: True
+- volume: 27.0 angstrom^3
+
+## Method
+- r max: 8.0 angstrom
+- bin width: 0.1 angstrom
+- normalization: number_density
+- periodic-image policy: pymatgen periodic neighbors with pbc == [true, true, true]
+- partial RDF: True
+- resource caps: max_sites=500, max_bins=1000, max_neighbors_total=200000
+
+## Results
+- bin count: 80
+- first peak: r=4.25 angstrom, g(r)=14.273723
+- partial pairs: 1
+
+## Limits
+- truncated: False
+- warnings: RDF_NORMALIZATION_NUMBER_DENSITY_ONLY, RDF_CUTOFF_SENSITIVE, RDF_BIN_WIDTH_SENSITIVE, RDF_PERIODIC_IMAGES_REQUIRED, RDF_LARGE_STRUCTURE_DEFERRED, RDF_BROWSER_EVIDENCE_DEFERRED, RDF_NOT_EXPERIMENTAL_PDF_FITTING, RDF_NO_PHONON_DOS
+
+## Security
+- no artifact JavaScript
+- no external URLs
+- no WebGL renderer
+- no full 3D viewer

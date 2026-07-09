@@ -1,0 +1,26 @@
+{
+  "raw_hits": [
+    {
+      "match": "WebGL",
+      "path": "docs/phase10e/browser_api_evidence/phase10e8_rdf/artifacts/nacl_poscar/summary.md"
+    },
+    {
+      "match": "WebGL",
+      "path": "docs/phase10e/browser_api_evidence/phase10e8_rdf/artifacts/simple_cubic_cif/summary.md"
+    },
+    {
+      "match": "WebGL",
+      "path": "docs/phase10e/browser_api_evidence/phase10e8_rdf/api_redacted/negative_routing_response.redacted.json"
+    },
+    {
+      "match": "WebGL",
+      "path": "docs/phase10e/browser_api_evidence/phase10e8_rdf/api_redacted/nacl_poscar/artifact_summary_md_response.redacted.txt"
+    },
+    {
+      "match": "WebGL",
+      "path": "docs/phase10e/browser_api_evidence/phase10e8_rdf/api_redacted/simple_cubic_cif/artifact_summary_md_response.redacted.txt"
+    }
+  ],
+  "result": "NO_SECRET_PATTERN_HITS",
+  "secret_hits": []
+}

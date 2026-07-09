@@ -1,0 +1,100 @@
+[
+  {
+    "ok": true,
+    "prompt": "生成 XRD 图谱",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": "structure.xrd"
+  },
+  {
+    "ok": true,
+    "prompt": "Generate XRD pattern",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": "structure.xrd"
+  },
+  {
+    "ok": true,
+    "prompt": "生成这个结构的 coordination histogram",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": "structure.coordination_hist"
+  },
+  {
+    "ok": true,
+    "prompt": "计算配位数直方图",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": "structure.coordination_hist"
+  },
+  {
+    "ok": true,
+    "prompt": "打开交互式 3D viewer",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": "structure.preview_metadata"
+  },
+  {
+    "ok": true,
+    "prompt": "用 WebGL 显示这个晶体",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": null
+  },
+  {
+    "ok": true,
+    "prompt": "生成 Brillouin zone 3D",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": "structure.preview_metadata"
+  },
+  {
+    "ok": true,
+    "prompt": "画 phonon bands",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": null
+  },
+  {
+    "ok": true,
+    "prompt": "画 phonon DOS",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": null
+  },
+  {
+    "ok": true,
+    "prompt": "experimental PDF fitting",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": null
+  },
+  {
+    "ok": true,
+    "prompt": "neutron scattering refinement",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": null
+  },
+  {
+    "ok": true,
+    "prompt": "Rietveld refinement",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": null
+  },
+  {
+    "ok": true,
+    "prompt": "做 Voronoi local environment analysis",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": null
+  },
+  {
+    "ok": true,
+    "prompt": "做 CrystalNN chemical environment classification",
+    "routes_to_rdf": false,
+    "status": 200,
+    "tool_id": "structure.summary"
+  }
+]

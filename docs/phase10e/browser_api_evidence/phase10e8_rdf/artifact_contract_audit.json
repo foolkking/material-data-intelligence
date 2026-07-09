@@ -1,0 +1,59 @@
+{
+  "rdf_json": {
+    "arrays_aligned": true,
+    "bin_edges_sorted": true,
+    "limits_present": true,
+    "normalization": "number_density",
+    "parameters_present": true,
+    "partial_pairs_sorted": true,
+    "pbc": [
+      true,
+      true,
+      true
+    ],
+    "r_sorted": true,
+    "rdf_arrays_present": true,
+    "schema_version": "phase10e7.rdf.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "source_present": true,
+    "structure_present": true,
+    "tool_id": "structure.rdf",
+    "volume_positive": true,
+    "warnings_present": true
+  },
+  "rdf_plot_json": {
+    "chart_type": "line",
+    "metadata_present": true,
+    "schema_version": "phase10e7.static_chart.v1",
+    "security": {
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false
+    },
+    "series_present": true,
+    "tool_id": "structure.rdf",
+    "x_axis_present": true,
+    "y_axis_present": true
+  },
+  "recipe_json": {
+    "deterministic": true,
+    "new_dependencies_added": false,
+    "schema_version": "phase10e7.recipe.v1",
+    "steps_present": true,
+    "tool_id": "structure.rdf"
+  },
+  "summary_md": {
+    "contains_input": true,
+    "contains_limits": true,
+    "contains_method": true,
+    "contains_normalization": true,
+    "contains_periodic_policy": true,
+    "contains_results": true,
+    "contains_security": true,
+    "forbidden_claims_absent": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "browser_executable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+  "automation_tool": "E:/mdi-playwright-runner/node_modules/playwright",
+  "viewport": "1440x1000",
+  "frontend_url": "http://127.0.0.1:3128",
+  "backend_url": "http://127.0.0.1:8128",
+  "job_id": "job_cccfebd4cdf641e580538e01",
+  "artifact_names": [
+    "rdf.json",
+    "rdf_plot.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "screenshots": [
+    "01_job_completed.png",
+    "02_artifact_list.png",
+    "03_rdf_json_preview.png",
+    "04_rdf_plot_preview.png",
+    "05_summary_preview.png",
+    "06_recipe_preview.png"
+  ],
+  "preview_note": "rdf_plot.json is displayed as a static JSON artifact entry; rendered line chart UI is deferred."
+}

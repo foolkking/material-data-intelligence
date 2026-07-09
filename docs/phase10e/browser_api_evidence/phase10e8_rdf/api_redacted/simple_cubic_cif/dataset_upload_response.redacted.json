@@ -1,0 +1,123 @@
+{
+  "body": {
+    "createdAt": "2026-07-09T01:24:34.031124+00:00",
+    "datasetId": "dataset_0002",
+    "fileCount": 1,
+    "files": [
+      {
+        "detectedFormat": "cif",
+        "errorCode": null,
+        "fileId": "file_001",
+        "name": "simple_cubic.cif",
+        "objectCount": 1,
+        "status": "success"
+      }
+    ],
+    "id": "dataset_0002",
+    "name": "phase10e8_simple_cubic_cif",
+    "normalizedExports": [
+      {
+        "contentHash": "067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6",
+        "metadataKey": "projects/project_0002/datasets/dataset_0002/normalized/obj_structure_72a5ab29a949/metadata.json",
+        "objectId": "obj_structure_72a5ab29a949",
+        "storageKey": "projects/project_0002/datasets/dataset_0002/normalized/obj_structure_72a5ab29a949/structure.json"
+      }
+    ],
+    "objectCount": 1,
+    "profile": {
+      "createdAt": "2026-07-09T01:24:34.030142+00:00",
+      "datasetId": "dataset_0002",
+      "datasetType": "structure_collection",
+      "files": [
+        {
+          "detectedFormat": "cif",
+          "fileId": "file_001",
+          "fileName": "simple_cubic.cif",
+          "parseStatus": "success"
+        }
+      ],
+      "objects": [
+        {
+          "count": 1,
+          "objectId": "obj_structure_72a5ab29a949",
+          "objectType": "Structure",
+          "periodicity": "periodic",
+          "sourceFileIds": [
+            "file_001"
+          ]
+        }
+      ],
+      "phononSummary": null,
+      "profileId": "profile_dataset_0002_v1",
+      "qualityIssues": [],
+      "recommendedTasks": [
+        {
+          "availableNow": true,
+          "label": "Composition overview",
+          "reason": "Periodic structures contain composition information.",
+          "requiredTools": [
+            "composition.ptable_heatmap"
+          ],
+          "stage": "mvp",
+          "taskId": "composition.overview",
+          "taskType": "composition_overview"
+        },
+        {
+          "availableNow": true,
+          "label": "Representative structure viewer",
+          "reason": "Periodic Structure objects are available.",
+          "requiredTools": [
+            "structure.structure_3d",
+            "structure.viewer_3d"
+          ],
+          "stage": "mvp",
+          "taskId": "structure.viewer",
+          "taskType": "structure_quality"
+        }
+      ],
+      "schemaVersion": "0.1",
+      "structureSummary": {
+        "atomCountStats": {
+          "max": 1,
+          "median": 1,
+          "min": 1
+        },
+        "chemicalSystemStats": {
+          "topChemicalSystems": [
+            {
+              "chemSys": "Si",
+              "count": 1
+            }
+          ],
+          "uniqueCount": 1
+        },
+        "elements": [
+          "Si"
+        ],
+        "formulaStats": {
+          "topFormulas": [
+            {
+              "count": 1,
+              "formula": "Si"
+            }
+          ],
+          "total": 1,
+          "uniqueCount": 1
+        },
+        "hasForces": false,
+        "hasMagmoms": false,
+        "nStructures": 1,
+        "representativeStructureIds": [
+          "obj_structure_72a5ab29a949"
+        ]
+      },
+      "tableSummary": null,
+      "trajectorySummary": null,
+      "version": "1"
+    },
+    "profileId": "profile_dataset_0002_v1",
+    "projectId": "project_0002",
+    "status": "profile_ready"
+  },
+  "status": 200
+}

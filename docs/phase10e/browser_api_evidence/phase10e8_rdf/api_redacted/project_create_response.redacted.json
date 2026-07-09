@@ -1,0 +1,20 @@
+{
+  "body": {
+    "createdAt": "2026-07-09T01:24:34.011133+00:00",
+    "defaultDownloadFormats": [
+      "html",
+      "json",
+      "png",
+      "markdown"
+    ],
+    "defaultUnits": {},
+    "id": "project_0002",
+    "llmConfigRef": null,
+    "name": "Phase 10E-8 RDF Evidence Project",
+    "projectId": "project_0002",
+    "projectType": "mixed_material_dataset",
+    "role": "owner",
+    "status": "created"
+  },
+  "status": 200
+}

@@ -1,5 +1,14 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10E-8 RDF Browser/API Evidence
+
+- Added browser/API evidence for `structure.rdf` under `docs/phase10e/browser_api_evidence/phase10e8_rdf/`.
+- Verified two small periodic structure inputs through local FastAPI `/planner/jobs`, deterministic Mock Planner, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, and adapter execution.
+- Confirmed `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json` were generated with Phase 10E-7 schema versions, deterministic ordering, limits/warnings, and no-JS/no-external-URL security flags.
+- Captured six real browser-rendered frontend screenshots with system Chrome and Playwright `executablePath`; the frontend shows the completed RDF job, summary/recipe previews, artifact gallery entries, and `structure.rdf` ToolCall.
+- Negative routing evidence confirms XRD, coordination histogram, full viewer, WebGL, Brillouin-zone, phonon, experimental PDF fitting, neutron scattering refinement, Voronoi, and CrystalNN prompts did not misroute to `structure.rdf`.
+- No new adapter, full 3D viewer, WebGL renderer, Three.js, phonon, advanced local environment classification, experimental fitting, notebook/script extraction, external API workflow, runtime semantic change, real LLM path, artifact JS, or external URL loading was added.
+
 ## 2026-07-09 Phase 10E-7 RDF Implementation
 
 - Implemented `structure.rdf` as the third Phase 10E static structure physics adapter after coordination histogram and XRD.

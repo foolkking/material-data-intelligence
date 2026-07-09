@@ -1,0 +1,78 @@
+{
+  "artifactTypes": [
+    "table_json",
+    "plotly_json",
+    "summary_md",
+    "recipe_json"
+  ],
+  "artifacts": [
+    "rdf.json",
+    "rdf_plot.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "dependencies": {
+    "aseVersion": "3.29.0",
+    "new_dependencies_added": false,
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "deterministic": true,
+  "inputs": {
+    "dataset_id": "dataset_0002",
+    "input_hashes": [
+      "fc31647337b6f7acd7e9b579fc42d054e40ec18fae6b51562e08b1950c206988"
+    ]
+  },
+  "limits": {
+    "bin_count": 80,
+    "max_bins": 1000,
+    "max_neighbors_total": 200000,
+    "max_partial_pairs": 64,
+    "max_sites": 500,
+    "neighbor_count": 80,
+    "partial_pair_count": 1,
+    "partial_pair_count_before_limit": 1,
+    "site_count_before_limit": 1,
+    "truncated": false
+  },
+  "name": "Radial Distribution Function",
+  "numericTolerance": {
+    "bin_assignment": "floor(distance / bin_width), final bin includes r_max",
+    "density_rounding_decimals": 6,
+    "g_r_rounding_decimals": 6,
+    "r_rounding_decimals": 6
+  },
+  "params": {
+    "bin_width_angstrom": 0.1,
+    "include_partial_pairs": true,
+    "max_bins": 1000,
+    "max_neighbors_total": 200000,
+    "max_partial_pairs": 64,
+    "max_sites": 500,
+    "normalization": "number_density",
+    "plot_kind": "line",
+    "r_max_angstrom": 8.0
+  },
+  "recipeId": "recipe_call_job_cccfebd4cdf641e580538e01_step_001",
+  "schemaVersion": "0.1",
+  "schema_version": "phase10e7.recipe.v1",
+  "steps": [
+    "parse_structure",
+    "validate_periodic_structure",
+    "validate_lattice_volume",
+    "validate_rdf_params",
+    "build_radial_bins",
+    "collect_periodic_neighbors",
+    "count_global_distances",
+    "normalize_by_number_density",
+    "aggregate_partial_pairs",
+    "round_numeric_values",
+    "write_rdf_json",
+    "write_static_chart_json",
+    "write_summary"
+  ],
+  "toolId": "structure.rdf",
+  "tool_id": "structure.rdf"
+}

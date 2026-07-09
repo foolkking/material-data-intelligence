@@ -1,10 +1,18 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10E-8 Follow-ups
+
+- **Closed: Phase 10E-8 evidence.** Browser/API/artifact/security/negative-routing evidence is now complete for `structure.rdf`.
+- **Still open: rendered RDF chart UI.** `rdf_plot.json` is verified as static chart JSON / artifact gallery evidence; a rendered line chart UI can be considered later without changing the adapter contract.
+- **Still open: RDF scope extensions.** Trajectory RDF, time-averaged RDF, experimental PDF fitting, neutron scattering refinement, and X-ray total scattering analysis remain out of scope.
+- **Still open: advanced local environments.** Voronoi, CrystalNN, bond valence, and oxidation-state-aware environment classification remain future planning items.
+- **Still open: advanced visualization / phonon.** Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook/script extraction, and external API workflows remain future work.
+
 ## 2026-07-09 Phase 10E-7 Follow-ups
 
 - **Closed at adapter level: RDF.** `structure.rdf` now emits deterministic `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json` artifacts for periodic crystalline structures.
 - **Closed: RDF numeric policy.** Phase 10E-7 implements fixed radial bins, `number_density` shell-volume normalization, ordered partial RDF pairs, and explicit site/bin/neighbor/partial-pair caps.
-- **Still open: Phase 10E-8 evidence.** Browser/API/artifact evidence is still required for `structure.rdf`.
+- **Closed: Phase 10E-8 evidence.** Browser/API/artifact evidence is complete for `structure.rdf`.
 - **Still open: RDF scope extensions.** Trajectory RDF, time-averaged RDF, experimental PDF fitting, neutron scattering refinement, and X-ray total scattering analysis remain out of scope.
 - **Still open: advanced local environments.** Voronoi, CrystalNN, bond valence, and oxidation-state-aware environment classification remain future planning items.
 - **Still open: advanced visualization / phonon.** Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook/script extraction, and external API workflows remain future work.

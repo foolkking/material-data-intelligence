@@ -1,0 +1,35 @@
+{
+  "body": [
+    {
+      "artifactIds": [
+        "call_job_cccfebd4cdf641e580538e01_step_001-table_json",
+        "call_job_cccfebd4cdf641e580538e01_step_001-plotly_json",
+        "call_job_cccfebd4cdf641e580538e01_step_001-summary_md",
+        "call_job_cccfebd4cdf641e580538e01_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_cccfebd4cdf641e580538e01_step_001",
+      "idempotencyKey": "job_cccfebd4cdf641e580538e01:step_001",
+      "inputSummary": "Params: bin_width_angstrom, include_partial_pairs, max_bins, max_neighbors_total, max_partial_pairs, max_sites, normalization, plot_kind, r_max_angstrom",
+      "jobId": "job_cccfebd4cdf641e580538e01",
+      "outputSummary": "4 artifact(s)",
+      "params": {
+        "bin_width_angstrom": 0.1,
+        "include_partial_pairs": true,
+        "max_bins": 1000,
+        "max_neighbors_total": 200000,
+        "max_partial_pairs": 64,
+        "max_sites": 500,
+        "normalization": "number_density",
+        "plot_kind": "line",
+        "r_max_angstrom": 8.0
+      },
+      "planHash": "aba1991d04f9441a1613272a8c14396d239af06a9a81b968c691f1029f080f83",
+      "planId": "plan_1096d3645cb6455cbad7df5b",
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "structure.rdf"
+    }
+  ],
+  "status": 200
+}

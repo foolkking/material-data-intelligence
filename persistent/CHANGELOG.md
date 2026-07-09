@@ -2,6 +2,15 @@
 
 ## 2026-07-09
 
+### Phase 10E-8 RDF Browser/API Evidence
+
+- Added `docs/phase10e/phase10e8_rdf_browser_api_evidence.md`.
+- Added `docs/phase10e/browser_api_evidence/phase10e8_rdf/` with redacted API captures, copied RDF artifacts, browser-rendered screenshots, audits, and evidence manifest.
+- Verified `structure.rdf` through local FastAPI `/planner/jobs`, deterministic Mock Planner, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry validation, and adapter execution.
+- Captured six real frontend screenshots with system Chrome / Playwright.
+- Verified no artifact JavaScript, no external artifact URLs, no WebGL, no Three.js, no real LLM, and `NO_SECRET_PATTERN_HITS`.
+- No new adapter, full 3D viewer, WebGL renderer, phonon, experimental fitting, runtime semantic change, or official example PASS claim was added.
+
 ### Phase 10E-7 RDF Implementation
 
 - Implemented `structure.rdf` as a deterministic static physics adapter for periodic crystalline structures.

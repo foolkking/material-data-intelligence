@@ -2897,3 +2897,22 @@ Do not implement full interactive 3D viewer, WebGL/Three.js renderer, Brillouin-
 - `rdf_plot.json` follows the existing static chart JSON pattern and does not require a browser chart renderer.
 - Mock Planner can route RDF prompts to `structure.rdf`, while XRD, coordination histogram, full viewer, WebGL, phonon, and fitting prompts remain bounded to their correct existing or deferred behavior.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter execution boundaries, and the live LLM gate remain unchanged.
+
+## ADR-10E-8-RDF-EVIDENCE: RDF evidence validates API execution and static frontend viewing
+
+### Context
+
+After Phase 10E-7 implemented `structure.rdf`, the platform needed evidence that RDF jobs execute through the product path and that the four static RDF artifacts can be inspected in the frontend without adding browser execution authority or renderer scope.
+
+### Decision
+
+Treat Phase 10E-8 as evidence-only validation for `structure.rdf`. Evidence is captured under `docs/phase10e/browser_api_evidence/phase10e8_rdf/` from local FastAPI requests, deterministic Mock Planner output, persisted AnalysisPlan, QueueWorkerRuntime execution, Tool Registry validation, copied static artifacts, artifact contract audits, negative routing checks, and real browser-rendered frontend screenshots.
+
+The evidence is limited to static previews and artifact gallery visibility for `rdf.json`, `rdf_plot.json`, `summary.md`, and `recipe.json`. It must not claim rendered interactive RDF charts, full 3D viewing, WebGL rendering, phonon support, experimental PDF fitting, neutron scattering refinement, or official example reproduction.
+
+### Consequences
+
+- `structure.rdf` now has API/artifact/security/negative-routing/browser evidence over small CIF and POSCAR inputs.
+- The evidence records redacted API captures, artifact captures, six real frontend screenshots, browser console/network logs, and `NO_SECRET_PATTERN_HITS`.
+- `rdf_plot.json` remains static chart JSON; rendered line chart UI is deferred.
+- No new adapter, full 3D viewer, WebGL/Three.js renderer, phonon, experimental fitting, runtime semantic change, or live LLM path was introduced.

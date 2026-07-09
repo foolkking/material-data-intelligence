@@ -1,0 +1,10 @@
+{
+  "datasetName": "phase10e8_nacl_poscar",
+  "files": [
+    {
+      "content": "NaCl simple cubic\n1.0\n5.640200 0.000000 0.000000\n0.000000 5.640200 0.000000\n0.000000 0.000000 5.640200\nNa Cl\n1 1\nDirect\n0.000000 0.000000 0.000000\n0.500000 0.500000 0.500000\n",
+      "fileName": "nacl.poscar"
+    }
+  ],
+  "projectId": "project_0002"
+}
