@@ -2,6 +2,23 @@
 
 ## 2026-07-09
 
+### Phase 10F-8 Viewer Scene Artifact Contract Planning
+
+- Added `docs/phase10f/phase10f8_viewer_scene_artifact_contract_planning.md`.
+- Added `docs/phase10f/phase10f8_viewer_scene_json_contract.md`.
+- Added `docs/phase10f/phase10f8_viewer_scene_manifest_contract.md`.
+- Added `docs/phase10f/phase10f8_viewer_scene_validation_contract.md`.
+- Added `docs/phase10f/phase10f8_viewer_scene_security_contract.md`.
+- Added `docs/phase10f/phase10f8_viewer_scene_browser_evidence_contract.md`.
+- Added `docs/phase10f/phase10f8_viewer_scene_versioning_strategy.md`.
+- Added `docs/phase10f/phase10f8_viewer_scene_contract_readiness_matrix.md`.
+- Added `docs/phase10f/phase10f9_next_scope_prompt.md`.
+- Updated `docs/index.md` and `docs/13_SHARED_SCHEMA_SPEC.md` with the Phase 10F-8 contract-planning docs and schema draft.
+- Planned inert `viewer_scene` JSON, manifest, validation, security, browser evidence, and versioning contracts.
+- Recorded readiness decisions: contract planning `READY`, JSON-only preview planning `READY`, renderer handoff `PARTIAL_READY`, renderer implementation `NOT_READY`, and full `structure.viewer_3d` implementation `NOT_READY`.
+- Recommended Phase 10F-9: Viewer Scene JSON Preview Evidence / Contract Fixture Planning.
+- No full viewer implementation, WebGL renderer, Three.js integration, renderer bundle, frontend 3D runtime, new adapter, planner routing change, Tool Registry runtime change, notebook/script execution, external API workflow, artifact JS, external URL, phonon, or unsupported official PASS claim was added.
+
 ### Phase 10F-7 Advanced Structure Viewer Readiness Planning
 
 - Added `docs/phase10f/phase10f7_advanced_viewer_readiness.md`.

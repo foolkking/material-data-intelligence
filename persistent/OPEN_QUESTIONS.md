@@ -1,5 +1,19 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F-8 Follow-ups
+
+- **Closed: viewer_scene artifact identity planning.** Phase 10F-8 fixes `viewer_scene`, `viewer_scene.v1`, and `phase10f8.viewer_scene.v1` as the contract draft identity.
+- **Closed: top-level JSON contract planning.** Required fields are planned: `kind`, `version`, `schema_version`, `source`, `metadata`, `scene`, `validation`, `caps`, `warnings`, `provenance`, and `security`.
+- **Closed: validation contract draft.** Phase 10F-8 converts Phase 10F-7 caps into contract draft limits for sites, bonds, species, cell expansion, unit-cell edges, and JSON bytes.
+- **Closed: JSON-only browser evidence model.** Static JSON/manifest preview evidence is allowed; renderer screenshot evidence remains deferred.
+- **Still open: final implementation thresholds.** The draft caps are ready for contract planning, but implementation-time thresholds still need reviewer confirmation before validator code is added.
+- **Still open: bond policy.** Bonds remain optional and advisory in v1; whether a future producer must infer bonds remains deferred.
+- **Still open: coordinate canonicalization.** The v1 contract recommends Cartesian angstroms as renderer-facing basis with optional fractional coordinates, but final implementation must decide whether fractional coordinates are also required.
+- **Still open: renderer library decision.** Renderer implementation, WebGL, Three.js, renderer bundles, and sandboxing remain `NOT_READY` and require explicit approval.
+- **Still open: compressed payloads.** Compressed viewer artifacts are disallowed in v1; any future allowance requires security review.
+- **Still open: multi-structure scenes.** Multi-structure scenes are out of v1 and require a future contract version.
+- **Still open: official PASS evidence.** Official PASS claims remain none.
+
 ## 2026-07-09 Phase 10F-7 Follow-ups
 
 - **Closed: advanced viewer readiness assessment.** Phase 10F-7 assessed the artifact contract, renderer architecture, security boundary, input caps, routing policy, browser evidence model, and readiness matrix.

@@ -1,5 +1,32 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-8-VIEWER-SCENE-CONTRACT: Fix inert viewer scene contract before JSON preview evidence
+
+### Context
+
+Phase 10F-7 concluded that advanced viewer work should proceed through contract-before-renderer planning. Phase 10D already provides static `viewer_scene.json` and `viewer_assets_manifest.json` preview evidence, but those artifacts should be hardened into a future-facing contract before any renderer, WebGL, Three.js, or full `structure.viewer_3d` implementation is considered.
+
+### Decision
+
+Phase 10F-8 fixes the planning contract direction:
+
+- `viewer_scene.json` is an inert JSON artifact with artifact kind `viewer_scene`, contract version `viewer_scene.v1`, and schema version `phase10f8.viewer_scene.v1`;
+- the first intended consumer is JSON-only artifact preview;
+- a viewer scene manifest may index scene artifacts, but it must not include or require a renderer;
+- required top-level fields include source, metadata, scene, validation, caps, warnings, provenance, and security;
+- validation caps are planned for sites, bonds, species, cell expansion, unit-cell edges, and JSON byte size;
+- the security boundary forbids artifact JS, HTML, executable callbacks, external URLs, remote textures, renderer bundle references, hidden execution paths, notebooks, scripts, and external APIs;
+- renderer handoff is only partially ready;
+- renderer implementation and full `structure.viewer_3d` implementation remain `NOT_READY`.
+
+### Consequences
+
+- Phase 10F-9 should plan or capture JSON-only preview evidence / contract fixtures.
+- Future renderer work requires a separate approval gate, sandboxing plan, dependency review, browser console/network audit, and malicious-scene tests.
+- Existing Phase 10D `structure.viewer_scene_metadata` and `structure.viewer_export_package` remain unchanged.
+- Historical `structure.viewer_3d` registry/adapter inventory remains unapproved for full implementation.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, adapter semantics, planner routing, and the default real-LLM gate remain unchanged.
+
 ## ADR-10F-7-CONTRACT-BEFORE-RENDERER: Plan inert viewer scene artifacts before renderer implementation
 
 ### Context

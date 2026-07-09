@@ -1,5 +1,22 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10F-8 Viewer Scene Artifact Contract Planning
+
+- Planned the inert `viewer_scene` artifact contract after Phase 10F-7 readiness approved a contract-before-renderer path.
+- Fixed artifact identity for planning: artifact kind `viewer_scene`, contract version `viewer_scene.v1`, and schema version `phase10f8.viewer_scene.v1`.
+- Planned top-level JSON fields: `kind`, `version`, `schema_version`, `source`, `metadata`, `scene`, `validation`, `caps`, `warnings`, `provenance`, and `security`.
+- Planned a viewer scene manifest contract while preserving Phase 10D `viewer_assets_manifest.json` as existing static export-package evidence.
+- Converted Phase 10F-7 input caps into validation-contract draft caps: `max_sites: 256`, `max_bonds: 2048`, `max_unit_cell_edges: 12`, `max_species: 32`, `max_cell_expansion: [1, 1, 1]`, and `max_scene_json_bytes: 1000000`.
+- Fixed the security boundary: artifacts are inert data, with no artifact JS, no HTML, no external URLs, no remote textures, no renderer-required JSON phase, and no hidden execution path.
+- Planned JSON-only browser evidence for static artifact preview; renderer screenshot evidence remains deferred and requires explicit approval.
+- Decided viewer_scene artifact contract planning is `READY`.
+- Decided JSON-only preview planning is `READY`.
+- Decided renderer handoff is `PARTIAL_READY`.
+- Decided renderer implementation is `NOT_READY`.
+- Decided full `structure.viewer_3d` implementation is `NOT_READY`.
+- Recommended Phase 10F-9 scope: Viewer Scene JSON Preview Evidence / Contract Fixture Planning.
+- No `structure.viewer_3d`, full interactive viewer, WebGL renderer, Three.js integration, renderer bundle, frontend 3D runtime, new adapter, planner routing change, Tool Registry runtime change, notebook execution, external script, external API, artifact JS, external URL, phonon, Brillouin-zone 3D, or advanced local environment classifier was added.
+
 ## 2026-07-09 Phase 10F-7 Advanced Structure Viewer Readiness Planning
 
 - Assessed readiness for future advanced structure viewer work after static physics implementation, browser/API evidence, and fixture-pack replay closure.

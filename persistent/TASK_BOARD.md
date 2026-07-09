@@ -1,5 +1,40 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10F-8 Viewer Scene Artifact Contract Planning
+
+### Done
+
+- [x] Kept Phase 10F-7 status as `PASS`.
+- [x] Confirmed branch `master`, baseline HEAD `35bd2e9fd17c85bf942d73b4fd524ff49e587cb8`, and clean working tree before edits.
+- [x] Added `docs/phase10f/phase10f8_viewer_scene_artifact_contract_planning.md`.
+- [x] Added `docs/phase10f/phase10f8_viewer_scene_json_contract.md`.
+- [x] Added `docs/phase10f/phase10f8_viewer_scene_manifest_contract.md`.
+- [x] Added `docs/phase10f/phase10f8_viewer_scene_validation_contract.md`.
+- [x] Added `docs/phase10f/phase10f8_viewer_scene_security_contract.md`.
+- [x] Added `docs/phase10f/phase10f8_viewer_scene_browser_evidence_contract.md`.
+- [x] Added `docs/phase10f/phase10f8_viewer_scene_versioning_strategy.md`.
+- [x] Added `docs/phase10f/phase10f8_viewer_scene_contract_readiness_matrix.md`.
+- [x] Added `docs/phase10f/phase10f9_next_scope_prompt.md`.
+
+### Decisions
+
+- [x] `viewer_scene` artifact contract planning is `READY`.
+- [x] JSON-only preview planning is `READY`.
+- [x] Renderer handoff is `PARTIAL_READY`.
+- [x] Renderer implementation is `NOT_READY`.
+- [x] Full `structure.viewer_3d` implementation is `NOT_READY`.
+
+### Recommended Next Scope
+
+- [x] Recommend Phase 10F-9: Viewer Scene JSON Preview Evidence / Contract Fixture Planning.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, renderer bundle, planner routing implementation, or phonon implementation.
+
+### Remaining
+
+- [ ] Build or replay any future JSON-only viewer_scene contract fixtures only after Phase 10F-9 approval.
+- [ ] Renderer sandbox, dependency review, and browser renderer evidence remain future work.
+- [ ] Official PASS evidence remains none.
+
 ## 2026-07-09 Phase 10F-7 Advanced Structure Viewer Readiness Planning
 
 ### Done

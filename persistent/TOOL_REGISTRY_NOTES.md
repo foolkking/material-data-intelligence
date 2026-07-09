@@ -1,5 +1,16 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-09 Phase 10F-8 Viewer Scene Contract Notes
+
+- No Tool Registry entries were added, removed, or modified in Phase 10F-8.
+- Phase 10F-8 plans an inert `viewer_scene` artifact contract only. It does not register or activate `structure.viewer_3d`.
+- Existing Phase 10D tools remain the only implemented viewer-scene-related tools:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+- Historical `structure.viewer_3d` registry/adapter inventory remains unapproved for full implementation and is not evidenced by this phase.
+- Future viewer-scene implementation must still execute through AnalysisPlan validation, `/planner/jobs`, QueueWorkerRuntime, Tool Registry lookup, params schema validation, adapter execution, artifact generation, and security checks.
+- No Tool Registry main semantics, planner routing, runtime authority, renderer bundle, WebGL, Three.js, phonon, or unsupported official PASS claim was added.
+
 ## 2026-07-09 Phase 10F-7 Advanced Viewer Readiness Notes
 
 - No Tool Registry entries were added, removed, or modified in Phase 10F-7.

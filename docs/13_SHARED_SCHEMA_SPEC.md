@@ -1,5 +1,73 @@
 # 共享 Schema 规范
 
+## Phase 10F-8 Addendum: Viewer Scene Artifact Contract Draft
+
+Phase 10F-8 plans a renderer-neutral `viewer_scene` artifact contract. This is a documentation-level schema draft only; it does not implement `structure.viewer_3d`, does not add a renderer, and does not change Tool Registry or planner runtime behavior.
+
+### `viewer_scene.json`
+
+Draft identity:
+
+```json
+{
+  "kind": "viewer_scene",
+  "version": "viewer_scene.v1",
+  "schema_version": "phase10f8.viewer_scene.v1"
+}
+```
+
+Required top-level fields:
+
+- `kind`
+- `version`
+- `schema_version`
+- `source`
+- `metadata`
+- `scene`
+- `validation`
+- `caps`
+- `warnings`
+- `provenance`
+- `security`
+
+Security-critical fields:
+
+```json
+{
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "artifact_supplied_js_allowed": false,
+    "renderer_required": false,
+    "remote_assets_allowed": false,
+    "html_allowed": false
+  }
+}
+```
+
+The artifact is inert JSON. It must not contain embedded JavaScript, HTML, executable callbacks, external URLs, remote textures, renderer bundle references, notebook payloads, or external script references. JSON-only preview is allowed; renderer evidence and implementation remain future scope.
+
+### Viewer Scene Manifest
+
+Draft identity:
+
+```json
+{
+  "kind": "viewer_scene_manifest",
+  "version": "viewer_scene_manifest.v1",
+  "schema_version": "phase10f8.viewer_scene_manifest.v1",
+  "entry_artifact": "viewer_scene.json",
+  "renderer": {
+    "included": false,
+    "required": false,
+    "renderer_type": "none"
+  }
+}
+```
+
+The manifest is an inert artifact index. It must not load external assets or declare a renderer bundle. Phase 10D `viewer_assets_manifest.json` remains the existing implemented artifact; Phase 10F-8 only plans a future compatibility bridge.
+
 ## 1. 本阶段目标
 
 收敛前端、后端、Worker、Agent 和 Tool Registry 共同使用的核心类型，避免每个设计文件重复定义不同版本的 `ArtifactType`、`DisplayTarget`、`ToolCategory`、`DataProfile`、`AnalysisPlan`、`JobEvent` 和 `Recipe`。
