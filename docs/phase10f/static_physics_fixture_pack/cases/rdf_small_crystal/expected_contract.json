@@ -1,0 +1,71 @@
+{
+  "schema_version": "phase10f4.expected_contract.v1",
+  "case_id": "rdf_small_crystal",
+  "target_tool": "structure.rdf",
+  "official_pass_claim": false,
+  "provenance": {
+    "label": "internal_regression",
+    "official_pass_eligible": false
+  },
+  "input": {
+    "type": "poscar",
+    "direct_uploadable": true,
+    "max_sites": 128,
+    "requires_pbc": [true, true, true]
+  },
+  "expected_artifacts": [
+    "rdf.json",
+    "rdf_plot.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "exact_checks": {
+    "tool_id": "structure.rdf",
+    "normalization": "number_density",
+    "pbc": [true, true, true],
+    "artifact_filenames": [
+      "rdf.json",
+      "rdf_plot.json",
+      "summary.md",
+      "recipe.json"
+    ],
+    "security.contains_javascript": false,
+    "security.external_urls": [],
+    "security.external_urls_allowed": false
+  },
+  "numeric_checks": {
+    "bin_count": {
+      "mode": "exact",
+      "status": "pending_replay_generation"
+    },
+    "r_grid": {
+      "mode": "tolerance",
+      "tolerance": 0.000001,
+      "status": "pending_replay_generation"
+    },
+    "selected_g_r_values": {
+      "mode": "tolerance",
+      "tolerance": 0.000001,
+      "status": "pending_replay_generation"
+    },
+    "counts": {
+      "mode": "exact",
+      "status": "pending_replay_generation"
+    }
+  },
+  "metadata_checks": {
+    "schema_version": "required",
+    "limits": "required",
+    "warnings": "allowed",
+    "source": "required",
+    "rdf.normalization": "required"
+  },
+  "security_checks": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false
+  },
+  "tolerance_policy": "docs/phase10f/phase10f3_numeric_tolerance_policy.md",
+  "status": "candidate_expected_contract"
+}
+

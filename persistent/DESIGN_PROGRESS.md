@@ -1,5 +1,20 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10F-4 Static Physics Direct-Uploadable Fixture Pack Construction
+
+- Constructed a small candidate direct-uploadable fixture pack for future replay of `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Added `docs/phase10f/static_physics_fixture_pack/` with a pack README, manifest, local schemas, provenance policy, tolerance policy, and three bounded case directories.
+- Added candidate cases:
+  - `coordination_hist_small_crystal`
+  - `xrd_small_crystal`
+  - `rdf_small_crystal`
+- Each case includes a small text input, `input_manifest.json`, `expected_contract.json`, `provenance.json`, and `README.md`.
+- Provenance labels are `internal_regression`; all `official_pass_claim` / `official_pass_claims` fields remain `false`.
+- Numeric expected values remain `pending_replay_generation` until Phase 10F-5 replays the pack through the platform/job flow.
+- Added `docs/phase10f/phase10f4_static_physics_fixture_pack_construction.md` and `docs/phase10f/phase10f5_next_scope_prompt.md`.
+- Recommended Phase 10F-5 scope: Static Physics Fixture Pack Replay Verification.
+- No official PASS verification, official PASS claim, notebook execution, external script, benchmark extraction script, external API, network workflow, real LLM path, dependency installation, new adapter, adapter semantic change, Tool Registry semantic change, QueueWorkerRuntime change, AnalysisPlanRepository change, `/planner/jobs` change, PlanValidator relaxation, full viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, or advanced local environment classification was added.
+
 ## 2026-07-09 Phase 10F-3 Static Physics Direct-Uploadable Fixture Pack Planning
 
 - Planned a small direct-uploadable static physics fixture pack for future replay of `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.

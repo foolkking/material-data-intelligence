@@ -1,5 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F-4 Follow-ups
+
+- **Closed: fixture-pack construction.** Phase 10F-4 constructs `docs/phase10f/static_physics_fixture_pack/` with three bounded candidate cases for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- **Closed: no-PASS boundary in pack metadata.** Pack and case contracts keep `official_pass_claim` / `official_pass_claims` set to `false`; provenance labels are `internal_regression`.
+- **Still open: replay verification.** The pack has not yet been replayed through `/planner/jobs`, QueueWorkerRuntime, Tool Registry validation, and adapter execution.
+- **Still open: numeric expected values.** Numeric contract fields remain `pending_replay_generation` until Phase 10F-5 replay produces reviewed candidate values.
+- **Still open: official static physics PASS evidence.** No official PASS claim exists for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`.
+- **Recommended next: fixture-pack replay verification.** Phase 10F-5 should replay the candidate pack and report fixture-pack PASS/PARTIAL_PASS without promoting internal regression cases to official PASS.
+- **Still open: advanced structure.** Full interactive 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future readiness/planning items.
+
 ## 2026-07-09 Phase 10F-3 Follow-ups
 
 - **Closed: fixture-pack planning.** Phase 10F-3 defines the small direct-uploadable fixture pack layout, candidate matrix, provenance labels, expected-contract templates, numeric tolerance policy, and future replay protocol for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.

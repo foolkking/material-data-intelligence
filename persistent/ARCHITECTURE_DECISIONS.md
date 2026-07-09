@@ -1,5 +1,33 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-4-STATIC-PHYSICS-FIXTURE-PACK: Construct candidate fixtures without official PASS claims
+
+### Context
+
+Phase 10F-3 planned a provenance-gated fixture pack model for future replay of `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`. Phase 10F-1 remains `PARTIAL_PASS` because the current official benchmark pack has no direct-uploadable official static physics case. The next step is to construct small candidate inputs and expected-contract metadata without claiming official PASS.
+
+### Decision
+
+Phase 10F-4 constructs `docs/phase10f/static_physics_fixture_pack/` as a candidate direct-uploadable fixture pack:
+
+- one bounded case for `structure.coordination_hist`;
+- one bounded case for `structure.xrd`;
+- one bounded case for `structure.rdf`;
+- each case has a small text input, `input_manifest.json`, `expected_contract.json`, `provenance.json`, and `README.md`;
+- pack and expected-contract schemas are local and do not depend on external schema URLs;
+- provenance labels are `internal_regression`;
+- every `official_pass_claim` / `official_pass_claims` field is `false`;
+- numeric expected values remain `pending_replay_generation` until a later replay phase.
+
+The pack is for Phase 10F-5 fixture replay verification only. It does not create official example PASS evidence.
+
+### Consequences
+
+- Phase 10F-5 should replay the fixture pack through the existing validated platform/job flow.
+- Fixture-pack PASS must remain separate from official PASS unless provenance later becomes `official_direct` or reviewer-approved `official_derived_manual` and direct replay succeeds.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, adapter semantics, and the default real-LLM gate remain unchanged.
+- Full `structure.viewer_3d`, WebGL, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future planning items.
+
 ## ADR-10F-3-STATIC-PHYSICS-FIXTURE-PACK: Plan provenance-gated fixtures before replay verification
 
 ### Context

@@ -1,0 +1,12 @@
+{
+  "schema_version": "phase10f4.input_manifest.v1",
+  "case_id": "rdf_small_crystal",
+  "target_tool": "structure.rdf",
+  "input_file": "input.poscar",
+  "input_type": "poscar",
+  "direct_uploadable": true,
+  "requires_pbc": [true, true, true],
+  "max_sites": 128,
+  "notes": "Small deterministic NaCl POSCAR internal regression fixture for future RDF replay verification."
+}
+

@@ -1,0 +1,114 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "case_id",
+    "target_tool",
+    "official_pass_claim",
+    "provenance",
+    "input",
+    "expected_artifacts",
+    "exact_checks",
+    "numeric_checks",
+    "metadata_checks",
+    "security_checks",
+    "tolerance_policy",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "phase10f4.expected_contract.v1"
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_tool": {
+      "enum": [
+        "structure.coordination_hist",
+        "structure.xrd",
+        "structure.rdf"
+      ]
+    },
+    "official_pass_claim": {
+      "const": false
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "official_pass_eligible"
+      ],
+      "properties": {
+        "label": {
+          "enum": [
+            "official_direct",
+            "official_derived_manual",
+            "official_like_curated",
+            "internal_regression",
+            "mapping_only",
+            "future_scope",
+            "unsupported",
+            "unknown"
+          ]
+        },
+        "official_pass_eligible": {
+          "const": false
+        }
+      }
+    },
+    "input": {
+      "type": "object"
+    },
+    "expected_artifacts": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "string"
+      }
+    },
+    "exact_checks": {
+      "type": "object"
+    },
+    "numeric_checks": {
+      "type": "object"
+    },
+    "metadata_checks": {
+      "type": "object"
+    },
+    "security_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_javascript",
+        "external_urls",
+        "external_urls_allowed"
+      ],
+      "properties": {
+        "contains_javascript": {
+          "const": false
+        },
+        "external_urls": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "external_urls_allowed": {
+          "const": false
+        }
+      }
+    },
+    "tolerance_policy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "candidate_expected_contract",
+        "pending_replay_generation"
+      ]
+    }
+  }
+}
+

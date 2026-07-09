@@ -1,0 +1,20 @@
+{
+  "schema_version": "phase10f4.provenance.v1",
+  "case_id": "rdf_small_crystal",
+  "provenance_label": "internal_regression",
+  "source_description": "Copied from project-local tests/fixtures/structures/nacl.poscar for deterministic platform regression.",
+  "source_path": "tests/fixtures/structures/nacl.poscar",
+  "official_pass_eligible": false,
+  "official_pass_requires": [
+    "official_direct_or_approved_official_derived_manual_provenance",
+    "direct replay verification",
+    "reviewer approval"
+  ],
+  "not_official_pass_reason": "This fixture is project-local internal regression input, not a direct official example case.",
+  "notebook_executed": false,
+  "script_executed": false,
+  "external_api_used": false,
+  "network_used": false,
+  "created_in_phase": "10F-4"
+}
+

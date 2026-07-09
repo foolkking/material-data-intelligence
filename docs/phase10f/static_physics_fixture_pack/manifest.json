@@ -1,0 +1,48 @@
+{
+  "schema_version": "phase10f4.fixture_pack_manifest.v1",
+  "pack_id": "static_physics_direct_uploadable_fixture_pack",
+  "phase": "10F-4",
+  "status": "candidate_fixture_pack",
+  "official_pass_claims": false,
+  "description": "Small direct-uploadable static physics fixture pack for future replay verification.",
+  "target_tools": [
+    "structure.coordination_hist",
+    "structure.xrd",
+    "structure.rdf"
+  ],
+  "cases": [
+    {
+      "case_id": "coordination_hist_small_crystal",
+      "target_tool": "structure.coordination_hist",
+      "case_dir": "cases/coordination_hist_small_crystal",
+      "input_manifest": "cases/coordination_hist_small_crystal/input_manifest.json",
+      "expected_contract": "cases/coordination_hist_small_crystal/expected_contract.json",
+      "provenance": "cases/coordination_hist_small_crystal/provenance.json",
+      "official_pass_eligible": false
+    },
+    {
+      "case_id": "xrd_small_crystal",
+      "target_tool": "structure.xrd",
+      "case_dir": "cases/xrd_small_crystal",
+      "input_manifest": "cases/xrd_small_crystal/input_manifest.json",
+      "expected_contract": "cases/xrd_small_crystal/expected_contract.json",
+      "provenance": "cases/xrd_small_crystal/provenance.json",
+      "official_pass_eligible": false
+    },
+    {
+      "case_id": "rdf_small_crystal",
+      "target_tool": "structure.rdf",
+      "case_dir": "cases/rdf_small_crystal",
+      "input_manifest": "cases/rdf_small_crystal/input_manifest.json",
+      "expected_contract": "cases/rdf_small_crystal/expected_contract.json",
+      "provenance": "cases/rdf_small_crystal/provenance.json",
+      "official_pass_eligible": false
+    }
+  ],
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false
+  }
+}
+

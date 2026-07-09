@@ -2,6 +2,18 @@
 
 ## 2026-07-09
 
+### Phase 10F-4 Static Physics Direct-Uploadable Fixture Pack Construction
+
+- Added `docs/phase10f/static_physics_fixture_pack/`.
+- Added a candidate fixture pack manifest, local manifest schema, expected-contract schema, provenance policy, and tolerance policy.
+- Added three small direct-uploadable candidate cases for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Added each case's input file, `input_manifest.json`, `expected_contract.json`, `provenance.json`, and `README.md`.
+- Added `docs/phase10f/phase10f4_static_physics_fixture_pack_construction.md`.
+- Added `docs/phase10f/phase10f5_next_scope_prompt.md`.
+- Kept all official PASS claims false; numeric expected values are pending Phase 10F-5 replay generation.
+- Recommended Phase 10F-5: Static Physics Fixture Pack Replay Verification.
+- No official PASS verification, notebook/script execution, benchmark extraction script, external API workflow, new adapter, runtime semantic change, full viewer, WebGL renderer, Three.js, phonon, real LLM path, dependency, or unsupported official PASS claim was added.
+
 ### Phase 10F-3 Static Physics Direct-Uploadable Fixture Pack Planning
 
 - Added `docs/phase10f/phase10f3_static_physics_fixture_pack_planning.md`.

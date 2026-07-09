@@ -1,5 +1,17 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-09 Phase 10F-4 Fixture Pack Construction Notes
+
+- No Tool Registry entries were added, removed, or modified in Phase 10F-4.
+- Existing static physics tools remain:
+  - `structure.coordination_hist`
+  - `structure.xrd`
+  - `structure.rdf`
+- Phase 10F-4 constructs a candidate fixture pack only. The pack references the existing tools and expected artifact names but does not alter registry schemas, planner routing, adapter behavior, or runtime authority.
+- Future Phase 10F-5 replay must still execute through AnalysisPlan validation, `/planner/jobs`, QueueWorkerRuntime, Tool Registry lookup, params schema validation, adapter execution, artifact generation, and security checks.
+- All fixture-pack official PASS claims remain false; `internal_regression` cases are regression candidates, not official examples PASS evidence.
+- No Tool Registry main semantics, runtime authority, full viewer, WebGL renderer, Three.js, phonon, or unsupported official example PASS claim was added.
+
 ## 2026-07-09 Phase 10F-3 Fixture Pack Planning Notes
 
 - No Tool Registry entries were added, removed, or modified in Phase 10F-3.

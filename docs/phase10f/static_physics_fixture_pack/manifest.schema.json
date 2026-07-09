@@ -1,0 +1,119 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "pack_id",
+    "phase",
+    "status",
+    "official_pass_claims",
+    "description",
+    "target_tools",
+    "cases",
+    "security"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "phase10f4.fixture_pack_manifest.v1"
+    },
+    "pack_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "phase": {
+      "const": "10F-4"
+    },
+    "status": {
+      "const": "candidate_fixture_pack"
+    },
+    "official_pass_claims": {
+      "const": false
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_tools": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "enum": [
+          "structure.coordination_hist",
+          "structure.xrd",
+          "structure.rdf"
+        ]
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case_id",
+          "target_tool",
+          "case_dir",
+          "input_manifest",
+          "expected_contract",
+          "provenance",
+          "official_pass_eligible"
+        ],
+        "properties": {
+          "case_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_tool": {
+            "enum": [
+              "structure.coordination_hist",
+              "structure.xrd",
+              "structure.rdf"
+            ]
+          },
+          "case_dir": {
+            "type": "string",
+            "minLength": 1
+          },
+          "input_manifest": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_contract": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provenance": {
+            "type": "string",
+            "minLength": 1
+          },
+          "official_pass_eligible": {
+            "const": false
+          }
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_javascript",
+        "external_urls",
+        "external_urls_allowed"
+      ],
+      "properties": {
+        "contains_javascript": {
+          "const": false
+        },
+        "external_urls": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "external_urls_allowed": {
+          "const": false
+        }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,61 @@
+{
+  "schema_version": "phase10f4.expected_contract.v1",
+  "case_id": "coordination_hist_small_crystal",
+  "target_tool": "structure.coordination_hist",
+  "official_pass_claim": false,
+  "provenance": {
+    "label": "internal_regression",
+    "official_pass_eligible": false
+  },
+  "input": {
+    "type": "cif",
+    "direct_uploadable": true,
+    "max_sites": 64
+  },
+  "expected_artifacts": [
+    "coordination_hist.json",
+    "coordination_hist_plot.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "exact_checks": {
+    "tool_id": "structure.coordination_hist",
+    "artifact_filenames": [
+      "coordination_hist.json",
+      "coordination_hist_plot.json",
+      "summary.md",
+      "recipe.json"
+    ],
+    "security.contains_javascript": false,
+    "security.external_urls": [],
+    "security.external_urls_allowed": false
+  },
+  "numeric_checks": {
+    "site_count": {
+      "mode": "exact",
+      "status": "pending_replay_generation"
+    },
+    "histogram_counts": {
+      "mode": "exact",
+      "status": "pending_replay_generation"
+    },
+    "dominant_coordination": {
+      "mode": "exact",
+      "status": "pending_replay_generation"
+    }
+  },
+  "metadata_checks": {
+    "schema_version": "required",
+    "limits": "required",
+    "warnings": "allowed",
+    "source": "required"
+  },
+  "security_checks": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false
+  },
+  "tolerance_policy": "docs/phase10f/phase10f3_numeric_tolerance_policy.md",
+  "status": "candidate_expected_contract"
+}
+

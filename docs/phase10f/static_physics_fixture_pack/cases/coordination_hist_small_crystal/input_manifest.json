@@ -1,0 +1,12 @@
+{
+  "schema_version": "phase10f4.input_manifest.v1",
+  "case_id": "coordination_hist_small_crystal",
+  "target_tool": "structure.coordination_hist",
+  "input_file": "input.cif",
+  "input_type": "cif",
+  "direct_uploadable": true,
+  "requires_pbc": [true, true, true],
+  "max_sites": 64,
+  "notes": "Small deterministic simple-cubic internal regression fixture for future replay verification."
+}
+

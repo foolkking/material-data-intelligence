@@ -1,5 +1,34 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10F-4 Static Physics Direct-Uploadable Fixture Pack Construction
+
+### Done
+
+- [x] Kept Phase 10F-3 status as `PASS`.
+- [x] Kept Phase 10F-1 status as `PARTIAL_PASS`.
+- [x] Constructed `docs/phase10f/static_physics_fixture_pack/`.
+- [x] Added pack `README.md`, `manifest.json`, `manifest.schema.json`, `expected_contract.schema.json`, `provenance_policy.md`, and `tolerance_policy.md`.
+- [x] Added `coordination_hist_small_crystal` with input, input manifest, expected contract, provenance, and README.
+- [x] Added `xrd_small_crystal` with input, input manifest, expected contract, provenance, and README.
+- [x] Added `rdf_small_crystal` with input, input manifest, expected contract, provenance, and README.
+- [x] Kept every `official_pass_claim` / `official_pass_claims` field `false`.
+- [x] Added `docs/phase10f/phase10f4_static_physics_fixture_pack_construction.md`.
+- [x] Added `docs/phase10f/phase10f5_next_scope_prompt.md`.
+
+### Recommended Next Scope
+
+- [x] Recommend Phase 10F-5: Static Physics Fixture Pack Replay Verification.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, or phonon implementation.
+
+### Remaining
+
+- [ ] Replay the fixture pack through the platform/job flow.
+- [ ] Generate or verify candidate numeric expected values through replay, not by invention.
+- [ ] Keep fixture-pack PASS separate from official PASS unless provenance becomes eligible and replay succeeds.
+- [ ] Full interactive 3D viewer readiness planning.
+- [ ] Brillouin-zone 3D planning.
+- [ ] Phonon bands/DOS planning.
+
 ## 2026-07-09 Phase 10F-3 Static Physics Direct-Uploadable Fixture Pack Planning
 
 ### Done

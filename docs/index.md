@@ -67,3 +67,6 @@
 | [`phase10f/phase10f3_numeric_tolerance_policy.md`](phase10f/phase10f3_numeric_tolerance_policy.md) | Phase 10F-3 numeric tolerance policy |
 | [`phase10f/phase10f3_fixture_replay_protocol.md`](phase10f/phase10f3_fixture_replay_protocol.md) | Phase 10F-3 future fixture replay protocol |
 | [`phase10f/phase10f4_next_scope_prompt.md`](phase10f/phase10f4_next_scope_prompt.md) | Copyable Phase 10F-4 fixture-pack construction prompt |
+| [`phase10f/phase10f4_static_physics_fixture_pack_construction.md`](phase10f/phase10f4_static_physics_fixture_pack_construction.md) | Phase 10F-4 static physics fixture pack construction |
+| [`phase10f/static_physics_fixture_pack/`](phase10f/static_physics_fixture_pack/) | Phase 10F-4 candidate direct-uploadable static physics fixture pack |
+| [`phase10f/phase10f5_next_scope_prompt.md`](phase10f/phase10f5_next_scope_prompt.md) | Copyable Phase 10F-5 fixture-pack replay verification prompt |
