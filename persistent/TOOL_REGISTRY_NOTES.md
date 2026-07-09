@@ -1,5 +1,16 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-09 Phase 10F Static Physics Closure Notes
+
+- The static structure physics family is closed at the registry/evidence level for:
+  - `structure.coordination_hist`
+  - `structure.xrd`
+  - `structure.rdf`
+- All three tools remain registry-gated `structure` tools with strict params schemas, bounded resource limits, deterministic static artifacts, summaries, and recipes.
+- Mock Planner routing covers each static physics intent and preserves negative-routing boundaries for full viewer, WebGL, Brillouin-zone, phonon, advanced environment classification, and experimental fitting prompts.
+- The recommended next registry-related work is direct official-example verification, not new tool registration.
+- No Tool Registry main semantics, runtime authority, full viewer, WebGL renderer, Three.js, phonon, or official example PASS claim was added in Phase 10F.
+
 ## 2026-07-09 Phase 10E-8 RDF Evidence Notes
 
 - `structure.rdf` remains registered as an MVP `structure` tool with static artifacts only.

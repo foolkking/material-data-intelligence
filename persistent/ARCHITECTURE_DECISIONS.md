@@ -1,5 +1,33 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-STATIC-PHYSICS-CLOSURE: Close static structure physics before advanced viewer implementation
+
+### Context
+
+Phase 10E completed the static structure physics sequence:
+
+- `structure.coordination_hist`
+- `structure.xrd`
+- `structure.rdf`
+
+Each tool now has deterministic static artifacts, browser/API evidence, registry coverage, planner routing, negative-routing evidence, and CI coverage. The remaining structure roadmap includes higher-risk interactive or advanced capabilities such as full 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon plots, and advanced local environment classification.
+
+### Decision
+
+Treat Phase 10E static physics as closed and move next to a lower-risk verification phase:
+
+```text
+Phase 10F-1: Official Examples Direct Verification for Static Structure Physics
+```
+
+This phase should verify only direct-uploadable static physics cases and must not mark mapping-only, notebook-only, script-heavy, external-API, missing-input, or screenshot-only cases as PASS.
+
+### Consequences
+
+- Static physics can be used as a stable platform baseline for future advanced-structure planning.
+- Full `structure.viewer_3d`, WebGL, Three.js, Brillouin-zone 3D, phonon, and advanced environment classification remain future readiness/planning work, not immediate implementation work.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, and the default real-LLM gate remain unchanged.
+
 ## ADR-10E-1-COORDINATION-HIST: Coordination histogram uses deterministic cutoff counts, not advanced environment classification
 
 ### Context

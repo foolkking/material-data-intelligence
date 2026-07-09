@@ -1,5 +1,13 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F Follow-ups
+
+- **Closed: static physics family.** `structure.coordination_hist`, `structure.xrd`, and `structure.rdf` now have implementation, browser/API evidence, deterministic static artifacts, registry/planner coverage, and CI closure.
+- **Recommended next: official static physics direct verification.** Phase 10F recommends direct-uploadable official-example verification before moving to higher-risk viewer/WebGL/phonon work.
+- **Still open: official examples direct verification.** No mapping-only, notebook-only, script-heavy, external-API, missing-input, or screenshot-only case should be marked PASS without direct platform evidence.
+- **Still open: rendered chart UI.** Static chart JSON artifacts are evidenced; rendered bar/stem/line chart preview polish remains a separate UI enhancement.
+- **Still open: advanced structure.** Full interactive 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future readiness/planning items.
+
 ## 2026-07-09 Phase 10E-8 Follow-ups
 
 - **Closed: Phase 10E-8 evidence.** Browser/API/artifact/security/negative-routing evidence is now complete for `structure.rdf`.

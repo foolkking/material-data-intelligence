@@ -1,5 +1,30 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10F Static Structure Physics Closure
+
+### Done
+
+- [x] Audited Phase 10E static structure physics closure.
+- [x] Confirmed `structure.coordination_hist`, `structure.xrd`, and `structure.rdf` have implementation and browser/API evidence.
+- [x] Recorded artifact, registry, planner, security, and CI closure.
+- [x] Added `docs/phase10f/phase10f_static_structure_physics_closure.md`.
+- [x] Added `docs/phase10f/phase10f_next_scope_decision_matrix.md`.
+- [x] Added `docs/phase10f/phase10f1_next_scope_prompt.md`.
+
+### Recommended Next Scope
+
+- [x] Recommend Phase 10F-1: Official Examples Direct Verification for Static Structure Physics.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, or phonon implementation without a later readiness phase.
+
+### Remaining
+
+- [ ] Official examples direct verification for static physics, if selected.
+- [ ] Full interactive 3D viewer readiness planning.
+- [ ] Brillouin-zone 3D planning.
+- [ ] Phonon bands/DOS planning.
+- [ ] Advanced local environment classification planning.
+- [ ] Rendered static chart UI enhancement.
+
 ## 2026-07-09 Phase 10E-8 RDF Browser/API Evidence
 
 ### Done
@@ -15,8 +40,8 @@
 - [x] Evidence generation harness completed for CIF and POSCAR fixtures.
 - [x] Browser screenshot capture completed.
 - [x] Generated evidence scan recorded `NO_SECRET_PATTERN_HITS`.
-- [ ] Full regression checks before commit.
-- [ ] Commit, push, and confirm CI current HEAD.
+- [x] Full regression checks before commit.
+- [x] Commit, push, and confirm CI current HEAD.
 
 ### Remaining
 

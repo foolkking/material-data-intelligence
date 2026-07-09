@@ -1,5 +1,14 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10F Static Structure Physics Closure
+
+- Closed the Phase 10E static structure physics family at the implementation + browser/API evidence level.
+- Completed static physics tools are `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Verified closure across Tool Registry registration, strict params validation, deterministic static artifacts, Mock Planner routing, negative routing, browser/API evidence, no-JS/no-external-URL security posture, and CI.
+- Added Phase 10F closure docs under `docs/phase10f/`, including the closure audit, next-scope decision matrix, and copyable Phase 10F-1 prompt.
+- Recommended Phase 10F-1 scope: Official Examples Direct Verification for Static Structure Physics.
+- No new adapter, full interactive 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, advanced local environment classification, experimental fitting, notebook/script execution, external API workflow, runtime semantic change, real LLM path, artifact JS, or external URL loading was added.
+
 ## 2026-07-09 Phase 10E-8 RDF Browser/API Evidence
 
 - Added browser/API evidence for `structure.rdf` under `docs/phase10e/browser_api_evidence/phase10e8_rdf/`.
