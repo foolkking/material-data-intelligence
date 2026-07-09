@@ -2,6 +2,16 @@
 
 ## 2026-07-09
 
+### Phase 10F-10 Viewer Scene JSON-only Preview Surface Implementation / Evidence
+
+- Added `viewer_scene.v1` JSON-only preview support to the existing PlannerWorkbench artifact preview surface.
+- Added `phase10f9.viewer_scene_manifest.v1` manifest preview support.
+- Added fixture-backed frontend tests for valid, warning/caps, invalid external-resource placeholder, invalid executable placeholder, invalid schema, and renderer-free sample coverage.
+- Added stable selectors for evidence capture of kind, version, schema version, validation state, error codes, warning codes, caps, scene summary, and manifest metadata.
+- Added Phase 10F-10 implementation, preview evidence, security evidence, browser/API boundary, readiness matrix, text evidence, and Phase 10F-11 next-scope docs.
+- Updated `docs/index.md` and `docs/13_SHARED_SCHEMA_SPEC.md` with the implemented JSON-only preview surface.
+- No full viewer implementation, WebGL renderer, Three.js integration, renderer bundle, frontend 3D runtime, new adapter, planner routing change, Tool Registry runtime change, production runtime route, notebook/script execution, external API workflow, artifact JS, HTML renderer, real external URL dependency, phonon, or unsupported official PASS claim was added.
+
 ### Phase 10F-9 Viewer Scene Contract Fixture / Validator Implementation
 
 - Added `docs/phase10f/fixtures/viewer_scene_v1/` with inert `viewer_scene.v1` fixture files, manifest fixtures, and `expected_results.json`.

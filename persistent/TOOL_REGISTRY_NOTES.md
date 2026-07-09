@@ -909,3 +909,11 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Each fixture replay selected exactly the expected tool through a persisted plan/job path and QueueWorkerRuntime execution.
 - Expected static artifacts were generated and validated for each tool.
 - The replay confirms internal fixture-pack behavior only. It does not add official examples PASS evidence and does not register or claim full viewer, WebGL/Three.js renderer, phonon, experimental fitting, notebook/script, or external API support.
+# 2026-07-09 Phase 10F-10 Viewer Scene JSON-only Preview Surface
+
+- Added frontend-only JSON preview support for already-defined `viewer_scene.v1` artifacts in the existing artifact preview surface.
+- No Tool Registry tool registration was added.
+- No `structure.viewer_3d` adapter was added.
+- No planner routing, QueueWorkerRuntime, AnalysisPlanRepository, or `/planner/jobs` runtime behavior changed.
+- `structure.coordination_hist`, `structure.xrd`, and `structure.rdf` remain unchanged.
+- Renderer implementation, WebGL, Three.js, Brillouin-zone 3D, and phonon remain future scope.

@@ -1349,39 +1349,68 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
   );
 }
 
+const VIEWER_SCENE_V1_SCHEMA = "phase10f8.viewer_scene.v1";
+const VIEWER_SCENE_V1_VERSION = "viewer_scene.v1";
+const VIEWER_SCENE_MANIFEST_V1_SCHEMA = "phase10f9.viewer_scene_manifest.v1";
+
 function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
   const payload = artifactPayload(artifact);
   if (!payload) {
     return <ViewerFallbackPreview artifact={artifact} title="viewer_scene.json" description="Static scene metadata artifact. Payload preview is not attached to this API response." />;
   }
-  const structure = asRecord(payload.structure) || payload;
-  const lattice = asRecord(structure.lattice) || asRecord(payload.lattice) || {};
-  const atoms = arrayOfRecords(structure.atoms) || arrayOfRecords(payload.atoms) || [];
-  const bonds = arrayOfRecords(structure.bonds) || arrayOfRecords(payload.bonds) || [];
-  const display = asRecord(payload.display) || {};
+  const isViewerSceneV1 = isViewerSceneV1Payload(payload);
+  const scene = asRecord(payload.scene) || {};
+  const metadata = asRecord(payload.metadata) || {};
+  const structure = isViewerSceneV1 ? metadata : asRecord(payload.structure) || payload;
+  const lattice = isViewerSceneV1 ? asRecord(scene.lattice) || {} : asRecord(structure.lattice) || asRecord(payload.lattice) || {};
+  const latticeParameters = asRecord(lattice.parameters) || lattice;
+  const atoms = isViewerSceneV1 ? arrayOfRecords(scene.sites) || [] : arrayOfRecords(structure.atoms) || arrayOfRecords(payload.atoms) || [];
+  const bonds = isViewerSceneV1 ? arrayOfRecords(scene.bonds) || [] : arrayOfRecords(structure.bonds) || arrayOfRecords(payload.bonds) || [];
+  const display = isViewerSceneV1 ? asRecord(scene.style) || {} : asRecord(payload.display) || {};
   const camera = asRecord(payload.camera) || {};
-  const limits = asRecord(payload.limits) || asRecord(structure.limits) || {};
+  const limits = isViewerSceneV1 ? asRecord(payload.caps) || asRecord(payload.limits) || {} : asRecord(payload.limits) || asRecord(structure.limits) || {};
   const security = asRecord(payload.security) || {};
+  const validation = asRecord(payload.validation) || {};
   const warnings = arrayOfText(payload.warnings) || arrayOfText(structure.warnings) || [];
+  const validationErrors = arrayOfText(validation.errors) || [];
+  const validationStatus = text(validation.status || (isViewerSceneV1 ? "unknown" : undefined));
+  const coordinateBasis = text(scene.coordinate_basis || payload.coordinate_basis);
+  const species = textList(structure.species);
+  const latticePresent = Object.keys(lattice).length ? "true" : "false";
   return (
     <article className="viewer-preview-card" data-testid="viewer-scene-preview">
+      {isViewerSceneV1 ? <div data-testid="viewer-scene-v1-preview" hidden /> : null}
       <h3>Scene overview</h3>
-      <dl className="mini-grid">
-        <Field label="schema" value={text(payload.schema_version)} />
+      <dl className="mini-grid" data-testid={isViewerSceneV1 ? "viewer-scene-summary" : undefined}>
+        {isViewerSceneV1 ? <TestField testId="viewer-scene-kind" label="kind" value={text(payload.kind)} /> : null}
+        {isViewerSceneV1 ? <TestField testId="viewer-scene-version" label="version" value={text(payload.version)} /> : null}
+        <TestField testId={isViewerSceneV1 ? "viewer-scene-schema-version" : undefined} label="schema" value={text(payload.schema_version)} />
         <Field label="tool" value={text(payload.tool_id || payload.artifactType)} />
         <Field label="formula" value={text(structure.formula)} />
         <Field label="sites" value={text(structure.site_count || structure.siteCount || atoms.length)} />
-        <Field label="species" value={textList(structure.species)} />
+        <Field label="species" value={species} />
         <Field label="atoms / bonds" value={`${atoms.length} / ${bonds.length}`} />
+        {isViewerSceneV1 ? <Field label="species count" value={text(Array.isArray(structure.species) ? structure.species.length : undefined)} /> : null}
+        {isViewerSceneV1 ? <Field label="coordinate basis" value={coordinateBasis} /> : null}
+        {isViewerSceneV1 ? <Field label="lattice present" value={latticePresent} /> : null}
       </dl>
+      {isViewerSceneV1 ? (
+        <PreviewSubsection title="Contract validation">
+          <dl className="mini-grid">
+            <TestField testId="viewer-scene-validation-state" label="validation state" value={validationStatus} />
+            <TestField testId="viewer-scene-error-codes" label="error codes" value={validationErrors.length ? validationErrors.join(", ") : "none" } />
+            <TestField testId="viewer-scene-warning-codes" label="warning codes" value={warnings.length ? warnings.join(", ") : "none" } />
+          </dl>
+        </PreviewSubsection>
+      ) : null}
       <PreviewSubsection title="Lattice">
         <dl className="mini-grid">
-          <Field label="a b c" value={[lattice.a, lattice.b, lattice.c].map(text).join(" / ")} />
-          <Field label="alpha beta gamma" value={[lattice.alpha, lattice.beta, lattice.gamma].map(text).join(" / ")} />
+          <Field label="a b c" value={[latticeParameters.a, latticeParameters.b, latticeParameters.c].map(text).join(" / ")} />
+          <Field label="alpha beta gamma" value={[latticeParameters.alpha, latticeParameters.beta, latticeParameters.gamma].map(text).join(" / ")} />
           <Field label="volume" value={text(lattice.volume)} />
           <Field label="units" value={text(lattice.units || "unknown")} />
         </dl>
-        <CompactTable columns={["v1", "v2", "v3"]} rows={matrixRows(lattice.matrix)} emptyLabel="No lattice matrix attached" />
+        <CompactTable columns={["v1", "v2", "v3"]} rows={matrixRows(lattice.matrix || lattice.vectors)} emptyLabel="No lattice matrix attached" />
       </PreviewSubsection>
       <PreviewSubsection title={`Atoms preview (${atoms.length})`}>
         <CompactTable columns={["index", "element", "frac", "cart"]} rows={atoms.slice(0, 8).map(atomRow)} emptyLabel="No atoms attached" />
@@ -1415,27 +1444,47 @@ function ViewerManifestPreview({ artifact }: { artifact: Artifact }) {
   const limits = asRecord(payload.limits) || {};
   const warnings = arrayOfText(payload.warnings) || [];
   const manifestArtifacts = arrayOfRecords(payload.artifacts) || [];
+  const isManifestV1 = isViewerSceneManifestV1Payload(payload);
+  const expectedErrors = arrayOfText(payload.expected_errors) || [];
+  const expectedWarnings = arrayOfText(payload.expected_warnings) || [];
+  const expectedCaps = asRecord(payload.expected_caps) || {};
   return (
     <article className="viewer-preview-card" data-testid="viewer-manifest-preview">
+      {isManifestV1 ? <div data-testid="viewer-manifest-json-only-preview" hidden /> : null}
       <h3>Export package manifest</h3>
       <dl className="mini-grid">
         <Field label="schema" value={text(payload.schema_version)} />
-        <Field label="package" value={text(payload.package_type)} />
+        <Field label="package" value={text(payload.package_type || payload.artifact_kind)} />
         <Field label="tool" value={text(payload.tool_id || payload.artifactType)} />
-        <Field label="entry" value={text(payload.entry_artifact)} />
+        <Field label="entry" value={text(payload.entry_artifact || payload.fixture_source)} />
+        {isManifestV1 ? <Field label="artifact version" value={text(payload.artifact_version)} /> : null}
+        {isManifestV1 ? <Field label="validation state" value={text(payload.expected_validation_state)} /> : null}
       </dl>
-      <PreviewSubsection title="Artifacts">
-        <CompactTable columns={["path", "kind", "media", "required"]} rows={manifestArtifacts.map(manifestArtifactRow)} emptyLabel="No artifact list attached" />
-      </PreviewSubsection>
+      {isManifestV1 ? (
+        <PreviewSubsection title="JSON-only preview manifest">
+          <dl className="mini-grid">
+            <TestField testId="viewer-manifest-preview-mode" label="preview mode" value={text(payload.preview_mode)} />
+            <TestField testId="viewer-manifest-renderer-required" label="renderer required" value={flagText(payload.renderer_required)} />
+            <TestField testId="viewer-manifest-executable-assets" label="executable assets" value={text(payload.executable_assets)} />
+            <TestField testId="viewer-manifest-external-resources" label="external resources" value={text(payload.external_resources)} />
+            <Field label="expected errors" value={expectedErrors.length ? expectedErrors.join(", ") : "none"} />
+            <Field label="expected warnings" value={expectedWarnings.length ? expectedWarnings.join(", ") : "none"} />
+          </dl>
+        </PreviewSubsection>
+      ) : (
+        <PreviewSubsection title="Artifacts">
+          <CompactTable columns={["path", "kind", "media", "required"]} rows={manifestArtifacts.map(manifestArtifactRow)} emptyLabel="No artifact list attached" />
+        </PreviewSubsection>
+      )}
       <PreviewSubsection title="Renderer status">
         <dl className="mini-grid">
-          <Field label="renderer included" value={flagText(renderer.included)} />
+          <Field label="renderer included" value={isManifestV1 ? "false" : flagText(renderer.included)} />
           <Field label="renderer type" value={text(renderer.renderer_type)} />
           <Field label="future contract" value={text(renderer.future_renderer_contract)} />
-          <Field label="static package" value={renderer.included === false ? "yes" : "unknown"} />
+          <Field label="static package" value={isManifestV1 || renderer.included === false ? "yes" : "unknown"} />
         </dl>
       </PreviewSubsection>
-      <ViewerLimitsSecurity limits={limits} warnings={warnings} security={security} />
+      <ViewerLimitsSecurity limits={isManifestV1 ? expectedCaps : limits} warnings={warnings.concat(expectedWarnings)} security={isManifestV1 ? { renderer_required: payload.renderer_required, external_urls_allowed: false, artifact_supplied_js_allowed: false, contains_javascript: false } : security} />
       <RawJsonDetails payload={payload} />
     </article>
   );
@@ -1723,6 +1772,15 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
+function TestField({ testId, label, value }: { testId?: string; label: string; value: string }) {
+  return (
+    <div data-testid={testId}>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
+}
+
 function buildConversationChunks(input: {
   t: ReturnType<typeof createTranslator>;
   prompt: string;
@@ -1894,11 +1952,23 @@ function datasetKind(profile: DataProfileSummary | null, t: ReturnType<typeof cr
 }
 
 function isViewerSceneArtifact(artifact: Artifact) {
-  return String(artifact.name || "").toLowerCase() === "viewer_scene.json" || artifactPayload(artifact)?.schema_version === "phase10d1.viewer_scene.v1";
+  const name = String(artifact.name || "").toLowerCase();
+  const payload = artifactPayload(artifact);
+  return name === "viewer_scene.json" || name.endsWith(".viewer_scene.v1.json") || payload?.schema_version === "phase10d1.viewer_scene.v1" || isViewerSceneV1Payload(payload);
 }
 
 function isViewerManifestArtifact(artifact: Artifact) {
-  return String(artifact.name || "").toLowerCase() === "viewer_assets_manifest.json" || artifactPayload(artifact)?.schema_version === "phase10d1.viewer_assets_manifest.v1";
+  const name = String(artifact.name || "").toLowerCase();
+  const payload = artifactPayload(artifact);
+  return name === "viewer_assets_manifest.json" || (name.startsWith("manifest_") && name.endsWith(".viewer_scene.v1.json")) || payload?.schema_version === "phase10d1.viewer_assets_manifest.v1" || isViewerSceneManifestV1Payload(payload);
+}
+
+function isViewerSceneV1Payload(payload: JsonRecord | null): boolean {
+  return Boolean(payload && payload.kind === "viewer_scene" && payload.version === VIEWER_SCENE_V1_VERSION && payload.schema_version === VIEWER_SCENE_V1_SCHEMA);
+}
+
+function isViewerSceneManifestV1Payload(payload: JsonRecord | null): boolean {
+  return Boolean(payload && payload.schema_version === VIEWER_SCENE_MANIFEST_V1_SCHEMA && payload.artifact_kind === "viewer_scene" && payload.artifact_version === VIEWER_SCENE_V1_VERSION);
 }
 
 function artifactPayload(artifact: Artifact): JsonRecord | null {
@@ -1937,7 +2007,20 @@ function arrayOfRecords(value: unknown): JsonRecord[] | null {
 }
 
 function arrayOfText(value: unknown): string[] | null {
-  return Array.isArray(value) ? value.map((entry) => String(entry)) : null;
+  return Array.isArray(value) ? value.map(displayText) : null;
+}
+
+function displayText(value: unknown): string {
+  const record = asRecord(value);
+  if (record) {
+    const code = text(record.code);
+    const message = text(record.message);
+    if (code !== "unknown" && message !== "unknown") return `${code}: ${message}`;
+    if (code !== "unknown") return code;
+    if (message !== "unknown") return message;
+    return JSON.stringify(record);
+  }
+  return String(value);
 }
 
 function text(value: unknown): string {
@@ -1963,7 +2046,7 @@ function matrixRows(value: unknown): string[][] {
 }
 
 function atomRow(atom: JsonRecord): string[] {
-  return [text(atom.index), text(atom.element || atom.species_string), text(atom.frac_coords), text(atom.cart_coords)];
+  return [text(atom.index), text(atom.element || atom.species_string), text(atom.frac_coords || atom.frac), text(atom.cart_coords || atom.xyz)];
 }
 
 function bondRow(bond: JsonRecord): string[] {

@@ -140,6 +140,64 @@ Security boundary:
 - invalid external-resource and executable-field cases use safe placeholders;
 - renderer evidence and browser/API evidence remain deferred.
 
+## Phase 10F-10 Addendum: Viewer Scene JSON-only Preview Surface
+
+Phase 10F-10 implements a frontend JSON-only preview surface for the already-defined `viewer_scene.v1` contract. This addendum records the implemented preview contract; it does not implement `structure.viewer_3d`, a renderer, WebGL, Three.js, planner routing, Tool Registry runtime behavior, or a production runtime API route.
+
+Implemented preview location:
+
+- `apps/web/app/components/PlannerWorkbench.tsx`
+
+Implemented frontend evidence:
+
+- `apps/web/app/components/PlannerWorkbench.test.tsx`
+
+Supported viewer scene identity:
+
+```json
+{
+  "kind": "viewer_scene",
+  "version": "viewer_scene.v1",
+  "schema_version": "phase10f8.viewer_scene.v1"
+}
+```
+
+Supported manifest identity:
+
+```json
+{
+  "schema_version": "phase10f9.viewer_scene_manifest.v1",
+  "artifact_kind": "viewer_scene",
+  "artifact_version": "viewer_scene.v1"
+}
+```
+
+Preview fields surfaced through stable selectors:
+
+- artifact kind;
+- artifact version;
+- schema version;
+- validation state;
+- error codes;
+- warning codes;
+- site count;
+- bond count;
+- species count;
+- coordinate basis;
+- lattice presence;
+- manifest preview mode;
+- renderer required;
+- executable assets;
+- external resources.
+
+Security boundary:
+
+- preview is inert JSON summary and raw JSON detail only;
+- no artifact JavaScript is executed;
+- no HTML renderer is added;
+- no external resources are loaded;
+- no canvas, iframe, WebGL path, Three.js dependency, renderer bundle, adapter, planner route, or runtime route is added.
+
 ## 1. 本阶段目标
 
 收敛前端、后端、Worker、Agent 和 Tool Registry 共同使用的核心类型，避免每个设计文件重复定义不同版本的 `ArtifactType`、`DisplayTarget`、`ToolCategory`、`DataProfile`、`AnalysisPlan`、`JobEvent` 和 `Recipe`。

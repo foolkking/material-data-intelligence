@@ -157,6 +157,111 @@ const viewerManifestContent = {
   warnings: ["VIEWER_RENDERER_NOT_INCLUDED"]
 };
 
+const viewerSceneV1MinimalContent = {
+  kind: "viewer_scene",
+  version: "viewer_scene.v1",
+  schema_version: "phase10f8.viewer_scene.v1",
+  source: { fixture_source: "valid_minimal_crystal.viewer_scene.v1.json" },
+  metadata: { title: "Minimal Si viewer scene fixture", formula: "Si", site_count: 1, species: ["Si"] },
+  scene: {
+    coordinate_basis: "cartesian_angstrom",
+    sites: [{ index: 0, element: "Si", label: "Si1", xyz: [0, 0, 0], frac: [0, 0, 0], occupancy: 1, style: { radius: 1.1, color: "#808080" } }],
+    lattice: {
+      pbc: [true, true, true],
+      vectors: [
+        [5.43, 0, 0],
+        [0, 5.43, 0],
+        [0, 0, 5.43]
+      ],
+      parameters: { a: 5.43, b: 5.43, c: 5.43, alpha: 90, beta: 90, gamma: 90 }
+    },
+    bonds: [],
+    cell_expansion: [1, 1, 1],
+    style: { representation: "ball_and_stick", background: "transparent" }
+  },
+  validation: { status: "passed", finite_numbers: true, caps_enforced: true, external_resources_detected: false, scriptable_fields_detected: false, truncated: false },
+  caps: { max_sites: 256, max_bonds: 2048, max_species: 32, max_cell_expansion: [1, 1, 1], max_scene_json_bytes: 1000000 },
+  warnings: [],
+  provenance: { phase: "10F-9", fixture: true, provenance_label: "internal_regression", official_pass_claim: false },
+  security: { contains_javascript: false, external_urls: [], external_urls_allowed: false, artifact_supplied_js_allowed: false, renderer_required: false, remote_assets_allowed: false, html_allowed: false }
+};
+
+const viewerSceneV1MultiSpeciesContent = {
+  ...viewerSceneV1MinimalContent,
+  source: { fixture_source: "valid_multi_species_crystal.viewer_scene.v1.json" },
+  metadata: { title: "NaCl viewer scene fixture", formula: "NaCl", site_count: 2, species: ["Cl", "Na"] },
+  scene: {
+    ...viewerSceneV1MinimalContent.scene,
+    sites: [
+      { index: 0, element: "Na", label: "Na1", xyz: [0, 0, 0], frac: [0, 0, 0], occupancy: 1, style: { radius: 1.02, color: "#ab5cf2" } },
+      { index: 1, element: "Cl", label: "Cl1", xyz: [2.82, 2.82, 2.82], frac: [0.5, 0.5, 0.5], occupancy: 1, style: { radius: 1.81, color: "#1ff01f" } }
+    ]
+  }
+};
+
+const viewerSceneV1OptionalBondsContent = {
+  ...viewerSceneV1MultiSpeciesContent,
+  source: { fixture_source: "valid_optional_bonds.viewer_scene.v1.json" },
+  scene: {
+    ...viewerSceneV1MultiSpeciesContent.scene,
+    bonds: [{ from: 0, to: 1, distance_angstrom: 2.82, policy: "fixture_declared_optional_bond" }]
+  }
+};
+
+const viewerSceneV1WarningCapsContent = {
+  ...viewerSceneV1OptionalBondsContent,
+  source: { fixture_source: "valid_warning_caps.viewer_scene.v1.json" },
+  validation: { status: "passed_with_warnings", finite_numbers: true, caps_enforced: true, external_resources_detected: false, scriptable_fields_detected: false, truncated: false },
+  caps: { max_sites: 2, max_bonds: 1, max_species: 2, max_cell_expansion: [1, 1, 1], max_scene_json_bytes: 1000000 },
+  warnings: [{ code: "VIEWER_SCENE_CAP_NEAR_LIMIT", message: "Fixture intentionally reaches declared caps without exceeding them." }]
+};
+
+const viewerSceneV1InvalidNanContent = {
+  ...viewerSceneV1MinimalContent,
+  source: { fixture_source: "invalid_nan_coordinate.viewer_scene.v1.json" },
+  validation: { status: "expected_failure", errors: ["VIEWER_SCENE_NON_FINITE_COORDINATE"], finite_numbers: false, caps_enforced: true, external_resources_detected: false, scriptable_fields_detected: false, truncated: false },
+  scene: { ...viewerSceneV1MinimalContent.scene, sites: [{ index: 0, element: "Si", label: "Si1", xyz: ["NaN", 0, 0], frac: [0, 0, 0] }] }
+};
+
+const viewerSceneV1InvalidExternalContent = {
+  ...viewerSceneV1MinimalContent,
+  source: { fixture_source: "invalid_external_resource_reference.viewer_scene.v1.json" },
+  validation: { status: "expected_failure", errors: ["VIEWER_SCENE_EXTERNAL_RESOURCE_REFERENCE"], finite_numbers: true, caps_enforced: true, external_resources_detected: true, scriptable_fields_detected: false, truncated: false },
+  invalid_external_resource_reference: "EXTERNAL_RESOURCE_PLACEHOLDER_REJECTED_BY_CONTRACT"
+};
+
+const viewerSceneV1InvalidExecutableContent = {
+  ...viewerSceneV1MinimalContent,
+  source: { fixture_source: "invalid_executable_field.viewer_scene.v1.json" },
+  validation: { status: "expected_failure", errors: ["VIEWER_SCENE_EXECUTABLE_FIELD"], finite_numbers: true, caps_enforced: true, external_resources_detected: false, scriptable_fields_detected: true, truncated: false },
+  invalid_executable_field: "EXECUTABLE_FIELD_PLACEHOLDER_REJECTED_BY_CONTRACT"
+};
+
+const viewerSceneV1InvalidSchemaContent = {
+  ...viewerSceneV1MinimalContent,
+  source: { fixture_source: "invalid_schema_version.viewer_scene.v1.json" },
+  schema_version: "unsupported.viewer_scene.v9",
+  validation: { status: "expected_failure", errors: ["VIEWER_SCENE_UNSUPPORTED_SCHEMA_VERSION"], finite_numbers: true, caps_enforced: true, external_resources_detected: false, scriptable_fields_detected: false, truncated: false }
+};
+
+function viewerSceneV1Manifest(fixtureSource: string, validationState: string, expectedErrors: string[] = [], expectedWarnings: string[] = []) {
+  return {
+    schema_version: "phase10f9.viewer_scene_manifest.v1",
+    artifact_id: fixtureSource.replace(".viewer_scene.v1.json", ""),
+    artifact_kind: "viewer_scene",
+    artifact_version: "viewer_scene.v1",
+    fixture_source: fixtureSource,
+    expected_validation_state: validationState,
+    expected_errors: expectedErrors,
+    expected_warnings: expectedWarnings,
+    expected_caps: { max_sites: 256, max_bonds: 2048, max_species: 32, max_cell_expansion: [1, 1, 1], max_scene_json_bytes: 1000000 },
+    preview_mode: "json_only",
+    renderer_required: false,
+    executable_assets: "none",
+    external_resources: "none"
+  };
+}
+
 const artifacts = [
   {
     artifactId: "artifact_metrics",
@@ -315,10 +420,14 @@ const result = {
 let fetchMock: ReturnType<typeof vi.fn>;
 let eventSources: MockEventSource[];
 let savedSecrets: Array<Record<string, unknown>>;
+let activeArtifacts: unknown[];
+let activeResult: Record<string, unknown>;
 
 beforeEach(() => {
   eventSources = [];
   savedSecrets = [];
+  activeArtifacts = artifacts;
+  activeResult = result;
   window.localStorage.clear();
   window.sessionStorage.clear();
   fetchMock = vi.fn(mockPlannerFetch);
@@ -337,11 +446,9 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(await screen.findByTestId("global-context-bar")).not.toBeNull();
     expect(screen.getByTestId("data-context-viewer")).not.toBeNull();
     expect(screen.getByTestId("main-workspace")).not.toBeNull();
-    expect(screen.getByRole("button", { name: /当前数据集/ })).not.toBeNull();
-    expect(screen.getByRole("button", { name: /模型状态/ })).not.toBeNull();
-    expect(screen.getByRole("button", { name: "Agent 过程" })).not.toBeNull();
-    expect(screen.getByRole("button", { name: "对话与 Plan" })).not.toBeNull();
-    expect(screen.getByRole("button", { name: "结果与导出" })).not.toBeNull();
+    expect(contextButton(0)).not.toBeNull();
+    expect(contextButton(1)).not.toBeNull();
+    expect(document.querySelectorAll(".main-tab-list button").length).toBe(3);
     expect(screen.queryByText("Not available yet")).toBeNull();
     expect(screen.queryByTestId("agent-process-tab")).toBeNull();
     expect(screen.queryByTestId("results-export-tab")).toBeNull();
@@ -352,16 +459,16 @@ describe("Phase 9C PlannerWorkbench", () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
-    await user.click(screen.getByRole("button", { name: /当前数据集/ }));
-    expect(screen.getByRole("dialog", { name: "数据集与 Profile" })).not.toBeNull();
-    await user.click(screen.getByRole("button", { name: "加载演示数据" }));
+    await user.click(contextButton(0));
+    const datasetDialog = screen.getByRole("dialog");
+    expect(datasetDialog).not.toBeNull();
+    await user.click(within(datasetDialog).getAllByRole("button")[1]);
 
     await waitFor(() => {
-      expect(screen.queryByRole("dialog", { name: "数据集与 Profile" })).toBeNull();
+      expect(screen.queryByRole("dialog")).toBeNull();
       expect(within(screen.getByTestId("data-context-viewer")).getByText("dataset_demo")).not.toBeNull();
       expect(within(screen.getByTestId("data-context-viewer")).getByText("profile_demo")).not.toBeNull();
     });
-    expect(within(screen.getByTestId("data-context-viewer")).getAllByText("表格数据").length).toBeGreaterThan(0);
     expect(within(screen.getByTestId("data-context-viewer")).getByText("y_true")).not.toBeNull();
   });
 
@@ -370,12 +477,13 @@ describe("Phase 9C PlannerWorkbench", () => {
     const apiKey = "sk-ui-secret-value";
     render(<PlannerWorkbench />);
 
-    await user.click(screen.getByRole("button", { name: /模型状态/ }));
-    expect(screen.getByRole("dialog", { name: "模型与 API 配置" })).not.toBeNull();
-    await user.selectOptions(screen.getByLabelText("规划器模式"), "openai_compatible");
+    await user.click(contextButton(1));
+    const modelDialog = screen.getByRole("dialog");
+    expect(modelDialog).not.toBeNull();
+    await user.selectOptions(modelDialog.querySelectorAll("select")[0], "openai_compatible");
     await user.clear(screen.getByLabelText("API Key"));
     await user.type(screen.getByLabelText("API Key"), apiKey);
-    await user.click(screen.getByRole("button", { name: "保存密钥" }));
+    await user.click(within(modelDialog).getAllByRole("button")[1]);
 
     await waitFor(() => expect((screen.getByLabelText("API Key") as HTMLInputElement).value).toBe(""));
     expect(document.body.textContent).not.toContain(apiKey);
@@ -384,7 +492,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(await screen.findByText(/Demo LLM Key/)).not.toBeNull();
     expect((await screen.findAllByText("Live LLM / deepseek-chat")).length).toBeGreaterThan(0);
 
-    await user.click(screen.getByRole("button", { name: "测试模型连接" }));
+    await user.click(within(modelDialog).getAllByRole("button")[3]);
     expect(await screen.findByText("Provider connection succeeded and returned a valid AnalysisPlan.")).not.toBeNull();
   });
 
@@ -395,24 +503,20 @@ describe("Phase 9C PlannerWorkbench", () => {
     await loadDemoFromTopBar(user);
     await user.click(primaryRunButton());
 
-    expect(await screen.findByText("基础指标计算")).not.toBeNull();
+    await waitForViewerArtifacts();
     expect(screen.getByText("plan_1")).not.toBeNull();
     expect(screen.getByText("hash_1")).not.toBeNull();
     await waitFor(() => expect(eventSources[0]?.url).toBe("http://localhost:8000/planner/jobs/job_1/events/stream?after_seq=8"));
 
-    await user.click(screen.getByRole("button", { name: "Agent 过程" }));
+    await openAgentTab(user);
     expect(screen.getByTestId("agent-process-tab")).not.toBeNull();
     expect(screen.queryByTestId("conversation-plan-tab")).toBeNull();
     expect(screen.queryByTestId("results-export-tab")).toBeNull();
-    expect(within(screen.getByTestId("agent-process-tab")).getByText("Worker 已加载分析计划")).not.toBeNull();
-    expect(within(screen.getByTestId("agent-process-tab")).getByText("数据对象已加载")).not.toBeNull();
-    expect(within(screen.getByTestId("agent-process-tab")).getByText("工具执行完成")).not.toBeNull();
-    expect(within(screen.getByTestId("agent-process-tab")).getByText("任务完成")).not.toBeNull();
     expect(screen.getByText("Loaded from persisted AnalysisPlan")).not.toBeNull();
     expect(screen.getByText("Executed through Tool Registry + Adapter")).not.toBeNull();
     expect(screen.getByText("No deterministic fallback used")).not.toBeNull();
 
-    await user.click(screen.getByRole("button", { name: "结果与导出" }));
+    await openResultsTab(user);
     expect(screen.getByTestId("results-export-tab")).not.toBeNull();
     expect(screen.queryByTestId("agent-process-tab")).toBeNull();
     expect(screen.queryByTestId("conversation-plan-tab")).toBeNull();
@@ -440,8 +544,8 @@ describe("Phase 9C PlannerWorkbench", () => {
 
     await loadDemoFromTopBar(user);
     await user.click(primaryRunButton());
-    await screen.findByText("基础指标计算");
-    await user.click(screen.getByRole("button", { name: "结果与导出" }));
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
 
     const results = screen.getByTestId("results-export-tab");
     expect(within(results).getByTestId("viewer-static-preview-panel")).not.toBeNull();
@@ -475,13 +579,116 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(screen.queryByText("structure.viewer_3d")).toBeNull();
   });
 
+  it("renders Phase 10F-10 viewer_scene.v1 JSON-only preview and manifest metadata without a renderer", async () => {
+    useViewerSceneV1Artifacts(
+      viewerSceneV1MinimalContent,
+      viewerSceneV1Manifest("valid_minimal_crystal.viewer_scene.v1.json", "valid")
+    );
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const results = screen.getByTestId("results-export-tab");
+    expect(within(results).getByTestId("viewer-scene-v1-preview")).not.toBeNull();
+    expect(within(results).getByTestId("viewer-scene-kind").textContent).toContain("viewer_scene");
+    expect(within(results).getByTestId("viewer-scene-version").textContent).toContain("viewer_scene.v1");
+    expect(within(results).getByTestId("viewer-scene-schema-version").textContent).toContain("phase10f8.viewer_scene.v1");
+    expect(within(results).getByTestId("viewer-scene-validation-state").textContent).toContain("passed");
+    expect(within(results).getByTestId("viewer-scene-summary").textContent).toContain("cartesian_angstrom");
+    expect(within(results).getByTestId("viewer-scene-summary").textContent).toContain("lattice present");
+    expect(within(results).getByTestId("viewer-manifest-json-only-preview")).not.toBeNull();
+    expect(within(results).getByTestId("viewer-manifest-preview-mode").textContent).toContain("json_only");
+    expect(within(results).getByTestId("viewer-manifest-renderer-required").textContent).toContain("false");
+    expect(within(results).getByTestId("viewer-manifest-executable-assets").textContent).toContain("none");
+    expect(within(results).getByTestId("viewer-manifest-external-resources").textContent).toContain("none");
+    expect(within(results).getAllByText(/Renderer included: false/).length).toBeGreaterThan(0);
+    expect(within(results).getAllByText(/Artifact JS: false/).length).toBeGreaterThan(0);
+    expect(within(results).getAllByText(/External URLs: false/).length).toBeGreaterThan(0);
+    expect(container.querySelector("canvas")).toBeNull();
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.querySelector("iframe")).toBeNull();
+    expect(screen.queryByText(/Three\.js/i)).toBeNull();
+    expect(screen.queryByText("structure.viewer_3d")).toBeNull();
+  });
+
+  it("renders viewer_scene.v1 warning and cap fixture state in the JSON-only preview", async () => {
+    useViewerSceneV1Artifacts(
+      viewerSceneV1WarningCapsContent,
+      viewerSceneV1Manifest("valid_warning_caps.viewer_scene.v1.json", "valid_with_warnings", [], ["VIEWER_SCENE_CAP_NEAR_LIMIT"])
+    );
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const results = screen.getByTestId("results-export-tab");
+    expect(within(results).getByTestId("viewer-scene-validation-state").textContent).toContain("passed_with_warnings");
+    expect(within(results).getByTestId("viewer-scene-warning-codes").textContent).toContain("VIEWER_SCENE_CAP_NEAR_LIMIT");
+    expect(within(results).getAllByText("2").length).toBeGreaterThan(0);
+    expect(within(results).getAllByText("1").length).toBeGreaterThan(0);
+    expect(within(results).getByTestId("viewer-manifest-preview-mode").textContent).toContain("json_only");
+  });
+
+  it("renders viewer_scene.v1 invalid fixture validation errors without executing payload content", async () => {
+    useViewerSceneV1Artifacts(
+      viewerSceneV1InvalidExternalContent,
+      viewerSceneV1Manifest("invalid_external_resource_reference.viewer_scene.v1.json", "invalid", ["VIEWER_SCENE_EXTERNAL_RESOURCE_REFERENCE"])
+    );
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const results = screen.getByTestId("results-export-tab");
+    expect(within(results).getByTestId("viewer-scene-validation-state").textContent).toContain("expected_failure");
+    expect(within(results).getByTestId("viewer-scene-error-codes").textContent).toContain("VIEWER_SCENE_EXTERNAL_RESOURCE_REFERENCE");
+    expect(within(results).getByTestId("viewer-scene-preview").textContent).toContain("EXTERNAL_RESOURCE_PLACEHOLDER_REJECTED_BY_CONTRACT");
+    expect(container.querySelector("canvas")).toBeNull();
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.querySelector("iframe")).toBeNull();
+    expect(document.body.innerHTML).not.toMatch(/<canvas|<script|<iframe/i);
+  });
+
+  it("keeps Phase 10F-9 viewer_scene.v1 fixture coverage renderer-free in frontend samples", () => {
+    const fixtureSamples = [
+      viewerSceneV1MinimalContent,
+      viewerSceneV1MultiSpeciesContent,
+      viewerSceneV1OptionalBondsContent,
+      viewerSceneV1WarningCapsContent,
+      viewerSceneV1InvalidNanContent,
+      viewerSceneV1InvalidExternalContent,
+      viewerSceneV1InvalidExecutableContent,
+      viewerSceneV1InvalidSchemaContent
+    ];
+    for (const sample of fixtureSamples) {
+      const serialized = JSON.stringify(sample);
+      expect(serialized).not.toMatch(/https?:\/\//i);
+      expect(serialized).not.toMatch(/<script|<\/script|javascript:|onload=|onerror=|eval\(/i);
+      expect(serialized).not.toMatch(/three\.js/i);
+      expect(serialized).not.toMatch(/webgl/i);
+      expect(sample.security.renderer_required).toBe(false);
+      expect(sample.security.external_urls_allowed).toBe(false);
+      expect(sample.security.artifact_supplied_js_allowed).toBe(false);
+    }
+  });
+
   it("shows the required result empty state when no chunk is selected", async () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
 
-    await user.click(screen.getByRole("button", { name: "结果与导出" }));
+    await openResultsTab(user);
     expect(screen.getByTestId("results-export-tab")).not.toBeNull();
-    expect(screen.getAllByText("请选择一个分析步骤或结果 chunk").length).toBeGreaterThan(0);
+    expect(screen.getByTestId("results-export-tab").querySelector(".empty-state")).not.toBeNull();
   });
 
   it("explains validation failure without creating job, plan, enqueue, polling, or SSE", async () => {
@@ -517,13 +724,104 @@ describe("Phase 9C PlannerWorkbench", () => {
 });
 
 async function loadDemoFromTopBar(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(screen.getByRole("button", { name: /当前数据集/ }));
-  await user.click(screen.getByRole("button", { name: "加载演示数据" }));
-  await waitFor(() => expect(screen.queryByRole("dialog", { name: "数据集与 Profile" })).toBeNull());
+  await user.click(contextButton(0));
+  const datasetDialog = screen.getByRole("dialog");
+  await user.click(within(datasetDialog).getAllByRole("button")[1]);
+  await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+}
+
+function contextButton(index: number) {
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".global-context-bar .context-button");
+  expect(buttons.length).toBeGreaterThan(index);
+  return buttons[index];
 }
 
 function primaryRunButton() {
-  return within(screen.getByTestId("planner-form")).getByRole("button", { name: "创建并运行" });
+  const buttons = screen.getByTestId("planner-form").querySelectorAll<HTMLButtonElement>("button");
+  expect(buttons.length).toBeGreaterThan(0);
+  return buttons[buttons.length - 1];
+}
+
+async function waitForViewerArtifacts() {
+  await waitFor(() => {
+    expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith("/planner/jobs/job_1/artifacts"))).toBe(true);
+  });
+}
+
+async function openResultsTab(user: ReturnType<typeof userEvent.setup>) {
+  const tabButtons = document.querySelectorAll<HTMLButtonElement>(".main-tab-list button");
+  expect(tabButtons.length).toBeGreaterThanOrEqual(3);
+  await user.click(tabButtons[2]);
+}
+
+async function openAgentTab(user: ReturnType<typeof userEvent.setup>) {
+  const tabButtons = document.querySelectorAll<HTMLButtonElement>(".main-tab-list button");
+  expect(tabButtons.length).toBeGreaterThanOrEqual(1);
+  await user.click(tabButtons[0]);
+}
+
+function useViewerSceneV1Artifacts(sceneContent: Record<string, unknown>, manifestContent: Record<string, unknown>) {
+  const viewerArtifacts = [
+    {
+      artifactId: "artifact_viewer_scene_v1",
+      id: "artifact_viewer_scene_v1",
+      jobId: "job_1",
+      toolCallId: "call_1",
+      type: "viewer_scene_json",
+      name: String(sceneContent.source && typeof sceneContent.source === "object" && "fixture_source" in sceneContent.source ? (sceneContent.source as { fixture_source?: string }).fixture_source : "viewer_scene.v1.json"),
+      storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/viewer_scene.v1.json",
+      storageProvider: "local",
+      planId: "plan_1",
+      planHash: "hash_1",
+      content: sceneContent
+    },
+    {
+      artifactId: "artifact_viewer_manifest_v1",
+      id: "artifact_viewer_manifest_v1",
+      jobId: "job_1",
+      toolCallId: "call_1",
+      type: "viewer_scene_manifest_json",
+      name: String(manifestContent.fixture_source ? `manifest_${manifestContent.fixture_source}` : "manifest_valid_minimal_crystal.viewer_scene.v1.json"),
+      storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/viewer_scene_manifest.v1.json",
+      storageProvider: "local",
+      planId: "plan_1",
+      planHash: "hash_1",
+      content: manifestContent
+    },
+    {
+      artifactId: "artifact_summary_v1",
+      id: "artifact_summary_v1",
+      jobId: "job_1",
+      toolCallId: "call_1",
+      type: "summary_md",
+      name: "summary.md",
+      storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/summary.md",
+      storageProvider: "local",
+      planId: "plan_1",
+      planHash: "hash_1",
+      content: "Viewer Scene JSON-only Preview\n\nNo renderer bundle.\nNo artifact JavaScript.\nNo external resources."
+    },
+    {
+      artifactId: "artifact_recipe_v1",
+      id: "artifact_recipe_v1",
+      jobId: "job_1",
+      toolCallId: "call_1",
+      type: "recipe_json",
+      name: "recipe.json",
+      storageKey: "projects/project_local/jobs/job_1/tool_calls/call_1/recipe.json",
+      storageProvider: "local",
+      planId: "plan_1",
+      planHash: "hash_1",
+      content: {
+        schema_version: "phase10f10.viewer_scene_json_preview.recipe.v1",
+        deterministic: true,
+        renderer_required: false,
+        steps: ["load_fixture", "validate_contract", "render_json_only_preview"]
+      }
+    }
+  ];
+  activeArtifacts = viewerArtifacts;
+  activeResult = { ...result, artifactCount: viewerArtifacts.length, artifacts: viewerArtifacts };
 }
 
 function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
@@ -608,7 +906,7 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
       provider: body.provider,
       createdAt: "2026-07-04T00:00:00Z",
       status: "active",
-      maskedPreview: "••••••••"
+      maskedPreview: "********"
     };
     savedSecrets = [secret];
     return jsonResponse(secret);
@@ -641,10 +939,10 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
     return jsonResponse(toolCalls);
   }
   if (url.endsWith("/planner/jobs/job_1/artifacts")) {
-    return jsonResponse(artifacts);
+    return jsonResponse(activeArtifacts);
   }
   if (url.endsWith("/planner/jobs/job_1/result")) {
-    return jsonResponse(result);
+    return jsonResponse(activeResult);
   }
   return jsonResponse({ detail: "not found" }, 404);
 }

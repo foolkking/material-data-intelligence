@@ -1,5 +1,32 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10F-10 Viewer Scene JSON-only Preview Surface Implementation / Evidence
+
+### Done
+
+- [x] Kept Phase 10F-9 baseline as `ae6969675e3c9b6248f4ad8f4a2287d38a694046`.
+- [x] Implemented existing artifact preview surface support for `viewer_scene.v1`.
+- [x] Implemented existing artifact preview surface support for `phase10f9.viewer_scene_manifest.v1`.
+- [x] Added fixture-backed frontend tests for valid, warning/caps, and invalid viewer scene samples.
+- [x] Added no-renderer / no-artifact-JS / no-real-external-URL assertions.
+- [x] Added Phase 10F-10 implementation, evidence, security, browser/API boundary, readiness, and next-scope docs.
+
+### Decisions
+
+- [x] JSON-only preview surface is `READY`.
+- [x] Fixture-backed preview samples are `READY`.
+- [x] Manifest preview is `READY`.
+- [x] Frontend/API evidence is `READY`.
+- [x] Browser screenshot evidence is `PARTIAL_READY`; no real screenshot was captured.
+- [x] Renderer evidence remains `DEFERRED`.
+- [x] Renderer implementation remains `NOT_READY`.
+- [x] Full `structure.viewer_3d` implementation remains `NOT_READY`.
+
+### Recommended Next Scope
+
+- [x] Reviewer should select Phase 10F-11 from minimal adapter implementation, preview evidence hardening, or runtime integration planning.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, renderer bundle, planner routing implementation, or phonon implementation.
+
 ## 2026-07-09 Phase 10F-9 Viewer Scene Contract Fixture / Validator Implementation
 
 ### Done

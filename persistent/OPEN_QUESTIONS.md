@@ -1,5 +1,16 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F-10 Follow-ups
+
+- **Closed: JSON-only preview surface.** Phase 10F-10 implements `viewer_scene.v1` and manifest JSON-only preview support in the existing Results/export artifact preview surface.
+- **Closed: fixture-backed frontend evidence.** Tests cover valid, warning/caps, and invalid fixture samples through mock planner/job artifacts.
+- **Closed: preview inertness assertions.** Tests assert no canvas, script element, iframe, real external URL pattern, WebGL marker, or Three.js marker is introduced by the preview samples.
+- **Still open: real browser screenshot evidence.** Phase 10F-10 uses frontend/jsdom evidence and does not capture real browser screenshots.
+- **Still open: production artifact producer.** No `structure.viewer_3d` adapter or runtime artifact producer exists.
+- **Still open: renderer implementation.** Renderer, WebGL, Three.js, renderer bundles, and sandboxing remain `NOT_READY`.
+- **Still open: planner routing.** Viewer routing remains planned only; no planner route was added.
+- **Still open: official PASS evidence.** Official PASS claims remain none.
+
 ## 2026-07-09 Phase 10F-9 Follow-ups
 
 - **Closed: contract fixture implementation.** Phase 10F-9 adds inert `viewer_scene.v1` fixtures, manifest fixtures, expected validation results, an isolated validator, and pytest replay tests.

@@ -3201,3 +3201,21 @@ Keep `official_pass_claim` and `official_pass_claims` false for every case and f
 - Expected contracts now carry candidate replay values suitable for future internal regression replay.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter core semantics, and live LLM boundaries remain unchanged.
 - Full viewer, WebGL/Three.js renderer, phonon, notebooks, scripts, and external API workflows remain deferred.
+# 2026-07-09 Phase 10F-10 ADR: JSON-only viewer_scene preview before renderer work
+
+## Decision
+
+Implement `viewer_scene.v1` preview as inert JSON summary and manifest display inside the existing artifact preview surface before any renderer or `structure.viewer_3d` adapter work.
+
+## Rationale
+
+- Phase 10F-9 already landed contract fixtures and validation.
+- JSON-only preview evidence can verify the artifact shape, caps, warnings, and security boundary without introducing renderer risk.
+- Renderer, WebGL, Three.js, sandboxing, and dependency review remain higher-risk follow-up decisions.
+
+## Consequences
+
+- `viewer_scene.v1` fixtures can be shown as static preview data.
+- No full interactive 3D viewer exists.
+- No WebGL, Three.js, renderer bundle, adapter, planner routing, Tool Registry runtime behavior, or production runtime route is introduced.
+- Future renderer work must remain explicitly approved and separately evidenced.
