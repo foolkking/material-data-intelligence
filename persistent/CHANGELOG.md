@@ -2,6 +2,18 @@
 
 ## 2026-07-09
 
+### Phase 10F-2 Official Examples Coverage Gap Closure
+
+- Added `docs/phase10f/phase10f2_official_coverage_gap_analysis.md`.
+- Added `docs/phase10f/phase10f2_coverage_gap_matrix.md`.
+- Added `docs/phase10f/phase10f2_direct_uploadable_fixture_proposal.md`.
+- Added `docs/phase10f/phase10f2_expected_contract_authoring_plan.md`.
+- Added `docs/phase10f/phase10f3_next_scope_prompt.md`.
+- Planned how to close the lack of direct-uploadable official static physics cases for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Kept Phase 10F-1 as `PARTIAL_PASS` and made no new official static physics PASS claim.
+- Recommended Phase 10F-3: Static Physics Direct-Uploadable Fixture Pack Planning.
+- No new adapter, runtime semantic change, full viewer, WebGL renderer, Three.js, phonon, notebook/script execution, external API workflow, real LLM path, dependency, or unsupported official PASS claim was added.
+
 ### Phase 10F-1 Official Examples Direct Verification
 
 - Added `docs/phase10f/phase10f1_official_examples_direct_verification.md`.

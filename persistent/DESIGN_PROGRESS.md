@@ -1,5 +1,14 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10F-2 Official Examples Coverage Gap Closure
+
+- Planned closure for the official static physics coverage gap found in Phase 10F-1.
+- Retained Phase 10F-1 status as `PARTIAL_PASS`: the benchmark pack is present and classified, but no direct-uploadable official static physics case exists for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`.
+- Added the coverage-gap analysis, gap matrix, direct-uploadable fixture proposal, expected-contract authoring plan, and Phase 10F-3 next-scope prompt under `docs/phase10f/`.
+- Recommended Phase 10F-3 scope: Static Physics Direct-Uploadable Fixture Pack Planning.
+- No official static physics PASS claim was added; mapping-only, notebook-only, script-heavy, external-API, and future-scope cases remain non-PASS.
+- No notebook, external script, benchmark extraction script, external API, network workflow, real LLM path, dependency installation, new adapter, adapter semantic change, Tool Registry semantic change, QueueWorkerRuntime change, AnalysisPlanRepository change, `/planner/jobs` change, PlanValidator relaxation, full viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, or advanced local environment classification was added.
+
 ## 2026-07-09 Phase 10F-1 Official Examples Direct Verification
 
 - Audited the local official examples benchmark pack for direct static structure physics verification of `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.

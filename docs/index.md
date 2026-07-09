@@ -55,3 +55,8 @@
 | [`phase10f/phase10f1_official_examples_direct_verification.md`](phase10f/phase10f1_official_examples_direct_verification.md) | Phase 10F-1 official examples direct verification audit |
 | [`phase10f/official_examples_direct_verification/`](phase10f/official_examples_direct_verification/) | Phase 10F-1 case-selection, verification matrix, artifact, API, and security evidence |
 | [`phase10f/phase10f2_next_scope_prompt.md`](phase10f/phase10f2_next_scope_prompt.md) | Copyable Phase 10F-2 coverage-gap prompt |
+| [`phase10f/phase10f2_official_coverage_gap_analysis.md`](phase10f/phase10f2_official_coverage_gap_analysis.md) | Phase 10F-2 official static physics coverage-gap analysis |
+| [`phase10f/phase10f2_coverage_gap_matrix.md`](phase10f/phase10f2_coverage_gap_matrix.md) | Phase 10F-2 static physics official coverage gap matrix |
+| [`phase10f/phase10f2_direct_uploadable_fixture_proposal.md`](phase10f/phase10f2_direct_uploadable_fixture_proposal.md) | Phase 10F-2 direct-uploadable fixture proposal |
+| [`phase10f/phase10f2_expected_contract_authoring_plan.md`](phase10f/phase10f2_expected_contract_authoring_plan.md) | Phase 10F-2 expected contract authoring plan |
+| [`phase10f/phase10f3_next_scope_prompt.md`](phase10f/phase10f3_next_scope_prompt.md) | Copyable Phase 10F-3 fixture-pack planning prompt |

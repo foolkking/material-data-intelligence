@@ -1,5 +1,17 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-09 Phase 10F-2 Official Coverage Gap Notes
+
+- No Tool Registry entries were added, removed, or modified in Phase 10F-2.
+- Existing static physics tools remain:
+  - `structure.coordination_hist`
+  - `structure.xrd`
+  - `structure.rdf`
+- Phase 10F-2 is coverage-gap planning only. It proposes future direct-uploadable static physics fixture and expected-contract policies but does not execute those fixtures.
+- No official static physics PASS claim was added.
+- Future official PASS evidence must still run through AnalysisPlan validation, `/planner/jobs`, QueueWorkerRuntime, Tool Registry lookup, params schema validation, adapter execution, artifact generation, and security checks.
+- No Tool Registry main semantics, runtime authority, full viewer, WebGL renderer, Three.js, phonon, or unsupported official example PASS claim was added.
+
 ## 2026-07-09 Phase 10F-1 Official Verification Notes
 
 - No Tool Registry entries were added, removed, or modified in Phase 10F-1.

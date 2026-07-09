@@ -1,5 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F-2 Follow-ups
+
+- **Closed: coverage gap classification.** Phase 10F-2 records that the current official benchmark pack has zero direct-uploadable static physics cases for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`.
+- **Closed: fixture proposal.** Phase 10F-2 proposes small direct-uploadable CIF/POSCAR/Structure JSON fixture policies and expected artifact checks for the three completed static physics tools.
+- **Closed: expected contract authoring plan.** Exact fields, tolerance fields, security-critical fields, metadata-only fields, allowed variance, and provenance labels are documented.
+- **Still open: fixture approval.** No direct-uploadable static physics fixture pack has been approved or executed yet.
+- **Still open: official PASS evidence.** No official static physics PASS claim exists until approved fixtures are executed through the platform and compared to expected contracts.
+- **Recommended next: fixture-pack planning.** Phase 10F-3 should plan a small direct-uploadable expected-contract pack without executing notebooks/scripts or claiming PASS.
+- **Still open: advanced structure.** Full interactive 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future readiness/planning items.
+
 ## 2026-07-09 Phase 10F-1 Follow-ups
 
 - **Closed: benchmark pack audit.** The local official examples benchmark pack was present and audited for static physics direct verification.

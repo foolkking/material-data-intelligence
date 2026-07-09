@@ -1,5 +1,32 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-2-STATIC-PHYSICS-COVERAGE-GAP: Plan fixture coverage before any official PASS expansion
+
+### Context
+
+Phase 10F-1 audited the local official examples benchmark pack and found no direct-uploadable official static physics case for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`. The existing official direct-verified cases remain table/ML/composition cases, while structure-adjacent examples are mapping-only, notebook/script-dependent, widget/viewer oriented, external-data-dependent, or future-scope.
+
+### Decision
+
+Phase 10F-2 closes the planning gap by defining the fixture and expected-contract work required before any official static physics PASS expansion. A future static physics official PASS requires:
+
+- approved small direct-uploadable structure inputs;
+- expected contracts for the relevant static physics artifacts;
+- clear provenance labels distinguishing official-derived, official-like curated, and internal regression fixtures;
+- exact schema/security assertions;
+- tolerance-bounded numeric assertions;
+- platform execution through the existing validated job and Tool Registry path.
+
+Phase 10F-2 does not execute notebooks, scripts, extraction workflows, external APIs, or direct verification jobs, and it does not add a PASS claim.
+
+### Consequences
+
+- Phase 10F-1 remains `PARTIAL_PASS`.
+- Phase 10F-3 should plan a small direct-uploadable fixture pack before any official static physics replay.
+- Mapping-only, notebook-only, script-heavy, external-API, future-scope, screenshot-only, and missing-input cases remain non-PASS.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, and the default real-LLM gate remain unchanged.
+- Full `structure.viewer_3d`, WebGL, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future planning items.
+
 ## ADR-10F-1-OFFICIAL-STATIC-PHYSICS-GATE: Do not promote mapping-only static physics examples to PASS
 
 ### Context
