@@ -1,5 +1,20 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-09 Phase 10F-7 Advanced Viewer Readiness Notes
+
+- No Tool Registry entries were added, removed, or modified in Phase 10F-7.
+- Existing static physics tools remain closed:
+  - `structure.coordination_hist`
+  - `structure.xrd`
+  - `structure.rdf`
+- Existing Phase 10D static scene metadata/export tools remain the safe baseline for inert scene artifacts:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+- Historical `structure.viewer_3d` registry/adapter inventory exists, but Phase 10F-7 does not activate, extend, evidence, or approve full viewer implementation.
+- Future viewer work must first harden an inert `viewer_scene.json` contract before any renderer implementation.
+- Renderer implementation, WebGL, Three.js, renderer bundles, and phonon remain future scope and require explicit approval.
+- No Tool Registry main semantics, runtime authority, planner routing, full viewer implementation, WebGL renderer, Three.js integration, phonon, or unsupported official example PASS claim was added.
+
 ## 2026-07-09 Phase 10F-6 Fixture Evidence Closure Notes
 
 - No Tool Registry entries were added, removed, or modified in Phase 10F-6.

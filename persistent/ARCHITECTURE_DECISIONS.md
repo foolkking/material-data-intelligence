@@ -1,5 +1,29 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-7-CONTRACT-BEFORE-RENDERER: Plan inert viewer scene artifacts before renderer implementation
+
+### Context
+
+Phase 10F-6 closed the static physics evidence stack. Phase 10D already proved static scene metadata and static artifact preview, but renderer implementation adds a materially different security and dependency surface.
+
+### Decision
+
+Phase 10F-7 recommends a contract-before-renderer path:
+
+- proceed next to Viewer Scene Artifact Contract Planning;
+- keep `viewer_scene.json` inert and previewable as static JSON;
+- require no artifact JavaScript, no external URLs, no remote assets, and no executable callbacks;
+- treat renderer implementation as `NOT_READY`;
+- treat full `structure.viewer_3d` implementation as `NOT_READY`;
+- require explicit approval before WebGL, Three.js, renderer bundles, or browser 3D runtime work.
+
+### Consequences
+
+- Phase 10F-8 should finalize or scaffold inert `viewer_scene.json`, `viewer_summary.md`, and `viewer_recipe.json` contracts.
+- Renderer sandboxing, dependency review, browser console/network evidence, and malicious-scene tests remain future requirements.
+- Brillouin-zone 3D, phonon bands/DOS, and advanced local environment classification remain separate future scopes.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, adapter semantics, and the default real-LLM gate remain unchanged.
+
 ## ADR-10F-6-FIXTURE-EVIDENCE-CLOSURE: Close fixture-pack evidence without official PASS promotion
 
 ### Context

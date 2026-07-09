@@ -77,3 +77,12 @@
 | [`phase10f/phase10f6_evidence_boundary_matrix.md`](phase10f/phase10f6_evidence_boundary_matrix.md) | Phase 10F-6 fixture-pack vs official PASS boundary matrix |
 | [`phase10f/phase10f6_next_scope_decision_matrix.md`](phase10f/phase10f6_next_scope_decision_matrix.md) | Phase 10F-6 next-scope decision matrix |
 | [`phase10f/phase10f7_next_scope_prompt.md`](phase10f/phase10f7_next_scope_prompt.md) | Copyable Phase 10F-7 advanced viewer readiness planning prompt |
+| [`phase10f/phase10f7_advanced_viewer_readiness.md`](phase10f/phase10f7_advanced_viewer_readiness.md) | Phase 10F-7 advanced structure viewer readiness assessment |
+| [`phase10f/phase10f7_viewer_artifact_contract_proposal.md`](phase10f/phase10f7_viewer_artifact_contract_proposal.md) | Phase 10F-7 future inert viewer artifact contract proposal |
+| [`phase10f/phase10f7_renderer_architecture_assessment.md`](phase10f/phase10f7_renderer_architecture_assessment.md) | Phase 10F-7 renderer architecture assessment |
+| [`phase10f/phase10f7_viewer_security_boundary.md`](phase10f/phase10f7_viewer_security_boundary.md) | Phase 10F-7 viewer security boundary |
+| [`phase10f/phase10f7_viewer_input_caps.md`](phase10f/phase10f7_viewer_input_caps.md) | Phase 10F-7 viewer input and size caps |
+| [`phase10f/phase10f7_viewer_routing_policy.md`](phase10f/phase10f7_viewer_routing_policy.md) | Phase 10F-7 future viewer routing policy |
+| [`phase10f/phase10f7_viewer_browser_evidence_model.md`](phase10f/phase10f7_viewer_browser_evidence_model.md) | Phase 10F-7 future viewer browser evidence model |
+| [`phase10f/phase10f7_viewer_readiness_matrix.md`](phase10f/phase10f7_viewer_readiness_matrix.md) | Phase 10F-7 viewer readiness matrix |
+| [`phase10f/phase10f8_next_scope_prompt.md`](phase10f/phase10f8_next_scope_prompt.md) | Copyable Phase 10F-8 viewer scene artifact contract planning prompt |

@@ -1,5 +1,20 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10F-7 Advanced Structure Viewer Readiness Planning
+
+- Assessed readiness for future advanced structure viewer work after static physics implementation, browser/API evidence, and fixture-pack replay closure.
+- Confirmed the static physics stack remains closed for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Used Phase 10D static `viewer_scene.json` metadata and static preview evidence as the baseline for an inert scene-artifact path.
+- Proposed a future `viewer_scene.json`, `viewer_summary.md`, and `viewer_recipe.json` artifact contract path.
+- Decided `viewer_scene` artifact-contract planning is ready for Phase 10F-8.
+- Decided renderer implementation is `NOT_READY`.
+- Decided full `structure.viewer_3d` implementation is `NOT_READY` and not approved for direct implementation.
+- Kept WebGL and Three.js as future scope requiring explicit approval, sandboxing, dependency review, browser security tests, and console/network evidence.
+- Kept phonon bands/DOS, Brillouin-zone 3D, and advanced local environment classification as separate future scopes.
+- Official PASS claims remain none.
+- Recommended Phase 10F-8 scope: Viewer Scene Artifact Contract Planning.
+- No official PASS claim, notebook execution, external script, external API, network workflow, real LLM path, dependency installation, new adapter, adapter semantic change, Tool Registry semantic change, QueueWorkerRuntime change, AnalysisPlanRepository change, `/planner/jobs` change, PlanValidator relaxation, full viewer implementation, WebGL renderer, Three.js integration, renderer bundle, Brillouin-zone 3D, phonon, or advanced local environment classification was added.
+
 ## 2026-07-09 Phase 10F-6 Static Physics Fixture Pack Evidence Closure
 
 - Closed the Phase 10F-5 fixture-pack replay evidence for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.

@@ -1,5 +1,16 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F-7 Follow-ups
+
+- **Closed: advanced viewer readiness assessment.** Phase 10F-7 assessed the artifact contract, renderer architecture, security boundary, input caps, routing policy, browser evidence model, and readiness matrix.
+- **Closed: next readiness decision.** `viewer_scene` artifact-contract readiness is `READY` for the next contract phase.
+- **Still open: renderer implementation.** Renderer implementation is `NOT_READY`; sandboxing, dependency review, browser security tests, and console/network evidence remain required.
+- **Still open: full viewer implementation.** Full `structure.viewer_3d` implementation is `NOT_READY` and not approved for direct implementation.
+- **Still open: WebGL / Three.js.** WebGL and Three.js remain future scope requiring explicit approval.
+- **Still open: artifact contract finalization.** Phase 10F-8 should decide the final `viewer_scene.json`, summary, recipe, params, warning, and security schema.
+- **Still open: official PASS evidence.** Official static physics PASS remains none until eligible official provenance is replayed.
+- **Still open: advanced structure.** Brillouin-zone 3D, phonon, and advanced local environment classification remain separate future scopes.
+
 ## 2026-07-09 Phase 10F-6 Follow-ups
 
 - **Closed: fixture-pack replay evidence.** Phase 10F-6 records that the Phase 10F-5 replay PASS is complete for all three static physics fixture cases.

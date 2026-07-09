@@ -2,6 +2,22 @@
 
 ## 2026-07-09
 
+### Phase 10F-7 Advanced Structure Viewer Readiness Planning
+
+- Added `docs/phase10f/phase10f7_advanced_viewer_readiness.md`.
+- Added `docs/phase10f/phase10f7_viewer_artifact_contract_proposal.md`.
+- Added `docs/phase10f/phase10f7_renderer_architecture_assessment.md`.
+- Added `docs/phase10f/phase10f7_viewer_security_boundary.md`.
+- Added `docs/phase10f/phase10f7_viewer_input_caps.md`.
+- Added `docs/phase10f/phase10f7_viewer_routing_policy.md`.
+- Added `docs/phase10f/phase10f7_viewer_browser_evidence_model.md`.
+- Added `docs/phase10f/phase10f7_viewer_readiness_matrix.md`.
+- Added `docs/phase10f/phase10f8_next_scope_prompt.md`.
+- Updated `docs/index.md` with the Phase 10F-7 readiness docs and Phase 10F-8 prompt.
+- Recorded that inert `viewer_scene` artifact-contract work is ready for the next phase, while renderer implementation and full `structure.viewer_3d` implementation are not ready and not approved.
+- Recommended Phase 10F-8: Viewer Scene Artifact Contract Planning.
+- No official PASS verification, notebook/script execution, benchmark extraction script, external API workflow, new adapter, runtime semantic change, full viewer implementation, WebGL renderer, Three.js integration, renderer bundle, phonon, real LLM path, dependency, or unsupported official PASS claim was added.
+
 ### Phase 10F-6 Static Physics Fixture Pack Evidence Closure
 
 - Added `docs/phase10f/phase10f6_static_physics_fixture_pack_evidence_closure.md`.

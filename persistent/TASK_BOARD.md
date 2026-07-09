@@ -1,5 +1,41 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10F-7 Advanced Structure Viewer Readiness Planning
+
+### Done
+
+- [x] Kept Phase 10F-6 status as `PASS`.
+- [x] Confirmed static physics evidence remains closed for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- [x] Assessed existing Phase 10D static scene metadata and static preview evidence.
+- [x] Added `docs/phase10f/phase10f7_advanced_viewer_readiness.md`.
+- [x] Added `docs/phase10f/phase10f7_viewer_artifact_contract_proposal.md`.
+- [x] Added `docs/phase10f/phase10f7_renderer_architecture_assessment.md`.
+- [x] Added `docs/phase10f/phase10f7_viewer_security_boundary.md`.
+- [x] Added `docs/phase10f/phase10f7_viewer_input_caps.md`.
+- [x] Added `docs/phase10f/phase10f7_viewer_routing_policy.md`.
+- [x] Added `docs/phase10f/phase10f7_viewer_browser_evidence_model.md`.
+- [x] Added `docs/phase10f/phase10f7_viewer_readiness_matrix.md`.
+- [x] Added `docs/phase10f/phase10f8_next_scope_prompt.md`.
+
+### Decisions
+
+- [x] `viewer_scene` artifact-contract readiness is `READY` for the next planning/contract phase.
+- [x] Renderer implementation readiness is `NOT_READY`.
+- [x] Full `structure.viewer_3d` implementation readiness is `NOT_READY`.
+
+### Recommended Next Scope
+
+- [x] Recommend Phase 10F-8: Viewer Scene Artifact Contract Planning.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, renderer bundle, or phonon implementation.
+
+### Remaining
+
+- [ ] Finalize inert `viewer_scene.json` contract.
+- [ ] Decide how Phase 10D scene metadata maps into the future viewer contract.
+- [ ] Renderer sandbox and dependency review remain future work.
+- [ ] Official PASS evidence remains unavailable until eligible official provenance is replayed.
+- [ ] Brillouin-zone 3D and phonon remain separate future scopes.
+
 ## 2026-07-09 Phase 10F-6 Static Physics Fixture Pack Evidence Closure
 
 ### Done
