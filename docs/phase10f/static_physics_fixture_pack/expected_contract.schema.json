@@ -99,6 +99,36 @@
         }
       }
     },
+    "candidate_replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generated_in_phase",
+        "source",
+        "official_pass_claim",
+        "status"
+      ],
+      "properties": {
+        "generated_in_phase": {
+          "const": "10F-5"
+        },
+        "source": {
+          "const": "platform_replay"
+        },
+        "official_pass_claim": {
+          "const": false
+        },
+        "status": {
+          "const": "fixture_pack_replay_candidate"
+        }
+      }
+    },
+    "replay_params": {
+      "type": "object"
+    },
+    "observed_schema_versions": {
+      "type": "object"
+    },
     "tolerance_policy": {
       "type": "string",
       "minLength": 1
@@ -106,9 +136,9 @@
     "status": {
       "enum": [
         "candidate_expected_contract",
-        "pending_replay_generation"
+        "pending_replay_generation",
+        "fixture_pack_replay_candidate"
       ]
     }
   }
 }
-

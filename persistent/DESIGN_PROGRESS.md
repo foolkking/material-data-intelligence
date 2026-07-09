@@ -1045,3 +1045,17 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - RDF readiness decision: `READY` for a single-scope Phase 10E-7 implementation using existing pymatgen periodic neighbor APIs and small periodic fixtures.
 - This phase did not implement `structure.rdf`, did not modify `structure.xrd` or `structure.coordination_hist`, and did not change runtime semantics.
 - Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, trajectory RDF, experimental fitting, notebook extraction, script execution, and external API workflows remain deferred.
+
+## 2026-07-09 Phase 10F-5 Static Physics Fixture Pack Replay Verification
+
+- Replayed the Phase 10F-4 static physics fixture pack through the platform planner/job/runtime path.
+- Fixture-pack replay result: `PASS`.
+- Replayed cases:
+  - `coordination_hist_small_crystal` -> `structure.coordination_hist`
+  - `xrd_small_crystal` -> `structure.xrd`
+  - `rdf_small_crystal` -> `structure.rdf`
+- Verified selected tool IDs, expected artifact filenames, artifact schemas, static chart artifacts, summaries, recipes, deterministic recipe metadata, and no-JS/no-external-URL security flags.
+- Updated fixture pack expected contracts with Phase 10F-5 candidate replay numeric values while keeping `official_pass_claim` false.
+- Official examples PASS claims remain none because all replayed cases use `internal_regression` provenance.
+- No notebook, external script, benchmark extraction script, external API, real LLM, new adapter, full viewer, WebGL renderer, Three.js renderer, or phonon scope was introduced.
+- Recommended next scope: Phase 10F-6 fixture-pack evidence closure.

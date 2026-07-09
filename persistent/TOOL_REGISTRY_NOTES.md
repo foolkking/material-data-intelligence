@@ -839,3 +839,14 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - The tool does not emit HTML, executable JavaScript, external URLs, WebGL renderer assets, full 3D viewer artifacts, phonon artifacts, experimental PDF fitting artifacts, or local-environment classification artifacts.
 - Browser/API evidence for RDF is deferred to Phase 10E-8.
 - Full viewer, WebGL, Brillouin-zone, phonon, notebook/script, external API workflows, trajectory RDF, experimental fitting, and scattering refinement remain out of scope.
+
+## 2026-07-09 Phase 10F-5 Fixture Replay Notes
+
+- No Tool Registry changes were made in Phase 10F-5.
+- Fixture-pack replay used existing registered tools only:
+  - `structure.coordination_hist`
+  - `structure.xrd`
+  - `structure.rdf`
+- Each fixture replay selected exactly the expected tool through a persisted plan/job path and QueueWorkerRuntime execution.
+- Expected static artifacts were generated and validated for each tool.
+- The replay confirms internal fixture-pack behavior only. It does not add official examples PASS evidence and does not register or claim full viewer, WebGL/Three.js renderer, phonon, experimental fitting, notebook/script, or external API support.

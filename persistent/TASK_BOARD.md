@@ -1508,3 +1508,22 @@
 - [ ] `structure.rdf` remains planned but unimplemented.
 - [ ] Experimental XRD fitting and Rietveld refinement remain deferred.
 - [ ] Full interactive 3D viewer, WebGL renderer, Brillouin-zone 3D, phonon, notebook extraction, and script execution remain future work.
+
+## 2026-07-09 Phase 10F-5 Static Physics Fixture Pack Replay Verification
+
+### Done
+
+- [x] Validated the Phase 10F-4 fixture pack manifest, schemas, case paths, input manifests, expected contracts, provenance files, size limits, and no-notebook/no-script boundaries.
+- [x] Replayed `coordination_hist_small_crystal` through `planner_jobs`, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry, and `structure.coordination_hist`.
+- [x] Replayed `xrd_small_crystal` through `planner_jobs`, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry, and `structure.xrd`.
+- [x] Replayed `rdf_small_crystal` through `planner_jobs`, persisted AnalysisPlan, QueueWorkerRuntime, Tool Registry, and `structure.rdf`.
+- [x] Verified all expected artifacts and candidate numeric fields.
+- [x] Updated expected contracts with replay-generated candidate values.
+- [x] Kept `official_pass_claim` and `official_pass_claims` false.
+- [x] Added Phase 10F-5 replay evidence docs and Phase 10F-6 next-scope prompt.
+
+### Remaining
+
+- [ ] Phase 10F-6 fixture-pack evidence closure.
+- [ ] Official examples PASS remains absent until eligible official provenance and direct verification are available.
+- [ ] Full viewer, WebGL renderer, Three.js renderer, phonon, notebooks, scripts, and external API workflows remain deferred.

@@ -1419,3 +1419,24 @@
 ### Verification
 
 - Planning-only phase; no adapter, Tool Registry semantic change, runtime semantic change, browser/API evidence, frontend runtime change, dependency change, or real LLM path was added.
+
+## 2026-07-09 Phase 10F-5
+
+### Added
+
+- Added `docs/phase10f/phase10f5_static_physics_fixture_pack_replay_verification.md`.
+- Added `docs/phase10f/static_physics_fixture_pack_replay/` with validation, replay transcript, artifact contract validation, numeric candidate values, replay matrix, and security audit.
+- Added `docs/phase10f/phase10f6_next_scope_prompt.md`.
+
+### Changed
+
+- Updated the Phase 10F-4 fixture pack expected contracts with Phase 10F-5 replay-generated candidate numeric values.
+- Extended `expected_contract.schema.json` to allow Phase 10F-5 candidate replay metadata while keeping `official_pass_claim` constrained to false.
+
+### Verification
+
+- Replayed `coordination_hist_small_crystal`, `xrd_small_crystal`, and `rdf_small_crystal` through the platform planner/job/runtime path.
+- Verified selected tools, generated artifacts, schema versions, deterministic recipe metadata, and security flags.
+- Fixture-pack replay result: `PASS`.
+- Official examples PASS claims remain none.
+- No notebook, external script, external API, real LLM, new dependency, new adapter, full viewer, WebGL/Three.js renderer, or phonon scope was added.

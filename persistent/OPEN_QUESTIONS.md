@@ -505,3 +505,11 @@
 - RDF browser/API evidence remains deferred until after implementation, expected as Phase 10E-8.
 - Official RDF examples remain mapping references only; no official RDF case is direct-upload PASS evidence.
 - Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, trajectory RDF, experimental fitting, notebook extraction, script execution, and external API workflows remain open.
+
+## 2026-07-09 Phase 10F-5 Follow-ups
+
+- Phase 10F-5 closes fixture-pack replay for the internal static physics direct-uploadable fixture pack.
+- Official examples PASS evidence remains open because all replayed fixture cases are `internal_regression`, not `official_direct` or approved `official_derived_manual`.
+- Future official PASS work requires eligible provenance, reviewer approval where needed, and direct replay verification.
+- Phase 10F-6 should close the fixture-pack evidence boundary and decide whether to proceed to official-derived fixture approval planning or advanced viewer readiness planning.
+- Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and advanced local environment classification remain open.

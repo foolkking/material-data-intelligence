@@ -34,23 +34,43 @@
   },
   "numeric_checks": {
     "peak_count": {
-      "mode": "range_or_exact",
-      "status": "pending_replay_generation"
+      "mode": "exact",
+      "value": 23,
+      "status": "fixture_pack_replay_candidate"
     },
     "selected_two_theta_deg": {
       "mode": "tolerance",
       "tolerance": 0.02,
-      "status": "pending_replay_generation"
+      "values": [
+        15.711913,
+        22.290756,
+        27.388668
+      ],
+      "status": "fixture_pack_replay_candidate"
     },
     "relative_intensity": {
       "mode": "tolerance",
       "tolerance": 0.5,
-      "status": "pending_replay_generation"
+      "field": "intensity",
+      "scale": "relative_100",
+      "values": [
+        5.75318,
+        100.0,
+        1.53833
+      ],
+      "status": "fixture_pack_replay_candidate"
     },
     "strongest_peak": {
       "mode": "tolerance",
       "tolerance": 0.02,
-      "status": "pending_replay_generation"
+      "two_theta_deg": 22.290756,
+      "intensity": 100.0,
+      "hkl": [
+        1,
+        1,
+        0
+      ],
+      "status": "fixture_pack_replay_candidate"
     }
   },
   "metadata_checks": {
@@ -64,7 +84,27 @@
     "external_urls": [],
     "external_urls_allowed": false
   },
+  "candidate_replay": {
+    "generated_in_phase": "10F-5",
+    "source": "platform_replay",
+    "official_pass_claim": false,
+    "status": "fixture_pack_replay_candidate"
+  },
+  "replay_params": {
+    "radiation": "CuKa",
+    "two_theta_min": 0.0,
+    "two_theta_max": 90.0,
+    "intensity_threshold": 0.0,
+    "peak_merge_tolerance": 0.05,
+    "max_peaks": 500,
+    "include_hkl": true,
+    "plot_kind": "stem"
+  },
+  "observed_schema_versions": {
+    "xrd_pattern.json": "phase10e4.xrd_pattern.v1",
+    "xrd_plot.json": "phase10e4.static_chart.v1",
+    "recipe.json": "phase10e4.recipe.v1"
+  },
   "tolerance_policy": "docs/phase10f/phase10f3_numeric_tolerance_policy.md",
-  "status": "candidate_expected_contract"
+  "status": "fixture_pack_replay_candidate"
 }
-

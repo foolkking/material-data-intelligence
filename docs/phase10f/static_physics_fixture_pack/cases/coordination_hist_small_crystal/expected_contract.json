@@ -33,15 +33,23 @@
   "numeric_checks": {
     "site_count": {
       "mode": "exact",
-      "status": "pending_replay_generation"
+      "value": 1,
+      "status": "fixture_pack_replay_candidate"
     },
     "histogram_counts": {
       "mode": "exact",
-      "status": "pending_replay_generation"
+      "coordination_numbers": [
+        0
+      ],
+      "counts": [
+        1
+      ],
+      "status": "fixture_pack_replay_candidate"
     },
     "dominant_coordination": {
       "mode": "exact",
-      "status": "pending_replay_generation"
+      "value": 0,
+      "status": "fixture_pack_replay_candidate"
     }
   },
   "metadata_checks": {
@@ -55,7 +63,27 @@
     "external_urls": [],
     "external_urls_allowed": false
   },
+  "candidate_replay": {
+    "generated_in_phase": "10F-5",
+    "source": "platform_replay",
+    "official_pass_claim": false,
+    "status": "fixture_pack_replay_candidate"
+  },
+  "replay_params": {
+    "neighbor_policy": "distance_cutoff",
+    "cutoff_angstrom": 2.1,
+    "max_sites": 500,
+    "max_neighbors_per_site": 128,
+    "include_site_details": true,
+    "group_by_element": true,
+    "include_pair_counts": true,
+    "plot_kind": "bar"
+  },
+  "observed_schema_versions": {
+    "coordination_hist.json": "phase10e1.coordination_hist.v1",
+    "coordination_hist_plot.json": "phase10e1.static_chart.v1",
+    "recipe.json": "phase10e1.recipe.v1"
+  },
   "tolerance_policy": "docs/phase10f/phase10f3_numeric_tolerance_policy.md",
-  "status": "candidate_expected_contract"
+  "status": "fixture_pack_replay_candidate"
 }
-

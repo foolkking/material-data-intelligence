@@ -70,3 +70,6 @@
 | [`phase10f/phase10f4_static_physics_fixture_pack_construction.md`](phase10f/phase10f4_static_physics_fixture_pack_construction.md) | Phase 10F-4 static physics fixture pack construction |
 | [`phase10f/static_physics_fixture_pack/`](phase10f/static_physics_fixture_pack/) | Phase 10F-4 candidate direct-uploadable static physics fixture pack |
 | [`phase10f/phase10f5_next_scope_prompt.md`](phase10f/phase10f5_next_scope_prompt.md) | Copyable Phase 10F-5 fixture-pack replay verification prompt |
+| [`phase10f/phase10f5_static_physics_fixture_pack_replay_verification.md`](phase10f/phase10f5_static_physics_fixture_pack_replay_verification.md) | Phase 10F-5 static physics fixture pack replay verification |
+| [`phase10f/static_physics_fixture_pack_replay/`](phase10f/static_physics_fixture_pack_replay/) | Phase 10F-5 fixture-pack validation, replay, artifact, numeric, and security evidence |
+| [`phase10f/phase10f6_next_scope_prompt.md`](phase10f/phase10f6_next_scope_prompt.md) | Copyable Phase 10F-6 fixture-pack evidence closure prompt |

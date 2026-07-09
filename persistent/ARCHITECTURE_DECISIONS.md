@@ -3057,3 +3057,23 @@ The evidence is limited to static previews and artifact gallery visibility for `
 - The evidence records redacted API captures, artifact captures, six real frontend screenshots, browser console/network logs, and `NO_SECRET_PATTERN_HITS`.
 - `rdf_plot.json` remains static chart JSON; rendered line chart UI is deferred.
 - No new adapter, full 3D viewer, WebGL/Three.js renderer, phonon, experimental fitting, runtime semantic change, or live LLM path was introduced.
+
+## ADR-10F-5-FIXTURE-REPLAY: Fixture-pack replay is internal regression evidence, not official PASS
+
+### Context
+
+Phase 10F-4 constructed a small direct-uploadable static physics fixture pack for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`. The cases were intentionally labeled `internal_regression`, so they could support deterministic platform replay without being misrepresented as official examples.
+
+### Decision
+
+Replay the fixture pack through the existing planner/job/runtime path using deterministic fixed-plan `MockLLMProvider`, persisted AnalysisPlans, QueueWorkerRuntime, Tool Registry validation, and static physics adapters. Update expected contracts with replay-generated candidate numeric values only after artifact validation succeeds.
+
+Keep `official_pass_claim` and `official_pass_claims` false for every case and for the pack as a whole.
+
+### Consequences
+
+- Phase 10F-5 can claim fixture-pack replay `PASS`.
+- Phase 10F-5 cannot claim official examples PASS because all replayed cases are `internal_regression`.
+- Expected contracts now carry candidate replay values suitable for future internal regression replay.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter core semantics, and live LLM boundaries remain unchanged.
+- Full viewer, WebGL/Three.js renderer, phonon, notebooks, scripts, and external API workflows remain deferred.
