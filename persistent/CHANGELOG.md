@@ -2,6 +2,20 @@
 
 ## 2026-07-09
 
+### Phase 10F-3 Static Physics Direct-Uploadable Fixture Pack Planning
+
+- Added `docs/phase10f/phase10f3_static_physics_fixture_pack_planning.md`.
+- Added `docs/phase10f/phase10f3_fixture_candidate_matrix.md`.
+- Added `docs/phase10f/phase10f3_fixture_provenance_policy.md`.
+- Added `docs/phase10f/phase10f3_expected_contract_templates.md`.
+- Added `docs/phase10f/phase10f3_numeric_tolerance_policy.md`.
+- Added `docs/phase10f/phase10f3_fixture_replay_protocol.md`.
+- Added `docs/phase10f/phase10f4_next_scope_prompt.md`.
+- Planned the direct-uploadable fixture pack structure, provenance labels, expected-contract templates, numeric tolerance rules, and future replay protocol for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Kept Phase 10F-1 as `PARTIAL_PASS`, Phase 10F-2 as `PASS`, and made no new official static physics PASS claim.
+- Recommended Phase 10F-4: Static Physics Direct-Uploadable Fixture Pack Construction.
+- No fixture replay, notebook/script execution, benchmark extraction script, external API workflow, new adapter, runtime semantic change, full viewer, WebGL renderer, Three.js, phonon, real LLM path, dependency, or unsupported official PASS claim was added.
+
 ### Phase 10F-2 Official Examples Coverage Gap Closure
 
 - Added `docs/phase10f/phase10f2_official_coverage_gap_analysis.md`.

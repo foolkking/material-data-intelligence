@@ -60,3 +60,10 @@
 | [`phase10f/phase10f2_direct_uploadable_fixture_proposal.md`](phase10f/phase10f2_direct_uploadable_fixture_proposal.md) | Phase 10F-2 direct-uploadable fixture proposal |
 | [`phase10f/phase10f2_expected_contract_authoring_plan.md`](phase10f/phase10f2_expected_contract_authoring_plan.md) | Phase 10F-2 expected contract authoring plan |
 | [`phase10f/phase10f3_next_scope_prompt.md`](phase10f/phase10f3_next_scope_prompt.md) | Copyable Phase 10F-3 fixture-pack planning prompt |
+| [`phase10f/phase10f3_static_physics_fixture_pack_planning.md`](phase10f/phase10f3_static_physics_fixture_pack_planning.md) | Phase 10F-3 static physics direct-uploadable fixture pack planning |
+| [`phase10f/phase10f3_fixture_candidate_matrix.md`](phase10f/phase10f3_fixture_candidate_matrix.md) | Phase 10F-3 fixture candidate matrix |
+| [`phase10f/phase10f3_fixture_provenance_policy.md`](phase10f/phase10f3_fixture_provenance_policy.md) | Phase 10F-3 fixture provenance policy |
+| [`phase10f/phase10f3_expected_contract_templates.md`](phase10f/phase10f3_expected_contract_templates.md) | Phase 10F-3 expected contract templates |
+| [`phase10f/phase10f3_numeric_tolerance_policy.md`](phase10f/phase10f3_numeric_tolerance_policy.md) | Phase 10F-3 numeric tolerance policy |
+| [`phase10f/phase10f3_fixture_replay_protocol.md`](phase10f/phase10f3_fixture_replay_protocol.md) | Phase 10F-3 future fixture replay protocol |
+| [`phase10f/phase10f4_next_scope_prompt.md`](phase10f/phase10f4_next_scope_prompt.md) | Copyable Phase 10F-4 fixture-pack construction prompt |

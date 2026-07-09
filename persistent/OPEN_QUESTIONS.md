@@ -1,5 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F-3 Follow-ups
+
+- **Closed: fixture-pack planning.** Phase 10F-3 defines the small direct-uploadable fixture pack layout, candidate matrix, provenance labels, expected-contract templates, numeric tolerance policy, and future replay protocol for `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- **Closed: provenance labels.** `official_direct`, `official_derived_manual`, `official_like_curated`, `internal_regression`, `mapping_only`, `future_scope`, `unsupported`, and `unknown` are documented.
+- **Closed: official PASS boundary.** Only `official_direct` and reviewer-approved `official_derived_manual` cases can become official PASS after direct platform replay; `official_like_curated` and `internal_regression` remain non-official regression evidence.
+- **Still open: fixture construction approval.** No fixture pack has been constructed, approved, or replayed yet.
+- **Still open: official static physics PASS evidence.** No official PASS claim exists for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf` until approved direct-uploadable fixtures are replayed and compared.
+- **Recommended next: fixture-pack construction.** Phase 10F-4 should construct a small bounded fixture pack from the approved planning templates without running notebooks/scripts or claiming PASS.
+- **Still open: advanced structure.** Full interactive 3D viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future readiness/planning items.
+
 ## 2026-07-09 Phase 10F-2 Follow-ups
 
 - **Closed: coverage gap classification.** Phase 10F-2 records that the current official benchmark pack has zero direct-uploadable static physics cases for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`.

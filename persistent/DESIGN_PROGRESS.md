@@ -1,5 +1,15 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10F-3 Static Physics Direct-Uploadable Fixture Pack Planning
+
+- Planned a small direct-uploadable static physics fixture pack for future replay of `structure.coordination_hist`, `structure.xrd`, and `structure.rdf`.
+- Retained Phase 10F-2 status as `PASS` and Phase 10F-1 status as `PARTIAL_PASS`; the current official benchmark pack still has zero direct-uploadable static physics official cases and no official static physics PASS claims.
+- Added fixture-pack layout planning, fixture candidate matrix, provenance policy, expected-contract templates, numeric tolerance policy, fixture replay protocol, and Phase 10F-4 next-scope prompt under `docs/phase10f/`.
+- Defined provenance labels for `official_direct`, `official_derived_manual`, `official_like_curated`, `internal_regression`, `mapping_only`, `future_scope`, `unsupported`, and `unknown`.
+- Recorded that only `official_direct` and reviewer-approved `official_derived_manual` cases can become official PASS after direct platform replay; `official_like_curated` and `internal_regression` remain non-official regression evidence.
+- Recommended Phase 10F-4 scope: Static Physics Direct-Uploadable Fixture Pack Construction.
+- No fixture official PASS was generated; no notebook, external script, benchmark extraction script, external API, network workflow, real LLM path, dependency installation, new adapter, adapter semantic change, Tool Registry semantic change, QueueWorkerRuntime change, AnalysisPlanRepository change, `/planner/jobs` change, PlanValidator relaxation, full viewer, WebGL renderer, Three.js, Brillouin-zone 3D, phonon, or advanced local environment classification was added.
+
 ## 2026-07-09 Phase 10F-2 Official Examples Coverage Gap Closure
 
 - Planned closure for the official static physics coverage gap found in Phase 10F-1.

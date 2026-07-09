@@ -1,5 +1,31 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-3-STATIC-PHYSICS-FIXTURE-PACK: Plan provenance-gated fixtures before replay verification
+
+### Context
+
+Phase 10F-2 found that the current official examples benchmark pack has no direct-uploadable static physics official case for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`. Future coverage requires small uploadable inputs, expected contracts, provenance labels, numeric tolerance rules, and a replay protocol before any official static physics PASS claim.
+
+### Decision
+
+Phase 10F-3 defines a planning-only fixture pack model for static physics replay:
+
+- candidate fixtures are small, direct-uploadable CIF/POSCAR/Structure JSON cases;
+- expected contracts separate exact checks, numeric tolerance checks, metadata checks, and security-critical checks;
+- provenance labels distinguish `official_direct`, `official_derived_manual`, `official_like_curated`, `internal_regression`, `mapping_only`, `future_scope`, `unsupported`, and `unknown`;
+- only `official_direct` and reviewer-approved `official_derived_manual` cases can become official PASS after direct platform replay;
+- `official_like_curated` and `internal_regression` cases remain useful for regression but are not official PASS evidence by themselves;
+- replay must use the existing validated platform flow rather than notebooks, scripts, external APIs, or real LLM calls.
+
+Phase 10F-3 does not construct real fixtures, execute replay jobs, or add PASS evidence.
+
+### Consequences
+
+- Phase 10F-4 should construct a small direct-uploadable fixture pack from the approved templates.
+- Phase 10F-1 remains `PARTIAL_PASS` until eligible direct-uploadable official or approved official-derived cases are replayed successfully.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, and the default real-LLM gate remain unchanged.
+- Full `structure.viewer_3d`, WebGL, Three.js, Brillouin-zone 3D, phonon, and advanced local environment classification remain future planning items.
+
 ## ADR-10F-2-STATIC-PHYSICS-COVERAGE-GAP: Plan fixture coverage before any official PASS expansion
 
 ### Context

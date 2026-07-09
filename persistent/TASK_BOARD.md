@@ -1,5 +1,35 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10F-3 Static Physics Direct-Uploadable Fixture Pack Planning
+
+### Done
+
+- [x] Kept Phase 10F-2 status as `PASS`.
+- [x] Kept Phase 10F-1 status as `PARTIAL_PASS`.
+- [x] Recorded that no official static physics PASS claims exist for `structure.coordination_hist`, `structure.xrd`, or `structure.rdf`.
+- [x] Added `docs/phase10f/phase10f3_static_physics_fixture_pack_planning.md`.
+- [x] Added `docs/phase10f/phase10f3_fixture_candidate_matrix.md`.
+- [x] Added `docs/phase10f/phase10f3_fixture_provenance_policy.md`.
+- [x] Added `docs/phase10f/phase10f3_expected_contract_templates.md`.
+- [x] Added `docs/phase10f/phase10f3_numeric_tolerance_policy.md`.
+- [x] Added `docs/phase10f/phase10f3_fixture_replay_protocol.md`.
+- [x] Added `docs/phase10f/phase10f4_next_scope_prompt.md`.
+- [x] Recorded that `official_like_curated` and `internal_regression` fixtures are not official PASS evidence.
+
+### Recommended Next Scope
+
+- [x] Recommend Phase 10F-4: Static Physics Direct-Uploadable Fixture Pack Construction.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, or phonon implementation.
+
+### Remaining
+
+- [ ] Approve small direct-uploadable static physics fixture candidates.
+- [ ] Construct a bounded fixture pack and expected contracts without claiming official PASS.
+- [ ] Future replay verification for approved `structure.coordination_hist`, `structure.xrd`, and `structure.rdf` fixtures.
+- [ ] Full interactive 3D viewer readiness planning.
+- [ ] Brillouin-zone 3D planning.
+- [ ] Phonon bands/DOS planning.
+
 ## 2026-07-09 Phase 10F-2 Official Examples Coverage Gap Closure
 
 ### Done
