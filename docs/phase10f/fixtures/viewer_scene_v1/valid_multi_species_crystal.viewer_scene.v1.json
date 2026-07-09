@@ -1,0 +1,96 @@
+{
+  "kind": "viewer_scene",
+  "version": "viewer_scene.v1",
+  "schema_version": "phase10f8.viewer_scene.v1",
+  "source": {
+    "resource_id": "fixture_valid_multi_species_crystal",
+    "resource_type": "contract_fixture",
+    "filename": "valid_multi_species_crystal.viewer_scene.v1.json",
+    "parser": "phase10f9.fixture"
+  },
+  "metadata": {
+    "title": "NaCl viewer scene fixture",
+    "formula": "NaCl",
+    "site_count": 2,
+    "species": ["Cl", "Na"]
+  },
+  "scene": {
+    "coordinate_basis": "cartesian_angstrom",
+    "sites": [
+      {
+        "index": 0,
+        "element": "Na",
+        "label": "Na1",
+        "xyz": [0.0, 0.0, 0.0],
+        "frac": [0.0, 0.0, 0.0],
+        "occupancy": 1.0,
+        "style": {
+          "radius": 1.16,
+          "color": "#ab5cf2"
+        }
+      },
+      {
+        "index": 1,
+        "element": "Cl",
+        "label": "Cl1",
+        "xyz": [2.82, 2.82, 2.82],
+        "frac": [0.5, 0.5, 0.5],
+        "occupancy": 1.0,
+        "style": {
+          "radius": 0.99,
+          "color": "#1ff01f"
+        }
+      }
+    ],
+    "lattice": {
+      "pbc": [true, true, true],
+      "vectors": [[5.64, 0.0, 0.0], [0.0, 5.64, 0.0], [0.0, 0.0, 5.64]],
+      "parameters": {
+        "a": 5.64,
+        "b": 5.64,
+        "c": 5.64,
+        "alpha": 90.0,
+        "beta": 90.0,
+        "gamma": 90.0
+      }
+    },
+    "bonds": [],
+    "cell_expansion": [1, 1, 1],
+    "style": {
+      "representation": "ball_and_stick",
+      "background": "transparent"
+    }
+  },
+  "validation": {
+    "status": "passed",
+    "validated_in_phase": "10F-9",
+    "finite_numbers": true,
+    "caps_enforced": true,
+    "external_resources_detected": false,
+    "scriptable_fields_detected": false,
+    "truncated": false
+  },
+  "caps": {
+    "max_sites": 256,
+    "max_bonds": 2048,
+    "max_species": 32,
+    "max_cell_expansion": [1, 1, 1],
+    "max_scene_json_bytes": 1000000
+  },
+  "warnings": [],
+  "provenance": {
+    "phase": "10F-9",
+    "fixture": true,
+    "provenance_label": "internal_regression",
+    "official_pass_claim": false
+  },
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "artifact_supplied_js_allowed": false,
+    "renderer_required": false,
+    "remote_assets_allowed": false,
+    "html_allowed": false
+  }
+}

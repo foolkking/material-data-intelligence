@@ -1,0 +1,118 @@
+{
+  "schema_version": "phase10f9.viewer_scene_expected_results.v1",
+  "artifact_kind": "viewer_scene",
+  "artifact_version": "viewer_scene.v1",
+  "official_pass_claims": false,
+  "results": [
+    {
+      "fixture_name": "valid_minimal_crystal.viewer_scene.v1.json",
+      "expected_validity": true,
+      "expected_error_codes": [],
+      "expected_warning_codes": [],
+      "caps_interaction": "within_default_caps",
+      "security_interaction": "inert_json_only",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "DEFERRED"
+    },
+    {
+      "fixture_name": "valid_multi_species_crystal.viewer_scene.v1.json",
+      "expected_validity": true,
+      "expected_error_codes": [],
+      "expected_warning_codes": [],
+      "caps_interaction": "within_default_caps",
+      "security_interaction": "inert_json_only",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "DEFERRED"
+    },
+    {
+      "fixture_name": "valid_optional_bonds.viewer_scene.v1.json",
+      "expected_validity": true,
+      "expected_error_codes": [],
+      "expected_warning_codes": [],
+      "caps_interaction": "within_default_caps",
+      "security_interaction": "inert_json_only",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "DEFERRED"
+    },
+    {
+      "fixture_name": "valid_warning_caps.viewer_scene.v1.json",
+      "expected_validity": true,
+      "expected_error_codes": [],
+      "expected_warning_codes": ["VIEWER_SCENE_CAP_NEAR_LIMIT"],
+      "caps_interaction": "near_site_cap_warning",
+      "security_interaction": "inert_json_only",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "DEFERRED"
+    },
+    {
+      "fixture_name": "invalid_nan_coordinate.viewer_scene.v1.json",
+      "expected_validity": false,
+      "expected_error_codes": ["VIEWER_SCENE_COORDINATE_NON_FINITE"],
+      "expected_warning_codes": [],
+      "caps_interaction": "within_default_caps",
+      "security_interaction": "coordinate_rejected",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "NOT_APPLICABLE"
+    },
+    {
+      "fixture_name": "invalid_infinity_coordinate.viewer_scene.v1.json",
+      "expected_validity": false,
+      "expected_error_codes": ["VIEWER_SCENE_COORDINATE_NON_FINITE"],
+      "expected_warning_codes": [],
+      "caps_interaction": "within_default_caps",
+      "security_interaction": "coordinate_rejected",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "NOT_APPLICABLE"
+    },
+    {
+      "fixture_name": "invalid_external_resource_reference.viewer_scene.v1.json",
+      "expected_validity": false,
+      "expected_error_codes": ["VIEWER_SCENE_EXTERNAL_RESOURCE_REFERENCE"],
+      "expected_warning_codes": [],
+      "caps_interaction": "within_default_caps",
+      "security_interaction": "external_resource_placeholder_rejected",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "NOT_APPLICABLE"
+    },
+    {
+      "fixture_name": "invalid_executable_field.viewer_scene.v1.json",
+      "expected_validity": false,
+      "expected_error_codes": ["VIEWER_SCENE_EXECUTABLE_FIELD"],
+      "expected_warning_codes": [],
+      "caps_interaction": "within_default_caps",
+      "security_interaction": "executable_placeholder_rejected",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "NOT_APPLICABLE"
+    },
+    {
+      "fixture_name": "invalid_over_cap_sites.viewer_scene.v1.json",
+      "expected_validity": false,
+      "expected_error_codes": ["VIEWER_SCENE_SITE_LIMIT_EXCEEDED"],
+      "expected_warning_codes": [],
+      "caps_interaction": "site_cap_exceeded",
+      "security_interaction": "inert_json_only",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "NOT_APPLICABLE"
+    },
+    {
+      "fixture_name": "invalid_over_cap_bonds.viewer_scene.v1.json",
+      "expected_validity": false,
+      "expected_error_codes": ["VIEWER_SCENE_BOND_LIMIT_EXCEEDED"],
+      "expected_warning_codes": [],
+      "caps_interaction": "bond_cap_exceeded",
+      "security_interaction": "inert_json_only",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "NOT_APPLICABLE"
+    },
+    {
+      "fixture_name": "invalid_schema_version.viewer_scene.v1.json",
+      "expected_validity": false,
+      "expected_error_codes": ["VIEWER_SCENE_SCHEMA_VERSION_INVALID"],
+      "expected_warning_codes": [],
+      "caps_interaction": "within_default_caps",
+      "security_interaction": "inert_json_only",
+      "preview_expectation": "JSON_ONLY",
+      "renderer_expectation": "NOT_APPLICABLE"
+    }
+  ]
+}

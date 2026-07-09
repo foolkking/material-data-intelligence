@@ -1,5 +1,17 @@
 # OPEN_QUESTIONS
 
+## 2026-07-09 Phase 10F-9 Follow-ups
+
+- **Closed: contract fixture implementation.** Phase 10F-9 adds inert `viewer_scene.v1` fixtures, manifest fixtures, expected validation results, an isolated validator, and pytest replay tests.
+- **Closed: implementation-time validator thresholds for the fixture slice.** The validator enforces the Phase 10F-8 caps for sites, bonds, species, cell expansion, and JSON byte size.
+- **Closed: non-finite coordinate rejection.** Fixtures and tests cover `NaN` and `Infinity` string sentinels as invalid coordinates.
+- **Closed: external resource and executable placeholder rejection.** Invalid fixtures use safe placeholders and the validator rejects them without using real external URLs or executable code.
+- **Still open: JSON-only browser/API evidence.** Phase 10F-9 does not claim browser/API evidence; Phase 10F-10 should decide whether to replay these fixtures through an existing static preview surface.
+- **Still open: production artifact producer.** No `structure.viewer_3d` adapter or runtime artifact producer exists.
+- **Still open: renderer implementation.** Renderer, WebGL, Three.js, renderer bundles, and sandboxing remain `NOT_READY`.
+- **Still open: bond policy.** Bonds remain optional in contract fixtures; future producer requirements remain deferred.
+- **Still open: official PASS evidence.** Official PASS claims remain none.
+
 ## 2026-07-09 Phase 10F-8 Follow-ups
 
 - **Closed: viewer_scene artifact identity planning.** Phase 10F-8 fixes `viewer_scene`, `viewer_scene.v1`, and `phase10f8.viewer_scene.v1` as the contract draft identity.

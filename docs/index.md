@@ -95,3 +95,11 @@
 | [`phase10f/phase10f8_viewer_scene_versioning_strategy.md`](phase10f/phase10f8_viewer_scene_versioning_strategy.md) | Phase 10F-8 viewer scene versioning strategy |
 | [`phase10f/phase10f8_viewer_scene_contract_readiness_matrix.md`](phase10f/phase10f8_viewer_scene_contract_readiness_matrix.md) | Phase 10F-8 viewer scene contract readiness matrix |
 | [`phase10f/phase10f9_next_scope_prompt.md`](phase10f/phase10f9_next_scope_prompt.md) | Copyable Phase 10F-9 JSON preview evidence / contract fixture planning prompt |
+| [`phase10f/fixtures/viewer_scene_v1/`](phase10f/fixtures/viewer_scene_v1/) | Phase 10F-9 inert viewer_scene.v1 fixture pack, manifests, and expected results |
+| [`phase10f/phase10f9_viewer_scene_contract_fixture_implementation.md`](phase10f/phase10f9_viewer_scene_contract_fixture_implementation.md) | Phase 10F-9 viewer scene contract fixture and validator implementation |
+| [`phase10f/phase10f9_viewer_scene_fixture_matrix.md`](phase10f/phase10f9_viewer_scene_fixture_matrix.md) | Phase 10F-9 viewer scene fixture matrix |
+| [`phase10f/phase10f9_viewer_scene_validator_result.md`](phase10f/phase10f9_viewer_scene_validator_result.md) | Phase 10F-9 viewer scene validator result |
+| [`phase10f/phase10f9_viewer_scene_manifest_fixtures.md`](phase10f/phase10f9_viewer_scene_manifest_fixtures.md) | Phase 10F-9 viewer scene manifest fixtures |
+| [`phase10f/phase10f9_viewer_scene_security_evidence.md`](phase10f/phase10f9_viewer_scene_security_evidence.md) | Phase 10F-9 viewer scene fixture security evidence |
+| [`phase10f/phase10f9_viewer_scene_evidence_closure.md`](phase10f/phase10f9_viewer_scene_evidence_closure.md) | Phase 10F-9 viewer scene evidence closure |
+| [`phase10f/phase10f10_next_scope.md`](phase10f/phase10f10_next_scope.md) | Phase 10F-10 next scope note |

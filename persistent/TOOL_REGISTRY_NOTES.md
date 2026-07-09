@@ -1,5 +1,15 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-09 Phase 10F-9 Viewer Scene Contract Fixture Notes
+
+- No Tool Registry entries were added, removed, or modified in Phase 10F-9.
+- Phase 10F-9 implements inert `viewer_scene.v1` contract fixtures and an isolated validator only.
+- The validator lives in `mdi_artifact_core` for contract replay tests; it does not register or activate `structure.viewer_3d`.
+- Existing Phase 10D tools remain the only implemented viewer-scene-related runtime tools:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+- No planner routing, Tool Registry runtime behavior, QueueWorkerRuntime behavior, runtime API route, renderer bundle, WebGL, Three.js, phonon, or unsupported official PASS claim was added.
+
 ## 2026-07-09 Phase 10F-8 Viewer Scene Contract Notes
 
 - No Tool Registry entries were added, removed, or modified in Phase 10F-8.

@@ -1,5 +1,30 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-9-VIEWER-SCENE-CONTRACT-FIXTURES: Validate inert viewer scene contract before runtime integration
+
+### Context
+
+Phase 10F-8 fixed the `viewer_scene.v1` contract draft but intentionally stopped before implementation. The next safe slice is to validate inert JSON fixtures before any adapter, planner route, API route, renderer, WebGL, or Three.js work.
+
+### Decision
+
+Phase 10F-9 implements a contract-only validation slice:
+
+- add inert `viewer_scene.v1` fixtures under `docs/phase10f/fixtures/viewer_scene_v1/`;
+- add manifest fixtures and expected validation results;
+- add isolated validator utilities in `mdi_artifact_core`;
+- add pytest replay tests for valid, invalid, warning/caps, manifest, and security cases;
+- keep JSON-only browser evidence deferred;
+- keep renderer implementation and full `structure.viewer_3d` implementation `NOT_READY`.
+
+### Consequences
+
+- Viewer scene contract behavior is now testable without runtime integration.
+- The project can close fixture-level evidence before deciding whether to capture JSON-only browser preview evidence.
+- Future runtime integration still requires a separate adapter/planner/API approval gate.
+- QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry execution semantics, adapter semantics, planner routing, and the default real-LLM gate remain unchanged.
+- Full `structure.viewer_3d`, WebGL, Three.js, renderer bundles, Brillouin-zone 3D, phonon, and advanced local environment classification remain future scope.
+
 ## ADR-10F-8-VIEWER-SCENE-CONTRACT: Fix inert viewer scene contract before JSON preview evidence
 
 ### Context

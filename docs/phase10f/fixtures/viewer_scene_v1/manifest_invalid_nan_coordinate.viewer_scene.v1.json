@@ -1,0 +1,21 @@
+{
+  "schema_version": "phase10f9.viewer_scene_manifest.v1",
+  "artifact_id": "invalid_nan_coordinate",
+  "artifact_kind": "viewer_scene",
+  "artifact_version": "viewer_scene.v1",
+  "fixture_source": "invalid_nan_coordinate.viewer_scene.v1.json",
+  "expected_validation_state": "invalid",
+  "expected_errors": ["VIEWER_SCENE_COORDINATE_NON_FINITE"],
+  "expected_warnings": [],
+  "expected_caps": {
+    "max_sites": 256,
+    "max_bonds": 2048,
+    "max_species": 32,
+    "max_cell_expansion": [1, 1, 1],
+    "max_scene_json_bytes": 1000000
+  },
+  "preview_mode": "json_only",
+  "renderer_required": false,
+  "executable_assets": "none",
+  "external_resources": "none"
+}

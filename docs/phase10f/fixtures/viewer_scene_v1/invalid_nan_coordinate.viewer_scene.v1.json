@@ -1,0 +1,67 @@
+{
+  "kind": "viewer_scene",
+  "version": "viewer_scene.v1",
+  "schema_version": "phase10f8.viewer_scene.v1",
+  "source": {
+    "resource_id": "fixture_invalid_nan_coordinate",
+    "resource_type": "contract_fixture",
+    "filename": "invalid_nan_coordinate.viewer_scene.v1.json",
+    "parser": "phase10f9.fixture"
+  },
+  "metadata": {
+    "title": "Invalid NaN coordinate placeholder fixture",
+    "formula": "Si",
+    "site_count": 1,
+    "species": ["Si"]
+  },
+  "scene": {
+    "coordinate_basis": "cartesian_angstrom",
+    "sites": [
+      {
+        "index": 0,
+        "element": "Si",
+        "label": "Si1",
+        "xyz": ["NaN", 0.0, 0.0],
+        "frac": [0.0, 0.0, 0.0],
+        "occupancy": 1.0
+      }
+    ],
+    "lattice": {
+      "pbc": [true, true, true],
+      "vectors": [[5.43, 0.0, 0.0], [0.0, 5.43, 0.0], [0.0, 0.0, 5.43]]
+    },
+    "bonds": [],
+    "cell_expansion": [1, 1, 1],
+    "style": {
+      "representation": "ball_and_stick",
+      "background": "transparent"
+    }
+  },
+  "validation": {
+    "status": "expected_failure",
+    "validated_in_phase": "10F-9"
+  },
+  "caps": {
+    "max_sites": 256,
+    "max_bonds": 2048,
+    "max_species": 32,
+    "max_cell_expansion": [1, 1, 1],
+    "max_scene_json_bytes": 1000000
+  },
+  "warnings": [],
+  "provenance": {
+    "phase": "10F-9",
+    "fixture": true,
+    "provenance_label": "internal_regression",
+    "official_pass_claim": false
+  },
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "artifact_supplied_js_allowed": false,
+    "renderer_required": false,
+    "remote_assets_allowed": false,
+    "html_allowed": false
+  }
+}

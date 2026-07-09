@@ -2,6 +2,15 @@
 
 ## 2026-07-09
 
+### Phase 10F-9 Viewer Scene Contract Fixture / Validator Implementation
+
+- Added `docs/phase10f/fixtures/viewer_scene_v1/` with inert `viewer_scene.v1` fixture files, manifest fixtures, and `expected_results.json`.
+- Added `packages/artifact-core/mdi_artifact_core/viewer_scene_contract.py` and exported the viewer scene validator utilities.
+- Added `tests/test_viewer_scene_contract_fixtures.py` for fixture replay, manifest validation, expected error/warning matching, and no real external URL / no script marker assertions.
+- Added Phase 10F-9 implementation, fixture matrix, validator result, manifest fixture, security evidence, evidence closure, and Phase 10F-10 next-scope docs.
+- Updated `docs/index.md` and `docs/13_SHARED_SCHEMA_SPEC.md` with the implemented contract fixture and validator slice.
+- No full viewer implementation, WebGL renderer, Three.js integration, renderer bundle, frontend 3D runtime, new adapter, planner routing change, Tool Registry runtime change, runtime route, notebook/script execution, external API workflow, artifact JS, HTML renderer, real external URL dependency, phonon, or unsupported official PASS claim was added.
+
 ### Phase 10F-8 Viewer Scene Artifact Contract Planning
 
 - Added `docs/phase10f/phase10f8_viewer_scene_artifact_contract_planning.md`.

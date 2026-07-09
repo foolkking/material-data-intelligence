@@ -1,5 +1,17 @@
 # DESIGN_PROGRESS
 
+## 2026-07-09 Phase 10F-9 Viewer Scene Contract Fixture / Validator Implementation
+
+- Implemented a renderer-free `viewer_scene.v1` contract fixture pack under `docs/phase10f/fixtures/viewer_scene_v1/`.
+- Added valid, invalid, and warning/caps fixtures for minimal crystal, multi-species crystal, optional bonds, non-finite coordinates, external-resource placeholder rejection, executable-field placeholder rejection, cap violations, and unsupported schema version.
+- Added manifest fixtures and `expected_results.json` for expected validation states, error codes, warning codes, caps behavior, JSON-only preview expectation, and deferred renderer expectation.
+- Added isolated contract validation utilities in `packages/artifact-core/mdi_artifact_core/viewer_scene_contract.py`.
+- Added `tests/test_viewer_scene_contract_fixtures.py` to replay fixtures against the validator and manifest expectations.
+- Updated shared schema notes with the implemented Phase 10F-9 validator result shape, error codes, warning codes, and fixture-pack location.
+- JSON-only browser evidence remains deferred to a later evidence phase; no browser/API evidence is claimed here.
+- Renderer evidence, renderer implementation, and full `structure.viewer_3d` implementation remain `NOT_READY`.
+- No full viewer, WebGL renderer, Three.js integration, renderer bundle, frontend 3D runtime, new adapter, planner routing change, Tool Registry runtime change, runtime route, notebook execution, external script, external API, artifact JS, HTML renderer, external URL dependency, phonon, Brillouin-zone 3D, or advanced local environment classifier was added.
+
 ## 2026-07-09 Phase 10F-8 Viewer Scene Artifact Contract Planning
 
 - Planned the inert `viewer_scene` artifact contract after Phase 10F-7 readiness approved a contract-before-renderer path.

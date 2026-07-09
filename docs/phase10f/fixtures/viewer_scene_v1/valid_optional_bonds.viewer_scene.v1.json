@@ -1,0 +1,104 @@
+{
+  "kind": "viewer_scene",
+  "version": "viewer_scene.v1",
+  "schema_version": "phase10f8.viewer_scene.v1",
+  "source": {
+    "resource_id": "fixture_valid_optional_bonds",
+    "resource_type": "contract_fixture",
+    "filename": "valid_optional_bonds.viewer_scene.v1.json",
+    "parser": "phase10f9.fixture"
+  },
+  "metadata": {
+    "title": "Bonded Si viewer scene fixture",
+    "formula": "Si2",
+    "site_count": 2,
+    "species": ["Si"]
+  },
+  "scene": {
+    "coordinate_basis": "cartesian_angstrom",
+    "sites": [
+      {
+        "index": 0,
+        "element": "Si",
+        "label": "Si1",
+        "xyz": [0.0, 0.0, 0.0],
+        "frac": [0.0, 0.0, 0.0],
+        "occupancy": 1.0,
+        "style": {
+          "radius": 1.1,
+          "color": "#808080"
+        }
+      },
+      {
+        "index": 1,
+        "element": "Si",
+        "label": "Si2",
+        "xyz": [1.3575, 1.3575, 1.3575],
+        "frac": [0.25, 0.25, 0.25],
+        "occupancy": 1.0,
+        "style": {
+          "radius": 1.1,
+          "color": "#808080"
+        }
+      }
+    ],
+    "lattice": {
+      "pbc": [true, true, true],
+      "vectors": [[5.43, 0.0, 0.0], [0.0, 5.43, 0.0], [0.0, 0.0, 5.43]],
+      "parameters": {
+        "a": 5.43,
+        "b": 5.43,
+        "c": 5.43,
+        "alpha": 90.0,
+        "beta": 90.0,
+        "gamma": 90.0
+      }
+    },
+    "bonds": [
+      {
+        "from": 0,
+        "to": 1,
+        "distance": 2.351258,
+        "bond_type": "candidate",
+        "policy": "fixture_contract"
+      }
+    ],
+    "cell_expansion": [1, 1, 1],
+    "style": {
+      "representation": "ball_and_stick",
+      "background": "transparent"
+    }
+  },
+  "validation": {
+    "status": "passed",
+    "validated_in_phase": "10F-9",
+    "finite_numbers": true,
+    "caps_enforced": true,
+    "external_resources_detected": false,
+    "scriptable_fields_detected": false,
+    "truncated": false
+  },
+  "caps": {
+    "max_sites": 256,
+    "max_bonds": 2048,
+    "max_species": 32,
+    "max_cell_expansion": [1, 1, 1],
+    "max_scene_json_bytes": 1000000
+  },
+  "warnings": [],
+  "provenance": {
+    "phase": "10F-9",
+    "fixture": true,
+    "provenance_label": "internal_regression",
+    "official_pass_claim": false
+  },
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "artifact_supplied_js_allowed": false,
+    "renderer_required": false,
+    "remote_assets_allowed": false,
+    "html_allowed": false
+  }
+}

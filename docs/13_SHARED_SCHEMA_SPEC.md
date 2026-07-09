@@ -68,6 +68,78 @@ Draft identity:
 
 The manifest is an inert artifact index. It must not load external assets or declare a renderer bundle. Phase 10D `viewer_assets_manifest.json` remains the existing implemented artifact; Phase 10F-8 only plans a future compatibility bridge.
 
+## Phase 10F-9 Addendum: Viewer Scene Contract Fixture Validator
+
+Phase 10F-9 implements a low-risk, renderer-free validation slice for the Phase 10F-8 draft. This addendum records the implemented fixture and validator contract; it does not implement `structure.viewer_3d`, a renderer, WebGL, Three.js, planner routing, Tool Registry runtime behavior, or a runtime API route.
+
+Implemented validator location:
+
+- `packages/artifact-core/mdi_artifact_core/viewer_scene_contract.py`
+
+Implemented fixture pack:
+
+- `docs/phase10f/fixtures/viewer_scene_v1/`
+
+Implemented test:
+
+- `tests/test_viewer_scene_contract_fixtures.py`
+
+Validator result shape:
+
+```json
+{
+  "valid": true,
+  "errors": [],
+  "warnings": [],
+  "caps": {
+    "max_sites": 256,
+    "max_bonds": 2048,
+    "max_species": 32,
+    "max_cell_expansion": [1, 1, 1],
+    "max_scene_json_bytes": 1000000
+  }
+}
+```
+
+Implemented error codes:
+
+- `VIEWER_SCENE_KIND_INVALID`
+- `VIEWER_SCENE_VERSION_INVALID`
+- `VIEWER_SCENE_SCHEMA_VERSION_INVALID`
+- `VIEWER_SCENE_REQUIRED_FIELD_MISSING`
+- `VIEWER_SCENE_SECURITY_FIELD_INVALID`
+- `VIEWER_SCENE_EXTERNAL_URL_NOT_ALLOWED`
+- `VIEWER_SCENE_COORDINATE_NON_FINITE`
+- `VIEWER_SCENE_LATTICE_VECTOR_INVALID`
+- `VIEWER_SCENE_SITE_LIMIT_EXCEEDED`
+- `VIEWER_SCENE_BOND_LIMIT_EXCEEDED`
+- `VIEWER_SCENE_SPECIES_LIMIT_EXCEEDED`
+- `VIEWER_SCENE_CELL_EXPANSION_LIMIT_EXCEEDED`
+- `VIEWER_SCENE_JSON_BYTES_LIMIT_EXCEEDED`
+- `VIEWER_SCENE_EXTERNAL_RESOURCE_REFERENCE`
+- `VIEWER_SCENE_EXECUTABLE_FIELD`
+- `VIEWER_SCENE_FORBIDDEN_STRING_CONTENT`
+
+Implemented warning codes:
+
+- `VIEWER_SCENE_CAP_NEAR_LIMIT`
+
+Manifest fixture schema version:
+
+- `phase10f9.viewer_scene_manifest.v1`
+
+Expected-results schema version:
+
+- `phase10f9.viewer_scene_expected_results.v1`
+
+Security boundary:
+
+- fixtures are inert JSON only;
+- no real external URLs are allowed;
+- no artifact JavaScript or HTML is allowed;
+- invalid external-resource and executable-field cases use safe placeholders;
+- renderer evidence and browser/API evidence remain deferred.
+
 ## 1. 本阶段目标
 
 收敛前端、后端、Worker、Agent 和 Tool Registry 共同使用的核心类型，避免每个设计文件重复定义不同版本的 `ArtifactType`、`DisplayTarget`、`ToolCategory`、`DataProfile`、`AnalysisPlan`、`JobEvent` 和 `Recipe`。

@@ -1,0 +1,98 @@
+{
+  "kind": "viewer_scene",
+  "version": "viewer_scene.v1",
+  "schema_version": "phase10f8.viewer_scene.v1",
+  "source": {
+    "resource_id": "fixture_invalid_over_cap_bonds",
+    "resource_type": "contract_fixture",
+    "filename": "invalid_over_cap_bonds.viewer_scene.v1.json",
+    "parser": "phase10f9.fixture"
+  },
+  "metadata": {
+    "title": "Invalid bond cap fixture",
+    "formula": "Si3",
+    "site_count": 3,
+    "species": ["Si"]
+  },
+  "scene": {
+    "coordinate_basis": "cartesian_angstrom",
+    "sites": [
+      {
+        "index": 0,
+        "element": "Si",
+        "label": "Si1",
+        "xyz": [0.0, 0.0, 0.0],
+        "frac": [0.0, 0.0, 0.0],
+        "occupancy": 1.0
+      },
+      {
+        "index": 1,
+        "element": "Si",
+        "label": "Si2",
+        "xyz": [1.0, 0.0, 0.0],
+        "frac": [0.25, 0.0, 0.0],
+        "occupancy": 1.0
+      },
+      {
+        "index": 2,
+        "element": "Si",
+        "label": "Si3",
+        "xyz": [0.0, 1.0, 0.0],
+        "frac": [0.0, 0.25, 0.0],
+        "occupancy": 1.0
+      }
+    ],
+    "lattice": {
+      "pbc": [true, true, true],
+      "vectors": [[4.0, 0.0, 0.0], [0.0, 4.0, 0.0], [0.0, 0.0, 4.0]]
+    },
+    "bonds": [
+      {
+        "from": 0,
+        "to": 1,
+        "distance": 1.0,
+        "bond_type": "candidate",
+        "policy": "fixture_contract"
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "distance": 1.0,
+        "bond_type": "candidate",
+        "policy": "fixture_contract"
+      }
+    ],
+    "cell_expansion": [1, 1, 1],
+    "style": {
+      "representation": "ball_and_stick",
+      "background": "transparent"
+    }
+  },
+  "validation": {
+    "status": "expected_failure",
+    "validated_in_phase": "10F-9"
+  },
+  "caps": {
+    "max_sites": 256,
+    "max_bonds": 1,
+    "max_species": 32,
+    "max_cell_expansion": [1, 1, 1],
+    "max_scene_json_bytes": 1000000
+  },
+  "warnings": [],
+  "provenance": {
+    "phase": "10F-9",
+    "fixture": true,
+    "provenance_label": "internal_regression",
+    "official_pass_claim": false
+  },
+  "security": {
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "artifact_supplied_js_allowed": false,
+    "renderer_required": false,
+    "remote_assets_allowed": false,
+    "html_allowed": false
+  }
+}

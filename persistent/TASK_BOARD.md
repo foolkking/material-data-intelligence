@@ -1,5 +1,33 @@
 # TASK_BOARD
 
+## 2026-07-09 Phase 10F-9 Viewer Scene Contract Fixture / Validator Implementation
+
+### Done
+
+- [x] Kept Phase 10F-8 baseline as `caeb35710546a12358cb841c4b20b7451d23fe5d`.
+- [x] Added inert `viewer_scene.v1` fixture pack.
+- [x] Added manifest fixtures.
+- [x] Added expected validation results.
+- [x] Added isolated validator / contract checks.
+- [x] Added pytest fixture replay tests.
+- [x] Added Phase 10F-9 implementation, matrix, validator, manifest, security, and evidence closure docs.
+
+### Decisions
+
+- [x] Contract fixture implementation is `READY`.
+- [x] Valid fixture replay is `READY`.
+- [x] Invalid fixture replay is `READY`.
+- [x] Manifest fixture validation is `READY`.
+- [x] Expected result comparison is `READY`.
+- [x] JSON-only browser evidence remains deferred.
+- [x] Renderer implementation is `NOT_READY`.
+- [x] Full `structure.viewer_3d` implementation is `NOT_READY`.
+
+### Recommended Next Scope
+
+- [x] Recommend Phase 10F-10: Viewer Scene Contract Evidence Closure.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, renderer bundle, planner routing implementation, or phonon implementation.
+
 ## 2026-07-09 Phase 10F-8 Viewer Scene Artifact Contract Planning
 
 ### Done
