@@ -1359,16 +1359,18 @@ function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
     return <ViewerFallbackPreview artifact={artifact} title="viewer_scene.json" description="Static scene metadata artifact. Payload preview is not attached to this API response." />;
   }
   const isViewerSceneV1 = isViewerSceneV1Payload(payload);
+  const isViewerSceneJson = text(payload.kind) === "viewer_scene";
+  const isViewerSceneContractPayload = isViewerSceneV1 || isViewerSceneJson;
   const scene = asRecord(payload.scene) || {};
   const metadata = asRecord(payload.metadata) || {};
-  const structure = isViewerSceneV1 ? metadata : asRecord(payload.structure) || payload;
-  const lattice = isViewerSceneV1 ? asRecord(scene.lattice) || {} : asRecord(structure.lattice) || asRecord(payload.lattice) || {};
+  const structure = isViewerSceneContractPayload ? metadata : asRecord(payload.structure) || payload;
+  const lattice = isViewerSceneContractPayload ? asRecord(scene.lattice) || {} : asRecord(structure.lattice) || asRecord(payload.lattice) || {};
   const latticeParameters = asRecord(lattice.parameters) || lattice;
-  const atoms = isViewerSceneV1 ? arrayOfRecords(scene.sites) || [] : arrayOfRecords(structure.atoms) || arrayOfRecords(payload.atoms) || [];
-  const bonds = isViewerSceneV1 ? arrayOfRecords(scene.bonds) || [] : arrayOfRecords(structure.bonds) || arrayOfRecords(payload.bonds) || [];
-  const display = isViewerSceneV1 ? asRecord(scene.style) || {} : asRecord(payload.display) || {};
+  const atoms = isViewerSceneContractPayload ? arrayOfRecords(scene.sites) || [] : arrayOfRecords(structure.atoms) || arrayOfRecords(payload.atoms) || [];
+  const bonds = isViewerSceneContractPayload ? arrayOfRecords(scene.bonds) || [] : arrayOfRecords(structure.bonds) || arrayOfRecords(payload.bonds) || [];
+  const display = isViewerSceneContractPayload ? asRecord(scene.style) || {} : asRecord(payload.display) || {};
   const camera = asRecord(payload.camera) || {};
-  const limits = isViewerSceneV1 ? asRecord(payload.caps) || asRecord(payload.limits) || {} : asRecord(payload.limits) || asRecord(structure.limits) || {};
+  const limits = isViewerSceneContractPayload ? asRecord(payload.caps) || asRecord(payload.limits) || {} : asRecord(payload.limits) || asRecord(structure.limits) || {};
   const security = asRecord(payload.security) || {};
   const validation = asRecord(payload.validation) || {};
   const warnings = arrayOfText(payload.warnings) || arrayOfText(structure.warnings) || [];
@@ -1380,21 +1382,22 @@ function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
   return (
     <article className="viewer-preview-card" data-testid="viewer-scene-preview">
       {isViewerSceneV1 ? <div data-testid="viewer-scene-v1-preview" hidden /> : null}
+      {isViewerSceneContractPayload ? <div data-testid="viewer-scene-json-preview" hidden /> : null}
       <h3>Scene overview</h3>
-      <dl className="mini-grid" data-testid={isViewerSceneV1 ? "viewer-scene-summary" : undefined}>
-        {isViewerSceneV1 ? <TestField testId="viewer-scene-kind" label="kind" value={text(payload.kind)} /> : null}
-        {isViewerSceneV1 ? <TestField testId="viewer-scene-version" label="version" value={text(payload.version)} /> : null}
-        <TestField testId={isViewerSceneV1 ? "viewer-scene-schema-version" : undefined} label="schema" value={text(payload.schema_version)} />
+      <dl className="mini-grid" data-testid={isViewerSceneContractPayload ? "viewer-scene-summary" : undefined}>
+        {isViewerSceneContractPayload ? <TestField testId="viewer-scene-kind" label="kind" value={text(payload.kind)} /> : null}
+        {isViewerSceneContractPayload ? <TestField testId="viewer-scene-version" label="version" value={text(payload.version)} /> : null}
+        <TestField testId={isViewerSceneContractPayload ? "viewer-scene-schema-version" : undefined} label="schema" value={text(payload.schema_version)} />
         <Field label="tool" value={text(payload.tool_id || payload.artifactType)} />
         <Field label="formula" value={text(structure.formula)} />
         <Field label="sites" value={text(structure.site_count || structure.siteCount || atoms.length)} />
         <Field label="species" value={species} />
         <Field label="atoms / bonds" value={`${atoms.length} / ${bonds.length}`} />
-        {isViewerSceneV1 ? <Field label="species count" value={text(Array.isArray(structure.species) ? structure.species.length : undefined)} /> : null}
-        {isViewerSceneV1 ? <Field label="coordinate basis" value={coordinateBasis} /> : null}
-        {isViewerSceneV1 ? <Field label="lattice present" value={latticePresent} /> : null}
+        {isViewerSceneContractPayload ? <Field label="species count" value={text(Array.isArray(structure.species) ? structure.species.length : undefined)} /> : null}
+        {isViewerSceneContractPayload ? <Field label="coordinate basis" value={coordinateBasis} /> : null}
+        {isViewerSceneContractPayload ? <Field label="lattice present" value={latticePresent} /> : null}
       </dl>
-      {isViewerSceneV1 ? (
+      {isViewerSceneContractPayload ? (
         <PreviewSubsection title="Contract validation">
           <dl className="mini-grid">
             <TestField testId="viewer-scene-validation-state" label="validation state" value={validationStatus} />

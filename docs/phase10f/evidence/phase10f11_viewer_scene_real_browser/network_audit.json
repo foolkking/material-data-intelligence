@@ -1,0 +1,46 @@
+{
+  "schema_version": "phase10f11.viewer_scene_browser_network_audit.v1",
+  "external_request_count": 0,
+  "cases": [
+    {
+      "case_id": "valid_minimal_crystal",
+      "external_request_count": 0,
+      "request_paths": [
+        "app_server",
+        "mock_api"
+      ]
+    },
+    {
+      "case_id": "valid_warning_caps",
+      "external_request_count": 0,
+      "request_paths": [
+        "app_server",
+        "mock_api"
+      ]
+    },
+    {
+      "case_id": "invalid_external_resource_placeholder",
+      "external_request_count": 0,
+      "request_paths": [
+        "app_server",
+        "mock_api"
+      ]
+    },
+    {
+      "case_id": "invalid_executable_placeholder",
+      "external_request_count": 0,
+      "request_paths": [
+        "app_server",
+        "mock_api"
+      ]
+    },
+    {
+      "case_id": "invalid_schema_version",
+      "external_request_count": 0,
+      "request_paths": [
+        "app_server",
+        "mock_api"
+      ]
+    }
+  ]
+}

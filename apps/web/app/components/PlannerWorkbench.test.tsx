@@ -659,6 +659,33 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(document.body.innerHTML).not.toMatch(/<canvas|<script|<iframe/i);
   });
 
+  it("renders invalid viewer_scene schema as inert JSON-only preview without a renderer", async () => {
+    useViewerSceneV1Artifacts(
+      viewerSceneV1InvalidSchemaContent,
+      viewerSceneV1Manifest("invalid_schema_version.viewer_scene.v1.json", "invalid", ["VIEWER_SCENE_UNSUPPORTED_SCHEMA_VERSION"])
+    );
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const results = screen.getByTestId("results-export-tab");
+    expect(within(results).getByTestId("viewer-scene-json-preview")).not.toBeNull();
+    expect(within(results).queryByTestId("viewer-scene-v1-preview")).toBeNull();
+    expect(within(results).getByTestId("viewer-scene-kind").textContent).toContain("viewer_scene");
+    expect(within(results).getByTestId("viewer-scene-version").textContent).toContain("viewer_scene.v1");
+    expect(within(results).getByTestId("viewer-scene-schema-version").textContent).toContain("unsupported.viewer_scene.v9");
+    expect(within(results).getByTestId("viewer-scene-validation-state").textContent).toContain("expected_failure");
+    expect(within(results).getByTestId("viewer-scene-error-codes").textContent).toContain("VIEWER_SCENE_UNSUPPORTED_SCHEMA_VERSION");
+    expect(within(results).getByTestId("viewer-manifest-preview-mode").textContent).toContain("json_only");
+    expect(within(results).getByTestId("viewer-manifest-renderer-required").textContent).toContain("false");
+    expect(container.querySelector("canvas")).toBeNull();
+    expect(container.querySelector("iframe")).toBeNull();
+  });
+
   it("keeps Phase 10F-9 viewer_scene.v1 fixture coverage renderer-free in frontend samples", () => {
     const fixtureSamples = [
       viewerSceneV1MinimalContent,

@@ -917,3 +917,11 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - No planner routing, QueueWorkerRuntime, AnalysisPlanRepository, or `/planner/jobs` runtime behavior changed.
 - `structure.coordination_hist`, `structure.xrd`, and `structure.rdf` remain unchanged.
 - Renderer implementation, WebGL, Three.js, Brillouin-zone 3D, and phonon remain future scope.
+
+# 2026-07-10 Phase 10F-11 Viewer Scene Browser Evidence Notes
+
+- No Tool Registry changes were made in Phase 10F-11.
+- No `structure.viewer_3d` adapter was registered.
+- Existing `viewer_scene.v1` preview support remains a frontend JSON-only artifact preview surface, not a runtime executable tool.
+- Real browser evidence used fixture-backed mock API responses and did not alter planner routing, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, or Tool Registry behavior.
+- Full viewer, renderer bundle, WebGL, Three.js, Brillouin-zone 3D, phonon, notebook/script execution, and external API workflows remain out of scope.

@@ -3219,3 +3219,21 @@ Implement `viewer_scene.v1` preview as inert JSON summary and manifest display i
 - No full interactive 3D viewer exists.
 - No WebGL, Three.js, renderer bundle, adapter, planner routing, Tool Registry runtime behavior, or production runtime route is introduced.
 - Future renderer work must remain explicitly approved and separately evidenced.
+
+# 2026-07-10 Phase 10F-11 ADR: Real browser evidence for viewer_scene stays JSON-only
+
+## Decision
+
+Harden the existing `viewer_scene` preview evidence with real browser screenshots and DOM/network audits while keeping the preview JSON-only and renderer-free.
+
+## Rationale
+
+- Phase 10F-10 left browser evidence as partial because no real screenshot had been captured.
+- A real browser run can prove the existing surface shows kind, version, schema, validation state, caps/warnings, scene summary, and manifest metadata without introducing renderer risk.
+- Invalid schema payloads should still be visible as inert JSON contract evidence, not silently hidden behind renderer assumptions.
+
+## Consequences
+
+- The frontend preview can display inert `kind: viewer_scene` payloads even when schema validation is expected to fail.
+- Evidence confirms no canvas, iframe, WebGL marker, Three.js marker, renderer claim, or external request for covered cases.
+- Full `structure.viewer_3d`, WebGL/Three.js renderer, renderer bundle, new adapter, planner routing, and production runtime route remain unimplemented and unapproved.

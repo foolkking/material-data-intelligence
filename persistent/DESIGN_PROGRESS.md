@@ -1137,3 +1137,12 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Official examples PASS claims remain none because all replayed cases use `internal_regression` provenance.
 - No notebook, external script, benchmark extraction script, external API, real LLM, new adapter, full viewer, WebGL renderer, Three.js renderer, or phonon scope was introduced.
 - Recommended next scope: Phase 10F-6 fixture-pack evidence closure.
+
+## 2026-07-10 Phase 10F-11 Viewer Scene Real Browser Evidence Hardening
+
+- Added real browser evidence for the existing `viewer_scene.v1` JSON-only preview surface.
+- Added a Playwright/system Chrome evidence runner at `apps/web/test/viewer-scene-browser-evidence.mjs`.
+- Captured five browser-rendered screenshots plus DOM and network audit artifacts under `docs/phase10f/evidence/phase10f11_viewer_scene_real_browser/`.
+- Covered valid minimal, warning/caps, invalid external-resource placeholder, invalid executable placeholder, and invalid schema-version fixtures.
+- Hardened the existing frontend JSON-only preview to show inert `viewer_scene` summary and validation details even when schema validation is expected to fail.
+- No full `structure.viewer_3d`, WebGL renderer, Three.js integration, renderer bundle, new adapter, planner routing change, runtime route, notebook, external API, or artifact JavaScript was introduced.

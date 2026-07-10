@@ -578,3 +578,10 @@
 - Future official PASS work requires eligible provenance, reviewer approval where needed, and direct replay verification.
 - Phase 10F-6 should close the fixture-pack evidence boundary and decide whether to proceed to official-derived fixture approval planning or advanced viewer readiness planning.
 - Full interactive 3D viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebook extraction, script execution, external API workflows, and advanced local environment classification remain open.
+
+## 2026-07-10 Phase 10F-11 Follow-ups
+
+- Phase 10F-11 closes real browser evidence for JSON-only `viewer_scene.v1` preview.
+- Phase 10F-12 remains reviewer-selected; reasonable options are minimal adapter implementation, additional preview evidence hardening, or runtime integration planning.
+- Direct full `structure.viewer_3d`, WebGL renderer, Three.js integration, and phonon implementation remain not approved.
+- Future adapter work must preserve inert JSON artifact boundaries and must not introduce renderer execution.

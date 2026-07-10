@@ -1704,3 +1704,19 @@
 - [ ] Phase 10F-6 fixture-pack evidence closure.
 - [ ] Official examples PASS remains absent until eligible official provenance and direct verification are available.
 - [ ] Full viewer, WebGL renderer, Three.js renderer, phonon, notebooks, scripts, and external API workflows remain deferred.
+
+## 2026-07-10 Phase 10F-11 Viewer Scene Real Browser Evidence Hardening
+
+### Done
+
+- [x] Added a real browser evidence runner for `viewer_scene.v1` JSON-only preview.
+- [x] Captured browser screenshots for valid minimal, warning/caps, invalid external-resource placeholder, invalid executable placeholder, and invalid schema-version cases.
+- [x] Captured DOM and network audit evidence showing no canvas, iframe, WebGL marker, Three.js marker, renderer claim, or external request.
+- [x] Added frontend test coverage for invalid schema JSON-only preview.
+- [x] Updated docs and evidence replay instructions.
+
+### Remaining
+
+- [ ] Reviewer to select Phase 10F-12 scope.
+- [ ] Minimal `viewer_scene` adapter remains unimplemented.
+- [ ] Full viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebooks, scripts, and external API workflows remain deferred.

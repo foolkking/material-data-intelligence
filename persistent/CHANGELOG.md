@@ -1512,3 +1512,21 @@
 - Fixture-pack replay result: `PASS`.
 - Official examples PASS claims remain none.
 - No notebook, external script, external API, real LLM, new dependency, new adapter, full viewer, WebGL/Three.js renderer, or phonon scope was added.
+
+## 2026-07-10 Phase 10F-11
+
+### Added
+
+- Added `apps/web/test/viewer-scene-browser-evidence.mjs` for reproducible real browser evidence.
+- Added Phase 10F-11 browser evidence docs, readiness matrix, replay notes, screenshots, DOM snapshot, and network audit.
+
+### Changed
+
+- Hardened `PlannerWorkbench` JSON-only preview so `kind: viewer_scene` payloads with expected schema failures still display inert summary, validation, and error details.
+- Added frontend coverage for invalid schema JSON-only preview.
+
+### Verification
+
+- Real browser evidence command passed with system Chrome.
+- Evidence shows no canvas, iframe, WebGL marker, Three.js marker, renderer claim, or external request for covered cases.
+- No renderer, WebGL, Three.js, adapter, planner routing, runtime route, notebook, external API, or artifact JavaScript was added.
