@@ -2,6 +2,18 @@
 
 ## 2026-07-11
 
+### Phase 10F-13 Viewer Scene Live Adapter Browser/API Evidence
+
+- Added `apps/web/test/generate-viewer-scene-live-adapter-evidence.py` to capture live adapter-backed planner/job/runtime artifacts.
+- Added `apps/web/test/viewer-scene-live-adapter-browser-evidence.mjs` for real Chrome screenshots, DOM audit, console audit, and network audit.
+- Added `tests/test_phase10f13_viewer_scene_live_adapter_evidence.py` for API/runtime, invalid request, compatibility, routing, and security assertions.
+- Added live evidence under `docs/phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/`.
+- Added Phase 10F-13 browser/API evidence, security audit, schema compatibility audit, and renderer handoff readiness docs.
+- Updated docs index and persistent records.
+- Confirmed live adapter-generated artifacts, not Phase 10F-9 fixtures, enter the existing JSON-only preview surface.
+- Confirmed old Phase 10D schemas remain unchanged and are not relabeled as canonical `viewer_scene.v1`.
+- No renderer dependency, WebGL, Three.js, MatterViz, renderer bundle, canvas viewer, iframe viewer, external API, notebook/script execution, real LLM, artifact JavaScript, phonon, Brillouin-zone 3D, or full `structure.viewer_3d` implementation was added.
+
 ### Phase 10F-12 Viewer Scene Minimal Adapter Implementation
 
 - Added `StructureViewerSceneAdapter` for canonical `structure.viewer_scene` execution.

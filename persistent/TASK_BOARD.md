@@ -1,5 +1,39 @@
 # TASK_BOARD
 
+## 2026-07-11 Phase 10F-13 Viewer Scene Live Adapter Browser/API Evidence
+
+### Done
+
+- [x] Kept Phase 10F-12 baseline as `6e5d508d853ae399d0dbae9d915f756c807c1dc6`.
+- [x] Added live evidence generation through `planner_jobs`, persisted `AnalysisPlan`, `QueueWorkerRuntime`, Tool Registry, and `StructureViewerSceneAdapter`.
+- [x] Captured adapter-generated `viewer_scene.json`, `viewer_scene_manifest.json`, `summary.md`, and `recipe.json` through artifact listing.
+- [x] Added real Chrome browser runner for live adapter-generated JSON-only preview.
+- [x] Captured live screenshots for job completion, artifact list, valid preview, manifest preview, multi-species preview, warning/caps preview, and invalid request state.
+- [x] Added DOM, console, and network audit files.
+- [x] Added tests for live API/runtime evidence, invalid request rejection, schema compatibility, routing separation, and security payload inertness.
+- [x] Documented old/new viewer schema coexistence without migration.
+
+### Decisions
+
+- [x] Canonical contract remains `READY`.
+- [x] Minimal adapter remains `READY`.
+- [x] API/runtime evidence is `READY`.
+- [x] Live adapter browser evidence is `READY`.
+- [x] Browser inertness is `READY`.
+- [x] Network isolation is `READY`.
+- [x] Old/new schema coexistence is `DOCUMENTED`.
+- [x] Renderer API shape is `PARTIAL_READY`.
+- [x] Renderer dependency decision remains `NOT_READY`.
+- [x] Renderer security plan remains `NOT_READY`.
+- [x] Renderer implementation remains `NOT_READY`.
+- [x] Full `structure.viewer_3d` remains `NOT_READY`.
+
+### Reviewer Remaining Questions
+
+- [ ] Decide whether to enter a renderer dependency/API/security evaluation phase.
+- [ ] Decide whether Phase 10D viewer metadata/export tools need deprecation or migration.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, MatterViz renderer, renderer bundle, Brillouin-zone, or phonon implementation.
+
 ## 2026-07-11 Phase 10F-12 Viewer Scene Minimal Adapter Implementation
 
 ### Done

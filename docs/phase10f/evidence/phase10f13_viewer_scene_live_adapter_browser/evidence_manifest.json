@@ -1,0 +1,21 @@
+{
+  "browser_runner": "apps/web/test/viewer-scene-live-adapter-browser-evidence.mjs",
+  "cases": [
+    "valid_minimal_crystal",
+    "multi_species_crystal",
+    "warning_caps",
+    "invalid_multi_structure_rejected"
+  ],
+  "external_network_result": "NO_LIVE_ADAPTER_EXTERNAL_NETWORK_REQUESTS",
+  "pass_marker": "VIEWER_SCENE_LIVE_ADAPTER_BROWSER_EVIDENCE_PASS",
+  "schema_version": "phase10f13.viewer_scene_live_adapter_evidence_manifest.v1",
+  "screenshots_expected": [
+    "01_live_job_completed.png",
+    "02_live_artifact_list.png",
+    "03_live_viewer_scene_valid_preview.png",
+    "04_live_manifest_preview.png",
+    "05_live_multi_species_preview.png",
+    "06_live_warning_caps_preview.png",
+    "07_live_invalid_request_state.png"
+  ]
+}

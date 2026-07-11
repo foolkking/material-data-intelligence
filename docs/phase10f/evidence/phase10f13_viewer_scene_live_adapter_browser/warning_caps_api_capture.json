@@ -1,0 +1,1707 @@
+{
+  "api": {
+    "analysis_plan": {
+      "analysisPlan": {
+        "assumptions": [],
+        "datasetId": "dataset_warning_caps",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_warning_caps",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 5.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 0,
+              "max_sites": 2,
+              "style_preset": "default"
+            },
+            "purpose": "Create inert viewer_scene.v1 JSON through the live adapter path.",
+            "reason": "Phase 10F-13 live adapter evidence.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_scene"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "analysisPlanJson": {
+        "assumptions": [],
+        "datasetId": "dataset_warning_caps",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_warning_caps",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 5.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 0,
+              "max_sites": 2,
+              "style_preset": "default"
+            },
+            "purpose": "Create inert viewer_scene.v1 JSON through the live adapter path.",
+            "reason": "Phase 10F-13 live adapter evidence.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_scene"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "analysis_plan_json": {
+        "assumptions": [],
+        "datasetId": "dataset_warning_caps",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_warning_caps",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 5.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 0,
+              "max_sites": 2,
+              "style_preset": "default"
+            },
+            "purpose": "Create inert viewer_scene.v1 JSON through the live adapter path.",
+            "reason": "Phase 10F-13 live adapter evidence.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_scene"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "createdAt": "2026-07-11T13:19:48.700007+00:00",
+      "createdBy": "user_local",
+      "datasetId": "dataset_warning_caps",
+      "id": "plan_72be6c09a4d6485f85ed0e66",
+      "jobId": "job_133050c508ef4a5b8aa1fd14",
+      "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+      "planId": "plan_72be6c09a4d6485f85ed0e66",
+      "planSource": "llm",
+      "plan_hash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+      "plannerProvider": "mock",
+      "profileId": "profile_warning_caps",
+      "projectId": "project_10f13",
+      "updatedAt": "2026-07-11T13:19:48.700007+00:00",
+      "validationStatus": "validated"
+    },
+    "artifacts": [
+      {
+        "bucket": null,
+        "content": {
+          "caps": {
+            "max_bonds": 0,
+            "max_cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "max_scene_json_bytes": 1000000,
+            "max_sites": 2,
+            "max_species": 32
+          },
+          "kind": "viewer_scene",
+          "metadata": {
+            "formula": "NaCl",
+            "preview_mode": "json_only",
+            "renderer_required": false,
+            "site_count": 2,
+            "species": [
+              "Cl",
+              "Na"
+            ],
+            "species_count": 2,
+            "structure_id": "structure_1",
+            "title": "Viewer Scene Artifact"
+          },
+          "provenance": {
+            "deterministic": true,
+            "fixture": false,
+            "official_pass_claim": false,
+            "phase": "10F-12",
+            "provenance_label": "adapter_generated",
+            "tool_id": "structure.viewer_scene"
+          },
+          "scene": {
+            "bonds": [],
+            "cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "coordinate_basis": "cartesian_angstrom",
+            "lattice": {
+              "parameters": {
+                "a": 5.64,
+                "alpha": 90.0,
+                "b": 5.64,
+                "beta": 90.0,
+                "c": 5.64,
+                "gamma": 90.0
+              },
+              "pbc": [
+                true,
+                true,
+                true
+              ],
+              "vectors": [
+                [
+                  5.64,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  5.64,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  5.64
+                ]
+              ]
+            },
+            "sites": [
+              {
+                "element": "Na",
+                "frac": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "index": 0,
+                "label": "Na1",
+                "occupancy": 1.0,
+                "style": {
+                  "color": "#ab5cf2",
+                  "radius": 1.0
+                },
+                "xyz": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
+              },
+              {
+                "element": "Cl",
+                "frac": [
+                  0.5,
+                  0.5,
+                  0.5
+                ],
+                "index": 1,
+                "label": "Cl1",
+                "occupancy": 1.0,
+                "style": {
+                  "color": "#1ff01f",
+                  "radius": 1.0
+                },
+                "xyz": [
+                  2.82,
+                  2.82,
+                  2.82
+                ]
+              }
+            ],
+            "style": {
+              "background": "transparent",
+              "camera_preset": "auto",
+              "representation": "ball_and_stick",
+              "style_preset": "default"
+            }
+          },
+          "schema_version": "phase10f8.viewer_scene.v1",
+          "security": {
+            "artifact_supplied_js_allowed": false,
+            "contains_javascript": false,
+            "external_urls": [],
+            "external_urls_allowed": false,
+            "html_allowed": false,
+            "remote_assets_allowed": false,
+            "renderer_required": false
+          },
+          "source": {
+            "filename": "structures",
+            "parser": "pymatgen.Structure",
+            "parser_version": "2026.5.4",
+            "resource_id": "dataset_warning_caps",
+            "resource_type": "normalized_object",
+            "tool_id": "structure.viewer_scene"
+          },
+          "validation": {
+            "caps_enforced": true,
+            "errors": [],
+            "external_resources_detected": false,
+            "finite_numbers": true,
+            "scriptable_fields_detected": false,
+            "status": "passed_with_warnings",
+            "truncated": true,
+            "validated_in_phase": "10F-12"
+          },
+          "version": "viewer_scene.v1",
+          "warnings": [
+            {
+              "code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+              "message": "Bonds are bounded distance candidates for preview metadata only."
+            },
+            {
+              "code": "VIEWER_SCENE_CAP_NEAR_LIMIT",
+              "message": "Site count reaches the configured max_sites cap."
+            },
+            {
+              "code": "VIEWER_SCENE_BONDS_TRUNCATED",
+              "message": "Inferred bond candidates were truncated to max_bonds."
+            }
+          ]
+        },
+        "contentHash": "320dab44aca6e4037944be335c6892ba6e26b7906bb070c485668b6aa325c1a4",
+        "contentType": "application/json",
+        "datasetId": "dataset_warning_caps",
+        "id": "call_job_133050c508ef4a5b8aa1fd14_step_001-structure_json",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-11T13:19:48.724272+00:00",
+          "inputHashes": [
+            "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+          ],
+          "paramsHash": "f267c5afe8ee15a2870f6ba76bfbc13ca66a86a3dbdec1076a025164730e377f",
+          "profileId": null,
+          "provenance": {
+            "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+            "planId": "plan_72be6c09a4d6485f85ed0e66",
+            "planSource": "llm",
+            "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+            "toolId": "structure.viewer_scene"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_scene",
+          "toolVersion": "0.1.0"
+        },
+        "name": "viewer_scene.json",
+        "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+        "planId": "plan_72be6c09a4d6485f85ed0e66",
+        "previewKey": null,
+        "projectId": "project_10f13",
+        "provenance": {
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "toolId": "structure.viewer_scene"
+        },
+        "sha256": "320dab44aca6e4037944be335c6892ba6e26b7906bb070c485668b6aa325c1a4",
+        "sizeBytes": 2217,
+        "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/viewer_scene.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+        "type": "structure_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "artifact_id": "viewer_scene",
+          "artifact_kind": "viewer_scene",
+          "artifact_version": "viewer_scene.v1",
+          "artifacts": [
+            {
+              "kind": "viewer_scene",
+              "media_type": "application/json",
+              "path": "viewer_scene.json",
+              "required": true,
+              "sha256": "320dab44aca6e4037944be335c6892ba6e26b7906bb070c485668b6aa325c1a4",
+              "size_bytes": 2217
+            },
+            {
+              "kind": "manifest",
+              "media_type": "application/json",
+              "path": "viewer_scene_manifest.json",
+              "required": true
+            },
+            {
+              "kind": "summary",
+              "media_type": "text/markdown",
+              "path": "summary.md",
+              "required": true
+            },
+            {
+              "kind": "recipe",
+              "media_type": "application/json",
+              "path": "recipe.json",
+              "required": true
+            }
+          ],
+          "entry_artifact": "viewer_scene.json",
+          "executable_assets": "none",
+          "expected_caps": {
+            "max_bonds": 0,
+            "max_cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "max_scene_json_bytes": 1000000,
+            "max_sites": 2,
+            "max_species": 32
+          },
+          "expected_errors": [],
+          "expected_validation_state": "valid_with_warnings",
+          "expected_warnings": [
+            "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+            "VIEWER_SCENE_CAP_NEAR_LIMIT",
+            "VIEWER_SCENE_BONDS_TRUNCATED"
+          ],
+          "external_resources": "none",
+          "fixture_source": "adapter_generated",
+          "preview_mode": "json_only",
+          "renderer_required": false,
+          "schema_version": "phase10f9.viewer_scene_manifest.v1",
+          "security": {
+            "artifact_supplied_js_allowed": false,
+            "contains_javascript": false,
+            "external_urls": [],
+            "external_urls_allowed": false,
+            "html_allowed": false,
+            "remote_assets_allowed": false,
+            "renderer_required": false
+          },
+          "tool_id": "structure.viewer_scene"
+        },
+        "contentHash": "318443bfed262fb91e542b4ea1f1197419432cf137a547041929051971b20c10",
+        "contentType": "application/json",
+        "datasetId": "dataset_warning_caps",
+        "id": "call_job_133050c508ef4a5b8aa1fd14_step_001-table_json",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-11T13:19:48.727273+00:00",
+          "inputHashes": [
+            "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+          ],
+          "paramsHash": "f267c5afe8ee15a2870f6ba76bfbc13ca66a86a3dbdec1076a025164730e377f",
+          "profileId": null,
+          "provenance": {
+            "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+            "planId": "plan_72be6c09a4d6485f85ed0e66",
+            "planSource": "llm",
+            "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+            "toolId": "structure.viewer_scene"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_scene",
+          "toolVersion": "0.1.0"
+        },
+        "name": "viewer_scene_manifest.json",
+        "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+        "planId": "plan_72be6c09a4d6485f85ed0e66",
+        "previewKey": null,
+        "projectId": "project_10f13",
+        "provenance": {
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "toolId": "structure.viewer_scene"
+        },
+        "sha256": "318443bfed262fb91e542b4ea1f1197419432cf137a547041929051971b20c10",
+        "sizeBytes": 1371,
+        "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/viewer_scene_manifest.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+        "type": "table_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": "# Viewer Scene Artifact\n\n## Input\n- source resource: normalized_object\n- parser: pymatgen.Structure\n- formula: NaCl\n- site count: 2\n- species count: 2\n\n## Scene\n- contract version: viewer_scene.v1\n- coordinate basis: cartesian_angstrom\n- site count: 2\n- bond count: 0\n- lattice included: True\n- cell expansion: [1, 1, 1]\n\n## Caps and Warnings\n- max sites: 2\n- max bonds: 0\n- max species: 32\n- truncation status: True\n- warnings: VIEWER_SCENE_BONDS_NON_AUTHORITATIVE, VIEWER_SCENE_CAP_NEAR_LIMIT, VIEWER_SCENE_BONDS_TRUNCATED\n\n## Preview\n- JSON-only preview supported\n- renderer not included\n- no interactive 3D rendering claimed\n\n## Security\n- no artifact JavaScript\n- no HTML payload\n- no external URLs\n- no remote textures\n- no renderer bundle\n- no WebGL\n- no Three.js\n\n## Deferred\n- full structure.viewer_3d\n- WebGL renderer\n- renderer screenshot evidence\n- interactive camera controls\n",
+        "contentHash": "a83f7d71b4575b52c07fd1a8fad5ba5d44deed0e2c78075429da7c1476dbfb87",
+        "contentType": "application/json",
+        "datasetId": "dataset_warning_caps",
+        "id": "call_job_133050c508ef4a5b8aa1fd14_step_001-summary_md",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-11T13:19:48.738275+00:00",
+          "inputHashes": [
+            "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+          ],
+          "paramsHash": "f267c5afe8ee15a2870f6ba76bfbc13ca66a86a3dbdec1076a025164730e377f",
+          "profileId": null,
+          "provenance": {
+            "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+            "planId": "plan_72be6c09a4d6485f85ed0e66",
+            "planSource": "llm",
+            "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+            "toolId": "structure.viewer_scene"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_scene",
+          "toolVersion": "0.1.0"
+        },
+        "name": "summary.md",
+        "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+        "planId": "plan_72be6c09a4d6485f85ed0e66",
+        "previewKey": null,
+        "projectId": "project_10f13",
+        "provenance": {
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "toolId": "structure.viewer_scene"
+        },
+        "sha256": "a83f7d71b4575b52c07fd1a8fad5ba5d44deed0e2c78075429da7c1476dbfb87",
+        "sizeBytes": 889,
+        "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/summary.md",
+        "storageProvider": "local",
+        "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+        "type": "summary_md",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "artifactTypes": [
+            "recipe_json",
+            "structure_json",
+            "summary_md",
+            "table_json"
+          ],
+          "artifacts": [
+            "viewer_scene.json",
+            "viewer_scene_manifest.json",
+            "summary.md",
+            "recipe.json"
+          ],
+          "caps": {
+            "max_bonds": 0,
+            "max_cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "max_scene_json_bytes": 1000000,
+            "max_sites": 2,
+            "max_species": 32
+          },
+          "contract_version": "viewer_scene.v1",
+          "dependencies": {
+            "aseVersion": "3.29.0",
+            "new_dependencies_added": false,
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0"
+          },
+          "deterministic": true,
+          "generation_steps": [
+            "parse_structure",
+            "normalize_lattice",
+            "normalize_species",
+            "normalize_site_indices",
+            "normalize_coordinates",
+            "derive_bounded_optional_bonds",
+            "apply_caps",
+            "build_warnings",
+            "build_provenance",
+            "build_security_metadata",
+            "validate_viewer_scene_v1",
+            "write_inert_json_artifacts"
+          ],
+          "input_resource_reference": {
+            "dataset_id": "dataset_warning_caps",
+            "input_hashes": [
+              "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+            ]
+          },
+          "name": "Viewer Scene Artifact",
+          "normalized_params": {
+            "bond_cutoff_angstrom": 5.0,
+            "camera_preset": "auto",
+            "cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "coordinate_basis": "cartesian_angstrom",
+            "include_bonds": true,
+            "include_cartesian_positions": true,
+            "include_fractional_positions": true,
+            "max_bonds": 0,
+            "max_sites": 2,
+            "style_preset": "default"
+          },
+          "parser": "pymatgen.Structure",
+          "recipeId": "recipe_call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "renderer_included": false,
+          "schemaVersion": "0.1",
+          "schema_version": "phase10f12.viewer_scene.recipe.v1",
+          "toolId": "structure.viewer_scene",
+          "tool_id": "structure.viewer_scene"
+        },
+        "contentHash": "812d7d22faa34f96a601897427b8920b72fe3607cb59c1204e3fd05d9cc0214f",
+        "contentType": "application/json",
+        "datasetId": "dataset_warning_caps",
+        "id": "call_job_133050c508ef4a5b8aa1fd14_step_001-recipe_json",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-11T13:19:48.748302+00:00",
+          "inputHashes": [
+            "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+          ],
+          "paramsHash": "f267c5afe8ee15a2870f6ba76bfbc13ca66a86a3dbdec1076a025164730e377f",
+          "profileId": null,
+          "provenance": {
+            "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+            "planId": "plan_72be6c09a4d6485f85ed0e66",
+            "planSource": "llm",
+            "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+            "toolId": "structure.viewer_scene"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_scene",
+          "toolVersion": "0.1.0"
+        },
+        "name": "recipe.json",
+        "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+        "planId": "plan_72be6c09a4d6485f85ed0e66",
+        "previewKey": null,
+        "projectId": "project_10f13",
+        "provenance": {
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "toolId": "structure.viewer_scene"
+        },
+        "sha256": "812d7d22faa34f96a601897427b8920b72fe3607cb59c1204e3fd05d9cc0214f",
+        "sizeBytes": 1504,
+        "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/recipe.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+        "type": "recipe_json",
+        "version": "1"
+      }
+    ],
+    "events": [
+      {
+        "createdAt": "2026-07-11T13:19:48.701011+00:00",
+        "eventType": "job.created",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0001",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "payload": {
+          "datasetId": "dataset_warning_caps",
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "projectId": "project_10f13"
+        },
+        "progress": 0.0,
+        "seq": 1,
+        "status": "info"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.701011+00:00",
+        "eventType": "plan.persisted",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0002",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "plannerProvider": "mock"
+        },
+        "progress": 0.0,
+        "seq": 2,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.701011+00:00",
+        "eventType": "job.running",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0003",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Queue worker started job.",
+        "payload": {},
+        "progress": 0.0,
+        "seq": 3,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.702009+00:00",
+        "eventType": "plan.loaded",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0004",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm"
+        },
+        "progress": 0.05,
+        "seq": 4,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.702009+00:00",
+        "eventType": "tool.started",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0005",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Started tool structure.viewer_scene.",
+        "payload": {
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "stepId": "step_001",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "toolId": "structure.viewer_scene"
+        },
+        "progress": 0.0,
+        "seq": 5,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.724272+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0006",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Artifact ready: viewer_scene.json",
+        "payload": {
+          "artifactId": "call_job_133050c508ef4a5b8aa1fd14_step_001-structure_json",
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/viewer_scene.json",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001"
+        },
+        "progress": null,
+        "seq": 6,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.727273+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0007",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Artifact ready: viewer_scene_manifest.json",
+        "payload": {
+          "artifactId": "call_job_133050c508ef4a5b8aa1fd14_step_001-table_json",
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/viewer_scene_manifest.json",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001"
+        },
+        "progress": null,
+        "seq": 7,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.739275+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0008",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Artifact ready: summary.md",
+        "payload": {
+          "artifactId": "call_job_133050c508ef4a5b8aa1fd14_step_001-summary_md",
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/summary.md",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001"
+        },
+        "progress": null,
+        "seq": 8,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.748302+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0009",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Artifact ready: recipe.json",
+        "payload": {
+          "artifactId": "call_job_133050c508ef4a5b8aa1fd14_step_001-recipe_json",
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/recipe.json",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001"
+        },
+        "progress": null,
+        "seq": 9,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.748302+00:00",
+        "eventType": "tool.completed",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0010",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Completed tool structure.viewer_scene.",
+        "payload": {
+          "artifactIds": [
+            "call_job_133050c508ef4a5b8aa1fd14_step_001-structure_json",
+            "call_job_133050c508ef4a5b8aa1fd14_step_001-table_json",
+            "call_job_133050c508ef4a5b8aa1fd14_step_001-summary_md",
+            "call_job_133050c508ef4a5b8aa1fd14_step_001-recipe_json"
+          ],
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001"
+        },
+        "progress": 1.0,
+        "seq": 10,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:48.748302+00:00",
+        "eventType": "job.completed",
+        "id": "evt_job_133050c508ef4a5b8aa1fd14_0011",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "message": "Job completed.",
+        "payload": {
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "planSource": "llm"
+        },
+        "progress": 1.0,
+        "seq": 11,
+        "status": "success"
+      }
+    ],
+    "job": {
+      "analysisPlan": {
+        "assumptions": [],
+        "datasetId": "dataset_warning_caps",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_warning_caps",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 5.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 0,
+              "max_sites": 2,
+              "style_preset": "default"
+            },
+            "purpose": "Create inert viewer_scene.v1 JSON through the live adapter path.",
+            "reason": "Phase 10F-13 live adapter evidence.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_scene"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "artifactCount": 4,
+      "createdBy": "user_local",
+      "datasetId": "dataset_warning_caps",
+      "eventCount": 11,
+      "id": "job_133050c508ef4a5b8aa1fd14",
+      "jobId": "job_133050c508ef4a5b8aa1fd14",
+      "kind": "analysis",
+      "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+      "planId": "plan_72be6c09a4d6485f85ed0e66",
+      "planSource": "llm",
+      "plan_id": "plan_72be6c09a4d6485f85ed0e66",
+      "projectId": "project_10f13",
+      "provenance": {
+        "binding": "jobs.plan_id -> analysis_plans.id",
+        "fallbackUsed": false,
+        "loadedFrom": "persisted_analysis_plan",
+        "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+        "planId": "plan_72be6c09a4d6485f85ed0e66",
+        "planSource": "llm",
+        "toolPath": "Tool Registry + Adapter"
+      },
+      "status": "completed",
+      "toolCallCount": 1,
+      "updatedAt": "2026-07-11T13:19:48.748302+00:00",
+      "validationStatus": "validated"
+    },
+    "result": {
+      "artifactCount": 4,
+      "artifacts": [
+        {
+          "bucket": null,
+          "content": {
+            "caps": {
+              "max_bonds": 0,
+              "max_cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "max_scene_json_bytes": 1000000,
+              "max_sites": 2,
+              "max_species": 32
+            },
+            "kind": "viewer_scene",
+            "metadata": {
+              "formula": "NaCl",
+              "preview_mode": "json_only",
+              "renderer_required": false,
+              "site_count": 2,
+              "species": [
+                "Cl",
+                "Na"
+              ],
+              "species_count": 2,
+              "structure_id": "structure_1",
+              "title": "Viewer Scene Artifact"
+            },
+            "provenance": {
+              "deterministic": true,
+              "fixture": false,
+              "official_pass_claim": false,
+              "phase": "10F-12",
+              "provenance_label": "adapter_generated",
+              "tool_id": "structure.viewer_scene"
+            },
+            "scene": {
+              "bonds": [],
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "lattice": {
+                "parameters": {
+                  "a": 5.64,
+                  "alpha": 90.0,
+                  "b": 5.64,
+                  "beta": 90.0,
+                  "c": 5.64,
+                  "gamma": 90.0
+                },
+                "pbc": [
+                  true,
+                  true,
+                  true
+                ],
+                "vectors": [
+                  [
+                    5.64,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.0,
+                    5.64,
+                    0.0
+                  ],
+                  [
+                    0.0,
+                    0.0,
+                    5.64
+                  ]
+                ]
+              },
+              "sites": [
+                {
+                  "element": "Na",
+                  "frac": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "index": 0,
+                  "label": "Na1",
+                  "occupancy": 1.0,
+                  "style": {
+                    "color": "#ab5cf2",
+                    "radius": 1.0
+                  },
+                  "xyz": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ]
+                },
+                {
+                  "element": "Cl",
+                  "frac": [
+                    0.5,
+                    0.5,
+                    0.5
+                  ],
+                  "index": 1,
+                  "label": "Cl1",
+                  "occupancy": 1.0,
+                  "style": {
+                    "color": "#1ff01f",
+                    "radius": 1.0
+                  },
+                  "xyz": [
+                    2.82,
+                    2.82,
+                    2.82
+                  ]
+                }
+              ],
+              "style": {
+                "background": "transparent",
+                "camera_preset": "auto",
+                "representation": "ball_and_stick",
+                "style_preset": "default"
+              }
+            },
+            "schema_version": "phase10f8.viewer_scene.v1",
+            "security": {
+              "artifact_supplied_js_allowed": false,
+              "contains_javascript": false,
+              "external_urls": [],
+              "external_urls_allowed": false,
+              "html_allowed": false,
+              "remote_assets_allowed": false,
+              "renderer_required": false
+            },
+            "source": {
+              "filename": "structures",
+              "parser": "pymatgen.Structure",
+              "parser_version": "2026.5.4",
+              "resource_id": "dataset_warning_caps",
+              "resource_type": "normalized_object",
+              "tool_id": "structure.viewer_scene"
+            },
+            "validation": {
+              "caps_enforced": true,
+              "errors": [],
+              "external_resources_detected": false,
+              "finite_numbers": true,
+              "scriptable_fields_detected": false,
+              "status": "passed_with_warnings",
+              "truncated": true,
+              "validated_in_phase": "10F-12"
+            },
+            "version": "viewer_scene.v1",
+            "warnings": [
+              {
+                "code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+                "message": "Bonds are bounded distance candidates for preview metadata only."
+              },
+              {
+                "code": "VIEWER_SCENE_CAP_NEAR_LIMIT",
+                "message": "Site count reaches the configured max_sites cap."
+              },
+              {
+                "code": "VIEWER_SCENE_BONDS_TRUNCATED",
+                "message": "Inferred bond candidates were truncated to max_bonds."
+              }
+            ]
+          },
+          "contentHash": "320dab44aca6e4037944be335c6892ba6e26b7906bb070c485668b6aa325c1a4",
+          "contentType": "application/json",
+          "datasetId": "dataset_warning_caps",
+          "id": "call_job_133050c508ef4a5b8aa1fd14_step_001-structure_json",
+          "jobId": "job_133050c508ef4a5b8aa1fd14",
+          "metadata": {
+            "adapterVersion": "0.1.0",
+            "bucket": null,
+            "createdAt": "2026-07-11T13:19:48.724272+00:00",
+            "inputHashes": [
+              "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+            ],
+            "paramsHash": "f267c5afe8ee15a2870f6ba76bfbc13ca66a86a3dbdec1076a025164730e377f",
+            "profileId": null,
+            "provenance": {
+              "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+              "planId": "plan_72be6c09a4d6485f85ed0e66",
+              "planSource": "llm",
+              "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+              "toolId": "structure.viewer_scene"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_scene",
+            "toolVersion": "0.1.0"
+          },
+          "name": "viewer_scene.json",
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "previewKey": null,
+          "projectId": "project_10f13",
+          "provenance": {
+            "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+            "planId": "plan_72be6c09a4d6485f85ed0e66",
+            "planSource": "llm",
+            "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+            "toolId": "structure.viewer_scene"
+          },
+          "sha256": "320dab44aca6e4037944be335c6892ba6e26b7906bb070c485668b6aa325c1a4",
+          "sizeBytes": 2217,
+          "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/viewer_scene.json",
+          "storageProvider": "local",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "type": "structure_json",
+          "version": "1"
+        },
+        {
+          "bucket": null,
+          "content": {
+            "artifact_id": "viewer_scene",
+            "artifact_kind": "viewer_scene",
+            "artifact_version": "viewer_scene.v1",
+            "artifacts": [
+              {
+                "kind": "viewer_scene",
+                "media_type": "application/json",
+                "path": "viewer_scene.json",
+                "required": true,
+                "sha256": "320dab44aca6e4037944be335c6892ba6e26b7906bb070c485668b6aa325c1a4",
+                "size_bytes": 2217
+              },
+              {
+                "kind": "manifest",
+                "media_type": "application/json",
+                "path": "viewer_scene_manifest.json",
+                "required": true
+              },
+              {
+                "kind": "summary",
+                "media_type": "text/markdown",
+                "path": "summary.md",
+                "required": true
+              },
+              {
+                "kind": "recipe",
+                "media_type": "application/json",
+                "path": "recipe.json",
+                "required": true
+              }
+            ],
+            "entry_artifact": "viewer_scene.json",
+            "executable_assets": "none",
+            "expected_caps": {
+              "max_bonds": 0,
+              "max_cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "max_scene_json_bytes": 1000000,
+              "max_sites": 2,
+              "max_species": 32
+            },
+            "expected_errors": [],
+            "expected_validation_state": "valid_with_warnings",
+            "expected_warnings": [
+              "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+              "VIEWER_SCENE_CAP_NEAR_LIMIT",
+              "VIEWER_SCENE_BONDS_TRUNCATED"
+            ],
+            "external_resources": "none",
+            "fixture_source": "adapter_generated",
+            "preview_mode": "json_only",
+            "renderer_required": false,
+            "schema_version": "phase10f9.viewer_scene_manifest.v1",
+            "security": {
+              "artifact_supplied_js_allowed": false,
+              "contains_javascript": false,
+              "external_urls": [],
+              "external_urls_allowed": false,
+              "html_allowed": false,
+              "remote_assets_allowed": false,
+              "renderer_required": false
+            },
+            "tool_id": "structure.viewer_scene"
+          },
+          "contentHash": "318443bfed262fb91e542b4ea1f1197419432cf137a547041929051971b20c10",
+          "contentType": "application/json",
+          "datasetId": "dataset_warning_caps",
+          "id": "call_job_133050c508ef4a5b8aa1fd14_step_001-table_json",
+          "jobId": "job_133050c508ef4a5b8aa1fd14",
+          "metadata": {
+            "adapterVersion": "0.1.0",
+            "bucket": null,
+            "createdAt": "2026-07-11T13:19:48.727273+00:00",
+            "inputHashes": [
+              "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+            ],
+            "paramsHash": "f267c5afe8ee15a2870f6ba76bfbc13ca66a86a3dbdec1076a025164730e377f",
+            "profileId": null,
+            "provenance": {
+              "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+              "planId": "plan_72be6c09a4d6485f85ed0e66",
+              "planSource": "llm",
+              "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+              "toolId": "structure.viewer_scene"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_scene",
+            "toolVersion": "0.1.0"
+          },
+          "name": "viewer_scene_manifest.json",
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "previewKey": null,
+          "projectId": "project_10f13",
+          "provenance": {
+            "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+            "planId": "plan_72be6c09a4d6485f85ed0e66",
+            "planSource": "llm",
+            "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+            "toolId": "structure.viewer_scene"
+          },
+          "sha256": "318443bfed262fb91e542b4ea1f1197419432cf137a547041929051971b20c10",
+          "sizeBytes": 1371,
+          "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/viewer_scene_manifest.json",
+          "storageProvider": "local",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "type": "table_json",
+          "version": "1"
+        },
+        {
+          "bucket": null,
+          "content": "# Viewer Scene Artifact\n\n## Input\n- source resource: normalized_object\n- parser: pymatgen.Structure\n- formula: NaCl\n- site count: 2\n- species count: 2\n\n## Scene\n- contract version: viewer_scene.v1\n- coordinate basis: cartesian_angstrom\n- site count: 2\n- bond count: 0\n- lattice included: True\n- cell expansion: [1, 1, 1]\n\n## Caps and Warnings\n- max sites: 2\n- max bonds: 0\n- max species: 32\n- truncation status: True\n- warnings: VIEWER_SCENE_BONDS_NON_AUTHORITATIVE, VIEWER_SCENE_CAP_NEAR_LIMIT, VIEWER_SCENE_BONDS_TRUNCATED\n\n## Preview\n- JSON-only preview supported\n- renderer not included\n- no interactive 3D rendering claimed\n\n## Security\n- no artifact JavaScript\n- no HTML payload\n- no external URLs\n- no remote textures\n- no renderer bundle\n- no WebGL\n- no Three.js\n\n## Deferred\n- full structure.viewer_3d\n- WebGL renderer\n- renderer screenshot evidence\n- interactive camera controls\n",
+          "contentHash": "a83f7d71b4575b52c07fd1a8fad5ba5d44deed0e2c78075429da7c1476dbfb87",
+          "contentType": "application/json",
+          "datasetId": "dataset_warning_caps",
+          "id": "call_job_133050c508ef4a5b8aa1fd14_step_001-summary_md",
+          "jobId": "job_133050c508ef4a5b8aa1fd14",
+          "metadata": {
+            "adapterVersion": "0.1.0",
+            "bucket": null,
+            "createdAt": "2026-07-11T13:19:48.738275+00:00",
+            "inputHashes": [
+              "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+            ],
+            "paramsHash": "f267c5afe8ee15a2870f6ba76bfbc13ca66a86a3dbdec1076a025164730e377f",
+            "profileId": null,
+            "provenance": {
+              "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+              "planId": "plan_72be6c09a4d6485f85ed0e66",
+              "planSource": "llm",
+              "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+              "toolId": "structure.viewer_scene"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_scene",
+            "toolVersion": "0.1.0"
+          },
+          "name": "summary.md",
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "previewKey": null,
+          "projectId": "project_10f13",
+          "provenance": {
+            "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+            "planId": "plan_72be6c09a4d6485f85ed0e66",
+            "planSource": "llm",
+            "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+            "toolId": "structure.viewer_scene"
+          },
+          "sha256": "a83f7d71b4575b52c07fd1a8fad5ba5d44deed0e2c78075429da7c1476dbfb87",
+          "sizeBytes": 889,
+          "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/summary.md",
+          "storageProvider": "local",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "type": "summary_md",
+          "version": "1"
+        },
+        {
+          "bucket": null,
+          "content": {
+            "artifactTypes": [
+              "recipe_json",
+              "structure_json",
+              "summary_md",
+              "table_json"
+            ],
+            "artifacts": [
+              "viewer_scene.json",
+              "viewer_scene_manifest.json",
+              "summary.md",
+              "recipe.json"
+            ],
+            "caps": {
+              "max_bonds": 0,
+              "max_cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "max_scene_json_bytes": 1000000,
+              "max_sites": 2,
+              "max_species": 32
+            },
+            "contract_version": "viewer_scene.v1",
+            "dependencies": {
+              "aseVersion": "3.29.0",
+              "new_dependencies_added": false,
+              "plotlyVersion": "6.8.0",
+              "pymatgenVersion": "2026.5.4",
+              "pymatvizVersion": "0.18.0"
+            },
+            "deterministic": true,
+            "generation_steps": [
+              "parse_structure",
+              "normalize_lattice",
+              "normalize_species",
+              "normalize_site_indices",
+              "normalize_coordinates",
+              "derive_bounded_optional_bonds",
+              "apply_caps",
+              "build_warnings",
+              "build_provenance",
+              "build_security_metadata",
+              "validate_viewer_scene_v1",
+              "write_inert_json_artifacts"
+            ],
+            "input_resource_reference": {
+              "dataset_id": "dataset_warning_caps",
+              "input_hashes": [
+                "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+              ]
+            },
+            "name": "Viewer Scene Artifact",
+            "normalized_params": {
+              "bond_cutoff_angstrom": 5.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 0,
+              "max_sites": 2,
+              "style_preset": "default"
+            },
+            "parser": "pymatgen.Structure",
+            "recipeId": "recipe_call_job_133050c508ef4a5b8aa1fd14_step_001",
+            "renderer_included": false,
+            "schemaVersion": "0.1",
+            "schema_version": "phase10f12.viewer_scene.recipe.v1",
+            "toolId": "structure.viewer_scene",
+            "tool_id": "structure.viewer_scene"
+          },
+          "contentHash": "812d7d22faa34f96a601897427b8920b72fe3607cb59c1204e3fd05d9cc0214f",
+          "contentType": "application/json",
+          "datasetId": "dataset_warning_caps",
+          "id": "call_job_133050c508ef4a5b8aa1fd14_step_001-recipe_json",
+          "jobId": "job_133050c508ef4a5b8aa1fd14",
+          "metadata": {
+            "adapterVersion": "0.1.0",
+            "bucket": null,
+            "createdAt": "2026-07-11T13:19:48.748302+00:00",
+            "inputHashes": [
+              "f08fa12f6d5b23db022696545073ae5aca07da29ea51ed2ba3168f37217143a2"
+            ],
+            "paramsHash": "f267c5afe8ee15a2870f6ba76bfbc13ca66a86a3dbdec1076a025164730e377f",
+            "profileId": null,
+            "provenance": {
+              "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+              "planId": "plan_72be6c09a4d6485f85ed0e66",
+              "planSource": "llm",
+              "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+              "toolId": "structure.viewer_scene"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_scene",
+            "toolVersion": "0.1.0"
+          },
+          "name": "recipe.json",
+          "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+          "planId": "plan_72be6c09a4d6485f85ed0e66",
+          "previewKey": null,
+          "projectId": "project_10f13",
+          "provenance": {
+            "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+            "planId": "plan_72be6c09a4d6485f85ed0e66",
+            "planSource": "llm",
+            "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+            "toolId": "structure.viewer_scene"
+          },
+          "sha256": "812d7d22faa34f96a601897427b8920b72fe3607cb59c1204e3fd05d9cc0214f",
+          "sizeBytes": 1504,
+          "storageKey": "projects/project_10f13/jobs/job_133050c508ef4a5b8aa1fd14/tool_calls/call_job_133050c508ef4a5b8aa1fd14_step_001/recipe.json",
+          "storageProvider": "local",
+          "toolCallId": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+          "type": "recipe_json",
+          "version": "1"
+        }
+      ],
+      "jobId": "job_133050c508ef4a5b8aa1fd14",
+      "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+      "planId": "plan_72be6c09a4d6485f85ed0e66",
+      "provenance": {
+        "binding": "jobs.plan_id -> analysis_plans.id",
+        "fallbackUsed": false,
+        "loadedFrom": "persisted_analysis_plan",
+        "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+        "planId": "plan_72be6c09a4d6485f85ed0e66",
+        "planSource": "llm",
+        "toolPath": "Tool Registry + Adapter"
+      },
+      "status": "completed",
+      "summary": "Job completed with 1 ToolCall(s) and 4 Artifact(s).",
+      "toolCallCount": 1
+    },
+    "tool_calls": [
+      {
+        "artifactIds": [
+          "call_job_133050c508ef4a5b8aa1fd14_step_001-structure_json",
+          "call_job_133050c508ef4a5b8aa1fd14_step_001-table_json",
+          "call_job_133050c508ef4a5b8aa1fd14_step_001-summary_md",
+          "call_job_133050c508ef4a5b8aa1fd14_step_001-recipe_json"
+        ],
+        "attempt": 1,
+        "id": "call_job_133050c508ef4a5b8aa1fd14_step_001",
+        "idempotencyKey": "job_133050c508ef4a5b8aa1fd14:step_001",
+        "inputSummary": "Params: bond_cutoff_angstrom, camera_preset, cell_expansion, coordinate_basis, include_bonds, include_cartesian_positions, include_fractional_positions, max_bonds, max_sites, style_preset",
+        "jobId": "job_133050c508ef4a5b8aa1fd14",
+        "outputSummary": "4 artifact(s)",
+        "params": {
+          "bond_cutoff_angstrom": 5.0,
+          "camera_preset": "auto",
+          "cell_expansion": [
+            1,
+            1,
+            1
+          ],
+          "coordinate_basis": "cartesian_angstrom",
+          "include_bonds": true,
+          "include_cartesian_positions": true,
+          "include_fractional_positions": true,
+          "max_bonds": 0,
+          "max_sites": 2,
+          "style_preset": "default"
+        },
+        "planHash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+        "planId": "plan_72be6c09a4d6485f85ed0e66",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.viewer_scene"
+      }
+    ]
+  },
+  "artifact_audit": {
+    "artifact_names": [
+      "viewer_scene.json",
+      "viewer_scene_manifest.json",
+      "summary.md",
+      "recipe.json"
+    ],
+    "canonical_validator": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+        "VIEWER_SCENE_BONDS_TRUNCATED",
+        "VIEWER_SCENE_CAP_NEAR_LIMIT"
+      ]
+    },
+    "manifest_present": true,
+    "manifest_schema_version": "phase10f9.viewer_scene_manifest.v1",
+    "manifest_validator": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+        "VIEWER_SCENE_BONDS_TRUNCATED",
+        "VIEWER_SCENE_CAP_NEAR_LIMIT"
+      ]
+    },
+    "recipe_present": true,
+    "recipe_tool_id": "structure.viewer_scene",
+    "scene_schema_version": "phase10f8.viewer_scene.v1",
+    "security": {
+      "artifact_supplied_js_allowed": false,
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false,
+      "html_allowed": false,
+      "remote_assets_allowed": false,
+      "renderer_required": false
+    },
+    "summary_mentions_json_only": true,
+    "summary_mentions_renderer_deferred": true,
+    "summary_present": true,
+    "viewer_scene_present": true,
+    "warnings": [
+      "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+      "VIEWER_SCENE_CAP_NEAR_LIMIT",
+      "VIEWER_SCENE_BONDS_TRUNCATED"
+    ]
+  },
+  "case_id": "warning_caps",
+  "planner": {
+    "job_id": "job_133050c508ef4a5b8aa1fd14",
+    "mode": "mock_fixed_plan",
+    "ok": true,
+    "plan_hash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+    "plan_id": "plan_72be6c09a4d6485f85ed0e66",
+    "real_llm_used": false,
+    "selected_tool": "structure.viewer_scene"
+  },
+  "preview_expectation": {
+    "bond_count": 0,
+    "case_id": "warning_caps",
+    "coordinate_basis": "cartesian_angstrom",
+    "manifest_preview": "json_only",
+    "renderer_required": false,
+    "schema_version": "phase10f8.viewer_scene.v1",
+    "site_count": 2,
+    "species_count": 2,
+    "validation_state": "passed_with_warnings",
+    "viewer_scene_preview": "json_only",
+    "warnings": [
+      "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+      "VIEWER_SCENE_CAP_NEAR_LIMIT",
+      "VIEWER_SCENE_BONDS_TRUNCATED"
+    ]
+  },
+  "request": {
+    "body": {
+      "datasetId": "dataset_warning_caps",
+      "enqueue": true,
+      "profileId": "profile_warning_caps",
+      "projectId": "project_10f13",
+      "userPrompt": "Create a viewer_scene.v1 artifact with bounded caps."
+    },
+    "endpoint": "/planner/jobs",
+    "method": "POST"
+  },
+  "source_assertion": {
+    "adapter_generated": true,
+    "static_fixture_used": false,
+    "tool_id": "structure.viewer_scene"
+  },
+  "worker": {
+    "artifact_count": 4,
+    "event_count": 11,
+    "job_id": "job_133050c508ef4a5b8aa1fd14",
+    "message": "job completed",
+    "plan_hash": "2cb26dfa35cb8a50895b9fc16a08964f1abed56bcad131c447862c2039c8ff7a",
+    "plan_id": "plan_72be6c09a4d6485f85ed0e66",
+    "status": "completed",
+    "tool_call_count": 1
+  }
+}

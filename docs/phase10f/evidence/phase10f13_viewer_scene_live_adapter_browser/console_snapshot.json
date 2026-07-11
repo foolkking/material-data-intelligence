@@ -1,0 +1,29 @@
+{
+  "schema_version": "phase10f13.viewer_scene_live_browser_console_snapshot.v1",
+  "cases": [
+    {
+      "case_id": "valid_minimal_crystal",
+      "feature_console_messages": [],
+      "ignored_browser_noise_count": 1,
+      "page_errors": []
+    },
+    {
+      "case_id": "multi_species_crystal",
+      "feature_console_messages": [],
+      "ignored_browser_noise_count": 0,
+      "page_errors": []
+    },
+    {
+      "case_id": "warning_caps",
+      "feature_console_messages": [],
+      "ignored_browser_noise_count": 0,
+      "page_errors": []
+    },
+    {
+      "case_id": "invalid_multi_structure_rejected",
+      "feature_console_messages": [],
+      "ignored_browser_noise_count": 0,
+      "page_errors": []
+    }
+  ]
+}

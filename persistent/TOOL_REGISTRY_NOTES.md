@@ -1,5 +1,16 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-11 Phase 10F-13 Viewer Scene Live Adapter Evidence Notes
+
+- No Tool Registry entries were added, removed, or modified in Phase 10F-13.
+- `structure.viewer_scene` remains the canonical `viewer_scene.v1` adapter path.
+- Live evidence confirms `structure.viewer_scene` executes through `planner_jobs`, persisted `AnalysisPlan`, `QueueWorkerRuntime`, Tool Registry lookup, and adapter artifact generation.
+- Existing Phase 10D tools remain registered and unchanged:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+- Compatibility evidence confirms canonical prompts route to `structure.viewer_scene`, old metadata/export prompts route to old tools, and XRD/RDF/coordination/phonon/full-renderer prompts do not silently route to canonical viewer scene.
+- No Tool Registry core semantics, QueueWorkerRuntime semantics, production runtime route, renderer dependency, WebGL, Three.js, MatterViz, artifact JavaScript, external API, real LLM path, phonon, or unsupported official PASS claim was added.
+
 ## 2026-07-11 Phase 10F-12 Viewer Scene Minimal Adapter Notes
 
 - Added one Tool Registry entry:

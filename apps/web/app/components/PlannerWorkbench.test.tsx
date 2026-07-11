@@ -4,7 +4,20 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import adapterGeneratedViewerScene from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene.json";
 import adapterGeneratedViewerSceneManifest from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene_manifest.json";
+import liveAdapterPayload from "../../../../docs/phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/live_payload.json";
 import { PlannerWorkbench } from "./PlannerWorkbench";
+
+type CapturedLiveArtifact = { name?: string; content?: Record<string, unknown> };
+
+const liveWarningArtifacts = (liveAdapterPayload as { cases: { warning_caps: { api: { artifacts: CapturedLiveArtifact[] } } } }).cases.warning_caps.api.artifacts;
+const liveAdapterWarningViewerScene = capturedLiveArtifactContent("viewer_scene.json");
+const liveAdapterWarningViewerSceneManifest = capturedLiveArtifactContent("viewer_scene_manifest.json");
+
+function capturedLiveArtifactContent(name: string): Record<string, unknown> {
+  const artifact = liveWarningArtifacts.find((item) => item.name === name);
+  if (!artifact?.content) throw new Error(`Missing captured live adapter artifact: ${name}`);
+  return artifact.content;
+}
 
 const plan = {
   schemaVersion: "0.1",
@@ -645,6 +658,30 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(container.querySelector("canvas")).toBeNull();
     expect(container.querySelector("iframe")).toBeNull();
     expect(document.body.innerHTML).not.toMatch(/<canvas|<iframe|dangerouslySetInnerHTML/i);
+  });
+
+  it("renders Phase 10F-13 live adapter-generated warning/caps artifacts in the JSON-only preview", async () => {
+    useViewerSceneV1Artifacts(
+      liveAdapterWarningViewerScene as Record<string, unknown>,
+      liveAdapterWarningViewerSceneManifest as Record<string, unknown>
+    );
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const results = screen.getByTestId("results-export-tab");
+    expect(within(results).getByTestId("viewer-scene-v1-preview")).not.toBeNull();
+    expect(within(results).getByTestId("viewer-scene-validation-state").textContent).toContain("passed_with_warnings");
+    expect(within(results).getByTestId("viewer-scene-warning-codes").textContent).toContain("VIEWER_SCENE_CAP_NEAR_LIMIT");
+    expect(within(results).getByTestId("viewer-scene-warning-codes").textContent).toContain("VIEWER_SCENE_BONDS_TRUNCATED");
+    expect(within(results).getByTestId("viewer-manifest-preview-mode").textContent).toContain("json_only");
+    expect(within(results).getByTestId("viewer-manifest-renderer-required").textContent).toContain("false");
+    expect(container.querySelector("canvas")).toBeNull();
+    expect(container.querySelector("iframe")).toBeNull();
   });
 
   it("renders viewer_scene.v1 warning and cap fixture state in the JSON-only preview", async () => {

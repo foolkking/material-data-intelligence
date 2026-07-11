@@ -122,3 +122,8 @@
 | [`phase10f/phase10f12_viewer_scene_adapter_security_evidence.md`](phase10f/phase10f12_viewer_scene_adapter_security_evidence.md) | Phase 10F-12 adapter security evidence |
 | [`phase10f/phase10f12_viewer_scene_adapter_readiness_matrix.md`](phase10f/phase10f12_viewer_scene_adapter_readiness_matrix.md) | Phase 10F-12 viewer scene adapter readiness matrix |
 | [`phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/`](phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/) | Phase 10F-12 generated adapter execution, validator, preview, and security evidence |
+| [`phase10f/phase10f13_viewer_scene_live_adapter_browser_api_evidence.md`](phase10f/phase10f13_viewer_scene_live_adapter_browser_api_evidence.md) | Phase 10F-13 live adapter browser/API evidence |
+| [`phase10f/phase10f13_viewer_scene_live_browser_security_audit.md`](phase10f/phase10f13_viewer_scene_live_browser_security_audit.md) | Phase 10F-13 live browser security audit |
+| [`phase10f/phase10f13_viewer_schema_compatibility_audit.md`](phase10f/phase10f13_viewer_schema_compatibility_audit.md) | Phase 10F-13 old/new viewer schema compatibility audit |
+| [`phase10f/phase10f13_renderer_handoff_readiness_matrix.md`](phase10f/phase10f13_renderer_handoff_readiness_matrix.md) | Phase 10F-13 renderer handoff readiness matrix |
+| [`phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/`](phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/) | Phase 10F-13 live adapter Chrome screenshots, API captures, DOM, console, and network evidence |

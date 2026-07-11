@@ -1,0 +1,39 @@
+{
+  "schema_version": "phase10f13.viewer_scene_live_browser_network_snapshot.v1",
+  "external_request_count": 0,
+  "result": "NO_LIVE_ADAPTER_EXTERNAL_NETWORK_REQUESTS",
+  "cases": [
+    {
+      "case_id": "valid_minimal_crystal",
+      "external_request_count": 0,
+      "request_paths": [
+        "app_server",
+        "captured_live_planner_api"
+      ]
+    },
+    {
+      "case_id": "multi_species_crystal",
+      "external_request_count": 0,
+      "request_paths": [
+        "app_server",
+        "captured_live_planner_api"
+      ]
+    },
+    {
+      "case_id": "warning_caps",
+      "external_request_count": 0,
+      "request_paths": [
+        "app_server",
+        "captured_live_planner_api"
+      ]
+    },
+    {
+      "case_id": "invalid_multi_structure_rejected",
+      "external_request_count": 0,
+      "request_paths": [
+        "app_server",
+        "captured_live_planner_api"
+      ]
+    }
+  ]
+}

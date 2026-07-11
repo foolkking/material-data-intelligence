@@ -1,5 +1,18 @@
 # OPEN_QUESTIONS
 
+## 2026-07-11 Phase 10F-13 Follow-ups
+
+- **Closed: real job-backed browser evidence for adapter output.** Phase 10F-13 captures real Chrome evidence using adapter-generated live planner/job/runtime artifacts.
+- **Closed: adapter-generated preview evidence.** The JSON-only preview surface now displays adapter-generated `viewer_scene.json` and `viewer_scene_manifest.json` in real Chrome.
+- **Closed: live invalid request boundary evidence.** Multi-structure input fails before successful viewer artifact generation and exposes no misleading preview.
+- **Closed: live external network isolation evidence.** Browser network capture reports `NO_LIVE_ADAPTER_EXTERNAL_NETWORK_REQUESTS`.
+- **Documented: old/new viewer schema coexistence.** Phase 10D tools remain registered with old schemas and are not migrated or relabeled.
+- **Still open: old viewer schema compatibility debt.** Reviewer should decide deprecation, retention, or migration policy for Phase 10D viewer tools.
+- **Still open: renderer dependency decision.** No renderer dependency, WebGL, Three.js, MatterViz, or renderer bundle has been approved.
+- **Still open: renderer API and sandbox plan.** Renderer API shape and malicious-scene sandboxing require a separate evaluation phase.
+- **Still open: renderer implementation.** Renderer and full `structure.viewer_3d` remain `NOT_READY`.
+- **Still open: official PASS evidence.** Official PASS claims remain none.
+
 ## 2026-07-11 Phase 10F-12 Follow-ups
 
 - **Closed: minimal production artifact producer.** Phase 10F-12 implements `structure.viewer_scene`, which produces canonical `viewer_scene.v1` artifacts through the existing registry and execution path.

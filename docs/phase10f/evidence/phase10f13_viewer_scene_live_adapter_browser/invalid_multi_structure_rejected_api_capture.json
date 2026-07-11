@@ -1,0 +1,570 @@
+{
+  "api": {
+    "analysis_plan": {
+      "analysisPlan": {
+        "assumptions": [],
+        "datasetId": "dataset_invalid_multi_structure_rejected",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_invalid_multi_structure_rejected",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 3.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Create inert viewer_scene.v1 JSON through the live adapter path.",
+            "reason": "Phase 10F-13 live adapter evidence.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_scene"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "analysisPlanJson": {
+        "assumptions": [],
+        "datasetId": "dataset_invalid_multi_structure_rejected",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_invalid_multi_structure_rejected",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 3.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Create inert viewer_scene.v1 JSON through the live adapter path.",
+            "reason": "Phase 10F-13 live adapter evidence.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_scene"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "analysis_plan_json": {
+        "assumptions": [],
+        "datasetId": "dataset_invalid_multi_structure_rejected",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_invalid_multi_structure_rejected",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 3.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Create inert viewer_scene.v1 JSON through the live adapter path.",
+            "reason": "Phase 10F-13 live adapter evidence.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_scene"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "createdAt": "2026-07-11T13:19:49.129817+00:00",
+      "createdBy": "user_local",
+      "datasetId": "dataset_invalid_multi_structure_rejected",
+      "id": "plan_17e4e0a7a6c147ca86b2ac11",
+      "jobId": "job_7973b6a8359b48df8f5b3135",
+      "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+      "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+      "planSource": "llm",
+      "plan_hash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+      "plannerProvider": "mock",
+      "profileId": "profile_invalid_multi_structure_rejected",
+      "projectId": "project_10f13",
+      "updatedAt": "2026-07-11T13:19:49.130817+00:00",
+      "validationStatus": "validated"
+    },
+    "artifacts": [],
+    "events": [
+      {
+        "createdAt": "2026-07-11T13:19:49.130817+00:00",
+        "eventType": "job.created",
+        "id": "evt_job_7973b6a8359b48df8f5b3135_0001",
+        "jobId": "job_7973b6a8359b48df8f5b3135",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "payload": {
+          "datasetId": "dataset_invalid_multi_structure_rejected",
+          "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+          "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+          "projectId": "project_10f13"
+        },
+        "progress": 0.0,
+        "seq": 1,
+        "status": "info"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:49.130817+00:00",
+        "eventType": "plan.persisted",
+        "id": "evt_job_7973b6a8359b48df8f5b3135_0002",
+        "jobId": "job_7973b6a8359b48df8f5b3135",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+          "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+          "planSource": "llm",
+          "plannerProvider": "mock"
+        },
+        "progress": 0.0,
+        "seq": 2,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:49.130817+00:00",
+        "eventType": "job.running",
+        "id": "evt_job_7973b6a8359b48df8f5b3135_0003",
+        "jobId": "job_7973b6a8359b48df8f5b3135",
+        "message": "Queue worker started job.",
+        "payload": {},
+        "progress": 0.0,
+        "seq": 3,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:49.131821+00:00",
+        "eventType": "plan.loaded",
+        "id": "evt_job_7973b6a8359b48df8f5b3135_0004",
+        "jobId": "job_7973b6a8359b48df8f5b3135",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+          "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+          "planSource": "llm"
+        },
+        "progress": 0.05,
+        "seq": 4,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:49.131821+00:00",
+        "eventType": "tool.started",
+        "id": "evt_job_7973b6a8359b48df8f5b3135_0005",
+        "jobId": "job_7973b6a8359b48df8f5b3135",
+        "message": "Started tool structure.viewer_scene.",
+        "payload": {
+          "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+          "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+          "planSource": "llm",
+          "stepId": "step_001",
+          "toolCallId": "call_job_7973b6a8359b48df8f5b3135_step_001",
+          "toolId": "structure.viewer_scene"
+        },
+        "progress": 0.0,
+        "seq": 5,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:49.132823+00:00",
+        "eventType": "tool.failed",
+        "id": "evt_job_7973b6a8359b48df8f5b3135_0006",
+        "jobId": "job_7973b6a8359b48df8f5b3135",
+        "message": "TOOL_INPUT_INVALID: viewer_scene.v1 adapter accepts exactly one periodic structure.",
+        "payload": {
+          "stepId": "step_001",
+          "toolCallId": "call_job_7973b6a8359b48df8f5b3135_step_001",
+          "toolId": "structure.viewer_scene"
+        },
+        "progress": 1.0,
+        "seq": 6,
+        "status": "error"
+      },
+      {
+        "createdAt": "2026-07-11T13:19:49.132823+00:00",
+        "eventType": "job.failed",
+        "id": "evt_job_7973b6a8359b48df8f5b3135_0007",
+        "jobId": "job_7973b6a8359b48df8f5b3135",
+        "message": "TOOL_INPUT_INVALID: viewer_scene.v1 adapter accepts exactly one periodic structure.",
+        "payload": {
+          "errorType": "ToolExecutionError"
+        },
+        "progress": 1.0,
+        "seq": 7,
+        "status": "error"
+      }
+    ],
+    "job": {
+      "analysisPlan": {
+        "assumptions": [],
+        "datasetId": "dataset_invalid_multi_structure_rejected",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_invalid_multi_structure_rejected",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 3.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Create inert viewer_scene.v1 JSON through the live adapter path.",
+            "reason": "Phase 10F-13 live adapter evidence.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_scene"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "artifactCount": 0,
+      "createdBy": "user_local",
+      "datasetId": "dataset_invalid_multi_structure_rejected",
+      "eventCount": 7,
+      "id": "job_7973b6a8359b48df8f5b3135",
+      "jobId": "job_7973b6a8359b48df8f5b3135",
+      "kind": "analysis",
+      "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+      "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+      "planSource": "llm",
+      "plan_id": "plan_17e4e0a7a6c147ca86b2ac11",
+      "projectId": "project_10f13",
+      "provenance": {
+        "binding": "jobs.plan_id -> analysis_plans.id",
+        "fallbackUsed": false,
+        "loadedFrom": "persisted_analysis_plan",
+        "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+        "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+        "planSource": "llm",
+        "toolPath": "Tool Registry + Adapter"
+      },
+      "status": "failed",
+      "toolCallCount": 1,
+      "updatedAt": "2026-07-11T13:19:49.132823+00:00",
+      "validationStatus": "validated"
+    },
+    "result": {
+      "artifactCount": 0,
+      "artifacts": [],
+      "jobId": "job_7973b6a8359b48df8f5b3135",
+      "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+      "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+      "provenance": {
+        "binding": "jobs.plan_id -> analysis_plans.id",
+        "fallbackUsed": false,
+        "loadedFrom": "persisted_analysis_plan",
+        "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+        "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+        "planSource": "llm",
+        "toolPath": "Tool Registry + Adapter"
+      },
+      "status": "failed",
+      "summary": "Result not available yet.",
+      "toolCallCount": 1
+    },
+    "tool_calls": [
+      {
+        "attempt": 1,
+        "error": {
+          "message": "TOOL_INPUT_INVALID: viewer_scene.v1 adapter accepts exactly one periodic structure.",
+          "type": "ToolExecutionError"
+        },
+        "id": "call_job_7973b6a8359b48df8f5b3135_step_001",
+        "idempotencyKey": "job_7973b6a8359b48df8f5b3135:step_001",
+        "inputSummary": "Params: bond_cutoff_angstrom, camera_preset, cell_expansion, coordinate_basis, include_bonds, include_cartesian_positions, include_fractional_positions, max_bonds, max_sites, style_preset",
+        "jobId": "job_7973b6a8359b48df8f5b3135",
+        "outputSummary": "TOOL_INPUT_INVALID: viewer_scene.v1 adapter accepts exactly one periodic structure.",
+        "params": {
+          "bond_cutoff_angstrom": 3.0,
+          "camera_preset": "auto",
+          "cell_expansion": [
+            1,
+            1,
+            1
+          ],
+          "coordinate_basis": "cartesian_angstrom",
+          "include_bonds": true,
+          "include_cartesian_positions": true,
+          "include_fractional_positions": true,
+          "max_bonds": 2048,
+          "max_sites": 256,
+          "style_preset": "default"
+        },
+        "planHash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+        "planId": "plan_17e4e0a7a6c147ca86b2ac11",
+        "status": "failed",
+        "stepId": "step_001",
+        "toolId": "structure.viewer_scene"
+      }
+    ]
+  },
+  "artifact_audit": {
+    "artifact_names": [],
+    "canonical_validator": {
+      "errors": [
+        "VIEWER_SCENE_ARTIFACT_MISSING"
+      ],
+      "valid": false,
+      "warnings": []
+    },
+    "manifest_present": false,
+    "manifest_schema_version": null,
+    "manifest_validator": {
+      "errors": [
+        "VIEWER_SCENE_MANIFEST_MISSING"
+      ],
+      "valid": false,
+      "warnings": []
+    },
+    "recipe_present": false,
+    "recipe_tool_id": null,
+    "scene_schema_version": null,
+    "security": {},
+    "summary_mentions_json_only": false,
+    "summary_mentions_renderer_deferred": false,
+    "summary_present": false,
+    "viewer_scene_present": false,
+    "warnings": []
+  },
+  "case_id": "invalid_multi_structure_rejected",
+  "planner": {
+    "job_id": "job_7973b6a8359b48df8f5b3135",
+    "mode": "mock_fixed_plan",
+    "ok": true,
+    "plan_hash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+    "plan_id": "plan_17e4e0a7a6c147ca86b2ac11",
+    "real_llm_used": false,
+    "selected_tool": "structure.viewer_scene"
+  },
+  "preview_expectation": {
+    "invalid_state": "job_failed_before_successful_artifact",
+    "manifest_preview": "not_available",
+    "renderer_required": false,
+    "viewer_scene_preview": "not_available"
+  },
+  "request": {
+    "body": {
+      "datasetId": "dataset_invalid_multi_structure_rejected",
+      "enqueue": true,
+      "profileId": "profile_invalid_multi_structure_rejected",
+      "projectId": "project_10f13",
+      "userPrompt": "Build an inert viewer scene artifact for this structure."
+    },
+    "endpoint": "/planner/jobs",
+    "method": "POST"
+  },
+  "source_assertion": {
+    "adapter_generated": true,
+    "static_fixture_used": false,
+    "tool_id": "structure.viewer_scene"
+  },
+  "worker": {
+    "artifact_count": 0,
+    "event_count": 7,
+    "job_id": "job_7973b6a8359b48df8f5b3135",
+    "message": "job failed: TOOL_INPUT_INVALID: viewer_scene.v1 adapter accepts exactly one periodic structure.",
+    "plan_hash": "b121c5d9ab03ccb43c28c9849fa594d1721e66677c010cd487fa5eccc63d42c6",
+    "plan_id": "plan_17e4e0a7a6c147ca86b2ac11",
+    "status": "failed",
+    "tool_call_count": 1
+  }
+}

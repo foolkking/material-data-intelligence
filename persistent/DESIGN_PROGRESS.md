@@ -1,5 +1,17 @@
 # DESIGN_PROGRESS
 
+## 2026-07-11 Phase 10F-13 Viewer Scene Live Adapter Browser/API Evidence
+
+- Added live adapter-backed browser/API evidence for `structure.viewer_scene`.
+- Added a Python evidence generator that drives `planner_jobs`, persisted `AnalysisPlan`, `QueueWorkerRuntime.handle_job`, Tool Registry lookup, adapter execution, artifact listing, and canonical validators.
+- Added a real Chrome runner that opens the existing PlannerWorkbench JSON-only preview surface using captured live adapter API responses.
+- Captured live evidence for valid minimal crystal, multi-species crystal, warning/caps behavior, invalid multi-structure rejection, and manifest preview.
+- Captured screenshots, DOM snapshot, console snapshot, network snapshot, API transcript, job execution audit, artifact contract audit, security audit, and schema compatibility audit under `docs/phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/`.
+- Added pytest coverage for live API/runtime evidence, invalid request rejection, old/new schema routing separation, and inert/security evidence payloads.
+- Confirmed old Phase 10D viewer tools remain registered and unchanged while canonical `structure.viewer_scene` remains the only `viewer_scene.v1` adapter path.
+- Confirmed `NO_LIVE_ADAPTER_EXTERNAL_NETWORK_REQUESTS` for the live Chrome evidence run.
+- No full `structure.viewer_3d`, WebGL renderer, Three.js integration, MatterViz renderer, renderer bundle, canvas viewer, iframe viewer, external API, notebook/script execution, real LLM path, new dependency, phonon, Brillouin-zone 3D, or artifact JavaScript was added.
+
 ## 2026-07-11 Phase 10F-12 Viewer Scene Minimal Adapter Implementation
 
 - Implemented the canonical, renderer-free `structure.viewer_scene` adapter.
