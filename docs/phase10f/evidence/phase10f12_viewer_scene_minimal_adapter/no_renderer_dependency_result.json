@@ -1,0 +1,10 @@
+{
+  "canvas_viewer_included": false,
+  "iframe_viewer_included": false,
+  "new_dependency_added": false,
+  "renderer_included": false,
+  "result": "PASS",
+  "schema_version": "phase10f12.viewer_scene.no_renderer_dependency.v1",
+  "threejs_included": false,
+  "webgl_included": false
+}

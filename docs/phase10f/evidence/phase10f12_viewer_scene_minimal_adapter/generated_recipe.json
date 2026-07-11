@@ -1,0 +1,78 @@
+{
+  "artifactTypes": [
+    "recipe_json",
+    "structure_json",
+    "summary_md",
+    "table_json"
+  ],
+  "artifacts": [
+    "viewer_scene.json",
+    "viewer_scene_manifest.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "caps": {
+    "max_bonds": 2048,
+    "max_cell_expansion": [
+      1,
+      1,
+      1
+    ],
+    "max_scene_json_bytes": 1000000,
+    "max_sites": 256,
+    "max_species": 32
+  },
+  "contract_version": "viewer_scene.v1",
+  "dependencies": {
+    "aseVersion": "3.29.0",
+    "new_dependencies_added": false,
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "deterministic": true,
+  "generation_steps": [
+    "parse_structure",
+    "normalize_lattice",
+    "normalize_species",
+    "normalize_site_indices",
+    "normalize_coordinates",
+    "derive_bounded_optional_bonds",
+    "apply_caps",
+    "build_warnings",
+    "build_provenance",
+    "build_security_metadata",
+    "validate_viewer_scene_v1",
+    "write_inert_json_artifacts"
+  ],
+  "input_resource_reference": {
+    "dataset_id": "dataset_structure",
+    "input_hashes": [
+      "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+    ]
+  },
+  "name": "Viewer Scene Artifact",
+  "normalized_params": {
+    "bond_cutoff_angstrom": 3.0,
+    "camera_preset": "auto",
+    "cell_expansion": [
+      1,
+      1,
+      1
+    ],
+    "coordinate_basis": "cartesian_angstrom",
+    "include_bonds": true,
+    "include_cartesian_positions": true,
+    "include_fractional_positions": true,
+    "max_bonds": 2048,
+    "max_sites": 256,
+    "style_preset": "default"
+  },
+  "parser": "pymatgen.Structure",
+  "recipeId": "recipe_tool_call_local",
+  "renderer_included": false,
+  "schemaVersion": "0.1",
+  "schema_version": "phase10f12.viewer_scene.recipe.v1",
+  "toolId": "structure.viewer_scene",
+  "tool_id": "structure.viewer_scene"
+}

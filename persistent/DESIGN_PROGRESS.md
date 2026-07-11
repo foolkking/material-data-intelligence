@@ -1,5 +1,18 @@
 # DESIGN_PROGRESS
 
+## 2026-07-11 Phase 10F-12 Viewer Scene Minimal Adapter Implementation
+
+- Implemented the canonical, renderer-free `structure.viewer_scene` adapter.
+- Added Tool Registry registration with strict params and Phase 10F caps for `viewer_scene.v1`.
+- Generated canonical artifacts: `viewer_scene.json`, `viewer_scene_manifest.json`, `summary.md`, and `recipe.json`.
+- Reused the existing lightweight structure parser and artifact exporter; the adapter accepts exactly one periodic structure and rejects multi-structure inputs.
+- Validated generated scene and manifest artifacts with the Phase 10F canonical validators before export.
+- Added Mock Planner routing only for explicit inert viewer-scene JSON prompts; full viewer, WebGL, Three.js, RDF, XRD, coordination, Brillouin-zone, phonon, and trajectory prompts do not route to this adapter.
+- Added adapter, registry, PlanValidator, routing, direct execution, persisted queue-runtime execution, deterministic replay, and frontend preview-regression tests.
+- Added generated execution, validator, deterministic replay, preview compatibility, no-renderer, and security evidence under `docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/`.
+- Preserved Phase 10D `structure.viewer_scene_metadata` and `structure.viewer_export_package` schemas; no silent migration or replacement was performed.
+- No full `structure.viewer_3d`, WebGL renderer, Three.js integration, renderer bundle, 3D viewer component, notebook/script execution, external API, real LLM path, new dependency, phonon, Brillouin-zone 3D, or advanced local environment classifier was added.
+
 ## 2026-07-09 Phase 10F-10 Viewer Scene JSON-only Preview Surface Implementation / Evidence
 
 - Implemented JSON-only `viewer_scene.v1` preview support in the existing PlannerWorkbench Results/export artifact preview surface.

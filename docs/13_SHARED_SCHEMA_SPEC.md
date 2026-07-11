@@ -938,3 +938,49 @@ Required artifacts:
 - deterministic series values
 - source/result metadata
 - the same no-JavaScript and no-external-URL security flags
+
+## Phase 10F-12 Addendum: minimal viewer scene adapter artifacts
+
+Phase 10F-12 adds the executable `structure.viewer_scene` adapter. It emits
+inert `viewer_scene.v1` JSON data for JSON-only preview and future renderer
+handoff. It does not emit WebGL, Three.js, MatterViz renderer bundles, canvas
+viewer assets, iframe viewers, artifact JavaScript, HTML payloads, external
+URLs, remote textures, notebooks, scripts, or external API references.
+
+Required artifacts:
+
+- `viewer_scene.json`: canonical inert scene artifact.
+- `viewer_scene_manifest.json`: canonical JSON-only manifest.
+- `summary.md`: human-readable input, scene, caps, preview, security, and deferred-scope summary.
+- `recipe.json`: reproducible deterministic execution recipe.
+
+`viewer_scene.json` must include:
+
+- `kind: "viewer_scene"`
+- `version: "viewer_scene.v1"`
+- `schema_version: "phase10f8.viewer_scene.v1"`
+- source metadata
+- metadata with formula, site count, species count, preview mode, and renderer-required false
+- scene data with `coordinate_basis: "cartesian_angstrom"`
+- declarative site records with finite `xyz` coordinates and optional finite `frac` coordinates
+- finite lattice vectors and parameters
+- optional non-authoritative bounded bonds
+- caps aligned to Phase 10F contract
+- validation state and warnings
+- provenance with `deterministic: true`
+- security flags with no JavaScript, no external URLs, no renderer required, no remote assets, and no HTML
+
+`viewer_scene_manifest.json` must include:
+
+- `schema_version: "phase10f9.viewer_scene_manifest.v1"`
+- `artifact_kind: "viewer_scene"`
+- `artifact_version: "viewer_scene.v1"`
+- `preview_mode: "json_only"`
+- `renderer_required: false`
+- `executable_assets: "none"`
+- `external_resources: "none"`
+- local logical artifact references only
+
+The adapter validates both JSON artifacts with the canonical validator before
+export. If validation fails, the tool call must fail with a typed error rather
+than saving a successful artifact set.

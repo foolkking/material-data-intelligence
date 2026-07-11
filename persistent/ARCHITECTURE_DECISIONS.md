@@ -1,5 +1,50 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-12-VIEWER-SCENE-MINIMAL-ADAPTER: Add a canonical adapter without replacing Phase 10D viewer tools
+
+### Context
+
+Phase 10F-8 fixed the inert `viewer_scene.v1` contract, Phase 10F-9 added
+fixtures and validators, Phase 10F-10 added JSON-only preview, and Phase 10F-11
+captured real browser evidence for fixture-backed preview. The next safe slice
+is a minimal artifact-producing adapter, not a renderer.
+
+Existing Phase 10D tools already produce static viewer-related artifacts, but
+their schemas are `phase10d1.viewer_scene.v1` and
+`phase10d1.viewer_assets_manifest.v1`. Silently changing those tools would
+break historical evidence and compatibility.
+
+### Decision
+
+Phase 10F-12 adds one new Tool Registry entry and adapter:
+
+- `structure.viewer_scene`
+- `StructureViewerSceneAdapter`
+
+The adapter emits canonical Phase 10F artifacts:
+
+- `viewer_scene.json` with `phase10f8.viewer_scene.v1`
+- `viewer_scene_manifest.json` with `phase10f9.viewer_scene_manifest.v1`
+- `summary.md`
+- `recipe.json`
+
+The adapter accepts exactly one periodic structure, uses strict params, applies
+Phase 10F caps, validates generated scene and manifest artifacts before export,
+and remains renderer-free.
+
+### Consequences
+
+- The project now has a canonical production artifact producer for
+  `viewer_scene.v1`.
+- Phase 10D viewer metadata/export tools remain registered and unchanged.
+- Future compatibility work can decide whether to keep, migrate, or deprecate
+  Phase 10D viewer tools.
+- Renderer handoff is improved but still partial because no renderer API,
+  sandbox, dependency review, or renderer evidence exists.
+- Full `structure.viewer_3d`, WebGL, Three.js, renderer bundles, Brillouin-zone
+  3D, phonon, notebook/script execution, external APIs, and real LLM execution
+  remain future scope.
+
 ## ADR-10F-9-VIEWER-SCENE-CONTRACT-FIXTURES: Validate inert viewer scene contract before runtime integration
 
 ### Context

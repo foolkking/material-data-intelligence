@@ -1,5 +1,37 @@
 # TASK_BOARD
 
+## 2026-07-11 Phase 10F-12 Viewer Scene Minimal Adapter Implementation
+
+### Done
+
+- [x] Kept Phase 10F-11 baseline as `ee8f91b4330149015f5986a338b9a7d7d2c78f27`.
+- [x] Audited existing viewer tools and preserved Phase 10D schema compatibility.
+- [x] Added one canonical `structure.viewer_scene` adapter for `viewer_scene.v1`.
+- [x] Registered the adapter in Tool Registry with strict params and contract caps.
+- [x] Added canonical scene and manifest generation with validator gates.
+- [x] Added summary and recipe generation.
+- [x] Added positive minimal viewer-scene Mock Planner routing and negative full-viewer/static-physics routing tests.
+- [x] Added adapter, registry, PlanValidator, execution, queue-runtime, deterministic, security, and frontend preview-regression tests.
+- [x] Added Phase 10F-12 implementation docs and generated execution/security evidence.
+
+### Decisions
+
+- [x] `viewer_scene.v1` contract is `READY`.
+- [x] Contract validator is `READY`.
+- [x] Minimal adapter is `READY`.
+- [x] Tool Registry integration is `READY`.
+- [x] Execution integration is `READY`.
+- [x] JSON-only preview compatibility is `READY`.
+- [x] Renderer handoff is `PARTIAL_READY`.
+- [x] Renderer implementation remains `NOT_READY`.
+- [x] Full `structure.viewer_3d` implementation remains `NOT_READY`.
+
+### Reviewer Remaining Questions
+
+- [ ] Decide whether Phase 10D viewer metadata/export tools should be deprecated, kept indefinitely, or migrated in a future compatibility phase.
+- [ ] Decide whether adapter Browser/API evidence needs real job-backed Chrome capture before renderer dependency evaluation.
+- [ ] Do not directly enter full `structure.viewer_3d`, WebGL, Three.js, MatterViz renderer, renderer bundle, or phonon implementation.
+
 ## 2026-07-09 Phase 10F-10 Viewer Scene JSON-only Preview Surface Implementation / Evidence
 
 ### Done

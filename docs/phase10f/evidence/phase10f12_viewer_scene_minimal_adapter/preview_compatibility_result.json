@@ -1,0 +1,20 @@
+{
+  "artifact_name": "viewer_scene.json",
+  "json_only_preview_surface_expected": true,
+  "kind": "viewer_scene",
+  "manifest_name": "viewer_scene_manifest.json",
+  "manifest_schema_version": "phase10f9.viewer_scene_manifest.v1",
+  "preview_mode": "json_only",
+  "renderer_required": false,
+  "scene_schema_version": "phase10f8.viewer_scene.v1",
+  "scene_summary": {
+    "bond_count": 1,
+    "coordinate_basis": "cartesian_angstrom",
+    "lattice_present": true,
+    "site_count": 2,
+    "species_count": 1
+  },
+  "schema_version": "phase10f12.viewer_scene.preview_compatibility.v1",
+  "validation_state": "passed_with_warnings",
+  "version": "viewer_scene.v1"
+}

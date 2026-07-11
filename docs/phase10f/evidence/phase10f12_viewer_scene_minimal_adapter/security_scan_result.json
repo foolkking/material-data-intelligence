@@ -1,0 +1,12 @@
+{
+  "no_artifact_js": true,
+  "no_html_payload": true,
+  "no_new_dependency": true,
+  "no_real_external_urls": true,
+  "no_remote_textures": true,
+  "no_renderer_bundle": true,
+  "no_threejs_marker_in_json_payloads": true,
+  "no_webgl_marker_in_json_payloads": true,
+  "result": "PASS",
+  "schema_version": "phase10f12.viewer_scene.adapter_security_scan.v1"
+}

@@ -20,6 +20,7 @@ from .platform_builtin import (
     StructureCompositionAdapter,
     StructurePreviewMetadataAdapter,
     StructureSummaryAdapter,
+    StructureViewerSceneAdapter,
     StructureViewerExportPackageAdapter,
     StructureViewerSceneMetadataAdapter,
 )
@@ -63,6 +64,7 @@ __all__ = [
     "StructureCompositionAdapter",
     "StructurePreviewMetadataAdapter",
     "StructureSummaryAdapter",
+    "StructureViewerSceneAdapter",
     "StructureViewerExportPackageAdapter",
     "StructureViewerSceneMetadataAdapter",
     "StructureViewer3DAdapter",

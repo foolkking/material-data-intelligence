@@ -17,6 +17,7 @@ from .platform_builtin import (
     StructureCompositionAdapter,
     StructurePreviewMetadataAdapter,
     StructureSummaryAdapter,
+    StructureViewerSceneAdapter,
     StructureViewerExportPackageAdapter,
     StructureViewerSceneMetadataAdapter,
 )
@@ -57,6 +58,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     StructureCompositionAdapter.__name__: StructureCompositionAdapter,
     StructurePreviewMetadataAdapter.__name__: StructurePreviewMetadataAdapter,
     StructureSummaryAdapter.__name__: StructureSummaryAdapter,
+    StructureViewerSceneAdapter.__name__: StructureViewerSceneAdapter,
     StructureViewerExportPackageAdapter.__name__: StructureViewerExportPackageAdapter,
     StructureViewerSceneMetadataAdapter.__name__: StructureViewerSceneMetadataAdapter,
     StructureViewer3DAdapter.__name__: StructureViewer3DAdapter,

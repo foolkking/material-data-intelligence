@@ -97,6 +97,29 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_viewer_scene(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.viewer_scene",
+                purpose="Create an inert viewer_scene.v1 JSON artifact for JSON-only preview; no renderer is included.",
+                params={
+                    "include_bonds": True,
+                    "bond_cutoff_angstrom": 3.0,
+                    "max_sites": 256,
+                    "max_bonds": 2048,
+                    "coordinate_basis": "cartesian_angstrom",
+                    "include_cartesian_positions": True,
+                    "include_fractional_positions": True,
+                    "cell_expansion": [1, 1, 1],
+                    "style_preset": "default",
+                    "camera_preset": "auto",
+                },
+                artifact_name="viewer_scene.json",
+                artifact_type="structure_json",
+                artifact_types=["structure_json", "table_json", "summary_md", "recipe_json"],
+                extra_expected_artifacts=[{"name": "viewer_scene_manifest.json", "type": "table_json", "fromStepId": "step_001"}],
+            )
         elif _should_generate_viewer_export_package(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -880,6 +903,48 @@ def _should_generate_viewer_scene_metadata(
         "structure viewer metadata",
         "create viewer scene metadata",
         "build a static structure viewer scene contract",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_viewer_scene(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.viewer_scene") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    deferred_markers = (
+        "interactive",
+        "live viewer",
+        "webgl",
+        "three.js",
+        "threejs",
+        "render with three",
+        "rotatable",
+        "可旋转",
+        "真实 3d",
+        "brillouin",
+        "phonon",
+        "trajectory",
+        "animation",
+        "animate",
+    )
+    if any(marker in prompt for marker in deferred_markers):
+        return False
+    markers = (
+        "viewer_scene.v1",
+        "viewer scene json",
+        "viewer_scene json",
+        "viewer_scene artifact",
+        "viewer scene artifact",
+        "inert viewer scene",
+        "json scene data",
+        "scene data for a future structure renderer",
+        "导出这个晶体的 viewer scene 数据",
+        "生成这个结构的 viewer scene json",
+        "创建 viewer_scene.v1 artifact",
     )
     return any(marker in prompt for marker in markers)
 

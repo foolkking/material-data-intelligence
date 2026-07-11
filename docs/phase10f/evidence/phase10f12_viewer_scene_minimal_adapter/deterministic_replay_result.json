@@ -1,0 +1,8 @@
+{
+  "equivalent_payloads": true,
+  "manifest_hash_first": "ddaa8012be7a13e05b561cea965636b8e44b643771d2275627118b6a82ee10fa",
+  "manifest_hash_second": "ddaa8012be7a13e05b561cea965636b8e44b643771d2275627118b6a82ee10fa",
+  "schema_version": "phase10f12.viewer_scene.deterministic_replay.v1",
+  "viewer_scene_hash_first": "b9ee4c12c70634bedfebb148d365037bec4ead0e85939c2e5a275104f634139a",
+  "viewer_scene_hash_second": "b9ee4c12c70634bedfebb148d365037bec4ead0e85939c2e5a275104f634139a"
+}

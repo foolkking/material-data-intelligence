@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2026-07-11
+
+### Phase 10F-12 Viewer Scene Minimal Adapter Implementation
+
+- Added `StructureViewerSceneAdapter` for canonical `structure.viewer_scene` execution.
+- Registered `structure.viewer_scene` in Tool Registry with strict `viewer_scene.v1` params and Phase 10F caps.
+- Added canonical `viewer_scene.json` generation using `phase10f8.viewer_scene.v1`.
+- Added canonical `viewer_scene_manifest.json` generation using `phase10f9.viewer_scene_manifest.v1`.
+- Added summary and recipe generation for the minimal adapter.
+- Added canonical validator gates before adapter export.
+- Added Mock Planner positive routing for explicit inert viewer-scene JSON prompts and negative routing coverage for full viewer, WebGL, Three.js, XRD, RDF, coordination, Brillouin, phonon, and trajectory prompts.
+- Added `tests/test_phase10f12_viewer_scene_adapter.py` for adapter, registry, PlanValidator, routing, execution, deterministic replay, contract, manifest, and security coverage.
+- Added frontend preview regression using adapter-generated evidence JSON.
+- Added generated adapter execution/security evidence and Phase 10F-12 docs.
+- Updated shared schema, docs index, and persistent records.
+- No full `structure.viewer_3d`, WebGL renderer, Three.js integration, MatterViz renderer, renderer bundle, 3D component, external API, notebook/script execution, real LLM, new dependency, phonon, Brillouin-zone 3D, or unsupported official PASS claim was added.
+
 ## 2026-07-09
 
 ### Phase 10F-10 Viewer Scene JSON-only Preview Surface Implementation / Evidence

@@ -1,5 +1,17 @@
 # OPEN_QUESTIONS
 
+## 2026-07-11 Phase 10F-12 Follow-ups
+
+- **Closed: minimal production artifact producer.** Phase 10F-12 implements `structure.viewer_scene`, which produces canonical `viewer_scene.v1` artifacts through the existing registry and execution path.
+- **Closed: adapter contract validation.** Generated `viewer_scene.json` and `viewer_scene_manifest.json` are validated before export.
+- **Closed: minimal planner routing for inert scene JSON.** Mock Planner routes explicit inert viewer-scene JSON prompts to `structure.viewer_scene`.
+- **Closed: JSON-only preview compatibility for adapter output.** Frontend regression uses adapter-generated evidence JSON.
+- **Still open: old viewer schema compatibility debt.** Phase 10D `structure.viewer_scene_metadata` and `structure.viewer_export_package` remain registered with old schemas; reviewer should decide deprecation or migration policy.
+- **Still open: real job-backed browser evidence for adapter output.** Phase 10F-11 browser evidence used fixtures; Phase 10F-12 adds adapter output preview regression but not a new real Chrome capture from a live adapter job.
+- **Still open: renderer handoff details.** Renderer input API, renderer dependency evaluation, sandboxing, and malicious-scene tests remain future work.
+- **Still open: renderer implementation.** Renderer, WebGL, Three.js, renderer bundles, and full `structure.viewer_3d` remain `NOT_READY`.
+- **Still open: official PASS evidence.** Official PASS claims remain none.
+
 ## 2026-07-09 Phase 10F-10 Follow-ups
 
 - **Closed: JSON-only preview surface.** Phase 10F-10 implements `viewer_scene.v1` and manifest JSON-only preview support in the existing Results/export artifact preview surface.

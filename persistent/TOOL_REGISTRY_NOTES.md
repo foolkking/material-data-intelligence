@@ -1,5 +1,30 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-11 Phase 10F-12 Viewer Scene Minimal Adapter Notes
+
+- Added one Tool Registry entry:
+  - `structure.viewer_scene`
+- Registered adapter:
+  - `StructureViewerSceneAdapter`
+- Artifact types:
+  - `structure_json`
+  - `table_json`
+  - `summary_md`
+  - `recipe_json`
+- Generated artifact names:
+  - `viewer_scene.json`
+  - `viewer_scene_manifest.json`
+  - `summary.md`
+  - `recipe.json`
+- Params schema is strict and bounded to the Phase 10F contract caps.
+- Existing Phase 10D tools remain registered and unchanged:
+  - `structure.viewer_scene_metadata`
+  - `structure.viewer_export_package`
+- `structure.viewer_scene` emits canonical `viewer_scene.v1` data, not the old `phase10d1.viewer_scene.v1` schema.
+- Mock Planner routes only explicit inert viewer-scene JSON prompts to `structure.viewer_scene`.
+- Full interactive viewer, WebGL, Three.js, MatterViz renderer, Brillouin-zone, phonon, RDF, XRD, and coordination prompts do not route to `structure.viewer_scene`.
+- No Tool Registry core semantics, QueueWorkerRuntime semantics, production runtime route, renderer dependency, WebGL, Three.js, artifact JavaScript, external API, real LLM path, phonon, or unsupported official PASS claim was added.
+
 ## 2026-07-09 Phase 10F-9 Viewer Scene Contract Fixture Notes
 
 - No Tool Registry entries were added, removed, or modified in Phase 10F-9.

@@ -116,3 +116,9 @@
 | [`phase10f/phase10f11_viewer_scene_readiness_matrix.md`](phase10f/phase10f11_viewer_scene_readiness_matrix.md) | Phase 10F-11 viewer_scene browser evidence readiness matrix |
 | [`phase10f/evidence/phase10f11_viewer_scene_real_browser/`](phase10f/evidence/phase10f11_viewer_scene_real_browser/) | Phase 10F-11 screenshots, DOM snapshot, and network audit |
 | [`phase10f/phase10f12_next_scope.md`](phase10f/phase10f12_next_scope.md) | Phase 10F-12 reviewer-selected next-scope options |
+| [`phase10f/phase10f12_viewer_scene_minimal_adapter_implementation.md`](phase10f/phase10f12_viewer_scene_minimal_adapter_implementation.md) | Phase 10F-12 minimal `structure.viewer_scene` adapter implementation |
+| [`phase10f/phase10f12_viewer_scene_adapter_contract_audit.md`](phase10f/phase10f12_viewer_scene_adapter_contract_audit.md) | Phase 10F-12 viewer scene adapter contract audit |
+| [`phase10f/phase10f12_viewer_scene_adapter_execution_evidence.md`](phase10f/phase10f12_viewer_scene_adapter_execution_evidence.md) | Phase 10F-12 adapter execution evidence |
+| [`phase10f/phase10f12_viewer_scene_adapter_security_evidence.md`](phase10f/phase10f12_viewer_scene_adapter_security_evidence.md) | Phase 10F-12 adapter security evidence |
+| [`phase10f/phase10f12_viewer_scene_adapter_readiness_matrix.md`](phase10f/phase10f12_viewer_scene_adapter_readiness_matrix.md) | Phase 10F-12 viewer scene adapter readiness matrix |
+| [`phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/`](phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/) | Phase 10F-12 generated adapter execution, validator, preview, and security evidence |

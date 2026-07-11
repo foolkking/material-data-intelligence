@@ -1,0 +1,66 @@
+{
+  "artifact_id": "viewer_scene",
+  "artifact_kind": "viewer_scene",
+  "artifact_version": "viewer_scene.v1",
+  "artifacts": [
+    {
+      "kind": "viewer_scene",
+      "media_type": "application/json",
+      "path": "viewer_scene.json",
+      "required": true,
+      "sha256": "b9ee4c12c70634bedfebb148d365037bec4ead0e85939c2e5a275104f634139a",
+      "size_bytes": 2127
+    },
+    {
+      "kind": "manifest",
+      "media_type": "application/json",
+      "path": "viewer_scene_manifest.json",
+      "required": true
+    },
+    {
+      "kind": "summary",
+      "media_type": "text/markdown",
+      "path": "summary.md",
+      "required": true
+    },
+    {
+      "kind": "recipe",
+      "media_type": "application/json",
+      "path": "recipe.json",
+      "required": true
+    }
+  ],
+  "entry_artifact": "viewer_scene.json",
+  "executable_assets": "none",
+  "expected_caps": {
+    "max_bonds": 2048,
+    "max_cell_expansion": [
+      1,
+      1,
+      1
+    ],
+    "max_scene_json_bytes": 1000000,
+    "max_sites": 256,
+    "max_species": 32
+  },
+  "expected_errors": [],
+  "expected_validation_state": "valid_with_warnings",
+  "expected_warnings": [
+    "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+  ],
+  "external_resources": "none",
+  "fixture_source": "adapter_generated",
+  "preview_mode": "json_only",
+  "renderer_required": false,
+  "schema_version": "phase10f9.viewer_scene_manifest.v1",
+  "security": {
+    "artifact_supplied_js_allowed": false,
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "html_allowed": false,
+    "remote_assets_allowed": false,
+    "renderer_required": false
+  },
+  "tool_id": "structure.viewer_scene"
+}

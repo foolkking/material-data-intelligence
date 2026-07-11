@@ -8,7 +8,18 @@ from typing import Any
 from pymatgen.core import Lattice, Structure
 from pymatgen.core.periodic_table import Element
 
-from mdi_artifact_core import ArtifactPayload, content_hash, stable_json_dumps
+from mdi_artifact_core import (
+    ArtifactPayload,
+    DEFAULT_VIEWER_SCENE_CAPS,
+    VIEWER_SCENE_KIND,
+    VIEWER_SCENE_MANIFEST_SCHEMA_VERSION,
+    VIEWER_SCENE_SCHEMA_VERSION,
+    VIEWER_SCENE_VERSION,
+    content_hash,
+    stable_json_dumps,
+    validate_viewer_scene,
+    validate_viewer_scene_manifest,
+)
 from mdi_schemas import Artifact, ArtifactType
 
 from ..base import BaseToolAdapter
@@ -412,6 +423,73 @@ class StructureViewerSceneMetadataAdapter(_BaseStructureAdapter):
         )
 
 
+class StructureViewerSceneAdapter(_BaseStructureAdapter):
+    tool_id = "structure.viewer_scene"
+    adapter_version = "0.1.0"
+
+    def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> PreparedStructures:
+        if not self._resolved_inputs:
+            raise self._input_error("No structure input was provided.", "empty_structure")
+
+        raw = self._resolved_inputs[0] if len(self._resolved_inputs) == 1 else self._resolved_inputs
+        structures = self._coerce_structures(raw)
+        if not structures:
+            raise self._input_error("Structure collection is empty.", "empty_structure")
+        if len(structures) != 1:
+            raise self._input_error(
+                "viewer_scene.v1 adapter accepts exactly one periodic structure.",
+                "multiple_structures_unsupported",
+                structureCount=len(structures),
+            )
+        max_atoms = int(context.resource_limits.get("maxAtomsPerStructure") or DEFAULT_VIEWER_SCENE_CAPS["max_sites"])
+        for label, structure in structures.items():
+            self._validate_structure(label, structure, max_atoms=max_atoms)
+            _validate_viewer_scene_structure_numbers(structure, tool_id=self.tool_id)
+        return PreparedStructures(structures=structures, truncated=False, warnings=[])
+
+    def run(self, prepared: PreparedStructures, params: dict[str, Any]) -> StructureAdapterResult:
+        normalized_params = _viewer_scene_v1_params(params, self.context.resource_limits, tool_id=self.tool_id)
+        label, structure = next(iter(sorted(prepared.structures.items())))
+        payload, manifest = _viewer_scene_v1_payload(
+            label,
+            structure,
+            params=normalized_params,
+            tool_id=self.tool_id,
+            context=self.context,
+        )
+        scene_json = stable_json_dumps(payload)
+        scene_result = validate_viewer_scene(payload, raw_size_bytes=len(scene_json.encode("utf-8")))
+        if not scene_result.valid:
+            raise ToolExecutionError(
+                code="TOOL_CONTRACT_INVALID",
+                message="Generated viewer_scene.v1 payload failed canonical validation.",
+                tool_id=self.tool_id,
+                details={"errorType": "viewer_scene_contract_validation_failed", "errors": scene_result.errors},
+            )
+        manifest_result = validate_viewer_scene_manifest(manifest)
+        if not manifest_result.valid:
+            raise ToolExecutionError(
+                code="TOOL_CONTRACT_INVALID",
+                message="Generated viewer_scene.v1 manifest failed canonical validation.",
+                tool_id=self.tool_id,
+                details={"errorType": "viewer_scene_manifest_validation_failed", "errors": manifest_result.errors},
+            )
+        return StructureAdapterResult(
+            payload=payload,
+            params=normalized_params,
+            artifact_name="viewer_scene.json",
+            title="Viewer Scene Artifact",
+            primary_artifact_type=ArtifactType.structure_json,
+            extra_artifacts=(
+                ExtraJsonArtifact(
+                    artifact_type=ArtifactType.table_json,
+                    file_name="viewer_scene_manifest.json",
+                    payload=manifest,
+                ),
+            ),
+        )
+
+
 class StructureViewerExportPackageAdapter(_BaseStructureAdapter):
     tool_id = "structure.viewer_export_package"
     adapter_version = "0.1.0"
@@ -609,6 +687,8 @@ def _lattice_outliers(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _summary_markdown(title: str, payload: dict[str, Any]) -> str:
+    if payload.get("kind") == VIEWER_SCENE_KIND and payload.get("version") == VIEWER_SCENE_VERSION:
+        return _viewer_scene_v1_summary_markdown(payload)
     if str(payload.get("schema_version", "")).startswith("phase10d1.viewer_scene"):
         return _viewer_summary_markdown(title, payload)
     lines = [f"# {title}", ""]
@@ -992,6 +1072,394 @@ def _viewer_assets_manifest_payload(scene_payload: dict[str, Any], *, params: di
     }
 
 
+def _viewer_scene_v1_params(params: dict[str, Any], resource_limits: dict[str, int], *, tool_id: str) -> dict[str, Any]:
+    allowed = {
+        "include_bonds",
+        "bond_cutoff_angstrom",
+        "max_sites",
+        "max_bonds",
+        "coordinate_basis",
+        "include_cartesian_positions",
+        "include_fractional_positions",
+        "cell_expansion",
+        "style_preset",
+        "camera_preset",
+    }
+    unknown = sorted(set(params) - allowed)
+    if unknown:
+        raise ToolExecutionError(
+            code="TOOL_PARAM_INVALID",
+            message="viewer_scene.v1 params contain unsupported keys.",
+            tool_id=tool_id,
+            details={"errorType": "viewer_scene_invalid_params", "unknownParams": unknown},
+        )
+
+    caps = DEFAULT_VIEWER_SCENE_CAPS
+    max_sites_limit = min(int(resource_limits.get("maxSites") or caps["max_sites"]), caps["max_sites"])
+    max_bonds_limit = min(int(resource_limits.get("maxBonds") or caps["max_bonds"]), caps["max_bonds"])
+    result = {
+        "include_bonds": _strict_bool(params.get("include_bonds", True), "include_bonds", tool_id),
+        "bond_cutoff_angstrom": _strict_finite_float(
+            params.get("bond_cutoff_angstrom", 3.0),
+            "bond_cutoff_angstrom",
+            tool_id,
+            minimum=0.1,
+            maximum=10.0,
+        ),
+        "max_sites": _strict_int(params.get("max_sites", max_sites_limit), "max_sites", tool_id, minimum=1, maximum=max_sites_limit),
+        "max_bonds": _strict_int(params.get("max_bonds", max_bonds_limit), "max_bonds", tool_id, minimum=0, maximum=max_bonds_limit),
+        "coordinate_basis": str(params.get("coordinate_basis", "cartesian_angstrom")),
+        "include_cartesian_positions": _strict_bool(params.get("include_cartesian_positions", True), "include_cartesian_positions", tool_id),
+        "include_fractional_positions": _strict_bool(params.get("include_fractional_positions", True), "include_fractional_positions", tool_id),
+        "cell_expansion": params.get("cell_expansion", [1, 1, 1]),
+        "style_preset": str(params.get("style_preset", "default")),
+        "camera_preset": str(params.get("camera_preset", "auto")),
+    }
+    if result["coordinate_basis"] != "cartesian_angstrom":
+        raise _viewer_scene_param_error(tool_id, "viewer_scene_coordinate_basis_invalid", "coordinate_basis")
+    if result["include_cartesian_positions"] is not True:
+        raise _viewer_scene_param_error(tool_id, "viewer_scene_cartesian_positions_required", "include_cartesian_positions")
+    if result["style_preset"] != "default":
+        raise _viewer_scene_param_error(tool_id, "viewer_scene_style_preset_invalid", "style_preset")
+    if result["camera_preset"] != "auto":
+        raise _viewer_scene_param_error(tool_id, "viewer_scene_camera_preset_invalid", "camera_preset")
+    expansion = result["cell_expansion"]
+    if expansion != [1, 1, 1]:
+        raise _viewer_scene_param_error(tool_id, "viewer_scene_cell_expansion_limit_exceeded", "cell_expansion")
+    return result
+
+
+def _viewer_scene_v1_payload(
+    label: str,
+    structure: Structure,
+    *,
+    params: dict[str, Any],
+    tool_id: str,
+    context: ToolExecutionContext,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    max_sites = int(params["max_sites"])
+    if len(structure) > max_sites:
+        raise ToolExecutionError(
+            code="TOOL_RESOURCE_LIMIT",
+            message="Structure exceeds viewer_scene.v1 max_sites.",
+            tool_id=tool_id,
+            details={"errorType": "viewer_scene_site_limit_exceeded", "siteCount": len(structure), "maxSites": max_sites},
+        )
+    species = _elements(structure)
+    if len(species) > DEFAULT_VIEWER_SCENE_CAPS["max_species"]:
+        raise ToolExecutionError(
+            code="TOOL_RESOURCE_LIMIT",
+            message="Structure exceeds viewer_scene.v1 max_species.",
+            tool_id=tool_id,
+            details={"errorType": "viewer_scene_species_limit_exceeded", "speciesCount": len(species)},
+        )
+
+    warnings: list[dict[str, str]] = []
+    sites = _viewer_scene_v1_sites(structure, include_fractional=bool(params["include_fractional_positions"]))
+    bonds, bond_count_before_limit = _viewer_scene_v1_bonds(
+        structure,
+        max_bonds=int(params["max_bonds"]),
+        include_bonds=bool(params["include_bonds"]),
+        cutoff_angstrom=float(params["bond_cutoff_angstrom"]),
+        warnings=warnings,
+    )
+    if len(structure) == max_sites:
+        warnings.append({"code": "VIEWER_SCENE_CAP_NEAR_LIMIT", "message": "Site count reaches the configured max_sites cap."})
+    if bond_count_before_limit > int(params["max_bonds"]):
+        warnings.append({"code": "VIEWER_SCENE_BONDS_TRUNCATED", "message": "Inferred bond candidates were truncated to max_bonds."})
+
+    status = "passed_with_warnings" if warnings else "passed"
+    payload = {
+        "kind": VIEWER_SCENE_KIND,
+        "version": VIEWER_SCENE_VERSION,
+        "schema_version": VIEWER_SCENE_SCHEMA_VERSION,
+        "source": {
+            "resource_id": context.dataset_id,
+            "resource_type": "normalized_object",
+            "filename": "structures",
+            "parser": "pymatgen.Structure",
+            "parser_version": BaseToolAdapter.dependency_versions().get("pymatgenVersion", "unknown"),
+            "tool_id": tool_id,
+        },
+        "metadata": {
+            "title": "Viewer Scene Artifact",
+            "structure_id": label,
+            "formula": structure.composition.reduced_formula,
+            "site_count": len(structure),
+            "species_count": len(species),
+            "species": species,
+            "preview_mode": "json_only",
+            "renderer_required": False,
+        },
+        "scene": {
+            "coordinate_basis": "cartesian_angstrom",
+            "sites": sites,
+            "lattice": {
+                "pbc": [bool(item) for item in getattr(structure, "pbc", (True, True, True))],
+                "vectors": _round_nested(structure.lattice.matrix.tolist()),
+                "parameters": {
+                    "a": _round(structure.lattice.a),
+                    "b": _round(structure.lattice.b),
+                    "c": _round(structure.lattice.c),
+                    "alpha": _round(structure.lattice.alpha),
+                    "beta": _round(structure.lattice.beta),
+                    "gamma": _round(structure.lattice.gamma),
+                },
+            },
+            "bonds": bonds,
+            "cell_expansion": [1, 1, 1],
+            "style": {
+                "representation": "ball_and_stick",
+                "background": "transparent",
+                "style_preset": params["style_preset"],
+                "camera_preset": params["camera_preset"],
+            },
+        },
+        "validation": {
+            "status": status,
+            "validated_in_phase": "10F-12",
+            "finite_numbers": True,
+            "caps_enforced": True,
+            "external_resources_detected": False,
+            "scriptable_fields_detected": False,
+            "truncated": bond_count_before_limit > len(bonds),
+            "errors": [],
+        },
+        "caps": {
+            **DEFAULT_VIEWER_SCENE_CAPS,
+            "max_sites": int(params["max_sites"]),
+            "max_bonds": int(params["max_bonds"]),
+        },
+        "warnings": warnings,
+        "provenance": {
+            "phase": "10F-12",
+            "fixture": False,
+            "provenance_label": "adapter_generated",
+            "official_pass_claim": False,
+            "deterministic": True,
+            "tool_id": tool_id,
+        },
+        "security": {
+            "contains_javascript": False,
+            "external_urls": [],
+            "external_urls_allowed": False,
+            "artifact_supplied_js_allowed": False,
+            "renderer_required": False,
+            "remote_assets_allowed": False,
+            "html_allowed": False,
+        },
+    }
+    manifest = _viewer_scene_v1_manifest(payload, tool_id=tool_id)
+    return payload, manifest
+
+
+def _viewer_scene_v1_sites(structure: Structure, *, include_fractional: bool) -> list[dict[str, Any]]:
+    counts: dict[str, int] = {}
+    sites: list[dict[str, Any]] = []
+    for index, site in enumerate(structure):
+        element = _site_element(site)
+        counts[element] = counts.get(element, 0) + 1
+        style = _element_style(element)
+        item: dict[str, Any] = {
+            "index": index,
+            "element": element,
+            "label": f"{element}{counts[element]}",
+            "xyz": _round_list(site.coords.tolist()),
+            "occupancy": _round(sum(float(amount) for amount in site.species.values())),
+            "style": {
+                "radius": style["radius"],
+                "color": style["color"],
+            },
+        }
+        if include_fractional:
+            item["frac"] = _round_list(site.frac_coords.tolist())
+        sites.append(item)
+    return sites
+
+
+def _viewer_scene_v1_bonds(
+    structure: Structure,
+    *,
+    max_bonds: int,
+    include_bonds: bool,
+    cutoff_angstrom: float,
+    warnings: list[dict[str, str]],
+) -> tuple[list[dict[str, Any]], int]:
+    if not include_bonds:
+        warnings.append({"code": "VIEWER_SCENE_BONDS_SKIPPED", "message": "Bond generation disabled by params."})
+        return [], 0
+    candidates: list[dict[str, Any]] = []
+    for i in range(len(structure)):
+        for j in range(i + 1, len(structure)):
+            distance = _round(float(structure.get_distance(i, j)))
+            if distance <= cutoff_angstrom:
+                candidates.append(
+                    {
+                        "from": i,
+                        "to": j,
+                        "distance": distance,
+                        "distance_angstrom": distance,
+                        "policy": "distance_cutoff_non_authoritative",
+                    }
+                )
+    candidates.sort(key=lambda item: (item["from"], item["to"], item["distance"]))
+    if candidates:
+        warnings.append(
+            {
+                "code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+                "message": "Bonds are bounded distance candidates for preview metadata only.",
+            }
+        )
+    return candidates[:max_bonds], len(candidates)
+
+
+def _viewer_scene_v1_manifest(payload: dict[str, Any], *, tool_id: str) -> dict[str, Any]:
+    scene_json = stable_json_dumps(payload)
+    warning_codes = [item["code"] for item in payload.get("warnings", []) if isinstance(item, dict) and isinstance(item.get("code"), str)]
+    return {
+        "schema_version": VIEWER_SCENE_MANIFEST_SCHEMA_VERSION,
+        "artifact_id": "viewer_scene",
+        "artifact_kind": VIEWER_SCENE_KIND,
+        "artifact_version": VIEWER_SCENE_VERSION,
+        "fixture_source": "adapter_generated",
+        "expected_validation_state": "valid_with_warnings" if warning_codes else "valid",
+        "expected_errors": [],
+        "expected_warnings": warning_codes,
+        "expected_caps": payload["caps"],
+        "preview_mode": "json_only",
+        "renderer_required": False,
+        "executable_assets": "none",
+        "external_resources": "none",
+        "entry_artifact": "viewer_scene.json",
+        "artifacts": [
+            {
+                "path": "viewer_scene.json",
+                "kind": "viewer_scene",
+                "media_type": "application/json",
+                "required": True,
+                "sha256": content_hash(scene_json),
+                "size_bytes": len(scene_json.encode("utf-8")),
+            },
+            {"path": "viewer_scene_manifest.json", "kind": "manifest", "media_type": "application/json", "required": True},
+            {"path": "summary.md", "kind": "summary", "media_type": "text/markdown", "required": True},
+            {"path": "recipe.json", "kind": "recipe", "media_type": "application/json", "required": True},
+        ],
+        "tool_id": tool_id,
+        "security": {
+            "contains_javascript": False,
+            "external_urls": [],
+            "external_urls_allowed": False,
+            "artifact_supplied_js_allowed": False,
+            "renderer_required": False,
+            "remote_assets_allowed": False,
+            "html_allowed": False,
+        },
+    }
+
+
+def _strict_bool(value: Any, field: str, tool_id: str) -> bool:
+    if isinstance(value, bool):
+        return value
+    raise _viewer_scene_param_error(tool_id, "viewer_scene_invalid_params", field)
+
+
+def _strict_int(value: Any, field: str, tool_id: str, *, minimum: int, maximum: int) -> int:
+    if isinstance(value, int) and not isinstance(value, bool) and minimum <= value <= maximum:
+        return value
+    raise _viewer_scene_param_error(tool_id, "viewer_scene_invalid_params", field)
+
+
+def _strict_finite_float(value: Any, field: str, tool_id: str, *, minimum: float, maximum: float) -> float:
+    if isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(float(value)):
+        number = float(value)
+        if minimum <= number <= maximum:
+            return _round(number)
+    raise _viewer_scene_param_error(tool_id, "viewer_scene_invalid_params", field)
+
+
+def _viewer_scene_param_error(tool_id: str, error_type: str, field: str) -> ToolExecutionError:
+    return ToolExecutionError(
+        code="TOOL_PARAM_INVALID",
+        message="viewer_scene.v1 params are invalid.",
+        tool_id=tool_id,
+        details={"errorType": error_type, "field": field},
+    )
+
+
+def _validate_viewer_scene_structure_numbers(structure: Structure, *, tool_id: str) -> None:
+    values: list[float] = []
+    values.extend(float(item) for row in structure.lattice.matrix.tolist() for item in row)
+    for site in structure:
+        values.extend(float(item) for item in site.coords.tolist())
+        values.extend(float(item) for item in site.frac_coords.tolist())
+    if not all(math.isfinite(value) for value in values):
+        raise ToolExecutionError(
+            code="TOOL_INPUT_INVALID",
+            message="Structure contains non-finite viewer scene coordinates.",
+            tool_id=tool_id,
+            details={"errorType": "viewer_scene_non_finite_numeric_value"},
+        )
+
+
+def _viewer_scene_v1_summary_markdown(payload: dict[str, Any]) -> str:
+    metadata = payload["metadata"]
+    scene = payload["scene"]
+    validation = payload["validation"]
+    caps = payload["caps"]
+    warnings = payload.get("warnings") or []
+    warning_codes = [
+        str(item.get("code")) if isinstance(item, dict) else str(item)
+        for item in warnings
+    ]
+    return "\n".join(
+        [
+            "# Viewer Scene Artifact",
+            "",
+            "## Input",
+            f"- source resource: {payload['source']['resource_type']}",
+            f"- parser: {payload['source']['parser']}",
+            f"- formula: {metadata['formula']}",
+            f"- site count: {metadata['site_count']}",
+            f"- species count: {metadata['species_count']}",
+            "",
+            "## Scene",
+            f"- contract version: {payload['version']}",
+            f"- coordinate basis: {scene['coordinate_basis']}",
+            f"- site count: {len(scene['sites'])}",
+            f"- bond count: {len(scene.get('bonds') or [])}",
+            f"- lattice included: {bool(scene.get('lattice'))}",
+            f"- cell expansion: {scene.get('cell_expansion')}",
+            "",
+            "## Caps and Warnings",
+            f"- max sites: {caps['max_sites']}",
+            f"- max bonds: {caps['max_bonds']}",
+            f"- max species: {caps['max_species']}",
+            f"- truncation status: {validation['truncated']}",
+            f"- warnings: {', '.join(warning_codes) if warning_codes else 'none'}",
+            "",
+            "## Preview",
+            "- JSON-only preview supported",
+            "- renderer not included",
+            "- no interactive 3D rendering claimed",
+            "",
+            "## Security",
+            "- no artifact JavaScript",
+            "- no HTML payload",
+            "- no external URLs",
+            "- no remote textures",
+            "- no renderer bundle",
+            "- no WebGL",
+            "- no Three.js",
+            "",
+            "## Deferred",
+            "- full structure.viewer_3d",
+            "- WebGL renderer",
+            "- renderer screenshot evidence",
+            "- interactive camera controls",
+        ]
+    ) + "\n"
+
+
 def _viewer_summary_markdown(title: str, payload: dict[str, Any]) -> str:
     manifest_note = "- viewer_assets_manifest.json: generated when using structure.viewer_export_package"
     lines = [
@@ -1030,6 +1498,8 @@ def _viewer_summary_markdown(title: str, payload: dict[str, Any]) -> str:
 
 
 def _recipe_payload(adapter: _BaseStructureAdapter, result: StructureAdapterResult, requested: set[ArtifactType]) -> dict[str, Any]:
+    if result.payload.get("kind") == VIEWER_SCENE_KIND and result.payload.get("version") == VIEWER_SCENE_VERSION:
+        return _viewer_scene_v1_recipe_payload(adapter, result, requested)
     if str(result.payload.get("schema_version", "")).startswith("phase10d1.viewer_scene"):
         return _viewer_recipe_payload(adapter, result, requested)
     return adapter.recipe_payload(
@@ -1067,6 +1537,53 @@ def _viewer_recipe_payload(adapter: _BaseStructureAdapter, result: StructureAdap
             "new_dependencies_added": False,
             **BaseToolAdapter.dependency_versions(),
         },
+        "artifactTypes": [artifact_type.value for artifact_type in sorted(requested, key=lambda item: item.value)],
+        "artifacts": [
+            result.artifact_name,
+            *(extra.file_name for extra in result.extra_artifacts),
+            "summary.md",
+            "recipe.json",
+        ],
+    }
+
+
+def _viewer_scene_v1_recipe_payload(adapter: _BaseStructureAdapter, result: StructureAdapterResult, requested: set[ArtifactType]) -> dict[str, Any]:
+    context = adapter.context
+    return {
+        "schema_version": "phase10f12.viewer_scene.recipe.v1",
+        "schemaVersion": "0.1",
+        "recipeId": f"recipe_{context.tool_call_id}",
+        "name": result.title,
+        "tool_id": adapter.tool_id,
+        "toolId": adapter.tool_id,
+        "input_resource_reference": {
+            "dataset_id": context.dataset_id,
+            "input_hashes": adapter._input_hashes,
+        },
+        "normalized_params": result.params,
+        "deterministic": True,
+        "contract_version": VIEWER_SCENE_VERSION,
+        "parser": "pymatgen.Structure",
+        "generation_steps": [
+            "parse_structure",
+            "normalize_lattice",
+            "normalize_species",
+            "normalize_site_indices",
+            "normalize_coordinates",
+            "derive_bounded_optional_bonds",
+            "apply_caps",
+            "build_warnings",
+            "build_provenance",
+            "build_security_metadata",
+            "validate_viewer_scene_v1",
+            "write_inert_json_artifacts",
+        ],
+        "caps": result.payload.get("caps"),
+        "dependencies": {
+            "new_dependencies_added": False,
+            **BaseToolAdapter.dependency_versions(),
+        },
+        "renderer_included": False,
         "artifactTypes": [artifact_type.value for artifact_type in sorted(requested, key=lambda item: item.value)],
         "artifacts": [
             result.artifact_name,

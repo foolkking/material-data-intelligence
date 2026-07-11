@@ -1,0 +1,36 @@
+{
+  "artifacts": [
+    {
+      "media_type": "application/json",
+      "name": "viewer_scene.json",
+      "size_bytes": 2127,
+      "tool_id": "structure.viewer_scene",
+      "type": "structure_json"
+    },
+    {
+      "media_type": "application/json",
+      "name": "viewer_scene_manifest.json",
+      "size_bytes": 1315,
+      "tool_id": "structure.viewer_scene",
+      "type": "table_json"
+    },
+    {
+      "media_type": "text/markdown",
+      "name": "summary.md",
+      "size_bytes": 834,
+      "tool_id": "structure.viewer_scene",
+      "type": "summary_md"
+    },
+    {
+      "media_type": "application/json",
+      "name": "recipe.json",
+      "size_bytes": 1484,
+      "tool_id": "structure.viewer_scene",
+      "type": "recipe_json"
+    }
+  ],
+  "cache_hit": false,
+  "schema_version": "phase10f12.viewer_scene.adapter_execution_metadata.v1",
+  "selected_tool": "structure.viewer_scene",
+  "tool_adapter": "StructureViewerSceneAdapter"
+}

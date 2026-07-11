@@ -1,0 +1,34 @@
+{
+  "artifactTypes": [
+    "structure_json",
+    "table_json",
+    "summary_md",
+    "recipe_json"
+  ],
+  "inputRefs": [
+    {
+      "objectType": "Structure",
+      "ref": "structures",
+      "refType": "normalized_object"
+    }
+  ],
+  "jobId": "job_phase10f12_evidence",
+  "params": {
+    "bond_cutoff_angstrom": 3.0,
+    "camera_preset": "auto",
+    "cell_expansion": [
+      1,
+      1,
+      1
+    ],
+    "coordinate_basis": "cartesian_angstrom",
+    "include_bonds": true,
+    "include_cartesian_positions": true,
+    "include_fractional_positions": true,
+    "max_bonds": 2048,
+    "max_sites": 256,
+    "style_preset": "default"
+  },
+  "stepId": "step_001",
+  "toolId": "structure.viewer_scene"
+}

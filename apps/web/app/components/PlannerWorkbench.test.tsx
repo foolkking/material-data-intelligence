@@ -2,6 +2,8 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import adapterGeneratedViewerScene from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene.json";
+import adapterGeneratedViewerSceneManifest from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene_manifest.json";
 import { PlannerWorkbench } from "./PlannerWorkbench";
 
 const plan = {
@@ -613,6 +615,36 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(container.querySelector("iframe")).toBeNull();
     expect(screen.queryByText(/Three\.js/i)).toBeNull();
     expect(screen.queryByText("structure.viewer_3d")).toBeNull();
+  });
+
+  it("renders Phase 10F-12 adapter-generated viewer_scene.v1 artifacts in the JSON-only preview", async () => {
+    useViewerSceneV1Artifacts(
+      adapterGeneratedViewerScene as Record<string, unknown>,
+      adapterGeneratedViewerSceneManifest as Record<string, unknown>
+    );
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const results = screen.getByTestId("results-export-tab");
+    expect(within(results).getByTestId("viewer-scene-v1-preview")).not.toBeNull();
+    expect(within(results).getByTestId("viewer-scene-kind").textContent).toContain("viewer_scene");
+    expect(within(results).getByTestId("viewer-scene-version").textContent).toContain("viewer_scene.v1");
+    expect(within(results).getByTestId("viewer-scene-schema-version").textContent).toContain("phase10f8.viewer_scene.v1");
+    expect(within(results).getByTestId("viewer-scene-validation-state").textContent).toContain("passed");
+    expect(within(results).getByTestId("viewer-scene-summary").textContent).toContain("cartesian_angstrom");
+    expect(within(results).getByTestId("viewer-scene-summary").textContent).toContain("lattice present");
+    expect(within(results).getByTestId("viewer-manifest-preview-mode").textContent).toContain("json_only");
+    expect(within(results).getByTestId("viewer-manifest-renderer-required").textContent).toContain("false");
+    expect(within(results).getByTestId("viewer-manifest-executable-assets").textContent).toContain("none");
+    expect(within(results).getByTestId("viewer-manifest-external-resources").textContent).toContain("none");
+    expect(container.querySelector("canvas")).toBeNull();
+    expect(container.querySelector("iframe")).toBeNull();
+    expect(document.body.innerHTML).not.toMatch(/<canvas|<iframe|dangerouslySetInnerHTML/i);
   });
 
   it("renders viewer_scene.v1 warning and cap fixture state in the JSON-only preview", async () => {
