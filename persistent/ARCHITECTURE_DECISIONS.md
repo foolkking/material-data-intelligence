@@ -1,5 +1,28 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-14-VALIDATED-THREE-RENDERER: Add a canonical-only frontend renderer foundation
+
+### Context
+
+Phase 10F-13 proved live adapter artifacts in the JSON preview but no graphical renderer, dependency decision, graphics evidence or renderer lifecycle existed.
+
+### Decision
+
+- Select direct `three@0.185.1` and local OrbitControls; defer MatterViz and reject R3F/custom WebGL for this minimal slice.
+- Keep `viewer_scene.v1` unchanged and validate again in the frontend before a whitelist immutable mapper.
+- Lazy-load the Three engine only after a user opens the renderer tab for canonical identity.
+- Use demand rendering, deterministic camera, shared geometry/materials, contract caps, pixel-ratio cap and instance-owned disposal.
+- Preserve Scene JSON/Manifest as the default preview and keep old Phase 10D schema JSON-only.
+- Do not register `structure.viewer_3d`.
+
+### Consequences
+
+- Live adapter artifacts now render atoms, lattice and optional bounded bonds with rotate, zoom, pan, reset and visibility toggles.
+- Invalid, unsupported and context-lost states fail safely without changing job status.
+- Lazy renderer chunks add approximately 574 kB minified before transfer compression when opened; first-load JS remains 126 kB.
+- Chrome/SwiftShader WebGL 2 evidence and zero external renderer requests close the foundation evidence gap.
+- Production hardening, old-schema migration, formal tool registration, trajectory, phonon and Brillouin zone remain future reviewer decisions.
+
 ## ADR-10F-13-VIEWER-SCENE-LIVE-ADAPTER-EVIDENCE: Harden browser/API evidence before renderer dependency evaluation
 
 ### Context

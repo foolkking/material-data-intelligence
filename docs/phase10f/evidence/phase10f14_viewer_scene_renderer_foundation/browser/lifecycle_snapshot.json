@@ -1,0 +1,14 @@
+{
+  "schema_version": "phase10f14.renderer_lifecycle.v1",
+  "valid_case": {
+    "canvas_after_json_tab": 0,
+    "canvas_after_remount": 1,
+    "remount_state": "rendered",
+    "duplicate_canvas": false
+  },
+  "context_loss": {
+    "extension_available": true,
+    "safe_fallback": true,
+    "canvas_after_cleanup": 0
+  }
+}

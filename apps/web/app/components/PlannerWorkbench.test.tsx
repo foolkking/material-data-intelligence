@@ -755,6 +755,43 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(container.querySelector("iframe")).toBeNull();
   });
 
+  it("offers the canonical renderer tab and keeps JSON available when WebGL is unsupported", async () => {
+    useViewerSceneV1Artifacts(viewerSceneV1MinimalContent, viewerSceneV1Manifest("valid_minimal_crystal.viewer_scene.v1.json", "valid", [], []));
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const results = screen.getByTestId("results-export-tab");
+    expect(within(results).getByRole("tab", { name: "Scene JSON" }).getAttribute("aria-selected")).toBe("true");
+    await user.click(within(results).getByRole("tab", { name: "3D Renderer" }));
+    expect((await within(results).findByTestId("viewer-scene-renderer-unavailable")).textContent).toContain("Scene JSON and Manifest views remain available");
+    expect(container.querySelector("canvas")).toBeNull();
+    await user.click(within(results).getByRole("tab", { name: "Scene JSON" }));
+    expect(within(results).getByTestId("viewer-scene-json-preview")).not.toBeNull();
+  });
+
+  it("blocks canonical invalid payloads before renderer initialization", async () => {
+    useViewerSceneV1Artifacts(
+      viewerSceneV1InvalidExternalContent,
+      viewerSceneV1Manifest("invalid_external_resource_reference.viewer_scene.v1.json", "invalid", ["VIEWER_SCENE_EXTERNAL_RESOURCE_REFERENCE"])
+    );
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+    const results = screen.getByTestId("results-export-tab");
+    await user.click(within(results).getByRole("tab", { name: "3D Renderer" }));
+    expect(within(results).getByTestId("viewer-scene-renderer-invalid").textContent).toContain("VIEWER_SCENE_EXTERNAL_RESOURCE_REFERENCE");
+    expect(container.querySelector("canvas")).toBeNull();
+  });
+
   it("keeps Phase 10F-9 viewer_scene.v1 fixture coverage renderer-free in frontend samples", () => {
     const fixtureSamples = [
       viewerSceneV1MinimalContent,

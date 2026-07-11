@@ -636,6 +636,112 @@ pre {
   overflow: hidden;
 }
 
+.viewer-preview-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.viewer-preview-tabs button {
+  min-height: 32px;
+  background: var(--panel);
+  color: var(--accent);
+}
+
+.viewer-preview-tabs button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.viewer-preview-tab-panel {
+  min-width: 0;
+}
+
+.viewer-renderer-surface {
+  display: grid;
+  gap: 10px;
+}
+
+.viewer-renderer-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.viewer-renderer-toolbar > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.viewer-renderer-toolbar span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.viewer-renderer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.viewer-renderer-controls button.active {
+  border-color: var(--success);
+  background: var(--success);
+  color: #fff;
+}
+
+.viewer-renderer-canvas-host {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
+  max-height: 640px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: #f3f6f7;
+  aspect-ratio: 16 / 10;
+}
+
+.viewer-renderer-canvas-host canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+
+.viewer-renderer-canvas-host canvas:focus-visible,
+.viewer-renderer-controls button:focus-visible,
+.viewer-preview-tabs button:focus-visible {
+  outline: 3px solid rgba(31, 111, 139, 0.35);
+  outline-offset: 2px;
+}
+
+.viewer-renderer-fallback,
+.viewer-renderer-loading {
+  display: grid;
+  gap: 6px;
+  min-height: 180px;
+  place-content: center;
+  border: 1px dashed var(--border-strong);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  padding: 24px;
+  text-align: center;
+}
+
+.viewer-renderer-fallback code {
+  overflow-wrap: anywhere;
+  color: var(--danger);
+}
+
+.viewer-renderer-audit {
+  margin: 0;
+}
+
 .viewer-preview-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -796,6 +902,20 @@ pre {
   .viewer-preview-grid,
   .dialog-grid {
     grid-template-columns: 1fr;
+  }
+
+  .viewer-renderer-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .viewer-renderer-controls {
+    justify-content: flex-start;
+  }
+
+  .viewer-renderer-canvas-host {
+    min-height: 320px;
+    aspect-ratio: 4 / 3;
   }
 
   .agent-process-tab > .panel:first-child,

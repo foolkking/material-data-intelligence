@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import sys
 from dataclasses import dataclass
@@ -104,7 +105,7 @@ def generate_live_adapter_evidence(evidence_root: Path = DEFAULT_EVIDENCE_ROOT) 
 
 
 def _case_specs() -> list[LiveCaseSpec]:
-    return [
+    cases = [
         LiveCaseSpec(
             case_id="valid_minimal_crystal",
             prompt="Build an inert viewer scene artifact for this structure.",
@@ -134,6 +135,18 @@ def _case_specs() -> list[LiveCaseSpec]:
             expected_status="failed",
         ),
     ]
+    if os.environ.get("MDI_INCLUDE_RENDERER_CASES") == "1":
+        cases.insert(
+            3,
+            LiveCaseSpec(
+                case_id="bonds_disabled",
+                prompt="Create viewer scene JSON without bounded bond candidates.",
+                structure_input=[_nacl_structure()],
+                params={"include_bonds": False},
+                expected_status="completed",
+            ),
+        )
+    return cases
 
 
 def _run_live_case(spec: LiveCaseSpec, *, evidence_root: Path, runtime_root: Path) -> dict[str, Any]:

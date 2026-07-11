@@ -1,5 +1,32 @@
 # TASK_BOARD
 
+## 2026-07-11 Phase 10F-14 Validated Viewer Scene Renderer Foundation
+
+### Done
+
+- [x] Reviewed Three.js, React Three Fiber, MatterViz and custom WebGL candidates.
+- [x] Selected and pinned direct Three.js with local lazy bundling.
+- [x] Implemented canonical validation, whitelist mapping, renderer-safe internal types and resource caps.
+- [x] Implemented atoms, bounded bonds, unit cell, deterministic camera and OrbitControls.
+- [x] Implemented reset, cell/bond toggles, JSON/manifest tabs, accessibility and typed fallbacks.
+- [x] Implemented lifecycle cleanup, React Strict Mode canvas ownership and context-loss handling.
+- [x] Added focused, integration, near-cap and security tests.
+- [x] Captured live adapter-backed Chrome/WebGL screenshots, interactions, DOM, console and network evidence.
+- [x] Audited dependency, lockfile, build chunks, contract compatibility, UI and security.
+
+### Decisions
+
+- [x] Renderer dependency/API/validation/mapper/graphics/interactions/evidence are READY.
+- [x] Production minimal renderer is PARTIAL_READY.
+- [x] Old/new schema coexistence remains DOCUMENTED without migration.
+- [x] Full `structure.viewer_3d`, trajectory, phonon and Brillouin zone remain NOT_READY.
+
+### Remaining Reviewer Questions
+
+- [ ] Decide whether formal `structure.viewer_3d` registration should follow after production hardening.
+- [ ] Decide whether atom instancing, mobile/cross-browser coverage and richer accessibility are required first.
+- [ ] Decide Phase 10D schema deprecation or migration separately.
+
 ## 2026-07-11 Phase 10F-13 Viewer Scene Live Adapter Browser/API Evidence
 
 ### Done

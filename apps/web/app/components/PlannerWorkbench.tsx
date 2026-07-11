@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { createTranslator, type Locale, type MessageKey } from "../lib/i18n";
+import { ViewerSceneRendererSurface } from "./viewer-scene/ViewerSceneRendererSurface";
 import {
   type AnalysisPlan,
   type Artifact,
@@ -1337,13 +1338,39 @@ function TableSummaryRenderer({ t, artifact }: { t: ReturnType<typeof createTran
 function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
   const viewerScene = artifacts.find(isViewerSceneArtifact);
   const viewerManifest = artifacts.find(isViewerManifestArtifact);
+  const scenePayload = viewerScene ? artifactPayload(viewerScene) : null;
+  const canonicalScene = isViewerSceneV1Payload(scenePayload);
+  const [activePreview, setActivePreview] = useState<"renderer" | "json" | "manifest">("json");
   if (!viewerScene && !viewerManifest) return null;
+  if (!canonicalScene) {
+    return (
+      <section className="panel viewer-static-preview" data-testid="viewer-static-preview-panel">
+        <PanelHeading title="Viewer static preview" badge="JSON only" />
+        <div className="viewer-preview-grid">
+          {viewerScene ? <ViewerScenePreview artifact={viewerScene} /> : <ViewerMissingPreview title="viewer_scene.json" />}
+          {viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : <ViewerMissingPreview title="viewer_assets_manifest.json" />}
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="panel viewer-static-preview" data-testid="viewer-static-preview-panel">
-      <PanelHeading title="Viewer static preview" badge="No renderer included" />
-      <div className="viewer-preview-grid">
-        {viewerScene ? <ViewerScenePreview artifact={viewerScene} /> : <ViewerMissingPreview title="viewer_scene.json" />}
-        {viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : <ViewerMissingPreview title="viewer_assets_manifest.json" />}
+      <PanelHeading title="Viewer scene preview" badge="Validated renderer foundation" />
+      <div className="viewer-preview-tabs" role="tablist" aria-label="Viewer scene preview modes">
+        <button type="button" role="tab" aria-selected={activePreview === "renderer"} className={activePreview === "renderer" ? "active" : "secondary"} onClick={() => setActivePreview("renderer")}>3D Renderer</button>
+        <button type="button" role="tab" aria-selected={activePreview === "json"} className={activePreview === "json" ? "active" : "secondary"} onClick={() => setActivePreview("json")}>Scene JSON</button>
+        <button type="button" role="tab" aria-selected={activePreview === "manifest"} className={activePreview === "manifest" ? "active" : "secondary"} onClick={() => setActivePreview("manifest")}>Manifest</button>
+      </div>
+      <div className="viewer-preview-tab-panel" role="tabpanel">
+        {activePreview === "renderer" ? <ViewerSceneRendererSurface payload={scenePayload} /> : null}
+        {activePreview === "json" ? (
+          <div className="viewer-preview-grid">
+            {viewerScene ? <ViewerScenePreview artifact={viewerScene} /> : <ViewerMissingPreview title="viewer_scene.json" />}
+            {viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : <ViewerMissingPreview title="viewer_scene_manifest.json" />}
+          </div>
+        ) : null}
+        {activePreview === "manifest" && viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : null}
+        {activePreview === "manifest" && !viewerManifest ? <ViewerMissingPreview title="viewer_scene_manifest.json" /> : null}
       </div>
     </section>
   );

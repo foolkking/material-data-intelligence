@@ -1,5 +1,18 @@
 # OPEN_QUESTIONS
 
+## 2026-07-11 Phase 10F-14 Follow-ups
+
+- **Closed: renderer dependency decision.** Direct `three@0.185.1` is selected and pinned; R3F is rejected for excess abstraction and MatterViz remains deferred.
+- **Closed: canonical renderer API and security gate.** Raw artifacts must pass frontend validation and whitelist mapping before renderer initialization.
+- **Closed: renderer foundation and real graphics evidence.** Live adapter Si/NaCl/warning/bonds-disabled artifacts render in Chrome WebGL 2 with real interaction evidence.
+- **Closed: lifecycle and context loss foundation.** Tab/artifact/unmount cleanup and synthetic context loss are evidenced.
+- **Closed: renderer network isolation.** `NO_RENDERER_EXTERNAL_NETWORK_REQUESTS`.
+- **Still open: production renderer hardening.** Consider atom instancing, richer accessibility, mobile layout and a cross-browser matrix.
+- **Still open: npm framework/tooling audit debt.** Existing Vitest/Vite/Next/PostCSS findings require a separate dependency-upgrade phase.
+- **Still open: old viewer schema compatibility debt.** Phase 10D retention/deprecation/migration remains undecided.
+- **Still open: formal full viewer tool.** `structure.viewer_3d` is not registered and remains reviewer-gated.
+- **Still open: official PASS evidence.** Official example provenance claims remain none.
+
 ## 2026-07-11 Phase 10F-13 Follow-ups
 
 - **Closed: real job-backed browser evidence for adapter output.** Phase 10F-13 captures real Chrome evidence using adapter-generated live planner/job/runtime artifacts.

@@ -127,3 +127,25 @@
 | [`phase10f/phase10f13_viewer_schema_compatibility_audit.md`](phase10f/phase10f13_viewer_schema_compatibility_audit.md) | Phase 10F-13 old/new viewer schema compatibility audit |
 | [`phase10f/phase10f13_renderer_handoff_readiness_matrix.md`](phase10f/phase10f13_renderer_handoff_readiness_matrix.md) | Phase 10F-13 renderer handoff readiness matrix |
 | [`phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/`](phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/) | Phase 10F-13 live adapter Chrome screenshots, API captures, DOM, console, and network evidence |
+| [`phase10f/phase10f14_renderer_integrated_plan.md`](phase10f/phase10f14_renderer_integrated_plan.md) | Phase 10F-14 integrated renderer plan and candidate review |
+| [`phase10f/phase10f14_renderer_dependency_decision.md`](phase10f/phase10f14_renderer_dependency_decision.md) | Selected Three.js dependency decision |
+| [`phase10f/phase10f14_renderer_architecture.md`](phase10f/phase10f14_renderer_architecture.md) | Validation, mapper, engine, and React architecture |
+| [`phase10f/phase10f14_renderer_api_contract.md`](phase10f/phase10f14_renderer_api_contract.md) | Internal validated renderer API contract |
+| [`phase10f/phase10f14_renderer_state_machine.md`](phase10f/phase10f14_renderer_state_machine.md) | Renderer state and fallback model |
+| [`phase10f/phase10f14_renderer_resource_policy.md`](phase10f/phase10f14_renderer_resource_policy.md) | Renderer caps and resource policy |
+| [`phase10f/phase10f14_renderer_implementation.md`](phase10f/phase10f14_renderer_implementation.md) | Minimal interactive renderer implementation |
+| [`phase10f/phase10f14_renderer_lifecycle.md`](phase10f/phase10f14_renderer_lifecycle.md) | Renderer ownership, disposal, and context loss |
+| [`phase10f/phase10f14_renderer_fallback_behavior.md`](phase10f/phase10f14_renderer_fallback_behavior.md) | Invalid, unsupported, initialization, and context fallback |
+| [`phase10f/phase10f14_renderer_code_review.md`](phase10f/phase10f14_renderer_code_review.md) | Formal code and lifecycle review |
+| [`phase10f/phase10f14_renderer_dependency_audit.md`](phase10f/phase10f14_renderer_dependency_audit.md) | Dependency and npm audit findings |
+| [`phase10f/phase10f14_renderer_bundle_audit.md`](phase10f/phase10f14_renderer_bundle_audit.md) | Production bundle and lazy chunk audit |
+| [`phase10f/phase10f14_renderer_contract_compatibility_audit.md`](phase10f/phase10f14_renderer_contract_compatibility_audit.md) | Canonical and Phase 10D compatibility review |
+| [`phase10f/phase10f14_renderer_ui_review.md`](phase10f/phase10f14_renderer_ui_review.md) | UI and screenshot review |
+| [`phase10f/phase10f14_renderer_threat_model.md`](phase10f/phase10f14_renderer_threat_model.md) | Renderer threat model and trust boundary |
+| [`phase10f/phase10f14_renderer_security_review.md`](phase10f/phase10f14_renderer_security_review.md) | Injection, disclosure, and lifecycle security review |
+| [`phase10f/phase10f14_renderer_dependency_security.md`](phase10f/phase10f14_renderer_dependency_security.md) | Renderer dependency security result |
+| [`phase10f/phase10f14_renderer_network_isolation.md`](phase10f/phase10f14_renderer_network_isolation.md) | Renderer network-isolation evidence |
+| [`phase10f/phase10f14_renderer_resource_dos_review.md`](phase10f/phase10f14_renderer_resource_dos_review.md) | GPU/resource denial-of-service review |
+| [`phase10f/phase10f14_renderer_browser_evidence.md`](phase10f/phase10f14_renderer_browser_evidence.md) | Real Chrome, interaction, WebGL, console, and network evidence |
+| [`phase10f/phase10f14_renderer_readiness_matrix.md`](phase10f/phase10f14_renderer_readiness_matrix.md) | Phase 10F-14 readiness decisions |
+| [`phase10f/evidence/phase10f14_viewer_scene_renderer_foundation/`](phase10f/evidence/phase10f14_viewer_scene_renderer_foundation/) | Live adapter artifacts, WebGL snapshots, interactions, and screenshots |

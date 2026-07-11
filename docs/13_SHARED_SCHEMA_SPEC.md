@@ -984,3 +984,29 @@ Required artifacts:
 The adapter validates both JSON artifacts with the canonical validator before
 export. If validation fails, the tool call must fail with a typed error rather
 than saving a successful artifact set.
+
+## Phase 10F-14 Addendum: frontend validated renderer model
+
+Phase 10F-14 does not change `viewer_scene.v1`. It adds frontend-only types
+after canonical validation and whitelist mapping:
+
+```ts
+type RenderVector3 = readonly [number, number, number];
+
+type ValidatedRenderScene = {
+  readonly contractVersion: "viewer_scene.v1";
+  readonly schemaVersion: "phase10f8.viewer_scene.v1";
+  readonly atoms: readonly RenderAtom[];
+  readonly bonds: readonly RenderBond[];
+  readonly lattice: RenderLattice;
+  readonly warnings: readonly string[];
+};
+```
+
+The mapper is renderer-owned and immutable. It rechecks contract identity,
+security flags, finite values, site/bond/species caps, cell expansion, JSON
+bytes, indices, lattice shape, nesting, strings, safe colors, and radii. Raw
+artifact fields are never spread into Three.js, DOM, CSS, module imports,
+textures, shaders, callbacks, or URLs. These types are frontend display models;
+they do not alter persisted artifacts, Tool Registry, AnalysisPlan, Job, or
+QueueWorkerRuntime contracts.

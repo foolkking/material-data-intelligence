@@ -1,5 +1,18 @@
 # DESIGN_PROGRESS
 
+## 2026-07-11 Phase 10F-14 Validated Viewer Scene Renderer Foundation
+
+- Selected and pinned direct `three@0.185.1` with `@types/three@0.185.1`, both MIT.
+- Implemented a frontend canonical validation gate, whitelist mapper, geometry/camera utilities, Three.js renderer engine, React surface, typed fallback states, demand rendering, controls and complete disposal.
+- Rendered atoms, unit cell and optional bounded bonds from live `structure.viewer_scene` artifacts.
+- Added rotate, zoom, pan, deterministic reset, unit-cell toggle and bond toggle while retaining Scene JSON and Manifest preview.
+- Added invalid, unsupported and context-loss fallbacks; old Phase 10D schemas remain JSON-only.
+- Added mapper, geometry, component, lifecycle, security, integration and near-cap tests.
+- Captured real Chrome 149 WebGL 2 evidence, interaction snapshots, live adapter API artifacts and 14 screenshots under `docs/phase10f/evidence/phase10f14_viewer_scene_renderer_foundation/`.
+- Confirmed `NO_RENDERER_EXTERNAL_NETWORK_REQUESTS` and no artifact JavaScript/HTML/URL/texture/module/shader path.
+- Full `structure.viewer_3d`, production-complete viewer, trajectory, phonon and Brillouin zone remain unimplemented.
+- Changed the active product frontend default port from 3000 to 3050 and synchronized API CORS, tests, and Compose guidance; historical records keep their original ports.
+
 ## 2026-07-11 Phase 10F-13 Viewer Scene Live Adapter Browser/API Evidence
 
 - Added live adapter-backed browser/API evidence for `structure.viewer_scene`.

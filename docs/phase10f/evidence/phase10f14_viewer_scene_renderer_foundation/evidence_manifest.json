@@ -1,0 +1,65 @@
+{
+  "schema_version": "phase10f14.viewer_scene_renderer_evidence_manifest.v1",
+  "phase": "10F-14",
+  "baseline_head": "7477433c971c5fe93017386636bfbf2b532b018f",
+  "final_head": "git_commit_containing_this_manifest",
+  "generated_at": "2026-07-11T16:36:56.042Z",
+  "browser": "149.0.7827.201",
+  "viewport": [
+    1440,
+    1200
+  ],
+  "renderer_dependency": {
+    "package": "three",
+    "version": "0.185.1"
+  },
+  "generation_command": "node apps/web/test/viewer-scene-renderer-browser-evidence.mjs",
+  "cases": [
+    "valid_minimal_crystal:live",
+    "multi_species_crystal:live",
+    "warning_caps:live",
+    "bonds_disabled:live",
+    "valid_minimal_crystal:invalid",
+    "valid_minimal_crystal:unsupported",
+    "valid_minimal_crystal:context_loss"
+  ],
+  "screenshots": [
+    "01_live_job_artifacts.png",
+    "02_valid_si_renderer.png",
+    "03_valid_si_rotated.png",
+    "04_valid_si_zoomed.png",
+    "05_valid_si_reset.png",
+    "06_multispecies_nacl_renderer.png",
+    "07_warning_caps_renderer.png",
+    "08_bonds_disabled_renderer.png",
+    "09_bonds_hidden.png",
+    "10_unit_cell_hidden.png",
+    "11_json_fallback.png",
+    "12_invalid_scene_rejected.png",
+    "13_renderer_unavailable_fallback.png",
+    "14_context_loss_fallback.png"
+  ],
+  "artifact_hashes": {
+    "bonds_disabled/viewer_scene.json": "0d0afe3aef75030d958657e6bf6c571585f085203b3b75012c3b9d2f8de49f0c",
+    "bonds_disabled/viewer_scene_manifest.json": "3bb7615dffc8ad45a98aa3c1c98a007311ec91b15b39747f82d6f8b295dd7d7d",
+    "bonds_disabled/summary.md": "3b20fad22a9e47f2b0e8ac24d5b71b90f0bc1682d41d9770fc7c5bbbde0de3ec",
+    "bonds_disabled/recipe.json": "47f15df5544e823ce6e5a0aef35fcbbaabbd69611e4d5191a809ae80e8b345eb",
+    "multi_species_crystal/viewer_scene.json": "3d3e6c8f6e77702fb5670ad0f406934487ce40fb8059a07cf5092f93da733b07",
+    "multi_species_crystal/viewer_scene_manifest.json": "2a51d1673e87a3476b56c78aeaf172b7ae0cce331cbe79195cf833d6b8a6bea4",
+    "multi_species_crystal/summary.md": "004f654d75a3d6eddaabaff4c940506d4a5801c958a9ccd926914e8f45fa4cd7",
+    "multi_species_crystal/recipe.json": "c3b854d4307121cdb244d5b1186f9b0e5bd8b46711372601e362c9d1cd7d1eb4",
+    "valid_minimal_crystal/viewer_scene.json": "ea62d1c7c1f4fb3563fd8e377cbc27b9571214fcc886ec1fc2f379fff90a7502",
+    "valid_minimal_crystal/viewer_scene_manifest.json": "e2b1eea3cabcd29a69e4c098eb0e0c671d15cac975337c2d4c909c65ec839c9f",
+    "valid_minimal_crystal/summary.md": "51f59e7e7555dd648eeb45722852acbe1532c5c3cad394ecef43e983550e6306",
+    "valid_minimal_crystal/recipe.json": "76c89f45dd7be0e879026d45d7c1e400aeb435fd44996713f1da033a3327e56f",
+    "warning_caps/viewer_scene.json": "320dab44aca6e4037944be335c6892ba6e26b7906bb070c485668b6aa325c1a4",
+    "warning_caps/viewer_scene_manifest.json": "318443bfed262fb91e542b4ea1f1197419432cf137a547041929051971b20c10",
+    "warning_caps/summary.md": "a83f7d71b4575b52c07fd1a8fad5ba5d44deed0e2c78075429da7c1476dbfb87",
+    "warning_caps/recipe.json": "a6017f9ffcf5d3411de6e2166cbdda5491c20d5a0724c99e478d9cd52276fd4a"
+  },
+  "network_result": "NO_RENDERER_EXTERNAL_NETWORK_REQUESTS",
+  "console_result": "PASS",
+  "security_result": "PASS",
+  "test_result": "VIEWER_SCENE_RENDERER_FOUNDATION_BROWSER_EVIDENCE_PASS",
+  "redaction_status": "sanitized_no_secrets_no_private_paths"
+}

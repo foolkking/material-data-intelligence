@@ -1,0 +1,248 @@
+{
+  "schema_version": "phase10f14.renderer_capability.v1",
+  "browser": "149.0.7827.201",
+  "viewport": [
+    1440,
+    1200
+  ],
+  "cases": [
+    {
+      "case_id": "valid_minimal_crystal:live",
+      "renderer": {
+        "canvas_count": 1,
+        "iframe_count": 0,
+        "object_embed_count": 0,
+        "script_count": 15,
+        "external_script_count": 0,
+        "inline_handler_count": 0,
+        "javascript_uri_count": 0,
+        "three_global": false,
+        "matterviz_global": false,
+        "context_requests": [
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2"
+        ],
+        "renderer_state": "rendered",
+        "graphics": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "vendor": "Google Inc. (Google)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "drawing_buffer": [
+            1014,
+            633
+          ],
+          "context_attributes": {
+            "alpha": true,
+            "antialias": true,
+            "depth": true,
+            "desynchronized": false,
+            "failIfMajorPerformanceCaveat": false,
+            "powerPreference": "high-performance",
+            "premultipliedAlpha": true,
+            "preserveDrawingBuffer": false,
+            "stencil": false,
+            "xrCompatible": false
+          }
+        }
+      }
+    },
+    {
+      "case_id": "multi_species_crystal:live",
+      "renderer": {
+        "canvas_count": 1,
+        "iframe_count": 0,
+        "object_embed_count": 0,
+        "script_count": 15,
+        "external_script_count": 0,
+        "inline_handler_count": 0,
+        "javascript_uri_count": 0,
+        "three_global": false,
+        "matterviz_global": false,
+        "context_requests": [
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2"
+        ],
+        "renderer_state": "rendered",
+        "graphics": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "vendor": "Google Inc. (Google)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "drawing_buffer": [
+            1014,
+            633
+          ],
+          "context_attributes": {
+            "alpha": true,
+            "antialias": true,
+            "depth": true,
+            "desynchronized": false,
+            "failIfMajorPerformanceCaveat": false,
+            "powerPreference": "high-performance",
+            "premultipliedAlpha": true,
+            "preserveDrawingBuffer": false,
+            "stencil": false,
+            "xrCompatible": false
+          }
+        }
+      }
+    },
+    {
+      "case_id": "warning_caps:live",
+      "renderer": {
+        "canvas_count": 1,
+        "iframe_count": 0,
+        "object_embed_count": 0,
+        "script_count": 15,
+        "external_script_count": 0,
+        "inline_handler_count": 0,
+        "javascript_uri_count": 0,
+        "three_global": false,
+        "matterviz_global": false,
+        "context_requests": [
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2"
+        ],
+        "renderer_state": "rendered",
+        "graphics": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "vendor": "Google Inc. (Google)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "drawing_buffer": [
+            1014,
+            633
+          ],
+          "context_attributes": {
+            "alpha": true,
+            "antialias": true,
+            "depth": true,
+            "desynchronized": false,
+            "failIfMajorPerformanceCaveat": false,
+            "powerPreference": "high-performance",
+            "premultipliedAlpha": true,
+            "preserveDrawingBuffer": false,
+            "stencil": false,
+            "xrCompatible": false
+          }
+        }
+      }
+    },
+    {
+      "case_id": "bonds_disabled:live",
+      "renderer": {
+        "canvas_count": 1,
+        "iframe_count": 0,
+        "object_embed_count": 0,
+        "script_count": 15,
+        "external_script_count": 0,
+        "inline_handler_count": 0,
+        "javascript_uri_count": 0,
+        "three_global": false,
+        "matterviz_global": false,
+        "context_requests": [
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2"
+        ],
+        "renderer_state": "rendered",
+        "graphics": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "vendor": "Google Inc. (Google)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "drawing_buffer": [
+            1014,
+            633
+          ],
+          "context_attributes": {
+            "alpha": true,
+            "antialias": true,
+            "depth": true,
+            "desynchronized": false,
+            "failIfMajorPerformanceCaveat": false,
+            "powerPreference": "high-performance",
+            "premultipliedAlpha": true,
+            "preserveDrawingBuffer": false,
+            "stencil": false,
+            "xrCompatible": false
+          }
+        }
+      }
+    },
+    {
+      "case_id": "valid_minimal_crystal:invalid",
+      "renderer": {
+        "canvas_count": 0,
+        "iframe_count": 0,
+        "object_embed_count": 0,
+        "script_count": 15,
+        "external_script_count": 0,
+        "inline_handler_count": 0,
+        "javascript_uri_count": 0,
+        "three_global": false,
+        "matterviz_global": false,
+        "context_requests": [],
+        "renderer_state": "validation_failed",
+        "graphics": null
+      }
+    },
+    {
+      "case_id": "valid_minimal_crystal:unsupported",
+      "renderer": {
+        "canvas_count": 0,
+        "iframe_count": 0,
+        "object_embed_count": 0,
+        "script_count": 15,
+        "external_script_count": 0,
+        "inline_handler_count": 0,
+        "javascript_uri_count": 0,
+        "three_global": false,
+        "matterviz_global": false,
+        "context_requests": [
+          "webgl2",
+          "webgl",
+          "webgl2",
+          "webgl"
+        ],
+        "renderer_state": "unsupported",
+        "graphics": null
+      }
+    },
+    {
+      "case_id": "valid_minimal_crystal:context_loss",
+      "renderer": {
+        "canvas_count": 0,
+        "iframe_count": 0,
+        "object_embed_count": 0,
+        "script_count": 15,
+        "external_script_count": 0,
+        "inline_handler_count": 0,
+        "javascript_uri_count": 0,
+        "three_global": false,
+        "matterviz_global": false,
+        "context_requests": [
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2",
+          "webgl2"
+        ],
+        "renderer_state": "context_lost",
+        "graphics": null
+      }
+    }
+  ]
+}

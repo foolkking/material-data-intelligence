@@ -1,0 +1,40 @@
+{
+  "schema_version": "phase10f14.renderer_console.v1",
+  "cases": [
+    {
+      "case_id": "valid_minimal_crystal:live",
+      "console_errors": [],
+      "page_errors": []
+    },
+    {
+      "case_id": "multi_species_crystal:live",
+      "console_errors": [],
+      "page_errors": []
+    },
+    {
+      "case_id": "warning_caps:live",
+      "console_errors": [],
+      "page_errors": []
+    },
+    {
+      "case_id": "bonds_disabled:live",
+      "console_errors": [],
+      "page_errors": []
+    },
+    {
+      "case_id": "valid_minimal_crystal:invalid",
+      "console_errors": [],
+      "page_errors": []
+    },
+    {
+      "case_id": "valid_minimal_crystal:unsupported",
+      "console_errors": [],
+      "page_errors": []
+    },
+    {
+      "case_id": "valid_minimal_crystal:context_loss",
+      "console_errors": [],
+      "page_errors": []
+    }
+  ]
+}

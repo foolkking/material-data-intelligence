@@ -1,0 +1,300 @@
+{
+  "schema_version": "phase10f14.renderer_interaction.v1",
+  "cases": [
+    {
+      "case_id": "valid_minimal_crystal:live",
+      "interactions": {
+        "initial": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "rotated": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            -9.328307,
+            3.461976,
+            -6.276375
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "zoomed": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            -6.321452,
+            3.275478,
+            -4.031496
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "reset": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "bondsHidden": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "cellHidden": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 0,
+          "triangleCount": 1040,
+          "lineCount": 0,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "remounted": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "pixel_hash_initial": "839545a0cfdee58996151168aa38b6498808f0478c95146cb9833301ee841184",
+        "pixel_hash_remounted": "839545a0cfdee58996151168aa38b6498808f0478c95146cb9833301ee841184",
+        "initialization_ms": 531
+      }
+    },
+    {
+      "case_id": "multi_species_crystal:live",
+      "interactions": {
+        "rendered": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            13.677028,
+            11.316805,
+            10.183897
+          ],
+          "cameraTarget": [
+            2.82,
+            2.82,
+            2.82
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "initialization_ms": 592
+      }
+    },
+    {
+      "case_id": "warning_caps:live",
+      "interactions": {
+        "rendered": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            13.677028,
+            11.316805,
+            10.183897
+          ],
+          "cameraTarget": [
+            2.82,
+            2.82,
+            2.82
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "initialization_ms": 719
+      }
+    },
+    {
+      "case_id": "bonds_disabled:live",
+      "interactions": {
+        "rendered": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            13.677028,
+            11.316805,
+            10.183897
+          ],
+          "cameraTarget": [
+            2.82,
+            2.82,
+            2.82
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185"
+        },
+        "initialization_ms": 908
+      }
+    },
+    {
+      "case_id": "valid_minimal_crystal:invalid",
+      "interactions": {
+        "validation_failed": true
+      }
+    },
+    {
+      "case_id": "valid_minimal_crystal:unsupported",
+      "interactions": {
+        "unsupported": true
+      }
+    },
+    {
+      "case_id": "valid_minimal_crystal:context_loss",
+      "interactions": {
+        "context_lost": true,
+        "initialization_ms": 517
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "schema_version": "phase10f14.renderer_network.v1",
+  "external_request_count": 0,
+  "result": "NO_RENDERER_EXTERNAL_NETWORK_REQUESTS",
+  "cases": [
+    {
+      "case_id": "valid_minimal_crystal:live",
+      "external_request_count": 0,
+      "local_request_paths": [
+        "next_app",
+        "captured_live_planner_api",
+        "local_renderer_chunk"
+      ]
+    },
+    {
+      "case_id": "multi_species_crystal:live",
+      "external_request_count": 0,
+      "local_request_paths": [
+        "next_app",
+        "captured_live_planner_api",
+        "local_renderer_chunk"
+      ]
+    },
+    {
+      "case_id": "warning_caps:live",
+      "external_request_count": 0,
+      "local_request_paths": [
+        "next_app",
+        "captured_live_planner_api",
+        "local_renderer_chunk"
+      ]
+    },
+    {
+      "case_id": "bonds_disabled:live",
+      "external_request_count": 0,
+      "local_request_paths": [
+        "next_app",
+        "captured_live_planner_api",
+        "local_renderer_chunk"
+      ]
+    },
+    {
+      "case_id": "valid_minimal_crystal:invalid",
+      "external_request_count": 0,
+      "local_request_paths": [
+        "next_app",
+        "captured_live_planner_api",
+        "local_renderer_chunk"
+      ]
+    },
+    {
+      "case_id": "valid_minimal_crystal:unsupported",
+      "external_request_count": 0,
+      "local_request_paths": [
+        "next_app",
+        "captured_live_planner_api",
+        "local_renderer_chunk"
+      ]
+    },
+    {
+      "case_id": "valid_minimal_crystal:context_loss",
+      "external_request_count": 0,
+      "local_request_paths": [
+        "next_app",
+        "captured_live_planner_api",
+        "local_renderer_chunk"
+      ]
+    }
+  ]
+}

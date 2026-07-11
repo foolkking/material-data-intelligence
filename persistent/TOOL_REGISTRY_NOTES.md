@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-11 Phase 10F-14 Renderer Foundation Notes
+
+- No Tool Registry entry was added, removed or modified.
+- `structure.viewer_scene` remains the only canonical `viewer_scene.v1` producer.
+- The renderer is a frontend artifact consumer after canonical validation; it does not create execution authority.
+- Existing Phase 10D `structure.viewer_scene_metadata` and `structure.viewer_export_package` remain registered and JSON-only in the new renderer surface.
+- Formal `structure.viewer_3d` remains unregistered.
+- Planner routing, PlanValidator, QueueWorkerRuntime, artifact storage and `/planner/jobs` semantics are unchanged.
+
 ## 2026-07-11 Phase 10F-13 Viewer Scene Live Adapter Evidence Notes
 
 - No Tool Registry entries were added, removed, or modified in Phase 10F-13.

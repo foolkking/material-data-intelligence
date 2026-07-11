@@ -2,6 +2,18 @@
 
 ## 2026-07-11
 
+### Phase 10F-14 Validated Viewer Scene Renderer Foundation
+
+- Added pinned Three.js renderer dependencies and lockfile entries.
+- Added isolated viewer-scene validation, mapper, geometry/camera, engine, React surface, types and errors.
+- Added canonical-only renderer tabs to PlannerWorkbench while retaining JSON/manifest default preview and old-schema compatibility.
+- Added real atoms, lattice, optional bonds, OrbitControls rotate/zoom/pan, deterministic reset, toggles, capability detection, error fallback, context loss and disposal.
+- Added 35 focused/integration frontend tests and live Chrome/WebGL renderer evidence tooling.
+- Added live adapter artifacts, screenshots, DOM/graphics/interaction/lifecycle/console/network evidence and Phase 10F-14 audits.
+- Confirmed zero renderer external network requests and no artifact-controlled JavaScript, HTML, CSS, URL, texture, module or shader execution.
+- Did not register full `structure.viewer_3d` or implement trajectory, phonon or Brillouin zone.
+- Changed active frontend `dev`/`start` defaults and API CORS from port 3000 to 3050; browser evidence keeps isolated test ports.
+
 ### Phase 10F-13 Viewer Scene Live Adapter Browser/API Evidence
 
 - Added `apps/web/test/generate-viewer-scene-live-adapter-evidence.py` to capture live adapter-backed planner/job/runtime artifacts.
