@@ -1636,3 +1636,14 @@
 ### Security
 - Performance thresholds remain application-owned; over-budget input cannot initialize WebGL.
 - No dependencies, external telemetry, artifact execution, or canonical schema changes.
+
+## 2026-07-13 Phase 10F-22
+
+### Added
+- Keyboard rotate/pan/zoom/reset, deterministic focus restoration, semantic scene/topology summaries, and bounded live announcements.
+- Semantic periodic-neighbor table controls, mobile 44px targets, vertical scroll preservation, reduced-motion and forced-colors styles.
+- Real Chromium/Firefox/WebKit accessibility, mobile, orientation, zoom, console, and network evidence.
+
+### Security
+- Accessibility roles, shortcuts, event handling, and focus remain application-owned and cannot be supplied by artifacts.
+- No dependency, artifact schema, backend authority, external request, or remote asset change.

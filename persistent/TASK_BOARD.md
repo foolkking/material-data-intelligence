@@ -1901,3 +1901,15 @@
 
 ### Remaining
 - [ ] Phase 10F-22 accessibility, mobile, and cross-browser interaction hardening.
+
+## 2026-07-13 Phase 10F-22 Viewer Accessibility and Mobile Hardening
+
+### Done
+- [x] Focusable viewer region and bounded keyboard camera contract.
+- [x] Semantic scene summary, live selection status, and accessible periodic-neighbor table.
+- [x] Mobile touch/scroll/target-size/orientation and visual preference policies.
+- [x] Unit, build, and Chromium/Firefox/WebKit browser evidence.
+
+### Remaining
+- [ ] Physical screen-reader and broad physical-device GPU/touch lab coverage.
+- [ ] Advanced picking and measurement remains a separately reviewed phase.

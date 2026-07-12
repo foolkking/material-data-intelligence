@@ -53,6 +53,7 @@ function fakeEngine(dispose = vi.fn()) {
     setSelection: vi.fn(),
     exportPng: vi.fn(async () => new Blob(["png"], { type: "image/png" })),
     render: vi.fn(),
+    keyboardCamera: vi.fn(),
     snapshot,
     dispose,
   };
@@ -71,7 +72,10 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-periodic-neighbor-offset").textContent).toContain("1, 0, 0");
     expect(screen.getByTestId("viewer-periodic-neighbor-distance").textContent).toBe("0.400000");
     expect(screen.getByTestId("viewer-periodic-neighbor-source").textContent).toBe("distance_cutoff");
-    await userEvent.click(screen.getByRole("button",{name:"1"}));
+    expect(screen.getByText(/Periodic neighbor relationships/).tagName).toBe("CAPTION");
+    const neighborButton=screen.getByRole("button",{name:/Highlight bond to site 1/});
+    await userEvent.click(neighborButton);
+    expect(neighborButton.getAttribute("aria-pressed")).toBe("true");
     expect(engine.setSelection).toHaveBeenLastCalledWith([{siteIndex:0,imageOffset:[0,0,0]},{siteIndex:1,imageOffset:[1,0,0]}]);
   });
   it("distinguishes displayed and minimum-image boundary measurements", async () => {
@@ -170,6 +174,26 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("bonds0");
   });
 
+  it("provides bounded keyboard camera controls without trapping form inputs", async () => {
+    const engine = fakeEngine();
+    render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={async () => engine} />);
+    const region = await screen.findByRole("region", {name:"3D Structure Viewer"});
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("rendered"));
+    region.focus();
+    fireEvent.keyDown(region, {key:"ArrowLeft"});
+    fireEvent.keyDown(region, {key:"ArrowUp", shiftKey:true});
+    fireEvent.keyDown(region, {key:"+"});
+    expect(engine.keyboardCamera).toHaveBeenNthCalledWith(1,"rotate_left");
+    expect(engine.keyboardCamera).toHaveBeenNthCalledWith(2,"pan_up");
+    expect(engine.keyboardCamera).toHaveBeenNthCalledWith(3,"zoom_in");
+    fireEvent.keyDown(region, {key:"r"});
+    expect(engine.resetCamera).toHaveBeenCalledOnce();
+    const input=screen.getByTestId("viewer-supercell-x");
+    fireEvent.keyDown(input,{key:"ArrowLeft"});
+    expect(engine.keyboardCamera).toHaveBeenCalledTimes(3);
+    expect(region.getAttribute("aria-keyshortcuts")).toContain("Shift+ArrowLeft");
+  });
+
   it("maps engine picks to canonical inspector fields and measurements", async () => {
     const engine = fakeEngine();
     const writeText = vi.fn(async () => { throw new Error("clipboard denied"); });
@@ -182,6 +206,8 @@ describe("ViewerSceneRendererSurface", () => {
     const onSitePick = engineArgs?.onSitePick;
     act(() => onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}));
     expect(screen.getByTestId("viewer-selected-site-index").textContent).toContain("0");
+    expect(screen.getByTestId("viewer-scene-semantic-summary").textContent).toContain("0@[0,0,0]");
+    expect(screen.getByTestId("viewer-scene-accessibility-announcement").textContent).toContain("Selected site 0");
     expect(screen.getByTestId("viewer-selected-site-cartesian").textContent).toContain("0, 0, 0");
     await user.click(screen.getByRole("button", { name: "Copy site JSON" }));
     expect(writeText).toHaveBeenCalledOnce();
@@ -280,6 +306,7 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-scene-renderer-summary").textContent).toContain("1 sites");
     expect(screen.getByRole("list", { name: "Species legend" }).textContent).toContain("Si");
     expect(screen.getByTestId("viewer-scene-renderer-metrics").textContent).toContain("instancedMeshCount");
+    expect(screen.getByTestId("viewer-scene-semantic-summary").textContent).toContain("Cross-boundary bonds");
   });
 
   it("disposes every renderer across twenty bounded artifact switches", async () => {

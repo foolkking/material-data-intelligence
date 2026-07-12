@@ -29,6 +29,7 @@ export async function createThreeViewerEngine(args: {
   renderer.domElement.setAttribute("data-testid", "viewer-scene-renderer-canvas");
   renderer.domElement.setAttribute("aria-label", "Interactive three-dimensional crystal structure renderer");
   renderer.domElement.setAttribute("role", "img");
+  renderer.domElement.tabIndex = -1;
   renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio || 1, 1), pixelRatioCap));
   renderer.setSize(width, height, false);
   renderer.setClearColor(0xf3f6f7, 1);
@@ -44,6 +45,7 @@ export async function createThreeViewerEngine(args: {
   camera.up.set(0, 0, 1);
 
   const controls = new OrbitControls(camera, renderer.domElement);
+  renderer.domElement.style.touchAction = "pan-y";
   controls.enableDamping = false;
   controls.enablePan = true;
   controls.minDistance = Math.max(0.2, frame.near * 4);
@@ -146,6 +148,30 @@ export async function createThreeViewerEngine(args: {
     controls.update();
     render();
   };
+  const keyboardCamera: ViewerRendererEngine["keyboardCamera"] = (action) => {
+    const offset = camera.position.clone().sub(controls.target);
+    if (action.startsWith("rotate_")) {
+      const spherical = new THREE.Spherical().setFromVector3(offset);
+      if (action === "rotate_left") spherical.theta -= Math.PI / 18;
+      if (action === "rotate_right") spherical.theta += Math.PI / 18;
+      if (action === "rotate_up") spherical.phi = Math.max(0.08, spherical.phi - Math.PI / 18);
+      if (action === "rotate_down") spherical.phi = Math.min(Math.PI - 0.08, spherical.phi + Math.PI / 18);
+      camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));
+    } else if (action.startsWith("pan_")) {
+      const distance = Math.max(offset.length() * 0.04, 0.05);
+      const right = new THREE.Vector3().crossVectors(camera.getWorldDirection(new THREE.Vector3()), camera.up).normalize();
+      const up = camera.up.clone().normalize();
+      const delta = action === "pan_left" ? right.multiplyScalar(-distance) : action === "pan_right" ? right.multiplyScalar(distance) : action === "pan_up" ? up.multiplyScalar(distance) : up.multiplyScalar(-distance);
+      camera.position.add(delta); controls.target.add(delta);
+    } else {
+      const scale = action === "zoom_in" ? 0.88 : 1.12;
+      const next = offset.multiplyScalar(scale);
+      const boundedLength = THREE.MathUtils.clamp(next.length(), controls.minDistance, controls.maxDistance);
+      camera.position.copy(controls.target).add(next.setLength(boundedLength));
+    }
+    controls.update();
+    render();
+  };
   const onControlsChange = () => render();
   controls.addEventListener("change", onControlsChange);
   controls.update();
@@ -160,17 +186,11 @@ export async function createThreeViewerEngine(args: {
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   let pointerStart: { readonly id: number; readonly x: number; readonly y: number } | null = null;
-  const onPointerDown = (event: PointerEvent) => {
-    if (event.button !== 0 || contextLost || disposed) return;
-    pointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
-  };
-  const onPointerUp = (event: PointerEvent) => {
-    const start = pointerStart;
-    pointerStart = null;
-    if (!start || start.id !== event.pointerId || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 5 || contextLost || disposed) return;
+  const pickAt = (clientX: number, clientY: number) => {
+    if (contextLost || disposed) return;
     const bounds = renderer.domElement.getBoundingClientRect();
     if (bounds.width <= 0 || bounds.height <= 0) return;
-    pointer.set(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -((event.clientY - bounds.top) / bounds.height) * 2 + 1);
+    pointer.set(((clientX - bounds.left) / bounds.width) * 2 - 1, -((clientY - bounds.top) / bounds.height) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
     const hit = raycaster.intersectObjects(atomMeshes, false).find((intersection) => intersection.instanceId !== undefined && intersection.object.visible);
     if (!hit || hit.instanceId === undefined) {
@@ -180,6 +200,16 @@ export async function createThreeViewerEngine(args: {
     const periodicRefs = (hit.object as THREE.InstancedMesh).userData.periodicRefs;
     const ref = Array.isArray(periodicRefs) ? periodicRefs[hit.instanceId] as PeriodicSiteRef | undefined : undefined;
     onSitePick?.(ref && atomsByKey.has(periodicSiteKey(ref)) ? ref : null);
+  };
+  const onPointerDown = (event: PointerEvent) => {
+    if (event.button !== 0 || contextLost || disposed) return;
+    pointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  };
+  const onPointerUp = (event: PointerEvent) => {
+    const start = pointerStart;
+    pointerStart = null;
+    if (!start || start.id !== event.pointerId || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 5 || contextLost || disposed) return;
+    pickAt(event.clientX, event.clientY);
   };
   const onPointerCancel = () => { pointerStart = null; };
   renderer.domElement.addEventListener("pointerdown", onPointerDown);
@@ -286,6 +316,7 @@ export async function createThreeViewerEngine(args: {
     setCellVisible(visible) { cellLines.visible = visible; render(); },
     setBondsVisible(visible) { bondLines.visible = visible; render(); },
     setSelection,
+    keyboardCamera,
     exportPng,
     render,
     snapshot,

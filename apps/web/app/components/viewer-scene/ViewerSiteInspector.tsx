@@ -1,7 +1,12 @@
+import { useEffect, useState } from "react";
+
 import type { RenderAtom, RenderBond } from "./viewerSceneRendererTypes";
 
-export function ViewerSiteInspector({ atom, bonds, source, repeat, onClear, onJumpPrimary, onShowNeighbors, onClearNeighbors, onHighlightNeighbor }: {
+const MAX_ACCESSIBLE_NEIGHBOR_ROWS = 100;
+
+export function ViewerSiteInspector({ atom, atoms, bonds, source, repeat, onClear, onJumpPrimary, onShowNeighbors, onClearNeighbors, onHighlightNeighbor }: {
   readonly atom: RenderAtom | null;
+  readonly atoms: readonly RenderAtom[];
   readonly bonds: readonly RenderBond[];
   readonly source: string;
   readonly repeat: readonly [number, number, number];
@@ -11,8 +16,11 @@ export function ViewerSiteInspector({ atom, bonds, source, repeat, onClear, onJu
   readonly onClearNeighbors: () => void;
   readonly onHighlightNeighbor: (target: RenderAtom["ref"], bondId: string) => void;
 }) {
-  if (!atom) return <aside className="viewer-site-inspector" data-testid="viewer-site-inspector"><p>No site selected. Pick an atom to inspect canonical and periodic identity.</p></aside>;
+  const [highlightedBondId, setHighlightedBondId] = useState<string | null>(null);
+  useEffect(() => setHighlightedBondId(null), [atom?.id]);
+  if (!atom) return <aside className="viewer-site-inspector" aria-label="Selected site inspector" data-testid="viewer-site-inspector"><p>No site selected. Pick an atom to inspect canonical and periodic identity.</p></aside>;
   const connected = bonds.flatMap((bond) => sameRef(bond.fromRef,atom.ref) ? [{bond,target:bond.toRef}] : sameRef(bond.toRef,atom.ref) ? [{bond,target:bond.fromRef}] : []).sort((a,b)=>a.target.siteIndex-b.target.siteIndex||compareOffset(a.target.imageOffset,b.target.imageOffset));
+  const visibleConnected = connected.slice(0, MAX_ACCESSIBLE_NEIGHBOR_ROWS);
   const primary = atom.ref.imageOffset.every((value) => value === 0);
   const copyCoordinates = () => copyText(atom.position.join(", "));
   const copySite = () => copyText(JSON.stringify({ index: atom.siteIndex, image_offset: atom.ref.imageOffset, label: atom.label, element: atom.element, occupancy: atom.occupancy, canonical_xyz: atom.canonicalPosition, displayed_xyz: atom.position, frac: atom.fractionalPosition }, null, 2));
@@ -34,7 +42,18 @@ export function ViewerSiteInspector({ atom, bonds, source, repeat, onClear, onJu
         <div><dt>source</dt><dd>{source || "canonical viewer scene"}</dd></div>
         <div><dt>bond neighbors</dt><dd data-testid="viewer-selected-site-neighbors">{connected.length ? connected.map((item)=>`${item.target.siteIndex}@[${item.target.imageOffset.join(",")}]`).join("; ") : "none"} ({connected.length})</dd></div>
       </dl>
-      <table data-testid="viewer-periodic-neighbor-table"><thead><tr><th>Site</th><th>Image</th><th>Distance (A)</th><th>Source</th><th>Authoritative</th></tr></thead><tbody>{connected.map(({bond,target})=><tr key={bond.id} data-testid="viewer-periodic-neighbor-row"><td><button type="button" className="compact secondary" onClick={()=>onHighlightNeighbor(target,bond.id)}>{target.siteIndex}</button></td><td data-testid="viewer-periodic-neighbor-offset">[{target.imageOffset.join(", ")}]</td><td data-testid="viewer-periodic-neighbor-distance">{bond.distanceAngstrom.toFixed(6)}</td><td data-testid="viewer-periodic-neighbor-source">{bond.source}</td><td data-testid="viewer-periodic-neighbor-authoritative">{bond.authoritative ? "yes" : "no"}</td></tr>)}</tbody></table>
+      <div className="viewer-neighbor-table-scroll">
+        <table data-testid="viewer-periodic-neighbor-table">
+          <caption>Periodic neighbor relationships for {atom.siteIndex}@[{atom.ref.imageOffset.join(",")}]. Showing {visibleConnected.length} of {connected.length}.</caption>
+          <thead><tr><th scope="col">Target</th><th scope="col">Species</th><th scope="col">Image</th><th scope="col">Distance (A)</th><th scope="col">Source</th><th scope="col">Authoritative</th><th scope="col">Boundary</th></tr></thead>
+          <tbody>{visibleConnected.map(({bond,target})=>{
+            const crossBoundary=target.imageOffset.some((value,index)=>value!==atom.ref.imageOffset[index]);
+            const targetAtom=atoms.find((candidate)=>sameRef(candidate.ref,target));
+            return <tr key={bond.id} data-testid="viewer-periodic-neighbor-row"><td><button type="button" className="compact secondary" aria-pressed={highlightedBondId===bond.id} aria-label={`Highlight bond to site ${target.siteIndex} at image ${target.imageOffset.join(", ")}`} onClick={()=>{setHighlightedBondId(bond.id);onHighlightNeighbor(target,bond.id);}}>{target.siteIndex}</button></td><td>{targetAtom?.species ?? "unknown"}</td><td data-testid="viewer-periodic-neighbor-offset">[{target.imageOffset.join(", ")}]</td><td data-testid="viewer-periodic-neighbor-distance">{bond.distanceAngstrom.toFixed(6)}</td><td data-testid="viewer-periodic-neighbor-source">{bond.source}</td><td data-testid="viewer-periodic-neighbor-authoritative">{bond.authoritative ? "yes" : "no"}</td><td>{bond.fromSiteIndex===bond.toSiteIndex ? "self-periodic" : crossBoundary ? "cross-boundary" : "same-cell"}</td></tr>;
+          })}</tbody>
+        </table>
+      </div>
+      {connected.length > visibleConnected.length ? <p className="notice" role="status">Neighbor table limited to {MAX_ACCESSIBLE_NEIGHBOR_ROWS} rows.</p> : null}
       <p className="viewer-inspector-note">Neighbors are from bounded, non-authoritative scene bonds only. Replicas are renderer-local view state.</p>
       <div className="button-row"><button type="button" className="compact secondary" onClick={copyCoordinates}>Copy coordinates</button><button type="button" className="compact secondary" onClick={copySite}>Copy site JSON</button>{!primary ? <button type="button" className="compact secondary" onClick={onJumpPrimary}>Jump to primary image</button> : null}<button type="button" className="compact secondary" onClick={onShowNeighbors}>Show neighboring images</button><button type="button" className="compact secondary" onClick={onClearNeighbors}>Clear images</button></div>
     </aside>

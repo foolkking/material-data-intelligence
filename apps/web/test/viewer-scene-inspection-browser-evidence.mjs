@@ -255,9 +255,11 @@ async function mobileCase(browser) {
     await page.getByTestId("viewer-supercell-apply").click();
     await page.waitForFunction((expected) => window.__mdiViewerSceneRendererEvidence?.atomCount === expected, initialMobileCount * 2, { timeout: 20_000 });
   }
+  const canvas = page.getByTestId("viewer-scene-renderer-canvas");
+  await canvas.scrollIntoViewIfNeeded();
   const mobileSnapshot = await snapshot(page);
   const site = PERIODIC_MODE ? mobileSnapshot.siteScreenPositions.find((item) => item.ref?.imageOffset?.join(",") === "1,0,0") : mobileSnapshot.siteScreenPositions[0];
-  const box = await page.getByTestId("viewer-scene-renderer-canvas").boundingBox();
+  const box = await canvas.boundingBox();
   if (!site || !box) throw new Error("mobile picking coordinates unavailable");
   await page.touchscreen.tap(box.x + site.x, box.y + site.y);
   await page.waitForSelector('[data-testid="viewer-selected-site-index"]');

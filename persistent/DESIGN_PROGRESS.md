@@ -1239,3 +1239,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Near-cap scenes retain all validated topology with DPR 1/no antialias; over-budget scenes stop before engine creation.
 - Added explicit generation-token stale protection, context-loss retry, and auditable demand-based scheduling.
 - Three-browser/mobile/periodic performance evidence passed without dependency or schema changes.
+
+## 2026-07-13 Phase 10F-22 Viewer Accessibility and Mobile Hardening
+
+- Added a focusable viewer region with bounded keyboard rotate, pan, zoom, reset, and selection-clear actions.
+- Added a synchronized semantic scene/topology summary, bounded polite announcements, and a capped semantic neighbor table.
+- Removed the mobile scroll trap with `touch-action: pan-y`, established 44px mobile targets, and added reduced-motion/forced-colors policies.
+- Chromium, Firefox, and WebKit evidence covers keyboard camera changes, 200% zoom, mobile orientation, one-canvas lifecycle, and zero external requests.

@@ -46,6 +46,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const previousPayloadRef = useRef(payload);
   const payloadChanged = previousPayloadRef.current !== payload;
   const containerRef = useRef<HTMLDivElement>(null);
+  const surfaceRef = useRef<HTMLElement>(null);
   const engineRef = useRef<ViewerRendererEngine | null>(null);
   const generationRef = useRef(0);
   const [state, setState] = useState<ViewerRendererState>(mapping.ok ? "ready" : "validation_failed");
@@ -62,6 +63,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const [neighborSiteIndex, setNeighborSiteIndex] = useState<number | null>(null);
   const [supercellError, setSupercellError] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [announcement, setAnnouncement] = useState("Viewer ready for a validated scene.");
   const renderedRepeat = payloadChanged ? DEFAULT_REPEAT : repeat;
   const renderedNeighborSiteIndex = payloadChanged ? null : neighborSiteIndex;
   const derivation = useMemo(() => mapping.ok ? derivePeriodicSupercell(mapping.scene, renderedRepeat, renderedNeighborSiteIndex) : null, [mapping, renderedNeighborSiteIndex, renderedRepeat]);
@@ -70,6 +72,11 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const onSitePick = useCallback((site: PeriodicSiteRef | null) => setSelection((current) => selectViewerSite(current, site)), []);
 
   useEffect(() => { selectionRef.current = selection; }, [selection]);
+
+  useEffect(() => {
+    const active = selection.activeSite;
+    setAnnouncement(active ? `Selected site ${active.siteIndex} at image offset ${active.imageOffset.join(", ")}.` : "Selection cleared.");
+  }, [selection.activeSite]);
 
   useEffect(() => {
     if (previousPayloadRef.current === payload) return;
@@ -121,6 +128,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       engine.setSelection(selectionRef.current.selectedSites);
       setSnapshot(engine.snapshot());
       setState("rendered");
+      setAnnouncement(`Scene rendered with ${renderScene.atoms.length} displayed sites in ${performanceDecision.tier} mode.`);
     }).catch((error: unknown) => {
       if (!cancelled) setState(error instanceof ViewerRendererError && error.code === "VIEWER_RENDERER_CHUNK_LOAD_FAILED" ? "chunk_load_failed" : "renderer_failed");
     });
@@ -201,9 +209,10 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const retry = () => {
     setState("ready");
     setAttempt((value) => value + 1);
+    queueMicrotask(() => surfaceRef.current?.focus());
   };
   const changeMode = (mode: ViewerSelectionMode) => setSelection((current) => changeViewerSelectionMode(current, mode));
-  const clearSelection = () => setSelection((current) => initialViewerSelection(current.mode));
+  const clearSelection = () => { setSelection((current) => initialViewerSelection(current.mode)); queueMicrotask(() => surfaceRef.current?.focus()); };
   const applySupercell = () => {
     if (!mapping.ok) return;
     const checked = derivePeriodicSupercell(mapping.scene, repeatDraft, neighborSiteIndex);
@@ -226,9 +235,28 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     }
   };
   const selectedAtom = renderScene && selection.activeSite ? renderScene.atoms.find((atom) => periodicSiteKey(atom.ref) === periodicSiteKey(selection.activeSite!)) ?? null : null;
+  const topologySummary = useMemo(() => {
+    const bonds = renderScene?.bonds ?? [];
+    return {
+      crossBoundary: bonds.filter((bond) => bond.fromRef.imageOffset.some((value, index) => value !== bond.toRef.imageOffset[index])).length,
+      selfPeriodic: bonds.filter((bond) => bond.fromSiteIndex === bond.toSiteIndex && bond.fromRef.imageOffset.some((value, index) => value !== bond.toRef.imageOffset[index])).length,
+    };
+  }, [renderScene]);
+  const onViewerKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement) return;
+    const key = event.key.toLowerCase();
+    if (key === "escape") { event.preventDefault(); clearSelection(); return; }
+    if (key === "0" || key === "r") { event.preventDefault(); reset(); return; }
+    const action = key === "+" || key === "=" ? "zoom_in" : key === "-" ? "zoom_out" : key.startsWith("arrow") ? `${event.shiftKey ? "pan" : "rotate"}_${key.replace("arrow", "")}` : null;
+    if (!action || state !== "rendered") return;
+    event.preventDefault();
+    engineRef.current?.keyboardCamera(action as Parameters<ViewerRendererEngine["keyboardCamera"]>[0]);
+  };
 
   return (
-    <section className="viewer-renderer-surface" aria-label="3D Structure Viewer" data-testid="viewer-scene-renderer-surface">
+    <section ref={surfaceRef} className="viewer-renderer-surface" role="region" tabIndex={0} aria-label="3D Structure Viewer" aria-describedby="viewer-scene-keyboard-help viewer-scene-semantic-summary" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Shift+ArrowLeft Shift+ArrowRight Shift+ArrowUp Shift+ArrowDown + - 0 R Escape" onKeyDown={onViewerKeyDown} data-testid="viewer-scene-renderer-surface">
+      <p id="viewer-scene-keyboard-help" className="sr-only">Arrow keys rotate. Shift plus arrow keys pan. Plus and minus zoom. Zero or R resets the camera. Escape clears selection.</p>
+      <p className="sr-only" aria-live="polite" aria-atomic="true" data-testid="viewer-scene-accessibility-announcement">{announcement}</p>
       <div className="viewer-renderer-toolbar">
         <div>
           <strong>3D Structure Viewer</strong>
@@ -277,6 +305,18 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       ) : null}
       {mapping.ok ? (
         <>
+        <dl id="viewer-scene-semantic-summary" className="sr-only" data-testid="viewer-scene-semantic-summary">
+          <div><dt>Formula</dt><dd>{mapping.scene.formula}</dd></div>
+          <div><dt>Canonical sites</dt><dd>{mapping.scene.atoms.length}</dd></div>
+          <div><dt>Species</dt><dd>{new Set(mapping.scene.atoms.map((atom) => atom.species)).size}</dd></div>
+          <div><dt>Lattice</dt><dd>{mapping.scene.lattice.matrix.map((row) => `[${row.join(", ")}]`).join(" ")}</dd></div>
+          <div><dt>Canonical bonds</dt><dd>{mapping.scene.bonds.length}</dd></div>
+          <div><dt>Cross-boundary bonds</dt><dd>{topologySummary.crossBoundary}</dd></div>
+          <div><dt>Self-periodic bonds</dt><dd>{topologySummary.selfPeriodic}</dd></div>
+          <div><dt>Render mode</dt><dd>{performanceDecision?.tier ?? "unavailable"}</dd></div>
+          <div><dt>Selection</dt><dd>{selection.activeSite ? `${selection.activeSite.siteIndex}@[${selection.activeSite.imageOffset.join(",")}]` : "none"}</dd></div>
+          <div><dt>Warnings</dt><dd>{mapping.scene.warnings.length ? mapping.scene.warnings.join(", ") : "none"}</dd></div>
+        </dl>
         {performanceDecision?.warning ? <p className="notice" role="status" data-testid="viewer-scene-renderer-performance-warning">{performanceDecision.warning}: all validated atoms and bonds remain rendered with reduced pixel ratio and antialiasing.</p> : null}
         <fieldset className="viewer-supercell-controls" aria-label="Bounded supercell controls">
           <legend>Renderer-local supercell</legend>
@@ -286,7 +326,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
           <output data-testid="viewer-supercell-status">{supercellError ?? `${repeat.join(" x ")}: ${renderScene?.atoms.length ?? 0} displayed sites`}</output>
         </fieldset>
         <ViewerMeasurementPanel mode={selection.mode} selected={selection.selectedSites} coordinateMode={coordinateMode} resolvedRefs={measurementDetails.refs} evaluation={measurement} history={history} onMode={changeMode} onCoordinateMode={(mode) => { setCoordinateMode(mode); clearSelection(); }} onClear={clearSelection} />
-        <ViewerSiteInspector atom={selectedAtom} bonds={renderScene?.bonds ?? []} repeat={repeat} source={mapping.scene.source.filename || mapping.scene.source.resourceId} onClear={clearSelection} onJumpPrimary={() => selectedAtom && setSelection((current) => selectViewerSite(initialViewerSelection(current.mode), {siteIndex:selectedAtom.siteIndex,imageOffset:[0,0,0]}))} onShowNeighbors={() => selectedAtom && setNeighborSiteIndex(selectedAtom.siteIndex)} onClearNeighbors={() => setNeighborSiteIndex(null)} onHighlightNeighbor={(target)=>{if(!selectedAtom)return;engineRef.current?.setSelection([selectedAtom.ref,target]);if(engineRef.current)setSnapshot(engineRef.current.snapshot());}} />
+        <ViewerSiteInspector atom={selectedAtom} atoms={renderScene?.atoms ?? []} bonds={renderScene?.bonds ?? []} repeat={repeat} source={mapping.scene.source.filename || mapping.scene.source.resourceId} onClear={clearSelection} onJumpPrimary={() => selectedAtom && setSelection((current) => selectViewerSite(initialViewerSelection(current.mode), {siteIndex:selectedAtom.siteIndex,imageOffset:[0,0,0]}))} onShowNeighbors={() => selectedAtom && setNeighborSiteIndex(selectedAtom.siteIndex)} onClearNeighbors={() => setNeighborSiteIndex(null)} onHighlightNeighbor={(target)=>{if(!selectedAtom)return;engineRef.current?.setSelection([selectedAtom.ref,target]);if(engineRef.current)setSnapshot(engineRef.current.snapshot());}} />
         <div className="viewer-artifact-downloads" aria-label="Viewer artifact downloads">
           <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(payload), "viewer_scene.json")}>Download scene JSON</button>
           {downloads?.manifest ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(downloads.manifest), "viewer_scene_manifest.json")}>Download manifest</button> : null}

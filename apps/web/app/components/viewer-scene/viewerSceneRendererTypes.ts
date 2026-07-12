@@ -120,6 +120,7 @@ export type ViewerRendererEngine = {
   readonly setCellVisible: (visible: boolean) => void;
   readonly setBondsVisible: (visible: boolean) => void;
   readonly render: () => void;
+  readonly keyboardCamera: (action: "rotate_left" | "rotate_right" | "rotate_up" | "rotate_down" | "pan_left" | "pan_right" | "pan_up" | "pan_down" | "zoom_in" | "zoom_out") => void;
   readonly setSelection: (sites: readonly PeriodicSiteRef[]) => void;
   readonly exportPng: () => Promise<Blob>;
   readonly snapshot: () => ViewerRendererSnapshot;

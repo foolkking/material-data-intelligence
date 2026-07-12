@@ -3471,3 +3471,19 @@ not create WebGL. Use demand rendering and generation-token stale protection.
 - Draw calls scale with bounded style groups, not atom or bond count.
 - Late engines are disposed and context loss can be retried as a new generation.
 - Thresholds are application-owned and cannot be overridden by artifacts.
+
+# 2026-07-13 Phase 10F-22 ADR: application-owned accessible viewer interaction
+
+## Decision
+
+Expose one focusable renderer region with fixed keyboard camera actions, a
+bounded semantic scene summary and polite live status, and a capped semantic
+neighbor table. Preserve mobile page scrolling with `touch-action: pan-y` and
+use application-owned reduced-motion and forced-colors policies.
+
+## Consequences
+
+- Keyboard actions operate existing camera controls without rebuilding scenes or changing scientific identity.
+- Camera motion is never announced continuously; only bounded scene and selection state is live.
+- Artifact strings cannot control ARIA, focus, roles, shortcuts, events, CSS, or accessibility execution.
+- No backend authority, canonical schema, dependency, or network boundary changes.

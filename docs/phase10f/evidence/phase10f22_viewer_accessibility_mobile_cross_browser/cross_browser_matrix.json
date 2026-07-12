@@ -1,0 +1,1 @@
+{"chromium":{"keyboard":"PASS","zoom_200_percent":true,"forced_colors":true},"firefox":{"keyboard":"PASS","zoom_200_percent":true,"forced_colors":true},"webkit":{"keyboard":"PASS","zoom_200_percent":true,"forced_colors":true},"mobile_chromium":{"touch_action":"pan-y","minimum_target_px":44,"horizontal_overflow":false},"orientation":"PASS","result":"PASS"}

@@ -2769,7 +2769,7 @@ FAIL包括：
 ---END---
 
 ---TASK---  
-状态：待处理
+状态：已完成
 
  # Phase 10F-22：Viewer Accessibility, Mobile and Cross-Browser Hardening
 
@@ -5747,6 +5747,13 @@ FAIL包括：
 -   无browser evidence
     
 -   CI失败却声明PASS
+
+## 完成记录
+
+* 完成时间：2026-07-13 06:50:12 +08:00
+* 修改文件：`apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.tsx`、`ViewerSiteInspector.tsx`、`viewerSceneRendererEngine.ts`、`viewerSceneRendererTypes.ts`、相关测试与 CSS；生产/inspection/accessibility browser runners；Phase 10F-22 docs、evidence、shared schema addendum 和 persistent 记录。
+* 修改摘要：增加可聚焦 viewer region 与固定 keyboard camera contract；bounded semantic scene summary 和 polite live region；语义化且最多 100 行的 periodic neighbor table；稳定 focus restoration；移动端 `pan-y`、44px controls、orientation/zoom/forced-colors/reduced-motion hardening；Chromium/Firefox/WebKit 真实证据。未改变 artifact schema、Tool Registry、planner、runtime 或依赖。
+* 测试结果：frontend `85 passed`；backend `366 passed, 21 skipped`；typecheck/build/`uv lock --check`/`git diff --check` 通过；fixture/live-adapter/renderer/inspection/periodic/topology 历史 browser markers 全部通过；Phase 10F-22 keyboard/mobile/cross-browser markers 通过；`NO_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。`npm audit` 因 npmmirror endpoint `NOT_IMPLEMENTED` 不可用，未声明 clean。本机无 Docker，service-backed/no-skipped 由 current-HEAD CI 闭环。
 ---END---
 
 

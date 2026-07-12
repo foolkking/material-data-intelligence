@@ -711,7 +711,7 @@ pre {
   width: 100%;
   height: 100%;
   outline: none;
-  touch-action: none;
+  touch-action: pan-y;
 }
 
 .viewer-renderer-controls button {
@@ -757,7 +757,7 @@ pre {
 .viewer-supercell-controls {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  align-items: flex-end;
   gap: 8px;
 }
 
@@ -807,6 +807,16 @@ pre {
   font-size: 12px;
 }
 
+.viewer-neighbor-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.viewer-neighbor-table-scroll table {
+  min-width: 720px;
+}
+
 .viewer-artifact-downloads {
   margin: 4px 0;
 }
@@ -823,11 +833,58 @@ pre {
   border: 0;
 }
 
+.viewer-renderer-surface:focus-visible,
 .viewer-renderer-canvas-host canvas:focus-visible,
 .viewer-renderer-controls button:focus-visible,
-.viewer-preview-tabs button:focus-visible {
-  outline: 3px solid rgba(31, 111, 139, 0.35);
+.viewer-preview-tabs button:focus-visible,
+.viewer-site-inspector button:focus-visible,
+.viewer-measurement-panel button:focus-visible,
+.viewer-supercell-controls button:focus-visible,
+.viewer-artifact-downloads button:focus-visible {
+  outline: 3px solid #0b7285;
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewer-renderer-surface,
+  .viewer-renderer-surface * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .viewer-renderer-surface:focus-visible,
+  .viewer-renderer-surface button:focus-visible {
+    outline: 3px solid Highlight;
+  }
+
+  .viewer-renderer-fallback,
+  .viewer-site-inspector,
+  .viewer-measurement-panel,
+  .viewer-supercell-controls {
+    border-color: CanvasText;
+  }
+}
+
+@media (max-width: 640px) {
+  .viewer-renderer-controls button,
+  .viewer-site-inspector button,
+  .viewer-measurement-panel button,
+  .viewer-supercell-controls button,
+  .viewer-artifact-downloads button,
+  .viewer-preview-tabs button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .viewer-site-inspector {
+    max-height: min(52vh, 520px);
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+  }
 }
 
 .viewer-renderer-fallback,

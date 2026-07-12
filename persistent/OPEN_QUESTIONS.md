@@ -663,3 +663,9 @@
 
 - Validate accessibility and touch interaction under degraded mode in Phase 10F-22.
 - Absolute hardware GPU memory remains outside browser-portable evidence; retain bounded proxy metrics.
+
+## 2026-07-13 Phase 10F-22 Follow-ups
+
+- Physical NVDA, JAWS, VoiceOver, TalkBack, and broad device gesture testing remain outside automated CI evidence.
+- Forced-colors emulation support differs by browser; retain CSS plus recorded media-query evidence and schedule physical Windows high-contrast review.
+- Keyboard orbit is bounded and deterministic; keyboard-only atom traversal belongs to the separately reviewed advanced picking scope.

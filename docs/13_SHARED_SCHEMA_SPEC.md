@@ -1101,3 +1101,16 @@ Manifest v1 contracts remain inert compatibility records. The current
 `phase10f19.viewer_assets_manifest.v2` must pair with v2 and cannot include a
 renderer, WebGL, executable, or external asset. No automatic conversion exists:
 missing endpoint image offsets and capabilities are never inferred.
+
+## Phase 10F-22 Addendum: frontend accessibility contract
+
+Phase 10F-22 does not change any persisted schema. The validated renderer owns
+its focusable region, bounded keyboard camera actions, semantic scene summary,
+polite state announcements, and capped periodic-neighbor table. Artifact values
+remain inert text/data and cannot provide roles, ARIA attributes, shortcuts,
+event handlers, focus targets, CSS, or live-region policy.
+
+The semantic summary reports the validated formula, canonical site/species and
+bond counts, lattice, cross-boundary/self-periodic topology counts, render tier,
+periodic selection identity, and warnings. It is frontend state only and is not
+written to Artifacts, Recipes, AnalysisPlans, or Jobs.

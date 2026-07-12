@@ -68,6 +68,7 @@ async function main() {
     console.log("VIEWER_SCENE_MOBILE_VIEWER_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_RENDERER_PERFORMANCE_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_ACCESSIBILITY_EVIDENCE_PASS");
+    console.log("VIEWER_SCENE_ACCESSIBILITY_MOBILE_CROSS_BROWSER_EVIDENCE_PASS");
     console.log("NO_PRODUCTION_VIEWER_EXTERNAL_NETWORK_REQUESTS");
   } finally {
     if (server) {
@@ -115,7 +116,20 @@ async function renderCase(context, browserId, caseId, mode, screenshotName) {
   await productFlow(page);
   await openRenderer(page);
   const initial = await snapshot(page);
+  const region = page.getByRole("region", { name: "3D Structure Viewer" });
+  await region.focus();
+  await page.keyboard.press("ArrowLeft");
+  const keyboardRotated = await snapshot(page);
+  if (distance(initial.cameraPosition, keyboardRotated.cameraPosition) < 0.01) throw new Error(`${browserId} keyboard rotation failed`);
+  await page.keyboard.press("Shift+ArrowUp");
+  const keyboardPanned = await snapshot(page);
+  if (distance(keyboardRotated.cameraTarget, keyboardPanned.cameraTarget) < 0.001) throw new Error(`${browserId} keyboard pan failed`);
+  await page.keyboard.press("+");
+  const keyboardZoomed = await snapshot(page);
+  if (distance(keyboardZoomed.cameraPosition, keyboardZoomed.cameraTarget) >= distance(keyboardPanned.cameraPosition, keyboardPanned.cameraTarget)) throw new Error(`${browserId} keyboard zoom failed`);
+  await page.keyboard.press("0");
   const canvas = page.getByTestId("viewer-scene-renderer-canvas");
+  await canvas.scrollIntoViewIfNeeded();
   const box = await canvas.boundingBox();
   if (!box) throw new Error("renderer canvas has no box");
   await page.mouse.move(box.x + box.width * 0.65, box.y + box.height * 0.55);
@@ -140,8 +154,27 @@ async function renderCase(context, browserId, caseId, mode, screenshotName) {
     summary: document.querySelector('[data-testid="viewer-scene-renderer-summary"]')?.textContent,
     legend: document.querySelector('[aria-label="Species legend"]')?.textContent,
     controls: [...document.querySelectorAll(".viewer-renderer-controls button")].map((node) => ({ text: node.textContent, pressed: node.getAttribute("aria-pressed") })),
+    shortcuts: document.querySelector('[aria-label="3D Structure Viewer"]')?.getAttribute("aria-keyshortcuts"),
+    semantic_summary: document.querySelector('[data-testid="viewer-scene-semantic-summary"]')?.textContent,
+    live_region: document.querySelector('[data-testid="viewer-scene-accessibility-announcement"]')?.getAttribute("aria-live"),
+    reduced_motion: matchMedia("(prefers-reduced-motion: reduce)").matches,
   }));
-  if (!accessibility.region || !accessibility.summary || !accessibility.legend || accessibility.controls.length < 3) throw new Error("accessibility baseline failed");
+  if (!accessibility.region || !accessibility.summary || !accessibility.legend || accessibility.controls.length < 3 || !accessibility.shortcuts?.includes("Shift+ArrowLeft") || !accessibility.semantic_summary?.includes("Cross-boundary bonds") || accessibility.live_region !== "polite") throw new Error("accessibility baseline failed");
+  const zoom200 = await page.evaluate(() => {
+    document.documentElement.style.zoom = "2";
+    const region = document.querySelector('[aria-label="3D Structure Viewer"]');
+    const reset = document.querySelector('[data-testid="viewer-scene-renderer-reset"]');
+    const usable = Boolean(region?.getBoundingClientRect().width && reset?.getBoundingClientRect().height);
+    document.documentElement.style.zoom = "";
+    return { scale: 2, region_visible: Boolean(region), reset_operable: usable };
+  });
+  if (!zoom200.reset_operable) throw new Error(`${browserId} 200 percent zoom usability failed`);
+  await page.emulateMedia({ forcedColors: "active" }).catch(() => undefined);
+  const forcedColors = await page.evaluate(() => ({
+    active: matchMedia("(forced-colors: active)").matches,
+    focus_outline_style: getComputedStyle(document.querySelector('[aria-label="3D Structure Viewer"]')).outlineStyle,
+  }));
+  await page.emulateMedia({ forcedColors: "none" }).catch(() => undefined);
   await page.screenshot({ path: path.join(SCREENSHOTS, screenshotName), fullPage: true });
   await page.getByRole("tab", { name: "Scene JSON" }).click();
   const disposedCanvas = await page.locator("canvas").count();
@@ -151,7 +184,7 @@ async function renderCase(context, browserId, caseId, mode, screenshotName) {
   if (disposedCanvas !== 0 || remountedCanvas !== 1) throw new Error("lifecycle canvas policy failed");
   const audit = await auditPage(page);
   await page.close();
-  return { state: reset.state, metrics: reset.metrics, graphics: reset.graphicsContext, initial, rotated, zoomed, reset, lifecycle: { disposed_canvas: disposedCanvas, remounted_canvas: remountedCanvas }, accessibility, external_request_count: audit.external };
+  return { state: reset.state, metrics: reset.metrics, graphics: reset.graphicsContext, initial, keyboard: { rotated: keyboardRotated, panned: keyboardPanned, zoomed: keyboardZoomed }, rotated, zoomed, reset, lifecycle: { disposed_canvas: disposedCanvas, remounted_canvas: remountedCanvas }, accessibility: { ...accessibility, zoom_200_percent: zoom200, forced_colors: forcedColors }, external_request_count: audit.external };
 }
 
 async function mobileCase(browser, browserId) {
@@ -171,12 +204,17 @@ async function mobileCase(browser, browserId) {
   await page.waitForTimeout(150);
   const after = await snapshot(page);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
-  if (overflow || after.canvasCount !== 1 || after.drawingBuffer[0] <= 0) throw new Error("mobile resize/overflow policy failed");
+  const mobileAccessibility = await page.evaluate(() => ({
+    touch_action: getComputedStyle(document.querySelector('[data-testid="viewer-scene-renderer-canvas"]')).touchAction,
+    minimum_target: Math.min(...[...document.querySelectorAll(".viewer-renderer-controls button")].map((node) => Math.min(node.getBoundingClientRect().width, node.getBoundingClientRect().height))),
+    region_focusable: document.querySelector('[aria-label="3D Structure Viewer"]')?.getAttribute("tabindex"),
+  }));
+  if (overflow || after.canvasCount !== 1 || after.drawingBuffer[0] <= 0 || mobileAccessibility.touch_action !== "pan-y" || mobileAccessibility.minimum_target < 44 || mobileAccessibility.region_focusable !== "0") throw new Error(`mobile resize/overflow/accessibility policy failed: ${JSON.stringify({overflow,canvasCount:after.canvasCount,drawingBuffer:after.drawingBuffer,mobileAccessibility})}`);
   await page.screenshot({ path: path.join(SCREENSHOTS, `${browserId}_mobile_landscape.png`), fullPage: true });
   const audit = await auditPage(page);
   await page.close();
   await context.close();
-  return { before, after, horizontal_overflow: overflow, touch_enabled: true, external_request_count: audit.external };
+  return { before, after, horizontal_overflow: overflow, touch_enabled: true, accessibility: mobileAccessibility, external_request_count: audit.external };
 }
 
 async function boundaryCases(context, browserId) {

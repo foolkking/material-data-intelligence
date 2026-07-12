@@ -1012,3 +1012,9 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 
 - No Tool Registry, planner, adapter, PlanValidator, QueueWorkerRuntime, or artifact contract semantics changed.
 - Performance tiers are frontend-local validated-render-model policy and cannot be selected by artifact data.
+
+# 2026-07-13 Phase 10F-22 Viewer Accessibility Notes
+
+- No Tool Registry, planner, adapter, PlanValidator, QueueWorkerRuntime, AnalysisPlan, or artifact contract semantics changed.
+- Keyboard, focus, semantic summaries, live announcements, and mobile interaction are frontend-local consumers of validated scenes.
+- Artifact content cannot register shortcuts, roles, callbacks, event handlers, or focus behavior.
