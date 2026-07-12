@@ -1211,3 +1211,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added bounded exact minimum-image distance and anchored periodic angle/dihedral, independently cross-checked against pymatgen including triclinic input.
 - Added renderer-local `1x1x1` through `3x3x3` supercells with 2048-site and 8192-bond derived caps.
 - Canonical artifacts and backend runtime semantics remain unchanged; cross-boundary bonds remain a documented contract gap.
+
+## 2026-07-12 Phase 10F-18 Canonical Periodic Bond Topology
+
+- Added backward-compatible v2 scene evolution with explicit periodic bond endpoints, displacement, distance, source, and authority.
+- Both canonical viewer adapters generate bounded deterministic pymatgen periodic topology, including orthogonal/triclinic and self-periodic edges.
+- Renderer supercells now replicate complete cross-boundary edges; the inspector exposes periodic neighbor identity and highlight actions.
+- v1 remains valid as legacy same-cell topology. Distance-cutoff graphs remain non-authoritative.

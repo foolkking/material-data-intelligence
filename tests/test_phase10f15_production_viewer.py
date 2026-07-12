@@ -44,7 +44,8 @@ def test_formal_viewer_registry_identity_is_unique_and_canonical() -> None:
     assert tool.paramsSchema == registry.get_tool_by_id("structure.viewer_scene").paramsSchema
     assert tool.resourceLimits["maxSites"] == 256
     assert tool.resourceLimits["maxBonds"] == 2048
-    assert "canonical inert viewer_scene.v1" in tool.description
+    assert "canonical inert viewer_scene.v2" in tool.description
+    assert "periodic bond endpoints" in tool.description
     assert "trajectories" in tool.description.lower()
     assert "editing" in tool.description.lower()
 

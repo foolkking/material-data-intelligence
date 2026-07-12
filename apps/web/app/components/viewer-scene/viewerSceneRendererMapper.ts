@@ -1,4 +1,5 @@
 import type { ImageOffset, RenderAtom, RenderBond, RenderVector3, ValidatedRenderScene, ViewerSceneValidation } from "./viewerSceneRendererTypes";
+import { translateCartesian } from "./viewerScenePeriodicGeometry";
 import { finiteTriplet, isRecord, validateViewerSceneForRenderer } from "./viewerSceneRendererValidation";
 
 type MappingResult =
@@ -32,27 +33,34 @@ export function mapViewerSceneForRenderer(payload: unknown): MappingResult {
     return Object.freeze({ id: `site-${index}:0:0:0`, siteIndex: index, ref, species, element: species, label: String(site.label), occupancy, position, canonicalPosition: position, fractionalPosition, radius, color });
   });
 
-  const bonds: RenderBond[] = (Array.isArray(payload.scene.bonds) ? payload.scene.bonds : [])
-    .filter(isRecord)
-    .map((bond) => ({ from: Number(bond.from), to: Number(bond.to) }))
-    .sort((left, right) => left.from - right.from || left.to - right.to)
-    .flatMap((bond) => {
-      const start = positions.get(bond.from);
-      const end = positions.get(bond.to);
-      if (!start || !end || vectorDistance(start, end) <= 1e-9) return [];
-      const fromRef = Object.freeze({ siteIndex: bond.from, imageOffset: Object.freeze([0,0,0]) as ImageOffset });
-      const toRef = Object.freeze({ siteIndex: bond.to, imageOffset: Object.freeze([0,0,0]) as ImageOffset });
-      return [Object.freeze({ id: `bond-${bond.from}-${bond.to}`, fromSiteIndex: bond.from, toSiteIndex: bond.to, fromRef, toRef, start, end })];
-    });
-
   const vectors = payload.scene.lattice.vectors;
   if (!Array.isArray(vectors) || vectors.length !== 3 || !vectors.every(finiteTriplet)) return { ok: false, validation };
   const latticeMatrix: ValidatedRenderScene["lattice"]["matrix"] = Object.freeze([tuple(vectors[0]), tuple(vectors[1]), tuple(vectors[2])]);
+  const periodic = payload.version === "viewer_scene.v2";
+  const bonds: RenderBond[] = (Array.isArray(payload.scene.bonds) ? payload.scene.bonds : [])
+    .filter(isRecord)
+    .map((bond) => periodic && isRecord(bond.from) && isRecord(bond.to)
+      ? ({ id:String(bond.id), from:Number(bond.from.site_index), to:Number(bond.to.site_index), fromOffset:offset(bond.from.image_offset), toOffset:offset(bond.to.image_offset), distance:Number(bond.distance_angstrom), displacement:tuple(bond.displacement_cartesian), source:String(bond.source) as RenderBond["source"], authoritative:bond.authoritative===true })
+      : ({ id:`bond-${Number(bond.from)}-${Number(bond.to)}`, from:Number(bond.from), to:Number(bond.to), fromOffset:[0,0,0] as ImageOffset, toOffset:[0,0,0] as ImageOffset, distance:Number(bond.distance ?? 0), displacement:null, source:"legacy_same_cell" as const, authoritative:false }))
+    .sort((left, right) => left.from - right.from || left.to - right.to || compareOffset(left.toOffset,right.toOffset))
+    .flatMap((bond) => {
+      const canonicalStart = positions.get(bond.from);
+      const canonicalEnd = positions.get(bond.to);
+      const start = canonicalStart ? translateCartesian(canonicalStart,bond.fromOffset,latticeMatrix) : null;
+      const end = canonicalEnd ? translateCartesian(canonicalEnd,bond.toOffset,latticeMatrix) : null;
+      if (!start || !end || vectorDistance(start, end) <= 1e-9) return [];
+      const fromRef = Object.freeze({ siteIndex: bond.from, imageOffset: bond.fromOffset });
+      const toRef = Object.freeze({ siteIndex: bond.to, imageOffset: bond.toOffset });
+      const displacementCartesian = bond.displacement ?? Object.freeze([end[0]-start[0],end[1]-start[1],end[2]-start[2]]) as RenderVector3;
+      return [Object.freeze({ id: bond.id, fromSiteIndex: bond.from, toSiteIndex: bond.to, fromRef, toRef, start, end, displacementCartesian, distanceAngstrom: bond.distance || vectorDistance(start,end), source:bond.source, authoritative:bond.authoritative })];
+    });
   const source = isRecord(payload.source) ? payload.source : {};
   const metadata = isRecord(payload.metadata) ? payload.metadata : {};
+  const warnings = [...validation.warnings];
+  if (!periodic && bonds.length > 0) warnings.push("VIEWER_SCENE_LEGACY_SAME_CELL_TOPOLOGY");
   const scene: ValidatedRenderScene = Object.freeze({
-    contractVersion: "viewer_scene.v1",
-    schemaVersion: "phase10f8.viewer_scene.v1",
+    contractVersion: periodic ? "viewer_scene.v2" : "viewer_scene.v1",
+    schemaVersion: periodic ? "phase10f18.viewer_scene.v2" : "phase10f8.viewer_scene.v1",
     atoms: Object.freeze(atoms),
     bonds: Object.freeze(bonds),
     lattice: Object.freeze({ matrix: latticeMatrix }),
@@ -64,10 +72,13 @@ export function mapViewerSceneForRenderer(payload: unknown): MappingResult {
       parser: safeText(source.parser),
     }),
     formula: safeText(metadata.formula) || "structure",
-    warnings: Object.freeze([...validation.warnings]),
+    warnings: Object.freeze(warnings),
   });
   return { ok: true, scene, validation };
 }
+
+function offset(value: unknown): ImageOffset { return finiteTriplet(value) ? Object.freeze(value.map(Number)) as ImageOffset : Object.freeze([0,0,0]); }
+function compareOffset(a:ImageOffset,b:ImageOffset){return a[0]-b[0]||a[1]-b[1]||a[2]-b[2];}
 
 function safeText(value: unknown) {
   return typeof value === "string" ? value.slice(0, 256) : "";

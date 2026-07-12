@@ -1,0 +1,1735 @@
+{
+  "api": {
+    "analysis_plan": {
+      "analysisPlan": {
+        "assumptions": [],
+        "datasetId": "dataset_triclinic_boundary_bond",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_triclinic_boundary_bond",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 1.3,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Generate canonical viewer_scene.v2 artifacts for the minimal interactive structure viewer.",
+            "reason": "Live adapter evidence through the selected formal viewer identity.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_3d"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "analysisPlanJson": {
+        "assumptions": [],
+        "datasetId": "dataset_triclinic_boundary_bond",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_triclinic_boundary_bond",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 1.3,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Generate canonical viewer_scene.v2 artifacts for the minimal interactive structure viewer.",
+            "reason": "Live adapter evidence through the selected formal viewer identity.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_3d"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "analysis_plan_json": {
+        "assumptions": [],
+        "datasetId": "dataset_triclinic_boundary_bond",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_triclinic_boundary_bond",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 1.3,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Generate canonical viewer_scene.v2 artifacts for the minimal interactive structure viewer.",
+            "reason": "Live adapter evidence through the selected formal viewer identity.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_3d"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "createdAt": "2026-07-12T10:19:58.406170+00:00",
+      "createdBy": "user_local",
+      "datasetId": "dataset_triclinic_boundary_bond",
+      "id": "plan_eda0b33a2daa4e20b7016a63",
+      "jobId": "job_3e6f2fea39174a10844d68fd",
+      "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+      "planId": "plan_eda0b33a2daa4e20b7016a63",
+      "planSource": "llm",
+      "plan_hash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+      "plannerProvider": "mock",
+      "profileId": "profile_triclinic_boundary_bond",
+      "projectId": "project_10f15",
+      "updatedAt": "2026-07-12T10:19:58.406170+00:00",
+      "validationStatus": "validated"
+    },
+    "artifacts": [
+      {
+        "bucket": null,
+        "content": {
+          "caps": {
+            "max_bonds": 2048,
+            "max_cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "max_scene_json_bytes": 1000000,
+            "max_sites": 256,
+            "max_species": 32
+          },
+          "kind": "viewer_scene",
+          "metadata": {
+            "formula": "Si",
+            "preview_mode": "json_only",
+            "renderer_required": false,
+            "site_count": 2,
+            "species": [
+              "Si"
+            ],
+            "species_count": 1,
+            "structure_id": "structure_1",
+            "title": "Viewer Scene Artifact"
+          },
+          "provenance": {
+            "deterministic": true,
+            "fixture": false,
+            "official_pass_claim": false,
+            "phase": "10F-18",
+            "provenance_label": "adapter_generated",
+            "tool_id": "structure.viewer_3d"
+          },
+          "scene": {
+            "bonds": [
+              {
+                "authoritative": false,
+                "displacement_cartesian": [
+                  0.15,
+                  -0.15,
+                  0.17
+                ],
+                "distance_angstrom": 0.271846,
+                "from": {
+                  "image_offset": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "site_index": 0
+                },
+                "id": "bond:0:0,0,0->1:1,-1,1",
+                "source": "distance_cutoff",
+                "to": {
+                  "image_offset": [
+                    1,
+                    -1,
+                    1
+                  ],
+                  "site_index": 1
+                }
+              }
+            ],
+            "cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "coordinate_basis": "cartesian_angstrom",
+            "lattice": {
+              "parameters": {
+                "a": 2.0,
+                "alpha": 75.381771,
+                "b": 2.012461,
+                "beta": 76.954012,
+                "c": 1.772005,
+                "gamma": 63.434949
+              },
+              "pbc": [
+                true,
+                true,
+                true
+              ],
+              "vectors": [
+                [
+                  2.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.9,
+                  1.8,
+                  0.0
+                ],
+                [
+                  0.4,
+                  0.3,
+                  1.7
+                ]
+              ]
+            },
+            "sites": [
+              {
+                "element": "Si",
+                "frac": [
+                  0.95,
+                  0.05,
+                  0.95
+                ],
+                "index": 0,
+                "label": "Si1",
+                "occupancy": 1.0,
+                "style": {
+                  "color": "#f0c8a0",
+                  "radius": 1.0
+                },
+                "xyz": [
+                  2.325,
+                  0.375,
+                  1.615
+                ]
+              },
+              {
+                "element": "Si",
+                "frac": [
+                  0.05,
+                  0.95,
+                  0.05
+                ],
+                "index": 1,
+                "label": "Si2",
+                "occupancy": 1.0,
+                "style": {
+                  "color": "#f0c8a0",
+                  "radius": 1.0
+                },
+                "xyz": [
+                  0.975,
+                  1.725,
+                  0.085
+                ]
+              }
+            ],
+            "style": {
+              "background": "transparent",
+              "camera_preset": "auto",
+              "representation": "ball_and_stick",
+              "style_preset": "default"
+            }
+          },
+          "schema_version": "phase10f18.viewer_scene.v2",
+          "security": {
+            "artifact_supplied_js_allowed": false,
+            "contains_javascript": false,
+            "external_urls": [],
+            "external_urls_allowed": false,
+            "html_allowed": false,
+            "remote_assets_allowed": false,
+            "renderer_required": false
+          },
+          "source": {
+            "filename": "structures",
+            "parser": "pymatgen.Structure",
+            "parser_version": "2026.5.4",
+            "resource_id": "dataset_triclinic_boundary_bond",
+            "resource_type": "normalized_object",
+            "tool_id": "structure.viewer_3d"
+          },
+          "validation": {
+            "caps_enforced": true,
+            "errors": [],
+            "external_resources_detected": false,
+            "finite_numbers": true,
+            "scriptable_fields_detected": false,
+            "status": "passed_with_warnings",
+            "truncated": false,
+            "validated_in_phase": "10F-18"
+          },
+          "version": "viewer_scene.v2",
+          "warnings": [
+            {
+              "code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+              "message": "Bonds are bounded distance candidates for preview metadata only."
+            }
+          ]
+        },
+        "contentHash": "db8bd9e69c47cdb7297ecc591b6ea9b81ff498a8a5d81d6cc0e59e5e3d36f4ed",
+        "contentType": "application/json",
+        "datasetId": "dataset_triclinic_boundary_bond",
+        "id": "call_job_3e6f2fea39174a10844d68fd_step_001-structure_json",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "metadata": {
+          "adapterVersion": "1.0.0",
+          "bucket": null,
+          "createdAt": "2026-07-12T10:19:58.425147+00:00",
+          "inputHashes": [
+            "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+          ],
+          "paramsHash": "07abb259144127d23e6503b89026abd3fcca696fecd9fc7c1c082425ed12fb78",
+          "profileId": null,
+          "provenance": {
+            "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+            "planId": "plan_eda0b33a2daa4e20b7016a63",
+            "planSource": "llm",
+            "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_3d",
+          "toolVersion": "0.1.0"
+        },
+        "name": "viewer_scene.json",
+        "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+        "planId": "plan_eda0b33a2daa4e20b7016a63",
+        "previewKey": null,
+        "projectId": "project_10f15",
+        "provenance": {
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "sha256": "db8bd9e69c47cdb7297ecc591b6ea9b81ff498a8a5d81d6cc0e59e5e3d36f4ed",
+        "sizeBytes": 2295,
+        "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/viewer_scene.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+        "type": "structure_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "artifact_id": "viewer_scene",
+          "artifact_kind": "viewer_scene",
+          "artifact_version": "viewer_scene.v2",
+          "artifacts": [
+            {
+              "kind": "viewer_scene",
+              "media_type": "application/json",
+              "path": "viewer_scene.json",
+              "required": true,
+              "sha256": "db8bd9e69c47cdb7297ecc591b6ea9b81ff498a8a5d81d6cc0e59e5e3d36f4ed",
+              "size_bytes": 2295
+            },
+            {
+              "kind": "manifest",
+              "media_type": "application/json",
+              "path": "viewer_scene_manifest.json",
+              "required": true
+            },
+            {
+              "kind": "summary",
+              "media_type": "text/markdown",
+              "path": "summary.md",
+              "required": true
+            },
+            {
+              "kind": "recipe",
+              "media_type": "application/json",
+              "path": "recipe.json",
+              "required": true
+            }
+          ],
+          "entry_artifact": "viewer_scene.json",
+          "executable_assets": "none",
+          "expected_caps": {
+            "max_bonds": 2048,
+            "max_cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "max_scene_json_bytes": 1000000,
+            "max_sites": 256,
+            "max_species": 32
+          },
+          "expected_errors": [],
+          "expected_validation_state": "valid_with_warnings",
+          "expected_warnings": [
+            "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+          ],
+          "external_resources": "none",
+          "fixture_source": "adapter_generated",
+          "preview_mode": "json_only",
+          "renderer_required": false,
+          "schema_version": "phase10f9.viewer_scene_manifest.v1",
+          "security": {
+            "artifact_supplied_js_allowed": false,
+            "contains_javascript": false,
+            "external_urls": [],
+            "external_urls_allowed": false,
+            "html_allowed": false,
+            "remote_assets_allowed": false,
+            "renderer_required": false
+          },
+          "tool_id": "structure.viewer_3d"
+        },
+        "contentHash": "5f947cea2bbf122bfe92955fd556fac3b4a82c96362fc8a6d60ece6fb352bc66",
+        "contentType": "application/json",
+        "datasetId": "dataset_triclinic_boundary_bond",
+        "id": "call_job_3e6f2fea39174a10844d68fd_step_001-table_json",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "metadata": {
+          "adapterVersion": "1.0.0",
+          "bucket": null,
+          "createdAt": "2026-07-12T10:19:58.428148+00:00",
+          "inputHashes": [
+            "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+          ],
+          "paramsHash": "07abb259144127d23e6503b89026abd3fcca696fecd9fc7c1c082425ed12fb78",
+          "profileId": null,
+          "provenance": {
+            "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+            "planId": "plan_eda0b33a2daa4e20b7016a63",
+            "planSource": "llm",
+            "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_3d",
+          "toolVersion": "0.1.0"
+        },
+        "name": "viewer_scene_manifest.json",
+        "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+        "planId": "plan_eda0b33a2daa4e20b7016a63",
+        "previewKey": null,
+        "projectId": "project_10f15",
+        "provenance": {
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "sha256": "5f947cea2bbf122bfe92955fd556fac3b4a82c96362fc8a6d60ece6fb352bc66",
+        "sizeBytes": 1312,
+        "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/viewer_scene_manifest.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+        "type": "table_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": "# Viewer Scene Artifact\n\n## Input\n- source resource: normalized_object\n- parser: pymatgen.Structure\n- formula: Si\n- site count: 2\n- species count: 1\n\n## Scene\n- contract version: viewer_scene.v2\n- coordinate basis: cartesian_angstrom\n- site count: 2\n- periodic bond count: 1\n- cross-boundary bond count: 1\n- bond source policy: distance_cutoff\n- bond topology authoritative: false\n- lattice included: True\n- cell expansion: [1, 1, 1]\n\n## Caps and Warnings\n- max sites: 256\n- max bonds: 2048\n- max species: 32\n- truncation status: False\n- warnings: VIEWER_SCENE_BONDS_NON_AUTHORITATIVE\n\n## Preview\n- inert JSON preview supported\n- validated client renderer supported\n- renderer code is not embedded in this artifact\n\n## Security\n- no artifact JavaScript\n- no HTML payload\n- no external URLs\n- no remote textures\n- no renderer bundle or executable asset in the artifact\n\n## Deferred\n- CrystalNN/VoronoiNN authoritative coordination\n- bond order and valence\n- trajectory and phonon animation\n",
+        "contentHash": "899c5b3a64ee27381cda01c340cb497fd90947fc90c1e3adcf4d32600051c4d8",
+        "contentType": "application/json",
+        "datasetId": "dataset_triclinic_boundary_bond",
+        "id": "call_job_3e6f2fea39174a10844d68fd_step_001-summary_md",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "metadata": {
+          "adapterVersion": "1.0.0",
+          "bucket": null,
+          "createdAt": "2026-07-12T10:19:58.430145+00:00",
+          "inputHashes": [
+            "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+          ],
+          "paramsHash": "07abb259144127d23e6503b89026abd3fcca696fecd9fc7c1c082425ed12fb78",
+          "profileId": null,
+          "provenance": {
+            "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+            "planId": "plan_eda0b33a2daa4e20b7016a63",
+            "planSource": "llm",
+            "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_3d",
+          "toolVersion": "0.1.0"
+        },
+        "name": "summary.md",
+        "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+        "planId": "plan_eda0b33a2daa4e20b7016a63",
+        "previewKey": null,
+        "projectId": "project_10f15",
+        "provenance": {
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "sha256": "899c5b3a64ee27381cda01c340cb497fd90947fc90c1e3adcf4d32600051c4d8",
+        "sizeBytes": 989,
+        "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/summary.md",
+        "storageProvider": "local",
+        "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+        "type": "summary_md",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "artifactTypes": [
+            "recipe_json",
+            "structure_json",
+            "summary_md",
+            "table_json"
+          ],
+          "artifacts": [
+            "viewer_scene.json",
+            "viewer_scene_manifest.json",
+            "summary.md",
+            "recipe.json"
+          ],
+          "caps": {
+            "max_bonds": 2048,
+            "max_cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "max_scene_json_bytes": 1000000,
+            "max_sites": 256,
+            "max_species": 32
+          },
+          "contract_version": "viewer_scene.v2",
+          "dependencies": {
+            "aseVersion": "3.29.0",
+            "new_dependencies_added": false,
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0"
+          },
+          "deterministic": true,
+          "generation_steps": [
+            "parse_structure",
+            "normalize_lattice",
+            "normalize_species",
+            "normalize_site_indices",
+            "normalize_coordinates",
+            "derive_bounded_periodic_bonds",
+            "apply_caps",
+            "build_warnings",
+            "build_provenance",
+            "build_security_metadata",
+            "validate_viewer_scene_v1",
+            "write_inert_json_artifacts"
+          ],
+          "input_resource_reference": {
+            "dataset_id": "dataset_triclinic_boundary_bond",
+            "input_hashes": [
+              "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+            ]
+          },
+          "name": "Viewer Scene Artifact",
+          "normalized_params": {
+            "bond_cutoff_angstrom": 1.3,
+            "camera_preset": "auto",
+            "cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "coordinate_basis": "cartesian_angstrom",
+            "include_bonds": true,
+            "include_cartesian_positions": true,
+            "include_fractional_positions": true,
+            "max_bonds": 2048,
+            "max_sites": 256,
+            "style_preset": "default"
+          },
+          "parser": "pymatgen.Structure",
+          "periodic_bond_schema": "phase10f18.viewer_scene.v2",
+          "recipeId": "recipe_call_job_3e6f2fea39174a10844d68fd_step_001",
+          "renderer_included": false,
+          "schemaVersion": "0.1",
+          "schema_version": "phase10f12.viewer_scene.recipe.v1",
+          "toolId": "structure.viewer_3d",
+          "tool_id": "structure.viewer_3d"
+        },
+        "contentHash": "cbeecece5dbcdffcf32d30c86075102b3820b0cb8d245a8a9b45e469868e2af3",
+        "contentType": "application/json",
+        "datasetId": "dataset_triclinic_boundary_bond",
+        "id": "call_job_3e6f2fea39174a10844d68fd_step_001-recipe_json",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "metadata": {
+          "adapterVersion": "1.0.0",
+          "bucket": null,
+          "createdAt": "2026-07-12T10:19:58.439154+00:00",
+          "inputHashes": [
+            "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+          ],
+          "paramsHash": "07abb259144127d23e6503b89026abd3fcca696fecd9fc7c1c082425ed12fb78",
+          "profileId": null,
+          "provenance": {
+            "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+            "planId": "plan_eda0b33a2daa4e20b7016a63",
+            "planSource": "llm",
+            "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_3d",
+          "toolVersion": "0.1.0"
+        },
+        "name": "recipe.json",
+        "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+        "planId": "plan_eda0b33a2daa4e20b7016a63",
+        "previewKey": null,
+        "projectId": "project_10f15",
+        "provenance": {
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "sha256": "cbeecece5dbcdffcf32d30c86075102b3820b0cb8d245a8a9b45e469868e2af3",
+        "sizeBytes": 1571,
+        "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/recipe.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+        "type": "recipe_json",
+        "version": "1"
+      }
+    ],
+    "events": [
+      {
+        "createdAt": "2026-07-12T10:19:58.407162+00:00",
+        "eventType": "job.created",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0001",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "payload": {
+          "datasetId": "dataset_triclinic_boundary_bond",
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "projectId": "project_10f15"
+        },
+        "progress": 0.0,
+        "seq": 1,
+        "status": "info"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.407162+00:00",
+        "eventType": "plan.persisted",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0002",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "plannerProvider": "mock"
+        },
+        "progress": 0.0,
+        "seq": 2,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.407162+00:00",
+        "eventType": "job.running",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0003",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Queue worker started job.",
+        "payload": {},
+        "progress": 0.0,
+        "seq": 3,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.407162+00:00",
+        "eventType": "plan.loaded",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0004",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm"
+        },
+        "progress": 0.05,
+        "seq": 4,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.408165+00:00",
+        "eventType": "tool.started",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0005",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Started tool structure.viewer_3d.",
+        "payload": {
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "stepId": "step_001",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "progress": 0.0,
+        "seq": 5,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.426149+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0006",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Artifact ready: viewer_scene.json",
+        "payload": {
+          "artifactId": "call_job_3e6f2fea39174a10844d68fd_step_001-structure_json",
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/viewer_scene.json",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001"
+        },
+        "progress": null,
+        "seq": 6,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.428148+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0007",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Artifact ready: viewer_scene_manifest.json",
+        "payload": {
+          "artifactId": "call_job_3e6f2fea39174a10844d68fd_step_001-table_json",
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/viewer_scene_manifest.json",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001"
+        },
+        "progress": null,
+        "seq": 7,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.430145+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0008",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Artifact ready: summary.md",
+        "payload": {
+          "artifactId": "call_job_3e6f2fea39174a10844d68fd_step_001-summary_md",
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/summary.md",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001"
+        },
+        "progress": null,
+        "seq": 8,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.440147+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0009",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Artifact ready: recipe.json",
+        "payload": {
+          "artifactId": "call_job_3e6f2fea39174a10844d68fd_step_001-recipe_json",
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/recipe.json",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001"
+        },
+        "progress": null,
+        "seq": 9,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.440147+00:00",
+        "eventType": "tool.completed",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0010",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Completed tool structure.viewer_3d.",
+        "payload": {
+          "artifactIds": [
+            "call_job_3e6f2fea39174a10844d68fd_step_001-structure_json",
+            "call_job_3e6f2fea39174a10844d68fd_step_001-table_json",
+            "call_job_3e6f2fea39174a10844d68fd_step_001-summary_md",
+            "call_job_3e6f2fea39174a10844d68fd_step_001-recipe_json"
+          ],
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001"
+        },
+        "progress": 1.0,
+        "seq": 10,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:58.440147+00:00",
+        "eventType": "job.completed",
+        "id": "evt_job_3e6f2fea39174a10844d68fd_0011",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "message": "Job completed.",
+        "payload": {
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "planSource": "llm"
+        },
+        "progress": 1.0,
+        "seq": 11,
+        "status": "success"
+      }
+    ],
+    "job": {
+      "analysisPlan": {
+        "assumptions": [],
+        "datasetId": "dataset_triclinic_boundary_bond",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_triclinic_boundary_bond",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 1.3,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Generate canonical viewer_scene.v2 artifacts for the minimal interactive structure viewer.",
+            "reason": "Live adapter evidence through the selected formal viewer identity.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_3d"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "artifactCount": 4,
+      "createdBy": "user_local",
+      "datasetId": "dataset_triclinic_boundary_bond",
+      "eventCount": 11,
+      "id": "job_3e6f2fea39174a10844d68fd",
+      "jobId": "job_3e6f2fea39174a10844d68fd",
+      "kind": "analysis",
+      "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+      "planId": "plan_eda0b33a2daa4e20b7016a63",
+      "planSource": "llm",
+      "plan_id": "plan_eda0b33a2daa4e20b7016a63",
+      "projectId": "project_10f15",
+      "provenance": {
+        "binding": "jobs.plan_id -> analysis_plans.id",
+        "fallbackUsed": false,
+        "loadedFrom": "persisted_analysis_plan",
+        "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+        "planId": "plan_eda0b33a2daa4e20b7016a63",
+        "planSource": "llm",
+        "toolPath": "Tool Registry + Adapter"
+      },
+      "status": "completed",
+      "toolCallCount": 1,
+      "updatedAt": "2026-07-12T10:19:58.440147+00:00",
+      "validationStatus": "validated"
+    },
+    "result": {
+      "artifactCount": 4,
+      "artifacts": [
+        {
+          "bucket": null,
+          "content": {
+            "caps": {
+              "max_bonds": 2048,
+              "max_cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "max_scene_json_bytes": 1000000,
+              "max_sites": 256,
+              "max_species": 32
+            },
+            "kind": "viewer_scene",
+            "metadata": {
+              "formula": "Si",
+              "preview_mode": "json_only",
+              "renderer_required": false,
+              "site_count": 2,
+              "species": [
+                "Si"
+              ],
+              "species_count": 1,
+              "structure_id": "structure_1",
+              "title": "Viewer Scene Artifact"
+            },
+            "provenance": {
+              "deterministic": true,
+              "fixture": false,
+              "official_pass_claim": false,
+              "phase": "10F-18",
+              "provenance_label": "adapter_generated",
+              "tool_id": "structure.viewer_3d"
+            },
+            "scene": {
+              "bonds": [
+                {
+                  "authoritative": false,
+                  "displacement_cartesian": [
+                    0.15,
+                    -0.15,
+                    0.17
+                  ],
+                  "distance_angstrom": 0.271846,
+                  "from": {
+                    "image_offset": [
+                      0,
+                      0,
+                      0
+                    ],
+                    "site_index": 0
+                  },
+                  "id": "bond:0:0,0,0->1:1,-1,1",
+                  "source": "distance_cutoff",
+                  "to": {
+                    "image_offset": [
+                      1,
+                      -1,
+                      1
+                    ],
+                    "site_index": 1
+                  }
+                }
+              ],
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "lattice": {
+                "parameters": {
+                  "a": 2.0,
+                  "alpha": 75.381771,
+                  "b": 2.012461,
+                  "beta": 76.954012,
+                  "c": 1.772005,
+                  "gamma": 63.434949
+                },
+                "pbc": [
+                  true,
+                  true,
+                  true
+                ],
+                "vectors": [
+                  [
+                    2.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.9,
+                    1.8,
+                    0.0
+                  ],
+                  [
+                    0.4,
+                    0.3,
+                    1.7
+                  ]
+                ]
+              },
+              "sites": [
+                {
+                  "element": "Si",
+                  "frac": [
+                    0.95,
+                    0.05,
+                    0.95
+                  ],
+                  "index": 0,
+                  "label": "Si1",
+                  "occupancy": 1.0,
+                  "style": {
+                    "color": "#f0c8a0",
+                    "radius": 1.0
+                  },
+                  "xyz": [
+                    2.325,
+                    0.375,
+                    1.615
+                  ]
+                },
+                {
+                  "element": "Si",
+                  "frac": [
+                    0.05,
+                    0.95,
+                    0.05
+                  ],
+                  "index": 1,
+                  "label": "Si2",
+                  "occupancy": 1.0,
+                  "style": {
+                    "color": "#f0c8a0",
+                    "radius": 1.0
+                  },
+                  "xyz": [
+                    0.975,
+                    1.725,
+                    0.085
+                  ]
+                }
+              ],
+              "style": {
+                "background": "transparent",
+                "camera_preset": "auto",
+                "representation": "ball_and_stick",
+                "style_preset": "default"
+              }
+            },
+            "schema_version": "phase10f18.viewer_scene.v2",
+            "security": {
+              "artifact_supplied_js_allowed": false,
+              "contains_javascript": false,
+              "external_urls": [],
+              "external_urls_allowed": false,
+              "html_allowed": false,
+              "remote_assets_allowed": false,
+              "renderer_required": false
+            },
+            "source": {
+              "filename": "structures",
+              "parser": "pymatgen.Structure",
+              "parser_version": "2026.5.4",
+              "resource_id": "dataset_triclinic_boundary_bond",
+              "resource_type": "normalized_object",
+              "tool_id": "structure.viewer_3d"
+            },
+            "validation": {
+              "caps_enforced": true,
+              "errors": [],
+              "external_resources_detected": false,
+              "finite_numbers": true,
+              "scriptable_fields_detected": false,
+              "status": "passed_with_warnings",
+              "truncated": false,
+              "validated_in_phase": "10F-18"
+            },
+            "version": "viewer_scene.v2",
+            "warnings": [
+              {
+                "code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+                "message": "Bonds are bounded distance candidates for preview metadata only."
+              }
+            ]
+          },
+          "contentHash": "db8bd9e69c47cdb7297ecc591b6ea9b81ff498a8a5d81d6cc0e59e5e3d36f4ed",
+          "contentType": "application/json",
+          "datasetId": "dataset_triclinic_boundary_bond",
+          "id": "call_job_3e6f2fea39174a10844d68fd_step_001-structure_json",
+          "jobId": "job_3e6f2fea39174a10844d68fd",
+          "metadata": {
+            "adapterVersion": "1.0.0",
+            "bucket": null,
+            "createdAt": "2026-07-12T10:19:58.425147+00:00",
+            "inputHashes": [
+              "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+            ],
+            "paramsHash": "07abb259144127d23e6503b89026abd3fcca696fecd9fc7c1c082425ed12fb78",
+            "profileId": null,
+            "provenance": {
+              "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+              "planId": "plan_eda0b33a2daa4e20b7016a63",
+              "planSource": "llm",
+              "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+              "toolId": "structure.viewer_3d"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_3d",
+            "toolVersion": "0.1.0"
+          },
+          "name": "viewer_scene.json",
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "previewKey": null,
+          "projectId": "project_10f15",
+          "provenance": {
+            "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+            "planId": "plan_eda0b33a2daa4e20b7016a63",
+            "planSource": "llm",
+            "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "sha256": "db8bd9e69c47cdb7297ecc591b6ea9b81ff498a8a5d81d6cc0e59e5e3d36f4ed",
+          "sizeBytes": 2295,
+          "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/viewer_scene.json",
+          "storageProvider": "local",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+          "type": "structure_json",
+          "version": "1"
+        },
+        {
+          "bucket": null,
+          "content": {
+            "artifact_id": "viewer_scene",
+            "artifact_kind": "viewer_scene",
+            "artifact_version": "viewer_scene.v2",
+            "artifacts": [
+              {
+                "kind": "viewer_scene",
+                "media_type": "application/json",
+                "path": "viewer_scene.json",
+                "required": true,
+                "sha256": "db8bd9e69c47cdb7297ecc591b6ea9b81ff498a8a5d81d6cc0e59e5e3d36f4ed",
+                "size_bytes": 2295
+              },
+              {
+                "kind": "manifest",
+                "media_type": "application/json",
+                "path": "viewer_scene_manifest.json",
+                "required": true
+              },
+              {
+                "kind": "summary",
+                "media_type": "text/markdown",
+                "path": "summary.md",
+                "required": true
+              },
+              {
+                "kind": "recipe",
+                "media_type": "application/json",
+                "path": "recipe.json",
+                "required": true
+              }
+            ],
+            "entry_artifact": "viewer_scene.json",
+            "executable_assets": "none",
+            "expected_caps": {
+              "max_bonds": 2048,
+              "max_cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "max_scene_json_bytes": 1000000,
+              "max_sites": 256,
+              "max_species": 32
+            },
+            "expected_errors": [],
+            "expected_validation_state": "valid_with_warnings",
+            "expected_warnings": [
+              "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+            ],
+            "external_resources": "none",
+            "fixture_source": "adapter_generated",
+            "preview_mode": "json_only",
+            "renderer_required": false,
+            "schema_version": "phase10f9.viewer_scene_manifest.v1",
+            "security": {
+              "artifact_supplied_js_allowed": false,
+              "contains_javascript": false,
+              "external_urls": [],
+              "external_urls_allowed": false,
+              "html_allowed": false,
+              "remote_assets_allowed": false,
+              "renderer_required": false
+            },
+            "tool_id": "structure.viewer_3d"
+          },
+          "contentHash": "5f947cea2bbf122bfe92955fd556fac3b4a82c96362fc8a6d60ece6fb352bc66",
+          "contentType": "application/json",
+          "datasetId": "dataset_triclinic_boundary_bond",
+          "id": "call_job_3e6f2fea39174a10844d68fd_step_001-table_json",
+          "jobId": "job_3e6f2fea39174a10844d68fd",
+          "metadata": {
+            "adapterVersion": "1.0.0",
+            "bucket": null,
+            "createdAt": "2026-07-12T10:19:58.428148+00:00",
+            "inputHashes": [
+              "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+            ],
+            "paramsHash": "07abb259144127d23e6503b89026abd3fcca696fecd9fc7c1c082425ed12fb78",
+            "profileId": null,
+            "provenance": {
+              "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+              "planId": "plan_eda0b33a2daa4e20b7016a63",
+              "planSource": "llm",
+              "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+              "toolId": "structure.viewer_3d"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_3d",
+            "toolVersion": "0.1.0"
+          },
+          "name": "viewer_scene_manifest.json",
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "previewKey": null,
+          "projectId": "project_10f15",
+          "provenance": {
+            "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+            "planId": "plan_eda0b33a2daa4e20b7016a63",
+            "planSource": "llm",
+            "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "sha256": "5f947cea2bbf122bfe92955fd556fac3b4a82c96362fc8a6d60ece6fb352bc66",
+          "sizeBytes": 1312,
+          "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/viewer_scene_manifest.json",
+          "storageProvider": "local",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+          "type": "table_json",
+          "version": "1"
+        },
+        {
+          "bucket": null,
+          "content": "# Viewer Scene Artifact\n\n## Input\n- source resource: normalized_object\n- parser: pymatgen.Structure\n- formula: Si\n- site count: 2\n- species count: 1\n\n## Scene\n- contract version: viewer_scene.v2\n- coordinate basis: cartesian_angstrom\n- site count: 2\n- periodic bond count: 1\n- cross-boundary bond count: 1\n- bond source policy: distance_cutoff\n- bond topology authoritative: false\n- lattice included: True\n- cell expansion: [1, 1, 1]\n\n## Caps and Warnings\n- max sites: 256\n- max bonds: 2048\n- max species: 32\n- truncation status: False\n- warnings: VIEWER_SCENE_BONDS_NON_AUTHORITATIVE\n\n## Preview\n- inert JSON preview supported\n- validated client renderer supported\n- renderer code is not embedded in this artifact\n\n## Security\n- no artifact JavaScript\n- no HTML payload\n- no external URLs\n- no remote textures\n- no renderer bundle or executable asset in the artifact\n\n## Deferred\n- CrystalNN/VoronoiNN authoritative coordination\n- bond order and valence\n- trajectory and phonon animation\n",
+          "contentHash": "899c5b3a64ee27381cda01c340cb497fd90947fc90c1e3adcf4d32600051c4d8",
+          "contentType": "application/json",
+          "datasetId": "dataset_triclinic_boundary_bond",
+          "id": "call_job_3e6f2fea39174a10844d68fd_step_001-summary_md",
+          "jobId": "job_3e6f2fea39174a10844d68fd",
+          "metadata": {
+            "adapterVersion": "1.0.0",
+            "bucket": null,
+            "createdAt": "2026-07-12T10:19:58.430145+00:00",
+            "inputHashes": [
+              "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+            ],
+            "paramsHash": "07abb259144127d23e6503b89026abd3fcca696fecd9fc7c1c082425ed12fb78",
+            "profileId": null,
+            "provenance": {
+              "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+              "planId": "plan_eda0b33a2daa4e20b7016a63",
+              "planSource": "llm",
+              "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+              "toolId": "structure.viewer_3d"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_3d",
+            "toolVersion": "0.1.0"
+          },
+          "name": "summary.md",
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "previewKey": null,
+          "projectId": "project_10f15",
+          "provenance": {
+            "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+            "planId": "plan_eda0b33a2daa4e20b7016a63",
+            "planSource": "llm",
+            "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "sha256": "899c5b3a64ee27381cda01c340cb497fd90947fc90c1e3adcf4d32600051c4d8",
+          "sizeBytes": 989,
+          "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/summary.md",
+          "storageProvider": "local",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+          "type": "summary_md",
+          "version": "1"
+        },
+        {
+          "bucket": null,
+          "content": {
+            "artifactTypes": [
+              "recipe_json",
+              "structure_json",
+              "summary_md",
+              "table_json"
+            ],
+            "artifacts": [
+              "viewer_scene.json",
+              "viewer_scene_manifest.json",
+              "summary.md",
+              "recipe.json"
+            ],
+            "caps": {
+              "max_bonds": 2048,
+              "max_cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "max_scene_json_bytes": 1000000,
+              "max_sites": 256,
+              "max_species": 32
+            },
+            "contract_version": "viewer_scene.v2",
+            "dependencies": {
+              "aseVersion": "3.29.0",
+              "new_dependencies_added": false,
+              "plotlyVersion": "6.8.0",
+              "pymatgenVersion": "2026.5.4",
+              "pymatvizVersion": "0.18.0"
+            },
+            "deterministic": true,
+            "generation_steps": [
+              "parse_structure",
+              "normalize_lattice",
+              "normalize_species",
+              "normalize_site_indices",
+              "normalize_coordinates",
+              "derive_bounded_periodic_bonds",
+              "apply_caps",
+              "build_warnings",
+              "build_provenance",
+              "build_security_metadata",
+              "validate_viewer_scene_v1",
+              "write_inert_json_artifacts"
+            ],
+            "input_resource_reference": {
+              "dataset_id": "dataset_triclinic_boundary_bond",
+              "input_hashes": [
+                "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+              ]
+            },
+            "name": "Viewer Scene Artifact",
+            "normalized_params": {
+              "bond_cutoff_angstrom": 1.3,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "parser": "pymatgen.Structure",
+            "periodic_bond_schema": "phase10f18.viewer_scene.v2",
+            "recipeId": "recipe_call_job_3e6f2fea39174a10844d68fd_step_001",
+            "renderer_included": false,
+            "schemaVersion": "0.1",
+            "schema_version": "phase10f12.viewer_scene.recipe.v1",
+            "toolId": "structure.viewer_3d",
+            "tool_id": "structure.viewer_3d"
+          },
+          "contentHash": "cbeecece5dbcdffcf32d30c86075102b3820b0cb8d245a8a9b45e469868e2af3",
+          "contentType": "application/json",
+          "datasetId": "dataset_triclinic_boundary_bond",
+          "id": "call_job_3e6f2fea39174a10844d68fd_step_001-recipe_json",
+          "jobId": "job_3e6f2fea39174a10844d68fd",
+          "metadata": {
+            "adapterVersion": "1.0.0",
+            "bucket": null,
+            "createdAt": "2026-07-12T10:19:58.439154+00:00",
+            "inputHashes": [
+              "f4821e1c354842100900eed8ae06983757815e08d8f8cfb4bcba16699caf35d1"
+            ],
+            "paramsHash": "07abb259144127d23e6503b89026abd3fcca696fecd9fc7c1c082425ed12fb78",
+            "profileId": null,
+            "provenance": {
+              "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+              "planId": "plan_eda0b33a2daa4e20b7016a63",
+              "planSource": "llm",
+              "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+              "toolId": "structure.viewer_3d"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_3d",
+            "toolVersion": "0.1.0"
+          },
+          "name": "recipe.json",
+          "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+          "planId": "plan_eda0b33a2daa4e20b7016a63",
+          "previewKey": null,
+          "projectId": "project_10f15",
+          "provenance": {
+            "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+            "planId": "plan_eda0b33a2daa4e20b7016a63",
+            "planSource": "llm",
+            "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "sha256": "cbeecece5dbcdffcf32d30c86075102b3820b0cb8d245a8a9b45e469868e2af3",
+          "sizeBytes": 1571,
+          "storageKey": "projects/project_10f15/jobs/job_3e6f2fea39174a10844d68fd/tool_calls/call_job_3e6f2fea39174a10844d68fd_step_001/recipe.json",
+          "storageProvider": "local",
+          "toolCallId": "call_job_3e6f2fea39174a10844d68fd_step_001",
+          "type": "recipe_json",
+          "version": "1"
+        }
+      ],
+      "jobId": "job_3e6f2fea39174a10844d68fd",
+      "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+      "planId": "plan_eda0b33a2daa4e20b7016a63",
+      "provenance": {
+        "binding": "jobs.plan_id -> analysis_plans.id",
+        "fallbackUsed": false,
+        "loadedFrom": "persisted_analysis_plan",
+        "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+        "planId": "plan_eda0b33a2daa4e20b7016a63",
+        "planSource": "llm",
+        "toolPath": "Tool Registry + Adapter"
+      },
+      "status": "completed",
+      "summary": "Job completed with 1 ToolCall(s) and 4 Artifact(s).",
+      "toolCallCount": 1
+    },
+    "tool_calls": [
+      {
+        "artifactIds": [
+          "call_job_3e6f2fea39174a10844d68fd_step_001-structure_json",
+          "call_job_3e6f2fea39174a10844d68fd_step_001-table_json",
+          "call_job_3e6f2fea39174a10844d68fd_step_001-summary_md",
+          "call_job_3e6f2fea39174a10844d68fd_step_001-recipe_json"
+        ],
+        "attempt": 1,
+        "id": "call_job_3e6f2fea39174a10844d68fd_step_001",
+        "idempotencyKey": "job_3e6f2fea39174a10844d68fd:step_001",
+        "inputSummary": "Params: bond_cutoff_angstrom, camera_preset, cell_expansion, coordinate_basis, include_bonds, include_cartesian_positions, include_fractional_positions, max_bonds, max_sites, style_preset",
+        "jobId": "job_3e6f2fea39174a10844d68fd",
+        "outputSummary": "4 artifact(s)",
+        "params": {
+          "bond_cutoff_angstrom": 1.3,
+          "camera_preset": "auto",
+          "cell_expansion": [
+            1,
+            1,
+            1
+          ],
+          "coordinate_basis": "cartesian_angstrom",
+          "include_bonds": true,
+          "include_cartesian_positions": true,
+          "include_fractional_positions": true,
+          "max_bonds": 2048,
+          "max_sites": 256,
+          "style_preset": "default"
+        },
+        "planHash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+        "planId": "plan_eda0b33a2daa4e20b7016a63",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.viewer_3d"
+      }
+    ]
+  },
+  "artifact_audit": {
+    "artifact_names": [
+      "viewer_scene.json",
+      "viewer_scene_manifest.json",
+      "summary.md",
+      "recipe.json"
+    ],
+    "canonical_validator": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "manifest_present": true,
+    "manifest_schema_version": "phase10f9.viewer_scene_manifest.v1",
+    "manifest_validator": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "recipe_present": true,
+    "recipe_tool_id": "structure.viewer_3d",
+    "scene_schema_version": "phase10f18.viewer_scene.v2",
+    "security": {
+      "artifact_supplied_js_allowed": false,
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false,
+      "html_allowed": false,
+      "remote_assets_allowed": false,
+      "renderer_required": false
+    },
+    "summary_mentions_json_only": false,
+    "summary_mentions_renderer_deferred": false,
+    "summary_present": true,
+    "viewer_scene_present": true,
+    "warnings": [
+      "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+    ]
+  },
+  "case_id": "triclinic_boundary_bond",
+  "planner": {
+    "job_id": "job_3e6f2fea39174a10844d68fd",
+    "mode": "mock_fixed_plan",
+    "ok": true,
+    "plan_hash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+    "plan_id": "plan_eda0b33a2daa4e20b7016a63",
+    "real_llm_used": false,
+    "selected_tool": "structure.viewer_3d"
+  },
+  "preview_expectation": {
+    "bond_count": 1,
+    "case_id": "triclinic_boundary_bond",
+    "coordinate_basis": "cartesian_angstrom",
+    "manifest_preview": "json_only",
+    "renderer_required": false,
+    "schema_version": "phase10f18.viewer_scene.v2",
+    "site_count": 2,
+    "species_count": 1,
+    "validation_state": "passed_with_warnings",
+    "viewer_scene_preview": "json_only",
+    "warnings": [
+      "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+    ]
+  },
+  "request": {
+    "body": {
+      "datasetId": "dataset_triclinic_boundary_bond",
+      "enqueue": true,
+      "profileId": "profile_triclinic_boundary_bond",
+      "projectId": "project_10f15",
+      "userPrompt": "Open this triclinic crystal and inspect its periodic topology."
+    },
+    "endpoint": "/planner/jobs",
+    "method": "POST"
+  },
+  "source_assertion": {
+    "adapter_generated": true,
+    "static_fixture_used": false,
+    "tool_id": "structure.viewer_3d"
+  },
+  "worker": {
+    "artifact_count": 4,
+    "event_count": 11,
+    "job_id": "job_3e6f2fea39174a10844d68fd",
+    "message": "job completed",
+    "plan_hash": "9e212257c8d41a6ea3137c8a00d064a85f2a4d435271cbcba2fc2636ee863d8a",
+    "plan_id": "plan_eda0b33a2daa4e20b7016a63",
+    "status": "completed",
+    "tool_call_count": 1
+  }
+}

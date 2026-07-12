@@ -10,7 +10,12 @@ from typing import Any
 VIEWER_SCENE_KIND = "viewer_scene"
 VIEWER_SCENE_VERSION = "viewer_scene.v1"
 VIEWER_SCENE_SCHEMA_VERSION = "phase10f8.viewer_scene.v1"
+VIEWER_SCENE_PERIODIC_VERSION = "viewer_scene.v2"
+VIEWER_SCENE_PERIODIC_SCHEMA_VERSION = "phase10f18.viewer_scene.v2"
 VIEWER_SCENE_MANIFEST_SCHEMA_VERSION = "phase10f9.viewer_scene_manifest.v1"
+PERIODIC_BOND_SOURCES = frozenset({"distance_cutoff", "explicit_input"})
+PERIODIC_BOND_OFFSET_LIMIT = 3
+PERIODIC_BOND_DISTANCE_TOLERANCE = 1e-5
 
 DEFAULT_VIEWER_SCENE_CAPS: dict[str, Any] = {
     "max_sites": 256,
@@ -99,7 +104,7 @@ def validate_viewer_scene(payload: dict[str, Any], *, raw_size_bytes: int | None
     if not isinstance(scene, dict):
         errors.append("VIEWER_SCENE_SCENE_REQUIRED")
     else:
-        _validate_scene(scene, caps, errors)
+        _validate_scene(scene, caps, errors, version=payload.get("version"))
 
     for warning in _warning_codes(payload.get("warnings")):
         if warning not in warnings:
@@ -119,7 +124,7 @@ def validate_viewer_scene_manifest(payload: dict[str, Any]) -> ViewerSceneValida
 
     if payload.get("artifact_kind") != VIEWER_SCENE_KIND:
         errors.append("VIEWER_SCENE_MANIFEST_KIND_INVALID")
-    if payload.get("artifact_version") != VIEWER_SCENE_VERSION:
+    if payload.get("artifact_version") not in {VIEWER_SCENE_VERSION, VIEWER_SCENE_PERIODIC_VERSION}:
         errors.append("VIEWER_SCENE_MANIFEST_VERSION_INVALID")
     if payload.get("schema_version") != VIEWER_SCENE_MANIFEST_SCHEMA_VERSION:
         errors.append("VIEWER_SCENE_MANIFEST_SCHEMA_VERSION_INVALID")
@@ -158,9 +163,17 @@ def _require_top_level_fields(payload: dict[str, Any], errors: list[str]) -> Non
 def _validate_identity(payload: dict[str, Any], errors: list[str]) -> None:
     if payload.get("kind") != VIEWER_SCENE_KIND:
         errors.append("VIEWER_SCENE_KIND_INVALID")
-    if payload.get("version") != VIEWER_SCENE_VERSION:
+    version = payload.get("version")
+    schema_version = payload.get("schema_version")
+    allowed_versions = {VIEWER_SCENE_VERSION, VIEWER_SCENE_PERIODIC_VERSION}
+    allowed_schemas = {VIEWER_SCENE_SCHEMA_VERSION, VIEWER_SCENE_PERIODIC_SCHEMA_VERSION}
+    if version not in allowed_versions:
         errors.append("VIEWER_SCENE_VERSION_INVALID")
-    if payload.get("schema_version") != VIEWER_SCENE_SCHEMA_VERSION:
+    if schema_version not in allowed_schemas:
+        errors.append("VIEWER_SCENE_SCHEMA_VERSION_INVALID")
+    if version in allowed_versions and schema_version in allowed_schemas and (
+        (version == VIEWER_SCENE_VERSION) != (schema_version == VIEWER_SCENE_SCHEMA_VERSION)
+    ):
         errors.append("VIEWER_SCENE_SCHEMA_VERSION_INVALID")
 
 
@@ -191,7 +204,7 @@ def _effective_caps(caps_payload: Any) -> dict[str, Any]:
     return caps
 
 
-def _validate_scene(scene: dict[str, Any], caps: dict[str, Any], errors: list[str]) -> None:
+def _validate_scene(scene: dict[str, Any], caps: dict[str, Any], errors: list[str], *, version: Any) -> None:
     if scene.get("coordinate_basis") != "cartesian_angstrom":
         errors.append("VIEWER_SCENE_COORDINATE_BASIS_INVALID")
 
@@ -228,10 +241,13 @@ def _validate_scene(scene: dict[str, Any], caps: dict[str, Any], errors: list[st
         errors.append("VIEWER_SCENE_SPECIES_LIMIT_EXCEEDED")
 
     lattice = scene.get("lattice")
+    lattice_vectors: Any = None
     if not isinstance(lattice, dict):
         errors.append("VIEWER_SCENE_LATTICE_REQUIRED")
     elif not _is_finite_matrix_3x3(lattice.get("vectors")):
         errors.append("VIEWER_SCENE_LATTICE_VECTOR_INVALID")
+    else:
+        lattice_vectors = lattice["vectors"]
 
     bonds = scene.get("bonds", [])
     if bonds is None:
@@ -241,14 +257,17 @@ def _validate_scene(scene: dict[str, Any], caps: dict[str, Any], errors: list[st
         bonds = []
     if len(bonds) > caps["max_bonds"]:
         errors.append("VIEWER_SCENE_BOND_LIMIT_EXCEEDED")
-    for bond in bonds:
-        if not isinstance(bond, dict):
-            errors.append("VIEWER_SCENE_BOND_SHAPE_INVALID")
-            continue
-        if bond.get("from") not in site_indices or bond.get("to") not in site_indices:
-            errors.append("VIEWER_SCENE_BOND_ENDPOINT_INVALID")
-        if "distance" in bond and not _is_finite_number(bond.get("distance")):
-            errors.append("VIEWER_SCENE_BOND_DISTANCE_INVALID")
+    if version == VIEWER_SCENE_PERIODIC_VERSION:
+        _validate_periodic_bonds(bonds, sites, site_indices, lattice_vectors, errors)
+    else:
+        for bond in bonds:
+            if not isinstance(bond, dict):
+                errors.append("VIEWER_SCENE_BOND_SHAPE_INVALID")
+                continue
+            if bond.get("from") not in site_indices or bond.get("to") not in site_indices:
+                errors.append("VIEWER_SCENE_BOND_ENDPOINT_INVALID")
+            if "distance" in bond and not _is_finite_number(bond.get("distance")):
+                errors.append("VIEWER_SCENE_BOND_DISTANCE_INVALID")
 
     expansion = scene.get("cell_expansion", [1, 1, 1])
     if not _is_cell_expansion(expansion):
@@ -257,6 +276,110 @@ def _validate_scene(scene: dict[str, Any], caps: dict[str, Any], errors: list[st
         for value, cap in zip(expansion, caps["max_cell_expansion"], strict=True):
             if value > cap:
                 errors.append("VIEWER_SCENE_CELL_EXPANSION_LIMIT_EXCEEDED")
+
+
+def _validate_periodic_bonds(
+    bonds: list[Any],
+    sites: list[Any],
+    site_indices: set[int],
+    lattice: Any,
+    errors: list[str],
+) -> None:
+    positions = {
+        site["index"]: site["xyz"]
+        for site in sites
+        if isinstance(site, dict) and isinstance(site.get("index"), int) and _is_finite_triplet(site.get("xyz"))
+    }
+    seen: set[str] = set()
+    seen_topology: set[tuple[int, int, int, int, int]] = set()
+    allowed_fields = {
+        "id", "from", "to", "displacement_cartesian", "distance_angstrom", "source", "authoritative"
+    }
+    for bond in bonds:
+        if not isinstance(bond, dict):
+            errors.append("VIEWER_SCENE_BOND_SHAPE_INVALID")
+            continue
+        if set(bond) - allowed_fields:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_FIELD_INVALID")
+        from_endpoint = bond.get("from")
+        to_endpoint = bond.get("to")
+        if not _valid_periodic_endpoint(from_endpoint, site_indices) or not _valid_periodic_endpoint(to_endpoint, site_indices):
+            errors.append("VIEWER_SCENE_BOND_ENDPOINT_INVALID")
+            continue
+        if from_endpoint["image_offset"] != [0, 0, 0]:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_SOURCE_IMAGE_INVALID")
+        if from_endpoint["site_index"] == to_endpoint["site_index"] and to_endpoint["image_offset"] == [0, 0, 0]:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_ZERO_SELF_INVALID")
+        bond_id = bond.get("id")
+        if not isinstance(bond_id, str) or not bond_id or len(bond_id) > 160:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_ID_INVALID")
+        elif bond_id in seen:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_DUPLICATE")
+        else:
+            seen.add(bond_id)
+        topology_key = _periodic_topology_key(
+            from_endpoint["site_index"], to_endpoint["site_index"], to_endpoint["image_offset"]
+        )
+        if topology_key != (from_endpoint["site_index"], to_endpoint["site_index"], *to_endpoint["image_offset"]):
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_NOT_CANONICAL")
+        if topology_key in seen_topology:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_DUPLICATE")
+        else:
+            seen_topology.add(topology_key)
+        expected_id = f"bond:{topology_key[0]}:0,0,0->{topology_key[1]}:{topology_key[2]},{topology_key[3]},{topology_key[4]}"
+        if bond_id != expected_id:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_ID_INVALID")
+        if bond.get("source") not in PERIODIC_BOND_SOURCES:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_SOURCE_INVALID")
+        if not isinstance(bond.get("authoritative"), bool):
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_AUTHORITATIVE_INVALID")
+        elif bond.get("source") == "distance_cutoff" and bond["authoritative"] is not False:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_AUTHORITATIVE_INVALID")
+        distance = bond.get("distance_angstrom")
+        displacement = bond.get("displacement_cartesian")
+        if not _is_finite_number(distance) or float(distance) < 0:
+            errors.append("VIEWER_SCENE_BOND_DISTANCE_INVALID")
+        if not _is_finite_triplet(displacement):
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_DISPLACEMENT_INVALID")
+        if lattice is None or not _is_finite_matrix_3x3(lattice):
+            continue
+        start = positions.get(from_endpoint["site_index"])
+        target = positions.get(to_endpoint["site_index"])
+        if start is None or target is None:
+            continue
+        offset = to_endpoint["image_offset"]
+        expected = [
+            target[axis] - start[axis] + sum(offset[row] * lattice[row][axis] for row in range(3))
+            for axis in range(3)
+        ]
+        if _is_finite_triplet(displacement) and any(abs(displacement[axis] - expected[axis]) > PERIODIC_BOND_DISTANCE_TOLERANCE for axis in range(3)):
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_DISPLACEMENT_MISMATCH")
+        expected_distance = math.hypot(*expected)
+        if _is_finite_number(distance) and abs(float(distance) - expected_distance) > PERIODIC_BOND_DISTANCE_TOLERANCE:
+            errors.append("VIEWER_SCENE_PERIODIC_BOND_DISTANCE_MISMATCH")
+
+
+def _valid_periodic_endpoint(value: Any, site_indices: set[int]) -> bool:
+    return (
+        isinstance(value, dict)
+        and set(value) == {"site_index", "image_offset"}
+        and value.get("site_index") in site_indices
+        and _is_image_offset(value.get("image_offset"))
+    )
+
+
+def _is_image_offset(value: Any) -> bool:
+    return (
+        isinstance(value, list)
+        and len(value) == 3
+        and all(isinstance(item, int) and not isinstance(item, bool) and abs(item) <= PERIODIC_BOND_OFFSET_LIMIT for item in value)
+    )
+
+
+def _periodic_topology_key(from_index: int, to_index: int, offset: list[int]) -> tuple[int, int, int, int, int]:
+    forward = (from_index, to_index, offset[0], offset[1], offset[2])
+    reverse = (to_index, from_index, -offset[0], -offset[1], -offset[2])
+    return min(forward, reverse)
 
 
 def _scan_for_forbidden_content(

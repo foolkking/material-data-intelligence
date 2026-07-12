@@ -1,0 +1,124 @@
+{
+  "schema_version": "phase10f18.periodic_topology_browser_matrix.v1",
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "150.0.7871.115",
+      "pass": true,
+      "neighbor": {
+        "selectedSite": 1,
+        "selectedOffset": "[1, 0, 0]",
+        "neighborSite": 0,
+        "offset": "[0, 0, 0]",
+        "distance": "0.400000",
+        "source": "distance_cutoff",
+        "authoritative": "no"
+      },
+      "metrics": {
+        "atomCount": 4,
+        "bondCount": 1,
+        "speciesCount": 1,
+        "instancedMeshCount": 1,
+        "latticeEdgeCount": 12,
+        "drawCalls": 4,
+        "geometries": 3,
+        "materials": 3,
+        "triangles": 2080,
+        "lines": 1573,
+        "initializationMs": 13.7,
+        "firstFrameMs": 32.6
+      },
+      "triclinic": {
+        "bondCount": 1,
+        "metrics": {
+          "atomCount": 16,
+          "bondCount": 1,
+          "speciesCount": 1,
+          "instancedMeshCount": 1,
+          "latticeEdgeCount": 12,
+          "drawCalls": 3,
+          "geometries": 3,
+          "materials": 3,
+          "triangles": 8320,
+          "lines": 13,
+          "initializationMs": 15.4,
+          "firstFrameMs": 35.2
+        }
+      },
+      "mobile": {
+        "offset": "[0, 0, 0]",
+        "overflow": false,
+        "external": 0
+      },
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "pass": true,
+      "neighbor": {
+        "selectedSite": 1,
+        "selectedOffset": "[1, 0, 0]",
+        "neighborSite": 0,
+        "offset": "[0, 0, 0]",
+        "distance": "0.400000",
+        "source": "distance_cutoff",
+        "authoritative": "no"
+      },
+      "metrics": {
+        "atomCount": 4,
+        "bondCount": 1,
+        "speciesCount": 1,
+        "instancedMeshCount": 1,
+        "latticeEdgeCount": 12,
+        "drawCalls": 4,
+        "geometries": 3,
+        "materials": 3,
+        "triangles": 2080,
+        "lines": 1573,
+        "initializationMs": 9,
+        "firstFrameMs": 68
+      },
+      "triclinic": null,
+      "mobile": null,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "pass": true,
+      "neighbor": {
+        "selectedSite": 1,
+        "selectedOffset": "[1, 0, 0]",
+        "neighborSite": 0,
+        "offset": "[0, 0, 0]",
+        "distance": "0.400000",
+        "source": "distance_cutoff",
+        "authoritative": "no"
+      },
+      "metrics": {
+        "atomCount": 4,
+        "bondCount": 1,
+        "speciesCount": 1,
+        "instancedMeshCount": 1,
+        "latticeEdgeCount": 12,
+        "drawCalls": 4,
+        "geometries": 3,
+        "materials": 3,
+        "triangles": 2080,
+        "lines": 1573,
+        "initializationMs": 13,
+        "firstFrameMs": 71
+      },
+      "triclinic": null,
+      "mobile": null,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ]
+}

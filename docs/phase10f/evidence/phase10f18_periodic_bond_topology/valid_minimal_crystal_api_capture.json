@@ -1,0 +1,1735 @@
+{
+  "api": {
+    "analysis_plan": {
+      "analysisPlan": {
+        "assumptions": [],
+        "datasetId": "dataset_valid_minimal_crystal",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_valid_minimal_crystal",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 3.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Generate canonical viewer_scene.v2 artifacts for the minimal interactive structure viewer.",
+            "reason": "Live adapter evidence through the selected formal viewer identity.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_3d"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "analysisPlanJson": {
+        "assumptions": [],
+        "datasetId": "dataset_valid_minimal_crystal",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_valid_minimal_crystal",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 3.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Generate canonical viewer_scene.v2 artifacts for the minimal interactive structure viewer.",
+            "reason": "Live adapter evidence through the selected formal viewer identity.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_3d"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "analysis_plan_json": {
+        "assumptions": [],
+        "datasetId": "dataset_valid_minimal_crystal",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_valid_minimal_crystal",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 3.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Generate canonical viewer_scene.v2 artifacts for the minimal interactive structure viewer.",
+            "reason": "Live adapter evidence through the selected formal viewer identity.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_3d"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "createdAt": "2026-07-12T10:19:55.485346+00:00",
+      "createdBy": "user_local",
+      "datasetId": "dataset_valid_minimal_crystal",
+      "id": "plan_89c0d954812d435b9148da2c",
+      "jobId": "job_ffd458d61dd9487590623206",
+      "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+      "planId": "plan_89c0d954812d435b9148da2c",
+      "planSource": "llm",
+      "plan_hash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+      "plannerProvider": "mock",
+      "profileId": "profile_valid_minimal_crystal",
+      "projectId": "project_10f15",
+      "updatedAt": "2026-07-12T10:19:55.486346+00:00",
+      "validationStatus": "validated"
+    },
+    "artifacts": [
+      {
+        "bucket": null,
+        "content": {
+          "caps": {
+            "max_bonds": 2048,
+            "max_cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "max_scene_json_bytes": 1000000,
+            "max_sites": 256,
+            "max_species": 32
+          },
+          "kind": "viewer_scene",
+          "metadata": {
+            "formula": "Si",
+            "preview_mode": "json_only",
+            "renderer_required": false,
+            "site_count": 2,
+            "species": [
+              "Si"
+            ],
+            "species_count": 1,
+            "structure_id": "structure_1",
+            "title": "Viewer Scene Artifact"
+          },
+          "provenance": {
+            "deterministic": true,
+            "fixture": false,
+            "official_pass_claim": false,
+            "phase": "10F-18",
+            "provenance_label": "adapter_generated",
+            "tool_id": "structure.viewer_3d"
+          },
+          "scene": {
+            "bonds": [
+              {
+                "authoritative": false,
+                "displacement_cartesian": [
+                  1.3575,
+                  1.3575,
+                  1.3575
+                ],
+                "distance_angstrom": 2.351259,
+                "from": {
+                  "image_offset": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "site_index": 0
+                },
+                "id": "bond:0:0,0,0->1:0,0,0",
+                "source": "distance_cutoff",
+                "to": {
+                  "image_offset": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "site_index": 1
+                }
+              }
+            ],
+            "cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "coordinate_basis": "cartesian_angstrom",
+            "lattice": {
+              "parameters": {
+                "a": 5.43,
+                "alpha": 90.0,
+                "b": 5.43,
+                "beta": 90.0,
+                "c": 5.43,
+                "gamma": 90.0
+              },
+              "pbc": [
+                true,
+                true,
+                true
+              ],
+              "vectors": [
+                [
+                  5.43,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  5.43,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  5.43
+                ]
+              ]
+            },
+            "sites": [
+              {
+                "element": "Si",
+                "frac": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "index": 0,
+                "label": "Si1",
+                "occupancy": 1.0,
+                "style": {
+                  "color": "#f0c8a0",
+                  "radius": 1.0
+                },
+                "xyz": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
+              },
+              {
+                "element": "Si",
+                "frac": [
+                  0.25,
+                  0.25,
+                  0.25
+                ],
+                "index": 1,
+                "label": "Si2",
+                "occupancy": 1.0,
+                "style": {
+                  "color": "#f0c8a0",
+                  "radius": 1.0
+                },
+                "xyz": [
+                  1.3575,
+                  1.3575,
+                  1.3575
+                ]
+              }
+            ],
+            "style": {
+              "background": "transparent",
+              "camera_preset": "auto",
+              "representation": "ball_and_stick",
+              "style_preset": "default"
+            }
+          },
+          "schema_version": "phase10f18.viewer_scene.v2",
+          "security": {
+            "artifact_supplied_js_allowed": false,
+            "contains_javascript": false,
+            "external_urls": [],
+            "external_urls_allowed": false,
+            "html_allowed": false,
+            "remote_assets_allowed": false,
+            "renderer_required": false
+          },
+          "source": {
+            "filename": "structures",
+            "parser": "pymatgen.Structure",
+            "parser_version": "2026.5.4",
+            "resource_id": "dataset_valid_minimal_crystal",
+            "resource_type": "normalized_object",
+            "tool_id": "structure.viewer_3d"
+          },
+          "validation": {
+            "caps_enforced": true,
+            "errors": [],
+            "external_resources_detected": false,
+            "finite_numbers": true,
+            "scriptable_fields_detected": false,
+            "status": "passed_with_warnings",
+            "truncated": false,
+            "validated_in_phase": "10F-18"
+          },
+          "version": "viewer_scene.v2",
+          "warnings": [
+            {
+              "code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+              "message": "Bonds are bounded distance candidates for preview metadata only."
+            }
+          ]
+        },
+        "contentHash": "1fa592aeedcdf8b1685a6765bdfda9d063acdc3f358ecfed9829d623d36164f8",
+        "contentType": "application/json",
+        "datasetId": "dataset_valid_minimal_crystal",
+        "id": "call_job_ffd458d61dd9487590623206_step_001-structure_json",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "metadata": {
+          "adapterVersion": "1.0.0",
+          "bucket": null,
+          "createdAt": "2026-07-12T10:19:55.505344+00:00",
+          "inputHashes": [
+            "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+          ],
+          "paramsHash": "5959b1319d8b55e0a39b0de523ad9a7bcbb3eed71787390bbe856e9e09eb780d",
+          "profileId": null,
+          "provenance": {
+            "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+            "planId": "plan_89c0d954812d435b9148da2c",
+            "planSource": "llm",
+            "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_3d",
+          "toolVersion": "0.1.0"
+        },
+        "name": "viewer_scene.json",
+        "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+        "planId": "plan_89c0d954812d435b9148da2c",
+        "previewKey": null,
+        "projectId": "project_10f15",
+        "provenance": {
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "sha256": "1fa592aeedcdf8b1685a6765bdfda9d063acdc3f358ecfed9829d623d36164f8",
+        "sizeBytes": 2271,
+        "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/viewer_scene.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+        "type": "structure_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "artifact_id": "viewer_scene",
+          "artifact_kind": "viewer_scene",
+          "artifact_version": "viewer_scene.v2",
+          "artifacts": [
+            {
+              "kind": "viewer_scene",
+              "media_type": "application/json",
+              "path": "viewer_scene.json",
+              "required": true,
+              "sha256": "1fa592aeedcdf8b1685a6765bdfda9d063acdc3f358ecfed9829d623d36164f8",
+              "size_bytes": 2271
+            },
+            {
+              "kind": "manifest",
+              "media_type": "application/json",
+              "path": "viewer_scene_manifest.json",
+              "required": true
+            },
+            {
+              "kind": "summary",
+              "media_type": "text/markdown",
+              "path": "summary.md",
+              "required": true
+            },
+            {
+              "kind": "recipe",
+              "media_type": "application/json",
+              "path": "recipe.json",
+              "required": true
+            }
+          ],
+          "entry_artifact": "viewer_scene.json",
+          "executable_assets": "none",
+          "expected_caps": {
+            "max_bonds": 2048,
+            "max_cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "max_scene_json_bytes": 1000000,
+            "max_sites": 256,
+            "max_species": 32
+          },
+          "expected_errors": [],
+          "expected_validation_state": "valid_with_warnings",
+          "expected_warnings": [
+            "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+          ],
+          "external_resources": "none",
+          "fixture_source": "adapter_generated",
+          "preview_mode": "json_only",
+          "renderer_required": false,
+          "schema_version": "phase10f9.viewer_scene_manifest.v1",
+          "security": {
+            "artifact_supplied_js_allowed": false,
+            "contains_javascript": false,
+            "external_urls": [],
+            "external_urls_allowed": false,
+            "html_allowed": false,
+            "remote_assets_allowed": false,
+            "renderer_required": false
+          },
+          "tool_id": "structure.viewer_3d"
+        },
+        "contentHash": "33ed19a884337205e63460ba82986590d7b6602cae6c948108114e73b5d6065d",
+        "contentType": "application/json",
+        "datasetId": "dataset_valid_minimal_crystal",
+        "id": "call_job_ffd458d61dd9487590623206_step_001-table_json",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "metadata": {
+          "adapterVersion": "1.0.0",
+          "bucket": null,
+          "createdAt": "2026-07-12T10:19:55.507347+00:00",
+          "inputHashes": [
+            "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+          ],
+          "paramsHash": "5959b1319d8b55e0a39b0de523ad9a7bcbb3eed71787390bbe856e9e09eb780d",
+          "profileId": null,
+          "provenance": {
+            "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+            "planId": "plan_89c0d954812d435b9148da2c",
+            "planSource": "llm",
+            "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_3d",
+          "toolVersion": "0.1.0"
+        },
+        "name": "viewer_scene_manifest.json",
+        "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+        "planId": "plan_89c0d954812d435b9148da2c",
+        "previewKey": null,
+        "projectId": "project_10f15",
+        "provenance": {
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "sha256": "33ed19a884337205e63460ba82986590d7b6602cae6c948108114e73b5d6065d",
+        "sizeBytes": 1312,
+        "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/viewer_scene_manifest.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+        "type": "table_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": "# Viewer Scene Artifact\n\n## Input\n- source resource: normalized_object\n- parser: pymatgen.Structure\n- formula: Si\n- site count: 2\n- species count: 1\n\n## Scene\n- contract version: viewer_scene.v2\n- coordinate basis: cartesian_angstrom\n- site count: 2\n- periodic bond count: 1\n- cross-boundary bond count: 0\n- bond source policy: distance_cutoff\n- bond topology authoritative: false\n- lattice included: True\n- cell expansion: [1, 1, 1]\n\n## Caps and Warnings\n- max sites: 256\n- max bonds: 2048\n- max species: 32\n- truncation status: False\n- warnings: VIEWER_SCENE_BONDS_NON_AUTHORITATIVE\n\n## Preview\n- inert JSON preview supported\n- validated client renderer supported\n- renderer code is not embedded in this artifact\n\n## Security\n- no artifact JavaScript\n- no HTML payload\n- no external URLs\n- no remote textures\n- no renderer bundle or executable asset in the artifact\n\n## Deferred\n- CrystalNN/VoronoiNN authoritative coordination\n- bond order and valence\n- trajectory and phonon animation\n",
+        "contentHash": "a712371da8e29f24e57e815661ace23d2ed477485de49be06dc3245fa32d6428",
+        "contentType": "application/json",
+        "datasetId": "dataset_valid_minimal_crystal",
+        "id": "call_job_ffd458d61dd9487590623206_step_001-summary_md",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "metadata": {
+          "adapterVersion": "1.0.0",
+          "bucket": null,
+          "createdAt": "2026-07-12T10:19:55.510350+00:00",
+          "inputHashes": [
+            "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+          ],
+          "paramsHash": "5959b1319d8b55e0a39b0de523ad9a7bcbb3eed71787390bbe856e9e09eb780d",
+          "profileId": null,
+          "provenance": {
+            "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+            "planId": "plan_89c0d954812d435b9148da2c",
+            "planSource": "llm",
+            "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_3d",
+          "toolVersion": "0.1.0"
+        },
+        "name": "summary.md",
+        "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+        "planId": "plan_89c0d954812d435b9148da2c",
+        "previewKey": null,
+        "projectId": "project_10f15",
+        "provenance": {
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "sha256": "a712371da8e29f24e57e815661ace23d2ed477485de49be06dc3245fa32d6428",
+        "sizeBytes": 989,
+        "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/summary.md",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+        "type": "summary_md",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "artifactTypes": [
+            "recipe_json",
+            "structure_json",
+            "summary_md",
+            "table_json"
+          ],
+          "artifacts": [
+            "viewer_scene.json",
+            "viewer_scene_manifest.json",
+            "summary.md",
+            "recipe.json"
+          ],
+          "caps": {
+            "max_bonds": 2048,
+            "max_cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "max_scene_json_bytes": 1000000,
+            "max_sites": 256,
+            "max_species": 32
+          },
+          "contract_version": "viewer_scene.v2",
+          "dependencies": {
+            "aseVersion": "3.29.0",
+            "new_dependencies_added": false,
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0"
+          },
+          "deterministic": true,
+          "generation_steps": [
+            "parse_structure",
+            "normalize_lattice",
+            "normalize_species",
+            "normalize_site_indices",
+            "normalize_coordinates",
+            "derive_bounded_periodic_bonds",
+            "apply_caps",
+            "build_warnings",
+            "build_provenance",
+            "build_security_metadata",
+            "validate_viewer_scene_v1",
+            "write_inert_json_artifacts"
+          ],
+          "input_resource_reference": {
+            "dataset_id": "dataset_valid_minimal_crystal",
+            "input_hashes": [
+              "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+            ]
+          },
+          "name": "Viewer Scene Artifact",
+          "normalized_params": {
+            "bond_cutoff_angstrom": 3.0,
+            "camera_preset": "auto",
+            "cell_expansion": [
+              1,
+              1,
+              1
+            ],
+            "coordinate_basis": "cartesian_angstrom",
+            "include_bonds": true,
+            "include_cartesian_positions": true,
+            "include_fractional_positions": true,
+            "max_bonds": 2048,
+            "max_sites": 256,
+            "style_preset": "default"
+          },
+          "parser": "pymatgen.Structure",
+          "periodic_bond_schema": "phase10f18.viewer_scene.v2",
+          "recipeId": "recipe_call_job_ffd458d61dd9487590623206_step_001",
+          "renderer_included": false,
+          "schemaVersion": "0.1",
+          "schema_version": "phase10f12.viewer_scene.recipe.v1",
+          "toolId": "structure.viewer_3d",
+          "tool_id": "structure.viewer_3d"
+        },
+        "contentHash": "d29945f582e89ce6f34ecad2c1d573772eb33a5f02947a84b41d5b330dbc30b0",
+        "contentType": "application/json",
+        "datasetId": "dataset_valid_minimal_crystal",
+        "id": "call_job_ffd458d61dd9487590623206_step_001-recipe_json",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "metadata": {
+          "adapterVersion": "1.0.0",
+          "bucket": null,
+          "createdAt": "2026-07-12T10:19:55.520353+00:00",
+          "inputHashes": [
+            "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+          ],
+          "paramsHash": "5959b1319d8b55e0a39b0de523ad9a7bcbb3eed71787390bbe856e9e09eb780d",
+          "profileId": null,
+          "provenance": {
+            "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+            "planId": "plan_89c0d954812d435b9148da2c",
+            "planSource": "llm",
+            "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "structure.viewer_3d",
+          "toolVersion": "0.1.0"
+        },
+        "name": "recipe.json",
+        "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+        "planId": "plan_89c0d954812d435b9148da2c",
+        "previewKey": null,
+        "projectId": "project_10f15",
+        "provenance": {
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "sha256": "d29945f582e89ce6f34ecad2c1d573772eb33a5f02947a84b41d5b330dbc30b0",
+        "sizeBytes": 1569,
+        "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/recipe.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+        "type": "recipe_json",
+        "version": "1"
+      }
+    ],
+    "events": [
+      {
+        "createdAt": "2026-07-12T10:19:55.487351+00:00",
+        "eventType": "job.created",
+        "id": "evt_job_ffd458d61dd9487590623206_0001",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "payload": {
+          "datasetId": "dataset_valid_minimal_crystal",
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "projectId": "project_10f15"
+        },
+        "progress": 0.0,
+        "seq": 1,
+        "status": "info"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.487351+00:00",
+        "eventType": "plan.persisted",
+        "id": "evt_job_ffd458d61dd9487590623206_0002",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "plannerProvider": "mock"
+        },
+        "progress": 0.0,
+        "seq": 2,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.487351+00:00",
+        "eventType": "job.running",
+        "id": "evt_job_ffd458d61dd9487590623206_0003",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Queue worker started job.",
+        "payload": {},
+        "progress": 0.0,
+        "seq": 3,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.487351+00:00",
+        "eventType": "plan.loaded",
+        "id": "evt_job_ffd458d61dd9487590623206_0004",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm"
+        },
+        "progress": 0.05,
+        "seq": 4,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.488350+00:00",
+        "eventType": "tool.started",
+        "id": "evt_job_ffd458d61dd9487590623206_0005",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Started tool structure.viewer_3d.",
+        "payload": {
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "stepId": "step_001",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+          "toolId": "structure.viewer_3d"
+        },
+        "progress": 0.0,
+        "seq": 5,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.505344+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ffd458d61dd9487590623206_0006",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Artifact ready: viewer_scene.json",
+        "payload": {
+          "artifactId": "call_job_ffd458d61dd9487590623206_step_001-structure_json",
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/viewer_scene.json",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001"
+        },
+        "progress": null,
+        "seq": 6,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.507347+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ffd458d61dd9487590623206_0007",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Artifact ready: viewer_scene_manifest.json",
+        "payload": {
+          "artifactId": "call_job_ffd458d61dd9487590623206_step_001-table_json",
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/viewer_scene_manifest.json",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001"
+        },
+        "progress": null,
+        "seq": 7,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.510350+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ffd458d61dd9487590623206_0008",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Artifact ready: summary.md",
+        "payload": {
+          "artifactId": "call_job_ffd458d61dd9487590623206_step_001-summary_md",
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/summary.md",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001"
+        },
+        "progress": null,
+        "seq": 8,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.521348+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ffd458d61dd9487590623206_0009",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Artifact ready: recipe.json",
+        "payload": {
+          "artifactId": "call_job_ffd458d61dd9487590623206_step_001-recipe_json",
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/recipe.json",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001"
+        },
+        "progress": null,
+        "seq": 9,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.521348+00:00",
+        "eventType": "tool.completed",
+        "id": "evt_job_ffd458d61dd9487590623206_0010",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Completed tool structure.viewer_3d.",
+        "payload": {
+          "artifactIds": [
+            "call_job_ffd458d61dd9487590623206_step_001-structure_json",
+            "call_job_ffd458d61dd9487590623206_step_001-table_json",
+            "call_job_ffd458d61dd9487590623206_step_001-summary_md",
+            "call_job_ffd458d61dd9487590623206_step_001-recipe_json"
+          ],
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001"
+        },
+        "progress": 1.0,
+        "seq": 10,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-12T10:19:55.521348+00:00",
+        "eventType": "job.completed",
+        "id": "evt_job_ffd458d61dd9487590623206_0011",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "message": "Job completed.",
+        "payload": {
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "planSource": "llm"
+        },
+        "progress": 1.0,
+        "seq": 11,
+        "status": "success"
+      }
+    ],
+    "job": {
+      "analysisPlan": {
+        "assumptions": [],
+        "datasetId": "dataset_valid_minimal_crystal",
+        "expectedArtifacts": [
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene.json",
+            "type": "structure_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "viewer_scene_manifest.json",
+            "type": "table_json"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "summary.md",
+            "type": "summary_md"
+          },
+          {
+            "fromStepId": "step_001",
+            "name": "recipe.json",
+            "type": "recipe_json"
+          }
+        ],
+        "goal": "viewer scene live adapter evidence",
+        "profileId": "profile_valid_minimal_crystal",
+        "schemaVersion": "0.1",
+        "steps": [
+          {
+            "constraints": null,
+            "inputRefs": [
+              {
+                "columnName": null,
+                "fieldRole": null,
+                "objectType": "Structure",
+                "ref": "structures",
+                "refType": "normalized_object"
+              }
+            ],
+            "output": {
+              "artifactTypes": [
+                "structure_json",
+                "table_json",
+                "summary_md",
+                "recipe_json"
+              ]
+            },
+            "params": {
+              "bond_cutoff_angstrom": 3.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "purpose": "Generate canonical viewer_scene.v2 artifacts for the minimal interactive structure viewer.",
+            "reason": "Live adapter evidence through the selected formal viewer identity.",
+            "stepId": "step_001",
+            "toolId": "structure.viewer_3d"
+          }
+        ],
+        "toolRegistryVersion": "0.1.0",
+        "warnings": []
+      },
+      "artifactCount": 4,
+      "createdBy": "user_local",
+      "datasetId": "dataset_valid_minimal_crystal",
+      "eventCount": 11,
+      "id": "job_ffd458d61dd9487590623206",
+      "jobId": "job_ffd458d61dd9487590623206",
+      "kind": "analysis",
+      "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+      "planId": "plan_89c0d954812d435b9148da2c",
+      "planSource": "llm",
+      "plan_id": "plan_89c0d954812d435b9148da2c",
+      "projectId": "project_10f15",
+      "provenance": {
+        "binding": "jobs.plan_id -> analysis_plans.id",
+        "fallbackUsed": false,
+        "loadedFrom": "persisted_analysis_plan",
+        "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+        "planId": "plan_89c0d954812d435b9148da2c",
+        "planSource": "llm",
+        "toolPath": "Tool Registry + Adapter"
+      },
+      "status": "completed",
+      "toolCallCount": 1,
+      "updatedAt": "2026-07-12T10:19:55.521348+00:00",
+      "validationStatus": "validated"
+    },
+    "result": {
+      "artifactCount": 4,
+      "artifacts": [
+        {
+          "bucket": null,
+          "content": {
+            "caps": {
+              "max_bonds": 2048,
+              "max_cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "max_scene_json_bytes": 1000000,
+              "max_sites": 256,
+              "max_species": 32
+            },
+            "kind": "viewer_scene",
+            "metadata": {
+              "formula": "Si",
+              "preview_mode": "json_only",
+              "renderer_required": false,
+              "site_count": 2,
+              "species": [
+                "Si"
+              ],
+              "species_count": 1,
+              "structure_id": "structure_1",
+              "title": "Viewer Scene Artifact"
+            },
+            "provenance": {
+              "deterministic": true,
+              "fixture": false,
+              "official_pass_claim": false,
+              "phase": "10F-18",
+              "provenance_label": "adapter_generated",
+              "tool_id": "structure.viewer_3d"
+            },
+            "scene": {
+              "bonds": [
+                {
+                  "authoritative": false,
+                  "displacement_cartesian": [
+                    1.3575,
+                    1.3575,
+                    1.3575
+                  ],
+                  "distance_angstrom": 2.351259,
+                  "from": {
+                    "image_offset": [
+                      0,
+                      0,
+                      0
+                    ],
+                    "site_index": 0
+                  },
+                  "id": "bond:0:0,0,0->1:0,0,0",
+                  "source": "distance_cutoff",
+                  "to": {
+                    "image_offset": [
+                      0,
+                      0,
+                      0
+                    ],
+                    "site_index": 1
+                  }
+                }
+              ],
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "lattice": {
+                "parameters": {
+                  "a": 5.43,
+                  "alpha": 90.0,
+                  "b": 5.43,
+                  "beta": 90.0,
+                  "c": 5.43,
+                  "gamma": 90.0
+                },
+                "pbc": [
+                  true,
+                  true,
+                  true
+                ],
+                "vectors": [
+                  [
+                    5.43,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.0,
+                    5.43,
+                    0.0
+                  ],
+                  [
+                    0.0,
+                    0.0,
+                    5.43
+                  ]
+                ]
+              },
+              "sites": [
+                {
+                  "element": "Si",
+                  "frac": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "index": 0,
+                  "label": "Si1",
+                  "occupancy": 1.0,
+                  "style": {
+                    "color": "#f0c8a0",
+                    "radius": 1.0
+                  },
+                  "xyz": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ]
+                },
+                {
+                  "element": "Si",
+                  "frac": [
+                    0.25,
+                    0.25,
+                    0.25
+                  ],
+                  "index": 1,
+                  "label": "Si2",
+                  "occupancy": 1.0,
+                  "style": {
+                    "color": "#f0c8a0",
+                    "radius": 1.0
+                  },
+                  "xyz": [
+                    1.3575,
+                    1.3575,
+                    1.3575
+                  ]
+                }
+              ],
+              "style": {
+                "background": "transparent",
+                "camera_preset": "auto",
+                "representation": "ball_and_stick",
+                "style_preset": "default"
+              }
+            },
+            "schema_version": "phase10f18.viewer_scene.v2",
+            "security": {
+              "artifact_supplied_js_allowed": false,
+              "contains_javascript": false,
+              "external_urls": [],
+              "external_urls_allowed": false,
+              "html_allowed": false,
+              "remote_assets_allowed": false,
+              "renderer_required": false
+            },
+            "source": {
+              "filename": "structures",
+              "parser": "pymatgen.Structure",
+              "parser_version": "2026.5.4",
+              "resource_id": "dataset_valid_minimal_crystal",
+              "resource_type": "normalized_object",
+              "tool_id": "structure.viewer_3d"
+            },
+            "validation": {
+              "caps_enforced": true,
+              "errors": [],
+              "external_resources_detected": false,
+              "finite_numbers": true,
+              "scriptable_fields_detected": false,
+              "status": "passed_with_warnings",
+              "truncated": false,
+              "validated_in_phase": "10F-18"
+            },
+            "version": "viewer_scene.v2",
+            "warnings": [
+              {
+                "code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+                "message": "Bonds are bounded distance candidates for preview metadata only."
+              }
+            ]
+          },
+          "contentHash": "1fa592aeedcdf8b1685a6765bdfda9d063acdc3f358ecfed9829d623d36164f8",
+          "contentType": "application/json",
+          "datasetId": "dataset_valid_minimal_crystal",
+          "id": "call_job_ffd458d61dd9487590623206_step_001-structure_json",
+          "jobId": "job_ffd458d61dd9487590623206",
+          "metadata": {
+            "adapterVersion": "1.0.0",
+            "bucket": null,
+            "createdAt": "2026-07-12T10:19:55.505344+00:00",
+            "inputHashes": [
+              "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+            ],
+            "paramsHash": "5959b1319d8b55e0a39b0de523ad9a7bcbb3eed71787390bbe856e9e09eb780d",
+            "profileId": null,
+            "provenance": {
+              "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+              "planId": "plan_89c0d954812d435b9148da2c",
+              "planSource": "llm",
+              "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+              "toolId": "structure.viewer_3d"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_3d",
+            "toolVersion": "0.1.0"
+          },
+          "name": "viewer_scene.json",
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "previewKey": null,
+          "projectId": "project_10f15",
+          "provenance": {
+            "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+            "planId": "plan_89c0d954812d435b9148da2c",
+            "planSource": "llm",
+            "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "sha256": "1fa592aeedcdf8b1685a6765bdfda9d063acdc3f358ecfed9829d623d36164f8",
+          "sizeBytes": 2271,
+          "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/viewer_scene.json",
+          "storageProvider": "local",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+          "type": "structure_json",
+          "version": "1"
+        },
+        {
+          "bucket": null,
+          "content": {
+            "artifact_id": "viewer_scene",
+            "artifact_kind": "viewer_scene",
+            "artifact_version": "viewer_scene.v2",
+            "artifacts": [
+              {
+                "kind": "viewer_scene",
+                "media_type": "application/json",
+                "path": "viewer_scene.json",
+                "required": true,
+                "sha256": "1fa592aeedcdf8b1685a6765bdfda9d063acdc3f358ecfed9829d623d36164f8",
+                "size_bytes": 2271
+              },
+              {
+                "kind": "manifest",
+                "media_type": "application/json",
+                "path": "viewer_scene_manifest.json",
+                "required": true
+              },
+              {
+                "kind": "summary",
+                "media_type": "text/markdown",
+                "path": "summary.md",
+                "required": true
+              },
+              {
+                "kind": "recipe",
+                "media_type": "application/json",
+                "path": "recipe.json",
+                "required": true
+              }
+            ],
+            "entry_artifact": "viewer_scene.json",
+            "executable_assets": "none",
+            "expected_caps": {
+              "max_bonds": 2048,
+              "max_cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "max_scene_json_bytes": 1000000,
+              "max_sites": 256,
+              "max_species": 32
+            },
+            "expected_errors": [],
+            "expected_validation_state": "valid_with_warnings",
+            "expected_warnings": [
+              "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+            ],
+            "external_resources": "none",
+            "fixture_source": "adapter_generated",
+            "preview_mode": "json_only",
+            "renderer_required": false,
+            "schema_version": "phase10f9.viewer_scene_manifest.v1",
+            "security": {
+              "artifact_supplied_js_allowed": false,
+              "contains_javascript": false,
+              "external_urls": [],
+              "external_urls_allowed": false,
+              "html_allowed": false,
+              "remote_assets_allowed": false,
+              "renderer_required": false
+            },
+            "tool_id": "structure.viewer_3d"
+          },
+          "contentHash": "33ed19a884337205e63460ba82986590d7b6602cae6c948108114e73b5d6065d",
+          "contentType": "application/json",
+          "datasetId": "dataset_valid_minimal_crystal",
+          "id": "call_job_ffd458d61dd9487590623206_step_001-table_json",
+          "jobId": "job_ffd458d61dd9487590623206",
+          "metadata": {
+            "adapterVersion": "1.0.0",
+            "bucket": null,
+            "createdAt": "2026-07-12T10:19:55.507347+00:00",
+            "inputHashes": [
+              "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+            ],
+            "paramsHash": "5959b1319d8b55e0a39b0de523ad9a7bcbb3eed71787390bbe856e9e09eb780d",
+            "profileId": null,
+            "provenance": {
+              "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+              "planId": "plan_89c0d954812d435b9148da2c",
+              "planSource": "llm",
+              "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+              "toolId": "structure.viewer_3d"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_3d",
+            "toolVersion": "0.1.0"
+          },
+          "name": "viewer_scene_manifest.json",
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "previewKey": null,
+          "projectId": "project_10f15",
+          "provenance": {
+            "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+            "planId": "plan_89c0d954812d435b9148da2c",
+            "planSource": "llm",
+            "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "sha256": "33ed19a884337205e63460ba82986590d7b6602cae6c948108114e73b5d6065d",
+          "sizeBytes": 1312,
+          "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/viewer_scene_manifest.json",
+          "storageProvider": "local",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+          "type": "table_json",
+          "version": "1"
+        },
+        {
+          "bucket": null,
+          "content": "# Viewer Scene Artifact\n\n## Input\n- source resource: normalized_object\n- parser: pymatgen.Structure\n- formula: Si\n- site count: 2\n- species count: 1\n\n## Scene\n- contract version: viewer_scene.v2\n- coordinate basis: cartesian_angstrom\n- site count: 2\n- periodic bond count: 1\n- cross-boundary bond count: 0\n- bond source policy: distance_cutoff\n- bond topology authoritative: false\n- lattice included: True\n- cell expansion: [1, 1, 1]\n\n## Caps and Warnings\n- max sites: 256\n- max bonds: 2048\n- max species: 32\n- truncation status: False\n- warnings: VIEWER_SCENE_BONDS_NON_AUTHORITATIVE\n\n## Preview\n- inert JSON preview supported\n- validated client renderer supported\n- renderer code is not embedded in this artifact\n\n## Security\n- no artifact JavaScript\n- no HTML payload\n- no external URLs\n- no remote textures\n- no renderer bundle or executable asset in the artifact\n\n## Deferred\n- CrystalNN/VoronoiNN authoritative coordination\n- bond order and valence\n- trajectory and phonon animation\n",
+          "contentHash": "a712371da8e29f24e57e815661ace23d2ed477485de49be06dc3245fa32d6428",
+          "contentType": "application/json",
+          "datasetId": "dataset_valid_minimal_crystal",
+          "id": "call_job_ffd458d61dd9487590623206_step_001-summary_md",
+          "jobId": "job_ffd458d61dd9487590623206",
+          "metadata": {
+            "adapterVersion": "1.0.0",
+            "bucket": null,
+            "createdAt": "2026-07-12T10:19:55.510350+00:00",
+            "inputHashes": [
+              "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+            ],
+            "paramsHash": "5959b1319d8b55e0a39b0de523ad9a7bcbb3eed71787390bbe856e9e09eb780d",
+            "profileId": null,
+            "provenance": {
+              "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+              "planId": "plan_89c0d954812d435b9148da2c",
+              "planSource": "llm",
+              "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+              "toolId": "structure.viewer_3d"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_3d",
+            "toolVersion": "0.1.0"
+          },
+          "name": "summary.md",
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "previewKey": null,
+          "projectId": "project_10f15",
+          "provenance": {
+            "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+            "planId": "plan_89c0d954812d435b9148da2c",
+            "planSource": "llm",
+            "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "sha256": "a712371da8e29f24e57e815661ace23d2ed477485de49be06dc3245fa32d6428",
+          "sizeBytes": 989,
+          "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/summary.md",
+          "storageProvider": "local",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+          "type": "summary_md",
+          "version": "1"
+        },
+        {
+          "bucket": null,
+          "content": {
+            "artifactTypes": [
+              "recipe_json",
+              "structure_json",
+              "summary_md",
+              "table_json"
+            ],
+            "artifacts": [
+              "viewer_scene.json",
+              "viewer_scene_manifest.json",
+              "summary.md",
+              "recipe.json"
+            ],
+            "caps": {
+              "max_bonds": 2048,
+              "max_cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "max_scene_json_bytes": 1000000,
+              "max_sites": 256,
+              "max_species": 32
+            },
+            "contract_version": "viewer_scene.v2",
+            "dependencies": {
+              "aseVersion": "3.29.0",
+              "new_dependencies_added": false,
+              "plotlyVersion": "6.8.0",
+              "pymatgenVersion": "2026.5.4",
+              "pymatvizVersion": "0.18.0"
+            },
+            "deterministic": true,
+            "generation_steps": [
+              "parse_structure",
+              "normalize_lattice",
+              "normalize_species",
+              "normalize_site_indices",
+              "normalize_coordinates",
+              "derive_bounded_periodic_bonds",
+              "apply_caps",
+              "build_warnings",
+              "build_provenance",
+              "build_security_metadata",
+              "validate_viewer_scene_v1",
+              "write_inert_json_artifacts"
+            ],
+            "input_resource_reference": {
+              "dataset_id": "dataset_valid_minimal_crystal",
+              "input_hashes": [
+                "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+              ]
+            },
+            "name": "Viewer Scene Artifact",
+            "normalized_params": {
+              "bond_cutoff_angstrom": 3.0,
+              "camera_preset": "auto",
+              "cell_expansion": [
+                1,
+                1,
+                1
+              ],
+              "coordinate_basis": "cartesian_angstrom",
+              "include_bonds": true,
+              "include_cartesian_positions": true,
+              "include_fractional_positions": true,
+              "max_bonds": 2048,
+              "max_sites": 256,
+              "style_preset": "default"
+            },
+            "parser": "pymatgen.Structure",
+            "periodic_bond_schema": "phase10f18.viewer_scene.v2",
+            "recipeId": "recipe_call_job_ffd458d61dd9487590623206_step_001",
+            "renderer_included": false,
+            "schemaVersion": "0.1",
+            "schema_version": "phase10f12.viewer_scene.recipe.v1",
+            "toolId": "structure.viewer_3d",
+            "tool_id": "structure.viewer_3d"
+          },
+          "contentHash": "d29945f582e89ce6f34ecad2c1d573772eb33a5f02947a84b41d5b330dbc30b0",
+          "contentType": "application/json",
+          "datasetId": "dataset_valid_minimal_crystal",
+          "id": "call_job_ffd458d61dd9487590623206_step_001-recipe_json",
+          "jobId": "job_ffd458d61dd9487590623206",
+          "metadata": {
+            "adapterVersion": "1.0.0",
+            "bucket": null,
+            "createdAt": "2026-07-12T10:19:55.520353+00:00",
+            "inputHashes": [
+              "2219d2825d163a259a588ef684e2925140772fd6c175d29c57dacf38c7fbfa31"
+            ],
+            "paramsHash": "5959b1319d8b55e0a39b0de523ad9a7bcbb3eed71787390bbe856e9e09eb780d",
+            "profileId": null,
+            "provenance": {
+              "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+              "planId": "plan_89c0d954812d435b9148da2c",
+              "planSource": "llm",
+              "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+              "toolId": "structure.viewer_3d"
+            },
+            "recipeId": null,
+            "reportId": null,
+            "storageProvider": "local",
+            "toolId": "structure.viewer_3d",
+            "toolVersion": "0.1.0"
+          },
+          "name": "recipe.json",
+          "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+          "planId": "plan_89c0d954812d435b9148da2c",
+          "previewKey": null,
+          "projectId": "project_10f15",
+          "provenance": {
+            "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+            "planId": "plan_89c0d954812d435b9148da2c",
+            "planSource": "llm",
+            "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+            "toolId": "structure.viewer_3d"
+          },
+          "sha256": "d29945f582e89ce6f34ecad2c1d573772eb33a5f02947a84b41d5b330dbc30b0",
+          "sizeBytes": 1569,
+          "storageKey": "projects/project_10f15/jobs/job_ffd458d61dd9487590623206/tool_calls/call_job_ffd458d61dd9487590623206_step_001/recipe.json",
+          "storageProvider": "local",
+          "toolCallId": "call_job_ffd458d61dd9487590623206_step_001",
+          "type": "recipe_json",
+          "version": "1"
+        }
+      ],
+      "jobId": "job_ffd458d61dd9487590623206",
+      "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+      "planId": "plan_89c0d954812d435b9148da2c",
+      "provenance": {
+        "binding": "jobs.plan_id -> analysis_plans.id",
+        "fallbackUsed": false,
+        "loadedFrom": "persisted_analysis_plan",
+        "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+        "planId": "plan_89c0d954812d435b9148da2c",
+        "planSource": "llm",
+        "toolPath": "Tool Registry + Adapter"
+      },
+      "status": "completed",
+      "summary": "Job completed with 1 ToolCall(s) and 4 Artifact(s).",
+      "toolCallCount": 1
+    },
+    "tool_calls": [
+      {
+        "artifactIds": [
+          "call_job_ffd458d61dd9487590623206_step_001-structure_json",
+          "call_job_ffd458d61dd9487590623206_step_001-table_json",
+          "call_job_ffd458d61dd9487590623206_step_001-summary_md",
+          "call_job_ffd458d61dd9487590623206_step_001-recipe_json"
+        ],
+        "attempt": 1,
+        "id": "call_job_ffd458d61dd9487590623206_step_001",
+        "idempotencyKey": "job_ffd458d61dd9487590623206:step_001",
+        "inputSummary": "Params: bond_cutoff_angstrom, camera_preset, cell_expansion, coordinate_basis, include_bonds, include_cartesian_positions, include_fractional_positions, max_bonds, max_sites, style_preset",
+        "jobId": "job_ffd458d61dd9487590623206",
+        "outputSummary": "4 artifact(s)",
+        "params": {
+          "bond_cutoff_angstrom": 3.0,
+          "camera_preset": "auto",
+          "cell_expansion": [
+            1,
+            1,
+            1
+          ],
+          "coordinate_basis": "cartesian_angstrom",
+          "include_bonds": true,
+          "include_cartesian_positions": true,
+          "include_fractional_positions": true,
+          "max_bonds": 2048,
+          "max_sites": 256,
+          "style_preset": "default"
+        },
+        "planHash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+        "planId": "plan_89c0d954812d435b9148da2c",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.viewer_3d"
+      }
+    ]
+  },
+  "artifact_audit": {
+    "artifact_names": [
+      "viewer_scene.json",
+      "viewer_scene_manifest.json",
+      "summary.md",
+      "recipe.json"
+    ],
+    "canonical_validator": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "manifest_present": true,
+    "manifest_schema_version": "phase10f9.viewer_scene_manifest.v1",
+    "manifest_validator": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "recipe_present": true,
+    "recipe_tool_id": "structure.viewer_3d",
+    "scene_schema_version": "phase10f18.viewer_scene.v2",
+    "security": {
+      "artifact_supplied_js_allowed": false,
+      "contains_javascript": false,
+      "external_urls": [],
+      "external_urls_allowed": false,
+      "html_allowed": false,
+      "remote_assets_allowed": false,
+      "renderer_required": false
+    },
+    "summary_mentions_json_only": false,
+    "summary_mentions_renderer_deferred": false,
+    "summary_present": true,
+    "viewer_scene_present": true,
+    "warnings": [
+      "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+    ]
+  },
+  "case_id": "valid_minimal_crystal",
+  "planner": {
+    "job_id": "job_ffd458d61dd9487590623206",
+    "mode": "mock_fixed_plan",
+    "ok": true,
+    "plan_hash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+    "plan_id": "plan_89c0d954812d435b9148da2c",
+    "real_llm_used": false,
+    "selected_tool": "structure.viewer_3d"
+  },
+  "preview_expectation": {
+    "bond_count": 1,
+    "case_id": "valid_minimal_crystal",
+    "coordinate_basis": "cartesian_angstrom",
+    "manifest_preview": "json_only",
+    "renderer_required": false,
+    "schema_version": "phase10f18.viewer_scene.v2",
+    "site_count": 2,
+    "species_count": 1,
+    "validation_state": "passed_with_warnings",
+    "viewer_scene_preview": "json_only",
+    "warnings": [
+      "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+    ]
+  },
+  "request": {
+    "body": {
+      "datasetId": "dataset_valid_minimal_crystal",
+      "enqueue": true,
+      "profileId": "profile_valid_minimal_crystal",
+      "projectId": "project_10f15",
+      "userPrompt": "Open an interactive 3D view of this CIF."
+    },
+    "endpoint": "/planner/jobs",
+    "method": "POST"
+  },
+  "source_assertion": {
+    "adapter_generated": true,
+    "static_fixture_used": false,
+    "tool_id": "structure.viewer_3d"
+  },
+  "worker": {
+    "artifact_count": 4,
+    "event_count": 11,
+    "job_id": "job_ffd458d61dd9487590623206",
+    "message": "job completed",
+    "plan_hash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+    "plan_id": "plan_89c0d954812d435b9148da2c",
+    "status": "completed",
+    "tool_call_count": 1
+  }
+}

@@ -5,12 +5,12 @@ version_baseline:
 tools:
   - tool_id: structure.viewer_3d
     source_package: platform
-    source_class: viewer_scene.v1
+    source_class: viewer_scene.v2
     implementation_source: platform_builtin
     stage: mvp
     adapter: StructureViewer3DAdapter
     display_target: structure
-    notes: "Interactive minimal crystal structure viewer backed by canonical inert viewer_scene.v1 artifacts; supports atoms, lattice, optional bonds, and basic camera controls with JSON fallback. Trajectories, phonons, volumetric data, and editing are not supported."
+    notes: "Interactive crystal structure viewer backed by canonical inert viewer_scene.v2 artifacts with periodic bond endpoints; supports atoms, lattice, bounded periodic bonds, inspection, measurement, supercells, and basic camera controls with JSON fallback. Trajectories, phonons, volumetric data, and editing are not supported."
     artifact_types:
       - structure_json
       - table_json

@@ -126,7 +126,7 @@ def _case_specs() -> list[LiveCaseSpec]:
         ),
         LiveCaseSpec(
             case_id="warning_caps",
-            prompt="Open the minimal structure viewer with bounded caps." if FORMAL_VIEWER_MODE else "Create a viewer_scene.v1 artifact with bounded caps.",
+            prompt="Open the minimal structure viewer with bounded caps." if FORMAL_VIEWER_MODE else "Create a viewer_scene.v2 artifact with bounded caps.",
             structure_input=[_nacl_structure()],
             params={"max_sites": 2, "max_bonds": 0, "include_bonds": True, "bond_cutoff_angstrom": 5.0},
             expected_status="completed",
@@ -160,6 +160,25 @@ def _case_specs() -> list[LiveCaseSpec]:
                 params={"include_bonds": True, "bond_cutoff_angstrom": 4.1},
                 expected_status="completed",
             ),
+        )
+    if os.environ.get("MDI_INCLUDE_TOPOLOGY_CASES") == "1":
+        cases.extend(
+            [
+                LiveCaseSpec(
+                    case_id="periodic_boundary_bond",
+                    prompt="Open this boundary-crossing crystal in the structure viewer.",
+                    structure_input=[_periodic_boundary_structure()],
+                    params={"include_bonds": True, "bond_cutoff_angstrom": 1.0},
+                    expected_status="completed",
+                ),
+                LiveCaseSpec(
+                    case_id="triclinic_boundary_bond",
+                    prompt="Open this triclinic crystal and inspect its periodic topology.",
+                    structure_input=[_triclinic_boundary_structure()],
+                    params={"include_bonds": True, "bond_cutoff_angstrom": 1.3},
+                    expected_status="completed",
+                ),
+            ]
         )
     return cases
 
@@ -360,7 +379,7 @@ def _compatibility_audit() -> dict[str, Any]:
         "new_tool_registered": registry.get_tool_by_id("structure.viewer_scene").toolId,
         "routes": routes,
         "old_schema": "phase10d1.viewer_scene.v1",
-        "canonical_schema": "phase10f8.viewer_scene.v1",
+        "canonical_schema": "phase10f18.viewer_scene.v2",
         "migration_performed": False,
         "result": "DOCUMENTED",
     }
@@ -406,7 +425,7 @@ def _viewer_scene_plan(dataset_id: str, profile_id: str, *, params: dict[str, An
                 {
                     "stepId": "step_001",
                     "toolId": ACTIVE_VIEWER_TOOL_ID,
-                    "purpose": "Generate canonical viewer_scene.v1 artifacts for the minimal interactive structure viewer.",
+                    "purpose": "Generate canonical viewer_scene.v2 artifacts for the minimal interactive structure viewer.",
                     "reason": "Live adapter evidence through the selected formal viewer identity.",
                     "inputRefs": [{"refType": "normalized_object", "ref": "structures", "objectType": "Structure"}],
                     "params": normalized_params,
@@ -436,6 +455,18 @@ def _measurement_structure() -> Structure:
         Lattice.cubic(10.0),
         ["Si", "Si", "Si", "Si"],
         [[0.0, 0.0, 0.0], [0.4, 0.0, 0.0], [0.4, 0.4, 0.0], [0.0, 0.4, 0.4]],
+    )
+
+
+def _periodic_boundary_structure() -> Structure:
+    return Structure(Lattice.cubic(10.0), ["H", "H"], [[0.98, 0.0, 0.0], [0.02, 0.0, 0.0]])
+
+
+def _triclinic_boundary_structure() -> Structure:
+    return Structure(
+        Lattice([[2.0, 0.0, 0.0], [0.9, 1.8, 0.0], [0.4, 0.3, 1.7]]),
+        ["Si", "Si"],
+        [[0.95, 0.05, 0.95], [0.05, 0.95, 0.05]],
     )
 
 

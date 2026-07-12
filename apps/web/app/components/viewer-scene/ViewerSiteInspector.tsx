@@ -1,6 +1,6 @@
 import type { RenderAtom, RenderBond } from "./viewerSceneRendererTypes";
 
-export function ViewerSiteInspector({ atom, bonds, source, repeat, onClear, onJumpPrimary, onShowNeighbors, onClearNeighbors }: {
+export function ViewerSiteInspector({ atom, bonds, source, repeat, onClear, onJumpPrimary, onShowNeighbors, onClearNeighbors, onHighlightNeighbor }: {
   readonly atom: RenderAtom | null;
   readonly bonds: readonly RenderBond[];
   readonly source: string;
@@ -9,9 +9,10 @@ export function ViewerSiteInspector({ atom, bonds, source, repeat, onClear, onJu
   readonly onJumpPrimary: () => void;
   readonly onShowNeighbors: () => void;
   readonly onClearNeighbors: () => void;
+  readonly onHighlightNeighbor: (target: RenderAtom["ref"], bondId: string) => void;
 }) {
   if (!atom) return <aside className="viewer-site-inspector" data-testid="viewer-site-inspector"><p>No site selected. Pick an atom to inspect canonical and periodic identity.</p></aside>;
-  const connected = bonds.flatMap((bond) => bond.fromRef.siteIndex === atom.siteIndex ? [bond.toRef.siteIndex] : bond.toRef.siteIndex === atom.siteIndex ? [bond.fromRef.siteIndex] : []).sort((a, b) => a - b);
+  const connected = bonds.flatMap((bond) => sameRef(bond.fromRef,atom.ref) ? [{bond,target:bond.toRef}] : sameRef(bond.toRef,atom.ref) ? [{bond,target:bond.fromRef}] : []).sort((a,b)=>a.target.siteIndex-b.target.siteIndex||compareOffset(a.target.imageOffset,b.target.imageOffset));
   const primary = atom.ref.imageOffset.every((value) => value === 0);
   const copyCoordinates = () => copyText(atom.position.join(", "));
   const copySite = () => copyText(JSON.stringify({ index: atom.siteIndex, image_offset: atom.ref.imageOffset, label: atom.label, element: atom.element, occupancy: atom.occupancy, canonical_xyz: atom.canonicalPosition, displayed_xyz: atom.position, frac: atom.fractionalPosition }, null, 2));
@@ -31,13 +32,17 @@ export function ViewerSiteInspector({ atom, bonds, source, repeat, onClear, onJu
         <div><dt>supercell</dt><dd>{repeat.join(" x ")}</dd></div>
         <div><dt>display radius</dt><dd>{atom.radius}</dd></div>
         <div><dt>source</dt><dd>{source || "canonical viewer scene"}</dd></div>
-        <div><dt>bond neighbors</dt><dd data-testid="viewer-selected-site-neighbors">{connected.length ? connected.join(", ") : "none"} ({connected.length})</dd></div>
+        <div><dt>bond neighbors</dt><dd data-testid="viewer-selected-site-neighbors">{connected.length ? connected.map((item)=>`${item.target.siteIndex}@[${item.target.imageOffset.join(",")}]`).join("; ") : "none"} ({connected.length})</dd></div>
       </dl>
+      <table data-testid="viewer-periodic-neighbor-table"><thead><tr><th>Site</th><th>Image</th><th>Distance (A)</th><th>Source</th><th>Authoritative</th></tr></thead><tbody>{connected.map(({bond,target})=><tr key={bond.id} data-testid="viewer-periodic-neighbor-row"><td><button type="button" className="compact secondary" onClick={()=>onHighlightNeighbor(target,bond.id)}>{target.siteIndex}</button></td><td data-testid="viewer-periodic-neighbor-offset">[{target.imageOffset.join(", ")}]</td><td data-testid="viewer-periodic-neighbor-distance">{bond.distanceAngstrom.toFixed(6)}</td><td data-testid="viewer-periodic-neighbor-source">{bond.source}</td><td data-testid="viewer-periodic-neighbor-authoritative">{bond.authoritative ? "yes" : "no"}</td></tr>)}</tbody></table>
       <p className="viewer-inspector-note">Neighbors are from bounded, non-authoritative scene bonds only. Replicas are renderer-local view state.</p>
       <div className="button-row"><button type="button" className="compact secondary" onClick={copyCoordinates}>Copy coordinates</button><button type="button" className="compact secondary" onClick={copySite}>Copy site JSON</button>{!primary ? <button type="button" className="compact secondary" onClick={onJumpPrimary}>Jump to primary image</button> : null}<button type="button" className="compact secondary" onClick={onShowNeighbors}>Show neighboring images</button><button type="button" className="compact secondary" onClick={onClearNeighbors}>Clear images</button></div>
     </aside>
   );
 }
+
+function sameRef(a:RenderAtom["ref"],b:RenderAtom["ref"]){return a.siteIndex===b.siteIndex&&a.imageOffset.every((value,index)=>value===b.imageOffset[index]);}
+function compareOffset(a:readonly number[],b:readonly number[]){return a[0]-b[0]||a[1]-b[1]||a[2]-b[2];}
 
 function copyText(value: string) {
   const operation = navigator.clipboard?.writeText(value);

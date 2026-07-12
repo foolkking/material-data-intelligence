@@ -232,8 +232,8 @@ async function runCase(page, testCase) {
   }
   await page.waitForSelector('[data-testid="viewer-scene-json-preview"]', { state: "attached" });
   await expectText(page, '[data-testid="viewer-scene-kind"]', "viewer_scene");
-  await expectText(page, '[data-testid="viewer-scene-version"]', "viewer_scene.v1");
-  await expectText(page, '[data-testid="viewer-scene-schema-version"]', "phase10f8.viewer_scene.v1");
+  await expectText(page, '[data-testid="viewer-scene-version"]', "viewer_scene.v2");
+  await expectText(page, '[data-testid="viewer-scene-schema-version"]', "phase10f18.viewer_scene.v2");
   await expectText(page, '[data-testid="viewer-scene-validation-state"]', testCase.expectedState);
   await expectText(page, '[data-testid="viewer-scene-summary"]', "cartesian_angstrom");
   await expectText(page, '[data-testid="viewer-manifest-preview-mode"]', "json_only");
@@ -299,7 +299,7 @@ async function collectSnapshot(page, testCase, browserVersion) {
 function assertBrowserSnapshot(values, testCase) {
   const failures = [];
   if (!testCase.invalid && !values.kind.includes("viewer_scene")) failures.push("viewer_scene kind not visible");
-  if (!testCase.invalid && !values.version.includes("viewer_scene.v1")) failures.push("viewer_scene.v1 version not visible");
+  if (!testCase.invalid && !values.version.includes("viewer_scene.v2")) failures.push("viewer_scene.v2 version not visible");
   if (!testCase.invalid && !values.manifest_preview_mode.includes("json_only")) failures.push("manifest json_only not visible");
   if (!testCase.invalid && !values.manifest_renderer_required.includes("false")) failures.push("renderer required false not visible");
   if (values.canvas_count !== 0) failures.push("canvas element present");
@@ -407,7 +407,7 @@ function demoDataset() {
 
 function promptForCase(testCase) {
   if (testCase.id === "multi_species_crystal") return "Create JSON scene data for a future structure renderer";
-  if (testCase.id === "warning_caps") return "Create a viewer_scene.v1 artifact with bounded caps";
+  if (testCase.id === "warning_caps") return "Create a viewer_scene.v2 artifact with bounded caps";
   if (testCase.invalid) return "Build an inert viewer scene artifact for this structure";
   return "Build an inert viewer scene artifact for this structure";
 }

@@ -994,3 +994,10 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - No Tool Registry, planner, PlanValidator, adapter, or QueueWorkerRuntime semantics changed.
 - `structure.viewer_3d` still emits one canonical inert single-cell scene; supercell and periodic images are frontend-only view state.
 - No backend measurement or supercell tool was added.
+
+# 2026-07-12 Phase 10F-18 Periodic Topology Notes
+
+- `structure.viewer_scene` and `structure.viewer_3d` now emit the same inert `viewer_scene.v2` periodic topology semantics.
+- Params, planner identities, PlanValidator authority, QueueWorkerRuntime, and backend success/client renderer separation remain unchanged.
+- Phase 10D tools remain direct-compatible and JSON-only. v1 bonds remain same-cell only.
+- No topology service, CrystalNN/VoronoiNN tool, trajectory tool, or artifact execution authority was added.

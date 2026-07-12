@@ -320,6 +320,8 @@ function artifacts(source) {
 
 function nearCapScene(scene) {
   const result = structuredClone(scene);
+  result.version = "viewer_scene.v1";
+  result.schema_version = "phase10f8.viewer_scene.v1";
   result.scene.sites = Array.from({ length: 256 }, (_, index) => ({ index, element: index % 2 ? "Na" : "Cl", label: `site-${index}`, xyz: [index % 8, Math.floor(index / 8) % 8, Math.floor(index / 64)], frac: [(index % 8) / 8, (Math.floor(index / 8) % 8) / 8, Math.floor(index / 64) / 4] }));
   result.scene.bonds = Array.from({ length: 2048 }, (_, index) => ({ from: index % 256, to: (index + 1) % 256, distance: 1, policy: "distance_cutoff_non_authoritative" }));
   result.metadata.site_count = 256;

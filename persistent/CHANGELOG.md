@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-12 - Phase 10F-18 Canonical Periodic Bond Topology
+
+- Added `viewer_scene.v2` with strict periodic endpoints, stable identity, source/authority semantics, distance consistency, caps, and v1 compatibility.
+- Updated both viewer adapters to emit bounded deterministic periodic neighbor topology.
+- Added frontend v2 validation/mapping, complete-edge supercell replication, and periodic neighbor inspection/highlight.
+- Added live orthogonal/triclinic API and browser evidence with no external topology service.
+
 ## 2026-07-12 - Phase 10F-15 Production Minimal Structure Viewer
 
 - Formalized `structure.viewer_3d` as the canonical minimal interactive viewer job identity.

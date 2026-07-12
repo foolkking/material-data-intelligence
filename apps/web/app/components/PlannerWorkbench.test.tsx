@@ -6,6 +6,7 @@ import adapterGeneratedViewerScene from "../../../../docs/phase10f/evidence/phas
 import adapterGeneratedViewerSceneManifest from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene_manifest.json";
 import liveAdapterPayload from "../../../../docs/phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/live_payload.json";
 import { PlannerWorkbench } from "./PlannerWorkbench";
+import { periodicBoundaryScene } from "./viewer-scene/viewerScenePeriodicBondTestFixture";
 
 type CapturedLiveArtifact = { name?: string; content?: Record<string, unknown> };
 
@@ -773,6 +774,24 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(container.querySelector("canvas")).toBeNull();
     await user.click(within(results).getByRole("tab", { name: "Scene JSON" }));
     expect(within(results).getByTestId("viewer-scene-json-preview")).not.toBeNull();
+  });
+
+  it("offers the canonical renderer for viewer_scene.v2 periodic topology artifacts", async () => {
+    const manifest = viewerSceneV1Manifest("periodic_boundary.viewer_scene.v2.json", "valid_with_warnings", [], ["VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"]);
+    manifest.artifact_version = "viewer_scene.v2";
+    useViewerSceneV1Artifacts(periodicBoundaryScene(), manifest);
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const results = screen.getByTestId("results-export-tab");
+    expect(within(results).getByTestId("viewer-scene-version").textContent).toContain("viewer_scene.v2");
+    await user.click(within(results).getByRole("tab", { name: "3D Renderer" }));
+    expect(await within(results).findByTestId("viewer-scene-renderer-unavailable")).not.toBeNull();
   });
 
   it("blocks canonical invalid payloads before renderer initialization", async () => {

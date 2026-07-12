@@ -3401,3 +3401,23 @@ Keep supercells and resolved images in frontend view state rather than modifying
 - Triclinic minimum-image behavior is independently testable.
 - Derived GPU work is bounded and over-cap requests fail without truncation.
 - Cross-boundary bonds remain partial until the canonical contract can identify endpoint images.
+
+# 2026-07-12 Phase 10F-18 ADR: periodic topology requires a new scene version
+
+## Decision
+
+Emit `viewer_scene.v2` with explicit periodic endpoints rather than adding
+optional offsets to v1. Normalize source image to zero, canonicalize reversal,
+and treat distance-cutoff topology as non-authoritative.
+
+## Rationale
+
+An old v1 consumer could ignore optional offsets and draw a wrong cross-boundary
+edge. A distinct version makes support explicit while retaining v1 validation.
+
+## Consequences
+
+- Adapter, validator, mapper, renderer, and inspector share one endpoint identity.
+- v1 artifacts remain same-cell and are never silently migrated.
+- Bounded supercell edges are renderer-local derivations of canonical topology.
+- Trajectory and phonon contract planning has stable topology identity, but no implementation is authorized.

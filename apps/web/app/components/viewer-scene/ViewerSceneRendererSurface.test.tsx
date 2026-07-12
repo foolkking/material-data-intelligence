@@ -6,6 +6,7 @@ import minimalScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/
 import multiSpeciesScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_multi_species_crystal.viewer_scene.v1.json";
 import { ViewerSceneRendererSurface } from "./ViewerSceneRendererSurface";
 import type { ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot } from "./viewerSceneRendererTypes";
+import { periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";
 
 function fakeEngine(dispose = vi.fn()) {
   let cellVisible = true;
@@ -55,6 +56,20 @@ function fakeEngine(dispose = vi.fn()) {
 }
 
 describe("ViewerSceneRendererSurface", () => {
+  it("shows periodic neighbor topology and highlights the stored target endpoint",async()=>{
+    const engine=fakeEngine(); let args:Parameters<ViewerRendererEngineFactory>[0]|undefined;
+    render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
+    await waitFor(()=>expect(args).toBeTruthy());
+    fireEvent.change(screen.getByTestId("viewer-supercell-x"), {target:{value:"2"}});
+    await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
+    await waitFor(()=>expect(args?.scene.bonds).toHaveLength(1));
+    act(()=>args?.onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}));
+    expect(screen.getByTestId("viewer-periodic-neighbor-offset").textContent).toContain("1, 0, 0");
+    expect(screen.getByTestId("viewer-periodic-neighbor-distance").textContent).toBe("0.400000");
+    expect(screen.getByTestId("viewer-periodic-neighbor-source").textContent).toBe("distance_cutoff");
+    await userEvent.click(screen.getByRole("button",{name:"1"}));
+    expect(engine.setSelection).toHaveBeenLastCalledWith([{siteIndex:0,imageOffset:[0,0,0]},{siteIndex:1,imageOffset:[1,0,0]}]);
+  });
   it("distinguishes displayed and minimum-image boundary measurements", async () => {
     const boundary = structuredClone(multiSpeciesScene) as Record<string, any>;
     boundary.scene.lattice.vectors = [[10,0,0],[0,10,0],[0,0,10]];

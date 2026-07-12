@@ -1,0 +1,111 @@
+{
+  "schema_version": "phase10f18.periodic_bond_topology_evidence.v1",
+  "baseline_head": "bfca00d4c93ab2bd16966b237d850bd33206c20c",
+  "final_head": "current commit recorded in final report",
+  "formal_tool": "structure.viewer_3d",
+  "canonical_schema": "phase10f18.viewer_scene.v2",
+  "periodic_bonds": "adapter_generated_explicit_endpoints",
+  "source_policy": "distance_cutoff_non_authoritative",
+  "evidence_generation_command": "node apps/web/test/viewer-scene-periodic-topology-browser-evidence.mjs",
+  "timestamp": "2026-07-12T10:19:58.000148+00:00",
+  "artifact_hashes": {
+    "viewer_scene.json": "798bd9be302edc6a1f56ff964de7ddb29a84775952e2f7d6833f73cc106c9279",
+    "viewer_scene_manifest.json": "ce50817fbafde518ea3240bc12cd716aa799a6f0e4bfd0172415df1a973d58c8",
+    "summary.md": "dfcaf76eed3e44800bc83f74ee5cf4d37f8443cc72041870679ea11e5ed6802b",
+    "recipe.json": "a50b5d9b497274608493921218019ee897591bca67cd678edf38602800717b11"
+  },
+  "browser_results": [
+    {
+      "browser": "chromium",
+      "version": "150.0.7871.115",
+      "pass": true,
+      "neighbor": {
+        "selectedSite": 1,
+        "selectedOffset": "[1, 0, 0]",
+        "neighborSite": 0,
+        "offset": "[0, 0, 0]",
+        "distance": "0.400000",
+        "source": "distance_cutoff",
+        "authoritative": "no"
+      },
+      "metrics": {
+        "atomCount": 4,
+        "bondCount": 1,
+        "speciesCount": 1,
+        "instancedMeshCount": 1,
+        "latticeEdgeCount": 12,
+        "drawCalls": 4,
+        "geometries": 3,
+        "materials": 3,
+        "triangles": 2080,
+        "lines": 1573,
+        "initializationMs": 13.7,
+        "firstFrameMs": 32.6
+      }
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "pass": true,
+      "neighbor": {
+        "selectedSite": 1,
+        "selectedOffset": "[1, 0, 0]",
+        "neighborSite": 0,
+        "offset": "[0, 0, 0]",
+        "distance": "0.400000",
+        "source": "distance_cutoff",
+        "authoritative": "no"
+      },
+      "metrics": {
+        "atomCount": 4,
+        "bondCount": 1,
+        "speciesCount": 1,
+        "instancedMeshCount": 1,
+        "latticeEdgeCount": 12,
+        "drawCalls": 4,
+        "geometries": 3,
+        "materials": 3,
+        "triangles": 2080,
+        "lines": 1573,
+        "initializationMs": 9,
+        "firstFrameMs": 68
+      }
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "pass": true,
+      "neighbor": {
+        "selectedSite": 1,
+        "selectedOffset": "[1, 0, 0]",
+        "neighborSite": 0,
+        "offset": "[0, 0, 0]",
+        "distance": "0.400000",
+        "source": "distance_cutoff",
+        "authoritative": "no"
+      },
+      "metrics": {
+        "atomCount": 4,
+        "bondCount": 1,
+        "speciesCount": 1,
+        "instancedMeshCount": 1,
+        "latticeEdgeCount": 12,
+        "drawCalls": 4,
+        "geometries": 3,
+        "materials": 3,
+        "triangles": 2080,
+        "lines": 1573,
+        "initializationMs": 13,
+        "firstFrameMs": 71
+      }
+    }
+  ],
+  "network_result": "NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS",
+  "markers": [
+    "VIEWER_SCENE_PERIODIC_BOND_CONTRACT_EVIDENCE_PASS",
+    "VIEWER_SCENE_PERIODIC_TOPOLOGY_BROWSER_EVIDENCE_PASS",
+    "VIEWER_SCENE_PERIODIC_NEIGHBOR_INSPECTOR_EVIDENCE_PASS",
+    "VIEWER_SCENE_PERIODIC_BOND_PERFORMANCE_EVIDENCE_PASS"
+  ],
+  "redaction": "sanitized"
+}

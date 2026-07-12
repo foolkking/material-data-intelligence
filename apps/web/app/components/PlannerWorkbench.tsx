@@ -1339,7 +1339,7 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
   const viewerScene = artifacts.find(isViewerSceneArtifact);
   const viewerManifest = artifacts.find(isViewerManifestArtifact);
   const scenePayload = viewerScene ? artifactPayload(viewerScene) : null;
-  const canonicalScene = isViewerSceneV1Payload(scenePayload);
+  const canonicalScene = isCanonicalViewerScenePayload(scenePayload);
   const summaryArtifact = artifacts.find((artifact) => artifact.name === "summary.md" || artifact.type === "summary_md");
   const recipeArtifact = artifacts.find((artifact) => artifact.name === "recipe.json" || artifact.type === "recipe_json");
   const [activePreview, setActivePreview] = useState<"renderer" | "json" | "manifest">("json");
@@ -1382,6 +1382,8 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
 
 const VIEWER_SCENE_V1_SCHEMA = "phase10f8.viewer_scene.v1";
 const VIEWER_SCENE_V1_VERSION = "viewer_scene.v1";
+const VIEWER_SCENE_V2_SCHEMA = "phase10f18.viewer_scene.v2";
+const VIEWER_SCENE_V2_VERSION = "viewer_scene.v2";
 const VIEWER_SCENE_MANIFEST_V1_SCHEMA = "phase10f9.viewer_scene_manifest.v1";
 
 function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
@@ -1390,8 +1392,9 @@ function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
     return <ViewerFallbackPreview artifact={artifact} title="viewer_scene.json" description="Static scene metadata artifact. Payload preview is not attached to this API response." />;
   }
   const isViewerSceneV1 = isViewerSceneV1Payload(payload);
+  const isViewerSceneV2 = isViewerSceneV2Payload(payload);
   const isViewerSceneJson = text(payload.kind) === "viewer_scene";
-  const isViewerSceneContractPayload = isViewerSceneV1 || isViewerSceneJson;
+  const isViewerSceneContractPayload = isViewerSceneV1 || isViewerSceneV2 || isViewerSceneJson;
   const scene = asRecord(payload.scene) || {};
   const metadata = asRecord(payload.metadata) || {};
   const structure = isViewerSceneContractPayload ? metadata : asRecord(payload.structure) || payload;
@@ -1988,7 +1991,7 @@ function datasetKind(profile: DataProfileSummary | null, t: ReturnType<typeof cr
 function isViewerSceneArtifact(artifact: Artifact) {
   const name = String(artifact.name || "").toLowerCase();
   const payload = artifactPayload(artifact);
-  return name === "viewer_scene.json" || name.endsWith(".viewer_scene.v1.json") || payload?.schema_version === "phase10d1.viewer_scene.v1" || isViewerSceneV1Payload(payload);
+  return name === "viewer_scene.json" || name.endsWith(".viewer_scene.v1.json") || name.endsWith(".viewer_scene.v2.json") || payload?.schema_version === "phase10d1.viewer_scene.v1" || isCanonicalViewerScenePayload(payload);
 }
 
 function isViewerManifestArtifact(artifact: Artifact) {
@@ -2001,8 +2004,16 @@ function isViewerSceneV1Payload(payload: JsonRecord | null): boolean {
   return Boolean(payload && payload.kind === "viewer_scene" && payload.version === VIEWER_SCENE_V1_VERSION && payload.schema_version === VIEWER_SCENE_V1_SCHEMA);
 }
 
+function isViewerSceneV2Payload(payload: JsonRecord | null): boolean {
+  return Boolean(payload && payload.kind === "viewer_scene" && payload.version === VIEWER_SCENE_V2_VERSION && payload.schema_version === VIEWER_SCENE_V2_SCHEMA);
+}
+
+function isCanonicalViewerScenePayload(payload: JsonRecord | null): boolean {
+  return isViewerSceneV1Payload(payload) || isViewerSceneV2Payload(payload);
+}
+
 function isViewerSceneManifestV1Payload(payload: JsonRecord | null): boolean {
-  return Boolean(payload && payload.schema_version === VIEWER_SCENE_MANIFEST_V1_SCHEMA && payload.artifact_kind === "viewer_scene" && payload.artifact_version === VIEWER_SCENE_V1_VERSION);
+  return Boolean(payload && payload.schema_version === VIEWER_SCENE_MANIFEST_V1_SCHEMA && payload.artifact_kind === "viewer_scene" && (payload.artifact_version === VIEWER_SCENE_V1_VERSION || payload.artifact_version === VIEWER_SCENE_V2_VERSION));
 }
 
 function artifactPayload(artifact: Artifact): JsonRecord | null {

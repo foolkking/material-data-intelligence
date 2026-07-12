@@ -129,7 +129,7 @@ tools:
     stage: mvp
     adapter: StructureViewerSceneAdapter
     display_target: structure
-    notes: Create an inert viewer_scene.v1 JSON artifact and manifest for JSON-only preview; no interactive 3D viewer, WebGL, JavaScript, renderer bundle, or external resources are included.
+    notes: Create an inert viewer_scene.v2 JSON artifact with canonical periodic bond endpoints and a manifest; the artifact embeds no JavaScript, renderer bundle, WebGL runtime, or external resources.
     artifact_types:
       - structure_json
       - table_json

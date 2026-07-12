@@ -5,6 +5,7 @@ import multiSpeciesScene from "../../../../../docs/phase10f/fixtures/viewer_scen
 import optionalBondsScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_optional_bonds.viewer_scene.v1.json";
 import { bondMetrics, cameraFrame, latticeEdges, sceneBounds } from "./viewerSceneRendererGeometry";
 import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
+import { periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";
 
 describe("viewer scene renderer mapper", () => {
   it("maps canonical sites, lattice, species colors, and bounded bonds deterministically", () => {
@@ -31,6 +32,20 @@ describe("viewer scene renderer mapper", () => {
     expect(result.scene.atoms[0].color).toMatch(/^#[0-9a-f]{6}$/);
     expect(result.scene.atoms[0].radius).toBe(0.72);
     expect(result.scene.atoms[0]).not.toHaveProperty("unknown_renderer_config");
+  });
+
+  it("maps explicit cross-boundary endpoints without choosing a new image",()=>{
+    const result=mapViewerSceneForRenderer(periodicBoundaryScene());
+    expect(result.ok).toBe(true); if(!result.ok)return;
+    expect(result.scene.contractVersion).toBe("viewer_scene.v2");
+    expect(result.scene.bonds[0]).toMatchObject({fromRef:{siteIndex:0,imageOffset:[0,0,0]},toRef:{siteIndex:1,imageOffset:[1,0,0]},start:[9.8,0,0],end:[10.2,0,0],distanceAngstrom:0.4,source:"distance_cutoff",authoritative:false});
+  });
+
+  it("rejects periodic distance spoofing before mapping",()=>{
+    const payload=periodicBoundaryScene(); payload.scene.bonds[0].distance_angstrom=9;
+    const result=mapViewerSceneForRenderer(payload);
+    expect(result.ok).toBe(false);
+    expect(result.validation.errors).toContain("VIEWER_SCENE_PERIODIC_BOND_DISTANCE_MISMATCH");
   });
 
   it.each([

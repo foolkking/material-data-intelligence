@@ -647,3 +647,9 @@
 - Decide whether canonical bonds need optional endpoint image offsets; current renderer intentionally supports same-cell replication only.
 - Periodic identity and bounded supercells provide partial foundations for trajectory and phonon animation, but no time/frame contract exists.
 - Persisted supercells, structure mutation, minimum-image chemical inference, CrystalNN/VoronoiNN, defects, surfaces, and volumetric data remain open.
+
+## 2026-07-12 Phase 10F-18 Follow-ups
+
+- Decide whether a future explicit-input topology source needs a separate provenance sub-contract before authoritative connectivity is accepted.
+- Distance-cutoff periodic topology is complete for visualization but remains non-authoritative; CrystalNN/VoronoiNN, bond order, and valence are open.
+- Periodic identity/topology can support trajectory or phonon contract planning, but no frame/time/displacement contract exists yet.

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import minimalScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_minimal_crystal.viewer_scene.v1.json";
 import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
 import { derivePeriodicSupercell, supercellOffsets } from "./viewerSceneSupercell";
+import { periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";
 
 function scene() { const mapped=mapViewerSceneForRenderer(minimalScene); if(!mapped.ok) throw new Error("fixture invalid"); return mapped.scene; }
 
@@ -29,6 +30,15 @@ describe("bounded periodic supercell derivation", () => {
     const result=derivePeriodicSupercell(scene(),[1,1,1],0);
     expect(result.ok).toBe(true); if(!result.ok)return;
     expect(result.scene.atoms).toHaveLength(27);
+  });
+
+  it("replicates complete cross-boundary edges without floating or duplicate bonds",()=>{
+    const mapped=mapViewerSceneForRenderer(periodicBoundaryScene()); if(!mapped.ok)throw new Error("fixture invalid");
+    const one=derivePeriodicSupercell(mapped.scene,[1,1,1]); expect(one.ok).toBe(true); if(one.ok)expect(one.scene.bonds).toHaveLength(0);
+    const two=derivePeriodicSupercell(mapped.scene,[2,1,1]); expect(two.ok).toBe(true); if(!two.ok)return;
+    expect(two.scene.bonds).toHaveLength(1);
+    expect(two.scene.bonds[0]).toMatchObject({fromRef:{siteIndex:0,imageOffset:[0,0,0]},toRef:{siteIndex:1,imageOffset:[1,0,0]}});
+    expect(new Set(two.scene.bonds.map((bond)=>bond.id)).size).toBe(two.scene.bonds.length);
   });
 
   it("rejects invalid repeats and over-cap derived scenes without truncation",()=>{

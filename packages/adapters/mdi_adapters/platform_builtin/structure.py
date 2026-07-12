@@ -13,6 +13,8 @@ from mdi_artifact_core import (
     DEFAULT_VIEWER_SCENE_CAPS,
     VIEWER_SCENE_KIND,
     VIEWER_SCENE_MANIFEST_SCHEMA_VERSION,
+    VIEWER_SCENE_PERIODIC_SCHEMA_VERSION,
+    VIEWER_SCENE_PERIODIC_VERSION,
     VIEWER_SCENE_SCHEMA_VERSION,
     VIEWER_SCENE_VERSION,
     content_hash,
@@ -437,7 +439,7 @@ class StructureViewerSceneAdapter(_BaseStructureAdapter):
             raise self._input_error("Structure collection is empty.", "empty_structure")
         if len(structures) != 1:
             raise self._input_error(
-                "viewer_scene.v1 adapter accepts exactly one periodic structure.",
+                "viewer scene adapter accepts exactly one periodic structure.",
                 "multiple_structures_unsupported",
                 structureCount=len(structures),
             )
@@ -462,7 +464,7 @@ class StructureViewerSceneAdapter(_BaseStructureAdapter):
         if not scene_result.valid:
             raise ToolExecutionError(
                 code="TOOL_CONTRACT_INVALID",
-                message="Generated viewer_scene.v1 payload failed canonical validation.",
+                message="Generated viewer scene payload failed canonical validation.",
                 tool_id=self.tool_id,
                 details={"errorType": "viewer_scene_contract_validation_failed", "errors": scene_result.errors},
             )
@@ -470,7 +472,7 @@ class StructureViewerSceneAdapter(_BaseStructureAdapter):
         if not manifest_result.valid:
             raise ToolExecutionError(
                 code="TOOL_CONTRACT_INVALID",
-                message="Generated viewer_scene.v1 manifest failed canonical validation.",
+                message="Generated viewer scene manifest failed canonical validation.",
                 tool_id=self.tool_id,
                 details={"errorType": "viewer_scene_manifest_validation_failed", "errors": manifest_result.errors},
             )
@@ -694,7 +696,7 @@ def _lattice_outliers(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _summary_markdown(title: str, payload: dict[str, Any]) -> str:
-    if payload.get("kind") == VIEWER_SCENE_KIND and payload.get("version") == VIEWER_SCENE_VERSION:
+    if payload.get("kind") == VIEWER_SCENE_KIND and payload.get("version") in {VIEWER_SCENE_VERSION, VIEWER_SCENE_PERIODIC_VERSION}:
         return _viewer_scene_v1_summary_markdown(payload)
     if str(payload.get("schema_version", "")).startswith("phase10d1.viewer_scene"):
         return _viewer_summary_markdown(title, payload)
@@ -1096,7 +1098,7 @@ def _viewer_scene_v1_params(params: dict[str, Any], resource_limits: dict[str, i
     if unknown:
         raise ToolExecutionError(
             code="TOOL_PARAM_INVALID",
-            message="viewer_scene.v1 params contain unsupported keys.",
+            message="viewer scene params contain unsupported keys.",
             tool_id=tool_id,
             details={"errorType": "viewer_scene_invalid_params", "unknownParams": unknown},
         )
@@ -1148,7 +1150,7 @@ def _viewer_scene_v1_payload(
     if len(structure) > max_sites:
         raise ToolExecutionError(
             code="TOOL_RESOURCE_LIMIT",
-            message="Structure exceeds viewer_scene.v1 max_sites.",
+            message="Structure exceeds viewer scene max_sites.",
             tool_id=tool_id,
             details={"errorType": "viewer_scene_site_limit_exceeded", "siteCount": len(structure), "maxSites": max_sites},
         )
@@ -1156,14 +1158,14 @@ def _viewer_scene_v1_payload(
     if len(species) > DEFAULT_VIEWER_SCENE_CAPS["max_species"]:
         raise ToolExecutionError(
             code="TOOL_RESOURCE_LIMIT",
-            message="Structure exceeds viewer_scene.v1 max_species.",
+            message="Structure exceeds viewer scene max_species.",
             tool_id=tool_id,
             details={"errorType": "viewer_scene_species_limit_exceeded", "speciesCount": len(species)},
         )
 
     warnings: list[dict[str, str]] = []
     sites = _viewer_scene_v1_sites(structure, include_fractional=bool(params["include_fractional_positions"]))
-    bonds, bond_count_before_limit = _viewer_scene_v1_bonds(
+    bonds, bond_count_before_limit, offset_limited_count = _viewer_scene_periodic_bonds(
         structure,
         max_bonds=int(params["max_bonds"]),
         include_bonds=bool(params["include_bonds"]),
@@ -1174,12 +1176,14 @@ def _viewer_scene_v1_payload(
         warnings.append({"code": "VIEWER_SCENE_CAP_NEAR_LIMIT", "message": "Site count reaches the configured max_sites cap."})
     if bond_count_before_limit > int(params["max_bonds"]):
         warnings.append({"code": "VIEWER_SCENE_BONDS_TRUNCATED", "message": "Inferred bond candidates were truncated to max_bonds."})
+    if offset_limited_count:
+        warnings.append({"code": "VIEWER_SCENE_BOND_OFFSETS_OMITTED", "message": "Periodic bond candidates outside the bounded image-offset policy were omitted."})
 
     status = "passed_with_warnings" if warnings else "passed"
     payload = {
         "kind": VIEWER_SCENE_KIND,
-        "version": VIEWER_SCENE_VERSION,
-        "schema_version": VIEWER_SCENE_SCHEMA_VERSION,
+        "version": VIEWER_SCENE_PERIODIC_VERSION,
+        "schema_version": VIEWER_SCENE_PERIODIC_SCHEMA_VERSION,
         "source": {
             "resource_id": context.dataset_id,
             "resource_type": "normalized_object",
@@ -1224,7 +1228,7 @@ def _viewer_scene_v1_payload(
         },
         "validation": {
             "status": status,
-            "validated_in_phase": "10F-12",
+            "validated_in_phase": "10F-18",
             "finite_numbers": True,
             "caps_enforced": True,
             "external_resources_detected": False,
@@ -1239,7 +1243,7 @@ def _viewer_scene_v1_payload(
         },
         "warnings": warnings,
         "provenance": {
-            "phase": "10F-12",
+            "phase": "10F-18",
             "fixture": False,
             "provenance_label": "adapter_generated",
             "official_pass_claim": False,
@@ -1284,40 +1288,83 @@ def _viewer_scene_v1_sites(structure: Structure, *, include_fractional: bool) ->
     return sites
 
 
-def _viewer_scene_v1_bonds(
+def _viewer_scene_periodic_bonds(
     structure: Structure,
     *,
     max_bonds: int,
     include_bonds: bool,
     cutoff_angstrom: float,
     warnings: list[dict[str, str]],
-) -> tuple[list[dict[str, Any]], int]:
+) -> tuple[list[dict[str, Any]], int, int]:
     if not include_bonds:
         warnings.append({"code": "VIEWER_SCENE_BONDS_SKIPPED", "message": "Bond generation disabled by params."})
-        return [], 0
-    candidates: list[dict[str, Any]] = []
-    for i in range(len(structure)):
-        for j in range(i + 1, len(structure)):
-            distance = _round(float(structure.get_distance(i, j)))
-            if distance <= cutoff_angstrom:
-                candidates.append(
-                    {
-                        "from": i,
-                        "to": j,
-                        "distance": distance,
-                        "distance_angstrom": distance,
-                        "policy": "distance_cutoff_non_authoritative",
-                    }
-                )
-    candidates.sort(key=lambda item: (item["from"], item["to"], item["distance"]))
-    if candidates:
+        return [], 0, 0
+    center_indices, point_indices, image_offsets, _distances = structure.get_neighbor_list(cutoff_angstrom)
+    candidates: dict[tuple[int, int, int, int, int], dict[str, Any]] = {}
+    offset_limited_count = 0
+    for raw_from, raw_to, raw_offset in zip(center_indices, point_indices, image_offsets, strict=True):
+        offset = tuple(int(item) for item in raw_offset)
+        if any(abs(item) > 3 for item in offset):
+            offset_limited_count += 1
+            continue
+        canonical = canonicalize_periodic_bond(int(raw_from), int(raw_to), offset)
+        if canonical is None:
+            continue
+        from_index, to_index, target_offset = canonical
+        displacement = _periodic_bond_displacement(structure, from_index, to_index, target_offset)
+        distance = _round(math.hypot(*displacement))
+        key = periodic_bond_key(from_index, to_index, target_offset)
+        candidates[key] = {
+            "id": f"bond:{from_index}:0,0,0->{to_index}:{target_offset[0]},{target_offset[1]},{target_offset[2]}",
+            "from": {"site_index": from_index, "image_offset": [0, 0, 0]},
+            "to": {"site_index": to_index, "image_offset": list(target_offset)},
+            "displacement_cartesian": [_round(value) for value in displacement],
+            "distance_angstrom": distance,
+            "source": "distance_cutoff",
+            "authoritative": False,
+        }
+    ordered = [candidates[key] for key in sorted(candidates)]
+    if ordered:
         warnings.append(
             {
                 "code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
                 "message": "Bonds are bounded distance candidates for preview metadata only.",
             }
         )
-    return candidates[:max_bonds], len(candidates)
+    return ordered[:max_bonds], len(ordered), offset_limited_count
+
+
+def canonicalize_periodic_bond(
+    from_index: int,
+    to_index: int,
+    target_offset: tuple[int, int, int],
+) -> tuple[int, int, tuple[int, int, int]] | None:
+    if from_index == to_index and target_offset == (0, 0, 0):
+        return None
+    forward = (from_index, to_index, *target_offset)
+    reverse_offset = tuple(-item for item in target_offset)
+    reverse = (to_index, from_index, *reverse_offset)
+    selected = min(forward, reverse)
+    return selected[0], selected[1], (selected[2], selected[3], selected[4])
+
+
+def periodic_bond_key(from_index: int, to_index: int, target_offset: tuple[int, int, int]) -> tuple[int, int, int, int, int]:
+    canonical = canonicalize_periodic_bond(from_index, to_index, target_offset)
+    if canonical is None:
+        raise ValueError("Zero-offset self bonds do not have a periodic bond key.")
+    return canonical[0], canonical[1], *canonical[2]
+
+
+def _periodic_bond_displacement(
+    structure: Structure,
+    from_index: int,
+    to_index: int,
+    target_offset: tuple[int, int, int],
+) -> tuple[float, float, float]:
+    start = structure[from_index].coords
+    end = structure[to_index].coords + structure.lattice.get_cartesian_coords(target_offset)
+    value = end - start
+    return float(value[0]), float(value[1]), float(value[2])
 
 
 def _viewer_scene_v1_manifest(payload: dict[str, Any], *, tool_id: str) -> dict[str, Any]:
@@ -1327,7 +1374,7 @@ def _viewer_scene_v1_manifest(payload: dict[str, Any], *, tool_id: str) -> dict[
         "schema_version": VIEWER_SCENE_MANIFEST_SCHEMA_VERSION,
         "artifact_id": "viewer_scene",
         "artifact_kind": VIEWER_SCENE_KIND,
-        "artifact_version": VIEWER_SCENE_VERSION,
+        "artifact_version": payload["version"],
         "fixture_source": "adapter_generated",
         "expected_validation_state": "valid_with_warnings" if warning_codes else "valid",
         "expected_errors": [],
@@ -1387,7 +1434,7 @@ def _strict_finite_float(value: Any, field: str, tool_id: str, *, minimum: float
 def _viewer_scene_param_error(tool_id: str, error_type: str, field: str) -> ToolExecutionError:
     return ToolExecutionError(
         code="TOOL_PARAM_INVALID",
-        message="viewer_scene.v1 params are invalid.",
+        message="viewer scene params are invalid.",
         tool_id=tool_id,
         details={"errorType": error_type, "field": field},
     )
@@ -1418,6 +1465,14 @@ def _viewer_scene_v1_summary_markdown(payload: dict[str, Any]) -> str:
         str(item.get("code")) if isinstance(item, dict) else str(item)
         for item in warnings
     ]
+    bonds = scene.get("bonds") or []
+    cross_boundary_count = sum(
+        1
+        for bond in bonds
+        if isinstance(bond, dict)
+        and isinstance(bond.get("to"), dict)
+        and bond["to"].get("image_offset") != [0, 0, 0]
+    )
     return "\n".join(
         [
             "# Viewer Scene Artifact",
@@ -1433,7 +1488,10 @@ def _viewer_scene_v1_summary_markdown(payload: dict[str, Any]) -> str:
             f"- contract version: {payload['version']}",
             f"- coordinate basis: {scene['coordinate_basis']}",
             f"- site count: {len(scene['sites'])}",
-            f"- bond count: {len(scene.get('bonds') or [])}",
+            f"- periodic bond count: {len(bonds)}",
+            f"- cross-boundary bond count: {cross_boundary_count}",
+            "- bond source policy: distance_cutoff",
+            "- bond topology authoritative: false",
             f"- lattice included: {bool(scene.get('lattice'))}",
             f"- cell expansion: {scene.get('cell_expansion')}",
             "",
@@ -1445,24 +1503,21 @@ def _viewer_scene_v1_summary_markdown(payload: dict[str, Any]) -> str:
             f"- warnings: {', '.join(warning_codes) if warning_codes else 'none'}",
             "",
             "## Preview",
-            "- JSON-only preview supported",
-            "- renderer not included",
-            "- no interactive 3D rendering claimed",
+            "- inert JSON preview supported",
+            "- validated client renderer supported",
+            "- renderer code is not embedded in this artifact",
             "",
             "## Security",
             "- no artifact JavaScript",
             "- no HTML payload",
             "- no external URLs",
             "- no remote textures",
-            "- no renderer bundle",
-            "- no WebGL",
-            "- no Three.js",
+            "- no renderer bundle or executable asset in the artifact",
             "",
             "## Deferred",
-            "- full structure.viewer_3d",
-            "- WebGL renderer",
-            "- renderer screenshot evidence",
-            "- interactive camera controls",
+            "- CrystalNN/VoronoiNN authoritative coordination",
+            "- bond order and valence",
+            "- trajectory and phonon animation",
         ]
     ) + "\n"
 
@@ -1505,7 +1560,7 @@ def _viewer_summary_markdown(title: str, payload: dict[str, Any]) -> str:
 
 
 def _recipe_payload(adapter: _BaseStructureAdapter, result: StructureAdapterResult, requested: set[ArtifactType]) -> dict[str, Any]:
-    if result.payload.get("kind") == VIEWER_SCENE_KIND and result.payload.get("version") == VIEWER_SCENE_VERSION:
+    if result.payload.get("kind") == VIEWER_SCENE_KIND and result.payload.get("version") in {VIEWER_SCENE_VERSION, VIEWER_SCENE_PERIODIC_VERSION}:
         return _viewer_scene_v1_recipe_payload(adapter, result, requested)
     if str(result.payload.get("schema_version", "")).startswith("phase10d1.viewer_scene"):
         return _viewer_recipe_payload(adapter, result, requested)
@@ -1569,7 +1624,8 @@ def _viewer_scene_v1_recipe_payload(adapter: _BaseStructureAdapter, result: Stru
         },
         "normalized_params": result.params,
         "deterministic": True,
-        "contract_version": VIEWER_SCENE_VERSION,
+        "contract_version": result.payload["version"],
+        "periodic_bond_schema": result.payload["schema_version"],
         "parser": "pymatgen.Structure",
         "generation_steps": [
             "parse_structure",
@@ -1577,7 +1633,7 @@ def _viewer_scene_v1_recipe_payload(adapter: _BaseStructureAdapter, result: Stru
             "normalize_species",
             "normalize_site_indices",
             "normalize_coordinates",
-            "derive_bounded_optional_bonds",
+            "derive_bounded_periodic_bonds",
             "apply_caps",
             "build_warnings",
             "build_provenance",

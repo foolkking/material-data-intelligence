@@ -37,8 +37,8 @@ def test_viewer_scene_adapter_generates_canonical_scene_manifest_summary_and_rec
         "recipe.json",
     }
     assert scene["kind"] == "viewer_scene"
-    assert scene["version"] == "viewer_scene.v1"
-    assert scene["schema_version"] == "phase10f8.viewer_scene.v1"
+    assert scene["version"] == "viewer_scene.v2"
+    assert scene["schema_version"] == "phase10f18.viewer_scene.v2"
     assert scene["metadata"]["formula"] == "Si"
     assert scene["scene"]["coordinate_basis"] == "cartesian_angstrom"
     assert scene["scene"]["lattice"]["vectors"] == [[5.43, 0.0, 0.0], [0.0, 5.43, 0.0], [0.0, 0.0, 5.43]]
@@ -51,8 +51,9 @@ def test_viewer_scene_adapter_generates_canonical_scene_manifest_summary_and_rec
     assert manifest["executable_assets"] == "none"
     assert validate_viewer_scene_manifest(manifest).valid
     assert "# Viewer Scene Artifact" in summary
-    assert "renderer not included" in summary
-    assert "no interactive 3D rendering claimed" in summary
+    assert "renderer code is not embedded in this artifact" in summary
+    assert "periodic bond count" in summary
+    assert "validated client renderer supported" in summary
     assert recipe["schema_version"] == "phase10f12.viewer_scene.recipe.v1"
     assert recipe["tool_id"] == "structure.viewer_scene"
     assert recipe["deterministic"] is True
@@ -82,7 +83,8 @@ def test_viewer_scene_adapter_bonds_can_be_disabled_or_bounded() -> None:
 
     assert disabled["scene"]["bonds"] == []
     assert "VIEWER_SCENE_BONDS_SKIPPED" in _warning_codes(disabled)
-    assert bounded["scene"]["bonds"][0]["policy"] == "distance_cutoff_non_authoritative"
+    assert bounded["scene"]["bonds"][0]["source"] == "distance_cutoff"
+    assert bounded["scene"]["bonds"][0]["authoritative"] is False
     assert "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE" in _warning_codes(bounded)
 
 
@@ -196,9 +198,10 @@ def test_viewer_scene_tool_registered_with_strict_schema_and_no_renderer_capabil
         ArtifactType.recipe_json,
     ]
     description = tool.description.lower()
-    assert "viewer_scene.v1" in description
-    assert "json-only" in description
-    assert "no interactive 3d viewer" in description
+    assert "viewer_scene.v2" in description
+    assert "periodic bond endpoints" in description
+    assert "json artifact" in description
+    assert "no javascript, renderer bundle" in description
     assert "webgl" in description
     assert "javascript" in description
     assert "external resources" in description

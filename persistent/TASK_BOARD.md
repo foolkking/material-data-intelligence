@@ -1854,3 +1854,15 @@
 ### Remaining
 - [ ] Canonical cross-boundary bond endpoint representation.
 - [ ] Authoritative neighbor inference, trajectory, phonon, Brillouin, and volumetric capabilities.
+
+## 2026-07-12 Phase 10F-18 Periodic Bond Topology
+
+### Done
+- [x] `viewer_scene.v2` periodic endpoint contract and v1 compatibility.
+- [x] Bounded deterministic adapter topology for both formal viewer tools.
+- [x] Cross-boundary/supercell rendering and periodic neighbor inspector.
+- [x] Live API/browser/performance/network/security evidence.
+
+### Remaining
+- [ ] Authoritative CrystalNN/VoronoiNN coordination and bond order.
+- [ ] Trajectory, phonon, Brillouin, volumetric, defects, and surfaces.

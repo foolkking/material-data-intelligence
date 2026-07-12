@@ -192,3 +192,10 @@
 | [`phase10f/phase10f17_browser_api_evidence.md`](phase10f/phase10f17_browser_api_evidence.md) | Live browser/API evidence procedure |
 | [`phase10f/phase10f17_readiness_matrix.md`](phase10f/phase10f17_readiness_matrix.md) | Phase 10F-17 readiness decisions |
 | [`phase10f/evidence/phase10f17_periodic_crystal_inspection/`](phase10f/evidence/phase10f17_periodic_crystal_inspection/) | Live artifacts, references, metrics, browser and screenshot evidence |
+| [`phase10f/phase10f18_integrated_plan.md`](phase10f/phase10f18_integrated_plan.md) | Canonical periodic bond topology closure plan |
+| [`phase10f/phase10f18_periodic_bond_schema_decision.md`](phase10f/phase10f18_periodic_bond_schema_decision.md) | v2 schema and v1 compatibility decision |
+| [`phase10f/phase10f18_periodic_bond_identity.md`](phase10f/phase10f18_periodic_bond_identity.md) | Stable periodic endpoint identity and deduplication |
+| [`phase10f/phase10f18_topology_generation_policy.md`](phase10f/phase10f18_topology_generation_policy.md) | Bounded non-authoritative adapter topology policy |
+| [`phase10f/phase10f18_security_review.md`](phase10f/phase10f18_security_review.md) | Numeric, injection, GPU, and network review |
+| [`phase10f/phase10f18_readiness_matrix.md`](phase10f/phase10f18_readiness_matrix.md) | Phase 10F-18 readiness decisions |
+| [`phase10f/evidence/phase10f18_periodic_bond_topology/`](phase10f/evidence/phase10f18_periodic_bond_topology/) | Live jobs, v2 artifacts, browser matrix, metrics, and screenshots |

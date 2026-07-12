@@ -32,13 +32,15 @@ export function validateViewerSceneForRenderer(payload: unknown): ViewerSceneVal
     if (!(field in payload)) errors.push("VIEWER_SCENE_REQUIRED_FIELD_MISSING");
   }
   if (payload.kind !== "viewer_scene") errors.push("VIEWER_SCENE_KIND_INVALID");
-  if (payload.version !== "viewer_scene.v1") errors.push("VIEWER_SCENE_VERSION_INVALID");
-  if (payload.schema_version !== "phase10f8.viewer_scene.v1") errors.push("VIEWER_SCENE_SCHEMA_VERSION_INVALID");
+  const identity = `${String(payload.version)}|${String(payload.schema_version)}`;
+  if (!new Set(["viewer_scene.v1|phase10f8.viewer_scene.v1", "viewer_scene.v2|phase10f18.viewer_scene.v2"]).has(identity)) {
+    errors.push("VIEWER_SCENE_SCHEMA_VERSION_INVALID");
+  }
 
   scanValue(payload, errors, 0, new Set<object>());
   validateSecurity(payload.security, errors);
   validateCaps(payload.caps, errors);
-  validateScene(payload.scene, errors);
+  validateScene(payload.scene, errors, payload.version);
 
   if (Array.isArray(payload.warnings)) {
     for (const warning of payload.warnings) {
@@ -74,7 +76,7 @@ function validateCaps(value: unknown, errors: string[]) {
   }
 }
 
-function validateScene(value: unknown, errors: string[]) {
+function validateScene(value: unknown, errors: string[], version: unknown) {
   if (!isRecord(value)) {
     errors.push("VIEWER_SCENE_SCENE_REQUIRED");
     return;
@@ -108,7 +110,8 @@ function validateScene(value: unknown, errors: string[]) {
   if (!Array.isArray(bonds)) errors.push("VIEWER_SCENE_BONDS_SHAPE_INVALID");
   else {
     if (bonds.length > VIEWER_SCENE_RENDER_LIMITS.maxBonds) errors.push("VIEWER_SCENE_BOND_LIMIT_EXCEEDED");
-    for (const bond of bonds) {
+    if (version === "viewer_scene.v2") validatePeriodicBonds(bonds, sites, indices, lattice?.vectors, errors);
+    else for (const bond of bonds) {
       if (!isRecord(bond) || !indices.has(Number(bond.from)) || !indices.has(Number(bond.to))) errors.push("VIEWER_SCENE_BOND_ENDPOINT_INVALID");
       if (isRecord(bond) && "distance" in bond && !finiteNumber(bond.distance)) errors.push("VIEWER_SCENE_BOND_DISTANCE_INVALID");
     }
@@ -117,6 +120,43 @@ function validateScene(value: unknown, errors: string[]) {
     errors.push("VIEWER_SCENE_CELL_EXPANSION_LIMIT_EXCEEDED");
   }
 }
+
+function validatePeriodicBonds(bonds: unknown[], sites: unknown[], indices: Set<number>, latticeValue: unknown, errors: string[]) {
+  const lattice = finiteMatrix(latticeValue) ? latticeValue : null;
+  const positions = new Map<number, [number,number,number]>(sites.flatMap((site) => isRecord(site) && typeof site.index === "number" && finiteTriplet(site.xyz) ? [[site.index, site.xyz]] : []));
+  const seen = new Set<string>();
+  for (const bond of bonds) {
+    if (!isRecord(bond) || !validEndpoint(bond.from, indices) || !validEndpoint(bond.to, indices)) { errors.push("VIEWER_SCENE_BOND_ENDPOINT_INVALID"); continue; }
+    const from = bond.from; const to = bond.to;
+    const topologyKey = canonicalBondKey(from.site_index, to.site_index, to.image_offset);
+    const expectedId = `bond:${topologyKey}`;
+    if (from.image_offset.join() !== "0,0,0") errors.push("VIEWER_SCENE_PERIODIC_BOND_SOURCE_IMAGE_INVALID");
+    if (from.site_index === to.site_index && to.image_offset.join() === "0,0,0") errors.push("VIEWER_SCENE_PERIODIC_BOND_ZERO_SELF_INVALID");
+    if (bond.id !== expectedId) errors.push("VIEWER_SCENE_PERIODIC_BOND_ID_INVALID");
+    if (seen.has(topologyKey)) errors.push("VIEWER_SCENE_PERIODIC_BOND_DUPLICATE"); else seen.add(topologyKey);
+    if (!new Set(["distance_cutoff","explicit_input"]).has(String(bond.source))) errors.push("VIEWER_SCENE_PERIODIC_BOND_SOURCE_INVALID");
+    if (typeof bond.authoritative !== "boolean" || (bond.source === "distance_cutoff" && bond.authoritative !== false)) errors.push("VIEWER_SCENE_PERIODIC_BOND_AUTHORITATIVE_INVALID");
+    const displacement = bond.displacement_cartesian;
+    if (!finiteTriplet(displacement)) errors.push("VIEWER_SCENE_PERIODIC_BOND_DISPLACEMENT_INVALID");
+    if (!finiteNumber(bond.distance_angstrom) || bond.distance_angstrom < 0) errors.push("VIEWER_SCENE_BOND_DISTANCE_INVALID");
+    const start=positions.get(from.site_index); const target=positions.get(to.site_index);
+    if (!lattice || !start || !target) continue;
+    const expected = [0,1,2].map((axis)=>target[axis]-start[axis]+to.image_offset.reduce((sum:number,item:number,row:number)=>sum+item*lattice[row][axis],0)) as [number,number,number];
+    if (finiteTriplet(displacement) && expected.some((item,index)=>Math.abs(item-displacement[index])>1e-5)) errors.push("VIEWER_SCENE_PERIODIC_BOND_DISPLACEMENT_MISMATCH");
+    if (finiteNumber(bond.distance_angstrom) && Math.abs(Math.hypot(...expected)-bond.distance_angstrom)>1e-5) errors.push("VIEWER_SCENE_PERIODIC_BOND_DISTANCE_MISMATCH");
+  }
+}
+
+function validEndpoint(value: unknown, indices: Set<number>): value is {site_index:number;image_offset:[number,number,number]} {
+  return isRecord(value) && Object.keys(value).sort().join() === "image_offset,site_index" && typeof value.site_index === "number" && indices.has(value.site_index) && Array.isArray(value.image_offset) && value.image_offset.length===3 && value.image_offset.every((item)=>Number.isSafeInteger(item)&&Math.abs(item)<=3);
+}
+
+function canonicalBondKey(from:number,to:number,offset:[number,number,number]) {
+  const forward=[from,to,...offset]; const reverse=[to,from,...offset.map((item)=>-item)];
+  const selected=compareNumbers(forward,reverse)<=0?forward:reverse;
+  return `${selected[0]}:0,0,0->${selected[1]}:${selected.slice(2).join(",")}`;
+}
+function compareNumbers(left:number[],right:number[]){for(let index=0;index<left.length;index+=1){if(left[index]!==right[index])return left[index]-right[index];}return 0;}
 
 function scanValue(value: unknown, errors: string[], depth: number, seen: Set<object>) {
   if (depth > VIEWER_SCENE_RENDER_LIMITS.maxDepth) {

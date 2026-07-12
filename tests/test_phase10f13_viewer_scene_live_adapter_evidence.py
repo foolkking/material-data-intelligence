@@ -50,7 +50,7 @@ def test_phase10f13_invalid_live_request_fails_without_successful_viewer_artifac
     assert invalid["preview_expectation"]["invalid_state"] == "job_failed_before_successful_artifact"
     tool_error = invalid["api"]["tool_calls"][0]["error"]
     assert tool_error["type"] == "ToolExecutionError"
-    assert "viewer_scene.v1 adapter accepts exactly one periodic structure" in tool_error["message"]
+    assert "viewer scene adapter accepts exactly one periodic structure" in tool_error["message"]
     assert ":\\" not in tool_error["message"]
 
 
@@ -65,7 +65,7 @@ def test_phase10f13_schema_compatibility_and_routing_boundaries(tmp_path: Path) 
     }
     assert compatibility["new_tool_registered"] == "structure.viewer_scene"
     assert compatibility["old_schema"] == "phase10d1.viewer_scene.v1"
-    assert compatibility["canonical_schema"] == "phase10f8.viewer_scene.v1"
+    assert compatibility["canonical_schema"] == "phase10f18.viewer_scene.v2"
     assert compatibility["migration_performed"] is False
     assert routes["canonical_viewer_scene"] == "structure.viewer_scene"
     assert routes["old_metadata"] == "structure.viewer_scene_metadata"

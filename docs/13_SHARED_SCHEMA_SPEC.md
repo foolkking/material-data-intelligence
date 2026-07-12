@@ -1062,3 +1062,17 @@ candidates, deterministic lexicographic ties, finite/condition checks, and no
 silent direct-distance fallback. Derived display caps are 2048 sites and 8192
 bonds with repeat axes 1 through 3. Canonical bonds lack endpoint image offsets,
 so only provable same-cell bond replication is rendered.
+
+## Phase 10F-18 Addendum: canonical periodic bond topology
+
+Adapters now emit `viewer_scene.v2` / `phase10f18.viewer_scene.v2`. A periodic
+bond contains strict `from` and `to` endpoints, each with canonical `site_index`
+and integer `image_offset`, plus Cartesian displacement, angstrom distance,
+allowlisted source, and authority flag. The normalized source image is zero and
+the target image is relative. Reverse-equivalent edges share one stable key.
+
+`distance_cutoff` topology is always non-authoritative. Distances are checked
+against row-vector lattice translation within `1e-5` angstrom. Canonical bonds
+are capped at 2048, endpoint components at absolute value 3, and renderer-local
+derived bonds at 8192. `viewer_scene.v1` remains valid but missing offsets mean
+same-cell only; no cross-boundary topology is inferred or migrated.

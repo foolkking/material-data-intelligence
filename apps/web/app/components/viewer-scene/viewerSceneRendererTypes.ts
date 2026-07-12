@@ -29,6 +29,10 @@ export type RenderBond = {
   readonly toRef: PeriodicSiteRef;
   readonly start: RenderVector3;
   readonly end: RenderVector3;
+  readonly displacementCartesian: RenderVector3;
+  readonly distanceAngstrom: number;
+  readonly source: "distance_cutoff" | "explicit_input" | "legacy_same_cell";
+  readonly authoritative: boolean;
 };
 
 export type RenderLattice = {
@@ -36,8 +40,8 @@ export type RenderLattice = {
 };
 
 export type ValidatedRenderScene = {
-  readonly contractVersion: "viewer_scene.v1";
-  readonly schemaVersion: "phase10f8.viewer_scene.v1";
+  readonly contractVersion: "viewer_scene.v1" | "viewer_scene.v2";
+  readonly schemaVersion: "phase10f8.viewer_scene.v1" | "phase10f18.viewer_scene.v2";
   readonly atoms: readonly RenderAtom[];
   readonly bonds: readonly RenderBond[];
   readonly lattice: RenderLattice;
