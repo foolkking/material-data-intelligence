@@ -47,3 +47,4 @@ Thumbs.db
 # Keep design docs and persistent planning files tracked.
 # docs/
 # persistent/
+.codex-worker/
