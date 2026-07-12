@@ -5,7 +5,8 @@ export type ViewerRendererErrorCode =
   | "VIEWER_RENDERER_CONTEXT_LOST"
   | "VIEWER_RENDERER_INVALID_GEOMETRY"
   | "VIEWER_RENDERER_RESOURCE_LIMIT"
-  | "VIEWER_RENDERER_DISPOSE_FAILED";
+  | "VIEWER_RENDERER_DISPOSE_FAILED"
+  | "VIEWER_RENDERER_CHUNK_LOAD_FAILED";
 
 export class ViewerRendererError extends Error {
   readonly code: ViewerRendererErrorCode;

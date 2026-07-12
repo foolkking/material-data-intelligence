@@ -1,5 +1,20 @@
 # TASK_BOARD
 
+## Phase 10F-15 Completed
+
+- [x] Inventory and consolidate viewer tool identities.
+- [x] Formalize `structure.viewer_3d` on canonical inert artifacts.
+- [x] Preserve explicit JSON and legacy direct-purpose routes without schema reinterpretation.
+- [x] Add atom instancing, bounded bond geometry, metrics, cap alignment, chunk fallback, mobile, and accessibility hardening.
+- [x] Capture live Chromium/Firefox/WebKit, mobile, near-cap, boundary, performance, accessibility, console, and network evidence.
+- [x] Keep artifact execution, external renderer assets, trajectory, phonon, Brillouin zone, volumetric rendering, and editing out of scope.
+
+## Remaining Viewer Work
+
+- [ ] Resolve framework/test-tool npm audit debt through a separately reviewed upgrade.
+- [ ] Define any future Phase 10D migration/removal window.
+- [ ] Scope advanced scientific viewer features independently; do not fold them into the minimal viewer.
+
 ## 2026-07-11 Phase 10F-14 Validated Viewer Scene Renderer Foundation
 
 ### Done

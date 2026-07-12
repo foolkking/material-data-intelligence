@@ -490,6 +490,13 @@ class StructureViewerSceneAdapter(_BaseStructureAdapter):
         )
 
 
+class StructureViewer3DAdapter(StructureViewerSceneAdapter):
+    """Formal minimal viewer backend that emits canonical inert artifacts."""
+
+    tool_id = "structure.viewer_3d"
+    adapter_version = "1.0.0"
+
+
 class StructureViewerExportPackageAdapter(_BaseStructureAdapter):
     tool_id = "structure.viewer_export_package"
     adapter_version = "0.1.0"

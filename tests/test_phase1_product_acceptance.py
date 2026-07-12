@@ -48,8 +48,7 @@ def test_phase1_mvp_product_flow_acceptance(tmp_path, repo_root):
         ArtifactType.plotly_json,
         ArtifactType.plotly_html,
         ArtifactType.preview_png,
-        ArtifactType.matterviz_html,
-        ArtifactType.structure_json,
+            ArtifactType.structure_json,
         ArtifactType.metrics_json,
         ArtifactType.table_json,
         ArtifactType.table_csv,
@@ -58,6 +57,7 @@ def test_phase1_mvp_product_flow_acceptance(tmp_path, repo_root):
         ArtifactType.report_md,
         ArtifactType.report_html,
     }.issubset(artifact_types)
+    assert ArtifactType.matterviz_html not in artifact_types
 
     for artifact in result.artifacts:
         path = artifact_root / artifact.storageKey

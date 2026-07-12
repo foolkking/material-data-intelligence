@@ -1010,3 +1010,25 @@ artifact fields are never spread into Three.js, DOM, CSS, module imports,
 textures, shaders, callbacks, or URLs. These types are frontend display models;
 they do not alter persisted artifacts, Tool Registry, AnalysisPlan, Job, or
 QueueWorkerRuntime contracts.
+
+## Phase 10F-15 Addendum: formal minimal viewer identity and metrics
+
+`structure.viewer_3d` is the formal product capability. Its backend adapter
+emits the same canonical artifacts as `structure.viewer_scene`:
+
+- `viewer_scene.json` (`phase10f8.viewer_scene.v1`)
+- `viewer_scene_manifest.json` (`phase10f9.viewer_scene_manifest.v1`)
+- `summary.md`
+- `recipe.json`
+
+No HTML, JavaScript, renderer, shader, texture, or external asset is embedded.
+Browser renderer availability is separate from backend job success.
+
+The frontend-only evidence model adds `ViewerRendererMetrics` with atom, bond,
+species, instanced-mesh, lattice-edge, draw-call, geometry, material, triangle,
+line, initialization-time, and first-frame fields. Metrics are not persisted
+into the canonical artifact and do not change the viewer scene contract.
+
+Canonical, adapter, and renderer hard caps remain aligned at 256 sites, 2048
+bonds, 32 species, cell expansion `[1, 1, 1]`, and 1,000,000 JSON bytes.
+Renderer-side truncation is prohibited.

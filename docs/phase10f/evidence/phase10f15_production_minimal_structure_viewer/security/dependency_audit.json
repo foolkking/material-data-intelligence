@@ -1,0 +1,15 @@
+{
+  "schema_version": "phase10f15.dependency_audit.v1",
+  "renderer_dependency": "three@0.185.1",
+  "renderer_findings": 0,
+  "total_existing_findings": 7,
+  "severity": {
+    "critical": 1,
+    "high": 1,
+    "moderate": 5
+  },
+  "chains": ["vitest", "vite", "vite-node", "esbuild", "next", "postcss"],
+  "introduced_by_phase10f15": false,
+  "audit_clean_claimed": false,
+  "disposition": "documented_existing_debt_major_upgrade_deferred"
+}

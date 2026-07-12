@@ -192,12 +192,12 @@ def test_mock_planner_routes_structure_prompts(prompt: str, expected_tool: str) 
     assert plan["steps"][0]["toolId"] == expected_tool
 
 
-def test_mock_planner_does_not_claim_3d_viewer_support() -> None:
+def test_mock_planner_routes_supported_minimal_3d_viewer() -> None:
     plan = _mock_plan("Please render a 3D structure viewer.", _structure_profile())
 
-    assert plan["steps"][0]["toolId"] == "structure.preview_metadata"
-    assert plan["steps"][0]["toolId"] != "structure.viewer_3d"
-    assert "future scope" in plan["steps"][0]["reason"].lower()
+    assert plan["steps"][0]["toolId"] == "structure.viewer_3d"
+    assert "future scope" not in plan["steps"][0]["reason"].lower()
+    assert plan["steps"][0]["output"]["artifactTypes"] == ["structure_json", "table_json", "summary_md", "recipe_json"]
 
 
 def test_structure_prompt_not_routed_to_composition_or_histogram() -> None:

@@ -843,6 +843,8 @@ def build_object_store(objects: list[NormalizedObjectDraft]) -> tuple[dict[str, 
     if structures:
         object_refs["structures"] = "structures"
         object_store["structures"] = structures
+        object_refs["viewer_structure"] = "viewer_structure"
+        object_store["viewer_structure"] = structures[0]
     if dataframes:
         object_refs["ml_table"] = "ml_table"
         object_store["ml_table"] = dataframes[0]
@@ -963,6 +965,8 @@ def _phase2_step(
     artifact_types = [artifact_type.value for artifact_type in tool.artifactTypes]
     if tool_id.startswith("composition."):
         input_ref = InputRef(refType="normalized_object", ref=object_refs["formulas"], objectType=MaterialObjectType.Composition)
+    elif tool_id == "structure.viewer_3d":
+        input_ref = InputRef(refType="normalized_object", ref=object_refs.get("viewer_structure", object_refs["structures"]), objectType=MaterialObjectType.Structure)
     elif tool_id.startswith("structure."):
         input_ref = InputRef(refType="normalized_object", ref=object_refs["structures"], objectType=MaterialObjectType.Structure)
     else:
@@ -1112,7 +1116,18 @@ def _default_params_for(tool_id: str) -> dict[str, Any]:
         "structure.preview_metadata": {"maxPreviewSites": 100, "includeCartesian": True, "includeFractional": True},
         "structure.viewer_scene_metadata": {"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
         "structure.viewer_export_package": {"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
-        "structure.viewer_3d": {"showCell": True, "showBonds": "auto", "cameraPreset": "isometric"},
+        "structure.viewer_3d": {
+            "include_bonds": True,
+            "bond_cutoff_angstrom": 3.0,
+            "max_sites": 256,
+            "max_bonds": 2048,
+            "coordinate_basis": "cartesian_angstrom",
+            "include_cartesian_positions": True,
+            "include_fractional_positions": True,
+            "cell_expansion": [1, 1, 1],
+            "style_preset": "default",
+            "camera_preset": "auto",
+        },
         "ml.basic_metrics": {"targetColumn": "y_true", "predictionColumn": "y_pred"},
         "ml.outlier_table": {"targetColumn": "y_true", "predictionColumn": "y_pred", "topK": 5},
     }
@@ -1130,7 +1145,7 @@ def _purpose_for(tool_id: str) -> str:
         "structure.preview_metadata": "Generate lightweight structure preview metadata.",
         "structure.viewer_scene_metadata": "Generate static scene metadata for future structure viewer rendering.",
         "structure.viewer_export_package": "Generate a static structure viewer export package without a renderer.",
-        "structure.viewer_3d": "Create an interactive 3D viewer artifact.",
+        "structure.viewer_3d": "Generate canonical artifacts for the minimal interactive crystal structure viewer.",
         "ml.basic_metrics": "Compute regression quality metrics.",
         "ml.outlier_table": "List highest-error rows for review.",
     }

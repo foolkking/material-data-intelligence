@@ -215,6 +215,9 @@ def test_mock_planner_does_not_route_deferred_physics_to_coordination(prompt: st
     plan = _mock_plan(prompt)
 
     assert plan["steps"][0]["toolId"] != "structure.coordination_hist"
+    if prompt in {"打开交互式 3D viewer", "用 WebGL 显示这个晶体"}:
+        assert plan["steps"][0]["toolId"] == "structure.viewer_3d"
+        return
     assert plan["steps"][0]["toolId"] not in {
         "structure.viewer_3d",
         "structure.brillouin_zone_3d",

@@ -1,5 +1,28 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-15-FORMAL-MINIMAL-STRUCTURE-VIEWER: Consolidate on canonical artifacts and a client capability
+
+### Context
+
+Phase 10F-14 proved a safe renderer, but the active `structure.viewer_3d` inventory still pointed to a MatterViz HTML adapter while `structure.viewer_scene` was the canonical producer. This created product identity and security-boundary ambiguity.
+
+### Decision
+
+- Make `structure.viewer_3d` the ordinary minimal interactive viewer identity.
+- Reuse canonical scene generation and validation; never embed renderer code in artifacts.
+- Keep `structure.viewer_scene` as explicit JSON export.
+- Retain Phase 10D metadata/export tools as legacy direct-purpose JSON-only paths with no migration.
+- Use species-grouped Three.js instancing, one bounded bond geometry, aligned caps, lazy local chunks, typed fallbacks, and complete disposal.
+- Treat backend job success, artifact validation, and browser renderer state as separate statuses.
+
+### Consequences
+
+- Natural viewer requests now execute through persisted plans, QueueWorkerRuntime, Tool Registry, canonical artifacts, frontend validation, and the production-minimal renderer.
+- Old HTML viewer artifacts are no longer emitted by the formal viewer tool.
+- Chromium, Firefox, WebKit, mobile, near-cap, accessibility, and network evidence support production-minimal readiness.
+- Existing npm framework/test-tool audit debt remains documented and requires separate upgrades.
+- Advanced scientific viewer features remain out of scope.
+
 ## ADR-10F-14-VALIDATED-THREE-RENDERER: Add a canonical-only frontend renderer foundation
 
 ### Context

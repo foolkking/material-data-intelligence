@@ -36,6 +36,10 @@ DEFAULT_EVIDENCE_ROOT = (
     / "evidence"
     / "phase10f13_viewer_scene_live_adapter_browser"
 )
+FORMAL_VIEWER_MODE = os.environ.get("MDI_FORMAL_VIEWER_MODE") == "1"
+ACTIVE_VIEWER_TOOL_ID = "structure.viewer_3d" if FORMAL_VIEWER_MODE else "structure.viewer_scene"
+ACTIVE_VIEWER_ADAPTER = "StructureViewer3DAdapter" if FORMAL_VIEWER_MODE else "StructureViewerSceneAdapter"
+EVIDENCE_PROJECT_ID = "project_10f15" if FORMAL_VIEWER_MODE else "project_10f13"
 
 
 @dataclass(frozen=True)
@@ -78,7 +82,7 @@ def generate_live_adapter_evidence(evidence_root: Path = DEFAULT_EVIDENCE_ROOT) 
             "persisted AnalysisPlan",
             "QueueWorkerRuntime.handle_job",
             "Tool Registry lookup",
-            "StructureViewerSceneAdapter",
+            ACTIVE_VIEWER_ADAPTER,
             "artifact metadata listing",
             "JSON-only preview API capture",
         ],
@@ -108,28 +112,28 @@ def _case_specs() -> list[LiveCaseSpec]:
     cases = [
         LiveCaseSpec(
             case_id="valid_minimal_crystal",
-            prompt="Build an inert viewer scene artifact for this structure.",
+            prompt="Open an interactive 3D view of this CIF." if FORMAL_VIEWER_MODE else "Build an inert viewer scene artifact for this structure.",
             structure_input=[_si_structure()],
             params={},
             expected_status="completed",
         ),
         LiveCaseSpec(
             case_id="multi_species_crystal",
-            prompt="Create JSON scene data for a future structure renderer.",
+            prompt="Render this crystal in the structure viewer." if FORMAL_VIEWER_MODE else "Create JSON scene data for a future structure renderer.",
             structure_input=[_nacl_structure()],
             params={},
             expected_status="completed",
         ),
         LiveCaseSpec(
             case_id="warning_caps",
-            prompt="Create a viewer_scene.v1 artifact with bounded caps.",
+            prompt="Open the minimal structure viewer with bounded caps." if FORMAL_VIEWER_MODE else "Create a viewer_scene.v1 artifact with bounded caps.",
             structure_input=[_nacl_structure()],
             params={"max_sites": 2, "max_bonds": 0, "include_bonds": True, "bond_cutoff_angstrom": 5.0},
             expected_status="completed",
         ),
         LiveCaseSpec(
             case_id="invalid_multi_structure_rejected",
-            prompt="Build an inert viewer scene artifact for this structure.",
+            prompt="Open an interactive 3D view of these structures." if FORMAL_VIEWER_MODE else "Build an inert viewer scene artifact for this structure.",
             structure_input=[_si_structure(), _nacl_structure()],
             params={},
             expected_status="failed",
@@ -140,7 +144,7 @@ def _case_specs() -> list[LiveCaseSpec]:
             3,
             LiveCaseSpec(
                 case_id="bonds_disabled",
-                prompt="Create viewer scene JSON without bounded bond candidates.",
+                prompt="Open the structure viewer without bounded bond candidates." if FORMAL_VIEWER_MODE else "Create viewer scene JSON without bounded bond candidates.",
                 structure_input=[_nacl_structure()],
                 params={"include_bonds": False},
                 expected_status="completed",
@@ -159,7 +163,7 @@ def _run_live_case(spec: LiveCaseSpec, *, evidence_root: Path, runtime_root: Pat
     job_result = planner_jobs(
         PlannerJobsRequest(
             userPrompt=spec.prompt,
-            projectId="project_10f13",
+            projectId=EVIDENCE_PROJECT_ID,
             datasetId=f"dataset_{spec.case_id}",
             profileId=f"profile_{spec.case_id}",
             enqueue=True,
@@ -197,7 +201,7 @@ def _run_live_case(spec: LiveCaseSpec, *, evidence_root: Path, runtime_root: Pat
             "method": "POST",
             "body": {
                 "userPrompt": spec.prompt,
-                "projectId": "project_10f13",
+                "projectId": EVIDENCE_PROJECT_ID,
                 "datasetId": f"dataset_{spec.case_id}",
                 "profileId": f"profile_{spec.case_id}",
                 "enqueue": True,
@@ -241,7 +245,7 @@ def _run_live_case(spec: LiveCaseSpec, *, evidence_root: Path, runtime_root: Pat
         "source_assertion": {
             "adapter_generated": True,
             "static_fixture_used": False,
-            "tool_id": "structure.viewer_scene",
+            "tool_id": ACTIVE_VIEWER_TOOL_ID,
         },
     }
     if spec.expected_status != worker_result.status:
@@ -390,9 +394,9 @@ def _viewer_scene_plan(dataset_id: str, profile_id: str, *, params: dict[str, An
             "steps": [
                 {
                     "stepId": "step_001",
-                    "toolId": "structure.viewer_scene",
-                    "purpose": "Create inert viewer_scene.v1 JSON through the live adapter path.",
-                    "reason": "Phase 10F-13 live adapter evidence.",
+                    "toolId": ACTIVE_VIEWER_TOOL_ID,
+                    "purpose": "Generate canonical viewer_scene.v1 artifacts for the minimal interactive structure viewer.",
+                    "reason": "Live adapter evidence through the selected formal viewer identity.",
                     "inputRefs": [{"refType": "normalized_object", "ref": "structures", "objectType": "Structure"}],
                     "params": normalized_params,
                     "output": {"artifactTypes": ["structure_json", "table_json", "summary_md", "recipe_json"]},

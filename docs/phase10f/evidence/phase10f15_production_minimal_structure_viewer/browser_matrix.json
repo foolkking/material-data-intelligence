@@ -1,0 +1,1290 @@
+{
+  "schema_version": "phase10f15.browser_matrix.v1",
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.201",
+      "available": true,
+      "desktop": {
+        "state": "rendered",
+        "metrics": {
+          "atomCount": 2,
+          "bondCount": 1,
+          "speciesCount": 1,
+          "instancedMeshCount": 1,
+          "latticeEdgeCount": 12,
+          "drawCalls": 3,
+          "geometries": 3,
+          "materials": 3,
+          "triangles": 1040,
+          "lines": 13,
+          "initializationMs": 17.9,
+          "firstFrameMs": 37.3
+        },
+        "graphics": "webgl2",
+        "initial": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 17.9,
+            "firstFrameMs": 37.3
+          }
+        },
+        "rotated": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            -6.5754,
+            -2.878663,
+            -7.717806
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 17.9,
+            "firstFrameMs": 37.3
+          }
+        },
+        "zoomed": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            -4.774857,
+            -1.794573,
+            -5.695857
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 17.9,
+            "firstFrameMs": 37.3
+          }
+        },
+        "reset": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 17.9,
+            "firstFrameMs": 37.3
+          }
+        },
+        "lifecycle": {
+          "disposed_canvas": 0,
+          "remounted_canvas": 1
+        },
+        "accessibility": {
+          "region": "3D Structure Viewer",
+          "status_live": "polite",
+          "summary": "Validated canonical scene: 2 sites, 1 species, 1 bounded bonds.",
+          "legend": "Si",
+          "controls": [
+            {
+              "text": "Reset camera",
+              "pressed": null
+            },
+            {
+              "text": "Unit cell",
+              "pressed": "true"
+            },
+            {
+              "text": "Bonds",
+              "pressed": "true"
+            }
+          ]
+        },
+        "external_request_count": 0
+      },
+      "multi": {
+        "state": "rendered",
+        "metrics": {
+          "atomCount": 2,
+          "bondCount": 0,
+          "speciesCount": 2,
+          "instancedMeshCount": 2,
+          "latticeEdgeCount": 12,
+          "drawCalls": 4,
+          "geometries": 3,
+          "materials": 4,
+          "triangles": 1040,
+          "lines": 12,
+          "initializationMs": 21.1,
+          "firstFrameMs": 45
+        },
+        "graphics": "webgl2",
+        "initial": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            13.677028,
+            11.316805,
+            10.183897
+          ],
+          "cameraTarget": [
+            2.82,
+            2.82,
+            2.82
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 0,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 1040,
+            "lines": 12,
+            "initializationMs": 21.1,
+            "firstFrameMs": 45
+          }
+        },
+        "rotated": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            -6.829697,
+            -2.989993,
+            -8.016284
+          ],
+          "cameraTarget": [
+            2.82,
+            2.82,
+            2.82
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 0,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 1040,
+            "lines": 12,
+            "initializationMs": 21.1,
+            "firstFrameMs": 45
+          }
+        },
+        "zoomed": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            -4.95952,
+            -1.863977,
+            -5.916139
+          ],
+          "cameraTarget": [
+            2.82,
+            2.82,
+            2.82
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 0,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 1040,
+            "lines": 12,
+            "initializationMs": 21.1,
+            "firstFrameMs": 45
+          }
+        },
+        "reset": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            13.677028,
+            11.316805,
+            10.183897
+          ],
+          "cameraTarget": [
+            2.82,
+            2.82,
+            2.82
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 0,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 1040,
+            "lines": 12,
+            "initializationMs": 21.1,
+            "firstFrameMs": 45
+          }
+        },
+        "lifecycle": {
+          "disposed_canvas": 0,
+          "remounted_canvas": 1
+        },
+        "accessibility": {
+          "region": "3D Structure Viewer",
+          "status_live": "polite",
+          "summary": "Validated canonical scene: 2 sites, 2 species, 0 bounded bonds.",
+          "legend": "NaCl",
+          "controls": [
+            {
+              "text": "Reset camera",
+              "pressed": null
+            },
+            {
+              "text": "Unit cell",
+              "pressed": "true"
+            },
+            {
+              "text": "Bonds",
+              "pressed": "true"
+            }
+          ]
+        },
+        "external_request_count": 0
+      },
+      "near_cap": {
+        "state": "rendered",
+        "metrics": {
+          "atomCount": 256,
+          "bondCount": 2048,
+          "speciesCount": 2,
+          "instancedMeshCount": 2,
+          "latticeEdgeCount": 12,
+          "drawCalls": 4,
+          "geometries": 3,
+          "materials": 4,
+          "triangles": 133120,
+          "lines": 2060,
+          "initializationMs": 20.9,
+          "firstFrameMs": 44.6
+        },
+        "graphics": "webgl2",
+        "initial": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 256,
+          "bondCount": 2048,
+          "latticeEdgeCount": 12,
+          "triangleCount": 133120,
+          "lineCount": 2060,
+          "cameraPosition": [
+            16.048754,
+            13.320764,
+            11.226329
+          ],
+          "cameraTarget": [
+            3.5,
+            3.5,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 256,
+            "bondCount": 2048,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 133120,
+            "lines": 2060,
+            "initializationMs": 20.9,
+            "firstFrameMs": 44.6
+          }
+        },
+        "rotated": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 256,
+          "bondCount": 2048,
+          "latticeEdgeCount": 12,
+          "triangleCount": 133120,
+          "lineCount": 2060,
+          "cameraPosition": [
+            -7.653298,
+            -3.215297,
+            -9.809778
+          ],
+          "cameraTarget": [
+            3.5,
+            3.5,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 256,
+            "bondCount": 2048,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 133120,
+            "lines": 2060,
+            "initializationMs": 20.9,
+            "firstFrameMs": 44.6
+          }
+        },
+        "zoomed": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 256,
+          "bondCount": 2048,
+          "latticeEdgeCount": 12,
+          "triangleCount": 133120,
+          "lineCount": 2060,
+          "cameraPosition": [
+            -5.491714,
+            -1.913827,
+            -7.382391
+          ],
+          "cameraTarget": [
+            3.5,
+            3.5,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 256,
+            "bondCount": 2048,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 133120,
+            "lines": 2060,
+            "initializationMs": 20.9,
+            "firstFrameMs": 44.6
+          }
+        },
+        "reset": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 256,
+          "bondCount": 2048,
+          "latticeEdgeCount": 12,
+          "triangleCount": 133120,
+          "lineCount": 2060,
+          "cameraPosition": [
+            16.048754,
+            13.320764,
+            11.226329
+          ],
+          "cameraTarget": [
+            3.5,
+            3.5,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 256,
+            "bondCount": 2048,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 133120,
+            "lines": 2060,
+            "initializationMs": 20.9,
+            "firstFrameMs": 44.6
+          }
+        },
+        "lifecycle": {
+          "disposed_canvas": 0,
+          "remounted_canvas": 1
+        },
+        "accessibility": {
+          "region": "3D Structure Viewer",
+          "status_live": "polite",
+          "summary": "Validated canonical scene: 256 sites, 2 species, 2048 bounded bonds.",
+          "legend": "ClNa",
+          "controls": [
+            {
+              "text": "Reset camera",
+              "pressed": null
+            },
+            {
+              "text": "Unit cell",
+              "pressed": "true"
+            },
+            {
+              "text": "Bonds",
+              "pressed": "true"
+            }
+          ]
+        },
+        "external_request_count": 0
+      },
+      "mobile": {
+        "before": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            13.677028,
+            11.316805,
+            10.183897
+          ],
+          "cameraTarget": [
+            2.82,
+            2.82,
+            2.82
+          ],
+          "drawingBuffer": [
+            640,
+            640
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 0,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 1040,
+            "lines": 12,
+            "initializationMs": 16.7,
+            "firstFrameMs": 39.5
+          }
+        },
+        "after": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 0,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 12,
+          "cameraPosition": [
+            13.677028,
+            11.316805,
+            10.183897
+          ],
+          "cameraTarget": [
+            2.82,
+            2.82,
+            2.82
+          ],
+          "drawingBuffer": [
+            836,
+            640
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 0,
+            "speciesCount": 2,
+            "instancedMeshCount": 2,
+            "latticeEdgeCount": 12,
+            "drawCalls": 4,
+            "geometries": 3,
+            "materials": 4,
+            "triangles": 1040,
+            "lines": 12,
+            "initializationMs": 16.7,
+            "firstFrameMs": 39.5
+          }
+        },
+        "horizontal_overflow": false,
+        "touch_enabled": true,
+        "external_request_count": 0
+      },
+      "boundaries": {
+        "invalid": {
+          "pass": true,
+          "canvas_count": 0,
+          "external_request_count": 0
+        },
+        "legacy": {
+          "pass": true,
+          "canvas_count": 0,
+          "external_request_count": 0
+        },
+        "unsupported": {
+          "pass": true,
+          "canvas_count": 0,
+          "external_request_count": 0
+        },
+        "chunk_failure": {
+          "pass": true,
+          "canvas_count": 0,
+          "external_request_count": 0
+        },
+        "context_loss": {
+          "pass": true,
+          "canvas_count": 0,
+          "external_request_count": 0
+        }
+      },
+      "performance": {
+        "minimal": {
+          "atomCount": 2,
+          "bondCount": 1,
+          "speciesCount": 1,
+          "instancedMeshCount": 1,
+          "latticeEdgeCount": 12,
+          "drawCalls": 3,
+          "geometries": 3,
+          "materials": 3,
+          "triangles": 1040,
+          "lines": 13,
+          "initializationMs": 17.9,
+          "firstFrameMs": 37.3
+        },
+        "multispecies": {
+          "atomCount": 2,
+          "bondCount": 0,
+          "speciesCount": 2,
+          "instancedMeshCount": 2,
+          "latticeEdgeCount": 12,
+          "drawCalls": 4,
+          "geometries": 3,
+          "materials": 4,
+          "triangles": 1040,
+          "lines": 12,
+          "initializationMs": 21.1,
+          "firstFrameMs": 45
+        },
+        "near_cap": {
+          "atomCount": 256,
+          "bondCount": 2048,
+          "speciesCount": 2,
+          "instancedMeshCount": 2,
+          "latticeEdgeCount": 12,
+          "drawCalls": 4,
+          "geometries": 3,
+          "materials": 4,
+          "triangles": 133120,
+          "lines": 2060,
+          "initializationMs": 20.9,
+          "firstFrameMs": 44.6
+        },
+        "lifecycle": {
+          "disposed_canvas": 0,
+          "remounted_canvas": 1
+        }
+      },
+      "accessibility": {
+        "region": "3D Structure Viewer",
+        "status_live": "polite",
+        "summary": "Validated canonical scene: 2 sites, 1 species, 1 bounded bonds.",
+        "legend": "Si",
+        "controls": [
+          {
+            "text": "Reset camera",
+            "pressed": null
+          },
+          {
+            "text": "Unit cell",
+            "pressed": "true"
+          },
+          {
+            "text": "Bonds",
+            "pressed": "true"
+          }
+        ]
+      },
+      "external_request_count": 0,
+      "console_errors": [],
+      "page_errors": []
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "available": true,
+      "desktop": {
+        "state": "rendered",
+        "metrics": {
+          "atomCount": 2,
+          "bondCount": 1,
+          "speciesCount": 1,
+          "instancedMeshCount": 1,
+          "latticeEdgeCount": 12,
+          "drawCalls": 3,
+          "geometries": 3,
+          "materials": 3,
+          "triangles": 1040,
+          "lines": 13,
+          "initializationMs": 7,
+          "firstFrameMs": 69
+        },
+        "graphics": "webgl2",
+        "initial": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1015,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 7,
+            "firstFrameMs": 69
+          }
+        },
+        "rotated": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            -6.583499,
+            -2.984636,
+            -7.653032
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1015,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 7,
+            "firstFrameMs": 69
+          }
+        },
+        "zoomed": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            -4.862572,
+            -1.929771,
+            -5.73416
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1015,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 7,
+            "firstFrameMs": 69
+          }
+        },
+        "reset": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1015,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 7,
+            "firstFrameMs": 69
+          }
+        },
+        "lifecycle": {
+          "disposed_canvas": 0,
+          "remounted_canvas": 1
+        },
+        "accessibility": {
+          "region": "3D Structure Viewer",
+          "status_live": "polite",
+          "summary": "Validated canonical scene: 2 sites, 1 species, 1 bounded bonds.",
+          "legend": "Si",
+          "controls": [
+            {
+              "text": "Reset camera",
+              "pressed": null
+            },
+            {
+              "text": "Unit cell",
+              "pressed": "true"
+            },
+            {
+              "text": "Bonds",
+              "pressed": "true"
+            }
+          ]
+        },
+        "external_request_count": 0
+      },
+      "multi": null,
+      "near_cap": null,
+      "mobile": null,
+      "boundaries": {},
+      "performance": {
+        "minimal": {
+          "atomCount": 2,
+          "bondCount": 1,
+          "speciesCount": 1,
+          "instancedMeshCount": 1,
+          "latticeEdgeCount": 12,
+          "drawCalls": 3,
+          "geometries": 3,
+          "materials": 3,
+          "triangles": 1040,
+          "lines": 13,
+          "initializationMs": 7,
+          "firstFrameMs": 69
+        },
+        "lifecycle": {
+          "disposed_canvas": 0,
+          "remounted_canvas": 1
+        }
+      },
+      "accessibility": {
+        "region": "3D Structure Viewer",
+        "status_live": "polite",
+        "summary": "Validated canonical scene: 2 sites, 1 species, 1 bounded bonds.",
+        "legend": "Si",
+        "controls": [
+          {
+            "text": "Reset camera",
+            "pressed": null
+          },
+          {
+            "text": "Unit cell",
+            "pressed": "true"
+          },
+          {
+            "text": "Bonds",
+            "pressed": "true"
+          }
+        ]
+      },
+      "external_request_count": 0,
+      "console_errors": [],
+      "page_errors": []
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "available": true,
+      "desktop": {
+        "state": "rendered",
+        "metrics": {
+          "atomCount": 2,
+          "bondCount": 1,
+          "speciesCount": 1,
+          "instancedMeshCount": 1,
+          "latticeEdgeCount": 12,
+          "drawCalls": 3,
+          "geometries": 3,
+          "materials": 3,
+          "triangles": 1040,
+          "lines": 13,
+          "initializationMs": 28,
+          "firstFrameMs": 91
+        },
+        "graphics": "webgl2",
+        "initial": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 28,
+            "firstFrameMs": 91
+          }
+        },
+        "rotated": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            -6.584307,
+            -2.86385,
+            -7.717802
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 28,
+            "firstFrameMs": 91
+          }
+        },
+        "zoomed": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            -4.782038,
+            -1.782631,
+            -5.695854
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 28,
+            "firstFrameMs": 91
+          }
+        },
+        "reset": {
+          "state": "rendered",
+          "canvasCount": 1,
+          "atomCount": 2,
+          "bondCount": 1,
+          "latticeEdgeCount": 12,
+          "triangleCount": 1040,
+          "lineCount": 13,
+          "cameraPosition": [
+            13.167777,
+            10.895434,
+            9.80471
+          ],
+          "cameraTarget": [
+            2.715,
+            2.715,
+            2.715
+          ],
+          "drawingBuffer": [
+            1014,
+            633
+          ],
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "metrics": {
+            "atomCount": 2,
+            "bondCount": 1,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 1040,
+            "lines": 13,
+            "initializationMs": 28,
+            "firstFrameMs": 91
+          }
+        },
+        "lifecycle": {
+          "disposed_canvas": 0,
+          "remounted_canvas": 1
+        },
+        "accessibility": {
+          "region": "3D Structure Viewer",
+          "status_live": "polite",
+          "summary": "Validated canonical scene: 2 sites, 1 species, 1 bounded bonds.",
+          "legend": "Si",
+          "controls": [
+            {
+              "text": "Reset camera",
+              "pressed": null
+            },
+            {
+              "text": "Unit cell",
+              "pressed": "true"
+            },
+            {
+              "text": "Bonds",
+              "pressed": "true"
+            }
+          ]
+        },
+        "external_request_count": 0
+      },
+      "multi": null,
+      "near_cap": null,
+      "mobile": null,
+      "boundaries": {},
+      "performance": {
+        "minimal": {
+          "atomCount": 2,
+          "bondCount": 1,
+          "speciesCount": 1,
+          "instancedMeshCount": 1,
+          "latticeEdgeCount": 12,
+          "drawCalls": 3,
+          "geometries": 3,
+          "materials": 3,
+          "triangles": 1040,
+          "lines": 13,
+          "initializationMs": 28,
+          "firstFrameMs": 91
+        },
+        "lifecycle": {
+          "disposed_canvas": 0,
+          "remounted_canvas": 1
+        }
+      },
+      "accessibility": {
+        "region": "3D Structure Viewer",
+        "status_live": "polite",
+        "summary": "Validated canonical scene: 2 sites, 1 species, 1 bounded bonds.",
+        "legend": "Si",
+        "controls": [
+          {
+            "text": "Reset camera",
+            "pressed": null
+          },
+          {
+            "text": "Unit cell",
+            "pressed": "true"
+          },
+          {
+            "text": "Bonds",
+            "pressed": "true"
+          }
+        ]
+      },
+      "external_request_count": 0,
+      "console_errors": [],
+      "page_errors": []
+    }
+  ]
+}

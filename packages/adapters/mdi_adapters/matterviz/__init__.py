@@ -1,6 +1,4 @@
-"""MatterViz/pymatviz widget adapters."""
+"""Reserved namespace for future explicitly approved MatterViz adapters."""
 
-from .structure_viewer_3d import StructureViewer3DAdapter
-
-__all__ = ["StructureViewer3DAdapter"]
+__all__: list[str] = []
 

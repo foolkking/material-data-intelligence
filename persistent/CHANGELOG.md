@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-07-12 - Phase 10F-15 Production Minimal Structure Viewer
+
+- Formalized `structure.viewer_3d` as the canonical minimal interactive viewer job identity.
+- Replaced legacy HTML-producing viewer execution with canonical scene, manifest, summary, and recipe artifacts.
+- Added planner routing separation, strict registry params/caps, PlanValidator/runtime tests, and legacy policy.
+- Added species instancing, bounded draw calls, metrics, chunk retry fallback, responsive/mobile and accessibility hardening.
+- Added live formal-tool browser/API evidence in Chromium, Firefox, and WebKit with zero external viewer requests.
+- Recorded existing npm audit debt without claiming it clean or attributing it to Three.js.
+
 ## 2026-07-11
 
 ### Phase 10F-14 Validated Viewer Scene Renderer Foundation

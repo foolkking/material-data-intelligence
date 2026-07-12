@@ -47,8 +47,25 @@ export type ViewerRendererState =
   | "unsupported"
   | "validation_failed"
   | "renderer_failed"
+  | "chunk_load_failed"
+  | "scene_over_renderer_cap"
   | "context_lost"
   | "disposed";
+
+export type ViewerRendererMetrics = {
+  readonly atomCount: number;
+  readonly bondCount: number;
+  readonly speciesCount: number;
+  readonly instancedMeshCount: number;
+  readonly latticeEdgeCount: number;
+  readonly drawCalls: number;
+  readonly geometries: number;
+  readonly materials: number;
+  readonly triangles: number;
+  readonly lines: number;
+  readonly initializationMs: number;
+  readonly firstFrameMs: number;
+};
 
 export type ViewerRendererSnapshot = {
   readonly state: ViewerRendererState;
@@ -63,6 +80,7 @@ export type ViewerRendererSnapshot = {
   readonly drawingBuffer: readonly [number, number];
   readonly graphicsContext: "webgl2" | "webgl";
   readonly rendererVersion: string;
+  readonly metrics: ViewerRendererMetrics;
 };
 
 export type ViewerRendererEngine = {

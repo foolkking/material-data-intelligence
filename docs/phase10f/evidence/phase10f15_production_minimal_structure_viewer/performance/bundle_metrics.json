@@ -1,0 +1,17 @@
+{
+  "schema_version": "phase10f15.viewer_bundle_metrics.v1",
+  "route_first_load_js_kb": 127,
+  "renderer_engine_chunk": {
+    "raw_bytes": 25466,
+    "gzip_bytes": 6855,
+    "brotli_bytes": 6115
+  },
+  "three_split_chunks": {
+    "raw_bytes": 552668,
+    "gzip_bytes": 137560,
+    "brotli_bytes": 113699
+  },
+  "duplicate_three_copies": 0,
+  "external_runtime_imports": 0,
+  "ordinary_json_preview_loads_renderer": false
+}

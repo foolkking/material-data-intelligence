@@ -711,6 +711,52 @@ pre {
   width: 100%;
   height: 100%;
   outline: none;
+  touch-action: none;
+}
+
+.viewer-renderer-controls button {
+  min-height: 36px;
+}
+
+.viewer-renderer-scene-summary {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.viewer-renderer-species-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.viewer-renderer-species-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.viewer-renderer-species-legend span {
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.28);
+  border-radius: 50%;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .viewer-renderer-canvas-host canvas:focus-visible,
@@ -911,6 +957,11 @@ pre {
 
   .viewer-renderer-controls {
     justify-content: flex-start;
+  }
+
+  .viewer-renderer-controls button {
+    min-height: 44px;
+    flex: 1 1 120px;
   }
 
   .viewer-renderer-canvas-host {

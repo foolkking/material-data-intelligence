@@ -4,7 +4,6 @@ from .base import BaseToolAdapter
 from .context import ToolExecutionContext
 from .errors import ToolExecutionError
 from .executor import ToolExecutionResult, execute_tool_request
-from .matterviz.structure_viewer_3d import StructureViewer3DAdapter
 from .platform_builtin import (
     BasicMetricsAdapter,
     CompositionSummaryAdapter,
@@ -21,6 +20,7 @@ from .platform_builtin import (
     StructurePreviewMetadataAdapter,
     StructureSummaryAdapter,
     StructureViewerSceneAdapter,
+    StructureViewer3DAdapter,
     StructureViewerExportPackageAdapter,
     StructureViewerSceneMetadataAdapter,
 )

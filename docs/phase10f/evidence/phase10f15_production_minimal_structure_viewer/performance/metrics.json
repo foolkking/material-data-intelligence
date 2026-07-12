@@ -1,0 +1,48 @@
+{
+  "minimal": {
+    "atomCount": 2,
+    "bondCount": 1,
+    "speciesCount": 1,
+    "instancedMeshCount": 1,
+    "latticeEdgeCount": 12,
+    "drawCalls": 3,
+    "geometries": 3,
+    "materials": 3,
+    "triangles": 1040,
+    "lines": 13,
+    "initializationMs": 17.9,
+    "firstFrameMs": 37.3
+  },
+  "multispecies": {
+    "atomCount": 2,
+    "bondCount": 0,
+    "speciesCount": 2,
+    "instancedMeshCount": 2,
+    "latticeEdgeCount": 12,
+    "drawCalls": 4,
+    "geometries": 3,
+    "materials": 4,
+    "triangles": 1040,
+    "lines": 12,
+    "initializationMs": 21.1,
+    "firstFrameMs": 45
+  },
+  "near_cap": {
+    "atomCount": 256,
+    "bondCount": 2048,
+    "speciesCount": 2,
+    "instancedMeshCount": 2,
+    "latticeEdgeCount": 12,
+    "drawCalls": 4,
+    "geometries": 3,
+    "materials": 4,
+    "triangles": 133120,
+    "lines": 2060,
+    "initializationMs": 20.9,
+    "firstFrameMs": 44.6
+  },
+  "lifecycle": {
+    "disposed_canvas": 0,
+    "remounted_canvas": 1
+  }
+}

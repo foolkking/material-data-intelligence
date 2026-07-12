@@ -203,7 +203,7 @@ def test_phase2_end_to_end_product_flow_covers_profile_plan_job_artifacts_and_re
         "report_md",
         "report_html",
         "plotly_json",
-        "matterviz_html",
-        "metrics_json",
+            "metrics_json",
         "table_json",
     }.issubset(artifact_types)
+    assert "matterviz_html" not in artifact_types

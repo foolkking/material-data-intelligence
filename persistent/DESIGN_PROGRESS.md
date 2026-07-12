@@ -1,5 +1,17 @@
 # DESIGN_PROGRESS
 
+## 2026-07-12 Phase 10F-15 Production Minimal Structure Viewer
+
+- Consolidated the formal product identity on `structure.viewer_3d`; it now generates canonical inert `viewer_scene.v1` artifacts through the existing validated runtime path.
+- Retained `structure.viewer_scene` for explicit JSON export and marked Phase 10D metadata/export tools as legacy direct-purpose compatibility paths.
+- Replaced the active MatterViz/fallback-HTML viewer adapter behavior; formal viewer artifacts contain no HTML or executable renderer assets.
+- Implemented species-grouped Three.js `InstancedMesh` atoms, bounded single-geometry bonds, renderer metrics, lazy chunk failure/retry, responsive touch controls, scene text summary, species legend, and live accessibility state.
+- Aligned canonical, adapter, and renderer caps at 256 sites, 2048 bonds, 32 species, and 1 MB JSON; no renderer truncation is allowed.
+- Captured live formal-tool Chromium 149, Firefox 128, and WebKit 18 WebGL 2 evidence, plus mobile, near-cap, legacy, invalid, chunk failure, unsupported, context-loss, console, network, performance, and accessibility evidence.
+- Confirmed `NO_PRODUCTION_VIEWER_EXTERNAL_NETWORK_REQUESTS`.
+- Corrected the Phase 10F-14 note: the attempted 3050 port drift was reverted before that phase committed; the product default port was not changed by Phase 10F-14.
+- Full scientific viewer, trajectory, phonon, Brillouin-zone, volumetric rendering, editing, and advanced measurement remain deferred.
+
 ## 2026-07-11 Phase 10F-14 Validated Viewer Scene Renderer Foundation
 
 - Selected and pinned direct `three@0.185.1` with `@types/three@0.185.1`, both MIT.
@@ -11,7 +23,7 @@
 - Captured real Chrome 149 WebGL 2 evidence, interaction snapshots, live adapter API artifacts and 14 screenshots under `docs/phase10f/evidence/phase10f14_viewer_scene_renderer_foundation/`.
 - Confirmed `NO_RENDERER_EXTERNAL_NETWORK_REQUESTS` and no artifact JavaScript/HTML/URL/texture/module/shader path.
 - Full `structure.viewer_3d`, production-complete viewer, trajectory, phonon and Brillouin zone remain unimplemented.
-- Changed the active product frontend default port from 3000 to 3050 and synchronized API CORS, tests, and Compose guidance; historical records keep their original ports.
+- The active product frontend default port was not changed; an intermediate 3050 experiment was reverted before commit.
 
 ## 2026-07-11 Phase 10F-13 Viewer Scene Live Adapter Browser/API Evidence
 

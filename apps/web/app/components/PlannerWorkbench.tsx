@@ -1343,9 +1343,11 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
   const [activePreview, setActivePreview] = useState<"renderer" | "json" | "manifest">("json");
   if (!viewerScene && !viewerManifest) return null;
   if (!canonicalScene) {
+    const legacyScene = asRecord(scenePayload)?.schema_version === "phase10d1.viewer_scene.v1";
     return (
       <section className="panel viewer-static-preview" data-testid="viewer-static-preview-panel">
         <PanelHeading title="Viewer static preview" badge="JSON only" />
+        {legacyScene ? <p className="notice" data-testid="viewer-scene-legacy-notice">Legacy viewer scene contract. Rerun with the 3D Structure Viewer to generate the canonical scene; no automatic migration is performed.</p> : null}
         <div className="viewer-preview-grid">
           {viewerScene ? <ViewerScenePreview artifact={viewerScene} /> : <ViewerMissingPreview title="viewer_scene.json" />}
           {viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : <ViewerMissingPreview title="viewer_assets_manifest.json" />}
@@ -1355,7 +1357,7 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
   }
   return (
     <section className="panel viewer-static-preview" data-testid="viewer-static-preview-panel">
-      <PanelHeading title="Viewer scene preview" badge="Validated renderer foundation" />
+      <PanelHeading title="Viewer scene preview" badge="Minimal interactive viewer" />
       <div className="viewer-preview-tabs" role="tablist" aria-label="Viewer scene preview modes">
         <button type="button" role="tab" aria-selected={activePreview === "renderer"} className={activePreview === "renderer" ? "active" : "secondary"} onClick={() => setActivePreview("renderer")}>3D Renderer</button>
         <button type="button" role="tab" aria-selected={activePreview === "json"} className={activePreview === "json" ? "active" : "secondary"} onClick={() => setActivePreview("json")}>Scene JSON</button>

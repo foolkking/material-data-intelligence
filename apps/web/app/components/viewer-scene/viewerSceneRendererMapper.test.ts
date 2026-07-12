@@ -73,6 +73,15 @@ describe("viewer scene renderer mapper", () => {
     expect(result.scene.bonds).toHaveLength(2048);
     expect(elapsed).toBeLessThan(1000);
   });
+
+  it("refuses a scene above the aligned renderer and canonical site cap", () => {
+    const payload = structuredClone(minimalScene) as Record<string, any>;
+    payload.scene.sites = Array.from({ length: 257 }, (_, index) => ({ index, element: "Si", label: `site-${index}`, xyz: [index, 0, 0] }));
+    payload.metadata.site_count = 257;
+    const result = mapViewerSceneForRenderer(payload);
+    expect(result.ok).toBe(false);
+    expect(result.validation.errors).toContain("VIEWER_SCENE_SITE_LIMIT_EXCEEDED");
+  });
 });
 
 describe("viewer scene renderer geometry", () => {

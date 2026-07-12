@@ -104,7 +104,7 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
-    if tool_id == "structure.viewer_scene":
+    if tool_id in {"structure.viewer_scene", "structure.viewer_3d"}:
         return {
             "maxStructures": 1,
             "maxAtomsPerStructure": 256,
@@ -200,12 +200,12 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
         )
     if tool_id == "structure.viewer_3d":
         return ToolInputSchema(
-            periodicity="non_periodic_allowed",
+            periodicity="periodic_required",
             inputOptions=[
                 ToolInputOption(
-                    name="structure_or_atoms",
-                    requiredObjectTypes=[MaterialObjectType.Structure, MaterialObjectType.Atoms],
-                    description="Use a pymatgen Structure or ASE Atoms object for an interactive viewer.",
+                    name="single_periodic_structure",
+                    requiredObjectTypes=[MaterialObjectType.Structure],
+                    description="Use exactly one periodic structure to generate a canonical inert viewer scene.",
                 )
             ],
         )
@@ -342,16 +342,7 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             },
         }
     if tool_id == "structure.viewer_3d":
-        return {
-            "type": "object",
-            "additionalProperties": False,
-            "properties": {
-                "selectedStructureId": {"type": "string"},
-                "showCell": {"type": "boolean"},
-                "showBonds": {"anyOf": [{"type": "boolean"}, {"enum": ["auto"]}]},
-                "cameraPreset": {"type": "string"},
-            },
-        }
+        return _viewer_scene_v1_params_schema()
     if tool_id == "structure.viewer_scene_metadata":
         return {
             "type": "object",
@@ -359,27 +350,7 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             "properties": _viewer_scene_params_schema(),
         }
     if tool_id == "structure.viewer_scene":
-        return {
-            "type": "object",
-            "additionalProperties": False,
-            "properties": {
-                "include_bonds": {"type": "boolean"},
-                "bond_cutoff_angstrom": {"type": "number", "minimum": 0.1, "maximum": 10.0},
-                "max_sites": {"type": "integer", "minimum": 1, "maximum": 256},
-                "max_bonds": {"type": "integer", "minimum": 0, "maximum": 2048},
-                "coordinate_basis": {"enum": ["cartesian_angstrom"]},
-                "include_cartesian_positions": {"enum": [True]},
-                "include_fractional_positions": {"type": "boolean"},
-                "cell_expansion": {
-                    "type": "array",
-                    "prefixItems": [{"const": 1}, {"const": 1}, {"const": 1}],
-                    "minItems": 3,
-                    "maxItems": 3,
-                },
-                "style_preset": {"enum": ["default"]},
-                "camera_preset": {"enum": ["auto"]},
-            },
-        }
+        return _viewer_scene_v1_params_schema()
     if tool_id == "structure.viewer_export_package":
         properties = {
             **_viewer_scene_params_schema(),
@@ -615,6 +586,30 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             },
         }
     return {"type": "object", "additionalProperties": True, "properties": {}}
+
+
+def _viewer_scene_v1_params_schema() -> dict[str, Any]:
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {
+            "include_bonds": {"type": "boolean"},
+            "bond_cutoff_angstrom": {"type": "number", "minimum": 0.1, "maximum": 10.0},
+            "max_sites": {"type": "integer", "minimum": 1, "maximum": 256},
+            "max_bonds": {"type": "integer", "minimum": 0, "maximum": 2048},
+            "coordinate_basis": {"enum": ["cartesian_angstrom"]},
+            "include_cartesian_positions": {"enum": [True]},
+            "include_fractional_positions": {"type": "boolean"},
+            "cell_expansion": {
+                "type": "array",
+                "prefixItems": [{"const": 1}, {"const": 1}, {"const": 1}],
+                "minItems": 3,
+                "maxItems": 3,
+            },
+            "style_preset": {"enum": ["default"]},
+            "camera_preset": {"enum": ["auto"]},
+        },
+    }
 
 
 def _viewer_scene_params_schema() -> dict[str, Any]:

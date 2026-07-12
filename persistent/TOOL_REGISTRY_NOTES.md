@@ -1,5 +1,16 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-12 Phase 10F-15 Formal Viewer Notes
+
+- `structure.viewer_3d` is the formal minimal interactive viewer identity.
+- Its adapter is `StructureViewer3DAdapter`, implemented as a canonical `StructureViewerSceneAdapter` specialization.
+- Artifacts are `structure_json`, `table_json`, `summary_md`, and `recipe_json`; `matterviz_html` is no longer declared or emitted.
+- Params and resource limits match `structure.viewer_scene`: 256 sites, 2048 bonds, 32 species, and 1 MB JSON.
+- Natural viewer prompts route to `structure.viewer_3d`; explicit inert scene JSON prompts route to `structure.viewer_scene`.
+- `structure.viewer_scene_metadata` and `structure.viewer_export_package` remain explicit legacy direct-purpose tools.
+- `structure.structure_3d` remains a separate static Plotly capability.
+- Full scientific viewer, trajectory, phonon, Brillouin-zone, volumetric, and editing capability tags are not declared.
+
 ## 2026-07-11 Phase 10F-14 Renderer Foundation Notes
 
 - No Tool Registry entry was added, removed or modified.

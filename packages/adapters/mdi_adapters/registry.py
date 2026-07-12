@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from .base import BaseToolAdapter
-from .matterviz.structure_viewer_3d import StructureViewer3DAdapter
 from .platform_builtin import (
     BasicMetricsAdapter,
     CompositionSummaryAdapter,
@@ -18,6 +17,7 @@ from .platform_builtin import (
     StructurePreviewMetadataAdapter,
     StructureSummaryAdapter,
     StructureViewerSceneAdapter,
+    StructureViewer3DAdapter,
     StructureViewerExportPackageAdapter,
     StructureViewerSceneMetadataAdapter,
 )

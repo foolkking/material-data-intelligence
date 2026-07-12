@@ -11,6 +11,7 @@ export async function createThreeViewerEngine(args: {
   readonly onContextLost: () => void;
   readonly pixelRatioCap: number;
 }): Promise<ViewerRendererEngine> {
+  const startedAt = performance.now();
   const { container, scene, onContextLost, pixelRatioCap } = args;
   const width = Math.max(320, container.clientWidth || 720);
   const height = Math.max(320, container.clientHeight || 480);
@@ -50,17 +51,33 @@ export async function createThreeViewerEngine(args: {
 
   const sphereGeometry = new THREE.SphereGeometry(1, 20, 14);
   const materials = new Map<string, THREE.MeshStandardMaterial>();
+  const atomGroups = new Map<string, typeof scene.atoms>();
   for (const atom of scene.atoms) {
-    let material = materials.get(atom.color);
+    const key = `${atom.species}|${atom.color}`;
+    atomGroups.set(key, Object.freeze([...(atomGroups.get(key) ?? []), atom]));
+  }
+  const atomMeshes: THREE.InstancedMesh[] = [];
+  const transform = new THREE.Matrix4();
+  for (const [groupKey, atoms] of [...atomGroups.entries()].sort(([left], [right]) => left.localeCompare(right))) {
+    const color = atoms[0].color;
+    let material = materials.get(color);
     if (!material) {
-      material = new THREE.MeshStandardMaterial({ color: atom.color, roughness: 0.38, metalness: 0.04 });
-      materials.set(atom.color, material);
+      material = new THREE.MeshStandardMaterial({ color, roughness: 0.38, metalness: 0.04 });
+      materials.set(color, material);
     }
-    const mesh = new THREE.Mesh(sphereGeometry, material);
-    mesh.name = atom.id;
-    mesh.position.set(...atom.position);
-    mesh.scale.setScalar(atom.radius);
-    mesh.userData = { siteIndex: atom.siteIndex, species: atom.species };
+    const mesh = new THREE.InstancedMesh(sphereGeometry, material, atoms.length);
+    mesh.name = `atoms-${groupKey}`;
+    atoms.forEach((atom, index) => {
+      transform.compose(
+        new THREE.Vector3(...atom.position),
+        new THREE.Quaternion(),
+        new THREE.Vector3(atom.radius, atom.radius, atom.radius),
+      );
+      mesh.setMatrixAt(index, transform);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.userData = { siteIndices: atoms.map((atom) => atom.siteIndex), species: atoms[0].species };
+    atomMeshes.push(mesh);
     root.add(mesh);
   }
 
@@ -83,10 +100,13 @@ export async function createThreeViewerEngine(args: {
 
   let disposed = false;
   let contextLost = false;
+  const initializationMs = performance.now() - startedAt;
+  let firstFrameMs = 0;
   let publishEvidence = () => {};
   const render = () => {
     if (disposed || contextLost) return;
     renderer.render(threeScene, camera);
+    if (!firstFrameMs) firstFrameMs = performance.now() - startedAt;
     publishEvidence();
   };
   const resetCamera = () => {
@@ -136,6 +156,20 @@ export async function createThreeViewerEngine(args: {
     drawingBuffer: Object.freeze([renderer.domElement.width, renderer.domElement.height] as const),
     graphicsContext,
     rendererVersion: THREE.REVISION,
+    metrics: Object.freeze({
+      atomCount: scene.atoms.length,
+      bondCount: scene.bonds.length,
+      speciesCount: atomGroups.size,
+      instancedMeshCount: atomMeshes.length,
+      latticeEdgeCount: 12,
+      drawCalls: renderer.info.render.calls,
+      geometries: renderer.info.memory.geometries,
+      materials: materials.size + 2,
+      triangles: renderer.info.render.triangles,
+      lines: renderer.info.render.lines,
+      initializationMs: round(initializationMs),
+      firstFrameMs: round(firstFrameMs),
+    }),
   });
   publishEvidence = () => {
     (window as unknown as { __mdiViewerSceneRendererEvidence?: ViewerRendererSnapshot }).__mdiViewerSceneRendererEvidence = snapshot();

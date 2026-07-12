@@ -1,5 +1,16 @@
 # OPEN_QUESTIONS
 
+## 2026-07-12 Phase 10F-15 Follow-ups
+
+- **Closed: formal minimal viewer identity.** `structure.viewer_3d` is the sole ordinary interactive viewer identity and emits canonical inert artifacts.
+- **Closed: production cap and performance policy.** Caps align with the contract; species instancing and bounded line geometry are evidenced at 256 sites / 2048 bonds.
+- **Closed: multi-browser and mobile baseline.** Chromium 149, Firefox 128, WebKit 18, portrait, and landscape evidence are complete.
+- **Closed: legacy policy.** Phase 10D tools are retained as explicit direct-purpose JSON-only paths with no migration.
+- **Still open: npm framework/test-tool debt.** Vitest/Vite and Next/PostCSS upgrades need a dedicated compatibility phase.
+- **Still open: long-term legacy removal window.** No deletion or migration date is selected.
+- **Still open: advanced scientific viewer scope.** Trajectory, phonon, Brillouin zone, volumetric data, editing, picking, and measurements require independent contracts and security reviews.
+- **Still open: broader device GPU matrix.** Current evidence is software WebGL 2 on the tested Windows browsers and is not a universal hardware claim.
+
 ## 2026-07-11 Phase 10F-14 Follow-ups
 
 - **Closed: renderer dependency decision.** Direct `three@0.185.1` is selected and pinned; R3F is rejected for excess abstraction and MatterViz remains deferred.

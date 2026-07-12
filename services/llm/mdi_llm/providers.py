@@ -143,6 +143,18 @@ class MockLLMProvider:
                 artifact_type="structure_json",
                 artifact_types=["structure_json", "summary_md", "recipe_json"],
             )
+        elif _should_generate_structure_viewer(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.viewer_3d",
+                purpose="Generate a canonical inert viewer scene for the minimal interactive structure viewer.",
+                params=_canonical_viewer_scene_params(),
+                artifact_name="viewer_scene.json",
+                artifact_type="structure_json",
+                artifact_types=["structure_json", "table_json", "summary_md", "recipe_json"],
+                extra_expected_artifacts=[{"name": "viewer_scene_manifest.json", "type": "table_json", "fromStepId": "step_001"}],
+            )
         elif _should_generate_rdf(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -947,6 +959,44 @@ def _should_generate_viewer_scene(
         "创建 viewer_scene.v1 artifact",
     )
     return any(marker in prompt for marker in markers)
+
+
+def _should_generate_structure_viewer(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.viewer_3d") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    unsupported = (
+        "trajectory", "animation", "animate", "phonon", "brillouin", "charge density",
+        "spin density", "volumetric", "isosurface", "edit structure", "structure editing",
+        "rietveld", "轨迹", "动画", "声子", "布里渊", "电荷密度", "编辑结构",
+    )
+    if any(marker in prompt for marker in unsupported):
+        return False
+    markers = (
+        "3d viewer", "3d view", "structure viewer", "interactive 3d", "interactive view", "webgl",
+        "render this crystal", "open an interactive 3d view", "三维查看器", "3d 查看器",
+        "交互查看", "三维模型", "三维结构", "显示这个结构",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _canonical_viewer_scene_params() -> dict[str, Any]:
+    return {
+        "include_bonds": True,
+        "bond_cutoff_angstrom": 3.0,
+        "max_sites": 256,
+        "max_bonds": 2048,
+        "coordinate_basis": "cartesian_angstrom",
+        "include_cartesian_positions": True,
+        "include_fractional_positions": True,
+        "cell_expansion": [1, 1, 1],
+        "style_preset": "default",
+        "camera_preset": "auto",
+    }
 
 
 def _should_generate_xrd(

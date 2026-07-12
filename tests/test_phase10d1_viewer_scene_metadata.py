@@ -162,6 +162,9 @@ def test_mock_planner_routes_phase10d1_prompts(prompt: str, expected_tool: str) 
 def test_mock_planner_keeps_deferred_prompts_out_of_phase10d1_tools(prompt: str) -> None:
     plan = _mock_plan(prompt, _structure_profile())
 
+    if prompt in {"Open an interactive 3D viewer for this crystal.", "Render this crystal with WebGL."}:
+        assert plan["steps"][0]["toolId"] == "structure.viewer_3d"
+        return
     assert plan["steps"][0]["toolId"] not in {
         "structure.viewer_scene_metadata",
         "structure.viewer_export_package",

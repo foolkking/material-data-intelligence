@@ -1,0 +1,14 @@
+{
+  "schema_version": "phase10f15.viewer_tool_consolidation.v1",
+  "formal_tool": "structure.viewer_3d",
+  "formal_adapter": "StructureViewer3DAdapter",
+  "canonical_schema": "phase10f8.viewer_scene.v1",
+  "explicit_json_tool": "structure.viewer_scene",
+  "legacy_tools": [
+    "structure.viewer_scene_metadata",
+    "structure.viewer_export_package"
+  ],
+  "legacy_policy": "retained_direct_purpose_json_only",
+  "duplicate_active_ids": 0,
+  "artifact_html_allowed": false
+}

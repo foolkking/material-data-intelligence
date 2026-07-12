@@ -573,6 +573,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(within(results).getAllByText("Si").length).toBeGreaterThan(0);
     expect(within(results).getByText("ball_and_stick")).not.toBeNull();
     expect(within(results).getByText("phase10d1.viewer_scene.v1")).not.toBeNull();
+    expect(within(results).getByTestId("viewer-scene-legacy-notice").textContent).toContain("Legacy viewer scene contract");
 
     expect(within(results).getByTestId("viewer-manifest-preview")).not.toBeNull();
     expect(within(results).getByText("Export package manifest")).not.toBeNull();

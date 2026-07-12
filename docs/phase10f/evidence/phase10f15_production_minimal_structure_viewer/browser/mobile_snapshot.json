@@ -1,0 +1,83 @@
+{
+  "before": {
+    "state": "rendered",
+    "canvasCount": 1,
+    "atomCount": 2,
+    "bondCount": 0,
+    "latticeEdgeCount": 12,
+    "triangleCount": 1040,
+    "lineCount": 12,
+    "cameraPosition": [
+      13.677028,
+      11.316805,
+      10.183897
+    ],
+    "cameraTarget": [
+      2.82,
+      2.82,
+      2.82
+    ],
+    "drawingBuffer": [
+      640,
+      640
+    ],
+    "graphicsContext": "webgl2",
+    "rendererVersion": "185",
+    "metrics": {
+      "atomCount": 2,
+      "bondCount": 0,
+      "speciesCount": 2,
+      "instancedMeshCount": 2,
+      "latticeEdgeCount": 12,
+      "drawCalls": 4,
+      "geometries": 3,
+      "materials": 4,
+      "triangles": 1040,
+      "lines": 12,
+      "initializationMs": 16.7,
+      "firstFrameMs": 39.5
+    }
+  },
+  "after": {
+    "state": "rendered",
+    "canvasCount": 1,
+    "atomCount": 2,
+    "bondCount": 0,
+    "latticeEdgeCount": 12,
+    "triangleCount": 1040,
+    "lineCount": 12,
+    "cameraPosition": [
+      13.677028,
+      11.316805,
+      10.183897
+    ],
+    "cameraTarget": [
+      2.82,
+      2.82,
+      2.82
+    ],
+    "drawingBuffer": [
+      836,
+      640
+    ],
+    "graphicsContext": "webgl2",
+    "rendererVersion": "185",
+    "metrics": {
+      "atomCount": 2,
+      "bondCount": 0,
+      "speciesCount": 2,
+      "instancedMeshCount": 2,
+      "latticeEdgeCount": 12,
+      "drawCalls": 4,
+      "geometries": 3,
+      "materials": 4,
+      "triangles": 1040,
+      "lines": 12,
+      "initializationMs": 16.7,
+      "firstFrameMs": 39.5
+    }
+  },
+  "horizontal_overflow": false,
+  "touch_enabled": true,
+  "external_request_count": 0
+}

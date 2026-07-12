@@ -1,0 +1,42 @@
+{
+  "schema_version": "phase10f15.production_viewer_evidence.v1",
+  "baseline_head": "0c90d74fd250f8e47c032e2ee238fc5f619d85f0",
+  "final_head": "git_commit_containing_this_manifest",
+  "generated_at": "2026-07-12T09:59:29+08:00",
+  "generation_command": "node apps/web/test/viewer-scene-production-browser-evidence.mjs",
+  "formal_tool": "structure.viewer_3d",
+  "canonical_schema": "phase10f8.viewer_scene.v1",
+  "viewports": {
+    "desktop": [1440, 1200],
+    "mobile_portrait": [390, 844],
+    "mobile_landscape": [844, 390]
+  },
+  "browser_results": [
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.201",
+      "available": true,
+      "renderer": "rendered"
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "available": true,
+      "renderer": "rendered"
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "available": true,
+      "renderer": "rendered"
+    }
+  ],
+  "network_result": "NO_PRODUCTION_VIEWER_EXTERNAL_NETWORK_REQUESTS",
+  "markers": [
+    "VIEWER_SCENE_PRODUCTION_MINIMAL_VIEWER_BROWSER_EVIDENCE_PASS",
+    "VIEWER_SCENE_MOBILE_VIEWER_EVIDENCE_PASS",
+    "VIEWER_SCENE_RENDERER_PERFORMANCE_EVIDENCE_PASS",
+    "VIEWER_SCENE_ACCESSIBILITY_EVIDENCE_PASS"
+  ],
+  "redaction": "sanitized"
+}

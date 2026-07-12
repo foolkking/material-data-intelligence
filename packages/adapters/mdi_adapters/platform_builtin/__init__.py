@@ -12,6 +12,7 @@ from .structure import (
     StructurePreviewMetadataAdapter,
     StructureSummaryAdapter,
     StructureViewerSceneAdapter,
+    StructureViewer3DAdapter,
     StructureViewerExportPackageAdapter,
     StructureViewerSceneMetadataAdapter,
 )
@@ -34,6 +35,7 @@ __all__ = [
     "StructurePreviewMetadataAdapter",
     "StructureSummaryAdapter",
     "StructureViewerSceneAdapter",
+    "StructureViewer3DAdapter",
     "StructureViewerExportPackageAdapter",
     "StructureViewerSceneMetadataAdapter",
 ]

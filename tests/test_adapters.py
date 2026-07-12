@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 from pymatgen.core import Structure
+from mdi_artifact_core import validate_viewer_scene, validate_viewer_scene_manifest
 
 from mdi_adapters import (
     BasicMetricsAdapter,
@@ -118,15 +119,15 @@ def test_structure_3d_generates_plotly_artifacts_from_cif_fixture(tmp_path, repo
     assert ArtifactType.recipe_json in artifact_types(artifacts)
 
 
-def test_structure_viewer_3d_generates_viewer_or_graceful_fallback(tmp_path, repo_root):
+def test_structure_viewer_3d_generates_canonical_inert_scene_artifacts(tmp_path, repo_root):
     structure = Structure.from_file(repo_root / "tests" / "fixtures" / "structures" / "si.cif")
     request = ToolExecutionRequest(
         jobId="job_adapter",
         stepId="step_viewer",
         toolId="structure.viewer_3d",
         inputRefs=[{"refType": "normalized_object", "ref": "si_structure", "objectType": "Structure"}],
-        params={"showCell": True, "showBonds": "auto"},
-        artifactTypes=["matterviz_html", "structure_json", "summary_md", "recipe_json"],
+        params={"include_bonds": True, "max_sites": 256, "max_bonds": 2048},
+        artifactTypes=["structure_json", "table_json", "summary_md", "recipe_json"],
     )
 
     artifacts = StructureViewer3DAdapter().execute(
@@ -135,13 +136,19 @@ def test_structure_viewer_3d_generates_viewer_or_graceful_fallback(tmp_path, rep
     )
 
     assert artifact_types(artifacts) == {
-        ArtifactType.matterviz_html,
         ArtifactType.structure_json,
+        ArtifactType.table_json,
         ArtifactType.summary_md,
         ArtifactType.recipe_json,
     }
-    viewer = next(artifact for artifact in artifacts if artifact.type == ArtifactType.matterviz_html)
-    assert (tmp_path / "artifacts" / viewer.storageKey).read_text(encoding="utf-8").startswith("<!DOCTYPE html>")
+    assert {artifact.name for artifact in artifacts} == {"viewer_scene.json", "viewer_scene_manifest.json", "summary.md", "recipe.json"}
+    scene = read_artifact_json(tmp_path, artifacts, ArtifactType.structure_json)
+    manifest = read_artifact_json(tmp_path, artifacts, ArtifactType.table_json)
+    assert validate_viewer_scene(scene).valid is True
+    assert validate_viewer_scene_manifest(manifest).valid is True
+    assert scene["provenance"]["tool_id"] == "structure.viewer_3d"
+    assert manifest["tool_id"] == "structure.viewer_3d"
+    assert all(artifact.type != ArtifactType.matterviz_html for artifact in artifacts)
 
 
 def test_elements_hist_generates_plotly_artifacts(tmp_path):

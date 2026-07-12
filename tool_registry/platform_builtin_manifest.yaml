@@ -118,7 +118,7 @@ tools:
     stage: mvp
     adapter: StructureViewerSceneMetadataAdapter
     display_target: structure
-    notes: Create static, non-executable structure viewer scene metadata for future renderer consumption.
+    notes: "Legacy Phase 10D direct-purpose metadata tool. Retained for compatibility, excluded from ordinary viewer intent, and never reinterpreted as canonical viewer_scene.v1."
     artifact_types:
       - structure_json
       - summary_md
@@ -141,7 +141,7 @@ tools:
     stage: mvp
     adapter: StructureViewerExportPackageAdapter
     display_target: structure
-    notes: Create a static structure viewer export package manifest without bundling any renderer.
+    notes: "Legacy Phase 10D direct-purpose export tool. Retained for compatibility; artifacts remain JSON-only and are not migrated into the canonical renderer."
     artifact_types:
       - structure_json
       - table_json
