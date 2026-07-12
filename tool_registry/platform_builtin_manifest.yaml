@@ -118,7 +118,7 @@ tools:
     stage: mvp
     adapter: StructureViewerSceneMetadataAdapter
     display_target: structure
-    notes: "Legacy Phase 10D direct-purpose metadata tool. Retained for compatibility, excluded from ordinary viewer intent, and never reinterpreted as canonical viewer_scene.v1."
+    notes: "Deprecated read-only compatibility producer for Phase 10D direct execution. Hidden from Mock Planner generation; historical artifacts remain JSON-only and are never reinterpreted as canonical topology."
     artifact_types:
       - structure_json
       - summary_md
@@ -141,7 +141,7 @@ tools:
     stage: mvp
     adapter: StructureViewerExportPackageAdapter
     display_target: structure
-    notes: "Legacy Phase 10D direct-purpose export tool. Retained for compatibility; artifacts remain JSON-only and are not migrated into the canonical renderer."
+    notes: "Deprecated read-only compatibility producer for Phase 10D direct execution. Hidden from Mock Planner generation; historical packages remain JSON-only, include no renderer, and are not migrated into canonical topology."
     artifact_types:
       - structure_json
       - table_json

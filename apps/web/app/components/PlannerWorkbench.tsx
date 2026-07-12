@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { createTranslator, type Locale, type MessageKey } from "../lib/i18n";
 import { ViewerSceneRendererSurface } from "./viewer-scene/ViewerSceneRendererSurface";
+import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
   type Artifact,
@@ -1340,16 +1341,17 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
   const viewerManifest = artifacts.find(isViewerManifestArtifact);
   const scenePayload = viewerScene ? artifactPayload(viewerScene) : null;
   const canonicalScene = isCanonicalViewerScenePayload(scenePayload);
+  const compatibility = viewerSceneCompatibility(scenePayload?.schema_version);
   const summaryArtifact = artifacts.find((artifact) => artifact.name === "summary.md" || artifact.type === "summary_md");
   const recipeArtifact = artifacts.find((artifact) => artifact.name === "recipe.json" || artifact.type === "recipe_json");
   const [activePreview, setActivePreview] = useState<"renderer" | "json" | "manifest">("json");
   if (!viewerScene && !viewerManifest) return null;
   if (!canonicalScene) {
-    const legacyScene = asRecord(scenePayload)?.schema_version === "phase10d1.viewer_scene.v1";
+    const legacyScene = compatibility.status === "deprecated_read_only";
     return (
       <section className="panel viewer-static-preview" data-testid="viewer-static-preview-panel">
         <PanelHeading title="Viewer static preview" badge="JSON only" />
-        {legacyScene ? <p className="notice" data-testid="viewer-scene-legacy-notice"><strong>Legacy viewer scene contract.</strong> Interactive rendering is unavailable; JSON remains accessible. Rerun the source structure with <code>structure.viewer_3d</code> to create a new canonical job. No automatic migration is performed.</p> : null}
+        {legacyScene ? <p className="notice" data-testid="viewer-scene-legacy-notice"><strong>Legacy Phase 10D viewer scene schema is deprecated.</strong> JSON-only preview remains available. Renderer and periodic topology are unsupported because periodic endpoint identity is absent. Regenerate from the source structure with <code>structure.viewer_3d</code>; no automatic migration is performed.</p> : null}
         <div className="viewer-preview-grid">
           {viewerScene ? <ViewerScenePreview artifact={viewerScene} /> : <ViewerMissingPreview title="viewer_scene.json" />}
           {viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : <ViewerMissingPreview title="viewer_assets_manifest.json" />}
@@ -1360,6 +1362,7 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
   return (
     <section className="panel viewer-static-preview" data-testid="viewer-static-preview-panel">
       <PanelHeading title="Viewer scene preview" badge="Minimal interactive viewer" />
+      {compatibility.status === "supported_legacy_same_cell" ? <p className="notice" data-testid="viewer-scene-v1-compatibility-notice"><strong>Supported legacy viewer scene v1.</strong> Bonds are same-cell only; periodic endpoints and periodic topology are unavailable. Regenerate from the source structure with the current adapter for v2 topology.</p> : null}
       <div className="viewer-preview-tabs" role="tablist" aria-label="Viewer scene preview modes">
         <button type="button" role="tab" aria-selected={activePreview === "renderer"} className={activePreview === "renderer" ? "active" : "secondary"} onClick={() => setActivePreview("renderer")}>3D Renderer</button>
         <button type="button" role="tab" aria-selected={activePreview === "json"} className={activePreview === "json" ? "active" : "secondary"} onClick={() => setActivePreview("json")}>Scene JSON</button>
@@ -1413,6 +1416,7 @@ function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
   const validationStatus = text(validation.status || (isViewerSceneV1 ? "unknown" : undefined));
   const capabilities = asRecord(payload.capabilities) || {};
   const topology = viewerTopologySummary(bonds, isViewerSceneV2);
+  const compatibility = viewerSceneCompatibility(payload.schema_version);
   const coordinateBasis = text(scene.coordinate_basis || payload.coordinate_basis);
   const species = textList(structure.species);
   const latticePresent = Object.keys(lattice).length ? "true" : "false";
@@ -1421,6 +1425,14 @@ function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
       {isViewerSceneV1 ? <div data-testid="viewer-scene-v1-preview" hidden /> : null}
       {isViewerSceneContractPayload ? <div data-testid="viewer-scene-json-preview" hidden /> : null}
       <h3>Scene overview</h3>
+      <PreviewSubsection title="Schema compatibility"><dl className="mini-grid" data-testid="viewer-scene-compatibility-summary">
+        <TestField testId="viewer-scene-compatibility-status" label="status" value={compatibility.status} />
+        <Field label="preview" value={compatibility.previewMode} />
+        <TestField testId="viewer-scene-compatibility-renderer" label="renderer supported" value={flagText(compatibility.rendererSupported)} />
+        <TestField testId="viewer-scene-compatibility-periodic" label="periodic topology" value={flagText(compatibility.periodicTopologySupported)} />
+        <Field label="migration" value={compatibility.migrationPolicy} />
+        <TestField testId="viewer-scene-compatibility-warnings" label="compatibility warnings" value={compatibility.warnings.length?compatibility.warnings.join(", "):"none"} />
+      </dl></PreviewSubsection>
       <dl className="mini-grid" data-testid={isViewerSceneContractPayload ? "viewer-scene-summary" : undefined}>
         {isViewerSceneContractPayload ? <TestField testId="viewer-scene-kind" label="kind" value={text(payload.kind)} /> : null}
         {isViewerSceneContractPayload ? <TestField testId="viewer-scene-version" label="version" value={text(payload.version)} /> : null}
@@ -1502,10 +1514,18 @@ function ViewerManifestPreview({ artifact }: { artifact: Artifact }) {
   const expectedWarnings = arrayOfText(payload.expected_warnings) || [];
   const expectedCaps = asRecord(payload.expected_caps) || {};
   const capabilities = asRecord(payload.capabilities) || {};
+  const compatibility = viewerManifestCompatibility(payload.schema_version);
   return (
     <article className="viewer-preview-card" data-testid="viewer-manifest-preview">
       {isManifestV1 ? <div data-testid="viewer-manifest-json-only-preview" hidden /> : null}
       <h3>Export package manifest</h3>
+      <PreviewSubsection title="Manifest compatibility"><dl className="mini-grid" data-testid="viewer-manifest-compatibility-summary">
+        <TestField testId="viewer-manifest-compatibility-status" label="status" value={compatibility.status} />
+        <Field label="paired scene schema" value={compatibility.pairedSceneSchema} />
+        <TestField testId="viewer-manifest-compatibility-periodic" label="periodic topology" value={flagText(compatibility.periodicTopologySupported)} />
+        <Field label="renderer included" value={flagText(compatibility.rendererIncluded)} />
+        <TestField testId="viewer-manifest-compatibility-warnings" label="warnings" value={compatibility.warnings.length?compatibility.warnings.join(", "):"none"} />
+      </dl></PreviewSubsection>
       <dl className="mini-grid">
         <Field label="schema" value={text(payload.schema_version)} />
         <Field label="package" value={text(payload.package_type || payload.artifact_kind)} />

@@ -1878,3 +1878,15 @@
 ### Remaining
 - [ ] Renderer work remains outside this phase.
 - [ ] Trajectory, phonon, Brillouin, volumetric, defects, surfaces, and slabs remain deferred.
+
+## 2026-07-12 Phase 10F-20 Legacy Viewer Schema Compatibility
+
+### Done
+- [x] Encode scene and manifest lifecycle inventory in application code.
+- [x] Gate Phase 10D before renderer mapping and preserve v1 same-cell semantics.
+- [x] Redirect planner legacy requests to current v2 production paths.
+- [x] Add preview warnings, tests, evidence, security, and deprecation policy.
+
+### Remaining
+- [ ] Legacy removal awaits retention and regeneration policy.
+- [ ] Viewer performance hardening is the next eligible scope.

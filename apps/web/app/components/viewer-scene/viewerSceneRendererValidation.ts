@@ -1,4 +1,5 @@
 import type { ViewerSceneValidation } from "./viewerSceneRendererTypes";
+import { viewerSceneCompatibility } from "./viewerSceneCompatibility";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -19,6 +20,9 @@ export function validateViewerSceneForRenderer(payload: unknown): ViewerSceneVal
   const errors: string[] = [];
   const warnings: string[] = [];
   if (!isRecord(payload)) return result(["VIEWER_RENDERER_PAYLOAD_REQUIRED"], warnings);
+  const compatibility=viewerSceneCompatibility(payload.schema_version);
+  if (!compatibility.rendererSupported) errors.push("VIEWER_SCENE_RENDERER_SCHEMA_UNSUPPORTED");
+  warnings.push(...compatibility.warnings);
 
   try {
     if (new TextEncoder().encode(JSON.stringify(payload)).byteLength > VIEWER_SCENE_RENDER_LIMITS.maxJsonBytes) {

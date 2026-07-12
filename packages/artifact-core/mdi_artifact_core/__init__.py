@@ -23,6 +23,13 @@ from .viewer_scene_contract import (
     validate_viewer_scene,
     validate_viewer_scene_manifest,
 )
+from .viewer_schema_compatibility import (
+    VIEWER_MANIFEST_COMPATIBILITY,
+    VIEWER_SCHEMA_COMPATIBILITY,
+    compatibility_matrix_snapshot,
+    viewer_manifest_compatibility_result,
+    viewer_schema_compatibility_result,
+)
 
 __all__ = [
     "ArtifactPayload",
@@ -39,9 +46,14 @@ __all__ = [
     "VIEWER_SCENE_SCHEMA_VERSION",
     "VIEWER_SCENE_VERSION",
     "ViewerSceneValidationResult",
+    "VIEWER_MANIFEST_COMPATIBILITY",
+    "VIEWER_SCHEMA_COMPATIBILITY",
+    "compatibility_matrix_snapshot",
     "content_hash",
     "load_viewer_scene_json",
     "stable_json_dumps",
     "validate_viewer_scene",
     "validate_viewer_scene_manifest",
+    "viewer_manifest_compatibility_result",
+    "viewer_schema_compatibility_result",
 ]

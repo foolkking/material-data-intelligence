@@ -1088,3 +1088,16 @@ New adapter output uses `phase10f19.viewer_assets_manifest.v2` with
 `scene_contract = phase10f18.viewer_scene.v2`, `periodic_topology = true`,
 `renderer_included = false`, and `webgl_included = false`. Historical
 `phase10f9.viewer_scene_manifest.v1` remains readable.
+
+## Phase 10F-20 Addendum: viewer schema lifecycle
+
+The application-owned compatibility registry recognizes exactly three scene
+contracts. `phase10d1.viewer_scene.v1` is deprecated read-only and JSON-only;
+it is rejected before renderer mapping. `phase10f8.viewer_scene.v1` is supported
+legacy same-cell and cannot claim periodic endpoints. `phase10f18.viewer_scene.v2`
+is current and is the only default production output.
+
+Manifest v1 contracts remain inert compatibility records. The current
+`phase10f19.viewer_assets_manifest.v2` must pair with v2 and cannot include a
+renderer, WebGL, executable, or external asset. No automatic conversion exists:
+missing endpoint image offsets and capabilities are never inferred.

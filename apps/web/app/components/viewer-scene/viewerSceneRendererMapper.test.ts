@@ -106,6 +106,22 @@ describe("viewer scene renderer mapper", () => {
     expect(result.ok).toBe(false);
     expect(result.validation.errors).toContain("VIEWER_SCENE_SITE_LIMIT_EXCEEDED");
   });
+
+  it("rejects the Phase 10D legacy schema before renderer mapping", () => {
+    const result = mapViewerSceneForRenderer({
+      artifactType: "structure.viewer_scene_metadata",
+      schema_version: "phase10d1.viewer_scene.v1",
+      structure: { formula: "Si", site_count: 1, atoms: [] },
+      security: {
+        contains_javascript: false,
+        external_urls: [],
+        external_urls_allowed: false,
+        artifact_supplied_js_allowed: false,
+      },
+    });
+    expect(result.ok).toBe(false);
+    expect(result.validation.errors).toContain("VIEWER_SCENE_RENDERER_SCHEMA_UNSUPPORTED");
+  });
 });
 
 describe("viewer scene renderer geometry", () => {

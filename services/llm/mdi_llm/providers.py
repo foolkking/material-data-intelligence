@@ -102,7 +102,7 @@ class MockLLMProvider:
                 request,
                 data_profile=data_profile,
                 tool_id="structure.viewer_scene",
-                purpose="Create an inert viewer_scene.v1 JSON artifact for JSON-only preview; no renderer is included.",
+                purpose="Create an inert viewer_scene.v2 JSON artifact with the current manifest; no renderer is included.",
                 params={
                     "include_bonds": True,
                     "bond_cutoff_angstrom": 3.0,
@@ -124,24 +124,25 @@ class MockLLMProvider:
             plan = _mock_structure_plan(
                 request,
                 data_profile=data_profile,
-                tool_id="structure.viewer_export_package",
-                purpose="Create a static structure viewer export package without a renderer.",
-                params={"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
+                tool_id="structure.viewer_scene",
+                purpose="Regenerate a current inert viewer_scene.v2 artifact package; legacy export production is deprecated.",
+                params=_canonical_viewer_scene_params(),
                 artifact_name="viewer_scene.json",
                 artifact_type="structure_json",
                 artifact_types=["structure_json", "table_json", "summary_md", "recipe_json"],
-                extra_expected_artifacts=[{"name": "viewer_assets_manifest.json", "type": "table_json", "fromStepId": "step_001"}],
+                extra_expected_artifacts=[{"name": "viewer_scene_manifest.json", "type": "table_json", "fromStepId": "step_001"}],
             )
         elif _should_generate_viewer_scene_metadata(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
                 data_profile=data_profile,
-                tool_id="structure.viewer_scene_metadata",
-                purpose="Create static viewer scene metadata for future renderer consumption.",
-                params={"inferBonds": True, "maxSites": 500, "maxBonds": 2000, "cameraPreset": "auto"},
+                tool_id="structure.viewer_scene",
+                purpose="Regenerate current inert viewer_scene.v2 data; legacy metadata production is deprecated.",
+                params=_canonical_viewer_scene_params(),
                 artifact_name="viewer_scene.json",
                 artifact_type="structure_json",
-                artifact_types=["structure_json", "summary_md", "recipe_json"],
+                artifact_types=["structure_json", "table_json", "summary_md", "recipe_json"],
+                extra_expected_artifacts=[{"name": "viewer_scene_manifest.json", "type": "table_json", "fromStepId": "step_001"}],
             )
         elif _should_generate_structure_viewer(request, tools, data_profile):
             plan = _mock_structure_plan(

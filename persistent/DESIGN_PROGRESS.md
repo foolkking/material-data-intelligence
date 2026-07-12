@@ -1225,3 +1225,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added `phase10f19.viewer_assets_manifest.v2` with accurate periodic topology and no-renderer/no-WebGL declarations.
 - Unified JSON preview topology counts and endpoint identity with the adapter contract and inspector.
 - No renderer, dependency, planner, PlanValidator, or QueueWorkerRuntime semantics changed.
+
+## 2026-07-12 Phase 10F-20 Legacy Viewer Schema Compatibility
+
+- Added executable scene and manifest compatibility matrices mirrored in the frontend.
+- Phase 10D is deprecated read-only/JSON-only; canonical v1 remains supported same-cell; v2 is current.
+- Mock Planner redirects historical viewer requests to current v2 producers while direct legacy replay remains available.
+- Automatic migration is intentionally absent because missing periodic endpoint identity cannot be inferred.

@@ -573,12 +573,17 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(within(results).getByText("Display / camera")).not.toBeNull();
     expect(within(results).getAllByText("Si").length).toBeGreaterThan(0);
     expect(within(results).getByText("ball_and_stick")).not.toBeNull();
-    expect(within(results).getByText("phase10d1.viewer_scene.v1")).not.toBeNull();
-    expect(within(results).getByTestId("viewer-scene-legacy-notice").textContent).toContain("Legacy viewer scene contract");
+    expect(within(results).getAllByText("phase10d1.viewer_scene.v1").length).toBeGreaterThan(0);
+    expect(within(results).getByTestId("viewer-scene-legacy-notice").textContent).toContain("deprecated");
+    expect(within(results).getByTestId("viewer-scene-legacy-notice").textContent).toContain("structure.viewer_3d");
+    expect(within(results).getByTestId("viewer-scene-compatibility-status").textContent).toContain("deprecated_read_only");
+    expect(within(results).getByTestId("viewer-scene-compatibility-renderer").textContent).toContain("false");
+    expect(within(results).getByTestId("viewer-scene-compatibility-periodic").textContent).toContain("false");
 
     expect(within(results).getByTestId("viewer-manifest-preview")).not.toBeNull();
     expect(within(results).getByText("Export package manifest")).not.toBeNull();
     expect(within(results).getByText("Renderer status")).not.toBeNull();
+    expect(within(results).getByTestId("viewer-manifest-compatibility-status").textContent).toContain("deprecated_read_only");
     expect(within(results).getAllByText("none").length).toBeGreaterThan(0);
     expect(within(results).getAllByText(/Renderer included: false/).length).toBeGreaterThan(0);
     expect(within(results).getAllByText(/Artifact JS: false/).length).toBeGreaterThan(0);

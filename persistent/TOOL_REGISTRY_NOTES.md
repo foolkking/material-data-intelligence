@@ -1001,3 +1001,9 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Params, planner identities, PlanValidator authority, QueueWorkerRuntime, and backend success/client renderer separation remain unchanged.
 - Phase 10D tools remain direct-compatible and JSON-only. v1 bonds remain same-cell only.
 - No topology service, CrystalNN/VoronoiNN tool, trajectory tool, or artifact execution authority was added.
+
+# 2026-07-12 Phase 10F-20 Viewer Producer Policy
+
+- `structure.viewer_scene` and `structure.viewer_3d` are current v2 producers selected by Mock Planner.
+- `structure.viewer_scene_metadata` and `structure.viewer_export_package` remain registered only for deprecated direct compatibility.
+- Legacy output is never relabeled, migrated, or interpreted as periodic topology.

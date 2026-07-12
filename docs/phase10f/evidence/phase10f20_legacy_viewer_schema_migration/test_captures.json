@@ -1,0 +1,1 @@
+{"compatibility_matrix":"PASS","validator":"PASS","renderer_gate":"PASS","preview":"PASS","producer_policy":"PASS","frontend":{"passed":79},"backend":{"passed":366,"skipped":21},"typecheck":"PASS","build":"PASS","browser_runners":"PASS","service_backed_local":"UNAVAILABLE_NO_DOCKER","marker":"VIEWER_SCHEMA_COMPATIBILITY_EVIDENCE_PASS"}

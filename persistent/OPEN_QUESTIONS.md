@@ -653,3 +653,8 @@
 - Decide whether a future explicit-input topology source needs a separate provenance sub-contract before authoritative connectivity is accepted.
 - Distance-cutoff periodic topology is complete for visualization but remains non-authoritative; CrystalNN/VoronoiNN, bond order, and valence are open.
 - Periodic identity/topology can support trajectory or phonon contract planning, but no frame/time/displacement contract exists yet.
+
+## 2026-07-12 Phase 10F-20 Follow-ups
+
+- Define artifact retention and regeneration windows before removing Phase 10D direct compatibility tools.
+- Decide whether any future explicitly lossy archival converter is preferable to regeneration; none is currently authorized.

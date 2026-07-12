@@ -201,3 +201,10 @@
 | [`phase10f/evidence/phase10f18_periodic_bond_topology/`](phase10f/evidence/phase10f18_periodic_bond_topology/) | Live jobs, v2 artifacts, browser matrix, metrics, and screenshots |
 | [`phase10f/phase10f19_periodic_scene_integration.md`](phase10f/phase10f19_periodic_scene_integration.md) | Periodic scene capability, manifest, preview, and validation hardening |
 | [`phase10f/evidence/phase10f19_periodic_scene_integration/`](phase10f/evidence/phase10f19_periodic_scene_integration/) | Adapter artifacts, validation output, topology captures, and security evidence |
+| [`phase10f/phase10f20_legacy_viewer_schema_migration.md`](phase10f/phase10f20_legacy_viewer_schema_migration.md) | Executable legacy compatibility and producer policy |
+| [`phase10f/phase10f20_viewer_schema_compatibility_matrix.md`](phase10f/phase10f20_viewer_schema_compatibility_matrix.md) | Scene and manifest lifecycle matrix |
+| [`phase10f/phase10f20_viewer_schema_deprecation_policy.md`](phase10f/phase10f20_viewer_schema_deprecation_policy.md) | Read-only retention and removal prerequisites |
+| [`phase10f/phase10f20_viewer_schema_migration_decision.md`](phase10f/phase10f20_viewer_schema_migration_decision.md) | No-inference migration decision |
+| [`phase10f/phase10f20_viewer_schema_security_evidence.md`](phase10f/phase10f20_viewer_schema_security_evidence.md) | Compatibility security boundary |
+| [`phase10f/phase10f20_viewer_schema_readiness_matrix.md`](phase10f/phase10f20_viewer_schema_readiness_matrix.md) | Phase 10F-20 readiness decisions |
+| [`phase10f/evidence/phase10f20_legacy_viewer_schema_migration/`](phase10f/evidence/phase10f20_legacy_viewer_schema_migration/) | Compatibility, renderer gate, preview, and security captures |

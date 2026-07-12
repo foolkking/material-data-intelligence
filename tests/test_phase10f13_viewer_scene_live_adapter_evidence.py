@@ -68,8 +68,8 @@ def test_phase10f13_schema_compatibility_and_routing_boundaries(tmp_path: Path) 
     assert compatibility["canonical_schema"] == "phase10f18.viewer_scene.v2"
     assert compatibility["migration_performed"] is False
     assert routes["canonical_viewer_scene"] == "structure.viewer_scene"
-    assert routes["old_metadata"] == "structure.viewer_scene_metadata"
-    assert routes["old_export_package"] == "structure.viewer_export_package"
+    assert routes["old_metadata"] == "structure.viewer_scene"
+    assert routes["old_export_package"] == "structure.viewer_scene"
     assert routes["full_3d_viewer"] != "structure.viewer_scene"
     assert routes["xrd"] == "structure.xrd"
     assert routes["rdf"] == "structure.rdf"

@@ -263,7 +263,7 @@ async function collectSnapshot(page, testCase, browserVersion) {
     canvas_count: document.querySelectorAll("canvas").length,
     iframe_count: document.querySelectorAll("iframe").length,
     script_count: document.querySelectorAll("script").length,
-    body_has_webgl_marker: /webgl/i.test(document.body.textContent || ""),
+    body_has_webgl_marker: /webgl\s+(?:enabled|renderer)|webgl\s+included\s*true/i.test(document.body.textContent || ""),
     body_has_three_marker: /three\.js/i.test(document.body.textContent || ""),
     body_has_viewer_3d_claim: /structure\.viewer_3d/.test(document.body.textContent || ""),
   }));

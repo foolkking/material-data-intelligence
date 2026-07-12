@@ -1,0 +1,1 @@
+{"phase10d":{"badge":"deprecated","mode":"JSON-only","recommendation":"regenerate"},"v1":{"badge":"supported legacy","topology":"same-cell only","recommendation":"regenerate"},"v2":{"badge":"current","topology":"periodic endpoints and neighbor graph"},"html_execution":false}

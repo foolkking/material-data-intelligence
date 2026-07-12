@@ -133,18 +133,19 @@ def test_viewer_scene_tools_are_registered_with_strict_params() -> None:
 
 
 @pytest.mark.parametrize(
-    ("prompt", "expected_tool"),
+    "prompt",
     [
-        ("Create viewer scene metadata for this CIF.", "structure.viewer_scene_metadata"),
-        ("Build a static structure viewer scene contract.", "structure.viewer_scene_metadata"),
-        ("Create a static viewer export package for this structure.", "structure.viewer_export_package"),
-        ("Package this structure for future 3D viewer rendering.", "structure.viewer_export_package"),
+        "Create viewer scene metadata for this CIF.",
+        "Build a static structure viewer scene contract.",
+        "Create a static viewer export package for this structure.",
+        "Package this structure for future 3D viewer rendering.",
     ],
 )
-def test_mock_planner_routes_phase10d1_prompts(prompt: str, expected_tool: str) -> None:
+def test_mock_planner_redirects_phase10d1_prompts_to_current_producer(prompt: str) -> None:
     plan = _mock_plan(prompt, _structure_profile())
 
-    assert plan["steps"][0]["toolId"] == expected_tool
+    assert plan["steps"][0]["toolId"] == "structure.viewer_scene"
+    assert [item["name"] for item in plan["expectedArtifacts"]] == ["viewer_scene.json", "viewer_scene_manifest.json", "summary.md", "recipe.json"]
 
 
 @pytest.mark.parametrize(

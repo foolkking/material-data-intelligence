@@ -68,8 +68,8 @@ def test_natural_viewer_prompts_route_to_formal_tool(prompt: str) -> None:
 
 def test_explicit_json_and_legacy_prompts_remain_separate() -> None:
     assert _mock_plan("Build inert viewer scene data")["steps"][0]["toolId"] == "structure.viewer_scene"
-    assert _mock_plan("Create viewer scene metadata for this CIF")["steps"][0]["toolId"] == "structure.viewer_scene_metadata"
-    assert _mock_plan("Create a static viewer export package for this structure")["steps"][0]["toolId"] == "structure.viewer_export_package"
+    assert _mock_plan("Create viewer scene metadata for this CIF")["steps"][0]["toolId"] == "structure.viewer_scene"
+    assert _mock_plan("Create a static viewer export package for this structure")["steps"][0]["toolId"] == "structure.viewer_scene"
 
 
 @pytest.mark.parametrize("prompt", [

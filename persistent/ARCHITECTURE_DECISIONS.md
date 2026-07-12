@@ -3436,3 +3436,23 @@ components, modules, URLs, callbacks, shaders, or execution paths.
 - Manifest metadata cannot imply an embedded renderer or WebGL asset.
 - v1 and Phase 10F-18 periodic bond identity remain unchanged.
 - Rendering, AnalysisPlan, PlanValidator, and QueueWorkerRuntime authority remain separate.
+
+# 2026-07-12 Phase 10F-20 ADR: retain legacy schemas without inferred migration
+
+## Decision
+
+Maintain an application-owned compatibility registry. Phase 10D is deprecated
+read-only, canonical v1 is supported legacy same-cell, and v2 is current. New
+production artifacts use v2. Do not implement an automatic converter.
+
+## Rationale
+
+Legacy contracts cannot reconstruct periodic endpoint identity or exact v2
+capabilities. Conversion would lose meaning or fabricate topology.
+
+## Consequences
+
+- Historical artifacts remain inspectable and are not deleted.
+- Phase 10D cannot initialize the renderer; v1 cannot claim periodic topology.
+- Planner routes old viewer wording to current producers while direct replay remains available.
+- Removal remains deferred until retention and regeneration prerequisites are approved.

@@ -1616,3 +1616,13 @@
 ### Security
 - Added determinant, condition, offset, repeat, candidate, site, and bond limits.
 - No canonical schema change, backend supercell resource, external periodic service, or artifact execution.
+
+## 2026-07-12 Phase 10F-20
+
+### Added
+- Code-owned compatibility registries for three viewer scene and three manifest versions.
+- Typed Phase 10D renderer rejection and schema-specific JSON preview status.
+- Current-producer redirects for legacy Mock Planner viewer intents.
+
+### Security
+- No topology inference, dependency change, executable artifact content, or external resource.
