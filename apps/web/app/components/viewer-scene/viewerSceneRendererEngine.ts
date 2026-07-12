@@ -13,14 +13,16 @@ export async function createThreeViewerEngine(args: {
   readonly onContextLost: () => void;
   readonly onSitePick?: (site: PeriodicSiteRef | null) => void;
   readonly pixelRatioCap: number;
+  readonly antialias: boolean;
+  readonly performanceTier: "interactive" | "degraded";
 }): Promise<ViewerRendererEngine> {
   const startedAt = performance.now();
-  const { container, scene, onContextLost, onSitePick, pixelRatioCap } = args;
+  const { container, scene, onContextLost, onSitePick, pixelRatioCap, antialias, performanceTier } = args;
   const width = Math.max(320, container.clientWidth || 720);
   const height = Math.max(320, container.clientHeight || 480);
   let renderer: THREE.WebGLRenderer;
   try {
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+    renderer = new THREE.WebGLRenderer({ antialias, alpha: false, powerPreference: performanceTier === "degraded" ? "low-power" : "high-performance" });
   } catch {
     throw new ViewerRendererError("VIEWER_RENDERER_INITIALIZATION_FAILED", "The browser could not initialize the graphics renderer.");
   }
@@ -223,6 +225,7 @@ export async function createThreeViewerEngine(args: {
       });
     })),
     metrics: Object.freeze({
+      performanceTier,
       atomCount: scene.atoms.length,
       bondCount: scene.bonds.length,
       speciesCount: atomGroups.size,
@@ -233,6 +236,9 @@ export async function createThreeViewerEngine(args: {
       materials: materials.size + 2,
       triangles: renderer.info.render.triangles,
       lines: renderer.info.render.lines,
+      textures: renderer.info.memory.textures,
+      bufferAttributes: 3,
+      sceneObjects: root.children.length + 3,
       initializationMs: round(initializationMs),
       firstFrameMs: round(firstFrameMs),
     }),

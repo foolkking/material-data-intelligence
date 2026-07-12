@@ -1232,3 +1232,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Phase 10D is deprecated read-only/JSON-only; canonical v1 remains supported same-cell; v2 is current.
 - Mock Planner redirects historical viewer requests to current v2 producers while direct legacy replay remains available.
 - Automatic migration is intentionally absent because missing periodic endpoint identity cannot be inferred.
+
+## 2026-07-13 Phase 10F-21 Viewer Performance Hardening
+
+- Added immutable interactive/degraded/refused renderer budgets and fixed resource proxies.
+- Near-cap scenes retain all validated topology with DPR 1/no antialias; over-budget scenes stop before engine creation.
+- Added explicit generation-token stale protection, context-loss retry, and auditable demand-based scheduling.
+- Three-browser/mobile/periodic performance evidence passed without dependency or schema changes.

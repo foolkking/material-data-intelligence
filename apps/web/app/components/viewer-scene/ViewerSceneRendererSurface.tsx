@@ -7,6 +7,7 @@ import { ViewerSiteInspector } from "./ViewerSiteInspector";
 import { downloadLocalBlob, jsonBlob, sanitizeViewerFilename } from "./viewerSceneExport";
 import { measureAngle, measureDihedral, measureDistance, type ViewerMeasurementEvaluation, type ViewerMeasurementResult } from "./viewerSceneMeasurements";
 import { minimumImage, periodicAngle, periodicDihedral, periodicSiteKey } from "./viewerScenePeriodicGeometry";
+import { classifyViewerPerformance } from "./viewerScenePerformance";
 import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
 import { ViewerRendererError } from "./viewerSceneRendererErrors";
 import type { ImageOffset, PeriodicSiteRef, RenderVector3, ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot, ViewerRendererState } from "./viewerSceneRendererTypes";
@@ -46,6 +47,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const payloadChanged = previousPayloadRef.current !== payload;
   const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<ViewerRendererEngine | null>(null);
+  const generationRef = useRef(0);
   const [state, setState] = useState<ViewerRendererState>(mapping.ok ? "ready" : "validation_failed");
   const [showCell, setShowCell] = useState(true);
   const [showBonds, setShowBonds] = useState(true);
@@ -64,6 +66,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const renderedNeighborSiteIndex = payloadChanged ? null : neighborSiteIndex;
   const derivation = useMemo(() => mapping.ok ? derivePeriodicSupercell(mapping.scene, renderedRepeat, renderedNeighborSiteIndex) : null, [mapping, renderedNeighborSiteIndex, renderedRepeat]);
   const renderScene = derivation?.ok ? derivation.scene : mapping.ok ? mapping.scene : null;
+  const performanceDecision = useMemo(() => renderScene ? classifyViewerPerformance(renderScene) : null, [renderScene]);
   const onSitePick = useCallback((site: PeriodicSiteRef | null) => setSelection((current) => selectViewerSite(current, site)), []);
 
   useEffect(() => { selectionRef.current = selection; }, [selection]);
@@ -78,7 +81,11 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   useEffect(() => {
     setState(mapping.ok ? "ready" : "validation_failed");
     setSnapshot(null);
-    if (!mapping.ok || !renderScene) return;
+    if (!mapping.ok || !renderScene || !performanceDecision) return;
+    if (performanceDecision.tier === "refused") {
+      setState("scene_over_renderer_cap");
+      return;
+    }
     const supported = capabilityOverride ?? supportsWebGL();
     if (!supported) {
       setState("unsupported");
@@ -87,11 +94,14 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     const container = containerRef.current;
     if (!container) return;
     let cancelled = false;
+    const generation = ++generationRef.current;
     setState("initializing_renderer");
     void engineFactory({
       container,
       scene: renderScene,
-      pixelRatioCap: 2,
+      pixelRatioCap: performanceDecision.pixelRatioCap,
+      antialias: performanceDecision.antialias,
+      performanceTier: performanceDecision.tier,
       onContextLost: () => {
         setState("context_lost");
         queueMicrotask(() => {
@@ -101,7 +111,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       },
       onSitePick,
     }).then((engine) => {
-      if (cancelled) {
+      if (cancelled || generation !== generationRef.current) {
         engine.dispose();
         return;
       }
@@ -116,13 +126,14 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     });
     return () => {
       cancelled = true;
+      if (generation === generationRef.current) generationRef.current += 1;
       const engine = engineRef.current;
       engineRef.current = null;
       if (engine) {
         try { engine.dispose(); } catch { /* disposal is best-effort after the surface is detached */ }
       }
     };
-  }, [attempt, capabilityOverride, engineFactory, mapping, onSitePick, renderScene]);
+  }, [attempt, capabilityOverride, engineFactory, mapping, onSitePick, performanceDecision, renderScene]);
 
   useEffect(() => {
     engineRef.current?.setSelection(selection.selectedSites);
@@ -244,21 +255,29 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
           <p>This browser did not provide a usable WebGL context. The Scene JSON and Manifest views remain available.</p>
         </div>
       ) : null}
+      {mapping.ok && state === "scene_over_renderer_cap" ? (
+        <div className="viewer-renderer-fallback" data-testid="viewer-scene-renderer-performance-refused">
+          <strong>Scene exceeds the interactive renderer budget</strong>
+          <p>No graphics context was created. Scene JSON remains available.</p>
+          <code>{performanceDecision?.reason}</code>
+        </div>
+      ) : null}
       {mapping.ok && (state === "renderer_failed" || state === "chunk_load_failed" || state === "context_lost") ? (
         <div className="viewer-renderer-fallback" data-testid="viewer-scene-renderer-fallback">
           <strong>{state === "context_lost" ? "Graphics context lost" : state === "chunk_load_failed" ? "Renderer module unavailable" : "Renderer initialization failed"}</strong>
           <p>The artifact remains available as validated JSON. No artifact content was executed.</p>
-          {state === "chunk_load_failed" ? <button type="button" className="compact secondary" onClick={retry}>Retry renderer</button> : null}
+          {state === "chunk_load_failed" || state === "context_lost" ? <button type="button" className="compact secondary" onClick={retry}>Retry renderer</button> : null}
         </div>
       ) : null}
       {mapping.ok && state === "initializing_renderer" ? <p className="viewer-renderer-loading">Initializing local renderer...</p> : null}
-      {mapping.ok && !["unsupported", "renderer_failed", "chunk_load_failed", "context_lost"].includes(state) ? (
+      {mapping.ok && !["unsupported", "renderer_failed", "chunk_load_failed", "context_lost", "scene_over_renderer_cap"].includes(state) ? (
         <div ref={containerRef} className="viewer-renderer-canvas-host" data-testid="viewer-scene-renderer-valid">
           <span className="sr-only">Interactive canvas showing {mapping.scene.atoms.length} sites, {new Set(mapping.scene.atoms.map((atom) => atom.species)).size} species, and {mapping.scene.bonds.length} bounded bonds.</span>
         </div>
       ) : null}
       {mapping.ok ? (
         <>
+        {performanceDecision?.warning ? <p className="notice" role="status" data-testid="viewer-scene-renderer-performance-warning">{performanceDecision.warning}: all validated atoms and bonds remain rendered with reduced pixel ratio and antialiasing.</p> : null}
         <fieldset className="viewer-supercell-controls" aria-label="Bounded supercell controls">
           <legend>Renderer-local supercell</legend>
           {([0,1,2] as const).map((axis) => <label key={axis}>{["X","Y","Z"][axis]}<input data-testid={`viewer-supercell-${["x","y","z"][axis]}`} type="number" min="1" max="3" value={repeatDraft[axis]} onChange={(event) => { const next=[...repeatDraft] as number[]; next[axis]=Number(event.target.value); setRepeatDraft(next as unknown as SupercellRepeat); }} /></label>)}
@@ -290,6 +309,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
           <div><dt>renderer</dt><dd>{snapshot?.rendererVersion ? `Three r${snapshot.rendererVersion}` : "pending"}</dd></div>
         </dl>
         <output className="sr-only" data-testid="viewer-scene-renderer-metrics">{snapshot ? JSON.stringify(snapshot.metrics) : "metrics pending"}</output>
+        <output className="sr-only" data-testid="viewer-scene-renderer-performance-tier">{performanceDecision?.tier ?? "unavailable"}</output>
         </>
       ) : null}
     </section>

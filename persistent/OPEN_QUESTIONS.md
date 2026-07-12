@@ -658,3 +658,8 @@
 
 - Define artifact retention and regeneration windows before removing Phase 10D direct compatibility tools.
 - Decide whether any future explicitly lossy archival converter is preferable to regeneration; none is currently authorized.
+
+## 2026-07-13 Phase 10F-21 Follow-ups
+
+- Validate accessibility and touch interaction under degraded mode in Phase 10F-22.
+- Absolute hardware GPU memory remains outside browser-portable evidence; retain bounded proxy metrics.

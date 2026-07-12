@@ -78,6 +78,7 @@ export type ViewerRendererState =
   | "disposed";
 
 export type ViewerRendererMetrics = {
+  readonly performanceTier: "interactive" | "degraded";
   readonly atomCount: number;
   readonly bondCount: number;
   readonly speciesCount: number;
@@ -88,6 +89,9 @@ export type ViewerRendererMetrics = {
   readonly materials: number;
   readonly triangles: number;
   readonly lines: number;
+  readonly textures: number;
+  readonly bufferAttributes: number;
+  readonly sceneObjects: number;
   readonly initializationMs: number;
   readonly firstFrameMs: number;
 };
@@ -128,4 +132,6 @@ export type ViewerRendererEngineFactory = (args: {
   readonly onContextLost: () => void;
   readonly onSitePick?: (site: PeriodicSiteRef | null) => void;
   readonly pixelRatioCap: number;
+  readonly antialias: boolean;
+  readonly performanceTier: "interactive" | "degraded";
 }) => Promise<ViewerRendererEngine>;

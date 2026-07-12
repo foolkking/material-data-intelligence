@@ -1007,3 +1007,8 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - `structure.viewer_scene` and `structure.viewer_3d` are current v2 producers selected by Mock Planner.
 - `structure.viewer_scene_metadata` and `structure.viewer_export_package` remain registered only for deprecated direct compatibility.
 - Legacy output is never relabeled, migrated, or interpreted as periodic topology.
+
+# 2026-07-13 Phase 10F-21 Viewer Performance Notes
+
+- No Tool Registry, planner, adapter, PlanValidator, QueueWorkerRuntime, or artifact contract semantics changed.
+- Performance tiers are frontend-local validated-render-model policy and cannot be selected by artifact data.

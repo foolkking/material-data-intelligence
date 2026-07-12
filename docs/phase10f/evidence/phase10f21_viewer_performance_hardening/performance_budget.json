@@ -1,0 +1,1 @@
+{"interactive":{"atoms":1000,"bonds":4096,"dpr_cap":2,"antialias":true},"degraded":{"atoms":2048,"bonds":8192,"dpr_cap":1,"antialias":false},"draw_calls":40,"geometries":5,"materials":39,"style_groups":32}

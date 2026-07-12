@@ -28,6 +28,7 @@ function fakeEngine(dispose = vi.fn()) {
     selectedSiteIndices: [],
     siteScreenPositions: [],
     metrics: {
+      performanceTier: "interactive",
       atomCount: 2,
       bondCount: 1,
       speciesCount: 1,
@@ -38,6 +39,9 @@ function fakeEngine(dispose = vi.fn()) {
       materials: 3,
       triangles: 560,
       lines: 13,
+      textures: 0,
+      bufferAttributes: 3,
+      sceneObjects: 8,
       initializationMs: 10,
       firstFrameMs: 12,
     },
@@ -117,6 +121,37 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("requested 6912 sites");
     expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("limits are 2048");
     expect(factory).toHaveBeenCalledOnce();
+  });
+
+  it("uses degraded GPU settings without truncating a near-cap supercell", async () => {
+    const large = structuredClone(minimalScene) as Record<string, any>;
+    large.scene.sites = Array.from({length:64}, (_, index) => ({...large.scene.sites[0], index, label:`Si${index + 1}`, xyz:[index % 4, Math.floor(index / 4) % 4, Math.floor(index / 16)], frac:[(index % 4) / 4, (Math.floor(index / 4) % 4) / 4, Math.floor(index / 16) / 4]}));
+    large.metadata.site_count = 64;
+    const calls: Parameters<ViewerRendererEngineFactory>[0][] = [];
+    render(<ViewerSceneRendererSurface payload={large} capabilityOverride engineFactory={async (args) => { calls.push(args); return fakeEngine(); }} />);
+    await waitFor(() => expect(calls).toHaveLength(1));
+    for (const axis of ["x","y","z"] as const) fireEvent.change(screen.getByTestId(`viewer-supercell-${axis}`), {target:{value:"3"}});
+    await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
+    await waitFor(() => expect(calls).toHaveLength(2));
+    expect(calls[1]).toMatchObject({performanceTier:"degraded",pixelRatioCap:1,antialias:false});
+    expect(calls[1].scene.atoms).toHaveLength(1_728);
+    expect(screen.getByTestId("viewer-scene-renderer-performance-warning").textContent).toContain("VIEWER_RENDERER_DEGRADED_RESOURCE_MODE");
+  });
+
+  it("disposes a stale asynchronous engine generation after a scene switch", async () => {
+    let resolveFirst: ((engine: ViewerRendererEngine) => void) | undefined;
+    const stale = fakeEngine();
+    const current = fakeEngine();
+    const factory = vi.fn()
+      .mockImplementationOnce(() => new Promise<ViewerRendererEngine>((resolve) => { resolveFirst = resolve; }))
+      .mockResolvedValueOnce(current) as ViewerRendererEngineFactory;
+    const {rerender} = render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(factory).toHaveBeenCalledOnce());
+    rerender(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(factory).toHaveBeenCalledTimes(2));
+    act(() => resolveFirst?.(stale));
+    await waitFor(() => expect(stale.dispose).toHaveBeenCalledOnce());
+    expect(current.dispose).not.toHaveBeenCalled();
   });
 
   it("initializes a validated scene and exposes accessible controls", async () => {

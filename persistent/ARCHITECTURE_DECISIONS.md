@@ -3456,3 +3456,18 @@ capabilities. Conversion would lose meaning or fabricate topology.
 - Phase 10D cannot initialize the renderer; v1 cannot claim periodic topology.
 - Planner routes old viewer wording to current producers while direct replay remains available.
 - Removal remains deferred until retention and regeneration prerequisites are approved.
+
+# 2026-07-13 Phase 10F-21 ADR: bounded renderer performance tiers
+
+## Decision
+
+Classify immutable validated scenes as interactive, degraded, or refused before
+engine creation. Degraded mode changes DPR and antialias only; refused mode does
+not create WebGL. Use demand rendering and generation-token stale protection.
+
+## Consequences
+
+- Scientific identity and topology never change for performance reasons.
+- Draw calls scale with bounded style groups, not atom or bond count.
+- Late engines are disposed and context loss can be retried as a new generation.
+- Thresholds are application-owned and cannot be overridden by artifacts.

@@ -1626,3 +1626,13 @@
 
 ### Security
 - No topology inference, dependency change, executable artifact content, or external resource.
+
+## 2026-07-13 Phase 10F-21
+
+### Added
+- Renderer performance budgets, degraded/refused policy, generation cancellation, and resource metrics.
+- Near-cap/stale-generation tests and real multi-browser performance runner.
+
+### Security
+- Performance thresholds remain application-owned; over-budget input cannot initialize WebGL.
+- No dependencies, external telemetry, artifact execution, or canonical schema changes.

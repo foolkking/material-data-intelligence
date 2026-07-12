@@ -1890,3 +1890,14 @@
 ### Remaining
 - [ ] Legacy removal awaits retention and regeneration policy.
 - [ ] Viewer performance hardening is the next eligible scope.
+
+## 2026-07-13 Phase 10F-21 Viewer Performance Hardening
+
+### Done
+- [x] Centralized draw, geometry, material, displayed-site, and displayed-bond budgets.
+- [x] Added degraded GPU policy and refusal before renderer initialization.
+- [x] Added generation-based stale completion protection and context-loss retry.
+- [x] Added unit, lifecycle, build, and three-browser performance evidence.
+
+### Remaining
+- [ ] Phase 10F-22 accessibility, mobile, and cross-browser interaction hardening.

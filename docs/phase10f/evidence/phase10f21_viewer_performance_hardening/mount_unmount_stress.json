@@ -1,0 +1,1 @@
+{"cleanup":{"observer":true,"window_listener":true,"control_listener":true,"pointer_listeners":true,"materials":true,"geometries":true,"renderer":true,"canvas":true},"duplicate_canvas":false}

@@ -208,3 +208,11 @@
 | [`phase10f/phase10f20_viewer_schema_security_evidence.md`](phase10f/phase10f20_viewer_schema_security_evidence.md) | Compatibility security boundary |
 | [`phase10f/phase10f20_viewer_schema_readiness_matrix.md`](phase10f/phase10f20_viewer_schema_readiness_matrix.md) | Phase 10F-20 readiness decisions |
 | [`phase10f/evidence/phase10f20_legacy_viewer_schema_migration/`](phase10f/evidence/phase10f20_legacy_viewer_schema_migration/) | Compatibility, renderer gate, preview, and security captures |
+| [`phase10f/phase10f21_viewer_performance_hardening.md`](phase10f/phase10f21_viewer_performance_hardening.md) | Renderer performance architecture and implementation |
+| [`phase10f/phase10f21_viewer_performance_budget.md`](phase10f/phase10f21_viewer_performance_budget.md) | Application-owned resource budgets |
+| [`phase10f/phase10f21_viewer_large_scene_policy.md`](phase10f/phase10f21_viewer_large_scene_policy.md) | Interactive, degraded, and refused behavior |
+| [`phase10f/phase10f21_viewer_lifecycle_contract.md`](phase10f/phase10f21_viewer_lifecycle_contract.md) | Demand rendering, stale protection, and cleanup |
+| [`phase10f/phase10f21_viewer_performance_evidence.md`](phase10f/phase10f21_viewer_performance_evidence.md) | Multi-browser performance evidence |
+| [`phase10f/phase10f21_viewer_performance_security.md`](phase10f/phase10f21_viewer_performance_security.md) | Resource and threshold security review |
+| [`phase10f/phase10f21_viewer_performance_readiness_matrix.md`](phase10f/phase10f21_viewer_performance_readiness_matrix.md) | Performance readiness decisions |
+| [`phase10f/evidence/phase10f21_viewer_performance_hardening/`](phase10f/evidence/phase10f21_viewer_performance_hardening/) | Budgets, metrics, lifecycle, browser, bundle, and security captures |
