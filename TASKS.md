@@ -2764,7 +2764,7 @@ FAIL包括：
 - 完成时间：2026-07-13 00:47（Asia/Shanghai）
 - 修改文件：renderer surface/engine/types、新增 performance policy 与测试、Phase 10F-21 browser runner、evidence/docs 和 persistent 记录。
 - 修改摘要：新增 interactive/degraded/refused 性能预算；保持 atom instancing 与 shared bond geometry；近上限场景降低 DPR/antialias 但不截断数据；超限在 engine factory 前拒绝；增加 generation token stale protection、context-loss retry 和资源 proxy metrics。
-- 测试结果：focused frontend 19 passed；frontend full 84 passed；backend full 366 passed, 21 skipped；typecheck/build/uv lock 通过；全部 7 个历史 viewer browser runner 与 Phase 10F-21 browser runner 通过；npm audit 因 registry endpoint `NOT_IMPLEMENTED` unavailable；本地 service-backed 因无 Docker unavailable，待 current-HEAD CI 验证。
+- 测试结果：focused frontend 19 passed；frontend full 84 passed；backend full 366 passed, 21 skipped；typecheck/build/uv lock 通过；全部 7 个历史 viewer browser runner 与 Phase 10F-21 browser runner 通过；npm audit 因 registry endpoint `NOT_IMPLEMENTED` unavailable；CI run `29201025785` 的 unit、frontend build、service-backed integration 和 no-skipped assertion 全部 success。
 - 安全结果：`NO_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`；无依赖、lockfile、canonical schema、PlanValidator、QueueWorkerRuntime 或 AnalysisPlanRepository 语义变更。
 ---END---
 
