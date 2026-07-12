@@ -13,6 +13,7 @@ VIEWER_SCENE_SCHEMA_VERSION = "phase10f8.viewer_scene.v1"
 VIEWER_SCENE_PERIODIC_VERSION = "viewer_scene.v2"
 VIEWER_SCENE_PERIODIC_SCHEMA_VERSION = "phase10f18.viewer_scene.v2"
 VIEWER_SCENE_MANIFEST_SCHEMA_VERSION = "phase10f9.viewer_scene_manifest.v1"
+VIEWER_SCENE_MANIFEST_V2_SCHEMA_VERSION = "phase10f19.viewer_assets_manifest.v2"
 PERIODIC_BOND_SOURCES = frozenset({"distance_cutoff", "explicit_input"})
 PERIODIC_BOND_OFFSET_LIMIT = 3
 PERIODIC_BOND_DISTANCE_TOLERANCE = 1e-5
@@ -46,6 +47,23 @@ SECURITY_REQUIRED_FLAGS = {
     "renderer_required": False,
     "remote_assets_allowed": False,
     "html_allowed": False,
+}
+
+VIEWER_SCENE_V2_CAPABILITIES = {
+    "periodic_structure": True,
+    "periodic_bonds": True,
+    "cross_boundary_bonds": True,
+    "neighbor_graph": True,
+    "trajectory": False,
+    "phonon": False,
+    "volumetric": False,
+}
+
+VIEWER_SCENE_MANIFEST_V2_CAPABILITIES = {
+    "scene_contract": VIEWER_SCENE_PERIODIC_SCHEMA_VERSION,
+    "periodic_topology": True,
+    "renderer_included": False,
+    "webgl_included": False,
 }
 
 EXECUTABLE_PLACEHOLDERS = {
@@ -93,6 +111,7 @@ def validate_viewer_scene(payload: dict[str, Any], *, raw_size_bytes: int | None
 
     _require_top_level_fields(payload, errors)
     _validate_identity(payload, errors)
+    _validate_capabilities(payload, errors)
     _validate_security(payload.get("security"), errors)
     _scan_for_forbidden_content(payload, errors)
 
@@ -126,8 +145,14 @@ def validate_viewer_scene_manifest(payload: dict[str, Any]) -> ViewerSceneValida
         errors.append("VIEWER_SCENE_MANIFEST_KIND_INVALID")
     if payload.get("artifact_version") not in {VIEWER_SCENE_VERSION, VIEWER_SCENE_PERIODIC_VERSION}:
         errors.append("VIEWER_SCENE_MANIFEST_VERSION_INVALID")
-    if payload.get("schema_version") != VIEWER_SCENE_MANIFEST_SCHEMA_VERSION:
+    schema_version = payload.get("schema_version")
+    if schema_version not in {VIEWER_SCENE_MANIFEST_SCHEMA_VERSION, VIEWER_SCENE_MANIFEST_V2_SCHEMA_VERSION}:
         errors.append("VIEWER_SCENE_MANIFEST_SCHEMA_VERSION_INVALID")
+    if schema_version == VIEWER_SCENE_MANIFEST_V2_SCHEMA_VERSION:
+        if payload.get("artifact_version") != VIEWER_SCENE_PERIODIC_VERSION:
+            errors.append("VIEWER_SCENE_MANIFEST_VERSION_INVALID")
+        if payload.get("capabilities") != VIEWER_SCENE_MANIFEST_V2_CAPABILITIES:
+            errors.append("VIEWER_SCENE_MANIFEST_CAPABILITIES_INVALID")
     if payload.get("preview_mode") != "json_only":
         errors.append("VIEWER_SCENE_MANIFEST_PREVIEW_MODE_INVALID")
     if payload.get("renderer_required") is not False:
@@ -175,6 +200,11 @@ def _validate_identity(payload: dict[str, Any], errors: list[str]) -> None:
         (version == VIEWER_SCENE_VERSION) != (schema_version == VIEWER_SCENE_SCHEMA_VERSION)
     ):
         errors.append("VIEWER_SCENE_SCHEMA_VERSION_INVALID")
+
+
+def _validate_capabilities(payload: dict[str, Any], errors: list[str]) -> None:
+    if payload.get("version") == VIEWER_SCENE_PERIODIC_VERSION and payload.get("capabilities") != VIEWER_SCENE_V2_CAPABILITIES:
+        errors.append("VIEWER_SCENE_CAPABILITIES_INVALID")
 
 
 def _validate_security(security: Any, errors: list[str]) -> None:

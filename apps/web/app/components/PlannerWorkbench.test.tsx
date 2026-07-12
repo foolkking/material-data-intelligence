@@ -777,8 +777,11 @@ describe("Phase 9C PlannerWorkbench", () => {
   });
 
   it("offers the canonical renderer for viewer_scene.v2 periodic topology artifacts", async () => {
-    const manifest = viewerSceneV1Manifest("periodic_boundary.viewer_scene.v2.json", "valid_with_warnings", [], ["VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"]);
+    const manifest: any = viewerSceneV1Manifest("periodic_boundary.viewer_scene.v2.json", "valid_with_warnings", [], ["VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"]);
+    manifest.schema_version = "phase10f19.viewer_assets_manifest.v2";
     manifest.artifact_version = "viewer_scene.v2";
+    manifest.capabilities = {scene_contract:"phase10f18.viewer_scene.v2",periodic_topology:true,renderer_included:false,webgl_included:false};
+    manifest.webgl_included = false;
     useViewerSceneV1Artifacts(periodicBoundaryScene(), manifest);
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
@@ -790,6 +793,13 @@ describe("Phase 9C PlannerWorkbench", () => {
 
     const results = screen.getByTestId("results-export-tab");
     expect(within(results).getByTestId("viewer-scene-version").textContent).toContain("viewer_scene.v2");
+    expect(within(results).getByTestId("viewer-scene-cross-boundary-bond-count").textContent).toContain("1");
+    expect(within(results).getByTestId("viewer-scene-self-periodic-bond-count").textContent).toContain("0");
+    expect(within(results).getByTestId("viewer-scene-neighbor-count").textContent).toContain("1");
+    expect(within(results).getByTestId("viewer-scene-artifact-renderer-status").textContent).toContain("not included");
+    expect(within(results).getByTestId("viewer-scene-future-renderer-contract").textContent).toContain("consumer of viewer_scene.v2");
+    expect(within(results).getByTestId("viewer-manifest-scene-contract").textContent).toContain("phase10f18.viewer_scene.v2");
+    expect(within(results).getByTestId("viewer-manifest-periodic-topology").textContent).toContain("true");
     await user.click(within(results).getByRole("tab", { name: "3D Renderer" }));
     expect(await within(results).findByTestId("viewer-scene-renderer-unavailable")).not.toBeNull();
   });

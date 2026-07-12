@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-07-12 - Phase 10F-19 Periodic Scene Integration Hardening
+
+- Added exact additive capability metadata to `viewer_scene.v2` without changing periodic bond semantics or v1.
+- Added validator-compatible `phase10f19.viewer_assets_manifest.v2` with explicit periodic topology and absent renderer/WebGL assets.
+- Added periodic topology/security status to the JSON artifact preview and integration evidence for orthogonal, triclinic, and self-periodic cases.
+
 ## 2026-07-12 - Phase 10F-18 Canonical Periodic Bond Topology
 
 - Added `viewer_scene.v2` with strict periodic endpoints, stable identity, source/authority semantics, distance consistency, caps, and v1 compatibility.

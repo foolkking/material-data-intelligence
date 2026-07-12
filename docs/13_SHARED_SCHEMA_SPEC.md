@@ -1076,3 +1076,15 @@ against row-vector lattice translation within `1e-5` angstrom. Canonical bonds
 are capped at 2048, endpoint components at absolute value 3, and renderer-local
 derived bonds at 8192. `viewer_scene.v1` remains valid but missing offsets mean
 same-cell only; no cross-boundary topology is inferred or migrated.
+
+## Phase 10F-19 Addendum: periodic scene capabilities and manifest v2
+
+`viewer_scene.v2` adds a required, exact `capabilities` object. It declares
+periodic structure/bonds, cross-boundary bonds, and the emitted neighbor graph;
+trajectory, phonon, and volumetric capabilities are false. Bond fields,
+identity, offsets, distance tolerance, and caps are unchanged. v1 is unchanged.
+
+New adapter output uses `phase10f19.viewer_assets_manifest.v2` with
+`scene_contract = phase10f18.viewer_scene.v2`, `periodic_topology = true`,
+`renderer_included = false`, and `webgl_included = false`. Historical
+`phase10f9.viewer_scene_manifest.v1` remains readable.

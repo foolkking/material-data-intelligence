@@ -45,7 +45,13 @@ def test_viewer_scene_adapter_generates_canonical_scene_manifest_summary_and_rec
     assert scene["scene"]["sites"][0]["xyz"] == [0.0, 0.0, 0.0]
     assert scene["security"]["renderer_required"] is False
     assert validate_viewer_scene(scene, raw_size_bytes=len(json.dumps(scene).encode("utf-8"))).valid
-    assert manifest["schema_version"] == "phase10f9.viewer_scene_manifest.v1"
+    assert manifest["schema_version"] == "phase10f19.viewer_assets_manifest.v2"
+    assert manifest["capabilities"] == {
+        "scene_contract": "phase10f18.viewer_scene.v2",
+        "periodic_topology": True,
+        "renderer_included": False,
+        "webgl_included": False,
+    }
     assert manifest["preview_mode"] == "json_only"
     assert manifest["renderer_required"] is False
     assert manifest["executable_assets"] == "none"
@@ -164,7 +170,7 @@ def test_viewer_scene_adapter_artifacts_are_inert_and_url_free() -> None:
     ):
         assert marker not in combined
     assert "three.js" not in payload_combined
-    assert "webgl" not in payload_combined
+    assert '"webgl_included":true' not in payload_combined
 
 
 def test_viewer_scene_tool_registered_with_strict_schema_and_no_renderer_capabilities() -> None:

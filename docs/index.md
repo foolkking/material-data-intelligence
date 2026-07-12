@@ -199,3 +199,5 @@
 | [`phase10f/phase10f18_security_review.md`](phase10f/phase10f18_security_review.md) | Numeric, injection, GPU, and network review |
 | [`phase10f/phase10f18_readiness_matrix.md`](phase10f/phase10f18_readiness_matrix.md) | Phase 10F-18 readiness decisions |
 | [`phase10f/evidence/phase10f18_periodic_bond_topology/`](phase10f/evidence/phase10f18_periodic_bond_topology/) | Live jobs, v2 artifacts, browser matrix, metrics, and screenshots |
+| [`phase10f/phase10f19_periodic_scene_integration.md`](phase10f/phase10f19_periodic_scene_integration.md) | Periodic scene capability, manifest, preview, and validation hardening |
+| [`phase10f/evidence/phase10f19_periodic_scene_integration/`](phase10f/evidence/phase10f19_periodic_scene_integration/) | Adapter artifacts, validation output, topology captures, and security evidence |

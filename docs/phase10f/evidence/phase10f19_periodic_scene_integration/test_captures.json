@@ -1,0 +1,86 @@
+{
+  "orthogonal": {
+    "bond_count": 1,
+    "bond_ids": [
+      "bond:0:0,0,0->1:1,0,0"
+    ],
+    "capabilities": {
+      "cross_boundary_bonds": true,
+      "neighbor_graph": true,
+      "periodic_bonds": true,
+      "periodic_structure": true,
+      "phonon": false,
+      "trajectory": false,
+      "volumetric": false
+    },
+    "manifest_valid": true,
+    "scene_valid": true,
+    "target_offsets": [
+      [
+        1,
+        0,
+        0
+      ]
+    ]
+  },
+  "self_periodic": {
+    "bond_count": 3,
+    "bond_ids": [
+      "bond:0:0,0,0->0:-1,0,0",
+      "bond:0:0,0,0->0:0,-1,0",
+      "bond:0:0,0,0->0:0,0,-1"
+    ],
+    "capabilities": {
+      "cross_boundary_bonds": true,
+      "neighbor_graph": true,
+      "periodic_bonds": true,
+      "periodic_structure": true,
+      "phonon": false,
+      "trajectory": false,
+      "volumetric": false
+    },
+    "manifest_valid": true,
+    "scene_valid": true,
+    "target_offsets": [
+      [
+        -1,
+        0,
+        0
+      ],
+      [
+        0,
+        -1,
+        0
+      ],
+      [
+        0,
+        0,
+        -1
+      ]
+    ]
+  },
+  "triclinic": {
+    "bond_count": 1,
+    "bond_ids": [
+      "bond:0:0,0,0->1:1,-1,1"
+    ],
+    "capabilities": {
+      "cross_boundary_bonds": true,
+      "neighbor_graph": true,
+      "periodic_bonds": true,
+      "periodic_structure": true,
+      "phonon": false,
+      "trajectory": false,
+      "volumetric": false
+    },
+    "manifest_valid": true,
+    "scene_valid": true,
+    "target_offsets": [
+      [
+        1,
+        -1,
+        1
+      ]
+    ]
+  }
+}

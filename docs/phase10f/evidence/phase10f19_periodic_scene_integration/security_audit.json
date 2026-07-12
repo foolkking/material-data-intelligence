@@ -1,0 +1,7 @@
+{
+  "artifact_javascript": false,
+  "external_network_requests": 0,
+  "external_urls": [],
+  "result": "NO_EXTERNAL_NETWORK_REQUESTS",
+  "secret_scan": "NO_SECRET_PATTERN_HITS"
+}

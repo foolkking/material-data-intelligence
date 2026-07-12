@@ -1866,3 +1866,15 @@
 ### Remaining
 - [ ] Authoritative CrystalNN/VoronoiNN coordination and bond order.
 - [ ] Trajectory, phonon, Brillouin, volumetric, defects, and surfaces.
+
+## 2026-07-12 Phase 10F-19 Periodic Scene Integration
+
+### Done
+- [x] Additive v2 capability metadata and overclaim validation.
+- [x] Manifest v2 periodic topology/no-renderer metadata.
+- [x] JSON preview topology/security/consumer status.
+- [x] Orthogonal, triclinic, self-periodic integration evidence.
+
+### Remaining
+- [ ] Renderer work remains outside this phase.
+- [ ] Trajectory, phonon, Brillouin, volumetric, defects, surfaces, and slabs remain deferred.

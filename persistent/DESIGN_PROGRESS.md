@@ -1218,3 +1218,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Both canonical viewer adapters generate bounded deterministic pymatgen periodic topology, including orthogonal/triclinic and self-periodic edges.
 - Renderer supercells now replicate complete cross-boundary edges; the inspector exposes periodic neighbor identity and highlight actions.
 - v1 remains valid as legacy same-cell topology. Distance-cutoff graphs remain non-authoritative.
+
+## 2026-07-12 Phase 10F-19 Periodic Scene Integration Hardening
+
+- Added exact additive capability metadata to `viewer_scene.v2`; bond semantics remain unchanged and v1 remains untouched.
+- Added `phase10f19.viewer_assets_manifest.v2` with accurate periodic topology and no-renderer/no-WebGL declarations.
+- Unified JSON preview topology counts and endpoint identity with the adapter contract and inspector.
+- No renderer, dependency, planner, PlanValidator, or QueueWorkerRuntime semantics changed.

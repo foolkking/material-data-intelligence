@@ -1385,6 +1385,7 @@ const VIEWER_SCENE_V1_VERSION = "viewer_scene.v1";
 const VIEWER_SCENE_V2_SCHEMA = "phase10f18.viewer_scene.v2";
 const VIEWER_SCENE_V2_VERSION = "viewer_scene.v2";
 const VIEWER_SCENE_MANIFEST_V1_SCHEMA = "phase10f9.viewer_scene_manifest.v1";
+const VIEWER_SCENE_MANIFEST_V2_SCHEMA = "phase10f19.viewer_assets_manifest.v2";
 
 function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
   const payload = artifactPayload(artifact);
@@ -1410,6 +1411,8 @@ function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
   const warnings = arrayOfText(payload.warnings) || arrayOfText(structure.warnings) || [];
   const validationErrors = arrayOfText(validation.errors) || [];
   const validationStatus = text(validation.status || (isViewerSceneV1 ? "unknown" : undefined));
+  const capabilities = asRecord(payload.capabilities) || {};
+  const topology = viewerTopologySummary(bonds, isViewerSceneV2);
   const coordinateBasis = text(scene.coordinate_basis || payload.coordinate_basis);
   const species = textList(structure.species);
   const latticePresent = Object.keys(lattice).length ? "true" : "false";
@@ -1457,6 +1460,14 @@ function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
         <CompactTable columns={["from", "to", "distance", "policy"]} rows={bonds.slice(0, 8).map(bondRow)} emptyLabel="No inferred bonds attached" />
         {bonds.length > 8 ? <p className="empty-state">Preview truncated to 8 bonds.</p> : null}
       </PreviewSubsection>
+      {isViewerSceneV2 ? <PreviewSubsection title="Periodic topology"><dl className="mini-grid" data-testid="viewer-scene-periodic-topology-summary">
+        <TestField testId="viewer-scene-canonical-bond-count" label="canonical bonds" value={String(topology.canonicalBonds)} />
+        <TestField testId="viewer-scene-cross-boundary-bond-count" label="cross-boundary bonds" value={String(topology.crossBoundaryBonds)} />
+        <TestField testId="viewer-scene-self-periodic-bond-count" label="self-periodic bonds" value={String(topology.selfPeriodicBonds)} />
+        <TestField testId="viewer-scene-neighbor-count" label="neighbor relationships" value={String(topology.neighborRelationships)} />
+        <Field label="periodic topology capability" value={flagText(capabilities.periodic_bonds)} />
+        <Field label="neighbor graph capability" value={flagText(capabilities.neighbor_graph)} />
+      </dl></PreviewSubsection> : null}
       <PreviewSubsection title="Display / camera">
         <dl className="mini-grid">
           <Field label="representation" value={text(display.representation)} />
@@ -1466,6 +1477,11 @@ function ViewerScenePreview({ artifact }: { artifact: Artifact }) {
         </dl>
       </PreviewSubsection>
       <ViewerLimitsSecurity limits={limits} warnings={warnings} security={security} />
+      {isViewerSceneV2 ? <PreviewSubsection title="Renderer status"><dl className="mini-grid">
+        <TestField testId="viewer-scene-artifact-renderer-status" label="renderer" value="not included" />
+        <TestField testId="viewer-scene-future-renderer-contract" label="future renderer" value="consumer of viewer_scene.v2" />
+        <Field label="WebGL in artifact" value="false" />
+      </dl></PreviewSubsection> : null}
       <RawJsonDetails payload={payload} />
     </article>
   );
@@ -1485,6 +1501,7 @@ function ViewerManifestPreview({ artifact }: { artifact: Artifact }) {
   const expectedErrors = arrayOfText(payload.expected_errors) || [];
   const expectedWarnings = arrayOfText(payload.expected_warnings) || [];
   const expectedCaps = asRecord(payload.expected_caps) || {};
+  const capabilities = asRecord(payload.capabilities) || {};
   return (
     <article className="viewer-preview-card" data-testid="viewer-manifest-preview">
       {isManifestV1 ? <div data-testid="viewer-manifest-json-only-preview" hidden /> : null}
@@ -1504,6 +1521,9 @@ function ViewerManifestPreview({ artifact }: { artifact: Artifact }) {
             <TestField testId="viewer-manifest-renderer-required" label="renderer required" value={flagText(payload.renderer_required)} />
             <TestField testId="viewer-manifest-executable-assets" label="executable assets" value={text(payload.executable_assets)} />
             <TestField testId="viewer-manifest-external-resources" label="external resources" value={text(payload.external_resources)} />
+            <TestField testId="viewer-manifest-scene-contract" label="scene contract" value={text(capabilities.scene_contract)} />
+            <TestField testId="viewer-manifest-periodic-topology" label="periodic topology" value={flagText(capabilities.periodic_topology)} />
+            <TestField testId="viewer-manifest-webgl-included" label="WebGL included" value={flagText(capabilities.webgl_included ?? payload.webgl_included)} />
             <Field label="expected errors" value={expectedErrors.length ? expectedErrors.join(", ") : "none"} />
             <Field label="expected warnings" value={expectedWarnings.length ? expectedWarnings.join(", ") : "none"} />
           </dl>
@@ -2013,7 +2033,7 @@ function isCanonicalViewerScenePayload(payload: JsonRecord | null): boolean {
 }
 
 function isViewerSceneManifestV1Payload(payload: JsonRecord | null): boolean {
-  return Boolean(payload && payload.schema_version === VIEWER_SCENE_MANIFEST_V1_SCHEMA && payload.artifact_kind === "viewer_scene" && (payload.artifact_version === VIEWER_SCENE_V1_VERSION || payload.artifact_version === VIEWER_SCENE_V2_VERSION));
+  return Boolean(payload && (payload.schema_version === VIEWER_SCENE_MANIFEST_V1_SCHEMA || payload.schema_version === VIEWER_SCENE_MANIFEST_V2_SCHEMA) && payload.artifact_kind === "viewer_scene" && (payload.artifact_version === VIEWER_SCENE_V1_VERSION || payload.artifact_version === VIEWER_SCENE_V2_VERSION));
 }
 
 function artifactPayload(artifact: Artifact): JsonRecord | null {
@@ -2095,8 +2115,26 @@ function atomRow(atom: JsonRecord): string[] {
 }
 
 function bondRow(bond: JsonRecord): string[] {
-  return [text(bond.from), text(bond.to), text(bond.distance), text(bond.policy || bond.bond_type)];
+  const from = asRecord(bond.from);
+  const to = asRecord(bond.to);
+  return [periodicEndpointText(from) || text(bond.from), periodicEndpointText(to) || text(bond.to), text(bond.distance_angstrom ?? bond.distance), text(bond.source || bond.policy || bond.bond_type)];
 }
+
+function periodicEndpointText(endpoint: JsonRecord | null): string {
+  if (!endpoint || typeof endpoint.site_index !== "number" || !Array.isArray(endpoint.image_offset)) return "";
+  return `${endpoint.site_index}@[${endpoint.image_offset.map(text).join(",")}]`;
+}
+
+function viewerTopologySummary(bonds: JsonRecord[], periodic: boolean) {
+  if (!periodic) return { canonicalBonds:bonds.length, crossBoundaryBonds:0, selfPeriodicBonds:0, neighborRelationships:bonds.length };
+  const endpoint = (bond:JsonRecord,key:"from"|"to")=>asRecord(bond[key]);
+  const nonzero = (value:unknown)=>Array.isArray(value)&&value.some((item)=>item!==0);
+  const crossBoundaryBonds=bonds.filter((bond)=>nonzero(endpoint(bond,"from")?.image_offset)||nonzero(endpoint(bond,"to")?.image_offset)).length;
+  const selfPeriodicBonds=bonds.filter((bond)=>endpoint(bond,"from")?.site_index===endpoint(bond,"to")?.site_index&&crossBoundaryBond(bond)).length;
+  return { canonicalBonds:bonds.length, crossBoundaryBonds, selfPeriodicBonds, neighborRelationships:bonds.length };
+}
+
+function crossBoundaryBond(bond:JsonRecord){const from=asRecord(bond.from);const to=asRecord(bond.to);return [from?.image_offset,to?.image_offset].some((value)=>Array.isArray(value)&&value.some((item)=>item!==0));}
 
 function manifestArtifactRow(artifact: JsonRecord): string[] {
   return [text(artifact.path), text(artifact.kind), text(artifact.media_type), text(artifact.required)];

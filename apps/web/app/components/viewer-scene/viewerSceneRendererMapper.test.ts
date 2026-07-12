@@ -48,6 +48,13 @@ describe("viewer scene renderer mapper", () => {
     expect(result.validation.errors).toContain("VIEWER_SCENE_PERIODIC_BOND_DISTANCE_MISMATCH");
   });
 
+  it("rejects viewer_scene.v2 capability overclaims before consumption",()=>{
+    const payload=periodicBoundaryScene(); payload.capabilities.trajectory=true;
+    const result=mapViewerSceneForRenderer(payload);
+    expect(result.ok).toBe(false);
+    expect(result.validation.errors).toContain("VIEWER_SCENE_CAPABILITIES_INVALID");
+  });
+
   it.each([
     ["duplicate site", (payload: any) => { payload.scene.sites[1].index = payload.scene.sites[0].index; }, "VIEWER_SCENE_SITE_INDEX_DUPLICATE"],
     ["invalid bond", (payload: any) => { payload.scene.bonds = [{ from: 0, to: 99 }]; }, "VIEWER_SCENE_BOND_ENDPOINT_INVALID"],

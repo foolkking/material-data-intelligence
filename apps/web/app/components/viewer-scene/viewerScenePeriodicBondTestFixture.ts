@@ -4,6 +4,7 @@ export function periodicBoundaryScene() {
   const payload = structuredClone(multiSpeciesScene) as Record<string, any>;
   payload.version = "viewer_scene.v2";
   payload.schema_version = "phase10f18.viewer_scene.v2";
+  payload.capabilities = {periodic_structure:true,periodic_bonds:true,cross_boundary_bonds:true,neighbor_graph:true,trajectory:false,phonon:false,volumetric:false};
   payload.scene.lattice.vectors = [[10,0,0],[0,10,0],[0,0,10]];
   payload.scene.sites[0].frac = [0.98,0,0]; payload.scene.sites[0].xyz = [9.8,0,0];
   payload.scene.sites[1].frac = [0.02,0,0]; payload.scene.sites[1].xyz = [0.2,0,0];

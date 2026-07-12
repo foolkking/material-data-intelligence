@@ -3421,3 +3421,18 @@ edge. A distinct version makes support explicit while retaining v1 validation.
 - v1 artifacts remain same-cell and are never silently migrated.
 - Bounded supercell edges are renderer-local derivations of canonical topology.
 - Trajectory and phonon contract planning has stable topology identity, but no implementation is authorized.
+
+# 2026-07-12 Phase 10F-19 ADR: capabilities are contract facts, not executable hooks
+
+## Decision
+
+Add an exact capability object to v2 scenes and a separate v2 export manifest.
+Capabilities describe validated data present in artifacts; they never select
+components, modules, URLs, callbacks, shaders, or execution paths.
+
+## Consequences
+
+- Consumers can distinguish periodic topology from deferred scientific domains.
+- Manifest metadata cannot imply an embedded renderer or WebGL asset.
+- v1 and Phase 10F-18 periodic bond identity remain unchanged.
+- Rendering, AnalysisPlan, PlanValidator, and QueueWorkerRuntime authority remain separate.

@@ -1,0 +1,38 @@
+{
+  "manifest": {
+    "caps": {
+      "max_bonds": 2048,
+      "max_cell_expansion": [
+        1,
+        1,
+        1
+      ],
+      "max_scene_json_bytes": 1000000,
+      "max_sites": 256,
+      "max_species": 32
+    },
+    "errors": [],
+    "valid": true,
+    "warnings": [
+      "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+    ]
+  },
+  "scene": {
+    "caps": {
+      "max_bonds": 2048,
+      "max_cell_expansion": [
+        1,
+        1,
+        1
+      ],
+      "max_scene_json_bytes": 1000000,
+      "max_sites": 256,
+      "max_species": 32
+    },
+    "errors": [],
+    "valid": true,
+    "warnings": [
+      "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+    ]
+  }
+}

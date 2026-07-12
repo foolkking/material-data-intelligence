@@ -36,6 +36,7 @@ export function validateViewerSceneForRenderer(payload: unknown): ViewerSceneVal
   if (!new Set(["viewer_scene.v1|phase10f8.viewer_scene.v1", "viewer_scene.v2|phase10f18.viewer_scene.v2"]).has(identity)) {
     errors.push("VIEWER_SCENE_SCHEMA_VERSION_INVALID");
   }
+  validateCapabilities(payload.version, payload.capabilities, errors);
 
   scanValue(payload, errors, 0, new Set<object>());
   validateSecurity(payload.security, errors);
@@ -49,6 +50,14 @@ export function validateViewerSceneForRenderer(payload: unknown): ViewerSceneVal
     }
   }
   return result(errors, warnings);
+}
+
+function validateCapabilities(version: unknown, value: unknown, errors: string[]) {
+  if (version !== "viewer_scene.v2") return;
+  const expected: JsonRecord = { periodic_structure:true, periodic_bonds:true, cross_boundary_bonds:true, neighbor_graph:true, trajectory:false, phonon:false, volumetric:false };
+  if (!isRecord(value) || Object.keys(value).sort().join() !== Object.keys(expected).sort().join() || Object.entries(expected).some(([key, expectedValue]) => value[key] !== expectedValue)) {
+    errors.push("VIEWER_SCENE_CAPABILITIES_INVALID");
+  }
 }
 
 function validateSecurity(value: unknown, errors: string[]) {

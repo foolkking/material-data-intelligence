@@ -1,0 +1,195 @@
+{
+  "capabilities": {
+    "cross_boundary_bonds": true,
+    "neighbor_graph": true,
+    "periodic_bonds": true,
+    "periodic_structure": true,
+    "phonon": false,
+    "trajectory": false,
+    "volumetric": false
+  },
+  "caps": {
+    "max_bonds": 2048,
+    "max_cell_expansion": [
+      1,
+      1,
+      1
+    ],
+    "max_scene_json_bytes": 1000000,
+    "max_sites": 256,
+    "max_species": 32
+  },
+  "kind": "viewer_scene",
+  "metadata": {
+    "formula": "H2",
+    "preview_mode": "json_only",
+    "renderer_required": false,
+    "site_count": 2,
+    "species": [
+      "H"
+    ],
+    "species_count": 1,
+    "structure_id": "structure_1",
+    "title": "Viewer Scene Artifact"
+  },
+  "provenance": {
+    "deterministic": true,
+    "fixture": false,
+    "official_pass_claim": false,
+    "phase": "10F-18",
+    "provenance_label": "adapter_generated",
+    "tool_id": "structure.viewer_scene"
+  },
+  "scene": {
+    "bonds": [
+      {
+        "authoritative": false,
+        "displacement_cartesian": [
+          0.4,
+          0.0,
+          0.0
+        ],
+        "distance_angstrom": 0.4,
+        "from": {
+          "image_offset": [
+            0,
+            0,
+            0
+          ],
+          "site_index": 0
+        },
+        "id": "bond:0:0,0,0->1:1,0,0",
+        "source": "distance_cutoff",
+        "to": {
+          "image_offset": [
+            1,
+            0,
+            0
+          ],
+          "site_index": 1
+        }
+      }
+    ],
+    "cell_expansion": [
+      1,
+      1,
+      1
+    ],
+    "coordinate_basis": "cartesian_angstrom",
+    "lattice": {
+      "parameters": {
+        "a": 10.0,
+        "alpha": 90.0,
+        "b": 10.0,
+        "beta": 90.0,
+        "c": 10.0,
+        "gamma": 90.0
+      },
+      "pbc": [
+        true,
+        true,
+        true
+      ],
+      "vectors": [
+        [
+          10.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          10.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          10.0
+        ]
+      ]
+    },
+    "sites": [
+      {
+        "element": "H",
+        "frac": [
+          0.98,
+          0.0,
+          0.0
+        ],
+        "index": 0,
+        "label": "H1",
+        "occupancy": 1.0,
+        "style": {
+          "color": "#ffffff",
+          "radius": 1.0
+        },
+        "xyz": [
+          9.8,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "element": "H",
+        "frac": [
+          0.02,
+          0.0,
+          0.0
+        ],
+        "index": 1,
+        "label": "H2",
+        "occupancy": 1.0,
+        "style": {
+          "color": "#ffffff",
+          "radius": 1.0
+        },
+        "xyz": [
+          0.2,
+          0.0,
+          0.0
+        ]
+      }
+    ],
+    "style": {
+      "background": "transparent",
+      "camera_preset": "auto",
+      "representation": "ball_and_stick",
+      "style_preset": "default"
+    }
+  },
+  "schema_version": "phase10f18.viewer_scene.v2",
+  "security": {
+    "artifact_supplied_js_allowed": false,
+    "contains_javascript": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "html_allowed": false,
+    "remote_assets_allowed": false,
+    "renderer_required": false
+  },
+  "source": {
+    "filename": "structures",
+    "parser": "pymatgen.Structure",
+    "parser_version": "2026.5.4",
+    "resource_id": "dataset_structure",
+    "resource_type": "normalized_object",
+    "tool_id": "structure.viewer_scene"
+  },
+  "validation": {
+    "caps_enforced": true,
+    "errors": [],
+    "external_resources_detected": false,
+    "finite_numbers": true,
+    "scriptable_fields_detected": false,
+    "status": "passed_with_warnings",
+    "truncated": false,
+    "validated_in_phase": "10F-18"
+  },
+  "version": "viewer_scene.v2",
+  "warnings": [
+    {
+      "code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+      "message": "Bonds are bounded distance candidates for preview metadata only."
+    }
+  ]
+}

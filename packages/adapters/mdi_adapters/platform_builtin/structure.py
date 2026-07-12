@@ -13,8 +13,11 @@ from mdi_artifact_core import (
     DEFAULT_VIEWER_SCENE_CAPS,
     VIEWER_SCENE_KIND,
     VIEWER_SCENE_MANIFEST_SCHEMA_VERSION,
+    VIEWER_SCENE_MANIFEST_V2_SCHEMA_VERSION,
+    VIEWER_SCENE_MANIFEST_V2_CAPABILITIES,
     VIEWER_SCENE_PERIODIC_SCHEMA_VERSION,
     VIEWER_SCENE_PERIODIC_VERSION,
+    VIEWER_SCENE_V2_CAPABILITIES,
     VIEWER_SCENE_SCHEMA_VERSION,
     VIEWER_SCENE_VERSION,
     content_hash,
@@ -1184,6 +1187,7 @@ def _viewer_scene_v1_payload(
         "kind": VIEWER_SCENE_KIND,
         "version": VIEWER_SCENE_PERIODIC_VERSION,
         "schema_version": VIEWER_SCENE_PERIODIC_SCHEMA_VERSION,
+        "capabilities": dict(VIEWER_SCENE_V2_CAPABILITIES),
         "source": {
             "resource_id": context.dataset_id,
             "resource_type": "normalized_object",
@@ -1371,10 +1375,11 @@ def _viewer_scene_v1_manifest(payload: dict[str, Any], *, tool_id: str) -> dict[
     scene_json = stable_json_dumps(payload)
     warning_codes = [item["code"] for item in payload.get("warnings", []) if isinstance(item, dict) and isinstance(item.get("code"), str)]
     return {
-        "schema_version": VIEWER_SCENE_MANIFEST_SCHEMA_VERSION,
+        "schema_version": VIEWER_SCENE_MANIFEST_V2_SCHEMA_VERSION,
         "artifact_id": "viewer_scene",
         "artifact_kind": VIEWER_SCENE_KIND,
         "artifact_version": payload["version"],
+        "capabilities": dict(VIEWER_SCENE_MANIFEST_V2_CAPABILITIES),
         "fixture_source": "adapter_generated",
         "expected_validation_state": "valid_with_warnings" if warning_codes else "valid",
         "expected_errors": [],
@@ -1382,6 +1387,7 @@ def _viewer_scene_v1_manifest(payload: dict[str, Any], *, tool_id: str) -> dict[
         "expected_caps": payload["caps"],
         "preview_mode": "json_only",
         "renderer_required": False,
+        "webgl_included": False,
         "executable_assets": "none",
         "external_resources": "none",
         "entry_artifact": "viewer_scene.json",
