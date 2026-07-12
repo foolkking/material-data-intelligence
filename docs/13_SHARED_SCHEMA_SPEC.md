@@ -1048,3 +1048,17 @@ correction, inferred chemistry, or persisted measurement artifact is added.
 PNG export is a frontend-local view capture bounded to 4096 by 4096 and
 16,777,216 effective pixels. It does not alter Artifact, Recipe, AnalysisPlan,
 Job, Tool Registry, QueueWorkerRuntime, or canonical scene schemas.
+
+## Phase 10F-17 Addendum: periodic frontend identity and view state
+
+Phase 10F-17 does not change `viewer_scene.v1`. Frontend-only identity is
+`PeriodicSiteRef { siteIndex, imageOffset: [i,j,k] }`, where the integer offset
+translates the canonical site by row lattice vectors. Supercell repeat, derived
+replicas, resolved minimum-image offsets, and measurement history are local view
+state and are never persisted into canonical artifacts.
+
+Minimum-image search is finite and typed: radius at most 4, at most 729
+candidates, deterministic lexicographic ties, finite/condition checks, and no
+silent direct-distance fallback. Derived display caps are 2048 sites and 8192
+bonds with repeat axes 1 through 3. Canonical bonds lack endpoint image offsets,
+so only provable same-cell bond replication is rendered.

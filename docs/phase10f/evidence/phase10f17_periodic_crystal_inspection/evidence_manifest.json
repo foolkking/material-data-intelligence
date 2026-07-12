@@ -1,0 +1,37 @@
+{
+  "schema_version": "phase10f17.periodic_crystal_inspection_evidence.v1",
+  "baseline_head": "5e7474be92e0ef75bed7a91ec5309c7fdea9e7f0",
+  "formal_tool": "structure.viewer_3d",
+  "coordinate_policies": [
+    "displayed_positions",
+    "minimum_image"
+  ],
+  "lattice_convention": "row_vectors",
+  "supercell": "renderer_local_bounded_1_to_3",
+  "periodic_bonds": "same_cell_replication_only",
+  "browser_results": [
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.201",
+      "pass": true
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "pass": true
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "pass": true
+    }
+  ],
+  "network_result": "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS",
+  "markers": [
+    "VIEWER_SCENE_PERIODIC_INSPECTION_BROWSER_EVIDENCE_PASS",
+    "VIEWER_SCENE_MINIMUM_IMAGE_MEASUREMENT_EVIDENCE_PASS",
+    "VIEWER_SCENE_SUPERCELL_BROWSER_EVIDENCE_PASS",
+    "VIEWER_SCENE_PERIODIC_PERFORMANCE_EVIDENCE_PASS"
+  ],
+  "redaction": "sanitized"
+}

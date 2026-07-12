@@ -988,3 +988,9 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - `structure.viewer_3d` remains the formal backend artifact-generation tool; picking, measurement, and PNG export are client viewer actions, not new executable tools.
 - Explicit scene JSON requests still use `structure.viewer_scene`; Phase 10D legacy tools remain direct-compatible and JSON-only.
 - Measurement prompts do not add arbitrary backend execution authority.
+
+# 2026-07-12 Phase 10F-17 Periodic Inspection Notes
+
+- No Tool Registry, planner, PlanValidator, adapter, or QueueWorkerRuntime semantics changed.
+- `structure.viewer_3d` still emits one canonical inert single-cell scene; supercell and periodic images are frontend-only view state.
+- No backend measurement or supercell tool was added.

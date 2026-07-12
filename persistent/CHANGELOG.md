@@ -1592,3 +1592,14 @@
 ### Security
 - Selection is capped at four, history at twenty, PNG at 4096 squared pixels.
 - No artifact execution, external viewer network, remote asset, or schema change.
+
+## 2026-07-12 Phase 10F-17
+
+### Added
+- Periodic site refs, replica picking and periodic inspector fields.
+- Bounded exact minimum-image math with triclinic reference fixtures.
+- Renderer-local supercell controls, derived caps, and supercell-aware PNG names.
+
+### Security
+- Added determinant, condition, offset, repeat, candidate, site, and bond limits.
+- No canonical schema change, backend supercell resource, external periodic service, or artifact execution.

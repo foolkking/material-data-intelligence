@@ -1,4 +1,4 @@
-import type { RenderAtom, RenderBond, RenderVector3, ValidatedRenderScene, ViewerSceneValidation } from "./viewerSceneRendererTypes";
+import type { ImageOffset, RenderAtom, RenderBond, RenderVector3, ValidatedRenderScene, ViewerSceneValidation } from "./viewerSceneRendererTypes";
 import { finiteTriplet, isRecord, validateViewerSceneForRenderer } from "./viewerSceneRendererValidation";
 
 type MappingResult =
@@ -28,7 +28,8 @@ export function mapViewerSceneForRenderer(payload: unknown): MappingResult {
     const radius = typeof style.radius === "number" && Number.isFinite(style.radius) && style.radius > 0 && style.radius <= 3 ? style.radius : 0.72;
     const fractionalPosition = finiteTriplet(site.frac) ? tuple(site.frac) : null;
     const occupancy = typeof site.occupancy === "number" && Number.isFinite(site.occupancy) && site.occupancy >= 0 && site.occupancy <= 1 ? site.occupancy : 1;
-    return Object.freeze({ id: `site-${index}`, siteIndex: index, species, element: species, label: String(site.label), occupancy, position, fractionalPosition, radius, color });
+    const ref = Object.freeze({ siteIndex: index, imageOffset: Object.freeze([0, 0, 0]) as ImageOffset });
+    return Object.freeze({ id: `site-${index}:0:0:0`, siteIndex: index, ref, species, element: species, label: String(site.label), occupancy, position, canonicalPosition: position, fractionalPosition, radius, color });
   });
 
   const bonds: RenderBond[] = (Array.isArray(payload.scene.bonds) ? payload.scene.bonds : [])
@@ -39,7 +40,9 @@ export function mapViewerSceneForRenderer(payload: unknown): MappingResult {
       const start = positions.get(bond.from);
       const end = positions.get(bond.to);
       if (!start || !end || vectorDistance(start, end) <= 1e-9) return [];
-      return [Object.freeze({ id: `bond-${bond.from}-${bond.to}`, fromSiteIndex: bond.from, toSiteIndex: bond.to, start, end })];
+      const fromRef = Object.freeze({ siteIndex: bond.from, imageOffset: Object.freeze([0,0,0]) as ImageOffset });
+      const toRef = Object.freeze({ siteIndex: bond.to, imageOffset: Object.freeze([0,0,0]) as ImageOffset });
+      return [Object.freeze({ id: `bond-${bond.from}-${bond.to}`, fromSiteIndex: bond.from, toSiteIndex: bond.to, fromRef, toRef, start, end })];
     });
 
   const vectors = payload.scene.lattice.vectors;
@@ -53,6 +56,8 @@ export function mapViewerSceneForRenderer(payload: unknown): MappingResult {
     atoms: Object.freeze(atoms),
     bonds: Object.freeze(bonds),
     lattice: Object.freeze({ matrix: latticeMatrix }),
+    displayLattice: Object.freeze({ matrix: latticeMatrix }),
+    supercellRepeat: Object.freeze([1,1,1]) as ImageOffset,
     source: Object.freeze({
       resourceId: safeText(source.resource_id),
       filename: safeText(source.filename),

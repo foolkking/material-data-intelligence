@@ -1839,5 +1839,18 @@
 - [x] Seven-finding npm audit disposition.
 
 ### Remaining
-- [ ] Minimum-image periodic measurement and periodic image selection.
-- [ ] Supercell, advanced neighbor inference, trajectory, phonon, Brillouin and volumetric capabilities.
+- [x] Minimum-image periodic measurement and periodic image selection completed in Phase 10F-17.
+- [x] Bounded renderer-local supercell completed in Phase 10F-17.
+- [ ] Advanced neighbor inference, trajectory, phonon, Brillouin and volumetric capabilities.
+
+## 2026-07-12 Phase 10F-17 Periodic Crystal Inspection
+
+### Done
+- [x] Periodic site identity and replica picking.
+- [x] Triclinic-validated bounded minimum-image distance, periodic angle, and periodic dihedral.
+- [x] Renderer-local bounded `1x1x1` to `3x3x3` supercells and derived caps.
+- [x] Live browser, mobile, performance, network, and security evidence.
+
+### Remaining
+- [ ] Canonical cross-boundary bond endpoint representation.
+- [ ] Authoritative neighbor inference, trajectory, phonon, Brillouin, and volumetric capabilities.

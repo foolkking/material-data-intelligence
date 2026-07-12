@@ -3385,3 +3385,19 @@ measurement tools or modify the canonical viewer artifact.
 - The scientific inspection baseline is available without changing planner/runtime authority.
 - Measurement history is session-local and capped at twenty.
 - Phase 10D artifacts remain JSON-only; npm audit debt remains explicitly owned and reviewed.
+
+# 2026-07-12 Phase 10F-17 ADR: periodic identity is renderer-local and explicit
+
+## Decision
+
+Represent every displayed atom as a canonical site index plus bounded integer
+image offset. Use a finite exact minimum-image search with deterministic ties.
+Keep supercells and resolved images in frontend view state rather than modifying
+`viewer_scene.v1` or creating backend resources.
+
+## Consequences
+
+- Replica picking and measurements are replayable and do not depend on Three.js ids.
+- Triclinic minimum-image behavior is independently testable.
+- Derived GPU work is bounded and over-cap requests fail without truncation.
+- Cross-boundary bonds remain partial until the canonical contract can identify endpoint images.

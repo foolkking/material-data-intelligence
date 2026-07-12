@@ -23,6 +23,7 @@ function fakeEngine(dispose = vi.fn()) {
     drawingBuffer: [720, 480],
     graphicsContext: "webgl2",
     rendererVersion: "185",
+    selectedSites: [],
     selectedSiteIndices: [],
     siteScreenPositions: [],
     metrics: {
@@ -54,6 +55,55 @@ function fakeEngine(dispose = vi.fn()) {
 }
 
 describe("ViewerSceneRendererSurface", () => {
+  it("distinguishes displayed and minimum-image boundary measurements", async () => {
+    const boundary = structuredClone(multiSpeciesScene) as Record<string, any>;
+    boundary.scene.lattice.vectors = [[10,0,0],[0,10,0],[0,0,10]];
+    boundary.scene.sites[0].frac = [0.98,0,0]; boundary.scene.sites[0].xyz = [9.8,0,0];
+    boundary.scene.sites[1].frac = [0.02,0,0]; boundary.scene.sites[1].xyz = [0.2,0,0];
+    let args: Parameters<ViewerRendererEngineFactory>[0] | undefined;
+    render(<ViewerSceneRendererSurface payload={boundary} capabilityOverride engineFactory={async (value) => { args=value; return fakeEngine(); }} />);
+    await waitFor(() => expect(args).toBeTruthy());
+    await userEvent.click(screen.getByRole("button", {name:"Distance"}));
+    act(() => { args?.onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}); args?.onSitePick?.({siteIndex:1,imageOffset:[0,0,0]}); });
+    expect(screen.getByTestId("viewer-measurement-result").textContent).toContain("9.600");
+    await userEvent.click(screen.getByRole("button", {name:"Minimum image (periodic)"}));
+    act(() => { args?.onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}); args?.onSitePick?.({siteIndex:1,imageOffset:[0,0,0]}); });
+    expect(screen.getByTestId("viewer-measurement-result").textContent).toContain("0.400");
+    expect(screen.getByTestId("viewer-periodic-measurement-offsets").textContent).toContain("1@[1,0,0]");
+  });
+
+  it("derives a bounded supercell and exposes periodic replica identity", async () => {
+    const scenes: Parameters<ViewerRendererEngineFactory>[0]["scene"][]=[];
+    let latest: Parameters<ViewerRendererEngineFactory>[0] | undefined;
+    render(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={async (args) => { latest=args; scenes.push(args.scene); return fakeEngine(); }} />);
+    await waitFor(() => expect(scenes).toHaveLength(1));
+    fireEvent.change(screen.getByTestId("viewer-supercell-x"), {target:{value:"2"}});
+    fireEvent.change(screen.getByTestId("viewer-supercell-y"), {target:{value:"2"}});
+    fireEvent.change(screen.getByTestId("viewer-supercell-z"), {target:{value:"2"}});
+    await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
+    await waitFor(() => expect(scenes.at(-1)?.atoms).toHaveLength(16));
+    const replica=scenes.at(-1)?.atoms.find((atom)=>atom.siteIndex===1&&atom.ref.imageOffset[0]===1);
+    expect(replica).toBeTruthy();
+    act(()=>latest?.onSitePick?.(replica!.ref));
+    expect(screen.getByTestId("viewer-selected-site-index").textContent).toBe("1");
+    expect(screen.getByTestId("viewer-selected-site-image-offset").textContent).toContain("1, 0, 0");
+    expect(screen.getByText("Jump to primary image")).toBeTruthy();
+  });
+
+  it("refuses an over-cap derived supercell without replacing the current renderer", async () => {
+    const large = structuredClone(minimalScene) as Record<string, any>;
+    large.scene.sites = Array.from({length:256}, (_, index) => ({...large.scene.sites[0], index, label:`Si${index + 1}`, xyz:[index % 8, Math.floor(index / 8) % 8, Math.floor(index / 64)], frac:[(index % 8) / 8, (Math.floor(index / 8) % 8) / 8, Math.floor(index / 64) / 4]}));
+    large.metadata.site_count = 256;
+    const factory = vi.fn(async () => fakeEngine()) satisfies ViewerRendererEngineFactory;
+    render(<ViewerSceneRendererSurface payload={large} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(factory).toHaveBeenCalledOnce());
+    for (const axis of ["x","y","z"] as const) fireEvent.change(screen.getByTestId(`viewer-supercell-${axis}`), {target:{value:"3"}});
+    await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
+    expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("requested 6912 sites");
+    expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("limits are 2048");
+    expect(factory).toHaveBeenCalledOnce();
+  });
+
   it("initializes a validated scene and exposes accessible controls", async () => {
     const engine = fakeEngine();
     const factory = vi.fn(async () => engine) satisfies ViewerRendererEngineFactory;
@@ -80,15 +130,15 @@ describe("ViewerSceneRendererSurface", () => {
     render(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={factory} />);
     await waitFor(() => expect(factory).toHaveBeenCalledOnce());
     const onSitePick = engineArgs?.onSitePick;
-    act(() => onSitePick?.(0));
+    act(() => onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}));
     expect(screen.getByTestId("viewer-selected-site-index").textContent).toContain("0");
     expect(screen.getByTestId("viewer-selected-site-cartesian").textContent).toContain("0, 0, 0");
     await user.click(screen.getByRole("button", { name: "Copy site JSON" }));
     expect(writeText).toHaveBeenCalledOnce();
     await user.click(screen.getByRole("button", { name: "Distance" }));
-    act(() => { onSitePick?.(0); onSitePick?.(1); });
+    act(() => { onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}); onSitePick?.({siteIndex:1,imageOffset:[0,0,0]}); });
     await waitFor(() => expect(screen.getByTestId("viewer-measurement-result").textContent).toContain("distance"));
-    expect(engine.setSelection).toHaveBeenLastCalledWith([0, 1]);
+    expect(engine.setSelection).toHaveBeenLastCalledWith([{siteIndex:0,imageOffset:[0,0,0]}, {siteIndex:1,imageOffset:[0,0,0]}]);
     delete (navigator as unknown as { clipboard?: unknown }).clipboard;
   });
 

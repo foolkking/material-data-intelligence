@@ -641,3 +641,9 @@
 - The seven npm audit nodes require review during the next compatible Next/Vitest upgrade; none is newly renderer-reachable.
 - Phase 10D legacy removal remains deferred until a separate migration/deprecation decision.
 - Future adapter work must preserve inert JSON artifact boundaries and must not introduce renderer execution.
+
+## 2026-07-12 Phase 10F-17 Follow-ups
+
+- Decide whether canonical bonds need optional endpoint image offsets; current renderer intentionally supports same-cell replication only.
+- Periodic identity and bounded supercells provide partial foundations for trajectory and phonon animation, but no time/frame contract exists.
+- Persisted supercells, structure mutation, minimum-image chemical inference, CrystalNN/VoronoiNN, defects, surfaces, and volumetric data remain open.

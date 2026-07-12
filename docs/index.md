@@ -177,3 +177,18 @@
 | [`phase10f/phase10f16_browser_api_evidence.md`](phase10f/phase10f16_browser_api_evidence.md) | Live job and multi-browser inspection evidence |
 | [`phase10f/phase10f16_readiness_matrix.md`](phase10f/phase10f16_readiness_matrix.md) | Scientific inspection readiness decisions |
 | [`phase10f/evidence/phase10f16_scientific_structure_inspection/`](phase10f/evidence/phase10f16_scientific_structure_inspection/) | Live artifacts, measurements, PNG, browser and security evidence |
+| [`phase10f/phase10f17_integrated_plan.md`](phase10f/phase10f17_integrated_plan.md) | Periodic inspection integrated plan |
+| [`phase10f/phase10f17_periodic_identity_contract.md`](phase10f/phase10f17_periodic_identity_contract.md) | Canonical site plus image-offset identity |
+| [`phase10f/phase10f17_lattice_math_policy.md`](phase10f/phase10f17_lattice_math_policy.md) | Row-vector lattice conversion and rejection policy |
+| [`phase10f/phase10f17_minimum_image_algorithm.md`](phase10f/phase10f17_minimum_image_algorithm.md) | Bounded exact minimum-image search |
+| [`phase10f/phase10f17_periodic_measurement_semantics.md`](phase10f/phase10f17_periodic_measurement_semantics.md) | Periodic distance, angle, and dihedral rules |
+| [`phase10f/phase10f17_supercell_policy.md`](phase10f/phase10f17_supercell_policy.md) | Renderer-local bounded supercell policy |
+| [`phase10f/phase10f17_periodic_bond_audit.md`](phase10f/phase10f17_periodic_bond_audit.md) | Same-cell replication and cross-boundary contract gap |
+| [`phase10f/phase10f17_resource_cap_plan.md`](phase10f/phase10f17_resource_cap_plan.md) | Derived periodic resource caps |
+| [`phase10f/phase10f17_implementation.md`](phase10f/phase10f17_implementation.md) | Periodic renderer implementation summary |
+| [`phase10f/phase10f17_mathematical_audit.md`](phase10f/phase10f17_mathematical_audit.md) | Triclinic reference audit |
+| [`phase10f/phase10f17_performance_review.md`](phase10f/phase10f17_performance_review.md) | Supercell performance review |
+| [`phase10f/phase10f17_security_review.md`](phase10f/phase10f17_security_review.md) | Numeric, GPU, and network security review |
+| [`phase10f/phase10f17_browser_api_evidence.md`](phase10f/phase10f17_browser_api_evidence.md) | Live browser/API evidence procedure |
+| [`phase10f/phase10f17_readiness_matrix.md`](phase10f/phase10f17_readiness_matrix.md) | Phase 10F-17 readiness decisions |
+| [`phase10f/evidence/phase10f17_periodic_crystal_inspection/`](phase10f/evidence/phase10f17_periodic_crystal_inspection/) | Live artifacts, references, metrics, browser and screenshot evidence |

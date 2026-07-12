@@ -4,12 +4,13 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
-const EVIDENCE = path.join(ROOT, "docs/phase10f/evidence/phase10f16_scientific_structure_inspection");
+const EVIDENCE = path.join(ROOT, process.env.MDI_INSPECTION_EVIDENCE_DIR || "docs/phase10f/evidence/phase10f16_scientific_structure_inspection");
 const SCREENSHOTS = path.join(EVIDENCE, "screenshots");
 const PLAYWRIGHT = process.env.MDI_PLAYWRIGHT_MODULE || "E:/mdi-playwright-runner/node_modules/playwright/index.mjs";
 const CHROME = process.env.MDI_BROWSER_EXECUTABLE || "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe";
 const PORT = Number(process.env.MDI_VIEWER_INSPECTION_EVIDENCE_PORT || "3051");
 const ORIGIN = `http://127.0.0.1:${PORT}`;
+const PERIODIC_MODE = process.env.MDI_PERIODIC_EVIDENCE === "1";
 let payload;
 let activeCase = "measurement_crystal";
 let activeMode = "live";
@@ -39,8 +40,8 @@ async function main() {
       }
     }
     if (results.some((result) => !result.pass || result.externalRequests !== 0)) throw new Error(`inspection matrix failed: ${JSON.stringify(results)}`);
-    await write("browser/browser_matrix.json", { schema_version: "phase10f16.inspection_browser_matrix.v1", results });
-    await write("browser/network_snapshot.json", { external_request_count: 0, result: "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS" });
+    await write("browser/browser_matrix.json", { schema_version: PERIODIC_MODE ? "phase10f17.periodic_browser_matrix.v1" : "phase10f16.inspection_browser_matrix.v1", results });
+    await write("browser/network_snapshot.json", { external_request_count: 0, result: PERIODIC_MODE ? "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS" : "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS" });
     await write("browser/console_snapshot.json", { errors: results.flatMap((result) => result.consoleErrors), page_errors: results.flatMap((result) => result.pageErrors) });
     await write("evidence_manifest.json", manifest(results));
     await writeFile(path.join(EVIDENCE, "README.md"), readme(results), "utf-8");
@@ -49,6 +50,13 @@ async function main() {
     console.log("VIEWER_SCENE_EXPORT_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_LEGACY_GUIDANCE_EVIDENCE_PASS");
     console.log("NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS");
+    if (PERIODIC_MODE) {
+      console.log("VIEWER_SCENE_PERIODIC_INSPECTION_BROWSER_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_MINIMUM_IMAGE_MEASUREMENT_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_SUPERCELL_BROWSER_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_PERIODIC_PERFORMANCE_EVIDENCE_PASS");
+      console.log("NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS");
+    }
   } finally {
     if (server) { server.kill(); await stopPort(); }
   }
@@ -90,6 +98,8 @@ async function inspectBrowser(browser, browserId) {
   const dihedral = await measurement(page, "dihedral");
   if (browserId === "chromium") await page.screenshot({ path: path.join(SCREENSHOTS, "chromium_dihedral.png"), fullPage: true });
 
+  const periodic = PERIODIC_MODE ? await periodicCase(page, browserId) : null;
+
   let png = null;
   let artifactDownloads = null;
   if (browserId === "chromium") {
@@ -99,7 +109,7 @@ async function inspectBrowser(browser, browserId) {
     await download.saveAs(pngPath);
     const bytes = await readFile(pngPath);
     const validSignature = bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
-    if (!validSignature || bytes.length < 1000 || !/structure-viewer\.png$/.test(download.suggestedFilename())) throw new Error("PNG export audit failed");
+    if (!validSignature || bytes.length < 1000 || !/structure-viewer(?:-1x1x1)?\.png$/.test(download.suggestedFilename())) throw new Error("PNG export audit failed");
     png = { filename: download.suggestedFilename(), bytes: bytes.length, validSignature };
     await write("export/png_export_audit.json", { ...png, local_only: true, max_dimensions: [4096, 4096], external_requests: 0 });
     artifactDownloads = [];
@@ -129,7 +139,35 @@ async function inspectBrowser(browser, browserId) {
   const security = await auditPage(page, audit);
   await page.close();
   await context.close();
-  return { browser: browserId, version: browser.version(), pass: true, inspector, distance, angle, dihedral, png, artifactDownloads, mobile, legacy, lifecycle: { selectionCleared: cleared, canvasCount: 1 }, externalRequests: security.external, consoleErrors: security.consoleErrors, pageErrors: audit.pageErrors };
+  return { browser: browserId, version: browser.version(), pass: true, inspector, distance, angle, dihedral, periodic, png, artifactDownloads, mobile, legacy, lifecycle: { selectionCleared: cleared, canvasCount: 1 }, externalRequests: security.external, consoleErrors: security.consoleErrors, pageErrors: audit.pageErrors };
+}
+
+async function periodicCase(page, browserId) {
+  await page.getByRole("button", { name: "Distance" }).click();
+  await page.getByRole("button", { name: "Minimum image (periodic)" }).click();
+  await pickMany(page, [0, 1]);
+  const result = await measurement(page, "distance");
+  const offsets = await page.getByTestId("viewer-periodic-measurement-offsets").innerText();
+  if (!offsets.includes("@[")) throw new Error("periodic image offsets missing");
+  for (const [axis, value] of [["x","2"],["y","2"],["z","2"]]) await page.getByTestId(`viewer-supercell-${axis}`).fill(value);
+  await page.getByTestId("viewer-supercell-apply").click();
+  await page.waitForFunction(() => window.__mdiViewerSceneRendererEvidence?.atomCount === 32, null, { timeout: 20_000 });
+  const doubled = await snapshot(page);
+  const replica = doubled.siteScreenPositions.find((item) => item.ref?.imageOffset?.join(",") === "1,0,0");
+  const box = await page.getByTestId("viewer-scene-renderer-canvas").boundingBox();
+  if (!replica || !box) throw new Error("periodic replica projection unavailable");
+  await page.mouse.click(box.x + replica.x, box.y + replica.y);
+  await page.waitForFunction(() => document.querySelector('[data-testid="viewer-selected-site-image-offset"]')?.textContent?.includes("1, 0, 0"));
+  if (browserId === "chromium") await page.screenshot({ path: path.join(SCREENSHOTS, "chromium_periodic_replica_2x2x2.png"), fullPage: true });
+  for (const axis of ["x","y","z"]) await page.getByTestId(`viewer-supercell-${axis}`).fill("3");
+  const applyStarted = Date.now();
+  await page.getByTestId("viewer-supercell-apply").click();
+  await page.waitForFunction(() => window.__mdiViewerSceneRendererEvidence?.atomCount === 108, null, { timeout: 20_000 });
+  const tripled = await snapshot(page);
+  if (browserId === "chromium") await page.screenshot({ path: path.join(SCREENSHOTS, "chromium_supercell_3x3x3.png"), fullPage: true });
+  await page.getByTestId("viewer-supercell-reset").click();
+  await page.waitForFunction(() => window.__mdiViewerSceneRendererEvidence?.atomCount === 4, null, { timeout: 20_000 });
+  return { result, offsets, two_by_two_by_two: { atoms: doubled.atomCount, metrics: doubled.metrics }, three_by_three_by_three: { atoms: tripled.atomCount, metrics: tripled.metrics, apply_ms: Date.now() - applyStarted }, reset_atoms: (await snapshot(page)).atomCount };
 }
 
 async function mobileCase(browser) {
@@ -139,7 +177,14 @@ async function mobileCase(browser) {
   const audit = { external: [], console: [], pageErrors: [], failedResponses: [] };
   const page = await evidencePage(context, audit);
   await productFlow(page); await openRenderer(page);
-  const site = (await snapshot(page)).siteScreenPositions[0];
+  const initialMobileCount = (await snapshot(page)).atomCount;
+  if (PERIODIC_MODE) {
+    await page.getByTestId("viewer-supercell-x").fill("2");
+    await page.getByTestId("viewer-supercell-apply").click();
+    await page.waitForFunction((expected) => window.__mdiViewerSceneRendererEvidence?.atomCount === expected, initialMobileCount * 2, { timeout: 20_000 });
+  }
+  const mobileSnapshot = await snapshot(page);
+  const site = PERIODIC_MODE ? mobileSnapshot.siteScreenPositions.find((item) => item.ref?.imageOffset?.join(",") === "1,0,0") : mobileSnapshot.siteScreenPositions[0];
   const box = await page.getByTestId("viewer-scene-renderer-canvas").boundingBox();
   if (!site || !box) throw new Error("mobile picking coordinates unavailable");
   await page.touchscreen.tap(box.x + site.x, box.y + site.y);
@@ -148,7 +193,7 @@ async function mobileCase(browser) {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
   if (overflow) throw new Error("mobile inspection overflow");
   await page.screenshot({ path: path.join(SCREENSHOTS, "chromium_mobile_atom_selection.png"), fullPage: false });
-  const result = { selected: await page.getByTestId("viewer-selected-site-index").innerText(), overflow, external: (await auditPage(page, audit)).external };
+  const result = { selected: await page.getByTestId("viewer-selected-site-index").innerText(), imageOffset: await page.getByTestId("viewer-selected-site-image-offset").innerText(), supercellAtoms: mobileSnapshot.atomCount, overflow, external: (await auditPage(page, audit)).external };
   await page.close(); await context.close();
   return result;
 }
@@ -263,7 +308,8 @@ function artifacts(source) {
 }
 
 function generatePayload() {
-  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", "docs/phase10f/evidence/phase10f16_scientific_structure_inspection"], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1", MDI_INCLUDE_INSPECTION_CASES: "1" } });
+  const output = process.env.MDI_INSPECTION_EVIDENCE_DIR || "docs/phase10f/evidence/phase10f16_scientific_structure_inspection";
+  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", output], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1", MDI_INCLUDE_INSPECTION_CASES: "1" } });
   if (result.status !== 0) throw new Error(`inspection payload generation failed\n${result.stdout}\n${result.stderr}`);
   process.stdout.write(result.stdout);
 }
@@ -280,7 +326,7 @@ async function ensureServer() { try { if ((await fetch(ORIGIN)).ok) return null;
 async function waitForApp() { const end = Date.now() + 60_000; while (Date.now() < end) { try { if ((await fetch(ORIGIN)).ok) return; } catch {} await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error("inspection app timeout"); }
 async function stopPort() { if (process.platform !== "win32") return; const ps = `$c=Get-NetTCPConnection -LocalPort ${PORT} -State Listen -ErrorAction SilentlyContinue; if($c){$c|%{if($_.OwningProcess){Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue}}}`; await new Promise((resolve) => { const child = spawn("powershell.exe", ["-NoProfile", "-Command", ps], { stdio: "ignore" }); child.on("exit", resolve); child.on("error", resolve); }); }
 async function write(relative, value) { const file = path.join(EVIDENCE, relative); await mkdir(path.dirname(file), { recursive: true }); await writeFile(file, `${JSON.stringify(value, null, 2)}\n`, "utf-8"); }
-function manifest(results) { return { schema_version: "phase10f16.scientific_inspection_evidence.v1", baseline_head: "1be7689c2d8881b0fb9f2f67360da7cf2d795703", formal_tool: "structure.viewer_3d", coordinate_policy: "displayed_canonical_cartesian_positions", dihedral_range: "[-180, 180]", browser_results: results.map((item) => ({ browser: item.browser, version: item.version, pass: item.pass })), network_result: "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS", markers: ["VIEWER_SCENE_SCIENTIFIC_INSPECTION_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_MEASUREMENT_EVIDENCE_PASS", "VIEWER_SCENE_EXPORT_EVIDENCE_PASS", "VIEWER_SCENE_LEGACY_GUIDANCE_EVIDENCE_PASS"], redaction: "sanitized" }; }
-function readme(results) { return `# Phase 10F-16 Scientific Structure Inspection Evidence\n\nFormal tool: \`structure.viewer_3d\`\nBrowsers: ${results.map((item) => `${item.browser}=${item.pass ? "pass" : "fail"}`).join(", ")}\nMeasurements use displayed canonical Cartesian positions.\nNetwork: \`NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS\`\n`; }
+function manifest(results) { return PERIODIC_MODE ? { schema_version: "phase10f17.periodic_crystal_inspection_evidence.v1", baseline_head: "5e7474be92e0ef75bed7a91ec5309c7fdea9e7f0", formal_tool: "structure.viewer_3d", coordinate_policies: ["displayed_positions", "minimum_image"], lattice_convention: "row_vectors", supercell: "renderer_local_bounded_1_to_3", periodic_bonds: "same_cell_replication_only", browser_results: results.map((item) => ({ browser: item.browser, version: item.version, pass: item.pass })), network_result: "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS", markers: ["VIEWER_SCENE_PERIODIC_INSPECTION_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_MINIMUM_IMAGE_MEASUREMENT_EVIDENCE_PASS", "VIEWER_SCENE_SUPERCELL_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_PERIODIC_PERFORMANCE_EVIDENCE_PASS"], redaction: "sanitized" } : { schema_version: "phase10f16.scientific_inspection_evidence.v1", baseline_head: "1be7689c2d8881b0fb9f2f67360da7cf2d795703", formal_tool: "structure.viewer_3d", coordinate_policy: "displayed_canonical_cartesian_positions", dihedral_range: "[-180, 180]", browser_results: results.map((item) => ({ browser: item.browser, version: item.version, pass: item.pass })), network_result: "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS", markers: ["VIEWER_SCENE_SCIENTIFIC_INSPECTION_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_MEASUREMENT_EVIDENCE_PASS", "VIEWER_SCENE_EXPORT_EVIDENCE_PASS", "VIEWER_SCENE_LEGACY_GUIDANCE_EVIDENCE_PASS"], redaction: "sanitized" }; }
+function readme(results) { return PERIODIC_MODE ? `# Phase 10F-17 Periodic Crystal Inspection Evidence\n\nFormal tool: \`structure.viewer_3d\`\nBrowsers: ${results.map((item) => `${item.browser}=${item.pass ? "pass" : "fail"}`).join(", ")}\nMinimum-image search is bounded and independently cross-checked against pymatgen. Supercells are renderer-local.\nNetwork: \`NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS\`\n` : `# Phase 10F-16 Scientific Structure Inspection Evidence\n\nFormal tool: \`structure.viewer_3d\`\nBrowsers: ${results.map((item) => `${item.browser}=${item.pass ? "pass" : "fail"}`).join(", ")}\nMeasurements use displayed canonical Cartesian positions.\nNetwork: \`NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS\`\n`; }
 
 await main();

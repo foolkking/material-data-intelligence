@@ -748,9 +748,31 @@ pre {
 }
 
 .viewer-measurement-panel,
+.viewer-supercell-controls,
 .viewer-site-inspector {
   border-top: 1px solid var(--border);
   padding-top: 12px;
+}
+
+.viewer-supercell-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px;
+}
+
+.viewer-supercell-controls label {
+  display: grid;
+  gap: 4px;
+  min-width: 64px;
+}
+
+.viewer-supercell-controls input {
+  width: 64px;
+}
+
+.viewer-supercell-controls output {
+  flex-basis: 100%;
 }
 
 .viewer-measurement-modes,

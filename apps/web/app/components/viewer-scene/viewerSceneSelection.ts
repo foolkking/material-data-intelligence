@@ -1,9 +1,12 @@
+import { periodicSiteKey } from "./viewerScenePeriodicGeometry";
+import type { PeriodicSiteRef } from "./viewerSceneRendererTypes";
+
 export type ViewerSelectionMode = "inspect" | "distance" | "angle" | "dihedral";
 
 export type ViewerSelectionState = {
   readonly mode: ViewerSelectionMode;
-  readonly selectedSiteIndices: readonly number[];
-  readonly activeSiteIndex: number | null;
+  readonly selectedSites: readonly PeriodicSiteRef[];
+  readonly activeSite: PeriodicSiteRef | null;
 };
 
 const MODE_LIMITS: Readonly<Record<ViewerSelectionMode, number>> = Object.freeze({
@@ -14,18 +17,19 @@ const MODE_LIMITS: Readonly<Record<ViewerSelectionMode, number>> = Object.freeze
 });
 
 export function initialViewerSelection(mode: ViewerSelectionMode = "inspect"): ViewerSelectionState {
-  return Object.freeze({ mode, selectedSiteIndices: Object.freeze([]), activeSiteIndex: null });
+  return Object.freeze({ mode, selectedSites: Object.freeze([]), activeSite: null });
 }
 
-export function selectViewerSite(state: ViewerSelectionState, siteIndex: number | null): ViewerSelectionState {
-  if (siteIndex === null) return initialViewerSelection(state.mode);
-  if (!Number.isInteger(siteIndex) || siteIndex < 0) return state;
-  const existing = state.selectedSiteIndices.indexOf(siteIndex);
-  const withoutExisting = existing >= 0 ? state.selectedSiteIndices.filter((value) => value !== siteIndex) : state.selectedSiteIndices;
+export function selectViewerSite(state: ViewerSelectionState, site: PeriodicSiteRef | null): ViewerSelectionState {
+  if (site === null) return initialViewerSelection(state.mode);
+  let key: string;
+  try { key = periodicSiteKey(site); } catch { return state; }
+  const existing = state.selectedSites.findIndex((value) => periodicSiteKey(value) === key);
+  const withoutExisting = existing >= 0 ? state.selectedSites.filter((value) => periodicSiteKey(value) !== key) : state.selectedSites;
   const next = existing >= 0
     ? withoutExisting
-    : [...withoutExisting, siteIndex].slice(-MODE_LIMITS[state.mode]);
-  return Object.freeze({ mode: state.mode, selectedSiteIndices: Object.freeze(next), activeSiteIndex: next.at(-1) ?? null });
+    : [...withoutExisting, Object.freeze({ siteIndex: site.siteIndex, imageOffset: Object.freeze([...site.imageOffset]) as PeriodicSiteRef["imageOffset"] })].slice(-MODE_LIMITS[state.mode]);
+  return Object.freeze({ mode: state.mode, selectedSites: Object.freeze(next), activeSite: next.at(-1) ?? null });
 }
 
 export function changeViewerSelectionMode(_state: ViewerSelectionState, mode: ViewerSelectionMode): ViewerSelectionState {

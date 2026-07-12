@@ -1204,3 +1204,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Real Chromium, Firefox, and WebKit evidence uses formal `structure.viewer_3d` jobs and adapter-generated artifacts.
 - Canonical schema, formal tool identity, planner/runtime authority, and Phase 10D legacy artifacts remain unchanged.
 - npm audit remains seven documented findings with no newly introduced renderer-reachable issue.
+
+## 2026-07-12 Phase 10F-17 Periodic Crystal Inspection
+
+- Added stable canonical-site plus image-offset identity throughout instancing, picking, highlights, inspector, snapshots, and measurements.
+- Added bounded exact minimum-image distance and anchored periodic angle/dihedral, independently cross-checked against pymatgen including triclinic input.
+- Added renderer-local `1x1x1` through `3x3x3` supercells with 2048-site and 8192-bond derived caps.
+- Canonical artifacts and backend runtime semantics remain unchanged; cross-boundary bonds remain a documented contract gap.

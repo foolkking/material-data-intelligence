@@ -1,0 +1,220 @@
+{
+  "schema_version": "phase10f17.periodic_browser_matrix.v1",
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.201",
+      "pass": true,
+      "inspector": "Site inspector\nClear selection\nCANONICAL SITE INDEX\n0\nIMAGE OFFSET\n[0, 0, 0]\nIDENTITY\nprimary\nLABEL\nSi1\nSPECIES / ELEMENT\nSi / Si\nOCCUPANCY\n1\nFRACTIONAL\n0, 0, 0\nCANONICAL CARTESIAN (A)\n0, 0, 0\nDISPLAYED CARTESIAN (A)\n0, 0, 0\nSUPERCELL\n1 x 1 x 1\nDISPLAY RADIUS\n1\nSOURCE\nstructures\nBOND NEIGHBORS\n1 (1)\n\nNeighbors are from bounded, non-authoritative scene bonds only. Replicas are renderer-local view state.\n\nCopy coordinates\nCopy site JSON\nShow neighboring images\nClear images",
+      "distance": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "periodic": {
+        "result": "distance: 4.000 Å",
+        "offsets": "Resolved images: 0@[0,0,0]; 1@[0,0,0]",
+        "two_by_two_by_two": {
+          "atoms": 32,
+          "metrics": {
+            "atomCount": 32,
+            "bondCount": 16,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 16640,
+            "lines": 28,
+            "initializationMs": 17.4,
+            "firstFrameMs": 41.4
+          }
+        },
+        "three_by_three_by_three": {
+          "atoms": 108,
+          "metrics": {
+            "atomCount": 108,
+            "bondCount": 54,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 56160,
+            "lines": 66,
+            "initializationMs": 17.3,
+            "firstFrameMs": 38.7
+          },
+          "apply_ms": 746
+        },
+        "reset_atoms": 4
+      },
+      "png": {
+        "filename": "Si-structure-viewer-1x1x1.png",
+        "bytes": 44717,
+        "validSignature": true
+      },
+      "artifactDownloads": [
+        {
+          "button": "Download scene JSON",
+          "filename": "viewer_scene.json",
+          "bytes": 4102
+        },
+        {
+          "button": "Download manifest",
+          "filename": "viewer_scene_manifest.json",
+          "bytes": 1681
+        },
+        {
+          "button": "Download summary",
+          "filename": "summary.md",
+          "bytes": 834
+        },
+        {
+          "button": "Download recipe",
+          "filename": "recipe.json",
+          "bytes": 1902
+        }
+      ],
+      "mobile": {
+        "selected": "1",
+        "imageOffset": "[1, 0, 0]",
+        "supercellAtoms": 4,
+        "overflow": false,
+        "external": 0
+      },
+      "legacy": {
+        "notice": "Legacy viewer scene contract. Interactive rendering is unavailable; JSON remains accessible. Rerun the source structure with structure.viewer_3d to create a new canonical job. No automatic migration is performed.",
+        "rendererTabs": 0,
+        "external": 0
+      },
+      "lifecycle": {
+        "selectionCleared": true,
+        "canvasCount": 1
+      },
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "pass": true,
+      "inspector": "Site inspector\nClear selection\nCANONICAL SITE INDEX\n0\nIMAGE OFFSET\n[0, 0, 0]\nIDENTITY\nprimary\nLABEL\nSi1\nSPECIES / ELEMENT\nSi / Si\nOCCUPANCY\n1\nFRACTIONAL\n0, 0, 0\nCANONICAL CARTESIAN (A)\n0, 0, 0\nDISPLAYED CARTESIAN (A)\n0, 0, 0\nSUPERCELL\n1 x 1 x 1\nDISPLAY RADIUS\n1\nSOURCE\nstructures\nBOND NEIGHBORS\n1 (1)\n\nNeighbors are from bounded, non-authoritative scene bonds only. Replicas are renderer-local view state.\n\nCopy coordinates\nCopy site JSON\nShow neighboring images\nClear images",
+      "distance": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "periodic": {
+        "result": "distance: 4.000 Å",
+        "offsets": "Resolved images: 0@[0,0,0]; 1@[0,0,0]",
+        "two_by_two_by_two": {
+          "atoms": 32,
+          "metrics": {
+            "atomCount": 32,
+            "bondCount": 16,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 16640,
+            "lines": 28,
+            "initializationMs": 10,
+            "firstFrameMs": 70
+          }
+        },
+        "three_by_three_by_three": {
+          "atoms": 108,
+          "metrics": {
+            "atomCount": 108,
+            "bondCount": 54,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 56160,
+            "lines": 66,
+            "initializationMs": 12,
+            "firstFrameMs": 76
+          },
+          "apply_ms": 310
+        },
+        "reset_atoms": 4
+      },
+      "png": null,
+      "artifactDownloads": null,
+      "mobile": null,
+      "legacy": null,
+      "lifecycle": {
+        "selectionCleared": true,
+        "canvasCount": 1
+      },
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "pass": true,
+      "inspector": "Site inspector\nClear selection\nCANONICAL SITE INDEX\n0\nIMAGE OFFSET\n[0, 0, 0]\nIDENTITY\nprimary\nLABEL\nSi1\nSPECIES / ELEMENT\nSi / Si\nOCCUPANCY\n1\nFRACTIONAL\n0, 0, 0\nCANONICAL CARTESIAN (A)\n0, 0, 0\nDISPLAYED CARTESIAN (A)\n0, 0, 0\nSUPERCELL\n1 x 1 x 1\nDISPLAY RADIUS\n1\nSOURCE\nstructures\nBOND NEIGHBORS\n1 (1)\nNeighbors are from bounded, non-authoritative scene bonds only. Replicas are renderer-local view state.\nCopy coordinates\nCopy site JSON\nShow neighboring images\nClear images\n",
+      "distance": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "periodic": {
+        "result": "distance: 4.000 Å",
+        "offsets": "Resolved images: 0@[0,0,0]; 1@[0,0,0]",
+        "two_by_two_by_two": {
+          "atoms": 32,
+          "metrics": {
+            "atomCount": 32,
+            "bondCount": 16,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 16640,
+            "lines": 28,
+            "initializationMs": 18,
+            "firstFrameMs": 80
+          }
+        },
+        "three_by_three_by_three": {
+          "atoms": 108,
+          "metrics": {
+            "atomCount": 108,
+            "bondCount": 54,
+            "speciesCount": 1,
+            "instancedMeshCount": 1,
+            "latticeEdgeCount": 12,
+            "drawCalls": 3,
+            "geometries": 3,
+            "materials": 3,
+            "triangles": 56160,
+            "lines": 66,
+            "initializationMs": 22,
+            "firstFrameMs": 82
+          },
+          "apply_ms": 851
+        },
+        "reset_atoms": 4
+      },
+      "png": null,
+      "artifactDownloads": null,
+      "mobile": null,
+      "legacy": null,
+      "lifecycle": {
+        "selectionCleared": true,
+        "canvasCount": 1
+      },
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": "phase10f17.periodic_reference.v1",
+  "matrix_convention": "row lattice vectors; cartesian = fractional[0]*a + fractional[1]*b + fractional[2]*c",
+  "reference": "pymatgen.core.Lattice.get_distance_and_image",
+  "cases": [
+    {
+      "id": "orthogonal_boundary",
+      "lattice": [[10, 0, 0], [0, 10, 0], [0, 0, 10]],
+      "source_fractional": [0.98, 0, 0],
+      "target_fractional": [0.02, 0, 0],
+      "distance": 0.3999999999999986,
+      "image_offset": [1, 0, 0]
+    },
+    {
+      "id": "skewed_component_wrap_counterexample",
+      "lattice": [[1, 0, 0], [0.9, 0.2, 0], [0, 0, 1]],
+      "source_fractional": [0, 0, 0],
+      "target_fractional": [0.49, 0.49, 0],
+      "distance": 0.10660675400742685,
+      "image_offset": [0, -1, 0]
+    },
+    {
+      "id": "triclinic_general",
+      "lattice": [[4, 0, 0], [1.2, 3.1, 0], [0.7, 0.4, 2.6]],
+      "source_fractional": [0.91, 0.13, 0.77],
+      "target_fractional": [0.08, 0.89, 0.12],
+      "distance": 1.2643911578305191,
+      "image_offset": [1, -1, 1]
+    }
+  ]
+}

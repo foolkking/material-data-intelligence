@@ -4,13 +4,14 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { cameraFrame, latticeEdges } from "./viewerSceneRendererGeometry";
 import { assertViewerExportDimensions } from "./viewerSceneExport";
 import { ViewerRendererError } from "./viewerSceneRendererErrors";
-import type { RenderVector3, ViewerRendererEngine, ViewerRendererSnapshot, ValidatedRenderScene } from "./viewerSceneRendererTypes";
+import { periodicSiteKey } from "./viewerScenePeriodicGeometry";
+import type { PeriodicSiteRef, RenderVector3, ViewerRendererEngine, ViewerRendererSnapshot, ValidatedRenderScene } from "./viewerSceneRendererTypes";
 
 export async function createThreeViewerEngine(args: {
   readonly container: HTMLElement;
   readonly scene: ValidatedRenderScene;
   readonly onContextLost: () => void;
-  readonly onSitePick?: (siteIndex: number | null) => void;
+  readonly onSitePick?: (site: PeriodicSiteRef | null) => void;
   readonly pixelRatioCap: number;
 }): Promise<ViewerRendererEngine> {
   const startedAt = performance.now();
@@ -59,7 +60,7 @@ export async function createThreeViewerEngine(args: {
     atomGroups.set(key, Object.freeze([...(atomGroups.get(key) ?? []), atom]));
   }
   const atomMeshes: THREE.InstancedMesh[] = [];
-  const atomsByIndex = new Map(scene.atoms.map((atom) => [atom.siteIndex, atom] as const));
+  const atomsByKey = new Map(scene.atoms.map((atom) => [periodicSiteKey(atom.ref), atom] as const));
   const transform = new THREE.Matrix4();
   for (const [groupKey, atoms] of [...atomGroups.entries()].sort(([left], [right]) => left.localeCompare(right))) {
     const color = atoms[0].color;
@@ -81,7 +82,7 @@ export async function createThreeViewerEngine(args: {
     mesh.instanceMatrix.needsUpdate = true;
     mesh.computeBoundingBox();
     mesh.computeBoundingSphere();
-    mesh.userData = { siteIndices: atoms.map((atom) => atom.siteIndex), species: atoms[0].species };
+    mesh.userData = { periodicRefs: atoms.map((atom) => atom.ref), species: atoms[0].species };
     atomMeshes.push(mesh);
     root.add(mesh);
   }
@@ -92,7 +93,7 @@ export async function createThreeViewerEngine(args: {
   bondLines.name = "bounded-non-authoritative-bonds";
   root.add(bondLines);
 
-  const cellGeometry = lineGeometry(latticeEdges(scene.lattice.matrix).flatMap((edge) => [edge[0], edge[1]]));
+  const cellGeometry = lineGeometry(latticeEdges(scene.displayLattice.matrix).flatMap((edge) => [edge[0], edge[1]]));
   const cellMaterial = new THREE.LineBasicMaterial({ color: 0x1f6f8b, transparent: true, opacity: 0.9 });
   const cellLines = new THREE.LineSegments(cellGeometry, cellMaterial);
   cellLines.name = "unit-cell";
@@ -115,7 +116,7 @@ export async function createThreeViewerEngine(args: {
   measurementLines.renderOrder = 19;
   measurementLines.visible = false;
   root.add(measurementLines);
-  let selectedSiteIndices: readonly number[] = Object.freeze([]);
+  let selectedSites: readonly PeriodicSiteRef[] = Object.freeze([]);
 
   const ambient = new THREE.AmbientLight(0xffffff, 1.35);
   const key = new THREE.DirectionalLight(0xffffff, 2.25);
@@ -174,9 +175,9 @@ export async function createThreeViewerEngine(args: {
       onSitePick?.(null);
       return;
     }
-    const siteIndices = (hit.object as THREE.InstancedMesh).userData.siteIndices;
-    const siteIndex = Array.isArray(siteIndices) ? siteIndices[hit.instanceId] : undefined;
-    onSitePick?.(Number.isInteger(siteIndex) ? siteIndex : null);
+    const periodicRefs = (hit.object as THREE.InstancedMesh).userData.periodicRefs;
+    const ref = Array.isArray(periodicRefs) ? periodicRefs[hit.instanceId] as PeriodicSiteRef | undefined : undefined;
+    onSitePick?.(ref && atomsByKey.has(periodicSiteKey(ref)) ? ref : null);
   };
   const onPointerCancel = () => { pointerStart = null; };
   renderer.domElement.addEventListener("pointerdown", onPointerDown);
@@ -210,10 +211,12 @@ export async function createThreeViewerEngine(args: {
     drawingBuffer: Object.freeze([renderer.domElement.width, renderer.domElement.height] as const),
     graphicsContext,
     rendererVersion: THREE.REVISION,
-    selectedSiteIndices: Object.freeze([...selectedSiteIndices]),
+    selectedSites: Object.freeze([...selectedSites]),
+    selectedSiteIndices: Object.freeze(selectedSites.map((site) => site.siteIndex)),
     siteScreenPositions: Object.freeze(scene.atoms.map((atom) => {
       const projected = new THREE.Vector3(...atom.position).project(camera);
       return Object.freeze({
+        ref: atom.ref,
         siteIndex: atom.siteIndex,
         x: round((projected.x + 1) * 0.5 * renderer.domElement.clientWidth),
         y: round((1 - projected.y) * 0.5 * renderer.domElement.clientHeight),
@@ -239,10 +242,11 @@ export async function createThreeViewerEngine(args: {
   };
   render();
 
-  const setSelection = (siteIndices: readonly number[]) => {
-    selectedSiteIndices = Object.freeze(siteIndices.filter((siteIndex, index) => index < 4 && atomsByIndex.has(siteIndex)));
+  const setSelection = (sites: readonly PeriodicSiteRef[]) => {
+    selectedSites = Object.freeze(sites.filter((site, index) => index < 4 && atomsByKey.has(periodicSiteKey(site))));
     highlightMeshes.forEach((mesh, index) => {
-      const atom = atomsByIndex.get(selectedSiteIndices[index]);
+      const selected = selectedSites[index];
+      const atom = selected ? atomsByKey.get(periodicSiteKey(selected)) : undefined;
       mesh.visible = Boolean(atom);
       if (atom) {
         mesh.position.set(...atom.position);
@@ -250,13 +254,13 @@ export async function createThreeViewerEngine(args: {
         mesh.scale.set(scale, scale, scale);
       }
     });
-    const points = selectedSiteIndices.flatMap((siteIndex) => {
-      const atom = atomsByIndex.get(siteIndex);
+    const points = selectedSites.flatMap((site) => {
+      const atom = atomsByKey.get(periodicSiteKey(site));
       return atom ? [...atom.position] : [];
     });
     measurementGeometry.setAttribute("position", new THREE.Float32BufferAttribute(points, 3));
     measurementGeometry.computeBoundingSphere();
-    measurementLines.visible = selectedSiteIndices.length >= 2;
+    measurementLines.visible = selectedSites.length >= 2;
     render();
   };
 
