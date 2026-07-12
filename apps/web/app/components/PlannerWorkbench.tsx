@@ -1340,6 +1340,8 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
   const viewerManifest = artifacts.find(isViewerManifestArtifact);
   const scenePayload = viewerScene ? artifactPayload(viewerScene) : null;
   const canonicalScene = isViewerSceneV1Payload(scenePayload);
+  const summaryArtifact = artifacts.find((artifact) => artifact.name === "summary.md" || artifact.type === "summary_md");
+  const recipeArtifact = artifacts.find((artifact) => artifact.name === "recipe.json" || artifact.type === "recipe_json");
   const [activePreview, setActivePreview] = useState<"renderer" | "json" | "manifest">("json");
   if (!viewerScene && !viewerManifest) return null;
   if (!canonicalScene) {
@@ -1347,7 +1349,7 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
     return (
       <section className="panel viewer-static-preview" data-testid="viewer-static-preview-panel">
         <PanelHeading title="Viewer static preview" badge="JSON only" />
-        {legacyScene ? <p className="notice" data-testid="viewer-scene-legacy-notice">Legacy viewer scene contract. Rerun with the 3D Structure Viewer to generate the canonical scene; no automatic migration is performed.</p> : null}
+        {legacyScene ? <p className="notice" data-testid="viewer-scene-legacy-notice"><strong>Legacy viewer scene contract.</strong> Interactive rendering is unavailable; JSON remains accessible. Rerun the source structure with <code>structure.viewer_3d</code> to create a new canonical job. No automatic migration is performed.</p> : null}
         <div className="viewer-preview-grid">
           {viewerScene ? <ViewerScenePreview artifact={viewerScene} /> : <ViewerMissingPreview title="viewer_scene.json" />}
           {viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : <ViewerMissingPreview title="viewer_assets_manifest.json" />}
@@ -1364,7 +1366,7 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
         <button type="button" role="tab" aria-selected={activePreview === "manifest"} className={activePreview === "manifest" ? "active" : "secondary"} onClick={() => setActivePreview("manifest")}>Manifest</button>
       </div>
       <div className="viewer-preview-tab-panel" role="tabpanel">
-        {activePreview === "renderer" ? <ViewerSceneRendererSurface payload={scenePayload} /> : null}
+        {activePreview === "renderer" ? <ViewerSceneRendererSurface payload={scenePayload} downloads={{ manifest: viewerManifest ? artifactPayload(viewerManifest) : undefined, summary: summaryArtifact ? artifactText(summaryArtifact) ?? undefined : undefined, recipe: recipeArtifact ? artifactPayload(recipeArtifact) : undefined }} /> : null}
         {activePreview === "json" ? (
           <div className="viewer-preview-grid">
             {viewerScene ? <ViewerScenePreview artifact={viewerScene} /> : <ViewerMissingPreview title="viewer_scene.json" />}

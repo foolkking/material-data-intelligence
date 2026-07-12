@@ -1,0 +1,18 @@
+{
+  "schema_version": "phase10f16.npm_audit_disposition.v1",
+  "registry": "official npm registry",
+  "total": 7,
+  "critical": 1,
+  "high": 1,
+  "moderate": 5,
+  "findings": [
+    {"package":"vitest","severity":"critical","chain":"direct dev","production_reachable":false,"action":"DEFERRED_WITH_OWNER","owner":"frontend tooling"},
+    {"package":"vite","severity":"high","chain":"vitest","production_reachable":false,"action":"NOT_REACHABLE"},
+    {"package":"esbuild","severity":"moderate","chain":"vitest > vite","production_reachable":false,"action":"NOT_REACHABLE"},
+    {"package":"@vitest/mocker","severity":"moderate","chain":"vitest > vite","production_reachable":false,"action":"NOT_REACHABLE"},
+    {"package":"vite-node","severity":"moderate","chain":"vitest > vite","production_reachable":false,"action":"NOT_REACHABLE"},
+    {"package":"next","severity":"moderate","chain":"direct > postcss","production_reachable":false,"action":"DEFERRED_WITH_OWNER","owner":"frontend platform"},
+    {"package":"postcss","severity":"moderate","chain":"next","production_reachable":false,"action":"NOT_REACHABLE"}
+  ],
+  "new_renderer_reachable_findings": 0
+}

@@ -1828,3 +1828,16 @@
 - [ ] Reviewer to select Phase 10F-12 scope.
 - [ ] Minimal `viewer_scene` adapter remains unimplemented.
 - [ ] Full viewer, WebGL renderer, Three.js renderer, Brillouin-zone 3D, phonon, notebooks, scripts, and external API workflows remain deferred.
+
+## 2026-07-12 Phase 10F-16 Scientific Structure Inspection
+
+### Done
+- [x] Instanced atom picking and canonical site inspector.
+- [x] Distance, angle, signed dihedral, bounded history and overlays.
+- [x] Local bounded PNG and scene/manifest/summary/recipe downloads.
+- [x] Multi-browser, mobile, lifecycle, legacy, network and export evidence.
+- [x] Seven-finding npm audit disposition.
+
+### Remaining
+- [ ] Minimum-image periodic measurement and periodic image selection.
+- [ ] Supercell, advanced neighbor inference, trajectory, phonon, Brillouin and volumetric capabilities.

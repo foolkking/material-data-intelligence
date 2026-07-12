@@ -150,6 +150,17 @@ def _case_specs() -> list[LiveCaseSpec]:
                 expected_status="completed",
             ),
         )
+    if os.environ.get("MDI_INCLUDE_INSPECTION_CASES") == "1":
+        cases.insert(
+            3,
+            LiveCaseSpec(
+                case_id="measurement_crystal",
+                prompt="Open this four-site crystal for structure inspection." if FORMAL_VIEWER_MODE else "Create canonical viewer scene data for this four-site crystal.",
+                structure_input=[_measurement_structure()],
+                params={"include_bonds": True, "bond_cutoff_angstrom": 4.1},
+                expected_status="completed",
+            ),
+        )
     return cases
 
 
@@ -418,6 +429,14 @@ def _si_structure() -> Structure:
 
 def _nacl_structure() -> Structure:
     return Structure(Lattice.cubic(5.64), ["Na", "Cl"], [[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
+
+
+def _measurement_structure() -> Structure:
+    return Structure(
+        Lattice.cubic(10.0),
+        ["Si", "Si", "Si", "Si"],
+        [[0.0, 0.0, 0.0], [0.4, 0.0, 0.0], [0.4, 0.4, 0.0], [0.0, 0.4, 0.4]],
+    )
 
 
 def _structure_profile() -> DataProfile:

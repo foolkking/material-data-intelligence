@@ -633,4 +633,11 @@
 - Phase 10F-11 closes real browser evidence for JSON-only `viewer_scene.v1` preview.
 - Phase 10F-12 remains reviewer-selected; reasonable options are minimal adapter implementation, additional preview evidence hardening, or runtime integration planning.
 - Direct full `structure.viewer_3d`, WebGL renderer, Three.js integration, and phonon implementation remain not approved.
+
+## 2026-07-12 Phase 10F-16 Follow-ups
+
+- Decide whether the next inspection increment should implement explicit periodic images/minimum-image measurements or first close npm tooling upgrades.
+- Keyboard orbit, advanced picking, measurements across periodic images, and persisted measurement reports remain open.
+- The seven npm audit nodes require review during the next compatible Next/Vitest upgrade; none is newly renderer-reachable.
+- Phase 10D legacy removal remains deferred until a separate migration/deprecation decision.
 - Future adapter work must preserve inert JSON artifact boundaries and must not introduce renderer execution.

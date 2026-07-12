@@ -14,6 +14,8 @@ describe("viewer scene renderer mapper", () => {
     expect(first.ok).toBe(true);
     if (!first.ok) return;
     expect(first.scene.atoms.map((atom) => atom.siteIndex)).toEqual([0, 1]);
+    expect(first.scene.atoms[0]).toMatchObject({ element: "Si", occupancy: 1, fractionalPosition: [0, 0, 0] });
+    expect(first.scene.source.filename).toBe("valid_optional_bonds.viewer_scene.v1.json");
     expect(first.scene.bonds.map((bond) => bond.id)).toEqual(["bond-0-1"]);
     expect(first.scene.lattice.matrix).toHaveLength(3);
     expect(Object.isFrozen(first.scene)).toBe(true);

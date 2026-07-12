@@ -5,7 +5,10 @@ export type RenderAtom = {
   readonly siteIndex: number;
   readonly species: string;
   readonly label: string;
+  readonly element: string;
+  readonly occupancy: number;
   readonly position: RenderVector3;
+  readonly fractionalPosition: RenderVector3 | null;
   readonly radius: number;
   readonly color: string;
 };
@@ -28,6 +31,12 @@ export type ValidatedRenderScene = {
   readonly atoms: readonly RenderAtom[];
   readonly bonds: readonly RenderBond[];
   readonly lattice: RenderLattice;
+  readonly source: Readonly<{
+    readonly resourceId: string;
+    readonly filename: string;
+    readonly parser: string;
+  }>;
+  readonly formula: string;
   readonly warnings: readonly string[];
 };
 
@@ -80,6 +89,8 @@ export type ViewerRendererSnapshot = {
   readonly drawingBuffer: readonly [number, number];
   readonly graphicsContext: "webgl2" | "webgl";
   readonly rendererVersion: string;
+  readonly selectedSiteIndices: readonly number[];
+  readonly siteScreenPositions: readonly Readonly<{ readonly siteIndex: number; readonly x: number; readonly y: number }>[];
   readonly metrics: ViewerRendererMetrics;
 };
 
@@ -88,6 +99,8 @@ export type ViewerRendererEngine = {
   readonly setCellVisible: (visible: boolean) => void;
   readonly setBondsVisible: (visible: boolean) => void;
   readonly render: () => void;
+  readonly setSelection: (siteIndices: readonly number[]) => void;
+  readonly exportPng: () => Promise<Blob>;
   readonly snapshot: () => ViewerRendererSnapshot;
   readonly dispose: () => void;
 };
@@ -96,5 +109,6 @@ export type ViewerRendererEngineFactory = (args: {
   readonly container: HTMLElement;
   readonly scene: ValidatedRenderScene;
   readonly onContextLost: () => void;
+  readonly onSitePick?: (siteIndex: number | null) => void;
   readonly pixelRatioCap: number;
 }) => Promise<ViewerRendererEngine>;

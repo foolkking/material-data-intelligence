@@ -3365,3 +3365,23 @@ Harden the existing `viewer_scene` preview evidence with real browser screenshot
 - The frontend preview can display inert `kind: viewer_scene` payloads even when schema validation is expected to fail.
 - Evidence confirms no canvas, iframe, WebGL marker, Three.js marker, renderer claim, or external request for covered cases.
 - Full `structure.viewer_3d`, WebGL/Three.js renderer, renderer bundle, new adapter, planner routing, and production runtime route remain unimplemented and unapproved.
+
+# 2026-07-12 Phase 10F-16 ADR: Scientific inspection remains frontend-bounded
+
+## Decision
+
+Implement picking, site inspection, displayed-position measurements, and PNG
+capture inside the independently validated frontend renderer. Do not add backend
+measurement tools or modify the canonical viewer artifact.
+
+## Rationale
+
+- Canonical site indices and coordinates already provide reproducible inputs.
+- Application-owned instance mappings, math, overlays, filenames, and limits keep artifact data inert.
+- Minimum-image semantics require an explicit periodic-image model and are deferred rather than guessed.
+
+## Consequences
+
+- The scientific inspection baseline is available without changing planner/runtime authority.
+- Measurement history is session-local and capped at twenty.
+- Phase 10D artifacts remain JSON-only; npm audit debt remains explicitly owned and reviewed.

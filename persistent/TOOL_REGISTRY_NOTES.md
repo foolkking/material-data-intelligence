@@ -981,3 +981,10 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Existing `viewer_scene.v1` preview support remains a frontend JSON-only artifact preview surface, not a runtime executable tool.
 - Real browser evidence used fixture-backed mock API responses and did not alter planner routing, QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, or Tool Registry behavior.
 - Full viewer, renderer bundle, WebGL, Three.js, Brillouin-zone 3D, phonon, notebook/script execution, and external API workflows remain out of scope.
+
+# 2026-07-12 Phase 10F-16 Scientific Inspection Notes
+
+- No Tool Registry or params schema change was made.
+- `structure.viewer_3d` remains the formal backend artifact-generation tool; picking, measurement, and PNG export are client viewer actions, not new executable tools.
+- Explicit scene JSON requests still use `structure.viewer_scene`; Phase 10D legacy tools remain direct-compatible and JSON-only.
+- Measurement prompts do not add arbitrary backend execution authority.

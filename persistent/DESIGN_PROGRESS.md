@@ -1196,3 +1196,11 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Covered valid minimal, warning/caps, invalid external-resource placeholder, invalid executable placeholder, and invalid schema-version fixtures.
 - Hardened the existing frontend JSON-only preview to show inert `viewer_scene` summary and validation details even when schema validation is expected to fail.
 - No full `structure.viewer_3d`, WebGL renderer, Three.js integration, renderer bundle, new adapter, planner routing change, runtime route, notebook, external API, or artifact JavaScript was introduced.
+
+## 2026-07-12 Phase 10F-16 Scientific Structure Inspection
+
+- Added canonical InstancedMesh atom picking, bounded A/B/C/D highlights, site inspector, bounded-bond neighbor summary, distance/angle/signed-dihedral measurement, and local PNG/artifact downloads.
+- Measurements use displayed canonical Cartesian positions; minimum-image periodic measurement remains deferred.
+- Real Chromium, Firefox, and WebKit evidence uses formal `structure.viewer_3d` jobs and adapter-generated artifacts.
+- Canonical schema, formal tool identity, planner/runtime authority, and Phase 10D legacy artifacts remain unchanged.
+- npm audit remains seven documented findings with no newly introduced renderer-reachable issue.

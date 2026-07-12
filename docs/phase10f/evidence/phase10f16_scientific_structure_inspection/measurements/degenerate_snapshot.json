@@ -1,0 +1,9 @@
+{
+  "schema_version": "phase10f16.degenerate_measurement_evidence.v1",
+  "test": "viewerSceneMeasurements.test.ts",
+  "cases": [
+    {"kind":"angle","condition":"zero-length vector","result":"DEGENERATE_MEASUREMENT"},
+    {"kind":"distance","condition":"NaN coordinate","result":"INVALID_COORDINATE"}
+  ],
+  "fabricated_value_returned": false
+}

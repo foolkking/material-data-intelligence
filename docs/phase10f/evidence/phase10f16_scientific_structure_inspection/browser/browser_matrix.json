@@ -1,0 +1,98 @@
+{
+  "schema_version": "phase10f16.inspection_browser_matrix.v1",
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.201",
+      "pass": true,
+      "inspector": "Site inspector\nClear selection\nSITE INDEX\n0\nLABEL\nSi1\nSPECIES / ELEMENT\nSi / Si\nOCCUPANCY\n1\nFRACTIONAL\n0, 0, 0\nCARTESIAN (Å)\n0, 0, 0\nDISPLAY RADIUS\n1\nSOURCE\nstructures\nBOND NEIGHBORS\n1 (1)\n\nNeighbors are from bounded, non-authoritative scene bonds only.\n\nCopy coordinates\nCopy site JSON",
+      "distance": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "png": {
+        "filename": "Si-structure-viewer.png",
+        "bytes": 54687,
+        "validSignature": true
+      },
+      "artifactDownloads": [
+        {
+          "button": "Download scene JSON",
+          "filename": "viewer_scene.json",
+          "bytes": 4102
+        },
+        {
+          "button": "Download manifest",
+          "filename": "viewer_scene_manifest.json",
+          "bytes": 1681
+        },
+        {
+          "button": "Download summary",
+          "filename": "summary.md",
+          "bytes": 834
+        },
+        {
+          "button": "Download recipe",
+          "filename": "recipe.json",
+          "bytes": 1902
+        }
+      ],
+      "mobile": {
+        "selected": "1",
+        "overflow": false,
+        "external": 0
+      },
+      "legacy": {
+        "notice": "Legacy viewer scene contract. Interactive rendering is unavailable; JSON remains accessible. Rerun the source structure with structure.viewer_3d to create a new canonical job. No automatic migration is performed.",
+        "rendererTabs": 0,
+        "external": 0
+      },
+      "lifecycle": {
+        "selectionCleared": true,
+        "canvasCount": 1
+      },
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "pass": true,
+      "inspector": "Site inspector\nClear selection\nSITE INDEX\n0\nLABEL\nSi1\nSPECIES / ELEMENT\nSi / Si\nOCCUPANCY\n1\nFRACTIONAL\n0, 0, 0\nCARTESIAN (Å)\n0, 0, 0\nDISPLAY RADIUS\n1\nSOURCE\nstructures\nBOND NEIGHBORS\n1 (1)\n\nNeighbors are from bounded, non-authoritative scene bonds only.\n\nCopy coordinates\nCopy site JSON",
+      "distance": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "png": null,
+      "artifactDownloads": null,
+      "mobile": null,
+      "legacy": null,
+      "lifecycle": {
+        "selectionCleared": true,
+        "canvasCount": 1
+      },
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "pass": true,
+      "inspector": "Site inspector\nClear selection\nSITE INDEX\n0\nLABEL\nSi1\nSPECIES / ELEMENT\nSi / Si\nOCCUPANCY\n1\nFRACTIONAL\n0, 0, 0\nCARTESIAN (Å)\n0, 0, 0\nDISPLAY RADIUS\n1\nSOURCE\nstructures\nBOND NEIGHBORS\n1 (1)\nNeighbors are from bounded, non-authoritative scene bonds only.\nCopy coordinates\nCopy site JSON\n",
+      "distance": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "png": null,
+      "artifactDownloads": null,
+      "mobile": null,
+      "legacy": null,
+      "lifecycle": {
+        "selectionCleared": true,
+        "canvasCount": 1
+      },
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ]
+}

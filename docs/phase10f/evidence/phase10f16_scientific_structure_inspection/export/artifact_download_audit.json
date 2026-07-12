@@ -1,0 +1,26 @@
+{
+  "local_only": true,
+  "downloads": [
+    {
+      "button": "Download scene JSON",
+      "filename": "viewer_scene.json",
+      "bytes": 4102
+    },
+    {
+      "button": "Download manifest",
+      "filename": "viewer_scene_manifest.json",
+      "bytes": 1681
+    },
+    {
+      "button": "Download summary",
+      "filename": "summary.md",
+      "bytes": 834
+    },
+    {
+      "button": "Download recipe",
+      "filename": "recipe.json",
+      "bytes": 1902
+    }
+  ],
+  "external_requests": 0
+}

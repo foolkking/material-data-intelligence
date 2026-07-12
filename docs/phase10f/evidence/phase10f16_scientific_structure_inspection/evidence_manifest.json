@@ -1,0 +1,32 @@
+{
+  "schema_version": "phase10f16.scientific_inspection_evidence.v1",
+  "baseline_head": "1be7689c2d8881b0fb9f2f67360da7cf2d795703",
+  "formal_tool": "structure.viewer_3d",
+  "coordinate_policy": "displayed_canonical_cartesian_positions",
+  "dihedral_range": "[-180, 180]",
+  "browser_results": [
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.201",
+      "pass": true
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "pass": true
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "pass": true
+    }
+  ],
+  "network_result": "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS",
+  "markers": [
+    "VIEWER_SCENE_SCIENTIFIC_INSPECTION_BROWSER_EVIDENCE_PASS",
+    "VIEWER_SCENE_MEASUREMENT_EVIDENCE_PASS",
+    "VIEWER_SCENE_EXPORT_EVIDENCE_PASS",
+    "VIEWER_SCENE_LEGACY_GUIDANCE_EVIDENCE_PASS"
+  ],
+  "redaction": "sanitized"
+}

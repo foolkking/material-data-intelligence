@@ -1580,3 +1580,15 @@
 - Real browser evidence command passed with system Chrome.
 - Evidence shows no canvas, iframe, WebGL marker, Three.js marker, renderer claim, or external request for covered cases.
 - No renderer, WebGL, Three.js, adapter, planner routing, runtime route, notebook, external API, or artifact JavaScript was added.
+
+## 2026-07-12 Phase 10F-16
+
+### Added
+- Instanced atom picking, canonical site inspector and bounded-bond neighbor summary.
+- Cartesian distance, angle and signed dihedral measurement with bounded history.
+- Current-view PNG and attached viewer artifact downloads.
+- Multi-browser scientific inspection runner and evidence.
+
+### Security
+- Selection is capped at four, history at twenty, PNG at 4096 squared pixels.
+- No artifact execution, external viewer network, remote asset, or schema change.

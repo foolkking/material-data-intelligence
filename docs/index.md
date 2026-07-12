@@ -164,3 +164,16 @@
 | [`phase10f/phase10f15_browser_api_evidence.md`](phase10f/phase10f15_browser_api_evidence.md) | Live formal-tool browser/API evidence |
 | [`phase10f/phase10f15_readiness_matrix.md`](phase10f/phase10f15_readiness_matrix.md) | Phase 10F-15 production readiness decisions |
 | [`phase10f/evidence/phase10f15_production_minimal_structure_viewer/`](phase10f/evidence/phase10f15_production_minimal_structure_viewer/) | Formal jobs, artifacts, metrics, browser matrix, security evidence, and screenshots |
+| [`phase10f/phase10f16_integrated_plan.md`](phase10f/phase10f16_integrated_plan.md) | Scientific inspection integrated plan |
+| [`phase10f/phase10f16_atom_picking_design.md`](phase10f/phase10f16_atom_picking_design.md) | Instanced atom picking and highlight design |
+| [`phase10f/phase10f16_site_inspector_contract.md`](phase10f/phase10f16_site_inspector_contract.md) | Site inspector field and inference boundary |
+| [`phase10f/phase10f16_measurement_semantics.md`](phase10f/phase10f16_measurement_semantics.md) | Distance, angle, and signed dihedral semantics |
+| [`phase10f/phase10f16_renderer_export_policy.md`](phase10f/phase10f16_renderer_export_policy.md) | Local PNG and artifact download policy |
+| [`phase10f/phase10f16_legacy_guidance_policy.md`](phase10f/phase10f16_legacy_guidance_policy.md) | Legacy JSON-only guidance policy |
+| [`phase10f/phase10f16_npm_audit_disposition.md`](phase10f/phase10f16_npm_audit_disposition.md) | Seven-finding npm audit disposition |
+| [`phase10f/phase10f16_implementation.md`](phase10f/phase10f16_implementation.md) | Scientific inspection implementation |
+| [`phase10f/phase10f16_audit_review.md`](phase10f/phase10f16_audit_review.md) | Picking, measurement, export, lifecycle audit |
+| [`phase10f/phase10f16_security_review.md`](phase10f/phase10f16_security_review.md) | Inspection and export security review |
+| [`phase10f/phase10f16_browser_api_evidence.md`](phase10f/phase10f16_browser_api_evidence.md) | Live job and multi-browser inspection evidence |
+| [`phase10f/phase10f16_readiness_matrix.md`](phase10f/phase10f16_readiness_matrix.md) | Scientific inspection readiness decisions |
+| [`phase10f/evidence/phase10f16_scientific_structure_inspection/`](phase10f/evidence/phase10f16_scientific_structure_inspection/) | Live artifacts, measurements, PNG, browser and security evidence |

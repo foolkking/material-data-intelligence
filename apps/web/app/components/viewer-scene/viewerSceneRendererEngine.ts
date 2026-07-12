@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 import { cameraFrame, latticeEdges } from "./viewerSceneRendererGeometry";
+import { assertViewerExportDimensions } from "./viewerSceneExport";
 import { ViewerRendererError } from "./viewerSceneRendererErrors";
 import type { RenderVector3, ViewerRendererEngine, ViewerRendererSnapshot, ValidatedRenderScene } from "./viewerSceneRendererTypes";
 
@@ -9,10 +10,11 @@ export async function createThreeViewerEngine(args: {
   readonly container: HTMLElement;
   readonly scene: ValidatedRenderScene;
   readonly onContextLost: () => void;
+  readonly onSitePick?: (siteIndex: number | null) => void;
   readonly pixelRatioCap: number;
 }): Promise<ViewerRendererEngine> {
   const startedAt = performance.now();
-  const { container, scene, onContextLost, pixelRatioCap } = args;
+  const { container, scene, onContextLost, onSitePick, pixelRatioCap } = args;
   const width = Math.max(320, container.clientWidth || 720);
   const height = Math.max(320, container.clientHeight || 480);
   let renderer: THREE.WebGLRenderer;
@@ -57,6 +59,7 @@ export async function createThreeViewerEngine(args: {
     atomGroups.set(key, Object.freeze([...(atomGroups.get(key) ?? []), atom]));
   }
   const atomMeshes: THREE.InstancedMesh[] = [];
+  const atomsByIndex = new Map(scene.atoms.map((atom) => [atom.siteIndex, atom] as const));
   const transform = new THREE.Matrix4();
   for (const [groupKey, atoms] of [...atomGroups.entries()].sort(([left], [right]) => left.localeCompare(right))) {
     const color = atoms[0].color;
@@ -76,6 +79,8 @@ export async function createThreeViewerEngine(args: {
       mesh.setMatrixAt(index, transform);
     });
     mesh.instanceMatrix.needsUpdate = true;
+    mesh.computeBoundingBox();
+    mesh.computeBoundingSphere();
     mesh.userData = { siteIndices: atoms.map((atom) => atom.siteIndex), species: atoms[0].species };
     atomMeshes.push(mesh);
     root.add(mesh);
@@ -93,6 +98,25 @@ export async function createThreeViewerEngine(args: {
   cellLines.name = "unit-cell";
   root.add(cellLines);
 
+  const highlightColors = [0xf5c542, 0x2ca6a4, 0xe85d75, 0x7b61ff] as const;
+  const highlightMaterials = highlightColors.map((color) => new THREE.MeshBasicMaterial({ color, wireframe: true, depthTest: false }));
+  const highlightMeshes = highlightMaterials.map((material, index) => {
+    const mesh = new THREE.Mesh(sphereGeometry, material);
+    mesh.name = `selection-${String.fromCharCode(65 + index)}`;
+    mesh.renderOrder = 20;
+    mesh.visible = false;
+    root.add(mesh);
+    return mesh;
+  });
+  const measurementGeometry = new THREE.BufferGeometry();
+  const measurementMaterial = new THREE.LineBasicMaterial({ color: 0x0b7285, depthTest: false });
+  const measurementLines = new THREE.Line(measurementGeometry, measurementMaterial);
+  measurementLines.name = "measurement-chain";
+  measurementLines.renderOrder = 19;
+  measurementLines.visible = false;
+  root.add(measurementLines);
+  let selectedSiteIndices: readonly number[] = Object.freeze([]);
+
   const ambient = new THREE.AmbientLight(0xffffff, 1.35);
   const key = new THREE.DirectionalLight(0xffffff, 2.25);
   key.position.set(frame.position[0], frame.position[1] - 6, frame.position[2] + 4);
@@ -105,6 +129,7 @@ export async function createThreeViewerEngine(args: {
   let publishEvidence = () => {};
   const render = () => {
     if (disposed || contextLost) return;
+    camera.updateMatrixWorld();
     renderer.render(threeScene, camera);
     if (!firstFrameMs) firstFrameMs = performance.now() - startedAt;
     publishEvidence();
@@ -128,6 +153,35 @@ export async function createThreeViewerEngine(args: {
     onContextLost();
   };
   renderer.domElement.addEventListener("webglcontextlost", onLost, false);
+
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  let pointerStart: { readonly id: number; readonly x: number; readonly y: number } | null = null;
+  const onPointerDown = (event: PointerEvent) => {
+    if (event.button !== 0 || contextLost || disposed) return;
+    pointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  };
+  const onPointerUp = (event: PointerEvent) => {
+    const start = pointerStart;
+    pointerStart = null;
+    if (!start || start.id !== event.pointerId || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 5 || contextLost || disposed) return;
+    const bounds = renderer.domElement.getBoundingClientRect();
+    if (bounds.width <= 0 || bounds.height <= 0) return;
+    pointer.set(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -((event.clientY - bounds.top) / bounds.height) * 2 + 1);
+    raycaster.setFromCamera(pointer, camera);
+    const hit = raycaster.intersectObjects(atomMeshes, false).find((intersection) => intersection.instanceId !== undefined && intersection.object.visible);
+    if (!hit || hit.instanceId === undefined) {
+      onSitePick?.(null);
+      return;
+    }
+    const siteIndices = (hit.object as THREE.InstancedMesh).userData.siteIndices;
+    const siteIndex = Array.isArray(siteIndices) ? siteIndices[hit.instanceId] : undefined;
+    onSitePick?.(Number.isInteger(siteIndex) ? siteIndex : null);
+  };
+  const onPointerCancel = () => { pointerStart = null; };
+  renderer.domElement.addEventListener("pointerdown", onPointerDown);
+  renderer.domElement.addEventListener("pointerup", onPointerUp);
+  renderer.domElement.addEventListener("pointercancel", onPointerCancel);
 
   const resize = () => {
     if (disposed) return;
@@ -156,6 +210,15 @@ export async function createThreeViewerEngine(args: {
     drawingBuffer: Object.freeze([renderer.domElement.width, renderer.domElement.height] as const),
     graphicsContext,
     rendererVersion: THREE.REVISION,
+    selectedSiteIndices: Object.freeze([...selectedSiteIndices]),
+    siteScreenPositions: Object.freeze(scene.atoms.map((atom) => {
+      const projected = new THREE.Vector3(...atom.position).project(camera);
+      return Object.freeze({
+        siteIndex: atom.siteIndex,
+        x: round((projected.x + 1) * 0.5 * renderer.domElement.clientWidth),
+        y: round((1 - projected.y) * 0.5 * renderer.domElement.clientHeight),
+      });
+    })),
     metrics: Object.freeze({
       atomCount: scene.atoms.length,
       bondCount: scene.bonds.length,
@@ -176,10 +239,44 @@ export async function createThreeViewerEngine(args: {
   };
   render();
 
+  const setSelection = (siteIndices: readonly number[]) => {
+    selectedSiteIndices = Object.freeze(siteIndices.filter((siteIndex, index) => index < 4 && atomsByIndex.has(siteIndex)));
+    highlightMeshes.forEach((mesh, index) => {
+      const atom = atomsByIndex.get(selectedSiteIndices[index]);
+      mesh.visible = Boolean(atom);
+      if (atom) {
+        mesh.position.set(...atom.position);
+        const scale = atom.radius * 1.22;
+        mesh.scale.set(scale, scale, scale);
+      }
+    });
+    const points = selectedSiteIndices.flatMap((siteIndex) => {
+      const atom = atomsByIndex.get(siteIndex);
+      return atom ? [...atom.position] : [];
+    });
+    measurementGeometry.setAttribute("position", new THREE.Float32BufferAttribute(points, 3));
+    measurementGeometry.computeBoundingSphere();
+    measurementLines.visible = selectedSiteIndices.length >= 2;
+    render();
+  };
+
+  const exportPng = async () => {
+    assertViewerExportDimensions(renderer.domElement.width, renderer.domElement.height);
+    render();
+    return new Promise<Blob>((resolve, reject) => {
+      renderer.domElement.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new ViewerRendererError("VIEWER_RENDERER_INITIALIZATION_FAILED", "The current view could not be exported.")),
+        "image/png",
+      );
+    });
+  };
+
   return {
     resetCamera,
     setCellVisible(visible) { cellLines.visible = visible; render(); },
     setBondsVisible(visible) { bondLines.visible = visible; render(); },
+    setSelection,
+    exportPng,
     render,
     snapshot,
     dispose() {
@@ -190,11 +287,17 @@ export async function createThreeViewerEngine(args: {
       controls.removeEventListener("change", onControlsChange);
       controls.dispose();
       renderer.domElement.removeEventListener("webglcontextlost", onLost);
+      renderer.domElement.removeEventListener("pointerdown", onPointerDown);
+      renderer.domElement.removeEventListener("pointerup", onPointerUp);
+      renderer.domElement.removeEventListener("pointercancel", onPointerCancel);
       sphereGeometry.dispose();
       bondGeometry.dispose();
       cellGeometry.dispose();
+      measurementGeometry.dispose();
       bondMaterial.dispose();
       cellMaterial.dispose();
+      measurementMaterial.dispose();
+      for (const material of highlightMaterials) material.dispose();
       for (const material of materials.values()) material.dispose();
       renderer.dispose();
       renderer.forceContextLoss();

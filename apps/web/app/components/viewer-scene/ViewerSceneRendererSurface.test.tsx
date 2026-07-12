@@ -1,8 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import minimalScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_minimal_crystal.viewer_scene.v1.json";
+import multiSpeciesScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_multi_species_crystal.viewer_scene.v1.json";
 import { ViewerSceneRendererSurface } from "./ViewerSceneRendererSurface";
 import type { ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot } from "./viewerSceneRendererTypes";
 
@@ -22,6 +23,8 @@ function fakeEngine(dispose = vi.fn()) {
     drawingBuffer: [720, 480],
     graphicsContext: "webgl2",
     rendererVersion: "185",
+    selectedSiteIndices: [],
+    siteScreenPositions: [],
     metrics: {
       atomCount: 2,
       bondCount: 1,
@@ -41,6 +44,8 @@ function fakeEngine(dispose = vi.fn()) {
     resetCamera: vi.fn(),
     setCellVisible(value) { cellVisible = value; },
     setBondsVisible(value) { bondsVisible = value; },
+    setSelection: vi.fn(),
+    exportPng: vi.fn(async () => new Blob(["png"], { type: "image/png" })),
     render: vi.fn(),
     snapshot,
     dispose,
@@ -63,6 +68,50 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("cell edges0");
     await user.click(screen.getByTestId("viewer-scene-renderer-toggle-bonds"));
     expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("bonds0");
+  });
+
+  it("maps engine picks to canonical inspector fields and measurements", async () => {
+    const engine = fakeEngine();
+    const writeText = vi.fn(async () => { throw new Error("clipboard denied"); });
+    let engineArgs: Parameters<ViewerRendererEngineFactory>[0] | undefined;
+    const factory = vi.fn(async (args: Parameters<ViewerRendererEngineFactory>[0]) => { engineArgs = args; return engine; }) satisfies ViewerRendererEngineFactory;
+    const user = userEvent.setup();
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+    render(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(factory).toHaveBeenCalledOnce());
+    const onSitePick = engineArgs?.onSitePick;
+    act(() => onSitePick?.(0));
+    expect(screen.getByTestId("viewer-selected-site-index").textContent).toContain("0");
+    expect(screen.getByTestId("viewer-selected-site-cartesian").textContent).toContain("0, 0, 0");
+    await user.click(screen.getByRole("button", { name: "Copy site JSON" }));
+    expect(writeText).toHaveBeenCalledOnce();
+    await user.click(screen.getByRole("button", { name: "Distance" }));
+    act(() => { onSitePick?.(0); onSitePick?.(1); });
+    await waitFor(() => expect(screen.getByTestId("viewer-measurement-result").textContent).toContain("distance"));
+    expect(engine.setSelection).toHaveBeenLastCalledWith([0, 1]);
+    delete (navigator as unknown as { clipboard?: unknown }).clipboard;
+  });
+
+  it("exports a bounded local PNG and clears selection when the scene changes", async () => {
+    const engine = fakeEngine();
+    const factory = vi.fn(async () => engine) satisfies ViewerRendererEngineFactory;
+    const createUrl = vi.fn(() => "blob:local-viewer");
+    const revokeUrl = vi.fn();
+    Object.defineProperty(URL, "createObjectURL", { configurable: true, value: createUrl });
+    Object.defineProperty(URL, "revokeObjectURL", { configurable: true, value: revokeUrl });
+    const anchorClick = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined);
+    const { rerender } = render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("rendered"));
+    await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
+    expect(engine.exportPng).toHaveBeenCalledOnce();
+    expect(createUrl).toHaveBeenCalledOnce();
+    rerender(<ViewerSceneRendererSurface payload={{ ...minimalScene, metadata: { ...minimalScene.metadata, title: "changed" } }} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(engine.setSelection).toHaveBeenCalledWith([]));
+    await Promise.resolve();
+    expect(revokeUrl).toHaveBeenCalled();
+    delete (URL as unknown as { createObjectURL?: unknown }).createObjectURL;
+    delete (URL as unknown as { revokeObjectURL?: unknown }).revokeObjectURL;
+    anchorClick.mockRestore();
   });
 
   it("rejects an invalid scene without initializing an engine", () => {

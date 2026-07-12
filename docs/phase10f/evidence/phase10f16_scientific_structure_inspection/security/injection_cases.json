@@ -1,0 +1,11 @@
+{
+  "schema_version": "phase10f16.inspection_injection_evidence.v1",
+  "cases": [
+    {"input":"HTML/script species or label","boundary":"canonical validator or React text","executed":false},
+    {"input":"external URL/texture/module/shader/callback","boundary":"canonical validator","executed":false},
+    {"input":"path-like export filename","boundary":"NFKD allowlist sanitizer","executed":false},
+    {"input":"clipboard markup text","boundary":"plain text Clipboard API","executed":false},
+    {"input":"prototype keys","boundary":"whitelist mapper","executed":false}
+  ],
+  "external_requests": 0
+}

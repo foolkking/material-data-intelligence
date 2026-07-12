@@ -1032,3 +1032,19 @@ into the canonical artifact and do not change the viewer scene contract.
 Canonical, adapter, and renderer hard caps remain aligned at 256 sites, 2048
 bonds, 32 species, cell expansion `[1, 1, 1]`, and 1,000,000 JSON bytes.
 Renderer-side truncation is prohibited.
+
+## Phase 10F-16 Addendum: frontend inspection state and measurements
+
+Phase 10F-16 does not change `viewer_scene.v1`. Frontend-only inspection state
+contains a mode (`inspect`, `distance`, `angle`, or `dihedral`), up to four
+canonical site indices, and one active site index. Instanced picking maps through
+an application-owned immutable `instanceId -> siteIndex` array.
+
+Distance uses two displayed canonical Cartesian positions in angstrom. Angle is
+A-B-C in degrees. Dihedral is signed A-B-C-D in `[-180, 180]` degrees. Degenerate
+or non-finite inputs produce typed frontend failures. No minimum-image periodic
+correction, inferred chemistry, or persisted measurement artifact is added.
+
+PNG export is a frontend-local view capture bounded to 4096 by 4096 and
+16,777,216 effective pixels. It does not alter Artifact, Recipe, AnalysisPlan,
+Job, Tool Registry, QueueWorkerRuntime, or canonical scene schemas.

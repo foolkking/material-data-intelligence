@@ -592,7 +592,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(container.querySelector("canvas")).toBeNull();
     expect(container.querySelector("script")).toBeNull();
     expect(screen.queryByText(/Three\.js/i)).toBeNull();
-    expect(screen.queryByText("structure.viewer_3d")).toBeNull();
+    expect(screen.queryByText("structure.viewer_3d")).not.toBeNull();
   });
 
   it("renders Phase 10F-10 viewer_scene.v1 JSON-only preview and manifest metadata without a renderer", async () => {

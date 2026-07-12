@@ -747,6 +747,48 @@ pre {
   border-radius: 50%;
 }
 
+.viewer-measurement-panel,
+.viewer-site-inspector {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.viewer-measurement-modes,
+.viewer-artifact-downloads,
+.viewer-inspector-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewer-inspector-heading {
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.viewer-measurement-panel output {
+  display: block;
+  margin: 8px 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.viewer-measurement-history {
+  max-height: 132px;
+  overflow: auto;
+  margin: 8px 0;
+}
+
+.viewer-inspector-note {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.viewer-artifact-downloads {
+  margin: 4px 0;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -962,6 +1004,12 @@ pre {
   .viewer-renderer-controls button {
     min-height: 44px;
     flex: 1 1 120px;
+  }
+
+  .viewer-measurement-modes button,
+  .viewer-artifact-downloads button,
+  .viewer-site-inspector button {
+    min-height: 44px;
   }
 
   .viewer-renderer-canvas-host {

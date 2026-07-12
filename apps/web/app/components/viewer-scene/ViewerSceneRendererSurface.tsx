@@ -1,15 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { ViewerMeasurementPanel } from "./ViewerMeasurementPanel";
+import { ViewerSiteInspector } from "./ViewerSiteInspector";
+import { downloadLocalBlob, jsonBlob, sanitizeViewerFilename } from "./viewerSceneExport";
+import { measureAngle, measureDihedral, measureDistance, type ViewerMeasurementEvaluation, type ViewerMeasurementResult } from "./viewerSceneMeasurements";
 import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
 import { ViewerRendererError } from "./viewerSceneRendererErrors";
-import type { ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot, ViewerRendererState } from "./viewerSceneRendererTypes";
+import type { RenderVector3, ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot, ViewerRendererState } from "./viewerSceneRendererTypes";
+import { changeViewerSelectionMode, initialViewerSelection, selectViewerSite, type ViewerSelectionMode } from "./viewerSceneSelection";
 
 export type ViewerSceneRendererSurfaceProps = {
   readonly payload: unknown;
   readonly capabilityOverride?: boolean;
   readonly engineFactory?: ViewerRendererEngineFactory;
+  readonly downloads?: Readonly<{ manifest?: unknown; summary?: string; recipe?: unknown }>;
 };
 
 const defaultEngineFactory: ViewerRendererEngineFactory = async (args) => {
@@ -30,7 +36,7 @@ const defaultEngineFactory: ViewerRendererEngineFactory = async (args) => {
   return module.createThreeViewerEngine(args);
 };
 
-export function ViewerSceneRendererSurface({ payload, capabilityOverride, engineFactory = defaultEngineFactory }: ViewerSceneRendererSurfaceProps) {
+export function ViewerSceneRendererSurface({ payload, capabilityOverride, engineFactory = defaultEngineFactory, downloads }: ViewerSceneRendererSurfaceProps) {
   const mapping = useMemo(() => mapViewerSceneForRenderer(payload), [payload]);
   const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<ViewerRendererEngine | null>(null);
@@ -39,10 +45,16 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const [showBonds, setShowBonds] = useState(true);
   const [snapshot, setSnapshot] = useState<ViewerRendererSnapshot | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const [selection, setSelection] = useState(initialViewerSelection());
+  const [history, setHistory] = useState<readonly ViewerMeasurementResult[]>([]);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const onSitePick = useCallback((siteIndex: number | null) => setSelection((current) => selectViewerSite(current, siteIndex)), []);
 
   useEffect(() => {
     setState(mapping.ok ? "ready" : "validation_failed");
     setSnapshot(null);
+    setSelection(initialViewerSelection());
+    setHistory([]);
     if (!mapping.ok) return;
     const supported = capabilityOverride ?? supportsWebGL();
     if (!supported) {
@@ -64,6 +76,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
           engineRef.current = null;
         });
       },
+      onSitePick,
     }).then((engine) => {
       if (cancelled) {
         engine.dispose();
@@ -72,6 +85,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       engineRef.current = engine;
       engine.setCellVisible(showCell);
       engine.setBondsVisible(showBonds);
+      engine.setSelection([]);
       setSnapshot(engine.snapshot());
       setState("rendered");
     }).catch((error: unknown) => {
@@ -85,7 +99,31 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
         try { engine.dispose(); } catch { /* disposal is best-effort after the surface is detached */ }
       }
     };
-  }, [attempt, capabilityOverride, engineFactory, mapping]);
+  }, [attempt, capabilityOverride, engineFactory, mapping, onSitePick]);
+
+  useEffect(() => {
+    engineRef.current?.setSelection(selection.selectedSiteIndices);
+    if (engineRef.current) setSnapshot(engineRef.current.snapshot());
+  }, [selection.selectedSiteIndices]);
+
+  const measurement = useMemo<ViewerMeasurementEvaluation | null>(() => {
+    if (!mapping.ok || selection.mode === "inspect") return null;
+    const atoms = new Map(mapping.scene.atoms.map((atom) => [atom.siteIndex, atom] as const));
+    const points = selection.selectedSiteIndices.map((index) => atoms.get(index)?.position).filter((point): point is RenderVector3 => Boolean(point));
+    if (selection.mode === "distance" && points.length === 2) return measureDistance(selection.selectedSiteIndices as [number, number], [points[0], points[1]]);
+    if (selection.mode === "angle" && points.length === 3) return measureAngle(selection.selectedSiteIndices as [number, number, number], [points[0], points[1], points[2]]);
+    if (selection.mode === "dihedral" && points.length === 4) return measureDihedral(selection.selectedSiteIndices as [number, number, number, number], [points[0], points[1], points[2], points[3]]);
+    return null;
+  }, [mapping, selection]);
+
+  useEffect(() => {
+    if (!measurement?.ok) return;
+    setHistory((current) => {
+      const key = `${measurement.result.kind}:${measurement.result.siteIndices.join("-")}`;
+      if (current.some((item) => `${item.kind}:${item.siteIndices.join("-")}` === key)) return current;
+      return Object.freeze([...current, measurement.result].slice(-20));
+    });
+  }, [measurement]);
 
   const applyVisibility = (kind: "cell" | "bonds", visible: boolean) => {
     if (kind === "cell") {
@@ -105,6 +143,19 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     setState("ready");
     setAttempt((value) => value + 1);
   };
+  const changeMode = (mode: ViewerSelectionMode) => setSelection((current) => changeViewerSelectionMode(current, mode));
+  const clearSelection = () => setSelection((current) => initialViewerSelection(current.mode));
+  const exportPng = async () => {
+    setExportError(null);
+    try {
+      const blob = await engineRef.current?.exportPng();
+      if (!blob) throw new Error("VIEWER_EXPORT_RENDERER_UNAVAILABLE");
+      downloadLocalBlob(blob, sanitizeViewerFilename(mapping.ok ? mapping.scene.formula : "structure"));
+    } catch {
+      setExportError("Current-view PNG export failed. Scene JSON remains available.");
+    }
+  };
+  const selectedAtom = mapping.ok ? mapping.scene.atoms.find((atom) => atom.siteIndex === selection.activeSiteIndex) ?? null : null;
 
   return (
     <section className="viewer-renderer-surface" aria-label="3D Structure Viewer" data-testid="viewer-scene-renderer-surface">
@@ -117,6 +168,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
           <button type="button" className="compact secondary" data-testid="viewer-scene-renderer-reset" onClick={reset} disabled={state !== "rendered"}>Reset camera</button>
           <button type="button" className={`compact ${showCell ? "active" : "secondary"}`} data-testid="viewer-scene-renderer-toggle-cell" aria-pressed={showCell} onClick={() => applyVisibility("cell", !showCell)}>Unit cell</button>
           <button type="button" className={`compact ${showBonds ? "active" : "secondary"}`} data-testid="viewer-scene-renderer-toggle-bonds" aria-pressed={showBonds} onClick={() => applyVisibility("bonds", !showBonds)}>Bonds</button>
+          <button type="button" className="compact secondary" data-testid="viewer-scene-export-png" onClick={() => void exportPng()} disabled={state !== "rendered"}>Download PNG</button>
         </div>
       </div>
 
@@ -148,6 +200,15 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       ) : null}
       {mapping.ok ? (
         <>
+        <ViewerMeasurementPanel mode={selection.mode} selected={selection.selectedSiteIndices} evaluation={measurement} history={history} onMode={changeMode} onClear={clearSelection} />
+        <ViewerSiteInspector atom={selectedAtom} bonds={mapping.scene.bonds} source={mapping.scene.source.filename || mapping.scene.source.resourceId} onClear={clearSelection} />
+        <div className="viewer-artifact-downloads" aria-label="Viewer artifact downloads">
+          <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(payload), "viewer_scene.json")}>Download scene JSON</button>
+          {downloads?.manifest ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(downloads.manifest), "viewer_scene_manifest.json")}>Download manifest</button> : null}
+          {downloads?.summary ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(new Blob([downloads.summary ?? ""], { type: "text/markdown" }), "summary.md")}>Download summary</button> : null}
+          {downloads?.recipe ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(downloads.recipe), "recipe.json")}>Download recipe</button> : null}
+        </div>
+        {exportError ? <p className="notice" role="alert" data-testid="viewer-scene-export-error">{exportError}</p> : null}
         <p className="viewer-renderer-scene-summary" data-testid="viewer-scene-renderer-summary">
           Validated canonical scene: {mapping.scene.atoms.length} sites, {new Set(mapping.scene.atoms.map((atom) => atom.species)).size} species, {mapping.scene.bonds.length} bounded bonds.
         </p>

@@ -26,7 +26,9 @@ export function mapViewerSceneForRenderer(payload: unknown): MappingResult {
     const paletteColor = SPECIES_PALETTE[speciesOrder.indexOf(species) % SPECIES_PALETTE.length];
     const color = typeof style.color === "string" && SAFE_HEX.test(style.color) ? style.color.toLowerCase() : paletteColor;
     const radius = typeof style.radius === "number" && Number.isFinite(style.radius) && style.radius > 0 && style.radius <= 3 ? style.radius : 0.72;
-    return Object.freeze({ id: `site-${index}`, siteIndex: index, species, label: String(site.label), position, radius, color });
+    const fractionalPosition = finiteTriplet(site.frac) ? tuple(site.frac) : null;
+    const occupancy = typeof site.occupancy === "number" && Number.isFinite(site.occupancy) && site.occupancy >= 0 && site.occupancy <= 1 ? site.occupancy : 1;
+    return Object.freeze({ id: `site-${index}`, siteIndex: index, species, element: species, label: String(site.label), occupancy, position, fractionalPosition, radius, color });
   });
 
   const bonds: RenderBond[] = (Array.isArray(payload.scene.bonds) ? payload.scene.bonds : [])
@@ -43,15 +45,27 @@ export function mapViewerSceneForRenderer(payload: unknown): MappingResult {
   const vectors = payload.scene.lattice.vectors;
   if (!Array.isArray(vectors) || vectors.length !== 3 || !vectors.every(finiteTriplet)) return { ok: false, validation };
   const latticeMatrix: ValidatedRenderScene["lattice"]["matrix"] = Object.freeze([tuple(vectors[0]), tuple(vectors[1]), tuple(vectors[2])]);
+  const source = isRecord(payload.source) ? payload.source : {};
+  const metadata = isRecord(payload.metadata) ? payload.metadata : {};
   const scene: ValidatedRenderScene = Object.freeze({
     contractVersion: "viewer_scene.v1",
     schemaVersion: "phase10f8.viewer_scene.v1",
     atoms: Object.freeze(atoms),
     bonds: Object.freeze(bonds),
     lattice: Object.freeze({ matrix: latticeMatrix }),
+    source: Object.freeze({
+      resourceId: safeText(source.resource_id),
+      filename: safeText(source.filename),
+      parser: safeText(source.parser),
+    }),
+    formula: safeText(metadata.formula) || "structure",
     warnings: Object.freeze([...validation.warnings]),
   });
   return { ok: true, scene, validation };
+}
+
+function safeText(value: unknown) {
+  return typeof value === "string" ? value.slice(0, 256) : "";
 }
 
 function tuple(value: unknown): RenderVector3 {

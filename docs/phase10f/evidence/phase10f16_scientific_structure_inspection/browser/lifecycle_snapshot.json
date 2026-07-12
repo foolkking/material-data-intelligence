@@ -1,0 +1,10 @@
+{
+  "schema_version": "phase10f16.inspection_lifecycle_evidence.v1",
+  "selection_cleared_on_scene_tab_switch": true,
+  "canvas_count_after_remount": 1,
+  "selection_overlay_limit": 4,
+  "measurement_history_limit": 20,
+  "pointer_listeners_removed_on_dispose": true,
+  "highlight_and_measurement_resources_disposed": true,
+  "blob_urls_revoked": true
+}
