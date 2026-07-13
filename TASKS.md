@@ -2644,7 +2644,7 @@ FAIL包括：
 ---END---
 
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10F-27：Formal `structure.viewer_3d` Registration and Product Evidence
 
 进入 Phase 10F-27：Formal `structure.viewer_3d` Registration and Product Evidence。
@@ -5175,6 +5175,35 @@ FAIL包括：
 -   CI失败却声明PASS
 
 -   full viewer未闭环却标记READY
+
+完成时间：2026-07-13 17:57:29 +08:00
+
+修改文件：
+
+- `tool_registry/platform_builtin_manifest.yaml`、`tool_registry/matterviz_manifest.yaml`
+- `tests/test_manifest_loader.py`、`tests/test_phase10f15_production_viewer.py`、`tests/test_phase10f27_formal_viewer_product.py`
+- `apps/web/test/generate-viewer-scene-live-adapter-evidence.py`、`apps/web/test/generate-viewer-3d-product-evidence.py`
+- `apps/web/test/viewer-scene-production-browser-evidence.mjs`、`apps/web/test/viewer-scene-formal-product-browser-evidence.mjs`
+- `docs/phase10f/phase10f27_structure_viewer_3d_*.md`、`docs/phase10f/evidence/phase10f27_structure_viewer_3d_product/`
+- `docs/index.md`、`docs/13_SHARED_SCHEMA_SPEC.md`、相关 `persistent/*.md`
+
+修改摘要：
+
+- 将唯一 `structure.viewer_3d` 条目迁移到 platform built-in manifest，保持 adapter、strict params、artifact 和 runtime 语义不变。
+- 冻结正式 viewer 产品能力与负能力边界，保留显式 JSON route 和 legacy compatibility。
+- 增加 registry/catalog/routing/PlanValidator/adapter tests，以及真实 planner job、periodic topology、三浏览器、移动、性能、accessibility、network 和 security evidence。
+- 主提交：`187722a0b994971dabcf55882d0b169e3cbcd147 Register structure viewer 3D product`。
+
+测试结果：
+
+- 精确后端组：`27 passed`。
+- frontend：`104 passed`；typecheck 和 Next.js production build 通过。
+- backend full：`370 passed, 21 skipped, 11 warnings`。
+- 13 个历史 viewer browser runners 与 Phase 10F-27 formal product runner 全部通过。
+- Chromium 150、Firefox 128、WebKit 18 均 rendered；console errors `0`；external requests `0`。
+- `uv lock --check`、`git diff --check`、`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS` 通过。
+- `npm audit` 因配置 registry 不实现 audit endpoint 而 unavailable；本阶段无 dependency/lockfile 变更。
+- 本地 Docker CLI 不可用；current-HEAD CI run `29240890361` 的 unit、frontend npm ci/typecheck/build、PostgreSQL+Redis+MinIO service-backed integration 和 no-skipped assertion 全部 success。
 ---END---
 
 ---TASK---
