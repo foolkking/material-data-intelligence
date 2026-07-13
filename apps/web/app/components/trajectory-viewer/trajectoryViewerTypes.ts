@@ -31,8 +31,9 @@ export type MappedTrajectoryFrame = Readonly<{
   rawFrame:TrajectoryFrame; mapMs:number; estimatedBytes:number;
 }>;
 export type TrajectoryPerformanceDecision = Readonly<{
-  mode:"interactive"|"degraded"|"refused"; displayedInstances:number; cacheFrames:number; cacheBytes:number;
-  maxPlaybackFps:15|30; warnings:readonly string[]; reason:string|null;
+  mode:"interactive"|"degraded"|"refused"; displayedInstances:number; coordinateValues:number; mobile:boolean;
+  cacheFrames:number; cacheBytes:number; maxPlaybackFps:15|30; maxPendingRequests:1; maxPrefetchRequests:0;
+  warnings:readonly string[]; reason:string|null;
 }>;
 
 export const TRAJECTORY_PLAYBACK_SPEEDS = Object.freeze([0.25,0.5,1,2,4] as const);

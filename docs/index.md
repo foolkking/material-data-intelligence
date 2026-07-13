@@ -8,6 +8,8 @@
 
 [`phase10g/phase10g2_trajectory_viewer.md`](phase10g/phase10g2_trajectory_viewer.md) implements validated dynamic frame rendering, playback, stable identity, bounded cache/lifecycle, accessibility/mobile controls, and three-browser smoke while retaining an internal tool boundary.
 
+[`phase10g/phase10g3_trajectory_performance.md`](phase10g/phase10g3_trajectory_performance.md) closes formal `structure.trajectory_viewer` registration, strict routing, desktop/mobile performance tiers, cache/pending/lifecycle hardening, real API captures, and Chromium/Firefox/WebKit product evidence. Related browser, mobile, registration, routing, security, evidence, and readiness records use the `phase10g3_trajectory_*` filenames in the same directory.
+
 ## Phase 10F-25 Clipping, Cell, and Camera Controls
 
 `phase10f/phase10f25_clipping_cell_camera.md` is the implementation entry point. The clipping, camera, cell display, security, and evidence documents define bounded renderer-local view controls and their three-browser closure.

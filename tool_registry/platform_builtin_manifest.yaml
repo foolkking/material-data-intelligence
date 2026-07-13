@@ -172,6 +172,18 @@ tools:
       - trajectory_report_json
       - trajectory_manifest_json
 
+  - tool_id: structure.trajectory_viewer
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: TrajectoryViewerAdapter
+    display_target: trajectory
+    notes: "Inspect and play validated phase10g.trajectory.v1 atomic trajectories with stable atom identity, fixed or variable lattice, bounded frame navigation, picking, current-frame measurement, renderer-local supercells, clipping, camera controls, mobile policy, and JSON fallback. Static-reference bonds are partial and off by default. Dynamic bonds, variable atom count, analytics, editing, video export, artifact code, remote frames, and external network are not supported."
+    artifact_types:
+      - trajectory_json
+      - trajectory_summary_json
+      - trajectory_report_json
+      - trajectory_manifest_json
+
   - tool_id: ml.basic_metrics
     implementation_source: platform_builtin
     stage: mvp

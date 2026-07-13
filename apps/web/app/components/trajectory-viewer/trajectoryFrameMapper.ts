@@ -1,6 +1,7 @@
 import { fractionalToCartesian, validateTrajectoryReference } from "../../lib/trajectoryContract";
 import type { ImageOffset, RenderAtom, RenderVector3, ValidatedRenderScene } from "../viewer-scene/viewerSceneRendererTypes";
 import { supercellOffsets, validSupercellRepeat } from "../viewer-scene/viewerSceneSupercell";
+import { trajectoryPerformanceDecision } from "./trajectoryViewerPerformance";
 import type { MappedTrajectoryFrame, TrajectoryPerformanceDecision, ValidatedTrajectory } from "./trajectoryViewerTypes";
 
 const PALETTE=["#2f7f8f","#d56a45","#7b61a8","#4f8d58","#c08b28","#476aa3","#a74f6f","#64748b"] as const;
@@ -12,10 +13,7 @@ export function validateTrajectoryForViewer(payload:unknown):TrajectoryMappingRe
   return validation.valid?{ok:true,trajectory:payload as ValidatedTrajectory}:{ok:false,errors:Object.freeze(validation.errors.map((error)=>error.replace(/^TRAJECTORY_/,"TRAJECTORY_VIEWER_")))};
 }
 export function classifyTrajectoryViewer(trajectory:ValidatedTrajectory,repeat:ImageOffset=Object.freeze([1,1,1]),mobile=false):TrajectoryPerformanceDecision{
-  if(!validSupercellRepeat(repeat))return Object.freeze({mode:"refused",displayedInstances:0,cacheFrames:0,cacheBytes:0,maxPlaybackFps:15,warnings:Object.freeze([]),reason:"TRAJECTORY_VIEWER_BUDGET_EXCEEDED"});
-  const cells=repeat[0]*repeat[1]*repeat[2];const displayedInstances=trajectory.atoms.count*cells;const coordinateValues=trajectory.frames.length*trajectory.atoms.count*3;
-  const refused=displayedInstances>768||coordinateValues>2_000_000;const degraded=!refused&&(displayedInstances>384||coordinateValues>300_000);
-  return Object.freeze({mode:refused?"refused":degraded?"degraded":"interactive",displayedInstances,cacheFrames:mobile?3:degraded?4:7,cacheBytes:mobile?4_194_304:degraded?8_388_608:16_777_216,maxPlaybackFps:mobile||degraded?15:30,warnings:Object.freeze(degraded?["TRAJECTORY_VIEWER_DEGRADED_MODE"]:[]),reason:refused?"TRAJECTORY_VIEWER_BUDGET_EXCEEDED":null});
+  return trajectoryPerformanceDecision(trajectory,repeat,mobile);
 }
 export function mapTrajectoryFrame(trajectory:ValidatedTrajectory,frameIndex:number,repeat:ImageOffset=Object.freeze([1,1,1])):MappedTrajectoryFrame{
   const started=performance.now();if(!Number.isSafeInteger(frameIndex)||frameIndex<0||frameIndex>=trajectory.frames.length)throw new Error("TRAJECTORY_VIEWER_FRAME_INDEX_INVALID");if(!validSupercellRepeat(repeat))throw new Error("TRAJECTORY_VIEWER_BUDGET_EXCEEDED");

@@ -1,0 +1,40 @@
+{
+  "chunked_indexed_storage": "DEFERRED_BY_DESIGN",
+  "degraded": {
+    "atoms": 400,
+    "desktop": "degraded",
+    "frames": 2,
+    "mobile": "refused"
+  },
+  "fixed": {
+    "atoms": 2,
+    "desktop": "interactive",
+    "frames": 3,
+    "mobile": "interactive"
+  },
+  "many_frames": {
+    "atoms": 2,
+    "desktop": "interactive",
+    "frames": 64,
+    "mobile": "interactive",
+    "purpose": "rapid_seek_and_cache_stress"
+  },
+  "refused": {
+    "atoms": 400,
+    "desktop": "refused",
+    "displayed_instances": 10800,
+    "frames": 2,
+    "mobile": "refused",
+    "supercell": [
+      3,
+      3,
+      3
+    ]
+  },
+  "variable": {
+    "atoms": 2,
+    "desktop": "interactive",
+    "frames": 3,
+    "mobile": "interactive"
+  }
+}

@@ -1,8 +1,16 @@
 # OPEN_QUESTIONS
 
+## 2026-07-13 Phase 10G-3 trajectory product closure
+
+- **Closed: formal trajectory product.** `structure.trajectory_viewer` is a unique planner-visible validated tool with canonical artifacts and persisted launch/capability provenance.
+- **Closed: bounded browser performance baseline.** Chromium 150, Firefox 128, WebKit 18, mobile portrait/landscape, rapid seek, playback cycling, context recovery, artifact switching, accessibility, and external-network isolation are evidenced.
+- **Open: local indexed/chunked storage.** The current canonical JSON path is bounded; a separately reviewed local indexed/chunk design is required for larger trajectories. Remote chunk streaming is not approved.
+- **Open: topology and science.** Static-reference bonds remain `PARTIAL_READY`; dynamic bonds, reactive/variable-atom trajectories, RDF/MSD/VACF/diffusion, comparison, editing, and video export require independent contracts and evidence.
+- **Open: npm audit endpoint.** The configured npmmirror registry does not implement the audit endpoint; retain lockfile/tree/CI review and do not claim a clean npm audit until an approved endpoint is available.
+
 ## 2026-07-13 Phase 10G-2 trajectory closure
 
-- Final long-trajectory performance acceptance, validated static-reference bond playback, and formal planner-visible trajectory product identity remain for Phase 10G-3.
+- Formal planner-visible identity and bounded performance acceptance were closed by Phase 10G-3; static-reference bond playback remains explicitly partial.
 - The configured npmmirror registry still does not implement the npm audit endpoint; current dependency risk must continue to use lockfile/tree review plus CI until an approved audit endpoint is available.
 
 ## 2026-07-13 Phase 10G-1 Follow-ups

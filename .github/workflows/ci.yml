@@ -64,6 +64,10 @@ jobs:
         run: node test/phase10-closure-evidence-check.mjs
         working-directory: apps/web
 
+      - name: Trajectory performance evidence integrity
+        run: npm run test:trajectory-performance-evidence
+        working-directory: apps/web
+
       - name: Typecheck
         run: npm run typecheck
         working-directory: apps/web

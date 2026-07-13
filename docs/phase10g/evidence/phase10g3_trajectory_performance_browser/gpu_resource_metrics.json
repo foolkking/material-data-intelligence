@@ -1,0 +1,108 @@
+{
+  "initial": {
+    "toolId": "structure.trajectory_viewer",
+    "currentFrame": 0,
+    "requestedFrame": 0,
+    "status": "paused",
+    "tier": "interactive",
+    "speed": 1,
+    "loop": false,
+    "mobile": false,
+    "maxPlaybackFps": 30,
+    "cache": {
+      "trajectoryId": "sha256:3a9cddcd823a8728d93d704e44f21169ab9614fc714085dea67ad9c7aeefb008",
+      "maxFrames": 7,
+      "maxBytes": 16777216,
+      "size": 1,
+      "bytes": 832,
+      "hits": 0,
+      "misses": 0,
+      "evictions": 0,
+      "peakFrames": 1,
+      "peakBytes": 832,
+      "indices": [
+        0
+      ]
+    },
+    "pendingRequests": 0,
+    "peakPendingRequests": 0,
+    "maxPendingRequests": 1,
+    "prefetchRequests": 0,
+    "displayedInstances": 2,
+    "coordinateValues": 384,
+    "activeLoops": 0,
+    "canvasCount": 1,
+    "contextCount": 1,
+    "drawCalls": 3,
+    "geometries": 4,
+    "materials": 11,
+    "textures": 1,
+    "programs": 2
+  },
+  "recovered": {
+    "toolId": "structure.trajectory_viewer",
+    "currentFrame": 63,
+    "requestedFrame": 63,
+    "status": "paused",
+    "tier": "interactive",
+    "speed": 4,
+    "loop": true,
+    "mobile": false,
+    "maxPlaybackFps": 30,
+    "cache": {
+      "trajectoryId": "sha256:3a9cddcd823a8728d93d704e44f21169ab9614fc714085dea67ad9c7aeefb008",
+      "maxFrames": 7,
+      "maxBytes": 16777216,
+      "size": 1,
+      "bytes": 3072,
+      "hits": 0,
+      "misses": 0,
+      "evictions": 0,
+      "peakFrames": 1,
+      "peakBytes": 3072,
+      "indices": [
+        63
+      ]
+    },
+    "pendingRequests": 0,
+    "peakPendingRequests": 0,
+    "maxPendingRequests": 1,
+    "prefetchRequests": 0,
+    "displayedInstances": 16,
+    "coordinateValues": 384,
+    "activeLoops": 0,
+    "canvasCount": 1,
+    "contextCount": 1,
+    "drawCalls": 3,
+    "geometries": 4,
+    "materials": 11,
+    "textures": 1,
+    "programs": 2
+  },
+  "graphics": {
+    "initial": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        485,
+        418
+      ],
+      "compositedImage": [
+        485,
+        419
+      ],
+      "sampledColorCount": 9
+    },
+    "recovered": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        485,
+        418
+      ],
+      "compositedImage": [
+        485,
+        419
+      ],
+      "sampledColorCount": 9
+    }
+  }
+}

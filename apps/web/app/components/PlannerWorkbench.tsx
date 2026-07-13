@@ -1391,16 +1391,22 @@ export function TrajectoryPreviewPanel({ artifacts }: { artifacts: Artifact[] })
   const [activePreview, setActivePreview] = useState<"viewer" | "json" | "manifest">("viewer");
   if (!trajectoryArtifact) return null;
   const payload = trajectoryArtifactPayload(trajectoryArtifact);
+  const toolId = trajectoryViewerToolId(trajectoryArtifact);
+  const launchOptions = trajectoryViewerLaunchOptions(trajectoryArtifact);
+  const trajectoryIdentity = typeof payload?.trajectory_id === "string" ? payload.trajectory_id : "unknown-trajectory";
+  const artifactIdentity = String(trajectoryArtifact.id || trajectoryArtifact.artifactId || trajectoryArtifact.name || "trajectory-preview");
+  const trajectoryKey = `${trajectoryIdentity}:${artifactIdentity}:${toolId}`;
   return (
     <section className="panel viewer-static-preview" data-testid="trajectory-preview-panel">
-      <PanelHeading title="Trajectory preview" badge="Validated dynamic viewer" />
+      <PanelHeading title="Trajectory preview" badge={toolId === "structure.trajectory_viewer" ? "Formal trajectory viewer" : "Validated trajectory replay"} />
+      <p className="notice" data-testid="trajectory-product-path">{toolId === "structure.trajectory_viewer" ? "Formal product path: structure.trajectory_viewer" : toolId === "structure.trajectory_import" ? "Internal import artifact replay; viewer availability is client-side." : "Validated artifact replay; formal tool identity unavailable."}</p>
       <div className="viewer-preview-tabs" role="tablist" aria-label="Trajectory preview modes">
         <button type="button" role="tab" aria-selected={activePreview === "viewer"} className={activePreview === "viewer" ? "active" : "secondary"} onClick={() => setActivePreview("viewer")}>3D Trajectory</button>
         <button type="button" role="tab" aria-selected={activePreview === "json"} className={activePreview === "json" ? "active" : "secondary"} onClick={() => setActivePreview("json")}>Trajectory JSON</button>
         <button type="button" role="tab" aria-selected={activePreview === "manifest"} className={activePreview === "manifest" ? "active" : "secondary"} onClick={() => setActivePreview("manifest")}>Manifest</button>
       </div>
       <div className="viewer-preview-tab-panel" role="tabpanel">
-        {activePreview === "viewer" ? <TrajectoryViewerSurface payload={payload} /> : null}
+        {activePreview === "viewer" ? <TrajectoryViewerSurface key={trajectoryKey} payload={payload} toolId={toolId} initialOptions={launchOptions} /> : null}
         {activePreview === "json" ? <pre className="json-preview" data-testid="trajectory-json-preview">{JSON.stringify(payload, null, 2)}</pre> : null}
         {activePreview === "manifest" ? <pre className="json-preview" data-testid="trajectory-manifest-preview">{JSON.stringify(manifestArtifact ? trajectoryArtifactPayload(manifestArtifact) : null, null, 2)}</pre> : null}
       </div>
@@ -2105,6 +2111,36 @@ function trajectoryArtifactPayload(artifact: Artifact): JsonRecord | null {
   const raw = artifactText(artifact);
   if (!raw || raw.length > 64 * 1024 * 1024) return null;
   try { return asRecord(JSON.parse(raw)); } catch { return null; }
+}
+
+function trajectoryViewerToolId(artifact: Artifact): "structure.trajectory_viewer" | "structure.trajectory_import" | "unknown" {
+  const metadata = asRecord(artifact.metadata);
+  const provenance = asRecord(metadata?.provenance) || asRecord(artifact.provenance);
+  const candidate = text(metadata?.toolId) || text(provenance?.formalViewerToolId);
+  if (candidate === "structure.trajectory_viewer" || candidate === "structure.trajectory_import") return candidate;
+  return "unknown";
+}
+
+function trajectoryViewerLaunchOptions(artifact: Artifact) {
+  const metadata = asRecord(artifact.metadata);
+  const provenance = asRecord(metadata?.provenance);
+  const launch = asRecord(provenance?.viewerLaunch);
+  const options = asRecord(launch?.options);
+  if (!options) return undefined;
+  const playbackSpeed = options.playbackSpeed;
+  const supercell = options.supercell;
+  if (![0.25, 0.5, 1, 2, 4].includes(Number(playbackSpeed))) return undefined;
+  if (!Array.isArray(supercell) || supercell.length !== 3 || supercell.some((value) => !Number.isSafeInteger(value) || Number(value) < 1 || Number(value) > 3)) return undefined;
+  if (typeof options.loop !== "boolean" || typeof options.showCell !== "boolean" || typeof options.clipping !== "boolean" || options.performanceMode !== "auto" || options.bondMode !== "none") return undefined;
+  return Object.freeze({
+    playbackSpeed: Number(playbackSpeed) as 0.25 | 0.5 | 1 | 2 | 4,
+    loop: options.loop,
+    supercell: Object.freeze(supercell.map(Number)) as readonly [number, number, number],
+    showCell: options.showCell,
+    clipping: options.clipping,
+    performanceMode: "auto" as const,
+    bondMode: "none" as const,
+  });
 }
 
 function artifactText(artifact: Artifact): string | null {

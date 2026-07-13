@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-13 - Phase 10G-3 Trajectory Performance / Browser Evidence
+
+- Added formal `structure.trajectory_viewer` registration, strict English/Chinese planner routing, negative capability routing, validated launch params, and persisted adapter provenance.
+- Added application-owned desktop/mobile performance tiers, supercell-aware refusal, trajectory-scoped bounded LRU caching, one pending seek request, expanded renderer metrics, context retry, and mobile/200%-layout hardening.
+- Added deterministic real parser/planner/runtime API captures and Chromium 150, Firefox 128, WebKit 18, mobile, accessibility, lifecycle, context-loss, degraded/refused, security, and evidence-integrity automation.
+- Kept `phase10g.trajectory.v1`, parser semantics, static `viewer_scene.v2`, static `structure.viewer_3d`, and dependency tree unchanged; static-reference bonds remain partial and advanced trajectory science remains deferred.
+
 ## 2026-07-13 - Phase 10G-2 Trajectory Viewer
 
 - Added a real validated trajectory viewer using one shared Three.js engine with bounded dynamic frame updates rather than per-frame renderer reconstruction.

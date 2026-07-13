@@ -97,6 +97,8 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_trajectory_viewer(request, tools, data_profile):
+            plan = _mock_trajectory_viewer_plan(request)
         elif _should_generate_viewer_scene(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -1385,6 +1387,65 @@ def _has_structure_input(data_profile: DataProfile) -> bool:
                 return True
     dataset_type = str(getattr(data_profile, "datasetType", "") or "").lower()
     return "structure" in dataset_type or "cif" in dataset_type or "poscar" in dataset_type
+
+
+def _has_trajectory_input(data_profile: DataProfile) -> bool:
+    summary = getattr(data_profile, "trajectorySummary", None)
+    if isinstance(summary, dict):
+        try:
+            if int(summary.get("frames") or summary.get("frameCount") or 0) > 0:
+                return True
+        except (TypeError, ValueError):
+            pass
+    for obj in getattr(data_profile, "objects", None) or []:
+        if isinstance(obj, dict) and str(obj.get("objectType") or obj.get("object_type") or "").lower() == "trajectory":
+            return True
+    return "trajectory" in str(getattr(data_profile, "datasetType", "") or "").lower()
+
+
+def _should_generate_trajectory_viewer(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.trajectory_viewer") or not _has_trajectory_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    unsupported = (
+        "rdf", "radial distribution", "diffusion", "msd", "mean squared", "vacf",
+        "velocity distribution", "infer bond", "changing bond", "dynamic bond",
+        "edit frame", "trajectory editing", "trim", "merge", "cluster", "compare",
+        "video", "gif", "mp4", "扩散", "径向分布", "动态键", "编辑", "裁剪轨迹",
+    )
+    if any(marker in prompt for marker in unsupported):
+        return False
+    markers = (
+        "play this molecular dynamics trajectory", "play this trajectory", "trajectory viewer",
+        "inspect this relaxation trajectory frame by frame", "frame by frame",
+        "show the atomic motion", "atomic motion", "view this trajectory", "animate this trajectory",
+        "播放这个轨迹", "逐帧查看", "查看这个轨迹", "原子运动", "轨迹查看器",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _mock_trajectory_viewer_plan(request: PlannerRequest) -> dict[str, Any]:
+    artifact_types = ["trajectory_json", "trajectory_summary_json", "trajectory_report_json", "trajectory_manifest_json"]
+    step = {
+        "stepId": "step_001",
+        "toolId": "structure.trajectory_viewer",
+        "purpose": "Prepare validated trajectory artifacts for bounded interactive playback.",
+        "reason": "The request asks to inspect a validated trajectory with the formal trajectory viewer.",
+        "inputRefs": [{"refType": "normalized_object", "ref": "trajectory", "objectType": "Trajectory"}],
+        "params": {"playbackSpeed": 1, "loop": False, "supercell": [1, 1, 1], "showCell": True, "clipping": False, "performanceMode": "auto", "bondMode": "none"},
+        "output": {"artifactTypes": artifact_types},
+    }
+    expected = [
+        {"name": "trajectory.json", "type": "trajectory_json", "fromStepId": "step_001"},
+        {"name": "trajectory_summary.json", "type": "trajectory_summary_json", "fromStepId": "step_001"},
+        {"name": "trajectory_parse_report.json", "type": "trajectory_report_json", "fromStepId": "step_001"},
+        {"name": "trajectory_manifest.json", "type": "trajectory_manifest_json", "fromStepId": "step_001"},
+    ]
+    return _single_step_plan(request, step, expected)
 
 
 def _is_3d_viewer_request(prompt: str) -> bool:

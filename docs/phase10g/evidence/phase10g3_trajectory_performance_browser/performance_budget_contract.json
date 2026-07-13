@@ -1,0 +1,32 @@
+{
+  "desktop": {
+    "degraded_cache_bytes": 8388608,
+    "degraded_cache_frames": 4,
+    "degraded_fps": 15,
+    "degraded_instances": 768,
+    "degraded_values": 2000000,
+    "interactive_cache_bytes": 16777216,
+    "interactive_cache_frames": 7,
+    "interactive_fps": 30,
+    "interactive_instances": 384,
+    "interactive_values": 300000
+  },
+  "max_active_loops": 1,
+  "max_canvas_count": 1,
+  "max_context_count": 1,
+  "max_measurement_overlays": 1,
+  "max_pending_requests": 1,
+  "max_prefetch_requests": 0,
+  "mobile": {
+    "degraded_cache_bytes": 2097152,
+    "degraded_cache_frames": 2,
+    "degraded_fps": 15,
+    "degraded_instances": 384,
+    "degraded_values": 1000000,
+    "interactive_cache_bytes": 4194304,
+    "interactive_cache_frames": 3,
+    "interactive_fps": 15,
+    "interactive_instances": 192,
+    "interactive_values": 150000
+  }
+}

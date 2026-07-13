@@ -1,0 +1,127 @@
+{
+  "initial": {
+    "trajectory": {
+      "id": "sha256:c4850a3531806fab480eb2bc928400c865dc776d93ccdaf97b6cf78ab832d3c7",
+      "schema": "phase10g.trajectory.v1",
+      "kind": "geometry_optimization",
+      "frames": 3,
+      "atoms": 2,
+      "coordinateMode": "cartesian",
+      "wrapping": "unknown",
+      "latticeMode": "variable"
+    },
+    "viewer": {
+      "toolId": "structure.trajectory_viewer",
+      "currentFrame": 0,
+      "requestedFrame": 0,
+      "status": "paused",
+      "tier": "interactive",
+      "speed": 1,
+      "loop": false,
+      "mobile": false,
+      "maxPlaybackFps": 30,
+      "cache": {
+        "trajectoryId": "sha256:c4850a3531806fab480eb2bc928400c865dc776d93ccdaf97b6cf78ab832d3c7",
+        "maxFrames": 7,
+        "maxBytes": 16777216,
+        "size": 1,
+        "bytes": 832,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0,
+        "peakFrames": 1,
+        "peakBytes": 832,
+        "indices": [
+          0
+        ]
+      },
+      "pendingRequests": 0,
+      "peakPendingRequests": 0,
+      "maxPendingRequests": 1,
+      "prefetchRequests": 0,
+      "displayedInstances": 2,
+      "coordinateValues": 18,
+      "activeLoops": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "drawCalls": 4,
+      "geometries": 4,
+      "materials": 12,
+      "textures": 1,
+      "programs": 2
+    },
+    "timing": {
+      "frameMapMs": 0.10000000894069672,
+      "gpuUpdateMs": 0
+    }
+  },
+  "frame": {
+    "trajectory": {
+      "id": "sha256:c4850a3531806fab480eb2bc928400c865dc776d93ccdaf97b6cf78ab832d3c7",
+      "schema": "phase10g.trajectory.v1",
+      "kind": "geometry_optimization",
+      "frames": 3,
+      "atoms": 2,
+      "coordinateMode": "cartesian",
+      "wrapping": "unknown",
+      "latticeMode": "variable"
+    },
+    "viewer": {
+      "toolId": "structure.trajectory_viewer",
+      "currentFrame": 1,
+      "requestedFrame": 1,
+      "status": "paused",
+      "tier": "interactive",
+      "speed": 1,
+      "loop": false,
+      "mobile": false,
+      "maxPlaybackFps": 30,
+      "cache": {
+        "trajectoryId": "sha256:c4850a3531806fab480eb2bc928400c865dc776d93ccdaf97b6cf78ab832d3c7",
+        "maxFrames": 7,
+        "maxBytes": 16777216,
+        "size": 2,
+        "bytes": 1664,
+        "hits": 0,
+        "misses": 1,
+        "evictions": 0,
+        "peakFrames": 2,
+        "peakBytes": 1664,
+        "indices": [
+          0,
+          1
+        ]
+      },
+      "pendingRequests": 0,
+      "peakPendingRequests": 1,
+      "maxPendingRequests": 1,
+      "prefetchRequests": 0,
+      "displayedInstances": 2,
+      "coordinateValues": 18,
+      "activeLoops": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "drawCalls": 4,
+      "geometries": 4,
+      "materials": 12,
+      "textures": 1,
+      "programs": 2
+    },
+    "timing": {
+      "frameMapMs": 0.09999999403953552,
+      "gpuUpdateMs": 3.6
+    }
+  },
+  "graphics": {
+    "context": "webgl2",
+    "drawingBuffer": [
+      485,
+      418
+    ],
+    "compositedImage": [
+      485,
+      419
+    ],
+    "sampledColorCount": 9
+  }
+}

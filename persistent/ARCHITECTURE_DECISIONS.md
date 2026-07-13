@@ -1,5 +1,19 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10G3-FORMAL-TRAJECTORY-PRODUCT: Register a bounded canonical trajectory consumer
+
+### Decision
+
+Register `structure.trajectory_viewer` as the sole ordinary interactive trajectory identity. It consumes a validated `Trajectory` through persisted AnalysisPlan, Tool Registry, PlanValidator, QueueWorkerRuntime, and `TrajectoryViewerAdapter`, then emits the unchanged inert Phase 10G artifact family. Static `structure.viewer_3d` remains separate and `structure.trajectory_import` remains planner-hidden.
+
+Desktop and mobile performance tiers are application-owned. Displayed instances include renderer-local supercell multiplication; coordinate values, cache frames/bytes, pending requests, playback loops, canvases, contexts, overlays, DPR, and renderer resources are bounded. Work above the degraded tier is refused before WebGL initialization. Artifact data cannot set fps, cache, tier, shaders, modules, URLs, or budgets.
+
+Adapter launch/capability/budget provenance is persisted, but QueueWorkerRuntime retains authority over plan, tool, and call identity on key collisions. The frontend accepts only whitelisted launch metadata and revalidates the canonical artifact. One shared renderer updates bounded buffers, one pending seek slot coalesces requests, and cache keys include canonical trajectory identity.
+
+### Consequences
+
+Deterministic parser/planner/runtime captures and Chromium 150, Firefox 128, WebKit 18, mobile, accessibility, lifecycle, context-loss, rapid-seek, and zero-external-network evidence support formal bounded product readiness. Static-reference bonds remain `PARTIAL_READY`; local indexed/chunked storage, new formats, dynamic topology, analytics, editing, comparison, and video export remain separate decisions.
+
 ## ADR-10G2-TRAJECTORY-VIEWER: Reuse one static engine with bounded dynamic buffers
 
 Validated trajectory frames map to renderer-local display scenes. A single shared Three.js engine updates existing instanced atom matrices and line position attributes; frame changes do not recreate renderer, geometry, material, controls, camera, or React tree. Playback uses one capped timer, a bounded LRU mapped-frame cache, generation-token stale protection, and pause-on-hidden/context-loss semantics. Picks are ignored until a requested frame commits, and active clipping is recalculated against the committed frame.

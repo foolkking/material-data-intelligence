@@ -1,11 +1,18 @@
 # DESIGN_PROGRESS
 
+## 2026-07-13 Phase 10G-3 Trajectory Performance / Browser Evidence
+
+- Registered formal `structure.trajectory_viewer` with strict planner routing, PlanValidator inputs, bounded launch options, canonical trajectory artifacts, and capability-truth metadata.
+- Hardened trajectory-scoped LRU caching, one-slot seek coalescing, interactive/degraded/refused preflight, context retry, renderer metrics, mobile landscape detection, and bounded fallback output.
+- Captured deterministic real parser/planner/persisted-runtime artifacts and Chromium 150, Firefox 128, WebKit 18, portrait/landscape, accessibility, lifecycle, context-loss, and rapid-seek evidence.
+- Confirmed one canvas/context, bounded GPU resources and pending work, zero external requests, and no artifact execution; static-reference bonds remain `PARTIAL_READY` and indexed/chunked local storage remains deferred.
+
 ## 2026-07-13 Phase 10G-2 Trajectory Viewer
 
 - Added validated trajectory artifact preview with real Three.js frame navigation/playback and dynamic instanced-matrix/lattice-buffer updates.
 - Added stable atom/periodic instance identity, committed-frame picking/measurement and velocity/force inspection, renderer-local supercells, camera/clipping integration, bounded cache/stale guards, typed fallback, accessibility and detected mobile controls.
 - Chromium, Firefox, WebKit and mobile browser smoke pass with nonblank composited-canvas checks and per-page zero-error/network audits; frontend 132 passed and backend 413 passed / 22 skipped locally.
-- Static-reference bonds remain PARTIAL_READY and formal product registration/final performance closure remain deferred to G-3.
+- Static-reference bonds remain `PARTIAL_READY`; formal product registration and final bounded performance evidence were closed by Phase 10G-3.
 
 ## 2026-07-13 Phase 10G-1 Trajectory Parser / Adapter
 

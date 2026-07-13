@@ -1,0 +1,493 @@
+{
+  "browser": "firefox",
+  "version": "128.0",
+  "available": true,
+  "viewport": [
+    1440,
+    1100
+  ],
+  "fixed": {
+    "initial": {
+      "trajectory": {
+        "id": "sha256:3a9cddcd823a8728d93d704e44f21169ab9614fc714085dea67ad9c7aeefb008",
+        "schema": "phase10g.trajectory.v1",
+        "kind": "molecular_dynamics",
+        "frames": 64,
+        "atoms": 2,
+        "coordinateMode": "cartesian",
+        "wrapping": "unknown",
+        "latticeMode": "fixed"
+      },
+      "viewer": {
+        "toolId": "structure.trajectory_viewer",
+        "currentFrame": 0,
+        "requestedFrame": 0,
+        "status": "paused",
+        "tier": "interactive",
+        "speed": 1,
+        "loop": false,
+        "mobile": false,
+        "maxPlaybackFps": 30,
+        "cache": {
+          "trajectoryId": "sha256:3a9cddcd823a8728d93d704e44f21169ab9614fc714085dea67ad9c7aeefb008",
+          "maxFrames": 7,
+          "maxBytes": 16777216,
+          "size": 1,
+          "bytes": 832,
+          "hits": 0,
+          "misses": 0,
+          "evictions": 0,
+          "peakFrames": 1,
+          "peakBytes": 832,
+          "indices": [
+            0
+          ]
+        },
+        "pendingRequests": 0,
+        "peakPendingRequests": 0,
+        "maxPendingRequests": 1,
+        "prefetchRequests": 0,
+        "displayedInstances": 2,
+        "coordinateValues": 384,
+        "activeLoops": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "drawCalls": 3,
+        "geometries": 4,
+        "materials": 11,
+        "textures": 1,
+        "programs": 2
+      },
+      "timing": {
+        "frameMapMs": 0,
+        "gpuUpdateMs": 0
+      }
+    },
+    "stress": [
+      {
+        "cycle": 0,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 1,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 2,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 3,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 4,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 5,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 6,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 7,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 8,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 9,
+        "currentFrame": 0,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      }
+    ],
+    "rapidSeek": {
+      "requested": 63,
+      "committed": 63,
+      "elapsedMs": 197,
+      "peakPendingRequests": 1,
+      "pendingRequests": 0
+    },
+    "measurement": "1.785 angstrom | frame 63",
+    "expanded": {
+      "trajectory": {
+        "id": "sha256:3a9cddcd823a8728d93d704e44f21169ab9614fc714085dea67ad9c7aeefb008",
+        "schema": "phase10g.trajectory.v1",
+        "kind": "molecular_dynamics",
+        "frames": 64,
+        "atoms": 2,
+        "coordinateMode": "cartesian",
+        "wrapping": "unknown",
+        "latticeMode": "fixed"
+      },
+      "viewer": {
+        "toolId": "structure.trajectory_viewer",
+        "currentFrame": 63,
+        "requestedFrame": 63,
+        "status": "paused",
+        "tier": "interactive",
+        "speed": 4,
+        "loop": true,
+        "mobile": false,
+        "maxPlaybackFps": 30,
+        "cache": {
+          "trajectoryId": "sha256:3a9cddcd823a8728d93d704e44f21169ab9614fc714085dea67ad9c7aeefb008",
+          "maxFrames": 7,
+          "maxBytes": 16777216,
+          "size": 1,
+          "bytes": 3072,
+          "hits": 0,
+          "misses": 0,
+          "evictions": 0,
+          "peakFrames": 1,
+          "peakBytes": 3072,
+          "indices": [
+            63
+          ]
+        },
+        "pendingRequests": 0,
+        "peakPendingRequests": 0,
+        "maxPendingRequests": 1,
+        "prefetchRequests": 0,
+        "displayedInstances": 16,
+        "coordinateValues": 384,
+        "activeLoops": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "drawCalls": 3,
+        "geometries": 4,
+        "materials": 11,
+        "textures": 1,
+        "programs": 2
+      },
+      "timing": {
+        "frameMapMs": 0,
+        "gpuUpdateMs": 0
+      }
+    },
+    "recovered": {
+      "trajectory": {
+        "id": "sha256:3a9cddcd823a8728d93d704e44f21169ab9614fc714085dea67ad9c7aeefb008",
+        "schema": "phase10g.trajectory.v1",
+        "kind": "molecular_dynamics",
+        "frames": 64,
+        "atoms": 2,
+        "coordinateMode": "cartesian",
+        "wrapping": "unknown",
+        "latticeMode": "fixed"
+      },
+      "viewer": {
+        "toolId": "structure.trajectory_viewer",
+        "currentFrame": 63,
+        "requestedFrame": 63,
+        "status": "paused",
+        "tier": "interactive",
+        "speed": 4,
+        "loop": true,
+        "mobile": false,
+        "maxPlaybackFps": 30,
+        "cache": {
+          "trajectoryId": "sha256:3a9cddcd823a8728d93d704e44f21169ab9614fc714085dea67ad9c7aeefb008",
+          "maxFrames": 7,
+          "maxBytes": 16777216,
+          "size": 1,
+          "bytes": 3072,
+          "hits": 0,
+          "misses": 0,
+          "evictions": 0,
+          "peakFrames": 1,
+          "peakBytes": 3072,
+          "indices": [
+            63
+          ]
+        },
+        "pendingRequests": 0,
+        "peakPendingRequests": 0,
+        "maxPendingRequests": 1,
+        "prefetchRequests": 0,
+        "displayedInstances": 16,
+        "coordinateValues": 384,
+        "activeLoops": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "drawCalls": 3,
+        "geometries": 4,
+        "materials": 11,
+        "textures": 1,
+        "programs": 2
+      },
+      "timing": {
+        "frameMapMs": 0,
+        "gpuUpdateMs": 0
+      }
+    },
+    "graphics": {
+      "initial": {
+        "context": "webgl2",
+        "drawingBuffer": [
+          485,
+          418
+        ],
+        "compositedImage": [
+          486,
+          419
+        ],
+        "sampledColorCount": 9
+      },
+      "recovered": {
+        "context": "webgl2",
+        "drawingBuffer": [
+          485,
+          418
+        ],
+        "compositedImage": [
+          486,
+          419
+        ],
+        "sampledColorCount": 9
+      }
+    }
+  },
+  "variable": {
+    "initial": {
+      "trajectory": {
+        "id": "sha256:c4850a3531806fab480eb2bc928400c865dc776d93ccdaf97b6cf78ab832d3c7",
+        "schema": "phase10g.trajectory.v1",
+        "kind": "geometry_optimization",
+        "frames": 3,
+        "atoms": 2,
+        "coordinateMode": "cartesian",
+        "wrapping": "unknown",
+        "latticeMode": "variable"
+      },
+      "viewer": {
+        "toolId": "structure.trajectory_viewer",
+        "currentFrame": 0,
+        "requestedFrame": 0,
+        "status": "paused",
+        "tier": "interactive",
+        "speed": 1,
+        "loop": false,
+        "mobile": false,
+        "maxPlaybackFps": 30,
+        "cache": {
+          "trajectoryId": "sha256:c4850a3531806fab480eb2bc928400c865dc776d93ccdaf97b6cf78ab832d3c7",
+          "maxFrames": 7,
+          "maxBytes": 16777216,
+          "size": 1,
+          "bytes": 832,
+          "hits": 0,
+          "misses": 0,
+          "evictions": 0,
+          "peakFrames": 1,
+          "peakBytes": 832,
+          "indices": [
+            0
+          ]
+        },
+        "pendingRequests": 0,
+        "peakPendingRequests": 0,
+        "maxPendingRequests": 1,
+        "prefetchRequests": 0,
+        "displayedInstances": 2,
+        "coordinateValues": 18,
+        "activeLoops": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "drawCalls": 4,
+        "geometries": 4,
+        "materials": 12,
+        "textures": 1,
+        "programs": 2
+      },
+      "timing": {
+        "frameMapMs": 1,
+        "gpuUpdateMs": 0
+      }
+    },
+    "frame": {
+      "trajectory": {
+        "id": "sha256:c4850a3531806fab480eb2bc928400c865dc776d93ccdaf97b6cf78ab832d3c7",
+        "schema": "phase10g.trajectory.v1",
+        "kind": "geometry_optimization",
+        "frames": 3,
+        "atoms": 2,
+        "coordinateMode": "cartesian",
+        "wrapping": "unknown",
+        "latticeMode": "variable"
+      },
+      "viewer": {
+        "toolId": "structure.trajectory_viewer",
+        "currentFrame": 1,
+        "requestedFrame": 1,
+        "status": "paused",
+        "tier": "interactive",
+        "speed": 1,
+        "loop": false,
+        "mobile": false,
+        "maxPlaybackFps": 30,
+        "cache": {
+          "trajectoryId": "sha256:c4850a3531806fab480eb2bc928400c865dc776d93ccdaf97b6cf78ab832d3c7",
+          "maxFrames": 7,
+          "maxBytes": 16777216,
+          "size": 2,
+          "bytes": 1664,
+          "hits": 0,
+          "misses": 1,
+          "evictions": 0,
+          "peakFrames": 2,
+          "peakBytes": 1664,
+          "indices": [
+            0,
+            1
+          ]
+        },
+        "pendingRequests": 0,
+        "peakPendingRequests": 1,
+        "maxPendingRequests": 1,
+        "prefetchRequests": 0,
+        "displayedInstances": 2,
+        "coordinateValues": 18,
+        "activeLoops": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "drawCalls": 4,
+        "geometries": 4,
+        "materials": 12,
+        "textures": 1,
+        "programs": 2
+      },
+      "timing": {
+        "frameMapMs": 1,
+        "gpuUpdateMs": 3
+      }
+    },
+    "graphics": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        485,
+        418
+      ],
+      "compositedImage": [
+        486,
+        419
+      ],
+      "sampledColorCount": 9
+    }
+  },
+  "degraded": {
+    "trajectory": {
+      "id": "sha256:37d52ac76f9ee343c6d89958fae3a45ddbdc98b721545b7b1320fe8e07f2fb76",
+      "schema": "phase10g.trajectory.v1",
+      "kind": "molecular_dynamics",
+      "frames": 2,
+      "atoms": 400,
+      "coordinateMode": "cartesian",
+      "wrapping": "unknown",
+      "latticeMode": "fixed"
+    },
+    "viewer": {
+      "toolId": "structure.trajectory_viewer",
+      "currentFrame": 0,
+      "requestedFrame": 0,
+      "status": "degraded",
+      "tier": "degraded",
+      "speed": 1,
+      "loop": false,
+      "mobile": false,
+      "maxPlaybackFps": 15,
+      "cache": {
+        "trajectoryId": "sha256:37d52ac76f9ee343c6d89958fae3a45ddbdc98b721545b7b1320fe8e07f2fb76",
+        "maxFrames": 4,
+        "maxBytes": 8388608,
+        "size": 1,
+        "bytes": 64512,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0,
+        "peakFrames": 1,
+        "peakBytes": 64512,
+        "indices": [
+          0
+        ]
+      },
+      "pendingRequests": 0,
+      "peakPendingRequests": 0,
+      "maxPendingRequests": 1,
+      "prefetchRequests": 0,
+      "displayedInstances": 400,
+      "coordinateValues": 2400,
+      "activeLoops": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "drawCalls": 3,
+      "geometries": 4,
+      "materials": 11,
+      "textures": 1,
+      "programs": 2
+    },
+    "timing": {
+      "frameMapMs": 2,
+      "gpuUpdateMs": 0
+    }
+  },
+  "refused": {
+    "code": "TRAJECTORY_VIEWER_BUDGET_EXCEEDED",
+    "canvasCount": 0,
+    "identity": "Formal product path: structure.trajectory_viewer"
+  },
+  "invalid": {
+    "trajectoryPanel": false,
+    "canvasCount": 0
+  },
+  "switching": null,
+  "accessibility": null,
+  "mobile": null,
+  "externalRequests": 0,
+  "consoleErrors": [],
+  "pageErrors": []
+}

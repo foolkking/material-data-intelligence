@@ -1,0 +1,9 @@
+{
+  "Calculate ensemble RDF from this trajectory.": "ml.basic_metrics",
+  "Compute diffusion coefficient and MSD.": "ml.basic_metrics",
+  "Edit frame 20 and trim this trajectory.": "ml.basic_metrics",
+  "Infer changing chemical bonds in every frame.": "ml.basic_metrics",
+  "Inspect this relaxation trajectory frame by frame.": "structure.trajectory_viewer",
+  "Play this molecular dynamics trajectory.": "structure.trajectory_viewer",
+  "Show the atomic motion in this extxyz trajectory.": "structure.trajectory_viewer"
+}

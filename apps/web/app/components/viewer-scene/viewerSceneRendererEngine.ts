@@ -158,6 +158,7 @@ export async function createThreeViewerEngine(args: {
   threeScene.add(ambient, key);
 
   let disposed = false;
+  let lastDynamicUpdateMs = 0;
   let contextLost = false;
   const initializationMs = performance.now() - startedAt;
   let firstFrameMs = 0;
@@ -224,6 +225,7 @@ export async function createThreeViewerEngine(args: {
     selectedSites=Object.freeze([]); selectedBondId=null; setSelection([]); setBondSelection(null); resetCamera();
   };
   const updateDynamicScene: ViewerRendererEngine["updateDynamicScene"] = (nextScene) => {
+    const updateStarted = performance.now();
     if (disposed || contextLost) throw new ViewerRendererError("VIEWER_RENDERER_CONTEXT_LOST", "The graphics context is unavailable for a frame update.");
     const nextGroups = new Map<string, typeof nextScene.atoms>();
     for (const atom of nextScene.atoms) {
@@ -257,6 +259,7 @@ export async function createThreeViewerEngine(args: {
     setSelection(selectedSites);
     setBondSelection(selectedBondId);
     render();
+    lastDynamicUpdateMs = performance.now() - updateStarted;
     return Object.freeze({ atomMatricesUpdated, lineVerticesUpdated: bondPoints.length + 30 });
   };
   const keyboardCamera: ViewerRendererEngine["keyboardCamera"] = (action) => {
@@ -408,6 +411,8 @@ export async function createThreeViewerEngine(args: {
       sceneObjects: root.children.length + 3,
       initializationMs: round(initializationMs),
       firstFrameMs: round(firstFrameMs),
+      programs: renderer.info.programs?.length ?? 0,
+      lastDynamicUpdateMs: round(lastDynamicUpdateMs),
     }),
   });
   publishEvidence = () => {

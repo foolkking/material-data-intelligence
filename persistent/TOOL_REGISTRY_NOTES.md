@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-13 Phase 10G-3 Formal Trajectory Viewer
+
+- Added unique `structure.trajectory_viewer` using `TrajectoryViewerAdapter`, one validated `Trajectory` input, strict launch-only params, and the existing four inert trajectory JSON artifact types.
+- Natural interactive trajectory requests route to the formal tool in English and Chinese; analytics, editing, dynamic-bond, URL/streaming, phonon, volumetric, and static-viewer requests are excluded.
+- `structure.trajectory_import` remains the planner-hidden import identity, while `structure.viewer_3d` remains static. The identities are not aliases and do not share planner intent.
+- Adapter provenance declares exact launch options, app-owned performance budgets, displayed-instance estimate, and capability truth. QueueWorkerRuntime preserves this metadata while retaining authority over plan/tool/call identity fields.
+- The formal tool supports validated playback, picking/current-frame measurement, bounded renderer-local supercells, clipping/camera, and static-reference bonds at `PARTIAL_READY`; it does not claim dynamic bonds, trajectory analytics/editing, video export, or remote streaming.
+
 ## 2026-07-13 Phase 10G-1 Internal Import
 
 - Added unique `structure.trajectory_import` using `TrajectoryImportAdapter`, `Trajectory` input, strict empty params, and four inert trajectory JSON artifact types.

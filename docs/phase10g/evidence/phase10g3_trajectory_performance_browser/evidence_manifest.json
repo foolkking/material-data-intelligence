@@ -1,0 +1,43 @@
+{
+  "schema_version": "phase10g3.trajectory_performance_evidence.v1",
+  "api_capture": "real_in_memory_planner_job_runtime",
+  "browser_replay": "local_capture_backed",
+  "browsers": [
+    {
+      "browser": "chromium",
+      "version": "150.0.7871.115",
+      "available": true
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "available": true
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "available": true
+    }
+  ],
+  "viewports": [
+    [
+      1440,
+      1100
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      844,
+      390
+    ]
+  ],
+  "markers": [
+    "TRAJECTORY_FORMAL_API_EVIDENCE_PASS",
+    "TRAJECTORY_PERFORMANCE_BROWSER_EVIDENCE_PASS",
+    "TRAJECTORY_MOBILE_PERFORMANCE_EVIDENCE_PASS",
+    "NO_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ]
+}

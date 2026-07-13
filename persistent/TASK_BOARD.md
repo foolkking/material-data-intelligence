@@ -1,10 +1,18 @@
 # TASK_BOARD
 
+## Phase 10G-3 Trajectory Performance / Browser Evidence Completed
+
+- [x] Registered unique formal `structure.trajectory_viewer` with strict product params, planner routes, PlanValidator resources, runtime adapter, and canonical artifact outputs.
+- [x] Added desktop/mobile interactive, degraded, and refused budgets; trajectory-scoped bounded cache; one-slot seek coalescing; complete metrics; context retry; and responsive/mobile hardening.
+- [x] Captured deterministic real parser/planner/runtime API evidence and Chromium/Firefox/WebKit plus mobile, accessibility, lifecycle, context-loss, rapid-seek, degraded/refused, console, and network evidence.
+- [x] Added CI evidence-integrity replay and service-backed formal-tool coverage without new dependencies, real LLM use, remote resources, or static viewer contract changes.
+- [ ] Static-reference bonds remain `PARTIAL_READY`; dynamic bonds, analytics, editing, video export, additional formats, and local indexed/chunked storage require separate phases.
+
 ## Phase 10G-2 Trajectory Viewer Completed
 
 - [x] Validated artifact loading, dynamic GPU updates, frame navigation, playback speed/loop and stable identity.
 - [x] Current-frame picking/measurement, variable lattice, display-only supercell, bounded cache, stale protection, fallback, accessibility/mobile and three-browser smoke.
-- [ ] Final long-trajectory performance acceptance, static-reference bond completion and formal planner-visible product registration (Phase 10G-3).
+- [x] Phase 10G-3 closed formal product registration and bounded performance evidence; static-reference bonds remain explicitly `PARTIAL_READY` rather than overstated.
 
 ## Phase 10G-1 Trajectory Parser / Adapter Completed
 

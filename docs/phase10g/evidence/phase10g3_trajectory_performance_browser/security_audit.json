@@ -1,0 +1,13 @@
+{
+  "artifactJavaScript": false,
+  "artifactHtml": false,
+  "externalFrames": false,
+  "artifactControlledFps": false,
+  "artifactControlledCache": false,
+  "artifactControlledTier": false,
+  "dynamicBonds": false,
+  "analyticsExecution": false,
+  "externalRequests": 0,
+  "result": "PASS",
+  "marker": "NO_SECRET_PATTERN_HITS"
+}

@@ -1,0 +1,85 @@
+{
+  "cycles": 10,
+  "results": [
+    {
+      "cycle": 0,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    },
+    {
+      "cycle": 1,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    },
+    {
+      "cycle": 2,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    },
+    {
+      "cycle": 3,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    },
+    {
+      "cycle": 4,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    },
+    {
+      "cycle": 5,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    },
+    {
+      "cycle": 6,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    },
+    {
+      "cycle": 7,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    },
+    {
+      "cycle": 8,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    },
+    {
+      "cycle": 9,
+      "currentFrame": 0,
+      "activeLoops": 0,
+      "pending": 0,
+      "geometries": 4,
+      "materials": 11
+    }
+  ]
+}

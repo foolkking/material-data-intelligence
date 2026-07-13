@@ -101,6 +101,8 @@ export type ViewerRendererMetrics = {
   readonly sceneObjects: number;
   readonly initializationMs: number;
   readonly firstFrameMs: number;
+  readonly programs?: number;
+  readonly lastDynamicUpdateMs?: number;
 };
 
 export type ViewerRendererSnapshot = {

@@ -97,7 +97,7 @@ def _cost_for(entry: dict[str, Any]) -> str:
 
 
 def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
-    if entry["tool_id"] == "structure.trajectory_import":
+    if entry["tool_id"] in {"structure.trajectory_import", "structure.trajectory_viewer"}:
         return 120, 300
     if entry["tool_id"] == "structure.viewer_3d":
         return 90, 180
@@ -108,12 +108,17 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
-    if tool_id == "structure.trajectory_import":
+    if tool_id in {"structure.trajectory_import", "structure.trajectory_viewer"}:
         return {
             "maxAtoms": 4096,
             "maxFrames": 10000,
             "maxCoordinateValues": 12000000,
             "maxJsonBytes": 64000000,
+            "maxDisplayedInstances": 768,
+            "maxCacheFrames": 7,
+            "maxCacheBytes": 16777216,
+            "maxPendingFrameRequests": 1,
+            "maxPlaybackFps": 30,
         }
     if tool_id in {"structure.viewer_scene", "structure.viewer_3d"}:
         return {
@@ -167,7 +172,7 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
     tool_id = entry["tool_id"]
-    if tool_id == "structure.trajectory_import":
+    if tool_id in {"structure.trajectory_import", "structure.trajectory_viewer"}:
         return ToolInputSchema(
             periodicity="any",
             inputOptions=[
@@ -283,6 +288,29 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
     if tool_id == "structure.trajectory_import":
         return {"type": "object", "additionalProperties": False, "properties": {}}
+    if tool_id == "structure.trajectory_viewer":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "playbackSpeed": {"enum": [0.25, 0.5, 1, 2, 4]},
+                "loop": {"type": "boolean"},
+                "supercell": {
+                    "type": "array",
+                    "prefixItems": [
+                        {"type": "integer", "minimum": 1, "maximum": 3},
+                        {"type": "integer", "minimum": 1, "maximum": 3},
+                        {"type": "integer", "minimum": 1, "maximum": 3},
+                    ],
+                    "minItems": 3,
+                    "maxItems": 3,
+                },
+                "showCell": {"type": "boolean"},
+                "clipping": {"type": "boolean"},
+                "performanceMode": {"const": "auto"},
+                "bondMode": {"const": "none"},
+            },
+        }
     composition_count_mode = {"enum": ["occurrence", "stoichiometric", "fractional", "composition"]}
     formula_column_props = {
         "formulaColumn": {"type": "string"},

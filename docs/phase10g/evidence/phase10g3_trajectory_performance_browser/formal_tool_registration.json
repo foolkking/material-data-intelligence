@@ -1,0 +1,79 @@
+{
+  "adapter": "TrajectoryViewerAdapter",
+  "artifact_types": [
+    "trajectory_json",
+    "trajectory_summary_json",
+    "trajectory_report_json",
+    "trajectory_manifest_json"
+  ],
+  "deterministic": true,
+  "display_target": "trajectory",
+  "input_object_type": "Trajectory",
+  "network_access": false,
+  "params_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "bondMode": {
+        "const": "none"
+      },
+      "clipping": {
+        "type": "boolean"
+      },
+      "loop": {
+        "type": "boolean"
+      },
+      "performanceMode": {
+        "const": "auto"
+      },
+      "playbackSpeed": {
+        "enum": [
+          0.25,
+          0.5,
+          1,
+          2,
+          4
+        ]
+      },
+      "showCell": {
+        "type": "boolean"
+      },
+      "supercell": {
+        "maxItems": 3,
+        "minItems": 3,
+        "prefixItems": [
+          {
+            "maximum": 3,
+            "minimum": 1,
+            "type": "integer"
+          },
+          {
+            "maximum": 3,
+            "minimum": 1,
+            "type": "integer"
+          },
+          {
+            "maximum": 3,
+            "minimum": 1,
+            "type": "integer"
+          }
+        ],
+        "type": "array"
+      }
+    },
+    "type": "object"
+  },
+  "resource_limits": {
+    "maxAtoms": 4096,
+    "maxCacheBytes": 16777216,
+    "maxCacheFrames": 7,
+    "maxCoordinateValues": 12000000,
+    "maxDisplayedInstances": 768,
+    "maxFrames": 10000,
+    "maxJsonBytes": 64000000,
+    "maxPendingFrameRequests": 1,
+    "maxPlaybackFps": 30
+  },
+  "stage": "mvp",
+  "tool_id": "structure.trajectory_viewer",
+  "unique_count": 1
+}

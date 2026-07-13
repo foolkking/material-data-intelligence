@@ -1,0 +1,14 @@
+{
+  "regionLabel": "Trajectory viewer",
+  "playName": "Play trajectory",
+  "sliderText": "Frame 2 of 64",
+  "liveRegion": "polite",
+  "formalTitle": "Formal structure.trajectory_viewer product",
+  "horizontalOverflow": false,
+  "viewport": [
+    720,
+    900
+  ],
+  "zoomEquivalent": "200_percent_from_1440_css_width",
+  "localOverflow": []
+}

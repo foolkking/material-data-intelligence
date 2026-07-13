@@ -1,0 +1,36 @@
+{
+  "approved_defaults": {
+    "errors": [],
+    "ok": true
+  },
+  "arbitrary_renderer": {
+    "errors": [
+      "PARAMS_SCHEMA_INVALID"
+    ],
+    "ok": false
+  },
+  "dynamic_bonds": {
+    "errors": [
+      "PARAMS_SCHEMA_INVALID"
+    ],
+    "ok": false
+  },
+  "editing": {
+    "errors": [
+      "PARAMS_SCHEMA_INVALID"
+    ],
+    "ok": false
+  },
+  "external_frame": {
+    "errors": [
+      "PARAMS_SCHEMA_INVALID"
+    ],
+    "ok": false
+  },
+  "supercell_over_cap": {
+    "errors": [
+      "PARAMS_SCHEMA_INVALID"
+    ],
+    "ok": false
+  }
+}

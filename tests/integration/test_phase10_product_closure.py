@@ -19,14 +19,22 @@ from mdi_api.repositories import InMemoryRepositoryBundle, SqlAlchemyRepositoryB
 from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
 from mdi_artifact_core import (
     VIEWER_SCHEMA_COMPATIBILITY,
+    validate_trajectory,
+    validate_trajectory_manifest,
+    validate_trajectory_summary,
     validate_viewer_scene,
     validate_viewer_scene_manifest,
 )
 from mdi_llm import MockLLMProvider, PlannerRequest
+from mdi_material_parsers import parse_file
 from mdi_schemas import DataProfile
 from mdi_tool_registry import load_manifests
 from mdi_tool_registry.plan_validator import validate_plan
 from mdi_workers import QueueWorkerRuntime, RedisRQQueueBackend
+
+
+ROOT = Path(__file__).resolve().parents[2]
+TRAJECTORY_FIXTURE = ROOT / "docs" / "phase10g" / "fixtures" / "trajectory_import" / "fixed_lattice_md.extxyz"
 
 
 PORTFOLIO = (
@@ -111,6 +119,27 @@ def test_phase10_determinism_capability_and_compatibility_closure(tmp_path: Path
         assert forbidden not in combined
 
 
+def test_phase10_formal_trajectory_viewer_product_closure(tmp_path: Path) -> None:
+    result = _run_in_memory_product_job(
+        "Play this molecular dynamics trajectory.",
+        _trajectory_profile(),
+        {"trajectory": _trajectory_object()},
+        tmp_path / "trajectory-viewer",
+    )
+    assert result["tool_id"] == "structure.trajectory_viewer"
+    assert result["worker_status"] == "completed"
+    assert result["tool_call_count"] == 1
+    assert result["artifact_names"] == {
+        "trajectory.json",
+        "trajectory_summary.json",
+        "trajectory_parse_report.json",
+        "trajectory_manifest.json",
+    }
+    assert validate_trajectory(_json_artifact(result, "trajectory.json")).valid
+    assert validate_trajectory_summary(_json_artifact(result, "trajectory_summary.json")).valid
+    assert validate_trajectory_manifest(_json_artifact(result, "trajectory_manifest.json")).valid
+
+
 @pytest.mark.integration
 def test_phase10_service_backed_formal_viewer_product_closure(tmp_path: Path) -> None:
     if os.getenv("MDI_RUN_INTEGRATION") != "1":
@@ -153,6 +182,72 @@ def test_phase10_service_backed_formal_viewer_product_closure(tmp_path: Path) ->
     assert len(calls) == 1 and calls[0]["toolId"] == "structure.viewer_3d"
     assert {item["name"] for item in artifacts} == {"viewer_scene.json", "viewer_scene_manifest.json", "summary.md", "recipe.json"}
     assert all(item["storageProvider"] == "s3" and storage.exists(item["storageKey"]) for item in artifacts)
+    engine.dispose()
+
+
+@pytest.mark.integration
+def test_phase10_service_backed_formal_trajectory_viewer_product_closure(tmp_path: Path) -> None:
+    if os.getenv("MDI_RUN_INTEGRATION") != "1":
+        pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
+    database_url = os.getenv("MDI_TEST_DATABASE_URL") or os.getenv("DATABASE_URL")
+    redis_url = os.getenv("REDIS_URL") or os.getenv("MDI_REDIS_URL")
+    if not database_url or "postgres" not in database_url or not redis_url:
+        pytest.skip("Service-backed Phase 10 trajectory environment is incomplete")
+
+    engine = create_engine(database_url, future=True)
+    metadata.create_all(engine)
+    repos = SqlAlchemyRepositoryBundle.create(engine)
+    suffix = uuid.uuid4().hex[:10]
+    project_id = f"project_phase10_trajectory_{suffix}"
+    dataset_id = f"dataset_phase10_trajectory_{suffix}"
+    profile_id = f"profile_phase10_trajectory_{suffix}"
+    repos.projects.save({"id": project_id, "name": project_id, "createdBy": "test_user"})
+    repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": dataset_id, "createdBy": "test_user"})
+
+    profile = _trajectory_profile(dataset_id=dataset_id, profile_id=profile_id)
+    plan = _planner_plan("Play this molecular dynamics trajectory.", profile)
+    assert plan["steps"][0]["toolId"] == "structure.trajectory_viewer"
+    assert validate_plan(plan, registry=load_manifests()).ok
+    storage = _minio_storage(f"phase10-trajectory-{suffix}")
+    runtime = QueueWorkerRuntime(
+        repository_factory=create_repository_factory(load_settings()),
+        queue_backend=RedisRQQueueBackend(redis_url=redis_url, queue_name="mdi-test-phase10-trajectory"),
+        artifact_storage=storage,
+        registry=load_manifests(),
+        artifact_root=tmp_path / "adapter-artifacts",
+    )
+    created = planner_jobs(
+        PlannerJobsRequest(
+            userPrompt="Play this molecular dynamics trajectory.",
+            projectId=project_id,
+            datasetId=dataset_id,
+            profileId=profile_id,
+            enqueue=True,
+        ),
+        provider=MockLLMProvider(fixed_plan=plan),
+        repositories=repos,
+        queue_runtime=runtime,
+        registry=load_manifests(),
+    )
+    assert created.ok and created.job_id and created.plan_id and created.enqueued
+    result = runtime.handle_job(created.job_id, object_store={"trajectory": _trajectory_object()})
+    artifacts = repos.artifacts.list_for_job(created.job_id)
+    calls = repos.tool_calls.list_for_job(created.job_id)
+    assert result.status == "completed"
+    assert len(calls) == 1 and calls[0]["toolId"] == "structure.trajectory_viewer"
+    assert {item["name"] for item in artifacts} == {
+        "trajectory.json",
+        "trajectory_summary.json",
+        "trajectory_parse_report.json",
+        "trajectory_manifest.json",
+    }
+    assert all(item["storageProvider"] == "s3" and storage.exists(item["storageKey"]) for item in artifacts)
+    trajectory_record = next(item for item in artifacts if item["name"] == "trajectory.json")
+    summary_record = next(item for item in artifacts if item["name"] == "trajectory_summary.json")
+    manifest_record = next(item for item in artifacts if item["name"] == "trajectory_manifest.json")
+    assert validate_trajectory(storage.get_json(trajectory_record["storageKey"])).valid
+    assert validate_trajectory_summary(storage.get_json(summary_record["storageKey"])).valid
+    assert validate_trajectory_manifest(storage.get_json(manifest_record["storageKey"])).valid
     engine.dispose()
 
 
@@ -233,6 +328,24 @@ def _structure_profile(*, dataset_id: str = "dataset_structure", profile_id: str
         "structureSummary": {"nStructures": 1, "elements": ["H"], "formulaStats": {"total": 1, "uniqueCount": 1}},
         "qualityIssues": [], "recommendedTasks": [], "createdAt": "2026-07-13T00:00:00+00:00",
     })
+
+
+def _trajectory_profile(
+    *,
+    dataset_id: str = "dataset_trajectory",
+    profile_id: str = "profile_trajectory",
+) -> DataProfile:
+    return DataProfile.model_validate({
+        "schemaVersion": "0.1", "profileId": profile_id, "datasetId": dataset_id, "version": "1", "datasetType": "trajectory",
+        "files": [{"path": "trajectory.extxyz", "format": "extxyz", "sizeBytes": 1024}],
+        "objects": [{"id": "trajectory", "objectType": "Trajectory"}],
+        "trajectorySummary": {"frames": 3, "atoms": 2},
+        "qualityIssues": [], "recommendedTasks": [], "createdAt": "2026-07-13T00:00:00+00:00",
+    })
+
+
+def _trajectory_object() -> Any:
+    return parse_file(TRAJECTORY_FIXTURE, dataset_id="dataset_trajectory", file_id="trajectory").objects[0]
 
 
 def _minio_storage(prefix: str) -> S3CompatibleArtifactStorage:

@@ -458,6 +458,10 @@ class QueueWorkerRuntime:
             )
         else:
             metadata = _metadata_from_record(record, storage_key=storage_key, content_type=content_type)
+        artifact_metadata = dict(record.get("metadata") or {})
+        adapter_provenance = artifact_metadata.get("provenance")
+        if not isinstance(adapter_provenance, Mapping):
+            adapter_provenance = {}
         return {
             "id": artifact_id,
             "projectId": project_id,
@@ -476,11 +480,16 @@ class QueueWorkerRuntime:
             "contentHash": str(record.get("contentHash") or metadata.sha256),
             "sha256": metadata.sha256,
             "metadata": {
-                **dict(record.get("metadata") or {}),
+                **artifact_metadata,
                 "storageProvider": metadata.storage_provider,
                 "bucket": metadata.bucket,
                 "createdAt": metadata.created_at,
-                "provenance": {"toolId": tool_id, "toolCallId": tool_call_id, **_plan_provenance(plan_record)},
+                "provenance": {
+                    **dict(adapter_provenance),
+                    "toolId": tool_id,
+                    "toolCallId": tool_call_id,
+                    **_plan_provenance(plan_record),
+                },
             },
         }
 

@@ -1210,3 +1210,19 @@ The shared artifact enum adds `trajectory_json`, `trajectory_summary_json`,
 `trajectory_report_json`, and `trajectory_manifest_json`. The canonical manifest
 hashes trajectory and summary; artifact listing supplies report and manifest
 identity without a circular manifest self-hash. No static viewer schema changes.
+
+## Phase 10G-3 Addendum: formal trajectory viewer product metadata
+
+Phase 10G-3 does not change the trajectory, frame, summary, parse-report, or
+manifest contracts. `structure.trajectory_viewer` is the unique formal product
+identity and emits the same four inert JSON artifacts as the internal import
+adapter. Persisted Artifact metadata may additionally carry application-owned
+viewer launch options, exact capability truth, and desktop/mobile resource
+budgets; runtime-owned tool/plan identity overrides any colliding adapter key.
+
+Frontend launch mapping accepts only the strict registered speed, loop,
+1-through-3 supercell, cell, clipping, `performanceMode=auto`, and
+`bondMode=none` values. Performance tier, fps, cache, pending-request limits,
+WebGL capability, and renderer implementation remain client-owned and are not
+canonical trajectory fields. Dynamic bonds, analytics, editing, video, remote
+frames, and executable assets remain unsupported.
