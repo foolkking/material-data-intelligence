@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10G-1：Trajectory Parser / Adapter
 
 进入 Phase 10G-1：Trajectory Parser / Adapter。
@@ -3309,6 +3309,34 @@ FAIL包括：
 -   Phase 10 closure回退
 
 -   CI失败却声明PASS
+
+完成时间：2026-07-13 20:06:55 +08:00
+
+修改文件：
+
+-   `packages/material-parsers/mdi_material_parsers/trajectory.py`、`parsers.py`和package exports
+-   `packages/adapters/mdi_adapters/platform_builtin/trajectory.py`、adapter registry和Tool Registry manifest/loader
+-   shared Python/TypeScript/JSON artifact type declarations
+-   `tests/test_phase10g1_trajectory_parser_adapter.py`和`tests/test_manifest_loader.py`
+-   `docs/phase10g/fixtures/trajectory_import/`、`docs/phase10g/evidence/phase10g1_trajectory_parser_adapter/`及Phase 10G-1 docs
+-   shared schema docs、docs index和persistent project records
+
+修改摘要：
+
+-   实现受64 MB输入、行、metadata、frame、atom、property和numeric caps约束的UTF-8 multi-frame EXTXYZ及canonical trajectory JSON parser。
+-   固定atom identity/reorder、lattice mode、coordinate/wrapping/time/unit/property normalization，不伪造缺失lattice或unknown units，invalid/cancel/over-cap均不产生partial artifacts。
+-   新增planner-hidden `structure.trajectory_import`，经PlanValidator、Tool Registry和QueueWorkerRuntime输出validated trajectory、summary、parse report和manifest四个inert JSON artifacts。
+-   保留single-frame EXTXYZ静态Structure行为；plain XYZ trajectory、viewer/playback、dynamic bonds和formal trajectory product registration按设计延期。
+
+测试结果：
+
+-   focused trajectory contract/parser/adapter/runtime：`41 passed`；existing parser/adapter/product regression：`28 passed`；registry regression：`25 passed`。
+-   frontend full：`116 passed`；typecheck、Next.js production build和`uv lock --check`通过。
+-   backend full：`413 passed, 22 skipped, 11 warnings`；skipped未计为passed。
+-   Phase 10 closure script通过，包含Chromium/Firefox/WebKit、mobile/accessibility/performance、evidence integrity、`NO_EXTERNAL_NETWORK_REQUESTS`和`NO_SECRET_PATTERN_HITS`。
+-   Phase 10G-1 evidence generator输出`PHASE10G1_TRAJECTORY_PARSER_ADAPTER_EVIDENCE_PASS`、`NO_EXTERNAL_NETWORK_REQUESTS`和`NO_SECRET_PATTERN_HITS`。
+-   本机无Docker，未本地运行service-backed；current implementation commit `444f1203eb68b39d3a0cd984fa7d350172f2cb9a`的CI run `29248521500`已通过unit、frontend、service-backed和no-skipped assertion。
+-   `npm audit`因configured npmmirror audit endpoint返回`NOT_IMPLEMENTED`而不可用；无dependency/lockfile变更。
 ---END---
 
 ---TASK---
