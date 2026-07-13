@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-13 Phase 10G Follow-ups
+
+- **Closed: trajectory data identity and units.** Stable atom/frame index, row-vector lattice, coordinate/wrapping modes, time, vector/scalar units, and strict availability are fixed by v1.
+- **Open: parser and storage implementation.** Format parsing and local indexed/chunk artifacts require a separate phase; v1 JSON is not a large-trajectory loading promise.
+- **Open: product execution.** No adapter, planner route, formal tool, playback, renderer, or browser/performance readiness exists yet.
+- **Open: future science.** Stress, partial PBC/occupancy, variable atom count, reactive trajectories, RDF/MSD/VACF/diffusion, and dynamic bonds need independent contracts.
+
 ## 2026-07-13 Phase 10F-24 Follow-ups
 
 - Decide whether a later phase needs a capped internal cell grid; canonical and outer boundaries are complete.

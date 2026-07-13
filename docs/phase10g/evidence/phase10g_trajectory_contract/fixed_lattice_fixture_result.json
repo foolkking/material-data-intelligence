@@ -1,0 +1,26 @@
+{
+  "fixture": "fixed_lattice_md.json",
+  "result": {
+    "atom_count": 2,
+    "caps": {
+      "max_atoms": 4096,
+      "max_frame_metadata_bytes": 4096,
+      "max_frames": 10000,
+      "max_json_bytes": 64000000,
+      "max_label_length": 128,
+      "max_metadata_bytes": 16384,
+      "max_numeric_magnitude": 1000000000000,
+      "max_property_arrays": 2,
+      "max_property_keys": 6,
+      "max_provenance_fields": 6,
+      "max_total_coordinate_values": 12000000,
+      "max_warnings": 32
+    },
+    "errors": [],
+    "frame_count": 4,
+    "valid": true,
+    "warnings": [
+      "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN"
+    ]
+  }
+}

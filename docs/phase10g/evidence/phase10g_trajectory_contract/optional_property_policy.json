@@ -1,0 +1,9 @@
+{
+  "arbitrary_properties": false,
+  "consistency": "strict_all_frames",
+  "energy": "electronvolt total_system",
+  "forces": "electronvolt_per_angstrom",
+  "stress": "DEFERRED_BY_DESIGN",
+  "temperature": "kelvin",
+  "velocities": "angstrom_per_femtosecond"
+}

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-07-13 - Phase 10G Trajectory Contract
+
+- Added closed inert trajectory, frame, summary, and manifest contracts with stable identity and canonical serialization.
+- Added bounded Python validation, small deterministic valid/invalid fixtures, independent TypeScript reference tests, and evidence hashes.
+- Documented row-vector lattice, wrapping, units, strict properties, storage/cap/security policy, while deferring parser, adapter, tool, and viewer implementation.
+
 ## 2026-07-13 - Phase 10F-25 Clipping, Cell, and Camera Controls
 
 - Added real axis-aligned clipping with matching WebGL material and raycast visibility semantics.

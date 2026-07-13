@@ -1,5 +1,9 @@
 # 文档索引
 
+## Phase 10G Trajectory Contract
+
+[`phase10g/phase10g_trajectory_contract.md`](phase10g/phase10g_trajectory_contract.md) defines the inert trajectory/frame/summary/manifest family, stable identity, coordinate/lattice/time/unit policies, caps, validators, fixtures, independent TypeScript comparison, and security evidence. Parser, adapter, formal tool, playback, and viewer remain deferred.
+
 ## Phase 10F-25 Clipping, Cell, and Camera Controls
 
 `phase10f/phase10f25_clipping_cell_camera.md` is the implementation entry point. The clipping, camera, cell display, security, and evidence documents define bounded renderer-local view controls and their three-browser closure.

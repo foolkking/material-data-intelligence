@@ -1,0 +1,22 @@
+{
+  "coordinate_mode": [
+    "cartesian",
+    "fractional"
+  ],
+  "kind": [
+    "geometry_optimization",
+    "molecular_dynamics",
+    "structure_sequence",
+    "unknown_static_sequence"
+  ],
+  "lattice_mode": [
+    "fixed",
+    "variable"
+  ],
+  "partial_periodicity": "DEFERRED_BY_DESIGN",
+  "position_wrapping": [
+    "unknown",
+    "unwrapped",
+    "wrapped"
+  ]
+}

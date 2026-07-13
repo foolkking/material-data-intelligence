@@ -1,0 +1,117 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "path": "docs/phase10g/fixtures/trajectory_v1/expected_results.json",
+      "sha256": "28d1b3c485039c9deab69a5aad2fc2dbbe26d7e0864f88786d3b61f57b748f79"
+    },
+    {
+      "path": "docs/phase10g/fixtures/trajectory_v1/fixed_lattice_md.json",
+      "sha256": "7e0a46b2582b26d57aa4e82f9ab05a57aa1d80585ac54003ceceed83b6684e13"
+    },
+    {
+      "path": "docs/phase10g/fixtures/trajectory_v1/invalid_atom_count.json",
+      "sha256": "f19e45f24e945b2f99da00abdb9ed7167c8d2b1b8842a8bdcbea32caa6a5d458"
+    },
+    {
+      "path": "docs/phase10g/fixtures/trajectory_v1/invalid_lattice.json",
+      "sha256": "da99f284c0cb7d7248438821a93d7234ce496dfcdbbd78d43cf7325efe81e7ea"
+    },
+    {
+      "path": "docs/phase10g/fixtures/trajectory_v1/invalid_species_reorder.json",
+      "sha256": "bb6718b787fe52cac81a4a985c87729f030fb205765f3d2fd278455447574a6a"
+    },
+    {
+      "path": "docs/phase10g/fixtures/trajectory_v1/invalid_time.json",
+      "sha256": "6cd218a81fc255e02cf749316bfc5a22b0a5e257ec5629184d22ef7264fbc535"
+    },
+    {
+      "path": "docs/phase10g/fixtures/trajectory_v1/nonperiodic_sequence.json",
+      "sha256": "03b5c46ded4b6bb26df94948b4b64001364de62f72dcfca4c1299853a26f7562"
+    },
+    {
+      "path": "docs/phase10g/fixtures/trajectory_v1/unwrapped_diffusion.json",
+      "sha256": "f970fda75442b554406d5da99d979a2c06522e0d2331794b896d8ac265cf3d4d"
+    },
+    {
+      "path": "docs/phase10g/fixtures/trajectory_v1/variable_lattice_relaxation.json",
+      "sha256": "4ad11221bc539e9d99c091077debb12185edc613bc9093f91393a17278ea9e2b"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/atom_identity_policy.json",
+      "sha256": "9f1fa6e8623ce38e1c469713c582803363615381c2333c70a319ee09828898c8"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/caps.json",
+      "sha256": "32481f0db5c87448d30c4b05ca93e8a74d1867ab31a7d3a407a79404608d8482"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/coordinate_policy.json",
+      "sha256": "242ea3ec818aa94bcd0cd48b7433790af5c293b47cce6feee991d3053456901b"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/deterministic_serialization.json",
+      "sha256": "cba5760bd3f907fd57c495aef9ecd55b80af49b100a6aa815765a4cb6bba9cae"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/enum_policy.json",
+      "sha256": "e038a05610283b79bbd1619df5a2613c96dffaec726b2d87d44719f25756577a"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/fixed_lattice_fixture_result.json",
+      "sha256": "ad34ca6905ca3fade3c20996f6f34ad23b30feefd81b0f19aa737bc71a8ad332"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/frontend_backend_validation_comparison.json",
+      "sha256": "90511df14054b17d17398938a950a207f5b5fcc4ffff9292a9b70f7080011ea1"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/invalid_cases.json",
+      "sha256": "aaa3e785f6d0153ce715207e3b8904829d0290cbf8766688fbd3143e96fc9dfd"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/lattice_policy.json",
+      "sha256": "c566d9569062097003a112065497fdafaaee0595eeec8e84a5d7c2cb2c20f004"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/network_audit.json",
+      "sha256": "8001570e1611bcca9ab0301b57dc54dabb4763dbc6abaedf18f141c755565f65"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/optional_property_policy.json",
+      "sha256": "3f5a1ad890675c99cfa2b066651279122f27d6fa25703833681c9693961502df"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/security_audit.json",
+      "sha256": "e9f53969de370e867faa5dcb3a90dae30885baa8d2bcbf7c33d6ce543a4e098d"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/time_unit_policy.json",
+      "sha256": "c62afb65330f3b54b4a9452c65e016e1d368b3251b563bfa67ce00c7e87b8d27"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/trajectory_frame_schema.json",
+      "sha256": "d7f085eb57d2085fce49412734bc3b06d66f64b6a263d511a917821776f93e21"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/trajectory_manifest_schema.json",
+      "sha256": "64efe4a82d2f54ed8220d30265ad5eca86192c217bafd70c01293d6d45a0eaac"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/trajectory_schema.json",
+      "sha256": "e2b1109933d60405cd633defb113085b3121d0293dae342be0dff38811556697"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/trajectory_summary_schema.json",
+      "sha256": "c64323d23da07e1cd4841fe1323a27d28ba9e227cee8ae56b6434d3e73bc4db3"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/unwrapped_fixture_result.json",
+      "sha256": "7556d99fd652dc9ddb5f0315684244ca22725ba6a0a3f00255dd75c60348cf2d"
+    },
+    {
+      "path": "docs/phase10g/evidence/phase10g_trajectory_contract/variable_lattice_fixture_result.json",
+      "sha256": "50de8e500395908552c939c3824a109bafa11f676460b5b110fb2ae8c841bf31"
+    }
+  ]
+}

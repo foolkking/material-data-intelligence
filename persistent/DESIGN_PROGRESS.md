@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-13 Phase 10G Trajectory Contract
+
+- Defined inert `phase10g.trajectory.v1`, frame, summary, and manifest contracts with content-derived identity and deterministic JSON.
+- Fixed stable atom/frame identity, row-vector lattice math, coordinate/wrapping/time/unit semantics, strict optional properties, and application-owned caps.
+- Added canonical Python validation, independent TypeScript fixture comparison, deterministic evidence, and security/network audits.
+- Trajectory parsing, chunking, adapter/runtime execution, formal registration, playback, rendering, and browser/performance evidence remain NOT_READY.
+
 ## 2026-07-13 Phase 10F-25 Clipping, Cell, and Camera Controls
 
 - Added bounded application-owned X/Y/Z clipping with shared Three.js materials and matching raycast visibility checks.

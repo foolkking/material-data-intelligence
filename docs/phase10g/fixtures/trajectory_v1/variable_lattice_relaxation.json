@@ -1,0 +1,261 @@
+{
+  "atom_identity_mode": "stable_index",
+  "atoms": {
+    "count": 2,
+    "records": [
+      {
+        "atom_id": 0,
+        "label": "Na1",
+        "occupancy": 1.0,
+        "species": "Na"
+      },
+      {
+        "atom_id": 1,
+        "label": "Cl2",
+        "occupancy": 1.0,
+        "species": "Cl"
+      }
+    ]
+  },
+  "coordinate_mode": "cartesian",
+  "fixed_lattice": null,
+  "frames": [
+    {
+      "atom_ids": [
+        0,
+        1
+      ],
+      "energy": {
+        "free": null,
+        "kinetic": null,
+        "potential": -5.0,
+        "scope": "total_system",
+        "total": -5.0,
+        "unit": "electronvolt"
+      },
+      "forces": [
+        [
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          -0.1,
+          0.0,
+          0.0
+        ]
+      ],
+      "frame_index": 0,
+      "lattice": [
+        [
+          5.8,
+          0.0,
+          0.0
+        ],
+        [
+          0.2,
+          5.8,
+          0.0
+        ],
+        [
+          0.1,
+          0.3,
+          5.8
+        ]
+      ],
+      "metadata": {},
+      "positions": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          2.9,
+          2.9,
+          2.9
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 0,
+      "temperature": null,
+      "time": null,
+      "velocities": null
+    },
+    {
+      "atom_ids": [
+        0,
+        1
+      ],
+      "energy": {
+        "free": null,
+        "kinetic": null,
+        "potential": -5.2,
+        "scope": "total_system",
+        "total": -5.2,
+        "unit": "electronvolt"
+      },
+      "forces": [
+        [
+          0.05,
+          0.0,
+          0.0
+        ],
+        [
+          -0.05,
+          0.0,
+          0.0
+        ]
+      ],
+      "frame_index": 1,
+      "lattice": [
+        [
+          5.7,
+          0.0,
+          0.0
+        ],
+        [
+          0.2,
+          5.7,
+          0.0
+        ],
+        [
+          0.1,
+          0.3,
+          5.7
+        ]
+      ],
+      "metadata": {},
+      "positions": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          2.85,
+          2.85,
+          2.85
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 1,
+      "temperature": null,
+      "time": null,
+      "velocities": null
+    },
+    {
+      "atom_ids": [
+        0,
+        1
+      ],
+      "energy": {
+        "free": null,
+        "kinetic": null,
+        "potential": -5.4,
+        "scope": "total_system",
+        "total": -5.4,
+        "unit": "electronvolt"
+      },
+      "forces": [
+        [
+          0.03333333333333333,
+          0.0,
+          0.0
+        ],
+        [
+          -0.03333333333333333,
+          0.0,
+          0.0
+        ]
+      ],
+      "frame_index": 2,
+      "lattice": [
+        [
+          5.65,
+          0.0,
+          0.0
+        ],
+        [
+          0.2,
+          5.65,
+          0.0
+        ],
+        [
+          0.1,
+          0.3,
+          5.65
+        ]
+      ],
+      "metadata": {},
+      "positions": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          2.825,
+          2.825,
+          2.825
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 2,
+      "temperature": null,
+      "time": null,
+      "velocities": null
+    }
+  ],
+  "kind": "geometry_optimization",
+  "lattice_mode": "variable",
+  "metadata": {
+    "title": "Deterministic Phase 10G fixture"
+  },
+  "periodic_boundary": [
+    true,
+    true,
+    true
+  ],
+  "position_wrapping": "unknown",
+  "properties": {
+    "energy": true,
+    "forces": true,
+    "positions": true,
+    "stress": false,
+    "temperature": false,
+    "velocities": false
+  },
+  "provenance": {
+    "created_by_tool": null,
+    "input_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "parser_version": null,
+    "source_format": "contract_fixture",
+    "source_software": "unknown",
+    "source_version": null
+  },
+  "schema_version": "phase10g.trajectory.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_urls_allowed": false,
+    "remote_frames_allowed": false
+  },
+  "time": {
+    "origin": 0.0,
+    "unit": null
+  },
+  "trajectory_id": "sha256:0fda4b6e2e3187ca41cb8a735f49654bc20aa1788dff081390885e3d195fb0d8",
+  "units": {
+    "energy": "electronvolt",
+    "forces": "electronvolt_per_angstrom",
+    "positions": "angstrom",
+    "temperature": "kelvin",
+    "velocities": "angstrom_per_femtosecond"
+  },
+  "warnings": [
+    "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN",
+    "TRAJECTORY_WRAPPING_UNKNOWN"
+  ]
+}

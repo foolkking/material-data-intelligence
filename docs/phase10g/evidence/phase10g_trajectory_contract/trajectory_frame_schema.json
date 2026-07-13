@@ -1,0 +1,10 @@
+{
+  "atom_identity": "stable_index",
+  "executable_content": "forbidden",
+  "external_references": "forbidden",
+  "frame_index": "zero-based contiguous",
+  "positions": "atom_count x 3 finite values",
+  "representation": "application/json",
+  "schema_version": "phase10g.trajectory_frame.v1",
+  "unknown_fields": "rejected"
+}

@@ -1,5 +1,12 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-13 Phase 10G Contract Boundary
+
+- No Tool Registry entry, adapter, planner route, or runtime authority was added.
+- The existing `trajectory.viewer` MatterViz manifest entry remains a V1 planning inventory item, not an executable product claim.
+- Future trajectory producers must emit validated `phase10g.trajectory.v1` (or a separately reviewed chunked equivalent) before registration.
+- Static `structure.viewer_3d` remains static and cannot be used to claim trajectory playback.
+
 ## 2026-07-13 Phase 10F-24
 
 No Tool Registry change. `structure.viewer_3d` still emits canonical `phase10f18.viewer_scene.v2`; expansion is validated frontend view state and never a new adapter parameter, artifact topology, or structure resource.

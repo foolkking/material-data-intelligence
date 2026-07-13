@@ -1,5 +1,12 @@
 # TASK_BOARD
 
+## Phase 10G Trajectory Contract Completed
+
+- [x] Trajectory/frame/summary/manifest schema family and deterministic content identity.
+- [x] Stable atom/frame identity, coordinate/wrapping/lattice/time/unit/property policy.
+- [x] Hard caps, Python validator, independent TypeScript comparison, fixtures, security, and evidence.
+- [ ] Parser, indexed/chunk storage, adapter, formal tool, viewer, playback, browser, and performance remain deferred.
+
 ## Phase 10F-25 Completed
 
 - DONE: bounded axis clipping, hidden-pick gate, cell/boundary/axes toggles, deterministic camera presets, inert view-state validation, mobile and three-browser evidence.

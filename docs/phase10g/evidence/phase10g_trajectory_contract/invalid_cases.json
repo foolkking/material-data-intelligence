@@ -1,0 +1,105 @@
+{
+  "invalid_atom_count.json": {
+    "atom_count": 2,
+    "caps": {
+      "max_atoms": 4096,
+      "max_frame_metadata_bytes": 4096,
+      "max_frames": 10000,
+      "max_json_bytes": 64000000,
+      "max_label_length": 128,
+      "max_metadata_bytes": 16384,
+      "max_numeric_magnitude": 1000000000000,
+      "max_property_arrays": 2,
+      "max_property_keys": 6,
+      "max_provenance_fields": 6,
+      "max_total_coordinate_values": 12000000,
+      "max_warnings": 32
+    },
+    "errors": [
+      "TRAJECTORY_ATOM_COUNT_MISMATCH",
+      "TRAJECTORY_POSITION_SHAPE_INVALID",
+      "TRAJECTORY_VELOCITY_SHAPE_INVALID"
+    ],
+    "frame_count": 4,
+    "valid": false,
+    "warnings": [
+      "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN"
+    ]
+  },
+  "invalid_lattice.json": {
+    "atom_count": 2,
+    "caps": {
+      "max_atoms": 4096,
+      "max_frame_metadata_bytes": 4096,
+      "max_frames": 10000,
+      "max_json_bytes": 64000000,
+      "max_label_length": 128,
+      "max_metadata_bytes": 16384,
+      "max_numeric_magnitude": 1000000000000,
+      "max_property_arrays": 2,
+      "max_property_keys": 6,
+      "max_provenance_fields": 6,
+      "max_total_coordinate_values": 12000000,
+      "max_warnings": 32
+    },
+    "errors": [
+      "TRAJECTORY_LATTICE_SINGULAR"
+    ],
+    "frame_count": 3,
+    "valid": false,
+    "warnings": [
+      "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN",
+      "TRAJECTORY_WRAPPING_UNKNOWN"
+    ]
+  },
+  "invalid_species_reorder.json": {
+    "atom_count": 2,
+    "caps": {
+      "max_atoms": 4096,
+      "max_frame_metadata_bytes": 4096,
+      "max_frames": 10000,
+      "max_json_bytes": 64000000,
+      "max_label_length": 128,
+      "max_metadata_bytes": 16384,
+      "max_numeric_magnitude": 1000000000000,
+      "max_property_arrays": 2,
+      "max_property_keys": 6,
+      "max_provenance_fields": 6,
+      "max_total_coordinate_values": 12000000,
+      "max_warnings": 32
+    },
+    "errors": [
+      "TRAJECTORY_SPECIES_MISMATCH"
+    ],
+    "frame_count": 4,
+    "valid": false,
+    "warnings": [
+      "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN"
+    ]
+  },
+  "invalid_time.json": {
+    "atom_count": 2,
+    "caps": {
+      "max_atoms": 4096,
+      "max_frame_metadata_bytes": 4096,
+      "max_frames": 10000,
+      "max_json_bytes": 64000000,
+      "max_label_length": 128,
+      "max_metadata_bytes": 16384,
+      "max_numeric_magnitude": 1000000000000,
+      "max_property_arrays": 2,
+      "max_property_keys": 6,
+      "max_provenance_fields": 6,
+      "max_total_coordinate_values": 12000000,
+      "max_warnings": 32
+    },
+    "errors": [
+      "TRAJECTORY_TIME_NONMONOTONIC"
+    ],
+    "frame_count": 4,
+    "valid": false,
+    "warnings": [
+      "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN"
+    ]
+  }
+}

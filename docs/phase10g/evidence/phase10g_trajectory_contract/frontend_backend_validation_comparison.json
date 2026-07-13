@@ -1,0 +1,41 @@
+{
+  "fixtures": {
+    "fixed_lattice_md.json": {
+      "python_valid": true,
+      "typescript_expected_valid": true
+    },
+    "invalid_atom_count.json": {
+      "python_valid": false,
+      "typescript_expected_valid": false
+    },
+    "invalid_lattice.json": {
+      "python_valid": false,
+      "typescript_expected_valid": false
+    },
+    "invalid_species_reorder.json": {
+      "python_valid": false,
+      "typescript_expected_valid": false
+    },
+    "invalid_time.json": {
+      "python_valid": false,
+      "typescript_expected_valid": false
+    },
+    "nonperiodic_sequence.json": {
+      "python_valid": true,
+      "typescript_expected_valid": true
+    },
+    "unwrapped_diffusion.json": {
+      "python_valid": true,
+      "typescript_expected_valid": true
+    },
+    "variable_lattice_relaxation.json": {
+      "python_valid": true,
+      "typescript_expected_valid": true
+    }
+  },
+  "independent_implementations": [
+    "mdi_artifact_core.trajectory_contract",
+    "apps/web/app/lib/trajectoryContract.ts"
+  ],
+  "result": "MATCH"
+}

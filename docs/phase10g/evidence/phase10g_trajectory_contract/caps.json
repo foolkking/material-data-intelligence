@@ -1,0 +1,25 @@
+{
+  "contract_hard": {
+    "max_atoms": 4096,
+    "max_frame_metadata_bytes": 4096,
+    "max_frames": 10000,
+    "max_json_bytes": 64000000,
+    "max_label_length": 128,
+    "max_metadata_bytes": 16384,
+    "max_numeric_magnitude": 1000000000000,
+    "max_property_arrays": 2,
+    "max_property_keys": 6,
+    "max_provenance_fields": 6,
+    "max_total_coordinate_values": 12000000,
+    "max_warnings": 32
+  },
+  "future_degraded": {
+    "max_atoms": 2048,
+    "max_frames": 2000
+  },
+  "future_interactive": {
+    "max_atoms": 256,
+    "max_frames": 200
+  },
+  "overflow_safe_preflight": true
+}

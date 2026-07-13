@@ -1,0 +1,58 @@
+{
+  "example": {
+    "artifacts": [
+      {
+        "bytes": 4326,
+        "media_type": "application/json",
+        "name": "trajectory.json",
+        "sha256": "7e0a46b2582b26d57aa4e82f9ab05a57aa1d80585ac54003ceceed83b6684e13"
+      },
+      {
+        "bytes": 566,
+        "media_type": "application/json",
+        "name": "trajectory_summary.json",
+        "sha256": "c565c43929a3ba850610065983c6583b5c7734544b18dcd42f57d1fa37f954a5"
+      }
+    ],
+    "atom_count": 2,
+    "frame_count": 4,
+    "frame_schema_version": "phase10g.trajectory_frame.v1",
+    "schema_version": "phase10g.trajectory_manifest.v1",
+    "security": {
+      "contains_html": false,
+      "contains_javascript": false,
+      "executable_content_allowed": false,
+      "external_urls_allowed": false,
+      "remote_frames_allowed": false
+    },
+    "summary_schema_version": "phase10g.trajectory_summary.v1",
+    "trajectory_id": "sha256:dcaa81411bb244d804b3cea7980db184bc843cab024efe680cd1fd586138e471",
+    "trajectory_schema_version": "phase10g.trajectory.v1"
+  },
+  "executable_content": "forbidden",
+  "external_references": "forbidden",
+  "representation": "application/json",
+  "schema_version": "phase10g.trajectory_manifest.v1",
+  "unknown_fields": "rejected",
+  "validation": {
+    "atom_count": 2,
+    "caps": {
+      "max_atoms": 4096,
+      "max_frame_metadata_bytes": 4096,
+      "max_frames": 10000,
+      "max_json_bytes": 64000000,
+      "max_label_length": 128,
+      "max_metadata_bytes": 16384,
+      "max_numeric_magnitude": 1000000000000,
+      "max_property_arrays": 2,
+      "max_property_keys": 6,
+      "max_provenance_fields": 6,
+      "max_total_coordinate_values": 12000000,
+      "max_warnings": 32
+    },
+    "errors": [],
+    "frame_count": 4,
+    "valid": true,
+    "warnings": []
+  }
+}

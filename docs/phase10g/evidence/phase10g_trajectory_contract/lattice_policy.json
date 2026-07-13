@@ -1,0 +1,9 @@
+{
+  "implicit_previous_frame_lattice": false,
+  "maximum_condition_number": 100000000.0,
+  "modes": [
+    "fixed",
+    "variable"
+  ],
+  "relative_determinant_threshold": 1e-12
+}

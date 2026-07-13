@@ -1,0 +1,119 @@
+{
+  "atom_identity_mode": "stable_index",
+  "atoms": {
+    "count": 2,
+    "records": [
+      {
+        "atom_id": 0,
+        "label": "C1",
+        "occupancy": 1.0,
+        "species": "C"
+      },
+      {
+        "atom_id": 1,
+        "label": "O2",
+        "occupancy": 1.0,
+        "species": "O"
+      }
+    ]
+  },
+  "coordinate_mode": "cartesian",
+  "fixed_lattice": [
+    [
+      5.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      5.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      5.0
+    ]
+  ],
+  "frames": [
+    {
+      "atom_ids": [
+        0,
+        1
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 0,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.2,
+          0.0,
+          0.0
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": null,
+      "temperature": null,
+      "time": null,
+      "velocities": null
+    }
+  ],
+  "kind": "structure_sequence",
+  "lattice_mode": "fixed",
+  "metadata": {
+    "title": "Deterministic Phase 10G fixture"
+  },
+  "periodic_boundary": [
+    false,
+    false,
+    false
+  ],
+  "position_wrapping": "unknown",
+  "properties": {
+    "energy": false,
+    "forces": false,
+    "positions": true,
+    "stress": false,
+    "temperature": false,
+    "velocities": false
+  },
+  "provenance": {
+    "created_by_tool": null,
+    "input_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "parser_version": null,
+    "source_format": "contract_fixture",
+    "source_software": "unknown",
+    "source_version": null
+  },
+  "schema_version": "phase10g.trajectory.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_urls_allowed": false,
+    "remote_frames_allowed": false
+  },
+  "time": {
+    "origin": 0.0,
+    "unit": null
+  },
+  "trajectory_id": "sha256:d4ee3ba13b83fdea695ca03c01fd29c0a40bf28278a3c2bb0a5e212e6c7e6e7c",
+  "units": {
+    "energy": "electronvolt",
+    "forces": "electronvolt_per_angstrom",
+    "positions": "angstrom",
+    "temperature": "kelvin",
+    "velocities": "angstrom_per_femtosecond"
+  },
+  "warnings": [
+    "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN",
+    "TRAJECTORY_WRAPPING_UNKNOWN"
+  ]
+}

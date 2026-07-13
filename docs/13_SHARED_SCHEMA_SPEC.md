@@ -1172,3 +1172,24 @@ and its artifacts contain no renderer code. Explicit scene-data export remains
 `structure.viewer_scene`; both producers share the same canonical schema and
 validation semantics. No scene, manifest, AnalysisPlan, or runtime schema is
 changed by formal registration.
+
+## Phase 10G Addendum: trajectory contract family
+
+The inert trajectory family is `phase10g.trajectory.v1`,
+`phase10g.trajectory_frame.v1`, `phase10g.trajectory_summary.v1`, and
+`phase10g.trajectory_manifest.v1`. Atom identity is stable zero-based index;
+frame identity is zero-based contiguous index. Atom count, order, species, and
+occupancy 1.0 remain fixed across frames.
+
+Coordinates are trajectory-wide fractional or Cartesian. Lattice vectors are
+rows and `cartesian = f0*a + f1*b + f2*c`. Fixed trajectories use one top-level
+lattice; variable trajectories require one per frame. Wrapped, unwrapped, and
+unknown semantics are retained without validator mutation. Time, velocities,
+forces, total-system energy, and temperature use closed canonical units; stress,
+partial occupancy, partial PBC, arbitrary properties, and variable atom count
+are deferred.
+
+The JSON contract has hard atom/frame/value/byte/metadata bounds, content-derived
+SHA-256 identity, exact field allowlists, deterministic serialization, and no
+executable or external reference. It does not modify static viewer scenes and
+does not register or authorize a parser, adapter, trajectory tool, or viewer.

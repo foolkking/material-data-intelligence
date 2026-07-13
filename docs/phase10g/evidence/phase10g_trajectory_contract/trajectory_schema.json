@@ -1,0 +1,27 @@
+{
+  "executable_content": "forbidden",
+  "external_references": "forbidden",
+  "identity": "sha256 of canonical payload excluding trajectory_id",
+  "representation": "application/json",
+  "required_sections": [
+    "atom_identity_mode",
+    "atoms",
+    "coordinate_mode",
+    "fixed_lattice",
+    "frames",
+    "kind",
+    "lattice_mode",
+    "metadata",
+    "periodic_boundary",
+    "position_wrapping",
+    "properties",
+    "provenance",
+    "schema_version",
+    "security",
+    "time",
+    "units",
+    "warnings"
+  ],
+  "schema_version": "phase10g.trajectory.v1",
+  "unknown_fields": "rejected"
+}

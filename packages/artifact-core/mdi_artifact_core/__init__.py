@@ -30,6 +30,22 @@ from .viewer_schema_compatibility import (
     viewer_manifest_compatibility_result,
     viewer_schema_compatibility_result,
 )
+from .trajectory_contract import (
+    DEFAULT_TRAJECTORY_CAPS,
+    FUTURE_DEGRADED_CAPS,
+    FUTURE_INTERACTIVE_CAPS,
+    TRAJECTORY_FRAME_SCHEMA_VERSION,
+    TRAJECTORY_MANIFEST_SCHEMA_VERSION,
+    TRAJECTORY_SCHEMA_VERSION,
+    TRAJECTORY_SUMMARY_SCHEMA_VERSION,
+    TrajectoryValidationResult,
+    canonical_trajectory_id,
+    stable_trajectory_json,
+    trajectory_summary,
+    validate_trajectory,
+    validate_trajectory_manifest,
+    validate_trajectory_summary,
+)
 
 __all__ = [
     "ArtifactPayload",
@@ -56,4 +72,18 @@ __all__ = [
     "validate_viewer_scene_manifest",
     "viewer_manifest_compatibility_result",
     "viewer_schema_compatibility_result",
+    "DEFAULT_TRAJECTORY_CAPS",
+    "FUTURE_DEGRADED_CAPS",
+    "FUTURE_INTERACTIVE_CAPS",
+    "TRAJECTORY_FRAME_SCHEMA_VERSION",
+    "TRAJECTORY_MANIFEST_SCHEMA_VERSION",
+    "TRAJECTORY_SCHEMA_VERSION",
+    "TRAJECTORY_SUMMARY_SCHEMA_VERSION",
+    "TrajectoryValidationResult",
+    "canonical_trajectory_id",
+    "stable_trajectory_json",
+    "trajectory_summary",
+    "validate_trajectory",
+    "validate_trajectory_manifest",
+    "validate_trajectory_summary",
 ]

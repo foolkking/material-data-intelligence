@@ -1,0 +1,10 @@
+{
+  "accepted": [
+    "femtosecond",
+    "picosecond"
+  ],
+  "canonical": "femtosecond",
+  "frame_index": "required contiguous",
+  "md_time": "required monotonic",
+  "step": "optional monotonic"
+}

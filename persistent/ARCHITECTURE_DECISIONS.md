@@ -1,5 +1,19 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10G-TRAJECTORY-CONTRACT: Fix inert stable-index trajectory semantics before execution
+
+### Decision
+
+Use a closed JSON family for trajectory, frame, summary, and manifest data. Atom identity is a stable zero-based index and frame identity is contiguous zero-based index. Coordinates use one trajectory-wide mode, row lattice vectors, explicit wrapping, fixed/variable lattice policy, explicit PBC, and canonical units. Properties are strict across all frames. Content-derived SHA-256 identity, deterministic serialization, hard resource caps, and inert field allowlists are mandatory.
+
+### Boundary
+
+Stress, partial occupancy/PBC, arbitrary properties, variable atom count, chunk runtime, parsing, adapters, formal registration, playback, and rendering are deferred. A future viewer may derive static display data from a validated frame, but static `viewer_scene` is unchanged and cannot become trajectory authority.
+
+### Consequences
+
+Small/medium trajectory contracts are reproducible and independently testable in Python and TypeScript. Large files need a later local indexed/chunk design. Existing trajectory inventory entries gain no execution authority from this ADR.
+
 ## ADR-10F-25-VIEW-CONTROLS: Keep clipping and camera state bounded and renderer-local
 
 Axis clipping is limited to three application-owned X/Y/Z planes within the displayed scene bounds. The same planes govern shared material clipping and raycast acceptance. Camera presets derive from the deterministic current-scene frame and transition instantly. Cell, outer-boundary, and lattice-axis visibility remain independent renderer state.

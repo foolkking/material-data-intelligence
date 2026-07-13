@@ -1,0 +1,33 @@
+{
+  "contains_frame_data": false,
+  "example": {
+    "atoms": 2,
+    "available_properties": [
+      "positions",
+      "velocities"
+    ],
+    "coordinate_mode": "fractional",
+    "frames": 4,
+    "kind": "molecular_dynamics",
+    "lattice_mode": "fixed",
+    "periodic_boundary": [
+      true,
+      true,
+      true
+    ],
+    "position_wrapping": "wrapped",
+    "schema_version": "phase10g.trajectory_summary.v1",
+    "time_end": 6.0,
+    "time_start": 0.0,
+    "time_unit": "femtosecond",
+    "trajectory_id": "sha256:dcaa81411bb244d804b3cea7980db184bc843cab024efe680cd1fd586138e471",
+    "warnings": [
+      "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN"
+    ]
+  },
+  "executable_content": "forbidden",
+  "external_references": "forbidden",
+  "representation": "application/json",
+  "schema_version": "phase10g.trajectory_summary.v1",
+  "unknown_fields": "rejected"
+}
