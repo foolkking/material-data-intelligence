@@ -1,0 +1,19 @@
+{
+  "schema_version": "phase10f25.view_controls_security.v1",
+  "artifact_javascript": false,
+  "artifact_html": false,
+  "artifact_shader": false,
+  "artifact_camera_callback": false,
+  "arbitrary_plane_equation": false,
+  "external_assets": [],
+  "remote_shader": false,
+  "eval": false,
+  "function_constructor": false,
+  "iframe": false,
+  "dependency_changes": false,
+  "npm_audit": "unavailable: configured npmmirror audit endpoint returned NOT_IMPLEMENTED",
+  "structure_mutated": false,
+  "canonical_topology_mutated": false,
+  "network_result": "NO_EXTERNAL_NETWORK_REQUESTS",
+  "secret_result": "NO_SECRET_PATTERN_HITS"
+}

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-07-13 - Phase 10F-25 Clipping, Cell, and Camera Controls
+
+- Added real axis-aligned clipping with matching WebGL material and raycast visibility semantics.
+- Added lattice axes, independent cell boundaries, deterministic camera presets, and inert scene-bound view-state serialization.
+- Added Chromium/Firefox/WebKit/mobile evidence with zero external requests and no dependency changes.
+
 ## 2026-07-13 - Phase 10F-24 Supercell Productization
 
 - Added bounded supercell productization with deterministic periodic identity, canonical-bond replication, estimate/apply/reset UI, state download/replay, and independent unit-cell/supercell boundaries.

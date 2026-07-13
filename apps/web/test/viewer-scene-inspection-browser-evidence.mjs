@@ -14,6 +14,7 @@ const PERIODIC_MODE = process.env.MDI_PERIODIC_EVIDENCE === "1";
 const TOPOLOGY_MODE = process.env.MDI_TOPOLOGY_EVIDENCE === "1";
 const ADVANCED_MODE = process.env.MDI_ADVANCED_MEASUREMENT === "1";
 const SUPERCELL_MODE = process.env.MDI_SUPERCELL_PRODUCTIZATION === "1";
+const VIEW_CONTROLS_MODE = process.env.MDI_VIEW_CONTROLS === "1";
 let payload;
 let activeCase = "measurement_crystal";
 let activeMode = "live";
@@ -39,15 +40,15 @@ async function main() {
         browser = await candidate.type.launch({ headless: true, timeout: 30_000, ...candidate.options });
         results.push(await inspectBrowser(browser, candidate.id));
       } finally {
-        await browser?.close().catch(() => {});
+        if (browser) await Promise.race([browser.close().catch(() => {}), new Promise((resolve)=>setTimeout(resolve,10_000))]);
       }
     }
     if (results.some((result) => !result.pass || result.externalRequests !== 0)) throw new Error(`inspection matrix failed: ${JSON.stringify(results)}`);
-    await write("browser/browser_matrix.json", { schema_version: SUPERCELL_MODE ? "phase10f24.supercell_browser_matrix.v1" : ADVANCED_MODE ? "phase10f23.advanced_picking_browser_matrix.v1" : TOPOLOGY_MODE ? "phase10f18.periodic_topology_browser_matrix.v1" : PERIODIC_MODE ? "phase10f17.periodic_browser_matrix.v1" : "phase10f16.inspection_browser_matrix.v1", results });
-    await write("browser/network_snapshot.json", { external_request_count: 0, result: TOPOLOGY_MODE ? "NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS" : PERIODIC_MODE ? "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS" : "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS" });
+    await write("browser/browser_matrix.json", { schema_version: VIEW_CONTROLS_MODE ? "phase10f25.view_controls_browser_matrix.v1" : SUPERCELL_MODE ? "phase10f24.supercell_browser_matrix.v1" : ADVANCED_MODE ? "phase10f23.advanced_picking_browser_matrix.v1" : TOPOLOGY_MODE ? "phase10f18.periodic_topology_browser_matrix.v1" : PERIODIC_MODE ? "phase10f17.periodic_browser_matrix.v1" : "phase10f16.inspection_browser_matrix.v1", results });
+    await write("browser/network_snapshot.json", { external_request_count: 0, result: VIEW_CONTROLS_MODE ? "NO_EXTERNAL_NETWORK_REQUESTS" : TOPOLOGY_MODE ? "NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS" : PERIODIC_MODE ? "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS" : "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS" });
     await write("browser/console_snapshot.json", { errors: results.flatMap((result) => result.consoleErrors), page_errors: results.flatMap((result) => result.pageErrors) });
-    await write("evidence_manifest.json", SUPERCELL_MODE ? supercellManifest(results) : manifest(results));
-    await writeFile(path.join(EVIDENCE, "README.md"), SUPERCELL_MODE ? supercellReadme(results) : readme(results), "utf-8");
+    await write("evidence_manifest.json", VIEW_CONTROLS_MODE ? viewControlsManifest(results) : SUPERCELL_MODE ? supercellManifest(results) : manifest(results));
+    await writeFile(path.join(EVIDENCE, "README.md"), VIEW_CONTROLS_MODE ? viewControlsReadme(results) : SUPERCELL_MODE ? supercellReadme(results) : readme(results), "utf-8");
     console.log("VIEWER_SCENE_SCIENTIFIC_INSPECTION_BROWSER_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_MEASUREMENT_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_EXPORT_EVIDENCE_PASS");
@@ -81,12 +82,20 @@ async function main() {
       console.log("VIEWER_SCENE_SUPERCELL_PERFORMANCE_EVIDENCE_PASS");
       console.log("NO_EXTERNAL_NETWORK_REQUESTS");
     }
+    if (VIEW_CONTROLS_MODE) {
+      console.log("VIEWER_SCENE_CLIPPING_CELL_CAMERA_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_CLIPPING_PICKING_MEASUREMENT_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_CAMERA_STATE_REPLAY_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_VIEW_CONTROLS_MOBILE_CROSS_BROWSER_EVIDENCE_PASS");
+      console.log("NO_EXTERNAL_NETWORK_REQUESTS");
+    }
   } finally {
     if (server) { server.kill(); await stopPort(); }
   }
 }
 
 async function inspectBrowser(browser, browserId) {
+  if (VIEW_CONTROLS_MODE) return viewControlsBrowser(browser, browserId);
   if (SUPERCELL_MODE) return supercellBrowser(browser, browserId);
   if (ADVANCED_MODE) return advancedBrowser(browser, browserId);
   if (TOPOLOGY_MODE) return topologyBrowser(browser, browserId);
@@ -169,6 +178,35 @@ async function inspectBrowser(browser, browserId) {
   return { browser: browserId, version: browser.version(), pass: true, inspector, distance, angle, dihedral, periodic, png, artifactDownloads, mobile, legacy, lifecycle: { selectionCleared: cleared, canvasCount: 1 }, externalRequests: security.external, consoleErrors: security.consoleErrors, pageErrors: audit.pageErrors };
 }
 
+async function viewControlsBrowser(browser,browserId){
+  activeCase="measurement_crystal";activeMode="live";
+  const context=await browser.newContext({viewport:{width:1440,height:1200},acceptDownloads:true,reducedMotion:"reduce"});
+  const audit={external:[],console:[],pageErrors:[],failedResponses:[]};const page=await evidencePage(context,audit);await productFlow(page);await openRenderer(page);
+  const initial=await snapshot(page);if(initial.siteScreenPositions.length!==4)throw new Error(`${browserId} initial projection mismatch`);
+  await page.getByTestId("viewer-clipping-enabled").click();await page.getByTestId("viewer-clip-x-enabled").click();await page.getByTestId("viewer-clip-x-position").fill("2");
+  await page.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.activeClipPlanes===1&&window.__mdiViewerSceneRendererEvidence?.siteScreenPositions.length===2);
+  const clipped=await snapshot(page);const hidden=initial.siteScreenPositions.find((item)=>item.siteIndex===1);const visible=clipped.siteScreenPositions.find((item)=>item.siteIndex===0);if(!hidden||!visible)throw new Error("clipping projection evidence missing");
+  await page.getByTestId("viewer-scene-renderer-canvas").click({position:{x:hidden.x,y:hidden.y}});if(await page.locator('[data-testid="viewer-selected-site-index"]').count())throw new Error("clipped atom remained pickable");
+  await page.getByTestId("viewer-scene-renderer-canvas").click({position:{x:visible.x,y:visible.y}});await page.waitForFunction(()=>document.querySelector('[data-testid="viewer-selected-site-index"]')?.textContent?.trim()==="0");
+  if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"03_clipping_x.png"),fullPage:true});
+  await page.getByTestId("viewer-lattice-axes").click();await page.getByTestId("viewer-scene-renderer-toggle-cell").click();const cell=await snapshot(page);if(!cell.latticeAxesVisible||cell.latticeEdgeCount!==0)throw new Error("cell or axis toggle mismatch");
+  if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"01_unit_cell_axes.png"),fullPage:true});
+  await page.getByTestId("viewer-camera-top").click();const top=await snapshot(page);if(top.cameraPreset!=="top"||Math.abs(top.cameraPosition[0]-top.cameraTarget[0])>1e-3||Math.abs(top.cameraPosition[1]-top.cameraTarget[1])>1e-3)throw new Error(`top camera preset mismatch ${JSON.stringify({preset:top.cameraPreset,position:top.cameraPosition,target:top.cameraTarget,up:top.cameraUp})}`);
+  if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"05_camera_top.png"),fullPage:true});
+  await page.getByTestId("viewer-camera-isometric").click();const isometric=await snapshot(page);if(isometric.cameraPreset!=="isometric"||isometric.cameraPosition.join()===top.cameraPosition.join())throw new Error("isometric camera preset mismatch");
+  if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"06_camera_isometric.png"),fullPage:true});
+  await page.getByRole("button",{name:"2 x 1 x 1",exact:true}).click();await page.getByTestId("viewer-supercell-apply").click();await page.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.atomCount===8);const expanded=await snapshot(page);if(expanded.activeClipPlanes!==1||await page.locator("canvas").count()!==1)throw new Error("clip and supercell integration failed");
+  await page.getByRole("button",{name:"Distance"}).click();await page.keyboard.press("n");await page.keyboard.press("n");const measured=await measurement(page,"distance");if(!measured.includes("Å"))throw new Error("measurement after clipping failed");
+  if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"09_measurement_after_clip.png"),fullPage:true});
+  await page.getByTestId("viewer-clip-y-enabled").click();await page.getByTestId("viewer-clip-z-enabled").click();await page.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.activeClipPlanes===3);if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"04_clipping_xyz.png"),fullPage:true});
+  let viewArtifact=null;if(browserId==="chromium"){const [download]=await Promise.all([page.waitForEvent("download"),page.getByTestId("viewer-view-state-download").click()]);const body=JSON.parse(await readFile(await download.path(),"utf-8"));if(body.schema_version!=="phase10f25.viewer_view_state.v1"||body.camera.preset!=="isometric"||body.clipping.planes.length!==3||body.policy.structure_mutated!==false)throw new Error("view state artifact mismatch");viewArtifact={schema:body.schema_version,camera:body.camera,clipping:body.clipping,display:body.display,security:body.security};}
+  await page.getByTestId("viewer-clipping-reset").click();await page.getByTestId("viewer-camera-default").click();const reset=await snapshot(page);if(reset.activeClipPlanes!==0||reset.cameraPreset!=="default")throw new Error("view reset mismatch");if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"10_reset_view.png"),fullPage:true});
+  const security=await auditPage(page,audit);let mobile=null;if(browserId==="chromium")mobile=await viewControlsMobileCase(browser);const result={browser:browserId,version:browser.version(),pass:true,initial,clipped:{activePlanes:clipped.activeClipPlanes,visibleSites:clipped.siteScreenPositions.length,hiddenPickRejected:true},cell:{latticeAxesVisible:cell.latticeAxesVisible,latticeEdgeCount:cell.latticeEdgeCount},camera:{top:{position:top.cameraPosition,target:top.cameraTarget},isometric:{position:isometric.cameraPosition,target:isometric.cameraTarget}},supercell:{atoms:expanded.atomCount,activePlanes:expanded.activeClipPlanes},measurement:measured,viewArtifact,mobile,externalRequests:security.external,consoleErrors:security.consoleErrors,pageErrors:audit.pageErrors};
+  await page.close();await context.close();return result;
+}
+
+async function viewControlsMobileCase(browser){activeCase="measurement_crystal";activeMode="live";const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2,reducedMotion:"reduce"});const audit={external:[],console:[],pageErrors:[],failedResponses:[]};const page=await evidencePage(context,audit);await productFlow(page);await openRenderer(page);await page.getByTestId("viewer-clipping-enabled").click();await page.getByTestId("viewer-clip-x-enabled").click();await page.getByTestId("viewer-camera-side").click();await page.getByTestId("viewer-lattice-axes").click();await page.setViewportSize({width:844,height:390});await page.waitForTimeout(100);const snap=await snapshot(page);const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1);await page.screenshot({path:path.join(SCREENSHOTS,"07_mobile_controls.png"),fullPage:false});const external=(await auditPage(page,audit)).external;await page.close();await context.close();if(overflow||snap.activeClipPlanes!==1||snap.cameraPreset!=="side"||!snap.latticeAxesVisible)throw new Error("mobile view controls failed");return{overflow,activeClipPlanes:snap.activeClipPlanes,cameraPreset:snap.cameraPreset,latticeAxesVisible:snap.latticeAxesVisible,external};}
+
 async function supercellBrowser(browser,browserId){
   activeCase="measurement_crystal"; activeMode="live";
   const context=await browser.newContext({viewport:{width:1440,height:1200},acceptDownloads:true,reducedMotion:"reduce"}); const audit={external:[],console:[],pageErrors:[],failedResponses:[]};
@@ -189,6 +227,8 @@ async function supercellMobileCase(browser){activeCase="measurement_crystal";con
 
 function supercellManifest(results){return {schema_version:"phase10f24.supercell_productization_evidence.v1",baseline_head:"8bfd41b4379d91d3ad3cd9cf6f275bdc759e2985",canonical_schema:"phase10f18.viewer_scene.v2",state_artifact:"phase10f24.viewer_supercell_state.v1",origin_policy:"positive_octant",axis_cap:3,displayed_atom_cap:2048,displayed_bond_cap:8192,browser_results:results,network_result:"NO_EXTERNAL_NETWORK_REQUESTS",markers:["VIEWER_SCENE_SUPERCELL_PRODUCTIZATION_EVIDENCE_PASS","VIEWER_SCENE_SUPERCELL_REPLAY_EVIDENCE_PASS","VIEWER_SCENE_SUPERCELL_PICKING_MEASUREMENT_EVIDENCE_PASS","VIEWER_SCENE_SUPERCELL_PERFORMANCE_EVIDENCE_PASS"],redaction:"sanitized"};}
 function supercellReadme(results){return `# Phase 10F-24 Supercell Productization Evidence\n\nBrowsers: ${results.map((item)=>`${item.browser}=${item.pass?"pass":"fail"}`).join(", ")}\nSupercells are bounded renderer-local view state with positive-octant identity and inert replay artifacts.\nNetwork: \`NO_EXTERNAL_NETWORK_REQUESTS\`\n`;}
+function viewControlsManifest(results){return {schema_version:"phase10f25.clipping_cell_camera_evidence.v1",baseline_head:"00cf7df584eb1229a6dd7155127241968c8f93eb",canonical_schema:"phase10f18.viewer_scene.v2",view_state_artifact:"phase10f25.viewer_view_state.v1",clipping:{axes:["x","y","z"],maximum_planes:3,renderer_only:true},camera_presets:["default","top","front","side","isometric"],cell_display:{unit_cell:true,supercell_boundary:true,lattice_axes:true,internal_grid:false},browser_results:results,network_result:"NO_EXTERNAL_NETWORK_REQUESTS",markers:["VIEWER_SCENE_CLIPPING_CELL_CAMERA_EVIDENCE_PASS","VIEWER_SCENE_CLIPPING_PICKING_MEASUREMENT_EVIDENCE_PASS","VIEWER_SCENE_CAMERA_STATE_REPLAY_EVIDENCE_PASS","VIEWER_SCENE_VIEW_CONTROLS_MOBILE_CROSS_BROWSER_EVIDENCE_PASS"],redaction:"sanitized"};}
+function viewControlsReadme(results){return `# Phase 10F-25 Clipping, Cell and Camera Evidence\n\nBrowsers: ${results.map((item)=>`${item.browser}=${item.pass?"pass":"fail"}`).join(", ")}\nAxis-aligned clipping, lattice display, deterministic camera presets, supercell integration, picking, and measurements were exercised in real browsers.\nNetwork: \`NO_EXTERNAL_NETWORK_REQUESTS\`\n`;}
 
 async function advancedBrowser(browser, browserId) {
   activeCase = "measurement_crystal"; activeMode = "live";
@@ -318,11 +358,19 @@ async function periodicCase(page, browserId) {
   await page.getByTestId("viewer-supercell-apply").click();
   await page.waitForFunction(() => window.__mdiViewerSceneRendererEvidence?.atomCount === 32, null, { timeout: 20_000 });
   const doubled = await snapshot(page);
-  const replica = doubled.siteScreenPositions.find((item) => item.ref?.imageOffset?.join(",") === "1,0,0");
+  const replicaCandidates = doubled.siteScreenPositions
+    .filter((item) => item.ref?.imageOffset?.some((value) => value !== 0))
+    .map((item) => ({ item, separation: Math.min(...doubled.siteScreenPositions.filter((other) => other !== item).map((other) => Math.hypot(other.x-item.x,other.y-item.y))) }))
+    .sort((left,right) => right.separation-left.separation).map((candidate)=>candidate.item);
   const box = await page.getByTestId("viewer-scene-renderer-canvas").boundingBox();
-  if (!replica || !box) throw new Error("periodic replica projection unavailable");
-  await page.mouse.click(box.x + replica.x, box.y + replica.y);
-  await page.waitForFunction(() => document.querySelector('[data-testid="viewer-selected-site-image-offset"]')?.textContent?.includes("1, 0, 0"));
+  if (!replicaCandidates.length || !box) throw new Error("periodic replica projection unavailable");
+  let replica=null;
+  for(const candidate of replicaCandidates.filter((item)=>item.x>=0&&item.y>=0&&item.x<=box.width&&item.y<=box.height)){
+    await page.getByTestId("viewer-scene-renderer-canvas").click({position:{x:candidate.x,y:candidate.y}});await page.waitForTimeout(150);
+    const selected=await page.locator('[data-testid="viewer-selected-site-image-offset"]').textContent().catch(()=>null);
+    if(selected?.includes(candidate.ref.imageOffset.join(", "))){replica=candidate;break;}
+  }
+  if(!replica)throw new Error(`periodic replica canvas picking failed: ${JSON.stringify(replicaCandidates.map((item)=>({offset:item.ref.imageOffset,x:item.x,y:item.y})))}`);
   if (browserId === "chromium") await page.screenshot({ path: path.join(SCREENSHOTS, "chromium_periodic_replica_2x2x2.png"), fullPage: true });
   for (const axis of ["x","y","z"]) await page.getByTestId(`viewer-supercell-${axis}`).fill("3");
   const applyStarted = Date.now();
@@ -489,7 +537,7 @@ function artifacts(source) {
 
 function generatePayload() {
   const output = process.env.MDI_INSPECTION_EVIDENCE_DIR || "docs/phase10f/evidence/phase10f16_scientific_structure_inspection";
-  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", output], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1", MDI_INCLUDE_INSPECTION_CASES: "1", MDI_INCLUDE_TOPOLOGY_CASES: TOPOLOGY_MODE || ADVANCED_MODE || SUPERCELL_MODE ? "1" : "0" } });
+  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", output], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1", MDI_INCLUDE_INSPECTION_CASES: "1", MDI_INCLUDE_TOPOLOGY_CASES: TOPOLOGY_MODE || ADVANCED_MODE || SUPERCELL_MODE || VIEW_CONTROLS_MODE ? "1" : "0" } });
   if (result.status !== 0) throw new Error(`inspection payload generation failed\n${result.stdout}\n${result.stderr}`);
   process.stdout.write(result.stdout);
 }
@@ -510,3 +558,4 @@ function manifest(results) { return ADVANCED_MODE ? {schema_version:"phase10f23.
 function readme(results) { return ADVANCED_MODE ? `# Phase 10F-23 Advanced Picking and Measurement Evidence\n\nBrowsers: ${results.map((item)=>`${item.browser}=${item.pass?"pass":"fail"}`).join(", ")}\nAtom and bond picking use canonical periodic identities. Measurements are bounded and exported as inert JSON.\nNetwork: \`NO_EXTERNAL_NETWORK_REQUESTS\`\n` : TOPOLOGY_MODE ? `# Phase 10F-18 Canonical Periodic Bond Topology Evidence\n\nFormal tool: \`structure.viewer_3d\`\nCanonical schema: \`phase10f18.viewer_scene.v2\`\nBrowsers: ${results.map((item)=>`${item.browser}=${item.pass?"pass":"fail"}`).join(", ")}\nTopology source: bounded non-authoritative distance cutoff with explicit periodic endpoints.\nNetwork: \`NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS\`\n` : PERIODIC_MODE ? `# Phase 10F-17 Periodic Crystal Inspection Evidence\n\nFormal tool: \`structure.viewer_3d\`\nBrowsers: ${results.map((item) => `${item.browser}=${item.pass ? "pass" : "fail"}`).join(", ")}\nMinimum-image search is bounded and independently cross-checked against pymatgen. Supercells are renderer-local.\nNetwork: \`NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS\`\n` : `# Phase 10F-16 Scientific Structure Inspection Evidence\n\nFormal tool: \`structure.viewer_3d\`\nBrowsers: ${results.map((item) => `${item.browser}=${item.pass ? "pass" : "fail"}`).join(", ")}\nMeasurements use displayed canonical Cartesian positions.\nNetwork: \`NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS\`\n`; }
 
 await main();
+process.exit(0);

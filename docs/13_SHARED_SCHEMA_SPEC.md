@@ -1,5 +1,18 @@
 # 共享 Schema 规范
 
+## Phase 10F-25 Addendum: renderer-local view state
+
+`phase10f25.viewer_view_state.v1` is a frontend-local inert JSON download bound
+to canonical scene schema/resource identity. It records one finite perspective
+camera state, an application-owned preset, exactly three bounded X/Y/Z clipping
+planes, and unit-cell/supercell-boundary/lattice-axis visibility. It contains no
+Three.js objects, callback, shader, URL, or executable content.
+
+The contract does not change `phase10f18.viewer_scene.v2`, lattice vectors,
+periodic identities, topology, measurements, AnalysisPlan, or backend runtime.
+Replay validates scene identity, finite coordinates, zoom, plane order, and
+current displayed-scene bounds before renderer use.
+
 ## Phase 10F-24 Addendum: renderer-local supercell display state
 
 `phase10f24.viewer_supercell_state.v1` is a frontend-local inert JSON download. It records canonical scene identity, strict `[a,b,c]` expansion, fixed `positive_octant` origin, visibility, counts, render tier, caps, warnings, and no-mutation/security flags. Replay requires matching scene schema and resource identity. It does not modify `phase10f18.viewer_scene.v2`, create a structure resource, or grant execution authority.

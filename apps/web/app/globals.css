@@ -749,6 +749,7 @@ pre {
 
 .viewer-measurement-panel,
 .viewer-supercell-controls,
+.viewer-view-controls,
 .viewer-site-inspector {
   border-top: 1px solid var(--border);
   padding-top: 12px;
@@ -758,6 +759,48 @@ pre {
   display: grid;
   gap: 8px;
 }
+
+.viewer-view-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.viewer-view-control-groups {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.8fr) minmax(220px, 0.8fr);
+  gap: 14px;
+}
+
+.viewer-view-control-groups > section {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.viewer-control-heading,
+.viewer-display-toggles,
+.viewer-camera-presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.viewer-control-heading strong { margin-right: auto; }
+
+.viewer-clip-row {
+  display: grid;
+  grid-template-columns: 88px minmax(120px, 1fr) 92px;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewer-clip-row label { white-space: nowrap; }
+.viewer-clip-row input[type="range"] { width: 100%; }
+.viewer-clip-row input[type="number"] { width: 92px; }
+.viewer-view-controls output { overflow-wrap: anywhere; }
+.viewer-lattice-vector-summary { margin: 0; }
 
 .viewer-supercell-axis-inputs,
 .viewer-supercell-presets,
@@ -1145,4 +1188,8 @@ pre {
   .main-workspace {
     max-height: none;
   }
+
+  .viewer-view-control-groups { grid-template-columns: 1fr; }
+  .viewer-view-controls button { min-height: 44px; }
+  .viewer-clip-row { grid-template-columns: 88px minmax(0, 1fr) 96px; }
 }

@@ -1,0 +1,14 @@
+{
+  "schema_version": "phase10f25.view_controls_performance.v1",
+  "render_policy": "demand_based",
+  "clipping_allocation": "only_on_control_change",
+  "clipping_plane_cap": 3,
+  "extra_geometry_when_axes_enabled": 1,
+  "extra_materials_when_axes_enabled": 1,
+  "extra_draw_calls_when_axes_enabled": 1,
+  "camera_move_geometry_rebuilds": 0,
+  "canvas_count": 1,
+  "context_count": 1,
+  "supercell_displayed_atoms_tested": 8,
+  "external_requests": 0
+}

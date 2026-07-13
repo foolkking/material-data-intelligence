@@ -6,6 +6,7 @@ import { assertViewerExportDimensions } from "./viewerSceneExport";
 import { ViewerRendererError } from "./viewerSceneRendererErrors";
 import { periodicSiteKey } from "./viewerScenePeriodicGeometry";
 import type { PeriodicSiteRef, RenderVector3, ViewerRendererEngine, ViewerRendererSnapshot, ValidatedRenderScene } from "./viewerSceneRendererTypes";
+import type { CameraPreset } from "./viewerSceneViewState";
 
 export async function createThreeViewerEngine(args: {
   readonly container: HTMLElement;
@@ -37,6 +38,7 @@ export async function createThreeViewerEngine(args: {
   renderer.setSize(width, height, false);
   renderer.setClearColor(0xf3f6f7, 1);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.localClippingEnabled = true;
   container.append(renderer.domElement);
 
   const threeScene = new THREE.Scene();
@@ -119,6 +121,13 @@ export async function createThreeViewerEngine(args: {
   const supercellBoundaryLines = new THREE.LineSegments(supercellBoundaryGeometry, supercellBoundaryMaterial);
   supercellBoundaryLines.name = "renderer-local-supercell-boundary";
   root.add(supercellBoundaryLines);
+  let latticeAxesGeometry = axesGeometry(scene.lattice.matrix);
+  const latticeAxesMaterial = new THREE.LineBasicMaterial({ vertexColors: true, depthTest: false });
+  const latticeAxesLines = new THREE.LineSegments(latticeAxesGeometry, latticeAxesMaterial);
+  latticeAxesLines.name = "canonical-lattice-axes";
+  latticeAxesLines.renderOrder = 18;
+  latticeAxesLines.visible = false;
+  root.add(latticeAxesLines);
 
   const highlightColors = [0xf5c542, 0x2ca6a4, 0xe85d75, 0x7b61ff] as const;
   const highlightMaterials = highlightColors.map((color) => new THREE.MeshBasicMaterial({ color, wireframe: true, depthTest: false }));
@@ -139,6 +148,8 @@ export async function createThreeViewerEngine(args: {
   root.add(measurementLines);
   let selectedSites: readonly PeriodicSiteRef[] = Object.freeze([]);
   let selectedBondId: string | null = null;
+  let clippingPlanes: THREE.Plane[] = [];
+  let cameraPreset: CameraPreset = "default";
 
   const ambient = new THREE.AmbientLight(0xffffff, 1.35);
   const key = new THREE.DirectionalLight(0xffffff, 2.25);
@@ -158,7 +169,22 @@ export async function createThreeViewerEngine(args: {
     publishEvidence();
   };
   const resetCamera = () => {
+    cameraPreset = "default";
     camera.position.copy(initialPosition);
+    controls.target.copy(initialTarget);
+    camera.near = frame.near;
+    camera.far = frame.far;
+    camera.updateProjectionMatrix();
+    controls.update();
+    render();
+  };
+  const setCameraPreset: ViewerRendererEngine["setCameraPreset"] = (preset) => {
+    if (preset === "default") { resetCamera(); return; }
+    cameraPreset = preset;
+    const distance = Math.max(initialPosition.distanceTo(initialTarget), 1);
+    const direction = presetDirection(preset);
+    camera.position.copy(initialTarget).add(direction.multiplyScalar(distance));
+    camera.up.copy(preset === "top" ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(0, 0, 1));
     controls.target.copy(initialTarget);
     camera.near = frame.near;
     camera.far = frame.far;
@@ -176,7 +202,7 @@ export async function createThreeViewerEngine(args: {
     const nextGroups = new Map<string, typeof currentScene.atoms>();
     for (const atom of currentScene.atoms) { const groupKey=`${atom.species}|${atom.color}`; nextGroups.set(groupKey,Object.freeze([...(nextGroups.get(groupKey)??[]),atom])); }
     for (const [groupKey, atoms] of [...nextGroups.entries()].sort(([left],[right])=>left.localeCompare(right))) {
-      let material=materials.get(atoms[0].color); if(!material){material=new THREE.MeshStandardMaterial({color:atoms[0].color,roughness:0.38,metalness:0.04});materials.set(atoms[0].color,material);}
+      let material=materials.get(atoms[0].color); if(!material){material=new THREE.MeshStandardMaterial({color:atoms[0].color,roughness:0.38,metalness:0.04,clippingPlanes});materials.set(atoms[0].color,material);}
       const mesh=new THREE.InstancedMesh(sphereGeometry,material,atoms.length); mesh.name=`atoms-${groupKey}`;
       atoms.forEach((atom,index)=>{transform.compose(new THREE.Vector3(...atom.position),new THREE.Quaternion(),new THREE.Vector3(atom.radius,atom.radius,atom.radius));mesh.setMatrixAt(index,transform);});
       mesh.instanceMatrix.needsUpdate=true;mesh.computeBoundingBox();mesh.computeBoundingSphere();mesh.userData={periodicRefs:atoms.map((atom)=>atom.ref),species:atoms[0].species};atomMeshes.push(mesh);root.add(mesh);
@@ -184,6 +210,7 @@ export async function createThreeViewerEngine(args: {
     bondGeometry.dispose(); bondGeometry=lineGeometry(currentScene.bonds.flatMap((bond)=>[bond.start,bond.end])); bondLines.geometry=bondGeometry; bondLines.userData={bondIds:currentScene.bonds.map((bond)=>bond.id)};
     cellGeometry.dispose(); cellGeometry=lineGeometry(latticeEdges(currentScene.lattice.matrix).flatMap((edge)=>[edge[0],edge[1]])); cellLines.geometry=cellGeometry;
     supercellBoundaryGeometry.dispose(); supercellBoundaryGeometry=lineGeometry(latticeEdges(currentScene.displayLattice.matrix).flatMap((edge)=>[edge[0],edge[1]])); supercellBoundaryLines.geometry=supercellBoundaryGeometry;
+    latticeAxesGeometry.dispose(); latticeAxesGeometry=axesGeometry(currentScene.lattice.matrix); latticeAxesLines.geometry=latticeAxesGeometry;
     frame=cameraFrame(currentScene); initialPosition=new THREE.Vector3(...frame.position); initialTarget=new THREE.Vector3(...frame.target); controls.minDistance=Math.max(0.2,frame.near*4);controls.maxDistance=frame.far*0.45;
     selectedSites=Object.freeze([]); selectedBondId=null; setSelection([]); setBondSelection(null); resetCamera();
   };
@@ -209,6 +236,7 @@ export async function createThreeViewerEngine(args: {
       camera.position.copy(controls.target).add(next.setLength(boundedLength));
     }
     controls.update();
+    cameraPreset = "default";
     render();
   };
   const onControlsChange = () => render();
@@ -232,8 +260,9 @@ export async function createThreeViewerEngine(args: {
     if (bounds.width <= 0 || bounds.height <= 0) return;
     pointer.set(((clientX - bounds.left) / bounds.width) * 2 - 1, -((clientY - bounds.top) / bounds.height) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    const atomHit = raycaster.intersectObjects(atomMeshes, false).find((intersection) => intersection.instanceId !== undefined && intersection.object.visible);
-    const bondHit = bondLines.visible ? raycaster.intersectObject(bondLines, false)[0] : undefined;
+    const visibleIntersection = (intersection: THREE.Intersection) => clippingPlanes.every((plane) => plane.distanceToPoint(intersection.point) >= -1e-7);
+    const atomHit = raycaster.intersectObjects(atomMeshes, false).find((intersection) => intersection.instanceId !== undefined && intersection.object.visible && visibleIntersection(intersection));
+    const bondHit = bondLines.visible ? raycaster.intersectObject(bondLines, false).find(visibleIntersection) : undefined;
     // Atom surfaces own their screen area; bonds are selectable only where no atom is hit.
     if (!atomHit && bondHit) {
       const segmentIndex = Math.floor(Number(bondHit.index ?? -1) / 2);
@@ -288,13 +317,18 @@ export async function createThreeViewerEngine(args: {
     lineCount: renderer.info.render.lines,
     cameraPosition: vector(camera.position),
     cameraTarget: vector(controls.target),
+    cameraUp: vector(camera.up),
+    cameraZoom: round(camera.zoom),
+    cameraPreset,
+    activeClipPlanes: clippingPlanes.length,
+    latticeAxesVisible: latticeAxesLines.visible,
     drawingBuffer: Object.freeze([renderer.domElement.width, renderer.domElement.height] as const),
     graphicsContext,
     rendererVersion: THREE.REVISION,
     selectedSites: Object.freeze([...selectedSites]),
     selectedSiteIndices: Object.freeze(selectedSites.map((site) => site.siteIndex)),
     selectedBondId,
-    siteScreenPositions: Object.freeze(currentScene.atoms.map((atom) => {
+    siteScreenPositions: Object.freeze(currentScene.atoms.filter((atom) => isPointVisible(atom.position, clippingPlanes)).map((atom) => {
       const projected = new THREE.Vector3(...atom.position).project(camera);
       return Object.freeze({
         ref: atom.ref,
@@ -303,7 +337,7 @@ export async function createThreeViewerEngine(args: {
         y: round((1 - projected.y) * 0.5 * renderer.domElement.clientHeight),
       });
     })),
-    bondScreenPositions: Object.freeze(currentScene.bonds.map((bond) => {
+    bondScreenPositions: Object.freeze(currentScene.bonds.filter((bond) => isPointVisible(bond.start, clippingPlanes) || isPointVisible(bond.end, clippingPlanes)).map((bond) => {
       const projected = new THREE.Vector3((bond.start[0] + bond.end[0]) / 2, (bond.start[1] + bond.end[1]) / 2, (bond.start[2] + bond.end[2]) / 2).project(camera);
       return Object.freeze({ bondId: bond.id, x: round((projected.x + 1) * 0.5 * renderer.domElement.clientWidth), y: round((1 - projected.y) * 0.5 * renderer.domElement.clientHeight) });
     })),
@@ -316,7 +350,7 @@ export async function createThreeViewerEngine(args: {
       latticeEdgeCount: 12,
       drawCalls: renderer.info.render.calls,
       geometries: renderer.info.memory.geometries,
-      materials: materials.size + 2,
+      materials: materials.size + 10,
       triangles: renderer.info.render.triangles,
       lines: renderer.info.render.lines,
       textures: renderer.info.memory.textures,
@@ -336,7 +370,7 @@ export async function createThreeViewerEngine(args: {
     highlightMeshes.forEach((mesh, index) => {
       const selected = selectedSites[index];
       const atom = selected ? atomsByKey.get(periodicSiteKey(selected)) : undefined;
-      mesh.visible = Boolean(atom);
+      mesh.visible = Boolean(atom && isPointVisible(atom.position, clippingPlanes));
       if (atom) {
         mesh.position.set(...atom.position);
         const scale = atom.radius * 1.22;
@@ -360,6 +394,17 @@ export async function createThreeViewerEngine(args: {
     selectedBondLine.visible = Boolean(bond);
     render();
   };
+  const setClipState: ViewerRendererEngine["setClipState"] = (nextState) => {
+    clippingPlanes = nextState.enabled ? nextState.planes.filter((plane) => plane.enabled).map((plane) => {
+      const normal = plane.axis === "x" ? new THREE.Vector3(-1,0,0) : plane.axis === "y" ? new THREE.Vector3(0,-1,0) : new THREE.Vector3(0,0,-1);
+      return new THREE.Plane(normal, plane.position);
+    }) : [];
+    const clippedMaterials: THREE.Material[] = [bondMaterial, selectedBondMaterial, measurementMaterial, ...highlightMaterials, ...materials.values()];
+    for (const material of clippedMaterials) { material.clippingPlanes = clippingPlanes; material.needsUpdate = true; }
+    setSelection(selectedSites);
+    setBondSelection(selectedBondId);
+    render();
+  };
 
   const exportPng = async () => {
     assertViewerExportDimensions(renderer.domElement.width, renderer.domElement.height);
@@ -376,7 +421,10 @@ export async function createThreeViewerEngine(args: {
     resetCamera,
     setCellVisible(visible) { cellLines.visible = visible; render(); },
     setSupercellBoundaryVisible(visible) { supercellBoundaryLines.visible = visible; render(); },
+    setLatticeAxesVisible(visible) { latticeAxesLines.visible = visible; render(); },
     setBondsVisible(visible) { bondLines.visible = visible; render(); },
+    setClipState,
+    setCameraPreset,
     setSelection,
     setBondSelection,
     keyboardCamera,
@@ -400,11 +448,13 @@ export async function createThreeViewerEngine(args: {
       selectedBondGeometry.dispose();
       cellGeometry.dispose();
       supercellBoundaryGeometry.dispose();
+      latticeAxesGeometry.dispose();
       measurementGeometry.dispose();
       bondMaterial.dispose();
       selectedBondMaterial.dispose();
       cellMaterial.dispose();
       supercellBoundaryMaterial.dispose();
+      latticeAxesMaterial.dispose();
       measurementMaterial.dispose();
       for (const material of highlightMaterials) material.dispose();
       for (const material of materials.values()) material.dispose();
@@ -422,6 +472,28 @@ function lineGeometry(points: readonly RenderVector3[]) {
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(points.flatMap((point) => [...point]), 3));
   return geometry;
+}
+
+function axesGeometry(matrix: ValidatedRenderScene["lattice"]["matrix"]) {
+  const geometry = lineGeometry(matrix.flatMap((vector) => [[0,0,0] as const, vector]));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute([
+    0.78,0.16,0.22, 0.78,0.16,0.22,
+    0.10,0.48,0.31, 0.10,0.48,0.31,
+    0.12,0.38,0.67, 0.12,0.38,0.67,
+  ], 3));
+  return geometry;
+}
+
+function presetDirection(preset: CameraPreset) {
+  if (preset === "top") return new THREE.Vector3(0,0,1);
+  if (preset === "front") return new THREE.Vector3(0,-1,0);
+  if (preset === "side") return new THREE.Vector3(1,0,0);
+  return new THREE.Vector3(1,-1,1).normalize();
+}
+
+function isPointVisible(point: RenderVector3, planes: readonly THREE.Plane[]) {
+  const vector = new THREE.Vector3(...point);
+  return planes.every((plane) => plane.distanceToPoint(vector) >= -1e-7);
 }
 
 function vector(value: THREE.Vector3): RenderVector3 {

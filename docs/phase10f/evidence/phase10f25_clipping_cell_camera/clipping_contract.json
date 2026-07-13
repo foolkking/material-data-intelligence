@@ -1,0 +1,11 @@
+{
+  "schema_version": "phase10f25.clipping_contract.v1",
+  "axes": ["x", "y", "z"],
+  "visible_half_space": "coordinate <= plane_position",
+  "maximum_active_planes": 3,
+  "position_bounds": "current displayed scene Cartesian bounds",
+  "renderer_only": true,
+  "changes_scene": false,
+  "changes_topology": false,
+  "artifact_controlled": false
+}

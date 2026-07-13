@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-13 Phase 10F-25 Clipping, Cell, and Camera Controls
+
+- Added bounded application-owned X/Y/Z clipping with shared Three.js materials and matching raycast visibility checks.
+- Added independent canonical-cell, outer-supercell-boundary, and lattice-axis display with textual vector equivalents.
+- Added deterministic default/top/front/side/isometric camera presets and inert `phase10f25.viewer_view_state.v1` serialization/replay validation.
+- Chromium, Firefox, WebKit, and mobile evidence passed without dependency, canonical schema, topology, or backend runtime changes.
+
 ## 2026-07-13 Phase 10F-24 Supercell Productization
 
 - Productized strict renderer-local 1x1x1 through 3x3x3 expansion with preflight, presets, outer boundary, degraded/refused states, picking, and measurement provenance.

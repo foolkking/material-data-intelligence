@@ -1,0 +1,12 @@
+{
+  "schema_version": "phase10f25.view_controls_mobile.v1",
+  "browser": "chromium",
+  "portrait": [390, 844],
+  "landscape": [844, 390],
+  "touch": true,
+  "active_clip_planes": 1,
+  "camera_preset": "side",
+  "lattice_axes_visible": true,
+  "horizontal_overflow": false,
+  "external_requests": 0
+}

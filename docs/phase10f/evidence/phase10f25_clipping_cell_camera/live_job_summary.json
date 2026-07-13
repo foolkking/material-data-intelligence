@@ -1,0 +1,16 @@
+{
+  "case": "measurement_crystal",
+  "job_id": "job_5af132b247df41f2acc46531",
+  "plan_id": "plan_fdc51eae7e674769aa6e975e",
+  "tool_id": "structure.viewer_3d",
+  "job_status": "completed",
+  "artifact_names": [
+    "viewer_scene.json",
+    "viewer_scene_manifest.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "scene_schema": "phase10f18.viewer_scene.v2",
+  "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+  "capture_policy": "sanitized_minimal_provenance"
+}

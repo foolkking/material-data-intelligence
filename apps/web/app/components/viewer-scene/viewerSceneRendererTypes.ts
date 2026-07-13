@@ -1,3 +1,5 @@
+import type { CameraPreset, ViewerClipState } from "./viewerSceneViewState";
+
 export type RenderVector3 = readonly [number, number, number];
 export type ImageOffset = readonly [number, number, number];
 
@@ -110,6 +112,11 @@ export type ViewerRendererSnapshot = {
   readonly lineCount: number;
   readonly cameraPosition: RenderVector3;
   readonly cameraTarget: RenderVector3;
+  readonly cameraUp: RenderVector3;
+  readonly cameraZoom: number;
+  readonly cameraPreset: CameraPreset;
+  readonly activeClipPlanes: number;
+  readonly latticeAxesVisible: boolean;
   readonly drawingBuffer: readonly [number, number];
   readonly graphicsContext: "webgl2" | "webgl";
   readonly rendererVersion: string;
@@ -125,7 +132,10 @@ export type ViewerRendererEngine = {
   readonly resetCamera: () => void;
   readonly setCellVisible: (visible: boolean) => void;
   readonly setSupercellBoundaryVisible: (visible: boolean) => void;
+  readonly setLatticeAxesVisible: (visible: boolean) => void;
   readonly setBondsVisible: (visible: boolean) => void;
+  readonly setClipState: (state: ViewerClipState) => void;
+  readonly setCameraPreset: (preset: CameraPreset) => void;
   readonly render: () => void;
   readonly replaceScene: (scene: ValidatedRenderScene, performanceTier: "interactive" | "degraded", pixelRatioCap: 1 | 2) => void;
   readonly keyboardCamera: (action: "rotate_left" | "rotate_right" | "rotate_up" | "rotate_down" | "pan_left" | "pan_right" | "pan_up" | "pan_down" | "zoom_in" | "zoom_out") => void;

@@ -1,0 +1,9 @@
+{
+  "schema_version": "phase10f25.cell_display.v1",
+  "canonical_unit_cell": "toggleable_12_edges",
+  "supercell_boundary": "toggleable_outer_12_edges",
+  "lattice_axes": "toggleable_single_shared_line_geometry",
+  "axis_text_equivalent": true,
+  "internal_grid": false,
+  "canonical_lattice_mutated": false
+}

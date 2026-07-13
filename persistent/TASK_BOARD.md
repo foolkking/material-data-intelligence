@@ -1,5 +1,11 @@
 # TASK_BOARD
 
+## Phase 10F-25 Completed
+
+- DONE: bounded axis clipping, hidden-pick gate, cell/boundary/axes toggles, deterministic camera presets, inert view-state validation, mobile and three-browser evidence.
+- READY: clipping foundation, camera presets/persistence, picking/measurement integration, accessibility, performance, and security.
+- DEFERRED: internal cell grid, arbitrary clipping planes, camera animation, export productization, trajectory, phonon, Brillouin zone, and volumetric rendering.
+
 ## Phase 10F-24 Completed
 
 - DONE: strict supercell params, positive-octant derivation, exact estimate, caps, presets, outer boundary, state replay, picking/measurement integration, mobile and three-browser lifecycle evidence.

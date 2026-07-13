@@ -1,5 +1,11 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-25-VIEW-CONTROLS: Keep clipping and camera state bounded and renderer-local
+
+Axis clipping is limited to three application-owned X/Y/Z planes within the displayed scene bounds. The same planes govern shared material clipping and raycast acceptance. Camera presets derive from the deterministic current-scene frame and transition instantly. Cell, outer-boundary, and lattice-axis visibility remain independent renderer state.
+
+The inert `phase10f25.viewer_view_state.v1` record is bound to scene schema/resource identity and cannot define arbitrary equations, shaders, callbacks, URLs, limits, or executable behavior. No canonical artifact, periodic identity, topology, measurement, AnalysisPlan, QueueWorkerRuntime, dependency, or network boundary changes.
+
 ## ADR-10F-24-SUPERCELL-CONTEXT: Bounded renderer-local supercells reuse one graphics context
 
 Supercell expansion is `[a,b,c]` with fixed positive-octant offsets and application-owned caps. It is not persisted into the canonical scene. Apply replaces instanced atom, shared bond, and boundary buffers inside one WebGL renderer; canonical artifact changes still recreate the renderer. This prevents active-context growth while preserving deterministic camera refit and complete buffer disposal. Replay uses inert `phase10f24.viewer_supercell_state.v1` bound to scene schema/resource identity.

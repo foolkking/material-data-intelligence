@@ -21,6 +21,11 @@ function fakeEngine(dispose = vi.fn()) {
     lineCount: 13,
     cameraPosition: [8, 8, 8],
     cameraTarget: [2, 2, 2],
+    cameraUp: [0, 0, 1],
+    cameraZoom: 1,
+    cameraPreset: "default",
+    activeClipPlanes: 0,
+    latticeAxesVisible: false,
     drawingBuffer: [720, 480],
     graphicsContext: "webgl2",
     rendererVersion: "185",
@@ -52,7 +57,10 @@ function fakeEngine(dispose = vi.fn()) {
     resetCamera: vi.fn(),
     setCellVisible(value) { cellVisible = value; },
     setSupercellBoundaryVisible: vi.fn(),
+    setLatticeAxesVisible: vi.fn(),
     setBondsVisible(value) { bondsVisible = value; },
+    setClipState: vi.fn(),
+    setCameraPreset: vi.fn(),
     setSelection: vi.fn(),
     setBondSelection: vi.fn(),
     exportPng: vi.fn(async () => new Blob(["png"], { type: "image/png" })),
@@ -211,6 +219,22 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("cell edges0");
     await user.click(screen.getByTestId("viewer-scene-renderer-toggle-bonds"));
     expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("bonds0");
+  });
+
+  it("applies bounded clipping, lattice axes, and deterministic camera presets", async () => {
+    const engine=fakeEngine();
+    render(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={async()=>engine}/>);
+    await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
+    await userEvent.click(screen.getByTestId("viewer-clipping-enabled"));
+    await userEvent.click(screen.getByTestId("viewer-clip-x-enabled"));
+    fireEvent.change(screen.getByTestId("viewer-clip-x-position"),{target:{value:"1"}});
+    expect(engine.setClipState).toHaveBeenLastCalledWith(expect.objectContaining({enabled:true,planes:expect.arrayContaining([expect.objectContaining({axis:"x",position:1,enabled:true})])}));
+    expect(screen.getByTestId("viewer-clipping-status").textContent).toContain("X at 1.000 angstrom");
+    await userEvent.click(screen.getByTestId("viewer-lattice-axes"));
+    expect(engine.setLatticeAxesVisible).toHaveBeenLastCalledWith(true);
+    await userEvent.click(screen.getByTestId("viewer-camera-top"));
+    expect(engine.setCameraPreset).toHaveBeenLastCalledWith("top");
+    expect(screen.getByTestId("viewer-camera-status").textContent).toContain("top");
   });
 
   it("provides bounded keyboard camera controls without trapping form inputs", async () => {

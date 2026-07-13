@@ -1,0 +1,13 @@
+{
+  "algorithm": "sha256",
+  "files": {
+    "01_unit_cell_axes.png": "93050ad7dde9a21978f136cc132211e6f69d7a277dd1979d075f2ec3d6459c86",
+    "03_clipping_x.png": "ba15425296600ad976d7ebace0fc76ba2e416b4697f3662851c866c29c649639",
+    "04_clipping_xyz.png": "19b4f01141b650762fd0c988fb8185e121e3c176883e6f835936b62f136435e5",
+    "05_camera_top.png": "e65ceaed559b25fe41932488147a7b57b1cbb9a560630b35ceb8943e613b2538",
+    "06_camera_isometric.png": "f58db1068bcbe7a48f4bdbfd76311400e6d87cafa31b4846a661774200edb0c2",
+    "07_mobile_controls.png": "ee9c2a2aa8a4aca3006305aeb18d4e24a4b7d50fed4cea21910a55955ed24bc9",
+    "09_measurement_after_clip.png": "a8ded4ebc2dedede65711e2aee1aa5bc51e90d490c7dd14df56458d59cb12211",
+    "10_reset_view.png": "7345c4b754433850234ac5cbf88b5193562109a42e82d72169209eb9786ba897"
+  }
+}

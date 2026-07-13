@@ -1,0 +1,11 @@
+{
+  "schema_version": "phase10f25.camera_contract.v1",
+  "state_schema": "phase10f25.viewer_view_state.v1",
+  "camera": "perspective",
+  "presets": ["default", "top", "front", "side", "isometric"],
+  "transition": "instant_deterministic",
+  "finite_required": true,
+  "coordinate_limit": 1000000,
+  "zoom_range": [0, 100],
+  "renderer_only": true
+}
