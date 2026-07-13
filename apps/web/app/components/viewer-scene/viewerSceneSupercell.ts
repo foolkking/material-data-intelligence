@@ -1,9 +1,22 @@
 import { periodicSiteKey, translateCartesian } from "./viewerScenePeriodicGeometry";
 import type { ImageOffset, PeriodicSiteRef, RenderAtom, RenderBond, RenderVector3, ValidatedRenderScene } from "./viewerSceneRendererTypes";
 
-export const PERIODIC_DERIVED_CAPS = Object.freeze({ maxAxisRepeat: 3, maxDisplayedSites: 2048, maxDisplayedBonds: 8192, maxNeighborImages: 26 });
+export const PERIODIC_DERIVED_CAPS = Object.freeze({ maxAxisRepeat: 3, maxTotalCells: 27, maxDisplayedSites: 2048, maxDisplayedBonds: 8192, maxNeighborImages: 26, maxArtifactBytes: 16_384 });
 export type SupercellRepeat = ImageOffset;
+export type SupercellEstimate = Readonly<{ expansion: SupercellRepeat; totalCells: number; displayedAtoms: number; displayedBonds: number; mode: "interactive" | "degraded" | "refused"; warnings: readonly string[]; error: string | null }>;
 export type SupercellDerivation = { readonly ok: true; readonly scene: ValidatedRenderScene; readonly offsets: readonly ImageOffset[] } | { readonly ok: false; readonly error: "PERIODIC_REPEAT_INVALID" | "PERIODIC_DERIVED_SITE_LIMIT_EXCEEDED" | "PERIODIC_DERIVED_BOND_LIMIT_EXCEEDED"; readonly requestedSites: number; readonly requestedBonds: number };
+
+export function estimatePeriodicSupercell(scene: ValidatedRenderScene, repeat: unknown): SupercellEstimate {
+  if (!validRepeat(repeat)) return Object.freeze({ expansion: Object.freeze([1,1,1]) as SupercellRepeat, totalCells: 0, displayedAtoms: 0, displayedBonds: 0, mode: "refused", warnings: Object.freeze([]), error: "VIEWER_SUPERCELL_INVALID_EXPANSION" });
+  const totalCells = repeat[0] * repeat[1] * repeat[2];
+  const offsets = supercellOffsets(repeat);
+  const offsetKeys = new Set(offsets.map((offset) => offset.join(",")));
+  const displayedAtoms = scene.atoms.length * totalCells;
+  const displayedBonds = scene.bonds.reduce((count,bond)=>count+offsets.filter((cell)=>offsetKeys.has(addOffset(cell,bond.toRef.imageOffset).join(","))).length,0);
+  const error = totalCells > PERIODIC_DERIVED_CAPS.maxTotalCells ? "VIEWER_SUPERCELL_TOTAL_CELL_LIMIT_EXCEEDED" : displayedAtoms > PERIODIC_DERIVED_CAPS.maxDisplayedSites ? "VIEWER_SUPERCELL_ATOM_BUDGET_EXCEEDED" : displayedBonds > PERIODIC_DERIVED_CAPS.maxDisplayedBonds ? "VIEWER_SUPERCELL_BOND_BUDGET_EXCEEDED" : null;
+  const degraded = !error && (displayedAtoms > 1000 || displayedBonds > 4096);
+  return Object.freeze({ expansion: Object.freeze([...repeat]) as SupercellRepeat, totalCells, displayedAtoms, displayedBonds, mode: error ? "refused" : degraded ? "degraded" : "interactive", warnings: Object.freeze(degraded ? ["VIEWER_SUPERCELL_DEGRADED_MODE"] : []), error });
+}
 
 export function derivePeriodicSupercell(scene: ValidatedRenderScene, repeat: SupercellRepeat, neighborSiteIndex: number | null = null): SupercellDerivation {
   if (!validRepeat(repeat)) return Object.freeze({ ok: false, error: "PERIODIC_REPEAT_INVALID", requestedSites: 0, requestedBonds: 0 });
@@ -69,6 +82,7 @@ export function centeredNeighborOffsets(): readonly ImageOffset[] {
   return Object.freeze(offsets);
 }
 
-function validRepeat(value: ImageOffset) { return value.length===3 && value.every((item)=>Number.isSafeInteger(item)&&item>=1&&item<=PERIODIC_DERIVED_CAPS.maxAxisRepeat); }
+export function validSupercellRepeat(value: unknown): value is SupercellRepeat { return Array.isArray(value) && value.length===3 && value.every((item)=>typeof item === "number"&&Number.isSafeInteger(item)&&item>=1&&item<=PERIODIC_DERIVED_CAPS.maxAxisRepeat); }
+function validRepeat(value: unknown): value is SupercellRepeat { return validSupercellRepeat(value); }
 function compareOffset(a: ImageOffset,b: ImageOffset) { return a[0]-b[0]||a[1]-b[1]||a[2]-b[2]; }
 function addOffset(a:ImageOffset,b:ImageOffset):ImageOffset{return Object.freeze([a[0]+b[0],a[1]+b[1],a[2]+b[2]]);}

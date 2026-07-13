@@ -2,13 +2,28 @@ import { describe, expect, it } from "vitest";
 
 import minimalScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_minimal_crystal.viewer_scene.v1.json";
 import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
-import { derivePeriodicSupercell, supercellOffsets } from "./viewerSceneSupercell";
+import { derivePeriodicSupercell, estimatePeriodicSupercell, supercellOffsets, validSupercellRepeat } from "./viewerSceneSupercell";
 import { periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";
 
 function scene() { const mapped=mapViewerSceneForRenderer(minimalScene); if(!mapped.ok) throw new Error("fixture invalid"); return mapped.scene; }
 
 describe("bounded periodic supercell derivation", () => {
   it("generates deterministic positive offsets",()=>expect(supercellOffsets([2,2,1])).toEqual([[0,0,0],[0,1,0],[1,0,0],[1,1,0]]));
+
+  it("strictly validates expansion without coercion",()=>{
+    expect(validSupercellRepeat([2,2,1])).toBe(true);
+    for (const invalid of [[0,1,1],[-1,1,1],[1.5,1,1],["2",1,1],[4,1,1],[Number.NaN,1,1],[Number.POSITIVE_INFINITY,1,1]]) expect(validSupercellRepeat(invalid)).toBe(false);
+  });
+
+  it("preflights interactive, degraded, and refused budgets before allocation",()=>{
+    expect(estimatePeriodicSupercell(scene(),[2,2,2])).toMatchObject({totalCells:8,displayedAtoms:8,mode:"interactive",error:null});
+    const canonical=scene();
+    const atoms=Array.from({length:64},(_,index)=>Object.freeze({...canonical.atoms[0],siteIndex:index,ref:Object.freeze({siteIndex:index,imageOffset:Object.freeze([0,0,0] as const)}),id:`site-${index}`}));
+    expect(estimatePeriodicSupercell(Object.freeze({...canonical,atoms:Object.freeze(atoms)}),[3,3,1])).toMatchObject({displayedAtoms:576,mode:"interactive"});
+    const maxAtoms=Array.from({length:256},(_,index)=>Object.freeze({...canonical.atoms[0],siteIndex:index,ref:Object.freeze({siteIndex:index,imageOffset:Object.freeze([0,0,0] as const)}),id:`site-${index}`}));
+    expect(estimatePeriodicSupercell(Object.freeze({...canonical,atoms:Object.freeze(maxAtoms)}),[2,2,2])).toMatchObject({displayedAtoms:2048,mode:"degraded",warnings:["VIEWER_SUPERCELL_DEGRADED_MODE"]});
+    expect(estimatePeriodicSupercell(Object.freeze({...canonical,atoms:Object.freeze(maxAtoms)}),[3,3,3])).toMatchObject({displayedAtoms:6912,mode:"refused",error:"VIEWER_SUPERCELL_ATOM_BUDGET_EXCEEDED"});
+  });
 
   it.each([[[1,1,1],1],[[2,2,2],8],[[3,3,3],27]] as const)("derives %j without mutating the canonical scene",(repeat,multiplier)=>{
     const canonical=scene(); const result=derivePeriodicSupercell(canonical,repeat);

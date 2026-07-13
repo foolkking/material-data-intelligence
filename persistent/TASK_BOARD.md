@@ -1,5 +1,10 @@
 # TASK_BOARD
 
+## Phase 10F-24 Completed
+
+- DONE: strict supercell params, positive-octant derivation, exact estimate, caps, presets, outer boundary, state replay, picking/measurement integration, mobile and three-browser lifecycle evidence.
+- DEFERRED: internal grid, clipping, camera preset productization, persisted supercell resources, and advanced scientific viewers.
+
 ## Phase 10F-15 Completed
 
 - [x] Inventory and consolidate viewer tool identities.

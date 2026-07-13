@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-13 Phase 10F-24 Supercell Productization
+
+- Productized strict renderer-local 1x1x1 through 3x3x3 expansion with preflight, presets, outer boundary, degraded/refused states, picking, and measurement provenance.
+- Added deterministic inert `phase10f24.viewer_supercell_state.v1` download/replay without canonical structure or topology mutation.
+- Reused one WebGL context for expansion buffer replacement; Chromium, Firefox, and WebKit passed 20 lifecycle cycles with no console/network errors.
+- Internal grid, clipping, camera presets, persisted structure supercells, trajectory, phonon, Brillouin zone, and volumetric rendering remain deferred.
+
 ## 2026-07-12 Phase 10F-15 Production Minimal Structure Viewer
 
 - Consolidated the formal product identity on `structure.viewer_3d`; it now generates canonical inert `viewer_scene.v1` artifacts through the existing validated runtime path.

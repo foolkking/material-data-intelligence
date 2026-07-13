@@ -1,5 +1,9 @@
 # 文档索引
 
+## Phase 10F-24 Supercell Productization
+
+`phase10f/phase10f24_supercell_productization.md` is the entry point. The adjacent display-contract, identity, bond-replication, performance, persistence, security, evidence, and readiness documents record the implementation and closure.
+
 本目录保存“材料数据智能分析与可视化平台”的分阶段设计文档。阅读顺序建议从 Phase 0 到 Phase 12；`docs/11_MATERIAL_DOMAIN_EXTENSIONS.md` 是专业材料领域扩展补充文件，不改变 `docs/12_MVP_ROADMAP.md` 的 Phase 11 开发路线编号。
 
 ## 核心设计文档

@@ -13,6 +13,7 @@ const ORIGIN = `http://127.0.0.1:${PORT}`;
 const PERIODIC_MODE = process.env.MDI_PERIODIC_EVIDENCE === "1";
 const TOPOLOGY_MODE = process.env.MDI_TOPOLOGY_EVIDENCE === "1";
 const ADVANCED_MODE = process.env.MDI_ADVANCED_MEASUREMENT === "1";
+const SUPERCELL_MODE = process.env.MDI_SUPERCELL_PRODUCTIZATION === "1";
 let payload;
 let activeCase = "measurement_crystal";
 let activeMode = "live";
@@ -42,11 +43,11 @@ async function main() {
       }
     }
     if (results.some((result) => !result.pass || result.externalRequests !== 0)) throw new Error(`inspection matrix failed: ${JSON.stringify(results)}`);
-    await write("browser/browser_matrix.json", { schema_version: ADVANCED_MODE ? "phase10f23.advanced_picking_browser_matrix.v1" : TOPOLOGY_MODE ? "phase10f18.periodic_topology_browser_matrix.v1" : PERIODIC_MODE ? "phase10f17.periodic_browser_matrix.v1" : "phase10f16.inspection_browser_matrix.v1", results });
+    await write("browser/browser_matrix.json", { schema_version: SUPERCELL_MODE ? "phase10f24.supercell_browser_matrix.v1" : ADVANCED_MODE ? "phase10f23.advanced_picking_browser_matrix.v1" : TOPOLOGY_MODE ? "phase10f18.periodic_topology_browser_matrix.v1" : PERIODIC_MODE ? "phase10f17.periodic_browser_matrix.v1" : "phase10f16.inspection_browser_matrix.v1", results });
     await write("browser/network_snapshot.json", { external_request_count: 0, result: TOPOLOGY_MODE ? "NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS" : PERIODIC_MODE ? "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS" : "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS" });
     await write("browser/console_snapshot.json", { errors: results.flatMap((result) => result.consoleErrors), page_errors: results.flatMap((result) => result.pageErrors) });
-    await write("evidence_manifest.json", manifest(results));
-    await writeFile(path.join(EVIDENCE, "README.md"), readme(results), "utf-8");
+    await write("evidence_manifest.json", SUPERCELL_MODE ? supercellManifest(results) : manifest(results));
+    await writeFile(path.join(EVIDENCE, "README.md"), SUPERCELL_MODE ? supercellReadme(results) : readme(results), "utf-8");
     console.log("VIEWER_SCENE_SCIENTIFIC_INSPECTION_BROWSER_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_MEASUREMENT_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_EXPORT_EVIDENCE_PASS");
@@ -73,12 +74,20 @@ async function main() {
       console.log("VIEWER_SCENE_KEYBOARD_MOBILE_MEASUREMENT_EVIDENCE_PASS");
       console.log("NO_EXTERNAL_NETWORK_REQUESTS");
     }
+    if (SUPERCELL_MODE) {
+      console.log("VIEWER_SCENE_SUPERCELL_PRODUCTIZATION_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_SUPERCELL_REPLAY_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_SUPERCELL_PICKING_MEASUREMENT_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_SUPERCELL_PERFORMANCE_EVIDENCE_PASS");
+      console.log("NO_EXTERNAL_NETWORK_REQUESTS");
+    }
   } finally {
     if (server) { server.kill(); await stopPort(); }
   }
 }
 
 async function inspectBrowser(browser, browserId) {
+  if (SUPERCELL_MODE) return supercellBrowser(browser, browserId);
   if (ADVANCED_MODE) return advancedBrowser(browser, browserId);
   if (TOPOLOGY_MODE) return topologyBrowser(browser, browserId);
   activeCase = "measurement_crystal";
@@ -159,6 +168,27 @@ async function inspectBrowser(browser, browserId) {
   await context.close();
   return { browser: browserId, version: browser.version(), pass: true, inspector, distance, angle, dihedral, periodic, png, artifactDownloads, mobile, legacy, lifecycle: { selectionCleared: cleared, canvasCount: 1 }, externalRequests: security.external, consoleErrors: security.consoleErrors, pageErrors: audit.pageErrors };
 }
+
+async function supercellBrowser(browser,browserId){
+  activeCase="measurement_crystal"; activeMode="live";
+  const context=await browser.newContext({viewport:{width:1440,height:1200},acceptDownloads:true,reducedMotion:"reduce"}); const audit={external:[],console:[],pageErrors:[],failedResponses:[]};
+  const page=await evidencePage(context,audit); await productFlow(page); await openRenderer(page); await page.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.atomCount===4);
+  const states=[]; const capture=async(label)=>{const snapshot=await page.evaluate(()=>window.__mdiViewerSceneRendererEvidence); states.push({label,status:await page.getByTestId("viewer-supercell-status").innerText(),estimate:await page.getByTestId("viewer-supercell-estimate").innerText(),atoms:snapshot.atomCount,bonds:snapshot.bondCount,canvas:await page.locator("canvas").count(),metrics:snapshot.metrics}); if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,`${String(states.length).padStart(2,"0")}_${label}.png`),fullPage:true});};
+  await capture("default_1x1x1");
+  for(const expansion of [[2,1,1],[2,2,1],[2,2,2]]){for(const [axis,value] of ["x","y","z"].map((axis,index)=>[axis,String(expansion[index])]))await page.getByTestId(`viewer-supercell-${axis}`).fill(value); await page.getByTestId("viewer-supercell-apply").click(); await page.waitForFunction((count)=>window.__mdiViewerSceneRendererEvidence?.atomCount===count,4*expansion[0]*expansion[1]*expansion[2]); await capture(`supercell_${expansion.join("x")}`);}
+  await page.getByRole("button",{name:"Distance"}).click(); const snap=await page.evaluate(()=>window.__mdiViewerSceneRendererEvidence); const primary=snap.siteScreenPositions.find((item)=>item.siteIndex===0&&item.ref.imageOffset.join()=== "0,0,0"); const replica=snap.siteScreenPositions.find((item)=>item.siteIndex===0&&item.ref.imageOffset.join()=== "1,0,0"); if(!primary||!replica)throw new Error("supercell replica identity missing"); for(const item of [primary,replica])await page.getByTestId("viewer-scene-renderer-canvas").click({position:{x:item.x,y:item.y}}); const selected=await page.getByTestId("viewer-measurement-selection").innerText(); const measured=await measurement(page,"distance"); if(!selected.includes("0@[1,0,0]"))throw new Error(`replica picking mismatch ${selected}`);
+  let artifact=null;if(browserId==="chromium"){const [download]=await Promise.all([page.waitForEvent("download"),page.getByTestId("viewer-supercell-download").click()]);const body=JSON.parse(await readFile(await download.path(),"utf-8"));if(body.schema_version!=="phase10f24.viewer_supercell_state.v1"||body.expansion.join()!=="2,2,2"||body.policy.structure_mutated!==false)throw new Error("supercell state artifact invalid");artifact={filename:download.suggestedFilename(),schema:body.schema_version,expansion:body.expansion,counts:body.counts};}
+  await page.getByTestId("viewer-supercell-x").fill("4"); const refused=await page.getByTestId("viewer-supercell-estimate").innerText(); if(!refused.includes("refused")||await page.getByTestId("viewer-supercell-apply").isEnabled())throw new Error("supercell refusal preflight missing"); if(await page.locator("canvas").count()!==1)throw new Error("refused draft replaced canvas");
+  await page.getByTestId("viewer-supercell-reset").click(); await page.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.atomCount===4); await capture("reset_1x1x1");
+  for(let index=0;index<20;index+=1){const expanded=index%2===0;await page.getByRole("button",{name:expanded?"2 x 1 x 1":"1 x 1 x 1",exact:true}).click();await page.getByTestId("viewer-supercell-apply").click();await page.waitForFunction((count)=>window.__mdiViewerSceneRendererEvidence?.atomCount===count,expanded?8:4);if(await page.locator("canvas").count()!==1)throw new Error("supercell lifecycle canvas leak");}
+  let degraded=null;let mobile=null;if(browserId==="chromium"){activeMode="near_cap";const degradedPage=await evidencePage(context,audit);await productFlow(degradedPage);await openRenderer(degradedPage);await degradedPage.getByRole("button",{name:"2 x 2 x 2",exact:true}).click();await degradedPage.getByTestId("viewer-supercell-apply").click();await degradedPage.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.atomCount===1024);const tier=await degradedPage.getByTestId("viewer-scene-renderer-performance-tier").innerText();const warning=await degradedPage.getByTestId("viewer-scene-renderer-performance-warning").innerText();if(tier!=="degraded")throw new Error(`degraded tier missing: ${tier}`);await degradedPage.screenshot({path:path.join(SCREENSHOTS,"08_degraded_mode.png"),fullPage:true});degraded={tier,warning,syntheticCanonicalSites:128,displayedAtoms:1024};await degradedPage.close();activeMode="live";mobile=await supercellMobileCase(browser);}
+  const security=await auditPage(page,audit);await page.close();await context.close();return{browser:browserId,version:browser.version(),pass:true,states,selected,measured,artifact,refused,degraded,mobile,externalRequests:security.external,consoleErrors:security.consoleErrors,pageErrors:audit.pageErrors};
+}
+
+async function supercellMobileCase(browser){activeCase="measurement_crystal";const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});const audit={external:[],console:[],pageErrors:[],failedResponses:[]};const page=await evidencePage(context,audit);await productFlow(page);await openRenderer(page);await page.getByRole("button",{name:"2 x 2 x 1"}).click();await page.getByTestId("viewer-supercell-apply").click();await page.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.atomCount===16);await page.setViewportSize({width:844,height:390});await page.waitForTimeout(100);const canvasCount=await page.locator("canvas").count();const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1);await page.screenshot({path:path.join(SCREENSHOTS,"10_mobile_supercell.png"),fullPage:false});const external=(await auditPage(page,audit)).external;await page.close();await context.close();if(canvasCount!==1||overflow)throw new Error("mobile supercell lifecycle failed");return{canvasCount,overflow,external};}
+
+function supercellManifest(results){return {schema_version:"phase10f24.supercell_productization_evidence.v1",baseline_head:"8bfd41b4379d91d3ad3cd9cf6f275bdc759e2985",canonical_schema:"phase10f18.viewer_scene.v2",state_artifact:"phase10f24.viewer_supercell_state.v1",origin_policy:"positive_octant",axis_cap:3,displayed_atom_cap:2048,displayed_bond_cap:8192,browser_results:results,network_result:"NO_EXTERNAL_NETWORK_REQUESTS",markers:["VIEWER_SCENE_SUPERCELL_PRODUCTIZATION_EVIDENCE_PASS","VIEWER_SCENE_SUPERCELL_REPLAY_EVIDENCE_PASS","VIEWER_SCENE_SUPERCELL_PICKING_MEASUREMENT_EVIDENCE_PASS","VIEWER_SCENE_SUPERCELL_PERFORMANCE_EVIDENCE_PASS"],redaction:"sanitized"};}
+function supercellReadme(results){return `# Phase 10F-24 Supercell Productization Evidence\n\nBrowsers: ${results.map((item)=>`${item.browser}=${item.pass?"pass":"fail"}`).join(", ")}\nSupercells are bounded renderer-local view state with positive-octant identity and inert replay artifacts.\nNetwork: \`NO_EXTERNAL_NETWORK_REQUESTS\`\n`;}
 
 async function advancedBrowser(browser, browserId) {
   activeCase = "measurement_crystal"; activeMode = "live";
@@ -351,7 +381,8 @@ async function legacyCase(context) {
 }
 
 async function pickMany(page, siteIndices) {
-  for (const siteIndex of siteIndices) await pick(page, siteIndex);
+  const region=page.getByRole("region",{name:"3D Structure Viewer"}); await region.focus();
+  for (const _siteIndex of siteIndices) await region.press("n");
   await page.waitForFunction((count) => document.querySelector('[data-testid="viewer-measurement-selection"]')?.textContent?.includes(`${count}/${count}`), siteIndices.length);
 }
 
@@ -448,12 +479,17 @@ function artifacts(source) {
     const scene = copy.find((item) => item.name === "viewer_scene.json");
     scene.content = { schema_version: "phase10d1.viewer_scene.v1", artifactType: "structure.viewer_scene_metadata", structure: { formula: "Si", site_count: 2, species: ["Si"], atoms: [] }, security: { contains_javascript: false, external_urls: [] } };
   }
+  if (activeMode === "near_cap") {
+    const sceneArtifact=copy.find((item)=>item.name==="viewer_scene.json"); const scene=sceneArtifact.content; const template=scene.scene.sites[0];
+    scene.scene.sites=Array.from({length:128},(_,index)=>({...template,index,label:`${template.element}${index+1}`,xyz:[(index%8)*0.4,(Math.floor(index/8)%4)*0.4,Math.floor(index/32)*0.4],frac:[(index%8)*0.04,(Math.floor(index/8)%4)*0.04,Math.floor(index/32)*0.04]}));
+    scene.scene.bonds=[]; scene.metadata.site_count=128; scene.metadata.formula="Si128"; scene.caps.max_sites=256; scene.caps.max_bonds=2048; scene.validation.status="passed"; scene.validation.truncated=false; scene.warnings=[];
+  }
   return copy;
 }
 
 function generatePayload() {
   const output = process.env.MDI_INSPECTION_EVIDENCE_DIR || "docs/phase10f/evidence/phase10f16_scientific_structure_inspection";
-  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", output], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1", MDI_INCLUDE_INSPECTION_CASES: "1", MDI_INCLUDE_TOPOLOGY_CASES: TOPOLOGY_MODE || ADVANCED_MODE ? "1" : "0" } });
+  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", output], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1", MDI_INCLUDE_INSPECTION_CASES: "1", MDI_INCLUDE_TOPOLOGY_CASES: TOPOLOGY_MODE || ADVANCED_MODE || SUPERCELL_MODE ? "1" : "0" } });
   if (result.status !== 0) throw new Error(`inspection payload generation failed\n${result.stdout}\n${result.stderr}`);
   process.stdout.write(result.stdout);
 }

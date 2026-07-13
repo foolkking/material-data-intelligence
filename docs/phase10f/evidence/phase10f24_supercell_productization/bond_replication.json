@@ -1,0 +1,1 @@
+{"source":"canonical phase10f18.viewer_scene.v2 periodic bonds","rule":"translate both endpoints; draw only when both are displayed","deduplication":"symmetric periodic endpoint key","half_bonds":false,"topology_inference":false,"hard_cap":8192}

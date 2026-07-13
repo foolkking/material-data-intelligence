@@ -51,11 +51,13 @@ function fakeEngine(dispose = vi.fn()) {
   const engine: ViewerRendererEngine = {
     resetCamera: vi.fn(),
     setCellVisible(value) { cellVisible = value; },
+    setSupercellBoundaryVisible: vi.fn(),
     setBondsVisible(value) { bondsVisible = value; },
     setSelection: vi.fn(),
     setBondSelection: vi.fn(),
     exportPng: vi.fn(async () => new Blob(["png"], { type: "image/png" })),
     render: vi.fn(),
+    replaceScene: vi.fn(),
     keyboardCamera: vi.fn(),
     snapshot,
     dispose,
@@ -64,13 +66,28 @@ function fakeEngine(dispose = vi.fn()) {
 }
 
 describe("ViewerSceneRendererSurface", () => {
+  it("separates draft from applied state, uses presets, toggles the outer boundary, and downloads inert state",async()=>{
+    const engine=fakeEngine(); const createUrl=vi.fn(()=>"blob:supercell"); Object.defineProperty(URL,"createObjectURL",{configurable:true,value:createUrl}); Object.defineProperty(URL,"revokeObjectURL",{configurable:true,value:vi.fn()}); const anchorClick=vi.spyOn(HTMLAnchorElement.prototype,"click").mockImplementation(()=>undefined);
+    render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async()=>engine}/>);
+    await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
+    await userEvent.click(screen.getByRole("button",{name:"2 x 2 x 1"}));
+    expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("Applied 1 by 1 by 1");
+    expect(screen.getByTestId("viewer-supercell-estimate").textContent).toContain("Draft 2 by 2 by 1");
+    await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
+    await waitFor(()=>expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("Applied 2 by 2 by 1"));
+    await userEvent.click(screen.getByTestId("viewer-scene-renderer-toggle-supercell-boundary"));
+    expect(engine.setSupercellBoundaryVisible).toHaveBeenLastCalledWith(false);
+    await userEvent.click(screen.getByTestId("viewer-supercell-download"));
+    expect(createUrl).toHaveBeenCalledOnce(); expect(anchorClick).toHaveBeenCalled();
+    anchorClick.mockRestore();
+  });
   it("shows periodic neighbor topology and highlights the stored target endpoint",async()=>{
     const engine=fakeEngine(); let args:Parameters<ViewerRendererEngineFactory>[0]|undefined;
     render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
     await waitFor(()=>expect(args).toBeTruthy());
     fireEvent.change(screen.getByTestId("viewer-supercell-x"), {target:{value:"2"}});
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
-    await waitFor(()=>expect(args?.scene.bonds).toHaveLength(1));
+    await waitFor(()=>expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].bonds).toHaveLength(1));
     act(()=>args?.onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}));
     expect(screen.getByTestId("viewer-periodic-neighbor-offset").textContent).toContain("1, 0, 0");
     expect(screen.getByTestId("viewer-periodic-neighbor-distance").textContent).toBe("0.400000");
@@ -89,10 +106,11 @@ describe("ViewerSceneRendererSurface", () => {
     render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
     await waitFor(()=>expect(args).toBeTruthy());
     fireEvent.change(screen.getByTestId("viewer-supercell-x"),{target:{value:"2"}}); await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
-    await waitFor(()=>expect(args?.scene.bonds).toHaveLength(1));
+    await waitFor(()=>expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].bonds).toHaveLength(1));
+    const expanded=vi.mocked(engine.replaceScene).mock.calls.at(-1)![0];
     await userEvent.click(screen.getByRole("button",{name:"Distance"}));
-    act(()=>args?.onBondPick?.(args!.scene.bonds[0].id));
-    expect(screen.getByTestId("viewer-selected-bond-id").textContent).toBe(args!.scene.bonds[0].id);
+    act(()=>args?.onBondPick?.(expanded.bonds[0].id));
+    expect(screen.getByTestId("viewer-selected-bond-id").textContent).toBe(expanded.bonds[0].id);
     expect(screen.getByTestId("viewer-measurement-selection").textContent).toContain("0@[0,0,0]");
     expect(screen.getByTestId("viewer-measurement-selection").textContent).toContain("1@[1,0,0]");
     await userEvent.click(screen.getByTestId("viewer-measurement-download")); expect(createUrl).toHaveBeenCalledOnce();
@@ -117,16 +135,16 @@ describe("ViewerSceneRendererSurface", () => {
   });
 
   it("derives a bounded supercell and exposes periodic replica identity", async () => {
-    const scenes: Parameters<ViewerRendererEngineFactory>[0]["scene"][]=[];
+    const scenes: Parameters<ViewerRendererEngineFactory>[0]["scene"][]=[]; const engine=fakeEngine();
     let latest: Parameters<ViewerRendererEngineFactory>[0] | undefined;
-    render(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={async (args) => { latest=args; scenes.push(args.scene); return fakeEngine(); }} />);
+    render(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={async (args) => { latest=args; scenes.push(args.scene); return engine; }} />);
     await waitFor(() => expect(scenes).toHaveLength(1));
     fireEvent.change(screen.getByTestId("viewer-supercell-x"), {target:{value:"2"}});
     fireEvent.change(screen.getByTestId("viewer-supercell-y"), {target:{value:"2"}});
     fireEvent.change(screen.getByTestId("viewer-supercell-z"), {target:{value:"2"}});
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
-    await waitFor(() => expect(scenes.at(-1)?.atoms).toHaveLength(16));
-    const replica=scenes.at(-1)?.atoms.find((atom)=>atom.siteIndex===1&&atom.ref.imageOffset[0]===1);
+    await waitFor(() => expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].atoms).toHaveLength(16));
+    const replica=vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].atoms.find((atom)=>atom.siteIndex===1&&atom.ref.imageOffset[0]===1);
     expect(replica).toBeTruthy();
     act(()=>latest?.onSitePick?.(replica!.ref));
     expect(screen.getByTestId("viewer-selected-site-index").textContent).toBe("1");
@@ -152,14 +170,14 @@ describe("ViewerSceneRendererSurface", () => {
     const large = structuredClone(minimalScene) as Record<string, any>;
     large.scene.sites = Array.from({length:64}, (_, index) => ({...large.scene.sites[0], index, label:`Si${index + 1}`, xyz:[index % 4, Math.floor(index / 4) % 4, Math.floor(index / 16)], frac:[(index % 4) / 4, (Math.floor(index / 4) % 4) / 4, Math.floor(index / 16) / 4]}));
     large.metadata.site_count = 64;
-    const calls: Parameters<ViewerRendererEngineFactory>[0][] = [];
-    render(<ViewerSceneRendererSurface payload={large} capabilityOverride engineFactory={async (args) => { calls.push(args); return fakeEngine(); }} />);
+    const calls: Parameters<ViewerRendererEngineFactory>[0][] = []; const engine=fakeEngine();
+    render(<ViewerSceneRendererSurface payload={large} capabilityOverride engineFactory={async (args) => { calls.push(args); return engine; }} />);
     await waitFor(() => expect(calls).toHaveLength(1));
     for (const axis of ["x","y","z"] as const) fireEvent.change(screen.getByTestId(`viewer-supercell-${axis}`), {target:{value:"3"}});
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
-    await waitFor(() => expect(calls).toHaveLength(2));
-    expect(calls[1]).toMatchObject({performanceTier:"degraded",pixelRatioCap:1,antialias:false});
-    expect(calls[1].scene.atoms).toHaveLength(1_728);
+    await waitFor(() => expect(vi.mocked(engine.replaceScene)).toHaveBeenCalled());
+    expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.slice(1)).toEqual(["degraded",1]);
+    expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].atoms).toHaveLength(1_728);
     expect(screen.getByTestId("viewer-scene-renderer-performance-warning").textContent).toContain("VIEWER_RENDERER_DEGRADED_RESOURCE_MODE");
   });
 

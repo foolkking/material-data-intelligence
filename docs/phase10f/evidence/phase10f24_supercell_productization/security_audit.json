@@ -1,0 +1,1 @@
+{"result":"PASS","allocation_preflight":true,"integer_validation":true,"artifact_controlled_caps":false,"artifact_controlled_offsets":false,"topology_inference":false,"canonical_mutation":false,"javascript":false,"html":false,"external_network_requests":0,"marker":"NO_EXTERNAL_NETWORK_REQUESTS","secret_scan":"NO_SECRET_PATTERN_HITS"}

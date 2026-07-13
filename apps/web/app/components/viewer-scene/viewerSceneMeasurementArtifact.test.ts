@@ -15,6 +15,7 @@ describe("viewer measurement artifact", () => {
     const second = buildViewerMeasurementArtifact(mapped.scene,"displayed_positions",refs,result);
     expect(JSON.stringify(first)).toBe(JSON.stringify(second));
     expect(first.measurement).toMatchObject({value:0.4,points:refs});
+    expect(first.viewer_state).toEqual({supercell_expansion:[1,1,1],origin_policy:"positive_octant"});
     expect(first.policy).toMatchObject({structure_mutated:false,topology_mutated:false});
     expect(first.security).toEqual({inert_json:true,artifact_javascript:false,external_urls:false});
   });

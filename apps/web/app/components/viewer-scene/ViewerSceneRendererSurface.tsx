@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ViewerMeasurementPanel, type PeriodicMeasurementMode } from "./ViewerMeasurementPanel";
 import { ViewerBondInspector } from "./ViewerBondInspector";
 import { ViewerSiteInspector } from "./ViewerSiteInspector";
+import { ViewerSupercellControls } from "./ViewerSupercellControls";
 import { downloadLocalBlob, jsonBlob, sanitizeViewerFilename } from "./viewerSceneExport";
 import { measureAngle, measureDihedral, measureDistance, type ViewerMeasurementEvaluation, type ViewerMeasurementResult } from "./viewerSceneMeasurements";
 import { buildViewerMeasurementArtifact } from "./viewerSceneMeasurementArtifact";
@@ -14,7 +15,8 @@ import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
 import { ViewerRendererError } from "./viewerSceneRendererErrors";
 import type { ImageOffset, PeriodicSiteRef, RenderVector3, ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot, ViewerRendererState } from "./viewerSceneRendererTypes";
 import { changeViewerSelectionMode, initialViewerSelection, selectViewerBondEndpoints, selectViewerSite, undoViewerSelection, type ViewerSelectionMode } from "./viewerSceneSelection";
-import { derivePeriodicSupercell, PERIODIC_DERIVED_CAPS, type SupercellRepeat } from "./viewerSceneSupercell";
+import { derivePeriodicSupercell, estimatePeriodicSupercell, type SupercellRepeat } from "./viewerSceneSupercell";
+import { buildViewerSupercellState } from "./viewerSceneSupercellState";
 
 export type ViewerSceneRendererSurfaceProps = {
   readonly payload: unknown;
@@ -50,10 +52,12 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const containerRef = useRef<HTMLDivElement>(null);
   const surfaceRef = useRef<HTMLElement>(null);
   const engineRef = useRef<ViewerRendererEngine | null>(null);
+  const engineSceneRef = useRef<typeof renderScene>(null);
   const generationRef = useRef(0);
   const [state, setState] = useState<ViewerRendererState>(mapping.ok ? "ready" : "validation_failed");
   const [showCell, setShowCell] = useState(true);
   const [showBonds, setShowBonds] = useState(true);
+  const [showSupercellBoundary, setShowSupercellBoundary] = useState(true);
   const [snapshot, setSnapshot] = useState<ViewerRendererSnapshot | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [selection, setSelection] = useState(initialViewerSelection());
@@ -62,7 +66,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const [history, setHistory] = useState<readonly ViewerMeasurementResult[]>([]);
   const [coordinateMode, setCoordinateMode] = useState<PeriodicMeasurementMode>("displayed_positions");
   const [repeat, setRepeat] = useState<SupercellRepeat>(DEFAULT_REPEAT);
-  const [repeatDraft, setRepeatDraft] = useState<SupercellRepeat>(DEFAULT_REPEAT);
+  const [repeatDraft, setRepeatDraft] = useState<readonly string[]>(["1","1","1"]);
   const [neighborSiteIndex, setNeighborSiteIndex] = useState<number | null>(null);
   const [supercellError, setSupercellError] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -71,14 +75,18 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const renderedNeighborSiteIndex = payloadChanged ? null : neighborSiteIndex;
   const derivation = useMemo(() => mapping.ok ? derivePeriodicSupercell(mapping.scene, renderedRepeat, renderedNeighborSiteIndex) : null, [mapping, renderedNeighborSiteIndex, renderedRepeat]);
   const renderScene = derivation?.ok ? derivation.scene : mapping.ok ? mapping.scene : null;
+  const renderSceneRef = useRef(renderScene);
+  renderSceneRef.current = renderScene;
+  const parsedRepeatDraft = useMemo(() => repeatDraft.map((value) => value === "" ? Number.NaN : Number(value)) as unknown as SupercellRepeat, [repeatDraft]);
+  const supercellEstimate = useMemo(() => mapping.ok ? estimatePeriodicSupercell(mapping.scene, parsedRepeatDraft) : Object.freeze({ expansion: DEFAULT_REPEAT, totalCells:0, displayedAtoms:0, displayedBonds:0, mode:"refused" as const, warnings:Object.freeze([]), error:"VIEWER_SUPERCELL_SCENE_UNSUPPORTED" }), [mapping, parsedRepeatDraft]);
   const performanceDecision = useMemo(() => renderScene ? classifyViewerPerformance(renderScene) : null, [renderScene]);
   const onSitePick = useCallback((site: PeriodicSiteRef | null) => { setSelectedBondId(null); setSelection((current) => selectViewerSite(current, site)); }, []);
   const onBondPick = useCallback((bondId: string) => {
-    const bond = renderScene?.bonds.find((candidate) => candidate.id === bondId);
+    const bond = renderSceneRef.current?.bonds.find((candidate) => candidate.id === bondId);
     if (!bond) return;
     setSelectedBondId(bond.id);
     setSelection((current) => selectViewerBondEndpoints(current, bond.fromRef, bond.toRef));
-  }, [renderScene]);
+  }, []);
 
   useEffect(() => { selectionRef.current = selection; }, [selection]);
 
@@ -91,7 +99,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     if (previousPayloadRef.current === payload) return;
     previousPayloadRef.current = payload;
     setSelection(initialViewerSelection()); setSelectedBondId(null); setHistory([]); setCoordinateMode("displayed_positions");
-    setRepeat(DEFAULT_REPEAT); setRepeatDraft(DEFAULT_REPEAT); setNeighborSiteIndex(null); setSupercellError(null);
+    setRepeat(DEFAULT_REPEAT); setRepeatDraft(["1","1","1"]); setNeighborSiteIndex(null); setSupercellError(null); setShowSupercellBoundary(true);
   }, [payload]);
 
   useEffect(() => {
@@ -133,7 +141,9 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
         return;
       }
       engineRef.current = engine;
+      engineSceneRef.current = renderScene;
       engine.setCellVisible(showCell);
+      engine.setSupercellBoundaryVisible(showSupercellBoundary);
       engine.setBondsVisible(showBonds);
       engine.setSelection(selectionRef.current.selectedSites);
       engine.setBondSelection(selectedBondId);
@@ -148,11 +158,20 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       if (generation === generationRef.current) generationRef.current += 1;
       const engine = engineRef.current;
       engineRef.current = null;
+      engineSceneRef.current = null;
       if (engine) {
         try { engine.dispose(); } catch { /* disposal is best-effort after the surface is detached */ }
       }
     };
-  }, [attempt, capabilityOverride, engineFactory, mapping, onBondPick, onSitePick, performanceDecision, renderScene]);
+  }, [attempt, capabilityOverride, engineFactory, mapping, onBondPick, onSitePick]);
+
+  useEffect(() => {
+    const engine=engineRef.current;
+    if(!engine||!renderScene||!performanceDecision||performanceDecision.tier==="refused"||engineSceneRef.current===renderScene)return;
+    engine.replaceScene(renderScene,performanceDecision.tier,performanceDecision.pixelRatioCap);
+    engine.setCellVisible(showCell);engine.setSupercellBoundaryVisible(showSupercellBoundary);engine.setBondsVisible(showBonds);
+    engineSceneRef.current=renderScene;setSnapshot(engine.snapshot());setState("rendered");
+  },[performanceDecision,renderScene,showBonds,showCell,showSupercellBoundary]);
 
   useEffect(() => {
     engineRef.current?.setSelection(selection.selectedSites);
@@ -218,6 +237,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     }
     if (engineRef.current) setSnapshot(engineRef.current.snapshot());
   };
+  const applySupercellBoundaryVisibility = (visible: boolean) => { setShowSupercellBoundary(visible); engineRef.current?.setSupercellBoundaryVisible(visible); if (engineRef.current) setSnapshot(engineRef.current.snapshot()); };
   const reset = () => {
     engineRef.current?.resetCamera();
     if (engineRef.current) setSnapshot(engineRef.current.snapshot());
@@ -232,14 +252,16 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const undoSelection = () => { setSelection(undoViewerSelection); setSelectedBondId(null); };
   const applySupercell = () => {
     if (!mapping.ok) return;
-    const checked = derivePeriodicSupercell(mapping.scene, repeatDraft, neighborSiteIndex);
+    if (supercellEstimate.mode === "refused") { setSupercellError(supercellEstimate.error); return; }
+    const checked = derivePeriodicSupercell(mapping.scene, parsedRepeatDraft, neighborSiteIndex);
     if (!checked.ok) {
-      setSupercellError(`${checked.error}: requested ${checked.requestedSites} sites and ${checked.requestedBonds} bonds; limits are ${PERIODIC_DERIVED_CAPS.maxDisplayedSites} and ${PERIODIC_DERIVED_CAPS.maxDisplayedBonds}.`);
+      setSupercellError(checked.error);
       return;
     }
-    setSupercellError(null); setRepeat(repeatDraft); setNeighborSiteIndex(null); clearSelection(); setHistory([]);
+    setSupercellError(null); setRepeat(parsedRepeatDraft); setNeighborSiteIndex(null); clearSelection(); setHistory([]); setAnnouncement(`Supercell applied: ${parsedRepeatDraft.join(" by ")}, ${supercellEstimate.totalCells} cells, ${supercellEstimate.displayedAtoms} displayed atoms.`);
   };
-  const resetSupercell = () => { setRepeatDraft(DEFAULT_REPEAT); setRepeat(DEFAULT_REPEAT); setNeighborSiteIndex(null); setSupercellError(null); clearSelection(); setHistory([]); };
+  const resetSupercell = () => { setRepeatDraft(["1","1","1"]); setRepeat(DEFAULT_REPEAT); setNeighborSiteIndex(null); setSupercellError(null); clearSelection(); setHistory([]); setAnnouncement("Supercell reset to 1 by 1 by 1."); };
+  const downloadSupercellState = () => { if (!mapping.ok) return; const artifact=buildViewerSupercellState(mapping.scene,{expansion:repeat,originPolicy:"positive_octant",showPrimaryCell:showCell,showSupercellBoundary,showInternalGrid:false}); downloadLocalBlob(jsonBlob(artifact),"viewer_supercell_state.json"); };
   const exportPng = async () => {
     setExportError(null);
     try {
@@ -256,7 +278,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const downloadMeasurement = () => {
     if (!mapping.ok || !measurement?.ok) return;
     const refs = measurementDetails.refs.length ? measurementDetails.refs : selection.selectedSites;
-    const artifact = buildViewerMeasurementArtifact(mapping.scene, coordinateMode, refs, measurement.result);
+    const artifact = buildViewerMeasurementArtifact(mapping.scene, coordinateMode, refs, measurement.result, repeat);
     downloadLocalBlob(jsonBlob(artifact), "viewer_measurement.json");
   };
   const topologySummary = useMemo(() => {
@@ -301,6 +323,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
         <div className="viewer-renderer-controls" aria-label="Viewer controls">
           <button type="button" className="compact secondary" data-testid="viewer-scene-renderer-reset" onClick={reset} disabled={state !== "rendered"}>Reset camera</button>
           <button type="button" className={`compact ${showCell ? "active" : "secondary"}`} data-testid="viewer-scene-renderer-toggle-cell" aria-pressed={showCell} onClick={() => applyVisibility("cell", !showCell)}>Unit cell</button>
+          <button type="button" className={`compact ${showSupercellBoundary ? "active" : "secondary"}`} data-testid="viewer-scene-renderer-toggle-supercell-boundary" aria-pressed={showSupercellBoundary} onClick={() => applySupercellBoundaryVisibility(!showSupercellBoundary)}>Supercell boundary</button>
           <button type="button" className={`compact ${showBonds ? "active" : "secondary"}`} data-testid="viewer-scene-renderer-toggle-bonds" aria-pressed={showBonds} onClick={() => applyVisibility("bonds", !showBonds)}>Bonds</button>
           <button type="button" className="compact secondary" data-testid="viewer-scene-export-png" onClick={() => void exportPng()} disabled={state !== "rendered"}>Download PNG</button>
         </div>
@@ -350,18 +373,15 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
           <div><dt>Cross-boundary bonds</dt><dd>{topologySummary.crossBoundary}</dd></div>
           <div><dt>Self-periodic bonds</dt><dd>{topologySummary.selfPeriodic}</dd></div>
           <div><dt>Render mode</dt><dd>{performanceDecision?.tier ?? "unavailable"}</dd></div>
+          <div><dt>Supercell expansion</dt><dd>{repeat.join(" by ")}</dd></div>
+          <div><dt>Displayed sites</dt><dd>{renderScene?.atoms.length ?? 0}</dd></div>
+          <div><dt>Displayed bonds</dt><dd>{renderScene?.bonds.length ?? 0}</dd></div>
           <div><dt>Selection</dt><dd>{selection.activeSite ? `${selection.activeSite.siteIndex}@[${selection.activeSite.imageOffset.join(",")}]` : "none"}</dd></div>
           <div><dt>Selected bond</dt><dd>{selectedBondId ?? "none"}</dd></div>
           <div><dt>Warnings</dt><dd>{mapping.scene.warnings.length ? mapping.scene.warnings.join(", ") : "none"}</dd></div>
         </dl>
         {performanceDecision?.warning ? <p className="notice" role="status" data-testid="viewer-scene-renderer-performance-warning">{performanceDecision.warning}: all validated atoms and bonds remain rendered with reduced pixel ratio and antialiasing.</p> : null}
-        <fieldset className="viewer-supercell-controls" aria-label="Bounded supercell controls">
-          <legend>Renderer-local supercell</legend>
-          {([0,1,2] as const).map((axis) => <label key={axis}>{["X","Y","Z"][axis]}<input data-testid={`viewer-supercell-${["x","y","z"][axis]}`} type="number" min="1" max="3" value={repeatDraft[axis]} onChange={(event) => { const next=[...repeatDraft] as number[]; next[axis]=Number(event.target.value); setRepeatDraft(next as unknown as SupercellRepeat); }} /></label>)}
-          <button type="button" className="compact secondary" data-testid="viewer-supercell-apply" onClick={applySupercell}>Apply</button>
-          <button type="button" className="compact secondary" data-testid="viewer-supercell-reset" onClick={resetSupercell}>Reset 1 x 1 x 1</button>
-          <output data-testid="viewer-supercell-status">{supercellError ?? `${repeat.join(" x ")}: ${renderScene?.atoms.length ?? 0} displayed sites`}</output>
-        </fieldset>
+        <ViewerSupercellControls draft={repeatDraft} applied={repeat} estimate={supercellError ? Object.freeze({...supercellEstimate,error:supercellError,mode:"refused" as const}) : supercellEstimate} onDraft={(axis,value)=>{const next=[...repeatDraft];next[axis]=value;setRepeatDraft(next);setSupercellError(null);}} onApply={applySupercell} onReset={resetSupercell} onPreset={(value)=>{setRepeatDraft(value.map(String));setSupercellError(null);}} onDownload={downloadSupercellState} />
         <ViewerMeasurementPanel mode={selection.mode} selected={selection.selectedSites} coordinateMode={coordinateMode} resolvedRefs={measurementDetails.refs} evaluation={measurement} history={history} onMode={changeMode} onCoordinateMode={(mode) => { setCoordinateMode(mode); clearSelection(); }} onUndo={undoSelection} onClear={clearSelection} onDownload={downloadMeasurement} />
         <ViewerBondInspector bond={selectedBond} onClear={() => setSelectedBondId(null)} />
         <ViewerSiteInspector atom={selectedAtom} atoms={renderScene?.atoms ?? []} bonds={renderScene?.bonds ?? []} repeat={repeat} source={mapping.scene.source.filename || mapping.scene.source.resourceId} onClear={clearSelection} onJumpPrimary={() => selectedAtom && setSelection((current) => selectViewerSite(initialViewerSelection(current.mode), {siteIndex:selectedAtom.siteIndex,imageOffset:[0,0,0]}))} onShowNeighbors={() => selectedAtom && setNeighborSiteIndex(selectedAtom.siteIndex)} onClearNeighbors={() => setNeighborSiteIndex(null)} onHighlightNeighbor={(target)=>{if(!selectedAtom)return;engineRef.current?.setSelection([selectedAtom.ref,target]);if(engineRef.current)setSnapshot(engineRef.current.snapshot());}} />

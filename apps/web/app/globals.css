@@ -755,6 +755,13 @@ pre {
 }
 
 .viewer-supercell-controls {
+  display: grid;
+  gap: 8px;
+}
+
+.viewer-supercell-axis-inputs,
+.viewer-supercell-presets,
+.viewer-supercell-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
@@ -772,7 +779,8 @@ pre {
 }
 
 .viewer-supercell-controls output {
-  flex-basis: 100%;
+  display: block;
+  overflow-wrap: anywhere;
 }
 
 .viewer-measurement-modes,
@@ -870,6 +878,16 @@ pre {
 }
 
 @media (max-width: 640px) {
+  .viewer-supercell-axis-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .viewer-supercell-controls label,
+  .viewer-supercell-controls input {
+    width: 100%;
+    min-width: 0;
+  }
   .viewer-renderer-controls button,
   .viewer-site-inspector button,
   .viewer-measurement-panel button,

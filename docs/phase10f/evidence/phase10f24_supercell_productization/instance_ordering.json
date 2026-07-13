@@ -1,0 +1,1 @@
+{"ordering":["image_dx","image_dy","image_dz","canonical_site_index"],"identity":"site_index@[image_offset]","translation":"canonical_cartesian + i*a + j*b + k*c","triclinic_supported":true,"random_ids":false}

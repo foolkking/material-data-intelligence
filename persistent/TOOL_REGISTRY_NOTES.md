@@ -1,5 +1,9 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-13 Phase 10F-24
+
+No Tool Registry change. `structure.viewer_3d` still emits canonical `phase10f18.viewer_scene.v2`; expansion is validated frontend view state and never a new adapter parameter, artifact topology, or structure resource.
+
 ## 2026-07-12 Phase 10F-15 Formal Viewer Notes
 
 - `structure.viewer_3d` is the formal minimal interactive viewer identity.

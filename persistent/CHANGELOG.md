@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-07-13 - Phase 10F-24 Supercell Productization
+
+- Added bounded supercell productization with deterministic periodic identity, canonical-bond replication, estimate/apply/reset UI, state download/replay, and independent unit-cell/supercell boundaries.
+- Changed expansion rebuilds to replace GPU buffers in one renderer context, preventing active WebGL context growth.
+
 ## 2026-07-12 - Phase 10F-19 Periodic Scene Integration Hardening
 
 - Added exact additive capability metadata to `viewer_scene.v2` without changing periodic bond semantics or v1.

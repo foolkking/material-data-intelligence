@@ -1,5 +1,11 @@
 # 共享 Schema 规范
 
+## Phase 10F-24 Addendum: renderer-local supercell display state
+
+`phase10f24.viewer_supercell_state.v1` is a frontend-local inert JSON download. It records canonical scene identity, strict `[a,b,c]` expansion, fixed `positive_octant` origin, visibility, counts, render tier, caps, warnings, and no-mutation/security flags. Replay requires matching scene schema and resource identity. It does not modify `phase10f18.viewer_scene.v2`, create a structure resource, or grant execution authority.
+
+Displayed instances remain `site_index@[image_offset]`, ordered by image offset then canonical site index. Axes are 1 through 3, total cells at most 27, displayed atoms at most 2048, and displayed bonds at most 8192. Measurement artifacts include applied expansion as view provenance.
+
 ## Phase 10F-8 Addendum: Viewer Scene Artifact Contract Draft
 
 Phase 10F-8 plans a renderer-neutral `viewer_scene` artifact contract. This is a documentation-level schema draft only; it does not implement `structure.viewer_3d`, does not add a renderer, and does not change Tool Registry or planner runtime behavior.

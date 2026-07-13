@@ -1,5 +1,11 @@
 # OPEN_QUESTIONS
 
+## 2026-07-13 Phase 10F-24 Follow-ups
+
+- Decide whether a later phase needs a capped internal cell grid; canonical and outer boundaries are complete.
+- Camera preset/state productization and clipping remain the next real-space controls.
+- Persisted supercell structures require a separate backend contract and are not implied by renderer-local expansion.
+
 ## 2026-07-12 Phase 10F-15 Follow-ups
 
 - **Closed: formal minimal viewer identity.** `structure.viewer_3d` is the sole ordinary interactive viewer identity and emits canonical inert artifacts.

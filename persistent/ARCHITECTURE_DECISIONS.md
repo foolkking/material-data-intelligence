@@ -1,5 +1,9 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10F-24-SUPERCELL-CONTEXT: Bounded renderer-local supercells reuse one graphics context
+
+Supercell expansion is `[a,b,c]` with fixed positive-octant offsets and application-owned caps. It is not persisted into the canonical scene. Apply replaces instanced atom, shared bond, and boundary buffers inside one WebGL renderer; canonical artifact changes still recreate the renderer. This prevents active-context growth while preserving deterministic camera refit and complete buffer disposal. Replay uses inert `phase10f24.viewer_supercell_state.v1` bound to scene schema/resource identity.
+
 ## ADR-10F-15-FORMAL-MINIMAL-STRUCTURE-VIEWER: Consolidate on canonical artifacts and a client capability
 
 ### Context

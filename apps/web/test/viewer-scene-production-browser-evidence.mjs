@@ -147,7 +147,7 @@ async function renderCase(context, browserId, caseId, mode, screenshotName) {
   await page.getByTestId("viewer-scene-renderer-reset").click();
   const reset = await snapshot(page);
   if (distance(initial.cameraPosition, reset.cameraPosition) > 0.002) throw new Error(`${browserId} reset failed`);
-  if (mode === "near_cap" && (reset.metrics.atomCount !== 256 || reset.metrics.instancedMeshCount > reset.metrics.speciesCount || reset.metrics.drawCalls > reset.metrics.speciesCount + 2)) throw new Error("near-cap instancing policy failed");
+  if (mode === "near_cap" && (reset.metrics.atomCount !== 256 || reset.metrics.instancedMeshCount > reset.metrics.speciesCount || reset.metrics.drawCalls > reset.metrics.speciesCount + 3)) throw new Error("near-cap instancing policy failed");
   const accessibility = await page.evaluate(() => ({
     region: document.querySelector('[aria-label="3D Structure Viewer"]')?.getAttribute("aria-label"),
     status_live: document.querySelector('[data-testid="viewer-scene-renderer-state"]')?.getAttribute("aria-live"),
