@@ -1267,3 +1267,12 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added ordered bounded endpoint selection, undo, keyboard atom/bond selection, and exact periodic identity announcements.
 - Added deterministic inert `phase10f23.viewer_measurement.v1` local JSON download without scene/topology mutation.
 - Chromium, Firefox, WebKit, and mobile evidence covers atom/bond picking, distance/angle/dihedral, cross-boundary endpoints, lifecycle, and network isolation.
+
+## 2026-07-13 Phase 10F-26 Scientific Export and Reporting Foundation
+
+- Added strict bounded PNG/JSON/Markdown export requests and responsive controls.
+- Added light, dark, transparent, and high-DPI current-view capture with full renderer restoration.
+- Added inert view-state JSON, scientific Markdown, and ordered SHA-256 manifest.
+- Added stale cancellation, one-export concurrency, Blob URL cleanup, and safe error codes.
+- Chromium, Firefox, WebKit, and mobile evidence observed zero external requests.
+- PDF and full report layout remain deferred pending dedicated contract and dependency review.

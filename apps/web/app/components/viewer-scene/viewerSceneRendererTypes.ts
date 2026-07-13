@@ -1,4 +1,5 @@
 import type { CameraPreset, ViewerClipState } from "./viewerSceneViewState";
+import type { ViewerExportRequest } from "./viewerSceneExport";
 
 export type RenderVector3 = readonly [number, number, number];
 export type ImageOffset = readonly [number, number, number];
@@ -141,7 +142,7 @@ export type ViewerRendererEngine = {
   readonly keyboardCamera: (action: "rotate_left" | "rotate_right" | "rotate_up" | "rotate_down" | "pan_left" | "pan_right" | "pan_up" | "pan_down" | "zoom_in" | "zoom_out") => void;
   readonly setSelection: (sites: readonly PeriodicSiteRef[]) => void;
   readonly setBondSelection: (bondId: string | null) => void;
-  readonly exportPng: () => Promise<Blob>;
+  readonly exportPng: (request: ViewerExportRequest) => Promise<Blob>;
   readonly snapshot: () => ViewerRendererSnapshot;
   readonly dispose: () => void;
 };
@@ -152,6 +153,7 @@ export type ViewerRendererEngineFactory = (args: {
   readonly onContextLost: () => void;
   readonly onSitePick?: (site: PeriodicSiteRef | null) => void;
   readonly onBondPick?: (bondId: string) => void;
+  readonly onViewChange?: () => void;
   readonly pixelRatioCap: number;
   readonly antialias: boolean;
   readonly performanceTier: "interactive" | "degraded";

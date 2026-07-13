@@ -681,3 +681,9 @@
 - Decide whether measurement artifacts should become persisted backend artifacts; current downloads are deterministic local inert JSON only.
 - Lasso/box selection and persisted annotations remain intentionally absent.
 - Supercell view-state productization, clipping, camera presets, and vector export remain separate queued scopes.
+
+## 2026-07-13 Phase 10F-26 Follow-ups
+
+- Decide whether a future PDF/report phase should use browser-native layout or a reviewed local PDF dependency.
+- Define font embedding, pagination, metadata, accessibility, and vector/raster policies before PDF implementation.
+- Decide whether local export state should ever become a persisted backend artifact; it currently grants no execution authority.

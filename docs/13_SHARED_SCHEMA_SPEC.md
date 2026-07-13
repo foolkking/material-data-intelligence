@@ -1141,3 +1141,23 @@ records source scene schema/resource/formula, measurement kind and coordinate
 mode, two to four exact `PeriodicSiteRef` points, rounded value/unit/precision,
 policy warnings, and explicit false structure/topology mutation flags. It is not
 a backend Artifact contract and grants no execution authority.
+
+## Phase 10F-26 Addendum: local scientific export contracts
+
+`phase10f26.viewer_export_state.v1` is a frontend-local inert view-state
+download. It records validated scene identity, renderer-local supercell repeat,
+camera, clipping, display flags, up to twenty bounded measurements, optional
+selected-site summary, and an exact export request. It explicitly declares that
+the screenshot is not scientific source data and that structure/topology were
+not mutated.
+
+`phase10f26.viewer_export_manifest.v1` lists exactly `viewer.png`,
+`viewer_export_state.json`, and `viewer_export_summary.md` in deterministic
+order, with media type, byte size, and SHA-256. It declares no renderer,
+JavaScript, or external asset. Both schemas are local downloads, not persisted
+backend Artifact types and not executable Tool Registry or AnalysisPlan inputs.
+
+Export requests allow only PNG/JSON/Markdown, light/dark/transparent background,
+DPR 1 or 2, and application-owned overlay booleans. Effective dimensions and
+memory are capped before allocation. No canonical viewer scene, periodic bond,
+manifest v2, planner, adapter, or runtime contract changes.

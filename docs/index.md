@@ -248,3 +248,12 @@
 | [`phase10f/phase10f23_measurement_evidence.md`](phase10f/phase10f23_measurement_evidence.md) | Three-browser and mobile evidence procedure |
 | [`phase10f/phase10f23_measurement_readiness_matrix.md`](phase10f/phase10f23_measurement_readiness_matrix.md) | Phase 10F-23 readiness decisions |
 | [`phase10f/evidence/phase10f23_advanced_picking_measurement/`](phase10f/evidence/phase10f23_advanced_picking_measurement/) | Picking, math, artifact, browser, screenshot, and security evidence |
+| [`phase10f/phase10f26_scientific_export.md`](phase10f/phase10f26_scientific_export.md) | Scientific export architecture and scope |
+| [`phase10f/phase10f26_export_contract.md`](phase10f/phase10f26_export_contract.md) | Strict request and inert view-state contract |
+| [`phase10f/phase10f26_png_export.md`](phase10f/phase10f26_png_export.md) | PNG, background, high-DPI, and restoration policy |
+| [`phase10f/phase10f26_export_manifest.md`](phase10f/phase10f26_export_manifest.md) | Ordered SHA-256 export manifest |
+| [`phase10f/phase10f26_export_security.md`](phase10f/phase10f26_export_security.md) | Export threat model and controls |
+| [`phase10f/phase10f26_pdf_readiness.md`](phase10f/phase10f26_pdf_readiness.md) | PDF deferred-by-design decision |
+| [`phase10f/phase10f26_export_evidence.md`](phase10f/phase10f26_export_evidence.md) | Live three-browser and mobile export evidence |
+| [`phase10f/phase10f26_export_readiness_matrix.md`](phase10f/phase10f26_export_readiness_matrix.md) | Export readiness decisions |
+| [`phase10f/evidence/phase10f26_scientific_export/`](phase10f/evidence/phase10f26_scientific_export/) | Live artifacts, PNGs, reports, manifests, browser and security captures |

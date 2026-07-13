@@ -3513,3 +3513,19 @@ deterministic inert local JSON document.
 - Explicit bond endpoint images are preserved even when minimum-image mode could choose another image.
 - Raycast/movement thresholds, caps, overlays, callbacks, and keyboard bindings are application-owned.
 - Backend execution authority, artifact contracts, dependencies, and network boundaries are unchanged.
+
+# 2026-07-13 Phase 10F-26 ADR: reuse and restore the validated renderer for export
+
+## Decision
+
+Capture bounded PNGs by temporarily resizing and configuring the one active
+validated Three.js renderer, then restore every renderer and camera property in
+`finally`. Export inert JSON/Markdown plus an ordered SHA-256 manifest locally.
+
+## Consequences
+
+- Export reflects current camera, clipping, supercell, bonds, and measurement overlays.
+- No second WebGL context, server renderer, external upload, or remote asset exists.
+- Generation tokens reject stale exports and one active request prevents allocation amplification.
+- PDF is deferred until layout, font, accessibility, dependency, and evidence policies are approved.
+- Backend tools, canonical artifacts, planner/runtime authority, and dependencies remain unchanged.

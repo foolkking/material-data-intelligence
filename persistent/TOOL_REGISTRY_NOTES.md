@@ -1028,3 +1028,9 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - No Tool Registry, planner, adapter, PlanValidator, QueueWorkerRuntime, AnalysisPlan, or canonical scene semantics changed.
 - Picking and measurement are bounded frontend actions over independently validated scene/topology data.
 - `viewer_measurement.json` is a local inert download, not a newly registered executable tool or persisted backend artifact.
+
+# 2026-07-13 Phase 10F-26 Scientific Export Notes
+
+- No Tool Registry, planner, adapter, PlanValidator, QueueWorkerRuntime, AnalysisPlan, or canonical scene semantics changed.
+- PNG, export-state JSON, Markdown, and export manifest are bounded frontend-local downloads over an independently validated scene.
+- No PDF/report tool, server renderer, external upload, script, renderer asset, or new execution authority was registered.

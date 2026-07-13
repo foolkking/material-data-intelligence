@@ -153,13 +153,16 @@ async function renderCase(context, browserId, caseId, mode, screenshotName) {
     status_live: document.querySelector('[data-testid="viewer-scene-renderer-state"]')?.getAttribute("aria-live"),
     summary: document.querySelector('[data-testid="viewer-scene-renderer-summary"]')?.textContent,
     legend: document.querySelector('[aria-label="Species legend"]')?.textContent,
-    controls: [...document.querySelectorAll(".viewer-renderer-controls button")].map((node) => ({ text: node.textContent, pressed: node.getAttribute("aria-pressed") })),
+    controls: [...document.querySelectorAll('[aria-label="3D Structure Viewer"] button')].map((node) => ({ text: node.textContent, pressed: node.getAttribute("aria-pressed") })),
+    export_region: document.querySelector('[aria-label="Scientific export controls"]')?.tagName,
+    export_status_live: document.querySelector('[data-testid="viewer-export-status"]')?.getAttribute("aria-live"),
     shortcuts: document.querySelector('[aria-label="3D Structure Viewer"]')?.getAttribute("aria-keyshortcuts"),
     semantic_summary: document.querySelector('[data-testid="viewer-scene-semantic-summary"]')?.textContent,
     live_region: document.querySelector('[data-testid="viewer-scene-accessibility-announcement"]')?.getAttribute("aria-live"),
     reduced_motion: matchMedia("(prefers-reduced-motion: reduce)").matches,
   }));
-  if (!accessibility.region || !accessibility.summary || !accessibility.legend || accessibility.controls.length < 3 || !accessibility.shortcuts?.includes("Shift+ArrowLeft") || !accessibility.semantic_summary?.includes("Cross-boundary bonds") || accessibility.live_region !== "polite") throw new Error("accessibility baseline failed");
+  const controlNames=accessibility.controls.map((item)=>item.text?.trim());
+  if (!accessibility.region || !accessibility.summary || !accessibility.legend || !controlNames.includes("Reset camera") || !controlNames.includes("Bonds") || accessibility.export_region!=="FIELDSET" || accessibility.export_status_live!=="polite" || !accessibility.shortcuts?.includes("Shift+ArrowLeft") || !accessibility.semantic_summary?.includes("Cross-boundary bonds") || accessibility.live_region !== "polite") throw new Error("accessibility baseline failed");
   const zoom200 = await page.evaluate(() => {
     document.documentElement.style.zoom = "2";
     const region = document.querySelector('[aria-label="3D Structure Viewer"]');

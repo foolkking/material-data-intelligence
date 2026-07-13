@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
@@ -15,6 +16,7 @@ const TOPOLOGY_MODE = process.env.MDI_TOPOLOGY_EVIDENCE === "1";
 const ADVANCED_MODE = process.env.MDI_ADVANCED_MEASUREMENT === "1";
 const SUPERCELL_MODE = process.env.MDI_SUPERCELL_PRODUCTIZATION === "1";
 const VIEW_CONTROLS_MODE = process.env.MDI_VIEW_CONTROLS === "1";
+const SCIENTIFIC_EXPORT_MODE = process.env.MDI_SCIENTIFIC_EXPORT === "1";
 let payload;
 let activeCase = "measurement_crystal";
 let activeMode = "live";
@@ -44,11 +46,11 @@ async function main() {
       }
     }
     if (results.some((result) => !result.pass || result.externalRequests !== 0)) throw new Error(`inspection matrix failed: ${JSON.stringify(results)}`);
-    await write("browser/browser_matrix.json", { schema_version: VIEW_CONTROLS_MODE ? "phase10f25.view_controls_browser_matrix.v1" : SUPERCELL_MODE ? "phase10f24.supercell_browser_matrix.v1" : ADVANCED_MODE ? "phase10f23.advanced_picking_browser_matrix.v1" : TOPOLOGY_MODE ? "phase10f18.periodic_topology_browser_matrix.v1" : PERIODIC_MODE ? "phase10f17.periodic_browser_matrix.v1" : "phase10f16.inspection_browser_matrix.v1", results });
-    await write("browser/network_snapshot.json", { external_request_count: 0, result: VIEW_CONTROLS_MODE ? "NO_EXTERNAL_NETWORK_REQUESTS" : TOPOLOGY_MODE ? "NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS" : PERIODIC_MODE ? "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS" : "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS" });
+    await write("browser/browser_matrix.json", { schema_version: SCIENTIFIC_EXPORT_MODE ? "phase10f26.scientific_export_browser_matrix.v1" : VIEW_CONTROLS_MODE ? "phase10f25.view_controls_browser_matrix.v1" : SUPERCELL_MODE ? "phase10f24.supercell_browser_matrix.v1" : ADVANCED_MODE ? "phase10f23.advanced_picking_browser_matrix.v1" : TOPOLOGY_MODE ? "phase10f18.periodic_topology_browser_matrix.v1" : PERIODIC_MODE ? "phase10f17.periodic_browser_matrix.v1" : "phase10f16.inspection_browser_matrix.v1", results });
+    await write("browser/network_snapshot.json", { external_request_count: 0, result: SCIENTIFIC_EXPORT_MODE ? "NO_EXTERNAL_NETWORK_REQUESTS" : VIEW_CONTROLS_MODE ? "NO_EXTERNAL_NETWORK_REQUESTS" : TOPOLOGY_MODE ? "NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS" : PERIODIC_MODE ? "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS" : "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS" });
     await write("browser/console_snapshot.json", { errors: results.flatMap((result) => result.consoleErrors), page_errors: results.flatMap((result) => result.pageErrors) });
-    await write("evidence_manifest.json", VIEW_CONTROLS_MODE ? viewControlsManifest(results) : SUPERCELL_MODE ? supercellManifest(results) : manifest(results));
-    await writeFile(path.join(EVIDENCE, "README.md"), VIEW_CONTROLS_MODE ? viewControlsReadme(results) : SUPERCELL_MODE ? supercellReadme(results) : readme(results), "utf-8");
+    await write("evidence_manifest.json", SCIENTIFIC_EXPORT_MODE ? scientificExportManifest(results) : VIEW_CONTROLS_MODE ? viewControlsManifest(results) : SUPERCELL_MODE ? supercellManifest(results) : manifest(results));
+    await writeFile(path.join(EVIDENCE, "README.md"), SCIENTIFIC_EXPORT_MODE ? scientificExportReadme(results) : VIEW_CONTROLS_MODE ? viewControlsReadme(results) : SUPERCELL_MODE ? supercellReadme(results) : readme(results), "utf-8");
     console.log("VIEWER_SCENE_SCIENTIFIC_INSPECTION_BROWSER_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_MEASUREMENT_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_EXPORT_EVIDENCE_PASS");
@@ -89,12 +91,21 @@ async function main() {
       console.log("VIEWER_SCENE_VIEW_CONTROLS_MOBILE_CROSS_BROWSER_EVIDENCE_PASS");
       console.log("NO_EXTERNAL_NETWORK_REQUESTS");
     }
+    if (SCIENTIFIC_EXPORT_MODE) {
+      console.log("VIEWER_SCENE_SCIENTIFIC_EXPORT_BROWSER_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_HIGH_DPI_EXPORT_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_TRANSPARENT_EXPORT_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_EXPORT_ARTIFACT_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_EXPORT_MOBILE_CROSS_BROWSER_EVIDENCE_PASS");
+      console.log("NO_EXTERNAL_NETWORK_REQUESTS");
+    }
   } finally {
     if (server) { server.kill(); await stopPort(); }
   }
 }
 
 async function inspectBrowser(browser, browserId) {
+  if (SCIENTIFIC_EXPORT_MODE) return scientificExportBrowser(browser, browserId);
   if (VIEW_CONTROLS_MODE) return viewControlsBrowser(browser, browserId);
   if (SUPERCELL_MODE) return supercellBrowser(browser, browserId);
   if (ADVANCED_MODE) return advancedBrowser(browser, browserId);
@@ -177,6 +188,91 @@ async function inspectBrowser(browser, browserId) {
   await context.close();
   return { browser: browserId, version: browser.version(), pass: true, inspector, distance, angle, dihedral, periodic, png, artifactDownloads, mobile, legacy, lifecycle: { selectionCleared: cleared, canvasCount: 1 }, externalRequests: security.external, consoleErrors: security.consoleErrors, pageErrors: audit.pageErrors };
 }
+
+async function scientificExportBrowser(browser, browserId) {
+  activeCase = "measurement_crystal";
+  activeMode = "live";
+  const context = await browser.newContext({ viewport:{width:1440,height:1200}, acceptDownloads:true, reducedMotion:"reduce" });
+  const audit = {external:[],console:[],pageErrors:[],failedResponses:[]};
+  const page = await evidencePage(context,audit);
+  await productFlow(page);
+  await openRenderer(page);
+  await setExportRequest(page,{width:800,height:600,pixelRatio:"1",background:"light"});
+  const baseline = await captureExport(page,`${browserId}_baseline.png`);
+  if (baseline.width !== 800 || baseline.height !== 600 || ![2,6].includes(baseline.colorType)) throw new Error(`${browserId} baseline PNG mismatch`);
+
+  let extended = null;
+  let mobile = null;
+  if (browserId === "chromium") {
+    await page.getByTestId("viewer-clipping-enabled").click();
+    await page.getByTestId("viewer-clip-x-enabled").click();
+    await page.getByRole("button",{name:"2 x 1 x 1",exact:true}).click();
+    await page.getByTestId("viewer-supercell-apply").click();
+    await page.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.atomCount===8);
+    await page.getByRole("button",{name:"Distance"}).click();
+    const region=page.getByRole("region",{name:"3D Structure Viewer"});
+    await region.focus();await region.press("n");await region.press("n");
+    await page.waitForFunction(()=>document.querySelector('[data-testid="viewer-measurement-result"]')?.textContent?.includes("distance"));
+
+    await setExportRequest(page,{width:800,height:600,pixelRatio:"1",background:"transparent"});
+    const transparent=await captureExport(page,"transparent.png");
+    await page.screenshot({path:path.join(SCREENSHOTS,"02_transparent_export_controls.png"),fullPage:true});
+    await setExportRequest(page,{width:800,height:600,pixelRatio:"1",background:"dark"});
+    const dark=await captureExport(page,"dark.png");
+    await setExportRequest(page,{width:1200,height:900,pixelRatio:"2",background:"light"});
+    const highDpi=await captureExport(page,"high_dpi.png");
+    if(highDpi.width!==2400||highDpi.height!==1800||transparent.colorType!==6||transparent.sha256===dark.sha256)throw new Error("high-DPI or background export evidence mismatch");
+
+    const prepared={};
+    for(const [label,name] of [["Download export JSON","viewer_export_state.json"],["Download export Markdown","viewer_export_summary.md"],["Download export manifest","viewer_export_manifest.json"]]){
+      const [download]=await Promise.all([page.waitForEvent("download"),page.getByRole("button",{name:label,exact:true}).click()]);
+      const target=path.join(EVIDENCE,"artifacts",name);await mkdir(path.dirname(target),{recursive:true});await download.saveAs(target);prepared[name]=await readFile(target);
+    }
+    const state=JSON.parse(prepared["viewer_export_state.json"].toString("utf-8"));
+    const manifestBody=JSON.parse(prepared["viewer_export_manifest.json"].toString("utf-8"));
+    const expectedHashes={"viewer.png":highDpi.sha256,"viewer_export_state.json":sha256(prepared["viewer_export_state.json"]),"viewer_export_summary.md":sha256(prepared["viewer_export_summary.md"])};
+    for(const item of manifestBody.artifacts)if(expectedHashes[item.name]!==item.sha256||item.size_bytes!==(item.name==="viewer.png"?highDpi.bytes:prepared[item.name].length))throw new Error(`manifest integrity mismatch: ${item.name}`);
+    if(state.schema_version!=="phase10f26.viewer_export_state.v1"||state.viewer_state.supercell_expansion.join()!=="2,1,1"||!state.viewer_state.clipping.enabled||state.measurements.length!==1||state.policy.structure_mutated!==false)throw new Error("viewer export state mismatch");
+    if(!prepared["viewer_export_summary.md"].toString("utf-8").includes("Scientific Structure Viewer Export"))throw new Error("Markdown export missing scientific summary");
+
+    const repeat=[];
+    await setExportRequest(page,{width:800,height:600,pixelRatio:"1",background:"light"});
+    for(let index=0;index<10;index+=1){const started=Date.now();repeat.push({...await captureExport(page,`repeat_${index+1}.png`,false),elapsedMs:Date.now()-started});}
+    if(await page.locator("canvas").count()!==1)throw new Error("repeated export created duplicate canvas");
+    mobile=await scientificExportMobile(browser);
+    extended={transparent,dark,highDpi,state:{schema:state.schema_version,supercell:state.viewer_state.supercell_expansion,clipping:state.viewer_state.clipping.enabled,measurements:state.measurements.length},manifest:manifestBody,repeat};
+    await write("export/export_matrix.json",extended);
+    await page.screenshot({path:path.join(SCREENSHOTS,"01_scientific_export.png"),fullPage:true});
+  }
+  const security=await auditPage(page,audit);
+  const result={browser:browserId,version:browser.version(),pass:true,baseline,extended,mobile,canvasCount:await page.locator("canvas").count(),externalRequests:security.external,consoleErrors:security.consoleErrors,pageErrors:audit.pageErrors};
+  await page.close();await context.close();return result;
+}
+
+async function scientificExportMobile(browser){
+  activeCase="measurement_crystal";activeMode="live";
+  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2,acceptDownloads:true,reducedMotion:"reduce"});
+  const audit={external:[],console:[],pageErrors:[],failedResponses:[]};const page=await evidencePage(context,audit);await productFlow(page);await openRenderer(page);
+  await setExportRequest(page,{width:800,height:600,pixelRatio:"1",background:"light"});
+  const png=await captureExport(page,"mobile.png");const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1);const security=await auditPage(page,audit);
+  await page.addStyleTag({content:"nextjs-portal{display:none!important}"});
+  await page.screenshot({path:path.join(SCREENSHOTS,"03_mobile_export.png"),fullPage:false});await page.close();await context.close();if(overflow)throw new Error("mobile export controls overflow");return{png,overflow,externalRequests:security.external};
+}
+
+async function setExportRequest(page,{width,height,pixelRatio,background}){
+  await page.getByTestId("viewer-export-width").fill(String(width));await page.getByTestId("viewer-export-height").fill(String(height));await page.getByTestId("viewer-export-pixel-ratio").selectOption(String(pixelRatio));await page.getByTestId("viewer-export-background").selectOption(background);
+}
+
+async function captureExport(page,name,persist=true){
+  const [download]=await Promise.all([page.waitForEvent("download"),page.getByTestId("viewer-scene-export-png").click()]);const temporary=await download.path();if(!temporary)throw new Error("PNG download path unavailable");const bytes=await readFile(temporary);const signature=bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]));if(!signature||bytes.length<1000)throw new Error("PNG signature or size invalid");
+  if(persist){const target=path.join(EVIDENCE,"export",name);await mkdir(path.dirname(target),{recursive:true});await download.saveAs(target);}
+  return{filename:download.suggestedFilename(),bytes:bytes.length,width:bytes.readUInt32BE(16),height:bytes.readUInt32BE(20),bitDepth:bytes[24],colorType:bytes[25],sha256:sha256(bytes)};
+}
+
+function sha256(bytes){return createHash("sha256").update(bytes).digest("hex");}
+
+function scientificExportManifest(results){return{schema_version:"phase10f26.scientific_export_evidence.v1",baseline_head:"74db79795dd61d313c2bc6331e5ece9184165a19",canonical_schema:"phase10f18.viewer_scene.v2",export_state:"phase10f26.viewer_export_state.v1",export_manifest:"phase10f26.viewer_export_manifest.v1",formats:["png","json","markdown"],backgrounds:["light","dark","transparent"],limits:{logical:[256,4096],pixel_ratio:2,effective_pixels:16777216},browser_results:results,network_result:"NO_EXTERNAL_NETWORK_REQUESTS",markers:["VIEWER_SCENE_SCIENTIFIC_EXPORT_BROWSER_EVIDENCE_PASS","VIEWER_SCENE_HIGH_DPI_EXPORT_EVIDENCE_PASS","VIEWER_SCENE_TRANSPARENT_EXPORT_EVIDENCE_PASS","VIEWER_SCENE_EXPORT_ARTIFACT_EVIDENCE_PASS","VIEWER_SCENE_EXPORT_MOBILE_CROSS_BROWSER_EVIDENCE_PASS"],redaction:"sanitized"};}
+function scientificExportReadme(results){return`# Phase 10F-26 Scientific Export Evidence\n\nBrowsers: ${results.map((item)=>`${item.browser}=${item.pass?"pass":"fail"}`).join(", ")}\nPNG, high-DPI, transparent/dark background, inert JSON/Markdown/manifest artifacts, repeated export, and mobile controls were exercised in real browsers.\nNetwork: \`NO_EXTERNAL_NETWORK_REQUESTS\`\n`;}
 
 async function viewControlsBrowser(browser,browserId){
   activeCase="measurement_crystal";activeMode="live";

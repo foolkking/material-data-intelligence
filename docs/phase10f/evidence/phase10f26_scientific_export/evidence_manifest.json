@@ -1,0 +1,275 @@
+{
+  "schema_version": "phase10f26.scientific_export_evidence.v1",
+  "baseline_head": "74db79795dd61d313c2bc6331e5ece9184165a19",
+  "canonical_schema": "phase10f18.viewer_scene.v2",
+  "export_state": "phase10f26.viewer_export_state.v1",
+  "export_manifest": "phase10f26.viewer_export_manifest.v1",
+  "formats": [
+    "png",
+    "json",
+    "markdown"
+  ],
+  "backgrounds": [
+    "light",
+    "dark",
+    "transparent"
+  ],
+  "limits": {
+    "logical": [
+      256,
+      4096
+    ],
+    "pixel_ratio": 2,
+    "effective_pixels": 16777216
+  },
+  "browser_results": [
+    {
+      "browser": "chromium",
+      "version": "150.0.7871.115",
+      "pass": true,
+      "baseline": {
+        "filename": "Si-structure-viewer.png",
+        "bytes": 39390,
+        "width": 800,
+        "height": 600,
+        "bitDepth": 8,
+        "colorType": 6,
+        "sha256": "52aabdfd5f272fe105b1a9887268269ef41ae37946635e08b4d07b06ab329524"
+      },
+      "extended": {
+        "transparent": {
+          "filename": "Si-structure-viewer.png",
+          "bytes": 38079,
+          "width": 800,
+          "height": 600,
+          "bitDepth": 8,
+          "colorType": 6,
+          "sha256": "3c8916233206df871c6f8d01a68877b931418f7dea398a01fd4f7db2b1b05b4a"
+        },
+        "dark": {
+          "filename": "Si-structure-viewer.png",
+          "bytes": 36646,
+          "width": 800,
+          "height": 600,
+          "bitDepth": 8,
+          "colorType": 6,
+          "sha256": "10e4fedc3bd9668042776c5d4673c03e9bdbbedde106d616e513c0ff1d484479"
+        },
+        "highDpi": {
+          "filename": "Si-structure-viewer.png",
+          "bytes": 214985,
+          "width": 2400,
+          "height": 1800,
+          "bitDepth": 8,
+          "colorType": 6,
+          "sha256": "f1ba70a0dc05d1416aa17f2134a1fde58e6c648af8577aaa1985a5b988e8b477"
+        },
+        "state": {
+          "schema": "phase10f26.viewer_export_state.v1",
+          "supercell": [
+            2,
+            1,
+            1
+          ],
+          "clipping": true,
+          "measurements": 1
+        },
+        "manifest": {
+          "schema_version": "phase10f26.viewer_export_manifest.v1",
+          "artifacts": [
+            {
+              "name": "viewer.png",
+              "media_type": "image/png",
+              "size_bytes": 214985,
+              "sha256": "f1ba70a0dc05d1416aa17f2134a1fde58e6c648af8577aaa1985a5b988e8b477"
+            },
+            {
+              "name": "viewer_export_state.json",
+              "media_type": "application/json",
+              "size_bytes": 2079,
+              "sha256": "bd14299f47631388a8eafe3ab8257775e987084c8900d292e57557565d75633c"
+            },
+            {
+              "name": "viewer_export_summary.md",
+              "media_type": "text/markdown",
+              "size_bytes": 953,
+              "sha256": "0e9b5a0b85d6b9593bc62fb06b8a900c74ae340270ff935ce37b07b00a64c54c"
+            }
+          ],
+          "renderer_included": false,
+          "javascript_included": false,
+          "external_assets": [],
+          "deterministic_order": true
+        },
+        "repeat": [
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 172
+          },
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 140
+          },
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 130
+          },
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 136
+          },
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 133
+          },
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 137
+          },
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 133
+          },
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 140
+          },
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 216
+          },
+          {
+            "filename": "Si-structure-viewer.png",
+            "bytes": 37677,
+            "width": 800,
+            "height": 600,
+            "bitDepth": 8,
+            "colorType": 6,
+            "sha256": "00678d7d8703beb128d462229c2f06441b7242ae6dd9dafc844a6b996642cfbd",
+            "elapsedMs": 131
+          }
+        ]
+      },
+      "mobile": {
+        "png": {
+          "filename": "Si-structure-viewer.png",
+          "bytes": 39390,
+          "width": 800,
+          "height": 600,
+          "bitDepth": 8,
+          "colorType": 6,
+          "sha256": "52aabdfd5f272fe105b1a9887268269ef41ae37946635e08b4d07b06ab329524"
+        },
+        "overflow": false,
+        "externalRequests": 0
+      },
+      "canvasCount": 1,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "pass": true,
+      "baseline": {
+        "filename": "Si-structure-viewer.png",
+        "bytes": 34515,
+        "width": 800,
+        "height": 600,
+        "bitDepth": 8,
+        "colorType": 6,
+        "sha256": "7dd31770295e4a688a958748407c52c98fc188ed2f00c99e430404b663dc2684"
+      },
+      "extended": null,
+      "mobile": null,
+      "canvasCount": 1,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "pass": true,
+      "baseline": {
+        "filename": "Si-structure-viewer.png",
+        "bytes": 20514,
+        "width": 800,
+        "height": 600,
+        "bitDepth": 8,
+        "colorType": 2,
+        "sha256": "d1a1c39fd0bbb9a00c5cec96d4b339a91f052656b805d3c5d3bbbf3f233f100b"
+      },
+      "extended": null,
+      "mobile": null,
+      "canvasCount": 1,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ],
+  "network_result": "NO_EXTERNAL_NETWORK_REQUESTS",
+  "markers": [
+    "VIEWER_SCENE_SCIENTIFIC_EXPORT_BROWSER_EVIDENCE_PASS",
+    "VIEWER_SCENE_HIGH_DPI_EXPORT_EVIDENCE_PASS",
+    "VIEWER_SCENE_TRANSPARENT_EXPORT_EVIDENCE_PASS",
+    "VIEWER_SCENE_EXPORT_ARTIFACT_EVIDENCE_PASS",
+    "VIEWER_SCENE_EXPORT_MOBILE_CROSS_BROWSER_EVIDENCE_PASS"
+  ],
+  "redaction": "sanitized"
+}

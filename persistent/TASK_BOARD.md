@@ -1936,3 +1936,10 @@
 ### Remaining
 - [ ] Persisted annotation/history, lasso/box selection, clipping, and vector export.
 - [ ] Supercell productization remains the next queued scope.
+
+## Phase 10F-26 Scientific Export
+
+- [x] Bounded current-view PNG with transparent/light/dark and high-DPI modes.
+- [x] Deterministic JSON state, Markdown summary, and SHA-256 manifest.
+- [x] Three-browser/mobile/lifecycle/network/security evidence.
+- [ ] PDF export is deferred by design.

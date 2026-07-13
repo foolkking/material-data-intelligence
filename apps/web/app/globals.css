@@ -750,9 +750,53 @@ pre {
 .viewer-measurement-panel,
 .viewer-supercell-controls,
 .viewer-view-controls,
+.viewer-export-panel,
 .viewer-site-inspector {
   border-top: 1px solid var(--border);
   padding-top: 12px;
+}
+
+.viewer-export-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.viewer-export-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.viewer-export-grid label,
+.viewer-export-options label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.viewer-export-grid input,
+.viewer-export-grid select {
+  width: 100%;
+  min-width: 0;
+}
+
+.viewer-export-presets,
+.viewer-export-options,
+.viewer-export-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.viewer-export-options label {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.viewer-export-panel output {
+  overflow-wrap: anywhere;
 }
 
 .viewer-supercell-controls {
@@ -926,6 +970,10 @@ pre {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .viewer-export-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .viewer-supercell-controls label,
   .viewer-supercell-controls input {
     width: 100%;
@@ -936,6 +984,7 @@ pre {
   .viewer-measurement-panel button,
   .viewer-supercell-controls button,
   .viewer-artifact-downloads button,
+  .viewer-export-panel button,
   .viewer-preview-tabs button {
     min-width: 44px;
     min-height: 44px;

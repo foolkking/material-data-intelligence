@@ -1670,3 +1670,14 @@
 ### Security
 - Fixed application-owned thresholds/caps and on-demand raycasting; no artifact callbacks or screen-space science.
 - No dependency, backend runtime, canonical scene topology, or external network change.
+
+## 2026-07-13 Phase 10F-26
+
+### Added
+- Strict scientific export controls for PNG, JSON view state, and Markdown summary.
+- Transparent/light/dark and high-DPI capture over current camera, clipping, supercell, and measurement state.
+- Ordered SHA-256 export manifest and three-browser/mobile evidence runner.
+
+### Security
+- Added dimension/DPR/pixel/memory, concurrency, stale-generation, filename, and Blob URL controls.
+- No dependency, backend runtime, canonical scene, external request, remote asset, artifact execution, or PDF implementation.

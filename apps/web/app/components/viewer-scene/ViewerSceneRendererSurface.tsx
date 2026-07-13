@@ -7,7 +7,8 @@ import { ViewerBondInspector } from "./ViewerBondInspector";
 import { ViewerSiteInspector } from "./ViewerSiteInspector";
 import { ViewerSupercellControls } from "./ViewerSupercellControls";
 import { ViewerViewControls } from "./ViewerViewControls";
-import { downloadLocalBlob, jsonBlob, sanitizeViewerFilename } from "./viewerSceneExport";
+import { ViewerExportPanel } from "./ViewerExportPanel";
+import { buildViewerExportManifest, buildViewerExportMarkdown, buildViewerExportState, DEFAULT_VIEWER_EXPORT_REQUEST, downloadLocalBlob, jsonBlob, markdownBlob, sanitizeViewerFilename, validateViewerExportRequest, type ViewerExportRequest } from "./viewerSceneExport";
 import { measureAngle, measureDihedral, measureDistance, type ViewerMeasurementEvaluation, type ViewerMeasurementResult } from "./viewerSceneMeasurements";
 import { buildViewerMeasurementArtifact } from "./viewerSceneMeasurementArtifact";
 import { minimumImage, periodicAngle, periodicDihedral, periodicSiteKey } from "./viewerScenePeriodicGeometry";
@@ -56,6 +57,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const engineRef = useRef<ViewerRendererEngine | null>(null);
   const engineSceneRef = useRef<typeof renderScene>(null);
   const generationRef = useRef(0);
+  const exportGenerationRef = useRef(0);
   const [state, setState] = useState<ViewerRendererState>(mapping.ok ? "ready" : "validation_failed");
   const [showCell, setShowCell] = useState(true);
   const [showBonds, setShowBonds] = useState(true);
@@ -75,6 +77,10 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const [neighborSiteIndex, setNeighborSiteIndex] = useState<number | null>(null);
   const [supercellError, setSupercellError] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [exportRequest,setExportRequest]=useState<ViewerExportRequest>(DEFAULT_VIEWER_EXPORT_REQUEST);
+  const [exportBusy,setExportBusy]=useState(false);
+  const [exportStatus,setExportStatus]=useState("No export prepared.");
+  const [exportBundle,setExportBundle]=useState<Readonly<{png:Blob;json:Blob;markdown:Blob;manifest:Blob}>|null>(null);
   const [announcement, setAnnouncement] = useState("Viewer ready for a validated scene.");
   const renderedRepeat = payloadChanged ? DEFAULT_REPEAT : repeat;
   const renderedNeighborSiteIndex = payloadChanged ? null : neighborSiteIndex;
@@ -94,6 +100,11 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     setSelectedBondId(bond.id);
     setSelection((current) => selectViewerBondEndpoints(current, bond.fromRef, bond.toRef));
   }, []);
+  const onViewChange = useCallback(() => {
+    exportGenerationRef.current += 1;
+    setExportBundle(null);
+    setExportStatus("Viewer state changed; prepare a new export.");
+  }, []);
 
   useEffect(() => { selectionRef.current = selection; }, [selection]);
 
@@ -106,6 +117,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     if (previousPayloadRef.current === payload) return;
     previousPayloadRef.current = payload;
     setSelection(initialViewerSelection()); setSelectedBondId(null); setHistory([]); setCoordinateMode("displayed_positions");
+    exportGenerationRef.current+=1;setExportBundle(null);setExportStatus("No export prepared.");setExportBusy(false);
     setRepeat(DEFAULT_REPEAT); setRepeatDraft(["1","1","1"]); setNeighborSiteIndex(null); setSupercellError(null); setShowCell(true); setShowSupercellBoundary(true); setShowLatticeAxes(false); setCameraPreset("default");
     if (mapping.ok) setClipState(initialViewerClipState(mapping.scene));
   }, [payload]);
@@ -143,6 +155,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       },
       onSitePick,
       onBondPick,
+      onViewChange,
     }).then((engine) => {
       if (cancelled || generation !== generationRef.current) {
         engine.dispose();
@@ -173,7 +186,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
         try { engine.dispose(); } catch { /* disposal is best-effort after the surface is detached */ }
       }
     };
-  }, [attempt, capabilityOverride, engineFactory, mapping, onBondPick, onSitePick]);
+  }, [attempt, capabilityOverride, engineFactory, mapping, onBondPick, onSitePick, onViewChange]);
 
   useEffect(() => {
     const engine=engineRef.current;
@@ -238,6 +251,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   }, [measurement]);
 
   const applyVisibility = (kind: "cell" | "bonds", visible: boolean) => {
+    exportGenerationRef.current+=1;setExportBundle(null);
     if (kind === "cell") {
       setShowCell(visible);
       engineRef.current?.setCellVisible(visible);
@@ -247,14 +261,22 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     }
     if (engineRef.current) setSnapshot(engineRef.current.snapshot());
   };
-  const applySupercellBoundaryVisibility = (visible: boolean) => { setShowSupercellBoundary(visible); engineRef.current?.setSupercellBoundaryVisible(visible); if (engineRef.current) setSnapshot(engineRef.current.snapshot()); };
+  const invalidatePreparedExport = () => {
+    onViewChange();
+  };
+  const applySupercellBoundaryVisibility = (visible: boolean) => {
+    invalidatePreparedExport();
+    setShowSupercellBoundary(visible);
+    engineRef.current?.setSupercellBoundaryVisible(visible);
+    if (engineRef.current) setSnapshot(engineRef.current.snapshot());
+  };
   const applyViewDisplay = (kind: keyof ViewerCellDisplayState, visible: boolean) => {
     if (kind === "unitCell") applyVisibility("cell", visible);
     if (kind === "supercellBoundary") applySupercellBoundaryVisibility(visible);
-    if (kind === "latticeAxes") { setShowLatticeAxes(visible); engineRef.current?.setLatticeAxesVisible(visible); if (engineRef.current) setSnapshot(engineRef.current.snapshot()); }
+    if (kind === "latticeAxes") { exportGenerationRef.current+=1;setExportBundle(null);setShowLatticeAxes(visible); engineRef.current?.setLatticeAxesVisible(visible); if (engineRef.current) setSnapshot(engineRef.current.snapshot()); }
     setAnnouncement(`${kind === "latticeAxes" ? "Lattice axes" : kind === "unitCell" ? "Unit cell" : "Supercell boundary"} ${visible ? "shown" : "hidden"}.`);
   };
-  const updateClipState = (next: ViewerClipState) => { setClipState(next); engineRef.current?.setClipState(next); if (engineRef.current) setSnapshot(engineRef.current.snapshot()); };
+  const updateClipState = (next: ViewerClipState) => { exportGenerationRef.current+=1;setExportBundle(null);setClipState(next); engineRef.current?.setClipState(next); if (engineRef.current) setSnapshot(engineRef.current.snapshot()); };
   const updateClipPlane = (axis: ViewerClipAxis, update: Readonly<{ enabled?: boolean; position?: number }>) => {
     const [min,max]=clipBounds[axis];
     if (update.position !== undefined && (!Number.isFinite(update.position) || update.position < min || update.position > max)) { setAnnouncement(`Invalid ${axis.toUpperCase()} clipping position.`); return; }
@@ -264,8 +286,9 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     const active=next.enabled&&next.planes.find((plane)=>plane.axis===axis)?.enabled;
     setAnnouncement(active ? `Clipping enabled. ${axis.toUpperCase()} plane at ${next.planes.find((plane)=>plane.axis===axis)!.position.toFixed(3)} angstrom.` : `${axis.toUpperCase()} clipping plane disabled.`);
   };
-  const applyCameraPreset = (preset: CameraPreset) => { setCameraPreset(preset); engineRef.current?.setCameraPreset(preset); if(engineRef.current)setSnapshot(engineRef.current.snapshot()); setAnnouncement(`Camera preset: ${preset}.`); };
+  const applyCameraPreset = (preset: CameraPreset) => { exportGenerationRef.current+=1;setExportBundle(null);setCameraPreset(preset); engineRef.current?.setCameraPreset(preset); if(engineRef.current)setSnapshot(engineRef.current.snapshot()); setAnnouncement(`Camera preset: ${preset}.`); };
   const reset = () => {
+    invalidatePreparedExport();
     setCameraPreset("default");
     engineRef.current?.resetCamera();
     if (engineRef.current) setSnapshot(engineRef.current.snapshot());
@@ -286,22 +309,34 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       setSupercellError(checked.error);
       return;
     }
-    setSupercellError(null); setRepeat(parsedRepeatDraft); setNeighborSiteIndex(null); clearSelection(); setHistory([]); setAnnouncement(`Supercell applied: ${parsedRepeatDraft.join(" by ")}, ${supercellEstimate.totalCells} cells, ${supercellEstimate.displayedAtoms} displayed atoms.`);
+    exportGenerationRef.current+=1;setExportBundle(null);setSupercellError(null); setRepeat(parsedRepeatDraft); setNeighborSiteIndex(null); clearSelection(); setHistory([]); setAnnouncement(`Supercell applied: ${parsedRepeatDraft.join(" by ")}, ${supercellEstimate.totalCells} cells, ${supercellEstimate.displayedAtoms} displayed atoms.`);
   };
-  const resetSupercell = () => { setRepeatDraft(["1","1","1"]); setRepeat(DEFAULT_REPEAT); setNeighborSiteIndex(null); setSupercellError(null); clearSelection(); setHistory([]); setAnnouncement("Supercell reset to 1 by 1 by 1."); };
+  const resetSupercell = () => { exportGenerationRef.current+=1;setExportBundle(null);setRepeatDraft(["1","1","1"]); setRepeat(DEFAULT_REPEAT); setNeighborSiteIndex(null); setSupercellError(null); clearSelection(); setHistory([]); setAnnouncement("Supercell reset to 1 by 1 by 1."); };
   const downloadSupercellState = () => { if (!mapping.ok) return; const artifact=buildViewerSupercellState(mapping.scene,{expansion:repeat,originPolicy:"positive_octant",showPrimaryCell:showCell,showSupercellBoundary,showInternalGrid:false}); downloadLocalBlob(jsonBlob(artifact),"viewer_supercell_state.json"); };
   const downloadViewState = () => { if (!renderScene || !snapshot) return; const artifact=buildViewerViewState(renderScene,clipState,{unitCell:showCell,supercellBoundary:showSupercellBoundary,latticeAxes:showLatticeAxes},cameraPreset,snapshot); downloadLocalBlob(jsonBlob(artifact),"viewer_view_state.json"); };
-  const exportPng = async () => {
+  const prepareExport = async () => {
+    if(exportBusy){setExportStatus("VIEWER_EXPORT_BUSY");return;}
     setExportError(null);
+    const engine=engineRef.current;const scene=renderScene;const currentSnapshot=engine?.snapshot();const version=exportGenerationRef.current;
     try {
-      const blob = await engineRef.current?.exportPng();
-      if (!blob) throw new Error("VIEWER_EXPORT_RENDERER_UNAVAILABLE");
-      const base = sanitizeViewerFilename(mapping.ok ? mapping.scene.formula : "structure").replace(/\.png$/i, "");
-      downloadLocalBlob(blob, `${base}-${repeat.join("x")}.png`);
-    } catch {
-      setExportError("Current-view PNG export failed. Scene JSON remains available.");
+      if (!engine || !scene || !currentSnapshot) throw new Error("VIEWER_EXPORT_SCENE_UNAVAILABLE");
+      setExportBusy(true);
+      setExportStatus("Export started.");
+      setAnnouncement("Export started.");
+      const request=validateViewerExportRequest(exportRequest);const png=await engine.exportPng(request);
+      if(version!==exportGenerationRef.current||renderSceneRef.current!==scene)throw new Error("VIEWER_EXPORT_STALE_SCENE");
+      const refs=measurementDetails.refs.length?measurementDetails.refs:selection.selectedSites;const measurements=measurement?.ok&&request.includeMeasurements?[{result:measurement.result,refs}]:[];
+      const inspectorSummary=selectedAtom?{siteIndex:selectedAtom.siteIndex,imageOffset:selectedAtom.ref.imageOffset,species:selectedAtom.species,displayedCartesian:selectedAtom.position}:undefined;
+      const state=buildViewerExportState({scene,snapshot:currentSnapshot,request,clip:clipState,cameraPreset,showCell,showSupercellBoundary,showAxes:showLatticeAxes,showBonds,measurements,inspectorSummary});const json=jsonBlob(state);const markdown=markdownBlob(buildViewerExportMarkdown(scene,state));const manifestObject=await buildViewerExportManifest([{name:"viewer.png",mediaType:"image/png",blob:png},{name:"viewer_export_state.json",mediaType:"application/json",blob:json},{name:"viewer_export_summary.md",mediaType:"text/markdown",blob:markdown}]);
+      if(version!==exportGenerationRef.current)throw new Error("VIEWER_EXPORT_STALE_SCENE");const manifest=jsonBlob(manifestObject);const bundle=Object.freeze({png,json,markdown,manifest});setExportBundle(bundle);
+      const selected=request.format==="png"?png:request.format==="json"?json:markdown;const suffix=request.format==="png"?"structure-viewer.png":request.format==="json"?"viewer-export-state.json":"viewer-export-summary.md";const filename=sanitizeViewerFilename(scene.formula,suffix);downloadLocalBlob(selected,filename);setExportStatus(`Export completed: ${filename}.`);setAnnouncement(`Export completed: ${filename}.`);
+    } catch(error) {
+      const code=error instanceof Error&&/^VIEWER_EXPORT_/.test(error.message)?error.message:"VIEWER_EXPORT_FAILED";setExportError(`${code}. Existing scene artifacts remain available.`);setExportStatus(`Export failed: ${code}.`);setAnnouncement(`Export failed: ${code}.`);
+    } finally {
+      setExportBusy(false);
     }
   };
+  const downloadPrepared=(kind:"png"|"json"|"markdown"|"manifest")=>{if(!exportBundle||!renderScene)return;const suffix=kind==="png"?"structure-viewer.png":kind==="json"?"viewer-export-state.json":kind==="markdown"?"viewer-export-summary.md":"viewer-export-manifest.json";downloadLocalBlob(exportBundle[kind],sanitizeViewerFilename(renderScene.formula,suffix));};
   const selectedAtom = renderScene && selection.activeSite ? renderScene.atoms.find((atom) => periodicSiteKey(atom.ref) === periodicSiteKey(selection.activeSite!)) ?? null : null;
   const selectedBond = renderScene?.bonds.find((bond) => bond.id === selectedBondId) ?? null;
   const downloadMeasurement = () => {
@@ -352,7 +387,6 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
         <div className="viewer-renderer-controls" aria-label="Viewer controls">
           <button type="button" className="compact secondary" data-testid="viewer-scene-renderer-reset" onClick={reset} disabled={state !== "rendered"}>Reset camera</button>
           <button type="button" className={`compact ${showBonds ? "active" : "secondary"}`} data-testid="viewer-scene-renderer-toggle-bonds" aria-pressed={showBonds} onClick={() => applyVisibility("bonds", !showBonds)}>Bonds</button>
-          <button type="button" className="compact secondary" data-testid="viewer-scene-export-png" onClick={() => void exportPng()} disabled={state !== "rendered"}>Download PNG</button>
         </div>
       </div>
 
@@ -413,6 +447,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
         {performanceDecision?.warning ? <p className="notice" role="status" data-testid="viewer-scene-renderer-performance-warning">{performanceDecision.warning}: all validated atoms and bonds remain rendered with reduced pixel ratio and antialiasing.</p> : null}
         <ViewerSupercellControls draft={repeatDraft} applied={repeat} estimate={supercellError ? Object.freeze({...supercellEstimate,error:supercellError,mode:"refused" as const}) : supercellEstimate} onDraft={(axis,value)=>{const next=[...repeatDraft];next[axis]=value;setRepeatDraft(next);setSupercellError(null);}} onApply={applySupercell} onReset={resetSupercell} onPreset={(value)=>{setRepeatDraft(value.map(String));setSupercellError(null);}} onDownload={downloadSupercellState} />
         <ViewerViewControls clip={clipState} bounds={clipBounds} display={{unitCell:showCell,supercellBoundary:showSupercellBoundary,latticeAxes:showLatticeAxes}} preset={cameraPreset} latticeLengths={latticeLengths} onClipEnabled={(enabled)=>{const next=Object.freeze({...clipState,enabled});updateClipState(next);setAnnouncement(enabled?"Clipping enabled.":"Clipping disabled.");}} onPlaneEnabled={(axis,enabled)=>updateClipPlane(axis,{enabled})} onPosition={(axis,position)=>updateClipPlane(axis,{position})} onResetClip={()=>{const next=renderScene?initialViewerClipState(renderScene):clipState;updateClipState(next);setAnnouncement("Clipping reset.");}} onDisplay={applyViewDisplay} onPreset={applyCameraPreset} onDownload={downloadViewState} />
+        <ViewerExportPanel request={exportRequest} busy={exportBusy||state!=="rendered"} status={exportStatus} bundleReady={Boolean(exportBundle)} onChange={(request)=>{setExportRequest(request);setExportBundle(null);setExportStatus("Export settings changed; prepare a new export.");}} onExport={()=>void prepareExport()} onDownload={downloadPrepared}/>
         <ViewerMeasurementPanel mode={selection.mode} selected={selection.selectedSites} coordinateMode={coordinateMode} resolvedRefs={measurementDetails.refs} evaluation={measurement} history={history} onMode={changeMode} onCoordinateMode={(mode) => { setCoordinateMode(mode); clearSelection(); }} onUndo={undoSelection} onClear={clearSelection} onDownload={downloadMeasurement} />
         <ViewerBondInspector bond={selectedBond} onClear={() => setSelectedBondId(null)} />
         <ViewerSiteInspector atom={selectedAtom} atoms={renderScene?.atoms ?? []} bonds={renderScene?.bonds ?? []} repeat={repeat} source={mapping.scene.source.filename || mapping.scene.source.resourceId} onClear={clearSelection} onJumpPrimary={() => selectedAtom && setSelection((current) => selectViewerSite(initialViewerSelection(current.mode), {siteIndex:selectedAtom.siteIndex,imageOffset:[0,0,0]}))} onShowNeighbors={() => selectedAtom && setNeighborSiteIndex(selectedAtom.siteIndex)} onClearNeighbors={() => setNeighborSiteIndex(null)} onHighlightNeighbor={(target)=>{if(!selectedAtom)return;engineRef.current?.setSelection([selectedAtom.ref,target]);if(engineRef.current)setSnapshot(engineRef.current.snapshot());}} />

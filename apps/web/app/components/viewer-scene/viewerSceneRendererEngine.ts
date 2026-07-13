@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 import { cameraFrame, latticeEdges } from "./viewerSceneRendererGeometry";
-import { assertViewerExportDimensions } from "./viewerSceneExport";
+import { assertViewerExportDimensions, type ViewerExportRequest } from "./viewerSceneExport";
 import { ViewerRendererError } from "./viewerSceneRendererErrors";
 import { periodicSiteKey } from "./viewerScenePeriodicGeometry";
 import type { PeriodicSiteRef, RenderVector3, ViewerRendererEngine, ViewerRendererSnapshot, ValidatedRenderScene } from "./viewerSceneRendererTypes";
@@ -14,19 +14,20 @@ export async function createThreeViewerEngine(args: {
   readonly onContextLost: () => void;
   readonly onSitePick?: (site: PeriodicSiteRef | null) => void;
   readonly onBondPick?: (bondId: string) => void;
+  readonly onViewChange?: () => void;
   readonly pixelRatioCap: number;
   readonly antialias: boolean;
   readonly performanceTier: "interactive" | "degraded";
 }): Promise<ViewerRendererEngine> {
   const startedAt = performance.now();
-  const { container, scene, onContextLost, onSitePick, onBondPick, pixelRatioCap, antialias, performanceTier } = args;
+  const { container, scene, onContextLost, onSitePick, onBondPick, onViewChange, pixelRatioCap, antialias, performanceTier } = args;
   let currentScene = scene;
   let currentPerformanceTier = performanceTier;
   const width = Math.max(320, container.clientWidth || 720);
   const height = Math.max(320, container.clientHeight || 480);
   let renderer: THREE.WebGLRenderer;
   try {
-    renderer = new THREE.WebGLRenderer({ antialias, alpha: false, powerPreference: performanceTier === "degraded" ? "low-power" : "high-performance" });
+    renderer = new THREE.WebGLRenderer({ antialias, alpha: true, powerPreference: performanceTier === "degraded" ? "low-power" : "high-performance" });
   } catch {
     throw new ViewerRendererError("VIEWER_RENDERER_INITIALIZATION_FAILED", "The browser could not initialize the graphics renderer.");
   }
@@ -239,9 +240,14 @@ export async function createThreeViewerEngine(args: {
     cameraPreset = "default";
     render();
   };
-  const onControlsChange = () => render();
+  let viewNotificationsEnabled = false;
+  const onControlsChange = () => {
+    render();
+    if (viewNotificationsEnabled) onViewChange?.();
+  };
   controls.addEventListener("change", onControlsChange);
   controls.update();
+  viewNotificationsEnabled = true;
 
   const onLost = (event: Event) => {
     event.preventDefault();
@@ -406,15 +412,22 @@ export async function createThreeViewerEngine(args: {
     render();
   };
 
-  const exportPng = async () => {
-    assertViewerExportDimensions(renderer.domElement.width, renderer.domElement.height);
-    render();
-    return new Promise<Blob>((resolve, reject) => {
-      renderer.domElement.toBlob(
-        (blob) => blob ? resolve(blob) : reject(new ViewerRendererError("VIEWER_RENDERER_INITIALIZATION_FAILED", "The current view could not be exported.")),
-        "image/png",
-      );
-    });
+  const exportPng = async (request:ViewerExportRequest) => {
+    assertViewerExportDimensions(request.width,request.height,request.pixelRatio);
+    if(disposed||contextLost)throw new ViewerRendererError(contextLost?"VIEWER_RENDERER_CONTEXT_LOST":"VIEWER_RENDERER_INITIALIZATION_FAILED","The current view is unavailable for export.");
+    const previousSize=renderer.getSize(new THREE.Vector2());const previousPixelRatio=renderer.getPixelRatio();const previousColor=renderer.getClearColor(new THREE.Color()).clone();const previousAlpha=renderer.getClearAlpha();const previousAspect=camera.aspect;
+    const visibility={cell:cellLines.visible,boundary:supercellBoundaryLines.visible,axes:latticeAxesLines.visible,bonds:bondLines.visible,selectedBond:selectedBondLine.visible,measurement:measurementLines.visible,highlights:highlightMeshes.map((mesh)=>mesh.visible)};
+    try{
+      renderer.setPixelRatio(request.pixelRatio);renderer.setSize(request.width,request.height,false);camera.aspect=request.width/request.height;camera.updateProjectionMatrix();
+      const background=request.background==="dark"?0x101820:0xf3f6f7;renderer.setClearColor(background,request.background==="transparent"?0:1);
+      cellLines.visible=request.includeCell&&visibility.cell;supercellBoundaryLines.visible=request.includeCell&&visibility.boundary;latticeAxesLines.visible=request.includeAxes&&visibility.axes;bondLines.visible=request.includeBonds&&visibility.bonds;
+      selectedBondLine.visible=request.includeMeasurements&&visibility.selectedBond;measurementLines.visible=request.includeMeasurements&&visibility.measurement;highlightMeshes.forEach((mesh,index)=>{mesh.visible=request.includeMeasurements&&visibility.highlights[index];});
+      render();
+      return await new Promise<Blob>((resolve,reject)=>renderer.domElement.toBlob((blob)=>blob?resolve(blob):reject(new ViewerRendererError("VIEWER_RENDERER_INITIALIZATION_FAILED","The current view could not be exported.")),"image/png"));
+    }finally{
+      renderer.setPixelRatio(previousPixelRatio);renderer.setSize(previousSize.x,previousSize.y,false);renderer.setClearColor(previousColor,previousAlpha);camera.aspect=previousAspect;camera.updateProjectionMatrix();
+      cellLines.visible=visibility.cell;supercellBoundaryLines.visible=visibility.boundary;latticeAxesLines.visible=visibility.axes;bondLines.visible=visibility.bonds;selectedBondLine.visible=visibility.selectedBond;measurementLines.visible=visibility.measurement;highlightMeshes.forEach((mesh,index)=>{mesh.visible=visibility.highlights[index];});render();
+    }
   };
 
   return {

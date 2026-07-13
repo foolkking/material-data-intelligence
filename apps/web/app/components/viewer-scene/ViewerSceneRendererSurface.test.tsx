@@ -293,13 +293,60 @@ describe("ViewerSceneRendererSurface", () => {
     await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("rendered"));
     await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
     expect(engine.exportPng).toHaveBeenCalledOnce();
-    expect(createUrl).toHaveBeenCalledOnce();
+    expect(engine.exportPng).toHaveBeenCalledWith(expect.objectContaining({width:1600,height:1200,pixelRatio:1,background:"light"}));
+    await waitFor(() => expect(createUrl).toHaveBeenCalledOnce());
     rerender(<ViewerSceneRendererSurface payload={{ ...minimalScene, metadata: { ...minimalScene.metadata, title: "changed" } }} capabilityOverride engineFactory={factory} />);
     await waitFor(() => expect(engine.setSelection).toHaveBeenCalledWith([]));
     await Promise.resolve();
     expect(revokeUrl).toHaveBeenCalled();
     delete (URL as unknown as { createObjectURL?: unknown }).createObjectURL;
     delete (URL as unknown as { revokeObjectURL?: unknown }).revokeObjectURL;
+    anchorClick.mockRestore();
+  });
+
+  it("keeps one export active and reports renderer export failures safely", async () => {
+    let rejectExport: ((reason?: unknown) => void) | undefined;
+    const engine = fakeEngine();
+    vi.mocked(engine.exportPng).mockImplementation(() => new Promise<Blob>((_resolve, reject) => { rejectExport = reject; }));
+    render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={async () => engine} />);
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
+    await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
+    expect((screen.getByTestId("viewer-scene-export-png") as HTMLButtonElement).disabled).toBe(true);
+    expect(engine.exportPng).toHaveBeenCalledOnce();
+    act(() => rejectExport?.(new Error("private renderer details")));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-export-error").textContent).toContain("VIEWER_EXPORT_FAILED"));
+    expect(screen.getByTestId("viewer-scene-export-error").textContent).not.toContain("private renderer details");
+    expect((screen.getByTestId("viewer-scene-export-png") as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it("rejects a stale asynchronous export after a scene switch", async () => {
+    let resolveExport: ((blob: Blob) => void) | undefined;
+    const engine = fakeEngine();
+    vi.mocked(engine.exportPng).mockImplementation(() => new Promise<Blob>((resolve) => { resolveExport = resolve; }));
+    const createUrl = vi.fn(() => "blob:must-not-download");
+    Object.defineProperty(URL, "createObjectURL", { configurable: true, value: createUrl });
+    const changed = structuredClone(minimalScene) as Record<string, any>;
+    changed.metadata.title = "Changed during export";
+    const {rerender} = render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={async () => engine} />);
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
+    await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
+    rerender(<ViewerSceneRendererSurface payload={changed} capabilityOverride engineFactory={async () => engine} />);
+    act(() => resolveExport?.(new Blob(["stale"], {type:"image/png"})));
+    await waitFor(() => expect(screen.getByTestId("viewer-export-status").textContent).toContain("VIEWER_EXPORT_STALE_SCENE"));
+    expect(createUrl).not.toHaveBeenCalled();
+    delete (URL as unknown as { createObjectURL?: unknown }).createObjectURL;
+  });
+
+  it("invalidates a prepared bundle when orbit controls change the camera", async () => {
+    const engine=fakeEngine();let args:Parameters<ViewerRendererEngineFactory>[0]|undefined;
+    const createUrl=vi.fn(()=>"blob:export");Object.defineProperty(URL,"createObjectURL",{configurable:true,value:createUrl});Object.defineProperty(URL,"revokeObjectURL",{configurable:true,value:vi.fn()});const anchorClick=vi.spyOn(HTMLAnchorElement.prototype,"click").mockImplementation(()=>undefined);
+    render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
+    await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
+    await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
+    await waitFor(()=>expect((screen.getByRole("button",{name:"Download export manifest"}) as HTMLButtonElement).disabled).toBe(false));
+    act(()=>args?.onViewChange?.());
+    expect((screen.getByRole("button",{name:"Download export manifest"}) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByTestId("viewer-export-status").textContent).toContain("Viewer state changed");
     anchorClick.mockRestore();
   });
 
