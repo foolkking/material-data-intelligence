@@ -1,0 +1,80 @@
+{
+  "manifests": {
+    "phase10d1.viewer_assets_manifest.v1": {
+      "kind": "manifest",
+      "paired_scene_schema": "phase10d1.viewer_scene.v1",
+      "periodic_topology_supported": false,
+      "preview_mode": "json_only",
+      "renderer_included": false,
+      "status": "deprecated_read_only",
+      "warnings": [
+        "VIEWER_MANIFEST_LEGACY_PHASE10D_SCHEMA"
+      ]
+    },
+    "phase10f19.viewer_assets_manifest.v2": {
+      "kind": "manifest",
+      "paired_scene_schema": "phase10f18.viewer_scene.v2",
+      "periodic_topology_supported": true,
+      "preview_mode": "json_only",
+      "renderer_included": false,
+      "status": "current",
+      "warnings": []
+    },
+    "phase10f9.viewer_scene_manifest.v1": {
+      "kind": "manifest",
+      "paired_scene_schema": "phase10f8.viewer_scene.v1",
+      "periodic_topology_supported": false,
+      "preview_mode": "json_only",
+      "renderer_included": false,
+      "status": "supported_legacy",
+      "warnings": [
+        "VIEWER_MANIFEST_LEGACY_V1_SCHEMA"
+      ]
+    }
+  },
+  "scenes": {
+    "phase10d1.viewer_scene.v1": {
+      "kind": "scene",
+      "migration_policy": "regenerate_from_source_only",
+      "migration_target": null,
+      "new_artifact_generation_allowed": false,
+      "periodic_topology_supported": false,
+      "preview_mode": "json_only",
+      "preview_supported": true,
+      "producer_status": "deprecated_direct_compatibility_only",
+      "renderer_supported": false,
+      "status": "deprecated_read_only",
+      "warnings": [
+        "VIEWER_SCENE_LEGACY_PHASE10D_SCHEMA"
+      ]
+    },
+    "phase10f18.viewer_scene.v2": {
+      "kind": "scene",
+      "migration_policy": "not_required",
+      "migration_target": null,
+      "new_artifact_generation_allowed": true,
+      "periodic_topology_supported": true,
+      "preview_mode": "json_or_renderer",
+      "preview_supported": true,
+      "producer_status": "current_default",
+      "renderer_supported": true,
+      "status": "current",
+      "warnings": []
+    },
+    "phase10f8.viewer_scene.v1": {
+      "kind": "scene",
+      "migration_policy": "regenerate_from_source_only",
+      "migration_target": null,
+      "new_artifact_generation_allowed": false,
+      "periodic_topology_supported": false,
+      "preview_mode": "json_or_renderer",
+      "preview_supported": true,
+      "producer_status": "fixtures_and_compatibility_only",
+      "renderer_supported": true,
+      "status": "supported_legacy_same_cell",
+      "warnings": [
+        "VIEWER_SCENE_LEGACY_SAME_CELL_TOPOLOGY"
+      ]
+    }
+  }
+}

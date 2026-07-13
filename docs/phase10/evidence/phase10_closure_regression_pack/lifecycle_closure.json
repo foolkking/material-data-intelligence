@@ -1,0 +1,9 @@
+{
+  "browser": "chromium",
+  "canvas_count": 1,
+  "result": "PASS",
+  "snapshot": {
+    "disposed_canvas": 0,
+    "remounted_canvas": 1
+  }
+}

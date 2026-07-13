@@ -1,0 +1,1 @@
+"# Phase 10 Closure Regression Pack Evidence\n\nBackend closure: `PASS`\n\nFrontend closure: `PASS`\n\nBrowser closure: `chromium=rendered, firefox=rendered, webkit=rendered`\n\nNetwork: `NO_EXTERNAL_NETWORK_REQUESTS`\n\nSecrets: `NO_SECRET_PATTERN_HITS`\n"

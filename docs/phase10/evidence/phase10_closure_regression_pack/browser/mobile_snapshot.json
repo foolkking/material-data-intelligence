@@ -1,0 +1,189 @@
+{
+  "before": {
+    "state": "rendered",
+    "canvasCount": 1,
+    "atomCount": 2,
+    "bondCount": 0,
+    "latticeEdgeCount": 12,
+    "triangleCount": 1040,
+    "lineCount": 24,
+    "cameraPosition": [
+      13.677028,
+      11.316805,
+      10.183897
+    ],
+    "cameraTarget": [
+      2.82,
+      2.82,
+      2.82
+    ],
+    "cameraUp": [
+      0,
+      0,
+      1
+    ],
+    "cameraZoom": 1,
+    "cameraPreset": "default",
+    "activeClipPlanes": 0,
+    "latticeAxesVisible": false,
+    "drawingBuffer": [
+      640,
+      640
+    ],
+    "graphicsContext": "webgl2",
+    "rendererVersion": "185",
+    "selectedSites": [],
+    "selectedSiteIndices": [],
+    "selectedBondId": null,
+    "siteScreenPositions": [
+      {
+        "ref": {
+          "siteIndex": 0,
+          "imageOffset": [
+            0,
+            0,
+            0
+          ]
+        },
+        "siteIndex": 0,
+        "x": 146.406258,
+        "y": 171.603999
+      },
+      {
+        "ref": {
+          "siteIndex": 1,
+          "imageOffset": [
+            0,
+            0,
+            0
+          ]
+        },
+        "siteIndex": 1,
+        "x": 156,
+        "y": 159
+      }
+    ],
+    "bondScreenPositions": [],
+    "metrics": {
+      "performanceTier": "interactive",
+      "atomCount": 2,
+      "bondCount": 0,
+      "speciesCount": 2,
+      "instancedMeshCount": 2,
+      "latticeEdgeCount": 12,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 12,
+      "triangles": 1040,
+      "lines": 24,
+      "textures": 1,
+      "bufferAttributes": 3,
+      "sceneObjects": 15,
+      "initializationMs": 25.2,
+      "firstFrameMs": 46.3
+    }
+  },
+  "after": {
+    "state": "rendered",
+    "canvasCount": 1,
+    "atomCount": 2,
+    "bondCount": 0,
+    "latticeEdgeCount": 12,
+    "triangleCount": 1040,
+    "lineCount": 1584,
+    "cameraPosition": [
+      13.677028,
+      11.316805,
+      10.183897
+    ],
+    "cameraTarget": [
+      2.82,
+      2.82,
+      2.82
+    ],
+    "cameraUp": [
+      0,
+      0,
+      1
+    ],
+    "cameraZoom": 1,
+    "cameraPreset": "default",
+    "activeClipPlanes": 0,
+    "latticeAxesVisible": false,
+    "drawingBuffer": [
+      1436,
+      1076
+    ],
+    "graphicsContext": "webgl2",
+    "rendererVersion": "185",
+    "selectedSites": [
+      {
+        "siteIndex": 1,
+        "imageOffset": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "selectedSiteIndices": [
+      1
+    ],
+    "selectedBondId": null,
+    "siteScreenPositions": [
+      {
+        "ref": {
+          "siteIndex": 0,
+          "imageOffset": [
+            0,
+            0,
+            0
+          ]
+        },
+        "siteIndex": 0,
+        "x": 342.456946,
+        "y": 290.323747
+      },
+      {
+        "ref": {
+          "siteIndex": 1,
+          "imageOffset": [
+            0,
+            0,
+            0
+          ]
+        },
+        "siteIndex": 1,
+        "x": 359,
+        "y": 269
+      }
+    ],
+    "bondScreenPositions": [],
+    "metrics": {
+      "performanceTier": "interactive",
+      "atomCount": 2,
+      "bondCount": 0,
+      "speciesCount": 2,
+      "instancedMeshCount": 2,
+      "latticeEdgeCount": 12,
+      "drawCalls": 6,
+      "geometries": 4,
+      "materials": 12,
+      "triangles": 1040,
+      "lines": 1584,
+      "textures": 1,
+      "bufferAttributes": 3,
+      "sceneObjects": 15,
+      "initializationMs": 25.2,
+      "firstFrameMs": 46.3
+    }
+  },
+  "horizontal_overflow": false,
+  "touch_enabled": true,
+  "accessibility": {
+    "touch_action": "pan-y",
+    "minimum_target": 44,
+    "region_focusable": "0"
+  },
+  "external_request_count": 0
+}

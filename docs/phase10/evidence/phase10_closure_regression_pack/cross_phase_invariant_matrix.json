@@ -1,0 +1,45 @@
+{
+  "invariants": [
+    {
+      "id": "unique_formal_tool",
+      "owner": "registry",
+      "passed": true
+    },
+    {
+      "id": "planner_selects_structure.viewer_3d",
+      "owner": "planner",
+      "passed": true
+    },
+    {
+      "id": "plan_persisted_and_validated",
+      "owner": "runtime",
+      "passed": true
+    },
+    {
+      "id": "runtime_completed",
+      "owner": "runtime",
+      "passed": true
+    },
+    {
+      "id": "scene_v2_current",
+      "owner": "artifact",
+      "passed": true
+    },
+    {
+      "id": "manifest_v2_current",
+      "owner": "artifact",
+      "passed": true
+    },
+    {
+      "id": "renderer_not_embedded",
+      "owner": "security",
+      "passed": true
+    },
+    {
+      "id": "three_browser_product_surface",
+      "owner": "browser",
+      "passed": true
+    }
+  ],
+  "result": "PASS"
+}

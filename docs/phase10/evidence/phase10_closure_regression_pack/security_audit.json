@@ -1,0 +1,15 @@
+{
+  "artifact_html_execution": false,
+  "artifact_javascript": false,
+  "external_assets": false,
+  "markers": [
+    "NO_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ],
+  "real_llm": false,
+  "registry_bypass": false,
+  "remote_modules": false,
+  "remote_textures": false,
+  "result": "PASS",
+  "validator_bypass": false
+}

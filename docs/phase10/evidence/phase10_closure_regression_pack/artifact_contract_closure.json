@@ -1,0 +1,14 @@
+{
+  "external_resources": "none",
+  "local_artifacts": [
+    "phase10f23.viewer_measurement.v1",
+    "phase10f24.viewer_supercell_state.v1",
+    "phase10f25.viewer_view_state.v1",
+    "phase10f26.viewer_export_manifest.v1"
+  ],
+  "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+  "manifest_valid": true,
+  "renderer_included": false,
+  "scene_schema": "phase10f18.viewer_scene.v2",
+  "scene_valid": true
+}

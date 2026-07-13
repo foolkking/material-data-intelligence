@@ -1691,3 +1691,13 @@
 
 ### Security
 - No dependency, canonical schema, QueueWorkerRuntime, PlanValidator, external request, artifact execution, or advanced scientific capability was added.
+
+## 2026-07-13 Phase 10 Closure Regression Pack
+
+### Added
+- Executable backend portfolio, frontend composition, and real browser closure entries.
+- Machine-readable invariant, compatibility, capability, determinism, fallback, lifecycle, network, and hash evidence.
+- Required CI steps for backend/frontend evidence integrity and service-backed formal viewer execution.
+
+### Security
+- No dependency, schema, adapter, renderer feature, runtime authority, external network, real LLM, or deferred scientific capability was added.

@@ -29,6 +29,9 @@ jobs:
       - name: Install Python dependencies
         run: uv sync --frozen --extra test
 
+      - name: Phase 10 backend closure
+        run: uv run python -m pytest -q tests/integration/test_phase10_product_closure.py -m "not integration" --tb=short
+
       - name: Run unit tests
         run: uv run python -m pytest -q -m "not integration" --tb=short
 
@@ -51,6 +54,14 @@ jobs:
 
       - name: npm ci
         run: npm ci
+        working-directory: apps/web
+
+      - name: Phase 10 frontend closure
+        run: npm run test:phase10-closure
+        working-directory: apps/web
+
+      - name: Phase 10 browser evidence integrity
+        run: node test/phase10-closure-evidence-check.mjs
         working-directory: apps/web
 
       - name: Typecheck
@@ -223,7 +234,7 @@ jobs:
 
       - name: Run integration tests (capture output)
         run: |
-          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py -q -m integration \
+          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py -q -m integration \
             --tb=long --color=yes 2>&1 | tee integration.log
         # Don't fail on pytest exit code yet — we parse the log below
         continue-on-error: true
@@ -259,11 +270,11 @@ jobs:
             exit 1
           fi
 
-          # P0: at least 19 passed (18 Phase 6 + 1 Phase 8B)
-          if [ "${PASSED:-0}" -lt 19 ]; then
+          # P0: at least 20 passed (18 Phase 6 + 1 Phase 8B + 1 Phase 10 closure)
+          if [ "${PASSED:-0}" -lt 20 ]; then
             echo ""
-            echo "ERROR: Only ${PASSED:-0}/19 integration tests passed."
-            echo "Expected: at least 19 passed."
+            echo "ERROR: Only ${PASSED:-0}/20 integration tests passed."
+            echo "Expected: at least 20 passed."
             exit 1
           fi
 

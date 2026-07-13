@@ -1,0 +1,52 @@
+{
+  "baseline_head": "fb141da2ffbc5f6a766db3df780572797e52524d",
+  "browsers": [
+    {
+      "name": "chromium",
+      "state": "rendered",
+      "version": "150.0.7871.115"
+    },
+    {
+      "name": "firefox",
+      "state": "rendered",
+      "version": "128.0"
+    },
+    {
+      "name": "webkit",
+      "state": "rendered",
+      "version": "18.0"
+    }
+  ],
+  "entries": {
+    "backend": [
+      "uv",
+      "run",
+      "python",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/integration/test_phase10_product_closure.py",
+      "-m",
+      "not integration"
+    ],
+    "browser": "npm --prefix apps/web run test:phase10-browser-evidence",
+    "frontend": [
+      "npm.cmd",
+      "--prefix",
+      "apps/web",
+      "run",
+      "test:phase10-closure"
+    ]
+  },
+  "formal_tool": "structure.viewer_3d",
+  "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+  "markers": [
+    "PHASE10_CLOSURE_EVIDENCE_PASS",
+    "PHASE10_PRODUCT_CLOSURE_BROWSER_PASS",
+    "NO_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ],
+  "redaction": "sanitized",
+  "scene_schema": "phase10f18.viewer_scene.v2",
+  "schema_version": "phase10.closure_regression_evidence.v1"
+}

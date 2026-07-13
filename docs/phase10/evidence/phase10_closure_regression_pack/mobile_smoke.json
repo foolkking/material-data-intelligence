@@ -1,0 +1,194 @@
+{
+  "browser": "chromium",
+  "external_requests": 0,
+  "result": "PASS",
+  "snapshot": {
+    "accessibility": {
+      "minimum_target": 44,
+      "region_focusable": "0",
+      "touch_action": "pan-y"
+    },
+    "after": {
+      "activeClipPlanes": 0,
+      "atomCount": 2,
+      "bondCount": 0,
+      "bondScreenPositions": [],
+      "cameraPosition": [
+        13.677028,
+        11.316805,
+        10.183897
+      ],
+      "cameraPreset": "default",
+      "cameraTarget": [
+        2.82,
+        2.82,
+        2.82
+      ],
+      "cameraUp": [
+        0,
+        0,
+        1
+      ],
+      "cameraZoom": 1,
+      "canvasCount": 1,
+      "drawingBuffer": [
+        1436,
+        1076
+      ],
+      "graphicsContext": "webgl2",
+      "latticeAxesVisible": false,
+      "latticeEdgeCount": 12,
+      "lineCount": 1584,
+      "metrics": {
+        "atomCount": 2,
+        "bondCount": 0,
+        "bufferAttributes": 3,
+        "drawCalls": 6,
+        "firstFrameMs": 46.3,
+        "geometries": 4,
+        "initializationMs": 25.2,
+        "instancedMeshCount": 2,
+        "latticeEdgeCount": 12,
+        "lines": 1584,
+        "materials": 12,
+        "performanceTier": "interactive",
+        "sceneObjects": 15,
+        "speciesCount": 2,
+        "textures": 1,
+        "triangles": 1040
+      },
+      "rendererVersion": "185",
+      "selectedBondId": null,
+      "selectedSiteIndices": [
+        1
+      ],
+      "selectedSites": [
+        {
+          "imageOffset": [
+            0,
+            0,
+            0
+          ],
+          "siteIndex": 1
+        }
+      ],
+      "siteScreenPositions": [
+        {
+          "ref": {
+            "imageOffset": [
+              0,
+              0,
+              0
+            ],
+            "siteIndex": 0
+          },
+          "siteIndex": 0,
+          "x": 342.456946,
+          "y": 290.323747
+        },
+        {
+          "ref": {
+            "imageOffset": [
+              0,
+              0,
+              0
+            ],
+            "siteIndex": 1
+          },
+          "siteIndex": 1,
+          "x": 359,
+          "y": 269
+        }
+      ],
+      "state": "rendered",
+      "triangleCount": 1040
+    },
+    "before": {
+      "activeClipPlanes": 0,
+      "atomCount": 2,
+      "bondCount": 0,
+      "bondScreenPositions": [],
+      "cameraPosition": [
+        13.677028,
+        11.316805,
+        10.183897
+      ],
+      "cameraPreset": "default",
+      "cameraTarget": [
+        2.82,
+        2.82,
+        2.82
+      ],
+      "cameraUp": [
+        0,
+        0,
+        1
+      ],
+      "cameraZoom": 1,
+      "canvasCount": 1,
+      "drawingBuffer": [
+        640,
+        640
+      ],
+      "graphicsContext": "webgl2",
+      "latticeAxesVisible": false,
+      "latticeEdgeCount": 12,
+      "lineCount": 24,
+      "metrics": {
+        "atomCount": 2,
+        "bondCount": 0,
+        "bufferAttributes": 3,
+        "drawCalls": 5,
+        "firstFrameMs": 46.3,
+        "geometries": 4,
+        "initializationMs": 25.2,
+        "instancedMeshCount": 2,
+        "latticeEdgeCount": 12,
+        "lines": 24,
+        "materials": 12,
+        "performanceTier": "interactive",
+        "sceneObjects": 15,
+        "speciesCount": 2,
+        "textures": 1,
+        "triangles": 1040
+      },
+      "rendererVersion": "185",
+      "selectedBondId": null,
+      "selectedSiteIndices": [],
+      "selectedSites": [],
+      "siteScreenPositions": [
+        {
+          "ref": {
+            "imageOffset": [
+              0,
+              0,
+              0
+            ],
+            "siteIndex": 0
+          },
+          "siteIndex": 0,
+          "x": 146.406258,
+          "y": 171.603999
+        },
+        {
+          "ref": {
+            "imageOffset": [
+              0,
+              0,
+              0
+            ],
+            "siteIndex": 1
+          },
+          "siteIndex": 1,
+          "x": 156,
+          "y": 159
+        }
+      ],
+      "state": "rendered",
+      "triangleCount": 1040
+    },
+    "external_request_count": 0,
+    "horizontal_overflow": false,
+    "touch_enabled": true
+  }
+}

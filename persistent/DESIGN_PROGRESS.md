@@ -1283,3 +1283,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Froze the strict product input/output and capability contract around canonical inert scene v2 artifacts.
 - Added live planner/job/artifact, three-browser/mobile, accessibility, lifecycle, performance, network, and security evidence.
 - Explicit scene JSON remains `structure.viewer_scene`; advanced trajectory, phonon, Brillouin, volumetric, editing, and authoritative chemistry remain unsupported.
+
+## 2026-07-13 Phase 10 Closure Regression Pack
+
+- Added bounded backend, frontend, and real three-browser product composition entries.
+- Closed six representative adapter paths through registry, planner, PlanValidator, runtime, artifact persistence/retrieval, and validators.
+- Added current/legacy, determinism, fallback, lifecycle, capability-truth, network, and secret evidence.
+- Integrated exact closure gates into existing unit, frontend, and PostgreSQL/Redis/MinIO CI jobs without new dependencies.

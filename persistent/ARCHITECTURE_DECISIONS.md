@@ -3545,3 +3545,18 @@ Keep `structure.viewer_scene` as the explicit inert-data export identity.
 - Backend job success remains independent of browser renderer availability.
 - Artifacts contain no renderer code and cannot expand client execution authority.
 - Advanced scientific domains remain separate future contracts rather than implied viewer capabilities.
+
+# 2026-07-13 Phase 10 Closure ADR: bounded composition regression pack
+
+## Decision
+
+Maintain one small three-layer closure pack: representative backend product
+paths, frontend product composition, and real cross-browser smoke evidence.
+Integrate exact backend/frontend/integrity entries into existing required CI
+jobs and add the formal viewer to the existing service-backed zero-skip gate.
+
+## Consequences
+
+- Cross-module invariants fail close to their ownership boundary without copying historical tests.
+- Browser evidence remains real and reviewable while CI avoids a new large browser dependency.
+- Phase 10 can be formally closed without changing scientific semantics or enabling deferred domains.

@@ -5207,7 +5207,7 @@ FAIL包括：
 ---END---
 
 ---TASK---
- 状态：待处理
+ 状态：处理中
  # Phase 10 Closure Regression Pack
 
 进入 Phase 10 Closure Regression Pack。

@@ -1,0 +1,35 @@
+{
+  "browser_assertions": {
+    "chunk_failure": {
+      "canvas_count": 0,
+      "external_request_count": 0,
+      "pass": true
+    },
+    "context_loss": {
+      "canvas_count": 0,
+      "external_request_count": 0,
+      "pass": true
+    },
+    "invalid": {
+      "canvas_count": 0,
+      "external_request_count": 0,
+      "pass": true
+    },
+    "legacy": {
+      "canvas_count": 0,
+      "external_request_count": 0,
+      "pass": true
+    },
+    "unsupported": {
+      "canvas_count": 0,
+      "external_request_count": 0,
+      "pass": true
+    }
+  },
+  "context_loss": "typed_fallback_and_retry",
+  "degraded": "rendered_without_scientific_truncation",
+  "invalid_input": "validation_failed_before_renderer",
+  "legacy": "policy_gated_json_only_or_same_cell",
+  "over_budget": "refused_before_engine_with_json_fallback",
+  "unsupported_browser": "json_fallback"
+}

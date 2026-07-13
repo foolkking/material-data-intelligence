@@ -693,3 +693,9 @@
 - Formal minimal viewer product registration is closed; trajectory, phonon, Brillouin-zone, volumetric, and editing require independent contracts and reviews.
 - Distance-cutoff periodic topology remains non-authoritative; explicit-input authoritative topology provenance remains an open scientific contract decision.
 - Broad physical GPU/device and assistive-technology lab coverage remains outside automated browser evidence.
+
+## 2026-07-13 Phase 10 Closure Follow-ups
+
+- Phase 11 must define official benchmark/reference certification separately from current candidate scientific outputs.
+- Fresh real browser evidence remains required when product browser behavior changes; CI currently validates committed browser evidence integrity without installing a new browser dependency.
+- Trajectory, phonon, Brillouin-zone, volumetric, defects/surfaces, and editing remain independent future contracts.

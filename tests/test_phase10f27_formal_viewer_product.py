@@ -52,6 +52,7 @@ def test_formal_viewer_is_owned_by_platform_registry_and_catalogued_once() -> No
 def test_natural_viewer_intent_routes_to_formal_tool_and_json_intent_stays_separate() -> None:
     assert _plan_for("Open an interactive 3D view of this CIF")["steps"][0]["toolId"] == "structure.viewer_3d"
     assert _plan_for("Render this crystal in the structure viewer")["steps"][0]["toolId"] == "structure.viewer_3d"
+    assert _plan_for("Show this periodic crystal in 3D and allow bond inspection.")["steps"][0]["toolId"] == "structure.viewer_3d"
     assert _plan_for("Build inert viewer scene data")["steps"][0]["toolId"] == "structure.viewer_scene"
     for prompt in ("Animate this trajectory", "Show phonon animation", "Render the Brillouin zone", "Edit this structure"):
         assert _plan_for(prompt)["steps"][0]["toolId"] != "structure.viewer_3d"

@@ -1,0 +1,31 @@
+{
+  "artifacts": [
+    "viewer_scene.json",
+    "viewer_scene_manifest.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "planner": {
+    "job_id": "job_8c036668d4c644769f2d9bba",
+    "mode": "mock_fixed_plan",
+    "ok": true,
+    "plan_hash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+    "plan_id": "plan_f0c94a8d4ec74109b204af0f",
+    "real_llm_used": false,
+    "selected_tool": "structure.viewer_3d"
+  },
+  "registry_owner": "platform_builtin_manifest.yaml",
+  "result": "PASS",
+  "tool_id": "structure.viewer_3d",
+  "unique_count": 1,
+  "worker": {
+    "artifact_count": 4,
+    "event_count": 11,
+    "job_id": "job_8c036668d4c644769f2d9bba",
+    "message": "job completed",
+    "plan_hash": "bf841763a569c5fac3fa43e3023b0263af077073f1d2ff00ee239d2488a82e0e",
+    "plan_id": "plan_f0c94a8d4ec74109b204af0f",
+    "status": "completed",
+    "tool_call_count": 1
+  }
+}

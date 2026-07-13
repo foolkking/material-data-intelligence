@@ -266,3 +266,10 @@
 | [`phase10f/phase10f27_structure_viewer_3d_security.md`](phase10f/phase10f27_structure_viewer_3d_security.md) | Formal product threat boundary and controls |
 | [`phase10f/phase10f27_structure_viewer_3d_readiness_matrix.md`](phase10f/phase10f27_structure_viewer_3d_readiness_matrix.md) | Formal viewer product readiness decisions |
 | [`phase10f/evidence/phase10f27_structure_viewer_3d_product/`](phase10f/evidence/phase10f27_structure_viewer_3d_product/) | Live product registration, API, artifacts, browsers, metrics, screenshots, and security captures |
+| [`phase10/phase10_closure_regression_pack.md`](phase10/phase10_closure_regression_pack.md) | Executable Phase 10 cross-module closure architecture and result |
+| [`phase10/phase10_cross_phase_invariants.md`](phase10/phase10_cross_phase_invariants.md) | Registry, runtime, artifact, frontend, browser, and security invariants |
+| [`phase10/phase10_closure_test_inventory.md`](phase10/phase10_closure_test_inventory.md) | Existing coverage audit and bounded closure selection |
+| [`phase10/phase10_closure_ci_contract.md`](phase10/phase10_closure_ci_contract.md) | Stable backend, frontend, browser-evidence, and service CI entries |
+| [`phase10/phase10_closure_security.md`](phase10/phase10_closure_security.md) | Cross-phase threat model and security closure |
+| [`phase10/phase10_final_readiness_matrix.md`](phase10/phase10_final_readiness_matrix.md) | Final Phase 10 readiness and deferred domains |
+| [`phase10/evidence/phase10_closure_regression_pack/`](phase10/evidence/phase10_closure_regression_pack/) | Live product, browser, mobile, lifecycle, contract, hash, and security evidence |

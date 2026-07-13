@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
+    "test:phase10-closure": "vitest run app/components/viewer-scene/phase10ProductClosure.test.ts",
+    "test:phase10-browser-evidence": "node test/phase10-product-closure-browser-evidence.mjs",
     "typecheck": "tsc --project tsconfig.typecheck.json --noEmit --incremental false"
   },
   "dependencies": {

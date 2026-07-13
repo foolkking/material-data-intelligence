@@ -1,0 +1,9 @@
+{
+  "browsers": [
+    "chromium",
+    "firefox",
+    "webkit"
+  ],
+  "external_requests": 0,
+  "result": "NO_EXTERNAL_NETWORK_REQUESTS"
+}

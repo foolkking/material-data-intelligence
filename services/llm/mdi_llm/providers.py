@@ -978,7 +978,7 @@ def _should_generate_structure_viewer(
     if any(marker in prompt for marker in unsupported):
         return False
     markers = (
-        "3d viewer", "3d view", "structure viewer", "interactive 3d", "interactive view", "webgl",
+        "3d viewer", "3d view", "in 3d", "structure viewer", "interactive 3d", "interactive view", "webgl",
         "render this crystal", "open an interactive 3d view", "三维查看器", "3d 查看器",
         "交互查看", "三维模型", "三维结构", "显示这个结构",
     )

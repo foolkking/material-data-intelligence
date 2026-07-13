@@ -1,0 +1,8 @@
+{
+  "recipe_runtime_identity_excluded": [
+    "recipeId"
+  ],
+  "result": "PASS",
+  "scene_manifest_exact_replay": true,
+  "test": "test_phase10_determinism_capability_and_compatibility_closure"
+}

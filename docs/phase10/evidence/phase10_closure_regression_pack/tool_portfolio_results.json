@@ -1,0 +1,12 @@
+{
+  "execution": "planner_to_runtime_to_artifact",
+  "test_result": "PASS",
+  "tools": [
+    "table.distribution_summary",
+    "viz.scatter",
+    "composition.summary",
+    "structure.summary",
+    "structure.xrd",
+    "structure.viewer_3d"
+  ]
+}

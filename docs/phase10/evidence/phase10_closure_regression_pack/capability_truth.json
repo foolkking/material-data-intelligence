@@ -1,0 +1,28 @@
+{
+  "description": "Production interactive periodic crystal structure viewer backed by canonical inert viewer_scene.v2 artifacts with periodic bond endpoints. Supports atoms, lattice, bounded periodic bonds, inspection, distance/angle/dihedral measurement, renderer-local supercells, clipping, camera controls, scientific export, accessibility, mobile use, and JSON fallback. Artifacts contain no renderer code. Trajectories, phonons, Brillouin zones, volumetric data, structure editing, and authoritative chemical topology are not supported.",
+  "product_supported": [
+    "picking",
+    "measurement",
+    "supercell",
+    "clipping",
+    "camera_presets",
+    "scientific_export"
+  ],
+  "product_unsupported": [
+    "trajectory",
+    "phonon",
+    "brillouin_zone",
+    "volumetric",
+    "editing",
+    "authoritative_chemical_topology"
+  ],
+  "scene_capabilities": {
+    "cross_boundary_bonds": true,
+    "neighbor_graph": true,
+    "periodic_bonds": true,
+    "periodic_structure": true,
+    "phonon": false,
+    "trajectory": false,
+    "volumetric": false
+  }
+}

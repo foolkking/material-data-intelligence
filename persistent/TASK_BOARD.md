@@ -1951,3 +1951,12 @@
 - [x] Record real API/job/artifact and cross-browser product evidence.
 - [x] Freeze supported and unsupported product capabilities.
 - [ ] Trajectory, phonon, Brillouin-zone, volumetric, editing, and authoritative chemistry remain deferred.
+
+## Phase 10 Closure Regression Pack
+
+- [x] Add registry/planner/runtime/artifact portfolio closure.
+- [x] Add frontend product composition and fallback closure.
+- [x] Add Chromium full plus Firefox/WebKit/mobile product smoke.
+- [x] Add deterministic, compatibility, lifecycle, network, and security evidence.
+- [x] Integrate closure entries into required CI jobs and no-skipped gate.
+- [ ] Phase 11 official benchmark certification remains separate.

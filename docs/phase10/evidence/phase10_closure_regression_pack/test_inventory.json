@@ -1,0 +1,79 @@
+{
+  "backend_closure": {
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/integration/test_phase10_product_closure.py",
+      "-m",
+      "not integration"
+    ],
+    "deselected": 1,
+    "exit_code": 0,
+    "passed": 2,
+    "result": "PASS"
+  },
+  "browser_runners": [
+    "viewer-scene-accessibility-browser-evidence.mjs",
+    "viewer-scene-advanced-picking-browser-evidence.mjs",
+    "viewer-scene-browser-evidence.mjs",
+    "viewer-scene-clipping-camera-browser-evidence.mjs",
+    "viewer-scene-formal-product-browser-evidence.mjs",
+    "viewer-scene-inspection-browser-evidence.mjs",
+    "viewer-scene-live-adapter-browser-evidence.mjs",
+    "viewer-scene-performance-hardening-browser-evidence.mjs",
+    "viewer-scene-periodic-browser-evidence.mjs",
+    "viewer-scene-periodic-topology-browser-evidence.mjs",
+    "viewer-scene-production-browser-evidence.mjs",
+    "viewer-scene-renderer-browser-evidence.mjs",
+    "viewer-scene-scientific-export-browser-evidence.mjs",
+    "viewer-scene-supercell-browser-evidence.mjs"
+  ],
+  "frontend_closure": {
+    "command": [
+      "npm.cmd",
+      "--prefix",
+      "apps/web",
+      "run",
+      "test:phase10-closure"
+    ],
+    "deselected": 0,
+    "exit_code": 0,
+    "passed": 1,
+    "result": "PASS"
+  },
+  "phase10_backend_files": [
+    "tests/test_phase10a1_first_batch_adapters.py",
+    "tests/test_phase10c1_lightweight_structure_adapters.py",
+    "tests/test_phase10d1_viewer_scene_metadata.py",
+    "tests/test_phase10e1_coordination_hist.py",
+    "tests/test_phase10e4_xrd.py",
+    "tests/test_phase10e7_rdf.py",
+    "tests/test_phase10f12_viewer_scene_adapter.py",
+    "tests/test_phase10f13_viewer_scene_live_adapter_evidence.py",
+    "tests/test_phase10f15_production_viewer.py",
+    "tests/test_phase10f17_periodic_reference.py",
+    "tests/test_phase10f18_periodic_bond_topology.py",
+    "tests/test_phase10f19_periodic_scene_integration.py",
+    "tests/test_phase10f20_legacy_viewer_schema_compatibility.py",
+    "tests/test_phase10f27_formal_viewer_product.py"
+  ],
+  "selected_strategy": "bounded_cross_phase_composition_not_historical_duplication",
+  "viewer_frontend_files": [
+    "apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.test.tsx",
+    "apps/web/app/components/viewer-scene/phase10ProductClosure.test.ts",
+    "apps/web/app/components/viewer-scene/viewerSceneExport.test.ts",
+    "apps/web/app/components/viewer-scene/viewerSceneMeasurementArtifact.test.ts",
+    "apps/web/app/components/viewer-scene/viewerSceneMeasurements.test.ts",
+    "apps/web/app/components/viewer-scene/viewerScenePerformance.test.ts",
+    "apps/web/app/components/viewer-scene/viewerScenePeriodicGeometry.test.ts",
+    "apps/web/app/components/viewer-scene/viewerSceneRendererMapper.test.ts",
+    "apps/web/app/components/viewer-scene/viewerSceneSelection.test.ts",
+    "apps/web/app/components/viewer-scene/viewerSceneSupercell.test.ts",
+    "apps/web/app/components/viewer-scene/viewerSceneSupercellState.test.ts",
+    "apps/web/app/components/viewer-scene/viewerSceneViewState.test.ts"
+  ]
+}

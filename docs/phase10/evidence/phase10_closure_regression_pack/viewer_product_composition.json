@@ -1,0 +1,25 @@
+{
+  "canonical_scene": "phase10f18.viewer_scene.v2",
+  "composition_test": "PASS",
+  "formal_tool": "structure.viewer_3d",
+  "metrics": {
+    "atomCount": 2,
+    "bondCount": 1,
+    "bufferAttributes": 3,
+    "drawCalls": 4,
+    "firstFrameMs": 35.5,
+    "geometries": 4,
+    "initializationMs": 16.8,
+    "instancedMeshCount": 1,
+    "latticeEdgeCount": 12,
+    "lines": 25,
+    "materials": 11,
+    "performanceTier": "interactive",
+    "sceneObjects": 14,
+    "speciesCount": 1,
+    "textures": 1,
+    "triangles": 1040
+  },
+  "result": "PASS",
+  "state": "rendered"
+}
