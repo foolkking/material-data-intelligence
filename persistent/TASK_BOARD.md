@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-## Phase 10G-2 Trajectory Viewer In Progress
+## Phase 10G-2 Trajectory Viewer Completed
 
 - [x] Validated artifact loading, dynamic GPU updates, frame navigation, playback speed/loop and stable identity.
 - [x] Current-frame picking/measurement, variable lattice, display-only supercell, bounded cache, stale protection, fallback, accessibility/mobile and three-browser smoke.

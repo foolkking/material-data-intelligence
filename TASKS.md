@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10G-2：Trajectory Viewer
 
 进入 Phase 10G-2：Trajectory Viewer。
@@ -4278,6 +4278,46 @@ FAIL包括：
 -   Phase 10 closure回退
 
 -   CI失败却声明PASS
+
+完成时间：2026-07-13 23:17:06 +08:00
+
+修改文件：
+
+- `apps/web/app/components/trajectory-viewer/*`
+- `apps/web/app/components/viewer-scene/viewerSceneRendererEngine.ts`
+- `apps/web/app/components/viewer-scene/viewerSceneRendererTypes.ts`
+- `apps/web/app/components/PlannerWorkbench.tsx`
+- `apps/web/app/globals.css`
+- `apps/web/app/icon.svg`
+- `apps/web/test/trajectory-viewer-browser-evidence.mjs`
+- `docs/phase10g/fixtures/trajectory_viewer/*`
+- `docs/phase10g/evidence/phase10g2_trajectory_viewer/*`
+- `docs/phase10g/phase10g2_*.md`
+- `docs/13_SHARED_SCHEMA_SPEC.md`
+- `docs/index.md`
+- `persistent/*.md`
+- `scripts/generate_phase10g2_trajectory_fixtures.py`
+
+修改摘要：
+
+- 实现 validated `phase10g.trajectory.v1` 的真实 Three.js/WebGL2 trajectory viewer，包括 frame navigation、play/pause/speed/loop、fixed/variable lattice、stable atom identity、current-frame picking/measurement/inspector、display-only supercell、clipping/camera integration 和 JSON fallback。
+- 复用单一 renderer/context，逐帧只更新既有 instanced matrices 与 line buffers；加入 bounded LRU cache、generation stale guard、hidden-tab/context-loss cleanup、typed fallback、mobile policy 和 accessibility controls。
+- 保持 `structure.trajectory_import` planner-hidden、`structure.viewer_3d` 静态语义不变；默认无 bonds，static-reference bonds 为 `PARTIAL_READY`，禁止 dynamic inference。
+- 增加 canonical G-2 fixtures、三浏览器/mobile evidence、逐页 console/network audit、WebGL/composited-pixel evidence、valid over-budget preflight 和 SHA-256 evidence manifest。
+
+测试结果：
+
+- trajectory focused frontend：`16 passed`；frontend full：`132 passed`。
+- frontend typecheck：通过；Next production build：通过（154 kB first-load JS，renderer 保持 lazy chunk）。
+- trajectory backend focused：`41 passed`；backend full：`413 passed, 22 skipped`。
+- Phase 10 Closure Regression Pack：`PHASE10_CLOSURE_REGRESSION_PACK_PASS`。
+- browser：Chromium 150、Firefox 128、WebKit 18、mobile Chromium 全部通过；`TRAJECTORY_VIEWER_BROWSER_SMOKE_PASS`、`TRAJECTORY_VIEWER_PLAYBACK_EVIDENCE_PASS`、`TRAJECTORY_VIEWER_MOBILE_SMOKE_PASS`。
+- security：`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`；valid 780-atom over-budget case 为 `TRAJECTORY_VIEWER_BUDGET_EXCEEDED` 且 `canvasCount=0`。
+- `uv lock --check`、dependency tree、evidence JSON/SHA-256、`git diff --check`：通过；无 dependency/lockfile 变更。
+- `npm audit`：配置的 npmmirror endpoint 返回 `404 [NOT_IMPLEMENTED]`，如实记为 unavailable，未声称 clean。
+- CI：run `29261466537`，SHA `cac462a17bb3872e5709ebfecccb80e25382a789`；unit、frontend、build、service-backed integration、no-skipped assertion 全部 success。
+
+任务结论：PASS。Final long-trajectory performance acceptance、static-reference bond completion 和 formal planner-visible trajectory product registration 延后到 Phase 10G-3。
 ---END---
 
 ---TASK---
