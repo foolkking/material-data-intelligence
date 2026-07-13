@@ -59,7 +59,7 @@
         "programs": 2
       },
       "timing": {
-        "frameMapMs": 0,
+        "frameMapMs": 1,
         "gpuUpdateMs": 0
       }
     },
@@ -90,14 +90,6 @@
       },
       {
         "cycle": 3,
-        "currentFrame": 5,
-        "activeLoops": 0,
-        "pending": 0,
-        "geometries": 4,
-        "materials": 11
-      },
-      {
-        "cycle": 4,
         "currentFrame": 6,
         "activeLoops": 0,
         "pending": 0,
@@ -105,15 +97,7 @@
         "materials": 11
       },
       {
-        "cycle": 5,
-        "currentFrame": 7,
-        "activeLoops": 0,
-        "pending": 0,
-        "geometries": 4,
-        "materials": 11
-      },
-      {
-        "cycle": 6,
+        "cycle": 4,
         "currentFrame": 8,
         "activeLoops": 0,
         "pending": 0,
@@ -121,7 +105,7 @@
         "materials": 11
       },
       {
-        "cycle": 7,
+        "cycle": 5,
         "currentFrame": 9,
         "activeLoops": 0,
         "pending": 0,
@@ -129,7 +113,7 @@
         "materials": 11
       },
       {
-        "cycle": 8,
+        "cycle": 6,
         "currentFrame": 11,
         "activeLoops": 0,
         "pending": 0,
@@ -137,8 +121,24 @@
         "materials": 11
       },
       {
+        "cycle": 7,
+        "currentFrame": 13,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
+        "cycle": 8,
+        "currentFrame": 15,
+        "activeLoops": 0,
+        "pending": 0,
+        "geometries": 4,
+        "materials": 11
+      },
+      {
         "cycle": 9,
-        "currentFrame": 12,
+        "currentFrame": 16,
         "activeLoops": 0,
         "pending": 0,
         "geometries": 4,
@@ -148,7 +148,7 @@
     "rapidSeek": {
       "requested": 63,
       "committed": 63,
-      "elapsedMs": 328,
+      "elapsedMs": 347,
       "peakPendingRequests": 1,
       "pendingRequests": 0
     },
@@ -205,7 +205,7 @@
         "programs": 2
       },
       "timing": {
-        "frameMapMs": 1.000000000001819,
+        "frameMapMs": 0,
         "gpuUpdateMs": 0
       }
     },
@@ -345,7 +345,7 @@
         "programs": 2
       },
       "timing": {
-        "frameMapMs": 0,
+        "frameMapMs": 0.9999999999995453,
         "gpuUpdateMs": 0
       }
     },
@@ -403,7 +403,7 @@
       },
       "timing": {
         "frameMapMs": 0,
-        "gpuUpdateMs": 18
+        "gpuUpdateMs": 20
       }
     },
     "graphics": {
@@ -471,7 +471,7 @@
       "programs": 2
     },
     "timing": {
-      "frameMapMs": 4,
+      "frameMapMs": 5,
       "gpuUpdateMs": 0
     }
   },

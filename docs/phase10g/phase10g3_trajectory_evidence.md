@@ -8,6 +8,8 @@ Evidence is stored in `docs/phase10g/evidence/phase10g3_trajectory_performance_b
 
 The capture boundary is explicit: backend artifact generation is real in-memory persisted runtime execution; browser HTTP is a local replay of those captures. The separate service-backed CI test covers PostgreSQL/Redis/MinIO persistence.
 
+The hash inventory normalizes JSON and Markdown line endings to LF before hashing so Windows and Linux checkouts verify the same text content. Binary screenshots remain raw-byte SHA-256 evidence.
+
 Markers:
 
 - `TRAJECTORY_FORMAL_API_EVIDENCE_PASS`

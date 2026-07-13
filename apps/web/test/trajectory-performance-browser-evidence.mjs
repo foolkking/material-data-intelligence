@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 
@@ -142,10 +142,11 @@ async function exerciseInteractive(page,browserId){
     await page.getByRole("button",{name:"Play trajectory"}).click();
     await page.waitForTimeout(35);
     await page.getByRole("button",{name:"Pause trajectory"}).click();
+    await page.waitForFunction(()=>{const value=JSON.parse(document.querySelector('[data-testid="trajectory-viewer-metrics"]')?.textContent||"{}");return value.viewer?.status!=="playing"&&value.viewer?.activeLoops===0&&value.viewer?.pendingRequests===0;});
     const value=await metrics(page);
     stress.push({cycle,currentFrame:value.viewer.currentFrame,activeLoops:value.viewer.activeLoops,pending:value.viewer.pendingRequests,geometries:value.viewer.geometries,materials:value.viewer.materials});
   }
-  if(stress.some(item=>item.activeLoops!==0||item.pending>1||item.geometries!==initial.viewer.geometries||item.materials!==initial.viewer.materials))throw new Error("repeated playback resource growth");
+  if(stress.some(item=>item.activeLoops!==0||item.pending>1||item.geometries!==initial.viewer.geometries||item.materials!==initial.viewer.materials))throw new Error(`repeated playback resource growth: ${JSON.stringify({initial:initial.viewer,stress})}`);
   await page.getByTestId("trajectory-playback-speed").selectOption("4");
   await setCheckbox(page.getByTestId("trajectory-loop"),true);
 
@@ -439,7 +440,15 @@ async function writeEvidence(results){
   await writeFile(path.join(EVIDENCE,"README.md"),"# Phase 10G-3 Trajectory Performance Browser Evidence\n\nThe Python generator executes the real parser, Mock Planner, PlanValidator, persisted planner job, QueueWorkerRuntime, formal TrajectoryViewerAdapter, and artifact listing path. The browser runner replays those sanitized captures through the production PlannerWorkbench and drives real Chromium, Firefox, WebKit, mobile layouts, and WebGL contexts. Timing is observational; PASS depends on bounded resources and semantic consistency. No external request, artifact execution, remote frame, or telemetry is allowed.\n","utf-8");
   await assertEvidenceSecurity();
   const files=(await listFiles(EVIDENCE)).filter(file=>!file.endsWith("artifact_hashes.json"));
-  await write("artifact_hashes.json",{algorithm:"sha256",files:await Promise.all(files.map(async file=>({path:path.relative(EVIDENCE,file).replaceAll("\\","/"),bytes:(await stat(file)).size,sha256:createHash("sha256").update(await readFile(file)).digest("hex"),normalization:"raw"})))});
+  await write("artifact_hashes.json",{algorithm:"sha256",files:await Promise.all(files.map(evidenceHash))});
+}
+
+async function evidenceHash(file){
+  const relative=path.relative(EVIDENCE,file).replaceAll("\\","/");
+  const raw=await readFile(file);
+  const text=/\.(json|md)$/i.test(file);
+  const content=text?Buffer.from(raw.toString("utf-8").replace(/\r\n?/g,"\n"),"utf-8"):raw;
+  return {path:relative,bytes:content.byteLength,sha256:createHash("sha256").update(content).digest("hex"),normalization:text?"lf":"raw"};
 }
 
 async function assertEvidenceSecurity(){

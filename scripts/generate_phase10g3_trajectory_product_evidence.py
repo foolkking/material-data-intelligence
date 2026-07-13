@@ -389,7 +389,11 @@ def _normalize_ids(
 
 
 def _write(name: str, payload: Any) -> None:
-    (EVIDENCE / name).write_text(json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=True) + "\n", encoding="utf-8")
+    (EVIDENCE / name).write_text(
+        json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
 
 
 if __name__ == "__main__":

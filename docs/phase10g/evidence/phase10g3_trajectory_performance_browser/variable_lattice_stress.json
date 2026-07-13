@@ -51,7 +51,7 @@
       "programs": 2
     },
     "timing": {
-      "frameMapMs": 0.10000000894069672,
+      "frameMapMs": 0,
       "gpuUpdateMs": 0
     }
   },
@@ -108,8 +108,8 @@
       "programs": 2
     },
     "timing": {
-      "frameMapMs": 0.09999999403953552,
-      "gpuUpdateMs": 3.6
+      "frameMapMs": 0,
+      "gpuUpdateMs": 1.8
     }
   },
   "graphics": {

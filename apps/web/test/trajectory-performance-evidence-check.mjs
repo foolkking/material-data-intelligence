@@ -53,8 +53,9 @@ for(const marker of ["TRAJECTORY_FORMAL_API_EVIDENCE_PASS","TRAJECTORY_PERFORMAN
 const hashes=await load("artifact_hashes.json");
 if(hashes.algorithm!=="sha256"||!Array.isArray(hashes.files)||hashes.files.length<required.length)throw new Error("trajectory evidence hash inventory invalid");
 for(const item of hashes.files){
-  if(item.normalization!=="raw")throw new Error(`unsupported trajectory hash normalization: ${item.path}`);
-  const content=await readFile(path.join(evidence,item.path));
+  if(!["raw","lf"].includes(item.normalization))throw new Error(`unsupported trajectory hash normalization: ${item.path}`);
+  const raw=await readFile(path.join(evidence,item.path));
+  const content=item.normalization==="lf"?Buffer.from(raw.toString("utf-8").replace(/\r\n?/g,"\n"),"utf-8"):raw;
   if(content.byteLength!==item.bytes||createHash("sha256").update(content).digest("hex")!==item.sha256)throw new Error(`trajectory evidence hash mismatch: ${item.path}`);
 }
 console.log("TRAJECTORY_PERFORMANCE_EVIDENCE_INTEGRITY_PASS");

@@ -59,7 +59,7 @@
         "programs": 2
       },
       "timing": {
-        "frameMapMs": 0.10000000894069672,
+        "frameMapMs": 0.09999999403953552,
         "gpuUpdateMs": 0
       }
     },
@@ -148,7 +148,7 @@
     "rapidSeek": {
       "requested": 63,
       "committed": 63,
-      "elapsedMs": 262,
+      "elapsedMs": 243,
       "peakPendingRequests": 1,
       "pendingRequests": 0
     },
@@ -205,7 +205,7 @@
         "programs": 2
       },
       "timing": {
-        "frameMapMs": 0.10000000894069672,
+        "frameMapMs": 0.09999999403953552,
         "gpuUpdateMs": 0
       }
     },
@@ -261,7 +261,7 @@
         "programs": 2
       },
       "timing": {
-        "frameMapMs": 0.09999999403953552,
+        "frameMapMs": 0.10000000894069672,
         "gpuUpdateMs": 0
       }
     },
@@ -345,7 +345,7 @@
         "programs": 2
       },
       "timing": {
-        "frameMapMs": 0.10000000894069672,
+        "frameMapMs": 0,
         "gpuUpdateMs": 0
       }
     },
@@ -402,8 +402,8 @@
         "programs": 2
       },
       "timing": {
-        "frameMapMs": 0.09999999403953552,
-        "gpuUpdateMs": 3.6
+        "frameMapMs": 0,
+        "gpuUpdateMs": 1.8
       }
     },
     "graphics": {
@@ -471,7 +471,7 @@
       "programs": 2
     },
     "timing": {
-      "frameMapMs": 0.5,
+      "frameMapMs": 0.6000000089406967,
       "gpuUpdateMs": 0
     }
   },
@@ -606,7 +606,7 @@
         "programs": 4
       },
       "timing": {
-        "frameMapMs": 0.09999999403953552,
+        "frameMapMs": 0.10000000894069672,
         "gpuUpdateMs": 0
       }
     },

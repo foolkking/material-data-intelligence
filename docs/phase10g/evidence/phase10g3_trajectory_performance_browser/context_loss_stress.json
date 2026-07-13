@@ -50,7 +50,7 @@
     "programs": 2
   },
   "timing": {
-    "frameMapMs": 0.09999999403953552,
+    "frameMapMs": 0.10000000894069672,
     "gpuUpdateMs": 0
   }
 }
