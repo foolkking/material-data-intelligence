@@ -1,0 +1,6 @@
+{
+  "fixture": "unwrapped_diffusion_12_frames.json",
+  "positions": "unchanged",
+  "autoWrap": false,
+  "source": "validated_fixture_and_mapper_tests"
+}

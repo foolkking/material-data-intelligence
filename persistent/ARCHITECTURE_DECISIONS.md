@@ -1,5 +1,11 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10G2-TRAJECTORY-VIEWER: Reuse one static engine with bounded dynamic buffers
+
+Validated trajectory frames map to renderer-local display scenes. A single shared Three.js engine updates existing instanced atom matrices and line position attributes; frame changes do not recreate renderer, geometry, material, controls, camera, or React tree. Playback uses one capped timer, a bounded LRU mapped-frame cache, generation-token stale protection, and pause-on-hidden/context-loss semantics. Picks are ignored until a requested frame commits, and active clipping is recalculated against the committed frame.
+
+The viewer hard cap is 768 displayed instances because repeated frame/cache updates have a different budget from static 2048-site display. Mobile viewport policy lowers playback to 15 fps and cache to three frames / 4 MiB. Bonds default to none; dynamic inference is forbidden and static-reference topology remains partial. The internal import tool stays planner-hidden until G-3 performance and product registration closure.
+
 ## ADR-10G1-BOUNDED-TRAJECTORY-INGESTION: Normalize before adapter execution
 
 Use a small application-owned streaming EXTXYZ parser and byte-capped canonical JSON pass-through. Parser output must validate as `phase10g.trajectory.v1` before becoming a normalized `Trajectory`; the adapter never reparses source files. Stable source IDs may reorder only by first-frame identity and must be reported.

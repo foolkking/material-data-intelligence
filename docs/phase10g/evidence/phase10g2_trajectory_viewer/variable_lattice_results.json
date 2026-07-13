@@ -1,0 +1,68 @@
+{
+  "trajectory": {
+    "schema": "phase10g.trajectory.v1",
+    "kind": "geometry_optimization",
+    "frames": 6,
+    "atoms": 4,
+    "coordinateMode": "cartesian",
+    "wrapping": "unknown",
+    "latticeMode": "variable"
+  },
+  "viewer": {
+    "currentFrame": 1,
+    "requestedFrame": 1,
+    "status": "paused",
+    "speed": 1,
+    "loop": false,
+    "mobile": false,
+    "maxPlaybackFps": 30,
+    "cache": {
+      "maxFrames": 7,
+      "maxBytes": 16777216,
+      "size": 2,
+      "bytes": 2304,
+      "hits": 0,
+      "misses": 1,
+      "indices": [
+        0,
+        1
+      ]
+    },
+    "displayedInstances": 4,
+    "activeLoops": 0,
+    "canvasCount": 1,
+    "contextCount": 1,
+    "drawCalls": 4,
+    "geometries": 4,
+    "materials": 12
+  },
+  "timing": {
+    "frameMapMs": 0.09999999403953552
+  },
+  "graphics": {
+    "initial": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        491,
+        418
+      ],
+      "compositedImage": [
+        491,
+        419
+      ],
+      "sampledColorCount": 9
+    },
+    "frame": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        491,
+        418
+      ],
+      "compositedImage": [
+        491,
+        419
+      ],
+      "sampledColorCount": 9
+    }
+  }
+}

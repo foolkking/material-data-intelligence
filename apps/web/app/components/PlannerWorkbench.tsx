@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { createTranslator, type Locale, type MessageKey } from "../lib/i18n";
 import { ViewerSceneRendererSurface } from "./viewer-scene/ViewerSceneRendererSurface";
+import { TrajectoryViewerSurface } from "./trajectory-viewer/TrajectoryViewerSurface";
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
@@ -1194,6 +1195,7 @@ function ResultsExportTab(props: {
       <MetricsResultRenderer t={t} artifact={props.artifacts.find((artifact) => artifact.type === "metrics_json")} />
       <TableSummaryRenderer t={t} artifact={props.artifacts.find(isTableSummaryArtifact)} />
       <ViewerStaticPreviewPanel artifacts={props.artifacts} />
+      <TrajectoryPreviewPanel artifacts={props.artifacts} />
       <ArtifactGallery t={t} artifacts={props.artifacts} developerMode={props.developerMode} selectedArtifact={props.selectedArtifact} />
       <ToolCallList t={t} toolCalls={props.toolCalls} developerMode={props.developerMode} />
       <ExportControls t={t} artifacts={props.artifacts} />
@@ -1378,6 +1380,29 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
         ) : null}
         {activePreview === "manifest" && viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : null}
         {activePreview === "manifest" && !viewerManifest ? <ViewerMissingPreview title="viewer_scene_manifest.json" /> : null}
+      </div>
+    </section>
+  );
+}
+
+export function TrajectoryPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
+  const trajectoryArtifact = artifacts.find((artifact) => artifact.type === "trajectory_json" || artifact.name === "trajectory.json");
+  const manifestArtifact = artifacts.find((artifact) => artifact.type === "trajectory_manifest_json" || artifact.name === "trajectory_manifest.json");
+  const [activePreview, setActivePreview] = useState<"viewer" | "json" | "manifest">("viewer");
+  if (!trajectoryArtifact) return null;
+  const payload = trajectoryArtifactPayload(trajectoryArtifact);
+  return (
+    <section className="panel viewer-static-preview" data-testid="trajectory-preview-panel">
+      <PanelHeading title="Trajectory preview" badge="Validated dynamic viewer" />
+      <div className="viewer-preview-tabs" role="tablist" aria-label="Trajectory preview modes">
+        <button type="button" role="tab" aria-selected={activePreview === "viewer"} className={activePreview === "viewer" ? "active" : "secondary"} onClick={() => setActivePreview("viewer")}>3D Trajectory</button>
+        <button type="button" role="tab" aria-selected={activePreview === "json"} className={activePreview === "json" ? "active" : "secondary"} onClick={() => setActivePreview("json")}>Trajectory JSON</button>
+        <button type="button" role="tab" aria-selected={activePreview === "manifest"} className={activePreview === "manifest" ? "active" : "secondary"} onClick={() => setActivePreview("manifest")}>Manifest</button>
+      </div>
+      <div className="viewer-preview-tab-panel" role="tabpanel">
+        {activePreview === "viewer" ? <TrajectoryViewerSurface payload={payload} /> : null}
+        {activePreview === "json" ? <pre className="json-preview" data-testid="trajectory-json-preview">{JSON.stringify(payload, null, 2)}</pre> : null}
+        {activePreview === "manifest" ? <pre className="json-preview" data-testid="trajectory-manifest-preview">{JSON.stringify(manifestArtifact ? trajectoryArtifactPayload(manifestArtifact) : null, null, 2)}</pre> : null}
       </div>
     </section>
   );
@@ -2072,6 +2097,14 @@ function artifactPayload(artifact: Artifact): JsonRecord | null {
     if (record) return record;
   }
   return null;
+}
+
+function trajectoryArtifactPayload(artifact: Artifact): JsonRecord | null {
+  const direct = artifactPayload(artifact);
+  if (direct) return direct;
+  const raw = artifactText(artifact);
+  if (!raw || raw.length > 64 * 1024 * 1024) return null;
+  try { return asRecord(JSON.parse(raw)); } catch { return null; }
 }
 
 function artifactText(artifact: Artifact): string | null {

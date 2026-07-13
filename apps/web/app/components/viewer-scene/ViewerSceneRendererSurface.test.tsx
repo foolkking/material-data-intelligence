@@ -55,6 +55,7 @@ function fakeEngine(dispose = vi.fn()) {
   });
   const engine: ViewerRendererEngine = {
     resetCamera: vi.fn(),
+    fitCurrentScene: vi.fn(),
     setCellVisible(value) { cellVisible = value; },
     setSupercellBoundaryVisible: vi.fn(),
     setLatticeAxesVisible: vi.fn(),
@@ -66,6 +67,7 @@ function fakeEngine(dispose = vi.fn()) {
     exportPng: vi.fn(async () => new Blob(["png"], { type: "image/png" })),
     render: vi.fn(),
     replaceScene: vi.fn(),
+    updateDynamicScene: vi.fn(() => ({ atomMatricesUpdated: 2, lineVerticesUpdated: 30 })),
     keyboardCamera: vi.fn(),
     snapshot,
     dispose,

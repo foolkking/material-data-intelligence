@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-13 - Phase 10G-2 Trajectory Viewer
+
+- Added a real validated trajectory viewer using one shared Three.js engine with bounded dynamic frame updates rather than per-frame renderer reconstruction.
+- Added playback/navigation, variable lattice, stable identity, committed-frame inspection/measurement, canonical velocity/force display, cache/stale/lifecycle controls, detected mobile/accessibility UI and three-browser evidence.
+- Added per-page console/network audits, composited-canvas pixel evidence, valid over-budget refusal, and a local inert application icon; frontend 132 passed, backend 413 passed / 22 skipped, and the Phase 10 closure pack passed locally.
+- Kept static viewer semantics unchanged, bonds off by default, dynamic inference prohibited, and formal trajectory registration deferred.
+
 ## 2026-07-13 - Phase 10G-1 Trajectory Parser / Adapter
 
 - Added bounded streaming multi-frame EXTXYZ and canonical trajectory JSON ingestion with deterministic canonical normalization.

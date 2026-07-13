@@ -1,0 +1,14 @@
+{
+  "degraded_generator": {
+    "atoms": 400,
+    "frames": 260,
+    "persist_payload": false
+  },
+  "refused_generator": {
+    "displayed_instances": 769,
+    "hard_cap": 768,
+    "persist_payload": false
+  },
+  "schema_version": "phase10g2.synthetic_budget_policy.v1",
+  "static_reference_bonds": "PARTIAL_READY_NOT_EMITTED"
+}

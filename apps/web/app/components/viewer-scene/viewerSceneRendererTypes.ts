@@ -47,8 +47,8 @@ export type RenderLattice = {
 };
 
 export type ValidatedRenderScene = {
-  readonly contractVersion: "viewer_scene.v1" | "viewer_scene.v2";
-  readonly schemaVersion: "phase10f8.viewer_scene.v1" | "phase10f18.viewer_scene.v2";
+  readonly contractVersion: "viewer_scene.v1" | "viewer_scene.v2" | "trajectory.v1";
+  readonly schemaVersion: "phase10f8.viewer_scene.v1" | "phase10f18.viewer_scene.v2" | "phase10g.trajectory.v1";
   readonly atoms: readonly RenderAtom[];
   readonly bonds: readonly RenderBond[];
   readonly lattice: RenderLattice;
@@ -131,6 +131,7 @@ export type ViewerRendererSnapshot = {
 
 export type ViewerRendererEngine = {
   readonly resetCamera: () => void;
+  readonly fitCurrentScene: () => void;
   readonly setCellVisible: (visible: boolean) => void;
   readonly setSupercellBoundaryVisible: (visible: boolean) => void;
   readonly setLatticeAxesVisible: (visible: boolean) => void;
@@ -139,6 +140,7 @@ export type ViewerRendererEngine = {
   readonly setCameraPreset: (preset: CameraPreset) => void;
   readonly render: () => void;
   readonly replaceScene: (scene: ValidatedRenderScene, performanceTier: "interactive" | "degraded", pixelRatioCap: 1 | 2) => void;
+  readonly updateDynamicScene: (scene: ValidatedRenderScene) => Readonly<{ atomMatricesUpdated: number; lineVerticesUpdated: number }>;
   readonly keyboardCamera: (action: "rotate_left" | "rotate_right" | "rotate_up" | "rotate_down" | "pan_left" | "pan_right" | "pan_up" | "pan_down" | "zoom_in" | "zoom_out") => void;
   readonly setSelection: (sites: readonly PeriodicSiteRef[]) => void;
   readonly setBondSelection: (bondId: string | null) => void;

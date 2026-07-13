@@ -1,5 +1,9 @@
 # 共享 Schema 规范
 
+## Phase 10G-2 trajectory viewer internal display contract
+
+The persisted schema remains `phase10g.trajectory.v1`. The frontend derives immutable per-frame display scenes with stable `atomIndex` and renderer-local `imageOffset`; these are not artifacts and do not modify the canonical contract. Current/requested frame, playback, cache, supercell, clipping, camera, selection, and measurements are application-owned local state. Dynamic bond inference and artifact-controlled execution remain forbidden.
+
 ## Phase 10F-25 Addendum: renderer-local view state
 
 `phase10f25.viewer_view_state.v1` is a frontend-local inert JSON download bound

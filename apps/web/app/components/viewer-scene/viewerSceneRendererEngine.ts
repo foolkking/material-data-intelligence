@@ -179,6 +179,14 @@ export async function createThreeViewerEngine(args: {
     controls.update();
     render();
   };
+  const fitCurrentScene = () => {
+    frame = cameraFrame(currentScene);
+    initialPosition = new THREE.Vector3(...frame.position);
+    initialTarget = new THREE.Vector3(...frame.target);
+    controls.minDistance = Math.max(0.2, frame.near * 4);
+    controls.maxDistance = frame.far * 0.45;
+    resetCamera();
+  };
   const setCameraPreset: ViewerRendererEngine["setCameraPreset"] = (preset) => {
     if (preset === "default") { resetCamera(); return; }
     cameraPreset = preset;
@@ -214,6 +222,42 @@ export async function createThreeViewerEngine(args: {
     latticeAxesGeometry.dispose(); latticeAxesGeometry=axesGeometry(currentScene.lattice.matrix); latticeAxesLines.geometry=latticeAxesGeometry;
     frame=cameraFrame(currentScene); initialPosition=new THREE.Vector3(...frame.position); initialTarget=new THREE.Vector3(...frame.target); controls.minDistance=Math.max(0.2,frame.near*4);controls.maxDistance=frame.far*0.45;
     selectedSites=Object.freeze([]); selectedBondId=null; setSelection([]); setBondSelection(null); resetCamera();
+  };
+  const updateDynamicScene: ViewerRendererEngine["updateDynamicScene"] = (nextScene) => {
+    if (disposed || contextLost) throw new ViewerRendererError("VIEWER_RENDERER_CONTEXT_LOST", "The graphics context is unavailable for a frame update.");
+    const nextGroups = new Map<string, typeof nextScene.atoms>();
+    for (const atom of nextScene.atoms) {
+      const groupKey = `${atom.species}|${atom.color}`;
+      nextGroups.set(groupKey, Object.freeze([...(nextGroups.get(groupKey) ?? []), atom]));
+    }
+    const orderedGroups = [...nextGroups.entries()].sort(([left], [right]) => left.localeCompare(right));
+    if (orderedGroups.length !== atomMeshes.length) throw new ViewerRendererError("VIEWER_RENDERER_INVALID_GEOMETRY", "Trajectory atom groups changed across frames.");
+    let atomMatricesUpdated = 0;
+    orderedGroups.forEach(([groupKey, atoms], groupIndex) => {
+      const mesh = atomMeshes[groupIndex];
+      if (mesh.name !== `atoms-${groupKey}` || mesh.count !== atoms.length) throw new ViewerRendererError("VIEWER_RENDERER_INVALID_GEOMETRY", "Trajectory atom identity changed across frames.");
+      atoms.forEach((atom, index) => {
+        transform.compose(new THREE.Vector3(...atom.position), new THREE.Quaternion(), new THREE.Vector3(atom.radius, atom.radius, atom.radius));
+        mesh.setMatrixAt(index, transform);
+        atomMatricesUpdated += 1;
+      });
+      mesh.instanceMatrix.needsUpdate = true;
+      mesh.computeBoundingBox();
+      mesh.computeBoundingSphere();
+      mesh.userData = { periodicRefs: atoms.map((atom) => atom.ref), species: atoms[0]?.species };
+    });
+    const bondPoints = nextScene.bonds.flatMap((bond) => [bond.start, bond.end]);
+    updateLinePositions(bondGeometry, bondPoints);
+    updateLinePositions(cellGeometry, latticeEdges(nextScene.lattice.matrix).flatMap((edge) => [edge[0], edge[1]]));
+    updateLinePositions(supercellBoundaryGeometry, latticeEdges(nextScene.displayLattice.matrix).flatMap((edge) => [edge[0], edge[1]]));
+    updateLinePositions(latticeAxesGeometry, nextScene.lattice.matrix.flatMap((vector) => [[0,0,0] as const, vector]));
+    currentScene = nextScene;
+    atomsByKey = new Map(currentScene.atoms.map((atom) => [periodicSiteKey(atom.ref), atom] as const));
+    bondLines.userData = { bondIds: currentScene.bonds.map((bond) => bond.id) };
+    setSelection(selectedSites);
+    setBondSelection(selectedBondId);
+    render();
+    return Object.freeze({ atomMatricesUpdated, lineVerticesUpdated: bondPoints.length + 30 });
   };
   const keyboardCamera: ViewerRendererEngine["keyboardCamera"] = (action) => {
     const offset = camera.position.clone().sub(controls.target);
@@ -432,6 +476,7 @@ export async function createThreeViewerEngine(args: {
 
   return {
     resetCamera,
+    fitCurrentScene,
     setCellVisible(visible) { cellLines.visible = visible; render(); },
     setSupercellBoundaryVisible(visible) { supercellBoundaryLines.visible = visible; render(); },
     setLatticeAxesVisible(visible) { latticeAxesLines.visible = visible; render(); },
@@ -444,6 +489,7 @@ export async function createThreeViewerEngine(args: {
     exportPng,
     render,
     replaceScene,
+    updateDynamicScene,
     snapshot,
     dispose() {
       if (disposed) return;
@@ -485,6 +531,16 @@ function lineGeometry(points: readonly RenderVector3[]) {
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(points.flatMap((point) => [...point]), 3));
   return geometry;
+}
+
+function updateLinePositions(geometry: THREE.BufferGeometry, points: readonly RenderVector3[]) {
+  const attribute = geometry.getAttribute("position");
+  if (!(attribute instanceof THREE.BufferAttribute) || attribute.count !== points.length) {
+    throw new ViewerRendererError("VIEWER_RENDERER_INVALID_GEOMETRY", "Trajectory line topology changed across frames.");
+  }
+  points.forEach((point, index) => attribute.setXYZ(index, point[0], point[1], point[2]));
+  attribute.needsUpdate = true;
+  geometry.computeBoundingSphere();
 }
 
 function axesGeometry(matrix: ValidatedRenderScene["lattice"]["matrix"]) {

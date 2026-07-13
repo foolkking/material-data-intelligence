@@ -1,0 +1,7 @@
+{
+  "desktop_frames": 7,
+  "degraded_frames": 4,
+  "mobile_frames": 3,
+  "lru": true,
+  "bounded_bytes": true
+}

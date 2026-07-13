@@ -1,5 +1,11 @@
 # TASK_BOARD
 
+## Phase 10G-2 Trajectory Viewer In Progress
+
+- [x] Validated artifact loading, dynamic GPU updates, frame navigation, playback speed/loop and stable identity.
+- [x] Current-frame picking/measurement, variable lattice, display-only supercell, bounded cache, stale protection, fallback, accessibility/mobile and three-browser smoke.
+- [ ] Final long-trajectory performance acceptance, static-reference bond completion and formal planner-visible product registration (Phase 10G-3).
+
 ## Phase 10G-1 Trajectory Parser / Adapter Completed
 
 - [x] Bounded EXTXYZ and canonical JSON parsing, normalization, units, stable IDs, caps, cancellation, and security.

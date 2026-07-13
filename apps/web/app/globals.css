@@ -714,6 +714,15 @@ pre {
   touch-action: pan-y;
 }
 
+.trajectory-viewer-surface { display: grid; gap: 12px; }
+.trajectory-timeline, .trajectory-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; }
+.trajectory-timeline label { display: inline-flex; align-items: center; gap: 8px; }
+.trajectory-timeline input[type="range"] { width: min(440px, 55vw); }
+.trajectory-controls fieldset { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-width: 0; border: 1px solid var(--border); }
+.trajectory-inspector { border-top: 1px solid var(--border); padding-top: 10px; }
+.trajectory-inspector dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; margin: 8px 0; }
+.trajectory-inspector dd { margin: 0; overflow-wrap: anywhere; }
+
 .viewer-renderer-controls button {
   min-height: 36px;
 }
@@ -1241,4 +1250,7 @@ pre {
   .viewer-view-control-groups { grid-template-columns: 1fr; }
   .viewer-view-controls button { min-height: 44px; }
   .viewer-clip-row { grid-template-columns: 88px minmax(0, 1fr) 96px; }
+  .trajectory-timeline, .trajectory-controls, .trajectory-controls fieldset { align-items: stretch; flex-direction: column; }
+  .trajectory-timeline input[type="range"] { width: 100%; }
+  .trajectory-viewer-surface button, .trajectory-viewer-surface select, .trajectory-viewer-surface input { min-height: 44px; }
 }

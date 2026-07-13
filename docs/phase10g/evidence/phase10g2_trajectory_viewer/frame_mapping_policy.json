@@ -1,0 +1,6 @@
+{
+  "fractional": "row_vector_lattice",
+  "cartesian": "angstrom_passthrough",
+  "variable_lattice": "current_frame",
+  "wrapping": "unchanged"
+}

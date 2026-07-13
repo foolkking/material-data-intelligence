@@ -1,0 +1,10 @@
+{
+  "artifactJavaScript": false,
+  "artifactHtml": false,
+  "callbacks": false,
+  "externalFrames": false,
+  "artifactControlledFps": false,
+  "artifactControlledCache": false,
+  "dynamicBondInference": false,
+  "marker": "NO_SECRET_PATTERN_HITS"
+}

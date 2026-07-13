@@ -1,5 +1,10 @@
 # OPEN_QUESTIONS
 
+## 2026-07-13 Phase 10G-2 trajectory closure
+
+- Final long-trajectory performance acceptance, validated static-reference bond playback, and formal planner-visible trajectory product identity remain for Phase 10G-3.
+- The configured npmmirror registry still does not implement the npm audit endpoint; current dependency risk must continue to use lockfile/tree review plus CI until an approved audit endpoint is available.
+
 ## 2026-07-13 Phase 10G-1 Follow-ups
 
 - **Closed: first parser scope.** Multi-frame EXTXYZ and canonical JSON are supported with bounded deterministic normalization.
@@ -713,3 +718,5 @@
 - Phase 11 must define official benchmark/reference certification separately from current candidate scientific outputs.
 - Fresh real browser evidence remains required when product browser behavior changes; CI currently validates committed browser evidence integrity without installing a new browser dependency.
 - Trajectory, phonon, Brillouin-zone, volumetric, defects/surfaces, and editing remain independent future contracts.
+- **Open after Phase 10G-2: formal trajectory product closure.** G-3 must finish long-trajectory performance/browser acceptance, decide static-reference topology completion, and formalize planner-visible registration.
+- **Closed in Phase 10G-2: dynamic display foundation.** Validated frame mapping, playback, identity, variable lattice, bounded cache, fallback, accessibility/mobile, and initial browser matrix are implemented.

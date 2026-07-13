@@ -1,0 +1,5 @@
+{
+  "interactive": true,
+  "degraded": true,
+  "refused_before_webgl": true
+}

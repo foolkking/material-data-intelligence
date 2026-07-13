@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-13 Phase 10G-2 Trajectory Viewer
+
+- Added validated trajectory artifact preview with real Three.js frame navigation/playback and dynamic instanced-matrix/lattice-buffer updates.
+- Added stable atom/periodic instance identity, committed-frame picking/measurement and velocity/force inspection, renderer-local supercells, camera/clipping integration, bounded cache/stale guards, typed fallback, accessibility and detected mobile controls.
+- Chromium, Firefox, WebKit and mobile browser smoke pass with nonblank composited-canvas checks and per-page zero-error/network audits; frontend 132 passed and backend 413 passed / 22 skipped locally.
+- Static-reference bonds remain PARTIAL_READY and formal product registration/final performance closure remain deferred to G-3.
+
 ## 2026-07-13 Phase 10G-1 Trajectory Parser / Adapter
 
 - Added bounded streaming EXTXYZ and byte-capped canonical trajectory JSON parsers with strict UTF-8, identity, units, lattice/PBC, property, cancellation, and security checks.

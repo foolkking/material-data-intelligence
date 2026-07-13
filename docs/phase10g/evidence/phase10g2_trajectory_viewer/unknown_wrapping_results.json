@@ -1,0 +1,6 @@
+{
+  "fixture": "unknown_wrapping_12_frames.json",
+  "warning": "TRAJECTORY_VIEWER_WRAPPING_UNKNOWN",
+  "inference": false,
+  "source": "validated_fixture_and_mapper_tests"
+}

@@ -1,0 +1,12 @@
+{
+  "speeds": [
+    0.25,
+    0.5,
+    1,
+    2,
+    4
+  ],
+  "direction": "forward",
+  "hidden_tab": "pause_remain_paused",
+  "physical_time_scale": false
+}

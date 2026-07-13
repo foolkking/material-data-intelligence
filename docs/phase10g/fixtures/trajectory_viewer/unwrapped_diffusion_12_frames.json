@@ -1,0 +1,834 @@
+{
+  "atom_identity_mode": "stable_index",
+  "atoms": {
+    "count": 4,
+    "records": [
+      {
+        "atom_id": 0,
+        "label": "Si1",
+        "occupancy": 1.0,
+        "species": "Si"
+      },
+      {
+        "atom_id": 1,
+        "label": "Si2",
+        "occupancy": 1.0,
+        "species": "Si"
+      },
+      {
+        "atom_id": 2,
+        "label": "O3",
+        "occupancy": 1.0,
+        "species": "O"
+      },
+      {
+        "atom_id": 3,
+        "label": "O4",
+        "occupancy": 1.0,
+        "species": "O"
+      }
+    ]
+  },
+  "coordinate_mode": "fractional",
+  "fixed_lattice": [
+    [
+      5.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      5.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      5.0
+    ]
+  ],
+  "frames": [
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 0,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          0.92,
+          0.0,
+          0.0
+        ],
+        [
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.75
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 0,
+      "temperature": null,
+      "time": 0.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 1,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.26,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.51,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.76
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 5,
+      "temperature": null,
+      "time": 1.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 2,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.08,
+          0.0,
+          0.0
+        ],
+        [
+          0.27,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.52,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.77
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 10,
+      "temperature": null,
+      "time": 2.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 3,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.1600000000000001,
+          0.0,
+          0.0
+        ],
+        [
+          0.28,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.53,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.78
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 15,
+      "temperature": null,
+      "time": 3.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 4,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.24,
+          0.0,
+          0.0
+        ],
+        [
+          0.29,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.54,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.79
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 20,
+      "temperature": null,
+      "time": 4.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 5,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.32,
+          0.0,
+          0.0
+        ],
+        [
+          0.3,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.55,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.8
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 25,
+      "temperature": null,
+      "time": 5.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 6,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.4,
+          0.0,
+          0.0
+        ],
+        [
+          0.31,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.56,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.81
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 30,
+      "temperature": null,
+      "time": 6.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 7,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.48,
+          0.0,
+          0.0
+        ],
+        [
+          0.32,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.5700000000000001,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.8200000000000001
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 35,
+      "temperature": null,
+      "time": 7.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 8,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.56,
+          0.0,
+          0.0
+        ],
+        [
+          0.33,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.58,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.83
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 40,
+      "temperature": null,
+      "time": 8.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 9,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.6400000000000001,
+          0.0,
+          0.0
+        ],
+        [
+          0.33999999999999997,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.59,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.84
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 45,
+      "temperature": null,
+      "time": 9.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 10,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.7200000000000002,
+          0.0,
+          0.0
+        ],
+        [
+          0.35,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.6,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.85
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 50,
+      "temperature": null,
+      "time": 10.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    },
+    {
+      "atom_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "energy": null,
+      "forces": null,
+      "frame_index": 11,
+      "lattice": null,
+      "metadata": {},
+      "positions": [
+        [
+          1.8,
+          0.0,
+          0.0
+        ],
+        [
+          0.36,
+          0.25,
+          0.25
+        ],
+        [
+          0.5,
+          0.61,
+          0.5
+        ],
+        [
+          0.75,
+          0.75,
+          0.86
+        ]
+      ],
+      "schema_version": "phase10g.trajectory_frame.v1",
+      "step": 55,
+      "temperature": null,
+      "time": 11.0,
+      "velocities": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.005
+        ]
+      ]
+    }
+  ],
+  "kind": "molecular_dynamics",
+  "lattice_mode": "fixed",
+  "metadata": {
+    "title": "Phase 10G-2 unwrapped fixed-lattice viewer fixture"
+  },
+  "periodic_boundary": [
+    true,
+    true,
+    true
+  ],
+  "position_wrapping": "unwrapped",
+  "properties": {
+    "energy": false,
+    "forces": false,
+    "positions": true,
+    "stress": false,
+    "temperature": false,
+    "velocities": true
+  },
+  "provenance": {
+    "created_by_tool": null,
+    "input_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "parser_version": null,
+    "source_format": "contract_fixture",
+    "source_software": "unknown",
+    "source_version": null
+  },
+  "schema_version": "phase10g.trajectory.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_urls_allowed": false,
+    "remote_frames_allowed": false
+  },
+  "time": {
+    "origin": 0.0,
+    "unit": "femtosecond"
+  },
+  "trajectory_id": "sha256:66abc346926be96a8fa6fcd4f94406b0f189cb19d4e8840027f2f187a297f0ed",
+  "units": {
+    "energy": "electronvolt",
+    "forces": "electronvolt_per_angstrom",
+    "positions": "fractional",
+    "temperature": "kelvin",
+    "velocities": "angstrom_per_femtosecond"
+  },
+  "warnings": [
+    "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN"
+  ]
+}

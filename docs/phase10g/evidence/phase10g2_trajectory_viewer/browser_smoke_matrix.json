@@ -1,0 +1,316 @@
+{
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "150.0.7871.115",
+      "available": true,
+      "fixed": {
+        "initialFrame": 0,
+        "currentFrame": 3,
+        "requestedFrame": 3,
+        "status": "paused",
+        "cache": {
+          "maxFrames": 7,
+          "maxBytes": 16777216,
+          "size": 4,
+          "bytes": 4608,
+          "hits": 0,
+          "misses": 3,
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        "canvasCount": 1,
+        "contextCount": 1,
+        "activeLoops": 0,
+        "drawCalls": 4,
+        "geometries": 4,
+        "materials": 12,
+        "graphics": {
+          "initial": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              491,
+              418
+            ],
+            "compositedImage": [
+              491,
+              419
+            ],
+            "sampledColorCount": 9
+          },
+          "final": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              491,
+              418
+            ],
+            "compositedImage": [
+              491,
+              419
+            ],
+            "sampledColorCount": 9
+          }
+        },
+        "measurement": "12.318 angstrom | frame 3"
+      },
+      "variable": {
+        "trajectory": {
+          "schema": "phase10g.trajectory.v1",
+          "kind": "geometry_optimization",
+          "frames": 6,
+          "atoms": 4,
+          "coordinateMode": "cartesian",
+          "wrapping": "unknown",
+          "latticeMode": "variable"
+        },
+        "viewer": {
+          "currentFrame": 1,
+          "requestedFrame": 1,
+          "status": "paused",
+          "speed": 1,
+          "loop": false,
+          "mobile": false,
+          "maxPlaybackFps": 30,
+          "cache": {
+            "maxFrames": 7,
+            "maxBytes": 16777216,
+            "size": 2,
+            "bytes": 2304,
+            "hits": 0,
+            "misses": 1,
+            "indices": [
+              0,
+              1
+            ]
+          },
+          "displayedInstances": 4,
+          "activeLoops": 0,
+          "canvasCount": 1,
+          "contextCount": 1,
+          "drawCalls": 4,
+          "geometries": 4,
+          "materials": 12
+        },
+        "timing": {
+          "frameMapMs": 0.09999999403953552
+        },
+        "graphics": {
+          "initial": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              491,
+              418
+            ],
+            "compositedImage": [
+              491,
+              419
+            ],
+            "sampledColorCount": 9
+          },
+          "frame": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              491,
+              418
+            ],
+            "compositedImage": [
+              491,
+              419
+            ],
+            "sampledColorCount": 9
+          }
+        }
+      },
+      "overBudget": {
+        "code": "TRAJECTORY_VIEWER_BUDGET_EXCEEDED",
+        "canvasCount": 0
+      },
+      "mobile": {
+        "viewport": [
+          390,
+          844
+        ],
+        "currentFrame": 1,
+        "canvasCount": 1,
+        "mobilePolicy": {
+          "mobile": true,
+          "maxPlaybackFps": 15,
+          "cacheMaxFrames": 3,
+          "cacheMaxBytes": 4194304
+        },
+        "graphics": {
+          "initial": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              320,
+              320
+            ],
+            "compositedImage": [
+              312,
+              319
+            ],
+            "sampledColorCount": 9
+          },
+          "frame": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              320,
+              320
+            ],
+            "compositedImage": [
+              312,
+              319
+            ],
+            "sampledColorCount": 9
+          }
+        },
+        "horizontalOverflow": false,
+        "audit": {
+          "externalRequests": 0,
+          "inert": {
+            "iframe": 0,
+            "externalScript": 0,
+            "javascriptUri": 0,
+            "inlineHandler": 0
+          }
+        }
+      },
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "available": true,
+      "fixed": {
+        "initialFrame": 0,
+        "currentFrame": 3,
+        "requestedFrame": 3,
+        "status": "paused",
+        "cache": {
+          "maxFrames": 7,
+          "maxBytes": 16777216,
+          "size": 4,
+          "bytes": 4608,
+          "hits": 0,
+          "misses": 3,
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        "canvasCount": 1,
+        "contextCount": 1,
+        "activeLoops": 0,
+        "drawCalls": 4,
+        "geometries": 4,
+        "materials": 12,
+        "graphics": {
+          "initial": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              491,
+              418
+            ],
+            "compositedImage": [
+              491,
+              419
+            ],
+            "sampledColorCount": 9
+          },
+          "final": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              491,
+              418
+            ],
+            "compositedImage": [
+              491,
+              419
+            ],
+            "sampledColorCount": 9
+          }
+        },
+        "measurement": "12.318 angstrom | frame 3"
+      },
+      "variable": null,
+      "overBudget": null,
+      "mobile": null,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "available": true,
+      "fixed": {
+        "initialFrame": 0,
+        "currentFrame": 4,
+        "requestedFrame": 4,
+        "status": "paused",
+        "cache": {
+          "maxFrames": 7,
+          "maxBytes": 16777216,
+          "size": 5,
+          "bytes": 5760,
+          "hits": 0,
+          "misses": 4,
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        "canvasCount": 1,
+        "contextCount": 1,
+        "activeLoops": 0,
+        "drawCalls": 4,
+        "geometries": 4,
+        "materials": 12,
+        "graphics": {
+          "initial": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              488,
+              418
+            ],
+            "compositedImage": [
+              488,
+              418
+            ],
+            "sampledColorCount": 9
+          },
+          "final": {
+            "context": "webgl2",
+            "drawingBuffer": [
+              488,
+              418
+            ],
+            "compositedImage": [
+              488,
+              418
+            ],
+            "sampledColorCount": 9
+          }
+        },
+        "measurement": "12.279 angstrom | frame 4"
+      },
+      "variable": null,
+      "overBudget": null,
+      "mobile": null,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "initialFrame": 0,
+  "currentFrame": 3,
+  "requestedFrame": 3,
+  "status": "paused",
+  "cache": {
+    "maxFrames": 7,
+    "maxBytes": 16777216,
+    "size": 4,
+    "bytes": 4608,
+    "hits": 0,
+    "misses": 3,
+    "indices": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "canvasCount": 1,
+  "contextCount": 1,
+  "activeLoops": 0,
+  "drawCalls": 4,
+  "geometries": 4,
+  "materials": 12,
+  "graphics": {
+    "initial": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        491,
+        418
+      ],
+      "compositedImage": [
+        491,
+        419
+      ],
+      "sampledColorCount": 9
+    },
+    "final": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        491,
+        418
+      ],
+      "compositedImage": [
+        491,
+        419
+      ],
+      "sampledColorCount": 9
+    }
+  },
+  "measurement": "12.318 angstrom | frame 3"
+}

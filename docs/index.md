@@ -6,6 +6,8 @@
 
 [`phase10g/phase10g1_trajectory_parser_adapter.md`](phase10g/phase10g1_trajectory_parser_adapter.md) implements bounded EXTXYZ/canonical JSON ingestion, normalization, planner-hidden adapter/runtime artifacts, API evidence, and parser security. Viewer and playback remain deferred.
 
+[`phase10g/phase10g2_trajectory_viewer.md`](phase10g/phase10g2_trajectory_viewer.md) implements validated dynamic frame rendering, playback, stable identity, bounded cache/lifecycle, accessibility/mobile controls, and three-browser smoke while retaining an internal tool boundary.
+
 ## Phase 10F-25 Clipping, Cell, and Camera Controls
 
 `phase10f/phase10f25_clipping_cell_camera.md` is the implementation entry point. The clipping, camera, cell display, security, and evidence documents define bounded renderer-local view controls and their three-browser closure.

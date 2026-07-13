@@ -1054,3 +1054,4 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - The adapter remains `StructureViewer3DAdapter`; outputs remain canonical scene v2, manifest v2, summary, and recipe.
 - Natural interactive viewer intent selects `structure.viewer_3d`; explicit inert scene JSON selects `structure.viewer_scene`.
 - Legacy tools remain direct compatibility only. Unsupported advanced domains are explicit negative capabilities.
+- Phase 10G-2 consumes `structure.trajectory_import` artifacts in a client viewer but keeps that tool planner-hidden. `structure.viewer_3d` remains static; no formal trajectory product ID is added before G-3 performance closure.

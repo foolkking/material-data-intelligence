@@ -1,0 +1,19 @@
+{
+  "activeLoopsAfterPause": 0,
+  "canvasCount": 1,
+  "cache": {
+    "maxFrames": 7,
+    "maxBytes": 16777216,
+    "size": 4,
+    "bytes": 4608,
+    "hits": 0,
+    "misses": 3,
+    "indices": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "source": "browser_and_component_tests"
+}

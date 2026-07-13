@@ -1,0 +1,50 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "currentFrame": 1,
+  "canvasCount": 1,
+  "mobilePolicy": {
+    "mobile": true,
+    "maxPlaybackFps": 15,
+    "cacheMaxFrames": 3,
+    "cacheMaxBytes": 4194304
+  },
+  "graphics": {
+    "initial": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        320,
+        320
+      ],
+      "compositedImage": [
+        312,
+        319
+      ],
+      "sampledColorCount": 9
+    },
+    "frame": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        320,
+        320
+      ],
+      "compositedImage": [
+        312,
+        319
+      ],
+      "sampledColorCount": 9
+    }
+  },
+  "horizontalOverflow": false,
+  "audit": {
+    "externalRequests": 0,
+    "inert": {
+      "iframe": 0,
+      "externalScript": 0,
+      "javascriptUri": 0,
+      "inlineHandler": 0
+    }
+  }
+}
