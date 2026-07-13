@@ -927,7 +927,7 @@ Phase 10F-26：Scientific Export and Reporting Foundation
 * 完成时间：2026-07-13 14:05 +08:00
 * 修改文件：viewer view-state contract、controls、renderer engine/types/surface、CSS、component/contract tests、browser runners、Phase 10F-25 evidence/docs 和 persistent 记录。
 * 修改摘要：实现最多 3 个 application-owned X/Y/Z clipping planes、共享材质 WebGL clipping 与同语义 raycast gate；独立 unit-cell/supercell-boundary/lattice-axes display；deterministic default/top/front/side/isometric camera presets；inert phase10f25.viewer_view_state.v1 validation/download/replay；未修改 canonical scene、periodic topology、measurement、backend runtime 或依赖。
-* 测试结果：frontend 98 passed；backend 366 passed, 21 skipped, 11 warnings；typecheck/build/uv lock 通过；全部历史 viewer runners 与新增 Chromium 150、Firefox 128、WebKit 18/mobile runner 通过；hidden clipped atom pick rejected；console/page errors 0；NO_EXTERNAL_NETWORK_REQUESTS；NO_SECRET_PATTERN_HITS；npm audit 因 npmmirror NOT_IMPLEMENTED 不可用；本地 service-backed 因无 Docker 命令不可用，等待 current-HEAD CI 验证。
+* 测试结果：frontend 98 passed；backend 366 passed, 21 skipped, 11 warnings；typecheck/build/uv lock 通过；全部历史 viewer runners 与新增 Chromium 150、Firefox 128、WebKit 18/mobile runner 通过；hidden clipped atom pick rejected；console/page errors 0；NO_EXTERNAL_NETWORK_REQUESTS；NO_SECRET_PATTERN_HITS；npm audit 因 npmmirror NOT_IMPLEMENTED 不可用；本地 service-backed 因无 Docker 命令不可用；GitHub Actions run 29227580893（SHA 460867536564b1846fefaea138625ef6878bddcb）的 unit、frontend npm ci/typecheck/build、PostgreSQL+Redis+MinIO service-backed integration 和 no-skipped assertion 全部成功。
 ---END---
 
 
