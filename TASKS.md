@@ -3434,7 +3434,7 @@ FAIL包括：
 * 完成时间：2026-07-13 11:25 +08:00
 * 修改文件：supercell validation/estimator/state、controls、renderer engine/surface/types、measurement provenance、tests、browser runners、Phase 10F-24 evidence/docs和persistent记录。
 * 修改摘要：实现strict [a,b,c] draft/apply/reset/presets、positive-octant deterministic instances、canonical periodic bond replication、独立unit-cell/outer-boundary、interactive/degraded/refused preflight、inert phase10f24.viewer_supercell_state.v1 replay，以及single-context GPU buffer replacement；未修改canonical scene、backend runtime或Tool Registry。
-* 测试结果：frontend 94 passed；backend 366 passed, 21 skipped, 11 warnings（首次并行运行因残留SQLite测试临时文件锁失败，清理workspace内.pytest_tmp后独立重跑通过）；typecheck/build/uv lock/git diff通过；全部10个viewer browser runners通过；Chromium 150、Firefox 128、WebKit 18及mobile通过；60次总supercell lifecycle cycles无context leak；NO_EXTERNAL_NETWORK_REQUESTS；NO_SECRET_PATTERN_HITS；npm audit因npmmirror endpoint NOT_IMPLEMENTED不可用；current-HEAD CI待提交后确认。
+* 测试结果：frontend 94 passed；backend 366 passed, 21 skipped, 11 warnings（首次并行运行因残留SQLite测试临时文件锁失败，清理workspace内.pytest_tmp后独立重跑通过）；typecheck/build/uv lock/git diff通过；全部10个viewer browser runners通过；Chromium 150、Firefox 128、WebKit 18及mobile通过；60次总supercell lifecycle cycles无context leak；NO_EXTERNAL_NETWORK_REQUESTS；NO_SECRET_PATTERN_HITS；npm audit因npmmirror endpoint NOT_IMPLEMENTED不可用；GitHub Actions run 29221567076（SHA 61978b1210b27d5ec03368aeac274c73dd50aadd）的unit、frontend typecheck/build、service-backed integration和no-skipped assertion全部成功。
 ---END---
 
 ---TASK---
