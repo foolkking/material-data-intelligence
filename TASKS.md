@@ -1,2224 +1,5 @@
 ---TASK---
- 状态：已完成
- # Phase 10G：Trajectory Contrac
-
-进入 Phase 10G：Trajectory Contract。
-
-可以默认：
-
-* Phase 10 Closure Regression Pack 已完成并通过
-* Phase 10 overall 已正式标记为 READY
-* `structure.viewer_3d` 已正式注册并完成产品闭环
-* static periodic viewer、picking、measurement、supercell、clipping、camera、export均已稳定
-* viewer performance budgets、lifecycle、context-loss、accessibility、mobile和cross-browser基础均已完成
-* current static production scene schema仍为 `phase10f18.viewer_scene.v2
-* current static viewer manifest仍为正式v2 manifes
-* periodic identity、canonical topology、artifact security和runtime正式路径保持稳定
-* 当前branch、HEAD、working tree和Phase 10 Closure CI可视为正确且clean
-
-本阶段不需要重复Phase 10 Closure baseline检查。
-
-本阶段的主要任务是：
-
-> 建立可用于分子动力学轨迹、结构弛豫轨迹和一般结构演化序列的统一、严格、可扩展、受资源预算约束的trajectory数据contract，为后续Trajectory Parser / Adapter和Trajectory Viewer提供稳定基础。
-
-本阶段只完成：
-
-* trajectory数据模型
-* frame identity
-* atom identity
-* coordinate/lattice conventions
-* time and unit policy
-* optional properties contrac
-* parser boundary
-* caps
-* validation
-* fixtures
-* reference tests
-* security
-* readiness documentation
-
-本阶段不实现正式trajectory parser，不实现viewer playback，不实现动画。
-
----
-
-# 1. 本阶段定位
-
-Phase 10G是动态结构能力的基础contract阶段。
-
-它必须解决：
-
-* 一个trajectory是什么
-* 一个frame是什么
-* 原子如何跨frame保持身份
-* 晶格如何随frame变化
-* 坐标如何解释
-* 周期边界如何表示
-* 时间如何表示
-* velocities、forces、energy、temperature等可选数据如何表示
-* 大型轨迹如何受cap约束
-* parser和viewer未来如何安全消费该contrac
-* malformed、incomplete、inconsistent trajectory如何拒绝
-
-本阶段不是：
-
-* trajectory parser phase
-* viewer playback phase
-* MD simulation phase
-* trajectory analysis phase
-* RDF ensemble phase
-* trajectory editing phase
-* production registration phase
-
----
-
-# 2. 本阶段目标
-
-必须完成以下十类工作：
-
-1. **Trajectory architecture audit**
-2. **Canonical trajectory schema**
-3. **Frame and atom identity contract**
-4. **Coordinate、lattice和periodic boundary policy**
-5. **Time、units和optional properties policy**
-6. **Validation、caps和typed errors**
-7. **Deterministic serialization and hashing**
-8. **Fixtures and independent reference tests**
-9. **Security and compatibility boundaries**
-10. **Docs、evidence和readiness closure**
-
-本阶段必须产生实际contract实现代码和validator代码。
-
-如果最终只有规划文档、schema草图或readiness matrix，没有可执行validator和tests，本阶段必须判定为FAIL。
-
----
-
-# 3. 严格禁止范围
-
-本阶段不得实现：
-
-* trajectory file parser
-* XYZ parser
-* extended XYZ parser
-* ASE trajectory parser
-* LAMMPS dump parser
-* trajectory playback
-* animation loop
-* frame slider
-* play/pause
-* atom interpolation
-* dynamic bonds
-* trajectory viewer registration
-* trajectory expor
-* trajectory editing
-* frame mutation
-* velocity editing
-* force editing
-* MD simulation
-* relaxation execution
-* phonon animation
-* ensemble RDF
-* mean-square displacemen
-* diffusion coefficien
-* VACF
-* trajectory clustering
-* external API
-* notebook execution
-* script execution
-* real LLM
-
-不得：
-
-* 修改static `viewer_scene.v2
-* 将trajectory fields直接塞入static viewer scene contrac
-* 将trajectory注册成`structure.viewer_3d`的隐式模式
-* 使用数组位置作为唯一跨frame atom identity而不定义前提
-* 静默接受frame间atom count变化
-* 静默接受species ordering变化
-* 静默混用Cartesian和fractional coordinates
-* 静默混用wrapped和unwrapped positions
-* 静默混用时间单位
-* 允许NaN或Infinity
-* 允许无限frames
-* 允许无限atoms
-* 允许无限metadata
-* 允许外部URL引用frame数据
-* 允许artifact JavaScrip
-* 允许artifact callback
-* 允许任意二进制payload嵌入JSON
-* 以压缩字符串绕过byte caps
-* 在没有contract的情况下预先决定viewer实现细节
-* 将trajectory contract标记为正式产品READY
-
-允许：
-
-* schema
-* validator
-* typed models
-* deterministic serializers
-* test fixtures
-* reference utilities
-* docs
-* evidence
-* persistent updates
-
----
-
-# 4. 必读实现
-
-开始后直接阅读当前真实代码，不做baseline检查。
-
-## 4.1 Existing Structure Contracts
-
-搜索：
-
-```bash
-rg -n "viewer_scene|structure_input|lattice|fractional|cartesian|siteIndex|PeriodicSiteRef|schema_version" backend packages apps tests
-
-
-确认：
-
-* static structure input contrac
-* lattice convention
-* fractional/Cartesian conversion
-* site ordering
-* species model
-* occupancy model
-* metadata model
-* existing numeric guard
-* current schema validation framework
-
-## 4.2 Artifact and Manifest Contracts
-
-搜索：
-
-```bash
-rg -n "manifest|artifact validator|schema validator|deterministic|sha256|provenance|security" backend packages tests
-
-
-确认：
-
-* artifact schema pattern
-* manifest pattern
-* security metadata pattern
-* canonical JSON serialization
-* hash generation
-* warning ordering
-* typed error conventions
-
-## 4.3 Runtime Caps
-
-搜索：
-
-```bash
-rg -n "MAX_.*SITE|MAX_.*BYTE|MAX_.*FRAME|budget|cap|limit" backend packages apps tests
-
-
-确认：
-
-* structure site caps
-* artifact byte caps
-* frontend preview caps
-* runtime memory policies
-* integer overflow guards
-* JSON size validation
-
-## 4.4 Existing Trajectory References
-
-搜索：
-
-```bash
-rg -n "trajectory|frame_index|timestep|velocity|force|temperature|molecular dynamics|relaxation" .
-
-
-必须识别：
-
-* 是否已有未注册trajectory模型
-* 是否有fixture
-* 是否有dependency对象
-* 是否有旧实验代码
-* 是否有future notes
-* 是否有命名冲突
-
----
-
-# 5. 修改前输出审计
-
-修改任何代码前输出：
-
-# Phase 10G Trajectory Contract Pre-Implementation Audi
-
-## 1. Existing Structure Model
-
-* static structure schema:
-* lattice convention:
-* coordinate convention:
-* species representation:
-* occupancy:
-* site ordering:
-* numeric guards:
-* caps:
-* reusable components:
-
-## 2. Existing Artifact Model
-
-* schema framework:
-* validator framework:
-* manifest:
-* provenance:
-* security metadata:
-* deterministic serialization:
-* hashing:
-* warning ordering:
-
-## 3. Existing Trajectory-Related Code
-
-* models:
-* fixtures:
-* parser code:
-* viewer code:
-* experimental code:
-* docs:
-* conflicts:
-* reusable pieces:
-
-## 4. Contract Risks
-
-至少列出：
-
-* atom identity drif
-* atom count mismatch
-* species ordering mismatch
-* coordinate mode mismatch
-* wrapped/unwrapped ambiguity
-* fixed/variable lattice ambiguity
-* timestamp ambiguity
-* unit ambiguity
-* missing frames
-* duplicate frame index
-* nonmonotonic time
-* nonfinite values
-* integer overflow
-* artifact size blowup
-* metadata abuse
-* future parser incompatibility
-* static viewer schema contamination
-
-## 5. Selected Strategy
-
-说明：
-
-* trajectory schema:
-* frame schema:
-* atom identity:
-* lattice policy:
-* coordinate policy:
-* periodic boundary policy:
-* time policy:
-* optional properties:
-* caps:
-* determinism:
-* compatibility:
-* security:
-
-## 6. Planned Files
-
-列出预计修改或新增：
-
-* schema/model
-* validator
-* serializer
-* caps
-* fixtures
-* backend tests
-* frontend/shared contract tests，若需要
-* evidence
-* docs
-* persisten
-
-审计后直接继续执行。
-
----
-
-# 6. Canonical Schema Family
-
-本阶段建议建立三个核心schema：
-
-```tex
-phase10g.trajectory.v1
-phase10g.trajectory_frame.v1
-phase10g.trajectory_manifest.v1
-
-
-可选建立：
-
-```tex
-phase10g.trajectory_summary.v1
-
-
-不得复用static viewer scene schema作为trajectory容器。
-
----
-
-# 7. Trajectory Top-Level Contrac
-
-建议结构：
-
-```json
-{
-  "schema_version": "phase10g.trajectory.v1",
-  "trajectory_id": "stable-id",
-  "kind": "molecular_dynamics",
-  "coordinate_mode": "fractional",
-  "position_wrapping": "wrapped",
-  "lattice_mode": "fixed",
-  "atom_identity_mode": "stable_index",
-  "time": {
-    "unit": "femtosecond",
-    "origin": 0.0
-  },
-  "atoms": {
-    "count": 2,
-    "species": ["Si", "Si"],
-    "labels": ["Si1", "Si2"]
-  },
-  "fixed_lattice": [
-    [5.43, 0.0, 0.0],
-    [0.0, 5.43, 0.0],
-    [0.0, 0.0, 5.43]
-  ],
-  "frames": [],
-  "properties": {
-    "positions": true,
-    "velocities": false,
-    "forces": false,
-    "energy": false,
-    "temperature": false,
-    "stress": false
-  },
-  "provenance": {},
-  "warnings": [],
-  "security": {
-    "contains_javascript": false,
-    "external_urls": []
-  }
-}
-
-
-字段名可以按项目现有风格调整，但语义必须完整。
-
----
-
-# 8. Trajectory Kind
-
-必须定义受控枚举。
-
-建议第一版支持：
-
-```tex
-molecular_dynamics
-geometry_optimization
-structure_sequence
-unknown_static_sequence
-
-
-语义：
-
-## molecular_dynamics
-
-* 有物理时间或step
-* atom identity稳定
-* 通常atom count固定
-
-## geometry_optimization
-
-* frame表示优化步骤
-* time可能不存在
-* 需要step index
-* energy/force可能存在
-
-## structure_sequence
-
-* 一般有序结构序列
-* 不声称MD时间语义
-
-## unknown_static_sequence
-
-* 仅表示有序frame集合
-* 不允许推断动力学结论
-
-不得允许artifact定义任意kind字符串。
-
----
-
-# 9. Frame Contrac
-
-建议：
-
-```json
-{
-  "schema_version": "phase10g.trajectory_frame.v1",
-  "frame_index": 0,
-  "step": 0,
-  "time": 0.0,
-  "lattice": null,
-  "positions": [
-    [0.0, 0.0, 0.0],
-    [0.25, 0.25, 0.25]
-  ],
-  "velocities": null,
-  "forces": null,
-  "energy": null,
-  "temperature": null,
-  "stress": null,
-  "metadata": {}
-}
-
-
-必须固定：
-
-* frame_index从0开始
-* frame_index连续
-* frame顺序由数组顺序和frame_index共同验证
-* positions是必需字段
-* lattice是否出现由lattice_mode决定
-* optional arrays长度必须等于atom coun
-* metadata受键数量和byte caps限制
-
----
-
-# 10. Atom Identity Contrac
-
-这是本阶段最关键部分之一。
-
-第一版推荐：
-
-```tex
-atom_identity_mode = stable_index
-
-
-定义：
-
-* top-level `atoms.species[i]
-* top-level atom index `i
-* 在所有frame中指向同一逻辑原子
-* frame positions数组索引必须与top-level atom index一致
-* frame间不允许reorder
-* 不允许atom count变化
-* 不允许species在frame中变化
-
-可选支持stable label：
-
-```json
-{
-  "atom_id": 0,
-  "label": "Si1",
-  "species": "Si"
-}
-
-
-但科学身份仍由stable integer index主导。
-
-不得：
-
-* 仅依赖元素符号
-* 仅依赖坐标近邻匹配
-* 每frame重新排序
-* 自动猜测atom correspondence
-* 允许一帧中删除/新增atom
-
-动态反应、variable atom count trajectory延后到未来schema。
-
----
-
-# 11. Species and Occupancy
-
-第一版trajectory建议仅支持：
-
-* ordered species
-* occupancy = 1
-
-如需兼容static structure的partial occupancy，必须明确：
-
-* occupancy是否top-level固定
-* frame间不得变化
-* viewer是否支持
-
-推荐第一版：
-
-```tex
-partial occupancy: unsupported
-
-
-并给出typed error。
-
-原因：
-
-* 动态trajectory中的partial occupancy科学语义不清晰
-* 容易和ensemble/disorder混淆
-
-typed code建议：
-
-```tex
-TRAJECTORY_PARTIAL_OCCUPANCY_UNSUPPORTED
-
-
----
-
-# 12. Coordinate Mode
-
-必须在top-level固定一种：
-
-```tex
-fractional
-cartesian
-
-
-所有frame必须一致。
-
-不得每frame混用。
-
-## fractional
-
-positions表示相对于该frame lattice的fractional coordinates。
-
-要求：
-
-* lattice必须可用
-* fixed lattice使用top-level lattice
-* variable lattice使用frame lattice
-
-## cartesian
-
-positions单位必须明确。
-
-建议内部统一为：
-
-```tex
-angstrom
-
-
-不得在frame级改变单位。
-
----
-
-# 13. Position Wrapping Policy
-
-必须定义：
-
-```tex
-wrapped
-unwrapped
-unknown
-
-
-## wrapped
-
-fractional coordinates通常在canonical interval内，但允许数值容差。
-
-推荐canonical interval：
-
-```tex
-[0,1)
-
-
-必须定义边界容差。
-
-## unwrapped
-
-允许fractional coordinates超出cell范围，用于扩散和连续轨迹。
-
-## unknown
-
-不得用于需要连续位移的分析。
-
-第一版contract必须保存原始wrapping语义，不自动wrap或unwrap。
-
-禁止validator静默改变positions。
-
----
-
-# 14. Lattice Mode
-
-必须支持：
-
-```tex
-fixed
-variable
-
-
-## fixed
-
-* top-level必须包含`fixed_lattice
-* frame不得重复提供不同lattice
-* frame lattice应为null或省略
-* 所有positions使用同一lattice
-
-## variable
-
-* 每个frame必须包含lattice
-* top-level不得把单一fixed lattice当作权威
-* 支持NPT、cell relaxation等情况
-
-不支持：
-
-* 部分frame缺lattice
-* 隐式沿用上一frame
-* frame混用fixed/variable语义
-
----
-
-# 15. Lattice Mathematics
-
-必须继承Phase 10既定约定：
-
-```tex
-row lattice vectors
-
-
-即：
-
-```tex
-cartesian =
-fractional[0] * a
-+ fractional[1] * b
-+ fractional[2] * c
-
-
-每个lattice必须：
-
-* 3×3
-* finite
-* determinant nonzero
-* condition number在既定安全范围
-* 单位angstrom
-* deterministic validation
-
-优先复用Phase 10F已有inverse、determinant和condition guard。
-
-不得建立第二套冲突阈值。
-
-如果Phase 10F当前标准是：
-
-```tex
-relative determinant threshold = 1e-12
-maximum condition number = 1e8
-
-
-应继续复用，除非审计发现更正式的统一常量。
-
----
-
-# 16. Periodic Boundary Contrac
-
-必须定义：
-
-```json
-{
-  "periodic_boundary": [true, true, true]
-}
-
-
-允许未来支持：
-
-* 3D periodic
-* slab-like partial periodicity
-* nonperiodic sequence
-
-但第一版是否支持partial periodicity必须明确。
-
-推荐第一版：
-
-* `[true,true,true]
-* `[false,false,false]
-
-partial periodicity：
-
-```tex
-DEFERRED_BY_DESIGN
-
-
-如果已有结构contract支持partial PBC，可以复用，但必须有tests。
-
-不得通过lattice是否存在来猜PBC。
-
----
-
-# 17. Time Contrac
-
-时间必须区分：
-
-* frame index
-* simulation step
-* physical time
-
-## frame_index
-
-必需、连续、从0开始。
-
-## step
-
-可选整数。
-
-要求：
-
-* nonnegative
-* monotonic nondecreasing
-* 不要求连续
-
-## time
-
-对MD trajectory可选或必需，必须根据kind定义。
-
-推荐：
-
-### molecular_dynamics
-
-* time必需
-* monotonic nondecreasing
-* unit必需
-
-### geometry_optimization
-
-* time可省略
-* step建议必需
-
-### structure_sequence
-
-* time可省略
-
-支持单位建议第一版：
-
-```tex
-femtosecond
-picosecond
-
-
-内部canonical unit建议：
-
-```tex
-femtosecond
-
-
-不得接受任意时间unit字符串。
-
----
-
-# 18. Positions Contrac
-
-每frame的positions必须：
-
-* shape = `[atom_count, 3]
-* finite
-* numeric
-* deterministic order
-* no missing atom
-* no extra atom
-* no sparse representation
-* no arbitrary typed binary blob in v1 JSON contrac
-
-必须限制：
-
-* coordinate magnitude
-* total numeric values
-* frame bytes
-
-对于unwrapped轨迹，不能使用过窄coordinate bound，但必须防止非合理极值和overflow。
-
-建议建立application-owned absolute guard，并记录理由。
-
----
-
-# 19. Velocities Contrac
-
-velocities为可选。
-
-必须固定：
-
-* shape = `[atom_count,3]
-* Cartesian vectors
-* canonical uni
-
-推荐canonical unit：
-
-```tex
-angstrom_per_femtosecond
-
-
-不得允许：
-
-* fractional velocity而不标记
-* frame间单位变化
-* 与positions坐标模式混淆
-
-如果输入来源是不同单位，后续parser负责转换，contract只保存canonical unit。
-
----
-
-# 20. Forces Contrac
-
-forces为可选。
-
-必须固定：
-
-* shape = `[atom_count,3]
-* Cartesian vectors
-* canonical uni
-
-推荐：
-
-```tex
-electronvolt_per_angstrom
-
-
-必须明确：
-
-* force不是displacemen
-* force不会由viewer直接应用为位置变化
-* 不允许NaN/Infinity
-
----
-
-# 21. Energy Contrac
-
-需要区分：
-
-* potential energy
-* kinetic energy
-* total energy
-* free energy
-
-不应只使用含糊的`energy`字段。
-
-建议：
-
-```json
-{
-  "energy": {
-    "potential": -10.0,
-    "kinetic": 1.5,
-    "total": -8.5,
-    "free": null,
-    "unit": "electronvolt"
-  }
-}
-
-
-也可以只支持第一版有限字段，但必须明确。
-
-不得自动假设per-atom或total。
-
-必须定义：
-
-```tex
-scope = total_system
-
-
-未来per-atom energy另设字段。
-
----
-
-# 22. Temperature Contrac
-
-temperature为可选。
-
-必须固定：
-
-* unit = kelvin
-* finite
-* nonnegative，允许小容差
-* 不允许viewer从velocities自行推断
-* provenance必须说明来源
-
-不得把单帧temperature视为必然严格热力学温度。
-
----
-
-# 23. Stress Contrac
-
-如第一版支持stress，必须固定：
-
-* tensor shape
-* component ordering
-* sign convention
-* uni
-
-建议第一版可选择：
-
-```tex
-stress: DEFERRED_BY_DESIGN
-
-
-因为不同软件：
-
-* Voigt ordering不同
-* 压力符号不同
-* 单位不同
-
-如实现，必须明确：
-
-```tex
-3×3 Cartesian symmetric tensor
-unit = gigapascal
-sign convention = tensile positive or compressive positive
-
-
-不得使用未说明的6-vector。
-
----
-
-# 24. Optional Per-Atom Properties
-
-第一版只建议批准：
-
-* velocities
-* forces
-
-不建议开放任意：
-
-```tex
-properties: Record<string, any>
-
-
-如果必须支持扩展，使用严格extension命名空间：
-
-```json
-{
-  "extensions": {
-    "approved.namespace": {}
-  }
-}
-
-
-并设：
-
-* approved key lis
-* key count cap
-* value type cap
-* byte cap
-
-不得允许任意嵌套对象绕过contract。
-
----
-
-# 25. Top-Level Metadata
-
-允许有限metadata：
-
-* title
-* description
-* source forma
-* source software
-* source version
-* calculation type
-* ensemble
-* integrator
-* timestep
-* user-provided tags，若项目允许
-
-必须：
-
-* sanitized
-* bounded
-* iner
-* no HTML
-* no URL，除非项目provenance允许受控URL；本阶段建议禁止
-* no executable conten
-* no private path
-* no secre
-
----
-
-# 26. Provenance Contrac
-
-至少包含：
-
-```json
-{
-  "source_format": "extxyz",
-  "source_software": "unknown",
-  "source_version": null,
-  "parser_version": null,
-  "input_sha256": "...",
-  "created_by_tool": null
-}
-
-
-本阶段尚未实现parser，因此：
-
-* parser_version可为空
-* source_format可来自fixture
-* provenance schema必须先固定
-
-不得包含：
-
-* absolute local path
-* token
-* environment dump
-* hostname
-* username
-
----
-
-# 27. Trajectory Summary Contrac
-
-建议新增：
-
-```tex
-phase10g.trajectory_summary.v1
-
-
-包含：
-
-```json
-{
-  "schema_version": "phase10g.trajectory_summary.v1",
-  "kind": "molecular_dynamics",
-  "frames": 100,
-  "atoms": 64,
-  "coordinate_mode": "fractional",
-  "position_wrapping": "wrapped",
-  "lattice_mode": "fixed",
-  "periodic_boundary": [true,true,true],
-  "time_start": 0.0,
-  "time_end": 99.0,
-  "time_unit": "femtosecond",
-  "available_properties": [
-    "positions",
-    "velocities",
-    "temperature"
-  ],
-  "warnings": []
-}
-
-
-用途：
-
-* JSON-only preview
-* parser summary
-* future planner/runtime
-* over-budget fallback
-
-不得复制完整frame数据。
-
----
-
-# 28. Manifest Contrac
-
-建议：
-
-```tex
-phase10g.trajectory_manifest.v1
-
-
-至少包含：
-
-* trajectory artifac
-* summary artifac
-* optional index artifac
-* schema versions
-* media types
-* sizes
-* hashes
-* frame coun
-* atom coun
-* security markers
-
-禁止包含：
-
-* JS bundle
-* remote frames
-* external URL
-* arbitrary media type
-* executable assets
-
----
-
-# 29. Caps and Budgets
-
-必须以真实平台限制为依据建立application-owned caps。
-
-至少定义：
-
-* max atom coun
-* max frame coun
-* max total coordinate values
-* max JSON bytes
-* max metadata bytes
-* max optional property arrays
-* max property key coun
-* max label length
-* max warning coun
-* max provenance fields
-* max numeric magnitude
-
-建议建立分层：
-
-## Contract Hard Cap
-
-超过直接invalid。
-
-## Future Interactive Cap
-
-用于Trajectory Viewer，但本阶段只定义建议值。
-
-## Future Degraded Cap
-
-用于后续viewer fallback。
-
-不得在本阶段声称viewer performance READY。
-
-必须使用overflow-safe乘法：
-
-```tex
-frames × atoms × components
-
-
-在任何大规模allocation前检查。
-
----
-
-# 30. Storage Strategy Decision
-
-本阶段必须明确v1采用何种存储。
-
-推荐：
-
-## Contract Representation
-
-```tex
-JSON
-
-
-用于：
-
-* small/medium fixture
-* validation
-* evidence
-* interoperability
-
-但必须记录：
-
-* 大型trajectory不适合完整JSON驻留
-* Phase 10G-1 parser可能需要indexed/chunked artifac
-* v1 JSON contract不代表未来viewer必须一次加载全部frame
-
-建议为后续预留：
-
-```tex
-trajectory index artifac
-frame chunk artifacts
-
-
-但本阶段不得实现chunk runtime。
-
----
-
-# 31. Deterministic Ordering
-
-必须固定：
-
-* top-level key serialization
-* atom order
-* frame order
-* optional property order
-* warning order
-* manifest artifact order
-* provenance key order
-* enum representation
-
-相同输入contract必须得到相同canonical JSON hash。
-
-不得将：
-
-* current time
-* random UUID
-* unordered map iteration
-* environment-specific path
-
-放入canonical payload。
-
-如果需要trajectory_id，必须说明：
-
-* content-derived
-* caller-provided validated ID
-* 或排除在deterministic hash之外
-
-推荐使用content-derived identity。
-
----
-
-# 32. Typed Errors and Warnings
-
-至少定义：
-
-```tex
-TRAJECTORY_SCHEMA_UNSUPPORTED
-TRAJECTORY_KIND_UNSUPPORTED
-TRAJECTORY_EMPTY
-TRAJECTORY_FRAME_LIMIT_EXCEEDED
-TRAJECTORY_ATOM_LIMIT_EXCEEDED
-TRAJECTORY_BYTE_LIMIT_EXCEEDED
-TRAJECTORY_FRAME_INDEX_INVALID
-TRAJECTORY_FRAME_INDEX_DUPLICATE
-TRAJECTORY_FRAME_COUNT_MISMATCH
-TRAJECTORY_ATOM_COUNT_MISMATCH
-TRAJECTORY_SPECIES_MISMATCH
-TRAJECTORY_COORDINATE_MODE_INVALID
-TRAJECTORY_POSITION_WRAPPING_INVALID
-TRAJECTORY_LATTICE_MODE_INVALID
-TRAJECTORY_LATTICE_REQUIRED
-TRAJECTORY_LATTICE_UNEXPECTED
-TRAJECTORY_LATTICE_SINGULAR
-TRAJECTORY_LATTICE_ILL_CONDITIONED
-TRAJECTORY_TIME_UNIT_UNSUPPORTED
-TRAJECTORY_TIME_NONMONOTONIC
-TRAJECTORY_STEP_NONMONOTONIC
-TRAJECTORY_POSITION_NONFINITE
-TRAJECTORY_VELOCITY_NONFINITE
-TRAJECTORY_FORCE_NONFINITE
-TRAJECTORY_PROPERTY_SHAPE_INVALID
-TRAJECTORY_PARTIAL_OCCUPANCY_UNSUPPORTED
-TRAJECTORY_METADATA_LIMIT_EXCEEDED
-TRAJECTORY_EXTERNAL_REFERENCE_FORBIDDEN
-
-
-warnings建议：
-
-```tex
-TRAJECTORY_TIME_MISSING
-TRAJECTORY_STEP_MISSING
-TRAJECTORY_WRAPPING_UNKNOWN
-TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN
-TRAJECTORY_OPTIONAL_PROPERTY_PARTIAL
-
-
-必须固定warning排序。
-
-错误必须：
-
-* sanitized
-* deterministic
-* no stack
-* no private path
-* no raw frame dump
-* no secre
-
----
-
-# 33. Validation Rules
-
-validator至少分为：
-
-## Top-Level Validation
-
-* schema
-* kind
-* coordinate mode
-* wrapping
-* lattice mode
-* atom metadata
-* time metadata
-* properties
-* provenance
-* security
-
-## Frame Validation
-
-* frame index
-* step/time
-* lattice
-* positions
-* optional arrays
-* scalar properties
-* metadata
-
-## Cross-Frame Validation
-
-* atom count constan
-* species constan
-* frame index continuous
-* step monotonic
-* time monotonic
-* lattice mode consisten
-* coordinate mode consisten
-* optional property consistency policy
-* total caps
-
-## Security Validation
-
-* no executable fields
-* no URLs
-* no binary payloads
-* no oversized strings
-* no unbounded nested objects
-
----
-
-# 34. Optional Property Consistency Policy
-
-必须选择：
-
-## Strict Consistency
-
-如果top-level声明：
-
-```tex
-velocities = true
-
-
-则每个frame必须都有velocities。
-
-推荐第一版采用此策略。
-
-不建议：
-
-* 某些frame有、某些frame没有
-
-除非显式：
-
-```tex
-availability = partial
-
-
-但会增加viewer复杂度。
-
-第一版建议：
-
-* properties声明与所有frame严格一致
-* 不允许partial arrays
-* scalar properties可按明确policy允许partial，但优先保持stric
-
----
-
-# 35. Reference Fixtures
-
-新增small、deterministic fixtures。
-
-至少包含：
-
-## 35.1 Fixed-Lattice MD
-
-* 2–4 atoms
-* 3–5 frames
-* fractional wrapped
-* timestamps
-* velocities
-
-## 35.2 Variable-Lattice Relaxation
-
-* Cartesian或fractional
-* 3–5 frames
-* per-frame lattice
-* energy
-* forces
-
-## 35.3 Unwrapped Diffusion-Like Sequence
-
-* fractional coordinates跨越cell
-* wrapping = unwrapped
-* stable atom identity
-
-## 35.4 Nonperiodic Structure Sequence
-
-仅当第一版支持nonperiodic。
-
-## 35.5 Invalid Atom Coun
-
-某frame少一个atom。
-
-## 35.6 Invalid Species Reorder
-
-atom count相同但species mapping变化。
-
-## 35.7 Invalid Lattice
-
-singular或ill-conditioned。
-
-## 35.8 Invalid Time
-
-nonmonotonic time。
-
-## 35.9 Over-Cap Synthetic
-
-使用test generator，不提交巨大JSON。
-
-不得提交大型真实MD轨迹。
-
----
-
-# 36. Independent Reference Tests
-
-必须建立独立参考。
-
-至少验证：
-
-* fractional→Cartesian
-* variable lattice conversion
-* wrapped coordinate interpretation
-* unwrapped coordinate preservation
-* frame time monotonicity
-* atom identity stability
-* canonical serialization hash
-
-优先：
-
-* frontend/shared TypeScript validator
-* backend Python reference validator
-
-同一fixtures双实现对照。
-
-不得用同一实现生成expected再验证自己。
-
----
-
-# 37. Unit Tests
-
-至少覆盖：
-
-## Schema
-
-* valid minimal
-* valid full
-* unknown field
-* unsupported schema
-* unsupported enum
-
-## Atom Identity
-
-* stable order
-* count mismatch
-* species mismatch
-* reorder
-* duplicate labels
-* invalid atom ID
-
-## Frames
-
-* frame index continuous
-* duplicate index
-* missing index
-* invalid shape
-* empty trajectory
-
-## Coordinates
-
-* fractional
-* Cartesian
-* wrapped
-* unwrapped
-* nonfinite
-* excessive magnitude
-
-## Lattice
-
-* fixed
-* variable
-* missing
-* unexpected
-* singular
-* ill-conditioned
-* triclinic
-
-## Time
-
-* MD valid time
-* missing MD time
-* optimization without time
-* nonmonotonic
-* unsupported uni
-* step monotonicity
-
-## Properties
-
-* velocities
-* forces
-* energy
-* temperature
-* invalid shape
-* inconsistent availability
-
-## Caps
-
-* frames
-* atoms
-* bytes
-* metadata
-* warning coun
-* overflow multiplication
-
-## Security
-
-* JS-like field
-* URL
-* HTML
-* callback-like field
-* oversized nested metadata
-* private path
-
----
-
-# 38. Compatibility Policy
-
-必须明确：
-
-## Static Viewer Scene
-
-* 不包含trajectory
-* 不改变schema
-* 可由未来Trajectory Viewer按frame派生静态display scene
-* derived static scene不得反向成为trajectory权威
-
-## Static Structure Inpu
-
-* 可作为single-frame trajectory来源
-* 但本阶段不自动转换
-* single-frame trajectory是否允许必须固定
-
-推荐：
-
-```tex
-minimum frame count = 1
-
-
-但：
-
-* kind为structure_sequence时允许1
-* molecular_dynamics建议至少2
-
-## Future Parser
-
-Phase 10G-1必须输出本contract。
-
-## Future Viewer
-
-Phase 10G-2只消费validated trajectory contract或其chunked等价形式。
-
----
-
-# 39. Security
-
-必须验证：
-
-* no artifact JavaScrip
-* no artifact HTML
-* no callback
-* no shader
-* no module
-* no eval
-* no Function constructor
-* no external URL
-* no remote frame reference
-* no remote texture
-* no CDN
-* no iframe
-* no arbitrary file access
-* no notebook execution
-* no script execution
-* no real LLM
-* no unbounded frames
-* no unbounded atoms
-* no integer overflow
-* no compressed payload bypass
-* no metadata recursion abuse
-* no parser execution
-* no private path
-* no secre
-* no telemetry upload
-
-必须输出：
-
-```tex
-NO_EXTERNAL_NETWORK_REQUESTS
-NO_SECRET_PATTERN_HITS
-
-
----
-
-# 40. Evidence
-
-新增：
-
-```tex
-docs/phase10g/evidence/phase10g_trajectory_contract/
-
-
-至少包含：
-
-```tex
-README.md
-trajectory_schema.json
-trajectory_frame_schema.json
-trajectory_manifest_schema.json
-trajectory_summary_schema.json
-enum_policy.json
-atom_identity_policy.json
-coordinate_policy.json
-lattice_policy.json
-time_unit_policy.json
-optional_property_policy.json
-caps.json
-fixed_lattice_fixture_result.json
-variable_lattice_fixture_result.json
-unwrapped_fixture_result.json
-invalid_cases.json
-frontend_backend_validation_comparison.json
-deterministic_serialization.json
-security_audit.json
-network_audit.json
-artifact_hashes.json
-
-
-不得保存：
-
-* 大型trajectory
-* cache
-* private path
-* token
-* secre
-* remote URL
-* notebook outpu
-* parser traces
-* crash dump
-
----
-
-# 41. Documentation
-
-新增或更新：
-
-```tex
-docs/phase10g/phase10g_trajectory_contract.md
-docs/phase10g/phase10g_trajectory_schema.md
-docs/phase10g/phase10g_trajectory_frame_identity.md
-docs/phase10g/phase10g_trajectory_coordinate_and_lattice_policy.md
-docs/phase10g/phase10g_trajectory_units.md
-docs/phase10g/phase10g_trajectory_caps.md
-docs/phase10g/phase10g_trajectory_security.md
-docs/phase10g/phase10g_trajectory_evidence.md
-docs/phase10g/phase10g_trajectory_readiness_matrix.md
-
-
-更新：
-
-```tex
-docs/index.md
-docs/13_SHARED_SCHEMA_SPEC.md
-persistent/DESIGN_PROGRESS.md
-persistent/TASK_BOARD.md
-persistent/CHANGELOG.md
-persistent/OPEN_QUESTIONS.md
-persistent/TOOL_REGISTRY_NOTES.md
-persistent/ARCHITECTURE_DECISIONS.md
-
-
-必须记录：
-
-* schema family
-* atom identity
-* frame identity
-* lattice convention
-* coordinate modes
-* wrapping policy
-* time policy
-* units
-* optional properties
-* caps
-* storage decision
-* chunking deferred
-* parser deferred
-* viewer deferred
-* registration deferred
-
----
-
-# 42. Readiness Matrix
-
-最终分别判断：
-
-* trajectory top-level schema
-* frame schema
-* manifest schema
-* summary schema
-* atom identity
-* frame identity
-* species stability
-* coordinate mode
-* wrapping policy
-* fixed lattice
-* variable lattice
-* periodic boundary
-* time units
-* step policy
-* positions
-* velocities
-* forces
-* energy
-* temperature
-* stress
-* optional properties
-* metadata
-* provenance
-* caps
-* deterministic serialization
-* validator
-* fixtures
-* reference comparison
-* security
-* parser
-* adapter
-* viewer
-* performance/browser evidence
-* formal tool registration
-
-推荐期望：
-
-```tex
-trajectory schema: READY
-frame schema: READY
-manifest schema: READY
-summary schema: READY
-atom identity: READY
-frame identity: READY
-coordinate policy: READY
-wrapping policy: READY
-fixed lattice: READY
-variable lattice: READY
-time/unit policy: READY
-positions: READY
-velocities: READY
-forces: READY
-energy: READY
-temperature: READY
-stress: READY or DEFERRED_BY_DESIGN
-caps: READY
-deterministic serialization: READY
-validator: READY
-fixtures: READY
-reference comparison: READY
-security: READY
-
-trajectory parser: NOT_READY
-trajectory adapter: NOT_READY
-trajectory viewer: NOT_READY
-trajectory performance evidence: NOT_READY
-formal trajectory tool registration: NOT_READY
-
-
-不得因为contract完成就将trajectory product标记READY。
-
----
-
-# 43. Checks
-
-至少运行：
-
-```bash
-git diff --check
-uv lock --check
-
-uv run python -m pytest -q
-
-npm --prefix apps/web tes
-npm --prefix apps/web run typecheck
-npm --prefix apps/web run build
-
-
-并运行：
-
-* trajectory schema tests
-* trajectory frame tests
-* atom identity tests
-* coordinate/lattice tests
-* time/unit tests
-* property tests
-* cap/overflow tests
-* deterministic serialization tests
-* frontend/backend comparison
-* artifact validator tests
-* security scan
-* network audi
-* Phase 10 closure regression pack
-* service-backed integration
-* no-skipped assertion
-
-本阶段不要求trajectory browser evidence，因为尚未实现viewer。
-
-必须如实记录：
-
-* passed
-* failed
-* skipped
-* unavailable
-
-不得把skipped写成passed。
-
----
-
-# 44. Commit / CI
-
-完成contract、validator、tests、evidence和docs后：
-
-```bash
-git status --shor
-git diff --sta
-git add <only Phase 10G related files>
-git commit -m "Define trajectory data contract"
-git push origin master
-
-
-等待current HEAD CI。
-
-必须确认：
-
-* backend unit success
-* frontend tests success
-* frontend typecheck success
-* frontend build success
-* Phase 10 closure regression success
-* service-backed integration success
-* no-skipped assertion success
-* origin/master matches HEAD
-* git status clean
-
-不得伪造CI结果。
-
----
-
-# 45. 最终报告格式
-
-完成后输出：
-
-# Phase 10G Trajectory Contract Resul
-
-## 1. Conclusion
-
-PASS / PARTIAL_PASS / FAIL
-
-## 2. Baseline
-
-* Phase 10 Closure assumed complete:
-* branch:
-* initial status:
-* final HEAD:
-* final status:
-
-## 3. Schema Family
-
-* trajectory:
-* frame:
-* summary:
-* manifest:
-* current versions:
-
-## 4. Trajectory Semantics
-
-* supported kinds:
-* minimum frames:
-* atom count policy:
-* species policy:
-* atom identity:
-* frame identity:
-* ordering:
-
-## 5. Coordinate Policy
-
-* coordinate modes:
-* canonical Cartesian unit:
-* wrapped:
-* unwrapped:
-* unknown wrapping:
-* conversion convention:
-
-## 6. Lattice Policy
-
-* lattice convention:
-* fixed lattice:
-* variable lattice:
-* determinant threshold:
-* condition threshold:
-* triclinic:
-* periodic boundary:
-
-## 7. Time and Step
-
-* frame index:
-* simulation step:
-* physical time:
-* supported units:
-* canonical unit:
-* monotonicity:
-
-## 8. Properties
-
-* positions:
-* velocities:
-* forces:
-* energy:
-* temperature:
-* stress:
-* partial availability:
-* extension policy:
-
-## 9. Caps
-
-* max atoms:
-* max frames:
-* max numeric values:
-* max bytes:
-* metadata:
-* warning count:
-* overflow protection:
-
-## 10. Validation
-
-* top-level:
-* frame:
-* cross-frame:
-* atom identity:
-* lattice:
-* time:
-* optional properties:
-* security:
-
-## 11. Determinism
-
-* atom order:
-* frame order:
-* property order:
-* warning order:
-* manifest order:
-* canonical hash:
-* trajectory identity:
-
-## 12. Fixtures
-
-* fixed lattice:
-* variable lattice:
-* unwrapped:
-* invalid atom count:
-* species reorder:
-* invalid lattice:
-* invalid time:
-* over-cap:
-
-## 13. Reference Comparison
-
-* frontend:
-* backend:
-* coordinate conversion:
-* variable lattice:
-* identity:
-* hashes:
-* differences:
-
-## 14. Security
-
-* executable content:
-* external references:
-* metadata abuse:
-* overflow:
-* caps:
-* private paths:
-* secrets:
-* network:
-* markers:
-
-## 15. Evidence
-
-* directory:
-* schemas:
-* policies:
-* fixtures:
-* validation comparison:
-* deterministic serialization:
-* security:
-* hashes:
-
-## 16. Tests
-
-* schemas:
-* frames:
-* identity:
-* coordinates:
-* lattice:
-* time:
-* properties:
-* caps:
-* security:
-* backend full:
-* frontend full:
-* typecheck:
-* build:
-* Phase 10 closure:
-* service-backed:
-* no-skipped:
-* lock:
-* diff:
-
-## 17. Files
-
-* schemas/models:
-* validators:
-* serializers:
-* fixtures:
-* backend tests:
-* frontend/shared tests:
-* evidence:
-* docs:
-* persistent:
-* dependencies/lockfile:
-
-## 18. Deferred
-
-明确列出：
-
-* XYZ/extxyz parser
-* ASE trajectory parser
-* LAMMPS parser
-* chunked storage
-* frame index artifac
-* trajectory adapter
-* trajectory viewer
-* playback
-* interpolation
-* dynamic bonds
-* trajectory expor
-* ensemble RDF
-* MSD
-* diffusion
-* VACF
-* trajectory editing
-* variable atom coun
-* reactive trajectories
-* partial occupancy
-* stress，若未实现
-* formal trajectory tool registration
-
-## 19. Readiness
-
-* contract:
-* validator:
-* identity:
-* coordinates:
-* lattice:
-* time:
-* properties:
-* caps:
-* determinism:
-* fixtures:
-* security:
-* parser:
-* adapter:
-* viewer:
-* browser:
-* formal product:
-
-## 20. Commit / CI
-
-* commit:
-* HEAD:
-* CI run:
-* backend:
-* frontend:
-* typecheck:
-* build:
-* Phase 10 closure:
-* service-backed:
-* no-skipped:
-* origin:
-* status:
-
-## 21. Whether allowed to enter next phase
-
-允许 / 不允许
-
-下一阶段：
-
-```tex
-Phase 10G-1：Trajectory Parser / Adapter
-
-
-下一阶段只实现批准的trajectory输入parser、normalization、adapter、artifact emission和API evidence基础，不直接实现trajectory playback viewer。
-
----
-
-# 46. PASS 判定
-
-PASS必须满足：
-
-* 有真实trajectory schema实现
-* 有真实frame schema实现
-* 有validator实现
-* atom identity明确
-* frame identity明确
-* frame间atom count固定
-* frame间species稳定
-* coordinate mode固定
-* wrapped/unwrapped语义固定
-* fixed/variable lattice语义固定
-* lattice convention复用Phase 10标准
-* time/step语义固定
-* units固定
-* positions shape验证
-* velocities/forces policy明确
-* energy scope明确
-* optional property一致性明确
-* caps明确
-* overflow protection完成
-* deterministic serialization完成
-* manifest和summary contract完成
-* fixtures完整
-* frontend/backend reference comparison完成
-* no external references
-* no executable conten
-* no secret hits
-* Phase 10 closure regression不回退
-* tests通过
-* CI通过
-* git clean
-
-PARTIAL_PASS仅允许：
-
-* stress明确DEFERRED_BY_DESIGN
-* partial periodicity明确deferred
-* nonperiodic trajectory明确deferred
-* frontend validator暂不实现，但backend contract和独立reference完整
-* npm audit因既有registry问题不可用
-
-FAIL包括：
-
-* 只有docs，没有validator
-* trajectory直接复用static viewer scene作为容器
-* atom identity依赖模糊坐标匹配
-* frame间atom count变化被静默接受
-* frame间species reorder被静默接受
-* 坐标模式混用
-* lattice语义不明确
-* wrapped/unwrapped不明确
-* units不明确
-* 无caps
-* 先分配后检查cap
-* 允许NaN/Infinity
-* 允许外部frame URL
-* 允许任意metadata绕过限制
-* 提前实现viewer/playback导致范围膨胀
-* Phase 10 closure tests回退
-* CI失败却声明PASS
-
-## 完成记录
-
-* 完成时间：2026-07-13 19:24:47 +08:00
-* 修改文件：`packages/artifact-core/mdi_artifact_core/trajectory_contract.py`、`packages/artifact-core/mdi_artifact_core/__init__.py`、`apps/web/app/lib/trajectoryContract.ts`、`apps/web/app/lib/trajectoryContract.test.ts`、`tests/test_phase10g_trajectory_contract.py`、`scripts/generate_phase10g_contract_evidence.py`、`docs/phase10g/**`、`docs/13_SHARED_SCHEMA_SPEC.md`、`docs/index.md`、`persistent/{DESIGN_PROGRESS,TASK_BOARD,CHANGELOG,OPEN_QUESTIONS,TOOL_REGISTRY_NOTES,ARCHITECTURE_DECISIONS}.md`、`TASKS.md`
-* 修改摘要：定义 `phase10g.trajectory.v1`、frame、summary、manifest 惰性契约；实现稳定 atom/frame identity、row-vector fixed/variable lattice、coordinate/wrapping/PBC/time/unit/strict property 语义、content-derived identity、确定性序列化、资源与递归 caps、Python canonical validator、独立 TypeScript reference validator、小型 fixtures、manifest/summary、安全及 hash evidence。未实现 parser、chunk runtime、adapter、planner route、formal tool、viewer、playback 或 renderer。
-* 测试结果：trajectory Python `22 passed`；TypeScript reference `10 passed`；frontend full `116 passed`；backend full `394 passed, 22 skipped, 11 warnings`；typecheck/build/`uv lock --check`/`git diff --check`通过；Phase 10 closure（backend `2 passed, 1 deselected`、frontend `2 passed`、Chromium/Firefox/WebKit evidence）通过；`PHASE10G_TRAJECTORY_CONTRACT_EVIDENCE_PASS`、`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。本机 Docker unavailable，service-backed由 current-HEAD CI `29246068417` 验证通过，no-skipped assertion通过。`npm audit`因 npmmirror audit endpoint `NOT_IMPLEMENTED` unavailable，无依赖或 lockfile变更。
-* 实现提交：`34dfa6b8f681ccc3f21f1eb455cc71dc8733ef2c` (`Define trajectory data contract`)
-* CI：run `29246068417`，unit success、frontend typecheck/build success、Phase 10 closure success、service-backed integration success、no-skipped assertion success。
-
----END---
-
----TASK---
- 状态：待处理
+ 状态：处理中
  # Phase 10G-1：Trajectory Parser / Adapter
 
 进入 Phase 10G-1：Trajectory Parser / Adapter。
@@ -12156,5 +9937,10478 @@ FAIL包括：
 * Phase 10 closure回退
 * CI失败却声明PASS
 
+
+---END---
+
+---TASK---
+ 状态：待处理
+
+ # Phase 10H：Phonon Contract
+
+进入 Phase 10H：Phonon Contract。
+
+可以默认：
+
+-   Phase 10G：Trajectory Contract 已完成
+
+-   Phase 10G-1：Trajectory Parser / Adapter 已完成
+
+-   Phase 10G-2：Trajectory Viewer 已完成
+
+-   Phase 10G-3：Trajectory Performance / Browser Evidence 已完成并收口
+
+-   `structure.trajectory_viewer` 已正式注册
+
+-   trajectory atom identity、frame identity、fixed/variable lattice、playback、performance tiers、browser matrix和security边界均已稳定
+
+-   Phase 10 Closure Regression Pack保持通过
+
+-   Phase 10F static viewer和Phase 10G trajectory viewer均保持稳定
+
+-   current static scene contract仍为 `phase10f18.viewer_scene.v2`
+
+-   current trajectory contract仍为 `phase10g.trajectory.v1`
+
+-   当前branch、HEAD、working tree和Phase 10G-3 CI可视为正确且clean
+
+
+本阶段不需要重复Phase 10G-3 baseline检查。
+
+本阶段主要目标：
+
+> 建立统一、严格、可验证、可扩展的phonon数据合同体系，覆盖phonon band、phonon DOS、q-point路径、频率、分支身份、单位、虚频、简并、原子顺序和未来eigenvector扩展边界，为后续Phonon Bands、Phonon DOS、Combined Band + DOS以及Phonon Eigenvector阶段提供稳定基础。
+
+本阶段只完成：
+
+-   phonon domain architecture
+
+-   q-point contract
+
+-   reciprocal-space conventions
+
+-   phonon frequency contract
+
+-   branch identity
+
+-   imaginary frequency policy
+
+-   units and normalization
+
+-   phonon band schema
+
+-   phonon DOS schema
+
+-   combined compatibility contract
+
+-   provenance
+
+-   validation
+
+-   caps
+
+-   fixtures
+
+-   reference tests
+
+-   security
+
+-   readiness documentation
+
+
+本阶段不实现正式phonon band plot、不实现phonon DOS plot、不实现eigenvector动画。
+
+----------
+
+# 1. 本阶段定位
+
+Phase 10H是phonon科学数据模型基础阶段。
+
+它必须回答：
+
+-   一个phonon band artifact是什么
+
+-   一个q-point如何表示
+
+-   q-point使用什么坐标系
+
+-   reciprocal lattice是否包含`2π`
+
+-   phonon frequency的canonical unit是什么
+
+-   imaginary mode如何表示
+
+-   branch index如何保持稳定
+
+-   degeneracy如何表达
+
+-   high-symmetry labels如何绑定q-point
+
+-   segment boundary如何表达
+
+-   phonon DOS如何归一化
+
+-   projected DOS如何绑定atom/species
+
+-   band和DOS何时可组合
+
+-   eigenvectors将在后续如何关联atom顺序和mode identity
+
+-   invalid或不完整phonon数据如何拒绝
+
+
+本阶段不是：
+
+-   phonon计算阶段
+
+-   phonopy运行阶段
+
+-   density-functional perturbation theory阶段
+
+-   phonon band renderer阶段
+
+-   phonon DOS renderer阶段
+
+-   phonon animation阶段
+
+-   thermal-property阶段
+
+-   Brillouin zone renderer阶段
+
+
+----------
+
+# 2. 本阶段目标
+
+必须完成以下十二类工作：
+
+1.  **Existing reciprocal / phonon capability audit**
+
+2.  **Reciprocal-space convention**
+
+3.  **Q-point and path contract**
+
+4.  **Frequency、unit和imaginary-mode policy**
+
+5.  **Branch、mode和degeneracy identity**
+
+6.  **Phonon band schema**
+
+7.  **Phonon DOS schema**
+
+8.  **Band + DOS compatibility contract**
+
+9.  **Validation、caps和typed errors**
+
+10.  **Deterministic serialization、fixtures和reference tests**
+
+11.  **Security and compatibility boundaries**
+
+12.  **Docs、evidence和readiness closure**
+
+
+本阶段必须产生真实schema、model和validator实现。
+
+如果最终只有规划文档、字段列表或示例JSON，没有可执行validator和tests，本阶段必须判定为FAIL。
+
+----------
+
+# 3. 严格禁止范围
+
+本阶段不得实现：
+
+-   phonon band plotting
+
+-   phonon DOS plotting
+
+-   combined band + DOS UI
+
+-   phonon eigenvector parser
+
+-   phonon animation
+
+-   atomic displacement animation
+
+-   phonopy execution
+
+-   DFPT execution
+
+-   external calculation
+
+-   thermal conductivity
+
+-   free energy
+
+-   entropy
+
+-   heat capacity
+
+-   Grüneisen parameters
+
+-   quasi-harmonic approximation
+
+-   thermal expansion
+
+-   neutron scattering intensity
+
+-   Raman/IR activity
+
+-   Brillouin zone renderer
+
+-   electronic bands
+
+-   electronic DOS
+
+-   trajectory reuse for phonon animation
+
+-   external API
+
+-   notebook execution
+
+-   script execution
+
+-   real LLM
+
+-   formal phonon tool registration
+
+
+不得：
+
+-   修改trajectory contract
+
+-   修改static viewer scene
+
+-   将phonon mode塞入trajectory contract
+
+-   将phonon frequency与electronic energy混用
+
+-   静默混用THz、cm⁻¹、meV
+
+-   静默改变frequency sign
+
+-   把imaginary frequency绝对值当作positive physical mode
+
+-   使用q-point数组位置作为唯一mode identity而不定义排序
+
+-   静默重新排序branches
+
+-   静默合并degenerate branches
+
+-   静默丢弃negative frequencies
+
+-   静默对DOS重新归一化
+
+-   静默推断high-symmetry labels
+
+-   静默接受不同band和DOS来源进行combined view
+
+-   允许NaN或Infinity
+
+-   允许无限q-points
+
+-   允许无限branches
+
+-   允许无限DOS bins
+
+-   允许任意metadata
+
+-   允许external URL
+
+-   允许artifact JavaScript
+
+-   允许callback
+
+-   允许任意complex payload绕过caps
+
+-   提前标记phonon bands或DOS READY
+
+
+允许：
+
+-   schema
+
+-   typed models
+
+-   validators
+
+-   canonical serializers
+
+-   unit conversion helpers
+
+-   fixtures
+
+-   reference calculations
+
+-   docs
+
+-   evidence
+
+-   persistent updates
+
+
+----------
+
+# 4. 必读实现
+
+开始后直接阅读当前真实代码。
+
+## 4.1 Reciprocal-Space and Lattice Code
+
+搜索：
+
+```bash
+rg -n "reciprocal|kpoint|qpoint|k-path|brillouin|2\\*pi|2π|lattice inverse|inverse lattice" backend packages apps tests
+
+```
+
+确认：
+
+-   是否已有reciprocal lattice helper
+
+-   是否已有`2π`约定
+
+-   row-vector lattice如何转换到reciprocal lattice
+
+-   是否已有k-point或q-point schema
+
+-   是否已有high-symmetry labels
+
+-   是否有Brillouin规划残留
+
+-   是否存在与本阶段冲突的命名
+
+
+## 4.2 Existing Plot / Series Contracts
+
+搜索：
+
+```bash
+rg -n "band|dos|series|x_axis|y_axis|plot artifact|line plot|density of states" backend packages apps tests
+
+```
+
+确认：
+
+-   通用plot artifact contract
+
+-   series ordering
+
+-   labels
+
+-   units
+
+-   discontinuous segment表示
+
+-   shared axis支持
+
+-   static preview能力
+
+
+## 4.3 Static Physics Adapters
+
+阅读：
+
+-   `structure.xrd`
+
+-   `structure.rdf`
+
+-   `structure.coordination_hist`
+
+
+确认：
+
+-   numeric policy
+
+-   units
+
+-   artifact schema
+
+-   provenance
+
+-   candidate expected values
+
+-   official PASS boundaries
+
+-   deterministic ordering
+
+
+## 4.4 Dependencies
+
+搜索：
+
+```bash
+rg -n "phonopy|pymatgen.*phonon|seekpath|spglib|bandstructure|dos" pyproject.toml uv.lock backend packages tests
+
+```
+
+确认：
+
+-   phonopy是否已存在
+
+-   pymatgen phonon对象是否可用
+
+-   seekpath/spglib是否已存在
+
+-   dependency licensing和版本
+
+-   是否已有test-only reference path
+
+
+----------
+
+# 5. 修改前输出审计
+
+修改任何代码前输出：
+
+# Phase 10H Phonon Contract Pre-Implementation Audit
+
+## 1. Existing Reciprocal-Space Infrastructure
+
+-   lattice convention:
+
+-   reciprocal lattice helper:
+
+-   `2π` convention:
+
+-   q-point model:
+
+-   k-point model:
+
+-   high-symmetry path:
+
+-   reusable validators:
+
+-   current gaps:
+
+
+## 2. Existing Plot / Artifact Infrastructure
+
+-   line plot contract:
+
+-   DOS-like plot contract:
+
+-   shared axis:
+
+-   discontinuities:
+
+-   series metadata:
+
+-   provenance:
+
+-   deterministic serialization:
+
+-   caps:
+
+
+## 3. Existing Phonon-Related Code
+
+-   models:
+
+-   adapters:
+
+-   fixtures:
+
+-   docs:
+
+-   dependencies:
+
+-   experimental code:
+
+-   naming conflicts:
+
+-   reusable pieces:
+
+
+## 4. Scientific Risks
+
+至少列出：
+
+-   reciprocal lattice convention mismatch
+
+-   `2π` ambiguity
+
+-   reciprocal fractional vs Cartesian ambiguity
+
+-   q-point path discontinuity
+
+-   duplicated segment endpoints
+
+-   branch reorder
+
+-   degeneracy ambiguity
+
+-   imaginary frequency sign loss
+
+-   THz/cm⁻¹/meV conversion drift
+
+-   angular frequency vs cyclic frequency confusion
+
+-   DOS normalization ambiguity
+
+-   projected DOS atom-order mismatch
+
+-   atom count mismatch
+
+-   acoustic mode handling
+
+-   Gamma label ambiguity
+
+-   LO-TO metadata ambiguity
+
+-   source library version drift
+
+-   band/DOS source mismatch
+
+-   future eigenvector atom ordering mismatch
+
+
+## 5. Selected Strategy
+
+说明：
+
+-   reciprocal convention:
+
+-   q-point coordinates:
+
+-   path representation:
+
+-   canonical frequency unit:
+
+-   imaginary mode representation:
+
+-   branch identity:
+
+-   degeneracy:
+
+-   band schema:
+
+-   DOS schema:
+
+-   projected DOS:
+
+-   combined compatibility:
+
+-   caps:
+
+-   determinism:
+
+-   security:
+
+
+## 6. Planned Files
+
+列出预计新增或修改：
+
+-   phonon models
+
+-   schemas
+
+-   validators
+
+-   unit conversion
+
+-   serializers
+
+-   fixtures
+
+-   backend tests
+
+-   shared/frontend tests，若需要
+
+-   evidence
+
+-   docs
+
+-   persistent
+
+
+审计后直接继续实现。
+
+----------
+
+# 6. Schema Family
+
+建议建立：
+
+```text
+phase10h.phonon_band.v1
+phase10h.phonon_dos.v1
+phase10h.phonon_summary.v1
+phase10h.phonon_manifest.v1
+
+```
+
+建议建立共享子合同：
+
+```text
+phase10h.qpoint_path.v1
+phase10h.frequency_axis.v1
+phase10h.phonon_source.v1
+
+```
+
+可预留但本阶段不完整实现：
+
+```text
+phase10h.phonon_mode_ref.v1
+
+```
+
+不得在本阶段建立完整eigenvector payload合同；该内容属于Phase 10H-4。
+
+----------
+
+# 7. Reciprocal Lattice Convention
+
+必须继承项目row-vector lattice约定。
+
+实空间晶格：
+
+```text
+A =
+[a
+ b
+ c]
+
+```
+
+其中每一行为一个lattice vector。
+
+必须明确reciprocal lattice定义。
+
+推荐物理学约定：
+
+```text
+B = 2π (A⁻¹)ᵀ
+
+```
+
+并满足：
+
+```text
+aᵢ · bⱼ = 2π δᵢⱼ
+
+```
+
+如果项目已有不含`2π`的crystallographic reciprocal lattice约定，则必须：
+
+-   选择一个canonical内部约定
+
+-   显式区分
+
+-   提供严格conversion
+
+-   不得混用
+
+
+建议合同同时记录：
+
+```json
+{
+  "reciprocal_convention": "physics_2pi",
+  "qpoint_coordinate_system": "reciprocal_fractional"
+}
+
+```
+
+不得依靠字段名猜测是否含`2π`。
+
+----------
+
+# 8. Q-Point Coordinate Systems
+
+第一版支持：
+
+```text
+reciprocal_fractional
+reciprocal_cartesian
+
+```
+
+## reciprocal_fractional
+
+q-point：
+
+```text
+q = h b1 + k b2 + l b3
+
+```
+
+其中`b1,b2,b3`按合同约定。
+
+推荐canonical representation：
+
+```text
+reciprocal_fractional
+
+```
+
+原因：
+
+-   与high-symmetry path兼容
+
+-   与晶格变化解耦
+
+-   更适合序列化
+
+
+## reciprocal_cartesian
+
+单位必须固定，例如：
+
+```text
+radian_per_angstrom
+
+```
+
+或：
+
+```text
+inverse_angstrom
+
+```
+
+必须与`2π`约定一致。
+
+不得：
+
+-   每个q-point使用不同坐标系
+
+-   在一个path内混用
+
+-   省略coordinate system
+
+
+----------
+
+# 9. Q-Point Contract
+
+建议：
+
+```json
+{
+  "index": 0,
+  "coordinates": [0.0, 0.0, 0.0],
+  "label": "Γ",
+  "segment_index": 0,
+  "distance": 0.0
+}
+
+```
+
+必须定义：
+
+-   index
+
+-   coordinates
+
+-   optional label
+
+-   segment membership
+
+-   cumulative path distance
+
+
+要求：
+
+-   coordinates shape = 3
+
+-   finite
+
+-   deterministic
+
+-   index从0开始
+
+-   index连续
+
+-   distance nonnegative
+
+-   segment内distance单调
+
+-   segment boundary策略明确
+
+-   labels bounded
+
+-   label为inert text
+
+-   no HTML
+
+-   no LaTeX execution
+
+
+----------
+
+# 10. High-Symmetry Label Policy
+
+必须规范化常见标签。
+
+建议canonical：
+
+```text
+Γ
+X
+L
+W
+K
+M
+R
+A
+Z
+
+```
+
+允许来源使用：
+
+```text
+GAMMA
+Gamma
+\\Gamma
+
+```
+
+但normalization必须由后续adapter完成。
+
+本合同必须定义：
+
+-   canonical label representation
+
+-   display label
+
+-   raw source label是否保存
+
+-   label length cap
+
+-   duplicate label policy
+
+
+建议保存：
+
+```json
+{
+  "label": "Γ",
+  "source_label": "GAMMA"
+}
+
+```
+
+不得允许任意HTML或script标签。
+
+----------
+
+# 11. Path Segment Contract
+
+phonon path通常由多个高对称线段组成。
+
+建议：
+
+```json
+{
+  "segments": [
+    {
+      "segment_index": 0,
+      "start_qpoint_index": 0,
+      "end_qpoint_index": 50,
+      "start_label": "Γ",
+      "end_label": "X"
+    }
+  ]
+}
+
+```
+
+必须固定：
+
+-   segment order
+
+-   endpoint inclusion
+
+-   duplicated endpoints policy
+
+-   discontinuity policy
+
+-   cumulative distance reset或continuous policy
+
+
+推荐：
+
+-   q-point数组保留source order
+
+-   相邻segments共享端点时，只保存一个q-point或显式保存duplicate marker
+
+-   非连续segment必须标记：
+
+
+```text
+discontinuous = true
+
+```
+
+不得通过distance突变猜测segment discontinuity。
+
+----------
+
+# 12. Path Distance
+
+必须明确distance的数学意义。
+
+推荐：
+
+-   基于reciprocal Cartesian space
+
+-   使用合同固定的reciprocal lattice约定
+
+-   canonical unit：
+
+
+```text
+radian_per_angstrom
+
+```
+
+或项目选定单位。
+
+必须：
+
+-   q-point path distance nondecreasing
+
+-   每segment内部严格或非严格递增
+
+-   duplicated endpoint允许相等distance
+
+-   discontinuous segment可reset或继续累积，但合同必须固定
+
+
+推荐：
+
+```text
+global cumulative distance
+
+```
+
+并为discontinuity提供显式boundary marker。
+
+不得使用q-point数组索引代替科学路径距离。
+
+----------
+
+# 13. Frequency Unit Policy
+
+必须选择canonical frequency unit。
+
+推荐：
+
+```text
+terahertz
+
+```
+
+批准输入/转换单位可包括：
+
+```text
+terahertz
+inverse_centimeter
+millielectronvolt
+
+```
+
+必须明确：
+
+-   THz表示cycles per second，不是angular frequency
+
+-   不使用rad/s作为第一版canonical unit
+
+-   cm⁻¹是spectroscopic wavenumber
+
+-   meV是能量等价表示
+
+
+转换必须使用固定物理常数来源。
+
+不得：
+
+-   将THz与rad·THz混用
+
+-   忽略`2π`
+
+-   使用四舍五入后的常数作为唯一实现
+
+-   静默接受任意unit字符串
+
+
+----------
+
+# 14. Frequency Representation
+
+每个q-point每个branch一个frequency值。
+
+建议shape：
+
+```text
+[qpoint_count, branch_count]
+
+```
+
+或：
+
+```text
+branches[branch_index].frequencies[qpoint_index]
+
+```
+
+必须选择并固定。
+
+推荐branch-major：
+
+```json
+{
+  "branches": [
+    {
+      "branch_index": 0,
+      "frequencies": [0.0, 1.2, 2.1]
+    }
+  ]
+}
+
+```
+
+优势：
+
+-   branch identity更明确
+
+-   plot series自然
+
+-   future eigenvector mode ref更容易绑定
+
+
+必须：
+
+-   每branch频率长度等于qpoint count
+
+-   branch index连续
+
+-   所有值finite
+
+-   negative值允许
+
+-   no missing values
+
+-   no sparse arrays
+
+
+----------
+
+# 15. Imaginary Frequency Policy
+
+这是核心科学语义。
+
+推荐canonical规则：
+
+```text
+negative real frequency value represents an imaginary phonon mode
+
+```
+
+例如：
+
+```text
+-1.5 THz
+
+```
+
+表示：
+
+```text
+1.5 i THz
+
+```
+
+必须同时记录合同语义：
+
+```json
+{
+  "imaginary_frequency_encoding": "negative_real"
+}
+
+```
+
+不得：
+
+-   自动取绝对值
+
+-   丢弃negative frequency
+
+-   使用NaN
+
+-   使用字符串`"1.5i"`
+
+-   同一artifact混用negative和explicit imaginary flag
+
+
+可为每个mode派生：
+
+```text
+is_imaginary = frequency < -tolerance
+
+```
+
+但canonical payload不需要重复存储，除非已有schema规范。
+
+----------
+
+# 16. Zero Frequency and Tolerance
+
+必须定义：
+
+```text
+frequency_zero_tolerance
+
+```
+
+用途：
+
+-   Gamma acoustic modes
+
+-   small numerical negative values
+
+-   zero classification
+
+-   imaginary classification
+
+
+必须区分：
+
+-   原始frequency值
+
+-   classification tolerance
+
+-   是否显示为0
+
+
+不得修改原始值。
+
+建议：
+
+```text
+abs(frequency) <= tolerance → near_zero
+frequency < -tolerance → imaginary
+
+```
+
+具体tolerance必须通过现有库和fixtures审计确定。
+
+不得凭UI格式化阈值替代科学阈值。
+
+----------
+
+# 17. Acoustic Mode Policy
+
+本阶段不执行acoustic sum rule correction。
+
+必须记录：
+
+-   source是否声明ASR
+
+-   Gamma附近低频模式
+
+-   source-provided corrections
+
+-   warnings
+
+
+建议metadata：
+
+```json
+{
+  "acoustic_sum_rule": {
+    "applied": false,
+    "method": null
+  }
+}
+
+```
+
+不得：
+
+-   自动把前三个Gamma频率设为0
+
+-   自动排序声学支
+
+-   自动修正imaginary acoustic mode
+
+
+后续adapter只能根据批准policy处理。
+
+----------
+
+# 18. Branch Identity
+
+第一版必须定义：
+
+```text
+branch_index
+
+```
+
+范围：
+
+```text
+0 .. branch_count - 1
+
+```
+
+必须明确：
+
+-   branch identity按source order保持
+
+-   不在contract validation阶段按frequency排序
+
+-   不自动跨q-point追踪band connectivity
+
+-   不自动交换crossing branches
+
+-   不因简并重新编号
+
+
+如果source提供mode eigenvector identity，后续Phase 10H-4可增加更强mode identity。
+
+本阶段：
+
+```text
+branch identity = source-stable branch index
+
+```
+
+不得声称branch index一定代表连续物理支，除非source保证。
+
+----------
+
+# 19. Branch Count
+
+对N个原子，通常有：
+
+```text
+3N
+
+```
+
+phonon branches。
+
+合同必须检查或警告：
+
+-   `branch_count == 3 * atom_count`
+
+
+推荐：
+
+-   如果atom count已知且不匹配，默认typed error
+
+-   如果artifact为reduced/filtered dataset，必须显式声明：
+
+
+```text
+branch_scope = subset
+
+```
+
+第一版建议只支持：
+
+```text
+branch_scope = full
+
+```
+
+避免歧义。
+
+不得静默接受少量branches并称为完整phonon band。
+
+----------
+
+# 20. Degeneracy Policy
+
+合同必须区分：
+
+-   数值近似简并
+
+-   source-declared degeneracy
+
+-   branch identity
+
+
+第一版建议：
+
+-   不自动合并branch
+
+-   每branch独立保存
+
+-   可选source metadata记录degeneracy groups
+
+-   validator只检查group indices合法
+
+-   不根据frequency tolerance自动生成权威degeneracy
+
+
+可选：
+
+```json
+{
+  "degeneracy_groups": [
+    {
+      "qpoint_index": 0,
+      "branch_indices": [1, 2],
+      "source": "producer"
+    }
+  ]
+}
+
+```
+
+不得将近似相等频率自动合并后丢失数据。
+
+----------
+
+# 21. Atom Ordering Contract
+
+即使Phase 10H-4才处理eigenvectors，本阶段必须固定phonon atom ordering基础。
+
+至少记录：
+
+```json
+{
+  "structure_identity": "...",
+  "atom_count": 2,
+  "species": ["Si", "Si"],
+  "atom_ordering": "canonical_structure_order"
+}
+
+```
+
+要求：
+
+-   atom count finite and bounded
+
+-   species order稳定
+
+-   structure identity存在
+
+-   future eigenvectors必须使用同一atom order
+
+-   projected DOS必须绑定同一atom index
+
+
+不得依赖元素聚合后丢失atom顺序。
+
+----------
+
+# 22. Phonon Band Contract
+
+建议：
+
+```json
+{
+  "schema_version": "phase10h.phonon_band.v1",
+  "structure_identity": "...",
+  "atom_count": 2,
+  "species": ["Si", "Si"],
+  "reciprocal_convention": "physics_2pi",
+  "qpoint_coordinate_system": "reciprocal_fractional",
+  "frequency_unit": "terahertz",
+  "imaginary_frequency_encoding": "negative_real",
+  "frequency_zero_tolerance": 1e-6,
+  "qpoints": [],
+  "segments": [],
+  "branches": [],
+  "source": {},
+  "warnings": [],
+  "security": {
+    "contains_javascript": false,
+    "external_urls": []
+  }
+}
+
+```
+
+字段名称按项目规范调整。
+
+必须包含：
+
+-   schema version
+
+-   structure identity
+
+-   atom metadata
+
+-   reciprocal convention
+
+-   q-point system
+
+-   frequency unit
+
+-   imaginary encoding
+
+-   tolerance
+
+-   path
+
+-   branches
+
+-   provenance
+
+-   warnings
+
+-   security
+
+
+----------
+
+# 23. Phonon DOS Contract
+
+建议：
+
+```json
+{
+  "schema_version": "phase10h.phonon_dos.v1",
+  "structure_identity": "...",
+  "frequency_unit": "terahertz",
+  "density_unit": "states_per_terahertz",
+  "normalization": "total_modes",
+  "frequencies": [],
+  "total_dos": [],
+  "projected_dos": [],
+  "source": {},
+  "warnings": [],
+  "security": {
+    "contains_javascript": false,
+    "external_urls": []
+  }
+}
+
+```
+
+必须固定：
+
+-   frequency grid
+
+-   density values
+
+-   density unit
+
+-   normalization
+
+-   projected DOS identity
+
+-   negative-frequency region policy
+
+-   integration tolerance
+
+-   smoothing/broadening metadata
+
+
+----------
+
+# 24. DOS Frequency Grid
+
+要求：
+
+-   one-dimensional
+
+-   finite
+
+-   strictly increasing
+
+-   no duplicates
+
+-   bounded size
+
+-   canonical frequency unit
+
+-   may include negative frequencies
+
+-   no implicit resampling in validator
+
+
+不得：
+
+-   使用bin edges和bin centers混淆
+
+-   省略grid semantic
+
+
+必须定义：
+
+```text
+frequencies represent sample centers
+
+```
+
+或：
+
+```text
+frequencies represent grid points
+
+```
+
+推荐：
+
+```text
+sample grid points
+
+```
+
+----------
+
+# 25. DOS Density Unit
+
+推荐：
+
+```text
+states_per_terahertz
+
+```
+
+或更科学准确地：
+
+```text
+modes_per_terahertz
+
+```
+
+必须区分：
+
+-   total DOS
+
+-   per-atom DOS
+
+-   normalized-to-one DOS
+
+-   mode-count normalized DOS
+
+
+推荐canonical normalization：
+
+```text
+integral(total_dos df) = 3N
+
+```
+
+即：
+
+```text
+normalization = total_modes
+
+```
+
+如果输入采用unit-area normalization，后续adapter需转换或明确保存。
+
+不得静默重新归一化。
+
+----------
+
+# 26. DOS Integration Policy
+
+必须固定数值积分方法用于validation/reference。
+
+推荐：
+
+```text
+trapezoidal integration
+
+```
+
+验证：
+
+```text
+∫ DOS(f) df ≈ 3N
+
+```
+
+使用application-owned tolerance。
+
+必须记录：
+
+-   expected mode count
+
+-   observed integral
+
+-   tolerance
+
+-   normalization status
+
+
+不得把小网格误差当作严格等式。
+
+----------
+
+# 27. Negative-Frequency DOS
+
+必须允许DOS grid包含negative frequency。
+
+必须明确：
+
+-   negative region表示imaginary modes
+
+-   不自动截断
+
+-   不自动镜像
+
+-   不将其并入positive积分而不说明
+
+
+可提供：
+
+```text
+imaginary_mode_weight
+
+```
+
+作为派生summary，但不修改原始DOS。
+
+----------
+
+# 28. Projected DOS
+
+第一版可支持：
+
+```text
+atom_projected
+species_projected
+
+```
+
+建议结构：
+
+```json
+{
+  "projected_dos": [
+    {
+      "projection_type": "atom",
+      "atom_index": 0,
+      "species": "Si",
+      "values": []
+    }
+  ]
+}
+
+```
+
+或species projection：
+
+```json
+{
+  "projection_type": "species",
+  "species": "Si",
+  "values": []
+}
+
+```
+
+必须：
+
+-   values长度等于frequency grid
+
+-   atom index合法
+
+-   species与canonical atom order一致
+
+-   projection ordering deterministic
+
+-   no duplicate projection identity
+
+-   units与total DOS一致
+
+-   normalization语义明确
+
+
+不得：
+
+-   同一字段混合atom和species identity
+
+-   仅靠display label绑定projection
+
+-   将projection总和一定等于total DOS，除非source保证
+
+
+----------
+
+# 29. DOS Broadening Metadata
+
+本阶段不执行broadening，但合同必须可记录：
+
+```json
+{
+  "broadening": {
+    "method": "gaussian",
+    "width": 0.1,
+    "unit": "terahertz"
+  }
+}
+
+```
+
+允许：
+
+-   none
+
+-   gaussian
+
+-   source_defined
+
+
+不得开放任意函数名。
+
+必须记录：
+
+-   method
+
+-   width
+
+-   unit
+
+-   source
+
+
+不得声称不同broadening结果可直接比较而无说明。
+
+----------
+
+# 30. Combined Band + DOS Compatibility
+
+Phase 10H-3将实现combined view，本阶段必须定义兼容条件。
+
+两个artifact只有在以下条件满足时才可直接组合：
+
+-   same structure identity
+
+-   same atom count
+
+-   same species ordering
+
+-   same frequency unit或可无损转换
+
+-   same imaginary frequency convention
+
+-   compatible source calculation
+
+-   compatible NAC/LO-TO policy
+
+-   compatible normalization metadata
+
+-   compatible frequency range
+
+-   compatible provenance family
+
+
+建议validator输出：
+
+```text
+compatible
+convertible
+incompatible
+
+```
+
+不得简单因为两个artifact都有frequency axis就组合。
+
+----------
+
+# 31. Source / Provenance Contract
+
+建议：
+
+```json
+{
+  "producer": "unknown",
+  "producer_version": null,
+  "calculation_method": null,
+  "force_constants_source": null,
+  "supercell_matrix": null,
+  "primitive_matrix": null,
+  "nac": {
+    "enabled": false,
+    "direction_policy": null
+  },
+  "input_sha256": null,
+  "adapter_version": null
+}
+
+```
+
+字段按真实项目规范调整。
+
+必须记录：
+
+-   source software
+
+-   source version
+
+-   calculation type
+
+-   structure identity
+
+-   primitive/supercell relation，若有
+
+-   NAC status
+
+-   adapter version
+
+-   input hash
+
+
+不得包含：
+
+-   absolute local path
+
+-   username
+
+-   hostname
+
+-   token
+
+-   environment dump
+
+-   remote URL，除非项目统一provenance允许且安全；本阶段建议禁止
+
+
+----------
+
+# 32. NAC / LO-TO Metadata
+
+本阶段不计算NAC，但必须记录：
+
+```text
+non-analytical correction
+
+```
+
+至少支持：
+
+```json
+{
+  "nac": {
+    "enabled": false,
+    "gamma_direction": null
+  }
+}
+
+```
+
+如果enabled：
+
+-   必须有source metadata
+
+-   Gamma方向策略必须明确
+
+-   不得让validator自行重算
+
+-   combined band/DOS兼容性需考虑
+
+
+不得省略NAC状态后假设不存在。
+
+----------
+
+# 33. Summary Contract
+
+建议建立：
+
+```text
+phase10h.phonon_summary.v1
+
+```
+
+至少包含：
+
+```json
+{
+  "schema_version": "phase10h.phonon_summary.v1",
+  "structure_identity": "...",
+  "atom_count": 2,
+  "branch_count": 6,
+  "qpoint_count": 101,
+  "segment_count": 4,
+  "frequency_unit": "terahertz",
+  "frequency_min": -1.2,
+  "frequency_max": 15.4,
+  "imaginary_mode_count": 3,
+  "near_zero_mode_count": 3,
+  "dos_available": true,
+  "projected_dos_available": false,
+  "nac_enabled": false,
+  "warnings": []
+}
+
+```
+
+用途：
+
+-   JSON-only preview
+
+-   planner/runtime metadata
+
+-   future frontend summary
+
+-   over-budget fallback
+
+
+不得复制完整band或DOS arrays。
+
+----------
+
+# 34. Manifest Contract
+
+建议：
+
+```text
+phase10h.phonon_manifest.v1
+
+```
+
+允许artifacts：
+
+```text
+phonon_band.json
+phonon_dos.json
+phonon_summary.json
+phonon_manifest.json
+
+```
+
+Phase 10H-4后可加入：
+
+```text
+phonon_modes.json
+
+```
+
+本阶段不得默认包含eigenvectors。
+
+Manifest必须包含：
+
+-   exact artifact order
+
+-   schema
+
+-   media type
+
+-   size
+
+-   hash
+
+-   structure identity
+
+-   security markers
+
+-   no executable assets
+
+-   no external URLs
+
+
+----------
+
+# 35. Caps and Budgets
+
+必须定义application-owned caps。
+
+至少包括：
+
+-   max atoms
+
+-   max branches
+
+-   max q-points
+
+-   max path segments
+
+-   max labels
+
+-   max DOS grid points
+
+-   max projected DOS series
+
+-   max total numeric values
+
+-   max metadata bytes
+
+-   max warnings
+
+-   max artifact bytes
+
+-   max degeneracy groups
+
+
+必须验证：
+
+```text
+qpoints × branches
+
+```
+
+以及：
+
+```text
+dos_points × projections
+
+```
+
+使用overflow-safe乘法。
+
+必须在大规模allocation前检查。
+
+----------
+
+# 36. Deterministic Ordering
+
+必须固定：
+
+-   q-point order
+
+-   segment order
+
+-   branch order
+
+-   label normalization order
+
+-   projection order
+
+-   warning order
+
+-   manifest artifact order
+
+-   provenance key order
+
+-   degeneracy group order
+
+
+相同输入必须得到相同canonical JSON hash。
+
+不得在canonical payload中加入：
+
+-   current timestamp
+
+-   random UUID
+
+-   environment path
+
+-   unordered map输出
+
+-   library object repr
+
+
+结构identity应：
+
+-   content-derived
+
+-   或来自validated canonical structure artifact
+
+
+----------
+
+# 37. Typed Errors
+
+至少定义：
+
+```text
+PHONON_SCHEMA_UNSUPPORTED
+PHONON_STRUCTURE_IDENTITY_REQUIRED
+PHONON_ATOM_COUNT_INVALID
+PHONON_SPECIES_ORDER_INVALID
+PHONON_RECIPROCAL_CONVENTION_UNSUPPORTED
+PHONON_QPOINT_COORDINATE_SYSTEM_UNSUPPORTED
+PHONON_QPOINT_SHAPE_INVALID
+PHONON_QPOINT_NONFINITE
+PHONON_QPOINT_INDEX_INVALID
+PHONON_QPOINT_DISTANCE_NONMONOTONIC
+PHONON_PATH_SEGMENT_INVALID
+PHONON_PATH_LABEL_INVALID
+PHONON_FREQUENCY_UNIT_UNSUPPORTED
+PHONON_FREQUENCY_NONFINITE
+PHONON_FREQUENCY_SHAPE_INVALID
+PHONON_BRANCH_COUNT_MISMATCH
+PHONON_BRANCH_INDEX_INVALID
+PHONON_IMAGINARY_ENCODING_UNSUPPORTED
+PHONON_ZERO_TOLERANCE_INVALID
+PHONON_DEGENERACY_GROUP_INVALID
+PHONON_DOS_GRID_INVALID
+PHONON_DOS_NONFINITE
+PHONON_DOS_SHAPE_INVALID
+PHONON_DOS_NORMALIZATION_UNSUPPORTED
+PHONON_DOS_INTEGRAL_MISMATCH
+PHONON_PROJECTED_DOS_IDENTITY_INVALID
+PHONON_PROJECTED_DOS_DUPLICATE
+PHONON_BAND_DOS_STRUCTURE_MISMATCH
+PHONON_BAND_DOS_UNIT_MISMATCH
+PHONON_BAND_DOS_SOURCE_INCOMPATIBLE
+PHONON_CAP_EXCEEDED
+PHONON_METADATA_LIMIT_EXCEEDED
+PHONON_EXTERNAL_REFERENCE_FORBIDDEN
+
+```
+
+----------
+
+# 38. Warnings
+
+建议：
+
+```text
+PHONON_SMALL_IMAGINARY_FREQUENCY
+PHONON_ACOUSTIC_MODES_NOT_CORRECTED
+PHONON_SOURCE_SOFTWARE_UNKNOWN
+PHONON_NAC_STATUS_UNKNOWN
+PHONON_DEGENERACY_SOURCE_UNAVAILABLE
+PHONON_DOS_INTEGRAL_APPROXIMATE
+PHONON_PROJECTED_DOS_SUM_MISMATCH
+PHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY
+PHONON_HIGH_SYMMETRY_LABEL_NORMALIZED
+
+```
+
+warning排序必须稳定。
+
+错误和warning不得包含：
+
+-   raw large arrays
+
+-   stack traces
+
+-   local paths
+
+-   secrets
+
+-   library internal repr
+
+
+----------
+
+# 39. Validation Architecture
+
+建议分层：
+
+## 39.1 Shared Validation
+
+-   schema
+
+-   structure identity
+
+-   atom metadata
+
+-   reciprocal convention
+
+-   units
+
+-   provenance
+
+-   security
+
+-   caps
+
+
+## 39.2 Band Validation
+
+-   q-points
+
+-   path segments
+
+-   distances
+
+-   branches
+
+-   branch count
+
+-   frequency values
+
+-   imaginary encoding
+
+-   degeneracy
+
+
+## 39.3 DOS Validation
+
+-   frequency grid
+
+-   total DOS
+
+-   projected DOS
+
+-   normalization
+
+-   integration
+
+-   broadening metadata
+
+
+## 39.4 Compatibility Validation
+
+-   band + DOS compatibility
+
+-   source consistency
+
+-   unit conversion compatibility
+
+-   structure identity
+
+-   NAC
+
+
+不得让frontend自行承担scientific validation。
+
+----------
+
+# 40. Independent Reference Tests
+
+必须建立至少两条独立验证路径。
+
+建议：
+
+-   production validator
+
+-   independent Python reference functions
+
+-   TypeScript/shared shape validator，若现有架构需要
+
+
+至少独立验证：
+
+-   reciprocal lattice convention
+
+-   q-point Cartesian conversion
+
+-   path distance
+
+-   THz ↔ cm⁻¹
+
+-   THz ↔ meV
+
+-   imaginary-mode classification
+
+-   DOS trapezoidal integral
+
+-   branch count = 3N
+
+-   deterministic hash
+
+
+不得由production helper生成expected再验证同一个helper。
+
+----------
+
+# 41. Reference Physical Constants
+
+必须明确物理常数来源。
+
+至少涉及：
+
+-   Planck constant
+
+-   speed of light
+
+-   electronvolt conversion
+
+
+应使用：
+
+-   approved library constants
+
+-   或项目固定高精度constants
+
+
+必须记录：
+
+-   source
+
+-   precision
+
+-   canonical values
+
+-   tests
+
+
+不得使用散落magic numbers。
+
+----------
+
+# 42. Fixtures
+
+新增small、deterministic fixtures。
+
+至少包括：
+
+## 42.1 Stable Cubic Phonon Band
+
+-   small atom count
+
+-   Γ-X-L path
+
+-   no imaginary modes
+
+-   3N branches
+
+
+## 42.2 Imaginary Mode Band
+
+-   negative frequency
+
+-   near-zero frequency
+
+-   classification tests
+
+
+## 42.3 Discontinuous Path
+
+-   multiple segments
+
+-   explicit discontinuity
+
+-   labels
+
+
+## 42.4 Degenerate Modes
+
+-   source-declared degeneracy group
+
+-   no branch merging
+
+
+## 42.5 Total DOS
+
+-   known integral≈3N
+
+-   includes positive frequencies
+
+
+## 42.6 DOS with Imaginary Region
+
+-   negative frequency grid
+
+-   nonzero negative-region weight
+
+
+## 42.7 Projected DOS
+
+-   atom or species projections
+
+-   deterministic ordering
+
+
+## 42.8 Band + DOS Compatible Pair
+
+-   same structure/source/unit
+
+
+## 42.9 Band + DOS Incompatible Pair
+
+-   different structure identity或NAC policy
+
+
+## 42.10 Invalid Cases
+
+-   branch count mismatch
+
+-   nonmonotonic q-distance
+
+-   invalid q shape
+
+-   nonfinite frequency
+
+-   invalid DOS grid
+
+-   projection length mismatch
+
+-   over-cap synthetic
+
+
+不得提交大型真实phonon数据。
+
+----------
+
+# 43. Unit Tests
+
+至少覆盖：
+
+## Reciprocal
+
+-   row-vector lattice
+
+-   `2π` convention
+
+-   fractional→Cartesian reciprocal conversion
+
+-   orthogonal
+
+-   triclinic
+
+
+## Q-Points
+
+-   valid
+
+-   invalid shape
+
+-   nonfinite
+
+-   index ordering
+
+-   label normalization
+
+-   segment references
+
+-   discontinuity
+
+-   distance monotonicity
+
+
+## Frequencies
+
+-   THz
+
+-   cm⁻¹ conversion
+
+-   meV conversion
+
+-   negative frequency
+
+-   near-zero
+
+-   unsupported unit
+
+-   nonfinite
+
+
+## Branches
+
+-   correct 3N
+
+-   mismatch
+
+-   duplicate index
+
+-   missing branch
+
+-   unequal lengths
+
+-   source order preserved
+
+
+## Degeneracy
+
+-   valid group
+
+-   duplicate member
+
+-   invalid branch index
+
+-   same branch in multiple conflicting groups
+
+
+## DOS
+
+-   valid grid
+
+-   nonmonotonic grid
+
+-   total DOS length
+
+-   projected DOS length
+
+-   normalization
+
+-   trapezoidal integral
+
+-   negative-frequency region
+
+
+## Compatibility
+
+-   compatible
+
+-   convertible unit
+
+-   structure mismatch
+
+-   atom order mismatch
+
+-   NAC mismatch
+
+-   source mismatch
+
+
+## Caps
+
+-   q-points
+
+-   branches
+
+-   DOS grid
+
+-   projections
+
+-   numeric total
+
+-   bytes
+
+-   overflow
+
+
+## Security
+
+-   HTML label
+
+-   script-like metadata
+
+-   external URL
+
+-   callback-like key
+
+-   oversized provenance
+
+-   private path
+
+
+----------
+
+# 44. Cross-Language Contract Tests
+
+如果phonon artifact未来由backend生成、frontend消费，建议增加：
+
+-   backend canonical fixture validation
+
+-   frontend schema/type guard validation
+
+-   same fixture accept/reject comparison
+
+-   enum parity
+
+-   numeric finite checks
+
+-   warning ordering
+
+-   deterministic serialization comparison
+
+
+若frontend暂不需要完整validator：
+
+-   至少生成shared types
+
+-   或明确backend为权威validator
+
+-   frontend不得重复定义冲突enum
+
+
+----------
+
+# 45. Compatibility with Existing Static Structure
+
+Phonon artifacts必须引用已验证的structure identity。
+
+必须明确：
+
+-   phonon structure atom order来自canonical structure
+
+-   primitive cell和supercell关系通过provenance记录
+
+-   phonon band不修改structure artifact
+
+-   phonon DOS不修改structure artifact
+
+-   static viewer不直接消费phonon band
+
+-   future phonon animation必须经过Phase 10H-4 eigenvector contract
+
+
+不得将phonon q-point身份映射为static periodic site identity。
+
+----------
+
+# 46. Compatibility with Trajectory
+
+本阶段必须明确：
+
+-   phonon mode不是trajectory
+
+-   eigenvector animation未来可派生display frames
+
+-   derived display frames不成为trajectory scientific artifact
+
+-   phonon frequency决定oscillation semantics
+
+-   trajectory playback speed合同不可直接复用为物理phonon时间
+
+-   stable atom order可复用，但artifact类型必须独立
+
+
+不得将phonon mode序列保存成`phase10g.trajectory.v1`并声称科学等价。
+
+----------
+
+# 47. Security
+
+必须验证：
+
+-   no artifact JavaScript
+
+-   no artifact HTML
+
+-   no callback
+
+-   no shader
+
+-   no module
+
+-   no eval
+
+-   no Function constructor
+
+-   no external URL
+
+-   no remote data
+
+-   no notebook execution
+
+-   no script execution
+
+-   no real LLM
+
+-   no arbitrary formula execution
+
+-   no arbitrary unit expression
+
+-   no arbitrary labels with markup
+
+-   no unbounded arrays
+
+-   no integer overflow
+
+-   no metadata recursion abuse
+
+-   no private paths
+
+-   no secrets
+
+-   no telemetry upload
+
+
+必须输出：
+
+```text
+NO_EXTERNAL_NETWORK_REQUESTS
+NO_SECRET_PATTERN_HITS
+
+```
+
+----------
+
+# 48. Evidence
+
+新增：
+
+```text
+docs/phase10h/evidence/phase10h_phonon_contract/
+
+```
+
+至少包含：
+
+```text
+README.md
+phonon_band_schema.json
+phonon_dos_schema.json
+phonon_summary_schema.json
+phonon_manifest_schema.json
+qpoint_path_schema.json
+reciprocal_convention.json
+frequency_unit_policy.json
+imaginary_frequency_policy.json
+branch_identity_policy.json
+degeneracy_policy.json
+dos_normalization_policy.json
+band_dos_compatibility_policy.json
+caps.json
+stable_band_fixture_result.json
+imaginary_band_fixture_result.json
+discontinuous_path_result.json
+degenerate_modes_result.json
+total_dos_result.json
+imaginary_dos_result.json
+projected_dos_result.json
+compatible_pair_result.json
+incompatible_pair_result.json
+frontend_backend_validation_comparison.json
+deterministic_serialization.json
+security_audit.json
+network_audit.json
+artifact_hashes.json
+
+```
+
+不得保存：
+
+-   大型phonon datasets
+
+-   notebook outputs
+
+-   private paths
+
+-   tokens
+
+-   secrets
+
+-   external URLs
+
+-   raw library object dumps
+
+-   crash dumps
+
+
+----------
+
+# 49. Documentation
+
+新增或更新：
+
+```text
+docs/phase10h/phase10h_phonon_contract.md
+docs/phase10h/phase10h_reciprocal_convention.md
+docs/phase10h/phase10h_qpoint_path_contract.md
+docs/phase10h/phase10h_frequency_units.md
+docs/phase10h/phase10h_imaginary_frequency_policy.md
+docs/phase10h/phase10h_branch_and_degeneracy.md
+docs/phase10h/phase10h_phonon_band_schema.md
+docs/phase10h/phase10h_phonon_dos_schema.md
+docs/phase10h/phase10h_band_dos_compatibility.md
+docs/phase10h/phase10h_caps.md
+docs/phase10h/phase10h_security.md
+docs/phase10h/phase10h_evidence.md
+docs/phase10h/phase10h_readiness_matrix.md
+
+```
+
+更新：
+
+```text
+docs/index.md
+docs/13_SHARED_SCHEMA_SPEC.md
+persistent/DESIGN_PROGRESS.md
+persistent/TASK_BOARD.md
+persistent/CHANGELOG.md
+persistent/OPEN_QUESTIONS.md
+persistent/TOOL_REGISTRY_NOTES.md
+persistent/ARCHITECTURE_DECISIONS.md
+
+```
+
+必须记录：
+
+-   reciprocal lattice convention
+
+-   `2π` policy
+
+-   q-point coordinate system
+
+-   path segments
+
+-   labels
+
+-   frequency canonical unit
+
+-   unit conversions
+
+-   imaginary encoding
+
+-   zero tolerance
+
+-   branch identity
+
+-   degeneracy
+
+-   DOS normalization
+
+-   projected DOS identity
+
+-   band/DOS compatibility
+
+-   eigenvector deferred
+
+-   renderer deferred
+
+-   formal registration deferred
+
+
+----------
+
+# 50. Readiness Matrix
+
+最终分别判断：
+
+-   reciprocal convention
+
+-   `2π` policy
+
+-   q-point coordinates
+
+-   q-point path
+
+-   segment discontinuities
+
+-   labels
+
+-   path distance
+
+-   frequency unit
+
+-   THz conversion
+
+-   cm⁻¹ conversion
+
+-   meV conversion
+
+-   imaginary frequency
+
+-   near-zero classification
+
+-   acoustic mode metadata
+
+-   branch identity
+
+-   branch count
+
+-   degeneracy
+
+-   atom ordering
+
+-   phonon band schema
+
+-   phonon DOS schema
+
+-   projected DOS
+
+-   DOS normalization
+
+-   DOS integration
+
+-   negative-frequency DOS
+
+-   broadening metadata
+
+-   band/DOS compatibility
+
+-   source/provenance
+
+-   NAC metadata
+
+-   summary
+
+-   manifest
+
+-   caps
+
+-   deterministic serialization
+
+-   validator
+
+-   fixtures
+
+-   reference comparison
+
+-   security
+
+-   phonon band adapter
+
+-   phonon DOS adapter
+
+-   combined renderer
+
+-   eigenvector contract
+
+-   phonon animation
+
+-   formal registration
+
+
+推荐期望：
+
+```text
+reciprocal convention: READY
+q-point contract: READY
+path/segment contract: READY
+frequency unit policy: READY
+imaginary frequency policy: READY
+zero tolerance: READY
+branch identity: READY
+branch count policy: READY
+degeneracy policy: READY
+atom ordering: READY
+phonon band schema: READY
+phonon DOS schema: READY
+projected DOS contract: READY
+DOS normalization: READY
+band/DOS compatibility: READY
+source/provenance: READY
+NAC metadata: READY
+summary: READY
+manifest: READY
+caps: READY
+deterministic serialization: READY
+validator: READY
+fixtures: READY
+reference comparison: READY
+security: READY
+
+phonon band adapter: NOT_READY
+phonon DOS adapter: NOT_READY
+combined band + DOS: NOT_READY
+phonon eigenvector contract: NOT_READY
+phonon animation: NOT_READY
+formal phonon product registration: NOT_READY
+
+```
+
+不得因为contract完成就将phonon bands或DOS标记READY。
+
+----------
+
+# 51. Checks
+
+至少运行：
+
+```bash
+git diff --check
+uv lock --check
+
+uv run python -m pytest -q
+
+npm --prefix apps/web test
+npm --prefix apps/web run typecheck
+npm --prefix apps/web run build
+
+```
+
+并运行：
+
+-   reciprocal convention tests
+
+-   q-point tests
+
+-   path segment tests
+
+-   frequency conversion tests
+
+-   imaginary-mode tests
+
+-   branch tests
+
+-   degeneracy tests
+
+-   DOS tests
+
+-   normalization/integration tests
+
+-   projected DOS tests
+
+-   band/DOS compatibility tests
+
+-   caps/overflow tests
+
+-   deterministic serialization tests
+
+-   frontend/backend comparison
+
+-   artifact validator tests
+
+-   security scan
+
+-   network audit
+
+-   Phase 10 Closure Regression Pack
+
+-   Phase 10G regression
+
+-   service-backed integration
+
+-   no-skipped assertion
+
+
+本阶段不要求phonon browser evidence，因为尚未实现renderer。
+
+必须如实记录：
+
+-   passed
+
+-   failed
+
+-   skipped
+
+-   unavailable
+
+
+不得把skipped写成passed。
+
+----------
+
+# 52. Commit / CI
+
+完成contract、validators、tests、evidence和docs后：
+
+```bash
+git status --short
+git diff --stat
+git add <only Phase 10H related files>
+git commit -m "Define phonon data contracts"
+git push origin master
+
+```
+
+等待current HEAD CI。
+
+必须确认：
+
+-   backend unit success
+
+-   frontend tests success
+
+-   frontend typecheck success
+
+-   frontend build success
+
+-   phonon contract tests success
+
+-   Phase 10 closure success
+
+-   Phase 10G regression success
+
+-   service-backed integration success
+
+-   no-skipped assertion success
+
+-   origin/master matches HEAD
+
+-   git status clean
+
+
+不得伪造CI。
+
+----------
+
+# 53. 最终报告格式
+
+完成后输出：
+
+# Phase 10H Phonon Contract Result
+
+## 1. Conclusion
+
+PASS / PARTIAL_PASS / FAIL
+
+## 2. Baseline
+
+-   Phase 10G-3 assumed complete:
+
+-   branch:
+
+-   initial status:
+
+-   final HEAD:
+
+-   final status:
+
+
+## 3. Schema Family
+
+-   phonon band:
+
+-   phonon DOS:
+
+-   phonon summary:
+
+-   phonon manifest:
+
+-   q-point path:
+
+-   current versions:
+
+
+## 4. Reciprocal Convention
+
+-   real-space lattice:
+
+-   reciprocal formula:
+
+-   `2π`:
+
+-   reciprocal fractional:
+
+-   reciprocal Cartesian:
+
+-   Cartesian unit:
+
+-   triclinic:
+
+
+## 5. Q-Point Path
+
+-   q-point shape:
+
+-   index:
+
+-   labels:
+
+-   segments:
+
+-   shared endpoints:
+
+-   discontinuities:
+
+-   path distance:
+
+-   ordering:
+
+
+## 6. Frequency Policy
+
+-   canonical unit:
+
+-   THz:
+
+-   cm⁻¹:
+
+-   meV:
+
+-   physical constants:
+
+-   angular/cyclic distinction:
+
+-   unsupported units:
+
+
+## 7. Imaginary / Zero Modes
+
+-   encoding:
+
+-   negative values:
+
+-   zero tolerance:
+
+-   near-zero:
+
+-   acoustic modes:
+
+-   source corrections:
+
+-   warnings:
+
+
+## 8. Branches / Degeneracy
+
+-   branch identity:
+
+-   source order:
+
+-   branch count:
+
+-   full/subset scope:
+
+-   crossings:
+
+-   degeneracy groups:
+
+-   merging policy:
+
+
+## 9. Atom Ordering
+
+-   structure identity:
+
+-   atom count:
+
+-   species:
+
+-   canonical order:
+
+-   projected DOS identity:
+
+-   future eigenvectors:
+
+
+## 10. Phonon Band Contract
+
+-   q-points:
+
+-   segments:
+
+-   branches:
+
+-   frequency shape:
+
+-   provenance:
+
+-   security:
+
+-   caps:
+
+
+## 11. Phonon DOS Contract
+
+-   frequency grid:
+
+-   total DOS:
+
+-   density unit:
+
+-   normalization:
+
+-   integration:
+
+-   negative region:
+
+-   projected DOS:
+
+-   broadening:
+
+
+## 12. Band / DOS Compatibility
+
+-   structure:
+
+-   atom order:
+
+-   units:
+
+-   imaginary policy:
+
+-   source:
+
+-   NAC:
+
+-   compatible:
+
+-   convertible:
+
+-   incompatible:
+
+
+## 13. Provenance / NAC
+
+-   producer:
+
+-   version:
+
+-   method:
+
+-   force constants:
+
+-   primitive/supercell:
+
+-   NAC:
+
+-   input hash:
+
+-   private paths:
+
+
+## 14. Caps
+
+-   atoms:
+
+-   branches:
+
+-   q-points:
+
+-   segments:
+
+-   DOS grid:
+
+-   projections:
+
+-   numeric values:
+
+-   artifact bytes:
+
+-   overflow:
+
+
+## 15. Validation
+
+-   shared:
+
+-   band:
+
+-   DOS:
+
+-   compatibility:
+
+-   security:
+
+-   typed errors:
+
+-   warning ordering:
+
+
+## 16. Determinism
+
+-   q-point order:
+
+-   branch order:
+
+-   segment order:
+
+-   projection order:
+
+-   warning order:
+
+-   manifest order:
+
+-   hashes:
+
+-   structure identity:
+
+
+## 17. Fixtures
+
+-   stable band:
+
+-   imaginary band:
+
+-   discontinuous path:
+
+-   degenerate modes:
+
+-   total DOS:
+
+-   imaginary DOS:
+
+-   projected DOS:
+
+-   compatible pair:
+
+-   incompatible pair:
+
+-   invalid:
+
+-   over-cap:
+
+
+## 18. Reference Comparison
+
+-   reciprocal conversion:
+
+-   path distance:
+
+-   THz/cm⁻¹:
+
+-   THz/meV:
+
+-   imaginary classification:
+
+-   DOS integral:
+
+-   backend/frontend:
+
+-   differences:
+
+
+## 19. Security
+
+-   executable content:
+
+-   labels/markup:
+
+-   external references:
+
+-   unit expressions:
+
+-   metadata abuse:
+
+-   caps:
+
+-   private paths:
+
+-   secrets:
+
+-   network:
+
+-   markers:
+
+
+## 20. Evidence
+
+-   directory:
+
+-   schemas:
+
+-   reciprocal policy:
+
+-   frequency policy:
+
+-   branch policy:
+
+-   DOS policy:
+
+-   compatibility:
+
+-   fixtures:
+
+-   validation comparison:
+
+-   deterministic serialization:
+
+-   security:
+
+-   hashes:
+
+
+## 21. Tests
+
+-   reciprocal:
+
+-   q-points:
+
+-   path:
+
+-   frequency:
+
+-   imaginary:
+
+-   branches:
+
+-   degeneracy:
+
+-   DOS:
+
+-   projections:
+
+-   compatibility:
+
+-   caps:
+
+-   security:
+
+-   backend full:
+
+-   frontend full:
+
+-   typecheck:
+
+-   build:
+
+-   Phase 10 closure:
+
+-   Phase 10G:
+
+-   service-backed:
+
+-   no-skipped:
+
+-   lock:
+
+-   diff:
+
+
+## 22. Files
+
+-   schemas/models:
+
+-   validators:
+
+-   conversions:
+
+-   serializers:
+
+-   fixtures:
+
+-   backend tests:
+
+-   shared/frontend tests:
+
+-   evidence:
+
+-   docs:
+
+-   persistent:
+
+-   dependencies/lockfile:
+
+
+## 23. Deferred
+
+明确列出：
+
+-   phonopy parser/adapter
+
+-   pymatgen phonon adapter
+
+-   phonon bands plot
+
+-   phonon DOS plot
+
+-   combined band + DOS
+
+-   eigenvector payload
+
+-   eigenvector atom mapping
+
+-   complex phase
+
+-   mode animation
+
+-   LO-TO directional rendering
+
+-   Raman/IR activity
+
+-   thermal properties
+
+-   Grüneisen
+
+-   quasi-harmonic
+
+-   official benchmark validation
+
+-   formal phonon tool registration
+
+
+## 24. Readiness
+
+-   reciprocal:
+
+-   q-points:
+
+-   frequency:
+
+-   imaginary modes:
+
+-   branches:
+
+-   DOS:
+
+-   compatibility:
+
+-   provenance:
+
+-   caps:
+
+-   validator:
+
+-   fixtures:
+
+-   security:
+
+-   band adapter:
+
+-   DOS adapter:
+
+-   combined:
+
+-   eigenvectors:
+
+-   animation:
+
+-   formal product:
+
+
+## 25. Commit / CI
+
+-   commit:
+
+-   HEAD:
+
+-   CI run:
+
+-   backend:
+
+-   frontend:
+
+-   typecheck:
+
+-   build:
+
+-   phonon contract:
+
+-   Phase 10 closure:
+
+-   Phase 10G:
+
+-   service-backed:
+
+-   no-skipped:
+
+-   origin:
+
+-   status:
+
+
+## 26. Whether allowed to enter next phase
+
+允许 / 不允许
+
+下一阶段：
+
+```text
+Phase 10H-1：Phonon Bands
+
+```
+
+下一阶段只实现批准来源的phonon band adapter、unit normalization、artifact emission、static plot和API evidence基础，不实现phonon DOS、combined view、eigenvectors或animation。
+
+----------
+
+# 54. PASS 判定
+
+PASS必须满足：
+
+-   有真实phonon band schema
+
+-   有真实phonon DOS schema
+
+-   有summary和manifest schema
+
+-   reciprocal lattice convention明确
+
+-   `2π`语义明确
+
+-   q-point坐标系明确
+
+-   path segments明确
+
+-   discontinuity明确
+
+-   high-symmetry label policy明确
+
+-   path distance数学定义明确
+
+-   canonical frequency unit明确
+
+-   THz/cm⁻¹/meV conversion经过reference测试
+
+-   angular/cyclic frequency不混淆
+
+-   imaginary frequency编码明确
+
+-   zero tolerance明确
+
+-   acoustic modes不被静默修正
+
+-   branch identity明确
+
+-   branch order不被validator重排
+
+-   branch count policy明确
+
+-   degeneracy不被静默合并
+
+-   atom ordering明确
+
+-   DOS grid语义明确
+
+-   DOS normalization明确
+
+-   DOS integration policy明确
+
+-   negative-frequency DOS明确
+
+-   projected DOS identity明确
+
+-   band/DOS compatibility明确
+
+-   provenance和NAC metadata明确
+
+-   caps和overflow protection完成
+
+-   deterministic serialization完成
+
+-   validators完成
+
+-   fixtures和独立reference完成
+
+-   no executable content
+
+-   no external URL
+
+-   no secret hits
+
+-   Phase 10 Closure和Phase 10G不回退
+
+-   tests通过
+
+-   CI通过
+
+-   git clean
+
+
+PARTIAL_PASS仅允许：
+
+-   projected DOS标记PARTIAL_READY，但total DOS contract完整
+
+-   degeneracy仅支持source-declared groups
+
+-   NAC只记录metadata、不做数值验证
+
+-   frontend完整validator暂未实现，但shared types和backend权威validator完整
+
+-   npm audit因既有registry问题不可用
+
+
+FAIL包括：
+
+-   只有文档，没有validator
+
+-   reciprocal convention不明确
+
+-   `2π`含义不明确
+
+-   q-point坐标系混用
+
+-   THz和angular frequency混淆
+
+-   negative frequencies被取绝对值
+
+-   branch被按频率静默重排
+
+-   degeneracy被合并导致数据丢失
+
+-   branch count与3N不一致却无说明
+
+-   DOS normalization不明确
+
+-   band和DOS无structure/source检查直接组合
+
+-   projected DOS只靠字符串label绑定
+
+-   无caps
+
+-   允许NaN/Infinity
+
+-   允许external URL
+
+-   提前实现animation导致范围膨胀
+
+-   Phase 10G回退
+
+-   CI失败却声明PASS
+
+---END---
+
+---TASK---
+ 状态：待处理
+ # Phase 10H-1：Phonon Bands
+
+进入 Phase 10H-1：Phonon Bands。
+
+可以默认：
+
+-   Phase 10H：Phonon Contract 已完成并通过
+
+-   `phase10h.phonon_band.v1`
+
+-   `phase10h.phonon_dos.v1`
+
+-   `phase10h.phonon_summary.v1`
+
+-   `phase10h.phonon_manifest.v1`
+
+-   `phase10h.qpoint_path.v1`
+
+-   reciprocal lattice convention、`2π` policy、q-point coordinate system、path segment、frequency unit、imaginary-mode encoding、branch identity、degeneracy、atom ordering、caps和security contract均已固定
+
+-   canonical frequency unit已确定
+
+-   THz、cm⁻¹、meV转换已有reference tests
+
+-   phonon band与DOS compatibility contract已定义
+
+-   Phase 10G trajectory product已正式收口
+
+-   Phase 10 Closure Regression Pack保持通过
+
+-   当前branch、HEAD、working tree和Phase 10H CI可视为正确且clean
+
+
+本阶段不需要重复Phase 10H baseline检查。
+
+本阶段主要目标：
+
+> 为已批准来源的phonon band数据实现安全、deterministic、可验证的adapter、normalization、artifact emission、静态band plot、表格结果、API路径和最小产品预览，为后续Phonon DOS和Combined Band + DOS提供稳定基础。
+
+本阶段只完成：
+
+-   approved phonon band input scope
+
+-   source adapter
+
+-   q-point/path normalization
+
+-   frequency unit conversion
+
+-   imaginary-mode handling
+
+-   branch preservation
+
+-   high-symmetry label normalization
+
+-   phonon band artifact emission
+
+-   summary and manifest
+
+-   static band plot
+
+-   data table
+
+-   API evidence
+
+-   accessibility
+
+-   browser smoke
+
+-   security
+
+-   docs and readiness
+
+
+本阶段不实现phonon DOS、不实现combined band + DOS、不实现eigenvector、不实现phonon animation。
+
+----------
+
+# 1. 本阶段定位
+
+Phase 10H-1是phonon band的正式数据生产和静态产品预览阶段。
+
+它必须解决：
+
+-   哪些phonon band来源在第一版受支持
+
+-   来源对象如何映射到`phase10h.phonon_band.v1`
+
+-   reciprocal-space约定如何核对
+
+-   q-point path如何规范化
+
+-   high-symmetry label如何规范化
+
+-   branch顺序如何保留
+
+-   frequency单位如何转换
+
+-   imaginary frequency如何显示
+
+-   discontinuous path如何绘制
+
+-   band artifact如何进入正式runtime
+
+-   static plot和table如何安全呈现
+
+-   malformed或不兼容数据如何拒绝
+
+-   browser/API证据如何形成
+
+
+本阶段不是：
+
+-   phonon计算执行阶段
+
+-   phonopy命令执行阶段
+
+-   DOS阶段
+
+-   eigenvector阶段
+
+-   animation阶段
+
+-   thermal-property阶段
+    -正式完整phonon产品收口阶段
+
+
+----------
+
+# 2. 本阶段目标
+
+必须完成以下十二类工作：
+
+1.  **Phonon band source and adapter audit**
+
+2.  **Approved input format / object scope**
+
+3.  **Q-point and reciprocal normalization**
+
+4.  **Frequency unit normalization**
+
+5.  **Branch、imaginary-mode和degeneracy preservation**
+
+6.  **Band artifact、summary和manifest emission**
+
+7.  **Static phonon band plot**
+
+8.  **Tabular and JSON preview**
+
+9.  **Runtime、registry和API integration基础**
+
+10.  **Browser smoke and accessibility**
+
+11.  **Security、performance和determinism**
+
+12.  **Docs、evidence和readiness closure**
+
+
+本阶段必须产生真实adapter和真实plot artifact。
+
+如果最终只有contract mapping文档、mock chart或fixture静态截图，没有真实输入→adapter→artifact→preview路径，本阶段必须判定为FAIL。
+
+----------
+
+# 3. 第一版输入范围
+
+优先支持以下来源之一或多个，必须根据仓库现有依赖审计后决定：
+
+```text
+phonopy band.yaml / band structure object
+pymatgen phonon band structure object
+canonical phase10h.phonon_band.v1 JSON
+
+```
+
+推荐优先级：
+
+1.  canonical JSON
+
+2.  已存在依赖中的pymatgen phonon对象
+
+3.  phonopy静态输出文件
+
+4.  其他格式延后
+
+
+如果仓库已使用phonopy：
+
+-   可以支持`band.yaml`
+
+-   不得运行phonopy命令
+
+-   只允许静态文件解析
+
+
+如果仓库已有pymatgen：
+
+-   可以适配其phonon band structure对象或安全序列化结果
+
+-   必须核对其reciprocal convention和branch order
+
+
+本阶段默认不支持：
+
+-   动态执行phonopy
+
+-   force constants计算
+
+-   vasprun.xml phonon提取
+
+-   OUTCAR解析
+
+-   arbitrary YAML object tags
+
+-   pickle
+
+-   notebook object
+
+-   remote URL
+
+-   compressed archive
+
+-   arbitrary plugin adapter
+
+
+----------
+
+# 4. 严格禁止范围
+
+本阶段不得实现：
+
+-   phonon DOS
+
+-   combined band + DOS
+
+-   eigenvector payload
+
+-   eigenvector parser
+
+-   phonon animation
+
+-   atomic displacement
+
+-   mode selection animation
+
+-   LO-TO directional renderer
+
+-   thermal properties
+
+-   free energy
+
+-   entropy
+
+-   heat capacity
+
+-   Grüneisen parameters
+
+-   quasi-harmonic approximation
+
+-   phonon calculation execution
+
+-   external solver invocation
+
+-   electronic band structure
+
+-   Brillouin zone renderer
+
+-   external API
+
+-   notebook execution
+
+-   script execution
+
+-   real LLM
+
+-   formal full phonon product registration
+
+
+不得：
+
+-   修改Phase 10H contract语义
+
+-   修改trajectory contract
+
+-   修改static viewer scene
+
+-   静默改变`2π` convention
+
+-   静默改变q-point coordinate system
+
+-   静默重排branches
+
+-   静默按frequency排序branches
+
+-   静默连接跨越discontinuous segment的线
+
+-   静默丢弃negative frequencies
+
+-   静默将negative frequencies取绝对值
+
+-   静默把near-zero全部设为0
+
+-   静默执行ASR correction
+
+-   静默生成high-symmetry labels
+
+-   静默推断缺失atom order
+
+-   允许任意YAML tag构造对象
+
+-   允许NaN或Infinity
+
+-   允许无限q-points/branches
+
+-   允许外部URL
+
+-   允许artifact JavaScript
+
+-   允许HTML/script label
+
+-   允许用户提供任意plot代码
+
+-   通过前端转换掩盖backend artifact错误
+
+-   将band plot标记为officially validated
+
+
+允许：
+
+-   safe static parser
+
+-   adapter
+
+-   unit conversion
+
+-   canonicalization
+
+-   plot generation
+
+-   table generation
+
+-   API evidence
+
+-   browser smoke
+
+-   tests
+
+-   docs
+
+
+----------
+
+# 5. 必读实现
+
+开始后直接阅读当前真实代码。
+
+## 5.1 Phase 10H Contract
+
+阅读：
+
+-   phonon band schema
+
+-   q-point path schema
+
+-   summary schema
+
+-   manifest schema
+
+-   validators
+
+-   frequency conversion helpers
+
+-   reciprocal conversion helpers
+
+-   typed errors
+
+-   caps
+
+-   fixtures
+
+-   deterministic serializer
+
+
+必须直接复用，不建立第二套phonon band模型。
+
+## 5.2 Existing Adapter Patterns
+
+搜索：
+
+```bash
+rg -n "adapter|tool_id|artifact emission|summary artifact|manifest|plot artifact" backend packages tests
+
+```
+
+重点阅读：
+
+-   static physics adapters
+
+-   XRD adapter
+
+-   RDF adapter
+
+-   generic plot adapter
+
+-   service-backed runtime
+
+-   artifact validator
+
+-   Tool Registry
+
+-   planner metadata
+
+
+## 5.3 Existing Plot Infrastructure
+
+搜索：
+
+```bash
+rg -n "line plot|series|x_axis|y_axis|plotly|recharts|canvas|svg|chart" apps/web backend packages tests
+
+```
+
+确认：
+
+-   通用line plot contract
+
+-   series cap
+
+-   discontinuity表达
+
+-   axis labels
+
+-   negative values
+
+-   annotations
+
+-   responsive layout
+
+-   PNG/export能力
+
+-   accessibility
+
+
+## 5.4 Existing Phonon Dependencies
+
+搜索：
+
+```bash
+rg -n "phonopy|pymatgen.*phonon|PhononBand|band.yaml|yaml" pyproject.toml uv.lock backend packages tests
+
+```
+
+确认：
+
+-   dependency是否已存在
+
+-   parser能力
+
+-   YAML安全加载方式
+
+-   library version
+
+-   licensing
+
+-   source object semantics
+
+
+----------
+
+# 6. 修改前输出审计
+
+修改代码前输出：
+
+# Phase 10H-1 Phonon Bands Pre-Implementation Audit
+
+## 1. Existing Source Support
+
+-   canonical JSON:
+
+-   phonopy:
+
+-   pymatgen:
+
+-   other existing formats:
+
+-   current dependencies:
+
+-   safe parser support:
+
+-   gaps:
+
+
+## 2. Existing Plot Infrastructure
+
+-   line plot contract:
+
+-   discontinuity support:
+
+-   negative y-values:
+
+-   high-symmetry labels:
+
+-   multiple series:
+
+-   accessibility:
+
+-   export:
+
+-   limits:
+
+
+## 3. Existing Runtime Path
+
+-   registry:
+
+-   planner:
+
+-   adapter base:
+
+-   runtime:
+
+-   artifact validator:
+
+-   manifest:
+
+-   frontend preview:
+
+-   API:
+
+-   evidence helpers:
+
+
+## 4. Scientific Risks
+
+至少列出：
+
+-   source reciprocal convention mismatch
+
+-   q-point coordinate mismatch
+
+-   path distance mismatch
+
+-   duplicated segment endpoint handling
+
+-   branch transposition
+
+-   branch reorder
+
+-   negative frequency sign loss
+
+-   frequency unit drift
+
+-   angular/cyclic frequency confusion
+
+-   3N branch mismatch
+
+-   missing atom ordering
+
+-   high-symmetry label corruption
+
+-   source NAC ambiguity
+
+-   source ASR ambiguity
+
+-   YAML unsafe construction
+
+-   large band matrix
+
+-   plot line connection across discontinuity
+
+-   candidate/reference overclaim
+
+
+## 5. Selected Strategy
+
+说明：
+
+-   supported sources:
+
+-   parser:
+
+-   normalization:
+
+-   reciprocal convention:
+
+-   frequency conversion:
+
+-   branch order:
+
+-   labels:
+
+-   path distance:
+
+-   plot:
+
+-   table:
+
+-   adapter:
+
+-   registry visibility:
+
+-   API:
+
+-   browser:
+
+-   security:
+
+
+## 6. Planned Files
+
+列出：
+
+-   source parser
+
+-   adapter
+
+-   normalizer
+
+-   plot producer
+
+-   table producer
+
+-   registry metadata
+
+-   API tests
+
+-   frontend preview
+
+-   fixtures
+
+-   browser smoke
+
+-   evidence
+
+-   docs
+
+-   persistent
+
+
+审计后直接继续实现。
+
+----------
+
+# 7. Tool Boundary
+
+建议内部或受限工具ID：
+
+```text
+phonon.bands
+
+```
+
+或符合项目命名规范的：
+
+```text
+structure.phonon_bands
+
+```
+
+必须审计现有tool naming后选定唯一ID。
+
+本阶段推荐状态：
+
+```text
+registered internally / planner-limited
+
+```
+
+正式完整phonon产品注册可以推迟到：
+
+-   Phase 10H-3 combined view完成
+
+-   或独立phonon band产品证据完整后
+
+
+如果本阶段已有充分API和browser evidence，也可以将band-only tool正式注册，但必须：
+
+-   capability只声明bands
+
+-   DOS=false
+
+-   eigenvectors=false
+
+-   animation=false
+
+
+不得将其注册成通用`phonon.viewer`并过度宣称。
+
+----------
+
+# 8. Input Contract
+
+Adapter输入必须是批准来源之一。
+
+建议：
+
+```ts
+type PhononBandAdapterInput = {
+  sourceArtifactId: string;
+  sourceFormat:
+    | "phase10h.phonon_band.v1"
+    | "phonopy_band_yaml"
+    | "pymatgen_phonon_band_json";
+  frequencyUnitOverride?: ApprovedFrequencyUnit;
+  reciprocalConventionOverride?: ApprovedReciprocalConvention;
+};
+
+```
+
+Overrides必须：
+
+-   strict allowlist
+
+-   only when source metadata缺失
+
+-   provenance中记录
+
+-   不允许任意字符串
+
+
+不得允许：
+
+-   arbitrary parser name
+
+-   arbitrary Python class
+
+-   arbitrary URL
+
+-   arbitrary YAML tag
+
+-   arbitrary unit expression
+
+-   callback
+
+-   plot code
+
+
+----------
+
+# 9. Canonical JSON Path
+
+如果输入已是：
+
+```text
+phase10h.phonon_band.v1
+
+```
+
+则流程：
+
+```text
+parse
+→ validate
+→ canonicalize
+→ summary
+→ manifest
+→ plot/table
+
+```
+
+不得：
+
+-   重新推断q-path
+
+-   重排branches
+
+-   改变unit
+
+-   改变negative frequency
+
+-   改变labels
+
+
+只允许canonical key ordering和明确格式化。
+
+----------
+
+# 10. Phonopy Band YAML Path
+
+如果实现phonopy支持，必须使用安全静态解析。
+
+## 安全要求
+
+-   使用safe loader
+
+-   禁止自定义tag
+
+-   禁止Python object construction
+
+-   禁止anchors造成过度展开，或设置严格cap
+
+-   输入byte cap
+
+-   nesting depth cap
+
+-   sequence length cap
+
+-   mapping key count cap
+
+-   string length cap
+
+
+不得使用：
+
+```python
+yaml.load(...)
+
+```
+
+搭配不安全loader。
+
+## Mapping
+
+必须审计真实phonopy字段，例如：
+
+-   `nqpoint`
+
+-   `npath`
+
+-   `segment_nqpoint`
+
+-   `reciprocal_lattice`
+
+-   `phonon`
+
+-   `q-position`
+
+-   `distance`
+
+-   `band`
+
+-   `frequency`
+
+-   `label`
+
+
+不得凭假设实现。
+
+必须核对：
+
+-   reciprocal lattice convention
+
+-   q-position coordinate system
+
+-   frequency unit
+
+-   branch ordering
+
+-   segment boundaries
+
+-   labels
+
+-   NAC metadata
+
+-   group velocity等未知字段处理
+
+
+未知字段：
+
+-   默认忽略并记录bounded warning
+
+-   不得写入任意metadata
+
+
+----------
+
+# 11. Pymatgen Source Path
+
+如果支持pymatgen对象或JSON：
+
+必须核对：
+
+-   object serialization shape
+
+-   q-point fractional/cartesian semantics
+
+-   branches shape
+
+-   branch definitions
+
+-   labels dictionary
+
+-   distances
+
+-   reciprocal lattice convention
+
+-   structure linkage
+
+-   NAC metadata
+
+-   frequency unit
+
+
+不得直接将library object dump写入artifact。
+
+必须映射到纯JSON canonical schema。
+
+如果pymatgen对象只能来自内存：
+
+-   adapter必须使用已批准内部对象
+
+-   不接受pickle上传
+
+-   不接受任意Python module path
+
+
+----------
+
+# 12. Source Detection
+
+格式检测必须：
+
+-   基于显式source format或artifact media/schema
+
+-   可辅以bounded content sniffing
+
+-   不仅依赖扩展名
+
+-   不尝试所有parser直到一个成功
+
+
+未知格式返回：
+
+```text
+PHONON_BAND_FORMAT_UNSUPPORTED
+
+```
+
+ambiguous格式返回：
+
+```text
+PHONON_BAND_FORMAT_AMBIGUOUS
+
+```
+
+----------
+
+# 13. Reciprocal Convention Normalization
+
+所有输出必须符合Phase 10H canonical convention。
+
+如果source使用不同convention：
+
+-   必须显式转换
+
+-   provenance记录source和target convention
+
+-   reference tests覆盖
+
+-   q-point coordinates/path distances同步转换
+
+
+不得只转换reciprocal lattice而不转换path distance。
+
+建议parse report记录：
+
+```json
+{
+  "source_reciprocal_convention": "crystallographic_no_2pi",
+  "target_reciprocal_convention": "physics_2pi",
+  "converted": true
+}
+
+```
+
+----------
+
+# 14. Q-Point Coordinate Normalization
+
+Canonical输出建议使用：
+
+```text
+reciprocal_fractional
+
+```
+
+如果source为reciprocal Cartesian：
+
+-   使用validated reciprocal lattice转换
+
+-   处理triclinic lattice
+
+-   保留source coordinates可选摘要，不写入主payload除非contract允许
+
+
+必须验证：
+
+-   shape 3
+
+-   finite
+
+-   count一致
+
+-   index连续
+
+-   no duplicate accidental removal
+
+
+不得自动折回第一Brillouin zone，除非contract明确；本阶段建议不做。
+
+----------
+
+# 15. Path Distance Normalization
+
+优先策略：
+
+-   如果source distance符合contract，验证后使用
+
+-   如果source缺失或不符合canonical unit，使用q-point和reciprocal lattice重新计算
+
+-   provenance记录是否recomputed
+
+
+必须：
+
+-   使用reciprocal Cartesian metric
+
+-   处理segment discontinuity
+
+-   deterministic
+
+-   reference-tested
+
+
+不得：
+
+-   使用q-point index作为distance
+
+-   对discontinuous segments画连接线
+
+-   静默修改source order
+
+
+----------
+
+# 16. Segment Normalization
+
+必须从source中建立明确segments。
+
+支持：
+
+-   source segment counts
+
+-   source branch definitions
+
+-   explicit start/end indices
+
+
+必须固定：
+
+-   shared endpoint policy
+
+-   duplicate endpoint policy
+
+-   discontinuity flag
+
+-   label propagation
+
+
+如果source无法可靠恢复segment：
+
+-   typed failure
+
+-   或生成单segment并发出明确warning，仅在科学上安全时
+
+
+不得通过labels缺失简单猜测segment。
+
+----------
+
+# 17. High-Symmetry Labels
+
+使用Phase 10H normalization policy。
+
+至少处理：
+
+```text
+GAMMA
+Gamma
+\Gamma
+Γ
+
+```
+
+输出canonical：
+
+```text
+Γ
+
+```
+
+必须：
+
+-   保留source label，若contract允许
+
+-   sanitize
+
+-   bounded length
+
+-   no markup execution
+
+-   no HTML
+
+-   no script
+
+-   no arbitrary LaTeX rendering
+
+
+未知安全label可以原样作为inert text保留，但必须符合字符和长度策略。
+
+----------
+
+# 18. Frequency Unit Normalization
+
+输出必须使用canonical frequency unit。
+
+如果canonical为：
+
+```text
+terahertz
+
+```
+
+则所有source值转换到THz。
+
+必须支持Phase 10H批准的conversion：
+
+-   THz → THz
+
+-   cm⁻¹ → THz
+
+-   meV → THz
+
+
+转换必须：
+
+-   使用统一constants helper
+
+-   preserve sign
+
+-   finite
+
+-   deterministic
+
+-   tested
+
+
+不得：
+
+-   对negative frequency丢失sign
+
+-   把angular frequency当THz
+
+-   仅修改unit label不修改数值
+
+
+parse report必须记录：
+
+```json
+{
+  "source_frequency_unit": "inverse_centimeter",
+  "target_frequency_unit": "terahertz",
+  "conversion_applied": true
+}
+
+```
+
+----------
+
+# 19. Imaginary Frequency Handling
+
+Canonical输出继续使用：
+
+```text
+negative_real
+
+```
+
+如果source使用：
+
+-   negative frequency
+
+-   imaginary flag + magnitude
+
+-   complex notation
+
+
+必须安全映射为negative real值。
+
+不得：
+
+-   取绝对值
+
+-   使用字符串`i`
+
+-   丢弃模式
+
+-   将small negative自动改0
+
+
+分类：
+
+```text
+imaginary
+near_zero
+positive
+
+```
+
+只作为summary/plot派生状态。
+
+原始canonical数值必须保留转换后结果。
+
+----------
+
+# 20. Zero Tolerance and ASR
+
+使用Phase 10H既定tolerance。
+
+Adapter不得：
+
+-   修改原始frequency
+
+-   自动执行acoustic sum rule correction
+
+-   自动把Gamma前三支归零
+
+
+可以生成warnings：
+
+```text
+PHONON_ACOUSTIC_MODES_NOT_CORRECTED
+PHONON_SMALL_IMAGINARY_FREQUENCY
+
+```
+
+如果source声明ASR已应用，记录provenance。
+
+----------
+
+# 21. Branch Preservation
+
+输出branch顺序必须按source order保持。
+
+必须检查：
+
+-   branch index连续
+
+-   branch count
+
+-   每branch长度
+
+-   3N policy
+
+-   subset policy
+
+
+不得：
+
+-   每个q-point独立排序frequency
+
+-   按平均frequency重排
+
+-   自动连接crossing branches
+
+-   自动合并degenerate branches
+
+
+parse report记录：
+
+```json
+{
+  "branch_order_policy": "source_preserved",
+  "branch_reordered": false
+}
+
+```
+
+如果source本身使用q-point-major矩阵，转置时必须有shape tests。
+
+----------
+
+# 22. Degeneracy
+
+本阶段只保留：
+
+-   source-declared degeneracy
+
+-   或不提供
+
+
+不得自动从frequency tolerance生成权威degeneracy。
+
+如果source没有：
+
+-   summary中标记unknown
+
+-   不影响band plot
+
+
+plot不得因degeneracy而合并series。
+
+----------
+
+# 23. Atom Ordering and Structure Identity
+
+Adapter必须要求或恢复：
+
+-   canonical structure identity
+
+-   atom count
+
+-   species order
+
+
+来源可能包括：
+
+-   linked structure artifact
+
+-   source metadata
+
+-   adapter input关联
+
+
+必须验证：
+
+```text
+branch_count == 3 × atom_count
+
+```
+
+除非批准subset scope。
+
+不得：
+
+-   只从branch count反推atom order
+
+-   仅用formula作为identity
+
+-   丢失species ordering
+
+
+如果无法建立structure identity：
+
+```text
+PHONON_STRUCTURE_IDENTITY_REQUIRED
+
+```
+
+----------
+
+# 24. Phonon Band Parse Report
+
+建议新增：
+
+```text
+phase10h.phonon_band_parse_report.v1
+
+```
+
+至少包含：
+
+```json
+{
+  "schema_version": "phase10h.phonon_band_parse_report.v1",
+  "detected_format": "phonopy_band_yaml",
+  "qpoint_count": 101,
+  "segment_count": 4,
+  "branch_count": 6,
+  "source_frequency_unit": "terahertz",
+  "target_frequency_unit": "terahertz",
+  "source_reciprocal_convention": "physics_2pi",
+  "target_reciprocal_convention": "physics_2pi",
+  "path_distance_recomputed": false,
+  "labels_normalized": 1,
+  "branch_order_policy": "source_preserved",
+  "imaginary_mode_count": 2,
+  "warnings": [],
+  "input_sha256": "...",
+  "deterministic": true
+}
+
+```
+
+不得包含：
+
+-   raw full source
+
+-   absolute path
+
+-   environment dump
+
+-   stack trace
+
+-   Python repr
+
+
+----------
+
+# 25. Adapter Output
+
+至少输出：
+
+```text
+phonon_band.json
+phonon_band_summary.json
+phonon_band_parse_report.json
+phonon_band_plot.json
+phonon_band_table.json
+phonon_manifest.json
+
+```
+
+如果项目plot artifact命名已有规范，按现有规范调整。
+
+每个artifact必须：
+
+-   schema明确
+
+-   media type allowlisted
+
+-   size
+
+-   hash
+
+-   provenance
+
+-   security metadata
+
+-   deterministic order
+
+
+不得输出：
+
+-   renderer bundle
+
+-   HTML
+
+-   JS
+
+-   external assets
+
+-   raw library object
+
+-   source file副本，除非统一artifact policy批准
+
+
+----------
+
+# 26. Static Plot Contract
+
+优先复用现有line plot contract。
+
+必须支持：
+
+-   x-axis：q-path distance
+
+-   y-axis：frequency
+
+-   multiple branch series
+
+-   negative frequency region
+
+-   zero line
+
+-   segment discontinuities
+
+-   high-symmetry ticks
+
+-   unit label
+
+-   optional imaginary region shading，若现有plot contract安全支持
+
+
+不得：
+
+-   将discontinuous segment连接
+
+-   将negative频率翻到positive
+
+-   将每branch随机配色作为唯一识别
+
+-   依赖远程字体
+
+-   依赖外部JS
+
+
+----------
+
+# 27. Plot Series Policy
+
+每个branch为一条series，或使用批准的multi-series表示。
+
+必须：
+
+-   stable branch order
+
+-   stable branch ID
+
+-   no missing q-point
+
+-   discontinuity通过null break、segment series或显式break表达
+
+-   不复制超大数据超过plot cap
+
+
+如果branch数较多：
+
+-   可使用单一visual style
+
+-   tooltip/legend不需要列出全部branch
+
+-   不得因UI简化丢失scientific data
+
+
+Legend建议：
+
+```text
+Phonon branches
+
+```
+
+而不是列出`Branch 0...Branch 299`。
+
+----------
+
+# 28. Plot Axes
+
+## X Axis
+
+标签建议：
+
+```text
+Wave vector path
+
+```
+
+ticks显示：
+
+-   Γ
+
+-   X
+
+-   L
+
+-   等high-symmetry labels
+
+
+不得将x-axis仅标为`q-point index`，除非fallback明确。
+
+## Y Axis
+
+例如：
+
+```text
+Frequency (THz)
+
+```
+
+必须来自canonical unit。
+
+Zero line必须清晰。
+
+Imaginary频率显示在zero以下。
+
+----------
+
+# 29. Discontinuous Segment Rendering
+
+必须显式断线。
+
+可选实现：
+
+-   null separator
+
+-   separate series per segment
+
+-   plot contract segment break
+
+
+必须验证：
+
+-   Γ-X和L-W等不连续段不被连线
+
+-   shared endpoints不出现错误双线
+
+-   labels/ticks顺序稳定
+
+
+不得只靠大distance jump让chart library自动判断。
+
+----------
+
+# 30. Imaginary-Mode Plot Policy
+
+Negative frequencies必须正常绘制。
+
+可以：
+
+-   zero以下区域轻量标注
+
+-   显示“Imaginary modes”文字说明
+
+
+不得：
+
+-   使用红色作为唯一语义
+
+-   自动隐藏
+
+-   镜像为positive
+
+-   标为error而不显示
+
+
+辅助文本必须说明：
+
+```text
+Negative plotted values represent imaginary phonon modes under the contract's negative-real encoding.
+
+```
+
+----------
+
+# 31. Table Artifact
+
+建议提供long-form或branch-oriented table。
+
+例如：
+
+```text
+qpoint_index
+segment_index
+path_distance
+q_x
+q_y
+q_z
+label
+branch_index
+frequency
+classification
+
+```
+
+必须：
+
+-   deterministic row order
+
+-   q-point-major或branch-major固定
+
+-   bounded row count
+
+-   no HTML
+
+-   unit metadata
+
+-   imaginary classification派生
+
+-   original values不修改
+
+
+如果完整table超cap：
+
+-   输出summary table
+
+-   完整band JSON仍保留
+
+-   不允许生成巨大CSV导致内存风险
+
+
+----------
+
+# 32. Summary
+
+复用`phase10h.phonon_summary.v1`。
+
+至少填充：
+
+-   structure identity
+
+-   atom count
+
+-   branch count
+
+-   q-point count
+
+-   segment count
+
+-   frequency min/max
+
+-   imaginary count
+
+-   near-zero count
+
+-   unit
+
+-   NAC status
+
+-   ASR status
+
+-   source
+
+-   warnings
+
+
+不得：
+
+-   把small imaginary mode自动视为稳定
+
+-   声称结构稳定/不稳定的最终科学结论
+
+-   把band图当官方benchmark
+
+
+可显示中性文字：
+
+```text
+2 modes fall below the configured imaginary-mode threshold.
+
+```
+
+----------
+
+# 33. Manifest
+
+使用Phase 10H manifest contract。
+
+artifact order固定，例如：
+
+1.  phonon_band.json
+
+2.  phonon_band_summary.json
+
+3.  phonon_band_parse_report.json
+
+4.  phonon_band_plot.json
+
+5.  phonon_band_table.json
+
+6.  phonon_manifest.json
+
+
+必须包含：
+
+-   schema
+
+-   media type
+
+-   size
+
+-   sha256
+
+-   structure identity
+
+-   source
+
+-   security markers
+
+
+不得包含：
+
+-   JS
+
+-   HTML
+
+-   external URL
+
+-   eigenvectors
+
+-   DOS
+
+
+----------
+
+# 34. Adapter Registration
+
+建议tool metadata：
+
+```json
+{
+  "tool_id": "phonon.bands",
+  "category": "phonon",
+  "display_name": "Phonon Bands",
+  "description": "Normalize and visualize phonon branch frequencies along a validated q-point path.",
+  "input_contract": "approved phonon band source",
+  "output_contract": "phase10h.phonon_band.v1",
+  "execution_mode": "service_backed",
+  "deterministic": true,
+  "network_access": false
+}
+
+```
+
+字段按真实registry调整。
+
+Capabilities：
+
+```text
+phonon_bands: true
+imaginary_modes: true
+high_symmetry_path: true
+unit_conversion: true
+static_plot: true
+table: true
+phonon_dos: false
+eigenvectors: false
+animation: false
+thermal_properties: false
+
+```
+
+不得过度宣称。
+
+----------
+
+# 35. Planner Policy
+
+如果planner-visible，正向请求：
+
+```text
+Plot the phonon bands for this calculation.
+Show imaginary phonon modes along the q-point path.
+Visualize the phonon dispersion.
+
+```
+
+应选择phonon band tool。
+
+负向请求：
+
+```text
+Show phonon DOS.
+Animate this phonon mode.
+Calculate thermal conductivity.
+Compute phonons from this structure.
+
+```
+
+不得由本tool伪完成。
+
+推荐本阶段：
+
+```text
+planner-visible: limited
+
+```
+
+只有当输入artifact已是approved phonon band source时可选择。
+
+不得从普通structure直接承诺计算phonons。
+
+----------
+
+# 36. PlanValidator
+
+必须验证：
+
+-   approved input kind
+
+-   source format
+
+-   structure identity
+
+-   caps
+
+-   unit override allowlist
+
+-   reciprocal override allowlist
+
+-   no DOS request
+
+-   no animation request
+
+-   no computation request
+
+-   no external URL
+
+-   no arbitrary plot code
+
+
+typed codes建议：
+
+```text
+PHONON_BAND_INPUT_REQUIRED
+PHONON_BAND_SOURCE_FORMAT_UNSUPPORTED
+PHONON_BAND_STRUCTURE_MISMATCH
+PHONON_BAND_OPTION_UNSUPPORTED
+PHONON_BAND_DOS_UNSUPPORTED
+PHONON_BAND_ANIMATION_UNSUPPORTED
+PHONON_CALCULATION_UNSUPPORTED
+
+```
+
+不得放宽PlanValidator。
+
+----------
+
+# 37. API Evidence
+
+必须通过正式service-backed路径。
+
+至少覆盖：
+
+## Valid Canonical JSON
+
+```text
+approved artifact
+→ tool selection/direct tool request
+→ PlanValidator
+→ runtime
+→ adapter
+→ band/summary/plot/table/manifest
+→ artifact retrieval
+
+```
+
+## Valid External Static Source
+
+如果实现phonopy或pymatgen适配：
+
+-   parse
+
+-   normalize
+
+-   artifact emission
+
+-   stable hash
+
+
+## Imaginary Modes
+
+-   negative frequencies保留
+
+-   plot在zero以下
+
+-   summary count正确
+
+
+## Discontinuous Path
+
+-   plot断线
+
+-   labels正确
+
+
+## Invalid Input
+
+-   typed failure
+
+-   no partial artifacts
+
+
+## Over-Cap
+
+-   allocation前拒绝
+
+-   no crash
+
+-   no plot build
+
+
+----------
+
+# 38. Frontend Preview
+
+本阶段需要最小正式产品预览。
+
+至少显示：
+
+-   tool title
+
+-   structure identity摘要
+
+-   atom count
+
+-   branch count
+
+-   q-point count
+
+-   frequency range
+
+-   unit
+
+-   imaginary count
+
+-   plot
+
+-   table/JSON tabs
+
+-   source
+
+-   warnings
+
+-   artifact downloads
+
+
+不得显示：
+
+-   DOS
+
+-   eigenvector
+
+-   animation controls
+
+-   thermal-property结果
+
+-   stability最终结论
+
+
+----------
+
+# 39. Accessibility
+
+Plot和预览必须可访问。
+
+要求：
+
+-   plot有标题
+
+-   plot有文本摘要
+
+-   axis含unit
+
+-   high-symmetry path可读
+
+-   negative frequency语义有文本说明
+
+-   table可键盘访问
+
+-   warnings不只靠颜色
+
+-   focus order正确
+
+-   200% zoom可用
+
+-   mobile横向溢出有合理处理
+
+
+建议文本摘要：
+
+```text
+Phonon band structure with 6 branches across 101 q-points. Frequency range: -1.2 to 15.4 THz. Two imaginary modes are present below the configured threshold.
+
+```
+
+不得只提供canvas而无语义fallback。
+
+----------
+
+# 40. Mobile
+
+至少支持：
+
+-   responsive plot
+
+-   horizontal scrolling或压缩策略
+
+-   readable labels
+
+-   summary
+
+-   warnings
+
+-   table fallback
+
+-   artifact download
+
+
+要求：
+
+-   high-symmetry ticks不全部重叠
+
+-   tooltip不作为唯一数据访问方式
+
+-   no scroll trap
+
+-   touch target合格
+
+
+本阶段不要求复杂3D或动画。
+
+----------
+
+# 41. Plot Performance
+
+必须设置：
+
+-   max q-points
+
+-   max branches
+
+-   max plotted values
+
+-   max table rows
+
+
+超过interactive plot cap：
+
+-   artifact仍有效
+
+-   plot进入degraded或summary-only
+
+-   table可分页或只显示sample
+
+-   no browser freeze
+
+
+超过hard contract cap：
+
+-   adapter拒绝
+
+
+typed warning：
+
+```text
+PHONON_BAND_PLOT_DEGRADED
+
+```
+
+不得：
+
+-   在前端一次生成超大SVG节点
+
+-   为每个point创建DOM element
+
+-   将全部branch放入巨大legend
+
+
+----------
+
+# 42. Determinism
+
+必须验证：
+
+-   source mapping稳定
+
+-   q-point order稳定
+
+-   segment order稳定
+
+-   branch order稳定
+
+-   label normalization稳定
+
+-   unit conversion稳定
+
+-   warning order稳定
+
+-   table row order稳定
+
+-   manifest order稳定
+
+-   plot series order稳定
+
+-   hashes稳定
+
+
+PNG截图hash不作为跨浏览器一致性要求。
+
+----------
+
+# 43. Security
+
+必须验证：
+
+-   no unsafe YAML loader
+
+-   no Python object construction
+
+-   no pickle
+
+-   no eval
+
+-   no literal eval
+
+-   no shell
+
+-   no notebook execution
+
+-   no script execution
+
+-   no external URL
+
+-   no remote source
+
+-   no HTML label execution
+
+-   no SVG script
+
+-   no artifact JavaScript
+
+-   no arbitrary plot code
+
+-   no arbitrary unit expression
+
+-   no callback
+
+-   no oversized YAML expansion
+
+-   no metadata recursion abuse
+
+-   no private path
+
+-   no secrets
+
+-   no telemetry upload
+
+
+必须输出：
+
+```text
+NO_EXTERNAL_NETWORK_REQUESTS
+NO_SECRET_PATTERN_HITS
+
+```
+
+----------
+
+# 44. Fixtures
+
+新增small、deterministic fixtures。
+
+至少：
+
+## 44.1 Stable Canonical Band
+
+-   2 atoms
+
+-   6 branches
+
+-   Γ-X-L
+
+-   no imaginary modes
+
+
+## 44.2 Imaginary Band
+
+-   negative frequency
+
+-   near-zero frequency
+
+-   zero line
+
+
+## 44.3 Discontinuous Path
+
+-   Γ-X | L-W
+
+-   explicit break
+
+
+## 44.4 Triclinic Reciprocal Case
+
+-   reciprocal conversion
+
+-   path distance
+
+
+## 44.5 Label Normalization
+
+-   GAMMA / `\Gamma`
+
+-   canonical Γ
+
+
+## 44.6 Source Unit Conversion
+
+-   cm⁻¹ source
+
+-   meV source
+
+
+## 44.7 Degeneracy Metadata
+
+-   source-declared group
+
+-   separate branches
+
+
+## 44.8 Invalid Branch Shape
+
+## 44.9 Branch Count Mismatch
+
+## 44.10 Over-Cap Synthetic
+
+不得提交大型真实dataset。
+
+----------
+
+# 45. Unit Tests
+
+至少覆盖：
+
+## Source Detection
+
+-   canonical JSON
+
+-   phonopy，若支持
+
+-   pymatgen，若支持
+
+-   unsupported
+
+-   ambiguous
+
+
+## Q-Point Mapping
+
+-   fractional
+
+-   Cartesian
+
+-   reciprocal conversion
+
+-   triclinic
+
+-   distance
+
+-   segment break
+
+
+## Labels
+
+-   Gamma normalization
+
+-   duplicate labels
+
+-   unsafe markup
+
+-   bounded length
+
+
+## Frequencies
+
+-   THz
+
+-   cm⁻¹
+
+-   meV
+
+-   negative
+
+-   near-zero
+
+-   nonfinite
+
+-   unsupported unit
+
+
+## Branches
+
+-   source order
+
+-   q-major transpose
+
+-   correct 3N
+
+-   mismatch
+
+-   unequal length
+
+-   no automatic sorting
+
+
+## Plot
+
+-   series count
+
+-   discontinuity
+
+-   negative region
+
+-   axis units
+
+-   high-symmetry ticks
+
+-   degraded cap
+
+
+## Table
+
+-   row order
+
+-   classification
+
+-   labels
+
+-   unit metadata
+
+-   cap
+
+
+## Artifacts
+
+-   schema
+
+-   summary
+
+-   report
+
+-   manifest
+
+-   hashes
+
+-   order
+
+-   no executable assets
+
+
+## Security
+
+-   unsafe YAML tags
+
+-   anchors/expansion
+
+-   HTML labels
+
+-   external URL
+
+-   callback-like metadata
+
+-   private path
+
+
+----------
+
+# 46. API Tests
+
+覆盖：
+
+-   canonical valid
+
+-   supported source valid
+
+-   imaginary modes
+
+-   discontinuous path
+
+-   unit conversion
+
+-   invalid source
+
+-   structure mismatch
+
+-   over-cap
+
+-   deterministic replay
+
+-   artifact retrieval
+
+-   no partial artifacts
+
+
+----------
+
+# 47. Browser Smoke Evidence
+
+新增：
+
+```text
+docs/phase10h/evidence/phase10h1_phonon_bands/
+
+```
+
+## Chromium
+
+覆盖：
+
+-   tool result
+
+-   stable band plot
+
+-   imaginary band
+
+-   discontinuous path
+
+-   table
+
+-   JSON fallback
+
+-   degraded plot
+
+-   invalid state
+
+-   accessibility
+
+-   no external network
+
+
+## Firefox
+
+smoke：
+
+-   plot
+
+-   labels
+
+-   negative frequencies
+
+-   table fallback
+
+-   console/network
+
+
+## WebKit
+
+smoke：
+
+-   responsive plot
+
+-   labels
+
+-   table/JSON fallback
+
+-   console/network
+
+
+## Mobile
+
+smoke：
+
+-   summary
+
+-   responsive plot
+
+-   label handling
+
+-   warning
+
+-   table fallback
+
+-   no scroll trap
+
+
+----------
+
+# 48. Browser Evidence Assertions
+
+记录：
+
+-   browser version
+
+-   viewport
+
+-   tool ID
+
+-   source format
+
+-   schema
+
+-   atom count
+
+-   branch count
+
+-   q-point count
+
+-   segment count
+
+-   frequency unit
+
+-   min/max
+
+-   imaginary count
+
+-   plot mode
+
+-   series count
+
+-   table rows
+
+-   warnings
+
+-   console errors
+
+-   network requests
+
+
+必须验证：
+
+-   negative值显示在zero以下
+
+-   discontinuity未连接
+
+-   labels正确
+
+-   unit正确
+
+-   no branch reorder
+
+-   summary一致
+
+-   no external network
+
+-   no artifact JS
+
+-   no capability overclaim
+
+
+----------
+
+# 49. Evidence Files
+
+至少包含：
+
+```text
+README.md
+format_scope.json
+source_mapping_policy.json
+reciprocal_normalization.json
+frequency_conversion_results.json
+branch_preservation.json
+label_normalization.json
+path_segment_mapping.json
+parse_report_schema.json
+stable_band_result.json
+imaginary_band_result.json
+discontinuous_path_result.json
+triclinic_result.json
+degeneracy_result.json
+plot_contract_result.json
+table_contract_result.json
+api_valid_canonical.json
+api_valid_source.json
+api_imaginary.json
+api_invalid.json
+api_over_cap.json
+deterministic_replay.json
+browser_chromium.json
+browser_firefox.json
+browser_webkit.json
+browser_mobile.json
+accessibility_audit.json
+performance_metrics.json
+security_audit.json
+network_audit.json
+artifact_hashes.json
+
+```
+
+截图建议：
+
+```text
+01_stable_phonon_bands.png
+02_imaginary_modes.png
+03_discontinuous_path.png
+04_high_symmetry_labels.png
+05_phonon_band_table.png
+06_degraded_plot.png
+07_invalid_input.png
+08_mobile_phonon_bands.png
+
+```
+
+不得保存：
+
+-   大型source file
+
+-   unsafe YAML payload
+
+-   private path
+
+-   token
+
+-   secret
+
+-   raw library dump
+
+-   browser cache
+
+-   full traces
+
+
+----------
+
+# 50. Dependency Policy
+
+优先不新增依赖。
+
+如果已有：
+
+-   PyYAML
+
+-   phonopy
+
+-   pymatgen
+
+-   chart library
+
+
+则复用。
+
+如果没有phonopy/pymatgen：
+
+-   优先只支持canonical JSON
+
+-   或实现有限safe band.yaml parser
+
+-   不要为了本阶段引入庞大计算依赖
+
+
+如新增YAML依赖，必须：
+
+-   security audit
+
+-   safe loader
+
+-   lockfile更新
+
+-   license记录
+
+
+检查：
+
+```bash
+uv lock --check
+npm --prefix apps/web ls --depth=0
+npm --prefix apps/web run build
+
+```
+
+----------
+
+# 51. Documentation
+
+新增或更新：
+
+```text
+docs/phase10h/phase10h1_phonon_bands.md
+docs/phase10h/phase10h1_phonon_band_source_scope.md
+docs/phase10h/phase10h1_phonon_band_mapping.md
+docs/phase10h/phase10h1_phonon_band_plot_contract.md
+docs/phase10h/phase10h1_phonon_band_table.md
+docs/phase10h/phase10h1_phonon_band_api_evidence.md
+docs/phase10h/phase10h1_phonon_band_accessibility.md
+docs/phase10h/phase10h1_phonon_band_security.md
+docs/phase10h/phase10h1_phonon_band_readiness_matrix.md
+
+```
+
+更新：
+
+```text
+docs/index.md
+docs/13_SHARED_SCHEMA_SPEC.md
+persistent/DESIGN_PROGRESS.md
+persistent/TASK_BOARD.md
+persistent/CHANGELOG.md
+persistent/OPEN_QUESTIONS.md
+persistent/TOOL_REGISTRY_NOTES.md
+persistent/ARCHITECTURE_DECISIONS.md
+
+```
+
+必须记录：
+
+-   supported sources
+
+-   deferred sources
+
+-   reciprocal normalization
+
+-   frequency conversion
+
+-   branch preservation
+
+-   imaginary-mode display
+
+-   path discontinuity
+
+-   labels
+
+-   plot/table contracts
+
+-   planner visibility
+
+-   API path
+
+-   DOS deferred
+
+-   eigenvectors deferred
+
+-   animation deferred
+
+
+----------
+
+# 52. Readiness Matrix
+
+最终分别判断：
+
+-   source scope
+
+-   canonical JSON adapter
+
+-   phonopy adapter
+
+-   pymatgen adapter
+
+-   safe parsing
+
+-   reciprocal normalization
+
+-   q-point normalization
+
+-   path distance
+
+-   segment discontinuity
+
+-   label normalization
+
+-   frequency conversion
+
+-   imaginary frequency
+
+-   near-zero classification
+
+-   ASR metadata
+
+-   branch preservation
+
+-   branch count
+
+-   degeneracy metadata
+
+-   structure identity
+
+-   phonon band artifact
+
+-   summary
+
+-   parse report
+
+-   manifest
+
+-   static plot
+
+-   table
+
+-   degraded plot
+
+-   API evidence
+
+-   frontend preview
+
+-   accessibility
+
+-   mobile
+
+-   browser smoke
+
+-   security
+
+-   formal band tool registration
+
+-   phonon DOS
+
+-   combined view
+
+-   eigenvectors
+
+-   animation
+
+
+推荐期望：
+
+```text
+source scope: READY
+canonical JSON adapter: READY
+phonopy adapter: READY or DEFERRED_BY_DESIGN
+pymatgen adapter: READY or DEFERRED_BY_DESIGN
+safe parsing: READY
+reciprocal normalization: READY
+q-point/path normalization: READY
+segment discontinuity: READY
+label normalization: READY
+frequency conversion: READY
+imaginary frequencies: READY
+branch preservation: READY
+branch count validation: READY
+structure identity: READY
+phonon band artifact: READY
+summary: READY
+parse report: READY
+manifest: READY
+static plot: READY
+table: READY
+API evidence: READY
+frontend preview: READY
+accessibility: READY
+mobile: READY
+browser smoke: READY
+security: READY
+
+formal phonon band tool registration: READY or PARTIAL_READY
+phonon DOS: NOT_READY
+combined band + DOS: NOT_READY
+eigenvector contract: NOT_READY
+phonon animation: NOT_READY
+
+```
+
+----------
+
+# 53. Checks
+
+至少运行：
+
+```bash
+git diff --check
+uv lock --check
+
+uv run python -m pytest -q
+
+npm --prefix apps/web test
+npm --prefix apps/web run typecheck
+npm --prefix apps/web run build
+
+```
+
+并运行：
+
+-   phonon band source parser tests
+
+-   reciprocal normalization tests
+
+-   q-point/path tests
+
+-   unit conversion tests
+
+-   imaginary-mode tests
+
+-   branch preservation tests
+
+-   label normalization tests
+
+-   plot tests
+
+-   table tests
+
+-   adapter tests
+
+-   API integration
+
+-   frontend preview tests
+
+-   accessibility tests
+
+-   Chromium smoke
+
+-   Firefox smoke
+
+-   WebKit smoke
+
+-   mobile smoke
+
+-   security scan
+
+-   network audit
+
+-   Phase 10 Closure Regression Pack
+
+-   Phase 10G regression
+
+-   Phase 10H contract regression
+
+-   service-backed integration
+
+-   no-skipped assertion
+
+
+必须如实记录：
+
+-   passed
+
+-   failed
+
+-   skipped
+
+-   unavailable
+
+
+不得把skipped写成passed。
+
+----------
+
+# 54. Commit / CI
+
+完成adapter、plot、tests、evidence和docs后：
+
+```bash
+git status --short
+git diff --stat
+git add <only Phase 10H-1 related files>
+git commit -m "Add phonon band adapter and visualization"
+git push origin master
+
+```
+
+等待current HEAD CI。
+
+必须确认：
+
+-   backend unit success
+
+-   frontend tests success
+
+-   frontend typecheck success
+
+-   frontend build success
+
+-   phonon band tests success
+
+-   API integration success
+
+-   browser smoke success
+
+-   Phase 10 Closure success
+
+-   Phase 10G regression success
+
+-   Phase 10H contract success
+
+-   service-backed integration success
+
+-   no-skipped assertion success
+
+-   origin/master matches HEAD
+
+-   git status clean
+
+
+不得伪造CI。
+
+----------
+
+# 55. 最终报告格式
+
+完成后输出：
+
+# Phase 10H-1 Phonon Bands Result
+
+## 1. Conclusion
+
+PASS / PARTIAL_PASS / FAIL
+
+## 2. Baseline
+
+-   Phase 10H assumed complete:
+
+-   branch:
+
+-   initial status:
+
+-   final HEAD:
+
+-   final status:
+
+
+## 3. Source Scope
+
+-   canonical JSON:
+
+-   phonopy:
+
+-   pymatgen:
+
+-   deferred:
+
+-   detection:
+
+-   safe parsing:
+
+
+## 4. Adapter Architecture
+
+-   source parser:
+
+-   normalizer:
+
+-   validator:
+
+-   serializer:
+
+-   summary:
+
+-   parse report:
+
+-   manifest:
+
+-   runtime:
+
+
+## 5. Reciprocal / Q-Point Mapping
+
+-   source convention:
+
+-   target convention:
+
+-   `2π`:
+
+-   q-point source system:
+
+-   canonical system:
+
+-   path distance:
+
+-   triclinic:
+
+-   conversions:
+
+
+## 6. Path / Labels
+
+-   segments:
+
+-   shared endpoints:
+
+-   discontinuities:
+
+-   label normalization:
+
+-   Gamma:
+
+-   unsafe labels:
+
+-   ordering:
+
+
+## 7. Frequency Mapping
+
+-   source units:
+
+-   canonical unit:
+
+-   THz:
+
+-   cm⁻¹:
+
+-   meV:
+
+-   sign:
+
+-   near-zero:
+
+-   ASR:
+
+
+## 8. Branches / Degeneracy
+
+-   branch order:
+
+-   q-major transpose:
+
+-   branch count:
+
+-   3N:
+
+-   crossings:
+
+-   degeneracy:
+
+-   reordering:
+
+
+## 9. Structure Identity
+
+-   identity:
+
+-   atom count:
+
+-   species:
+
+-   atom order:
+
+-   mismatch behavior:
+
+
+## 10. Artifacts
+
+-   phonon band:
+
+-   summary:
+
+-   parse report:
+
+-   plot:
+
+-   table:
+
+-   manifest:
+
+-   hashes:
+
+-   provenance:
+
+-   security:
+
+
+## 11. Plot
+
+-   series:
+
+-   x-axis:
+
+-   y-axis:
+
+-   units:
+
+-   zero line:
+
+-   imaginary region:
+
+-   discontinuities:
+
+-   labels:
+
+-   degraded mode:
+
+
+## 12. Table
+
+-   columns:
+
+-   row order:
+
+-   classification:
+
+-   labels:
+
+-   unit metadata:
+
+-   row cap:
+
+-   fallback:
+
+
+## 13. Tool / Planner
+
+-   tool ID:
+
+-   registry:
+
+-   planner visibility:
+
+-   valid routing:
+
+-   DOS rejection:
+
+-   animation rejection:
+
+-   computation rejection:
+
+-   PlanValidator:
+
+
+## 14. API Evidence
+
+-   canonical valid:
+
+-   source valid:
+
+-   imaginary:
+
+-   discontinuous:
+
+-   invalid:
+
+-   over-cap:
+
+-   artifact retrieval:
+
+-   runtime path:
+
+
+## 15. Frontend / Accessibility
+
+-   product preview:
+
+-   summary:
+
+-   plot:
+
+-   table:
+
+-   JSON fallback:
+
+-   keyboard:
+
+-   screen reader text:
+
+-   200% zoom:
+
+-   mobile:
+
+
+## 16. Browser Smoke
+
+-   Chromium:
+
+-   Firefox:
+
+-   WebKit:
+
+-   mobile:
+
+-   labels:
+
+-   negative values:
+
+-   discontinuities:
+
+-   console:
+
+-   network:
+
+
+## 17. Performance
+
+-   q-points:
+
+-   branches:
+
+-   plotted values:
+
+-   table rows:
+
+-   degraded threshold:
+
+-   render behavior:
+
+-   memory proxy:
+
+
+## 18. Determinism
+
+-   q-point order:
+
+-   segment order:
+
+-   branch order:
+
+-   label order:
+
+-   warning order:
+
+-   plot series:
+
+-   table rows:
+
+-   manifest:
+
+-   hashes:
+
+
+## 19. Security
+
+-   YAML loader:
+
+-   object construction:
+
+-   eval/pickle:
+
+-   external references:
+
+-   labels:
+
+-   plot code:
+
+-   metadata:
+
+-   caps:
+
+-   private paths:
+
+-   secrets:
+
+-   network:
+
+-   markers:
+
+
+## 20. Evidence
+
+-   directory:
+
+-   source mapping:
+
+-   reciprocal:
+
+-   frequency:
+
+-   branches:
+
+-   plot:
+
+-   table:
+
+-   API:
+
+-   browser:
+
+-   accessibility:
+
+-   security:
+
+-   screenshots:
+
+-   hashes:
+
+
+## 21. Tests
+
+-   source parser:
+
+-   reciprocal:
+
+-   q-points:
+
+-   path:
+
+-   labels:
+
+-   frequency:
+
+-   imaginary:
+
+-   branches:
+
+-   plot:
+
+-   table:
+
+-   adapter:
+
+-   API:
+
+-   frontend:
+
+-   accessibility:
+
+-   Chromium:
+
+-   Firefox:
+
+-   WebKit:
+
+-   mobile:
+
+-   backend full:
+
+-   frontend full:
+
+-   typecheck:
+
+-   build:
+
+-   Phase 10 closure:
+
+-   Phase 10G:
+
+-   Phase 10H:
+
+-   service-backed:
+
+-   no-skipped:
+
+-   lock:
+
+-   diff:
+
+
+## 22. Files
+
+-   parser:
+
+-   adapter:
+
+-   normalizer:
+
+-   plot producer:
+
+-   table producer:
+
+-   registry:
+
+-   planner:
+
+-   API:
+
+-   frontend:
+
+-   fixtures:
+
+-   tests:
+
+-   browser runners:
+
+-   evidence:
+
+-   docs:
+
+-   persistent:
+
+-   dependencies/lockfile:
+
+
+## 23. Deferred
+
+明确列出：
+
+-   unsupported phonon source formats
+
+-   phonon DOS
+
+-   projected phonon DOS rendering
+
+-   combined band + DOS
+
+-   eigenvector payload
+
+-   eigenvector atom mapping
+
+-   complex phase
+
+-   phonon animation
+
+-   LO-TO directional rendering
+
+-   Raman/IR activity
+
+-   thermal properties
+
+-   official benchmark validation
+
+-   full phonon product registration，若未完成
+
+
+## 24. Readiness
+
+-   source adapter:
+
+-   normalization:
+
+-   artifact:
+
+-   plot:
+
+-   table:
+
+-   API:
+
+-   frontend:
+
+-   browser:
+
+-   accessibility:
+
+-   security:
+
+-   phonon bands:
+
+-   DOS:
+
+-   combined:
+
+-   eigenvectors:
+
+-   animation:
+
+-   formal product:
+
+
+## 25. Commit / CI
+
+-   commit:
+
+-   HEAD:
+
+-   CI run:
+
+-   backend:
+
+-   frontend:
+
+-   typecheck:
+
+-   build:
+
+-   phonon band:
+
+-   API:
+
+-   browser:
+
+-   Phase 10 closure:
+
+-   Phase 10G:
+
+-   Phase 10H:
+
+-   service-backed:
+
+-   no-skipped:
+
+-   origin:
+
+-   status:
+
+
+## 26. Whether allowed to enter next phase
+
+允许 / 不允许
+
+下一阶段：
+
+```text
+Phase 10H-2：Phonon DOS
+
+```
+
+下一阶段只实现total/projected phonon DOS adapter、normalization、artifact、plot、table和API/browser evidence，不实现combined view、eigenvectors或animation。
+
+----------
+
+# 56. PASS 判定
+
+PASS必须满足：
+
+-   有真实phonon band adapter
+
+-   有至少一种正式支持来源
+
+-   canonical JSON路径完整
+
+-   source parsing安全
+
+-   reciprocal convention转换正确
+
+-   q-point坐标正确
+
+-   path distance正确
+
+-   segment discontinuity正确
+
+-   high-symmetry labels正确
+
+-   canonical frequency单位正确
+
+-   THz/cm⁻¹/meV转换正确
+
+-   negative frequency sign保留
+
+-   near-zero分类不修改原值
+
+-   不自动执行ASR
+
+-   branch order保留
+
+-   不按frequency静默重排
+
+-   branch count验证
+
+-   structure identity和atom order验证
+
+-   band artifact生成
+
+-   summary生成
+
+-   parse report生成
+
+-   manifest生成
+
+-   static plot真实工作
+
+-   imaginary modes在zero以下显示
+
+-   discontinuous path不连线
+
+-   table真实工作
+
+-   plot/table caps生效
+
+-   API正式路径闭合
+
+-   frontend preview真实工作
+
+-   accessibility不回退
+
+-   Chromium真实smoke通过
+
+-   Firefox/WebKit/mobile smoke完成或如实记录
+
+-   deterministic replay稳定
+
+-   no unsafe YAML
+
+-   no artifact JS
+
+-   no external network
+
+-   no secret hits
+
+-   Phase 10 Closure、Phase 10G、Phase 10H contract不回退
+
+-   tests通过
+
+-   CI通过
+
+-   git clean
+
+
+PARTIAL_PASS仅允许：
+
+-   phonopy或pymatgen其中一个来源明确DEFERRED_BY_DESIGN，但canonical JSON和至少一个正式来源完整
+
+-   formal planner visibility保持limited
+
+-   degeneracy仅保留source metadata
+
+-   browser某非主要环境明确unavailable
+
+-   npm audit因既有registry问题不可用
+
+
+FAIL包括：
+
+-   只有mock plot
+
+-   adapter绕过Phase 10H validator
+
+-   reciprocal convention错误
+
+-   q-path错误
+
+-   discontinuous segments被连接
+
+-   negative frequency被取绝对值
+
+-   branch被静默重排
+
+-   branch count异常被忽略
+
+-   structure identity缺失
+
+-   unsafe YAML loader
+
+-   前端自行修正错误backend数据
+
+-   无API evidence
+
+-   无browser evidence
+
+-   提前实现DOS/eigenvector/animation导致范围膨胀
+
+-   Phase 10H contract回退
+
+-   CI失败却声明PASS
+
+---END---
+
+---TASK---
+ 状态：待处理
+ # Phase 10H-2：Phonon DOS
+
+进入 Phase 10H-2：Phonon DOS。
+
+可以默认：
+
+* Phase 10H：Phonon Contract 已完成并通过
+* Phase 10H-1：Phonon Bands 已完成并通过
+* `phase10h.phonon_band.v1`
+* `phase10h.phonon_dos.v1`
+* `phase10h.phonon_summary.v1`
+* `phase10h.phonon_manifest.v1`
+* reciprocal-space convention、frequency units、imaginary-mode encoding、atom ordering、DOS normalization、projected DOS identity、caps和security contract均已固定
+* phonon band adapter、plot、table、API和browser smoke已完成
+* canonical frequency unit已固定
+* total DOS normalization目标、negative-frequency DOS语义和trapezoidal integration policy已固定
+* Phase 10G trajectory产品保持稳定
+* Phase 10 Closure Regression Pack保持通过
+* 当前branch、HEAD、working tree和Phase 10H-1 CI可视为正确且clean
+
+本阶段不需要重复Phase 10H-1 baseline检查。
+
+本阶段主要目标：
+
+> 为批准来源的phonon density of states数据实现安全、deterministic、可验证的adapter、frequency-grid normalization、total/projected DOS artifact emission、静态DOS plot、表格结果、API路径和浏览器证据，为下一阶段Combined Phonon Band + DOS提供稳定基础。
+
+本阶段只完成：
+
+* approved phonon DOS input scope
+* total DOS adapter
+* projected DOS adapter，若来源支持
+* frequency unit normalization
+* DOS density-unit normalization
+* normalization/integration validation
+* negative-frequency DOS preservation
+* broadening metadata
+* atom/species projection identity
+* DOS artifact emission
+* summary and manifest
+* static DOS plot
+* data table
+* API evidence
+* accessibility
+* browser smoke
+* performance/security closure
+* docs and readiness
+
+本阶段不实现combined band + DOS、不实现eigenvectors、不实现phonon animation。
+
+---
+
+# 1. 本阶段定位
+
+Phase 10H-2是phonon DOS正式数据生产和产品预览阶段。
+
+它必须解决：
+
+* 哪些phonon DOS来源在第一版受支持
+* 来源对象如何映射到`phase10h.phonon_dos.v1`
+* frequency grid如何解释
+* frequency单位如何转换
+* density单位如何转换
+* total DOS采用什么normalization
+* DOS积分如何验证
+* negative-frequency区域如何保留和显示
+* projected DOS如何绑定atom或species
+* projected DOS总和与total DOS不一致时如何处理
+* broadening信息如何记录
+* DOS artifact如何进入runtime、API和frontend
+* 大型grid/projection如何degraded或refused
+* malformed或科学语义不明的数据如何拒绝
+
+本阶段不是：
+
+* phonon band阶段
+* combined band + DOS阶段
+* eigenvector阶段
+* animation阶段
+* phonon thermodynamics阶段
+* phonon calculation执行阶段
+* neutron/Raman/IR spectrum阶段
+
+---
+
+# 2. 本阶段目标
+
+必须完成以下十二类工作：
+
+1. **Phonon DOS source and adapter audit**
+2. **Approved input format / object scope**
+3. **Frequency-grid normalization**
+4. **Frequency and density-unit normalization**
+5. **Total DOS normalization and integration validation**
+6. **Projected DOS identity and aggregation**
+7. **DOS artifact、summary、parse report和manifest emission**
+8. **Static DOS plot and table**
+9. **Runtime、registry、planner和API integration基础**
+10. **Browser smoke、mobile和accessibility**
+11. **Performance、determinism和security**
+12. **Docs、evidence和readiness closure**
+
+本阶段必须产生真实adapter和真实DOS plot。
+
+如果最终只有schema映射文档、mock plot或静态fixture截图，没有真实输入→adapter→artifact→preview路径，本阶段必须判定为FAIL。
+
+---
+
+# 3. 第一版输入范围
+
+优先支持以下来源之一或多个，必须根据仓库现有依赖审计后决定：
+
+```text
+canonical phase10h.phonon_dos.v1 JSON
+phonopy total DOS output
+phonopy projected DOS output
+pymatgen phonon DOS object or approved JSON
+```
+
+推荐优先级：
+
+1. canonical JSON
+2. 已存在依赖中的pymatgen phonon DOS对象或安全JSON
+3. phonopy静态DOS输出
+4. 其他格式延后
+
+如果支持phonopy，候选静态输入可能包括：
+
+```text
+total_dos.dat
+projected_dos.dat
+phonopy.yaml / mesh.yaml metadata
+```
+
+但不得凭文件名直接假设字段语义。
+
+如果支持pymatgen：
+
+* 必须审计其frequency grid
+* density单位
+* normalization
+* site/species projection语义
+* structure linkage
+
+本阶段默认不支持：
+
+* 动态执行phonopy
+* force constants计算
+* mesh生成
+* arbitrary text columns
+* arbitrary CSV schema guessing
+* pickle
+* notebook object
+* remote URL
+* compressed archive
+* custom Python object upload
+* arbitrary plugin adapter
+
+---
+
+# 4. 严格禁止范围
+
+本阶段不得实现：
+
+* combined band + DOS
+* phonon eigenvector contract
+* eigenvector parser
+* phonon animation
+* mode displacement
+* thermal free energy
+* entropy
+* heat capacity
+* Debye temperature
+* thermal conductivity
+* Grüneisen parameters
+* quasi-harmonic approximation
+* Raman activity
+* IR activity
+* neutron scattering intensity
+* phonon calculation execution
+* force constants execution
+* external solver invocation
+* electronic DOS
+* electronic bands
+* Brillouin renderer
+* external API
+* notebook execution
+* script execution
+* real LLM
+* full phonon product registration
+
+不得：
+
+* 修改Phase 10H DOS contract语义
+* 修改Phase 10H-1 phonon band语义
+* 静默重采样frequency grid
+* 静默平滑DOS
+* 静默应用Gaussian broadening
+* 静默裁剪negative-frequency区域
+* 静默把negative frequency转换为positive
+* 静默归一化到1
+* 静默归一化到3N
+* 仅修改density unit label不修改数值
+* 将states、modes和arbitrary density混为一谈
+* 将bin edges当作sample points
+* 将projected DOS仅靠display label绑定
+* 自动假设projected DOS总和等于total DOS
+* 自动修复projection mismatch
+* 静默推断atom order
+* 静默推断structure identity
+* 允许NaN或Infinity
+* 允许无限grid points
+* 允许无限projections
+* 允许任意metadata
+* 允许external URL
+* 允许artifact JavaScript
+* 允许HTML/script label
+* 允许任意plot code
+* 将DOS结果标记为officially validated
+
+允许：
+
+* safe static parser
+* adapter
+* unit conversion
+* approved normalization conversion
+* integration validation
+* plot generation
+* table generation
+* API evidence
+* browser smoke
+* tests
+* docs
+
+---
+
+# 5. 必读实现
+
+开始后直接阅读当前真实代码。
+
+## 5.1 Phase 10H DOS Contract
+
+阅读：
+
+* phonon DOS schema
+* summary schema
+* manifest schema
+* projected DOS contract
+* frequency conversion helpers
+* DOS normalization policy
+* integration helper
+* typed errors
+* caps
+* fixtures
+* deterministic serializer
+* band/DOS compatibility validator
+
+必须直接复用，不建立第二套DOS模型。
+
+## 5.2 Phase 10H-1 Implementation
+
+阅读：
+
+* phonon band adapter
+* source detection
+* parser architecture
+* parse report
+* registry metadata
+* PlanValidator
+* artifact emission
+* plot/table producers
+* frontend preview
+* browser evidence helpers
+
+优先复用相同模式。
+
+## 5.3 Existing Histogram / Density Plot Infrastructure
+
+搜索：
+
+```bash
+rg -n "dos|density|histogram|area plot|line plot|filled area|series|x_axis|y_axis" apps/web backend packages tests
+```
+
+确认：
+
+* line/area plot contract
+* negative x-axis支持
+* multiple projected series
+* stacking能力
+* normalization metadata
+* legend caps
+* tooltip/accessibility
+* responsive behavior
+* export能力
+
+## 5.4 Existing Dependencies
+
+搜索：
+
+```bash
+rg -n "phonopy|pymatgen.*dos|PhononDos|CompletePhononDos|total_dos|projected_dos" pyproject.toml uv.lock backend packages tests
+```
+
+确认：
+
+* phonopy/pymatgen版本
+* static parser能力
+* object serialization方式
+* site projection API
+* species projection API
+* licensing
+* existing approved use
+
+---
+
+# 6. 修改前输出审计
+
+修改代码前输出：
+
+# Phase 10H-2 Phonon DOS Pre-Implementation Audit
+
+## 1. Existing Source Support
+
+* canonical JSON:
+* phonopy total DOS:
+* phonopy projected DOS:
+* pymatgen DOS:
+* other existing sources:
+* dependencies:
+* safe parser support:
+* gaps:
+
+## 2. Existing Plot Infrastructure
+
+* line/area plot:
+* negative frequencies:
+* multiple projections:
+* stacking:
+* legend:
+* accessibility:
+* export:
+* performance caps:
+
+## 3. Existing Runtime Path
+
+* registry:
+* planner:
+* adapter base:
+* runtime:
+* artifact validator:
+* manifest:
+* frontend preview:
+* API:
+* evidence helpers:
+
+## 4. Scientific Risks
+
+至少列出：
+
+* frequency-grid semantic ambiguity
+* bin edge vs sample point confusion
+* frequency-unit mismatch
+* density-unit mismatch
+* total-modes vs unit-area normalization
+* per-cell vs per-atom DOS ambiguity
+* negative-frequency truncation
+* imaginary-region weight loss
+* broadening metadata loss
+* projected DOS atom-order mismatch
+* species aggregation ambiguity
+* projection duplicate identity
+* projected sum mismatch
+* source atom count mismatch
+* source structure identity mismatch
+* nonmonotonic frequency grid
+* integration tolerance drift
+* unsafe text parsing
+* large projection matrix
+* candidate/reference overclaim
+
+## 5. Selected Strategy
+
+说明：
+
+* supported sources:
+* parser:
+* canonical grid:
+* frequency unit:
+* density unit:
+* normalization:
+* integration:
+* negative region:
+* projections:
+* broadening:
+* plot:
+* table:
+* adapter:
+* planner visibility:
+* API:
+* browser:
+* security:
+
+## 6. Planned Files
+
+列出：
+
+* source parser
+* adapter
+* normalizer
+* integration validator
+* projection mapper
+* plot producer
+* table producer
+* registry metadata
+* API tests
+* frontend preview
+* fixtures
+* browser smoke
+* evidence
+* docs
+* persistent
+
+审计后直接继续实现。
+
+---
+
+# 7. Tool Boundary
+
+建议工具ID：
+
+```text
+phonon.dos
+```
+
+或符合项目命名规范的：
+
+```text
+structure.phonon_dos
+```
+
+必须审计现有tool naming后选定唯一ID。
+
+推荐本阶段状态：
+
+```text
+registered internally / planner-limited
+```
+
+如果API和browser证据完整，可以正式注册DOS-only tool，但capability必须严格限定。
+
+不得把本工具命名为：
+
+```text
+phonon.viewer
+```
+
+并宣称bands、eigenvectors或animation已经可用。
+
+---
+
+# 8. Input Contract
+
+建议：
+
+```ts
+type PhononDosAdapterInput = {
+  sourceArtifactId: string;
+  sourceFormat:
+    | "phase10h.phonon_dos.v1"
+    | "phonopy_total_dos"
+    | "phonopy_projected_dos"
+    | "pymatgen_phonon_dos_json";
+  frequencyUnitOverride?: ApprovedFrequencyUnit;
+  densityUnitOverride?: ApprovedPhononDosDensityUnit;
+  normalizationOverride?: ApprovedPhononDosNormalization;
+};
+```
+
+Overrides必须：
+
+* strict allowlist
+* 仅在source metadata缺失时使用
+* provenance中记录
+* validator检查兼容性
+* 不允许任意表达式
+
+不得允许：
+
+* arbitrary parser
+* arbitrary unit expression
+* arbitrary normalization function
+* arbitrary source URL
+* arbitrary plotting code
+* callback
+* Python class path
+
+---
+
+# 9. Canonical JSON Path
+
+如果输入已是：
+
+```text
+phase10h.phonon_dos.v1
+```
+
+流程：
+
+```text
+parse
+→ validate
+→ canonicalize
+→ summary
+→ parse report
+→ plot/table
+→ manifest
+```
+
+不得：
+
+* 重采样
+* 平滑
+* broadening
+* 裁剪negative frequencies
+* 改变normalization
+* 聚合projection
+* 修改原始DOS值
+
+只有明确请求且contract批准的unit conversion才允许转换。
+
+---
+
+# 10. Phonopy Total DOS Path
+
+如果支持phonopy total DOS静态文件，必须审计真实格式。
+
+通常可能包含：
+
+```text
+frequency density
+```
+
+但不得凭假设实现。
+
+必须确认：
+
+* 列数量
+* header
+* frequency unit
+* density unit
+* normalization
+* negative-frequency支持
+* broadening来源
+* mesh metadata关联
+* atom count来源
+* structure identity来源
+
+要求：
+
+* UTF-8或ASCII明确
+* bounded line reading
+* bounded token count
+* comment/header allowlist
+* no arbitrary expression
+* no locale-dependent number parsing
+* no partial success
+
+如果source缺少structure identity或atom count：
+
+* 必须通过关联artifact提供
+* 否则拒绝
+
+不得仅凭DOS积分反推atom count并作为权威identity。
+
+---
+
+# 11. Phonopy Projected DOS Path
+
+如果支持projected DOS，必须确定列语义。
+
+可能包括：
+
+* frequency
+* per-atom projection columns
+* per-direction projection columns
+* species aggregated columns
+
+第一版建议只批准：
+
+```text
+atom-projected scalar DOS
+species-projected scalar DOS
+```
+
+方向分量：
+
+```text
+x / y / z projected DOS
+```
+
+建议：
+
+```text
+DEFERRED_BY_DESIGN
+```
+
+除非Phase 10H contract已明确支持。
+
+必须建立projection column mapping：
+
+```text
+source column
+→ canonical atom index/species identity
+```
+
+不得：
+
+* 仅按列顺序猜atom order而无metadata
+* 聚合方向分量而不记录
+* 混合atom和species projection
+* 允许列数与atom count不一致
+
+---
+
+# 12. Pymatgen DOS Path
+
+如果支持pymatgen对象或JSON，必须审计：
+
+* frequency grid unit
+* density values unit
+* total DOS normalization
+* site projection identity
+* species projection aggregation
+* structure linkage
+* interpolation行为
+* smearing/broadening metadata
+* imaginary-frequency支持
+
+不得：
+
+* 将library object直接序列化为artifact
+* 接受pickle
+* 接受任意Python import path
+* 依赖object repr
+
+必须转换为纯JSON canonical schema。
+
+---
+
+# 13. Source Detection
+
+格式检测必须：
+
+* 优先使用artifact schema/media metadata
+* 或显式source format
+* 使用bounded content sniffing
+* 不仅依赖扩展名
+* 不尝试所有parser直到某个成功
+
+typed errors：
+
+```text
+PHONON_DOS_FORMAT_UNSUPPORTED
+PHONON_DOS_FORMAT_AMBIGUOUS
+```
+
+---
+
+# 14. Frequency Grid Contract
+
+Canonical grid必须：
+
+* 一维数组
+* finite
+* strictly increasing
+* no duplicate points
+* length至少2，除非contract另有规定
+* bounded
+* unit固定
+* sample-grid语义明确
+* 可包含negative frequencies
+
+不得：
+
+* 自动sort无序grid并掩盖输入问题
+* 自动deduplicate
+* 自动interpolate
+* 自动uniformize
+* 将bin edges当作sample centers
+
+如果source明确使用bin centers或edges且与contract不同：
+
+* 必须显式转换
+* 或拒绝
+* provenance记录
+
+第一版建议只支持：
+
+```text
+sample grid points
+```
+
+---
+
+# 15. Frequency Unit Normalization
+
+输出必须使用Phase 10H canonical frequency unit。
+
+若canonical为：
+
+```text
+terahertz
+```
+
+则支持批准转换：
+
+* THz → THz
+* cm⁻¹ → THz
+* meV → THz
+
+转换frequency grid时必须同步转换density数值。
+
+这是关键：
+
+如果：
+
+```text
+x_new = c × x_old
+```
+
+则density必须满足积分不变：
+
+```text
+D_new(x_new) = D_old(x_old) / c
+```
+
+必须验证：
+
+```text
+∫ D_old dx_old = ∫ D_new dx_new
+```
+
+不得只转换x-axis而不转换density。
+
+Projected DOS也必须同步转换。
+
+---
+
+# 16. Density Unit Contract
+
+Canonical density unit建议：
+
+```text
+modes_per_terahertz
+```
+
+或Phase 10H已批准的等价枚举。
+
+必须区分：
+
+* modes_per_terahertz
+* modes_per_inverse_centimeter
+* modes_per_millielectronvolt
+* normalized_unit_area
+* per_atom
+* per_cell
+
+第一版推荐canonical：
+
+```text
+modes_per_terahertz
+normalization = total_modes
+scope = structure_cell
+```
+
+不得使用含糊字段：
+
+```text
+states
+density
+```
+
+而不说明单位和scope。
+
+---
+
+# 17. Normalization Policy
+
+必须遵循Phase 10H contract。
+
+推荐目标：
+
+```text
+integral(total_dos df) ≈ 3N
+```
+
+其中N为canonical atom count。
+
+必须区分：
+
+## total_modes
+
+```text
+integral ≈ 3N
+```
+
+## unit_area
+
+```text
+integral ≈ 1
+```
+
+## source_defined
+
+仅在明确metadata下允许，且不能声称与total_modes等价。
+
+本阶段建议canonical输出统一为：
+
+```text
+total_modes
+```
+
+但只有在source normalization已知且可安全转换时。
+
+如果source normalization未知：
+
+* 不得静默scale
+* typed failure或PARTIAL result
+* 推荐拒绝正式artifact生成
+
+---
+
+# 18. Normalization Conversion
+
+若source为unit-area normalization且atom count已知，可转换：
+
+```text
+D_total_modes = D_unit_area × 3N
+```
+
+必须：
+
+* provenance记录
+* parse report记录scale factor
+* total和projected DOS同步处理
+* integration reference test
+* deterministic
+
+不得：
+
+* 只scale total DOS不scale projections
+* 通过observed integral猜source normalization
+* 对unknown normalization做自动判断
+
+---
+
+# 19. Integration Validation
+
+使用Phase 10H固定方法：
+
+```text
+trapezoidal integration
+```
+
+记录：
+
+* expected integral
+* observed integral
+* absolute error
+* relative error
+* tolerance
+* status
+
+建议：
+
+```json
+{
+  "normalization_check": {
+    "method": "trapezoidal",
+    "expected": 6.0,
+    "observed": 5.98,
+    "absolute_error": 0.02,
+    "relative_error": 0.0033,
+    "status": "within_tolerance"
+  }
+}
+```
+
+不得：
+
+* 修改数据以强行通过
+* 使用plot采样数据代替artifact原始数据
+* 对非均匀grid使用简单矩形积分而无说明
+
+---
+
+# 20. Integration Mismatch Policy
+
+必须区分：
+
+## Small Approximate Mismatch
+
+可输出warning：
+
+```text
+PHONON_DOS_INTEGRAL_APPROXIMATE
+```
+
+## Material Mismatch
+
+typed failure：
+
+```text
+PHONON_DOS_INTEGRAL_MISMATCH
+```
+
+阈值必须application-owned并有fixture/reference依据。
+
+不得用UI显示精度决定科学容差。
+
+---
+
+# 21. Negative-Frequency Region
+
+必须完整保留negative-frequency grid和DOS值。
+
+必须：
+
+* plot在x=0左侧显示
+* summary记录negative-region weight
+* 不裁剪
+* 不镜像
+* 不取绝对值
+* 不自动并入positive side
+
+建议派生：
+
+```text
+imaginary_region_integral
+```
+
+使用同一积分方法。
+
+可显示：
+
+```text
+A nonzero DOS contribution is present below 0 THz.
+```
+
+不得直接声称结构不稳定为最终结论。
+
+---
+
+# 22. Near-Zero Policy
+
+DOS grid接近0的点必须按Phase 10H zero tolerance分类。
+
+不得：
+
+* 修改frequency值
+* 合并near-zero bins
+* 将小negative grid点变成0
+* 将near-zero DOS归入positive或negative而不说明
+
+summary可记录：
+
+* grid points below zero threshold
+* near-zero region weight
+
+---
+
+# 23. Total DOS Values
+
+要求：
+
+* 长度等于frequency grid
+* finite
+* nonnegative，允许极小数值容差
+* bounded numeric magnitude
+* deterministic
+
+对于小负density数值：
+
+* 不能静默abs
+* 可按application-owned tolerance判断numerical noise
+* 原始值保留或拒绝，必须固定策略
+
+推荐：
+
+```text
+density < -tolerance → invalid
+-tolerance <= density < 0 → warning, canonicalize only if contract allows
+```
+
+更稳妥方案：
+
+* 不修改
+* 直接拒绝任何negative density
+
+需根据Phase 10H合同决定。
+
+---
+
+# 24. Projected DOS Identity
+
+Projected DOS必须使用严格身份。
+
+## Atom Projection
+
+至少包含：
+
+```json
+{
+  "projection_type": "atom",
+  "atom_index": 0,
+  "species": "Si",
+  "values": []
+}
+```
+
+必须验证：
+
+* atom index合法
+* species与canonical structure顺序一致
+* values长度一致
+* identity唯一
+* order按atom index稳定
+
+## Species Projection
+
+至少包含：
+
+```json
+{
+  "projection_type": "species",
+  "species": "Si",
+  "values": []
+}
+```
+
+必须验证：
+
+* species存在于structure
+* identity唯一
+* order按canonical species policy稳定
+* aggregation来源明确
+
+不得使用：
+
+* display label作为唯一identity
+* 任意字符串projection ID
+* 数组位置隐式绑定
+
+---
+
+# 25. Atom / Species Projection Scope
+
+必须明确DOS projection表示：
+
+* atom total
+* species total
+* per-atom normalized
+* per-species aggregated
+
+建议字段：
+
+```text
+projection_scope
+```
+
+枚举例如：
+
+```text
+atom_total
+species_total
+```
+
+不得把species total和species per-atom average混为一谈。
+
+如果source提供species average：
+
+* 必须显式标记
+* 第一版可选择拒绝
+
+---
+
+# 26. Projected DOS Sum Policy
+
+不得默认要求：
+
+```text
+sum(projected_dos) == total_dos
+```
+
+除非source contract明确保证complete decomposition。
+
+必须记录：
+
+```text
+projection_completeness
+```
+
+建议枚举：
+
+```text
+complete
+partial
+unknown
+```
+
+## complete
+
+允许验证sum≈total。
+
+## partial
+
+不要求相等，但显示说明。
+
+## unknown
+
+不得做强结论。
+
+对于complete projection：
+
+* 使用application-owned tolerance
+* mismatch输出warning或error
+* 不自动rescale
+
+---
+
+# 27. Directional Projections
+
+例如：
+
+```text
+x
+y
+z
+```
+
+第一版建议：
+
+```text
+DEFERRED_BY_DESIGN
+```
+
+除非Phase 10H contract已有正式schema。
+
+如果支持：
+
+* 必须明确coordinate basis
+* Cartesian axes还是local axes
+* sum of components semantics
+* atom identity
+* units
+
+不得用一个任意label字段塞入方向数据。
+
+---
+
+# 28. Broadening Metadata
+
+本阶段不执行broadening。
+
+只记录source metadata：
+
+```json
+{
+  "broadening": {
+    "method": "gaussian",
+    "width": 0.1,
+    "unit": "terahertz",
+    "source": "producer"
+  }
+}
+```
+
+批准method：
+
+```text
+none
+gaussian
+source_defined
+```
+
+不得：
+
+* 应用新的平滑
+* 改变width
+* 用前端平滑
+* 接受任意function string
+
+如果source没有信息：
+
+```text
+method = unknown
+```
+
+或相应warning，按contract执行。
+
+---
+
+# 29. Mesh Metadata
+
+DOS通常来自q-point mesh。
+
+建议provenance记录：
+
+```json
+{
+  "mesh": [20, 20, 20],
+  "mesh_shift": [0, 0, 0],
+  "symmetry_reduction": true
+}
+```
+
+如果source提供。
+
+必须：
+
+* bounded integers
+* nonnegative
+* deterministic
+* inert
+
+不得从DOS curve反推mesh。
+
+---
+
+# 30. Parse Report
+
+建议新增：
+
+```text
+phase10h.phonon_dos_parse_report.v1
+```
+
+至少包含：
+
+```json
+{
+  "schema_version": "phase10h.phonon_dos_parse_report.v1",
+  "detected_format": "phonopy_total_dos",
+  "grid_point_count": 1001,
+  "projection_count": 2,
+  "source_frequency_unit": "inverse_centimeter",
+  "target_frequency_unit": "terahertz",
+  "source_density_unit": "modes_per_inverse_centimeter",
+  "target_density_unit": "modes_per_terahertz",
+  "source_normalization": "total_modes",
+  "target_normalization": "total_modes",
+  "frequency_conversion_applied": true,
+  "density_jacobian_applied": true,
+  "normalization_scale_applied": false,
+  "normalization_integral": 5.99,
+  "expected_modes": 6,
+  "negative_region_integral": 0.04,
+  "projection_completeness": "complete",
+  "warnings": [],
+  "input_sha256": "...",
+  "deterministic": true
+}
+```
+
+不得包含：
+
+* raw完整source
+* local path
+* environment dump
+* stack trace
+* library object repr
+
+---
+
+# 31. Adapter Output
+
+至少输出：
+
+```text
+phonon_dos.json
+phonon_dos_summary.json
+phonon_dos_parse_report.json
+phonon_dos_plot.json
+phonon_dos_table.json
+phonon_manifest.json
+```
+
+如项目已有统一命名，按真实规范调整。
+
+每个artifact必须：
+
+* schema明确
+* media type allowlisted
+* deterministic
+* hash
+* size
+* provenance
+* security metadata
+
+不得输出：
+
+* phonon bands
+* combined plot
+* eigenvectors
+* renderer bundle
+* HTML
+* JS
+* remote assets
+* raw library object
+
+---
+
+# 32. Summary Contract
+
+复用`phase10h.phonon_summary.v1`或建立DOS-specific summary extension。
+
+至少包含：
+
+* structure identity
+* atom count
+* frequency min/max
+* frequency unit
+* density unit
+* normalization
+* expected mode count
+* observed integral
+* normalization status
+* negative-region integral
+* total DOS available
+* projected DOS available
+* projection count
+* projection completeness
+* broadening
+* source
+* warnings
+
+不得：
+
+* 声称积分偏差意味着计算错误，除非超出正式阈值
+* 声称negative DOS weight等于结构必然不稳定
+* 将projected sum mismatch自动解释为错误，除非complete decomposition
+
+---
+
+# 33. Static DOS Plot
+
+优先复用现有line/area plot contract。
+
+必须支持：
+
+* x-axis：Frequency
+* y-axis：Phonon DOS
+* total DOS
+* optional projected DOS
+* negative-frequency region
+* x=0 reference line
+* unit labels
+* responsive layout
+* degraded mode
+
+推荐：
+
+* total DOS为主线
+* projected DOS为可切换系列
+* 不默认stack所有projection，除非科学语义明确
+
+不得：
+
+* 裁掉negative x-axis
+* 对DOS平滑
+* 归一化显示但artifact未归一化
+* 让projection颜色成为唯一识别方式
+* 为数百projections生成完整legend
+
+---
+
+# 34. Plot Orientation
+
+第一版推荐：
+
+```text
+x = frequency
+y = DOS
+```
+
+因为后续Combined Band + DOS可能需要DOS旋转为：
+
+```text
+x = DOS
+y = frequency
+```
+
+本阶段必须设计plot artifact使未来可转换，但不需要实现combined布局。
+
+不得为combined view提前修改主DOS contract。
+
+---
+
+# 35. Negative Region Plot
+
+必须显示：
+
+* frequency < 0区域
+* zero line
+* explanatory text
+
+建议：
+
+```text
+DOS below 0 THz corresponds to imaginary phonon modes under the contract convention.
+```
+
+不得：
+
+* 把negative frequency隐藏
+* 将其镜像
+* 仅用红色表示
+* 标记为parser error
+
+---
+
+# 36. Projection Plot Policy
+
+当projection数量较少：
+
+* 可显示toggle/legend
+
+当projection数量较多：
+
+* 默认只显示total DOS
+* 提供projection selector
+* species aggregation优先于列出全部atoms
+* table/JSON保留全部数据
+
+必须设置：
+
+* max simultaneously rendered projections
+* max legend entries
+* max plotted numeric values
+
+超过cap：
+
+```text
+PHONON_DOS_PLOT_DEGRADED
+```
+
+artifact仍有效。
+
+---
+
+# 37. Table Artifact
+
+建议long-form表：
+
+```text
+frequency
+total_dos
+projection_type
+projection_identity
+projected_dos
+classification
+```
+
+但完整long-form可能过大。
+
+更推荐：
+
+## Total DOS Table
+
+```text
+frequency
+total_dos
+frequency_classification
+```
+
+## Projection Table
+
+```text
+frequency
+projection_type
+atom_index/species
+projected_dos
+```
+
+必须：
+
+* deterministic row order
+* unit metadata
+* bounded rows
+* no HTML
+* no scientific-value mutation
+* pagination/sample fallback
+
+如果projection table超cap：
+
+* 总表保留
+* projection JSON保留
+* UI使用筛选后按projection显示
+
+---
+
+# 38. Tool Metadata
+
+建议：
+
+```json
+{
+  "tool_id": "phonon.dos",
+  "category": "phonon",
+  "display_name": "Phonon Density of States",
+  "description": "Normalize and visualize total and projected phonon density of states.",
+  "input_contract": "approved phonon DOS source",
+  "output_contract": "phase10h.phonon_dos.v1",
+  "execution_mode": "service_backed",
+  "deterministic": true,
+  "network_access": false
+}
+```
+
+Capabilities：
+
+```text
+phonon_dos: true
+total_dos: true
+projected_dos: according to implementation
+imaginary_region: true
+unit_conversion: true
+normalization_validation: true
+static_plot: true
+table: true
+phonon_bands: false
+combined_view: false
+eigenvectors: false
+animation: false
+thermal_properties: false
+```
+
+不得过度宣称。
+
+---
+
+# 39. Planner Policy
+
+如果planner-visible，正向请求：
+
+```text
+Plot the phonon density of states.
+Show the total phonon DOS.
+Show atom-projected phonon DOS.
+Inspect imaginary-frequency DOS weight.
+```
+
+应选择DOS tool，但前提是已有approved DOS input。
+
+负向请求：
+
+```text
+Plot phonon bands.
+Combine phonon bands and DOS.
+Animate a phonon mode.
+Calculate phonons from this structure.
+Compute heat capacity.
+```
+
+不得由本tool伪完成。
+
+不得从普通structure artifact直接承诺计算DOS。
+
+推荐：
+
+```text
+planner-visible: limited
+```
+
+---
+
+# 40. PlanValidator
+
+必须验证：
+
+* approved input kind
+* source format
+* structure identity
+* atom count
+* frequency/density units
+* normalization
+* projection scope
+* caps
+* no band request
+* no combined request
+* no animation request
+* no thermal-property request
+* no external URL
+* no arbitrary plot code
+
+typed codes建议：
+
+```text
+PHONON_DOS_INPUT_REQUIRED
+PHONON_DOS_SOURCE_FORMAT_UNSUPPORTED
+PHONON_DOS_STRUCTURE_MISMATCH
+PHONON_DOS_UNIT_OVERRIDE_INVALID
+PHONON_DOS_NORMALIZATION_OVERRIDE_INVALID
+PHONON_DOS_PROJECTION_UNSUPPORTED
+PHONON_DOS_BAND_REQUEST_UNSUPPORTED
+PHONON_DOS_COMBINED_REQUEST_UNSUPPORTED
+PHONON_DOS_ANIMATION_UNSUPPORTED
+PHONON_DOS_THERMAL_PROPERTY_UNSUPPORTED
+PHONON_CALCULATION_UNSUPPORTED
+```
+
+不得放宽PlanValidator。
+
+---
+
+# 41. API Evidence
+
+必须通过正式service-backed路径。
+
+至少覆盖：
+
+## Valid Canonical JSON
+
+```text
+approved DOS artifact
+→ PlanValidator
+→ runtime
+→ adapter
+→ DOS/summary/report/plot/table/manifest
+→ artifact retrieval
+```
+
+## Valid Static Source
+
+如果实现phonopy或pymatgen适配：
+
+* parse
+* normalize
+* unit conversion
+* density Jacobian
+* stable hash
+
+## Total DOS
+
+* normalization integral正确
+* expected mode count正确
+
+## Imaginary Region
+
+* negative frequencies保留
+* negative-region integral正确
+* plot显示正确
+
+## Projected DOS
+
+* identity正确
+* ordering正确
+* completeness policy正确
+
+## Invalid Input
+
+* typed failure
+* no partial artifacts
+
+## Over-Cap
+
+* allocation前拒绝
+* no plot build
+* no crash
+
+---
+
+# 42. Frontend Preview
+
+至少显示：
+
+* tool title
+* structure identity摘要
+* atom count
+* frequency range
+* frequency unit
+* density unit
+* normalization
+* expected/observed integral
+* negative-region weight
+* total DOS plot
+* projection selector，若支持
+* table/JSON tabs
+* source
+* broadening metadata
+* warnings
+* artifact downloads
+
+不得显示：
+
+* phonon bands
+* combined plot
+* eigenvector controls
+* animation controls
+* thermal properties
+* stability最终结论
+
+---
+
+# 43. Accessibility
+
+必须提供：
+
+* plot title
+* text summary
+* axis units
+* normalization说明
+* negative-frequency语义说明
+* projection selector accessible name
+* total/projected series文本标识
+* table keyboard navigation
+* warnings不只靠颜色
+* focus order
+* 200% zoom
+* mobile可读
+
+建议文本摘要：
+
+```text
+Phonon density of states from -1.2 to 15.4 THz. The integrated total DOS is 5.98 modes compared with an expected 6 modes. A small contribution is present below 0 THz.
+```
+
+不得只提供canvas而无文本或table fallback。
+
+---
+
+# 44. Mobile
+
+至少支持：
+
+* responsive plot
+* total DOS默认显示
+* projection selector
+* summary
+* warning
+* table/JSON fallback
+* artifact download
+
+要求：
+
+* no scroll trap
+* legend不遮挡plot
+* projection selector touch target合格
+* negative region仍可见
+* tooltip不是唯一信息通道
+
+---
+
+# 45. Plot Performance
+
+必须设置：
+
+* max grid points
+* max projections
+* max simultaneously rendered projections
+* max plotted numeric values
+* max legend entries
+* max table rows
+
+超过interactive cap：
+
+* total DOS仍可显示，若安全
+* projections进入selector/degraded
+* table分页或sample
+* artifact完整保留
+
+超过hard contract cap：
+
+* adapter拒绝
+
+不得：
+
+* 为每个grid point创建DOM节点
+* 同时渲染数百projection
+* 创建巨大SVG path集合
+* 在前端重采样来掩盖性能问题，除非另有明确display-only downsampling contract；本阶段建议不做
+
+---
+
+# 46. Determinism
+
+必须验证：
+
+* source mapping稳定
+* frequency grid order稳定
+* projection order稳定
+* unit conversion稳定
+* density Jacobian稳定
+* normalization scale稳定
+* integration result稳定
+* warning order稳定
+* plot series order稳定
+* table row order稳定
+* manifest order稳定
+* hashes稳定
+
+跨浏览器PNG hash不要求一致。
+
+---
+
+# 47. Security
+
+必须验证：
+
+* no unsafe YAML/object loader
+* no pickle
+* no eval
+* no literal eval
+* no shell
+* no notebook execution
+* no script execution
+* no remote source
+* no external URL
+* no HTML label execution
+* no SVG script
+* no artifact JavaScript
+* no arbitrary plot code
+* no arbitrary unit expression
+* no arbitrary normalization expression
+* no callback
+* no oversized text expansion
+* no metadata recursion abuse
+* no private path
+* no secrets
+* no telemetry upload
+
+必须输出：
+
+```text
+NO_EXTERNAL_NETWORK_REQUESTS
+NO_SECRET_PATTERN_HITS
+```
+
+---
+
+# 48. Fixtures
+
+新增small、deterministic fixtures。
+
+至少：
+
+## 48.1 Valid Total DOS
+
+* 2 atoms
+* expected integral≈6
+* positive frequencies
+
+## 48.2 Imaginary-Region DOS
+
+* negative-frequency grid
+* nonzeronegative-region weight
+
+## 48.3 Unit-Area DOS
+
+* source normalization=unit_area
+* convert tototal_modes
+* validate scale
+
+## 48.4 cm⁻¹ DOS
+
+* frequency and density conversion
+* integral invariance
+
+## 48.5 meV DOS
+
+* frequency and density conversion
+* integral invariance
+
+## 48.6 Atom-Projected DOS
+
+* canonical atom identity
+* complete decomposition
+
+## 48.7 Species-Projected DOS
+
+* species total projections
+* deterministic ordering
+
+## 48.8 Partial Projection
+
+* projection completeness=partial
+* no forced sum validation
+
+## 48.9 Projection Sum Mismatch
+
+* complete projection
+* warning/error policy
+
+## 48.10 Broadening Metadata
+
+* Gaussian width recorded
+* no new broadening applied
+
+## 48.11 Invalid Grid
+
+* duplicate/nonmonotonic
+
+## 48.12 Invalid Density
+
+* nonfinite
+* negative density beyond tolerance
+
+## 48.13 Over-Cap Synthetic
+
+不得提交大型真实DOS文件。
+
+---
+
+# 49. Unit Tests
+
+至少覆盖：
+
+## Source Detection
+
+* canonical JSON
+* phonopy total DOS，若支持
+* phonopy projected DOS，若支持
+* pymatgen，若支持
+* unsupported
+* ambiguous
+
+## Grid
+
+* strictly increasing
+* duplicate
+* nonmonotonic
+* negative frequencies
+* nonfinite
+* too short
+* over-cap
+
+## Unit Conversion
+
+* THz
+* cm⁻¹
+* meV
+* density Jacobian
+* integral invariance
+* unsupported unit
+
+## Normalization
+
+* total_modes
+* unit_area conversion
+* unknown normalization
+* expected 3N
+* approximate mismatch
+* material mismatch
+
+## Total DOS
+
+* shape
+* finite
+* negative density policy
+* magnitude cap
+
+## Projections
+
+* atom identity
+* species identity
+* duplicate projection
+* invalid atom index
+* species mismatch
+* complete sum
+* partial sum
+* deterministic ordering
+
+## Broadening
+
+* none
+* Gaussian metadata
+* invalid width
+* unsupported method
+* no transformation
+
+## Plot
+
+* total DOS
+* negative region
+* zero line
+* projections
+* selector/degraded
+* units
+* legend caps
+
+## Table
+
+* row order
+* projection filtering
+* units
+* classification
+* row cap
+
+## Artifacts
+
+* schema
+* summary
+* report
+* plot
+* table
+* manifest
+* hashes
+* no executable assets
+
+## Security
+
+* unsafe tags
+* HTML labels
+* external URL
+* callback-like metadata
+* arbitrary normalization text
+* private path
+
+---
+
+# 50. API Tests
+
+覆盖：
+
+* canonical valid
+* supported source valid
+* total DOS normalization
+* imaginary region
+* unit conversion
+* projected DOS
+* projection mismatch
+* invalid grid
+* structure mismatch
+* over-cap
+* deterministic replay
+* artifact retrieval
+* no partial artifacts
+
+---
+
+# 51. Browser Smoke Evidence
+
+新增：
+
+```text
+docs/phase10h/evidence/phase10h2_phonon_dos/
+```
+
+## Chromium
+
+覆盖：
+
+* total DOS
+* imaginary-region DOS
+* unit conversion result
+* atom projection selector
+* species projection
+* normalization summary
+* table
+* JSON fallback
+* degraded plot
+* invalid state
+* accessibility
+* no external network
+
+## Firefox
+
+smoke：
+
+* total DOS
+* negative frequencies
+* projection selector
+* table fallback
+* console/network
+
+## WebKit
+
+smoke：
+
+* responsive DOS
+* projection selection
+* warning
+* JSON/table fallback
+* console/network
+
+## Mobile
+
+smoke：
+
+* total DOS
+* summary
+* projection selector
+* warning
+* table fallback
+* no scroll trap
+
+---
+
+# 52. Browser Evidence Assertions
+
+记录：
+
+* browser version
+* viewport
+* tool ID
+* source format
+* schema
+* atom count
+* frequency grid size
+* projection count
+* frequency unit
+* density unit
+* normalization
+* expected integral
+* observed integral
+* negative-region integral
+* projection completeness
+* plot mode
+* rendered series count
+* table rows
+* warnings
+* console errors
+* network requests
+
+必须验证：
+
+* frequency单位正确
+* density Jacobian正确反映在artifact结果
+* negative频率显示
+* normalization摘要正确
+* projection identity正确
+* no silent resampling
+* no external network
+* no artifact JS
+* no capability overclaim
+
+---
+
+# 53. Evidence Files
+
+至少包含：
+
+```text
+README.md
+format_scope.json
+source_mapping_policy.json
+frequency_grid_policy.json
+frequency_density_conversion.json
+normalization_policy.json
+integration_validation.json
+negative_frequency_policy.json
+projection_identity_policy.json
+projection_completeness_policy.json
+broadening_policy.json
+parse_report_schema.json
+total_dos_result.json
+imaginary_dos_result.json
+unit_area_conversion_result.json
+inverse_centimeter_conversion_result.json
+mev_conversion_result.json
+atom_projected_result.json
+species_projected_result.json
+partial_projection_result.json
+projection_mismatch_result.json
+plot_contract_result.json
+table_contract_result.json
+api_valid_canonical.json
+api_valid_source.json
+api_imaginary.json
+api_projected.json
+api_invalid.json
+api_over_cap.json
+deterministic_replay.json
+browser_chromium.json
+browser_firefox.json
+browser_webkit.json
+browser_mobile.json
+accessibility_audit.json
+performance_metrics.json
+security_audit.json
+network_audit.json
+artifact_hashes.json
+```
+
+截图建议：
+
+```text
+01_total_phonon_dos.png
+02_imaginary_region_dos.png
+03_atom_projected_dos.png
+04_species_projected_dos.png
+05_normalization_summary.png
+06_phonon_dos_table.png
+07_degraded_dos_plot.png
+08_invalid_dos_input.png
+09_mobile_phonon_dos.png
+```
+
+不得保存：
+
+* 大型source文件
+* unsafe payload
+* private path
+* token
+* secret
+* raw library dump
+* browser cache
+* full traces
+
+---
+
+# 54. Dependency Policy
+
+优先不新增依赖。
+
+如果已有：
+
+* phonopy
+* pymatgen
+* NumPy
+* approved chart library
+
+则复用。
+
+如果没有phonopy/pymatgen：
+
+* canonical JSON必须完整
+* 可实现有限静态text parser
+* 不要引入完整计算栈仅为解析DOS
+
+如新增解析依赖：
+
+* security audit
+* safe usage
+* lockfile更新
+* license记录
+
+检查：
+
+```bash
+uv lock --check
+npm --prefix apps/web ls --depth=0
+npm --prefix apps/web run build
+```
+
+记录：
+
+* dependency tree
+* lockfile
+* frontend bundle
+* no unexpected additions
+
+---
+
+# 55. Documentation
+
+新增或更新：
+
+```text
+docs/phase10h/phase10h2_phonon_dos.md
+docs/phase10h/phase10h2_phonon_dos_source_scope.md
+docs/phase10h/phase10h2_frequency_density_conversion.md
+docs/phase10h/phase10h2_dos_normalization.md
+docs/phase10h/phase10h2_dos_integration_validation.md
+docs/phase10h/phase10h2_projected_dos.md
+docs/phase10h/phase10h2_phonon_dos_plot_contract.md
+docs/phase10h/phase10h2_phonon_dos_table.md
+docs/phase10h/phase10h2_phonon_dos_api_evidence.md
+docs/phase10h/phase10h2_phonon_dos_accessibility.md
+docs/phase10h/phase10h2_phonon_dos_security.md
+docs/phase10h/phase10h2_phonon_dos_readiness_matrix.md
+```
+
+更新：
+
+```text
+docs/index.md
+docs/13_SHARED_SCHEMA_SPEC.md
+persistent/DESIGN_PROGRESS.md
+persistent/TASK_BOARD.md
+persistent/CHANGELOG.md
+persistent/OPEN_QUESTIONS.md
+persistent/TOOL_REGISTRY_NOTES.md
+persistent/ARCHITECTURE_DECISIONS.md
+```
+
+必须记录：
+
+* supported sources
+* deferred sources
+* grid semantics
+* frequency conversion
+* density Jacobian
+* normalization
+* integration
+* negative-frequency region
+* projected identity
+* projection completeness
+* broadening metadata
+* plot/table contracts
+* planner visibility
+* API path
+* combined view deferred
+* eigenvectors deferred
+* animation deferred
+
+---
+
+# 56. Readiness Matrix
+
+最终分别判断：
+
+* source scope
+* canonical JSON adapter
+* phonopy total DOS adapter
+* phonopy projected DOS adapter
+* pymatgen adapter
+* safe parsing
+* frequency grid
+* frequency conversion
+* density conversion
+* Jacobian
+* integral invariance
+* total-modes normalization
+* unit-area conversion
+* normalization validation
+* negative-frequency DOS
+* imaginary-region integral
+* total DOS
+* atom-projected DOS
+* species-projected DOS
+* projection completeness
+* projection sum validation
+* broadening metadata
+* structure identity
+* DOS artifact
+* summary
+* parse report
+* manifest
+* static plot
+* table
+* degraded plot
+* API evidence
+* frontend preview
+* accessibility
+* mobile
+* browser smoke
+* security
+* formal DOS tool registration
+* combined view
+* eigenvectors
+* animation
+
+推荐期望：
+
+```text
+source scope: READY
+canonical JSON adapter: READY
+phonopy total DOS adapter: READY or DEFERRED_BY_DESIGN
+phonopy projected DOS adapter: READY or DEFERRED_BY_DESIGN
+pymatgen adapter: READY or DEFERRED_BY_DESIGN
+safe parsing: READY
+frequency grid: READY
+frequency conversion: READY
+density Jacobian: READY
+integral invariance: READY
+normalization: READY
+integration validation: READY
+negative-frequency DOS: READY
+total DOS: READY
+atom-projected DOS: READY or PARTIAL_READY
+species-projected DOS: READY or PARTIAL_READY
+projection completeness: READY
+broadening metadata: READY
+structure identity: READY
+DOS artifact: READY
+summary: READY
+parse report: READY
+manifest: READY
+static plot: READY
+table: READY
+API evidence: READY
+frontend preview: READY
+accessibility: READY
+mobile: READY
+browser smoke: READY
+security: READY
+
+formal phonon DOS tool registration: READY or PARTIAL_READY
+combined band + DOS: NOT_READY
+phonon eigenvector contract: NOT_READY
+phonon animation: NOT_READY
+```
+
+---
+
+# 57. Checks
+
+至少运行：
+
+```bash
+git diff --check
+uv lock --check
+
+uv run python -m pytest -q
+
+npm --prefix apps/web test
+npm --prefix apps/web run typecheck
+npm --prefix apps/web run build
+```
+
+并运行：
+
+* phonon DOS source parser tests
+* frequency-grid tests
+* frequency/density conversion tests
+* Jacobian tests
+* normalization tests
+* integration tests
+* negative-region tests
+* total DOS tests
+* projected DOS tests
+* projection completeness tests
+* broadening metadata tests
+* plot tests
+* table tests
+* adapter tests
+* API integration
+* frontend preview tests
+* accessibility tests
+* Chromium smoke
+* Firefox smoke
+* WebKit smoke
+* mobile smoke
+* security scan
+* network audit
+* Phase 10 Closure Regression Pack
+* Phase 10G regression
+* Phase 10H contract regression
+* Phase 10H-1 phonon band regression
+* service-backed integration
+* no-skipped assertion
+
+必须如实记录：
+
+* passed
+* failed
+* skipped
+* unavailable
+
+不得把skipped写成passed。
+
+---
+
+# 58. Commit / CI
+
+完成adapter、plot、tests、evidence和docs后：
+
+```bash
+git status --short
+git diff --stat
+git add <only Phase 10H-2 related files>
+git commit -m "Add phonon DOS adapter and visualization"
+git push origin master
+```
+
+等待current HEAD CI。
+
+必须确认：
+
+* backend unit success
+* frontend tests success
+* frontend typecheck success
+* frontend build success
+* phonon DOS tests success
+* API integration success
+* browser smoke success
+* Phase 10 Closure success
+* Phase 10G regression success
+* Phase 10H contract success
+* Phase 10H-1 regression success
+* service-backed integration success
+* no-skipped assertion success
+* origin/master matches HEAD
+* git status clean
+
+不得伪造CI。
+
+---
+
+# 59. 最终报告格式
+
+完成后输出：
+
+# Phase 10H-2 Phonon DOS Result
+
+## 1. Conclusion
+
+PASS / PARTIAL_PASS / FAIL
+
+## 2. Baseline
+
+* Phase 10H-1 assumed complete:
+* branch:
+* initial status:
+* final HEAD:
+* final status:
+
+## 3. Source Scope
+
+* canonical JSON:
+* phonopy total DOS:
+* phonopy projected DOS:
+* pymatgen:
+* deferred:
+* detection:
+* safe parsing:
+
+## 4. Adapter Architecture
+
+* source parser:
+* normalizer:
+* unit converter:
+* integration validator:
+* projection mapper:
+* validator:
+* serializer:
+* summary:
+* parse report:
+* manifest:
+* runtime:
+
+## 5. Frequency Grid
+
+* semantic:
+* ordering:
+* negative region:
+* duplicates:
+* nonuniform grid:
+* source conversion:
+* caps:
+
+## 6. Units and Jacobian
+
+* source frequency unit:
+* canonical frequency unit:
+* source density unit:
+* canonical density unit:
+* THz:
+* cm⁻¹:
+* meV:
+* density Jacobian:
+* integral invariance:
+
+## 7. Normalization
+
+* source normalization:
+* target normalization:
+* total modes:
+* unit-area conversion:
+* scale factor:
+* expected integral:
+* observed integral:
+* tolerance:
+* mismatch policy:
+
+## 8. Negative / Near-Zero Region
+
+* negative frequencies:
+* imaginary-region integral:
+* zero tolerance:
+* near-zero:
+* clipping:
+* display:
+
+## 9. Total DOS
+
+* shape:
+* finite:
+* nonnegative policy:
+* density unit:
+* normalization:
+* integral:
+* source:
+
+## 10. Projected DOS
+
+* atom projections:
+* species projections:
+* ordering:
+* identity:
+* scope:
+* completeness:
+* sum validation:
+* mismatch:
+* directional projections:
+
+## 11. Broadening / Mesh
+
+* broadening method:
+* width:
+* unit:
+* applied by adapter:
+* mesh metadata:
+* source:
+
+## 12. Artifacts
+
+* DOS:
+* summary:
+* parse report:
+* plot:
+* table:
+* manifest:
+* hashes:
+* provenance:
+* security:
+
+## 13. Plot
+
+* x-axis:
+* y-axis:
+* units:
+* zero line:
+* negative region:
+* total series:
+* projected series:
+* selector:
+* degraded mode:
+* legend cap:
+
+## 14. Table
+
+* total table:
+* projection table:
+* columns:
+* row order:
+* units:
+* classification:
+* row cap:
+* fallback:
+
+## 15. Tool / Planner
+
+* tool ID:
+* registry:
+* planner visibility:
+* valid routing:
+* band rejection:
+* combined rejection:
+* animation rejection:
+* calculation rejection:
+* PlanValidator:
+
+## 16. API Evidence
+
+* canonical valid:
+* source valid:
+* normalization:
+* imaginary region:
+* projected:
+* invalid:
+* over-cap:
+* artifact retrieval:
+* runtime path:
+
+## 17. Frontend / Accessibility
+
+* product preview:
+* summary:
+* plot:
+* projection selector:
+* table:
+* JSON fallback:
+* screen reader summary:
+* keyboard:
+* 200% zoom:
+* mobile:
+
+## 18. Browser Smoke
+
+* Chromium:
+* Firefox:
+* WebKit:
+* mobile:
+* negative region:
+* projections:
+* normalization:
+* console:
+* network:
+
+## 19. Performance
+
+* grid points:
+* projections:
+* plotted values:
+* simultaneous series:
+* table rows:
+* degraded threshold:
+* memory proxy:
+* render behavior:
+
+## 20. Determinism
+
+* frequency order:
+* projection order:
+* conversion:
+* normalization scale:
+* integral:
+* warning order:
+* plot series:
+* table rows:
+* manifest:
+* hashes:
+
+## 21. Security
+
+* parser:
+* unsafe object construction:
+* eval/pickle:
+* external references:
+* labels:
+* plot code:
+* unit/normalization expressions:
+* metadata:
+* caps:
+* private paths:
+* secrets:
+* network:
+* markers:
+
+## 22. Evidence
+
+* directory:
+* source mapping:
+* grid policy:
+* unit conversion:
+* Jacobian:
+* normalization:
+* integration:
+* negative region:
+* projections:
+* plot:
+* table:
+* API:
+* browser:
+* accessibility:
+* security:
+* screenshots:
+* hashes:
+
+## 23. Tests
+
+* source parser:
+* grid:
+* frequency units:
+* density units:
+* Jacobian:
+* normalization:
+* integration:
+* negative region:
+* total DOS:
+* projections:
+* broadening:
+* plot:
+* table:
+* adapter:
+* API:
+* frontend:
+* accessibility:
+* Chromium:
+* Firefox:
+* WebKit:
+* mobile:
+* backend full:
+* frontend full:
+* typecheck:
+* build:
+* Phase 10 closure:
+* Phase 10G:
+* Phase 10H:
+* Phase 10H-1:
+* service-backed:
+* no-skipped:
+* lock:
+* diff:
+
+## 24. Files
+
+* parser:
+* adapter:
+* normalizer:
+* converters:
+* integration validator:
+* projection mapper:
+* plot producer:
+* table producer:
+* registry:
+* planner:
+* API:
+* frontend:
+* fixtures:
+* tests:
+* browser runners:
+* evidence:
+* docs:
+* persistent:
+* dependencies/lockfile:
+
+## 25. Deferred
+
+明确列出：
+
+* unsupported DOS source formats
+* directional projected DOS，若未实现
+* combined phonon band + DOS
+* eigenvector payload
+* eigenvector atom mapping
+* complex phase
+* phonon animation
+* LO-TO directional rendering
+* Raman/IR activity
+* thermodynamic properties
+* official benchmark validation
+* full phonon product registration，若未完成
+
+## 26. Readiness
+
+* source adapter:
+* grid normalization:
+* frequency conversion:
+* density conversion:
+* normalization:
+* integration:
+* negative region:
+* total DOS:
+* projected DOS:
+* artifact:
+* plot:
+* table:
+* API:
+* frontend:
+* browser:
+* accessibility:
+* security:
+* phonon DOS:
+* bands:
+* combined:
+* eigenvectors:
+* animation:
+* formal product:
+
+## 27. Commit / CI
+
+* commit:
+* HEAD:
+* CI run:
+* backend:
+* frontend:
+* typecheck:
+* build:
+* phonon DOS:
+* API:
+* browser:
+* Phase 10 closure:
+* Phase 10G:
+* Phase 10H:
+* Phase 10H-1:
+* service-backed:
+* no-skipped:
+* origin:
+* status:
+
+## 28. Whether allowed to enter next phase
+
+允许 / 不允许
+
+下一阶段：
+
+```text
+Phase 10H-3：Combined Band + DOS
+```
+
+下一阶段只实现兼容phonon band和phonon DOS artifact的组合验证、共享frequency axis、联合静态布局、API/frontend/browser evidence，不实现eigenvector或animation。
+
+---
+
+# 60. PASS 判定
+
+PASS必须满足：
+
+* 有真实phonon DOS adapter
+* 有至少一种正式支持来源
+* canonical JSON路径完整
+* source parsing安全
+* frequency grid语义明确
+* grid严格递增
+* frequency单位转换正确
+* density Jacobian正确
+* 转换前后积分保持
+* normalization明确
+* total-modes积分检查正确
+* unit-area conversion正确
+* unknown normalization不被猜测
+* negative-frequency区域完整保留
+* imaginary-region积分正确
+* total DOS artifact生成
+* projected DOS identity正确
+* atom/species projections不混淆
+* projection completeness明确
+* complete projection sum验证正确
+* mismatch不被静默修复
+* broadening只记录、不重新应用
+* summary生成
+* parse report生成
+* manifest生成
+* static DOS plot真实工作
+* negative region真实显示
+* projection selector或degraded策略真实工作
+* table真实工作
+* plot/table caps生效
+* API正式路径闭合
+* frontend preview真实工作
+* accessibility不回退
+* Chromium真实smoke通过
+* Firefox/WebKit/mobile smoke完成或如实记录
+* deterministic replay稳定
+* no unsafe parser
+* no artifact JS
+* no external network
+* no secret hits
+* Phase 10 Closure、Phase 10G、Phase 10H和Phase 10H-1不回退
+* tests通过
+* CI通过
+* git clean
+
+PARTIAL_PASS仅允许：
+
+* phonopy或pymatgen某来源明确DEFERRED_BY_DESIGN，但canonical JSON和至少一个正式来源完整
+* atom-projected或species-projected其中一类暂未实现，但total DOS完整且另一类projection受控
+* formal planner visibility保持limited
+* browser某非主要环境明确unavailable
+* directional projections明确deferred
+* npm audit因既有registry问题不可用
+
+FAIL包括：
+
+* 只有mock DOS plot
+* adapter绕过Phase 10H validator
+* frequency grid被静默排序或重采样
+* frequency转换后density未应用Jacobian
+* normalization不明确
+* 通过observed积分猜normalization
+* negative-frequency区域被裁剪
+* projected DOS只靠label绑定
+* complete projection mismatch被静默rescale
+* broadening被前端自动应用
+* structure identity缺失
+* 无API evidence
+* 无browser evidence
+* 提前实现combined/eigenvector/animation导致范围膨胀
+* Phase 10H-1回退
+* CI失败却声明PASS
 
 ---END---

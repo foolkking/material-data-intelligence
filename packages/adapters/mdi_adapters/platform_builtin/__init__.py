@@ -17,6 +17,7 @@ from .structure import (
     StructureViewerSceneMetadataAdapter,
 )
 from .table_distribution import DistributionSummaryAdapter
+from .trajectory import TrajectoryImportAdapter
 from .viz import CorrelationAdapter, HistogramAdapter, ScatterAdapter
 
 __all__ = [
@@ -38,4 +39,5 @@ __all__ = [
     "StructureViewer3DAdapter",
     "StructureViewerExportPackageAdapter",
     "StructureViewerSceneMetadataAdapter",
+    "TrajectoryImportAdapter",
 ]

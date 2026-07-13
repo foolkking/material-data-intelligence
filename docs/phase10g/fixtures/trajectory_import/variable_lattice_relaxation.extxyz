@@ -1,0 +1,12 @@
+2
+Lattice="5.2 0 0 0.2 5.1 0 0.1 0.3 5.0" Properties=species:S:1:id:I:1:pos:R:3:forces:R:3 pbc="T T T" Step=0 force_unit=electronvolt_per_angstrom energy=-5.0 energy_scope=potential energy_unit=electronvolt trajectory_kind=geometry_optimization
+Na 1 0 0 0 0.2 0 0
+Cl 2 2.6 2.55 2.5 -0.2 0 0
+2
+Lattice="5.1 0 0 0.2 5.0 0 0.1 0.3 4.9" Properties=species:S:1:id:I:1:pos:R:3:forces:R:3 pbc="T T T" Step=1 force_unit=electronvolt_per_angstrom energy=-5.4 energy_scope=potential energy_unit=electronvolt trajectory_kind=geometry_optimization
+Na 1 0 0 0 0.1 0 0
+Cl 2 2.55 2.5 2.45 -0.1 0 0
+2
+Lattice="5.0 0 0 0.2 4.9 0 0.1 0.3 4.8" Properties=species:S:1:id:I:1:pos:R:3:forces:R:3 pbc="T T T" Step=2 force_unit=electronvolt_per_angstrom energy=-5.6 energy_scope=potential energy_unit=electronvolt trajectory_kind=geometry_optimization
+Na 1 0 0 0 0.02 0 0
+Cl 2 2.5 2.45 2.4 -0.02 0 0

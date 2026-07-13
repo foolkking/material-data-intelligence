@@ -1,0 +1,11 @@
+{
+  "atoms": 4096,
+  "checks_during_read": true,
+  "comment_bytes": 8192,
+  "coordinate_values": 12000000,
+  "frames": 10000,
+  "input_bytes": 64000000,
+  "line_bytes": 65536,
+  "metadata_keys": 32,
+  "row_tokens": 64
+}

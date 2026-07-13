@@ -1,0 +1,25 @@
+{
+  "energy": [
+    "electronvolt",
+    "hartree"
+  ],
+  "force": [
+    "electronvolt_per_angstrom",
+    "hartree_per_bohr"
+  ],
+  "position": {
+    "angstrom": 1,
+    "bohr": 0.529177210903,
+    "nanometer": 10
+  },
+  "time": {
+    "femtosecond": 1,
+    "picosecond": 1000
+  },
+  "unknown": "reject",
+  "velocity": [
+    "angstrom_per_femtosecond",
+    "angstrom_per_picosecond",
+    "nanometer_per_picosecond"
+  ]
+}

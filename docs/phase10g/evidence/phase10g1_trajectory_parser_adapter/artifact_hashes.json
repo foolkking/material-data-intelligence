@@ -1,0 +1,89 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "name": "api_invalid.json",
+      "sha256": "1b0149dcfd034ea78b3777b64d7c45c277c66f2c097cd8626fbbed1cf59ed9a8"
+    },
+    {
+      "name": "api_over_cap.json",
+      "sha256": "8382cae0c5b18d0383540e332b3f93d40958d554f31bbc2e4fcfe3d3a441f129"
+    },
+    {
+      "name": "api_valid_extxyz.json",
+      "sha256": "ddd7b23bfd0e3c8453f9be0c051e61bea3a1135de0dae82d23c9baa424a78c65"
+    },
+    {
+      "name": "api_valid_json.json",
+      "sha256": "2897a9cc55447ce24c7073422bde872e73bad27c9fe7212f395904da33aced12"
+    },
+    {
+      "name": "atom_id_reorder_result.json",
+      "sha256": "c13129b9e19316b574b9f0924a53aa609a4cd7bf8fda4e59f094248086850072"
+    },
+    {
+      "name": "deterministic_replay.json",
+      "sha256": "a295b2852a3707e6bfbef2f4a9943153d43ba3ff7d58071b7caf4a5602a459d8"
+    },
+    {
+      "name": "extxyz_mapping.json",
+      "sha256": "8bb8372e2fd860abe6be9cebbc525ebe86010ee22dc2da14f5d195fb11e3f8da"
+    },
+    {
+      "name": "format_detection.json",
+      "sha256": "b558c3148d15030073d6820a5682d78d86f04f16cf75fd76f02bebd42417193f"
+    },
+    {
+      "name": "format_scope.json",
+      "sha256": "ace521ace851a5ae74250b8769fca1bd42f7099c50284e3cc5e93943c7f2d473"
+    },
+    {
+      "name": "identity_mapping.json",
+      "sha256": "ee097d37000ff087404eb7a58152ac5bf50d011dad791cd939066c2608cab719"
+    },
+    {
+      "name": "invalid_case_matrix.json",
+      "sha256": "af257aacd1489fa1e4f9a08fdad1ef26d155b73d9afd438b0f37ed8e208160e5"
+    },
+    {
+      "name": "native_json_mapping.json",
+      "sha256": "c2c2ff0e24c04f5e8a412e7b0c91dc02a10ef35f46eaffb7d1c449c391525bd6"
+    },
+    {
+      "name": "network_audit.json",
+      "sha256": "e53de59ae566f35b17f10b8ee168060da0f1b4b71bfa9d2a70f99bdec6ba6909"
+    },
+    {
+      "name": "over_cap_result.json",
+      "sha256": "8382cae0c5b18d0383540e332b3f93d40958d554f31bbc2e4fcfe3d3a441f129"
+    },
+    {
+      "name": "parser_caps.json",
+      "sha256": "3d9811c039796938a97ac27c69149c726b17bd6a519f6575867d5d42e421ad2f"
+    },
+    {
+      "name": "performance_metrics.json",
+      "sha256": "ac730d1b35a28c055d63de9a9876ebfc3357d8ecfb4e5b40c8cc78f2a057d555"
+    },
+    {
+      "name": "security_audit.json",
+      "sha256": "aad8ece6945ec1c0ad3b10dc94332b3650b853958aaa57e699d7ee0d9b3400c6"
+    },
+    {
+      "name": "unit_conversion_policy.json",
+      "sha256": "20d880f90623d6667bb120131af0338043b601dadf2b8010a98080ec9b5712d9"
+    },
+    {
+      "name": "valid_fixed_lattice_result.json",
+      "sha256": "324847e7a00a3666468a579af8c1dd49a99599ebacae1b5e49d3b1fb033d72e8"
+    },
+    {
+      "name": "valid_triclinic_result.json",
+      "sha256": "c13129b9e19316b574b9f0924a53aa609a4cd7bf8fda4e59f094248086850072"
+    },
+    {
+      "name": "valid_variable_lattice_result.json",
+      "sha256": "257224744f45f41c0fbed4944ab31d2fbcbe996470e7e5c1f2d032f257ce7dd4"
+    }
+  ]
+}

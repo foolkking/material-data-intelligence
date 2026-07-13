@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-07-13 - Phase 10G-1 Trajectory Parser / Adapter
+
+- Added bounded streaming multi-frame EXTXYZ and canonical trajectory JSON ingestion with deterministic canonical normalization.
+- Added stable source-ID reorder, approved unit conversion, strict lattice/PBC/property/time policies, typed failures, cancellation, and no-partial-artifact behavior.
+- Added planner-hidden internal trajectory import adapter, four unique JSON artifact types, runtime/API evidence, tests, and security documentation.
+
 ## 2026-07-13 - Phase 10G Trajectory Contract
 
 - Added closed inert trajectory, frame, summary, and manifest contracts with stable identity and canonical serialization.

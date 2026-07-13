@@ -1,0 +1,6 @@
+{
+  "invalid_truncated.extxyz": {
+    "code": "TRAJECTORY_FRAME_TRUNCATED",
+    "message": "Frame ended before all atom rows were read."
+  }
+}

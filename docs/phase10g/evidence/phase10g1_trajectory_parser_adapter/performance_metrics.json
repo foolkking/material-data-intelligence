@@ -1,0 +1,11 @@
+{
+  "atoms": 2,
+  "bounded_line_reader": true,
+  "file_handles_closed": true,
+  "fixture_bytes": 934,
+  "frames": 3,
+  "max_ms": 2.454,
+  "min_ms": 2.228,
+  "runs": 5,
+  "whole_file_split": false
+}

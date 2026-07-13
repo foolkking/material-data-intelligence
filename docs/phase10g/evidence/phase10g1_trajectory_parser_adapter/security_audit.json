@@ -1,0 +1,13 @@
+{
+  "arbitrary_plugin": false,
+  "archive": false,
+  "artifact_javascript": false,
+  "dependencies_added": false,
+  "eval": false,
+  "external_url": false,
+  "literal_eval": false,
+  "marker": "NO_SECRET_PATTERN_HITS",
+  "pickle": false,
+  "private_path_in_artifacts": false,
+  "shell": false
+}

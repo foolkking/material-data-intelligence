@@ -1,0 +1,23 @@
+{
+  "canonical": "stable_index",
+  "later_reorder": "mapped explicitly",
+  "reordered_fixture": {
+    "atoms_per_frame": 2,
+    "coordinate_mode": "cartesian",
+    "detected_format": "extxyz",
+    "deterministic": true,
+    "frames_read": 2,
+    "input_sha256": "0ba53a2d809e5e1df7c1398f8d454ac5d2614f3f77278345fb81a09484100bc0",
+    "lattice_mode": "fixed",
+    "properties_detected": [
+      "positions"
+    ],
+    "reordered_by_atom_id": true,
+    "schema_version": "phase10g.trajectory_parse_report.v1",
+    "unit_conversions": [],
+    "warnings": [
+      "TRAJECTORY_ATOMS_REORDERED_BY_ID"
+    ]
+  },
+  "source_ids": "first-frame order"
+}

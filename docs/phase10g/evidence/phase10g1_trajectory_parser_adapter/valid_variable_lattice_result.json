@@ -1,0 +1,45 @@
+{
+  "report": {
+    "atoms_per_frame": 2,
+    "coordinate_mode": "cartesian",
+    "detected_format": "extxyz",
+    "deterministic": true,
+    "frames_read": 3,
+    "input_sha256": "3dc9da99b9f3b473fc33d17c37448e0a483c1aad49081b2b5e8cf12318cb98c7",
+    "lattice_mode": "variable",
+    "properties_detected": [
+      "positions",
+      "forces",
+      "energy"
+    ],
+    "reordered_by_atom_id": false,
+    "schema_version": "phase10g.trajectory_parse_report.v1",
+    "unit_conversions": [],
+    "warnings": []
+  },
+  "trajectory_id": "sha256:c4850a3531806fab480eb2bc928400c865dc776d93ccdaf97b6cf78ab832d3c7",
+  "validation": {
+    "atom_count": 2,
+    "caps": {
+      "max_atoms": 4096,
+      "max_frame_metadata_bytes": 4096,
+      "max_frames": 10000,
+      "max_json_bytes": 64000000,
+      "max_label_length": 128,
+      "max_metadata_bytes": 16384,
+      "max_numeric_magnitude": 1000000000000,
+      "max_property_arrays": 2,
+      "max_property_keys": 6,
+      "max_provenance_fields": 6,
+      "max_total_coordinate_values": 12000000,
+      "max_warnings": 32
+    },
+    "errors": [],
+    "frame_count": 3,
+    "valid": true,
+    "warnings": [
+      "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN",
+      "TRAJECTORY_WRAPPING_UNKNOWN"
+    ]
+  }
+}

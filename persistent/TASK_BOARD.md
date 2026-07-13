@@ -1,5 +1,11 @@
 # TASK_BOARD
 
+## Phase 10G-1 Trajectory Parser / Adapter Completed
+
+- [x] Bounded EXTXYZ and canonical JSON parsing, normalization, units, stable IDs, caps, cancellation, and security.
+- [x] Internal validated adapter/runtime artifacts, summary, parse report, manifest, and API evidence.
+- [ ] Trajectory viewer, playback, dynamic topology, analysis, browser performance, and formal product registration.
+
 ## Phase 10G Trajectory Contract Completed
 
 - [x] Trajectory/frame/summary/manifest schema family and deterministic content identity.

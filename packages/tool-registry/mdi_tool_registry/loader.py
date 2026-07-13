@@ -80,6 +80,8 @@ def _domain_from_tool_id(tool_id: str) -> ToolDomain:
 
 
 def _category_for(entry: dict[str, Any]) -> ToolCategory:
+    if entry["tool_id"] == "structure.trajectory_import":
+        return ToolCategory.parser
     artifact_types = set(entry.get("artifact_types", []))
     source = entry.get("implementation_source")
     if source == "platform_builtin" and not artifact_types.intersection({"plotly_json", "plotly_html"}):
@@ -95,6 +97,8 @@ def _cost_for(entry: dict[str, Any]) -> str:
 
 
 def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
+    if entry["tool_id"] == "structure.trajectory_import":
+        return 120, 300
     if entry["tool_id"] == "structure.viewer_3d":
         return 90, 180
     if entry["tool_id"].startswith("structure."):
@@ -104,6 +108,13 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.trajectory_import":
+        return {
+            "maxAtoms": 4096,
+            "maxFrames": 10000,
+            "maxCoordinateValues": 12000000,
+            "maxJsonBytes": 64000000,
+        }
     if tool_id in {"structure.viewer_scene", "structure.viewer_3d"}:
         return {
             "maxStructures": 1,
@@ -156,6 +167,17 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.trajectory_import":
+        return ToolInputSchema(
+            periodicity="any",
+            inputOptions=[
+                ToolInputOption(
+                    name="validated_trajectory",
+                    requiredObjectTypes=[MaterialObjectType.Trajectory],
+                    description="Use exactly one bounded normalized phase10g.trajectory.v1 object.",
+                )
+            ],
+        )
     if tool_id == "composition.ptable_heatmap":
         options = [
             ToolInputOption(
@@ -259,6 +281,8 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.trajectory_import":
+        return {"type": "object", "additionalProperties": False, "properties": {}}
     composition_count_mode = {"enum": ["occurrence", "stoichiometric", "fractional", "composition"]}
     formula_column_props = {
         "formulaColumn": {"type": "string"},

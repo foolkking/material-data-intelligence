@@ -4,6 +4,8 @@
 
 [`phase10g/phase10g_trajectory_contract.md`](phase10g/phase10g_trajectory_contract.md) defines the inert trajectory/frame/summary/manifest family, stable identity, coordinate/lattice/time/unit policies, caps, validators, fixtures, independent TypeScript comparison, and security evidence. Parser, adapter, formal tool, playback, and viewer remain deferred.
 
+[`phase10g/phase10g1_trajectory_parser_adapter.md`](phase10g/phase10g1_trajectory_parser_adapter.md) implements bounded EXTXYZ/canonical JSON ingestion, normalization, planner-hidden adapter/runtime artifacts, API evidence, and parser security. Viewer and playback remain deferred.
+
 ## Phase 10F-25 Clipping, Cell, and Camera Controls
 
 `phase10f/phase10f25_clipping_cell_camera.md` is the implementation entry point. The clipping, camera, cell display, security, and evidence documents define bounded renderer-local view controls and their three-browser closure.

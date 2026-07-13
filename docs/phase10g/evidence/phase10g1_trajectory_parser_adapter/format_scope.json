@@ -1,0 +1,22 @@
+{
+  "deferred": [
+    "ase_traj",
+    "lammps_dump",
+    "xtc",
+    "trr",
+    "dcd",
+    "netcdf",
+    "hdf5",
+    "xdatcar",
+    "vasprun_xml",
+    "pdb_trajectory",
+    "remote_url",
+    "archive",
+    "pickle"
+  ],
+  "plain_xyz": "DEFERRED_BY_DESIGN",
+  "supported": [
+    "extended_xyz",
+    "canonical_phase10g_json"
+  ]
+}

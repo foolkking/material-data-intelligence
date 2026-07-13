@@ -1,0 +1,8 @@
+{
+  "eval": false,
+  "lattice": "nine row-vector angstrom values",
+  "pbc": "explicit all/all-none",
+  "positions": "Cartesian angstrom",
+  "production_parser": "bounded application-owned line parser",
+  "unknown_properties": "ignored with bounded warning"
+}

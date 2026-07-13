@@ -17,6 +17,7 @@ from mdi_schemas import MaterialObjectType
 
 from .detector import detect_format
 from .models import DetectedFormat, NormalizedObjectDraft, ParseResult
+from .trajectory import TrajectoryParseError, parse_trajectory_file
 
 
 def parse_file(path: str | Path, *, dataset_id: str, file_id: str | None = None) -> ParseResult:
@@ -42,9 +43,16 @@ def parse_file(path: str | Path, *, dataset_id: str, file_id: str | None = None)
                 parse_status="success",
                 objects=[_dataframe_object(dataframe, dataset_id, resolved_file_id, detected_format.value)],
             )
+        if detected_format == DetectedFormat.json_limited and _looks_like_canonical_trajectory_file(file_path):
+            return _parse_trajectory(file_path, dataset_id=dataset_id, file_id=resolved_file_id, detected_format=detected_format)
         if detected_format == DetectedFormat.json_limited:
             return _parse_json_limited(file_path, dataset_id=dataset_id, file_id=resolved_file_id)
-        if detected_format in {DetectedFormat.xyz, DetectedFormat.extxyz}:
+        if detected_format == DetectedFormat.extxyz:
+            parsed = parse_trajectory_file(file_path)
+            if len(parsed.trajectory["frames"]) > 1:
+                return _trajectory_parse_result(parsed, file_path=file_path, dataset_id=dataset_id, file_id=resolved_file_id, detected_format=detected_format)
+            return _parse_xyz(file_path, dataset_id=dataset_id, file_id=resolved_file_id, detected_format=detected_format)
+        if detected_format == DetectedFormat.xyz:
             return _parse_xyz(file_path, dataset_id=dataset_id, file_id=resolved_file_id, detected_format=detected_format)
         if detected_format == DetectedFormat.archive:
             return _parse_zip_archive(file_path, dataset_id=dataset_id, file_id=resolved_file_id)
@@ -55,6 +63,15 @@ def parse_file(path: str | Path, *, dataset_id: str, file_id: str | None = None)
             parse_status="unsupported",
             error_code="FORMAT_UNSUPPORTED",
             error_message=f"No MVP parser is implemented for {detected_format.value}.",
+        )
+    except TrajectoryParseError as exc:
+        return ParseResult(
+            file_id=resolved_file_id,
+            file_path=file_path,
+            detected_format=detected_format,
+            parse_status="failed",
+            error_code=exc.code,
+            error_message=str(exc),
         )
     except Exception as exc:
         return ParseResult(
@@ -281,6 +298,71 @@ def _dataframe_object(dataframe: pd.DataFrame, dataset_id: str, file_id: str, de
         hash=digest,
         payload=payload,
     )
+
+
+def _parse_trajectory(file_path: Path, *, dataset_id: str, file_id: str, detected_format: DetectedFormat) -> ParseResult:
+    parsed = parse_trajectory_file(file_path)
+    return _trajectory_parse_result(
+        parsed,
+        file_path=file_path,
+        dataset_id=dataset_id,
+        file_id=file_id,
+        detected_format=detected_format,
+    )
+
+
+def _trajectory_parse_result(
+    parsed: Any,
+    *,
+    file_path: Path,
+    dataset_id: str,
+    file_id: str,
+    detected_format: DetectedFormat,
+) -> ParseResult:
+    payload = parsed.trajectory
+    digest = content_hash(stable_json_dumps(payload))
+    object_id = f"obj_trajectory_{digest[:12]}"
+    summary = {
+        "kind": payload["kind"],
+        "frameCount": len(payload["frames"]),
+        "atomCount": payload["atoms"]["count"],
+        "coordinateMode": payload["coordinate_mode"],
+        "latticeMode": payload["lattice_mode"],
+        "properties": [key for key, enabled in payload["properties"].items() if enabled],
+    }
+    obj = NormalizedObjectDraft(
+        id=object_id,
+        dataset_id=dataset_id,
+        object_type=MaterialObjectType.Trajectory,
+        source_file_ids=[file_id],
+        storage_key=f"normalized/{object_id}/trajectory.json",
+        metadata={
+            "detectedFormat": detected_format.value,
+            "trajectorySummary": summary,
+            "trajectoryParseReport": parsed.report,
+        },
+        hash=digest,
+        payload=payload,
+    )
+    return ParseResult(
+        file_id=file_id,
+        file_path=file_path,
+        detected_format=detected_format,
+        parse_status="success",
+        objects=[obj],
+    )
+
+
+def _looks_like_canonical_trajectory_file(path: Path) -> bool:
+    if path.stat().st_size > 64_000_000:
+        return False
+    with path.open("rb") as handle:
+        head = handle.read(4096)
+    try:
+        text = head.decode("utf-8-sig", errors="strict")
+    except UnicodeDecodeError:
+        return False
+    return "phase10g.trajectory.v1" in text and '"schema_version"' in text
 
 
 def _coerce_numeric_like_columns(dataframe: pd.DataFrame) -> pd.DataFrame:

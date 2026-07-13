@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-13 Phase 10G-1 Trajectory Parser / Adapter
+
+- Added bounded streaming EXTXYZ and byte-capped canonical trajectory JSON parsers with strict UTF-8, identity, units, lattice/PBC, property, cancellation, and security checks.
+- Multi-frame inputs normalize to validated `Trajectory`; single-frame EXTXYZ remains the static Structure path and plain XYZ trajectory is deferred without lattice fabrication.
+- Added planner-hidden `structure.trajectory_import` validated runtime path and four inert JSON artifacts with API evidence.
+- Viewer, playback, dynamic bonds, analytics, browser evidence, and formal trajectory product registration remain NOT_READY.
+
 ## 2026-07-13 Phase 10G Trajectory Contract
 
 - Defined inert `phase10g.trajectory.v1`, frame, summary, and manifest contracts with content-derived identity and deterministic JSON.

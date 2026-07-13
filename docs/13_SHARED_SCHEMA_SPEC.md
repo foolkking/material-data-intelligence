@@ -1193,3 +1193,16 @@ The JSON contract has hard atom/frame/value/byte/metadata bounds, content-derive
 SHA-256 identity, exact field allowlists, deterministic serialization, and no
 executable or external reference. It does not modify static viewer scenes and
 does not register or authorize a parser, adapter, trajectory tool, or viewer.
+
+## Phase 10G-1 Addendum: parser report and artifact types
+
+`phase10g.trajectory_parse_report.v1` is a bounded inert parser audit containing
+detected format, frame/atom counts, coordinate/lattice modes, detected approved
+properties, unit conversions, source-ID reorder state, warning codes, input
+SHA-256, and deterministic=true. It excludes source content, paths, stack,
+environment, URLs, and executable data.
+
+The shared artifact enum adds `trajectory_json`, `trajectory_summary_json`,
+`trajectory_report_json`, and `trajectory_manifest_json`. The canonical manifest
+hashes trajectory and summary; artifact listing supplies report and manifest
+identity without a circular manifest self-hash. No static viewer schema changes.

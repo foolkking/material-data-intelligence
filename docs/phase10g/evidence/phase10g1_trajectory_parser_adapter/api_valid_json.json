@@ -1,0 +1,435 @@
+{
+  "artifact_contents": {
+    "trajectory.json": {
+      "atom_identity_mode": "stable_index",
+      "atoms": {
+        "count": 2,
+        "records": [
+          {
+            "atom_id": 0,
+            "label": "Si1",
+            "occupancy": 1.0,
+            "species": "Si"
+          },
+          {
+            "atom_id": 1,
+            "label": "Si2",
+            "occupancy": 1.0,
+            "species": "Si"
+          }
+        ]
+      },
+      "coordinate_mode": "fractional",
+      "fixed_lattice": [
+        [
+          5.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          5.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          5.0
+        ]
+      ],
+      "frames": [
+        {
+          "atom_ids": [
+            0,
+            1
+          ],
+          "energy": null,
+          "forces": null,
+          "frame_index": 0,
+          "lattice": null,
+          "metadata": {},
+          "positions": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.25,
+              0.25
+            ]
+          ],
+          "schema_version": "phase10g.trajectory_frame.v1",
+          "step": 0,
+          "temperature": null,
+          "time": 0.0,
+          "velocities": [
+            [
+              0.005,
+              0.0,
+              0.0
+            ],
+            [
+              0.005,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "atom_ids": [
+            0,
+            1
+          ],
+          "energy": null,
+          "forces": null,
+          "frame_index": 1,
+          "lattice": null,
+          "metadata": {},
+          "positions": [
+            [
+              0.01,
+              0.0,
+              0.0
+            ],
+            [
+              0.26,
+              0.25,
+              0.25
+            ]
+          ],
+          "schema_version": "phase10g.trajectory_frame.v1",
+          "step": 5,
+          "temperature": null,
+          "time": 2.0,
+          "velocities": [
+            [
+              0.005,
+              0.0,
+              0.0
+            ],
+            [
+              0.005,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "atom_ids": [
+            0,
+            1
+          ],
+          "energy": null,
+          "forces": null,
+          "frame_index": 2,
+          "lattice": null,
+          "metadata": {},
+          "positions": [
+            [
+              0.02,
+              0.0,
+              0.0
+            ],
+            [
+              0.27,
+              0.25,
+              0.25
+            ]
+          ],
+          "schema_version": "phase10g.trajectory_frame.v1",
+          "step": 10,
+          "temperature": null,
+          "time": 4.0,
+          "velocities": [
+            [
+              0.005,
+              0.0,
+              0.0
+            ],
+            [
+              0.005,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "atom_ids": [
+            0,
+            1
+          ],
+          "energy": null,
+          "forces": null,
+          "frame_index": 3,
+          "lattice": null,
+          "metadata": {},
+          "positions": [
+            [
+              0.03,
+              0.0,
+              0.0
+            ],
+            [
+              0.28,
+              0.25,
+              0.25
+            ]
+          ],
+          "schema_version": "phase10g.trajectory_frame.v1",
+          "step": 15,
+          "temperature": null,
+          "time": 6.0,
+          "velocities": [
+            [
+              0.005,
+              0.0,
+              0.0
+            ],
+            [
+              0.005,
+              0.0,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "kind": "molecular_dynamics",
+      "lattice_mode": "fixed",
+      "metadata": {
+        "title": "Deterministic Phase 10G fixture"
+      },
+      "periodic_boundary": [
+        true,
+        true,
+        true
+      ],
+      "position_wrapping": "wrapped",
+      "properties": {
+        "energy": false,
+        "forces": false,
+        "positions": true,
+        "stress": false,
+        "temperature": false,
+        "velocities": true
+      },
+      "provenance": {
+        "created_by_tool": null,
+        "input_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "parser_version": null,
+        "source_format": "contract_fixture",
+        "source_software": "unknown",
+        "source_version": null
+      },
+      "schema_version": "phase10g.trajectory.v1",
+      "security": {
+        "contains_html": false,
+        "contains_javascript": false,
+        "executable_content_allowed": false,
+        "external_urls_allowed": false,
+        "remote_frames_allowed": false
+      },
+      "time": {
+        "origin": 0.0,
+        "unit": "femtosecond"
+      },
+      "trajectory_id": "sha256:dcaa81411bb244d804b3cea7980db184bc843cab024efe680cd1fd586138e471",
+      "units": {
+        "energy": "electronvolt",
+        "forces": "electronvolt_per_angstrom",
+        "positions": "fractional",
+        "temperature": "kelvin",
+        "velocities": "angstrom_per_femtosecond"
+      },
+      "warnings": [
+        "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN"
+      ]
+    },
+    "trajectory_manifest.json": {
+      "artifacts": [
+        {
+          "bytes": 2435,
+          "media_type": "application/json",
+          "name": "trajectory.json",
+          "sha256": "ee665f2c7771495887a9d1b19bdef403de368121de1375b2f910060151cda238"
+        },
+        {
+          "bytes": 469,
+          "media_type": "application/json",
+          "name": "trajectory_summary.json",
+          "sha256": "efa19bacd6bb641948658569691722dc9398907092dbe57176ccb57ad4b82b04"
+        }
+      ],
+      "atom_count": 2,
+      "frame_count": 4,
+      "frame_schema_version": "phase10g.trajectory_frame.v1",
+      "schema_version": "phase10g.trajectory_manifest.v1",
+      "security": {
+        "contains_html": false,
+        "contains_javascript": false,
+        "executable_content_allowed": false,
+        "external_urls_allowed": false,
+        "remote_frames_allowed": false
+      },
+      "summary_schema_version": "phase10g.trajectory_summary.v1",
+      "trajectory_id": "sha256:dcaa81411bb244d804b3cea7980db184bc843cab024efe680cd1fd586138e471",
+      "trajectory_schema_version": "phase10g.trajectory.v1"
+    },
+    "trajectory_parse_report.json": {
+      "atoms_per_frame": 2,
+      "coordinate_mode": "fractional",
+      "detected_format": "canonical_json",
+      "deterministic": true,
+      "frames_read": 4,
+      "input_sha256": "7e0a46b2582b26d57aa4e82f9ab05a57aa1d80585ac54003ceceed83b6684e13",
+      "lattice_mode": "fixed",
+      "properties_detected": [
+        "positions",
+        "velocities"
+      ],
+      "reordered_by_atom_id": false,
+      "schema_version": "phase10g.trajectory_parse_report.v1",
+      "unit_conversions": [],
+      "warnings": []
+    },
+    "trajectory_summary.json": {
+      "atoms": 2,
+      "available_properties": [
+        "positions",
+        "velocities"
+      ],
+      "coordinate_mode": "fractional",
+      "frames": 4,
+      "kind": "molecular_dynamics",
+      "lattice_mode": "fixed",
+      "periodic_boundary": [
+        true,
+        true,
+        true
+      ],
+      "position_wrapping": "wrapped",
+      "schema_version": "phase10g.trajectory_summary.v1",
+      "time_end": 6.0,
+      "time_start": 0.0,
+      "time_unit": "femtosecond",
+      "trajectory_id": "sha256:dcaa81411bb244d804b3cea7980db184bc843cab024efe680cd1fd586138e471",
+      "warnings": [
+        "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN"
+      ]
+    }
+  },
+  "artifacts": [
+    {
+      "name": "trajectory.json",
+      "sha256": "ee665f2c7771495887a9d1b19bdef403de368121de1375b2f910060151cda238",
+      "size_bytes": 2435,
+      "type": "trajectory_json"
+    },
+    {
+      "name": "trajectory_summary.json",
+      "sha256": "efa19bacd6bb641948658569691722dc9398907092dbe57176ccb57ad4b82b04",
+      "size_bytes": 469,
+      "type": "trajectory_summary_json"
+    },
+    {
+      "name": "trajectory_parse_report.json",
+      "sha256": "25304957afd40a21f0dc046b81f9fcef23872c4c30b695a21a6c40689e7ce08c",
+      "size_bytes": 460,
+      "type": "trajectory_report_json"
+    },
+    {
+      "name": "trajectory_manifest.json",
+      "sha256": "bfb5c05d9ac928ca4779219f57350ee471742eb4e88843ef82eff40925f08b8e",
+      "size_bytes": 970,
+      "type": "trajectory_manifest_json"
+    }
+  ],
+  "job": {
+    "ok": true,
+    "status": "completed",
+    "tool_call_count": 1
+  },
+  "plan_validation": {
+    "errors": [],
+    "ok": true
+  },
+  "request": {
+    "dataset_id": "dataset_trajectory_evidence",
+    "project_id": "project_trajectory_evidence",
+    "prompt": "Normalize this uploaded trajectory."
+  },
+  "tool_calls": [
+    {
+      "status": "completed",
+      "tool_id": "structure.trajectory_import"
+    }
+  ],
+  "validation": {
+    "manifest": {
+      "atom_count": 2,
+      "caps": {
+        "max_atoms": 4096,
+        "max_frame_metadata_bytes": 4096,
+        "max_frames": 10000,
+        "max_json_bytes": 64000000,
+        "max_label_length": 128,
+        "max_metadata_bytes": 16384,
+        "max_numeric_magnitude": 1000000000000,
+        "max_property_arrays": 2,
+        "max_property_keys": 6,
+        "max_provenance_fields": 6,
+        "max_total_coordinate_values": 12000000,
+        "max_warnings": 32
+      },
+      "errors": [],
+      "frame_count": 4,
+      "valid": true,
+      "warnings": []
+    },
+    "summary": {
+      "atom_count": 2,
+      "caps": {
+        "max_atoms": 4096,
+        "max_frame_metadata_bytes": 4096,
+        "max_frames": 10000,
+        "max_json_bytes": 64000000,
+        "max_label_length": 128,
+        "max_metadata_bytes": 16384,
+        "max_numeric_magnitude": 1000000000000,
+        "max_property_arrays": 2,
+        "max_property_keys": 6,
+        "max_provenance_fields": 6,
+        "max_total_coordinate_values": 12000000,
+        "max_warnings": 32
+      },
+      "errors": [],
+      "frame_count": 4,
+      "valid": true,
+      "warnings": []
+    },
+    "trajectory": {
+      "atom_count": 2,
+      "caps": {
+        "max_atoms": 4096,
+        "max_frame_metadata_bytes": 4096,
+        "max_frames": 10000,
+        "max_json_bytes": 64000000,
+        "max_label_length": 128,
+        "max_metadata_bytes": 16384,
+        "max_numeric_magnitude": 1000000000000,
+        "max_property_arrays": 2,
+        "max_property_keys": 6,
+        "max_provenance_fields": 6,
+        "max_total_coordinate_values": 12000000,
+        "max_warnings": 32
+      },
+      "errors": [],
+      "frame_count": 4,
+      "valid": true,
+      "warnings": [
+        "TRAJECTORY_SOURCE_SOFTWARE_UNKNOWN"
+      ]
+    }
+  }
+}

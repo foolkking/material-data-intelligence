@@ -1,0 +1,6 @@
+{
+  "accepted_schema": "phase10g.trajectory.v1",
+  "byte_preflight": true,
+  "semantic_mutation": false,
+  "validator_required": true
+}

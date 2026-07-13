@@ -1,5 +1,11 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10G1-BOUNDED-TRAJECTORY-INGESTION: Normalize before adapter execution
+
+Use a small application-owned streaming EXTXYZ parser and byte-capped canonical JSON pass-through. Parser output must validate as `phase10g.trajectory.v1` before becoming a normalized `Trajectory`; the adapter never reparses source files. Stable source IDs may reorder only by first-frame identity and must be reported.
+
+Register `structure.trajectory_import` at the existing execution-admissible stage but keep it Mock-Planner-hidden until a viewer exists. Four unique inert artifact types avoid artifact identity collision. Plain XYZ trajectory, additional formats, chunks, viewer, playback, and product registration remain deferred.
+
 ## ADR-10G-TRAJECTORY-CONTRACT: Fix inert stable-index trajectory semantics before execution
 
 ### Decision

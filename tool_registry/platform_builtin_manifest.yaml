@@ -160,6 +160,18 @@ tools:
       - summary_md
       - recipe_json
 
+  - tool_id: structure.trajectory_import
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: TrajectoryImportAdapter
+    display_target: trajectory
+    notes: "Planner-hidden internal import closure for an already bounded and validated phase10g.trajectory.v1 normalized object. Emits inert trajectory, summary, parse-report, and manifest JSON only; no viewer, playback, HTML, JavaScript, remote frame, or external asset."
+    artifact_types:
+      - trajectory_json
+      - trajectory_summary_json
+      - trajectory_report_json
+      - trajectory_manifest_json
+
   - tool_id: ml.basic_metrics
     implementation_source: platform_builtin
     stage: mvp

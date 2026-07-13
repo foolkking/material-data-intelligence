@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-13 Phase 10G-1 Follow-ups
+
+- **Closed: first parser scope.** Multi-frame EXTXYZ and canonical JSON are supported with bounded deterministic normalization.
+- **Open: plain/non-lattice trajectory contract.** Plain XYZ cannot become trajectory without a separately reviewed absent-lattice mode.
+- **Open: additional formats/chunking.** ASE traj, LAMMPS, XDATCAR, binary formats, indexed chunks, and remote streaming remain deferred.
+- **Open: product capability.** Internal import is not a formal planner-visible trajectory viewer; playback and browser performance remain future phases.
+
 ## 2026-07-13 Phase 10G Follow-ups
 
 - **Closed: trajectory data identity and units.** Stable atom/frame index, row-vector lattice, coordinate/wrapping modes, time, vector/scalar units, and strict availability are fixed by v1.

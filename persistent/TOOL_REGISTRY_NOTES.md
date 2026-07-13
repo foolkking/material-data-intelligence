@@ -1,5 +1,11 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-13 Phase 10G-1 Internal Import
+
+- Added unique `structure.trajectory_import` using `TrajectoryImportAdapter`, `Trajectory` input, strict empty params, and four inert trajectory JSON artifact types.
+- It is execution-stage registered so PlanValidator/QueueWorkerRuntime can validate it, but its description is planner-hidden and Mock Planner has no route.
+- It does not represent formal trajectory viewer registration and emits no HTML, renderer, playback, JavaScript, or remote asset.
+
 ## 2026-07-13 Phase 10G Contract Boundary
 
 - No Tool Registry entry, adapter, planner route, or runtime authority was added.
