@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10G：Trajectory Contrac
 
 进入 Phase 10G：Trajectory Contract。
@@ -2205,6 +2205,15 @@ FAIL包括：
 * 提前实现viewer/playback导致范围膨胀
 * Phase 10 closure tests回退
 * CI失败却声明PASS
+
+## 完成记录
+
+* 完成时间：2026-07-13 19:24:47 +08:00
+* 修改文件：`packages/artifact-core/mdi_artifact_core/trajectory_contract.py`、`packages/artifact-core/mdi_artifact_core/__init__.py`、`apps/web/app/lib/trajectoryContract.ts`、`apps/web/app/lib/trajectoryContract.test.ts`、`tests/test_phase10g_trajectory_contract.py`、`scripts/generate_phase10g_contract_evidence.py`、`docs/phase10g/**`、`docs/13_SHARED_SCHEMA_SPEC.md`、`docs/index.md`、`persistent/{DESIGN_PROGRESS,TASK_BOARD,CHANGELOG,OPEN_QUESTIONS,TOOL_REGISTRY_NOTES,ARCHITECTURE_DECISIONS}.md`、`TASKS.md`
+* 修改摘要：定义 `phase10g.trajectory.v1`、frame、summary、manifest 惰性契约；实现稳定 atom/frame identity、row-vector fixed/variable lattice、coordinate/wrapping/PBC/time/unit/strict property 语义、content-derived identity、确定性序列化、资源与递归 caps、Python canonical validator、独立 TypeScript reference validator、小型 fixtures、manifest/summary、安全及 hash evidence。未实现 parser、chunk runtime、adapter、planner route、formal tool、viewer、playback 或 renderer。
+* 测试结果：trajectory Python `22 passed`；TypeScript reference `10 passed`；frontend full `116 passed`；backend full `394 passed, 22 skipped, 11 warnings`；typecheck/build/`uv lock --check`/`git diff --check`通过；Phase 10 closure（backend `2 passed, 1 deselected`、frontend `2 passed`、Chromium/Firefox/WebKit evidence）通过；`PHASE10G_TRAJECTORY_CONTRACT_EVIDENCE_PASS`、`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。本机 Docker unavailable，service-backed由 current-HEAD CI `29246068417` 验证通过，no-skipped assertion通过。`npm audit`因 npmmirror audit endpoint `NOT_IMPLEMENTED` unavailable，无依赖或 lockfile变更。
+* 实现提交：`34dfa6b8f681ccc3f21f1eb455cc71dc8733ef2c` (`Define trajectory data contract`)
+* CI：run `29246068417`，unit success、frontend typecheck/build success、Phase 10 closure success、service-backed integration success、no-skipped assertion success。
 
 ---END---
 
