@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10G-3：Trajectory Performance / Browser Evidence
 
 进入 Phase 10G-3：Trajectory Performance / Browser Evidence。
@@ -2341,6 +2341,17 @@ FAIL包括：
 * 无browser evidence
 * Phase 10 closure回退
 * CI失败却声明PASS
+
+
+## 完成记录
+
+- 完成时间：2026-07-14 01:39:57 +08:00
+- 提交：`ddd3d0152001b925b5ec1546805f0a41b917cff9`（实现与证据）、`ae17ef7483f69303d7f9c0cc3372d1033fae9829`（跨平台 evidence hash 修复）
+- 修改文件：`.github/workflows/ci.yml`；`apps/web/app/components/PlannerWorkbench.tsx`；`apps/web/app/components/trajectory-viewer/*`；`apps/web/app/components/viewer-scene/viewerSceneRendererEngine.ts` 与 `viewerSceneRendererTypes.ts`；`apps/web/app/globals.css`、`layout.tsx`、`package.json`；`apps/web/test/trajectory-performance-*.mjs`；`packages/adapters/mdi_adapters/platform_builtin/trajectory.py` 及 registry exports；`packages/tool-registry/mdi_tool_registry/loader.py`；`tool_registry/platform_builtin_manifest.yaml`；`services/llm/mdi_llm/providers.py`；`services/workers/mdi_workers/queue_runtime.py`；G3 tests/scripts/docs/evidence；shared schema/index；persistent records。
+- 修改摘要：正式注册并闭合 `structure.trajectory_viewer` 的 validated planner/runtime/product path；加入 desktop/mobile interactive/degraded/refused 预算、trajectory-scoped bounded LRU、单 pending seek、完整 renderer/lifecycle metrics、context retry、artifact 隔离、responsive/mobile hardening；保留 static viewer 语义并明确 dynamic bonds/analytics/editing/video 为 false；生成确定性 real parser/planner/runtime API captures 与 Chromium/Firefox/WebKit/mobile evidence，并增加跨平台 LF-normalized text/raw-binary hash integrity CI。
+- 测试结果：trajectory frontend 30 passed；Phase 10G/G1/G3/registry backend 67 passed；frontend full 146 passed；backend full 434 passed、23 skipped；Phase 10 closure backend 3 passed、2 integration deselected，frontend 2 passed，完整 browser/integrity pack PASS；typecheck、production build、`uv lock --check`、npm dependency tree PASS；G2/G3 Chromium/Firefox/WebKit/mobile runners PASS；`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`；Git-index evidence integrity PASS。
+- 本地限制：Docker CLI 与 MinIO 不可用，因此本地 service-backed run 记录为 unavailable；`npm audit` 因 npmmirror 404 `NOT_IMPLEMENTED` 记录为 unavailable，未声称 clean。
+- CI：run `29271233740` 对应 `ae17ef7483f69303d7f9c0cc3372d1033fae9829`；unit、frontend evidence/typecheck/build、PostgreSQL/Redis/MinIO service-backed integration、no-skipped assertion 全部 success。先前 run `29270377547` 的 CRLF evidence hash 失败已由第二个提交修复。
 
 
 ---END---
