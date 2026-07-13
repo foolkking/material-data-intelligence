@@ -1,0 +1,76 @@
+{
+  "schema_version": "phase10f23.advanced_picking_browser_matrix.v1",
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "150.0.7871.115",
+      "pass": true,
+      "atomIdentity": "3@[0, 0, 0]",
+      "bondId": "bond-0:0:0:0-1:0:0:0",
+      "orderedSelection": "Selected sites: A=0@[0,0,0], B=1@[0,0,0] (2/2)",
+      "explicitDistance": "distance: 4.000 Å",
+      "crossBoundarySelection": "Selected sites: A=0@[0,0,0], B=1@[1,0,0] (2/2)",
+      "crossBoundaryDistance": "distance: 0.400 Å",
+      "keyboardResult": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "artifact": {
+        "filename": "viewer_measurement.json",
+        "schema": "phase10f23.viewer_measurement.v1",
+        "value": 45
+      },
+      "mobile": {
+        "value": "distance: 4.000 Å",
+        "overflow": false,
+        "external": 0
+      },
+      "contextLoss": "safe_fallback",
+      "canvasCount": 0,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "pass": true,
+      "atomIdentity": "3@[0, 0, 0]",
+      "bondId": "bond-0:0:0:0-1:0:0:0",
+      "orderedSelection": "Selected sites: A=0@[0,0,0], B=1@[0,0,0] (2/2)",
+      "explicitDistance": "distance: 4.000 Å",
+      "crossBoundarySelection": "Selected sites: A=0@[0,0,0], B=1@[1,0,0] (2/2)",
+      "crossBoundaryDistance": "distance: 0.400 Å",
+      "keyboardResult": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "artifact": null,
+      "mobile": null,
+      "contextLoss": null,
+      "canvasCount": 1,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "pass": true,
+      "atomIdentity": "3@[0, 0, 0]",
+      "bondId": "bond-0:0:0:0-1:0:0:0",
+      "orderedSelection": "Selected sites: A=0@[0,0,0], B=1@[0,0,0] (2/2)",
+      "explicitDistance": "distance: 4.000 Å",
+      "crossBoundarySelection": "Selected sites: A=0@[0,0,0], B=1@[1,0,0] (2/2)",
+      "crossBoundaryDistance": "distance: 0.400 Å",
+      "keyboardResult": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "artifact": null,
+      "mobile": null,
+      "contextLoss": null,
+      "canvasCount": 1,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ]
+}

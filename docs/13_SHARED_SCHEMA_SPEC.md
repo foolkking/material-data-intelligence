@@ -1114,3 +1114,11 @@ The semantic summary reports the validated formula, canonical site/species and
 bond counts, lattice, cross-boundary/self-periodic topology counts, render tier,
 periodic selection identity, and warnings. It is frontend state only and is not
 written to Artifacts, Recipes, AnalysisPlans, or Jobs.
+
+## Phase 10F-23 Addendum: local measurement artifact
+
+`phase10f23.viewer_measurement.v1` is a frontend-local inert JSON download. It
+records source scene schema/resource/formula, measurement kind and coordinate
+mode, two to four exact `PeriodicSiteRef` points, rounded value/unit/precision,
+policy warnings, and explicit false structure/topology mutation flags. It is not
+a backend Artifact contract and grants no execution authority.

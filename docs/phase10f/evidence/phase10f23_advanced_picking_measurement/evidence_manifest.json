@@ -1,0 +1,92 @@
+{
+  "schema_version": "phase10f23.advanced_picking_measurement_evidence.v1",
+  "baseline_head": "31dc3b64a1b892cc649818af2fefacfd9a4522c8",
+  "canonical_schema": "phase10f18.viewer_scene.v2",
+  "selection_cap": 4,
+  "coordinate_policies": [
+    "displayed_positions",
+    "minimum_image"
+  ],
+  "measurement_artifact": "phase10f23.viewer_measurement.v1",
+  "browser_results": [
+    {
+      "browser": "chromium",
+      "version": "150.0.7871.115",
+      "pass": true,
+      "atomIdentity": "3@[0, 0, 0]",
+      "bondId": "bond-0:0:0:0-1:0:0:0",
+      "orderedSelection": "Selected sites: A=0@[0,0,0], B=1@[0,0,0] (2/2)",
+      "explicitDistance": "distance: 4.000 Å",
+      "crossBoundarySelection": "Selected sites: A=0@[0,0,0], B=1@[1,0,0] (2/2)",
+      "crossBoundaryDistance": "distance: 0.400 Å",
+      "keyboardResult": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "artifact": {
+        "filename": "viewer_measurement.json",
+        "schema": "phase10f23.viewer_measurement.v1",
+        "value": 45
+      },
+      "mobile": {
+        "value": "distance: 4.000 Å",
+        "overflow": false,
+        "external": 0
+      },
+      "contextLoss": "safe_fallback",
+      "canvasCount": 0,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "pass": true,
+      "atomIdentity": "3@[0, 0, 0]",
+      "bondId": "bond-0:0:0:0-1:0:0:0",
+      "orderedSelection": "Selected sites: A=0@[0,0,0], B=1@[0,0,0] (2/2)",
+      "explicitDistance": "distance: 4.000 Å",
+      "crossBoundarySelection": "Selected sites: A=0@[0,0,0], B=1@[1,0,0] (2/2)",
+      "crossBoundaryDistance": "distance: 0.400 Å",
+      "keyboardResult": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "artifact": null,
+      "mobile": null,
+      "contextLoss": null,
+      "canvasCount": 1,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "pass": true,
+      "atomIdentity": "3@[0, 0, 0]",
+      "bondId": "bond-0:0:0:0-1:0:0:0",
+      "orderedSelection": "Selected sites: A=0@[0,0,0], B=1@[0,0,0] (2/2)",
+      "explicitDistance": "distance: 4.000 Å",
+      "crossBoundarySelection": "Selected sites: A=0@[0,0,0], B=1@[1,0,0] (2/2)",
+      "crossBoundaryDistance": "distance: 0.400 Å",
+      "keyboardResult": "distance: 4.000 Å",
+      "angle": "angle: 90.000 °",
+      "dihedral": "dihedral: 45.000 °",
+      "artifact": null,
+      "mobile": null,
+      "contextLoss": null,
+      "canvasCount": 1,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ],
+  "network_result": "NO_EXTERNAL_NETWORK_REQUESTS",
+  "markers": [
+    "VIEWER_SCENE_ADVANCED_PICKING_BROWSER_EVIDENCE_PASS",
+    "VIEWER_SCENE_BOND_PICKING_EVIDENCE_PASS",
+    "VIEWER_SCENE_PERIODIC_MEASUREMENT_ARTIFACT_EVIDENCE_PASS",
+    "VIEWER_SCENE_KEYBOARD_MOBILE_MEASUREMENT_EVIDENCE_PASS"
+  ],
+  "redaction": "sanitized"
+}

@@ -1913,3 +1913,15 @@
 ### Remaining
 - [ ] Physical screen-reader and broad physical-device GPU/touch lab coverage.
 - [ ] Advanced picking and measurement remains a separately reviewed phase.
+
+## 2026-07-13 Phase 10F-23 Advanced Picking and Measurement
+
+### Done
+- [x] Canonical periodic atom and bond picking identities.
+- [x] Bounded ordered selection, undo, keyboard and mobile measurement.
+- [x] Distance, angle, signed dihedral, explicit-image and exact minimum-image policies.
+- [x] Inert local measurement JSON and three-browser evidence.
+
+### Remaining
+- [ ] Persisted annotation/history, lasso/box selection, clipping, and vector export.
+- [ ] Supercell productization remains the next queued scope.

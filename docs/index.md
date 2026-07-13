@@ -225,3 +225,11 @@
 | [`phase10f/phase10f22_viewer_accessibility_evidence.md`](phase10f/phase10f22_viewer_accessibility_evidence.md) | Real browser accessibility evidence procedure |
 | [`phase10f/phase10f22_viewer_accessibility_readiness_matrix.md`](phase10f/phase10f22_viewer_accessibility_readiness_matrix.md) | Phase 10F-22 readiness decisions |
 | [`phase10f/evidence/phase10f22_viewer_accessibility_mobile_cross_browser/`](phase10f/evidence/phase10f22_viewer_accessibility_mobile_cross_browser/) | Keyboard, semantic, mobile, contrast, zoom, browser, and security captures |
+| [`phase10f/phase10f23_advanced_picking_measurement.md`](phase10f/phase10f23_advanced_picking_measurement.md) | Atom/bond picking and bounded measurement implementation |
+| [`phase10f/phase10f23_selection_identity_contract.md`](phase10f/phase10f23_selection_identity_contract.md) | Periodic atom and canonical bond selection identity |
+| [`phase10f/phase10f23_periodic_measurement_contract.md`](phase10f/phase10f23_periodic_measurement_contract.md) | Explicit-image and minimum-image measurement policy |
+| [`phase10f/phase10f23_measurement_mathematics.md`](phase10f/phase10f23_measurement_mathematics.md) | Distance, angle, dihedral, and reference policy |
+| [`phase10f/phase10f23_measurement_security.md`](phase10f/phase10f23_measurement_security.md) | Picking, cap, artifact, and network security |
+| [`phase10f/phase10f23_measurement_evidence.md`](phase10f/phase10f23_measurement_evidence.md) | Three-browser and mobile evidence procedure |
+| [`phase10f/phase10f23_measurement_readiness_matrix.md`](phase10f/phase10f23_measurement_readiness_matrix.md) | Phase 10F-23 readiness decisions |
+| [`phase10f/evidence/phase10f23_advanced_picking_measurement/`](phase10f/evidence/phase10f23_advanced_picking_measurement/) | Picking, math, artifact, browser, screenshot, and security evidence |

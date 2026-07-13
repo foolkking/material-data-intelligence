@@ -1647,3 +1647,15 @@
 ### Security
 - Accessibility roles, shortcuts, event handling, and focus remain application-owned and cannot be supplied by artifacts.
 - No dependency, artifact schema, backend authority, external request, or remote asset change.
+
+## 2026-07-13 Phase 10F-23
+
+### Added
+- Real canonical bond picking over shared Three.js line geometry and fixed bond highlight.
+- Ordered endpoint selection, undo, keyboard atom/bond traversal, and accessible bond inspector.
+- Deterministic local `viewer_measurement.json` with periodic points and no-mutation policy.
+- Three-browser/mobile advanced picking, math, lifecycle, console, and network evidence.
+
+### Security
+- Fixed application-owned thresholds/caps and on-demand raycasting; no artifact callbacks or screen-space science.
+- No dependency, backend runtime, canonical scene topology, or external network change.

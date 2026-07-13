@@ -3487,3 +3487,19 @@ use application-owned reduced-motion and forced-colors policies.
 - Camera motion is never announced continuously; only bounded scene and selection state is live.
 - Artifact strings cannot control ARIA, focus, roles, shortcuts, events, CSS, or accessibility execution.
 - No backend authority, canonical schema, dependency, or network boundary changes.
+
+# 2026-07-13 Phase 10F-23 ADR: canonical picking identity and local measurements
+
+## Decision
+
+Map instanced atom hits to exact `PeriodicSiteRef` and shared line-segment hits
+to emitted `RenderBond.id`. Keep selection ordered and capped at four. Perform
+all math from validated Cartesian/lattice data and export results only as a
+deterministic inert local JSON document.
+
+## Consequences
+
+- Bond picking never infers or rewrites topology.
+- Explicit bond endpoint images are preserved even when minimum-image mode could choose another image.
+- Raycast/movement thresholds, caps, overlays, callbacks, and keyboard bindings are application-owned.
+- Backend execution authority, artifact contracts, dependencies, and network boundaries are unchanged.

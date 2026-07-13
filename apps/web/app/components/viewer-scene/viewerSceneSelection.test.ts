@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { changeViewerSelectionMode, initialViewerSelection, selectViewerSite } from "./viewerSceneSelection";
+import { changeViewerSelectionMode, initialViewerSelection, selectViewerBondEndpoints, selectViewerSite, undoViewerSelection } from "./viewerSceneSelection";
 
 const primary = (siteIndex: number) => ({ siteIndex, imageOffset: [0,0,0] as const });
 
@@ -25,5 +25,11 @@ describe("viewer selection state", () => {
     const primarySelected = selectViewerSite(initialViewerSelection("distance"), primary(1));
     expect(selectViewerSite(primarySelected, {siteIndex:1,imageOffset:[1,0,0]}).selectedSites).toHaveLength(2);
     expect(selectViewerSite(initialViewerSelection(), {siteIndex:-1,imageOffset:[0,0,0]})).toEqual(initialViewerSelection());
+  });
+
+  it("adds explicit bond endpoints in order and supports bounded undo", () => {
+    const state = selectViewerBondEndpoints(initialViewerSelection("distance"), primary(4), {siteIndex:4,imageOffset:[1,0,0]});
+    expect(state.selectedSites).toEqual([primary(4), {siteIndex:4,imageOffset:[1,0,0]}]);
+    expect(undoViewerSelection(state).selectedSites).toEqual([primary(4)]);
   });
 });

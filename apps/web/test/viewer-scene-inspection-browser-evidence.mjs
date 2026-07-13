@@ -12,6 +12,7 @@ const PORT = Number(process.env.MDI_VIEWER_INSPECTION_EVIDENCE_PORT || "3051");
 const ORIGIN = `http://127.0.0.1:${PORT}`;
 const PERIODIC_MODE = process.env.MDI_PERIODIC_EVIDENCE === "1";
 const TOPOLOGY_MODE = process.env.MDI_TOPOLOGY_EVIDENCE === "1";
+const ADVANCED_MODE = process.env.MDI_ADVANCED_MEASUREMENT === "1";
 let payload;
 let activeCase = "measurement_crystal";
 let activeMode = "live";
@@ -41,7 +42,7 @@ async function main() {
       }
     }
     if (results.some((result) => !result.pass || result.externalRequests !== 0)) throw new Error(`inspection matrix failed: ${JSON.stringify(results)}`);
-    await write("browser/browser_matrix.json", { schema_version: TOPOLOGY_MODE ? "phase10f18.periodic_topology_browser_matrix.v1" : PERIODIC_MODE ? "phase10f17.periodic_browser_matrix.v1" : "phase10f16.inspection_browser_matrix.v1", results });
+    await write("browser/browser_matrix.json", { schema_version: ADVANCED_MODE ? "phase10f23.advanced_picking_browser_matrix.v1" : TOPOLOGY_MODE ? "phase10f18.periodic_topology_browser_matrix.v1" : PERIODIC_MODE ? "phase10f17.periodic_browser_matrix.v1" : "phase10f16.inspection_browser_matrix.v1", results });
     await write("browser/network_snapshot.json", { external_request_count: 0, result: TOPOLOGY_MODE ? "NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS" : PERIODIC_MODE ? "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS" : "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS" });
     await write("browser/console_snapshot.json", { errors: results.flatMap((result) => result.consoleErrors), page_errors: results.flatMap((result) => result.pageErrors) });
     await write("evidence_manifest.json", manifest(results));
@@ -65,12 +66,20 @@ async function main() {
       console.log("VIEWER_SCENE_PERIODIC_BOND_PERFORMANCE_EVIDENCE_PASS");
       console.log("NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS");
     }
+    if (ADVANCED_MODE) {
+      console.log("VIEWER_SCENE_ADVANCED_PICKING_BROWSER_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_BOND_PICKING_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_PERIODIC_MEASUREMENT_ARTIFACT_EVIDENCE_PASS");
+      console.log("VIEWER_SCENE_KEYBOARD_MOBILE_MEASUREMENT_EVIDENCE_PASS");
+      console.log("NO_EXTERNAL_NETWORK_REQUESTS");
+    }
   } finally {
     if (server) { server.kill(); await stopPort(); }
   }
 }
 
 async function inspectBrowser(browser, browserId) {
+  if (ADVANCED_MODE) return advancedBrowser(browser, browserId);
   if (TOPOLOGY_MODE) return topologyBrowser(browser, browserId);
   activeCase = "measurement_crystal";
   activeMode = "live";
@@ -149,6 +158,60 @@ async function inspectBrowser(browser, browserId) {
   await page.close();
   await context.close();
   return { browser: browserId, version: browser.version(), pass: true, inspector, distance, angle, dihedral, periodic, png, artifactDownloads, mobile, legacy, lifecycle: { selectionCleared: cleared, canvasCount: 1 }, externalRequests: security.external, consoleErrors: security.consoleErrors, pageErrors: audit.pageErrors };
+}
+
+async function advancedBrowser(browser, browserId) {
+  activeCase = "measurement_crystal"; activeMode = "live";
+  const context = await browser.newContext({ viewport:{width:1440,height:1200}, acceptDownloads:true, reducedMotion:"reduce" });
+  const audit={external:[],console:[],pageErrors:[],failedResponses:[]};
+  const page=await evidencePage(context,audit); await productFlow(page); await openRenderer(page);
+  await page.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.bondCount===2,null,{timeout:20_000});
+  await pick(page,3); await page.waitForSelector('[data-testid="viewer-selected-site-index"]'); const atomIdentity=`${await page.getByTestId("viewer-selected-site-index").innerText()}@${await page.getByTestId("viewer-selected-site-image-offset").innerText()}`;
+  if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"01_atom_selected.png"),fullPage:true}); await page.getByTestId("viewer-measurement-clear").click();
+  await pickBond(page,0); await page.waitForSelector('[data-testid="viewer-selected-bond-id"]');
+  const bondId=await page.getByTestId("viewer-selected-bond-id").innerText();
+  await page.getByRole("button",{name:"Distance"}).click(); await pickBond(page,0);
+  const explicitDistance=await measurement(page,"distance");
+  const orderedSelection=await page.getByTestId("viewer-measurement-selection").innerText();
+  if(!orderedSelection.includes("0@[0,0,0]")||!orderedSelection.includes("1@[0,0,0]")||!explicitDistance.includes("4.000")) throw new Error(`advanced bond measurement mismatch: ${orderedSelection} ${explicitDistance}`);
+  const region=page.getByRole("region",{name:"3D Structure Viewer"}); await page.getByTestId("viewer-measurement-clear").click(); await region.focus(); await region.press("n"); await region.press("n");
+  await page.waitForFunction(()=>document.querySelector('[data-testid="viewer-measurement-selection"]')?.textContent?.includes("2/2"));
+  const keyboardResult=await measurement(page,"distance"); await region.press("Backspace");
+  if(!(await page.getByTestId("viewer-measurement-selection").innerText()).includes("1/2")) throw new Error("keyboard undo failed");
+  await page.getByTestId("viewer-measurement-clear").click(); await page.getByRole("button",{name:"Angle"}).click(); await region.focus(); for(let i=0;i<3;i+=1)await region.press("n"); const angle=await measurement(page,"angle");
+  if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"05_angle_measurement.png"),fullPage:true});
+  await page.getByTestId("viewer-measurement-clear").click(); await page.getByRole("button",{name:"Dihedral"}).click(); await region.focus(); for(let i=0;i<4;i+=1)await region.press("n"); const dihedral=await measurement(page,"dihedral");
+  if(browserId==="chromium")await page.screenshot({path:path.join(SCREENSHOTS,"06_dihedral_measurement.png"),fullPage:true});
+  activeCase="periodic_boundary_bond"; const crossPage=await evidencePage(context,audit); await productFlow(crossPage); await openRenderer(crossPage);
+  await crossPage.getByTestId("viewer-supercell-x").fill("2"); await crossPage.getByTestId("viewer-supercell-apply").click(); await crossPage.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.bondCount===1);
+  await crossPage.getByRole("button",{name:"Distance"}).click(); const crossRegion=crossPage.getByRole("region",{name:"3D Structure Viewer"}); await crossRegion.focus(); await crossRegion.press("b");
+  const crossBoundarySelection=await crossPage.getByTestId("viewer-measurement-selection").innerText(); const crossBoundaryDistance=await measurement(crossPage,"distance");
+  if(!crossBoundarySelection.includes("1@[1,0,0]")||!crossBoundaryDistance.includes("0.400"))throw new Error("cross-boundary keyboard bond selection failed"); await crossPage.close(); activeCase="measurement_crystal";
+  let artifact=null; let mobile=null; let contextLoss=null;
+  if(browserId==="chromium"){
+    const [download]=await Promise.all([page.waitForEvent("download"),page.getByTestId("viewer-measurement-download").click()]);
+    const artifactPath=await download.path(); const artifactBody=JSON.parse(await readFile(artifactPath,"utf-8"));
+    if(download.suggestedFilename()!=="viewer_measurement.json"||artifactBody.schema_version!=="phase10f23.viewer_measurement.v1"||artifactBody.policy.topology_mutated!==false) throw new Error("measurement artifact invalid");
+    artifact={filename:download.suggestedFilename(),schema:artifactBody.schema_version,value:artifactBody.measurement.value};
+    await page.screenshot({path:path.join(SCREENSHOTS,"03_bond_selected.png"),fullPage:true});
+    mobile=await advancedMobileCase(browser);
+    await page.getByTestId("viewer-scene-renderer-canvas").dispatchEvent("webglcontextlost");
+    await page.waitForSelector('[data-testid="viewer-scene-renderer-fallback"]'); contextLoss="safe_fallback";
+  }
+  if(browserId!=="chromium"){ await page.getByRole("tab",{name:"Scene JSON"}).click(); await page.getByRole("tab",{name:"3D Renderer"}).click(); await openRenderer(page,false); }
+  const canvasCount=await page.locator("canvas").count(); if(canvasCount!==1&&contextLoss===null) throw new Error("advanced lifecycle canvas mismatch");
+  const security=await auditPage(page,audit); await page.close(); await context.close();
+  return {browser:browserId,version:browser.version(),pass:true,atomIdentity,bondId,orderedSelection,explicitDistance,crossBoundarySelection,crossBoundaryDistance,keyboardResult,angle,dihedral,artifact,mobile,contextLoss,canvasCount,externalRequests:security.external,consoleErrors:security.consoleErrors,pageErrors:audit.pageErrors};
+}
+
+async function advancedMobileCase(browser){
+  activeCase="measurement_crystal"; const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
+  const audit={external:[],console:[],pageErrors:[],failedResponses:[]}; const page=await evidencePage(context,audit); await productFlow(page); await openRenderer(page);
+  await page.waitForFunction(()=>window.__mdiViewerSceneRendererEvidence?.bondCount===2);
+  await page.getByRole("button",{name:"Distance"}).click(); await pickBond(page,0,true); await page.waitForSelector('[data-testid="viewer-selected-bond-id"]');
+  const value=await measurement(page,"distance"); await page.getByTestId("viewer-measurement-undo").click(); await page.getByTestId("viewer-measurement-clear").click();
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1); if(overflow)throw new Error("advanced mobile overflow");
+  await page.screenshot({path:path.join(SCREENSHOTS,"09_mobile_distance_measurement.png"),fullPage:false}); const external=(await auditPage(page,audit)).external; await page.close();await context.close();return{value,overflow,external};
 }
 
 async function topologyBrowser(browser, browserId) {
@@ -300,6 +363,13 @@ async function pick(page, siteIndex) {
   await page.mouse.click(box.x + site.x, box.y + site.y);
 }
 
+async function pickBond(page, bondIndex, touch=false){
+  const canvas=page.getByTestId("viewer-scene-renderer-canvas"); await canvas.scrollIntoViewIfNeeded();
+  const state=await snapshot(page); const bond=state.bondScreenPositions[bondIndex]; const box=await canvas.boundingBox();
+  if(!bond||!box)throw new Error(`bond ${bondIndex} screen position unavailable`);
+  if(touch)await page.touchscreen.tap(box.x+bond.x,box.y+bond.y);else await page.mouse.click(box.x+bond.x,box.y+bond.y);
+}
+
 async function measurement(page, kind) {
   const value = await page.getByTestId("viewer-measurement-result").innerText();
   if (!value.startsWith(kind) || !/[Å°]/.test(value)) throw new Error(`${kind} result invalid: ${value}`);
@@ -383,7 +453,7 @@ function artifacts(source) {
 
 function generatePayload() {
   const output = process.env.MDI_INSPECTION_EVIDENCE_DIR || "docs/phase10f/evidence/phase10f16_scientific_structure_inspection";
-  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", output], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1", MDI_INCLUDE_INSPECTION_CASES: "1", MDI_INCLUDE_TOPOLOGY_CASES: TOPOLOGY_MODE ? "1" : "0" } });
+  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", output], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1", MDI_INCLUDE_INSPECTION_CASES: "1", MDI_INCLUDE_TOPOLOGY_CASES: TOPOLOGY_MODE || ADVANCED_MODE ? "1" : "0" } });
   if (result.status !== 0) throw new Error(`inspection payload generation failed\n${result.stdout}\n${result.stderr}`);
   process.stdout.write(result.stdout);
 }
@@ -400,7 +470,7 @@ async function ensureServer() { try { if ((await fetch(ORIGIN)).ok) return null;
 async function waitForApp() { const end = Date.now() + 60_000; while (Date.now() < end) { try { if ((await fetch(ORIGIN)).ok) return; } catch {} await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error("inspection app timeout"); }
 async function stopPort() { if (process.platform !== "win32") return; const ps = `$c=Get-NetTCPConnection -LocalPort ${PORT} -State Listen -ErrorAction SilentlyContinue; if($c){$c|%{if($_.OwningProcess){Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue}}}`; await new Promise((resolve) => { const child = spawn("powershell.exe", ["-NoProfile", "-Command", ps], { stdio: "ignore" }); child.on("exit", resolve); child.on("error", resolve); }); }
 async function write(relative, value) { const file = path.join(EVIDENCE, relative); await mkdir(path.dirname(file), { recursive: true }); await writeFile(file, `${JSON.stringify(value, null, 2)}\n`, "utf-8"); }
-function manifest(results) { return TOPOLOGY_MODE ? { schema_version:"phase10f18.periodic_bond_topology_evidence.v1", baseline_head:"bfca00d4c93ab2bd16966b237d850bd33206c20c", final_head:"current commit recorded in final report", formal_tool:"structure.viewer_3d", canonical_schema:"phase10f18.viewer_scene.v2", periodic_bonds:"adapter_generated_explicit_endpoints", source_policy:"distance_cutoff_non_authoritative", evidence_generation_command:"node apps/web/test/viewer-scene-periodic-topology-browser-evidence.mjs", timestamp:payload.cases.periodic_boundary_bond.api.artifacts[0]?.metadata?.createdAt, artifact_hashes:Object.fromEntries(payload.cases.periodic_boundary_bond.api.artifacts.map((item)=>[item.name,item.sha256||item.contentHash])), browser_results:results.map((item)=>({browser:item.browser,version:item.version,pass:item.pass,neighbor:item.neighbor,metrics:item.metrics})), network_result:"NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS", markers:["VIEWER_SCENE_PERIODIC_BOND_CONTRACT_EVIDENCE_PASS","VIEWER_SCENE_PERIODIC_TOPOLOGY_BROWSER_EVIDENCE_PASS","VIEWER_SCENE_PERIODIC_NEIGHBOR_INSPECTOR_EVIDENCE_PASS","VIEWER_SCENE_PERIODIC_BOND_PERFORMANCE_EVIDENCE_PASS"], redaction:"sanitized" } : PERIODIC_MODE ? { schema_version: "phase10f17.periodic_crystal_inspection_evidence.v1", baseline_head: "5e7474be92e0ef75bed7a91ec5309c7fdea9e7f0", formal_tool: "structure.viewer_3d", coordinate_policies: ["displayed_positions", "minimum_image"], lattice_convention: "row_vectors", supercell: "renderer_local_bounded_1_to_3", periodic_bonds: "same_cell_replication_only", browser_results: results.map((item) => ({ browser: item.browser, version: item.version, pass: item.pass })), network_result: "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS", markers: ["VIEWER_SCENE_PERIODIC_INSPECTION_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_MINIMUM_IMAGE_MEASUREMENT_EVIDENCE_PASS", "VIEWER_SCENE_SUPERCELL_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_PERIODIC_PERFORMANCE_EVIDENCE_PASS"], redaction: "sanitized" } : { schema_version: "phase10f16.scientific_inspection_evidence.v1", baseline_head: "1be7689c2d8881b0fb9f2f67360da7cf2d795703", formal_tool: "structure.viewer_3d", coordinate_policy: "displayed_canonical_cartesian_positions", dihedral_range: "[-180, 180]", browser_results: results.map((item) => ({ browser: item.browser, version: item.version, pass: item.pass })), network_result: "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS", markers: ["VIEWER_SCENE_SCIENTIFIC_INSPECTION_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_MEASUREMENT_EVIDENCE_PASS", "VIEWER_SCENE_EXPORT_EVIDENCE_PASS", "VIEWER_SCENE_LEGACY_GUIDANCE_EVIDENCE_PASS"], redaction: "sanitized" }; }
-function readme(results) { return TOPOLOGY_MODE ? `# Phase 10F-18 Canonical Periodic Bond Topology Evidence\n\nFormal tool: \`structure.viewer_3d\`\nCanonical schema: \`phase10f18.viewer_scene.v2\`\nBrowsers: ${results.map((item)=>`${item.browser}=${item.pass?"pass":"fail"}`).join(", ")}\nTopology source: bounded non-authoritative distance cutoff with explicit periodic endpoints.\nNetwork: \`NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS\`\n` : PERIODIC_MODE ? `# Phase 10F-17 Periodic Crystal Inspection Evidence\n\nFormal tool: \`structure.viewer_3d\`\nBrowsers: ${results.map((item) => `${item.browser}=${item.pass ? "pass" : "fail"}`).join(", ")}\nMinimum-image search is bounded and independently cross-checked against pymatgen. Supercells are renderer-local.\nNetwork: \`NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS\`\n` : `# Phase 10F-16 Scientific Structure Inspection Evidence\n\nFormal tool: \`structure.viewer_3d\`\nBrowsers: ${results.map((item) => `${item.browser}=${item.pass ? "pass" : "fail"}`).join(", ")}\nMeasurements use displayed canonical Cartesian positions.\nNetwork: \`NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS\`\n`; }
+function manifest(results) { return ADVANCED_MODE ? {schema_version:"phase10f23.advanced_picking_measurement_evidence.v1",baseline_head:"31dc3b64a1b892cc649818af2fefacfd9a4522c8",canonical_schema:"phase10f18.viewer_scene.v2",selection_cap:4,coordinate_policies:["displayed_positions","minimum_image"],measurement_artifact:"phase10f23.viewer_measurement.v1",browser_results:results,network_result:"NO_EXTERNAL_NETWORK_REQUESTS",markers:["VIEWER_SCENE_ADVANCED_PICKING_BROWSER_EVIDENCE_PASS","VIEWER_SCENE_BOND_PICKING_EVIDENCE_PASS","VIEWER_SCENE_PERIODIC_MEASUREMENT_ARTIFACT_EVIDENCE_PASS","VIEWER_SCENE_KEYBOARD_MOBILE_MEASUREMENT_EVIDENCE_PASS"],redaction:"sanitized"} : TOPOLOGY_MODE ? { schema_version:"phase10f18.periodic_bond_topology_evidence.v1", baseline_head:"bfca00d4c93ab2bd16966b237d850bd33206c20c", final_head:"current commit recorded in final report", formal_tool:"structure.viewer_3d", canonical_schema:"phase10f18.viewer_scene.v2", periodic_bonds:"adapter_generated_explicit_endpoints", source_policy:"distance_cutoff_non_authoritative", evidence_generation_command:"node apps/web/test/viewer-scene-periodic-topology-browser-evidence.mjs", timestamp:payload.cases.periodic_boundary_bond.api.artifacts[0]?.metadata?.createdAt, artifact_hashes:Object.fromEntries(payload.cases.periodic_boundary_bond.api.artifacts.map((item)=>[item.name,item.sha256||item.contentHash])), browser_results:results.map((item)=>({browser:item.browser,version:item.version,pass:item.pass,neighbor:item.neighbor,metrics:item.metrics})), network_result:"NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS", markers:["VIEWER_SCENE_PERIODIC_BOND_CONTRACT_EVIDENCE_PASS","VIEWER_SCENE_PERIODIC_TOPOLOGY_BROWSER_EVIDENCE_PASS","VIEWER_SCENE_PERIODIC_NEIGHBOR_INSPECTOR_EVIDENCE_PASS","VIEWER_SCENE_PERIODIC_BOND_PERFORMANCE_EVIDENCE_PASS"], redaction:"sanitized" } : PERIODIC_MODE ? { schema_version: "phase10f17.periodic_crystal_inspection_evidence.v1", baseline_head: "5e7474be92e0ef75bed7a91ec5309c7fdea9e7f0", formal_tool: "structure.viewer_3d", coordinate_policies: ["displayed_positions", "minimum_image"], lattice_convention: "row_vectors", supercell: "renderer_local_bounded_1_to_3", periodic_bonds: "same_cell_replication_only", browser_results: results.map((item) => ({ browser: item.browser, version: item.version, pass: item.pass })), network_result: "NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS", markers: ["VIEWER_SCENE_PERIODIC_INSPECTION_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_MINIMUM_IMAGE_MEASUREMENT_EVIDENCE_PASS", "VIEWER_SCENE_SUPERCELL_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_PERIODIC_PERFORMANCE_EVIDENCE_PASS"], redaction: "sanitized" } : { schema_version: "phase10f16.scientific_inspection_evidence.v1", baseline_head: "1be7689c2d8881b0fb9f2f67360da7cf2d795703", formal_tool: "structure.viewer_3d", coordinate_policy: "displayed_canonical_cartesian_positions", dihedral_range: "[-180, 180]", browser_results: results.map((item) => ({ browser: item.browser, version: item.version, pass: item.pass })), network_result: "NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS", markers: ["VIEWER_SCENE_SCIENTIFIC_INSPECTION_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_MEASUREMENT_EVIDENCE_PASS", "VIEWER_SCENE_EXPORT_EVIDENCE_PASS", "VIEWER_SCENE_LEGACY_GUIDANCE_EVIDENCE_PASS"], redaction: "sanitized" }; }
+function readme(results) { return ADVANCED_MODE ? `# Phase 10F-23 Advanced Picking and Measurement Evidence\n\nBrowsers: ${results.map((item)=>`${item.browser}=${item.pass?"pass":"fail"}`).join(", ")}\nAtom and bond picking use canonical periodic identities. Measurements are bounded and exported as inert JSON.\nNetwork: \`NO_EXTERNAL_NETWORK_REQUESTS\`\n` : TOPOLOGY_MODE ? `# Phase 10F-18 Canonical Periodic Bond Topology Evidence\n\nFormal tool: \`structure.viewer_3d\`\nCanonical schema: \`phase10f18.viewer_scene.v2\`\nBrowsers: ${results.map((item)=>`${item.browser}=${item.pass?"pass":"fail"}`).join(", ")}\nTopology source: bounded non-authoritative distance cutoff with explicit periodic endpoints.\nNetwork: \`NO_PERIODIC_TOPOLOGY_EXTERNAL_NETWORK_REQUESTS\`\n` : PERIODIC_MODE ? `# Phase 10F-17 Periodic Crystal Inspection Evidence\n\nFormal tool: \`structure.viewer_3d\`\nBrowsers: ${results.map((item) => `${item.browser}=${item.pass ? "pass" : "fail"}`).join(", ")}\nMinimum-image search is bounded and independently cross-checked against pymatgen. Supercells are renderer-local.\nNetwork: \`NO_PERIODIC_VIEWER_EXTERNAL_NETWORK_REQUESTS\`\n` : `# Phase 10F-16 Scientific Structure Inspection Evidence\n\nFormal tool: \`structure.viewer_3d\`\nBrowsers: ${results.map((item) => `${item.browser}=${item.pass ? "pass" : "fail"}`).join(", ")}\nMeasurements use displayed canonical Cartesian positions.\nNetwork: \`NO_VIEWER_INSPECTION_EXTERNAL_NETWORK_REQUESTS\`\n`; }
 
 await main();

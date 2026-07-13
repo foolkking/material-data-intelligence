@@ -6,6 +6,10 @@ export type PeriodicSiteRef = {
   readonly imageOffset: ImageOffset;
 };
 
+export type ViewerPickTarget =
+  | Readonly<{ readonly kind: "atom"; readonly ref: PeriodicSiteRef }>
+  | Readonly<{ readonly kind: "bond"; readonly bondId: string }>;
+
 export type RenderAtom = {
   readonly id: string;
   readonly siteIndex: number;
@@ -111,7 +115,9 @@ export type ViewerRendererSnapshot = {
   readonly rendererVersion: string;
   readonly selectedSites: readonly PeriodicSiteRef[];
   readonly selectedSiteIndices: readonly number[];
+  readonly selectedBondId: string | null;
   readonly siteScreenPositions: readonly Readonly<{ readonly ref: PeriodicSiteRef; readonly siteIndex: number; readonly x: number; readonly y: number }>[];
+  readonly bondScreenPositions: readonly Readonly<{ readonly bondId: string; readonly x: number; readonly y: number }>[];
   readonly metrics: ViewerRendererMetrics;
 };
 
@@ -122,6 +128,7 @@ export type ViewerRendererEngine = {
   readonly render: () => void;
   readonly keyboardCamera: (action: "rotate_left" | "rotate_right" | "rotate_up" | "rotate_down" | "pan_left" | "pan_right" | "pan_up" | "pan_down" | "zoom_in" | "zoom_out") => void;
   readonly setSelection: (sites: readonly PeriodicSiteRef[]) => void;
+  readonly setBondSelection: (bondId: string | null) => void;
   readonly exportPng: () => Promise<Blob>;
   readonly snapshot: () => ViewerRendererSnapshot;
   readonly dispose: () => void;
@@ -132,6 +139,7 @@ export type ViewerRendererEngineFactory = (args: {
   readonly scene: ValidatedRenderScene;
   readonly onContextLost: () => void;
   readonly onSitePick?: (site: PeriodicSiteRef | null) => void;
+  readonly onBondPick?: (bondId: string) => void;
   readonly pixelRatioCap: number;
   readonly antialias: boolean;
   readonly performanceTier: "interactive" | "degraded";

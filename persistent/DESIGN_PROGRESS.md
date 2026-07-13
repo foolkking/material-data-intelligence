@@ -1246,3 +1246,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added a synchronized semantic scene/topology summary, bounded polite announcements, and a capped semantic neighbor table.
 - Removed the mobile scroll trap with `touch-action: pan-y`, established 44px mobile targets, and added reduced-motion/forced-colors policies.
 - Chromium, Firefox, and WebKit evidence covers keyboard camera changes, 200% zoom, mobile orientation, one-canvas lifecycle, and zero external requests.
+
+## 2026-07-13 Phase 10F-23 Advanced Picking and Measurement
+
+- Added shared-LineSegments bond raycasting with stable canonical bond identity and fixed selected-bond overlay.
+- Added ordered bounded endpoint selection, undo, keyboard atom/bond selection, and exact periodic identity announcements.
+- Added deterministic inert `phase10f23.viewer_measurement.v1` local JSON download without scene/topology mutation.
+- Chromium, Firefox, WebKit, and mobile evidence covers atom/bond picking, distance/angle/dihedral, cross-boundary endpoints, lifecycle, and network isolation.

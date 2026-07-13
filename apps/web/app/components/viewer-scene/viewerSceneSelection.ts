@@ -36,6 +36,21 @@ export function changeViewerSelectionMode(_state: ViewerSelectionState, mode: Vi
   return initialViewerSelection(mode);
 }
 
+export function undoViewerSelection(state: ViewerSelectionState): ViewerSelectionState {
+  const next = state.selectedSites.slice(0, -1);
+  return Object.freeze({ mode: state.mode, selectedSites: Object.freeze(next), activeSite: next.at(-1) ?? null });
+}
+
+export function selectViewerBondEndpoints(state: ViewerSelectionState, from: PeriodicSiteRef, to: PeriodicSiteRef): ViewerSelectionState {
+  if (state.mode === "inspect") return selectViewerSite(state, from);
+  let next = state;
+  for (const ref of [from, to]) {
+    if (next.selectedSites.length >= MODE_LIMITS[state.mode]) break;
+    if (!next.selectedSites.some((selected) => periodicSiteKey(selected) === periodicSiteKey(ref))) next = selectViewerSite(next, ref);
+  }
+  return next;
+}
+
 export function selectionLimit(mode: ViewerSelectionMode) {
   return MODE_LIMITS[mode];
 }

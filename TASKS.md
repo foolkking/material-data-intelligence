@@ -5758,7 +5758,7 @@ FAIL包括：
 
 
 ---TASK---  
-状态：待处理
+状态：已完成
 
  # Phase 10F-23：Advanced Picking and Measurement
 
@@ -8968,6 +8968,13 @@ FAIL包括：
 -   无browser evidence
     
 -   CI失败却声明PASS
+
+## 完成记录
+
+* 完成时间：2026-07-13 10:08:39 +08:00
+* 修改文件：viewer engine/types/selection/measurement panel/surface、`ViewerBondInspector.tsx`、`viewerSceneMeasurementArtifact.ts`及测试；advanced/inspection browser runners；Phase 10F-23 docs/evidence；shared schema/index和persistent记录。
+* 修改摘要：实现真实InstancedMesh atom与shared LineSegments bond picking，稳定PeriodicSiteRef/canonical bond identity，最多4点的ordered selection、undo、键盘N/B/Backspace、移动bond tap、distance/angle/signed-dihedral、显式周期映像与bounded exact minimum-image策略、固定overlay资源，以及deterministic inert `phase10f23.viewer_measurement.v1`下载。未修改scene topology、backend runtime、Tool Registry或依赖。
+* 测试结果：frontend `89 passed`；backend `366 passed, 21 skipped`；typecheck/build/`uv lock --check`通过；全部历史viewer browser runners与Phase 10F-23 Chromium/Firefox/WebKit/mobile runner通过；`VIEWER_SCENE_ADVANCED_PICKING_BROWSER_EVIDENCE_PASS`、`VIEWER_SCENE_BOND_PICKING_EVIDENCE_PASS`、`VIEWER_SCENE_PERIODIC_MEASUREMENT_ARTIFACT_EVIDENCE_PASS`、`VIEWER_SCENE_KEYBOARD_MOBILE_MEASUREMENT_EVIDENCE_PASS`、`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。service-backed/no-skipped等待current-HEAD CI。
 ---END---
 
 ---TASK---  

@@ -669,3 +669,9 @@
 - Physical NVDA, JAWS, VoiceOver, TalkBack, and broad device gesture testing remain outside automated CI evidence.
 - Forced-colors emulation support differs by browser; retain CSS plus recorded media-query evidence and schedule physical Windows high-contrast review.
 - Keyboard orbit is bounded and deterministic; keyboard-only atom traversal belongs to the separately reviewed advanced picking scope.
+
+## 2026-07-13 Phase 10F-23 Follow-ups
+
+- Decide whether measurement artifacts should become persisted backend artifacts; current downloads are deterministic local inert JSON only.
+- Lasso/box selection and persisted annotations remain intentionally absent.
+- Supercell view-state productization, clipping, camera presets, and vector export remain separate queued scopes.

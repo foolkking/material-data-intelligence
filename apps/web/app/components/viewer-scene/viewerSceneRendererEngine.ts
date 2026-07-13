@@ -12,12 +12,13 @@ export async function createThreeViewerEngine(args: {
   readonly scene: ValidatedRenderScene;
   readonly onContextLost: () => void;
   readonly onSitePick?: (site: PeriodicSiteRef | null) => void;
+  readonly onBondPick?: (bondId: string) => void;
   readonly pixelRatioCap: number;
   readonly antialias: boolean;
   readonly performanceTier: "interactive" | "degraded";
 }): Promise<ViewerRendererEngine> {
   const startedAt = performance.now();
-  const { container, scene, onContextLost, onSitePick, pixelRatioCap, antialias, performanceTier } = args;
+  const { container, scene, onContextLost, onSitePick, onBondPick, pixelRatioCap, antialias, performanceTier } = args;
   const width = Math.max(320, container.clientWidth || 720);
   const height = Math.max(320, container.clientHeight || 480);
   let renderer: THREE.WebGLRenderer;
@@ -95,7 +96,16 @@ export async function createThreeViewerEngine(args: {
   const bondMaterial = new THREE.LineBasicMaterial({ color: 0x62707c, transparent: true, opacity: 0.74 });
   const bondLines = new THREE.LineSegments(bondGeometry, bondMaterial);
   bondLines.name = "bounded-non-authoritative-bonds";
+  bondLines.userData = { bondIds: scene.bonds.map((bond) => bond.id) };
   root.add(bondLines);
+
+  const selectedBondGeometry = new THREE.BufferGeometry();
+  const selectedBondMaterial = new THREE.LineBasicMaterial({ color: 0xe85d75, depthTest: false });
+  const selectedBondLine = new THREE.LineSegments(selectedBondGeometry, selectedBondMaterial);
+  selectedBondLine.name = "selected-canonical-bond";
+  selectedBondLine.renderOrder = 21;
+  selectedBondLine.visible = false;
+  root.add(selectedBondLine);
 
   const cellGeometry = lineGeometry(latticeEdges(scene.displayLattice.matrix).flatMap((edge) => [edge[0], edge[1]]));
   const cellMaterial = new THREE.LineBasicMaterial({ color: 0x1f6f8b, transparent: true, opacity: 0.9 });
@@ -121,6 +131,7 @@ export async function createThreeViewerEngine(args: {
   measurementLines.visible = false;
   root.add(measurementLines);
   let selectedSites: readonly PeriodicSiteRef[] = Object.freeze([]);
+  let selectedBondId: string | null = null;
 
   const ambient = new THREE.AmbientLight(0xffffff, 1.35);
   const key = new THREE.DirectionalLight(0xffffff, 2.25);
@@ -184,6 +195,7 @@ export async function createThreeViewerEngine(args: {
   renderer.domElement.addEventListener("webglcontextlost", onLost, false);
 
   const raycaster = new THREE.Raycaster();
+  raycaster.params.Line = { threshold: 0.12 };
   const pointer = new THREE.Vector2();
   let pointerStart: { readonly id: number; readonly x: number; readonly y: number } | null = null;
   const pickAt = (clientX: number, clientY: number) => {
@@ -192,13 +204,20 @@ export async function createThreeViewerEngine(args: {
     if (bounds.width <= 0 || bounds.height <= 0) return;
     pointer.set(((clientX - bounds.left) / bounds.width) * 2 - 1, -((clientY - bounds.top) / bounds.height) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObjects(atomMeshes, false).find((intersection) => intersection.instanceId !== undefined && intersection.object.visible);
-    if (!hit || hit.instanceId === undefined) {
+    const atomHit = raycaster.intersectObjects(atomMeshes, false).find((intersection) => intersection.instanceId !== undefined && intersection.object.visible);
+    const bondHit = bondLines.visible ? raycaster.intersectObject(bondLines, false)[0] : undefined;
+    if (bondHit && (!atomHit || bondHit.distance < atomHit.distance)) {
+      const segmentIndex = Math.floor(Number(bondHit.index ?? -1) / 2);
+      const bondId = scene.bonds[segmentIndex]?.id;
+      if (bondId) onBondPick?.(bondId);
+      return;
+    }
+    if (!atomHit || atomHit.instanceId === undefined) {
       onSitePick?.(null);
       return;
     }
-    const periodicRefs = (hit.object as THREE.InstancedMesh).userData.periodicRefs;
-    const ref = Array.isArray(periodicRefs) ? periodicRefs[hit.instanceId] as PeriodicSiteRef | undefined : undefined;
+    const periodicRefs = (atomHit.object as THREE.InstancedMesh).userData.periodicRefs;
+    const ref = Array.isArray(periodicRefs) ? periodicRefs[atomHit.instanceId] as PeriodicSiteRef | undefined : undefined;
     onSitePick?.(ref && atomsByKey.has(periodicSiteKey(ref)) ? ref : null);
   };
   const onPointerDown = (event: PointerEvent) => {
@@ -245,6 +264,7 @@ export async function createThreeViewerEngine(args: {
     rendererVersion: THREE.REVISION,
     selectedSites: Object.freeze([...selectedSites]),
     selectedSiteIndices: Object.freeze(selectedSites.map((site) => site.siteIndex)),
+    selectedBondId,
     siteScreenPositions: Object.freeze(scene.atoms.map((atom) => {
       const projected = new THREE.Vector3(...atom.position).project(camera);
       return Object.freeze({
@@ -253,6 +273,10 @@ export async function createThreeViewerEngine(args: {
         x: round((projected.x + 1) * 0.5 * renderer.domElement.clientWidth),
         y: round((1 - projected.y) * 0.5 * renderer.domElement.clientHeight),
       });
+    })),
+    bondScreenPositions: Object.freeze(scene.bonds.map((bond) => {
+      const projected = new THREE.Vector3((bond.start[0] + bond.end[0]) / 2, (bond.start[1] + bond.end[1]) / 2, (bond.start[2] + bond.end[2]) / 2).project(camera);
+      return Object.freeze({ bondId: bond.id, x: round((projected.x + 1) * 0.5 * renderer.domElement.clientWidth), y: round((1 - projected.y) * 0.5 * renderer.domElement.clientHeight) });
     })),
     metrics: Object.freeze({
       performanceTier,
@@ -299,6 +323,14 @@ export async function createThreeViewerEngine(args: {
     measurementLines.visible = selectedSites.length >= 2;
     render();
   };
+  const setBondSelection = (bondId: string | null) => {
+    const bond = bondId ? scene.bonds.find((candidate) => candidate.id === bondId) : undefined;
+    selectedBondId = bond?.id ?? null;
+    selectedBondGeometry.setAttribute("position", new THREE.Float32BufferAttribute(bond ? [...bond.start, ...bond.end] : [], 3));
+    if (bond) selectedBondGeometry.computeBoundingSphere();
+    selectedBondLine.visible = Boolean(bond);
+    render();
+  };
 
   const exportPng = async () => {
     assertViewerExportDimensions(renderer.domElement.width, renderer.domElement.height);
@@ -316,6 +348,7 @@ export async function createThreeViewerEngine(args: {
     setCellVisible(visible) { cellLines.visible = visible; render(); },
     setBondsVisible(visible) { bondLines.visible = visible; render(); },
     setSelection,
+    setBondSelection,
     keyboardCamera,
     exportPng,
     render,
@@ -333,9 +366,11 @@ export async function createThreeViewerEngine(args: {
       renderer.domElement.removeEventListener("pointercancel", onPointerCancel);
       sphereGeometry.dispose();
       bondGeometry.dispose();
+      selectedBondGeometry.dispose();
       cellGeometry.dispose();
       measurementGeometry.dispose();
       bondMaterial.dispose();
+      selectedBondMaterial.dispose();
       cellMaterial.dispose();
       measurementMaterial.dispose();
       for (const material of highlightMaterials) material.dispose();

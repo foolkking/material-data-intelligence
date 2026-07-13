@@ -4,7 +4,7 @@ import type { PeriodicSiteRef } from "./viewerSceneRendererTypes";
 
 export type PeriodicMeasurementMode = "displayed_positions" | "minimum_image";
 
-export function ViewerMeasurementPanel({ mode, selected, coordinateMode, resolvedRefs, evaluation, history, onMode, onCoordinateMode, onClear }: {
+export function ViewerMeasurementPanel({ mode, selected, coordinateMode, resolvedRefs, evaluation, history, onMode, onCoordinateMode, onUndo, onClear, onDownload }: {
   readonly mode: ViewerSelectionMode;
   readonly selected: readonly PeriodicSiteRef[];
   readonly coordinateMode: PeriodicMeasurementMode;
@@ -13,13 +13,17 @@ export function ViewerMeasurementPanel({ mode, selected, coordinateMode, resolve
   readonly history: readonly ViewerMeasurementResult[];
   readonly onMode: (mode: ViewerSelectionMode) => void;
   readonly onCoordinateMode: (mode: PeriodicMeasurementMode) => void;
+  readonly onUndo: () => void;
   readonly onClear: () => void;
+  readonly onDownload: () => void;
 }) {
   return (
     <section className="viewer-measurement-panel" aria-label="Structure measurements">
       <div className="viewer-measurement-modes" data-testid="viewer-measurement-mode">
         {(["inspect", "distance", "angle", "dihedral"] as const).map((value) => <button key={value} type="button" className={`compact ${mode === value ? "active" : "secondary"}`} aria-pressed={mode === value} onClick={() => onMode(value)}>{value === "inspect" ? "Select" : value[0].toUpperCase() + value.slice(1)}</button>)}
+        <button type="button" className="compact secondary" data-testid="viewer-measurement-undo" onClick={onUndo} disabled={!selected.length}>Undo</button>
         <button type="button" className="compact secondary" data-testid="viewer-measurement-clear" onClick={onClear}>Clear</button>
+        <button type="button" className="compact secondary" data-testid="viewer-measurement-download" onClick={onDownload} disabled={!evaluation?.ok}>Download measurement JSON</button>
       </div>
       <div className="viewer-measurement-modes" aria-label="Measurement coordinate mode">
         <button type="button" className={`compact ${coordinateMode === "displayed_positions" ? "active" : "secondary"}`} aria-pressed={coordinateMode === "displayed_positions"} onClick={() => onCoordinateMode("displayed_positions")}>Displayed positions</button>

@@ -1018,3 +1018,9 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - No Tool Registry, planner, adapter, PlanValidator, QueueWorkerRuntime, AnalysisPlan, or artifact contract semantics changed.
 - Keyboard, focus, semantic summaries, live announcements, and mobile interaction are frontend-local consumers of validated scenes.
 - Artifact content cannot register shortcuts, roles, callbacks, event handlers, or focus behavior.
+
+# 2026-07-13 Phase 10F-23 Picking and Measurement Notes
+
+- No Tool Registry, planner, adapter, PlanValidator, QueueWorkerRuntime, AnalysisPlan, or canonical scene semantics changed.
+- Picking and measurement are bounded frontend actions over independently validated scene/topology data.
+- `viewer_measurement.json` is a local inert download, not a newly registered executable tool or persisted backend artifact.

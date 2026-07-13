@@ -26,7 +26,9 @@ function fakeEngine(dispose = vi.fn()) {
     rendererVersion: "185",
     selectedSites: [],
     selectedSiteIndices: [],
+    selectedBondId: null,
     siteScreenPositions: [],
+    bondScreenPositions: [],
     metrics: {
       performanceTier: "interactive",
       atomCount: 2,
@@ -51,6 +53,7 @@ function fakeEngine(dispose = vi.fn()) {
     setCellVisible(value) { cellVisible = value; },
     setBondsVisible(value) { bondsVisible = value; },
     setSelection: vi.fn(),
+    setBondSelection: vi.fn(),
     exportPng: vi.fn(async () => new Blob(["png"], { type: "image/png" })),
     render: vi.fn(),
     keyboardCamera: vi.fn(),
@@ -77,6 +80,24 @@ describe("ViewerSceneRendererSurface", () => {
     await userEvent.click(neighborButton);
     expect(neighborButton.getAttribute("aria-pressed")).toBe("true");
     expect(engine.setSelection).toHaveBeenLastCalledWith([{siteIndex:0,imageOffset:[0,0,0]},{siteIndex:1,imageOffset:[1,0,0]}]);
+  });
+  it("maps a canonical bond pick to ordered endpoints, inspector, undo, and artifact download", async () => {
+    const engine=fakeEngine(); let args:Parameters<ViewerRendererEngineFactory>[0]|undefined;
+    const createUrl=vi.fn(()=>"blob:measurement"); const revokeUrl=vi.fn();
+    Object.defineProperty(URL,"createObjectURL",{configurable:true,value:createUrl}); Object.defineProperty(URL,"revokeObjectURL",{configurable:true,value:revokeUrl});
+    const anchorClick=vi.spyOn(HTMLAnchorElement.prototype,"click").mockImplementation(()=>undefined);
+    render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
+    await waitFor(()=>expect(args).toBeTruthy());
+    fireEvent.change(screen.getByTestId("viewer-supercell-x"),{target:{value:"2"}}); await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
+    await waitFor(()=>expect(args?.scene.bonds).toHaveLength(1));
+    await userEvent.click(screen.getByRole("button",{name:"Distance"}));
+    act(()=>args?.onBondPick?.(args!.scene.bonds[0].id));
+    expect(screen.getByTestId("viewer-selected-bond-id").textContent).toBe(args!.scene.bonds[0].id);
+    expect(screen.getByTestId("viewer-measurement-selection").textContent).toContain("0@[0,0,0]");
+    expect(screen.getByTestId("viewer-measurement-selection").textContent).toContain("1@[1,0,0]");
+    await userEvent.click(screen.getByTestId("viewer-measurement-download")); expect(createUrl).toHaveBeenCalledOnce();
+    await userEvent.click(screen.getByTestId("viewer-measurement-undo")); expect(screen.getByTestId("viewer-measurement-selection").textContent).toContain("1/2");
+    anchorClick.mockRestore();
   });
   it("distinguishes displayed and minimum-image boundary measurements", async () => {
     const boundary = structuredClone(multiSpeciesScene) as Record<string, any>;
