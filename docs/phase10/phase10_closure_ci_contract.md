@@ -15,5 +15,9 @@ CI has no Playwright browser dependency and this phase adds no large testing
 dependency. CI validates the committed three-browser evidence and hashes; a
 fresh browser run is required when product browser behavior changes.
 
+Evidence hashes use raw bytes for binary files and LF-normalized UTF-8 bytes
+for JSON/Markdown/TXT, so integrity checks are stable across Windows and Linux
+Git checkouts without weakening binary screenshot verification.
+
 All entries return nonzero on failure, perform no deployment or push, use no
 real LLM, and require no external network at runtime.

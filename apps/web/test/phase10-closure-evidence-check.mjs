@@ -31,7 +31,9 @@ if (network.external_requests !== 0 || network.result !== "NO_EXTERNAL_NETWORK_R
 if (manifest.schema_version !== "phase10.closure_regression_evidence.v1" || !manifest.markers?.includes("PHASE10_PRODUCT_CLOSURE_BROWSER_PASS")) throw new Error("Phase 10 evidence manifest is invalid");
 if (hashes.algorithm !== "sha256" || !Array.isArray(hashes.files) || hashes.files.length < required.length) throw new Error("Phase 10 artifact hash inventory is invalid");
 for (const item of hashes.files) {
-  const content = await readFile(path.join(evidence, item.path));
+  let content = await readFile(path.join(evidence, item.path));
+  if (item.normalization === "lf") content = Buffer.from(content.toString("utf-8").replaceAll("\r\n", "\n"), "utf-8");
+  else if (item.normalization !== "raw") throw new Error(`Phase 10 evidence hash normalization is invalid: ${item.path}`);
   if (content.byteLength !== item.bytes || createHash("sha256").update(content).digest("hex") !== item.sha256) throw new Error(`Phase 10 evidence hash mismatch: ${item.path}`);
 }
 console.log("PHASE10_CLOSURE_EVIDENCE_INTEGRITY_PASS");

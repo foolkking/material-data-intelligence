@@ -162,10 +162,20 @@ def _write(path: Path, value: Any) -> None:
 
 
 def _hashes(root: Path) -> dict[str, Any]:
-    return {"algorithm": "sha256", "files": [
-        {"path": path.relative_to(root).as_posix(), "bytes": path.stat().st_size, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
-        for path in sorted(root.rglob("*")) if path.is_file() and path.name != "artifact_hashes.json"
-    ]}
+    files = []
+    for path in sorted(root.rglob("*")):
+        if not path.is_file() or path.name == "artifact_hashes.json":
+            continue
+        content, normalization = _canonical_hash_content(path)
+        files.append({"path": path.relative_to(root).as_posix(), "bytes": len(content), "sha256": hashlib.sha256(content).hexdigest(), "normalization": normalization})
+    return {"algorithm": "sha256", "text_normalization": "lf", "files": files}
+
+
+def _canonical_hash_content(path: Path) -> tuple[bytes, str]:
+    content = path.read_bytes()
+    if path.suffix.lower() in {".json", ".md", ".txt"}:
+        return content.replace(b"\r\n", b"\n"), "lf"
+    return content, "raw"
 
 
 def _readme(results: list[dict[str, Any]], backend: dict[str, Any], frontend: dict[str, Any]) -> str:

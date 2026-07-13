@@ -2,384 +2,461 @@
   "algorithm": "sha256",
   "files": [
     {
-      "bytes": 3424,
+      "bytes": 3335,
+      "normalization": "lf",
       "path": "api_transcript.md",
-      "sha256": "b173383a08c4b923af18d55790da4453251179f98f5c0e755c0c63a4e462c01e"
+      "sha256": "b05f4265d914593847b35f505e21c040fae9f5f0fc8bfeac84a30e237db08832"
     },
     {
-      "bytes": 2474,
+      "bytes": 2393,
+      "normalization": "lf",
       "path": "artifact_contract_audit.md",
-      "sha256": "43ee026bb6ba2ed5744f6c9e7f4bdc684d665006ffbd16b17f9333942f48192f"
+      "sha256": "70cf8cafa7bc9c8ee6bc171a3f4d3436713dfa591d939dbf2ba456dbb65a576c"
     },
     {
-      "bytes": 431,
+      "bytes": 417,
+      "normalization": "lf",
       "path": "artifact_contract_closure.json",
-      "sha256": "dc932ca2ed816a4d1925c4280dbfabc5cc5ee29e2bd636d6296cd24b92c96920"
+      "sha256": "67de5c6d3e00e4ef1d31eca15ce6b1c95f2e30703f692dcae0618fb7ba3b5f52"
     },
     {
-      "bytes": 2033,
+      "bytes": 1954,
+      "normalization": "lf",
       "path": "artifacts/bonds_disabled_recipe.json",
-      "sha256": "6a917764790abe52fdd9a24d7dd2f2817109eabddb55740c56a726c48d7b5f2a"
+      "sha256": "048c8b8678d9fe80edaa3ab012b55843d82459988f619fb3bfadfc6f1461da8b"
     },
     {
-      "bytes": 1024,
+      "bytes": 981,
+      "normalization": "lf",
       "path": "artifacts/bonds_disabled_summary.md",
-      "sha256": "7ed7077f426871d34f4d160424bc9ecdbe7705a71fa8ecb07c0c3e671bb24aea"
+      "sha256": "514631ade9a80c6ee25890700b393faf5d614d9d967fa05bd9dc2a9cd4a7203f"
     },
     {
-      "bytes": 3537,
+      "bytes": 3369,
+      "normalization": "lf",
       "path": "artifacts/bonds_disabled_viewer_scene.json",
-      "sha256": "4113153d5bd3e836f8474d8e6efee0f3928bd6a8a34705eb7551da26da3b5b70"
+      "sha256": "f0d02b56c2c7ba06d5d8eb13fe8b296e82e06a4df7dd23969e236caa67507e5d"
+    },
+    {
+      "bytes": 1868,
+      "normalization": "lf",
+      "path": "artifacts/bonds_disabled_viewer_scene_manifest.json",
+      "sha256": "8bd3f02da1b2a8f0969cb0ff283f97e332883f3d1739932c12c537943821cd66"
+    },
+    {
+      "bytes": 1960,
+      "normalization": "lf",
+      "path": "artifacts/multi_species_crystal_recipe.json",
+      "sha256": "3d512051874f20d9cfbd73515ce561557f55ffb1667e082852911fe4ba05bf82"
+    },
+    {
+      "bytes": 959,
+      "normalization": "lf",
+      "path": "artifacts/multi_species_crystal_summary.md",
+      "sha256": "c21ab196f7b8b0a070d9efda765bf0330d47fb6e1b5f17ed598c9830ccfe3ee3"
+    },
+    {
+      "bytes": 3248,
+      "normalization": "lf",
+      "path": "artifacts/multi_species_crystal_viewer_scene.json",
+      "sha256": "15133933c4ceb0747087c12bcc22a467fd4afd2ca840707766fa13b149623493"
+    },
+    {
+      "bytes": 1818,
+      "normalization": "lf",
+      "path": "artifacts/multi_species_crystal_viewer_scene_manifest.json",
+      "sha256": "bdb6943a5b124b85a962e628356b2e05b232d9f853dee0efb07840c68d773ef3"
+    },
+    {
+      "bytes": 1961,
+      "normalization": "lf",
+      "path": "artifacts/periodic_boundary_bond_recipe.json",
+      "sha256": "72352c5f448ec5c6136ec95c02db83252dd58802ce9bcbfdb8894220ecb31274"
+    },
+    {
+      "bytes": 989,
+      "normalization": "lf",
+      "path": "artifacts/periodic_boundary_bond_summary.md",
+      "sha256": "dfcaf76eed3e44800bc83f74ee5cf4d37f8443cc72041870679ea11e5ed6802b"
+    },
+    {
+      "bytes": 3927,
+      "normalization": "lf",
+      "path": "artifacts/periodic_boundary_bond_viewer_scene.json",
+      "sha256": "dd2e0de8657701a25a75d368d1a05d923940acbe60c64c88fa0f096cad763645"
+    },
+    {
+      "bytes": 1878,
+      "normalization": "lf",
+      "path": "artifacts/periodic_boundary_bond_viewer_scene_manifest.json",
+      "sha256": "ad97e95c0f8032fe53efdf2f426cfc93f507e5160c9eb59f6fb8d2a1aff5d800"
+    },
+    {
+      "bytes": 1957,
+      "normalization": "lf",
+      "path": "artifacts/self_periodic_bond_recipe.json",
+      "sha256": "9a36146a446fc7ac913c06c3dbef7dbefac245824efb36f425ed703f49b8a9c8"
+    },
+    {
+      "bytes": 989,
+      "normalization": "lf",
+      "path": "artifacts/self_periodic_bond_summary.md",
+      "sha256": "b56e294c63a8297efe6b180bf48de6328617f010388aa7545e702be04fdf6505"
+    },
+    {
+      "bytes": 4640,
+      "normalization": "lf",
+      "path": "artifacts/self_periodic_bond_viewer_scene.json",
+      "sha256": "eded3ecaeb0681a2faf7500dbfa9cd210c9ec38704b88794332412c93c4b3e4e"
+    },
+    {
+      "bytes": 1878,
+      "normalization": "lf",
+      "path": "artifacts/self_periodic_bond_viewer_scene_manifest.json",
+      "sha256": "024832dedb4af468dc1b66834bbf7c9ea158c56801719af5bccd8b3be343307b"
+    },
+    {
+      "bytes": 1962,
+      "normalization": "lf",
+      "path": "artifacts/triclinic_boundary_bond_recipe.json",
+      "sha256": "861ae69b8e0f3dc900421559ead1fbe85d3b134332cbf9f112848ed99e2cf5c1"
+    },
+    {
+      "bytes": 989,
+      "normalization": "lf",
+      "path": "artifacts/triclinic_boundary_bond_summary.md",
+      "sha256": "899c5b3a64ee27381cda01c340cb497fd90947fc90c1e3adcf4d32600051c4d8"
+    },
+    {
+      "bytes": 3979,
+      "normalization": "lf",
+      "path": "artifacts/triclinic_boundary_bond_viewer_scene.json",
+      "sha256": "d1fc9af81e3b71bf067a84817017bb25866b526f7d4d0c2ecccadc4df47edd20"
+    },
+    {
+      "bytes": 1878,
+      "normalization": "lf",
+      "path": "artifacts/triclinic_boundary_bond_viewer_scene_manifest.json",
+      "sha256": "402bbb430def7e7bfa28ae96141017265f058afa12a5d713a144762b6451e325"
+    },
+    {
+      "bytes": 1960,
+      "normalization": "lf",
+      "path": "artifacts/valid_minimal_crystal_recipe.json",
+      "sha256": "754c01f3fb6cedc152151a090b07b545295d11b45e960ef7c08c50b28d38fe9c"
+    },
+    {
+      "bytes": 989,
+      "normalization": "lf",
+      "path": "artifacts/valid_minimal_crystal_summary.md",
+      "sha256": "a712371da8e29f24e57e815661ace23d2ed477485de49be06dc3245fa32d6428"
+    },
+    {
+      "bytes": 3955,
+      "normalization": "lf",
+      "path": "artifacts/valid_minimal_crystal_viewer_scene.json",
+      "sha256": "354382ff10018d4a2246a1d9ea3bc2289895df569eecfbf193956fce59055eea"
+    },
+    {
+      "bytes": 1878,
+      "normalization": "lf",
+      "path": "artifacts/valid_minimal_crystal_viewer_scene_manifest.json",
+      "sha256": "ed0ed9d2305b00ad21e33e8adea2a214f0f59d4accc763e4b96d9d1bd68a6b0a"
     },
     {
       "bytes": 1941,
-      "path": "artifacts/bonds_disabled_viewer_scene_manifest.json",
-      "sha256": "d58a9be3aed563116695501dfa9632e64f90fd639fe3c6beca7b9206fa550c75"
-    },
-    {
-      "bytes": 2039,
-      "path": "artifacts/multi_species_crystal_recipe.json",
-      "sha256": "2b14d2fd1e0008a5259dc217b88c3d8a936bcf6d3b0106a9fa7d531975559ea2"
-    },
-    {
-      "bytes": 1002,
-      "path": "artifacts/multi_species_crystal_summary.md",
-      "sha256": "8c01d824288cd72ccef2f58bafb3174bd830553be317c702709051aabb2b2c19"
-    },
-    {
-      "bytes": 3411,
-      "path": "artifacts/multi_species_crystal_viewer_scene.json",
-      "sha256": "e3d0b842db3e5e85d54b73912bbad11905103ee9138366003c5a9f356839e130"
-    },
-    {
-      "bytes": 1889,
-      "path": "artifacts/multi_species_crystal_viewer_scene_manifest.json",
-      "sha256": "e0f63f4517c81827ddeb256876977ebeba5c7b75c574c916e25c27fdf61babb7"
-    },
-    {
-      "bytes": 2040,
-      "path": "artifacts/periodic_boundary_bond_recipe.json",
-      "sha256": "e55263eaf29433860aab5d0a1e739051a8acab6657d82d10e754cf3e2d6d8451"
-    },
-    {
-      "bytes": 1032,
-      "path": "artifacts/periodic_boundary_bond_summary.md",
-      "sha256": "d147e2cb5e8bca24f755266ca9fe51428cc580a25efcfa8d7158836fdd767f3f"
-    },
-    {
-      "bytes": 4122,
-      "path": "artifacts/periodic_boundary_bond_viewer_scene.json",
-      "sha256": "a1e9b0f846f31bf38aa1a4e6b607c04896cc73377a91eb3575cd82d7202adeff"
-    },
-    {
-      "bytes": 1951,
-      "path": "artifacts/periodic_boundary_bond_viewer_scene_manifest.json",
-      "sha256": "0f6049c8ce6377a2b20f7920d428a5b3b69dbb2cc1f66c86322f1d81e6725c79"
-    },
-    {
-      "bytes": 2036,
-      "path": "artifacts/self_periodic_bond_recipe.json",
-      "sha256": "8bae15340e68d47f3a69711324b40173aed5e37a8303ed72c7dc631e042466ed"
-    },
-    {
-      "bytes": 1032,
-      "path": "artifacts/self_periodic_bond_summary.md",
-      "sha256": "2dcb6fca0bfaeb59e0288e7cd24df5eb72288b2116ef63019e8d1ddc5bd537aa"
-    },
-    {
-      "bytes": 4869,
-      "path": "artifacts/self_periodic_bond_viewer_scene.json",
-      "sha256": "4081e17c61ab85c227a974c9e6d566258fbe737bde63f22a1324c593deb77f16"
-    },
-    {
-      "bytes": 1951,
-      "path": "artifacts/self_periodic_bond_viewer_scene_manifest.json",
-      "sha256": "380396d964c892a168fa7adfb3bbc4a551771512ed5389cbef4bd5d1f0082acb"
-    },
-    {
-      "bytes": 2041,
-      "path": "artifacts/triclinic_boundary_bond_recipe.json",
-      "sha256": "69f767da59a943b553bfa8cfb87448941527164802930feebbfeff04c327e3bc"
-    },
-    {
-      "bytes": 1032,
-      "path": "artifacts/triclinic_boundary_bond_summary.md",
-      "sha256": "b052cf50561839ec5c3b0d95d88abddc5b549aba257aca4e61847fa0ac23db7b"
-    },
-    {
-      "bytes": 4174,
-      "path": "artifacts/triclinic_boundary_bond_viewer_scene.json",
-      "sha256": "870e0230ab65c1ad0f426b7576ddd2408d27f8c5a7760879bcb2b57b65ed000c"
-    },
-    {
-      "bytes": 1951,
-      "path": "artifacts/triclinic_boundary_bond_viewer_scene_manifest.json",
-      "sha256": "982462980b966a241b5d65127bde6ff529f7ecb4397deabf427330214a248436"
-    },
-    {
-      "bytes": 2039,
-      "path": "artifacts/valid_minimal_crystal_recipe.json",
-      "sha256": "eccf603a64cae332a50b523a9c4be28943355949246b8940830e16b51bb32806"
-    },
-    {
-      "bytes": 1032,
-      "path": "artifacts/valid_minimal_crystal_summary.md",
-      "sha256": "045f5ca884453f908c9fb3209b09019e5be045d98466be8fec38d91e6730ca50"
-    },
-    {
-      "bytes": 4150,
-      "path": "artifacts/valid_minimal_crystal_viewer_scene.json",
-      "sha256": "d3ad186f9f22142dc474f6ddab2a909230b68a1329ad2b11f9d1b3623adec1d4"
-    },
-    {
-      "bytes": 1951,
-      "path": "artifacts/valid_minimal_crystal_viewer_scene_manifest.json",
-      "sha256": "562a0c5f058271af232ac85bb21c02bcf2153f27a736610d72a8244edeae18a2"
-    },
-    {
-      "bytes": 2020,
+      "normalization": "lf",
       "path": "artifacts/warning_caps_recipe.json",
-      "sha256": "cb177d811e1d654e94a47aaf2ffb92d009596523f7aa69325059df744ddf7cf9"
+      "sha256": "3f4eb85f2cf1ae7517ba9e27dfe55baf4a400a2406ddace8b4a68e097397aa5b"
     },
     {
-      "bytes": 1087,
+      "bytes": 1044,
+      "normalization": "lf",
       "path": "artifacts/warning_caps_summary.md",
-      "sha256": "be53c06b0db05dd5a66d0d954e2d34cbd5bbc845fc6f555db10f85b909a76055"
+      "sha256": "ea1e61599c5c4318e848b3fa7527ddb362698ef0e7037766f05d675b59d81677"
     },
     {
-      "bytes": 3834,
+      "bytes": 3658,
+      "normalization": "lf",
       "path": "artifacts/warning_caps_viewer_scene.json",
-      "sha256": "2c77adbfe4b8b2ccae20e31f8c3d2ec7282387ce0c1ef7e24512c1ea594e6dbb"
+      "sha256": "b6ce6ec05b0cba65ce78080c58a0d1f726505c917af196284d1683489517b962"
     },
     {
-      "bytes": 2019,
+      "bytes": 1944,
+      "normalization": "lf",
       "path": "artifacts/warning_caps_viewer_scene_manifest.json",
-      "sha256": "8ab3c87a1f0053c93fb0368ddac971a1fac4d88b70d620538c582d7633f24ca8"
+      "sha256": "83cb564fb342f3c30f6b4be85af7a6923ab631bf689612f0e1f1e694d578c38d"
     },
     {
-      "bytes": 65940,
+      "bytes": 64227,
+      "normalization": "lf",
       "path": "bonds_disabled_api_capture.json",
-      "sha256": "92fcdf1e57f62ec87014495a0a4418ad0926d2ff86bc87ed8218b0b7079dcb1f"
+      "sha256": "35a70748073f90220b477e87758b43f4923a7c0484357eade2e3e0b147a05681"
     },
     {
       "bytes": 3881,
+      "normalization": "lf",
       "path": "browser/accessibility_snapshot.json",
       "sha256": "c0155896e9c1d64db129da36fb368ea60e0f05e70b5eb3b1c97926ba6694c95a"
     },
     {
       "bytes": 40,
+      "normalization": "lf",
       "path": "browser/console_snapshot.json",
       "sha256": "fad2a8b6ca27b80ed03ec50a472bf057815024d84d545adeebff3fd7c12475a5"
     },
     {
       "bytes": 3604,
+      "normalization": "lf",
       "path": "browser/mobile_snapshot.json",
       "sha256": "7d905f6eaaeb822a978788337431a684c2211331fa7308adee0c42f865eaa9bc"
     },
     {
       "bytes": 96,
+      "normalization": "lf",
       "path": "browser/network_snapshot.json",
       "sha256": "9359da33fc008f01f347cf355db2c30ce9c92ec428acd74b6d5ce7c3ffa4013c"
     },
     {
       "bytes": 963837,
+      "normalization": "lf",
       "path": "browser_matrix.json",
       "sha256": "20ad07a6e872b5c117de67b25196c8f0663f0add7bc186444f908df99a0f4e98"
     },
     {
-      "bytes": 1097,
+      "bytes": 1069,
+      "normalization": "lf",
       "path": "capability_truth.json",
-      "sha256": "48241c6f46d2941fd328e0367aa4b5b9ce3e9f9e207e791426c4a4dc6d869cd6"
+      "sha256": "366bcbe95e918a5b8c387e7e20d8e16d642326ccc217b149fd035b19e0720120"
     },
     {
-      "bytes": 885,
+      "bytes": 840,
+      "normalization": "lf",
       "path": "cross_phase_invariant_matrix.json",
-      "sha256": "d153226482ce81e404065ba2a32a10c9e550c59018fe823d284836b01d4bdcac"
+      "sha256": "f1981c1eb6f7e037df03751cb88305c4293d987a9c54c761154d9ba32348bc50"
     },
     {
-      "bytes": 205,
+      "bytes": 197,
+      "normalization": "lf",
       "path": "deterministic_replay.json",
-      "sha256": "d62cdada7f9e1426d309009a270ddd54922dc9c14dd78a2541622e3ce3535cbf"
+      "sha256": "3ccf658c8310a305d20622a59d8fae95353c7e28d10c4caa4e063f73fea7a9e8"
     },
     {
-      "bytes": 1234,
+      "bytes": 1182,
+      "normalization": "lf",
       "path": "evidence_manifest.json",
-      "sha256": "30e29fd2b35eecdd4afa5816a7a2ccb26aaa12821bb4b1b2f7e246713f7ada9e"
+      "sha256": "90db1ebb923332ae77b6e21b512de6e9ddf61d694277b7399ec38ce09c36df30"
     },
     {
-      "bytes": 909,
+      "bytes": 874,
+      "normalization": "lf",
       "path": "failure_fallback_matrix.json",
-      "sha256": "9b295a8ddb812a1afc6297f84b1c5c67ac303866eaf167a5c97da7ef82858fe6"
+      "sha256": "68af09eaf44b183aa895101d3cd730c0c422b65c026334d8447d5fd246515561"
     },
     {
-      "bytes": 19907,
+      "bytes": 19337,
+      "normalization": "lf",
       "path": "invalid_multi_structure_rejected_api_capture.json",
-      "sha256": "030cd7feab4408f22c72c057aa6667511e3a382b028332f992576476cf0bd539"
+      "sha256": "4cf7df1327de66fc64f1c63bbc19239b0b9edfef1c68ed8170742f1ee438b874"
     },
     {
-      "bytes": 1652,
+      "bytes": 1579,
+      "normalization": "lf",
       "path": "job_execution_audit.md",
-      "sha256": "64097a5676f3088c94d8d153a32832889320b533a0b20cc566429b23f8e6fffb"
+      "sha256": "f4d2a1e6a38051633309a2c3aa5dd587e5c8966acfad777e1ed4c242f15153bc"
     },
     {
-      "bytes": 2638,
+      "bytes": 2558,
+      "normalization": "lf",
       "path": "legacy_compatibility_closure.json",
-      "sha256": "83c5653bfa6d494b8b962e276670d2242e4f3a58c37384dc7c9963ee00e37d88"
+      "sha256": "07daa173a9872ab013a65de93a09612e7d85f6829313962365a3e840008210f6"
     },
     {
-      "bytes": 151,
+      "bytes": 142,
+      "normalization": "lf",
       "path": "lifecycle_closure.json",
-      "sha256": "41a3744cf98139a6f763c77885aff1cc7331a49d431eca6e97b78b5a922cf697"
+      "sha256": "c5cf7d147edce7c13c4e65ed0bf1ce3ffbf54f5aa1c33aa57bc9bfa60ecf56c3"
     },
     {
-      "bytes": 545505,
+      "bytes": 532605,
+      "normalization": "lf",
       "path": "live_payload.json",
-      "sha256": "edd85f517a84bee0ec69bfecf622a99cf1c2b48d8df78a73bc87478243251eae"
+      "sha256": "acbe686fcf984ce236c4402fac3d4c93291974378e215c22e2e1a64837b10640"
     },
     {
-      "bytes": 4263,
+      "bytes": 4069,
+      "normalization": "lf",
       "path": "mobile_smoke.json",
-      "sha256": "fd75dec2ee01a30554d7abe4b48a402f84bd7d4967371cc97002460fd2650356"
+      "sha256": "2157190f710af4cfca4f3433af930b93fbe0fd1b805a339d1dce9e1c41637025"
     },
     {
-      "bytes": 65385,
+      "bytes": 63694,
+      "normalization": "lf",
       "path": "multi_species_crystal_api_capture.json",
-      "sha256": "43ed3777ddc5ebad242d557052f01d097bb9de687954b30730a1885ecada2086"
+      "sha256": "c9d55dfd36dfd149311a56365a4b53ba66f5d702b0b8949c7bd3a43146b63e8e"
     },
     {
-      "bytes": 147,
+      "bytes": 138,
+      "normalization": "lf",
       "path": "network_audit.json",
-      "sha256": "351065c2c11842c8e395061cb5fb2bd0c3de0f821ba565e706d24972bc29d2d4"
+      "sha256": "87844a38dd05b848dc864751f3e865518f0a4b6d08abec4e67753a7d63cc3a3f"
     },
     {
       "bytes": 1305,
+      "normalization": "lf",
       "path": "performance/metrics.json",
       "sha256": "b2b51bca19384ea9a35f8ee6436d9e58dd93d76c21b41640435b71346a5d48ba"
     },
     {
-      "bytes": 67875,
+      "bytes": 66108,
+      "normalization": "lf",
       "path": "periodic_boundary_bond_api_capture.json",
-      "sha256": "62a3921e54358caff23544e94ec4fb12983731e4a5cd40c04dd085eddd15e2f2"
+      "sha256": "29a9bf04adba09d9c4841a0adcb6652ec25515a90f5448aa5aadfa7c1b570154"
     },
     {
-      "bytes": 259,
+      "bytes": 258,
+      "normalization": "lf",
       "path": "README.md",
-      "sha256": "5a6e384aced039ec24672913c3b01e6e52d7cd828551f52ca8c69957ccaf6441"
+      "sha256": "904ce102d9cbb269115b1f98562911ce636b9aff6cab08fe04f3b4300a08e4a1"
     },
     {
-      "bytes": 929,
+      "bytes": 898,
+      "normalization": "lf",
       "path": "registry_planner_runtime_closure.json",
-      "sha256": "150849ce6cab3873154f759445661cdd7208d01eae18f5291ac0e7877ffe8e80"
+      "sha256": "43b0ab8c2c81debecc5ac7cb1ed14b99575e185c1d14d4bd91dda8e161ff1e58"
     },
     {
-      "bytes": 595,
+      "bytes": 578,
+      "normalization": "lf",
       "path": "schema_compatibility_audit.md",
-      "sha256": "055d4d82a6ab62677d4638467294f784a73589905551e2fe7571ce9595d15924"
+      "sha256": "5af323b8bfed1cd199f0432cd879ee5f98e857ff858e79eed1b142551c286fba"
     },
     {
       "bytes": 333715,
+      "normalization": "raw",
       "path": "screenshots/chromium_chunk_failure.png",
       "sha256": "d0c76715a81c85ef9561445343a45820f7b5ebbf04d618eab723f9f0e0cade99"
     },
     {
       "bytes": 333847,
+      "normalization": "raw",
       "path": "screenshots/chromium_context_loss.png",
       "sha256": "c9ae3663a02842a161dcf3f9812449147ea814673b8bc40a93eb75449ac34d56"
     },
     {
       "bytes": 337308,
+      "normalization": "raw",
       "path": "screenshots/chromium_desktop.png",
       "sha256": "3f9f511d31c307056271c0975966c1ce3aa98743584b358479c83354b6acd7a4"
     },
     {
       "bytes": 227175,
+      "normalization": "raw",
       "path": "screenshots/chromium_invalid.png",
       "sha256": "f25a5ca457943a22e4f9ffa9a07f0cfb1010030a5fdc7a0a28ad7c0651b741ee"
     },
     {
       "bytes": 320518,
+      "normalization": "raw",
       "path": "screenshots/chromium_legacy.png",
       "sha256": "8e11e3da223e185da672615bc21f4ed371ceacf142524b197600fb6fff9213a6"
     },
     {
       "bytes": 1559887,
+      "normalization": "raw",
       "path": "screenshots/chromium_mobile_landscape.png",
       "sha256": "004257e854824f5a08eefbf7ca75298222973d38ac462e58f5dd4ebc576eca50"
     },
     {
       "bytes": 1445351,
+      "normalization": "raw",
       "path": "screenshots/chromium_mobile_portrait.png",
       "sha256": "f24bf2158cac35c3035d79ae5affc6abc16fc453bbb7a696ba8ca8ce70d05efd"
     },
     {
       "bytes": 339820,
+      "normalization": "raw",
       "path": "screenshots/chromium_multispecies.png",
       "sha256": "01696afa0096a63f9cfea204656ebcbc5fb8ec75631f5a333eb1e01c569e7b76"
     },
     {
       "bytes": 503879,
+      "normalization": "raw",
       "path": "screenshots/chromium_near_cap.png",
       "sha256": "8df42d1eb3b222835c78722fcc738de75ce3c12c7aa8cc3b35ae41755c0b4d8f"
     },
     {
       "bytes": 332909,
+      "normalization": "raw",
       "path": "screenshots/chromium_unsupported.png",
       "sha256": "2d901c2bffdc4c383adeabd249b85aa57f2aaa8f01c3db132caf3cbbc08a9149"
     },
     {
       "bytes": 517682,
+      "normalization": "raw",
       "path": "screenshots/firefox_desktop.png",
       "sha256": "3287bd88e9250383b73612bfa61ec42d3be5ab7544ced4214c08815885b8435e"
     },
     {
       "bytes": 327973,
+      "normalization": "raw",
       "path": "screenshots/webkit_desktop.png",
       "sha256": "91c5d0fb3f8b89503b646e52f97501dd2770ee1c139017c57eeea5cb6b2e44f3"
     },
     {
-      "bytes": 352,
+      "bytes": 337,
+      "normalization": "lf",
       "path": "security_audit.json",
-      "sha256": "9a30d14863e68089dfeaba193a002905198b69b7a2251f9174d27a2ad9e0fbf1"
+      "sha256": "0fc345f09af709d14eaa58ec64b6cfb6b9fee2b4bd073be48852436ed37feda3"
     },
     {
-      "bytes": 378,
+      "bytes": 366,
+      "normalization": "lf",
       "path": "security_audit.md",
-      "sha256": "a2554af46563f06d16b5ba9afa8df12a5c8fcc8fb739244c1c7d7f7338022ec2"
+      "sha256": "c3babd40b2dcf5a1edfb5386c46d0f0eec1de3fa73f857a755b8e3f5a1918a06"
     },
     {
-      "bytes": 69881,
+      "bytes": 68046,
+      "normalization": "lf",
       "path": "self_periodic_bond_api_capture.json",
-      "sha256": "2d57ff25d2a25629cd31aed5131cf993ec79b043c99e883975c5cbb7e4aa4ff2"
+      "sha256": "050cec1c1ce0514ef15dfbe5d5414f7e8f8ce36b7e1bf2541118538c4f5b0081"
     },
     {
-      "bytes": 3206,
+      "bytes": 3127,
+      "normalization": "lf",
       "path": "test_inventory.json",
-      "sha256": "170d3686530562f5e445b9a2b9e18dfb83f9864ca2582337d7d604e8d620d3c8"
+      "sha256": "2718b7ce8d0c113d98e1b485e99256fe50bf7bf2152566d17308e5d5b2b8fbe8"
     },
     {
-      "bytes": 259,
+      "bytes": 247,
+      "normalization": "lf",
       "path": "tool_portfolio_results.json",
-      "sha256": "6df9ef55cc556d020890897e292fc09bbd34cfb4916e1d0b5930d2173c8059de"
+      "sha256": "af5d8fc488cdd5723baca2cab06eb2eeab22ae38297d0078b5df6080e1ee4c08"
     },
     {
-      "bytes": 68007,
+      "bytes": 66240,
+      "normalization": "lf",
       "path": "triclinic_boundary_bond_api_capture.json",
-      "sha256": "ed5c825ddcd7d32e32e5b269001faf2346bc47b522a3af422aa9dcd480bd22ee"
+      "sha256": "e8dfdc5a90497c1c98ca888e06d81292eae8376c998692d336dc71c9013a1fb2"
     },
     {
-      "bytes": 67885,
+      "bytes": 66118,
+      "normalization": "lf",
       "path": "valid_minimal_crystal_api_capture.json",
-      "sha256": "201419495aa672a67c568122d9f6d5179d3c2826376c38dc6691070ce4f3fa30"
+      "sha256": "0547c9bfb63cb8815b6fff599406e428fcb93adf395df3ed4bd366ade76f27a9"
     },
     {
-      "bytes": 597,
+      "bytes": 572,
+      "normalization": "lf",
       "path": "viewer_product_composition.json",
-      "sha256": "843879371d8f1c78496ad8770db2ae34afb7e1de797ab99bd5284256f1e79582"
+      "sha256": "e59343cdd52b919db9fb9c10d5fec142a63e0c82d085567a4a79fe474644a893"
     },
     {
-      "bytes": 67244,
+      "bytes": 65503,
+      "normalization": "lf",
       "path": "warning_caps_api_capture.json",
-      "sha256": "947a9f5517fd7e79ddc536a70b3e33e135af574d6439ab0f19888e19ab49311e"
+      "sha256": "d7ac58e21baf65d938cd66e5e328456883d769dc4c4a2be0335db79ce9b0b6c0"
     }
-  ]
+  ],
+  "text_normalization": "lf"
 }
