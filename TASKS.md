@@ -932,7 +932,7 @@ Phase 10F-26：Scientific Export and Reporting Foundation
 
 
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10F-26：Scientific Export and Reporting Foundation
 
 进入 Phase 10F-26：Scientific Export and Reporting Foundation。
@@ -2607,6 +2607,39 @@ FAIL包括：
 * 用window.print伪造PDF READY
 * 无browser evidence
 * CI失败却声明PASS
+
+完成时间：2026-07-13 16:14:28 +08:00
+
+修改文件：
+- `apps/web/app/components/viewer-scene/ViewerExportPanel.tsx`
+- `apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.tsx`
+- `apps/web/app/components/viewer-scene/viewerSceneExport.ts`
+- `apps/web/app/components/viewer-scene/viewerSceneRendererEngine.ts`
+- `apps/web/app/components/viewer-scene/viewerSceneRendererTypes.ts`
+- `apps/web/app/globals.css`
+- export/component tests and browser evidence runners
+- `docs/phase10f/phase10f26_*` and `docs/phase10f/evidence/phase10f26_scientific_export/`
+- shared schema, docs index, and persistent project records
+
+修改摘要：
+- Added strict bounded PNG/JSON/Markdown scientific export requests and responsive controls.
+- Reused one validated Three.js renderer with temporary size, DPR, background, and overlay state plus complete restoration.
+- Added transparent/light/dark and high-DPI PNG, deterministic inert view-state JSON, scientific Markdown, and ordered SHA-256 manifest.
+- Added stale-scene/camera cancellation, one-export concurrency, safe filenames/errors, Blob URL cleanup, and PDF deferred-by-design closure.
+- Added live Chromium/Firefox/WebKit/mobile evidence and updated the historical production accessibility assertion to use semantic controls.
+
+测试结果：
+- export/renderer focused: `29 passed`
+- frontend full: `104 passed`
+- frontend typecheck/build: passed
+- backend full: `366 passed, 21 skipped, 11 warnings`
+- all historical viewer browser runners: passed
+- Phase 10F-26 browser markers: passed; external requests `0`; console/page errors `0`
+- `uv lock --check` and `git diff --check`: passed
+- npm audit: unavailable (`npmmirror` audit endpoint `NOT_IMPLEMENTED`); no dependency or lockfile changes
+- local service-backed: unavailable because Docker CLI is not installed
+- CI run `29234514215` for `fd9212ae5e659643c9204e402c1fd59e785763b8`: unit, frontend install/typecheck/build, service-backed integration, and no-skipped assertion all succeeded
+- security: `NO_SECRET_PATTERN_HITS`, `NO_EXTERNAL_NETWORK_REQUESTS`
 
 ---END---
 
