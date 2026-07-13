@@ -1,0 +1,20 @@
+{
+  "required_fields": [
+    "atom_count",
+    "branch_count",
+    "dos_available",
+    "frequency_max",
+    "frequency_min",
+    "frequency_unit",
+    "imaginary_mode_count",
+    "nac_enabled",
+    "near_zero_mode_count",
+    "projected_dos_available",
+    "qpoint_count",
+    "schema_version",
+    "segment_count",
+    "structure_identity",
+    "warnings"
+  ],
+  "schema_version": "phase10h.phonon_summary.v1"
+}

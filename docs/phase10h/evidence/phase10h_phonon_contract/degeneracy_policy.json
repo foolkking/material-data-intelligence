@@ -1,0 +1,9 @@
+{
+  "branches_merged": false,
+  "identity": [
+    "qpoint_index",
+    "branch_indices"
+  ],
+  "source": "producer",
+  "source_declared_only": true
+}

@@ -1,0 +1,254 @@
+{
+  "acoustic_sum_rule": {
+    "applied": false,
+    "method": null
+  },
+  "atom_count": 2,
+  "atom_ordering": "canonical_structure_order",
+  "branch_scope": "full",
+  "branches": [
+    {
+      "branch_index": 0,
+      "frequencies": [
+        0.0,
+        1.0,
+        1.5,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "branch_index": 1,
+      "frequencies": [
+        0.0,
+        1.0,
+        1.6,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "branch_index": 2,
+      "frequencies": [
+        0.0,
+        1.2,
+        1.7,
+        0.0,
+        1.2
+      ]
+    },
+    {
+      "branch_index": 3,
+      "frequencies": [
+        4.0,
+        4.4,
+        4.8,
+        4.0,
+        4.4
+      ]
+    },
+    {
+      "branch_index": 4,
+      "frequencies": [
+        4.0,
+        4.5,
+        4.9,
+        4.0,
+        4.5
+      ]
+    },
+    {
+      "branch_index": 5,
+      "frequencies": [
+        4.2,
+        4.6,
+        5.0,
+        4.2,
+        4.6
+      ]
+    }
+  ],
+  "degeneracy_groups": [
+    {
+      "branch_indices": [
+        0,
+        1,
+        2
+      ],
+      "qpoint_index": 0,
+      "source": "producer"
+    },
+    {
+      "branch_indices": [
+        3,
+        4
+      ],
+      "qpoint_index": 0,
+      "source": "producer"
+    }
+  ],
+  "frequency_unit": "terahertz",
+  "frequency_zero_tolerance": 1e-06,
+  "imaginary_frequency_encoding": "negative_real",
+  "path_distance_unit": "radian_per_angstrom",
+  "qpoint_coordinate_system": "reciprocal_fractional",
+  "qpoints": [
+    {
+      "coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distance": 0.0,
+      "index": 0,
+      "label": "Γ",
+      "segment_index": 0,
+      "source_label": "GAMMA"
+    },
+    {
+      "coordinates": [
+        0.5,
+        0.0,
+        0.0
+      ],
+      "distance": 0.5785621829815458,
+      "index": 1,
+      "label": "X",
+      "segment_index": 0,
+      "source_label": "X"
+    },
+    {
+      "coordinates": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "distance": 1.3967726688302322,
+      "index": 2,
+      "label": "L",
+      "segment_index": 0,
+      "source_label": "L"
+    },
+    {
+      "coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distance": 1.3967726688302322,
+      "index": 3,
+      "label": "Γ",
+      "segment_index": 1,
+      "source_label": "Gamma"
+    },
+    {
+      "coordinates": [
+        0.0,
+        0.5,
+        0.0
+      ],
+      "distance": 1.975334851811778,
+      "index": 4,
+      "label": "M",
+      "segment_index": 1,
+      "source_label": "M"
+    }
+  ],
+  "real_space_lattice_angstrom": [
+    [
+      5.43,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      5.43,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      5.43
+    ]
+  ],
+  "reciprocal_convention": "physics_2pi",
+  "schema_version": "phase10h.phonon_band.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "segments": [
+    {
+      "discontinuous_from_previous": false,
+      "end_label": "L",
+      "end_qpoint_index": 2,
+      "segment_index": 0,
+      "start_label": "Γ",
+      "start_qpoint_index": 0
+    },
+    {
+      "discontinuous_from_previous": true,
+      "end_label": "M",
+      "end_qpoint_index": 4,
+      "segment_index": 1,
+      "start_label": "Γ",
+      "start_qpoint_index": 3
+    }
+  ],
+  "source": {
+    "adapter_version": "phase10h-fixture-v1",
+    "calculation_method": "finite_displacement",
+    "force_constants_source": "force_constants",
+    "input_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "nac": {
+      "direction_policy": null,
+      "enabled": false,
+      "gamma_direction": null
+    },
+    "primitive_matrix": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "producer": "fixture",
+    "producer_version": "1.0",
+    "supercell_matrix": [
+      [
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        2
+      ]
+    ]
+  },
+  "species": [
+    "Si",
+    "Si"
+  ],
+  "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "warnings": []
+}

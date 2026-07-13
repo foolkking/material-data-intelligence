@@ -1,0 +1,69 @@
+{
+  "result": "PASS",
+  "implementation": "independent TypeScript reference validator",
+  "canonical_fixture_sha256": "f8f96c7e93fe67398c15c3dfba7b191c1827bb81d642635f415677da3010883f",
+  "cases": [
+    {
+      "name": "stable_band",
+      "expected_valid": true,
+      "backend_valid": true,
+      "backend_errors": [],
+      "frontend_valid": true,
+      "frontend_errors": []
+    },
+    {
+      "name": "imaginary_band",
+      "expected_valid": true,
+      "backend_valid": true,
+      "backend_errors": [],
+      "frontend_valid": true,
+      "frontend_errors": []
+    },
+    {
+      "name": "discontinuous_band",
+      "expected_valid": true,
+      "backend_valid": true,
+      "backend_errors": [],
+      "frontend_valid": true,
+      "frontend_errors": []
+    },
+    {
+      "name": "projected_dos",
+      "expected_valid": true,
+      "backend_valid": true,
+      "backend_errors": [],
+      "frontend_valid": true,
+      "frontend_errors": []
+    },
+    {
+      "name": "invalid_branch_count",
+      "expected_valid": false,
+      "backend_valid": false,
+      "backend_errors": [
+        "PHONON_BRANCH_COUNT_MISMATCH"
+      ],
+      "frontend_valid": false,
+      "frontend_errors": [
+        "PHONON_BRANCH_COUNT_MISMATCH"
+      ]
+    },
+    {
+      "name": "invalid_dos_grid",
+      "expected_valid": false,
+      "backend_valid": false,
+      "backend_errors": [
+        "PHONON_DOS_GRID_INVALID"
+      ],
+      "frontend_valid": false,
+      "frontend_errors": [
+        "PHONON_DOS_GRID_INVALID"
+      ]
+    }
+  ],
+  "enum_parity": {
+    "band_schema": "phase10h.phonon_band.v1",
+    "dos_schema": "phase10h.phonon_dos.v1",
+    "frequency_unit": "terahertz",
+    "imaginary_encoding": "negative_real"
+  }
+}

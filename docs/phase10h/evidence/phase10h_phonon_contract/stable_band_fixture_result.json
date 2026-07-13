@@ -1,0 +1,36 @@
+{
+  "canonical_sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+  "schema_version": "phase10h.phonon_band.v1",
+  "validation": {
+    "atom_count": 2,
+    "branch_count": 6,
+    "caps": {
+      "max_artifact_bytes": 64000000,
+      "max_atoms": 512,
+      "max_branches": 1536,
+      "max_degeneracy_groups": 4096,
+      "max_dos_points": 100000,
+      "max_label_length": 64,
+      "max_labels": 512,
+      "max_metadata_bytes": 16384,
+      "max_nesting_depth": 10,
+      "max_numeric_magnitude": 1000000000000,
+      "max_projected_dos_series": 512,
+      "max_qpoints": 4096,
+      "max_segments": 256,
+      "max_total_numeric_values": 4000000,
+      "max_visited_nodes": 5000000,
+      "max_warnings": 32
+    },
+    "dos_point_count": 0,
+    "errors": [],
+    "projected_series_count": 0,
+    "qpoint_count": 3,
+    "valid": true,
+    "warnings": [
+      "PHONON_ACOUSTIC_MODES_NOT_CORRECTED",
+      "PHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY",
+      "PHONON_HIGH_SYMMETRY_LABEL_NORMALIZED"
+    ]
+  }
+}

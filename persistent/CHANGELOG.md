@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-14 - Phase 10H Phonon Contract
+
+- Added the inert Phase 10H phonon band, DOS, summary, manifest, q-point, frequency, and source contract family with deterministic serialization and hard resource caps.
+- Added physics-`2*pi` reciprocal math, THz/cm^-1/meV conversion, negative-real imaginary classification, explicit path/discontinuity validation, source-stable full `3N` branches, source-declared degeneracy, DOS normalization/projections, and band/DOS compatibility.
+- Added 53 focused Python checks, 5 independent TypeScript checks, deterministic fixtures/evidence, NumPy/SciPy reference comparison, and no-network/no-secret security captures.
+- Did not add a dependency, parser, adapter, Tool Registry capability, planner route, plot, renderer, eigenvector, animation, external API, notebook/script execution, or real LLM path.
+
 ## 2026-07-13 - Phase 10G-3 Trajectory Performance / Browser Evidence
 
 - Added formal `structure.trajectory_viewer` registration, strict English/Chinese planner routing, negative capability routing, validated launch params, and persisted adapter provenance.

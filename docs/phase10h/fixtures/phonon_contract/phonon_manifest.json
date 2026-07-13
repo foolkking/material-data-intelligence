@@ -1,0 +1,37 @@
+{
+  "artifacts": [
+    {
+      "media_type": "application/json",
+      "name": "phonon_band.json",
+      "schema_version": "phase10h.phonon_band.v1",
+      "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "size_bytes": 2152
+    },
+    {
+      "media_type": "application/json",
+      "name": "phonon_dos.json",
+      "schema_version": "phase10h.phonon_dos.v1",
+      "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "size_bytes": 1638
+    },
+    {
+      "media_type": "application/json",
+      "name": "phonon_summary.json",
+      "schema_version": "phase10h.phonon_summary.v1",
+      "sha256": "1e6441433588ab2d8c695b01819d3488ea1fe63ae101b55ca20fc5fa91ceba5e",
+      "size_bytes": 529
+    }
+  ],
+  "band_schema_version": "phase10h.phonon_band.v1",
+  "dos_schema_version": "phase10h.phonon_dos.v1",
+  "schema_version": "phase10h.phonon_manifest.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "summary_schema_version": "phase10h.phonon_summary.v1"
+}

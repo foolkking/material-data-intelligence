@@ -1,0 +1,24 @@
+{
+  "required_fields": [
+    "atom_count",
+    "atom_ordering",
+    "broadening",
+    "density_unit",
+    "frequencies",
+    "frequency_grid_semantics",
+    "frequency_unit",
+    "frequency_zero_tolerance",
+    "imaginary_frequency_encoding",
+    "integration",
+    "normalization",
+    "projected_dos",
+    "schema_version",
+    "security",
+    "source",
+    "species",
+    "structure_identity",
+    "total_dos",
+    "warnings"
+  ],
+  "schema_version": "phase10h.phonon_dos.v1"
+}

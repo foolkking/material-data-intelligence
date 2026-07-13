@@ -1,0 +1,71 @@
+{
+  "arbitrary_units": false,
+  "artifact_html": false,
+  "artifact_javascript": false,
+  "attacks": [
+    {
+      "attack_fields": [
+        "callback"
+      ],
+      "errors": [
+        "PHONON_EXTERNAL_REFERENCE_FORBIDDEN",
+        "PHONON_METADATA_LIMIT_EXCEEDED"
+      ],
+      "valid": false
+    },
+    {
+      "attack_fields": [
+        "note"
+      ],
+      "errors": [
+        "PHONON_EXTERNAL_REFERENCE_FORBIDDEN",
+        "PHONON_METADATA_LIMIT_EXCEEDED"
+      ],
+      "valid": false
+    },
+    {
+      "attack_fields": [
+        "note"
+      ],
+      "errors": [
+        "PHONON_EXTERNAL_REFERENCE_FORBIDDEN",
+        "PHONON_METADATA_LIMIT_EXCEEDED"
+      ],
+      "valid": false
+    },
+    {
+      "attack_fields": [
+        "note"
+      ],
+      "errors": [
+        "PHONON_EXTERNAL_REFERENCE_FORBIDDEN",
+        "PHONON_METADATA_LIMIT_EXCEEDED"
+      ],
+      "valid": false
+    },
+    {
+      "attack_fields": [
+        "note"
+      ],
+      "errors": [
+        "PHONON_EXTERNAL_REFERENCE_FORBIDDEN",
+        "PHONON_METADATA_LIMIT_EXCEEDED"
+      ],
+      "valid": false
+    },
+    {
+      "attack_fields": [
+        "shader"
+      ],
+      "errors": [
+        "PHONON_EXTERNAL_REFERENCE_FORBIDDEN",
+        "PHONON_METADATA_LIMIT_EXCEEDED"
+      ],
+      "valid": false
+    }
+  ],
+  "external_modules": false,
+  "external_urls": false,
+  "marker": "NO_SECRET_PATTERN_HITS",
+  "result": "PASS"
+}

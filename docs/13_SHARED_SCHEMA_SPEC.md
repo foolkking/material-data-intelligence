@@ -1226,3 +1226,39 @@ Frontend launch mapping accepts only the strict registered speed, loop,
 WebGL capability, and renderer implementation remain client-owned and are not
 canonical trajectory fields. Dynamic bonds, analytics, editing, video, remote
 frames, and executable assets remain unsupported.
+
+## Phase 10H Addendum: phonon contract family
+
+The inert phonon family is `phase10h.phonon_band.v1`,
+`phase10h.phonon_dos.v1`, `phase10h.phonon_summary.v1`, and
+`phase10h.phonon_manifest.v1`. Shared semantics are named by
+`phase10h.qpoint_path.v1`, `phase10h.frequency_axis.v1`, and
+`phase10h.phonon_source.v1`; `phase10h.phonon_mode_ref.v1` is reserved for a
+later eigenvector phase and defines no payload here.
+
+Real-space lattice vectors are rows. The canonical reciprocal lattice is the
+physics convention `B = 2*pi*(A^-1)^T`, so reciprocal-fractional q-points map
+through `q_cart = q*B` and path distance has unit `radian_per_angstrom`.
+Segments retain source order and explicit discontinuities. Duplicated segment
+endpoints are stored as distinct q-points; global distance excludes a declared
+discontinuity gap and never resets.
+
+Canonical frequency is cyclic `terahertz`. Approved source-boundary conversion
+units are `inverse_centimeter` and `millielectronvolt`, using exact SI defining
+constants. Negative real values encode imaginary modes. Zero tolerance only
+classifies values and the validator performs no acoustic-sum-rule correction.
+Branch identity is source-stable contiguous index, version 1 requires full
+`3N`, and degeneracy is source-declared metadata without branch merging.
+
+DOS frequencies are strictly increasing THz sample grid points and may include
+negative values. Total density is `modes_per_terahertz`, normalized by a
+trapezoidal integral approximately equal to `3N`. Projected series use exact
+atom or species identity in canonical atom order. Band/DOS compatibility checks
+structure/order, unit, imaginary encoding, tolerance, calculation lineage, cell
+relation, input hash, and NAC metadata.
+
+All objects use exact fields, finite numbers, deterministic order and
+serialization, hard atom/q-point/branch/DOS/projection/value/metadata/byte caps,
+and explicit no-executable/no-external security flags. This schema family does
+not register a phonon tool, parser, adapter, plot, renderer, eigenvector,
+animation, notebook/script, external API, or real LLM execution path.

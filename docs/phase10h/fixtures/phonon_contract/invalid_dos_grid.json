@@ -1,0 +1,136 @@
+{
+  "atom_count": 2,
+  "atom_ordering": "canonical_structure_order",
+  "broadening": {
+    "method": "none",
+    "source": "fixture",
+    "unit": null,
+    "width": null
+  },
+  "density_unit": "modes_per_terahertz",
+  "frequencies": [
+    -1.0,
+    0.0,
+    0.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0
+  ],
+  "frequency_grid_semantics": "sample_grid_points",
+  "frequency_unit": "terahertz",
+  "frequency_zero_tolerance": 1e-06,
+  "imaginary_frequency_encoding": "negative_real",
+  "integration": {
+    "expected_mode_count": 6,
+    "method": "trapezoidal",
+    "observed_integral": 6.0,
+    "relative_tolerance": 0.01,
+    "status": "within_tolerance"
+  },
+  "normalization": "total_modes",
+  "projected_dos": [
+    {
+      "atom_index": 0,
+      "projection_index": 0,
+      "projection_type": "atom",
+      "source_guarantees_sum": true,
+      "species": "Si",
+      "values": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "atom_index": 1,
+      "projection_index": 1,
+      "projection_type": "atom",
+      "source_guarantees_sum": true,
+      "species": "Si",
+      "values": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  ],
+  "schema_version": "phase10h.phonon_dos.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "source": {
+    "adapter_version": "phase10h-fixture-v1",
+    "calculation_method": "finite_displacement",
+    "force_constants_source": "force_constants",
+    "input_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "nac": {
+      "direction_policy": null,
+      "enabled": false,
+      "gamma_direction": null
+    },
+    "primitive_matrix": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "producer": "fixture",
+    "producer_version": "1.0",
+    "supercell_matrix": [
+      [
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        2
+      ]
+    ]
+  },
+  "species": [
+    "Si",
+    "Si"
+  ],
+  "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "total_dos": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "warnings": []
+}

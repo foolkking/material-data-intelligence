@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-14 Phase 10H Phonon Contract
+
+- Added closed `phase10h.phonon_band.v1`, `phonon_dos.v1`, `phonon_summary.v1`, and `phonon_manifest.v1` contracts with deterministic Python validation and independent TypeScript consumer validation.
+- Fixed row-vector `B = 2*pi*(A^-1)^T`, reciprocal-fractional q-points, explicit discontinuities, global path distance, canonical THz, negative-real imaginary modes, source-stable full `3N` branches, source-declared degeneracy, and canonical atom ordering.
+- Added total/projected DOS identity and trapezoidal `3N` normalization, band/DOS compatibility, NAC/ASR provenance, application caps, inertness checks, small fixtures, independent NumPy/SciPy comparison, and reproducible evidence hashes.
+- No phonon parser, adapter, formal tool, planner route, plot, renderer, eigenvector, animation, dependency, network, notebook/script, or real LLM path was added.
+
 ## 2026-07-13 Phase 10G-3 Trajectory Performance / Browser Evidence
 
 - Registered formal `structure.trajectory_viewer` with strict planner routing, PlanValidator inputs, bounded launch options, canonical trajectory artifacts, and capability-truth metadata.

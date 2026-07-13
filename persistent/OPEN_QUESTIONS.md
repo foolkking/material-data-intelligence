@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-14 Phase 10H phonon contract closure
+
+- **Closed: scientific data semantics.** Reciprocal `2*pi`, q-point path/discontinuity, THz conversion, negative-real imaginary modes, source-stable full `3N` branch identity, source-declared degeneracy, DOS normalization/projection identity, compatibility, and caps are fixed and validated.
+- **Open: parser and producer.** No `phonopy.yaml`, `band.yaml`, DOS, or other source parser/adapter is implemented; future ingestion must convert explicitly into the canonical contract and retain atom/source lineage.
+- **Open: product surfaces.** Band/DOS/combined plots, formal tools, planner routing, browser/API evidence, eigenvectors, mode animation, thermal/Raman/IR, and Brillouin-zone features require independent phases.
+- **Open: mode identity.** `phase10h.phonon_mode_ref.v1` is reserved only; eigenvector phase, normalization, mass weighting, phase convention, and degenerate-subspace policy remain undefined.
+
 ## 2026-07-13 Phase 10G-3 trajectory product closure
 
 - **Closed: formal trajectory product.** `structure.trajectory_viewer` is a unique planner-visible validated tool with canonical artifacts and persisted launch/capability provenance.

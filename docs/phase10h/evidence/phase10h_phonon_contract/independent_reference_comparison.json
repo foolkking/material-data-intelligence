@@ -1,0 +1,9 @@
+{
+  "one_thz_inverse_centimeter_production": 33.3564095198152,
+  "one_thz_inverse_centimeter_reference": 33.3564095198152,
+  "one_thz_mev_production": 4.135667696923859,
+  "one_thz_mev_reference": 4.135667696923859,
+  "reciprocal_max_abs_error": 2.220446049250313e-16,
+  "reference": "numpy.linalg plus scipy.constants",
+  "result": "PASS"
+}

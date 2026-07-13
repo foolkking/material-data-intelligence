@@ -1,0 +1,26 @@
+{
+  "required_fields": [
+    "acoustic_sum_rule",
+    "atom_count",
+    "atom_ordering",
+    "branch_scope",
+    "branches",
+    "degeneracy_groups",
+    "frequency_unit",
+    "frequency_zero_tolerance",
+    "imaginary_frequency_encoding",
+    "path_distance_unit",
+    "qpoint_coordinate_system",
+    "qpoints",
+    "real_space_lattice_angstrom",
+    "reciprocal_convention",
+    "schema_version",
+    "security",
+    "segments",
+    "source",
+    "species",
+    "structure_identity",
+    "warnings"
+  ],
+  "schema_version": "phase10h.phonon_band.v1"
+}

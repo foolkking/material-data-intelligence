@@ -1,0 +1,6 @@
+{
+  "convention": "physics_2pi",
+  "formula": "B = 2*pi*(A^-1)^T",
+  "identity": "a_i dot b_j = 2*pi*delta_ij",
+  "real_lattice": "row_vectors"
+}

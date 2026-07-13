@@ -1,5 +1,11 @@
 # 文档索引
 
+## Phase 10H Phonon Contract
+
+[`phase10h/phase10h_phonon_contract.md`](phase10h/phase10h_phonon_contract.md) defines the closed inert band/DOS/summary/manifest family, row-vector physics-`2*pi` reciprocal convention, explicit q-point paths, THz and imaginary-mode semantics, source-stable `3N` branches, projected DOS identity, normalization, compatibility, caps, validators, fixtures, independent TypeScript/NumPy/SciPy comparison, and security evidence. Phonon adapters, tools, plots, eigenvectors, animation, and formal product registration remain deferred.
+
+[`phase10h/evidence/phase10h_phonon_contract/`](phase10h/evidence/phase10h_phonon_contract/) contains deterministic schema, policy, fixture, reference, cross-language, serialization, security, network, and hash evidence.
+
 ## Phase 10G Trajectory Contract
 
 [`phase10g/phase10g_trajectory_contract.md`](phase10g/phase10g_trajectory_contract.md) defines the inert trajectory/frame/summary/manifest family, stable identity, coordinate/lattice/time/unit policies, caps, validators, fixtures, independent TypeScript comparison, and security evidence. Parser, adapter, formal tool, playback, and viewer remain deferred.

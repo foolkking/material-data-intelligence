@@ -1,0 +1,21 @@
+{
+  "atom_count": 2,
+  "branch_count": 6,
+  "dos_available": true,
+  "frequency_max": 5.0,
+  "frequency_min": 0.0,
+  "frequency_unit": "terahertz",
+  "imaginary_mode_count": 0,
+  "nac_enabled": false,
+  "near_zero_mode_count": 3,
+  "projected_dos_available": true,
+  "qpoint_count": 3,
+  "schema_version": "phase10h.phonon_summary.v1",
+  "segment_count": 1,
+  "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "warnings": [
+    "PHONON_ACOUSTIC_MODES_NOT_CORRECTED",
+    "PHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY",
+    "PHONON_HIGH_SYMMETRY_LABEL_NORMALIZED"
+  ]
+}

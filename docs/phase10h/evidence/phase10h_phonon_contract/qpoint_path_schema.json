@@ -1,0 +1,8 @@
+{
+  "coordinate_system": "reciprocal_fractional",
+  "discontinuity": "explicit",
+  "distance_policy": "global_cumulative_excluding_discontinuity_gap",
+  "distance_unit": "radian_per_angstrom",
+  "endpoint_policy": "duplicated_segment_endpoints",
+  "schema_version": "phase10h.qpoint_path.v1"
+}

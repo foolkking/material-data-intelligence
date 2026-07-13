@@ -1,0 +1,6 @@
+{
+  "acoustic_sum_rule_applied_by_validator": false,
+  "encoding": "negative_real",
+  "near_zero_classification_only": true,
+  "values_mutated": false
+}

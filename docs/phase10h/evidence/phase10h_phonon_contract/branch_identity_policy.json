@@ -1,0 +1,7 @@
+{
+  "connectivity_inference": false,
+  "frequency_sorting": false,
+  "identity": "source_stable_branch_index",
+  "required_count": "3N",
+  "scope": "full"
+}

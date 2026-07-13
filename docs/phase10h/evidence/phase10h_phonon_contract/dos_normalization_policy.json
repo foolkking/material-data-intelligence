@@ -1,0 +1,8 @@
+{
+  "density_unit": "modes_per_terahertz",
+  "expected_integral": "3N",
+  "grid": "sample_grid_points",
+  "method": "trapezoidal",
+  "negative_frequency_region_allowed": true,
+  "normalization": "total_modes"
+}

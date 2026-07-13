@@ -1,0 +1,7 @@
+{
+  "contains_random_uuid": false,
+  "contains_timestamp": false,
+  "equal": true,
+  "first_sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+  "second_sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2"
+}

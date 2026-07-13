@@ -1,5 +1,12 @@
 # TASK_BOARD
 
+## Phase 10H Phonon Contract Completed
+
+- [x] Closed band/DOS/summary/manifest schemas with row-vector physics-`2*pi` reciprocal and explicit q-point path semantics.
+- [x] Canonical THz conversion, negative-real imaginary modes, source-stable full `3N` branches, source-declared degeneracy, atom order, NAC/ASR provenance, and deterministic serialization.
+- [x] Total/projected DOS, trapezoidal `3N` normalization, compatibility statuses, caps, typed errors/warnings, Python/TypeScript validators, fixtures, independent physics comparison, and security evidence.
+- [ ] Phonon parser/adapter/tool/plots, combined product, eigenvectors, animation, thermal/Raman/IR, and Brillouin-zone features remain separate phases.
+
 ## Phase 10G-3 Trajectory Performance / Browser Evidence Completed
 
 - [x] Registered unique formal `structure.trajectory_viewer` with strict product params, planner routes, PlanValidator resources, runtime adapter, and canonical artifact outputs.

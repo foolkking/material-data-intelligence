@@ -1,5 +1,11 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-14 Phase 10H Phonon Contract
+
+- No Tool Registry entry, adapter, planner route, PlanValidator capability, QueueWorkerRuntime behavior, or formal phonon product was added.
+- Existing `phonon.band`, `phonon.dos`, and `phonon.band_dos` pymatviz inventory rows remain planning references only and do not gain execution authority from the new contract.
+- A future producer must emit validated inert `phase10h.*` artifacts and pass a separate adapter/tool/security/evidence review before registration.
+
 ## 2026-07-13 Phase 10G-3 Formal Trajectory Viewer
 
 - Added unique `structure.trajectory_viewer` using `TrajectoryViewerAdapter`, one validated `Trajectory` input, strict launch-only params, and the existing four inert trajectory JSON artifact types.

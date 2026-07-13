@@ -1,5 +1,17 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10H-PHONON-CONTRACT: Fix reciprocal, branch, and DOS semantics before execution
+
+### Decision
+
+Define a closed inert phonon band/DOS/summary/manifest family before implementing parsers, adapters, plots, or animation. Real lattice vectors are rows; reciprocal space uses `B = 2*pi*(A^-1)^T`; q-points are reciprocal fractional with explicit globally cumulative Cartesian path distance and discontinuities. Canonical frequency is cyclic THz, imaginary modes are negative real values, and tolerance classifies without mutation or ASR correction.
+
+Branch identity is source-stable contiguous index and v1 requires all `3N` branches. Degeneracy is source-declared only. DOS uses strictly increasing sample points, `modes_per_terahertz`, trapezoidal total-mode normalization, and deterministic atom/species projection identity. Band/DOS compatibility includes structure/atom order, unit/encoding/tolerance, source lineage, cell relation, input hash, and NAC.
+
+### Boundary and consequences
+
+Python is the normative scientific validator and TypeScript is an independent bounded consumer validator. Exact fields, deterministic serialization, content hashes, resource caps, typed errors/warnings, and no-executable/no-external security flags are mandatory. Existing phonon inventory entries remain non-executable. Parser/adapter/tool/plot/renderer/eigenvector/animation work requires later ADRs and cannot reinterpret this contract as trajectory data.
+
 ## ADR-10G3-FORMAL-TRAJECTORY-PRODUCT: Register a bounded canonical trajectory consumer
 
 ### Decision

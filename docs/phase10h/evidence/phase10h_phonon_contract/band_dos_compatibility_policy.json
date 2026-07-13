@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "structure_identity",
+    "atom_count",
+    "species_order",
+    "frequency_unit",
+    "imaginary_encoding",
+    "zero_tolerance",
+    "source_lineage",
+    "NAC"
+  ],
+  "statuses": [
+    "compatible",
+    "convertible",
+    "incompatible"
+  ]
+}

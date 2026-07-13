@@ -1,0 +1,8 @@
+{
+  "artifact_order": [
+    "phonon_band.json",
+    "phonon_dos.json",
+    "phonon_summary.json"
+  ],
+  "schema_version": "phase10h.phonon_manifest.v1"
+}
