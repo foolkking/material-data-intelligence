@@ -1,0 +1,60 @@
+{
+  "minimal": {
+    "performanceTier": "interactive",
+    "atomCount": 2,
+    "bondCount": 1,
+    "speciesCount": 1,
+    "instancedMeshCount": 1,
+    "latticeEdgeCount": 12,
+    "drawCalls": 4,
+    "geometries": 4,
+    "materials": 11,
+    "triangles": 1040,
+    "lines": 25,
+    "textures": 1,
+    "bufferAttributes": 3,
+    "sceneObjects": 14,
+    "initializationMs": 17.4,
+    "firstFrameMs": 36.1
+  },
+  "multispecies": {
+    "performanceTier": "interactive",
+    "atomCount": 2,
+    "bondCount": 0,
+    "speciesCount": 2,
+    "instancedMeshCount": 2,
+    "latticeEdgeCount": 12,
+    "drawCalls": 5,
+    "geometries": 4,
+    "materials": 12,
+    "triangles": 1040,
+    "lines": 24,
+    "textures": 1,
+    "bufferAttributes": 3,
+    "sceneObjects": 15,
+    "initializationMs": 21.5,
+    "firstFrameMs": 42.7
+  },
+  "near_cap": {
+    "performanceTier": "interactive",
+    "atomCount": 256,
+    "bondCount": 256,
+    "speciesCount": 2,
+    "instancedMeshCount": 2,
+    "latticeEdgeCount": 12,
+    "drawCalls": 5,
+    "geometries": 4,
+    "materials": 12,
+    "triangles": 133120,
+    "lines": 280,
+    "textures": 1,
+    "bufferAttributes": 3,
+    "sceneObjects": 15,
+    "initializationMs": 20.1,
+    "firstFrameMs": 43.9
+  },
+  "lifecycle": {
+    "disposed_canvas": 0,
+    "remounted_canvas": 1
+  }
+}

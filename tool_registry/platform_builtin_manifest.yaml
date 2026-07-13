@@ -136,6 +136,18 @@ tools:
       - summary_md
       - recipe_json
 
+  - tool_id: structure.viewer_3d
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: StructureViewer3DAdapter
+    display_target: structure
+    notes: "Production interactive periodic crystal structure viewer backed by canonical inert viewer_scene.v2 artifacts with periodic bond endpoints. Supports atoms, lattice, bounded periodic bonds, inspection, distance/angle/dihedral measurement, renderer-local supercells, clipping, camera controls, scientific export, accessibility, mobile use, and JSON fallback. Artifacts contain no renderer code. Trajectories, phonons, Brillouin zones, volumetric data, structure editing, and authoritative chemical topology are not supported."
+    artifact_types:
+      - structure_json
+      - table_json
+      - summary_md
+      - recipe_json
+
   - tool_id: structure.viewer_export_package
     implementation_source: platform_builtin
     stage: mvp

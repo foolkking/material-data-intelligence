@@ -1,0 +1,36 @@
+{
+  "schema_version": "phase10f27.structure_viewer_3d_product_evidence.v1",
+  "baseline_head": "d32c9bfd3d24bd440927705154958b3d1a3d443d",
+  "formal_tool": "structure.viewer_3d",
+  "registry_owner": "platform_builtin_manifest.yaml",
+  "canonical_schema": "phase10f18.viewer_scene.v2",
+  "browser_results": [
+    {
+      "browser": "chromium",
+      "version": "150.0.7871.115",
+      "available": true,
+      "renderer": "rendered"
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "available": true,
+      "renderer": "rendered"
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "available": true,
+      "renderer": "rendered"
+    }
+  ],
+  "network_result": "NO_PRODUCTION_VIEWER_EXTERNAL_NETWORK_REQUESTS",
+  "markers": [
+    "VIEWER_SCENE_PRODUCTION_MINIMAL_VIEWER_BROWSER_EVIDENCE_PASS",
+    "VIEWER_SCENE_MOBILE_VIEWER_EVIDENCE_PASS",
+    "VIEWER_SCENE_RENDERER_PERFORMANCE_EVIDENCE_PASS",
+    "VIEWER_SCENE_ACCESSIBILITY_EVIDENCE_PASS",
+    "STRUCTURE_VIEWER_3D_PRODUCT_EVIDENCE_PASS"
+  ],
+  "redaction": "sanitized"
+}

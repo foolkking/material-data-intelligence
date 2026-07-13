@@ -1276,3 +1276,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added stale cancellation, one-export concurrency, Blob URL cleanup, and safe error codes.
 - Chromium, Firefox, WebKit, and mobile evidence observed zero external requests.
 - PDF and full report layout remain deferred pending dedicated contract and dependency review.
+
+## 2026-07-13 Phase 10F-27 Formal structure.viewer_3d Product Registration
+
+- Moved the unique `structure.viewer_3d` registry entry to the platform-owned manifest without changing its adapter or runtime semantics.
+- Froze the strict product input/output and capability contract around canonical inert scene v2 artifacts.
+- Added live planner/job/artifact, three-browser/mobile, accessibility, lifecycle, performance, network, and security evidence.
+- Explicit scene JSON remains `structure.viewer_scene`; advanced trajectory, phonon, Brillouin, volumetric, editing, and authoritative chemistry remain unsupported.

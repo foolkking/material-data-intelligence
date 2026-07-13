@@ -1,0 +1,195 @@
+{
+  "region": "3D Structure Viewer",
+  "status_live": "polite",
+  "summary": "Validated canonical scene: 2 sites; current renderer-local view: 2 sites, 1 species, 1 bounded same-cell bonds.",
+  "legend": "Si",
+  "controls": [
+    {
+      "text": "Reset camera",
+      "pressed": null
+    },
+    {
+      "text": "Bonds",
+      "pressed": "true"
+    },
+    {
+      "text": "1 x 1 x 1",
+      "pressed": null
+    },
+    {
+      "text": "2 x 1 x 1",
+      "pressed": null
+    },
+    {
+      "text": "2 x 2 x 1",
+      "pressed": null
+    },
+    {
+      "text": "2 x 2 x 2",
+      "pressed": null
+    },
+    {
+      "text": "3 x 3 x 3",
+      "pressed": null
+    },
+    {
+      "text": "Apply",
+      "pressed": null
+    },
+    {
+      "text": "Reset 1 x 1 x 1",
+      "pressed": null
+    },
+    {
+      "text": "Download view state",
+      "pressed": null
+    },
+    {
+      "text": "Enable clipping",
+      "pressed": "false"
+    },
+    {
+      "text": "Reset clipping",
+      "pressed": null
+    },
+    {
+      "text": "Unit cell",
+      "pressed": "true"
+    },
+    {
+      "text": "Supercell boundary",
+      "pressed": "true"
+    },
+    {
+      "text": "Lattice axes",
+      "pressed": "false"
+    },
+    {
+      "text": "Default",
+      "pressed": "true"
+    },
+    {
+      "text": "Top",
+      "pressed": "false"
+    },
+    {
+      "text": "Front",
+      "pressed": "false"
+    },
+    {
+      "text": "Side",
+      "pressed": "false"
+    },
+    {
+      "text": "Isometric",
+      "pressed": "false"
+    },
+    {
+      "text": "Download view state",
+      "pressed": null
+    },
+    {
+      "text": "web",
+      "pressed": null
+    },
+    {
+      "text": "presentation",
+      "pressed": null
+    },
+    {
+      "text": "square",
+      "pressed": null
+    },
+    {
+      "text": "publication",
+      "pressed": null
+    },
+    {
+      "text": "Export png",
+      "pressed": null
+    },
+    {
+      "text": "Download PNG",
+      "pressed": null
+    },
+    {
+      "text": "Download export JSON",
+      "pressed": null
+    },
+    {
+      "text": "Download export Markdown",
+      "pressed": null
+    },
+    {
+      "text": "Download export manifest",
+      "pressed": null
+    },
+    {
+      "text": "Select",
+      "pressed": "true"
+    },
+    {
+      "text": "Distance",
+      "pressed": "false"
+    },
+    {
+      "text": "Angle",
+      "pressed": "false"
+    },
+    {
+      "text": "Dihedral",
+      "pressed": "false"
+    },
+    {
+      "text": "Undo",
+      "pressed": null
+    },
+    {
+      "text": "Clear",
+      "pressed": null
+    },
+    {
+      "text": "Download measurement JSON",
+      "pressed": null
+    },
+    {
+      "text": "Displayed positions",
+      "pressed": "true"
+    },
+    {
+      "text": "Minimum image (periodic)",
+      "pressed": "false"
+    },
+    {
+      "text": "Download scene JSON",
+      "pressed": null
+    },
+    {
+      "text": "Download manifest",
+      "pressed": null
+    },
+    {
+      "text": "Download summary",
+      "pressed": null
+    },
+    {
+      "text": "Download recipe",
+      "pressed": null
+    }
+  ],
+  "export_region": "FIELDSET",
+  "export_status_live": "polite",
+  "shortcuts": "ArrowLeft ArrowRight ArrowUp ArrowDown Shift+ArrowLeft Shift+ArrowRight Shift+ArrowUp Shift+ArrowDown + - 0 R N B Backspace Escape",
+  "semantic_summary": "FormulaSiCanonical sites2Species1Lattice[5.43, 0, 0] [0, 5.43, 0] [0, 0, 5.43]Canonical bonds1Cross-boundary bonds0Self-periodic bonds0Render modeinteractiveSupercell expansion1 by 1 by 1Displayed sites2Displayed bonds1SelectionnoneSelected bondnoneClippingdisabledCamera presetdefaultLattice axeshiddenWarningsVIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+  "live_region": "polite",
+  "reduced_motion": true,
+  "zoom_200_percent": {
+    "scale": 2,
+    "region_visible": true,
+    "reset_operable": true
+  },
+  "forced_colors": {
+    "active": true,
+    "focus_outline_style": "none"
+  }
+}

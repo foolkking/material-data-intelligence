@@ -1,0 +1,87 @@
+{
+  "additional_properties": false,
+  "input_schema": {
+    "inputOptions": [
+      {
+        "description": "Use exactly one periodic structure to generate a canonical inert viewer scene.",
+        "name": "single_periodic_structure",
+        "requiredFields": [],
+        "requiredObjectTypes": [
+          "Structure"
+        ]
+      }
+    ],
+    "periodicity": "periodic_required"
+  },
+  "params_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "bond_cutoff_angstrom": {
+        "maximum": 10.0,
+        "minimum": 0.1,
+        "type": "number"
+      },
+      "camera_preset": {
+        "enum": [
+          "auto"
+        ]
+      },
+      "cell_expansion": {
+        "maxItems": 3,
+        "minItems": 3,
+        "prefixItems": [
+          {
+            "const": 1
+          },
+          {
+            "const": 1
+          },
+          {
+            "const": 1
+          }
+        ],
+        "type": "array"
+      },
+      "coordinate_basis": {
+        "enum": [
+          "cartesian_angstrom"
+        ]
+      },
+      "include_bonds": {
+        "type": "boolean"
+      },
+      "include_cartesian_positions": {
+        "enum": [
+          true
+        ]
+      },
+      "include_fractional_positions": {
+        "type": "boolean"
+      },
+      "max_bonds": {
+        "maximum": 2048,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "max_sites": {
+        "maximum": 256,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "style_preset": {
+        "enum": [
+          "default"
+        ]
+      }
+    },
+    "type": "object"
+  },
+  "resource_limits": {
+    "maxAtomsPerStructure": 256,
+    "maxBonds": 2048,
+    "maxSceneJsonBytes": 1000000,
+    "maxSites": 256,
+    "maxSpecies": 32,
+    "maxStructures": 1
+  }
+}

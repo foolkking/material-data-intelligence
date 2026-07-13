@@ -1,0 +1,27 @@
+{
+  "artifact_execution": false,
+  "external_assets": false,
+  "supported": [
+    "atoms",
+    "lattice",
+    "bounded_periodic_bonds",
+    "inspection",
+    "distance",
+    "angle",
+    "dihedral",
+    "renderer_local_supercell",
+    "clipping",
+    "camera_controls",
+    "scientific_export",
+    "json_fallback"
+  ],
+  "tool_id": "structure.viewer_3d",
+  "unsupported": [
+    "trajectory",
+    "phonon",
+    "brillouin_zone",
+    "volumetric",
+    "structure_editing",
+    "authoritative_chemical_topology"
+  ]
+}

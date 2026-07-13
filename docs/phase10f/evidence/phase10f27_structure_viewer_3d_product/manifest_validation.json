@@ -1,0 +1,128 @@
+{
+  "bonds_disabled": {
+    "manifest": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_SKIPPED"
+      ]
+    },
+    "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+    "scene": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_SKIPPED"
+      ]
+    },
+    "scene_schema": "phase10f18.viewer_scene.v2"
+  },
+  "multi_species_crystal": {
+    "manifest": {
+      "errors": [],
+      "valid": true,
+      "warnings": []
+    },
+    "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+    "scene": {
+      "errors": [],
+      "valid": true,
+      "warnings": []
+    },
+    "scene_schema": "phase10f18.viewer_scene.v2"
+  },
+  "periodic_boundary_bond": {
+    "manifest": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+    "scene": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "scene_schema": "phase10f18.viewer_scene.v2"
+  },
+  "self_periodic_bond": {
+    "manifest": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+    "scene": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "scene_schema": "phase10f18.viewer_scene.v2"
+  },
+  "triclinic_boundary_bond": {
+    "manifest": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+    "scene": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "scene_schema": "phase10f18.viewer_scene.v2"
+  },
+  "valid_minimal_crystal": {
+    "manifest": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+    "scene": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE"
+      ]
+    },
+    "scene_schema": "phase10f18.viewer_scene.v2"
+  },
+  "warning_caps": {
+    "manifest": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+        "VIEWER_SCENE_BONDS_TRUNCATED",
+        "VIEWER_SCENE_CAP_NEAR_LIMIT"
+      ]
+    },
+    "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+    "scene": {
+      "errors": [],
+      "valid": true,
+      "warnings": [
+        "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE",
+        "VIEWER_SCENE_BONDS_TRUNCATED",
+        "VIEWER_SCENE_CAP_NEAR_LIMIT"
+      ]
+    },
+    "scene_schema": "phase10f18.viewer_scene.v2"
+  }
+}

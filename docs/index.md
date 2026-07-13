@@ -257,3 +257,12 @@
 | [`phase10f/phase10f26_export_evidence.md`](phase10f/phase10f26_export_evidence.md) | Live three-browser and mobile export evidence |
 | [`phase10f/phase10f26_export_readiness_matrix.md`](phase10f/phase10f26_export_readiness_matrix.md) | Export readiness decisions |
 | [`phase10f/evidence/phase10f26_scientific_export/`](phase10f/evidence/phase10f26_scientific_export/) | Live artifacts, PNGs, reports, manifests, browser and security captures |
+| [`phase10f/phase10f27_structure_viewer_3d_registration.md`](phase10f/phase10f27_structure_viewer_3d_registration.md) | Formal product identity and platform registry ownership |
+| [`phase10f/phase10f27_structure_viewer_3d_tool_contract.md`](phase10f/phase10f27_structure_viewer_3d_tool_contract.md) | Strict input, output, runtime, and artifact contract |
+| [`phase10f/phase10f27_structure_viewer_3d_capabilities.md`](phase10f/phase10f27_structure_viewer_3d_capabilities.md) | Supported and explicitly unsupported capability matrix |
+| [`phase10f/phase10f27_structure_viewer_3d_planner_routing.md`](phase10f/phase10f27_structure_viewer_3d_planner_routing.md) | Natural viewer, JSON export, and negative routing policy |
+| [`phase10f/phase10f27_structure_viewer_3d_api_evidence.md`](phase10f/phase10f27_structure_viewer_3d_api_evidence.md) | Live planner/job/runtime/artifact evidence procedure |
+| [`phase10f/phase10f27_structure_viewer_3d_browser_evidence.md`](phase10f/phase10f27_structure_viewer_3d_browser_evidence.md) | Three-browser, mobile, accessibility, lifecycle, and network evidence |
+| [`phase10f/phase10f27_structure_viewer_3d_security.md`](phase10f/phase10f27_structure_viewer_3d_security.md) | Formal product threat boundary and controls |
+| [`phase10f/phase10f27_structure_viewer_3d_readiness_matrix.md`](phase10f/phase10f27_structure_viewer_3d_readiness_matrix.md) | Formal viewer product readiness decisions |
+| [`phase10f/evidence/phase10f27_structure_viewer_3d_product/`](phase10f/evidence/phase10f27_structure_viewer_3d_product/) | Live product registration, API, artifacts, browsers, metrics, screenshots, and security captures |

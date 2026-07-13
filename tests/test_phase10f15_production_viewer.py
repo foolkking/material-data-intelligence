@@ -38,6 +38,7 @@ def test_formal_viewer_registry_identity_is_unique_and_canonical() -> None:
     ids = [item.toolId for item in registry.list_tools()]
 
     assert ids.count("structure.viewer_3d") == 1
+    assert tool.source["manifest"] == "platform_builtin_manifest.yaml"
     assert tool.adapter == "StructureViewer3DAdapter"
     assert tool.artifactTypes == [ArtifactType.structure_json, ArtifactType.table_json, ArtifactType.summary_md, ArtifactType.recipe_json]
     assert tool.paramsSchema["additionalProperties"] is False

@@ -687,3 +687,9 @@
 - Decide whether a future PDF/report phase should use browser-native layout or a reviewed local PDF dependency.
 - Define font embedding, pagination, metadata, accessibility, and vector/raster policies before PDF implementation.
 - Decide whether local export state should ever become a persisted backend artifact; it currently grants no execution authority.
+
+## 2026-07-13 Phase 10F-27 Follow-ups
+
+- Formal minimal viewer product registration is closed; trajectory, phonon, Brillouin-zone, volumetric, and editing require independent contracts and reviews.
+- Distance-cutoff periodic topology remains non-authoritative; explicit-input authoritative topology provenance remains an open scientific contract decision.
+- Broad physical GPU/device and assistive-technology lab coverage remains outside automated browser evidence.

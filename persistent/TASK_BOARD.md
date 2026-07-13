@@ -1943,3 +1943,11 @@
 - [x] Deterministic JSON state, Markdown summary, and SHA-256 manifest.
 - [x] Three-browser/mobile/lifecycle/network/security evidence.
 - [ ] PDF export is deferred by design.
+
+## Phase 10F-27 Formal structure.viewer_3d Registration
+
+- [x] Establish one platform-owned formal viewer tool identity.
+- [x] Preserve strict PlanValidator, adapter, runtime, and canonical artifact semantics.
+- [x] Record real API/job/artifact and cross-browser product evidence.
+- [x] Freeze supported and unsupported product capabilities.
+- [ ] Trajectory, phonon, Brillouin-zone, volumetric, editing, and authoritative chemistry remain deferred.

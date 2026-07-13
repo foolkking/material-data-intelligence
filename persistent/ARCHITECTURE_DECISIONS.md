@@ -3529,3 +3529,19 @@ validated Three.js renderer, then restore every renderer and camera property in
 - Generation tokens reject stale exports and one active request prevents allocation amplification.
 - PDF is deferred until layout, font, accessibility, dependency, and evidence policies are approved.
 - Backend tools, canonical artifacts, planner/runtime authority, and dependencies remain unchanged.
+
+# 2026-07-13 Phase 10F-27 ADR: platform-owned formal viewer identity
+
+## Decision
+
+Own the one `structure.viewer_3d` registration in the platform built-in
+manifest. Reuse the established adapter, validated AnalysisPlan/runtime path,
+canonical scene v2 artifacts, and independently validated frontend consumer.
+Keep `structure.viewer_scene` as the explicit inert-data export identity.
+
+## Consequences
+
+- No duplicate tool ID, wrapper indirection, or MatterViz ownership ambiguity remains.
+- Backend job success remains independent of browser renderer availability.
+- Artifacts contain no renderer code and cannot expand client execution authority.
+- Advanced scientific domains remain separate future contracts rather than implied viewer capabilities.

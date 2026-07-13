@@ -1034,3 +1034,10 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - No Tool Registry, planner, adapter, PlanValidator, QueueWorkerRuntime, AnalysisPlan, or canonical scene semantics changed.
 - PNG, export-state JSON, Markdown, and export manifest are bounded frontend-local downloads over an independently validated scene.
 - No PDF/report tool, server renderer, external upload, script, renderer asset, or new execution authority was registered.
+
+# 2026-07-13 Phase 10F-27 Formal Viewer Registration Notes
+
+- `structure.viewer_3d` is registered exactly once and is owned by `platform_builtin_manifest.yaml`.
+- The adapter remains `StructureViewer3DAdapter`; outputs remain canonical scene v2, manifest v2, summary, and recipe.
+- Natural interactive viewer intent selects `structure.viewer_3d`; explicit inert scene JSON selects `structure.viewer_scene`.
+- Legacy tools remain direct compatibility only. Unsupported advanced domains are explicit negative capabilities.

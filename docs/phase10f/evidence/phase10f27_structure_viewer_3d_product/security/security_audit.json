@@ -1,0 +1,16 @@
+{
+  "artifact_html_execution": false,
+  "artifact_javascript": false,
+  "artifact_urls": false,
+  "dependency_changes": false,
+  "markers": [
+    "NO_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ],
+  "real_llm_used": false,
+  "remote_modules": false,
+  "remote_textures": false,
+  "renderer_code_in_artifacts": false,
+  "result": "PASS",
+  "tool_params_additional_properties": false
+}

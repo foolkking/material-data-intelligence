@@ -1681,3 +1681,13 @@
 ### Security
 - Added dimension/DPR/pixel/memory, concurrency, stale-generation, filename, and Blob URL controls.
 - No dependency, backend runtime, canonical scene, external request, remote asset, artifact execution, or PDF implementation.
+
+## 2026-07-13 Phase 10F-27
+
+### Changed
+- Moved the unique `structure.viewer_3d` registration from the MatterViz manifest to the platform built-in manifest.
+- Added exact formal product capability text while preserving adapter, params, artifacts, and runtime behavior.
+- Added live API, topology, browser, mobile, performance, accessibility, network, and hash evidence.
+
+### Security
+- No dependency, canonical schema, QueueWorkerRuntime, PlanValidator, external request, artifact execution, or advanced scientific capability was added.

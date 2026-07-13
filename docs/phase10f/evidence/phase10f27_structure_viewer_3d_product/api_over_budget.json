@@ -1,0 +1,7 @@
+{
+  "browser_matrix": "browser_matrix.json",
+  "expected_state": "scene_over_renderer_cap",
+  "json_fallback_available": true,
+  "partial_rendering": false,
+  "source": "browser_renderer_cap_preflight"
+}

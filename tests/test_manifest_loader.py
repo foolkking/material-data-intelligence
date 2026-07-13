@@ -20,8 +20,8 @@ def test_loads_three_manifests_and_expected_tool_counts(repo_root):
     tools = registry.list_tools()
 
     assert len([tool for tool in tools if tool.source.get("manifest") == "pymatviz_manifest.yaml"]) == 20
-    assert len([tool for tool in tools if tool.source.get("manifest") == "matterviz_manifest.yaml"]) == 2
-    assert len([tool for tool in tools if tool.source.get("manifest") == "platform_builtin_manifest.yaml"]) == 21
+    assert len([tool for tool in tools if tool.source.get("manifest") == "matterviz_manifest.yaml"]) == 1
+    assert len([tool for tool in tools if tool.source.get("manifest") == "platform_builtin_manifest.yaml"]) == 22
     assert len({tool.toolId for tool in tools}) == len(tools)
 
 

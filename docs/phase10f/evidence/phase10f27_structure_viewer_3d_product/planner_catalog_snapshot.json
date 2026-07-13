@@ -1,0 +1,121 @@
+{
+  "adapter": "StructureViewer3DAdapter",
+  "artifactTypes": [
+    "structure_json",
+    "table_json",
+    "summary_md",
+    "recipe_json"
+  ],
+  "cachePolicy": "reuse",
+  "category": "analysis",
+  "costLevel": "medium",
+  "defaultTimeoutSec": 90,
+  "description": "Production interactive periodic crystal structure viewer backed by canonical inert viewer_scene.v2 artifacts with periodic bond endpoints. Supports atoms, lattice, bounded periodic bonds, inspection, distance/angle/dihedral measurement, renderer-local supercells, clipping, camera controls, scientific export, accessibility, mobile use, and JSON fallback. Artifacts contain no renderer code. Trajectories, phonons, Brillouin zones, volumetric data, structure editing, and authoritative chemical topology are not supported.",
+  "domain": "structure",
+  "implementationSource": "platform_builtin",
+  "inputSchema": {
+    "inputOptions": [
+      {
+        "description": "Use exactly one periodic structure to generate a canonical inert viewer scene.",
+        "name": "single_periodic_structure",
+        "requiredFields": [],
+        "requiredObjectTypes": [
+          "Structure"
+        ]
+      }
+    ],
+    "periodicity": "periodic_required"
+  },
+  "maxTimeoutSec": 180,
+  "name": "Structure Viewer 3D",
+  "outputSchema": {
+    "displayTarget": "structure",
+    "primaryArtifactType": "structure_json",
+    "secondaryArtifactTypes": [
+      "table_json",
+      "summary_md",
+      "recipe_json"
+    ]
+  },
+  "paramsSchema": {
+    "additionalProperties": false,
+    "properties": {
+      "bond_cutoff_angstrom": {
+        "maximum": 10.0,
+        "minimum": 0.1,
+        "type": "number"
+      },
+      "camera_preset": {
+        "enum": [
+          "auto"
+        ]
+      },
+      "cell_expansion": {
+        "maxItems": 3,
+        "minItems": 3,
+        "prefixItems": [
+          {
+            "const": 1
+          },
+          {
+            "const": 1
+          },
+          {
+            "const": 1
+          }
+        ],
+        "type": "array"
+      },
+      "coordinate_basis": {
+        "enum": [
+          "cartesian_angstrom"
+        ]
+      },
+      "include_bonds": {
+        "type": "boolean"
+      },
+      "include_cartesian_positions": {
+        "enum": [
+          true
+        ]
+      },
+      "include_fractional_positions": {
+        "type": "boolean"
+      },
+      "max_bonds": {
+        "maximum": 2048,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "max_sites": {
+        "maximum": 256,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "style_preset": {
+        "enum": [
+          "default"
+        ]
+      }
+    },
+    "type": "object"
+  },
+  "permissions": [
+    "tool.execute"
+  ],
+  "resourceLimits": {
+    "maxAtomsPerStructure": 256,
+    "maxBonds": 2048,
+    "maxSceneJsonBytes": 1000000,
+    "maxSites": 256,
+    "maxSpecies": 32,
+    "maxStructures": 1
+  },
+  "source": {
+    "manifest": "platform_builtin_manifest.yaml",
+    "notes": "Production interactive periodic crystal structure viewer backed by canonical inert viewer_scene.v2 artifacts with periodic bond endpoints. Supports atoms, lattice, bounded periodic bonds, inspection, distance/angle/dihedral measurement, renderer-local supercells, clipping, camera controls, scientific export, accessibility, mobile use, and JSON fallback. Artifacts contain no renderer code. Trajectories, phonons, Brillouin zones, volumetric data, structure editing, and authoritative chemical topology are not supported."
+  },
+  "stage": "mvp",
+  "toolId": "structure.viewer_3d",
+  "version": "0.1.0"
+}

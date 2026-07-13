@@ -1,0 +1,20 @@
+{
+  "artifact_types": [
+    "structure_json",
+    "table_json",
+    "summary_md",
+    "recipe_json"
+  ],
+  "manifest_schema": "phase10f19.viewer_assets_manifest.v2",
+  "output_schema": {
+    "displayTarget": "structure",
+    "primaryArtifactType": "structure_json",
+    "secondaryArtifactTypes": [
+      "table_json",
+      "summary_md",
+      "recipe_json"
+    ]
+  },
+  "renderer_code_in_artifacts": false,
+  "scene_schema": "phase10f18.viewer_scene.v2"
+}

@@ -1161,3 +1161,14 @@ Export requests allow only PNG/JSON/Markdown, light/dark/transparent background,
 DPR 1 or 2, and application-owned overlay booleans. Effective dimensions and
 memory are capped before allocation. No canonical viewer scene, periodic bond,
 manifest v2, planner, adapter, or runtime contract changes.
+
+## Phase 10F-27 Addendum: formal viewer product identity
+
+`structure.viewer_3d` is the unique formal product tool for generating the
+current inert `phase10f18.viewer_scene.v2` and
+`phase10f19.viewer_assets_manifest.v2` pair. Its registry owner is
+`platform_builtin_manifest.yaml`, its adapter is `StructureViewer3DAdapter`,
+and its artifacts contain no renderer code. Explicit scene-data export remains
+`structure.viewer_scene`; both producers share the same canonical schema and
+validation semantics. No scene, manifest, AnalysisPlan, or runtime schema is
+changed by formal registration.

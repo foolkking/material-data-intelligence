@@ -178,6 +178,13 @@ def _case_specs() -> list[LiveCaseSpec]:
                     params={"include_bonds": True, "bond_cutoff_angstrom": 1.3},
                     expected_status="completed",
                 ),
+                LiveCaseSpec(
+                    case_id="self_periodic_bond",
+                    prompt="Open this single-site periodic crystal and inspect its topology.",
+                    structure_input=[_self_periodic_structure()],
+                    params={"include_bonds": True, "bond_cutoff_angstrom": 1.1},
+                    expected_status="completed",
+                ),
             ]
         )
     return cases
@@ -468,6 +475,10 @@ def _triclinic_boundary_structure() -> Structure:
         ["Si", "Si"],
         [[0.95, 0.05, 0.95], [0.05, 0.95, 0.05]],
     )
+
+
+def _self_periodic_structure() -> Structure:
+    return Structure(Lattice.cubic(1.0), ["H"], [[0.0, 0.0, 0.0]])
 
 
 def _structure_profile() -> DataProfile:

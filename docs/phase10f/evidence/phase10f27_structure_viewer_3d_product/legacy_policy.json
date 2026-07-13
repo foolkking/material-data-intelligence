@@ -1,0 +1,6 @@
+{
+  "automatic_migration": false,
+  "phase10d1.viewer_scene.v1": "deprecated_read_only_json_only",
+  "phase10f18.viewer_scene.v2": "current_periodic_renderer_contract",
+  "phase10f8.viewer_scene.v1": "supported_legacy_same_cell"
+}

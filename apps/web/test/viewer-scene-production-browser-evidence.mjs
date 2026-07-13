@@ -4,7 +4,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
-const EVIDENCE = path.join(ROOT, "docs/phase10f/evidence/phase10f15_production_minimal_structure_viewer");
+const EVIDENCE = path.join(ROOT, process.env.MDI_PRODUCTION_VIEWER_EVIDENCE_DIR || "docs/phase10f/evidence/phase10f15_production_minimal_structure_viewer");
+const FORMAL_REGISTRATION_MODE = process.env.MDI_FORMAL_VIEWER_REGISTRATION === "1";
 const SCREENSHOTS = path.join(EVIDENCE, "screenshots");
 const BROWSER = path.join(EVIDENCE, "browser");
 const PERFORMANCE = path.join(EVIDENCE, "performance");
@@ -70,6 +71,10 @@ async function main() {
     console.log("VIEWER_SCENE_ACCESSIBILITY_EVIDENCE_PASS");
     console.log("VIEWER_SCENE_ACCESSIBILITY_MOBILE_CROSS_BROWSER_EVIDENCE_PASS");
     console.log("NO_PRODUCTION_VIEWER_EXTERNAL_NETWORK_REQUESTS");
+    if (FORMAL_REGISTRATION_MODE) {
+      console.log("STRUCTURE_VIEWER_3D_PRODUCT_EVIDENCE_PASS");
+      console.log("NO_EXTERNAL_NETWORK_REQUESTS");
+    }
   } finally {
     if (server) {
       server.kill();
@@ -375,7 +380,8 @@ function nearCapScene(scene) {
 }
 
 function generateFormalPayload() {
-  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", "docs/phase10f/evidence/phase10f15_production_minimal_structure_viewer"], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1" } });
+  const target = path.relative(ROOT, EVIDENCE).replaceAll("\\", "/");
+  const result = spawnSync("uv", ["run", "python", "apps/web/test/generate-viewer-scene-live-adapter-evidence.py", target], { cwd: ROOT, encoding: "utf-8", env: { ...process.env, PYTHONIOENCODING: "utf-8", MDI_FORMAL_VIEWER_MODE: "1", MDI_INCLUDE_RENDERER_CASES: "1", ...(FORMAL_REGISTRATION_MODE ? { MDI_INCLUDE_TOPOLOGY_CASES: "1" } : {}) } });
   if (result.status !== 0) throw new Error(`formal viewer evidence generation failed\n${result.stdout}\n${result.stderr}`);
   process.stdout.write(result.stdout);
 }
@@ -410,7 +416,7 @@ async function write(relative, value) { const file = path.join(EVIDENCE, relativ
 function distance(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); }
 function safeError(error) { return String(error instanceof Error ? error.message : error).replace(/[A-Z]:\\[^\n]+/gi, "[local-path]").slice(0, 500); }
 function bounded(promise, timeoutMs, message) { return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error(message)), timeoutMs))]); }
-function manifest(results) { return { schema_version: "phase10f15.production_viewer_evidence.v1", baseline_head: "0c90d74fd250f8e47c032e2ee238fc5f619d85f0", formal_tool: "structure.viewer_3d", canonical_schema: "phase10f8.viewer_scene.v1", browser_results: results.map((item) => ({ browser: item.browser, version: item.version, available: item.available, renderer: item.desktop?.state || item.renderer })), network_result: "NO_PRODUCTION_VIEWER_EXTERNAL_NETWORK_REQUESTS", markers: ["VIEWER_SCENE_PRODUCTION_MINIMAL_VIEWER_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_MOBILE_VIEWER_EVIDENCE_PASS", "VIEWER_SCENE_RENDERER_PERFORMANCE_EVIDENCE_PASS", "VIEWER_SCENE_ACCESSIBILITY_EVIDENCE_PASS"], redaction: "sanitized" }; }
-function readme(results) { return `# Phase 10F-15 Production Minimal Structure Viewer Evidence\n\nFormal tool: \`structure.viewer_3d\`\nCanonical artifact: \`phase10f8.viewer_scene.v1\`\nBrowser matrix: ${results.map((item) => `${item.browser}=${item.available ? item.desktop?.state : "unavailable"}`).join(", ")}\nNetwork: \`NO_PRODUCTION_VIEWER_EXTERNAL_NETWORK_REQUESTS\`\n`; }
+function manifest(results) { return { schema_version: FORMAL_REGISTRATION_MODE ? "phase10f27.structure_viewer_3d_product_evidence.v1" : "phase10f15.production_viewer_evidence.v1", baseline_head: FORMAL_REGISTRATION_MODE ? "d32c9bfd3d24bd440927705154958b3d1a3d443d" : "0c90d74fd250f8e47c032e2ee238fc5f619d85f0", formal_tool: "structure.viewer_3d", registry_owner: FORMAL_REGISTRATION_MODE ? "platform_builtin_manifest.yaml" : undefined, canonical_schema: FORMAL_REGISTRATION_MODE ? "phase10f18.viewer_scene.v2" : "phase10f8.viewer_scene.v1", browser_results: results.map((item) => ({ browser: item.browser, version: item.version, available: item.available, renderer: item.desktop?.state || item.renderer })), network_result: "NO_PRODUCTION_VIEWER_EXTERNAL_NETWORK_REQUESTS", markers: ["VIEWER_SCENE_PRODUCTION_MINIMAL_VIEWER_BROWSER_EVIDENCE_PASS", "VIEWER_SCENE_MOBILE_VIEWER_EVIDENCE_PASS", "VIEWER_SCENE_RENDERER_PERFORMANCE_EVIDENCE_PASS", "VIEWER_SCENE_ACCESSIBILITY_EVIDENCE_PASS", ...(FORMAL_REGISTRATION_MODE ? ["STRUCTURE_VIEWER_3D_PRODUCT_EVIDENCE_PASS"] : [])], redaction: "sanitized" }; }
+function readme(results) { return `# ${FORMAL_REGISTRATION_MODE ? "Phase 10F-27 Formal Structure Viewer 3D Product Evidence" : "Phase 10F-15 Production Minimal Structure Viewer Evidence"}\n\nFormal tool: \`structure.viewer_3d\`\nCanonical artifact: \`${FORMAL_REGISTRATION_MODE ? "phase10f18.viewer_scene.v2" : "phase10f8.viewer_scene.v1"}\`\nBrowser matrix: ${results.map((item) => `${item.browser}=${item.available ? item.desktop?.state : "unavailable"}`).join(", ")}\nNetwork: \`NO_PRODUCTION_VIEWER_EXTERNAL_NETWORK_REQUESTS\`\n`; }
 
 await main();

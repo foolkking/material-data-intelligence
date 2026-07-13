@@ -1,0 +1,8 @@
+{
+  "adapter": "StructureViewer3DAdapter",
+  "implementation_source": "platform_builtin",
+  "registry_owner": "platform_builtin_manifest.yaml",
+  "status": "formal_product",
+  "tool_id": "structure.viewer_3d",
+  "unique_catalog_entry": true
+}
