@@ -8974,7 +8974,7 @@ FAIL包括：
 * 完成时间：2026-07-13 10:08:39 +08:00
 * 修改文件：viewer engine/types/selection/measurement panel/surface、`ViewerBondInspector.tsx`、`viewerSceneMeasurementArtifact.ts`及测试；advanced/inspection browser runners；Phase 10F-23 docs/evidence；shared schema/index和persistent记录。
 * 修改摘要：实现真实InstancedMesh atom与shared LineSegments bond picking，稳定PeriodicSiteRef/canonical bond identity，最多4点的ordered selection、undo、键盘N/B/Backspace、移动bond tap、distance/angle/signed-dihedral、显式周期映像与bounded exact minimum-image策略、固定overlay资源，以及deterministic inert `phase10f23.viewer_measurement.v1`下载。未修改scene topology、backend runtime、Tool Registry或依赖。
-* 测试结果：frontend `89 passed`；backend `366 passed, 21 skipped`；typecheck/build/`uv lock --check`通过；全部历史viewer browser runners与Phase 10F-23 Chromium/Firefox/WebKit/mobile runner通过；`VIEWER_SCENE_ADVANCED_PICKING_BROWSER_EVIDENCE_PASS`、`VIEWER_SCENE_BOND_PICKING_EVIDENCE_PASS`、`VIEWER_SCENE_PERIODIC_MEASUREMENT_ARTIFACT_EVIDENCE_PASS`、`VIEWER_SCENE_KEYBOARD_MOBILE_MEASUREMENT_EVIDENCE_PASS`、`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。service-backed/no-skipped等待current-HEAD CI。
+* 测试结果：frontend `89 passed`；backend `366 passed, 21 skipped`；typecheck/build/`uv lock --check`通过；全部历史viewer browser runners与Phase 10F-23 Chromium/Firefox/WebKit/mobile runner通过；`VIEWER_SCENE_ADVANCED_PICKING_BROWSER_EVIDENCE_PASS`、`VIEWER_SCENE_BOND_PICKING_EVIDENCE_PASS`、`VIEWER_SCENE_PERIODIC_MEASUREMENT_ARTIFACT_EVIDENCE_PASS`、`VIEWER_SCENE_KEYBOARD_MOBILE_MEASUREMENT_EVIDENCE_PASS`、`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。GitHub Actions run `29218972950` 的unit、frontend typecheck/build、service-backed integration和no-skipped assertion全部成功。
 ---END---
 
 ---TASK---  
@@ -12400,12 +12400,5153 @@ FAIL包括：
 -   只有静态fixture没有真实browser interaction
     
 -   修改原始结构或canonical scene
-    
+
 -   引入trajectory/phonon/Brillouin/volumetric
-    
+
 -   修改核心runtime语义
-    
+
 -   无browser evidence
-    
+
 -   CI失败却声明PASS
+---END---
+
+---TASK---
+状态：待处理
+ # Phase 10F-25：Clipping, Cell and Camera Controls
+
+进入 Phase 10F-25：Clipping, Cell and Camera Controls。
+
+可以默认：
+
+* Phase 10F-24 已完成
+* supercell productization 已完成
+* supercell expansion、instance generation、bond replication、deduplication、persistence、picking、measurement 已完成
+* Phase 10F-23 advanced picking and measurement 已完成
+* Phase 10F-22 accessibility、mobile、cross-browser 已完成
+* Phase 10F-21 performance budgets、instancing、bond batching、lifecycle 已完成
+* current production scene schema 仍为 `phase10f18.viewer_scene.v2`
+* current manifest仍为当前 v2 manifest
+* canonical periodic topology、PeriodicSiteRef、measurement identity、supercell display state保持稳定
+* 当前 branch、HEAD、working tree 和 Phase 10F-24 CI 可视为正确且 clean
+
+本阶段不需要重复 baseline 检查。
+
+---
+
+# 1. 本阶段目标
+
+本阶段目标：
+
+> 为周期晶体 viewer 增加科学可解释的空间控制能力，包括 clipping、unit cell/supercell boundary display、camera presets 和视角控制，同时保持周期拓扑、measurement、picking、performance、安全边界不变。
+
+本阶段重点：
+
+* clipping plane foundation
+* bounded section inspection
+* unit cell display
+* supercell boundary display
+* lattice axes display
+* camera presets
+* deterministic camera state
+* view state persistence
+* accessibility
+* mobile interaction
+* browser evidence
+
+---
+
+# 2. 当前能力基础
+
+当前 viewer 已具备：
+
+* unit cell结构
+* supercell display
+* periodic instances
+* canonical bonds
+* picking
+* measurement
+* inspector
+* keyboard controls
+* mobile gestures
+* camera rotate / pan / zoom
+* performance budgets
+* degraded/refused mode
+* lifecycle cleanup
+* JSON-only fallback
+
+当前缺少：
+
+* clipping plane
+* section view
+* scientific slice inspection
+* cell boundary toggle
+* axis display
+* camera preset
+* camera state serialization
+* view reproducibility
+* clipping accessibility
+* clipping mobile behavior
+
+---
+
+# 3. 严格禁止范围
+
+本阶段不得实现：
+
+* structure editing
+* atom mutation
+* bond mutation
+* lattice editing
+* trajectory
+* phonon
+* Brillouin zone
+* volumetric rendering
+* charge density
+* spin density
+* isosurface
+* defects
+* surfaces
+* slabs
+* arbitrary mesh editing
+* CAD-like modeling
+* export
+* glTF/GLB
+* PNG/PDF
+* formal structure.viewer_3d registration
+* external APIs
+* notebook execution
+* script execution
+* real LLM
+
+不得：
+
+* 修改 canonical lattice
+* 修改 fractional coordinates
+* 修改 canonical topology
+* 修改 periodic identity
+* 使用 clipping 修改实际结构数据
+* 将camera state当作scientific data
+* 将clip后的显示结果写回scene
+* 允许artifact控制camera代码
+* 允许artifact控制clip shader
+* 引入远程shader
+* 引入外部viewer runtime
+* 放宽performance caps
+
+允许：
+
+* renderer state
+* camera state
+* clipping state
+* display-only derived state
+* tests
+* evidence
+* docs
+
+---
+
+# 4. 必读代码
+
+开始前阅读：
+
+## 4.1 Camera
+
+搜索：
+
+```bash
+rg -n "Camera|OrbitControls|PerspectiveCamera|OrthographicCamera|controls|zoom|rotate|pan" apps/web
+```
+
+确认：
+
+* camera初始化
+* controls
+* reset逻辑
+* lifecycle
+* resize
+* mobile handling
+* keyboard camera controls
+* persistence
+
+---
+
+## 4.2 Cell Display
+
+搜索：
+
+```bash
+rg -n "lattice|cell|boundary|axis|supercell|grid" apps/web
+```
+
+确认：
+
+* 当前unit cell
+* supercell boundary
+* line geometry
+* visibility
+* styling
+* disposal
+
+---
+
+## 4.3 Rendering Pipeline
+
+搜索：
+
+```bash
+rg -n "ShaderMaterial|clippingPlanes|renderer.localClippingEnabled|material" apps/web
+```
+
+确认：
+
+* 是否已有Three.js clipping能力
+* material共享策略
+* shader修改风险
+* GPU lifecycle
+
+---
+
+# 5. 修改前审计输出
+
+输出：
+
+# Phase 10F-25 Pre-Implementation Audit
+
+## 1. Current Camera
+
+* camera type:
+* controls:
+* reset:
+* keyboard:
+* mobile:
+* persistence:
+
+## 2. Current Cell Display
+
+* unit cell:
+* supercell:
+* axes:
+* lattice vectors:
+* geometry count:
+
+## 3. Current Rendering
+
+* material strategy:
+* shader:
+* clipping support:
+* renderer capabilities:
+
+## 4. Performance Risks
+
+列出：
+
+* clipping cost
+* extra draw calls
+* extra geometry
+* camera animation cost
+* mobile GPU risk
+
+## 5. Selected Strategy
+
+说明：
+
+* clipping implementation
+* cell display
+* camera presets
+* persistence
+* caps
+* fallback
+
+---
+
+# 6. Clipping Contract
+
+建立：
+
+```ts
+type ViewerClipState = {
+  enabled: boolean;
+  planes: ClipPlane[];
+};
+```
+
+推荐：
+
+```ts
+type ClipPlane = {
+  axis: "x" | "y" | "z";
+  position: number;
+  enabled: boolean;
+};
+```
+
+要求：
+
+* application-owned
+* bounded
+* deterministic
+* no arbitrary plane equation输入
+* no shader injection
+* no artifact callback
+
+---
+
+# 7. Clipping Policy
+
+第一阶段只支持：
+
+* axis aligned clipping
+
+支持：
+
+* X
+* Y
+* Z
+
+不支持：
+
+* arbitrary normal vector
+* user drawn plane
+* boolean geometry cut
+* mesh modification
+
+原因：
+
+* 更容易保持科学解释
+* 更容易保证性能
+* 更容易跨浏览器
+
+---
+
+# 8. Clip Semantics
+
+必须明确：
+
+clip只影响：
+
+* renderer visibility
+
+不影响：
+
+* scene JSON
+* topology
+* picking identity
+* measurement coordinates
+
+例如：
+
+atom被clip隐藏：
+
+* 仍存在于scene
+* 不改变siteIndex
+* 不改变bond
+
+---
+
+# 9. Clipping UI
+
+提供：
+
+* enable/disable
+* X/Y/Z选择
+* position slider/input
+* reset
+
+要求：
+
+* keyboard accessible
+* mobile usable
+* numeric input验证
+* slider bounded
+* live region提示一次
+
+显示：
+
+例如：
+
+```text
+Clipping X enabled at 4.2 Å
+```
+
+---
+
+# 10. Clipping Caps
+
+必须限制：
+
+* maximum active planes
+
+推荐：
+
+```text
+max active clipping planes = 3
+```
+
+不得：
+
+* 创建无限plane
+* 每atom创建clip对象
+
+---
+
+# 11. Cell Display
+
+实现：
+
+## Unit Cell
+
+支持：
+
+* show/hide
+
+显示：
+
+* lattice edges
+* origin
+* vectors
+
+---
+
+## Supercell Boundary
+
+支持：
+
+* show/hide
+
+根据Phase 10F-24：
+
+```text
+A' = aA
+B' = bB
+C' = cC
+```
+
+显示：
+
+* outer boundary
+
+默认：
+
+* 不显示内部所有cell grid
+
+原因：
+
+避免大量line geometry。
+
+---
+
+## Internal Grid
+
+可选。
+
+必须：
+
+* bounded
+* disabled by default
+
+限制：
+
+* 最大cell数量
+* 最大line数量
+
+---
+
+# 12. Axis Display
+
+提供：
+
+* a vector
+* b vector
+* c vector
+
+要求：
+
+* text label
+* color不是唯一标识
+* accessibility文本说明
+
+例如：
+
+```
+a vector length: 5.43 Å
+b vector length: 5.43 Å
+c vector length: 5.43 Å
+```
+
+---
+
+# 13. Camera Presets
+
+建立：
+
+```ts
+type CameraPreset =
+ | "default"
+ | "top"
+ | "front"
+ | "side"
+ | "isometric";
+```
+
+要求：
+
+* deterministic
+* bounded
+* keyboard accessible
+* mobile accessible
+
+每个preset定义：
+
+* position
+* target
+* up vector
+
+不得：
+
+* 自动随机旋转
+* 无限动画
+
+---
+
+# 14. Camera State Contract
+
+可选保存：
+
+```json
+{
+ "schema_version":"phase10f25.camera_state.v1",
+ "preset":"isometric",
+ "position":[1,2,3],
+ "target":[0,0,0],
+ "zoom":1
+}
+```
+
+要求：
+
+* finite
+* bounded
+* validated
+
+不得保存：
+
+* Three.js对象
+* matrix对象
+  -函数
+* callback
+
+---
+
+# 15. Camera Animation
+
+如果已有：
+
+必须支持：
+
+* reduced motion
+
+要求：
+
+prefers-reduced-motion:
+
+* instant transition
+
+否则：
+
+* bounded short transition
+
+禁止：
+
+* 无限旋转
+* idle animation
+
+---
+
+# 16. Picking Integration
+
+必须验证：
+
+clip开启时：
+
+* visible atom可pick
+* hidden atom不可pick
+
+但是：
+
+measurement/picking identity保持：
+
+```
+siteIndex@[imageOffset]
+```
+
+不得：
+
+* clip重新生成scene
+* 修改instance mapping
+
+---
+
+# 17. Measurement Integration
+
+必须验证：
+
+clip不会影响：
+
+* distance
+* angle
+* dihedral
+
+因为：
+
+measurement来自world coordinates。
+
+---
+
+# 18. Supercell Integration
+
+测试：
+
+* clip + supercell
+* cell boundary + supercell
+* camera preset + supercell
+* picking copied instance
+
+---
+
+# 19. Accessibility
+
+必须保持Phase 10F-22。
+
+新增：
+
+必须可读：
+
+* clipping enabled
+* active plane
+* plane position
+* visible cell mode
+* camera preset
+
+例如：
+
+```
+Clipping enabled. X plane at 3.5 angstrom.
+Camera preset: top.
+```
+
+不得：
+
+* 只靠视觉
+
+---
+
+# 20. Mobile
+
+测试：
+
+* slider
+* numeric input
+* presets
+* orientation change
+* clipping
+* camera controls
+* inspector
+
+要求：
+
+* 不阻塞viewer
+* 不破坏gesture
+* 不增加scroll trap
+
+---
+
+# 21. Performance
+
+必须保持：
+
+* no per-frame clipping allocation
+* no geometry rebuild on camera move
+* no material explosion
+* no duplicate renderer
+
+记录：
+
+before/after：
+
+* draw calls
+* geometries
+* materials
+* GPU resources
+* canvas count
+
+---
+
+# 22. Tests
+
+必须覆盖：
+
+## Clipping
+
+* enable
+* disable
+* x/y/z
+* multiple planes
+* reset
+* invalid values
+
+## Cell
+
+* unit cell
+* supercell
+* triclinic
+* hide/show
+
+## Camera
+
+* presets
+* reset
+* serialization
+* invalid state
+
+## Integration
+
+* clipping + picking
+* clipping + measurement
+* clipping + supercell
+* mobile
+* lifecycle
+
+---
+
+# 23. Evidence
+
+新增：
+
+```
+docs/phase10f/evidence/phase10f25_clipping_cell_camera/
+```
+
+包含：
+
+```
+README.md
+clipping_contract.json
+camera_contract.json
+cell_display.json
+camera_presets.json
+performance_metrics.json
+browser_matrix.json
+mobile_matrix.json
+security_audit.json
+network_audit.json
+artifact_hashes.json
+```
+
+截图：
+
+```
+01_unit_cell.png
+02_supercell_boundary.png
+03_clipping_x.png
+04_clipping_xyz.png
+05_camera_top.png
+06_camera_isometric.png
+07_mobile_controls.png
+08_picking_after_clip.png
+09_measurement_after_clip.png
+10_reset_view.png
+```
+
+---
+
+# 24. Security
+
+必须确认：
+
+* no shader injection
+* no artifact clipping plane
+* no artifact camera callback
+* no external assets
+* no remote shader
+* no eval
+* no Function
+* no iframe
+* no network
+* no secret
+
+输出：
+
+```
+NO_EXTERNAL_NETWORK_REQUESTS
+NO_SECRET_PATTERN_HITS
+```
+
+---
+
+# 25. Docs
+
+新增：
+
+```
+docs/phase10f/phase10f25_clipping_cell_camera.md
+docs/phase10f/phase10f25_clipping_contract.md
+docs/phase10f/phase10f25_camera_contract.md
+docs/phase10f/phase10f25_cell_display_contract.md
+docs/phase10f/phase10f25_security.md
+docs/phase10f/phase10f25_evidence.md
+```
+
+更新：
+
+```
+persistent/DESIGN_PROGRESS.md
+persistent/TASK_BOARD.md
+persistent/CHANGELOG.md
+persistent/ARCHITECTURE_DECISIONS.md
+```
+
+---
+
+# 26. Readiness Matrix
+
+最终输出：
+
+```
+clipping foundation: READY
+axis clipping: READY
+cell display: READY
+supercell boundary: READY
+camera presets: READY
+camera persistence: READY
+picking integration: READY
+measurement integration: READY
+accessibility: READY
+mobile: READY
+performance: READY
+security: READY
+
+full structure.viewer_3d: PARTIAL_READY
+
+export: NOT_READY
+trajectory: NOT_READY
+phonon: NOT_READY
+Brillouin zone: NOT_READY
+volumetric: NOT_READY
+```
+
+---
+
+# 27. Checks
+
+运行：
+
+```bash
+git diff --check
+uv lock --check
+
+npm --prefix apps/web test
+npm --prefix apps/web run typecheck
+npm --prefix apps/web run build
+
+uv run python -m pytest -q
+```
+
+额外：
+
+* clipping tests
+* camera tests
+* lifecycle tests
+* browser tests
+* mobile tests
+* performance regression
+* accessibility regression
+* security scan
+
+---
+
+# 28. Commit
+
+完成：
+
+```bash
+git status --short
+git add <Phase 10F-25 files>
+git commit -m "Add viewer clipping cell and camera controls"
+git push origin master
+```
+
+确认：
+
+* CI success
+* origin/master matches
+* clean tree
+
+---
+
+# 29. 最终报告
+
+输出：
+
+# Phase 10F-25 Clipping, Cell and Camera Controls Result
+
+包括：
+
+1. Conclusion
+2. Baseline
+3. Clipping contract
+4. Cell display
+5. Supercell integration
+6. Camera presets
+7. Persistence
+8. Picking
+9. Measurement
+10. Accessibility
+11. Mobile
+12. Performance
+13. Security
+14. Evidence
+15. Tests
+16. Files
+17. Deferred
+18. Readiness
+19. Commit / CI
+20. Whether allowed to enter next phase
+
+PASS条件：
+
+* clipping真实工作
+* cell显示真实工作
+* camera presets真实工作
+* 不修改结构
+* 不修改topology
+* picking/measurement保持正确
+* performance不回退
+* accessibility不回退
+* browser evidence完整
+* security闭合
+* CI通过
+* git clean
+
+下一阶段建议：
+
+```
+Phase 10F-26：Scientific Export and Reporting Foundation
+```
+
+不要进入trajectory、phonon、Brillouin zone或volumetric。
+
+---END---
+
+
+---TASK---
+ 状态：待处理
+ # Phase 10F-26：Scientific Export and Reporting Foundation
+
+进入 Phase 10F-26：Scientific Export and Reporting Foundation。
+
+可以默认：
+
+* Phase 10F-25 已完成
+* clipping、cell display、supercell boundary、camera presets 和 camera state 已完成
+* Phase 10F-24 supercell productization 已完成
+* Phase 10F-23 picking and measurement 已完成
+* Phase 10F-22 accessibility、mobile、cross-browser 已完成
+* Phase 10F-21 performance hardening 已完成
+* current production scene schema 仍为 `phase10f18.viewer_scene.v2`
+* current manifest仍为当前 v2 manifest
+* periodic identity、canonical bonds、measurement、supercell、clipping 和 camera controls均保持稳定
+* 当前 branch、HEAD、working tree 和 Phase 10F-25 CI 可视为正确且 clean
+
+本阶段不需要重复 baseline 检查。
+
+本阶段主要目标：
+
+> 为当前 periodic crystal viewer 建立安全、确定性、可复现的科学导出和报告基础，使用户可以导出视图、状态、测量结果和结构化报告，同时不允许 artifact 执行代码或加载外部资源。
+
+本阶段重点包括：
+
+* deterministic PNG export
+* high-DPI screenshot
+* transparent/solid background
+* camera-consistent export
+* clipping/supercell state capture
+* measurement overlay capture
+* JSON state export
+* manifest export
+* Markdown scientific summary
+* PDF readiness assessment
+* export artifact contracts
+* export accessibility
+* browser evidence
+* security closure
+
+本阶段仍不是 trajectory、phonon、Brillouin zone 或 volumetric phase。
+
+---
+
+# 1. 当前已知能力
+
+当前 viewer 已具备：
+
+* validated `viewer_scene.v2`
+* periodic site identity
+* canonical bonds
+* cross-boundary and self-periodic topology
+* picking
+* distance / angle / dihedral measurement
+* supercell display
+* clipping
+* cell boundaries
+* camera presets
+* deterministic camera state
+* accessibility
+* mobile interaction
+* performance budgets
+* browser matrix
+* lifecycle cleanup
+* no artifact JS
+* no external assets
+
+当前尚未正式实现：
+
+* PNG export
+* high-resolution export
+* deterministic export dimensions
+* transparent background export
+* export with/without overlays
+* export with current camera
+* export with saved camera preset
+* export with clipping/supercell state
+* measurement result packaging
+* scientific summary artifact
+* export manifest
+* export recipe
+* PDF export readiness
+* browser export evidence
+* export security audit
+
+---
+
+# 2. 本阶段目标
+
+必须完成以下八类工作：
+
+1. Export architecture audit
+2. Deterministic render capture
+3. PNG and image export
+4. JSON state and measurement export
+5. Scientific summary/report artifact
+6. Export provenance and manifest
+7. Browser/mobile evidence
+8. Security、tests、docs和readiness收口
+
+本阶段必须产生真实可下载的 export artifacts。
+
+如果最终只有文档、按钮占位或静态fixture，没有真实浏览器导出路径，本阶段必须判定为 FAIL。
+
+---
+
+# 3. 严格禁止范围
+
+本阶段不得实现：
+
+* trajectory
+* phonon
+* Brillouin zone
+* volumetric rendering
+* charge density
+* spin density
+* isosurface
+* defects
+* surfaces
+* slabs
+* structure editing
+* atom mutation
+* bond mutation
+* canonical structure export，除非已有安全、明确contract
+* glTF/GLB export
+* arbitrary 3D format export
+* video export
+* animation export
+* notebook execution
+* script execution
+* external API
+* cloud upload
+* remote storage
+* email/share service
+* real LLM
+* formal `structure.viewer_3d` registration
+
+不得：
+
+* 修改 canonical scene
+* 修改 topology
+* 修改 measurement values
+* 重新计算 bonds
+* 将截图结果作为科学数据源
+* 将 export 过程依赖外部 CDN
+* 允许 artifact 控制文件名路径
+* 允许 path traversal
+* 允许任意 MIME type
+* 允许任意 HTML
+* 执行 artifact JS
+* 允许 external URL
+* 允许 remote fonts/textures
+* 导出用户未明确请求的私有信息
+* 在图片中泄漏本地路径、token或调试数据
+* 通过浏览器打印对话框伪装成PDF export完成
+* 将未实现的PDF标记为READY
+
+允许：
+
+* canvas capture
+* application-owned export rendering
+* deterministic offscreen render
+* PNG generation
+* JSON generation
+* Markdown generation
+* safe download
+* manifest
+* recipe
+* tests
+* evidence
+* docs
+* persistent updates
+
+---
+
+# 4. 必读代码
+
+开始后直接阅读当前真实实现。
+
+## 4.1 Renderer Capture
+
+搜索：
+
+```bash
+rg -n "toDataURL|toBlob|canvas|preserveDrawingBuffer|WebGLRenderer|renderTarget|screenshot|export" apps/web
+```
+
+确认：
+
+* current renderer lifecycle
+* canvas ownership
+* preserveDrawingBuffer setting
+* render scheduling
+* camera state
+* clipping state
+* supercell state
+* measurement overlay
+* background handling
+
+## 4.2 Artifact and Download
+
+搜索：
+
+```bash
+rg -n "download|Blob|URL.createObjectURL|artifact|manifest|recipe|summary.md" apps/web backend packages
+```
+
+确认：
+
+* current artifact download helpers
+* filename sanitization
+* MIME policy
+* object URL cleanup
+* existing JSON/Markdown artifact patterns
+* security metadata conventions
+
+## 4.3 Measurement and Viewer State
+
+确认：
+
+* measurement artifact
+* supercell state artifact
+* camera state
+* clipping state
+* scene identity
+* provenance
+* deterministic serialization
+
+## 4.4 Existing Browser Evidence
+
+定位：
+
+* screenshot helpers
+* browser runners
+* Playwright download handling
+* mobile runner
+* cross-browser runner
+
+---
+
+# 5. 修改前输出审计
+
+修改前输出：
+
+# Phase 10F-26 Scientific Export Pre-Implementation Audit
+
+## 1. Current Export Capability
+
+* image export:
+* JSON export:
+* Markdown export:
+* download helper:
+* filename handling:
+* MIME handling:
+* provenance:
+* manifest:
+* current gaps:
+
+## 2. Renderer Capture Risks
+
+* preserveDrawingBuffer:
+* canvas reuse:
+* offscreen rendering:
+* background:
+* clipping:
+* overlays:
+* devicePixelRatio:
+* browser differences:
+* memory:
+* context loss:
+
+## 3. Artifact Risks
+
+至少检查：
+
+* path traversal
+* object URL leak
+* stale scene export
+* wrong camera state
+* wrong clipping state
+* missing periodic identity
+* inconsistent measurement values
+* external resources
+* hidden debug data
+* non-deterministic timestamps
+* browser-specific PNG differences
+* large image memory
+* mobile download behavior
+
+## 4. Selected Strategy
+
+说明：
+
+* PNG capture:
+* export dimensions:
+* high-DPI:
+* background:
+* overlays:
+* JSON:
+* Markdown:
+* manifest:
+* filename:
+* security:
+* fallback:
+
+## 5. Planned Files
+
+列出：
+
+* renderer/export helper
+* UI
+* artifact serializer
+* tests
+* browser runner
+* evidence
+* docs
+* persistent
+
+审计后直接继续实现。
+
+---
+
+# 6. Export Contract
+
+建立 application-owned export request contract。
+
+推荐：
+
+```ts
+type ViewerExportRequest = {
+  format: "png" | "json" | "markdown";
+  width?: number;
+  height?: number;
+  pixelRatio?: number;
+  background: "transparent" | "light" | "dark";
+  includeCell: boolean;
+  includeAxes: boolean;
+  includeBonds: boolean;
+  includeMeasurements: boolean;
+  includeInspectorSummary: boolean;
+};
+```
+
+必须：
+
+* strict validation
+* bounded values
+* deterministic defaults
+* no arbitrary MIME
+* no arbitrary extension
+* no arbitrary path
+* no executable fields
+* no callback
+* no URL
+
+推荐默认：
+
+```json
+{
+  "format": "png",
+  "width": 1600,
+  "height": 1200,
+  "pixel_ratio": 1,
+  "background": "light",
+  "include_cell": true,
+  "include_axes": true,
+  "include_bonds": true,
+  "include_measurements": true,
+  "include_inspector_summary": false
+}
+```
+
+---
+
+# 7. Export Size and Resource Caps
+
+必须定义：
+
+* minimum width
+* maximum width
+* minimum height
+* maximum height
+* max total pixels
+* max pixel ratio
+* max estimated memory
+* max concurrent export jobs
+
+建议：
+
+```text
+min width/height: 256
+max width/height: 4096
+max total pixels: 16,777,216
+max pixel ratio: 2
+max concurrent export: 1
+```
+
+具体数值应结合真实代码和浏览器测试调整。
+
+必须在 allocation 前检查。
+
+Typed errors：
+
+```text
+VIEWER_EXPORT_INVALID_SIZE
+VIEWER_EXPORT_PIXEL_BUDGET_EXCEEDED
+VIEWER_EXPORT_BUSY
+VIEWER_EXPORT_SCENE_UNAVAILABLE
+VIEWER_EXPORT_CONTEXT_LOST
+VIEWER_EXPORT_FAILED
+```
+
+---
+
+# 8. PNG Export
+
+## 8.1 Deterministic Capture
+
+导出必须使用当前 validated scene 和 applied viewer state。
+
+必须捕获：
+
+* camera
+* target
+* zoom
+* projection
+* supercell expansion
+* clipping state
+* cell visibility
+* axes visibility
+* bond visibility
+* measurement overlays
+* background
+
+不得捕获：
+
+* hover tooltip
+* transient focus ring，除非明确选择
+* browser chrome
+* unrelated UI
+* private debug panels
+* console
+* local file path
+
+## 8.2 Capture Strategy
+
+优先：
+
+* application-owned export render pass
+* fixed output dimensions
+* temporary render target或bounded offscreen renderer
+* capture完成后dispose
+
+不建议永久启用：
+
+```text
+preserveDrawingBuffer: true
+```
+
+如果必须使用，需证明性能影响可接受。
+
+## 8.3 Deterministic Camera
+
+导出使用：
+
+* current camera state
+* 或 selected camera preset
+
+必须明确。
+
+导出前不自动改变用户camera。
+
+## 8.4 Background
+
+支持：
+
+* transparent
+* light
+* dark
+
+background由应用定义。
+
+不得由artifact提供任意CSS或shader。
+
+## 8.5 High-DPI
+
+支持 bounded high-DPI。
+
+必须：
+
+* 先检查pixel budget
+* 不使用设备真实DPR作为无上限输入
+* mobile默认更保守
+* 导出后恢复renderer state
+
+---
+
+# 9. Overlay Export
+
+必须明确可选包含：
+
+* cell boundary
+* supercell boundary
+* axes
+* bonds
+* selected atoms
+* measurement lines
+* angle/dihedral overlays
+
+默认不包含：
+
+* hover state
+* inspector panel
+* controls
+* warnings overlay
+
+可选生成单独的文本summary，而不是把大量UI画进PNG。
+
+不得：
+
+* 让export改变selection
+* 让export改变measurement
+* 让export改变scene
+
+---
+
+# 10. JSON Export
+
+至少生成：
+
+```text
+viewer_export_state.json
+```
+
+建议schema：
+
+```json
+{
+  "schema_version": "phase10f26.viewer_export_state.v1",
+  "scene_schema_version": "phase10f18.viewer_scene.v2",
+  "scene_identity": "...",
+  "viewer_state": {
+    "supercell_expansion": [2,2,1],
+    "camera_preset": "isometric",
+    "camera_position": [1,2,3],
+    "camera_target": [0,0,0],
+    "clipping": [],
+    "show_unit_cell": true,
+    "show_supercell_boundary": true,
+    "show_axes": true,
+    "show_bonds": true
+  },
+  "measurements": [],
+  "export_request": {
+    "format": "png",
+    "width": 1600,
+    "height": 1200,
+    "background": "light"
+  },
+  "deterministic": true,
+  "security": {
+    "contains_javascript": false,
+    "external_urls": []
+  }
+}
+```
+
+要求：
+
+* deterministic key ordering
+* no NaN/Infinity
+* no renderer objects
+* no raw Three.js matrix unless normalized
+* no local path
+* no URL
+* no callback
+* no HTML
+* no executable content
+
+---
+
+# 11. Scientific Markdown Summary
+
+生成：
+
+```text
+viewer_export_summary.md
+```
+
+至少包含：
+
+* formula
+* scene schema
+* lattice summary
+* canonical site count
+* canonical bond count
+* cross-boundary bond count
+* self-periodic bond count
+* supercell expansion
+* displayed atom count
+* displayed bond count
+* camera preset/state summary
+* clipping summary
+* measurements
+* export dimensions
+* background
+* provenance
+* security declaration
+* known limitations
+
+不得：
+
+* 声称 authoritative chemistry
+* 声称截图本身是结构数据
+* 省略periodic identity
+* 使用远程图片
+* 嵌入HTML或脚本
+
+---
+
+# 12. Export Manifest
+
+新增：
+
+```text
+viewer_export_manifest.json
+```
+
+建议schema：
+
+```json
+{
+  "schema_version": "phase10f26.viewer_export_manifest.v1",
+  "artifacts": [
+    {
+      "name": "viewer.png",
+      "media_type": "image/png",
+      "sha256": "..."
+    },
+    {
+      "name": "viewer_export_state.json",
+      "media_type": "application/json",
+      "sha256": "..."
+    },
+    {
+      "name": "viewer_export_summary.md",
+      "media_type": "text/markdown",
+      "sha256": "..."
+    }
+  ],
+  "renderer_included": false,
+  "javascript_included": false,
+  "external_assets": []
+}
+```
+
+要求：
+
+* exact allowlist
+* deterministic artifact order
+* hashes
+* sizes
+* media types
+* no executable assets
+* no external URLs
+* no renderer bundle
+
+---
+
+# 13. Filename Policy
+
+必须 application-owned。
+
+推荐：
+
+```text
+viewer.png
+viewer_export_state.json
+viewer_export_summary.md
+viewer_export_manifest.json
+```
+
+可允许安全前缀：
+
+```text
+<sanitized_formula>_viewer.png
+```
+
+必须：
+
+* strip path separators
+* strip control chars
+* bound length
+* normalized Unicode
+* fallback name
+* no user-provided extension
+
+不得允许：
+
+```text
+../../secret
+C:\...
+file://
+http://
+```
+
+---
+
+# 14. UI
+
+提供：
+
+* Export button
+* format selector
+* dimensions
+* background
+* include overlays
+* export preview summary
+* progress
+* success
+* failure
+
+要求：
+
+* keyboard accessible
+* mobile usable
+* touch targets合格
+* focus management
+* live-region announcements
+* no color-only status
+* export during busy state disabled
+* invalid size blocked before allocation
+
+建议预设：
+
+```text
+Web 1200×900
+Presentation 1600×900
+Square 1600×1600
+Publication 2400×1800
+```
+
+所有preset必须经过caps。
+
+---
+
+# 15. Accessibility
+
+必须保持Phase 10F-22标准。
+
+必须可读：
+
+* selected format
+* dimensions
+* estimated pixels
+* background
+* included overlays
+* progress
+* success
+* failure
+* downloaded filename
+
+Live region：
+
+```text
+Export started.
+Export completed: viewer.png.
+Export failed: image size exceeds safe limit.
+```
+
+不得播报：
+
+* binary data
+* object URL
+* hashes全文
+* internal stack
+
+---
+
+# 16. Mobile
+
+必须测试：
+
+* export panel
+* preset selection
+* dimensions
+* export PNG
+* export JSON
+* download result
+* orientation change
+* repeated export
+* over-budget rejection
+
+要求：
+
+* mobile使用更保守默认尺寸
+* 导出期间不冻结UI
+* 不创建重复canvas/context
+* export完成后资源释放
+* download失败时提供明确fallback
+
+---
+
+# 17. Lifecycle
+
+必须处理：
+
+* export start
+* export cancel
+* scene switch
+* artifact switch
+* camera change
+* clipping change
+* supercell change
+* context loss
+* component unmount
+* browser tab hidden
+* mobile orientation
+
+要求：
+
+* export绑定scene generation
+* scene变化后stale export不得完成为当前scene
+* stale export结果必须丢弃
+* temporary renderer/target dispose
+* object URL revoke
+* no canvas leak
+* no context leak
+* no stale success message
+* no duplicate downloads
+
+---
+
+# 18. PDF Readiness
+
+本阶段必须做正式评估，但不要求强制实现PDF。
+
+允许结果：
+
+```text
+PDF export: DEFERRED_BY_DESIGN
+```
+
+原因可包括：
+
+* browser print nondeterministic
+* vector fidelity未定义
+* font embedding未定义
+* pagination contract未定义
+* no approved PDF dependency
+
+不得用浏览器 `window.print()` 直接标记 PDF READY。
+
+必须记录后续PDF所需：
+
+* page size
+* image embedding
+* metadata
+* fonts
+* vector/raster policy
+* accessibility
+* deterministic layout
+* dependency/security review
+
+---
+
+# 19. Performance
+
+必须保持Phase 10F-21预算。
+
+记录：
+
+* capture duration
+* encode duration
+* total duration
+* temporary geometries
+* temporary materials
+* temporary textures/render targets
+* canvas count
+* context count
+* memory proxy before/after
+
+必须验证：
+
+* repeated export no monotonic growth
+* 10次bounded repeated export
+* over-budget rejected before allocation
+* export不改变interactive renderer性能
+* no continuous loop
+
+不得用严格毫秒值作为唯一PASS依据。
+
+---
+
+# 20. Security
+
+必须验证：
+
+* no artifact JS
+* no HTML execution
+* no SVG script
+* no remote image
+* no remote font
+* no CDN
+* no external URL
+* no iframe
+* no eval
+* no Function constructor
+* no path traversal
+* no arbitrary MIME
+* no arbitrary extension
+* no raw local path
+* no token
+* no private debug data
+* no browser fingerprinting
+* no cloud upload
+* no telemetry upload
+* no object URL leak
+* no export of hidden unrelated UI
+* no artifact-controlled filename path
+* no artifact-controlled shader
+* no artifact-controlled camera callback
+
+必须输出：
+
+```text
+NO_EXTERNAL_NETWORK_REQUESTS
+NO_SECRET_PATTERN_HITS
+```
+
+---
+
+# 21. Tests
+
+## 21.1 Export Contract Tests
+
+覆盖：
+
+* valid PNG
+* valid JSON
+* valid Markdown
+* invalid format
+* invalid dimensions
+* pixel budget
+* pixel ratio
+* background
+* unknown fields
+
+## 21.2 PNG Tests
+
+覆盖：
+
+* default
+* transparent
+* dark
+* high-DPI
+* camera preset
+* clipping
+* supercell
+* measurement overlay
+* no inspector UI
+* deterministic dimensions
+* repeated export
+
+## 21.3 JSON Tests
+
+覆盖：
+
+* schema
+* scene identity
+* camera
+* clipping
+* supercell
+* measurements
+* deterministic ordering
+* nonfinite rejection
+* no executable fields
+
+## 21.4 Markdown Tests
+
+覆盖：
+
+* formula
+* counts
+* periodic identity
+* measurement formatting
+* clipping
+* camera
+* limitations
+* no HTML/script
+
+## 21.5 Manifest Tests
+
+覆盖：
+
+* exact files
+* hashes
+* sizes
+* media types
+* stable order
+* no JS
+* no external assets
+
+## 21.6 Lifecycle Tests
+
+覆盖：
+
+* scene switch during export
+* context loss
+* unmount
+* repeated export
+* object URL cleanup
+* temporary renderer cleanup
+* no duplicate download
+
+## 21.7 Regression
+
+必须保持：
+
+* periodic identity
+* topology
+* performance
+* accessibility
+* picking
+* measurement
+* supercell
+* clipping
+* camera
+* compatibility
+* no external network
+* no artifact JS
+
+---
+
+# 22. Browser Evidence
+
+新增：
+
+```text
+docs/phase10f/evidence/phase10f26_scientific_export/
+```
+
+必须使用真实浏览器。
+
+## Chromium
+
+覆盖：
+
+* PNG default
+* transparent PNG
+* high-DPI
+* supercell
+* clipping
+* measurement overlays
+* JSON
+* Markdown
+* manifest
+* repeated export
+* stale export cancellation
+
+## Firefox
+
+至少覆盖：
+
+* PNG
+* JSON
+* clipping
+* repeated export
+* download handling
+
+## WebKit
+
+至少覆盖：
+
+* PNG
+* transparent background
+* measurement overlay
+* JSON
+* lifecycle
+
+## Mobile
+
+至少覆盖：
+
+* export panel
+* preset
+* PNG
+* JSON
+* over-budget rejection
+* repeated export
+* orientation change
+
+---
+
+# 23. Evidence Assertions
+
+每个browser evidence记录：
+
+* browser version
+* viewport
+* scene
+* viewer state
+* format
+* dimensions
+* pixel ratio
+* background
+* included overlays
+* filename
+* media type
+* size
+* hash
+* duration
+* canvas/context counts
+* console errors
+* network requests
+
+必须验证：
+
+* image dimensions exact
+* camera state exact
+* clipping state exact
+* supercell state exact
+* measurement values exact
+* manifest hashes exact
+* no external network
+* no executable assets
+* repeated export no leak
+* stale export rejected
+
+---
+
+# 24. Evidence Files
+
+至少包含：
+
+```text
+README.md
+export_contract.json
+export_caps.json
+png_export_results.json
+transparent_export_results.json
+high_dpi_results.json
+camera_consistency.json
+clipping_consistency.json
+supercell_consistency.json
+measurement_overlay_results.json
+json_export_results.json
+markdown_export_results.json
+manifest_validation.json
+repeated_export_stress.json
+stale_export_cancellation.json
+browser_matrix.json
+mobile_matrix.json
+console_audit.json
+network_audit.json
+security_audit.json
+artifact_hashes.json
+```
+
+截图或导出样例：
+
+```text
+01_default_viewer.png
+02_transparent_background.png
+03_dark_background.png
+04_supercell_export.png
+05_clipping_export.png
+06_measurement_export.png
+07_mobile_export_panel.png
+08_export_success.png
+```
+
+不要保存：
+
+* browser cache
+* private paths
+* token
+* debug dump
+* remote asset
+* giant images beyond caps
+* object URLs
+* crash dumps
+
+---
+
+# 25. Docs / Persistent
+
+新增或更新：
+
+```text
+docs/phase10f/phase10f26_scientific_export.md
+docs/phase10f/phase10f26_export_contract.md
+docs/phase10f/phase10f26_png_export.md
+docs/phase10f/phase10f26_export_manifest.md
+docs/phase10f/phase10f26_export_security.md
+docs/phase10f/phase10f26_pdf_readiness.md
+docs/phase10f/phase10f26_export_evidence.md
+docs/phase10f/phase10f26_export_readiness_matrix.md
+```
+
+更新：
+
+```text
+docs/index.md
+docs/13_SHARED_SCHEMA_SPEC.md
+persistent/DESIGN_PROGRESS.md
+persistent/TASK_BOARD.md
+persistent/CHANGELOG.md
+persistent/OPEN_QUESTIONS.md
+persistent/TOOL_REGISTRY_NOTES.md
+persistent/ARCHITECTURE_DECISIONS.md
+```
+
+必须记录：
+
+* export contract
+* size caps
+* PNG strategy
+* high-DPI policy
+* background policy
+* camera consistency
+* clipping/supercell consistency
+* measurement overlay policy
+* JSON schema
+* Markdown summary
+* manifest
+* security
+* PDF deferred/ready decision
+* remaining formal viewer registration work
+
+---
+
+# 26. Readiness Matrix
+
+最终分别判断：
+
+* export request contract
+* filename policy
+* PNG export
+* transparent background
+* dark/light background
+* high-DPI
+* current camera capture
+* camera preset capture
+* clipping capture
+* supercell capture
+* measurement overlay
+* JSON state export
+* Markdown summary
+* manifest
+* deterministic hashes
+* lifecycle
+* repeated export
+* accessibility
+* mobile
+* Chromium
+* Firefox
+* WebKit
+* security
+* PDF export
+* full `structure.viewer_3d`
+* trajectory
+* phonon
+* Brillouin zone
+* volumetric
+
+推荐期望：
+
+```text
+export request contract: READY
+PNG export: READY
+transparent background: READY
+high-DPI export: READY
+camera consistency: READY
+clipping consistency: READY
+supercell consistency: READY
+measurement overlay: READY
+JSON export: READY
+Markdown summary: READY
+manifest: READY
+deterministic serialization: READY
+lifecycle: READY
+accessibility: READY
+mobile: READY
+browser matrix: READY
+security: READY
+PDF export: DEFERRED_BY_DESIGN or PARTIAL_READY
+full structure.viewer_3d: PARTIAL_READY
+trajectory: NOT_READY
+phonon: NOT_READY
+Brillouin zone: NOT_READY
+volumetric: NOT_READY
+```
+
+---
+
+# 27. Checks
+
+至少运行：
+
+```bash
+git diff --check
+uv lock --check
+
+npm --prefix apps/web test
+npm --prefix apps/web run typecheck
+npm --prefix apps/web run build
+
+uv run python -m pytest -q
+```
+
+并运行：
+
+* export focused tests
+* PNG tests
+* JSON tests
+* Markdown tests
+* manifest tests
+* filename security tests
+* repeated export stress
+* lifecycle tests
+* performance regression
+* accessibility regression
+* Chromium runner
+* Firefox runner
+* WebKit runner
+* mobile runner
+* service-backed integration
+* no-skipped assertion
+* secret scan
+* network audit
+
+必须如实记录：
+
+* passed
+* failed
+* skipped
+* unavailable
+
+不得把 skipped 写成 passed。
+
+---
+
+# 28. Commit / CI
+
+完成实现、tests、evidence和docs后：
+
+```bash
+git status --short
+git diff --stat
+git add <only Phase 10F-26 related files>
+git commit -m "Add scientific viewer export foundation"
+git push origin master
+```
+
+等待current HEAD CI。
+
+必须确认：
+
+* unit success
+* frontend tests success
+* frontend typecheck success
+* frontend build success
+* service-backed integration success
+* no-skipped assertion success
+* origin/master matches HEAD
+* git status clean
+
+不得伪造CI。
+
+---
+
+# 29. 最终报告格式
+
+输出：
+
+# Phase 10F-26 Scientific Export and Reporting Foundation Result
+
+## 1. Conclusion
+
+PASS / PARTIAL_PASS / FAIL
+
+## 2. Baseline
+
+* Phase 10F-25 assumed complete:
+* branch:
+* initial status:
+* final HEAD:
+* final status:
+
+## 3. Export Architecture
+
+* capture strategy:
+* renderer reuse:
+* temporary resources:
+* deterministic state:
+* cancellation:
+* cleanup:
+
+## 4. Export Contract
+
+* schema:
+* formats:
+* dimensions:
+* pixel ratio:
+* backgrounds:
+* overlays:
+* caps:
+
+## 5. PNG Export
+
+* default:
+* transparent:
+* dark/light:
+* high-DPI:
+* dimensions:
+* camera:
+* clipping:
+* supercell:
+* measurements:
+
+## 6. JSON Export
+
+* schema:
+* viewer state:
+* measurements:
+* provenance:
+* determinism:
+* security:
+
+## 7. Markdown Summary
+
+* structure:
+* topology:
+* supercell:
+* clipping:
+* camera:
+* measurements:
+* limitations:
+
+## 8. Manifest
+
+* schema:
+* files:
+* hashes:
+* media types:
+* executable assets:
+* external assets:
+
+## 9. Filename and Download
+
+* sanitization:
+* extensions:
+* MIME allowlist:
+* object URL cleanup:
+* mobile download:
+
+## 10. Lifecycle
+
+* repeated export:
+* scene switch:
+* context loss:
+* unmount:
+* stale export:
+* temporary resource cleanup:
+
+## 11. Performance
+
+* capture duration:
+* encoding:
+* memory proxy:
+* repeated trend:
+* over-budget:
+* interactive renderer impact:
+
+## 12. Accessibility
+
+* controls:
+* live region:
+* progress:
+* error:
+* mobile:
+* focus:
+
+## 13. Browser Evidence
+
+* Chromium:
+* Firefox:
+* WebKit:
+* mobile:
+* downloads:
+* console:
+* network:
+
+## 14. PDF Readiness
+
+* decision:
+* implemented:
+* deferred:
+* remaining requirements:
+
+## 15. Security
+
+* filenames:
+* MIME:
+* executable content:
+* external resources:
+* hidden UI:
+* secrets:
+* network:
+* dependencies:
+
+## 16. Evidence
+
+* directory:
+* contracts:
+* PNG:
+* JSON:
+* Markdown:
+* manifest:
+* stress:
+* screenshots:
+* markers:
+
+## 17. Tests
+
+* export:
+* PNG:
+* JSON:
+* Markdown:
+* manifest:
+* security:
+* frontend full:
+* backend full:
+* typecheck:
+* build:
+* browsers:
+* mobile:
+* service-backed:
+* no-skipped:
+* lock:
+* diff:
+
+## 18. Files
+
+* renderer/export:
+* UI:
+* serializers:
+* tests:
+* browser runners:
+* evidence:
+* docs:
+* persistent:
+* dependencies/lockfile:
+
+## 19. Deferred
+
+明确列出：
+
+* true vector SVG export
+* PDF export，若未实现
+* glTF/GLB
+* video/animation export
+* structure file export
+* collaboration/share links
+* formal `structure.viewer_3d`
+* trajectory
+* phonon
+* Brillouin zone
+* volumetric
+* defects
+* surfaces
+* slabs
+* structure editing
+
+## 20. Readiness
+
+* PNG:
+* high-DPI:
+* transparent:
+* JSON:
+* Markdown:
+* manifest:
+* lifecycle:
+* accessibility:
+* mobile:
+* browser matrix:
+* PDF:
+* full `structure.viewer_3d`:
+* trajectory:
+* phonon:
+* Brillouin:
+* volumetric:
+
+## 21. Commit / CI
+
+* commit:
+* HEAD:
+* CI run:
+* unit:
+* frontend:
+* build:
+* service-backed:
+* no-skipped:
+* origin:
+* status:
+
+## 22. Whether allowed to enter next phase
+
+允许 / 不允许
+
+下一阶段建议：
+
+```text
+Phase 10F-27：Formal structure.viewer_3d Registration and Product Evidence
+```
+
+不要进入 trajectory、phonon、Brillouin zone 或 volumetric。
+
+---
+
+# 30. PASS 判定
+
+PASS必须满足：
+
+* 有真实PNG export
+* PNG尺寸确定
+* background可选
+* high-DPI受cap约束
+* camera state一致
+* clipping一致
+* supercell一致
+* measurement overlay一致
+* JSON state export完成
+* Markdown summary完成
+* manifest完成
+* filename安全
+* MIME allowlist
+* no path traversal
+* no executable asset
+* no external asset
+* repeated export无泄漏
+* stale export保护完成
+* mobile可导出
+* Chromium/Firefox/WebKit证据完整
+* performance不回退
+* accessibility不回退
+* no external network
+* no secret hits
+* tests通过
+* CI通过
+* git clean
+
+PARTIAL_PASS仅允许：
+
+* PDF明确deferred
+* 某浏览器PNG编码二进制hash不同，但视觉和尺寸等语义证据一致
+* mobile下载API有平台限制，但生成和fallback完整
+* npm audit因既有registry问题不可用
+
+FAIL包括：
+
+* 只有截图按钮占位
+* 依赖浏览器页面截图而非viewer capture
+* 导出包含无关UI或私有路径
+* export修改scene/camera
+* over-budget先分配后拒绝
+* object URL泄漏
+* stale scene导出成功
+* artifact可控制路径/MIME
+* 引入远程资源
+* 用window.print伪造PDF READY
+* 无browser evidence
+* CI失败却声明PASS
+
+---END---
+
+---TASK---
+ 状态：待处理
+ # Phase 10F-27：Formal `structure.viewer_3d` Registration and Product Evidence
+
+进入 Phase 10F-27：Formal `structure.viewer_3d` Registration and Product Evidence。
+
+可以默认：
+
+-   Phase 10F-26 已完成
+
+-   scientific export and reporting foundation 已完成
+
+-   PNG、JSON、Markdown、manifest export 已完成或按Phase 10F-26结论收口
+
+-   Phase 10F-25 clipping、cell、camera controls 已完成
+
+-   Phase 10F-24 supercell productization 已完成
+
+-   Phase 10F-23 advanced picking and measurement 已完成
+
+-   Phase 10F-22 accessibility、mobile、cross-browser 已完成
+
+-   Phase 10F-21 performance hardening 已完成
+
+-   current production scene schema 仍为 `phase10f18.viewer_scene.v2`
+
+-   current manifest、measurement、supercell、camera、clipping、export contracts均已稳定
+
+-   periodic identity、canonical periodic topology、performance、安全边界均保持稳定
+
+-   当前 branch、HEAD、working tree 和 Phase 10F-26 CI 可视为正确且 clean
+
+
+本阶段不需要重复 baseline 检查。
+
+本阶段主要目标：
+
+> 将现有已经完成技术闭环的 periodic crystal viewer，正式注册为生产可发现、可规划、可执行、可审计的 `structure.viewer_3d` 工具，并完成 Browser/API/Product Evidence。
+
+本阶段不是新的科学功能扩展阶段。
+
+不得借正式注册之名继续加入trajectory、phonon、Brillouin zone、volumetric、defects、surfaces、slabs或structure editing。
+
+----------
+
+# 1. 本阶段目标
+
+必须完成以下九类工作：
+
+1.  **Formal tool contract**
+
+2.  **Tool Registry registration**
+
+3.  **Planner discovery and routing**
+
+4.  **Execution adapter and artifact closure**
+
+5.  **Product UI integration**
+
+6.  **API evidence**
+
+7.  **Browser evidence**
+
+8.  **Security and readiness closure**
+
+9.  **Formal product acceptance**
+
+
+本阶段必须形成真实的production execution path。
+
+如果最终只有registry metadata、docs或静态fixture，没有planner/API/browser真实调用，本阶段必须判定为FAIL。
+
+----------
+
+# 2. 当前能力基础
+
+当前viewer已经具备：
+
+-   `viewer_scene.v2`
+
+-   canonical lattice
+
+-   canonical sites
+
+-   periodic image identity
+
+-   canonical periodic bonds
+
+-   same-cell bonds
+
+-   cross-boundary bonds
+
+-   self-periodic bonds
+
+-   triclinic support
+
+-   neighbor inspector
+
+-   performance budgets
+
+-   large-scene degraded/refused policy
+
+-   accessibility
+
+-   mobile
+
+-   atom/bond picking
+
+-   distance/angle/dihedral measurement
+
+-   supercell
+
+-   clipping
+
+-   cell controls
+
+-   camera presets
+
+-   scientific export
+
+-   deterministic artifacts
+
+-   browser matrix
+
+-   no artifact JS
+
+-   no external assets
+
+-   no remote renderer assets
+
+
+当前尚未正式完成：
+
+-   `structure.viewer_3d`正式tool ID
+
+-   Tool Registry registration
+
+-   planner discoverability
+
+-   planner routing
+
+-   API invocation
+
+-   job execution
+
+-   artifact manifest declaration
+
+-   frontend product entry
+
+-   formal product evidence
+
+-   final readiness decision
+
+-   legacy viewer tool consolidation
+
+-   capability truthfulness
+
+-   production user-facing documentation
+
+
+----------
+
+# 3. 严格禁止范围
+
+本阶段不得实现：
+
+-   trajectory
+
+-   trajectory playback
+
+-   phonon
+
+-   phonon animation
+
+-   Brillouin zone
+
+-   volumetric rendering
+
+-   charge density
+
+-   spin density
+
+-   isosurface
+
+-   defects
+
+-   surfaces
+
+-   slabs
+
+-   structure editing
+
+-   atom mutation
+
+-   bond mutation
+
+-   lattice editing
+
+-   arbitrary annotations
+
+-   arbitrary scene scripting
+
+-   remote assets
+
+-   external renderer
+
+-   notebook execution
+
+-   script execution
+
+-   real LLM
+
+-   new plugin framework
+
+-   new auth model
+
+-   multi-tenant changes
+
+
+不得：
+
+-   修改 `viewer_scene.v2` periodic topology semantics
+
+-   修改 canonical bond identity
+
+-   修改 `1e-5 Å` bond tolerance
+
+-   放宽 PlanValidator
+
+-   绕过 Tool Registry
+
+-   绕过 execution runtime
+
+-   使用隐藏未注册路径
+
+-   将preview-only路径伪装成正式tool execution
+
+-   将legacy Phase 10D schema标记成current
+
+-   将canonical v1标记成periodic
+
+-   让artifact执行JS
+
+-   加载remote texture、font、shader、module
+
+-   让artifact控制camera callback、shader、URL或event handler
+
+-   在capability中宣称trajectory/phonon/volumetric为true
+
+-   将PARTIAL_READY项写成READY
+
+-   伪造browser/API evidence
+
+-   伪造CI
+
+-   通过直接调用前端内部fixture绕过正式API
+
+
+允许：
+
+-   registry changes
+
+-   planner metadata
+
+-   adapter wiring
+
+-   artifact contract wiring
+
+-   frontend entry point
+
+-   API route exposure
+
+-   tests
+
+-   evidence
+
+-   docs
+
+-   persistent updates
+
+
+----------
+
+# 4. 必读实现
+
+开始后直接阅读当前真实代码。
+
+## 4.1 Tool Registry
+
+搜索：
+
+```bash
+rg -n "ToolRegistry|tool_id|structure.viewer|viewer_3d|registered_tools|tool catalog" backend packages apps tests
+
+```
+
+确认：
+
+-   registry schema
+
+-   tool metadata
+
+-   input contract
+
+-   output contract
+
+-   capability metadata
+
+-   registration mechanism
+
+-   discovery endpoint
+
+-   planner integration
+
+-   validation
+
+
+## 4.2 Planner
+
+搜索：
+
+```bash
+rg -n "planner|available tools|tool selection|tool routing|PlanValidator|AnalysisPlan" backend apps tests
+
+```
+
+确认：
+
+-   planner tool catalog
+
+-   tool capability descriptions
+
+-   input matching
+
+-   unsupported input behavior
+
+-   deterministic test planner
+
+-   no-real-LLM path
+
+-   service-backed integration
+
+
+## 4.3 Execution
+
+检查：
+
+-   adapter registration
+
+-   job runtime
+
+-   artifact emission
+
+-   manifest emission
+
+-   validation
+
+-   provenance
+
+-   result preview
+
+-   retry behavior
+
+-   failure behavior
+
+
+## 4.4 Frontend Product Entry
+
+检查：
+
+-   tool selection UI
+
+-   planner workbench
+
+-   results page
+
+-   viewer preview
+
+-   JSON fallback
+
+-   export controls
+
+-   accessibility
+
+-   mobile layout
+
+-   legacy compatibility handling
+
+
+## 4.5 Existing Viewer Tools
+
+搜索所有：
+
+```text
+structure.viewer_scene_metadata
+structure.viewer_export_package
+phase10d viewer tools
+phase10f viewer adapters
+
+```
+
+必须审计是否存在：
+
+-   duplicate tools
+
+-   overlapping tools
+
+-   deprecated tools
+
+-   hidden aliases
+
+-   conflicting output schemas
+
+
+----------
+
+# 5. 修改前输出审计
+
+修改代码前输出：
+
+# Phase 10F-27 Formal Viewer Registration Pre-Implementation Audit
+
+## 1. Current Viewer Tool Inventory
+
+对每个viewer-related tool列出：
+
+-   tool ID
+
+-   registry status
+
+-   producer
+
+-   input
+
+-   output
+
+-   schema
+
+-   planner visibility
+
+-   API visibility
+
+-   browser visibility
+
+-   deprecation status
+
+
+## 2. Current Production Path
+
+-   planner:
+
+-   registry:
+
+-   execution:
+
+-   artifact:
+
+-   manifest:
+
+-   preview:
+
+-   renderer:
+
+-   export:
+
+-   browser:
+
+-   API:
+
+
+## 3. Registration Gaps
+
+至少列出：
+
+-   missing formal ID
+
+-   duplicate legacy path
+
+-   output schema ambiguity
+
+-   capability drift
+
+-   planner nondiscovery
+
+-   missing API evidence
+
+-   missing browser evidence
+
+-   missing result metadata
+
+-   unsupported input ambiguity
+
+-   fallback ambiguity
+
+
+## 4. Selected Strategy
+
+说明：
+
+-   formal tool ID
+
+-   legacy tool policy
+
+-   input contract
+
+-   output contract
+
+-   planner registration
+
+-   execution routing
+
+-   product UI
+
+-   evidence
+
+-   deprecation
+
+
+## 5. Planned Files
+
+列出预计修改或新增：
+
+-   registry
+
+-   adapter
+
+-   planner
+
+-   validator
+
+-   API
+
+-   frontend
+
+-   tests
+
+-   evidence
+
+-   docs
+
+-   persistent
+
+
+审计完成后直接继续实现。
+
+----------
+
+# 6. Formal Tool ID
+
+正式注册：
+
+```text
+structure.viewer_3d
+
+```
+
+必须保证：
+
+-   唯一
+
+-   稳定
+
+-   无alias冲突
+
+-   不与legacy tool重名
+
+-   不在不同registry重复定义
+
+-   不通过magic string散落定义
+
+
+推荐application-owned constant。
+
+----------
+
+# 7. Tool Metadata
+
+正式metadata至少包含：
+
+```json
+{
+  "tool_id": "structure.viewer_3d",
+  "category": "structure",
+  "display_name": "3D Structure Viewer",
+  "description": "Render and inspect periodic crystal structures with canonical periodic topology.",
+  "input_contract": "structure_input.v1",
+  "output_contract": "phase10f18.viewer_scene.v2",
+  "manifest_contract": "phase10f19.viewer_assets_manifest.v2",
+  "execution_mode": "service_backed",
+  "deterministic": true,
+  "network_access": false
+}
+
+```
+
+字段名按真实registry规范调整。
+
+必须明确：
+
+-   periodic structure：true
+
+-   periodic bonds：true
+
+-   cross-boundary bonds：true
+
+-   neighbor graph：true
+
+-   picking：true
+
+-   measurement：true
+
+-   supercell：true
+
+-   clipping：true
+
+-   export：按Phase 10F-26真实结论
+
+-   trajectory：false
+
+-   phonon：false
+
+-   Brillouin zone：false
+
+-   volumetric：false
+
+-   editing：false
+
+
+capability不得过度宣称。
+
+----------
+
+# 8. Input Contract
+
+必须明确正式input。
+
+至少支持：
+
+-   valid periodic crystal structure
+
+-   lattice
+
+-   fractional coordinates
+
+-   species
+
+-   optional canonical bond source，若adapter contract允许
+
+-   deterministic viewer options，若正式支持
+
+
+必须拒绝或typed fallback：
+
+-   molecule without lattice，除非已有独立nonperiodic contract
+
+-   trajectory
+
+-   phonon data
+
+-   volumetric grid
+
+-   malformed lattice
+
+-   nonfinite coordinates
+
+-   over-cap site count
+
+-   arbitrary renderer config
+
+-   executable payload
+
+-   external URLs
+
+
+typed codes建议：
+
+```text
+STRUCTURE_VIEWER_3D_INPUT_INVALID
+STRUCTURE_VIEWER_3D_LATTICE_REQUIRED
+STRUCTURE_VIEWER_3D_SITE_LIMIT_EXCEEDED
+STRUCTURE_VIEWER_3D_UNSUPPORTED_DATA_KIND
+STRUCTURE_VIEWER_3D_RENDER_BUDGET_EXCEEDED
+
+```
+
+----------
+
+# 9. Output Contract
+
+正式输出必须以：
+
+```text
+phase10f18.viewer_scene.v2
+
+```
+
+为current scene contract。
+
+同时输出current manifest。
+
+至少包含：
+
+-   scene
+
+-   manifest
+
+-   recipe
+
+-   validation output
+
+-   optional export artifacts
+
+-   summary
+
+
+不得默认生成：
+
+-   Phase 10D legacy schema
+
+-   canonical v1
+
+-   renderer bundle
+
+-   JavaScript
+
+-   HTML
+
+-   remote assets
+
+
+如果需要compatibility artifact：
+
+-   必须显式
+
+-   仅test/legacy mode
+
+-   不进入default production path
+
+
+----------
+
+# 10. Adapter Registration
+
+正式adapter必须：
+
+-   register once
+
+-   deterministic
+
+-   validated input
+
+-   validated output
+
+-   no network
+
+-   no external resources
+
+-   no artifact JS
+
+-   no hidden renderer bundle
+
+-   current v2 output
+
+-   exact capabilities
+
+-   stable warnings
+
+-   sanitized errors
+
+
+必须证明：
+
+```text
+input
+→ adapter
+→ viewer_scene.v2
+→ manifest
+→ validator
+→ artifact store
+→ frontend renderer
+
+```
+
+完整闭环。
+
+----------
+
+# 11. Legacy Tool Policy
+
+必须审计并处理旧viewer-related tools。
+
+建议策略：
+
+## Phase 10D tools
+
+-   deprecated
+
+-   not planner-visible
+
+-   not recommended
+
+-   read-only artifact compatibility
+
+-   no new production generation
+
+
+## Phase 10F pre-formal adapters
+
+允许：
+
+-   internal implementation backing `structure.viewer_3d`
+
+-   hidden fromplanner catalog
+
+-   not separately user-facing
+
+-   no duplicate formal registration
+
+
+必须避免：
+
+-   planner看到多个近似viewer tools
+
+-   用户不知道该选哪个
+
+-   一个输出v1、一个输出v2
+
+-   capability冲突
+
+
+最终只应有一个正式用户可发现ID：
+
+```text
+structure.viewer_3d
+
+```
+
+----------
+
+# 12. Planner Registration
+
+必须将 `structure.viewer_3d` 加入 planner tool catalog。
+
+Planner描述必须准确：
+
+适合：
+
+-   periodic crystal visualization
+
+-   bond topology inspection
+
+-   supercell display
+
+-   measurement
+
+-   static viewer export
+
+
+不适合：
+
+-   trajectory
+
+-   phonon
+
+-   volumetric
+
+-   editing
+
+-   Brillouin zone
+
+
+必须有tests验证：
+
+-   “show this crystal in 3D”选择viewer
+
+-   “inspect periodic bonds”选择viewer
+
+-   “measure distance in structure”选择viewer或viewer-compatible path
+
+-   “play trajectory”不得选择viewer完成trajectory
+
+-   “plot phonon bands”不得选择viewer
+
+-   “render charge density”不得选择viewer
+
+
+----------
+
+# 13. PlanValidator
+
+必须确保：
+
+-   tool ID known
+
+-   input artifact kind compatible
+
+-   output schema known
+
+-   unsupported capability rejected
+
+-   no executable artifact request
+
+-   no external resource request
+
+-   no over-cap options
+
+-   no arbitrary renderer config
+
+
+不得放宽PlanValidator。
+
+如果planner请求：
+
+```text
+trajectory=true
+
+```
+
+必须拒绝或route到未来tool，不得让viewer静默忽略。
+
+----------
+
+# 14. API Registration
+
+正式API路径必须真实可调用。
+
+至少证明：
+
+-   tool discovery
+
+-   job creation
+
+-   execution
+
+-   status polling
+
+-   artifact retrieval
+
+-   validation result
+
+-   failure result
+
+
+复用现有API，不建议新增重复route。
+
+API evidence必须通过正式路径：
+
+```text
+POST planner/job or equivalent
+→ registered tool
+→ service-backed execution
+→ artifacts
+
+```
+
+不得：
+
+-   直接调用adapter函数伪造API evidence
+
+-   仅测试fixture endpoint
+
+-   绕过job runtime
+
+
+----------
+
+# 15. API Evidence Cases
+
+至少覆盖：
+
+## Valid Orthogonal
+
+-   scene PASS
+
+-   manifest PASS
+
+-   renderer-compatible
+
+
+## Valid Triclinic
+
+-   periodic offsets
+
+-   cross-boundary bonds
+
+-   renderer-compatible
+
+
+## Self-Periodic
+
+-   nonzero self-periodic bond
+
+-   inspector-compatible
+
+
+## Large but Allowed
+
+-   degraded mode
+
+-   artifact valid
+
+
+## Over-Budget
+
+-   artifact or input valid
+
+-   renderer fallback typed
+
+-   no crash
+
+
+## Invalid
+
+-   invalid lattice
+
+-   nonfinite coordinates
+
+-   typed failure
+
+-   sanitized error
+
+
+----------
+
+# 16. Product UI Registration
+
+正式frontend entry必须：
+
+-   显示 `3D Structure Viewer`
+
+-   显示tool ID或合理用户名称
+
+-   支持planner result打开
+
+-   支持renderer
+
+-   支持JSON-only fallback
+
+-   支持inspector
+
+-   支持measurement
+
+-   支持supercell
+
+-   支持clipping/camera
+
+-   支持export
+
+-   支持accessibility
+
+-   支持mobile
+
+
+必须显示真实capability summary。
+
+不得显示：
+
+-   trajectory ready
+
+-   phonon ready
+
+-   volumetric ready
+
+-   editing ready
+
+
+----------
+
+# 17. Result Surface
+
+正式result surface至少显示：
+
+-   formula
+
+-   site count
+
+-   lattice
+
+-   canonical bond count
+
+-   cross-boundary bond count
+
+-   render mode
+
+-   schema version
+
+-   tool ID
+
+-   capabilities
+
+-   warnings
+
+-   security state
+
+-   artifact downloads
+
+
+必须区分：
+
+-   artifact valid
+
+-   renderer degraded
+
+-   renderer refused
+
+-   tool execution failed
+
+
+不得将renderer budget exceeded写成analysis job failure。
+
+----------
+
+# 18. Product UX
+
+正式产品路径必须具备：
+
+-   loading
+
+-   success
+
+-   warning
+
+-   degraded
+
+-   over-budget
+
+-   invalid
+
+-   retry
+
+-   JSON fallback
+
+-   artifact download
+
+-   no blank screen
+
+-   no silent failure
+
+
+必须保持：
+
+-   keyboard
+
+-   focus
+
+-   mobile
+
+-   browser matrix
+
+-   context loss fallback
+
+-   lifecycle cleanup
+
+
+----------
+
+# 19. Formal Capability Contract
+
+建立可机器验证的正式capability。
+
+建议：
+
+```json
+{
+  "periodic_structure": true,
+  "periodic_bonds": true,
+  "cross_boundary_bonds": true,
+  "neighbor_graph": true,
+  "picking": true,
+  "measurement": true,
+  "supercell": true,
+  "clipping": true,
+  "camera_presets": true,
+  "png_export": true,
+  "json_export": true,
+  "markdown_export": true,
+  "trajectory": false,
+  "phonon": false,
+  "brillouin_zone": false,
+  "volumetric": false,
+  "editing": false
+}
+
+```
+
+必须与真实implementation一致。
+
+若Phase 10F-26某项是PARTIAL_READY或DEFERRED：
+
+-   这里不得写true
+
+-   或使用更准确状态模型
+
+
+禁止简单boolean过度宣称。
+
+----------
+
+# 20. Evidence Package
+
+新增：
+
+```text
+docs/phase10f/evidence/phase10f27_structure_viewer_3d_product/
+
+```
+
+至少包含：
+
+```text
+README.md
+tool_registration.json
+tool_registry_snapshot.json
+planner_catalog_snapshot.json
+capability_contract.json
+input_contract.json
+output_contract.json
+manifest_validation.json
+api_valid_orthogonal.json
+api_valid_triclinic.json
+api_self_periodic.json
+api_large_degraded.json
+api_over_budget.json
+api_invalid_input.json
+browser_product_matrix.json
+mobile_product_matrix.json
+legacy_tool_policy.json
+security_audit.json
+network_audit.json
+artifact_hashes.json
+
+```
+
+截图建议：
+
+```text
+01_tool_discovery.png
+02_planner_selected_viewer.png
+03_job_running.png
+04_viewer_success.png
+05_triclinic_periodic.png
+06_self_periodic.png
+07_measurement.png
+08_supercell.png
+09_clipping_camera.png
+10_export.png
+11_degraded_mode.png
+12_over_budget_fallback.png
+13_mobile_viewer.png
+14_json_fallback.png
+
+```
+
+----------
+
+# 21. Browser Evidence
+
+必须通过真实产品路径。
+
+## Chromium
+
+覆盖：
+
+-   tool discovery
+
+-   planner selection
+
+-   job execution
+
+-   result render
+
+-   picking
+
+-   measurement
+
+-   supercell
+
+-   clipping
+
+-   export
+
+-   degraded mode
+
+-   over-budget fallback
+
+-   context loss
+
+-   reload/reopen artifact
+
+
+## Firefox
+
+至少覆盖：
+
+-   planner→job→result
+
+-   periodic render
+
+-   measurement
+
+-   export
+
+-   fallback
+
+
+## WebKit
+
+至少覆盖：
+
+-   planner→job→result
+
+-   render
+
+-   mobile-like interaction
+
+-   export
+
+-   fallback
+
+
+## Mobile
+
+至少覆盖：
+
+-   tool discovery或result entry
+
+-   renderer
+
+-   controls
+
+-   measurement
+
+-   supercell
+
+-   export
+
+-   degraded/refused state
+
+
+----------
+
+# 22. Browser Evidence Assertions
+
+每个case记录：
+
+-   browser version
+
+-   viewport
+
+-   tool ID
+
+-   planner choice
+
+-   job ID或sanitized identity
+
+-   execution status
+
+-   scene schema
+
+-   manifest schema
+
+-   capabilities
+
+-   render mode
+
+-   artifact names
+
+-   console errors
+
+-   network requests
+
+-   canvas count
+
+-   context count
+
+
+必须验证：
+
+-   formal tool ID shown
+
+-   planner selects correct tool
+
+-   job executes registered adapter
+
+-   output is v2
+
+-   no legacy default output
+
+-   renderer loads
+
+-   fallback works
+
+-   no external network
+
+-   no artifact JS
+
+-   no duplicate canvas/context
+
+-   no capability overclaim
+
+
+----------
+
+# 23. API Evidence Assertions
+
+必须记录：
+
+-   request
+
+-   selected tool
+
+-   validated plan
+
+-   job status
+
+-   adapter execution
+
+-   output schemas
+
+-   artifact names
+
+-   warnings
+
+-   typed errors
+
+-   security metadata
+
+-   hashes
+
+
+必须证明：
+
+-   Tool Registry真实参与
+
+-   PlanValidator真实参与
+
+-   runtime真实参与
+
+-   artifact validator真实参与
+
+-   frontend使用真实artifact
+
+
+----------
+
+# 24. Tests
+
+## 24.1 Registry Tests
+
+覆盖：
+
+-   `structure.viewer_3d` registered
+
+-   exactly once
+
+-   metadata exact
+
+-   current schema exact
+
+-   capabilities exact
+
+-   deprecated tools hidden
+
+-   no alias collision
+
+
+## 24.2 Planner Tests
+
+覆盖：
+
+-   visualization request selects viewer
+
+-   bond inspection selects viewer
+
+-   measurement request selects viewer-compatible route
+
+-   trajectory request rejected/not routed
+
+-   phonon request rejected/not routed
+
+-   volumetric request rejected/not routed
+
+-   editing request rejected/not routed
+
+
+## 24.3 Validator Tests
+
+覆盖：
+
+-   valid structure
+
+-   invalid lattice
+
+-   nonfinite coordinates
+
+-   unsupported data kind
+
+-   over-cap sites
+
+-   executable options
+
+-   external URL
+
+-   unsupported capability
+
+
+## 24.4 Execution Tests
+
+覆盖：
+
+-   orthogonal
+
+-   triclinic
+
+-   self-periodic
+
+-   degraded
+
+-   over-budget
+
+-   invalid
+
+-   deterministic replay
+
+-   artifact hashes
+
+
+## 24.5 API Tests
+
+覆盖：
+
+-   discovery
+
+-   job create
+
+-   job status
+
+-   artifact retrieve
+
+-   validation
+
+-   failure
+
+-   retry，若现有runtime支持
+
+
+## 24.6 Frontend Tests
+
+覆盖：
+
+-   product title
+
+-   tool metadata
+
+-   result render
+
+-   JSON fallback
+
+-   capability display
+
+-   warnings
+
+-   degraded
+
+-   over-budget
+
+-   invalid
+
+-   export
+
+-   accessibility
+
+-   mobile
+
+
+## 24.7 Regression
+
+必须保持：
+
+-   Phase 10F-18 periodic topology
+
+-   Phase 10F-19 integration
+
+-   Phase 10F-20 compatibility
+
+-   Phase 10F-21 performance
+
+-   Phase 10F-22 accessibility
+
+-   Phase 10F-23 picking/measurement
+
+-   Phase 10F-24 supercell
+
+-   Phase 10F-25 clipping/camera
+
+-   Phase 10F-26 export
+
+-   no external network
+
+-   no artifact JS
+
+
+----------
+
+# 25. Security
+
+必须验证：
+
+-   no artifact JavaScript
+
+-   no artifact HTML execution
+
+-   no remote assets
+
+-   no external URL
+
+-   no shader injection
+
+-   no callback injection
+
+-   no arbitrary renderer config
+
+-   no arbitrary file access
+
+-   no notebook execution
+
+-   no script execution
+
+-   no real LLM
+
+-   no registry bypass
+
+-   no planner bypass
+
+-   no validator bypass
+
+-   no hidden alias execution
+
+-   no capability overclaim
+
+-   no legacy schema masquerading as current
+
+-   no private path
+
+-   no token
+
+-   no secret
+
+-   no telemetry upload
+
+
+必须输出：
+
+```text
+NO_EXTERNAL_NETWORK_REQUESTS
+NO_SECRET_PATTERN_HITS
+
+```
+
+----------
+
+# 26. Documentation
+
+新增或更新：
+
+```text
+docs/phase10f/phase10f27_structure_viewer_3d_registration.md
+docs/phase10f/phase10f27_structure_viewer_3d_tool_contract.md
+docs/phase10f/phase10f27_structure_viewer_3d_capabilities.md
+docs/phase10f/phase10f27_structure_viewer_3d_planner_routing.md
+docs/phase10f/phase10f27_structure_viewer_3d_api_evidence.md
+docs/phase10f/phase10f27_structure_viewer_3d_browser_evidence.md
+docs/phase10f/phase10f27_structure_viewer_3d_security.md
+docs/phase10f/phase10f27_structure_viewer_3d_readiness_matrix.md
+
+```
+
+更新：
+
+```text
+docs/index.md
+docs/13_SHARED_SCHEMA_SPEC.md
+persistent/DESIGN_PROGRESS.md
+persistent/TASK_BOARD.md
+persistent/CHANGELOG.md
+persistent/OPEN_QUESTIONS.md
+persistent/TOOL_REGISTRY_NOTES.md
+persistent/ARCHITECTURE_DECISIONS.md
+
+```
+
+必须记录：
+
+-   formal tool ID
+
+-   input/output contracts
+
+-   planner behavior
+
+-   API behavior
+
+-   artifact behavior
+
+-   capability truth
+
+-   legacy policy
+
+-   product UX
+
+-   security
+
+-   remaining unsupported scopes
+
+
+----------
+
+# 27. Readiness Matrix
+
+最终分别判断：
+
+-   formal tool ID
+
+-   registry
+
+-   planner discovery
+
+-   planner routing
+
+-   PlanValidator
+
+-   adapter
+
+-   execution runtime
+
+-   API
+
+-   artifact emission
+
+-   manifest
+
+-   frontend product entry
+
+-   renderer
+
+-   JSON fallback
+
+-   picking
+
+-   measurement
+
+-   supercell
+
+-   clipping
+
+-   camera
+
+-   export
+
+-   accessibility
+
+-   mobile
+
+-   performance
+
+-   Chromium
+
+-   Firefox
+
+-   WebKit
+
+-   security
+
+-   legacy deprecation
+
+-   full `structure.viewer_3d`
+
+-   trajectory
+
+-   phonon
+
+-   Brillouin zone
+
+-   volumetric
+
+-   editing
+
+
+推荐期望：
+
+```text
+formal tool ID: READY
+registry: READY
+planner discovery: READY
+planner routing: READY
+PlanValidator: READY
+adapter: READY
+execution runtime: READY
+API: READY
+artifact emission: READY
+manifest: READY
+frontend product entry: READY
+renderer: READY
+JSON fallback: READY
+picking: READY
+measurement: READY
+supercell: READY
+clipping: READY
+camera: READY
+export: READY or PARTIAL_READY according to Phase 10F-26
+accessibility: READY
+mobile: READY
+performance: READY
+browser matrix: READY
+security: READY
+legacy deprecation: READY
+full structure.viewer_3d: READY
+trajectory: NOT_READY
+phonon: NOT_READY
+Brillouin zone: NOT_READY
+volumetric: NOT_READY
+editing: NOT_READY
+
+```
+
+只有本阶段全部闭环后，才允许首次将：
+
+```text
+full structure.viewer_3d: READY
+
+```
+
+----------
+
+# 28. Checks
+
+至少运行：
+
+```bash
+git diff --check
+uv lock --check
+
+npm --prefix apps/web test
+npm --prefix apps/web run typecheck
+npm --prefix apps/web run build
+
+uv run python -m pytest -q
+
+```
+
+并运行：
+
+-   registry tests
+
+-   planner tests
+
+-   PlanValidator tests
+
+-   adapter tests
+
+-   execution tests
+
+-   API tests
+
+-   frontend product tests
+
+-   browser tests
+
+-   mobile tests
+
+-   performance regression
+
+-   accessibility regression
+
+-   export regression
+
+-   service-backed integration
+
+-   no-skipped assertion
+
+-   secret scan
+
+-   network audit
+
+
+必须如实记录：
+
+-   passed
+
+-   failed
+
+-   skipped
+
+-   unavailable
+
+
+不得把skipped写成passed。
+
+----------
+
+# 29. Commit / CI
+
+完成实现、tests、evidence和docs后：
+
+```bash
+git status --short
+git diff --stat
+git add <only Phase 10F-27 related files>
+git commit -m "Register structure viewer 3D product"
+git push origin master
+
+```
+
+等待current HEAD CI。
+
+必须确认：
+
+-   unit success
+
+-   frontend tests success
+
+-   frontend typecheck success
+
+-   frontend build success
+
+-   service-backed integration success
+
+-   no-skipped assertion success
+
+-   origin/master matches HEAD
+
+-   git status clean
+
+
+不得伪造CI。
+
+----------
+
+# 30. 最终报告格式
+
+输出：
+
+# Phase 10F-27 Formal `structure.viewer_3d` Registration and Product Evidence Result
+
+## 1. Conclusion
+
+PASS / PARTIAL_PASS / FAIL
+
+## 2. Baseline
+
+-   Phase 10F-26 assumed complete:
+
+-   branch:
+
+-   initial status:
+
+-   final HEAD:
+
+-   final status:
+
+
+## 3. Formal Tool Registration
+
+-   tool ID:
+
+-   registry:
+
+-   display name:
+
+-   category:
+
+-   deterministic:
+
+-   network:
+
+-   current schema:
+
+-   manifest:
+
+
+## 4. Capability Contract
+
+-   periodic structure:
+
+-   periodic bonds:
+
+-   cross-boundary:
+
+-   neighbor graph:
+
+-   picking:
+
+-   measurement:
+
+-   supercell:
+
+-   clipping:
+
+-   camera:
+
+-   export:
+
+-   trajectory:
+
+-   phonon:
+
+-   Brillouin:
+
+-   volumetric:
+
+-   editing:
+
+
+## 5. Legacy Tool Policy
+
+-   Phase 10D:
+
+-   canonical v1:
+
+-   internal adapters:
+
+-   planner visibility:
+
+-   user-facing IDs:
+
+-   deprecation:
+
+
+## 6. Planner
+
+-   discovery:
+
+-   routing:
+
+-   valid visualization:
+
+-   measurement:
+
+-   trajectory rejection:
+
+-   phonon rejection:
+
+-   volumetric rejection:
+
+-   editing rejection:
+
+
+## 7. PlanValidator
+
+-   known tool:
+
+-   input validation:
+
+-   output validation:
+
+-   unsupported capability:
+
+-   executable options:
+
+-   external URLs:
+
+-   caps:
+
+
+## 8. Execution
+
+-   adapter:
+
+-   runtime:
+
+-   scene:
+
+-   manifest:
+
+-   recipe:
+
+-   validation:
+
+-   deterministic replay:
+
+-   warnings:
+
+-   failure behavior:
+
+
+## 9. API Evidence
+
+-   discovery:
+
+-   orthogonal:
+
+-   triclinic:
+
+-   self-periodic:
+
+-   degraded:
+
+-   over-budget:
+
+-   invalid:
+
+-   artifact retrieval:
+
+-   typed errors:
+
+
+## 10. Product UI
+
+-   tool entry:
+
+-   result surface:
+
+-   renderer:
+
+-   JSON fallback:
+
+-   inspector:
+
+-   measurement:
+
+-   supercell:
+
+-   clipping:
+
+-   camera:
+
+-   export:
+
+-   warnings:
+
+-   invalid state:
+
+
+## 11. Browser Evidence
+
+-   Chromium:
+
+-   Firefox:
+
+-   WebKit:
+
+-   mobile:
+
+-   planner:
+
+-   execution:
+
+-   renderer:
+
+-   fallback:
+
+-   export:
+
+-   console:
+
+-   network:
+
+
+## 12. Performance
+
+-   interactive:
+
+-   degraded:
+
+-   refused:
+
+-   lifecycle:
+
+-   canvas/context:
+
+-   draw calls:
+
+-   memory proxy:
+
+
+## 13. Accessibility
+
+-   keyboard:
+
+-   focus:
+
+-   semantic scene:
+
+-   inspector:
+
+-   measurement:
+
+-   mobile:
+
+-   fallback:
+
+-   live regions:
+
+
+## 14. Security
+
+-   registry bypass:
+
+-   planner bypass:
+
+-   validator bypass:
+
+-   artifact JS:
+
+-   external assets:
+
+-   capability overclaim:
+
+-   legacy masquerading:
+
+-   dependencies:
+
+-   secrets:
+
+-   network:
+
+
+## 15. Evidence
+
+-   directory:
+
+-   registration:
+
+-   registry snapshot:
+
+-   planner snapshot:
+
+-   capability contract:
+
+-   API:
+
+-   browser:
+
+-   mobile:
+
+-   security:
+
+-   markers:
+
+
+## 16. Tests
+
+-   registry:
+
+-   planner:
+
+-   validator:
+
+-   execution:
+
+-   API:
+
+-   frontend:
+
+-   backend:
+
+-   typecheck:
+
+-   build:
+
+-   browsers:
+
+-   mobile:
+
+-   service-backed:
+
+-   no-skipped:
+
+-   lock:
+
+-   diff:
+
+
+## 17. Files
+
+-   registry:
+
+-   planner:
+
+-   adapter:
+
+-   validator:
+
+-   API:
+
+-   frontend:
+
+-   tests:
+
+-   browser runners:
+
+-   evidence:
+
+-   docs:
+
+-   persistent:
+
+-   dependencies/lockfile:
+
+
+## 18. Deferred
+
+明确列出：
+
+-   trajectory
+
+-   trajectory playback
+
+-   phonon
+
+-   phonon animation
+
+-   Brillouin zone
+
+-   volumetric
+
+-   charge density
+
+-   spin density
+
+-   isosurface
+
+-   defects
+
+-   surfaces
+
+-   slabs
+
+-   structure editing
+
+-   atom mutation
+
+-   bond mutation
+
+-   lattice editing
+
+-   collaboration
+
+-   remote assets
+
+-   external plugins
+
+
+## 19. Readiness
+
+-   formal tool:
+
+-   registry:
+
+-   planner:
+
+-   validator:
+
+-   execution:
+
+-   API:
+
+-   product UI:
+
+-   renderer:
+
+-   picking:
+
+-   measurement:
+
+-   supercell:
+
+-   clipping:
+
+-   camera:
+
+-   export:
+
+-   accessibility:
+
+-   mobile:
+
+-   performance:
+
+-   security:
+
+-   full `structure.viewer_3d`:
+
+-   trajectory:
+
+-   phonon:
+
+-   Brillouin:
+
+-   volumetric:
+
+-   editing:
+
+
+## 20. Commit / CI
+
+-   commit:
+
+-   HEAD:
+
+-   CI run:
+
+-   unit:
+
+-   frontend:
+
+-   build:
+
+-   service-backed:
+
+-   no-skipped:
+
+-   origin:
+
+-   status:
+
+
+## 21. Whether allowed to enter next phase
+
+允许 / 不允许
+
+下一阶段建议：
+
+```text
+Phase 10G：Brillouin Zone Planning and Contract
+
+```
+
+下一阶段只做planning和contract，不直接实现Brillouin zone renderer。
+
+----------
+
+# 31. PASS 判定
+
+PASS必须满足：
+
+-   `structure.viewer_3d`正式注册
+
+-   registry中唯一
+
+-   planner可发现
+
+-   planner可正确选择
+
+-   unsupported scopes不误选
+
+-   PlanValidator不放宽
+
+-   service-backed execution真实闭环
+
+-   API evidence真实闭环
+
+-   browser evidence真实闭环
+
+-   output默认v2
+
+-   manifest正确
+
+-   legacy不再作为正式production default
+
+-   product UI真实可用
+
+-   renderer真实可用
+
+-   JSON fallback真实可用
+
+-   picking/measurement/supercell/clipping/camera/export不回退
+
+-   performance不回退
+
+-   accessibility不回退
+
+-   mobile不回退
+
+-   capability metadata真实
+
+-   trajectory/phonon/Brillouin/volumetric/editing全部false
+
+-   no registry/planner/validator bypass
+
+-   no artifact JS
+
+-   no external network
+
+-   no secret hits
+
+-   tests通过
+
+-   CI通过
+
+-   git clean
+
+-   `full structure.viewer_3d: READY`
+
+
+PARTIAL_PASS仅允许：
+
+-   Phase 10F-26某个export子项本来就是PARTIAL_READY，且这里准确继承
+
+-   某个mobile平台下载行为有既有限制，但viewer product路径完整
+
+-   npm audit因既有registry问题不可用
+
+
+FAIL包括：
+
+-   只有registry metadata，没有真实执行
+
+-   planner看不到tool
+
+-   planner错误选择viewer处理trajectory/phonon/volumetric
+
+-   API绕过runtime
+
+-   browser使用fixture绕过product path
+
+-   output仍默认legacy schema
+
+-   capability过度宣称
+
+-   formal tool与legacy tool冲突
+
+-   PlanValidator被放宽
+
+-   artifact执行JS或加载remote assets
+
+-   无API evidence
+
+-   无browser evidence
+
+-   CI失败却声明PASS
+
+-   full viewer未闭环却标记READY
 ---END---
