@@ -5207,7 +5207,7 @@ FAIL包括：
 ---END---
 
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10 Closure Regression Pack
 
 进入 Phase 10 Closure Regression Pack。
@@ -7706,6 +7706,38 @@ FAIL包括：
 -   无browser closure
 
 -   CI失败却声明PASS
+
+完成时间：2026-07-13 18:38:54 +08:00
+
+修改文件：
+
+- `tests/integration/test_phase10_product_closure.py`、`tests/test_phase10f27_formal_viewer_product.py`
+- `apps/web/app/components/viewer-scene/phase10ProductClosure.test.ts`
+- `apps/web/test/phase10-product-closure-browser-evidence.mjs`、`phase10-closure-evidence-check.mjs`、`generate-phase10-closure-evidence.py`
+- `scripts/test_phase10_closure.ps1`、`apps/web/package.json`、`.github/workflows/ci.yml`
+- `docs/phase10/*.md`、`docs/phase10/evidence/phase10_closure_regression_pack/`、`docs/index.md`
+- `services/llm/mdi_llm/providers.py`、相关 `persistent/*.md`
+
+修改摘要：
+
+- 新增 6-tool registry→planner→PlanValidator→runtime→artifact closure，并加入 PostgreSQL/Redis/MinIO service-backed formal viewer case。
+- 新增 frontend v2/periodic/supercell/measurement/clipping/export/legacy/refused composition closure。
+- 新增 Chromium full、Firefox/WebKit/mobile smoke、console/network/lifecycle/fallback/security evidence 和跨平台 SHA-256 integrity gate。
+- 修复任务指定 `Show this periodic crystal in 3D and allow bond inspection` 被 preview metadata 抢占的 route precedence。
+- 将 backend/frontend/evidence integrity 和 service-backed 20-pass/0-skip gate 接入 required CI；无 dependency、schema、adapter、runtime 或 renderer feature 变更。
+
+测试结果：
+
+- backend closure：`2 passed, 1 deselected`；精确 registry/planner/PlanValidator/artifact/compatibility 组：`72 passed, 1 deselected`。
+- frontend closure：`2 passed`；frontend full：`106 passed`；typecheck/build 通过。
+- backend full：`372 passed, 22 skipped, 11 warnings`；本地额外 skip 为 Docker 不可用的 service-backed closure。
+- browser closure entry：Chromium 150、Firefox 128、WebKit 18 和 mobile PASS；console/page errors `0`；external requests `0`。
+- `PHASE10_CLOSURE_EVIDENCE_PASS`、`PHASE10_PRODUCT_CLOSURE_BROWSER_PASS`、`PHASE10_CLOSURE_EVIDENCE_INTEGRITY_PASS`、`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。
+- `npm audit` 因配置 registry 不实现 audit endpoint而 unavailable；dependency/lockfile unchanged。
+- 主提交：`589ddca02ac039b2de6456b5c7ca49d92e026f2c Add Phase 10 closure regression pack`。
+- CI `29243052704` 因 Windows CRLF hash 与 Linux LF 不一致失败；`69b93a7` 改为 canonical LF text hashing。
+- CI `29243222153` 因 hash inventory 包含被 gitignore 排除的重复 artifact copies 失败；`5230105` 删除重复 raw copies。
+- 最终 current-HEAD CI `29243395743`：unit、Phase 10 backend/frontend closure、evidence integrity、typecheck/build、service-backed integration、20-pass/0-skip 全部 success。
 ---END---
 
 ---TASK---
