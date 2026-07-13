@@ -23,6 +23,7 @@ def main() -> None:
     evidence.relative_to(ROOT)
     payload = _read(evidence / "live_payload.json")
     browser = _read(evidence / "browser_matrix.json")
+    shutil.rmtree(evidence / "artifacts", ignore_errors=True)
     backend = _run(["uv", "run", "python", "-m", "pytest", "-q", "tests/integration/test_phase10_product_closure.py", "-m", "not integration"])
     npm = shutil.which("npm.cmd") or shutil.which("npm") or "npm"
     frontend = _run([npm, "--prefix", "apps/web", "run", "test:phase10-closure"])
