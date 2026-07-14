@@ -6,7 +6,7 @@
 - [x] Implement bounded phonon animation adapter, formal tool/runtime path, and validated frontend mode selection/playback.
 - [x] Add browser, performance, accessibility, security, and regression evidence without expanding into thermal or spectroscopy scope.
 - [x] Complete full regression, implementation commit, current-HEAD CI, and completion record.
-- [ ] Archive the completed TASKS block after this completion record's current-HEAD CI succeeds.
+- [x] Archive the completed TASKS block after completion-record commit `1021a2e` passed current-HEAD CI run `29327795589`.
 
 ## Phase 10H-4 Phonon Eigenvector Contract Completed
 

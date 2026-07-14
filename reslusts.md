@@ -63,3 +63,10 @@
 * 修改摘要：实现正式 `phonon.animation` 产品链路，包含严格 structure/band/eigenvector/mode 兼容性、frame-free inert package、Gamma 与 bounded diagonal commensurate non-Gamma 位移重建、imaginary-mode policy、Three.js phase playback、vectors/trails、periodic picking、exact band handoff、mobile/accessibility/context-loss 和 JSON fallback。未新增依赖，未实现 phonon solver、thermal/spectroscopy、video export、remote assets 或 real LLM。
 * 测试结果：frontend full `193 passed`；backend full `566 passed, 23 skipped, 11 warnings`；typecheck/build/uv lock/diff success；H5 Chromium/Firefox/WebKit/mobile/accessibility/API/reference evidence和历史 trajectory performance 三浏览器回归通过；`NO_PHONON_ANIMATION_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。本机无 Docker；CI service-backed/no-skipped 成功。`npm audit` 因 configured npmmirror endpoint `404 NOT_IMPLEMENTED` unavailable，且无 dependency/lockfile 变更。
 * 提交 / CI：实现提交 `b67a9e18109f976aeadaf6002eaac6c71297875c`；CI run `29327516331` success。完成记录提交推送后需再次通过 current-HEAD CI，最终归档以该检查为准。
+
+### 队列归档确认
+
+* 核验时间：2026-07-14 19:09:39 +08:00
+* 完成记录提交：`1021a2e2cba202ffaec22d4e0d35a4fb345a890c`
+* current-HEAD CI：run `29327795589` success
+* 归档结论：实现、测试、API/browser evidence、completion record、service-backed/no-skipped 和两次 current-HEAD CI 均闭合；允许从 `TASKS.md` 删除 Phase 10H-5 block，历史结果保留于本文件。
