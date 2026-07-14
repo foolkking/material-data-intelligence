@@ -1,0 +1,1493 @@
+{
+  "artifacts": [
+    {
+      "bucket": null,
+      "content": {
+        "acoustic_sum_rule": {
+          "applied": false,
+          "method": null
+        },
+        "atom_count": 2,
+        "atom_ordering": "canonical_structure_order",
+        "branch_scope": "full",
+        "branches": [
+          {
+            "branch_index": 0,
+            "frequencies": [
+              0.0,
+              1.0,
+              1.5
+            ]
+          },
+          {
+            "branch_index": 1,
+            "frequencies": [
+              0.0,
+              1.0,
+              1.6
+            ]
+          },
+          {
+            "branch_index": 2,
+            "frequencies": [
+              0.0,
+              1.2,
+              1.7
+            ]
+          },
+          {
+            "branch_index": 3,
+            "frequencies": [
+              4.0,
+              4.4,
+              4.8
+            ]
+          },
+          {
+            "branch_index": 4,
+            "frequencies": [
+              4.0,
+              4.5,
+              4.9
+            ]
+          },
+          {
+            "branch_index": 5,
+            "frequencies": [
+              4.2,
+              4.6,
+              5.0
+            ]
+          }
+        ],
+        "degeneracy_groups": [
+          {
+            "branch_indices": [
+              0,
+              1,
+              2
+            ],
+            "qpoint_index": 0,
+            "source": "producer"
+          },
+          {
+            "branch_indices": [
+              3,
+              4
+            ],
+            "qpoint_index": 0,
+            "source": "producer"
+          }
+        ],
+        "frequency_unit": "terahertz",
+        "frequency_zero_tolerance": 1e-06,
+        "imaginary_frequency_encoding": "negative_real",
+        "path_distance_unit": "radian_per_angstrom",
+        "qpoint_coordinate_system": "reciprocal_fractional",
+        "qpoints": [
+          {
+            "coordinates": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "distance": 0.0,
+            "index": 0,
+            "label": "\u0393",
+            "segment_index": 0,
+            "source_label": "GAMMA"
+          },
+          {
+            "coordinates": [
+              0.5,
+              0.0,
+              0.0
+            ],
+            "distance": 0.5785621829815458,
+            "index": 1,
+            "label": "X",
+            "segment_index": 0,
+            "source_label": "X"
+          },
+          {
+            "coordinates": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "distance": 1.3967726688302322,
+            "index": 2,
+            "label": "L",
+            "segment_index": 0,
+            "source_label": "L"
+          }
+        ],
+        "real_space_lattice_angstrom": [
+          [
+            5.43,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            5.43,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            5.43
+          ]
+        ],
+        "reciprocal_convention": "physics_2pi",
+        "schema_version": "phase10h.phonon_band.v1",
+        "security": {
+          "contains_html": false,
+          "contains_javascript": false,
+          "executable_content_allowed": false,
+          "external_assets": [],
+          "external_urls_allowed": false
+        },
+        "segments": [
+          {
+            "discontinuous_from_previous": false,
+            "end_label": "L",
+            "end_qpoint_index": 2,
+            "segment_index": 0,
+            "start_label": "\u0393",
+            "start_qpoint_index": 0
+          }
+        ],
+        "source": {
+          "adapter_version": "phase10h-fixture-v1",
+          "calculation_method": "finite_displacement",
+          "force_constants_source": "force_constants",
+          "input_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "nac": {
+            "direction_policy": null,
+            "enabled": false,
+            "gamma_direction": null
+          },
+          "primitive_matrix": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "producer": "fixture",
+          "producer_version": "1.0",
+          "supercell_matrix": [
+            [
+              2,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              0
+            ],
+            [
+              0,
+              0,
+              2
+            ]
+          ]
+        },
+        "species": [
+          "Si",
+          "Si"
+        ],
+        "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "warnings": []
+      },
+      "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "contentType": "application/json",
+      "datasetId": "dataset_h1",
+      "id": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_band_json",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "createdAt": "2026-07-14T01:43:13.467096+00:00",
+        "inputHashes": [
+          "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c"
+        ],
+        "paramsHash": "b9402174f057fb54d49d6fbf18e5a9de54c1782cfcd0c77ecd7e88588c85911f",
+        "profileId": null,
+        "provenance": {
+          "adapter": "phonon.band",
+          "animationIncluded": false,
+          "aseVersion": "3.29.0",
+          "dosIncluded": false,
+          "eigenvectorsIncluded": false,
+          "externalResources": false,
+          "mediaType": "application/json",
+          "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+          "planId": "plan_870e972a31be4f5da0d52d14",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "schemaVersion": "phase10h.phonon_band.v1",
+          "staticBandOnly": true,
+          "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+          "toolId": "phonon.band"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "phonon.band",
+        "toolVersion": "0.1.0"
+      },
+      "name": "phonon_band.json",
+      "previewKey": null,
+      "projectId": "project_h1",
+      "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "sizeBytes": 2152,
+      "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_band.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+      "type": "phonon_band_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "content": {
+        "atom_count": 2,
+        "branch_count": 6,
+        "dos_available": false,
+        "frequency_max": 5.0,
+        "frequency_min": 0.0,
+        "frequency_unit": "terahertz",
+        "imaginary_mode_count": 0,
+        "nac_enabled": false,
+        "near_zero_mode_count": 3,
+        "projected_dos_available": false,
+        "qpoint_count": 3,
+        "schema_version": "phase10h.phonon_summary.v1",
+        "segment_count": 1,
+        "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "warnings": [
+          "PHONON_ACOUSTIC_MODES_NOT_CORRECTED",
+          "PHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY",
+          "PHONON_HIGH_SYMMETRY_LABEL_NORMALIZED"
+        ]
+      },
+      "contentHash": "4ce5290d692161051847be730df2951e397868a58ed92b6ac0c6454dc81f3dc8",
+      "contentType": "application/json",
+      "datasetId": "dataset_h1",
+      "id": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_summary_json",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "createdAt": "2026-07-14T01:43:13.469095+00:00",
+        "inputHashes": [
+          "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c"
+        ],
+        "paramsHash": "b9402174f057fb54d49d6fbf18e5a9de54c1782cfcd0c77ecd7e88588c85911f",
+        "profileId": null,
+        "provenance": {
+          "adapter": "phonon.band",
+          "animationIncluded": false,
+          "aseVersion": "3.29.0",
+          "dosIncluded": false,
+          "eigenvectorsIncluded": false,
+          "externalResources": false,
+          "mediaType": "application/json",
+          "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+          "planId": "plan_870e972a31be4f5da0d52d14",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "schemaVersion": "phase10h.phonon_band.v1",
+          "staticBandOnly": true,
+          "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+          "toolId": "phonon.band"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "phonon.band",
+        "toolVersion": "0.1.0"
+      },
+      "name": "phonon_summary.json",
+      "previewKey": null,
+      "projectId": "project_h1",
+      "sha256": "4ce5290d692161051847be730df2951e397868a58ed92b6ac0c6454dc81f3dc8",
+      "sizeBytes": 531,
+      "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_summary.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+      "type": "phonon_summary_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "content": {
+        "atom_count": 2,
+        "branch_count": 6,
+        "branch_order": "source_order_preserved",
+        "canonical_schema_version": "phase10h.phonon_band.v1",
+        "frequency_unit": "terahertz",
+        "qpoint_count": 3,
+        "reciprocal_convention": "physics_2pi",
+        "schema_version": "phase10h1.phonon_band_parse_report.v1",
+        "security": {
+          "contains_html": false,
+          "contains_javascript": false,
+          "executable_content_allowed": false,
+          "external_assets": [],
+          "external_urls_allowed": false
+        },
+        "segment_count": 1,
+        "source_format": "phase10h.phonon_band.v1",
+        "source_sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+        "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "validation": {
+          "atom_count": 2,
+          "branch_count": 6,
+          "caps": {
+            "max_artifact_bytes": 64000000,
+            "max_atoms": 512,
+            "max_branches": 1536,
+            "max_degeneracy_groups": 4096,
+            "max_dos_points": 100000,
+            "max_label_length": 64,
+            "max_labels": 512,
+            "max_metadata_bytes": 16384,
+            "max_nesting_depth": 10,
+            "max_numeric_magnitude": 1000000000000,
+            "max_projected_dos_series": 512,
+            "max_qpoints": 4096,
+            "max_segments": 256,
+            "max_total_numeric_values": 4000000,
+            "max_visited_nodes": 5000000,
+            "max_warnings": 32
+          },
+          "dos_point_count": 0,
+          "errors": [],
+          "projected_series_count": 0,
+          "qpoint_count": 3,
+          "valid": true,
+          "warnings": [
+            "PHONON_ACOUSTIC_MODES_NOT_CORRECTED",
+            "PHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY",
+            "PHONON_HIGH_SYMMETRY_LABEL_NORMALIZED"
+          ]
+        },
+        "warnings": []
+      },
+      "contentHash": "10a228a1693a16dc760f4d6044bf91a72c63dbf9befe144f19b72d0f748ab4a1",
+      "contentType": "application/json",
+      "datasetId": "dataset_h1",
+      "id": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_report_json",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "createdAt": "2026-07-14T01:43:13.472095+00:00",
+        "inputHashes": [
+          "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c"
+        ],
+        "paramsHash": "b9402174f057fb54d49d6fbf18e5a9de54c1782cfcd0c77ecd7e88588c85911f",
+        "profileId": null,
+        "provenance": {
+          "adapter": "phonon.band",
+          "animationIncluded": false,
+          "aseVersion": "3.29.0",
+          "dosIncluded": false,
+          "eigenvectorsIncluded": false,
+          "externalResources": false,
+          "mediaType": "application/json",
+          "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+          "planId": "plan_870e972a31be4f5da0d52d14",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "schemaVersion": "phase10h.phonon_band.v1",
+          "staticBandOnly": true,
+          "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+          "toolId": "phonon.band"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "phonon.band",
+        "toolVersion": "0.1.0"
+      },
+      "name": "phonon_band_parse_report.json",
+      "previewKey": null,
+      "projectId": "project_h1",
+      "sha256": "10a228a1693a16dc760f4d6044bf91a72c63dbf9befe144f19b72d0f748ab4a1",
+      "sizeBytes": 1338,
+      "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_band_parse_report.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+      "type": "phonon_report_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "content": {
+        "artifacts": [
+          {
+            "media_type": "application/json",
+            "name": "phonon_band.json",
+            "schema_version": "phase10h.phonon_band.v1",
+            "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+            "size_bytes": 2152
+          },
+          {
+            "media_type": "application/json",
+            "name": "phonon_summary.json",
+            "schema_version": "phase10h.phonon_summary.v1",
+            "sha256": "4ce5290d692161051847be730df2951e397868a58ed92b6ac0c6454dc81f3dc8",
+            "size_bytes": 531
+          }
+        ],
+        "band_schema_version": "phase10h.phonon_band.v1",
+        "dos_schema_version": null,
+        "schema_version": "phase10h.phonon_manifest.v1",
+        "security": {
+          "contains_html": false,
+          "contains_javascript": false,
+          "executable_content_allowed": false,
+          "external_assets": [],
+          "external_urls_allowed": false
+        },
+        "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "summary_schema_version": "phase10h.phonon_summary.v1"
+      },
+      "contentHash": "d3a37e57f4fcbdcf9624c96eceffab183c8a1558eac110509b20098e73e4ccd5",
+      "contentType": "application/json",
+      "datasetId": "dataset_h1",
+      "id": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_manifest_json",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "createdAt": "2026-07-14T01:43:13.474095+00:00",
+        "inputHashes": [
+          "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c"
+        ],
+        "paramsHash": "b9402174f057fb54d49d6fbf18e5a9de54c1782cfcd0c77ecd7e88588c85911f",
+        "profileId": null,
+        "provenance": {
+          "adapter": "phonon.band",
+          "animationIncluded": false,
+          "aseVersion": "3.29.0",
+          "dosIncluded": false,
+          "eigenvectorsIncluded": false,
+          "externalResources": false,
+          "mediaType": "application/json",
+          "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+          "planId": "plan_870e972a31be4f5da0d52d14",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "schemaVersion": "phase10h.phonon_band.v1",
+          "staticBandOnly": true,
+          "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+          "toolId": "phonon.band"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "phonon.band",
+        "toolVersion": "0.1.0"
+      },
+      "name": "phonon_manifest.json",
+      "previewKey": null,
+      "projectId": "project_h1",
+      "sha256": "d3a37e57f4fcbdcf9624c96eceffab183c8a1558eac110509b20098e73e4ccd5",
+      "sizeBytes": 826,
+      "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_manifest.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+      "type": "phonon_manifest_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "content": {
+        "artifact_type": "phonon.band_plot",
+        "data": [
+          {
+            "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+            "legendgroup": "branch-0",
+            "mode": "lines",
+            "name": "Branch 1",
+            "showlegend": true,
+            "type": "scatter",
+            "x": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "y": [
+              0.0,
+              1.0,
+              1.5
+            ]
+          },
+          {
+            "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+            "legendgroup": "branch-1",
+            "mode": "lines",
+            "name": "Branch 2",
+            "showlegend": true,
+            "type": "scatter",
+            "x": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "y": [
+              0.0,
+              1.0,
+              1.6
+            ]
+          },
+          {
+            "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+            "legendgroup": "branch-2",
+            "mode": "lines",
+            "name": "Branch 3",
+            "showlegend": true,
+            "type": "scatter",
+            "x": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "y": [
+              0.0,
+              1.2,
+              1.7
+            ]
+          },
+          {
+            "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+            "legendgroup": "branch-3",
+            "mode": "lines",
+            "name": "Branch 4",
+            "showlegend": true,
+            "type": "scatter",
+            "x": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "y": [
+              4.0,
+              4.4,
+              4.8
+            ]
+          },
+          {
+            "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+            "legendgroup": "branch-4",
+            "mode": "lines",
+            "name": "Branch 5",
+            "showlegend": true,
+            "type": "scatter",
+            "x": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "y": [
+              4.0,
+              4.5,
+              4.9
+            ]
+          },
+          {
+            "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+            "legendgroup": "branch-5",
+            "mode": "lines",
+            "name": "Branch 6",
+            "showlegend": true,
+            "type": "scatter",
+            "x": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "y": [
+              4.2,
+              4.6,
+              5.0
+            ]
+          }
+        ],
+        "layout": {
+          "hovermode": "x unified",
+          "showlegend": false,
+          "title": {
+            "text": "Phonon band structure"
+          },
+          "xaxis": {
+            "tickmode": "array",
+            "ticktext": [
+              "\u0393",
+              "X",
+              "L"
+            ],
+            "tickvals": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "title": {
+              "text": "Wave vector path"
+            }
+          },
+          "yaxis": {
+            "title": {
+              "text": "Frequency (THz)"
+            },
+            "zeroline": true
+          }
+        },
+        "metadata": {
+          "branch_count": 6,
+          "discontinuities_split": true,
+          "negative_frequency_preserved": true,
+          "segment_count": 1,
+          "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "trace_count": 6
+        },
+        "schema_version": "phase10h1.phonon_band_plot.v1",
+        "security": {
+          "contains_html": false,
+          "contains_javascript": false,
+          "executable_content_allowed": false,
+          "external_assets": [],
+          "external_urls_allowed": false
+        }
+      },
+      "contentHash": "3f579988f015640c3492e3dbb378ff99be15c599e3904cfbd0aef8c04990a1f1",
+      "contentType": "application/json",
+      "datasetId": "dataset_h1",
+      "id": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-plotly_json",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "createdAt": "2026-07-14T01:43:13.477102+00:00",
+        "inputHashes": [
+          "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c"
+        ],
+        "paramsHash": "b9402174f057fb54d49d6fbf18e5a9de54c1782cfcd0c77ecd7e88588c85911f",
+        "profileId": null,
+        "provenance": {
+          "adapter": "phonon.band",
+          "animationIncluded": false,
+          "aseVersion": "3.29.0",
+          "dosIncluded": false,
+          "eigenvectorsIncluded": false,
+          "externalResources": false,
+          "mediaType": "application/json",
+          "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+          "planId": "plan_870e972a31be4f5da0d52d14",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "schemaVersion": "phase10h.phonon_band.v1",
+          "staticBandOnly": true,
+          "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+          "toolId": "phonon.band"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "phonon.band",
+        "toolVersion": "0.1.0"
+      },
+      "name": "phonon_band_plot.json",
+      "previewKey": null,
+      "projectId": "project_h1",
+      "sha256": "3f579988f015640c3492e3dbb378ff99be15c599e3904cfbd0aef8c04990a1f1",
+      "sizeBytes": 2170,
+      "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_band_plot.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+      "type": "plotly_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "content": {
+        "columns": [
+          "qpoint_index",
+          "segment_index",
+          "path_distance",
+          "q_x",
+          "q_y",
+          "q_z",
+          "label",
+          "branch_index",
+          "frequency_terahertz",
+          "classification"
+        ],
+        "row_count": 18,
+        "rows": [
+          {
+            "branch_index": 0,
+            "classification": "near_zero",
+            "frequency_terahertz": 0.0,
+            "label": "\u0393",
+            "path_distance": 0.0,
+            "q_x": 0.0,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 0,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 1,
+            "classification": "near_zero",
+            "frequency_terahertz": 0.0,
+            "label": "\u0393",
+            "path_distance": 0.0,
+            "q_x": 0.0,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 0,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 2,
+            "classification": "near_zero",
+            "frequency_terahertz": 0.0,
+            "label": "\u0393",
+            "path_distance": 0.0,
+            "q_x": 0.0,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 0,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 3,
+            "classification": "real",
+            "frequency_terahertz": 4.0,
+            "label": "\u0393",
+            "path_distance": 0.0,
+            "q_x": 0.0,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 0,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 4,
+            "classification": "real",
+            "frequency_terahertz": 4.0,
+            "label": "\u0393",
+            "path_distance": 0.0,
+            "q_x": 0.0,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 0,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 5,
+            "classification": "real",
+            "frequency_terahertz": 4.2,
+            "label": "\u0393",
+            "path_distance": 0.0,
+            "q_x": 0.0,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 0,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 0,
+            "classification": "real",
+            "frequency_terahertz": 1.0,
+            "label": "X",
+            "path_distance": 0.5785621829815458,
+            "q_x": 0.5,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 1,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 1,
+            "classification": "real",
+            "frequency_terahertz": 1.0,
+            "label": "X",
+            "path_distance": 0.5785621829815458,
+            "q_x": 0.5,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 1,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 2,
+            "classification": "real",
+            "frequency_terahertz": 1.2,
+            "label": "X",
+            "path_distance": 0.5785621829815458,
+            "q_x": 0.5,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 1,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 3,
+            "classification": "real",
+            "frequency_terahertz": 4.4,
+            "label": "X",
+            "path_distance": 0.5785621829815458,
+            "q_x": 0.5,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 1,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 4,
+            "classification": "real",
+            "frequency_terahertz": 4.5,
+            "label": "X",
+            "path_distance": 0.5785621829815458,
+            "q_x": 0.5,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 1,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 5,
+            "classification": "real",
+            "frequency_terahertz": 4.6,
+            "label": "X",
+            "path_distance": 0.5785621829815458,
+            "q_x": 0.5,
+            "q_y": 0.0,
+            "q_z": 0.0,
+            "qpoint_index": 1,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 0,
+            "classification": "real",
+            "frequency_terahertz": 1.5,
+            "label": "L",
+            "path_distance": 1.3967726688302322,
+            "q_x": 0.5,
+            "q_y": 0.5,
+            "q_z": 0.5,
+            "qpoint_index": 2,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 1,
+            "classification": "real",
+            "frequency_terahertz": 1.6,
+            "label": "L",
+            "path_distance": 1.3967726688302322,
+            "q_x": 0.5,
+            "q_y": 0.5,
+            "q_z": 0.5,
+            "qpoint_index": 2,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 2,
+            "classification": "real",
+            "frequency_terahertz": 1.7,
+            "label": "L",
+            "path_distance": 1.3967726688302322,
+            "q_x": 0.5,
+            "q_y": 0.5,
+            "q_z": 0.5,
+            "qpoint_index": 2,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 3,
+            "classification": "real",
+            "frequency_terahertz": 4.8,
+            "label": "L",
+            "path_distance": 1.3967726688302322,
+            "q_x": 0.5,
+            "q_y": 0.5,
+            "q_z": 0.5,
+            "qpoint_index": 2,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 4,
+            "classification": "real",
+            "frequency_terahertz": 4.9,
+            "label": "L",
+            "path_distance": 1.3967726688302322,
+            "q_x": 0.5,
+            "q_y": 0.5,
+            "q_z": 0.5,
+            "qpoint_index": 2,
+            "segment_index": 0
+          },
+          {
+            "branch_index": 5,
+            "classification": "real",
+            "frequency_terahertz": 5.0,
+            "label": "L",
+            "path_distance": 1.3967726688302322,
+            "q_x": 0.5,
+            "q_y": 0.5,
+            "q_z": 0.5,
+            "qpoint_index": 2,
+            "segment_index": 0
+          }
+        ],
+        "schema_version": "phase10h1.phonon_band_table.v1",
+        "security": {
+          "contains_html": false,
+          "contains_javascript": false,
+          "executable_content_allowed": false,
+          "external_assets": [],
+          "external_urls_allowed": false
+        },
+        "total_row_count": 18,
+        "truncated": false,
+        "units": {
+          "frequency": "terahertz",
+          "path_distance": "radian_per_angstrom",
+          "qpoint_coordinates": "reciprocal_fractional"
+        }
+      },
+      "contentHash": "d5c7587c3eb2f2992364dfeb31c786448687adf5b50a6ef8be64f9955deb8eb4",
+      "contentType": "application/json",
+      "datasetId": "dataset_h1",
+      "id": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-table_json",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "createdAt": "2026-07-14T01:43:13.479095+00:00",
+        "inputHashes": [
+          "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c"
+        ],
+        "paramsHash": "b9402174f057fb54d49d6fbf18e5a9de54c1782cfcd0c77ecd7e88588c85911f",
+        "profileId": null,
+        "provenance": {
+          "adapter": "phonon.band",
+          "animationIncluded": false,
+          "aseVersion": "3.29.0",
+          "dosIncluded": false,
+          "eigenvectorsIncluded": false,
+          "externalResources": false,
+          "mediaType": "application/json",
+          "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+          "planId": "plan_870e972a31be4f5da0d52d14",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "schemaVersion": "phase10h.phonon_band.v1",
+          "staticBandOnly": true,
+          "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+          "toolId": "phonon.band"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "phonon.band",
+        "toolVersion": "0.1.0"
+      },
+      "name": "phonon_band_table.json",
+      "previewKey": null,
+      "projectId": "project_h1",
+      "sha256": "d5c7587c3eb2f2992364dfeb31c786448687adf5b50a6ef8be64f9955deb8eb4",
+      "sizeBytes": 3732,
+      "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_band_table.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+      "type": "table_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "content": {
+        "adapter_version": "0.1.0",
+        "animation": false,
+        "dependencies": {
+          "aseVersion": "3.29.0",
+          "new_dependencies_added": false,
+          "plotlyVersion": "6.8.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0"
+        },
+        "deterministic": true,
+        "dos": false,
+        "eigenvectors": false,
+        "external_resources": false,
+        "params": {
+          "max_table_rows": 20000,
+          "plot_kind": "line",
+          "source_format": "auto",
+          "source_frequency_unit": "terahertz"
+        },
+        "schema_version": "phase10h1.phonon_band_recipe.v1",
+        "source_format": "phase10h.phonon_band.v1",
+        "steps": [
+          "resolve_approved_source",
+          "safe_parse",
+          "normalize_to_phase10h",
+          "canonical_validate",
+          "emit_static_artifacts"
+        ],
+        "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "tool_id": "phonon.band"
+      },
+      "contentHash": "bae4297205f6f64ccb5627ffcebb3d825ab1e0d9eed2379d83179431473e29a3",
+      "contentType": "application/json",
+      "datasetId": "dataset_h1",
+      "id": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-recipe_json",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "createdAt": "2026-07-14T01:43:13.482094+00:00",
+        "inputHashes": [
+          "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c"
+        ],
+        "paramsHash": "b9402174f057fb54d49d6fbf18e5a9de54c1782cfcd0c77ecd7e88588c85911f",
+        "profileId": null,
+        "provenance": {
+          "adapter": "phonon.band",
+          "animationIncluded": false,
+          "aseVersion": "3.29.0",
+          "dosIncluded": false,
+          "eigenvectorsIncluded": false,
+          "externalResources": false,
+          "mediaType": "application/json",
+          "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+          "planId": "plan_870e972a31be4f5da0d52d14",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "schemaVersion": "phase10h.phonon_band.v1",
+          "staticBandOnly": true,
+          "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+          "toolId": "phonon.band"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "phonon.band",
+        "toolVersion": "0.1.0"
+      },
+      "name": "recipe.json",
+      "previewKey": null,
+      "projectId": "project_h1",
+      "sha256": "bae4297205f6f64ccb5627ffcebb3d825ab1e0d9eed2379d83179431473e29a3",
+      "sizeBytes": 711,
+      "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/recipe.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+      "type": "recipe_json",
+      "version": "1"
+    }
+  ],
+  "events": [
+    {
+      "createdAt": "2026-07-14T01:43:13.448092+00:00",
+      "eventType": "job.created",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0001",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Planner job created with persisted AnalysisPlan.",
+      "payload": {
+        "datasetId": "dataset_h1",
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "projectId": "project_h1"
+      },
+      "progress": 0.0,
+      "seq": 1,
+      "status": "info"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.448092+00:00",
+      "eventType": "plan.persisted",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0002",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Persisted validated AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "plannerProvider": "mock"
+      },
+      "progress": 0.0,
+      "seq": 2,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.448092+00:00",
+      "eventType": "job.running",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0003",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Queue worker started job.",
+      "payload": {},
+      "progress": 0.0,
+      "seq": 3,
+      "status": "running"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.448092+00:00",
+      "eventType": "plan.loaded",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0004",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm"
+      },
+      "progress": 0.05,
+      "seq": 4,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.448092+00:00",
+      "eventType": "tool.started",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0005",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Started tool phonon.band.",
+      "payload": {
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "stepId": "step_001",
+        "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+        "toolId": "phonon.band"
+      },
+      "progress": 0.0,
+      "seq": 5,
+      "status": "running"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.467096+00:00",
+      "eventType": "artifact.ready",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0006",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Artifact ready: phonon_band.json",
+      "payload": {
+        "artifactId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_band_json",
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_band.json",
+        "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001"
+      },
+      "progress": null,
+      "seq": 6,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.469095+00:00",
+      "eventType": "artifact.ready",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0007",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Artifact ready: phonon_summary.json",
+      "payload": {
+        "artifactId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_summary_json",
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_summary.json",
+        "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001"
+      },
+      "progress": null,
+      "seq": 7,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.472095+00:00",
+      "eventType": "artifact.ready",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0008",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Artifact ready: phonon_band_parse_report.json",
+      "payload": {
+        "artifactId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_report_json",
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_band_parse_report.json",
+        "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001"
+      },
+      "progress": null,
+      "seq": 8,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.474095+00:00",
+      "eventType": "artifact.ready",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0009",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Artifact ready: phonon_manifest.json",
+      "payload": {
+        "artifactId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_manifest_json",
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_manifest.json",
+        "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001"
+      },
+      "progress": null,
+      "seq": 9,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.477102+00:00",
+      "eventType": "artifact.ready",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0010",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Artifact ready: phonon_band_plot.json",
+      "payload": {
+        "artifactId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-plotly_json",
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_band_plot.json",
+        "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001"
+      },
+      "progress": null,
+      "seq": 10,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.480099+00:00",
+      "eventType": "artifact.ready",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0011",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Artifact ready: phonon_band_table.json",
+      "payload": {
+        "artifactId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-table_json",
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/phonon_band_table.json",
+        "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001"
+      },
+      "progress": null,
+      "seq": 11,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.482094+00:00",
+      "eventType": "artifact.ready",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0012",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Artifact ready: recipe.json",
+      "payload": {
+        "artifactId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-recipe_json",
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "storageKey": "projects/project_h1/jobs/job_a5cbaeed1d6d4271a4bafcc0/tool_calls/call_job_a5cbaeed1d6d4271a4bafcc0_step_001/recipe.json",
+        "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001"
+      },
+      "progress": null,
+      "seq": 12,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.483099+00:00",
+      "eventType": "tool.completed",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0013",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Completed tool phonon.band.",
+      "payload": {
+        "artifactIds": [
+          "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_band_json",
+          "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_summary_json",
+          "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_report_json",
+          "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_manifest_json",
+          "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-plotly_json",
+          "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-table_json",
+          "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-recipe_json"
+        ],
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm",
+        "toolCallId": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001"
+      },
+      "progress": 1.0,
+      "seq": 13,
+      "status": "success"
+    },
+    {
+      "createdAt": "2026-07-14T01:43:13.483099+00:00",
+      "eventType": "job.completed",
+      "id": "evt_job_a5cbaeed1d6d4271a4bafcc0_0014",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "message": "Job completed.",
+      "payload": {
+        "planHash": "2fa110db6cf2aee5908851977311e9727b86539f5b39794b9660e0dad05c49a8",
+        "planId": "plan_870e972a31be4f5da0d52d14",
+        "planSource": "llm"
+      },
+      "progress": 1.0,
+      "seq": 14,
+      "status": "success"
+    }
+  ],
+  "job": {
+    "createdBy": "user_local",
+    "datasetId": "dataset_h1",
+    "id": "job_a5cbaeed1d6d4271a4bafcc0",
+    "kind": "analysis",
+    "planId": "plan_870e972a31be4f5da0d52d14",
+    "plan_id": "plan_870e972a31be4f5da0d52d14",
+    "projectId": "project_h1",
+    "status": "completed",
+    "updatedAt": "2026-07-14T01:43:13.483099+00:00"
+  },
+  "plan": {
+    "assumptions": [
+      "Generated by MockLLMProvider for testing."
+    ],
+    "datasetId": "dataset_h1",
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_001",
+        "name": "phonon_band.json",
+        "type": "phonon_band_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "phonon_summary.json",
+        "type": "phonon_summary_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "phonon_band_parse_report.json",
+        "type": "phonon_report_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "phonon_manifest.json",
+        "type": "phonon_manifest_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "phonon_band_plot.json",
+        "type": "plotly_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "phonon_band_table.json",
+        "type": "table_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "goal": "Plot the phonon bands",
+    "profileId": "profile_h1",
+    "schemaVersion": "0.1",
+    "steps": [
+      {
+        "inputRefs": [
+          {
+            "objectType": "PhononBand",
+            "ref": "phonon_band",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "phonon_band_json",
+            "phonon_summary_json",
+            "phonon_report_json",
+            "phonon_manifest_json",
+            "plotly_json",
+            "table_json",
+            "recipe_json"
+          ]
+        },
+        "params": {
+          "max_table_rows": 20000,
+          "plot_kind": "line",
+          "source_format": "auto",
+          "source_frequency_unit": "terahertz"
+        },
+        "purpose": "Normalize and visualize an approved static phonon band source.",
+        "reason": "The request asks for a static phonon band plot from an available PhononBand object.",
+        "stepId": "step_001",
+        "toolId": "phonon.band"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "result": {
+    "job_id": "job_a5cbaeed1d6d4271a4bafcc0",
+    "status": "completed"
+  },
+  "tool_calls": [
+    {
+      "artifactIds": [
+        "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_band_json",
+        "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_summary_json",
+        "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_report_json",
+        "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-phonon_manifest_json",
+        "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-plotly_json",
+        "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-table_json",
+        "call_job_a5cbaeed1d6d4271a4bafcc0_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_a5cbaeed1d6d4271a4bafcc0_step_001",
+      "idempotencyKey": "job_a5cbaeed1d6d4271a4bafcc0:step_001",
+      "jobId": "job_a5cbaeed1d6d4271a4bafcc0",
+      "params": {
+        "max_table_rows": 20000,
+        "plot_kind": "line",
+        "source_format": "auto",
+        "source_frequency_unit": "terahertz"
+      },
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "phonon.band"
+    }
+  ]
+}

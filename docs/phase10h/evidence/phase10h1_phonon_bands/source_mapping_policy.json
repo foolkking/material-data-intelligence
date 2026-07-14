@@ -1,0 +1,7 @@
+{
+  "atom_order": "required",
+  "branch_order": "source",
+  "frequency_target": "terahertz",
+  "qpoint_order": "source",
+  "topology_inference": false
+}

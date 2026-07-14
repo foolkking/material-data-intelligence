@@ -1,0 +1,23 @@
+{
+  "groups": [
+    {
+      "branch_indices": [
+        0,
+        1,
+        2
+      ],
+      "qpoint_index": 0,
+      "source": "producer"
+    },
+    {
+      "branch_indices": [
+        3,
+        4
+      ],
+      "qpoint_index": 0,
+      "source": "producer"
+    }
+  ],
+  "inferred": false,
+  "source_only": true
+}

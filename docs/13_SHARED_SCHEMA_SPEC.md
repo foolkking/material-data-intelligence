@@ -1262,3 +1262,19 @@ serialization, hard atom/q-point/branch/DOS/projection/value/metadata/byte caps,
 and explicit no-executable/no-external security flags. This schema family does
 not register a phonon tool, parser, adapter, plot, renderer, eigenvector,
 animation, notebook/script, external API, or real LLM execution path.
+
+## Phase 10H-1 Addendum: phonon band product artifacts
+
+The canonical Phase 10H schemas and scientific semantics are unchanged.
+`phonon.band` now produces `phonon_band_json`, `phonon_summary_json`,
+`phonon_report_json`, `phonon_manifest_json`, `plotly_json`, `table_json`, and
+`recipe_json`. The canonical manifest still hashes exactly band and summary;
+report, plot, table, manifest, and recipe are additional persisted artifacts,
+not new canonical phonon scientific fields.
+
+`phase10h1.phonon_band_parse_report.v1`,
+`phase10h1.phonon_band_plot.v1`, and
+`phase10h1.phonon_band_table.v1` are inert product/audit contracts. They grant
+no solver, script, URL, HTML, JavaScript, renderer, DOS, eigenvector, or
+animation authority. Frontend Plotly mapping occurs only after independent
+validation of `phase10h.phonon_band.v1`.

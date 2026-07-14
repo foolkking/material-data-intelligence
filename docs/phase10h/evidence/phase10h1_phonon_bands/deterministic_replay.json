@@ -1,0 +1,8 @@
+{
+  "adapter_runs_equal": true,
+  "manifest_order": [
+    "phonon_band.json",
+    "phonon_summary.json"
+  ],
+  "warning_order": "sorted"
+}

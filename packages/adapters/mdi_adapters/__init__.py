@@ -31,6 +31,7 @@ from .pymatviz import (
     DensityScatterAdapter,
     ElementsHistAdapter,
     FormulaStatisticsAdapter,
+    PhononBandAdapter,
     RdfAdapter,
     XrdPatternAdapter,
 )
@@ -51,6 +52,7 @@ __all__ = [
     "ElementsHistAdapter",
     "ErrorDistributionAdapter",
     "FormulaStatisticsAdapter",
+    "PhononBandAdapter",
     "XrdPatternAdapter",
     "DistributionSummaryAdapter",
     "HistogramAdapter",

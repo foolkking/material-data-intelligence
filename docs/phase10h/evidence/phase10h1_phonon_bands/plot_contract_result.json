@@ -1,0 +1,158 @@
+{
+  "artifact_type": "phonon.band_plot",
+  "data": [
+    {
+      "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+      "legendgroup": "branch-0",
+      "mode": "lines",
+      "name": "Branch 1",
+      "showlegend": true,
+      "type": "scatter",
+      "x": [
+        0.0,
+        0.5785621829815458,
+        1.3967726688302322
+      ],
+      "y": [
+        0.0,
+        1.0,
+        1.5
+      ]
+    },
+    {
+      "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+      "legendgroup": "branch-1",
+      "mode": "lines",
+      "name": "Branch 2",
+      "showlegend": true,
+      "type": "scatter",
+      "x": [
+        0.0,
+        0.5785621829815458,
+        1.3967726688302322
+      ],
+      "y": [
+        0.0,
+        1.0,
+        1.6
+      ]
+    },
+    {
+      "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+      "legendgroup": "branch-2",
+      "mode": "lines",
+      "name": "Branch 3",
+      "showlegend": true,
+      "type": "scatter",
+      "x": [
+        0.0,
+        0.5785621829815458,
+        1.3967726688302322
+      ],
+      "y": [
+        0.0,
+        1.2,
+        1.7
+      ]
+    },
+    {
+      "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+      "legendgroup": "branch-3",
+      "mode": "lines",
+      "name": "Branch 4",
+      "showlegend": true,
+      "type": "scatter",
+      "x": [
+        0.0,
+        0.5785621829815458,
+        1.3967726688302322
+      ],
+      "y": [
+        4.0,
+        4.4,
+        4.8
+      ]
+    },
+    {
+      "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+      "legendgroup": "branch-4",
+      "mode": "lines",
+      "name": "Branch 5",
+      "showlegend": true,
+      "type": "scatter",
+      "x": [
+        0.0,
+        0.5785621829815458,
+        1.3967726688302322
+      ],
+      "y": [
+        4.0,
+        4.5,
+        4.9
+      ]
+    },
+    {
+      "hovertemplate": "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>",
+      "legendgroup": "branch-5",
+      "mode": "lines",
+      "name": "Branch 6",
+      "showlegend": true,
+      "type": "scatter",
+      "x": [
+        0.0,
+        0.5785621829815458,
+        1.3967726688302322
+      ],
+      "y": [
+        4.2,
+        4.6,
+        5.0
+      ]
+    }
+  ],
+  "layout": {
+    "hovermode": "x unified",
+    "showlegend": false,
+    "title": {
+      "text": "Phonon band structure"
+    },
+    "xaxis": {
+      "tickmode": "array",
+      "ticktext": [
+        "\u0393",
+        "X",
+        "L"
+      ],
+      "tickvals": [
+        0.0,
+        0.5785621829815458,
+        1.3967726688302322
+      ],
+      "title": {
+        "text": "Wave vector path"
+      }
+    },
+    "yaxis": {
+      "title": {
+        "text": "Frequency (THz)"
+      },
+      "zeroline": true
+    }
+  },
+  "metadata": {
+    "branch_count": 6,
+    "discontinuities_split": true,
+    "negative_frequency_preserved": true,
+    "segment_count": 1,
+    "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "trace_count": 6
+  },
+  "schema_version": "phase10h1.phonon_band_plot.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  }
+}

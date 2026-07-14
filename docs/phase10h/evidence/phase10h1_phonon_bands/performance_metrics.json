@@ -1,0 +1,7 @@
+{
+  "hard_contract_values": 4000000,
+  "preview_numeric_value_cap": 500000,
+  "preview_trace_cap": 4096,
+  "silent_truncation": false,
+  "table_visible_row_cap": 200
+}

@@ -108,6 +108,16 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
+    if tool_id == "phonon.band":
+        return {
+            "maxAtoms": 512,
+            "maxBranches": 1536,
+            "maxQpoints": 4096,
+            "maxSegments": 256,
+            "maxNumericValues": 4000000,
+            "maxArtifactBytes": 64000000,
+            "maxTableRows": 50000,
+        }
     if tool_id in {"structure.trajectory_import", "structure.trajectory_viewer"}:
         return {
             "maxAtoms": 4096,
@@ -172,6 +182,17 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
     tool_id = entry["tool_id"]
+    if tool_id == "phonon.band":
+        return ToolInputSchema(
+            periodicity="periodic_required",
+            inputOptions=[
+                ToolInputOption(
+                    name="approved_phonon_band",
+                    requiredObjectTypes=[MaterialObjectType.PhononBand],
+                    description="Use exactly one validated phase10h.phonon_band.v1 object or bounded phonopy band.yaml wrapper.",
+                )
+            ],
+        )
     if tool_id in {"structure.trajectory_import", "structure.trajectory_viewer"}:
         return ToolInputSchema(
             periodicity="any",
@@ -286,6 +307,17 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    if tool_id == "phonon.band":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "source_format": {"enum": ["auto", "phase10h.phonon_band.v1", "phonopy_band_yaml"]},
+                "source_frequency_unit": {"enum": ["terahertz", "inverse_centimeter", "millielectronvolt"]},
+                "max_table_rows": {"type": "integer", "minimum": 1, "maximum": 50000},
+                "plot_kind": {"const": "line"},
+            },
+        }
     if tool_id == "structure.trajectory_import":
         return {"type": "object", "additionalProperties": False, "properties": {}}
     if tool_id == "structure.trajectory_viewer":

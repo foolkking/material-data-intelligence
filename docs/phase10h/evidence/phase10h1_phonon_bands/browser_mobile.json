@@ -1,0 +1,37 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "snapshot": {
+    "state": "rendered",
+    "branchCount": 6,
+    "segmentCount": 1,
+    "traceCount": 6,
+    "numericValues": 18,
+    "negativePreserved": true,
+    "externalRequests": 0,
+    "summary": "Atoms2Species orderSi, SiBranches6Q-points3Segments1Frequency range0 to 5 THz",
+    "svgCount": 3,
+    "pathCount": 18,
+    "labelText": "ΓXL012345",
+    "accessibility": {
+      "region": "Phonon band preview",
+      "plot": "Phonon frequency by wave vector path",
+      "live": "polite",
+      "tableTab": "Band table"
+    },
+    "renderMs": 343
+  },
+  "horizontalOverflow": false,
+  "tableFallback": true,
+  "audit": {
+    "externalRequests": 0,
+    "inert": {
+      "iframe": 0,
+      "externalScript": 0,
+      "javascriptUri": 0,
+      "inlineHandler": 0
+    }
+  }
+}

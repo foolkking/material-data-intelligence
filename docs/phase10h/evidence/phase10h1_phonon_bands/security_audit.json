@@ -1,0 +1,10 @@
+{
+  "arbitrary_plot_code": false,
+  "artifact_html": false,
+  "artifact_javascript": false,
+  "external_solver": false,
+  "external_urls": false,
+  "marker": "NO_SECRET_PATTERN_HITS",
+  "new_dependencies": false,
+  "yaml_loader": "yaml.safe_load plus alias/tag/depth/node/byte guards"
+}

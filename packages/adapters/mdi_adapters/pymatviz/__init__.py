@@ -6,6 +6,7 @@ from .coordination_hist import CoordinationHistAdapter
 from .density_scatter import DensityScatterAdapter
 from .elements_hist import ElementsHistAdapter
 from .formula_statistics import FormulaStatisticsAdapter
+from .phonon_band import PhononBandAdapter
 from .ptable_heatmap import PTableHeatmapAdapter
 from .rdf import RdfAdapter
 from .structure_3d import Structure3DAdapter
@@ -18,6 +19,7 @@ __all__ = [
     "DensityScatterAdapter",
     "ElementsHistAdapter",
     "FormulaStatisticsAdapter",
+    "PhononBandAdapter",
     "PTableHeatmapAdapter",
     "RdfAdapter",
     "Structure3DAdapter",

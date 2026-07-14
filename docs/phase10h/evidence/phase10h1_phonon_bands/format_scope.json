@@ -1,0 +1,17 @@
+{
+  "approved": [
+    "phase10h.phonon_band.v1",
+    "phonopy_band_yaml"
+  ],
+  "deferred": [
+    "pymatgen_serialized_object"
+  ],
+  "rejected": [
+    "remote_url",
+    "archive",
+    "pickle",
+    "notebook",
+    "plugin",
+    "solver_execution"
+  ]
+}

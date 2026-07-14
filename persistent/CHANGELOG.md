@@ -1734,3 +1734,15 @@
 
 ### Security
 - No dependency, schema, adapter, renderer feature, runtime authority, external network, real LLM, or deferred scientific capability was added.
+
+## 2026-07-14 Phase 10H-1
+
+### Added
+- Static `phonon.band` adapter for strict canonical JSON and bounded phonopy band.yaml.
+- Four dedicated phonon artifact types plus inert plot, table, and recipe outputs.
+- Planner/job/runtime persistence and a canonical-validated lazy local Plotly frontend preview.
+- Real Chromium, Firefox, WebKit, mobile, accessibility, determinism, API, network, and screenshot evidence.
+
+### Security
+- Added safe YAML alias/tag/depth/node/byte guards, exact field mapping, explicit preview budgets, and Plotly cleanup.
+- No new dependency, remote asset, solver, artifact execution, DOS, eigenvector, animation, notebook/script, external API, or real LLM path.

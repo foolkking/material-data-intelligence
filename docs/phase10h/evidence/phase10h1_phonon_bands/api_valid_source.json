@@ -1,0 +1,6 @@
+{
+  "canonical_target": "phase10h.phonon_band.v1",
+  "external_solver": false,
+  "source": "phonopy_band_yaml",
+  "status": "covered_by_safe_parser_adapter_tests"
+}

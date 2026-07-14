@@ -3612,3 +3612,22 @@ jobs and add the formal viewer to the existing service-backed zero-skip gate.
 - Cross-module invariants fail close to their ownership boundary without copying historical tests.
 - Browser evidence remains real and reviewable while CI avoids a new large browser dependency.
 - Phase 10 can be formally closed without changing scientific semantics or enabling deferred domains.
+
+# 2026-07-14 Phase 10H-1 ADR: canonical-first static phonon band ingestion
+
+## Decision
+
+Use the existing Phase 10H canonical band contract as the only frontend and
+artifact scientific model. Accept canonical JSON directly and add a bounded
+static phonopy band.yaml boundary parser using existing PyYAML. Preserve source
+q-point, segment, and branch order; recompute physics-2pi path distances and
+convert only approved frequency units. Load local Plotly core/scatter lazily
+after independent canonical validation.
+
+## Consequences
+
+- No second band model, branch sorting, negative-frequency correction, ASR correction, or generated labels exist.
+- YAML never constructs Python objects or invokes phonopy; pymatgen serialized sources remain deferred.
+- Plot/table/report are inert product artifacts; the canonical manifest remains band plus summary.
+- Explicit frontend budgets refuse oversized plotting without mutating or silently sampling the canonical artifact.
+- DOS, eigenvectors, animation, calculations, and external resources gain no execution authority.

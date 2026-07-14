@@ -1262,3 +1262,30 @@ pre {
   .trajectory-timeline input[type="range"] { width: 100%; }
   .trajectory-viewer-surface button, .trajectory-viewer-surface select, .trajectory-viewer-surface input { min-height: 44px; }
 }
+.phonon-band-preview { display: grid; gap: 14px; }
+.phonon-band-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.phonon-band-heading h2 { margin: 0; font-size: 1.1rem; }
+.phonon-band-heading p { margin: 4px 0 0; color: var(--text-muted, #58616b); }
+.phonon-band-heading > span { font: 0.78rem/1.3 ui-monospace, monospace; padding: 5px 7px; border: 1px solid #cbd2d9; border-radius: 4px; }
+.phonon-band-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 0; background: #dfe3e8; border: 1px solid #dfe3e8; }
+.phonon-band-summary > div { min-width: 0; padding: 9px 10px; background: #fff; }
+.phonon-band-summary dt { color: #59636e; font-size: 0.76rem; }
+.phonon-band-summary dd { margin: 3px 0 0; overflow-wrap: anywhere; font-weight: 600; }
+.phonon-band-tab-panel { min-width: 0; }
+.phonon-band-plot-wrap { position: relative; min-height: 420px; border: 1px solid #d8dde3; background: #fff; }
+.phonon-band-plot { width: 100%; height: 420px; }
+.phonon-band-plot-fallback { position: absolute; inset: 0; display: grid; place-content: center; padding: 24px; text-align: center; background: #fff; }
+.phonon-band-table-wrap { max-width: 100%; overflow: auto; border: 1px solid #d8dde3; }
+.phonon-band-table-wrap > p { margin: 0; padding: 10px; background: #f5f7f8; }
+.phonon-band-table-wrap table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.phonon-band-table-wrap caption { padding: 10px; text-align: left; font-weight: 600; }
+.phonon-band-table-wrap th, .phonon-band-table-wrap td { padding: 7px 9px; border-top: 1px solid #e4e7eb; text-align: right; white-space: nowrap; }
+.phonon-band-table-wrap th:nth-child(3), .phonon-band-table-wrap td:nth-child(3) { text-align: left; }
+.phonon-band-json-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.phonon-band-json-grid details { min-width: 0; }
+.phonon-band-json-grid pre { max-height: 420px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .phonon-band-summary, .phonon-band-json-grid { grid-template-columns: 1fr; }
+  .phonon-band-heading { flex-direction: column; }
+  .phonon-band-plot-wrap, .phonon-band-plot { min-height: 340px; height: 340px; }
+}

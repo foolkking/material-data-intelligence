@@ -1,0 +1,5 @@
+{
+  "cross_gap_line": false,
+  "discontinuity": "explicit_segment_trace_split",
+  "duplicated_endpoint": "preserved"
+}

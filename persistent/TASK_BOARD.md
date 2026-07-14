@@ -1994,3 +1994,12 @@
 - [x] Add deterministic, compatibility, lifecycle, network, and security evidence.
 - [x] Integrate closure entries into required CI jobs and no-skipped gate.
 - [ ] Phase 11 official benchmark certification remains separate.
+
+## Phase 10H-1 Phonon Bands
+
+- [x] Approve canonical JSON and bounded static phonopy band.yaml inputs.
+- [x] Add strict `phonon.band` registry/planner/runtime integration.
+- [x] Emit canonical band, summary, manifest, parse report, plot, table, and recipe artifacts.
+- [x] Add local Plotly/table/JSON preview with explicit performance refusal and lifecycle cleanup.
+- [x] Close backend/frontend, Chromium/Firefox/WebKit/mobile, API, security, and evidence gates.
+- [ ] Phonon DOS, combined view, eigenvectors, and animation remain separate queued tasks.

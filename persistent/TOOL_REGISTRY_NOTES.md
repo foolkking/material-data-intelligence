@@ -1069,3 +1069,11 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Natural interactive viewer intent selects `structure.viewer_3d`; explicit inert scene JSON selects `structure.viewer_scene`.
 - Legacy tools remain direct compatibility only. Unsupported advanced domains are explicit negative capabilities.
 - Phase 10G-2 consumes `structure.trajectory_import` artifacts in a client viewer but keeps that tool planner-hidden. `structure.viewer_3d` remains static; no formal trajectory product ID is added before G-3 performance closure.
+
+# 2026-07-14 Phase 10H-1 Phonon Band Notes
+
+- `phonon.band` is the unique MVP-stage static band tool and uses `PhononBandAdapter`.
+- Input is exactly one profiled `PhononBand`: canonical `phase10h.phonon_band.v1` or bounded `phonopy_band_yaml` wrapper.
+- Params are closed to source format/unit, table row cap, and `plot_kind=line`; outputs are seven exact inert artifact types.
+- Mock Planner routes explicit static band/dispersion requests only. DOS, combined view, eigenvectors, animation, thermal properties, solver execution, and Brillouin requests do not route here.
+- PlanValidator, QueueWorkerRuntime, and AnalysisPlan authority are unchanged.

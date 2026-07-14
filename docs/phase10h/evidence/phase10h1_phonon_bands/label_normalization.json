@@ -1,0 +1,10 @@
+{
+  "canonical": "Gamma symbol",
+  "gamma_inputs": [
+    "GAMMA",
+    "\\Gamma",
+    "G"
+  ],
+  "generated_labels": false,
+  "html_allowed": false
+}

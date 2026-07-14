@@ -735,3 +735,10 @@
 - Trajectory, phonon, Brillouin-zone, volumetric, defects/surfaces, and editing remain independent future contracts.
 - **Open after Phase 10G-2: formal trajectory product closure.** G-3 must finish long-trajectory performance/browser acceptance, decide static-reference topology completion, and formalize planner-visible registration.
 - **Closed in Phase 10G-2: dynamic display foundation.** Validated frame mapping, playback, identity, variable lattice, bounded cache, fallback, accessibility/mobile, and initial browser matrix are implemented.
+
+## 2026-07-14 Phase 10H-1 Follow-ups
+
+- Decide whether a stable persisted pymatgen phonon-band object deserves a separate approved source adapter; no arbitrary object deserialization is authorized.
+- Phase 10H-2 must define DOS production independently and preserve the established band structure identity/unit/source lineage.
+- Combined band+DOS, eigenvectors, mode animation, LO-TO directional visualization, and phonon calculation remain open and must not be inferred from the static band tool.
+- Physical assistive-technology and broad device rendering remain outside automated browser evidence.

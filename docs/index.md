@@ -289,3 +289,13 @@
 | [`phase10/phase10_closure_security.md`](phase10/phase10_closure_security.md) | Cross-phase threat model and security closure |
 | [`phase10/phase10_final_readiness_matrix.md`](phase10/phase10_final_readiness_matrix.md) | Final Phase 10 readiness and deferred domains |
 | [`phase10/evidence/phase10_closure_regression_pack/`](phase10/evidence/phase10_closure_regression_pack/) | Live product, browser, mobile, lifecycle, contract, hash, and security evidence |
+| [`phase10h/phase10h1_phonon_bands.md`](phase10h/phase10h1_phonon_bands.md) | Static phonon band adapter, runtime, artifacts, and preview |
+| [`phase10h/phase10h1_phonon_band_source_scope.md`](phase10h/phase10h1_phonon_band_source_scope.md) | Approved canonical and bounded phonopy sources |
+| [`phase10h/phase10h1_phonon_band_mapping.md`](phase10h/phase10h1_phonon_band_mapping.md) | Reciprocal, path, frequency, branch, and label mapping |
+| [`phase10h/phase10h1_phonon_band_plot_contract.md`](phase10h/phase10h1_phonon_band_plot_contract.md) | Local Plotly and preview budget contract |
+| [`phase10h/phase10h1_phonon_band_table.md`](phase10h/phase10h1_phonon_band_table.md) | Bounded accessible table contract |
+| [`phase10h/phase10h1_phonon_band_api_evidence.md`](phase10h/phase10h1_phonon_band_api_evidence.md) | Planner/runtime/API/browser evidence method |
+| [`phase10h/phase10h1_phonon_band_accessibility.md`](phase10h/phase10h1_phonon_band_accessibility.md) | Semantic, keyboard, and mobile baseline |
+| [`phase10h/phase10h1_phonon_band_security.md`](phase10h/phase10h1_phonon_band_security.md) | Parser, artifact, preview, and network security |
+| [`phase10h/phase10h1_phonon_band_readiness_matrix.md`](phase10h/phase10h1_phonon_band_readiness_matrix.md) | Phase 10H-1 readiness decisions |
+| [`phase10h/evidence/phase10h1_phonon_bands/`](phase10h/evidence/phase10h1_phonon_bands/) | Live artifacts, browser matrix, screenshots, and security evidence |

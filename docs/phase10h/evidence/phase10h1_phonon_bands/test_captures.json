@@ -1,0 +1,13 @@
+{
+  "backend_focus": "9 passed",
+  "backend_focus_with_registry": "15 passed",
+  "backend_full": "496 passed, 23 skipped",
+  "browser_matrix": "Chromium, Firefox, WebKit passed",
+  "build": "success",
+  "frontend_focus": "10 passed",
+  "frontend_full": "156 passed",
+  "generated_by": "scripts/generate_phase10h1_phonon_band_evidence.py",
+  "npm_audit": "unavailable: configured registry returned NOT_IMPLEMENTED",
+  "service_backed_local": "unavailable: local PostgreSQL credentials are not configured",
+  "typecheck": "success"
+}

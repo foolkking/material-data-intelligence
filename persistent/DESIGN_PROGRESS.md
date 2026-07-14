@@ -1325,3 +1325,11 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Closed six representative adapter paths through registry, planner, PlanValidator, runtime, artifact persistence/retrieval, and validators.
 - Added current/legacy, determinism, fallback, lifecycle, capability-truth, network, and secret evidence.
 - Integrated exact closure gates into existing unit, frontend, and PostgreSQL/Redis/MinIO CI jobs without new dependencies.
+
+## 2026-07-14 Phase 10H-1 Phonon Bands
+
+- Implemented the unique planner-visible `phonon.band` adapter for validated canonical JSON and bounded static phonopy band.yaml.
+- Added deterministic canonical band/summary/manifest, parse report, Plotly, table, and recipe artifacts through QueueWorkerRuntime.
+- Added canonical-only lazy local Plotly preview with branch/segment preservation, negative values, refusal budgets, table/JSON fallback, and cleanup.
+- Chromium, Firefox, WebKit, mobile, API, determinism, network, and security evidence passed without new dependencies.
+- DOS, combined view, eigenvectors, animation, and phonon calculation remain deferred.

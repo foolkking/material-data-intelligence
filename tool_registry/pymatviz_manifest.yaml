@@ -198,18 +198,21 @@ tools:
       - recipe_json
 
   - tool_id: phonon.band
-    source_package: pymatviz
-    source_function: phonon_bands
-    implementation_source: pymatviz
-    stage: v1
+    source_package: mdi_adapters
+    source_function: canonical_phonon_band
+    implementation_source: pymatviz_composed
+    stage: mvp
     adapter: PhononBandAdapter
     display_target: phonon
     artifact_types:
+      - phonon_band_json
+      - phonon_summary_json
+      - phonon_report_json
+      - phonon_manifest_json
       - plotly_json
-      - plotly_html
-      - preview_png
-      - summary_md
+      - table_json
       - recipe_json
+    notes: Static phonon band ingestion and visualization for approved canonical phase10h JSON or bounded phonopy band.yaml input; preserves source branch order, negative frequencies, and path discontinuities. Excludes DOS, eigenvectors, animation, phonon calculation, and external resources.
 
   - tool_id: phonon.dos
     source_package: pymatviz

@@ -1,0 +1,7 @@
+{
+  "json_keyboard_accessible": true,
+  "non_graphical_summary": true,
+  "plot_label": "Phonon frequency by wave vector path",
+  "status_region": "aria-live polite",
+  "table_caption": true
+}

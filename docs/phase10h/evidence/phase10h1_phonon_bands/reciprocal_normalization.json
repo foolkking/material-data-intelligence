@@ -1,0 +1,6 @@
+{
+  "coordinate_system": "reciprocal_fractional",
+  "distance_source": "recomputed_with_phase10h_helper",
+  "distance_unit": "radian_per_angstrom",
+  "target": "physics_2pi"
+}
