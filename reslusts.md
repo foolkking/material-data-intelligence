@@ -55,3 +55,11 @@
 * 测试结果：H4 backend `21 passed`；phonon focused `108 passed`；frontend contract `15 passed`；frontend full `178 passed`；backend full `542 passed, 23 skipped, 11 warnings`；typecheck/build/uv lock/diff success；H1/H2/H3、Phase 10 Closure、trajectory performance browser regressions PASS；45 evidence hashes verified；`NO_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。Local service-backed unavailable，GitHub CI service-backed/no-skipped passed。npm audit 因 configured npmmirror endpoint `NOT_IMPLEMENTED` unavailable。
 * 提交 / CI：implementation commit `2ef9a2799d1e23689ca4ba929ae10f5d87d84846`; CI run `29315146259` success。完成记录提交 `3cc34e4ed410a538b51d8ac44dd29beb1b4729d5`; current-HEAD CI run `29315291221` success。
 * 归档结论：实现、测试、evidence、completion record、service-backed/no-skipped 和两次 current-HEAD CI 均闭合；Phase 10H-4 task block 可从 `TASKS.md` 删除，历史结果保留于本文件。
+
+## Phase 10H-5: Phonon Animation
+
+* 状态：已完成
+* 完成时间：2026-07-14 19:06:26 +08:00
+* 修改摘要：实现正式 `phonon.animation` 产品链路，包含严格 structure/band/eigenvector/mode 兼容性、frame-free inert package、Gamma 与 bounded diagonal commensurate non-Gamma 位移重建、imaginary-mode policy、Three.js phase playback、vectors/trails、periodic picking、exact band handoff、mobile/accessibility/context-loss 和 JSON fallback。未新增依赖，未实现 phonon solver、thermal/spectroscopy、video export、remote assets 或 real LLM。
+* 测试结果：frontend full `193 passed`；backend full `566 passed, 23 skipped, 11 warnings`；typecheck/build/uv lock/diff success；H5 Chromium/Firefox/WebKit/mobile/accessibility/API/reference evidence和历史 trajectory performance 三浏览器回归通过；`NO_PHONON_ANIMATION_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。本机无 Docker；CI service-backed/no-skipped 成功。`npm audit` 因 configured npmmirror endpoint `404 NOT_IMPLEMENTED` unavailable，且无 dependency/lockfile 变更。
+* 提交 / CI：实现提交 `b67a9e18109f976aeadaf6002eaac6c71297875c`；CI run `29327516331` success。完成记录提交推送后需再次通过 current-HEAD CI，最终归档以该检查为准。

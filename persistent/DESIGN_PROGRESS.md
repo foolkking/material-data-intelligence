@@ -1,12 +1,12 @@
 # DESIGN_PROGRESS
 
-## 2026-07-14 Phase 10H-5 Phonon Animation In Progress
+## 2026-07-14 Phase 10H-5 Phonon Animation
 
 - Added formal `phonon.animation` registration and strict structure/band/eigenvector role binding through PlanValidator and QueueWorkerRuntime.
 - Added inert frame-free animation package/summary/manifest/recipe, exact mode compatibility, bounded diagonal commensurate supercells, and fixed-envelope complex displacement reconstruction.
 - Added app-owned Three.js phase playback, instanced periodic atoms, vectors/trails, picking inspector, exact band handoff, reduced motion, mobile, context-loss, and Chromium/Firefox/WebKit evidence.
 - Completed local full regression (`193` frontend tests; `566 passed, 23 skipped` backend), typecheck/build, historical trajectory browser replay, dependency/lock review, and final security scans. The configured npm audit endpoint remains unavailable and is not reported as clean.
-- Implementation commit, current-HEAD CI, completion record, and queue archival remain open.
+- Implementation commit `b67a9e18109f976aeadaf6002eaac6c71297875c` and current-HEAD CI run `29327516331` passed unit, frontend, service-backed integration, and no-skipped gates. Completion-record CI and queue archival remain open.
 
 ## 2026-07-14 Phase 10H-4 Phonon Eigenvector Contract
 

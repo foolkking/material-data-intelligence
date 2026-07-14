@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 # Phase 10H-5：Phonon Animation
 
 进入 Phase 10H-5：Phonon Animation。
@@ -2548,6 +2548,16 @@ Phase 10I：Brillouin Zone Contract
 ```
 
 现在开始执行。先读取 Phase 10H-4 的真实result、schema、validator、fixtures和current viewer实现，输出 Pre-Implementation Audit，然后直接完成 `phonon.animation`、动画package、supercell和科学位移重建、正式runtime/API/frontend/browser/performance/security闭环。不得停留在planning或静态preview。
+
+完成时间：2026-07-14 19:06:26 +08:00
+
+修改文件：`packages/artifact-core/mdi_artifact_core/phonon_animation_contract.py`、`packages/adapters/mdi_adapters/pymatviz/phonon_animation.py`、Tool Registry/schema/planner integration、`apps/web/app/components/phonon-animation/`、共享 renderer displacement overlays、exact band handoff、H5 tests/browser runner、fixtures/evidence/docs/persistent。
+
+修改摘要：实现正式 `phonon.animation` 产品链路；使用严格 structure/band/eigenvector/mode 绑定与 frame-free inert package，支持 Gamma、bounded diagonal commensurate non-Gamma、imaginary-mode warning、application-owned phase/amplitude playback、vectors/trails、periodic picking、exact band handoff、mobile/accessibility/context-loss 和 JSON fallback。未新增依赖、未执行 phonon calculation、未实现 thermal/spectroscopy/video/export 或远程资源。
+
+测试结果：frontend full `193 passed`；backend full `566 passed, 23 skipped, 11 warnings`；typecheck/build/`uv lock --check`/diff checks通过；H5 Chromium 150、Firefox 128、WebKit 18 及 mobile/accessibility/API/reference evidence通过；历史 trajectory performance 三浏览器回归通过；`NO_PHONON_ANIMATION_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。`npm audit` 已尝试，但 configured npmmirror endpoint 返回 `404 NOT_IMPLEMENTED`，未声称 clean。本机无 Docker；GitHub CI service-backed/no-skipped 已通过。
+
+提交 / CI：实现提交 `b67a9e18109f976aeadaf6002eaac6c71297875c`；current-HEAD CI run `29327516331` success，unit、frontend typecheck/build、PostgreSQL + Redis + MinIO service-backed integration 和 no-skipped assertion 全部成功；origin/master 与实现提交一致。完成记录提交及其 current-HEAD CI 仍需闭合后方可归档删除本 block。
 
 ---END---
 
