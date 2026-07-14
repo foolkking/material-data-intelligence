@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 
  # Phase 10H-4：Phonon Eigenvector Contract
 
@@ -3330,6 +3330,15 @@ FAIL包括：
 * Phase 10H-3回退
 * CI失败却声明PASS
 
+完成时间：2026-07-14 15:38:40 +08:00
+
+修改文件：artifact-core eigenvector contract/exports、independent TypeScript validator/tests、small eigenvector fixtures、Phase 10H-4 evidence generator/evidence、18 Phase 10H-4 docs、shared schema/index、specified persistent files、`TASKS.md`。
+
+修改摘要：定义 `phonon_mode_ref`、complex vector、eigenvector、set、summary、manifest 合同；实现 band hash/q-point/branch/frequency/structure/atom/NAC binding、source-stable mode ID、mass-weighted Euclidean normalization、atomic mass provenance、global phase canonicalization/equivalence、imaginary/degenerate policy、Gamma/non-Gamma static reconstruction和display-only amplitude。未新增 parser、adapter、tool、planner/API、UI、animation、solver、dependency、network 或 real LLM。
+
+测试结果：H4 backend `21 passed`；phonon focused `108 passed`；frontend contract `15 passed`；frontend full `178 passed`；backend full `542 passed, 23 skipped, 11 warnings`；typecheck/build/uv lock/diff success；H1/H2/H3、Phase 10 Closure、trajectory performance browser regressions PASS；45 evidence hashes verified；`NO_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。Local service-backed unavailable，GitHub CI service-backed/no-skipped passed。npm audit 因 configured npmmirror endpoint `NOT_IMPLEMENTED` unavailable。
+
+提交 / CI：implementation commit `2ef9a2799d1e23689ca4ba929ae10f5d87d84846`; CI run `29315146259` success。`worker.ps1` remains unrelated user-owned unstaged deletion。
 
 ---END---
 
