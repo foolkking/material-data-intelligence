@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
  # Phase 10H-2：Phonon DOS
 
 进入 Phase 10H-2：Phonon DOS。
@@ -2963,6 +2963,39 @@ FAIL包括：
 * 提前实现combined/eigenvector/animation导致范围膨胀
 * Phase 10H-1回退
 * CI失败却声明PASS
+
+完成时间：2026-07-14 12:46:03 +08:00
+
+修改文件：
+
+* `packages/adapters/mdi_adapters/pymatviz/phonon_dos.py`、phonon contract/schema/registry/planner integration
+* `apps/web/app/components/phonon-dos/`、`PlannerWorkbench.tsx`、frontend validator/styles/browser runner
+* `tests/test_phase10h2_phonon_dos.py`、frontend contract/component tests、evidence generator
+* `docs/phase10h/phase10h2_*`、`docs/phase10h/evidence/phase10h2_phonon_dos/`、shared schema/index
+* `persistent/` design progress、task board、changelog、open questions、tool registry notes、architecture decisions
+
+修改摘要：
+
+* 实现唯一正式 `phonon.dos` adapter，支持 canonical JSON 与 bounded phonopy total/projected text wrappers，执行显式 frequency/density Jacobian、total-modes normalization、trapezoidal integration validation、negative-frequency preservation 和 deterministic projection identity。
+* 新增 DOS-specific summary/manifest、7 类 inert artifacts、strict registry/PlanValidator caps、limited Mock Planner routing，以及 validated lazy local Plotly plot、table、JSON、typed fallback、projection mismatch warning、mobile/accessibility lifecycle。
+* 生成真实 planner job/runtime/API、Chromium/Firefox/WebKit/mobile/accessibility、performance、security、network 和 screenshot evidence；未新增依赖，未实现 combined band+DOS、eigenvectors、animation、solver 或外部资源。
+
+测试结果：
+
+* backend focused：`82 passed`
+* backend full：`510 passed, 23 skipped, 11 warnings`
+* frontend focused：`13 passed`
+* frontend full：`164 passed`
+* typecheck、production build、`uv lock --check`、cached diff check：success
+* H2/H1/Phase 10 Closure/Phase 10G Chromium、Firefox、WebKit、mobile/accessibility browser regressions：PASS
+* `NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`、evidence SHA-256：PASS
+* local service-backed：unavailable（本机未安装 Docker）；GitHub CI service-backed integration 与 no-skipped assertion：success
+* `npm audit`：unavailable（配置的 registry audit endpoint 返回 `NOT_IMPLEMENTED`）；无 dependency/lockfile 变更
+
+提交 / CI：
+
+* 实现提交：`b2eb9ce7ae5e4d76cb97749339109446a3790fa5` (`Add phonon DOS adapter and visualization`)
+* current-HEAD CI：run `29306549843` success；unit、frontend typecheck/build、service-backed integration、no-skipped assertion 全部成功
 
 ---END---
 
