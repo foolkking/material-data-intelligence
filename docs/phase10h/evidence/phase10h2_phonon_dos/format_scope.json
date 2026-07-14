@@ -1,0 +1,21 @@
+{
+  "approved": [
+    "phase10h.phonon_dos.v1",
+    "phonopy_total_dos",
+    "phonopy_projected_dos"
+  ],
+  "deferred": [
+    "pymatgen serialized object",
+    "directional projections"
+  ],
+  "metadata_required_for_text": true,
+  "rejected": [
+    "remote_url",
+    "archive",
+    "pickle",
+    "notebook",
+    "plugin",
+    "solver_execution",
+    "arbitrary_csv"
+  ]
+}

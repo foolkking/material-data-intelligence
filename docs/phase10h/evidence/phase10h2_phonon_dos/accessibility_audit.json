@@ -1,0 +1,6 @@
+{
+  "region": "Phonon density of states preview",
+  "plot": "Phonon density of states by frequency",
+  "live": "polite",
+  "selector": "Projected seriesTotal DOS onlyAtom 0 (Si)Atom 1 (Si)"
+}

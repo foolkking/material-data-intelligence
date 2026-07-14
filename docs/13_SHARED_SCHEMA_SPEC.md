@@ -1278,3 +1278,18 @@ not new canonical phonon scientific fields.
 no solver, script, URL, HTML, JavaScript, renderer, DOS, eigenvector, or
 animation authority. Frontend Plotly mapping occurs only after independent
 validation of `phase10h.phonon_band.v1`.
+
+## Phase 10H-2 Addendum: phonon DOS product artifacts
+
+The canonical `phase10h.phonon_dos.v1` fields and semantics remain unchanged.
+`phonon.dos` adds `phonon_dos_json` plus inert report, plot, table, and recipe
+products. DOS-only execution uses additive
+`phase10h2.phonon_dos_summary.v1` and
+`phase10h2.phonon_dos_manifest.v1`; stable band-rooted family contracts are not
+relaxed or populated with a synthetic band.
+
+At approved text boundaries, `f_target = c*f_source` requires
+`D_target = D_source/c`. Unit-area sources scale total and all projections by
+`3N/integral`; total-mode sources are validation-only. Negative frequencies
+are preserved, completeness is explicit, broadening is metadata only, and no
+backend or frontend resampling/smoothing is permitted.

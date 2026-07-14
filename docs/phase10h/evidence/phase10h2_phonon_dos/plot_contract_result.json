@@ -1,0 +1,113 @@
+{
+  "artifact_type": "phonon.dos_plot",
+  "data": [
+    {
+      "hovertemplate": "Frequency %{x:.5f} THz<br>DOS %{y:.5f} modes/THz<extra></extra>",
+      "mode": "lines",
+      "name": "Total DOS",
+      "type": "scatter",
+      "x": [
+        -1.0,
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0
+      ],
+      "y": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "hovertemplate": "Atom 0 (Si)<br>Frequency %{x:.5f} THz<br>DOS %{y:.5f} modes/THz<extra></extra>",
+      "mode": "lines",
+      "name": "Atom 0 (Si)",
+      "type": "scatter",
+      "x": [
+        -1.0,
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0
+      ],
+      "y": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "hovertemplate": "Atom 1 (Si)<br>Frequency %{x:.5f} THz<br>DOS %{y:.5f} modes/THz<extra></extra>",
+      "mode": "lines",
+      "name": "Atom 1 (Si)",
+      "type": "scatter",
+      "x": [
+        -1.0,
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0
+      ],
+      "y": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  ],
+  "layout": {
+    "hovermode": "x unified",
+    "showlegend": true,
+    "title": {
+      "text": "Phonon density of states"
+    },
+    "xaxis": {
+      "title": {
+        "text": "Frequency (THz)"
+      },
+      "zeroline": true
+    },
+    "yaxis": {
+      "title": {
+        "text": "DOS (modes/THz)"
+      }
+    }
+  },
+  "metadata": {
+    "available_series": 3,
+    "degraded": false,
+    "degraded_code": null,
+    "grid_point_count": 7,
+    "negative_frequency_preserved": true,
+    "orientation": "frequency_x_dos_y",
+    "rendered_series": 3,
+    "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "schema_version": "phase10h2.phonon_dos_plot.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  }
+}

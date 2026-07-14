@@ -1,0 +1,17 @@
+{
+  "inverse_centimeter": {
+    "density_jacobian_to_modes_per_thz": 33.35640951981521,
+    "frequency_scale_to_thz": 0.0299792458,
+    "integral_invariant": true
+  },
+  "millielectronvolt": {
+    "density_jacobian_to_modes_per_thz": 4.135667696923859,
+    "frequency_scale_to_thz": 0.2417989242084918,
+    "integral_invariant": true
+  },
+  "terahertz": {
+    "density_jacobian_to_modes_per_thz": 1.0,
+    "frequency_scale_to_thz": 1.0,
+    "integral_invariant": true
+  }
+}

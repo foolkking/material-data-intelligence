@@ -1077,3 +1077,11 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Params are closed to source format/unit, table row cap, and `plot_kind=line`; outputs are seven exact inert artifact types.
 - Mock Planner routes explicit static band/dispersion requests only. DOS, combined view, eigenvectors, animation, thermal properties, solver execution, and Brillouin requests do not route here.
 - PlanValidator, QueueWorkerRuntime, and AnalysisPlan authority are unchanged.
+
+# 2026-07-14 Phase 10H-2 Phonon DOS Notes
+
+- `phonon.dos` is the unique MVP-stage static DOS tool using `PhononDosAdapter`.
+- Input is exactly one `PhononDos`: canonical v1 or bounded phonopy total/projected text wrapper with explicit metadata.
+- Params cover only source format/unit/normalization, table/plot caps, and line plot; outputs are seven exact inert types.
+- Mock Planner routes static DOS only. Bands, combined, eigenvectors, animation, thermal properties, calculations, and Brillouin requests do not route here.
+- PlanValidator, QueueWorkerRuntime, and AnalysisPlan authority are unchanged.

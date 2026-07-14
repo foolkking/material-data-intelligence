@@ -215,18 +215,21 @@ tools:
     notes: Static phonon band ingestion and visualization for approved canonical phase10h JSON or bounded phonopy band.yaml input; preserves source branch order, negative frequencies, and path discontinuities. Excludes DOS, eigenvectors, animation, phonon calculation, and external resources.
 
   - tool_id: phonon.dos
-    source_package: pymatviz
-    source_function: phonon_dos
-    implementation_source: pymatviz
-    stage: v1
+    source_package: mdi_adapters
+    source_function: canonical_phonon_dos
+    implementation_source: pymatviz_composed
+    stage: mvp
     adapter: PhononDosAdapter
     display_target: phonon
     artifact_types:
+      - phonon_dos_json
+      - phonon_summary_json
+      - phonon_report_json
+      - phonon_manifest_json
       - plotly_json
-      - plotly_html
-      - preview_png
-      - summary_md
+      - table_json
       - recipe_json
+    notes: Static phonon DOS ingestion and visualization for approved canonical phase10h JSON or bounded phonopy total/projected text wrappers with explicit metadata; preserves negative frequencies, applies unit-density Jacobians, and validates total-mode normalization. Excludes bands, combined views, eigenvectors, animation, calculations, and external resources.
 
   - tool_id: phonon.band_dos
     source_package: pymatviz

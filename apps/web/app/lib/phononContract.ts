@@ -17,6 +17,7 @@ export const PHONON_CAPS = Object.freeze({
 export type PhononReferenceResult = Readonly<{
   valid: boolean;
   errors: readonly string[];
+  warnings: readonly string[];
   atomCount: number;
   qpointCount: number;
   branchCount: number;
@@ -37,6 +38,12 @@ const dosFields = new Set([
   "density_unit", "normalization", "frequency_grid_semantics", "frequencies", "total_dos",
   "projected_dos", "broadening", "integration", "source", "warnings", "security",
 ]);
+const projectionFields = new Set(["projection_index", "projection_type", "atom_index", "species", "values", "source_guarantees_sum"]);
+const broadeningFields = new Set(["method", "width", "unit", "source"]);
+const integrationFields = new Set(["method", "expected_mode_count", "observed_integral", "relative_tolerance", "status"]);
+const sourceFields = new Set(["producer", "producer_version", "calculation_method", "force_constants_source", "supercell_matrix", "primitive_matrix", "nac", "input_sha256", "adapter_version"]);
+const nacFields = new Set(["enabled", "gamma_direction", "direction_policy"]);
+const warningCodes = new Set(["PHONON_SMALL_IMAGINARY_FREQUENCY", "PHONON_ACOUSTIC_MODES_NOT_CORRECTED", "PHONON_SOURCE_SOFTWARE_UNKNOWN", "PHONON_NAC_STATUS_UNKNOWN", "PHONON_DEGENERACY_SOURCE_UNAVAILABLE", "PHONON_DOS_INTEGRAL_APPROXIMATE", "PHONON_PROJECTED_DOS_SUM_MISMATCH", "PHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY", "PHONON_HIGH_SYMMETRY_LABEL_NORMALIZED"]);
 const forbiddenKeys = new Set([
   "callback", "callbacks", "code", "eval", "formula", "function", "html", "iframe",
   "module", "script", "shader", "src", "texture", "url", "urls", "__proto__",
@@ -67,6 +74,14 @@ function exactFields(value: Record<string, unknown>, expected: Set<string>): boo
 
 function validHash(value: unknown): boolean {
   return typeof value === "string" && /^[0-9a-f]{64}$/.test(value);
+}
+
+function safeText(value: unknown, optional = false): boolean {
+  return optional && value === null || typeof value === "string" && value.length > 0 && value.length <= 128 && /^[A-Za-z0-9_.:+() /-]+$/.test(value);
+}
+
+function matrix(value: unknown, integersOnly: boolean): boolean {
+  return Array.isArray(value) && value.length === 3 && value.every((row) => Array.isArray(row) && row.length === 3 && row.every((item) => integersOnly ? integer(item) : finite(item)));
 }
 
 function scanInert(root: unknown, errors: Set<string>): void {
@@ -112,12 +127,34 @@ function validateShared(payload: Record<string, unknown>, errors: Set<string>): 
     || !Array.isArray(security.external_assets)
     || security.external_assets.length !== 0
   ) errors.add("PHONON_EXTERNAL_REFERENCE_FORBIDDEN");
+  const source = record(payload.source) ? payload.source : {};
+  const nac = record(source.nac) ? source.nac : {};
+  if (
+    !exactFields(source, sourceFields)
+    || !safeText(source.producer)
+    || !safeText(source.producer_version, true)
+    || !safeText(source.calculation_method, true)
+    || !safeText(source.force_constants_source, true)
+    || !safeText(source.adapter_version, true)
+    || !validHash(source.input_sha256)
+    || source.supercell_matrix !== null && !matrix(source.supercell_matrix, true)
+    || source.primitive_matrix !== null && !matrix(source.primitive_matrix, false)
+    || !exactFields(nac, nacFields)
+    || typeof nac.enabled !== "boolean"
+    || !new Set([null, "source_defined", "explicit"]).has(nac.direction_policy as null | string)
+    || nac.gamma_direction !== null && !triplet(nac.gamma_direction)
+    || nac.enabled === false && (nac.direction_policy !== null || nac.gamma_direction !== null)
+    || nac.enabled === true && nac.direction_policy === null
+    || nac.direction_policy === "explicit" && nac.gamma_direction === null
+  ) errors.add("PHONON_METADATA_LIMIT_EXCEEDED");
+  const warnings = Array.isArray(payload.warnings) ? payload.warnings : [];
+  if (warnings.length > 32 || warnings.some((item) => typeof item !== "string" || !warningCodes.has(item)) || warnings.some((item, index) => index > 0 && String(item) <= String(warnings[index - 1]))) errors.add("PHONON_METADATA_LIMIT_EXCEEDED");
   scanInert(payload, errors);
   return atomCount;
 }
 
-function result(errors: Set<string>, atomCount: number, qpointCount = 0, branchCount = 0, dosPointCount = 0, projectedSeriesCount = 0): PhononReferenceResult {
-  return Object.freeze({valid: errors.size === 0, errors: Object.freeze([...errors].sort()), atomCount, qpointCount, branchCount, dosPointCount, projectedSeriesCount});
+function result(errors: Set<string>, atomCount: number, qpointCount = 0, branchCount = 0, dosPointCount = 0, projectedSeriesCount = 0, warnings: Set<string> = new Set()): PhononReferenceResult {
+  return Object.freeze({valid: errors.size === 0, errors: Object.freeze([...errors].sort()), warnings: Object.freeze([...warnings].sort()), atomCount, qpointCount, branchCount, dosPointCount, projectedSeriesCount});
 }
 
 export function reciprocalLatticePhysics2Pi(real: readonly (readonly number[])[]): number[][] {
@@ -195,21 +232,49 @@ export function validatePhononDosReference(payload: unknown): PhononReferenceRes
   const frequencies = Array.isArray(payload.frequencies) ? payload.frequencies : [];
   const total = Array.isArray(payload.total_dos) ? payload.total_dos : [];
   const projected = Array.isArray(payload.projected_dos) ? payload.projected_dos : [];
+  const warnings = new Set<string>(Array.isArray(payload.warnings) ? payload.warnings.filter((item): item is string => typeof item === "string" && warningCodes.has(item)) : []);
   if (frequencies.length < 2 || frequencies.some((value) => !finite(value)) || frequencies.some((value, index) => index > 0 && value <= frequencies[index - 1])) errors.add("PHONON_DOS_GRID_INVALID");
   if (total.length !== frequencies.length) errors.add("PHONON_DOS_SHAPE_INVALID");
   if (total.some((value) => !finite(value) || value < 0)) errors.add("PHONON_DOS_NONFINITE");
   if (frequencies.length > PHONON_CAPS.maxDosPoints || projected.length > PHONON_CAPS.maxProjectedSeries || frequencies.length * (projected.length + 2) > PHONON_CAPS.maxNumericValues) errors.add("PHONON_CAP_EXCEEDED");
   const identities = new Set<string>();
+  let priorProjectionOrder = "";
   projected.forEach((projection, index) => {
-    if (!record(projection) || projection.projection_index !== index) { errors.add("PHONON_PROJECTED_DOS_IDENTITY_INVALID"); return; }
+    if (!record(projection) || !exactFields(projection, projectionFields) || projection.projection_index !== index) { errors.add("PHONON_PROJECTED_DOS_IDENTITY_INVALID"); return; }
     const identity = projection.projection_type === "atom" ? `atom:${String(projection.atom_index)}` : projection.projection_type === "species" ? `species:${String(projection.species)}` : "invalid";
-    if (identity === "invalid") errors.add("PHONON_PROJECTED_DOS_IDENTITY_INVALID");
+    const species = Array.isArray(payload.species) ? payload.species : [];
+    const validAtom = projection.projection_type === "atom" && integer(projection.atom_index) && projection.atom_index >= 0 && projection.atom_index < atomCount && projection.species === species[projection.atom_index];
+    const validSpecies = projection.projection_type === "species" && projection.atom_index === null && typeof projection.species === "string" && species.includes(projection.species);
+    const order = validAtom ? `0:${String(projection.atom_index).padStart(8, "0")}` : validSpecies ? `1:${String(projection.species)}` : "";
+    if (identity === "invalid" || (!validAtom && !validSpecies) || typeof projection.source_guarantees_sum !== "boolean" || (priorProjectionOrder && order <= priorProjectionOrder)) errors.add("PHONON_PROJECTED_DOS_IDENTITY_INVALID");
+    priorProjectionOrder = order;
     if (identities.has(identity)) errors.add("PHONON_PROJECTED_DOS_DUPLICATE");
     identities.add(identity);
     if (!Array.isArray(projection.values) || projection.values.length !== frequencies.length) errors.add("PHONON_DOS_SHAPE_INVALID");
     else if (projection.values.some((value) => !finite(value) || value < 0)) errors.add("PHONON_DOS_NONFINITE");
   });
+  const guaranteesSum = projected.length > 0 && projected.every((projection) => record(projection) && projection.source_guarantees_sum === true);
+  const projectedValues = projected.map((projection) => record(projection) && Array.isArray(projection.values) ? projection.values : []);
+  if (guaranteesSum && projectedValues.every((values) => values.length === frequencies.length && values.every(finite)) && total.length === frequencies.length && total.every(finite)) {
+    for (let point = 0; point < frequencies.length; point += 1) {
+      const projectionSum = projectedValues.reduce((sum, values) => sum + Number(values[point]), 0);
+      if (Math.abs(projectionSum - Number(total[point])) > Math.max(1e-8, Math.abs(Number(total[point])) * 1e-5)) {
+        warnings.add("PHONON_PROJECTED_DOS_SUM_MISMATCH");
+        break;
+      }
+    }
+  }
+  const broadening = record(payload.broadening) ? payload.broadening : {};
+  const broadeningMethod = broadening.method;
+  if (!exactFields(broadening, broadeningFields) || !new Set(["none", "gaussian", "source_defined"]).has(String(broadeningMethod)) || !safeText(broadening.source, true)) errors.add("PHONON_SCHEMA_UNSUPPORTED");
+  else if (broadeningMethod === "none" ? broadening.width !== null || broadening.unit !== null : !finite(broadening.width) || broadening.width <= 0 || broadening.unit !== "terahertz") errors.add("PHONON_SCHEMA_UNSUPPORTED");
   const integration = record(payload.integration) ? payload.integration : {};
-  if (integration.method !== "trapezoidal" || integration.expected_mode_count !== 3 * atomCount || !finite(integration.observed_integral) || !finite(integration.relative_tolerance)) errors.add("PHONON_DOS_INTEGRAL_MISMATCH");
-  return result(errors, atomCount, 0, 0, frequencies.length, projected.length);
+  if (!exactFields(integration, integrationFields) || integration.method !== "trapezoidal" || integration.expected_mode_count !== 3 * atomCount || !finite(integration.observed_integral) || !finite(integration.relative_tolerance) || integration.relative_tolerance <= 0 || integration.relative_tolerance > 0.05 || !new Set(["within_tolerance", "approximate"]).has(String(integration.status))) errors.add("PHONON_DOS_INTEGRAL_MISMATCH");
+  else if (frequencies.length === total.length && frequencies.length >= 2) {
+    let calculated = 0;
+    for (let index = 1; index < frequencies.length; index += 1) calculated += (frequencies[index] - frequencies[index - 1]) * (Number(total[index]) + Number(total[index - 1])) / 2;
+    const observed = Number(integration.observed_integral);
+    if (Math.abs(calculated - observed) > Math.max(1e-8, Math.abs(calculated) * 1e-8) || Math.abs(calculated - 3 * atomCount) / Math.max(3 * atomCount, 1) > Number(integration.relative_tolerance)) errors.add("PHONON_DOS_INTEGRAL_MISMATCH");
+  }
+  return result(errors, atomCount, 0, 0, frequencies.length, projected.length, warnings);
 }

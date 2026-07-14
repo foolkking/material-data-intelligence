@@ -299,3 +299,12 @@
 | [`phase10h/phase10h1_phonon_band_security.md`](phase10h/phase10h1_phonon_band_security.md) | Parser, artifact, preview, and network security |
 | [`phase10h/phase10h1_phonon_band_readiness_matrix.md`](phase10h/phase10h1_phonon_band_readiness_matrix.md) | Phase 10H-1 readiness decisions |
 | [`phase10h/evidence/phase10h1_phonon_bands/`](phase10h/evidence/phase10h1_phonon_bands/) | Live artifacts, browser matrix, screenshots, and security evidence |
+| [`phase10h/phase10h2_phonon_dos.md`](phase10h/phase10h2_phonon_dos.md) | Static phonon DOS adapter, runtime, artifacts, and preview |
+| [`phase10h/phase10h2_phonon_dos_source_scope.md`](phase10h/phase10h2_phonon_dos_source_scope.md) | Approved canonical and bounded phonopy DOS sources |
+| [`phase10h/phase10h2_frequency_density_conversion.md`](phase10h/phase10h2_frequency_density_conversion.md) | Frequency conversion and density Jacobian |
+| [`phase10h/phase10h2_dos_normalization.md`](phase10h/phase10h2_dos_normalization.md) | Total-mode and unit-area normalization |
+| [`phase10h/phase10h2_projected_dos.md`](phase10h/phase10h2_projected_dos.md) | Atom/species projection identity and completeness |
+| [`phase10h/phase10h2_phonon_dos_plot_contract.md`](phase10h/phase10h2_phonon_dos_plot_contract.md) | Local Plotly mapping and preview budget |
+| [`phase10h/phase10h2_phonon_dos_security.md`](phase10h/phase10h2_phonon_dos_security.md) | Parser, artifact, preview, resource, and network security |
+| [`phase10h/phase10h2_phonon_dos_readiness_matrix.md`](phase10h/phase10h2_phonon_dos_readiness_matrix.md) | Phase 10H-2 readiness decisions |
+| [`phase10h/evidence/phase10h2_phonon_dos/`](phase10h/evidence/phase10h2_phonon_dos/) | Live artifacts, conversions, browser matrix, screenshots, and security evidence |

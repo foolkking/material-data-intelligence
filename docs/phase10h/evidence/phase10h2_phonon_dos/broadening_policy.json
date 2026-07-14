@@ -1,0 +1,10 @@
+{
+  "applied_by_adapter": false,
+  "applied_by_frontend": false,
+  "metadata_only": true,
+  "methods": [
+    "none",
+    "gaussian",
+    "source_defined"
+  ]
+}

@@ -97,6 +97,8 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_phonon_dos(request, tools, data_profile):
+            plan = _mock_phonon_dos_plan(request)
         elif _should_generate_phonon_band(request, tools, data_profile):
             plan = _mock_phonon_band_plan(request)
         elif _should_generate_trajectory_viewer(request, tools, data_profile):
@@ -1398,6 +1400,67 @@ def _has_phonon_band_input(data_profile: DataProfile) -> bool:
             if object_type == "phononband":
                 return True
     return "phononband" in str(getattr(data_profile, "datasetType", "") or "").lower()
+
+
+def _has_phonon_dos_input(data_profile: DataProfile) -> bool:
+    for obj in getattr(data_profile, "objects", None) or []:
+        if isinstance(obj, dict):
+            object_type = str(obj.get("objectType") or obj.get("object_type") or "").lower()
+            if object_type == "phonondos":
+                return True
+    return "phonondos" in str(getattr(data_profile, "datasetType", "") or "").lower()
+
+
+def _should_generate_phonon_dos(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "phonon.dos") or not _has_phonon_dos_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    unsupported = (
+        "band dos", "band + dos", "band and dos", "combined", "eigenvector", "animate", "animation",
+        "displacement", "thermal", "free energy", "entropy", "heat capacity", "gruneisen",
+        "calculate phonon", "run phonopy", "force constants", "brillouin", "volumetric",
+        "声子能带和态密度", "联合", "声子动画", "计算声子", "热容", "自由能",
+    )
+    if any(marker in prompt for marker in unsupported):
+        return False
+    markers = (
+        "phonon dos", "phonon density of states", "total phonon dos", "projected phonon dos",
+        "imaginary-frequency dos", "声子态密度", "总声子态密度", "分波声子态密度",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _mock_phonon_dos_plan(request: PlannerRequest) -> dict[str, Any]:
+    artifact_types = [
+        "phonon_dos_json", "phonon_summary_json", "phonon_report_json", "phonon_manifest_json",
+        "plotly_json", "table_json", "recipe_json",
+    ]
+    step = {
+        "stepId": "step_001",
+        "toolId": "phonon.dos",
+        "purpose": "Normalize and visualize an approved static phonon density-of-states source.",
+        "reason": "The request asks for a static phonon DOS plot from an available PhononDos object.",
+        "inputRefs": [{"refType": "normalized_object", "ref": "phonon_dos", "objectType": "PhononDos"}],
+        "params": {
+            "source_format": "auto", "source_frequency_unit": "terahertz", "source_normalization": "total_modes",
+            "max_table_rows": 20000, "max_plot_values": 100000, "plot_kind": "line",
+        },
+        "output": {"artifactTypes": artifact_types},
+    }
+    expected = [
+        {"name": "phonon_dos.json", "type": "phonon_dos_json", "fromStepId": "step_001"},
+        {"name": "phonon_dos_summary.json", "type": "phonon_summary_json", "fromStepId": "step_001"},
+        {"name": "phonon_dos_parse_report.json", "type": "phonon_report_json", "fromStepId": "step_001"},
+        {"name": "phonon_manifest.json", "type": "phonon_manifest_json", "fromStepId": "step_001"},
+        {"name": "phonon_dos_plot.json", "type": "plotly_json", "fromStepId": "step_001"},
+        {"name": "phonon_dos_table.json", "type": "table_json", "fromStepId": "step_001"},
+        {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_001"},
+    ]
+    return _single_step_plan(request, step, expected)
 
 
 def _should_generate_phonon_band(

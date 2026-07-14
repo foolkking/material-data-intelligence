@@ -1,0 +1,10 @@
+{
+  "covered_by": [
+    "contract caps",
+    "adapter numeric preflight",
+    "frontend preview budget"
+  ],
+  "error": "PHONON_CAP_EXCEEDED",
+  "partial_artifacts": 0,
+  "status": "rejected_before_plot"
+}

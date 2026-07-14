@@ -1333,3 +1333,11 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added canonical-only lazy local Plotly preview with branch/segment preservation, negative values, refusal budgets, table/JSON fallback, and cleanup.
 - Chromium, Firefox, WebKit, mobile, API, determinism, network, and security evidence passed without new dependencies.
 - DOS, combined view, eigenvectors, animation, and phonon calculation remain deferred.
+
+## 2026-07-14 Phase 10H-2 Phonon DOS
+
+- Implemented the unique planner-visible `phonon.dos` adapter for canonical DOS and bounded phonopy total/projected text wrappers.
+- Added exact THz/density-Jacobian conversion, explicit total-mode/unit-area normalization, negative-region preservation, and atom/species projection identity.
+- Added DOS-specific summary/manifest extensions, report, plot, table, recipe, runtime persistence, and validated local Plotly preview.
+- Chromium, Firefox, WebKit, mobile, accessibility, API, determinism, network, and security evidence passed without new dependencies.
+- Combined band+DOS, pymatgen serialized input, directional projections, eigenvectors, animation, and calculation remain deferred.

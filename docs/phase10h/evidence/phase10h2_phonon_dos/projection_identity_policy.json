@@ -1,0 +1,10 @@
+{
+  "atom_index": "canonical zero-based",
+  "directional": "DEFERRED_BY_DESIGN",
+  "display_label_identity": false,
+  "species_check": "canonical order",
+  "types": [
+    "atom",
+    "species"
+  ]
+}

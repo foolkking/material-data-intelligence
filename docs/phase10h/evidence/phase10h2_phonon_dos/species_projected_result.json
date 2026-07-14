@@ -1,0 +1,11 @@
+{
+  "count": 1,
+  "identities": [
+    {
+      "atom_index": null,
+      "species": "Si"
+    }
+  ],
+  "projection_type": "species",
+  "source_guarantees_sum": true
+}

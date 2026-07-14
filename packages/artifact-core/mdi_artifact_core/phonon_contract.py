@@ -12,6 +12,8 @@ PHONON_BAND_SCHEMA_VERSION = "phase10h.phonon_band.v1"
 PHONON_DOS_SCHEMA_VERSION = "phase10h.phonon_dos.v1"
 PHONON_SUMMARY_SCHEMA_VERSION = "phase10h.phonon_summary.v1"
 PHONON_MANIFEST_SCHEMA_VERSION = "phase10h.phonon_manifest.v1"
+PHONON_DOS_SUMMARY_SCHEMA_VERSION = "phase10h2.phonon_dos_summary.v1"
+PHONON_DOS_MANIFEST_SCHEMA_VERSION = "phase10h2.phonon_dos_manifest.v1"
 QPOINT_PATH_SCHEMA_VERSION = "phase10h.qpoint_path.v1"
 FREQUENCY_AXIS_SCHEMA_VERSION = "phase10h.frequency_axis.v1"
 PHONON_SOURCE_SCHEMA_VERSION = "phase10h.phonon_source.v1"
@@ -578,6 +580,126 @@ def validate_phonon_manifest(payload: Any) -> PhononValidationResult:
             if set(artifact) != {"name", "schema_version", "media_type", "size_bytes", "sha256"} or artifact.get("schema_version") != schema_by_name.get(artifact.get("name")) or artifact.get("media_type") != "application/json" or not _positive_int(artifact.get("size_bytes")) or artifact["size_bytes"] > DEFAULT_PHONON_CAPS["max_artifact_bytes"] or not _sha256(artifact.get("sha256")):
                 errors.add("PHONON_SCHEMA_UNSUPPORTED")
     return _result(errors, set())
+
+
+def phonon_dos_summary(
+    dos: dict[str, Any],
+    *,
+    projection_completeness: Literal["complete", "partial", "unknown"],
+) -> dict[str, Any]:
+    result = validate_phonon_dos(dos)
+    if not result.valid:
+        raise ValueError("phonon DOS must validate before summary generation")
+    frequencies = [float(value) for value in dos["frequencies"]]
+    total = [float(value) for value in dos["total_dos"]]
+    tolerance = float(dos["frequency_zero_tolerance"])
+    return {
+        "schema_version": PHONON_DOS_SUMMARY_SCHEMA_VERSION,
+        "structure_identity": dos["structure_identity"],
+        "atom_count": dos["atom_count"],
+        "frequency_min": min(frequencies),
+        "frequency_max": max(frequencies),
+        "frequency_unit": FREQUENCY_UNIT,
+        "density_unit": DENSITY_UNIT,
+        "normalization": DOS_NORMALIZATION,
+        "expected_mode_count": dos["integration"]["expected_mode_count"],
+        "observed_integral": dos["integration"]["observed_integral"],
+        "normalization_status": dos["integration"]["status"],
+        "imaginary_region_integral": _integral_below_zero(frequencies, total),
+        "near_zero_point_count": sum(abs(value) <= tolerance for value in frequencies),
+        "total_dos_available": True,
+        "projected_dos_available": bool(dos["projected_dos"]),
+        "projection_count": len(dos["projected_dos"]),
+        "projection_completeness": projection_completeness,
+        "broadening": dos["broadening"],
+        "source": dos["source"],
+        "warnings": list(result.warnings),
+    }
+
+
+def validate_phonon_dos_summary(payload: Any) -> PhononValidationResult:
+    errors: set[str] = set()
+    fields = {
+        "schema_version", "structure_identity", "atom_count", "frequency_min", "frequency_max",
+        "frequency_unit", "density_unit", "normalization", "expected_mode_count", "observed_integral",
+        "normalization_status", "imaginary_region_integral", "near_zero_point_count", "total_dos_available",
+        "projected_dos_available", "projection_count", "projection_completeness", "broadening", "source", "warnings",
+    }
+    if not isinstance(payload, dict) or set(payload) != fields or payload.get("schema_version") != PHONON_DOS_SUMMARY_SCHEMA_VERSION:
+        return _result({"PHONON_SCHEMA_UNSUPPORTED"}, set())
+    _scan_inert_content(payload, errors)
+    if not _sha256(payload.get("structure_identity")):
+        errors.add("PHONON_STRUCTURE_IDENTITY_REQUIRED")
+    atom_count = payload.get("atom_count")
+    if not _positive_int(atom_count) or atom_count > DEFAULT_PHONON_CAPS["max_atoms"]:
+        errors.add("PHONON_ATOM_COUNT_INVALID")
+        atom_count = 0
+    if payload.get("frequency_unit") != FREQUENCY_UNIT or payload.get("density_unit") != DENSITY_UNIT or payload.get("normalization") != DOS_NORMALIZATION:
+        errors.add("PHONON_DOS_NORMALIZATION_UNSUPPORTED")
+    minimum, maximum = payload.get("frequency_min"), payload.get("frequency_max")
+    numeric = [minimum, maximum, payload.get("observed_integral"), payload.get("imaginary_region_integral")]
+    if any(not _finite_number(value) for value in numeric) or (_finite_number(minimum) and _finite_number(maximum) and float(minimum) > float(maximum)):
+        errors.add("PHONON_DOS_NONFINITE")
+    if payload.get("expected_mode_count") != 3 * atom_count or payload.get("normalization_status") not in {"within_tolerance", "approximate"}:
+        errors.add("PHONON_DOS_INTEGRAL_MISMATCH")
+    if any(not _nonnegative_int(payload.get(key)) for key in ("near_zero_point_count", "projection_count")):
+        errors.add("PHONON_DOS_SHAPE_INVALID")
+    if payload.get("projection_completeness") not in {"complete", "partial", "unknown"}:
+        errors.add("PHONON_PROJECTED_DOS_IDENTITY_INVALID")
+    if type(payload.get("total_dos_available")) is not bool or payload.get("total_dos_available") is not True or type(payload.get("projected_dos_available")) is not bool:
+        errors.add("PHONON_SCHEMA_UNSUPPORTED")
+    _validate_broadening(payload.get("broadening"), errors)
+    warnings: set[str] = set()
+    _validate_source(payload.get("source"), errors, warnings)
+    _validate_warnings(payload.get("warnings"), errors, warnings)
+    return _result(errors, warnings, atom_count=int(atom_count or 0), projections=int(payload.get("projection_count", 0) or 0))
+
+
+def validate_phonon_dos_manifest(payload: Any) -> PhononValidationResult:
+    errors: set[str] = set()
+    fields = {"schema_version", "structure_identity", "dos_schema_version", "summary_schema_version", "artifacts", "security"}
+    if not isinstance(payload, dict) or set(payload) != fields or payload.get("schema_version") != PHONON_DOS_MANIFEST_SCHEMA_VERSION:
+        return _result({"PHONON_SCHEMA_UNSUPPORTED"}, set())
+    _scan_inert_content(payload, errors)
+    _validate_security(payload.get("security"), errors)
+    if not _sha256(payload.get("structure_identity")):
+        errors.add("PHONON_STRUCTURE_IDENTITY_REQUIRED")
+    if payload.get("dos_schema_version") != PHONON_DOS_SCHEMA_VERSION or payload.get("summary_schema_version") != PHONON_DOS_SUMMARY_SCHEMA_VERSION:
+        errors.add("PHONON_SCHEMA_UNSUPPORTED")
+    artifacts = payload.get("artifacts")
+    expected = ["phonon_dos.json", "phonon_dos_summary.json"]
+    if not isinstance(artifacts, list) or [item.get("name") for item in artifacts if isinstance(item, dict)] != expected or len(artifacts) != 2:
+        errors.add("PHONON_SCHEMA_UNSUPPORTED")
+    else:
+        schemas = {"phonon_dos.json": PHONON_DOS_SCHEMA_VERSION, "phonon_dos_summary.json": PHONON_DOS_SUMMARY_SCHEMA_VERSION}
+        for artifact in artifacts:
+            if (
+                not isinstance(artifact, dict)
+                or set(artifact) != {"name", "schema_version", "media_type", "size_bytes", "sha256"}
+                or artifact.get("schema_version") != schemas.get(artifact.get("name"))
+                or artifact.get("media_type") != "application/json"
+                or not _positive_int(artifact.get("size_bytes"))
+                or artifact["size_bytes"] > DEFAULT_PHONON_CAPS["max_artifact_bytes"]
+                or not _sha256(artifact.get("sha256"))
+            ):
+                errors.add("PHONON_SCHEMA_UNSUPPORTED")
+    return _result(errors, set())
+
+
+def _integral_below_zero(frequencies: list[float], values: list[float]) -> float:
+    integral = 0.0
+    for left in range(len(frequencies) - 1):
+        x0, x1 = frequencies[left], frequencies[left + 1]
+        y0, y1 = values[left], values[left + 1]
+        if x0 >= 0:
+            break
+        if x1 <= 0:
+            integral += (x1 - x0) * (y0 + y1) / 2.0
+        else:
+            y_at_zero = y0 + (y1 - y0) * ((0.0 - x0) / (x1 - x0))
+            integral += (0.0 - x0) * (y0 + y_at_zero) / 2.0
+            break
+    return integral
 
 
 def phonon_schema_snapshots() -> dict[str, Any]:

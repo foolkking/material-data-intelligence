@@ -40,7 +40,7 @@ def test_registry_filters_and_lookup():
     registry = load_manifests()
 
     assert registry.get_tool_by_id("composition.ptable_heatmap").adapter == "PTableHeatmapAdapter"
-    assert len(registry.list_tools_by_stage("mvp")) == 31
+    assert len(registry.list_tools_by_stage("mvp")) == 32
     assert {tool.toolId for tool in registry.list_tools_by_domain("structure")} >= {
         "structure.summary",
         "structure.lattice_summary",

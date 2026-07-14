@@ -3631,3 +3631,21 @@ after independent canonical validation.
 - Plot/table/report are inert product artifacts; the canonical manifest remains band plus summary.
 - Explicit frontend budgets refuse oversized plotting without mutating or silently sampling the canonical artifact.
 - DOS, eigenvectors, animation, calculations, and external resources gain no execution authority.
+
+# 2026-07-14 Phase 10H-2 ADR: explicit static DOS normalization boundary
+
+## Decision
+
+Use `phase10h.phonon_dos.v1` as the only scientific DOS model. Accept canonical
+JSON and bounded phonopy text only with explicit structure, units,
+normalization, projection identity, broadening, and lineage. Apply exact
+frequency-density Jacobians and only approved unit-area-to-3N scaling. Use
+DOS-specific additive summary/manifest contracts instead of weakening stable
+band-rooted contracts.
+
+## Consequences
+
+- No sorting, resampling, smoothing, clipping, column guessing, or normalization inference exists.
+- Pymatgen serialized input and directional projections remain deferred.
+- Frontend Plotly mapping starts only after independent validation and never executes artifact plot data.
+- Combined views, eigenvectors, animation, calculations, dependencies, and external resources gain no authority.

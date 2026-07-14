@@ -742,3 +742,10 @@
 - Phase 10H-2 must define DOS production independently and preserve the established band structure identity/unit/source lineage.
 - Combined band+DOS, eigenvectors, mode animation, LO-TO directional visualization, and phonon calculation remain open and must not be inferred from the static band tool.
 - Physical assistive-technology and broad device rendering remain outside automated browser evidence.
+
+## 2026-07-14 Phase 10H-2 Follow-ups
+
+- Decide whether stable pymatgen phonon-DOS serialization deserves a separately approved source adapter; arbitrary deserialization remains forbidden.
+- Directional projections require an explicit coordinate-basis contract.
+- Phase 10H-3 may combine independently validated band and DOS but must not renormalize either source.
+- Physical assistive-technology and broad-device rendering remain outside automated evidence.

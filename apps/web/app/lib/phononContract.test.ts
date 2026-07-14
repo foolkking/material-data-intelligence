@@ -65,6 +65,21 @@ describe("Phase 10H phonon reference contract", () => {
     expect(validatePhononBandReference({...band(), callback: "run"}).errors).toContain("PHONON_EXTERNAL_REFERENCE_FORBIDDEN");
   });
 
+  it("rejects noncanonical DOS provenance and projection identity", () => {
+    const sourceMismatch = dos();
+    sourceMismatch.source = {...source, extra: "not canonical"} as typeof source;
+    expect(validatePhononDosReference(sourceMismatch).errors).toContain("PHONON_METADATA_LIMIT_EXCEEDED");
+    const projectionMismatch: Record<string, any> = dos();
+    projectionMismatch.projected_dos = [{projection_index: 0, projection_type: "atom", atom_index: 0, species: "Na", values: [1.5,1.5,1.5], source_guarantees_sum: true}];
+    expect(validatePhononDosReference(projectionMismatch).errors).toContain("PHONON_PROJECTED_DOS_IDENTITY_INVALID");
+  });
+
+  it("reports complete projected DOS sum mismatches without mutating or rejecting the artifact", () => {
+    const mismatch: Record<string, any> = dos();
+    mismatch.projected_dos = [{projection_index: 0, projection_type: "atom", atom_index: 0, species: "Si", values: [0,2,0], source_guarantees_sum: true}];
+    expect(validatePhononDosReference(mismatch)).toMatchObject({valid: true, warnings: ["PHONON_PROJECTED_DOS_SUM_MISMATCH"]});
+  });
+
   it("uses row-vector 2pi reciprocal convention", () => {
     const reciprocal = reciprocalLatticePhysics2Pi([[4,0,0],[1,3,0],[0.2,0.4,5]]);
     const cartesian = reciprocalFractionalToCartesian([0.25,0.5,0.75], [[4,0,0],[1,3,0],[0.2,0.4,5]]);

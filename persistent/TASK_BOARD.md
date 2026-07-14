@@ -2003,3 +2003,12 @@
 - [x] Add local Plotly/table/JSON preview with explicit performance refusal and lifecycle cleanup.
 - [x] Close backend/frontend, Chromium/Firefox/WebKit/mobile, API, security, and evidence gates.
 - [ ] Phonon DOS, combined view, eigenvectors, and animation remain separate queued tasks.
+
+## Phase 10H-2 Phonon DOS
+
+- [x] Approve canonical and bounded phonopy total/projected DOS inputs.
+- [x] Add unit/density Jacobian and explicit normalization/integration validation.
+- [x] Add strict `phonon.dos` registry/planner/runtime integration and seven inert artifacts.
+- [x] Add validated Plotly/table/JSON preview with projection selector and degraded fallback.
+- [x] Close backend/frontend, Chromium/Firefox/WebKit/mobile, API, security, and evidence gates.
+- [ ] Combined band+DOS, eigenvectors, and animation remain separate queued tasks.

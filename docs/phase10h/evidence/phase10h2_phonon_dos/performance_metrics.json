@@ -1,0 +1,22 @@
+{
+  "browsers": [
+    {
+      "browser": "chromium",
+      "renderMs": 337
+    },
+    {
+      "browser": "firefox",
+      "renderMs": 462
+    },
+    {
+      "browser": "webkit",
+      "renderMs": 504
+    }
+  ],
+  "degraded": {
+    "text": "Plot budget exceededPHONON_DOS_PREVIEW_LIMIT_EXCEEDED: 120000 values exceed the static preview budget. Canonical JSON remains available.",
+    "svg": 0
+  },
+  "previewNumericCap": 100000,
+  "tableVisibleRowCap": 300
+}

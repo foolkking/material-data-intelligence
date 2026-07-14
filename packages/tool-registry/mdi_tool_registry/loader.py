@@ -118,6 +118,15 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxArtifactBytes": 64000000,
             "maxTableRows": 50000,
         }
+    if tool_id == "phonon.dos":
+        return {
+            "maxAtoms": 512,
+            "maxDosPoints": 100000,
+            "maxProjectedDosSeries": 512,
+            "maxNumericValues": 4000000,
+            "maxArtifactBytes": 64000000,
+            "maxTableRows": 50000,
+        }
     if tool_id in {"structure.trajectory_import", "structure.trajectory_viewer"}:
         return {
             "maxAtoms": 4096,
@@ -190,6 +199,17 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
                     name="approved_phonon_band",
                     requiredObjectTypes=[MaterialObjectType.PhononBand],
                     description="Use exactly one validated phase10h.phonon_band.v1 object or bounded phonopy band.yaml wrapper.",
+                )
+            ],
+        )
+    if tool_id == "phonon.dos":
+        return ToolInputSchema(
+            periodicity="periodic_required",
+            inputOptions=[
+                ToolInputOption(
+                    name="approved_phonon_dos",
+                    requiredObjectTypes=[MaterialObjectType.PhononDos],
+                    description="Use exactly one validated phase10h.phonon_dos.v1 object or bounded phonopy DOS text wrapper with explicit structure and projection metadata.",
                 )
             ],
         )
@@ -315,6 +335,19 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "source_format": {"enum": ["auto", "phase10h.phonon_band.v1", "phonopy_band_yaml"]},
                 "source_frequency_unit": {"enum": ["terahertz", "inverse_centimeter", "millielectronvolt"]},
                 "max_table_rows": {"type": "integer", "minimum": 1, "maximum": 50000},
+                "plot_kind": {"const": "line"},
+            },
+        }
+    if tool_id == "phonon.dos":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "source_format": {"enum": ["auto", "phase10h.phonon_dos.v1", "phonopy_total_dos", "phonopy_projected_dos"]},
+                "source_frequency_unit": {"enum": ["terahertz", "inverse_centimeter", "millielectronvolt"]},
+                "source_normalization": {"enum": ["total_modes", "unit_area"]},
+                "max_table_rows": {"type": "integer", "minimum": 1, "maximum": 50000},
+                "max_plot_values": {"type": "integer", "minimum": 2, "maximum": 250000},
                 "plot_kind": {"const": "line"},
             },
         }

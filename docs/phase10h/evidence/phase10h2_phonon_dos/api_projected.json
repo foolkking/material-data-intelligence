@@ -1,0 +1,37 @@
+{
+  "atoms": 2,
+  "grid_points": 7,
+  "integral": 6.0,
+  "maximum_frequency": 5.0,
+  "minimum_frequency": -1.0,
+  "projections": 2,
+  "schema": "phase10h.phonon_dos.v1",
+  "validation": {
+    "atom_count": 2,
+    "branch_count": 0,
+    "caps": {
+      "max_artifact_bytes": 64000000,
+      "max_atoms": 512,
+      "max_branches": 1536,
+      "max_degeneracy_groups": 4096,
+      "max_dos_points": 100000,
+      "max_label_length": 64,
+      "max_labels": 512,
+      "max_metadata_bytes": 16384,
+      "max_nesting_depth": 10,
+      "max_numeric_magnitude": 1000000000000,
+      "max_projected_dos_series": 512,
+      "max_qpoints": 4096,
+      "max_segments": 256,
+      "max_total_numeric_values": 4000000,
+      "max_visited_nodes": 5000000,
+      "max_warnings": 32
+    },
+    "dos_point_count": 7,
+    "errors": [],
+    "projected_series_count": 2,
+    "qpoint_count": 0,
+    "valid": true,
+    "warnings": []
+  }
+}

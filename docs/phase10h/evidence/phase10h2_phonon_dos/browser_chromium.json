@@ -1,0 +1,87 @@
+{
+  "browser": "chromium",
+  "version": "150.0.7871.115",
+  "available": true,
+  "projected": {
+    "state": "rendered",
+    "pointCount": 7,
+    "traceCount": 1,
+    "numericValues": 7,
+    "negativePreserved": true,
+    "externalRequests": 0,
+    "summary": "Atoms2Grid points7Frequency range-1.00000 to 5.00000 THzNormalizationtotal_modesIntegral / expected6.00000 / 6Imaginary-region weight0.50000Projected series2Projection completenesscompleteBroadeningnone applied",
+    "svgCount": 3,
+    "pathCount": 14,
+    "text": "02400.20.40.60.81",
+    "accessibility": {
+      "region": "Phonon density of states preview",
+      "plot": "Phonon density of states by frequency",
+      "live": "polite",
+      "selector": "Projected seriesTotal DOS onlyAtom 0 (Si)Atom 1 (Si)"
+    },
+    "renderMs": 337
+  },
+  "imaginary": {
+    "state": "rendered",
+    "pointCount": 7,
+    "traceCount": 1,
+    "numericValues": 7,
+    "negativePreserved": true,
+    "externalRequests": 0,
+    "summary": "Atoms2Grid points7Frequency range-1.00000 to 5.00000 THzNormalizationtotal_modesIntegral / expected6.00000 / 6Imaginary-region weight0.50000Projected series0Projection completenessunknownBroadeningnone applied",
+    "svgCount": 3,
+    "pathCount": 14,
+    "text": "02400.20.40.60.81",
+    "accessibility": {
+      "region": "Phonon density of states preview",
+      "plot": "Phonon density of states by frequency",
+      "live": "polite"
+    },
+    "renderMs": 345
+  },
+  "species": "0",
+  "degraded": {
+    "text": "Plot budget exceededPHONON_DOS_PREVIEW_LIMIT_EXCEEDED: 120000 values exceed the static preview budget. Canonical JSON remains available.",
+    "svg": 0
+  },
+  "invalid": {
+    "code": "PHONON_EXTERNAL_REFERENCE_FORBIDDEN",
+    "plotHost": 0
+  },
+  "mobile": {
+    "viewport": [
+      390,
+      844
+    ],
+    "snapshot": {
+      "state": "rendered",
+      "pointCount": 7,
+      "traceCount": 1,
+      "numericValues": 7,
+      "negativePreserved": true,
+      "externalRequests": 0,
+      "summary": "Atoms2Grid points7Frequency range-1.00000 to 5.00000 THzNormalizationtotal_modesIntegral / expected6.00000 / 6Imaginary-region weight0.50000Projected series2Projection completenesscompleteBroadeningnone applied",
+      "svgCount": 3,
+      "pathCount": 14,
+      "text": "02400.20.40.60.81",
+      "accessibility": {
+        "region": "Phonon density of states preview",
+        "plot": "Phonon density of states by frequency",
+        "live": "polite",
+        "selector": "Projected seriesTotal DOS onlyAtom 0 (Si)Atom 1 (Si)"
+      },
+      "renderMs": 358
+    },
+    "horizontalOverflow": false,
+    "audit": {
+      "externalRequests": 0,
+      "inert": {
+        "iframe": 0,
+        "externalScript": 0,
+        "javascriptUri": 0,
+        "inlineHandler": 0
+      }
+    }
+  },
+  "externalRequests": 0
+}

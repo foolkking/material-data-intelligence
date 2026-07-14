@@ -1,0 +1,8 @@
+{
+  "bin_edges": "unsupported",
+  "duplicates": "reject",
+  "negative": "preserved",
+  "nonuniform": "supported",
+  "semantic": "sample_grid_points",
+  "strictly_increasing": true
+}

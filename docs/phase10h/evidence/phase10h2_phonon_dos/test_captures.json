@@ -1,0 +1,15 @@
+{
+  "backend_focus": "82 passed",
+  "backend_full": "510 passed, 23 skipped, 11 warnings",
+  "frontend_focus": "13 passed",
+  "frontend_full": "164 passed",
+  "typecheck": "success",
+  "build": "success",
+  "phonon_dos_browser": "Chromium, Firefox, WebKit, mobile, and accessibility passed",
+  "phonon_band_regression": "Chromium, Firefox, WebKit, mobile, and accessibility passed",
+  "phase10_closure_regression": "passed",
+  "phase10g_regression": "evidence integrity and Chromium/Firefox/WebKit browser smoke passed",
+  "service_backed_local": "unavailable: Docker executable not installed",
+  "npm_audit": "unavailable: configured registry audit endpoint returned NOT_IMPLEMENTED",
+  "generated_by": "scripts/generate_phase10h2_phonon_dos_evidence.py plus final Phase 10H-2 closure checks"
+}

@@ -1,0 +1,7 @@
+{
+  "expected_integral": "3N",
+  "inference": false,
+  "source_total_modes": "validate only",
+  "source_unit_area": "scale both total and projections by 3N/integral",
+  "target": "total_modes"
+}

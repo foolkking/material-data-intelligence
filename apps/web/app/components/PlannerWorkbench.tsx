@@ -6,6 +6,7 @@ import { createTranslator, type Locale, type MessageKey } from "../lib/i18n";
 import { ViewerSceneRendererSurface } from "./viewer-scene/ViewerSceneRendererSurface";
 import { TrajectoryViewerSurface } from "./trajectory-viewer/TrajectoryViewerSurface";
 import { PhononBandPreviewPanel } from "./phonon-band/PhononBandPreviewPanel";
+import { PhononDosPreviewPanel } from "./phonon-dos/PhononDosPreviewPanel";
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
@@ -1198,6 +1199,7 @@ function ResultsExportTab(props: {
       <ViewerStaticPreviewPanel artifacts={props.artifacts} />
       <TrajectoryPreviewPanel artifacts={props.artifacts} />
       <PhononBandPreviewPanel artifacts={props.artifacts} />
+      <PhononDosPreviewPanel artifacts={props.artifacts} />
       <ArtifactGallery t={t} artifacts={props.artifacts} developerMode={props.developerMode} selectedArtifact={props.selectedArtifact} />
       <ToolCallList t={t} toolCalls={props.toolCalls} developerMode={props.developerMode} />
       <ExportControls t={t} artifacts={props.artifacts} />

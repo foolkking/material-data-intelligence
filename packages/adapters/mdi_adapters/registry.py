@@ -31,6 +31,7 @@ from .pymatviz import (
     ElementsHistAdapter,
     FormulaStatisticsAdapter,
     PhononBandAdapter,
+    PhononDosAdapter,
     RdfAdapter,
     XrdPatternAdapter,
 )
@@ -56,6 +57,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     OutlierTableAdapter.__name__: OutlierTableAdapter,
     PTableHeatmapAdapter.__name__: PTableHeatmapAdapter,
     PhononBandAdapter.__name__: PhononBandAdapter,
+    PhononDosAdapter.__name__: PhononDosAdapter,
     RdfAdapter.__name__: RdfAdapter,
     Structure3DAdapter.__name__: Structure3DAdapter,
     SpacegroupSummaryAdapter.__name__: SpacegroupSummaryAdapter,
