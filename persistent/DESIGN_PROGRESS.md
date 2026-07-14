@@ -6,7 +6,7 @@
 - Fixed row-vector physics-`2*pi` reciprocal mathematics, source/primitive/conventional transform direction, first reciprocal Wigner-Seitz topology, deterministic point/path identity, provider/time-reversal metadata, caps, hashes, and typed security validation.
 - Added simple-cubic, BCC, FCC, hexagonal, triclinic, and conventional/primitive fixtures plus independent NumPy/SciPy Voronoi/ConvexHull references and Phase 10H compatibility checks.
 - No production adapter, Tool Registry entry, planner route, runtime job, frontend component, Three.js/WebGL renderer, dependency, external service, or real LLM path was added.
-- Local closure passed `39` Phase 10I tests, `157` focused cross-phase tests, `193` frontend tests, and `605 passed, 23 skipped` backend tests. Implementation commit `653ea133d5791db3f6879b05dc66a2e397d0d646` passed CI run `29339358234`, including service-backed and no-skipped jobs; completion-record CI remains the queue-archival gate.
+- Local closure passed `39` Phase 10I tests, `157` focused cross-phase tests, `193` frontend tests, and `605 passed, 23 skipped` backend tests. Implementation commit `653ea133d5791db3f6879b05dc66a2e397d0d646` passed CI run `29339358234`; completion record `3fe1913b53814ef0df31f85baafa265c8ba0df97` passed CI run `29339658353`. Unit, frontend, service-backed, and no-skipped gates are closed, so the completed queue block is archived.
 
 ## 2026-07-14 Phase 10H-5 Phonon Animation
 
