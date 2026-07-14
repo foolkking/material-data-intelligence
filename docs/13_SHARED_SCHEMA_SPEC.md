@@ -1,5 +1,38 @@
 # 共享 Schema 规范
 
+## Phase 10I Brillouin-zone contract family
+
+Phase 10I adds five inert schema identities:
+
+- `phase10i.reciprocal_lattice.v1`
+- `phase10i.brillouin_zone.v1`
+- `phase10i.kpath.v1`
+- `phase10i.brillouin_zone_manifest.v1`
+- `phase10i.tolerance_policy.v1`
+
+Real and reciprocal lattice vectors are rows. The canonical formulas are
+`r_cart=r_frac*A`, `B=2*pi*(A^-1)^T`, `A*B^T=2*pi*I`, and
+`k_cart=k_frac*B`; `A` uses angstrom and `B` uses `angstrom^-1`. The BZ is the
+origin-centered Wigner-Seitz cell of the standardized primitive reciprocal
+lattice. Vertices, undirected edges, and outward counter-clockwise faces have
+canonical stable order and exact incidence; a valid polyhedron is closed,
+convex, manifold, centrally symmetric, has Euler characteristic 2, and volume
+`(2*pi)^3/|det(A)|`.
+
+The optional k-path is provider-bound and geometry-independent. It stores safe
+point labels/aliases, reciprocal-fractional and Cartesian coordinates, explicit
+path variants, segments, discontinuities, cumulative Cartesian reciprocal
+distance, time-reversal policy, and provider tolerances. Phase 10H's
+`radian_per_angstrom` path-distance spelling is explicitly compatible with
+Phase 10I `angstrom^-1` under the shared `physics_2pi` convention; structure,
+primitive lattice hash, and selected endpoints must still match.
+
+Every artifact uses exact fields, versioned independent tolerances, hard caps,
+canonical JSON/content hashes, and the same closed inert security declaration.
+There is no JavaScript, HTML, CSS, URL, shader, executable asset, renderer, or
+WebGL artifact. `structure.brillouin_zone` is not registered; the generic JSON
+preview is the only current consumer.
+
 ## Phase 10G-2 trajectory viewer internal display contract
 
 The persisted schema remains `phase10g.trajectory.v1`. The frontend derives immutable per-frame display scenes with stable `atomIndex` and renderer-local `imageOffset`; these are not artifacts and do not modify the canonical contract. Current/requested frame, playback, cache, supercell, clipping, camera, selection, and measurements are application-owned local state. Dynamic bond inference and artifact-controlled execution remain forbidden.

@@ -1,5 +1,30 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10I-BRILLOUIN-CONTRACT: Separate primitive reciprocal geometry from provider paths
+
+### Decision
+
+Use row real lattices and one canonical physics reciprocal basis
+`B=2*pi*(A^-1)^T`, so `A*B^T=2*pi*I` and reciprocal Cartesian coordinates are
+`k_fractional*B`. Bind source, standardized primitive, and optional conventional
+cells with explicit `A_new=M*A_old` transformation direction. Define the first
+BZ only as the origin-centered Wigner-Seitz cell of the standardized primitive
+reciprocal lattice.
+
+Persist geometry as canonical vertices, undirected edges, and outward-oriented
+faces with generator planes and full incidence. Persist high-symmetry points,
+variants, segments, discontinuities, provider convention, and time reversal in
+a separate optional k-path artifact. Use exact field allowlists, independent
+versioned tolerances, conservative caps, canonical content hashes, and inert
+security metadata.
+
+### Consequences
+
+- BCC and FCC references follow reciprocal, not real, lattice topology: BCC real has an FCC reciprocal rhombic-dodecahedron BZ; FCC real has a BCC reciprocal truncated-octahedron BZ.
+- Geometry identity cannot depend on provider labels or path branch choices, and a path cannot modify geometry.
+- Phase 10H reciprocal q-points and non-Gamma phases share exactly one `2*pi`; its `radian_per_angstrom` path-distance spelling is explicitly mapped to Phase 10I Cartesian reciprocal length.
+- `structure.brillouin_zone`, adapter/planner/runtime execution, browser rendering, electronic/phonon calculations, and external providers remain unregistered and deferred.
+
 ## ADR-10H5-PHONON-ANIMATION: Animate one validated mode in the shared viewer engine
 
 ### Decision

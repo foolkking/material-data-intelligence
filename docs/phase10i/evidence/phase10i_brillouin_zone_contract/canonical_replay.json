@@ -1,0 +1,32 @@
+{
+  "bcc": {
+    "byte_equal": true,
+    "sha256": "8dc0308cb94b8142dceb0f3f897fe2851afc600ba6231db9c7a1573f7eb792bc",
+    "valid": true
+  },
+  "conventional_bcc": {
+    "byte_equal": true,
+    "sha256": "eb3ef0a24fd1433e4c84d0dd00f6c0113a9ea15236c34f196e505d84bc801153",
+    "valid": true
+  },
+  "fcc": {
+    "byte_equal": true,
+    "sha256": "8e3355b529164e26172924b7c6747bd14559ed7aaba1600516df7cae97023ec9",
+    "valid": true
+  },
+  "hexagonal": {
+    "byte_equal": true,
+    "sha256": "738c22b10e00f40ad44bc0fb03d34352612faf4749a9ff7e8ae9b2ec8899d811",
+    "valid": true
+  },
+  "simple_cubic": {
+    "byte_equal": true,
+    "sha256": "3e86f5eb126c758c2baca9974f3c2bfd6db5597513d98bae1581197ac0b94d7e",
+    "valid": true
+  },
+  "triclinic": {
+    "byte_equal": true,
+    "sha256": "25c7bdc8ab23da8ee39d4da2d8e12a912ea1a52fd4aeae8beac7c49a42162153",
+    "valid": true
+  }
+}

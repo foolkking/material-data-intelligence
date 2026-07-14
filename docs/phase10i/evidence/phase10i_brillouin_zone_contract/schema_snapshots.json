@@ -1,0 +1,70 @@
+{
+  "caps": {
+    "max_aliases_per_point": 16,
+    "max_candidate_planes": 728,
+    "max_discontinuities": 64,
+    "max_edges": 512,
+    "max_faces": 256,
+    "max_generator_search_radius": 4,
+    "max_high_symmetry_points": 128,
+    "max_json_bytes": 8000000,
+    "max_label_length": 64,
+    "max_numeric_magnitude": 1000000000000,
+    "max_path_segments": 256,
+    "max_path_variants": 8,
+    "max_provider_metadata_bytes": 16384,
+    "max_scan_depth": 32,
+    "max_scan_nodes": 100000,
+    "max_transformations": 8,
+    "max_vertices": 256,
+    "max_vertices_per_face": 64,
+    "max_warnings": 32
+  },
+  "convention": {
+    "duality": "A*B^T=2*pi*I",
+    "real_cartesian": "r_cart=r_frac*A",
+    "real_lattice": "row_vectors",
+    "reciprocal_cartesian": "k_cart=k_frac*B",
+    "reciprocal_lattice": "B=2*pi*A^-T",
+    "units": "angstrom^-1"
+  },
+  "renderer": "NOT_INCLUDED",
+  "security": {
+    "contains_css": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_assets": [],
+    "executable_content_allowed": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "remote_assets": [],
+    "renderer_included": false,
+    "shader_sources": []
+  },
+  "tolerances": {
+    "central_symmetry_angstrom_inverse": 1e-08,
+    "coplanarity_angstrom_inverse": 1e-08,
+    "edge_length_angstrom_inverse": 1e-10,
+    "label_coordinate_absolute": 1e-08,
+    "path_endpoint_absolute": 1e-08,
+    "plane_absolute": 1e-08,
+    "rationalization_absolute": 1e-10,
+    "real_lattice_condition_max": 100000000.0,
+    "real_lattice_determinant_relative": 1e-12,
+    "reciprocal_duality_absolute": 1e-09,
+    "schema_version": "phase10i.tolerance_policy.v1",
+    "symmetry_angle_tolerance_degrees": 5.0,
+    "symmetry_symprec_angstrom": 1e-05,
+    "transformation_roundtrip_absolute": 1e-09,
+    "vertex_merge_angstrom_inverse": 1e-08,
+    "volume_relative": 1e-08
+  },
+  "tool_registration": "NOT_REGISTERED",
+  "versions": {
+    "brillouin_zone": "phase10i.brillouin_zone.v1",
+    "kpath": "phase10i.kpath.v1",
+    "manifest": "phase10i.brillouin_zone_manifest.v1",
+    "reciprocal_lattice": "phase10i.reciprocal_lattice.v1",
+    "tolerances": "phase10i.tolerance_policy.v1"
+  }
+}

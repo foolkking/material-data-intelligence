@@ -1,0 +1,11 @@
+{
+  "backend_full": "605 passed, 23 skipped, 11 warnings",
+  "focused_cross_phase": "157 passed",
+  "frontend": "193 passed",
+  "frontend_build": "success",
+  "frontend_typecheck": "success",
+  "phase10i_contract": "39 passed",
+  "service_backed_local": "unavailable: Docker and required service environment variables are not configured",
+  "skipped_are_not_reported_as_passed": true,
+  "uv_lock_check": "success"
+}

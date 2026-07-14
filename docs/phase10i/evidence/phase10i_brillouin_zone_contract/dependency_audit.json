@@ -1,0 +1,23 @@
+{
+  "absent": [
+    "seekpath",
+    "phonopy"
+  ],
+  "dependency_changes": false,
+  "direct": {
+    "pymatgen": "2026.5.4",
+    "pymatviz": "0.18.0"
+  },
+  "future_provider_recommendation": "pymatgen HighSymmKpath plus spglib standardization until seekpath is separately approved",
+  "installed_transitive": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "spglib": "2.7.0"
+  },
+  "network_required": false,
+  "npm_audit": {
+    "reason": "configured npmmirror audit endpoint returns 404 NOT_IMPLEMENTED",
+    "reported_clean": false,
+    "status": "unavailable"
+  }
+}

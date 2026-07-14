@@ -1,0 +1,45 @@
+{
+  "bcc_real_bz": {
+    "artifact_counts": {
+      "centrally_symmetric": true,
+      "closed": true,
+      "connected": true,
+      "convex": true,
+      "edge_count": 24,
+      "euler_characteristic": 2,
+      "face_count": 12,
+      "manifold": true,
+      "vertex_count": 14
+    },
+    "counts": {
+      "edge_count": 24,
+      "euler_characteristic": 2,
+      "face_count": 12,
+      "vertex_count": 14
+    },
+    "solid": "rhombic_dodecahedron"
+  },
+  "bcc_real_reciprocal_type": "fcc",
+  "fcc_real_bz": {
+    "artifact_counts": {
+      "centrally_symmetric": true,
+      "closed": true,
+      "connected": true,
+      "convex": true,
+      "edge_count": 36,
+      "euler_characteristic": 2,
+      "face_count": 14,
+      "manifold": true,
+      "vertex_count": 24
+    },
+    "counts": {
+      "edge_count": 36,
+      "euler_characteristic": 2,
+      "face_count": 14,
+      "vertex_count": 24
+    },
+    "solid": "truncated_octahedron"
+  },
+  "fcc_real_reciprocal_type": "bcc",
+  "verification": "independent_numpy_inverse_scipy_voronoi_convex_hull"
+}

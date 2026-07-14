@@ -1,0 +1,60 @@
+{
+  "artifacts": [
+    {
+      "media_type": "application/json",
+      "name": "reciprocal_lattice.json",
+      "schema_version": "phase10i.reciprocal_lattice.v1",
+      "sha256": "7e691923a66aa5511ee34e9c6a4da4ca57bd13e08c01c32271bad2e2a560d513"
+    },
+    {
+      "media_type": "application/json",
+      "name": "brillouin_zone.json",
+      "schema_version": "phase10i.brillouin_zone.v1",
+      "sha256": "3ba9b419039204e0280bb4f96d576ab7a1f6a649b686b768e854a2b3f29b27e1"
+    }
+  ],
+  "capabilities": {
+    "brillouin_zone_geometry": true,
+    "high_symmetry_kpath": false,
+    "preview_mode": "json_only",
+    "reciprocal_lattice": true,
+    "renderer_included": false,
+    "webgl_artifact_included": false
+  },
+  "content_hash": "012ba7fa2906e01950da1327c9931c5a2754212e6aa71d26b48f39ad8b1d81af",
+  "convention": "physics_2pi",
+  "entry_artifact": "brillouin_zone.json",
+  "package_id": "bzpkg-97a10ac8e14080fa6b50",
+  "provenance": {
+    "deterministic": true,
+    "producer": "phase10i.contract",
+    "producer_version": "1.0.0",
+    "production_adapter_registered": false
+  },
+  "provider": {
+    "angle_tolerance_degrees": 5.0,
+    "convention": "internal_fixture_reference",
+    "input_structure_sha256": "e27c33abd96e9d99b766c101714b12ea9cd6e633770fc10673254011ed775f98",
+    "name": "internal_fixture_reference",
+    "standardization_status": "validated_fixture",
+    "symprec_angstrom": 1e-05,
+    "time_reversal_used": true,
+    "version": "1",
+    "warnings": []
+  },
+  "schema_version": "phase10i.brillouin_zone_manifest.v1",
+  "security": {
+    "contains_css": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_assets": [],
+    "executable_content_allowed": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "remote_assets": [],
+    "renderer_included": false,
+    "shader_sources": []
+  },
+  "structure_identity": "e27c33abd96e9d99b766c101714b12ea9cd6e633770fc10673254011ed775f98",
+  "units": "angstrom^-1"
+}

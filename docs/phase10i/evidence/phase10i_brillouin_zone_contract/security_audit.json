@@ -1,0 +1,38 @@
+{
+  "artifact_css": false,
+  "artifact_html": false,
+  "artifact_javascript": false,
+  "artifact_shader": false,
+  "caps": {
+    "max_aliases_per_point": 16,
+    "max_candidate_planes": 728,
+    "max_discontinuities": 64,
+    "max_edges": 512,
+    "max_faces": 256,
+    "max_generator_search_radius": 4,
+    "max_high_symmetry_points": 128,
+    "max_json_bytes": 8000000,
+    "max_label_length": 64,
+    "max_numeric_magnitude": 1000000000000,
+    "max_path_segments": 256,
+    "max_path_variants": 8,
+    "max_provider_metadata_bytes": 16384,
+    "max_scan_depth": 32,
+    "max_scan_nodes": 100000,
+    "max_transformations": 8,
+    "max_vertices": 256,
+    "max_vertices_per_face": 64,
+    "max_warnings": 32
+  },
+  "external_urls": [],
+  "inert_json": true,
+  "markers": [
+    "NO_BRILLOUIN_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ],
+  "planner_routing": false,
+  "real_llm": false,
+  "renderer_included": false,
+  "tool_registered": false,
+  "webgl_included": false
+}

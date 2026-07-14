@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-14 - Phase 10I Brillouin Zone Contract
+
+- Added reciprocal-lattice, first-Brillouin-zone, high-symmetry k-path, manifest, and tolerance contract schemas with deterministic canonical JSON and hashes.
+- Added physics-`2*pi` row-vector duality, primitive/conventional transforms, closed convex manifold topology, oriented generator planes, provider/time-reversal identity, explicit discontinuities, and Phase 10H compatibility.
+- Added six bounded fixture families, independent NumPy/SciPy references, replay/security evidence, and focused contract tests.
+- Added no adapter, registered tool, planner/runtime path, frontend renderer, dependency, network resource, notebook/script, or real LLM capability.
+
 ## 2026-07-14 - Phase 10H-5 Phonon Animation
 
 - Added unique formal `phonon.animation`, strict planner/registry/PlanValidator/runtime integration, and four inert animation artifact types.

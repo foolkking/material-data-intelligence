@@ -1,0 +1,37 @@
+{
+  "baseline_head": "b0b191cb05f518acfb50924a5021944bfea7c6b4",
+  "branch": "master",
+  "duality": "A*B^T=2*pi*I",
+  "initial_worktree": "clean",
+  "phase10h5": {
+    "archive_ci_run": "29327985997",
+    "archive_commit": "b0b191cb05f518acfb50924a5021944bfea7c6b4",
+    "backend_tests": "566 passed, 23 skipped",
+    "completion_record_ci_run": "29327795589",
+    "completion_record_commit": "1021a2e2cba202ffaec22d4e0d35a4fb345a890c",
+    "frontend": "success",
+    "frontend_tests": "193 passed",
+    "implementation_ci_run": "29327516331",
+    "implementation_commit": "b67a9e18109f976aeadaf6002eaac6c71297875c",
+    "no_skipped_assertion": "success",
+    "service_backed_integration": "success",
+    "unit": "success"
+  },
+  "phonon_compatibility": "reciprocal_fractional and 2*pi*q.R",
+  "real_lattice": "row vectors; r_cart=r_frac*A",
+  "reciprocal_lattice": "B=2*pi*A^-T; k_cart=k_frac*B",
+  "renderer": "NOT_INCLUDED",
+  "selected_family": [
+    "phase10i.reciprocal_lattice.v1",
+    "phase10i.brillouin_zone.v1",
+    "phase10i.kpath.v1",
+    "phase10i.brillouin_zone_manifest.v1"
+  ],
+  "symmetry": {
+    "phonopy": null,
+    "pymatgen": "2026.5.4",
+    "seekpath": null,
+    "spglib": "2.7.0"
+  },
+  "tool_registration": "NOT_REGISTERED"
+}

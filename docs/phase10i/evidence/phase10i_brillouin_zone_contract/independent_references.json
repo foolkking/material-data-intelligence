@@ -1,0 +1,266 @@
+{
+  "bcc": {
+    "dual_product": [
+      [
+        6.28318530718,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        6.28318530718,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        6.28318530718
+      ]
+    ],
+    "method": "independent_numpy_inverse_scipy_voronoi_convex_hull",
+    "reciprocal_matrix": [
+      [
+        0.0,
+        1.570796326795,
+        1.570796326795
+      ],
+      [
+        1.570796326795,
+        0.0,
+        1.570796326795
+      ],
+      [
+        1.570796326795,
+        1.570796326795,
+        0.0
+      ]
+    ],
+    "topology": {
+      "edge_count": 24,
+      "euler_characteristic": 2,
+      "face_count": 12,
+      "vertex_count": 14
+    },
+    "volume": 7.751569170075
+  },
+  "conventional_bcc": {
+    "dual_product": [
+      [
+        6.28318530718,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        6.28318530718,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        6.28318530718
+      ]
+    ],
+    "method": "independent_numpy_inverse_scipy_voronoi_convex_hull",
+    "reciprocal_matrix": [
+      [
+        0.0,
+        1.570796326795,
+        1.570796326795
+      ],
+      [
+        1.570796326795,
+        0.0,
+        1.570796326795
+      ],
+      [
+        1.570796326795,
+        1.570796326795,
+        0.0
+      ]
+    ],
+    "topology": {
+      "edge_count": 24,
+      "euler_characteristic": 2,
+      "face_count": 12,
+      "vertex_count": 14
+    },
+    "volume": 7.751569170075
+  },
+  "fcc": {
+    "dual_product": [
+      [
+        6.28318530718,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        6.28318530718,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        6.28318530718
+      ]
+    ],
+    "method": "independent_numpy_inverse_scipy_voronoi_convex_hull",
+    "reciprocal_matrix": [
+      [
+        -1.570796326795,
+        1.570796326795,
+        1.570796326795
+      ],
+      [
+        1.570796326795,
+        -1.570796326795,
+        1.570796326795
+      ],
+      [
+        1.570796326795,
+        1.570796326795,
+        -1.570796326795
+      ]
+    ],
+    "topology": {
+      "edge_count": 36,
+      "euler_characteristic": 2,
+      "face_count": 14,
+      "vertex_count": 24
+    },
+    "volume": 15.50313834015
+  },
+  "hexagonal": {
+    "dual_product": [
+      [
+        6.28318530718,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        6.28318530718,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        6.28318530718
+      ]
+    ],
+    "method": "independent_numpy_inverse_scipy_voronoi_convex_hull",
+    "reciprocal_matrix": [
+      [
+        2.094395102393,
+        1.209199576156,
+        0.0
+      ],
+      [
+        0.0,
+        2.418399152312,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.208304866765
+      ]
+    ],
+    "topology": {
+      "edge_count": 18,
+      "euler_characteristic": 2,
+      "face_count": 8,
+      "vertex_count": 12
+    },
+    "volume": 6.120164850577
+  },
+  "simple_cubic": {
+    "dual_product": [
+      [
+        6.28318530718,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        6.28318530718,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        6.28318530718
+      ]
+    ],
+    "method": "independent_numpy_inverse_scipy_voronoi_convex_hull",
+    "reciprocal_matrix": [
+      [
+        1.570796326795,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.570796326795,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.570796326795
+      ]
+    ],
+    "topology": {
+      "edge_count": 12,
+      "euler_characteristic": 2,
+      "face_count": 6,
+      "vertex_count": 8
+    },
+    "volume": 3.875784585037
+  },
+  "triclinic": {
+    "dual_product": [
+      [
+        6.28318530718,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        6.28318530718,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        6.28318530718
+      ]
+    ],
+    "method": "independent_numpy_inverse_scipy_voronoi_convex_hull",
+    "reciprocal_matrix": [
+      [
+        2.052915882674,
+        -0.35131745016,
+        -0.105904390773
+      ],
+      [
+        -0.095721276275,
+        1.605877156238,
+        -0.244394747937
+      ],
+      [
+        -0.034622589291,
+        -0.087574784678,
+        1.24844983738
+      ]
+    ],
+    "topology": {
+      "edge_count": 36,
+      "euler_characteristic": 2,
+      "face_count": 14,
+      "vertex_count": 24
+    },
+    "volume": 4.020132466409
+  }
+}

@@ -1,0 +1,296 @@
+{
+  "content_hash": "71b0216536456a8694e389be6133391e9a305474d71455607c593d2596bf399e",
+  "discontinuities": [
+    {
+      "after_segment_id": "ks-767ce830ba34aeaa",
+      "before_segment_id": "ks-784509e740a43318",
+      "discontinuity_id": "kd-000",
+      "variant_id": "variant-d89678e80d76"
+    }
+  ],
+  "distance_policy": {
+    "accumulation": "per_variant_cumulative_without_discontinuity_jump",
+    "metric": "euclidean_reciprocal_cartesian",
+    "unit": "angstrom^-1"
+  },
+  "magnetic_policy": "non_magnetic_only",
+  "path_convention": "internal_fixture_reference",
+  "path_variants": [
+    {
+      "description": "Internal deterministic fixture path",
+      "provider_variant_key": "primary",
+      "segment_ids": [
+        "ks-108cf26cbbda1758",
+        "ks-ec0bc265bad1fd04",
+        "ks-2bfe4f4abe6fba73",
+        "ks-83ea7fed5a79a8f3",
+        "ks-767ce830ba34aeaa",
+        "ks-784509e740a43318"
+      ],
+      "selected": true,
+      "variant_id": "variant-d89678e80d76"
+    }
+  ],
+  "points": [
+    {
+      "aliases": [
+        "G"
+      ],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "display_label": "Γ",
+      "fractional_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "label_key": "GAMMA",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-a8acf6e6594f41f2",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "internal_fixture_reference",
+        "source_label_keys": [
+          "GAMMA"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.0,
+        1.570796326795,
+        0.0
+      ],
+      "display_label": "H",
+      "fractional_coordinates": [
+        0.5,
+        -0.5,
+        0.5
+      ],
+      "label_key": "H",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-da31228fbf28350e",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "internal_fixture_reference",
+        "source_label_keys": [
+          "H"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.785398163398,
+        0.785398163398,
+        0.0
+      ],
+      "display_label": "N",
+      "fractional_coordinates": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "label_key": "N",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-bfcc8b9e6764e707",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "internal_fixture_reference",
+        "source_label_keys": [
+          "N"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.785398163398,
+        0.785398163398,
+        0.785398163398
+      ],
+      "display_label": "P",
+      "fractional_coordinates": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "label_key": "P",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-eb7fbfe8cba38a7e",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "internal_fixture_reference",
+        "source_label_keys": [
+          "P"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "deterministic": true,
+    "geometry_independent": true,
+    "producer": "phase10i.contract",
+    "producer_version": "1.0.0"
+  },
+  "provider": {
+    "angle_tolerance_degrees": 5.0,
+    "convention": "internal_fixture_reference",
+    "input_structure_sha256": "33c694b6615f55b8d90776363aca38f1c1e84da4109e584fb0eb73dc92a200b7",
+    "name": "internal_fixture_reference",
+    "standardization_status": "validated_fixture",
+    "symprec_angstrom": 1e-05,
+    "time_reversal_used": true,
+    "version": "1",
+    "warnings": []
+  },
+  "reciprocal_lattice_binding": {
+    "convention": "physics_2pi",
+    "primitive_lattice_sha256": "4a60d3398e283cbf8fcbb0fef0045c13104c059964058b9b044fd5b9501f1a1c",
+    "reciprocal_lattice_sha256": "d4bd9dc5b0521bf0f0dbd12089a3b342e70ba7e6b66cc07efc8b40800cadc713",
+    "source_structure_sha256": "33c694b6615f55b8d90776363aca38f1c1e84da4109e584fb0eb73dc92a200b7",
+    "units": "angstrom^-1"
+  },
+  "schema_version": "phase10i.kpath.v1",
+  "security": {
+    "contains_css": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_assets": [],
+    "executable_content_allowed": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "remote_assets": [],
+    "renderer_included": false,
+    "shader_sources": []
+  },
+  "segments": [
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": false,
+      "distance_end": 1.570796326795,
+      "distance_start": 0.0,
+      "end_label_key": "H",
+      "end_point_id": "kp-da31228fbf28350e",
+      "length": 1.570796326795,
+      "order_index": 0,
+      "segment_id": "ks-108cf26cbbda1758",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "GAMMA",
+      "start_point_id": "kp-a8acf6e6594f41f2",
+      "variant_id": "variant-d89678e80d76"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": false,
+      "distance_end": 2.681517061335,
+      "distance_start": 1.570796326795,
+      "end_label_key": "N",
+      "end_point_id": "kp-bfcc8b9e6764e707",
+      "length": 1.11072073454,
+      "order_index": 1,
+      "segment_id": "ks-ec0bc265bad1fd04",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "H",
+      "start_point_id": "kp-da31228fbf28350e",
+      "variant_id": "variant-d89678e80d76"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": false,
+      "distance_end": 3.792237795875,
+      "distance_start": 2.681517061335,
+      "end_label_key": "GAMMA",
+      "end_point_id": "kp-a8acf6e6594f41f2",
+      "length": 1.11072073454,
+      "order_index": 2,
+      "segment_id": "ks-2bfe4f4abe6fba73",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "N",
+      "start_point_id": "kp-bfcc8b9e6764e707",
+      "variant_id": "variant-d89678e80d76"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": false,
+      "distance_end": 5.152587319052,
+      "distance_start": 3.792237795875,
+      "end_label_key": "P",
+      "end_point_id": "kp-eb7fbfe8cba38a7e",
+      "length": 1.360349523177,
+      "order_index": 3,
+      "segment_id": "ks-83ea7fed5a79a8f3",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "GAMMA",
+      "start_point_id": "kp-a8acf6e6594f41f2",
+      "variant_id": "variant-d89678e80d76"
+    },
+    {
+      "discontinuity_after": true,
+      "discontinuity_before": false,
+      "distance_end": 6.512936842228,
+      "distance_start": 5.152587319052,
+      "end_label_key": "H",
+      "end_point_id": "kp-da31228fbf28350e",
+      "length": 1.360349523176,
+      "order_index": 4,
+      "segment_id": "ks-767ce830ba34aeaa",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "P",
+      "start_point_id": "kp-eb7fbfe8cba38a7e",
+      "variant_id": "variant-d89678e80d76"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": true,
+      "distance_end": 7.298335005626,
+      "distance_start": 6.512936842228,
+      "end_label_key": "N",
+      "end_point_id": "kp-bfcc8b9e6764e707",
+      "length": 0.785398163398,
+      "order_index": 5,
+      "segment_id": "ks-784509e740a43318",
+      "source_branch_identity": "primary:branch-1",
+      "start_label_key": "P",
+      "start_point_id": "kp-eb7fbfe8cba38a7e",
+      "variant_id": "variant-d89678e80d76"
+    }
+  ],
+  "selected_variant_id": "variant-d89678e80d76",
+  "time_reversal_used": true,
+  "tolerances": {
+    "central_symmetry_angstrom_inverse": 1e-08,
+    "coplanarity_angstrom_inverse": 1e-08,
+    "edge_length_angstrom_inverse": 1e-10,
+    "label_coordinate_absolute": 1e-08,
+    "path_endpoint_absolute": 1e-08,
+    "plane_absolute": 1e-08,
+    "rationalization_absolute": 1e-10,
+    "real_lattice_condition_max": 100000000.0,
+    "real_lattice_determinant_relative": 1e-12,
+    "reciprocal_duality_absolute": 1e-09,
+    "schema_version": "phase10i.tolerance_policy.v1",
+    "symmetry_angle_tolerance_degrees": 5.0,
+    "symmetry_symprec_angstrom": 1e-05,
+    "transformation_roundtrip_absolute": 1e-09,
+    "vertex_merge_angstrom_inverse": 1e-08,
+    "volume_relative": 1e-08
+  },
+  "warnings": []
+}

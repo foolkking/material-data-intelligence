@@ -1,0 +1,141 @@
+{
+  "basis_orientation": "row_vectors",
+  "basis_role": "standardized_primitive_reciprocal",
+  "cell_volume": 6.120164850575,
+  "content_hash": "ae535c8f13870470e4fe940ac6984c4749a94ee7358843c11b69d304e007d92d",
+  "convention": "physics_2pi",
+  "determinant": 6.120164850575,
+  "dual_product": [
+    [
+      6.283185307179,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      6.283185307179,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      6.283185307178
+    ]
+  ],
+  "matrix": [
+    [
+      2.094395102393,
+      1.209199576156,
+      0.0
+    ],
+    [
+      0.0,
+      2.418399152312,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.208304866765
+    ]
+  ],
+  "provenance": {
+    "deterministic": true,
+    "geometry_generated": false,
+    "producer": "phase10i.contract",
+    "producer_version": "1.0.0"
+  },
+  "provider": {
+    "angle_tolerance_degrees": 5.0,
+    "convention": "internal_fixture_reference",
+    "input_structure_sha256": "e44b6ab227c16c27afe4aa725b81a436e2f1b619c0351a3fcd8967cd10d002e9",
+    "name": "internal_fixture_reference",
+    "standardization_status": "validated_fixture",
+    "symprec_angstrom": 1e-05,
+    "time_reversal_used": true,
+    "version": "1",
+    "warnings": []
+  },
+  "real_cell_volume": 40.529988897112,
+  "real_lattice_binding": {
+    "conventional_lattice_sha256": null,
+    "conventional_real_lattice": null,
+    "magnetic": false,
+    "ordered": true,
+    "partial_occupancy": false,
+    "periodic_dimension": 3,
+    "primitive_basis_role": "standardized_primitive_cell",
+    "primitive_lattice_sha256": "66143f920ff6e91a1a31fc278a6c5846ce86ed6e15a88ed44a0c561efbc2dff2",
+    "primitive_real_lattice": [
+      [
+        3.0,
+        0.0,
+        0.0
+      ],
+      [
+        -1.5,
+        2.598076211353,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        5.2
+      ]
+    ],
+    "source_basis_role": "source_cell",
+    "source_lattice_sha256": "66143f920ff6e91a1a31fc278a6c5846ce86ed6e15a88ed44a0c561efbc2dff2",
+    "source_real_lattice": [
+      [
+        3.0,
+        0.0,
+        0.0
+      ],
+      [
+        -1.5,
+        2.598076211353,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        5.2
+      ]
+    ],
+    "source_structure_id": "fixture:hexagonal",
+    "source_structure_sha256": "e44b6ab227c16c27afe4aa725b81a436e2f1b619c0351a3fcd8967cd10d002e9"
+  },
+  "schema_version": "phase10i.reciprocal_lattice.v1",
+  "security": {
+    "contains_css": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_assets": [],
+    "executable_content_allowed": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "remote_assets": [],
+    "renderer_included": false,
+    "shader_sources": []
+  },
+  "tolerances": {
+    "central_symmetry_angstrom_inverse": 1e-08,
+    "coplanarity_angstrom_inverse": 1e-08,
+    "edge_length_angstrom_inverse": 1e-10,
+    "label_coordinate_absolute": 1e-08,
+    "path_endpoint_absolute": 1e-08,
+    "plane_absolute": 1e-08,
+    "rationalization_absolute": 1e-10,
+    "real_lattice_condition_max": 100000000.0,
+    "real_lattice_determinant_relative": 1e-12,
+    "reciprocal_duality_absolute": 1e-09,
+    "schema_version": "phase10i.tolerance_policy.v1",
+    "symmetry_angle_tolerance_degrees": 5.0,
+    "symmetry_symprec_angstrom": 1e-05,
+    "transformation_roundtrip_absolute": 1e-09,
+    "vertex_merge_angstrom_inverse": 1e-08,
+    "volume_relative": 1e-08
+  },
+  "transformations": [],
+  "units": "angstrom^-1"
+}

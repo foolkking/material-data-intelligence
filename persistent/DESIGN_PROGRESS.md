@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-14 Phase 10I Brillouin Zone Contract
+
+- Added the inert `phase10i.reciprocal_lattice.v1`, `phase10i.brillouin_zone.v1`, `phase10i.kpath.v1`, `phase10i.brillouin_zone_manifest.v1`, and versioned tolerance contracts.
+- Fixed row-vector physics-`2*pi` reciprocal mathematics, source/primitive/conventional transform direction, first reciprocal Wigner-Seitz topology, deterministic point/path identity, provider/time-reversal metadata, caps, hashes, and typed security validation.
+- Added simple-cubic, BCC, FCC, hexagonal, triclinic, and conventional/primitive fixtures plus independent NumPy/SciPy Voronoi/ConvexHull references and Phase 10H compatibility checks.
+- No production adapter, Tool Registry entry, planner route, runtime job, frontend component, Three.js/WebGL renderer, dependency, external service, or real LLM path was added.
+
 ## 2026-07-14 Phase 10H-5 Phonon Animation
 
 - Added formal `phonon.animation` registration and strict structure/band/eigenvector role binding through PlanValidator and QueueWorkerRuntime.

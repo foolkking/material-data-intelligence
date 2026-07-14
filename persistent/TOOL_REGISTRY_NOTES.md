@@ -1,5 +1,12 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-14 Phase 10I Brillouin Zone Contract
+
+- Candidate `structure.brillouin_zone` is `PLANNED / NOT_REGISTERED / NOT_EXECUTABLE`.
+- No Tool Registry manifest, adapter map, PlanValidator schema, QueueWorkerRuntime behavior, planner route, or API product was added.
+- The contract family is inert JSON-only data. A future producer must bind a validated periodic structure, standardized primitive cell, local provider policy, exact hashes, and the Phase 10I security/cap contract before registration.
+- Contract readiness does not imply a Brillouin-zone renderer, electronic/phonon calculation, user path editor, integration mesh, or reciprocal-space volumetric capability.
+
 ## 2026-07-14 Phase 10H-5 Formal Phonon Animation
 
 - Added one canonical dynamic identity: `phonon.animation` using `PhononAnimationAdapter`.

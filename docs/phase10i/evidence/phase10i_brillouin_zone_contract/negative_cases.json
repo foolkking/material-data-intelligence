@@ -1,0 +1,316 @@
+{
+  "cap_exceeded": {
+    "caps": {
+      "max_aliases_per_point": 16,
+      "max_candidate_planes": 728,
+      "max_discontinuities": 64,
+      "max_edges": 512,
+      "max_faces": 256,
+      "max_generator_search_radius": 4,
+      "max_high_symmetry_points": 128,
+      "max_json_bytes": 8000000,
+      "max_label_length": 64,
+      "max_numeric_magnitude": 1000000000000,
+      "max_path_segments": 256,
+      "max_path_variants": 8,
+      "max_provider_metadata_bytes": 16384,
+      "max_scan_depth": 32,
+      "max_scan_nodes": 100000,
+      "max_transformations": 8,
+      "max_vertices": 256,
+      "max_vertices_per_face": 64,
+      "max_warnings": 32
+    },
+    "counts": {
+      "discontinuities": 1,
+      "points": 129,
+      "segments": 6,
+      "variants": 1
+    },
+    "errors": [
+      "BZ_CAP_EXCEEDED"
+    ],
+    "valid": false,
+    "warnings": []
+  },
+  "convention_mismatch": {
+    "caps": {
+      "max_aliases_per_point": 16,
+      "max_candidate_planes": 728,
+      "max_discontinuities": 64,
+      "max_edges": 512,
+      "max_faces": 256,
+      "max_generator_search_radius": 4,
+      "max_high_symmetry_points": 128,
+      "max_json_bytes": 8000000,
+      "max_label_length": 64,
+      "max_numeric_magnitude": 1000000000000,
+      "max_path_segments": 256,
+      "max_path_variants": 8,
+      "max_provider_metadata_bytes": 16384,
+      "max_scan_depth": 32,
+      "max_scan_nodes": 100000,
+      "max_transformations": 8,
+      "max_vertices": 256,
+      "max_vertices_per_face": 64,
+      "max_warnings": 32
+    },
+    "counts": {
+      "transformations": 0
+    },
+    "errors": [
+      "BZ_RECIPROCAL_CONVENTION_MISMATCH"
+    ],
+    "valid": false,
+    "warnings": []
+  },
+  "duplicate_vertex": {
+    "caps": {
+      "max_aliases_per_point": 16,
+      "max_candidate_planes": 728,
+      "max_discontinuities": 64,
+      "max_edges": 512,
+      "max_faces": 256,
+      "max_generator_search_radius": 4,
+      "max_high_symmetry_points": 128,
+      "max_json_bytes": 8000000,
+      "max_label_length": 64,
+      "max_numeric_magnitude": 1000000000000,
+      "max_path_segments": 256,
+      "max_path_variants": 8,
+      "max_provider_metadata_bytes": 16384,
+      "max_scan_depth": 32,
+      "max_scan_nodes": 100000,
+      "max_transformations": 8,
+      "max_vertices": 256,
+      "max_vertices_per_face": 64,
+      "max_warnings": 32
+    },
+    "counts": {
+      "edges": 12,
+      "faces": 6,
+      "vertices": 8
+    },
+    "errors": [
+      "BZ_CENTRAL_SYMMETRY_FAILED",
+      "BZ_DUPLICATE_VERTEX",
+      "BZ_EDGE_INVALID",
+      "BZ_FACE_INVALID",
+      "BZ_FACE_NOT_COPLANAR",
+      "BZ_VERTEX_INVALID",
+      "BZ_VOLUME_MISMATCH"
+    ],
+    "valid": false,
+    "warnings": []
+  },
+  "ill_conditioned_lattice": "BZ_REAL_LATTICE_ILL_CONDITIONED",
+  "invalid_path_endpoint": {
+    "caps": {
+      "max_aliases_per_point": 16,
+      "max_candidate_planes": 728,
+      "max_discontinuities": 64,
+      "max_edges": 512,
+      "max_faces": 256,
+      "max_generator_search_radius": 4,
+      "max_high_symmetry_points": 128,
+      "max_json_bytes": 8000000,
+      "max_label_length": 64,
+      "max_numeric_magnitude": 1000000000000,
+      "max_path_segments": 256,
+      "max_path_variants": 8,
+      "max_provider_metadata_bytes": 16384,
+      "max_scan_depth": 32,
+      "max_scan_nodes": 100000,
+      "max_transformations": 8,
+      "max_vertices": 256,
+      "max_vertices_per_face": 64,
+      "max_warnings": 32
+    },
+    "counts": {
+      "discontinuities": 1,
+      "points": 4,
+      "segments": 6,
+      "variants": 1
+    },
+    "errors": [
+      "BZ_PATH_DISTANCE_INVALID",
+      "BZ_PATH_ENDPOINT_MISSING",
+      "BZ_PATH_SEGMENT_INVALID"
+    ],
+    "valid": false,
+    "warnings": []
+  },
+  "inward_face": {
+    "caps": {
+      "max_aliases_per_point": 16,
+      "max_candidate_planes": 728,
+      "max_discontinuities": 64,
+      "max_edges": 512,
+      "max_faces": 256,
+      "max_generator_search_radius": 4,
+      "max_high_symmetry_points": 128,
+      "max_json_bytes": 8000000,
+      "max_label_length": 64,
+      "max_numeric_magnitude": 1000000000000,
+      "max_path_segments": 256,
+      "max_path_variants": 8,
+      "max_provider_metadata_bytes": 16384,
+      "max_scan_depth": 32,
+      "max_scan_nodes": 100000,
+      "max_transformations": 8,
+      "max_vertices": 256,
+      "max_vertices_per_face": 64,
+      "max_warnings": 32
+    },
+    "counts": {
+      "edges": 12,
+      "faces": 6,
+      "vertices": 8
+    },
+    "errors": [
+      "BZ_FACE_NOT_COPLANAR",
+      "BZ_FACE_PLANE_INVALID",
+      "BZ_FACE_WINDING_INVALID"
+    ],
+    "valid": false,
+    "warnings": []
+  },
+  "label_injection": {
+    "caps": {
+      "max_aliases_per_point": 16,
+      "max_candidate_planes": 728,
+      "max_discontinuities": 64,
+      "max_edges": 512,
+      "max_faces": 256,
+      "max_generator_search_radius": 4,
+      "max_high_symmetry_points": 128,
+      "max_json_bytes": 8000000,
+      "max_label_length": 64,
+      "max_numeric_magnitude": 1000000000000,
+      "max_path_segments": 256,
+      "max_path_variants": 8,
+      "max_provider_metadata_bytes": 16384,
+      "max_scan_depth": 32,
+      "max_scan_nodes": 100000,
+      "max_transformations": 8,
+      "max_vertices": 256,
+      "max_vertices_per_face": 64,
+      "max_warnings": 32
+    },
+    "counts": {
+      "discontinuities": 1,
+      "points": 4,
+      "segments": 6,
+      "variants": 1
+    },
+    "errors": [
+      "BZ_EXTERNAL_OR_EXECUTABLE_CONTENT_FORBIDDEN",
+      "BZ_LABEL_INVALID"
+    ],
+    "valid": false,
+    "warnings": []
+  },
+  "malformed_transformation": {
+    "caps": {
+      "max_aliases_per_point": 16,
+      "max_candidate_planes": 728,
+      "max_discontinuities": 64,
+      "max_edges": 512,
+      "max_faces": 256,
+      "max_generator_search_radius": 4,
+      "max_high_symmetry_points": 128,
+      "max_json_bytes": 8000000,
+      "max_label_length": 64,
+      "max_numeric_magnitude": 1000000000000,
+      "max_path_segments": 256,
+      "max_path_variants": 8,
+      "max_provider_metadata_bytes": 16384,
+      "max_scan_depth": 32,
+      "max_scan_nodes": 100000,
+      "max_transformations": 8,
+      "max_vertices": 256,
+      "max_vertices_per_face": 64,
+      "max_warnings": 32
+    },
+    "counts": {
+      "transformations": 1
+    },
+    "errors": [
+      "BZ_TRANSFORMATION_INVALID"
+    ],
+    "valid": false,
+    "warnings": []
+  },
+  "non_finite_lattice": "BZ_REAL_LATTICE_SHAPE_INVALID",
+  "open_topology": {
+    "caps": {
+      "max_aliases_per_point": 16,
+      "max_candidate_planes": 728,
+      "max_discontinuities": 64,
+      "max_edges": 512,
+      "max_faces": 256,
+      "max_generator_search_radius": 4,
+      "max_high_symmetry_points": 128,
+      "max_json_bytes": 8000000,
+      "max_label_length": 64,
+      "max_numeric_magnitude": 1000000000000,
+      "max_path_segments": 256,
+      "max_path_variants": 8,
+      "max_provider_metadata_bytes": 16384,
+      "max_scan_depth": 32,
+      "max_scan_nodes": 100000,
+      "max_transformations": 8,
+      "max_vertices": 256,
+      "max_vertices_per_face": 64,
+      "max_warnings": 32
+    },
+    "counts": {
+      "edges": 12,
+      "faces": 5,
+      "vertices": 8
+    },
+    "errors": [
+      "BZ_CENTRAL_SYMMETRY_FAILED",
+      "BZ_NON_MANIFOLD_POLYHEDRON",
+      "BZ_TOPOLOGY_INVALID",
+      "BZ_VERTEX_INCIDENCE_INVALID",
+      "BZ_VOLUME_MISMATCH"
+    ],
+    "valid": false,
+    "warnings": []
+  },
+  "singular_lattice": "BZ_REAL_LATTICE_SINGULAR",
+  "volume_mismatch": {
+    "caps": {
+      "max_aliases_per_point": 16,
+      "max_candidate_planes": 728,
+      "max_discontinuities": 64,
+      "max_edges": 512,
+      "max_faces": 256,
+      "max_generator_search_radius": 4,
+      "max_high_symmetry_points": 128,
+      "max_json_bytes": 8000000,
+      "max_label_length": 64,
+      "max_numeric_magnitude": 1000000000000,
+      "max_path_segments": 256,
+      "max_path_variants": 8,
+      "max_provider_metadata_bytes": 16384,
+      "max_scan_depth": 32,
+      "max_scan_nodes": 100000,
+      "max_transformations": 8,
+      "max_vertices": 256,
+      "max_vertices_per_face": 64,
+      "max_warnings": 32
+    },
+    "counts": {
+      "edges": 12,
+      "faces": 6,
+      "vertices": 8
+    },
+    "errors": [
+      "BZ_VOLUME_MISMATCH"
+    ],
+    "valid": false,
+    "warnings": []
+  }
+}

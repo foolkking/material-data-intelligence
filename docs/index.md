@@ -1,5 +1,17 @@
 # 文档索引
 
+## Phase 10I Brillouin Zone Contract
+
+[`phase10i/phase10i_brillouin_zone_contract.md`](phase10i/phase10i_brillouin_zone_contract.md)
+defines the inert reciprocal-lattice, first-BZ, k-path, tolerance, and manifest
+family. Adjacent reciprocal-math, topology, provider, security/evidence, and
+readiness documents record the physics-`2*pi` row-vector convention,
+deterministic fixtures, independent NumPy/SciPy references, and the explicit
+no-tool/no-renderer boundary. Fixtures and evidence are under
+[`phase10i/fixtures/brillouin_zone_v1/`](phase10i/fixtures/brillouin_zone_v1/)
+and
+[`phase10i/evidence/phase10i_brillouin_zone_contract/`](phase10i/evidence/phase10i_brillouin_zone_contract/).
+
 ## Phase 10H-5 Phonon Animation
 
 [`phase10h/phase10h5_phonon_animation.md`](phase10h/phase10h5_phonon_animation.md) records the formal `phonon.animation` product, declarative package, validated mode binding, application-owned Three.js animation, periodic identity, controls, and scope. Adjacent H5 documents cover contract, displacement/supercell mathematics, renderer/performance, security, browser/API evidence, and readiness. Evidence is under [`phase10h/evidence/phase10h5_phonon_animation/`](phase10h/evidence/phase10h5_phonon_animation/).

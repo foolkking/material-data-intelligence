@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-14 Phase 10I Follow-ups
+
+- Phase 10I-1 must select and pin a local standardization/path provider policy from existing pymatgen/spglib capabilities; `seekpath` is not currently installed and no dependency was added in the contract phase.
+- Exact rational transform encoding remains open. V1 stores finite decimals with explicit direction and tolerance-checked real/reciprocal round trips.
+- Magnetic, partially occupied, disordered, lower-dimensional, and user-defined path semantics require separate scientific policies; they must not be silently treated as ordered non-magnetic 3D paths.
+- Adapter execution, Tool Registry/planner registration, API evidence, and a reciprocal-space renderer remain separate Phase 10I-1/10I-2 decisions.
+
 ## 2026-07-14 Phase 10H-5 Follow-ups
 
 - General integer commensurate supercell matrices remain deferred; H5 supports exact diagonal repeats up to three and rejects unsupported q-points.
