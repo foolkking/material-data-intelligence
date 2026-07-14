@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+状态：已完成
  # Phase 10H-1：Phonon Bands
 
 进入 Phase 10H-1：Phonon Bands。
@@ -3757,6 +3757,14 @@ FAIL包括：
 -   Phase 10H contract回退
 
 -   CI失败却声明PASS
+
+## 任务完成记录
+
+* 完成时间：2026-07-14 09:54:22 +08:00
+* 修改文件：`packages/adapters/mdi_adapters/pymatviz/phonon_band.py`、Tool Registry/Schema/Planner 注册文件、`apps/web/app/components/phonon-band/*`、`apps/web/test/phonon-band-browser-evidence.mjs`、`tests/test_phase10h1_phonon_bands.py`、Phase 10H-1 docs/evidence、persistent 文档、`AGENTS.md`、`reslusts.md`。
+* 修改摘要：实现唯一 `phonon.band` 安全 adapter、受限 phonopy YAML 和 canonical JSON 归一化、canonical validation、7 类可审计 artifacts、确定性 plot/table/manifest/recipe、limited planner routing、lazy local Plotly 静态预览、表格/JSON/invalid/degraded fallback、三浏览器与移动 evidence。未实现 DOS、eigenvectors、animation 或 solver execution，未新增依赖。
+* 测试结果：后端 focused `15 passed`；前端 focused `10 passed`；前端 full `156 passed`；后端 full `496 passed, 23 skipped`；typecheck、Next build、`uv lock --check` 和 `git diff --check` 成功。H1 API/Chromium/Firefox/WebKit/mobile/accessibility evidence 全部通过，`NO_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。本地 service-backed 因未配置 PostgreSQL 凭据不可运行；CI 隔离 service-backed 验证成功且 no-skipped assertion 成功。
+* 提交 / CI：实现提交 `5e9c8e724056f77b58a03175fda150835d2cd46e`；CI run `29299478431` success（Unit Tests、Frontend Typecheck & Build、Service-backed Integration 均 success）。完成记录提交将在推送后再次执行 current-HEAD CI，最终报告仅在该 CI 成功后输出。
 
 ---END---
 ---TASK---
