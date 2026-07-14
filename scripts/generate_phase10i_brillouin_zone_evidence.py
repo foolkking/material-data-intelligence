@@ -41,6 +41,8 @@ EVIDENCE = ROOT / "docs" / "phase10i" / "evidence" / "phase10i_brillouin_zone_co
 PHASE10I_BASELINE_HEAD = "b0b191cb05f518acfb50924a5021944bfea7c6b4"
 PHASE10H5_IMPLEMENTATION_COMMIT = "b67a9e18109f976aeadaf6002eaac6c71297875c"
 PHASE10H5_COMPLETION_COMMIT = "1021a2e2cba202ffaec22d4e0d35a4fb345a890c"
+PHASE10I_IMPLEMENTATION_COMMIT = "653ea133d5791db3f6879b05dc66a2e397d0d646"
+PHASE10I_IMPLEMENTATION_CI_RUN = "29339358234"
 
 
 def main() -> None:
@@ -100,7 +102,16 @@ def main() -> None:
     write_json(EVIDENCE / "local_check_record.json", local_check_record())
     write_json(
         EVIDENCE / "ci_record.json",
-        {"baseline_head": PHASE10I_BASELINE_HEAD, "current_head_ci": "pending_implementation_commit"},
+        {
+            "baseline_head": PHASE10I_BASELINE_HEAD,
+            "implementation_commit": PHASE10I_IMPLEMENTATION_COMMIT,
+            "ci_run": PHASE10I_IMPLEMENTATION_CI_RUN,
+            "ci_commit_matches": True,
+            "unit": "success",
+            "frontend_typecheck_build": "success",
+            "service_backed_integration": "success",
+            "no_skipped_assertion": "success",
+        },
     )
     (EVIDENCE / "README.md").write_text(
         "# Phase 10I Brillouin Zone Contract Evidence\n\n"

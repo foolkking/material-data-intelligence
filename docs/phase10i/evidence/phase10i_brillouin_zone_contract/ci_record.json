@@ -1,4 +1,10 @@
 {
   "baseline_head": "b0b191cb05f518acfb50924a5021944bfea7c6b4",
-  "current_head_ci": "pending_implementation_commit"
+  "ci_commit_matches": true,
+  "ci_run": "29339358234",
+  "frontend_typecheck_build": "success",
+  "implementation_commit": "653ea133d5791db3f6879b05dc66a2e397d0d646",
+  "no_skipped_assertion": "success",
+  "service_backed_integration": "success",
+  "unit": "success"
 }

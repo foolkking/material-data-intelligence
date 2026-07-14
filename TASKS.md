@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 
 # Phase 10I：Brillouin Zone Contract
 
@@ -2401,6 +2401,15 @@ Phase 10I-1：Brillouin Zone Adapter
 
 本阶段不得进入 production Adapter 或 3D Brillouin Zone Renderer。
 
+完成时间：2026-07-14 22:08:32 +08:00
+
+修改文件：`packages/artifact-core/mdi_artifact_core/brillouin_zone_contract.py`、`packages/artifact-core/mdi_artifact_core/__init__.py`、`tests/test_phase10i_brillouin_zone_contract.py`、`scripts/generate_phase10i_brillouin_zone_evidence.py`、`docs/phase10i/`、`docs/13_SHARED_SCHEMA_SPEC.md`、`docs/index.md`、`persistent/*.md`。
+
+修改摘要：实现五个 versioned inert Brillouin Zone schema contracts、row-vector physics-`2*pi` reciprocal math、source/primitive/conventional transforms、first-BZ canonical polyhedron topology、high-symmetry point/path/provider/time-reversal policy、manifest、hard caps、typed validators、deterministic hashes/replay、六套 bounded fixtures、11 类 negative evidence 和 independent NumPy/SciPy references。保持 `structure.brillouin_zone` NOT_REGISTERED/NOT_EXECUTABLE；未新增 adapter、planner/runtime、frontend renderer、依赖、网络或 real LLM 能力。
+
+测试结果：Phase 10I `39 passed`；focused cross-phase `157 passed`；frontend `193 passed`；backend full `605 passed, 23 skipped, 11 warnings`；typecheck/build、`uv lock --check`、`git diff --check`、Phase 10 closure/browser regression均成功；evidence markers、无外部网络/API/path和 Phase 10I secret scan通过。`npm audit` 因 configured npmmirror endpoint 404 `NOT_IMPLEMENTED` 为 unavailable，未声称 clean；无 dependency/lockfile 变更。本机 Docker/service env 不可用，GitHub CI service-backed 与 no-skipped assertion成功。
+
+提交 / CI：implementation commit `653ea133d5791db3f6879b05dc66a2e397d0d646`；CI run `29339358234` success（unit、frontend typecheck/build、service-backed integration、no-skipped assertion）。完成记录提交需再次通过 current-HEAD CI 后才允许删除本 block。
 
 ---END---
 

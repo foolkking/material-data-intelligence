@@ -70,3 +70,11 @@
 * 完成记录提交：`1021a2e2cba202ffaec22d4e0d35a4fb345a890c`
 * current-HEAD CI：run `29327795589` success
 * 归档结论：实现、测试、API/browser evidence、completion record、service-backed/no-skipped 和两次 current-HEAD CI 均闭合；允许从 `TASKS.md` 删除 Phase 10H-5 block，历史结果保留于本文件。
+
+## Phase 10I: Brillouin Zone Contract
+
+* 状态：已完成
+* 完成时间：2026-07-14 22:08:32 +08:00
+* 修改摘要：实现 `phase10i.reciprocal_lattice.v1`、`phase10i.brillouin_zone.v1`、`phase10i.kpath.v1`、`phase10i.brillouin_zone_manifest.v1` 和 tolerance policy；固定 row-vector physics-`2*pi` 数学、primitive/conventional transform、first-BZ canonical topology、k-path/provider/time-reversal、caps、hashes 和 inert security。新增 SC/BCC/FCC/hex/triclinic/conventional-BCC fixtures、11 类负例、deterministic replay 和 independent NumPy/SciPy references。未注册 tool/adapter/planner/runtime/frontend renderer，未新增依赖或网络能力。
+* 测试结果：Phase 10I `39 passed`；focused cross-phase `157 passed`；frontend full `193 passed`；backend full `605 passed, 23 skipped, 11 warnings`；typecheck/build/lock/diff、Phase 10 closure/browser regression及 evidence/security markers成功。`npm audit` 因 npmmirror 404 `NOT_IMPLEMENTED` unavailable；本阶段无 dependency/lockfile diff。本机 service-backed 不可用，GitHub CI service-backed/no-skipped成功。
+* 提交 / CI：implementation commit `653ea133d5791db3f6879b05dc66a2e397d0d646`；CI run `29339358234` success。Completion record commit 和其 current-HEAD CI 仍是归档前置条件。

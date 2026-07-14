@@ -1,11 +1,12 @@
 # TASK_BOARD
 
-## Phase 10I Brillouin Zone Contract In Progress
+## Phase 10I Brillouin Zone Contract Completed (Archival Pending)
 
 - [x] Audit real-space/reciprocal conventions, symmetry capabilities, dependencies, and artifact infrastructure.
 - [x] Implement versioned reciprocal lattice, first-Brillouin-zone polyhedron, high-symmetry point/path contracts and validators without registering a tool or adapter.
 - [x] Add independent mathematical references, bounded fixtures, security evidence, tests, and documentation.
-- [ ] Complete full regression, implementation commit, current-HEAD CI, completion record, and queue archival.
+- [x] Complete full regression, implementation commit, current-HEAD CI, and completion record.
+- [ ] Archive the completed queue block after the completion-record commit passes current-HEAD CI.
 
 ## Phase 10H-5 Phonon Animation Completed
 
