@@ -136,6 +136,22 @@ from .phonon_eigenvector_contract import (
     validate_phonon_eigenvector_summary,
     validate_phonon_mode_ref,
 )
+from .phonon_animation_contract import (
+    PHONON_ANIMATION_CAPS,
+    PHONON_ANIMATION_MANIFEST_SCHEMA_VERSION,
+    PHONON_ANIMATION_RECIPE_SCHEMA_VERSION,
+    PHONON_ANIMATION_SCHEMA_VERSION,
+    PHONON_ANIMATION_SUMMARY_SCHEMA_VERSION,
+    PhononAnimationContractError,
+    PhononAnimationValidationResult,
+    animation_displacements,
+    build_phonon_animation,
+    commensurate_diagonal_supercell,
+    normalize_animation_params,
+    phonon_animation_manifest,
+    phonon_animation_summary,
+    validate_phonon_animation,
+)
 
 __all__ = [
     "ArtifactPayload",
@@ -260,4 +276,18 @@ __all__ = [
     "validate_phonon_eigenvector_set",
     "validate_phonon_eigenvector_summary",
     "validate_phonon_mode_ref",
+    "PHONON_ANIMATION_CAPS",
+    "PHONON_ANIMATION_MANIFEST_SCHEMA_VERSION",
+    "PHONON_ANIMATION_RECIPE_SCHEMA_VERSION",
+    "PHONON_ANIMATION_SCHEMA_VERSION",
+    "PHONON_ANIMATION_SUMMARY_SCHEMA_VERSION",
+    "PhononAnimationContractError",
+    "PhononAnimationValidationResult",
+    "animation_displacements",
+    "build_phonon_animation",
+    "commensurate_diagonal_supercell",
+    "normalize_animation_params",
+    "phonon_animation_manifest",
+    "phonon_animation_summary",
+    "validate_phonon_animation",
 ]

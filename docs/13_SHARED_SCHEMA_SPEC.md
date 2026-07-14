@@ -1337,3 +1337,8 @@ degeneracy is preserved without cross-source individual-mode matching.
 
 This contract adds no parser, adapter, tool, planner route, UI, animation,
 solver, external asset, notebook/script, network, or real LLM authority.
+# Phase 10H-5 Phonon Animation Schemas
+
+The current dynamic phonon visualization family is `phase10h5.phonon_animation.v1`, `phase10h5.phonon_animation_summary.v1`, `phase10h5.phonon_animation_manifest.v1`, and `phase10h5.phonon_animation_recipe.v1`. The package binds one exact H4 mode, canonical structure, source band/eigenvector hashes, bounded renderer-local diagonal supercell, display/playback metadata, caps, warnings, inert security, and provenance. It stores no frames or executable/remote resources. Shared artifact types add `phonon_animation_json`, `phonon_animation_summary_json`, and `phonon_animation_manifest_json`; material object types add `PhononEigenvector` for strict role binding.
+
+Animation reconstruction uses mass-unweighted Cartesian vectors, fixed mode-envelope display scaling, canonical phase, and `2*pi*q_fractional.cell_image`. Display scale is angstrom-valued visualization state, not a physical amplitude.

@@ -248,6 +248,20 @@ tools:
       - recipe_json
     notes: Strict composition of one validated phase10h.phonon_band.v1 artifact and one validated phase10h.phonon_dos.v1 artifact into an inert shared-frequency-axis band-left/DOS-right product. Enforces structure, atom ordering, lineage, force-constant, frequency, normalization, imaginary-mode, zero-tolerance, and NAC compatibility. Excludes eigenvectors, animation, thermal properties, phonon calculation, executable content, and external resources.
 
+  - tool_id: phonon.animation
+    source_package: mdi_adapters
+    source_function: canonical_phonon_animation
+    implementation_source: pymatviz_composed
+    stage: mvp
+    adapter: PhononAnimationAdapter
+    display_target: phonon
+    artifact_types:
+      - phonon_animation_json
+      - phonon_animation_summary_json
+      - phonon_animation_manifest_json
+      - recipe_json
+    notes: Bounded visualization of one validated phonon eigenmode using an approved canonical structure, phonon band, and eigenvector-set binding. Produces an inert declarative package for the application-owned renderer; display amplitude is visual only, imaginary modes are not stable time oscillations, and no phonon calculation, executable content, remote asset, or external network is included.
+
   - tool_id: structure.xrd
     source_package: pymatgen
     source_class: XRDCalculator

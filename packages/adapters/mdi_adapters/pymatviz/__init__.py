@@ -8,6 +8,7 @@ from .elements_hist import ElementsHistAdapter
 from .formula_statistics import FormulaStatisticsAdapter
 from .phonon_band import PhononBandAdapter
 from .phonon_band_dos import PhononBandDosAdapter
+from .phonon_animation import PhononAnimationAdapter
 from .phonon_dos import PhononDosAdapter
 from .ptable_heatmap import PTableHeatmapAdapter
 from .rdf import RdfAdapter
@@ -23,6 +24,7 @@ __all__ = [
     "FormulaStatisticsAdapter",
     "PhononBandAdapter",
     "PhononBandDosAdapter",
+    "PhononAnimationAdapter",
     "PhononDosAdapter",
     "PTableHeatmapAdapter",
     "RdfAdapter",

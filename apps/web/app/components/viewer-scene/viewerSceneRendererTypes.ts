@@ -47,8 +47,8 @@ export type RenderLattice = {
 };
 
 export type ValidatedRenderScene = {
-  readonly contractVersion: "viewer_scene.v1" | "viewer_scene.v2" | "trajectory.v1";
-  readonly schemaVersion: "phase10f8.viewer_scene.v1" | "phase10f18.viewer_scene.v2" | "phase10g.trajectory.v1";
+  readonly contractVersion: "viewer_scene.v1" | "viewer_scene.v2" | "trajectory.v1" | "phonon_animation.v1";
+  readonly schemaVersion: "phase10f8.viewer_scene.v1" | "phase10f18.viewer_scene.v2" | "phase10g.trajectory.v1" | "phase10h5.phonon_animation.v1";
   readonly atoms: readonly RenderAtom[];
   readonly bonds: readonly RenderBond[];
   readonly lattice: RenderLattice;
@@ -146,6 +146,8 @@ export type ViewerRendererEngine = {
   readonly keyboardCamera: (action: "rotate_left" | "rotate_right" | "rotate_up" | "rotate_down" | "pan_left" | "pan_right" | "pan_up" | "pan_down" | "zoom_in" | "zoom_out") => void;
   readonly setSelection: (sites: readonly PeriodicSiteRef[]) => void;
   readonly setBondSelection: (bondId: string | null) => void;
+  readonly setDisplacementVectors: (segments: readonly Readonly<{ readonly start: RenderVector3; readonly end: RenderVector3 }>[]) => void;
+  readonly setDisplacementTrails: (paths: readonly (readonly RenderVector3[])[]) => void;
   readonly exportPng: (request: ViewerExportRequest) => Promise<Blob>;
   readonly snapshot: () => ViewerRendererSnapshot;
   readonly dispose: () => void;

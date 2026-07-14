@@ -1,0 +1,235 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "name": "README.md",
+      "bytes": 238,
+      "sha256": "0390a4477d0056101a10d51325c023ef8c42820bbfa0447c1638a0ddae0b46c6"
+    },
+    {
+      "name": "api/artifacts.json",
+      "bytes": 22599,
+      "sha256": "9e6cf6d6263f034e8ab38a467175cbc62cc216f2288c32c9d4b1a51dedd3350a"
+    },
+    {
+      "name": "api/events.json",
+      "bytes": 7281,
+      "sha256": "32ce41b96b9026c4bf60e30be79a13306700ade0d55aa7bc8dfde9b88c441f44"
+    },
+    {
+      "name": "api/job_response.json",
+      "bytes": 222,
+      "sha256": "8d79b62080eebe1f048b64a9111af0fe634dd263ac7f78e5d47f7972aec666d7"
+    },
+    {
+      "name": "api/planner_request.json",
+      "bytes": 118,
+      "sha256": "1af54bd212748e0a357387b82a863257e15b8d59c94789f49c578807f8a2d13c"
+    },
+    {
+      "name": "api/tool_calls.json",
+      "bytes": 1205,
+      "sha256": "165ed185aed7165137ddcf33d9b166e713b8c8f41ff3a6f40227bfd6b3b1c5f2"
+    },
+    {
+      "name": "api/validated_plan.json",
+      "bytes": 2500,
+      "sha256": "68773b1c436e36b909130ecda433c7073173b0e4ce67c240ee5f72a543c56b3f"
+    },
+    {
+      "name": "artifacts/gamma_animation.json",
+      "bytes": 6265,
+      "sha256": "773a4286c262872ef5835e8770c9fd9c3a2536a511372dfde9a9cced200b701b"
+    },
+    {
+      "name": "artifacts/imaginary_animation.json",
+      "bytes": 6416,
+      "sha256": "a3b8531e6ac5cda04bc3f703bf540ff4354553cc32b909dca4c56fdd94ebe720"
+    },
+    {
+      "name": "artifacts/multi_species_animation.json",
+      "bytes": 6280,
+      "sha256": "0c76c64676009e1490285c35acdda474a103338a370099d7fd6f68ddef6a7960"
+    },
+    {
+      "name": "artifacts/nac_animation.json",
+      "bytes": 6320,
+      "sha256": "73a7a1a8639ecbb8c1b999181aadd31e6c5da784566c6ff78a836271429fa7f2"
+    },
+    {
+      "name": "artifacts/non_gamma_animation.json",
+      "bytes": 6013,
+      "sha256": "9b16070559cbbe7968a575f6037f996f0e468c6c10bede9cf89b22d02fa42e9e"
+    },
+    {
+      "name": "artifacts/phonon_animation_manifest.json",
+      "bytes": 960,
+      "sha256": "5e58dd94f429306739e90324f27dd93c6d84be6ad36c6dbe32ef5bdb96cb7b21"
+    },
+    {
+      "name": "artifacts/phonon_animation_summary.json",
+      "bytes": 502,
+      "sha256": "8856680a103a9bcfdbd44666955883e8a1ede96d05155f406b1e921d80cf5323"
+    },
+    {
+      "name": "audit/implementation.json",
+      "bytes": 233,
+      "sha256": "b021c5ea060e432a0f75aa8edd050c5a4370d9fca8f80273a2a8b6e0518bea65"
+    },
+    {
+      "name": "browser/accessibility.json",
+      "bytes": 149,
+      "sha256": "eb52710474a7c9b235b3b0ee6fc4635417fed390fe636762e5b9485d7d6b64a4"
+    },
+    {
+      "name": "browser/chromium.json",
+      "bytes": 5621,
+      "sha256": "3268e640b3d0520b2b69b4233202d80370cbcfbb703f189275db6447a90bffde"
+    },
+    {
+      "name": "browser/console_audit.json",
+      "bytes": 40,
+      "sha256": "fad2a8b6ca27b80ed03ec50a472bf057815024d84d545adeebff3fd7c12475a5"
+    },
+    {
+      "name": "browser/firefox.json",
+      "bytes": 1805,
+      "sha256": "19e92cf1a4aa7abd928b3b72488dabaf4649cea3b69e655a8d20b385106e01f1"
+    },
+    {
+      "name": "browser/matrix.json",
+      "bytes": 10926,
+      "sha256": "cdfd36dd2b237c432652a0d1d53ab6579108bb0cef20faf2688fab47534cd8d2"
+    },
+    {
+      "name": "browser/mobile.json",
+      "bytes": 649,
+      "sha256": "cbc0bb5fad36474c7278109493de518fac9dff3c09a3fc75b516036a53a9f42f"
+    },
+    {
+      "name": "browser/network_audit.json",
+      "bytes": 90,
+      "sha256": "4be6605ad9954def530f794ef78cab4fb8114f2e5237951723d1f7eee5b61f82"
+    },
+    {
+      "name": "browser/performance.json",
+      "bytes": 3321,
+      "sha256": "56cac2eb54b27c55fb2c077f5ca22177ead016ad300e4dd2c0387fb1a9786cc5"
+    },
+    {
+      "name": "browser/webkit.json",
+      "bytes": 1803,
+      "sha256": "269ba7a53eadcb7f0700df44c5370b6f1fcaae945b5194377ea3baae22c1e6d5"
+    },
+    {
+      "name": "determinism/replay.json",
+      "bytes": 13546,
+      "sha256": "f3f5276c41eea1d7204703dff5a026ed5ef3e994a95f8e465d1e5c6566bbb4ab"
+    },
+    {
+      "name": "evidence_manifest.json",
+      "bytes": 880,
+      "sha256": "04de5c11aca04b068e65483ffe0795102c22305200bf0ce3ed0a5ba2122405a6"
+    },
+    {
+      "name": "live_payload.json",
+      "bytes": 47106,
+      "sha256": "a0d0d994e37a2fff7a38b83078830824ac99b9061b576d706031cd536dacad6f"
+    },
+    {
+      "name": "reference/commensurate_supercells.json",
+      "bytes": 140,
+      "sha256": "41f3c6bfc70a3c95aabda9ba4ce86cd58368aa8a04420801d8e524e4d625625f"
+    },
+    {
+      "name": "reference/displacement_phases.json",
+      "bytes": 2692,
+      "sha256": "bdcd299d8b840102b6351d86a66e00dc37ab76bbda0aa95d108bb06890c84bce"
+    },
+    {
+      "name": "runtime_artifacts/projects/project_h5/jobs/job_eae80576eafa43688b0ee6f7/tool_calls/call_job_eae80576eafa43688b0ee6f7_step_001/phonon_animation.json",
+      "bytes": 4253,
+      "sha256": "4257d42841c849f5f1553ede93ee438171e3c300578dd3c82d7c89ec0b0e6470"
+    },
+    {
+      "name": "runtime_artifacts/projects/project_h5/jobs/job_eae80576eafa43688b0ee6f7/tool_calls/call_job_eae80576eafa43688b0ee6f7_step_001/phonon_animation_manifest.json",
+      "bytes": 773,
+      "sha256": "41f963893434539e6811c6e9c8c1a3224c0120611c4325f38e7d71e696722eff"
+    },
+    {
+      "name": "runtime_artifacts/projects/project_h5/jobs/job_eae80576eafa43688b0ee6f7/tool_calls/call_job_eae80576eafa43688b0ee6f7_step_001/phonon_animation_summary.json",
+      "bytes": 401,
+      "sha256": "3e7b1eb96775201a37ecadf44e68842e621588266394c4707c12c4ee7e8cde84"
+    },
+    {
+      "name": "runtime_artifacts/projects/project_h5/jobs/job_eae80576eafa43688b0ee6f7/tool_calls/call_job_eae80576eafa43688b0ee6f7_step_001/recipe.json",
+      "bytes": 889,
+      "sha256": "1bc3f6533bfd0c31d9ff1a80c58aa6a03bedfaf1e949da38d366076868afa0a0"
+    },
+    {
+      "name": "screenshots/01_gamma_paused.png",
+      "bytes": 60755,
+      "sha256": "d9c0535f87eb9d2d4390e8caff8c2597237ab78d9c8615e12e96e5a070713ca4"
+    },
+    {
+      "name": "screenshots/02_gamma_phase_pi_over_2.png",
+      "bytes": 60224,
+      "sha256": "e779de80f46552dfc6aac69fb8d78a8cf6efda855d0f737e7e120285b9f3bdcd"
+    },
+    {
+      "name": "screenshots/03_non_gamma_supercell.png",
+      "bytes": 62198,
+      "sha256": "7a3390d2b4f2b9532a2cc05b3cd35a05de08268fdccaa2460d3e98a2b365a3cb"
+    },
+    {
+      "name": "screenshots/04_imaginary_warning.png",
+      "bytes": 59172,
+      "sha256": "1b85604f1fec46ac48adb5b3c6fa72ccf1a89aee41fed0e040830324aebd6a61"
+    },
+    {
+      "name": "screenshots/05_reduced_motion.png",
+      "bytes": 62256,
+      "sha256": "cf0cea8bc43439ca1a80a42632ba465f0fa654df6850ac5625d475914f6d272c"
+    },
+    {
+      "name": "screenshots/06_mobile_non_gamma.png",
+      "bytes": 70608,
+      "sha256": "cde874862dfb265d51caedee15a58096d4554a96f7d9bdf0c2c82cc0a0f94614"
+    },
+    {
+      "name": "security/inertness.json",
+      "bytes": 200,
+      "sha256": "e316eb4a7cb0fe99bbc214fa6478dddfb72f142351ebbef01097a856276460d4"
+    },
+    {
+      "name": "validation/gamma_animation.json",
+      "bytes": 114,
+      "sha256": "a8dce8b67a3a72fd65638ca991a56340a8e06364a45c72cf409a164e485f9a29"
+    },
+    {
+      "name": "validation/imaginary_animation.json",
+      "bytes": 171,
+      "sha256": "b70f9a8ead3deffde1d3213d9a79d6d8420d8a2614ec6d8e9bb03cea6a5cf016"
+    },
+    {
+      "name": "validation/multi_species_animation.json",
+      "bytes": 114,
+      "sha256": "a8dce8b67a3a72fd65638ca991a56340a8e06364a45c72cf409a164e485f9a29"
+    },
+    {
+      "name": "validation/nac_animation.json",
+      "bytes": 114,
+      "sha256": "a8dce8b67a3a72fd65638ca991a56340a8e06364a45c72cf409a164e485f9a29"
+    },
+    {
+      "name": "validation/non_gamma_animation.json",
+      "bytes": 59,
+      "sha256": "7f6f88d76c907c4b70f50e80710192c5b3783a1d80a2f65b0401b5cc0a60feed"
+    },
+    {
+      "name": "validation/over_cap_animation.json",
+      "bytes": 192,
+      "sha256": "68331c4f7234aa10365628db0e97335abd56e017d2c51f61aa421dfa09215408"
+    }
+  ]
+}

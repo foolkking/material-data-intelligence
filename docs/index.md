@@ -1,5 +1,9 @@
 # 文档索引
 
+## Phase 10H-5 Phonon Animation
+
+[`phase10h/phase10h5_phonon_animation.md`](phase10h/phase10h5_phonon_animation.md) records the formal `phonon.animation` product, declarative package, validated mode binding, application-owned Three.js animation, periodic identity, controls, and scope. Adjacent H5 documents cover contract, displacement/supercell mathematics, renderer/performance, security, browser/API evidence, and readiness. Evidence is under [`phase10h/evidence/phase10h5_phonon_animation/`](phase10h/evidence/phase10h5_phonon_animation/).
+
 ## Phase 10H Phonon Contract
 
 [`phase10h/phase10h_phonon_contract.md`](phase10h/phase10h_phonon_contract.md) defines the closed inert band/DOS/summary/manifest family, row-vector physics-`2*pi` reciprocal convention, explicit q-point paths, THz and imaginary-mode semantics, source-stable `3N` branches, projected DOS identity, normalization, compatibility, caps, validators, fixtures, independent TypeScript/NumPy/SciPy comparison, and security evidence. Phonon adapters, tools, plots, eigenvectors, animation, and formal product registration remain deferred.

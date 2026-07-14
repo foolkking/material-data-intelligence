@@ -147,6 +147,18 @@ export async function createThreeViewerEngine(args: {
   measurementLines.renderOrder = 19;
   measurementLines.visible = false;
   root.add(measurementLines);
+  const displacementVectorGeometry = new THREE.BufferGeometry();
+  const displacementVectorMaterial = new THREE.LineBasicMaterial({ color: 0xc23b22, depthTest: false });
+  const displacementVectorLines = new THREE.LineSegments(displacementVectorGeometry, displacementVectorMaterial);
+  displacementVectorLines.name = "phonon-displacement-vectors";
+  displacementVectorLines.renderOrder = 17;
+  root.add(displacementVectorLines);
+  const displacementTrailGeometry = new THREE.BufferGeometry();
+  const displacementTrailMaterial = new THREE.LineBasicMaterial({ color: 0x28666e, transparent: true, opacity: 0.52, depthTest: false });
+  const displacementTrailLines = new THREE.LineSegments(displacementTrailGeometry, displacementTrailMaterial);
+  displacementTrailLines.name = "phonon-displacement-trails";
+  displacementTrailLines.renderOrder = 16;
+  root.add(displacementTrailLines);
   let selectedSites: readonly PeriodicSiteRef[] = Object.freeze([]);
   let selectedBondId: string | null = null;
   let clippingPlanes: THREE.Plane[] = [];
@@ -449,6 +461,21 @@ export async function createThreeViewerEngine(args: {
     selectedBondLine.visible = Boolean(bond);
     render();
   };
+  const setDisplacementVectors: ViewerRendererEngine["setDisplacementVectors"] = (segments) => {
+    const bounded = segments.slice(0, 768);
+    displacementVectorGeometry.setAttribute("position", new THREE.Float32BufferAttribute(bounded.flatMap((segment) => [...segment.start, ...segment.end]), 3));
+    if (bounded.length) displacementVectorGeometry.computeBoundingSphere();
+    displacementVectorLines.visible = bounded.length > 0;
+    render();
+  };
+  const setDisplacementTrails: ViewerRendererEngine["setDisplacementTrails"] = (paths) => {
+    const points: number[] = [];
+    for (const path of paths.slice(0, 768)) for (let index = 1; index < Math.min(path.length, 32); index += 1) points.push(...path[index - 1], ...path[index]);
+    displacementTrailGeometry.setAttribute("position", new THREE.Float32BufferAttribute(points, 3));
+    if (points.length) displacementTrailGeometry.computeBoundingSphere();
+    displacementTrailLines.visible = points.length > 0;
+    render();
+  };
   const setClipState: ViewerRendererEngine["setClipState"] = (nextState) => {
     clippingPlanes = nextState.enabled ? nextState.planes.filter((plane) => plane.enabled).map((plane) => {
       const normal = plane.axis === "x" ? new THREE.Vector3(-1,0,0) : plane.axis === "y" ? new THREE.Vector3(0,-1,0) : new THREE.Vector3(0,0,-1);
@@ -490,6 +517,8 @@ export async function createThreeViewerEngine(args: {
     setCameraPreset,
     setSelection,
     setBondSelection,
+    setDisplacementVectors,
+    setDisplacementTrails,
     keyboardCamera,
     exportPng,
     render,
@@ -514,12 +543,16 @@ export async function createThreeViewerEngine(args: {
       supercellBoundaryGeometry.dispose();
       latticeAxesGeometry.dispose();
       measurementGeometry.dispose();
+      displacementVectorGeometry.dispose();
+      displacementTrailGeometry.dispose();
       bondMaterial.dispose();
       selectedBondMaterial.dispose();
       cellMaterial.dispose();
       supercellBoundaryMaterial.dispose();
       latticeAxesMaterial.dispose();
       measurementMaterial.dispose();
+      displacementVectorMaterial.dispose();
+      displacementTrailMaterial.dispose();
       for (const material of highlightMaterials) material.dispose();
       for (const material of materials.values()) material.dispose();
       renderer.dispose();

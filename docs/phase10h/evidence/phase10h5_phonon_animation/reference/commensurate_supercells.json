@@ -1,0 +1,13 @@
+{
+  "gamma": [
+    1,
+    1,
+    1
+  ],
+  "policy": "positive_diagonal_exact_bounded",
+  "x_half": [
+    2,
+    1,
+    1
+  ]
+}

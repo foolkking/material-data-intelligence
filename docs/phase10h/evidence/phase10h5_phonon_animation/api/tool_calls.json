@@ -1,0 +1,38 @@
+[
+  {
+    "artifactIds": [
+      "call_job_eae80576eafa43688b0ee6f7_step_001-phonon_animation_json",
+      "call_job_eae80576eafa43688b0ee6f7_step_001-phonon_animation_summary_json",
+      "call_job_eae80576eafa43688b0ee6f7_step_001-phonon_animation_manifest_json",
+      "call_job_eae80576eafa43688b0ee6f7_step_001-recipe_json"
+    ],
+    "attempt": 1,
+    "id": "call_job_eae80576eafa43688b0ee6f7_step_001",
+    "idempotencyKey": "job_eae80576eafa43688b0ee6f7:step_001",
+    "jobId": "job_eae80576eafa43688b0ee6f7",
+    "params": {
+      "autoplay": false,
+      "display_scale": 0.15,
+      "initial_phase_radians": 0.0,
+      "loop": true,
+      "mode_id": "e290873ff46ad3cf5959cf21f5ca247cc298354a914a663aae2397151d1f6bf0",
+      "playback_cycles_per_second": 0.5,
+      "representation": "ball_and_stick",
+      "show_axes": true,
+      "show_bonds": true,
+      "show_trails": false,
+      "show_unit_cell": true,
+      "show_vectors": true,
+      "supercell": [
+        1,
+        1,
+        1
+      ],
+      "supercell_mode": "auto",
+      "trail_length": 12
+    },
+    "status": "completed",
+    "stepId": "step_001",
+    "toolId": "phonon.animation"
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "phase": "10H-5",
+  "tool": "phonon.animation",
+  "schema": "phase10h5.phonon_animation.v1",
+  "browsers": [
+    {
+      "browser": "chromium",
+      "available": true,
+      "version": "150.0.7871.115"
+    },
+    {
+      "browser": "firefox",
+      "available": true,
+      "version": "128.0"
+    },
+    {
+      "browser": "webkit",
+      "available": true,
+      "version": "18.0"
+    }
+  ],
+  "external_requests": 0,
+  "real_llm": false,
+  "renderer": "application-owned Three.js",
+  "markers": [
+    "PHONON_ANIMATION_BROWSER_EVIDENCE_PASS",
+    "PHONON_ANIMATION_GAMMA_EVIDENCE_PASS",
+    "PHONON_ANIMATION_NON_GAMMA_EVIDENCE_PASS",
+    "PHONON_ANIMATION_IMAGINARY_MODE_EVIDENCE_PASS",
+    "PHONON_ANIMATION_MOBILE_EVIDENCE_PASS",
+    "PHONON_ANIMATION_ACCESSIBILITY_EVIDENCE_PASS",
+    "NO_PHONON_ANIMATION_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ]
+}

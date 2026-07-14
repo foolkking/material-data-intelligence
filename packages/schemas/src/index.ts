@@ -18,6 +18,9 @@ export const artifactTypes = [
   "phonon_summary_json",
   "phonon_report_json",
   "phonon_manifest_json",
+  "phonon_animation_json",
+  "phonon_animation_summary_json",
+  "phonon_animation_manifest_json",
   "metrics_json",
   "table_json",
   "table_csv",
@@ -72,6 +75,7 @@ export type MaterialObjectType =
   | "DataFrame"
   | "PhononBand"
   | "PhononDos"
+  | "PhononEigenvector"
   | "Trajectory"
   | "ElementValueMap"
   | "RawUnsupported";

@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-14 Phase 10H-5 Follow-ups
+
+- General integer commensurate supercell matrices remain deferred; H5 supports exact diagonal repeats up to three and rejects unsupported q-points.
+- Physical/thermal/zero-point amplitudes need separate source contracts; H5 display scale is intentionally visual only.
+- Cross-source degenerate-subspace matching, partial occupancy, isotope remapping, and broad physical-device GPU validation remain open.
+- Phonon calculation, force constants, Raman/IR/neutron intensity, thermal properties, video export, and Brillouin-zone products remain separate phases.
+
 ## 2026-07-14 Phase 10H-4 Follow-ups
 
 - Define and test a bounded commensurate-supercell solver before non-Gamma animation; the contract only fixes `2*pi*q.cell_image` phase.

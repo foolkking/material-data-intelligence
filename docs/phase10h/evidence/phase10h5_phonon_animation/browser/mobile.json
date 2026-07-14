@@ -1,0 +1,36 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "metrics": {
+    "modeId": "12ab55eb1774d05a50064ac8a425db537310da07e19a9f498d03865b1c6a606e",
+    "phase": 3.14,
+    "scale": 0.15,
+    "playing": false,
+    "reducedMotion": false,
+    "supercell": [
+      2,
+      1,
+      1
+    ],
+    "atomCount": 4,
+    "vectorCount": 4,
+    "trailPaths": 0,
+    "canvasCount": 1,
+    "contextCount": 1,
+    "activeLoops": 0,
+    "drawCalls": 6,
+    "mapMs": 0.4000000059604645
+  },
+  "overflow": false,
+  "audit": {
+    "externalRequests": 0,
+    "inert": {
+      "iframe": 0,
+      "externalScript": 0,
+      "javascriptUri": 0,
+      "inlineHandler": 0
+    }
+  }
+}

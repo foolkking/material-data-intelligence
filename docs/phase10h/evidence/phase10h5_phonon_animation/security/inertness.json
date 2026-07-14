@@ -1,0 +1,9 @@
+{
+  "artifact_html": false,
+  "artifact_javascript": false,
+  "artifact_shader": false,
+  "external_urls": false,
+  "frames_persisted": false,
+  "real_llm": false,
+  "remote_assets": false
+}

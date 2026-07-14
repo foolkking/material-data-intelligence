@@ -136,6 +136,8 @@ export type Artifact = {
   type?: string;
   name?: string;
   storageKey?: string;
+  contentHash?: string;
+  sha256?: string | null;
   storageProvider?: string;
   bucket?: string | null;
   createdAt?: string;

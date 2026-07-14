@@ -1,0 +1,12 @@
+{
+  "canonical_atoms": 512,
+  "cap": 768,
+  "derived_atoms": 1024,
+  "error": "PHONON_ANIMATION_CAP_EXCEEDED",
+  "refused": true,
+  "requested_repeat": [
+    2,
+    1,
+    1
+  ]
+}

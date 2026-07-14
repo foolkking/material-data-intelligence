@@ -22,6 +22,7 @@ export function PhononBandPreviewPanel({ artifacts, plotlyLoader = loadPlotly }:
   const bandArtifact = artifacts.find((artifact) => artifact.type === "phonon_band_json" || artifact.name === "phonon_band.json");
   const summaryArtifact = artifacts.find((artifact) => artifact.type === "phonon_summary_json" || artifact.name === "phonon_summary.json");
   const manifestArtifact = artifacts.find((artifact) => artifact.type === "phonon_manifest_json" || artifact.name === "phonon_manifest.json");
+  const animationArtifact = artifacts.find((artifact) => artifact.type === "phonon_animation_json" || artifact.name === "phonon_animation.json");
   const [tab, setTab] = useState<"plot" | "table" | "json">("plot");
   if (!bandArtifact) return null;
   const payload = artifactPayload(bandArtifact);
@@ -32,6 +33,7 @@ export function PhononBandPreviewPanel({ artifacts, plotlyLoader = loadPlotly }:
   const band = payload;
   const summary = artifactPayload(summaryArtifact);
   const manifest = artifactPayload(manifestArtifact);
+  const handoff = phononAnimationHandoff(band, bandArtifact, artifactPayload(animationArtifact));
   return (
     <section className="panel phonon-band-preview" data-testid="phonon-band-preview" aria-label="Phonon band preview">
       <header className="phonon-band-heading">
@@ -39,6 +41,7 @@ export function PhononBandPreviewPanel({ artifacts, plotlyLoader = loadPlotly }:
         <span data-testid="phonon-band-schema">{String(band.schema_version)}</span>
       </header>
       <PhononBandSummary band={band} summary={summary} />
+      <div className="phonon-band-handoff" data-testid="phonon-band-animation-handoff"><span>{handoff.ok?`Mode q${handoff.qpointIndex} / branch ${handoff.branchIndex} is bound by canonical mode ID.`:handoff.code}</span><button type="button" disabled={!handoff.ok} onClick={()=>document.querySelector('[data-testid="phonon-animation-preview-panel"]')?.scrollIntoView({behavior:"smooth",block:"start"})}>Open mode animation</button></div>
       <p className="notice" data-testid="phonon-band-scope">Source branch order is preserved. Negative plotted values represent imaginary phonon modes under the contract&apos;s negative-real encoding. DOS, eigenvectors, animation, and phonon calculation are not included.</p>
       <div className="viewer-preview-tabs" role="tablist" aria-label="Phonon band preview modes">
         {(["plot", "table", "json"] as const).map((value) => <button key={value} type="button" role="tab" aria-selected={tab === value} className={tab === value ? "active" : "secondary"} onClick={() => setTab(value)}>{value === "plot" ? "Band plot" : value === "table" ? "Band table" : "Canonical JSON"}</button>)}
@@ -179,3 +182,10 @@ function records(value: unknown): JsonRecord[] { return Array.isArray(value) ? v
 function numbers(value: unknown): number[] { return Array.isArray(value) ? value.filter(finite) : []; }
 function finite(value: unknown): value is number { return typeof value === "number" && Number.isFinite(value); }
 function format(value: number): string { return Math.abs(value) >= 1000 || (Math.abs(value) < 0.001 && value !== 0) ? value.toExponential(4) : value.toFixed(5); }
+
+export function phononAnimationHandoff(band:JsonRecord,artifact:Artifact,animation:JsonRecord|null):{ok:true;modeId:string;qpointIndex:number;branchIndex:number}|{ok:false;code:string}{
+  if(!animation)return{ok:false,code:"PHONON_ANIMATION_EIGENVECTOR_UNAVAILABLE"};const mode=record(animation.mode)&&record(animation.mode.mode)?animation.mode.mode:null;const source=record(animation.source)?animation.source:null;if(!mode||!source||typeof mode.mode_id!=="string")return{ok:false,code:"PHONON_ANIMATION_HANDOFF_INVALID"};
+  const artifactHash=artifact.sha256||artifact.contentHash;const expected=source.band_sha256;const modeArtifact=record(mode.band_artifact)?mode.band_artifact:null;if(typeof artifactHash!=="string"||artifactHash!==expected||modeArtifact?.sha256!==expected)return{ok:false,code:"PHONON_ANIMATION_BAND_HASH_MISMATCH"};
+  const qpointIndex=Number(mode.qpoint_index),branchIndex=Number(mode.branch_index);const qpoint=records(band.qpoints).find((item)=>Number(item.index)===qpointIndex);const branch=records(band.branches).find((item)=>Number(item.branch_index)===branchIndex);const frequency=branch?numbers(branch.frequencies)[qpointIndex]:undefined;if(!qpoint||!branch||!finite(frequency)||Math.abs(frequency-Number(mode.frequency))>Number(mode.frequency_tolerance))return{ok:false,code:"PHONON_ANIMATION_MODE_REFERENCE_STALE"};
+  return{ok:true,modeId:String(mode.mode_id),qpointIndex,branchIndex};
+}

@@ -5,7 +5,8 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
-import { mapPhononBandPlot, PhononBandPreviewPanel } from "./PhononBandPreviewPanel";
+import { mapPhononBandPlot, phononAnimationHandoff, PhononBandPreviewPanel } from "./PhononBandPreviewPanel";
+import { phononAnimationFixture } from "../phonon-animation/phononAnimationTestFixture";
 
 const root = resolve(__dirname, "../../../../..");
 const stable = JSON.parse(readFileSync(resolve(root, "docs/phase10h/fixtures/phonon_contract/stable_band.json"), "utf8"));
@@ -68,4 +69,8 @@ describe("PhononBandPreviewPanel", () => {
     expect(mapped.ok).toBe(false);
     if (!mapped.ok) expect(mapped.message).toContain("PHONON_BAND_PREVIEW_LIMIT_EXCEEDED");
   });
+
+  it("enables handoff only for the exact band hash and mode identity",()=>{const animation=phononAnimationFixture();const hash=animation.source.band_sha256;const linked={id:"band",type:"phonon_band_json",name:"phonon_band.json",content:stable,sha256:hash};expect(phononAnimationHandoff(stable,linked,animation)).toMatchObject({ok:true,qpointIndex:1,branchIndex:3,modeId:animation.mode.mode.mode_id});expect(phononAnimationHandoff(stable,{...linked,sha256:"f".repeat(64)},animation)).toEqual({ok:false,code:"PHONON_ANIMATION_BAND_HASH_MISMATCH"});expect(phononAnimationHandoff(stable,linked,null)).toEqual({ok:false,code:"PHONON_ANIMATION_EIGENVECTOR_UNAVAILABLE"});});
+
+  it("shows an enabled exact-mode handoff without frequency search",()=>{const animation=phononAnimationFixture();render(<><div data-testid="phonon-animation-preview-panel"/><PhononBandPreviewPanel artifacts={[...artifacts(),{id:"animation",type:"phonon_animation_json",name:"phonon_animation.json",content:animation}] .map((artifact)=>artifact.name==="phonon_band.json"?{...artifact,sha256:animation.source.band_sha256}:artifact)} plotlyLoader={async()=>({newPlot:vi.fn().mockResolvedValue(undefined),purge:vi.fn()})}/></>);expect(screen.getByTestId("phonon-band-animation-handoff")).toHaveTextContent("canonical mode ID");expect(screen.getByRole("button",{name:"Open mode animation"})).toBeEnabled();});
 });

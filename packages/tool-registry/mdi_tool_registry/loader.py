@@ -140,6 +140,16 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxArtifactBytes": 64000000,
             "maxTableRows": 500,
         }
+    if tool_id == "phonon.animation":
+        return {
+            "maxAtoms": 512,
+            "maxDisplayedAtoms": 768,
+            "maxSupercellAxis": 3,
+            "maxVectors": 768,
+            "maxTrailPoints": 32,
+            "maxArtifactBytes": 16000000,
+            "maxPlaybackFps": 30,
+        }
     if tool_id in {"structure.trajectory_import", "structure.trajectory_viewer"}:
         return {
             "maxAtoms": 4096,
@@ -234,6 +244,17 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
                     name="approved_phonon_band_and_dos_artifacts",
                     requiredObjectTypes=[MaterialObjectType.PhononBand, MaterialObjectType.PhononDos],
                     description="Use exactly two role-bound artifact references: one validated phase10h.phonon_band.v1 and one validated phase10h.phonon_dos.v1.",
+                )
+            ],
+        )
+    if tool_id == "phonon.animation":
+        return ToolInputSchema(
+            periodicity="periodic_required",
+            inputOptions=[
+                ToolInputOption(
+                    name="approved_structure_band_and_eigenvectors",
+                    requiredObjectTypes=[MaterialObjectType.Structure, MaterialObjectType.PhononBand, MaterialObjectType.PhononEigenvector],
+                    description="Use exactly three role-bound inert inputs: canonical structure, validated phase10h band, and validated phase10h eigenvector set.",
                 )
             ],
         )
@@ -391,6 +412,36 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "manual_frequency_max": {"type": "number", "minimum": -1000000000000, "maximum": 1000000000000},
                 "max_table_rows": {"type": "integer", "minimum": 1, "maximum": 500},
                 "layout": {"const": "band_left_dos_right"},
+            },
+        }
+    if tool_id == "phonon.animation":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["mode_id"],
+            "properties": {
+                "mode_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+                "display_scale": {"type": "number", "minimum": 0.01, "maximum": 1.0},
+                "initial_phase_radians": {"type": "number", "minimum": -1000000, "maximum": 1000000},
+                "playback_cycles_per_second": {"type": "number", "minimum": 0.05, "maximum": 2.0},
+                "autoplay": {"type": "boolean"},
+                "loop": {"type": "boolean"},
+                "supercell_mode": {"enum": ["auto", "manual"]},
+                "supercell": {
+                    "type": "array", "minItems": 3, "maxItems": 3,
+                    "prefixItems": [
+                        {"type": "integer", "minimum": 1, "maximum": 3},
+                        {"type": "integer", "minimum": 1, "maximum": 3},
+                        {"type": "integer", "minimum": 1, "maximum": 3},
+                    ],
+                },
+                "show_vectors": {"type": "boolean"},
+                "show_trails": {"type": "boolean"},
+                "trail_length": {"type": "integer", "minimum": 1, "maximum": 32},
+                "show_bonds": {"type": "boolean"},
+                "show_unit_cell": {"type": "boolean"},
+                "show_axes": {"type": "boolean"},
+                "representation": {"const": "ball_and_stick"},
             },
         }
     if tool_id == "structure.trajectory_import":

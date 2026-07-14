@@ -1,0 +1,85 @@
+{
+  "browser": "webkit",
+  "version": "18.0",
+  "available": true,
+  "gamma": {
+    "initial": {
+      "modeId": "e290873ff46ad3cf5959cf21f5ca247cc298354a914a663aae2397151d1f6bf0",
+      "phase": 0,
+      "scale": 0.15,
+      "playing": false,
+      "reducedMotion": false,
+      "supercell": [
+        1,
+        1,
+        1
+      ],
+      "atomCount": 2,
+      "vectorCount": 2,
+      "trailPaths": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "activeLoops": 0,
+      "drawCalls": 6,
+      "mapMs": 1
+    },
+    "paused": {
+      "modeId": "e290873ff46ad3cf5959cf21f5ca247cc298354a914a663aae2397151d1f6bf0",
+      "phase": 4.729645882716436,
+      "scale": 0.15,
+      "playing": false,
+      "reducedMotion": false,
+      "supercell": [
+        1,
+        1,
+        1
+      ],
+      "atomCount": 2,
+      "vectorCount": 2,
+      "trailPaths": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "activeLoops": 0,
+      "drawCalls": 6,
+      "mapMs": 1
+    },
+    "noVectors": {
+      "modeId": "e290873ff46ad3cf5959cf21f5ca247cc298354a914a663aae2397151d1f6bf0",
+      "phase": 4.729645882716436,
+      "scale": 0.15,
+      "playing": false,
+      "reducedMotion": false,
+      "supercell": [
+        1,
+        1,
+        1
+      ],
+      "atomCount": 2,
+      "vectorCount": 0,
+      "trailPaths": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "activeLoops": 0,
+      "drawCalls": 5,
+      "mapMs": 1
+    },
+    "graphics": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        485,
+        418
+      ],
+      "sampledColorCount": 9
+    },
+    "canvasCount": 1,
+    "contextCount": 1
+  },
+  "nonGamma": null,
+  "imaginary": null,
+  "invalid": null,
+  "reduced": null,
+  "lifecycle": null,
+  "mobile": null,
+  "accessibility": null,
+  "externalRequests": 0
+}

@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-14 Phase 10H-5 Formal Phonon Animation
+
+- Added one canonical dynamic identity: `phonon.animation` using `PhononAnimationAdapter`.
+- Requires exactly three unique role-bound inputs: `Structure`, `PhononBand`, and `PhononEigenvector`; a canonical 64-character mode ID is mandatory.
+- Params are closed and bounded to phase/display/playback/supercell/vector/trail/bond/cell/axes controls. Output is `phonon_animation_json`, `phonon_animation_summary_json`, `phonon_animation_manifest_json`, and `recipe_json`.
+- Mock Planner routes only explicit English/Chinese eigenmode animation intent when all compatible profile objects and mode ID exist. Calculation, thermal, trajectory, static viewer, Brillouin, XRD, editing, and video requests are excluded.
+- Artifacts contain no renderer, frames, JavaScript, HTML, shader, URL, or remote asset. Existing static phonon and trajectory tool identities remain unchanged.
+
 ## 2026-07-14 Phase 10H-4 Eigenvector Contract Notes
 
 - No Tool Registry entry, adapter, planner route, PlanValidator input, QueueWorkerRuntime behavior, API product, or frontend mode viewer was added.

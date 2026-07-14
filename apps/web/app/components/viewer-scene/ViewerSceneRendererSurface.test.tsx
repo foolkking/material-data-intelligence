@@ -64,6 +64,8 @@ function fakeEngine(dispose = vi.fn()) {
     setCameraPreset: vi.fn(),
     setSelection: vi.fn(),
     setBondSelection: vi.fn(),
+    setDisplacementVectors: vi.fn(),
+    setDisplacementTrails: vi.fn(),
     exportPng: vi.fn(async () => new Blob(["png"], { type: "image/png" })),
     render: vi.fn(),
     replaceScene: vi.fn(),

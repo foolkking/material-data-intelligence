@@ -1,5 +1,12 @@
 # TASK_BOARD
 
+## Phase 10H-5 Phonon Animation In Progress
+
+- [x] Audit approved eigenvector sources, existing phonon contracts, trajectory patterns, and renderer boundaries.
+- [x] Implement bounded phonon animation adapter, formal tool/runtime path, and validated frontend mode selection/playback.
+- [x] Add browser, performance, accessibility, security, and regression evidence without expanding into thermal or spectroscopy scope.
+- [ ] Complete full regression, commit, current-HEAD CI, completion record, and queue archival.
+
 ## Phase 10H-4 Phonon Eigenvector Contract Completed
 
 - [x] Define mode reference, complex eigenvector, set, summary, and manifest schemas.

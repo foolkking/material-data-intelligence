@@ -1,0 +1,9 @@
+{
+  "dependencies_added": false,
+  "diagonal_supercell_only": true,
+  "display_scale_physical": false,
+  "frames_persisted": false,
+  "general_integer_matrix": false,
+  "shared_renderer_engine": true,
+  "single_raf": true
+}

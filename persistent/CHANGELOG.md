@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-14 - Phase 10H-5 Phonon Animation
+
+- Added unique formal `phonon.animation`, strict planner/registry/PlanValidator/runtime integration, and four inert animation artifact types.
+- Added exact structure/band/eigenvector/mode compatibility, fixed-envelope mass-unweighted displacement reconstruction, Gamma and bounded diagonal non-Gamma supercells, imaginary/degenerate warnings, and hard caps.
+- Reused the shared Three.js engine for one-RAF instanced playback, vectors, bounded trails, periodic picking, inspector, controls, reduced motion, context loss, responsive mobile layout, and exact hash-bound band handoff.
+- Added real Chromium/Firefox/WebKit/mobile WebGL evidence with zero external requests and no new dependency.
+
 ## 2026-07-14 - Phase 10H-4 Phonon Eigenvector Contract
 
 - Added canonical mode reference, complex eigenvector, eigenvector-set, summary, and manifest contracts.

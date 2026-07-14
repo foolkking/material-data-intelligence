@@ -8,6 +8,7 @@ import { TrajectoryViewerSurface } from "./trajectory-viewer/TrajectoryViewerSur
 import { PhononBandPreviewPanel } from "./phonon-band/PhononBandPreviewPanel";
 import { PhononBandDosPreviewPanel } from "./phonon-band-dos/PhononBandDosPreviewPanel";
 import { PhononDosPreviewPanel } from "./phonon-dos/PhononDosPreviewPanel";
+import { PhononAnimationSurface } from "./phonon-animation/PhononAnimationSurface";
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
@@ -1200,6 +1201,7 @@ function ResultsExportTab(props: {
       <TableSummaryRenderer t={t} artifact={props.artifacts.find(isTableSummaryArtifact)} />
       <ViewerStaticPreviewPanel artifacts={props.artifacts} />
       <TrajectoryPreviewPanel artifacts={props.artifacts} />
+      <PhononAnimationPreviewPanel artifacts={props.artifacts} />
       <PhononBandDosPreviewPanel artifacts={props.artifacts} />
       {!hasCombinedPhonon ? <PhononBandPreviewPanel artifacts={props.artifacts} /> : null}
       {!hasCombinedPhonon ? <PhononDosPreviewPanel artifacts={props.artifacts} /> : null}
@@ -1419,6 +1421,31 @@ export function TrajectoryPreviewPanel({ artifacts }: { artifacts: Artifact[] })
       </div>
     </section>
   );
+}
+
+export function PhononAnimationPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
+  const animationArtifact = artifacts.find((artifact) => artifact.type === "phonon_animation_json" || artifact.name === "phonon_animation.json");
+  const manifestArtifact = artifacts.find((artifact) => artifact.type === "phonon_animation_manifest_json" || artifact.name === "phonon_animation_manifest.json");
+  const [activePreview, setActivePreview] = useState<"viewer" | "json" | "manifest">("viewer");
+  if (!animationArtifact) return null;
+  const payload = trajectoryArtifactPayload(animationArtifact);
+  const manifest = manifestArtifact ? trajectoryArtifactPayload(manifestArtifact) : null;
+  const mode = asRecord(asRecord(payload?.mode)?.mode);
+  const key = `${text(mode?.mode_id) || "unknown-mode"}:${String(animationArtifact.id || animationArtifact.artifactId || animationArtifact.name)}`;
+  return <section className="panel viewer-static-preview" data-testid="phonon-animation-preview-panel">
+    <PanelHeading title="Phonon mode animation" badge="Formal phonon.animation product" />
+    <p className="notice" data-testid="phonon-animation-product-path">Validated structure, band, and eigenvector inputs; application-owned renderer; visualization scale only.</p>
+    <div className="viewer-preview-tabs" role="tablist" aria-label="Phonon animation preview modes">
+      <button type="button" role="tab" aria-selected={activePreview==="viewer"} className={activePreview==="viewer"?"active":"secondary"} onClick={()=>setActivePreview("viewer")}>3D Animation</button>
+      <button type="button" role="tab" aria-selected={activePreview==="json"} className={activePreview==="json"?"active":"secondary"} onClick={()=>setActivePreview("json")}>Animation JSON</button>
+      <button type="button" role="tab" aria-selected={activePreview==="manifest"} className={activePreview==="manifest"?"active":"secondary"} onClick={()=>setActivePreview("manifest")}>Manifest</button>
+    </div>
+    <div className="viewer-preview-tab-panel" role="tabpanel">
+      {activePreview==="viewer"?<PhononAnimationSurface key={key} payload={payload}/>:null}
+      {activePreview==="json"?<pre className="json-preview" data-testid="phonon-animation-json-preview">{JSON.stringify(payload,null,2)}</pre>:null}
+      {activePreview==="manifest"?<pre className="json-preview" data-testid="phonon-animation-manifest-preview">{JSON.stringify(manifest,null,2)}</pre>:null}
+    </div>
+  </section>;
 }
 
 const VIEWER_SCENE_V1_SCHEMA = "phase10f8.viewer_scene.v1";

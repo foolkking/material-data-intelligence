@@ -1,5 +1,21 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10H5-PHONON-ANIMATION: Animate one validated mode in the shared viewer engine
+
+### Decision
+
+Register `phonon.animation` as the only dynamic phonon visualization tool. Compose one canonical structure, band artifact, eigenvector set, and exact H4 mode reference into a closed frame-free package. Keep animation phase, display scale, and renderer-local supercell as display state; do not reinterpret the package as `phase10g.trajectory.v1`.
+
+Use `display_scale/envelope * Re[(e/sqrt(m))*exp(i*(2*pi*q.R+phase))]`, where the complex envelope is fixed for the mode. Support exact positive diagonal commensurate repeats up to three and reject q-points requiring a general matrix. Reuse one shared Three.js engine and update instanced atom matrices plus bounded application-owned vector/trail lines under one RAF.
+
+### Consequences
+
+- Mode handoff requires exact band hash, q-point, branch, frequency tolerance, atom order, structure identity, and NAC binding; frequency-nearest fallback is forbidden.
+- Phase nodes may have zero displacement and global phase remains artifact-canonical.
+- Imaginary modes are unstable-direction morphs, not stable oscillations; amplitude is visualization scale, not thermal or physical amplitude.
+- Invalid, incompatible, unsupported, over-cap, and context-loss paths retain inert JSON and allocate no new execution authority.
+- Phonon calculation, general commensurate matrices, physical amplitudes, spectroscopy, thermal science, video, and remote assets remain deferred.
+
 ## ADR-10H4-PHONON-EIGENVECTOR: Canonicalize one global phase over mass-weighted vectors
 
 ### Decision

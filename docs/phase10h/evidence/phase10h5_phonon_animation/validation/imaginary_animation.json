@@ -1,0 +1,8 @@
+{
+  "errors": [],
+  "valid": true,
+  "warnings": [
+    "PHONON_ANIMATION_DEGENERATE_BASIS_ARBITRARY",
+    "PHONON_ANIMATION_IMAGINARY_MODE_STATIC_DIRECTION"
+  ]
+}

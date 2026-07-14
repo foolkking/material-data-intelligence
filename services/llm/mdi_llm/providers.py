@@ -97,6 +97,8 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_phonon_animation(request, tools, data_profile):
+            plan = _mock_phonon_animation_plan(request, data_profile)
         elif _should_generate_phonon_band_dos(request, tools, data_profile):
             plan = _mock_phonon_band_dos_plan(request, data_profile)
         elif _should_generate_phonon_dos(request, tools, data_profile):
@@ -1411,6 +1413,70 @@ def _has_phonon_dos_input(data_profile: DataProfile) -> bool:
             if object_type == "phonondos":
                 return True
     return "phonondos" in str(getattr(data_profile, "datasetType", "") or "").lower()
+
+
+def _phonon_profile_object(data_profile: DataProfile, object_type: str) -> dict[str, Any] | None:
+    for item in getattr(data_profile, "objects", None) or []:
+        if isinstance(item, dict) and str(item.get("objectType") or item.get("object_type") or "") == object_type:
+            return item
+    return None
+
+
+def _should_generate_phonon_animation(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "phonon.animation"):
+        return False
+    structure = _phonon_profile_object(data_profile, "Structure")
+    band = _phonon_profile_object(data_profile, "PhononBand")
+    eigenvectors = _phonon_profile_object(data_profile, "PhononEigenvector")
+    mode_id = eigenvectors.get("modeId") if eigenvectors else None
+    if structure is None or band is None or eigenvectors is None or not isinstance(mode_id, str) or len(mode_id) != 64:
+        return False
+    prompt = request.user_prompt.lower()
+    unsupported = (
+        "calculate phonon", "run phonopy", "force constants", "thermal conductivity", "heat capacity",
+        "raman", "infrared", "neutron", "molecular dynamics", "md trajectory", "brillouin",
+        "charge density", "xrd", "crystalnn", "edit structure", "mp4", "gif",
+        "计算声子", "力常数", "热导率", "热容", "分子动力学轨迹", "布里渊区", "编辑结构",
+    )
+    if any(marker in prompt for marker in unsupported):
+        return False
+    markers = (
+        "animate the selected phonon mode", "visualize this phonon eigenmode", "phonon mode animation",
+        "open a phonon mode animation", "show atomic displacements for this q-point",
+        "播放这个声子模式", "显示这个q点的原子振动", "声子模式动画", "动画展示这个虚频模式",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _mock_phonon_animation_plan(request: PlannerRequest, data_profile: DataProfile) -> dict[str, Any]:
+    structure = _phonon_profile_object(data_profile, "Structure") or {}
+    band = _phonon_profile_object(data_profile, "PhononBand") or {}
+    eigenvectors = _phonon_profile_object(data_profile, "PhononEigenvector") or {}
+    mode_id = str(eigenvectors["modeId"])
+    artifact_types = ["phonon_animation_json", "phonon_animation_summary_json", "phonon_animation_manifest_json", "recipe_json"]
+    step = {
+        "stepId": "step_001", "toolId": "phonon.animation",
+        "purpose": "Build a bounded declarative visualization package for one validated phonon eigenmode.",
+        "reason": "The request explicitly asks to visualize an available canonical phonon eigenvector.",
+        "inputRefs": [
+            {"refType": "normalized_object", "ref": structure.get("id") or structure.get("ref") or "structure", "fieldRole": "structure", "objectType": "Structure"},
+            {"refType": "artifact", "ref": band.get("id") or band.get("ref") or "phonon_band", "fieldRole": "band", "objectType": "PhononBand"},
+            {"refType": "artifact", "ref": eigenvectors.get("id") or eigenvectors.get("ref") or "phonon_eigenvectors", "fieldRole": "eigenvectors", "objectType": "PhononEigenvector"},
+        ],
+        "params": {"mode_id": mode_id, "display_scale": 0.15, "initial_phase_radians": 0.0, "playback_cycles_per_second": 0.5, "autoplay": False, "loop": True, "supercell_mode": "auto", "supercell": [1, 1, 1], "show_vectors": True, "show_trails": False, "trail_length": 12, "show_bonds": True, "show_unit_cell": True, "show_axes": True, "representation": "ball_and_stick"},
+        "output": {"artifactTypes": artifact_types},
+    }
+    expected = [
+        {"name": "phonon_animation.json", "type": "phonon_animation_json", "fromStepId": "step_001"},
+        {"name": "phonon_animation_summary.json", "type": "phonon_animation_summary_json", "fromStepId": "step_001"},
+        {"name": "phonon_animation_manifest.json", "type": "phonon_animation_manifest_json", "fromStepId": "step_001"},
+        {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_001"},
+    ]
+    return _single_step_plan(request, step, expected)
 
 
 def _should_generate_phonon_band_dos(

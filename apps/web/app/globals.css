@@ -1263,6 +1263,15 @@ pre {
   .trajectory-viewer-surface button, .trajectory-viewer-surface select, .trajectory-viewer-surface input { min-height: 44px; }
 }
 .phonon-band-preview { display: grid; gap: 14px; }
+.phonon-band-handoff { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 10px; border: 1px solid #cfd7dd; background: #f7f9fa; }
+.phonon-band-handoff button { min-height: 40px; }
+.phonon-animation-surface { display: grid; gap: 12px; min-width: 0; }
+.phonon-animation-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: end; }
+.phonon-animation-controls label { display: grid; gap: 5px; min-width: 0; }
+.phonon-animation-controls label:has(input[type="checkbox"]) { grid-template-columns: 20px minmax(0, 1fr); align-items: center; align-self: center; }
+.phonon-animation-controls input[type="checkbox"] { width: 20px; height: 20px; min-height: 20px; margin: 0; }
+.phonon-animation-controls input[type="range"], .phonon-animation-controls select { width: 100%; min-height: 40px; }
+.phonon-animation-surface button:focus-visible, .phonon-animation-surface input:focus-visible, .phonon-animation-surface select:focus-visible { outline: 3px solid #1d6f8a; outline-offset: 2px; }
 .phonon-dos-preview { display: grid; gap: 14px; }
 .phonon-band-dos-preview { display: grid; gap: 14px; min-width: 0; }
 .phonon-band-dos-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
@@ -1335,6 +1344,9 @@ pre {
 .phonon-band-json-grid details { min-width: 0; }
 .phonon-band-json-grid pre { max-height: 420px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
 @media (max-width: 760px) {
+  .phonon-animation-controls { grid-template-columns: 1fr; }
+  .phonon-band-handoff { align-items: stretch; flex-direction: column; }
+  .phonon-animation-controls input[type="range"], .phonon-animation-controls select, .phonon-animation-surface button { min-height: 44px; }
   .phonon-band-summary, .phonon-band-json-grid, .phonon-dos-summary, .phonon-dos-json-grid, .phonon-band-dos-summary, .phonon-band-dos-json-grid { grid-template-columns: 1fr; }
   .phonon-band-heading, .phonon-dos-heading, .phonon-band-dos-heading { flex-direction: column; }
   .phonon-band-plot-wrap, .phonon-band-plot, .phonon-dos-plot-wrap, .phonon-dos-plot { min-height: 340px; height: 340px; }
