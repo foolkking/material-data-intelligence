@@ -24,3 +24,10 @@
 * 修改摘要：实现唯一正式 `phonon.dos` adapter，支持 canonical JSON 与 bounded phonopy total/projected text wrappers，显式执行 frequency/density Jacobian、total-modes normalization、trapezoidal integration validation、negative-frequency preservation 和 deterministic projection identity；新增 DOS-specific summary/manifest、7 类 inert artifacts、strict registry/PlanValidator caps、limited planner routing，以及 validated lazy local Plotly plot、table、JSON、typed fallback、projection mismatch warning、mobile/accessibility lifecycle。生成真实 planner/runtime/API 和三浏览器证据；未新增依赖，未实现 combined band+DOS、eigenvectors、animation、solver 或外部资源。
 * 测试结果：backend focused `82 passed`，backend full `510 passed, 23 skipped, 11 warnings`，frontend focused `13 passed`，frontend full `164 passed`；typecheck/build/lock/cached diff success；H2/H1/Phase 10 Closure/Phase 10G Chromium/Firefox/WebKit/mobile/accessibility browser regressions PASS；`NO_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`；evidence SHA-256 PASS。本机 Docker 不可用，local service-backed unavailable；GitHub CI service-backed 与 no-skipped assertion 均成功。`npm audit` 因配置镜像 endpoint `NOT_IMPLEMENTED` 为 unavailable，且无 dependency/lockfile 变更。
 * 提交 / CI：实现提交 `b2eb9ce7ae5e4d76cb97749339109446a3790fa5`，CI run `29306549843` success。完成记录提交推送后需再次通过 current-HEAD CI，最终归档以该检查为准。
+
+### 队列归档确认
+
+* 核验时间：2026-07-14 12:51:38 +08:00
+* 完成记录提交：`08945db34db7a5b085ee60f0ec380d66f984b248`
+* current-HEAD CI：run `29306940632` success
+* 归档结论：实现、测试、API/browser evidence、完成记录和两次 current-HEAD CI 均闭合；允许从 `TASKS.md` 删除 Phase 10H-2 block，历史结果保留于本文件。
