@@ -1,0 +1,9 @@
+{
+  "max_artifact_bytes": 64000000,
+  "max_atoms": 512,
+  "max_complex_components": 6291456,
+  "max_image_offset": 16,
+  "max_metadata_bytes": 1000000,
+  "max_modes": 4096,
+  "max_warnings": 32
+}

@@ -1,5 +1,28 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10H4-PHONON-EIGENVECTOR: Canonicalize one global phase over mass-weighted vectors
+
+### Decision
+
+Represent each mode as a band-hash-bound reference plus Cartesian complex
+`real[3]+imag[3]` vectors in canonical atom order. Store mass-weighted
+eigenvectors with global Euclidean unit norm and explicit positive atomic
+masses. Canonicalize one global phase by rotating the first nonzero atom-major
+xyz component to real-positive. Define scientific equivalence modulo one global
+phase and preserve source-declared degenerate branches without cross-source
+individual matching.
+
+Real-space display direction uses `u_i=e_i/sqrt(m_i)`. Non-Gamma cell phase is
+`2*pi*q_fractional.cell_image`; display amplitude is max-atom normalized and
+explicitly non-thermal.
+
+### Consequences
+
+- Mode identity changes with band content and cannot depend on labels, filenames, frequency alone, or UI ordering.
+- Atom order, mass source, normalization, phase, NAC direction, and imaginary-mode semantics are explicit and validator-enforced.
+- Deterministic serialization is phase-stable for one scientific vector; degenerate subspace matching remains a future benchmark problem.
+- No parser, adapter, dynamic tool, animation, solver, dependency, network, or executable artifact authority is introduced.
+
 ## ADR-10H3-COMBINED-PHONON-PRODUCT: Compose validated artifacts, not plots
 
 ### Decision

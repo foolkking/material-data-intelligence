@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-07-14 - Phase 10H-4 Phonon Eigenvector Contract
+
+- Added canonical mode reference, complex eigenvector, eigenvector-set, summary, and manifest contracts.
+- Added stable mode IDs, band/q-point/branch/frequency/NAC binding, canonical atom order, atomic mass provenance, mass-weighted unit normalization, global phase canonicalization, and scientific phase equivalence.
+- Added bounded real-space display reconstruction with physics-`2*pi` non-Gamma cell phase and display-only maximum displacement scaling.
+- Added Python and independent TypeScript checks, deterministic fixtures/evidence, NumPy comparison, security and no-network markers.
+- Added no parser, adapter, registry/planner/API product, UI, animation, solver, dependency, remote resource, notebook/script, or real LLM path.
+
 ## 2026-07-14 - Phase 10H-3 Combined Band + DOS
 
 - Added the formal `phonon.band_dos` adapter and strict two-artifact role binding through validated planner/runtime execution.

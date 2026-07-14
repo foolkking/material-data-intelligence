@@ -317,3 +317,11 @@
 | [`phase10h/phase10h3_combined_security.md`](phase10h/phase10h3_combined_security.md) | Artifact, compatibility, browser, and network security |
 | [`phase10h/phase10h3_combined_readiness_matrix.md`](phase10h/phase10h3_combined_readiness_matrix.md) | Phase 10H-3 readiness decisions |
 | [`phase10h/evidence/phase10h3_combined_band_dos/`](phase10h/evidence/phase10h3_combined_band_dos/) | API, compatibility, browser, mobile, screenshots, and security evidence |
+| [`phase10h/phase10h4_phonon_eigenvector_contract.md`](phase10h/phase10h4_phonon_eigenvector_contract.md) | Canonical complex phonon eigenvector contract and validation |
+| [`phase10h/phase10h4_phonon_mode_identity.md`](phase10h/phase10h4_phonon_mode_identity.md) | Band/q-point/branch/calculation-bound mode identity |
+| [`phase10h/phase10h4_normalization.md`](phase10h/phase10h4_normalization.md) | Mass-weighted Euclidean unit normalization |
+| [`phase10h/phase10h4_global_phase_and_gauge.md`](phase10h/phase10h4_global_phase_and_gauge.md) | Canonical global phase and scientific equivalence |
+| [`phase10h/phase10h4_displacement_reconstruction.md`](phase10h/phase10h4_displacement_reconstruction.md) | Gamma/non-Gamma static displacement reconstruction |
+| [`phase10h/phase10h4_security.md`](phase10h/phase10h4_security.md) | Numeric, artifact, cap, and execution security |
+| [`phase10h/phase10h4_readiness_matrix.md`](phase10h/phase10h4_readiness_matrix.md) | Phase 10H-4 readiness and deferred dynamic product |
+| [`phase10h/evidence/phase10h4_phonon_eigenvector_contract/`](phase10h/evidence/phase10h4_phonon_eigenvector_contract/) | Schemas, fixtures, references, cross-language, security, and hashes |

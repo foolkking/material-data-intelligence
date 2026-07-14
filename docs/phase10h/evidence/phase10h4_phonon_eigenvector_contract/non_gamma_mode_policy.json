@@ -1,0 +1,5 @@
+{
+  "commensurate_supercell": "required_for_future_animation",
+  "phase": "2*pi*q_fractional.cell_image",
+  "solver": "deferred"
+}

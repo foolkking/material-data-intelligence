@@ -1315,3 +1315,25 @@ one shared THz frequency y-axis. Plot data is inert and mapped only by
 application-owned frontend code after independent validation. No eigenvector,
 animation, solver, HTML, JavaScript, external asset, or network authority is
 added.
+
+## Phase 10H-4 Addendum: phonon eigenvector contract
+
+The inert eigenvector family is `phase10h.phonon_mode_ref.v1`,
+`phonon_eigenvector.v1`, `phonon_eigenvector_set.v1`,
+`phonon_eigenvector_summary.v1`, and `phonon_eigenvector_manifest.v1`, with
+shared `phase10h.complex_scalar.v1` and `complex_vector3.v1` representations.
+
+A mode reference binds the canonical band artifact SHA-256, structure and
+calculation identity, reciprocal-fractional q-point and segment, source-stable
+branch, THz frequency, and optional Gamma NAC direction. Stored vectors are
+Cartesian dimensionless mass-weighted eigenvectors with global Euclidean unit
+norm. Canonical global phase makes the first nonzero atom-major xyz component
+real and positive; scientific equivalence ignores one common phase.
+
+Real-space display direction is `u_i=e_i/sqrt(m_i)`. Non-Gamma image phase is
+`2*pi*q_fractional.cell_image`; display amplitude is a separate bounded
+angstrom maximum-atom scale with no thermal or trajectory meaning. Source
+degeneracy is preserved without cross-source individual-mode matching.
+
+This contract adds no parser, adapter, tool, planner route, UI, animation,
+solver, external asset, notebook/script, network, or real LLM authority.

@@ -1,0 +1,5 @@
+{
+  "double_unweighting": false,
+  "formula": "u_i=e_i/sqrt(m_i)",
+  "mass_unit": "unified_atomic_mass_unit"
+}

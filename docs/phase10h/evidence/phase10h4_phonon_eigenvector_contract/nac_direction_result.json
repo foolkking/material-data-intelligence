@@ -1,0 +1,48 @@
+{
+  "mode": {
+    "band_artifact": {
+      "artifact_id": "nac-band",
+      "schema_version": "phase10h.phonon_band.v1",
+      "sha256": "6f7d82b2938c9fec5323503996a8e0251119fdbd05be74e7628e11b9bfaa99f6"
+    },
+    "branch_index": 3,
+    "degeneracy": {
+      "basis_arbitrary_within_subspace": true,
+      "branch_indices": [
+        3,
+        4
+      ],
+      "group_id": "q0-branches-3-4",
+      "source_declared": true
+    },
+    "frequency": 4.0,
+    "frequency_tolerance": 1e-08,
+    "frequency_unit": "terahertz",
+    "mode_id": "6328c773f7c709508892553a3ee9a13d7a7328022f0e2081eea015b5a533f14e",
+    "nac_direction": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "phonon_calculation_identity": "7e3ce3eb7051dbb7dbd571340a321d82ae0172ea67704c5b770804c0c61a1e01",
+    "qpoint_coordinate_system": "reciprocal_fractional",
+    "qpoint_coordinates": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "qpoint_index": 0,
+    "reciprocal_convention": "physics_2pi",
+    "schema_version": "phase10h.phonon_mode_ref.v1",
+    "segment_index": 0,
+    "source_branch_identity": "source-branch-3",
+    "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "validation": {
+    "atom_count": 2,
+    "errors": [],
+    "mode_count": 1,
+    "valid": true,
+    "warnings": []
+  }
+}

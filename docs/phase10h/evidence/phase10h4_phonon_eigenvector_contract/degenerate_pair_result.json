@@ -1,0 +1,39 @@
+{
+  "mode": {
+    "band_artifact": {
+      "artifact_id": "band-artifact",
+      "schema_version": "phase10h.phonon_band.v1",
+      "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2"
+    },
+    "branch_index": 0,
+    "degeneracy": {
+      "basis_arbitrary_within_subspace": true,
+      "branch_indices": [
+        0,
+        1,
+        2
+      ],
+      "group_id": "q0-branches-0-1-2",
+      "source_declared": true
+    },
+    "frequency": 0.0,
+    "frequency_tolerance": 1e-08,
+    "frequency_unit": "terahertz",
+    "mode_id": "c8b1b311ef4bb234657c1246d76f400a34906692e5cf6463fcee2ddd71337b16",
+    "nac_direction": null,
+    "phonon_calculation_identity": "80880e6444c843cd2cef7546fe619d0c927a3aa0df4304a25e404a4d03466012",
+    "qpoint_coordinate_system": "reciprocal_fractional",
+    "qpoint_coordinates": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "qpoint_index": 0,
+    "reciprocal_convention": "physics_2pi",
+    "schema_version": "phase10h.phonon_mode_ref.v1",
+    "segment_index": 0,
+    "source_branch_identity": "source-branch-0",
+    "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "policy": "individual source branches retained"
+}

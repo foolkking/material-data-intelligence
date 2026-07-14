@@ -1,5 +1,12 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-14 Phase 10H-4 Eigenvector Contract Notes
+
+- No Tool Registry entry, adapter, planner route, PlanValidator input, QueueWorkerRuntime behavior, API product, or frontend mode viewer was added.
+- The eigenvector family is inert contract data bound to an existing canonical phonon band artifact.
+- `phonon.band`, `phonon.dos`, and `phonon.band_dos` retain static product semantics and do not imply eigenvector availability.
+- A future dynamic tool must pass an independent parser/adapter/animation/security/evidence phase and cannot execute artifact code or infer missing mass/phase semantics.
+
 ## 2026-07-14 Phase 10H-3 Combined Product Notes
 
 - `phonon.band_dos` is the unique formal static combined product using `PhononBandDosAdapter`.

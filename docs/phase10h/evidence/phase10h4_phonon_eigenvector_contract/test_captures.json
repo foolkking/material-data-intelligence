@@ -1,0 +1,12 @@
+{
+  "backend_full": "542 passed, 23 skipped, 11 warnings",
+  "backend_h4": "21 passed",
+  "build": "success",
+  "frontend_contracts": "15 passed",
+  "frontend_full": "178 passed",
+  "npm_audit": "unavailable: configured npmmirror endpoint does not implement audit",
+  "phonon_focused": "108 passed",
+  "service_backed_local": "unavailable: Docker and service environment are not configured",
+  "typecheck": "success",
+  "uv_lock": "success"
+}

@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-14 Phase 10H-4 Phonon Eigenvector Contract
+
+- Added inert mode/eigenvector/set/summary/manifest contracts with band hash, structure/calculation, q-point, branch, frequency, atom-order, and NAC binding.
+- Fixed Cartesian complex `real[3]+imag[3]`, mass-weighted Euclidean unit norm, explicit atomic masses, canonical global phase, and phase-insensitive scientific equivalence.
+- Added mass unweighting, bounded Gamma/non-Gamma static displacement reconstruction, display-only amplitude policy, small Python/NumPy/TypeScript fixtures, security, and evidence.
+- Parser, adapter, tool, mode UI, commensurate-supercell solver, animation, thermal science, dependencies, network, and real LLM remain deferred.
+
 ## 2026-07-14 Phase 10H-3 Combined Band + DOS
 
 - Added formal `phonon.band_dos` composition over validated band and DOS artifacts with ordered compatibility, source hashes, and no source mutation.

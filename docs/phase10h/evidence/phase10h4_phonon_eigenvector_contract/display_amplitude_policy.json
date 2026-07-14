@@ -1,0 +1,6 @@
+{
+  "display_only": true,
+  "policy": "max_atom_displacement",
+  "thermal_amplitude": false,
+  "unit": "angstrom"
+}

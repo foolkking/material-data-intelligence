@@ -1,0 +1,5 @@
+{
+  "gamma_direction_bound": true,
+  "mismatch": "reject",
+  "non_gamma_direction": null
+}

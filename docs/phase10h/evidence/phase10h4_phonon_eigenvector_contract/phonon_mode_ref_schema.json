@@ -1,0 +1,22 @@
+{
+  "fields": [
+    "band_artifact",
+    "branch_index",
+    "degeneracy",
+    "frequency",
+    "frequency_tolerance",
+    "frequency_unit",
+    "mode_id",
+    "nac_direction",
+    "phonon_calculation_identity",
+    "qpoint_coordinate_system",
+    "qpoint_coordinates",
+    "qpoint_index",
+    "reciprocal_convention",
+    "schema_version",
+    "segment_index",
+    "source_branch_identity",
+    "structure_identity"
+  ],
+  "schema_version": "phase10h.phonon_mode_ref.v1"
+}

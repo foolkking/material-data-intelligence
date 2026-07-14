@@ -1,0 +1,5 @@
+{
+  "finite_only": true,
+  "shape": "atom_count x (real[3],imag[3])",
+  "string_complex": false
+}

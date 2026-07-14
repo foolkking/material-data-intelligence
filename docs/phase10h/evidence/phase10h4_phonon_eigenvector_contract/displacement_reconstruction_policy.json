@@ -1,0 +1,4 @@
+{
+  "formula": "A*Re[(e_i/sqrt(m_i))*exp(i*(2*pi*q.cell_image+phase))]",
+  "trajectory": false
+}

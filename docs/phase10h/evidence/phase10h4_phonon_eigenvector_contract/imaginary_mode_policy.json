@@ -1,0 +1,6 @@
+{
+  "animation_claim": false,
+  "behavior": "static_unstable_direction",
+  "eigenvector_retained": true,
+  "frequency_encoding": "negative_real"
+}

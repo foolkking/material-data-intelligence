@@ -1,0 +1,11 @@
+{
+  "atom_count": 2,
+  "errors": [
+    "PHONON_EIGENVECTOR_NORMALIZATION_INVALID",
+    "PHONON_EIGENVECTOR_PHASE_INVALID",
+    "PHONON_EIGENVECTOR_SHAPE_INVALID"
+  ],
+  "mode_count": 1,
+  "valid": false,
+  "warnings": []
+}

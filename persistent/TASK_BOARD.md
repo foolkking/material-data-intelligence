@@ -1,5 +1,14 @@
 # TASK_BOARD
 
+## Phase 10H-4 Phonon Eigenvector Contract In Progress
+
+- [x] Define mode reference, complex eigenvector, set, summary, and manifest schemas.
+- [x] Implement band/q-point/branch/frequency/structure/atom/NAC binding and deterministic mode IDs.
+- [x] Implement normalization, mass unweighting, canonical global phase, equivalence, and non-Gamma static reconstruction.
+- [x] Add small fixtures, Python/NumPy and independent TypeScript validators, evidence, security, and documentation.
+- [ ] Complete full regression, commit, current-HEAD CI, completion record, and queue archival.
+- [ ] Parser, adapter, mode UI, animation renderer, and dynamic product remain separate phases.
+
 ## Phase 10H-3 Combined Band + DOS Completed
 
 - [x] Implement combined schema family, artifact-reference/hash validation, compatibility states, and deterministic check order.

@@ -1,0 +1,10 @@
+{
+  "content_derived": true,
+  "fields": [
+    "band_artifact_sha256",
+    "qpoint_index",
+    "branch_index",
+    "nac_direction"
+  ],
+  "frequency_only": false
+}

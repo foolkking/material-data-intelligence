@@ -1,0 +1,21 @@
+{
+  "fields": [
+    "atom_count",
+    "atom_ordering",
+    "atomic_masses",
+    "coordinate_basis",
+    "eigenvectors",
+    "mode",
+    "normalization",
+    "phase_convention",
+    "provenance",
+    "schema_version",
+    "security",
+    "species",
+    "stored_vector_representation",
+    "structure_identity",
+    "vector_unit",
+    "warnings"
+  ],
+  "schema_version": "phase10h.phonon_eigenvector.v1"
+}

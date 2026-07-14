@@ -1,0 +1,10 @@
+{
+  "allowed_sources": [
+    "source_provided",
+    "canonical_structure_mass",
+    "standard_atomic_weight",
+    "isotope_specific"
+  ],
+  "atomic_number_substitution": false,
+  "positive_finite": true
+}

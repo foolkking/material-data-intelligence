@@ -1,0 +1,11 @@
+{
+  "artifact_html": false,
+  "artifact_javascript": false,
+  "callbacks": false,
+  "external_urls": false,
+  "marker": "NO_SECRET_PATTERN_HITS",
+  "modules": false,
+  "new_dependencies": false,
+  "real_llm": false,
+  "shaders": false
+}

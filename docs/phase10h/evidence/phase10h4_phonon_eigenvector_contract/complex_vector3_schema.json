@@ -1,0 +1,7 @@
+{
+  "fields": [
+    "real[3]",
+    "imag[3]"
+  ],
+  "schema_version": "phase10h.complex_vector3.v1"
+}

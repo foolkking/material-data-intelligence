@@ -1,0 +1,5 @@
+{
+  "component_order": "atom_major_xyz",
+  "policy": "first_nonzero_component_real_positive",
+  "tolerance": 1e-12
+}

@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-14 Phase 10H-4 Follow-ups
+
+- Define and test a bounded commensurate-supercell solver before non-Gamma animation; the contract only fixes `2*pi*q.cell_image` phase.
+- Cross-source degenerate modes require subspace/projector comparison rather than individual vector matching and remain deferred.
+- Future adapters must declare atomic mass/isotope source and explicit source-to-canonical atom mapping; partial occupancy remains unsupported.
+- Physical animation amplitude, zero-point motion, temperature dependence, parser formats, mode UI, and formal dynamic registration remain Phase 10H-5 or later decisions.
+
 ## 2026-07-14 Phase 10H-3 Follow-ups
 
 - The static combined product is closed; simultaneous display of multiple projected DOS series is intentionally bounded and the initial UI selects one projection at a time.
