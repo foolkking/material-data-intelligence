@@ -1,0 +1,36 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "snapshot": {
+    "state": "rendered",
+    "sharedFrequencyAxis": true,
+    "bandTraceCount": 6,
+    "dosTraceCount": 1,
+    "numericValues": 67,
+    "projectionId": null,
+    "externalRequests": 0,
+    "svgCount": 3,
+    "pathCount": 31,
+    "text": "ΓXL−101234500.51Total DOSWave vector pathDOS (modes/THz)Frequency (THz)Phonon bandsDensity of states",
+    "plotHosts": 1,
+    "accessibility": {
+      "region": "Combined phonon band and density of states preview",
+      "plot": "Combined phonon band and density of states with shared frequency axis",
+      "live": "polite",
+      "selector": "Projected DOSTotal DOS onlyAtom 0 (Si)Atom 1 (Si)"
+    },
+    "renderMs": 575
+  },
+  "horizontalOverflow": false,
+  "audit": {
+    "externalRequests": 0,
+    "inert": {
+      "iframe": 0,
+      "externalScript": 0,
+      "javascriptUri": 0,
+      "inlineHandler": 0
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "atom_count": 2,
+  "band_asr_applied": false,
+  "band_frequency_max": 5.0,
+  "band_frequency_min": 0.0,
+  "branch_count": 6,
+  "broadening": {
+    "method": "none",
+    "source": "fixture",
+    "unit": null,
+    "width": null
+  },
+  "compatibility_status": "compatible",
+  "dos_density_unit": "modes_per_terahertz",
+  "dos_frequency_max": 5.0,
+  "dos_frequency_min": -1.0,
+  "dos_grid_point_count": 7,
+  "dos_integral": 6.0,
+  "dos_normalization": "total_modes",
+  "expected_modes": 6,
+  "frequency_max": 5.0,
+  "frequency_min": -1.0,
+  "frequency_unit": "terahertz",
+  "imaginary_band_mode_count": 0,
+  "imaginary_dos_integral": 0.0,
+  "nac_enabled": false,
+  "projection_count": 2,
+  "qpoint_count": 3,
+  "schema_version": "phase10h.phonon_band_dos_summary.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "segment_count": 1,
+  "species": [
+    "Si",
+    "Si"
+  ],
+  "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "warnings": [
+    "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+  ]
+}

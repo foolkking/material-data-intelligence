@@ -97,6 +97,8 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_phonon_band_dos(request, tools, data_profile):
+            plan = _mock_phonon_band_dos_plan(request, data_profile)
         elif _should_generate_phonon_dos(request, tools, data_profile):
             plan = _mock_phonon_dos_plan(request)
         elif _should_generate_phonon_band(request, tools, data_profile):
@@ -1409,6 +1411,71 @@ def _has_phonon_dos_input(data_profile: DataProfile) -> bool:
             if object_type == "phonondos":
                 return True
     return "phonondos" in str(getattr(data_profile, "datasetType", "") or "").lower()
+
+
+def _should_generate_phonon_band_dos(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "phonon.band_dos") or not _has_phonon_band_input(data_profile) or not _has_phonon_dos_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    unsupported = (
+        "eigenvector", "animate", "animation", "displacement", "thermal", "free energy", "entropy",
+        "heat capacity", "gruneisen", "calculate phonon", "run phonopy", "force constants", "brillouin",
+        "volumetric", "isosurface", "trajectory", "phonon movie", "phonon video",
+        "\u672c\u5f81\u5411\u91cf", "\u52a8\u753b", "\u4f4d\u79fb\u77e2\u91cf", "\u8ba1\u7b97\u58f0\u5b50", "\u70ed\u5bb9", "\u81ea\u7531\u80fd",
+    )
+    if any(marker in prompt for marker in unsupported):
+        return False
+    markers = (
+        "band dos", "band + dos", "band and dos", "combined band", "combined phonon",
+        "phonon band with dos", "phonon bands with dos", "shared frequency axis",
+        "\u8054\u5408\u663e\u793a\u58f0\u5b50\u80fd\u5e26\u548cdos",
+        "\u58f0\u5b50\u80fd\u5e26\u548c\u58f0\u5b50\u6001\u5bc6\u5ea6",
+        "\u628a phonon band \u548c phonon dos \u653e\u5728\u4e00\u5f20\u56fe",
+        "\u5171\u4eab\u9891\u7387\u8f74",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _mock_phonon_band_dos_plan(request: PlannerRequest, data_profile: DataProfile) -> dict[str, Any]:
+    artifact_types = [
+        "phonon_band_dos_json", "phonon_summary_json", "phonon_compatibility_json", "plotly_json",
+        "table_json", "phonon_manifest_json", "recipe_json",
+    ]
+    step = {
+        "stepId": "step_001",
+        "toolId": "phonon.band_dos",
+        "purpose": "Validate and compose approved static phonon band and DOS artifacts on one shared frequency axis.",
+        "reason": "The request asks for a combined band-left/DOS-right phonon view from compatible canonical artifacts.",
+        "inputRefs": [
+            {"refType": "artifact", "ref": _phonon_object_ref(data_profile, "PhononBand", "phonon_band"), "fieldRole": "band", "objectType": "PhononBand"},
+            {"refType": "artifact", "ref": _phonon_object_ref(data_profile, "PhononDos", "phonon_dos"), "fieldRole": "dos", "objectType": "PhononDos"},
+        ],
+        "params": {"selected_projection_ids": [], "domain_policy": "union", "max_table_rows": 200, "layout": "band_left_dos_right"},
+        "output": {"artifactTypes": artifact_types},
+    }
+    expected = [
+        {"name": "phonon_band_dos.json", "type": "phonon_band_dos_json", "fromStepId": "step_001"},
+        {"name": "phonon_band_dos_summary.json", "type": "phonon_summary_json", "fromStepId": "step_001"},
+        {"name": "phonon_band_dos_compatibility_report.json", "type": "phonon_compatibility_json", "fromStepId": "step_001"},
+        {"name": "phonon_band_dos_plot.json", "type": "plotly_json", "fromStepId": "step_001"},
+        {"name": "phonon_band_dos_table.json", "type": "table_json", "fromStepId": "step_001"},
+        {"name": "phonon_band_dos_manifest.json", "type": "phonon_manifest_json", "fromStepId": "step_001"},
+        {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_001"},
+    ]
+    return _single_step_plan(request, step, expected)
+
+
+def _phonon_object_ref(data_profile: DataProfile, object_type: str, fallback: str) -> str:
+    for item in getattr(data_profile, "objects", None) or []:
+        if isinstance(item, dict) and str(item.get("objectType") or item.get("object_type") or "") == object_type:
+            value = item.get("id") or item.get("ref")
+            if isinstance(value, str) and value:
+                return value
+    return fallback
 
 
 def _should_generate_phonon_dos(

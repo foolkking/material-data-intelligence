@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-14 Phase 10H-3 Combined Band + DOS
+
+- Added formal `phonon.band_dos` composition over validated band and DOS artifacts with ordered compatibility, source hashes, and no source mutation.
+- Added exact frequency conversion, DOS density Jacobian/integral invariance, structure/atom/cell/lineage/NAC/normalization checks, and a shared union THz axis.
+- Added six inert product artifacts, validated local Plotly combined preview, projection selector, tables, export, responsive accessibility, and three-browser evidence.
+- Eigenvectors, animation, thermal properties, calculations, scripts, remote artifacts, dependencies, and real LLM execution remain deferred.
+
 ## 2026-07-14 Phase 10H Phonon Contract
 
 - Added closed `phase10h.phonon_band.v1`, `phonon_dos.v1`, `phonon_summary.v1`, and `phonon_manifest.v1` contracts with deterministic Python validation and independent TypeScript consumer validation.

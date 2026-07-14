@@ -20,6 +20,8 @@ class ArtifactType(str, Enum):
     trajectory_report_json = "trajectory_report_json"
     trajectory_manifest_json = "trajectory_manifest_json"
     phonon_band_json = "phonon_band_json"
+    phonon_band_dos_json = "phonon_band_dos_json"
+    phonon_compatibility_json = "phonon_compatibility_json"
     phonon_dos_json = "phonon_dos_json"
     phonon_summary_json = "phonon_summary_json"
     phonon_report_json = "phonon_report_json"

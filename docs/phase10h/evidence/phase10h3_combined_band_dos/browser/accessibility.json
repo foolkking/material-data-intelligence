@@ -1,0 +1,6 @@
+{
+  "region": "Combined phonon band and density of states preview",
+  "plot": "Combined phonon band and density of states with shared frequency axis",
+  "live": "polite",
+  "selector": "Projected DOSTotal DOS onlyAtom 0 (Si)Atom 1 (Si)"
+}

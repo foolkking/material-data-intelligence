@@ -1,0 +1,10 @@
+{
+  "details": {
+    "errors": [
+      "PHONON_DOS_INTEGRAL_MISMATCH"
+    ]
+  },
+  "error": "PHONON_BAND_DOS_DOS_ARTIFACT_INVALID",
+  "partial_artifacts": 0,
+  "status": "incompatible"
+}

@@ -1,0 +1,8 @@
+{
+  "aria_live": "polite",
+  "non_color_projection_label": true,
+  "projection_selector_labeled": true,
+  "region": "Combined phonon band and density of states preview",
+  "shared_axis_summary": true,
+  "tabs_keyboard_accessible": true
+}

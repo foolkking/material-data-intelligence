@@ -1,0 +1,19 @@
+{
+  "backend_full": "521 passed, 23 skipped, 11 warnings",
+  "backend_h3": "11 passed",
+  "browser_regressions": [
+    "phase10h1",
+    "phase10h2",
+    "phase10_closure",
+    "phase10g2",
+    "phase10g3"
+  ],
+  "build": "success",
+  "frontend_full": "174 passed",
+  "frontend_h3": "10 passed",
+  "generator": "scripts/generate_phase10h3_phonon_band_dos_evidence.py",
+  "npm_audit": "unavailable: configured npmmirror audit endpoint returns NOT_IMPLEMENTED",
+  "registry_regression": "6 passed",
+  "service_backed_local": "unavailable: Docker and required service environment variables are not configured",
+  "typecheck": "success"
+}

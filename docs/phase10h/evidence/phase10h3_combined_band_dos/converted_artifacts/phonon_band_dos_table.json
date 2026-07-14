@@ -1,0 +1,307 @@
+{
+  "compatibility_columns": [
+    "check",
+    "band_value",
+    "dos_value",
+    "status",
+    "result_code"
+  ],
+  "compatibility_rows": [
+    {
+      "band_value": "band-converted",
+      "check": "input_artifacts",
+      "dos_value": "dos-converted",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "phase10h.phonon_band.v1",
+      "check": "band_schema",
+      "dos_value": "phase10h.phonon_band.v1",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "phase10h.phonon_dos.v1",
+      "check": "dos_schema",
+      "dos_value": "phase10h.phonon_dos.v1",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "check": "artifact_hashes",
+      "dos_value": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "check": "structure_identity",
+      "dos_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": 2,
+      "check": "atom_count",
+      "dos_value": 2,
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        "Si",
+        "Si"
+      ],
+      "check": "species_ordering",
+      "dos_value": [
+        "Si",
+        "Si"
+      ],
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ]
+      ],
+      "check": "cell_lineage",
+      "dos_value": [
+        [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ]
+      ],
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        "fixture",
+        "finite_displacement",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "check": "source_lineage",
+      "dos_value": [
+        "fixture",
+        "finite_displacement",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "force_constants",
+      "check": "force_constants",
+      "dos_value": "force_constants",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "inverse_centimeter",
+      "check": "frequency_unit",
+      "dos_value": "inverse_centimeter",
+      "result_code": "PHONON_BAND_DOS_UNIT_CONVERSION_APPLIED",
+      "status": "convertible"
+    },
+    {
+      "band_value": "negative_real",
+      "check": "imaginary_encoding",
+      "dos_value": "negative_real",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": 1e-06,
+      "check": "zero_tolerance",
+      "dos_value": 1e-06,
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": {
+        "direction_policy": null,
+        "enabled": false,
+        "gamma_direction": null
+      },
+      "check": "nac",
+      "dos_value": {
+        "direction_policy": null,
+        "enabled": false,
+        "gamma_direction": null
+      },
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        "n/a",
+        6
+      ],
+      "check": "dos_normalization",
+      "dos_value": [
+        "total_modes",
+        6.0
+      ],
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        "Si",
+        "Si"
+      ],
+      "check": "projection_identity",
+      "dos_value": 2,
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": 18,
+      "check": "display_caps",
+      "dos_value": 21,
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        0.0,
+        5.0
+      ],
+      "check": "frequency_domain",
+      "dos_value": [
+        -1.0,
+        5.0
+      ],
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "band_left",
+      "check": "display_options",
+      "dos_value": "dos_right",
+      "result_code": null,
+      "status": "pass"
+    }
+  ],
+  "row_count": 30,
+  "schema_version": "phase10h.phonon_band_dos_table.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "summary_rows": [
+    {
+      "name": "structure_identity",
+      "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "name": "atom_count",
+      "value": 2
+    },
+    {
+      "name": "frequency_unit",
+      "value": "terahertz"
+    },
+    {
+      "name": "frequency_min",
+      "value": -1.0
+    },
+    {
+      "name": "frequency_max",
+      "value": 5.0
+    },
+    {
+      "name": "nac_enabled",
+      "value": false
+    },
+    {
+      "name": "dos_normalization",
+      "value": "total_modes"
+    },
+    {
+      "name": "dos_integral",
+      "value": 6.0
+    },
+    {
+      "name": "expected_modes",
+      "value": 6
+    },
+    {
+      "name": "imaginary_band_mode_count",
+      "value": 0
+    },
+    {
+      "name": "imaginary_dos_integral",
+      "value": 0.0
+    }
+  ],
+  "truncated": false
+}

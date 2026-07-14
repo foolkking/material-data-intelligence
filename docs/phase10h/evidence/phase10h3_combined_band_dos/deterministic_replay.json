@@ -1,0 +1,32 @@
+{
+  "artifact_order": [
+    "phonon_band_dos.json",
+    "phonon_band_dos_summary.json",
+    "phonon_band_dos_compatibility_report.json",
+    "phonon_band_dos_plot.json",
+    "phonon_band_dos_table.json",
+    "phonon_band_dos_manifest.json"
+  ],
+  "check_order": [
+    "input_artifacts",
+    "band_schema",
+    "dos_schema",
+    "artifact_hashes",
+    "structure_identity",
+    "atom_count",
+    "species_ordering",
+    "cell_lineage",
+    "source_lineage",
+    "force_constants",
+    "frequency_unit",
+    "imaginary_encoding",
+    "zero_tolerance",
+    "nac",
+    "dos_normalization",
+    "projection_identity",
+    "display_caps",
+    "frequency_domain",
+    "display_options"
+  ],
+  "runtime_runs_equal": true
+}

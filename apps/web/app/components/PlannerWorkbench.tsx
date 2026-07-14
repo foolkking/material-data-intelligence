@@ -6,6 +6,7 @@ import { createTranslator, type Locale, type MessageKey } from "../lib/i18n";
 import { ViewerSceneRendererSurface } from "./viewer-scene/ViewerSceneRendererSurface";
 import { TrajectoryViewerSurface } from "./trajectory-viewer/TrajectoryViewerSurface";
 import { PhononBandPreviewPanel } from "./phonon-band/PhononBandPreviewPanel";
+import { PhononBandDosPreviewPanel } from "./phonon-band-dos/PhononBandDosPreviewPanel";
 import { PhononDosPreviewPanel } from "./phonon-dos/PhononDosPreviewPanel";
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
@@ -1176,6 +1177,7 @@ function ResultsExportTab(props: {
     );
   }
   const hasResults = Boolean(props.result || props.artifacts.length || props.toolCalls.length);
+  const hasCombinedPhonon = props.artifacts.some((artifact) => artifact.type === "phonon_band_dos_json" || artifact.name === "phonon_band_dos.json");
   return (
     <div className="results-export-tab" data-testid="results-export-tab">
       <section className="panel selected-result-header">
@@ -1198,8 +1200,9 @@ function ResultsExportTab(props: {
       <TableSummaryRenderer t={t} artifact={props.artifacts.find(isTableSummaryArtifact)} />
       <ViewerStaticPreviewPanel artifacts={props.artifacts} />
       <TrajectoryPreviewPanel artifacts={props.artifacts} />
-      <PhononBandPreviewPanel artifacts={props.artifacts} />
-      <PhononDosPreviewPanel artifacts={props.artifacts} />
+      <PhononBandDosPreviewPanel artifacts={props.artifacts} />
+      {!hasCombinedPhonon ? <PhononBandPreviewPanel artifacts={props.artifacts} /> : null}
+      {!hasCombinedPhonon ? <PhononDosPreviewPanel artifacts={props.artifacts} /> : null}
       <ArtifactGallery t={t} artifacts={props.artifacts} developerMode={props.developerMode} selectedArtifact={props.selectedArtifact} />
       <ToolCallList t={t} toolCalls={props.toolCalls} developerMode={props.developerMode} />
       <ExportControls t={t} artifacts={props.artifacts} />

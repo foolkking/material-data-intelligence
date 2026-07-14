@@ -1,0 +1,302 @@
+{
+  "band_artifact": {
+    "artifact_id": "band-converted",
+    "media_type": "application/json",
+    "schema_version": "phase10h.phonon_band.v1",
+    "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+    "size_bytes": 2152
+  },
+  "checks": [
+    {
+      "band_value": "band-converted",
+      "dos_value": "dos-converted",
+      "name": "input_artifacts",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "phase10h.phonon_band.v1",
+      "dos_value": "phase10h.phonon_band.v1",
+      "name": "band_schema",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "phase10h.phonon_dos.v1",
+      "dos_value": "phase10h.phonon_dos.v1",
+      "name": "dos_schema",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "dos_value": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "name": "artifact_hashes",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "dos_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "name": "structure_identity",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": 2,
+      "dos_value": 2,
+      "name": "atom_count",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        "Si",
+        "Si"
+      ],
+      "dos_value": [
+        "Si",
+        "Si"
+      ],
+      "name": "species_ordering",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ]
+      ],
+      "dos_value": [
+        [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ]
+      ],
+      "name": "cell_lineage",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        "fixture",
+        "finite_displacement",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "dos_value": [
+        "fixture",
+        "finite_displacement",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "name": "source_lineage",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "force_constants",
+      "dos_value": "force_constants",
+      "name": "force_constants",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "inverse_centimeter",
+      "dos_value": "inverse_centimeter",
+      "name": "frequency_unit",
+      "result_code": "PHONON_BAND_DOS_UNIT_CONVERSION_APPLIED",
+      "status": "convertible"
+    },
+    {
+      "band_value": "negative_real",
+      "dos_value": "negative_real",
+      "name": "imaginary_encoding",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": 1e-06,
+      "dos_value": 1e-06,
+      "name": "zero_tolerance",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": {
+        "direction_policy": null,
+        "enabled": false,
+        "gamma_direction": null
+      },
+      "dos_value": {
+        "direction_policy": null,
+        "enabled": false,
+        "gamma_direction": null
+      },
+      "name": "nac",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        "n/a",
+        6
+      ],
+      "dos_value": [
+        "total_modes",
+        6.0
+      ],
+      "name": "dos_normalization",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        "Si",
+        "Si"
+      ],
+      "dos_value": 2,
+      "name": "projection_identity",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": 18,
+      "dos_value": 21,
+      "name": "display_caps",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": [
+        0.0,
+        5.0
+      ],
+      "dos_value": [
+        -1.0,
+        5.0
+      ],
+      "name": "frequency_domain",
+      "result_code": null,
+      "status": "pass"
+    },
+    {
+      "band_value": "band_left",
+      "dos_value": "dos_right",
+      "name": "display_options",
+      "result_code": null,
+      "status": "pass"
+    }
+  ],
+  "conversion": {
+    "band_frequency_factor": 0.0299792458,
+    "band_frequency_unit_from": "inverse_centimeter",
+    "broadening_width_converted": false,
+    "density_jacobian_applied": true,
+    "dos_frequency_factor": 0.0299792458,
+    "dos_frequency_unit_from": "inverse_centimeter",
+    "frequency_conversion_applied": true,
+    "frequency_unit_to": "terahertz",
+    "integral_after": 6.0,
+    "integral_before": 6.0
+  },
+  "deterministic": true,
+  "dos_artifact": {
+    "artifact_id": "dos-converted",
+    "media_type": "application/json",
+    "schema_version": "phase10h.phonon_dos.v1",
+    "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+    "size_bytes": 1638
+  },
+  "frequency_domain": {
+    "band": [
+      0.0,
+      5.0
+    ],
+    "display": [
+      -1.0,
+      5.0
+    ],
+    "dos": [
+      -1.0,
+      5.0
+    ],
+    "policy": "union",
+    "union": [
+      -1.0,
+      5.0
+    ]
+  },
+  "schema_version": "phase10h.phonon_band_dos_compatibility_report.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "status": "convertible",
+  "warnings": [
+    "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+  ]
+}

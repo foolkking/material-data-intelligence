@@ -1,0 +1,2939 @@
+{
+  "api": {
+    "artifacts": [
+      {
+        "bucket": null,
+        "content": {
+          "band": {
+            "artifact_id": "inline-band-d0820733b4427d12",
+            "media_type": "application/json",
+            "schema_version": "phase10h.phonon_band.v1",
+            "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+            "size_bytes": 2152
+          },
+          "compatibility": {
+            "density_jacobian_applied": false,
+            "frequency_conversion_applied": false,
+            "report_name": "phonon_band_dos_compatibility_report.json",
+            "report_sha256": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+            "status": "compatible",
+            "warnings": [
+              "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+            ]
+          },
+          "display": {
+            "default_projection_mode": "total_only",
+            "dos_orientation": "density_x_frequency_y",
+            "layout": "band_left_dos_right",
+            "performance_mode": "interactive",
+            "selected_projection_ids": [],
+            "shared_frequency_axis": true
+          },
+          "dos": {
+            "artifact_id": "inline-dos-f47bdecb4954cc9e",
+            "media_type": "application/json",
+            "schema_version": "phase10h.phonon_dos.v1",
+            "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+            "size_bytes": 1638
+          },
+          "frequency_axis": {
+            "domain_policy": "union",
+            "maximum": 5.0,
+            "minimum": -1.0,
+            "unit": "terahertz",
+            "zero_tolerance": 1e-06
+          },
+          "provenance": {
+            "derived_for_display": true,
+            "deterministic": true,
+            "source_hashes": [
+              "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+            ]
+          },
+          "schema_version": "phase10h.phonon_band_dos.v1",
+          "security": {
+            "contains_html": false,
+            "contains_javascript": false,
+            "executable_content_allowed": false,
+            "external_assets": [],
+            "external_urls_allowed": false
+          },
+          "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "tool_id": "phonon.band_dos",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        "contentHash": "de8710a8dd86e8b9867b02615cde88c8fed21a5c5840e9ab40d72d3429ea6feb",
+        "contentType": "application/json",
+        "datasetId": "dataset_h3",
+        "id": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_band_dos_json",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-14T06:52:05.294509+00:00",
+          "inputHashes": [
+            "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c",
+            "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+          ],
+          "paramsHash": "151acedaf8aaca350a0973d447afb7e3cbc7f028e650009aeeb7ade2eedb5053",
+          "profileId": null,
+          "provenance": {
+            "adapter": "phonon.band_dos",
+            "animationIncluded": false,
+            "aseVersion": "3.29.0",
+            "compatibilitySchemaVersion": "phase10h.phonon_band_dos_compatibility_report.v1",
+            "eigenvectorsIncluded": false,
+            "externalResources": false,
+            "manifestSchemaVersion": "phase10h.phonon_band_dos_manifest.v1",
+            "mediaType": "application/json",
+            "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+            "planId": "plan_e30779009a0e4aad93a6f4a3",
+            "planSource": "llm",
+            "plotSchemaVersion": "phase10h.phonon_band_dos_plot.v1",
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "schemaVersion": "phase10h.phonon_band_dos.v1",
+            "sharedFrequencyAxis": true,
+            "sourceArtifactHashes": [
+              "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+            ],
+            "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+            "toolId": "phonon.band_dos"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "phonon.band_dos",
+          "toolVersion": "0.1.0"
+        },
+        "name": "phonon_band_dos.json",
+        "previewKey": null,
+        "projectId": "project_h3",
+        "sha256": "de8710a8dd86e8b9867b02615cde88c8fed21a5c5840e9ab40d72d3429ea6feb",
+        "sizeBytes": 1655,
+        "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+        "type": "phonon_band_dos_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "atom_count": 2,
+          "band_asr_applied": false,
+          "band_frequency_max": 5.0,
+          "band_frequency_min": 0.0,
+          "branch_count": 6,
+          "broadening": {
+            "method": "none",
+            "source": "fixture",
+            "unit": null,
+            "width": null
+          },
+          "compatibility_status": "compatible",
+          "dos_density_unit": "modes_per_terahertz",
+          "dos_frequency_max": 5.0,
+          "dos_frequency_min": -1.0,
+          "dos_grid_point_count": 7,
+          "dos_integral": 6.0,
+          "dos_normalization": "total_modes",
+          "expected_modes": 6,
+          "frequency_max": 5.0,
+          "frequency_min": -1.0,
+          "frequency_unit": "terahertz",
+          "imaginary_band_mode_count": 0,
+          "imaginary_dos_integral": 0.0,
+          "nac_enabled": false,
+          "projection_count": 2,
+          "qpoint_count": 3,
+          "schema_version": "phase10h.phonon_band_dos_summary.v1",
+          "security": {
+            "contains_html": false,
+            "contains_javascript": false,
+            "executable_content_allowed": false,
+            "external_assets": [],
+            "external_urls_allowed": false
+          },
+          "segment_count": 1,
+          "species": [
+            "Si",
+            "Si"
+          ],
+          "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        "contentHash": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+        "contentType": "application/json",
+        "datasetId": "dataset_h3",
+        "id": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_summary_json",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-14T06:52:05.297507+00:00",
+          "inputHashes": [
+            "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c",
+            "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+          ],
+          "paramsHash": "151acedaf8aaca350a0973d447afb7e3cbc7f028e650009aeeb7ade2eedb5053",
+          "profileId": null,
+          "provenance": {
+            "adapter": "phonon.band_dos",
+            "animationIncluded": false,
+            "aseVersion": "3.29.0",
+            "compatibilitySchemaVersion": "phase10h.phonon_band_dos_compatibility_report.v1",
+            "eigenvectorsIncluded": false,
+            "externalResources": false,
+            "manifestSchemaVersion": "phase10h.phonon_band_dos_manifest.v1",
+            "mediaType": "application/json",
+            "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+            "planId": "plan_e30779009a0e4aad93a6f4a3",
+            "planSource": "llm",
+            "plotSchemaVersion": "phase10h.phonon_band_dos_plot.v1",
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "schemaVersion": "phase10h.phonon_band_dos.v1",
+            "sharedFrequencyAxis": true,
+            "sourceArtifactHashes": [
+              "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+            ],
+            "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+            "toolId": "phonon.band_dos"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "phonon.band_dos",
+          "toolVersion": "0.1.0"
+        },
+        "name": "phonon_band_dos_summary.json",
+        "previewKey": null,
+        "projectId": "project_h3",
+        "sha256": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+        "sizeBytes": 977,
+        "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_summary.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+        "type": "phonon_summary_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "band_artifact": {
+            "artifact_id": "inline-band-d0820733b4427d12",
+            "media_type": "application/json",
+            "schema_version": "phase10h.phonon_band.v1",
+            "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+            "size_bytes": 2152
+          },
+          "checks": [
+            {
+              "band_value": "inline-band-d0820733b4427d12",
+              "dos_value": "inline-dos-f47bdecb4954cc9e",
+              "name": "input_artifacts",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "phase10h.phonon_band.v1",
+              "dos_value": "phase10h.phonon_band.v1",
+              "name": "band_schema",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "phase10h.phonon_dos.v1",
+              "dos_value": "phase10h.phonon_dos.v1",
+              "name": "dos_schema",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "dos_value": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+              "name": "artifact_hashes",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "dos_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "name": "structure_identity",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": 2,
+              "dos_value": 2,
+              "name": "atom_count",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                "Si",
+                "Si"
+              ],
+              "dos_value": [
+                "Si",
+                "Si"
+              ],
+              "name": "species_ordering",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                [
+                  [
+                    1,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    1,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    1
+                  ]
+                ],
+                [
+                  [
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    2,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    2
+                  ]
+                ]
+              ],
+              "dos_value": [
+                [
+                  [
+                    1,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    1,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    1
+                  ]
+                ],
+                [
+                  [
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    2,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    2
+                  ]
+                ]
+              ],
+              "name": "cell_lineage",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                "fixture",
+                "finite_displacement",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              ],
+              "dos_value": [
+                "fixture",
+                "finite_displacement",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              ],
+              "name": "source_lineage",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "force_constants",
+              "dos_value": "force_constants",
+              "name": "force_constants",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "terahertz",
+              "dos_value": "terahertz",
+              "name": "frequency_unit",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "negative_real",
+              "dos_value": "negative_real",
+              "name": "imaginary_encoding",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": 1e-06,
+              "dos_value": 1e-06,
+              "name": "zero_tolerance",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": {
+                "direction_policy": null,
+                "enabled": false,
+                "gamma_direction": null
+              },
+              "dos_value": {
+                "direction_policy": null,
+                "enabled": false,
+                "gamma_direction": null
+              },
+              "name": "nac",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                "n/a",
+                6
+              ],
+              "dos_value": [
+                "total_modes",
+                6.0
+              ],
+              "name": "dos_normalization",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                "Si",
+                "Si"
+              ],
+              "dos_value": 2,
+              "name": "projection_identity",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": 18,
+              "dos_value": 21,
+              "name": "display_caps",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                0.0,
+                5.0
+              ],
+              "dos_value": [
+                -1.0,
+                5.0
+              ],
+              "name": "frequency_domain",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "band_left",
+              "dos_value": "dos_right",
+              "name": "display_options",
+              "result_code": null,
+              "status": "pass"
+            }
+          ],
+          "conversion": {
+            "band_frequency_factor": 1.0,
+            "band_frequency_unit_from": "terahertz",
+            "broadening_width_converted": false,
+            "density_jacobian_applied": false,
+            "dos_frequency_factor": 1.0,
+            "dos_frequency_unit_from": "terahertz",
+            "frequency_conversion_applied": false,
+            "frequency_unit_to": "terahertz",
+            "integral_after": 6.0,
+            "integral_before": 6.0
+          },
+          "deterministic": true,
+          "dos_artifact": {
+            "artifact_id": "inline-dos-f47bdecb4954cc9e",
+            "media_type": "application/json",
+            "schema_version": "phase10h.phonon_dos.v1",
+            "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+            "size_bytes": 1638
+          },
+          "frequency_domain": {
+            "band": [
+              0.0,
+              5.0
+            ],
+            "display": [
+              -1.0,
+              5.0
+            ],
+            "dos": [
+              -1.0,
+              5.0
+            ],
+            "policy": "union",
+            "union": [
+              -1.0,
+              5.0
+            ]
+          },
+          "schema_version": "phase10h.phonon_band_dos_compatibility_report.v1",
+          "security": {
+            "contains_html": false,
+            "contains_javascript": false,
+            "executable_content_allowed": false,
+            "external_assets": [],
+            "external_urls_allowed": false
+          },
+          "status": "compatible",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        "contentHash": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+        "contentType": "application/json",
+        "datasetId": "dataset_h3",
+        "id": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_compatibility_json",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-14T06:52:05.299501+00:00",
+          "inputHashes": [
+            "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c",
+            "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+          ],
+          "paramsHash": "151acedaf8aaca350a0973d447afb7e3cbc7f028e650009aeeb7ade2eedb5053",
+          "profileId": null,
+          "provenance": {
+            "adapter": "phonon.band_dos",
+            "animationIncluded": false,
+            "aseVersion": "3.29.0",
+            "compatibilitySchemaVersion": "phase10h.phonon_band_dos_compatibility_report.v1",
+            "eigenvectorsIncluded": false,
+            "externalResources": false,
+            "manifestSchemaVersion": "phase10h.phonon_band_dos_manifest.v1",
+            "mediaType": "application/json",
+            "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+            "planId": "plan_e30779009a0e4aad93a6f4a3",
+            "planSource": "llm",
+            "plotSchemaVersion": "phase10h.phonon_band_dos_plot.v1",
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "schemaVersion": "phase10h.phonon_band_dos.v1",
+            "sharedFrequencyAxis": true,
+            "sourceArtifactHashes": [
+              "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+            ],
+            "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+            "toolId": "phonon.band_dos"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "phonon.band_dos",
+          "toolVersion": "0.1.0"
+        },
+        "name": "phonon_band_dos_compatibility_report.json",
+        "previewKey": null,
+        "projectId": "project_h3",
+        "sha256": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+        "sizeBytes": 3954,
+        "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_compatibility_report.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+        "type": "phonon_compatibility_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "band_panel": {
+            "preserve_segment_breaks": true,
+            "series": [
+              {
+                "branch_index": 0,
+                "frequencies": [
+                  0.0,
+                  1.0,
+                  1.5
+                ],
+                "path_distance": [
+                  0.0,
+                  0.5785621829815458,
+                  1.3967726688302322
+                ],
+                "segment_index": 0
+              },
+              {
+                "branch_index": 1,
+                "frequencies": [
+                  0.0,
+                  1.0,
+                  1.6
+                ],
+                "path_distance": [
+                  0.0,
+                  0.5785621829815458,
+                  1.3967726688302322
+                ],
+                "segment_index": 0
+              },
+              {
+                "branch_index": 2,
+                "frequencies": [
+                  0.0,
+                  1.2,
+                  1.7
+                ],
+                "path_distance": [
+                  0.0,
+                  0.5785621829815458,
+                  1.3967726688302322
+                ],
+                "segment_index": 0
+              },
+              {
+                "branch_index": 3,
+                "frequencies": [
+                  4.0,
+                  4.4,
+                  4.8
+                ],
+                "path_distance": [
+                  0.0,
+                  0.5785621829815458,
+                  1.3967726688302322
+                ],
+                "segment_index": 0
+              },
+              {
+                "branch_index": 4,
+                "frequencies": [
+                  4.0,
+                  4.5,
+                  4.9
+                ],
+                "path_distance": [
+                  0.0,
+                  0.5785621829815458,
+                  1.3967726688302322
+                ],
+                "segment_index": 0
+              },
+              {
+                "branch_index": 5,
+                "frequencies": [
+                  4.2,
+                  4.6,
+                  5.0
+                ],
+                "path_distance": [
+                  0.0,
+                  0.5785621829815458,
+                  1.3967726688302322
+                ],
+                "segment_index": 0
+              }
+            ],
+            "ticks": [
+              {
+                "distance": 0.0,
+                "label": "\u0393"
+              },
+              {
+                "distance": 0.5785621829815458,
+                "label": "X"
+              },
+              {
+                "distance": 1.3967726688302322,
+                "label": "L"
+              }
+            ],
+            "x_axis": "q_path_distance"
+          },
+          "display": {
+            "mode": "interactive",
+            "numeric_values": 67,
+            "reason": null,
+            "selected_projection_ids": [],
+            "show_high_symmetry_labels": true,
+            "show_imaginary_region": true,
+            "trace_count": 7
+          },
+          "dos_panel": {
+            "density_unit": "modes_per_terahertz",
+            "frequencies": [
+              -1.0,
+              0.0,
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0
+            ],
+            "projections": [
+              {
+                "atom_index": 0,
+                "projection_id": "atom:0",
+                "projection_type": "atom",
+                "source_guarantees_sum": true,
+                "species": "Si",
+                "values": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "atom_index": 1,
+                "projection_id": "atom:1",
+                "projection_type": "atom",
+                "source_guarantees_sum": true,
+                "species": "Si",
+                "values": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ],
+            "total_dos": [
+              1.0,
+              1.0,
+              1.0,
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "x_axis": "dos_density",
+            "y_axis": "shared_frequency"
+          },
+          "layout": "band_left_dos_right",
+          "schema_version": "phase10h.phonon_band_dos_plot.v1",
+          "security": {
+            "contains_html": false,
+            "contains_javascript": false,
+            "executable_content_allowed": false,
+            "external_assets": [],
+            "external_urls_allowed": false
+          },
+          "shared_frequency_axis": {
+            "domain_policy": "union",
+            "maximum": 5.0,
+            "minimum": -1.0,
+            "unit": "terahertz",
+            "zero_tolerance": 1e-06
+          },
+          "source_refs": {
+            "band": {
+              "artifact_id": "inline-band-d0820733b4427d12",
+              "media_type": "application/json",
+              "schema_version": "phase10h.phonon_band.v1",
+              "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "size_bytes": 2152
+            },
+            "dos": {
+              "artifact_id": "inline-dos-f47bdecb4954cc9e",
+              "media_type": "application/json",
+              "schema_version": "phase10h.phonon_dos.v1",
+              "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+              "size_bytes": 1638
+            }
+          }
+        },
+        "contentHash": "06ecd1c157e309402bd2eb03d3c4365f29d6722ed75a1ef16428899e6e6ae668",
+        "contentType": "application/json",
+        "datasetId": "dataset_h3",
+        "id": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-plotly_json",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-14T06:52:05.302510+00:00",
+          "inputHashes": [
+            "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c",
+            "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+          ],
+          "paramsHash": "151acedaf8aaca350a0973d447afb7e3cbc7f028e650009aeeb7ade2eedb5053",
+          "profileId": null,
+          "provenance": {
+            "adapter": "phonon.band_dos",
+            "animationIncluded": false,
+            "aseVersion": "3.29.0",
+            "compatibilitySchemaVersion": "phase10h.phonon_band_dos_compatibility_report.v1",
+            "eigenvectorsIncluded": false,
+            "externalResources": false,
+            "manifestSchemaVersion": "phase10h.phonon_band_dos_manifest.v1",
+            "mediaType": "application/json",
+            "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+            "planId": "plan_e30779009a0e4aad93a6f4a3",
+            "planSource": "llm",
+            "plotSchemaVersion": "phase10h.phonon_band_dos_plot.v1",
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "schemaVersion": "phase10h.phonon_band_dos.v1",
+            "sharedFrequencyAxis": true,
+            "sourceArtifactHashes": [
+              "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+            ],
+            "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+            "toolId": "phonon.band_dos"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "phonon.band_dos",
+          "toolVersion": "0.1.0"
+        },
+        "name": "phonon_band_dos_plot.json",
+        "previewKey": null,
+        "projectId": "project_h3",
+        "sha256": "06ecd1c157e309402bd2eb03d3c4365f29d6722ed75a1ef16428899e6e6ae668",
+        "sizeBytes": 2458,
+        "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_plot.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+        "type": "plotly_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "compatibility_columns": [
+            "check",
+            "band_value",
+            "dos_value",
+            "status",
+            "result_code"
+          ],
+          "compatibility_rows": [
+            {
+              "band_value": "inline-band-d0820733b4427d12",
+              "check": "input_artifacts",
+              "dos_value": "inline-dos-f47bdecb4954cc9e",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "phase10h.phonon_band.v1",
+              "check": "band_schema",
+              "dos_value": "phase10h.phonon_band.v1",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "phase10h.phonon_dos.v1",
+              "check": "dos_schema",
+              "dos_value": "phase10h.phonon_dos.v1",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "check": "artifact_hashes",
+              "dos_value": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "check": "structure_identity",
+              "dos_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": 2,
+              "check": "atom_count",
+              "dos_value": 2,
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                "Si",
+                "Si"
+              ],
+              "check": "species_ordering",
+              "dos_value": [
+                "Si",
+                "Si"
+              ],
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                [
+                  [
+                    1,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    1,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    1
+                  ]
+                ],
+                [
+                  [
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    2,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    2
+                  ]
+                ]
+              ],
+              "check": "cell_lineage",
+              "dos_value": [
+                [
+                  [
+                    1,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    1,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    1
+                  ]
+                ],
+                [
+                  [
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    2,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    2
+                  ]
+                ]
+              ],
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                "fixture",
+                "finite_displacement",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              ],
+              "check": "source_lineage",
+              "dos_value": [
+                "fixture",
+                "finite_displacement",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              ],
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "force_constants",
+              "check": "force_constants",
+              "dos_value": "force_constants",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "terahertz",
+              "check": "frequency_unit",
+              "dos_value": "terahertz",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "negative_real",
+              "check": "imaginary_encoding",
+              "dos_value": "negative_real",
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": 1e-06,
+              "check": "zero_tolerance",
+              "dos_value": 1e-06,
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": {
+                "direction_policy": null,
+                "enabled": false,
+                "gamma_direction": null
+              },
+              "check": "nac",
+              "dos_value": {
+                "direction_policy": null,
+                "enabled": false,
+                "gamma_direction": null
+              },
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                "n/a",
+                6
+              ],
+              "check": "dos_normalization",
+              "dos_value": [
+                "total_modes",
+                6.0
+              ],
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                "Si",
+                "Si"
+              ],
+              "check": "projection_identity",
+              "dos_value": 2,
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": 18,
+              "check": "display_caps",
+              "dos_value": 21,
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": [
+                0.0,
+                5.0
+              ],
+              "check": "frequency_domain",
+              "dos_value": [
+                -1.0,
+                5.0
+              ],
+              "result_code": null,
+              "status": "pass"
+            },
+            {
+              "band_value": "band_left",
+              "check": "display_options",
+              "dos_value": "dos_right",
+              "result_code": null,
+              "status": "pass"
+            }
+          ],
+          "row_count": 30,
+          "schema_version": "phase10h.phonon_band_dos_table.v1",
+          "security": {
+            "contains_html": false,
+            "contains_javascript": false,
+            "executable_content_allowed": false,
+            "external_assets": [],
+            "external_urls_allowed": false
+          },
+          "summary_rows": [
+            {
+              "name": "structure_identity",
+              "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "name": "atom_count",
+              "value": 2
+            },
+            {
+              "name": "frequency_unit",
+              "value": "terahertz"
+            },
+            {
+              "name": "frequency_min",
+              "value": -1.0
+            },
+            {
+              "name": "frequency_max",
+              "value": 5.0
+            },
+            {
+              "name": "nac_enabled",
+              "value": false
+            },
+            {
+              "name": "dos_normalization",
+              "value": "total_modes"
+            },
+            {
+              "name": "dos_integral",
+              "value": 6.0
+            },
+            {
+              "name": "expected_modes",
+              "value": 6
+            },
+            {
+              "name": "imaginary_band_mode_count",
+              "value": 0
+            },
+            {
+              "name": "imaginary_dos_integral",
+              "value": 0.0
+            }
+          ],
+          "truncated": false
+        },
+        "contentHash": "0eaff3531926c5aed317b6ef0c0e194c5b0a8cc8800f3b37f937bf6b9de8641b",
+        "contentType": "application/json",
+        "datasetId": "dataset_h3",
+        "id": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-table_json",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-14T06:52:05.304500+00:00",
+          "inputHashes": [
+            "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c",
+            "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+          ],
+          "paramsHash": "151acedaf8aaca350a0973d447afb7e3cbc7f028e650009aeeb7ade2eedb5053",
+          "profileId": null,
+          "provenance": {
+            "adapter": "phonon.band_dos",
+            "animationIncluded": false,
+            "aseVersion": "3.29.0",
+            "compatibilitySchemaVersion": "phase10h.phonon_band_dos_compatibility_report.v1",
+            "eigenvectorsIncluded": false,
+            "externalResources": false,
+            "manifestSchemaVersion": "phase10h.phonon_band_dos_manifest.v1",
+            "mediaType": "application/json",
+            "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+            "planId": "plan_e30779009a0e4aad93a6f4a3",
+            "planSource": "llm",
+            "plotSchemaVersion": "phase10h.phonon_band_dos_plot.v1",
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "schemaVersion": "phase10h.phonon_band_dos.v1",
+            "sharedFrequencyAxis": true,
+            "sourceArtifactHashes": [
+              "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+            ],
+            "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+            "toolId": "phonon.band_dos"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "phonon.band_dos",
+          "toolVersion": "0.1.0"
+        },
+        "name": "phonon_band_dos_table.json",
+        "previewKey": null,
+        "projectId": "project_h3",
+        "sha256": "0eaff3531926c5aed317b6ef0c0e194c5b0a8cc8800f3b37f937bf6b9de8641b",
+        "sizeBytes": 3618,
+        "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_table.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+        "type": "table_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "artifact_order": [
+            "phonon_band_dos.json",
+            "phonon_band_dos_summary.json",
+            "phonon_band_dos_compatibility_report.json",
+            "phonon_band_dos_plot.json",
+            "phonon_band_dos_table.json",
+            "phonon_band_dos_manifest.json"
+          ],
+          "artifacts": [
+            {
+              "media_type": "application/json",
+              "name": "phonon_band_dos.json",
+              "schema_version": "phase10h.phonon_band_dos.v1",
+              "sha256": "de8710a8dd86e8b9867b02615cde88c8fed21a5c5840e9ab40d72d3429ea6feb",
+              "size_bytes": 1655
+            },
+            {
+              "media_type": "application/json",
+              "name": "phonon_band_dos_summary.json",
+              "schema_version": "phase10h.phonon_band_dos_summary.v1",
+              "sha256": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+              "size_bytes": 977
+            },
+            {
+              "media_type": "application/json",
+              "name": "phonon_band_dos_compatibility_report.json",
+              "schema_version": "phase10h.phonon_band_dos_compatibility_report.v1",
+              "sha256": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+              "size_bytes": 3954
+            },
+            {
+              "media_type": "application/json",
+              "name": "phonon_band_dos_plot.json",
+              "schema_version": "phase10h.phonon_band_dos_plot.v1",
+              "sha256": "06ecd1c157e309402bd2eb03d3c4365f29d6722ed75a1ef16428899e6e6ae668",
+              "size_bytes": 2458
+            },
+            {
+              "media_type": "application/json",
+              "name": "phonon_band_dos_table.json",
+              "schema_version": "phase10h.phonon_band_dos_table.v1",
+              "sha256": "0eaff3531926c5aed317b6ef0c0e194c5b0a8cc8800f3b37f937bf6b9de8641b",
+              "size_bytes": 3618
+            }
+          ],
+          "capabilities": {
+            "animation": false,
+            "band": true,
+            "combined_view": true,
+            "dos": true,
+            "eigenvectors": false,
+            "external_resources": false,
+            "phonon_calculation": false,
+            "projected_dos": true,
+            "shared_frequency_axis": true,
+            "thermal_properties": false
+          },
+          "compatibility_status": "compatible",
+          "frequency_unit": "terahertz",
+          "schema_version": "phase10h.phonon_band_dos_manifest.v1",
+          "security": {
+            "contains_html": false,
+            "contains_javascript": false,
+            "executable_content_allowed": false,
+            "external_assets": [],
+            "external_urls_allowed": false
+          },
+          "source_artifacts": {
+            "band": {
+              "artifact_id": "inline-band-d0820733b4427d12",
+              "media_type": "application/json",
+              "schema_version": "phase10h.phonon_band.v1",
+              "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "size_bytes": 2152
+            },
+            "dos": {
+              "artifact_id": "inline-dos-f47bdecb4954cc9e",
+              "media_type": "application/json",
+              "schema_version": "phase10h.phonon_dos.v1",
+              "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+              "size_bytes": 1638
+            }
+          },
+          "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "tool_id": "phonon.band_dos"
+        },
+        "contentHash": "8b1aa9cf62383107e5b9090d34eb51276bb0617d7f0a322229ccfdc4dcaece36",
+        "contentType": "application/json",
+        "datasetId": "dataset_h3",
+        "id": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_manifest_json",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-14T06:52:05.307500+00:00",
+          "inputHashes": [
+            "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c",
+            "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+          ],
+          "paramsHash": "151acedaf8aaca350a0973d447afb7e3cbc7f028e650009aeeb7ade2eedb5053",
+          "profileId": null,
+          "provenance": {
+            "adapter": "phonon.band_dos",
+            "animationIncluded": false,
+            "aseVersion": "3.29.0",
+            "compatibilitySchemaVersion": "phase10h.phonon_band_dos_compatibility_report.v1",
+            "eigenvectorsIncluded": false,
+            "externalResources": false,
+            "manifestSchemaVersion": "phase10h.phonon_band_dos_manifest.v1",
+            "mediaType": "application/json",
+            "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+            "planId": "plan_e30779009a0e4aad93a6f4a3",
+            "planSource": "llm",
+            "plotSchemaVersion": "phase10h.phonon_band_dos_plot.v1",
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "schemaVersion": "phase10h.phonon_band_dos.v1",
+            "sharedFrequencyAxis": true,
+            "sourceArtifactHashes": [
+              "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+            ],
+            "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+            "toolId": "phonon.band_dos"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "phonon.band_dos",
+          "toolVersion": "0.1.0"
+        },
+        "name": "phonon_band_dos_manifest.json",
+        "previewKey": null,
+        "projectId": "project_h3",
+        "sha256": "8b1aa9cf62383107e5b9090d34eb51276bb0617d7f0a322229ccfdc4dcaece36",
+        "sizeBytes": 2406,
+        "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_manifest.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+        "type": "phonon_manifest_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "content": {
+          "adapter_version": "0.1.0",
+          "animation": false,
+          "compatibility_status": "compatible",
+          "dependencies": {
+            "aseVersion": "3.29.0",
+            "new_dependencies_added": false,
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0"
+          },
+          "deterministic": true,
+          "eigenvectors": false,
+          "external_resources": false,
+          "params": {
+            "domain_policy": "union",
+            "layout": "band_left_dos_right",
+            "manual_frequency_domain": null,
+            "max_table_rows": 200,
+            "selected_projection_ids": []
+          },
+          "phonon_calculation": false,
+          "schema_version": "phase10h3.phonon_band_dos_recipe.v1",
+          "schemas": {
+            "combined": "phase10h.phonon_band_dos.v1",
+            "compatibility": "phase10h.phonon_band_dos_compatibility_report.v1",
+            "manifest": "phase10h.phonon_band_dos_manifest.v1",
+            "plot": "phase10h.phonon_band_dos_plot.v1",
+            "summary": "phase10h.phonon_band_dos_summary.v1",
+            "table": "phase10h.phonon_band_dos_table.v1"
+          },
+          "shared_frequency_axis": true,
+          "source_artifacts": {
+            "band": {
+              "artifact_id": "inline-band-d0820733b4427d12",
+              "media_type": "application/json",
+              "schema_version": "phase10h.phonon_band.v1",
+              "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "size_bytes": 2152
+            },
+            "dos": {
+              "artifact_id": "inline-dos-f47bdecb4954cc9e",
+              "media_type": "application/json",
+              "schema_version": "phase10h.phonon_dos.v1",
+              "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+              "size_bytes": 1638
+            }
+          },
+          "steps": [
+            "resolve_role_bound_artifacts",
+            "validate_independent_contracts",
+            "run_ordered_compatibility_checks",
+            "apply_proven_unit_canonicalization",
+            "derive_shared_frequency_domain",
+            "emit_combined_static_artifacts"
+          ],
+          "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "thermal_properties": false,
+          "tool_id": "phonon.band_dos"
+        },
+        "contentHash": "7f0bc5f994b1092c32dae8f710c2395ddbab115caadfb0bd42cf057143201181",
+        "contentType": "application/json",
+        "datasetId": "dataset_h3",
+        "id": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-recipe_json",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "createdAt": "2026-07-14T06:52:05.310498+00:00",
+          "inputHashes": [
+            "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c",
+            "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+          ],
+          "paramsHash": "151acedaf8aaca350a0973d447afb7e3cbc7f028e650009aeeb7ade2eedb5053",
+          "profileId": null,
+          "provenance": {
+            "adapter": "phonon.band_dos",
+            "animationIncluded": false,
+            "aseVersion": "3.29.0",
+            "compatibilitySchemaVersion": "phase10h.phonon_band_dos_compatibility_report.v1",
+            "eigenvectorsIncluded": false,
+            "externalResources": false,
+            "manifestSchemaVersion": "phase10h.phonon_band_dos_manifest.v1",
+            "mediaType": "application/json",
+            "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+            "planId": "plan_e30779009a0e4aad93a6f4a3",
+            "planSource": "llm",
+            "plotSchemaVersion": "phase10h.phonon_band_dos_plot.v1",
+            "plotlyVersion": "6.8.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "schemaVersion": "phase10h.phonon_band_dos.v1",
+            "sharedFrequencyAxis": true,
+            "sourceArtifactHashes": [
+              "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+              "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+            ],
+            "structureIdentity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+            "toolId": "phonon.band_dos"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "phonon.band_dos",
+          "toolVersion": "0.1.0"
+        },
+        "name": "recipe.json",
+        "previewKey": null,
+        "projectId": "project_h3",
+        "sha256": "7f0bc5f994b1092c32dae8f710c2395ddbab115caadfb0bd42cf057143201181",
+        "sizeBytes": 1681,
+        "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/recipe.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+        "type": "recipe_json",
+        "version": "1"
+      }
+    ],
+    "events": [
+      {
+        "createdAt": "2026-07-14T06:52:05.273499+00:00",
+        "eventType": "job.created",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0001",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "payload": {
+          "datasetId": "dataset_h3",
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "projectId": "project_h3"
+        },
+        "progress": 0.0,
+        "seq": 1,
+        "status": "info"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.273499+00:00",
+        "eventType": "plan.persisted",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0002",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "plannerProvider": "mock"
+        },
+        "progress": 0.0,
+        "seq": 2,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.273499+00:00",
+        "eventType": "job.running",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0003",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Queue worker started job.",
+        "payload": {},
+        "progress": 0.0,
+        "seq": 3,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.274509+00:00",
+        "eventType": "plan.loaded",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0004",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "payload": {
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm"
+        },
+        "progress": 0.05,
+        "seq": 4,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.274509+00:00",
+        "eventType": "tool.started",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0005",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Started tool phonon.band_dos.",
+        "payload": {
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "stepId": "step_001",
+          "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+          "toolId": "phonon.band_dos"
+        },
+        "progress": 0.0,
+        "seq": 5,
+        "status": "running"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.295501+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0006",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Artifact ready: phonon_band_dos.json",
+        "payload": {
+          "artifactId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_band_dos_json",
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos.json",
+          "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001"
+        },
+        "progress": null,
+        "seq": 6,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.297507+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0007",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Artifact ready: phonon_band_dos_summary.json",
+        "payload": {
+          "artifactId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_summary_json",
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_summary.json",
+          "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001"
+        },
+        "progress": null,
+        "seq": 7,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.300512+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0008",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Artifact ready: phonon_band_dos_compatibility_report.json",
+        "payload": {
+          "artifactId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_compatibility_json",
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_compatibility_report.json",
+          "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001"
+        },
+        "progress": null,
+        "seq": 8,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.302510+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0009",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Artifact ready: phonon_band_dos_plot.json",
+        "payload": {
+          "artifactId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-plotly_json",
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_plot.json",
+          "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001"
+        },
+        "progress": null,
+        "seq": 9,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.305504+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0010",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Artifact ready: phonon_band_dos_table.json",
+        "payload": {
+          "artifactId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-table_json",
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_table.json",
+          "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001"
+        },
+        "progress": null,
+        "seq": 10,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.307500+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0011",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Artifact ready: phonon_band_dos_manifest.json",
+        "payload": {
+          "artifactId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_manifest_json",
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/phonon_band_dos_manifest.json",
+          "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001"
+        },
+        "progress": null,
+        "seq": 11,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.310498+00:00",
+        "eventType": "artifact.ready",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0012",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Artifact ready: recipe.json",
+        "payload": {
+          "artifactId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001-recipe_json",
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "storageKey": "projects/project_h3/jobs/job_ac9d4a5e7fd24e738eb2f179/tool_calls/call_job_ac9d4a5e7fd24e738eb2f179_step_001/recipe.json",
+          "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001"
+        },
+        "progress": null,
+        "seq": 12,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.310498+00:00",
+        "eventType": "tool.completed",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0013",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Completed tool phonon.band_dos.",
+        "payload": {
+          "artifactIds": [
+            "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_band_dos_json",
+            "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_summary_json",
+            "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_compatibility_json",
+            "call_job_ac9d4a5e7fd24e738eb2f179_step_001-plotly_json",
+            "call_job_ac9d4a5e7fd24e738eb2f179_step_001-table_json",
+            "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_manifest_json",
+            "call_job_ac9d4a5e7fd24e738eb2f179_step_001-recipe_json"
+          ],
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm",
+          "toolCallId": "call_job_ac9d4a5e7fd24e738eb2f179_step_001"
+        },
+        "progress": 1.0,
+        "seq": 13,
+        "status": "success"
+      },
+      {
+        "createdAt": "2026-07-14T06:52:05.310498+00:00",
+        "eventType": "job.completed",
+        "id": "evt_job_ac9d4a5e7fd24e738eb2f179_0014",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "message": "Job completed.",
+        "payload": {
+          "planHash": "0db17a0d5a71c3ae9e0fba4a1f2d0d8e4a4c70d7e1cc205235f66c42fa969821",
+          "planId": "plan_e30779009a0e4aad93a6f4a3",
+          "planSource": "llm"
+        },
+        "progress": 1.0,
+        "seq": 14,
+        "status": "success"
+      }
+    ],
+    "job": {
+      "createdBy": "user_local",
+      "datasetId": "dataset_h3",
+      "id": "job_ac9d4a5e7fd24e738eb2f179",
+      "kind": "analysis",
+      "planId": "plan_e30779009a0e4aad93a6f4a3",
+      "plan_id": "plan_e30779009a0e4aad93a6f4a3",
+      "projectId": "project_h3",
+      "status": "completed",
+      "updatedAt": "2026-07-14T06:52:05.310498+00:00"
+    },
+    "plan": {
+      "assumptions": [
+        "Generated by MockLLMProvider for testing."
+      ],
+      "datasetId": "dataset_h3",
+      "expectedArtifacts": [
+        {
+          "fromStepId": "step_001",
+          "name": "phonon_band_dos.json",
+          "type": "phonon_band_dos_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "phonon_band_dos_summary.json",
+          "type": "phonon_summary_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "phonon_band_dos_compatibility_report.json",
+          "type": "phonon_compatibility_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "phonon_band_dos_plot.json",
+          "type": "plotly_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "phonon_band_dos_table.json",
+          "type": "table_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "phonon_band_dos_manifest.json",
+          "type": "phonon_manifest_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "goal": "Show a combined phonon band + DOS with shared frequency axis",
+      "profileId": "profile_h3",
+      "schemaVersion": "0.1",
+      "steps": [
+        {
+          "inputRefs": [
+            {
+              "fieldRole": "band",
+              "objectType": "PhononBand",
+              "ref": "band_artifact",
+              "refType": "artifact"
+            },
+            {
+              "fieldRole": "dos",
+              "objectType": "PhononDos",
+              "ref": "dos_artifact",
+              "refType": "artifact"
+            }
+          ],
+          "output": {
+            "artifactTypes": [
+              "phonon_band_dos_json",
+              "phonon_summary_json",
+              "phonon_compatibility_json",
+              "plotly_json",
+              "table_json",
+              "phonon_manifest_json",
+              "recipe_json"
+            ]
+          },
+          "params": {
+            "domain_policy": "union",
+            "layout": "band_left_dos_right",
+            "max_table_rows": 200,
+            "selected_projection_ids": []
+          },
+          "purpose": "Validate and compose approved static phonon band and DOS artifacts on one shared frequency axis.",
+          "reason": "The request asks for a combined band-left/DOS-right phonon view from compatible canonical artifacts.",
+          "stepId": "step_001",
+          "toolId": "phonon.band_dos"
+        }
+      ],
+      "toolRegistryVersion": "0.1.0",
+      "warnings": []
+    },
+    "result": {
+      "job_id": "job_ac9d4a5e7fd24e738eb2f179",
+      "status": "completed"
+    },
+    "tool_calls": [
+      {
+        "artifactIds": [
+          "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_band_dos_json",
+          "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_summary_json",
+          "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_compatibility_json",
+          "call_job_ac9d4a5e7fd24e738eb2f179_step_001-plotly_json",
+          "call_job_ac9d4a5e7fd24e738eb2f179_step_001-table_json",
+          "call_job_ac9d4a5e7fd24e738eb2f179_step_001-phonon_manifest_json",
+          "call_job_ac9d4a5e7fd24e738eb2f179_step_001-recipe_json"
+        ],
+        "attempt": 1,
+        "id": "call_job_ac9d4a5e7fd24e738eb2f179_step_001",
+        "idempotencyKey": "job_ac9d4a5e7fd24e738eb2f179:step_001",
+        "jobId": "job_ac9d4a5e7fd24e738eb2f179",
+        "params": {
+          "domain_policy": "union",
+          "layout": "band_left_dos_right",
+          "max_table_rows": 200,
+          "selected_projection_ids": []
+        },
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "phonon.band_dos"
+      }
+    ]
+  },
+  "artifact_contents": {
+    "phonon_band_dos.json": {
+      "band": {
+        "artifact_id": "inline-band-d0820733b4427d12",
+        "media_type": "application/json",
+        "schema_version": "phase10h.phonon_band.v1",
+        "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+        "size_bytes": 2152
+      },
+      "compatibility": {
+        "density_jacobian_applied": false,
+        "frequency_conversion_applied": false,
+        "report_name": "phonon_band_dos_compatibility_report.json",
+        "report_sha256": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+        "status": "compatible",
+        "warnings": [
+          "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+        ]
+      },
+      "display": {
+        "default_projection_mode": "total_only",
+        "dos_orientation": "density_x_frequency_y",
+        "layout": "band_left_dos_right",
+        "performance_mode": "interactive",
+        "selected_projection_ids": [],
+        "shared_frequency_axis": true
+      },
+      "dos": {
+        "artifact_id": "inline-dos-f47bdecb4954cc9e",
+        "media_type": "application/json",
+        "schema_version": "phase10h.phonon_dos.v1",
+        "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+        "size_bytes": 1638
+      },
+      "frequency_axis": {
+        "domain_policy": "union",
+        "maximum": 5.0,
+        "minimum": -1.0,
+        "unit": "terahertz",
+        "zero_tolerance": 1e-06
+      },
+      "provenance": {
+        "derived_for_display": true,
+        "deterministic": true,
+        "source_hashes": [
+          "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+          "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+        ]
+      },
+      "schema_version": "phase10h.phonon_band_dos.v1",
+      "security": {
+        "contains_html": false,
+        "contains_javascript": false,
+        "executable_content_allowed": false,
+        "external_assets": [],
+        "external_urls_allowed": false
+      },
+      "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "tool_id": "phonon.band_dos",
+      "warnings": [
+        "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+      ]
+    },
+    "phonon_band_dos_compatibility_report.json": {
+      "band_artifact": {
+        "artifact_id": "inline-band-d0820733b4427d12",
+        "media_type": "application/json",
+        "schema_version": "phase10h.phonon_band.v1",
+        "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+        "size_bytes": 2152
+      },
+      "checks": [
+        {
+          "band_value": "inline-band-d0820733b4427d12",
+          "dos_value": "inline-dos-f47bdecb4954cc9e",
+          "name": "input_artifacts",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "phase10h.phonon_band.v1",
+          "dos_value": "phase10h.phonon_band.v1",
+          "name": "band_schema",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "phase10h.phonon_dos.v1",
+          "dos_value": "phase10h.phonon_dos.v1",
+          "name": "dos_schema",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+          "dos_value": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+          "name": "artifact_hashes",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dos_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "name": "structure_identity",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": 2,
+          "dos_value": 2,
+          "name": "atom_count",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            "Si",
+            "Si"
+          ],
+          "dos_value": [
+            "Si",
+            "Si"
+          ],
+          "name": "species_ordering",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                0,
+                2
+              ]
+            ]
+          ],
+          "dos_value": [
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                0,
+                2
+              ]
+            ]
+          ],
+          "name": "cell_lineage",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            "fixture",
+            "finite_displacement",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          ],
+          "dos_value": [
+            "fixture",
+            "finite_displacement",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          ],
+          "name": "source_lineage",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "force_constants",
+          "dos_value": "force_constants",
+          "name": "force_constants",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "terahertz",
+          "dos_value": "terahertz",
+          "name": "frequency_unit",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "negative_real",
+          "dos_value": "negative_real",
+          "name": "imaginary_encoding",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": 1e-06,
+          "dos_value": 1e-06,
+          "name": "zero_tolerance",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": {
+            "direction_policy": null,
+            "enabled": false,
+            "gamma_direction": null
+          },
+          "dos_value": {
+            "direction_policy": null,
+            "enabled": false,
+            "gamma_direction": null
+          },
+          "name": "nac",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            "n/a",
+            6
+          ],
+          "dos_value": [
+            "total_modes",
+            6.0
+          ],
+          "name": "dos_normalization",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            "Si",
+            "Si"
+          ],
+          "dos_value": 2,
+          "name": "projection_identity",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": 18,
+          "dos_value": 21,
+          "name": "display_caps",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            0.0,
+            5.0
+          ],
+          "dos_value": [
+            -1.0,
+            5.0
+          ],
+          "name": "frequency_domain",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "band_left",
+          "dos_value": "dos_right",
+          "name": "display_options",
+          "result_code": null,
+          "status": "pass"
+        }
+      ],
+      "conversion": {
+        "band_frequency_factor": 1.0,
+        "band_frequency_unit_from": "terahertz",
+        "broadening_width_converted": false,
+        "density_jacobian_applied": false,
+        "dos_frequency_factor": 1.0,
+        "dos_frequency_unit_from": "terahertz",
+        "frequency_conversion_applied": false,
+        "frequency_unit_to": "terahertz",
+        "integral_after": 6.0,
+        "integral_before": 6.0
+      },
+      "deterministic": true,
+      "dos_artifact": {
+        "artifact_id": "inline-dos-f47bdecb4954cc9e",
+        "media_type": "application/json",
+        "schema_version": "phase10h.phonon_dos.v1",
+        "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+        "size_bytes": 1638
+      },
+      "frequency_domain": {
+        "band": [
+          0.0,
+          5.0
+        ],
+        "display": [
+          -1.0,
+          5.0
+        ],
+        "dos": [
+          -1.0,
+          5.0
+        ],
+        "policy": "union",
+        "union": [
+          -1.0,
+          5.0
+        ]
+      },
+      "schema_version": "phase10h.phonon_band_dos_compatibility_report.v1",
+      "security": {
+        "contains_html": false,
+        "contains_javascript": false,
+        "executable_content_allowed": false,
+        "external_assets": [],
+        "external_urls_allowed": false
+      },
+      "status": "compatible",
+      "warnings": [
+        "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+      ]
+    },
+    "phonon_band_dos_manifest.json": {
+      "artifact_order": [
+        "phonon_band_dos.json",
+        "phonon_band_dos_summary.json",
+        "phonon_band_dos_compatibility_report.json",
+        "phonon_band_dos_plot.json",
+        "phonon_band_dos_table.json",
+        "phonon_band_dos_manifest.json"
+      ],
+      "artifacts": [
+        {
+          "media_type": "application/json",
+          "name": "phonon_band_dos.json",
+          "schema_version": "phase10h.phonon_band_dos.v1",
+          "sha256": "de8710a8dd86e8b9867b02615cde88c8fed21a5c5840e9ab40d72d3429ea6feb",
+          "size_bytes": 1655
+        },
+        {
+          "media_type": "application/json",
+          "name": "phonon_band_dos_summary.json",
+          "schema_version": "phase10h.phonon_band_dos_summary.v1",
+          "sha256": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "size_bytes": 977
+        },
+        {
+          "media_type": "application/json",
+          "name": "phonon_band_dos_compatibility_report.json",
+          "schema_version": "phase10h.phonon_band_dos_compatibility_report.v1",
+          "sha256": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+          "size_bytes": 3954
+        },
+        {
+          "media_type": "application/json",
+          "name": "phonon_band_dos_plot.json",
+          "schema_version": "phase10h.phonon_band_dos_plot.v1",
+          "sha256": "06ecd1c157e309402bd2eb03d3c4365f29d6722ed75a1ef16428899e6e6ae668",
+          "size_bytes": 2458
+        },
+        {
+          "media_type": "application/json",
+          "name": "phonon_band_dos_table.json",
+          "schema_version": "phase10h.phonon_band_dos_table.v1",
+          "sha256": "0eaff3531926c5aed317b6ef0c0e194c5b0a8cc8800f3b37f937bf6b9de8641b",
+          "size_bytes": 3618
+        }
+      ],
+      "capabilities": {
+        "animation": false,
+        "band": true,
+        "combined_view": true,
+        "dos": true,
+        "eigenvectors": false,
+        "external_resources": false,
+        "phonon_calculation": false,
+        "projected_dos": true,
+        "shared_frequency_axis": true,
+        "thermal_properties": false
+      },
+      "compatibility_status": "compatible",
+      "frequency_unit": "terahertz",
+      "schema_version": "phase10h.phonon_band_dos_manifest.v1",
+      "security": {
+        "contains_html": false,
+        "contains_javascript": false,
+        "executable_content_allowed": false,
+        "external_assets": [],
+        "external_urls_allowed": false
+      },
+      "source_artifacts": {
+        "band": {
+          "artifact_id": "inline-band-d0820733b4427d12",
+          "media_type": "application/json",
+          "schema_version": "phase10h.phonon_band.v1",
+          "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+          "size_bytes": 2152
+        },
+        "dos": {
+          "artifact_id": "inline-dos-f47bdecb4954cc9e",
+          "media_type": "application/json",
+          "schema_version": "phase10h.phonon_dos.v1",
+          "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+          "size_bytes": 1638
+        }
+      },
+      "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "tool_id": "phonon.band_dos"
+    },
+    "phonon_band_dos_plot.json": {
+      "band_panel": {
+        "preserve_segment_breaks": true,
+        "series": [
+          {
+            "branch_index": 0,
+            "frequencies": [
+              0.0,
+              1.0,
+              1.5
+            ],
+            "path_distance": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "segment_index": 0
+          },
+          {
+            "branch_index": 1,
+            "frequencies": [
+              0.0,
+              1.0,
+              1.6
+            ],
+            "path_distance": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "segment_index": 0
+          },
+          {
+            "branch_index": 2,
+            "frequencies": [
+              0.0,
+              1.2,
+              1.7
+            ],
+            "path_distance": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "segment_index": 0
+          },
+          {
+            "branch_index": 3,
+            "frequencies": [
+              4.0,
+              4.4,
+              4.8
+            ],
+            "path_distance": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "segment_index": 0
+          },
+          {
+            "branch_index": 4,
+            "frequencies": [
+              4.0,
+              4.5,
+              4.9
+            ],
+            "path_distance": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "segment_index": 0
+          },
+          {
+            "branch_index": 5,
+            "frequencies": [
+              4.2,
+              4.6,
+              5.0
+            ],
+            "path_distance": [
+              0.0,
+              0.5785621829815458,
+              1.3967726688302322
+            ],
+            "segment_index": 0
+          }
+        ],
+        "ticks": [
+          {
+            "distance": 0.0,
+            "label": "\u0393"
+          },
+          {
+            "distance": 0.5785621829815458,
+            "label": "X"
+          },
+          {
+            "distance": 1.3967726688302322,
+            "label": "L"
+          }
+        ],
+        "x_axis": "q_path_distance"
+      },
+      "display": {
+        "mode": "interactive",
+        "numeric_values": 67,
+        "reason": null,
+        "selected_projection_ids": [],
+        "show_high_symmetry_labels": true,
+        "show_imaginary_region": true,
+        "trace_count": 7
+      },
+      "dos_panel": {
+        "density_unit": "modes_per_terahertz",
+        "frequencies": [
+          -1.0,
+          0.0,
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0
+        ],
+        "projections": [
+          {
+            "atom_index": 0,
+            "projection_id": "atom:0",
+            "projection_type": "atom",
+            "source_guarantees_sum": true,
+            "species": "Si",
+            "values": [
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          },
+          {
+            "atom_index": 1,
+            "projection_id": "atom:1",
+            "projection_type": "atom",
+            "source_guarantees_sum": true,
+            "species": "Si",
+            "values": [
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          }
+        ],
+        "total_dos": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "x_axis": "dos_density",
+        "y_axis": "shared_frequency"
+      },
+      "layout": "band_left_dos_right",
+      "schema_version": "phase10h.phonon_band_dos_plot.v1",
+      "security": {
+        "contains_html": false,
+        "contains_javascript": false,
+        "executable_content_allowed": false,
+        "external_assets": [],
+        "external_urls_allowed": false
+      },
+      "shared_frequency_axis": {
+        "domain_policy": "union",
+        "maximum": 5.0,
+        "minimum": -1.0,
+        "unit": "terahertz",
+        "zero_tolerance": 1e-06
+      },
+      "source_refs": {
+        "band": {
+          "artifact_id": "inline-band-d0820733b4427d12",
+          "media_type": "application/json",
+          "schema_version": "phase10h.phonon_band.v1",
+          "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+          "size_bytes": 2152
+        },
+        "dos": {
+          "artifact_id": "inline-dos-f47bdecb4954cc9e",
+          "media_type": "application/json",
+          "schema_version": "phase10h.phonon_dos.v1",
+          "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+          "size_bytes": 1638
+        }
+      }
+    },
+    "phonon_band_dos_summary.json": {
+      "atom_count": 2,
+      "band_asr_applied": false,
+      "band_frequency_max": 5.0,
+      "band_frequency_min": 0.0,
+      "branch_count": 6,
+      "broadening": {
+        "method": "none",
+        "source": "fixture",
+        "unit": null,
+        "width": null
+      },
+      "compatibility_status": "compatible",
+      "dos_density_unit": "modes_per_terahertz",
+      "dos_frequency_max": 5.0,
+      "dos_frequency_min": -1.0,
+      "dos_grid_point_count": 7,
+      "dos_integral": 6.0,
+      "dos_normalization": "total_modes",
+      "expected_modes": 6,
+      "frequency_max": 5.0,
+      "frequency_min": -1.0,
+      "frequency_unit": "terahertz",
+      "imaginary_band_mode_count": 0,
+      "imaginary_dos_integral": 0.0,
+      "nac_enabled": false,
+      "projection_count": 2,
+      "qpoint_count": 3,
+      "schema_version": "phase10h.phonon_band_dos_summary.v1",
+      "security": {
+        "contains_html": false,
+        "contains_javascript": false,
+        "executable_content_allowed": false,
+        "external_assets": [],
+        "external_urls_allowed": false
+      },
+      "segment_count": 1,
+      "species": [
+        "Si",
+        "Si"
+      ],
+      "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "warnings": [
+        "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+      ]
+    },
+    "phonon_band_dos_table.json": {
+      "compatibility_columns": [
+        "check",
+        "band_value",
+        "dos_value",
+        "status",
+        "result_code"
+      ],
+      "compatibility_rows": [
+        {
+          "band_value": "inline-band-d0820733b4427d12",
+          "check": "input_artifacts",
+          "dos_value": "inline-dos-f47bdecb4954cc9e",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "phase10h.phonon_band.v1",
+          "check": "band_schema",
+          "dos_value": "phase10h.phonon_band.v1",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "phase10h.phonon_dos.v1",
+          "check": "dos_schema",
+          "dos_value": "phase10h.phonon_dos.v1",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+          "check": "artifact_hashes",
+          "dos_value": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "check": "structure_identity",
+          "dos_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": 2,
+          "check": "atom_count",
+          "dos_value": 2,
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            "Si",
+            "Si"
+          ],
+          "check": "species_ordering",
+          "dos_value": [
+            "Si",
+            "Si"
+          ],
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                0,
+                2
+              ]
+            ]
+          ],
+          "check": "cell_lineage",
+          "dos_value": [
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                0,
+                2
+              ]
+            ]
+          ],
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            "fixture",
+            "finite_displacement",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          ],
+          "check": "source_lineage",
+          "dos_value": [
+            "fixture",
+            "finite_displacement",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          ],
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "force_constants",
+          "check": "force_constants",
+          "dos_value": "force_constants",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "terahertz",
+          "check": "frequency_unit",
+          "dos_value": "terahertz",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "negative_real",
+          "check": "imaginary_encoding",
+          "dos_value": "negative_real",
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": 1e-06,
+          "check": "zero_tolerance",
+          "dos_value": 1e-06,
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": {
+            "direction_policy": null,
+            "enabled": false,
+            "gamma_direction": null
+          },
+          "check": "nac",
+          "dos_value": {
+            "direction_policy": null,
+            "enabled": false,
+            "gamma_direction": null
+          },
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            "n/a",
+            6
+          ],
+          "check": "dos_normalization",
+          "dos_value": [
+            "total_modes",
+            6.0
+          ],
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            "Si",
+            "Si"
+          ],
+          "check": "projection_identity",
+          "dos_value": 2,
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": 18,
+          "check": "display_caps",
+          "dos_value": 21,
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": [
+            0.0,
+            5.0
+          ],
+          "check": "frequency_domain",
+          "dos_value": [
+            -1.0,
+            5.0
+          ],
+          "result_code": null,
+          "status": "pass"
+        },
+        {
+          "band_value": "band_left",
+          "check": "display_options",
+          "dos_value": "dos_right",
+          "result_code": null,
+          "status": "pass"
+        }
+      ],
+      "row_count": 30,
+      "schema_version": "phase10h.phonon_band_dos_table.v1",
+      "security": {
+        "contains_html": false,
+        "contains_javascript": false,
+        "executable_content_allowed": false,
+        "external_assets": [],
+        "external_urls_allowed": false
+      },
+      "summary_rows": [
+        {
+          "name": "structure_identity",
+          "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "name": "atom_count",
+          "value": 2
+        },
+        {
+          "name": "frequency_unit",
+          "value": "terahertz"
+        },
+        {
+          "name": "frequency_min",
+          "value": -1.0
+        },
+        {
+          "name": "frequency_max",
+          "value": 5.0
+        },
+        {
+          "name": "nac_enabled",
+          "value": false
+        },
+        {
+          "name": "dos_normalization",
+          "value": "total_modes"
+        },
+        {
+          "name": "dos_integral",
+          "value": 6.0
+        },
+        {
+          "name": "expected_modes",
+          "value": 6
+        },
+        {
+          "name": "imaginary_band_mode_count",
+          "value": 0
+        },
+        {
+          "name": "imaginary_dos_integral",
+          "value": 0.0
+        }
+      ],
+      "truncated": false
+    },
+    "recipe.json": {
+      "adapter_version": "0.1.0",
+      "animation": false,
+      "compatibility_status": "compatible",
+      "dependencies": {
+        "aseVersion": "3.29.0",
+        "new_dependencies_added": false,
+        "plotlyVersion": "6.8.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0"
+      },
+      "deterministic": true,
+      "eigenvectors": false,
+      "external_resources": false,
+      "params": {
+        "domain_policy": "union",
+        "layout": "band_left_dos_right",
+        "manual_frequency_domain": null,
+        "max_table_rows": 200,
+        "selected_projection_ids": []
+      },
+      "phonon_calculation": false,
+      "schema_version": "phase10h3.phonon_band_dos_recipe.v1",
+      "schemas": {
+        "combined": "phase10h.phonon_band_dos.v1",
+        "compatibility": "phase10h.phonon_band_dos_compatibility_report.v1",
+        "manifest": "phase10h.phonon_band_dos_manifest.v1",
+        "plot": "phase10h.phonon_band_dos_plot.v1",
+        "summary": "phase10h.phonon_band_dos_summary.v1",
+        "table": "phase10h.phonon_band_dos_table.v1"
+      },
+      "shared_frequency_axis": true,
+      "source_artifacts": {
+        "band": {
+          "artifact_id": "inline-band-d0820733b4427d12",
+          "media_type": "application/json",
+          "schema_version": "phase10h.phonon_band.v1",
+          "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+          "size_bytes": 2152
+        },
+        "dos": {
+          "artifact_id": "inline-dos-f47bdecb4954cc9e",
+          "media_type": "application/json",
+          "schema_version": "phase10h.phonon_dos.v1",
+          "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+          "size_bytes": 1638
+        }
+      },
+      "steps": [
+        "resolve_role_bound_artifacts",
+        "validate_independent_contracts",
+        "run_ordered_compatibility_checks",
+        "apply_proven_unit_canonicalization",
+        "derive_shared_frequency_domain",
+        "emit_combined_static_artifacts"
+      ],
+      "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "thermal_properties": false,
+      "tool_id": "phonon.band_dos"
+    }
+  },
+  "deterministic": true,
+  "external_network": false,
+  "real_llm": false
+}

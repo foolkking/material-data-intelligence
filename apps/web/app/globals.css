@@ -1264,6 +1264,35 @@ pre {
 }
 .phonon-band-preview { display: grid; gap: 14px; }
 .phonon-dos-preview { display: grid; gap: 14px; }
+.phonon-band-dos-preview { display: grid; gap: 14px; min-width: 0; }
+.phonon-band-dos-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.phonon-band-dos-heading h2 { margin: 0; font-size: 1.1rem; }
+.phonon-band-dos-heading p { margin: 4px 0 0; color: var(--text-muted, #58616b); }
+.phonon-band-dos-heading > span { font: 0.78rem/1.3 ui-monospace, monospace; padding: 5px 7px; border: 1px solid #cbd2d9; border-radius: 4px; }
+.phonon-band-dos-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 0; background: #dfe3e8; border: 1px solid #dfe3e8; }
+.phonon-band-dos-summary > div { min-width: 0; padding: 9px 10px; background: #fff; }
+.phonon-band-dos-summary dt { color: #59636e; font-size: 0.76rem; }
+.phonon-band-dos-summary dd { margin: 3px 0 0; overflow-wrap: anywhere; font-weight: 600; }
+.phonon-band-dos-toolbar { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.phonon-band-dos-toolbar label { display: grid; gap: 5px; min-width: min(360px, 100%); }
+.phonon-band-dos-toolbar select, .phonon-band-dos-toolbar button { min-height: 40px; }
+.phonon-band-dos-tabs { flex-wrap: wrap; }
+.phonon-band-dos-tab-panel { min-width: 0; }
+.phonon-band-dos-plot-wrap { position: relative; min-height: 500px; border: 1px solid #d8dde3; background: #fff; overflow: hidden; }
+.phonon-band-dos-plot { width: 100%; height: 500px; }
+.phonon-band-dos-plot-actions { position: absolute; z-index: 3; top: 8px; right: 8px; }
+.phonon-band-dos-plot-actions button { min-height: 36px; background: rgba(255,255,255,0.94); }
+.phonon-band-dos-plot-fallback { position: absolute; inset: 0; display: grid; place-content: center; gap: 8px; padding: 24px; text-align: center; background: #fff; z-index: 2; }
+.phonon-band-dos-table-wrap { max-width: 100%; overflow: auto; border: 1px solid #d8dde3; }
+.phonon-band-dos-table-wrap > p { margin: 0; padding: 10px; background: #f5f7f8; }
+.phonon-band-dos-table-wrap table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.phonon-band-dos-table-wrap caption { padding: 10px; text-align: left; font-weight: 600; }
+.phonon-band-dos-table-wrap th, .phonon-band-dos-table-wrap td { padding: 7px 9px; border-top: 1px solid #e4e7eb; text-align: left; white-space: nowrap; }
+.phonon-band-dos-table-wrap code { display: inline-block; max-width: 260px; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
+.phonon-band-dos-json-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.phonon-band-dos-json-grid details { min-width: 0; }
+.phonon-band-dos-json-grid pre { max-height: 420px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.phonon-band-dos-preview button:focus-visible, .phonon-band-dos-preview select:focus-visible { outline: 3px solid #1d6f8a; outline-offset: 2px; }
 .phonon-dos-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .phonon-dos-heading h2 { margin: 0; font-size: 1.1rem; }
 .phonon-dos-heading p { margin: 4px 0 0; color: var(--text-muted, #58616b); }
@@ -1306,8 +1335,13 @@ pre {
 .phonon-band-json-grid details { min-width: 0; }
 .phonon-band-json-grid pre { max-height: 420px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
 @media (max-width: 760px) {
-  .phonon-band-summary, .phonon-band-json-grid, .phonon-dos-summary, .phonon-dos-json-grid { grid-template-columns: 1fr; }
-  .phonon-band-heading, .phonon-dos-heading { flex-direction: column; }
+  .phonon-band-summary, .phonon-band-json-grid, .phonon-dos-summary, .phonon-dos-json-grid, .phonon-band-dos-summary, .phonon-band-dos-json-grid { grid-template-columns: 1fr; }
+  .phonon-band-heading, .phonon-dos-heading, .phonon-band-dos-heading { flex-direction: column; }
   .phonon-band-plot-wrap, .phonon-band-plot, .phonon-dos-plot-wrap, .phonon-dos-plot { min-height: 340px; height: 340px; }
   .phonon-dos-projection-control { grid-template-columns: 1fr; }
+  .phonon-band-dos-toolbar { align-items: stretch; flex-direction: column; }
+  .phonon-band-dos-toolbar label { min-width: 0; }
+  .phonon-band-dos-toolbar select, .phonon-band-dos-toolbar button, .phonon-band-dos-tabs button { min-height: 44px; }
+  .phonon-band-dos-plot-wrap, .phonon-band-dos-plot { min-height: 420px; height: 420px; }
+  .phonon-band-dos-plot-actions { position: static; padding: 8px; display: flex; justify-content: flex-end; }
 }

@@ -1293,3 +1293,25 @@ At approved text boundaries, `f_target = c*f_source` requires
 `3N/integral`; total-mode sources are validation-only. Negative frequencies
 are preserved, completeness is explicit, broadening is metadata only, and no
 backend or frontend resampling/smoothing is permitted.
+
+## Phase 10H-3 Addendum: combined phonon band and DOS product
+
+`phonon.band_dos` consumes one independently validated band artifact and one
+independently validated DOS artifact. It adds the inert schemas
+`phase10h.phonon_band_dos.v1`, `phonon_band_dos_summary.v1`,
+`phonon_band_dos_compatibility_report.v1`, `phonon_band_dos_plot.v1`,
+`phonon_band_dos_table.v1`, and `phonon_band_dos_manifest.v1`. Stable Phase 10H
+band and DOS schemas are unchanged.
+
+The combined contract references source artifact IDs, schemas, byte sizes, and
+SHA-256 values. Compatibility checks structure identity, canonical atom order,
+cell/calculation/force-constant lineage, approved frequency conversion, DOS
+density Jacobian and integral invariance, imaginary encoding, zero tolerance,
+NAC, normalization, projections, caps, and shared-domain policy in deterministic
+order. Incompatible inputs produce no success artifacts.
+
+Display uses band q-path distance and DOS density on separate x domains with
+one shared THz frequency y-axis. Plot data is inert and mapped only by
+application-owned frontend code after independent validation. No eigenvector,
+animation, solver, HTML, JavaScript, external asset, or network authority is
+added.

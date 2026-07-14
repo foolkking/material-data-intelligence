@@ -1,0 +1,206 @@
+{
+  "band_panel": {
+    "preserve_segment_breaks": true,
+    "series": [
+      {
+        "branch_index": 0,
+        "frequencies": [
+          0.0,
+          1.0,
+          1.5
+        ],
+        "path_distance": [
+          0.0,
+          0.5785621829815458,
+          1.3967726688302322
+        ],
+        "segment_index": 0
+      },
+      {
+        "branch_index": 1,
+        "frequencies": [
+          0.0,
+          1.0,
+          1.6
+        ],
+        "path_distance": [
+          0.0,
+          0.5785621829815458,
+          1.3967726688302322
+        ],
+        "segment_index": 0
+      },
+      {
+        "branch_index": 2,
+        "frequencies": [
+          0.0,
+          1.2,
+          1.7
+        ],
+        "path_distance": [
+          0.0,
+          0.5785621829815458,
+          1.3967726688302322
+        ],
+        "segment_index": 0
+      },
+      {
+        "branch_index": 3,
+        "frequencies": [
+          4.0,
+          4.4,
+          4.8
+        ],
+        "path_distance": [
+          0.0,
+          0.5785621829815458,
+          1.3967726688302322
+        ],
+        "segment_index": 0
+      },
+      {
+        "branch_index": 4,
+        "frequencies": [
+          4.0,
+          4.5,
+          4.9
+        ],
+        "path_distance": [
+          0.0,
+          0.5785621829815458,
+          1.3967726688302322
+        ],
+        "segment_index": 0
+      },
+      {
+        "branch_index": 5,
+        "frequencies": [
+          4.2,
+          4.6,
+          5.0
+        ],
+        "path_distance": [
+          0.0,
+          0.5785621829815458,
+          1.3967726688302322
+        ],
+        "segment_index": 0
+      }
+    ],
+    "ticks": [
+      {
+        "distance": 0.0,
+        "label": "\u0393"
+      },
+      {
+        "distance": 0.5785621829815458,
+        "label": "X"
+      },
+      {
+        "distance": 1.3967726688302322,
+        "label": "L"
+      }
+    ],
+    "x_axis": "q_path_distance"
+  },
+  "display": {
+    "mode": "interactive",
+    "numeric_values": 67,
+    "reason": null,
+    "selected_projection_ids": [
+      "atom:0"
+    ],
+    "show_high_symmetry_labels": true,
+    "show_imaginary_region": true,
+    "trace_count": 8
+  },
+  "dos_panel": {
+    "density_unit": "modes_per_terahertz",
+    "frequencies": [
+      -1.0,
+      0.0,
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0
+    ],
+    "projections": [
+      {
+        "atom_index": 0,
+        "projection_id": "atom:0",
+        "projection_type": "atom",
+        "source_guarantees_sum": true,
+        "species": "Si",
+        "values": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      {
+        "atom_index": 1,
+        "projection_id": "atom:1",
+        "projection_type": "atom",
+        "source_guarantees_sum": true,
+        "species": "Si",
+        "values": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      }
+    ],
+    "total_dos": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "x_axis": "dos_density",
+    "y_axis": "shared_frequency"
+  },
+  "layout": "band_left_dos_right",
+  "schema_version": "phase10h.phonon_band_dos_plot.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "shared_frequency_axis": {
+    "domain_policy": "union",
+    "maximum": 5.0,
+    "minimum": -1.0,
+    "unit": "terahertz",
+    "zero_tolerance": 1e-06
+  },
+  "source_refs": {
+    "band": {
+      "artifact_id": "inline-band-d0820733b4427d12",
+      "media_type": "application/json",
+      "schema_version": "phase10h.phonon_band.v1",
+      "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "size_bytes": 2152
+    },
+    "dos": {
+      "artifact_id": "inline-dos-f47bdecb4954cc9e",
+      "media_type": "application/json",
+      "schema_version": "phase10h.phonon_dos.v1",
+      "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "size_bytes": 1638
+    }
+  }
+}

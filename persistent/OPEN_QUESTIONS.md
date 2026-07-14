@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-14 Phase 10H-3 Follow-ups
+
+- The static combined product is closed; simultaneous display of multiple projected DOS series is intentionally bounded and the initial UI selects one projection at a time.
+- Physical assistive-technology and broad-device rendering remain outside automated browser evidence.
+- Eigenvector normalization, complex phase/gauge, degeneracy, non-Gamma reconstruction, and animation remain Phase 10H-4/10H-5 work and are not inferred from band/DOS compatibility.
+- Combined artifacts reference validated source artifacts; remote artifact loading and cross-project arbitrary artifact composition remain unauthorized.
+
 ## 2026-07-14 Phase 10H phonon contract closure
 
 - **Closed: scientific data semantics.** Reciprocal `2*pi`, q-point path/discontinuity, THz conversion, negative-real imaginary modes, source-stable full `3N` branch identity, source-declared degeneracy, DOS normalization/projection identity, compatibility, and caps are fixed and validated.

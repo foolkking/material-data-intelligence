@@ -1,5 +1,14 @@
 # TASK_BOARD
 
+## Phase 10H-3 Combined Band + DOS In Progress
+
+- [x] Implement combined schema family, artifact-reference/hash validation, compatibility states, and deterministic check order.
+- [x] Validate structure/atom/cell/source/NAC/normalization semantics and approved frequency-density conversion.
+- [x] Register `phonon.band_dos` through planner, PlanValidator, runtime, API, and six inert artifacts.
+- [x] Add shared-axis frontend, accessibility/mobile behavior, API/browser/security evidence, and focused tests.
+- [ ] Complete full regression, documentation audit, commit, current-HEAD CI, and queue archival.
+- [ ] Eigenvector and animation work remains in separate queued phases.
+
 ## Phase 10H Phonon Contract Completed
 
 - [x] Closed band/DOS/summary/manifest schemas with row-vector physics-`2*pi` reciprocal and explicit q-point path semantics.

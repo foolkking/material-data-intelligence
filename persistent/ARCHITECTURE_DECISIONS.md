@@ -1,5 +1,25 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10H3-COMBINED-PHONON-PRODUCT: Compose validated artifacts, not plots
+
+### Decision
+
+Register `phonon.band_dos` as a strict two-artifact composition tool. Validate
+band and DOS independently, bind explicit roles, verify canonical hashes and
+scientific compatibility in deterministic order, and emit reference-only
+combined metadata plus bounded display artifacts. Convert only approved
+frequency units and apply the reciprocal DOS density Jacobian while preserving
+the trapezoidal mode integral. Use one application-owned Plotly figure with two
+x domains and one shared THz y axis.
+
+### Consequences
+
+- Formula, filename, atom count, or frontend layout alone can never establish compatibility.
+- Incompatible structure/order/cell/lineage/encoding/tolerance/NAC/normalization pairs fail before success artifacts.
+- Source band and DOS artifacts are not rewritten, resampled, smoothed, clipped, or renormalized.
+- Plotly loads locally only after independent bundle validation; artifact content cannot select modules, trace types, HTML, URLs, callbacks, or budgets.
+- Eigenvectors, animation, calculations, thermal properties, remote artifacts, and new dependencies remain separate decisions.
+
 ## ADR-10H-PHONON-CONTRACT: Fix reciprocal, branch, and DOS semantics before execution
 
 ### Decision

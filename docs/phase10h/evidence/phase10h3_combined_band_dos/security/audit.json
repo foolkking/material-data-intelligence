@@ -1,0 +1,10 @@
+{
+  "artifact_html": false,
+  "artifact_javascript": false,
+  "artifact_layout_forwarded": false,
+  "external_resources": false,
+  "external_urls": false,
+  "marker": "NO_SECRET_PATTERN_HITS",
+  "new_dependencies": false,
+  "remote_modules": false
+}

@@ -7,6 +7,7 @@ from .density_scatter import DensityScatterAdapter
 from .elements_hist import ElementsHistAdapter
 from .formula_statistics import FormulaStatisticsAdapter
 from .phonon_band import PhononBandAdapter
+from .phonon_band_dos import PhononBandDosAdapter
 from .phonon_dos import PhononDosAdapter
 from .ptable_heatmap import PTableHeatmapAdapter
 from .rdf import RdfAdapter
@@ -21,6 +22,7 @@ __all__ = [
     "ElementsHistAdapter",
     "FormulaStatisticsAdapter",
     "PhononBandAdapter",
+    "PhononBandDosAdapter",
     "PhononDosAdapter",
     "PTableHeatmapAdapter",
     "RdfAdapter",

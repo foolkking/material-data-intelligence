@@ -1,0 +1,87 @@
+{
+  "artifact_order": [
+    "phonon_band_dos.json",
+    "phonon_band_dos_summary.json",
+    "phonon_band_dos_compatibility_report.json",
+    "phonon_band_dos_plot.json",
+    "phonon_band_dos_table.json",
+    "phonon_band_dos_manifest.json"
+  ],
+  "artifacts": [
+    {
+      "media_type": "application/json",
+      "name": "phonon_band_dos.json",
+      "schema_version": "phase10h.phonon_band_dos.v1",
+      "sha256": "e83efdb4fd7a8a25579ec0dbf2c26b1a8bb44dbf19e5c2350fa24ffa3c2f2adc",
+      "size_bytes": 1663
+    },
+    {
+      "media_type": "application/json",
+      "name": "phonon_band_dos_summary.json",
+      "schema_version": "phase10h.phonon_band_dos_summary.v1",
+      "sha256": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+      "size_bytes": 977
+    },
+    {
+      "media_type": "application/json",
+      "name": "phonon_band_dos_compatibility_report.json",
+      "schema_version": "phase10h.phonon_band_dos_compatibility_report.v1",
+      "sha256": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+      "size_bytes": 3954
+    },
+    {
+      "media_type": "application/json",
+      "name": "phonon_band_dos_plot.json",
+      "schema_version": "phase10h.phonon_band_dos_plot.v1",
+      "sha256": "92dcf12e56c2129d381077e4b6d4b67169567f2f9c3033cc49c9aeab1ab310a0",
+      "size_bytes": 2466
+    },
+    {
+      "media_type": "application/json",
+      "name": "phonon_band_dos_table.json",
+      "schema_version": "phase10h.phonon_band_dos_table.v1",
+      "sha256": "0eaff3531926c5aed317b6ef0c0e194c5b0a8cc8800f3b37f937bf6b9de8641b",
+      "size_bytes": 3618
+    }
+  ],
+  "capabilities": {
+    "animation": false,
+    "band": true,
+    "combined_view": true,
+    "dos": true,
+    "eigenvectors": false,
+    "external_resources": false,
+    "phonon_calculation": false,
+    "projected_dos": true,
+    "shared_frequency_axis": true,
+    "thermal_properties": false
+  },
+  "compatibility_status": "compatible",
+  "frequency_unit": "terahertz",
+  "schema_version": "phase10h.phonon_band_dos_manifest.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "source_artifacts": {
+    "band": {
+      "artifact_id": "inline-band-d0820733b4427d12",
+      "media_type": "application/json",
+      "schema_version": "phase10h.phonon_band.v1",
+      "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "size_bytes": 2152
+    },
+    "dos": {
+      "artifact_id": "inline-dos-f47bdecb4954cc9e",
+      "media_type": "application/json",
+      "schema_version": "phase10h.phonon_dos.v1",
+      "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "size_bytes": 1638
+    }
+  },
+  "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "tool_id": "phonon.band_dos"
+}

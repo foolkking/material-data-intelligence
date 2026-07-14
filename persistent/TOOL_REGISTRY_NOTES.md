@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-14 Phase 10H-3 Combined Product Notes
+
+- `phonon.band_dos` is the unique formal static combined product using `PhononBandDosAdapter`.
+- It requires exactly one `PhononBand` and one `PhononDos` input with explicit `band`/`dos` roles; role order is irrelevant but duplicates and extra inputs are rejected.
+- Params are closed to shared-domain/display/table/projection controls; outputs are six exact inert combined artifact types.
+- Mock Planner routes explicit static combined band-plus-DOS intent only. Standalone band/DOS, eigenvector, animation, thermal, calculation, trajectory, and Brillouin requests remain separate.
+- PlanValidator and QueueWorkerRuntime authority are unchanged; source artifact payloads are validated and hashed before composition.
+
 ## 2026-07-14 Phase 10H Phonon Contract
 
 - No Tool Registry entry, adapter, planner route, PlanValidator capability, QueueWorkerRuntime behavior, or formal phonon product was added.

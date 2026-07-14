@@ -1,0 +1,15 @@
+{
+  "caps": {
+    "max_artifact_bytes": 64000000,
+    "max_combined_plot_values": 1000000,
+    "max_combined_plot_values_interactive": 500000,
+    "max_plot_traces": 4096,
+    "max_table_rows": 500,
+    "max_visible_projections": 4,
+    "max_warnings": 32
+  },
+  "degraded": "total DOS only",
+  "interactive": "all bounded projections available",
+  "refused": "no plot arrays",
+  "silent_truncation": false
+}

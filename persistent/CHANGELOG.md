@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-07-14 - Phase 10H-3 Combined Band + DOS
+
+- Added the formal `phonon.band_dos` adapter and strict two-artifact role binding through validated planner/runtime execution.
+- Added compatibility, combined-reference, summary, shared-axis plot, bounded table, and manifest artifacts with deterministic hashes and security flags.
+- Added unit conversion with DOS Jacobian/integral audit, structure/atom/lineage/NAC/normalization gates, projection policy, and union frequency domain.
+- Added independent frontend validation, lazy local Plotly combined view, keyboard/mobile/accessibility behavior, local PNG/JSON export, and real Chromium/Firefox/WebKit evidence.
+- Added no dependency, solver, eigenvector, animation, thermal-property, notebook/script, external API, remote artifact, or real LLM capability.
+
 ## 2026-07-14 - Phase 10H Phonon Contract
 
 - Added the inert Phase 10H phonon band, DOS, summary, manifest, q-point, frequency, and source contract family with deterministic serialization and hard resource caps.

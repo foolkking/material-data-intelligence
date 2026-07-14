@@ -1,0 +1,12 @@
+{
+  "band_frequency_factor": 0.0299792458,
+  "band_frequency_unit_from": "inverse_centimeter",
+  "broadening_width_converted": false,
+  "density_jacobian_applied": true,
+  "dos_frequency_factor": 0.0299792458,
+  "dos_frequency_unit_from": "inverse_centimeter",
+  "frequency_conversion_applied": true,
+  "frequency_unit_to": "terahertz",
+  "integral_after": 6.0,
+  "integral_before": 6.0
+}

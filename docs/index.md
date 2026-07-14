@@ -308,3 +308,12 @@
 | [`phase10h/phase10h2_phonon_dos_security.md`](phase10h/phase10h2_phonon_dos_security.md) | Parser, artifact, preview, resource, and network security |
 | [`phase10h/phase10h2_phonon_dos_readiness_matrix.md`](phase10h/phase10h2_phonon_dos_readiness_matrix.md) | Phase 10H-2 readiness decisions |
 | [`phase10h/evidence/phase10h2_phonon_dos/`](phase10h/evidence/phase10h2_phonon_dos/) | Live artifacts, conversions, browser matrix, screenshots, and security evidence |
+| [`phase10h/phase10h3_combined_band_dos.md`](phase10h/phase10h3_combined_band_dos.md) | Formal validated static phonon band plus DOS product |
+| [`phase10h/phase10h3_combined_schema.md`](phase10h/phase10h3_combined_schema.md) | Combined schema family and source-reference boundary |
+| [`phase10h/phase10h3_band_dos_compatibility.md`](phase10h/phase10h3_band_dos_compatibility.md) | Ordered compatibility states and failure policy |
+| [`phase10h/phase10h3_frequency_conversion_and_jacobian.md`](phase10h/phase10h3_frequency_conversion_and_jacobian.md) | Frequency conversion and DOS density Jacobian |
+| [`phase10h/phase10h3_shared_frequency_axis.md`](phase10h/phase10h3_shared_frequency_axis.md) | Shared THz axis and aligned zero/imaginary region |
+| [`phase10h/phase10h3_combined_plot_contract.md`](phase10h/phase10h3_combined_plot_contract.md) | Local Plotly mapping, budgets, fallback, and cleanup |
+| [`phase10h/phase10h3_combined_security.md`](phase10h/phase10h3_combined_security.md) | Artifact, compatibility, browser, and network security |
+| [`phase10h/phase10h3_combined_readiness_matrix.md`](phase10h/phase10h3_combined_readiness_matrix.md) | Phase 10H-3 readiness decisions |
+| [`phase10h/evidence/phase10h3_combined_band_dos/`](phase10h/evidence/phase10h3_combined_band_dos/) | API, compatibility, browser, mobile, screenshots, and security evidence |

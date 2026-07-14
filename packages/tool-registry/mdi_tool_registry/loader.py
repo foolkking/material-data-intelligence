@@ -127,6 +127,19 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxArtifactBytes": 64000000,
             "maxTableRows": 50000,
         }
+    if tool_id == "phonon.band_dos":
+        return {
+            "maxAtoms": 512,
+            "maxBranches": 1536,
+            "maxQpoints": 4096,
+            "maxDosPoints": 100000,
+            "maxProjectedDosSeries": 512,
+            "maxVisibleProjections": 4,
+            "maxCombinedPlotValues": 1000000,
+            "maxPlotTraces": 4096,
+            "maxArtifactBytes": 64000000,
+            "maxTableRows": 500,
+        }
     if tool_id in {"structure.trajectory_import", "structure.trajectory_viewer"}:
         return {
             "maxAtoms": 4096,
@@ -210,6 +223,17 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
                     name="approved_phonon_dos",
                     requiredObjectTypes=[MaterialObjectType.PhononDos],
                     description="Use exactly one validated phase10h.phonon_dos.v1 object or bounded phonopy DOS text wrapper with explicit structure and projection metadata.",
+                )
+            ],
+        )
+    if tool_id == "phonon.band_dos":
+        return ToolInputSchema(
+            periodicity="periodic_required",
+            inputOptions=[
+                ToolInputOption(
+                    name="approved_phonon_band_and_dos_artifacts",
+                    requiredObjectTypes=[MaterialObjectType.PhononBand, MaterialObjectType.PhononDos],
+                    description="Use exactly two role-bound artifact references: one validated phase10h.phonon_band.v1 and one validated phase10h.phonon_dos.v1.",
                 )
             ],
         )
@@ -349,6 +373,24 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "max_table_rows": {"type": "integer", "minimum": 1, "maximum": 50000},
                 "max_plot_values": {"type": "integer", "minimum": 2, "maximum": 250000},
                 "plot_kind": {"const": "line"},
+            },
+        }
+    if tool_id == "phonon.band_dos":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "selected_projection_ids": {
+                    "type": "array",
+                    "maxItems": 4,
+                    "uniqueItems": True,
+                    "items": {"type": "string", "pattern": "^(atom:[0-9]{1,6}|species:[A-Z][a-z]?)$"},
+                },
+                "domain_policy": {"enum": ["union", "manual_view"]},
+                "manual_frequency_min": {"type": "number", "minimum": -1000000000000, "maximum": 1000000000000},
+                "manual_frequency_max": {"type": "number", "minimum": -1000000000000, "maximum": 1000000000000},
+                "max_table_rows": {"type": "integer", "minimum": 1, "maximum": 500},
+                "layout": {"const": "band_left_dos_right"},
             },
         }
     if tool_id == "structure.trajectory_import":

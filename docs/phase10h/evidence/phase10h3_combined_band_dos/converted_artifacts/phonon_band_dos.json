@@ -1,0 +1,62 @@
+{
+  "band": {
+    "artifact_id": "band-converted",
+    "media_type": "application/json",
+    "schema_version": "phase10h.phonon_band.v1",
+    "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+    "size_bytes": 2152
+  },
+  "compatibility": {
+    "density_jacobian_applied": true,
+    "frequency_conversion_applied": true,
+    "report_name": "phonon_band_dos_compatibility_report.json",
+    "report_sha256": "cba91e4374197861ad6a53ea3896dad4b853ce835d6cadeaf0e552b4bdd00da6",
+    "status": "convertible",
+    "warnings": [
+      "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+    ]
+  },
+  "display": {
+    "default_projection_mode": "total_only",
+    "dos_orientation": "density_x_frequency_y",
+    "layout": "band_left_dos_right",
+    "performance_mode": "interactive",
+    "selected_projection_ids": [],
+    "shared_frequency_axis": true
+  },
+  "dos": {
+    "artifact_id": "dos-converted",
+    "media_type": "application/json",
+    "schema_version": "phase10h.phonon_dos.v1",
+    "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+    "size_bytes": 1638
+  },
+  "frequency_axis": {
+    "domain_policy": "union",
+    "maximum": 5.0,
+    "minimum": -1.0,
+    "unit": "terahertz",
+    "zero_tolerance": 1e-06
+  },
+  "provenance": {
+    "derived_for_display": true,
+    "deterministic": true,
+    "source_hashes": [
+      "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe"
+    ]
+  },
+  "schema_version": "phase10h.phonon_band_dos.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "structure_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "tool_id": "phonon.band_dos",
+  "warnings": [
+    "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+  ]
+}
