@@ -31,3 +31,11 @@
 * 完成记录提交：`08945db34db7a5b085ee60f0ec380d66f984b248`
 * current-HEAD CI：run `29306940632` success
 * 归档结论：实现、测试、API/browser evidence、完成记录和两次 current-HEAD CI 均闭合；允许从 `TASKS.md` 删除 Phase 10H-2 block，历史结果保留于本文件。
+
+## Phase 10H-3: Combined Band + DOS
+
+* 状态：已完成
+* 完成时间：2026-07-14 14:56:56 +08:00
+* 修改摘要：实现正式 `phonon.band_dos` 两 artifact 组合产品、严格有序 compatibility validator、结构/原子/lineage/NAC/normalization 检查、频率转换和 DOS density Jacobian、共享 THz 频率轴、六类 inert combined artifacts、独立前端 bundle validation、local Plotly combined view、投影选择、表格/JSON/PNG export、fallback、mobile/accessibility、API/三浏览器 evidence。未新增依赖，未实现 eigenvector、animation、thermal property、solver、script/notebook、remote artifact 或 real LLM。
+* 测试结果：focused backend `11 passed`；focused frontend `10 passed`；registry `6 passed`；frontend full `174 passed`；backend full `521 passed, 23 skipped, 11 warnings`；typecheck/build/uv lock/diff success；Chromium/Firefox/WebKit、Chromium mobile、WebKit mobile、Phase 10H-1、Phase 10H-2、Phase 10 Closure、trajectory viewer/performance browser regressions PASS；`NO_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`；evidence hashes verified。Local service-backed unavailable because Docker and service variables are absent; GitHub CI service-backed and no-skipped jobs passed.
+* 提交 / CI：implementation commit `9078c36ecae2c06efe509d2d098482fa72ad669f`; CI run `29312771228` success. Completion record commit and current-HEAD CI are pending before queue archival.

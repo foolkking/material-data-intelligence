@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10H-3：Combined Band + DOS
 
 进入 Phase 10H-3：Combined Band + DOS。
@@ -4152,6 +4152,27 @@ FAIL包括：
 * 提前实现eigenvector或animation造成范围膨胀
 * Phase 10H-2回退
 * CI失败却声明PASS
+
+完成时间：2026-07-14 14:56:56 +08:00
+
+修改文件：
+
+* `packages/artifact-core/mdi_artifact_core/phonon_band_dos_contract.py`
+* `packages/adapters/mdi_adapters/pymatviz/phonon_band_dos.py`
+* Tool Registry、shared schema enum/model、Mock Planner 与 adapter registry 文件
+* `apps/web/app/lib/phononBandDosContract.ts` 及测试
+* `apps/web/app/components/phonon-band-dos/` 及 PlannerWorkbench/CSS integration
+* `apps/web/test/phonon-band-dos-browser-evidence.mjs`
+* `tests/test_phase10h3_phonon_band_dos.py`、`tests/test_manifest_loader.py`
+* `scripts/generate_phase10h3_phonon_band_dos_evidence.py`
+* `docs/phase10h/phase10h3_*.md`、shared schema/index、Phase 10H-3 evidence
+* specified `persistent/` progress, registry, decision, changelog, task-board, and open-question records
+
+修改摘要：实现正式 `phonon.band_dos` 两 artifact 组合产品、严格有序 compatibility validator、结构/原子/lineage/NAC/normalization 检查、频率转换和 DOS density Jacobian、共享 THz 频率轴、六类 inert combined artifacts、独立前端 bundle validation、local Plotly combined view、投影选择、表格/JSON/PNG export、fallback、mobile/accessibility、API/三浏览器 evidence。未新增依赖，未实现 eigenvector、animation、thermal property、solver、script/notebook、remote artifact 或 real LLM。
+
+测试结果：focused backend `11 passed`；focused frontend `10 passed`；registry `6 passed`；frontend full `174 passed`；backend full `521 passed, 23 skipped, 11 warnings`；typecheck/build/uv lock/diff success；Chromium/Firefox/WebKit、Chromium mobile、WebKit mobile、Phase 10H-1、Phase 10H-2、Phase 10 Closure、trajectory viewer/performance browser regressions PASS；`NO_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`；58+ evidence hashes verified。Local service-backed unavailable because Docker and service variables are absent; GitHub CI service-backed and no-skipped jobs passed.
+
+提交 / CI：implementation commit `9078c36ecae2c06efe509d2d098482fa72ad669f`; CI run `29312771228` success for unit, frontend typecheck/build, service-backed integration, and no-skipped assertion. `worker.ps1` remains an unrelated user-owned unstaged deletion and was not included.
 
 ---END---
 
