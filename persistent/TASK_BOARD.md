@@ -1,11 +1,12 @@
 # TASK_BOARD
 
-## Phase 10I-1 Brillouin Zone Adapter In Progress
+## Phase 10I-1 Brillouin Zone Adapter Completed
 
 - [x] Audit the Phase 10I contract, structure normalization pipeline, provider capabilities, registry overlap, and runtime boundaries.
 - [x] Implement the validated periodic-structure adapter, bounded local geometry/path providers, six inert artifacts, and formal registry/planner/runtime integration.
 - [x] Add deterministic scientific references, API/service-backed evidence, JSON-only preview, security, tests, and documentation.
-- [ ] Complete full regression, implementation commit, current-HEAD CI, completion record, and queue archival.
+- [x] Complete full regression and implementation commit `08d7742`; current-HEAD CI run `29384696711` passed unit, frontend, service-backed, and no-skipped gates.
+- [ ] Archive the completed queue block after its completion-record commit passes current-HEAD CI.
 
 ## Phase 10I Brillouin Zone Contract Completed
 

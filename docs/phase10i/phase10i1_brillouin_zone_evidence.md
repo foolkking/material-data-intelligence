@@ -52,6 +52,8 @@ Local closure passed 88 focused Phase 10I/10I-1/registry tests, 194 frontend
 tests, and `648 passed, 23 skipped` backend tests. Typecheck, production build,
 lock validation, Ruff, diff check, and the Phase 10 closure browser regression
 pack passed. The local machine has no Docker CLI, so PostgreSQL/Redis/MinIO
-service-backed execution and the zero-skipped assertion remain current-HEAD CI
-gates rather than locally claimed results. The configured npmmirror registry
-does not implement npm's audit endpoint; no dependency or lockfile changed.
+service-backed execution was not claimed locally. Implementation commit
+`08d7742ddc6d1574a79c99baf90f019f3635aa3f` passed current-HEAD CI run
+`29384696711`, including service-backed integration and the zero-skipped
+assertion. The configured npmmirror registry does not implement npm's audit
+endpoint; no dependency or lockfile changed.

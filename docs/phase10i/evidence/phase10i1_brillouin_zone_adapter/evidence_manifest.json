@@ -85,11 +85,11 @@
     "backendFull": "648 passed, 23 skipped",
     "crossPhaseFocused": "208 passed before the final additive preview test; covered by backend full afterward",
     "frontendFull": "194 passed",
-    "noSkippedAssertion": "pending current-HEAD CI",
+    "noSkippedAssertion": "CI run 29384696711 success",
     "phase10ClosureRegressionPack": "success",
     "phase10iAndAdapterFocused": "88 passed",
     "productionBuild": "success",
-    "serviceBackedIntegration": "pending current-HEAD CI because Docker CLI is unavailable locally",
+    "serviceBackedIntegration": "CI run 29384696711 success; Docker CLI unavailable locally",
     "typecheck": "success"
   },
   "toolId": "structure.brillouin_zone"

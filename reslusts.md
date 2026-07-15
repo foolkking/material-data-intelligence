@@ -85,3 +85,11 @@
 * 完成记录提交：`3fe1913b53814ef0df31f85baafa265c8ba0df97`
 * current-HEAD CI：run `29339658353` success
 * 归档结论：contract、数学 references、fixtures、security、完整测试、completion record、service-backed/no-skipped 和两次 current-HEAD CI 均闭合；允许从 `TASKS.md` 删除 Phase 10I block，历史结果保留于本文件。
+
+## Phase 10I-1: Brillouin Zone Adapter
+
+* 状态：已完成
+* 完成时间：2026-07-15 10:43:33 +08:00
+* 修改摘要：实现正式 JSON-only `structure.brillouin_zone` adapter，包含单个有序非磁性 3D 结构边界、primitive standardization、physics-`2*pi` reciprocal lattice、bounded first-BZ Wigner-Seitz geometry、Setyawan-Curtarolo k-path、六类 inert artifacts、Tool Registry/Planner/PlanValidator/QueueWorkerRuntime 闭环、application-owned JSON preview 和 sanitized deterministic evidence。未实现 Three.js/WebGL renderer、GPU/browser BZ product、external network、artifact code 或 real LLM。
+* 测试结果：focused backend `88 passed`；frontend full `194 passed`；backend full `648 passed, 23 skipped, 56 warnings`；typecheck/build/uv lock/Ruff/diff 通过；Phase 10 closure 三浏览器与 mobile/accessibility/performance/integrity regressions PASS；Phase 10I-1 adapter/runtime/network/secret markers PASS。本机无 Docker CLI，CI service-backed/no-skipped 通过。`npm audit` 因 npmmirror `404 NOT_IMPLEMENTED` 不可用，无 dependency/lockfile 变更。
+* 提交 / CI：implementation commit `08d7742ddc6d1574a79c99baf90f019f3635aa3f`；CI run `29384696711` success。Completion record commit 和其 current-HEAD CI 待归档前闭合。

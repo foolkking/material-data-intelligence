@@ -6,7 +6,7 @@
 - Implemented local pymatgen/spglib primitive standardization, physics-`2*pi` reciprocal construction, bounded Wigner-Seitz generator binding, Setyawan-Curtarolo paths, production provenance, validation, hashes, summary, and recipe.
 - Added explicit English/Chinese planner routing, negative capability routing, PlanValidator coverage, persisted QueueWorkerRuntime replay, scientific references, typed rejection, and sanitized evidence.
 - Added a fixed application-owned reciprocal/BZ/k-path/manifest JSON preview using real adapter evidence, with no canvas, graphics context, artifact execution, or renderer claim. No dependency, network, external asset, real LLM, Three.js/WebGL renderer, browser GPU evidence, or interactive BZ product was added; those remain Phase 10I-2 scope.
-- Local closure passed 88 focused tests, 194 frontend tests, `648 passed, 23 skipped` backend tests, typecheck/build, Ruff, evidence replay, and the Phase 10 browser regression pack. Local service-backed/no-skipped execution is unavailable without Docker and remains a current-HEAD CI gate; npm audit remains unavailable at the configured registry.
+- Local closure passed 88 focused tests, 194 frontend tests, `648 passed, 23 skipped` backend tests, typecheck/build, Ruff, evidence replay, and the Phase 10 browser regression pack. Implementation commit `08d7742ddc6d1574a79c99baf90f019f3635aa3f` passed current-HEAD CI run `29384696711`, including unit, frontend typecheck/build, service-backed integration, and no-skipped gates. The configured npm audit endpoint remains unavailable; no dependency or lockfile changed.
 
 ## 2026-07-14 Phase 10I Brillouin Zone Contract
 
