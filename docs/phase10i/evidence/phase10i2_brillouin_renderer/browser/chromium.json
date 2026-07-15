@@ -1,0 +1,1420 @@
+{
+  "browser": "chromium",
+  "version": "150.0.7871.115",
+  "available": true,
+  "simple": {
+    "metrics": {
+      "artifactBytes": 17674,
+      "vertexCount": 8,
+      "edgeCount": 12,
+      "faceCount": 6,
+      "triangleCount": 12,
+      "pointCount": 4,
+      "pathSegmentCount": 6,
+      "visibleLabelCount": 4,
+      "drawCalls": 6,
+      "geometries": 5,
+      "materials": 8,
+      "textures": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "mappingMs": 3.199999988079071,
+      "initializationMs": 44.599999994039536,
+      "firstFrameMs": 44.599999994039536
+    },
+    "graphics": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        1014,
+        633
+      ],
+      "sampledColorCount": 9
+    },
+    "interaction": {
+      "initial": {
+        "state": "rendered",
+        "graphicsContext": "webgl2",
+        "rendererVersion": "185",
+        "projection": "perspective",
+        "cameraPosition": [
+          4.8,
+          4.8,
+          4.8
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0
+        ],
+        "cameraUp": [
+          0,
+          0,
+          1
+        ],
+        "selection": null,
+        "pointScreenPositions": [
+          {
+            "id": "kp-bc76fcc5abb82d05",
+            "x": 507,
+            "y": 316.5
+          },
+          {
+            "id": "kp-68e0a327f6759e17",
+            "x": 507,
+            "y": 469.925552
+          },
+          {
+            "id": "kp-040c2d4412b34397",
+            "x": 507,
+            "y": 316.5
+          },
+          {
+            "id": "kp-692a1bb9c69d0efa",
+            "x": 624.420376,
+            "y": 384.292686
+          }
+        ],
+        "faceScreenPositions": [
+          {
+            "id": "f000",
+            "x": 602.265588,
+            "y": 261.498387
+          },
+          {
+            "id": "f001",
+            "x": 411.734412,
+            "y": 261.498387
+          },
+          {
+            "id": "f002",
+            "x": 507,
+            "y": 426.503226
+          },
+          {
+            "id": "f003",
+            "x": 507,
+            "y": 180.914628
+          },
+          {
+            "id": "f004",
+            "x": 624.420376,
+            "y": 384.292686
+          },
+          {
+            "id": "f005",
+            "x": 389.579624,
+            "y": 384.292686
+          }
+        ],
+        "metrics": {
+          "artifactBytes": 17674,
+          "vertexCount": 8,
+          "edgeCount": 12,
+          "faceCount": 6,
+          "triangleCount": 12,
+          "pointCount": 4,
+          "pathSegmentCount": 6,
+          "visibleLabelCount": 4,
+          "drawCalls": 6,
+          "geometries": 5,
+          "materials": 8,
+          "textures": 0,
+          "canvasCount": 1,
+          "contextCount": 1,
+          "mappingMs": 3.199999988079071,
+          "initializationMs": 44.599999994039536,
+          "firstFrameMs": 44.599999994039536
+        }
+      },
+      "rotated": {
+        "state": "rendered",
+        "graphicsContext": "webgl2",
+        "rendererVersion": "185",
+        "projection": "perspective",
+        "cameraPosition": [
+          -4.296764,
+          -2.13958,
+          -6.788227
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0
+        ],
+        "cameraUp": [
+          0,
+          0,
+          1
+        ],
+        "selection": null,
+        "pointScreenPositions": [
+          {
+            "id": "kp-bc76fcc5abb82d05",
+            "x": 507,
+            "y": 316.5
+          },
+          {
+            "id": "kp-68e0a327f6759e17",
+            "x": 448.338967,
+            "y": 459.407924
+          },
+          {
+            "id": "kp-040c2d4412b34397",
+            "x": 455.053532,
+            "y": 376.315829
+          },
+          {
+            "id": "kp-692a1bb9c69d0efa",
+            "x": 379.744917,
+            "y": 368.238841
+          }
+        ],
+        "faceScreenPositions": [
+          {
+            "id": "f000",
+            "x": 433.87202,
+            "y": 196.59123
+          },
+          {
+            "id": "f001",
+            "x": 646.647884,
+            "y": 259.722546
+          },
+          {
+            "id": "f002",
+            "x": 507,
+            "y": 417.224637
+          },
+          {
+            "id": "f003",
+            "x": 507,
+            "y": 241.641245
+          },
+          {
+            "id": "f004",
+            "x": 379.744917,
+            "y": 368.238841
+          },
+          {
+            "id": "f005",
+            "x": 567.653433,
+            "y": 415.954116
+          }
+        ],
+        "metrics": {
+          "artifactBytes": 17674,
+          "vertexCount": 8,
+          "edgeCount": 12,
+          "faceCount": 6,
+          "triangleCount": 12,
+          "pointCount": 4,
+          "pathSegmentCount": 6,
+          "visibleLabelCount": 4,
+          "drawCalls": 6,
+          "geometries": 5,
+          "materials": 8,
+          "textures": 0,
+          "canvasCount": 1,
+          "contextCount": 1,
+          "mappingMs": 3.199999988079071,
+          "initializationMs": 44.599999994039536,
+          "firstFrameMs": 44.599999994039536
+        }
+      },
+      "zoomed": {
+        "state": "rendered",
+        "graphicsContext": "webgl2",
+        "rendererVersion": "185",
+        "projection": "perspective",
+        "cameraPosition": [
+          -3.324754,
+          -1.655566,
+          -5.2526
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0
+        ],
+        "cameraUp": [
+          0,
+          0,
+          1
+        ],
+        "selection": null,
+        "pointScreenPositions": [
+          {
+            "id": "kp-bc76fcc5abb82d05",
+            "x": 507,
+            "y": 316.5
+          },
+          {
+            "id": "kp-68e0a327f6759e17",
+            "x": 433.811494,
+            "y": 494.799237
+          },
+          {
+            "id": "kp-040c2d4412b34397",
+            "x": 443.97549,
+            "y": 389.072081
+          },
+          {
+            "id": "kp-692a1bb9c69d0efa",
+            "x": 344.647287,
+            "y": 382.508689
+          }
+        ],
+        "faceScreenPositions": [
+          {
+            "id": "f000",
+            "x": 409.563295,
+            "y": 156.73194
+          },
+          {
+            "id": "f001",
+            "x": 690.080968,
+            "y": 242.063704
+          },
+          {
+            "id": "f002",
+            "x": 507,
+            "y": 453.596598
+          },
+          {
+            "id": "f003",
+            "x": 507,
+            "y": 223.256085
+          },
+          {
+            "id": "f004",
+            "x": 344.647287,
+            "y": 382.508689
+          },
+          {
+            "id": "f005",
+            "x": 583.47874,
+            "y": 441.903049
+          }
+        ],
+        "metrics": {
+          "artifactBytes": 17674,
+          "vertexCount": 8,
+          "edgeCount": 12,
+          "faceCount": 6,
+          "triangleCount": 12,
+          "pointCount": 4,
+          "pathSegmentCount": 6,
+          "visibleLabelCount": 4,
+          "drawCalls": 6,
+          "geometries": 5,
+          "materials": 8,
+          "textures": 0,
+          "canvasCount": 1,
+          "contextCount": 1,
+          "mappingMs": 3.199999988079071,
+          "initializationMs": 44.599999994039536,
+          "firstFrameMs": 44.599999994039536
+        }
+      },
+      "panned": {
+        "state": "rendered",
+        "graphicsContext": "webgl2",
+        "rendererVersion": "185",
+        "projection": "perspective",
+        "cameraPosition": [
+          -3.89566,
+          -1.232798,
+          -5.024484
+        ],
+        "cameraTarget": [
+          -0.570906,
+          0.422768,
+          0.228116
+        ],
+        "cameraUp": [
+          0,
+          0,
+          1
+        ],
+        "selection": null,
+        "pointScreenPositions": [
+          {
+            "id": "kp-bc76fcc5abb82d05",
+            "x": 588.119995,
+            "y": 367.139954
+          },
+          {
+            "id": "kp-68e0a327f6759e17",
+            "x": 502.527373,
+            "y": 537.695799
+          },
+          {
+            "id": "kp-040c2d4412b34397",
+            "x": 503.148505,
+            "y": 426.011417
+          },
+          {
+            "id": "kp-692a1bb9c69d0efa",
+            "x": 421.175117,
+            "y": 430.281938
+          }
+        ],
+        "faceScreenPositions": [
+          {
+            "id": "f000",
+            "x": 501.798209,
+            "y": 214.310491
+          },
+          {
+            "id": "f001",
+            "x": 776.379428,
+            "y": 295.936366
+          },
+          {
+            "id": "f002",
+            "x": 607.195392,
+            "y": 516.144555
+          },
+          {
+            "id": "f003",
+            "x": 575.146189,
+            "y": 265.797012
+          },
+          {
+            "id": "f004",
+            "x": 421.175117,
+            "y": 430.281938
+          },
+          {
+            "id": "f005",
+            "x": 655.874558,
+            "y": 487.09685
+          }
+        ],
+        "metrics": {
+          "artifactBytes": 17674,
+          "vertexCount": 8,
+          "edgeCount": 12,
+          "faceCount": 6,
+          "triangleCount": 12,
+          "pointCount": 4,
+          "pathSegmentCount": 6,
+          "visibleLabelCount": 4,
+          "drawCalls": 6,
+          "geometries": 5,
+          "materials": 8,
+          "textures": 0,
+          "canvasCount": 1,
+          "contextCount": 1,
+          "mappingMs": 3.199999988079071,
+          "initializationMs": 44.599999994039536,
+          "firstFrameMs": 44.599999994039536
+        }
+      },
+      "reset": {
+        "state": "rendered",
+        "graphicsContext": "webgl2",
+        "rendererVersion": "185",
+        "projection": "perspective",
+        "cameraPosition": [
+          4.8,
+          4.8,
+          4.8
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0
+        ],
+        "cameraUp": [
+          0,
+          0,
+          1
+        ],
+        "selection": null,
+        "pointScreenPositions": [
+          {
+            "id": "kp-bc76fcc5abb82d05",
+            "x": 507,
+            "y": 316.5
+          },
+          {
+            "id": "kp-68e0a327f6759e17",
+            "x": 507,
+            "y": 469.925552
+          },
+          {
+            "id": "kp-040c2d4412b34397",
+            "x": 507,
+            "y": 316.5
+          },
+          {
+            "id": "kp-692a1bb9c69d0efa",
+            "x": 624.420376,
+            "y": 384.292686
+          }
+        ],
+        "faceScreenPositions": [
+          {
+            "id": "f000",
+            "x": 602.265588,
+            "y": 261.498387
+          },
+          {
+            "id": "f001",
+            "x": 411.734412,
+            "y": 261.498387
+          },
+          {
+            "id": "f002",
+            "x": 507,
+            "y": 426.503226
+          },
+          {
+            "id": "f003",
+            "x": 507,
+            "y": 180.914628
+          },
+          {
+            "id": "f004",
+            "x": 624.420376,
+            "y": 384.292686
+          },
+          {
+            "id": "f005",
+            "x": 389.579624,
+            "y": 384.292686
+          }
+        ],
+        "metrics": {
+          "artifactBytes": 17674,
+          "vertexCount": 8,
+          "edgeCount": 12,
+          "faceCount": 6,
+          "triangleCount": 12,
+          "pointCount": 4,
+          "pathSegmentCount": 6,
+          "visibleLabelCount": 4,
+          "drawCalls": 6,
+          "geometries": 5,
+          "materials": 8,
+          "textures": 0,
+          "canvasCount": 1,
+          "contextCount": 1,
+          "mappingMs": 3.199999988079071,
+          "initializationMs": 44.599999994039536,
+          "firstFrameMs": 44.599999994039536
+        }
+      }
+    }
+  },
+  "performance": {
+    "simple_cubic": {
+      "metrics": {
+        "artifactBytes": 17674,
+        "vertexCount": 8,
+        "edgeCount": 12,
+        "faceCount": 6,
+        "triangleCount": 12,
+        "pointCount": 4,
+        "pathSegmentCount": 6,
+        "visibleLabelCount": 4,
+        "drawCalls": 6,
+        "geometries": 5,
+        "materials": 8,
+        "textures": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "mappingMs": 3.199999988079071,
+        "initializationMs": 44.599999994039536,
+        "firstFrameMs": 44.599999994039536
+      },
+      "graphics": {
+        "context": "webgl2",
+        "drawingBuffer": [
+          1014,
+          633
+        ],
+        "sampledColorCount": 9
+      },
+      "interaction": {
+        "initial": {
+          "state": "rendered",
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "projection": "perspective",
+          "cameraPosition": [
+            4.8,
+            4.8,
+            4.8
+          ],
+          "cameraTarget": [
+            0,
+            0,
+            0
+          ],
+          "cameraUp": [
+            0,
+            0,
+            1
+          ],
+          "selection": null,
+          "pointScreenPositions": [
+            {
+              "id": "kp-bc76fcc5abb82d05",
+              "x": 507,
+              "y": 316.5
+            },
+            {
+              "id": "kp-68e0a327f6759e17",
+              "x": 507,
+              "y": 469.925552
+            },
+            {
+              "id": "kp-040c2d4412b34397",
+              "x": 507,
+              "y": 316.5
+            },
+            {
+              "id": "kp-692a1bb9c69d0efa",
+              "x": 624.420376,
+              "y": 384.292686
+            }
+          ],
+          "faceScreenPositions": [
+            {
+              "id": "f000",
+              "x": 602.265588,
+              "y": 261.498387
+            },
+            {
+              "id": "f001",
+              "x": 411.734412,
+              "y": 261.498387
+            },
+            {
+              "id": "f002",
+              "x": 507,
+              "y": 426.503226
+            },
+            {
+              "id": "f003",
+              "x": 507,
+              "y": 180.914628
+            },
+            {
+              "id": "f004",
+              "x": 624.420376,
+              "y": 384.292686
+            },
+            {
+              "id": "f005",
+              "x": 389.579624,
+              "y": 384.292686
+            }
+          ],
+          "metrics": {
+            "artifactBytes": 17674,
+            "vertexCount": 8,
+            "edgeCount": 12,
+            "faceCount": 6,
+            "triangleCount": 12,
+            "pointCount": 4,
+            "pathSegmentCount": 6,
+            "visibleLabelCount": 4,
+            "drawCalls": 6,
+            "geometries": 5,
+            "materials": 8,
+            "textures": 0,
+            "canvasCount": 1,
+            "contextCount": 1,
+            "mappingMs": 3.199999988079071,
+            "initializationMs": 44.599999994039536,
+            "firstFrameMs": 44.599999994039536
+          }
+        },
+        "rotated": {
+          "state": "rendered",
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "projection": "perspective",
+          "cameraPosition": [
+            -4.296764,
+            -2.13958,
+            -6.788227
+          ],
+          "cameraTarget": [
+            0,
+            0,
+            0
+          ],
+          "cameraUp": [
+            0,
+            0,
+            1
+          ],
+          "selection": null,
+          "pointScreenPositions": [
+            {
+              "id": "kp-bc76fcc5abb82d05",
+              "x": 507,
+              "y": 316.5
+            },
+            {
+              "id": "kp-68e0a327f6759e17",
+              "x": 448.338967,
+              "y": 459.407924
+            },
+            {
+              "id": "kp-040c2d4412b34397",
+              "x": 455.053532,
+              "y": 376.315829
+            },
+            {
+              "id": "kp-692a1bb9c69d0efa",
+              "x": 379.744917,
+              "y": 368.238841
+            }
+          ],
+          "faceScreenPositions": [
+            {
+              "id": "f000",
+              "x": 433.87202,
+              "y": 196.59123
+            },
+            {
+              "id": "f001",
+              "x": 646.647884,
+              "y": 259.722546
+            },
+            {
+              "id": "f002",
+              "x": 507,
+              "y": 417.224637
+            },
+            {
+              "id": "f003",
+              "x": 507,
+              "y": 241.641245
+            },
+            {
+              "id": "f004",
+              "x": 379.744917,
+              "y": 368.238841
+            },
+            {
+              "id": "f005",
+              "x": 567.653433,
+              "y": 415.954116
+            }
+          ],
+          "metrics": {
+            "artifactBytes": 17674,
+            "vertexCount": 8,
+            "edgeCount": 12,
+            "faceCount": 6,
+            "triangleCount": 12,
+            "pointCount": 4,
+            "pathSegmentCount": 6,
+            "visibleLabelCount": 4,
+            "drawCalls": 6,
+            "geometries": 5,
+            "materials": 8,
+            "textures": 0,
+            "canvasCount": 1,
+            "contextCount": 1,
+            "mappingMs": 3.199999988079071,
+            "initializationMs": 44.599999994039536,
+            "firstFrameMs": 44.599999994039536
+          }
+        },
+        "zoomed": {
+          "state": "rendered",
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "projection": "perspective",
+          "cameraPosition": [
+            -3.324754,
+            -1.655566,
+            -5.2526
+          ],
+          "cameraTarget": [
+            0,
+            0,
+            0
+          ],
+          "cameraUp": [
+            0,
+            0,
+            1
+          ],
+          "selection": null,
+          "pointScreenPositions": [
+            {
+              "id": "kp-bc76fcc5abb82d05",
+              "x": 507,
+              "y": 316.5
+            },
+            {
+              "id": "kp-68e0a327f6759e17",
+              "x": 433.811494,
+              "y": 494.799237
+            },
+            {
+              "id": "kp-040c2d4412b34397",
+              "x": 443.97549,
+              "y": 389.072081
+            },
+            {
+              "id": "kp-692a1bb9c69d0efa",
+              "x": 344.647287,
+              "y": 382.508689
+            }
+          ],
+          "faceScreenPositions": [
+            {
+              "id": "f000",
+              "x": 409.563295,
+              "y": 156.73194
+            },
+            {
+              "id": "f001",
+              "x": 690.080968,
+              "y": 242.063704
+            },
+            {
+              "id": "f002",
+              "x": 507,
+              "y": 453.596598
+            },
+            {
+              "id": "f003",
+              "x": 507,
+              "y": 223.256085
+            },
+            {
+              "id": "f004",
+              "x": 344.647287,
+              "y": 382.508689
+            },
+            {
+              "id": "f005",
+              "x": 583.47874,
+              "y": 441.903049
+            }
+          ],
+          "metrics": {
+            "artifactBytes": 17674,
+            "vertexCount": 8,
+            "edgeCount": 12,
+            "faceCount": 6,
+            "triangleCount": 12,
+            "pointCount": 4,
+            "pathSegmentCount": 6,
+            "visibleLabelCount": 4,
+            "drawCalls": 6,
+            "geometries": 5,
+            "materials": 8,
+            "textures": 0,
+            "canvasCount": 1,
+            "contextCount": 1,
+            "mappingMs": 3.199999988079071,
+            "initializationMs": 44.599999994039536,
+            "firstFrameMs": 44.599999994039536
+          }
+        },
+        "panned": {
+          "state": "rendered",
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "projection": "perspective",
+          "cameraPosition": [
+            -3.89566,
+            -1.232798,
+            -5.024484
+          ],
+          "cameraTarget": [
+            -0.570906,
+            0.422768,
+            0.228116
+          ],
+          "cameraUp": [
+            0,
+            0,
+            1
+          ],
+          "selection": null,
+          "pointScreenPositions": [
+            {
+              "id": "kp-bc76fcc5abb82d05",
+              "x": 588.119995,
+              "y": 367.139954
+            },
+            {
+              "id": "kp-68e0a327f6759e17",
+              "x": 502.527373,
+              "y": 537.695799
+            },
+            {
+              "id": "kp-040c2d4412b34397",
+              "x": 503.148505,
+              "y": 426.011417
+            },
+            {
+              "id": "kp-692a1bb9c69d0efa",
+              "x": 421.175117,
+              "y": 430.281938
+            }
+          ],
+          "faceScreenPositions": [
+            {
+              "id": "f000",
+              "x": 501.798209,
+              "y": 214.310491
+            },
+            {
+              "id": "f001",
+              "x": 776.379428,
+              "y": 295.936366
+            },
+            {
+              "id": "f002",
+              "x": 607.195392,
+              "y": 516.144555
+            },
+            {
+              "id": "f003",
+              "x": 575.146189,
+              "y": 265.797012
+            },
+            {
+              "id": "f004",
+              "x": 421.175117,
+              "y": 430.281938
+            },
+            {
+              "id": "f005",
+              "x": 655.874558,
+              "y": 487.09685
+            }
+          ],
+          "metrics": {
+            "artifactBytes": 17674,
+            "vertexCount": 8,
+            "edgeCount": 12,
+            "faceCount": 6,
+            "triangleCount": 12,
+            "pointCount": 4,
+            "pathSegmentCount": 6,
+            "visibleLabelCount": 4,
+            "drawCalls": 6,
+            "geometries": 5,
+            "materials": 8,
+            "textures": 0,
+            "canvasCount": 1,
+            "contextCount": 1,
+            "mappingMs": 3.199999988079071,
+            "initializationMs": 44.599999994039536,
+            "firstFrameMs": 44.599999994039536
+          }
+        },
+        "reset": {
+          "state": "rendered",
+          "graphicsContext": "webgl2",
+          "rendererVersion": "185",
+          "projection": "perspective",
+          "cameraPosition": [
+            4.8,
+            4.8,
+            4.8
+          ],
+          "cameraTarget": [
+            0,
+            0,
+            0
+          ],
+          "cameraUp": [
+            0,
+            0,
+            1
+          ],
+          "selection": null,
+          "pointScreenPositions": [
+            {
+              "id": "kp-bc76fcc5abb82d05",
+              "x": 507,
+              "y": 316.5
+            },
+            {
+              "id": "kp-68e0a327f6759e17",
+              "x": 507,
+              "y": 469.925552
+            },
+            {
+              "id": "kp-040c2d4412b34397",
+              "x": 507,
+              "y": 316.5
+            },
+            {
+              "id": "kp-692a1bb9c69d0efa",
+              "x": 624.420376,
+              "y": 384.292686
+            }
+          ],
+          "faceScreenPositions": [
+            {
+              "id": "f000",
+              "x": 602.265588,
+              "y": 261.498387
+            },
+            {
+              "id": "f001",
+              "x": 411.734412,
+              "y": 261.498387
+            },
+            {
+              "id": "f002",
+              "x": 507,
+              "y": 426.503226
+            },
+            {
+              "id": "f003",
+              "x": 507,
+              "y": 180.914628
+            },
+            {
+              "id": "f004",
+              "x": 624.420376,
+              "y": 384.292686
+            },
+            {
+              "id": "f005",
+              "x": 389.579624,
+              "y": 384.292686
+            }
+          ],
+          "metrics": {
+            "artifactBytes": 17674,
+            "vertexCount": 8,
+            "edgeCount": 12,
+            "faceCount": 6,
+            "triangleCount": 12,
+            "pointCount": 4,
+            "pathSegmentCount": 6,
+            "visibleLabelCount": 4,
+            "drawCalls": 6,
+            "geometries": 5,
+            "materials": 8,
+            "textures": 0,
+            "canvasCount": 1,
+            "contextCount": 1,
+            "mappingMs": 3.199999988079071,
+            "initializationMs": 44.599999994039536,
+            "firstFrameMs": 44.599999994039536
+          }
+        }
+      }
+    },
+    "interactionMetrics": {
+      "labelToggleMs": 73,
+      "pointPickMs": 76,
+      "facePickMs": 183,
+      "pngExportMs": 1231
+    },
+    "bcc_conventional": {
+      "metrics": {
+        "artifactBytes": 23386,
+        "vertexCount": 14,
+        "edgeCount": 24,
+        "faceCount": 12,
+        "triangleCount": 24,
+        "pointCount": 4,
+        "pathSegmentCount": 6,
+        "visibleLabelCount": 4,
+        "drawCalls": 6,
+        "geometries": 5,
+        "materials": 8,
+        "textures": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "mappingMs": 3.9000000059604645,
+        "initializationMs": 40.29999998211861,
+        "firstFrameMs": 40.29999998211861
+      },
+      "graphics": {
+        "context": "webgl2",
+        "drawingBuffer": [
+          1014,
+          633
+        ],
+        "sampledColorCount": 9
+      }
+    },
+    "fcc": {
+      "metrics": {
+        "artifactBytes": 29533,
+        "vertexCount": 24,
+        "edgeCount": 36,
+        "faceCount": 14,
+        "triangleCount": 44,
+        "pointCount": 6,
+        "pathSegmentCount": 10,
+        "visibleLabelCount": 6,
+        "drawCalls": 6,
+        "geometries": 5,
+        "materials": 8,
+        "textures": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "mappingMs": 3.7000000178813934,
+        "initializationMs": 42.69999998807907,
+        "firstFrameMs": 42.69999998807907
+      },
+      "graphics": {
+        "context": "webgl2",
+        "drawingBuffer": [
+          1014,
+          633
+        ],
+        "sampledColorCount": 9
+      }
+    },
+    "hexagonal": {
+      "metrics": {
+        "artifactBytes": 23072,
+        "vertexCount": 12,
+        "edgeCount": 18,
+        "faceCount": 8,
+        "triangleCount": 20,
+        "pointCount": 6,
+        "pathSegmentCount": 9,
+        "visibleLabelCount": 6,
+        "drawCalls": 6,
+        "geometries": 5,
+        "materials": 8,
+        "textures": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "mappingMs": 6.4000000059604645,
+        "initializationMs": 39.599999994039536,
+        "firstFrameMs": 39.599999994039536
+      },
+      "graphics": {
+        "context": "webgl2",
+        "drawingBuffer": [
+          1014,
+          633
+        ],
+        "sampledColorCount": 9
+      }
+    },
+    "triclinic": {
+      "metrics": {
+        "artifactBytes": 31448,
+        "vertexCount": 24,
+        "edgeCount": 36,
+        "faceCount": 14,
+        "triangleCount": 44,
+        "pointCount": 8,
+        "pathSegmentCount": 7,
+        "visibleLabelCount": 8,
+        "drawCalls": 6,
+        "geometries": 5,
+        "materials": 8,
+        "textures": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "mappingMs": 3.7000000178813934,
+        "initializationMs": 39.599999994039536,
+        "firstFrameMs": 39.599999994039536
+      },
+      "graphics": {
+        "context": "webgl2",
+        "drawingBuffer": [
+          1014,
+          633
+        ],
+        "sampledColorCount": 9
+      }
+    },
+    "no_kpath": {
+      "state": "rendered",
+      "graphicsContext": "webgl2",
+      "rendererVersion": "185",
+      "projection": "perspective",
+      "cameraPosition": [
+        4.772773,
+        3.978531,
+        4.232045
+      ],
+      "cameraTarget": [
+        0,
+        0,
+        0
+      ],
+      "cameraUp": [
+        0,
+        0,
+        1
+      ],
+      "selection": null,
+      "pointScreenPositions": [],
+      "faceScreenPositions": [
+        {
+          "id": "f000",
+          "x": 528.562413,
+          "y": 283.661294
+        },
+        {
+          "id": "f001",
+          "x": 526.629701,
+          "y": 208.836201
+        },
+        {
+          "id": "f002",
+          "x": 617.626882,
+          "y": 332.101771
+        },
+        {
+          "id": "f003",
+          "x": 620.494337,
+          "y": 255.711526
+        },
+        {
+          "id": "f004",
+          "x": 419.217562,
+          "y": 340.308755
+        },
+        {
+          "id": "f005",
+          "x": 410.852696,
+          "y": 261.592401
+        },
+        {
+          "id": "f006",
+          "x": 510.354065,
+          "y": 396.699832
+        },
+        {
+          "id": "f007",
+          "x": 503.21242,
+          "y": 225.934298
+        },
+        {
+          "id": "f008",
+          "x": 615.9302,
+          "y": 378.707628
+        },
+        {
+          "id": "f009",
+          "x": 619.413409,
+          "y": 286.010721
+        },
+        {
+          "id": "f010",
+          "x": 367.947426,
+          "y": 390.977671
+        },
+        {
+          "id": "f011",
+          "x": 353.631062,
+          "y": 294.870293
+        },
+        {
+          "id": "f012",
+          "x": 479.694858,
+          "y": 466.261594
+        },
+        {
+          "id": "f013",
+          "x": 472.972255,
+          "y": 368.322916
+        }
+      ],
+      "metrics": {
+        "artifactBytes": 22131,
+        "vertexCount": 24,
+        "edgeCount": 36,
+        "faceCount": 14,
+        "triangleCount": 44,
+        "pointCount": 0,
+        "pathSegmentCount": 0,
+        "visibleLabelCount": 0,
+        "drawCalls": 5,
+        "geometries": 4,
+        "materials": 8,
+        "textures": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "mappingMs": 3.2999999821186066,
+        "initializationMs": 35.900000005960464,
+        "firstFrameMs": 35.900000005960464
+      }
+    }
+  },
+  "lifecycle": {
+    "contextLostCanvasCount": 0,
+    "restored": {
+      "state": "rendered",
+      "graphicsContext": "webgl2",
+      "rendererVersion": "185",
+      "projection": "perspective",
+      "cameraPosition": [
+        4.8,
+        4.8,
+        4.8
+      ],
+      "cameraTarget": [
+        0,
+        0,
+        0
+      ],
+      "cameraUp": [
+        0,
+        0,
+        1
+      ],
+      "selection": null,
+      "pointScreenPositions": [
+        {
+          "id": "kp-bc76fcc5abb82d05",
+          "x": 507,
+          "y": 316.5
+        },
+        {
+          "id": "kp-68e0a327f6759e17",
+          "x": 507,
+          "y": 469.925552
+        },
+        {
+          "id": "kp-040c2d4412b34397",
+          "x": 507,
+          "y": 316.5
+        },
+        {
+          "id": "kp-692a1bb9c69d0efa",
+          "x": 624.420376,
+          "y": 384.292686
+        }
+      ],
+      "faceScreenPositions": [
+        {
+          "id": "f000",
+          "x": 602.265588,
+          "y": 261.498387
+        },
+        {
+          "id": "f001",
+          "x": 411.734412,
+          "y": 261.498387
+        },
+        {
+          "id": "f002",
+          "x": 507,
+          "y": 426.503226
+        },
+        {
+          "id": "f003",
+          "x": 507,
+          "y": 180.914628
+        },
+        {
+          "id": "f004",
+          "x": 624.420376,
+          "y": 384.292686
+        },
+        {
+          "id": "f005",
+          "x": 389.579624,
+          "y": 384.292686
+        }
+      ],
+      "metrics": {
+        "artifactBytes": 17674,
+        "vertexCount": 8,
+        "edgeCount": 12,
+        "faceCount": 6,
+        "triangleCount": 12,
+        "pointCount": 4,
+        "pathSegmentCount": 6,
+        "visibleLabelCount": 4,
+        "drawCalls": 6,
+        "geometries": 5,
+        "materials": 8,
+        "textures": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "mappingMs": 3.600000023841858,
+        "initializationMs": 30.299999982118607,
+        "firstFrameMs": 30.299999982118607
+      }
+    }
+  },
+  "mobile": {
+    "portrait": {
+      "name": "portrait",
+      "viewport": [
+        390,
+        844
+      ],
+      "overflow": false,
+      "selection": null,
+      "metrics": {
+        "artifactBytes": 23072,
+        "vertexCount": 12,
+        "edgeCount": 18,
+        "faceCount": 8,
+        "triangleCount": 20,
+        "pointCount": 6,
+        "pathSegmentCount": 9,
+        "visibleLabelCount": 6,
+        "drawCalls": 6,
+        "geometries": 5,
+        "materials": 8,
+        "textures": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "mappingMs": 3.699999988079071,
+        "initializationMs": 42.5,
+        "firstFrameMs": 42.5
+      }
+    },
+    "landscape": {
+      "name": "landscape",
+      "viewport": [
+        844,
+        390
+      ],
+      "overflow": false,
+      "selection": null,
+      "metrics": {
+        "artifactBytes": 23072,
+        "vertexCount": 12,
+        "edgeCount": 18,
+        "faceCount": 8,
+        "triangleCount": 20,
+        "pointCount": 6,
+        "pathSegmentCount": 9,
+        "visibleLabelCount": 6,
+        "drawCalls": 6,
+        "geometries": 5,
+        "materials": 8,
+        "textures": 0,
+        "canvasCount": 1,
+        "contextCount": 1,
+        "mappingMs": 2.800000011920929,
+        "initializationMs": 41.5,
+        "firstFrameMs": 41.5
+      }
+    }
+  },
+  "accessibility": {
+    "region": "First Brillouin zone viewer",
+    "live": "polite",
+    "pressed": "true",
+    "tables": 2,
+    "canvasLabel": "Interactive first Brillouin zone renderer",
+    "reducedMotion": true
+  },
+  "externalRequests": 0
+}

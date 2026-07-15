@@ -1,5 +1,17 @@
 # 文档索引
 
+## Phase 10I-2 Brillouin Renderer / Evidence
+
+[`phase10i/phase10i2_brillouin_renderer.md`](phase10i/phase10i2_brillouin_renderer.md)
+records the validated artifact mapper, bounded face triangulation,
+application-owned Three.js renderer, reciprocal-space interaction, camera,
+projection, PNG export, fallback, lifecycle, performance, accessibility,
+mobile, security, and Phase 10I-3 handoff boundary. Browser/API replay and
+readiness are documented in
+[`phase10i/phase10i2_brillouin_renderer_evidence.md`](phase10i/phase10i2_brillouin_renderer_evidence.md)
+and captured under
+[`phase10i/evidence/phase10i2_brillouin_renderer/`](phase10i/evidence/phase10i2_brillouin_renderer/).
+
 ## Phase 10I-1 Brillouin Zone Adapter
 
 [`phase10i/phase10i1_brillouin_zone_adapter.md`](phase10i/phase10i1_brillouin_zone_adapter.md)

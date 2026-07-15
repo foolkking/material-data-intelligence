@@ -1,0 +1,9 @@
+{
+  "input": "validated Phase 10I artifact bundle",
+  "coordinates": "canonical reciprocal Cartesian angstrom^-1",
+  "convention": "physics_2pi applied exactly once by backend",
+  "visualScale": "one uniform scalar",
+  "triangleCap": 512,
+  "visibleLabelCap": 64,
+  "invalidBeforeWebGL": true
+}

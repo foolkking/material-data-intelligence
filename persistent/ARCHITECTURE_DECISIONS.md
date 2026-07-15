@@ -1,5 +1,40 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10I2-VALIDATED-BRILLOUIN-RENDERER: Render canonical reciprocal artifacts with one local engine
+
+### Decision
+
+Keep `structure.brillouin_zone` as the only product identity and leave its Phase
+10I artifact family unchanged. Before a static application-owned dynamic import,
+the frontend validates schemas, security, manifest hashes, structure/primitive/
+reciprocal bindings, canonical topology/IDs, finite values, and caps. Map
+canonical reciprocal Cartesian `angstrom^-1` coordinates directly; never apply
+`2*pi` again. Fit only with one uniform visual scalar.
+
+Project each canonical outward-CCW face onto a local orthonormal basis and use a
+bounded convex triangulation with area checks. Render shared/batched faces,
+canonical edges, vertices, reciprocal axes, high-symmetry points, and only
+emitted path segments. Discontinuities never create connectors. Artifact data
+cannot select modules, shaders, materials, textures, URLs, or renderer budgets.
+
+Use one demand-render Three.js/OrbitControls context with reciprocal-basis
+cameras, canonical picking identity, text-content labels, bounded local PNG,
+typed fallback, context reinitialization, and symmetric disposal. Keep complete
+Band-BZ linkage for Phase 10I-3.
+
+### Consequences
+
+- Backend scientific generation, persisted plan/runtime authority, contracts,
+  provider semantics, and inert security remain unchanged.
+- Standalone BZ viewing is available in the Results workspace across the tested
+  browser/mobile matrix while JSON, summary, recipe, and text tables remain
+  usable without WebGL.
+- Real-space clipping is not reused with incorrect units; BZ clipping remains a
+  separate future policy.
+- Electronic/phonon calculations, magnetic/surface zones, meshes, Fermi and
+  reciprocal volumetric products, custom editing, and linked views remain
+  outside this product.
+
 ## ADR-10I1-BRILLOUIN-ADAPTER: Register one local JSON producer before a renderer
 
 ### Decision

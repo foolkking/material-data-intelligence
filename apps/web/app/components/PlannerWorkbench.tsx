@@ -9,6 +9,7 @@ import { PhononBandPreviewPanel } from "./phonon-band/PhononBandPreviewPanel";
 import { PhononBandDosPreviewPanel } from "./phonon-band-dos/PhononBandDosPreviewPanel";
 import { PhononDosPreviewPanel } from "./phonon-dos/PhononDosPreviewPanel";
 import { PhononAnimationSurface } from "./phonon-animation/PhononAnimationSurface";
+import { BrillouinZonePreviewPanel } from "./brillouin-zone/BrillouinZonePreviewPanel";
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
@@ -1200,7 +1201,7 @@ function ResultsExportTab(props: {
       <MetricsResultRenderer t={t} artifact={props.artifacts.find((artifact) => artifact.type === "metrics_json")} />
       <TableSummaryRenderer t={t} artifact={props.artifacts.find(isTableSummaryArtifact)} />
       <ViewerStaticPreviewPanel artifacts={props.artifacts} />
-      <BrillouinZoneJsonPreviewPanel artifacts={props.artifacts} />
+      <BrillouinZonePreviewPanel artifacts={props.artifacts} />
       <TrajectoryPreviewPanel artifacts={props.artifacts} />
       <PhononAnimationPreviewPanel artifacts={props.artifacts} />
       <PhononBandDosPreviewPanel artifacts={props.artifacts} />
@@ -1390,79 +1391,6 @@ function ViewerStaticPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
         ) : null}
         {activePreview === "manifest" && viewerManifest ? <ViewerManifestPreview artifact={viewerManifest} /> : null}
         {activePreview === "manifest" && !viewerManifest ? <ViewerMissingPreview title="viewer_scene_manifest.json" /> : null}
-      </div>
-    </section>
-  );
-}
-
-type BrillouinPreviewKind = "reciprocal" | "zone" | "kpath" | "manifest";
-
-function BrillouinZoneJsonPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
-  const entries: Array<{ kind: BrillouinPreviewKind; label: string; artifact?: Artifact }> = [
-    { kind: "reciprocal", label: "Reciprocal lattice", artifact: artifacts.find((item) => item.type === "reciprocal_lattice_json" || item.name === "reciprocal_lattice.json") },
-    { kind: "zone", label: "Brillouin zone", artifact: artifacts.find((item) => item.type === "brillouin_zone_json" || item.name === "brillouin_zone.json") },
-    { kind: "kpath", label: "K-path", artifact: artifacts.find((item) => item.type === "kpath_json" || item.name === "kpath.json") },
-    { kind: "manifest", label: "Manifest", artifact: artifacts.find((item) => item.type === "brillouin_zone_manifest_json" || item.name === "brillouin_zone_manifest.json") }
-  ];
-  const [active, setActive] = useState<BrillouinPreviewKind>("zone");
-  const available = entries.filter((entry) => entry.artifact);
-  if (!available.length) return null;
-  const selected = available.find((entry) => entry.kind === active) || available[0];
-  const selectedPayload = selected.artifact ? artifactPayload(selected.artifact) : null;
-  const reciprocal = artifactPayload(entries[0].artifact || {});
-  const zone = artifactPayload(entries[1].artifact || {});
-  const kpath = artifactPayload(entries[2].artifact || {});
-  const manifest = artifactPayload(entries[3].artifact || {});
-  const binding = asRecord(reciprocal?.real_lattice_binding);
-  const topology = asRecord(zone?.topology);
-  const provider = asRecord(kpath?.provider || reciprocal?.provider);
-  const capabilities = asRecord(manifest?.capabilities);
-  const warnings = [zone, kpath]
-    .flatMap((payload) => Array.isArray(payload?.warnings) ? payload.warnings : [])
-    .map((value) => text(value));
-  return (
-    <section className="panel viewer-static-preview" data-testid="brillouin-zone-json-preview-panel">
-      <PanelHeading title="Brillouin zone data" badge="Validated JSON only" />
-      <div className="viewer-preview-tabs" role="tablist" aria-label="Brillouin zone artifact previews">
-        {available.map((entry) => (
-          <button
-            key={entry.kind}
-            type="button"
-            role="tab"
-            aria-selected={selected.kind === entry.kind}
-            className={selected.kind === entry.kind ? "active" : "secondary"}
-            onClick={() => setActive(entry.kind)}
-          >
-            {entry.label}
-          </button>
-        ))}
-      </div>
-      <div className="viewer-preview-tab-panel" role="tabpanel">
-        <PreviewSubsection title="Contract summary">
-          <dl className="mini-grid" data-testid="brillouin-zone-contract-summary">
-            <Field label="reciprocal schema" value={text(reciprocal?.schema_version)} />
-            <Field label="BZ schema" value={text(zone?.schema_version)} />
-            <Field label="k-path schema" value={text(kpath?.schema_version)} />
-            <Field label="convention" value={text(reciprocal?.convention)} />
-            <Field label="units" value={text(reciprocal?.units)} />
-            <Field label="provider" value={text(provider?.name)} />
-            <Field label="vertices" value={text(topology?.vertex_count)} />
-            <Field label="edges" value={text(topology?.edge_count)} />
-            <Field label="faces" value={text(topology?.face_count)} />
-            <Field label="BZ volume" value={text(zone?.volume)} />
-            <Field label="high-symmetry points" value={Array.isArray(kpath?.points) ? String(kpath.points.length) : "unknown"} />
-            <Field label="path segments" value={Array.isArray(kpath?.segments) ? String(kpath.segments.length) : "unknown"} />
-            <Field label="renderer included" value={text(capabilities?.renderer_included)} />
-            <Field label="preview mode" value={text(capabilities?.preview_mode)} />
-          </dl>
-          {Array.isArray(binding?.primitive_real_lattice) ? (
-            <pre className="json-preview" data-testid="brillouin-zone-primitive-lattice">{JSON.stringify(binding.primitive_real_lattice, null, 2)}</pre>
-          ) : null}
-          {warnings.length ? <ul className="warning-list">{warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul> : null}
-        </PreviewSubsection>
-        <PreviewSubsection title={selected.label}>
-          <pre className="json-preview" data-testid="brillouin-zone-raw-json">{JSON.stringify(selectedPayload || selected.artifact, null, 2)}</pre>
-        </PreviewSubsection>
       </div>
     </section>
   );

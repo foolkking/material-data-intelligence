@@ -1,0 +1,58 @@
+{
+  "portrait": {
+    "name": "portrait",
+    "viewport": [
+      390,
+      844
+    ],
+    "overflow": false,
+    "selection": null,
+    "metrics": {
+      "artifactBytes": 23072,
+      "vertexCount": 12,
+      "edgeCount": 18,
+      "faceCount": 8,
+      "triangleCount": 20,
+      "pointCount": 6,
+      "pathSegmentCount": 9,
+      "visibleLabelCount": 6,
+      "drawCalls": 6,
+      "geometries": 5,
+      "materials": 8,
+      "textures": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "mappingMs": 3.699999988079071,
+      "initializationMs": 42.5,
+      "firstFrameMs": 42.5
+    }
+  },
+  "landscape": {
+    "name": "landscape",
+    "viewport": [
+      844,
+      390
+    ],
+    "overflow": false,
+    "selection": null,
+    "metrics": {
+      "artifactBytes": 23072,
+      "vertexCount": 12,
+      "edgeCount": 18,
+      "faceCount": 8,
+      "triangleCount": 20,
+      "pointCount": 6,
+      "pathSegmentCount": 9,
+      "visibleLabelCount": 6,
+      "drawCalls": 6,
+      "geometries": 5,
+      "materials": 8,
+      "textures": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "mappingMs": 2.800000011920929,
+      "initializationMs": 41.5,
+      "firstFrameMs": 41.5
+    }
+  }
+}

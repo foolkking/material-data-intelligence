@@ -1,0 +1,7 @@
+{
+  "projection": "outward-normal local orthonormal basis",
+  "winding": "ccw_from_outside",
+  "coplanarity": true,
+  "nonzeroArea": true,
+  "faceAreaConsistency": true
+}

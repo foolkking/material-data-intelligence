@@ -1,11 +1,18 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-15 Phase 10I-2 Standalone Brillouin Product
+
+- `structure.brillouin_zone` remains the unique recommended identity; no `structure.brillouin_zone_3d`, `structure.bz_viewer`, or reciprocal-viewer duplicate was added.
+- The same adapter and six inert artifacts now have an application-owned lazy Three.js consumer. `renderer_included=false` remains accurate because renderer code is not embedded in the package.
+- Mock Planner now routes explicit interactive/rotatable/3D Brillouin and reciprocal-axis requests to the canonical tool. Electronic/phonon calculation, trajectory, Fermi surface, Monkhorst-Pack mesh, magnetic/surface BZ, editing, XRD, and CrystalNN remain excluded.
+- PlanValidator, QueueWorkerRuntime, input/params, providers, artifact versions, scientific caps, and network authority are unchanged.
+
 ## 2026-07-14 Phase 10I-1 Formal Brillouin Data Adapter
 
 - Added one canonical identity: `structure.brillouin_zone` using `BrillouinZoneAdapter`; no overlapping `structure.kpath` or `structure.brillouin_zone_3d` tool is registered.
 - Input is exactly one ordered, non-magnetic, 3D periodic `Structure`; params are closed to required artifacts, contract-default providers, time reversal, versioned tolerances, and no alternative variants.
 - Outputs are `reciprocal_lattice_json`, `brillouin_zone_json`, `kpath_json`, `brillouin_zone_manifest_json`, `summary_md`, and `recipe_json` with exact Phase 10I contracts and hard caps.
-- Mock Planner routes explicit BZ/reciprocal/k-path data generation only. Interactive rendering, electronic/phonon/trajectory science, Fermi/mesh, XRD, CrystalNN, editing, and DFT are excluded.
+- Mock Planner originally routed explicit BZ/reciprocal/k-path data generation only; Phase 10I-2 extends the same identity to interactive display intent while retaining scientific negative routes.
 - QueueWorkerRuntime and PlanValidator semantics are unchanged. Artifacts contain no renderer, WebGL, executable content, external assets, or network authority.
 
 ## 2026-07-14 Phase 10I Brillouin Zone Contract

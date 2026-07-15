@@ -1,0 +1,8 @@
+{
+  "region": "First Brillouin zone viewer",
+  "live": "polite",
+  "pressed": "true",
+  "tables": 2,
+  "canvasLabel": "Interactive first Brillouin zone renderer",
+  "reducedMotion": true
+}

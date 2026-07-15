@@ -37,9 +37,19 @@ for exactly one ordered, non-magnetic, 3D periodic `Structure`. Its exact output
 types are `reciprocal_lattice_json`, `brillouin_zone_json`, `kpath_json`,
 `brillouin_zone_manifest_json`, `summary_md`, and `recipe_json`. The first four
 map one-to-one to the schema identities above. This registration grants only
-validated asynchronous artifact generation. The application-owned BZ preview
-only renders fixed summaries and escaped JSON for these four scientific types;
-it allocates no canvas/WebGL context and no BZ renderer capability is implied.
+validated asynchronous artifact generation. Artifacts allocate no canvas or
+WebGL context and carry no renderer capability.
+
+Phase 10I-2 adds an application-owned consumer without changing these schemas.
+The frontend independently validates the reciprocal/BZ/k-path/manifest bundle,
+then maps canonical reciprocal Cartesian `angstrom^-1` coordinates exactly once
+into a uniformly scaled local Three.js scene. Faces are bounded-triangulated
+from canonical outward-CCW loops; canonical edges, points, segments,
+discontinuities, IDs, and provider semantics are preserved. Camera, visibility,
+opacity, selection, projection, labels, and PNG export are renderer-local state
+and are not written into canonical artifacts. Artifact `renderer_included=false`
+continues to mean that no executable renderer is packaged, not that the
+application lacks a validated consumer.
 
 ## Phase 10G-2 trajectory viewer internal display contract
 

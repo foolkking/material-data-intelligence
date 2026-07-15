@@ -1,0 +1,10 @@
+{
+  "idleRAF": 0,
+  "maxCanvas": 1,
+  "maxContext": 1,
+  "maxTriangles": 512,
+  "maxLabels": 64,
+  "maxDpr": 2,
+  "maxExportPixels": 16777216,
+  "largestScientificCase": "triclinic lattice Voronoi cell; contract maxima are defensive and not physically saturated by a 3D lattice BZ"
+}

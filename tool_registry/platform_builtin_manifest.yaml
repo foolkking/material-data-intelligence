@@ -165,7 +165,7 @@ tools:
     stage: mvp
     adapter: BrillouinZoneAdapter
     display_target: structure
-    notes: "Generate validated inert reciprocal-lattice, first-Brillouin-zone, high-symmetry k-path, manifest, summary, and recipe artifacts from exactly one ordered non-magnetic 3D periodic structure. Uses local deterministic contract-approved providers; includes no renderer, WebGL, executable content, external assets, or network access."
+    notes: "Generate validated inert reciprocal-lattice, first-Brillouin-zone, high-symmetry k-path, manifest, summary, and recipe artifacts from exactly one ordered non-magnetic 3D periodic structure for the application-owned interactive Brillouin Zone Viewer. Supports faces, canonical edges and vertices, reciprocal axes, high-symmetry points/path, basic camera controls, inspection, and local PNG export in the browser. Artifacts contain no renderer, WebGL, executable content, external assets, or network access; electronic bands, phonons, magnetic/surface BZ, meshes, and editing are unsupported."
     artifact_types:
       - reciprocal_lattice_json
       - brillouin_zone_json

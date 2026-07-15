@@ -169,7 +169,7 @@ def test_registry_declares_one_strict_json_only_brillouin_tool() -> None:
     description = tool.description.lower()
     assert "renderer" in description and "no renderer" in description
     assert "external assets" in description and "network" in description
-    assert "interactive" not in description
+    assert "interactive" in description and "electronic bands" in description
 
 
 @pytest.mark.parametrize(
@@ -183,6 +183,10 @@ def test_registry_declares_one_strict_json_only_brillouin_tool() -> None:
         "Export the reciprocal lattice and high-symmetry path",
         "Build a Brillouin zone JSON artifact",
         "Compute the standardized k-path for this crystal",
+        "打开交互式布里渊区3D viewer",
+        "显示可旋转的第一布里渊区",
+        "Open an interactive Brillouin zone viewer",
+        "Show the first Brillouin zone in 3D",
     ),
 )
 def test_planner_routes_approved_data_generation_prompts(prompt: str) -> None:
@@ -203,9 +207,6 @@ def test_planner_routes_approved_data_generation_prompts(prompt: str) -> None:
 @pytest.mark.parametrize(
     "prompt",
     (
-        "打开交互式布里渊区3D viewer",
-        "用Three.js显示BZ",
-        "Render the Brillouin zone interactively",
         "计算电子能带",
         "计算声子",
         "播放声子模式",
@@ -217,6 +218,8 @@ def test_planner_routes_approved_data_generation_prompts(prompt: str) -> None:
         "做CrystalNN",
         "编辑结构",
         "运行DFT",
+        "显示 magnetic Brillouin zone",
+        "显示 surface BZ",
     ),
 )
 def test_planner_negative_domains_never_route_to_brillouin_adapter(prompt: str) -> None:

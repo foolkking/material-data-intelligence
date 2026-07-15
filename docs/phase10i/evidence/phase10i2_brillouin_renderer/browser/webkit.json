@@ -1,0 +1,39 @@
+{
+  "browser": "webkit",
+  "version": "18.0",
+  "available": true,
+  "simple": {
+    "metrics": {
+      "artifactBytes": 17674,
+      "vertexCount": 8,
+      "edgeCount": 12,
+      "faceCount": 6,
+      "triangleCount": 12,
+      "pointCount": 4,
+      "pathSegmentCount": 6,
+      "visibleLabelCount": 4,
+      "drawCalls": 6,
+      "geometries": 5,
+      "materials": 8,
+      "textures": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "mappingMs": 7.000000000000455,
+      "initializationMs": 79,
+      "firstFrameMs": 79
+    },
+    "graphics": {
+      "context": "webgl2",
+      "drawingBuffer": [
+        1014,
+        633
+      ],
+      "sampledColorCount": 9
+    }
+  },
+  "performance": null,
+  "lifecycle": null,
+  "mobile": null,
+  "accessibility": null,
+  "externalRequests": 0
+}

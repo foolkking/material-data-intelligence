@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-15 - Phase 10I-2 Brillouin Renderer / Evidence
+
+- Added a strict Phase 10I artifact mapper, bounded outward-normal face triangulation, uniform reciprocal-space visual scaling, and typed pre-WebGL validation/resource fallbacks.
+- Added a lazy Three.js standalone Brillouin Zone Viewer with translucent faces, canonical edges/vertices, reciprocal axes, points/labels/path, discontinuity preservation, point/face/vertex/segment picking, inspector/tables, projection/camera/layers/opacity, local PNG, mobile/accessibility, and complete lifecycle cleanup.
+- Updated `structure.brillouin_zone` interactive planner routing and product description while retaining one tool identity and unchanged adapter/runtime/artifact semantics.
+- Added real Chromium/Firefox/WebKit/mobile PlannerWorkbench evidence with runtime artifacts, nonblank WebGL, performance/context-loss/export captures, zero external requests, and no dependency changes.
+
 ## 2026-07-14 - Phase 10I-1 Brillouin Zone Adapter
 
 - Added formal `structure.brillouin_zone`, `BrillouinZoneAdapter`, strict registry schemas/caps, four dedicated scientific artifact types, and deterministic planner routing.

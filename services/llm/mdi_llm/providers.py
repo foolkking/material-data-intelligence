@@ -15,7 +15,7 @@ from typing import Any, Protocol
 import urllib.error
 import urllib.request
 
-from mdi_schemas import AnalysisPlan, DataProfile, RegisteredTool
+from mdi_schemas import DataProfile, RegisteredTool
 
 from .redaction import redact_credential_values
 
@@ -112,7 +112,7 @@ class MockLLMProvider:
                 request,
                 data_profile=data_profile,
                 tool_id="structure.brillouin_zone",
-                purpose="Generate validated inert first-Brillouin-zone data and the canonical high-symmetry k-path; no renderer is included.",
+                purpose="Generate validated inert first-Brillouin-zone data and the canonical high-symmetry k-path for the application-owned interactive viewer; artifacts include no renderer or external resources.",
                 params={
                     "include_reciprocal_lattice": True,
                     "include_brillouin_zone": True,
@@ -545,13 +545,13 @@ def _call_fake_transport(
         return transport(**accepted)
     except LLMProviderError:
         raise
-    except (TimeoutError, socket.timeout) as exc:
+    except (TimeoutError, socket.timeout):
         raise LLMProviderError("OpenAI-compatible LLM request timed out.", code="LLM_TIMEOUT") from None
     except urllib.error.HTTPError as exc:
         raise _http_error(exc) from None
-    except urllib.error.URLError as exc:
+    except urllib.error.URLError:
         raise LLMProviderError("OpenAI-compatible LLM request failed before a response was received.", code="LLM_NETWORK_ERROR") from None
-    except Exception as exc:
+    except Exception:
         raise LLMProviderError("OpenAI-compatible LLM request failed.", code="LLM_PROVIDER_ERROR") from None
 
 
@@ -588,15 +588,15 @@ def _post_chat_completion(
         try:
             with urllib.request.urlopen(req, timeout=timeout_seconds) as resp:
                 return json.loads(resp.read().decode("utf-8"))
-        except (TimeoutError, socket.timeout) as exc:
+        except (TimeoutError, socket.timeout):
             raise LLMProviderError("OpenAI-compatible LLM request timed out.", code="LLM_TIMEOUT") from None
         except urllib.error.HTTPError as exc:
             if include_response_format and int(getattr(exc, "code", 0) or 0) == 400:
                 continue
             raise _http_error(exc) from None
-        except urllib.error.URLError as exc:
+        except urllib.error.URLError:
             raise LLMProviderError("OpenAI-compatible LLM request failed before a response was received.", code="LLM_NETWORK_ERROR") from None
-        except ValueError as exc:
+        except ValueError:
             raise LLMProviderError("OpenAI-compatible LLM response was not valid JSON.", code="LLM_RESPONSE_INVALID") from None
 
     raise LLMProviderError("OpenAI-compatible LLM request failed.", code="LLM_PROVIDER_ERROR")
@@ -622,7 +622,7 @@ def _http_error(exc: urllib.error.HTTPError) -> LLMProviderError:
 def _first_choice(response: dict[str, Any]) -> dict[str, Any]:
     try:
         choice = response["choices"][0]
-    except Exception as exc:
+    except Exception:
         raise LLMProviderError(
             "OpenAI-compatible LLM response did not include a completion choice.",
             code="LLM_RESPONSE_INVALID",
@@ -638,7 +638,7 @@ def _first_choice(response: dict[str, Any]) -> dict[str, Any]:
 def _choice_content(choice: dict[str, Any]) -> Any:
     try:
         return choice["message"]["content"]
-    except Exception as exc:
+    except Exception:
         raise LLMProviderError(
             "OpenAI-compatible LLM response did not include message content.",
             code="LLM_RESPONSE_INVALID",
@@ -951,10 +951,10 @@ def _should_generate_brillouin_zone(
         return False
     prompt = request.user_prompt.lower()
     unsupported = (
-        "interactive", "3d viewer", "three.js", "threejs", "webgl", "rotatable",
-        "交互式", "可旋转", "三维查看", "电子能带", "electronic band", "band structure",
+        "电子能带", "electronic band", "band structure",
         "phonon", "声子", "trajectory", "轨迹", "fermi", "monkhorst", "charge density",
         "电荷密度", "xrd", "crystalnn", "edit structure", "编辑结构", "dft",
+        "magnetic brillouin", "surface brillouin", "surface bz", "磁性布里渊", "表面布里渊",
     )
     if any(marker in prompt for marker in unsupported):
         return False
@@ -964,6 +964,9 @@ def _should_generate_brillouin_zone(
         "standardized k-path", "standardized kpath", "crystal k-path", "crystal kpath",
         "第一布里渊区", "布里渊区数据", "倒易晶格和高对称路径", "高对称路径",
         "这个晶体的k路径", "这个晶体的 k 路径", "导出这个结构的brillouin zone数据",
+        "interactive brillouin zone viewer", "brillouin zone interactively", "brillouin zone in 3d",
+        "3d reciprocal lattice", "reciprocal axes and the high-symmetry path",
+        "交互式布里渊区", "可旋转的第一布里渊区", "三维布里渊区", "3d查看倒易晶格", "3d 查看倒易晶格",
     )
     return any(marker in prompt for marker in markers)
 

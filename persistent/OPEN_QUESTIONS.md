@@ -1,8 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-07-15 Phase 10I-2 Follow-ups
+
+- Phase 10I-3 may design a hash- and identity-bound Band-BZ linked view; bidirectional selection, cursor synchronization, band-path compatibility, and cross-panel state are not implemented here.
+- BZ clipping remains deferred because the current clipping artifact/state is explicitly real-space; a reciprocal-plane policy must be designed instead of reusing units incorrectly.
+- Magnetic, surface/slab, irreducible-wedge, custom-path, k-mesh, integration-weight, Fermi-surface, reciprocal-volume, and editing semantics remain undefined or separate products.
+- Browser transparency ordering can vary for overlapping translucent faces; canonical edges, IDs, coordinates, topology, picking, and text tables remain authoritative.
+
 ## 2026-07-14 Phase 10I-1 Follow-ups
 
-- Phase 10I-2 must define and evidence the Three.js/WebGL consumer, lifecycle, picking, labels, controls, mobile/accessibility, and browser/GPU performance without changing the inert Phase 10I artifacts.
+- Phase 10I-2 closed the Three.js/WebGL consumer, lifecycle, picking, labels, controls, mobile/accessibility, and browser/GPU evidence without changing inert Phase 10I artifacts.
 - `seekpath`/HPKOT remains uninstalled and unapproved; adding it requires a separate dependency, convention, equivalence, and migration review rather than an adapter parameter toggle.
 - Magnetic, disordered/partially occupied, 2D/surface, irreducible-wedge, custom-path, and mesh semantics remain undefined and are rejected or deferred.
 - Electronic/phonon values and Fermi surfaces remain separate calculation/artifact contracts; the BZ adapter supplies geometry and a reference path only.

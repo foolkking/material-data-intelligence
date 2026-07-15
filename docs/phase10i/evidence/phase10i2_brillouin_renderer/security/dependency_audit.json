@@ -1,0 +1,9 @@
+{
+  "three": "0.185.1",
+  "copies": 1,
+  "newDependencies": 0,
+  "runtimeNetwork": false,
+  "artifactShader": false,
+  "artifactModule": false,
+  "npmAudit": "run during closure; configured endpoint may be unavailable"
+}

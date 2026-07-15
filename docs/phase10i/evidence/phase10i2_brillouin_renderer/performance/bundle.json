@@ -1,0 +1,10 @@
+{
+  "file": "apps/web/.next/static/chunks/542.afc15ea41a9c45ec.js",
+  "bytes": 11658,
+  "gzip_bytes": 4664,
+  "brotli_bytes": 4168,
+  "lazy": true,
+  "external_import": false,
+  "three_version": "0.185.1",
+  "three_copies": 1
+}

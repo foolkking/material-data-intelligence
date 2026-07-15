@@ -1,0 +1,39 @@
+{
+  "phase": "10I-2",
+  "tool": "structure.brillouin_zone",
+  "schemas": [
+    "phase10i.reciprocal_lattice.v1",
+    "phase10i.brillouin_zone.v1",
+    "phase10i.kpath.v1",
+    "phase10i.brillouin_zone_manifest.v1"
+  ],
+  "renderer": "application-owned Three.js 0.185.1",
+  "source": "Phase 10I-1 QueueWorkerRuntime artifact captures",
+  "browsers": [
+    {
+      "browser": "chromium",
+      "available": true,
+      "version": "150.0.7871.115"
+    },
+    {
+      "browser": "firefox",
+      "available": true,
+      "version": "128.0"
+    },
+    {
+      "browser": "webkit",
+      "available": true,
+      "version": "18.0"
+    }
+  ],
+  "external_requests": 0,
+  "real_llm": false,
+  "markers": [
+    "BRILLOUIN_ZONE_RENDERER_BROWSER_EVIDENCE_PASS",
+    "BRILLOUIN_ZONE_RENDERER_PERFORMANCE_EVIDENCE_PASS",
+    "BRILLOUIN_ZONE_RENDERER_ACCESSIBILITY_EVIDENCE_PASS",
+    "BRILLOUIN_ZONE_RENDERER_API_EVIDENCE_PASS",
+    "NO_BRILLOUIN_RENDERER_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ]
+}

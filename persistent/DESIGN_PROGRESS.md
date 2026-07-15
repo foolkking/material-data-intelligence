@@ -1,5 +1,13 @@
 # DESIGN_PROGRESS
 
+## 2026-07-15 Phase 10I-2 Brillouin Renderer / Evidence
+
+- Added a strict frontend bundle mapper and outward-normal bounded face triangulation over unchanged Phase 10I artifacts; reciprocal Cartesian `angstrom^-1` values use one uniform visual scale and no repeated `2*pi` conversion.
+- Added a lazy application-owned Three.js BZ engine with translucent faces, canonical edges/vertices, primitive reciprocal axes, high-symmetry points/labels/path, canonical point/face/vertex/segment picking, inspector, text tables, reciprocal-basis cameras, projection, layer/opacity/variant controls, fixed-camera PNG, fallback, context reinitialization, and complete demand-render lifecycle.
+- Kept `structure.brillouin_zone` as the sole product identity and expanded explicit interactive English/Chinese routing while retaining electronic/phonon/trajectory/Fermi/mesh/magnetic/surface/editing exclusions. Artifacts still contain no renderer, shader, module, URL, texture, or network authority.
+- Real PlannerWorkbench evidence passed Chromium 150, Firefox 128, WebKit 18, portrait/landscape mobile, point/face picking, PNG, context loss, accessibility, nonblank canvas, performance, console, and zero-external-network checks.
+- Local closure passed 209 frontend tests, `654 passed, 23 skipped` backend tests, focused Phase 10I replay, typecheck/build, Ruff, lock/tree checks, and the historical Phase 10 three-browser product pack. Implementation commit and current-HEAD CI remain the closure gate; Docker is unavailable locally and the configured npm audit endpoint returned `404 NOT_IMPLEMENTED`.
+
 ## 2026-07-14 Phase 10I-1 Brillouin Zone Adapter
 
 - Registered the unique JSON-only `structure.brillouin_zone` data tool with strict single ordered/non-magnetic 3D Structure input, fixed provider policy, six inert output types, and Phase 10I caps.

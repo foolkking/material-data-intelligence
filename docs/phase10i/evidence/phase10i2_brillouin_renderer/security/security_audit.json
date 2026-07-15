@@ -1,0 +1,16 @@
+{
+  "artifact_javascript": false,
+  "artifact_html": false,
+  "artifact_css": false,
+  "artifact_shader": false,
+  "artifact_module": false,
+  "external_urls": false,
+  "remote_assets": false,
+  "iframe": false,
+  "eval": false,
+  "dynamic_artifact_import": false,
+  "label_mode": "React text content",
+  "renderer_owned_by_application": true,
+  "external_requests": 0,
+  "marker": "NO_SECRET_PATTERN_HITS"
+}

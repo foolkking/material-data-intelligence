@@ -641,7 +641,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(screen.queryByText("structure.viewer_3d")).toBeNull();
   });
 
-  it("previews validated Brillouin-zone artifacts as inert JSON without a renderer", async () => {
+  it("offers the validated Brillouin-zone renderer product with JSON and manifest fallbacks", async () => {
     useBrillouinZoneArtifacts();
     const user = userEvent.setup();
     const { container } = render(<PlannerWorkbench />);
@@ -651,18 +651,16 @@ describe("Phase 9C PlannerWorkbench", () => {
     await waitForViewerArtifacts();
     await openResultsTab(user);
 
-    const panel = screen.getByTestId("brillouin-zone-json-preview-panel");
-    expect(within(panel).getByText("Validated JSON only")).not.toBeNull();
-    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("phase10i.reciprocal_lattice.v1");
-    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("phase10i.brillouin_zone.v1");
-    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("physics_2pi");
-    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("8");
-    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("false");
-    expect(within(panel).getByTestId("brillouin-zone-primitive-lattice").textContent).toContain("4");
-    await user.click(within(panel).getByRole("tab", { name: "K-path" }));
-    expect(within(panel).getByTestId("brillouin-zone-raw-json").textContent).toContain("phase10i.kpath.v1");
+    const panel = screen.getByTestId("brillouin-zone-preview-panel");
+    expect(within(panel).getByText("Standalone reciprocal-space product")).not.toBeNull();
+    expect(within(panel).getByTestId("brillouin-zone-renderer-state")).toHaveTextContent("unsupported");
+    expect(within(panel).getByTestId("brillouin-zone-renderer-fallback")).toHaveTextContent("BZ_RENDERER_UNSUPPORTED");
+    expect(within(panel).getByTestId("brillouin-zone-summary").textContent).toContain("8");
+    expect(within(panel).getByTestId("brillouin-zone-summary").textContent).toContain("6");
+    await user.click(within(panel).getByRole("tab", { name: "Scientific data" }));
+    expect(within(panel).getByText("K-path").parentElement?.textContent).toContain("phase10i.kpath.v1");
     await user.click(within(panel).getByRole("tab", { name: "Manifest" }));
-    expect(within(panel).getByTestId("brillouin-zone-raw-json").textContent).toContain("json_only");
+    expect(within(panel).getByTestId("brillouin-zone-manifest-json").textContent).toContain("phase10i.brillouin_zone_manifest.v1");
     expect(container.querySelector("canvas")).toBeNull();
     expect(container.querySelector("iframe")).toBeNull();
     expect(container.querySelector("script")).toBeNull();
