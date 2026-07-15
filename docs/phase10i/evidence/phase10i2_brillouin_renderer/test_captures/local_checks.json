@@ -49,7 +49,15 @@
     "status": "unavailable"
   },
   "service_backed_local": {
-    "result": "Docker CLI unavailable; required service-backed gate remains pending current-HEAD CI",
+    "result": "Docker CLI unavailable locally; GitHub CI service-backed integration and no-skipped assertion passed",
     "status": "unavailable_locally"
+  },
+  "implementation_ci": {
+    "commit": "b5469c35cc39f096037036309a37aab160c9593c",
+    "run": 29420821864,
+    "unit": "success",
+    "frontend_typecheck_build": "success",
+    "service_backed_integration": "success",
+    "no_skipped_assertion": "success"
   }
 }

@@ -183,8 +183,8 @@
     },
     {
       "name": "test_captures/local_checks.json",
-      "bytes": 1785,
-      "sha256": "e9367d412dc01fa9012cfe74e5deac869fb66de05f7400c6e6e20b7df327a25b"
+      "bytes": 2062,
+      "sha256": "1f8e8cd5c94ebea29da915a13bf1eafbfc7a46aced953f69c0a13a38a5a84d8c"
     },
     {
       "name": "validation/mapper_policy.json",

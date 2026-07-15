@@ -1,5 +1,5 @@
 ---TASK---
- 状态：待处理
+ 状态：已完成
 # Phase 10I-2：Brillouin Renderer / Evidence
 
 进入 Phase 10I-2：Brillouin Renderer / Evidence。
@@ -2490,6 +2490,14 @@ Phase 10I-3：Band–BZ Linked View
 先读取真实 Phase 10I-1 Result、canonical artifacts、现有 Three.js viewer infrastructure和Browser evidence runners，输出 Pre-Implementation Audit；然后完成正式 Brillouin Zone scene mapper、Three.js renderer、faces/edges/axes/points/path、picking/inspector、camera、controls、PNG export、fallback、lifecycle、移动端、可访问性、浏览器矩阵、性能、安全、commit和CI闭环。
 
 不得提前进入完整 Band–BZ Linked View。
+
+## 完成记录
+
+* 完成时间：2026-07-15 21:52:00 +08:00
+* 修改文件：`apps/web/app/components/brillouin-zone/*`、`apps/web/app/components/PlannerWorkbench.tsx`、`apps/web/app/globals.css`、`apps/web/test/brillouin-zone-browser-evidence.mjs`、`services/llm/mdi_llm/providers.py`、`tool_registry/platform_builtin_manifest.yaml`、Phase 10I tests/evidence/docs 与 persistent 文件。
+* 修改摘要：实现严格 Phase 10I artifact mapper、bounded outward-normal face triangulation 和 application-owned lazy Three.js BZ renderer；支持 faces/edges/vertices、reciprocal axes、high-symmetry points/labels/path、discontinuity preservation、point/face/vertex/segment picking、inspector/text tables、rotate/zoom/pan/reset、reciprocal camera presets、perspective/orthographic、layer/opacity/variant controls、local bounded PNG、typed fallback、context loss/reinitialize、mobile/accessibility 和完整资源清理。保留唯一 `structure.brillouin_zone`，未改变 adapter/contract/PlanValidator/QueueWorkerRuntime 主语义，未新增依赖或外部执行能力。
+* 测试结果：frontend `209 passed`；backend `654 passed, 23 skipped, 56 warnings`；focused Phase 10I `49 passed`；typecheck/build/Ruff/`uv lock --check`/dependency tree/diff check PASS；Chromium 150、Firefox 128、WebKit 18、portrait/landscape mobile、API/performance/accessibility/security evidence PASS；历史 Phase 10 三浏览器产品闭包 PASS；`NO_BRILLOUIN_RENDERER_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。`npm audit` 因配置镜像 `404 NOT_IMPLEMENTED` unavailable，且无 dependency/lockfile 变更。
+* 提交 / CI：implementation commit `b5469c35cc39f096037036309a37aab160c9593c`；CI run `29420821864` success，Unit、Frontend Typecheck & Build、Service-backed PostgreSQL/Redis/MinIO 和 no-skipped assertion 均成功。完成记录提交及其 current-HEAD CI 仍为归档前置条件。
 
 ---END---
 

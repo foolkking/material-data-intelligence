@@ -66,5 +66,7 @@ is never inferred from the browser evidence.
 - Ruff, `uv lock --check`, `git diff --check`, and the npm dependency tree
   passed. Three.js remains one installed copy.
 - The configured npm audit registry returned `404 NOT_IMPLEMENTED`; audit is
-  unavailable, not clean. Docker CLI is unavailable locally, so the required
-  service-backed integration remains a current-HEAD CI gate.
+  unavailable, not clean. Docker CLI is unavailable locally; implementation
+  commit `b5469c35cc39f096037036309a37aab160c9593c` passed CI run `29420821864`,
+  including unit, frontend typecheck/build, service-backed integration, and the
+  no-skipped assertion.
