@@ -6,7 +6,7 @@
 - [x] Implement the validated periodic-structure adapter, bounded local geometry/path providers, six inert artifacts, and formal registry/planner/runtime integration.
 - [x] Add deterministic scientific references, API/service-backed evidence, JSON-only preview, security, tests, and documentation.
 - [x] Complete full regression and implementation commit `08d7742`; current-HEAD CI run `29384696711` passed unit, frontend, service-backed, and no-skipped gates.
-- [ ] Archive the completed queue block after its completion-record commit passes current-HEAD CI.
+- [x] Archive the completed queue block after completion-record commit `4defa6f` passed current-HEAD CI run `29384954078`.
 
 ## Phase 10I Brillouin Zone Contract Completed
 
