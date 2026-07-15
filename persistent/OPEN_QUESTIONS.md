@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-14 Phase 10I-1 Follow-ups
+
+- Phase 10I-2 must define and evidence the Three.js/WebGL consumer, lifecycle, picking, labels, controls, mobile/accessibility, and browser/GPU performance without changing the inert Phase 10I artifacts.
+- `seekpath`/HPKOT remains uninstalled and unapproved; adding it requires a separate dependency, convention, equivalence, and migration review rather than an adapter parameter toggle.
+- Magnetic, disordered/partially occupied, 2D/surface, irreducible-wedge, custom-path, and mesh semantics remain undefined and are rejected or deferred.
+- Electronic/phonon values and Fermi surfaces remain separate calculation/artifact contracts; the BZ adapter supplies geometry and a reference path only.
+
 ## 2026-07-14 Phase 10I Follow-ups
 
 - Phase 10I-1 must select and pin a local standardization/path provider policy from existing pymatgen/spglib capabilities; `seekpath` is not currently installed and no dependency was added in the contract phase.

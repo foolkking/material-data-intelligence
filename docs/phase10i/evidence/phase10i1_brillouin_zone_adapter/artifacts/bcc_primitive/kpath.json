@@ -1,0 +1,294 @@
+{
+  "content_hash": "77e2acbded1b1f34fc7f3b33a6f864e8640e91a6c3c009d8d211414cf9c3e1bf",
+  "discontinuities": [
+    {
+      "after_segment_id": "ks-51793049bb97c772",
+      "before_segment_id": "ks-366639aa17390838",
+      "discontinuity_id": "kd-000",
+      "variant_id": "variant-919de2c4fe79"
+    }
+  ],
+  "distance_policy": {
+    "accumulation": "per_variant_cumulative_without_discontinuity_jump",
+    "metric": "euclidean_reciprocal_cartesian",
+    "unit": "angstrom^-1"
+  },
+  "magnetic_policy": "non_magnetic_only",
+  "path_convention": "setyawan_curtarolo",
+  "path_variants": [
+    {
+      "description": "Canonical Setyawan Curtarolo path",
+      "provider_variant_key": "primary",
+      "segment_ids": [
+        "ks-31657f0b43e8559f",
+        "ks-0f3bc87ed6c75f35",
+        "ks-0f9868ddf61dd918",
+        "ks-05820139c4c31553",
+        "ks-51793049bb97c772",
+        "ks-366639aa17390838"
+      ],
+      "selected": true,
+      "variant_id": "variant-919de2c4fe79"
+    }
+  ],
+  "points": [
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "display_label": "Γ",
+      "fractional_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "label_key": "GAMMA",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-739e8a8634830172",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "GAMMA"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.0,
+        1.570796326795,
+        0.0
+      ],
+      "display_label": "H",
+      "fractional_coordinates": [
+        0.5,
+        -0.5,
+        0.5
+      ],
+      "label_key": "H",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-bea06ad4747fb14f",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "H"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.785398163398,
+        0.785398163398,
+        0.0
+      ],
+      "display_label": "N",
+      "fractional_coordinates": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "label_key": "N",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-b0d02a118debefe2",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "N"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.785398163398,
+        0.785398163398,
+        0.785398163398
+      ],
+      "display_label": "P",
+      "fractional_coordinates": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "label_key": "P",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-a306bd08775ef2f8",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "P"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "deterministic": true,
+    "geometry_independent": true,
+    "producer": "structure.brillouin_zone",
+    "producer_version": "1.0.0"
+  },
+  "provider": {
+    "angle_tolerance_degrees": 5.0,
+    "convention": "setyawan_curtarolo",
+    "input_structure_sha256": "0d31e02da4d9ba0ea78bae04b0ef17edc7ed511c5d9434908396ca80649e420e",
+    "name": "pymatgen_highsymmkpath",
+    "standardization_status": "standardized",
+    "symprec_angstrom": 1e-05,
+    "time_reversal_used": true,
+    "version": "2026.5.4",
+    "warnings": []
+  },
+  "reciprocal_lattice_binding": {
+    "convention": "physics_2pi",
+    "primitive_lattice_sha256": "4a60d3398e283cbf8fcbb0fef0045c13104c059964058b9b044fd5b9501f1a1c",
+    "reciprocal_lattice_sha256": "8f40d03a7565f4d1f6d48436b156425d5140b6a6574893d076e2e81729a87ce6",
+    "source_structure_sha256": "0d31e02da4d9ba0ea78bae04b0ef17edc7ed511c5d9434908396ca80649e420e",
+    "units": "angstrom^-1"
+  },
+  "schema_version": "phase10i.kpath.v1",
+  "security": {
+    "contains_css": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_assets": [],
+    "executable_content_allowed": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "remote_assets": [],
+    "renderer_included": false,
+    "shader_sources": []
+  },
+  "segments": [
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": false,
+      "distance_end": 1.570796326795,
+      "distance_start": 0.0,
+      "end_label_key": "H",
+      "end_point_id": "kp-bea06ad4747fb14f",
+      "length": 1.570796326795,
+      "order_index": 0,
+      "segment_id": "ks-31657f0b43e8559f",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "GAMMA",
+      "start_point_id": "kp-739e8a8634830172",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": false,
+      "distance_end": 2.681517061335,
+      "distance_start": 1.570796326795,
+      "end_label_key": "N",
+      "end_point_id": "kp-b0d02a118debefe2",
+      "length": 1.11072073454,
+      "order_index": 1,
+      "segment_id": "ks-0f3bc87ed6c75f35",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "H",
+      "start_point_id": "kp-bea06ad4747fb14f",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": false,
+      "distance_end": 3.792237795875,
+      "distance_start": 2.681517061335,
+      "end_label_key": "GAMMA",
+      "end_point_id": "kp-739e8a8634830172",
+      "length": 1.11072073454,
+      "order_index": 2,
+      "segment_id": "ks-0f9868ddf61dd918",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "N",
+      "start_point_id": "kp-b0d02a118debefe2",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": false,
+      "distance_end": 5.152587319052,
+      "distance_start": 3.792237795875,
+      "end_label_key": "P",
+      "end_point_id": "kp-a306bd08775ef2f8",
+      "length": 1.360349523177,
+      "order_index": 3,
+      "segment_id": "ks-05820139c4c31553",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "GAMMA",
+      "start_point_id": "kp-739e8a8634830172",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": true,
+      "discontinuity_before": false,
+      "distance_end": 6.512936842228,
+      "distance_start": 5.152587319052,
+      "end_label_key": "H",
+      "end_point_id": "kp-bea06ad4747fb14f",
+      "length": 1.360349523176,
+      "order_index": 4,
+      "segment_id": "ks-51793049bb97c772",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "P",
+      "start_point_id": "kp-a306bd08775ef2f8",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": true,
+      "distance_end": 7.298335005626,
+      "distance_start": 6.512936842228,
+      "end_label_key": "N",
+      "end_point_id": "kp-b0d02a118debefe2",
+      "length": 0.785398163398,
+      "order_index": 5,
+      "segment_id": "ks-366639aa17390838",
+      "source_branch_identity": "primary:branch-1",
+      "start_label_key": "P",
+      "start_point_id": "kp-a306bd08775ef2f8",
+      "variant_id": "variant-919de2c4fe79"
+    }
+  ],
+  "selected_variant_id": "variant-919de2c4fe79",
+  "time_reversal_used": true,
+  "tolerances": {
+    "central_symmetry_angstrom_inverse": 1e-08,
+    "coplanarity_angstrom_inverse": 1e-08,
+    "edge_length_angstrom_inverse": 1e-10,
+    "label_coordinate_absolute": 1e-08,
+    "path_endpoint_absolute": 1e-08,
+    "plane_absolute": 1e-08,
+    "rationalization_absolute": 1e-10,
+    "real_lattice_condition_max": 100000000.0,
+    "real_lattice_determinant_relative": 1e-12,
+    "reciprocal_duality_absolute": 1e-09,
+    "schema_version": "phase10i.tolerance_policy.v1",
+    "symmetry_angle_tolerance_degrees": 5.0,
+    "symmetry_symprec_angstrom": 1e-05,
+    "transformation_roundtrip_absolute": 1e-09,
+    "vertex_merge_angstrom_inverse": 1e-08,
+    "volume_relative": 1e-08
+  },
+  "warnings": []
+}

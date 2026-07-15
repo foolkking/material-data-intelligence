@@ -1,0 +1,430 @@
+{
+  "content_hash": "ac89f7f178c2e95c0e6fae7582c013cf698615e2a84e8c695a92728aeeb80dbf",
+  "discontinuities": [
+    {
+      "after_segment_id": "ks-454a829c934ea5a9",
+      "before_segment_id": "ks-56729ee5267ca3c4",
+      "discontinuity_id": "kd-000",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "after_segment_id": "ks-3b1f9ed51e3fa8f0",
+      "before_segment_id": "ks-aa39c34e9c47c701",
+      "discontinuity_id": "kd-001",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "after_segment_id": "ks-62d0f4c1c79da662",
+      "before_segment_id": "ks-9e7072d80be6815c",
+      "discontinuity_id": "kd-002",
+      "variant_id": "variant-919de2c4fe79"
+    }
+  ],
+  "distance_policy": {
+    "accumulation": "per_variant_cumulative_without_discontinuity_jump",
+    "metric": "euclidean_reciprocal_cartesian",
+    "unit": "angstrom^-1"
+  },
+  "magnetic_policy": "non_magnetic_only",
+  "path_convention": "setyawan_curtarolo",
+  "path_variants": [
+    {
+      "description": "Canonical Setyawan Curtarolo path",
+      "provider_variant_key": "primary",
+      "segment_ids": [
+        "ks-7d971d314b4b59b0",
+        "ks-454a829c934ea5a9",
+        "ks-56729ee5267ca3c4",
+        "ks-3b1f9ed51e3fa8f0",
+        "ks-aa39c34e9c47c701",
+        "ks-62d0f4c1c79da662",
+        "ks-9e7072d80be6815c"
+      ],
+      "selected": true,
+      "variant_id": "variant-919de2c4fe79"
+    }
+  ],
+  "points": [
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "display_label": "Γ",
+      "fractional_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "label_key": "GAMMA",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-e391557d3b9ed224",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "GAMMA"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        1.010790867671,
+        0.547536499054,
+        -0.245592490805
+      ],
+      "display_label": "L",
+      "fractional_coordinates": [
+        0.5,
+        0.5,
+        0.0
+      ],
+      "label_key": "L",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-3194282e0dce1aea",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "L"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.0,
+        0.794174561691,
+        0.449306493295
+      ],
+      "display_label": "M",
+      "fractional_coordinates": [
+        0.0,
+        0.5,
+        0.5
+      ],
+      "label_key": "M",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-c9a2220a37e9e637",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "M"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        1.010790867671,
+        -0.246638062637,
+        0.557097446827
+      ],
+      "display_label": "N",
+      "fractional_coordinates": [
+        0.5,
+        0.0,
+        0.5
+      ],
+      "label_key": "N",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-ce685d99264120f6",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "N"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        1.010790867671,
+        0.547536499054,
+        0.380405724658
+      ],
+      "display_label": "R",
+      "fractional_coordinates": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "label_key": "R",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-5ad53de8ae434fea",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "R"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        1.010790867671,
+        -0.246638062637,
+        -0.068900768637
+      ],
+      "display_label": "X",
+      "fractional_coordinates": [
+        0.5,
+        0.0,
+        0.0
+      ],
+      "label_key": "X",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-092fab9c1905f161",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "X"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.0,
+        0.794174561691,
+        -0.176691722169
+      ],
+      "display_label": "Y",
+      "fractional_coordinates": [
+        0.0,
+        0.5,
+        0.0
+      ],
+      "label_key": "Y",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-1f30955fa3164bcf",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "Y"
+        ]
+      }
+    },
+    {
+      "aliases": [],
+      "basis": "standardized_primitive_reciprocal",
+      "cartesian_coordinates": [
+        0.0,
+        0.0,
+        0.625998215463
+      ],
+      "display_label": "Z",
+      "fractional_coordinates": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "label_key": "Z",
+      "metadata": {
+        "coincident_labels_merged": false
+      },
+      "point_id": "kp-46645a4a5b500c18",
+      "provider_identity": {
+        "namespace": "primary",
+        "provider": "pymatgen_highsymmkpath",
+        "source_label_keys": [
+          "Z"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "deterministic": true,
+    "geometry_independent": true,
+    "producer": "structure.brillouin_zone",
+    "producer_version": "1.0.0"
+  },
+  "provider": {
+    "angle_tolerance_degrees": 5.0,
+    "convention": "setyawan_curtarolo",
+    "input_structure_sha256": "4ee8c4493e827731bd06600b69e8b45eaf9a63f2adaca004984faee27064284a",
+    "name": "pymatgen_highsymmkpath",
+    "standardization_status": "standardized",
+    "symprec_angstrom": 1e-05,
+    "time_reversal_used": true,
+    "version": "2026.5.4",
+    "warnings": []
+  },
+  "reciprocal_lattice_binding": {
+    "convention": "physics_2pi",
+    "primitive_lattice_sha256": "2fb3bf4ec260c489afe9673735e2a51f66b4d203f89d150c8cebe2d240c0262c",
+    "reciprocal_lattice_sha256": "9767bd20bf85d76e325659598b3734e7660a0e62a1729143de7d9daecd488258",
+    "source_structure_sha256": "4ee8c4493e827731bd06600b69e8b45eaf9a63f2adaca004984faee27064284a",
+    "units": "angstrom^-1"
+  },
+  "schema_version": "phase10i.kpath.v1",
+  "security": {
+    "contains_css": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_assets": [],
+    "executable_content_allowed": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "remote_assets": [],
+    "renderer_included": false,
+    "shader_sources": []
+  },
+  "segments": [
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": false,
+      "distance_end": 1.042725192957,
+      "distance_start": 0.0,
+      "end_label_key": "GAMMA",
+      "end_point_id": "kp-e391557d3b9ed224",
+      "length": 1.042725192957,
+      "order_index": 0,
+      "segment_id": "ks-7d971d314b4b59b0",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "X",
+      "start_point_id": "kp-092fab9c1905f161",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": true,
+      "discontinuity_before": false,
+      "distance_end": 1.856317965246,
+      "distance_start": 1.042725192957,
+      "end_label_key": "Y",
+      "end_point_id": "kp-1f30955fa3164bcf",
+      "length": 0.813592772289,
+      "order_index": 1,
+      "segment_id": "ks-454a829c934ea5a9",
+      "source_branch_identity": "primary:branch-0",
+      "start_label_key": "GAMMA",
+      "start_point_id": "kp-e391557d3b9ed224",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": true,
+      "distance_end": 3.031822141122,
+      "distance_start": 1.856317965246,
+      "end_label_key": "GAMMA",
+      "end_point_id": "kp-e391557d3b9ed224",
+      "length": 1.175504175877,
+      "order_index": 2,
+      "segment_id": "ks-56729ee5267ca3c4",
+      "source_branch_identity": "primary:branch-1",
+      "start_label_key": "L",
+      "start_point_id": "kp-3194282e0dce1aea",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": true,
+      "discontinuity_before": false,
+      "distance_end": 3.657820356585,
+      "distance_start": 3.031822141122,
+      "end_label_key": "Z",
+      "end_point_id": "kp-46645a4a5b500c18",
+      "length": 0.625998215463,
+      "order_index": 3,
+      "segment_id": "ks-3b1f9ed51e3fa8f0",
+      "source_branch_identity": "primary:branch-1",
+      "start_label_key": "GAMMA",
+      "start_point_id": "kp-e391557d3b9ed224",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": true,
+      "distance_end": 4.8380263036,
+      "distance_start": 3.657820356585,
+      "end_label_key": "GAMMA",
+      "end_point_id": "kp-e391557d3b9ed224",
+      "length": 1.180205947015,
+      "order_index": 4,
+      "segment_id": "ks-aa39c34e9c47c701",
+      "source_branch_identity": "primary:branch-2",
+      "start_label_key": "N",
+      "start_point_id": "kp-ce685d99264120f6",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": true,
+      "discontinuity_before": false,
+      "distance_end": 5.750489760049,
+      "distance_start": 4.8380263036,
+      "end_label_key": "M",
+      "end_point_id": "kp-c9a2220a37e9e637",
+      "length": 0.912463456449,
+      "order_index": 5,
+      "segment_id": "ks-62d0f4c1c79da662",
+      "source_branch_identity": "primary:branch-2",
+      "start_label_key": "GAMMA",
+      "start_point_id": "kp-e391557d3b9ed224",
+      "variant_id": "variant-919de2c4fe79"
+    },
+    {
+      "discontinuity_after": false,
+      "discontinuity_before": true,
+      "distance_end": 6.961358419861,
+      "distance_start": 5.750489760049,
+      "end_label_key": "GAMMA",
+      "end_point_id": "kp-e391557d3b9ed224",
+      "length": 1.210868659812,
+      "order_index": 6,
+      "segment_id": "ks-9e7072d80be6815c",
+      "source_branch_identity": "primary:branch-3",
+      "start_label_key": "R",
+      "start_point_id": "kp-5ad53de8ae434fea",
+      "variant_id": "variant-919de2c4fe79"
+    }
+  ],
+  "selected_variant_id": "variant-919de2c4fe79",
+  "time_reversal_used": true,
+  "tolerances": {
+    "central_symmetry_angstrom_inverse": 1e-08,
+    "coplanarity_angstrom_inverse": 1e-08,
+    "edge_length_angstrom_inverse": 1e-10,
+    "label_coordinate_absolute": 1e-08,
+    "path_endpoint_absolute": 1e-08,
+    "plane_absolute": 1e-08,
+    "rationalization_absolute": 1e-10,
+    "real_lattice_condition_max": 100000000.0,
+    "real_lattice_determinant_relative": 1e-12,
+    "reciprocal_duality_absolute": 1e-09,
+    "schema_version": "phase10i.tolerance_policy.v1",
+    "symmetry_angle_tolerance_degrees": 5.0,
+    "symmetry_symprec_angstrom": 1e-05,
+    "transformation_roundtrip_absolute": 1e-09,
+    "vertex_merge_angstrom_inverse": 1e-08,
+    "volume_relative": 1e-08
+  },
+  "warnings": []
+}

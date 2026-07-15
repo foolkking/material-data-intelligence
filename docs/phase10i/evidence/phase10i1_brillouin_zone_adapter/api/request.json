@@ -1,0 +1,9 @@
+{
+  "datasetId": "dataset_phase10i1",
+  "enqueue": true,
+  "externalNetwork": false,
+  "profileId": "profile_phase10i1",
+  "projectId": "project_phase10i1",
+  "provider": "MockLLMProvider fixed validated plan",
+  "userPrompt": "Generate first Brillouin zone data"
+}

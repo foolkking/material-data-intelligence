@@ -6,6 +6,7 @@ from .errors import ToolExecutionError
 from .executor import ToolExecutionResult, execute_tool_request
 from .platform_builtin import (
     BasicMetricsAdapter,
+    BrillouinZoneAdapter,
     CompositionSummaryAdapter,
     CorrelationAdapter,
     DistributionSummaryAdapter,
@@ -46,6 +47,7 @@ __all__ = [
     "ADAPTER_CLASSES",
     "BaseToolAdapter",
     "BasicMetricsAdapter",
+    "BrillouinZoneAdapter",
     "ChemSysSunburstAdapter",
     "ChemSysTreemapAdapter",
     "CompositionSummaryAdapter",

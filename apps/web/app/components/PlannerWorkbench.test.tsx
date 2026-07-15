@@ -5,6 +5,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import adapterGeneratedViewerScene from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene.json";
 import adapterGeneratedViewerSceneManifest from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene_manifest.json";
 import liveAdapterPayload from "../../../../docs/phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/live_payload.json";
+import bzReciprocal from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/reciprocal_lattice.json";
+import bzZone from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/brillouin_zone.json";
+import bzKpath from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/kpath.json";
+import bzManifest from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/brillouin_zone_manifest.json";
 import { PlannerWorkbench } from "./PlannerWorkbench";
 import { periodicBoundaryScene } from "./viewer-scene/viewerScenePeriodicBondTestFixture";
 
@@ -637,6 +641,33 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(screen.queryByText("structure.viewer_3d")).toBeNull();
   });
 
+  it("previews validated Brillouin-zone artifacts as inert JSON without a renderer", async () => {
+    useBrillouinZoneArtifacts();
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const panel = screen.getByTestId("brillouin-zone-json-preview-panel");
+    expect(within(panel).getByText("Validated JSON only")).not.toBeNull();
+    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("phase10i.reciprocal_lattice.v1");
+    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("phase10i.brillouin_zone.v1");
+    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("physics_2pi");
+    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("8");
+    expect(within(panel).getByTestId("brillouin-zone-contract-summary").textContent).toContain("false");
+    expect(within(panel).getByTestId("brillouin-zone-primitive-lattice").textContent).toContain("4");
+    await user.click(within(panel).getByRole("tab", { name: "K-path" }));
+    expect(within(panel).getByTestId("brillouin-zone-raw-json").textContent).toContain("phase10i.kpath.v1");
+    await user.click(within(panel).getByRole("tab", { name: "Manifest" }));
+    expect(within(panel).getByTestId("brillouin-zone-raw-json").textContent).toContain("json_only");
+    expect(container.querySelector("canvas")).toBeNull();
+    expect(container.querySelector("iframe")).toBeNull();
+    expect(container.querySelector("script")).toBeNull();
+  });
+
   it("renders Phase 10F-12 adapter-generated viewer_scene.v1 artifacts in the JSON-only preview", async () => {
     useViewerSceneV1Artifacts(
       adapterGeneratedViewerScene as Record<string, unknown>,
@@ -990,6 +1021,29 @@ function useViewerSceneV1Artifacts(sceneContent: Record<string, unknown>, manife
   ];
   activeArtifacts = viewerArtifacts;
   activeResult = { ...result, artifactCount: viewerArtifacts.length, artifacts: viewerArtifacts };
+}
+
+function useBrillouinZoneArtifacts() {
+  const definitions = [
+    ["reciprocal_lattice_json", "reciprocal_lattice.json", bzReciprocal],
+    ["brillouin_zone_json", "brillouin_zone.json", bzZone],
+    ["kpath_json", "kpath.json", bzKpath],
+    ["brillouin_zone_manifest_json", "brillouin_zone_manifest.json", bzManifest]
+  ] as const;
+  activeArtifacts = definitions.map(([type, name, content], index) => ({
+    artifactId: `artifact_bz_${index}`,
+    id: `artifact_bz_${index}`,
+    jobId: "job_1",
+    toolCallId: "call_bz",
+    type,
+    name,
+    storageKey: `projects/project_local/jobs/job_1/tool_calls/call_bz/${name}`,
+    storageProvider: "local",
+    planId: "plan_1",
+    planHash: "hash_1",
+    content
+  }));
+  activeResult = { ...result, artifactCount: activeArtifacts.length, artifacts: activeArtifacts };
 }
 
 function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {

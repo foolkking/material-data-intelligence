@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-14 - Phase 10I-1 Brillouin Zone Adapter
+
+- Added formal `structure.brillouin_zone`, `BrillouinZoneAdapter`, strict registry schemas/caps, four dedicated scientific artifact types, and deterministic planner routing.
+- Added local primitive/conventional standardization, canonical reciprocal/BZ geometry, generator-plane binding, Setyawan-Curtarolo k-path generation, Phase 10I validation, six inert artifacts, persisted runtime execution, and typed failures.
+- Added SC/BCC/FCC/hexagonal/lower-symmetry references, conventional/primitive equivalence, replay, API/runtime evidence, security checks, and fixed JSON-only reciprocal/BZ/k-path/manifest preview tabs.
+- Added no dependency, frontend renderer, WebGL/Canvas, external network/resource, notebook/script, real LLM, electronic/phonon calculation, or custom path capability.
+
 ## 2026-07-14 - Phase 10I Brillouin Zone Contract
 
 - Added reciprocal-lattice, first-Brillouin-zone, high-symmetry k-path, manifest, and tolerance contract schemas with deterministic canonical JSON and hashes.

@@ -107,6 +107,39 @@ class MockLLMProvider:
             plan = _mock_phonon_band_plan(request)
         elif _should_generate_trajectory_viewer(request, tools, data_profile):
             plan = _mock_trajectory_viewer_plan(request)
+        elif _should_generate_brillouin_zone(request, tools, data_profile):
+            plan = _mock_structure_plan(
+                request,
+                data_profile=data_profile,
+                tool_id="structure.brillouin_zone",
+                purpose="Generate validated inert first-Brillouin-zone data and the canonical high-symmetry k-path; no renderer is included.",
+                params={
+                    "include_reciprocal_lattice": True,
+                    "include_brillouin_zone": True,
+                    "include_kpath": True,
+                    "standardization": "contract_default",
+                    "kpath_provider": "contract_default",
+                    "time_reversal": True,
+                    "symmetry_tolerance_angstrom": 0.00001,
+                    "angle_tolerance_degrees": 5.0,
+                    "include_alternative_path_variants": False,
+                },
+                artifact_name="reciprocal_lattice.json",
+                artifact_type="reciprocal_lattice_json",
+                artifact_types=[
+                    "reciprocal_lattice_json",
+                    "brillouin_zone_json",
+                    "kpath_json",
+                    "brillouin_zone_manifest_json",
+                    "summary_md",
+                    "recipe_json",
+                ],
+                extra_expected_artifacts=[
+                    {"name": "brillouin_zone.json", "type": "brillouin_zone_json", "fromStepId": "step_001"},
+                    {"name": "kpath.json", "type": "kpath_json", "fromStepId": "step_001"},
+                    {"name": "brillouin_zone_manifest.json", "type": "brillouin_zone_manifest_json", "fromStepId": "step_001"},
+                ],
+            )
         elif _should_generate_viewer_scene(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -905,6 +938,32 @@ def _should_generate_viewer_export_package(
         "viewer_assets_manifest",
         "package this structure for future 3d viewer",
         "static viewer export",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _should_generate_brillouin_zone(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.brillouin_zone") or not _has_structure_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    unsupported = (
+        "interactive", "3d viewer", "three.js", "threejs", "webgl", "rotatable",
+        "交互式", "可旋转", "三维查看", "电子能带", "electronic band", "band structure",
+        "phonon", "声子", "trajectory", "轨迹", "fermi", "monkhorst", "charge density",
+        "电荷密度", "xrd", "crystalnn", "edit structure", "编辑结构", "dft",
+    )
+    if any(marker in prompt for marker in unsupported):
+        return False
+    markers = (
+        "first brillouin zone", "brillouin zone data", "brillouin zone json",
+        "reciprocal lattice and high-symmetry path", "reciprocal lattice and high symmetry path",
+        "standardized k-path", "standardized kpath", "crystal k-path", "crystal kpath",
+        "第一布里渊区", "布里渊区数据", "倒易晶格和高对称路径", "高对称路径",
+        "这个晶体的k路径", "这个晶体的 k 路径", "导出这个结构的brillouin zone数据",
     )
     return any(marker in prompt for marker in markers)
 

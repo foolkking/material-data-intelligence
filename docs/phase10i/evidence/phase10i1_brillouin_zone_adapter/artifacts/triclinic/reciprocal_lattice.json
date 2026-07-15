@@ -1,0 +1,208 @@
+{
+  "basis_orientation": "row_vectors",
+  "basis_role": "standardized_primitive_reciprocal",
+  "cell_volume": 4.02013246641,
+  "content_hash": "9767bd20bf85d76e325659598b3734e7660a0e62a1729143de7d9daecd488258",
+  "convention": "physics_2pi",
+  "determinant": 4.02013246641,
+  "dual_product": [
+    [
+      6.283185307181,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      6.283185307181,
+      0.0
+    ],
+    [
+      0.0,
+      1e-12,
+      6.283185307178
+    ]
+  ],
+  "matrix": [
+    [
+      2.021581735342,
+      -0.493276125274,
+      -0.137801537273
+    ],
+    [
+      0.0,
+      1.588349123382,
+      -0.353383444338
+    ],
+    [
+      0.0,
+      0.0,
+      1.251996430927
+    ]
+  ],
+  "provenance": {
+    "deterministic": true,
+    "geometry_generated": false,
+    "producer": "structure.brillouin_zone",
+    "producer_version": "1.0.0"
+  },
+  "provider": {
+    "angle_tolerance_degrees": 5.0,
+    "convention": "setyawan_curtarolo",
+    "input_structure_sha256": "4ee8c4493e827731bd06600b69e8b45eaf9a63f2adaca004984faee27064284a",
+    "name": "pymatgen_highsymmkpath",
+    "standardization_status": "standardized",
+    "symprec_angstrom": 1e-05,
+    "time_reversal_used": true,
+    "version": "2026.5.4",
+    "warnings": []
+  },
+  "real_cell_volume": 61.702,
+  "real_lattice_binding": {
+    "conventional_lattice_sha256": "2fb3bf4ec260c489afe9673735e2a51f66b4d203f89d150c8cebe2d240c0262c",
+    "conventional_real_lattice": [
+      [
+        3.108054053584,
+        0.0,
+        0.0
+      ],
+      [
+        0.965234178132,
+        3.955796124849,
+        0.0
+      ],
+      [
+        0.614532426744,
+        1.116547000588,
+        5.018532922275
+      ]
+    ],
+    "magnetic": false,
+    "ordered": true,
+    "partial_occupancy": false,
+    "periodic_dimension": 3,
+    "primitive_basis_role": "standardized_primitive_cell",
+    "primitive_lattice_sha256": "2fb3bf4ec260c489afe9673735e2a51f66b4d203f89d150c8cebe2d240c0262c",
+    "primitive_real_lattice": [
+      [
+        3.108054053584,
+        0.0,
+        0.0
+      ],
+      [
+        0.965234178132,
+        3.955796124849,
+        0.0
+      ],
+      [
+        0.614532426744,
+        1.116547000588,
+        5.018532922275
+      ]
+    ],
+    "source_basis_role": "source_cell",
+    "source_lattice_sha256": "22f0db78dd3e33a16f7f53e9eb4b5741f0ede48ab8cb886e5a68de998ded471e",
+    "source_real_lattice": [
+      [
+        3.1,
+        0.2,
+        0.1
+      ],
+      [
+        0.7,
+        4.0,
+        0.3
+      ],
+      [
+        0.4,
+        0.8,
+        5.1
+      ]
+    ],
+    "source_structure_id": "structure:4ee8c4493e827731bd06600b",
+    "source_structure_sha256": "4ee8c4493e827731bd06600b69e8b45eaf9a63f2adaca004984faee27064284a"
+  },
+  "schema_version": "phase10i.reciprocal_lattice.v1",
+  "security": {
+    "contains_css": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_assets": [],
+    "executable_content_allowed": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "remote_assets": [],
+    "renderer_included": false,
+    "shader_sources": []
+  },
+  "tolerances": {
+    "central_symmetry_angstrom_inverse": 1e-08,
+    "coplanarity_angstrom_inverse": 1e-08,
+    "edge_length_angstrom_inverse": 1e-10,
+    "label_coordinate_absolute": 1e-08,
+    "path_endpoint_absolute": 1e-08,
+    "plane_absolute": 1e-08,
+    "rationalization_absolute": 1e-10,
+    "real_lattice_condition_max": 100000000.0,
+    "real_lattice_determinant_relative": 1e-12,
+    "reciprocal_duality_absolute": 1e-09,
+    "schema_version": "phase10i.tolerance_policy.v1",
+    "symmetry_angle_tolerance_degrees": 5.0,
+    "symmetry_symprec_angstrom": 1e-05,
+    "transformation_roundtrip_absolute": 1e-09,
+    "vertex_merge_angstrom_inverse": 1e-08,
+    "volume_relative": 1e-08
+  },
+  "transformations": [
+    {
+      "cartesian_rotation": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "determinant": 1.0,
+      "matrix": [
+        [
+          1.01549981719,
+          -0.047349693857,
+          -0.017126485012
+        ],
+        [
+          0.094188590328,
+          0.996330504058,
+          -0.060454511814
+        ],
+        [
+          0.053768311108,
+          0.080804620671,
+          0.978218569601
+        ]
+      ],
+      "matrix_representation": "finite_decimal",
+      "new_basis": "standardized_primitive_cell",
+      "old_basis": "source_cell",
+      "origin_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "real_fractional_formula": "r_new=r_old*M^-1",
+      "real_lattice_formula": "A_new=M*A_old",
+      "reciprocal_basis_formula": "B_new=M^-T*B_old",
+      "reciprocal_fractional_formula": "k_new=k_old*M^T",
+      "transformation_id": "source_cell_to_standardized_primitive_cell"
+    }
+  ],
+  "units": "angstrom^-1"
+}

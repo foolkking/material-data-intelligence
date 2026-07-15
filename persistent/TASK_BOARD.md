@@ -1,5 +1,12 @@
 # TASK_BOARD
 
+## Phase 10I-1 Brillouin Zone Adapter In Progress
+
+- [x] Audit the Phase 10I contract, structure normalization pipeline, provider capabilities, registry overlap, and runtime boundaries.
+- [x] Implement the validated periodic-structure adapter, bounded local geometry/path providers, six inert artifacts, and formal registry/planner/runtime integration.
+- [x] Add deterministic scientific references, API/service-backed evidence, JSON-only preview, security, tests, and documentation.
+- [ ] Complete full regression, implementation commit, current-HEAD CI, completion record, and queue archival.
+
 ## Phase 10I Brillouin Zone Contract Completed
 
 - [x] Audit real-space/reciprocal conventions, symmetry capabilities, dependencies, and artifact infrastructure.

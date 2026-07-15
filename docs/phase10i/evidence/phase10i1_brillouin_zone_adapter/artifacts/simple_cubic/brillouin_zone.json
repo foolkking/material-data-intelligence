@@ -1,0 +1,615 @@
+{
+  "center": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "content_hash": "2a6fd406e92b2049d3a6239738827c4930fe17568ae1307838f8fba13b39c9a5",
+  "definition": "wigner_seitz",
+  "edges": [
+    {
+      "edge_id": "e000",
+      "incident_face_ids": [
+        "f000",
+        "f001"
+      ],
+      "length": 1.570796326794,
+      "order_index": 0,
+      "vertex_ids": [
+        "v000",
+        "v001"
+      ]
+    },
+    {
+      "edge_id": "e001",
+      "incident_face_ids": [
+        "f000",
+        "f002"
+      ],
+      "length": 1.570796326794,
+      "order_index": 1,
+      "vertex_ids": [
+        "v000",
+        "v002"
+      ]
+    },
+    {
+      "edge_id": "e002",
+      "incident_face_ids": [
+        "f001",
+        "f002"
+      ],
+      "length": 1.570796326794,
+      "order_index": 2,
+      "vertex_ids": [
+        "v000",
+        "v004"
+      ]
+    },
+    {
+      "edge_id": "e003",
+      "incident_face_ids": [
+        "f000",
+        "f003"
+      ],
+      "length": 1.570796326794,
+      "order_index": 3,
+      "vertex_ids": [
+        "v001",
+        "v003"
+      ]
+    },
+    {
+      "edge_id": "e004",
+      "incident_face_ids": [
+        "f001",
+        "f003"
+      ],
+      "length": 1.570796326794,
+      "order_index": 4,
+      "vertex_ids": [
+        "v001",
+        "v005"
+      ]
+    },
+    {
+      "edge_id": "e005",
+      "incident_face_ids": [
+        "f000",
+        "f004"
+      ],
+      "length": 1.570796326794,
+      "order_index": 5,
+      "vertex_ids": [
+        "v002",
+        "v003"
+      ]
+    },
+    {
+      "edge_id": "e006",
+      "incident_face_ids": [
+        "f002",
+        "f004"
+      ],
+      "length": 1.570796326794,
+      "order_index": 6,
+      "vertex_ids": [
+        "v002",
+        "v006"
+      ]
+    },
+    {
+      "edge_id": "e007",
+      "incident_face_ids": [
+        "f003",
+        "f004"
+      ],
+      "length": 1.570796326794,
+      "order_index": 7,
+      "vertex_ids": [
+        "v003",
+        "v007"
+      ]
+    },
+    {
+      "edge_id": "e008",
+      "incident_face_ids": [
+        "f001",
+        "f005"
+      ],
+      "length": 1.570796326794,
+      "order_index": 8,
+      "vertex_ids": [
+        "v004",
+        "v005"
+      ]
+    },
+    {
+      "edge_id": "e009",
+      "incident_face_ids": [
+        "f002",
+        "f005"
+      ],
+      "length": 1.570796326794,
+      "order_index": 9,
+      "vertex_ids": [
+        "v004",
+        "v006"
+      ]
+    },
+    {
+      "edge_id": "e010",
+      "incident_face_ids": [
+        "f003",
+        "f005"
+      ],
+      "length": 1.570796326794,
+      "order_index": 10,
+      "vertex_ids": [
+        "v005",
+        "v007"
+      ]
+    },
+    {
+      "edge_id": "e011",
+      "incident_face_ids": [
+        "f004",
+        "f005"
+      ],
+      "length": 1.570796326794,
+      "order_index": 11,
+      "vertex_ids": [
+        "v006",
+        "v007"
+      ]
+    }
+  ],
+  "faces": [
+    {
+      "area": 2.46740110027,
+      "centroid": [
+        -0.785398163397,
+        0.0,
+        0.0
+      ],
+      "edge_ids": [
+        "e000",
+        "e003",
+        "e005",
+        "e001"
+      ],
+      "face_id": "f000",
+      "generator_cartesian": [
+        -1.570796326795,
+        0.0,
+        0.0
+      ],
+      "generator_hkl": [
+        -1,
+        0,
+        0
+      ],
+      "order_index": 0,
+      "outward_normal": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "plane_offset": 0.785398163398,
+      "vertex_ids": [
+        "v000",
+        "v001",
+        "v003",
+        "v002"
+      ],
+      "winding": "ccw_from_outside"
+    },
+    {
+      "area": 2.46740110027,
+      "centroid": [
+        0.0,
+        -0.785398163397,
+        0.0
+      ],
+      "edge_ids": [
+        "e002",
+        "e008",
+        "e004",
+        "e000"
+      ],
+      "face_id": "f001",
+      "generator_cartesian": [
+        0.0,
+        -1.570796326795,
+        0.0
+      ],
+      "generator_hkl": [
+        0,
+        -1,
+        0
+      ],
+      "order_index": 1,
+      "outward_normal": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "plane_offset": 0.785398163398,
+      "vertex_ids": [
+        "v000",
+        "v004",
+        "v005",
+        "v001"
+      ],
+      "winding": "ccw_from_outside"
+    },
+    {
+      "area": 2.46740110027,
+      "centroid": [
+        0.0,
+        0.0,
+        -0.785398163397
+      ],
+      "edge_ids": [
+        "e001",
+        "e006",
+        "e009",
+        "e002"
+      ],
+      "face_id": "f002",
+      "generator_cartesian": [
+        0.0,
+        0.0,
+        -1.570796326795
+      ],
+      "generator_hkl": [
+        0,
+        0,
+        -1
+      ],
+      "order_index": 2,
+      "outward_normal": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "plane_offset": 0.785398163398,
+      "vertex_ids": [
+        "v000",
+        "v002",
+        "v006",
+        "v004"
+      ],
+      "winding": "ccw_from_outside"
+    },
+    {
+      "area": 2.46740110027,
+      "centroid": [
+        0.0,
+        0.0,
+        0.785398163397
+      ],
+      "edge_ids": [
+        "e004",
+        "e010",
+        "e007",
+        "e003"
+      ],
+      "face_id": "f003",
+      "generator_cartesian": [
+        0.0,
+        0.0,
+        1.570796326795
+      ],
+      "generator_hkl": [
+        0,
+        0,
+        1
+      ],
+      "order_index": 3,
+      "outward_normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "plane_offset": 0.785398163398,
+      "vertex_ids": [
+        "v001",
+        "v005",
+        "v007",
+        "v003"
+      ],
+      "winding": "ccw_from_outside"
+    },
+    {
+      "area": 2.46740110027,
+      "centroid": [
+        0.0,
+        0.785398163397,
+        0.0
+      ],
+      "edge_ids": [
+        "e005",
+        "e007",
+        "e011",
+        "e006"
+      ],
+      "face_id": "f004",
+      "generator_cartesian": [
+        0.0,
+        1.570796326795,
+        0.0
+      ],
+      "generator_hkl": [
+        0,
+        1,
+        0
+      ],
+      "order_index": 4,
+      "outward_normal": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "plane_offset": 0.785398163398,
+      "vertex_ids": [
+        "v002",
+        "v003",
+        "v007",
+        "v006"
+      ],
+      "winding": "ccw_from_outside"
+    },
+    {
+      "area": 2.46740110027,
+      "centroid": [
+        0.785398163397,
+        0.0,
+        0.0
+      ],
+      "edge_ids": [
+        "e009",
+        "e011",
+        "e010",
+        "e008"
+      ],
+      "face_id": "f005",
+      "generator_cartesian": [
+        1.570796326795,
+        0.0,
+        0.0
+      ],
+      "generator_hkl": [
+        1,
+        0,
+        0
+      ],
+      "order_index": 5,
+      "outward_normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "plane_offset": 0.785398163398,
+      "vertex_ids": [
+        "v004",
+        "v006",
+        "v007",
+        "v005"
+      ],
+      "winding": "ccw_from_outside"
+    }
+  ],
+  "provenance": {
+    "deterministic": true,
+    "geometry_method": "pymatgen reciprocal Wigner Seitz",
+    "producer": "structure.brillouin_zone",
+    "producer_version": "1.0.0"
+  },
+  "reciprocal_lattice_binding": {
+    "convention": "physics_2pi",
+    "primitive_lattice_sha256": "23e1f946f587d7a17bc37e73dc0417865cf6d8bfd07b7b7d2bf08b8afc89c4a8",
+    "reciprocal_lattice_sha256": "d331c1f0f3b37a1d25ec540492b32fce9a0c74489b6d5829a540e46f60b484df",
+    "source_structure_sha256": "78c6ecaabdf1eab90c460f2b3578b73f34e81a2d7305fd87aa97b17759969c69",
+    "units": "angstrom^-1"
+  },
+  "schema_version": "phase10i.brillouin_zone.v1",
+  "security": {
+    "contains_css": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_assets": [],
+    "executable_content_allowed": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "remote_assets": [],
+    "renderer_included": false,
+    "shader_sources": []
+  },
+  "surface_area": 14.80440660162,
+  "tolerances": {
+    "central_symmetry_angstrom_inverse": 1e-08,
+    "coplanarity_angstrom_inverse": 1e-08,
+    "edge_length_angstrom_inverse": 1e-10,
+    "label_coordinate_absolute": 1e-08,
+    "path_endpoint_absolute": 1e-08,
+    "plane_absolute": 1e-08,
+    "rationalization_absolute": 1e-10,
+    "real_lattice_condition_max": 100000000.0,
+    "real_lattice_determinant_relative": 1e-12,
+    "reciprocal_duality_absolute": 1e-09,
+    "schema_version": "phase10i.tolerance_policy.v1",
+    "symmetry_angle_tolerance_degrees": 5.0,
+    "symmetry_symprec_angstrom": 1e-05,
+    "transformation_roundtrip_absolute": 1e-09,
+    "vertex_merge_angstrom_inverse": 1e-08,
+    "volume_relative": 1e-08
+  },
+  "topology": {
+    "centrally_symmetric": true,
+    "closed": true,
+    "connected": true,
+    "convex": true,
+    "edge_count": 12,
+    "euler_characteristic": 2,
+    "face_count": 6,
+    "manifold": true,
+    "vertex_count": 8
+  },
+  "vertices": [
+    {
+      "cartesian_coordinates": [
+        -0.785398163397,
+        -0.785398163397,
+        -0.785398163397
+      ],
+      "fractional_coordinates": [
+        -0.5,
+        -0.5,
+        -0.5
+      ],
+      "incident_face_ids": [
+        "f000",
+        "f001",
+        "f002"
+      ],
+      "order_index": 0,
+      "vertex_id": "v000"
+    },
+    {
+      "cartesian_coordinates": [
+        -0.785398163397,
+        -0.785398163397,
+        0.785398163397
+      ],
+      "fractional_coordinates": [
+        -0.5,
+        -0.5,
+        0.5
+      ],
+      "incident_face_ids": [
+        "f000",
+        "f001",
+        "f003"
+      ],
+      "order_index": 1,
+      "vertex_id": "v001"
+    },
+    {
+      "cartesian_coordinates": [
+        -0.785398163397,
+        0.785398163397,
+        -0.785398163397
+      ],
+      "fractional_coordinates": [
+        -0.5,
+        0.5,
+        -0.5
+      ],
+      "incident_face_ids": [
+        "f000",
+        "f002",
+        "f004"
+      ],
+      "order_index": 2,
+      "vertex_id": "v002"
+    },
+    {
+      "cartesian_coordinates": [
+        -0.785398163397,
+        0.785398163397,
+        0.785398163397
+      ],
+      "fractional_coordinates": [
+        -0.5,
+        0.5,
+        0.5
+      ],
+      "incident_face_ids": [
+        "f000",
+        "f003",
+        "f004"
+      ],
+      "order_index": 3,
+      "vertex_id": "v003"
+    },
+    {
+      "cartesian_coordinates": [
+        0.785398163397,
+        -0.785398163397,
+        -0.785398163397
+      ],
+      "fractional_coordinates": [
+        0.5,
+        -0.5,
+        -0.5
+      ],
+      "incident_face_ids": [
+        "f001",
+        "f002",
+        "f005"
+      ],
+      "order_index": 4,
+      "vertex_id": "v004"
+    },
+    {
+      "cartesian_coordinates": [
+        0.785398163397,
+        -0.785398163397,
+        0.785398163397
+      ],
+      "fractional_coordinates": [
+        0.5,
+        -0.5,
+        0.5
+      ],
+      "incident_face_ids": [
+        "f001",
+        "f003",
+        "f005"
+      ],
+      "order_index": 5,
+      "vertex_id": "v005"
+    },
+    {
+      "cartesian_coordinates": [
+        0.785398163397,
+        0.785398163397,
+        -0.785398163397
+      ],
+      "fractional_coordinates": [
+        0.5,
+        0.5,
+        -0.5
+      ],
+      "incident_face_ids": [
+        "f002",
+        "f004",
+        "f005"
+      ],
+      "order_index": 6,
+      "vertex_id": "v006"
+    },
+    {
+      "cartesian_coordinates": [
+        0.785398163397,
+        0.785398163397,
+        0.785398163397
+      ],
+      "fractional_coordinates": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "incident_face_ids": [
+        "f003",
+        "f004",
+        "f005"
+      ],
+      "order_index": 7,
+      "vertex_id": "v007"
+    }
+  ],
+  "volume": 3.875784585031,
+  "warnings": []
+}

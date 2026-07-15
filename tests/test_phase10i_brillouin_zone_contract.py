@@ -147,7 +147,7 @@ def test_schema_family_caps_security_and_registration_boundary() -> None:
         "duality": "A*B^T=2*pi*I",
         "units": "angstrom^-1",
     }
-    assert snapshots["tool_registration"] == "NOT_REGISTERED"
+    assert snapshots["tool_registration"] == "REGISTERED_DATA_ADAPTER"
     assert snapshots["renderer"] == "NOT_INCLUDED"
     assert BRILLOUIN_CAPS["max_vertices"] == 256
     assert BRILLOUIN_CAPS["max_edges"] == 512
@@ -156,7 +156,7 @@ def test_schema_family_caps_security_and_registration_boundary() -> None:
     assert BRILLOUIN_SECURITY["renderer_included"] is False
     assert BRILLOUIN_SECURITY["external_urls"] == []
     tool_ids = {tool.toolId for tool in load_manifests().list_tools()}
-    assert "structure.brillouin_zone" not in tool_ids
+    assert "structure.brillouin_zone" in tool_ids
     assert "structure.kpath" not in tool_ids
 
 

@@ -1,0 +1,102 @@
+{
+  "artifacts/bcc_conventional/brillouin_zone.json": {
+    "sha256": "cc8fc751f249b2da1f5b104c1290fc2f9d7069d21ac80ac7a238190d99dd2166",
+    "stable": true
+  },
+  "artifacts/bcc_conventional/brillouin_zone_manifest.json": {
+    "sha256": "2c4c5281dcaef24b5ab4ea0285a257315190919d17ffd7d3df43fb7914373362",
+    "stable": true
+  },
+  "artifacts/bcc_conventional/kpath.json": {
+    "sha256": "3f4c72bca298dfa1ed9c80d88e746ca39928e500741a58ea02263fc232a3fa35",
+    "stable": true
+  },
+  "artifacts/bcc_conventional/recipe.json": {
+    "sha256": "409dfdbbcba07e19dc817217baff5546d735c98e916a4adc8dbefe474a07a0ce",
+    "stable": true
+  },
+  "artifacts/bcc_conventional/reciprocal_lattice.json": {
+    "sha256": "ad9466205ee8bf9229df76dd8d7debf1c808be57078b562d7a53c7186799fb71",
+    "stable": true
+  },
+  "artifacts/bcc_primitive/brillouin_zone.json": {
+    "sha256": "61e5ea103bb0e4aac41b81b8af736abaa116822017e91940c44abb2298ce3727",
+    "stable": true
+  },
+  "artifacts/bcc_primitive/brillouin_zone_manifest.json": {
+    "sha256": "0a3bbc03fa5f8c11184d372b0b8658de6078a484e587e9805fcb53fdbee451c6",
+    "stable": true
+  },
+  "artifacts/bcc_primitive/kpath.json": {
+    "sha256": "b64b8372864059ee6d53e31021eeff6916e73f84d2a6e992d816e470f9c0cdc9",
+    "stable": true
+  },
+  "artifacts/bcc_primitive/recipe.json": {
+    "sha256": "f145906d6e6c17a33c5e40a5d3e0cec25e55303a5834be11a275d04d6fd14d92",
+    "stable": true
+  },
+  "artifacts/bcc_primitive/reciprocal_lattice.json": {
+    "sha256": "df7f676abcccaeaafd60325baae1699e1c203e5a8c08293eff43aaed2daefdb1",
+    "stable": true
+  },
+  "artifacts/hexagonal/brillouin_zone.json": {
+    "sha256": "0ccb902009b8ee6f35fc7fb0a42d4a6a4a8364aad128a6d1cec2a78c3d263444",
+    "stable": true
+  },
+  "artifacts/hexagonal/brillouin_zone_manifest.json": {
+    "sha256": "bf2a7c33c0c942d1e08faae96b84a104e2cbfb1e859a8c9367cf9b4e3a4eb454",
+    "stable": true
+  },
+  "artifacts/hexagonal/kpath.json": {
+    "sha256": "a8ac27b06edb955b16bd133d6a63a44612e0422b888a86532d83753f2ed141c7",
+    "stable": true
+  },
+  "artifacts/hexagonal/recipe.json": {
+    "sha256": "51b4fcf1d4af621b27a8a6436a0a93db5f978e8cd31ddc3d88ec127e5b418aca",
+    "stable": true
+  },
+  "artifacts/hexagonal/reciprocal_lattice.json": {
+    "sha256": "09fcd6170c9639a2a24fbea1836c3b98c1b36bf342940ed96116f98276ca0f67",
+    "stable": true
+  },
+  "artifacts/simple_cubic/brillouin_zone.json": {
+    "sha256": "e7b9cded78f3b044d71829b4b6f9426dc6d1828116b0177269cd98f1f9d50375",
+    "stable": true
+  },
+  "artifacts/simple_cubic/brillouin_zone_manifest.json": {
+    "sha256": "558696316009ec1ebc7449cf0b51973c6a19e5b30188dade1d3f2080881220a6",
+    "stable": true
+  },
+  "artifacts/simple_cubic/kpath.json": {
+    "sha256": "7d46dfd4c647a679453d3e6f076712151f3aaa882ecb6e25d71757b146bef02b",
+    "stable": true
+  },
+  "artifacts/simple_cubic/recipe.json": {
+    "sha256": "9dbde61e1d75736822be411ef9d1b340a5be6793eb893ea2ec975288b4bee79e",
+    "stable": true
+  },
+  "artifacts/simple_cubic/reciprocal_lattice.json": {
+    "sha256": "82ea8804643b1c85f2093428d7ed44a97363849d033e1ac13bb466192a9b7e30",
+    "stable": true
+  },
+  "artifacts/triclinic/brillouin_zone.json": {
+    "sha256": "eef570633acf8d8b2f4acdbf152893e764fb7c0b7159610ffc902273bde16a14",
+    "stable": true
+  },
+  "artifacts/triclinic/brillouin_zone_manifest.json": {
+    "sha256": "4fccaf27a20dfd42b0d904876ce5af9240af18fb9e6f3074881e8ac6cbbab317",
+    "stable": true
+  },
+  "artifacts/triclinic/kpath.json": {
+    "sha256": "2cbced2c37603616a1007fdd8bd11ca9ab92f3db140f0d71013e91b0dc8317cf",
+    "stable": true
+  },
+  "artifacts/triclinic/recipe.json": {
+    "sha256": "f5b8b8e933adb7b7e4c7ad4f03365ec15db3c4f136cc36d34e9007f1f8a0583c",
+    "stable": true
+  },
+  "artifacts/triclinic/reciprocal_lattice.json": {
+    "sha256": "6c18a1f79c0e7c2ac022a2dbc1658d93b7561b9a5af208a5050208f75a5651bf",
+    "stable": true
+  }
+}

@@ -1,5 +1,13 @@
 # DESIGN_PROGRESS
 
+## 2026-07-14 Phase 10I-1 Brillouin Zone Adapter
+
+- Registered the unique JSON-only `structure.brillouin_zone` data tool with strict single ordered/non-magnetic 3D Structure input, fixed provider policy, six inert output types, and Phase 10I caps.
+- Implemented local pymatgen/spglib primitive standardization, physics-`2*pi` reciprocal construction, bounded Wigner-Seitz generator binding, Setyawan-Curtarolo paths, production provenance, validation, hashes, summary, and recipe.
+- Added explicit English/Chinese planner routing, negative capability routing, PlanValidator coverage, persisted QueueWorkerRuntime replay, scientific references, typed rejection, and sanitized evidence.
+- Added a fixed application-owned reciprocal/BZ/k-path/manifest JSON preview using real adapter evidence, with no canvas, graphics context, artifact execution, or renderer claim. No dependency, network, external asset, real LLM, Three.js/WebGL renderer, browser GPU evidence, or interactive BZ product was added; those remain Phase 10I-2 scope.
+- Local closure passed 88 focused tests, 194 frontend tests, `648 passed, 23 skipped` backend tests, typecheck/build, Ruff, evidence replay, and the Phase 10 browser regression pack. Local service-backed/no-skipped execution is unavailable without Docker and remains a current-HEAD CI gate; npm audit remains unavailable at the configured registry.
+
 ## 2026-07-14 Phase 10I Brillouin Zone Contract
 
 - Added the inert `phase10i.reciprocal_lattice.v1`, `phase10i.brillouin_zone.v1`, `phase10i.kpath.v1`, `phase10i.brillouin_zone_manifest.v1`, and versioned tolerance contracts.

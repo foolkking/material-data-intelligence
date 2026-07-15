@@ -1,6 +1,11 @@
 """Platform builtin and custom Plotly adapters."""
 
 from .basic_metrics import BasicMetricsAdapter
+from .brillouin_zone import (
+    BRILLOUIN_ZONE_ADAPTER_VERSION,
+    BRILLOUIN_ZONE_TOOL_ID,
+    BrillouinZoneAdapter,
+)
 from .composition_summary import CompositionSummaryAdapter
 from .error_distribution import ErrorDistributionAdapter
 from .numeric_summary import NumericSummaryAdapter
@@ -28,6 +33,9 @@ from .viz import CorrelationAdapter, HistogramAdapter, ScatterAdapter
 
 __all__ = [
     "BasicMetricsAdapter",
+    "BRILLOUIN_ZONE_ADAPTER_VERSION",
+    "BRILLOUIN_ZONE_TOOL_ID",
+    "BrillouinZoneAdapter",
     "CompositionSummaryAdapter",
     "CorrelationAdapter",
     "DistributionSummaryAdapter",

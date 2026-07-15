@@ -108,6 +108,25 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.brillouin_zone":
+        return {
+            "maxStructures": 1,
+            "maxAtomsPerStructure": 512,
+            "maxVertices": 256,
+            "maxEdges": 512,
+            "maxFaces": 256,
+            "maxVerticesPerFace": 64,
+            "maxHighSymmetryPoints": 128,
+            "maxAliasesPerPoint": 16,
+            "maxPathVariants": 8,
+            "maxPathSegments": 256,
+            "maxDiscontinuities": 64,
+            "maxWarnings": 32,
+            "maxProviderMetadataBytes": 16384,
+            "maxJsonBytes": 8000000,
+            "maxGeneratorSearchRadius": 4,
+            "maxCandidatePlanes": 728,
+        }
     if tool_id == "phonon.band":
         return {
             "maxAtoms": 512,
@@ -214,6 +233,18 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.brillouin_zone":
+        return ToolInputSchema(
+            inputOptions=[
+                ToolInputOption(
+                    name="single_periodic_structure",
+                    requiredObjectTypes=[MaterialObjectType.Structure],
+                    requiredFields=[],
+                    description="Use exactly one ordered non-magnetic three-dimensional periodic Structure.",
+                )
+            ],
+            periodicity="periodic_required",
+        )
     if tool_id == "phonon.band":
         return ToolInputSchema(
             periodicity="periodic_required",
@@ -372,6 +403,30 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.brillouin_zone":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "include_reciprocal_lattice": {"const": True},
+                "include_brillouin_zone": {"const": True},
+                "include_kpath": {"const": True},
+                "standardization": {"const": "contract_default"},
+                "kpath_provider": {"const": "contract_default"},
+                "time_reversal": {"const": True},
+                "symmetry_tolerance_angstrom": {
+                    "type": "number",
+                    "minimum": 0.0000001,
+                    "maximum": 1.0,
+                },
+                "angle_tolerance_degrees": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 30.0,
+                },
+                "include_alternative_path_variants": {"const": False},
+            },
+        }
     if tool_id == "phonon.band":
         return {
             "type": "object",

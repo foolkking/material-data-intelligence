@@ -1,0 +1,66 @@
+{
+  "artifacts": [
+    {
+      "media_type": "application/json",
+      "name": "reciprocal_lattice.json",
+      "schema_version": "phase10i.reciprocal_lattice.v1",
+      "sha256": "9767bd20bf85d76e325659598b3734e7660a0e62a1729143de7d9daecd488258"
+    },
+    {
+      "media_type": "application/json",
+      "name": "brillouin_zone.json",
+      "schema_version": "phase10i.brillouin_zone.v1",
+      "sha256": "74fb0566e6442a0d74e6eff9d7b8dad8874bab4b67d20332d49b8adc17e2856e"
+    },
+    {
+      "media_type": "application/json",
+      "name": "kpath.json",
+      "schema_version": "phase10i.kpath.v1",
+      "sha256": "ac89f7f178c2e95c0e6fae7582c013cf698615e2a84e8c695a92728aeeb80dbf"
+    }
+  ],
+  "capabilities": {
+    "brillouin_zone_geometry": true,
+    "high_symmetry_kpath": true,
+    "preview_mode": "json_only",
+    "reciprocal_lattice": true,
+    "renderer_included": false,
+    "webgl_artifact_included": false
+  },
+  "content_hash": "b76714ad44080e264da0e08300aa1e27afe662bb1ac1117f4e7d0ab9a7be0b55",
+  "convention": "physics_2pi",
+  "entry_artifact": "brillouin_zone.json",
+  "package_id": "bzpkg-5300f0670fc027269e82",
+  "provenance": {
+    "deterministic": true,
+    "producer": "structure.brillouin_zone",
+    "producer_version": "1.0.0",
+    "production_adapter_registered": true
+  },
+  "provider": {
+    "angle_tolerance_degrees": 5.0,
+    "convention": "setyawan_curtarolo",
+    "input_structure_sha256": "4ee8c4493e827731bd06600b69e8b45eaf9a63f2adaca004984faee27064284a",
+    "name": "pymatgen_highsymmkpath",
+    "standardization_status": "standardized",
+    "symprec_angstrom": 1e-05,
+    "time_reversal_used": true,
+    "version": "2026.5.4",
+    "warnings": []
+  },
+  "schema_version": "phase10i.brillouin_zone_manifest.v1",
+  "security": {
+    "contains_css": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_assets": [],
+    "executable_content_allowed": false,
+    "external_urls": [],
+    "external_urls_allowed": false,
+    "remote_assets": [],
+    "renderer_included": false,
+    "shader_sources": []
+  },
+  "structure_identity": "4ee8c4493e827731bd06600b69e8b45eaf9a63f2adaca004984faee27064284a",
+  "units": "angstrom^-1"
+}

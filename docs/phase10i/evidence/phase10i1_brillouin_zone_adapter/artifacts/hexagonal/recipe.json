@@ -1,0 +1,59 @@
+{
+  "artifactHashes": {
+    "brillouin_zone": "b5b7719d23d9374ba272121d25c97fd2ea690c822b2570fa3067f6477cda30dd",
+    "kpath": "04c679b0223f694b75e1a019d390da42b51442905e9d563f831ae8350bf2ed9b",
+    "manifest": "0fa056bdf3fd76232cc8c1be7f17a4a0edfc6b300f540fe4992a94588f83c7bd",
+    "reciprocal_lattice": "da2d0d3e13d9c164e9063b980712628653455c6fb851f66c8155f261cc440822"
+  },
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Brillouin Zone Data",
+  "projectId": "project_phase10i1",
+  "recipeId": "recipe_phase10i1_hexagonal",
+  "schemaVersion": "0.1",
+  "scientificContract": {
+    "deterministic": true,
+    "externalNetwork": false,
+    "geometry": "pymatgen reciprocal Wigner Seitz",
+    "kpath": "pymatgen HighSymmKpath setyawan curtarolo",
+    "reciprocalConvention": "physics_2pi",
+    "rendererIncluded": false,
+    "standardization": "pymatgen SpacegroupAnalyzer primitive standard structure"
+  },
+  "sourceJobId": "job_phase10i1_hexagonal",
+  "steps": [
+    {
+      "artifactTypes": [
+        "reciprocal_lattice_json",
+        "brillouin_zone_json",
+        "kpath_json",
+        "brillouin_zone_manifest_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "angle_tolerance_degrees": 5.0,
+        "include_alternative_path_variants": false,
+        "include_brillouin_zone": true,
+        "include_kpath": true,
+        "include_reciprocal_lattice": true,
+        "kpath_provider": "contract_default",
+        "standardization": "contract_default",
+        "symmetry_tolerance_angstrom": 1e-05,
+        "time_reversal": true
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "structure.brillouin_zone",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

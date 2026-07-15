@@ -1077,7 +1077,7 @@ def brillouin_schema_snapshots() -> dict[str, Any]:
         "caps": dict(BRILLOUIN_CAPS),
         "tolerances": dict(BRILLOUIN_TOLERANCES),
         "security": _security_copy(),
-        "tool_registration": "NOT_REGISTERED",
+        "tool_registration": "REGISTERED_DATA_ADAPTER",
         "renderer": "NOT_INCLUDED",
     }
 

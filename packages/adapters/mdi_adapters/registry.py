@@ -3,6 +3,7 @@ from __future__ import annotations
 from .base import BaseToolAdapter
 from .platform_builtin import (
     BasicMetricsAdapter,
+    BrillouinZoneAdapter,
     CompositionSummaryAdapter,
     CorrelationAdapter,
     DistributionSummaryAdapter,
@@ -43,6 +44,7 @@ from .pymatviz.structure_3d import Structure3DAdapter
 
 ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     BasicMetricsAdapter.__name__: BasicMetricsAdapter,
+    BrillouinZoneAdapter.__name__: BrillouinZoneAdapter,
     ChemSysSunburstAdapter.__name__: ChemSysSunburstAdapter,
     ChemSysTreemapAdapter.__name__: ChemSysTreemapAdapter,
     CompositionSummaryAdapter.__name__: CompositionSummaryAdapter,

@@ -1,5 +1,17 @@
 # 文档索引
 
+## Phase 10I-1 Brillouin Zone Adapter
+
+[`phase10i/phase10i1_brillouin_zone_adapter.md`](phase10i/phase10i1_brillouin_zone_adapter.md)
+records the formal JSON-only `structure.brillouin_zone` adapter, local
+pymatgen/spglib provider policy, strict input/params, primitive standardization,
+canonical BZ/k-path generation, six inert artifacts, planner/runtime execution,
+fixed artifact preview tabs, caps, errors, security, and deferred renderer boundary. Evidence and readiness
+are documented in
+[`phase10i/phase10i1_brillouin_zone_evidence.md`](phase10i/phase10i1_brillouin_zone_evidence.md)
+and captured under
+[`phase10i/evidence/phase10i1_brillouin_zone_adapter/`](phase10i/evidence/phase10i1_brillouin_zone_adapter/).
+
 ## Phase 10I Brillouin Zone Contract
 
 [`phase10i/phase10i_brillouin_zone_contract.md`](phase10i/phase10i_brillouin_zone_contract.md)

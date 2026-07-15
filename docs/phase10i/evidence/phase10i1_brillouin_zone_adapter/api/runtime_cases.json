@@ -1,0 +1,673 @@
+{
+  "bcc_conventional": {
+    "artifactCount": 6,
+    "artifacts": [
+      {
+        "contentHash": "ad9466205ee8bf9229df76dd8d7debf1c808be57078b562d7a53c7186799fb71",
+        "hashScope": "runtime_artifact",
+        "name": "reciprocal_lattice.json",
+        "type": "reciprocal_lattice_json"
+      },
+      {
+        "contentHash": "cc8fc751f249b2da1f5b104c1290fc2f9d7069d21ac80ac7a238190d99dd2166",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone.json",
+        "type": "brillouin_zone_json"
+      },
+      {
+        "contentHash": "e9ba0864cfde34cb78016604b7683a9b545d570fba5f16ecdbe27fce6f50b4ab",
+        "hashScope": "runtime_artifact",
+        "name": "kpath.json",
+        "type": "kpath_json"
+      },
+      {
+        "contentHash": "2c4c5281dcaef24b5ab4ea0285a257315190919d17ffd7d3df43fb7914373362",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone_manifest.json",
+        "type": "brillouin_zone_manifest_json"
+      },
+      {
+        "contentHash": "58b0dcfa750fe41116494a68f9664b6180649caf56c95c293aefd6ccb67a76ad",
+        "hashScope": "runtime_artifact",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "contentHash": "409dfdbbcba07e19dc817217baff5546d735c98e916a4adc8dbefe474a07a0ce",
+        "hashScope": "sanitized_evidence",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "case": "bcc_conventional",
+    "errorType": null,
+    "events": [
+      {
+        "eventType": "job.created",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "status": "info"
+      },
+      {
+        "eventType": "plan.persisted",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "job.running",
+        "message": "Queue worker started job.",
+        "status": "running"
+      },
+      {
+        "eventType": "plan.loaded",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.started",
+        "message": "Started tool structure.brillouin_zone.",
+        "status": "running"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: reciprocal_lattice.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: kpath.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone_manifest.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: summary.md",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: recipe.json",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.completed",
+        "message": "Completed tool structure.brillouin_zone.",
+        "status": "success"
+      },
+      {
+        "eventType": "job.completed",
+        "message": "Job completed.",
+        "status": "success"
+      }
+    ],
+    "externalNetworkRequests": 0,
+    "persistedPlan": true,
+    "selectedTool": "structure.brillouin_zone",
+    "status": "completed",
+    "toolCallStatus": "completed"
+  },
+  "bcc_primitive": {
+    "artifactCount": 6,
+    "artifacts": [
+      {
+        "contentHash": "df7f676abcccaeaafd60325baae1699e1c203e5a8c08293eff43aaed2daefdb1",
+        "hashScope": "runtime_artifact",
+        "name": "reciprocal_lattice.json",
+        "type": "reciprocal_lattice_json"
+      },
+      {
+        "contentHash": "61e5ea103bb0e4aac41b81b8af736abaa116822017e91940c44abb2298ce3727",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone.json",
+        "type": "brillouin_zone_json"
+      },
+      {
+        "contentHash": "97e1374b5ad0cc9176b061aec9e36d43545050e046f4ceb607b5f7932b237ce6",
+        "hashScope": "runtime_artifact",
+        "name": "kpath.json",
+        "type": "kpath_json"
+      },
+      {
+        "contentHash": "0a3bbc03fa5f8c11184d372b0b8658de6078a484e587e9805fcb53fdbee451c6",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone_manifest.json",
+        "type": "brillouin_zone_manifest_json"
+      },
+      {
+        "contentHash": "aa3569e1dbf8647e5af0d564cf0f55e52e500ce4610c4129ffa0238e323d2e85",
+        "hashScope": "runtime_artifact",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "contentHash": "f145906d6e6c17a33c5e40a5d3e0cec25e55303a5834be11a275d04d6fd14d92",
+        "hashScope": "sanitized_evidence",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "case": "bcc_primitive",
+    "errorType": null,
+    "events": [
+      {
+        "eventType": "job.created",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "status": "info"
+      },
+      {
+        "eventType": "plan.persisted",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "job.running",
+        "message": "Queue worker started job.",
+        "status": "running"
+      },
+      {
+        "eventType": "plan.loaded",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.started",
+        "message": "Started tool structure.brillouin_zone.",
+        "status": "running"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: reciprocal_lattice.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: kpath.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone_manifest.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: summary.md",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: recipe.json",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.completed",
+        "message": "Completed tool structure.brillouin_zone.",
+        "status": "success"
+      },
+      {
+        "eventType": "job.completed",
+        "message": "Job completed.",
+        "status": "success"
+      }
+    ],
+    "externalNetworkRequests": 0,
+    "persistedPlan": true,
+    "selectedTool": "structure.brillouin_zone",
+    "status": "completed",
+    "toolCallStatus": "completed"
+  },
+  "hexagonal": {
+    "artifactCount": 6,
+    "artifacts": [
+      {
+        "contentHash": "09fcd6170c9639a2a24fbea1836c3b98c1b36bf342940ed96116f98276ca0f67",
+        "hashScope": "runtime_artifact",
+        "name": "reciprocal_lattice.json",
+        "type": "reciprocal_lattice_json"
+      },
+      {
+        "contentHash": "0ccb902009b8ee6f35fc7fb0a42d4a6a4a8364aad128a6d1cec2a78c3d263444",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone.json",
+        "type": "brillouin_zone_json"
+      },
+      {
+        "contentHash": "2557fc201226a940977e6d4656a4e991e3a8868ed6b3d54941b2f9455fa80194",
+        "hashScope": "runtime_artifact",
+        "name": "kpath.json",
+        "type": "kpath_json"
+      },
+      {
+        "contentHash": "bf2a7c33c0c942d1e08faae96b84a104e2cbfb1e859a8c9367cf9b4e3a4eb454",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone_manifest.json",
+        "type": "brillouin_zone_manifest_json"
+      },
+      {
+        "contentHash": "70f57aa2e18dabaa3f42d84bd1fedf94e9352177094bba8a9064a193386d197d",
+        "hashScope": "runtime_artifact",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "contentHash": "51b4fcf1d4af621b27a8a6436a0a93db5f978e8cd31ddc3d88ec127e5b418aca",
+        "hashScope": "sanitized_evidence",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "case": "hexagonal",
+    "errorType": null,
+    "events": [
+      {
+        "eventType": "job.created",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "status": "info"
+      },
+      {
+        "eventType": "plan.persisted",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "job.running",
+        "message": "Queue worker started job.",
+        "status": "running"
+      },
+      {
+        "eventType": "plan.loaded",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.started",
+        "message": "Started tool structure.brillouin_zone.",
+        "status": "running"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: reciprocal_lattice.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: kpath.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone_manifest.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: summary.md",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: recipe.json",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.completed",
+        "message": "Completed tool structure.brillouin_zone.",
+        "status": "success"
+      },
+      {
+        "eventType": "job.completed",
+        "message": "Job completed.",
+        "status": "success"
+      }
+    ],
+    "externalNetworkRequests": 0,
+    "persistedPlan": true,
+    "selectedTool": "structure.brillouin_zone",
+    "status": "completed",
+    "toolCallStatus": "completed"
+  },
+  "non_periodic": {
+    "artifactCount": 0,
+    "artifacts": [],
+    "case": "non_periodic",
+    "errorType": "ToolExecutionError",
+    "events": [
+      {
+        "eventType": "job.created",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "status": "info"
+      },
+      {
+        "eventType": "plan.persisted",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "job.running",
+        "message": "Queue worker started job.",
+        "status": "running"
+      },
+      {
+        "eventType": "plan.loaded",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.started",
+        "message": "Started tool structure.brillouin_zone.",
+        "status": "running"
+      },
+      {
+        "eventType": "tool.failed",
+        "message": "TOOL_INPUT_INVALID: Structure adapters accept pymatgen Structure objects, Structure dictionaries, or structure text.",
+        "status": "error"
+      },
+      {
+        "eventType": "job.failed",
+        "message": "TOOL_INPUT_INVALID: Structure adapters accept pymatgen Structure objects, Structure dictionaries, or structure text.",
+        "status": "error"
+      }
+    ],
+    "externalNetworkRequests": 0,
+    "persistedPlan": true,
+    "selectedTool": "structure.brillouin_zone",
+    "status": "failed",
+    "toolCallStatus": "failed"
+  },
+  "simple_cubic": {
+    "artifactCount": 6,
+    "artifacts": [
+      {
+        "contentHash": "82ea8804643b1c85f2093428d7ed44a97363849d033e1ac13bb466192a9b7e30",
+        "hashScope": "runtime_artifact",
+        "name": "reciprocal_lattice.json",
+        "type": "reciprocal_lattice_json"
+      },
+      {
+        "contentHash": "e7b9cded78f3b044d71829b4b6f9426dc6d1828116b0177269cd98f1f9d50375",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone.json",
+        "type": "brillouin_zone_json"
+      },
+      {
+        "contentHash": "864c8849cd82f1de1ec053bcf65c72025c1a5655789c4dae5818f72da3acbac7",
+        "hashScope": "runtime_artifact",
+        "name": "kpath.json",
+        "type": "kpath_json"
+      },
+      {
+        "contentHash": "558696316009ec1ebc7449cf0b51973c6a19e5b30188dade1d3f2080881220a6",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone_manifest.json",
+        "type": "brillouin_zone_manifest_json"
+      },
+      {
+        "contentHash": "4e81660cf9aed404f305ce20deb3866fb12d4af33844221cf793288790b0b48b",
+        "hashScope": "runtime_artifact",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "contentHash": "9dbde61e1d75736822be411ef9d1b340a5be6793eb893ea2ec975288b4bee79e",
+        "hashScope": "sanitized_evidence",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "case": "simple_cubic",
+    "errorType": null,
+    "events": [
+      {
+        "eventType": "job.created",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "status": "info"
+      },
+      {
+        "eventType": "plan.persisted",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "job.running",
+        "message": "Queue worker started job.",
+        "status": "running"
+      },
+      {
+        "eventType": "plan.loaded",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.started",
+        "message": "Started tool structure.brillouin_zone.",
+        "status": "running"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: reciprocal_lattice.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: kpath.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone_manifest.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: summary.md",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: recipe.json",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.completed",
+        "message": "Completed tool structure.brillouin_zone.",
+        "status": "success"
+      },
+      {
+        "eventType": "job.completed",
+        "message": "Job completed.",
+        "status": "success"
+      }
+    ],
+    "externalNetworkRequests": 0,
+    "persistedPlan": true,
+    "selectedTool": "structure.brillouin_zone",
+    "status": "completed",
+    "toolCallStatus": "completed"
+  },
+  "singular_lattice": {
+    "artifactCount": 0,
+    "artifacts": [],
+    "case": "singular_lattice",
+    "errorType": "ToolExecutionError",
+    "events": [
+      {
+        "eventType": "job.created",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "status": "info"
+      },
+      {
+        "eventType": "plan.persisted",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "job.running",
+        "message": "Queue worker started job.",
+        "status": "running"
+      },
+      {
+        "eventType": "plan.loaded",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.started",
+        "message": "Started tool structure.brillouin_zone.",
+        "status": "running"
+      },
+      {
+        "eventType": "tool.failed",
+        "message": "TOOL_INPUT_INVALID: The real-space lattice is singular.",
+        "status": "error"
+      },
+      {
+        "eventType": "job.failed",
+        "message": "TOOL_INPUT_INVALID: The real-space lattice is singular.",
+        "status": "error"
+      }
+    ],
+    "externalNetworkRequests": 0,
+    "persistedPlan": true,
+    "selectedTool": "structure.brillouin_zone",
+    "status": "failed",
+    "toolCallStatus": "failed"
+  },
+  "triclinic": {
+    "artifactCount": 6,
+    "artifacts": [
+      {
+        "contentHash": "6c18a1f79c0e7c2ac022a2dbc1658d93b7561b9a5af208a5050208f75a5651bf",
+        "hashScope": "runtime_artifact",
+        "name": "reciprocal_lattice.json",
+        "type": "reciprocal_lattice_json"
+      },
+      {
+        "contentHash": "eef570633acf8d8b2f4acdbf152893e764fb7c0b7159610ffc902273bde16a14",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone.json",
+        "type": "brillouin_zone_json"
+      },
+      {
+        "contentHash": "d9d99b88c33d0d74ecf05a8d32fa50e24ebf217ed32f535762254c095a2ded63",
+        "hashScope": "runtime_artifact",
+        "name": "kpath.json",
+        "type": "kpath_json"
+      },
+      {
+        "contentHash": "4fccaf27a20dfd42b0d904876ce5af9240af18fb9e6f3074881e8ac6cbbab317",
+        "hashScope": "runtime_artifact",
+        "name": "brillouin_zone_manifest.json",
+        "type": "brillouin_zone_manifest_json"
+      },
+      {
+        "contentHash": "e9c41eeaaae1ebeaa193d9c5af5f3e9251d778aef9f74700db1eee2762bcab6f",
+        "hashScope": "runtime_artifact",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "contentHash": "f5b8b8e933adb7b7e4c7ad4f03365ec15db3c4f136cc36d34e9007f1f8a0583c",
+        "hashScope": "sanitized_evidence",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "case": "triclinic",
+    "errorType": null,
+    "events": [
+      {
+        "eventType": "job.created",
+        "message": "Planner job created with persisted AnalysisPlan.",
+        "status": "info"
+      },
+      {
+        "eventType": "plan.persisted",
+        "message": "Persisted validated AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "job.running",
+        "message": "Queue worker started job.",
+        "status": "running"
+      },
+      {
+        "eventType": "plan.loaded",
+        "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.started",
+        "message": "Started tool structure.brillouin_zone.",
+        "status": "running"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: reciprocal_lattice.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: kpath.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: brillouin_zone_manifest.json",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: summary.md",
+        "status": "success"
+      },
+      {
+        "eventType": "artifact.ready",
+        "message": "Artifact ready: recipe.json",
+        "status": "success"
+      },
+      {
+        "eventType": "tool.completed",
+        "message": "Completed tool structure.brillouin_zone.",
+        "status": "success"
+      },
+      {
+        "eventType": "job.completed",
+        "message": "Job completed.",
+        "status": "success"
+      }
+    ],
+    "externalNetworkRequests": 0,
+    "persistedPlan": true,
+    "selectedTool": "structure.brillouin_zone",
+    "status": "completed",
+    "toolCallStatus": "completed"
+  }
+}

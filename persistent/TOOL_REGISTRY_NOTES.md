@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-14 Phase 10I-1 Formal Brillouin Data Adapter
+
+- Added one canonical identity: `structure.brillouin_zone` using `BrillouinZoneAdapter`; no overlapping `structure.kpath` or `structure.brillouin_zone_3d` tool is registered.
+- Input is exactly one ordered, non-magnetic, 3D periodic `Structure`; params are closed to required artifacts, contract-default providers, time reversal, versioned tolerances, and no alternative variants.
+- Outputs are `reciprocal_lattice_json`, `brillouin_zone_json`, `kpath_json`, `brillouin_zone_manifest_json`, `summary_md`, and `recipe_json` with exact Phase 10I contracts and hard caps.
+- Mock Planner routes explicit BZ/reciprocal/k-path data generation only. Interactive rendering, electronic/phonon/trajectory science, Fermi/mesh, XRD, CrystalNN, editing, and DFT are excluded.
+- QueueWorkerRuntime and PlanValidator semantics are unchanged. Artifacts contain no renderer, WebGL, executable content, external assets, or network authority.
+
 ## 2026-07-14 Phase 10I Brillouin Zone Contract
 
 - Candidate `structure.brillouin_zone` is `PLANNED / NOT_REGISTERED / NOT_EXECUTABLE`.

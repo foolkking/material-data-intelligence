@@ -1,0 +1,14 @@
+{
+  "artifactCss": false,
+  "artifactHtml": false,
+  "artifactJavaScript": false,
+  "artifactShader": false,
+  "externalAssets": [],
+  "externalNetworkRequests": 0,
+  "noExternalNetworkRequests": true,
+  "noSecretPatternHits": true,
+  "notebookOrScriptExecutionByArtifact": false,
+  "realLlm": false,
+  "rendererIncluded": false,
+  "scannedEvidenceFiles": 37
+}

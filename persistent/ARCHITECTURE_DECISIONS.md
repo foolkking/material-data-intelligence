@@ -1,5 +1,26 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10I1-BRILLOUIN-ADAPTER: Register one local JSON producer before a renderer
+
+### Decision
+
+Register `structure.brillouin_zone` as the only public Brillouin data tool. Use
+the existing normalized `pymatgen.Structure` pipeline, require exactly one
+ordered non-magnetic 3D structure, standardize with `SpacegroupAnalyzer`, bind
+Wigner-Seitz faces through a bounded reciprocal-generator search, and generate
+one Setyawan-Curtarolo `HighSymmKpath`. Feed every result through the unchanged
+Phase 10I contracts and the existing persisted AnalysisPlan/QueueWorkerRuntime
+path. Emit six inert artifacts and render only fixed application-owned summary
+fields plus escaped raw JSON in the preview.
+
+### Consequences
+
+- Existing pymatgen/spglib/NumPy dependencies are sufficient; `seekpath` and external services remain unapproved.
+- Adapter, contract, manifest, planner, runtime, summary, and recipe use the same source/primitive identities, provider convention, tolerances, caps, and hashes.
+- Partial occupancy/disorder, magnetic metadata, explicit lower dimensionality, singular/ill-conditioned lattices, unapproved providers, and partial artifact output fail explicitly.
+- No renderer, browser execution authority, Three.js/WebGL bundle, URL, executable artifact, electronic/phonon calculation, mesh, custom path, or real LLM is introduced.
+- Phase 10I-2 may add a validated artifact consumer but must not move scientific generation into the browser or change these contract semantics.
+
 ## ADR-10I-BRILLOUIN-CONTRACT: Separate primitive reciprocal geometry from provider paths
 
 ### Decision

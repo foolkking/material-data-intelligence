@@ -30,8 +30,16 @@ primitive lattice hash, and selected endpoints must still match.
 Every artifact uses exact fields, versioned independent tolerances, hard caps,
 canonical JSON/content hashes, and the same closed inert security declaration.
 There is no JavaScript, HTML, CSS, URL, shader, executable asset, renderer, or
-WebGL artifact. `structure.brillouin_zone` is not registered; the generic JSON
-preview is the only current consumer.
+WebGL artifact.
+
+Phase 10I-1 registers `structure.brillouin_zone` as the canonical data producer
+for exactly one ordered, non-magnetic, 3D periodic `Structure`. Its exact output
+types are `reciprocal_lattice_json`, `brillouin_zone_json`, `kpath_json`,
+`brillouin_zone_manifest_json`, `summary_md`, and `recipe_json`. The first four
+map one-to-one to the schema identities above. This registration grants only
+validated asynchronous artifact generation. The application-owned BZ preview
+only renders fixed summaries and escaped JSON for these four scientific types;
+it allocates no canvas/WebGL context and no BZ renderer capability is implied.
 
 ## Phase 10G-2 trajectory viewer internal display contract
 
