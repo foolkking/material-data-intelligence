@@ -1,13 +1,13 @@
 # TASK_BOARD
 
-## Phase 10I-2 Brillouin Renderer / Evidence Completed, Archive Pending
+## Phase 10I-2 Brillouin Renderer / Evidence Completed
 
 - [x] Audit Phase 10I artifacts, existing Three.js lifecycle, product dispatch, dependency tree, and security boundary.
 - [x] Implement validated BZ mapping, bounded triangulation, reciprocal-space renderer, controls, picking, inspector, export, fallback, accessibility, and lifecycle.
 - [x] Integrate the canonical product identity and interactive routing without changing artifact or runtime semantics.
 - [x] Capture Chromium/Firefox/WebKit/mobile/API/performance/accessibility/security evidence from real Phase 10I-1 runtime artifacts.
 - [x] Complete full regression, implementation commit `b5469c3`, and current-HEAD CI run `29420821864`.
-- [ ] Pass current-HEAD CI for the completion record, then archive the verified queue block.
+- [x] Pass current-HEAD CI run `29421142527` for completion record `28a3cfa`, verify `reslusts.md`, and archive the queue block.
 
 ## Phase 10I-1 Brillouin Zone Adapter Completed
 

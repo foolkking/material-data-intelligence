@@ -108,3 +108,10 @@
 * 修改摘要：实现严格 Phase 10I artifact mapper、bounded outward-normal face triangulation 和 application-owned lazy Three.js BZ renderer；支持 faces/edges/vertices、reciprocal axes、high-symmetry points/labels/path、discontinuity preservation、point/face/vertex/segment picking、inspector/text tables、rotate/zoom/pan/reset、reciprocal camera presets、perspective/orthographic、layer/opacity/variant controls、local bounded PNG、typed fallback、context loss/reinitialize、mobile/accessibility 和完整资源清理。保留唯一 `structure.brillouin_zone`，未改变 adapter/contract/PlanValidator/QueueWorkerRuntime 主语义，未新增依赖或外部执行能力。Band-BZ linked view、electronic/phonon computation、mesh、magnetic/surface BZ 和 reciprocal volumetric data 仍明确 deferred。
 * 测试结果：frontend `209 passed`；backend `654 passed, 23 skipped, 56 warnings`；focused Phase 10I `49 passed`；typecheck/build/Ruff/`uv lock --check`/dependency tree/diff check PASS；Chromium 150、Firefox 128、WebKit 18、portrait/landscape mobile、API/performance/accessibility/security evidence PASS；历史 Phase 10 三浏览器产品闭包 PASS；`NO_BRILLOUIN_RENDERER_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。`npm audit` 因配置镜像 `404 NOT_IMPLEMENTED` unavailable，且无 dependency/lockfile 变更。
 * 提交 / CI：implementation commit `b5469c35cc39f096037036309a37aab160c9593c`；CI run `29420821864` success。Completion record commit 和其 current-HEAD CI 仍是队列归档前置条件。
+
+### 队列归档确认
+
+* 核验时间：2026-07-15 21:55:36 +08:00
+* 完成记录提交：`28a3cfa934a350e5a704d9f7b35b080b354eef83`
+* current-HEAD CI：run `29421142527` success
+* 归档结论：renderer、真实 Phase 10I-1 artifacts、三浏览器/mobile/API/performance/accessibility/security evidence、完整回归、completion record、service-backed/no-skipped 和两次 current-HEAD CI 均闭合；允许从 `TASKS.md` 删除 Phase 10I-2 block，历史结果保留于本文件。

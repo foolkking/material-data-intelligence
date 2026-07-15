@@ -59,5 +59,13 @@
     "frontend_typecheck_build": "success",
     "service_backed_integration": "success",
     "no_skipped_assertion": "success"
+  },
+  "completion_record_ci": {
+    "commit": "28a3cfa934a350e5a704d9f7b35b080b354eef83",
+    "run": 29421142527,
+    "unit": "success",
+    "frontend_typecheck_build": "success",
+    "service_backed_integration": "success",
+    "no_skipped_assertion": "success"
   }
 }
