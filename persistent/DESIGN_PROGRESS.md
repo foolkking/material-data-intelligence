@@ -1,11 +1,11 @@
 # DESIGN_PROGRESS
 
-## 2026-07-17 Phase 10I-3 Band-BZ Linked View In Progress
+## 2026-07-17 Phase 10I-3 Band-BZ Linked View Completed
 
 - Added the strict frontend-only `phase10i3.reciprocal_band_bz_link.v1` model over existing `phonon.band` and `structure.brillouin_zone` runtime artifacts; no public tool, persisted link artifact, scientific recomputation, dependency, or canonical schema was added.
 - Added exact structure/primitive-lattice/convention/unit/path/discontinuity compatibility, point occurrence, segment direction, sampled q-point `t`, branch separation, bounded mapping, typed mismatch fallback, and stable provider/time-reversal warnings. Display labels are never mapping identity.
 - Added one transaction-safe hover/pinned reducer, bidirectional Band/BZ selection, shared inspector/table, exact animation handoff, artifact cleanup, desktop/mobile composition, and controlled reuse of the Phase 10I-2 BZ engine.
-- Focused validation currently passes 20 frontend link/BZ lifecycle tests, seven backend routing/runtime/evidence tests, typecheck, real Chromium 150/Firefox 128/WebKit 18 WebGL2 evidence, mobile canvas lifecycle, accessibility, near-cap mapping, zero external requests, and secret scan. Full regression and current-HEAD CI closure remain pending.
+- Closure passed 20 focused frontend link/BZ lifecycle tests, seven backend routing/runtime/evidence tests, 223 full frontend tests, and `661 passed, 23 skipped, 62 warnings` backend tests, plus typecheck/build, real Chromium 150/Firefox 128/WebKit 18 WebGL2 evidence, mobile canvas lifecycle, accessibility, near-cap mapping, zero external requests, and secret scan. Implementation/fix commits `f81aedb`, `5b5873e`, and `f3fa177` culminated in current-HEAD CI run `29572530288`, where unit, frontend/typecheck/build, service-backed integration, and no-skipped gates all succeeded.
 
 ## 2026-07-15 Phase 10I-2 Brillouin Renderer / Evidence
 

@@ -1,5 +1,5 @@
 ---TASK---
- 状态：待处理
+ 状态：已完成
  # Phase 10I-3：Band–BZ Linked View
 
 进入 Phase 10I-3：Band–BZ Linked View。
@@ -2116,6 +2116,16 @@ Phase 10J：Volumetric Data Contract
 先读取真实 Phase 10I-2 Result、phonon band/combined/animation artifacts、BZ/kpath artifacts和当前前端状态架构，输出 Pre-Implementation Audit；然后完成兼容性验证、point/segment/sample mapping、双向selection、shared inspector、animation handoff、移动端、可访问性、浏览器矩阵、性能、安全、commit和CI闭环。
 
 不得把本阶段扩展为电子能带实现。
+
+完成时间：2026-07-17 18:12:18 +08:00
+
+修改文件：`apps/web/app/components/band-bz-link/*`、`PlannerWorkbench.tsx`、Brillouin Zone surface/engine/types、`globals.css`、Mock Planner provider、I3 backend/frontend tests、browser runner、runtime evidence generator、`docs/phase10i/evidence/phase10i3_band_bz_linked_view/`、Phase 10I/shared-schema docs 和 required persistent files。
+
+修改摘要：实现 application-owned `phase10i3.reciprocal_band_bz_link.v1` typed model，对现有 `phonon.band` 与 `structure.brillouin_zone` artifacts 执行严格结构、primitive reciprocal lattice、physics-2pi、path variant、point/segment/sample、direction 和 discontinuity 兼容验证；实现 hover/pinned shared state、Band→BZ 与 BZ→Band 双向选择、shared inspector/table、exact phonon-animation handoff、artifact cleanup、mobile tabs、typed mismatch fallback 和受控 BZ selection。未新增 public tool、dependency、canonical artifact schema、电子能带、外部网络或 artifact executable authority。
+
+测试结果：frontend focused `20 passed`，frontend full `223 passed`；backend focused `7 passed, 7 warnings`，backend full `661 passed, 23 skipped, 62 warnings`；typecheck、Next build、Ruff、`uv lock --check`、dependency tree 和 diff check 通过。Chromium 150、Firefox 128、WebKit 18、mobile、bidirectional selection、performance、accessibility、animation handoff、Phase 10 closure、BZ、phonon band/DOS/combined/animation browser regressions全部通过；`NO_BAND_BZ_LINK_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。`npm audit` 因配置的 npmmirror endpoint 返回 `404 NOT_IMPLEMENTED`，如实记录为 unavailable；无 dependency/lockfile 变更。
+
+提交 / CI：implementation `f81aedbd53048a1a42a3fb4476bd32c9020418e1`；ignored runtime evidence closure `5b5873ec2f98cbe1ee143d848103e700f6849007`；cross-platform evidence hash closure `f3fa17759031324c97bb48208f755997c543c727`。前两次 CI 分别暴露缺失 ignored artifacts 和 CRLF/LF hash 问题；最终 current-HEAD CI run `29572530288` success，unit、frontend/typecheck/build、service-backed integration 和 no-skipped assertion 均通过。
 
 
 ---END---

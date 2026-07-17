@@ -118,3 +118,12 @@ artifacts.
 - Mobile uses tabs rather than simultaneous panels.
 - Electronic bands, custom paths, reciprocal meshes, magnetic/surface BZ,
   unfolding, interpolation, and collaborative cursors remain unimplemented.
+
+## Closure
+
+The implementation chain ends at `f3fa17759031324c97bb48208f755997c543c727`.
+GitHub Actions run `29572530288` passed unit tests, frontend tests/typecheck/build,
+service-backed PostgreSQL/Redis/MinIO integration, and the zero-skipped gate.
+No dependency or lockfile changed. The configured npm mirror does not implement
+the audit endpoint, so npm audit remains recorded as unavailable rather than
+clean.

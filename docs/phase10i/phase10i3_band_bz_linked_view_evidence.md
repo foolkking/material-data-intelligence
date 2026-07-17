@@ -68,3 +68,14 @@ NO_SECRET_PATTERN_HITS
 
 No artifact JavaScript, HTML, CSS, shader, callback, external URL, renderer
 bundle, browser profile, private path, or secret is present.
+
+## CI closure
+
+- Final implementation/fix HEAD: `f3fa17759031324c97bb48208f755997c543c727`
+- GitHub Actions run: `29572530288`
+- Unit: success
+- Frontend tests/typecheck/build: success
+- Service-backed PostgreSQL/Redis/MinIO integration: success
+- No-skipped assertion: success
+- Earlier runs `29566032835` and `29572229644` exposed and led to fixes for
+  ignored runtime artifacts and Windows/Linux line-ending hash drift.

@@ -115,3 +115,11 @@
 * 完成记录提交：`28a3cfa934a350e5a704d9f7b35b080b354eef83`
 * current-HEAD CI：run `29421142527` success
 * 归档结论：renderer、真实 Phase 10I-1 artifacts、三浏览器/mobile/API/performance/accessibility/security evidence、完整回归、completion record、service-backed/no-skipped 和两次 current-HEAD CI 均闭合；允许从 `TASKS.md` 删除 Phase 10I-2 block，历史结果保留于本文件。
+
+## Phase 10I-3: Band-BZ Linked View
+
+* 状态：已完成
+* 完成时间：2026-07-17 18:12:18 +08:00
+* 修改摘要：新增 application-owned `phase10i3.reciprocal_band_bz_link.v1` typed compatibility model，严格绑定现有 phonon band、reciprocal lattice、BZ 和 k-path artifacts；实现 point occurrence、segment direction、sample `t`、branch/mode 分离、discontinuity、hover/pinned shared state、Band→BZ 与 BZ→Band 双向选择、shared inspector/table、exact phonon-animation handoff、typed mismatch fallback、artifact cleanup 和 mobile/accessibility composition。未新增 public tool、dependency、canonical schema、电子能带、外部网络或 artifact executable authority。
+* 测试结果：frontend focused `20 passed`，frontend full `223 passed`；backend focused `7 passed, 7 warnings`，backend full `661 passed, 23 skipped, 62 warnings`；typecheck/build/Ruff/lock/tree/diff checks PASS；Chromium 150、Firefox 128、WebKit 18、mobile、bidirectional selection、performance、accessibility、Phase 10/BZ/phonon browser regressions PASS；`NO_BAND_BZ_LINK_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。`npm audit` 因 npmmirror `404 NOT_IMPLEMENTED` unavailable，且无 dependency/lockfile 变更。
+* 提交 / CI：implementation `f81aedbd53048a1a42a3fb4476bd32c9020418e1`；runtime evidence closure `5b5873ec2f98cbe1ee143d848103e700f6849007`；cross-platform hash closure `f3fa17759031324c97bb48208f755997c543c727`；current-HEAD CI run `29572530288` success（unit、frontend/typecheck/build、service-backed integration、no-skipped）。Completion record commit 和其 current-HEAD CI 仍是删除 `TASKS.md` block 前置条件。
