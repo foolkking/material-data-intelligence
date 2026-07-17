@@ -51,6 +51,23 @@ and are not written into canonical artifacts. Artifact `renderer_included=false`
 continues to mean that no executable renderer is packaged, not that the
 application lacks a validated consumer.
 
+Phase 10I-3 adds the frontend-only typed model
+`phase10i3.reciprocal_band_bz_link.v1`. It binds independently validated Phase
+10H phonon-band and Phase 10I reciprocal/BZ/k-path artifacts by content hashes,
+structure identity, standardized primitive real lattice, `physics_2pi`
+convention, units, selected path variant, ordered segments, discontinuities,
+and exact sampled q-point geometry. It stores no new band or BZ scientific data
+and is not a persisted artifact schema or public tool output.
+
+Point occurrence identity is distinct from geometric point identity. Segment
+mappings retain order and direction; sample mappings retain source q-point
+index, segment, normalized `t`, path distance, and residual. Labels are display
+metadata only. Reciprocal q-point selection never implies a phonon branch or
+mode; exact branch/mode identity is preserved only from band-originated state
+or an exact H4/H5 binding. Discontinuities are never interpolated. Shared
+selection is bounded, ephemeral frontend state and cannot mutate source
+artifacts or grant execution authority.
+
 ## Phase 10G-2 trajectory viewer internal display contract
 
 The persisted schema remains `phase10g.trajectory.v1`. The frontend derives immutable per-frame display scenes with stable `atomIndex` and renderer-local `imageOffset`; these are not artifacts and do not modify the canonical contract. Current/requested frame, playback, cache, supercell, clipping, camera, selection, and measurements are application-owned local state. Dynamic bond inference and artifact-controlled execution remain forbidden.

@@ -1395,3 +1395,38 @@ pre {
   .brillouin-zone-stage .viewer-renderer-canvas-host { min-height: 340px; aspect-ratio: 3 / 4; }
   .brillouin-zone-label { min-width: 44px; }
 }
+
+.band-bz-linked-view { display: grid; gap: 12px; }
+.band-bz-compatibility { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 18px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+.band-bz-compatibility h2, .band-bz-panel h3, .band-bz-shared-inspector h3 { margin: 0; }
+.band-bz-compatibility p { margin: 4px 0 0; }
+.band-bz-compatibility > strong { align-self: start; color: #17633c; }
+.band-bz-compatibility dl { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.band-bz-compatibility dl div { min-width: 0; }
+.band-bz-compatibility dt { color: var(--muted); font-size: 12px; }
+.band-bz-compatibility dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+.band-bz-grid { display: grid; grid-template-columns: minmax(360px, .9fr) minmax(480px, 1.1fr); gap: 12px; align-items: start; }
+.band-bz-panel { min-width: 0; border: 1px solid var(--border); padding: 10px; }
+.band-bz-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.band-bz-chart { width: 100%; aspect-ratio: 2 / 1; min-height: 260px; border: 1px solid var(--border); background: #fff; }
+.band-bz-chart line { stroke: #9aa8ad; stroke-width: 1; }
+.band-bz-chart polyline { fill: none; stroke: #b4bec1; stroke-width: 1.2; }
+.band-bz-chart .selected-branch { stroke: #24735d; stroke-width: 2.4; }
+.band-bz-chart .band-sample { fill: #fff; stroke: #24735d; stroke-width: 1.5; cursor: pointer; }
+.band-bz-chart .selected-sample { fill: #d84545; stroke: #8d1f2d; stroke-width: 2; }
+.band-bz-chart circle:focus-visible { outline: none; stroke: #111; stroke-width: 4; }
+.band-bz-shared-inspector { border-top: 1px solid var(--border); padding-top: 12px; }
+.band-bz-inspector-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.band-bz-mobile-tabs { display: none; }
+.band-bz-linked-fallback code { overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .band-bz-compatibility { grid-template-columns: 1fr; }
+  .band-bz-compatibility dl { grid-column: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .band-bz-mobile-tabs { display: flex; gap: 6px; }
+  .band-bz-mobile-tabs button { min-height: 44px; }
+  .band-bz-grid { display: block; }
+  .band-bz-panel, .band-bz-shared-inspector { width: 100%; }
+  .band-bz-linked-view .mobile-hidden { display: none; }
+  .band-bz-chart { min-height: 220px; }
+}

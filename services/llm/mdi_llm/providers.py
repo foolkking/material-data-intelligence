@@ -97,6 +97,8 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_band_bz_link(request, tools, data_profile):
+            plan = _mock_band_bz_link_plan(request, data_profile)
         elif _should_generate_phonon_animation(request, tools, data_profile):
             plan = _mock_phonon_animation_plan(request, data_profile)
         elif _should_generate_phonon_band_dos(request, tools, data_profile):
@@ -1679,6 +1681,77 @@ def _should_generate_phonon_band(
         "声子能带", "声子色散", "绘制声子能带", "显示声子能带",
     )
     return any(marker in prompt for marker in markers)
+
+
+def _should_generate_band_bz_link(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not (_has_tool(tools, "phonon.band") and _has_tool(tools, "structure.brillouin_zone")):
+        return False
+    if not (_has_phonon_band_input(data_profile) and _has_structure_input(data_profile)):
+        return False
+    prompt = request.user_prompt.lower()
+    unsupported = (
+        "electronic band", "electronic dos", "fermi", "dft", "dfpt", "wannier",
+        "unfolding", "custom path", "edit k-path", "monkhorst", "magnetic bz",
+        "surface bz", "calculate phonon", "run phonopy", "电子能带", "费米", "磁性布里渊", "表面布里渊",
+    )
+    if any(marker in prompt for marker in unsupported):
+        return False
+    markers = (
+        "phonon band path in the brillouin zone", "link the phonon band chart to the 3d bz",
+        "link phonon bands", "phonon bands with the brillouin zone", "highlight selected q-points in reciprocal space",
+        "同时显示声子能带和布里渊区", "把声子q路径映射到三维bz", "联动查看phonon bands与高对称路径",
+        "声子能带和布里渊区联动", "声子 q 路径映射到三维 bz",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _mock_band_bz_link_plan(request: PlannerRequest, data_profile: DataProfile) -> dict[str, Any]:
+    band_types = [
+        "phonon_band_json", "phonon_summary_json", "phonon_report_json", "phonon_manifest_json",
+        "plotly_json", "table_json", "recipe_json",
+    ]
+    bz_types = [
+        "reciprocal_lattice_json", "brillouin_zone_json", "kpath_json",
+        "brillouin_zone_manifest_json", "summary_md", "recipe_json",
+    ]
+    steps = [
+        {
+            "stepId": "step_band",
+            "toolId": "phonon.band",
+            "purpose": "Validate the existing phonon band artifact for the linked reciprocal-space view.",
+            "reason": "The linked product needs the canonical phonon q-path without recomputing phonons.",
+            "inputRefs": [{"refType": "normalized_object", "ref": "phonon_band", "objectType": "PhononBand"}],
+            "params": {"source_format": "auto", "source_frequency_unit": "terahertz", "max_table_rows": 20000, "plot_kind": "line"},
+            "output": {"artifactTypes": band_types},
+        },
+        {
+            "stepId": "step_bz",
+            "toolId": "structure.brillouin_zone",
+            "purpose": "Generate the canonical Brillouin-zone geometry and k-path for compatibility validation.",
+            "reason": _structure_reason(request, data_profile, "structure.brillouin_zone"),
+            "inputRefs": [{"refType": "normalized_object", "ref": "structures", "objectType": "Structure"}],
+            "params": {"include_reciprocal_lattice": True, "include_brillouin_zone": True, "include_kpath": True, "standardization": "contract_default", "kpath_provider": "contract_default", "time_reversal": True, "symmetry_tolerance_angstrom": 0.00001, "angle_tolerance_degrees": 5.0, "include_alternative_path_variants": False},
+            "output": {"artifactTypes": bz_types},
+        },
+    ]
+    expected = [
+        {"name": "phonon_band.json", "type": "phonon_band_json", "fromStepId": "step_band"},
+        {"name": "reciprocal_lattice.json", "type": "reciprocal_lattice_json", "fromStepId": "step_bz"},
+        {"name": "brillouin_zone.json", "type": "brillouin_zone_json", "fromStepId": "step_bz"},
+        {"name": "kpath.json", "type": "kpath_json", "fromStepId": "step_bz"},
+        {"name": "brillouin_zone_manifest.json", "type": "brillouin_zone_manifest_json", "fromStepId": "step_bz"},
+    ]
+    return {
+        "schemaVersion": "0.1", "goal": request.user_prompt, "datasetId": request.dataset_id,
+        "profileId": request.profile_id, "toolRegistryVersion": request.tool_registry_version,
+        "assumptions": ["Linked view is an application-owned compatibility layer over inert artifacts."],
+        "warnings": ["Band provider and time-reversal metadata are not declared by phase10h.phonon_band.v1; exact ordered path geometry is revalidated before linking."],
+        "steps": steps, "expectedArtifacts": expected,
+    }
 
 
 def _mock_phonon_band_plan(request: PlannerRequest) -> dict[str, Any]:

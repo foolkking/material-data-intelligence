@@ -90,7 +90,8 @@ export type BZSelection =
   | Readonly<{ kind: "point"; id: string }>
   | Readonly<{ kind: "face"; id: string }>
   | Readonly<{ kind: "vertex"; id: string }>
-  | Readonly<{ kind: "segment"; id: string; variantId: string }>;
+  | Readonly<{ kind: "segment"; id: string; variantId: string }>
+  | Readonly<{ kind: "reciprocal_sample"; id: string; cartesian: BZVector3; segmentId: string }>;
 
 export type BZProjection = "perspective" | "orthographic";
 export type BZCameraPreset = "isometric" | "b1" | "b2" | "b3";

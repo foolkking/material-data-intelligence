@@ -1,0 +1,12 @@
+{
+  "artifactJavaScript": false,
+  "artifactHtml": false,
+  "artifactCss": false,
+  "artifactShader": false,
+  "externalUrls": false,
+  "dynamicArtifactImport": false,
+  "labelMapping": false,
+  "boundedMappings": true,
+  "externalRequests": 0,
+  "marker": "NO_SECRET_PATTERN_HITS"
+}

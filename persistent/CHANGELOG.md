@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-17 - Phase 10I-3 Band-BZ Linked View (In Progress)
+
+- Added a strict immutable reciprocal link model that binds existing phonon band and BZ/k-path artifacts by scientific identities and exact ordered geometry, never by display labels.
+- Added point occurrence, segment, sample, branch, hover/pinned selection, reverse BZ selection, exact animation handoff, mismatch fallback, mobile tabs, and semantic table/inspector support.
+- Extended the existing BZ surface with a controlled application-owned reciprocal-sample/segment selection while preserving standalone behavior and demand-render cleanup.
+- Added focused frontend/backend/runtime tests plus real three-browser, mobile, performance, accessibility, console, network, screenshot, and hash evidence. Full regression and CI closure remain pending.
+
 ## 2026-07-15 - Phase 10I-2 Brillouin Renderer / Evidence
 
 - Added a strict Phase 10I artifact mapper, bounded outward-normal face triangulation, uniform reciprocal-space visual scaling, and typed pre-WebGL validation/resource fallbacks.

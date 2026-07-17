@@ -1,0 +1,32 @@
+{
+  "phase": "10I-3",
+  "source": "QueueWorkerRuntime phonon.band + structure.brillouin_zone artifacts",
+  "schema": "phase10i3.reciprocal_band_bz_link.v1",
+  "browsers": [
+    {
+      "browser": "chromium",
+      "version": "150.0.7871.115",
+      "available": true
+    },
+    {
+      "browser": "firefox",
+      "version": "128.0",
+      "available": true
+    },
+    {
+      "browser": "webkit",
+      "version": "18.0",
+      "available": true
+    }
+  ],
+  "externalRequests": 0,
+  "realLLM": false,
+  "markers": [
+    "BAND_BZ_LINKED_VIEW_BROWSER_EVIDENCE_PASS",
+    "BAND_BZ_BIDIRECTIONAL_SELECTION_EVIDENCE_PASS",
+    "BAND_BZ_LINK_PERFORMANCE_EVIDENCE_PASS",
+    "BAND_BZ_LINK_ACCESSIBILITY_EVIDENCE_PASS",
+    "NO_BAND_BZ_LINK_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ]
+}

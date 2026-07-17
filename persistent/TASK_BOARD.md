@@ -1,5 +1,12 @@
 # TASK_BOARD
 
+## Phase 10I-3 Band-BZ Linked View In Progress
+
+- [x] Audit Phase 10H band/mode identity, Phase 10I BZ/k-path identity, existing compatibility, Three.js lifecycle, and planner composition.
+- [x] Implement strict compatibility, immutable point-occurrence/segment/sample maps, bounded shared state, bidirectional Band/BZ selection, exact animation handoff, mobile tabs, and accessible table/inspector.
+- [x] Capture real QueueWorkerRuntime artifacts and Chromium/Firefox/WebKit/mobile/performance/accessibility/network/security evidence.
+- [ ] Complete full frontend/backend/Phase 10H/Phase 10I regression, implementation commit, current-HEAD CI, completion record, and archive verification.
+
 ## Phase 10I-2 Brillouin Renderer / Evidence Completed
 
 - [x] Audit Phase 10I artifacts, existing Three.js lifecycle, product dispatch, dependency tree, and security boundary.

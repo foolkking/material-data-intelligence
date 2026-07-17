@@ -1,0 +1,12 @@
+[
+  {
+    "status": "completed",
+    "stepId": "step_band",
+    "toolId": "phonon.band"
+  },
+  {
+    "status": "completed",
+    "stepId": "step_bz",
+    "toolId": "structure.brillouin_zone"
+  }
+]

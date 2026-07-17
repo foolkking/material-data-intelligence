@@ -10,6 +10,7 @@ import { PhononBandDosPreviewPanel } from "./phonon-band-dos/PhononBandDosPrevie
 import { PhononDosPreviewPanel } from "./phonon-dos/PhononDosPreviewPanel";
 import { PhononAnimationSurface } from "./phonon-animation/PhononAnimationSurface";
 import { BrillouinZonePreviewPanel } from "./brillouin-zone/BrillouinZonePreviewPanel";
+import { BandBZLinkedView } from "./band-bz-link/BandBZLinkedView";
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
@@ -1180,6 +1181,7 @@ function ResultsExportTab(props: {
   }
   const hasResults = Boolean(props.result || props.artifacts.length || props.toolCalls.length);
   const hasCombinedPhonon = props.artifacts.some((artifact) => artifact.type === "phonon_band_dos_json" || artifact.name === "phonon_band_dos.json");
+  const hasBandBZLinkInputs = ["phonon_band.json", "reciprocal_lattice.json", "brillouin_zone.json", "brillouin_zone_manifest.json"].every((name) => props.artifacts.some((artifact) => artifact.name === name));
   return (
     <div className="results-export-tab" data-testid="results-export-tab">
       <section className="panel selected-result-header">
@@ -1201,11 +1203,11 @@ function ResultsExportTab(props: {
       <MetricsResultRenderer t={t} artifact={props.artifacts.find((artifact) => artifact.type === "metrics_json")} />
       <TableSummaryRenderer t={t} artifact={props.artifacts.find(isTableSummaryArtifact)} />
       <ViewerStaticPreviewPanel artifacts={props.artifacts} />
-      <BrillouinZonePreviewPanel artifacts={props.artifacts} />
+      {hasBandBZLinkInputs ? <BandBZLinkedView artifacts={props.artifacts} /> : <BrillouinZonePreviewPanel artifacts={props.artifacts} />}
       <TrajectoryPreviewPanel artifacts={props.artifacts} />
       <PhononAnimationPreviewPanel artifacts={props.artifacts} />
       <PhononBandDosPreviewPanel artifacts={props.artifacts} />
-      {!hasCombinedPhonon ? <PhononBandPreviewPanel artifacts={props.artifacts} /> : null}
+      {!hasCombinedPhonon && !hasBandBZLinkInputs ? <PhononBandPreviewPanel artifacts={props.artifacts} /> : null}
       {!hasCombinedPhonon ? <PhononDosPreviewPanel artifacts={props.artifacts} /> : null}
       <ArtifactGallery t={t} artifacts={props.artifacts} developerMode={props.developerMode} selectedArtifact={props.selectedArtifact} />
       <ToolCallList t={t} toolCalls={props.toolCalls} developerMode={props.developerMode} />

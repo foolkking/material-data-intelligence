@@ -1,5 +1,11 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-17 Phase 10I-3 Band-BZ Product Composition
+
+- No `reciprocal.band_bz_link` public tool was registered. Linked View is an application-owned composition of independently validated artifacts from existing `phonon.band` and `structure.brillouin_zone` steps.
+- Mock Planner may emit those two existing steps for explicit compatible linked-view intent. It retains strict PhononBand/Structure profile inputs and negative routes for electronic bands, DFT/Fermi, meshes, custom paths, magnetic/surface BZ, editing, and unrelated products.
+- QueueWorkerRuntime, Tool Registry, PlanValidator, AnalysisPlan, artifacts, and backend job success semantics are unchanged. `phonon.animation` is consumed only through an exact existing mode binding.
+
 ## 2026-07-15 Phase 10I-2 Standalone Brillouin Product
 
 - `structure.brillouin_zone` remains the unique recommended identity; no `structure.brillouin_zone_3d`, `structure.bz_viewer`, or reciprocal-viewer duplicate was added.

@@ -1,5 +1,17 @@
 # 文档索引
 
+## Phase 10I-3 Band-BZ Linked View
+
+[`phase10i/phase10i3_band_bz_linked_view.md`](phase10i/phase10i3_band_bz_linked_view.md)
+defines the strict reciprocal link model, compatibility gate, point
+occurrence/segment/sample identities, bidirectional selection, exact phonon
+animation handoff, mobile/accessibility behavior, caps, and security boundary.
+Real runtime, Chromium/Firefox/WebKit, mobile, performance, network, and
+screenshot evidence is documented in
+[`phase10i/phase10i3_band_bz_linked_view_evidence.md`](phase10i/phase10i3_band_bz_linked_view_evidence.md)
+and stored under
+[`phase10i/evidence/phase10i3_band_bz_linked_view/`](phase10i/evidence/phase10i3_band_bz_linked_view/).
+
 ## Phase 10I-2 Brillouin Renderer / Evidence
 
 [`phase10i/phase10i2_brillouin_renderer.md`](phase10i/phase10i2_brillouin_renderer.md)

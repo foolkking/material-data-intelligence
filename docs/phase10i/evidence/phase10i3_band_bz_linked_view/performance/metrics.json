@@ -1,0 +1,144 @@
+{
+  "initial": {
+    "state": "rendered",
+    "graphicsContext": "webgl2",
+    "rendererVersion": "185",
+    "projection": "perspective",
+    "cameraPosition": [
+      6.788225,
+      6.788225,
+      6.788225
+    ],
+    "cameraTarget": [
+      0,
+      0,
+      0
+    ],
+    "cameraUp": [
+      0,
+      0,
+      1
+    ],
+    "selection": null,
+    "pointScreenPositions": [
+      {
+        "id": "kp-739e8a8634830172",
+        "x": 228,
+        "y": 209
+      },
+      {
+        "id": "kp-bea06ad4747fb14f",
+        "x": 305.538258,
+        "y": 253.766734
+      },
+      {
+        "id": "kp-b0d02a118debefe2",
+        "x": 228,
+        "y": 253.766734
+      },
+      {
+        "id": "kp-a306bd08775ef2f8",
+        "x": 228,
+        "y": 209
+      }
+    ],
+    "faceScreenPositions": [
+      {
+        "id": "f000",
+        "x": 196.545801,
+        "y": 227.16009
+      },
+      {
+        "id": "f001",
+        "x": 193.269322,
+        "y": 269.155299
+      },
+      {
+        "id": "f002",
+        "x": 158.538644,
+        "y": 209
+      },
+      {
+        "id": "f003",
+        "x": 259.454199,
+        "y": 227.16009
+      },
+      {
+        "id": "f004",
+        "x": 262.730678,
+        "y": 269.155299
+      },
+      {
+        "id": "f005",
+        "x": 228,
+        "y": 172.679819
+      },
+      {
+        "id": "f006",
+        "x": 228,
+        "y": 253.766734
+      },
+      {
+        "id": "f007",
+        "x": 193.269322,
+        "y": 148.844701
+      },
+      {
+        "id": "f008",
+        "x": 189.230871,
+        "y": 186.616633
+      },
+      {
+        "id": "f009",
+        "x": 297.461356,
+        "y": 209
+      },
+      {
+        "id": "f010",
+        "x": 262.730678,
+        "y": 148.844701
+      },
+      {
+        "id": "f011",
+        "x": 266.769129,
+        "y": 186.616633
+      }
+    ],
+    "metrics": {
+      "artifactBytes": 23386,
+      "vertexCount": 14,
+      "edgeCount": 24,
+      "faceCount": 12,
+      "triangleCount": 24,
+      "pointCount": 4,
+      "pathSegmentCount": 6,
+      "visibleLabelCount": 4,
+      "drawCalls": 6,
+      "geometries": 5,
+      "materials": 8,
+      "textures": 0,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "mappingMs": 2,
+      "initializationMs": 43.10000002384186,
+      "firstFrameMs": 43.10000002384186
+    }
+  },
+  "hoverToBzMs": 449,
+  "bandToBzMs": 193,
+  "bzToBandMs": 158,
+  "graphics": {
+    "sampledColorCount": 62
+  },
+  "nearCap": {
+    "compatibilityMs": 9.600000023841858,
+    "mappingMs": 1.7000000476837158,
+    "pointMappings": 12,
+    "segmentMappings": 6,
+    "sampleMappings": 198,
+    "numericValues": 1188,
+    "revision": 2,
+    "canvasExpected": 0,
+    "externalRequests": 0
+  }
+}

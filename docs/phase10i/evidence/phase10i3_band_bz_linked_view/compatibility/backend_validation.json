@@ -1,0 +1,63 @@
+{
+  "checks": [
+    {
+      "compatible": true,
+      "left": true,
+      "name": "phonon_band_valid",
+      "right": true
+    },
+    {
+      "compatible": true,
+      "left": true,
+      "name": "reciprocal_valid",
+      "right": true
+    },
+    {
+      "compatible": true,
+      "left": true,
+      "name": "kpath_valid",
+      "right": true
+    },
+    {
+      "compatible": true,
+      "left": "56e2139b89588f6356c64534bfed08c3b21dd88c684fd12407c016e33977b54f",
+      "name": "structure_identity",
+      "right": "56e2139b89588f6356c64534bfed08c3b21dd88c684fd12407c016e33977b54f"
+    },
+    {
+      "compatible": true,
+      "left": "physics_2pi",
+      "name": "reciprocal_convention",
+      "right": "physics_2pi"
+    },
+    {
+      "compatible": true,
+      "left": "reciprocal_fractional",
+      "name": "coordinate_system",
+      "right": "reciprocal_fractional"
+    },
+    {
+      "compatible": true,
+      "left": "radian_per_angstrom",
+      "name": "path_distance_unit",
+      "right": "radian_per_angstrom"
+    },
+    {
+      "compatible": true,
+      "left": "4a60d3398e283cbf8fcbb0fef0045c13104c059964058b9b044fd5b9501f1a1c",
+      "name": "primitive_lattice",
+      "right": "4a60d3398e283cbf8fcbb0fef0045c13104c059964058b9b044fd5b9501f1a1c"
+    },
+    {
+      "compatible": true,
+      "left": 6,
+      "name": "selected_path_segments",
+      "right": 6
+    }
+  ],
+  "compatible": true,
+  "errors": [],
+  "warnings": [
+    "BZ_PHONON_TIME_REVERSAL_UNDECLARED"
+  ]
+}

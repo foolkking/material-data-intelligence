@@ -1,0 +1,13 @@
+{
+  "band": {
+    "canvasCount": 0
+  },
+  "bz": {
+    "canvasCount": 1,
+    "overflow": false
+  },
+  "inspector": {
+    "canvasCount": 0,
+    "overflow": false
+  }
+}

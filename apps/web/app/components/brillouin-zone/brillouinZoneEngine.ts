@@ -176,6 +176,11 @@ export const createBrillouinZoneEngine: BZRendererEngineFactory = async (args) =
     } else if (next?.kind === "segment") {
       const item = scene.segments.find((segment) => segment.id === next.id && segment.variantId === next.variantId);
       if (item) segments.push(scaled(item.start), scaled(item.end));
+    } else if (next?.kind === "reciprocal_sample") {
+      selectedPoint.position.copy(scaled(next.cartesian));
+      selectedPoint.visible = true;
+      const item = scene.segments.find((segment) => segment.id === next.segmentId);
+      if (item) segments.push(scaled(item.start), scaled(item.end));
     }
     selectionGeometry.dispose();
     selectionGeometry = lineBuffer(segments);
@@ -250,7 +255,7 @@ export const createBrillouinZoneEngine: BZRendererEngineFactory = async (args) =
     fit: resetCamera,
     setCameraPreset,
     setProjection(next) { if(next===projection)return;projection=next;syncCamera(next==="perspective"?perspective:orthographic);notifyView(); },
-    setVisibility(next) { visibility=next;applyVisibility();if(selection&&((selection.kind==="point"&&!next.points)||(selection.kind==="vertex"&&!next.vertices)||(selection.kind==="face"&&!next.faces)||(selection.kind==="segment"&&!next.path)))args.onSelection(null);render(); },
+    setVisibility(next) { visibility=next;applyVisibility();if(selection&&((selection.kind==="point"&&!next.points)||(selection.kind==="vertex"&&!next.vertices)||(selection.kind==="face"&&!next.faces)||((selection.kind==="segment"||selection.kind==="reciprocal_sample")&&!next.path)))args.onSelection(null);render(); },
     setOpacity(next) { opacity=boundedOpacity(next);faceMaterial.opacity=opacity;render(); },
     setVariant(next) { if(next===variantId)return;variantId=next;pathData.geometry.dispose();pathData=pathBuffer(scene,variantId,scaled);path.geometry=pathData.geometry;path.visible=visibility.path&&Boolean(variantId);if(selection?.kind==="segment"&&selection.variantId!==variantId)args.onSelection(null);render(); },
     setSelection: updateSelection,

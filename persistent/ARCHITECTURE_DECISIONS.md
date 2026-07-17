@@ -1,5 +1,22 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10I3-BAND-BZ-LINK: Link validated reciprocal identities, not display labels
+
+### Decision
+
+Compose existing Phase 10H phonon-band and Phase 10I BZ artifacts in a frontend-only versioned typed model. Require independent validation plus exact structure, primitive lattice, reciprocal convention/unit, selected path, ordered segment, endpoint, sample, and discontinuity compatibility before linked mode. Where band v1 lacks provider/time-reversal metadata, require complete ordered geometric equivalence and retain explicit warnings. Never use labels, nearest frequency, or nearest coordinate as canonical identity.
+
+Represent geometric points separately from path occurrences. Keep q-point/segment selection independent from branch/mode identity. BZ selection therefore never guesses a phonon branch. Preserve branch and mode only from a band-originated selection or exact animation binding, and prohibit interpolation across discontinuities.
+
+Keep hover and pinned selection in one bounded component-local reducer with transaction IDs and artifact-hash reset. Selection is ephemeral session state; it does not mutate canonical artifacts or create a public tool. Reuse the controlled Phase 10I-2 BZ engine, with mobile tabs owning at most one visible canvas/context.
+
+### Consequences
+
+- Compatible linked view is deterministic, replayable, bidirectional, and protected from feedback loops and stale artifact state.
+- Provider/time-reversal warnings remain until a future phonon-band schema declares them explicitly.
+- URL state, interior-segment BZ raycast, alternative variants, and electronic-band products remain deferred.
+- No AnalysisPlan, QueueWorkerRuntime, Tool Registry, Phase 10H/10I scientific schema, dependency, or execution-security boundary changes.
+
 ## ADR-10I2-VALIDATED-BRILLOUIN-RENDERER: Render canonical reciprocal artifacts with one local engine
 
 ### Decision

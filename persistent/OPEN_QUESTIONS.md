@@ -1,5 +1,11 @@
 # OPEN_QUESTIONS
 
+## 2026-07-17 Phase 10I-3 Follow-ups
+
+- Phase 10H band v1 does not declare provider/version or time-reversal metadata. Phase 10I-3 therefore requires complete ordered geometry equivalence and emits stable warnings; a future band schema may make these bindings explicit without weakening current compatibility.
+- URL serialization, arbitrary interior BZ segment raycast, alternative path variants, and simultaneous mobile Band/BZ panels remain deferred. Session-local state, canonical point/whole-segment reverse selection, and mobile tabs are complete.
+- The typed reciprocal-band interface reserves no electronic scientific semantics. Electronic band artifacts, DOS, Fermi data, and calculations remain unimplemented and require separate contracts and review.
+
 ## 2026-07-15 Phase 10I-2 Follow-ups
 
 - Phase 10I-3 may design a hash- and identity-bound Band-BZ linked view; bidirectional selection, cursor synchronization, band-path compatibility, and cross-panel state are not implemented here.

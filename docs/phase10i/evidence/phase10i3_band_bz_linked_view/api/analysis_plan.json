@@ -1,0 +1,106 @@
+{
+  "assumptions": [
+    "Linked view is an application-owned compatibility layer over inert artifacts."
+  ],
+  "datasetId": "dataset_link",
+  "expectedArtifacts": [
+    {
+      "fromStepId": "step_band",
+      "name": "phonon_band.json",
+      "type": "phonon_band_json"
+    },
+    {
+      "fromStepId": "step_bz",
+      "name": "reciprocal_lattice.json",
+      "type": "reciprocal_lattice_json"
+    },
+    {
+      "fromStepId": "step_bz",
+      "name": "brillouin_zone.json",
+      "type": "brillouin_zone_json"
+    },
+    {
+      "fromStepId": "step_bz",
+      "name": "kpath.json",
+      "type": "kpath_json"
+    },
+    {
+      "fromStepId": "step_bz",
+      "name": "brillouin_zone_manifest.json",
+      "type": "brillouin_zone_manifest_json"
+    }
+  ],
+  "goal": "Link the phonon band chart to the 3D BZ",
+  "profileId": "profile_link",
+  "schemaVersion": "0.1",
+  "steps": [
+    {
+      "inputRefs": [
+        {
+          "objectType": "PhononBand",
+          "ref": "phonon_band",
+          "refType": "normalized_object"
+        }
+      ],
+      "output": {
+        "artifactTypes": [
+          "phonon_band_json",
+          "phonon_summary_json",
+          "phonon_report_json",
+          "phonon_manifest_json",
+          "plotly_json",
+          "table_json",
+          "recipe_json"
+        ]
+      },
+      "params": {
+        "max_table_rows": 20000,
+        "plot_kind": "line",
+        "source_format": "auto",
+        "source_frequency_unit": "terahertz"
+      },
+      "purpose": "Validate the existing phonon band artifact for the linked reciprocal-space view.",
+      "reason": "The linked product needs the canonical phonon q-path without recomputing phonons.",
+      "stepId": "step_band",
+      "toolId": "phonon.band"
+    },
+    {
+      "inputRefs": [
+        {
+          "objectType": "Structure",
+          "ref": "structures",
+          "refType": "normalized_object"
+        }
+      ],
+      "output": {
+        "artifactTypes": [
+          "reciprocal_lattice_json",
+          "brillouin_zone_json",
+          "kpath_json",
+          "brillouin_zone_manifest_json",
+          "summary_md",
+          "recipe_json"
+        ]
+      },
+      "params": {
+        "angle_tolerance_degrees": 5.0,
+        "include_alternative_path_variants": false,
+        "include_brillouin_zone": true,
+        "include_kpath": true,
+        "include_reciprocal_lattice": true,
+        "kpath_provider": "contract_default",
+        "standardization": "contract_default",
+        "symmetry_tolerance_angstrom": 1e-05,
+        "time_reversal": true
+      },
+      "purpose": "Generate the canonical Brillouin-zone geometry and k-path for compatibility validation.",
+      "reason": "The request asks for lightweight structure analysis using 1 structure input(s).",
+      "stepId": "step_bz",
+      "toolId": "structure.brillouin_zone"
+    }
+  ],
+  "toolRegistryVersion": "0.1.0",
+  "warnings": [
+    "Band provider and time-reversal metadata are not declared by phase10h.phonon_band.v1; exact ordered path geometry is revalidated before linking."
+  ]
+}

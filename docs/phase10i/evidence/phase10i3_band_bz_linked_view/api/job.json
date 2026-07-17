@@ -1,0 +1,10 @@
+{
+  "artifactCount": 13,
+  "externalNetworkRequests": 0,
+  "jobId": "[runtime-job-redacted]",
+  "planHash": "73431541d1036a7a6b88c5181f9366e6c46c6ff20b757e70c4e06e6ffb58726a",
+  "planId": "[runtime-plan-redacted]",
+  "realLLM": false,
+  "status": "completed",
+  "toolCallCount": 2
+}
