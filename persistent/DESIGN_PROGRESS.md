@@ -6,6 +6,7 @@
 - Added exact structure/primitive-lattice/convention/unit/path/discontinuity compatibility, point occurrence, segment direction, sampled q-point `t`, branch separation, bounded mapping, typed mismatch fallback, and stable provider/time-reversal warnings. Display labels are never mapping identity.
 - Added one transaction-safe hover/pinned reducer, bidirectional Band/BZ selection, shared inspector/table, exact animation handoff, artifact cleanup, desktop/mobile composition, and controlled reuse of the Phase 10I-2 BZ engine.
 - Closure passed 20 focused frontend link/BZ lifecycle tests, seven backend routing/runtime/evidence tests, 223 full frontend tests, and `661 passed, 23 skipped, 62 warnings` backend tests, plus typecheck/build, real Chromium 150/Firefox 128/WebKit 18 WebGL2 evidence, mobile canvas lifecycle, accessibility, near-cap mapping, zero external requests, and secret scan. Implementation/fix commits `f81aedb`, `5b5873e`, and `f3fa177` culminated in current-HEAD CI run `29572530288`, where unit, frontend/typecheck/build, service-backed integration, and no-skipped gates all succeeded.
+- Completion record `02c550b67afa479ec711b45c1e9db0d61ff148b0` passed current-HEAD CI run `29572771301`; the result record was verified and the completed queue block was archived.
 
 ## 2026-07-15 Phase 10I-2 Brillouin Renderer / Evidence
 

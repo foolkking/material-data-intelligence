@@ -5,7 +5,7 @@
 - [x] Audit Phase 10H band/mode identity, Phase 10I BZ/k-path identity, existing compatibility, Three.js lifecycle, and planner composition.
 - [x] Implement strict compatibility, immutable point-occurrence/segment/sample maps, bounded shared state, bidirectional Band/BZ selection, exact animation handoff, mobile tabs, and accessible table/inspector.
 - [x] Capture real QueueWorkerRuntime artifacts and Chromium/Firefox/WebKit/mobile/performance/accessibility/network/security evidence.
-- [x] Complete full frontend/backend/Phase 10H/Phase 10I regression and implementation/fix commits through `f3fa177`; current-HEAD CI run `29572530288` passed unit, frontend/typecheck/build, service-backed integration, and no-skipped gates. Completion-record CI and archive verification remain the final queue bookkeeping gates.
+- [x] Complete full regression and implementation/fix commits through `f3fa177`; current-HEAD CI run `29572530288` passed all gates. Completion record `02c550b` passed current-HEAD CI run `29572771301`, and the verified queue block is archived in `reslusts.md`.
 
 ## Phase 10I-2 Brillouin Renderer / Evidence Completed
 
