@@ -1,0 +1,10 @@
+{
+  "allocation_checked_before_decode": true,
+  "bounded_streaming_gzip": true,
+  "compression_ratio_cap": 128,
+  "focused_test": "test_compression_ratio_cap_blocks_bomb_like_constant_payload",
+  "gzip_members_allowed": 1,
+  "max_chunks_per_field": 256,
+  "max_total_voxels": 16777216,
+  "result": "PASS"
+}

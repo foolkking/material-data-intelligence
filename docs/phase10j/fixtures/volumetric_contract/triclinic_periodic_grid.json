@@ -1,0 +1,247 @@
+{
+  "field": {
+    "complex_semantics": null,
+    "component_basis": "not_applicable",
+    "component_labels": [
+      "value"
+    ],
+    "content_hash": "82cf68fa388f04f31eac2f99b8015a4461b9e8cfbd857e5b3fe71dc3feb56b34",
+    "custom_quantity": null,
+    "field_id": "field:82cf68fa388f04f31eac2f99b8015a4461b9e8cfbd857e5b3fe71dc3feb56b34",
+    "field_name": "triclinic scalar",
+    "field_rank": "scalar",
+    "grid_content_hash": "e09b0a55ebe7b8edbf17ac68ed6eb92feb8fd8817e6df33fa3136e49886d612e",
+    "grid_id": "grid:e09b0a55ebe7b8edbf17ac68ed6eb92feb8fd8817e6df33fa3136e49886d612e",
+    "integral_semantics": "not_physically_interpreted",
+    "logical_component_count": 1,
+    "normalization_semantics": "not_normalized",
+    "payload_id": "payload:83e13c83f17cec9f8ab1cf1146ae28520e65812acb66b4e41c6945d196fc04fe",
+    "payload_logical_sha256": "83e13c83f17cec9f8ab1cf1146ae28520e65812acb66b4e41c6945d196fc04fe",
+    "potential_reference": null,
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "quantity": "generic_scalar",
+    "schema_version": "phase10j.volumetric_field.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "spin": null,
+    "statistics": {
+      "accumulation_dtype": "float64",
+      "authority": "computed_from_payload",
+      "complex_magnitude": null,
+      "finite_count": 24,
+      "histogram": null,
+      "stored_components": [
+        {
+          "absolute_integral": 276.0,
+          "count": 24,
+          "integral": 276.0,
+          "maximum": 23.0,
+          "mean": 11.5,
+          "minimum": 0.0,
+          "rms": 13.42261772780059,
+          "standard_deviation": 6.922186552431729,
+          "variance": 47.916666666666664
+        }
+      ]
+    },
+    "stored_component_count": 1,
+    "unit": {
+      "canonical_unit": "dimensionless",
+      "conversion_applied": false,
+      "conversion_factor": 1.0,
+      "conversion_provenance": "identity",
+      "source_unit": "dimensionless"
+    },
+    "value_kind": "real",
+    "warnings": []
+  },
+  "fixture_id": "triclinic_periodic_grid",
+  "grid": {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "content_hash": "e09b0a55ebe7b8edbf17ac68ed6eb92feb8fd8817e6df33fa3136e49886d612e",
+    "coordinate_space": "real_cartesian",
+    "domain_extent_matrix": [
+      [
+        4.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        3.0,
+        0.0
+      ],
+      [
+        0.5,
+        0.25,
+        2.0
+      ]
+    ],
+    "endpoint_policy": "excluded",
+    "grid_id": "grid:e09b0a55ebe7b8edbf17ac68ed6eb92feb8fd8817e6df33fa3136e49886d612e",
+    "length_unit": "angstrom",
+    "origin_cartesian": [
+      1.875,
+      1.6875,
+      1.5
+    ],
+    "origin_fractional": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "sample_location": "node",
+    "schema_version": "phase10j.volumetric_grid.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "shape": [
+      2,
+      3,
+      4
+    ],
+    "step_matrix": [
+      [
+        2.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.3333333333333333,
+        1.0,
+        0.0
+      ],
+      [
+        0.125,
+        0.0625,
+        0.5
+      ]
+    ],
+    "structure_binding": {
+      "basis_role": "canonical_structure_cell",
+      "lattice_matrix": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          3.0,
+          0.0
+        ],
+        [
+          0.5,
+          0.25,
+          2.0
+        ]
+      ],
+      "lattice_sha256": "ae062d57627265c50f59bdd571af8efd53546d2899ea7958ddacb3300580d652",
+      "structure_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "tolerance_policy": {
+      "determinant_relative_minimum": 1e-12,
+      "endpoint": 1e-10,
+      "matrix_absolute": 1e-09,
+      "maximum_condition_number": 100000000.0,
+      "relative": 1e-09,
+      "schema_version": "phase10j.volumetric_tolerances.v1"
+    },
+    "voxel_volume": 1.0
+  },
+  "payload": {
+    "artifact_name": null,
+    "chunks": [],
+    "compressed_bytes": 192,
+    "compression": {
+      "codec": "none",
+      "deterministic": true,
+      "filename": null,
+      "mtime": null
+    },
+    "dtype": "float64",
+    "encoding": "inline_json",
+    "endianness": "little",
+    "flatten_order": "ijkc_component_fastest",
+    "grid_shape": [
+      2,
+      3,
+      4
+    ],
+    "inline_values": [
+      0.0,
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0,
+      6.0,
+      7.0,
+      8.0,
+      9.0,
+      10.0,
+      11.0,
+      12.0,
+      13.0,
+      14.0,
+      15.0,
+      16.0,
+      17.0,
+      18.0,
+      19.0,
+      20.0,
+      21.0,
+      22.0,
+      23.0
+    ],
+    "logical_sha256": "83e13c83f17cec9f8ab1cf1146ae28520e65812acb66b4e41c6945d196fc04fe",
+    "logical_shape": [
+      2,
+      3,
+      4,
+      1
+    ],
+    "media_type": "application/json",
+    "payload_id": "payload:83e13c83f17cec9f8ab1cf1146ae28520e65812acb66b4e41c6945d196fc04fe",
+    "schema_version": "phase10j.volumetric_payload.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "storage_layout_hash": "4aa84a1a30f765c8f0b6be4d97043ef83895b43fbffafd14de8b2cc3c997213d",
+    "storage_sha256": "3ef30ddcf9e247e832d4fa881a6187f786932d672c395e8e597c2a36f9d14eb8",
+    "stored_component_count": 1,
+    "uncompressed_bytes": 192,
+    "value_count": 24
+  },
+  "synthetic": true
+}

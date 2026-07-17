@@ -797,3 +797,10 @@
 - Directional projections require an explicit coordinate-basis contract.
 - Phase 10H-3 may combine independently validated band and DOS but must not renormalize either source.
 - Physical assistive-technology and broad-device rendering remain outside automated evidence.
+
+## 2026-07-17 Phase 10J Follow-ups
+
+- Phase 10J-1 must map bounded VASP volumetric and Gaussian CUBE source semantics into the established contracts without introducing a second grid model.
+- Mixed periodicity, masks, sparse data, complex vectors/tensors, reciprocal-space grids, and time-dependent volume require separate schema decisions.
+- Isosurface and slice consumers must preserve source quantity, unit, normalization, gauge, hashes, periodic seam policy, and contract caps.
+- Production products for charge/spin density, electrostatic potential, ELF, orbitals, Bader analysis, and volume rendering remain unapproved.

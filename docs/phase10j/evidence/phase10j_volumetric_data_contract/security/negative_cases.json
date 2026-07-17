@@ -1,0 +1,12 @@
+{
+  "all_rejected": true,
+  "cases": {
+    "mixed_periodicity": "VOLUME_MIXED_PERIODICITY_UNSUPPORTED",
+    "nan_value": "VOLUME_NON_FINITE_VALUE",
+    "path_traversal": "VOLUME_ARTIFACT_NAME_INVALID",
+    "periodic_endpoint_included": "VOLUME_CONTENT_HASH_MISMATCH",
+    "singular_basis": "VOLUME_GRID_BASIS_SINGULAR",
+    "truncated_payload": "VOLUME_PAYLOAD_HASH_MISMATCH",
+    "zero_dimension": "VOLUME_GRID_SHAPE_INVALID"
+  }
+}

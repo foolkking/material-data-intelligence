@@ -1,0 +1,679 @@
+{
+  "dataset": {
+    "caps": {
+      "max_chunks_per_field": 256,
+      "max_compressed_bytes_per_field": 134217728,
+      "max_compression_ratio": 128,
+      "max_dataset_bytes": 536870912,
+      "max_fields_per_dataset": 8,
+      "max_grid_dimension": 512,
+      "max_histogram_bins": 256,
+      "max_inline_json_bytes": 4194304,
+      "max_inline_values": 262144,
+      "max_metadata_bytes": 65536,
+      "max_name_length": 96,
+      "max_provenance_entries": 32,
+      "max_stored_values": 50331648,
+      "max_total_voxels": 16777216,
+      "max_uncompressed_bytes_per_field": 268435456,
+      "max_unit_length": 64,
+      "max_warnings": 32
+    },
+    "content_hash": "30e6341d1a3a82d3bd50fdb1bc5d6338e6687487747fe1a70b3de8bd8bb80640",
+    "dataset_id": "volume-dataset:30e6341d1a3a82d3bd50fdb1bc5d6338e6687487747fe1a70b3de8bd8bb80640",
+    "fields": [
+      {
+        "complex_semantics": null,
+        "component_basis": "not_applicable",
+        "component_labels": [
+          "value"
+        ],
+        "content_hash": "31b9e607e1b00ddb6b4425433d33eedc4a68a8d01e3ebd92a2542f3731e1d8ce",
+        "custom_quantity": null,
+        "field_id": "field:31b9e607e1b00ddb6b4425433d33eedc4a68a8d01e3ebd92a2542f3731e1d8ce",
+        "field_name": "down",
+        "field_rank": "scalar",
+        "grid_content_hash": "bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+        "grid_id": "grid:bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+        "integral_semantics": "electron_count",
+        "logical_component_count": 1,
+        "normalization_semantics": "source_native",
+        "payload_id": "payload:d2ea885216dc17a8083447edea720c6a4b930a7aea91ab917c6fda0f5e320fa9",
+        "payload_logical_sha256": "d2ea885216dc17a8083447edea720c6a4b930a7aea91ab917c6fda0f5e320fa9",
+        "potential_reference": null,
+        "provenance": {
+          "producer": "mdi_artifact_core",
+          "producer_version": "phase10j",
+          "source_format": "canonical_contract",
+          "source_kind": "synthetic_fixture",
+          "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "transformations": []
+        },
+        "quantity": "electron_density",
+        "schema_version": "phase10j.volumetric_field.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "spin": null,
+        "statistics": {
+          "accumulation_dtype": "float64",
+          "authority": "computed_from_payload",
+          "complex_magnitude": null,
+          "finite_count": 8,
+          "histogram": null,
+          "stored_components": [
+            {
+              "absolute_integral": 16.0,
+              "count": 8,
+              "integral": 16.0,
+              "maximum": 0.25,
+              "mean": 0.25,
+              "minimum": 0.25,
+              "rms": 0.25,
+              "standard_deviation": 0.0,
+              "variance": 0.0
+            }
+          ]
+        },
+        "stored_component_count": 1,
+        "unit": {
+          "canonical_unit": "electron/angstrom^3",
+          "conversion_applied": false,
+          "conversion_factor": 1.0,
+          "conversion_provenance": "identity",
+          "source_unit": "electron/angstrom^3"
+        },
+        "value_kind": "real",
+        "warnings": []
+      },
+      {
+        "complex_semantics": null,
+        "component_basis": "not_applicable",
+        "component_labels": [
+          "value"
+        ],
+        "content_hash": "4f22790b8d9ad2c8a0b6716e801ee9c1234a011cef50e9885b876b09a7e307e4",
+        "custom_quantity": null,
+        "field_id": "field:4f22790b8d9ad2c8a0b6716e801ee9c1234a011cef50e9885b876b09a7e307e4",
+        "field_name": "up",
+        "field_rank": "scalar",
+        "grid_content_hash": "bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+        "grid_id": "grid:bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+        "integral_semantics": "electron_count",
+        "logical_component_count": 1,
+        "normalization_semantics": "source_native",
+        "payload_id": "payload:0f9d42d511ca95ce6b2f89832e98d12c0dcf179e10eda9c2a16990b8893e4f49",
+        "payload_logical_sha256": "0f9d42d511ca95ce6b2f89832e98d12c0dcf179e10eda9c2a16990b8893e4f49",
+        "potential_reference": null,
+        "provenance": {
+          "producer": "mdi_artifact_core",
+          "producer_version": "phase10j",
+          "source_format": "canonical_contract",
+          "source_kind": "synthetic_fixture",
+          "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "transformations": []
+        },
+        "quantity": "electron_density",
+        "schema_version": "phase10j.volumetric_field.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "spin": null,
+        "statistics": {
+          "accumulation_dtype": "float64",
+          "authority": "computed_from_payload",
+          "complex_magnitude": null,
+          "finite_count": 8,
+          "histogram": null,
+          "stored_components": [
+            {
+              "absolute_integral": 48.0,
+              "count": 8,
+              "integral": 48.0,
+              "maximum": 0.75,
+              "mean": 0.75,
+              "minimum": 0.75,
+              "rms": 0.75,
+              "standard_deviation": 0.0,
+              "variance": 0.0
+            }
+          ]
+        },
+        "stored_component_count": 1,
+        "unit": {
+          "canonical_unit": "electron/angstrom^3",
+          "conversion_applied": false,
+          "conversion_factor": 1.0,
+          "conversion_provenance": "identity",
+          "source_unit": "electron/angstrom^3"
+        },
+        "value_kind": "real",
+        "warnings": []
+      },
+      {
+        "complex_semantics": null,
+        "component_basis": "not_applicable",
+        "component_labels": [
+          "value"
+        ],
+        "content_hash": "4fcaf61a12e304b70d72304021fffca08397dcc95361f26342b8d1175586ef55",
+        "custom_quantity": null,
+        "field_id": "field:4fcaf61a12e304b70d72304021fffca08397dcc95361f26342b8d1175586ef55",
+        "field_name": "total",
+        "field_rank": "scalar",
+        "grid_content_hash": "bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+        "grid_id": "grid:bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+        "integral_semantics": "electron_count",
+        "logical_component_count": 1,
+        "normalization_semantics": "source_native",
+        "payload_id": "payload:fe5b7d5309402fa73f02fe2905b3d9eeb69d9c468cf3a1b6cfc35f01f27b43ab",
+        "payload_logical_sha256": "fe5b7d5309402fa73f02fe2905b3d9eeb69d9c468cf3a1b6cfc35f01f27b43ab",
+        "potential_reference": null,
+        "provenance": {
+          "producer": "mdi_artifact_core",
+          "producer_version": "phase10j",
+          "source_format": "canonical_contract",
+          "source_kind": "synthetic_fixture",
+          "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "transformations": []
+        },
+        "quantity": "electron_density",
+        "schema_version": "phase10j.volumetric_field.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "spin": null,
+        "statistics": {
+          "accumulation_dtype": "float64",
+          "authority": "computed_from_payload",
+          "complex_magnitude": null,
+          "finite_count": 8,
+          "histogram": null,
+          "stored_components": [
+            {
+              "absolute_integral": 64.0,
+              "count": 8,
+              "integral": 64.0,
+              "maximum": 1.0,
+              "mean": 1.0,
+              "minimum": 1.0,
+              "rms": 1.0,
+              "standard_deviation": 0.0,
+              "variance": 0.0
+            }
+          ]
+        },
+        "stored_component_count": 1,
+        "unit": {
+          "canonical_unit": "electron/angstrom^3",
+          "conversion_applied": false,
+          "conversion_factor": 1.0,
+          "conversion_provenance": "identity",
+          "source_unit": "electron/angstrom^3"
+        },
+        "value_kind": "real",
+        "warnings": []
+      },
+      {
+        "complex_semantics": null,
+        "component_basis": "not_applicable",
+        "component_labels": [
+          "value"
+        ],
+        "content_hash": "9f3b3ca82c4c9503e8bff0b7fffd9dcf02e8ce43721999b4b24b10208ea28b21",
+        "custom_quantity": null,
+        "field_id": "field:9f3b3ca82c4c9503e8bff0b7fffd9dcf02e8ce43721999b4b24b10208ea28b21",
+        "field_name": "difference",
+        "field_rank": "scalar",
+        "grid_content_hash": "bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+        "grid_id": "grid:bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+        "integral_semantics": "electron_count",
+        "logical_component_count": 1,
+        "normalization_semantics": "source_native",
+        "payload_id": "payload:ec19e14c59eda784a9f071a1d494cb14728eb8ead09dfc97b6bff7cb8facab12",
+        "payload_logical_sha256": "ec19e14c59eda784a9f071a1d494cb14728eb8ead09dfc97b6bff7cb8facab12",
+        "potential_reference": null,
+        "provenance": {
+          "producer": "mdi_artifact_core",
+          "producer_version": "phase10j",
+          "source_format": "canonical_contract",
+          "source_kind": "synthetic_fixture",
+          "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "transformations": []
+        },
+        "quantity": "spin_density",
+        "schema_version": "phase10j.volumetric_field.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "spin": {
+          "channel": "spin_difference",
+          "component_basis": "not_applicable",
+          "representation": "collinear",
+          "sign_convention": "up minus down",
+          "source_convention": "synthetic fixture"
+        },
+        "statistics": {
+          "accumulation_dtype": "float64",
+          "authority": "computed_from_payload",
+          "complex_magnitude": null,
+          "finite_count": 8,
+          "histogram": null,
+          "stored_components": [
+            {
+              "absolute_integral": 32.0,
+              "count": 8,
+              "integral": 32.0,
+              "maximum": 0.5,
+              "mean": 0.5,
+              "minimum": 0.5,
+              "rms": 0.5,
+              "standard_deviation": 0.0,
+              "variance": 0.0
+            }
+          ]
+        },
+        "stored_component_count": 1,
+        "unit": {
+          "canonical_unit": "electron/angstrom^3",
+          "conversion_applied": false,
+          "conversion_factor": 1.0,
+          "conversion_provenance": "identity",
+          "source_unit": "electron/angstrom^3"
+        },
+        "value_kind": "real",
+        "warnings": []
+      }
+    ],
+    "grid": {
+      "boundary_conditions": [
+        "periodic",
+        "periodic",
+        "periodic"
+      ],
+      "content_hash": "bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+      "coordinate_space": "real_cartesian",
+      "domain_extent_matrix": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.0
+        ]
+      ],
+      "endpoint_policy": "excluded",
+      "grid_id": "grid:bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+      "length_unit": "angstrom",
+      "origin_cartesian": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "origin_fractional": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sample_location": "node",
+      "schema_version": "phase10j.volumetric_grid.v1",
+      "security": {
+        "contains_css": false,
+        "contains_executable": false,
+        "contains_html": false,
+        "contains_javascript": false,
+        "contains_shader": false,
+        "external_urls_allowed": false,
+        "renderer_included": false
+      },
+      "shape": [
+        2,
+        2,
+        2
+      ],
+      "step_matrix": [
+        [
+          2.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          2.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          2.0
+        ]
+      ],
+      "structure_binding": {
+        "basis_role": "canonical_structure_cell",
+        "lattice_matrix": [
+          [
+            4.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            4.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            4.0
+          ]
+        ],
+        "lattice_sha256": "23e1f946f587d7a17bc37e73dc0417865cf6d8bfd07b7b7d2bf08b8afc89c4a8",
+        "structure_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "tolerance_policy": {
+        "determinant_relative_minimum": 1e-12,
+        "endpoint": 1e-10,
+        "matrix_absolute": 1e-09,
+        "maximum_condition_number": 100000000.0,
+        "relative": 1e-09,
+        "schema_version": "phase10j.volumetric_tolerances.v1"
+      },
+      "voxel_volume": 8.0
+    },
+    "payloads": [
+      {
+        "artifact_name": null,
+        "chunks": [],
+        "compressed_bytes": 64,
+        "compression": {
+          "codec": "none",
+          "deterministic": true,
+          "filename": null,
+          "mtime": null
+        },
+        "dtype": "float64",
+        "encoding": "inline_json",
+        "endianness": "little",
+        "flatten_order": "ijkc_component_fastest",
+        "grid_shape": [
+          2,
+          2,
+          2
+        ],
+        "inline_values": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "logical_sha256": "0f9d42d511ca95ce6b2f89832e98d12c0dcf179e10eda9c2a16990b8893e4f49",
+        "logical_shape": [
+          2,
+          2,
+          2,
+          1
+        ],
+        "media_type": "application/json",
+        "payload_id": "payload:0f9d42d511ca95ce6b2f89832e98d12c0dcf179e10eda9c2a16990b8893e4f49",
+        "schema_version": "phase10j.volumetric_payload.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "storage_layout_hash": "41036bba25f548d353af6d013effd6c4c0c232bd430c6a39b0a261acf7111e15",
+        "storage_sha256": "fd36b233313c9ac043c430f816326a12b423570f2017d496746dd711d098ec18",
+        "stored_component_count": 1,
+        "uncompressed_bytes": 64,
+        "value_count": 8
+      },
+      {
+        "artifact_name": null,
+        "chunks": [],
+        "compressed_bytes": 64,
+        "compression": {
+          "codec": "none",
+          "deterministic": true,
+          "filename": null,
+          "mtime": null
+        },
+        "dtype": "float64",
+        "encoding": "inline_json",
+        "endianness": "little",
+        "flatten_order": "ijkc_component_fastest",
+        "grid_shape": [
+          2,
+          2,
+          2
+        ],
+        "inline_values": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "logical_sha256": "d2ea885216dc17a8083447edea720c6a4b930a7aea91ab917c6fda0f5e320fa9",
+        "logical_shape": [
+          2,
+          2,
+          2,
+          1
+        ],
+        "media_type": "application/json",
+        "payload_id": "payload:d2ea885216dc17a8083447edea720c6a4b930a7aea91ab917c6fda0f5e320fa9",
+        "schema_version": "phase10j.volumetric_payload.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "storage_layout_hash": "64835b0992654416b81e066cdcaffce332813b572659092931f1935055a9fd2a",
+        "storage_sha256": "428c7c3e4d5e0bea828d4fcbd901ecd329a12db213c7211673248ed84e62e462",
+        "stored_component_count": 1,
+        "uncompressed_bytes": 64,
+        "value_count": 8
+      },
+      {
+        "artifact_name": null,
+        "chunks": [],
+        "compressed_bytes": 64,
+        "compression": {
+          "codec": "none",
+          "deterministic": true,
+          "filename": null,
+          "mtime": null
+        },
+        "dtype": "float64",
+        "encoding": "inline_json",
+        "endianness": "little",
+        "flatten_order": "ijkc_component_fastest",
+        "grid_shape": [
+          2,
+          2,
+          2
+        ],
+        "inline_values": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "logical_sha256": "ec19e14c59eda784a9f071a1d494cb14728eb8ead09dfc97b6bff7cb8facab12",
+        "logical_shape": [
+          2,
+          2,
+          2,
+          1
+        ],
+        "media_type": "application/json",
+        "payload_id": "payload:ec19e14c59eda784a9f071a1d494cb14728eb8ead09dfc97b6bff7cb8facab12",
+        "schema_version": "phase10j.volumetric_payload.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "storage_layout_hash": "976c1a1e098fe04b6c82b2830860417e65e2763c3c055fa93af9b7245a583fa6",
+        "storage_sha256": "dae21f7158ab1c734ada02ad59ce27d433e587c0702192290c104115a844609e",
+        "stored_component_count": 1,
+        "uncompressed_bytes": 64,
+        "value_count": 8
+      },
+      {
+        "artifact_name": null,
+        "chunks": [],
+        "compressed_bytes": 64,
+        "compression": {
+          "codec": "none",
+          "deterministic": true,
+          "filename": null,
+          "mtime": null
+        },
+        "dtype": "float64",
+        "encoding": "inline_json",
+        "endianness": "little",
+        "flatten_order": "ijkc_component_fastest",
+        "grid_shape": [
+          2,
+          2,
+          2
+        ],
+        "inline_values": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "logical_sha256": "fe5b7d5309402fa73f02fe2905b3d9eeb69d9c468cf3a1b6cfc35f01f27b43ab",
+        "logical_shape": [
+          2,
+          2,
+          2,
+          1
+        ],
+        "media_type": "application/json",
+        "payload_id": "payload:fe5b7d5309402fa73f02fe2905b3d9eeb69d9c468cf3a1b6cfc35f01f27b43ab",
+        "schema_version": "phase10j.volumetric_payload.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "storage_layout_hash": "e04beece1ba8d16df0909c5c17263e8ce9d0c11b514c4154703b70543cca20fb",
+        "storage_sha256": "91d86f0162c9c8c39e2750833a71b6a366e5a532e386a7520086ab811c70c990",
+        "stored_component_count": 1,
+        "uncompressed_bytes": 64,
+        "value_count": 8
+      }
+    ],
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "relationships": [
+      {
+        "input_field_ids": [
+          "field:4f22790b8d9ad2c8a0b6716e801ee9c1234a011cef50e9885b876b09a7e307e4",
+          "field:31b9e607e1b00ddb6b4425433d33eedc4a68a8d01e3ebd92a2542f3731e1d8ce"
+        ],
+        "kind": "spin_difference_equals_up_minus_down",
+        "output_field_id": "field:9f3b3ca82c4c9503e8bff0b7fffd9dcf02e8ce43721999b4b24b10208ea28b21",
+        "relationship_id": "difference",
+        "residual": 0.0,
+        "status": "validated"
+      },
+      {
+        "input_field_ids": [
+          "field:4f22790b8d9ad2c8a0b6716e801ee9c1234a011cef50e9885b876b09a7e307e4",
+          "field:31b9e607e1b00ddb6b4425433d33eedc4a68a8d01e3ebd92a2542f3731e1d8ce"
+        ],
+        "kind": "total_equals_up_plus_down",
+        "output_field_id": "field:4fcaf61a12e304b70d72304021fffca08397dcc95361f26342b8d1175586ef55",
+        "relationship_id": "total",
+        "residual": 0.0,
+        "status": "validated"
+      }
+    ],
+    "schema_version": "phase10j.volumetric_dataset.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "warnings": []
+  },
+  "fixture_id": "collinear_spin_dataset",
+  "synthetic": true
+}

@@ -1,0 +1,11 @@
+{
+  "artifact_bytes_supported": true,
+  "baseline_head": "7884f2f18f41c9b3bf8bff0765f2929473bfc465",
+  "dependencies_added": [],
+  "hash": "sha256",
+  "parser_implemented": false,
+  "phase10i3_archive_ci": "29572957408 success",
+  "renderer_implemented": false,
+  "row_vector_formula": "r_cart=r_frac*A",
+  "tool_registered": false
+}

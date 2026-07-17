@@ -1,0 +1,14 @@
+{
+  "artifact_javascript": false,
+  "bounded_allocation": true,
+  "bounded_decompression": true,
+  "css": false,
+  "executable": false,
+  "external_urls": [],
+  "html": false,
+  "object_deserialization": false,
+  "path_traversal": false,
+  "pickle": false,
+  "secret_scan": "NO_SECRET_PATTERN_HITS",
+  "shader": false
+}

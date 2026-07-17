@@ -1,0 +1,277 @@
+{
+  "field": {
+    "complex_semantics": null,
+    "component_basis": "cartesian",
+    "component_labels": [
+      "x",
+      "y",
+      "z"
+    ],
+    "content_hash": "5874980db6bead4cc598be391f5a0a91014feba593ab5027dcae926f431079ec",
+    "custom_quantity": null,
+    "field_id": "field:5874980db6bead4cc598be391f5a0a91014feba593ab5027dcae926f431079ec",
+    "field_name": "magnetization",
+    "field_rank": "vector",
+    "grid_content_hash": "bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+    "grid_id": "grid:bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+    "integral_semantics": "magnetic_moment",
+    "logical_component_count": 3,
+    "normalization_semantics": "source_native",
+    "payload_id": "payload:90736c1fafa5a7b7f42de97c3aa5a459c0ac6dc58bbc661e220ea3394a8e0a1a",
+    "payload_logical_sha256": "90736c1fafa5a7b7f42de97c3aa5a459c0ac6dc58bbc661e220ea3394a8e0a1a",
+    "potential_reference": null,
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "quantity": "magnetization_density",
+    "schema_version": "phase10j.volumetric_field.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "spin": {
+      "channel": "magnetization_vector",
+      "component_basis": "cartesian",
+      "representation": "non_collinear",
+      "sign_convention": "source declared",
+      "source_convention": "synthetic Cartesian fixture"
+    },
+    "statistics": {
+      "accumulation_dtype": "float64",
+      "authority": "computed_from_payload",
+      "complex_magnitude": null,
+      "finite_count": 24,
+      "histogram": null,
+      "stored_components": [
+        {
+          "absolute_integral": 224.0,
+          "count": 8,
+          "integral": 224.0,
+          "maximum": 7.0,
+          "mean": 3.5,
+          "minimum": 0.0,
+          "rms": 4.183300132670378,
+          "standard_deviation": 2.29128784747792,
+          "variance": 5.25
+        },
+        {
+          "absolute_integral": 224.0,
+          "count": 8,
+          "integral": -224.0,
+          "maximum": 0.0,
+          "mean": -3.5,
+          "minimum": -7.0,
+          "rms": 4.183300132670378,
+          "standard_deviation": 2.29128784747792,
+          "variance": 5.25
+        },
+        {
+          "absolute_integral": 32.0,
+          "count": 8,
+          "integral": 32.0,
+          "maximum": 0.5,
+          "mean": 0.5,
+          "minimum": 0.5,
+          "rms": 0.5,
+          "standard_deviation": 0.0,
+          "variance": 0.0
+        }
+      ]
+    },
+    "stored_component_count": 3,
+    "unit": {
+      "canonical_unit": "bohr_magneton/angstrom^3",
+      "conversion_applied": false,
+      "conversion_factor": 1.0,
+      "conversion_provenance": "identity",
+      "source_unit": "bohr_magneton/angstrom^3"
+    },
+    "value_kind": "real",
+    "warnings": []
+  },
+  "fixture_id": "noncollinear_magnetization",
+  "grid": {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "content_hash": "bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+    "coordinate_space": "real_cartesian",
+    "domain_extent_matrix": [
+      [
+        4.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        4.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        4.0
+      ]
+    ],
+    "endpoint_policy": "excluded",
+    "grid_id": "grid:bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+    "length_unit": "angstrom",
+    "origin_cartesian": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "origin_fractional": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "sample_location": "node",
+    "schema_version": "phase10j.volumetric_grid.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "step_matrix": [
+      [
+        2.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        2.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        2.0
+      ]
+    ],
+    "structure_binding": {
+      "basis_role": "canonical_structure_cell",
+      "lattice_matrix": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.0
+        ]
+      ],
+      "lattice_sha256": "23e1f946f587d7a17bc37e73dc0417865cf6d8bfd07b7b7d2bf08b8afc89c4a8",
+      "structure_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "tolerance_policy": {
+      "determinant_relative_minimum": 1e-12,
+      "endpoint": 1e-10,
+      "matrix_absolute": 1e-09,
+      "maximum_condition_number": 100000000.0,
+      "relative": 1e-09,
+      "schema_version": "phase10j.volumetric_tolerances.v1"
+    },
+    "voxel_volume": 8.0
+  },
+  "payload": {
+    "artifact_name": null,
+    "chunks": [],
+    "compressed_bytes": 192,
+    "compression": {
+      "codec": "none",
+      "deterministic": true,
+      "filename": null,
+      "mtime": null
+    },
+    "dtype": "float64",
+    "encoding": "inline_json",
+    "endianness": "little",
+    "flatten_order": "ijkc_component_fastest",
+    "grid_shape": [
+      2,
+      2,
+      2
+    ],
+    "inline_values": [
+      0.0,
+      0.0,
+      0.5,
+      1.0,
+      -1.0,
+      0.5,
+      2.0,
+      -2.0,
+      0.5,
+      3.0,
+      -3.0,
+      0.5,
+      4.0,
+      -4.0,
+      0.5,
+      5.0,
+      -5.0,
+      0.5,
+      6.0,
+      -6.0,
+      0.5,
+      7.0,
+      -7.0,
+      0.5
+    ],
+    "logical_sha256": "90736c1fafa5a7b7f42de97c3aa5a459c0ac6dc58bbc661e220ea3394a8e0a1a",
+    "logical_shape": [
+      2,
+      2,
+      2,
+      3
+    ],
+    "media_type": "application/json",
+    "payload_id": "payload:90736c1fafa5a7b7f42de97c3aa5a459c0ac6dc58bbc661e220ea3394a8e0a1a",
+    "schema_version": "phase10j.volumetric_payload.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "storage_layout_hash": "1d4c857627c5c7d8dc4395fb5718e6759adc5ff14eb77799accdf333462aeb69",
+    "storage_sha256": "678fd35fa343cf6eb234b514218ed858c80288a8414b0fd94a651dfa94a52a57",
+    "stored_component_count": 3,
+    "uncompressed_bytes": 192,
+    "value_count": 24
+  },
+  "synthetic": true
+}

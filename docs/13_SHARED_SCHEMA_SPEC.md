@@ -1410,3 +1410,28 @@ solver, external asset, notebook/script, network, or real LLM authority.
 The current dynamic phonon visualization family is `phase10h5.phonon_animation.v1`, `phase10h5.phonon_animation_summary.v1`, `phase10h5.phonon_animation_manifest.v1`, and `phase10h5.phonon_animation_recipe.v1`. The package binds one exact H4 mode, canonical structure, source band/eigenvector hashes, bounded renderer-local diagonal supercell, display/playback metadata, caps, warnings, inert security, and provenance. It stores no frames or executable/remote resources. Shared artifact types add `phonon_animation_json`, `phonon_animation_summary_json`, and `phonon_animation_manifest_json`; material object types add `PhononEigenvector` for strict role binding.
 
 Animation reconstruction uses mass-unweighted Cartesian vectors, fixed mode-envelope display scaling, canonical phase, and `2*pi*q_fractional.cell_image`. Display scale is angstrom-valued visualization state, not a physical amplitude.
+
+## Phase 10J Addendum: inert real-space volumetric data
+
+The canonical family is `phase10j.volumetric_grid.v1`,
+`phase10j.volumetric_payload.v1`, `phase10j.volumetric_field.v1`,
+`phase10j.volumetric_dataset.v1`, and `phase10j.volumetric_manifest.v1`.
+
+Real-space lattices and affine steps are row vectors. Structure coordinates use
+`r_cart = r_frac*A`; grid samples use
+`origin + (i+s)step_0 + (j+s)step_1 + (k+s)step_2`, where `s=0` for nodes and
+`s=0.5` for cell centers. Periodic grids are three-dimensional, structure-bound,
+and endpoint-excluded. Mixed periodicity is not accepted. Logical storage is
+`(i,j,k,c)` with component fastest.
+
+The contract supports finite real scalar, Cartesian real vector, and interleaved
+real/imaginary complex scalar fields. Binary storage is little-endian float32 or
+float64 with raw, deterministic gzip, or bounded whole-i-slab chunk encoding;
+small fixtures may use inline JSON. Logical and storage SHA-256 identities are
+separate. Exact byte lengths, caps, chunk coverage, gzip ratio/member bounds,
+quantity/unit compatibility, normalization, spin, potential gauge, statistics,
+structure/lattice binding, and inert security metadata are validated.
+
+This family grants no parser, adapter, tool, planner, runtime, renderer,
+isosurface, slice, script, URL, HTML, JavaScript, CSS, shader, object
+deserialization, or external-resource authority.

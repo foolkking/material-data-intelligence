@@ -1,0 +1,12 @@
+{
+  "backend_full": "695 passed, 23 skipped, 62 warnings",
+  "focused_contract_and_evidence": "34 passed",
+  "frontend_build": "success",
+  "frontend_full": "223 passed",
+  "frontend_typecheck": "success",
+  "phase10_backend_closure": "3 passed, 2 deselected",
+  "phase10_evidence_integrity": "PHASE10_CLOSURE_EVIDENCE_INTEGRITY_PASS",
+  "phase10_frontend_closure": "2 passed",
+  "phase10i_cross_platform_evidence": "6 passed",
+  "service_backed_local": "unavailable: Docker CLI is not installed"
+}

@@ -1808,3 +1808,14 @@
 ### Security
 - Exact fields/columns, byte/value caps, no smoothing or inference, preview refusal, and Plotly cleanup.
 - No dependency, network, solver, artifact execution, combined view, eigenvector, animation, notebook/script, external API, or real LLM path.
+
+## 2026-07-17 Phase 10J
+
+### Added
+- `phase10j.volumetric_grid.v1`, payload v1, field v1, dataset v1, and manifest v1 contracts and validators.
+- Row-vector real-space coordinates, periodic/non-periodic affine grids, canonical `ijkc` layout, scalar/vector/complex semantics, and explicit scientific metadata.
+- Little-endian raw, deterministic gzip, bounded i-slab chunks, layered hashes, statistics, caps, deterministic fixtures, and independent references.
+
+### Security
+- Added pre-allocation count/byte caps, bounded streaming gzip decode, ratio/member checks, exact chunk coverage, safe artifact names, and finite-only numeric validation.
+- No parser, tool, registry/planner/runtime path, renderer, dependency, artifact execution, external URL, pickle, or object deserialization was added.

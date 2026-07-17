@@ -1,0 +1,238 @@
+{
+  "field": {
+    "complex_semantics": null,
+    "component_basis": "not_applicable",
+    "component_labels": [
+      "value"
+    ],
+    "content_hash": "004da1e8baf303e0de31f088e3fd3d28f98e69af1563e84b3cde235fe3869d3f",
+    "custom_quantity": null,
+    "field_id": "field:004da1e8baf303e0de31f088e3fd3d28f98e69af1563e84b3cde235fe3869d3f",
+    "field_name": "potential",
+    "field_rank": "scalar",
+    "grid_content_hash": "bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+    "grid_id": "grid:bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+    "integral_semantics": "cell_average",
+    "logical_component_count": 1,
+    "normalization_semantics": "not_normalized",
+    "payload_id": "payload:80a62ba9358b1a2085eb4bb91e4acaf9afb33e552de7dc6723046b15459f87c8",
+    "payload_logical_sha256": "80a62ba9358b1a2085eb4bb91e4acaf9afb33e552de7dc6723046b15459f87c8",
+    "potential_reference": {
+      "kind": "cell_average_zero",
+      "reference_unit": "electronvolt",
+      "reference_value": 0.0,
+      "shift_amount": 0.0,
+      "shift_applied": false,
+      "source_metadata": "synthetic gauge"
+    },
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "quantity": "electrostatic_potential",
+    "schema_version": "phase10j.volumetric_field.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "spin": null,
+    "statistics": {
+      "accumulation_dtype": "float64",
+      "authority": "computed_from_payload",
+      "complex_magnitude": null,
+      "finite_count": 8,
+      "histogram": null,
+      "stored_components": [
+        {
+          "absolute_integral": 64.0,
+          "count": 8,
+          "integral": 0.0,
+          "maximum": 1.0,
+          "mean": 0.0,
+          "minimum": -1.0,
+          "rms": 1.0,
+          "standard_deviation": 1.0,
+          "variance": 1.0
+        }
+      ]
+    },
+    "stored_component_count": 1,
+    "unit": {
+      "canonical_unit": "electronvolt",
+      "conversion_applied": false,
+      "conversion_factor": 1.0,
+      "conversion_provenance": "identity",
+      "source_unit": "electronvolt"
+    },
+    "value_kind": "real",
+    "warnings": []
+  },
+  "fixture_id": "potential_gauge",
+  "grid": {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "content_hash": "bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+    "coordinate_space": "real_cartesian",
+    "domain_extent_matrix": [
+      [
+        4.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        4.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        4.0
+      ]
+    ],
+    "endpoint_policy": "excluded",
+    "grid_id": "grid:bdbff819d65b0654de548522d1f9fcd87a74074577e70a64feb54a08120ed63f",
+    "length_unit": "angstrom",
+    "origin_cartesian": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "origin_fractional": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "sample_location": "node",
+    "schema_version": "phase10j.volumetric_grid.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "step_matrix": [
+      [
+        2.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        2.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        2.0
+      ]
+    ],
+    "structure_binding": {
+      "basis_role": "canonical_structure_cell",
+      "lattice_matrix": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.0
+        ]
+      ],
+      "lattice_sha256": "23e1f946f587d7a17bc37e73dc0417865cf6d8bfd07b7b7d2bf08b8afc89c4a8",
+      "structure_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "tolerance_policy": {
+      "determinant_relative_minimum": 1e-12,
+      "endpoint": 1e-10,
+      "matrix_absolute": 1e-09,
+      "maximum_condition_number": 100000000.0,
+      "relative": 1e-09,
+      "schema_version": "phase10j.volumetric_tolerances.v1"
+    },
+    "voxel_volume": 8.0
+  },
+  "payload": {
+    "artifact_name": null,
+    "chunks": [],
+    "compressed_bytes": 64,
+    "compression": {
+      "codec": "none",
+      "deterministic": true,
+      "filename": null,
+      "mtime": null
+    },
+    "dtype": "float64",
+    "encoding": "inline_json",
+    "endianness": "little",
+    "flatten_order": "ijkc_component_fastest",
+    "grid_shape": [
+      2,
+      2,
+      2
+    ],
+    "inline_values": [
+      -1.0,
+      1.0,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+    ],
+    "logical_sha256": "80a62ba9358b1a2085eb4bb91e4acaf9afb33e552de7dc6723046b15459f87c8",
+    "logical_shape": [
+      2,
+      2,
+      2,
+      1
+    ],
+    "media_type": "application/json",
+    "payload_id": "payload:80a62ba9358b1a2085eb4bb91e4acaf9afb33e552de7dc6723046b15459f87c8",
+    "schema_version": "phase10j.volumetric_payload.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "storage_layout_hash": "f8e8ad4886920376a3e0a575e87c20719f58fb238682684e23a7d2a7ce42f670",
+    "storage_sha256": "8b5dd8b087ceb8e8030d6a7d68d0712e8f96d2008fffbc05c61f795bb56019ab",
+    "stored_component_count": 1,
+    "uncompressed_bytes": 64,
+    "value_count": 8
+  },
+  "synthetic": true
+}

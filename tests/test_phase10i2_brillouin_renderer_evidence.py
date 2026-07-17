@@ -13,6 +13,12 @@ def _json(relative: str) -> object:
     return json.loads((EVIDENCE / relative).read_text(encoding="utf-8"))
 
 
+def _canonical_evidence_bytes(path: Path) -> bytes:
+    if path.suffix.lower() == ".png":
+        return path.read_bytes()
+    return path.read_text(encoding="utf-8").encode("utf-8")
+
+
 def test_phase10i2_browser_api_performance_and_security_evidence_is_closed() -> None:
     manifest = _json("evidence_manifest.json")
     assert manifest["tool"] == "structure.brillouin_zone"
@@ -65,7 +71,7 @@ def test_phase10i2_mobile_png_screenshots_and_hash_inventory_are_replayable() ->
     assert set(records) == {path.relative_to(EVIDENCE).as_posix() for path in files}
     for path in files:
         relative = path.relative_to(EVIDENCE).as_posix()
-        content = path.read_bytes()
+        content = _canonical_evidence_bytes(path)
         assert records[relative]["bytes"] == len(content)
         assert records[relative]["sha256"] == hashlib.sha256(content).hexdigest()
 

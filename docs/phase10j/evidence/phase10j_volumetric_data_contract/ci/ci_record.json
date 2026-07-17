@@ -1,0 +1,11 @@
+{
+  "commit": "pending",
+  "required_jobs": [
+    "unit",
+    "frontend",
+    "service-backed integration",
+    "no-skipped assertion"
+  ],
+  "run": "pending",
+  "status": "pending current-head CI"
+}

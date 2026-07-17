@@ -3806,3 +3806,26 @@ band-rooted contracts.
 - Pymatgen serialized input and directional projections remain deferred.
 - Frontend Plotly mapping starts only after independent validation and never executes artifact plot data.
 - Combined views, eigenvectors, animation, calculations, dependencies, and external resources gain no authority.
+
+# 2026-07-17 Phase 10J ADR: canonical inert volumetric storage
+
+## Decision
+
+Represent real-space grids with row step vectors and structure lattices using
+`r_cart=r_frac*A`. Periodic canonical grids exclude duplicate endpoints. Store
+logical data in `ijkc` order with component fastest and binary values as
+little-endian float32/float64. Separate grid, logical payload, storage, field,
+dataset, and manifest identities. Require explicit quantity, unit,
+normalization, integral, spin, complex, and potential-reference semantics.
+
+Use only inline JSON, raw binary, deterministic gzip, and bounded whole-i-slab
+chunks. Canonical artifacts reject pickle, object arrays, nested archives,
+executable content, external URLs, and arbitrary codecs. Phase 10J defines no
+parser, tool, planner route, runtime adapter, renderer, slice, or isosurface.
+
+## Consequences
+
+- Triclinic and general affine grids share one deterministic row-vector model.
+- Logical hashes survive storage encoding and chunk-boundary changes while storage hashes remain auditable.
+- Caps and bounded decompression apply before allocation or decode.
+- Phase 10J-1 owns production parser/adapter work; visualization requires later separately reviewed consumers.

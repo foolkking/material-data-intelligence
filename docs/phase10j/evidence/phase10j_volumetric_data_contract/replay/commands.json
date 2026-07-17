@@ -1,0 +1,8 @@
+{
+  "build": "npm --prefix apps/web run build",
+  "focused_tests": "uv run python -m pytest tests/test_phase10j_volumetric_contract.py tests/test_phase10j_volumetric_evidence.py -q",
+  "frontend": "npm --prefix apps/web test",
+  "full_backend": "uv run python -m pytest -q",
+  "generate": "uv run python scripts/generate_phase10j_volumetric_evidence.py",
+  "typecheck": "npm --prefix apps/web run typecheck"
+}

@@ -1,0 +1,8 @@
+{
+  "binary": "python standard library struct",
+  "compression": "python standard library gzip/zlib",
+  "lockfile_changed": false,
+  "network_required": false,
+  "new_dependencies": [],
+  "npm_audit": "unavailable: configured npmmirror endpoint returned 404 NOT_IMPLEMENTED"
+}

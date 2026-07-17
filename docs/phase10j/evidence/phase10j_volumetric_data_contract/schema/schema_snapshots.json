@@ -1,0 +1,51 @@
+{
+  "caps": {
+    "max_chunks_per_field": 256,
+    "max_compressed_bytes_per_field": 134217728,
+    "max_compression_ratio": 128,
+    "max_dataset_bytes": 536870912,
+    "max_fields_per_dataset": 8,
+    "max_grid_dimension": 512,
+    "max_histogram_bins": 256,
+    "max_inline_json_bytes": 4194304,
+    "max_inline_values": 262144,
+    "max_metadata_bytes": 65536,
+    "max_name_length": 96,
+    "max_provenance_entries": 32,
+    "max_stored_values": 50331648,
+    "max_total_voxels": 16777216,
+    "max_uncompressed_bytes_per_field": 268435456,
+    "max_unit_length": 64,
+    "max_warnings": 32
+  },
+  "coordinate_formula": "r_cart=origin+(i+sample_shift)*step_0+(j+sample_shift)*step_1+(k+sample_shift)*step_2",
+  "dtypes": [
+    "float32",
+    "float64"
+  ],
+  "encodings": [
+    "chunked_binary",
+    "gzip_binary",
+    "inline_json",
+    "raw_binary"
+  ],
+  "flatten_order": "ijkc_component_fastest",
+  "periodic_endpoint_policy": "excluded",
+  "row_vector_lattice_formula": "r_cart=r_frac*A",
+  "schemas": {
+    "dataset": "phase10j.volumetric_dataset.v1",
+    "field": "phase10j.volumetric_field.v1",
+    "grid": "phase10j.volumetric_grid.v1",
+    "manifest": "phase10j.volumetric_manifest.v1",
+    "payload": "phase10j.volumetric_payload.v1"
+  },
+  "security": {
+    "contains_css": false,
+    "contains_executable": false,
+    "contains_html": false,
+    "contains_javascript": false,
+    "contains_shader": false,
+    "external_urls_allowed": false,
+    "renderer_included": false
+  }
+}

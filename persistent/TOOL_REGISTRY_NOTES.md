@@ -1136,3 +1136,10 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Params cover only source format/unit/normalization, table/plot caps, and line plot; outputs are seven exact inert types.
 - Mock Planner routes static DOS only. Bands, combined, eigenvectors, animation, thermal properties, calculations, and Brillouin requests do not route here.
 - PlanValidator, QueueWorkerRuntime, and AnalysisPlan authority are unchanged.
+
+# 2026-07-17 Phase 10J Volumetric Contract Notes
+
+- Phase 10J registers no Tool Registry entry and adds no planner route, params schema, adapter, or QueueWorkerRuntime path.
+- The five `phase10j.volumetric_*` schemas are inert artifact contracts only.
+- Generic JSON preview is sufficient for metadata; no parser or renderer capability may be inferred from contract validity.
+- A future `structure.volumetric_data` tool requires the separate Phase 10J-1 parser/adapter review and must reuse these contracts.

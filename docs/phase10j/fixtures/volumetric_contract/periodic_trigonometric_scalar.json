@@ -1,0 +1,226 @@
+{
+  "field": {
+    "complex_semantics": null,
+    "component_basis": "not_applicable",
+    "component_labels": [
+      "value"
+    ],
+    "content_hash": "a3727d3e62d8fde559fd3a03ff8a41707f839087c46c3efee1295e023dcc1dd0",
+    "custom_quantity": null,
+    "field_id": "field:a3727d3e62d8fde559fd3a03ff8a41707f839087c46c3efee1295e023dcc1dd0",
+    "field_name": "periodic trigonometric",
+    "field_rank": "scalar",
+    "grid_content_hash": "aa2757d40fd74c5de0e46a63d5315b6e23d84fbe81993ab91b72b8701bf9230a",
+    "grid_id": "grid:aa2757d40fd74c5de0e46a63d5315b6e23d84fbe81993ab91b72b8701bf9230a",
+    "integral_semantics": "zero_by_definition",
+    "logical_component_count": 1,
+    "normalization_semantics": "not_normalized",
+    "payload_id": "payload:8b44741ca0dd84cd1025c305cf7a26747367ee503a5787b0177512537f5d2dd3",
+    "payload_logical_sha256": "8b44741ca0dd84cd1025c305cf7a26747367ee503a5787b0177512537f5d2dd3",
+    "potential_reference": null,
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "quantity": "generic_scalar",
+    "schema_version": "phase10j.volumetric_field.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "spin": null,
+    "statistics": {
+      "accumulation_dtype": "float64",
+      "authority": "computed_from_payload",
+      "complex_magnitude": null,
+      "finite_count": 512,
+      "histogram": null,
+      "stored_components": [
+        {
+          "absolute_integral": 44.04163056034262,
+          "count": 512,
+          "integral": -1.924934205745357e-15,
+          "maximum": 1.75,
+          "mean": -3.0077096964771205e-17,
+          "minimum": -1.75,
+          "rms": 0.8100925873009825,
+          "standard_deviation": 0.8100925873009825,
+          "variance": 0.65625
+        }
+      ]
+    },
+    "stored_component_count": 1,
+    "unit": {
+      "canonical_unit": "dimensionless",
+      "conversion_applied": false,
+      "conversion_factor": 1.0,
+      "conversion_provenance": "identity",
+      "source_unit": "dimensionless"
+    },
+    "value_kind": "real",
+    "warnings": []
+  },
+  "fixture_id": "periodic_trigonometric_scalar",
+  "grid": {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "content_hash": "aa2757d40fd74c5de0e46a63d5315b6e23d84fbe81993ab91b72b8701bf9230a",
+    "coordinate_space": "real_cartesian",
+    "domain_extent_matrix": [
+      [
+        4.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        4.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        4.0
+      ]
+    ],
+    "endpoint_policy": "excluded",
+    "grid_id": "grid:aa2757d40fd74c5de0e46a63d5315b6e23d84fbe81993ab91b72b8701bf9230a",
+    "length_unit": "angstrom",
+    "origin_cartesian": [
+      0.5,
+      1.0,
+      1.5
+    ],
+    "origin_fractional": [
+      0.125,
+      0.25,
+      0.375
+    ],
+    "sample_location": "node",
+    "schema_version": "phase10j.volumetric_grid.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "shape": [
+      8,
+      8,
+      8
+    ],
+    "step_matrix": [
+      [
+        0.5,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.5
+      ]
+    ],
+    "structure_binding": {
+      "basis_role": "canonical_structure_cell",
+      "lattice_matrix": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.0
+        ]
+      ],
+      "lattice_sha256": "23e1f946f587d7a17bc37e73dc0417865cf6d8bfd07b7b7d2bf08b8afc89c4a8",
+      "structure_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "tolerance_policy": {
+      "determinant_relative_minimum": 1e-12,
+      "endpoint": 1e-10,
+      "matrix_absolute": 1e-09,
+      "maximum_condition_number": 100000000.0,
+      "relative": 1e-09,
+      "schema_version": "phase10j.volumetric_tolerances.v1"
+    },
+    "voxel_volume": 0.125
+  },
+  "payload": {
+    "artifact_name": "periodic-trigonometric.f64.gz",
+    "chunks": [],
+    "compressed_bytes": 882,
+    "compression": {
+      "codec": "gzip",
+      "deterministic": true,
+      "filename": null,
+      "mtime": 0
+    },
+    "dtype": "float64",
+    "encoding": "gzip_binary",
+    "endianness": "little",
+    "flatten_order": "ijkc_component_fastest",
+    "grid_shape": [
+      8,
+      8,
+      8
+    ],
+    "inline_values": null,
+    "logical_sha256": "8b44741ca0dd84cd1025c305cf7a26747367ee503a5787b0177512537f5d2dd3",
+    "logical_shape": [
+      8,
+      8,
+      8,
+      1
+    ],
+    "media_type": "application/gzip",
+    "payload_id": "payload:8b44741ca0dd84cd1025c305cf7a26747367ee503a5787b0177512537f5d2dd3",
+    "schema_version": "phase10j.volumetric_payload.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "storage_layout_hash": "50a6b2c7f54c7a97b2431c43db6a4aad553c6c4d3dcbca166c20994c195b67f7",
+    "storage_sha256": "05acc8f789c8036159245a74e4d9b2a97b4ae74a42d87c15df26eb7db535fc7a",
+    "stored_component_count": 1,
+    "uncompressed_bytes": 4096,
+    "value_count": 512
+  },
+  "reference": {
+    "cell_integral": -1.924934205745357e-15,
+    "expected_near_zero": true
+  },
+  "synthetic": true
+}

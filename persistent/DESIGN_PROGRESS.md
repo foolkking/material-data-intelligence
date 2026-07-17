@@ -1395,3 +1395,12 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added DOS-specific summary/manifest extensions, report, plot, table, recipe, runtime persistence, and validated local Plotly preview.
 - Chromium, Firefox, WebKit, mobile, accessibility, API, determinism, network, and security evidence passed without new dependencies.
 - Combined band+DOS, pymatgen serialized input, directional projections, eigenvectors, animation, and calculation remain deferred.
+
+## 2026-07-17 Phase 10J Volumetric Data Contract
+
+- Added five strict inert contracts for grid, payload, field, dataset, and manifest.
+- Fixed real-space row-vector affine math, endpoint-excluded periodic grids, `ijkc` component-fastest storage, and structure/lattice binding.
+- Added little-endian float32/float64 inline, raw, deterministic gzip, and bounded whole-i-slab chunk payloads with layered SHA-256 identities.
+- Added explicit quantity/unit, normalization/integral, collinear/non-collinear spin, complex scalar, potential gauge, statistics, caps, and typed validation.
+- Added deterministic fixtures, independent standard-library references, binary payloads, replay hashes, and decompression/security evidence.
+- No parser, adapter, tool, planner route, runtime execution, renderer, isosurface, external resource, or dependency was added.

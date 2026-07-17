@@ -2070,3 +2070,13 @@
 - [x] Add validated Plotly/table/JSON preview with projection selector and degraded fallback.
 - [x] Close backend/frontend, Chromium/Firefox/WebKit/mobile, API, security, and evidence gates.
 - [ ] Combined band+DOS, eigenvectors, and animation remain separate queued tasks.
+
+## Phase 10J Volumetric Data Contract
+
+- [x] Define strict grid, payload, field, dataset, and manifest schemas.
+- [x] Freeze row-vector affine math, endpoint and sample-location policy, and `ijkc` flattening.
+- [x] Implement bounded binary/gzip/chunk validation, hashes, statistics, and scientific metadata.
+- [x] Commit deterministic scalar/vector/complex/spin/potential fixtures and independent references.
+- [x] Close contract security and dependency boundaries without a new tool or renderer.
+- [ ] Production VASP/CUBE parsers and adapter integration remain Phase 10J-1 scope.
+- [ ] Isosurface, slice, and volume rendering remain separately reviewed future phases.

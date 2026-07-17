@@ -1,0 +1,25 @@
+{
+  "affine_first_cell_center": [
+    10.3,
+    -1.4,
+    4.0
+  ],
+  "binary_decoder": {
+    "count": 64,
+    "format": "<d",
+    "integral": 128.0,
+    "maximum": 2.0,
+    "minimum": 2.0
+  },
+  "flatten_2x3x4x2": {
+    "contiguous": true,
+    "first": 0,
+    "last": 47
+  },
+  "triclinic_coordinate_1_2_3": [
+    4.916666666666666,
+    3.875,
+    3.0
+  ],
+  "trigonometric_integral": -1.924934205745357e-15
+}

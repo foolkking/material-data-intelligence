@@ -1,0 +1,815 @@
+{
+  "equivalence": {
+    "known_integral": 128.0,
+    "logical_hash_equal": true
+  },
+  "fixture_id": "cubic_constant_scalar",
+  "grid": {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "content_hash": "a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+    "coordinate_space": "real_cartesian",
+    "domain_extent_matrix": [
+      [
+        4.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        4.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        4.0
+      ]
+    ],
+    "endpoint_policy": "excluded",
+    "grid_id": "grid:a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+    "length_unit": "angstrom",
+    "origin_cartesian": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "origin_fractional": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "sample_location": "node",
+    "schema_version": "phase10j.volumetric_grid.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "shape": [
+      4,
+      4,
+      4
+    ],
+    "step_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "structure_binding": {
+      "basis_role": "canonical_structure_cell",
+      "lattice_matrix": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.0
+        ]
+      ],
+      "lattice_sha256": "23e1f946f587d7a17bc37e73dc0417865cf6d8bfd07b7b7d2bf08b8afc89c4a8",
+      "structure_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "tolerance_policy": {
+      "determinant_relative_minimum": 1e-12,
+      "endpoint": 1e-10,
+      "matrix_absolute": 1e-09,
+      "maximum_condition_number": 100000000.0,
+      "relative": 1e-09,
+      "schema_version": "phase10j.volumetric_tolerances.v1"
+    },
+    "voxel_volume": 1.0
+  },
+  "inline_field": {
+    "complex_semantics": null,
+    "component_basis": "not_applicable",
+    "component_labels": [
+      "value"
+    ],
+    "content_hash": "8720d49ba84a349c46e20d0b1ff80444b7005b891673f173bf7c2ebfb646b8c7",
+    "custom_quantity": null,
+    "field_id": "field:8720d49ba84a349c46e20d0b1ff80444b7005b891673f173bf7c2ebfb646b8c7",
+    "field_name": "density",
+    "field_rank": "scalar",
+    "grid_content_hash": "a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+    "grid_id": "grid:a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+    "integral_semantics": "electron_count",
+    "logical_component_count": 1,
+    "normalization_semantics": "source_native",
+    "payload_id": "payload:b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+    "payload_logical_sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+    "potential_reference": null,
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "quantity": "electron_density",
+    "schema_version": "phase10j.volumetric_field.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "spin": null,
+    "statistics": {
+      "accumulation_dtype": "float64",
+      "authority": "computed_from_payload",
+      "complex_magnitude": null,
+      "finite_count": 64,
+      "histogram": null,
+      "stored_components": [
+        {
+          "absolute_integral": 128.0,
+          "count": 64,
+          "integral": 128.0,
+          "maximum": 2.0,
+          "mean": 2.0,
+          "minimum": 2.0,
+          "rms": 2.0,
+          "standard_deviation": 0.0,
+          "variance": 0.0
+        }
+      ]
+    },
+    "stored_component_count": 1,
+    "unit": {
+      "canonical_unit": "electron/angstrom^3",
+      "conversion_applied": false,
+      "conversion_factor": 1.0,
+      "conversion_provenance": "identity",
+      "source_unit": "electron/angstrom^3"
+    },
+    "value_kind": "real",
+    "warnings": []
+  },
+  "inline_payload": {
+    "artifact_name": null,
+    "chunks": [],
+    "compressed_bytes": 512,
+    "compression": {
+      "codec": "none",
+      "deterministic": true,
+      "filename": null,
+      "mtime": null
+    },
+    "dtype": "float64",
+    "encoding": "inline_json",
+    "endianness": "little",
+    "flatten_order": "ijkc_component_fastest",
+    "grid_shape": [
+      4,
+      4,
+      4
+    ],
+    "inline_values": [
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0
+    ],
+    "logical_sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+    "logical_shape": [
+      4,
+      4,
+      4,
+      1
+    ],
+    "media_type": "application/json",
+    "payload_id": "payload:b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+    "schema_version": "phase10j.volumetric_payload.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "storage_layout_hash": "81127d02123574e378c5c243cb081d3029e2066983f7f23a440b37197be2e819",
+    "storage_sha256": "f7461c35750020400ba737f931377ec0bc422172d19911a8e0ce5b5da10ae47f",
+    "stored_component_count": 1,
+    "uncompressed_bytes": 512,
+    "value_count": 64
+  },
+  "manifest": {
+    "artifacts": [
+      {
+        "bytes": 512,
+        "kind": "numeric_payload",
+        "media_type": "application/vnd.mdi.volumetric+float64",
+        "name": "cubic-constant.f64",
+        "schema_version": "phase10j.volumetric_payload.v1",
+        "sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e"
+      },
+      {
+        "bytes": 5450,
+        "kind": "dataset",
+        "media_type": "application/json",
+        "name": "volumetric_dataset.json",
+        "schema_version": "phase10j.volumetric_dataset.v1",
+        "sha256": "92a5f874ce30ff18bda1e3ac3c9ecfe9d5ba2951470b4b37066448b0d9cbb851"
+      },
+      {
+        "bytes": 1304,
+        "kind": "grid",
+        "media_type": "application/json",
+        "name": "volumetric_grid.json",
+        "schema_version": "phase10j.volumetric_grid.v1",
+        "sha256": "765a06d57661cbe97629250b9f11d0c545440a9399daa4f57ab7dbbf0c5ba2f8"
+      }
+    ],
+    "capabilities": {
+      "isosurface_included": false,
+      "metadata_preview": true,
+      "parser_included": false,
+      "renderer_included": false,
+      "slice_included": false
+    },
+    "caps": {
+      "max_chunks_per_field": 256,
+      "max_compressed_bytes_per_field": 134217728,
+      "max_compression_ratio": 128,
+      "max_dataset_bytes": 536870912,
+      "max_fields_per_dataset": 8,
+      "max_grid_dimension": 512,
+      "max_histogram_bins": 256,
+      "max_inline_json_bytes": 4194304,
+      "max_inline_values": 262144,
+      "max_metadata_bytes": 65536,
+      "max_name_length": 96,
+      "max_provenance_entries": 32,
+      "max_stored_values": 50331648,
+      "max_total_voxels": 16777216,
+      "max_uncompressed_bytes_per_field": 268435456,
+      "max_unit_length": 64,
+      "max_warnings": 32
+    },
+    "content_hash": "bf8c6a58bdbcb0913f3bb621c9c300897897e07361551834ca44d544256ca3eb",
+    "dataset_content_hash": "72c510076468cc980491056e86968c076d22b4a5c3d2845dd1f2ababe3a0c53c",
+    "dataset_id": "volume-dataset:72c510076468cc980491056e86968c076d22b4a5c3d2845dd1f2ababe3a0c53c",
+    "executable_assets": [],
+    "external_resources": [],
+    "manifest_id": "volume-manifest:bf8c6a58bdbcb0913f3bb621c9c300897897e07361551834ca44d544256ca3eb",
+    "preview_mode": "metadata_json_only",
+    "schema_version": "phase10j.volumetric_manifest.v1",
+    "schema_versions": {
+      "dataset": "phase10j.volumetric_dataset.v1",
+      "field": "phase10j.volumetric_field.v1",
+      "grid": "phase10j.volumetric_grid.v1",
+      "manifest": "phase10j.volumetric_manifest.v1",
+      "payload": "phase10j.volumetric_payload.v1"
+    },
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    }
+  },
+  "raw_dataset": {
+    "caps": {
+      "max_chunks_per_field": 256,
+      "max_compressed_bytes_per_field": 134217728,
+      "max_compression_ratio": 128,
+      "max_dataset_bytes": 536870912,
+      "max_fields_per_dataset": 8,
+      "max_grid_dimension": 512,
+      "max_histogram_bins": 256,
+      "max_inline_json_bytes": 4194304,
+      "max_inline_values": 262144,
+      "max_metadata_bytes": 65536,
+      "max_name_length": 96,
+      "max_provenance_entries": 32,
+      "max_stored_values": 50331648,
+      "max_total_voxels": 16777216,
+      "max_uncompressed_bytes_per_field": 268435456,
+      "max_unit_length": 64,
+      "max_warnings": 32
+    },
+    "content_hash": "72c510076468cc980491056e86968c076d22b4a5c3d2845dd1f2ababe3a0c53c",
+    "dataset_id": "volume-dataset:72c510076468cc980491056e86968c076d22b4a5c3d2845dd1f2ababe3a0c53c",
+    "fields": [
+      {
+        "complex_semantics": null,
+        "component_basis": "not_applicable",
+        "component_labels": [
+          "value"
+        ],
+        "content_hash": "8720d49ba84a349c46e20d0b1ff80444b7005b891673f173bf7c2ebfb646b8c7",
+        "custom_quantity": null,
+        "field_id": "field:8720d49ba84a349c46e20d0b1ff80444b7005b891673f173bf7c2ebfb646b8c7",
+        "field_name": "density",
+        "field_rank": "scalar",
+        "grid_content_hash": "a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+        "grid_id": "grid:a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+        "integral_semantics": "electron_count",
+        "logical_component_count": 1,
+        "normalization_semantics": "source_native",
+        "payload_id": "payload:b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+        "payload_logical_sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+        "potential_reference": null,
+        "provenance": {
+          "producer": "mdi_artifact_core",
+          "producer_version": "phase10j",
+          "source_format": "canonical_contract",
+          "source_kind": "synthetic_fixture",
+          "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "transformations": []
+        },
+        "quantity": "electron_density",
+        "schema_version": "phase10j.volumetric_field.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "spin": null,
+        "statistics": {
+          "accumulation_dtype": "float64",
+          "authority": "computed_from_payload",
+          "complex_magnitude": null,
+          "finite_count": 64,
+          "histogram": null,
+          "stored_components": [
+            {
+              "absolute_integral": 128.0,
+              "count": 64,
+              "integral": 128.0,
+              "maximum": 2.0,
+              "mean": 2.0,
+              "minimum": 2.0,
+              "rms": 2.0,
+              "standard_deviation": 0.0,
+              "variance": 0.0
+            }
+          ]
+        },
+        "stored_component_count": 1,
+        "unit": {
+          "canonical_unit": "electron/angstrom^3",
+          "conversion_applied": false,
+          "conversion_factor": 1.0,
+          "conversion_provenance": "identity",
+          "source_unit": "electron/angstrom^3"
+        },
+        "value_kind": "real",
+        "warnings": []
+      }
+    ],
+    "grid": {
+      "boundary_conditions": [
+        "periodic",
+        "periodic",
+        "periodic"
+      ],
+      "content_hash": "a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+      "coordinate_space": "real_cartesian",
+      "domain_extent_matrix": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.0
+        ]
+      ],
+      "endpoint_policy": "excluded",
+      "grid_id": "grid:a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+      "length_unit": "angstrom",
+      "origin_cartesian": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "origin_fractional": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sample_location": "node",
+      "schema_version": "phase10j.volumetric_grid.v1",
+      "security": {
+        "contains_css": false,
+        "contains_executable": false,
+        "contains_html": false,
+        "contains_javascript": false,
+        "contains_shader": false,
+        "external_urls_allowed": false,
+        "renderer_included": false
+      },
+      "shape": [
+        4,
+        4,
+        4
+      ],
+      "step_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "structure_binding": {
+        "basis_role": "canonical_structure_cell",
+        "lattice_matrix": [
+          [
+            4.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            4.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            4.0
+          ]
+        ],
+        "lattice_sha256": "23e1f946f587d7a17bc37e73dc0417865cf6d8bfd07b7b7d2bf08b8afc89c4a8",
+        "structure_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "tolerance_policy": {
+        "determinant_relative_minimum": 1e-12,
+        "endpoint": 1e-10,
+        "matrix_absolute": 1e-09,
+        "maximum_condition_number": 100000000.0,
+        "relative": 1e-09,
+        "schema_version": "phase10j.volumetric_tolerances.v1"
+      },
+      "voxel_volume": 1.0
+    },
+    "payloads": [
+      {
+        "artifact_name": "cubic-constant.f64",
+        "chunks": [],
+        "compressed_bytes": 512,
+        "compression": {
+          "codec": "none",
+          "deterministic": true,
+          "filename": null,
+          "mtime": null
+        },
+        "dtype": "float64",
+        "encoding": "raw_binary",
+        "endianness": "little",
+        "flatten_order": "ijkc_component_fastest",
+        "grid_shape": [
+          4,
+          4,
+          4
+        ],
+        "inline_values": null,
+        "logical_sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+        "logical_shape": [
+          4,
+          4,
+          4,
+          1
+        ],
+        "media_type": "application/vnd.mdi.volumetric+float64",
+        "payload_id": "payload:b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+        "schema_version": "phase10j.volumetric_payload.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "storage_layout_hash": "fb2e55d95cfe7362d49cde27b5ff01e9e2f213bf05e538b92e9730c90148aa8d",
+        "storage_sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+        "stored_component_count": 1,
+        "uncompressed_bytes": 512,
+        "value_count": 64
+      }
+    ],
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "relationships": [],
+    "schema_version": "phase10j.volumetric_dataset.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "warnings": []
+  },
+  "raw_field": {
+    "complex_semantics": null,
+    "component_basis": "not_applicable",
+    "component_labels": [
+      "value"
+    ],
+    "content_hash": "8720d49ba84a349c46e20d0b1ff80444b7005b891673f173bf7c2ebfb646b8c7",
+    "custom_quantity": null,
+    "field_id": "field:8720d49ba84a349c46e20d0b1ff80444b7005b891673f173bf7c2ebfb646b8c7",
+    "field_name": "density",
+    "field_rank": "scalar",
+    "grid_content_hash": "a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+    "grid_id": "grid:a069670016aa75b87d0b64ede5cfbb14cb8c3f16fe9957eb0e05632a28de0f76",
+    "integral_semantics": "electron_count",
+    "logical_component_count": 1,
+    "normalization_semantics": "source_native",
+    "payload_id": "payload:b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+    "payload_logical_sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+    "potential_reference": null,
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "quantity": "electron_density",
+    "schema_version": "phase10j.volumetric_field.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "spin": null,
+    "statistics": {
+      "accumulation_dtype": "float64",
+      "authority": "computed_from_payload",
+      "complex_magnitude": null,
+      "finite_count": 64,
+      "histogram": null,
+      "stored_components": [
+        {
+          "absolute_integral": 128.0,
+          "count": 64,
+          "integral": 128.0,
+          "maximum": 2.0,
+          "mean": 2.0,
+          "minimum": 2.0,
+          "rms": 2.0,
+          "standard_deviation": 0.0,
+          "variance": 0.0
+        }
+      ]
+    },
+    "stored_component_count": 1,
+    "unit": {
+      "canonical_unit": "electron/angstrom^3",
+      "conversion_applied": false,
+      "conversion_factor": 1.0,
+      "conversion_provenance": "identity",
+      "source_unit": "electron/angstrom^3"
+    },
+    "value_kind": "real",
+    "warnings": []
+  },
+  "raw_payload": {
+    "artifact_name": "cubic-constant.f64",
+    "chunks": [],
+    "compressed_bytes": 512,
+    "compression": {
+      "codec": "none",
+      "deterministic": true,
+      "filename": null,
+      "mtime": null
+    },
+    "dtype": "float64",
+    "encoding": "raw_binary",
+    "endianness": "little",
+    "flatten_order": "ijkc_component_fastest",
+    "grid_shape": [
+      4,
+      4,
+      4
+    ],
+    "inline_values": null,
+    "logical_sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+    "logical_shape": [
+      4,
+      4,
+      4,
+      1
+    ],
+    "media_type": "application/vnd.mdi.volumetric+float64",
+    "payload_id": "payload:b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+    "schema_version": "phase10j.volumetric_payload.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "storage_layout_hash": "fb2e55d95cfe7362d49cde27b5ff01e9e2f213bf05e538b92e9730c90148aa8d",
+    "storage_sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e",
+    "stored_component_count": 1,
+    "uncompressed_bytes": 512,
+    "value_count": 64
+  },
+  "synthetic": true,
+  "values": [
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0
+  ]
+}

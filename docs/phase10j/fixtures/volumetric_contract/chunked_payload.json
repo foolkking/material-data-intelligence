@@ -1,0 +1,562 @@
+{
+  "dataset": {
+    "caps": {
+      "max_chunks_per_field": 256,
+      "max_compressed_bytes_per_field": 134217728,
+      "max_compression_ratio": 128,
+      "max_dataset_bytes": 536870912,
+      "max_fields_per_dataset": 8,
+      "max_grid_dimension": 512,
+      "max_histogram_bins": 256,
+      "max_inline_json_bytes": 4194304,
+      "max_inline_values": 262144,
+      "max_metadata_bytes": 65536,
+      "max_name_length": 96,
+      "max_provenance_entries": 32,
+      "max_stored_values": 50331648,
+      "max_total_voxels": 16777216,
+      "max_uncompressed_bytes_per_field": 268435456,
+      "max_unit_length": 64,
+      "max_warnings": 32
+    },
+    "content_hash": "f35dd5947eaf6b35b7b7889501107a5d26e0aa593711a42ae2081db5384092ac",
+    "dataset_id": "volume-dataset:f35dd5947eaf6b35b7b7889501107a5d26e0aa593711a42ae2081db5384092ac",
+    "fields": [
+      {
+        "complex_semantics": null,
+        "component_basis": "not_applicable",
+        "component_labels": [
+          "value"
+        ],
+        "content_hash": "23b5fdcd1533eb01bdf856672825b60dacb05e679cd121b1f23c68cecb3b27a1",
+        "custom_quantity": null,
+        "field_id": "field:23b5fdcd1533eb01bdf856672825b60dacb05e679cd121b1f23c68cecb3b27a1",
+        "field_name": "chunked scalar",
+        "field_rank": "scalar",
+        "grid_content_hash": "5cf4c1b0de91eb29288ee4ace2670fc9071b7e2f76e3c1d8c9a7d5ec9a1d1410",
+        "grid_id": "grid:5cf4c1b0de91eb29288ee4ace2670fc9071b7e2f76e3c1d8c9a7d5ec9a1d1410",
+        "integral_semantics": "not_physically_interpreted",
+        "logical_component_count": 1,
+        "normalization_semantics": "not_normalized",
+        "payload_id": "payload:92b504f37b85c3772f8aebb0a5fd53acd897255c612dde97861d65b2be9ddec8",
+        "payload_logical_sha256": "92b504f37b85c3772f8aebb0a5fd53acd897255c612dde97861d65b2be9ddec8",
+        "potential_reference": null,
+        "provenance": {
+          "producer": "mdi_artifact_core",
+          "producer_version": "phase10j",
+          "source_format": "canonical_contract",
+          "source_kind": "synthetic_fixture",
+          "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "transformations": []
+        },
+        "quantity": "generic_scalar",
+        "schema_version": "phase10j.volumetric_field.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "spin": null,
+        "statistics": {
+          "accumulation_dtype": "float64",
+          "authority": "computed_from_payload",
+          "complex_magnitude": null,
+          "finite_count": 24,
+          "histogram": null,
+          "stored_components": [
+            {
+              "absolute_integral": 245.33333333333331,
+              "count": 24,
+              "integral": 245.33333333333331,
+              "maximum": 7.666666666666667,
+              "mean": 3.8333333333333335,
+              "minimum": 0.0,
+              "rms": 4.474205909266863,
+              "standard_deviation": 2.307395517477243,
+              "variance": 5.324074074074074
+            }
+          ]
+        },
+        "stored_component_count": 1,
+        "unit": {
+          "canonical_unit": "dimensionless",
+          "conversion_applied": false,
+          "conversion_factor": 1.0,
+          "conversion_provenance": "identity",
+          "source_unit": "dimensionless"
+        },
+        "value_kind": "real",
+        "warnings": []
+      }
+    ],
+    "grid": {
+      "boundary_conditions": [
+        "periodic",
+        "periodic",
+        "periodic"
+      ],
+      "content_hash": "5cf4c1b0de91eb29288ee4ace2670fc9071b7e2f76e3c1d8c9a7d5ec9a1d1410",
+      "coordinate_space": "real_cartesian",
+      "domain_extent_matrix": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.0
+        ]
+      ],
+      "endpoint_policy": "excluded",
+      "grid_id": "grid:5cf4c1b0de91eb29288ee4ace2670fc9071b7e2f76e3c1d8c9a7d5ec9a1d1410",
+      "length_unit": "angstrom",
+      "origin_cartesian": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "origin_fractional": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sample_location": "node",
+      "schema_version": "phase10j.volumetric_grid.v1",
+      "security": {
+        "contains_css": false,
+        "contains_executable": false,
+        "contains_html": false,
+        "contains_javascript": false,
+        "contains_shader": false,
+        "external_urls_allowed": false,
+        "renderer_included": false
+      },
+      "shape": [
+        4,
+        3,
+        2
+      ],
+      "step_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.3333333333333333,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          2.0
+        ]
+      ],
+      "structure_binding": {
+        "basis_role": "canonical_structure_cell",
+        "lattice_matrix": [
+          [
+            4.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            4.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            4.0
+          ]
+        ],
+        "lattice_sha256": "23e1f946f587d7a17bc37e73dc0417865cf6d8bfd07b7b7d2bf08b8afc89c4a8",
+        "structure_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "tolerance_policy": {
+        "determinant_relative_minimum": 1e-12,
+        "endpoint": 1e-10,
+        "matrix_absolute": 1e-09,
+        "maximum_condition_number": 100000000.0,
+        "relative": 1e-09,
+        "schema_version": "phase10j.volumetric_tolerances.v1"
+      },
+      "voxel_volume": 2.6666666666666665
+    },
+    "payloads": [
+      {
+        "artifact_name": null,
+        "chunks": [
+          {
+            "artifact_name": "chunked.chunk-0000.gz",
+            "chunk_id": "chunk:0000",
+            "compressed_bytes": 64,
+            "encoding": "gzip_binary",
+            "i_end": 2,
+            "i_start": 0,
+            "logical_sha256": "6c31eeefe4c31e8246acfb2a363d690a3520be89340e9232df99ce4fef93b2b4",
+            "logical_shape": [
+              2,
+              3,
+              2,
+              1
+            ],
+            "media_type": "application/gzip",
+            "storage_sha256": "88345d976d046f4e9f04542e0af487beca0d05afdb1cd25d96b610687ed6a02e",
+            "uncompressed_bytes": 96
+          },
+          {
+            "artifact_name": "chunked.chunk-0001.gz",
+            "chunk_id": "chunk:0001",
+            "compressed_bytes": 63,
+            "encoding": "gzip_binary",
+            "i_end": 4,
+            "i_start": 2,
+            "logical_sha256": "23976267ca750a7c3d759827adb215fd3006e3ea63970305615759b347e99721",
+            "logical_shape": [
+              2,
+              3,
+              2,
+              1
+            ],
+            "media_type": "application/gzip",
+            "storage_sha256": "0d3255e67d0d9447e85f2c23da29c0c697f2b3978fb115a58e6a9de088c60432",
+            "uncompressed_bytes": 96
+          }
+        ],
+        "compressed_bytes": 127,
+        "compression": {
+          "codec": "none",
+          "deterministic": true,
+          "filename": null,
+          "mtime": null
+        },
+        "dtype": "float64",
+        "encoding": "chunked_binary",
+        "endianness": "little",
+        "flatten_order": "ijkc_component_fastest",
+        "grid_shape": [
+          4,
+          3,
+          2
+        ],
+        "inline_values": null,
+        "logical_sha256": "92b504f37b85c3772f8aebb0a5fd53acd897255c612dde97861d65b2be9ddec8",
+        "logical_shape": [
+          4,
+          3,
+          2,
+          1
+        ],
+        "media_type": "application/vnd.mdi.volumetric-chunks+json",
+        "payload_id": "payload:92b504f37b85c3772f8aebb0a5fd53acd897255c612dde97861d65b2be9ddec8",
+        "schema_version": "phase10j.volumetric_payload.v1",
+        "security": {
+          "contains_css": false,
+          "contains_executable": false,
+          "contains_html": false,
+          "contains_javascript": false,
+          "contains_shader": false,
+          "external_urls_allowed": false,
+          "renderer_included": false
+        },
+        "storage_layout_hash": "454776d4c2b6d811e1b2c5ac7846db7d1e249c3cb656a08cb7419c2f18326a23",
+        "storage_sha256": "8a74af236db11ba3729db530df616b9077ab43f31075768f7ee546764e3147e7",
+        "stored_component_count": 1,
+        "uncompressed_bytes": 192,
+        "value_count": 24
+      }
+    ],
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "relationships": [],
+    "schema_version": "phase10j.volumetric_dataset.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "warnings": []
+  },
+  "field": {
+    "complex_semantics": null,
+    "component_basis": "not_applicable",
+    "component_labels": [
+      "value"
+    ],
+    "content_hash": "23b5fdcd1533eb01bdf856672825b60dacb05e679cd121b1f23c68cecb3b27a1",
+    "custom_quantity": null,
+    "field_id": "field:23b5fdcd1533eb01bdf856672825b60dacb05e679cd121b1f23c68cecb3b27a1",
+    "field_name": "chunked scalar",
+    "field_rank": "scalar",
+    "grid_content_hash": "5cf4c1b0de91eb29288ee4ace2670fc9071b7e2f76e3c1d8c9a7d5ec9a1d1410",
+    "grid_id": "grid:5cf4c1b0de91eb29288ee4ace2670fc9071b7e2f76e3c1d8c9a7d5ec9a1d1410",
+    "integral_semantics": "not_physically_interpreted",
+    "logical_component_count": 1,
+    "normalization_semantics": "not_normalized",
+    "payload_id": "payload:92b504f37b85c3772f8aebb0a5fd53acd897255c612dde97861d65b2be9ddec8",
+    "payload_logical_sha256": "92b504f37b85c3772f8aebb0a5fd53acd897255c612dde97861d65b2be9ddec8",
+    "potential_reference": null,
+    "provenance": {
+      "producer": "mdi_artifact_core",
+      "producer_version": "phase10j",
+      "source_format": "canonical_contract",
+      "source_kind": "synthetic_fixture",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transformations": []
+    },
+    "quantity": "generic_scalar",
+    "schema_version": "phase10j.volumetric_field.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "spin": null,
+    "statistics": {
+      "accumulation_dtype": "float64",
+      "authority": "computed_from_payload",
+      "complex_magnitude": null,
+      "finite_count": 24,
+      "histogram": null,
+      "stored_components": [
+        {
+          "absolute_integral": 245.33333333333331,
+          "count": 24,
+          "integral": 245.33333333333331,
+          "maximum": 7.666666666666667,
+          "mean": 3.8333333333333335,
+          "minimum": 0.0,
+          "rms": 4.474205909266863,
+          "standard_deviation": 2.307395517477243,
+          "variance": 5.324074074074074
+        }
+      ]
+    },
+    "stored_component_count": 1,
+    "unit": {
+      "canonical_unit": "dimensionless",
+      "conversion_applied": false,
+      "conversion_factor": 1.0,
+      "conversion_provenance": "identity",
+      "source_unit": "dimensionless"
+    },
+    "value_kind": "real",
+    "warnings": []
+  },
+  "fixture_id": "chunked_payload",
+  "grid": {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "content_hash": "5cf4c1b0de91eb29288ee4ace2670fc9071b7e2f76e3c1d8c9a7d5ec9a1d1410",
+    "coordinate_space": "real_cartesian",
+    "domain_extent_matrix": [
+      [
+        4.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        4.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        4.0
+      ]
+    ],
+    "endpoint_policy": "excluded",
+    "grid_id": "grid:5cf4c1b0de91eb29288ee4ace2670fc9071b7e2f76e3c1d8c9a7d5ec9a1d1410",
+    "length_unit": "angstrom",
+    "origin_cartesian": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "origin_fractional": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "sample_location": "node",
+    "schema_version": "phase10j.volumetric_grid.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "shape": [
+      4,
+      3,
+      2
+    ],
+    "step_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.3333333333333333,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        2.0
+      ]
+    ],
+    "structure_binding": {
+      "basis_role": "canonical_structure_cell",
+      "lattice_matrix": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.0
+        ]
+      ],
+      "lattice_sha256": "23e1f946f587d7a17bc37e73dc0417865cf6d8bfd07b7b7d2bf08b8afc89c4a8",
+      "structure_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "tolerance_policy": {
+      "determinant_relative_minimum": 1e-12,
+      "endpoint": 1e-10,
+      "matrix_absolute": 1e-09,
+      "maximum_condition_number": 100000000.0,
+      "relative": 1e-09,
+      "schema_version": "phase10j.volumetric_tolerances.v1"
+    },
+    "voxel_volume": 2.6666666666666665
+  },
+  "logical_hash_matches_unchunked": true,
+  "payload": {
+    "artifact_name": null,
+    "chunks": [
+      {
+        "artifact_name": "chunked.chunk-0000.gz",
+        "chunk_id": "chunk:0000",
+        "compressed_bytes": 64,
+        "encoding": "gzip_binary",
+        "i_end": 2,
+        "i_start": 0,
+        "logical_sha256": "6c31eeefe4c31e8246acfb2a363d690a3520be89340e9232df99ce4fef93b2b4",
+        "logical_shape": [
+          2,
+          3,
+          2,
+          1
+        ],
+        "media_type": "application/gzip",
+        "storage_sha256": "88345d976d046f4e9f04542e0af487beca0d05afdb1cd25d96b610687ed6a02e",
+        "uncompressed_bytes": 96
+      },
+      {
+        "artifact_name": "chunked.chunk-0001.gz",
+        "chunk_id": "chunk:0001",
+        "compressed_bytes": 63,
+        "encoding": "gzip_binary",
+        "i_end": 4,
+        "i_start": 2,
+        "logical_sha256": "23976267ca750a7c3d759827adb215fd3006e3ea63970305615759b347e99721",
+        "logical_shape": [
+          2,
+          3,
+          2,
+          1
+        ],
+        "media_type": "application/gzip",
+        "storage_sha256": "0d3255e67d0d9447e85f2c23da29c0c697f2b3978fb115a58e6a9de088c60432",
+        "uncompressed_bytes": 96
+      }
+    ],
+    "compressed_bytes": 127,
+    "compression": {
+      "codec": "none",
+      "deterministic": true,
+      "filename": null,
+      "mtime": null
+    },
+    "dtype": "float64",
+    "encoding": "chunked_binary",
+    "endianness": "little",
+    "flatten_order": "ijkc_component_fastest",
+    "grid_shape": [
+      4,
+      3,
+      2
+    ],
+    "inline_values": null,
+    "logical_sha256": "92b504f37b85c3772f8aebb0a5fd53acd897255c612dde97861d65b2be9ddec8",
+    "logical_shape": [
+      4,
+      3,
+      2,
+      1
+    ],
+    "media_type": "application/vnd.mdi.volumetric-chunks+json",
+    "payload_id": "payload:92b504f37b85c3772f8aebb0a5fd53acd897255c612dde97861d65b2be9ddec8",
+    "schema_version": "phase10j.volumetric_payload.v1",
+    "security": {
+      "contains_css": false,
+      "contains_executable": false,
+      "contains_html": false,
+      "contains_javascript": false,
+      "contains_shader": false,
+      "external_urls_allowed": false,
+      "renderer_included": false
+    },
+    "storage_layout_hash": "454776d4c2b6d811e1b2c5ac7846db7d1e249c3cb656a08cb7419c2f18326a23",
+    "storage_sha256": "8a74af236db11ba3729db530df616b9077ab43f31075768f7ee546764e3147e7",
+    "stored_component_count": 1,
+    "uncompressed_bytes": 192,
+    "value_count": 24
+  },
+  "synthetic": true
+}

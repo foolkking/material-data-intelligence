@@ -1,0 +1,150 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "bytes": 200,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/ci/ci_record.json",
+      "sha256": "5f4caa9b39f9787a765d2e2b86ac7081ebec3b63283f58ec16d6974c65901004"
+    },
+    {
+      "bytes": 277,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/dependency_audit.json",
+      "sha256": "23b9c2df44fa5f5a40602f1bb174f55399f6281c5c37cd21f85e80d69a866bcc"
+    },
+    {
+      "bytes": 334,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/pre_implementation_audit.json",
+      "sha256": "4552105084d54efc3da9adb4e182b534580b25675f088d5c13e862cebbfff88d"
+    },
+    {
+      "bytes": 273,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/README.md",
+      "sha256": "3ce07a232c42c663674abf061cf4361cb31a3b89636b242c3757bc7e4793664d"
+    },
+    {
+      "bytes": 410,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/references/independent_math.json",
+      "sha256": "14f48b8c326bb90398275520ba513427bd3927d7d4eac3b7d101ef66c33c27dd"
+    },
+    {
+      "bytes": 410,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/replay/commands.json",
+      "sha256": "97f2364bc99d354e3aa13778d9109530ef9f4fd37b96df91b0a58f3eac18deb7"
+    },
+    {
+      "bytes": 499,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/replay/determinism.json",
+      "sha256": "21702aed6a4793e75b0238cf4f7fe819a9f1ad8f12fe4522672136302abbe6c9"
+    },
+    {
+      "bytes": 1497,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/schema/schema_snapshots.json",
+      "sha256": "0c66efbed75eae63aa3cd5c4918a97b67da7a4e88739101a00fa533a20bd4493"
+    },
+    {
+      "bytes": 320,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/security/audit.json",
+      "sha256": "189a1153608fdab37ee123f604512d04f86a7e0b15c1a6e4e3d825560379ea7c"
+    },
+    {
+      "bytes": 307,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/security/cap_decompression.json",
+      "sha256": "7d8062fe51ac3a390dd7f4852c9d96bdff711a436b873f2ead12c8ff7aaac8f4"
+    },
+    {
+      "bytes": 433,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/security/negative_cases.json",
+      "sha256": "74a2e4698f9cfbf1b1e883acfaa0f5360eb165e1c8977bcb3483e5adb1ee2274"
+    },
+    {
+      "bytes": 499,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/test_captures/local_checks.json",
+      "sha256": "ee2acfd1c2c33bd27d0872170fe7a6ad6d34ee0dfbbcfff2be0bb2b9262a9393"
+    },
+    {
+      "bytes": 521,
+      "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/validation/fixture_validation.json",
+      "sha256": "7fcf0d5265313e6f44aadd4fb58db92bf049cabe9ac7f06d2936da5de2d42490"
+    },
+    {
+      "bytes": 192,
+      "name": "docs/phase10j/fixtures/volumetric_contract/binary/chunked-logical.raw",
+      "sha256": "92b504f37b85c3772f8aebb0a5fd53acd897255c612dde97861d65b2be9ddec8"
+    },
+    {
+      "bytes": 64,
+      "name": "docs/phase10j/fixtures/volumetric_contract/binary/chunked.chunk-0000.gz",
+      "sha256": "88345d976d046f4e9f04542e0af487beca0d05afdb1cd25d96b610687ed6a02e"
+    },
+    {
+      "bytes": 63,
+      "name": "docs/phase10j/fixtures/volumetric_contract/binary/chunked.chunk-0001.gz",
+      "sha256": "0d3255e67d0d9447e85f2c23da29c0c697f2b3978fb115a58e6a9de088c60432"
+    },
+    {
+      "bytes": 512,
+      "name": "docs/phase10j/fixtures/volumetric_contract/binary/cubic-constant.f64",
+      "sha256": "b6d5153c04182eb76340c93242016c5d97d4335fadbe1687315b58121d749c6e"
+    },
+    {
+      "bytes": 882,
+      "name": "docs/phase10j/fixtures/volumetric_contract/binary/periodic-trigonometric.f64.gz",
+      "sha256": "05acc8f789c8036159245a74e4d9b2a97b4ae74a42d87c15df26eb7db535fc7a"
+    },
+    {
+      "bytes": 16642,
+      "name": "docs/phase10j/fixtures/volumetric_contract/chunked_payload.json",
+      "sha256": "ca72bb1e35a3a738e5beb6235315ec7f3d51ff5cf7064140d58db1326c4a7a99"
+    },
+    {
+      "bytes": 22192,
+      "name": "docs/phase10j/fixtures/volumetric_contract/collinear_spin_dataset.json",
+      "sha256": "2d650110a4b27ef0ebe3b8ebd7fae0947fc70afc3a91020a1ea385647a5057cc"
+    },
+    {
+      "bytes": 7008,
+      "name": "docs/phase10j/fixtures/volumetric_contract/complex_scalar.json",
+      "sha256": "959b5110281756f98f5166bd225e3a1e76c5cb97024c4b7c4823903cfdd6ffc0"
+    },
+    {
+      "bytes": 21937,
+      "name": "docs/phase10j/fixtures/volumetric_contract/cubic_constant_scalar.json",
+      "sha256": "821046c397236d3a26b5172ae208dff527b02db66b3848349c25a422b5d5f76a"
+    },
+    {
+      "bytes": 433,
+      "name": "docs/phase10j/fixtures/volumetric_contract/negative_cases.json",
+      "sha256": "74a2e4698f9cfbf1b1e883acfaa0f5360eb165e1c8977bcb3483e5adb1ee2274"
+    },
+    {
+      "bytes": 7001,
+      "name": "docs/phase10j/fixtures/volumetric_contract/noncollinear_magnetization.json",
+      "sha256": "d6c006dd4f3f03397ea648d63dac45b1de2541b4dcbafc1e5d215cff2593a5f8"
+    },
+    {
+      "bytes": 5675,
+      "name": "docs/phase10j/fixtures/volumetric_contract/nonperiodic_affine_box.json",
+      "sha256": "16504ad20bf5bc8bedd8da0c2ca0f567dbb6e45677e30689bcc3fa018c721a04"
+    },
+    {
+      "bytes": 6101,
+      "name": "docs/phase10j/fixtures/volumetric_contract/periodic_trigonometric_scalar.json",
+      "sha256": "7e5e42d3a70ee5dcf21d401888829c054027c50268177cbed441ae325a173e5a"
+    },
+    {
+      "bytes": 6151,
+      "name": "docs/phase10j/fixtures/volumetric_contract/potential_gauge.json",
+      "sha256": "65ddb2b1500e71d8cbfd23df752ca34317289bddf8fa90ad7c0755cc60e00b61"
+    },
+    {
+      "bytes": 1497,
+      "name": "docs/phase10j/fixtures/volumetric_contract/schema_snapshots.json",
+      "sha256": "0c66efbed75eae63aa3cd5c4918a97b67da7a4e88739101a00fa533a20bd4493"
+    },
+    {
+      "bytes": 6232,
+      "name": "docs/phase10j/fixtures/volumetric_contract/triclinic_periodic_grid.json",
+      "sha256": "5c308339d7aa3f6efe3b90b6f975bf04a2e8a35d9e73d12cd9f19be5c07c9aad"
+    }
+  ]
+}

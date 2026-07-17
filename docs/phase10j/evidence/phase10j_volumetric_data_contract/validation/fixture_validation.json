@@ -1,0 +1,22 @@
+{
+  "chunked_payload": {
+    "grid_valid": true,
+    "payload_valid": "binary validated by focused tests"
+  },
+  "cubic_constant_scalar": {
+    "grid_valid": true,
+    "payload_valid": "binary validated by focused tests"
+  },
+  "nonperiodic_affine_box": {
+    "grid_valid": true,
+    "payload_valid": true
+  },
+  "periodic_trigonometric_scalar": {
+    "grid_valid": true,
+    "payload_valid": "binary validated by focused tests"
+  },
+  "triclinic_periodic_grid": {
+    "grid_valid": true,
+    "payload_valid": true
+  }
+}
