@@ -1,0 +1,502 @@
+{
+  "acoustic_sum_rule": {
+    "applied": false,
+    "method": null
+  },
+  "atom_count": 2,
+  "atom_ordering": "canonical_structure_order",
+  "branch_scope": "full",
+  "branches": [
+    {
+      "branch_index": 0,
+      "frequencies": [
+        0.0,
+        -0.375,
+        0.25,
+        0.375,
+        0.5,
+        0.625,
+        0.75,
+        0.875,
+        1.0,
+        1.125,
+        1.25,
+        1.375,
+        1.5,
+        1.625,
+        1.75,
+        1.875,
+        2.0,
+        2.125
+      ]
+    },
+    {
+      "branch_index": 1,
+      "frequencies": [
+        1.0,
+        1.125,
+        1.25,
+        1.375,
+        1.5,
+        1.625,
+        1.75,
+        1.875,
+        2.0,
+        2.125,
+        2.25,
+        2.375,
+        2.5,
+        2.625,
+        2.75,
+        2.875,
+        3.0,
+        3.125
+      ]
+    },
+    {
+      "branch_index": 2,
+      "frequencies": [
+        2.0,
+        2.125,
+        2.25,
+        2.375,
+        2.5,
+        2.625,
+        2.75,
+        2.875,
+        3.0,
+        3.125,
+        3.25,
+        3.375,
+        3.5,
+        3.625,
+        3.75,
+        3.875,
+        4.0,
+        4.125
+      ]
+    },
+    {
+      "branch_index": 3,
+      "frequencies": [
+        3.0,
+        3.125,
+        3.25,
+        3.375,
+        3.5,
+        3.625,
+        3.75,
+        3.875,
+        4.0,
+        4.125,
+        4.25,
+        4.375,
+        4.5,
+        4.625,
+        4.75,
+        4.875,
+        5.0,
+        5.125
+      ]
+    },
+    {
+      "branch_index": 4,
+      "frequencies": [
+        4.0,
+        4.125,
+        4.25,
+        4.375,
+        4.5,
+        4.625,
+        4.75,
+        4.875,
+        5.0,
+        5.125,
+        5.25,
+        5.375,
+        5.5,
+        5.625,
+        5.75,
+        5.875,
+        6.0,
+        6.125
+      ]
+    },
+    {
+      "branch_index": 5,
+      "frequencies": [
+        5.0,
+        5.125,
+        5.25,
+        5.375,
+        5.5,
+        5.625,
+        5.75,
+        5.875,
+        6.0,
+        6.125,
+        6.25,
+        6.375,
+        6.5,
+        6.625,
+        6.75,
+        6.875,
+        7.0,
+        7.125
+      ]
+    }
+  ],
+  "degeneracy_groups": [],
+  "frequency_unit": "terahertz",
+  "frequency_zero_tolerance": 1e-06,
+  "imaginary_frequency_encoding": "negative_real",
+  "path_distance_unit": "radian_per_angstrom",
+  "qpoint_coordinate_system": "reciprocal_fractional",
+  "qpoints": [
+    {
+      "coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distance": 0.0,
+      "index": 0,
+      "label": "Γ",
+      "segment_index": 0,
+      "source_label": "GAMMA"
+    },
+    {
+      "coordinates": [
+        0.25,
+        -0.25,
+        0.25
+      ],
+      "distance": 0.7853981633974483,
+      "index": 1,
+      "label": null,
+      "segment_index": 0,
+      "source_label": null
+    },
+    {
+      "coordinates": [
+        0.5,
+        -0.5,
+        0.5
+      ],
+      "distance": 1.5707963267948966,
+      "index": 2,
+      "label": "H",
+      "segment_index": 0,
+      "source_label": "H"
+    },
+    {
+      "coordinates": [
+        0.5,
+        -0.5,
+        0.5
+      ],
+      "distance": 1.5707963267948966,
+      "index": 3,
+      "label": "H",
+      "segment_index": 1,
+      "source_label": "H"
+    },
+    {
+      "coordinates": [
+        0.25,
+        -0.25,
+        0.5
+      ],
+      "distance": 2.1261566940646923,
+      "index": 4,
+      "label": null,
+      "segment_index": 1,
+      "source_label": null
+    },
+    {
+      "coordinates": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "distance": 2.681517061334488,
+      "index": 5,
+      "label": "N",
+      "segment_index": 1,
+      "source_label": "N"
+    },
+    {
+      "coordinates": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "distance": 2.681517061334488,
+      "index": 6,
+      "label": "N",
+      "segment_index": 2,
+      "source_label": "N"
+    },
+    {
+      "coordinates": [
+        0.0,
+        0.0,
+        0.25
+      ],
+      "distance": 3.236877428604284,
+      "index": 7,
+      "label": null,
+      "segment_index": 2,
+      "source_label": null
+    },
+    {
+      "coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distance": 3.7922377958740796,
+      "index": 8,
+      "label": "Γ",
+      "segment_index": 2,
+      "source_label": "GAMMA"
+    },
+    {
+      "coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distance": 3.7922377958740796,
+      "index": 9,
+      "label": "Γ",
+      "segment_index": 3,
+      "source_label": "GAMMA"
+    },
+    {
+      "coordinates": [
+        0.125,
+        0.125,
+        0.125
+      ],
+      "distance": 4.472412557461912,
+      "index": 10,
+      "label": null,
+      "segment_index": 3,
+      "source_label": null
+    },
+    {
+      "coordinates": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "distance": 5.1525873190497435,
+      "index": 11,
+      "label": "P",
+      "segment_index": 3,
+      "source_label": "P"
+    },
+    {
+      "coordinates": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "distance": 5.1525873190497435,
+      "index": 12,
+      "label": "P",
+      "segment_index": 4,
+      "source_label": "P"
+    },
+    {
+      "coordinates": [
+        0.375,
+        -0.125,
+        0.375
+      ],
+      "distance": 5.8327620806375755,
+      "index": 13,
+      "label": null,
+      "segment_index": 4,
+      "source_label": null
+    },
+    {
+      "coordinates": [
+        0.5,
+        -0.5,
+        0.5
+      ],
+      "distance": 6.5129368422254075,
+      "index": 14,
+      "label": "H",
+      "segment_index": 4,
+      "source_label": "H"
+    },
+    {
+      "coordinates": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "distance": 6.5129368422254075,
+      "index": 15,
+      "label": "P",
+      "segment_index": 5,
+      "source_label": "P"
+    },
+    {
+      "coordinates": [
+        0.125,
+        0.125,
+        0.375
+      ],
+      "distance": 6.905635923924132,
+      "index": 16,
+      "label": null,
+      "segment_index": 5,
+      "source_label": null
+    },
+    {
+      "coordinates": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "distance": 7.298335005622857,
+      "index": 17,
+      "label": "N",
+      "segment_index": 5,
+      "source_label": "N"
+    }
+  ],
+  "real_space_lattice_angstrom": [
+    [
+      -2.0,
+      2.0,
+      2.0
+    ],
+    [
+      2.0,
+      -2.0,
+      2.0
+    ],
+    [
+      2.0,
+      2.0,
+      -2.0
+    ]
+  ],
+  "reciprocal_convention": "physics_2pi",
+  "schema_version": "phase10h.phonon_band.v1",
+  "security": {
+    "contains_html": false,
+    "contains_javascript": false,
+    "executable_content_allowed": false,
+    "external_assets": [],
+    "external_urls_allowed": false
+  },
+  "segments": [
+    {
+      "discontinuous_from_previous": false,
+      "end_label": "H",
+      "end_qpoint_index": 2,
+      "segment_index": 0,
+      "start_label": "Γ",
+      "start_qpoint_index": 0
+    },
+    {
+      "discontinuous_from_previous": false,
+      "end_label": "N",
+      "end_qpoint_index": 5,
+      "segment_index": 1,
+      "start_label": "H",
+      "start_qpoint_index": 3
+    },
+    {
+      "discontinuous_from_previous": false,
+      "end_label": "Γ",
+      "end_qpoint_index": 8,
+      "segment_index": 2,
+      "start_label": "N",
+      "start_qpoint_index": 6
+    },
+    {
+      "discontinuous_from_previous": false,
+      "end_label": "P",
+      "end_qpoint_index": 11,
+      "segment_index": 3,
+      "start_label": "Γ",
+      "start_qpoint_index": 9
+    },
+    {
+      "discontinuous_from_previous": false,
+      "end_label": "H",
+      "end_qpoint_index": 14,
+      "segment_index": 4,
+      "start_label": "P",
+      "start_qpoint_index": 12
+    },
+    {
+      "discontinuous_from_previous": true,
+      "end_label": "N",
+      "end_qpoint_index": 17,
+      "segment_index": 5,
+      "start_label": "P",
+      "start_qpoint_index": 15
+    }
+  ],
+  "source": {
+    "adapter_version": "phase10h-fixture-v1",
+    "calculation_method": "finite_displacement",
+    "force_constants_source": "force_constants",
+    "input_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "nac": {
+      "direction_policy": null,
+      "enabled": false,
+      "gamma_direction": null
+    },
+    "primitive_matrix": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "producer": "fixture",
+    "producer_version": "1.0",
+    "supercell_matrix": [
+      [
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        2
+      ]
+    ]
+  },
+  "species": [
+    "Fe",
+    "Fe"
+  ],
+  "structure_identity": "56e2139b89588f6356c64534bfed08c3b21dd88c684fd12407c016e33977b54f",
+  "warnings": []
+}
