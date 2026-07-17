@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10J：Volumetric Data Contract
 
 进入 Phase 10J：Volumetric Data Contract。
@@ -3029,6 +3029,15 @@ Phase 10J-1：Volumetric Parser / Adapter
 先读取真实Phase 10I-3 Result、structure/lattice contracts、现有artifact storage和complex-array模型，输出Pre-Implementation Audit；然后实现volumetric grid、payload、field、dataset和manifest schemas、validators、fixtures、independent references、deterministic replay、安全审计、docs、commit和CI闭环。
 
 本阶段不得进入生产Parser、Tool Registry、等值面或Three.js volume renderer。
+
+
+### 完成记录
+
+* 完成时间：2026-07-18 01:16:11 +08:00
+* 修改文件：`packages/artifact-core/mdi_artifact_core/volumetric_contract.py`、artifact-core exports、Phase 10J tests/generator/fixtures/evidence/docs、共享 schema、persistent 状态，以及 Phase 10I-2/I-3 跨平台 evidence hash tests。
+* 修改摘要：实现五层 inert volumetric schema/validator、row-vector affine grid、periodic endpoint-excluded policy、`ijkc` component-fastest layout、little-endian float32/float64 inline/raw/deterministic-gzip/i-slab chunks、layered hashes、statistics、quantity/unit/normalization/spin/complex/potential semantics、caps 和 bounded decompression；未实现 parser、tool、planner/runtime 或 renderer。
+* 测试结果：focused contract/evidence/regression `40 passed`；frontend `223 passed`；typecheck/build success；backend full `695 passed, 23 skipped, 62 warnings`；Phase 10 backend closure `3 passed, 2 deselected`；frontend closure `2 passed`；evidence integrity PASS；local service-backed unavailable（Docker CLI 未安装）；GitHub CI service-backed/no-skipped success；`NO_EXTERNAL_NETWORK_REQUESTS`；`NO_SECRET_PATTERN_HITS`。npm audit 因 npmmirror `404 NOT_IMPLEMENTED` unavailable，且无 dependency/lockfile 变更。
+* 提交 / CI：implementation commit `ee1410572b00ad5844c4ed9b29fd3144644acd41`；CI run `29599183171` success。Completion record commit 和其 current-HEAD CI 仍是删除本任务 block 前置条件。
 
 
 ---END---

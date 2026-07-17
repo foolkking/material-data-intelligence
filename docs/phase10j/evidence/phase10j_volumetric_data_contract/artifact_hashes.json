@@ -2,9 +2,9 @@
   "algorithm": "sha256",
   "files": [
     {
-      "bytes": 200,
+      "bytes": 303,
       "name": "docs/phase10j/evidence/phase10j_volumetric_data_contract/ci/ci_record.json",
-      "sha256": "5f4caa9b39f9787a765d2e2b86ac7081ebec3b63283f58ec16d6974c65901004"
+      "sha256": "4a351390f972ed91e2fdca955328668bc27617ad92974a1443bed97b128e1dcd"
     },
     {
       "bytes": 277,

@@ -1,11 +1,11 @@
 {
-  "commit": "pending",
+  "commit": "ee1410572b00ad5844c4ed9b29fd3144644acd41",
   "required_jobs": [
     "unit",
     "frontend",
     "service-backed integration",
     "no-skipped assertion"
   ],
-  "run": "pending",
-  "status": "pending current-head CI"
+  "run": "29599183171",
+  "status": "success: unit, frontend typecheck/build, service-backed integration, no-skipped assertion"
 }
