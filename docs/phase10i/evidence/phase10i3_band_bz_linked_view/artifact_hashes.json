@@ -13,53 +13,53 @@
     },
     {
       "name": "api/analysis_plan.json",
-      "bytes": 3167,
-      "sha256": "d08cefdf21b1470d8fb43e07d631406c425435f68c34dc1af438805dd06dabee"
+      "bytes": 3061,
+      "sha256": "d22f2e9d71c04cf7b672b2aa66f3c8194332e30da1fd192613e0d366c37ccf46"
     },
     {
       "name": "api/artifact_inventory.json",
-      "bytes": 2518,
-      "sha256": "68f17a0b0c5bf9051a5ae1914cc68bc0f8a8036401da697a909fad8a488788dd"
+      "bytes": 2438,
+      "sha256": "96a74801ca12c9d33d7f63db6a90572b84a22e9f6a3ff748f18a71a4c6fe759d"
     },
     {
       "name": "api/job.json",
-      "bytes": 293,
-      "sha256": "98458be2c558a8362f1649b1d5e7fb3e90f1f81a33a7131ed4745f083c48572d"
+      "bytes": 283,
+      "sha256": "ed2632fd562db88ab4eff17e7779ca0ab2d66e2a2b1c8d9df0a52bcf9b90ff7c"
     },
     {
       "name": "api/tool_calls.json",
-      "bytes": 208,
-      "sha256": "9bfde595c247461ca065df1b2eb0b469f451046b753fa33fd1ba3540922d6e98"
+      "bytes": 196,
+      "sha256": "3e5443ae739d5391208c9b6bce997b320aa0122eaf5789f461527d641e7b0ddc"
     },
     {
       "name": "artifacts/brillouin_zone.json",
-      "bytes": 21983,
-      "sha256": "162c0f6d41cd0ba8ab5d8c363003496aeb367ec8696bdd1f22ce510b2d3c527f"
+      "bytes": 20858,
+      "sha256": "a49144a403c2dd6630ed1cc7d2a4ec0c71d3cdbecbf636eb26cf8e610a4418e0"
     },
     {
       "name": "artifacts/brillouin_zone_manifest.json",
-      "bytes": 2253,
-      "sha256": "f2ef659cd5ab7764ce69d345bcd265193f2b299d8e6772f7876430a0976d4e77"
+      "bytes": 2187,
+      "sha256": "10fda8a57798790f1d5fc469c4cb341149b362482b92a3f059e2f61f630aa891"
     },
     {
       "name": "artifacts/kpath.json",
-      "bytes": 8875,
-      "sha256": "0dba4b75c168bab33f02c2217fb8aa6793bb213ae75517ae7179c2058031eab4"
+      "bytes": 8581,
+      "sha256": "55fa2012d005d741f90bf5ef7a185805f094dc7c051f4f2e9cbae9b1bf4e795e"
     },
     {
       "name": "artifacts/phonon_animation.json",
-      "bytes": 5938,
-      "sha256": "1b67bf1ade200034d7b811f620fe52795e9ee38fbcf8da4b0a30c5959573220e"
+      "bytes": 5710,
+      "sha256": "2a42551f72132a2c852591a136af00d6752f4f74757769c82a9dc02f6d1d3406"
     },
     {
       "name": "artifacts/phonon_band.json",
-      "bytes": 9306,
-      "sha256": "6724241144bf774c6c9a823dcfa5771232228ab58aaa999c8e70cdd3ecb573ad"
+      "bytes": 8804,
+      "sha256": "1982c430fc9dee8ed21355a4a21150733ca85b6b2a7916ab90962d991d575527"
     },
     {
       "name": "artifacts/reciprocal_lattice.json",
-      "bytes": 4893,
-      "sha256": "1f075c9efaaca9d1eec187417a90428e43c6c9d8032c3c9bc91dcdb553d0c76c"
+      "bytes": 4685,
+      "sha256": "335cd13638a4f9eb5bfdb42761309cd7cef584b17772f2ae61dc3f58fb52406d"
     },
     {
       "name": "browser/console.json",
@@ -68,8 +68,8 @@
     },
     {
       "name": "browser/matrix.json",
-      "bytes": 28369,
-      "sha256": "b644f35052ea49013bb7c90f81f0269f0a95341ec3e53601eb8a04e43a3ce030"
+      "bytes": 28331,
+      "sha256": "7b9a1f5d9e396b8b4a9e87357395003fbd071a91e83d1980b43b781ec8b6dbe2"
     },
     {
       "name": "browser/network.json",
@@ -78,13 +78,13 @@
     },
     {
       "name": "compatibility/animation_handoff.json",
-      "bytes": 250,
-      "sha256": "a3a8ff3d37755ea1035cb8cf2f8d7108921db50426f98a4342cdee49a3301b9f"
+      "bytes": 243,
+      "sha256": "c3102c59b7e207e9f1fb3087b4b02bb30a05a86b9507b2d2aaec16a3ff6f3bf5"
     },
     {
       "name": "compatibility/backend_validation.json",
-      "bytes": 1546,
-      "sha256": "5342321a648e6a2ed550b2e5514adbb7164e68210bd4f4aa4a4d0e1ce4909c4c"
+      "bytes": 1483,
+      "sha256": "289ead6f33fae0ad6fec49a28089d6d63905ee65e23be6f6613a7d9be532fbe5"
     },
     {
       "name": "evidence_manifest.json",
@@ -98,18 +98,18 @@
     },
     {
       "name": "performance/metrics.json",
-      "bytes": 2689,
-      "sha256": "fa25e3642ae3de66894e21d2a0f01ef1a88cf71547b4d58593f71da545c0a254"
+      "bytes": 2679,
+      "sha256": "f4601f446144cd4b70340d61e1e6b86e8c43f04de2c1150e3a144247a1539ae8"
     },
     {
       "name": "runtime_source.json",
-      "bytes": 266,
-      "sha256": "fab709ddd83a642889c6ec990ee90ccd406fa38094cf8bb8ed1f3a8500eba9b7"
+      "bytes": 255,
+      "sha256": "a35fe40125238a235c788a687d9877e03a56cac09ec59ab6a5012710bc95bdf0"
     },
     {
       "name": "screenshots/01_compatible_linked_view.png",
-      "bytes": 109771,
-      "sha256": "b0522c78119016aaf0cb7cebc6c91b3eae912506460be57253e4d9ddc6857002"
+      "bytes": 109755,
+      "sha256": "7b19c8fee776da3083f6cf0afda9d1236ad2dbd37243929dfc2f5c5944e928d1"
     },
     {
       "name": "screenshots/02_band_selected_endpoint.png",
@@ -193,8 +193,8 @@
     },
     {
       "name": "screenshots/18_near_cap_linked_case.png",
-      "bytes": 325352,
-      "sha256": "9715fba54142fb0a4f1363426610f9d8661d99c43ba953b1a0919461f10f9464"
+      "bytes": 325394,
+      "sha256": "01c4d2866a3c1e45b668350f6ab456d272e94ef0e8a1c9f328e7d87f8c74b794"
     },
     {
       "name": "security/audit.json",

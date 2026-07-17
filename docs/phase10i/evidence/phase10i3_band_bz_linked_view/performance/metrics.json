@@ -119,20 +119,20 @@
       "textures": 0,
       "canvasCount": 1,
       "contextCount": 1,
-      "mappingMs": 2,
-      "initializationMs": 43.10000002384186,
-      "firstFrameMs": 43.10000002384186
+      "mappingMs": 1.5,
+      "initializationMs": 30.600000023841858,
+      "firstFrameMs": 30.600000023841858
     }
   },
-  "hoverToBzMs": 449,
-  "bandToBzMs": 193,
-  "bzToBandMs": 158,
+  "hoverToBzMs": 249,
+  "bandToBzMs": 156,
+  "bzToBandMs": 153,
   "graphics": {
     "sampledColorCount": 62
   },
   "nearCap": {
-    "compatibilityMs": 9.600000023841858,
-    "mappingMs": 1.7000000476837158,
+    "compatibilityMs": 11.699999988079071,
+    "mappingMs": 2.5,
     "pointMappings": 12,
     "segmentMappings": 6,
     "sampleMappings": 198,

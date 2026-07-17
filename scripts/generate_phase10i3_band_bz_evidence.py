@@ -139,7 +139,8 @@ def profile_payload() -> dict:
 
 def write_json(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
+    content = json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    path.write_bytes(content.encode("utf-8"))
 
 
 if __name__ == "__main__":
