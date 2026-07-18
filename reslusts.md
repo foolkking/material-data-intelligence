@@ -145,3 +145,138 @@
 * 完成记录提交：`14de78d2210dd7e0361c6c93f6627145ea574a21`
 * current-HEAD CI：run `29599508765` success
 * 归档结论：五层 contract、binary fixtures、independent references、caps/decompression security、完整回归、completion record、service-backed/no-skipped 和两次 current-HEAD CI 均闭合；允许从 `TASKS.md` 删除 Phase 10J block，历史结果保留于本文件。
+
+## Phase 10J-1 Volumetric Parser / Adapter Result
+
+### 1. Conclusion
+
+PASS
+
+### 2. Baseline
+
+* baseline HEAD: `afffec5d83a96e11b07bd755f7d759477b91bfbb`
+* branch/origin: `master`, matched before implementation
+* initial status: clean except required queue transition
+
+### 3. Pre-Implementation Audit
+
+* existing contracts: Phase 10J grid/payload/field/dataset/manifest reused
+* existing parser gap: no bounded VASP volumetric or CUBE parser
+* strategy: bounded internal streaming parser; pymatgen only for POSCAR structure semantics
+* dependency decision: no new dependency
+
+### 4. Tool / Registry
+
+* public tool: `structure.volumetric_data`
+* input: exactly one normalized `VolumetricData`
+* params: strict format, quantity, selection, dtype, compression, and required validation policy
+* no overlapping CHGCAR/LOCPOT/CUBE public tool IDs
+
+### 5. Format Detection
+
+* bounded content detection distinguishes VASP volumetric and CUBE without extension-only trust or heavyweight parser trials
+* explicit mismatch, ambiguity, invalid encoding, null bytes, malformed headers, and caps produce typed errors
+
+### 6. VASP Parser
+
+* CHGCAR/CHG, LOCPOT, ELFCAR, PARCHG: READY
+* source order: x-fastest converted to canonical i/j/k with k fastest
+* density normalization: divided by cell volume exactly once
+* spin: non-spin, collinear total+difference, and non-collinear Cartesian vector supported
+* augmentation: excluded with `VOLUME_VASP_AUGMENTATION_NOT_INCLUDED`; no scientific-equivalence claim
+
+### 7. CUBE Parser
+
+* one real scalar orthogonal or affine CUBE: READY
+* Bohr/Angstrom origin, steps, atoms, and allowlisted density units converted with provenance
+* boundary: non-periodic; no false crystal binding
+* negative atom count / multi-orbital: typed NOT_SUPPORTED
+
+### 8. Canonical Conversion
+
+* source parse -> validation -> order/unit/channel conversion -> dtype -> binary -> statistics -> contract validation -> hashes
+* Phase 10J schema identity unchanged; field builder gained backward-compatible source-unit conversion metadata
+
+### 9. Payload / Artifacts
+
+* grid, payload metadata, field metadata, deterministic little-endian binary, dataset, manifest, summary, and recipe emitted
+* deterministic gzip with safe raw fallback for contract-default high compression ratio
+* no partial completed package on parser/contract failure
+
+### 10. Scientific Validation
+
+* asymmetric VASP order, cell-volume integral, Bohr conversion, affine CUBE, potential reference, ELF, orbital density, and spin-channel fixtures pass
+* field statistics derive from decoded stored dtype values
+
+### 11. Streaming / Performance
+
+* source and SHA-256 streaming; line/token/atom/voxel caps applied
+* parser cap: 2,097,152 voxels, explicitly below canonical contract cap
+* measured 128^3 case: parse 15.70s, adapter 21.56s, peak tracemalloc about 219 MB, output about 16.8 MB
+* 129^3 rejected before payload allocation
+
+### 12. Runtime / API
+
+* Mock Planner, PlanValidator, QueueWorkerRuntime, artifact writer, persisted job/tool calls/events and API-style capture pass
+* CI executes new PostgreSQL/Redis/MinIO service-backed volumetric job with zero skips
+
+### 13. Preview
+
+* JSON-only metadata preview shows source, shape, count, sampling, fields, units, statistics, payload metadata, warnings, validation, and renderer absence
+* binary values are not expanded; no Canvas/WebGL/renderer
+
+### 14. Security
+
+* strict caps/enums, finite numerics, safe filenames, no archive/URL/import/callback/shader/pickle/object array/artifact code/external network
+* markers: `NO_VOLUMETRIC_PARSER_EXTERNAL_NETWORK_REQUESTS`, `NO_SECRET_PATTERN_HITS`
+
+### 15. Fixtures / References
+
+* CHGCAR non-spin/collinear/non-collinear/augmentation, LOCPOT, ELFCAR, PARCHG, orthogonal/affine/multi-orbital CUBE and malformed/cap cases committed
+* independent order, unit, integral, binary, replay and hash evidence committed
+
+### 16. Tests
+
+* focused parser/contract/integration: `45 passed, 3 skipped`
+* adapter/base hash regression: `37 passed`
+* frontend full: `224 passed`
+* backend full: `710 passed, 24 skipped, 62 warnings`
+* typecheck/build/diff/lock/tree: PASS
+* local service-backed: unavailable because Docker CLI is absent; CI service-backed/no-skipped: PASS
+* npm audit: unavailable because configured endpoint returns `404 NOT_IMPLEMENTED`; no dependency changes
+
+### 17. Evidence
+
+* directory: `docs/phase10j/evidence/phase10j1_volumetric_parser_adapter/`
+* marker: `VOLUMETRIC_PARSER_ADAPTER_EVIDENCE_PASS`
+
+### 18. Files
+
+* implementation: parser, adapter, schemas, registry, planner, preview, service integration
+* tests/evidence/docs/persistent: updated and committed
+* dependency/lockfile: unchanged
+
+### 19. Explicitly Deferred
+
+multi-orbital CUBE, augmentation reconstruction, HDF5/VTK/OpenVDB/XSF, source compression, partial datasets, renderer, isosurface, slices, arbitrary planes, volume analysis, Bader, simulation, external API, notebook/script execution, real LLM, artifact JS, remote assets.
+
+### 20. Checks
+
+All required local checks passed except accurately recorded local service and npm-audit unavailability.
+
+### 21. Commit / CI
+
+* implementation: `b7a14a870123a743602d04dde5d66dbd166fbdcf`
+* CI: `29634075725` success for unit, frontend, service-backed integration, and no-skipped assertion
+* completion record commit and current-head CI remain required before queue archive
+
+### 22. Readiness
+
+* VASP/CUBE parser, binary payload, Tool Registry, Planner/Runtime, metadata preview, scientific validation, security: READY
+* augmentation: PARTIAL_READY
+* multi-orbital CUBE, isosurface renderer, volume renderer: NOT_IMPLEMENTED
+* full volumetric product: PARTIAL_READY
+
+### 23. Whether Allowed to Enter Next Phase
+
+Implementation gates pass, but the task block may be archived only after completion-record current-head CI succeeds. The next queued phase, if present, must be selected from `TASKS.md`; no automatic renderer work is started.

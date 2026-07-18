@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10J-1：Volumetric Parser / Adapter
 
 进入 Phase 10J-1：Volumetric Parser / Adapter。
@@ -2781,6 +2781,14 @@ Phase 10J-2：Isosurface Renderer
 
 本阶段不得进入等值面、切片或 Three.js volumetric Renderer。
 
+
+## 完成记录
+
+* 完成时间：2026-07-18 14:31:24 +08:00
+* 修改文件：material parser/model/detector、Phase 10J field builder、volumetric adapter、schema/registry/planner/runtime integration、PlannerWorkbench metadata preview、unit/integration tests、VASP/CUBE fixtures、generated evidence、docs 和 persistent。
+* 修改摘要：实现受限流式 VASP volumetric family 与单标量 Gaussian CUBE 解析，转换为既有 Phase 10J canonical grid/field/little-endian binary/dataset/manifest；注册 `structure.volumetric_data`，接入 strict params、Mock Planner、PlanValidator、QueueWorkerRuntime、PostgreSQL/Redis/MinIO service-backed 路径和 JSON-only preview。未实现 renderer、slice、isosurface、simulation、external source 或 artifact execution。
+* 测试结果：parser/contract/integration `45 passed, 3 skipped`；adapter/hash regression `37 passed`；frontend full `224 passed`；backend full `710 passed, 24 skipped, 62 warnings`；typecheck/build/diff/lock/tree PASS；128^3 performance evidence PASS；`VOLUMETRIC_PARSER_ADAPTER_EVIDENCE_PASS`、`NO_VOLUMETRIC_PARSER_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。本地 service-backed 因 Docker CLI 缺失 unavailable；current-head CI 实际 service-backed/no-skipped 成功。npm audit 因 npmmirror `404 NOT_IMPLEMENTED` unavailable；无 dependency/lockfile 变化。
+* 提交 / CI：implementation `b7a14a870123a743602d04dde5d66dbd166fbdcf`；CI run `29634075725` success（unit、frontend typecheck/build、PostgreSQL+Redis+MinIO service-backed、no-skipped）。
 
 ---END---
 
