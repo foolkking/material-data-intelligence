@@ -2078,5 +2078,6 @@
 - [x] Implement bounded binary/gzip/chunk validation, hashes, statistics, and scientific metadata.
 - [x] Commit deterministic scalar/vector/complex/spin/potential fixtures and independent references.
 - [x] Close contract security and dependency boundaries without a new tool or renderer.
-- [ ] Production VASP/CUBE parsers and adapter integration remain Phase 10J-1 scope.
+- [x] Production bounded VASP/CUBE parsers and `structure.volumetric_data` adapter integration completed in Phase 10J-1.
 - [ ] Isosurface, slice, and volume rendering remain separately reviewed future phases.
+- [ ] Review Phase 10J-2 only as a consumer of validated canonical artifacts; do not weaken parser caps or execute artifact code.

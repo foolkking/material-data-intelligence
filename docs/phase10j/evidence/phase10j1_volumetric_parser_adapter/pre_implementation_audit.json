@@ -1,0 +1,11 @@
+{
+  "baseline_head": "afffec5d83a96e11b07bd755f7d759477b91bfbb",
+  "branch": "master",
+  "origin_matched": true,
+  "phase10j_contracts_present": true,
+  "existing_volumetric_parser": false,
+  "existing_cube_parser": false,
+  "selected_strategy": "bounded internal streaming parser with pymatgen POSCAR structure semantics and Phase 10J canonical builders",
+  "public_tool": "structure.volumetric_data",
+  "new_dependencies": []
+}

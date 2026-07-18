@@ -198,6 +198,22 @@ tools:
       - trajectory_report_json
       - trajectory_manifest_json
 
+  - tool_id: structure.volumetric_data
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: VolumetricDataAdapter
+    display_target: volumetric
+    notes: "Parse one bounded VASP CHGCAR/CHG/LOCPOT/ELFCAR/PARCHG or single-dataset Gaussian CUBE source into validated inert canonical grid, field, binary payload, dataset, manifest, summary, and recipe artifacts. No renderer, isosurface, slice, simulation, artifact code, external asset, or network access is included."
+    artifact_types:
+      - volumetric_grid_json
+      - volumetric_payload_json
+      - volumetric_field_json
+      - volumetric_dataset_json
+      - volumetric_manifest_json
+      - volumetric_binary
+      - summary_md
+      - recipe_json
+
   - tool_id: ml.basic_metrics
     implementation_source: platform_builtin
     stage: mvp

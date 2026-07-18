@@ -29,6 +29,12 @@ from .trajectory import (
     TrajectoryImportAdapter,
     TrajectoryViewerAdapter,
 )
+from .volumetric import (
+    VOLUMETRIC_ADAPTER_VERSION,
+    VOLUMETRIC_ARTIFACT_TYPES,
+    VOLUMETRIC_TOOL_ID,
+    VolumetricDataAdapter,
+)
 from .viz import CorrelationAdapter, HistogramAdapter, ScatterAdapter
 
 __all__ = [
@@ -58,4 +64,8 @@ __all__ = [
     "TRAJECTORY_VIEWER_CAPABILITIES",
     "TRAJECTORY_VIEWER_TOOL_ID",
     "TrajectoryViewerAdapter",
+    "VOLUMETRIC_ADAPTER_VERSION",
+    "VOLUMETRIC_ARTIFACT_TYPES",
+    "VOLUMETRIC_TOOL_ID",
+    "VolumetricDataAdapter",
 ]

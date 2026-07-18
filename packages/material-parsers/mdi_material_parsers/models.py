@@ -13,6 +13,8 @@ class DetectedFormat(str, Enum):
     poscar = "poscar"
     xyz = "xyz"
     extxyz = "extxyz"
+    vasp_volumetric = "vasp_volumetric"
+    gaussian_cube = "gaussian_cube"
     csv = "csv"
     json_limited = "json_limited"
     archive = "archive"

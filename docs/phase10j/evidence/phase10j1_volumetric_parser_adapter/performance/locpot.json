@@ -1,0 +1,15 @@
+{
+  "adapter_seconds": 0.2637698000180535,
+  "artifact_count": 8,
+  "field_count": 1,
+  "output_bytes": 15015,
+  "parse_seconds": 0.0035099999513477087,
+  "peak_tracemalloc_bytes": 1062583,
+  "shape": [
+    2,
+    2,
+    2
+  ],
+  "source_bytes": 125,
+  "voxel_count": 8
+}

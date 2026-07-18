@@ -18,6 +18,7 @@ from mdi_schemas import MaterialObjectType
 from .detector import detect_format
 from .models import DetectedFormat, NormalizedObjectDraft, ParseResult
 from .trajectory import TrajectoryParseError, parse_trajectory_file
+from .volumetric import VolumetricParseError, parse_volumetric_file
 
 
 def parse_file(path: str | Path, *, dataset_id: str, file_id: str | None = None) -> ParseResult:
@@ -33,6 +34,32 @@ def parse_file(path: str | Path, *, dataset_id: str, file_id: str | None = None)
                 detected_format=detected_format,
                 parse_status="success",
                 objects=[_structure_object(structure, dataset_id, resolved_file_id, detected_format.value)],
+            )
+        if detected_format in {DetectedFormat.vasp_volumetric, DetectedFormat.gaussian_cube}:
+            parsed = parse_volumetric_file(file_path, source_format=detected_format.value)
+            digest = content_hash(stable_json_dumps(parsed.source))
+            object_id = f"obj_volumetric_{digest[:12]}"
+            return ParseResult(
+                file_id=resolved_file_id,
+                file_path=file_path,
+                detected_format=detected_format,
+                parse_status="success",
+                objects=[NormalizedObjectDraft(
+                    id=object_id,
+                    dataset_id=dataset_id,
+                    object_type=MaterialObjectType.VolumetricData,
+                    source_file_ids=[resolved_file_id],
+                    storage_key=f"normalized/{object_id}/volumetric_source.json",
+                    metadata={
+                        "detectedFormat": detected_format.value,
+                        "gridShape": parsed.source["shape"],
+                        "fieldCount": len(parsed.source["channels"]),
+                        "sourceBytes": parsed.report["source_bytes"],
+                        "volumetricParseReport": parsed.report,
+                    },
+                    hash=digest,
+                    payload=parsed.source,
+                )],
             )
         if detected_format == DetectedFormat.csv:
             dataframe = _coerce_numeric_like_columns(pd.read_csv(file_path))
@@ -65,6 +92,15 @@ def parse_file(path: str | Path, *, dataset_id: str, file_id: str | None = None)
             error_message=f"No MVP parser is implemented for {detected_format.value}.",
         )
     except TrajectoryParseError as exc:
+        return ParseResult(
+            file_id=resolved_file_id,
+            file_path=file_path,
+            detected_format=detected_format,
+            parse_status="failed",
+            error_code=exc.code,
+            error_message=str(exc),
+        )
+    except VolumetricParseError as exc:
         return ParseResult(
             file_id=resolved_file_id,
             file_path=file_path,

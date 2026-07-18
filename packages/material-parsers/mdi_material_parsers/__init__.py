@@ -10,6 +10,12 @@ from .trajectory import (
     detect_trajectory_format,
     parse_trajectory_file,
 )
+from .volumetric import (
+    ParsedVolumetricSource,
+    VolumetricParseError,
+    detect_volumetric_format,
+    parse_volumetric_file,
+)
 
 __all__ = [
     "DetectedFormat",
@@ -23,5 +29,9 @@ __all__ = [
     "TrajectoryParseError",
     "detect_trajectory_format",
     "parse_trajectory_file",
+    "ParsedVolumetricSource",
+    "VolumetricParseError",
+    "detect_volumetric_format",
+    "parse_volumetric_file",
 ]
 

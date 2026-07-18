@@ -24,6 +24,7 @@ from .platform_builtin import (
     StructureViewer3DAdapter,
     StructureViewerExportPackageAdapter,
     StructureViewerSceneMetadataAdapter,
+    VolumetricDataAdapter,
 )
 from .pymatviz import (
     ChemSysSunburstAdapter,
@@ -82,6 +83,7 @@ __all__ = [
     "ToolExecutionContext",
     "ToolExecutionError",
     "ToolExecutionResult",
+    "VolumetricDataAdapter",
     "create_adapter",
     "execute_tool_request",
     "get_adapter_class",

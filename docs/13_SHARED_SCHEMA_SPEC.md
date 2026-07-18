@@ -1,5 +1,11 @@
 # 共享 Schema 规范
 
+## Phase 10J-1 volumetric source integration
+
+`VolumetricData` is the normalized source object accepted by the strict public parser tool `structure.volumetric_data`. It is not a second artifact contract: the adapter converts it into the existing `phase10j.volumetric_grid.v1`, payload, field, dataset, and manifest schemas. Allowed source formats are `vasp_volumetric` and `gaussian_cube`; the parser cap is 2,097,152 voxels while the larger Phase 10J contract cap remains the trusted canonical upper boundary.
+
+VASP source values are x-fastest and convert to canonical `ijkc_component_fastest`; CUBE already uses i-outer/j-middle/k-fastest order. CUBE spatial units and density volume units are explicitly converted. Outputs are deterministic little-endian float32/float64 raw or gzip binary plus inert JSON metadata. Multi-orbital CUBE, URLs, executable metadata, and renderers are excluded.
+
 ## Phase 10I Brillouin-zone contract family
 
 Phase 10I adds five inert schema identities:

@@ -24,6 +24,8 @@ from mdi_artifact_core import (
     validate_trajectory_summary,
     validate_viewer_scene,
     validate_viewer_scene_manifest,
+    validate_volumetric_dataset,
+    validate_volumetric_manifest,
 )
 from mdi_llm import MockLLMProvider, PlannerRequest
 from mdi_material_parsers import parse_file
@@ -35,6 +37,7 @@ from mdi_workers import QueueWorkerRuntime, RedisRQQueueBackend
 
 ROOT = Path(__file__).resolve().parents[2]
 TRAJECTORY_FIXTURE = ROOT / "docs" / "phase10g" / "fixtures" / "trajectory_import" / "fixed_lattice_md.extxyz"
+VOLUMETRIC_FIXTURE = ROOT / "docs" / "phase10j" / "fixtures" / "volumetric_parser" / "CHGCAR"
 
 
 PORTFOLIO = (
@@ -251,6 +254,62 @@ def test_phase10_service_backed_formal_trajectory_viewer_product_closure(tmp_pat
     engine.dispose()
 
 
+@pytest.mark.integration
+def test_phase10j1_service_backed_volumetric_parser_adapter_closure(tmp_path: Path) -> None:
+    if os.getenv("MDI_RUN_INTEGRATION") != "1":
+        pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
+    database_url = os.getenv("MDI_TEST_DATABASE_URL") or os.getenv("DATABASE_URL")
+    redis_url = os.getenv("REDIS_URL") or os.getenv("MDI_REDIS_URL")
+    if not database_url or "postgres" not in database_url or not redis_url:
+        pytest.skip("Service-backed Phase 10J-1 environment is incomplete")
+
+    engine = create_engine(database_url, future=True)
+    metadata.create_all(engine)
+    repos = SqlAlchemyRepositoryBundle.create(engine)
+    suffix = uuid.uuid4().hex[:10]
+    project_id = f"project_phase10j1_{suffix}"
+    dataset_id = f"dataset_phase10j1_{suffix}"
+    profile_id = f"profile_phase10j1_{suffix}"
+    repos.projects.save({"id": project_id, "name": project_id, "createdBy": "test_user"})
+    repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": dataset_id, "createdBy": "test_user"})
+
+    profile = _volumetric_profile(dataset_id=dataset_id, profile_id=profile_id)
+    prompt = "Parse this CHGCAR into canonical volumetric artifacts."
+    plan = _planner_plan(prompt, profile)
+    assert plan["steps"][0]["toolId"] == "structure.volumetric_data"
+    assert validate_plan(plan, registry=load_manifests()).ok
+    storage = _minio_storage(f"phase10j1-volume-{suffix}")
+    runtime = QueueWorkerRuntime(
+        repository_factory=create_repository_factory(load_settings()),
+        queue_backend=RedisRQQueueBackend(redis_url=redis_url, queue_name="mdi-test-phase10j1-volume"),
+        artifact_storage=storage,
+        registry=load_manifests(),
+        artifact_root=tmp_path / "adapter-artifacts",
+    )
+    created = planner_jobs(
+        PlannerJobsRequest(userPrompt=prompt, projectId=project_id, datasetId=dataset_id, profileId=profile_id, enqueue=True),
+        provider=MockLLMProvider(fixed_plan=plan), repositories=repos, queue_runtime=runtime, registry=load_manifests(),
+    )
+    assert created.ok and created.job_id and created.plan_id and created.enqueued
+    source = parse_file(VOLUMETRIC_FIXTURE, dataset_id=dataset_id, file_id="volumetric").objects[0]
+    result = runtime.handle_job(created.job_id, object_store={"volumetric": source})
+    artifacts = repos.artifacts.list_for_job(created.job_id)
+    calls = repos.tool_calls.list_for_job(created.job_id)
+    assert result.status == "completed"
+    assert len(calls) == 1 and calls[0]["toolId"] == "structure.volumetric_data"
+    assert all(item["storageProvider"] == "s3" and storage.exists(item["storageKey"]) for item in artifacts)
+    by_name = {item["name"]: item for item in artifacts}
+    dataset = storage.get_json(by_name["volumetric_dataset.json"]["storageKey"])
+    manifest = storage.get_json(by_name["volumetric_manifest.json"]["storageKey"])
+    binaries = {
+        item["name"]: storage.get_bytes(item["storageKey"])
+        for item in artifacts if item["type"] == "volumetric_binary"
+    }
+    assert validate_volumetric_dataset(dataset, binaries).valid
+    assert validate_volumetric_manifest(manifest, dataset=dataset, artifacts=binaries).valid
+    engine.dispose()
+
+
 def _run_in_memory_product_job(prompt: str, profile: DataProfile, object_store: dict[str, Any], root: Path) -> dict[str, Any]:
     registry = load_manifests()
     plan = _planner_plan(prompt, profile)
@@ -341,6 +400,15 @@ def _trajectory_profile(
         "objects": [{"id": "trajectory", "objectType": "Trajectory"}],
         "trajectorySummary": {"frames": 3, "atoms": 2},
         "qualityIssues": [], "recommendedTasks": [], "createdAt": "2026-07-13T00:00:00+00:00",
+    })
+
+
+def _volumetric_profile(*, dataset_id: str, profile_id: str) -> DataProfile:
+    return DataProfile.model_validate({
+        "schemaVersion": "0.1", "profileId": profile_id, "datasetId": dataset_id, "version": "1", "datasetType": "volumetric",
+        "files": [{"path": "CHGCAR", "format": "vasp_volumetric", "sizeBytes": VOLUMETRIC_FIXTURE.stat().st_size}],
+        "objects": [{"id": "volumetric", "objectType": "VolumetricData"}],
+        "qualityIssues": [], "recommendedTasks": [], "createdAt": "2026-07-18T00:00:00+00:00",
     })
 
 

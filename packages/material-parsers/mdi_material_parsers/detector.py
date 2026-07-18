@@ -25,6 +25,12 @@ def detect_format(path: str | Path) -> DetectedFormat:
     if name in {"poscar", "contcar"} or name.startswith(("poscar.", "contcar.")):
         return DetectedFormat.poscar
 
+    if any(name == item or name.startswith(f"{item}.") for item in {"chgcar", "chg", "locpot", "elfcar", "parchg"}) or suffix == ".cube":
+        from .volumetric import detect_volumetric_format
+
+        detected = detect_volumetric_format(file_path)
+        return DetectedFormat(detected)
+
     try:
         head = file_path.read_text(encoding="utf-8", errors="ignore")[:4096]
     except OSError:
@@ -33,7 +39,12 @@ def detect_format(path: str | Path) -> DetectedFormat:
     if "_cell_length_a" in head and "_atom_site" in head:
         return DetectedFormat.cif
     if _looks_like_poscar(head):
-        return DetectedFormat.poscar
+        from .volumetric import VolumetricParseError, detect_volumetric_format
+
+        try:
+            return DetectedFormat(detect_volumetric_format(file_path))
+        except VolumetricParseError:
+            return DetectedFormat.poscar
     return DetectedFormat.unknown
 
 

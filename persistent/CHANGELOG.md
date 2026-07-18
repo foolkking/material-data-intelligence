@@ -1819,3 +1819,14 @@
 ### Security
 - Added pre-allocation count/byte caps, bounded streaming gzip decode, ratio/member checks, exact chunk coverage, safe artifact names, and finite-only numeric validation.
 - No parser, tool, registry/planner/runtime path, renderer, dependency, artifact execution, external URL, pickle, or object deserialization was added.
+
+## Phase 10J-1 - 2026-07-18
+
+### Added
+- Bounded streaming VASP volumetric-family and Gaussian CUBE source parsing with deterministic canonical conversion.
+- Formal `structure.volumetric_data` registry/planner/runtime integration, binary artifacts, summary/recipe/manifest, and safe metadata preview.
+- Small scientific fixtures, 128-cubed performance evidence, cap/malformed tests, and in-memory persisted job evidence.
+
+### Security
+- Added source/head/line/token/atom/voxel caps, finite-only parsing, strict enums, multi-orbital rejection, safe compression fallback, and no-network/no-execution evidence.
+- Added no dependency and no lockfile change; renderer, isosurface, slice, simulation, and remote sources remain excluded.

@@ -109,6 +109,8 @@ class MockLLMProvider:
             plan = _mock_phonon_band_plan(request)
         elif _should_generate_trajectory_viewer(request, tools, data_profile):
             plan = _mock_trajectory_viewer_plan(request)
+        elif _should_generate_volumetric_data(request, tools, data_profile):
+            plan = _mock_volumetric_data_plan(request)
         elif _should_generate_brillouin_zone(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -1792,6 +1794,69 @@ def _has_trajectory_input(data_profile: DataProfile) -> bool:
         if isinstance(obj, dict) and str(obj.get("objectType") or obj.get("object_type") or "").lower() == "trajectory":
             return True
     return "trajectory" in str(getattr(data_profile, "datasetType", "") or "").lower()
+
+
+def _has_volumetric_input(data_profile: DataProfile) -> bool:
+    for obj in getattr(data_profile, "objects", None) or []:
+        if isinstance(obj, dict) and str(obj.get("objectType") or obj.get("object_type") or "").lower() == "volumetricdata":
+            return True
+    return "volumetric" in str(getattr(data_profile, "datasetType", "") or "").lower()
+
+
+def _should_generate_volumetric_data(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "structure.volumetric_data") or not _has_volumetric_input(data_profile):
+        return False
+    prompt = request.user_prompt.lower()
+    unsupported = (
+        "isosurface", "iso-surface", "slice", "render", "viewer", "3d", "three.js", "webgl",
+        "run vasp", "calculate density", "trajectory", "phonon", "brillouin", "defect", "surface", "slab",
+        "等值面", "切片", "渲染", "查看器", "计算电荷密度", "运行 vasp", "轨迹", "声子", "布里渊",
+    )
+    if any(marker in prompt for marker in unsupported):
+        return False
+    markers = (
+        "parse chgcar", "parse locpot", "parse elfcar", "parse parchg", "parse cube",
+        "normalize volumetric", "volumetric data artifact", "canonical volumetric", "import charge density",
+        "解析 chgcar", "解析 locpot", "解析 elfcar", "解析 parchg", "解析 cube", "规范化体数据", "导入体数据",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _mock_volumetric_data_plan(request: PlannerRequest) -> dict[str, Any]:
+    artifact_types = [
+        "volumetric_grid_json", "volumetric_payload_json", "volumetric_field_json",
+        "volumetric_dataset_json", "volumetric_manifest_json", "volumetric_binary", "summary_md", "recipe_json",
+    ]
+    step = {
+        "stepId": "step_001",
+        "toolId": "structure.volumetric_data",
+        "purpose": "Parse one bounded supported source into validated inert canonical volumetric artifacts.",
+        "reason": "The request asks to normalize an available bounded volumetric source without rendering or external execution.",
+        "inputRefs": [{"refType": "normalized_object", "ref": "volumetric", "objectType": "VolumetricData"}],
+        "params": {
+            "format": "auto", "quantity_hint": "auto", "field_selection": "all_supported",
+            "stored_dtype": "source_or_float64", "compression": "contract_default",
+            "include_statistics": True, "include_histogram": False,
+            "verify_integrals": True, "allow_partial_dataset": False,
+        },
+        "output": {"artifactTypes": artifact_types},
+        "constraints": {"noExternalNetwork": True},
+    }
+    expected = [
+        {"name": "volumetric_grid.json", "type": "volumetric_grid_json", "fromStepId": "step_001"},
+        {"name": "volumetric_payload_01.json", "type": "volumetric_payload_json", "fromStepId": "step_001"},
+        {"name": "volumetric_field_01.json", "type": "volumetric_field_json", "fromStepId": "step_001"},
+        {"name": "volumetric_dataset.json", "type": "volumetric_dataset_json", "fromStepId": "step_001"},
+        {"name": "volumetric_manifest.json", "type": "volumetric_manifest_json", "fromStepId": "step_001"},
+        {"name": "volumetric_field_01.f64.gz", "type": "volumetric_binary", "fromStepId": "step_001"},
+        {"name": "summary.md", "type": "summary_md", "fromStepId": "step_001"},
+        {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_001"},
+    ]
+    return _single_step_plan(request, step, expected)
 
 
 def _should_generate_trajectory_viewer(

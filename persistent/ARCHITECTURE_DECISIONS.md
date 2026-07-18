@@ -3829,3 +3829,13 @@ parser, tool, planner route, runtime adapter, renderer, slice, or isosurface.
 - Logical hashes survive storage encoding and chunk-boundary changes while storage hashes remain auditable.
 - Caps and bounded decompression apply before allocation or decode.
 - Phase 10J-1 owns production parser/adapter work; visualization requires later separately reviewed consumers.
+
+## Phase 10J-1 Volumetric Source Decisions
+
+- One public tool handles approved VASP and CUBE sources; format-specific public tools would create ambiguous overlapping semantics.
+- Every source parser converts to Phase 10J canonical order; third-party parsers are helpers, never the validation boundary.
+- VASP density normalization is independently checked by order/integral fixtures and is applied exactly once.
+- CUBE spatial units and density volume units are explicit transformations with provenance.
+- Source-native augmentation sections are not silently merged; unsupported content produces a bounded warning or typed rejection.
+- Canonical payload remains little-endian numeric binary. High-ratio default gzip safely falls back to raw without weakening decompression caps.
+- Renderer, slice, and isosurface ownership remains in a later phase and cannot execute artifact code or alter backend job success.

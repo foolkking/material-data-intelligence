@@ -1143,3 +1143,10 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - The five `phase10j.volumetric_*` schemas are inert artifact contracts only.
 - Generic JSON preview is sufficient for metadata; no parser or renderer capability may be inferred from contract validity.
 - A future `structure.volumetric_data` tool requires the separate Phase 10J-1 parser/adapter review and must reuse these contracts.
+
+## Phase 10J-1
+
+- Registered one public parser tool, `structure.volumetric_data`; no overlapping CHGCAR/LOCPOT/CUBE tool IDs were added.
+- Input is exactly one bounded normalized `VolumetricData` object. Params are fixed format/quantity/selection/dtype/compression enums and required validation booleans.
+- Current outputs are canonical grid, payload metadata, field metadata, numeric binary, dataset, manifest, summary, and recipe artifacts.
+- Mock Planner routes explicit parsing/normalization intent only. Renderer, isosurface, slice, VASP execution, trajectory, phonon, and Brillouin requests are excluded.

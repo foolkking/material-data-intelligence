@@ -800,7 +800,9 @@
 
 ## 2026-07-17 Phase 10J Follow-ups
 
-- Phase 10J-1 must map bounded VASP volumetric and Gaussian CUBE source semantics into the established contracts without introducing a second grid model.
+- Phase 10J-1 mapped bounded VASP volumetric and single-scalar Gaussian CUBE sources into the established contracts without a second grid model.
 - Mixed periodicity, masks, sparse data, complex vectors/tensors, reciprocal-space grids, and time-dependent volume require separate schema decisions.
 - Isosurface and slice consumers must preserve source quantity, unit, normalization, gauge, hashes, periodic seam policy, and contract caps.
 - Production products for charge/spin density, electrostatic potential, ELF, orbitals, Bader analysis, and volume rendering remain unapproved.
+- A future parser phase must decide whether multi-orbital CUBE and VASP augmentation can be represented without inference or silent loss.
+- Inputs above the 2,097,152-voxel production parser cap require a separately reviewed streaming-storage design.

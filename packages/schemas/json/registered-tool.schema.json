@@ -80,6 +80,7 @@
                     "PhononDos",
                     "PhononEigenvector",
                     "Trajectory",
+                    "VolumetricData",
                     "ElementValueMap",
                     "RawUnsupported"
                   ]
@@ -109,7 +110,7 @@
           "items": { "$ref": "#/$defs/artifactType" }
         },
         "displayTarget": {
-          "enum": ["overview", "composition", "structure", "trajectory", "phonon", "ml", "artifacts", "report"]
+          "enum": ["overview", "composition", "structure", "trajectory", "volumetric", "phonon", "ml", "artifacts", "report"]
         }
       }
     },
@@ -151,6 +152,12 @@
         "brillouin_zone_json",
         "kpath_json",
         "brillouin_zone_manifest_json",
+        "volumetric_grid_json",
+        "volumetric_payload_json",
+        "volumetric_field_json",
+        "volumetric_dataset_json",
+        "volumetric_manifest_json",
+        "volumetric_binary",
         "metrics_json",
         "table_json",
         "table_csv",

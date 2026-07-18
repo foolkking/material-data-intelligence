@@ -1,0 +1,8 @@
+{
+  "parser_temp_files": "none used",
+  "evidence_temp_sources": "TemporaryDirectory cleanup",
+  "partial_artifacts_on_parse_failure": false,
+  "partial_artifacts_on_contract_failure": false,
+  "source_path_persisted": false,
+  "runtime_cache_committed": false
+}

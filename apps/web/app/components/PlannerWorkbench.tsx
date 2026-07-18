@@ -1205,6 +1205,7 @@ function ResultsExportTab(props: {
       <ViewerStaticPreviewPanel artifacts={props.artifacts} />
       {hasBandBZLinkInputs ? <BandBZLinkedView artifacts={props.artifacts} /> : <BrillouinZonePreviewPanel artifacts={props.artifacts} />}
       <TrajectoryPreviewPanel artifacts={props.artifacts} />
+      <VolumetricMetadataPreviewPanel artifacts={props.artifacts} />
       <PhononAnimationPreviewPanel artifacts={props.artifacts} />
       <PhononBandDosPreviewPanel artifacts={props.artifacts} />
       {!hasCombinedPhonon && !hasBandBZLinkInputs ? <PhononBandPreviewPanel artifacts={props.artifacts} /> : null}
@@ -1425,6 +1426,63 @@ export function TrajectoryPreviewPanel({ artifacts }: { artifacts: Artifact[] })
       </div>
     </section>
   );
+}
+
+export function VolumetricMetadataPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
+  const datasetArtifact = artifacts.find((artifact) => artifact.type === "volumetric_dataset_json" || artifact.name === "volumetric_dataset.json");
+  const manifestArtifact = artifacts.find((artifact) => artifact.type === "volumetric_manifest_json" || artifact.name === "volumetric_manifest.json");
+  if (!datasetArtifact && !manifestArtifact) return null;
+  const dataset = datasetArtifact ? trajectoryArtifactPayload(datasetArtifact) : null;
+  const manifest = manifestArtifact ? trajectoryArtifactPayload(manifestArtifact) : null;
+  const grid = asRecord(dataset?.grid);
+  const fields = Array.isArray(dataset?.fields) ? dataset.fields.map(asRecord).filter((item): item is JsonRecord => Boolean(item)) : [];
+  const payloads = Array.isArray(dataset?.payloads) ? dataset.payloads.map(asRecord).filter((item): item is JsonRecord => Boolean(item)) : [];
+  const provenance = asRecord(dataset?.provenance) || {};
+  const security = asRecord(dataset?.security) || asRecord(manifest?.security) || {};
+  const capabilities = asRecord(manifest?.capabilities) || {};
+  return <section className="panel viewer-static-preview" data-testid="volumetric-metadata-preview">
+    <PanelHeading title="Volumetric data" badge="Metadata JSON only" />
+    <p className="notice">Canonical inert volumetric metadata is available. Binary values are download-only in this phase; no renderer, isosurface, slice, or external resource is included.</p>
+    <PreviewSubsection title="Grid">
+      <dl className="mini-grid">
+        <TestField testId="volumetric-schema-version" label="schema" value={text(dataset?.schema_version)} />
+        <TestField testId="volumetric-source-format" label="source format" value={text(provenance.source_format)} />
+        <TestField testId="volumetric-grid-shape" label="shape" value={Array.isArray(grid?.shape) ? grid.shape.join(" x ") : "unknown"} />
+        <Field label="voxel count" value={Array.isArray(grid?.shape) ? String(grid.shape.reduce((total, item) => total * Number(item), 1)) : "unknown"} />
+        <Field label="sample location" value={text(grid?.sample_location)} />
+        <Field label="endpoint policy" value={text(grid?.endpoint_policy)} />
+        <Field label="boundary conditions" value={Array.isArray(grid?.boundary_conditions) ? grid.boundary_conditions.join(", ") : "unknown"} />
+      </dl>
+    </PreviewSubsection>
+    <PreviewSubsection title={`Fields (${fields.length})`}>
+      <CompactTable
+        columns={["name", "quantity", "unit", "components"]}
+        rows={fields.map((field) => {
+          const unit = asRecord(field.unit);
+          const statistics = asRecord(field.statistics);
+          const component = Array.isArray(statistics?.stored_components) ? asRecord(statistics.stored_components[0]) : null;
+          return [text(field.field_name), text(field.quantity), text(unit?.canonical_unit), `${text(field.stored_component_count)}; min ${text(component?.minimum)}; max ${text(component?.maximum)}; mean ${text(component?.mean)}; integral ${text(component?.integral)}`];
+        })}
+        emptyLabel="No validated fields attached"
+      />
+    </PreviewSubsection>
+    <PreviewSubsection title={`Payloads (${payloads.length})`}>
+      <CompactTable columns={["dtype", "encoding", "values", "bytes"]} rows={payloads.map((payload) => [text(payload.dtype), text(payload.encoding), text(payload.value_count), text(payload.uncompressed_bytes)])} emptyLabel="No payload metadata attached" />
+      <p className="empty-state">Binary numeric payload values are not expanded in the DOM.</p>
+    </PreviewSubsection>
+    <PreviewSubsection title="Security / consumer status">
+      <dl className="mini-grid">
+        <TestField testId="volumetric-renderer-included" label="renderer included" value={flagText(capabilities.renderer_included ?? security.renderer_included)} />
+        <Field label="metadata preview" value={flagText(capabilities.metadata_preview)} />
+        <Field label="external URLs allowed" value={flagText(security.external_urls_allowed)} />
+        <Field label="contains executable" value={flagText(security.contains_executable)} />
+        <Field label="validation" value={dataset?.schema_version === "phase10j.volumetric_dataset.v1" && manifest?.schema_version === "phase10j.volumetric_manifest.v1" ? "canonical metadata recognized" : "metadata unavailable or invalid"} />
+      </dl>
+    </PreviewSubsection>
+    {Array.isArray(dataset?.warnings) && dataset.warnings.length ? <ul className="warning-list">{dataset.warnings.map((warning) => <li key={String(warning)}>{text(warning)}</li>)}</ul> : null}
+    {dataset ? <RawJsonDetails payload={dataset} /> : null}
+    {manifest ? <RawJsonDetails payload={manifest} /> : null}
+  </section>;
 }
 
 export function PhononAnimationPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {

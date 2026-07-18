@@ -1404,3 +1404,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added explicit quantity/unit, normalization/integral, collinear/non-collinear spin, complex scalar, potential gauge, statistics, caps, and typed validation.
 - Added deterministic fixtures, independent standard-library references, binary payloads, replay hashes, and decompression/security evidence.
 - No parser, adapter, tool, planner route, runtime execution, renderer, isosurface, external resource, or dependency was added.
+
+## Phase 10J-1 - Volumetric Parser / Adapter
+
+- Added bounded streaming VASP CHGCAR/CHG/LOCPOT/ELFCAR/PARCHG and single-scalar Gaussian CUBE parsing into the existing Phase 10J contracts.
+- Added `VolumetricData`, formal `structure.volumetric_data`, strict params, planner routing, PlanValidator/runtime execution, deterministic binary artifacts, and JSON-only metadata preview.
+- Verified canonical order, units, spin channels, affine grids, hashes, a 128-cubed bounded run, typed cap rejection, network isolation, and no artifact execution.
+- Renderer, slice, isosurface, multi-orbital CUBE, and production-scale inputs above the parser cap remain deferred.

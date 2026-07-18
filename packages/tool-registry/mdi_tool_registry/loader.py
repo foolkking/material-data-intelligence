@@ -80,7 +80,7 @@ def _domain_from_tool_id(tool_id: str) -> ToolDomain:
 
 
 def _category_for(entry: dict[str, Any]) -> ToolCategory:
-    if entry["tool_id"] == "structure.trajectory_import":
+    if entry["tool_id"] in {"structure.trajectory_import", "structure.volumetric_data"}:
         return ToolCategory.parser
     artifact_types = set(entry.get("artifact_types", []))
     source = entry.get("implementation_source")
@@ -97,7 +97,7 @@ def _cost_for(entry: dict[str, Any]) -> str:
 
 
 def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
-    if entry["tool_id"] in {"structure.trajectory_import", "structure.trajectory_viewer"}:
+    if entry["tool_id"] in {"structure.trajectory_import", "structure.trajectory_viewer", "structure.volumetric_data"}:
         return 120, 300
     if entry["tool_id"] == "structure.viewer_3d":
         return 90, 180
@@ -108,6 +108,16 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.volumetric_data":
+        return {
+            "maxSourceBytes": 268435456,
+            "maxGridDimension": 512,
+            "maxTotalVoxels": 16777216,
+            "maxStoredValues": 50331648,
+            "maxFieldsPerDataset": 8,
+            "maxUncompressedBytesPerField": 268435456,
+            "maxDatasetBytes": 536870912,
+        }
     if tool_id == "structure.brillouin_zone":
         return {
             "maxStructures": 1,
@@ -233,6 +243,16 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.volumetric_data":
+        return ToolInputSchema(
+            periodicity="any",
+            inputOptions=[ToolInputOption(
+                name="single_bounded_volumetric_source",
+                requiredObjectTypes=[MaterialObjectType.VolumetricData],
+                requiredFields=[],
+                description="Use exactly one parser-validated bounded VASP volumetric or single-dataset Gaussian CUBE object.",
+            )],
+        )
     if tool_id == "structure.brillouin_zone":
         return ToolInputSchema(
             inputOptions=[
@@ -403,6 +423,22 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.volumetric_data":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "format": {"enum": ["auto", "vasp_volumetric", "gaussian_cube"]},
+                "quantity_hint": {"enum": ["auto", "electron_density", "charge_density", "spin_density", "magnetization_density", "electrostatic_potential", "electron_localization_function", "orbital_density", "wavefunction", "generic_scalar"]},
+                "field_selection": {"enum": ["all_supported", "total_only", "spin_channels", "first_scalar"]},
+                "stored_dtype": {"enum": ["source_or_float64", "float32", "float64"]},
+                "compression": {"enum": ["contract_default", "raw_binary", "gzip_binary"]},
+                "include_statistics": {"const": True},
+                "include_histogram": {"const": False},
+                "verify_integrals": {"const": True},
+                "allow_partial_dataset": {"const": False},
+            },
+        }
     if tool_id == "structure.brillouin_zone":
         return {
             "type": "object",

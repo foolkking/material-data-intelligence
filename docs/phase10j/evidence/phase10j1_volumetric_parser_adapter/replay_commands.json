@@ -1,0 +1,7 @@
+{
+  "focused": "uv run python -m pytest -q tests/test_phase10j1_volumetric_parser_adapter.py tests/test_phase10j_volumetric_contract.py",
+  "evidence": "uv run python apps/web/test/generate-volumetric-parser-evidence.py",
+  "frontend": "npm --prefix apps/web test -- --run",
+  "backend": "uv run python -m pytest -q",
+  "build": "npm --prefix apps/web run build"
+}

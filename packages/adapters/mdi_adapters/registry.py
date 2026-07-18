@@ -23,6 +23,7 @@ from .platform_builtin import (
     StructureViewerSceneMetadataAdapter,
     TrajectoryImportAdapter,
     TrajectoryViewerAdapter,
+    VolumetricDataAdapter,
 )
 from .pymatviz import (
     ChemSysSunburstAdapter,
@@ -76,6 +77,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     StructureViewer3DAdapter.__name__: StructureViewer3DAdapter,
     TrajectoryImportAdapter.__name__: TrajectoryImportAdapter,
     TrajectoryViewerAdapter.__name__: TrajectoryViewerAdapter,
+    VolumetricDataAdapter.__name__: VolumetricDataAdapter,
     XrdPatternAdapter.__name__: XrdPatternAdapter,
     ScatterAdapter.__name__: ScatterAdapter,
 }

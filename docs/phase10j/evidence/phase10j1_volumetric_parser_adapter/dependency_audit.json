@@ -1,0 +1,8 @@
+{
+  "new_dependencies": [],
+  "lockfile_changed": false,
+  "reused": ["pymatgen", "python hashlib", "python gzip", "Phase 10J artifact core"],
+  "npm_tree": "resolved",
+  "npm_audit": "unavailable: configured npmmirror endpoint returned 404 NOT_IMPLEMENTED",
+  "runtime_network_required": false
+}

@@ -1,0 +1,10 @@
+{
+  "component": "VolumetricMetadataPreviewPanel",
+  "mode": "metadata_json_only",
+  "displayed": ["source format", "shape", "voxel count", "sampling", "periodicity", "fields", "units", "statistics", "payload encoding", "payload bytes", "warnings", "validation", "renderer status"],
+  "binary_values_expanded": false,
+  "canvas_created": false,
+  "webgl_created": false,
+  "iframe_created": false,
+  "frontend_test": "passed in 224-test full suite"
+}

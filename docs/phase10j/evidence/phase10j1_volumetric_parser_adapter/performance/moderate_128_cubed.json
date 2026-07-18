@@ -1,0 +1,13 @@
+{
+  "adapter_seconds": 21.56244599999627,
+  "output_bytes": 16791189,
+  "parse_seconds": 15.698448800016195,
+  "peak_tracemalloc_bytes": 219208904,
+  "shape": [
+    128,
+    128,
+    128
+  ],
+  "status": "completed",
+  "voxel_count": 2097152
+}

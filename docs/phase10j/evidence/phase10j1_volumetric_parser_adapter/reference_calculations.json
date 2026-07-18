@@ -1,0 +1,10 @@
+{
+  "vasp_source_values": [8, 16, 24, 32, 40, 48, 56, 64],
+  "vasp_shape": [2, 2, 2],
+  "vasp_cell_volume_angstrom3": 8,
+  "canonical_density_values": [1, 5, 3, 7, 2, 6, 4, 8],
+  "electron_integral": 36,
+  "cube_bohr_to_angstrom": 0.529177210903,
+  "cube_density_factor": 6.748334494600374,
+  "binary": "little-endian float64 independently decoded in contract/parser tests"
+}

@@ -1,0 +1,5 @@
+{
+  "multi_orbital.cube": "VOLUME_CUBE_MULTI_ORBITAL_UNSUPPORTED",
+  "nonfinite": "VOLUME_NUMERIC_NONFINITE (asserted by test_phase10j1_volumetric_parser_adapter.py)",
+  "over_cap": "VOLUME_GRID_CAP_EXCEEDED"
+}

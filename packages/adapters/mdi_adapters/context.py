@@ -14,6 +14,9 @@ def _input_ref_value(input_ref: Any, field: str) -> Any:
 
 
 def hashable_material(value: Any) -> Any:
+    object_type = getattr(getattr(value, "object_type", None), "value", getattr(value, "object_type", None))
+    if object_type == "VolumetricData" and isinstance(getattr(value, "hash", None), str):
+        return {"objectType": "VolumetricData", "contentHash": value.hash}
     if hasattr(value, "as_dict"):
         return value.as_dict()
     if isinstance(value, dict):

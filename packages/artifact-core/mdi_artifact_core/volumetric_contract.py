@@ -995,6 +995,9 @@ def build_volumetric_field(
     field_name: str,
     quantity: str,
     unit: str,
+    source_unit: str | None = None,
+    unit_conversion_factor: float = 1.0,
+    unit_conversion_provenance: str = "identity",
     value_kind: str,
     field_rank: str,
     normalization_semantics: str,
@@ -1017,8 +1020,11 @@ def build_volumetric_field(
         raise VolumetricContractError("VOLUME_COMPONENT_LABELS_INVALID", "Canonical component labels are required.")
     if payload.get("stored_component_count") != components or payload.get("grid_shape") != grid.get("shape"):
         raise VolumetricContractError("VOLUME_FIELD_PAYLOAD_MISMATCH", "Payload layout does not match the field/grid.")
-    if quantity not in FIELD_QUANTITIES or unit not in UNITS or unit not in _QUANTITY_UNITS[quantity]:
+    resolved_source_unit = unit if source_unit is None else source_unit
+    if quantity not in FIELD_QUANTITIES or unit not in UNITS or resolved_source_unit not in UNITS or unit not in _QUANTITY_UNITS[quantity]:
         raise VolumetricContractError("VOLUME_QUANTITY_UNIT_MISMATCH", "Quantity and unit are incompatible.")
+    if not _finite(unit_conversion_factor) or float(unit_conversion_factor) <= 0 or not _safe_text(unit_conversion_provenance, 128):
+        raise VolumetricContractError("VOLUME_QUANTITY_UNIT_MISMATCH", "Unit conversion metadata is invalid.")
     if quantity in {"electron_density", "charge_density", "spin_density", "electrostatic_potential", "local_potential", "electron_localization_function", "orbital_density"} and (value_kind, field_rank) != ("real", "scalar"):
         raise VolumetricContractError("VOLUME_FIELD_KIND_UNSUPPORTED", "Quantity requires a real scalar field.")
     if quantity == "magnetization_density" and (value_kind, field_rank) not in {("real", "scalar"), ("real", "vector")}:
@@ -1051,11 +1057,11 @@ def build_volumetric_field(
         "component_labels": labels,
         "component_basis": "cartesian" if field_rank == "vector" else "not_applicable",
         "unit": {
-            "source_unit": unit,
+            "source_unit": resolved_source_unit,
             "canonical_unit": unit,
-            "conversion_factor": 1.0,
-            "conversion_applied": False,
-            "conversion_provenance": "identity",
+            "conversion_factor": float(unit_conversion_factor),
+            "conversion_applied": resolved_source_unit != unit or not math.isclose(float(unit_conversion_factor), 1.0),
+            "conversion_provenance": unit_conversion_provenance,
         },
         "normalization_semantics": normalization_semantics,
         "integral_semantics": integral_semantics,

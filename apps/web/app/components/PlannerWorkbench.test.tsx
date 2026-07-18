@@ -9,7 +9,7 @@ import bzReciprocal from "../../../../docs/phase10i/evidence/phase10i1_brillouin
 import bzZone from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/brillouin_zone.json";
 import bzKpath from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/kpath.json";
 import bzManifest from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/brillouin_zone_manifest.json";
-import { PlannerWorkbench } from "./PlannerWorkbench";
+import { PlannerWorkbench, VolumetricMetadataPreviewPanel } from "./PlannerWorkbench";
 import { periodicBoundaryScene } from "./viewer-scene/viewerScenePeriodicBondTestFixture";
 
 type CapturedLiveArtifact = { name?: string; content?: Record<string, unknown> };
@@ -460,6 +460,26 @@ afterEach(() => {
 });
 
 describe("Phase 9C PlannerWorkbench", () => {
+  it("renders bounded volumetric metadata without binary values or executable content", () => {
+    const dataset = {
+      schema_version: "phase10j.volumetric_dataset.v1",
+      grid: { shape: [2, 3, 4], sample_location: "node", endpoint_policy: "excluded", boundary_conditions: ["periodic", "periodic", "periodic"] },
+      fields: [{ field_name: "total", quantity: "electron_density", stored_component_count: 1, unit: { canonical_unit: "electron/angstrom^3" } }],
+      security: { renderer_included: false, external_urls_allowed: false, contains_executable: false }
+    };
+    const manifest = { capabilities: { metadata_preview: true, renderer_included: false }, security: dataset.security };
+    const artifacts = [
+      { id: "dataset", artifactId: "dataset", type: "volumetric_dataset_json", name: "volumetric_dataset.json", content: dataset },
+      { id: "manifest", artifactId: "manifest", type: "volumetric_manifest_json", name: "volumetric_manifest.json", content: manifest }
+    ];
+    const { container } = render(<VolumetricMetadataPreviewPanel artifacts={artifacts as never} />);
+    expect(screen.getByTestId("volumetric-grid-shape").textContent).toContain("2 x 3 x 4");
+    expect(screen.getByText("electron_density")).not.toBeNull();
+    expect(screen.getByTestId("volumetric-renderer-included").textContent).toContain("false");
+    expect(container.querySelector("canvas")).toBeNull();
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.querySelector("iframe")).toBeNull();
+  });
   it("renders the strict top/left/main-tab layout in Chinese by default", async () => {
     render(<PlannerWorkbench />);
 

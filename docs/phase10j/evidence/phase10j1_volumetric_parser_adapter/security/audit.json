@@ -1,0 +1,17 @@
+{
+  "arbitrary_codec": false,
+  "arbitrary_path": false,
+  "artifact_css": false,
+  "artifact_html": false,
+  "artifact_javascript": false,
+  "artifact_shader": false,
+  "dependency_changes": false,
+  "eval": false,
+  "external_urls": false,
+  "iframe": false,
+  "network_marker": "NO_VOLUMETRIC_PARSER_EXTERNAL_NETWORK_REQUESTS",
+  "npm_audit": "unavailable: configured npmmirror endpoint returned 404 NOT_IMPLEMENTED",
+  "remote_assets": false,
+  "secret_marker": "NO_SECRET_PATTERN_HITS",
+  "local_service_backed": "unavailable: Docker CLI is not installed"
+}

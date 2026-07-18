@@ -1,0 +1,36 @@
+{
+  "malformed_cases": {
+    "multi_orbital.cube": "VOLUME_CUBE_MULTI_ORBITAL_UNSUPPORTED",
+    "nonfinite": "VOLUME_NUMERIC_NONFINITE (asserted by test_phase10j1_volumetric_parser_adapter.py)",
+    "over_cap": "VOLUME_GRID_CAP_EXCEEDED"
+  },
+  "moderate_performance": {
+    "adapter_seconds": 21.56244599999627,
+    "output_bytes": 16791189,
+    "parse_seconds": 15.698448800016195,
+    "peak_tracemalloc_bytes": 219208904,
+    "shape": [
+      128,
+      128,
+      128
+    ],
+    "status": "completed",
+    "voxel_count": 2097152
+  },
+  "network": "NO_VOLUMETRIC_PARSER_EXTERNAL_NETWORK_REQUESTS",
+  "phase": "10J-1",
+  "runtime_status": "completed",
+  "secrets": "NO_SECRET_PATTERN_HITS",
+  "source_cases": [
+    "chgcar_augmentation",
+    "chgcar_collinear",
+    "chgcar_noncollinear",
+    "chgcar_nonspin",
+    "cube_affine",
+    "cube_orthogonal",
+    "elfcar",
+    "locpot",
+    "parchg"
+  ],
+  "tool": "structure.volumetric_data"
+}
