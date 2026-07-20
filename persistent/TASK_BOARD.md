@@ -2083,6 +2083,6 @@
 - [ ] Review Phase 10J-2 only as a consumer of validated canonical artifacts; do not weaken parser caps or execute artifact code.
 # Phase 10J-2 Isosurface Renderer Completed
 
-- Status: completed; implementation commit `f6edcac347f2f7fffdbda47b1f72ad493c8edae8` and completion-record CI closure remain to be archived after verification.
+- Status: completed and verified; implementation commit `f6edcac347f2f7fffdbda47b1f72ad493c8edae8` passed CI run `29744316126`, completion record `c7669619b1444076bc47e8f084ddc2d5df5ce783` passed CI run `29745406355`, and the queue block is archived in `reslusts.md`.
 - Delivered: validated scalar/node payload consumer, application Worker extraction, periodic/affine mesh mapping, Three.js product UI, structure overlay, fallbacks, and three-browser/mobile evidence.
 - Deferred: slice, direct volume, cell-centered/vector/complex fields, Bader/field analysis, and remote assets.
