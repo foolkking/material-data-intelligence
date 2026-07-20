@@ -1150,3 +1150,7 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Input is exactly one bounded normalized `VolumetricData` object. Params are fixed format/quantity/selection/dtype/compression enums and required validation booleans.
 - Current outputs are canonical grid, payload metadata, field metadata, numeric binary, dataset, manifest, summary, and recipe artifacts.
 - Mock Planner routes explicit parsing/normalization intent only. Renderer, isosurface, slice, VASP execution, trajectory, phonon, and Brillouin requests are excluded.
+# Phase 10J-2
+
+- `structure.volumetric_data` remains the sole public generic volumetric tool. Isosurface is a validated frontend consumer capability, not a second parser/calculation tool.
+- The adapter now emits an additive inert `volumetric_structure_overlay_json` artifact; existing canonical Phase 10J contracts and tool execution semantics remain unchanged.

@@ -714,6 +714,15 @@ pre {
   touch-action: pan-y;
 }
 
+.volumetric-isosurface-surface { min-width: 0; padding-top: 12px; }
+.volumetric-isosurface-surface > * { min-width: 0; }
+.volumetric-layer-controls { display: grid; gap: 8px; padding: 10px 0; border-block: 1px solid var(--border); }
+.volumetric-layer-controls label { display: inline-flex; align-items: center; gap: 6px; }
+.volumetric-layer-controls input[type="number"] { width: 132px; }
+.volumetric-isosurface-surface .viewer-preview-grid { align-items: start; }
+.volumetric-isosurface-surface select,
+.volumetric-isosurface-surface input { max-width: 100%; }
+
 .trajectory-viewer-surface { display: grid; gap: 12px; min-width: 0; max-width: 100%; }
 .trajectory-viewer-surface > * { min-width: 0; max-width: 100%; }
 .trajectory-viewer-surface .viewer-renderer-toolbar { flex-wrap: wrap; }

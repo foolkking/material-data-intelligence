@@ -18,6 +18,7 @@ VOLUMETRIC_PAYLOAD_SCHEMA_VERSION = "phase10j.volumetric_payload.v1"
 VOLUMETRIC_FIELD_SCHEMA_VERSION = "phase10j.volumetric_field.v1"
 VOLUMETRIC_DATASET_SCHEMA_VERSION = "phase10j.volumetric_dataset.v1"
 VOLUMETRIC_MANIFEST_SCHEMA_VERSION = "phase10j.volumetric_manifest.v1"
+VOLUMETRIC_STRUCTURE_OVERLAY_SCHEMA_VERSION = "phase10j2.volumetric_structure_overlay.v1"
 VOLUMETRIC_TOLERANCE_SCHEMA_VERSION = "phase10j.volumetric_tolerances.v1"
 
 VOLUMETRIC_TOLERANCES: dict[str, float | str] = {
@@ -1474,6 +1475,113 @@ def is_isosurface_compatible(
     if payload.get("uncompressed_bytes", VOLUMETRIC_CAPS["max_uncompressed_bytes_per_field"] + 1) > VOLUMETRIC_CAPS["max_uncompressed_bytes_per_field"]:
         reasons.append("payload_over_cap")
     return not reasons, tuple(reasons)
+
+
+def build_volumetric_structure_overlay(
+    *,
+    grid: Mapping[str, Any],
+    viewer_scene: Mapping[str, Any] | None = None,
+    atom_records: Sequence[Mapping[str, Any]] = (),
+    unavailable_reason: str | None = None,
+) -> dict[str, Any]:
+    """Build inert, renderer-owned structure context for the volumetric viewer."""
+
+    grid_result = validate_volumetric_grid(dict(grid))
+    if not grid_result.valid:
+        raise VolumetricContractError(grid_result.errors[0], "Grid must validate before structure overlay generation.")
+    if grid["boundary_conditions"] == ["periodic"] * 3:
+        kind = "periodic_viewer_scene"
+        if viewer_scene is None and unavailable_reason is None:
+            raise VolumetricContractError("VOLUME_OVERLAY_MISSING", "Periodic overlay requires a validated viewer scene.")
+        if viewer_scene is not None:
+            try:
+                from .viewer_scene_contract import validate_viewer_scene
+
+                result = validate_viewer_scene(dict(viewer_scene))
+                if not result.valid:
+                    raise VolumetricContractError("VOLUME_OVERLAY_INVALID", "Periodic overlay viewer scene is invalid.")
+            except ImportError as exc:
+                raise VolumetricContractError("VOLUME_OVERLAY_INVALID", "Periodic overlay validator is unavailable.") from exc
+    else:
+        kind = "non_periodic_atom_context"
+        if viewer_scene is not None:
+            raise VolumetricContractError("VOLUME_OVERLAY_INVALID", "Non-periodic overlays cannot claim a periodic viewer scene.")
+        if len(atom_records) > DEFAULT_OVERLAY_ATOM_CAP:
+            raise VolumetricContractError("VOLUME_OVERLAY_CAP_EXCEEDED", "Atom context exceeds the overlay cap.")
+        for index, atom in enumerate(atom_records):
+            if not isinstance(atom, Mapping) or set(atom) != {"atomic_number", "cartesian_angstrom"} or type(atom.get("atomic_number")) is not int or not 1 <= atom["atomic_number"] <= 118:
+                raise VolumetricContractError("VOLUME_OVERLAY_INVALID", f"Atom context row {index} is invalid.")
+            _vector3(atom.get("cartesian_angstrom"), "VOLUME_OVERLAY_INVALID")
+    overlay: dict[str, Any] = {
+        "schema_version": VOLUMETRIC_STRUCTURE_OVERLAY_SCHEMA_VERSION,
+        "overlay_id": "",
+        "grid_id": grid["grid_id"],
+        "grid_content_hash": grid["content_hash"],
+        "kind": kind,
+        "viewer_scene": dict(viewer_scene) if viewer_scene is not None else None,
+        "atom_records": [dict(item) for item in atom_records],
+        "unavailable_reason": unavailable_reason,
+        "security": dict(VOLUMETRIC_SECURITY),
+        "content_hash": "",
+    }
+    digest = volumetric_content_hash({key: overlay[key] for key in overlay if key not in {"overlay_id", "content_hash"}})
+    overlay["overlay_id"] = f"volume-overlay:{digest}"
+    overlay["content_hash"] = digest
+    result = validate_volumetric_structure_overlay(overlay, grid=grid)
+    if not result.valid:
+        raise VolumetricContractError(result.errors[0], "Generated structure overlay is invalid.")
+    return overlay
+
+
+DEFAULT_OVERLAY_ATOM_CAP = 4096
+
+
+def validate_volumetric_structure_overlay(value: Any, *, grid: Mapping[str, Any] | None = None) -> VolumetricValidationResult:
+    errors: set[str] = set()
+    fields = {"schema_version", "overlay_id", "grid_id", "grid_content_hash", "kind", "viewer_scene", "atom_records", "unavailable_reason", "security", "content_hash"}
+    if not isinstance(value, dict) or set(value) != fields:
+        return VolumetricValidationResult(False, ("VOLUME_OVERLAY_SCHEMA_INVALID",))
+    try:
+        if value.get("schema_version") != VOLUMETRIC_STRUCTURE_OVERLAY_SCHEMA_VERSION or not _safe_id(value.get("overlay_id")) or not _safe_id(value.get("grid_id")) or not _SHA256.fullmatch(str(value.get("grid_content_hash"))):
+            errors.add("VOLUME_OVERLAY_SCHEMA_INVALID")
+        if grid is not None and (value.get("grid_id") != grid.get("grid_id") or value.get("grid_content_hash") != grid.get("content_hash")):
+            errors.add("VOLUME_OVERLAY_GRID_MISMATCH")
+        if value.get("kind") not in {"periodic_viewer_scene", "non_periodic_atom_context"}:
+            errors.add("VOLUME_OVERLAY_SCHEMA_INVALID")
+        atoms = value.get("atom_records")
+        if not isinstance(atoms, list) or len(atoms) > DEFAULT_OVERLAY_ATOM_CAP:
+            errors.add("VOLUME_OVERLAY_CAP_EXCEEDED")
+        else:
+            for atom in atoms:
+                if not isinstance(atom, dict) or set(atom) != {"atomic_number", "cartesian_angstrom"} or type(atom.get("atomic_number")) is not int or not 1 <= atom["atomic_number"] <= 118:
+                    errors.add("VOLUME_OVERLAY_INVALID")
+                else:
+                    _vector3(atom.get("cartesian_angstrom"), "VOLUME_OVERLAY_INVALID")
+        if value.get("kind") == "periodic_viewer_scene":
+            if value.get("viewer_scene") is None and value.get("unavailable_reason") is not None:
+                pass
+            elif not isinstance(value.get("viewer_scene"), dict):
+                errors.add("VOLUME_OVERLAY_INVALID")
+            else:
+                from .viewer_scene_contract import validate_viewer_scene
+
+                if not validate_viewer_scene(value["viewer_scene"]).valid:
+                    errors.add("VOLUME_OVERLAY_INVALID")
+        elif value.get("viewer_scene") is not None:
+            errors.add("VOLUME_OVERLAY_INVALID")
+        if value.get("unavailable_reason") is not None and not _safe_text(value.get("unavailable_reason"), 160):
+            errors.add("VOLUME_OVERLAY_INVALID")
+        if value.get("security") != VOLUMETRIC_SECURITY:
+            errors.add("VOLUME_SECURITY_INVALID")
+        _scan_inert({**value, "viewer_scene": None})
+        digest = volumetric_content_hash({key: value[key] for key in value if key not in {"overlay_id", "content_hash"}})
+        if value.get("content_hash") != digest or value.get("overlay_id") != f"volume-overlay:{digest}":
+            errors.add("VOLUME_CONTENT_HASH_MISMATCH")
+    except VolumetricContractError as error:
+        errors.add(error.code)
+    except (TypeError, ValueError, OverflowError, RecursionError):
+        errors.add("VOLUME_OVERLAY_SCHEMA_INVALID")
+    return VolumetricValidationResult(not errors, tuple(sorted(errors)))
 
 
 def volumetric_schema_snapshots() -> dict[str, Any]:

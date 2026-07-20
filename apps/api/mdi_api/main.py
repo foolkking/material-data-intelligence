@@ -33,6 +33,7 @@ from mdi_api.routers.planner import (
     get_planner_analysis_plan,
     get_planner_job,
     get_planner_job_artifacts,
+    get_planner_job_artifact_content_route,
     get_planner_job_events,
     get_planner_job_result,
     get_planner_job_tool_calls,
@@ -112,6 +113,7 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/planner/jobs/{job_id}/events/stream", stream_planner_job_events, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/tool-calls", get_planner_job_tool_calls, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/artifacts", get_planner_job_artifacts, ("GET",), ("planner",)),
+    RouteSpec("/planner/jobs/{job_id}/artifacts/{artifact_id}/content", get_planner_job_artifact_content_route, ("GET",), ("planner",)),
     RouteSpec("/planner/jobs/{job_id}/result", get_planner_job_result, ("GET",), ("planner",)),
     RouteSpec("/planner/analysis-plans/{plan_id}", get_planner_analysis_plan, ("GET",), ("planner",)),
     # Phase 7: Secrets API

@@ -1,0 +1,9 @@
+{
+  "artifactJavaScript": false,
+  "artifactHtml": false,
+  "artifactShader": false,
+  "externalUrls": false,
+  "dynamicArtifactImport": false,
+  "externalRequests": 0,
+  "marker": "NO_SECRET_PATTERN_HITS"
+}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import hashlib
 import json
 import os
 from typing import Any
@@ -438,6 +439,82 @@ def get_planner_job_artifacts(job_id: str, *, repositories: Any = None) -> list[
             }
         )
     return artifacts
+
+
+def get_planner_job_artifact_content(
+    job_id: str,
+    artifact_id: str,
+    *,
+    repositories: Any = None,
+    queue_runtime: QueueWorkerRuntime | None = None,
+) -> Any:
+    """Return bounded artifact bytes through the authenticated application API."""
+
+    def make_response() -> Any:
+        from fastapi.responses import Response
+
+        repos, runtime = _planner_repositories_and_runtime(
+            repositories=repositories,
+            queue_runtime=queue_runtime,
+        )
+        job = repos.jobs.get(job_id)
+        if not job:
+            raise LookupError("Planner job was not found.")
+        artifact = repos.artifacts.get(artifact_id)
+        if str(artifact.get("jobId") or artifact.get("job_id")) != job_id:
+            raise LookupError("Artifact does not belong to the requested job.")
+        size = int(artifact.get("sizeBytes") or artifact.get("size_bytes") or 0)
+        maximum = 67_108_864
+        if size <= 0 or size > maximum:
+            raise ValueError("Artifact content exceeds the browser transfer cap.")
+        storage_key = str(artifact.get("storageKey") or artifact.get("storage_key") or "")
+        content = runtime.artifact_storage.get_bytes(storage_key)
+        expected_hash = str(artifact.get("sha256") or artifact.get("contentHash") or artifact.get("content_hash") or "")
+        if len(content) != size or hashlib.sha256(content).hexdigest() != expected_hash:
+            raise ValueError("Artifact content failed size or hash validation.")
+        media_type = str(
+            artifact.get("contentType")
+            or artifact.get("content_type")
+            or (artifact.get("metadata") or {}).get("provenance", {}).get("mediaType")
+            or "application/octet-stream"
+        )
+        allowed = {
+            "application/json",
+            "application/gzip",
+            "application/octet-stream",
+            "application/vnd.mdi.volumetric+float32",
+            "application/vnd.mdi.volumetric+float64",
+            "text/markdown",
+        }
+        if media_type not in allowed:
+            raise ValueError("Artifact media type is not available through the bounded content route.")
+        return Response(
+            content=content,
+            media_type=media_type,
+            headers={
+                "X-Content-SHA256": expected_hash,
+                "X-Content-Length-Validated": str(size),
+                "Cache-Control": "private, no-store",
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
+
+    try:
+        return make_response()
+    except LookupError as error:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=404, detail="Planner artifact content was not found.") from error
+    except ValueError as error:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=422, detail="Planner artifact content failed bounded validation.") from error
+
+
+def get_planner_job_artifact_content_route(job_id: str, artifact_id: str) -> Any:
+    """HTTP boundary for bounded job-scoped artifact bytes."""
+
+    return get_planner_job_artifact_content(job_id, artifact_id)
 
 
 def get_planner_job_result(job_id: str, *, repositories: Any = None) -> dict[str, Any]:

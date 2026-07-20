@@ -12,6 +12,7 @@ from mdi_artifact_core import (
     build_volumetric_field,
     build_volumetric_grid,
     build_volumetric_manifest,
+    build_volumetric_structure_overlay,
     decode_volumetric_payload,
     stable_json_dumps,
     stable_volumetric_json,
@@ -24,6 +25,8 @@ from mdi_schemas import Artifact, ArtifactType
 from ..base import BaseToolAdapter
 from ..context import ToolExecutionContext
 from ..errors import ToolExecutionError
+from .structure import _viewer_scene_v1_params, _viewer_scene_v1_payload
+from pymatgen.core import Structure
 
 
 VOLUMETRIC_TOOL_ID = "structure.volumetric_data"
@@ -34,6 +37,7 @@ VOLUMETRIC_ARTIFACT_TYPES = [
     ArtifactType.volumetric_field_json,
     ArtifactType.volumetric_dataset_json,
     ArtifactType.volumetric_manifest_json,
+    ArtifactType.volumetric_structure_overlay_json,
     ArtifactType.volumetric_binary,
     ArtifactType.summary_md,
     ArtifactType.recipe_json,
@@ -50,6 +54,7 @@ class VolumetricAdapterResult:
     binary_artifacts: dict[str, bytes]
     dataset: dict[str, Any]
     manifest: dict[str, Any]
+    structure_overlay: dict[str, Any]
 
 
 class VolumetricDataAdapter(BaseToolAdapter):
@@ -102,6 +107,7 @@ class VolumetricDataAdapter(BaseToolAdapter):
                 structure_binding=binding,
                 origin_fractional=origin_fractional,
             )
+            structure_overlay = _build_structure_overlay(prepared, grid, self.context)
             provenance = _provenance(prepared)
             channels = _coalesce_noncollinear(selected)
             payloads: list[dict[str, Any]] = []
@@ -176,10 +182,12 @@ class VolumetricDataAdapter(BaseToolAdapter):
                 raise VolumetricContractError("VOLUME_ADAPTER_VALIDATION_FAILED", "Generated package failed validation.")
         except VolumetricContractError as exc:
             raise _error("TOOL_CONTRACT_INVALID", "Generated volumetric artifacts failed canonical validation.", exc.code) from exc
-        return VolumetricAdapterResult(prepared, normalized, grid, tuple(payloads), tuple(fields), binaries, dataset, manifest)
+        return VolumetricAdapterResult(prepared, normalized, grid, tuple(payloads), tuple(fields), binaries, dataset, manifest, structure_overlay)
 
     def export(self, result: VolumetricAdapterResult, artifact_types: list[ArtifactType]) -> list[Artifact]:
-        if artifact_types and set(artifact_types) != set(VOLUMETRIC_ARTIFACT_TYPES):
+        historical_types = set(VOLUMETRIC_ARTIFACT_TYPES) - {ArtifactType.volumetric_structure_overlay_json}
+        requested_types = set(artifact_types)
+        if artifact_types and requested_types != set(VOLUMETRIC_ARTIFACT_TYPES) and requested_types != historical_types:
             raise _error("TOOL_INPUT_INVALID", "Volumetric execution requires the complete canonical artifact package.", "artifact_request_mismatch")
         payloads: list[ArtifactPayload] = [
             ArtifactPayload(ArtifactType.volumetric_grid_json, "volumetric_grid.json", stable_volumetric_json(result.grid), "application/json"),
@@ -197,6 +205,7 @@ class VolumetricDataAdapter(BaseToolAdapter):
             ],
             ArtifactPayload(ArtifactType.volumetric_dataset_json, "volumetric_dataset.json", stable_volumetric_json(result.dataset), "application/json"),
             ArtifactPayload(ArtifactType.volumetric_manifest_json, "volumetric_manifest.json", stable_volumetric_json(result.manifest), "application/json"),
+            ArtifactPayload(ArtifactType.volumetric_structure_overlay_json, "volumetric_structure_overlay.json", stable_volumetric_json(result.structure_overlay), "application/json"),
             ArtifactPayload(ArtifactType.summary_md, "summary.md", _summary(result), "text/markdown"),
         ]
         recipe = self.recipe_payload(name="Canonical Volumetric Data", params=result.params, artifact_types=VOLUMETRIC_ARTIFACT_TYPES)
@@ -216,6 +225,36 @@ class VolumetricDataAdapter(BaseToolAdapter):
         })
         _make_repeated_artifact_ids_unique(artifacts)
         return artifacts
+
+
+def _build_structure_overlay(
+    prepared: dict[str, Any], grid: dict[str, Any], context: ToolExecutionContext
+) -> dict[str, Any]:
+    if grid["boundary_conditions"] == ["periodic"] * 3:
+        try:
+            structure = Structure.from_dict(prepared["structure"])
+            viewer_params = _viewer_scene_v1_params({}, context.resource_limits, tool_id=VOLUMETRIC_TOOL_ID)
+            viewer_scene, _manifest = _viewer_scene_v1_payload(
+                "volumetric-structure",
+                structure,
+                params=viewer_params,
+                tool_id=VOLUMETRIC_TOOL_ID,
+                context=context,
+            )
+            return build_volumetric_structure_overlay(grid=grid, viewer_scene=viewer_scene)
+        except (KeyError, TypeError, ValueError, ToolExecutionError):
+            return build_volumetric_structure_overlay(
+                grid=grid,
+                unavailable_reason="periodic_structure_overlay_unavailable",
+            )
+    atom_records = [
+        {
+            "atomic_number": int(item["atomic_number"]),
+            "cartesian_angstrom": list(item["cartesian_angstrom"]),
+        }
+        for item in prepared.get("atom_records", [])
+    ]
+    return build_volumetric_structure_overlay(grid=grid, atom_records=atom_records)
 
 
 def _normalize_params(params: dict[str, Any]) -> dict[str, Any]:

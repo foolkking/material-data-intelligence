@@ -1411,3 +1411,11 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added `VolumetricData`, formal `structure.volumetric_data`, strict params, planner routing, PlanValidator/runtime execution, deterministic binary artifacts, and JSON-only metadata preview.
 - Verified canonical order, units, spin channels, affine grids, hashes, a 128-cubed bounded run, typed cap rejection, network isolation, and no artifact execution.
 - Renderer, slice, isosurface, multi-orbital CUBE, and production-scale inputs above the parser cap remain deferred.
+
+## 2026-07-20 Phase 10J-2 Isosurface Renderer
+
+- Added strict frontend validation and bounded job-scoped raw/gzip/chunked payload retrieval with SHA-256 revalidation.
+- Added application-owned Worker extraction using deterministic marching tetrahedra, periodic logical halo, affine/triclinic coordinates, gradient normals, welding, and mesh caps.
+- Added lazy application-owned Three.js rendering, structure/cell overlay, layers, picking, clipping, projection, camera controls, PNG, fallbacks, and full disposal.
+- Real Phase 10J-1 CHGCAR artifacts rendered in Chromium, Firefox, WebKit, and mobile with zero external requests.
+- Slice, direct volume rendering, vector/complex derivation, and scientific field analysis remain deferred.

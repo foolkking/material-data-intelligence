@@ -1,0 +1,22 @@
+{
+  "browser": {
+    "browser": "chromium",
+    "available": true,
+    "rendered": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "triangles": 48,
+      "vertices": 50,
+      "context": "webgl2"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "worker": "application-owned static Worker",
+  "renderer": "Three.js 0.185.1",
+  "caps": {
+    "maximumLayers": 4,
+    "maximumPayloadBytes": 16777216
+  }
+}

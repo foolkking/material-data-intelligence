@@ -806,3 +806,7 @@
 - Production products for charge/spin density, electrostatic potential, ELF, orbitals, Bader analysis, and volume rendering remain unapproved.
 - A future parser phase must decide whether multi-orbital CUBE and VASP augmentation can be represented without inference or silent loss.
 - Inputs above the 2,097,152-voxel production parser cap require a separately reviewed streaming-storage design.
+# Phase 10J-2 follow-up
+
+- Phase 10J-3 must decide charge/spin product semantics without moving derived-field authority into the generic renderer.
+- Cell-centered dual-grid semantics, slice products, and direct volume GPU caps remain separate future decisions.

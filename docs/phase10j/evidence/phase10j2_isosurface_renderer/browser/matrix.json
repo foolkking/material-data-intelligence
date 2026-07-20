@@ -1,0 +1,44 @@
+[
+  {
+    "browser": "chromium",
+    "available": true,
+    "rendered": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "triangles": 48,
+      "vertices": 50,
+      "context": "webgl2"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "firefox",
+    "available": true,
+    "rendered": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "triangles": 48,
+      "vertices": 50,
+      "context": "webgl2"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "webkit",
+    "available": true,
+    "rendered": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "triangles": 48,
+      "vertices": 50,
+      "context": "webgl2"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

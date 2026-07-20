@@ -1,0 +1,15 @@
+{
+  "active_canvas_cap": 1,
+  "active_context_cap": 1,
+  "active_worker_cap": 1,
+  "demand_rendering": true,
+  "worker_terminated_after_result": true,
+  "worker_cancelled_on_replacement": true,
+  "resize_observer_disconnected": true,
+  "orbit_controls_disposed": true,
+  "listeners_removed": true,
+  "geometries_disposed": true,
+  "materials_disposed": true,
+  "renderer_disposed": true,
+  "context_loss_safe_state": true
+}

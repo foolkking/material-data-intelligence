@@ -1,0 +1,17 @@
+{
+  "source": "Phase 10J-1 parser/adapter evidence",
+  "jobId": "job_volumetric_live",
+  "selectedTool": "structure.volumetric_data",
+  "artifactNames": [
+    "volumetric_grid.json",
+    "volumetric_payload_01.json",
+    "volumetric_field_01.json",
+    "volumetric_dataset.json",
+    "volumetric_manifest.json",
+    "volumetric_field_01.f64.gz",
+    "summary.md",
+    "recipe.json"
+  ],
+  "dataset": "chgcar_augmentation",
+  "payloadPath": "local artifact content endpoint"
+}

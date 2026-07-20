@@ -3839,3 +3839,13 @@ parser, tool, planner route, runtime adapter, renderer, slice, or isosurface.
 - Source-native augmentation sections are not silently merged; unsupported content produces a bounded warning or typed rejection.
 - Canonical payload remains little-endian numeric binary. High-ratio default gzip safely falls back to raw without weakening decompression caps.
 - Renderer, slice, and isosurface ownership remains in a later phase and cannot execute artifact code or alter backend job success.
+
+## 2026-07-20 Phase 10J-2 ADR: validated Worker isosurface consumer
+
+- Isosurfaces consume only independently validated real scalar node fields.
+- Extraction runs in an application-owned module Worker using fixed six-tetrahedra cube decomposition; artifacts cannot select algorithms, Workers, shaders, materials, modules, or URLs.
+- Endpoint-excluded periodic grids close through logical wrapped sampling; non-periodic and triclinic coordinates use the full row step matrix.
+- Normals derive from finite-difference field gradients transformed into Cartesian space; meshes are deterministically welded and capped before WebGL allocation.
+- Browser render caps are stricter than parser caps and over-cap scenes are rejected without truncation.
+- Initial isovalues are visible display heuristics, not scientific analysis or persisted derived fields.
+- Slice and direct volume rendering remain later products with separate contracts and GPU review.

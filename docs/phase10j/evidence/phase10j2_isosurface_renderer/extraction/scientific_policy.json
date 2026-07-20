@@ -1,0 +1,12 @@
+{
+  "canonical_index": "((i * ny) + j) * nz + k",
+  "cube_decomposition": "six fixed tetrahedra",
+  "ambiguity_policy": "fixed topology; no data-dependent diagonal",
+  "periodic_cubes": "nx * ny * nz with logical wrapped samples",
+  "non_periodic_cubes": "(nx - 1) * (ny - 1) * (nz - 1)",
+  "coordinate_formula": "origin + i*step_0 + j*step_1 + k*step_2",
+  "normal_policy": "field gradient transformed to Cartesian; deterministic geometric fallback",
+  "welding": "canonical logical edge identity",
+  "degenerate_triangles": "rejected",
+  "source_field_mutated": false
+}

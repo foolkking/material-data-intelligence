@@ -1,0 +1,11 @@
+{
+  "three": {"version": "0.185.1", "license": "MIT", "copies": 1},
+  "fflate": {"version": "0.8.3", "license": "MIT", "transitive_dependencies": 0, "install_scripts": false},
+  "runtime_network": false,
+  "cdn": false,
+  "remote_module": false,
+  "artifact_worker": false,
+  "artifact_shader": false,
+  "artifact_wasm": false,
+  "artifact_material": false
+}

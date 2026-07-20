@@ -1,0 +1,14 @@
+{
+  "projectionBeforeReset": "perspective",
+  "reset": true,
+  "mobile": {
+    "viewport": [
+      390,
+      844
+    ],
+    "overflow": false,
+    "canvasCount": 1,
+    "triangles": 48,
+    "touch": true
+  }
+}

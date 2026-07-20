@@ -335,6 +335,10 @@ and
 | [`phase10j/phase10j_volumetric_data_contract.md`](phase10j/phase10j_volumetric_data_contract.md) | Real-space volumetric grid, payload, field, dataset, and manifest contract |
 | [`phase10j/phase10j_volumetric_data_contract_evidence.md`](phase10j/phase10j_volumetric_data_contract_evidence.md) | Deterministic fixtures, binary references, replay, and security evidence |
 | [`phase10j/evidence/phase10j_volumetric_data_contract/`](phase10j/evidence/phase10j_volumetric_data_contract/) | Machine-readable Phase 10J evidence and hash inventory |
+| [`phase10j/phase10j2_isosurface_renderer.md`](phase10j/phase10j2_isosurface_renderer.md) | Validated payload-to-Worker-to-Three.js isosurface product architecture |
+| [`phase10j/phase10j2_extraction_and_security.md`](phase10j/phase10j2_extraction_and_security.md) | Canonical indexing, periodic halo, affine mapping, normals, caps, and threat boundary |
+| [`phase10j/phase10j2_browser_evidence_and_readiness.md`](phase10j/phase10j2_browser_evidence_and_readiness.md) | Real J1 artifacts, three-browser/mobile evidence, and readiness decisions |
+| [`phase10j/evidence/phase10j2_isosurface_renderer/`](phase10j/evidence/phase10j2_isosurface_renderer/) | Browser, WebGL, API, performance, screenshot, and security evidence |
 | [`phase10f/phase10f27_structure_viewer_3d_registration.md`](phase10f/phase10f27_structure_viewer_3d_registration.md) | Formal product identity and platform registry ownership |
 | [`phase10f/phase10f27_structure_viewer_3d_tool_contract.md`](phase10f/phase10f27_structure_viewer_3d_tool_contract.md) | Strict input, output, runtime, and artifact contract |
 | [`phase10f/phase10f27_structure_viewer_3d_capabilities.md`](phase10f/phase10f27_structure_viewer_3d_capabilities.md) | Supported and explicitly unsupported capability matrix |

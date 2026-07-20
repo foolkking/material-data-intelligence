@@ -1,0 +1,18 @@
+{
+  "frontend": {
+    "command": "npm --prefix apps/web test -- --run",
+    "result": "39 files, 241 passed"
+  },
+  "backend": {
+    "command": "uv run python -m pytest -q",
+    "result": "713 passed, 24 skipped, 62 warnings"
+  },
+  "typecheck": "passed",
+  "production_build": "passed",
+  "browser_runner": {
+    "command": "node apps/web/test/volumetric-isosurface-browser-evidence.mjs",
+    "result": "Chromium, Firefox, WebKit and 390x844 mobile passed"
+  },
+  "service_backed_local": "unavailable: Docker CLI is not installed; current-head CI is the acceptance gate",
+  "npm_audit": "unavailable: configured npmmirror audit endpoint returned 404 NOT_IMPLEMENTED"
+}

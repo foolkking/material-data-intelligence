@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi.testclient import TestClient
+from fastapi import HTTPException
+import pytest
 
 from mdi_api import create_app
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
@@ -10,6 +12,7 @@ from mdi_api.routers.planner import (
     get_planner_analysis_plan,
     get_planner_job,
     get_planner_job_artifacts,
+    get_planner_job_artifact_content,
     get_planner_job_events,
     get_planner_job_result,
     get_planner_job_tool_calls,
@@ -103,6 +106,22 @@ def test_planner_read_endpoints_expose_execution_provenance_without_mutating() -
     assert len(repos.job_events.list_for_job(ids["job"])) == before_events
     assert len(repos.tool_calls.list_for_job(ids["job"])) == before_tool_calls
     assert len(repos.artifacts.list_for_job(ids["job"])) == before_artifacts
+
+
+def test_planner_job_artifact_content_is_job_scoped_and_hash_validated() -> None:
+    repos, ids, _ = _seed_persisted_plan_repos()
+    runtime = QueueWorkerRuntime(repositories=repos, tool_executor=_fake_executor)
+    assert runtime.handle_job(ids["job"]).status == "completed"
+    artifact = repos.artifacts.list_for_job(ids["job"])[0]
+    response = get_planner_job_artifact_content(ids["job"], artifact["id"], repositories=repos, queue_runtime=runtime)
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "private, no-store"
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert response.headers["x-content-sha256"] == artifact["contentHash"]
+    assert response.body
+    with pytest.raises(HTTPException) as raised:
+        get_planner_job_artifact_content("another_job", artifact["id"], repositories=repos, queue_runtime=runtime)
+    assert raised.value.status_code == 404
 
 
 def _seed_persisted_plan_repos() -> tuple[InMemoryRepositoryBundle, dict[str, str], str]:

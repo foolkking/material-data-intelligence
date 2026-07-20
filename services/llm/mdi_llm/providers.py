@@ -1830,6 +1830,7 @@ def _mock_volumetric_data_plan(request: PlannerRequest) -> dict[str, Any]:
     artifact_types = [
         "volumetric_grid_json", "volumetric_payload_json", "volumetric_field_json",
         "volumetric_dataset_json", "volumetric_manifest_json", "volumetric_binary", "summary_md", "recipe_json",
+        "volumetric_structure_overlay_json",
     ]
     step = {
         "stepId": "step_001",
@@ -1852,6 +1853,7 @@ def _mock_volumetric_data_plan(request: PlannerRequest) -> dict[str, Any]:
         {"name": "volumetric_field_01.json", "type": "volumetric_field_json", "fromStepId": "step_001"},
         {"name": "volumetric_dataset.json", "type": "volumetric_dataset_json", "fromStepId": "step_001"},
         {"name": "volumetric_manifest.json", "type": "volumetric_manifest_json", "fromStepId": "step_001"},
+        {"name": "volumetric_structure_overlay.json", "type": "volumetric_structure_overlay_json", "fromStepId": "step_001"},
         {"name": "volumetric_field_01.f64.gz", "type": "volumetric_binary", "fromStepId": "step_001"},
         {"name": "summary.md", "type": "summary_md", "fromStepId": "step_001"},
         {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_001"},

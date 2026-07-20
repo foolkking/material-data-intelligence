@@ -1,0 +1,42 @@
+{
+  "phase": "10J-2",
+  "baseline_commit": "beeef58523aa63e4f5efc10ab030c88c1a981216",
+  "phase10j1_implementation_commit": "b7a14a870123a743602d04dde5d66dbd166fbdcf",
+  "tool": "structure.volumetric_data",
+  "source": "Phase 10J-1 QueueWorkerRuntime chgcar_augmentation artifacts",
+  "schemas": [
+    "phase10j.volumetric_grid.v1",
+    "phase10j.volumetric_payload.v1",
+    "phase10j.volumetric_field.v1",
+    "phase10j.volumetric_dataset.v1",
+    "phase10j.volumetric_manifest.v1",
+    "phase10j2.volumetric_structure_overlay.v1"
+  ],
+  "payload_encoding": "gzip_binary",
+  "worker": "application-owned module Worker",
+  "extraction": "fixed six-tetrahedra per logical cube",
+  "renderer": "Three.js 0.185.1",
+  "browsers": ["Chromium WebGL2", "Firefox WebGL2", "WebKit WebGL2"],
+  "mobile_viewport": [390, 844],
+  "reference_mesh": {"vertices": 50, "triangles": 48, "canvas_count": 1},
+  "external_requests": 0,
+  "console_errors": 0,
+  "page_errors": 0,
+  "local_checks": {
+    "frontend": "241 passed",
+    "backend": "713 passed, 24 skipped, 62 warnings",
+    "typecheck": "passed",
+    "build": "passed",
+    "uv_lock": "passed",
+    "git_diff_check": "passed",
+    "npm_audit": "unavailable: configured registry returned 404 NOT_IMPLEMENTED"
+  },
+  "real_llm": false,
+  "redaction_status": "no private paths or secrets stored",
+  "markers": [
+    "VIEWER_SCENE_ISOSURFACE_BROWSER_EVIDENCE_PASS",
+    "VIEWER_SCENE_ISOSURFACE_PERFORMANCE_EVIDENCE_PASS",
+    "NO_VOLUMETRIC_ISOSURFACE_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ]
+}

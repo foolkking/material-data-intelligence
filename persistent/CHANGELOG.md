@@ -1830,3 +1830,8 @@
 ### Security
 - Added source/head/line/token/atom/voxel caps, finite-only parsing, strict enums, multi-orbital rejection, safe compression fallback, and no-network/no-execution evidence.
 - Added no dependency and no lockfile change; renderer, isosurface, slice, simulation, and remote sources remain excluded.
+# 2026-07-20 Phase 10J-2
+
+- Implemented the validated volumetric isosurface product with bounded artifact content retrieval, gzip decoding, Worker extraction, and Three.js rendering.
+- Added an inert grid-bound structure overlay artifact, strict frontend mapper, controls, picking, clipping, PNG, lifecycle cleanup, and JSON/manifest fallback.
+- Added extraction, payload, Worker, component, overlay, API, browser, performance, mobile, network, and security evidence.

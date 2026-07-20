@@ -1,0 +1,9 @@
+{
+  "tested": true,
+  "endpoint_policy": "excluded",
+  "halo": "logical only",
+  "wrapped_boundary_cubes": true,
+  "deterministic_mesh_hash": true,
+  "duplicate_endpoint_samples_added": false,
+  "test": "isosurfaceExtraction.test.ts periodic boundary cubes and seam hash"
+}

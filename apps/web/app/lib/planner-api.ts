@@ -135,7 +135,10 @@ export type Artifact = {
   toolCallId?: string;
   type?: string;
   name?: string;
+  downloadUrl?: string;
   storageKey?: string;
+  sizeBytes?: number;
+  contentType?: string;
   contentHash?: string;
   sha256?: string | null;
   storageProvider?: string;
@@ -354,6 +357,31 @@ export async function getPlannerJobToolCalls(jobId: string): Promise<ToolCall[]>
 
 export async function getPlannerJobArtifacts(jobId: string): Promise<Artifact[]> {
   return apiFetch<Artifact[]>(`/planner/jobs/${encodeURIComponent(jobId)}/artifacts`);
+}
+
+export async function getPlannerArtifactContent(
+  jobId: string,
+  artifactId: string,
+  options: Readonly<{ signal?: AbortSignal; maximumBytes?: number }> = {},
+): Promise<ArrayBuffer> {
+  const maximumBytes = options.maximumBytes ?? 67_108_864;
+  if (!Number.isSafeInteger(maximumBytes) || maximumBytes <= 0 || maximumBytes > 67_108_864) {
+    throw new Error("ARTIFACT_CONTENT_LIMIT_INVALID");
+  }
+  const response = await fetch(
+    `${API_BASE}/planner/jobs/${encodeURIComponent(jobId)}/artifacts/${encodeURIComponent(artifactId)}/content`,
+    { method: "GET", signal: options.signal, credentials: "omit" },
+  );
+  if (!response.ok) throw new Error("ARTIFACT_CONTENT_LOAD_FAILED");
+  const declared = Number(response.headers.get("content-length") ?? response.headers.get("x-content-length-validated"));
+  if (!Number.isSafeInteger(declared) || declared <= 0 || declared > maximumBytes) {
+    throw new Error("ARTIFACT_CONTENT_LIMIT_EXCEEDED");
+  }
+  const content = await response.arrayBuffer();
+  if (content.byteLength !== declared || content.byteLength > maximumBytes) {
+    throw new Error("ARTIFACT_CONTENT_BYTE_MISMATCH");
+  }
+  return content;
 }
 
 export async function getPlannerJobResult(jobId: string): Promise<JobResult> {

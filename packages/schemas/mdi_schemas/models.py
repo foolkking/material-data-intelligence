@@ -38,6 +38,7 @@ class ArtifactType(str, Enum):
     volumetric_field_json = "volumetric_field_json"
     volumetric_dataset_json = "volumetric_dataset_json"
     volumetric_manifest_json = "volumetric_manifest_json"
+    volumetric_structure_overlay_json = "volumetric_structure_overlay_json"
     volumetric_binary = "volumetric_binary"
     metrics_json = "metrics_json"
     table_json = "table_json"

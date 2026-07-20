@@ -1441,3 +1441,8 @@ structure/lattice binding, and inert security metadata are validated.
 This family grants no parser, adapter, tool, planner, runtime, renderer,
 isosurface, slice, script, URL, HTML, JavaScript, CSS, shader, object
 deserialization, or external-resource authority.
+# Phase 10J-2 Volumetric Structure Overlay
+
+`phase10j2.volumetric_structure_overlay.v1` is an additive, inert, renderer-consumer artifact. It binds exactly to one validated `phase10j.volumetric_grid.v1` by `grid_id` and `grid_content_hash`. Fully periodic sources may embed one independently validated canonical viewer scene; fully non-periodic sources may carry bounded `{atomic_number, cartesian_angstrom}` records. The artifact is not part of `phase10j.volumetric_manifest.v1` schema identity and does not modify the canonical grid, field, payload, dataset, or manifest contracts.
+
+The overlay security object is the canonical Phase 10J inert security declaration. It cannot contain executable content, HTML/CSS, JavaScript, shaders, renderer code, URLs, external assets, callbacks, or arbitrary appearance data. Missing overlay context is a supported renderer state and never changes backend job success.
