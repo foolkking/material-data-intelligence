@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10J-2：Isosurface Renderer
 
 进入 Phase 10J-2：Isosurface Renderer。
@@ -3040,6 +3040,17 @@ Phase 10J-3：Charge / Spin Density Product
 先读取真实 Phase 10J-1 Result、volumetric contracts、binary payload pipeline、现有 Three.js viewer infrastructure和Browser evidence runners，输出 Pre-Implementation Audit；然后完成payload loading、Worker extraction、topology-consistent isosurface、periodic halo、triclinic coordinates、gradient normals、Three.js scene、structure overlay、picking、inspector、clipping、PNG、fallback、browser matrix、performance、security、commit和CI闭环。
 
 不得把本阶段扩展为volume ray casting、slice、Bader analysis或完整charge/spin-density科学产品。
+
+### Phase 10J-2 完成记录
+
+* 完成时间：2026-07-20 21:04:31 +08:00
+* 实现提交：`f6edcac347f2f7fffdbda47b1f72ad493c8edae8`
+* 修改文件：volumetric overlay contract/adapter/API content route、payload loader、Worker isosurface extraction、Three.js renderer/UI、tests、browser evidence、docs、persistent records、approved `fflate` runtime dependency。
+* 修改摘要：完成真实 Phase 10J-1 artifact 到受控 content API、严格验证、gzip payload、application-owned Worker、periodic/affine isosurface、structure overlay、picking/inspector、clipping、camera、PNG、fallback、lifecycle、accessibility 和 JSON/manifest fallback 的正式产品链路。
+* 本地测试：frontend `39 files, 241 passed`；backend `713 passed, 24 skipped, 62 warnings`；focused J2/API `5 passed`；typecheck、build、`uv lock --check`、`git diff --check` 通过。
+* 浏览器证据：Chromium/Firefox/WebKit WebGL2 均通过，单 canvas、50 vertices、48 triangles、零 console/page errors、零外部请求；390x844 mobile 通过。
+* 安全/依赖：`NO_VOLUMETRIC_ISOSURFACE_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`；Three `0.185.1` 单份；`fflate 0.8.3` 为既有锁定包的直接 runtime 依赖；npm audit 因配置 registry 返回 `404 NOT_IMPLEMENTED`，如实记录 unavailable。
+* CI：current-HEAD run `29744316126` success；unit、frontend typecheck/build、service-backed PostgreSQL/Redis/MinIO、no-skipped 全部 success；origin/master 与实现 HEAD 一致，提交后工作区 clean。
 
 
 ---END---

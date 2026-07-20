@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-07-20 - Phase 10J-2 Isosurface Renderer
+
+- Added a validated volumetric artifact consumer with a job-scoped bounded content API, gzip/raw payload loading, application-owned Worker extraction, periodic halo/seam handling, affine coordinates, deterministic welded meshes, gradient normals, and typed security/resource limits.
+- Added the real Three.js isosurface product with structure/cell/bond overlays, signed and multi-layer controls, picking/inspector, clipping, camera controls, local PNG export, context/lifecycle cleanup, mobile/accessibility fallback, and inert metadata/manifest views.
+- Closed local frontend/backend/build/browser/security evidence and current-head CI run `29744316126`; local service-backed testing requires Docker, and npm audit remains unavailable at the configured registry endpoint.
+
 ## 2026-07-17 - Phase 10I-3 Band-BZ Linked View
 
 - Added a strict immutable reciprocal link model that binds existing phonon band and BZ/k-path artifacts by scientific identities and exact ordered geometry, never by display labels.

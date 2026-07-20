@@ -1414,6 +1414,8 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 
 ## 2026-07-20 Phase 10J-2 Isosurface Renderer
 
+- Implementation commit `f6edcac347f2f7fffdbda47b1f72ad493c8edae8` passed local frontend `241` tests, backend `713 passed, 24 skipped`, typecheck/build, real Chromium/Firefox/WebKit WebGL2 and mobile evidence; current-head CI run `29744316126` passed unit, frontend/typecheck/build, PostgreSQL/Redis/MinIO service-backed integration, and no-skipped gates.
+
 - Added strict frontend validation and bounded job-scoped raw/gzip/chunked payload retrieval with SHA-256 revalidation.
 - Added application-owned Worker extraction using deterministic marching tetrahedra, periodic logical halo, affine/triclinic coordinates, gradient normals, welding, and mesh caps.
 - Added lazy application-owned Three.js rendering, structure/cell overlay, layers, picking, clipping, projection, camera controls, PNG, fallbacks, and full disposal.

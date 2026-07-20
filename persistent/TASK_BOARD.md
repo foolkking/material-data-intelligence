@@ -2081,8 +2081,8 @@
 - [x] Production bounded VASP/CUBE parsers and `structure.volumetric_data` adapter integration completed in Phase 10J-1.
 - [ ] Isosurface, slice, and volume rendering remain separately reviewed future phases.
 - [ ] Review Phase 10J-2 only as a consumer of validated canonical artifacts; do not weaken parser caps or execute artifact code.
-# Phase 10J-2 Isosurface Renderer
+# Phase 10J-2 Isosurface Renderer Completed
 
-- Status: implementation and local browser evidence complete; current-head CI closure pending.
+- Status: completed; implementation commit `f6edcac347f2f7fffdbda47b1f72ad493c8edae8` and completion-record CI closure remain to be archived after verification.
 - Delivered: validated scalar/node payload consumer, application Worker extraction, periodic/affine mesh mapping, Three.js product UI, structure overlay, fallbacks, and three-browser/mobile evidence.
 - Deferred: slice, direct volume, cell-centered/vector/complex fields, Bader/field analysis, and remote assets.

@@ -287,3 +287,142 @@ Implementation gates pass, but the task block may be archived only after complet
 * 完成记录提交：`f0493a9a8eb4774e79753326644076477a3fe836`
 * current-HEAD CI：run `29634177478` success
 * 归档结论：VASP/CUBE parser、canonical conversion、binary artifacts、Registry/Planner/Runtime、metadata preview、128^3 performance、security、完整回归、PostgreSQL/Redis/MinIO service-backed、no-skipped、implementation CI 和 completion-record CI 均闭合；允许删除 Phase 10J-1 `TASKS.md` block，历史结果保留于本文件。
+
+# Phase 10J-2 Isosurface Renderer Result
+
+## 1. Conclusion
+
+PASS
+
+## 2. Baseline
+
+* Phase 10J-1 implementation commit: `b7a14a870123a743602d04dde5d66dbd166fbdcf`
+* initial HEAD: `beeef58523aa63e4f5efc10ab030c88c1a981216`
+* branch: `master`
+* initial status: clean
+* final implementation HEAD: `f6edcac347f2f7fffdbda47b1f72ad493c8edae8`
+* final status after implementation commit: clean
+
+## 3. Pre-Implementation Audit
+
+* Consumed real Phase 10J-1 CHGCAR augmentation runtime artifacts, including gzip payload and canonical metadata.
+* Reused Three.js `0.185.1`; selected an application-owned module Worker and direct Three.js engine; no new renderer library was introduced.
+* Added the missing bounded job-scoped artifact content API so browser loading remains application-controlled and hash-checked.
+
+## 4. Product Integration
+
+* Tool identity remains `structure.volumetric_data`; the renderer is a client consumer and does not change backend job semantics.
+* PlannerWorkbench now routes validated volumetric artifact bundles to Isosurface/Metadata JSON/Manifest tabs.
+* Compatibility and fallback states retain inert metadata/JSON access; renderer unavailable or invalid payload does not fail the job.
+
+## 5. Payload Pipeline
+
+* Supports controlled inline/history payloads, job-scoped JSON/binary content, raw bytes, gzip bytes, and bounded chunk assembly.
+* Validates content length, SHA-256, dtype, endianness, finite values, voxel/payload caps, and exact schema keys before Worker initialization.
+
+## 6. Extraction
+
+* Fixed six-tetrahedra-per-cube extraction with deterministic `ijkc_component_fastest` indexing, interpolation, edge welding, gradient normals, and typed degenerate/empty/cap errors.
+* Uses application-owned Worker transferables, revision cancellation, stale-result rejection, and timeout cleanup.
+
+## 7. Grid / Coordinates
+
+* Supports node-centered periodic logical halo and non-periodic affine/triclinic coordinates using the canonical row-vector step matrix and origin.
+* Cell-center, vector, and complex rendering remain explicitly deferred.
+
+## 8. Periodic Seam
+
+* Periodic boundary cubes wrap logically without duplicating endpoint samples; seam fixture and deterministic mesh hash tests pass.
+* Evidence records `periodic_seam.json` and `deterministic_mesh_hash: true`.
+
+## 9. Layers / Controls
+
+* Field selector, deterministic positive/negative layer heuristics, manual bounded isovalue, units, opacity, visibility, and four-layer cap are implemented.
+* Empty surface, unsupported field, malformed payload, and over-cap states remain typed and visible.
+
+## 10. Three.js Renderer
+
+* Real Three.js WebGL renderer with surface meshes, structure atoms, bonds, unit cell, camera/orbit controls, clipping, metrics, and demand rendering.
+* Structure overlay uses validated canonical scene data; no artifact code, shader, URL, texture, or callback is interpreted.
+
+## 11. Interaction
+
+* Surface picking exposes bounded surface index/position/value and structure overlay picking preserves canonical site identity.
+* Inspector and accessible summaries expose field/layer/render metrics without claiming unsupported chemistry.
+
+## 12. Export / Fallback
+
+* Local PNG export is bounded and uses the current camera/view; JSON/manifest/metadata fallbacks remain available.
+* WebGL unavailable, Worker failure, invalid payload, empty surface, over-cap, and context loss produce safe typed UI states.
+
+## 13. Lifecycle
+
+* One active canvas/context/Worker cap; demand render loop; Worker cancellation and termination; ResizeObserver, controls, listeners, geometry, materials, renderer, and stale objects are disposed.
+
+## 14. Browser Evidence
+
+* Chromium, Firefox, WebKit: WebGL2 rendered, one canvas, 50 vertices, 48 triangles, zero console/page errors.
+* Mobile `390x844`: canvas rendered, touch setup passed, no horizontal overflow.
+* Evidence directory: `docs/phase10j/evidence/phase10j2_isosurface_renderer/`.
+* Markers: `VIEWER_SCENE_ISOSURFACE_BROWSER_EVIDENCE_PASS`, `VIEWER_SCENE_ISOSURFACE_PERFORMANCE_EVIDENCE_PASS`, `NO_VOLUMETRIC_ISOSURFACE_EXTERNAL_NETWORK_REQUESTS`, `NO_SECRET_PATTERN_HITS`.
+
+## 15. Accessibility
+
+* Renderer region, status announcements, controls, field/layer summaries, fallback text, focusable actions, mobile layout, and reduced-motion-compatible demand rendering are covered.
+
+## 16. Performance / Memory
+
+* Payload maximum is 16 MiB for the browser consumer; maximum layers is 4; renderer evidence is finite and bounded.
+* Resource cleanup evidence confirms one active canvas/context/Worker and disposal on replacement/unmount.
+
+## 17. Security
+
+* Artifact JavaScript/HTML/CSS/shader/URL/module/callback execution is blocked by strict validation and whitelist mapping.
+* No external runtime request, remote asset, or secret pattern was found. npm audit is unavailable because the configured mirror returns `404 NOT_IMPLEMENTED`; lock/tree review passed and no new transitive package was added.
+
+## 18. Tests
+
+* Frontend: `39 files, 241 passed`.
+* Backend: `713 passed, 24 skipped, 62 warnings`.
+* Focused J2/API tests: `5 passed`.
+* Typecheck, production build, `uv lock --check`, and `git diff --check`: passed.
+* Local service-backed: unavailable because Docker CLI is absent; CI service-backed and no-skipped: passed.
+
+## 19. Evidence
+
+* Real artifact/API capture, browser matrix, interaction/accessibility/network/console, periodic seam, lifecycle, performance, security, screenshots, and test captures are committed in the evidence directory.
+
+## 20. Files
+
+* Implementation: `apps/web/app/components/volumetric-viewer/`, API content route, payload API, adapter and artifact contract.
+* Tests/runner: volumetric frontend tests, `tests/test_phase10j2_volumetric_overlay.py`, `apps/web/test/volumetric-isosurface-browser-evidence.mjs`.
+* Docs/persistent/evidence: Phase 10J-2 docs, shared schema/index, persistent records, and committed screenshots/captures.
+* Dependency: direct exact `fflate 0.8.3`; lockfile promotion only; Three remains `0.185.1`.
+
+## 21. Explicitly Deferred
+
+Volume ray casting, slices, cell-centered fields, vector/complex derived fields, Bader analysis, charge/spin-specific products, potential alignment, wavefunction/orbital rendering, time-dependent volume, mixed-periodicity products, mesh export, field editing, external APIs, notebooks/scripts, artifact code, and remote assets.
+
+## 22. Checks
+
+* `git diff --check`: passed.
+* `uv lock --check`: passed.
+* npm dependency tree: one Three `0.185.1`, fflate `0.8.3`.
+* `npm audit`: unavailable at configured registry (`404 NOT_IMPLEMENTED`).
+* Frontend tests/typecheck/build/backend pytest/browser runner/security scans: passed as recorded above.
+
+## 23. Commit / CI
+
+* commit: `f6edcac347f2f7fffdbda47b1f72ad493c8edae8` (`Add volumetric isosurface renderer`).
+* CI run: `29744316126`, current HEAD exact match.
+* unit: success; frontend typecheck/build: success; service-backed PostgreSQL/Redis/MinIO: success; no-skipped assertion: success.
+* origin/master: matched implementation HEAD; implementation worktree: clean.
+
+## 24. Readiness
+
+* Volumetric contracts, VASP/CUBE parser/adapter, payloads, scalar isosurface compatibility, Worker extraction, periodic halo, triclinic mapping, layers, Three.js renderer, overlay, picking, inspector, clipping, PNG, browser matrix, mobile, accessibility, performance, security: READY.
+* Charge/spin density product, volume ray casting, full volumetric analysis platform: NOT_IMPLEMENTED/PARTIAL_READY as applicable.
+
+## 25. Whether Allowed to Enter Next Phase
+
+允许进入 Phase 10J-3 only after this completion record is committed, current-head CI for that record succeeds, and the verified task block is archived from `TASKS.md`. No trajectory, phonon, Brillouin-zone, or volumetric expansion is started by this result.

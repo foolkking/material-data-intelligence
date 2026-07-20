@@ -808,5 +808,7 @@
 - Inputs above the 2,097,152-voxel production parser cap require a separately reviewed streaming-storage design.
 # Phase 10J-2 follow-up
 
+- Closed: the validated scalar isosurface renderer consumes real Phase 10J-1 runtime artifacts and has Chromium/Firefox/WebKit/mobile evidence plus CI run `29744316126`. Local service-backed execution remains unavailable without Docker; npm audit remains unavailable because the configured mirror returns `404 NOT_IMPLEMENTED`.
+
 - Phase 10J-3 must decide charge/spin product semantics without moving derived-field authority into the generic renderer.
 - Cell-centered dual-grid semantics, slice products, and direct volume GPU caps remain separate future decisions.
