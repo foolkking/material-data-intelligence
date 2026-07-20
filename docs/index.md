@@ -339,6 +339,11 @@ and
 | [`phase10j/phase10j2_extraction_and_security.md`](phase10j/phase10j2_extraction_and_security.md) | Canonical indexing, periodic halo, affine mapping, normals, caps, and threat boundary |
 | [`phase10j/phase10j2_browser_evidence_and_readiness.md`](phase10j/phase10j2_browser_evidence_and_readiness.md) | Real J1 artifacts, three-browser/mobile evidence, and readiness decisions |
 | [`phase10j/evidence/phase10j2_isosurface_renderer/`](phase10j/evidence/phase10j2_isosurface_renderer/) | Browser, WebGL, API, performance, screenshot, and security evidence |
+| [`phase10j/phase10j3_charge_spin_density_product.md`](phase10j/phase10j3_charge_spin_density_product.md) | Electron, signed charge, collinear spin, derived fields, integrals, and product boundary |
+| [`phase10j/phase10j3_charge_spin_density_semantics.md`](phase10j/phase10j3_charge_spin_density_semantics.md) | Quantity, unit, sign, VASP channel, and augmentation semantics |
+| [`phase10j/phase10j3_charge_spin_density_security_and_evidence.md`](phase10j/phase10j3_charge_spin_density_security_and_evidence.md) | Product security, caps, browser, performance, and evidence closure |
+| [`phase10j/phase10j3_readiness_matrix.md`](phase10j/phase10j3_readiness_matrix.md) | Phase 10J-3 readiness decisions and deferred scope |
+| [`phase10j/evidence/phase10j3_charge_spin_density_product/`](phase10j/evidence/phase10j3_charge_spin_density_product/) | Live runtime artifacts, scientific captures, browser matrix, screenshots, and security evidence |
 | [`phase10f/phase10f27_structure_viewer_3d_registration.md`](phase10f/phase10f27_structure_viewer_3d_registration.md) | Formal product identity and platform registry ownership |
 | [`phase10f/phase10f27_structure_viewer_3d_tool_contract.md`](phase10f/phase10f27_structure_viewer_3d_tool_contract.md) | Strict input, output, runtime, and artifact contract |
 | [`phase10f/phase10f27_structure_viewer_3d_capabilities.md`](phase10f/phase10f27_structure_viewer_3d_capabilities.md) | Supported and explicitly unsupported capability matrix |

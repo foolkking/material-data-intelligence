@@ -203,7 +203,7 @@ tools:
     stage: mvp
     adapter: VolumetricDataAdapter
     display_target: volumetric
-    notes: "Parse one bounded VASP CHGCAR/CHG/LOCPOT/ELFCAR/PARCHG or single-dataset Gaussian CUBE source into validated inert canonical grid, field, binary payload, dataset, manifest, bounded structure overlay, summary, and recipe artifacts. No renderer, isosurface, slice, simulation, artifact code, external asset, or network access is included."
+    notes: "Parse one bounded VASP CHGCAR/CHG/LOCPOT/ELFCAR/PARCHG or single-dataset Gaussian CUBE source into validated inert canonical grid, source and allowlisted collinear-derived fields, binary payload, dataset, manifest, bounded structure overlay, summary, and recipe artifacts. The application-owned client can consume compatible electron/charge/spin fields as bounded isosurfaces; artifacts contain no renderer, shader, code, external asset, or network authority. Slice, direct volume, Bader/atomic charge, DFT, and arbitrary density differences are unsupported."
     artifact_types:
       - volumetric_grid_json
       - volumetric_payload_json

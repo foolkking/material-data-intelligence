@@ -2086,3 +2086,10 @@
 - Status: completed and verified; implementation commit `f6edcac347f2f7fffdbda47b1f72ad493c8edae8` passed CI run `29744316126`, completion record `c7669619b1444076bc47e8f084ddc2d5df5ce783` passed CI run `29745406355`, and the queue block is archived in `reslusts.md`.
 - Delivered: validated scalar/node payload consumer, application Worker extraction, periodic/affine mesh mapping, Three.js product UI, structure overlay, fallbacks, and three-browser/mobile evidence.
 - Deferred: slice, direct volume, cell-centered/vector/complex fields, Bader/field analysis, and remote assets.
+
+## Phase 10J-3 Charge / Spin Density Product
+
+- [x] Add electron, explicit signed charge, source-native spin, and validated collinear derived spin channels.
+- [x] Add product model, integrals, provenance/relationship validation, paired thresholds, and scientific warnings.
+- [x] Capture live runtime artifacts and Chromium/Firefox/WebKit/mobile evidence with zero external requests.
+- [ ] Phase 10J-4 potential compatibility and product remain separate.

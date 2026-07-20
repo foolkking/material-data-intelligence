@@ -1,0 +1,29 @@
+{
+  "browser": {
+    "browser": "chromium",
+    "available": true,
+    "rendered": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "triangles": 24,
+      "vertices": 34,
+      "context": "webgl2",
+      "product": "Collinear charge / spin densityready",
+      "mode": "spin_difference",
+      "layerCount": 2,
+      "formula": "Derived formulas: COLLINEAR_SPIN_UP_V1, COLLINEAR_SPIN_DOWN_V1",
+      "integralRows": 4
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "worker": "application-owned static Worker",
+  "renderer": "Three.js 0.185.1",
+  "fields": 4,
+  "derivedFields": 2,
+  "caps": {
+    "maximumLayers": 4,
+    "maximumPayloadBytes": 16777216
+  }
+}

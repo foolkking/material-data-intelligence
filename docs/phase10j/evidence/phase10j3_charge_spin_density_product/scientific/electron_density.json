@@ -1,0 +1,13 @@
+{
+  "dataset_hash": "31d2a3044b937042493b978eefb462059955e8a6dfdcb37acfc736b48d1a914b",
+  "fields": [
+    {
+      "integral": 36.0,
+      "name": "total",
+      "quantity": "electron_density",
+      "unit": "electron/angstrom^3"
+    }
+  ],
+  "fixture": "CHGCAR",
+  "warnings": []
+}

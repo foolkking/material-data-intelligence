@@ -1812,16 +1812,18 @@ def _should_generate_volumetric_data(
         return False
     prompt = request.user_prompt.lower()
     unsupported = (
-        "isosurface", "iso-surface", "slice", "render", "viewer", "3d", "three.js", "webgl",
-        "run vasp", "calculate density", "trajectory", "phonon", "brillouin", "defect", "surface", "slab",
-        "等值面", "切片", "渲染", "查看器", "计算电荷密度", "运行 vasp", "轨迹", "声子", "布里渊",
+        "slice", "direct volume", "ray cast", "bader", "atomic charge", "charge partition",
+        "run vasp", "calculate density", "calculate charge", "electrostatic potential", "trajectory", "phonon", "brillouin", "defect", "slab",
+        "切片", "体渲染", "bader", "原子电荷", "电荷分区", "计算电荷密度", "运行 vasp", "静电势", "轨迹", "声子", "布里渊",
     )
     if any(marker in prompt for marker in unsupported):
         return False
     markers = (
         "parse chgcar", "parse locpot", "parse elfcar", "parse parchg", "parse cube",
         "normalize volumetric", "volumetric data artifact", "canonical volumetric", "import charge density",
+        "charge density", "electron density", "spin density", "spin difference", "isosurface", "iso-surface", "volumetric viewer", "render density",
         "解析 chgcar", "解析 locpot", "解析 elfcar", "解析 parchg", "解析 cube", "规范化体数据", "导入体数据",
+        "电荷密度", "电子密度", "自旋密度", "自旋差", "等值面", "体数据查看器", "渲染密度",
     )
     return any(marker in prompt for marker in markers)
 
@@ -1836,7 +1838,7 @@ def _mock_volumetric_data_plan(request: PlannerRequest) -> dict[str, Any]:
         "stepId": "step_001",
         "toolId": "structure.volumetric_data",
         "purpose": "Parse one bounded supported source into validated inert canonical volumetric artifacts.",
-        "reason": "The request asks to normalize an available bounded volumetric source without rendering or external execution.",
+        "reason": "The request asks to validate an available bounded volumetric source for the application-owned metadata or density product without external execution.",
         "inputRefs": [{"refType": "normalized_object", "ref": "volumetric", "objectType": "VolumetricData"}],
         "params": {
             "format": "auto", "quantity_hint": "auto", "field_selection": "all_supported",

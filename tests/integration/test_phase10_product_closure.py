@@ -113,7 +113,7 @@ def test_phase10_determinism_capability_and_compatibility_closure(tmp_path: Path
     assert VIEWER_SCHEMA_COMPATIBILITY["phase10f18.viewer_scene.v2"]["status"] == "current"
     assert VIEWER_SCHEMA_COMPATIBILITY["phase10f18.viewer_scene.v2"]["new_artifact_generation_allowed"] is True
 
-    for prompt in ("Animate this trajectory", "Show phonon animation", "Render volumetric charge density", "Edit this structure"):
+    for prompt in ("Animate this trajectory", "Show phonon animation", "Run Bader atomic charge analysis", "Edit this structure"):
         plan = _planner_plan(prompt, _structure_profile())
         assert plan["steps"][0]["toolId"] != "structure.viewer_3d"
 

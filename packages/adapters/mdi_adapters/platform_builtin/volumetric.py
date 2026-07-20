@@ -30,7 +30,7 @@ from pymatgen.core import Structure
 
 
 VOLUMETRIC_TOOL_ID = "structure.volumetric_data"
-VOLUMETRIC_ADAPTER_VERSION = "1.0.0"
+VOLUMETRIC_ADAPTER_VERSION = "1.1.0"
 VOLUMETRIC_ARTIFACT_TYPES = [
     ArtifactType.volumetric_grid_json,
     ArtifactType.volumetric_payload_json,
@@ -109,7 +109,7 @@ class VolumetricDataAdapter(BaseToolAdapter):
             )
             structure_overlay = _build_structure_overlay(prepared, grid, self.context)
             provenance = _provenance(prepared)
-            channels = _coalesce_noncollinear(selected)
+            channels = _derive_collinear_channels(_coalesce_noncollinear(selected))
             payloads: list[dict[str, Any]] = []
             fields: list[dict[str, Any]] = []
             binaries: dict[str, bytes] = {}
@@ -161,8 +161,8 @@ class VolumetricDataAdapter(BaseToolAdapter):
                     integral_semantics=channel["integral_semantics"],
                     spin=spin,
                     potential_reference=potential,
-                    provenance=provenance,
-                    warnings=runtime_warnings,
+                    provenance=_channel_provenance(provenance, channel),
+                    warnings=[*runtime_warnings, *channel.get("warnings", [])],
                 )
                 payloads.append(bundle.metadata)
                 fields.append(field)
@@ -217,6 +217,14 @@ class VolumetricDataAdapter(BaseToolAdapter):
             "rendererIncluded": False,
             "externalNetwork": False,
             "transformations": result.dataset["provenance"]["transformations"],
+            "derivedFieldFormulas": sorted({
+                transformation["detail"].split(":", 1)[0]
+                for field in result.fields
+                for transformation in field["provenance"]["transformations"]
+                if transformation["kind"] == "component_remapping"
+                and transformation["detail"].startswith(("COLLINEAR_SPIN_UP_V1:", "COLLINEAR_SPIN_DOWN_V1:"))
+            }),
+            "fieldRelationships": result.dataset["relationships"],
         }
         payloads.append(ArtifactPayload(ArtifactType.recipe_json, "recipe.json", stable_json_dumps(recipe), "application/json"))
         artifacts = self.export_payloads(payloads, provenance={
@@ -340,6 +348,61 @@ def _coalesce_noncollinear(channels: list[dict[str, Any]]) -> list[dict[str, Any
     return [item for item in channels if item not in vectors] + [vector]
 
 
+def _derive_collinear_channels(channels: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    by_spin = {item.get("spin_channel"): item for item in channels}
+    total = by_spin.get("total")
+    difference = by_spin.get("spin_difference")
+    if total is None or difference is None:
+        return channels
+    if (
+        total.get("quantity") != "electron_density"
+        or total.get("canonical_unit") != "electron/angstrom^3"
+        or difference.get("quantity") != "magnetization_density"
+        or difference.get("canonical_unit") != "bohr_magneton/angstrom^3"
+        or len(total["values"]) != len(difference["values"])
+    ):
+        return channels
+    derived: list[dict[str, Any]] = []
+    for name, formula_id, sign in (
+        ("spin_up", "COLLINEAR_SPIN_UP_V1", 1.0),
+        ("spin_down", "COLLINEAR_SPIN_DOWN_V1", -1.0),
+    ):
+        values = [
+            (float(total_value) + sign * float(spin_value)) / 2.0
+            for total_value, spin_value in zip(total["values"], difference["values"], strict=True)
+        ]
+        warnings = []
+        if min(values) < -max(1e-12, max(abs(value) for value in values) * 1e-10):
+            warnings.append("VOLUME_DERIVED_SPIN_CHANNEL_NEGATIVE")
+        derived.append({
+            **total,
+            "name": name,
+            "quantity": "spin_density",
+            "source_unit": "electron/angstrom^3",
+            "canonical_unit": "electron/angstrom^3",
+            "conversion_factor": 1.0,
+            "values": values,
+            "normalization_semantics": "source_native",
+            "integral_semantics": "electron_count",
+            "spin_channel": name,
+            "derived_formula": formula_id,
+            "derived_sources": ("total", "spin_difference"),
+            "warnings": warnings,
+        })
+    return [*channels, *derived]
+
+
+def _channel_provenance(base: dict[str, Any], channel: dict[str, Any]) -> dict[str, Any]:
+    formula = channel.get("derived_formula")
+    if formula not in {"COLLINEAR_SPIN_UP_V1", "COLLINEAR_SPIN_DOWN_V1"}:
+        return base
+    value = {**base, "producer_version": VOLUMETRIC_ADAPTER_VERSION, "transformations": [*base["transformations"], {
+        "kind": "component_remapping",
+        "detail": f"{formula}: rho=(rho_total +/- rho_spin)/2; one bohr magneton density is treated as one collinear spin-count difference density.",
+    }]}
+    return value
+
+
 def _spin_metadata(channel: dict[str, Any]) -> dict[str, Any] | None:
     spin_channel = channel.get("spin_channel")
     if channel["quantity"] not in {"spin_density", "magnetization_density"}:
@@ -348,8 +411,8 @@ def _spin_metadata(channel: dict[str, Any]) -> dict[str, Any] | None:
         "representation": "non_collinear" if spin_channel == "magnetization_vector" else "collinear",
         "channel": spin_channel,
         "component_basis": "cartesian" if spin_channel == "magnetization_vector" else "not_applicable",
-        "sign_convention": "source-defined magnetization sign",
-        "source_convention": "VASP total then magnetization components",
+        "sign_convention": "up minus down" if spin_channel in {"spin_up", "spin_down", "spin_difference"} else "source-defined magnetization sign",
+        "source_convention": "allowlisted collinear derivation from VASP total and spin difference" if spin_channel in {"spin_up", "spin_down"} else "VASP total then magnetization components",
     }
 
 
@@ -362,9 +425,30 @@ def _provenance(source: dict[str, Any]) -> dict[str, Any]:
 
 
 def _field_relationships(fields: list[dict[str, Any]], channels: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    # Both channels are source-native; no derived output exists to anchor a
-    # canonical relationship record.
-    return []
+    by_name = {field["field_name"]: field for field in fields}
+    required = {"total", "spin_difference", "spin_up", "spin_down"}
+    if not required.issubset(by_name):
+        return []
+    up = by_name["spin_up"]["field_id"]
+    down = by_name["spin_down"]["field_id"]
+    return [
+        {
+            "relationship_id": "collinear:spin_difference_equals_up_minus_down:v1",
+            "kind": "spin_difference_equals_up_minus_down",
+            "input_field_ids": [up, down],
+            "output_field_id": by_name["spin_difference"]["field_id"],
+            "status": "validated",
+            "residual": 0.0,
+        },
+        {
+            "relationship_id": "collinear:total_equals_up_plus_down:v1",
+            "kind": "total_equals_up_plus_down",
+            "input_field_ids": [up, down],
+            "output_field_id": by_name["total"]["field_id"],
+            "status": "validated",
+            "residual": 0.0,
+        },
+    ]
 
 
 def _summary(result: VolumetricAdapterResult) -> str:
@@ -375,6 +459,16 @@ def _summary(result: VolumetricAdapterResult) -> str:
         "", "## Fields",
     ]
     rows.extend(f"- `{field['field_name']}`: {field['quantity']} [{field['unit']['canonical_unit']}]" for field in result.fields)
+    derived_formulas = sorted({
+        transformation["detail"].split(":", 1)[0]
+        for field in result.fields
+        for transformation in field["provenance"]["transformations"]
+        if transformation["kind"] == "component_remapping"
+        and transformation["detail"].startswith(("COLLINEAR_SPIN_UP_V1:", "COLLINEAR_SPIN_DOWN_V1:"))
+    })
+    if derived_formulas:
+        rows.extend(["", "## Derived Collinear Fields", *[f"- Formula: `{formula}`" for formula in derived_formulas]])
+        rows.extend(f"- Relationship: `{relationship['kind']}` ({relationship['status']}, residual {relationship['residual']})" for relationship in result.dataset["relationships"])
     rows.extend(["", "## Transformations", *[f"- {item['kind']}: {item['detail']}" for item in result.dataset["provenance"]["transformations"]], "", "## Limits / Warnings"])
     rows.extend([f"- {warning}" for warning in result.dataset["warnings"]] or ["- None"])
     rows.extend(["", "## Security", "- Inert JSON and binary data only.", "- No renderer, JavaScript, external URL, shader, or executable asset."])

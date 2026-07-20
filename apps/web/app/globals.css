@@ -722,6 +722,19 @@ pre {
 .volumetric-isosurface-surface .viewer-preview-grid { align-items: start; }
 .volumetric-isosurface-surface select,
 .volumetric-isosurface-surface input { max-width: 100%; }
+.volumetric-product-panel { display: grid; gap: 10px; min-width: 0; margin: 10px 0; padding: 12px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.volumetric-product-panel > div:first-child { display: flex; justify-content: space-between; gap: 12px; }
+.volumetric-product-panel table { width: 100%; min-width: 540px; border-collapse: collapse; font-size: 0.82rem; }
+.volumetric-product-panel th, .volumetric-product-panel td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+@media (max-width: 640px) {
+  .volumetric-product-panel { padding: 8px; }
+  .volumetric-product-panel > div:first-child { align-items: flex-start; flex-direction: column; }
+  .volumetric-product-panel .viewer-renderer-controls { display: grid; grid-template-columns: 1fr; }
+  .volumetric-product-panel .viewer-renderer-controls button { width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+  .volumetric-product-panel table { min-width: 0; table-layout: fixed; font-size: 0.72rem; }
+  .volumetric-product-panel th, .volumetric-product-panel td { padding: 5px 3px; overflow-wrap: anywhere; }
+  .volumetric-product-panel th:first-child, .volumetric-product-panel td:first-child { width: 27%; }
+}
 
 .trajectory-viewer-surface { display: grid; gap: 12px; min-width: 0; max-width: 100%; }
 .trajectory-viewer-surface > * { min-width: 0; max-width: 100%; }

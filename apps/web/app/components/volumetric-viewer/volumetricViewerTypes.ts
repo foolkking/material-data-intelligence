@@ -74,12 +74,36 @@ export type ValidatedVolumetricField = Readonly<{
   fieldRank: "scalar" | "vector";
   storedComponentCount: number;
   unit: string;
+  sourceUnit: string;
+  normalizationSemantics: "source_native" | "normalized_to_unit_integral" | "normalized_to_electron_count" | "normalized_to_charge" | "not_normalized" | "unknown";
+  integralSemantics: "electron_count" | "elementary_charge" | "magnetic_moment" | "cell_average" | "zero_by_definition" | "not_physically_interpreted" | "unknown";
+  spin: Readonly<{
+    representation: "collinear" | "non_collinear";
+    channel: "total" | "spin_up" | "spin_down" | "spin_difference" | "magnetization_x" | "magnetization_y" | "magnetization_z" | "magnetization_vector";
+    signConvention: string;
+    sourceConvention: string;
+  }> | null;
+  provenance: Readonly<{
+    sourceSha256: string;
+    producer: string;
+    producerVersion: string;
+    transformations: readonly Readonly<{ kind: string; detail: string }>[];
+  }>;
   minimum: number;
   maximum: number;
   mean: number;
   integral: number;
   warnings: readonly string[];
   contentHash: string;
+}>;
+
+export type ValidatedVolumetricRelationship = Readonly<{
+  relationshipId: string;
+  kind: "total_equals_up_plus_down" | "spin_difference_equals_up_minus_down" | "vector_magnitude" | "complex_norm_density";
+  inputFieldIds: readonly string[];
+  outputFieldId: string;
+  status: "declared" | "validated" | "unverified";
+  residual: number;
 }>;
 
 export type VolumetricFieldCompatibility = Readonly<{
@@ -93,8 +117,10 @@ export type ValidatedVolumetricBundle = Readonly<{
   datasetId: string;
   datasetContentHash: string;
   sourceFormat: string;
+  sourceSha256: string;
   grid: ValidatedVolumetricGrid;
   fields: readonly VolumetricFieldCompatibility[];
+  relationships: readonly ValidatedVolumetricRelationship[];
   warnings: readonly string[];
   manifestContentHash: string;
   artifactNames: readonly string[];

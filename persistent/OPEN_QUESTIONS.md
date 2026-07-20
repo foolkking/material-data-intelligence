@@ -812,3 +812,8 @@
 
 - Phase 10J-3 must decide charge/spin product semantics without moving derived-field authority into the generic renderer.
 - Cell-centered dual-grid semantics, slice products, and direct volume GPU caps remain separate future decisions.
+
+## Phase 10J-3 follow-up
+
+- Authoritative electron-count references and augmentation-inclusive reconstruction require a separately approved source contract.
+- Non-collinear vector product, electrostatic potential, Bader/atomic partitioning, slices, and time-dependent density remain open future phases.

@@ -1,0 +1,20 @@
+{
+  "modes": [
+    "spin_difference",
+    "total",
+    "spin_up",
+    "spin_down"
+  ],
+  "symmetricThreshold": true,
+  "mobile": {
+    "viewport": [
+      390,
+      844
+    ],
+    "overflow": false,
+    "canvasCount": 1,
+    "triangles": 48,
+    "touch": true,
+    "mode": "spin_up"
+  }
+}

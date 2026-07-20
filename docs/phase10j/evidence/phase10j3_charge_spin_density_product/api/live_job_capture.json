@@ -1,0 +1,327 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1304,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_grid_json",
+      "name": "volumetric_grid.json",
+      "sha256": "5ea9a9394c977aa285cbf39c30db5af798b3cc73abe07f115edc6927d5bb9e14",
+      "type": "volumetric_grid_json"
+    },
+    {
+      "bytes": 1018,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_payload_json-01",
+      "name": "volumetric_payload_01.json",
+      "sha256": "84157c48820972ab6deaa6f0eab51d0d40a908df237426832b8a5ea7b26b0994",
+      "type": "volumetric_payload_json"
+    },
+    {
+      "bytes": 1018,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_payload_json-02",
+      "name": "volumetric_payload_02.json",
+      "sha256": "101c1caff958ba5c142ff3787be1b70d896231eeb0762bb7fc32a09f851c06fc",
+      "type": "volumetric_payload_json"
+    },
+    {
+      "bytes": 1018,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_payload_json-03",
+      "name": "volumetric_payload_03.json",
+      "sha256": "3dbc2d413f87343f9abfcd078d67c1fc26a1cc3d674bd9ebf741c2adc32614d7",
+      "type": "volumetric_payload_json"
+    },
+    {
+      "bytes": 1018,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_payload_json-04",
+      "name": "volumetric_payload_04.json",
+      "sha256": "8e839c8d53fe448ec5d5ee0d28097c13f56eb99aea7cd9c2025bbdf7a3b478fa",
+      "type": "volumetric_payload_json"
+    },
+    {
+      "bytes": 2244,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_field_json-01",
+      "name": "volumetric_field_01.json",
+      "sha256": "e0c394eb97fdcc3beee3c4009169208888630a3685a50d08d63e3ccde6a9ee02",
+      "type": "volumetric_field_json"
+    },
+    {
+      "bytes": 2461,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_field_json-02",
+      "name": "volumetric_field_02.json",
+      "sha256": "b5f77003e54b6100962f3fbb345a6cc5f137d3eb1ae8e5d289f9187f49181cbb",
+      "type": "volumetric_field_json"
+    },
+    {
+      "bytes": 2646,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_field_json-03",
+      "name": "volumetric_field_03.json",
+      "sha256": "64bd41e6ec74d3f075796b89d8181f6b4c5030ce2053c0d85be603111d318061",
+      "type": "volumetric_field_json"
+    },
+    {
+      "bytes": 2652,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_field_json-04",
+      "name": "volumetric_field_04.json",
+      "sha256": "e3f9d08bbfe80b21c5c8f9d96ad0b3591c369cfaad4e0bf62e43108fbd29dda9",
+      "type": "volumetric_field_json"
+    },
+    {
+      "bytes": 47,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_binary-01",
+      "name": "volumetric_field_01.f64.gz",
+      "sha256": "6f360e74fd5959280762f657d434c72771146205e8ef12b611fa562ba1a55904",
+      "type": "volumetric_binary"
+    },
+    {
+      "bytes": 47,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_binary-02",
+      "name": "volumetric_field_02.f64.gz",
+      "sha256": "23ae7779675653db5c040c7b8a62a6400c389d8ba79a763974db55148db24904",
+      "type": "volumetric_binary"
+    },
+    {
+      "bytes": 49,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_binary-03",
+      "name": "volumetric_field_03.f64.gz",
+      "sha256": "215779cc1c987eded6a5b1e8da8ae9482c4ae8d1a3209a51dd5d0e07859b37d0",
+      "type": "volumetric_binary"
+    },
+    {
+      "bytes": 50,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_binary-04",
+      "name": "volumetric_field_04.f64.gz",
+      "sha256": "4425d2d8decb073565ae1567e2d8367c5369faf2698734bec2bb6f7aa992edf7",
+      "type": "volumetric_binary"
+    },
+    {
+      "bytes": 17728,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_dataset_json",
+      "name": "volumetric_dataset.json",
+      "sha256": "74cc2aad9cf2e699cf8e6a4429a0ce6c03991bb3d40bd3a0cc726c2c1fb6e0db",
+      "type": "volumetric_dataset_json"
+    },
+    {
+      "bytes": 2930,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_manifest_json",
+      "name": "volumetric_manifest.json",
+      "sha256": "5e54f46ce377c812c9a57ed385a847edb8ab6b24194743e9fd3cb54c4c9ccf99",
+      "type": "volumetric_manifest_json"
+    },
+    {
+      "bytes": 4916,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-volumetric_structure_overlay_json",
+      "name": "volumetric_structure_overlay.json",
+      "sha256": "02f8f0ce5d7374573020d4def53038fa35ae4128dcd98d96e2cea157e5284980",
+      "type": "volumetric_structure_overlay_json"
+    },
+    {
+      "bytes": 1169,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-summary_md",
+      "name": "summary.md",
+      "sha256": "97c4871a3845c85c0ff5389c0a747fe3a3f4e65cd4fb2e0c316419fe172f916d",
+      "type": "summary_md"
+    },
+    {
+      "bytes": 2496,
+      "id": "call_job_d80da4399fe44ec88b4c8368_step_001-recipe_json",
+      "name": "recipe.json",
+      "sha256": "22c4b1897e351f6fadeb2a2f8b3567b1795f673146f4444d0ab4a0110ce34e06",
+      "type": "recipe_json"
+    }
+  ],
+  "dataset_hash": "28b2bea5ef549801e38e0c51de77d5dcc594ba32bb1ee8e0124d2f1b7d3ba9eb",
+  "field_summary": [
+    {
+      "field_id": "field:264096f627ff1dd5d482d15f7316743840985185d5302dda8f243ad313018666",
+      "integral": 36.0,
+      "name": "total",
+      "quantity": "electron_density",
+      "spin": null,
+      "unit": "electron/angstrom^3"
+    },
+    {
+      "field_id": "field:d9791b875695cf7d89080911447788b26a38a4789246a4602295c38c5dc60604",
+      "integral": 4.5,
+      "name": "spin_difference",
+      "quantity": "magnetization_density",
+      "spin": {
+        "channel": "spin_difference",
+        "component_basis": "not_applicable",
+        "representation": "collinear",
+        "sign_convention": "up minus down",
+        "source_convention": "VASP total then magnetization components"
+      },
+      "unit": "bohr_magneton/angstrom^3"
+    },
+    {
+      "field_id": "field:e0d65c21f9cebd1aee4ea0b7f2a0a0271b7416d9e3f318154084507f0b4b25a0",
+      "integral": 20.25,
+      "name": "spin_up",
+      "quantity": "spin_density",
+      "spin": {
+        "channel": "spin_up",
+        "component_basis": "not_applicable",
+        "representation": "collinear",
+        "sign_convention": "up minus down",
+        "source_convention": "allowlisted collinear derivation from VASP total and spin difference"
+      },
+      "unit": "electron/angstrom^3"
+    },
+    {
+      "field_id": "field:e391d9f56e63c249738506aa85f7182858a6bd61912aabbe740d09d5fc55f89d",
+      "integral": 15.75,
+      "name": "spin_down",
+      "quantity": "spin_density",
+      "spin": {
+        "channel": "spin_down",
+        "component_basis": "not_applicable",
+        "representation": "collinear",
+        "sign_convention": "up minus down",
+        "source_convention": "allowlisted collinear derivation from VASP total and spin difference"
+      },
+      "unit": "electron/angstrom^3"
+    }
+  ],
+  "job": {
+    "job_id": "job_d80da4399fe44ec88b4c8368",
+    "status": "completed"
+  },
+  "plan": {
+    "assumptions": [
+      "Generated by MockLLMProvider for testing."
+    ],
+    "datasetId": "dataset_charge_spin",
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_grid.json",
+        "type": "volumetric_grid_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_payload_01.json",
+        "type": "volumetric_payload_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_field_01.json",
+        "type": "volumetric_field_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_dataset.json",
+        "type": "volumetric_dataset_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_manifest.json",
+        "type": "volumetric_manifest_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_structure_overlay.json",
+        "type": "volumetric_structure_overlay_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_field_01.f64.gz",
+        "type": "volumetric_binary"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "goal": "Render positive and negative spin density isosurfaces from this CHGCAR",
+    "profileId": "profile_charge_spin",
+    "schemaVersion": "0.1",
+    "steps": [
+      {
+        "constraints": {
+          "noExternalNetwork": true
+        },
+        "inputRefs": [
+          {
+            "objectType": "VolumetricData",
+            "ref": "volumetric",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "volumetric_grid_json",
+            "volumetric_payload_json",
+            "volumetric_field_json",
+            "volumetric_dataset_json",
+            "volumetric_manifest_json",
+            "volumetric_binary",
+            "summary_md",
+            "recipe_json",
+            "volumetric_structure_overlay_json"
+          ]
+        },
+        "params": {
+          "allow_partial_dataset": false,
+          "compression": "contract_default",
+          "field_selection": "all_supported",
+          "format": "auto",
+          "include_histogram": false,
+          "include_statistics": true,
+          "quantity_hint": "auto",
+          "stored_dtype": "source_or_float64",
+          "verify_integrals": true
+        },
+        "purpose": "Parse one bounded supported source into validated inert canonical volumetric artifacts.",
+        "reason": "The request asks to validate an available bounded volumetric source for the application-owned metadata or density product without external execution.",
+        "stepId": "step_001",
+        "toolId": "structure.volumetric_data"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "relationships": [
+    {
+      "input_field_ids": [
+        "field:e0d65c21f9cebd1aee4ea0b7f2a0a0271b7416d9e3f318154084507f0b4b25a0",
+        "field:e391d9f56e63c249738506aa85f7182858a6bd61912aabbe740d09d5fc55f89d"
+      ],
+      "kind": "spin_difference_equals_up_minus_down",
+      "output_field_id": "field:d9791b875695cf7d89080911447788b26a38a4789246a4602295c38c5dc60604",
+      "relationship_id": "collinear:spin_difference_equals_up_minus_down:v1",
+      "residual": 0.0,
+      "status": "validated"
+    },
+    {
+      "input_field_ids": [
+        "field:e0d65c21f9cebd1aee4ea0b7f2a0a0271b7416d9e3f318154084507f0b4b25a0",
+        "field:e391d9f56e63c249738506aa85f7182858a6bd61912aabbe740d09d5fc55f89d"
+      ],
+      "kind": "total_equals_up_plus_down",
+      "output_field_id": "field:264096f627ff1dd5d482d15f7316743840985185d5302dda8f243ad313018666",
+      "relationship_id": "collinear:total_equals_up_plus_down:v1",
+      "residual": 0.0,
+      "status": "validated"
+    }
+  ],
+  "request": {
+    "dataset_id": "dataset_charge_spin",
+    "project_id": "project_charge_spin",
+    "prompt": "Render positive and negative spin density isosurfaces from this CHGCAR"
+  },
+  "selected_tool": "structure.volumetric_data",
+  "tool_calls": [
+    {
+      "status": "completed",
+      "toolId": "structure.volumetric_data"
+    }
+  ],
+  "validation": {
+    "dataset": true,
+    "manifest": true
+  }
+}

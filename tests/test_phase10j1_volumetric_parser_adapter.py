@@ -147,7 +147,7 @@ def test_parse_file_and_adapter_emit_valid_deterministic_binary_package(tmp_path
     assert validate_volumetric_grid(dataset["grid"]).valid
     assert validate_volumetric_dataset(dataset, binaries).valid
     assert validate_volumetric_manifest(manifest, dataset=dataset, artifacts=binaries).valid
-    assert len(dataset["fields"]) == 2
+    assert {field["field_name"] for field in dataset["fields"]} == {"total", "spin_difference", "spin_up", "spin_down"}
     for payload in dataset["payloads"]:
         assert len(decode_volumetric_payload(payload, binaries)) == 8
     assert all(item.metadata.provenance["rendererIncluded"] is False for item in first)
@@ -207,7 +207,7 @@ def test_registry_planner_validator_and_runtime_flow(tmp_path: Path) -> None:
     assert any(item["name"] == "volumetric_manifest.json" for item in repos.artifacts.list_for_job(created.job_id))
 
 
-@pytest.mark.parametrize("prompt", ["Render a charge density isosurface", "Run VASP to calculate charge density", "Show a volumetric 3D viewer", "Animate a phonon mode"])
+@pytest.mark.parametrize("prompt", ["Run VASP to calculate charge density", "Run Bader atomic charge analysis", "Show a density slice", "Animate a phonon mode"])
 def test_negative_planner_routing(prompt: str) -> None:
     registry = load_manifests()
     response = MockLLMProvider().generate_plan(
@@ -215,3 +215,13 @@ def test_negative_planner_routing(prompt: str) -> None:
         tools=registry.list_tools(), data_profile=_profile(),
     )
     assert response.raw_json and response.raw_json["steps"][0]["toolId"] != "structure.volumetric_data"
+
+
+@pytest.mark.parametrize("prompt", ["Render a charge density isosurface", "Show the electron density", "Display positive and negative spin density", "打开这个 CHGCAR 的自旋密度等值面"])
+def test_density_product_planner_routing(prompt: str) -> None:
+    registry = load_manifests()
+    response = MockLLMProvider().generate_plan(
+        PlannerRequest(user_prompt=prompt, dataset_id="dataset_volume", profile_id="profile_volume", tool_registry_version=registry.version),
+        tools=registry.list_tools(), data_profile=_profile(),
+    )
+    assert response.raw_json and response.raw_json["steps"][0]["toolId"] == "structure.volumetric_data"

@@ -4,6 +4,7 @@ import type {
   ValidatedVolumetricField,
   ValidatedVolumetricGrid,
   ValidatedVolumetricPayload,
+  ValidatedVolumetricRelationship,
   VolumeMatrix3,
   VolumeVector3,
   VolumetricValidationResult,
@@ -21,6 +22,9 @@ const GRID_KEYS = ["schema_version", "grid_id", "coordinate_space", "length_unit
 const PAYLOAD_KEYS = ["schema_version", "payload_id", "encoding", "dtype", "endianness", "stored_component_count", "flatten_order", "grid_shape", "logical_shape", "value_count", "uncompressed_bytes", "compressed_bytes", "media_type", "artifact_name", "inline_values", "chunks", "compression", "logical_sha256", "storage_sha256", "storage_layout_hash", "security"];
 const FIELD_KEYS = ["schema_version", "field_id", "field_name", "grid_id", "grid_content_hash", "payload_id", "payload_logical_sha256", "quantity", "custom_quantity", "value_kind", "field_rank", "logical_component_count", "stored_component_count", "component_labels", "component_basis", "unit", "normalization_semantics", "integral_semantics", "spin", "potential_reference", "complex_semantics", "statistics", "provenance", "warnings", "security", "content_hash"];
 const MANIFEST_KEYS = ["schema_version", "manifest_id", "dataset_id", "dataset_content_hash", "schema_versions", "artifacts", "capabilities", "external_resources", "executable_assets", "preview_mode", "caps", "security", "content_hash"];
+const NORMALIZATIONS = new Set(["source_native","normalized_to_unit_integral","normalized_to_electron_count","normalized_to_charge","not_normalized","unknown"]);
+const INTEGRALS = new Set(["electron_count","elementary_charge","magnetic_moment","cell_average","zero_by_definition","not_physically_interpreted","unknown"]);
+const RELATIONSHIP_KINDS = new Set(["total_equals_up_plus_down","spin_difference_equals_up_minus_down","vector_magnitude","complex_norm_density"]);
 
 export function validateVolumetricArtifacts(datasetValue: unknown, manifestValue: unknown): VolumetricValidationResult {
   const errors: string[] = [];
@@ -52,6 +56,11 @@ export function validateVolumetricArtifacts(datasetValue: unknown, manifestValue
   if (new Set(payloads.map((value) => value.payloadId)).size !== payloads.length || new Set(fields.map((value) => value.fieldId)).size !== fields.length) errors.push("VOLUME_CANONICAL_ORDER_INVALID");
   if (payloads.map((value) => value.payloadId).join("|") !== [...payloads].sort((a,b)=>a.payloadId.localeCompare(b.payloadId)).map((value)=>value.payloadId).join("|")) errors.push("VOLUME_CANONICAL_ORDER_INVALID");
   if (fields.map((value) => value.fieldId).join("|") !== [...fields].sort((a,b)=>a.fieldId.localeCompare(b.fieldId)).map((value)=>value.fieldId).join("|")) errors.push("VOLUME_CANONICAL_ORDER_INVALID");
+  const fieldIds = new Set(fields.map((field) => field.fieldId));
+  const relationshipValues = Array.isArray(datasetValue.relationships) ? datasetValue.relationships : [];
+  const relationships = relationshipValues.map((value) => validateRelationship(value, fieldIds, errors)).filter((value): value is ValidatedVolumetricRelationship => value !== null);
+  if (relationships.map((value) => value.relationshipId).join("|") !== [...relationships].sort((a,b)=>a.relationshipId.localeCompare(b.relationshipId)).map((value)=>value.relationshipId).join("|")) errors.push("VOLUME_RELATIONSHIP_INVALID");
+  validateDerivedCollinearSemantics(fields, relationships, errors);
 
   const compatibility = fields.map((field) => {
     const payload = payloadById.get(field.payloadId);
@@ -79,8 +88,10 @@ export function validateVolumetricArtifacts(datasetValue: unknown, manifestValue
     datasetId: String(datasetValue.dataset_id),
     datasetContentHash: String(datasetValue.content_hash),
     sourceFormat: typeof provenance.source_format === "string" ? provenance.source_format : "unknown",
+    sourceSha256: sha(provenance.source_sha256) ? String(provenance.source_sha256) : "0".repeat(64),
     grid,
     fields: Object.freeze(compatibility),
+    relationships: Object.freeze(relationships),
     warnings: Object.freeze([...warningValues]),
     manifestContentHash: String(manifestValue.content_hash),
     artifactNames: Object.freeze(artifactNames),
@@ -133,10 +144,59 @@ function validateField(value: unknown, errors: string[]): ValidatedVolumetricFie
   const componentCandidate=statistics&&Array.isArray(statistics.stored_components)?statistics.stored_components[0]:null;
   const components=record(componentCandidate)?componentCandidate:null;
   const unit=record(value.unit)?value.unit:null;
-  if(!components||![components.minimum,components.maximum,components.mean,components.integral].every(finite)||!unit||typeof unit.canonical_unit!=="string") {errors.push("VOLUME_STATISTICS_INVALID");return null;}
+  const provenance=record(value.provenance)?value.provenance:null;
+  const transformations=provenance&&Array.isArray(provenance.transformations)?provenance.transformations:null;
+  if(!components||![components.minimum,components.maximum,components.mean,components.integral].every(finite)||!unit||typeof unit.canonical_unit!=="string"||typeof unit.source_unit!=="string"||!NORMALIZATIONS.has(String(value.normalization_semantics))||!INTEGRALS.has(String(value.integral_semantics))||!provenance||!sha(provenance.source_sha256)||typeof provenance.producer!=="string"||typeof provenance.producer_version!=="string"||!transformations||!transformations.every((item)=>record(item)&&exactKeys(item,["kind","detail"])&&typeof item.kind==="string"&&typeof item.detail==="string"&&item.detail.length<=160)) {errors.push("VOLUME_STATISTICS_INVALID");return null;}
+  const spin=validateSpin(value.spin,errors);
   const minimum=Number(components.minimum),maximum=Number(components.maximum);if(minimum>maximum)errors.push("VOLUME_STATISTICS_INVALID");
   const warnings=Array.isArray(value.warnings)&&value.warnings.every((item)=>typeof item==="string")?Object.freeze([...value.warnings] as string[]):Object.freeze([] as string[]);
-  return Object.freeze({schemaVersion:"phase10j.volumetric_field.v1",fieldId:String(value.field_id),fieldName:String(value.field_name),gridId:String(value.grid_id),payloadId:String(value.payload_id),quantity:String(value.quantity),valueKind:value.value_kind as "real"|"complex",fieldRank:value.field_rank as "scalar"|"vector",storedComponentCount:Number(value.stored_component_count),unit:String(unit.canonical_unit),minimum,maximum,mean:Number(components.mean),integral:Number(components.integral),warnings,contentHash:String(value.content_hash)});
+  return Object.freeze({schemaVersion:"phase10j.volumetric_field.v1",fieldId:String(value.field_id),fieldName:String(value.field_name),gridId:String(value.grid_id),payloadId:String(value.payload_id),quantity:String(value.quantity),valueKind:value.value_kind as "real"|"complex",fieldRank:value.field_rank as "scalar"|"vector",storedComponentCount:Number(value.stored_component_count),unit:String(unit.canonical_unit),sourceUnit:String(unit.source_unit),normalizationSemantics:String(value.normalization_semantics) as ValidatedVolumetricField["normalizationSemantics"],integralSemantics:String(value.integral_semantics) as ValidatedVolumetricField["integralSemantics"],spin,provenance:Object.freeze({sourceSha256:String(provenance.source_sha256),producer:String(provenance.producer),producerVersion:String(provenance.producer_version),transformations:Object.freeze(transformations.map((item)=>Object.freeze({kind:String((item as JsonRecord).kind),detail:String((item as JsonRecord).detail)})))}),minimum,maximum,mean:Number(components.mean),integral:Number(components.integral),warnings,contentHash:String(value.content_hash)});
+}
+
+function validateSpin(value:unknown,errors:string[]):ValidatedVolumetricField["spin"]{
+  if(value===null)return null;
+  if(!record(value)||!exactKeys(value,["representation","channel","component_basis","sign_convention","source_convention"])||!["collinear","non_collinear"].includes(String(value.representation))||!["total","spin_up","spin_down","spin_difference","magnetization_x","magnetization_y","magnetization_z","magnetization_vector"].includes(String(value.channel))||typeof value.sign_convention!=="string"||typeof value.source_convention!=="string"||value.sign_convention.length>128||value.source_convention.length>128){errors.push("VOLUME_SPIN_SEMANTICS_INVALID");return null;}
+  return Object.freeze({representation:value.representation as "collinear"|"non_collinear",channel:value.channel as NonNullable<ValidatedVolumetricField["spin"]>["channel"],signConvention:value.sign_convention,sourceConvention:value.source_convention});
+}
+
+function validateRelationship(value:unknown,fieldIds:Set<string>,errors:string[]):ValidatedVolumetricRelationship|null{
+  if(!record(value)||!exactKeys(value,["relationship_id","kind","input_field_ids","output_field_id","status","residual"])||!safeId(value.relationship_id)||!RELATIONSHIP_KINDS.has(String(value.kind))||!["declared","validated","unverified"].includes(String(value.status))||!finite(value.residual)||!Array.isArray(value.input_field_ids)||!value.input_field_ids.length||value.input_field_ids.some((item)=>typeof item!=="string"||!fieldIds.has(item))||typeof value.output_field_id!=="string"||!fieldIds.has(value.output_field_id)){errors.push("VOLUME_RELATIONSHIP_INVALID");return null;}
+  return Object.freeze({relationshipId:String(value.relationship_id),kind:value.kind as ValidatedVolumetricRelationship["kind"],inputFieldIds:Object.freeze([...value.input_field_ids] as string[]),outputFieldId:value.output_field_id,status:value.status as ValidatedVolumetricRelationship["status"],residual:Number(value.residual)});
+}
+
+function validateDerivedCollinearSemantics(fields: readonly ValidatedVolumetricField[], relationships: readonly ValidatedVolumetricRelationship[], errors: string[]) {
+  const byChannel = new Map(fields.flatMap((field) => field.spin ? [[field.spin.channel, field] as const] : []));
+  const up = byChannel.get("spin_up");
+  const down = byChannel.get("spin_down");
+  const total = fields.find((field) => field.quantity === "electron_density" && field.fieldName === "total");
+  const difference = byChannel.get("spin_difference");
+  const formulas: Record<string, string> = { spin_up: "COLLINEAR_SPIN_UP_V1", spin_down: "COLLINEAR_SPIN_DOWN_V1" };
+  for (const channel of ["spin_up", "spin_down"] as const) {
+    const field = byChannel.get(channel);
+    if (!field) continue;
+    const formula = formulas[channel];
+    const hasFormula = field.quantity === "spin_density"
+      && field.unit === "electron/angstrom^3"
+      && field.normalizationSemantics === "source_native"
+      && field.integralSemantics === "electron_count"
+      && field.provenance.transformations.some((item) => item.kind === "component_remapping" && item.detail.startsWith(`${formula}:`));
+    if (!hasFormula) errors.push("VOLUME_DERIVED_FIELD_INVALID");
+  }
+  const relationKinds = new Set(relationships.map((relationship) => relationship.kind));
+  if (relationKinds.size !== relationships.length) errors.push("VOLUME_RELATIONSHIP_INVALID");
+  if (!up && !down && relationKinds.size) { errors.push("VOLUME_RELATIONSHIP_INVALID"); return; }
+  if ((up || down) && (!up || !down || !total || !difference)) { errors.push("VOLUME_DERIVED_FIELD_INVALID"); return; }
+  if (!up || !down || !total || !difference) return;
+  const expected = [
+    ["spin_difference_equals_up_minus_down", difference.fieldId, "collinear:spin_difference_equals_up_minus_down:v1"],
+    ["total_equals_up_plus_down", total.fieldId, "collinear:total_equals_up_plus_down:v1"],
+  ] as const;
+  for (const [kind, outputFieldId, relationshipId] of expected) {
+    const relationship = relationships.find((item) => item.kind === kind);
+    if (!relationship || relationship.relationshipId !== relationshipId || relationship.status !== "validated" || Math.abs(relationship.residual) > 1e-12 || relationship.outputFieldId !== outputFieldId || relationship.inputFieldIds.length !== 2 || relationship.inputFieldIds[0] !== up.fieldId || relationship.inputFieldIds[1] !== down.fieldId) {
+      errors.push("VOLUME_RELATIONSHIP_INVALID");
+    }
+  }
 }
 
 function failure(code:"VOLUME_VIEWER_CONTRACT_INVALID", errors:string[]):VolumetricValidationResult{return Object.freeze({ok:false,code,errors:Object.freeze([...new Set(errors)].sort())});}

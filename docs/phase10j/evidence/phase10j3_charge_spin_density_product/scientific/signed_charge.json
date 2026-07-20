@@ -1,0 +1,13 @@
+{
+  "dataset_hash": "31fdd3d64946c29e5ac4264231c3284e4395a17b824b24390311d914bb441b83",
+  "fields": [
+    {
+      "integral": 28.000000000000007,
+      "name": "scalar",
+      "quantity": "charge_density",
+      "unit": "elementary_charge/angstrom^3"
+    }
+  ],
+  "fixture": "orthogonal.cube",
+  "warnings": []
+}

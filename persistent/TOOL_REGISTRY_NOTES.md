@@ -1154,3 +1154,9 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 
 - `structure.volumetric_data` remains the sole public generic volumetric tool. Isosurface is a validated frontend consumer capability, not a second parser/calculation tool.
 - The adapter now emits an additive inert `volumetric_structure_overlay_json` artifact; existing canonical Phase 10J contracts and tool execution semantics remain unchanged.
+
+## Phase 10J-3
+
+- `structure.volumetric_data` remains the sole public tool. Charge/spin is a typed product consumer, not a new overlapping registry entry.
+- Planner accepts explicit density/isodensity/spin-density product intent while rejecting Bader, atomic charge, potential, slices, volume, trajectory, and phonon requests.
+- Derived collinear fields are inert canonical artifacts with allowlisted formula IDs and relationship validation; no renderer code or external resource is registered.

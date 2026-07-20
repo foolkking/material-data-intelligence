@@ -1,0 +1,15 @@
+{
+  "dataset_hash": "a643d965d78fb291a0594b0541ab36c9c41cae71597cd7c0a60e260475e76afa",
+  "fields": [
+    {
+      "integral": 36.0,
+      "name": "total",
+      "quantity": "electron_density",
+      "unit": "electron/angstrom^3"
+    }
+  ],
+  "fixture": "CHGCAR.augmentation",
+  "warnings": [
+    "VOLUME_VASP_AUGMENTATION_NOT_INCLUDED"
+  ]
+}

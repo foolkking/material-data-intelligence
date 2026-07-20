@@ -1422,3 +1422,11 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added lazy application-owned Three.js rendering, structure/cell overlay, layers, picking, clipping, projection, camera controls, PNG, fallbacks, and full disposal.
 - Real Phase 10J-1 CHGCAR artifacts rendered in Chromium, Firefox, WebKit, and mobile with zero external requests.
 - Slice, direct volume rendering, vector/complex derivation, and scientific field analysis remain deferred.
+
+## 2026-07-20 Phase 10J-3 Charge / Spin Density Product
+
+- Added source-native electron density and explicit signed charge-density product semantics over `structure.volumetric_data`.
+- Added allowlisted collinear `spin_up`/`spin_down` fields with fixed formula IDs, source provenance, exact relationships, and full-cell integrals.
+- Added product UI with total/spin-difference/up/down modes, paired signed isosurfaces, symmetric threshold lock, warnings, and mobile-safe layout.
+- Closed real QueueWorkerRuntime-to-adapter artifacts, Chromium/Firefox/WebKit/mobile browser evidence, performance, accessibility, network, and secret-scan markers.
+- Bader, atomic partitioning, non-collinear vector product, potential, slices, and direct volume remain deferred.

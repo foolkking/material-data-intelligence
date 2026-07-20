@@ -1,0 +1,26 @@
+{
+  "dataset_hash": "28b2bea5ef549801e38e0c51de77d5dcc594ba32bb1ee8e0124d2f1b7d3ba9eb",
+  "derived_formulas": [
+    "COLLINEAR_SPIN_DOWN_V1",
+    "COLLINEAR_SPIN_UP_V1"
+  ],
+  "network": "NO_CHARGE_SPIN_PRODUCT_EXTERNAL_NETWORK_REQUESTS",
+  "phase": "10J-3",
+  "relationship_kinds": [
+    "spin_difference_equals_up_minus_down",
+    "total_equals_up_plus_down"
+  ],
+  "renderer": "Phase 10J-2 Three.js/Worker consumer",
+  "replay_commands": [
+    "uv run python apps/web/test/generate-charge-spin-density-evidence.py",
+    "node apps/web/test/charge-spin-density-browser-evidence.mjs"
+  ],
+  "runtime_status": "completed",
+  "secrets": "NO_SECRET_PATTERN_HITS",
+  "source_cases": [
+    "augmentation",
+    "electron_density",
+    "signed_charge"
+  ],
+  "tool": "structure.volumetric_data"
+}

@@ -1,0 +1,27 @@
+{
+  "source": "Phase 10J-3 QueueWorkerRuntime collinear CHGCAR job",
+  "jobId": "job_d80da4399fe44ec88b4c8368",
+  "selectedTool": "structure.volumetric_data",
+  "artifactNames": [
+    "volumetric_grid.json",
+    "volumetric_payload_01.json",
+    "volumetric_payload_02.json",
+    "volumetric_payload_03.json",
+    "volumetric_payload_04.json",
+    "volumetric_field_01.json",
+    "volumetric_field_02.json",
+    "volumetric_field_03.json",
+    "volumetric_field_04.json",
+    "volumetric_field_01.f64.gz",
+    "volumetric_field_02.f64.gz",
+    "volumetric_field_03.f64.gz",
+    "volumetric_field_04.f64.gz",
+    "volumetric_dataset.json",
+    "volumetric_manifest.json",
+    "volumetric_structure_overlay.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "dataset": "live_collinear",
+  "payloadPath": "local job-scoped artifact content endpoint"
+}

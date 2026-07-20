@@ -35,4 +35,10 @@ describe("Phase 10J-2 volumetric compatibility gate", () => {
     const result=validateVolumetricArtifacts(fixture.raw_dataset,manifest);
     expect(result).toMatchObject({ok:false,errors:expect.arrayContaining(["VOLUME_MANIFEST_SECURITY_INVALID"])});
   });
+
+  it("rejects relationship metadata that is not backed by derived collinear channels", () => {
+    const dataset=structuredClone(fixture.raw_dataset);
+    (dataset as { relationships: unknown[] }).relationships=[{relationship_id:"collinear:total_equals_up_plus_down:v1",kind:"total_equals_up_plus_down",input_field_ids:[dataset.fields[0].field_id,dataset.fields[0].field_id],output_field_id:dataset.fields[0].field_id,status:"validated",residual:0}];
+    expect(validateVolumetricArtifacts(dataset,fixture.manifest)).toMatchObject({ok:false,errors:expect.arrayContaining(["VOLUME_RELATIONSHIP_INVALID"])});
+  });
 });

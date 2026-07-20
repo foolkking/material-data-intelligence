@@ -1,0 +1,80 @@
+{
+  "augmentation_included": true,
+  "fields": [
+    {
+      "field_id": "field:264096f627ff1dd5d482d15f7316743840985185d5302dda8f243ad313018666",
+      "integral": 36.0,
+      "name": "total",
+      "quantity": "electron_density",
+      "spin": null,
+      "unit": "electron/angstrom^3"
+    },
+    {
+      "field_id": "field:d9791b875695cf7d89080911447788b26a38a4789246a4602295c38c5dc60604",
+      "integral": 4.5,
+      "name": "spin_difference",
+      "quantity": "magnetization_density",
+      "spin": {
+        "channel": "spin_difference",
+        "component_basis": "not_applicable",
+        "representation": "collinear",
+        "sign_convention": "up minus down",
+        "source_convention": "VASP total then magnetization components"
+      },
+      "unit": "bohr_magneton/angstrom^3"
+    },
+    {
+      "field_id": "field:e0d65c21f9cebd1aee4ea0b7f2a0a0271b7416d9e3f318154084507f0b4b25a0",
+      "integral": 20.25,
+      "name": "spin_up",
+      "quantity": "spin_density",
+      "spin": {
+        "channel": "spin_up",
+        "component_basis": "not_applicable",
+        "representation": "collinear",
+        "sign_convention": "up minus down",
+        "source_convention": "allowlisted collinear derivation from VASP total and spin difference"
+      },
+      "unit": "electron/angstrom^3"
+    },
+    {
+      "field_id": "field:e391d9f56e63c249738506aa85f7182858a6bd61912aabbe740d09d5fc55f89d",
+      "integral": 15.75,
+      "name": "spin_down",
+      "quantity": "spin_density",
+      "spin": {
+        "channel": "spin_down",
+        "component_basis": "not_applicable",
+        "representation": "collinear",
+        "sign_convention": "up minus down",
+        "source_convention": "allowlisted collinear derivation from VASP total and spin difference"
+      },
+      "unit": "electron/angstrom^3"
+    }
+  ],
+  "reference": "unavailable",
+  "relationships": [
+    {
+      "input_field_ids": [
+        "field:e0d65c21f9cebd1aee4ea0b7f2a0a0271b7416d9e3f318154084507f0b4b25a0",
+        "field:e391d9f56e63c249738506aa85f7182858a6bd61912aabbe740d09d5fc55f89d"
+      ],
+      "kind": "spin_difference_equals_up_minus_down",
+      "output_field_id": "field:d9791b875695cf7d89080911447788b26a38a4789246a4602295c38c5dc60604",
+      "relationship_id": "collinear:spin_difference_equals_up_minus_down:v1",
+      "residual": 0.0,
+      "status": "validated"
+    },
+    {
+      "input_field_ids": [
+        "field:e0d65c21f9cebd1aee4ea0b7f2a0a0271b7416d9e3f318154084507f0b4b25a0",
+        "field:e391d9f56e63c249738506aa85f7182858a6bd61912aabbe740d09d5fc55f89d"
+      ],
+      "kind": "total_equals_up_plus_down",
+      "output_field_id": "field:264096f627ff1dd5d482d15f7316743840985185d5302dda8f243ad313018666",
+      "relationship_id": "collinear:total_equals_up_plus_down:v1",
+      "residual": 0.0,
+      "status": "validated"
+    }
+  ]
+}

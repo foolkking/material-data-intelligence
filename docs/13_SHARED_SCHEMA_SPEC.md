@@ -1441,6 +1441,17 @@ structure/lattice binding, and inert security metadata are validated.
 This family grants no parser, adapter, tool, planner, runtime, renderer,
 isosurface, slice, script, URL, HTML, JavaScript, CSS, shader, object
 deserialization, or external-resource authority.
+
+## Phase 10J-3 charge and spin product addendum
+
+The volumetric field contract remains source-native. The product layer may
+consume explicit `electron_density`, explicitly signed `charge_density`, and
+collinear `spin_difference` fields. It may emit only the allowlisted derived
+spin channels with formula IDs `COLLINEAR_SPIN_UP_V1` and
+`COLLINEAR_SPIN_DOWN_V1`, source provenance, and validated zero-residual
+relationships. Electron density is not signed electric charge density.
+Full-cell integrals are not atomic partition results, and augmentation
+contributions must remain visible as source warnings when unavailable.
 # Phase 10J-2 Volumetric Structure Overlay
 
 `phase10j2.volumetric_structure_overlay.v1` is an additive, inert, renderer-consumer artifact. It binds exactly to one validated `phase10j.volumetric_grid.v1` by `grid_id` and `grid_content_hash`. Fully periodic sources may embed one independently validated canonical viewer scene; fully non-periodic sources may carry bounded `{atomic_number, cartesian_angstrom}` records. The artifact is not part of `phase10j.volumetric_manifest.v1` schema identity and does not modify the canonical grid, field, payload, dataset, or manifest contracts.

@@ -3849,3 +3849,18 @@ parser, tool, planner route, runtime adapter, renderer, slice, or isosurface.
 - Browser render caps are stricter than parser caps and over-cap scenes are rejected without truncation.
 - Initial isovalues are visible display heuristics, not scientific analysis or persisted derived fields.
 - Slice and direct volume rendering remain later products with separate contracts and GPU review.
+
+## 2026-07-20 Phase 10J-3 ADR: charge and spin product boundary
+
+Keep electron density, explicitly signed charge density, and collinear spin
+difference as distinct quantity semantics. Preserve source-native fields and
+derive only `rho_up=(rho_total+rho_spin)/2` and
+`rho_down=(rho_total-rho_spin)/2`, each with fixed formula provenance and
+validated relationships. Full-cell integrals are never atomic charges or
+enclosed-isosurface electron counts. Symmetric spin thresholds are a visual
+default only. VASP augmentation not included remains a visible warning.
+
+The existing volumetric tool and Phase 10J-2 renderer remain the execution
+boundary; no overlapping parser or arbitrary scientific inference is added.
+Potential, Bader, non-collinear, slices, volume ray casting, and density
+analysis remain separately scoped.
