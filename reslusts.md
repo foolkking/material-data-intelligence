@@ -434,3 +434,55 @@ Volume ray casting, slices, cell-centered fields, vector/complex derived fields,
 * completion record current-HEAD CI: run `29745406355` success
 * verification: TASKS status/result record, frontend/backend/build/browser/security evidence, implementation CI, completion-record CI, service-backed/no-skipped gates, origin equality, and clean worktree all matched.
 * archive decision: the complete Phase 10J-2 task block may be removed from `TASKS.md`; this result remains the persistent history.
+
+# Phase 10J-3 Charge / Spin Density Product Result
+
+## Status
+
+已完成
+
+## Completion
+
+* completed at: `2026-07-22 13:29:44 +08:00`
+* implementation commit: `d4de1a342d767fcfe21302b7465ae047fdf620f9` (`Add charge and spin density product`)
+* implementation CI: run `29757885564`, exact implementation SHA, success
+* CI jobs: unit success; frontend typecheck/build success; PostgreSQL/Redis/MinIO service-backed integration success; no-skipped assertion success
+
+## Summary
+
+* Preserved source-native electron density, explicit signed charge density, and VASP collinear spin-difference semantics in the existing `structure.volumetric_data` tool.
+* Added deterministic persisted spin-up/down fields using fixed `COLLINEAR_SPIN_UP_V1` and `COLLINEAR_SPIN_DOWN_V1` formulas, exact provenance, immutable frontend mapping, and strict relationship validation.
+* Added full-cell integral presentation, augmentation/reference caveats, total/spin-difference/up/down modes, paired signed isosurfaces, symmetric threshold lock, responsive mobile layout, and safe generic/deferred states.
+* Reused the Phase 10J-2 application-owned Worker/Three.js renderer; no artifact code, shader, URL, external asset, new dependency, or lockfile change was added.
+* Bader analysis, atomic charges, charge partitioning/differences, non-collinear glyphs, electrostatic potential, slices, planar averages, and direct volume rendering remain deferred.
+
+## Files
+
+* Backend/planner/registry: `packages/adapters/mdi_adapters/platform_builtin/volumetric.py`, `services/llm/mdi_llm/providers.py`, `tool_registry/platform_builtin_manifest.yaml`.
+* Frontend: `apps/web/app/components/volumetric-viewer/`, `apps/web/app/globals.css`.
+* Tests/evidence: `tests/test_phase10j3_charge_spin_density.py`, updated J1/closure tests, J3 runtime/browser runners, and `docs/phase10j/evidence/phase10j3_charge_spin_density_product/`.
+* Documentation: Phase 10J-3 docs, shared schema/index, and all required persistent records.
+
+## Tests
+
+* frontend: `40 files, 246 passed`
+* backend: `719 passed, 24 skipped, 62 warnings`
+* focused backend: `26 passed, 3 deselected`
+* typecheck and production build: passed
+* J2 generic isosurface, J3 product, and Phase 10 closure browser regressions: Chromium/Firefox/WebKit/mobile passed
+* runtime/browser/performance/network/secret markers: passed
+* `git diff --check`, `uv lock --check`, Three/fflate dependency tree: passed
+* `npm audit`: unavailable because the configured mirror returned `404 NOT_IMPLEMENTED`; no dependency change was introduced
+
+## Security
+
+* No artifact JavaScript, HTML execution, shader, dynamic artifact import, remote asset, or external request.
+* Derived formulas and relationships are application-owned and allowlisted; source fields are not clipped or silently renormalized.
+* Full-cell integrals are not atomic partition or enclosed-isosurface charge claims.
+* Markers: `NO_CHARGE_SPIN_PRODUCT_EXTERNAL_NETWORK_REQUESTS`, `NO_SECRET_PATTERN_HITS`.
+
+## Readiness
+
+Electron density, explicit signed charge density, collinear spin difference, derived spin up/down, full-cell integrals, product UI, three-browser/mobile evidence, accessibility, performance, lifecycle, and security are READY within the bounded product scope. Non-collinear visualization, Bader/atomic charge, electrostatic potential, slices, and full volumetric analysis remain NOT IMPLEMENTED/PARTIAL READY.
+
+Phase 10J-4 may start only after this completion record receives current-head CI success and the verified J3 task block is archived from `TASKS.md`.

@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10J-3：Charge / Spin Density Product
 
 进入 Phase 10J-3：Charge / Spin Density Product。
@@ -2611,6 +2611,16 @@ Phase 10J-4：Electrostatic Potential Product
 先读取真实 Phase 10J-2 Result、Phase 10J quantity/unit/spin contracts、Phase 10J-1 CHGCAR映射与当前Isosurface Renderer，输出 Pre-Implementation Audit；然后完成quantity compatibility、electron/charge语义、共线spin、严格derived up/down fields、full-cell integrals、product UI、真实browser/API/performance/security evidence、docs、commit和CI闭环。
 
 不得把本阶段扩展为Bader analysis、atomic charge、density-difference calculation、volume ray casting或electrostatic-potential product。
+
+## 完成记录
+
+* 完成时间：`2026-07-22 13:29:44 +08:00`
+* 实现提交：`d4de1a342d767fcfe21302b7465ae047fdf620f9` (`Add charge and spin density product`)
+* 修改文件：volumetric adapter、frontend validator/types/product UI、planner/registry、聚焦与集成测试、J3 browser/runtime evidence、Phase 10J-3 docs、shared schema/index、persistent records 和本任务状态。
+* 修改摘要：保留 source-native electron/charge/spin fields；增加固定 `COLLINEAR_SPIN_UP_V1`/`COLLINEAR_SPIN_DOWN_V1` 派生、严格 relationship/provenance gate、full-cell integrals、augmentation/reference warnings、total/spin difference/up/down product modes、对称正负等值面阈值、移动端布局和真实三浏览器证据。未实现 Bader、atomic charge、density difference、potential、slice 或 direct volume。
+* 测试结果：frontend `246 passed`；backend `719 passed, 24 skipped, 62 warnings`；聚焦 backend `26 passed, 3 deselected`；typecheck/build、`git diff --check`、`uv lock --check`、J2/J3/Phase 10 browser closure、network/secret scans 通过。`npm audit` 因镜像 `404 NOT_IMPLEMENTED` unavailable；无依赖或 lockfile 变更。
+* Browser/Evidence：Chromium、Firefox、WebKit、mobile WebGL2 通过；`CHARGE_SPIN_DENSITY_RUNTIME_EVIDENCE_PASS`、`CHARGE_SPIN_DENSITY_PRODUCT_BROWSER_EVIDENCE_PASS`、`CHARGE_SPIN_DENSITY_PRODUCT_PERFORMANCE_EVIDENCE_PASS`、`NO_CHARGE_SPIN_PRODUCT_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。
+* CI：run `29757885564` 精确匹配实现 SHA；unit、frontend typecheck/build、PostgreSQL/Redis/MinIO service-backed integration 和 no-skipped assertion 均 success。
 
 
 ---END---
