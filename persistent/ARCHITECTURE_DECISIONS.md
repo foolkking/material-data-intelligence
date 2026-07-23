@@ -3864,3 +3864,16 @@ The existing volumetric tool and Phase 10J-2 renderer remain the execution
 boundary; no overlapping parser or arbitrary scientific inference is added.
 Potential, Bader, non-collinear, slices, volume ray casting, and density
 analysis remain separately scoped.
+
+## 2026-07-22 Phase 10J-4 ADR: source-defined potential and display gauges
+
+LOCPOT remains `local_potential` in electronvolt with a source-defined zero.
+Only source-native, discrete cell-average-zero, and selected-point-zero
+constant display gauges are allowed. Source payloads and hashes never change.
+Point differences are gauge invariant; profiles are raw arithmetic means over
+the two other canonical uniform-grid axes and are labeled by lattice axis,
+not Cartesian direction. The existing Worker reduces all three profiles in one
+pass, and surface layers preserve source contour identity across display-gauge
+changes. No vacuum, Fermi, work-function, component,
+cross-calculation alignment, smoothing, arbitrary path, or slice inference is
+authorized.

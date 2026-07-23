@@ -1,0 +1,12 @@
+{
+  "artifactJavaScript": false,
+  "artifactHtml": false,
+  "artifactShader": false,
+  "externalUrls": false,
+  "dynamicArtifactImport": false,
+  "vacuumDetection": false,
+  "workFunction": false,
+  "externalRequests": 0,
+  "network": "NO_ELECTROSTATIC_POTENTIAL_PRODUCT_EXTERNAL_NETWORK_REQUESTS",
+  "marker": "NO_SECRET_PATTERN_HITS"
+}

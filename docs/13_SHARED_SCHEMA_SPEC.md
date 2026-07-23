@@ -1452,6 +1452,17 @@ spin channels with formula IDs `COLLINEAR_SPIN_UP_V1` and
 relationships. Electron density is not signed electric charge density.
 Full-cell integrals are not atomic partition results, and augmentation
 contributions must remain visible as source warnings when unavailable.
+
+## Phase 10J-4 potential product addendum
+
+Potential products accept only validated real scalar `local_potential` or
+explicit `electrostatic_potential` fields with exact unit and reference
+metadata. Source fields remain immutable. Source-native, cell-average-zero,
+and selected-point-zero are product-local constant gauges. Surface layers bind
+source-native and displayed isovalues so gauge changes preserve source contour
+identity. Trilinear samples, point differences, and three unsmoothed canonical
+lattice-axis planar profiles bind to the source field hash; they provide no vacuum, Fermi, work-function,
+cross-calculation alignment, electric-field, or arbitrary slicing authority.
 # Phase 10J-2 Volumetric Structure Overlay
 
 `phase10j2.volumetric_structure_overlay.v1` is an additive, inert, renderer-consumer artifact. It binds exactly to one validated `phase10j.volumetric_grid.v1` by `grid_id` and `grid_content_hash`. Fully periodic sources may embed one independently validated canonical viewer scene; fully non-periodic sources may carry bounded `{atomic_number, cartesian_angstrom}` records. The artifact is not part of `phase10j.volumetric_manifest.v1` schema identity and does not modify the canonical grid, field, payload, dataset, or manifest contracts.

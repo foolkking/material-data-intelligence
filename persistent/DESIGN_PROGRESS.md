@@ -1430,3 +1430,11 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added product UI with total/spin-difference/up/down modes, paired signed isosurfaces, symmetric threshold lock, warnings, and mobile-safe layout.
 - Closed real QueueWorkerRuntime-to-adapter artifacts, Chromium/Firefox/WebKit/mobile browser evidence, performance, accessibility, network, and secret-scan markers.
 - Bader, atomic partitioning, non-collinear vector product, potential, slices, and direct volume remain deferred.
+
+## 2026-07-22 Phase 10J-4 Electrostatic Potential Product
+
+- Preserved real LOCPOT as source-defined `local_potential` in electronvolt; no electrostatic-component, vacuum, Fermi, or work-function inference.
+- Added strict frontend potential reference/statistics mapping, source-native/cell-average-zero/selected-point-zero gauges, source-contour-preserving layer identity, trilinear point sampling, gauge-invariant point differences, and three Worker-reduced raw lattice-axis profiles with linked 3D planes.
+- Reused the Phase 10J-2 Worker/Three.js renderer and captured Chromium/Firefox/WebKit/mobile runtime, profile, performance, accessibility, network, and security evidence.
+- Vacuum/work-function/Fermi alignment, cross-calculation alignment, macroscopic averaging, arbitrary slice/path, and direct volume remain deferred.
+- Local closure after the final runner hardening passed 258 frontend tests and `722 passed, 24 skipped, 62 warnings` backend tests, typecheck, production build, the historical volumetric/charge-spin/Phase 10 browser pack, and the Phase 10J-4 Chromium/Firefox/WebKit/mobile evidence. The live evidence records one WebGL2 canvas per browser, zero console/page errors, zero external requests, source-contour preservation, three profiles, point difference, PNG signature, and the bounded `128^3` float64 near-cap test. Docker-backed service integration remains a current-HEAD CI gate; the configured npm audit endpoint remains unavailable.

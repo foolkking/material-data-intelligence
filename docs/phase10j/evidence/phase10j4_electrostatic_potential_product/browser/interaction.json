@@ -1,0 +1,29 @@
+{
+  "gauges": [
+    "source_native",
+    "cell_average_zero",
+    "selected_point_zero"
+  ],
+  "sourceContourPreserved": true,
+  "profileAxes": 3,
+  "profilePlane": true,
+  "keyboardProfileSelection": true,
+  "pointSampling": true,
+  "pngBytes": 177978,
+  "negative": {
+    "unknownReferenceWarning": true,
+    "invalidQuantityPotentialProduct": false,
+    "invalidQuantityGenericCanvas": true
+  },
+  "mobile": {
+    "viewport": [
+      390,
+      844
+    ],
+    "overflow": false,
+    "canvasCount": 1,
+    "triangles": 64,
+    "touch": true,
+    "gauge": "cell_average_zero"
+  }
+}

@@ -2093,3 +2093,11 @@
 - [x] Add product model, integrals, provenance/relationship validation, paired thresholds, and scientific warnings.
 - [x] Capture live runtime artifacts and Chromium/Firefox/WebKit/mobile evidence with zero external requests.
 - [ ] Phase 10J-4 potential compatibility and product remain separate.
+
+## Phase 10J-4 Electrostatic Potential Product
+
+- [x] Add exact local/electrostatic potential compatibility and reference mapping.
+- [x] Add bounded source/cell-average/selected-point gauges, source-contour identity, sampling, point difference, Worker-reduced raw profiles, and linked 3D planes.
+- [x] Add live LOCPOT runtime and Chromium/Firefox/WebKit/mobile evidence.
+- [ ] Vacuum/work-function, alignment, slices, and direct volume remain separate.
+- [x] Phase 10J-4 local implementation, runtime artifact replay, three-browser/mobile evidence, full frontend/backend regression, build, security scan, and evidence manifest are complete; current-HEAD CI and queue archival remain before closure.

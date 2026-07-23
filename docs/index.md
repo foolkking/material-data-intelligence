@@ -344,6 +344,11 @@ and
 | [`phase10j/phase10j3_charge_spin_density_security_and_evidence.md`](phase10j/phase10j3_charge_spin_density_security_and_evidence.md) | Product security, caps, browser, performance, and evidence closure |
 | [`phase10j/phase10j3_readiness_matrix.md`](phase10j/phase10j3_readiness_matrix.md) | Phase 10J-3 readiness decisions and deferred scope |
 | [`phase10j/evidence/phase10j3_charge_spin_density_product/`](phase10j/evidence/phase10j3_charge_spin_density_product/) | Live runtime artifacts, scientific captures, browser matrix, screenshots, and security evidence |
+| [`phase10j/phase10j4_electrostatic_potential_product.md`](phase10j/phase10j4_electrostatic_potential_product.md) | Source-defined potential product and renderer integration |
+| [`phase10j/phase10j4_potential_gauge_and_profile_semantics.md`](phase10j/phase10j4_potential_gauge_and_profile_semantics.md) | Gauge, trilinear sampling, point difference, and lattice-axis profile semantics |
+| [`phase10j/phase10j4_potential_security_and_evidence.md`](phase10j/phase10j4_potential_security_and_evidence.md) | Potential security boundary and live evidence |
+| [`phase10j/phase10j4_readiness_matrix.md`](phase10j/phase10j4_readiness_matrix.md) | Phase 10J-4 readiness decisions |
+| [`phase10j/evidence/phase10j4_electrostatic_potential_product/`](phase10j/evidence/phase10j4_electrostatic_potential_product/) | Live LOCPOT artifacts, gauges, profiles, browsers, screenshots, and security evidence |
 | [`phase10f/phase10f27_structure_viewer_3d_registration.md`](phase10f/phase10f27_structure_viewer_3d_registration.md) | Formal product identity and platform registry ownership |
 | [`phase10f/phase10f27_structure_viewer_3d_tool_contract.md`](phase10f/phase10f27_structure_viewer_3d_tool_contract.md) | Strict input, output, runtime, and artifact contract |
 | [`phase10f/phase10f27_structure_viewer_3d_capabilities.md`](phase10f/phase10f27_structure_viewer_3d_capabilities.md) | Supported and explicitly unsupported capability matrix |

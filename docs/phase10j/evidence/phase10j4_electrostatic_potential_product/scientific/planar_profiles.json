@@ -1,0 +1,44 @@
+{
+  "axes": [
+    "lattice_axis_0",
+    "lattice_axis_1",
+    "lattice_axis_2"
+  ],
+  "formula": "POTENTIAL_PLANAR_AVERAGE_V1",
+  "profiles": [
+    {
+      "axis": "lattice_axis_0",
+      "cell_average_zero_values": [
+        -0.25,
+        0.25
+      ],
+      "source_values": [
+        0.5,
+        1.0
+      ]
+    },
+    {
+      "axis": "lattice_axis_1",
+      "cell_average_zero_values": [
+        -0.5,
+        0.5
+      ],
+      "source_values": [
+        0.25,
+        1.25
+      ]
+    },
+    {
+      "axis": "lattice_axis_2",
+      "cell_average_zero_values": [
+        -1.0,
+        1.0
+      ],
+      "source_values": [
+        -0.25,
+        1.75
+      ]
+    }
+  ],
+  "smoothing": false
+}

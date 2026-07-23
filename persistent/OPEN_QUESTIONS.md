@@ -816,4 +816,10 @@
 ## Phase 10J-3 follow-up
 
 - Authoritative electron-count references and augmentation-inclusive reconstruction require a separately approved source contract.
-- Non-collinear vector product, electrostatic potential, Bader/atomic partitioning, slices, and time-dependent density remain open future phases.
+- Non-collinear vector product, Bader/atomic partitioning, slices, and time-dependent density remain open future phases.
+
+## Phase 10J-4 follow-up
+
+- A work-function product requires independently validated vacuum and Fermi reference artifacts; neither is inferred from LOCPOT.
+- Macroscopic averaging, cross-calculation alignment, mixed-periodicity slab semantics, arbitrary slices, and direct volume rendering require separate contracts.
+- Local implementation checks are closed: 258 frontend tests, 722 backend passes with 24 intentional skips, production build, and real Chromium/Firefox/WebKit/mobile evidence. Docker is unavailable locally for service-backed zero-skip integration; current-HEAD CI is required. The configured npm audit mirror returns `404 NOT_IMPLEMENTED`.

@@ -1,0 +1,39 @@
+{
+  "dataset_hash": "e967b44d3a93fae087076bda0ae32b81e6299b91411ff99f3304a4ee6f84641a",
+  "external_assets": [],
+  "gauge_formulas": [
+    "POTENTIAL_SOURCE_NATIVE_V1",
+    "POTENTIAL_CELL_AVERAGE_ZERO_V1",
+    "POTENTIAL_SELECTED_POINT_ZERO_V1"
+  ],
+  "profile_formula": "POTENTIAL_PLANAR_AVERAGE_V1",
+  "profile_hashes": [
+    "d99f246689ec01fdf9fa6a3b3e3ae36ce000143e0fb3e660c393c01e2e6cdc52",
+    "b4c2db06e8ec31ca496d115f9540ab15fefd6cf483cf8eb341fc716e580c1675",
+    "61f1d88a36db68d52662909c358a18b52d5d40bef8125d9d814dc924eb59e005"
+  ],
+  "renderer_included": false,
+  "schema_version": "phase10j4.electrostatic_potential_product.v1",
+  "security": {
+    "artifact_javascript": false,
+    "artifact_shader": false,
+    "artifact_wasm": false,
+    "artifact_worker": false,
+    "external_urls": false
+  },
+  "source_contour_policy": "preserve_source_contour_identity",
+  "source_field": {
+    "field_hash": "8eab3447c0689ffb2e9d8dc17013c4299c50192bc62c6a79a66641c0382fe7d3",
+    "field_id": "field:8eab3447c0689ffb2e9d8dc17013c4299c50192bc62c6a79a66641c0382fe7d3",
+    "quantity": "local_potential",
+    "reference": {
+      "kind": "source_defined",
+      "reference_unit": "electronvolt",
+      "reference_value": 0.0,
+      "shift_amount": 0.0,
+      "shift_applied": false,
+      "source_metadata": "No alignment or mean shift was applied."
+    },
+    "unit": "electronvolt"
+  }
+}

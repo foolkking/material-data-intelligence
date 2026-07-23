@@ -1,0 +1,11 @@
+{
+  "cell_average_zero_shift": -0.75,
+  "formula": "POTENTIAL_CELL_AVERAGE_ZERO_V1",
+  "point_difference_after": 3.5,
+  "point_difference_before": 3.5,
+  "shifted_mean_residual": 0.0,
+  "source_contour_policy": "preserve_source_contour_identity",
+  "source_mean": 0.75,
+  "source_payload_sha256": "e25b93b3c7d0057c4cf7156f988d8e88b03dfa1ff5600da99b1c231c84dd9b3c",
+  "source_payload_unchanged": true
+}

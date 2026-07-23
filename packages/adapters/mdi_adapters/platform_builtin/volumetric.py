@@ -5,7 +5,6 @@ from typing import Any
 
 from mdi_artifact_core import (
     ArtifactPayload,
-    VOLUMETRIC_CAPS,
     VolumetricContractError,
     build_binary_payload,
     build_volumetric_dataset,
@@ -225,6 +224,16 @@ class VolumetricDataAdapter(BaseToolAdapter):
                 and transformation["detail"].startswith(("COLLINEAR_SPIN_UP_V1:", "COLLINEAR_SPIN_DOWN_V1:"))
             }),
             "fieldRelationships": result.dataset["relationships"],
+            "potentialFields": [
+                {
+                    "fieldId": field["field_id"],
+                    "quantity": field["quantity"],
+                    "unit": field["unit"]["canonical_unit"],
+                    "reference": field["potential_reference"],
+                }
+                for field in result.fields
+                if field["quantity"] in {"local_potential", "electrostatic_potential"}
+            ],
         }
         payloads.append(ArtifactPayload(ArtifactType.recipe_json, "recipe.json", stable_json_dumps(recipe), "application/json"))
         artifacts = self.export_payloads(payloads, provenance={
@@ -459,6 +468,14 @@ def _summary(result: VolumetricAdapterResult) -> str:
         "", "## Fields",
     ]
     rows.extend(f"- `{field['field_name']}`: {field['quantity']} [{field['unit']['canonical_unit']}]" for field in result.fields)
+    potential_fields = [field for field in result.fields if field["quantity"] in {"local_potential", "electrostatic_potential"}]
+    if potential_fields:
+        rows.extend(["", "## Potential Reference"])
+        rows.extend(
+            f"- `{field['field_name']}`: `{field['potential_reference']['kind']}`; source metadata: {field['potential_reference']['source_metadata']}"
+            for field in potential_fields
+        )
+        rows.append("- No vacuum, Fermi, work-function, or absolute-zero reference is inferred.")
     derived_formulas = sorted({
         transformation["detail"].split(":", 1)[0]
         for field in result.fields

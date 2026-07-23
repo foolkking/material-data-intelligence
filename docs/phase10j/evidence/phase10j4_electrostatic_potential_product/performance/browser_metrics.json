@@ -1,0 +1,60 @@
+{
+  "browser": {
+    "browser": "chromium",
+    "available": true,
+    "rendered": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "triangles": 64,
+      "vertices": 50,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 4,
+      "context": "webgl2",
+      "product": "Local Potentialready",
+      "quantity": "local_potential",
+      "reference": "source_defined",
+      "gauge": "source_native",
+      "profileRows": 2,
+      "profileChart": true,
+      "profileCalculationMs": 0.10000002384185791,
+      "extractionMs": 6.4,
+      "initializationMs": 2522.5172
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "worker": "application-owned static Worker",
+  "renderer": "Three.js 0.185.1",
+  "payloadBytes": 45,
+  "voxelCount": 8,
+  "profileAxes": 3,
+  "profilePoints": 6,
+  "profileCalculationMs": 0.10000002384185791,
+  "isosurfaceExtractionMs": 6.4,
+  "initializationMs": 2522.5172,
+  "drawCalls": 5,
+  "geometries": 4,
+  "materials": 4,
+  "canvasCount": 1,
+  "context": "webgl2",
+  "caps": {
+    "maximumLayers": 4,
+    "maximumPayloadBytes": 16777216,
+    "maximumProfilePointsPerAxis": 4096,
+    "maximumProfilePointsTotal": 12288
+  },
+  "nearCapReference": {
+    "dtype": "float64",
+    "shape": [
+      128,
+      128,
+      128
+    ],
+    "voxels": 2097152,
+    "bytes": 16777216,
+    "storedProfilePoints": 384,
+    "test": "electrostaticPotentialProduct.test.ts"
+  }
+}

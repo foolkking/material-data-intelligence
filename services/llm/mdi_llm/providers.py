@@ -1813,17 +1813,17 @@ def _should_generate_volumetric_data(
     prompt = request.user_prompt.lower()
     unsupported = (
         "slice", "direct volume", "ray cast", "bader", "atomic charge", "charge partition",
-        "run vasp", "calculate density", "calculate charge", "electrostatic potential", "trajectory", "phonon", "brillouin", "defect", "slab",
-        "切片", "体渲染", "bader", "原子电荷", "电荷分区", "计算电荷密度", "运行 vasp", "静电势", "轨迹", "声子", "布里渊",
+        "run vasp", "calculate density", "calculate charge", "calculate locpot", "work function", "vacuum level", "fermi level", "band offset", "potential alignment", "macroscopic average", "electric field", "trajectory", "phonon", "brillouin", "defect", "slab",
+        "切片", "体渲染", "bader", "原子电荷", "电荷分区", "计算电荷密度", "计算 locpot", "运行 vasp", "功函数", "真空能级", "费米能级", "能带偏移", "势对齐", "宏观平均", "电场", "轨迹", "声子", "布里渊",
     )
     if any(marker in prompt for marker in unsupported):
         return False
     markers = (
         "parse chgcar", "parse locpot", "parse elfcar", "parse parchg", "parse cube",
         "normalize volumetric", "volumetric data artifact", "canonical volumetric", "import charge density",
-        "charge density", "electron density", "spin density", "spin difference", "isosurface", "iso-surface", "volumetric viewer", "render density",
+        "charge density", "electron density", "spin density", "spin difference", "local potential", "electrostatic potential", "equipotential", "planar-averaged potential", "planar average potential", "potential difference", "compare the potential", "cell-average-zero", "isosurface", "iso-surface", "volumetric viewer", "render density",
         "解析 chgcar", "解析 locpot", "解析 elfcar", "解析 parchg", "解析 cube", "规范化体数据", "导入体数据",
-        "电荷密度", "电子密度", "自旋密度", "自旋差", "等值面", "体数据查看器", "渲染密度",
+        "电荷密度", "电子密度", "自旋密度", "自旋差", "局域势", "静电势", "等势面", "平面平均势", "电势差", "胞平均零点", "等值面", "体数据查看器", "渲染密度",
     )
     return any(marker in prompt for marker in markers)
 
@@ -1838,7 +1838,7 @@ def _mock_volumetric_data_plan(request: PlannerRequest) -> dict[str, Any]:
         "stepId": "step_001",
         "toolId": "structure.volumetric_data",
         "purpose": "Parse one bounded supported source into validated inert canonical volumetric artifacts.",
-        "reason": "The request asks to validate an available bounded volumetric source for the application-owned metadata or density product without external execution.",
+        "reason": "The request asks to validate an available bounded volumetric source for the application-owned density or potential product without external execution.",
         "inputRefs": [{"refType": "normalized_object", "ref": "volumetric", "objectType": "VolumetricData"}],
         "params": {
             "format": "auto", "quantity_hint": "auto", "field_selection": "all_supported",

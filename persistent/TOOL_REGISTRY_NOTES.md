@@ -1160,3 +1160,9 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - `structure.volumetric_data` remains the sole public tool. Charge/spin is a typed product consumer, not a new overlapping registry entry.
 - Planner accepts explicit density/isodensity/spin-density product intent while rejecting Bader, atomic charge, potential, slices, volume, trajectory, and phonon requests.
 - Derived collinear fields are inert canonical artifacts with allowlisted formula IDs and relationship validation; no renderer code or external resource is registered.
+
+## Phase 10J-4
+
+- `structure.volumetric_data` remains the sole public parser tool; potential inspection is an application-owned consumer.
+- Natural LOCPOT/local-potential/equipotential/planar-profile/point-difference requests route to the existing tool.
+- Work function, vacuum/Fermi detection, cross-potential alignment, electric-field calculation, DFT, macro-average, arbitrary slice/path, and direct volume requests remain rejected.

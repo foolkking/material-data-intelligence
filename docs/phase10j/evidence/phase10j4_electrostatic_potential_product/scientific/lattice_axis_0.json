@@ -1,0 +1,18 @@
+{
+  "axis": "lattice_axis_0",
+  "displayed_values": [
+    0.5,
+    1.0
+  ],
+  "formula_id": "POTENTIAL_PLANAR_AVERAGE_V1",
+  "gauge": "source_native",
+  "profile_hash": "d99f246689ec01fdf9fa6a3b3e3ae36ce000143e0fb3e660c393c01e2e6cdc52",
+  "schema_version": "phase10j4.potential_profile.v1",
+  "smoothing": false,
+  "source_field_hash": "8eab3447c0689ffb2e9d8dc17013c4299c50192bc62c6a79a66641c0382fe7d3",
+  "source_values": [
+    0.5,
+    1.0
+  ],
+  "unit": "electronvolt"
+}

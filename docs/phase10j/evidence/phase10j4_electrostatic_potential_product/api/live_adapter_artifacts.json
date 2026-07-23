@@ -1,0 +1,18 @@
+{
+  "source": "Phase 10J-4 QueueWorkerRuntime LOCPOT job",
+  "jobId": "job_4356b54177b346c69f3d62be",
+  "selectedTool": "structure.volumetric_data",
+  "artifactNames": [
+    "volumetric_grid.json",
+    "volumetric_payload_01.json",
+    "volumetric_field_01.json",
+    "volumetric_field_01.f64.gz",
+    "volumetric_dataset.json",
+    "volumetric_manifest.json",
+    "volumetric_structure_overlay.json",
+    "summary.md",
+    "recipe.json"
+  ],
+  "dataset": "live_locpot",
+  "payloadPath": "local job-scoped artifact content endpoint"
+}

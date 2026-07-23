@@ -77,6 +77,14 @@ export type ValidatedVolumetricField = Readonly<{
   sourceUnit: string;
   normalizationSemantics: "source_native" | "normalized_to_unit_integral" | "normalized_to_electron_count" | "normalized_to_charge" | "not_normalized" | "unknown";
   integralSemantics: "electron_count" | "elementary_charge" | "magnetic_moment" | "cell_average" | "zero_by_definition" | "not_physically_interpreted" | "unknown";
+  potentialReference: Readonly<{
+    kind: "absolute_declared" | "cell_average_zero" | "vacuum_reference" | "fermi_reference" | "source_defined" | "unknown";
+    referenceValue: number;
+    referenceUnit: string;
+    shiftApplied: boolean;
+    shiftAmount: number;
+    sourceMetadata: string;
+  }> | null;
   spin: Readonly<{
     representation: "collinear" | "non_collinear";
     channel: "total" | "spin_up" | "spin_down" | "spin_difference" | "magnetization_x" | "magnetization_y" | "magnetization_z" | "magnetization_vector";
@@ -92,6 +100,8 @@ export type ValidatedVolumetricField = Readonly<{
   minimum: number;
   maximum: number;
   mean: number;
+  standardDeviation: number;
+  rms: number;
   integral: number;
   warnings: readonly string[];
   contentHash: string;
@@ -235,6 +245,7 @@ export type IsosurfaceWorkerRequest = Readonly<{
   grid: ValidatedVolumetricGrid;
   dtype: "float32" | "float64";
   fieldBuffer: ArrayBuffer;
+  computePotentialProfiles?: boolean;
   layers: readonly IsosurfaceLayerRequest[];
   caps: Readonly<{
     maximumVerticesPerLayer: number;
@@ -246,7 +257,7 @@ export type IsosurfaceWorkerRequest = Readonly<{
 }>;
 
 export type IsosurfaceWorkerResponse =
-  | Readonly<{ type: "success"; requestId: number; meshes: readonly IsosurfaceMesh[]; metrics: IsosurfaceExtractionMetrics; warnings: readonly string[] }>
+  | Readonly<{ type: "success"; requestId: number; meshes: readonly IsosurfaceMesh[]; metrics: IsosurfaceExtractionMetrics; warnings: readonly string[]; potentialProfiles?: Readonly<{ sourceValues:readonly [readonly number[],readonly number[],readonly number[]]; calculationMs:number }> }>
   | Readonly<{ type: "failure"; requestId: number; code: VolumetricViewerErrorCode; message: string }>;
 
 export type DecodedVolumetricField = Readonly<{
@@ -297,6 +308,7 @@ export type VolumetricRendererEngine = Readonly<{
   fitSurface: () => void;
   fitStructure: () => void;
   setSelection: (pick: VolumetricSurfacePick | null) => void;
+  setProfilePlane: (axis: 0|1|2, index: number | null) => void;
   snapshot: () => VolumetricRendererSnapshot;
   render: () => void;
   exportPng: (width: number, height: number, pixelRatio: number) => Promise<Blob>;

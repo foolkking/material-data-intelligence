@@ -5,7 +5,9 @@
 - Added a validated volumetric artifact consumer with a job-scoped bounded content API, gzip/raw payload loading, application-owned Worker extraction, periodic halo/seam handling, affine coordinates, deterministic welded meshes, gradient normals, and typed security/resource limits.
 - Added the real Three.js isosurface product with structure/cell/bond overlays, signed and multi-layer controls, picking/inspector, clipping, camera controls, local PNG export, context/lifecycle cleanup, mobile/accessibility fallback, and inert metadata/manifest views.
 - Phase 10J-3 adds quantity-specific electron, signed charge, collinear spin, derived spin-up/down, integral, provenance, relationship, and augmentation semantics with live multi-browser product evidence.
+- Phase 10J-4 adds source-defined LOCPOT potential inspection, bounded display gauges, trilinear point differences, raw lattice-axis planar profiles, and live multi-browser evidence without absolute-potential claims.
 - Closed local frontend/backend/build/browser/security evidence and current-head CI run `29744316126`; local service-backed testing requires Docker, and npm audit remains unavailable at the configured registry endpoint.
+- Phase 10J-4 local closure now records 258 frontend tests, `722 passed, 24 skipped, 62 warnings` backend tests, production build, historical volumetric regressions, and real Chromium/Firefox/WebKit/mobile potential evidence. Local Docker service-backed integration is unavailable and npm audit remains unavailable at the configured mirror; neither is reported as passed locally.
 
 ## 2026-07-17 - Phase 10I-3 Band-BZ Linked View
 
