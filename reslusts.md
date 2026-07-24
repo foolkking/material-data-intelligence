@@ -494,3 +494,104 @@ Phase 10J-4 may start only after this completion record receives current-head CI
 * completion record commit and CI: `694c79eae7f65b1513fc010281972211642b22d6`, run `29895985539`, success
 * verification: TASKS completion record, `reslusts.md`, frontend/backend/build/browser/security evidence, both current-head CI runs, service-backed/no-skipped gates, origin equality, and clean worktree all matched.
 * archive decision: the complete Phase 10J-3 task block may be removed from `TASKS.md`; this result remains the persistent history.
+
+# Phase 10J-4 Electrostatic Potential Product Result
+
+## 1. Conclusion
+
+PASS for the bounded source-defined electrostatic-potential product scope.
+The implementation consumes a real QueueWorkerRuntime LOCPOT artifact through
+the existing `structure.volumetric_data` path. It does not infer an absolute
+potential, vacuum level, Fermi level, work function, electric field, or any
+cross-calculation alignment.
+
+## 2. Baseline and Closure
+
+* baseline: Phase 10J-3 archive HEAD `39dcd1b1f795af0b213123b5d6d71947f43d8492`
+* branch: `master`
+* implementation commit: `fc1022cdc8decb7e9e77302329d1d7f6fe11b87c`
+* implementation CI: run `29970344231`, success
+* final implementation CI jobs: unit success; frontend typecheck/build success; PostgreSQL/Redis/MinIO service-backed integration success; no-skipped assertion success
+* working tree after implementation commit: clean
+
+## 3. Product and Scientific Semantics
+
+* supported quantities: real scalar `local_potential` and explicitly defined `electrostatic_potential`
+* live LOCPOT mapping: `local_potential`, `electronvolt`, `source_defined`
+* source field bytes, field hash, statistics, unit, reference and provenance remain immutable
+* display gauges: source-native, cell-average-zero, selected-point-zero; shifts are bounded display-only derived views with formula, unit, amount and reset
+* source contour identity is preserved while gauge changes only the displayed isovalue
+* point sampling uses periodic trilinear interpolation and reports Cartesian/fractional coordinates, image, source/display values and interpolation policy
+* point-to-point differences are explicitly gauge invariant
+* profiles are raw arithmetic planar averages along the three canonical lattice axes, reduced in one Worker pass with deterministic profile hashes and no smoothing
+* no vacuum/Fermi/work-function/absolute-zero inference is exposed; unknown reference and unsupported quantity states fall back safely
+
+## 4. Implementation
+
+* reused Phase 10J-2 validated payload loader, Worker extraction, affine/triclinic Three.js renderer, structure overlay, clipping, picking, lifecycle and PNG export
+* added potential compatibility mapping, full source/display statistics, gauge state, surface identity, point inspector, profile chart/table, keyboard profile navigation, linked 3D profile plane and gauge-aware controls
+* added adapter summary/recipe potential metadata and explicit no-inference disclosures
+* added strict planner routing for potential inspection while retaining `structure.volumetric_data` as the only public tool
+* added application caps: 4 layers, 16 MiB payload, 4096 profile points per axis, 12288 total profile points, bounded point/shift values and bounded profile arrays
+
+## 5. Evidence
+
+* evidence directory: `docs/phase10j/evidence/phase10j4_electrostatic_potential_product/`
+* live API capture and artifacts: real Mock Planner -> QueueWorkerRuntime -> canonical adapter -> stored LOCPOT artifact set, including dataset, field, payload, manifest, overlay, summary and recipe
+* browser cases: source-native surface/statistics, cell-average-zero, source/display isovalue identity, axes A/B/C profiles, linked 3D plane, keyboard zoom, surface pick, point difference, selected-point gauge, structure toggle, clipping, accessibility table, PNG, unknown-reference warning and generic scalar fallback
+* browser matrix: Chromium, Firefox and WebKit all WebGL2, one canvas, 64 triangles, 50 vertices, five draw calls, four geometries, four materials, zero console/page errors and zero external requests
+* interaction evidence: source/cell-average/selected-point gauges, profile plane selection, touch mobile capture at 390x844, no horizontal page overflow, local PNG signature `89504e0d0a1a0a`
+* performance evidence: Chromium profile reduction `0.1 ms`, isosurface extraction `6.4 ms`, renderer initialization `2522.5 ms`; near-cap unit test covers float64 `128^3` / 2,097,152 voxels / 16 MiB and emits 384 profile values
+
+## 6. Tests and Audits
+
+* frontend full: 41 files, 258 passed
+* Phase 10J backend focused: 60 passed
+* backend full: 722 passed, 24 skipped, 62 warnings; skipped remain reported as skipped
+* typecheck: passed
+* production build: passed
+* historical browser regressions: volumetric isosurface, charge/spin and Phase 10 product closure passed in Chromium/Firefox/WebKit/mobile where applicable
+* J4 browser runner markers: product, profiles, performance, zero external requests and secret scan passed
+* `uv lock --check`: passed
+* Three dependency tree: one `three@0.185.1`; no dependency or lockfile change
+* Ruff compatible check: passed; repository compact evidence/test style requires E701/E702 exclusions
+* `git diff --check`: passed with Windows line-ending warnings only
+* local service-backed integration: unavailable because Docker CLI is not installed; CI is the source of truth and passed
+* `npm audit`: unavailable because `registry.npmmirror.com` returned `404 NOT_IMPLEMENTED`; no clean-audit claim made
+
+## 7. Security
+
+* no artifact JavaScript, HTML execution, shader/module/WASM authority, dynamic artifact import, remote texture, external asset or external API
+* product implementation has no HTML injection, `eval`, `new Function`, external URL sink, XHR, WebSocket or external resource sink
+* artifact values are mapped through allowlisted quantity/reference/unit fields and bounded numeric arrays
+* source payload is not mutated; Worker and renderer cleanup remain application-owned
+* secret scan marker: `NO_SECRET_PATTERN_HITS`
+* network marker: `NO_ELECTROSTATIC_POTENTIAL_PRODUCT_EXTERNAL_NETWORK_REQUESTS`
+
+## 8. Files
+
+* frontend: `apps/web/app/components/volumetric-viewer/electrostaticPotentialProduct.ts`, tests, isosurface surface/Worker/engine/type/validation integration and CSS
+* backend: volumetric adapter and mock planner routing updates; J4 backend tests
+* browser/evidence: J4 runner, live evidence generator, API/artifact captures, matrices, metrics, security audit and 23 screenshots with hash manifest
+* docs: J4 product, gauge/profile semantics, security/evidence, readiness, shared schema and index
+* persistent: architecture decisions, design progress, changelog, open questions, task board and registry notes
+
+## 9. Explicitly Deferred
+
+Vacuum-level detection, work-function calculation, Fermi alignment, band-edge/core-level alignment, cross-calculation potential alignment, absolute electrostatic zero, arbitrary potential subtraction, defect/charged-cell/Makov-Payne/Freysoldt/dipole corrections, electric-field/force/Poisson products, charge reconstruction, Hartree/ionic/XC decomposition, electrostatic energy, Bader analysis, planar charge integration, macroscopic dielectric analysis, arbitrary smoothing, arbitrary slices/paths, direct volume ray casting, arbitrary expression evaluation, artifact code, external URLs/assets, and real LLM/script/notebook execution remain deferred.
+
+## 10. Readiness
+
+Real LOCPOT runtime artifact, potential compatibility, source/reference disclosure,
+three gauges, source-contour identity, statistics, trilinear sampling, point
+difference, three profiles, linked plane, structure overlay, PNG, browser matrix,
+mobile, accessibility, lifecycle, performance, security and network isolation:
+READY. Absolute potential, vacuum/work-function/Fermi alignment, arbitrary
+slicing, electric-field product and full volumetric analysis platform:
+NOT_READY or deferred by design.
+
+## 11. Queue Status
+
+* TASKS state: `已完成` recorded after implementation CI verification
+* result record: appended without overwriting prior task history
+* next required closure: commit this completion record, wait for its current-HEAD CI, verify all records, then remove only the complete J4 block from `TASKS.md`
