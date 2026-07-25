@@ -17,5 +17,14 @@
     "dependency_install": "success"
   },
   "origin_master_matches": true,
+  "completion_record": {
+    "head": "75b2d74a1f263338f12bffe02f3ee89536625c17",
+    "run_id": 30135836995,
+    "status": "success",
+    "unit": "success",
+    "frontend_typecheck_build": "success",
+    "service_backed_integration": "success",
+    "no_skipped_assertion": "success"
+  },
   "note": "GitHub Actions run 30135550496 completed for the exact implementation SHA."
 }

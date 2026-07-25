@@ -2116,4 +2116,4 @@
 - [x] Reuse the Phase 10J-2 Worker/Three.js renderer with exact presets, picking, clipping, bounded periodic structure context, PNG, mobile, and accessibility behavior.
 - [x] Capture live QueueWorkerRuntime ELFCAR, PARCHG, and explicitly identified CUBE artifacts plus Chromium/Firefox/WebKit evidence with zero external requests.
 - [x] Implementation commit `a5ba567528c13ca1b3c0bb83856fe202bcdf4898` passed CI run `30135550496`, including unit, frontend typecheck/build, service-backed integration, and no-skipped assertion.
-- [ ] Completion-record CI and queue archive verification remain before removing the completed Phase 10J-5 block from `TASKS.md`.
+- [x] Completion-record commit `75b2d74a1f263338f12bffe02f3ee89536625c17` passed CI run `30135836995`; the verified completed Phase 10J-5 queue block is archived in `reslusts.md` and removed from `TASKS.md`.
