@@ -1,13 +1,21 @@
 {
   "baseline_head": "10393d3c62591c1a0d045ddfdb5ef8aa4ba128bf",
-  "implementation_head": null,
-  "run_id": null,
-  "status": "pending_implementation_commit",
+  "implementation_head": "a5ba567528c13ca1b3c0bb83856fe202bcdf4898",
+  "run_id": 30135550496,
+  "status": "success",
   "required_jobs": [
     "unit",
     "frontend",
     "service-backed integration",
     "no-skipped assertion"
   ],
-  "note": "Updated only after the pushed implementation SHA has completed current-HEAD CI."
+  "jobs": {
+    "unit": "success",
+    "frontend_typecheck_build": "success",
+    "service_backed_integration": "success",
+    "no_skipped_assertion": "success",
+    "dependency_install": "success"
+  },
+  "origin_master_matches": true,
+  "note": "GitHub Actions run 30135550496 completed for the exact implementation SHA."
 }

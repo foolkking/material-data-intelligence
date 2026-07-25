@@ -52,8 +52,14 @@
     "status": "unavailable",
     "reason": "Docker CLI is not installed in the local environment; current-HEAD CI is the required closure authority"
   },
+  "service_backed_ci": {
+    "status": "passed",
+    "run_id": 30135550496,
+    "job": "Service-backed Integration (PostgreSQL + Redis + MinIO)"
+  },
   "no_skipped_assertion": {
-    "status": "pending_current_head_ci",
-    "note": "The 24 full-suite skips are reported as skipped, not passed. The repository CI no-skipped policy job remains pending until push."
+    "status": "passed_in_current_head_ci",
+    "run_id": 30135550496,
+    "note": "The 24 full-suite skips remain reported as skipped, not passed. The service-backed integration job separately asserted zero skipped integration tests."
   }
 }

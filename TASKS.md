@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10J-5：ELF / Orbital Volumetric Product
 
 进入 Phase 10J-5：ELF / Orbital Volumetric Product。
@@ -2818,6 +2818,16 @@ Phase 10J-6：Volumetric Slice / Volume Rendering
 先读取真实 Phase 10J-4 Result、Phase 10J ELF/orbital quantity contracts、Phase 10J-1 ELFCAR/PARCHG/CUBE解析语义、Phase 10J-2 Renderer和现有产品基础设施，输出 Pre-Implementation Audit；然后完成ELF和Orbital compatibility、range/non-negativity验证、source identity、normalization/integral、产品UI、真实Browser/API/Performance/Security Evidence、docs、commit和CI闭环。
 
 不得把本阶段扩展为ELF basin分析、复波函数相位、轨道重构、HOMO/LUMO推断、轨道线性组合或外部量子计算。
+
+完成时间：2026-07-25 08:12:22 +08:00
+
+修改文件：`apps/web/app/components/volumetric-viewer/*`、`apps/web/test/elf-orbital-product-browser-evidence.mjs`、`apps/web/test/generate-elf-orbital-evidence.py`、`packages/adapters/mdi_adapters/platform_builtin/volumetric.py`、`services/llm/mdi_llm/providers.py`、`tests/test_phase10j5_elf_orbital_product.py`、`docs/phase10j/phase10j5_*`、`docs/phase10j/evidence/phase10j5_elf_orbital_product/`、共享 schema/index 与 persistent 记录；另对既有 BZ 重生命周期测试设置局部 10 秒限时。
+
+修改摘要：实现严格 ELF/轨道密度产品映射、dtype/scale-aware range validation、source identity/normalization/integral disclosure、精确 presets、产品 UI、不可变源值边界、bounded 结构叠加、隐藏对象 picking 修复、Mock Planner 路由、adapter summary/recipe 科学语义，以及真实 ELFCAR/PARCHG/显式 CUBE Runtime 和三浏览器/mobile/performance/security 证据。未新增依赖、公共 tool、canonical schema 或第二套 renderer。
+
+测试结果：frontend `43 files / 270 passed`；backend full `741 passed, 24 skipped`；Phase 10J exact backend group `79 passed`；Phase 10J-5 backend `19 passed`；typecheck/build 成功；Chromium/Firefox/WebKit、mobile、PNG、lifecycle、range/identity/performance markers 全部通过；`NO_ELF_ORBITAL_PRODUCT_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。npm audit 因配置镜像端点 `404 NOT_IMPLEMENTED` 为 unavailable，未声称 clean；本地 Docker unavailable，但 current-HEAD CI service-backed 与 no-skipped 均通过。
+
+提交/CI：实现提交 `a5ba567528c13ca1b3c0bb83856fe202bcdf4898`（`Add ELF and orbital volumetric products`）；GitHub Actions run `30135550496` success，Unit、Frontend Typecheck & Build、Service-backed Integration、integration no-skipped assertion 全部 success；origin/master 与实现 HEAD 一致。
 
 
 ---END---

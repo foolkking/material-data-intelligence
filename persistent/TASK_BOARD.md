@@ -2108,3 +2108,12 @@
 - [x] Add live LOCPOT runtime and Chromium/Firefox/WebKit/mobile evidence.
 - [ ] Vacuum/work-function, alignment, slices, and direct volume remain separate.
 - [x] Phase 10J-4 local implementation, runtime artifact replay, three-browser/mobile evidence, full frontend/backend regression, build, security scan, and evidence manifest are complete; current-HEAD CI and queue archival remain before closure.
+
+## Phase 10J-5 ELF / Orbital Volumetric Product
+
+- [x] Add strict application-owned ELF and source-defined orbital/partial-density product mapping over canonical Phase 10J artifacts.
+- [x] Preserve source values and disclose range, normalization, integral, and incomplete orbital identity without clamping, renormalization, HOMO/LUMO inference, or topology claims.
+- [x] Reuse the Phase 10J-2 Worker/Three.js renderer with exact presets, picking, clipping, bounded periodic structure context, PNG, mobile, and accessibility behavior.
+- [x] Capture live QueueWorkerRuntime ELFCAR, PARCHG, and explicitly identified CUBE artifacts plus Chromium/Firefox/WebKit evidence with zero external requests.
+- [x] Implementation commit `a5ba567528c13ca1b3c0bb83856fe202bcdf4898` passed CI run `30135550496`, including unit, frontend typecheck/build, service-backed integration, and no-skipped assertion.
+- [ ] Completion-record CI and queue archive verification remain before removing the completed Phase 10J-5 block from `TASKS.md`.

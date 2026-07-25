@@ -603,3 +603,156 @@ NOT_READY or deferred by design.
 * completion record commit and CI: `1d5c509c597917cefc777cbfad7435d5e6b4c237`, run `30092939805`, success
 * verification: TASKS completion record, `reslusts.md`, focused/full frontend and backend tests, production build, three-browser/mobile/runtime/performance/security evidence, both current-HEAD CI runs, service-backed/no-skipped gates, origin equality, and clean implementation worktree all matched.
 * archive decision: the complete Phase 10J-4 task block may be removed from `TASKS.md`; this result remains the persistent history.
+
+# Phase 10J-5 ELF / Orbital Volumetric Product Result
+
+## 1. Conclusion
+
+PASS. The application now provides bounded ELF and source-defined orbital/partial-density products over validated Phase 10J artifacts, with real runtime/browser evidence and no scientific identity inference beyond the source contract.
+
+## 2. Baseline
+
+* Phase 10J-4 implementation commit: `fc1022cdc8decb7e9e77302329d1d7f6fe11b87c`
+* initial HEAD / origin/master: `10393d3c62591c1a0d045ddfdb5ef8aa4ba128bf`
+* branch: `master`
+* initial status: clean except the required `TASKS.md` transition to `处理中`
+* implementation HEAD: `a5ba567528c13ca1b3c0bb83856fe202bcdf4898`
+
+## 3. Pre-Implementation Audit
+
+* ELFCAR already produced a source-native, dimensionless, real scalar `electron_localization_function` field.
+* PARCHG already produced source-native `orbital_density` in `electron/angstrom^3`, without authoritative orbital/band/k-point/occupancy identity.
+* CUBE remained generic unless an explicit trusted `quantity_hint=orbital_density` was supplied; multi-orbital CUBE remained typed unsupported.
+* The selected scope reused `structure.volumetric_data`, the Phase 10J-2 Worker, payload loader, validator, renderer, picking, clipping, lifecycle and PNG path.
+
+## 4. Product Model
+
+* Application model: `phase10j5.elf_orbital_product.v1`; canonical volumetric schemas were not changed.
+* Binding: dataset/manifest/field IDs and hashes, source SHA-256, parser/provider, units, normalization and integral semantics.
+* Compatibility: only supported real scalar ELF or orbital-density fields; generic, signed-amplitude and complex wavefunction quantities do not enter the product.
+* Field selection is current-field specific, including mixed ELF/orbital datasets.
+
+## 5. ELF Product
+
+* Quantity/unit: `electron_localization_function` / `dimensionless`.
+* Validation states: `VALID_RANGE`, `NUMERIC_TOLERANCE_WARNING`, `SOURCE_RANGE_ANOMALY`, `INVALID_NON_FINITE`.
+* Tolerance: versioned `ELF_ORBITAL_DTYPE_SCALE_TOLERANCE_V1`, based on stored dtype and field scale.
+* Exact neutral display presets: `0.50`, `0.70`, `0.80`, `0.90`.
+* Source values are never clamped. Full-cell ELF integral is explicitly not an electron count or basin population.
+* No bond, lone-pair, basin, shell, attractor or topology classification is claimed.
+
+## 6. Orbital / Partial Density Product
+
+* Quantity: `orbital_density`; accepted units are `electron/angstrom^3` and `angstrom^-3`.
+* PARCHG and explicit CUBE are labelled `Source-defined partial density`.
+* Identity completeness is `UNAVAILABLE` where the canonical source has no authoritative orbital/band/k-point/occupancy metadata; filename and surface shape grant no authority.
+* Non-negativity is checked without absolute value, square or renormalization.
+* Full-cell integral and source normalization are displayed without automatic occupancy, probability or single-orbital claims.
+
+## 7. Signed / Complex Boundary
+
+* Signed real orbital amplitude: `DEFERRED_BY_DESIGN`.
+* Complex wavefunction, phase, phase-coloured surfaces, Bloch phase and orbital reconstruction: not implemented.
+* No automatic HOMO/LUMO, orbital character, occupancy or linear-combination inference exists.
+
+## 8. Product UI
+
+* Product header, exact quantity/unit/isovalue, field selector, source/parser/hash identity, range status, full statistics/integral table, presets and scientific warnings are accessible outside the canvas.
+* Desktop, mobile portrait `390x844` and landscape `844x390` passed without horizontal overflow.
+* Duplicate warnings were removed; absent integrals display `unavailable` instead of `NaN`.
+
+## 9. Renderer / Interaction
+
+* Reused the existing Phase 10J-2 Worker and Three.js `0.185.1`; no second renderer was added.
+* Real isosurfaces, periodic/non-periodic structure overlay, surface/atom picking, inspector, clipping, camera/reset and local PNG export passed.
+* Periodic structure context supports bounded renderer-local `1x1x1` and `2x2x2`; the scalar field remains the immutable source cell.
+* Hidden atoms/surfaces are excluded from picking. Lifecycle replay retained one canvas/context and one active Worker.
+
+## 10. Runtime / API
+
+* Natural ELF/orbital display prompts route to existing `structure.volumetric_data`.
+* Calculation, ELF topology, HOMO/LUMO, wavefunction reconstruction and orbital-combination prompts are rejected from this display adapter.
+* Real Mock Planner -> `/planner/jobs` -> QueueWorkerRuntime -> ArtifactStorage captures were generated for ELFCAR, PARCHG and explicit CUBE.
+* No public tool, dependency, DFT execution, external API or real LLM was added.
+
+## 11. Browser Evidence
+
+* Chromium, Firefox and WebKit: WebGL2 rendered both products with one canvas and nonzero geometry.
+* Chromium final ELF metrics: 24 triangles, 14 vertices, 5 draw calls, 4 geometries, 4 materials.
+* Chromium final orbital metrics: 24 triangles, 34 vertices, 5 draw calls, 4 geometries, 4 materials.
+* Generic CUBE fallback, explicit CUBE product, range warning, signed-amplitude deferred state, picking, clipping, supercell, mobile, PNG and six-cycle lifecycle cases passed.
+* Console/page errors: zero. External requests: zero.
+
+## 12. Accessibility
+
+* Semantic product region, live status, labelled controls, exact units/values, statistics table, identity text, interpretation warnings, reduced-motion browser context and mobile touch targets passed browser evidence.
+
+## 13. Performance / Memory
+
+* Caps remain application-owned: one active payload, two cached payloads, four cached meshes/layers, 16 MiB decoded payload, 600,000 triangles, 64 MB GPU allocation proxy and eight structure replicas.
+* Metrics explicitly distinguish bounded allocation proxies from unavailable real GPU memory readback.
+* Six artifact cycles retained one canvas, one context, one Worker and stale-result protection.
+
+## 14. Security
+
+* No artifact JavaScript, HTML/CSS, Worker/WASM, shader, dynamic artifact import, arbitrary formula/normalization, filename authority, external URL or remote asset.
+* Source field bytes remain immutable; errors and evidence contain no private paths or credentials.
+* Browser marker: `NO_ELF_ORBITAL_PRODUCT_EXTERNAL_NETWORK_REQUESTS`.
+* Secret marker: `NO_SECRET_PATTERN_HITS`.
+* No dependency/lockfile change; `three@0.185.1` has one installed copy. npm audit was unavailable because the configured mirror audit API returned `404 NOT_IMPLEMENTED`; no clean claim was made.
+
+## 15. Tests
+
+* Frontend: `43 files / 270 passed`.
+* Backend full: `741 passed, 24 skipped, 62 warnings`; skipped tests remain reported as skipped.
+* Phase 10J exact backend group: `79 passed`; Phase 10J-5 backend: `19 passed`.
+* Typecheck and Next.js production build passed; home first-load JS remained `217 kB`.
+* Two early full frontend runs exposed a pre-existing BZ lifecycle test's 5-second timeout at 5.084/5.190 seconds. The single heavy test received a local 10-second timeout, passed focused `6/6`, and the final full suite passed.
+* Historical Phase 10J-2/-3/-4 and Phase 10 closure browser runners passed; their generated evidence churn was restored rather than committed.
+* Local Docker service-backed execution was unavailable; exact implementation CI provided successful PostgreSQL/Redis/MinIO integration and no-skipped closure.
+
+## 16. Evidence
+
+* Directory: `docs/phase10j/evidence/phase10j5_elf_orbital_product/`.
+* Contents: 81 files / 1,026,744 bytes, including three live artifact sets, 23 valid PNG screenshots, API captures, scientific manifests/references, browser matrix, lifecycle/mobile/accessibility/network, performance/memory, dependency/static security, tests and CI record.
+* Replay: `uv run python apps/web/test/generate-elf-orbital-evidence.py`; `node apps/web/test/elf-orbital-product-browser-evidence.mjs`.
+
+## 17. Files
+
+* Implementation: `elfOrbitalProduct.ts`, `volumetricOverlaySupercell.ts`, `VolumetricIsosurfaceSurface.tsx`, `volumetricRendererEngine.ts`, volumetric adapter and Mock Planner provider.
+* Tests/runners: product and supercell Vitest files, `test_phase10j5_elf_orbital_product.py`, runtime evidence generator and browser runner.
+* Documentation/evidence: `docs/phase10j/phase10j5_*`, shared schema/index, evidence directory and persistent project records.
+* Dependencies/lockfile: unchanged.
+
+## 18. Explicitly Deferred
+
+ELF topology/basins/attractors/populations, automatic bond or lone-pair interpretation, complex wavefunction and phase, orbital reconstruction/combinations, HOMO/LUMO inference, orbital-character analysis, density-matrix analysis, Bader/atomic charges, volume ray casting, arbitrary slices/profiles, external calculations/APIs, notebooks/scripts, artifact code and remote assets.
+
+## 19. Checks
+
+* `git diff --check`, `uv lock --check`, npm dependency tree and one-copy Three tree: passed.
+* Frontend tests/typecheck/build, backend full/exact tests and browser/performance runners: passed as recorded above.
+* Evidence JSON/PNG validation: all JSON parsed; all 23 PNG signatures valid.
+* Network/private path/secret scans: passed.
+* npm audit: unavailable, accurately recorded.
+
+## 20. Commit / CI
+
+* implementation commit/HEAD: `a5ba567528c13ca1b3c0bb83856fe202bcdf4898`
+* CI run: `30135550496`, exact SHA, conclusion `success`
+* Unit, frontend dependency install/typecheck/build, service-backed PostgreSQL+Redis+MinIO, and integration no-skipped assertion: success
+* origin/master matched implementation HEAD at verification time
+
+## 21. Readiness
+
+Volumetric contracts, ELFCAR/PARCHG/CUBE scalar parser, generic renderer, Charge/Spin product, Potential product, ELF product, range validation, structure overlay, orbital/partial-density product, source identity disclosure, integral/normalization disclosure, picking/inspector, Chromium/Firefox/WebKit/mobile/accessibility/performance/security: READY. ELF topology, complex phase, orbital reconstruction and automatic HOMO/LUMO: NOT_IMPLEMENTED. Full volumetric analysis platform: PARTIAL_READY.
+
+## 22. Whether Allowed to Enter Next Phase
+
+可以，在 Phase 10J-5 completion-record current-HEAD CI 和队列归档完成后，按 `TASKS.md` 的下一个待处理任务继续；本任务不自行进入 ELF topology、complex wavefunction 或外部量子计算。
+
+## 23. Queue Status
+
+* `TASKS.md` status: `已完成`
+* implementation CI: complete and successful
+* next required closure: commit this completion record, wait for its current-HEAD CI, verify task/result/test/CI consistency, then remove only the completed Phase 10J-5 block from `TASKS.md`
