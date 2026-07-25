@@ -234,6 +234,21 @@ class VolumetricDataAdapter(BaseToolAdapter):
                 for field in result.fields
                 if field["quantity"] in {"local_potential", "electrostatic_potential"}
             ],
+            "elfOrbitalFields": [
+                {
+                    "fieldId": field["field_id"],
+                    "fieldHash": field["content_hash"],
+                    "quantity": field["quantity"],
+                    "unit": field["unit"]["canonical_unit"],
+                    "normalization": field["normalization_semantics"],
+                    "integralSemantics": field["integral_semantics"],
+                    "identityCompleteness": "unavailable" if field["quantity"] == "orbital_density" else "not_applicable",
+                    "sourceInterpretation": "source_defined_partial_density" if field["quantity"] == "orbital_density" else "source_native_elf",
+                    "sourceValuesModified": False,
+                }
+                for field in result.fields
+                if field["quantity"] in {"electron_localization_function", "orbital_density"}
+            ],
         }
         payloads.append(ArtifactPayload(ArtifactType.recipe_json, "recipe.json", stable_json_dumps(recipe), "application/json"))
         artifacts = self.export_payloads(payloads, provenance={
@@ -476,6 +491,22 @@ def _summary(result: VolumetricAdapterResult) -> str:
             for field in potential_fields
         )
         rows.append("- No vacuum, Fermi, work-function, or absolute-zero reference is inferred.")
+    elf_fields = [field for field in result.fields if field["quantity"] == "electron_localization_function"]
+    orbital_fields = [field for field in result.fields if field["quantity"] == "orbital_density"]
+    if elf_fields:
+        rows.extend([
+            "", "## ELF Product Boundary",
+            "- Source-native dimensionless ELF values are preserved without clamping or rescaling.",
+            "- ELF isosurfaces are display contours, not bond, lone-pair, basin, shell, or topology classifications.",
+            "- The full-cell ELF volume integral has no automatic electron-count or basin-population interpretation.",
+        ])
+    if orbital_fields:
+        rows.extend([
+            "", "## Orbital / Partial Density Boundary",
+            "- The field is source-defined partial density; orbital, band, k-point, occupancy, energy, and HOMO/LUMO identity are unavailable unless present in authoritative source metadata.",
+            "- Full-cell source-grid integrals are reported with source normalization semantics and are not automatically occupancy or probability.",
+            "- No absolute value, square, renormalization, orbital reconstruction, character assignment, or complex-phase derivation is performed.",
+        ])
     derived_formulas = sorted({
         transformation["detail"].split(":", 1)[0]
         for field in result.fields

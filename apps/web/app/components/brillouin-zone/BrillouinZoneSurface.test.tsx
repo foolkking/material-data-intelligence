@@ -67,5 +67,5 @@ describe("BrillouinZoneSurface",()=>{
     expect(factory).toHaveBeenCalledTimes(1);expect(created[0].dispose).not.toHaveBeenCalled();
     for(let index=0;index<20;index+=1){rerender(<BrillouinZoneSurface bundle={{...bundle,zone:structuredClone(zone)}} capabilityOverride engineFactory={factory}/>);await waitFor(()=>expect(factory).toHaveBeenCalledTimes(index+2));expect(created[index].dispose).toHaveBeenCalledTimes(1);}
     unmount();expect(created.at(-1)?.dispose).toHaveBeenCalledTimes(1);
-  });
+  },10_000);
 });

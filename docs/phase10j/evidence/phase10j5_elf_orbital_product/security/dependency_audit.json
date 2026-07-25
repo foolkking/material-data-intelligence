@@ -1,0 +1,21 @@
+{
+  "captured_at": "2026-07-25T07:53:01+08:00",
+  "dependency_changes": false,
+  "lockfile_changes": false,
+  "three": {
+    "version": "0.185.1",
+    "copies": 1,
+    "tree_command": "npm --prefix apps/web ls three",
+    "tree_status": "passed"
+  },
+  "full_tree_command": "npm --prefix apps/web ls",
+  "full_tree_status": "passed",
+  "npm_audit": {
+    "command": "npm --prefix apps/web audit",
+    "status": "unavailable",
+    "endpoint": "configured npm mirror audit API",
+    "response": "404 NOT_IMPLEMENTED",
+    "claim_clean": false
+  },
+  "new_browser_reachable_vulnerabilities": "none introduced because package and lock files are unchanged"
+}

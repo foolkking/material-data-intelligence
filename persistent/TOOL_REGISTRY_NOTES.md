@@ -1,5 +1,11 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-24 Phase 10J-5 ELF / Orbital Product
+
+- `structure.volumetric_data` remains the only public identity. No `structure.elf`, `structure.parchg`, `structure.orbital_density`, or orbital-viewer tool was registered.
+- Explicit ELF/orbital/partial-density inspection prompts route to the existing strict volumetric tool. Calculation, topology/basin, HOMO/LUMO, wavefunction reconstruction/combination, external execution, and ambiguous orbital intent are excluded.
+- The adapter keeps source-native ELFCAR/PARCHG semantics and emits additive inert summary/recipe disclosure only. QueueWorkerRuntime, PlanValidator, AnalysisPlan, artifact authority, and canonical schema semantics are unchanged.
+
 ## 2026-07-17 Phase 10I-3 Band-BZ Product Composition
 
 - No `reciprocal.band_bz_link` public tool was registered. Linked View is an application-owned composition of independently validated artifacts from existing `phonon.band` and `structure.brillouin_zone` steps.

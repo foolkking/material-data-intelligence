@@ -1,0 +1,13 @@
+{
+  "portrait": [
+    390,
+    844
+  ],
+  "landscape": [
+    844,
+    390
+  ],
+  "touch": true,
+  "overflow": false,
+  "canvasCount": 1
+}

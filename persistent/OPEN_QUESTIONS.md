@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-24 Phase 10J-5 Follow-ups
+
+- The canonical PARCHG/CUBE metadata does not yet carry authoritative orbital, band, k-point, occupancy, or energy identity. The product deliberately reports `UNAVAILABLE`; a future electronic artifact contract must add identity instead of inferring it from filenames.
+- Signed real orbital amplitude, multi-orbital CUBE selection, complex wavefunction phase/gauge, `|psi|^2` derivation, orbital reconstruction/combinations, HOMO/LUMO, and orbital-character analysis require independent contracts and remain deferred.
+- ELF basin/attractor/topology and chemical interpretation require separate scientific algorithms and evidence. An ELF isosurface alone is not such an analysis.
+- Volume ray casting and arbitrary slices/profiles remain separate work. The J5 `2x2x2` control replicates only validated periodic structure context; it never replicates the source scalar field.
+
 ## 2026-07-17 Phase 10I-3 Follow-ups
 
 - Phase 10H band v1 does not declare provider/version or time-reversal metadata. Phase 10I-3 therefore requires complete ordered geometry equivalence and emits stable warnings; a future band schema may make these bindings explicit without weakening current compatibility.

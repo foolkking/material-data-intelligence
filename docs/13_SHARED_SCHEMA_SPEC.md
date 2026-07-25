@@ -1468,3 +1468,21 @@ cross-calculation alignment, electric-field, or arbitrary slicing authority.
 `phase10j2.volumetric_structure_overlay.v1` is an additive, inert, renderer-consumer artifact. It binds exactly to one validated `phase10j.volumetric_grid.v1` by `grid_id` and `grid_content_hash`. Fully periodic sources may embed one independently validated canonical viewer scene; fully non-periodic sources may carry bounded `{atomic_number, cartesian_angstrom}` records. The artifact is not part of `phase10j.volumetric_manifest.v1` schema identity and does not modify the canonical grid, field, payload, dataset, or manifest contracts.
 
 The overlay security object is the canonical Phase 10J inert security declaration. It cannot contain executable content, HTML/CSS, JavaScript, shaders, renderer code, URLs, external assets, callbacks, or arbitrary appearance data. Missing overlay context is a supported renderer state and never changes backend job success.
+## Phase 10J-5 Application-Owned ELF / Orbital Product Model
+
+Phase 10J-5 does not change the canonical Phase 10J grid, payload, field,
+dataset, or manifest schemas. The frontend may derive an immutable bounded
+`phase10j5.elf_orbital_product.v1` view model only after canonical validation.
+It binds the dataset/manifest/source-field hashes, exact quantity/unit,
+normalization and integral semantics, full-cell integral, dtype-aware range
+status, source identity completeness, exact contour presets, warnings, and the
+fixed no-execution security policy. This view model is not persisted as a
+canonical scientific artifact and does not authorize new tool execution.
+
+ELF compatibility is exactly real scalar `electron_localization_function` in
+`dimensionless`. Orbital compatibility is exactly real scalar
+`orbital_density` in `electron/angstrom^3` or `angstrom^-3`. Missing
+band/k-point/orbital/occupancy identity remains missing; filenames cannot fill
+it. A renderer-local periodic structure overlay may be derived at `1x1x1` or
+`2x2x2` within eight replicas, 4096 atoms, and 8192 bonds, while the scalar
+field remains the source cell.

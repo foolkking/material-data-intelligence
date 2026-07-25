@@ -1,0 +1,203 @@
+[
+  {
+    "browser": "chromium",
+    "available": true,
+    "elf": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 24,
+      "vertices": 14,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 4,
+      "quantity": "electron_localization_function",
+      "unit": "dimensionless",
+      "identity": "not_applicable",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 2.6,
+      "initializationMs": 2424.5728999999997
+    },
+    "orbital": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 24,
+      "vertices": 34,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 4,
+      "quantity": "orbital_density",
+      "unit": "electron/angstrom^3",
+      "identity": "UNAVAILABLE",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 3.5,
+      "initializationMs": 2445.471300000001
+    },
+    "cubeOrbital": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 8,
+      "vertices": 9,
+      "drawCalls": 3,
+      "geometries": 2,
+      "materials": 2,
+      "quantity": "orbital_density",
+      "unit": "electron/angstrom^3",
+      "identity": "UNAVAILABLE",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 2.1,
+      "initializationMs": 0
+    },
+    "lifecycle": {
+      "cycles": 6,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "activeWorkers": 1,
+      "staleResultProtection": true
+    },
+    "mobile": {
+      "portrait": [
+        390,
+        844
+      ],
+      "landscape": [
+        844,
+        390
+      ],
+      "touch": true,
+      "overflow": false,
+      "canvasCount": 1
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "firefox",
+    "available": true,
+    "elf": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 24,
+      "vertices": 14,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 4,
+      "quantity": "electron_localization_function",
+      "unit": "dimensionless",
+      "identity": "not_applicable",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 9,
+      "initializationMs": 8756.439599999998
+    },
+    "orbital": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 24,
+      "vertices": 34,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 4,
+      "quantity": "orbital_density",
+      "unit": "electron/angstrom^3",
+      "identity": "UNAVAILABLE",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 8,
+      "initializationMs": 5294.567900000002
+    },
+    "cubeOrbital": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 8,
+      "vertices": 9,
+      "drawCalls": 3,
+      "geometries": 2,
+      "materials": 2,
+      "quantity": "orbital_density",
+      "unit": "electron/angstrom^3",
+      "identity": "UNAVAILABLE",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 4,
+      "initializationMs": 0
+    },
+    "lifecycle": {
+      "cycles": 6,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "activeWorkers": 1,
+      "staleResultProtection": true
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "webkit",
+    "available": true,
+    "elf": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 24,
+      "vertices": 14,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 4,
+      "quantity": "electron_localization_function",
+      "unit": "dimensionless",
+      "identity": "not_applicable",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 8,
+      "initializationMs": 3636.1998999999923
+    },
+    "orbital": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 24,
+      "vertices": 34,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 4,
+      "quantity": "orbital_density",
+      "unit": "electron/angstrom^3",
+      "identity": "UNAVAILABLE",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 6,
+      "initializationMs": 2712.290500000003
+    },
+    "cubeOrbital": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 8,
+      "vertices": 9,
+      "drawCalls": 3,
+      "geometries": 2,
+      "materials": 2,
+      "quantity": "orbital_density",
+      "unit": "electron/angstrom^3",
+      "identity": "UNAVAILABLE",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 5,
+      "initializationMs": 0
+    },
+    "lifecycle": {
+      "cycles": 6,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "activeWorkers": 1,
+      "staleResultProtection": true
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

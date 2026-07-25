@@ -1,0 +1,48 @@
+{
+  "field_hash": "c90e64ae7bcd177eaa03f69b748337606eb0851d7b7a382ee292687ae18b8967",
+  "field_id": "field:c90e64ae7bcd177eaa03f69b748337606eb0851d7b7a382ee292687ae18b8967",
+  "integral_semantics": "not_physically_interpreted",
+  "normalization": "source_native",
+  "quantity": "electron_localization_function",
+  "range_validation": {
+    "above_one_count": 0,
+    "below_zero_count": 0,
+    "dtype": "float64",
+    "maximum": 1.0,
+    "maximum_lower_violation": 0.0,
+    "maximum_upper_violation": 0.0,
+    "minimum": 0.0,
+    "negative_count": 0,
+    "source_values_modified": false,
+    "status": "VALID_RANGE",
+    "tolerance": 5.684341886080802e-14,
+    "tolerance_policy": "ELF_ORBITAL_DTYPE_SCALE_TOLERANCE_V1"
+  },
+  "statistics": {
+    "accumulation_dtype": "float64",
+    "authority": "computed_from_payload",
+    "complex_magnitude": null,
+    "finite_count": 8,
+    "histogram": null,
+    "stored_components": [
+      {
+        "absolute_integral": 3.1,
+        "count": 8,
+        "integral": 3.1,
+        "maximum": 1.0,
+        "mean": 0.3875,
+        "minimum": 0.0,
+        "rms": 0.4886205071423016,
+        "standard_deviation": 0.2976470224947665,
+        "variance": 0.08859375000000001
+      }
+    ]
+  },
+  "unit": {
+    "canonical_unit": "dimensionless",
+    "conversion_applied": false,
+    "conversion_factor": 1.0,
+    "conversion_provenance": "source parser unit normalization",
+    "source_unit": "dimensionless"
+  }
+}

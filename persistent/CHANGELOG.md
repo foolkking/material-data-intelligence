@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-07-24 - Phase 10J-5 ELF / Orbital Volumetric Product
+
+- Added source-native ELF and source-defined orbital/partial-density product UI over existing `structure.volumetric_data` artifacts, including dtype-aware scientific range checks, exact contours, identity completeness, normalization/integral disclosure, and explicit interpretation limits.
+- Added bounded periodic structure-context replication, hidden-object picking correctness, real ELFCAR/PARCHG/explicit-CUBE runtime evidence, 23 screenshots, three-browser WebGL2 matrix, mobile, PNG, lifecycle, and zero-external-network evidence.
+- No public tool, canonical volumetric schema, dependency, source-field transformation, orbital reconstruction, HOMO/LUMO inference, ELF topology, external calculation, or artifact execution was added.
+
 ## 2026-07-20 - Phase 10J-2 Isosurface Renderer
 
 - Added a validated volumetric artifact consumer with a job-scoped bounded content API, gzip/raw payload loading, application-owned Worker extraction, periodic halo/seam handling, affine coordinates, deterministic welded meshes, gradient normals, and typed security/resource limits.

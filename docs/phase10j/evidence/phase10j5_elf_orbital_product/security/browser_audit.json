@@ -1,0 +1,14 @@
+{
+  "artifactJavaScript": false,
+  "artifactHtmlCss": false,
+  "artifactWorkerWasm": false,
+  "artifactShader": false,
+  "dynamicArtifactImport": false,
+  "externalUrls": false,
+  "arbitraryNormalization": false,
+  "filenameIdentityAuthority": false,
+  "signedFieldTransformation": false,
+  "externalRequests": 0,
+  "network": "NO_ELF_ORBITAL_PRODUCT_EXTERNAL_NETWORK_REQUESTS",
+  "secrets": "NO_SECRET_PATTERN_HITS"
+}

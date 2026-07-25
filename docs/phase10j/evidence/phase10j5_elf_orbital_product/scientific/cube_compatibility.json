@@ -1,0 +1,8 @@
+{
+  "explicit_orbital_product": true,
+  "explicit_quantity": "orbital_density",
+  "explicit_source_identity": "UNAVAILABLE",
+  "generic_orbital_product": false,
+  "generic_quantity": "generic_scalar",
+  "multi_orbital": "VOLUME_CUBE_MULTI_ORBITAL_UNSUPPORTED"
+}

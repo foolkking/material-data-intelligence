@@ -1,0 +1,13 @@
+{
+  "arbitrary_normalization": false,
+  "artifact_html_css": false,
+  "artifact_javascript": false,
+  "artifact_shader": false,
+  "artifact_worker_wasm": false,
+  "external_requests": 0,
+  "external_urls": false,
+  "filename_identity_authority": false,
+  "network": "NO_ELF_ORBITAL_PRODUCT_EXTERNAL_NETWORK_REQUESTS",
+  "secrets": "NO_SECRET_PATTERN_HITS",
+  "source_values_modified": false
+}

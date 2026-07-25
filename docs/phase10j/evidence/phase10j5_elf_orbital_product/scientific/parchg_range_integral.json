@@ -1,0 +1,48 @@
+{
+  "field_hash": "416933ecb2433c9831254d86569dbb5ff7ef4cf12d4b4246fbdc95a00fde0937",
+  "field_id": "field:416933ecb2433c9831254d86569dbb5ff7ef4cf12d4b4246fbdc95a00fde0937",
+  "integral_semantics": "electron_count",
+  "normalization": "source_native",
+  "quantity": "orbital_density",
+  "range_validation": {
+    "above_one_count": 6,
+    "below_zero_count": 0,
+    "dtype": "float64",
+    "maximum": 4.0,
+    "maximum_lower_violation": 0.0,
+    "maximum_upper_violation": 0.0,
+    "minimum": 0.5,
+    "negative_count": 0,
+    "source_values_modified": false,
+    "status": "VALID_RANGE",
+    "tolerance": 2.2737367544323206e-13,
+    "tolerance_policy": "ELF_ORBITAL_DTYPE_SCALE_TOLERANCE_V1"
+  },
+  "statistics": {
+    "accumulation_dtype": "float64",
+    "authority": "computed_from_payload",
+    "complex_magnitude": null,
+    "finite_count": 8,
+    "histogram": null,
+    "stored_components": [
+      {
+        "absolute_integral": 18.0,
+        "count": 8,
+        "integral": 18.0,
+        "maximum": 4.0,
+        "mean": 2.25,
+        "minimum": 0.5,
+        "rms": 2.5248762345905194,
+        "standard_deviation": 1.14564392373896,
+        "variance": 1.3125
+      }
+    ]
+  },
+  "unit": {
+    "canonical_unit": "electron/angstrom^3",
+    "conversion_applied": true,
+    "conversion_factor": 0.125,
+    "conversion_provenance": "source parser unit normalization",
+    "source_unit": "electron/angstrom^3"
+  }
+}

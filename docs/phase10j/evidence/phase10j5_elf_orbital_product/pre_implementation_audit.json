@@ -1,0 +1,9 @@
+{
+  "baseline_head": "10393d3c62591c1a0d045ddfdb5ef8aa4ba128bf",
+  "cube": "generic by default; explicit trusted quantity required; multi-orbital unsupported",
+  "elf": "source-native dimensionless real scalar; no topology claims",
+  "new_dependencies": [],
+  "parchg": "source-defined orbital density; identity unavailable; no occupancy inference",
+  "renderer": "existing Phase 10J-2 Worker and Three.js consumer",
+  "tool": "structure.volumetric_data"
+}

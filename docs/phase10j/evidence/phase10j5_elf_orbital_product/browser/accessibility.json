@@ -1,0 +1,9 @@
+{
+  "region": "Interactive volumetric isosurface renderer",
+  "liveState": "polite",
+  "productSummary": true,
+  "statisticsTable": true,
+  "exactInput": true,
+  "supercellLabel": "Structure overlay supercell",
+  "interpretationBoundary": true
+}

@@ -1,0 +1,65 @@
+{
+  "dataset_hashes": [
+    "d536d2837234956ce91731f40d858a12f79f7874fe7314357765a3bb6465451f",
+    "2258233cb24f797031d30df01ae2017df2e8d3a14e3e0bb06541f6168a28c5a0",
+    "de72cc5e827f38772ddd259c6c35008986b71d6ece3c6c116262baec6ca8a7ff"
+  ],
+  "external_requests": 0,
+  "field_hashes": [
+    "c90e64ae7bcd177eaa03f69b748337606eb0851d7b7a382ee292687ae18b8967",
+    "416933ecb2433c9831254d86569dbb5ff7ef4cf12d4b4246fbdc95a00fde0937",
+    "0a496d80fac1a0cc0aed8873fe572a51d4fa1f8eb6999e33d1acf825068b9fb0"
+  ],
+  "phase": "10J-5",
+  "renderer": "Phase 10J-2 application-owned Worker + Three.js 0.185.1",
+  "replay": [
+    "uv run python apps/web/test/generate-elf-orbital-evidence.py",
+    "node apps/web/test/elf-orbital-product-browser-evidence.mjs"
+  ],
+  "runtime_sources": [
+    "committed ELFCAR fixture through QueueWorkerRuntime",
+    "committed PARCHG fixture through QueueWorkerRuntime",
+    "committed CUBE fixture with explicit trusted orbital-density hint through QueueWorkerRuntime"
+  ],
+  "tool": "structure.volumetric_data",
+  "browsers": [
+    {
+      "browser": "chromium",
+      "available": true,
+      "graphics": "webgl2"
+    },
+    {
+      "browser": "firefox",
+      "available": true,
+      "graphics": "webgl2"
+    },
+    {
+      "browser": "webkit",
+      "available": true,
+      "graphics": "webgl2"
+    }
+  ],
+  "viewports": [
+    [
+      1440,
+      1100
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      844,
+      390
+    ]
+  ],
+  "redaction": "sanitized; no private paths, credentials, or source filenames used as scientific authority",
+  "markers": [
+    "ELF_ORBITAL_PRODUCT_BROWSER_EVIDENCE_PASS",
+    "ELF_ORBITAL_PRODUCT_RANGE_EVIDENCE_PASS",
+    "ELF_ORBITAL_PRODUCT_IDENTITY_EVIDENCE_PASS",
+    "ELF_ORBITAL_PRODUCT_PERFORMANCE_EVIDENCE_PASS",
+    "NO_ELF_ORBITAL_PRODUCT_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ]
+}

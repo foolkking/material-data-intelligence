@@ -1,0 +1,59 @@
+{
+  "captured_at": "2026-07-25T07:53:01+08:00",
+  "frontend_full": {
+    "command": "npm --prefix apps/web test -- --run",
+    "status": "passed",
+    "files_passed": 43,
+    "tests_passed": 270,
+    "tests_failed": 0
+  },
+  "frontend_transient_attempts": {
+    "status": "resolved",
+    "attempts": 2,
+    "failure": "existing BrillouinZoneSurface twenty-artifact lifecycle case exceeded its prior 5000 ms local timeout under full-suite concurrency",
+    "observed_ms": [5084, 5190],
+    "resolution": "the single intentionally heavy lifecycle test now has a local 10000 ms timeout; product behavior and global test timeout are unchanged",
+    "focused_replay": "6 passed",
+    "final_full_replay": "43 files and 270 tests passed"
+  },
+  "backend_full": {
+    "command": "uv run python -m pytest -q",
+    "status": "passed_with_skips",
+    "tests_passed": 741,
+    "tests_skipped": 24,
+    "tests_failed": 0,
+    "warnings": 62
+  },
+  "phase10j_exact_backend_group": {
+    "status": "passed",
+    "tests_passed": 79
+  },
+  "phase10j5_backend": {
+    "command": "uv run python -m pytest -q tests/test_phase10j5_elf_orbital_product.py",
+    "status": "passed",
+    "tests_passed": 19
+  },
+  "typecheck": {
+    "command": "npm --prefix apps/web run typecheck",
+    "status": "passed"
+  },
+  "build": {
+    "command": "npm --prefix apps/web run build",
+    "status": "passed",
+    "home_first_load_js": "217 kB"
+  },
+  "browser": {
+    "command": "node apps/web/test/elf-orbital-product-browser-evidence.mjs",
+    "status": "passed",
+    "browsers": ["chromium", "firefox", "webkit"],
+    "historical_phase10j_and_phase10_closure_runners": "passed locally; generated historical evidence was restored to avoid unrelated churn"
+  },
+  "service_backed_local": {
+    "status": "unavailable",
+    "reason": "Docker CLI is not installed in the local environment; current-HEAD CI is the required closure authority"
+  },
+  "no_skipped_assertion": {
+    "status": "pending_current_head_ci",
+    "note": "The 24 full-suite skips are reported as skipped, not passed. The repository CI no-skipped policy job remains pending until push."
+  }
+}

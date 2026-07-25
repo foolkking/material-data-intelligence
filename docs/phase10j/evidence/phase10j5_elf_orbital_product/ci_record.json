@@ -1,0 +1,13 @@
+{
+  "baseline_head": "10393d3c62591c1a0d045ddfdb5ef8aa4ba128bf",
+  "implementation_head": null,
+  "run_id": null,
+  "status": "pending_implementation_commit",
+  "required_jobs": [
+    "unit",
+    "frontend",
+    "service-backed integration",
+    "no-skipped assertion"
+  ],
+  "note": "Updated only after the pushed implementation SHA has completed current-HEAD CI."
+}

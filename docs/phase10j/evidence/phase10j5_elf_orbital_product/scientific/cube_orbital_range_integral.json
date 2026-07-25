@@ -1,0 +1,48 @@
+{
+  "field_hash": "0a496d80fac1a0cc0aed8873fe572a51d4fa1f8eb6999e33d1acf825068b9fb0",
+  "field_id": "field:0a496d80fac1a0cc0aed8873fe572a51d4fa1f8eb6999e33d1acf825068b9fb0",
+  "integral_semantics": "electron_count",
+  "normalization": "source_native",
+  "quantity": "orbital_density",
+  "range_validation": {
+    "above_one_count": 7,
+    "below_zero_count": 0,
+    "dtype": "float64",
+    "maximum": 47.23834146220263,
+    "maximum_lower_violation": 0.0,
+    "maximum_upper_violation": 0.0,
+    "minimum": 0.0,
+    "negative_count": 0,
+    "source_values_modified": false,
+    "status": "VALID_RANGE",
+    "tolerance": 2.685188830025858e-12,
+    "tolerance_policy": "ELF_ORBITAL_DTYPE_SCALE_TOLERANCE_V1"
+  },
+  "statistics": {
+    "accumulation_dtype": "float64",
+    "authority": "computed_from_payload",
+    "complex_magnitude": null,
+    "finite_count": 8,
+    "histogram": null,
+    "stored_components": [
+      {
+        "absolute_integral": 28.000000000000007,
+        "count": 8,
+        "integral": 28.000000000000007,
+        "maximum": 47.23834146220263,
+        "mean": 23.619170731101313,
+        "minimum": 0.0,
+        "rms": 28.230308586565837,
+        "standard_deviation": 15.46237681819389,
+        "variance": 239.08509686781983
+      }
+    ]
+  },
+  "unit": {
+    "canonical_unit": "electron/angstrom^3",
+    "conversion_applied": true,
+    "conversion_factor": 6.748334494600375,
+    "conversion_provenance": "source parser unit normalization",
+    "source_unit": "electron/bohr^3"
+  }
+}

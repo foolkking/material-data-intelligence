@@ -1,5 +1,15 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-10J5-ELF-ORBITAL: Preserve source fields and disclose missing identity
+
+### Decision
+
+Build ELF and orbital/partial-density products only from independently validated real scalar canonical fields with exact quantity and unit compatibility. ELF values are scanned with a dtype/scale-aware tolerance and never clamped. Orbital density is never squared, absolutized, or renormalized. PARCHG/CUBE filenames do not supply orbital identity; absent band/k-point/orbital/occupancy metadata is reported as `UNAVAILABLE`.
+
+ELF isosurfaces do not imply basin topology, bonds, lone pairs, or shells. Partial density is not automatically a single orbital, probability, occupancy, HOMO/LUMO, or orbital character. Signed amplitude and complex wavefunction phase remain separate future contracts. Source field bytes, hashes, statistics, normalization, and integral semantics are immutable.
+
+The product reuses the existing Worker and Three.js renderer. A periodic structure overlay may be derived locally at `1x1x1` or `2x2x2` within eight replicas, 4096 atoms, and 8192 bonds; this never replicates the scalar field or changes persisted artifacts. Hidden renderer objects are excluded from picking. No new public tool, dependency, canonical schema, artifact code, URL, shader, or network authority is introduced.
+
 ## ADR-10I3-BAND-BZ-LINK: Link validated reciprocal identities, not display labels
 
 ### Decision

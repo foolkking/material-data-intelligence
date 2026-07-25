@@ -1,0 +1,12 @@
+{
+  "measurementKind": "application-owned bounded allocation budget proxy",
+  "actualGpuMemoryReadback": false,
+  "decodedPayloadByteCap": 16777216,
+  "gpuAllocationByteCap": 64000000,
+  "triangleCap": 600000,
+  "activeLayerCap": 4,
+  "activeWorkerCount": 1,
+  "canvasCount": 1,
+  "contextCount": 1,
+  "sourceValuesImmutable": true
+}

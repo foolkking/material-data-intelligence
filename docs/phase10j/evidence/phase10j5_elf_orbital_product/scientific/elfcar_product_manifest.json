@@ -1,0 +1,63 @@
+{
+  "dataset_hash": "d536d2837234956ce91731f40d858a12f79f7874fe7314357765a3bb6465451f",
+  "dataset_id": "volume-dataset:d536d2837234956ce91731f40d858a12f79f7874fe7314357765a3bb6465451f",
+  "full_cell_integral": 3.1,
+  "identity": {
+    "authority": "canonical_source_metadata",
+    "band_index": null,
+    "completeness": "not_applicable",
+    "display_name": "Electron Localization Function",
+    "filename_authority": false,
+    "k_point_index": null,
+    "occupancy": null,
+    "orbital_id": null
+  },
+  "integral_semantics": "not_physically_interpreted",
+  "limitations": [
+    "no_elf_topology",
+    "no_orbital_reconstruction",
+    "no_homo_lumo_inference",
+    "no_occupancy_inference",
+    "no_complex_phase"
+  ],
+  "manifest_hash": "54a5e0e65f4fbf792c6c279afd5e6af2197b58c45c7f1be254c445dd6fb90e53",
+  "normalization": "source_native",
+  "presets": [
+    0.5,
+    0.7,
+    0.8,
+    0.9
+  ],
+  "product_hash": "b66eabe6be4d61ee84eca99396080af54e0e14b3dfc0aa9d7aaeb213fad18213",
+  "product_kind": "elf",
+  "quantity": "electron_localization_function",
+  "range_validation": {
+    "above_one_count": 0,
+    "below_zero_count": 0,
+    "dtype": "float64",
+    "maximum": 1.0,
+    "maximum_lower_violation": 0.0,
+    "maximum_upper_violation": 0.0,
+    "minimum": 0.0,
+    "negative_count": 0,
+    "source_values_modified": false,
+    "status": "VALID_RANGE",
+    "tolerance": 5.684341886080802e-14,
+    "tolerance_policy": "ELF_ORBITAL_DTYPE_SCALE_TOLERANCE_V1"
+  },
+  "renderer": "existing_phase10j2_isosurface_consumer",
+  "renderer_included": false,
+  "schema_version": "phase10j5.elf_orbital_product.v1",
+  "security": {
+    "artifact_javascript": false,
+    "artifact_shader": false,
+    "artifact_wasm": false,
+    "artifact_worker": false,
+    "external_urls": false,
+    "source_immutable": true
+  },
+  "source_field_hash": "c90e64ae7bcd177eaa03f69b748337606eb0851d7b7a382ee292687ae18b8967",
+  "source_field_id": "field:c90e64ae7bcd177eaa03f69b748337606eb0851d7b7a382ee292687ae18b8967",
+  "source_sha256": "83578554259c118eb6032683396d4b9ca22e307917cd7c5f419696a26d8e5d5e",
+  "unit": "dimensionless"
+}

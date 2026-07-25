@@ -1,0 +1,11 @@
+{
+  "active_payload_cap": 1,
+  "cached_payload_cap": 2,
+  "cube_orbital_runtime_ms": 136.93889998830855,
+  "cube_orbital_voxels": 8,
+  "elf_runtime_ms": 95.63710005022585,
+  "elf_voxels": 8,
+  "mesh_cache_cap": 4,
+  "orbital_runtime_ms": 96.23700007796288,
+  "orbital_voxels": 8
+}

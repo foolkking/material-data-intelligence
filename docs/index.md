@@ -349,6 +349,11 @@ and
 | [`phase10j/phase10j4_potential_security_and_evidence.md`](phase10j/phase10j4_potential_security_and_evidence.md) | Potential security boundary and live evidence |
 | [`phase10j/phase10j4_readiness_matrix.md`](phase10j/phase10j4_readiness_matrix.md) | Phase 10J-4 readiness decisions |
 | [`phase10j/evidence/phase10j4_electrostatic_potential_product/`](phase10j/evidence/phase10j4_electrostatic_potential_product/) | Live LOCPOT artifacts, gauges, profiles, browsers, screenshots, and security evidence |
+| [`phase10j/phase10j5_elf_orbital_product.md`](phase10j/phase10j5_elf_orbital_product.md) | ELF and source-defined orbital/partial-density product integration |
+| [`phase10j/phase10j5_scientific_semantics.md`](phase10j/phase10j5_scientific_semantics.md) | Range, identity, normalization, integral, preset, and interpretation policy |
+| [`phase10j/phase10j5_security_and_evidence.md`](phase10j/phase10j5_security_and_evidence.md) | Product trust boundary, caps, runtime/browser evidence, and markers |
+| [`phase10j/phase10j5_readiness_matrix.md`](phase10j/phase10j5_readiness_matrix.md) | Phase 10J-5 readiness and deferred scientific scope |
+| [`phase10j/evidence/phase10j5_elf_orbital_product/`](phase10j/evidence/phase10j5_elf_orbital_product/) | Live ELFCAR/PARCHG/CUBE artifacts, browser matrix, screenshots, metrics, and security evidence |
 | [`phase10f/phase10f27_structure_viewer_3d_registration.md`](phase10f/phase10f27_structure_viewer_3d_registration.md) | Formal product identity and platform registry ownership |
 | [`phase10f/phase10f27_structure_viewer_3d_tool_contract.md`](phase10f/phase10f27_structure_viewer_3d_tool_contract.md) | Strict input, output, runtime, and artifact contract |
 | [`phase10f/phase10f27_structure_viewer_3d_capabilities.md`](phase10f/phase10f27_structure_viewer_3d_capabilities.md) | Supported and explicitly unsupported capability matrix |

@@ -1,0 +1,35 @@
+{
+  "elf_major": {
+    "expected": "SOURCE_RANGE_ANOMALY",
+    "source_values_modified": false,
+    "values": [
+      -0.1,
+      1.2
+    ]
+  },
+  "elf_minor": {
+    "expected": "NUMERIC_TOLERANCE_WARNING",
+    "source_values_modified": false,
+    "values": [
+      -1e-14,
+      1.00000000000001
+    ]
+  },
+  "orbital_major": {
+    "expected": "SOURCE_RANGE_ANOMALY",
+    "source_values_modified": false,
+    "values": [
+      -0.01,
+      0.5
+    ]
+  },
+  "orbital_minor": {
+    "expected": "NUMERIC_TOLERANCE_WARNING",
+    "source_values_modified": false,
+    "values": [
+      -1e-14,
+      0.5
+    ]
+  },
+  "source": "frontend independent scientific reference tests"
+}

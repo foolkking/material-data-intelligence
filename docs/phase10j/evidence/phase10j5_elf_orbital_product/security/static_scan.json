@@ -1,0 +1,18 @@
+{
+  "captured_at": "2026-07-25T07:53:01+08:00",
+  "credential_patterns": "NO_SECRET_PATTERN_HITS",
+  "new_external_url_path": false,
+  "url_hit_classification": [
+    "browser evidence runner uses loopback-only HTTP",
+    "existing validator rejection markers include URL-like strings",
+    "existing LLM provider default URL is outside the Phase 10J-5 product change"
+  ],
+  "artifact_driven_network": false,
+  "artifact_driven_dynamic_import": false,
+  "artifact_html_execution": false,
+  "artifact_javascript_execution": false,
+  "artifact_worker_or_wasm": false,
+  "artifact_shader": false,
+  "external_browser_requests": 0,
+  "network_marker": "NO_ELF_ORBITAL_PRODUCT_EXTERNAL_NETWORK_REQUESTS"
+}

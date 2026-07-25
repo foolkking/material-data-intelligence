@@ -1,5 +1,11 @@
 # DESIGN_PROGRESS
 
+## 2026-07-24 Phase 10J-5 ELF / Orbital Product Implemented
+
+- Added strict application-owned ELF and orbital/partial-density product mapping over unchanged Phase 10J artifacts, with decoded-value range/non-negativity validation, exact units/isovalues, full-cell statistics/integrals, source identity completeness, and no-clamp/no-renormalization boundaries.
+- Reused the Phase 10J-2 Worker/Three.js renderer and added a bounded renderer-local `2x2x2` periodic structure overlay, hidden-object picking guard, scientific inspector/warnings, clipping, PNG, mobile/accessibility, and one-canvas lifecycle evidence.
+- Real Mock Planner -> QueueWorkerRuntime evidence covers ELFCAR, PARCHG, and an explicitly identified CUBE; Chromium, Firefox, and WebKit all rendered WebGL2 with zero console/page errors and zero external requests. Signed amplitude, multi-orbital CUBE, ELF topology, complex phase, orbital reconstruction, and electronic identity inference remain deferred.
+
 ## 2026-07-17 Phase 10I-3 Band-BZ Linked View Completed
 
 - Added the strict frontend-only `phase10i3.reciprocal_band_bz_link.v1` model over existing `phonon.band` and `structure.brillouin_zone` runtime artifacts; no public tool, persisted link artifact, scientific recomputation, dependency, or canonical schema was added.

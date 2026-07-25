@@ -1,0 +1,62 @@
+{
+  "dataset_hash": "de72cc5e827f38772ddd259c6c35008986b71d6ece3c6c116262baec6ca8a7ff",
+  "dataset_id": "volume-dataset:de72cc5e827f38772ddd259c6c35008986b71d6ece3c6c116262baec6ca8a7ff",
+  "full_cell_integral": 28.000000000000007,
+  "identity": {
+    "authority": "canonical_source_metadata",
+    "band_index": null,
+    "completeness": "UNAVAILABLE",
+    "display_name": "Source-defined partial density",
+    "filename_authority": false,
+    "k_point_index": null,
+    "occupancy": null,
+    "orbital_id": null
+  },
+  "integral_semantics": "electron_count",
+  "limitations": [
+    "no_elf_topology",
+    "no_orbital_reconstruction",
+    "no_homo_lumo_inference",
+    "no_occupancy_inference",
+    "no_complex_phase"
+  ],
+  "manifest_hash": "9ad852f63f25d3287fd52e1eccf84cb51c11a73bf9dcdf2812359800a8fd0483",
+  "normalization": "source_native",
+  "presets": [
+    0.1,
+    0.25,
+    0.5
+  ],
+  "product_hash": "287852b9e615776a1d8374fa22da3b8385d9848315bab923bc9c058cbc038e7f",
+  "product_kind": "orbital_density",
+  "quantity": "orbital_density",
+  "range_validation": {
+    "above_one_count": 7,
+    "below_zero_count": 0,
+    "dtype": "float64",
+    "maximum": 47.23834146220263,
+    "maximum_lower_violation": 0.0,
+    "maximum_upper_violation": 0.0,
+    "minimum": 0.0,
+    "negative_count": 0,
+    "source_values_modified": false,
+    "status": "VALID_RANGE",
+    "tolerance": 2.685188830025858e-12,
+    "tolerance_policy": "ELF_ORBITAL_DTYPE_SCALE_TOLERANCE_V1"
+  },
+  "renderer": "existing_phase10j2_isosurface_consumer",
+  "renderer_included": false,
+  "schema_version": "phase10j5.elf_orbital_product.v1",
+  "security": {
+    "artifact_javascript": false,
+    "artifact_shader": false,
+    "artifact_wasm": false,
+    "artifact_worker": false,
+    "external_urls": false,
+    "source_immutable": true
+  },
+  "source_field_hash": "0a496d80fac1a0cc0aed8873fe572a51d4fa1f8eb6999e33d1acf825068b9fb0",
+  "source_field_id": "field:0a496d80fac1a0cc0aed8873fe572a51d4fa1f8eb6999e33d1acf825068b9fb0",
+  "source_sha256": "9f106b6b4be2d565713cb9aaa484971a17723b6525810057beeb425d447420c3",
+  "unit": "electron/angstrom^3"
+}

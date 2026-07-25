@@ -1,5 +1,12 @@
 # TASK_BOARD
 
+## Phase 10J-5 ELF / Orbital Product Closure In Progress
+
+- [x] Audit ELFCAR, PARCHG, CUBE, canonical quantity/unit/normalization/integral semantics, and source identity availability.
+- [x] Implement strict ELF/orbital product mapping, range validation, exact presets, scientific warnings, bounded structure overlay, picking guard, and existing renderer integration.
+- [x] Generate real runtime artifacts plus Chromium/Firefox/WebKit/mobile/performance/accessibility/network/security evidence.
+- [ ] Complete full repository regression, implementation commit/push/current-HEAD CI, completion record, and verified queue archival.
+
 ## Phase 10I-3 Band-BZ Linked View Completed
 
 - [x] Audit Phase 10H band/mode identity, Phase 10I BZ/k-path identity, existing compatibility, Three.js lifecycle, and planner composition.

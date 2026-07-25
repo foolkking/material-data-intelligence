@@ -1,0 +1,69 @@
+{
+  "renderer": "application-owned Phase 10J-2 Worker + Three.js 0.185.1",
+  "chromium": {
+    "elf": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 24,
+      "vertices": 14,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 4,
+      "quantity": "electron_localization_function",
+      "unit": "dimensionless",
+      "identity": "not_applicable",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 2.6,
+      "initializationMs": 2424.5728999999997
+    },
+    "orbital": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 24,
+      "vertices": 34,
+      "drawCalls": 5,
+      "geometries": 4,
+      "materials": 4,
+      "quantity": "orbital_density",
+      "unit": "electron/angstrom^3",
+      "identity": "UNAVAILABLE",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 3.5,
+      "initializationMs": 2445.471300000001
+    },
+    "cubeOrbital": {
+      "state": "rendered",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "triangles": 8,
+      "vertices": 9,
+      "drawCalls": 3,
+      "geometries": 2,
+      "materials": 2,
+      "quantity": "orbital_density",
+      "unit": "electron/angstrom^3",
+      "identity": "UNAVAILABLE",
+      "rangeStatus": "VALID_RANGE",
+      "extractionMs": 2.1,
+      "initializationMs": 0
+    },
+    "lifecycle": {
+      "cycles": 6,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "activeWorkers": 1,
+      "staleResultProtection": true
+    }
+  },
+  "caps": {
+    "payloadBytes": 16777216,
+    "voxelsDesktop": 262144,
+    "layers": 4,
+    "triangles": 600000,
+    "gpuBytes": 64000000,
+    "supercellReplicas": 8
+  },
+  "sourceValuesImmutable": true
+}
