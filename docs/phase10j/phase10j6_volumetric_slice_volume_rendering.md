@@ -207,7 +207,7 @@ triclinic rendering, transfer functions, structure depth, shared clipping,
 PNG, three-browser support, mobile fallback, accessibility, caps, lifecycle,
 network isolation, and security are READY. Implementation CI `30197771307`
 passed unit, frontend build, service-backed integration, and no-skipped gates;
-the queue completion-record CI/archive step remains administrative closure.
+the completion-record CI `30197900247` passed and queue archival was verified.
 
 Explicitly deferred are cell-centered rendering, arbitrary oblique or curved
 scientific slices, vector/complex volume, scientific resampling, display

@@ -811,4 +811,5 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
 ## 8. Queue Status
 
 * `TASKS.md`: `已完成` with matching completion record.
-* Required next action: commit this completion record, wait for its own current-HEAD CI, then verify task/result/test/CI consistency before removing only the Phase 10J-6 task block.
+* Completion-record CI: [30197900247](https://github.com/foolkking/material-data-intelligence/actions/runs/30197900247), exact SHA `75cec5f`, success.
+* Archive verification: the implementation record, `reslusts.md`, local checks, implementation CI, and completion-record CI are consistent. The single completed Phase 10J-6 `---TASK---` block was removed from `TASKS.md`; no pending task remains.
