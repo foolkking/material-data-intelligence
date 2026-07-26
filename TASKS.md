@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
  # Phase 10J-6：Volumetric Slice / Volume Rendering
 
 进入 Phase 10J-6：Volumetric Slice / Volume Rendering。
@@ -3455,6 +3455,17 @@ full volumetric platform: READY_WITH_EXPLICIT_LIMITS
 先读取真实 Phase 10J-5 Result、Phase 10J grid/payload contracts、Phase 10J-2 Three.js/Worker基础设施、Phase 10J-3至10J-5产品实现及当前Browser evidence runners，输出 Pre-Implementation Audit；然后完成三轴slice、continuous interpolation、2D/3D slice、point probe、WebGL2 3D texture、float precision audit、affine ray marcher、transfer function、structure depth integration、fallback、browser matrix、GPU/performance/security、docs、commit和CI闭环。
 
 不得把本阶段扩展为scientific resampling、arbitrary oblique slicing、vector/complex volume、segmentation、Bader analysis或外部GPU服务。
+
+## 完成记录
+
+* 完成时间：2026-07-26 18:12:00 +08:00
+* 实现提交：`9cd0c693881f13be6ef0b0068563ec26a3b3d82e` (`Add volumetric slice and volume rendering`)
+* 实现 CI：`30197771307`，unit、frontend dependency install/typecheck/build、PostgreSQL/Redis/MinIO service-backed integration 和 no-skipped assertion 均成功。
+* 修改文件：`apps/web/app/components/volumetric-viewer/` Slice/Volume model, Worker, engines, shader, PNG export 和产品 surface；`VolumetricPreviewPanel.tsx`、routing provider、Phase 10J-6 backend/frontend tests and browser/runtime generators；Phase 10J-6 docs/evidence/shared schema/index/persistent records。
+* 修改摘要：交付 source-native 三轴 Slice、真实 Worker cancellation、2D heatmap/table/probe、lazy 3D Slice、WebGL2 Direct Volume 3D texture/ray marcher/depth/clipping、shader link gate、透视/正交、注释 PNG、typed fallback、三浏览器与近上限 evidence；不改变 canonical Phase 10J schema、Tool Registry 或 QueueWorkerRuntime 语义。
+* 测试结果：frontend `48 files / 294 passed`；backend `760 passed, 24 skipped`；所有 Phase 10J 测试 `98 passed`；typecheck/build/`uv lock --check`/`git diff --check`通过；Phase 10J/10I/10H/10G/formal viewer/Phase 10 closure browser runners通过；Phase 10J-6 Runtime、Chromium/Firefox/WebKit/mobile、GPU/performance/network/security markers通过。
+* 审计结果：Three.js `0.185.1` 单一副本；无 dependency/lockfile change；npm audit 因 configured mirror HTTP 404 `NOT_IMPLEMENTED` unavailable；本机无 Docker，service-backed/no-skipped 由上述 CI 成功闭合；`NO_VOLUMETRIC_SLICE_VOLUME_EXTERNAL_NETWORK_REQUESTS` 和 `NO_SECRET_PATTERN_HITS` 已记录。
+* 归档状态：本完成记录尚需其自身 current-HEAD CI 成功后，才能与 `reslusts.md` 一致性核验并删除本任务块。
 
 
 ---END---

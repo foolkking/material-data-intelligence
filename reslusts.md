@@ -764,3 +764,51 @@ Volumetric contracts, ELFCAR/PARCHG/CUBE scalar parser, generic renderer, Charge
 * completion record commit and CI: `75b2d74a1f263338f12bffe02f3ee89536625c17`, run `30135836995`, success
 * verification: `TASKS.md` completion record, `reslusts.md`, frontend `270 passed`, backend `741 passed, 24 skipped`, typecheck/build, runtime and three-browser/mobile/performance/security evidence, service-backed/no-skipped jobs, origin equality and clean worktree all matched.
 * archive decision: the complete Phase 10J-5 block may be removed; the next pending task remains unchanged and this result remains the persistent history.
+
+# Phase 10J-6 Volumetric Slice / Volume Rendering Result
+
+## 1. Conclusion
+
+PASS for the implementation and current implementation-HEAD CI. Queue archival remains pending the completion-record CI.
+
+## 2. Baseline
+
+* Phase 10J-5 archive HEAD: `f8cbdda20800b536fa38cd15c4b0375a186c42ef`.
+* branch/origin at implementation start: `master`, matched.
+* implementation commit: `9cd0c693881f13be6ef0b0068563ec26a3b3d82e`.
+
+## 3. Implementation
+
+* Added validated source-native lattice-axis Slice: exact/interpolated planes, periodic/non-periodic bounds, Worker sampling/cancellation, deterministic hash, heatmap, numeric legend/table, keyboard/pointer probing, affine 3D plane and local annotated PNG.
+* Added WebGL2 Direct Volume: canonical `width=nz,height=ny,depth=nx` mapping, bounded float64 display conversion, static shader compile/link gate, affine ray marcher, transfer/compositing, structure depth, shared clipping, perspective/orthographic projection, context-loss fallback and annotated PNG.
+* `structure.volumetric_data` remains the only producer; Slice and Volume are validated application-owned consumers. No canonical Phase 10J schema, Tool Registry, PlanValidator or QueueWorkerRuntime semantics changed.
+
+## 4. Runtime, Browser and Evidence
+
+* Six real Mock Planner -> `/planner/jobs` -> QueueWorkerRuntime artifact cases: charge, spin, potential, ELF, orbital and triclinic CUBE.
+* Chromium, Firefox and WebKit: WebGL2 Slice plane and Direct Volume passed. Chromium mobile `390x844`, context loss, six lifecycle cycles, near-cap `128^3`, shader link, one canvas/context, keyboard probe and PNG validation passed.
+* Evidence: `docs/phase10j/evidence/phase10j6_volumetric_slice_volume_rendering/`; 77 JSON files parsed and 11 PNG signatures/dimensions validated.
+* Markers: `VOLUMETRIC_SLICE_VOLUME_RUNTIME_EVIDENCE_PASS`, `VOLUMETRIC_SLICE_BROWSER_EVIDENCE_PASS`, `VOLUMETRIC_DIRECT_VOLUME_BROWSER_EVIDENCE_PASS`, `VOLUMETRIC_TEXTURE_MAPPING_EVIDENCE_PASS`, `VOLUMETRIC_SLICE_VOLUME_PERFORMANCE_EVIDENCE_PASS`, `NO_VOLUMETRIC_SLICE_VOLUME_EXTERNAL_NETWORK_REQUESTS`, `NO_SECRET_PATTERN_HITS`.
+
+## 5. Tests and Security
+
+* Frontend: `48 files / 294 passed`; backend: `760 passed, 24 skipped`; Phase 10J test group: `98 passed`.
+* `uv lock --check`, `git diff --check`, typecheck and production build passed; `/` first-load JS is `228 kB` with lazy Slice/Volume engines.
+* Phase 10J/10I/10H/10G/formal structure viewer/Phase 10 closure runners passed. Historical replay evidence was restored and not committed.
+* Three.js is one installed `0.185.1` copy; no dependency or lockfile change. No artifact JS/HTML/shader/URL/module execution, no external request, no secret or private-path hit. npm audit is unavailable because the configured mirror returns HTTP 404 `NOT_IMPLEMENTED`.
+
+## 6. Commit / CI
+
+* implementation CI: [30197771307](https://github.com/foolkking/material-data-intelligence/actions/runs/30197771307), exact SHA `9cd0c69`, success.
+* unit, frontend dependency install/typecheck/build, PostgreSQL/Redis/MinIO service-backed integration and no-skipped assertion: success.
+* local Docker was unavailable; service-backed/no-skipped were closed by implementation CI.
+
+## 7. Deferred and Readiness
+
+* READY: lattice-axis Slice, exact/interpolated planes, quantitative 2D/3D views, probing, Direct Volume, triclinic mapping, texture mapping, transfer, structure overlay/depth/clipping, PNG, three-browser/mobile/accessibility/performance/security.
+* Deferred: cell-centered/vector/complex/4D volume, arbitrary oblique or curved slices, resampling/downsampling, empty-space acceleration, segmentation/Bader/feature analysis, volume ray picking, direct-volume supercells, remote GPU/API, video, notebooks/scripts, artifact code and remote assets.
+
+## 8. Queue Status
+
+* `TASKS.md`: `已完成` with matching completion record.
+* Required next action: commit this completion record, wait for its own current-HEAD CI, then verify task/result/test/CI consistency before removing only the Phase 10J-6 task block.

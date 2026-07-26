@@ -205,7 +205,9 @@ Slice Product, exact/interpolated planes, quantitative heatmap, affine 3D
 plane, point probing, WebGL2 Direct Volume, canonical texture mapping,
 triclinic rendering, transfer functions, structure depth, shared clipping,
 PNG, three-browser support, mobile fallback, accessibility, caps, lifecycle,
-network isolation, and security are READY after current-HEAD CI closure.
+network isolation, and security are READY. Implementation CI `30197771307`
+passed unit, frontend build, service-backed integration, and no-skipped gates;
+the queue completion-record CI/archive step remains administrative closure.
 
 Explicitly deferred are cell-centered rendering, arbitrary oblique or curved
 scientific slices, vector/complex volume, scientific resampling, display
