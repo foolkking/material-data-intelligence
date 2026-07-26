@@ -1,0 +1,362 @@
+[
+  {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "case": "charge",
+    "dataset_hash": "31d2a3044b937042493b978eefb462059955e8a6dfdcb37acfc736b48d1a914b",
+    "dtype": "float64",
+    "field_hash": "168c726c6eb000d5d632720773b32eb6f42352d86359aaca9158029d31a8dc1d",
+    "fields": [
+      {
+        "field_id": "field:168c726c6eb000d5d632720773b32eb6f42352d86359aaca9158029d31a8dc1d",
+        "field_name": "total",
+        "maximum": 8.0,
+        "minimum": 1.0,
+        "quantity": "electron_density",
+        "spin": null
+      }
+    ],
+    "job_id": "job_8de369bce79a4c9ea3d8083d",
+    "maximum": 8.0,
+    "minimum": 1.0,
+    "prompt": "Show a slice through this charge density",
+    "quantity": "electron_density",
+    "runtime_ms": 215.462,
+    "selected_tool": "structure.volumetric_data",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "status": "completed",
+    "step_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "unit": "electron/angstrom^3",
+    "validation": true
+  },
+  {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "case": "spin",
+    "dataset_hash": "28b2bea5ef549801e38e0c51de77d5dcc594ba32bb1ee8e0124d2f1b7d3ba9eb",
+    "dtype": "float64",
+    "field_hash": "264096f627ff1dd5d482d15f7316743840985185d5302dda8f243ad313018666",
+    "fields": [
+      {
+        "field_id": "field:264096f627ff1dd5d482d15f7316743840985185d5302dda8f243ad313018666",
+        "field_name": "total",
+        "maximum": 8.0,
+        "minimum": 1.0,
+        "quantity": "electron_density",
+        "spin": null
+      },
+      {
+        "field_id": "field:d9791b875695cf7d89080911447788b26a38a4789246a4602295c38c5dc60604",
+        "field_name": "spin_difference",
+        "maximum": 1.0,
+        "minimum": 0.125,
+        "quantity": "magnetization_density",
+        "spin": {
+          "channel": "spin_difference",
+          "component_basis": "not_applicable",
+          "representation": "collinear",
+          "sign_convention": "up minus down",
+          "source_convention": "VASP total then magnetization components"
+        }
+      },
+      {
+        "field_id": "field:e0d65c21f9cebd1aee4ea0b7f2a0a0271b7416d9e3f318154084507f0b4b25a0",
+        "field_name": "spin_up",
+        "maximum": 4.5,
+        "minimum": 0.5625,
+        "quantity": "spin_density",
+        "spin": {
+          "channel": "spin_up",
+          "component_basis": "not_applicable",
+          "representation": "collinear",
+          "sign_convention": "up minus down",
+          "source_convention": "allowlisted collinear derivation from VASP total and spin difference"
+        }
+      },
+      {
+        "field_id": "field:e391d9f56e63c249738506aa85f7182858a6bd61912aabbe740d09d5fc55f89d",
+        "field_name": "spin_down",
+        "maximum": 3.5,
+        "minimum": 0.4375,
+        "quantity": "spin_density",
+        "spin": {
+          "channel": "spin_down",
+          "component_basis": "not_applicable",
+          "representation": "collinear",
+          "sign_convention": "up minus down",
+          "source_convention": "allowlisted collinear derivation from VASP total and spin difference"
+        }
+      }
+    ],
+    "job_id": "job_21c31acae89c4070947143fc",
+    "maximum": 8.0,
+    "minimum": 1.0,
+    "prompt": "Render this signed spin density directly",
+    "quantity": "electron_density",
+    "runtime_ms": 377.194,
+    "selected_tool": "structure.volumetric_data",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "status": "completed",
+    "step_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "unit": "electron/angstrom^3",
+    "validation": true
+  },
+  {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "case": "potential",
+    "dataset_hash": "e967b44d3a93fae087076bda0ae32b81e6299b91411ff99f3304a4ee6f84641a",
+    "dtype": "float64",
+    "field_hash": "8eab3447c0689ffb2e9d8dc17013c4299c50192bc62c6a79a66641c0382fe7d3",
+    "fields": [
+      {
+        "field_id": "field:8eab3447c0689ffb2e9d8dc17013c4299c50192bc62c6a79a66641c0382fe7d3",
+        "field_name": "local_potential",
+        "maximum": 2.5,
+        "minimum": -1.0,
+        "quantity": "local_potential",
+        "spin": null
+      }
+    ],
+    "job_id": "job_503af13d813242288243db99",
+    "maximum": 2.5,
+    "minimum": -1.0,
+    "prompt": "Display the LOCPOT plane at fractional coordinate 0.5",
+    "quantity": "local_potential",
+    "runtime_ms": 169.885,
+    "selected_tool": "structure.volumetric_data",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "status": "completed",
+    "step_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "unit": "electronvolt",
+    "validation": true
+  },
+  {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "case": "elf",
+    "dataset_hash": "d536d2837234956ce91731f40d858a12f79f7874fe7314357765a3bb6465451f",
+    "dtype": "float64",
+    "field_hash": "c90e64ae7bcd177eaa03f69b748337606eb0851d7b7a382ee292687ae18b8967",
+    "fields": [
+      {
+        "field_id": "field:c90e64ae7bcd177eaa03f69b748337606eb0851d7b7a382ee292687ae18b8967",
+        "field_name": "electron_localization_function",
+        "maximum": 1.0,
+        "minimum": 0.0,
+        "quantity": "electron_localization_function",
+        "spin": null
+      }
+    ],
+    "job_id": "job_54cc323299c34507a0610a88",
+    "maximum": 1.0,
+    "minimum": 0.0,
+    "prompt": "Render this volumetric field directly",
+    "quantity": "electron_localization_function",
+    "runtime_ms": 171.006,
+    "selected_tool": "structure.volumetric_data",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "status": "completed",
+    "step_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "unit": "dimensionless",
+    "validation": true
+  },
+  {
+    "boundary_conditions": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "case": "orbital",
+    "dataset_hash": "2258233cb24f797031d30df01ae2017df2e8d3a14e3e0bb06541f6168a28c5a0",
+    "dtype": "float64",
+    "field_hash": "416933ecb2433c9831254d86569dbb5ff7ef4cf12d4b4246fbdc95a00fde0937",
+    "fields": [
+      {
+        "field_id": "field:416933ecb2433c9831254d86569dbb5ff7ef4cf12d4b4246fbdc95a00fde0937",
+        "field_name": "total",
+        "maximum": 4.0,
+        "minimum": 0.5,
+        "quantity": "orbital_density",
+        "spin": null
+      }
+    ],
+    "job_id": "job_1c4b8251eab34ce884a454a5",
+    "maximum": 4.0,
+    "minimum": 0.5,
+    "prompt": "Open the 3D volume view for this partial density",
+    "quantity": "orbital_density",
+    "runtime_ms": 176.884,
+    "selected_tool": "structure.volumetric_data",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "status": "completed",
+    "step_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "unit": "electron/angstrom^3",
+    "validation": true
+  },
+  {
+    "boundary_conditions": [
+      "non_periodic",
+      "non_periodic",
+      "non_periodic"
+    ],
+    "case": "triclinic",
+    "dataset_hash": "759ef1651a73794700c96535d8c869067caa84376529b9506c4165aed2eb13be",
+    "dtype": "float64",
+    "field_hash": "4f727675fa062edf3ebaf4bd808087804ada1f6ec394bf16b5dc8abc009226f4",
+    "fields": [
+      {
+        "field_id": "field:4f727675fa062edf3ebaf4bd808087804ada1f6ec394bf16b5dc8abc009226f4",
+        "field_name": "scalar",
+        "maximum": 8.0,
+        "minimum": 1.0,
+        "quantity": "generic_scalar",
+        "spin": null
+      }
+    ],
+    "job_id": "job_b7304461169f41eb9af84aa4",
+    "maximum": 8.0,
+    "minimum": 1.0,
+    "prompt": "Render this volumetric field directly",
+    "quantity": "generic_scalar",
+    "runtime_ms": 139.118,
+    "selected_tool": "structure.volumetric_data",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "status": "completed",
+    "step_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.2,
+        1.0,
+        0.0
+      ],
+      [
+        0.1,
+        0.3,
+        1.0
+      ]
+    ],
+    "unit": "dimensionless",
+    "validation": true
+  }
+]

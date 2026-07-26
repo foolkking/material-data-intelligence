@@ -174,6 +174,18 @@ export const VOLUMETRIC_BROWSER_CAPS = Object.freeze({
   maximumExportDimension: 4096,
   maximumExportPixels: 16_777_216,
   maximumExtractionMs: 30_000,
+  maximumVolumeVoxelsDesktop: 2_097_152,
+  maximumVolumeVoxelsMobile: 524_288,
+  maximumVolumeTextureBytes: 16_777_216,
+  maximumFloat64ConversionBytes: 16_777_216,
+  maximumSliceValues: 262_144,
+  maximumSliceCacheEntries: 2,
+  maximumTransferFunctionPoints: 8,
+  maximumRayStepsDesktop: 768,
+  maximumRayStepsMobile: 384,
+  maximumSamplesPerVoxel: 2,
+  maximumVolumeRenderPixels: 2_097_152,
+  maximumVolumePixelRatio: 2,
 } as const);
 
 export type VolumetricViewerErrorCode =
@@ -194,6 +206,129 @@ export type VolumetricViewerErrorCode =
   | "VOLUME_VIEWER_RENDERER_FAILED"
   | "VOLUME_VIEWER_CONTEXT_LOST"
   | "VOLUME_VIEWER_EMPTY_SURFACE";
+
+export type VolumetricSliceAxis = 0 | 1 | 2;
+export type VolumetricSliceSamplingMode = "exact_grid_plane" | "linear_axis_interpolation";
+
+export type VolumetricSlicePlane = Readonly<{
+  origin: VolumeVector3;
+  basisU: VolumeVector3;
+  basisV: VolumeVector3;
+  normal: VolumeVector3;
+  horizontalAxis: VolumetricSliceAxis;
+  verticalAxis: VolumetricSliceAxis;
+}>;
+
+export type VolumetricSlice = Readonly<{
+  schemaVersion: "phase10j6.volumetric_slice.v1";
+  sourceDatasetHash: string;
+  sourceFieldHash: string;
+  axis: VolumetricSliceAxis;
+  fractionalPosition: number;
+  physicalPosition: number;
+  samplingMode: VolumetricSliceSamplingMode;
+  lowerIndex: number;
+  upperIndex: number;
+  interpolationFactor: number;
+  periodicWrap: boolean;
+  outputShape: readonly [number, number];
+  plane: VolumetricSlicePlane;
+  values: Float64Array;
+  unit: string;
+  statistics: Readonly<{ minimum: number; maximum: number; mean: number }>;
+  contentHash: string;
+  provenance: Readonly<{ algorithm: "phase10j6.lattice_axis_linear.v1"; sourceMutated: false }>;
+}>;
+
+export type VolumetricSliceWorkerRequest = Readonly<{
+  type: "slice";
+  requestId: number;
+  datasetHash: string;
+  fieldHash: string;
+  unit: string;
+  grid: ValidatedVolumetricGrid;
+  dtype: "float32" | "float64";
+  fieldBuffer: ArrayBuffer;
+  axis: VolumetricSliceAxis;
+  fractionalPosition: number;
+  maximumOutputValues: number;
+}>;
+
+export type VolumetricSliceWorkerResponse =
+  | Readonly<{ type: "success"; requestId: number; slice: VolumetricSlice; calculationMs: number }>
+  | Readonly<{ type: "failure"; requestId: number; code: VolumetricViewerErrorCode; message: string }>;
+
+export type VolumeTexturePrecision = Readonly<{
+  sourceDtype: "float32" | "float64";
+  gpuDtype: "float32";
+  conversionApplied: boolean;
+  maximumAbsoluteError: number;
+  maximumRelativeError: number;
+  rmsError: number;
+  finiteCount: number;
+  conversionHash: string;
+}>;
+
+export type VolumeGpuCapabilities = Readonly<{
+  supported: boolean;
+  reason: string | null;
+  webgl2: boolean;
+  maximum3dTextureSize: number;
+  maximumTextureImageUnits: number;
+  linearFloatFiltering: boolean;
+  textureShape: readonly [number, number, number];
+  textureBytes: number;
+  estimatedGpuBytes: number;
+  mobile: boolean;
+}>;
+
+export type VolumeTransferFunction = Readonly<{
+  version: "phase10j6.transfer_function.v1";
+  presetId: "nonnegative_medium" | "signed_symmetric" | "positive_only" | "negative_only" | "potential_source" | "elf_localization";
+  windowLow: number;
+  windowHigh: number;
+  opacityScale: number;
+  paletteId: "viridis" | "diverging_blue_red" | "magma" | "elf_teal_yellow";
+  zeroPolicy: "none" | "transparent_zero";
+}>;
+
+export type VolumeQuality = Readonly<{
+  id: "low" | "balanced" | "high";
+  samplesPerVoxel: number;
+  maximumRaySteps: number;
+  pixelRatioCap: number;
+}>;
+
+export type VolumetricVolumeRendererSnapshot = Readonly<{
+  state: "rendered" | "context_lost" | "disposed";
+  canvasCount: number;
+  contextCount: number;
+  textureShape: readonly [number, number, number];
+  textureBytes: number;
+  drawCalls: number;
+  rayStepCap: number;
+  structureVisible: boolean;
+  cellVisible: boolean;
+  clippingEnabled: boolean;
+  projection: "perspective" | "orthographic";
+  depthPolicy: "structure_depth_prepass";
+  depthTargetCount: number;
+  clippingPolicy: "shared_affine_plane";
+}>;
+
+export type VolumetricVolumeRendererEngine = Readonly<{
+  setTransferFunction: (transferFunction: VolumeTransferFunction) => void;
+  setQuality: (quality: VolumeQuality) => void;
+  setStructureVisible: (visible: boolean) => void;
+  setCellVisible: (visible: boolean) => void;
+  setClipping: (enabled: boolean, axis: VolumetricSliceAxis, offset: number) => void;
+  setProjection: (projection: "perspective" | "orthographic") => void;
+  resetCamera: () => void;
+  render: () => void;
+  snapshot: () => VolumetricVolumeRendererSnapshot;
+  exportPng: (width: number, height: number, pixelRatio: number) => Promise<Blob>;
+  dispose: () => void;
+}>;
 
 export class VolumetricViewerError extends Error {
   constructor(readonly code: VolumetricViewerErrorCode, message: string) {

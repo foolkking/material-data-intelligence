@@ -1,0 +1,365 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1304,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_grid_json",
+      "name": "volumetric_grid.json",
+      "sha256": "5ea9a9394c977aa285cbf39c30db5af798b3cc73abe07f115edc6927d5bb9e14",
+      "type": "volumetric_grid_json"
+    },
+    {
+      "bytes": 1018,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_payload_json-01",
+      "name": "volumetric_payload_01.json",
+      "sha256": "84157c48820972ab6deaa6f0eab51d0d40a908df237426832b8a5ea7b26b0994",
+      "type": "volumetric_payload_json"
+    },
+    {
+      "bytes": 1018,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_payload_json-02",
+      "name": "volumetric_payload_02.json",
+      "sha256": "101c1caff958ba5c142ff3787be1b70d896231eeb0762bb7fc32a09f851c06fc",
+      "type": "volumetric_payload_json"
+    },
+    {
+      "bytes": 1018,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_payload_json-03",
+      "name": "volumetric_payload_03.json",
+      "sha256": "3dbc2d413f87343f9abfcd078d67c1fc26a1cc3d674bd9ebf741c2adc32614d7",
+      "type": "volumetric_payload_json"
+    },
+    {
+      "bytes": 1018,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_payload_json-04",
+      "name": "volumetric_payload_04.json",
+      "sha256": "8e839c8d53fe448ec5d5ee0d28097c13f56eb99aea7cd9c2025bbdf7a3b478fa",
+      "type": "volumetric_payload_json"
+    },
+    {
+      "bytes": 2244,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_field_json-01",
+      "name": "volumetric_field_01.json",
+      "sha256": "e0c394eb97fdcc3beee3c4009169208888630a3685a50d08d63e3ccde6a9ee02",
+      "type": "volumetric_field_json"
+    },
+    {
+      "bytes": 2461,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_field_json-02",
+      "name": "volumetric_field_02.json",
+      "sha256": "b5f77003e54b6100962f3fbb345a6cc5f137d3eb1ae8e5d289f9187f49181cbb",
+      "type": "volumetric_field_json"
+    },
+    {
+      "bytes": 2646,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_field_json-03",
+      "name": "volumetric_field_03.json",
+      "sha256": "64bd41e6ec74d3f075796b89d8181f6b4c5030ce2053c0d85be603111d318061",
+      "type": "volumetric_field_json"
+    },
+    {
+      "bytes": 2652,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_field_json-04",
+      "name": "volumetric_field_04.json",
+      "sha256": "e3f9d08bbfe80b21c5c8f9d96ad0b3591c369cfaad4e0bf62e43108fbd29dda9",
+      "type": "volumetric_field_json"
+    },
+    {
+      "bytes": 47,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_binary-01",
+      "name": "volumetric_field_01.f64.gz",
+      "sha256": "6f360e74fd5959280762f657d434c72771146205e8ef12b611fa562ba1a55904",
+      "type": "volumetric_binary"
+    },
+    {
+      "bytes": 47,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_binary-02",
+      "name": "volumetric_field_02.f64.gz",
+      "sha256": "23ae7779675653db5c040c7b8a62a6400c389d8ba79a763974db55148db24904",
+      "type": "volumetric_binary"
+    },
+    {
+      "bytes": 49,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_binary-03",
+      "name": "volumetric_field_03.f64.gz",
+      "sha256": "215779cc1c987eded6a5b1e8da8ae9482c4ae8d1a3209a51dd5d0e07859b37d0",
+      "type": "volumetric_binary"
+    },
+    {
+      "bytes": 50,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_binary-04",
+      "name": "volumetric_field_04.f64.gz",
+      "sha256": "4425d2d8decb073565ae1567e2d8367c5369faf2698734bec2bb6f7aa992edf7",
+      "type": "volumetric_binary"
+    },
+    {
+      "bytes": 17728,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_dataset_json",
+      "name": "volumetric_dataset.json",
+      "sha256": "74cc2aad9cf2e699cf8e6a4429a0ce6c03991bb3d40bd3a0cc726c2c1fb6e0db",
+      "type": "volumetric_dataset_json"
+    },
+    {
+      "bytes": 2930,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_manifest_json",
+      "name": "volumetric_manifest.json",
+      "sha256": "5e54f46ce377c812c9a57ed385a847edb8ab6b24194743e9fd3cb54c4c9ccf99",
+      "type": "volumetric_manifest_json"
+    },
+    {
+      "bytes": 4909,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-volumetric_structure_overlay_json",
+      "name": "volumetric_structure_overlay.json",
+      "sha256": "2a347b440150905494b1b95573ad8244ef72cf35c6f3abba60fc5fd2b402194c",
+      "type": "volumetric_structure_overlay_json"
+    },
+    {
+      "bytes": 1169,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-summary_md",
+      "name": "summary.md",
+      "sha256": "97c4871a3845c85c0ff5389c0a747fe3a3f4e65cd4fb2e0c316419fe172f916d",
+      "type": "summary_md"
+    },
+    {
+      "bytes": 2540,
+      "id": "call_job_21c31acae89c4070947143fc_step_001-recipe_json",
+      "name": "recipe.json",
+      "sha256": "be4e9af36d9f2aac7918d5127ed560ccf062f1450a952e1391bf91b5d750d571",
+      "type": "recipe_json"
+    }
+  ],
+  "boundary_conditions": [
+    "periodic",
+    "periodic",
+    "periodic"
+  ],
+  "case": "spin",
+  "dataset_hash": "28b2bea5ef549801e38e0c51de77d5dcc594ba32bb1ee8e0124d2f1b7d3ba9eb",
+  "dtype": "float64",
+  "field_hash": "264096f627ff1dd5d482d15f7316743840985185d5302dda8f243ad313018666",
+  "fields": [
+    {
+      "field_id": "field:264096f627ff1dd5d482d15f7316743840985185d5302dda8f243ad313018666",
+      "field_name": "total",
+      "maximum": 8.0,
+      "minimum": 1.0,
+      "quantity": "electron_density",
+      "spin": null
+    },
+    {
+      "field_id": "field:d9791b875695cf7d89080911447788b26a38a4789246a4602295c38c5dc60604",
+      "field_name": "spin_difference",
+      "maximum": 1.0,
+      "minimum": 0.125,
+      "quantity": "magnetization_density",
+      "spin": {
+        "channel": "spin_difference",
+        "component_basis": "not_applicable",
+        "representation": "collinear",
+        "sign_convention": "up minus down",
+        "source_convention": "VASP total then magnetization components"
+      }
+    },
+    {
+      "field_id": "field:e0d65c21f9cebd1aee4ea0b7f2a0a0271b7416d9e3f318154084507f0b4b25a0",
+      "field_name": "spin_up",
+      "maximum": 4.5,
+      "minimum": 0.5625,
+      "quantity": "spin_density",
+      "spin": {
+        "channel": "spin_up",
+        "component_basis": "not_applicable",
+        "representation": "collinear",
+        "sign_convention": "up minus down",
+        "source_convention": "allowlisted collinear derivation from VASP total and spin difference"
+      }
+    },
+    {
+      "field_id": "field:e391d9f56e63c249738506aa85f7182858a6bd61912aabbe740d09d5fc55f89d",
+      "field_name": "spin_down",
+      "maximum": 3.5,
+      "minimum": 0.4375,
+      "quantity": "spin_density",
+      "spin": {
+        "channel": "spin_down",
+        "component_basis": "not_applicable",
+        "representation": "collinear",
+        "sign_convention": "up minus down",
+        "source_convention": "allowlisted collinear derivation from VASP total and spin difference"
+      }
+    }
+  ],
+  "job_id": "job_21c31acae89c4070947143fc",
+  "maximum": 8.0,
+  "minimum": 1.0,
+  "plan": {
+    "assumptions": [
+      "Generated by MockLLMProvider for testing."
+    ],
+    "datasetId": "dataset_spin",
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_grid.json",
+        "type": "volumetric_grid_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_payload_01.json",
+        "type": "volumetric_payload_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_field_01.json",
+        "type": "volumetric_field_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_dataset.json",
+        "type": "volumetric_dataset_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_manifest.json",
+        "type": "volumetric_manifest_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_structure_overlay.json",
+        "type": "volumetric_structure_overlay_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "volumetric_field_01.f64.gz",
+        "type": "volumetric_binary"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "goal": "Render this signed spin density directly",
+    "profileId": "profile_spin",
+    "schemaVersion": "0.1",
+    "steps": [
+      {
+        "constraints": {
+          "noExternalNetwork": true
+        },
+        "inputRefs": [
+          {
+            "objectType": "VolumetricData",
+            "ref": "volumetric",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "volumetric_grid_json",
+            "volumetric_payload_json",
+            "volumetric_field_json",
+            "volumetric_dataset_json",
+            "volumetric_manifest_json",
+            "volumetric_binary",
+            "summary_md",
+            "recipe_json",
+            "volumetric_structure_overlay_json"
+          ]
+        },
+        "params": {
+          "allow_partial_dataset": false,
+          "compression": "contract_default",
+          "field_selection": "all_supported",
+          "format": "auto",
+          "include_histogram": false,
+          "include_statistics": true,
+          "quantity_hint": "auto",
+          "stored_dtype": "source_or_float64",
+          "verify_integrals": true
+        },
+        "purpose": "Parse one bounded supported source into validated inert canonical volumetric artifacts for the application-owned isosurface, lattice-slice, or direct-volume product.",
+        "reason": "The request asks to validate an available bounded volumetric source for local browser visualization without external calculation, rendering, or execution.",
+        "stepId": "step_001",
+        "toolId": "structure.volumetric_data"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "prompt": "Render this signed spin density directly",
+  "quantity": "electron_density",
+  "runtime_ms": 377.194,
+  "selected_tool": "structure.volumetric_data",
+  "shape": [
+    2,
+    2,
+    2
+  ],
+  "status": "completed",
+  "step_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "tool_calls": [
+    {
+      "artifactIds": [
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_grid_json",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_payload_json-01",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_payload_json-02",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_payload_json-03",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_payload_json-04",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_field_json-01",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_field_json-02",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_field_json-03",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_field_json-04",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_binary-01",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_binary-02",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_binary-03",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_binary-04",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_dataset_json",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_manifest_json",
+        "call_job_21c31acae89c4070947143fc_step_001-volumetric_structure_overlay_json",
+        "call_job_21c31acae89c4070947143fc_step_001-summary_md",
+        "call_job_21c31acae89c4070947143fc_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_21c31acae89c4070947143fc_step_001",
+      "idempotencyKey": "job_21c31acae89c4070947143fc:step_001",
+      "jobId": "job_21c31acae89c4070947143fc",
+      "params": {
+        "allow_partial_dataset": false,
+        "compression": "contract_default",
+        "field_selection": "all_supported",
+        "format": "auto",
+        "include_histogram": false,
+        "include_statistics": true,
+        "quantity_hint": "auto",
+        "stored_dtype": "source_or_float64",
+        "verify_integrals": true
+      },
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "structure.volumetric_data"
+    }
+  ],
+  "unit": "electron/angstrom^3",
+  "validation": true
+}

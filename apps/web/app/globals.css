@@ -726,6 +726,18 @@ pre {
 .volumetric-product-panel > div:first-child { display: flex; justify-content: space-between; gap: 12px; }
 .volumetric-product-panel table { width: 100%; min-width: 540px; border-collapse: collapse; font-size: 0.82rem; }
 .volumetric-product-panel th, .volumetric-product-panel td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+.volumetric-slice-volume-surface { min-width: 0; padding-top: 12px; }
+.volumetric-slice-volume-surface .viewer-preview-grid { align-items: start; }
+.volumetric-display-window { padding: 10px 0; border-block: 1px solid var(--border); }
+.volumetric-display-window input[type="number"] { width: 116px; }
+.volumetric-slice-heatmap-wrap { display: grid; gap: 8px; min-height: 320px; max-height: 70vh; overflow: auto; padding: 10px; border: 1px solid var(--border); background: #f7f9fb; }
+.volumetric-slice-heatmap { width: min(100%, 720px); height: min(58vh, 520px); min-height: 280px; image-rendering: pixelated; border: 1px solid #536878; background: #fff; touch-action: pan-x pan-y pinch-zoom; cursor: crosshair; }
+.volumetric-slice-heatmap-wrap > span { color: var(--muted); font-size: .78rem; }
+.volumetric-slice-legend { position: sticky; left: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; width: min(100%, 720px); color: var(--text); font-size: .78rem; }
+.volumetric-slice-table { display: grid; gap: 8px; min-width: 0; }
+.volumetric-slice-table .viewer-table-wrap { max-height: 320px; overflow: auto; border: 1px solid var(--border); }
+.volumetric-slice-table table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: .78rem; }
+.volumetric-slice-table th, .volumetric-slice-table td { padding: 6px; border-bottom: 1px solid var(--border); text-align: left; }
 .potential-product-controls { display: flex; align-items: end; flex-wrap: wrap; gap: 8px; }
 .potential-product-controls label { display: grid; flex: 1 1 180px; gap: 4px; min-width: 0; }
 .potential-product-controls button, .potential-product-controls select { min-height: 40px; }
@@ -743,6 +755,8 @@ pre {
   .volumetric-product-panel table { min-width: 0; table-layout: fixed; font-size: 0.72rem; }
   .volumetric-product-panel th, .volumetric-product-panel td { padding: 5px 3px; overflow-wrap: anywhere; }
   .volumetric-product-panel th:first-child, .volumetric-product-panel td:first-child { width: 27%; }
+  .volumetric-slice-heatmap { height: 300px; min-height: 240px; }
+  .volumetric-display-window { display: grid; grid-template-columns: 1fr; }
 }
 
 .trajectory-viewer-surface { display: grid; gap: 12px; min-width: 0; max-width: 100%; }

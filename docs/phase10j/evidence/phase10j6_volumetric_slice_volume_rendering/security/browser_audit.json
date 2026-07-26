@@ -1,0 +1,12 @@
+{
+  "artifactJavaScript": false,
+  "artifactShader": false,
+  "artifactWorkerWasm": false,
+  "externalUrls": false,
+  "externalRequests": 0,
+  "sourceMutation": false,
+  "silentDownsampling": false,
+  "boundedShaderLoop": 768,
+  "network": "NO_VOLUMETRIC_SLICE_VOLUME_EXTERNAL_NETWORK_REQUESTS",
+  "secrets": "NO_SECRET_PATTERN_HITS"
+}

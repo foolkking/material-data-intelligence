@@ -1,0 +1,70 @@
+{
+  "dataset_hashes": [
+    "31d2a3044b937042493b978eefb462059955e8a6dfdcb37acfc736b48d1a914b",
+    "28b2bea5ef549801e38e0c51de77d5dcc594ba32bb1ee8e0124d2f1b7d3ba9eb",
+    "e967b44d3a93fae087076bda0ae32b81e6299b91411ff99f3304a4ee6f84641a",
+    "d536d2837234956ce91731f40d858a12f79f7874fe7314357765a3bb6465451f",
+    "2258233cb24f797031d30df01ae2017df2e8d3a14e3e0bb06541f6168a28c5a0",
+    "759ef1651a73794700c96535d8c869067caa84376529b9506c4165aed2eb13be"
+  ],
+  "external_requests": 0,
+  "field_hashes": [
+    "168c726c6eb000d5d632720773b32eb6f42352d86359aaca9158029d31a8dc1d",
+    "264096f627ff1dd5d482d15f7316743840985185d5302dda8f243ad313018666",
+    "8eab3447c0689ffb2e9d8dc17013c4299c50192bc62c6a79a66641c0382fe7d3",
+    "c90e64ae7bcd177eaa03f69b748337606eb0851d7b7a382ee292687ae18b8967",
+    "416933ecb2433c9831254d86569dbb5ff7ef4cf12d4b4246fbdc95a00fde0937",
+    "4f727675fa062edf3ebaf4bd808087804ada1f6ec394bf16b5dc8abc009226f4"
+  ],
+  "phase": "10J-6",
+  "renderer": "application-owned Three.js 0.185.1 WebGL2 direct volume and slice Worker",
+  "replay": [
+    "uv run python apps/web/test/generate-volumetric-slice-volume-evidence.py",
+    "node apps/web/test/volumetric-slice-volume-browser-evidence.mjs"
+  ],
+  "runtime_cases": [
+    "charge",
+    "spin",
+    "potential",
+    "elf",
+    "orbital",
+    "triclinic"
+  ],
+  "tool": "structure.volumetric_data",
+  "browsers": [
+    {
+      "browser": "chromium",
+      "available": true,
+      "graphics": "webgl2"
+    },
+    {
+      "browser": "firefox",
+      "available": true,
+      "graphics": "webgl2"
+    },
+    {
+      "browser": "webkit",
+      "available": true,
+      "graphics": "webgl2"
+    }
+  ],
+  "viewports": [
+    [
+      1440,
+      1100
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "markers": [
+    "VOLUMETRIC_SLICE_BROWSER_EVIDENCE_PASS",
+    "VOLUMETRIC_DIRECT_VOLUME_BROWSER_EVIDENCE_PASS",
+    "VOLUMETRIC_TEXTURE_MAPPING_EVIDENCE_PASS",
+    "VOLUMETRIC_SLICE_VOLUME_PERFORMANCE_EVIDENCE_PASS",
+    "NO_VOLUMETRIC_SLICE_VOLUME_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ],
+  "redaction": "sanitized; no private paths, credentials, driver strings, or external URLs"
+}

@@ -1,0 +1,14 @@
+{
+  "baseline_head": "f8cbdda20800b536fa38cd15c4b0375a186c42ef",
+  "new_dependencies": [],
+  "renderer": "application-owned Three.js 0.185.1 WebGL2 Data3DTexture/R32F",
+  "schemas": [
+    "phase10j.volumetric_dataset.v1",
+    "phase10j.volumetric_grid.v1",
+    "phase10j.volumetric_field.v1",
+    "phase10j.volumetric_payload.v1",
+    "phase10j.volumetric_manifest.v1"
+  ],
+  "texture_mapping": "width=nz,height=ny,depth=nx; texture(q2,q1,q0)",
+  "tool": "structure.volumetric_data"
+}

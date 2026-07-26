@@ -1,0 +1,13 @@
+{
+  "region": "WebGL2 Direct Volume product",
+  "liveStatus": "polite",
+  "qualityLabel": "Quality LowBalancedHigh",
+  "sourceDisclosure": true,
+  "fallbackTabs": [
+    "Isosurface",
+    "Slice",
+    "Volume",
+    "Metadata JSON",
+    "Manifest"
+  ]
+}

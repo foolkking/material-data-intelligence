@@ -1,5 +1,19 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-26 Phase 10J-6 Slice / Direct Volume Decisions
+
+1. Canonical texture mapping is `width=nz`, `height=ny`, `depth=nx`; shader coordinates are `(q2,q1,q0)` and payloads are not transposed.
+2. Scientific Slice scope is exactly three canonical lattice-axis planes. Exact nodes avoid interpolation; continuous positions use only bounded one-axis linear interpolation and never mutate source values.
+3. Slice state is an ephemeral immutable `phase10j6.volumetric_slice.v1` model with deterministic hash/provenance, not a new public tool or persisted canonical artifact.
+4. Direct Volume requires WebGL2, two texture units, float-linear support, explicit GPU caps, and one application-owned static GLSL3 shader. Missing capability falls back to Slice/Isosurface.
+5. Float64 sources use an explicit bounded float32 GPU display copy with absolute/relative/RMS error and conversion hash disclosure.
+6. Transfer functions, windows, palettes, quality, and clipping are display state, not scientific field transforms. Artifact code, shader, Worker/WASM, palette code, URLs, textures, or modules are forbidden.
+7. Triclinic volume and Slice geometry use the full affine transform. Structure occlusion uses one bounded depth prepass; ray marching terminates at reconstructed opaque depth and source-over blending preserves front/internal/rear relationships.
+8. Volume, atoms, bonds, and unit cell share one affine clipping plane. Axis-aligned world clipping is not used for skewed grids.
+9. Over-cap fields are refused before GPU allocation. There is no silent downsampling; Slice and Isosurface are the approved fallback.
+10. Direct Volume is source-cell only. Cell-centered/vector/complex rendering, arbitrary scientific slicing, resampling, segmentation, feature detection, and remote GPU rendering remain deferred.
+11. Slice sampling retains the canonical source dtype and never pays the Direct Volume float32 conversion budget. Superseded in-flight Slice work is cancelled by terminating its Worker. Both Slice 3D and Direct Volume engines remain lazy chunks; shader support is established by compiling/linking the exact static GLSL program before renderer initialization.
+
 ## ADR-10J5-ELF-ORBITAL: Preserve source fields and disclose missing identity
 
 ### Decision

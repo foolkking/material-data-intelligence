@@ -1812,11 +1812,11 @@ def _should_generate_volumetric_data(
         return False
     prompt = request.user_prompt.lower()
     unsupported = (
-        "slice", "direct volume", "ray cast", "bader", "atomic charge", "charge partition",
+        "curved slice", "arbitrary plane", "arbitrary surface", "arbitrary python", "volume filter", "remote gpu", "segmentation", "segment the", "bader", "atomic charge", "charge partition",
         "run vasp", "calculate density", "calculate charge", "calculate locpot", "calculate elf", "elf basin", "elf attractor", "lone pair",
         "calculate orbital", "generate orbital", "homo", "lumo", "wavefunction", "orbital reconstruction", "orbital combination", "linear combination",
         "work function", "vacuum level", "fermi level", "band offset", "potential alignment", "macroscopic average", "electric field", "trajectory", "phonon", "brillouin", "defect", "slab",
-        "切片", "体渲染", "bader", "原子电荷", "电荷分区", "计算电荷密度", "计算 locpot", "计算 elf", "elf 盆地", "孤对电子",
+        "任意曲面切片", "任意平面", "自动分割", "体数据过滤", "远程 gpu", "bader", "原子电荷", "电荷分区", "计算电荷密度", "计算 locpot", "计算 elf", "elf 盆地", "孤对电子",
         "计算轨道", "生成轨道", "重构波函数", "轨道线性组合", "运行 vasp", "功函数", "真空能级", "费米能级", "能带偏移", "势对齐", "宏观平均", "电场", "轨迹", "声子", "布里渊",
     )
     if any(marker in prompt for marker in unsupported):
@@ -1826,9 +1826,11 @@ def _should_generate_volumetric_data(
         "normalize volumetric", "volumetric data artifact", "canonical volumetric", "import charge density",
         "charge density", "electron density", "spin density", "spin difference", "local potential", "electrostatic potential", "equipotential", "planar-averaged potential", "planar average potential", "potential difference", "compare the potential", "cell-average-zero", "isosurface", "iso-surface", "volumetric viewer", "render density",
         "electron localization function", "elf isosurface", "visualize the elf", "show an elf", "orbital density", "orbital-density", "partial charge density", "partial density", "source-defined partial density",
+        "slice through", "lattice slice", "fractional coordinate", "direct volume", "volume rendering", "render this volumetric field", "3d volume view", "ray cast this volume",
         "解析 chgcar", "解析 locpot", "解析 elfcar", "解析 parchg", "解析 cube", "规范化体数据", "导入体数据",
         "电荷密度", "电子密度", "自旋密度", "自旋差", "局域势", "静电势", "等势面", "平面平均势", "电势差", "胞平均零点", "等值面", "体数据查看器", "渲染密度",
         "电子局域函数", "elf 等值面", "部分电荷密度", "轨道密度", "源定义的部分密度",
+        "切片", "晶格切片", "二维切片", "截面", "fractional 位置", "体绘制", "体渲染", "三维体数据",
     )
     return any(marker in prompt for marker in markers)
 
@@ -1842,8 +1844,8 @@ def _mock_volumetric_data_plan(request: PlannerRequest) -> dict[str, Any]:
     step = {
         "stepId": "step_001",
         "toolId": "structure.volumetric_data",
-        "purpose": "Parse one bounded supported source into validated inert canonical volumetric artifacts.",
-        "reason": "The request asks to validate an available bounded volumetric source for the application-owned density or potential product without external execution.",
+        "purpose": "Parse one bounded supported source into validated inert canonical volumetric artifacts for the application-owned isosurface, lattice-slice, or direct-volume product.",
+        "reason": "The request asks to validate an available bounded volumetric source for local browser visualization without external calculation, rendering, or execution.",
         "inputRefs": [{"refType": "normalized_object", "ref": "volumetric", "objectType": "VolumetricData"}],
         "params": {
             "format": "auto", "quantity_hint": "auto", "field_selection": "all_supported",

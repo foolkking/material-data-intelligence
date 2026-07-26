@@ -1,5 +1,14 @@
 # TASK_BOARD
 
+## Phase 10J-6 Volumetric Slice / Volume Rendering In Progress
+
+- [x] Audit canonical volumetric contracts, payloads, existing Three.js/Worker infrastructure, product semantics, GPU capabilities, and security boundary.
+- [x] Implement exact/interpolated lattice-axis Slice Product, Worker cancellation, quantitative 2D/3D views, probing, palette/window, PNG, accessibility, and typed fallbacks.
+- [x] Implement bounded WebGL2 Direct Volume with canonical texture mapping, float64 conversion audit, static affine ray marcher, transfer/compositing, depth prepass, shared clipping, PNG, and lifecycle cleanup.
+- [x] Capture real Runtime product cases, Chromium/Firefox/WebKit/mobile/context-loss/depth/near-cap evidence with zero external requests.
+- [x] Complete full frontend/backend, all Phase 10J tests, historical viewer regressions, typecheck/build, security scan, unique Three.js tree, and scoped evidence cleanup.
+- [ ] Complete implementation commit/push/current-HEAD service-backed/no-skipped CI, completion record, and verified queue archival.
+
 ## Phase 10J-5 ELF / Orbital Product Closure In Progress
 
 - [x] Audit ELFCAR, PARCHG, CUBE, canonical quantity/unit/normalization/integral semantics, and source identity availability.

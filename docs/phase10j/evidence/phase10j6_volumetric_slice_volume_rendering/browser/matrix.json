@@ -1,0 +1,395 @@
+[
+  {
+    "browser": "chromium",
+    "available": true,
+    "slice": {
+      "axisResults": [
+        "axis0fractional position0.500sampling modeexact_grid_planeindices1 to 1factor0periodic wrapfalseoutput2 x 2physical position1.000000 Angstromsource range0 to 1 dimensionlessslice range0.1 to 1 dimensionlesshash87599e1824124f34a347fddb64528d03b197dace8054978f1b48566576b66555Worker ms0.5",
+        "axis1fractional position0.500sampling modeexact_grid_planeindices1 to 1factor0periodic wrapfalseoutput2 x 2physical position1.000000 Angstromsource range0 to 1 dimensionlessslice range0.2 to 1 dimensionlesshash84120e0157daea27bd8b8334f2d0d40343ecbfa3e8aae035d877d314bb41076fWorker ms2.7",
+        "axis2fractional position0.500sampling modeexact_grid_planeindices1 to 1factor0periodic wrapfalseoutput2 x 2physical position1.000000 Angstromsource range0 to 1 dimensionlessslice range0.4 to 1 dimensionlesshash013650bd43a8ac1cfd7ae509d0cabd840c97f371c8b6c7e4a5941fd6ad0fc5c3Worker ms0.5"
+      ],
+      "interpolation": "Canonical planelinear_axis_interpolationAxis lattice axis 0lattice axis 1lattice axis 2Fractional position 0.3752D heatmap3D plane structure unit cellaxis2fractional position0.375sampling modelinear_axis_interpolationindices0 to 1factor0.75periodic wrapfalseoutput2 x 2physical position0.750000 Angstromsource range0 to 1 dimensionlessslice range0.3 to 0.825 dimensionlesshash801167b4541057c6061a904c75bc8632b3840ba8bbdb59cab16f7e8fbfdb8818Worker ms1.7",
+      "probeValue": 0.82192576509512,
+      "keyboardProbe": true,
+      "accessibleTable": true,
+      "slice3dContext": "webgl2",
+      "slice3dCanvasCount": 1,
+      "png": {
+        "bytes": 45797,
+        "dimensions": [
+          1000,
+          840
+        ],
+        "metadataCaptionPixels": 140
+      }
+    },
+    "volume": {
+      "state": "ready",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "nonblankPixels": 4096,
+      "textureBytes": 32,
+      "estimatedGpuBytes": 16779328,
+      "maximum3dTextureSize": 2048,
+      "maximumTextureImageUnits": 32,
+      "rayStepCap": 512,
+      "contextCount": 1,
+      "depthPolicy": "structure_depth_prepass",
+      "depthTargetCount": 1,
+      "clippingPolicy": "shared_affine_plane",
+      "shaderVersion": "phase10j6.volume_ray_march.v1",
+      "shaderLinked": true,
+      "metrics": "texture mapping2 x 2 x 2 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionfloat64 to float32 display copymax abs error2.38418579324e-8RMS error9.72864394308e-9texture bytes32MAX_3D_TEXTURE_SIZE2048texture units32projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985",
+      "projectionRoundTrip": true,
+      "png": {
+        "bytes": 258165,
+        "dimensions": [
+          1200,
+          1062
+        ],
+        "metadataCaptionPixels": 162
+      },
+      "contextLoss": true
+    },
+    "lifecycle": {
+      "cycles": 6,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "staleWorkerProtection": true,
+      "idleContinuousLoop": false
+    },
+    "accessibility": {
+      "region": "WebGL2 Direct Volume product",
+      "liveStatus": "polite",
+      "qualityLabel": "Quality LowBalancedHigh",
+      "sourceDisclosure": true,
+      "fallbackTabs": [
+        "Isosurface",
+        "Slice",
+        "Volume",
+        "Metadata JSON",
+        "Manifest"
+      ]
+    },
+    "productCases": [
+      {
+        "caseId": "charge",
+        "mode": "slice",
+        "quantity": "electron_density",
+        "minimum": 1,
+        "maximum": 8,
+        "spin": null,
+        "palette": "viridis",
+        "shape": [
+          2,
+          2,
+          2
+        ],
+        "boundaries": [
+          "periodic",
+          "periodic",
+          "periodic"
+        ],
+        "graphics": {
+          "canvasCount": 1,
+          "context": "2d"
+        },
+        "externalRequests": 0,
+        "consoleErrors": [],
+        "pageErrors": []
+      },
+      {
+        "caseId": "spin",
+        "mode": "volume",
+        "quantity": "magnetization_density",
+        "minimum": 0.125,
+        "maximum": 1,
+        "spin": {
+          "channel": "spin_difference",
+          "component_basis": "not_applicable",
+          "representation": "collinear",
+          "sign_convention": "up minus down",
+          "source_convention": "VASP total then magnetization components"
+        },
+        "palette": "diverging_blue_red",
+        "shape": [
+          2,
+          2,
+          2
+        ],
+        "boundaries": [
+          "periodic",
+          "periodic",
+          "periodic"
+        ],
+        "graphics": {
+          "state": "ready",
+          "canvasCount": 1,
+          "context": "webgl2",
+          "nonblankPixels": 4096,
+          "textureBytes": 32,
+          "estimatedGpuBytes": 16779328,
+          "maximum3dTextureSize": 2048,
+          "maximumTextureImageUnits": 32,
+          "rayStepCap": 512,
+          "contextCount": 1,
+          "depthPolicy": "structure_depth_prepass",
+          "depthTargetCount": 1,
+          "clippingPolicy": "shared_affine_plane",
+          "shaderVersion": "phase10j6.volume_ray_march.v1",
+          "shaderLinked": true,
+          "metrics": "texture mapping2 x 2 x 2 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionfloat64 to float32 display copymax abs error0RMS error0texture bytes32MAX_3D_TEXTURE_SIZE2048texture units32projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985"
+        },
+        "externalRequests": 0,
+        "consoleErrors": [],
+        "pageErrors": []
+      },
+      {
+        "caseId": "potential",
+        "mode": "slice",
+        "quantity": "local_potential",
+        "minimum": -1,
+        "maximum": 2.5,
+        "spin": null,
+        "palette": "diverging_blue_red",
+        "shape": [
+          2,
+          2,
+          2
+        ],
+        "boundaries": [
+          "periodic",
+          "periodic",
+          "periodic"
+        ],
+        "graphics": {
+          "canvasCount": 1,
+          "context": "2d"
+        },
+        "externalRequests": 0,
+        "consoleErrors": [],
+        "pageErrors": []
+      },
+      {
+        "caseId": "orbital",
+        "mode": "volume",
+        "quantity": "orbital_density",
+        "minimum": 0.5,
+        "maximum": 4,
+        "spin": null,
+        "palette": "viridis",
+        "shape": [
+          2,
+          2,
+          2
+        ],
+        "boundaries": [
+          "periodic",
+          "periodic",
+          "periodic"
+        ],
+        "graphics": {
+          "state": "ready",
+          "canvasCount": 1,
+          "context": "webgl2",
+          "nonblankPixels": 4096,
+          "textureBytes": 32,
+          "estimatedGpuBytes": 16779328,
+          "maximum3dTextureSize": 2048,
+          "maximumTextureImageUnits": 32,
+          "rayStepCap": 512,
+          "contextCount": 1,
+          "depthPolicy": "structure_depth_prepass",
+          "depthTargetCount": 1,
+          "clippingPolicy": "shared_affine_plane",
+          "shaderVersion": "phase10j6.volume_ray_march.v1",
+          "shaderLinked": true,
+          "metrics": "texture mapping2 x 2 x 2 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionfloat64 to float32 display copymax abs error0RMS error0texture bytes32MAX_3D_TEXTURE_SIZE2048texture units32projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985"
+        },
+        "externalRequests": 0,
+        "consoleErrors": [],
+        "pageErrors": []
+      },
+      {
+        "caseId": "triclinic",
+        "mode": "volume",
+        "quantity": "generic_scalar",
+        "minimum": 1,
+        "maximum": 8,
+        "spin": null,
+        "palette": "viridis",
+        "shape": [
+          2,
+          2,
+          2
+        ],
+        "boundaries": [
+          "non_periodic",
+          "non_periodic",
+          "non_periodic"
+        ],
+        "graphics": {
+          "state": "ready",
+          "canvasCount": 1,
+          "context": "webgl2",
+          "nonblankPixels": 4096,
+          "textureBytes": 32,
+          "estimatedGpuBytes": 16779328,
+          "maximum3dTextureSize": 2048,
+          "maximumTextureImageUnits": 32,
+          "rayStepCap": 512,
+          "contextCount": 1,
+          "depthPolicy": "structure_depth_prepass",
+          "depthTargetCount": 1,
+          "clippingPolicy": "shared_affine_plane",
+          "shaderVersion": "phase10j6.volume_ray_march.v1",
+          "shaderLinked": true,
+          "metrics": "texture mapping2 x 2 x 2 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionfloat64 to float32 display copymax abs error0RMS error0texture bytes32MAX_3D_TEXTURE_SIZE2048texture units32projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985"
+        },
+        "externalRequests": 0,
+        "consoleErrors": [],
+        "pageErrors": []
+      }
+    ],
+    "mobile": {
+      "viewport": [
+        390,
+        844
+      ],
+      "touch": true,
+      "overflow": false,
+      "probe": true
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "firefox",
+    "available": true,
+    "slice": {
+      "axisResults": [
+        "axis0fractional position0.500sampling modeexact_grid_planeindices1 to 1factor0periodic wrapfalseoutput2 x 2physical position1.000000 Angstromsource range0 to 1 dimensionlessslice range0.1 to 1 dimensionlesshash87599e1824124f34a347fddb64528d03b197dace8054978f1b48566576b66555Worker ms1",
+        "axis1fractional position0.500sampling modeexact_grid_planeindices1 to 1factor0periodic wrapfalseoutput2 x 2physical position1.000000 Angstromsource range0 to 1 dimensionlessslice range0.2 to 1 dimensionlesshash84120e0157daea27bd8b8334f2d0d40343ecbfa3e8aae035d877d314bb41076fWorker ms0",
+        "axis2fractional position0.500sampling modeexact_grid_planeindices1 to 1factor0periodic wrapfalseoutput2 x 2physical position1.000000 Angstromsource range0 to 1 dimensionlessslice range0.4 to 1 dimensionlesshash013650bd43a8ac1cfd7ae509d0cabd840c97f371c8b6c7e4a5941fd6ad0fc5c3Worker ms0"
+      ],
+      "interpolation": "Canonical planelinear_axis_interpolationAxis lattice axis 0lattice axis 1lattice axis 2Fractional position 0.3752D heatmap3D plane structure unit cellaxis2fractional position0.375sampling modelinear_axis_interpolationindices0 to 1factor0.75periodic wrapfalseoutput2 x 2physical position0.750000 Angstromsource range0 to 1 dimensionlessslice range0.3 to 0.825 dimensionlesshash801167b4541057c6061a904c75bc8632b3840ba8bbdb59cab16f7e8fbfdb8818Worker ms1",
+      "probeValue": 0.823330422566664,
+      "keyboardProbe": true,
+      "accessibleTable": true,
+      "slice3dContext": "webgl2",
+      "slice3dCanvasCount": 1,
+      "png": null
+    },
+    "volume": {
+      "state": "ready",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "nonblankPixels": 4096,
+      "textureBytes": 32,
+      "estimatedGpuBytes": 16779328,
+      "maximum3dTextureSize": 2048,
+      "maximumTextureImageUnits": 16,
+      "rayStepCap": 512,
+      "contextCount": 1,
+      "depthPolicy": "structure_depth_prepass",
+      "depthTargetCount": 1,
+      "clippingPolicy": "shared_affine_plane",
+      "shaderVersion": "phase10j6.volume_ray_march.v1",
+      "shaderLinked": true,
+      "metrics": "texture mapping2 x 2 x 2 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionfloat64 to float32 display copymax abs error2.38418579324e-8RMS error9.72864394308e-9texture bytes32MAX_3D_TEXTURE_SIZE2048texture units16projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985",
+      "projectionRoundTrip": true,
+      "png": null,
+      "contextLoss": null
+    },
+    "lifecycle": {
+      "cycles": 6,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "staleWorkerProtection": true,
+      "idleContinuousLoop": false
+    },
+    "accessibility": {
+      "region": "WebGL2 Direct Volume product",
+      "liveStatus": "polite",
+      "qualityLabel": "Quality LowBalancedHigh",
+      "sourceDisclosure": true,
+      "fallbackTabs": [
+        "Isosurface",
+        "Slice",
+        "Volume",
+        "Metadata JSON",
+        "Manifest"
+      ]
+    },
+    "productCases": null,
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "webkit",
+    "available": true,
+    "slice": {
+      "axisResults": [
+        "axis0fractional position0.500sampling modeexact_grid_planeindices1 to 1factor0periodic wrapfalseoutput2 x 2physical position1.000000 Angstromsource range0 to 1 dimensionlessslice range0.1 to 1 dimensionlesshash87599e1824124f34a347fddb64528d03b197dace8054978f1b48566576b66555Worker ms1",
+        "axis1fractional position0.500sampling modeexact_grid_planeindices1 to 1factor0periodic wrapfalseoutput2 x 2physical position1.000000 Angstromsource range0 to 1 dimensionlessslice range0.2 to 1 dimensionlesshash84120e0157daea27bd8b8334f2d0d40343ecbfa3e8aae035d877d314bb41076fWorker ms1",
+        "axis2fractional position0.500sampling modeexact_grid_planeindices1 to 1factor0periodic wrapfalseoutput2 x 2physical position1.000000 Angstromsource range0 to 1 dimensionlessslice range0.4 to 1 dimensionlesshash013650bd43a8ac1cfd7ae509d0cabd840c97f371c8b6c7e4a5941fd6ad0fc5c3Worker ms1"
+      ],
+      "interpolation": "Canonical planelinear_axis_interpolationAxis lattice axis 0lattice axis 1lattice axis 2Fractional position 0.3752D heatmap3D plane structure unit cellaxis2fractional position0.375sampling modelinear_axis_interpolationindices0 to 1factor0.75periodic wrapfalseoutput2 x 2physical position0.750000 Angstromsource range0 to 1 dimensionlessslice range0.3 to 0.825 dimensionlesshash801167b4541057c6061a904c75bc8632b3840ba8bbdb59cab16f7e8fbfdb8818Worker ms1",
+      "probeValue": 0.82283788254756,
+      "keyboardProbe": true,
+      "accessibleTable": true,
+      "slice3dContext": "webgl2",
+      "slice3dCanvasCount": 1,
+      "png": null
+    },
+    "volume": {
+      "state": "ready",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "nonblankPixels": 4096,
+      "textureBytes": 32,
+      "estimatedGpuBytes": 16779328,
+      "maximum3dTextureSize": 2048,
+      "maximumTextureImageUnits": 16,
+      "rayStepCap": 512,
+      "contextCount": 1,
+      "depthPolicy": "structure_depth_prepass",
+      "depthTargetCount": 1,
+      "clippingPolicy": "shared_affine_plane",
+      "shaderVersion": "phase10j6.volume_ray_march.v1",
+      "shaderLinked": true,
+      "metrics": "texture mapping2 x 2 x 2 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionfloat64 to float32 display copymax abs error2.38418579324e-8RMS error9.72864394308e-9texture bytes32MAX_3D_TEXTURE_SIZE2048texture units16projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985",
+      "projectionRoundTrip": true,
+      "png": null,
+      "contextLoss": null
+    },
+    "lifecycle": {
+      "cycles": 6,
+      "canvasCount": 1,
+      "contextCount": 1,
+      "staleWorkerProtection": true,
+      "idleContinuousLoop": false
+    },
+    "accessibility": {
+      "region": "WebGL2 Direct Volume product",
+      "liveStatus": "polite",
+      "qualityLabel": "Quality LowBalancedHigh",
+      "sourceDisclosure": true,
+      "fallbackTabs": [
+        "Isosurface",
+        "Slice",
+        "Volume",
+        "Metadata JSON",
+        "Manifest"
+      ]
+    },
+    "productCases": null,
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

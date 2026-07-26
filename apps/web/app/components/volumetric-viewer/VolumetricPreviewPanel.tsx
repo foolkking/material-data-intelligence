@@ -3,13 +3,14 @@
 import { useState } from "react";
 import type { Artifact } from "../../lib/planner-api";
 import { VolumetricIsosurfaceSurface } from "./VolumetricIsosurfaceSurface";
+import { VolumetricSliceVolumeSurface } from "./VolumetricSliceVolumeSurface";
 
 type JsonRecord = Record<string, unknown>;
 
 export function VolumetricPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
   const datasetArtifact = artifacts.find((artifact) => artifact.type === "volumetric_dataset_json" || artifact.name === "volumetric_dataset.json");
   const manifestArtifact = artifacts.find((artifact) => artifact.type === "volumetric_manifest_json" || artifact.name === "volumetric_manifest.json");
-  const [tab, setTab] = useState<"surface" | "metadata" | "manifest">("surface");
+  const [tab, setTab] = useState<"surface" | "slice" | "volume" | "metadata" | "manifest">("surface");
   if (!datasetArtifact && !manifestArtifact) return null;
   const dataset = record(payload(datasetArtifact));
   const manifest = record(payload(manifestArtifact));
@@ -20,8 +21,8 @@ export function VolumetricPreviewPanel({ artifacts }: { artifacts: Artifact[] })
   const fields = Array.isArray(dataset?.fields) ? dataset.fields : [];
   const payloads = Array.isArray(dataset?.payloads) ? dataset.payloads : [];
   return <section className="panel viewer-static-preview" data-testid="volumetric-metadata-preview">
-    <div className="panel-heading"><div><h3>Volumetric data</h3><span>Validated isosurface product</span></div></div>
-    <p className="notice">Canonical inert field data can be rendered locally as bounded isosurfaces. Metadata and manifest JSON remain available independently of Worker or WebGL support.</p>
+    <div className="panel-heading"><div><h3>Volumetric data</h3><span>Validated isosurface, lattice slice, and direct volume products</span></div></div>
+    <p className="notice">Canonical inert field data can be inspected as bounded isosurfaces, quantitative lattice-axis slices, or a WebGL2 direct volume. Metadata and manifest JSON remain independently available.</p>
     <dl className="mini-grid volumetric-metadata-summary" data-testid="volumetric-metadata-summary">
       <dt>schema</dt><dd data-testid="volumetric-schema-version">{text(dataset?.schema_version)}</dd>
       <dt>source format</dt><dd data-testid="volumetric-source-format">{text(provenance?.source_format)}</dd>
@@ -31,11 +32,14 @@ export function VolumetricPreviewPanel({ artifacts }: { artifacts: Artifact[] })
     </dl>
     <div className="viewer-preview-tabs" role="tablist" aria-label="Volumetric preview modes">
       <button type="button" role="tab" aria-selected={tab === "surface"} className={tab === "surface" ? "active" : "secondary"} onClick={() => setTab("surface")}>Isosurface</button>
+      <button type="button" role="tab" aria-selected={tab === "slice"} className={tab === "slice" ? "active" : "secondary"} onClick={() => setTab("slice")}>Slice</button>
+      <button type="button" role="tab" aria-selected={tab === "volume"} className={tab === "volume" ? "active" : "secondary"} onClick={() => setTab("volume")}>Volume</button>
       <button type="button" role="tab" aria-selected={tab === "metadata"} className={tab === "metadata" ? "active" : "secondary"} onClick={() => setTab("metadata")}>Metadata JSON</button>
       <button type="button" role="tab" aria-selected={tab === "manifest"} className={tab === "manifest" ? "active" : "secondary"} onClick={() => setTab("manifest")}>Manifest</button>
     </div>
     <div className="viewer-preview-tab-panel" role="tabpanel">
       {tab === "surface" ? <VolumetricIsosurfaceSurface artifacts={artifacts} /> : null}
+      {tab === "slice" || tab === "volume" ? <VolumetricSliceVolumeSurface artifacts={artifacts} mode={tab} /> : null}
       {tab === "metadata" ? <div data-testid="volumetric-metadata-json-preview"><dl className="mini-grid">
         <dt>schema</dt><dd>{text(dataset?.schema_version)}</dd>
         <dt>source format</dt><dd>{text(provenance?.source_format)}</dd>

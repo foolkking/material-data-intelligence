@@ -1,0 +1,23 @@
+{
+  "slice": {
+    "bytes": 45797,
+    "dimensions": [
+      1000,
+      840
+    ],
+    "metadataCaptionPixels": 140
+  },
+  "volume": {
+    "bytes": 258165,
+    "dimensions": [
+      1200,
+      1062
+    ],
+    "metadataCaptionPixels": 162
+  },
+  "signature": "89504e470d0a1a0a",
+  "localOnly": true,
+  "currentCamera": true,
+  "scientificMetadataCaption": true,
+  "boundedPixels": true
+}

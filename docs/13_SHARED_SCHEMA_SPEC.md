@@ -1486,3 +1486,27 @@ band/k-point/orbital/occupancy identity remains missing; filenames cannot fill
 it. A renderer-local periodic structure overlay may be derived at `1x1x1` or
 `2x2x2` within eight replicas, 4096 atoms, and 8192 bonds, while the scalar
 field remains the source cell.
+
+## Phase 10J-6 Application-Owned Slice / Direct Volume Models
+
+Phase 10J-6 does not change the canonical Phase 10J grid, payload, field,
+dataset, or manifest schemas. A validated frontend may derive an ephemeral,
+immutable `phase10j6.volumetric_slice.v1` model for exactly one canonical
+lattice-axis plane. It binds source dataset/field hashes, axis, fractional and
+physical position, exact-grid or one-axis linear interpolation metadata,
+affine plane origin/bases/normal, output shape, float64 sampled values, unit,
+statistics, deterministic SHA-256, and `sourceMutated=false` provenance.
+
+Direct Volume is renderer state rather than a scientific artifact. Canonical
+`ijkc` storage maps without transpose to a 3D texture with
+`width=nz`, `height=ny`, `depth=nx`; shader sampling uses `(q2,q1,q0)`.
+Float64 inputs are copied to a bounded float32 display buffer with explicit
+error/hash metadata. Transfer function, palette, quality, clipping, camera,
+structure depth target, and WebGL capability are application-owned display
+state and never modify or extend the canonical source artifact.
+
+Only finite real scalar one-component node data is supported. No artifact may
+supply shader, Worker/WASM, transfer code, plane expression, URL, texture,
+module, callback, HTML, CSS, or execution authority. Cell-centered,
+vector/complex, arbitrary oblique/curved slices, resampling, downsampling,
+segmentation, feature detection, and 4D volume remain outside this model.

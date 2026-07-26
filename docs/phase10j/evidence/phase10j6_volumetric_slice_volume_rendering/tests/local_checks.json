@@ -1,0 +1,14 @@
+{
+  "phase": "10J-6",
+  "frontend": {"files_passed": 48, "tests_passed": 294, "status": "passed"},
+  "backend": {"tests_passed": 760, "tests_skipped": 24, "status": "passed_with_intentional_service_gated_skips"},
+  "phase10j_backend": {"files": 8, "tests_passed": 98, "status": "passed"},
+  "typecheck": "passed",
+  "production_build": "passed",
+  "uv_lock_check": "passed",
+  "git_diff_check": "passed",
+  "three_tree": {"version": "0.185.1", "copies": 1},
+  "service_backed_local": "unavailable_no_docker_command",
+  "service_backed_ci": "required_pending_current_head",
+  "no_skipped_ci": "required_pending_current_head"
+}

@@ -1,0 +1,13 @@
+{
+  "textureBytes": 32,
+  "estimatedGpuBytes": 16779328,
+  "maximum3dTextureSize": 2048,
+  "maximumTextureImageUnits": 32,
+  "rayStepCap": 512,
+  "canvasCount": 1,
+  "contextCount": 1,
+  "depthPolicy": "structure_depth_prepass",
+  "depthTargetCount": 1,
+  "sourceValuesImmutable": true,
+  "actualDriverAllocationReadback": false
+}

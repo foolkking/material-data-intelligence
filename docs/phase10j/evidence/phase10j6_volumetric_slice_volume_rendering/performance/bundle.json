@@ -1,0 +1,11 @@
+{
+  "phase": "10J-6",
+  "build": "passed",
+  "home_route_size_kb": 125,
+  "home_first_load_js_kb": 228,
+  "shared_first_load_js_kb": 103,
+  "renderer_loading": "lazy_dynamic_chunks",
+  "three_copies": 1,
+  "external_runtime_imports": 0,
+  "note": "Environment-specific Next.js production build output; not a universal transfer-size claim."
+}

@@ -1,0 +1,14 @@
+{
+  "axes": [
+    0,
+    1,
+    2
+  ],
+  "canonical_offset": "((i * ny) + j) * nz + k",
+  "exact": true,
+  "interpolation": "linear_axis_only",
+  "periodic_wrap": true,
+  "reference_tests": "volumetricSliceModel.test.ts",
+  "source_mutated": false,
+  "triclinic_affine": true
+}

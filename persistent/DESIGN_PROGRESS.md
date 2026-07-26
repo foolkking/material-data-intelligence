@@ -1,5 +1,13 @@
 # DESIGN_PROGRESS
 
+## 2026-07-26 Phase 10J-6 Volumetric Slice / Volume Rendering Local Closure
+
+- Added validated three-axis exact/interpolated lattice slices with periodic wrap/non-periodic bounds, an application-owned cancellable Worker, deterministic hashes, quantitative 2D heatmap/probe/table, and true affine Three.js planes.
+- Added a lazy WebGL2 Direct Volume path with canonical `width=nz,height=ny,depth=nx` R32F mapping, explicit float64 display conversion audit, bounded static ray marcher, application palettes/transfers, affine/triclinic mapping, PNG, fallback, and context/lifecycle handling.
+- Added one-scene structure depth prepass and shared affine clipping for volume, atoms, bonds, and cell. Real Runtime cases cover CHGCAR charge/spin, LOCPOT, ELFCAR, PARCHG, and triclinic CUBE; Chromium near-cap `128^3` evidence uses an 8 MiB generated payload without committing it.
+- Added source-native Slice decoding, true Worker termination on supersession, exact legend/table/keyboard probes, lazy perspective/orthographic 3D Slice, shader compile/link preflight, and annotated bounded Slice/Volume PNGs.
+- Local closure passes 294 frontend tests, 760 backend tests with 24 intentional service-gated skips, 98 Phase 10J tests, typecheck/build, all required historical viewer runners, and real Chromium/Firefox/WebKit/mobile evidence with zero external requests. Docker-backed service/no-skipped and final completion remain current-HEAD CI gates.
+
 ## 2026-07-24 Phase 10J-5 ELF / Orbital Product Implemented
 
 - Added strict application-owned ELF and orbital/partial-density product mapping over unchanged Phase 10J artifacts, with decoded-value range/non-negativity validation, exact units/isovalues, full-cell statistics/integrals, source identity completeness, and no-clamp/no-renormalization boundaries.

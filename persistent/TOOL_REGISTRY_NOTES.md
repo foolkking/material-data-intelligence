@@ -1,5 +1,12 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-26 Phase 10J-6 Slice / Direct Volume Consumer
+
+- No public tool was added. `structure.volumetric_data` remains the sole validated producer of canonical volumetric artifacts.
+- Slice and Direct Volume are application-owned result modes over already validated artifacts. The ephemeral slice model and renderer display state are not AnalysisPlan inputs and grant no browser execution authority.
+- Mock Planner recognizes explicit slice/direct-volume intent but still routes to `structure.volumetric_data`; negative routing excludes arbitrary slicing/filtering, vector/complex derivation, segmentation/Bader, calculations, scripts, and remote GPU rendering.
+- Tool Registry, PlanValidator, QueueWorkerRuntime, adapter schemas, and backend job-success semantics are unchanged.
+
 ## 2026-07-24 Phase 10J-5 ELF / Orbital Product
 
 - `structure.volumetric_data` remains the only public identity. No `structure.elf`, `structure.parchg`, `structure.orbital_density`, or orbital-viewer tool was registered.

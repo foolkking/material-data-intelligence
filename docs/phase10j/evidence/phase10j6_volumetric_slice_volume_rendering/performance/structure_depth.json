@@ -1,0 +1,12 @@
+{
+  "policy": "structure_depth_prepass",
+  "clippingPolicy": "shared_affine_plane",
+  "depthTargetCount": 1,
+  "oneCanvas": true,
+  "oneContext": true,
+  "frontGeometry": "default framebuffer depth test preserves geometry before the volume proxy",
+  "internalGeometry": "ray exit is clipped at reconstructed opaque structure depth",
+  "rearGeometry": "front-to-back volume alpha composites over previously rendered structure color",
+  "sharedClipping": true,
+  "renderOrderOnly": false
+}

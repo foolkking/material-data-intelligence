@@ -1,0 +1,7 @@
+{
+  "cycles": 6,
+  "canvasCount": 1,
+  "contextCount": 1,
+  "staleWorkerProtection": true,
+  "idleContinuousLoop": false
+}

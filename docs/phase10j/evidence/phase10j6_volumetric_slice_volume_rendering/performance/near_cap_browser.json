@@ -1,0 +1,32 @@
+{
+  "state": "ready",
+  "canvasCount": 1,
+  "context": "webgl2",
+  "nonblankPixels": 4096,
+  "textureBytes": 8388608,
+  "estimatedGpuBytes": 33556480,
+  "maximum3dTextureSize": 2048,
+  "maximumTextureImageUnits": 32,
+  "rayStepCap": 512,
+  "contextCount": 1,
+  "depthPolicy": "structure_depth_prepass",
+  "depthTargetCount": 1,
+  "clippingPolicy": "shared_affine_plane",
+  "shaderVersion": "phase10j6.volume_ray_march.v1",
+  "shaderLinked": true,
+  "metrics": "texture mapping128 x 128 x 128 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionnot requiredmax abs error0RMS error0texture bytes8388608MAX_3D_TEXTURE_SIZE2048texture units32projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985",
+  "shape": [
+    128,
+    128,
+    128
+  ],
+  "voxelCount": 2097152,
+  "elapsedMs": 2052.173,
+  "payloadBytes": 8388608,
+  "payloadSha256": "34dd5a4738d444ca6c7fde6bde256d3676f5ad954aa3f64bfdf1bc84d454f38c",
+  "generatedInRunner": true,
+  "committedLargeBinary": false,
+  "externalRequests": 0,
+  "consoleErrors": [],
+  "pageErrors": []
+}

@@ -1,0 +1,14 @@
+{
+  "phase": "10J-6",
+  "dependency_changes": false,
+  "lockfile_changes": false,
+  "three": {"version": "0.185.1", "copies": 1},
+  "npm_audit": {
+    "status": "unavailable",
+    "reason": "configured_registry_endpoint_not_implemented",
+    "http_status": 404,
+    "registry": "configured_mirror_redacted"
+  },
+  "new_browser_dependencies": [],
+  "runtime_external_imports": 0
+}

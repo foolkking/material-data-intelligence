@@ -1,0 +1,7 @@
+{
+  "commands": [
+    "uv run python apps/web/test/generate-volumetric-slice-volume-evidence.py",
+    "npm --prefix apps/web run build",
+    "node apps/web/test/volumetric-slice-volume-browser-evidence.mjs"
+  ]
+}

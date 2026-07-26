@@ -1,0 +1,13 @@
+{
+  "artifact_html_css": false,
+  "artifact_javascript": false,
+  "artifact_shader": false,
+  "artifact_worker_wasm": false,
+  "external_requests": 0,
+  "external_urls": false,
+  "network": "NO_VOLUMETRIC_SLICE_VOLUME_EXTERNAL_NETWORK_REQUESTS",
+  "remote_texture": false,
+  "secrets": "NO_SECRET_PATTERN_HITS",
+  "silent_downsampling": false,
+  "source_mutation": false
+}

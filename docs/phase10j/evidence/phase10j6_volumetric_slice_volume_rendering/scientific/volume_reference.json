@@ -1,0 +1,14 @@
+{
+  "compositing": "front_to_back",
+  "cpu_reference_tests": "volumetricVolumeModel.test.ts",
+  "domain": "normalized affine unit cube",
+  "early_termination": 0.985,
+  "opacity_correction": "phase10j6.step_corrected.v1",
+  "sampling": "hardware float linear after capability gate",
+  "source_mutated": false,
+  "texture_coordinates": [
+    "q2",
+    "q1",
+    "q0"
+  ]
+}

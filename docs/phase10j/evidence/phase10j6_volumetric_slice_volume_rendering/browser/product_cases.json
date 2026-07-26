@@ -1,0 +1,180 @@
+[
+  {
+    "caseId": "charge",
+    "mode": "slice",
+    "quantity": "electron_density",
+    "minimum": 1,
+    "maximum": 8,
+    "spin": null,
+    "palette": "viridis",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "boundaries": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "graphics": {
+      "canvasCount": 1,
+      "context": "2d"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "caseId": "spin",
+    "mode": "volume",
+    "quantity": "magnetization_density",
+    "minimum": 0.125,
+    "maximum": 1,
+    "spin": {
+      "channel": "spin_difference",
+      "component_basis": "not_applicable",
+      "representation": "collinear",
+      "sign_convention": "up minus down",
+      "source_convention": "VASP total then magnetization components"
+    },
+    "palette": "diverging_blue_red",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "boundaries": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "graphics": {
+      "state": "ready",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "nonblankPixels": 4096,
+      "textureBytes": 32,
+      "estimatedGpuBytes": 16779328,
+      "maximum3dTextureSize": 2048,
+      "maximumTextureImageUnits": 32,
+      "rayStepCap": 512,
+      "contextCount": 1,
+      "depthPolicy": "structure_depth_prepass",
+      "depthTargetCount": 1,
+      "clippingPolicy": "shared_affine_plane",
+      "shaderVersion": "phase10j6.volume_ray_march.v1",
+      "shaderLinked": true,
+      "metrics": "texture mapping2 x 2 x 2 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionfloat64 to float32 display copymax abs error0RMS error0texture bytes32MAX_3D_TEXTURE_SIZE2048texture units32projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "caseId": "potential",
+    "mode": "slice",
+    "quantity": "local_potential",
+    "minimum": -1,
+    "maximum": 2.5,
+    "spin": null,
+    "palette": "diverging_blue_red",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "boundaries": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "graphics": {
+      "canvasCount": 1,
+      "context": "2d"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "caseId": "orbital",
+    "mode": "volume",
+    "quantity": "orbital_density",
+    "minimum": 0.5,
+    "maximum": 4,
+    "spin": null,
+    "palette": "viridis",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "boundaries": [
+      "periodic",
+      "periodic",
+      "periodic"
+    ],
+    "graphics": {
+      "state": "ready",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "nonblankPixels": 4096,
+      "textureBytes": 32,
+      "estimatedGpuBytes": 16779328,
+      "maximum3dTextureSize": 2048,
+      "maximumTextureImageUnits": 32,
+      "rayStepCap": 512,
+      "contextCount": 1,
+      "depthPolicy": "structure_depth_prepass",
+      "depthTargetCount": 1,
+      "clippingPolicy": "shared_affine_plane",
+      "shaderVersion": "phase10j6.volume_ray_march.v1",
+      "shaderLinked": true,
+      "metrics": "texture mapping2 x 2 x 2 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionfloat64 to float32 display copymax abs error0RMS error0texture bytes32MAX_3D_TEXTURE_SIZE2048texture units32projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "caseId": "triclinic",
+    "mode": "volume",
+    "quantity": "generic_scalar",
+    "minimum": 1,
+    "maximum": 8,
+    "spin": null,
+    "palette": "viridis",
+    "shape": [
+      2,
+      2,
+      2
+    ],
+    "boundaries": [
+      "non_periodic",
+      "non_periodic",
+      "non_periodic"
+    ],
+    "graphics": {
+      "state": "ready",
+      "canvasCount": 1,
+      "context": "webgl2",
+      "nonblankPixels": 4096,
+      "textureBytes": 32,
+      "estimatedGpuBytes": 16779328,
+      "maximum3dTextureSize": 2048,
+      "maximumTextureImageUnits": 32,
+      "rayStepCap": 512,
+      "contextCount": 1,
+      "depthPolicy": "structure_depth_prepass",
+      "depthTargetCount": 1,
+      "clippingPolicy": "shared_affine_plane",
+      "shaderVersion": "phase10j6.volume_ray_march.v1",
+      "shaderLinked": true,
+      "metrics": "texture mapping2 x 2 x 2 (width=nz, height=ny, depth=nx)GPU dtypefloat32conversionfloat64 to float32 display copymax abs error0RMS error0texture bytes32MAX_3D_TEXTURE_SIZE2048texture units32projectionperspectivedepth policysingle-scene structure depth prepasssampling1.25 samples/voxel, max 512 stepscompositingfront-to-back / corrected opacity / early stop 0.985"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

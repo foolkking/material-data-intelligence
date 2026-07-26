@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-07-26 Phase 10J-6 Follow-ups
+
+- Cell-centered fields, arbitrary oblique/curved scientific slices, mixed periodicity, vector/complex volume, and time-dependent 4D volume require separate contracts and are not inferred by the display layer.
+- Display downsampling and empty-space acceleration are not implemented. Over-cap fields are refused for Direct Volume and retain Slice/Isosurface fallbacks; there is no silent source mutation or scientific resampling.
+- Direct Volume supports the source cell only. Periodic volume supercells need a separate bounded identity/memory/depth policy and must not replicate the canonical payload implicitly.
+- Volume ray picking is not a scientific point-selection authority. Segmentation, Bader/basin/topology analysis, feature detection, vacuum detection, and chemical classification remain separate scientific products.
+
 ## 2026-07-24 Phase 10J-5 Follow-ups
 
 - The canonical PARCHG/CUBE metadata does not yet carry authoritative orbital, band, k-point, occupancy, or energy identity. The product deliberately reports `UNAVAILABLE`; a future electronic artifact contract must add identity instead of inferring it from filenames.

@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-07-26 - Phase 10J-6 Volumetric Slice / Volume Rendering
+
+- Added application-owned lattice-axis Slice and WebGL2 Direct Volume modes to validated volumetric results without adding a tool, dependency, or canonical scientific schema.
+- Added exact/linear sampling, periodic and non-periodic policy, Slice Worker cancellation, deterministic hash/provenance, 2D heatmap/table/probe, affine 3D plane, display controls, and PNG.
+- Added canonical 3D texture mapping, explicit float64-to-float32 error metadata, static bounded ray marching, transfer/compositing, one-scene structure depth prepass, shared triclinic clipping, capability fallback, context loss, and complete disposal.
+- Added Runtime, browser, mobile, near-cap, performance, accessibility, network, security, and screenshot evidence. Final CI closure is pending.
+- Hardened closure with source-native Slice decoding, terminating Worker cancellation, accessible paginated values and keyboard/pointer probes, orthographic Slice projection, exact shader compile/link preflight, annotated PNG exports, and lazy renderer chunks.
+- Local full tests and historical browser regressions pass; Docker-backed service/no-skipped remains a current-HEAD CI gate. The configured npm mirror audit endpoint remains unavailable and no dependency changed.
+
 ## 2026-07-24 - Phase 10J-5 ELF / Orbital Volumetric Product
 
 - Added source-native ELF and source-defined orbital/partial-density product UI over existing `structure.volumetric_data` artifacts, including dtype-aware scientific range checks, exact contours, identity completeness, normalization/integral disclosure, and explicit interpretation limits.
