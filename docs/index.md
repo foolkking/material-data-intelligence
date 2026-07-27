@@ -1,5 +1,10 @@
 # 文档索引
 
+## Gate J6-A / Post-J6 Electronic Structure Roadmap
+
+- [`phase10j/phase10j_post_j6_roadmap_reconciliation.md`](phase10j/phase10j_post_j6_roadmap_reconciliation.md) freezes the reviewer-approved J-7 through J-12 continuation while preserving actual J-5 ELF/Orbital and J-6 Slice/Volume history.
+- [`phase10j/phase10j7_electronic_band_dos_contract_next_scope.md`](phase10j/phase10j7_electronic_band_dos_contract_next_scope.md) records Phase 10J-7 entry criteria and contract-only scope. J-7 remains pending; no electronic or Fermi implementation exists yet.
+
 ## Phase 10J-1 Volumetric Parser / Adapter
 
 - [`phase10j/phase10j1_volumetric_parser_adapter.md`](phase10j/phase10j1_volumetric_parser_adapter.md)

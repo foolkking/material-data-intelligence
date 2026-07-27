@@ -1,5 +1,16 @@
 # OPEN_QUESTIONS
 
+## 2026-07-27 Phase 10J-7 Contract Questions
+
+- Which bounded source formats form the first supported electronic band/DOS parser batch? This remains a J-8 decision after J-7 defines source requirements.
+- How are spin channels, occupations, degeneracies, crossings, discontinuities, and direct/indirect gap authority represented without inferring missing source semantics?
+- Which electronic energy reference and Fermi-energy declarations are valid, and how are unknown or source-relative references represented?
+- What canonical DOS density unit, normalization, integrated-state tolerance, smearing metadata, and projection-completeness policy are required?
+- How are element, site, and source-defined `s/p/d/f` orbital projections identified without implying wavefunction phase or reconstruction?
+- Which k-path provider/version and Phase 10I reciprocal-space identities are mandatory for deterministic Electronic Band/BZ linking?
+- What regular 3D k-mesh completeness and interpolation authority will a future Fermi Surface contract require? A 1D path is explicitly insufficient.
+- Vacuum/work-function and cross-calculation energy alignment remain separate advanced-electrostatics questions.
+
 ## 2026-07-26 Phase 10J-6 Follow-ups
 
 - Cell-centered fields, arbitrary oblique/curved scientific slices, mixed periodicity, vector/complex volume, and time-dependent 4D volume require separate contracts and are not inferred by the display layer.

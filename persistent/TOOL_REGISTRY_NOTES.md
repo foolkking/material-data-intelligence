@@ -1,5 +1,12 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-27 Post-J6 Electronic Roadmap Freeze
+
+- This gate adds no Tool Registry entry and changes no Planner, PlanValidator, adapter, or QueueWorkerRuntime behavior.
+- Electronic Band/DOS public tool identities remain `NOT_IMPLEMENTED` until Phase 10J-8 completes the contract-dependent inventory and approval gate.
+- Fermi Surface public tool identity remains `NOT_IMPLEMENTED`; Phase 10J-10 must first freeze a real 3D k-mesh contract.
+- Existing `phonon.band`, `phonon.dos`, `phonon.band_dos`, and `structure.brillouin_zone` identities retain their current meanings and do not acquire electronic semantics.
+
 ## 2026-07-26 Phase 10J-6 Slice / Direct Volume Consumer
 
 - No public tool was added. `structure.volumetric_data` remains the sole validated producer of canonical volumetric artifacts.

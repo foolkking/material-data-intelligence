@@ -1,5 +1,13 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-27 ADR: Post-J6 Electronic Structure Roadmap Renumbering
+
+**Decision:** accept the reviewer-approved reconciliation that assigns Electronic Band/DOS to J-7 through J-9 and Fermi Surface to J-10 through J-12.
+
+This is not retroactive renaming. Completed J-5 remains ELF / Orbital Volumetric Product and completed J-6 remains Volumetric Slice / Volume Rendering. The previously planned electronic/Fermi meanings were never implemented, so their required capabilities are restored under unused phase numbers rather than falsely marked complete.
+
+The frozen sequence is J-7 contract, J-8 parser/adapter, J-9 product/BZ link, J-10 Fermi contract, J-11 extraction/renderer, and J-12 evidence closure. Existing phonon band/DOS and Phase 10I reciprocal-space contracts remain separate. J-7 begins only after explicit reviewer instruction. This gate adds no schema, dependency, tool, planner route, runtime behavior, or renderer.
+
 ## 2026-07-26 Phase 10J-6 Slice / Direct Volume Decisions
 
 1. Canonical texture mapping is `width=nz`, `height=ny`, `depth=nx`; shader coordinates are `(q2,q1,q0)` and payloads are not transposed.

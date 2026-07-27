@@ -1,5 +1,15 @@
 # TASK_BOARD
 
+## Gate J6-A / Post-J6 Roadmap Freeze
+
+- [x] Verify J-6 implementation, result, evidence, completion-record exact-SHA CI, archive commit, and archive exact-SHA CI.
+- [x] Audit electronic band/DOS and Fermi Surface implementation, contracts, tools, routes, frontend, and tests; all remain not implemented apart from explicit negative guards and future planning.
+- [x] Freeze J-7 through J-12 and preserve actual J-5/J-6 historical identities.
+- [x] Add roadmap and Phase 10J-7 entry-scope documentation plus six pending queue tasks.
+- [ ] Record roadmap-freeze current-HEAD CI and final result closure.
+
+Next task: Phase 10J-7 Electronic Band / DOS Contract (`待处理`). Do not mark it in progress without a new reviewer instruction.
+
 ## Phase 10J-6 Volumetric Slice / Volume Rendering Completed
 
 - [x] Audit canonical volumetric contracts, payloads, existing Three.js/Worker infrastructure, product semantics, GPU capabilities, and security boundary.

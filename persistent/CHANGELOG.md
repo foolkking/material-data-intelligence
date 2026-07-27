@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-07-27 - Gate J6-A / Post-J6 Roadmap Reconciliation
+
+- Verified Phase 10J-6 implementation, completion-record, and queue-archive commits and their exact-SHA CI runs; retained result history and evidence.
+- Recorded the reviewer-approved numbering reconciliation: actual J-5 ELF/Orbital and J-6 Slice/Volume remain historical facts, while missing Electronic Band/DOS and Fermi Surface work moves to J-7 through J-12.
+- Added pending J-7 through J-12 task blocks and a contract-only J-7 entry document. No schema, parser, adapter, tool, route, runtime, renderer, dependency, or electronic/Fermi implementation was added.
+
 ## 2026-07-26 - Phase 10J-6 Volumetric Slice / Volume Rendering
 
 - Added application-owned lattice-axis Slice and WebGL2 Direct Volume modes to validated volumetric results without adding a tool, dependency, or canonical scientific schema.

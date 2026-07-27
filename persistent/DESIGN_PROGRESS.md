@@ -1,5 +1,12 @@
 # DESIGN_PROGRESS
 
+## 2026-07-27 Gate J6-A / Post-J6 Roadmap Reconciliation
+
+- Phase 10J-6 implementation (`9cd0c69`), completion record (`75cec5f`), and queue archive (`16c4c18`) each have successful exact-SHA CI; its retained result and evidence establish `READY_WITH_EXPLICIT_LIMITS`.
+- Repository audit confirms electronic band/DOS and Fermi Surface remain unimplemented. Existing band/DOS products are phonon-specific, and Phase 10I BZ/link contracts reserve no electronic semantics.
+- Reviewer-approved canonical continuation is frozen as J-7 Electronic Band/DOS Contract, J-8 Parser/Adapter, J-9 Product/BZ Link, J-10 Fermi Contract, J-11 Extraction/Renderer, and J-12 Evidence Closure.
+- Historical J-5 ELF/Orbital and J-6 Slice/Volume names are unchanged. Phase 10J-7 is `NEXT / PENDING`, not started.
+
 ## 2026-07-26 Phase 10J-6 Volumetric Slice / Volume Rendering Completed
 
 - Added validated three-axis exact/interpolated lattice slices with periodic wrap/non-periodic bounds, an application-owned cancellable Worker, deterministic hashes, quantitative 2D heatmap/probe/table, and true affine Three.js planes.
