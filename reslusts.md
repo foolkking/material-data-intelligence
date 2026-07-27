@@ -813,3 +813,66 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
 * `TASKS.md`: `已完成` with matching completion record.
 * Completion-record CI: [30197900247](https://github.com/foolkking/material-data-intelligence/actions/runs/30197900247), exact SHA `75cec5f`, success.
 * Archive verification: the implementation record, `reslusts.md`, local checks, implementation CI, and completion-record CI are consistent. The single completed Phase 10J-6 `---TASK---` block was removed from `TASKS.md`; no pending task remains.
+
+# Gate J6-R Product Roadmap Correction & Persistent Scope Freeze Result
+
+## Status and Completion Time
+
+* status: `PASS`
+* completed: `2026-07-27 18:11:38 +08:00`
+
+## Summary
+
+* Preserved Phase 10J-6 implementation `9cd0c69`, completion record `75cec5f`,
+  archive `16c4c18`, retained result history, evidence, and successful exact-SHA
+  CI. J-6 remains `READY_WITH_EXPLICIT_LIMITS` and `ARCHIVED`.
+* Superseded pushed roadmap commit `e4bfabf` without rewriting history. The old
+  J-7 through J-12 electronic/Fermi sequence remains marked historical only.
+* Established `docs/ROADMAP.md` as the unique current authority: Phase 10K
+  Material Intelligence, 10L Intelligent Analysis Agent, 10M Unified Scientific
+  Workspace, 10N Professional Scientific Completion, Phase 11 validation, and
+  Phase 12 final product closure.
+* Kept CrystalNN/VoronoiNN, local environments/polyhedra, experimental XRD,
+  trajectory analytics, and Electronic Band/DOS in Initial Release. Classified
+  Fermi Surface and advanced research capabilities as Future Scope, and
+  enterprise SaaS/deployment/plugin marketplace as Not Planned.
+* Removed incomplete J7-J12 executable task blocks. `TASKS.md` contains no task
+  block; Phase 10K-0 is the approved next direction but awaits a complete user
+  prompt and is not in progress.
+* Added/updated project goal, product requirements, roadmap, capability matrix,
+  Future/Not Planned scope, docs index, README, MASTER_PROMPT, AGENTS, and all
+  required persistent project-memory records.
+* No source code, scientific schema, dependency, lockfile, Tool Registry,
+  Planner, PlanValidator, QueueWorkerRuntime, renderer, or scientific algorithm
+  changed.
+
+## Verification
+
+* `git diff --check`: PASS.
+* `uv lock --check`: PASS, 108 packages resolved, no lockfile change.
+* frontend: 48 files / 294 tests PASS.
+* typecheck: PASS.
+* production build: PASS; `/` first-load JS 228 kB.
+* backend: 760 passed, 24 skipped, 62 warnings.
+* Phase 10 product closure: 2 tests PASS.
+* Phase 10 evidence integrity: `PHASE10_CLOSURE_EVIDENCE_INTEGRITY_PASS`.
+* trajectory evidence integrity: `TRAJECTORY_PERFORMANCE_EVIDENCE_INTEGRITY_PASS`.
+* canonical docs/TASKS/J-6 evidence consistency: PASS.
+* security: `NO_EXTERNAL_NETWORK_REQUESTS`, `NO_SECRET_PATTERN_HITS`.
+
+## Commit / CI
+
+* roadmap correction commit: `55ab8a956b3f3efa3e8dffcc6f87d0f2915d9680`
+* correction CI run: `30256952162`, exact SHA, success.
+* CI jobs: Unit Tests, Frontend Typecheck & Build, and Service-backed Integration
+  with PostgreSQL/Redis/MinIO plus no-skipped assertion all succeeded.
+* completion-record commit and its exact-HEAD CI are recorded by the subsequent
+  closure commit.
+
+## Queue
+
+* Phase 10J-6: `ARCHIVED`.
+* Roadmap: `FROZEN`.
+* Phase 10K-0: `NEXT / AWAITING COMPLETE PROMPT`.
+* Future Scope: `DOCUMENTED_NOT_QUEUED`.
+* Not Planned: `DOCUMENTED_NOT_QUEUED`.
