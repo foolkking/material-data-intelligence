@@ -8,10 +8,10 @@
   product-centered 10K through 12 roadmap and separates Initial, Future, and Not
   Planned scope.
 - [x] Phase 10K-0 Material Intelligence Capability Gap Audit is complete at
-  audit commit `cada6fb`; exact-SHA CI run `30270323576` passed. Completion-record
-  CI and queue archive are the remaining closure gates.
+  audit commit `cada6fb` and completion record `ab5a69a`; exact-SHA CI runs
+  `30270323576` and `30270636913` passed. Its verified queue block is archived.
 - [ ] Phase 10K-1 Material Data Profile 2.0 is `NEXT / NOT_STARTED`; its complete
-  executable queue prompt is present but must not start before 10K-0 archival.
+  executable queue prompt is present and remains unstarted.
 
 `TASKS.md` contains the approved executable Phase 10K queue. Future Scope and
 Not Planned items are not queue work.

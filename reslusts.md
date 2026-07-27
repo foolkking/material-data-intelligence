@@ -957,8 +957,11 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
 * audit CI: run `30270323576`, exact SHA `cada6fb`, success.
 * CI jobs: Unit Tests, Frontend Typecheck & Build, PostgreSQL/Redis/MinIO
   Service-backed Integration, and no-skipped assertion all succeeded.
-* completion-record commit/CI: pending at record creation and must pass before
-  queue archival.
-* Phase 10K-0: `COMPLETED_PENDING_ARCHIVE`.
+* completion-record commit: `ab5a69a79ab5b4ac17357b3bcf8abb051c8f552d`.
+* completion-record CI: run `30270636913`, exact SHA, success; Unit, Frontend,
+  service-backed integration, and no-skipped assertion all succeeded.
+* archive decision: the result, local checks, audit commit/CI, and completion
+  record/CI are consistent; the complete 10K-0 task block may be removed.
+* Phase 10K-0: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 * Phase 10K-1: `NEXT / NOT_STARTED`; a complete prompt is now present in the
   user-maintained queue, superseding the earlier awaiting-prompt wording.

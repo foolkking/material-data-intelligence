@@ -21,7 +21,9 @@
   Phase 10K-1 has not started.
 - Audit commit `cada6fb` passed exact-SHA CI run `30270323576`, including unit,
   frontend typecheck/build, PostgreSQL/Redis/MinIO service-backed integration,
-  and the no-skipped assertion. Completion-record CI and queue archival remain.
+  and the no-skipped assertion. Completion record `ab5a69a` passed exact-SHA CI
+  run `30270636913`; the verified 10K-0 queue block is archived and 10K-1 remains
+  unstarted.
 
 ## 2026-07-27 Gate J6-R Product Roadmap Correction
 
