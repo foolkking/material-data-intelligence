@@ -1,5 +1,25 @@
 # DESIGN_PROGRESS
 
+## 2026-07-27 Phase 10K-0 Material Intelligence Capability Gap Audit
+
+- Audited the real parser/normalizer, `DataProfile 0.1`, Registry and adapter
+  closure, Planner routing, frontend profile/results surface, artifacts,
+  dependencies, caps, tests, and Phase 10A-C evidence. No product code, schema,
+  tool, dependency, Planner, runtime, or frontend behavior changed.
+- Classified the current profile as `MINIMAL`: table/structure summaries are a
+  reusable foundation, but trajectory/phonon/volumetric discovery, material
+  property semantics, model-task semantics, stable sample identity, and
+  available/unavailable analyses are absent.
+- Classified the Planner as `PARTIAL_PROFILE_AWARE / MOSTLY_PROMPT_ROUTED`.
+  Capability-aware multi-tool planning and interpretation remain Phase 10L.
+- Confirmed real executable foundations for table summaries, composition
+  aggregation, lightweight structure statistics, and basic regression. Several
+  historical V1 Manifest identities have no matching runtime adapter and are
+  not counted as implemented.
+- Froze the implementation order as 10K-1 Profile 2.0, 10K-2 Dataset Explorer,
+  10K-3 ML Evaluation, 10K-4 Composition Space, and 10K-5 integration/evidence.
+  Phase 10K-1 has not started.
+
 ## 2026-07-27 Gate J6-R Product Roadmap Correction
 
 - Phase 10J-6 implementation (`9cd0c69`), completion record (`75cec5f`), and

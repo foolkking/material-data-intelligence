@@ -7,6 +7,15 @@ assigned phases rather than by this roadmap gate:
 
 * Which capability schema and confidence/provenance rules belong in Material
   Data Profile 2.0?
+* How are stable sample references derived for tables with no trusted source ID,
+  and how do they remain stable across filtered artifacts without exposing a
+  private path or relying on mutable row position?
+* Which exact aliases, unit sources, confidence levels, and conflict rules govern
+  materials-property and model-task detection?
+* How should regression, uncertainty, and classification columns represent one
+  or multiple models/splits without guessing intent from names?
+* Which row/column/category/profile-byte budgets and deterministic sampling
+  policies replace uneven adapter-local truncation?
 * Which bounded composition embeddings and clustering methods can be supported
   without a large speculative dependency surface?
 * What intent vocabulary, plan-size bound, typed artifact binding, and failure

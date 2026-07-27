@@ -18,6 +18,13 @@
 Historical phase planning and evidence are retained below. They are not
 authoritative for future scope when they conflict with `ROADMAP.md`.
 
+## Phase 10K Material Intelligence
+
+- [`phase10k/phase10k0_material_intelligence_capability_gap_audit.md`](phase10k/phase10k0_material_intelligence_capability_gap_audit.md): implementation-grounded input, profile, tool, Planner, frontend, artifact, cap, and dependency audit.
+- [`phase10k/phase10k0_material_intelligence_gap_matrix.md`](phase10k/phase10k0_material_intelligence_gap_matrix.md): exact readiness and phase-ownership matrix.
+- [`phase10k/phase10k0_phase10k_implementation_sequence.md`](phase10k/phase10k0_phase10k_implementation_sequence.md): frozen 10K-1 through 10K-5 ordering, reuse boundary, and test strategy.
+- [`phase10k/phase10k1_next_scope.md`](phase10k/phase10k1_next_scope.md): Material Data Profile 2.0 entry gates and exclusions; no 10K-1 implementation.
+
 ## Historical Gate J6-A Roadmap Record
 
 - [`phase10j/phase10j_post_j6_roadmap_reconciliation.md`](phase10j/phase10j_post_j6_roadmap_reconciliation.md) records the superseded J-7 through J-12 proposal.

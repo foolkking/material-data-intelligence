@@ -1,5 +1,31 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-27 ADR: Material Intelligence Requires Profile and Identity Before Product Composition
+
+**Context:** the repository has working atomic table, composition, structure,
+and basic regression adapters, but `DataProfile 0.1` exposes only narrow
+table/structure summaries. Several planned identities exist only in the
+manifest, the Planner is mostly keyword-routed, and artifacts lack stable sample,
+property, model, and split identity for linked dataset analysis.
+
+**Decision:** Phase 10K starts with a deterministic, cross-language Material
+Data Profile 2.0 capability and identity contract. Dataset, ML, and composition
+products may then reuse existing atomic adapters, but a capability is not READY
+until Registry metadata, executable adapter, validation, runtime artifacts,
+tests, and user surface agree. Stable sample/property/model identity must not be
+reconstructed from plot array position. Product-level tools should represent
+coherent bounded analyses rather than one public tool per scalar metric.
+
+Phase 10K emits deterministic facts and summaries only. Capability-aware
+multi-tool planning and LLM interpretation remain Phase 10L; unified workspace
+composition remains Phase 10M. Exact new resource caps are frozen and tested in
+their implementation phases, not guessed by this audit.
+
+**Consequences:** Phase 10K-1 precedes dataset explorer, ML evaluation, and
+composition space. Manifest-only historical proposals remain non-executable.
+No schema, tool, Planner, runtime, dependency, or UI behavior changes in this
+audit.
+
 ## 2026-07-27 ADR: Post-J6 Product-Centered Roadmap Correction
 
 **Context:** Phase 10F through 10J-6 established deep validated scientific

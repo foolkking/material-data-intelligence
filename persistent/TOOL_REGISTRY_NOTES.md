@@ -1,5 +1,24 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-27 Phase 10K-0 Material Intelligence Inventory
+
+- Real executable foundations are limited to the adapter registry closure:
+  table numeric/distribution summaries; scatter/histogram/correlation;
+  composition summary/formula/element/periodic-table/chemical-system outputs;
+  basic regression metrics/error/outlier/density scatter; and lightweight
+  structure summaries.
+- Historical V1 manifest entries for parity, uncertainty calibration,
+  chemistry-conditioned error, and composition clustering do not have matching
+  runtime adapter classes and are `PLANNED / NON_EXECUTABLE`, not READY.
+- Phase 10K implementation must test Registry-to-adapter closure before
+  promoting a public capability. Product tools should group scientifically
+  coherent bounded outputs rather than create one public tool per scalar metric.
+- `DataProfile 0.1` does not yet expose the capability facts needed for truthful
+  eligibility. Phase 10K-1 owns that deterministic fact layer; Phase 10L owns
+  capability-aware multi-tool planning.
+- This audit adds no Registry entry and changes no manifest, adapter, Planner,
+  PlanValidator, QueueWorkerRuntime, artifact, or dependency.
+
 ## 2026-07-27 Gate J6-R Capability Surface Policy
 
 - Tool Registry exists to expose stable, meaningful, non-overlapping materials

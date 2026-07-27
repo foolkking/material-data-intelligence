@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-07-27 - Phase 10K-0 Material Intelligence Capability Gap Audit
+
+- Audited real material parsers, profile generation, schemas, executable
+  adapters, manifest-only identities, Planner use of profile facts, frontend
+  surfaces, artifacts, dependencies, caps, tests, and historical evidence.
+- Recorded `DataProfile 0.1` as a minimal reusable foundation and the current
+  Planner as partially profile-aware but mostly prompt-routed. Existing basic
+  table, composition, structure, and regression capabilities remain unchanged.
+- Added the Phase 10K gap matrix, 10K-1 through 10K-5 implementation sequence,
+  and Material Data Profile 2.0 entry boundary. No schema, adapter, tool,
+  dependency, runtime, Planner, or product feature was implemented.
+
 ## 2026-07-27 - Gate J6-R Product Roadmap Correction
 
 - Corrected the post-J6 route around the Material Data Intelligence product:
