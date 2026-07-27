@@ -1,5 +1,5 @@
 ---TASK---
- 状态：待处理
+ 状态：已完成
 你现在执行：
 
 # Phase 10K-0：Material Intelligence Capability Gap Audit
@@ -2314,6 +2314,25 @@ PASS 必须满足：
 本轮最终停在：
 
 **Phase 10K-1：Material Data Profile 2.0 = NEXT / AWAITING COMPLETE PROMPT**
+
+## 完成记录
+
+- 完成时间：`2026-07-27 21:28:51 +08:00`
+- 修改文件：`TASKS.md`、`docs/index.md`、`docs/phase10k/phase10k0_*`、
+  `docs/phase10k/phase10k1_next_scope.md`、`persistent/DESIGN_PROGRESS.md`、
+  `persistent/TASK_BOARD.md`、`persistent/CHANGELOG.md`、
+  `persistent/OPEN_QUESTIONS.md`、`persistent/TOOL_REGISTRY_NOTES.md`、
+  `persistent/ARCHITECTURE_DECISIONS.md`、`reslusts.md`。
+- 修改摘要：基于真实 parser/profile/schema/Registry/adapter/Planner/frontend/
+  artifact/test/dependency/cap 实现完成 Material Intelligence 能力审计，冻结
+  Gap Matrix、10K-1 至 10K-5 实施顺序与 10K-1 入口边界；未修改产品代码。
+- 测试结果：frontend `48 files / 294 tests`；backend `760 passed, 24 skipped,
+  62 warnings`；typecheck/build、`uv lock --check`、Phase 10 evidence integrity、
+  docs/TASKS consistency 与 `NO_SECRET_PATTERN_HITS` 均通过。
+- Audit commit/CI：`cada6fbe473c213f3a05b8e7a8a879ea110ffc2d`，
+  GitHub Actions run `30270323576` success；Unit、Frontend、service-backed 和
+  no-skipped 均成功。
+- Completion-record commit/CI：提交后核验；在 exact-SHA CI 成功前不归档。
 
 ---END---
 

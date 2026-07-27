@@ -7,10 +7,11 @@
 - [x] Gate J6-R replaces the superseded J-7 through J-12 plan with the canonical
   product-centered 10K through 12 roadmap and separates Initial, Future, and Not
   Planned scope.
-- [ ] Phase 10K-0 Material Intelligence Capability Gap Audit is `IN_PROGRESS`.
-  The repository audit is documentation-only and changes no executable product
-  behavior.
-- [ ] Phase 10K-1 Material Data Profile 2.0 remains `PENDING / NOT_STARTED`.
+- [x] Phase 10K-0 Material Intelligence Capability Gap Audit is complete at
+  audit commit `cada6fb`; exact-SHA CI run `30270323576` passed. Completion-record
+  CI and queue archive are the remaining closure gates.
+- [ ] Phase 10K-1 Material Data Profile 2.0 is `NEXT / NOT_STARTED`; its complete
+  executable queue prompt is present but must not start before 10K-0 archival.
 
 `TASKS.md` contains the approved executable Phase 10K queue. Future Scope and
 Not Planned items are not queue work.

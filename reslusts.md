@@ -876,3 +876,89 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
 * Phase 10K-0: `NEXT / AWAITING COMPLETE PROMPT`.
 * Future Scope: `DOCUMENTED_NOT_QUEUED`.
 * Not Planned: `DOCUMENTED_NOT_QUEUED`.
+
+# Phase 10K-0 Material Intelligence Capability Gap Audit Result
+
+## Status and Completion Time
+
+* status: `PASS`
+* completed: `2026-07-27 21:28:51 +08:00`
+
+## Repository and Scope
+
+* baseline: Gate J6-R completion HEAD `34c30c50631771209c90fca049fcff93a8a8bef9` on `master`, clean and equal to `origin/master`.
+* task: documentation-only repository capability audit; no Phase 10K-1 implementation.
+* audit commit: `cada6fbe473c213f3a05b8e7a8a879ea110ffc2d`.
+* no source code, schema, parser, adapter, Tool Registry, Planner, PlanValidator,
+  QueueWorkerRuntime, frontend product, dependency, or lockfile changed.
+
+## Main Findings
+
+* `DataProfile 0.1`: `MINIMAL`. It provides narrow table/structure summaries;
+  it does not provide material capability discovery, stable sample identity,
+  property/unit semantics, model-task semantics, or trajectory/phonon/volumetric
+  discovery.
+* semantic inference: exact/allowlisted table roles support formula and narrow
+  regression/uncertainty aliases; classification and general materials-property
+  recognition are missing.
+* dataset surface: executable table, composition, and lightweight structure
+  adapters are `REUSABLE_FOUNDATION`; they do not constitute a Dataset Materials
+  Explorer.
+* Materials ML: basic metrics, error distribution, outlier table, and density
+  scatter are real; complete regression, uncertainty, classification, chemistry-
+  conditioned errors, and model comparison remain Initial Release gaps.
+* composition space: formula parsing and aggregate views are reusable;
+  deterministic vectors, PCA, clustering, linked inspection, and outlier
+  semantics are missing. NumPy/SciPy are available; scikit-learn is transitive;
+  UMAP/matminer are not dependencies.
+* Planner: `PARTIAL_PROFILE_AWARE / MOSTLY_PROMPT_ROUTED`; capability-aware
+  multi-tool planning and interpretation remain Phase 10L.
+* frontend: PlannerWorkbench and generic artifacts are reusable, but there is no
+  product-level dataset intelligence experience. Unified workspace work remains
+  Phase 10M.
+* manifest-only V1 proposals without runtime adapter closure were not counted as
+  implemented.
+
+## Frozen Implementation Direction
+
+* 10K-1: versioned Material Data Profile 2.0 capability and identity layer.
+* 10K-2: bounded Dataset Materials Explorer using existing table/composition/
+  structure foundations.
+* 10K-3: data-gated regression, uncertainty, and classification evaluation.
+* 10K-4: deterministic composition vectors, bounded PCA, reviewed clustering,
+  property coloring, and linked inspection.
+* 10K-5: real upload/profile/tool/artifact/frontend/report/recipe evidence.
+* Future and Not Planned scope remains unqueued.
+
+## Documentation
+
+* audit: `docs/phase10k/phase10k0_material_intelligence_capability_gap_audit.md`
+* gap matrix: `docs/phase10k/phase10k0_material_intelligence_gap_matrix.md`
+* sequence: `docs/phase10k/phase10k0_phase10k_implementation_sequence.md`
+* next scope: `docs/phase10k/phase10k1_next_scope.md`
+* index and required persistent project-memory files were updated.
+
+## Verification
+
+* `git diff --check`: PASS.
+* `uv lock --check`: PASS; 108 packages resolved, no dependency change.
+* frontend: 48 test files / 294 tests PASS.
+* typecheck: PASS.
+* production build: PASS; `/` first-load JS 228 kB.
+* backend: 760 passed, 24 skipped, 62 warnings. Skips remain explicit service-
+  gated tests and were not reported as passed locally.
+* Phase 10 evidence integrity: `PHASE10_CLOSURE_EVIDENCE_INTEGRITY_PASS`.
+* docs links and TASKS structure/processing consistency: PASS.
+* security: `NO_SECRET_PATTERN_HITS`; no network operation or real LLM was used
+  by the audit.
+
+## Commit / CI / Queue
+
+* audit CI: run `30270323576`, exact SHA `cada6fb`, success.
+* CI jobs: Unit Tests, Frontend Typecheck & Build, PostgreSQL/Redis/MinIO
+  Service-backed Integration, and no-skipped assertion all succeeded.
+* completion-record commit/CI: pending at record creation and must pass before
+  queue archival.
+* Phase 10K-0: `COMPLETED_PENDING_ARCHIVE`.
+* Phase 10K-1: `NEXT / NOT_STARTED`; a complete prompt is now present in the
+  user-maintained queue, superseding the earlier awaiting-prompt wording.
