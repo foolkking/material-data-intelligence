@@ -1,14 +1,19 @@
 # Phase 10J-7 Electronic Band / DOS Contract: Next Scope
 
+> Status: HISTORICAL / SUPERSEDED BY GATE J6-R
+> Electronic Band/DOS remains required for the initial release but is now
+> planned under Phase 10N-5. Current authority: [../ROADMAP.md](../ROADMAP.md).
+> This document is not an entry prompt.
+
 ## Status
 
-`NEXT / PENDING`. This document is an entry contract, not an implementation.
+Historical `NEXT / PENDING` record. This document was an entry contract, not an implementation.
 No electronic schema, parser, adapter, tool, route, plot, or runtime behavior
 is introduced by the post-J6 roadmap freeze.
 
-## Entry Criteria
+## Historical Entry Criteria
 
-Phase 10J-7 may start only after all of the following are true:
+At the time, Phase 10J-7 could start only after all of the following were true:
 
 * Phase 10J-6 implementation, result, evidence, completion-record CI, and queue
   archive are complete.
@@ -21,9 +26,9 @@ Phase 10J-7 may start only after all of the following are true:
 * There is no overlapping public electronic tool identity.
 * The reviewer explicitly directs entry into Phase 10J-7.
 
-## Contract Questions
+## Historical Contract Questions
 
-J-7 must resolve rather than assume:
+The future Phase 10N-5 planning must resolve rather than assume:
 
 * bounded first-batch source formats and authoritative source metadata;
 * structure, calculation, reciprocal-lattice, k-point, path, and BZ identity;
@@ -36,8 +41,8 @@ J-7 must resolve rather than assume:
 * deterministic caps, validation order, error codes, provenance, and inert
   security declarations.
 
-## Explicit Non-Scope
+## Historical Explicit Non-Scope
 
-J-7 does not implement parsers, adapters, Tool Registry entries, planner
+This historical J-7 scope did not implement parsers, adapters, Tool Registry entries, planner
 routing, QueueWorkerRuntime behavior, charts, BZ linking, Fermi extraction,
 renderers, DFT, external APIs, notebooks, scripts, or real LLM execution.

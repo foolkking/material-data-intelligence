@@ -1,6 +1,48 @@
 # OPEN_QUESTIONS
 
-## 2026-07-27 Phase 10J-7 Contract Questions
+## Active Questions
+
+The following questions can affect Initial Release and must be decided in their
+assigned phases rather than by this roadmap gate:
+
+* Which capability schema and confidence/provenance rules belong in Material
+  Data Profile 2.0?
+* Which bounded composition embeddings and clustering methods can be supported
+  without a large speculative dependency surface?
+* What intent vocabulary, plan-size bound, typed artifact binding, and failure
+  policy are required for capability-aware multi-tool analysis?
+* Which scientific summary fields may be provided to bounded interpretation,
+  and how are unsupported claims blocked?
+* What cross-artifact identities are required by the unified workspace?
+* What provider/version/parameter and disagreement policies govern
+  CrystalNN/VoronoiNN and local environments?
+* What wavelength, normalization, peak-detection, and matching policies govern
+  experimental XRD comparison?
+* What wrapped/unwrapped, timestep, fitting-window, and sampling policies govern
+  MSD and diffusion estimates?
+* Which bounded electronic Band/DOS source formats, spin/occupation/energy
+  references, projection identities, normalization, and BZ bindings form the
+  first supported batch?
+
+## Closed Product-Scope Questions
+
+* Project goal: **CLOSED** - Material Data Intelligence & Visualization Platform.
+* Enterprise SaaS required: **NO**.
+* Plugin marketplace required: **NO** for the current project.
+* Fermi Surface required for the initial complete product: **NO**.
+* CrystalNN/VoronoiNN required: **YES**.
+* Experimental XRD comparison required: **YES**.
+* Basic trajectory analytics required: **YES**.
+* Electronic Band/DOS required: **YES**.
+* Arbitrary notebook/script execution required: **NO**.
+
+## Future and Historical Questions
+
+Questions in the older phase sections below are historical or non-blocking
+unless also listed in Active Questions. Future-only topics are governed by
+`docs/FUTURE_SCOPE.md`.
+
+## 2026-07-27 Phase 10J-7 Contract Questions (Superseded Phase Assignment)
 
 - Which bounded source formats form the first supported electronic band/DOS parser batch? This remains a J-8 decision after J-7 defines source requirements.
 - How are spin channels, occupations, degeneracies, crossings, discontinuities, and direct/indirect gap authority represented without inferring missing source semantics?
@@ -8,7 +50,7 @@
 - What canonical DOS density unit, normalization, integrated-state tolerance, smearing metadata, and projection-completeness policy are required?
 - How are element, site, and source-defined `s/p/d/f` orbital projections identified without implying wavefunction phase or reconstruction?
 - Which k-path provider/version and Phase 10I reciprocal-space identities are mandatory for deterministic Electronic Band/BZ linking?
-- What regular 3D k-mesh completeness and interpolation authority will a future Fermi Surface contract require? A 1D path is explicitly insufficient.
+- What regular 3D k-mesh completeness and interpolation authority would a future Fermi Surface contract require? A 1D path is explicitly insufficient; this is Future Scope.
 - Vacuum/work-function and cross-calculation energy alignment remain separate advanced-electrostatics questions.
 
 ## 2026-07-26 Phase 10J-6 Follow-ups

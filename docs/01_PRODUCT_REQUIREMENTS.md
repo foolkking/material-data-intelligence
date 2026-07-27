@@ -1,5 +1,87 @@
 # Phase 1：产品需求与用户流程
 
+## Current Initial Complete Product Scope (2026-07-27)
+
+This section is the current product requirement authority. Later historical
+Phase 1 details remain useful context but do not override this scope taxonomy.
+
+### Core Platform Capabilities
+
+1. **Data input and normalization.** Support only formats backed by real
+   repository parsers across tabular/composition, structure, trajectory,
+   phonon, volumetric, model-result, and canonical JSON data.
+2. **Material Data Profile 2.0.** Discover data kinds, scientific dimensions,
+   resources, predictions/targets/uncertainty/classes, available analyses,
+   unavailable analyses, warnings, and recommendations.
+3. **Dataset materials intelligence.** Provide chemistry, property, structure,
+   dataset-comparison, train/test, reliable duplicate, cluster, and anomaly
+   views for batches of materials.
+4. **Composition embedding and clustering.** Provide bounded composition
+   vectorization, reliable dimensionality reduction, property coloring,
+   cluster inspection, and outlier inspection without heavyweight speculative
+   dependencies.
+5. **Materials ML evaluation.** Support regression metrics/parity/residuals/
+   errors/chemistry-conditioned comparisons; uncertainty analysis when present;
+   and classification analysis only when the profile establishes valid inputs.
+6. **Intelligent Analysis Agent.** Generate validated plans from Natural
+   Language + DataProfile + Tool Registry, rather than keyword-to-tool routing.
+7. **Bounded multi-tool analysis.** Support small deterministic dependency
+   graphs, typed artifact binding, and failure isolation without arbitrary loops,
+   code, BPMN, or a generic workflow language.
+8. **Result interpretation.** Consume bounded structured result summaries to
+   produce findings, anomalies, limitations, and next-step recommendations;
+   never invent uncomputed scientific values or claims.
+9. **Unified Scientific Workspace.** Organize only supported panels under
+   Overview, Dataset, Structure, Dynamics, Phonon, Reciprocal, Volumetric, and
+   Results instead of exposing a collection of disconnected tool/debug pages.
+10. **Artifact, Report, and Recipe.** Preserve plots, tables, 3D products,
+    findings, warnings, parameters, provenance, lineage, reproducibility, and
+    export-ready report structure.
+11. **End-to-end natural-language experience.** Data selection -> profiling ->
+    inspectable plan -> validated execution -> scientific results -> bounded
+    interpretation -> report/recipe export.
+
+### Professional Scientific Completion
+
+The following are required for the initial release, although not all are
+implemented yet:
+
+* CrystalNN and VoronoiNN with algorithm/parameter/version provenance,
+  disagreements, periodic identities, distances, weights, and scientifically
+  bounded coordination/environment claims.
+* Local-environment summaries and coordination-polyhedra overlays tied to
+  canonical center/neighbor identities.
+* Experimental versus calculated XRD overlay and peak matching with wavelength,
+  normalization, delta-2theta, intensity, hkl, unmatched peaks, and an explicit
+  warning that matching is not structure confirmation.
+* Basic trajectory RDF, MSD, species MSD, conditional diffusion estimates,
+  energy/force time statistics, wrapped/unwrapped semantics, timestep/units,
+  fitting window, and insufficient-sampling warnings.
+* Electronic band, total/projected DOS, supported spin/projections, Fermi
+  reference, high-symmetry k-path, combined Band+DOS, and Phase 10I BZ linkage.
+  These consume existing results; they do not run DFT or fetch remote data.
+
+### Initial Release Completion Definition
+
+The platform may be called an **Initial Complete Material Data Intelligence &
+Visualization Platform** only when it can understand supported data, discover
+valid analyses, plan from natural language and profile, execute through the
+Registry/Adapter boundary, analyze datasets/compositions/model results, expose
+the completed scientific products, organize them in one workspace, produce
+bounded findings, preserve Artifact/Recipe/Report provenance, pass reference
+coverage, and demonstrate at least five complete end-to-end scenarios.
+
+The initial release does not require Fermi Surface, Rietveld refinement,
+defect workflows, Bader analysis, arbitrary notebooks/scripts, enterprise
+deployment, or a plugin marketplace.
+
+Scope references:
+
+* [Canonical roadmap](ROADMAP.md)
+* [Capability status matrix](CAPABILITY_STATUS_MATRIX.md)
+* [Future scope](FUTURE_SCOPE.md)
+* [Not planned scope](NOT_PLANNED_SCOPE.md)
+
 ## 1. 本阶段目标
 
 从用户视角定义“材料数据智能分析与可视化平台”的产品需求和核心使用流程，明确用户如何创建项目、上传材料数据、用自然语言提出分析需求、审查 Agent 计划、生成 Plotly / MatterViz 图表和 3D 模型、查看执行过程、保存 Artifact / Recipe / Report。

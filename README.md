@@ -12,7 +12,23 @@ Core capabilities:
 - Generate interactive charts, 3D material viewers, Artifacts, Recipes, and Reports.
 - Show Agent Timeline, tool calls, parameters, logs, reproducible code snippets, and results.
 - Provide an AI assistant style workspace with a global dataset/model bar, a collapsible data-context viewer, and a main three-tab work area for Agent process, conversation/Plan Preview, and results/export.
-- Design for asynchronous jobs, BYOK, permissions, audit logs, sandboxing, and domain extension.
+- Design for asynchronous jobs, protected BYOK, auditability, reproducibility,
+  and bounded scientific capability extension.
+
+The initial complete product joins Material Data Profile capability discovery,
+dataset/materials intelligence, materials ML evaluation, capability-aware
+planning, bounded multi-tool analysis, scientific visualization, interpretation,
+and a unified report/workspace experience. It analyzes existing data; it does
+not run DFT/HPC jobs or arbitrary user code.
+
+## Canonical Product Documents
+
+* [`docs/00_PROJECT_GOAL.md`](docs/00_PROJECT_GOAL.md)
+* [`docs/01_PRODUCT_REQUIREMENTS.md`](docs/01_PRODUCT_REQUIREMENTS.md)
+* [`docs/ROADMAP.md`](docs/ROADMAP.md)
+* [`docs/CAPABILITY_STATUS_MATRIX.md`](docs/CAPABILITY_STATUS_MATRIX.md)
+* [`docs/FUTURE_SCOPE.md`](docs/FUTURE_SCOPE.md)
+* [`docs/NOT_PLANNED_SCOPE.md`](docs/NOT_PLANNED_SCOPE.md)
 
 ## New Session Startup
 
@@ -24,7 +40,10 @@ Every Coding Agent or LLM session must read these files first:
 4. `persistent/ARCHITECTURE_DECISIONS.md`
 5. `docs/index.md`
 6. `docs/13_SHARED_SCHEMA_SPEC.md`
-7. The docs file for the phase currently being implemented.
+7. `docs/ROADMAP.md`
+8. `docs/FUTURE_SCOPE.md`
+9. `docs/NOT_PLANNED_SCOPE.md`
+10. The docs file for the phase currently being implemented.
 
 ## Persistent Update Rules
 
@@ -38,9 +57,17 @@ After each design or implementation phase, update:
 
 ## Current Status
 
-The codebase has progressed beyond the early shell: Phase 8B persisted AnalysisPlans and queue-worker exact execution are frozen, Phase 8C exposes planner provenance in the frontend, Phase 9A adds a gated OpenAI-compatible provider path without default real-LLM CI calls, and Phase 9B productizes the demo Planner workspace plus official direct-example evidence. Phase 9C updates the frontend design baseline to an AI assistant workspace: top global dataset/model context, resizable/collapsible left data viewer, and a main three-tab area for Agent process, conversation/Plan Preview, and results/export. Current verification remains based on the committed backend/frontend suites and service-backed CI integration from the frozen phase commits.
+The validated scientific foundation now includes production periodic structure,
+trajectory, phonon, Brillouin-zone, and bounded volumetric products through Phase
+10J-6. Phase 10J-6 is archived. The next approved direction is Phase 10K-0, a
+Material Intelligence capability gap audit; implementation waits for a complete
+reviewer-supplied task prompt.
 
-Current scope guard: live LLM verification is still gated and not default; production Secret encryption/KMS, multi-step DAG/data-dependency execution, worker supervision/dead-letter policy, advanced material viewer polish, and richer official example routing remain future work.
+The remaining initial-release route is 10K Material Intelligence, 10L Intelligent
+Analysis Agent, 10M Unified Scientific Workspace, 10N Professional Scientific
+Completion, Phase 11 validation, and Phase 12 final product closure. Fermi
+Surface is Future Scope. Enterprise SaaS, deployment productization, and a
+plugin marketplace are Not Planned.
 
 ## Sharing Archive
 

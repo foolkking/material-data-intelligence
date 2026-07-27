@@ -1,11 +1,31 @@
 # DESIGN_PROGRESS
 
-## 2026-07-27 Gate J6-A / Post-J6 Roadmap Reconciliation
+## 2026-07-27 Gate J6-R Product Roadmap Correction
+
+- Phase 10J-6 implementation (`9cd0c69`), completion record (`75cec5f`), and
+  queue archive (`16c4c18`) remain verified by successful exact-SHA CI. Its
+  product readiness remains `READY_WITH_EXPLICIT_LIMITS` and its evidence and
+  result history are unchanged.
+- Gate J6-R supersedes the short-lived post-J6 J-7 through J-12
+  electronic/Fermi roadmap without rewriting history. No scientific feature,
+  schema, tool, route, runtime behavior, renderer, or dependency changed.
+- The unique current route is 10K Material Intelligence, 10L Intelligent
+  Analysis Agent, 10M Unified Scientific Workspace, 10N Professional Scientific
+  Completion, Phase 11 validation, and Phase 12 final closure.
+- CrystalNN/VoronoiNN, local environments/polyhedra, experimental XRD,
+  trajectory analytics, and Electronic Band/DOS are initial-release work.
+  Fermi Surface and advanced research products are Future Scope. Enterprise
+  SaaS, deployment productization, and plugin marketplace are Not Planned.
+- Phase 10K-0 is the next approved direction but remains unstarted until its
+  complete executable prompt is supplied.
+
+## 2026-07-27 Gate J6-A / Post-J6 Roadmap Reconciliation (Superseded)
 
 - Phase 10J-6 implementation (`9cd0c69`), completion record (`75cec5f`), and queue archive (`16c4c18`) each have successful exact-SHA CI; its retained result and evidence establish `READY_WITH_EXPLICIT_LIMITS`.
 - Repository audit confirms electronic band/DOS and Fermi Surface remain unimplemented. Existing band/DOS products are phonon-specific, and Phase 10I BZ/link contracts reserve no electronic semantics.
-- Reviewer-approved canonical continuation is frozen as J-7 Electronic Band/DOS Contract, J-8 Parser/Adapter, J-9 Product/BZ Link, J-10 Fermi Contract, J-11 Extraction/Renderer, and J-12 Evidence Closure.
-- Historical J-5 ELF/Orbital and J-6 Slice/Volume names are unchanged. Phase 10J-7 is `NEXT / PENDING`, not started.
+- At that time, continuation was frozen as J-7 through J-12. Gate J6-R later
+  superseded this current-roadmap decision while retaining it as history.
+- Historical J-5 ELF/Orbital and J-6 Slice/Volume names remain unchanged.
 
 ## 2026-07-26 Phase 10J-6 Volumetric Slice / Volume Rendering Completed
 

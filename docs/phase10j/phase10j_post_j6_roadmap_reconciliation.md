@@ -1,8 +1,13 @@
 # Phase 10J Post-J6 Roadmap Reconciliation
 
+> Status: HISTORICAL / SUPERSEDED BY GATE J6-R
+> Current authority: [../ROADMAP.md](../ROADMAP.md). The J-7 through J-12
+> electronic/Fermi sequence below was superseded by the product-centered
+> roadmap and must not be used as an executable queue.
+
 ## Status
 
-This is the reviewer-approved canonical roadmap after Phase 10J-6. It is a
+This was the reviewer-approved roadmap at that point after Phase 10J-6. It is a
 planning freeze only. It adds no scientific schema, parser, adapter, public
 tool, planner route, runtime behavior, renderer, dependency, or execution
 authority.
@@ -126,7 +131,7 @@ absolute electrostatic zero. Projected `s/p/d/f` DOS identity is not complex
 wavefunction phase, orbital reconstruction, HOMO/LUMO inference, or orbital
 linear combination.
 
-## 6. Next Major Domains
+## 6. Historical Next-Domain Proposal
 
 ```text
 Phase 10K   Advanced Structure Science
@@ -139,5 +144,6 @@ Phase 12    Production Platform Hardening
 Phase 13    Advanced / Research Extensions
 ```
 
-The next phase is Phase 10J-7, and remains pending until explicitly started by
-the reviewer.
+This sequence was the proposed next route at the time. It is not current. Gate
+J6-R replaces it with Phase 10K Material Intelligence through Phase 12 Final
+Product Closure; see `docs/ROADMAP.md`.

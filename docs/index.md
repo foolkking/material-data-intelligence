@@ -1,9 +1,27 @@
 # 文档索引
 
-## Gate J6-A / Post-J6 Electronic Structure Roadmap
+## Current Product Authority
 
-- [`phase10j/phase10j_post_j6_roadmap_reconciliation.md`](phase10j/phase10j_post_j6_roadmap_reconciliation.md) freezes the reviewer-approved J-7 through J-12 continuation while preserving actual J-5 ELF/Orbital and J-6 Slice/Volume history.
-- [`phase10j/phase10j7_electronic_band_dos_contract_next_scope.md`](phase10j/phase10j7_electronic_band_dos_contract_next_scope.md) records Phase 10J-7 entry criteria and contract-only scope. J-7 remains pending; no electronic or Fermi implementation exists yet.
+- [`00_PROJECT_GOAL.md`](00_PROJECT_GOAL.md): platform identity, user journey,
+  stack responsibilities, and initial-complete-product definition.
+- [`01_PRODUCT_REQUIREMENTS.md`](01_PRODUCT_REQUIREMENTS.md): current initial
+  release requirements and professional completion boundary.
+- [`ROADMAP.md`](ROADMAP.md): the only authoritative post-J6 roadmap, from
+  Phase 10K Material Intelligence through Phase 12 final closure.
+- [`CAPABILITY_STATUS_MATRIX.md`](CAPABILITY_STATUS_MATRIX.md): current
+  READY/PARTIAL_READY/PLANNED/FUTURE/NOT_PLANNED truth.
+- [`FUTURE_SCOPE.md`](FUTURE_SCOPE.md): domain-relevant, non-blocking,
+  non-queued extensions.
+- [`NOT_PLANNED_SCOPE.md`](NOT_PLANNED_SCOPE.md): capabilities outside the
+  current product definition.
+
+Historical phase planning and evidence are retained below. They are not
+authoritative for future scope when they conflict with `ROADMAP.md`.
+
+## Historical Gate J6-A Roadmap Record
+
+- [`phase10j/phase10j_post_j6_roadmap_reconciliation.md`](phase10j/phase10j_post_j6_roadmap_reconciliation.md) records the superseded J-7 through J-12 proposal.
+- [`phase10j/phase10j7_electronic_band_dos_contract_next_scope.md`](phase10j/phase10j7_electronic_band_dos_contract_next_scope.md) is a superseded entry-scope record. Electronic Band/DOS is now planned at 10N-5; Fermi Surface is Future Scope.
 
 ## Phase 10J-1 Volumetric Parser / Adapter
 

@@ -1,10 +1,26 @@
 # TOOL_REGISTRY_NOTES
 
-## 2026-07-27 Post-J6 Electronic Roadmap Freeze
+## 2026-07-27 Gate J6-R Capability Surface Policy
+
+- Tool Registry exists to expose stable, meaningful, non-overlapping materials
+  analysis capabilities to the Agent, not to register every possible algorithm.
+- Each future tool requires strict parameters, bounded execution, data-kind
+  compatibility, inert artifacts, provenance, and an accurate user description.
+- Initial-release candidates, still `NOT_IMPLEMENTED` unless separately noted,
+  include CrystalNN/VoronoiNN, experimental XRD comparison, trajectory
+  analytics, and Electronic Band/DOS. They enter the Registry only in their
+  implementation phases.
+- Fermi Surface is Future Scope. Enterprise, deployment, and plugin-marketplace
+  capabilities are not Registry roadmap items.
+- This gate changes no manifest, adapter map, Tool Registry entry, Planner,
+  PlanValidator, or QueueWorkerRuntime behavior.
+
+## 2026-07-27 Post-J6 Electronic Roadmap Freeze (Superseded)
 
 - This gate adds no Tool Registry entry and changes no Planner, PlanValidator, adapter, or QueueWorkerRuntime behavior.
-- Electronic Band/DOS public tool identities remain `NOT_IMPLEMENTED` until Phase 10J-8 completes the contract-dependent inventory and approval gate.
-- Fermi Surface public tool identity remains `NOT_IMPLEMENTED`; Phase 10J-10 must first freeze a real 3D k-mesh contract.
+- Electronic Band/DOS public tool identities remained `NOT_IMPLEMENTED`; the
+  implementation is now planned for Phase 10N-5.
+- Fermi Surface public tool identity remains `NOT_IMPLEMENTED` and is now Future Scope.
 - Existing `phonon.band`, `phonon.dos`, `phonon.band_dos`, and `structure.brillouin_zone` identities retain their current meanings and do not acquire electronic semantics.
 
 ## 2026-07-26 Phase 10J-6 Slice / Direct Volume Consumer

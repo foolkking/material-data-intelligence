@@ -1,5 +1,86 @@
 # Phase 0：项目目标与边界定义
 
+## Current Canonical Product Definition (2026-07-27)
+
+The product is the **Material Data Intelligence & Visualization Platform / 材料数据智能分析与可视化平台**.
+
+It combines material-data understanding, capability-aware analysis planning,
+bounded scientific execution, professional visualization, interpretation, and
+reproducible delivery. It is not a pymatviz or MatterViz web wrapper, generic
+BI product, standalone 3D viewer, DFT workflow manager, arbitrary-code Agent,
+enterprise SaaS infrastructure project, or plugin marketplace.
+
+The core question is:
+
+> Given material data and a natural-language goal, can the platform discover
+> what the data supports, plan scientifically valid analyses, identify useful
+> patterns and anomalies, and produce explainable and reproducible results?
+
+The canonical user journey is:
+
+```text
+Material data + natural-language goal
+  -> parsing and normalization
+  -> Material Data Profile and capability discovery
+  -> capability-aware Analysis Intent and validated AnalysisPlan
+  -> Tool Registry and bounded Adapters
+  -> scientific artifacts, charts, tables, and 3D products
+  -> bounded interpretation and recommended next steps
+  -> Report, Recipe, provenance, and reproducibility metadata
+  -> Unified Scientific Workspace
+```
+
+### Scientific Stack Responsibilities
+
+* **pymatgen:** composition/structure semantics, lattice, coordinates, symmetry,
+  periodic neighbors, CrystalNN/VoronoiNN, XRD, reciprocal-space semantics, and
+  reviewed transformations.
+* **ASE:** Atoms interoperability, trajectory interchange, and appropriate
+  structure conversion.
+* **phonopy:** phonon data semantics, ingestion, and reference conventions.
+* **pymatviz:** a primary materials-informatics visualization kernel, not the
+  platform itself.
+* **Plotly:** interactive scientific charts, linked chart interactions, and
+  suitable tables/plots.
+* **MatterViz:** a source of materials-oriented browser concepts/components when
+  integration is beneficial; it does not displace mature application renderers.
+* **Application-owned Three.js/WebGL:** the validated structure, trajectory,
+  phonon, BZ, and volumetric renderers remain in place.
+* **LLM Agent:** intent understanding, planning, capability selection, bounded
+  result interpretation, explanation, and next-step recommendations only.
+* **Tool Registry and Adapters:** strict parameters, capability abstraction,
+  execution authority, resource caps, and deterministic scientific boundaries.
+* **Artifact, Recipe, and Report:** scientific output, provenance, auditability,
+  export, and reproducibility.
+
+The LLM never executes arbitrary Python, shell, filesystem, notebook, or network
+operations. Interpretation cannot invent calculations or elevate visual
+candidates into authoritative scientific claims.
+
+### Initial Complete Product
+
+The initial release is a complete first platform, not a minimal demo. It must
+combine Material Data Profile 2.0, dataset/materials intelligence, composition
+exploration, materials ML evaluation, capability-aware planning, bounded
+multi-tool analysis, bounded interpretation, a unified workspace, professional
+scientific coverage, and reproducible reports/recipes. Professional coverage
+includes CrystalNN/VoronoiNN, local environments/polyhedra, experimental XRD
+comparison, basic trajectory analytics, and Electronic Band/DOS.
+
+Fermi Surface, full Rietveld, defects/surfaces/editing, Bader/topological
+analysis, arbitrary code execution, enterprise deployment, and a plugin
+marketplace are not initial-release blockers.
+
+Current scope authority:
+
+* [Product requirements](01_PRODUCT_REQUIREMENTS.md)
+* [Canonical roadmap](ROADMAP.md)
+* [Capability status](CAPABILITY_STATUS_MATRIX.md)
+* [Future scope](FUTURE_SCOPE.md)
+* [Not planned](NOT_PLANNED_SCOPE.md)
+
+The remaining Phase 0 content is retained as historical product-design context.
+
 ## 1. 本阶段目标
 
 明确“材料数据智能分析与可视化平台”的系统定位、边界、核心用户、核心场景、MVP 范围和长期演进方向，为后续产品需求、系统架构、Agent 编排、工具注册表、数据管线和安全设计提供稳定基线。

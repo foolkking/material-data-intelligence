@@ -1,8 +1,37 @@
 # ARCHITECTURE_DECISIONS
 
-## 2026-07-27 ADR: Post-J6 Electronic Structure Roadmap Renumbering
+## 2026-07-27 ADR: Post-J6 Product-Centered Roadmap Correction
 
-**Decision:** accept the reviewer-approved reconciliation that assigns Electronic Band/DOS to J-7 through J-9 and Fermi Surface to J-10 through J-12.
+**Context:** Phase 10F through 10J-6 established deep validated scientific
+visualization, but the immediate post-J6 route continued toward renderer-heavy
+electronic/Fermi work and risked expanding into enterprise platform concerns.
+That ordering diverged from the product's central Material Data Intelligence
+goal: understanding datasets, planning analyses, integrating results, and
+delivering reproducible scientific work.
+
+**Decision:** prioritize (1) Material Intelligence, (2) Intelligent Agent,
+(3) Unified Workspace, (4) Professional Scientific Completion, (5) Scientific
+Validation, and (6) Final Product Closure. The canonical phases are 10K, 10L,
+10M, 10N, 11, and 12. CrystalNN/VoronoiNN, local environments, experimental
+XRD, basic trajectory analytics, and Electronic Band/DOS remain initial-release
+requirements. Fermi Surface and advanced science are Future Scope. Enterprise
+SaaS/IAM/KMS, deployment productization, observability platforms, and plugin
+marketplace are Not Planned.
+
+This is a superseding roadmap correction, not retroactive renaming. Completed
+J-5 and J-6 history stays unchanged, and the prior J-7 through J-12 decision
+remains visible below as a superseded record. Future Scope cannot enter the
+queue without explicit approval; Not Planned scope requires a change in product
+definition. No executable system semantics change in this gate.
+
+**Consequences:** the next approved direction is Phase 10K-0, but it remains
+unstarted until a complete task prompt exists. The product stops treating Fermi
+Surface, plugin ecosystems, enterprise auth/KMS, Kubernetes/deployment, or
+enterprise observability as initial-release blockers.
+
+## 2026-07-27 ADR: Post-J6 Electronic Structure Roadmap Renumbering (Superseded)
+
+**Historical decision:** accepted a reconciliation assigning Electronic Band/DOS to J-7 through J-9 and Fermi Surface to J-10 through J-12. Gate J6-R supersedes this as current roadmap authority.
 
 This is not retroactive renaming. Completed J-5 remains ELF / Orbital Volumetric Product and completed J-6 remains Volumetric Slice / Volume Rendering. The previously planned electronic/Fermi meanings were never implemented, so their required capabilities are restored under unused phase numbers rather than falsely marked complete.
 

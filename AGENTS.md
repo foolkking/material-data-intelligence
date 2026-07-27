@@ -2,7 +2,8 @@
 
 开始前读取 `persistent/PROJECT_BRIEF.md`、`persistent/DESIGN_PROGRESS.md`、
 `persistent/TASK_BOARD.md`、`persistent/ARCHITECTURE_DECISIONS.md`、
-`docs/index.md` 和 `docs/13_SHARED_SCHEMA_SPEC.md`。
+`docs/index.md`、`docs/ROADMAP.md`、`docs/FUTURE_SCOPE.md`、
+`docs/NOT_PLANNED_SCOPE.md` 和 `docs/13_SHARED_SCHEMA_SPEC.md`。
 
 ## 项目工作规则
 
@@ -24,6 +25,9 @@
 - 新共享 schema 写入 `docs/13_SHARED_SCHEMA_SPEC.md`。
 - 保持 MVP/V1/V2 scope 一致。
 - 保持 Phase 9C frontend baseline：顶部全局上下文栏、可折叠/缩放左侧数据上下文、单一活动主工作区 tab。
+- `docs/ROADMAP.md` 是当前路线唯一权威；历史 phase 文档不得覆盖它。
+- 未经 reviewer/user 明确批准，不得把 Future Scope 加入 `TASKS.md`。
+- Not Planned 能力不能仅因技术上可实现而重新进入路线。
 
 ## 持续任务执行规则
 

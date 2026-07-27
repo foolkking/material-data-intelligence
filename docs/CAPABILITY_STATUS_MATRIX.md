@@ -1,0 +1,47 @@
+# Capability Status Matrix
+
+Status: CURRENT
+
+`READY` means delivered and validated within documented limits.
+`PARTIAL_READY` means useful foundations exist but the initial-release product
+boundary is incomplete. `PLANNED`, `FUTURE`, and `NOT_PLANNED` are not claims of
+implementation.
+
+| Domain | Capability | Current Status | Initial Release | Future | Tool / Product |
+| --- | --- | --- | --- | --- | --- |
+| Platform | Registry/Adapter validated execution | READY | Yes | No | Tool Registry, QueueWorkerRuntime |
+| Platform | Artifact/Recipe/Report foundations | READY | Yes | No | Artifact platform |
+| Data | Current parsing and normalization | READY | Yes | No | Existing registered parsers only |
+| Data | Material Data Profile 2.0 | PLANNED | Yes | No | Phase 10K-1 |
+| Dataset | Materials explorer and comparisons | PARTIAL_READY | Yes | No | Phase 10K-2 |
+| Dataset | Composition embedding/clustering | PLANNED | Yes | No | Phase 10K-3 |
+| ML | Regression/basic model-result analysis | PARTIAL_READY | Yes | No | Existing ML tools; Phase 10K-4 completion |
+| ML | Uncertainty/classification evaluation | PLANNED | Conditional | No | Phase 10K-4 |
+| Agent | Structured validated planning | READY | Yes | No | AnalysisPlan/PlanValidator |
+| Agent | Capability-aware planning | PARTIAL_READY | Yes | No | Phase 10L-2 |
+| Agent | Bounded multi-tool analysis | PARTIAL_READY | Yes | No | Phase 10L-3 |
+| Agent | Scientific result interpretation | PLANNED | Yes | No | Phase 10L-4 |
+| Workspace | Phase 9C workspace foundation | READY | Yes | No | PlannerWorkbench |
+| Workspace | Unified scientific workspace | PLANNED | Yes | No | Phase 10M |
+| Structure | Production periodic viewer/inspection | READY | Yes | No | `structure.viewer_3d` |
+| Structure | RDF/coordination/calculated XRD | READY | Yes | No | Existing structure tools |
+| Structure | CrystalNN/VoronoiNN | PLANNED | Yes | No | Phase 10N-1 |
+| Structure | Local environments/polyhedra | PLANNED | Yes | No | Phase 10N-2 |
+| Experiment | Experimental XRD comparison | PLANNED | Yes | No | Phase 10N-3 |
+| Experiment | Full Rietveld refinement | FUTURE | No | Yes | Unimplemented |
+| Dynamics | Trajectory viewer | READY | Yes | No | Existing trajectory product |
+| Dynamics | RDF/MSD/diffusion/time analytics | PLANNED | Yes | No | Phase 10N-4 |
+| Phonon | Band/DOS/animation | READY | Yes | No | Existing phonon tools/products |
+| Reciprocal | Brillouin zone | READY | Yes | No | `structure.brillouin_zone` |
+| Electronic | Electronic Band/DOS/BZ link | PLANNED | Yes | No | Phase 10N-5; no current tool |
+| Electronic | Fermi Surface | FUTURE | No | Yes | Unimplemented |
+| Volumetric | Source-specific products and rendering | READY | Yes | No | Existing volumetric product |
+| Volumetric | Bader/ELF topology/advanced fields | FUTURE | No | Yes | Unimplemented |
+| Compute | External DFT/HPC execution | FUTURE | No | Yes | No current authority |
+| Code | Optional sandboxed notebook/script | FUTURE | No | Yes | No current authority |
+| Enterprise | SaaS/IAM/KMS/deployment products | NOT_PLANNED | No | No | Outside product |
+| Ecosystem | Plugin marketplace | NOT_PLANNED | No | No | Outside product |
+
+Scientific method limitations and source-format support remain authoritative in
+the relevant contract and phase documents. A roadmap entry never upgrades a
+capability status by itself.

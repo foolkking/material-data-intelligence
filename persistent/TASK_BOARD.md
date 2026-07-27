@@ -1,14 +1,27 @@
 # TASK_BOARD
 
-## Gate J6-A / Post-J6 Roadmap Freeze
+## Current Approved Work
+
+- [x] Phase 10J-6 implementation, completion record, exact-SHA CI, result
+  retention, evidence integrity, and queue archive are closed.
+- [x] Gate J6-R replaces the superseded J-7 through J-12 plan with the canonical
+  product-centered 10K through 12 roadmap and separates Initial, Future, and Not
+  Planned scope.
+- [ ] Phase 10K-0 Material Intelligence Capability Gap Audit is `NEXT`, not in
+  progress. Its full executable prompt is awaiting reviewer/user input.
+
+`TASKS.md` intentionally contains no executable task block until that complete
+prompt exists. Future Scope and Not Planned items are not queue work.
+
+The remaining sections are historical task records and do not override the
+current board above.
+
+## Gate J6-A / Post-J6 Roadmap Freeze (Superseded)
 
 - [x] Verify J-6 implementation, result, evidence, completion-record exact-SHA CI, archive commit, and archive exact-SHA CI.
 - [x] Audit electronic band/DOS and Fermi Surface implementation, contracts, tools, routes, frontend, and tests; all remain not implemented apart from explicit negative guards and future planning.
-- [x] Freeze J-7 through J-12 and preserve actual J-5/J-6 historical identities.
-- [x] Add roadmap and Phase 10J-7 entry-scope documentation plus six pending queue tasks.
-- [ ] Record roadmap-freeze current-HEAD CI and final result closure.
-
-Next task: Phase 10J-7 Electronic Band / DOS Contract (`待处理`). Do not mark it in progress without a new reviewer instruction.
+- [x] The temporary J-7 through J-12 roadmap was committed and passed CI, then
+  explicitly superseded by Gate J6-R. Actual J-5/J-6 identities remain intact.
 
 ## Phase 10J-6 Volumetric Slice / Volume Rendering Completed
 

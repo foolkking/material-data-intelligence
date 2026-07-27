@@ -1,6 +1,22 @@
 # CHANGELOG
 
-## 2026-07-27 - Gate J6-A / Post-J6 Roadmap Reconciliation
+## 2026-07-27 - Gate J6-R Product Roadmap Correction
+
+- Corrected the post-J6 route around the Material Data Intelligence product:
+  10K Material Intelligence, 10L Intelligent Agent, 10M Unified Workspace, 10N
+  Professional Scientific Completion, Phase 11 validation, and Phase 12 final
+  closure are now the unique current roadmap.
+- Separated Initial Release, Future Scope, and Not Planned scope. Electronic
+  Band/DOS remains initial release under 10N-5; Fermi Surface is Future; enterprise
+  SaaS/deployment/plugin-marketplace expansion is Not Planned.
+- Preserved all completed scientific history, including J-6 implementation,
+  evidence, completion CI, and archive. Marked the prior J-7 through J-12 freeze
+  as superseded rather than rewriting Git or historical documents.
+- Added canonical goal/scope/roadmap/capability entry points and removed
+  incomplete J7-J12 task blocks. No product code, schema, dependency, tool,
+  Planner, runtime, or renderer changed.
+
+## 2026-07-27 - Gate J6-A / Post-J6 Roadmap Reconciliation (Superseded)
 
 - Verified Phase 10J-6 implementation, completion-record, and queue-archive commits and their exact-SHA CI runs; retained result history and evidence.
 - Recorded the reviewer-approved numbering reconciliation: actual J-5 ELF/Orbital and J-6 Slice/Volume remain historical facts, while missing Electronic Band/DOS and Fermi Surface work moves to J-7 through J-12.

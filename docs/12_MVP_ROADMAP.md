@@ -1,5 +1,9 @@
 # Phase 11：MVP Roadmap 与开发计划
 
+> Status: HISTORICAL / SUPERSEDED BY POST-J6 PRODUCT ROADMAP
+> Current authority: [ROADMAP.md](ROADMAP.md). Historical milestones below are
+> retained as design history and do not authorize future work.
+
 ## 1. 本阶段目标
 
 将 Phase 0-10 的核心设计和领域扩展补充设计收敛为可执行开发路线，明确 MVP、V1、V2 范围，给出任务拆解、技术栈选择、优先级、风险清单、验收标准和进入代码实现的顺序。

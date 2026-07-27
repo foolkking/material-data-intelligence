@@ -1,5 +1,68 @@
 # PROJECT_BRIEF
 
+## 2026-07-27 Canonical Product Brief
+
+### Identity
+
+**Material Data Intelligence & Visualization Platform / 材料数据智能分析与可视化平台**
+
+The platform helps users understand supported material data, discover valid
+analyses, express goals in natural language, execute bounded scientific tools,
+inspect professional visual results, receive limitation-aware interpretation,
+and preserve reproducible Reports and Recipes. It is not a library wrapper,
+generic BI/viewer, DFT workflow manager, arbitrary-code Agent, enterprise SaaS
+program, deployment product, or plugin marketplace.
+
+### Core Stack
+
+* pymatgen for materials semantics and reviewed scientific transformations.
+* ASE for Atoms and trajectory interoperability.
+* phonopy for phonon semantics and source conventions.
+* pymatviz and Plotly for materials/scientific visualization.
+* MatterViz as a selective browser capability source.
+* Existing application-owned Three.js/WebGL renderers for structure,
+  trajectory, phonon, BZ, and volumetric products.
+* LLM Agent for intent, planning, bounded interpretation, and recommendations.
+* Tool Registry and Adapters as the strict executable boundary.
+* Artifact, Recipe, and Report for provenance, audit, export, and replay.
+
+### Core User Journey
+
+```text
+Data -> Profile -> Natural Language -> Validated Plan -> Execute
+     -> Visualize -> Interpret -> Report / Recipe
+```
+
+### Current Focus and Initial Release Route
+
+Phase 10J-6 is archived. The next approved direction is Phase 10K-0, Material
+Intelligence Capability Gap Audit, after a full reviewer task prompt is supplied.
+The remaining initial-release route is:
+
+```text
+10K Material Intelligence
+ -> 10L Intelligent Analysis Agent
+ -> 10M Unified Scientific Workspace
+ -> 10N Professional Scientific Completion
+ -> 11 Scientific Validation
+ -> 12 Final Product Closure
+```
+
+Professional completion includes CrystalNN/VoronoiNN, local environments and
+polyhedra, experimental XRD comparison, basic trajectory analytics, and
+Electronic Band/DOS. Fermi Surface is Future Scope, not an initial blocker.
+
+Canonical authority:
+
+* `docs/ROADMAP.md`
+* `docs/01_PRODUCT_REQUIREMENTS.md`
+* `docs/CAPABILITY_STATUS_MATRIX.md`
+* `docs/FUTURE_SCOPE.md`
+* `docs/NOT_PLANNED_SCOPE.md`
+
+The historical detail below is retained for implementation context. Where it
+conflicts with the canonical documents above, the canonical documents govern.
+
 ## 2026-07-05 Current UI Baseline
 
 Phase 9C updates the frontend product direction to an AI analysis assistant
