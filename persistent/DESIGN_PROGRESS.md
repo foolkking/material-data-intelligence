@@ -22,8 +22,9 @@
   capabilities, coverage, and warnings.
 - Focused API/unit/component checks, full local backend/frontend regression,
   typecheck/build, Phase 10 closure, and API/performance plus
-  Chromium/Firefox/WebKit/mobile evidence pass. Exact-SHA implementation and
-  completion-record CI remain the active gates; Phase 10K-2 has not started.
+  Chromium/Firefox/WebKit/mobile evidence pass. Implementation `92a8e98` passed
+  exact-SHA CI run `30346512968`, including service-backed/no-skipped. The
+  completion-record CI and verified queue archive remain; 10K-2 has not started.
 
 ## 2026-07-27 Phase 10K-0 Material Intelligence Capability Gap Audit
 
