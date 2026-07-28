@@ -14,7 +14,9 @@
 - Corrected the canonical 10K ordering to 10K-3 Materials ML Evaluation and
   10K-4 Composition Space, matching the approved queue and Phase 10K-0 audit.
 - No dependency, arbitrary execution, real LLM, embedding/clustering, ML
-  evaluator, or unified-workspace feature was added. Exact-SHA CI closure is
+  evaluator, or unified-workspace feature was added. Current implementation
+  HEAD `35c0fc6` passed exact-SHA CI run `30355075439`, including Unit,
+  Frontend, service-backed, and no-skipped gates; completion-record CI remains
   pending.
 
 ## 2026-07-28 - Phase 10K-1 Material Data Profile 2.0

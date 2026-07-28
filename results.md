@@ -1028,3 +1028,75 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
   eligible for verified queue archival.
 * Phase 10K-1: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 * Phase 10K-2: `NEXT / NOT_STARTED`.
+
+# Phase 10K-2 Dataset Materials Explorer Result
+
+## Status and Completion Time
+
+* status: `PASS_PENDING_COMPLETION_RECORD_CI`
+* completed: `2026-07-28 19:32:32 +08:00`
+
+## Delivered Capability
+
+* Added one validated product-level `dataset.materials_explorer` tool backed by
+  exactly one Material Data Profile 2.0 and explicitly bound canonical table/
+  Structure resources.
+* Delivered deterministic dataset overview, element and chemical-system
+  coverage, exact formula/Structure duplicate classes, canonical structure
+  statistics, finite-only property distributions, factual data-quality output,
+  explicit group/resource comparison, and stable sample links.
+* Emitted one bounded inert `phase10k2.dataset_materials_explorer.v1` product
+  bundle plus quality, summary, and recipe artifacts through persisted
+  AnalysisPlan, PlanValidator, QueueWorkerRuntime, Registry, and Adapter.
+* Added seven accessible responsive Results views: Overview, Composition,
+  Structures, Properties, Data quality, Comparison, and Samples. Every
+  chart-like view retains numeric/table content and inert JSON fallback.
+
+## Scientific and Security Boundary
+
+* Comparison requires explicit resource or group identity; row order never
+  infers a split and unlike property units are not converted.
+* Structure duplicates require equal canonical normalized hashes; reduced
+  formula duplicates are separate and no near-duplicate, chemical-validity,
+  significance, or anomaly authority is claimed.
+* Hard caps cover 100,000 rows, 512 columns, 64 properties, 256 categories,
+  200 linked rows, 100 bins, 256 structures, 5,000 atoms/structure, 128
+  warnings, and 8,000,000 bytes/artifact.
+* No dependency, arbitrary Python, notebook/script execution, real LLM,
+  external request/asset, artifact JavaScript, ML evaluation, embedding,
+  clustering, Agent automation, or workspace redesign was added.
+
+## Evidence and Verification
+
+* Real persisted Planner/job/runtime/API artifacts and Chromium/Firefox/WebKit
+  plus 390x844 mobile replay are retained under
+  `docs/phase10k/evidence/phase10k2_dataset_materials_explorer/`.
+* Performance cases: 4, 5,000, and 100,000 rows; near-cap artifact remained
+  bounded at about 24 KB and 100 linked sample rows.
+* backend full: `791 passed, 24 skipped, 63 warnings`; skipped tests are explicit
+  environment/real-LLM gates and were not reported as passed.
+* backend non-integration: `791 passed, 1 skipped, 23 deselected`.
+* frontend: `49 files, 300 tests passed`; typecheck and production build PASS.
+* manifest/schema focused tests: `22 passed`; Phase 10 closure and evidence
+  integrity PASS; `uv lock --check` and `git diff --check` PASS.
+* markers: `DATASET_MATERIALS_EXPLORER_RUNTIME_EVIDENCE_PASS`,
+  `DATASET_COMPOSITION_EXPLORER_EVIDENCE_PASS`,
+  `DATASET_STRUCTURE_STATISTICS_EVIDENCE_PASS`,
+  `DATASET_PROPERTY_EXPLORER_EVIDENCE_PASS`, `DATASET_QUALITY_EVIDENCE_PASS`,
+  `DATASET_COMPARISON_EVIDENCE_PASS`,
+  `DATASET_MATERIALS_EXPLORER_BROWSER_EVIDENCE_PASS`,
+  `DATASET_MATERIALS_EXPLORER_PERFORMANCE_EVIDENCE_PASS`,
+  `NO_DATASET_EXPLORER_EXTERNAL_NETWORK_REQUESTS`, and
+  `NO_SECRET_PATTERN_HITS`.
+
+## Commit / CI / Queue
+
+* implementation commit: `1f495e14ccae72d8b22fa494ca8f6754bffb73d1`.
+* cross-platform evidence fix/current implementation HEAD:
+  `35c0fc6aa829fb8e9445c3a9d867883c1f10645e`.
+* exact-SHA CI run `30355075439`: Unit Tests, Frontend Typecheck & Build,
+  PostgreSQL/Redis/MinIO service-backed integration, and no-skipped assertion
+  all succeeded.
+* completion-record commit/CI: pending this record commit.
+* Phase 10K-2 remains in `TASKS.md` until completion-record exact-SHA CI passes.
+* Phase 10K-3 remains pending and was not implemented by this task.

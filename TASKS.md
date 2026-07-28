@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 你现在执行：
 
 # Phase 10K-2：Dataset Materials Explorer
@@ -2722,6 +2722,27 @@ Audit 完成后直接继续 implementation。
 
 **Phase 10K-3：Materials ML Evaluation = NEXT / AWAITING COMPLETE PROMPT**
 
+
+## 完成记录
+
+- 完成时间：`2026-07-28 19:32:32 +08:00`
+- 修改文件：新增 `dataset.materials_explorer` adapter、Registry/schema/runtime/
+  Planner 集成、Dataset Explorer React 组件与样式、后端/前端/浏览器测试、
+  Phase 10K-2 evidence、contracts/docs，并更新 canonical roadmap、capability
+  matrix 与 persistent 项目记忆。
+- 修改摘要：交付 Profile 2.0 绑定的 dataset overview、composition、structure
+  statistics、property distributions、data quality、显式 dataset comparison、
+  stable sample links 和七视图响应式前端；不包含 ML evaluation、embedding、
+  clustering、Agent automation 或新依赖。
+- 测试结果：后端 `791 passed, 24 skipped`（24 为显式环境门控）；非
+  integration `791 passed, 1 skipped, 23 deselected`；前端 `300 passed`；
+  typecheck/build、Phase 10 closure/evidence、`uv lock --check`、三浏览器/
+  mobile、evidence SHA-256、network/secret scan 均 PASS。
+- 提交/CI：implementation `1f495e1`; portability fix/current implementation
+  HEAD `35c0fc6aa829fb8e9445c3a9d867883c1f10645e`; exact-SHA CI run
+  `30355075439` PASS（Unit、Frontend、service-backed、no-skipped）。
+- 当前归档状态：completion-record exact-SHA CI 待本记录提交后核验；核验
+  前不得删除本 task block。
 
 ---END---
 

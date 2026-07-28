@@ -16,7 +16,10 @@
 - Real persisted runtime/API evidence and Chromium/Firefox/WebKit/mobile replay
   cover mixed composition/structure/property data, partial states, explicit
   train/test comparison, 4/5,000/100,000-row performance, network isolation,
-  and security. Exact implementation-SHA CI closure remains pending.
+  and security. Current implementation HEAD `35c0fc6` passed exact-SHA CI run
+  `30355075439`, including Unit, Frontend, service-backed, and no-skipped gates.
+- The completion record is written in `TASKS.md` and `results.md`; its own
+  exact-SHA CI and verified queue archival remain pending.
 - ML evaluation remains Phase 10K-3, composition space remains Phase 10K-4,
   and capability-aware planning remains Phase 10L.
 

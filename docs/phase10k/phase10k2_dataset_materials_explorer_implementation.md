@@ -1,6 +1,7 @@
 # Phase 10K-2 Dataset Materials Explorer Implementation
 
-Status: IMPLEMENTED, pending exact-SHA CI closure.
+Status: IMPLEMENTED. Exact implementation-SHA CI run `30355075439` passed;
+completion-record CI and verified queue archival remain pending.
 
 ## Product boundary
 
