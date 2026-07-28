@@ -5,8 +5,6 @@
 The following questions can affect Initial Release and must be decided in their
 assigned phases rather than by this roadmap gate:
 
-* How should Phase 10K-2 define dataset comparison, split identity,
-  duplicate/near-duplicate authority, and dataset-level category/output caps?
 * Which exact units and domain property registries should be admitted beyond
   the conservative Phase 10K-1 numeric property allowlist?
 * Which bounded composition embeddings and clustering methods can be supported
@@ -27,6 +25,20 @@ assigned phases rather than by this roadmap gate:
   first supported batch?
 
 ## Closed Product-Scope Questions
+
+* Dataset summary semantics: **CLOSED FOR PHASE 10K-2** - Profile 2.0-bound
+  deterministic overview, explicit denominators, bounded category/sample
+  tables, and one coherent product artifact.
+* Dataset duplicate semantics: **CLOSED FOR PHASE 10K-2** - reduced-formula
+  equality is a formula duplicate; canonical normalized object-hash equality
+  is an exact Structure duplicate; near duplicates are not claimed.
+* Dataset comparison semantics: **CLOSED FOR PHASE 10K-2** - only explicit
+  group values or two explicit profiled resources; row order never infers a
+  split, and unlike property units are not converted.
+* Property distribution policy: **CLOSED FOR PHASE 10K-2** - Profile 2.0
+  material-property columns only, finite-only descriptive statistics,
+  separately reported missing/non-finite values, and statistical-candidate-only
+  IQR rows.
 
 * Profile semantic authority: **CLOSED** - explicit metadata, user declaration,
   canonical names, exact aliases, bounded patterns, then unknown; no LLM or

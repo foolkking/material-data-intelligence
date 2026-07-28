@@ -1,0 +1,26 @@
+{
+  "browsers": [
+    {
+      "browser": "chromium",
+      "available": true,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "firefox",
+      "available": true,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "browser": "webkit",
+      "available": true,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ],
+  "marker": "NO_DATASET_EXPLORER_EXTERNAL_NETWORK_REQUESTS"
+}

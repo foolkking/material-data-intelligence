@@ -30,6 +30,13 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase10k/phase10k1_fixture_matrix.md`](phase10k/phase10k1_fixture_matrix.md): table/resource, negative, cap, browser, and mobile fixture matrix.
 - [`phase10k/phase10k1_material_data_profile_2_evidence.md`](phase10k/phase10k1_material_data_profile_2_evidence.md): API, browser, performance, network, and security evidence index.
 - [`phase10k/evidence/phase10k1_material_data_profile_2/`](phase10k/evidence/phase10k1_material_data_profile_2/): sanitized captures and screenshots.
+- [`phase10k/phase10k2_dataset_materials_explorer_implementation.md`](phase10k/phase10k2_dataset_materials_explorer_implementation.md): product-level tool, runtime, frontend, caps, and explicit limits.
+- [`phase10k/phase10k2_dataset_analysis_contract.md`](phase10k/phase10k2_dataset_analysis_contract.md): dataset identity, composition, structure, property, quality, duplicate, and determinism semantics.
+- [`phase10k/phase10k2_dataset_comparison_contract.md`](phase10k/phase10k2_dataset_comparison_contract.md): explicit group/resource comparison and unit-compatibility boundary.
+- [`phase10k/phase10k2_fixture_matrix.md`](phase10k/phase10k2_fixture_matrix.md): scientific, negative, cap, browser, and mobile fixture coverage.
+- [`phase10k/phase10k2_evidence.md`](phase10k/phase10k2_evidence.md): runtime, API, browser, performance, network, and security evidence index.
+- [`phase10k/evidence/phase10k2_dataset_materials_explorer/`](phase10k/evidence/phase10k2_dataset_materials_explorer/): sanitized artifacts, captures, metrics, and screenshots.
+- [`phase10k/phase10k3_next_scope.md`](phase10k/phase10k3_next_scope.md): Materials ML Evaluation entry boundary; no 10K-3 implementation is included.
 
 ## Historical Gate J6-A Roadmap Record
 

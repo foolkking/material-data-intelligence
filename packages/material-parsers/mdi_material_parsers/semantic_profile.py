@@ -106,6 +106,8 @@ _PLATFORM_TOOLS: dict[str, tuple[str, ...]] = {
     "element_distribution": ("composition.ptable_heatmap",),
     "chemical_system_visualization": ("composition.chem_sys_treemap",),
     "structure_summary": ("structure.summary",),
+    "dataset_materials_explorer": ("dataset.materials_explorer",),
+    "dataset_structure_statistics": ("dataset.materials_explorer",),
     "trajectory_visualization": ("structure.trajectory_viewer",),
     "phonon_visualization": ("phonon.band_dos",),
     "volumetric_visualization": ("structure.volumetric_data",),
@@ -506,6 +508,7 @@ def analysis_readiness(
     roles = {role["role"] for column in semantic_columns for role in column["roles"]}
     resource_capabilities = {capability for resource in resources for capability in resource["capabilities"]}
     effective_semantics = roles | resource_capabilities
+    effective_semantics.add("profile_2")
     if {"classification_prediction", "class_probability"} & roles:
         effective_semantics.add("classification_output")
     parseable_formula = any(
@@ -518,6 +521,7 @@ def analysis_readiness(
     regression_groups = [group for group in semantic_groups if group["kind"] == "regression"]
     classification_groups = [group for group in semantic_groups if group["kind"] == "classification"]
     rules: list[tuple[str, set[str], bool, list[dict[str, Any]]]] = [
+        ("dataset_materials_explorer", {"profile_2"}, bool(semantic_columns or resources), []),
         ("table_distribution", {"table"}, "table" in resource_capabilities, []),
         ("scatter", {"table"}, "table" in resource_capabilities and numeric_column_count >= 2, []),
         ("histogram", {"table"}, "table" in resource_capabilities and numeric_column_count >= 1, []),

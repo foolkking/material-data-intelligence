@@ -51,6 +51,7 @@ export type DisplayTarget =
 export type ToolCategory = "visualization" | "analysis" | "parser" | "report" | "utility";
 
 export type ToolDomain =
+  | "dataset"
   | "table"
   | "viz"
   | "composition"

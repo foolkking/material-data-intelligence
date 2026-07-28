@@ -1,5 +1,37 @@
 # 共享 Schema 规范
 
+## Phase 10K-2 Dataset Materials Explorer product artifact
+
+`dataset.materials_explorer` consumes exactly one validated Material Data
+Profile 2.0 and its explicitly bound canonical table and optional Structure
+resources. Profile 2.0 remains the semantic-role and sample-identity authority;
+the adapter does not infer another formula, property, split, or resource-role
+contract. The deterministic content identity includes the profile semantic
+hash plus sorted object IDs and normalized object hashes.
+
+The primary inert artifact has schema
+`phase10k2.dataset_materials_explorer.v1`. It is one bounded `table_json`
+product bundle with dataset identity/resource bindings, overview, composition,
+structures, properties, quality, comparison, linked samples, warnings, and
+explicit truncation/cap metadata. Companion outputs are
+`dataset_quality.json`, `summary.md`, and `recipe.json`. All sample links use
+Profile 2.0 stable sample references rather than display-array position.
+
+Composition occurrence, stoichiometric sum, and fractional sum are distinct.
+Property statistics use finite values only and preserve missing/non-finite
+counts and declared units. Structure duplicates require identical canonical
+normalized object hashes; reduced formulas are formula duplicates only, and
+near-duplicate or chemical-validity claims are absent. Comparison requires two
+explicit resources or one explicit group column and two values; row order never
+defines a split, and unlike units are not converted or compared.
+
+Hard execution limits are 100,000 rows, 512 columns, 64 properties, 256
+categories, 200 linked rows, 100 histogram bins, 256 structures, 5,000 atoms
+per structure, 128 warnings, and 8,000,000 bytes per artifact. Bounded display
+lists disclose truncation without changing denominators. Artifacts contain no
+JavaScript, HTML authority, callback, URL, executable content, external asset,
+ML evaluation, embedding, clustering, or Agent interpretation.
+
 ## Phase 10J-1 volumetric source integration
 
 `VolumetricData` is the normalized source object accepted by the strict public parser tool `structure.volumetric_data`. It is not a second artifact contract: the adapter converts it into the existing `phase10j.volumetric_grid.v1`, payload, field, dataset, and manifest schemas. Allowed source formats are `vasp_volumetric` and `gaussian_cube`; the parser cap is 2,097,152 voxels while the larger Phase 10J contract cap remains the trusted canonical upper boundary.
@@ -349,6 +381,7 @@ type ToolCategory =
   | "utility";
 
 type ToolDomain =
+  | "dataset"
   | "table"
   | "viz"
   | "composition"

@@ -1,5 +1,28 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-28 ADR: Dataset Exploration Is One Profile-Bound Product Capability
+
+**Context:** dataset exploration needs several related summaries and links, but
+publishing a separate tool for each histogram, count, or table would fragment
+plans, duplicate semantic inference, and make provenance and caps inconsistent.
+Profile 2.0 already owns deterministic resource, semantic-role, property, and
+sample identity.
+
+**Decision:** expose one bounded `dataset.materials_explorer` Registry identity.
+It consumes exactly one Profile 2.0 and explicitly bound canonical resources,
+then emits one coherent inert explorer bundle plus quality, summary, and recipe
+artifacts. The adapter may compute deterministic descriptive statistics and
+scientifically sourced Structure facts, but cannot re-infer roles. Comparison
+requires explicit group/resource identity. Formula equality and normalized
+Structure-hash equality remain separate exact duplicate classes; near-duplicate,
+scientific anomaly, significance, and validity claims are excluded.
+
+**Consequences:** generic tools remain available but do not need to be composed
+into an unstable multi-tool plan for this product. The frontend can link every
+aggregate to stable samples while preserving one provenance/cap boundary.
+Phase 10K-3 owns ML evaluation, Phase 10K-4 owns embedding/clustering, Phase
+10L owns capability-aware planning, and Phase 10M owns workspace composition.
+
 ## 2026-07-28 ADR: Profile Facts, Semantic Authority, and Readiness Are Separate Contracts
 
 **Context:** the legacy profile mixed a narrow column-name hint with task

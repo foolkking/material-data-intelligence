@@ -1,5 +1,24 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-28 Phase 10K-2 Dataset Materials Explorer Product Surface
+
+- Added one public identity, `dataset.materials_explorer`, implemented by
+  `DatasetMaterialsExplorerAdapter`. A product-level aggregate was selected
+  because overview, composition, structures, properties, quality, comparison,
+  and sample links share one Profile 2.0 identity and one bounded user workflow;
+  one tool per histogram or scalar metric would fragment provenance and plans.
+- The tool requires Profile 2.0 and explicit canonical resource bindings. Its
+  closed parameter schema permits bounded display controls and only explicit
+  group/resource comparison. Registry limits cap rows, columns, properties,
+  categories, linked rows, bins, structures, atoms, warnings, artifact bytes,
+  and timeout.
+- Existing generic table/composition/structure tools retain their identities
+  and behavior. They remain reusable atomic capabilities and are not aliases of
+  this product.
+- Materials ML, uncertainty/classification evaluation, composition embedding,
+  and clustering remain unregistered until Phase 10K-3/10K-4. The new route
+  excludes ML intent and grants no arbitrary multi-tool or LLM authority.
+
 ## 2026-07-28 Phase 10K-1 Profile Eligibility Facts
 
 - No tool manifest, adapter map, public identity, parameter schema, Planner

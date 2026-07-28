@@ -97,6 +97,8 @@ class MockLLMProvider:
     ) -> PlannerRawResponse:
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_dataset_materials_explorer(request, tools, data_profile):
+            plan = _mock_dataset_materials_explorer_plan(request, data_profile)
         elif _should_generate_band_bz_link(request, tools, data_profile):
             plan = _mock_band_bz_link_plan(request, data_profile)
         elif _should_generate_phonon_animation(request, tools, data_profile):
@@ -1207,6 +1209,96 @@ def _single_step_plan(
         "steps": [step],
         "expectedArtifacts": expected_artifacts,
     }
+
+
+def _should_generate_dataset_materials_explorer(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "dataset.materials_explorer") or data_profile.profileContractVersion != "2.0":
+        return False
+    prompt = request.user_prompt.lower()
+    excluded = (
+        "model performance",
+        "prediction error",
+        "parity",
+        "uncertainty calibration",
+        "confusion matrix",
+        "机器学习模型",
+        "预测误差",
+        "不确定性校准",
+    )
+    if any(marker in prompt for marker in excluded):
+        return False
+    markers = (
+        "dataset materials explorer",
+        "materials dataset",
+        "dataset overview",
+        "explore this dataset",
+        "analyze this batch of materials",
+        "composition and properties",
+        "compare train and test coverage",
+        "材料数据集",
+        "这批材料",
+        "数据集概览",
+        "组成和属性",
+        "比较训练集和测试集",
+    )
+    return any(marker in prompt for marker in markers)
+
+
+def _mock_dataset_materials_explorer_plan(request: PlannerRequest, data_profile: DataProfile) -> dict[str, Any]:
+    table_ids = sorted(
+        item.objectId for item in data_profile.resourceSemantics if item.objectType == "DataFrame"
+    )
+    structure_ids = [item.objectId for item in data_profile.resourceSemantics if item.objectType == "Structure"]
+    input_refs: list[dict[str, Any]] = [{"refType": "profile", "ref": "profile"}]
+    if table_ids:
+        input_refs.append(
+            {"refType": "normalized_object", "ref": table_ids[0], "objectType": "DataFrame", "fieldRole": "primary_table"}
+        )
+    if structure_ids:
+        input_refs.append(
+            {
+                "refType": "normalized_object",
+                "ref": "structure_resources",
+                "objectType": "Structure",
+                "fieldRole": "structure_collection",
+            }
+        )
+    params: dict[str, Any] = {
+        "comparisonMode": "none",
+        "maxProperties": 32,
+        "maxCategories": 50,
+        "maxTableRows": 100,
+        "histogramBins": 20,
+        "maxStructures": 256,
+        "symprec": 0.01,
+    }
+    if table_ids:
+        params["tableObjectId"] = table_ids[0]
+    prompt = request.user_prompt.lower()
+    columns = {column.column.lower(): column.column for column in data_profile.semanticColumns if column.objectId in table_ids[:1]}
+    if any(marker in prompt for marker in ("train and test", "training and test", "训练集和测试集")) and "split" in columns:
+        params.update({"comparisonMode": "group", "groupColumn": columns["split"], "groupA": "train", "groupB": "test"})
+    artifact_types = ["table_json", "quality_issues_json", "summary_md", "recipe_json"]
+    step = {
+        "stepId": "step_001",
+        "toolId": "dataset.materials_explorer",
+        "purpose": "Build a bounded Profile 2.0-backed materials dataset overview and explicit comparison.",
+        "reason": "The request asks for one coherent dataset-level materials analysis product.",
+        "inputRefs": input_refs,
+        "params": params,
+        "output": {"artifactTypes": artifact_types},
+    }
+    expected = [
+        {"name": "dataset_materials_explorer.json", "type": "table_json", "fromStepId": "step_001"},
+        {"name": "dataset_quality.json", "type": "quality_issues_json", "fromStepId": "step_001"},
+        {"name": "summary.md", "type": "summary_md", "fromStepId": "step_001"},
+        {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_001"},
+    ]
+    return _single_step_plan(request, step, expected)
 
 
 def _should_generate_structure_spacegroup(

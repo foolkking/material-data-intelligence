@@ -1,0 +1,39 @@
+{
+  "acceptance": "PASS",
+  "caps": {
+    "maxArtifactBytes": 8000000,
+    "maxProperties": 64,
+    "maxRows": 100000,
+    "maxTableRows": 200
+  },
+  "cases": [
+    {
+      "artifactBytes": 4856,
+      "caseId": "small",
+      "chemicalSystemsMaterialized": 4,
+      "elapsedMs": 16.25,
+      "inputRows": 4,
+      "propertyCount": 1,
+      "sampleRowsMaterialized": 4
+    },
+    {
+      "artifactBytes": 23605,
+      "caseId": "medium",
+      "chemicalSystemsMaterialized": 4,
+      "elapsedMs": 399.356,
+      "inputRows": 5000,
+      "propertyCount": 1,
+      "sampleRowsMaterialized": 100
+    },
+    {
+      "artifactBytes": 23888,
+      "caseId": "near_cap",
+      "chemicalSystemsMaterialized": 4,
+      "elapsedMs": 8179.802,
+      "inputRows": 100000,
+      "propertyCount": 1,
+      "sampleRowsMaterialized": 100
+    }
+  ],
+  "marker": "DATASET_MATERIALS_EXPLORER_PERFORMANCE_EVIDENCE_PASS"
+}

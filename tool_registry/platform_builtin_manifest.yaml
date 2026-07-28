@@ -1,4 +1,15 @@
 tools:
+  - tool_id: dataset.materials_explorer
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: DatasetMaterialsExplorerAdapter
+    display_target: overview
+    artifact_types:
+      - table_json
+      - quality_issues_json
+      - summary_md
+      - recipe_json
+
   - tool_id: table.numeric_summary
     implementation_source: platform_builtin
     stage: mvp

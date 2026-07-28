@@ -1,0 +1,15 @@
+{
+  "desktop": {
+    "regionLabel": "Dataset Materials Explorer",
+    "tabCount": 7,
+    "selectedTabCount": 1,
+    "tableFallback": true
+  },
+  "mobile": {
+    "regionLabel": "Dataset Materials Explorer",
+    "tabCount": 7,
+    "selectedTabCount": 1,
+    "tableFallback": true
+  },
+  "marker": "DATASET_MATERIALS_EXPLORER_BROWSER_EVIDENCE_PASS"
+}

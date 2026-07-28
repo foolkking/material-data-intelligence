@@ -7,6 +7,11 @@ from .brillouin_zone import (
     BrillouinZoneAdapter,
 )
 from .composition_summary import CompositionSummaryAdapter
+from .dataset_materials_explorer import (
+    DATASET_EXPLORER_SCHEMA_VERSION,
+    DATASET_EXPLORER_TOOL_ID,
+    DatasetMaterialsExplorerAdapter,
+)
 from .error_distribution import ErrorDistributionAdapter
 from .numeric_summary import NumericSummaryAdapter
 from .outlier_table import OutlierTableAdapter
@@ -43,6 +48,9 @@ __all__ = [
     "BRILLOUIN_ZONE_TOOL_ID",
     "BrillouinZoneAdapter",
     "CompositionSummaryAdapter",
+    "DATASET_EXPLORER_SCHEMA_VERSION",
+    "DATASET_EXPLORER_TOOL_ID",
+    "DatasetMaterialsExplorerAdapter",
     "CorrelationAdapter",
     "DistributionSummaryAdapter",
     "ErrorDistributionAdapter",

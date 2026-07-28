@@ -72,6 +72,7 @@ class ToolCategory(str, Enum):
 
 
 class ToolDomain(str, Enum):
+    dataset = "dataset"
     table = "table"
     viz = "viz"
     composition = "composition"

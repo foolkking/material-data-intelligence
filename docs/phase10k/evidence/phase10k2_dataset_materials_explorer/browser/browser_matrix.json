@@ -1,0 +1,112 @@
+[
+  {
+    "browser": "chromium",
+    "version": "128.0.6613.18",
+    "available": true,
+    "desktop": {
+      "firstProductMs": 1636,
+      "snapshots": {
+        "Overview": "SAMPLES\n4\nTABLES\n1\nSTRUCTURES\n3\nPROPERTIES\n2\nAvailable analyses\ndataset_materials_explorer\ntable_distribution\nscatter\nhistogram\ncorrelation\ncomposition_summary\nformula_statistics\nelement_distribution\nchemical_system_visualization\nstructure_summary\ndataset_structure_statistics\nUnavailable analyses\ntrajectory_visualization\nphonon_visualization\nvolumetric_visualization\nregression_evaluation\nuncertainty_evaluation\nclassification_evaluation\ncomposition_space\nWarnings\nDATASET_FORMULA_PARSE_FAILURES\nFORMULA_VALUES_PARTIALLY_INVALID",
+        "Composition": "STATUS\nREADY\nFORMULA COLUMN\nformula\nUNIQUE FORMULAS\n2\nUNIQUE REDUCED FORMULAS\n2\nElement coverage\nCl\n1\nNa\n1\nSi\n2\nChemical systems\nCHEMICAL SYSTEM\tCOUNT\nSi\t2\nCl-Na\t1",
+        "Structures": "STATUS\nREADY\nSTRUCTURES\n3\nRESOURCE\tFORMULA\tSITES\tVOLUME (A^3)\tDENSITY (G/CM^3)\tSPACE GROUP\tCRYSTAL SYSTEM\nobj_nacl\tNaCl\t2\t179.40614\t0.54093\tPm-3m\tcubic\nobj_si_a\tSi\t2\t160.10301\t0.58259\tR-3m\ttrigonal\nobj_si_b\tSi\t2\t160.10301\t0.58259\tR-3m\ttrigonal\n\nSymmetry uses the fixed adapter policy. Exact structure duplicates require equal canonical normalized object hashes.",
+        "Properties": "Property\nband_gap (eV)\nformation_energy (eV/atom)\nCOUNT\n3\nMISSING\n0\nNON-FINITE\n1\nUNIT\neV\nMIN\n1.1\nQ1\n1.2\nMEDIAN\n1.3\nQ3\n3.45\nMAX\n5.6\nMEAN\n2.66667\nSTD\n2.54231\n\nOutliers use the 1.5 IQR rule and are statistical candidates only.",
+        "Data quality": "INVALID FORMULAS\n1\nSAMPLE LINKS\n4\nNEAR DUPLICATES\nNOT_IMPLEMENTED_BY_DESIGN\nColumn issues\nCOLUMN\tMISSING\tNON-FINITE\tAMBIGUITIES\nformation_energy\t1\t0\tnone\nband_gap\t0\t1\tnone\nDuplicate identity values\nCOLUMN\tVALUE\tCOUNT\nmaterial_id\tsample-nacl\t2",
+        "Comparison": "MODE\ngroup\nBINDING\n{\"groupA\":\"train\",\"groupB\":\"test\",\"groupColumn\":\"split\"}\nShared elements\nSi\nLeft only\nCl\nNa\nRight only\n\nNone\n\nPROPERTY\tUNIT\tCOMPARABLE\tLEFT MEDIAN\tRIGHT MEDIAN\nband_gap\teV\ttrue\t3.35\t1.3\nformation_energy\teV/atom\ttrue\t-4.315\t-5.31\n\nexplicitly bound groups/resources; no row-order inference",
+        "Samples": "Select a stable sample reference to inspect its source row.\n\nBounded stable sample index\nSAMPLE REFERENCE\tFORMULA\tREDUCED FORMULA\tOBJECT\tROW\ndataset_phase10k2_evidence@2:6f626a5f6d617465:0\tSi\tSi\tobj_materials\t0\ndataset_phase10k2_evidence@2:6f626a5f6d617465:1\tNaCl\tNaCl\tobj_materials\t1\ndataset_phase10k2_evidence@2:6f626a5f6d617465:2\tSi\tSi\tobj_materials\t2\ndataset_phase10k2_evidence@2:6f626a5f6d617465:3\tinvalid formula\t-\tobj_materials\t3"
+      },
+      "sampleInspector": "SAMPLE\ndataset_phase10k2_evidence@2:6f626a5f6d617465:2\nFORMULA\nSi\nREDUCED FORMULA\nSi\nSOURCE\nobj_materials row 2",
+      "keyboardFocus": "Overview",
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Dataset Materials Explorer",
+        "tabCount": 7,
+        "selectedTabCount": 1,
+        "tableFallback": true
+      }
+    },
+    "mobile": {
+      "firstProductMs": 1604,
+      "snapshots": {
+        "Overview": "SAMPLES\n4\nTABLES\n1\nSTRUCTURES\n3\nPROPERTIES\n2\nAvailable analyses\ndataset_materials_explorer\ntable_distribution\nscatter\nhistogram\ncorrelation\ncomposition_summary\nformula_statistics\nelement_distribution\nchemical_system_visualization\nstructure_summary\ndataset_structure_statistics\nUnavailable analyses\ntrajectory_visualization\nphonon_visualization\nvolumetric_visualization\nregression_evaluation\nuncertainty_evaluation\nclassification_evaluation\ncomposition_space\nWarnings\nDATASET_FORMULA_PARSE_FAILURES\nFORMULA_VALUES_PARTIALLY_INVALID",
+        "Composition": "STATUS\nREADY\nFORMULA COLUMN\nformula\nUNIQUE FORMULAS\n2\nUNIQUE REDUCED FORMULAS\n2\nElement coverage\nCl\n1\nNa\n1\nSi\n2\nChemical systems\nCHEMICAL SYSTEM\tCOUNT\nSi\t2\nCl-Na\t1",
+        "Structures": "STATUS\nREADY\nSTRUCTURES\n3\nRESOURCE\tFORMULA\tSITES\tVOLUME (A^3)\tDENSITY (G/CM^3)\tSPACE GROUP\tCRYSTAL SYSTEM\nobj_nacl\tNaCl\t2\t179.40614\t0.54093\tPm-3m\tcubic\nobj_si_a\tSi\t2\t160.10301\t0.58259\tR-3m\ttrigonal\nobj_si_b\tSi\t2\t160.10301\t0.58259\tR-3m\ttrigonal\n\nSymmetry uses the fixed adapter policy. Exact structure duplicates require equal canonical normalized object hashes.",
+        "Properties": "Property\nband_gap (eV)\nformation_energy (eV/atom)\nCOUNT\n3\nMISSING\n0\nNON-FINITE\n1\nUNIT\neV\nMIN\n1.1\nQ1\n1.2\nMEDIAN\n1.3\nQ3\n3.45\nMAX\n5.6\nMEAN\n2.66667\nSTD\n2.54231\n\nOutliers use the 1.5 IQR rule and are statistical candidates only.",
+        "Data quality": "INVALID FORMULAS\n1\nSAMPLE LINKS\n4\nNEAR DUPLICATES\nNOT_IMPLEMENTED_BY_DESIGN\nColumn issues\nCOLUMN\tMISSING\tNON-FINITE\tAMBIGUITIES\nformation_energy\t1\t0\tnone\nband_gap\t0\t1\tnone\nDuplicate identity values\nCOLUMN\tVALUE\tCOUNT\nmaterial_id\tsample-nacl\t2",
+        "Comparison": "MODE\ngroup\nBINDING\n{\"groupA\":\"train\",\"groupB\":\"test\",\"groupColumn\":\"split\"}\nShared elements\nSi\nLeft only\nCl\nNa\nRight only\n\nNone\n\nPROPERTY\tUNIT\tCOMPARABLE\tLEFT MEDIAN\tRIGHT MEDIAN\nband_gap\teV\ttrue\t3.35\t1.3\nformation_energy\teV/atom\ttrue\t-4.315\t-5.31\n\nexplicitly bound groups/resources; no row-order inference",
+        "Samples": "Select a stable sample reference to inspect its source row.\n\nBounded stable sample index\nSAMPLE REFERENCE\tFORMULA\tREDUCED FORMULA\tOBJECT\tROW\ndataset_phase10k2_evidence@2:6f626a5f6d617465:0\tSi\tSi\tobj_materials\t0\ndataset_phase10k2_evidence@2:6f626a5f6d617465:1\tNaCl\tNaCl\tobj_materials\t1\ndataset_phase10k2_evidence@2:6f626a5f6d617465:2\tSi\tSi\tobj_materials\t2\ndataset_phase10k2_evidence@2:6f626a5f6d617465:3\tinvalid formula\t-\tobj_materials\t3"
+      },
+      "sampleInspector": "SAMPLE\ndataset_phase10k2_evidence@2:6f626a5f6d617465:2\nFORMULA\nSi\nREDUCED FORMULA\nSi\nSOURCE\nobj_materials row 2",
+      "keyboardFocus": "Overview",
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Dataset Materials Explorer",
+        "tabCount": 7,
+        "selectedTabCount": 1,
+        "tableFallback": true
+      }
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "firefox",
+    "version": "128.0",
+    "available": true,
+    "desktop": {
+      "firstProductMs": 2308,
+      "snapshots": {
+        "Overview": "SAMPLES\n4\nTABLES\n1\nSTRUCTURES\n3\nPROPERTIES\n2\nAvailable analyses\ndataset_materials_explorer\ntable_distribution\nscatter\nhistogram\ncorrelation\ncomposition_summary\nformula_statistics\nelement_distribution\nchemical_system_visualization\nstructure_summary\ndataset_structure_statistics\nUnavailable analyses\ntrajectory_visualization\nphonon_visualization\nvolumetric_visualization\nregression_evaluation\nuncertainty_evaluation\nclassification_evaluation\ncomposition_space\nWarnings\nDATASET_FORMULA_PARSE_FAILURES\nFORMULA_VALUES_PARTIALLY_INVALID",
+        "Composition": "STATUS\nREADY\nFORMULA COLUMN\nformula\nUNIQUE FORMULAS\n2\nUNIQUE REDUCED FORMULAS\n2\nElement coverage\nCl\n1\nNa\n1\nSi\n2\nChemical systems\nCHEMICAL SYSTEM\tCOUNT\nSi\t2\nCl-Na\t1",
+        "Structures": "STATUS\nREADY\nSTRUCTURES\n3\nRESOURCE\tFORMULA\tSITES\tVOLUME (A^3)\tDENSITY (G/CM^3)\tSPACE GROUP\tCRYSTAL SYSTEM\nobj_nacl\tNaCl\t2\t179.40614\t0.54093\tPm-3m\tcubic\nobj_si_a\tSi\t2\t160.10301\t0.58259\tR-3m\ttrigonal\nobj_si_b\tSi\t2\t160.10301\t0.58259\tR-3m\ttrigonal\n\nSymmetry uses the fixed adapter policy. Exact structure duplicates require equal canonical normalized object hashes.",
+        "Properties": "Property\nCOUNT\n3\nMISSING\n0\nNON-FINITE\n1\nUNIT\neV\nMIN\n1.1\nQ1\n1.2\nMEDIAN\n1.3\nQ3\n3.45\nMAX\n5.6\nMEAN\n2.66667\nSTD\n2.54231\n\nOutliers use the 1.5 IQR rule and are statistical candidates only.",
+        "Data quality": "INVALID FORMULAS\n1\nSAMPLE LINKS\n4\nNEAR DUPLICATES\nNOT_IMPLEMENTED_BY_DESIGN\nColumn issues\nCOLUMN\tMISSING\tNON-FINITE\tAMBIGUITIES\nformation_energy\t1\t0\tnone\nband_gap\t0\t1\tnone\nDuplicate identity values\nCOLUMN\tVALUE\tCOUNT\nmaterial_id\tsample-nacl\t2",
+        "Comparison": "MODE\ngroup\nBINDING\n{\"groupA\":\"train\",\"groupB\":\"test\",\"groupColumn\":\"split\"}\nShared elements\nSi\nLeft only\nCl\nNa\nRight only\n\nNone\n\nPROPERTY\tUNIT\tCOMPARABLE\tLEFT MEDIAN\tRIGHT MEDIAN\nband_gap\teV\ttrue\t3.35\t1.3\nformation_energy\teV/atom\ttrue\t-4.315\t-5.31\n\nexplicitly bound groups/resources; no row-order inference",
+        "Samples": "Select a stable sample reference to inspect its source row.\n\nBounded stable sample index\nSAMPLE REFERENCE\tFORMULA\tREDUCED FORMULA\tOBJECT\tROW\ndataset_phase10k2_evidence@2:6f626a5f6d617465:0\tSi\tSi\tobj_materials\t0\ndataset_phase10k2_evidence@2:6f626a5f6d617465:1\tNaCl\tNaCl\tobj_materials\t1\ndataset_phase10k2_evidence@2:6f626a5f6d617465:2\tSi\tSi\tobj_materials\t2\ndataset_phase10k2_evidence@2:6f626a5f6d617465:3\tinvalid formula\t-\tobj_materials\t3"
+      },
+      "sampleInspector": "SAMPLE\ndataset_phase10k2_evidence@2:6f626a5f6d617465:2\nFORMULA\nSi\nREDUCED FORMULA\nSi\nSOURCE\nobj_materials row 2",
+      "keyboardFocus": "Overview",
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Dataset Materials Explorer",
+        "tabCount": 7,
+        "selectedTabCount": 1,
+        "tableFallback": true
+      }
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "webkit",
+    "version": "18.0",
+    "available": true,
+    "desktop": {
+      "firstProductMs": 3487,
+      "snapshots": {
+        "Overview": "SAMPLES\n4\nTABLES\n1\nSTRUCTURES\n3\nPROPERTIES\n2\nAvailable analyses\ndataset_materials_explorer\ntable_distribution\nscatter\nhistogram\ncorrelation\ncomposition_summary\nformula_statistics\nelement_distribution\nchemical_system_visualization\nstructure_summary\ndataset_structure_statistics\nUnavailable analyses\ntrajectory_visualization\nphonon_visualization\nvolumetric_visualization\nregression_evaluation\nuncertainty_evaluation\nclassification_evaluation\ncomposition_space\nWarnings\nDATASET_FORMULA_PARSE_FAILURES\nFORMULA_VALUES_PARTIALLY_INVALID\n",
+        "Composition": "STATUS\nREADY\nFORMULA COLUMN\nformula\nUNIQUE FORMULAS\n2\nUNIQUE REDUCED FORMULAS\n2\nElement coverage\nCl\n1\nNa\n1\nSi\n2\nChemical systems\nCHEMICAL SYSTEM\tCOUNT\nSi\t2\nCl-Na\t1\n",
+        "Structures": "STATUS\nREADY\nSTRUCTURES\n3\nRESOURCE\tFORMULA\tSITES\tVOLUME (A^3)\tDENSITY (G/CM^3)\tSPACE GROUP\tCRYSTAL SYSTEM\nobj_nacl\tNaCl\t2\t179.40614\t0.54093\tPm-3m\tcubic\nobj_si_a\tSi\t2\t160.10301\t0.58259\tR-3m\ttrigonal\nobj_si_b\tSi\t2\t160.10301\t0.58259\tR-3m\ttrigonal\nSymmetry uses the fixed adapter policy. Exact structure duplicates require equal canonical normalized object hashes.\n",
+        "Properties": "Property\nCOUNT\n3\nMISSING\n0\nNON-FINITE\n1\nUNIT\neV\nMIN\n1.1\nQ1\n1.2\nMEDIAN\n1.3\nQ3\n3.45\nMAX\n5.6\nMEAN\n2.66667\nSTD\n2.54231\nOutliers use the 1.5 IQR rule and are statistical candidates only.\n",
+        "Data quality": "INVALID FORMULAS\n1\nSAMPLE LINKS\n4\nNEAR DUPLICATES\nNOT_IMPLEMENTED_BY_DESIGN\nColumn issues\nCOLUMN\tMISSING\tNON-FINITE\tAMBIGUITIES\nformation_energy\t1\t0\tnone\nband_gap\t0\t1\tnone\nDuplicate identity values\nCOLUMN\tVALUE\tCOUNT\nmaterial_id\tsample-nacl\t2\n",
+        "Comparison": "MODE\ngroup\nBINDING\n{\"groupA\":\"train\",\"groupB\":\"test\",\"groupColumn\":\"split\"}\nShared elements\nSi\nLeft only\nCl\nNa\nRight only\nNone\nPROPERTY\tUNIT\tCOMPARABLE\tLEFT MEDIAN\tRIGHT MEDIAN\nband_gap\teV\ttrue\t3.35\t1.3\nformation_energy\teV/atom\ttrue\t-4.315\t-5.31\nexplicitly bound groups/resources; no row-order inference\n",
+        "Samples": "Select a stable sample reference to inspect its source row.\nBounded stable sample index\nSAMPLE REFERENCE\tFORMULA\tREDUCED FORMULA\tOBJECT\tROW\ndataset_phase10k2_evidence@2:6f626a5f6d617465:0\tSi\tSi\tobj_materials\t0\ndataset_phase10k2_evidence@2:6f626a5f6d617465:1\tNaCl\tNaCl\tobj_materials\t1\ndataset_phase10k2_evidence@2:6f626a5f6d617465:2\tSi\tSi\tobj_materials\t2\ndataset_phase10k2_evidence@2:6f626a5f6d617465:3\tinvalid formula\t-\tobj_materials\t3\n"
+      },
+      "sampleInspector": "SAMPLE\ndataset_phase10k2_evidence@2:6f626a5f6d617465:2\nFORMULA\nSi\nREDUCED FORMULA\nSi\nSOURCE\nobj_materials row 2\n",
+      "keyboardFocus": "Overview",
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Dataset Materials Explorer",
+        "tabCount": 7,
+        "selectedTabCount": 1,
+        "tableFallback": true
+      }
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

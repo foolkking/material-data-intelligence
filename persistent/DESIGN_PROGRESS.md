@@ -1,5 +1,25 @@
 # DESIGN_PROGRESS
 
+## 2026-07-28 Phase 10K-2 Dataset Materials Explorer Implementation
+
+- Added the coherent `dataset.materials_explorer` product over exactly one
+  Profile 2.0 plus explicitly bound table/Structure resources. It emits one
+  bounded explorer bundle, quality artifact, summary, and recipe through the
+  existing validated Planner/Runtime/Registry/Adapter path.
+- Delivered deterministic dataset overview, composition occurrence/system
+  statistics, canonical structure summaries, finite-only property
+  distributions, factual quality findings, exact formula/structure duplicate
+  classes, explicit group/resource comparison, and stable sample links.
+- Added seven frontend result tabs with numeric/table fallbacks, responsive
+  mobile layout, keyboard/accessibility coverage, and inert JSON fallback. No
+  new workspace architecture or browser execution authority was introduced.
+- Real persisted runtime/API evidence and Chromium/Firefox/WebKit/mobile replay
+  cover mixed composition/structure/property data, partial states, explicit
+  train/test comparison, 4/5,000/100,000-row performance, network isolation,
+  and security. Exact implementation-SHA CI closure remains pending.
+- ML evaluation remains Phase 10K-3, composition space remains Phase 10K-4,
+  and capability-aware planning remains Phase 10L.
+
 ## 2026-07-28 Phase 10K-1 Material Data Profile 2.0 Implementation
 
 - Extended the existing `DataProfile schemaVersion=0.1` additively with a

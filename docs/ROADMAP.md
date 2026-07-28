@@ -28,9 +28,9 @@ result history, and evidence are retained.
   handling, Planner profile use, and the user-facing dataset experience.
 * 10K-1: Material Data Profile 2.0 and capability discovery.
 * 10K-2: dataset materials explorer, distributions, and comparisons.
-* 10K-3: bounded composition embedding and clustering.
-* 10K-4: materials ML regression, uncertainty, and conditional classification
+* 10K-3: materials ML regression, uncertainty, and conditional classification
   evaluation.
+* 10K-4: bounded composition embedding and clustering.
 * 10K-5: browser/API/evidence closure from data selection through report.
 
 ### Phase 10L - Intelligent Analysis Agent

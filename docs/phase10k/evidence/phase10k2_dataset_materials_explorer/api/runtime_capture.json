@@ -1,0 +1,990 @@
+{
+  "apiContentRetrieval": {
+    "allContentRoutesValidated": true,
+    "artifactNames": [
+      "dataset_materials_explorer.json",
+      "dataset_quality.json",
+      "recipe.json",
+      "summary.md"
+    ]
+  },
+  "artifacts": [
+    {
+      "bucket": null,
+      "contentHash": "092387f94b8dd7f95a4940e26a23a11f1d64957b928c7deb7f20022cf75e5ed0",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k2_evidence",
+      "id": "call_job_000000000000000000000000_step_001-table_json",
+      "jobId": "job_000000000000000000000000",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "inputHashes": [
+          "1d0d5e5a7a5cb09e3345692d5b12881ac4c3994b6ff15a576c3317eb1e6bf89f",
+          "45bf06dd0e99bccd419a568caebfff9a7cb50ae121a00e6e3f45c3c5e3594c1e",
+          "1d79096f32066d54fe3da9e19af0fa866c07d126c7eb993cd2e08df03327ec26"
+        ],
+        "paramsHash": "192fdd2bc33e63b58ec2d5967ed0b6ba6156792d39364ed40839d5159e6e1bbf",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+          "sourceFunction": "platform_builtin.dataset_materials_explorer",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "dataset.materials_explorer"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "dataset.materials_explorer",
+        "toolVersion": "0.1.0"
+      },
+      "name": "dataset_materials_explorer.json",
+      "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+      "planId": "plan_000000000000000000000000",
+      "previewKey": null,
+      "projectId": "project_phase10k2_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+        "sourceFunction": "platform_builtin.dataset_materials_explorer",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "toolId": "dataset.materials_explorer"
+      },
+      "sha256": "092387f94b8dd7f95a4940e26a23a11f1d64957b928c7deb7f20022cf75e5ed0",
+      "sizeBytes": 8462,
+      "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/dataset_materials_explorer.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_000000000000000000000000_step_001",
+      "type": "table_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "contentHash": "fc9dff98c48d97b7c6a7119c21be21f3be13e5c84d3431140d15bbc71a462794",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k2_evidence",
+      "id": "call_job_000000000000000000000000_step_001-quality_issues_json",
+      "jobId": "job_000000000000000000000000",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "inputHashes": [
+          "1d0d5e5a7a5cb09e3345692d5b12881ac4c3994b6ff15a576c3317eb1e6bf89f",
+          "45bf06dd0e99bccd419a568caebfff9a7cb50ae121a00e6e3f45c3c5e3594c1e",
+          "1d79096f32066d54fe3da9e19af0fa866c07d126c7eb993cd2e08df03327ec26"
+        ],
+        "paramsHash": "192fdd2bc33e63b58ec2d5967ed0b6ba6156792d39364ed40839d5159e6e1bbf",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+          "sourceFunction": "platform_builtin.dataset_materials_explorer",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "dataset.materials_explorer"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "dataset.materials_explorer",
+        "toolVersion": "0.1.0"
+      },
+      "name": "dataset_quality.json",
+      "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+      "planId": "plan_000000000000000000000000",
+      "previewKey": null,
+      "projectId": "project_phase10k2_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+        "sourceFunction": "platform_builtin.dataset_materials_explorer",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "toolId": "dataset.materials_explorer"
+      },
+      "sha256": "fc9dff98c48d97b7c6a7119c21be21f3be13e5c84d3431140d15bbc71a462794",
+      "sizeBytes": 699,
+      "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/dataset_quality.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_000000000000000000000000_step_001",
+      "type": "quality_issues_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "contentHash": "dc7dba6547aa1b9d8253b0e0b8dc02bef5dce689ebb0b3f32255c947830af978",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k2_evidence",
+      "id": "call_job_000000000000000000000000_step_001-summary_md",
+      "jobId": "job_000000000000000000000000",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "inputHashes": [
+          "1d0d5e5a7a5cb09e3345692d5b12881ac4c3994b6ff15a576c3317eb1e6bf89f",
+          "45bf06dd0e99bccd419a568caebfff9a7cb50ae121a00e6e3f45c3c5e3594c1e",
+          "1d79096f32066d54fe3da9e19af0fa866c07d126c7eb993cd2e08df03327ec26"
+        ],
+        "paramsHash": "192fdd2bc33e63b58ec2d5967ed0b6ba6156792d39364ed40839d5159e6e1bbf",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "text/markdown",
+          "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+          "sourceFunction": "platform_builtin.dataset_materials_explorer",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "dataset.materials_explorer"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "dataset.materials_explorer",
+        "toolVersion": "0.1.0"
+      },
+      "name": "summary.md",
+      "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+      "planId": "plan_000000000000000000000000",
+      "previewKey": null,
+      "projectId": "project_phase10k2_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "text/markdown",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+        "sourceFunction": "platform_builtin.dataset_materials_explorer",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "toolId": "dataset.materials_explorer"
+      },
+      "sha256": "dc7dba6547aa1b9d8253b0e0b8dc02bef5dce689ebb0b3f32255c947830af978",
+      "sizeBytes": 363,
+      "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/summary.md",
+      "storageProvider": "local",
+      "toolCallId": "call_job_000000000000000000000000_step_001",
+      "type": "summary_md",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "contentHash": "aac6ede92d93e3f349d80764591d69b86eb6c76e55a2f7b371121e87bd6e431f",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k2_evidence",
+      "id": "call_job_000000000000000000000000_step_001-recipe_json",
+      "jobId": "job_000000000000000000000000",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "inputHashes": [
+          "1d0d5e5a7a5cb09e3345692d5b12881ac4c3994b6ff15a576c3317eb1e6bf89f",
+          "45bf06dd0e99bccd419a568caebfff9a7cb50ae121a00e6e3f45c3c5e3594c1e",
+          "1d79096f32066d54fe3da9e19af0fa866c07d126c7eb993cd2e08df03327ec26"
+        ],
+        "paramsHash": "192fdd2bc33e63b58ec2d5967ed0b6ba6156792d39364ed40839d5159e6e1bbf",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+          "sourceFunction": "platform_builtin.dataset_materials_explorer",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "dataset.materials_explorer"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "dataset.materials_explorer",
+        "toolVersion": "0.1.0"
+      },
+      "name": "recipe.json",
+      "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+      "planId": "plan_000000000000000000000000",
+      "previewKey": null,
+      "projectId": "project_phase10k2_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+        "sourceFunction": "platform_builtin.dataset_materials_explorer",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "toolId": "dataset.materials_explorer"
+      },
+      "sha256": "aac6ede92d93e3f349d80764591d69b86eb6c76e55a2f7b371121e87bd6e431f",
+      "sizeBytes": 1015,
+      "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/recipe.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_000000000000000000000000_step_001",
+      "type": "recipe_json",
+      "version": "1"
+    }
+  ],
+  "events": [
+    {
+      "eventType": "job.created",
+      "id": "evt_job_000000000000000000000000_0001",
+      "jobId": "job_000000000000000000000000",
+      "message": "Planner job created with persisted AnalysisPlan.",
+      "payload": {
+        "datasetId": "dataset_phase10k2_evidence",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "projectId": "project_phase10k2_evidence"
+      },
+      "progress": 0.0,
+      "seq": 1,
+      "status": "info"
+    },
+    {
+      "eventType": "plan.persisted",
+      "id": "evt_job_000000000000000000000000_0002",
+      "jobId": "job_000000000000000000000000",
+      "message": "Persisted validated AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "plannerProvider": "mock"
+      },
+      "progress": 0.0,
+      "seq": 2,
+      "status": "success"
+    },
+    {
+      "eventType": "job.running",
+      "id": "evt_job_000000000000000000000000_0003",
+      "jobId": "job_000000000000000000000000",
+      "message": "Queue worker started job.",
+      "payload": {},
+      "progress": 0.0,
+      "seq": 3,
+      "status": "running"
+    },
+    {
+      "eventType": "plan.loaded",
+      "id": "evt_job_000000000000000000000000_0004",
+      "jobId": "job_000000000000000000000000",
+      "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm"
+      },
+      "progress": 0.05,
+      "seq": 4,
+      "status": "success"
+    },
+    {
+      "eventType": "tool.started",
+      "id": "evt_job_000000000000000000000000_0005",
+      "jobId": "job_000000000000000000000000",
+      "message": "Started tool dataset.materials_explorer.",
+      "payload": {
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "stepId": "step_001",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "toolId": "dataset.materials_explorer"
+      },
+      "progress": 0.0,
+      "seq": 5,
+      "status": "running"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_000000000000000000000000_0006",
+      "jobId": "job_000000000000000000000000",
+      "message": "Artifact ready: dataset_materials_explorer.json",
+      "payload": {
+        "artifactId": "call_job_000000000000000000000000_step_001-table_json",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/dataset_materials_explorer.json",
+        "toolCallId": "call_job_000000000000000000000000_step_001"
+      },
+      "progress": null,
+      "seq": 6,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_000000000000000000000000_0007",
+      "jobId": "job_000000000000000000000000",
+      "message": "Artifact ready: dataset_quality.json",
+      "payload": {
+        "artifactId": "call_job_000000000000000000000000_step_001-quality_issues_json",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/dataset_quality.json",
+        "toolCallId": "call_job_000000000000000000000000_step_001"
+      },
+      "progress": null,
+      "seq": 7,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_000000000000000000000000_0008",
+      "jobId": "job_000000000000000000000000",
+      "message": "Artifact ready: summary.md",
+      "payload": {
+        "artifactId": "call_job_000000000000000000000000_step_001-summary_md",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/summary.md",
+        "toolCallId": "call_job_000000000000000000000000_step_001"
+      },
+      "progress": null,
+      "seq": 8,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_000000000000000000000000_0009",
+      "jobId": "job_000000000000000000000000",
+      "message": "Artifact ready: recipe.json",
+      "payload": {
+        "artifactId": "call_job_000000000000000000000000_step_001-recipe_json",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/recipe.json",
+        "toolCallId": "call_job_000000000000000000000000_step_001"
+      },
+      "progress": null,
+      "seq": 9,
+      "status": "success"
+    },
+    {
+      "eventType": "tool.completed",
+      "id": "evt_job_000000000000000000000000_0010",
+      "jobId": "job_000000000000000000000000",
+      "message": "Completed tool dataset.materials_explorer.",
+      "payload": {
+        "artifactIds": [
+          "call_job_000000000000000000000000_step_001-table_json",
+          "call_job_000000000000000000000000_step_001-quality_issues_json",
+          "call_job_000000000000000000000000_step_001-summary_md",
+          "call_job_000000000000000000000000_step_001-recipe_json"
+        ],
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "toolCallId": "call_job_000000000000000000000000_step_001"
+      },
+      "progress": 1.0,
+      "seq": 10,
+      "status": "success"
+    },
+    {
+      "eventType": "job.completed",
+      "id": "evt_job_000000000000000000000000_0011",
+      "jobId": "job_000000000000000000000000",
+      "message": "Job completed.",
+      "payload": {
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm"
+      },
+      "progress": 1.0,
+      "seq": 11,
+      "status": "success"
+    }
+  ],
+  "job": {
+    "analysisPlan": {
+      "assumptions": [
+        "Generated by MockLLMProvider for testing."
+      ],
+      "datasetId": "dataset_phase10k2_evidence",
+      "expectedArtifacts": [
+        {
+          "fromStepId": "step_001",
+          "name": "dataset_materials_explorer.json",
+          "type": "table_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "dataset_quality.json",
+          "type": "quality_issues_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "goal": "Explore this materials dataset and compare the explicit train and test groups.",
+      "profileId": "profile_dataset_phase10k2_evidence_v2",
+      "schemaVersion": "0.1",
+      "steps": [
+        {
+          "constraints": null,
+          "inputRefs": [
+            {
+              "columnName": null,
+              "fieldRole": null,
+              "objectType": null,
+              "ref": "profile",
+              "refType": "profile"
+            },
+            {
+              "columnName": null,
+              "fieldRole": "primary_table",
+              "objectType": "DataFrame",
+              "ref": "obj_materials",
+              "refType": "normalized_object"
+            },
+            {
+              "columnName": null,
+              "fieldRole": "structure_collection",
+              "objectType": "Structure",
+              "ref": "structure_resources",
+              "refType": "normalized_object"
+            }
+          ],
+          "output": {
+            "artifactTypes": [
+              "table_json",
+              "quality_issues_json",
+              "summary_md",
+              "recipe_json"
+            ]
+          },
+          "params": {
+            "comparisonMode": "group",
+            "groupA": "train",
+            "groupB": "test",
+            "groupColumn": "split",
+            "histogramBins": 20,
+            "maxCategories": 50,
+            "maxProperties": 32,
+            "maxStructures": 256,
+            "maxTableRows": 100,
+            "symprec": 0.01,
+            "tableObjectId": "obj_materials"
+          },
+          "purpose": "Build a bounded Profile 2.0-backed materials dataset overview and explicit comparison.",
+          "reason": "The request asks for one coherent dataset-level materials analysis product.",
+          "stepId": "step_001",
+          "toolId": "dataset.materials_explorer"
+        }
+      ],
+      "toolRegistryVersion": "0.1.0",
+      "warnings": []
+    },
+    "artifactCount": 4,
+    "createdBy": "user_local",
+    "datasetId": "dataset_phase10k2_evidence",
+    "eventCount": 11,
+    "id": "job_000000000000000000000000",
+    "jobId": "job_000000000000000000000000",
+    "kind": "analysis",
+    "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+    "planId": "plan_000000000000000000000000",
+    "planSource": "llm",
+    "plan_id": "plan_000000000000000000000000",
+    "projectId": "project_phase10k2_evidence",
+    "provenance": {
+      "binding": "jobs.plan_id -> analysis_plans.id",
+      "fallbackUsed": false,
+      "loadedFrom": "persisted_analysis_plan",
+      "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+      "planId": "plan_000000000000000000000000",
+      "planSource": "llm",
+      "toolPath": "Tool Registry + Adapter"
+    },
+    "status": "completed",
+    "toolCallCount": 1,
+    "validationStatus": "validated"
+  },
+  "plan": {
+    "assumptions": [
+      "Generated by MockLLMProvider for testing."
+    ],
+    "datasetId": "dataset_phase10k2_evidence",
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_001",
+        "name": "dataset_materials_explorer.json",
+        "type": "table_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "dataset_quality.json",
+        "type": "quality_issues_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "goal": "Explore this materials dataset and compare the explicit train and test groups.",
+    "profileId": "profile_dataset_phase10k2_evidence_v2",
+    "schemaVersion": "0.1",
+    "steps": [
+      {
+        "constraints": null,
+        "inputRefs": [
+          {
+            "columnName": null,
+            "fieldRole": null,
+            "objectType": null,
+            "ref": "profile",
+            "refType": "profile"
+          },
+          {
+            "columnName": null,
+            "fieldRole": "primary_table",
+            "objectType": "DataFrame",
+            "ref": "obj_materials",
+            "refType": "normalized_object"
+          },
+          {
+            "columnName": null,
+            "fieldRole": "structure_collection",
+            "objectType": "Structure",
+            "ref": "structure_resources",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "table_json",
+            "quality_issues_json",
+            "summary_md",
+            "recipe_json"
+          ]
+        },
+        "params": {
+          "comparisonMode": "group",
+          "groupA": "train",
+          "groupB": "test",
+          "groupColumn": "split",
+          "histogramBins": 20,
+          "maxCategories": 50,
+          "maxProperties": 32,
+          "maxStructures": 256,
+          "maxTableRows": 100,
+          "symprec": 0.01,
+          "tableObjectId": "obj_materials"
+        },
+        "purpose": "Build a bounded Profile 2.0-backed materials dataset overview and explicit comparison.",
+        "reason": "The request asks for one coherent dataset-level materials analysis product.",
+        "stepId": "step_001",
+        "toolId": "dataset.materials_explorer"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "request": {
+    "datasetId": "dataset_phase10k2_evidence",
+    "profileId": "profile_dataset_phase10k2_evidence_v2",
+    "userPrompt": "Explore this materials dataset and compare the explicit train and test groups."
+  },
+  "result": {
+    "artifactCount": 4,
+    "artifacts": [
+      {
+        "bucket": null,
+        "contentHash": "092387f94b8dd7f95a4940e26a23a11f1d64957b928c7deb7f20022cf75e5ed0",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k2_evidence",
+        "id": "call_job_000000000000000000000000_step_001-table_json",
+        "jobId": "job_000000000000000000000000",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "inputHashes": [
+            "1d0d5e5a7a5cb09e3345692d5b12881ac4c3994b6ff15a576c3317eb1e6bf89f",
+            "45bf06dd0e99bccd419a568caebfff9a7cb50ae121a00e6e3f45c3c5e3594c1e",
+            "1d79096f32066d54fe3da9e19af0fa866c07d126c7eb993cd2e08df03327ec26"
+          ],
+          "paramsHash": "192fdd2bc33e63b58ec2d5967ed0b6ba6156792d39364ed40839d5159e6e1bbf",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+            "planId": "plan_000000000000000000000000",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+            "sourceFunction": "platform_builtin.dataset_materials_explorer",
+            "toolCallId": "call_job_000000000000000000000000_step_001",
+            "toolId": "dataset.materials_explorer"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "dataset.materials_explorer",
+          "toolVersion": "0.1.0"
+        },
+        "name": "dataset_materials_explorer.json",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "previewKey": null,
+        "projectId": "project_phase10k2_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+          "sourceFunction": "platform_builtin.dataset_materials_explorer",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "dataset.materials_explorer"
+        },
+        "sha256": "092387f94b8dd7f95a4940e26a23a11f1d64957b928c7deb7f20022cf75e5ed0",
+        "sizeBytes": 8462,
+        "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/dataset_materials_explorer.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "type": "table_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "contentHash": "fc9dff98c48d97b7c6a7119c21be21f3be13e5c84d3431140d15bbc71a462794",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k2_evidence",
+        "id": "call_job_000000000000000000000000_step_001-quality_issues_json",
+        "jobId": "job_000000000000000000000000",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "inputHashes": [
+            "1d0d5e5a7a5cb09e3345692d5b12881ac4c3994b6ff15a576c3317eb1e6bf89f",
+            "45bf06dd0e99bccd419a568caebfff9a7cb50ae121a00e6e3f45c3c5e3594c1e",
+            "1d79096f32066d54fe3da9e19af0fa866c07d126c7eb993cd2e08df03327ec26"
+          ],
+          "paramsHash": "192fdd2bc33e63b58ec2d5967ed0b6ba6156792d39364ed40839d5159e6e1bbf",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+            "planId": "plan_000000000000000000000000",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+            "sourceFunction": "platform_builtin.dataset_materials_explorer",
+            "toolCallId": "call_job_000000000000000000000000_step_001",
+            "toolId": "dataset.materials_explorer"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "dataset.materials_explorer",
+          "toolVersion": "0.1.0"
+        },
+        "name": "dataset_quality.json",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "previewKey": null,
+        "projectId": "project_phase10k2_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+          "sourceFunction": "platform_builtin.dataset_materials_explorer",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "dataset.materials_explorer"
+        },
+        "sha256": "fc9dff98c48d97b7c6a7119c21be21f3be13e5c84d3431140d15bbc71a462794",
+        "sizeBytes": 699,
+        "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/dataset_quality.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "type": "quality_issues_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "contentHash": "dc7dba6547aa1b9d8253b0e0b8dc02bef5dce689ebb0b3f32255c947830af978",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k2_evidence",
+        "id": "call_job_000000000000000000000000_step_001-summary_md",
+        "jobId": "job_000000000000000000000000",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "inputHashes": [
+            "1d0d5e5a7a5cb09e3345692d5b12881ac4c3994b6ff15a576c3317eb1e6bf89f",
+            "45bf06dd0e99bccd419a568caebfff9a7cb50ae121a00e6e3f45c3c5e3594c1e",
+            "1d79096f32066d54fe3da9e19af0fa866c07d126c7eb993cd2e08df03327ec26"
+          ],
+          "paramsHash": "192fdd2bc33e63b58ec2d5967ed0b6ba6156792d39364ed40839d5159e6e1bbf",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "text/markdown",
+            "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+            "planId": "plan_000000000000000000000000",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+            "sourceFunction": "platform_builtin.dataset_materials_explorer",
+            "toolCallId": "call_job_000000000000000000000000_step_001",
+            "toolId": "dataset.materials_explorer"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "dataset.materials_explorer",
+          "toolVersion": "0.1.0"
+        },
+        "name": "summary.md",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "previewKey": null,
+        "projectId": "project_phase10k2_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "text/markdown",
+          "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+          "sourceFunction": "platform_builtin.dataset_materials_explorer",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "dataset.materials_explorer"
+        },
+        "sha256": "dc7dba6547aa1b9d8253b0e0b8dc02bef5dce689ebb0b3f32255c947830af978",
+        "sizeBytes": 363,
+        "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/summary.md",
+        "storageProvider": "local",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "type": "summary_md",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "contentHash": "aac6ede92d93e3f349d80764591d69b86eb6c76e55a2f7b371121e87bd6e431f",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k2_evidence",
+        "id": "call_job_000000000000000000000000_step_001-recipe_json",
+        "jobId": "job_000000000000000000000000",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "inputHashes": [
+            "1d0d5e5a7a5cb09e3345692d5b12881ac4c3994b6ff15a576c3317eb1e6bf89f",
+            "45bf06dd0e99bccd419a568caebfff9a7cb50ae121a00e6e3f45c3c5e3594c1e",
+            "1d79096f32066d54fe3da9e19af0fa866c07d126c7eb993cd2e08df03327ec26"
+          ],
+          "paramsHash": "192fdd2bc33e63b58ec2d5967ed0b6ba6156792d39364ed40839d5159e6e1bbf",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+            "planId": "plan_000000000000000000000000",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+            "sourceFunction": "platform_builtin.dataset_materials_explorer",
+            "toolCallId": "call_job_000000000000000000000000_step_001",
+            "toolId": "dataset.materials_explorer"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "dataset.materials_explorer",
+          "toolVersion": "0.1.0"
+        },
+        "name": "recipe.json",
+        "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+        "planId": "plan_000000000000000000000000",
+        "previewKey": null,
+        "projectId": "project_phase10k2_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7",
+          "sourceFunction": "platform_builtin.dataset_materials_explorer",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "dataset.materials_explorer"
+        },
+        "sha256": "aac6ede92d93e3f349d80764591d69b86eb6c76e55a2f7b371121e87bd6e431f",
+        "sizeBytes": 1015,
+        "storageKey": "projects/project_phase10k2_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/recipe.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "type": "recipe_json",
+        "version": "1"
+      }
+    ],
+    "jobId": "job_000000000000000000000000",
+    "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+    "planId": "plan_000000000000000000000000",
+    "provenance": {
+      "binding": "jobs.plan_id -> analysis_plans.id",
+      "fallbackUsed": false,
+      "loadedFrom": "persisted_analysis_plan",
+      "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+      "planId": "plan_000000000000000000000000",
+      "planSource": "llm",
+      "toolPath": "Tool Registry + Adapter"
+    },
+    "status": "completed",
+    "summary": "Job completed with 1 ToolCall(s) and 4 Artifact(s).",
+    "toolCallCount": 1
+  },
+  "toolCalls": [
+    {
+      "artifactIds": [
+        "call_job_000000000000000000000000_step_001-table_json",
+        "call_job_000000000000000000000000_step_001-quality_issues_json",
+        "call_job_000000000000000000000000_step_001-summary_md",
+        "call_job_000000000000000000000000_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_000000000000000000000000_step_001",
+      "idempotencyKey": "job_000000000000000000000000:step_001",
+      "inputSummary": "Params: comparisonMode, groupA, groupB, groupColumn, histogramBins, maxCategories, maxProperties, maxStructures, maxTableRows, symprec, tableObjectId",
+      "jobId": "job_000000000000000000000000",
+      "outputSummary": "4 artifact(s)",
+      "params": {
+        "comparisonMode": "group",
+        "groupA": "train",
+        "groupB": "test",
+        "groupColumn": "split",
+        "histogramBins": 20,
+        "maxCategories": 50,
+        "maxProperties": 32,
+        "maxStructures": 256,
+        "maxTableRows": 100,
+        "symprec": 0.01,
+        "tableObjectId": "obj_materials"
+      },
+      "planHash": "0c561f37ecf5140443bec6c8ca182c198a8fdef385f8cc346fb077306c6dcad4",
+      "planId": "plan_000000000000000000000000",
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "dataset.materials_explorer"
+    }
+  ]
+}

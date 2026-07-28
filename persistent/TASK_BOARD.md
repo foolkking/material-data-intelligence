@@ -14,8 +14,8 @@
   completion record `b5a464e` passed exact-SHA CI runs `30346512968` and
   `30346686652`, including service-backed/no-skipped. The result is retained and
   the verified queue block is archived.
-- [ ] Phase 10K-2 is `NEXT / NOT_STARTED`. Later queue blocks remain pending and
-  must not start early.
+- [ ] Phase 10K-2 Dataset Materials Explorer is `IN_PROGRESS`. It is the only
+  active queue task; later queue blocks remain pending and must not start early.
 
 `TASKS.md` contains the approved executable Phase 10K queue. Future Scope and
 Not Planned items are not queue work.

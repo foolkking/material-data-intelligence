@@ -91,13 +91,15 @@ def _category_for(entry: dict[str, Any]) -> ToolCategory:
 
 def _cost_for(entry: dict[str, Any]) -> str:
     tool_id = entry["tool_id"]
-    if tool_id.startswith(("structure.", "trajectory.", "phonon.")):
+    if tool_id.startswith(("dataset.", "structure.", "trajectory.", "phonon.")):
         return "medium"
     return "low"
 
 
 def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
     if entry["tool_id"] in {"structure.trajectory_import", "structure.trajectory_viewer", "structure.volumetric_data"}:
+        return 120, 300
+    if entry["tool_id"] == "dataset.materials_explorer":
         return 120, 300
     if entry["tool_id"] == "structure.viewer_3d":
         return 90, 180
@@ -108,6 +110,19 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
+    if tool_id == "dataset.materials_explorer":
+        return {
+            "maxRows": 100000,
+            "maxColumns": 512,
+            "maxProperties": 64,
+            "maxCategories": 256,
+            "maxTableRows": 200,
+            "maxHistogramBins": 100,
+            "maxStructures": 256,
+            "maxAtomsPerStructure": 5000,
+            "maxWarnings": 128,
+            "maxArtifactBytes": 8000000,
+        }
     if tool_id == "structure.volumetric_data":
         return {
             "maxSourceBytes": 268435456,
@@ -243,6 +258,27 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
     tool_id = entry["tool_id"]
+    if tool_id == "dataset.materials_explorer":
+        return ToolInputSchema(
+            periodicity="any",
+            inputOptions=[
+                ToolInputOption(
+                    name="profile_bound_material_table",
+                    requiredObjectTypes=[MaterialObjectType.DataFrame],
+                    requiredFields=[],
+                    description=(
+                        "Use a Profile 2.0 ref plus its explicitly identified DataFrame and optional canonical "
+                        "Structure resources. Comparison requires two named resources or one explicit group column."
+                    ),
+                ),
+                ToolInputOption(
+                    name="profile_bound_structure_collection",
+                    requiredObjectTypes=[MaterialObjectType.Structure],
+                    requiredFields=[],
+                    description="Use a Profile 2.0 ref plus the matching bounded canonical Structure collection.",
+                ),
+            ],
+        )
     if tool_id == "structure.volumetric_data":
         return ToolInputSchema(
             periodicity="any",
@@ -423,6 +459,27 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    if tool_id == "dataset.materials_explorer":
+        scalar = {"anyOf": [{"type": "string", "maxLength": 256}, {"type": "number"}, {"type": "boolean"}]}
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "tableObjectId": {"type": "string", "minLength": 1, "maxLength": 256},
+                "comparisonMode": {"enum": ["none", "group", "resources"]},
+                "groupColumn": {"type": "string", "minLength": 1, "maxLength": 256},
+                "groupA": scalar,
+                "groupB": scalar,
+                "leftObjectId": {"type": "string", "minLength": 1, "maxLength": 256},
+                "rightObjectId": {"type": "string", "minLength": 1, "maxLength": 256},
+                "maxProperties": {"type": "integer", "minimum": 1, "maximum": 64},
+                "maxCategories": {"type": "integer", "minimum": 1, "maximum": 256},
+                "maxTableRows": {"type": "integer", "minimum": 1, "maximum": 200},
+                "histogramBins": {"type": "integer", "minimum": 4, "maximum": 100},
+                "maxStructures": {"type": "integer", "minimum": 1, "maximum": 256},
+                "symprec": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+            },
+        }
     if tool_id == "structure.volumetric_data":
         return {
             "type": "object",

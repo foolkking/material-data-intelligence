@@ -12,6 +12,7 @@ import { PhononAnimationSurface } from "./phonon-animation/PhononAnimationSurfac
 import { BrillouinZonePreviewPanel } from "./brillouin-zone/BrillouinZonePreviewPanel";
 import { BandBZLinkedView } from "./band-bz-link/BandBZLinkedView";
 import { VolumetricPreviewPanel } from "./volumetric-viewer/VolumetricPreviewPanel";
+import { DatasetMaterialsExplorerPanel } from "./dataset-explorer/DatasetMaterialsExplorerPanel";
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
@@ -1241,6 +1242,7 @@ function ResultsExportTab(props: {
         </section>
       ) : null}
       <ReportRecipeSummaryPanel t={t} result={props.result} artifacts={props.artifacts} datasetId={props.datasetId} profileId={props.profileId} planId={props.planId} planHash={props.planHash} />
+      <DatasetMaterialsExplorerPanel artifacts={props.artifacts} />
       <MaterialResultRenderer t={t} artifacts={props.artifacts} />
       <MetricsResultRenderer t={t} artifact={props.artifacts.find((artifact) => artifact.type === "metrics_json")} />
       <TableSummaryRenderer t={t} artifact={props.artifacts.find(isTableSummaryArtifact)} />
@@ -2340,6 +2342,7 @@ function groupArtifacts(artifacts: Artifact[], t: ReturnType<typeof createTransl
 function isTableSummaryArtifact(artifact: Artifact) {
   const type = String(artifact.type || "");
   const name = String(artifact.name || "");
+  if (name === "dataset_materials_explorer.json") return false;
   return (
     type === "table_json" ||
     name.includes("distribution_summary") ||

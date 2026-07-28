@@ -260,7 +260,7 @@ class Phase2ProductRuntime:
             parse_results=parse_results,
             platform_tool_ids={tool.toolId for tool in self.registry.tools},
         )
-        object_store, object_refs = build_object_store(objects)
+        object_store, object_refs = build_object_store(objects, profile=profile)
         normalized_exports = self._export_normalized_objects(request.projectId, dataset_id, objects)
         record = DatasetRecord(
             id=dataset_id,
@@ -338,7 +338,7 @@ class Phase2ProductRuntime:
             parse_results=parse_results,
             platform_tool_ids={tool.toolId for tool in self.registry.tools},
         )
-        object_store, object_refs = build_object_store(objects)
+        object_store, object_refs = build_object_store(objects, profile=profile)
         normalized_exports = self._export_normalized_objects(project_id, dataset_id, objects)
         record = DatasetRecord(
             id=dataset_id,
@@ -830,7 +830,11 @@ def _expected_artifacts_for_steps(steps: list[AnalysisStep]) -> list[dict[str, s
     ]
 
 
-def build_object_store(objects: list[NormalizedObjectDraft]) -> tuple[dict[str, Any], dict[str, str]]:
+def build_object_store(
+    objects: list[NormalizedObjectDraft],
+    *,
+    profile: DataProfile | None = None,
+) -> tuple[dict[str, Any], dict[str, str]]:
     structures = [obj.payload for obj in objects if obj.object_type == MaterialObjectType.Structure]
     formulas = [
         obj.metadata["formula"]
@@ -845,6 +849,17 @@ def build_object_store(objects: list[NormalizedObjectDraft]) -> tuple[dict[str, 
 
     object_store: dict[str, Any] = {}
     object_refs: dict[str, str] = {}
+    structure_resources: dict[str, Any] = {}
+    if profile is not None:
+        object_refs["profile"] = "profile"
+        object_store["profile"] = profile
+    for obj in objects:
+        if obj.object_type == MaterialObjectType.DataFrame:
+            object_store[obj.id] = pd.DataFrame(obj.payload)
+            object_refs.setdefault("dataset_table", obj.id)
+        elif obj.object_type == MaterialObjectType.Structure:
+            object_store[obj.id] = obj.payload
+            structure_resources[obj.id] = obj.payload
     if formulas:
         object_refs["formulas"] = "formulas"
         object_store["formulas"] = formulas
@@ -853,6 +868,8 @@ def build_object_store(objects: list[NormalizedObjectDraft]) -> tuple[dict[str, 
         object_store["structures"] = structures
         object_refs["viewer_structure"] = "viewer_structure"
         object_store["viewer_structure"] = structures[0]
+        object_refs["structure_resources"] = "structure_resources"
+        object_store["structure_resources"] = structure_resources
     if dataframes:
         object_refs["ml_table"] = "ml_table"
         object_store["ml_table"] = dataframes[0]

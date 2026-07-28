@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2026-07-28 - Phase 10K-2 Dataset Materials Explorer
+
+- Registered and implemented one product-level `dataset.materials_explorer`
+  capability backed by Material Data Profile 2.0 and canonical resource IDs.
+- Added bounded composition, structure, property, quality, exact-duplicate,
+  explicit comparison, and stable-sample outputs in one coherent inert bundle
+  with summary, quality, and recipe companions.
+- Added Planner selection for explicit dataset-exploration intent, durable
+  Profile/object resolution, the seven-tab frontend product, deterministic
+  runtime/API evidence, three-browser/mobile replay, and near-cap performance
+  captures.
+- Corrected the canonical 10K ordering to 10K-3 Materials ML Evaluation and
+  10K-4 Composition Space, matching the approved queue and Phase 10K-0 audit.
+- No dependency, arbitrary execution, real LLM, embedding/clustering, ML
+  evaluator, or unified-workspace feature was added. Exact-SHA CI closure is
+  pending.
+
 ## 2026-07-28 - Phase 10K-1 Material Data Profile 2.0
 
 - Extended the existing DataProfile contract with deterministic semantic

@@ -12,11 +12,11 @@ implementation.
 | Platform | Registry/Adapter validated execution | READY | Yes | No | Tool Registry, QueueWorkerRuntime |
 | Platform | Artifact/Recipe/Report foundations | READY | Yes | No | Artifact platform |
 | Data | Current parsing and normalization | READY | Yes | No | Existing registered parsers only |
-| Data | Material Data Profile 2.0 | PLANNED | Yes | No | Phase 10K-1 |
-| Dataset | Materials explorer and comparisons | PARTIAL_READY | Yes | No | Phase 10K-2 |
-| Dataset | Composition embedding/clustering | PLANNED | Yes | No | Phase 10K-3 |
-| ML | Regression/basic model-result analysis | PARTIAL_READY | Yes | No | Existing ML tools; Phase 10K-4 completion |
-| ML | Uncertainty/classification evaluation | PLANNED | Conditional | No | Phase 10K-4 |
+| Data | Material Data Profile 2.0 | READY | Yes | No | Phase 10K-1 |
+| Dataset | Materials explorer and comparisons | READY | Yes | No | `dataset.materials_explorer` within Phase 10K-2 limits |
+| Dataset | Composition embedding/clustering | PLANNED | Yes | No | Phase 10K-4 |
+| ML | Regression/basic model-result analysis | PARTIAL_READY | Yes | No | Existing ML tools; Phase 10K-3 completion |
+| ML | Uncertainty/classification evaluation | PLANNED | Conditional | No | Phase 10K-3 |
 | Agent | Structured validated planning | READY | Yes | No | AnalysisPlan/PlanValidator |
 | Agent | Capability-aware planning | PARTIAL_READY | Yes | No | Phase 10L-2 |
 | Agent | Bounded multi-tool analysis | PARTIAL_READY | Yes | No | Phase 10L-3 |
