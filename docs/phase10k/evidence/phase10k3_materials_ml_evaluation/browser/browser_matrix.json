@@ -1,0 +1,134 @@
+[
+  {
+    "browser": "chromium",
+    "version": "128.0.6613.18",
+    "available": true,
+    "cases": {
+      "regression": {
+        "firstProductMs": 1728,
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Materials ML Evaluation",
+          "tableFallback": true,
+          "chartImageCount": 2
+        },
+        "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationRegressionDatasetdataset_phase10k3_regressionProfileprofile_dataset_phase10k3_regression_v2Semantic contract2.0Residualprediction_minus_targetTask / modelobj_regression:regression:model_a:model_aobj_regression:regression:model_b:model_bMAE0.25RMSE0.33912R20.908Mean error-0.05Evaluated4 / 4UnitunavailableParityTarget x; prediction y; dashed line is y=x.si-1; Si; target=1; prediction=1; absolute error=0nacl-1; NaCl; target=2; prediction=2.3; absolute error=0.3lif-1; LiF; target=3; prediction=2.4; absolute error=0.6gaas-1; GaAs; target=4; prediction=4.1; absolute error=0.1targetpredictionResidual vs targetResidual = prediction - target; points use the same bounded evaluated-sample set.si-1; Si; target=1; residual=0; absolute error=0nacl-1; NaCl; target=2; residual=0.3; absolute error=0.3lif-1; LiF; target=3; residual=-0.6; absolute error=0.6gaas-1; GaAs; target=4; residual=0.1; absolute error=0.1targetresidualResidual distributionResidual = prediction - target.Largest prediction errorsSampleFormulaSystemTargetPredictionResidualAbsolute errorUncertaintylif-1LiFF-Li32.4-0.60.60.6nacl-1NaClCl-Na22.30.30.30.3gaas-1GaAsAs-Ga44.10.10.10.1si-1SiSi11000.05Error by elementElement groups overlap; a material can appear in multiple rows.GroupSamplesMAERMSEF10.60.6Li10.60.6Cl10.30.3Na10.30.3As10.10.1Ga10.10.1Si100Error by chemical"
+      },
+      "uncertainty": {
+        "firstProductMs": 1598,
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Materials ML Evaluation",
+          "tableFallback": true,
+          "chartImageCount": 2
+        },
+        "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationUncertaintyDatasetdataset_phase10k3_uncertaintyProfileprofile_dataset_phase10k3_uncertainty_v2Semantic contract2.0Residualnot applicablePearson1Spearman1Evaluated4 / 4Uncertainty kindsource_defined_uncertaintyUncertainty vs absolute errorEach point retains its stable material sample reference.si-1; Si; uncertainty=0.05; absoluteError=0.05; absolute error=0.05nacl-1; NaCl; uncertainty=0.2; absoluteError=0.2; absolute error=0.2lif-1; LiF; uncertainty=0.6; absoluteError=0.6; absolute error=0.6gaas-1; GaAs; uncertainty=0.1; absoluteError=0.1; absolute error=0.1uncertaintyabsoluteErrorError decayRetain the lowest-uncertainty samples first.retainedFractionmaeEqual-count reliability binsBinSamplesMean uncertaintyMean absolute error010.050.05110.10.1210.20.2310.60.6Highest uncertainty samplesSampleFormulaUncertaintyAbsolute errorlif-1LiF0.60.6nacl-1NaCl0.20.2gaas-1GaAs0.10.1si-1Si0.050.05UNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITYPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth."
+      },
+      "classification": {
+        "firstProductMs": 1613,
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Materials ML Evaluation",
+          "tableFallback": true,
+          "chartImageCount": 2
+        },
+        "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationClassificationDatasetdataset_phase10k3_classificationProfileprofile_dataset_phase10k3_classification_v2Semantic contract2.0Residualnot applicableAccuracy0.75Macro precision0.83333Macro recall0.75Macro F10.73333Evaluated4Curve statusREADYConfusion matrix (raw counts)Actual / predictedABA11B02Per-class metricsClassSupportPrecisionRecallF1A210.50.66667B20.6666710.8ROC - positive class BAUC 1fprtprPrecision-recallAverage precision 1recallprecisionMisclassified samplesSampleFormulaActualPredictedlif-1LiFABCLASSIFICATION_PERFORMANCE_NOT_SCIENTIFIC_VALIDITYPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth."
+      }
+    },
+    "mobile": {
+      "firstProductMs": 1597,
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Materials ML Evaluation",
+        "tableFallback": true,
+        "chartImageCount": 2
+      },
+      "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationRegressionDatasetdataset_phase10k3_regressionProfileprofile_dataset_phase10k3_regression_v2Semantic contract2.0Residualprediction_minus_targetTask / modelobj_regression:regression:model_a:model_aobj_regression:regression:model_b:model_bMAE0.25RMSE0.33912R20.908Mean error-0.05Evaluated4 / 4UnitunavailableParityTarget x; prediction y; dashed line is y=x.si-1; Si; target=1; prediction=1; absolute error=0nacl-1; NaCl; target=2; prediction=2.3; absolute error=0.3lif-1; LiF; target=3; prediction=2.4; absolute error=0.6gaas-1; GaAs; target=4; prediction=4.1; absolute error=0.1targetpredictionResidual vs targetResidual = prediction - target; points use the same bounded evaluated-sample set.si-1; Si; target=1; residual=0; absolute error=0nacl-1; NaCl; target=2; residual=0.3; absolute error=0.3lif-1; LiF; target=3; residual=-0.6; absolute error=0.6gaas-1; GaAs; target=4; residual=0.1; absolute error=0.1targetresidualResidual distributionResidual = prediction - target.Largest prediction errorsSampleFormulaSystemTargetPredictionResidualAbsolute errorUncertaintylif-1LiFF-Li32.4-0.60.60.6nacl-1NaClCl-Na22.30.30.30.3gaas-1GaAsAs-Ga44.10.10.10.1si-1SiSi11000.05Error by elementElement groups overlap; a material can appear in multiple rows.GroupSamplesMAERMSEF10.60.6Li10.60.6Cl10.30.3Na10.30.3As10.10.1Ga10.10.1Si100Error by chemical"
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "firefox",
+    "version": "128.0",
+    "available": true,
+    "cases": {
+      "regression": {
+        "firstProductMs": 2499,
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Materials ML Evaluation",
+          "tableFallback": true,
+          "chartImageCount": 2
+        },
+        "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationRegressionDatasetdataset_phase10k3_regressionProfileprofile_dataset_phase10k3_regression_v2Semantic contract2.0Residualprediction_minus_targetTask / modelobj_regression:regression:model_a:model_aobj_regression:regression:model_b:model_bMAE0.25RMSE0.33912R20.908Mean error-0.05Evaluated4 / 4UnitunavailableParityTarget x; prediction y; dashed line is y=x.si-1; Si; target=1; prediction=1; absolute error=0nacl-1; NaCl; target=2; prediction=2.3; absolute error=0.3lif-1; LiF; target=3; prediction=2.4; absolute error=0.6gaas-1; GaAs; target=4; prediction=4.1; absolute error=0.1targetpredictionResidual vs targetResidual = prediction - target; points use the same bounded evaluated-sample set.si-1; Si; target=1; residual=0; absolute error=0nacl-1; NaCl; target=2; residual=0.3; absolute error=0.3lif-1; LiF; target=3; residual=-0.6; absolute error=0.6gaas-1; GaAs; target=4; residual=0.1; absolute error=0.1targetresidualResidual distributionResidual = prediction - target.Largest prediction errorsSampleFormulaSystemTargetPredictionResidualAbsolute errorUncertaintylif-1LiFF-Li32.4-0.60.60.6nacl-1NaClCl-Na22.30.30.30.3gaas-1GaAsAs-Ga44.10.10.10.1si-1SiSi11000.05Error by elementElement groups overlap; a material can appear in multiple rows.GroupSamplesMAERMSEF10.60.6Li10.60.6Cl10.30.3Na10.30.3As10.10.1Ga10.10.1Si100Error by chemical"
+      },
+      "uncertainty": {
+        "firstProductMs": 1790,
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Materials ML Evaluation",
+          "tableFallback": true,
+          "chartImageCount": 2
+        },
+        "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationUncertaintyDatasetdataset_phase10k3_uncertaintyProfileprofile_dataset_phase10k3_uncertainty_v2Semantic contract2.0Residualnot applicablePearson1Spearman1Evaluated4 / 4Uncertainty kindsource_defined_uncertaintyUncertainty vs absolute errorEach point retains its stable material sample reference.si-1; Si; uncertainty=0.05; absoluteError=0.05; absolute error=0.05nacl-1; NaCl; uncertainty=0.2; absoluteError=0.2; absolute error=0.2lif-1; LiF; uncertainty=0.6; absoluteError=0.6; absolute error=0.6gaas-1; GaAs; uncertainty=0.1; absoluteError=0.1; absolute error=0.1uncertaintyabsoluteErrorError decayRetain the lowest-uncertainty samples first.retainedFractionmaeEqual-count reliability binsBinSamplesMean uncertaintyMean absolute error010.050.05110.10.1210.20.2310.60.6Highest uncertainty samplesSampleFormulaUncertaintyAbsolute errorlif-1LiF0.60.6nacl-1NaCl0.20.2gaas-1GaAs0.10.1si-1Si0.050.05UNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITYPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth."
+      },
+      "classification": {
+        "firstProductMs": 1493,
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Materials ML Evaluation",
+          "tableFallback": true,
+          "chartImageCount": 2
+        },
+        "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationClassificationDatasetdataset_phase10k3_classificationProfileprofile_dataset_phase10k3_classification_v2Semantic contract2.0Residualnot applicableAccuracy0.75Macro precision0.83333Macro recall0.75Macro F10.73333Evaluated4Curve statusREADYConfusion matrix (raw counts)Actual / predictedABA11B02Per-class metricsClassSupportPrecisionRecallF1A210.50.66667B20.6666710.8ROC - positive class BAUC 1fprtprPrecision-recallAverage precision 1recallprecisionMisclassified samplesSampleFormulaActualPredictedlif-1LiFABCLASSIFICATION_PERFORMANCE_NOT_SCIENTIFIC_VALIDITYPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth."
+      }
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "webkit",
+    "version": "18.0",
+    "available": true,
+    "cases": {
+      "regression": {
+        "firstProductMs": 3165,
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Materials ML Evaluation",
+          "tableFallback": true,
+          "chartImageCount": 2
+        },
+        "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationRegressionDatasetdataset_phase10k3_regressionProfileprofile_dataset_phase10k3_regression_v2Semantic contract2.0Residualprediction_minus_targetTask / modelobj_regression:regression:model_a:model_aobj_regression:regression:model_b:model_bMAE0.25RMSE0.33912R20.908Mean error-0.05Evaluated4 / 4UnitunavailableParityTarget x; prediction y; dashed line is y=x.si-1; Si; target=1; prediction=1; absolute error=0nacl-1; NaCl; target=2; prediction=2.3; absolute error=0.3lif-1; LiF; target=3; prediction=2.4; absolute error=0.6gaas-1; GaAs; target=4; prediction=4.1; absolute error=0.1targetpredictionResidual vs targetResidual = prediction - target; points use the same bounded evaluated-sample set.si-1; Si; target=1; residual=0; absolute error=0nacl-1; NaCl; target=2; residual=0.3; absolute error=0.3lif-1; LiF; target=3; residual=-0.6; absolute error=0.6gaas-1; GaAs; target=4; residual=0.1; absolute error=0.1targetresidualResidual distributionResidual = prediction - target.Largest prediction errorsSampleFormulaSystemTargetPredictionResidualAbsolute errorUncertaintylif-1LiFF-Li32.4-0.60.60.6nacl-1NaClCl-Na22.30.30.30.3gaas-1GaAsAs-Ga44.10.10.10.1si-1SiSi11000.05Error by elementElement groups overlap; a material can appear in multiple rows.GroupSamplesMAERMSEF10.60.6Li10.60.6Cl10.30.3Na10.30.3As10.10.1Ga10.10.1Si100Error by chemical"
+      },
+      "uncertainty": {
+        "firstProductMs": 2850,
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Materials ML Evaluation",
+          "tableFallback": true,
+          "chartImageCount": 2
+        },
+        "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationUncertaintyDatasetdataset_phase10k3_uncertaintyProfileprofile_dataset_phase10k3_uncertainty_v2Semantic contract2.0Residualnot applicablePearson1Spearman1Evaluated4 / 4Uncertainty kindsource_defined_uncertaintyUncertainty vs absolute errorEach point retains its stable material sample reference.si-1; Si; uncertainty=0.05; absoluteError=0.05; absolute error=0.05nacl-1; NaCl; uncertainty=0.2; absoluteError=0.2; absolute error=0.2lif-1; LiF; uncertainty=0.6; absoluteError=0.6; absolute error=0.6gaas-1; GaAs; uncertainty=0.1; absoluteError=0.1; absolute error=0.1uncertaintyabsoluteErrorError decayRetain the lowest-uncertainty samples first.retainedFractionmaeEqual-count reliability binsBinSamplesMean uncertaintyMean absolute error010.050.05110.10.1210.20.2310.60.6Highest uncertainty samplesSampleFormulaUncertaintyAbsolute errorlif-1LiF0.60.6nacl-1NaCl0.20.2gaas-1GaAs0.10.1si-1Si0.050.05UNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITYPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth."
+      },
+      "classification": {
+        "firstProductMs": 2939,
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Materials ML Evaluation",
+          "tableFallback": true,
+          "chartImageCount": 2
+        },
+        "textSnapshot": "Deterministic materials model diagnosticsMaterials ML EvaluationClassificationDatasetdataset_phase10k3_classificationProfileprofile_dataset_phase10k3_classification_v2Semantic contract2.0Residualnot applicableAccuracy0.75Macro precision0.83333Macro recall0.75Macro F10.73333Evaluated4Curve statusREADYConfusion matrix (raw counts)Actual / predictedABA11B02Per-class metricsClassSupportPrecisionRecallF1A210.50.66667B20.6666710.8ROC - positive class BAUC 1fprtprPrecision-recallAverage precision 1recallprecisionMisclassified samplesSampleFormulaActualPredictedlif-1LiFABCLASSIFICATION_PERFORMANCE_NOT_SCIENTIFIC_VALIDITYPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth."
+      }
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

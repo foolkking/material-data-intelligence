@@ -15,6 +15,7 @@ from mdi_api.artifact_storage import S3CompatibleArtifactStorage
 from mdi_api.config import load_settings
 from mdi_api.database import create_repository_factory
 from mdi_api.db import metadata
+from mdi_api.phase2_runtime import build_object_store
 from mdi_api.repositories import InMemoryRepositoryBundle, SqlAlchemyRepositoryBundle
 from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
 from mdi_artifact_core import (
@@ -28,7 +29,7 @@ from mdi_artifact_core import (
     validate_volumetric_manifest,
 )
 from mdi_llm import MockLLMProvider, PlannerRequest
-from mdi_material_parsers import parse_file
+from mdi_material_parsers import build_data_profile, parse_file
 from mdi_schemas import DataProfile
 from mdi_tool_registry import load_manifests
 from mdi_tool_registry.plan_validator import validate_plan
@@ -255,6 +256,71 @@ def test_phase10_service_backed_formal_trajectory_viewer_product_closure(tmp_pat
 
 
 @pytest.mark.integration
+def test_phase10k3_service_backed_materials_ml_product_closure(tmp_path: Path) -> None:
+    if os.getenv("MDI_RUN_INTEGRATION") != "1":
+        pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
+    database_url = os.getenv("MDI_TEST_DATABASE_URL") or os.getenv("DATABASE_URL")
+    redis_url = os.getenv("REDIS_URL") or os.getenv("MDI_REDIS_URL")
+    if not database_url or "postgres" not in database_url or not redis_url:
+        pytest.skip("Service-backed Phase 10K-3 environment is incomplete")
+
+    engine = create_engine(database_url, future=True)
+    metadata.create_all(engine)
+    repos = SqlAlchemyRepositoryBundle.create(engine)
+    suffix = uuid.uuid4().hex[:10]
+    project_id = f"project_phase10k3_{suffix}"
+    dataset_id = f"dataset_phase10k3_{suffix}"
+    repos.projects.save({"id": project_id, "name": project_id, "createdBy": "test_user"})
+    repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": dataset_id, "createdBy": "test_user"})
+
+    profile, objects = _materials_ml_profile(tmp_path, dataset_id)
+    object_store, _ = build_object_store(objects, profile=profile)
+    registry = load_manifests()
+    storage = _minio_storage(f"phase10k3-ml-{suffix}")
+    runtime = QueueWorkerRuntime(
+        repository_factory=create_repository_factory(load_settings()),
+        queue_backend=RedisRQQueueBackend(redis_url=redis_url, queue_name="mdi-test-phase10k3-ml"),
+        artifact_storage=storage,
+        registry=registry,
+        artifact_root=tmp_path / "adapter-artifacts",
+    )
+    cases = (
+        ("Analyze model performance and prediction error.", "ml.regression_evaluation", "materials_ml_regression.json"),
+        ("Analyze uncertainty calibration and error filtering.", "ml.uncertainty_evaluation", "materials_ml_uncertainty.json"),
+        ("Analyze classification performance and confusion matrix.", "ml.classification_evaluation", "materials_ml_classification.json"),
+    )
+    for prompt, tool_id, product_name in cases:
+        plan = _planner_plan(prompt, profile)
+        assert plan["steps"][0]["toolId"] == tool_id
+        assert validate_plan(plan, registry=registry).ok
+        created = planner_jobs(
+            PlannerJobsRequest(
+                userPrompt=prompt,
+                projectId=project_id,
+                datasetId=dataset_id,
+                profileId=profile.profileId,
+                enqueue=True,
+            ),
+            provider=MockLLMProvider(fixed_plan=plan),
+            repositories=repos,
+            queue_runtime=runtime,
+            registry=registry,
+        )
+        assert created.ok and created.job_id and created.plan_id and created.enqueued
+        result = runtime.handle_job(created.job_id, object_store=object_store)
+        artifacts = repos.artifacts.list_for_job(created.job_id)
+        calls = repos.tool_calls.list_for_job(created.job_id)
+        assert result.status == "completed"
+        assert len(calls) == 1 and calls[0]["toolId"] == tool_id
+        assert {item["name"] for item in artifacts} == {product_name, "summary.md", "recipe.json"}
+        assert all(item["storageProvider"] == "s3" and storage.exists(item["storageKey"]) for item in artifacts)
+        product = storage.get_json(next(item["storageKey"] for item in artifacts if item["name"] == product_name))
+        assert product["profileVersion"] == "phase10k1.material_data_profile.v2"
+        assert product["schemaVersion"].startswith("phase10k3.materials_ml_")
+    engine.dispose()
+
+
+@pytest.mark.integration
 def test_phase10j1_service_backed_volumetric_parser_adapter_closure(tmp_path: Path) -> None:
     if os.getenv("MDI_RUN_INTEGRATION") != "1":
         pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
@@ -410,6 +476,27 @@ def _volumetric_profile(*, dataset_id: str, profile_id: str) -> DataProfile:
         "objects": [{"id": "volumetric", "objectType": "VolumetricData"}],
         "qualityIssues": [], "recommendedTasks": [], "createdAt": "2026-07-18T00:00:00+00:00",
     })
+
+
+def _materials_ml_profile(tmp_path: Path, dataset_id: str) -> tuple[DataProfile, list[Any]]:
+    path = tmp_path / f"{dataset_id}.csv"
+    path.write_text(
+        "material_id,formula,y_true,y_pred,y_std,class_true,class_pred,prob_A,prob_B\n"
+        "s1,Si,1.0,1.1,0.10,A,A,0.90,0.10\n"
+        "s2,NaCl,2.0,2.3,0.35,B,A,0.65,0.35\n"
+        "s3,LiF,3.0,2.9,0.20,B,B,0.20,0.80\n"
+        "s4,MgO,4.0,4.2,0.25,A,A,0.75,0.25\n",
+        encoding="utf-8",
+    )
+    parsed = parse_file(path, dataset_id=dataset_id, file_id=f"file_{dataset_id}")
+    assert parsed.parse_status == "success"
+    registry = load_manifests()
+    profile = build_data_profile(
+        dataset_id=dataset_id,
+        parse_results=[parsed],
+        platform_tool_ids={tool.toolId for tool in registry.tools},
+    )
+    return profile, parsed.objects
 
 
 def _trajectory_object() -> Any:

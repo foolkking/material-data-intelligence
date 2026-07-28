@@ -158,8 +158,9 @@ def test_demo_dataset_detail_and_profile_are_backend_generated() -> None:
     assert any(column["column"] == "y_true" for column in demo_body["profile"]["semanticColumns"])
     readiness = {item["capability"]: item for item in demo_body["profile"]["analysisReadiness"]}
     assert readiness["regression_evaluation"]["dataStatus"] == "READY"
-    assert readiness["regression_evaluation"]["platformStatus"] == "NOT_IMPLEMENTED"
-    assert readiness["uncertainty_evaluation"]["platformStatus"] == "NOT_IMPLEMENTED"
+    assert readiness["regression_evaluation"]["platformStatus"] == "AVAILABLE"
+    assert readiness["uncertainty_evaluation"]["platformStatus"] == "AVAILABLE"
+    assert readiness["classification_evaluation"]["platformStatus"] == "AVAILABLE"
 
     datasets = client.get("/datasets").json()
     assert any(dataset["datasetId"] == "dataset_demo" for dataset in datasets)

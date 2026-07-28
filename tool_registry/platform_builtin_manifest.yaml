@@ -10,6 +10,39 @@ tools:
       - summary_md
       - recipe_json
 
+  - tool_id: ml.regression_evaluation
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: RegressionEvaluationAdapter
+    display_target: ml
+    notes: "Evaluate Profile 2.0-bound materials regression results with deterministic metrics, parity/residual data, linked high-error samples, chemistry-conditioned errors, and common-sample model comparison. Does not train models or infer semantic roles."
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: ml.uncertainty_evaluation
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: UncertaintyEvaluationAdapter
+    display_target: ml
+    notes: "Evaluate explicit Profile 2.0 prediction/uncertainty bindings with association, equal-count reliability, retained-error curves, and linked high-uncertainty samples. Diagnostics are not calibration authority and no model fitting occurs."
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
+  - tool_id: ml.classification_evaluation
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: ClassificationEvaluationAdapter
+    display_target: ml
+    notes: "Evaluate Profile 2.0-bound classification outputs using raw confusion counts, accuracy, macro/per-class metrics, linked misclassifications, and explicit-positive-class binary ROC/PR when validated normalized probabilities exist."
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
   - tool_id: table.numeric_summary
     implementation_source: platform_builtin
     stage: mvp

@@ -1157,6 +1157,81 @@ pre {
   gap: 12px;
 }
 
+.materials-ml {
+  grid-column: 1 / -1;
+  min-width: 0;
+  gap: 12px;
+}
+
+.materials-ml-selectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.materials-ml-selectors label {
+  display: grid;
+  gap: 4px;
+  min-width: min(100%, 260px);
+  font-weight: 700;
+}
+
+.materials-ml-view {
+  display: grid;
+  min-width: 0;
+  gap: 14px;
+}
+
+.materials-ml-view h3 { margin: 0; font-size: 15px; }
+
+.materials-ml-charts,
+.materials-ml-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.materials-ml-charts figure,
+.materials-ml-columns section {
+  min-width: 0;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.materials-ml-charts figcaption {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.materials-ml-charts figcaption span { color: var(--muted); font-size: 12px; }
+.materials-ml-chart { width: 100%; min-height: 220px; color: var(--muted); }
+.materials-ml-chart circle { fill: #16738b; opacity: 0.8; }
+.materials-ml-chart text { fill: currentColor; font-size: 11px; text-anchor: middle; letter-spacing: 0; }
+.materials-ml-chart .chart-axis { stroke: currentColor; stroke-width: 1; }
+.materials-ml-chart .chart-reference { stroke: #b5472d; stroke-width: 1.5; stroke-dasharray: 5 4; }
+.materials-ml-chart .chart-line { fill: none; stroke: #16738b; stroke-width: 2.5; }
+
+.materials-ml-histogram {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 220px;
+  padding: 12px 6px 0;
+  border-bottom: 1px solid var(--muted);
+}
+
+.materials-ml-histogram span { flex: 1; min-width: 2px; background: #16738b; }
+
+@media (max-width: 760px) {
+  .materials-ml-charts,
+  .materials-ml-columns { grid-template-columns: 1fr; }
+  .materials-ml-chart { min-height: 180px; }
+  .materials-ml-selectors { display: grid; }
+}
+
 .dataset-explorer-tabs {
   display: flex;
   flex-wrap: wrap;

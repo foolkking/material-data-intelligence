@@ -1,5 +1,29 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-28 ADR: Model Evaluation Consumes Profile Semantics, Not Columns
+
+**Context:** model-result tables can contain multiple targets, predictions,
+uncertainties, labels, and probabilities. Re-inferring those relationships in
+each metric or frontend would create conflicting identity, silent row pairing,
+and unsafe Planner behavior. Existing atomic V1 ML manifest entries also lack a
+complete runtime product boundary.
+
+**Decision:** expose three coherent product capabilities for regression,
+uncertainty, and classification. Each consumes only complete Profile 2.0
+semantic groups from one canonical table and preserves the Profile semantic
+hash and stable sample identity. Regression fixes residual direction and
+common-sample comparison. Uncertainty requires an explicit series binding.
+Classification curves require explicit binary positive-class and probability
+authority. Adapters own deterministic math and caps; the frontend independently
+validates inert artifacts and renders only bounded SVG/table views.
+
+**Consequences:** user-supplied result data can be evaluated and linked back to
+materials without training, column guessing, arbitrary code, or LLM scientific
+calculation. Chemistry and uncertainty diagnostics remain descriptive. The
+historical atomic manifest entries are not promoted. Phase 10K-4 remains the
+separate composition-space product; capability-aware orchestration remains
+Phase 10L.
+
 ## 2026-07-28 ADR: Dataset Exploration Is One Profile-Bound Product Capability
 
 **Context:** dataset exploration needs several related summaries and links, but

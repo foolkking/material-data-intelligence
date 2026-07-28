@@ -36,7 +36,15 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase10k/phase10k2_fixture_matrix.md`](phase10k/phase10k2_fixture_matrix.md): scientific, negative, cap, browser, and mobile fixture coverage.
 - [`phase10k/phase10k2_evidence.md`](phase10k/phase10k2_evidence.md): runtime, API, browser, performance, network, and security evidence index.
 - [`phase10k/evidence/phase10k2_dataset_materials_explorer/`](phase10k/evidence/phase10k2_dataset_materials_explorer/): sanitized artifacts, captures, metrics, and screenshots.
-- [`phase10k/phase10k3_next_scope.md`](phase10k/phase10k3_next_scope.md): Materials ML Evaluation entry boundary; no 10K-3 implementation is included.
+- [`phase10k/phase10k3_next_scope.md`](phase10k/phase10k3_next_scope.md): historical Materials ML Evaluation entry boundary; the implementation records below are current.
+- [`phase10k/phase10k3_materials_ml_evaluation_implementation.md`](phase10k/phase10k3_materials_ml_evaluation_implementation.md): Profile-bound tools, frontend product, caps, and explicit scientific limits.
+- [`phase10k/phase10k3_regression_evaluation_contract.md`](phase10k/phase10k3_regression_evaluation_contract.md): aligned metrics, residual, chemistry groups, sample identity, and model comparison.
+- [`phase10k/phase10k3_uncertainty_evaluation_contract.md`](phase10k/phase10k3_uncertainty_evaluation_contract.md): explicit uncertainty binding, association, reliability, and error-decay policy.
+- [`phase10k/phase10k3_classification_evaluation_contract.md`](phase10k/phase10k3_classification_evaluation_contract.md): confusion/per-class metrics and guarded binary ROC/PR policy.
+- [`phase10k/phase10k3_fixture_matrix.md`](phase10k/phase10k3_fixture_matrix.md): scientific, negative, security, cap, browser, and mobile coverage.
+- [`phase10k/phase10k3_evidence.md`](phase10k/phase10k3_evidence.md): runtime, API, browser, performance, network, and security evidence index.
+- [`phase10k/evidence/phase10k3_materials_ml_evaluation/`](phase10k/evidence/phase10k3_materials_ml_evaluation/): sanitized artifacts, captures, metrics, and screenshots.
+- [`phase10k/phase10k4_next_scope.md`](phase10k/phase10k4_next_scope.md): composition-space entry boundary; no Phase 10K-4 implementation is included.
 
 ## Historical Gate J6-A Roadmap Record
 

@@ -5,13 +5,14 @@ import { useMemo, useState } from "react";
 import type { Artifact } from "../../lib/planner-api";
 
 type JsonRecord = Record<string, unknown>;
-type ExplorerTab = "overview" | "composition" | "structures" | "properties" | "quality" | "comparison" | "samples";
+type ExplorerTab = "overview" | "composition" | "structures" | "properties" | "model" | "quality" | "comparison" | "samples";
 
 const TABS: readonly { id: ExplorerTab; label: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "composition", label: "Composition" },
   { id: "structures", label: "Structures" },
   { id: "properties", label: "Properties" },
+  { id: "model", label: "Model evaluation" },
   { id: "quality", label: "Data quality" },
   { id: "comparison", label: "Comparison" },
   { id: "samples", label: "Samples" },
@@ -89,6 +90,7 @@ export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifa
         {tab === "properties" ? (
           <PropertiesView properties={properties} active={activeProperty} onSelect={setSelectedProperty} />
         ) : null}
+        {tab === "model" ? <ModelEvaluationView overview={overview} /> : null}
         {tab === "quality" ? <QualityView quality={quality} /> : null}
         {tab === "comparison" ? <ComparisonView comparison={comparison} /> : null}
         {tab === "samples" ? (
@@ -173,6 +175,20 @@ function PropertiesView({ properties, active, onSelect }: { properties: JsonReco
       </div>
       <p className="dataset-method-note">Outliers use the 1.5 IQR rule and are statistical candidates only.</p>
     </>}
+  </div>;
+}
+
+function ModelEvaluationView({ overview }: { overview: JsonRecord }) {
+  const capabilities = ["regression_evaluation", "uncertainty_evaluation", "classification_evaluation"];
+  const available = textList(overview.availableAnalyses).filter((item) => capabilities.includes(item));
+  const unavailable = textList(overview.unavailableAnalyses).filter((item) => capabilities.includes(item));
+  return <div data-testid="dataset-explorer-model-evaluation">
+    {!available.length ? <p className="empty-state">No model-result semantics detected.</p> : <>
+      <h3>Profile-ready model evaluations</h3>
+      <ul>{available.map((item) => <li key={item}>{item}</li>)}</ul>
+      <p className="dataset-method-note">Run the matching Materials ML Evaluation tool to create deterministic diagnostics linked to stable material samples.</p>
+    </>}
+    {unavailable.length ? <><h3>Unavailable for this dataset</h3><ul>{unavailable.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
   </div>;
 }
 

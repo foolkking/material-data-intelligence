@@ -1,0 +1,797 @@
+{
+  "apiContentRetrieval": {
+    "allContentRoutesValidated": true,
+    "artifactNames": [
+      "materials_ml_regression.json",
+      "recipe.json",
+      "summary.md"
+    ]
+  },
+  "artifacts": [
+    {
+      "bucket": null,
+      "contentHash": "38d517033e7a59aa89c4320eb1437ea04578f81f2f6dc640e72d8298fbeae282",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k3_regression",
+      "id": "call_job_000000000000000000000000_step_001-table_json",
+      "jobId": "job_000000000000000000000000",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "inputHashes": [
+          "bce044e37e81140a4a1cbc1b7ac00513a81e27afd9b76c1b5c3c88ffa38564c8",
+          "f36bbee04b98e31dfb034001726cd119bc1060f67872504abb51b53a1ad9f05c"
+        ],
+        "paramsHash": "e466b0cea6e29e6a19559ff3a88729b51d3badbf30dac6e94c0f14fc600b1b01",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+          "sourceFunction": "platform_builtin.ml_regression_evaluation",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "ml.regression_evaluation"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "ml.regression_evaluation",
+        "toolVersion": "0.1.0"
+      },
+      "name": "materials_ml_regression.json",
+      "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+      "planId": "plan_000000000000000000000000",
+      "previewKey": null,
+      "projectId": "project_phase10k3_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+        "sourceFunction": "platform_builtin.ml_regression_evaluation",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "toolId": "ml.regression_evaluation"
+      },
+      "sha256": "38d517033e7a59aa89c4320eb1437ea04578f81f2f6dc640e72d8298fbeae282",
+      "sizeBytes": 11839,
+      "storageKey": "projects/project_phase10k3_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/materials_ml_regression.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_000000000000000000000000_step_001",
+      "type": "table_json",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "contentHash": "fa0a7ead35b3d1bf0762b1bc2a6be7a5a1fcc833d7320a69c935fd3e40086d46",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k3_regression",
+      "id": "call_job_000000000000000000000000_step_001-summary_md",
+      "jobId": "job_000000000000000000000000",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "inputHashes": [
+          "bce044e37e81140a4a1cbc1b7ac00513a81e27afd9b76c1b5c3c88ffa38564c8",
+          "f36bbee04b98e31dfb034001726cd119bc1060f67872504abb51b53a1ad9f05c"
+        ],
+        "paramsHash": "e466b0cea6e29e6a19559ff3a88729b51d3badbf30dac6e94c0f14fc600b1b01",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "text/markdown",
+          "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+          "sourceFunction": "platform_builtin.ml_regression_evaluation",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "ml.regression_evaluation"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "ml.regression_evaluation",
+        "toolVersion": "0.1.0"
+      },
+      "name": "summary.md",
+      "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+      "planId": "plan_000000000000000000000000",
+      "previewKey": null,
+      "projectId": "project_phase10k3_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "text/markdown",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+        "sourceFunction": "platform_builtin.ml_regression_evaluation",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "toolId": "ml.regression_evaluation"
+      },
+      "sha256": "fa0a7ead35b3d1bf0762b1bc2a6be7a5a1fcc833d7320a69c935fd3e40086d46",
+      "sizeBytes": 311,
+      "storageKey": "projects/project_phase10k3_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/summary.md",
+      "storageProvider": "local",
+      "toolCallId": "call_job_000000000000000000000000_step_001",
+      "type": "summary_md",
+      "version": "1"
+    },
+    {
+      "bucket": null,
+      "contentHash": "aa08b456428500d8aea3887f03f923aab13a5caff90b4eea1d9d2c9c4fdc062d",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k3_regression",
+      "id": "call_job_000000000000000000000000_step_001-recipe_json",
+      "jobId": "job_000000000000000000000000",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "bucket": null,
+        "inputHashes": [
+          "bce044e37e81140a4a1cbc1b7ac00513a81e27afd9b76c1b5c3c88ffa38564c8",
+          "f36bbee04b98e31dfb034001726cd119bc1060f67872504abb51b53a1ad9f05c"
+        ],
+        "paramsHash": "e466b0cea6e29e6a19559ff3a88729b51d3badbf30dac6e94c0f14fc600b1b01",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+          "sourceFunction": "platform_builtin.ml_regression_evaluation",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "ml.regression_evaluation"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "ml.regression_evaluation",
+        "toolVersion": "0.1.0"
+      },
+      "name": "recipe.json",
+      "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+      "planId": "plan_000000000000000000000000",
+      "previewKey": null,
+      "projectId": "project_phase10k3_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+        "sourceFunction": "platform_builtin.ml_regression_evaluation",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "toolId": "ml.regression_evaluation"
+      },
+      "sha256": "aa08b456428500d8aea3887f03f923aab13a5caff90b4eea1d9d2c9c4fdc062d",
+      "sizeBytes": 1050,
+      "storageKey": "projects/project_phase10k3_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/recipe.json",
+      "storageProvider": "local",
+      "toolCallId": "call_job_000000000000000000000000_step_001",
+      "type": "recipe_json",
+      "version": "1"
+    }
+  ],
+  "caseId": "regression",
+  "events": [
+    {
+      "eventType": "job.created",
+      "id": "evt_job_000000000000000000000000_0001",
+      "jobId": "job_000000000000000000000000",
+      "message": "Planner job created with persisted AnalysisPlan.",
+      "payload": {
+        "datasetId": "dataset_phase10k3_regression",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "projectId": "project_phase10k3_evidence"
+      },
+      "progress": 0.0,
+      "seq": 1,
+      "status": "info"
+    },
+    {
+      "eventType": "plan.persisted",
+      "id": "evt_job_000000000000000000000000_0002",
+      "jobId": "job_000000000000000000000000",
+      "message": "Persisted validated AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "plannerProvider": "mock"
+      },
+      "progress": 0.0,
+      "seq": 2,
+      "status": "success"
+    },
+    {
+      "eventType": "job.running",
+      "id": "evt_job_000000000000000000000000_0003",
+      "jobId": "job_000000000000000000000000",
+      "message": "Queue worker started job.",
+      "payload": {},
+      "progress": 0.0,
+      "seq": 3,
+      "status": "running"
+    },
+    {
+      "eventType": "plan.loaded",
+      "id": "evt_job_000000000000000000000000_0004",
+      "jobId": "job_000000000000000000000000",
+      "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm"
+      },
+      "progress": 0.05,
+      "seq": 4,
+      "status": "success"
+    },
+    {
+      "eventType": "tool.started",
+      "id": "evt_job_000000000000000000000000_0005",
+      "jobId": "job_000000000000000000000000",
+      "message": "Started tool ml.regression_evaluation.",
+      "payload": {
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "stepId": "step_001",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "toolId": "ml.regression_evaluation"
+      },
+      "progress": 0.0,
+      "seq": 5,
+      "status": "running"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_000000000000000000000000_0006",
+      "jobId": "job_000000000000000000000000",
+      "message": "Artifact ready: materials_ml_regression.json",
+      "payload": {
+        "artifactId": "call_job_000000000000000000000000_step_001-table_json",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "storageKey": "projects/project_phase10k3_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/materials_ml_regression.json",
+        "toolCallId": "call_job_000000000000000000000000_step_001"
+      },
+      "progress": null,
+      "seq": 6,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_000000000000000000000000_0007",
+      "jobId": "job_000000000000000000000000",
+      "message": "Artifact ready: summary.md",
+      "payload": {
+        "artifactId": "call_job_000000000000000000000000_step_001-summary_md",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "storageKey": "projects/project_phase10k3_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/summary.md",
+        "toolCallId": "call_job_000000000000000000000000_step_001"
+      },
+      "progress": null,
+      "seq": 7,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_000000000000000000000000_0008",
+      "jobId": "job_000000000000000000000000",
+      "message": "Artifact ready: recipe.json",
+      "payload": {
+        "artifactId": "call_job_000000000000000000000000_step_001-recipe_json",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "storageKey": "projects/project_phase10k3_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/recipe.json",
+        "toolCallId": "call_job_000000000000000000000000_step_001"
+      },
+      "progress": null,
+      "seq": 8,
+      "status": "success"
+    },
+    {
+      "eventType": "tool.completed",
+      "id": "evt_job_000000000000000000000000_0009",
+      "jobId": "job_000000000000000000000000",
+      "message": "Completed tool ml.regression_evaluation.",
+      "payload": {
+        "artifactIds": [
+          "call_job_000000000000000000000000_step_001-table_json",
+          "call_job_000000000000000000000000_step_001-summary_md",
+          "call_job_000000000000000000000000_step_001-recipe_json"
+        ],
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm",
+        "toolCallId": "call_job_000000000000000000000000_step_001"
+      },
+      "progress": 1.0,
+      "seq": 9,
+      "status": "success"
+    },
+    {
+      "eventType": "job.completed",
+      "id": "evt_job_000000000000000000000000_0010",
+      "jobId": "job_000000000000000000000000",
+      "message": "Job completed.",
+      "payload": {
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "planSource": "llm"
+      },
+      "progress": 1.0,
+      "seq": 10,
+      "status": "success"
+    }
+  ],
+  "job": {
+    "analysisPlan": {
+      "assumptions": [
+        "Generated by MockLLMProvider for testing."
+      ],
+      "datasetId": "dataset_phase10k3_regression",
+      "expectedArtifacts": [
+        {
+          "fromStepId": "step_001",
+          "name": "materials_ml_regression.json",
+          "type": "table_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "goal": "Analyze model performance, prediction error, parity, and compare models.",
+      "profileId": "profile_dataset_phase10k3_regression_v2",
+      "schemaVersion": "0.1",
+      "steps": [
+        {
+          "constraints": null,
+          "inputRefs": [
+            {
+              "columnName": null,
+              "fieldRole": null,
+              "objectType": null,
+              "ref": "profile",
+              "refType": "profile"
+            },
+            {
+              "columnName": null,
+              "fieldRole": "ml_result_table",
+              "objectType": "DataFrame",
+              "ref": "obj_regression",
+              "refType": "normalized_object"
+            }
+          ],
+          "output": {
+            "artifactTypes": [
+              "table_json",
+              "summary_md",
+              "recipe_json"
+            ]
+          },
+          "params": {
+            "groupIds": [
+              "obj_regression:regression:model_a",
+              "obj_regression:regression:model_b"
+            ],
+            "histogramBins": 30,
+            "maxChemistryGroups": 128,
+            "maxPlotPoints": 2000,
+            "maxTableRows": 100,
+            "minGroupSize": 3
+          },
+          "purpose": "Evaluate Profile-bound materials regression results and linked chemistry-conditioned errors.",
+          "reason": "The request and Material Data Profile 2.0 expose a complete compatible evaluation task.",
+          "stepId": "step_001",
+          "toolId": "ml.regression_evaluation"
+        }
+      ],
+      "toolRegistryVersion": "0.1.0",
+      "warnings": []
+    },
+    "artifactCount": 3,
+    "createdBy": "user_local",
+    "datasetId": "dataset_phase10k3_regression",
+    "eventCount": 10,
+    "id": "job_000000000000000000000000",
+    "jobId": "job_000000000000000000000000",
+    "kind": "analysis",
+    "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+    "planId": "plan_000000000000000000000000",
+    "planSource": "llm",
+    "plan_id": "plan_000000000000000000000000",
+    "projectId": "project_phase10k3_evidence",
+    "provenance": {
+      "binding": "jobs.plan_id -> analysis_plans.id",
+      "fallbackUsed": false,
+      "loadedFrom": "persisted_analysis_plan",
+      "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+      "planId": "plan_000000000000000000000000",
+      "planSource": "llm",
+      "toolPath": "Tool Registry + Adapter"
+    },
+    "status": "completed",
+    "toolCallCount": 1,
+    "validationStatus": "validated"
+  },
+  "plan": {
+    "assumptions": [
+      "Generated by MockLLMProvider for testing."
+    ],
+    "datasetId": "dataset_phase10k3_regression",
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_001",
+        "name": "materials_ml_regression.json",
+        "type": "table_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "goal": "Analyze model performance, prediction error, parity, and compare models.",
+    "profileId": "profile_dataset_phase10k3_regression_v2",
+    "schemaVersion": "0.1",
+    "steps": [
+      {
+        "constraints": null,
+        "inputRefs": [
+          {
+            "columnName": null,
+            "fieldRole": null,
+            "objectType": null,
+            "ref": "profile",
+            "refType": "profile"
+          },
+          {
+            "columnName": null,
+            "fieldRole": "ml_result_table",
+            "objectType": "DataFrame",
+            "ref": "obj_regression",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "table_json",
+            "summary_md",
+            "recipe_json"
+          ]
+        },
+        "params": {
+          "groupIds": [
+            "obj_regression:regression:model_a",
+            "obj_regression:regression:model_b"
+          ],
+          "histogramBins": 30,
+          "maxChemistryGroups": 128,
+          "maxPlotPoints": 2000,
+          "maxTableRows": 100,
+          "minGroupSize": 3
+        },
+        "purpose": "Evaluate Profile-bound materials regression results and linked chemistry-conditioned errors.",
+        "reason": "The request and Material Data Profile 2.0 expose a complete compatible evaluation task.",
+        "stepId": "step_001",
+        "toolId": "ml.regression_evaluation"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "request": {
+    "datasetId": "dataset_phase10k3_regression",
+    "profileId": "profile_dataset_phase10k3_regression_v2",
+    "userPrompt": "Analyze model performance, prediction error, parity, and compare models."
+  },
+  "result": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "bucket": null,
+        "contentHash": "38d517033e7a59aa89c4320eb1437ea04578f81f2f6dc640e72d8298fbeae282",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k3_regression",
+        "id": "call_job_000000000000000000000000_step_001-table_json",
+        "jobId": "job_000000000000000000000000",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "inputHashes": [
+            "bce044e37e81140a4a1cbc1b7ac00513a81e27afd9b76c1b5c3c88ffa38564c8",
+            "f36bbee04b98e31dfb034001726cd119bc1060f67872504abb51b53a1ad9f05c"
+          ],
+          "paramsHash": "e466b0cea6e29e6a19559ff3a88729b51d3badbf30dac6e94c0f14fc600b1b01",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+            "planId": "plan_000000000000000000000000",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+            "sourceFunction": "platform_builtin.ml_regression_evaluation",
+            "toolCallId": "call_job_000000000000000000000000_step_001",
+            "toolId": "ml.regression_evaluation"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "ml.regression_evaluation",
+          "toolVersion": "0.1.0"
+        },
+        "name": "materials_ml_regression.json",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "previewKey": null,
+        "projectId": "project_phase10k3_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+          "sourceFunction": "platform_builtin.ml_regression_evaluation",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "ml.regression_evaluation"
+        },
+        "sha256": "38d517033e7a59aa89c4320eb1437ea04578f81f2f6dc640e72d8298fbeae282",
+        "sizeBytes": 11839,
+        "storageKey": "projects/project_phase10k3_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/materials_ml_regression.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "type": "table_json",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "contentHash": "fa0a7ead35b3d1bf0762b1bc2a6be7a5a1fcc833d7320a69c935fd3e40086d46",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k3_regression",
+        "id": "call_job_000000000000000000000000_step_001-summary_md",
+        "jobId": "job_000000000000000000000000",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "inputHashes": [
+            "bce044e37e81140a4a1cbc1b7ac00513a81e27afd9b76c1b5c3c88ffa38564c8",
+            "f36bbee04b98e31dfb034001726cd119bc1060f67872504abb51b53a1ad9f05c"
+          ],
+          "paramsHash": "e466b0cea6e29e6a19559ff3a88729b51d3badbf30dac6e94c0f14fc600b1b01",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "text/markdown",
+            "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+            "planId": "plan_000000000000000000000000",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+            "sourceFunction": "platform_builtin.ml_regression_evaluation",
+            "toolCallId": "call_job_000000000000000000000000_step_001",
+            "toolId": "ml.regression_evaluation"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "ml.regression_evaluation",
+          "toolVersion": "0.1.0"
+        },
+        "name": "summary.md",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "previewKey": null,
+        "projectId": "project_phase10k3_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "text/markdown",
+          "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+          "sourceFunction": "platform_builtin.ml_regression_evaluation",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "ml.regression_evaluation"
+        },
+        "sha256": "fa0a7ead35b3d1bf0762b1bc2a6be7a5a1fcc833d7320a69c935fd3e40086d46",
+        "sizeBytes": 311,
+        "storageKey": "projects/project_phase10k3_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/summary.md",
+        "storageProvider": "local",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "type": "summary_md",
+        "version": "1"
+      },
+      {
+        "bucket": null,
+        "contentHash": "aa08b456428500d8aea3887f03f923aab13a5caff90b4eea1d9d2c9c4fdc062d",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k3_regression",
+        "id": "call_job_000000000000000000000000_step_001-recipe_json",
+        "jobId": "job_000000000000000000000000",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "bucket": null,
+          "inputHashes": [
+            "bce044e37e81140a4a1cbc1b7ac00513a81e27afd9b76c1b5c3c88ffa38564c8",
+            "f36bbee04b98e31dfb034001726cd119bc1060f67872504abb51b53a1ad9f05c"
+          ],
+          "paramsHash": "e466b0cea6e29e6a19559ff3a88729b51d3badbf30dac6e94c0f14fc600b1b01",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+            "planId": "plan_000000000000000000000000",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+            "sourceFunction": "platform_builtin.ml_regression_evaluation",
+            "toolCallId": "call_job_000000000000000000000000_step_001",
+            "toolId": "ml.regression_evaluation"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "ml.regression_evaluation",
+          "toolVersion": "0.1.0"
+        },
+        "name": "recipe.json",
+        "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+        "planId": "plan_000000000000000000000000",
+        "previewKey": null,
+        "projectId": "project_phase10k3_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+          "planId": "plan_000000000000000000000000",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4",
+          "sourceFunction": "platform_builtin.ml_regression_evaluation",
+          "toolCallId": "call_job_000000000000000000000000_step_001",
+          "toolId": "ml.regression_evaluation"
+        },
+        "sha256": "aa08b456428500d8aea3887f03f923aab13a5caff90b4eea1d9d2c9c4fdc062d",
+        "sizeBytes": 1050,
+        "storageKey": "projects/project_phase10k3_evidence/jobs/job_000000000000000000000000/tool_calls/call_job_000000000000000000000000_step_001/recipe.json",
+        "storageProvider": "local",
+        "toolCallId": "call_job_000000000000000000000000_step_001",
+        "type": "recipe_json",
+        "version": "1"
+      }
+    ],
+    "jobId": "job_000000000000000000000000",
+    "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+    "planId": "plan_000000000000000000000000",
+    "provenance": {
+      "binding": "jobs.plan_id -> analysis_plans.id",
+      "fallbackUsed": false,
+      "loadedFrom": "persisted_analysis_plan",
+      "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+      "planId": "plan_000000000000000000000000",
+      "planSource": "llm",
+      "toolPath": "Tool Registry + Adapter"
+    },
+    "status": "completed",
+    "summary": "Job completed with 1 ToolCall(s) and 3 Artifact(s).",
+    "toolCallCount": 1
+  },
+  "toolCalls": [
+    {
+      "artifactIds": [
+        "call_job_000000000000000000000000_step_001-table_json",
+        "call_job_000000000000000000000000_step_001-summary_md",
+        "call_job_000000000000000000000000_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_000000000000000000000000_step_001",
+      "idempotencyKey": "job_000000000000000000000000:step_001",
+      "inputSummary": "Params: groupIds, histogramBins, maxChemistryGroups, maxPlotPoints, maxTableRows, minGroupSize",
+      "jobId": "job_000000000000000000000000",
+      "outputSummary": "3 artifact(s)",
+      "params": {
+        "groupIds": [
+          "obj_regression:regression:model_a",
+          "obj_regression:regression:model_b"
+        ],
+        "histogramBins": 30,
+        "maxChemistryGroups": 128,
+        "maxPlotPoints": 2000,
+        "maxTableRows": 100,
+        "minGroupSize": 3
+      },
+      "planHash": "7ad5a88c9952b86f9c7d38d82b9c5a09d06f7b0f3978524f6ecb1d97fdf2ab19",
+      "planId": "plan_000000000000000000000000",
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "ml.regression_evaluation"
+    }
+  ]
+}

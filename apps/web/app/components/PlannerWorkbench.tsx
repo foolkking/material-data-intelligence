@@ -13,6 +13,7 @@ import { BrillouinZonePreviewPanel } from "./brillouin-zone/BrillouinZonePreview
 import { BandBZLinkedView } from "./band-bz-link/BandBZLinkedView";
 import { VolumetricPreviewPanel } from "./volumetric-viewer/VolumetricPreviewPanel";
 import { DatasetMaterialsExplorerPanel } from "./dataset-explorer/DatasetMaterialsExplorerPanel";
+import { MaterialsMlEvaluationPanel } from "./materials-ml/MaterialsMlEvaluationPanel";
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
@@ -1243,6 +1244,7 @@ function ResultsExportTab(props: {
       ) : null}
       <ReportRecipeSummaryPanel t={t} result={props.result} artifacts={props.artifacts} datasetId={props.datasetId} profileId={props.profileId} planId={props.planId} planHash={props.planHash} />
       <DatasetMaterialsExplorerPanel artifacts={props.artifacts} />
+      <MaterialsMlEvaluationPanel artifacts={props.artifacts} />
       <MaterialResultRenderer t={t} artifacts={props.artifacts} />
       <MetricsResultRenderer t={t} artifact={props.artifacts.find((artifact) => artifact.type === "metrics_json")} />
       <TableSummaryRenderer t={t} artifact={props.artifacts.find(isTableSummaryArtifact)} />

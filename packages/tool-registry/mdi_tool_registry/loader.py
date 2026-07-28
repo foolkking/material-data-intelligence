@@ -99,7 +99,11 @@ def _cost_for(entry: dict[str, Any]) -> str:
 def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
     if entry["tool_id"] in {"structure.trajectory_import", "structure.trajectory_viewer", "structure.volumetric_data"}:
         return 120, 300
-    if entry["tool_id"] == "dataset.materials_explorer":
+    if entry["tool_id"] == "dataset.materials_explorer" or entry["tool_id"] in {
+        "ml.regression_evaluation",
+        "ml.uncertainty_evaluation",
+        "ml.classification_evaluation",
+    }:
         return 120, 300
     if entry["tool_id"] == "structure.viewer_3d":
         return 90, 180
@@ -121,6 +125,23 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxStructures": 256,
             "maxAtomsPerStructure": 5000,
             "maxWarnings": 128,
+            "maxArtifactBytes": 8000000,
+        }
+    if tool_id in {
+        "ml.regression_evaluation",
+        "ml.uncertainty_evaluation",
+        "ml.classification_evaluation",
+    }:
+        return {
+            "maxRows": 100000,
+            "maxModels": 16,
+            "maxClasses": 64,
+            "maxChemistryGroups": 256,
+            "maxTableRows": 200,
+            "maxPlotPoints": 10000,
+            "maxCurvePoints": 5000,
+            "maxUncertaintyBins": 50,
+            "maxHistogramBins": 100,
             "maxArtifactBytes": 8000000,
         }
     if tool_id == "structure.volumetric_data":
@@ -277,6 +298,26 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
                     requiredFields=[],
                     description="Use a Profile 2.0 ref plus the matching bounded canonical Structure collection.",
                 ),
+            ],
+        )
+    if tool_id in {
+        "ml.regression_evaluation",
+        "ml.uncertainty_evaluation",
+        "ml.classification_evaluation",
+    }:
+        return ToolInputSchema(
+            periodicity="any",
+            inputOptions=[
+                ToolInputOption(
+                    name="profile_bound_ml_result_table",
+                    requiredObjectTypes=[MaterialObjectType.DataFrame],
+                    requiredFields=[],
+                    description=(
+                        "Use exactly one Material Data Profile 2.0 ref and the explicitly bound immutable result "
+                        "DataFrame. Target, prediction, uncertainty, probability, unit, and sample identities come "
+                        "only from the Profile contract."
+                    ),
+                )
             ],
         )
     if tool_id == "structure.volumetric_data":
@@ -480,6 +521,45 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "symprec": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
             },
         }
+    if tool_id in {
+        "ml.regression_evaluation",
+        "ml.uncertainty_evaluation",
+        "ml.classification_evaluation",
+    }:
+        properties: dict[str, Any] = {
+            "groupIds": {
+                "type": "array",
+                "items": {"type": "string", "minLength": 1, "maxLength": 256},
+                "maxItems": 32,
+                "uniqueItems": True,
+            },
+            "maxTableRows": {"type": "integer", "minimum": 1, "maximum": 200},
+            "maxPlotPoints": {"type": "integer", "minimum": 10, "maximum": 10000},
+        }
+        if tool_id == "ml.regression_evaluation":
+            properties.update(
+                {
+                    "maxChemistryGroups": {"type": "integer", "minimum": 1, "maximum": 256},
+                    "minGroupSize": {"type": "integer", "minimum": 1, "maximum": 1000},
+                    "histogramBins": {"type": "integer", "minimum": 4, "maximum": 100},
+                }
+            )
+        elif tool_id == "ml.uncertainty_evaluation":
+            properties["uncertaintyBins"] = {"type": "integer", "minimum": 2, "maximum": 50}
+        else:
+            properties.update(
+                {
+                    "positiveClass": {
+                        "anyOf": [
+                            {"type": "string", "maxLength": 256},
+                            {"type": "number"},
+                            {"type": "boolean"},
+                        ]
+                    },
+                    "maxCurvePoints": {"type": "integer", "minimum": 10, "maximum": 5000},
+                }
+            )
+        return {"type": "object", "additionalProperties": False, "properties": properties}
     if tool_id == "structure.volumetric_data":
         return {
             "type": "object",

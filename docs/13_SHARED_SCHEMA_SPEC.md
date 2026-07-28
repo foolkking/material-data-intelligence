@@ -1,5 +1,44 @@
 # 共享 Schema 规范
 
+## Phase 10K-3 Materials ML Evaluation artifacts
+
+Phase 10K-3 adds three inert product schemas:
+
+- `phase10k3.materials_ml_regression.v1`
+- `phase10k3.materials_ml_uncertainty.v1`
+- `phase10k3.materials_ml_classification.v1`
+
+Each artifact binds `datasetId`, `profileId`, `profileContractVersion=2.0`, the
+Profile semantic hash, one canonical table object, and complete Profile 2.0
+semantic group IDs. The adapters do not infer target, prediction, uncertainty,
+label, probability, formula, unit, or sample identity from display arrays. All
+linked rows use the stable Profile sample reference.
+
+Regression fixes residual as `prediction-target`, reports finite aligned
+coverage and deterministic MAE/MSE/RMSE/mean error/median absolute error/R2,
+and stores bounded parity points, histogram bins, high-error rows, overlapping
+element groups, exact chemical-system groups, and common-valid-sample model
+comparisons. R2 is null for zero target variance.
+
+Uncertainty requires exactly one explicit series binding, finite non-negative
+values, and stores Pearson/Spearman association, equal-count reliability bins,
+lowest-uncertainty-first retained-error points, and linked high-uncertainty
+rows. Unknown uncertainty kind remains `source_defined_uncertainty`.
+
+Classification stores sorted class identity, raw confusion counts, accuracy,
+macro and per-class metrics, and linked misclassifications. Binary ROC/PR exists
+only with exactly two classes, an explicit positive class, and a matching
+normalized probability column. Typed unavailable states preserve ordinary
+classification metrics when curves are not scientifically valid.
+
+Hard limits include 100,000 rows, 16 models, 64 classes, 256 chemistry groups,
+200 linked rows, 10,000 plot points, 5,000 curve points, 50 uncertainty bins,
+100 histogram bins, and 8,000,000 artifact bytes. Unknown parameters, ambiguous
+or incomplete semantic groups, invalid numeric values, cap bypasses, executable
+content, URLs, callbacks, HTML authority, and external assets are rejected.
+Companion `summary_md` and `recipe_json` remain inert and record semantic group,
+limits, parameters, deterministic policy, and provenance.
+
 ## Phase 10K-2 Dataset Materials Explorer product artifact
 
 `dataset.materials_explorer` consumes exactly one validated Material Data

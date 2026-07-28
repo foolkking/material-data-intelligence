@@ -7,6 +7,7 @@ from .executor import ToolExecutionResult, execute_tool_request
 from .platform_builtin import (
     BasicMetricsAdapter,
     BrillouinZoneAdapter,
+    ClassificationEvaluationAdapter,
     CompositionSummaryAdapter,
     CorrelationAdapter,
     DistributionSummaryAdapter,
@@ -15,6 +16,7 @@ from .platform_builtin import (
     LatticeSummaryAdapter,
     NumericSummaryAdapter,
     OutlierTableAdapter,
+    RegressionEvaluationAdapter,
     ScatterAdapter,
     SpacegroupSummaryAdapter,
     StructureCompositionAdapter,
@@ -24,6 +26,7 @@ from .platform_builtin import (
     StructureViewer3DAdapter,
     StructureViewerExportPackageAdapter,
     StructureViewerSceneMetadataAdapter,
+    UncertaintyEvaluationAdapter,
     VolumetricDataAdapter,
 )
 from .pymatviz import (
@@ -49,6 +52,7 @@ __all__ = [
     "BaseToolAdapter",
     "BasicMetricsAdapter",
     "BrillouinZoneAdapter",
+    "ClassificationEvaluationAdapter",
     "ChemSysSunburstAdapter",
     "ChemSysTreemapAdapter",
     "CompositionSummaryAdapter",
@@ -68,6 +72,7 @@ __all__ = [
     "LatticeSummaryAdapter",
     "NumericSummaryAdapter",
     "OutlierTableAdapter",
+    "RegressionEvaluationAdapter",
     "PTableHeatmapAdapter",
     "RdfAdapter",
     "Structure3DAdapter",
@@ -83,6 +88,7 @@ __all__ = [
     "ToolExecutionContext",
     "ToolExecutionError",
     "ToolExecutionResult",
+    "UncertaintyEvaluationAdapter",
     "VolumetricDataAdapter",
     "create_adapter",
     "execute_tool_request",

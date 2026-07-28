@@ -1,0 +1,48 @@
+{
+  "acceptance": "PASS",
+  "caps": {
+    "maxArtifactBytes": 8000000,
+    "maxPlotPoints": 10000,
+    "maxRows": 100000,
+    "maxTableRows": 200
+  },
+  "cases": [
+    {
+      "artifactBytes": 6092,
+      "caseId": "small_regression",
+      "displayPoints": 4,
+      "elapsedMs": 17.233,
+      "evaluatedSamples": 4,
+      "inputRows": 4,
+      "toolId": "ml.regression_evaluation"
+    },
+    {
+      "artifactBytes": 608329,
+      "caseId": "medium_regression",
+      "displayPoints": 2000,
+      "elapsedMs": 1763.902,
+      "evaluatedSamples": 5000,
+      "inputRows": 5000,
+      "toolId": "ml.regression_evaluation"
+    },
+    {
+      "artifactBytes": 624045,
+      "caseId": "near_cap_regression",
+      "displayPoints": 2000,
+      "elapsedMs": 36211.406,
+      "evaluatedSamples": 100000,
+      "inputRows": 100000,
+      "toolId": "ml.regression_evaluation"
+    },
+    {
+      "artifactBytes": 565106,
+      "caseId": "near_cap_uncertainty",
+      "displayPoints": 2000,
+      "elapsedMs": 23278.901,
+      "evaluatedSamples": 100000,
+      "inputRows": 100000,
+      "toolId": "ml.uncertainty_evaluation"
+    }
+  ],
+  "marker": "MATERIALS_ML_PERFORMANCE_EVIDENCE_PASS"
+}

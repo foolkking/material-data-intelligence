@@ -1,5 +1,25 @@
 # DESIGN_PROGRESS
 
+## 2026-07-28 Phase 10K-3 Materials ML Evaluation Implementation
+
+- Added three product-level Registry/Adapter capabilities for regression,
+  uncertainty, and classification evaluation over complete Profile 2.0 semantic
+  groups and one explicitly bound canonical table.
+- Delivered deterministic aligned-sample metrics, fixed prediction-minus-target
+  residuals, stable high-error and misclassification links, overlapping element
+  and exact chemical-system diagnostics, common-sample model comparison,
+  equal-count uncertainty reliability, retained-error curves, raw confusion
+  counts, per-class metrics, and guarded explicit-positive binary ROC/PR.
+- Added strict params and layered row/model/class/group/point/bin/artifact caps,
+  Mock Planner routes, persisted runtime execution, responsive SVG/table
+  products, Dataset Explorer readiness integration, and inert fallback.
+- Real API/runtime evidence covers all three tools; Chromium, Firefox, WebKit,
+  and mobile evidence records zero console/page errors and external requests.
+  Performance evidence covers 4, 5,000, and 100,000 rows without unbounded
+  display arrays. Exact-HEAD CI and queue closure remain pending.
+- No model training, embedding/clustering, real LLM, arbitrary code, dependency,
+  external service, Phase 10L orchestration, or workspace redesign was added.
+
 ## 2026-07-28 Phase 10K-2 Dataset Materials Explorer Implementation
 
 - Added the coherent `dataset.materials_explorer` product over exactly one

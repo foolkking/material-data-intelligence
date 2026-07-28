@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 2026-07-28 - Phase 10K-3 Materials ML Evaluation
+
+- Added executable `ml.regression_evaluation`, `ml.uncertainty_evaluation`, and
+  `ml.classification_evaluation` product identities over Material Data Profile
+  2.0 semantic groups and stable material sample references.
+- Added strict bounded adapters, Mock Planner routing, runtime/API artifacts,
+  responsive regression/uncertainty/classification products, and truthful
+  Dataset Explorer readiness.
+- Added deterministic metrics, chemistry-conditioned errors, common-sample
+  model comparison, reliability/error-decay diagnostics, raw confusion/per-class
+  metrics, and binary ROC/PR with explicit positive-class/probability gates.
+- Added focused/full-contract tests and real three-browser/mobile, 100,000-row,
+  network, security, and evidence-integrity captures. Exact-HEAD CI and task
+  archive remain pending; Phase 10K-4 has not started.
+
 ## 2026-07-28 - Phase 10K-2 Dataset Materials Explorer
 
 - Registered and implemented one product-level `dataset.materials_explorer`

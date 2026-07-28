@@ -80,7 +80,7 @@ describe("DatasetMaterialsExplorerPanel", () => {
     partial.sampleIndex = [];
     render(<DatasetMaterialsExplorerPanel artifacts={[artifact(partial)]} />);
     expect(screen.getByLabelText("Dataset Materials Explorer")).toBeTruthy();
-    expect(screen.getAllByRole("tab")).toHaveLength(7);
+    expect(screen.getAllByRole("tab")).toHaveLength(8);
     await user.click(screen.getByRole("tab", { name: "Composition" }));
     expect(screen.getByText("Formula semantics are unavailable.")).toBeTruthy();
     await user.click(screen.getByRole("tab", { name: "Structures" }));
@@ -89,6 +89,20 @@ describe("DatasetMaterialsExplorerPanel", () => {
     expect(screen.getByText("No Profile 2.0 material-property roles are available.")).toBeTruthy();
     await user.click(screen.getByRole("tab", { name: "Comparison" }));
     expect(screen.getByText("No explicit dataset comparison was requested.")).toBeTruthy();
+    await user.click(screen.getByRole("tab", { name: "Model evaluation" }));
+    expect(screen.getByText("No model-result semantics detected.")).toBeTruthy();
+  });
+
+  it("links Profile-ready model semantics to the Materials ML product", async () => {
+    const user = userEvent.setup();
+    const ready = payload();
+    ready.overview.availableAnalyses.push("regression_evaluation", "uncertainty_evaluation");
+    render(<DatasetMaterialsExplorerPanel artifacts={[artifact(ready)]} />);
+    await user.click(screen.getByRole("tab", { name: "Model evaluation" }));
+    const view = screen.getByTestId("dataset-explorer-model-evaluation");
+    expect(view).toHaveTextContent("regression_evaluation");
+    expect(view).toHaveTextContent("uncertainty_evaluation");
+    expect(view).toHaveTextContent("stable material samples");
   });
 
   it("renders malicious labels as inert text", async () => {

@@ -13,6 +13,20 @@ from .dataset_materials_explorer import (
     DatasetMaterialsExplorerAdapter,
 )
 from .error_distribution import ErrorDistributionAdapter
+from .materials_ml_evaluation import (
+    CLASSIFICATION_SCHEMA_VERSION,
+    CLASSIFICATION_TOOL_ID,
+    REGRESSION_SCHEMA_VERSION,
+    REGRESSION_TOOL_ID,
+    UNCERTAINTY_SCHEMA_VERSION,
+    UNCERTAINTY_TOOL_ID,
+    ClassificationEvaluationAdapter,
+    RegressionEvaluationAdapter,
+    UncertaintyEvaluationAdapter,
+    binary_roc_pr,
+    classification_metric_values,
+    regression_metric_values,
+)
 from .numeric_summary import NumericSummaryAdapter
 from .outlier_table import OutlierTableAdapter
 from .structure import (
@@ -48,6 +62,9 @@ __all__ = [
     "BRILLOUIN_ZONE_TOOL_ID",
     "BrillouinZoneAdapter",
     "CompositionSummaryAdapter",
+    "CLASSIFICATION_SCHEMA_VERSION",
+    "CLASSIFICATION_TOOL_ID",
+    "ClassificationEvaluationAdapter",
     "DATASET_EXPLORER_SCHEMA_VERSION",
     "DATASET_EXPLORER_TOOL_ID",
     "DatasetMaterialsExplorerAdapter",
@@ -58,6 +75,9 @@ __all__ = [
     "LatticeSummaryAdapter",
     "NumericSummaryAdapter",
     "OutlierTableAdapter",
+    "REGRESSION_SCHEMA_VERSION",
+    "REGRESSION_TOOL_ID",
+    "RegressionEvaluationAdapter",
     "ScatterAdapter",
     "SpacegroupSummaryAdapter",
     "StructureCompositionAdapter",
@@ -72,8 +92,14 @@ __all__ = [
     "TRAJECTORY_VIEWER_CAPABILITIES",
     "TRAJECTORY_VIEWER_TOOL_ID",
     "TrajectoryViewerAdapter",
+    "UNCERTAINTY_SCHEMA_VERSION",
+    "UNCERTAINTY_TOOL_ID",
+    "UncertaintyEvaluationAdapter",
     "VOLUMETRIC_ADAPTER_VERSION",
     "VOLUMETRIC_ARTIFACT_TYPES",
     "VOLUMETRIC_TOOL_ID",
     "VolumetricDataAdapter",
+    "binary_roc_pr",
+    "classification_metric_values",
+    "regression_metric_values",
 ]

@@ -26,6 +26,26 @@ assigned phases rather than by this roadmap gate:
 
 ## Closed Product-Scope Questions
 
+* ML product identity: **CLOSED FOR PHASE 10K-3** - three coherent product
+  capabilities for regression, uncertainty, and classification; historical
+  atomic manifest entries are not aliases or execution authority.
+* Regression residual/model comparison: **CLOSED FOR PHASE 10K-3** - residual
+  is prediction minus target and model comparison uses common finite samples
+  for the same target.
+* Chemistry-conditioned error: **CLOSED FOR PHASE 10K-3** - overlapping element
+  membership and exact chemical systems with sample counts; the default small
+  group threshold is three and smaller groups are flagged, not hidden.
+* Uncertainty diagnostics: **CLOSED FOR PHASE 10K-3** - explicit series binding,
+  equal-count reliability, and lowest-uncertainty-first retained-error curves;
+  source-defined kind is retained and calibration authority is not claimed.
+* Classification curves: **CLOSED FOR PHASE 10K-3** - binary only, explicit
+  positive class, matching normalized probabilities; multiclass curves remain
+  typed unavailable.
+* Classification averaging: **CLOSED FOR PHASE 10K-3** - macro metrics are
+  unweighted means over defined class metrics; undefined zero-denominator
+  precision/recall/F1 is typed null and omitted from that macro denominator,
+  with support and raw confusion counts retained.
+
 * Dataset summary semantics: **CLOSED FOR PHASE 10K-2** - Profile 2.0-bound
   deterministic overview, explicit denominators, bounded category/sample
   tables, and one coherent product artifact.

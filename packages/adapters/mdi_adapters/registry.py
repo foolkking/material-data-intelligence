@@ -4,6 +4,7 @@ from .base import BaseToolAdapter
 from .platform_builtin import (
     BasicMetricsAdapter,
     BrillouinZoneAdapter,
+    ClassificationEvaluationAdapter,
     CompositionSummaryAdapter,
     DatasetMaterialsExplorerAdapter,
     CorrelationAdapter,
@@ -13,6 +14,7 @@ from .platform_builtin import (
     LatticeSummaryAdapter,
     NumericSummaryAdapter,
     OutlierTableAdapter,
+    RegressionEvaluationAdapter,
     ScatterAdapter,
     SpacegroupSummaryAdapter,
     StructureCompositionAdapter,
@@ -24,6 +26,7 @@ from .platform_builtin import (
     StructureViewerSceneMetadataAdapter,
     TrajectoryImportAdapter,
     TrajectoryViewerAdapter,
+    UncertaintyEvaluationAdapter,
     VolumetricDataAdapter,
 )
 from .pymatviz import (
@@ -47,6 +50,7 @@ from .pymatviz.structure_3d import Structure3DAdapter
 ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     BasicMetricsAdapter.__name__: BasicMetricsAdapter,
     BrillouinZoneAdapter.__name__: BrillouinZoneAdapter,
+    ClassificationEvaluationAdapter.__name__: ClassificationEvaluationAdapter,
     ChemSysSunburstAdapter.__name__: ChemSysSunburstAdapter,
     ChemSysTreemapAdapter.__name__: ChemSysTreemapAdapter,
     CompositionSummaryAdapter.__name__: CompositionSummaryAdapter,
@@ -62,6 +66,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     LatticeSummaryAdapter.__name__: LatticeSummaryAdapter,
     NumericSummaryAdapter.__name__: NumericSummaryAdapter,
     OutlierTableAdapter.__name__: OutlierTableAdapter,
+    RegressionEvaluationAdapter.__name__: RegressionEvaluationAdapter,
     PTableHeatmapAdapter.__name__: PTableHeatmapAdapter,
     PhononBandAdapter.__name__: PhononBandAdapter,
     PhononBandDosAdapter.__name__: PhononBandDosAdapter,
@@ -79,6 +84,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     StructureViewer3DAdapter.__name__: StructureViewer3DAdapter,
     TrajectoryImportAdapter.__name__: TrajectoryImportAdapter,
     TrajectoryViewerAdapter.__name__: TrajectoryViewerAdapter,
+    UncertaintyEvaluationAdapter.__name__: UncertaintyEvaluationAdapter,
     VolumetricDataAdapter.__name__: VolumetricDataAdapter,
     XrdPatternAdapter.__name__: XrdPatternAdapter,
     ScatterAdapter.__name__: ScatterAdapter,

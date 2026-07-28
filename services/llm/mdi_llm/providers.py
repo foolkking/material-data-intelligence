@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 import os
+import re
 import socket
 from typing import Any, Protocol
 import urllib.error
@@ -95,8 +96,11 @@ class MockLLMProvider:
         data_profile: DataProfile,
         user_config: PlannerUserConfig | None = None,
     ) -> PlannerRawResponse:
+        materials_ml_tool = _select_materials_ml_tool(request, tools, data_profile)
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif materials_ml_tool is not None:
+            plan = _mock_materials_ml_plan(request, data_profile, materials_ml_tool)
         elif _should_generate_dataset_materials_explorer(request, tools, data_profile):
             plan = _mock_dataset_materials_explorer_plan(request, data_profile)
         elif _should_generate_band_bz_link(request, tools, data_profile):
@@ -1246,6 +1250,135 @@ def _should_generate_dataset_materials_explorer(
         "比较训练集和测试集",
     )
     return any(marker in prompt for marker in markers)
+
+
+def _select_materials_ml_tool(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> str | None:
+    if data_profile.profileContractVersion != "2.0":
+        return None
+    prompt = request.user_prompt.lower()
+    candidates = (
+        (
+            "ml.classification_evaluation",
+            "classification",
+            ("classification", "confusion matrix", "precision", "recall", "roc", "pr curve", "分类", "混淆矩阵"),
+        ),
+        (
+            "ml.uncertainty_evaluation",
+            "uncertainty",
+            ("uncertainty", "calibration", "reliability", "error decay", "不确定性", "校准", "可靠性"),
+        ),
+        (
+            "ml.regression_evaluation",
+            "regression",
+            (
+                "model performance",
+                "prediction error",
+                "parity",
+                "residual",
+                "regression evaluation",
+                "compare models",
+                "机器学习模型",
+                "预测误差",
+                "回归评估",
+                "模型表现",
+            ),
+        ),
+    )
+    for tool_id, capability, markers in candidates:
+        if _has_tool(tools, tool_id) and any(marker in prompt for marker in markers):
+            groups = _materials_ml_groups(data_profile, capability)
+            if groups:
+                return tool_id
+    return None
+
+
+def _materials_ml_groups(data_profile: DataProfile, capability: str) -> list[Any]:
+    if capability == "classification":
+        return [group for group in data_profile.semanticGroups if group.kind == "classification" and group.status == "COMPLETE"]
+    groups = [group for group in data_profile.semanticGroups if group.kind == "regression" and group.status == "COMPLETE"]
+    if capability == "uncertainty":
+        groups = [group for group in groups if group.uncertaintyColumns or any(binding.uncertaintyColumns for binding in group.seriesBindings)]
+    return groups
+
+
+def _mock_materials_ml_plan(
+    request: PlannerRequest,
+    data_profile: DataProfile,
+    tool_id: str,
+) -> dict[str, Any]:
+    capability = {
+        "ml.regression_evaluation": "regression",
+        "ml.uncertainty_evaluation": "uncertainty",
+        "ml.classification_evaluation": "classification",
+    }[tool_id]
+    groups = _materials_ml_groups(data_profile, capability)
+    object_groups: dict[str, list[Any]] = {}
+    for group in groups:
+        object_ids = sorted(
+            {
+                column.objectId
+                for column in data_profile.semanticColumns
+                if any(role.groupId == group.groupId for role in column.roles)
+            }
+        )
+        if len(object_ids) == 1:
+            object_groups.setdefault(object_ids[0], []).append(group)
+    if not object_groups:
+        raise ValueError("Profile 2.0 contains no unambiguous ML table binding.")
+    object_id = sorted(object_groups)[0]
+    selected_groups = sorted(object_groups[object_id], key=lambda item: item.groupId)
+    params: dict[str, Any] = {
+        "groupIds": [group.groupId for group in selected_groups],
+        "maxTableRows": 100,
+        "maxPlotPoints": 2000,
+    }
+    if tool_id == "ml.regression_evaluation":
+        params.update({"maxChemistryGroups": 128, "minGroupSize": 3, "histogramBins": 30})
+    elif tool_id == "ml.uncertainty_evaluation":
+        params["uncertaintyBins"] = 10
+    else:
+        params["maxCurvePoints"] = 1000
+        explicit_positive = re.search(r"(?:positive class|正类)\s*[:=]?\s*([a-zA-Z0-9_.-]+)", request.user_prompt)
+        if explicit_positive:
+            requested = explicit_positive.group(1).lower().strip(".,;:!?")
+            classes = sorted({label for group in selected_groups for label in group.classes})
+            if requested in classes:
+                params["positiveClass"] = requested
+    artifact_name = {
+        "ml.regression_evaluation": "materials_ml_regression.json",
+        "ml.uncertainty_evaluation": "materials_ml_uncertainty.json",
+        "ml.classification_evaluation": "materials_ml_classification.json",
+    }[tool_id]
+    purpose = {
+        "ml.regression_evaluation": "Evaluate Profile-bound materials regression results and linked chemistry-conditioned errors.",
+        "ml.uncertainty_evaluation": "Evaluate explicit Profile-bound uncertainty diagnostics without fitting or calibration claims.",
+        "ml.classification_evaluation": "Evaluate Profile-bound classification results and valid explicit-positive-class binary curves.",
+    }[tool_id]
+    step = {
+        "stepId": "step_001",
+        "toolId": tool_id,
+        "purpose": purpose,
+        "reason": "The request and Material Data Profile 2.0 expose a complete compatible evaluation task.",
+        "inputRefs": [
+            {"refType": "profile", "ref": "profile"},
+            {"refType": "normalized_object", "ref": object_id, "objectType": "DataFrame", "fieldRole": "ml_result_table"},
+        ],
+        "params": params,
+        "output": {"artifactTypes": ["table_json", "summary_md", "recipe_json"]},
+    }
+    return _single_step_plan(
+        request,
+        step,
+        [
+            {"name": artifact_name, "type": "table_json", "fromStepId": "step_001"},
+            {"name": "summary.md", "type": "summary_md", "fromStepId": "step_001"},
+            {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_001"},
+        ],
+    )
 
 
 def _mock_dataset_materials_explorer_plan(request: PlannerRequest, data_profile: DataProfile) -> dict[str, Any]:

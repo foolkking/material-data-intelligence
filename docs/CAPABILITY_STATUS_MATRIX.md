@@ -15,8 +15,11 @@ implementation.
 | Data | Material Data Profile 2.0 | READY | Yes | No | Phase 10K-1 |
 | Dataset | Materials explorer and comparisons | READY | Yes | No | `dataset.materials_explorer` within Phase 10K-2 limits |
 | Dataset | Composition embedding/clustering | PLANNED | Yes | No | Phase 10K-4 |
-| ML | Regression/basic model-result analysis | PARTIAL_READY | Yes | No | Existing ML tools; Phase 10K-3 completion |
-| ML | Uncertainty/classification evaluation | PLANNED | Conditional | No | Phase 10K-3 |
+| ML | Regression model-result evaluation | READY | Yes | No | `ml.regression_evaluation` within Phase 10K-3 limits |
+| ML | Uncertainty evaluation | READY | Conditional | No | `ml.uncertainty_evaluation` when Profile 2.0 has an explicit binding |
+| ML | Classification evaluation | READY | Conditional | No | `ml.classification_evaluation`; binary curves require explicit valid probabilities |
+| ML | Chemistry-conditioned error | READY | Conditional | No | Phase 10K-3 descriptive element/system groups with small-group disclosure |
+| ML | Common-sample model comparison | READY | Conditional | No | Phase 10K-3 shared-target finite-sample intersection |
 | Agent | Structured validated planning | READY | Yes | No | AnalysisPlan/PlanValidator |
 | Agent | Capability-aware planning | PARTIAL_READY | Yes | No | Phase 10L-2 |
 | Agent | Bounded multi-tool analysis | PARTIAL_READY | Yes | No | Phase 10L-3 |

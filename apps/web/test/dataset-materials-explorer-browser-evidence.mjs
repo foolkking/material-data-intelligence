@@ -107,7 +107,7 @@ async function productFlow(page) {
   const product = page.getByTestId("dataset-materials-explorer");
   await product.waitFor();
   const firstProductMs = Date.now() - started;
-  const tabs = ["Overview", "Composition", "Structures", "Properties", "Data quality", "Comparison", "Samples"];
+  const tabs = ["Overview", "Composition", "Structures", "Properties", "Data quality", "Comparison", "Model evaluation", "Samples"];
   const snapshots = {};
   for (const tab of tabs) {
     await product.getByRole("tab", { name: tab }).click();
@@ -141,11 +141,13 @@ async function productFlow(page) {
     properties: snapshots.Properties.includes("statistical candidates only"),
     quality: snapshots["Data quality"].toLowerCase().includes("invalid formulas"),
     comparison: snapshots.Comparison.includes("no row-order inference"),
+    modelEvaluation: snapshots["Model evaluation"].includes("Profile-ready model evaluations")
+      || snapshots["Model evaluation"].includes("No model-result semantics detected"),
     sampleRow: sampleInspector.includes("row 2"),
     sampleFormula: sampleInspector.includes("Si"),
   };
   if (Object.values(contentChecks).some((value) => !value)) throw new Error(`Dataset product content mismatch: ${JSON.stringify(contentChecks)}`);
-  if (state.tabCount !== 7 || state.selectedTabCount !== 1 || state.canvasCount || state.iframeCount || state.scriptCount || horizontalOverflow) throw new Error(`Dataset product surface audit failed: ${JSON.stringify({ state, horizontalOverflow })}`);
+  if (state.tabCount !== 8 || state.selectedTabCount !== 1 || state.canvasCount || state.iframeCount || state.scriptCount || horizontalOverflow) throw new Error(`Dataset product surface audit failed: ${JSON.stringify({ state, horizontalOverflow })}`);
   return { firstProductMs, snapshots, sampleInspector, keyboardFocus, horizontalOverflow, accessibility: { regionLabel: state.regionLabel, tabCount: state.tabCount, selectedTabCount: state.selectedTabCount, tableFallback: state.tableCount > 0 } };
 }
 

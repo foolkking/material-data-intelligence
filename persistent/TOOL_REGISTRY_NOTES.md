@@ -1,5 +1,26 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-28 Phase 10K-3 Materials ML Evaluation Product Surface
+
+- Added exactly three public executable identities: `ml.regression_evaluation`,
+  `ml.uncertainty_evaluation`, and `ml.classification_evaluation`, implemented
+  by matching product adapters. They group coherent diagnostics rather than
+  exposing one tool per metric or chart.
+- All three require Profile 2.0 plus exactly one explicitly bound canonical
+  DataFrame. `groupIds` select only complete matching semantic groups; the
+  adapter rejects ambiguity, incompleteness, cross-object binding, and invalid
+  values instead of re-inferring columns.
+- Strict schemas and Registry caps bound rows, models, classes, chemistry
+  groups, linked rows, plot/curve points, bins, artifact bytes, and time.
+- Mock Planner routes explicit single-product evaluation intent only when the
+  current profile declares a complete group and the Registry contains the
+  formal tool. PlanValidator and QueueWorkerRuntime authority are unchanged.
+- Historical `ml.parity_plot`, `ml.uncertainty_calibration`, and
+  `ml.error_by_element` manifest identities remain non-executable legacy
+  planning entries; they are not aliases and gain no adapter authority here.
+- Training, AutoML, embedding/clustering, interpretation, arbitrary code, and
+  external model services remain outside this product surface.
+
 ## 2026-07-28 Phase 10K-2 Dataset Materials Explorer Product Surface
 
 - Added one public identity, `dataset.materials_explorer`, implemented by

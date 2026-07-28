@@ -56,7 +56,9 @@ def test_performance_and_browser_evidence_is_bounded(repo_root: Path) -> None:
     assert [item["browser"] for item in matrix] == ["chromium", "firefox", "webkit"]
     assert all(item["available"] for item in matrix)
     assert all(item["externalRequests"] == 0 for item in matrix)
-    assert all(item["desktop"]["accessibility"]["tabCount"] == 7 for item in matrix)
+    # Phase 10K-2 evidence is immutable historical evidence. Current UI may add
+    # later product tabs while preserving all seven original product tabs.
+    assert all(item["desktop"]["accessibility"]["tabCount"] >= 7 for item in matrix)
     assert matrix[0]["mobile"]["horizontalOverflow"] is False
     assert matrix[0]["mobile"]["accessibility"]["regionLabel"] == "Dataset Materials Explorer"
     for name in (
