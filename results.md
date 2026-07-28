@@ -1228,7 +1228,7 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
 
 ## Status and Completion Time
 
-* status: `PASS_PENDING_COMPLETION_RECORD_CI`
+* status: `PASS`
 * completed: `2026-07-28 23:23:54 +08:00`
 
 ## Delivered Capability
@@ -1291,6 +1291,11 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
   `fb9d720b9d6009ebecab8eeff7fc60c2080a67c6`; exact-SHA CI run
   `30372914960` passed Unit, Frontend Typecheck & Build,
   PostgreSQL/Redis/MinIO service-backed integration, and no-skipped assertion.
-* completion-record commit/CI: pending this record commit.
-* Phase 10K-4 remains in `TASKS.md` until completion-record exact-SHA CI passes.
+* completion record: `97a07814d4b7c7cfe9d086aedc094cf46cc0368b`;
+  exact-SHA CI run `30373474557` passed Unit, Frontend Typecheck & Build,
+  PostgreSQL/Redis/MinIO service-backed integration, and no-skipped assertion.
+* archive decision: implementation, evidence, permanent result, required local
+  checks, and both exact-SHA CI gates are consistent. The completed K4 task
+  block is removed by the verified queue archive commit.
+* Phase 10K-4: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 * Phase 10K-5 remains pending and was not implemented by this task.

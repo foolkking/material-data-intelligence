@@ -11,10 +11,11 @@
   consumes backend coordinates and never performs PCA or clustering.
 - Full backend/frontend, browser matrix, evidence integrity, accessibility,
   performance, and security checks passed. Implementation/evidence HEAD
-  `fb9d720` passed exact-SHA CI run `30372914960`, including service-backed and
-  no-skipped. Completion-record CI and verified queue archive remain pending;
-  no dependency, model training, UMAP/t-SNE, real LLM, external service, or
-  Phase 10L behavior was added.
+  `fb9d720` passed exact-SHA CI run `30372914960`; completion record `97a0781`
+  passed exact-SHA CI run `30373474557`. Both include service-backed and
+  no-skipped, and the verified queue block is archived. No dependency, model
+  training, UMAP/t-SNE, real LLM, external service, or Phase 10L behavior was
+  added.
 
 ## 2026-07-28 - Phase 10K-3 Materials ML Evaluation
 

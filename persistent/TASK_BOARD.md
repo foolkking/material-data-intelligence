@@ -22,11 +22,13 @@
   `a1e05ee` and completion record `c5483d6` passed exact-SHA CI runs
   `30363719393` and `30364098180`, including service-backed/no-skipped. The
   result and evidence are retained and the verified queue block is archived.
-- [~] Phase 10K-4 Composition Space / Embedding / Clustering implementation and
-  evidence HEAD `fb9d720` passed exact-SHA CI run `30372914960`, including
-  Unit, Frontend, service-backed integration, and no-skipped. The completion
-  record is being committed; its exact-SHA CI and verified queue archive remain
-  open. Phase 10K-5 and 10L have not started.
+- [x] Phase 10K-4 Composition Space / Embedding / Clustering implementation and
+  evidence HEAD `fb9d720` and completion record `97a0781` passed exact-SHA CI
+  runs `30372914960` and `30373474557`, including Unit, Frontend,
+  service-backed integration, and no-skipped. The permanent result/evidence are
+  retained and the verified queue block is archived.
+- [ ] Phase 10K-5 Material Intelligence Integration + Browser/API Evidence is
+  next and has not started. Phase 10L remains unstarted.
 
 `TASKS.md` contains the approved executable Phase 10K queue. Future Scope and
 Not Planned items are not queue work.

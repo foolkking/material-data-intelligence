@@ -20,8 +20,9 @@
   security, and deterministic evidence are retained. Full backend completed at
   `826 passed, 26 skipped`; frontend completed at `314 passed` with typecheck
   and build success. Implementation/evidence HEAD `fb9d720` passed exact-SHA CI
-  run `30372914960`, including service-backed/no-skipped. Completion-record CI
-  and verified queue archive remain open; Phase 10K-5 has not started.
+  run `30372914960`, including service-backed/no-skipped. Completion record
+  `97a0781` passed exact-SHA CI run `30373474557`; the verified task block is
+  archived and Phase 10K-5 remains next but unstarted.
 
 ## 2026-07-28 Phase 10K-3 Materials ML Evaluation Implementation
 
