@@ -10,11 +10,12 @@
 - [x] Phase 10K-0 Material Intelligence Capability Gap Audit is complete at
   audit commit `cada6fb` and completion record `ab5a69a`; exact-SHA CI runs
   `30270323576` and `30270636913` passed. Its verified queue block is archived.
-- [ ] Phase 10K-1 Material Data Profile 2.0 implementation `92a8e98` and exact-
-  SHA CI run `30346512968` are complete, including service-backed/no-skipped.
-  The task is `COMPLETE_PENDING_RECORD_CI`; completion-record CI, result ledger,
-  and verified queue archive remain. Phase 10K-2 has not started.
-  Later queue blocks remain pending and must not start early.
+- [x] Phase 10K-1 Material Data Profile 2.0 implementation `92a8e98` and
+  completion record `b5a464e` passed exact-SHA CI runs `30346512968` and
+  `30346686652`, including service-backed/no-skipped. The result is retained and
+  the verified queue block is archived.
+- [ ] Phase 10K-2 is `NEXT / NOT_STARTED`. Later queue blocks remain pending and
+  must not start early.
 
 `TASKS.md` contains the approved executable Phase 10K queue. Future Scope and
 Not Planned items are not queue work.

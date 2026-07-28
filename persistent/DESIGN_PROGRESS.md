@@ -23,8 +23,9 @@
 - Focused API/unit/component checks, full local backend/frontend regression,
   typecheck/build, Phase 10 closure, and API/performance plus
   Chromium/Firefox/WebKit/mobile evidence pass. Implementation `92a8e98` passed
-  exact-SHA CI run `30346512968`, including service-backed/no-skipped. The
-  completion-record CI and verified queue archive remain; 10K-2 has not started.
+  exact-SHA CI run `30346512968`, including service-backed/no-skipped.
+  Completion record `b5a464e` passed exact-SHA CI run `30346686652`; the
+  verified 10K-1 queue block is archived and 10K-2 remains unstarted.
 
 ## 2026-07-27 Phase 10K-0 Material Intelligence Capability Gap Audit
 

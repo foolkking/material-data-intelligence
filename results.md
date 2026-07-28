@@ -965,3 +965,66 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
 * Phase 10K-0: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 * Phase 10K-1: `NEXT / NOT_STARTED`; a complete prompt is now present in the
   user-maintained queue, superseding the earlier awaiting-prompt wording.
+
+# Phase 10K-1 Material Data Profile 2.0 Result
+
+## Status and Completion Time
+
+* status: `PASS`
+* completed: `2026-07-28 17:53:01 +08:00`
+
+## Delivered Capability
+
+* Extended the existing additive `DataProfile` contract (`schemaVersion=0.1`,
+  `profileContractVersion=2.0`) instead of creating a parallel profile type.
+* Added deterministic semantic facts for formula, approved material properties,
+  stable sample identity, regression/multiple-model/multi-target/uncertainty,
+  classification labels, and class probabilities.
+* Used bounded authority levels and explicit model-series bindings. A generic
+  uncertainty column is not silently assigned to multiple predictions.
+* Added immutable table, composition/structure, trajectory, phonon, and
+  volumetric resource semantics. Data readiness remains distinct from actual
+  Registry-backed platform availability.
+* Added deterministic semantic hashing, typed ambiguity/missing reasons,
+  coverage disclosure, bounded inputs, API/persistence serialization, and a
+  compact read-only profile surface in the existing frontend.
+
+## Scope and Evidence
+
+* No Dataset Explorer, ML evaluation product, embedding/clustering, capability-
+  aware Planner behavior, Tool Registry entry, PlanValidator rule,
+  QueueWorkerRuntime behavior, dependency, real LLM call, or external request
+  was introduced.
+* Real API, performance, and Chromium/Firefox/WebKit/mobile evidence is retained
+  in `docs/phase10k/evidence/phase10k1_material_data_profile_2/`.
+* Readiness: `READY_WITH_EXPLICIT_LIMITS`; semantic recognition is deterministic
+  and bounded, while future analysis products remain correctly unavailable until
+  their corresponding Registry-backed implementation phases.
+
+## Verification
+
+* focused profile/API/component tests: `41 passed`.
+* full backend: `777 passed, 24 skipped, 62 warnings`; local skips were explicit
+  service-gated cases and are not reported as passes.
+* frontend: `48 files, 294 tests passed`; typecheck and production build passed.
+* `uv lock --check`, `git diff --check`, Phase 10 closure/evidence integrity,
+  API/performance evidence, and browser runners passed.
+* markers: `MATERIAL_DATA_PROFILE_API_EVIDENCE_PASS`,
+  `MATERIAL_DATA_PROFILE_PERFORMANCE_EVIDENCE_PASS`,
+  `MATERIAL_PROFILE_BROWSER_EVIDENCE_PASS`,
+  `MATERIAL_PROFILE_MOBILE_EVIDENCE_PASS`,
+  `NO_MATERIAL_PROFILE_EXTERNAL_NETWORK_REQUESTS`, and
+  `NO_SECRET_PATTERN_HITS`.
+
+## Commit / CI / Queue
+
+* implementation: `92a8e98b344b0a819954746f107e765f8f9cf6d2`; exact-SHA CI run
+  `30346512968` succeeded, including service-backed integration and no-skipped.
+* completion record: `b5a464e1c436f6f7a056511b1a0a6cfcc6cbcb19`; exact-SHA CI run
+  `30346686652` succeeded for Unit Tests, Frontend Typecheck & Build, and
+  PostgreSQL/Redis/MinIO service-backed integration with the no-skipped gate.
+* archive decision: completion record, result, required checks, evidence, and
+  both exact-SHA CI gates are consistent; the `Phase 10K-1` task block is
+  eligible for verified queue archival.
+* Phase 10K-1: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
+* Phase 10K-2: `NEXT / NOT_STARTED`.
