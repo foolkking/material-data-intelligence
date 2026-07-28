@@ -744,10 +744,12 @@ function FormatAdaptiveProfile({ t, profile }: { t: ReturnType<typeof createTran
   const numericColumns = columns.filter((column) => column.dtype === "number").map((column) => column.name).filter(Boolean);
   const categoricalColumns = columns.filter((column) => column.dtype !== "number").map((column) => column.name).filter(Boolean);
   const formulaColumns = columns.filter((column) => column.inferredRole === "formula").map((column) => column.name).filter(Boolean);
+  const intelligence = <MaterialProfileIntelligence t={t} profile={profile} />;
   if (profile.tableSummary) {
     return (
       <section className="format-profile" data-format="table" data-testid="profile-summary">
         <h3>{t("tableData")}</h3>
+        {intelligence}
         <dl className="mini-grid">
           <Field label={t("rowCount")} value={String(profile.tableSummary.nRows ?? 0)} />
           <Field label={t("columnCount")} value={String(profile.tableSummary.nColumns ?? columns.length)} />
@@ -768,6 +770,7 @@ function FormatAdaptiveProfile({ t, profile }: { t: ReturnType<typeof createTran
     return (
       <section className="format-profile" data-format="structure">
         <h3>{t("structureData")}</h3>
+        {intelligence}
         <dl className="mini-grid">
           <Field label={t("structureCount")} value={String(profile.structureSummary.nStructures)} />
           <Field label={t("elements")} value={profile.structureSummary.elements?.join(", ") || t("notConfigured")} />
@@ -781,6 +784,7 @@ function FormatAdaptiveProfile({ t, profile }: { t: ReturnType<typeof createTran
     return (
       <section className="format-profile" data-format="archive">
         <h3>{t("archiveData")}</h3>
+        {intelligence}
         <div className="list-stack">
           {profile.objects.map((object, index) => (
             <div className="list-row" key={`${object.objectType}-${index}`}>
@@ -797,6 +801,43 @@ function FormatAdaptiveProfile({ t, profile }: { t: ReturnType<typeof createTran
       <h3>{t("unsupportedData")}</h3>
       <p>{t("unsupportedDataHint")}</p>
     </section>
+  );
+}
+
+function MaterialProfileIntelligence({ t, profile }: { t: ReturnType<typeof createTranslator>; profile: DataProfileSummary }) {
+  if (profile.profileContractVersion !== "2.0") return null;
+  const roles = Array.from(
+    new Set((profile.semanticColumns || []).flatMap((column) => (column.roles || []).map((role) => role.role).filter(Boolean)))
+  ).sort();
+  const ready = (profile.analysisReadiness || []).filter((item) => item.dataStatus === "READY");
+  const blocked = (profile.analysisReadiness || []).filter((item) => item.dataStatus !== "READY");
+  const available = ready.filter((item) => item.platformStatus === "AVAILABLE").map((item) => item.capability).filter(Boolean);
+  const planned = ready.filter((item) => item.platformStatus === "NOT_IMPLEMENTED").map((item) => item.capability).filter(Boolean);
+  const warningCodes = Array.from(
+    new Set([
+      ...(profile.qualityIssues || []).map((issue) => issue.code).filter(Boolean),
+      ...(profile.profileCoverage?.warnings || [])
+    ])
+  ).sort();
+  const coverage = profile.profileCoverage;
+  const coverageText = coverage
+    ? `${coverage.rowsInspected ?? 0}/${coverage.totalRows ?? 0} rows, ${coverage.columnsInspected ?? 0}/${coverage.totalColumns ?? 0} columns`
+    : t("notConfigured");
+  return (
+    <div className="profile-intelligence" data-testid="material-profile-intelligence" aria-label={t("profileSummary")}>
+      <dl className="mini-grid">
+        <Field label={t("detectedSemantics")} value={roles.join(", ") || t("noSemanticRoles")} />
+        <Field label={t("dataReadyAnalyses")} value={ready.map((item) => item.capability).filter(Boolean).join(", ") || t("notConfigured")} />
+        <Field label={t("availableAnalyses")} value={available.join(", ") || t("notConfigured")} />
+        <Field label={t("plannedAnalyses")} value={planned.join(", ") || t("notConfigured")} />
+        <Field
+          label={t("blockedAnalyses")}
+          value={blocked.map((item) => `${item.capability}:${item.dataStatus}${item.reasons?.length ? ` (${item.reasons.join("|")})` : ""}`).join(", ") || t("notConfigured")}
+        />
+        <Field label={t("profileCoverage")} value={coverageText} />
+        <Field label={t("profileWarnings")} value={warningCodes.join(", ") || t("notConfigured")} />
+      </dl>
+    </div>
   );
 }
 

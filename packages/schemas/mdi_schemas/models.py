@@ -282,6 +282,94 @@ class AnalysisPlan(BaseModel):
     expectedArtifacts: list[ExpectedArtifact] = Field(default_factory=list)
 
 
+class DataProfileSemanticRole(BaseModel):
+    role: Literal[
+        "material_formula",
+        "sample_identity",
+        "regression_target",
+        "regression_prediction",
+        "regression_uncertainty",
+        "classification_target",
+        "classification_prediction",
+        "class_probability",
+        "material_property",
+    ]
+    authority: Literal["explicit_metadata", "user_declared", "canonical_name", "alias_match", "bounded_pattern"]
+    groupId: str | None = None
+    details: dict[str, Any] = Field(default_factory=dict)
+
+
+class DataProfileSemanticColumn(BaseModel):
+    objectId: str
+    column: str
+    dtype: str
+    roles: list[DataProfileSemanticRole] = Field(default_factory=list)
+    missingCount: int = Field(default=0, ge=0)
+    uniqueCount: int = Field(default=0, ge=0)
+    finiteCount: int | None = Field(default=None, ge=0)
+    nonFiniteCount: int | None = Field(default=None, ge=0)
+    rowsInspected: int = Field(default=0, ge=0)
+    totalRows: int = Field(default=0, ge=0)
+    unit: str | None = None
+    ambiguities: list[str] = Field(default_factory=list)
+
+
+class DataProfileSemanticSeriesBinding(BaseModel):
+    seriesId: str
+    predictionColumn: str | None = None
+    uncertaintyColumns: list[str] = Field(default_factory=list)
+
+
+class DataProfileSemanticGroup(BaseModel):
+    groupId: str
+    kind: Literal["regression", "classification", "class_probability"]
+    targetColumns: list[str] = Field(default_factory=list)
+    predictionColumns: list[str] = Field(default_factory=list)
+    uncertaintyColumns: list[str] = Field(default_factory=list)
+    probabilityColumns: list[str] = Field(default_factory=list)
+    classes: list[str] = Field(default_factory=list)
+    seriesBindings: list[DataProfileSemanticSeriesBinding] = Field(default_factory=list)
+    status: Literal["COMPLETE", "INCOMPLETE", "AMBIGUOUS"]
+    reasons: list[str] = Field(default_factory=list)
+
+
+class DataProfileResourceSemantic(BaseModel):
+    objectId: str
+    objectType: str
+    objectHash: str
+    kind: str
+    facts: dict[str, Any] = Field(default_factory=dict)
+    capabilities: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class DataProfileAnalysisReadiness(BaseModel):
+    capability: str
+    dataStatus: Literal["READY", "MISSING_REQUIRED_DATA", "AMBIGUOUS", "UNSUPPORTED_DATA_KIND"]
+    platformStatus: Literal["AVAILABLE", "NOT_IMPLEMENTED", "NOT_EVALUATED"]
+    reasons: list[str] = Field(default_factory=list)
+    requiredSemantics: list[str] = Field(default_factory=list)
+    matchingGroups: list[str] = Field(default_factory=list)
+
+
+class DataProfileSampleIdentity(BaseModel):
+    policy: Literal["explicit_column", "object_hash_row_index"]
+    explicitColumn: str | None = None
+    fallbackPolicy: Literal["dataset_version_object_hash_row_index"] = "dataset_version_object_hash_row_index"
+    datasetVersion: str
+    objectIds: list[str] = Field(default_factory=list)
+
+
+class DataProfileCoverage(BaseModel):
+    policy: Literal["complete", "deterministic_bounded_sample"]
+    rowsInspected: int = Field(default=0, ge=0)
+    totalRows: int = Field(default=0, ge=0)
+    columnsInspected: int = Field(default=0, ge=0)
+    totalColumns: int = Field(default=0, ge=0)
+    limits: dict[str, int] = Field(default_factory=dict)
+    warnings: list[str] = Field(default_factory=list)
+
+
 class DataProfile(BaseModel):
     schemaVersion: Literal["0.1"] = "0.1"
     profileId: str
@@ -296,6 +384,15 @@ class DataProfile(BaseModel):
     trajectorySummary: dict[str, Any] | None = None
     qualityIssues: list[dict[str, Any]] = Field(default_factory=list)
     recommendedTasks: list[dict[str, Any]] = Field(default_factory=list)
+    profileContractVersion: Literal["2.0"] | None = None
+    semanticRulesVersion: str | None = None
+    semanticHash: str | None = None
+    semanticColumns: list[DataProfileSemanticColumn] = Field(default_factory=list)
+    semanticGroups: list[DataProfileSemanticGroup] = Field(default_factory=list)
+    resourceSemantics: list[DataProfileResourceSemantic] = Field(default_factory=list)
+    analysisReadiness: list[DataProfileAnalysisReadiness] = Field(default_factory=list)
+    sampleIdentity: DataProfileSampleIdentity | None = None
+    profileCoverage: DataProfileCoverage | None = None
     createdAt: str
 
 

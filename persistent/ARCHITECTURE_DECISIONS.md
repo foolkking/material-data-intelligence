@@ -1,5 +1,33 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-28 ADR: Profile Facts, Semantic Authority, and Readiness Are Separate Contracts
+
+**Context:** the legacy profile mixed a narrow column-name hint with task
+recommendations. Phase 10K requires deterministic material/model semantics that
+future products can trust without letting profile generation become a Planner,
+tool registry, or scientific analysis engine.
+
+**Decision:** extend the existing profile envelope additively. Observed parser
+facts, deterministic semantic classifications, semantic groups, resource
+facts, data readiness, platform availability, sample identity, and bounded
+coverage are distinct fields. Semantic authority is ordered as explicit
+metadata, user declaration, exact canonical name, exact bounded alias, anchored
+bounded pattern, then unknown. Dtype/value guards still apply. Ambiguity is
+typed and never silently resolved; no LLM or external lookup participates.
+
+Platform availability is application-owned and can only reference verified
+current Registry identities passed as an explicit runtime snapshot. A low-level
+profile built without that context reports `NOT_EVALUATED`; a data-ready future
+analysis remains `NOT_IMPLEMENTED`. The legacy Planner-facing `tableSummary.inferredRole`
+allowlist remains frozen, so new Profile 2.0 roles do not alter existing routing.
+One complete unique sample-ID column may be authoritative; otherwise identity
+uses dataset version, normalized object hash, and row index.
+
+**Consequences:** later Dataset/ML/composition products can consume explainable
+eligibility facts while retaining their own validation and scientific authority.
+Phase 10L owns capability-aware planning. The profile cannot execute code,
+select arbitrary tools, infer units, evaluate models, or promote roadmap state.
+
 ## 2026-07-27 ADR: Material Intelligence Requires Profile and Identity Before Product Composition
 
 **Context:** the repository has working atomic table, composition, structure,

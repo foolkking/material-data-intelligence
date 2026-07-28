@@ -200,7 +200,48 @@ export type DataProfileSummary = {
     elements?: string[];
     formulaStats?: { total?: number; uniqueCount?: number };
   };
-  objects?: Array<{ objectType?: string; count?: number }>;
+  objects?: Array<{ objectType?: string; count?: number; objectHash?: string }>;
+  profileContractVersion?: "2.0";
+  semanticRulesVersion?: string;
+  semanticHash?: string;
+  semanticColumns?: Array<{
+    objectId?: string;
+    column?: string;
+    dtype?: string;
+    roles?: Array<{ role?: string; authority?: string; groupId?: string; details?: Record<string, unknown> }>;
+    ambiguities?: string[];
+  }>;
+  semanticGroups?: Array<{
+    groupId?: string;
+    kind?: string;
+    status?: "COMPLETE" | "INCOMPLETE" | "AMBIGUOUS";
+    targetColumns?: string[];
+    predictionColumns?: string[];
+    uncertaintyColumns?: string[];
+    probabilityColumns?: string[];
+    seriesBindings?: Array<{
+      seriesId?: string;
+      predictionColumn?: string;
+      uncertaintyColumns?: string[];
+    }>;
+    reasons?: string[];
+  }>;
+  resourceSemantics?: Array<{ kind?: string; capabilities?: string[]; warnings?: string[] }>;
+  analysisReadiness?: Array<{
+    capability?: string;
+    dataStatus?: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+    platformStatus?: "AVAILABLE" | "NOT_IMPLEMENTED" | "NOT_EVALUATED";
+    reasons?: string[];
+  }>;
+  profileCoverage?: {
+    policy?: "complete" | "deterministic_bounded_sample";
+    rowsInspected?: number;
+    totalRows?: number;
+    columnsInspected?: number;
+    totalColumns?: number;
+    warnings?: string[];
+  };
+  qualityIssues?: Array<{ severity?: string; code?: string; message?: string }>;
 };
 
 export type DemoDatasetResult = DatasetDetail & {

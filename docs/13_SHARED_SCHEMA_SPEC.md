@@ -464,6 +464,8 @@ type DataProfile = {
     | "mixed_material_dataset"
     | "trajectory"
     | "phonon"
+    | "volumetric"
+    | "table"
     | "unknown";
   files: FileProfile[];
   objects: ObjectProfile[];
@@ -473,7 +475,108 @@ type DataProfile = {
   trajectorySummary?: Record<string, unknown>;
   qualityIssues: QualityIssue[];
   recommendedTasks: RecommendedTask[];
+  profileContractVersion?: "2.0";
+  semanticRulesVersion?: string;
+  semanticHash?: string;
+  semanticColumns?: DataProfileSemanticColumn[];
+  semanticGroups?: DataProfileSemanticGroup[];
+  resourceSemantics?: DataProfileResourceSemantic[];
+  analysisReadiness?: DataProfileAnalysisReadiness[];
+  sampleIdentity?: DataProfileSampleIdentity;
+  profileCoverage?: DataProfileCoverage;
   createdAt: string;
+};
+
+type DataProfileSemanticRole = {
+  role:
+    | "material_formula"
+    | "material_property"
+    | "sample_identity"
+    | "regression_target"
+    | "regression_prediction"
+    | "regression_uncertainty"
+    | "classification_target"
+    | "classification_prediction"
+    | "class_probability";
+  authority:
+    | "explicit_metadata"
+    | "user_declared"
+    | "canonical_name"
+    | "alias_match"
+    | "bounded_pattern";
+  groupId?: string;
+  details: Record<string, unknown>;
+};
+
+type DataProfileSemanticColumn = {
+  objectId: string;
+  column: string;
+  dtype: string;
+  roles: DataProfileSemanticRole[];
+  missingCount: number;
+  uniqueCount: number;
+  finiteCount?: number;
+  nonFiniteCount?: number;
+  rowsInspected: number;
+  totalRows: number;
+  unit?: string;
+  ambiguities: string[];
+};
+
+type DataProfileSemanticGroup = {
+  groupId: string;
+  kind: "regression" | "classification" | "class_probability";
+  targetColumns: string[];
+  predictionColumns: string[];
+  uncertaintyColumns: string[];
+  probabilityColumns: string[];
+  classes: string[];
+  seriesBindings: DataProfileSemanticSeriesBinding[];
+  status: "COMPLETE" | "INCOMPLETE" | "AMBIGUOUS";
+  reasons: string[];
+};
+
+type DataProfileSemanticSeriesBinding = {
+  seriesId: string;
+  predictionColumn?: string;
+  uncertaintyColumns: string[];
+};
+
+type DataProfileAnalysisReadiness = {
+  capability: string;
+  dataStatus: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  platformStatus: "AVAILABLE" | "NOT_IMPLEMENTED" | "NOT_EVALUATED";
+  reasons: string[];
+  requiredSemantics: string[];
+  matchingGroups: string[];
+};
+
+type DataProfileResourceSemantic = {
+  objectId: string;
+  objectType: string;
+  objectHash: string;
+  kind: string;
+  facts: Record<string, unknown>;
+  capabilities: string[];
+  warnings: string[];
+};
+
+type DataProfileSampleIdentity = {
+  policy: "explicit_column" | "object_hash_row_index";
+  explicitColumn?: string;
+  fallbackPolicy: "dataset_version_object_hash_row_index";
+  datasetVersion: string;
+  objectIds: string[];
+};
+
+type DataProfileCoverage = {
+  policy: "complete" | "deterministic_bounded_sample";
+  rowsInspected: number;
+  totalRows: number;
+  columnsInspected: number;
+  totalColumns: number;
+  limits: Record<string, number>;
+  warnings: string[];
 };
 
 type FileProfile = {
@@ -490,6 +593,7 @@ type ObjectProfile = {
   objectType: MaterialObjectType;
   count: number;
   sourceFileIds: string[];
+  objectHash?: string;
   periodicity?: ObjectPeriodicity;
 };
 

@@ -255,7 +255,11 @@ class Phase2ProductRuntime:
             parse_results.append(parse_file(path, dataset_id=dataset_id, file_id=f"file_{index:03d}"))
 
         objects = [obj for result in parse_results for obj in result.objects]
-        profile = build_data_profile(dataset_id=dataset_id, parse_results=parse_results)
+        profile = build_data_profile(
+            dataset_id=dataset_id,
+            parse_results=parse_results,
+            platform_tool_ids={tool.toolId for tool in self.registry.tools},
+        )
         object_store, object_refs = build_object_store(objects)
         normalized_exports = self._export_normalized_objects(request.projectId, dataset_id, objects)
         record = DatasetRecord(
@@ -329,7 +333,11 @@ class Phase2ProductRuntime:
             parse_results.append(parse_file(path, dataset_id=dataset_id, file_id=f"file_{index:03d}"))
 
         objects = [obj for result in parse_results for obj in result.objects]
-        profile = build_data_profile(dataset_id=dataset_id, parse_results=parse_results)
+        profile = build_data_profile(
+            dataset_id=dataset_id,
+            parse_results=parse_results,
+            platform_tool_ids={tool.toolId for tool in self.registry.tools},
+        )
         object_store, object_refs = build_object_store(objects)
         normalized_exports = self._export_normalized_objects(project_id, dataset_id, objects)
         record = DatasetRecord(

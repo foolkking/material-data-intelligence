@@ -4,6 +4,7 @@ from .detector import detect_format
 from .models import DetectedFormat, NormalizedObjectDraft, ParseResult
 from .parsers import parse_dataset, parse_file
 from .profile import build_data_profile
+from .semantic_profile import SEMANTIC_RULES_VERSION, stable_sample_reference
 from .trajectory import (
     ParsedTrajectory,
     TrajectoryParseError,
@@ -22,6 +23,8 @@ __all__ = [
     "NormalizedObjectDraft",
     "ParseResult",
     "build_data_profile",
+    "SEMANTIC_RULES_VERSION",
+    "stable_sample_reference",
     "detect_format",
     "parse_dataset",
     "parse_file",

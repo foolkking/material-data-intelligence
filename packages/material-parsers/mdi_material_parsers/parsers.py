@@ -17,6 +17,7 @@ from mdi_schemas import MaterialObjectType
 
 from .detector import detect_format
 from .models import DetectedFormat, NormalizedObjectDraft, ParseResult
+from .semantic_profile import legacy_inferred_role
 from .trajectory import TrajectoryParseError, parse_trajectory_file
 from .volumetric import VolumetricParseError, parse_volumetric_file
 
@@ -270,6 +271,15 @@ def _structure_object(structure: Structure, dataset_id: str, file_id: str, detec
         "chemicalSystem": "-".join(sorted({element.symbol for element in structure.composition.elements})),
         "nAtoms": len(structure),
         "latticeVolume": structure.lattice.volume,
+        "latticeParameters": {
+            "a": structure.lattice.a,
+            "b": structure.lattice.b,
+            "c": structure.lattice.c,
+            "alpha": structure.lattice.alpha,
+            "beta": structure.lattice.beta,
+            "gamma": structure.lattice.gamma,
+        },
+        "density": float(structure.density),
         "periodicity": "periodic",
         "detectedFormat": detected_format,
     }
@@ -421,7 +431,7 @@ def _column_metadata(dataframe: pd.DataFrame, column: str) -> dict[str, Any]:
     return {
         "name": str(column),
         "dtype": _dtype_name(series),
-        "inferredRole": _infer_field_role(str(column)),
+        "inferredRole": legacy_inferred_role(str(column)),
         "missingCount": int(series.isna().sum()),
         "uniqueCount": int(series.nunique(dropna=True)),
     }
@@ -437,21 +447,6 @@ def _dtype_name(series: pd.Series) -> str:
     if isinstance(series.dtype, pd.CategoricalDtype):
         return "category"
     return "string"
-
-
-def _infer_field_role(column_name: str) -> str | None:
-    key = column_name.lower()
-    if key in {"formula", "composition", "chemical_formula", "pretty_formula"}:
-        return "formula"
-    if key in {"target", "y_true", "true", "actual", "label"}:
-        return "target"
-    if key in {"prediction", "pred", "y_pred", "predicted"}:
-        return "prediction"
-    if key in {"uncertainty", "std", "y_std", "sigma"}:
-        return "uncertainty"
-    if key in {"structure_id", "material_id", "id"}:
-        return "structure_id"
-    return None
 
 
 def _looks_like_structure_dict(data: Any) -> bool:

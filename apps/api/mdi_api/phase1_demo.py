@@ -150,7 +150,11 @@ def run_phase1_demo(
         )
 
     objects = [obj for result in parse_results for obj in result.objects]
-    profile = build_data_profile(dataset_id=dataset_id, parse_results=parse_results)
+    profile = build_data_profile(
+        dataset_id=dataset_id,
+        parse_results=parse_results,
+        platform_tool_ids={tool.toolId for tool in active_registry.tools},
+    )
     dataset["status"] = "profile_ready"
     store.append_event(
         job_id,

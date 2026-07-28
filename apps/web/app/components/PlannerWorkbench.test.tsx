@@ -59,7 +59,20 @@ const demoProfile = {
       { name: "y_pred", dtype: "number", inferredRole: "prediction" }
     ]
   },
-  structureSummary: { nStructures: 0, elements: [], formulaStats: { total: 5, uniqueCount: 5 } }
+  structureSummary: { nStructures: 0, elements: [], formulaStats: { total: 5, uniqueCount: 5 } },
+  profileContractVersion: "2.0" as const,
+  semanticColumns: [
+    { column: "formula", roles: [{ role: "material_formula", authority: "canonical_name" }] },
+    { column: "y_true", roles: [{ role: "regression_target", authority: "canonical_name" }] },
+    { column: "y_pred", roles: [{ role: "regression_prediction", authority: "canonical_name" }] }
+  ],
+  analysisReadiness: [
+    { capability: "regression_evaluation", dataStatus: "READY" as const, platformStatus: "NOT_IMPLEMENTED" as const },
+    { capability: "uncertainty_evaluation", dataStatus: "READY" as const, platformStatus: "NOT_IMPLEMENTED" as const },
+    { capability: "classification_evaluation", dataStatus: "MISSING_REQUIRED_DATA" as const, platformStatus: "NOT_IMPLEMENTED" as const, reasons: ["MISSING:classification_target"] }
+  ],
+  profileCoverage: { policy: "complete" as const, rowsInspected: 5, totalRows: 5, columnsInspected: 3, totalColumns: 3 },
+  qualityIssues: [{ code: "FORMULA_VALUES_PARTIALLY_INVALID" }]
 };
 
 const createdJob = {
@@ -510,6 +523,13 @@ describe("Phase 9C PlannerWorkbench", () => {
       expect(within(screen.getByTestId("data-context-viewer")).getByText("profile_demo")).not.toBeNull();
     });
     expect(within(screen.getByTestId("data-context-viewer")).getByText("y_true")).not.toBeNull();
+    const profileIntelligence = within(screen.getByTestId("data-context-viewer")).getByTestId("material-profile-intelligence");
+    expect(profileIntelligence.textContent).toContain("regression_target");
+    expect(profileIntelligence.textContent).toContain("regression_evaluation");
+    expect(profileIntelligence.textContent).toContain("uncertainty_evaluation");
+    expect(profileIntelligence.textContent).toContain("MISSING_REQUIRED_DATA");
+    expect(profileIntelligence.textContent).toContain("MISSING:classification_target");
+    expect(profileIntelligence.textContent).toContain("FORMULA_VALUES_PARTIALLY_INVALID");
   });
 
   it("opens model dialog from the top bar, saves a secret without browser storage leakage, and tests the provider", async () => {

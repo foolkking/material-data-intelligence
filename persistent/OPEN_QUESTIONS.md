@@ -5,17 +5,10 @@
 The following questions can affect Initial Release and must be decided in their
 assigned phases rather than by this roadmap gate:
 
-* Which capability schema and confidence/provenance rules belong in Material
-  Data Profile 2.0?
-* How are stable sample references derived for tables with no trusted source ID,
-  and how do they remain stable across filtered artifacts without exposing a
-  private path or relying on mutable row position?
-* Which exact aliases, unit sources, confidence levels, and conflict rules govern
-  materials-property and model-task detection?
-* How should regression, uncertainty, and classification columns represent one
-  or multiple models/splits without guessing intent from names?
-* Which row/column/category/profile-byte budgets and deterministic sampling
-  policies replace uneven adapter-local truncation?
+* How should Phase 10K-2 define dataset comparison, split identity,
+  duplicate/near-duplicate authority, and dataset-level category/output caps?
+* Which exact units and domain property registries should be admitted beyond
+  the conservative Phase 10K-1 numeric property allowlist?
 * Which bounded composition embeddings and clustering methods can be supported
   without a large speculative dependency surface?
 * What intent vocabulary, plan-size bound, typed artifact binding, and failure
@@ -34,6 +27,17 @@ assigned phases rather than by this roadmap gate:
   first supported batch?
 
 ## Closed Product-Scope Questions
+
+* Profile semantic authority: **CLOSED** - explicit metadata, user declaration,
+  canonical names, exact aliases, bounded patterns, then unknown; no LLM or
+  numeric confidence score.
+* Stable table sample fallback: **CLOSED** - one complete unique declared ID or
+  dataset version + normalized object hash + row index.
+* Profile caps/sampling: **CLOSED** - deterministic disclosed caps of 4096 rows,
+  512 columns, 1024 formula values, 64 probability columns, and 256 resources.
+* Model semantic grouping: **CLOSED FOR PROFILE 2.0** - object-scoped groups,
+  deterministic prediction/uncertainty series bindings, multiple targets
+  ambiguous, unscoped uncertainty unpaired, and no model analysis.
 
 * Project goal: **CLOSED** - Material Data Intelligence & Visualization Platform.
 * Enterprise SaaS required: **NO**.

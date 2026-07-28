@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-07-28 - Phase 10K-1 Material Data Profile 2.0
+
+- Extended the existing DataProfile contract with deterministic semantic
+  columns/groups, scientific resource facts, analysis readiness, stable sample
+  identity, coverage disclosure, and semantic hashing while preserving old
+  profile validation and Planner-facing legacy roles.
+- Added bounded formula/property, regression/uncertainty, classification, and
+  false-positive policies. Data readiness is now independent from Registry/
+  adapter product availability, so planned ML and Dataset products are not
+  advertised as executable.
+- Added object-scoped model-series bindings so each prediction retains only its
+  deterministically matched uncertainty; runtime availability is resolved from
+  the actual Registry snapshot and direct low-level profiling reports
+  `NOT_EVALUATED`.
+- Added the existing API/persistence serialization path, compact profile UI,
+  unit/API/component tests, real Chromium/Firefox/WebKit/mobile evidence,
+  near-cap performance evidence, and network/security markers.
+- No dependency, public tool, Planner, PlanValidator, QueueWorkerRuntime,
+  Dataset Explorer, model evaluator, embedding, or workspace feature changed.
+
 ## 2026-07-28 - Canonical Task Result Filename Correction
 
 - Renamed the historical task result ledger from the misspelled `reslusts.md`

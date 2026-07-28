@@ -447,6 +447,12 @@ dd {
   font-weight: 700;
 }
 
+.profile-intelligence {
+  border-top: 1px solid var(--border);
+  margin: 10px 0;
+  padding-top: 10px;
+}
+
 .format-profile,
 .success-card,
 .error-card,

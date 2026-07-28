@@ -1,5 +1,30 @@
 # DESIGN_PROGRESS
 
+## 2026-07-28 Phase 10K-1 Material Data Profile 2.0 Implementation
+
+- Extended the existing `DataProfile schemaVersion=0.1` additively with a
+  `profileContractVersion=2.0` deterministic fact layer; no parallel profile,
+  new dependency, tool, Planner route, PlanValidator rule, or Runtime behavior
+  was introduced.
+- Centralized bounded semantic roles for formula, approved numeric properties,
+  stable sample identity, regression/multiple predictions/multi-target/
+  uncertainty, classification labels, and class probabilities. The old
+  Planner-facing `tableSummary.inferredRole` allowlist remains exact.
+- Added immutable resource semantics for table, structure/composition,
+  trajectory, phonon, and volumetric normalized objects and separated data
+  readiness from actual platform implementation availability.
+- Added deterministic semantic hashing, dataset-version/object-hash sample
+  fallback, typed ambiguity/missing reasons, explicit coverage disclosure, and
+  caps of 4096 rows, 512 columns, 1024 formula values, 64 probability columns,
+  and 256 resources.
+- Existing upload/profile endpoints and persistence serialize the contract. A
+  compact read-only frontend surface displays semantics, readiness, planned
+  capabilities, coverage, and warnings.
+- Focused API/unit/component checks, full local backend/frontend regression,
+  typecheck/build, Phase 10 closure, and API/performance plus
+  Chromium/Firefox/WebKit/mobile evidence pass. Exact-SHA implementation and
+  completion-record CI remain the active gates; Phase 10K-2 has not started.
+
 ## 2026-07-27 Phase 10K-0 Material Intelligence Capability Gap Audit
 
 - Audited the real parser/normalizer, `DataProfile 0.1`, Registry and adapter

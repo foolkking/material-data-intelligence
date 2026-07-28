@@ -1,0 +1,8 @@
+{
+  "build": "PASS",
+  "component": "19 passed",
+  "focusedBackend": "41 passed",
+  "fullBackend": "777 passed, 24 skipped",
+  "fullFrontend": "48 files, 294 tests passed",
+  "typecheck": "PASS"
+}

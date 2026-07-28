@@ -1,0 +1,112 @@
+[
+  {
+    "browser": "chromium",
+    "version": "128.0.6613.18",
+    "available": true,
+    "desktop": {
+      "viewport": "desktop",
+      "hasSemanticSurface": true,
+      "semanticText": "识别到的语义material_formula, regression_prediction, regression_target, regression_uncertainty, sample_identity数据条件已满足table_distribution, regression_evaluation, uncertainty_evaluation平台已支持分析table_distribution待实现分析regression_evaluation, uncertainty_evaluation数据条件未满足classification_evaluation:MISSING_REQUIRED_DATA (MISSING:classification_prediction|MISSING:classification_target)Profile 覆盖范围4/4 rows, 6/6 columnsProfile 警告PROFILE_WARNING_FIXTURE",
+      "hasDataReady": true,
+      "hasPlannedNotImplemented": true,
+      "warningVisible": true,
+      "profileContractVisible": false,
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Profile 摘要",
+        "dataContextTestId": true
+      },
+      "iframeCount": 0,
+      "externalScripts": 0,
+      "javascriptUriCount": 0,
+      "inlineHandlerCount": 0,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    "mobile": {
+      "viewport": "mobile",
+      "hasSemanticSurface": true,
+      "semanticText": "识别到的语义material_formula, regression_prediction, regression_target, regression_uncertainty, sample_identity数据条件已满足table_distribution, regression_evaluation, uncertainty_evaluation平台已支持分析table_distribution待实现分析regression_evaluation, uncertainty_evaluation数据条件未满足classification_evaluation:MISSING_REQUIRED_DATA (MISSING:classification_prediction|MISSING:classification_target)Profile 覆盖范围4/4 rows, 6/6 columnsProfile 警告PROFILE_WARNING_FIXTURE",
+      "hasDataReady": true,
+      "hasPlannedNotImplemented": true,
+      "warningVisible": true,
+      "profileContractVisible": false,
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Profile 摘要",
+        "dataContextTestId": true
+      },
+      "iframeCount": 0,
+      "externalScripts": 0,
+      "javascriptUriCount": 0,
+      "inlineHandlerCount": 0,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "firefox",
+    "version": "128.0",
+    "available": true,
+    "desktop": {
+      "viewport": "desktop",
+      "hasSemanticSurface": true,
+      "semanticText": "识别到的语义material_formula, regression_prediction, regression_target, regression_uncertainty, sample_identity数据条件已满足table_distribution, regression_evaluation, uncertainty_evaluation平台已支持分析table_distribution待实现分析regression_evaluation, uncertainty_evaluation数据条件未满足classification_evaluation:MISSING_REQUIRED_DATA (MISSING:classification_prediction|MISSING:classification_target)Profile 覆盖范围4/4 rows, 6/6 columnsProfile 警告PROFILE_WARNING_FIXTURE",
+      "hasDataReady": true,
+      "hasPlannedNotImplemented": true,
+      "warningVisible": true,
+      "profileContractVisible": false,
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Profile 摘要",
+        "dataContextTestId": true
+      },
+      "iframeCount": 0,
+      "externalScripts": 0,
+      "javascriptUriCount": 0,
+      "inlineHandlerCount": 0,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "webkit",
+    "version": "18.0",
+    "available": true,
+    "desktop": {
+      "viewport": "desktop",
+      "hasSemanticSurface": true,
+      "semanticText": "识别到的语义material_formula, regression_prediction, regression_target, regression_uncertainty, sample_identity数据条件已满足table_distribution, regression_evaluation, uncertainty_evaluation平台已支持分析table_distribution待实现分析regression_evaluation, uncertainty_evaluation数据条件未满足classification_evaluation:MISSING_REQUIRED_DATA (MISSING:classification_prediction|MISSING:classification_target)Profile 覆盖范围4/4 rows, 6/6 columnsProfile 警告PROFILE_WARNING_FIXTURE",
+      "hasDataReady": true,
+      "hasPlannedNotImplemented": true,
+      "warningVisible": true,
+      "profileContractVisible": false,
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Profile 摘要",
+        "dataContextTestId": true
+      },
+      "iframeCount": 0,
+      "externalScripts": 0,
+      "javascriptUriCount": 0,
+      "inlineHandlerCount": 0,
+      "externalRequests": 0,
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

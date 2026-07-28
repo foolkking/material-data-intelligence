@@ -1,0 +1,48 @@
+{
+  "acceptance": "PASS",
+  "cases": [
+    {
+      "caseId": "tiny",
+      "columnsInspected": 4,
+      "coveragePolicy": "complete",
+      "durationMs": 3.585,
+      "inputColumns": 4,
+      "inputRows": 5,
+      "outputBytes": 7616,
+      "peakAllocatedMiB": 0.049,
+      "rowsInspected": 5,
+      "warnings": []
+    },
+    {
+      "caseId": "medium",
+      "columnsInspected": 32,
+      "coveragePolicy": "complete",
+      "durationMs": 57.242,
+      "inputColumns": 32,
+      "inputRows": 1000,
+      "outputBytes": 17057,
+      "peakAllocatedMiB": 0.119,
+      "rowsInspected": 1000,
+      "warnings": []
+    },
+    {
+      "caseId": "near_cap",
+      "columnsInspected": 512,
+      "coveragePolicy": "deterministic_bounded_sample",
+      "durationMs": 3138.024,
+      "inputColumns": 516,
+      "inputRows": 4112,
+      "outputBytes": 179518,
+      "peakAllocatedMiB": 1.273,
+      "rowsInspected": 4096,
+      "warnings": [
+        "PROFILE_COLUMN_CAP_APPLIED",
+        "PROFILE_ROW_SAMPLE_APPLIED"
+      ]
+    }
+  ],
+  "policy": {
+    "maxColumns": 512,
+    "maxRows": 4096
+  }
+}

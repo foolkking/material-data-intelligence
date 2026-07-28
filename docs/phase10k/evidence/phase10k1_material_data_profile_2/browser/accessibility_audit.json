@@ -1,0 +1,11 @@
+{
+  "chromium": {
+    "regionLabel": "Profile 摘要",
+    "dataContextTestId": true
+  },
+  "mobile": {
+    "regionLabel": "Profile 摘要",
+    "dataContextTestId": true
+  },
+  "marker": "MATERIAL_PROFILE_ACCESSIBILITY_EVIDENCE_PASS"
+}

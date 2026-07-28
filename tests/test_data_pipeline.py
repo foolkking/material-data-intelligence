@@ -44,6 +44,7 @@ def test_parse_csv_and_build_ml_profile(repo_root):
     assert profile.tableSummary["inferredTask"] == "regression"
     assert {column["inferredRole"] for column in profile.tableSummary["columns"]} >= {"formula", "target", "prediction"}
     assert profile.recommendedTasks[0]["taskId"] == "ml.evaluation"
+    assert profile.recommendedTasks[0]["availableNow"] is False
 
 
 def test_parse_json_limited_structure(tmp_path):

@@ -261,6 +261,8 @@ export type DataProfile = {
     | "mixed_material_dataset"
     | "trajectory"
     | "phonon"
+    | "volumetric"
+    | "table"
     | "unknown";
   files: Array<Record<string, unknown>>;
   objects: Array<Record<string, unknown>>;
@@ -270,7 +272,99 @@ export type DataProfile = {
   trajectorySummary?: Record<string, unknown>;
   qualityIssues: Array<Record<string, unknown>>;
   recommendedTasks: Array<Record<string, unknown>>;
+  profileContractVersion?: "2.0";
+  semanticRulesVersion?: string;
+  semanticHash?: string;
+  semanticColumns?: DataProfileSemanticColumn[];
+  semanticGroups?: DataProfileSemanticGroup[];
+  resourceSemantics?: DataProfileResourceSemantic[];
+  analysisReadiness?: DataProfileAnalysisReadiness[];
+  sampleIdentity?: DataProfileSampleIdentity;
+  profileCoverage?: DataProfileCoverage;
   createdAt: string;
+};
+
+export type DataProfileSemanticAuthority =
+  | "explicit_metadata"
+  | "user_declared"
+  | "canonical_name"
+  | "alias_match"
+  | "bounded_pattern";
+
+export type DataProfileSemanticColumn = {
+  objectId: string;
+  column: string;
+  dtype: string;
+  roles: Array<{
+    role: string;
+    authority: DataProfileSemanticAuthority;
+    groupId?: string;
+    details: Record<string, unknown>;
+  }>;
+  missingCount: number;
+  uniqueCount: number;
+  finiteCount?: number;
+  nonFiniteCount?: number;
+  rowsInspected: number;
+  totalRows: number;
+  unit?: string;
+  ambiguities: string[];
+};
+
+export type DataProfileSemanticGroup = {
+  groupId: string;
+  kind: "regression" | "classification" | "class_probability";
+  targetColumns: string[];
+  predictionColumns: string[];
+  uncertaintyColumns: string[];
+  probabilityColumns: string[];
+  classes: string[];
+  seriesBindings: DataProfileSemanticSeriesBinding[];
+  status: "COMPLETE" | "INCOMPLETE" | "AMBIGUOUS";
+  reasons: string[];
+};
+
+export type DataProfileSemanticSeriesBinding = {
+  seriesId: string;
+  predictionColumn?: string;
+  uncertaintyColumns: string[];
+};
+
+export type DataProfileResourceSemantic = {
+  objectId: string;
+  objectType: string;
+  objectHash: string;
+  kind: string;
+  facts: Record<string, unknown>;
+  capabilities: string[];
+  warnings: string[];
+};
+
+export type DataProfileAnalysisReadiness = {
+  capability: string;
+  dataStatus: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  platformStatus: "AVAILABLE" | "NOT_IMPLEMENTED" | "NOT_EVALUATED";
+  reasons: string[];
+  requiredSemantics: string[];
+  matchingGroups: string[];
+};
+
+export type DataProfileSampleIdentity = {
+  policy: "explicit_column" | "object_hash_row_index";
+  explicitColumn?: string;
+  fallbackPolicy: "dataset_version_object_hash_row_index";
+  datasetVersion: string;
+  objectIds: string[];
+};
+
+export type DataProfileCoverage = {
+  policy: "complete" | "deterministic_bounded_sample";
+  rowsInspected: number;
+  totalRows: number;
+  columnsInspected: number;
+  totalColumns: number;
+  limits: Record<string, number>;
+  warnings: string[];
 };
 
 export type VisualizationRecipeStep = {

@@ -2,45 +2,124 @@ from __future__ import annotations
 
 from collections import Counter
 from datetime import datetime, timezone
+import hashlib
+import json
 from statistics import median
 from typing import Any
 
 from mdi_schemas import DataProfile, MaterialObjectType
 
 from .models import NormalizedObjectDraft, ParseResult
+from .semantic_profile import (
+    MAX_PROFILE_OBJECTS,
+    SEMANTIC_RULES_VERSION,
+    analysis_readiness,
+    resource_semantics,
+    sample_identity,
+    table_semantics,
+)
 
 
-def build_data_profile(*, dataset_id: str, parse_results: list[ParseResult]) -> DataProfile:
+def build_data_profile(
+    *,
+    dataset_id: str,
+    parse_results: list[ParseResult],
+    platform_tool_ids: set[str] | None = None,
+) -> DataProfile:
     objects = [obj for result in parse_results for obj in result.objects]
+    profiled_objects = sorted(objects, key=lambda item: (item.object_type.value, item.id))[:MAX_PROFILE_OBJECTS]
     structure_objects = [obj for obj in objects if obj.object_type == MaterialObjectType.Structure]
     dataframe_objects = [obj for obj in objects if obj.object_type == MaterialObjectType.DataFrame]
+    profiled_dataframes = [obj for obj in profiled_objects if obj.object_type == MaterialObjectType.DataFrame]
     quality_issues = _quality_issues(parse_results)
+
+    semantic_columns: list[dict[str, Any]] = []
+    semantic_groups: list[dict[str, Any]] = []
+    coverage_records: list[dict[str, Any]] = []
+    for dataframe_obj in profiled_dataframes:
+        columns, groups, coverage, warnings = table_semantics(dataframe_obj)
+        semantic_columns.extend(columns)
+        semantic_groups.extend(groups)
+        coverage_records.append(coverage)
+        quality_issues.extend(_semantic_quality_issues(dataframe_obj.id, columns, groups, warnings))
+    resources = resource_semantics(profiled_objects)
+    if len(objects) > MAX_PROFILE_OBJECTS:
+        quality_issues.append(
+            {
+                "severity": "warning",
+                "code": "PROFILE_OBJECT_CAP_APPLIED",
+                "message": "Only the bounded resource set was semantically profiled; no omitted objects were classified.",
+                "refs": [{"type": "dataset", "id": dataset_id}],
+            }
+        )
+    readiness = analysis_readiness(semantic_columns, semantic_groups, resources, platform_tool_ids)
+    coverage = _combined_coverage(coverage_records)
+    identity = sample_identity(semantic_columns, profiled_dataframes)
+
+    semantic_payload = {
+        "datasetId": dataset_id,
+        "datasetVersion": "2",
+        "semanticRulesVersion": SEMANTIC_RULES_VERSION,
+        "objectHashes": sorted(obj.hash for obj in objects),
+        "semanticColumns": semantic_columns,
+        "semanticGroups": semantic_groups,
+        "resourceSemantics": resources,
+        "analysisReadiness": readiness,
+        "sampleIdentity": identity,
+        "profileCoverage": coverage,
+    }
+    semantic_hash = hashlib.sha256(
+        json.dumps(semantic_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+    ).hexdigest()
 
     return DataProfile(
         schemaVersion="0.1",
-        profileId=f"profile_{dataset_id}_v1",
+        profileId=f"profile_{dataset_id}_v2",
         datasetId=dataset_id,
-        version="1",
-        datasetType=_dataset_type(structure_objects, dataframe_objects),
+        version="2",
+        datasetType=_dataset_type(objects, structure_objects, dataframe_objects, semantic_groups),
         files=[result.file_profile() for result in parse_results],
         objects=[_object_profile(obj) for obj in objects],
         structureSummary=_structure_summary(structure_objects) if structure_objects else None,
         tableSummary=_table_summary(dataframe_objects[0]) if dataframe_objects else None,
+        phononSummary=_phonon_summary(objects),
+        trajectorySummary=_trajectory_summary(objects),
         qualityIssues=quality_issues,
         recommendedTasks=_recommended_tasks(structure_objects, dataframe_objects),
+        profileContractVersion="2.0",
+        semanticRulesVersion=SEMANTIC_RULES_VERSION,
+        semanticHash=semantic_hash,
+        semanticColumns=semantic_columns,
+        semanticGroups=semantic_groups,
+        resourceSemantics=resources,
+        analysisReadiness=readiness,
+        sampleIdentity=identity,
+        profileCoverage=coverage,
         createdAt=datetime.now(timezone.utc).isoformat(),
     )
 
 
-def _dataset_type(structures: list[NormalizedObjectDraft], dataframes: list[NormalizedObjectDraft]) -> str:
-    if structures and dataframes:
+def _dataset_type(
+    objects: list[NormalizedObjectDraft],
+    structures: list[NormalizedObjectDraft],
+    dataframes: list[NormalizedObjectDraft],
+    semantic_groups: list[dict[str, Any]],
+) -> str:
+    object_types = {obj.object_type for obj in objects}
+    if len(object_types) > 1:
         return "mixed_material_dataset"
     if structures:
         return "structure_collection"
-    if dataframes and _has_roles(dataframes[0], {"target", "prediction"}):
+    if dataframes and any(group["kind"] in {"regression", "classification"} for group in semantic_groups):
         return "ml_results"
     if dataframes:
-        return "unknown"
+        return "table"
+    if MaterialObjectType.Trajectory in object_types:
+        return "trajectory"
+    if object_types & {MaterialObjectType.PhononBand, MaterialObjectType.PhononDos, MaterialObjectType.PhononEigenvector}:
+        return "phonon"
+    if MaterialObjectType.VolumetricData in object_types:
+        return "volumetric"
     return "unknown"
 
 
@@ -50,6 +129,7 @@ def _object_profile(obj: NormalizedObjectDraft) -> dict[str, Any]:
         "objectType": obj.object_type.value,
         "count": 1,
         "sourceFileIds": obj.source_file_ids,
+        "objectHash": obj.hash,
         "periodicity": obj.metadata.get("periodicity"),
     }
 
@@ -93,6 +173,97 @@ def _table_summary(dataframe_obj: NormalizedObjectDraft) -> dict[str, Any]:
         "columns": columns,
         "inferredTask": "regression" if _has_roles(dataframe_obj, {"target", "prediction"}) else "unknown",
     }
+
+
+def _trajectory_summary(objects: list[NormalizedObjectDraft]) -> dict[str, Any] | None:
+    trajectories = [obj for obj in objects if obj.object_type == MaterialObjectType.Trajectory]
+    if not trajectories:
+        return None
+    summaries = [obj.metadata.get("trajectorySummary", {}) for obj in trajectories]
+    return {
+        "trajectoryCount": len(trajectories),
+        "frameCount": sum(int(summary.get("frameCount", 0)) for summary in summaries),
+        "atomCounts": sorted({int(summary.get("atomCount", 0)) for summary in summaries}),
+        "properties": sorted({str(value) for summary in summaries for value in summary.get("properties", [])}),
+        "resourceIds": [obj.id for obj in trajectories],
+    }
+
+
+def _phonon_summary(objects: list[NormalizedObjectDraft]) -> dict[str, Any] | None:
+    phonon_objects = [
+        obj
+        for obj in objects
+        if obj.object_type in {MaterialObjectType.PhononBand, MaterialObjectType.PhononDos, MaterialObjectType.PhononEigenvector}
+    ]
+    if not phonon_objects:
+        return None
+    return {
+        "resourceCount": len(phonon_objects),
+        "resourceKinds": sorted({obj.object_type.value for obj in phonon_objects}),
+        "resourceIds": [obj.id for obj in phonon_objects],
+    }
+
+
+def _combined_coverage(records: list[dict[str, Any]]) -> dict[str, Any] | None:
+    if not records:
+        return None
+    warnings = sorted({warning for record in records for warning in record["warnings"]})
+    return {
+        "policy": "deterministic_bounded_sample" if any(record["policy"] != "complete" for record in records) else "complete",
+        "rowsInspected": sum(record["rowsInspected"] for record in records),
+        "totalRows": sum(record["totalRows"] for record in records),
+        "columnsInspected": sum(record["columnsInspected"] for record in records),
+        "totalColumns": sum(record["totalColumns"] for record in records),
+        "limits": records[0]["limits"],
+        "warnings": warnings,
+    }
+
+
+def _semantic_quality_issues(
+    object_id: str,
+    columns: list[dict[str, Any]],
+    groups: list[dict[str, Any]],
+    warnings: list[str],
+) -> list[dict[str, Any]]:
+    issues = [
+        {
+            "severity": "warning",
+            "code": warning,
+            "message": _semantic_warning_message(warning),
+            "refs": [{"type": "object", "id": object_id}],
+        }
+        for warning in warnings
+    ]
+    for column in columns:
+        for role in column["roles"]:
+            if role["role"] == "material_formula" and role["details"].get("invalidCount", 0):
+                issues.append(
+                    {
+                        "severity": "warning",
+                        "code": "FORMULA_VALUES_PARTIALLY_INVALID",
+                        "message": "Some inspected formula values could not be parsed; row-level validation remains required.",
+                        "refs": [{"type": "column", "id": f"{object_id}:{column['column']}"}],
+                    }
+                )
+    for group in groups:
+        if group["status"] == "AMBIGUOUS":
+            issues.append(
+                {
+                    "severity": "warning",
+                    "code": "SEMANTIC_GROUP_AMBIGUOUS",
+                    "message": "Multiple deterministic semantic candidates prevent automatic task binding.",
+                    "refs": [{"type": "semantic_group", "id": group["groupId"]}],
+                }
+            )
+    return issues
+
+
+def _semantic_warning_message(code: str) -> str:
+    return {
+        "PROFILE_COLUMN_CAP_APPLIED": "Only the bounded profile column set was inspected; no columns were silently classified.",
+        "PROFILE_ROW_SAMPLE_APPLIED": "Semantic value checks used a deterministic bounded row sample.",
+        "MULTIPLE_FORMULA_COLUMNS_AMBIGUOUS": "Multiple formula candidates were detected and no preferred column was selected.",
+    }.get(code, "A bounded material-profile warning was recorded.")
 
 
 def _quality_issues(parse_results: list[ParseResult]) -> list[dict[str, Any]]:
@@ -152,9 +323,9 @@ def _recommended_tasks(structures: list[NormalizedObjectDraft], dataframes: list
                 "label": "ML prediction evaluation",
                 "stage": "mvp",
                 "taskType": "ml_evaluation",
-                "availableNow": True,
+                "availableNow": False,
                 "requiredTools": ["ml.basic_metrics", "ml.error_distribution", "ml.outlier_table"],
-                "reason": "A table with target and prediction columns was detected.",
+                "reason": "Target and prediction columns were detected; the product capability remains planned until its bounded adapter and artifact contract are implemented.",
             }
         )
     return tasks

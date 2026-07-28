@@ -23,7 +23,13 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase10k/phase10k0_material_intelligence_capability_gap_audit.md`](phase10k/phase10k0_material_intelligence_capability_gap_audit.md): implementation-grounded input, profile, tool, Planner, frontend, artifact, cap, and dependency audit.
 - [`phase10k/phase10k0_material_intelligence_gap_matrix.md`](phase10k/phase10k0_material_intelligence_gap_matrix.md): exact readiness and phase-ownership matrix.
 - [`phase10k/phase10k0_phase10k_implementation_sequence.md`](phase10k/phase10k0_phase10k_implementation_sequence.md): frozen 10K-1 through 10K-5 ordering, reuse boundary, and test strategy.
-- [`phase10k/phase10k1_next_scope.md`](phase10k/phase10k1_next_scope.md): Material Data Profile 2.0 entry gates and exclusions; no 10K-1 implementation.
+- [`phase10k/phase10k1_next_scope.md`](phase10k/phase10k1_next_scope.md): historical Material Data Profile 2.0 entry gates and exclusions; the implementation record below is current.
+- [`phase10k/phase10k1_material_data_profile_2_implementation.md`](phase10k/phase10k1_material_data_profile_2_implementation.md): additive Profile 2.0 implementation, compatibility, caps, API/UI, and explicit limits.
+- [`phase10k/phase10k1_semantic_role_contract.md`](phase10k/phase10k1_semantic_role_contract.md): deterministic role authority, aliases, dtype guards, grouping, ambiguity, and legacy isolation.
+- [`phase10k/phase10k1_analysis_readiness_contract.md`](phase10k/phase10k1_analysis_readiness_contract.md): independent data-readiness and platform-availability contract.
+- [`phase10k/phase10k1_fixture_matrix.md`](phase10k/phase10k1_fixture_matrix.md): table/resource, negative, cap, browser, and mobile fixture matrix.
+- [`phase10k/phase10k1_material_data_profile_2_evidence.md`](phase10k/phase10k1_material_data_profile_2_evidence.md): API, browser, performance, network, and security evidence index.
+- [`phase10k/evidence/phase10k1_material_data_profile_2/`](phase10k/evidence/phase10k1_material_data_profile_2/): sanitized captures and screenshots.
 
 ## Historical Gate J6-A Roadmap Record
 

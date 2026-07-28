@@ -1,5 +1,21 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-28 Phase 10K-1 Profile Eligibility Facts
+
+- No tool manifest, adapter map, public identity, parameter schema, Planner
+  route, PlanValidator rule, or QueueWorkerRuntime behavior changed.
+- Profile 2.0 provides deterministic data-readiness facts for existing and
+  future consumers. `platformStatus=AVAILABLE` is restricted to verified
+  current Registry identities supplied as an explicit runtime snapshot; direct
+  profiling without that snapshot returns `NOT_EVALUATED`. Regression/
+  uncertainty/classification product,
+  composition space, and dataset structure statistics remain
+  `NOT_IMPLEMENTED` even when their data conditions are satisfied.
+- The legacy `recommendedTasks` ML entry is retained for response compatibility
+  but now has `availableNow=false`; it grants no execution authority.
+- Phase 10K-2/3/4 may consume these facts only after their own coherent bounded
+  product tools, artifact contracts, Registry closure, and reviewer gates.
+
 ## 2026-07-27 Phase 10K-0 Material Intelligence Inventory
 
 - Real executable foundations are limited to the adapter registry closure:

@@ -153,6 +153,13 @@ def test_demo_dataset_detail_and_profile_are_backend_generated() -> None:
     assert demo_body["demo"] is True
     assert demo_body["profile"]["datasetId"] == "dataset_demo"
     assert demo_body["profile"]["tableSummary"]["nRows"] >= 1
+    assert demo_body["profile"]["profileContractVersion"] == "2.0"
+    assert demo_body["profile"]["semanticHash"]
+    assert any(column["column"] == "y_true" for column in demo_body["profile"]["semanticColumns"])
+    readiness = {item["capability"]: item for item in demo_body["profile"]["analysisReadiness"]}
+    assert readiness["regression_evaluation"]["dataStatus"] == "READY"
+    assert readiness["regression_evaluation"]["platformStatus"] == "NOT_IMPLEMENTED"
+    assert readiness["uncertainty_evaluation"]["platformStatus"] == "NOT_IMPLEMENTED"
 
     datasets = client.get("/datasets").json()
     assert any(dataset["datasetId"] == "dataset_demo" for dataset in datasets)
@@ -164,6 +171,8 @@ def test_demo_dataset_detail_and_profile_are_backend_generated() -> None:
     profile = client.post("/datasets/dataset_demo/profile").json()
     assert profile["datasetId"] == "dataset_demo"
     assert profile["profileGenerated"] is True
+    assert profile["profileContractVersion"] == "2.0"
+    assert profile["semanticHash"] == demo_body["profile"]["semanticHash"]
 
 
 def test_provider_catalog_status_and_mock_test_endpoint() -> None:

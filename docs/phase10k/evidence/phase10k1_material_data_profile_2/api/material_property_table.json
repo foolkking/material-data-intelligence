@@ -1,0 +1,415 @@
+{
+  "caseId": "material_property_table",
+  "persistenceCheck": {
+    "regenerateHashMatch": true,
+    "uploadFetchHashMatch": true
+  },
+  "profile": {
+    "analysisReadiness": [
+      {
+        "capability": "table_distribution",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "table"
+        ]
+      },
+      {
+        "capability": "scatter",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "table"
+        ]
+      },
+      {
+        "capability": "histogram",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "table"
+        ]
+      },
+      {
+        "capability": "correlation",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "table"
+        ]
+      },
+      {
+        "capability": "composition_summary",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "formula_statistics",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "element_distribution",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "chemical_system_visualization",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "structure_summary",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "MISSING:structure"
+        ],
+        "requiredSemantics": [
+          "structure"
+        ]
+      },
+      {
+        "capability": "trajectory_visualization",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "MISSING:trajectory"
+        ],
+        "requiredSemantics": [
+          "trajectory"
+        ]
+      },
+      {
+        "capability": "phonon_visualization",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "MISSING:phonon"
+        ],
+        "requiredSemantics": [
+          "phonon"
+        ]
+      },
+      {
+        "capability": "volumetric_visualization",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "MISSING:volumetric"
+        ],
+        "requiredSemantics": [
+          "volumetric"
+        ]
+      },
+      {
+        "capability": "regression_evaluation",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "MISSING:regression_prediction",
+          "MISSING:regression_target"
+        ],
+        "requiredSemantics": [
+          "regression_prediction",
+          "regression_target"
+        ]
+      },
+      {
+        "capability": "uncertainty_evaluation",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "MISSING:regression_prediction",
+          "MISSING:regression_target",
+          "MISSING:regression_uncertainty"
+        ],
+        "requiredSemantics": [
+          "regression_prediction",
+          "regression_target",
+          "regression_uncertainty"
+        ]
+      },
+      {
+        "capability": "classification_evaluation",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "MISSING:classification_output",
+          "MISSING:classification_target"
+        ],
+        "requiredSemantics": [
+          "classification_output",
+          "classification_target"
+        ]
+      },
+      {
+        "capability": "composition_space",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "dataset_structure_statistics",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "MISSING:structure"
+        ],
+        "requiredSemantics": [
+          "structure"
+        ]
+      }
+    ],
+    "createdAt": "2026-07-28T09:23:39.604783+00:00",
+    "datasetId": "dataset_0001",
+    "datasetType": "table",
+    "files": [
+      {
+        "detectedFormat": "csv",
+        "fileId": "file_001",
+        "fileName": "materials.csv",
+        "parseStatus": "success"
+      }
+    ],
+    "objects": [
+      {
+        "count": 1,
+        "objectHash": "c18d0c28286b2ded2d87e8ec955009064d5d5992850041d91c5ce752cf4bca25",
+        "objectId": "obj_dataframe_c18d0c28286b",
+        "objectType": "DataFrame",
+        "periodicity": null,
+        "sourceFileIds": [
+          "file_001"
+        ]
+      }
+    ],
+    "phononSummary": null,
+    "profileContractVersion": "2.0",
+    "profileCoverage": {
+      "columnsInspected": 3,
+      "limits": {
+        "maxColumns": 512,
+        "maxFormulaLength": 256,
+        "maxFormulaValues": 1024,
+        "maxGroupIdLength": 128,
+        "maxObjects": 256,
+        "maxProbabilityColumns": 64,
+        "maxRows": 4096,
+        "maxUnitLength": 64
+      },
+      "policy": "complete",
+      "rowsInspected": 2,
+      "totalColumns": 3,
+      "totalRows": 2,
+      "warnings": []
+    },
+    "profileId": "profile_dataset_0001_v2",
+    "qualityIssues": [],
+    "recommendedTasks": [],
+    "resourceSemantics": [
+      {
+        "capabilities": [
+          "table"
+        ],
+        "facts": {
+          "columnCount": 3,
+          "rowCount": 2,
+          "sourceFileIds": [
+            "file_001"
+          ]
+        },
+        "kind": "dataframe",
+        "objectHash": "c18d0c28286b2ded2d87e8ec955009064d5d5992850041d91c5ce752cf4bca25",
+        "objectId": "obj_dataframe_c18d0c28286b",
+        "objectType": "DataFrame",
+        "warnings": []
+      }
+    ],
+    "sampleIdentity": {
+      "datasetVersion": "2",
+      "explicitColumn": null,
+      "fallbackPolicy": "dataset_version_object_hash_row_index",
+      "objectIds": [
+        "obj_dataframe_c18d0c28286b"
+      ],
+      "policy": "object_hash_row_index"
+    },
+    "schemaVersion": "0.1",
+    "semanticColumns": [
+      {
+        "ambiguities": [],
+        "column": "formula",
+        "dtype": "string",
+        "finiteCount": null,
+        "missingCount": 0,
+        "nonFiniteCount": null,
+        "objectId": "obj_dataframe_c18d0c28286b",
+        "roles": [
+          {
+            "authority": "canonical_name",
+            "details": {
+              "inspectedCount": 2,
+              "invalidCount": 0,
+              "tooLongCount": 0,
+              "validCount": 2
+            },
+            "groupId": null,
+            "role": "material_formula"
+          }
+        ],
+        "rowsInspected": 2,
+        "totalRows": 2,
+        "uniqueCount": 2,
+        "unit": null
+      },
+      {
+        "ambiguities": [],
+        "column": "density",
+        "dtype": "number",
+        "finiteCount": 2,
+        "missingCount": 0,
+        "nonFiniteCount": 0,
+        "objectId": "obj_dataframe_c18d0c28286b",
+        "roles": [
+          {
+            "authority": "canonical_name",
+            "details": {
+              "property": "density"
+            },
+            "groupId": null,
+            "role": "material_property"
+          }
+        ],
+        "rowsInspected": 2,
+        "totalRows": 2,
+        "uniqueCount": 2,
+        "unit": null
+      },
+      {
+        "ambiguities": [],
+        "column": "band_gap",
+        "dtype": "number",
+        "finiteCount": 2,
+        "missingCount": 0,
+        "nonFiniteCount": 0,
+        "objectId": "obj_dataframe_c18d0c28286b",
+        "roles": [
+          {
+            "authority": "canonical_name",
+            "details": {
+              "property": "band_gap"
+            },
+            "groupId": null,
+            "role": "material_property"
+          }
+        ],
+        "rowsInspected": 2,
+        "totalRows": 2,
+        "uniqueCount": 2,
+        "unit": null
+      }
+    ],
+    "semanticGroups": [],
+    "semanticHash": "7463686e0a1608dbdb6631ed8badb11f8000e03e23e8bd0fbfb1f3b06719c4ea",
+    "semanticRulesVersion": "phase10k1.material_profile_semantics.v1",
+    "structureSummary": null,
+    "tableSummary": {
+      "columns": [
+        {
+          "dtype": "string",
+          "inferredRole": "formula",
+          "missingCount": 0,
+          "name": "formula",
+          "uniqueCount": 2
+        },
+        {
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 0,
+          "name": "density",
+          "uniqueCount": 2
+        },
+        {
+          "dtype": "number",
+          "inferredRole": null,
+          "missingCount": 0,
+          "name": "band_gap",
+          "uniqueCount": 2
+        }
+      ],
+      "inferredTask": "unknown",
+      "nColumns": 3,
+      "nRows": 2
+    },
+    "trajectorySummary": null,
+    "version": "2"
+  },
+  "request": {
+    "endpoint": "POST /datasets/upload",
+    "fileName": "materials.csv"
+  },
+  "responses": {
+    "fetchStatus": 200,
+    "regenerateStatus": 200,
+    "uploadStatus": 200
+  }
+}

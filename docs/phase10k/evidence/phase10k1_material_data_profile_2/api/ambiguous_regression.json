@@ -1,0 +1,492 @@
+{
+  "caseId": "ambiguous_regression",
+  "persistenceCheck": {
+    "regenerateHashMatch": true,
+    "uploadFetchHashMatch": true
+  },
+  "profile": {
+    "analysisReadiness": [
+      {
+        "capability": "table_distribution",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "table"
+        ]
+      },
+      {
+        "capability": "scatter",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "table"
+        ]
+      },
+      {
+        "capability": "histogram",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "table"
+        ]
+      },
+      {
+        "capability": "correlation",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "table"
+        ]
+      },
+      {
+        "capability": "composition_summary",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "formula_statistics",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "element_distribution",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "chemical_system_visualization",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "structure_summary",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "MISSING:structure"
+        ],
+        "requiredSemantics": [
+          "structure"
+        ]
+      },
+      {
+        "capability": "trajectory_visualization",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "MISSING:trajectory"
+        ],
+        "requiredSemantics": [
+          "trajectory"
+        ]
+      },
+      {
+        "capability": "phonon_visualization",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "MISSING:phonon"
+        ],
+        "requiredSemantics": [
+          "phonon"
+        ]
+      },
+      {
+        "capability": "volumetric_visualization",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "AVAILABLE",
+        "reasons": [
+          "MISSING:volumetric"
+        ],
+        "requiredSemantics": [
+          "volumetric"
+        ]
+      },
+      {
+        "capability": "regression_evaluation",
+        "dataStatus": "AMBIGUOUS",
+        "matchingGroups": [
+          "obj_dataframe_a9f61ebe6f6e:regression:default"
+        ],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "MULTIPLE_TARGET_COLUMNS"
+        ],
+        "requiredSemantics": [
+          "regression_prediction",
+          "regression_target"
+        ]
+      },
+      {
+        "capability": "uncertainty_evaluation",
+        "dataStatus": "AMBIGUOUS",
+        "matchingGroups": [
+          "obj_dataframe_a9f61ebe6f6e:regression:default"
+        ],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "MULTIPLE_TARGET_COLUMNS"
+        ],
+        "requiredSemantics": [
+          "regression_prediction",
+          "regression_target",
+          "regression_uncertainty"
+        ]
+      },
+      {
+        "capability": "classification_evaluation",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "MISSING:classification_output",
+          "MISSING:classification_target"
+        ],
+        "requiredSemantics": [
+          "classification_output",
+          "classification_target"
+        ]
+      },
+      {
+        "capability": "composition_space",
+        "dataStatus": "READY",
+        "matchingGroups": [],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "DATA_REQUIREMENTS_SATISFIED"
+        ],
+        "requiredSemantics": [
+          "material_formula"
+        ]
+      },
+      {
+        "capability": "dataset_structure_statistics",
+        "dataStatus": "MISSING_REQUIRED_DATA",
+        "matchingGroups": [],
+        "platformStatus": "NOT_IMPLEMENTED",
+        "reasons": [
+          "MISSING:structure"
+        ],
+        "requiredSemantics": [
+          "structure"
+        ]
+      }
+    ],
+    "createdAt": "2026-07-28T09:23:39.681218+00:00",
+    "datasetId": "dataset_0003",
+    "datasetType": "ml_results",
+    "files": [
+      {
+        "detectedFormat": "csv",
+        "fileId": "file_001",
+        "fileName": "ambiguous.csv",
+        "parseStatus": "success"
+      }
+    ],
+    "objects": [
+      {
+        "count": 1,
+        "objectHash": "a9f61ebe6f6ec00fbbab4fd0f394d436747a72bd6dc40bf75e05ca86cf0907ae",
+        "objectId": "obj_dataframe_a9f61ebe6f6e",
+        "objectType": "DataFrame",
+        "periodicity": null,
+        "sourceFileIds": [
+          "file_001"
+        ]
+      }
+    ],
+    "phononSummary": null,
+    "profileContractVersion": "2.0",
+    "profileCoverage": {
+      "columnsInspected": 4,
+      "limits": {
+        "maxColumns": 512,
+        "maxFormulaLength": 256,
+        "maxFormulaValues": 1024,
+        "maxGroupIdLength": 128,
+        "maxObjects": 256,
+        "maxProbabilityColumns": 64,
+        "maxRows": 4096,
+        "maxUnitLength": 64
+      },
+      "policy": "complete",
+      "rowsInspected": 2,
+      "totalColumns": 4,
+      "totalRows": 2,
+      "warnings": []
+    },
+    "profileId": "profile_dataset_0003_v2",
+    "qualityIssues": [
+      {
+        "code": "SEMANTIC_GROUP_AMBIGUOUS",
+        "message": "Multiple deterministic semantic candidates prevent automatic task binding.",
+        "refs": [
+          {
+            "id": "obj_dataframe_a9f61ebe6f6e:regression:default",
+            "type": "semantic_group"
+          }
+        ],
+        "severity": "warning"
+      }
+    ],
+    "recommendedTasks": [
+      {
+        "availableNow": false,
+        "label": "ML prediction evaluation",
+        "reason": "Target and prediction columns were detected; the product capability remains planned until its bounded adapter and artifact contract are implemented.",
+        "requiredTools": [
+          "ml.basic_metrics",
+          "ml.error_distribution",
+          "ml.outlier_table"
+        ],
+        "stage": "mvp",
+        "taskId": "ml.evaluation",
+        "taskType": "ml_evaluation"
+      }
+    ],
+    "resourceSemantics": [
+      {
+        "capabilities": [
+          "table"
+        ],
+        "facts": {
+          "columnCount": 4,
+          "rowCount": 2,
+          "sourceFileIds": [
+            "file_001"
+          ]
+        },
+        "kind": "dataframe",
+        "objectHash": "a9f61ebe6f6ec00fbbab4fd0f394d436747a72bd6dc40bf75e05ca86cf0907ae",
+        "objectId": "obj_dataframe_a9f61ebe6f6e",
+        "objectType": "DataFrame",
+        "warnings": []
+      }
+    ],
+    "sampleIdentity": {
+      "datasetVersion": "2",
+      "explicitColumn": null,
+      "fallbackPolicy": "dataset_version_object_hash_row_index",
+      "objectIds": [
+        "obj_dataframe_a9f61ebe6f6e"
+      ],
+      "policy": "object_hash_row_index"
+    },
+    "schemaVersion": "0.1",
+    "semanticColumns": [
+      {
+        "ambiguities": [],
+        "column": "formula",
+        "dtype": "string",
+        "finiteCount": null,
+        "missingCount": 0,
+        "nonFiniteCount": null,
+        "objectId": "obj_dataframe_a9f61ebe6f6e",
+        "roles": [
+          {
+            "authority": "canonical_name",
+            "details": {
+              "inspectedCount": 2,
+              "invalidCount": 0,
+              "tooLongCount": 0,
+              "validCount": 2
+            },
+            "groupId": null,
+            "role": "material_formula"
+          }
+        ],
+        "rowsInspected": 2,
+        "totalRows": 2,
+        "uniqueCount": 2,
+        "unit": null
+      },
+      {
+        "ambiguities": [],
+        "column": "y_true",
+        "dtype": "number",
+        "finiteCount": 2,
+        "missingCount": 0,
+        "nonFiniteCount": 0,
+        "objectId": "obj_dataframe_a9f61ebe6f6e",
+        "roles": [
+          {
+            "authority": "canonical_name",
+            "details": {},
+            "groupId": "obj_dataframe_a9f61ebe6f6e:regression:default",
+            "role": "regression_target"
+          }
+        ],
+        "rowsInspected": 2,
+        "totalRows": 2,
+        "uniqueCount": 2,
+        "unit": null
+      },
+      {
+        "ambiguities": [],
+        "column": "target",
+        "dtype": "number",
+        "finiteCount": 2,
+        "missingCount": 0,
+        "nonFiniteCount": 0,
+        "objectId": "obj_dataframe_a9f61ebe6f6e",
+        "roles": [
+          {
+            "authority": "alias_match",
+            "details": {},
+            "groupId": "obj_dataframe_a9f61ebe6f6e:regression:default",
+            "role": "regression_target"
+          }
+        ],
+        "rowsInspected": 2,
+        "totalRows": 2,
+        "uniqueCount": 2,
+        "unit": null
+      },
+      {
+        "ambiguities": [],
+        "column": "y_pred",
+        "dtype": "number",
+        "finiteCount": 2,
+        "missingCount": 0,
+        "nonFiniteCount": 0,
+        "objectId": "obj_dataframe_a9f61ebe6f6e",
+        "roles": [
+          {
+            "authority": "canonical_name",
+            "details": {},
+            "groupId": "obj_dataframe_a9f61ebe6f6e:regression:default",
+            "role": "regression_prediction"
+          }
+        ],
+        "rowsInspected": 2,
+        "totalRows": 2,
+        "uniqueCount": 2,
+        "unit": null
+      }
+    ],
+    "semanticGroups": [
+      {
+        "classes": [],
+        "groupId": "obj_dataframe_a9f61ebe6f6e:regression:default",
+        "kind": "regression",
+        "predictionColumns": [
+          "y_pred"
+        ],
+        "probabilityColumns": [],
+        "reasons": [
+          "MULTIPLE_TARGET_COLUMNS"
+        ],
+        "seriesBindings": [
+          {
+            "predictionColumn": "y_pred",
+            "seriesId": "default",
+            "uncertaintyColumns": []
+          }
+        ],
+        "status": "AMBIGUOUS",
+        "targetColumns": [
+          "target",
+          "y_true"
+        ],
+        "uncertaintyColumns": []
+      }
+    ],
+    "semanticHash": "9479537c5ee81ee8ff159ee8c56b103b70c02c93c28adb8ace1f24cfc36a3fa9",
+    "semanticRulesVersion": "phase10k1.material_profile_semantics.v1",
+    "structureSummary": null,
+    "tableSummary": {
+      "columns": [
+        {
+          "dtype": "string",
+          "inferredRole": "formula",
+          "missingCount": 0,
+          "name": "formula",
+          "uniqueCount": 2
+        },
+        {
+          "dtype": "number",
+          "inferredRole": "target",
+          "missingCount": 0,
+          "name": "y_true",
+          "uniqueCount": 2
+        },
+        {
+          "dtype": "number",
+          "inferredRole": "target",
+          "missingCount": 0,
+          "name": "target",
+          "uniqueCount": 2
+        },
+        {
+          "dtype": "number",
+          "inferredRole": "prediction",
+          "missingCount": 0,
+          "name": "y_pred",
+          "uniqueCount": 2
+        }
+      ],
+      "inferredTask": "regression",
+      "nColumns": 4,
+      "nRows": 2
+    },
+    "trajectorySummary": null,
+    "version": "2"
+  },
+  "request": {
+    "endpoint": "POST /datasets/upload",
+    "fileName": "ambiguous.csv"
+  },
+  "responses": {
+    "fetchStatus": 200,
+    "regenerateStatus": 200,
+    "uploadStatus": 200
+  }
+}
