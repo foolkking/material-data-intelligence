@@ -14,7 +14,16 @@ implementation.
 | Data | Current parsing and normalization | READY | Yes | No | Existing registered parsers only |
 | Data | Material Data Profile 2.0 | READY | Yes | No | Phase 10K-1 |
 | Dataset | Materials explorer and comparisons | READY | Yes | No | `dataset.materials_explorer` within Phase 10K-2 limits |
-| Dataset | Composition space/PCA/clustering | READY | Yes | No | `dataset.composition_space` within Phase 10K-4 exploratory and resource-cap limits |
+| Dataset | Normalized atomic-fraction composition feature space | READY | Yes | No | `dataset.composition_space`; deterministic atomic-number basis |
+| Dataset | Deterministic 2D PCA projection | READY | Yes | No | `dataset.composition_space`; center-only SVD with stable sign convention |
+| Dataset | Bounded KMeans clustering | READY | Yes | No | Optional `dataset.composition_space` mode over the original feature matrix |
+| Dataset | Property coloring | READY | Conditional | No | Profile 2.0 `material_property` semantics with compatible units |
+| Dataset | ML error/uncertainty coloring | READY | Conditional | No | Explicit Phase 10K-3 artifact binding by `objectId + sampleRef` |
+| Dataset | Shared composition-space dataset comparison | READY | Conditional | No | Explicit group/resource identity and one shared basis/PCA fit |
+| Dataset | Composition-space sample inspection | READY | Yes | No | Stable object-qualified sample keys with numeric table fallback |
+| Dataset | UMAP projection | FUTURE | No | Yes | No dependency or implementation in Phase 10K-4 |
+| Dataset | t-SNE projection | FUTURE | No | Yes | Not implemented; no baseline requirement |
+| Dataset | Learned material embeddings | FUTURE | No | Yes | No pretrained/foundation-model embedding authority |
 | ML | Regression model-result evaluation | READY | Yes | No | `ml.regression_evaluation` within Phase 10K-3 limits |
 | ML | Uncertainty evaluation | READY | Conditional | No | `ml.uncertainty_evaluation` when Profile 2.0 has an explicit binding |
 | ML | Classification evaluation | READY | Conditional | No | `ml.classification_evaluation`; binary curves require explicit valid probabilities |

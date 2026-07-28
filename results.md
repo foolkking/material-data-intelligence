@@ -1223,3 +1223,74 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
   service-backed integration, and the no-skipped assertion.
 * archive eligibility: confirmed before deletion; results/evidence are retained
   permanently and only the complete K3 `---TASK---` block is removed.
+
+# Phase 10K-4 Composition Space / Embedding / Clustering Result
+
+## Status and Completion Time
+
+* status: `PASS_PENDING_COMPLETION_RECORD_CI`
+* completed: `2026-07-28 23:23:54 +08:00`
+
+## Delivered Capability
+
+* Added formal product-level `dataset.composition_space` over Material Data
+  Profile 2.0 formula/property semantics and explicitly bound canonical table
+  resources.
+* Added atomic-number-ordered normalized atomic-fraction vectors, deterministic
+  center-only two-dimensional PCA with stable sign convention, optional bounded
+  KMeans in the original feature space, descriptive centroid-distance outlier
+  candidates, and explicit group/resource comparison on one shared basis/PCA.
+* Preserved stable `objectId + sampleRef` identity; Profile property colors and
+  Phase 10K-3 error/uncertainty colors are sample-bound and never inferred from
+  row order.
+* Added an accessible responsive SVG/table Composition Space Explorer with
+  linked inspection and inert JSON fallback. The frontend consumes backend
+  coordinates and does not recalculate PCA or clustering.
+
+## Scientific and Security Boundary
+
+* Clusters and outliers are exploratory statistical summaries, not material
+  families, invalidity proofs, or anomaly authority. No UMAP/t-SNE, learned
+  embeddings, model training, scientific cluster naming, external service,
+  arbitrary code, real LLM calculation, or Phase 10L behavior was added.
+* Caps cover 100,000 resolved rows, 20,000 analyzed samples, 118 elements, 12
+  clusters, 10,000 plot points, 1,000 retained table rows, bounded warnings,
+  eight-megabyte artifacts, and strict timeout/parameter validation.
+
+## Evidence and Verification
+
+* Real Planner/job/runtime/API artifacts, deterministic hashes, property and K3
+  ML coloring, explicit comparisons, rank/cap failures, Chromium/Firefox/WebKit
+  and mobile replay, numeric fallback, screenshots, accessibility, performance,
+  network, and security evidence are retained under
+  `docs/phase10k/evidence/phase10k4_composition_space/`.
+* K4 focused backend/evidence/manifest: `24 passed`; full backend: `826 passed,
+  26 skipped, 63 warnings`. Skips are explicit environment/integration gates
+  and are not represented as passes.
+* frontend: `51 files, 314 tests passed`; typecheck and production build PASS.
+  Ruff, `uv lock --check`, `git diff --check`, evidence integrity, and historical
+  K1-K3 browser/evidence regression checks passed.
+* required markers: `COMPOSITION_SPACE_RUNTIME_EVIDENCE_PASS`,
+  `COMPOSITION_SPACE_PCA_EVIDENCE_PASS`,
+  `COMPOSITION_SPACE_SAMPLE_LINKAGE_EVIDENCE_PASS`,
+  `COMPOSITION_SPACE_PROPERTY_COLOR_EVIDENCE_PASS`,
+  `COMPOSITION_SPACE_DATASET_COMPARISON_EVIDENCE_PASS`,
+  `COMPOSITION_SPACE_CLUSTERING_EVIDENCE_PASS`,
+  `COMPOSITION_SPACE_BROWSER_EVIDENCE_PASS`,
+  `COMPOSITION_SPACE_PERFORMANCE_EVIDENCE_PASS`,
+  `NO_COMPOSITION_SPACE_EXTERNAL_NETWORK_REQUESTS`, and
+  `NO_SECRET_PATTERN_HITS`.
+* `npm audit`: `UNAVAILABLE`; configured npmmirror endpoint returns
+  `404 NOT_IMPLEMENTED`. No dependency or lockfile changed.
+
+## Commit / CI / Queue
+
+* implementation: `c25a815ea4b1e9601287d46a02be16603ce5cf07`; its first CI
+  exposed only ignored evidence files while frontend and service-backed passed.
+* evidence-closure/current implementation HEAD:
+  `fb9d720b9d6009ebecab8eeff7fc60c2080a67c6`; exact-SHA CI run
+  `30372914960` passed Unit, Frontend Typecheck & Build,
+  PostgreSQL/Redis/MinIO service-backed integration, and no-skipped assertion.
+* completion-record commit/CI: pending this record commit.
+* Phase 10K-4 remains in `TASKS.md` until completion-record exact-SHA CI passes.
+* Phase 10K-5 remains pending and was not implemented by this task.

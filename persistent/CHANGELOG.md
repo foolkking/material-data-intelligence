@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2026-07-28 - Phase 10K-4 Composition Space (In Progress)
+## 2026-07-28 - Phase 10K-4 Composition Space
 
 - Added `dataset.composition_space`, a Profile 2.0-bound product capability
   with normalized atomic-fraction features, deterministic two-dimensional PCA,
@@ -9,8 +9,10 @@
 - Added strict Registry/Planner/runtime integration and a responsive accessible
   SVG/table Composition Space Explorer with inert JSON fallback. The frontend
   consumes backend coordinates and never performs PCA or clustering.
-- Focused backend/frontend tests pass locally. Browser evidence, full
-  regression, exact-SHA CI, completion record, and queue archive are pending;
+- Full backend/frontend, browser matrix, evidence integrity, accessibility,
+  performance, and security checks passed. Implementation/evidence HEAD
+  `fb9d720` passed exact-SHA CI run `30372914960`, including service-backed and
+  no-skipped. Completion-record CI and verified queue archive remain pending;
   no dependency, model training, UMAP/t-SNE, real LLM, external service, or
   Phase 10L behavior was added.
 

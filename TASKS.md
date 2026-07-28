@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 你现在执行：
 
 # Phase 10K-4：Composition Space / Embedding / Clustering
@@ -2747,6 +2747,29 @@ Audit 完成后直接继续 implementation。
 本轮最终停在：
 
 **Phase 10K-5：Material Intelligence Integration + Browser/API Evidence = NEXT / AWAITING COMPLETE PROMPT**
+
+完成时间：2026-07-28 23:23:54 +08:00
+
+修改文件：
+
+* `packages/adapters/mdi_adapters/platform_builtin/composition_space.py` 及 Registry、Planner、Profile capability integration。
+* `apps/web/app/components/composition-space/`、Dataset Explorer/PlannerWorkbench integration 和 responsive CSS。
+* `tests/test_phase10k4_composition_space.py`、evidence/service-backed tests、browser runner 和 deterministic evidence pack。
+* Phase 10K-4 schema、implementation、fixture、evidence、next-scope docs 与 persistent records。
+
+修改摘要：
+
+* 建立正式 `dataset.composition_space` product capability，使用 canonical normalized atomic-fraction feature、deterministic center-only PCA、可选 bounded feature-space KMeans、stable sample identity、shared comparison projection、Profile property coloring 和 K3 sample-bound ML coloring。
+* 增加 accessible SVG/table Composition Space Explorer、inert JSON fallback、三浏览器/mobile evidence、strict caps、security/no-network evidence；未增加 dependency、UMAP/t-SNE、模型训练、frontend scientific calculation 或 Phase 10L 功能。
+
+测试结果：
+
+* K4 focused backend/evidence/manifest：`24 passed`；full backend：`826 passed, 26 skipped`。
+* frontend：`51 files, 314 tests passed`；typecheck/build PASS；ruff、`uv lock --check`、`git diff --check` PASS。
+* Chromium/Firefox/WebKit/mobile browser evidence 及全部 K4 markers PASS；`NO_COMPOSITION_SPACE_EXTERNAL_NETWORK_REQUESTS`、`NO_SECRET_PATTERN_HITS`。
+* implementation/evidence HEAD `fb9d720b9d6009ebecab8eeff7fc60c2080a67c6` exact-SHA CI run `30372914960` PASS，包括 Unit、Frontend Typecheck & Build、service-backed integration 和 no-skipped assertion。
+* `npm audit` UNAVAILABLE：configured npmmirror audit endpoint returns `404 NOT_IMPLEMENTED`；无 dependency/lockfile 变更。
+* completion-record exact-SHA CI 与 verified queue archive 仍待本记录 commit 后闭合。
 
 ---END---
 
