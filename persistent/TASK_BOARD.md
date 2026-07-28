@@ -48,7 +48,7 @@ current board above.
 - [x] Audit Phase 10H band/mode identity, Phase 10I BZ/k-path identity, existing compatibility, Three.js lifecycle, and planner composition.
 - [x] Implement strict compatibility, immutable point-occurrence/segment/sample maps, bounded shared state, bidirectional Band/BZ selection, exact animation handoff, mobile tabs, and accessible table/inspector.
 - [x] Capture real QueueWorkerRuntime artifacts and Chromium/Firefox/WebKit/mobile/performance/accessibility/network/security evidence.
-- [x] Complete full regression and implementation/fix commits through `f3fa177`; current-HEAD CI run `29572530288` passed all gates. Completion record `02c550b` passed current-HEAD CI run `29572771301`, and the verified queue block is archived in `reslusts.md`.
+- [x] Complete full regression and implementation/fix commits through `f3fa177`; current-HEAD CI run `29572530288` passed all gates. Completion record `02c550b` passed current-HEAD CI run `29572771301`, and the verified queue block is archived in `results.md`.
 
 ## Phase 10I-2 Brillouin Renderer / Evidence Completed
 
@@ -57,7 +57,7 @@ current board above.
 - [x] Integrate the canonical product identity and interactive routing without changing artifact or runtime semantics.
 - [x] Capture Chromium/Firefox/WebKit/mobile/API/performance/accessibility/security evidence from real Phase 10I-1 runtime artifacts.
 - [x] Complete full regression, implementation commit `b5469c3`, and current-HEAD CI run `29420821864`.
-- [x] Pass current-HEAD CI run `29421142527` for completion record `28a3cfa`, verify `reslusts.md`, and archive the queue block.
+- [x] Pass current-HEAD CI run `29421142527` for completion record `28a3cfa`, verify `results.md`, and archive the queue block.
 
 ## Phase 10I-1 Brillouin Zone Adapter Completed
 
@@ -2126,7 +2126,7 @@ current board above.
 - [ ] Review Phase 10J-2 only as a consumer of validated canonical artifacts; do not weaken parser caps or execute artifact code.
 # Phase 10J-2 Isosurface Renderer Completed
 
-- Status: completed and verified; implementation commit `f6edcac347f2f7fffdbda47b1f72ad493c8edae8` passed CI run `29744316126`, completion record `c7669619b1444076bc47e8f084ddc2d5df5ce783` passed CI run `29745406355`, and the queue block is archived in `reslusts.md`.
+- Status: completed and verified; implementation commit `f6edcac347f2f7fffdbda47b1f72ad493c8edae8` passed CI run `29744316126`, completion record `c7669619b1444076bc47e8f084ddc2d5df5ce783` passed CI run `29745406355`, and the queue block is archived in `results.md`.
 - Delivered: validated scalar/node payload consumer, application Worker extraction, periodic/affine mesh mapping, Three.js product UI, structure overlay, fallbacks, and three-browser/mobile evidence.
 - Deferred: slice, direct volume, cell-centered/vector/complex fields, Bader/field analysis, and remote assets.
 
@@ -2152,4 +2152,4 @@ current board above.
 - [x] Reuse the Phase 10J-2 Worker/Three.js renderer with exact presets, picking, clipping, bounded periodic structure context, PNG, mobile, and accessibility behavior.
 - [x] Capture live QueueWorkerRuntime ELFCAR, PARCHG, and explicitly identified CUBE artifacts plus Chromium/Firefox/WebKit evidence with zero external requests.
 - [x] Implementation commit `a5ba567528c13ca1b3c0bb83856fe202bcdf4898` passed CI run `30135550496`, including unit, frontend typecheck/build, service-backed integration, and no-skipped assertion.
-- [x] Completion-record commit `75b2d74a1f263338f12bffe02f3ee89536625c17` passed CI run `30135836995`; the verified completed Phase 10J-5 queue block is archived in `reslusts.md` and removed from `TASKS.md`.
+- [x] Completion-record commit `75b2d74a1f263338f12bffe02f3ee89536625c17` passed CI run `30135836995`; the verified completed Phase 10J-5 queue block is archived in `results.md` and removed from `TASKS.md`.

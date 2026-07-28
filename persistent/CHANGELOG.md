@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-28 - Canonical Task Result Filename Correction
+
+- Renamed the historical task result ledger from the misspelled `reslusts.md`
+  to `results.md` without changing or dropping prior records.
+- Updated `AGENTS.md` and persistent task references so every future task appends
+  to and verifies the single canonical `results.md` ledger.
+
 ## 2026-07-27 - Phase 10K-0 Material Intelligence Capability Gap Audit
 
 - Audited real material parsers, profile generation, schemas, executable
