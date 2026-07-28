@@ -99,6 +99,8 @@ class MockLLMProvider:
         materials_ml_tool = _select_materials_ml_tool(request, tools, data_profile)
         if self.fixed_plan is not None:
             plan = dict(self.fixed_plan)
+        elif _should_generate_composition_space(request, tools, data_profile):
+            plan = _mock_composition_space_plan(request, data_profile)
         elif materials_ml_tool is not None:
             plan = _mock_materials_ml_plan(request, data_profile, materials_ml_tool)
         elif _should_generate_dataset_materials_explorer(request, tools, data_profile):
@@ -1252,6 +1254,37 @@ def _should_generate_dataset_materials_explorer(
     return any(marker in prompt for marker in markers)
 
 
+def _should_generate_composition_space(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if not _has_tool(tools, "dataset.composition_space") or data_profile.profileContractVersion != "2.0":
+        return False
+    prompt = request.user_prompt.lower()
+    markers = (
+        "composition space",
+        "composition pca",
+        "pca compositions",
+        "cluster compositions",
+        "composition clustering",
+        "composition embedding",
+        "chemical composition space",
+        "组成空间",
+        "组成 pca",
+        "成分空间",
+        "成分聚类",
+    )
+    if not any(marker in prompt for marker in markers):
+        return False
+    return any(
+        item.capability == "composition_space"
+        and item.dataStatus == "READY"
+        and item.platformStatus == "AVAILABLE"
+        for item in data_profile.analysisReadiness
+    )
+
+
 def _select_materials_ml_tool(
     request: PlannerRequest,
     tools: list[RegisteredTool],
@@ -1379,6 +1412,70 @@ def _mock_materials_ml_plan(
             {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_001"},
         ],
     )
+
+
+def _mock_composition_space_plan(request: PlannerRequest, data_profile: DataProfile) -> dict[str, Any]:
+    table_ids = sorted(
+        item.objectId for item in data_profile.resourceSemantics if item.objectType == "DataFrame"
+    )
+    formula_tables = sorted(
+        {
+            column.objectId
+            for column in data_profile.semanticColumns
+            if any(role.role == "material_formula" for role in column.roles)
+        }
+    )
+    eligible = [object_id for object_id in table_ids if object_id in formula_tables]
+    if not eligible:
+        raise ValueError("Profile 2.0 contains no unambiguous composition table binding.")
+    object_id = eligible[0]
+    params: dict[str, Any] = {
+        "tableObjectId": object_id,
+        "comparisonMode": "none",
+        "projectionDimensions": 2,
+        "clusteringEnabled": True,
+        "nClusters": 3,
+        "randomState": 0,
+        "nInit": 10,
+        "maxIterations": 300,
+        "tolerance": 0.0001,
+        "maxPlotPoints": 5000,
+        "maxOutlierRows": 50,
+    }
+    prompt = request.user_prompt.lower()
+    columns = {
+        column.column.lower(): column.column
+        for column in data_profile.semanticColumns
+        if column.objectId == object_id
+    }
+    if any(marker in prompt for marker in ("train and test", "training and test", "train/test", "训练集和测试集")) and "split" in columns:
+        params.update(
+            {
+                "comparisonMode": "group",
+                "groupColumn": columns["split"],
+                "groupA": "train",
+                "groupB": "test",
+            }
+        )
+    step = {
+        "stepId": "step_001",
+        "toolId": "dataset.composition_space",
+        "purpose": "Build deterministic Profile-bound PCA composition space with optional bounded composition clustering.",
+        "reason": "The request explicitly asks for composition-space exploration on a Profile 2.0 formula-bearing table.",
+        "inputRefs": [
+            {"refType": "profile", "ref": "profile"},
+            {"refType": "normalized_object", "ref": object_id, "objectType": "DataFrame", "fieldRole": "composition_samples"},
+        ],
+        "params": params,
+        "output": {"artifactTypes": ["table_json", "plotly_json", "summary_md", "recipe_json"]},
+    }
+    expected = [
+        {"name": "composition_space.json", "type": "table_json", "fromStepId": "step_001"},
+        {"name": "composition_space_plot.json", "type": "plotly_json", "fromStepId": "step_001"},
+        {"name": "summary.md", "type": "summary_md", "fromStepId": "step_001"},
+        {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_001"},
+    ]
+    return _single_step_plan(request, step, expected)
 
 
 def _mock_dataset_materials_explorer_plan(request: PlannerRequest, data_profile: DataProfile) -> dict[str, Any]:

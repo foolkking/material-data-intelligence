@@ -1163,6 +1163,132 @@ pre {
   gap: 12px;
 }
 
+.composition-space {
+  grid-column: 1 / -1;
+  min-width: 0;
+  gap: 12px;
+}
+
+.composition-space-content {
+  display: grid;
+  min-width: 0;
+  gap: 14px;
+}
+
+.composition-space-subheading,
+.composition-space-inspector-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.composition-space-subheading h3,
+.composition-space-inspector h3,
+.composition-space-detail-grid h3,
+.composition-space-comparison h3,
+.composition-space-warnings h3 { margin: 0; font-size: 15px; }
+.composition-space-subheading p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+
+.composition-space-toolbar {
+  display: grid;
+  grid-template-columns: minmax(180px, 300px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: end;
+}
+
+.composition-space-toolbar > label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  font-weight: 700;
+}
+
+.composition-space-toolbar select { min-height: 40px; min-width: 0; }
+
+.composition-space-method {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.composition-space-method > div,
+.composition-space-comparison .mini-grid > div {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel-soft);
+}
+
+.composition-space-method dt,
+.composition-space-comparison dt { color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.composition-space-method dd,
+.composition-space-comparison dd { margin: 4px 0 0; overflow-wrap: anywhere; font-size: 12px; }
+
+.composition-space-main,
+.composition-space-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, .8fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.composition-space-figure,
+.composition-space-inspector,
+.composition-space-detail-grid > section,
+.composition-space-comparison,
+.composition-space-warnings,
+.composition-space-table-fallback {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 10px;
+}
+
+.composition-space-figure { display: grid; gap: 8px; }
+.composition-space-figure figcaption { display: grid; gap: 2px; }
+.composition-space-figure figcaption span { color: var(--muted); font-size: 12px; }
+.composition-space-chart { width: 100%; min-height: 280px; color: var(--muted); background: #fff; border: 1px solid var(--border); }
+.composition-space-axis { stroke: currentColor; stroke-width: 1; }
+.composition-space-chart circle { cursor: pointer; stroke: rgba(18, 30, 38, .35); stroke-width: 1; }
+.composition-space-chart circle.selected { stroke: #111827; stroke-width: 3; }
+.composition-space-chart circle:focus-visible { outline: none; stroke: #111827; stroke-width: 4; }
+.composition-space-chart text { fill: currentColor; font-size: 12px; text-anchor: middle; letter-spacing: 0; }
+
+.composition-space-inspector { display: grid; gap: 10px; }
+.composition-space-inspector .mini-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.composition-space-inspector .mini-grid > div { padding: 7px; }
+.composition-space-values { display: grid; gap: 5px; }
+.composition-space-values h4 { margin: 0; font-size: 12px; }
+.composition-space-values dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; margin: 0; }
+.composition-space-values dl > div { min-width: 0; padding: 5px; background: var(--panel-soft); }
+.composition-space-values dt { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+.composition-space-values dd { margin: 2px 0 0; font-size: 12px; overflow-wrap: anywhere; }
+
+.composition-space-detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.composition-space-detail-grid > section,
+.composition-space-comparison,
+.composition-space-warnings { display: grid; gap: 8px; }
+.composition-space-table-fallback summary { cursor: pointer; font-weight: 700; }
+.composition-space-table-fallback .compact-table-wrap { margin-top: 10px; }
+.composition-space-warnings ul { margin: 0; padding-left: 18px; }
+.composition-space-invalid { display: grid; gap: 10px; }
+.composition-space-invalid pre { max-height: 320px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .composition-space-toolbar,
+  .composition-space-main,
+  .composition-space-detail-grid { grid-template-columns: 1fr; }
+  .composition-space-toolbar select { min-height: 44px; }
+  .composition-space-method { grid-template-columns: 1fr; }
+  .composition-space-chart { min-height: 240px; }
+  .composition-space-chart circle { r: 6px; }
+  .composition-space-inspector .mini-grid,
+  .composition-space-values dl { grid-template-columns: 1fr; }
+}
+
 .materials-ml-selectors {
   display: flex;
   flex-wrap: wrap;

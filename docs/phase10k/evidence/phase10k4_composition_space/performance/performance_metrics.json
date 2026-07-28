@@ -1,0 +1,42 @@
+{
+  "acceptance": "PASS",
+  "caps": {
+    "maxAnalyzedSamples": 20000,
+    "maxArtifactBytes": 16000000,
+    "maxPlotPoints": 10000,
+    "maxRows": 100000
+  },
+  "cases": [
+    {
+      "artifactBytes": 8583,
+      "caseId": "small",
+      "clusterCount": 3,
+      "displayPoints": 6,
+      "elapsedMs": 47.381,
+      "featureDimensions": 10,
+      "inputRows": 6,
+      "validSamples": 6
+    },
+    {
+      "artifactBytes": 1979975,
+      "caseId": "medium",
+      "clusterCount": 3,
+      "displayPoints": 1000,
+      "elapsedMs": 1440.101,
+      "featureDimensions": 10,
+      "inputRows": 5000,
+      "validSamples": 5000
+    },
+    {
+      "artifactBytes": 7880538,
+      "caseId": "near_cap",
+      "clusterCount": 3,
+      "displayPoints": 1000,
+      "elapsedMs": 3803.041,
+      "featureDimensions": 10,
+      "inputRows": 20000,
+      "validSamples": 20000
+    }
+  ],
+  "marker": "COMPOSITION_SPACE_PERFORMANCE_EVIDENCE_PASS"
+}

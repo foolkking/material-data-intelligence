@@ -22,8 +22,11 @@
   `a1e05ee` and completion record `c5483d6` passed exact-SHA CI runs
   `30363719393` and `30364098180`, including service-backed/no-skipped. The
   result and evidence are retained and the verified queue block is archived.
-- [ ] Phase 10K-4 is next but awaiting its complete approved prompt; Phase 10K-5
-  and 10L have not started.
+- [~] Phase 10K-4 Composition Space / Embedding / Clustering is the sole active
+  task after verified 10K-3 archive commit `4d35957` and exact-SHA CI run
+  `30364715406`. Product implementation and focused backend/frontend checks are
+  complete locally; evidence, full regression, exact-SHA CI, completion record,
+  and archive remain open. Phase 10K-5 and 10L have not started.
 
 `TASKS.md` contains the approved executable Phase 10K queue. Future Scope and
 Not Planned items are not queue work.

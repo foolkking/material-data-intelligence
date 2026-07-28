@@ -1686,3 +1686,25 @@ supply shader, Worker/WASM, transfer code, plane expression, URL, texture,
 module, callback, HTML, CSS, or execution authority. Cell-centered,
 vector/complex, arbitrary oblique/curved slices, resampling, downsampling,
 segmentation, feature detection, and 4D volume remain outside this model.
+# Phase 10K-4 Composition Space Artifact
+
+`phase10k4.composition_space.v1` is the product contract emitted by
+`dataset.composition_space`. It binds exactly one Material Data Profile 2.0 and
+one or two explicitly selected DataFrames. The structured artifact contains:
+
+* dataset/profile/semantic hashes and stable `objectId + sampleRef` identity;
+* invalid-formula coverage with no silent drops;
+* atomic-number-ordered normalized atomic-fraction feature basis;
+* two-dimensional center-only, unscaled, full-SVD PCA with deterministic sign,
+  components, mean, rank, and explained variance;
+* optional bounded KMeans labels and centroids computed in feature space;
+* explicit group/resource comparison metadata using one shared basis/PCA;
+* Profile-authorized property values and optional Phase 10K-3 sample-bound ML
+  values;
+* bounded plot sample keys, cluster summaries, and descriptive outlier rows;
+* inert-content security declarations and exact resource limits.
+
+PCA coordinates and clusters are descriptive. They are not canonical material
+identity, structural similarity, material-family classification, or scientific
+validity. UMAP, t-SNE, learned embeddings, model fitting, external calls, and
+browser-side scientific calculation are not part of this contract.

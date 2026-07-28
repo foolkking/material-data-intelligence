@@ -1,0 +1,16 @@
+{
+  "artifactCreated": false,
+  "errors": [
+    {
+      "code": "PARAMS_SCHEMA_INVALID",
+      "detail": {
+        "detail": "Additional properties are not allowed ('callback' was unexpected)",
+        "stepId": "step_001",
+        "toolId": "dataset.composition_space"
+      },
+      "message": "Params for tool 'dataset.composition_space' do not match the registered paramsSchema."
+    }
+  ],
+  "runtimeStarted": false,
+  "validationOk": false
+}

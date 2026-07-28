@@ -7,8 +7,6 @@ assigned phases rather than by this roadmap gate:
 
 * Which exact units and domain property registries should be admitted beyond
   the conservative Phase 10K-1 numeric property allowlist?
-* Which bounded composition embeddings and clustering methods can be supported
-  without a large speculative dependency surface?
 * What intent vocabulary, plan-size bound, typed artifact binding, and failure
   policy are required for capability-aware multi-tool analysis?
 * Which scientific summary fields may be provided to bounded interpretation,
@@ -25,6 +23,17 @@ assigned phases rather than by this roadmap gate:
   first supported batch?
 
 ## Closed Product-Scope Questions
+
+* Composition-space baseline: **CLOSED FOR PHASE 10K-4** - normalized
+  atomic-fraction features ordered by atomic number, deterministic center-only
+  two-dimensional PCA, and optional bounded KMeans in the original feature
+  space. UMAP/t-SNE and larger embedding dependencies are not included.
+* Composition-space identity/comparison: **CLOSED FOR PHASE 10K-4** - stable
+  `objectId + sampleRef` identity, one shared feature basis/PCA for explicit
+  resource or group comparison, and no array-position or row-order binding.
+* Composition-space claims: **CLOSED FOR PHASE 10K-4** - clusters and centroid
+  distances are exploratory descriptive candidates, not material families,
+  phases, validity decisions, or scientific anomaly authority.
 
 * ML product identity: **CLOSED FOR PHASE 10K-3** - three coherent product
   capabilities for regression, uncertainty, and classification; historical

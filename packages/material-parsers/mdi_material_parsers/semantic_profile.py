@@ -108,6 +108,7 @@ _PLATFORM_TOOLS: dict[str, tuple[str, ...]] = {
     "structure_summary": ("structure.summary",),
     "dataset_materials_explorer": ("dataset.materials_explorer",),
     "dataset_structure_statistics": ("dataset.materials_explorer",),
+    "composition_space": ("dataset.composition_space",),
     "regression_evaluation": ("ml.regression_evaluation",),
     "uncertainty_evaluation": ("ml.uncertainty_evaluation",),
     "classification_evaluation": ("ml.classification_evaluation",),

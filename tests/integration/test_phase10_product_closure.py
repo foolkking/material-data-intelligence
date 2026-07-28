@@ -321,6 +321,78 @@ def test_phase10k3_service_backed_materials_ml_product_closure(tmp_path: Path) -
 
 
 @pytest.mark.integration
+def test_phase10k4_service_backed_composition_space_product_closure(tmp_path: Path) -> None:
+    if os.getenv("MDI_RUN_INTEGRATION") != "1":
+        pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
+    database_url = os.getenv("MDI_TEST_DATABASE_URL") or os.getenv("DATABASE_URL")
+    redis_url = os.getenv("REDIS_URL") or os.getenv("MDI_REDIS_URL")
+    if not database_url or "postgres" not in database_url or not redis_url:
+        pytest.skip("Service-backed Phase 10K-4 environment is incomplete")
+
+    engine = create_engine(database_url, future=True)
+    metadata.create_all(engine)
+    repos = SqlAlchemyRepositoryBundle.create(engine)
+    suffix = uuid.uuid4().hex[:10]
+    project_id = f"project_phase10k4_{suffix}"
+    dataset_id = f"dataset_phase10k4_{suffix}"
+    repos.projects.save({"id": project_id, "name": project_id, "createdBy": "test_user"})
+    repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": dataset_id, "createdBy": "test_user"})
+
+    profile, objects = _materials_ml_profile(tmp_path, dataset_id)
+    object_store, _ = build_object_store(objects, profile=profile)
+    registry = load_manifests()
+    storage = _minio_storage(f"phase10k4-composition-space-{suffix}")
+    runtime = QueueWorkerRuntime(
+        repository_factory=create_repository_factory(load_settings()),
+        queue_backend=RedisRQQueueBackend(redis_url=redis_url, queue_name="mdi-test-phase10k4-composition-space"),
+        artifact_storage=storage,
+        registry=registry,
+        artifact_root=tmp_path / "adapter-artifacts",
+    )
+    prompt = "Explore this composition space with PCA and composition clustering."
+    plan = _planner_plan(prompt, profile)
+    assert plan["steps"][0]["toolId"] == "dataset.composition_space"
+    assert validate_plan(plan, registry=registry).ok
+    created = planner_jobs(
+        PlannerJobsRequest(
+            userPrompt=prompt,
+            projectId=project_id,
+            datasetId=dataset_id,
+            profileId=profile.profileId,
+            enqueue=True,
+        ),
+        provider=MockLLMProvider(fixed_plan=plan),
+        repositories=repos,
+        queue_runtime=runtime,
+        registry=registry,
+    )
+    assert created.ok and created.job_id and created.plan_id and created.enqueued
+    result = runtime.handle_job(created.job_id, object_store=object_store)
+    artifacts = repos.artifacts.list_for_job(created.job_id)
+    calls = repos.tool_calls.list_for_job(created.job_id)
+    assert result.status == "completed"
+    assert len(calls) == 1 and calls[0]["toolId"] == "dataset.composition_space"
+    assert {item["name"] for item in artifacts} == {
+        "composition_space.json",
+        "composition_space_plot.json",
+        "summary.md",
+        "recipe.json",
+    }
+    assert all(item["storageProvider"] == "s3" and storage.exists(item["storageKey"]) for item in artifacts)
+    product = storage.get_json(next(item["storageKey"] for item in artifacts if item["name"] == "composition_space.json"))
+    assert product["schemaVersion"] == "phase10k4.composition_space.v1"
+    assert product["dataset"]["profileContractVersion"] == "2.0"
+    assert product["semantics"]["sampleIdentityPreserved"] is True
+    assert product["security"] == {
+        "artifactJavaScript": False,
+        "externalUrls": False,
+        "externalAssets": False,
+        "executableContent": False,
+    }
+    engine.dispose()
+
+
+@pytest.mark.integration
 def test_phase10j1_service_backed_volumetric_parser_adapter_closure(tmp_path: Path) -> None:
     if os.getenv("MDI_RUN_INTEGRATION") != "1":
         pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")

@@ -1,0 +1,991 @@
+{
+  "apiContentRetrieval": {
+    "allContentRoutesValidated": true,
+    "artifactNames": [
+      "composition_space.json",
+      "composition_space_plot.json",
+      "recipe.json",
+      "summary.md"
+    ]
+  },
+  "artifacts": [
+    {
+      "contentHash": "badc11cab5ddda0938b9459c6f8bf2a3eb6e72f9855ddd3b667a47b5e9172432",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k4_resources",
+      "id": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-table_json",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "7f127decaafd63be868e6e36a88ab5159ea35a42d96ae12af662bf140fd26baf",
+          "d4b0fedefdcfd40c398da575ca9b3985152a9dec48566beca1ff14a679ec9739",
+          "f1323ce1ed61e3ee538e98a6cc2b178ab72b60729607d0a2195080f454b6a7d5"
+        ],
+        "paramsHash": "d8ed97cd0a6d68da2ada58f71333684a6825db5c881e7f2bca6fd0c6a2695f24",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+          "planId": "plan_2aeb6fa32f695d76b0f07246",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+          "sklearnVersion": "1.9.0",
+          "sourceFunction": "platform_builtin.composition_space",
+          "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+          "toolId": "dataset.composition_space"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "dataset.composition_space",
+        "toolVersion": "0.1.0"
+      },
+      "name": "composition_space.json",
+      "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+      "planId": "plan_2aeb6fa32f695d76b0f07246",
+      "previewKey": null,
+      "projectId": "project_phase10k4_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+        "sklearnVersion": "1.9.0",
+        "sourceFunction": "platform_builtin.composition_space",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+        "toolId": "dataset.composition_space"
+      },
+      "sha256": "badc11cab5ddda0938b9459c6f8bf2a3eb6e72f9855ddd3b667a47b5e9172432",
+      "sizeBytes": 10325,
+      "storageProvider": "local",
+      "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+      "type": "table_json",
+      "version": "1"
+    },
+    {
+      "contentHash": "4fc61fb1cb134463295f4fae5f60f3880b14b5b4d074a474bd31e033d8407473",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k4_resources",
+      "id": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-plotly_json",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "7f127decaafd63be868e6e36a88ab5159ea35a42d96ae12af662bf140fd26baf",
+          "d4b0fedefdcfd40c398da575ca9b3985152a9dec48566beca1ff14a679ec9739",
+          "f1323ce1ed61e3ee538e98a6cc2b178ab72b60729607d0a2195080f454b6a7d5"
+        ],
+        "paramsHash": "d8ed97cd0a6d68da2ada58f71333684a6825db5c881e7f2bca6fd0c6a2695f24",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+          "planId": "plan_2aeb6fa32f695d76b0f07246",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+          "sklearnVersion": "1.9.0",
+          "sourceFunction": "platform_builtin.composition_space",
+          "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+          "toolId": "dataset.composition_space"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "dataset.composition_space",
+        "toolVersion": "0.1.0"
+      },
+      "name": "composition_space_plot.json",
+      "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+      "planId": "plan_2aeb6fa32f695d76b0f07246",
+      "previewKey": null,
+      "projectId": "project_phase10k4_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+        "sklearnVersion": "1.9.0",
+        "sourceFunction": "platform_builtin.composition_space",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+        "toolId": "dataset.composition_space"
+      },
+      "sha256": "4fc61fb1cb134463295f4fae5f60f3880b14b5b4d074a474bd31e033d8407473",
+      "sizeBytes": 1109,
+      "storageProvider": "local",
+      "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+      "type": "plotly_json",
+      "version": "1"
+    },
+    {
+      "contentHash": "a49d48672e0e4f8c4775f112d91ff1102192e61c0d9a08e35dc98fc5c94f06ae",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k4_resources",
+      "id": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-summary_md",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "7f127decaafd63be868e6e36a88ab5159ea35a42d96ae12af662bf140fd26baf",
+          "d4b0fedefdcfd40c398da575ca9b3985152a9dec48566beca1ff14a679ec9739",
+          "f1323ce1ed61e3ee538e98a6cc2b178ab72b60729607d0a2195080f454b6a7d5"
+        ],
+        "paramsHash": "d8ed97cd0a6d68da2ada58f71333684a6825db5c881e7f2bca6fd0c6a2695f24",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "text/markdown",
+          "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+          "planId": "plan_2aeb6fa32f695d76b0f07246",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+          "sklearnVersion": "1.9.0",
+          "sourceFunction": "platform_builtin.composition_space",
+          "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+          "toolId": "dataset.composition_space"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "dataset.composition_space",
+        "toolVersion": "0.1.0"
+      },
+      "name": "summary.md",
+      "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+      "planId": "plan_2aeb6fa32f695d76b0f07246",
+      "previewKey": null,
+      "projectId": "project_phase10k4_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "text/markdown",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+        "sklearnVersion": "1.9.0",
+        "sourceFunction": "platform_builtin.composition_space",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+        "toolId": "dataset.composition_space"
+      },
+      "sha256": "a49d48672e0e4f8c4775f112d91ff1102192e61c0d9a08e35dc98fc5c94f06ae",
+      "sizeBytes": 329,
+      "storageProvider": "local",
+      "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+      "type": "summary_md",
+      "version": "1"
+    },
+    {
+      "contentHash": "79638842d220a75ca680069c0b45d2f92abb062101c4c39d2318e2afcbba31d6",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k4_resources",
+      "id": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-recipe_json",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "7f127decaafd63be868e6e36a88ab5159ea35a42d96ae12af662bf140fd26baf",
+          "d4b0fedefdcfd40c398da575ca9b3985152a9dec48566beca1ff14a679ec9739",
+          "f1323ce1ed61e3ee538e98a6cc2b178ab72b60729607d0a2195080f454b6a7d5"
+        ],
+        "paramsHash": "d8ed97cd0a6d68da2ada58f71333684a6825db5c881e7f2bca6fd0c6a2695f24",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+          "planId": "plan_2aeb6fa32f695d76b0f07246",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+          "sklearnVersion": "1.9.0",
+          "sourceFunction": "platform_builtin.composition_space",
+          "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+          "toolId": "dataset.composition_space"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "dataset.composition_space",
+        "toolVersion": "0.1.0"
+      },
+      "name": "recipe.json",
+      "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+      "planId": "plan_2aeb6fa32f695d76b0f07246",
+      "previewKey": null,
+      "projectId": "project_phase10k4_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+        "sklearnVersion": "1.9.0",
+        "sourceFunction": "platform_builtin.composition_space",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+        "toolId": "dataset.composition_space"
+      },
+      "sha256": "79638842d220a75ca680069c0b45d2f92abb062101c4c39d2318e2afcbba31d6",
+      "sizeBytes": 1319,
+      "storageProvider": "local",
+      "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+      "type": "recipe_json",
+      "version": "1"
+    }
+  ],
+  "caseId": "resource_comparison",
+  "events": [
+    {
+      "eventType": "job.created",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0001",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Planner job created with persisted AnalysisPlan.",
+      "payload": {
+        "datasetId": "dataset_phase10k4_resources",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "projectId": "project_phase10k4_evidence"
+      },
+      "progress": 0.0,
+      "seq": 1,
+      "status": "info"
+    },
+    {
+      "eventType": "plan.persisted",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0002",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Persisted validated AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "plannerProvider": "mock"
+      },
+      "progress": 0.0,
+      "seq": 2,
+      "status": "success"
+    },
+    {
+      "eventType": "job.running",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0003",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Queue worker started job.",
+      "payload": {},
+      "progress": 0.0,
+      "seq": 3,
+      "status": "running"
+    },
+    {
+      "eventType": "plan.loaded",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0004",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm"
+      },
+      "progress": 0.05,
+      "seq": 4,
+      "status": "success"
+    },
+    {
+      "eventType": "tool.started",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0005",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Started tool dataset.composition_space.",
+      "payload": {
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "stepId": "step_001",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+        "toolId": "dataset.composition_space"
+      },
+      "progress": 0.0,
+      "seq": 5,
+      "status": "running"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0006",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Artifact ready: composition_space.json",
+      "payload": {
+        "artifactId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-table_json",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001"
+      },
+      "progress": null,
+      "seq": 6,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0007",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Artifact ready: composition_space_plot.json",
+      "payload": {
+        "artifactId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-plotly_json",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001"
+      },
+      "progress": null,
+      "seq": 7,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0008",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Artifact ready: summary.md",
+      "payload": {
+        "artifactId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-summary_md",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001"
+      },
+      "progress": null,
+      "seq": 8,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0009",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Artifact ready: recipe.json",
+      "payload": {
+        "artifactId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-recipe_json",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001"
+      },
+      "progress": null,
+      "seq": 9,
+      "status": "success"
+    },
+    {
+      "eventType": "tool.completed",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0010",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Completed tool dataset.composition_space.",
+      "payload": {
+        "artifactIds": [
+          "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-table_json",
+          "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-plotly_json",
+          "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-summary_md",
+          "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-recipe_json"
+        ],
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001"
+      },
+      "progress": 1.0,
+      "seq": 10,
+      "status": "success"
+    },
+    {
+      "eventType": "job.completed",
+      "id": "evt_job_e7ad4e4a6fe95bf683c58ccb_0011",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "message": "Job completed.",
+      "payload": {
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "planSource": "llm"
+      },
+      "progress": 1.0,
+      "seq": 11,
+      "status": "success"
+    }
+  ],
+  "expectedStatus": "completed",
+  "job": {
+    "analysisPlan": {
+      "assumptions": [
+        "Generated by MockLLMProvider for testing."
+      ],
+      "datasetId": "dataset_phase10k4_resources",
+      "expectedArtifacts": [
+        {
+          "fromStepId": "step_001",
+          "name": "composition_space.json",
+          "type": "table_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "composition_space_plot.json",
+          "type": "plotly_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "goal": "Explore this composition space with deterministic PCA and bounded composition clusters.",
+      "profileId": "profile_dataset_phase10k4_resources_v2",
+      "schemaVersion": "0.1",
+      "steps": [
+        {
+          "constraints": null,
+          "inputRefs": [
+            {
+              "columnName": null,
+              "fieldRole": null,
+              "objectType": null,
+              "ref": "profile",
+              "refType": "profile"
+            },
+            {
+              "columnName": null,
+              "fieldRole": "composition_samples",
+              "objectType": "DataFrame",
+              "ref": "obj_reference",
+              "refType": "normalized_object"
+            },
+            {
+              "columnName": null,
+              "fieldRole": "comparison_samples",
+              "objectType": "DataFrame",
+              "ref": "obj_holdout",
+              "refType": "normalized_object"
+            }
+          ],
+          "output": {
+            "artifactTypes": [
+              "table_json",
+              "plotly_json",
+              "summary_md",
+              "recipe_json"
+            ]
+          },
+          "params": {
+            "clusteringEnabled": true,
+            "comparisonMode": "resources",
+            "leftObjectId": "obj_reference",
+            "maxIterations": 300,
+            "maxOutlierRows": 50,
+            "maxPlotPoints": 5000,
+            "nClusters": 3,
+            "nInit": 10,
+            "projectionDimensions": 2,
+            "randomState": 0,
+            "rightObjectId": "obj_holdout",
+            "tableObjectId": "obj_reference",
+            "tolerance": 0.0001
+          },
+          "purpose": "Build deterministic Profile-bound PCA composition space with optional bounded composition clustering.",
+          "reason": "The request explicitly asks for composition-space exploration on a Profile 2.0 formula-bearing table.",
+          "stepId": "step_001",
+          "toolId": "dataset.composition_space"
+        }
+      ],
+      "toolRegistryVersion": "0.1.0",
+      "warnings": []
+    },
+    "artifactCount": 4,
+    "createdBy": "user_local",
+    "datasetId": "dataset_phase10k4_resources",
+    "eventCount": 11,
+    "id": "job_e7ad4e4a6fe95bf683c58ccb",
+    "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+    "kind": "analysis",
+    "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+    "planId": "plan_2aeb6fa32f695d76b0f07246",
+    "planSource": "llm",
+    "plan_id": "plan_2aeb6fa32f695d76b0f07246",
+    "projectId": "project_phase10k4_evidence",
+    "provenance": {
+      "binding": "jobs.plan_id -> analysis_plans.id",
+      "fallbackUsed": false,
+      "loadedFrom": "persisted_analysis_plan",
+      "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+      "planId": "plan_2aeb6fa32f695d76b0f07246",
+      "planSource": "llm",
+      "toolPath": "Tool Registry + Adapter"
+    },
+    "status": "completed",
+    "toolCallCount": 1,
+    "validationStatus": "validated"
+  },
+  "plan": {
+    "assumptions": [
+      "Generated by MockLLMProvider for testing."
+    ],
+    "datasetId": "dataset_phase10k4_resources",
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_001",
+        "name": "composition_space.json",
+        "type": "table_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "composition_space_plot.json",
+        "type": "plotly_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "goal": "Explore this composition space with deterministic PCA and bounded composition clusters.",
+    "profileId": "profile_dataset_phase10k4_resources_v2",
+    "schemaVersion": "0.1",
+    "steps": [
+      {
+        "constraints": null,
+        "inputRefs": [
+          {
+            "columnName": null,
+            "fieldRole": null,
+            "objectType": null,
+            "ref": "profile",
+            "refType": "profile"
+          },
+          {
+            "columnName": null,
+            "fieldRole": "composition_samples",
+            "objectType": "DataFrame",
+            "ref": "obj_reference",
+            "refType": "normalized_object"
+          },
+          {
+            "columnName": null,
+            "fieldRole": "comparison_samples",
+            "objectType": "DataFrame",
+            "ref": "obj_holdout",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "table_json",
+            "plotly_json",
+            "summary_md",
+            "recipe_json"
+          ]
+        },
+        "params": {
+          "clusteringEnabled": true,
+          "comparisonMode": "resources",
+          "leftObjectId": "obj_reference",
+          "maxIterations": 300,
+          "maxOutlierRows": 50,
+          "maxPlotPoints": 5000,
+          "nClusters": 3,
+          "nInit": 10,
+          "projectionDimensions": 2,
+          "randomState": 0,
+          "rightObjectId": "obj_holdout",
+          "tableObjectId": "obj_reference",
+          "tolerance": 0.0001
+        },
+        "purpose": "Build deterministic Profile-bound PCA composition space with optional bounded composition clustering.",
+        "reason": "The request explicitly asks for composition-space exploration on a Profile 2.0 formula-bearing table.",
+        "stepId": "step_001",
+        "toolId": "dataset.composition_space"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "planValidation": {
+    "errors": [],
+    "ok": true
+  },
+  "request": {
+    "datasetId": "dataset_phase10k4_resources",
+    "enqueue": true,
+    "profileId": "profile_dataset_phase10k4_resources_v2",
+    "provider": "MockLLMProvider"
+  },
+  "result": {
+    "artifactCount": 4,
+    "artifacts": [
+      {
+        "contentHash": "badc11cab5ddda0938b9459c6f8bf2a3eb6e72f9855ddd3b667a47b5e9172432",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k4_resources",
+        "id": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-table_json",
+        "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "inputHashes": [
+            "7f127decaafd63be868e6e36a88ab5159ea35a42d96ae12af662bf140fd26baf",
+            "d4b0fedefdcfd40c398da575ca9b3985152a9dec48566beca1ff14a679ec9739",
+            "f1323ce1ed61e3ee538e98a6cc2b178ab72b60729607d0a2195080f454b6a7d5"
+          ],
+          "paramsHash": "d8ed97cd0a6d68da2ada58f71333684a6825db5c881e7f2bca6fd0c6a2695f24",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+            "planId": "plan_2aeb6fa32f695d76b0f07246",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+            "sklearnVersion": "1.9.0",
+            "sourceFunction": "platform_builtin.composition_space",
+            "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+            "toolId": "dataset.composition_space"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "dataset.composition_space",
+          "toolVersion": "0.1.0"
+        },
+        "name": "composition_space.json",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "previewKey": null,
+        "projectId": "project_phase10k4_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+          "planId": "plan_2aeb6fa32f695d76b0f07246",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+          "sklearnVersion": "1.9.0",
+          "sourceFunction": "platform_builtin.composition_space",
+          "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+          "toolId": "dataset.composition_space"
+        },
+        "sha256": "badc11cab5ddda0938b9459c6f8bf2a3eb6e72f9855ddd3b667a47b5e9172432",
+        "sizeBytes": 10325,
+        "storageProvider": "local",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+        "type": "table_json",
+        "version": "1"
+      },
+      {
+        "contentHash": "4fc61fb1cb134463295f4fae5f60f3880b14b5b4d074a474bd31e033d8407473",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k4_resources",
+        "id": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-plotly_json",
+        "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "inputHashes": [
+            "7f127decaafd63be868e6e36a88ab5159ea35a42d96ae12af662bf140fd26baf",
+            "d4b0fedefdcfd40c398da575ca9b3985152a9dec48566beca1ff14a679ec9739",
+            "f1323ce1ed61e3ee538e98a6cc2b178ab72b60729607d0a2195080f454b6a7d5"
+          ],
+          "paramsHash": "d8ed97cd0a6d68da2ada58f71333684a6825db5c881e7f2bca6fd0c6a2695f24",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+            "planId": "plan_2aeb6fa32f695d76b0f07246",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+            "sklearnVersion": "1.9.0",
+            "sourceFunction": "platform_builtin.composition_space",
+            "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+            "toolId": "dataset.composition_space"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "dataset.composition_space",
+          "toolVersion": "0.1.0"
+        },
+        "name": "composition_space_plot.json",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "previewKey": null,
+        "projectId": "project_phase10k4_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+          "planId": "plan_2aeb6fa32f695d76b0f07246",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+          "sklearnVersion": "1.9.0",
+          "sourceFunction": "platform_builtin.composition_space",
+          "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+          "toolId": "dataset.composition_space"
+        },
+        "sha256": "4fc61fb1cb134463295f4fae5f60f3880b14b5b4d074a474bd31e033d8407473",
+        "sizeBytes": 1109,
+        "storageProvider": "local",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+        "type": "plotly_json",
+        "version": "1"
+      },
+      {
+        "contentHash": "a49d48672e0e4f8c4775f112d91ff1102192e61c0d9a08e35dc98fc5c94f06ae",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k4_resources",
+        "id": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-summary_md",
+        "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "inputHashes": [
+            "7f127decaafd63be868e6e36a88ab5159ea35a42d96ae12af662bf140fd26baf",
+            "d4b0fedefdcfd40c398da575ca9b3985152a9dec48566beca1ff14a679ec9739",
+            "f1323ce1ed61e3ee538e98a6cc2b178ab72b60729607d0a2195080f454b6a7d5"
+          ],
+          "paramsHash": "d8ed97cd0a6d68da2ada58f71333684a6825db5c881e7f2bca6fd0c6a2695f24",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "text/markdown",
+            "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+            "planId": "plan_2aeb6fa32f695d76b0f07246",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+            "sklearnVersion": "1.9.0",
+            "sourceFunction": "platform_builtin.composition_space",
+            "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+            "toolId": "dataset.composition_space"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "dataset.composition_space",
+          "toolVersion": "0.1.0"
+        },
+        "name": "summary.md",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "previewKey": null,
+        "projectId": "project_phase10k4_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "text/markdown",
+          "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+          "planId": "plan_2aeb6fa32f695d76b0f07246",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+          "sklearnVersion": "1.9.0",
+          "sourceFunction": "platform_builtin.composition_space",
+          "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+          "toolId": "dataset.composition_space"
+        },
+        "sha256": "a49d48672e0e4f8c4775f112d91ff1102192e61c0d9a08e35dc98fc5c94f06ae",
+        "sizeBytes": 329,
+        "storageProvider": "local",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+        "type": "summary_md",
+        "version": "1"
+      },
+      {
+        "contentHash": "79638842d220a75ca680069c0b45d2f92abb062101c4c39d2318e2afcbba31d6",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k4_resources",
+        "id": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-recipe_json",
+        "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "inputHashes": [
+            "7f127decaafd63be868e6e36a88ab5159ea35a42d96ae12af662bf140fd26baf",
+            "d4b0fedefdcfd40c398da575ca9b3985152a9dec48566beca1ff14a679ec9739",
+            "f1323ce1ed61e3ee538e98a6cc2b178ab72b60729607d0a2195080f454b6a7d5"
+          ],
+          "paramsHash": "d8ed97cd0a6d68da2ada58f71333684a6825db5c881e7f2bca6fd0c6a2695f24",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+            "planId": "plan_2aeb6fa32f695d76b0f07246",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+            "sklearnVersion": "1.9.0",
+            "sourceFunction": "platform_builtin.composition_space",
+            "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+            "toolId": "dataset.composition_space"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "dataset.composition_space",
+          "toolVersion": "0.1.0"
+        },
+        "name": "recipe.json",
+        "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+        "planId": "plan_2aeb6fa32f695d76b0f07246",
+        "previewKey": null,
+        "projectId": "project_phase10k4_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+          "planId": "plan_2aeb6fa32f695d76b0f07246",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "f978177f75d1aeaa11f22cda1c8bceefb1ac37a116f09d77764a15bc5d0a6139",
+          "sklearnVersion": "1.9.0",
+          "sourceFunction": "platform_builtin.composition_space",
+          "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+          "toolId": "dataset.composition_space"
+        },
+        "sha256": "79638842d220a75ca680069c0b45d2f92abb062101c4c39d2318e2afcbba31d6",
+        "sizeBytes": 1319,
+        "storageProvider": "local",
+        "toolCallId": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+        "type": "recipe_json",
+        "version": "1"
+      }
+    ],
+    "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+    "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+    "planId": "plan_2aeb6fa32f695d76b0f07246",
+    "provenance": {
+      "binding": "jobs.plan_id -> analysis_plans.id",
+      "fallbackUsed": false,
+      "loadedFrom": "persisted_analysis_plan",
+      "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+      "planId": "plan_2aeb6fa32f695d76b0f07246",
+      "planSource": "llm",
+      "toolPath": "Tool Registry + Adapter"
+    },
+    "status": "completed",
+    "summary": "Job completed with 1 ToolCall(s) and 4 Artifact(s).",
+    "toolCallCount": 1
+  },
+  "toolCalls": [
+    {
+      "artifactIds": [
+        "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-table_json",
+        "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-plotly_json",
+        "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-summary_md",
+        "call_job_e7ad4e4a6fe95bf683c58ccb_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_e7ad4e4a6fe95bf683c58ccb_step_001",
+      "idempotencyKey": "job_e7ad4e4a6fe95bf683c58ccb:step_001",
+      "inputSummary": "Params: clusteringEnabled, comparisonMode, leftObjectId, maxIterations, maxOutlierRows, maxPlotPoints, nClusters, nInit, projectionDimensions, randomState, rightObjectId, tableObjectId, tolerance",
+      "jobId": "job_e7ad4e4a6fe95bf683c58ccb",
+      "outputSummary": "4 artifact(s)",
+      "params": {
+        "clusteringEnabled": true,
+        "comparisonMode": "resources",
+        "leftObjectId": "obj_reference",
+        "maxIterations": 300,
+        "maxOutlierRows": 50,
+        "maxPlotPoints": 5000,
+        "nClusters": 3,
+        "nInit": 10,
+        "projectionDimensions": 2,
+        "randomState": 0,
+        "rightObjectId": "obj_holdout",
+        "tableObjectId": "obj_reference",
+        "tolerance": 0.0001
+      },
+      "planHash": "f81d694ded8cc4afea2035b63d8774e2e617b9cb955f86a3313e597960ea1957",
+      "planId": "plan_2aeb6fa32f695d76b0f07246",
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "dataset.composition_space"
+    }
+  ]
+}

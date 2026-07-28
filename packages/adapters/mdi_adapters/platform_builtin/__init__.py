@@ -7,6 +7,11 @@ from .brillouin_zone import (
     BrillouinZoneAdapter,
 )
 from .composition_summary import CompositionSummaryAdapter
+from .composition_space import (
+    COMPOSITION_SPACE_SCHEMA_VERSION,
+    COMPOSITION_SPACE_TOOL_ID,
+    CompositionSpaceAdapter,
+)
 from .dataset_materials_explorer import (
     DATASET_EXPLORER_SCHEMA_VERSION,
     DATASET_EXPLORER_TOOL_ID,
@@ -62,6 +67,9 @@ __all__ = [
     "BRILLOUIN_ZONE_TOOL_ID",
     "BrillouinZoneAdapter",
     "CompositionSummaryAdapter",
+    "COMPOSITION_SPACE_SCHEMA_VERSION",
+    "COMPOSITION_SPACE_TOOL_ID",
+    "CompositionSpaceAdapter",
     "CLASSIFICATION_SCHEMA_VERSION",
     "CLASSIFICATION_TOOL_ID",
     "ClassificationEvaluationAdapter",

@@ -1,4 +1,16 @@
 tools:
+  - tool_id: dataset.composition_space
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: CompositionSpaceAdapter
+    display_target: composition
+    notes: "Project Profile 2.0-bound canonical atomic-fraction vectors with deterministic PCA and optional bounded KMeans clustering. Preserves stable sample identity and makes no structural-similarity or material-family claim."
+    artifact_types:
+      - table_json
+      - plotly_json
+      - summary_md
+      - recipe_json
+
   - tool_id: dataset.materials_explorer
     implementation_source: platform_builtin
     stage: mvp

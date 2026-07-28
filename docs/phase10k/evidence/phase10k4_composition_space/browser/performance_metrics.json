@@ -1,0 +1,18 @@
+{
+  "browsers": [
+    {
+      "browser": "chromium",
+      "firstProductMs": 1713
+    },
+    {
+      "browser": "firefox",
+      "firstProductMs": 2515
+    },
+    {
+      "browser": "webkit",
+      "firstProductMs": 3078
+    }
+  ],
+  "mobileFirstProductMs": 1630,
+  "acceptance": "PASS"
+}

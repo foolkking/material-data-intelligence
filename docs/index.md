@@ -45,6 +45,12 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase10k/phase10k3_evidence.md`](phase10k/phase10k3_evidence.md): runtime, API, browser, performance, network, and security evidence index.
 - [`phase10k/evidence/phase10k3_materials_ml_evaluation/`](phase10k/evidence/phase10k3_materials_ml_evaluation/): sanitized artifacts, captures, metrics, and screenshots.
 - [`phase10k/phase10k4_next_scope.md`](phase10k/phase10k4_next_scope.md): composition-space entry boundary; no Phase 10K-4 implementation is included.
+- [`phase10k/phase10k4_composition_space_implementation.md`](phase10k/phase10k4_composition_space_implementation.md): Profile-bound Composition Space product and execution boundary.
+- [`phase10k/phase10k4_composition_feature_contract.md`](phase10k/phase10k4_composition_feature_contract.md): atomic-fraction, PCA, KMeans, comparison, coloring, and identity semantics.
+- [`phase10k/phase10k4_fixture_matrix.md`](phase10k/phase10k4_fixture_matrix.md): scientific, negative, security, performance, browser, and mobile coverage.
+- [`phase10k/phase10k4_evidence.md`](phase10k/phase10k4_evidence.md): runtime, API, browser, performance, network, and integrity evidence index.
+- [`phase10k/evidence/phase10k4_composition_space/`](phase10k/evidence/phase10k4_composition_space/): sanitized captures, artifacts, metrics, screenshots, and audits.
+- [`phase10k/phase10k5_next_scope.md`](phase10k/phase10k5_next_scope.md): Phase 10K integration entry boundary; no Phase 10K-5 implementation is included.
 
 ## Historical Gate J6-A Roadmap Record
 

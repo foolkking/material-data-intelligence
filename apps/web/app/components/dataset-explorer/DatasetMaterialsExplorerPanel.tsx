@@ -3,9 +3,10 @@
 import { useMemo, useState } from "react";
 
 import type { Artifact } from "../../lib/planner-api";
+import { CompositionSpaceExplorerBody } from "../composition-space/CompositionSpaceExplorerPanel";
 
 type JsonRecord = Record<string, unknown>;
-type ExplorerTab = "overview" | "composition" | "structures" | "properties" | "model" | "quality" | "comparison" | "samples";
+type ExplorerTab = "overview" | "composition" | "composition_space" | "structures" | "properties" | "model" | "quality" | "comparison" | "samples";
 
 const TABS: readonly { id: ExplorerTab; label: string }[] = [
   { id: "overview", label: "Overview" },
@@ -33,6 +34,9 @@ export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifa
   const [tab, setTab] = useState<ExplorerTab>("overview");
   const [selectedProperty, setSelectedProperty] = useState("");
   const [selectedSample, setSelectedSample] = useState("");
+  const tabs = artifacts.some((item) => item.name === "composition_space.json")
+    ? [...TABS.slice(0, 2), { id: "composition_space" as const, label: "Composition space" }, ...TABS.slice(2)]
+    : TABS;
 
   if (!artifact) return null;
   if (!validation.ok) {
@@ -71,7 +75,7 @@ export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifa
         <Field label="Semantic hash" value={compactHash(text(dataset.semanticHash))} />
       </dl>
       <div className="dataset-explorer-tabs" role="tablist" aria-label="Dataset explorer views">
-        {TABS.map((item) => (
+        {tabs.map((item) => (
           <button
             key={item.id}
             type="button"
@@ -86,6 +90,7 @@ export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifa
       <div id={`dataset-explorer-${tab}`} role="tabpanel" tabIndex={0} className="dataset-explorer-view">
         {tab === "overview" ? <OverviewView overview={overview} warnings={textList(explorer.warnings)} /> : null}
         {tab === "composition" ? <CompositionView composition={composition} /> : null}
+        {tab === "composition_space" ? <CompositionSpaceExplorerBody artifacts={artifacts} /> : null}
         {tab === "structures" ? <StructuresView structures={structures} /> : null}
         {tab === "properties" ? (
           <PropertiesView properties={properties} active={activeProperty} onSelect={setSelectedProperty} />

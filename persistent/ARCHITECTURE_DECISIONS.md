@@ -1,5 +1,30 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-28 ADR: Composition Space Is Profile-Bound and Exploratory
+
+**Context:** composition exploration requires one canonical formula meaning,
+stable material identity, deterministic dimensionality reduction, and bounded
+comparison. Re-inferring formulas/properties in a new adapter, using plot-array
+positions for links, clustering PCA coordinates, or naming clusters as
+scientific material classes would create semantic drift and unsupported claims.
+
+**Decision:** expose one bounded `dataset.composition_space` capability. It
+consumes Profile 2.0 formula/property/sample semantics and explicitly bound
+DataFrames, builds atomic-number-ordered normalized atomic-fraction vectors,
+and emits deterministic center-only two-dimensional full-SVD PCA. Optional
+KMeans runs in the original normalized feature space under fixed seed/init/
+iteration/tolerance caps and deterministically reindexed labels. Explicit
+resource/group comparison uses one combined basis and projection. Optional ML
+colors bind only through `objectId + sampleRef` to validated Phase 10K-3
+artifacts. The frontend validates and presents emitted facts; it performs no
+PCA, clustering, or scientific inference.
+
+**Consequences:** composition clusters, centroid distances, and combined
+projections are disclosed as exploratory descriptive aids, not material
+families, phases, structural similarity, invalid-data judgments, or statistical
+significance. UMAP/t-SNE and new dependencies are unnecessary for this baseline.
+Phase 10K-5 owns integration closure; Phase 10L owns capability-aware planning.
+
 ## 2026-07-28 ADR: Model Evaluation Consumes Profile Semantics, Not Columns
 
 **Context:** model-result tables can contain multiple targets, predictions,

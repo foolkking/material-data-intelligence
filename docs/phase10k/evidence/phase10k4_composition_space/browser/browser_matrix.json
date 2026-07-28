@@ -1,0 +1,274 @@
+[
+  {
+    "browser": "chromium",
+    "version": "128.0.6613.18",
+    "available": true,
+    "cases": {
+      "normal": {
+        "firstProductMs": 1713,
+        "selectedColor": "cluster",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\n\nNone supplied.",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\n\nNone supplied.",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "property_color": {
+        "firstProductMs": 1691,
+        "selectedColor": "property:band_gap",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\n\nNone supplied.",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\n\nNone supplied.",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "group_comparison": {
+        "firstProductMs": 1687,
+        "selectedColor": "group",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\ntrain\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\n\nNone supplied.",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\ntrain\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\n\nNone supplied.",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "resource_comparison": {
+        "firstProductMs": 1651,
+        "selectedColor": "group",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\ndataset_phase10k4_resources@2:2432e68e096b3903:0\nIDENTITY SOURCE\ndataset_version_object_hash_row_index\nOBJECT\nobj_reference\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_reference\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\n\nNone supplied.",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\ndataset_phase10k4_resources@2:2432e68e096b3903:1\nIDENTITY SOURCE\ndataset_version_object_hash_row_index\nOBJECT\nobj_reference\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_reference\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\n\nNone supplied.",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "k3_ml_color": {
+        "firstProductMs": 1653,
+        "selectedColor": "ml:obj_materials:regression:default:default:absolute_error",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:ABSOLUTE_ERROR\n0.1\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:RESIDUAL\n0.1",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:ABSOLUTE_ERROR\n0.2\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:RESIDUAL\n-0.2",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      }
+    },
+    "mobile": {
+      "firstProductMs": 1630,
+      "selectedColor": "cluster",
+      "pointCount": 6,
+      "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\n\nNone supplied.",
+      "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\n\nNone supplied.",
+      "horizontalOverflow": false,
+      "accessibility": {
+        "regionLabel": "Composition Space Explorer",
+        "chartImageCount": 1,
+        "keyboardPointCount": 6,
+        "tableFallback": true,
+        "touchSelection": true
+      }
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "firefox",
+    "version": "128.0",
+    "available": true,
+    "cases": {
+      "normal": {
+        "firstProductMs": 2515,
+        "selectedColor": "cluster",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\n\nNone supplied.",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\n\nNone supplied.",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "property_color": {
+        "firstProductMs": 1953,
+        "selectedColor": "property:band_gap",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\n\nNone supplied.",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\n\nNone supplied.",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "group_comparison": {
+        "firstProductMs": 1650,
+        "selectedColor": "group",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\ntrain\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\n\nNone supplied.",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\ntrain\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\n\nNone supplied.",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "resource_comparison": {
+        "firstProductMs": 1637,
+        "selectedColor": "group",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\ndataset_phase10k4_resources@2:2432e68e096b3903:0\nIDENTITY SOURCE\ndataset_version_object_hash_row_index\nOBJECT\nobj_reference\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_reference\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\n\nNone supplied.",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\ndataset_phase10k4_resources@2:2432e68e096b3903:1\nIDENTITY SOURCE\ndataset_version_object_hash_row_index\nOBJECT\nobj_reference\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_reference\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\n\nNone supplied.",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "k3_ml_color": {
+        "firstProductMs": 1644,
+        "selectedColor": "ml:obj_materials:regression:default:default:absolute_error",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:ABSOLUTE_ERROR\n0.1\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:RESIDUAL\n0.1",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:ABSOLUTE_ERROR\n0.2\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:RESIDUAL\n-0.2",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      }
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "browser": "webkit",
+    "version": "18.0",
+    "available": true,
+    "cases": {
+      "normal": {
+        "firstProductMs": 3078,
+        "selectedColor": "cluster",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\nNone supplied.\n",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\nNone supplied.\n",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "property_color": {
+        "firstProductMs": 3120,
+        "selectedColor": "property:band_gap",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\nNone supplied.\n",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\nNone supplied.\n",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "group_comparison": {
+        "firstProductMs": 3116,
+        "selectedColor": "group",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\ntrain\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\nNone supplied.\n",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\ntrain\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\nNone supplied.\n",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "resource_comparison": {
+        "firstProductMs": 3435,
+        "selectedColor": "group",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\ndataset_phase10k4_resources@2:2432e68e096b3903:0\nIDENTITY SOURCE\ndataset_version_object_hash_row_index\nOBJECT\nobj_reference\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_reference\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\nNone supplied.\n",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\ndataset_phase10k4_resources@2:2432e68e096b3903:1\nIDENTITY SOURCE\ndataset_version_object_hash_row_index\nOBJECT\nobj_reference\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_reference\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\nNone supplied.\n",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      },
+      "k3_ml_color": {
+        "firstProductMs": 3098,
+        "selectedColor": "ml:obj_materials:regression:default:default:absolute_error",
+        "pointCount": 6,
+        "pointerInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsi-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nCHEMICAL SYSTEM\nSi\nDATASET / GROUP\nobj_materials\nAtomic fractions\nSI\n1\nProfile properties\nBAND_GAP\n1.1\nLinked ML values\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:ABSOLUTE_ERROR\n0.1\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:RESIDUAL\n0.1\n",
+        "keyboardInspector": "Sample inspector\ncluster 0\nSAMPLE REFERENCE\nsige-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_materials\nROW\n1\nFORMULA\nSi0.5Ge0.5\nREDUCED FORMULA\nSi0.5Ge0.5\nCHEMICAL SYSTEM\nGe-Si\nDATASET / GROUP\nobj_materials\nAtomic fractions\nGE\n0.5\nSI\n0.5\nProfile properties\nBAND_GAP\n0.75\nLinked ML values\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:ABSOLUTE_ERROR\n0.2\nOBJ_MATERIALS:REGRESSION:DEFAULT:DEFAULT:RESIDUAL\n-0.2\n",
+        "horizontalOverflow": false,
+        "accessibility": {
+          "regionLabel": "Composition Space Explorer",
+          "chartImageCount": 1,
+          "keyboardPointCount": 6,
+          "tableFallback": true,
+          "touchSelection": false
+        }
+      }
+    },
+    "mobile": null,
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

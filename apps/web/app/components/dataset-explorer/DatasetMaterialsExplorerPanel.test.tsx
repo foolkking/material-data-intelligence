@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import type { Artifact } from "../../lib/planner-api";
+import { compositionSpaceArtifact } from "../composition-space/testFixtures";
 import { DatasetMaterialsExplorerPanel } from "./DatasetMaterialsExplorerPanel";
 
 function payload() {
@@ -103,6 +104,15 @@ describe("DatasetMaterialsExplorerPanel", () => {
     expect(view).toHaveTextContent("regression_evaluation");
     expect(view).toHaveTextContent("uncertainty_evaluation");
     expect(view).toHaveTextContent("stable material samples");
+  });
+
+  it("integrates Composition Space as a dataset tab when both artifacts are present", async () => {
+    const user = userEvent.setup();
+    render(<DatasetMaterialsExplorerPanel artifacts={[artifact(), compositionSpaceArtifact()]} />);
+    expect(screen.getAllByRole("tab")).toHaveLength(9);
+    await user.click(screen.getByRole("tab", { name: "Composition space" }));
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("Backend-computed atomic-fraction PCA");
+    expect(screen.getByRole("img", { name: "PCA composition scatter colored by cluster" })).toBeTruthy();
   });
 
   it("renders malicious labels as inert text", async () => {

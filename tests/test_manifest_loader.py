@@ -21,7 +21,7 @@ def test_loads_three_manifests_and_expected_tool_counts(repo_root):
 
     assert len([tool for tool in tools if tool.source.get("manifest") == "pymatviz_manifest.yaml"]) == 21
     assert len([tool for tool in tools if tool.source.get("manifest") == "matterviz_manifest.yaml"]) == 1
-    assert len([tool for tool in tools if tool.source.get("manifest") == "platform_builtin_manifest.yaml"]) == 30
+    assert len([tool for tool in tools if tool.source.get("manifest") == "platform_builtin_manifest.yaml"]) == 31
     assert len({tool.toolId for tool in tools}) == len(tools)
 
 
@@ -40,9 +40,10 @@ def test_registry_filters_and_lookup():
     registry = load_manifests()
 
     assert registry.get_tool_by_id("composition.ptable_heatmap").adapter == "PTableHeatmapAdapter"
-    assert len(registry.list_tools_by_stage("mvp")) == 40
+    assert len(registry.list_tools_by_stage("mvp")) == 41
     assert {tool.toolId for tool in registry.list_tools_by_domain("dataset")} == {
-        "dataset.materials_explorer"
+        "dataset.composition_space",
+        "dataset.materials_explorer",
     }
     assert {tool.toolId for tool in registry.list_tools_by_domain("structure")} >= {
         "structure.summary",

@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 2026-07-28 - Phase 10K-4 Composition Space (In Progress)
+
+- Added `dataset.composition_space`, a Profile 2.0-bound product capability
+  with normalized atomic-fraction features, deterministic two-dimensional PCA,
+  optional bounded feature-space KMeans, explicit comparison, property/ML
+  coloring, stable sample links, and descriptive outlier/cluster summaries.
+- Added strict Registry/Planner/runtime integration and a responsive accessible
+  SVG/table Composition Space Explorer with inert JSON fallback. The frontend
+  consumes backend coordinates and never performs PCA or clustering.
+- Focused backend/frontend tests pass locally. Browser evidence, full
+  regression, exact-SHA CI, completion record, and queue archive are pending;
+  no dependency, model training, UMAP/t-SNE, real LLM, external service, or
+  Phase 10L behavior was added.
+
 ## 2026-07-28 - Phase 10K-3 Materials ML Evaluation
 
 - Added executable `ml.regression_evaluation`, `ml.uncertainty_evaluation`, and

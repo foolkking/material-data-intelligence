@@ -1,0 +1,469 @@
+{
+  "artifactType": "ml.regression_evaluation",
+  "dataset": {
+    "datasetId": "dataset_phase10k4_normal",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k4_normal_v2",
+    "semanticHash": "cf68eacfdfa464ae760ab2d7fac570e063a8a9e5c01d52cd3f655501e59af570"
+  },
+  "evaluations": [
+    {
+      "chemistryConditioned": {
+        "byChemicalSystem": [
+          {
+            "group": "F-Li",
+            "mae": 0.5,
+            "rmse": 0.5,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Cl-Na",
+            "mae": 0.2999999999999998,
+            "rmse": 0.2999999999999998,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "As-Ga",
+            "mae": 0.20000000000000018,
+            "rmse": 0.20000000000000018,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Ge-Si",
+            "mae": 0.19999999999999996,
+            "rmse": 0.19999999999999996,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Si",
+            "mae": 0.10000000000000009,
+            "rmse": 0.10000000000000009,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Mg-O",
+            "mae": 0.09999999999999964,
+            "rmse": 0.09999999999999964,
+            "sampleCount": 1,
+            "smallGroup": true
+          }
+        ],
+        "byElement": [
+          {
+            "group": "F",
+            "mae": 0.5,
+            "rmse": 0.5,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Li",
+            "mae": 0.5,
+            "rmse": 0.5,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Cl",
+            "mae": 0.2999999999999998,
+            "rmse": 0.2999999999999998,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Na",
+            "mae": 0.2999999999999998,
+            "rmse": 0.2999999999999998,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "As",
+            "mae": 0.20000000000000018,
+            "rmse": 0.20000000000000018,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Ga",
+            "mae": 0.20000000000000018,
+            "rmse": 0.20000000000000018,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Ge",
+            "mae": 0.19999999999999996,
+            "rmse": 0.19999999999999996,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "Si",
+            "mae": 0.15000000000000002,
+            "rmse": 0.15811388300841897,
+            "sampleCount": 2,
+            "smallGroup": true
+          },
+          {
+            "group": "Mg",
+            "mae": 0.09999999999999964,
+            "rmse": 0.09999999999999964,
+            "sampleCount": 1,
+            "smallGroup": true
+          },
+          {
+            "group": "O",
+            "mae": 0.09999999999999964,
+            "rmse": 0.09999999999999964,
+            "sampleCount": 1,
+            "smallGroup": true
+          }
+        ],
+        "chemicalSystemGroupCount": 6,
+        "elementGroupCount": 10,
+        "elementGroupsOverlap": true,
+        "formulaColumn": "formula",
+        "groupsTruncated": false,
+        "invalidFormulaRows": 1,
+        "minimumGroupSize": 3,
+        "status": "READY"
+      },
+      "coverage": {
+        "evaluatedSamples": 7,
+        "excludedSamples": 0,
+        "nonFiniteOrInvalid": 0,
+        "predictionMissing": 0,
+        "targetMissing": 0,
+        "totalSamples": 7
+      },
+      "groupId": "obj_materials:regression:default",
+      "highErrorSamples": [
+        {
+          "absoluteError": 0.5,
+          "chemicalSystem": "F-Li",
+          "formula": "LiF",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 2.5,
+          "reducedFormula": "LiF",
+          "residual": -0.5,
+          "rowIndex": 3,
+          "sampleRef": "lif-1",
+          "target": 3.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.2999999999999998,
+          "chemicalSystem": "Cl-Na",
+          "formula": "NaCl",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 2.3,
+          "reducedFormula": "NaCl",
+          "residual": 0.2999999999999998,
+          "rowIndex": 2,
+          "sampleRef": "nacl-1",
+          "target": 2.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.20000000000000018,
+          "chemicalSystem": "As-Ga",
+          "formula": "GaAs",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 4.8,
+          "reducedFormula": "GaAs",
+          "residual": -0.20000000000000018,
+          "rowIndex": 5,
+          "sampleRef": "gaas-1",
+          "target": 5.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.19999999999999996,
+          "chemicalSystem": "Ge-Si",
+          "formula": "Si0.5Ge0.5",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 1.0,
+          "reducedFormula": "Si0.5Ge0.5",
+          "residual": -0.19999999999999996,
+          "rowIndex": 1,
+          "sampleRef": "sige-1",
+          "target": 1.2,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.10000000000000009,
+          "chemicalSystem": "Si",
+          "formula": "Si",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 1.1,
+          "reducedFormula": "Si",
+          "residual": 0.10000000000000009,
+          "rowIndex": 0,
+          "sampleRef": "si-1",
+          "target": 1.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.09999999999999964,
+          "chemicalSystem": "Mg-O",
+          "formula": "MgO",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 4.1,
+          "reducedFormula": "MgO",
+          "residual": 0.09999999999999964,
+          "rowIndex": 4,
+          "sampleRef": "mgo-1",
+          "target": 4.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.0,
+          "chemicalSystem": null,
+          "formula": "__proto__",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 0.0,
+          "reducedFormula": null,
+          "residual": 0.0,
+          "rowIndex": 6,
+          "sampleRef": "invalid-1",
+          "target": 0.0,
+          "uncertainty": null
+        }
+      ],
+      "metrics": {
+        "mae": 0.19999999999999996,
+        "meanSignedError": -0.057142857142857224,
+        "medianAbsoluteError": 0.19999999999999996,
+        "r2": 0.976779252110977,
+        "r2Status": "defined",
+        "rmse": 0.2507132682112035,
+        "sampleCount": 7
+      },
+      "objectId": "obj_materials",
+      "parityPoints": [
+        {
+          "absoluteError": 0.10000000000000009,
+          "chemicalSystem": "Si",
+          "formula": "Si",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 1.1,
+          "reducedFormula": "Si",
+          "residual": 0.10000000000000009,
+          "rowIndex": 0,
+          "sampleRef": "si-1",
+          "target": 1.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.19999999999999996,
+          "chemicalSystem": "Ge-Si",
+          "formula": "Si0.5Ge0.5",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 1.0,
+          "reducedFormula": "Si0.5Ge0.5",
+          "residual": -0.19999999999999996,
+          "rowIndex": 1,
+          "sampleRef": "sige-1",
+          "target": 1.2,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.2999999999999998,
+          "chemicalSystem": "Cl-Na",
+          "formula": "NaCl",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 2.3,
+          "reducedFormula": "NaCl",
+          "residual": 0.2999999999999998,
+          "rowIndex": 2,
+          "sampleRef": "nacl-1",
+          "target": 2.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.5,
+          "chemicalSystem": "F-Li",
+          "formula": "LiF",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 2.5,
+          "reducedFormula": "LiF",
+          "residual": -0.5,
+          "rowIndex": 3,
+          "sampleRef": "lif-1",
+          "target": 3.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.09999999999999964,
+          "chemicalSystem": "Mg-O",
+          "formula": "MgO",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 4.1,
+          "reducedFormula": "MgO",
+          "residual": 0.09999999999999964,
+          "rowIndex": 4,
+          "sampleRef": "mgo-1",
+          "target": 4.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.20000000000000018,
+          "chemicalSystem": "As-Ga",
+          "formula": "GaAs",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 4.8,
+          "reducedFormula": "GaAs",
+          "residual": -0.20000000000000018,
+          "rowIndex": 5,
+          "sampleRef": "gaas-1",
+          "target": 5.0,
+          "uncertainty": null
+        },
+        {
+          "absoluteError": 0.0,
+          "chemicalSystem": null,
+          "formula": "__proto__",
+          "identitySource": "explicit_column",
+          "objectId": "obj_materials",
+          "prediction": 0.0,
+          "reducedFormula": null,
+          "residual": 0.0,
+          "rowIndex": 6,
+          "sampleRef": "invalid-1",
+          "target": 0.0,
+          "uncertainty": null
+        }
+      ],
+      "predictionColumn": "y_pred",
+      "residualConvention": "prediction_minus_target",
+      "residualHistogram": {
+        "counts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "edges": [
+          -0.5,
+          -0.47333333333333333,
+          -0.44666666666666666,
+          -0.42000000000000004,
+          -0.39333333333333337,
+          -0.3666666666666667,
+          -0.34,
+          -0.31333333333333335,
+          -0.28666666666666674,
+          -0.26,
+          -0.2333333333333334,
+          -0.20666666666666672,
+          -0.18000000000000005,
+          -0.15333333333333338,
+          -0.12666666666666676,
+          -0.10000000000000009,
+          -0.07333333333333342,
+          -0.046666666666666745,
+          -0.020000000000000073,
+          0.006666666666666599,
+          0.033333333333333215,
+          0.05999999999999994,
+          0.08666666666666656,
+          0.11333333333333317,
+          0.1399999999999999,
+          0.16666666666666652,
+          0.19333333333333325,
+          0.21999999999999986,
+          0.24666666666666648,
+          0.2733333333333332,
+          0.2999999999999998
+        ]
+      },
+      "seriesId": "default",
+      "targetColumn": "y_true",
+      "taskId": "obj_materials:regression:default:default",
+      "uncertaintyColumn": null,
+      "unit": null,
+      "visualizationSampling": {
+        "displayCount": 7,
+        "policy": "deterministic_even_index",
+        "sourceCount": 7
+      },
+      "warnings": [
+        "UNIT_UNAVAILABLE"
+      ]
+    }
+  ],
+  "limits": {
+    "histogramBins": 30,
+    "maxChemistryGroups": 128,
+    "maxClasses": 64,
+    "maxCurvePoints": 1000,
+    "maxHighErrorRows": 100,
+    "maxModels": 16,
+    "maxPlotPoints": 1000,
+    "maxRows": 100000,
+    "maxTableRows": 100,
+    "maxUncertaintyBins": 10,
+    "minGroupSize": 3
+  },
+  "modelComparisons": [],
+  "residualConvention": "prediction_minus_target",
+  "schemaVersion": "phase10k3.materials_ml_regression.v1",
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  },
+  "semantics": {
+    "backendScientificAuthority": true,
+    "roleInferenceRepeated": false,
+    "sampleIdentityPreserved": true,
+    "source": "material_data_profile_2"
+  }
+}

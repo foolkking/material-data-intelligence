@@ -14,7 +14,7 @@ implementation.
 | Data | Current parsing and normalization | READY | Yes | No | Existing registered parsers only |
 | Data | Material Data Profile 2.0 | READY | Yes | No | Phase 10K-1 |
 | Dataset | Materials explorer and comparisons | READY | Yes | No | `dataset.materials_explorer` within Phase 10K-2 limits |
-| Dataset | Composition embedding/clustering | PLANNED | Yes | No | Phase 10K-4 |
+| Dataset | Composition space/PCA/clustering | READY | Yes | No | `dataset.composition_space` within Phase 10K-4 exploratory and resource-cap limits |
 | ML | Regression model-result evaluation | READY | Yes | No | `ml.regression_evaluation` within Phase 10K-3 limits |
 | ML | Uncertainty evaluation | READY | Conditional | No | `ml.uncertainty_evaluation` when Profile 2.0 has an explicit binding |
 | ML | Classification evaluation | READY | Conditional | No | `ml.classification_evaluation`; binary curves require explicit valid probabilities |

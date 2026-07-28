@@ -1,5 +1,26 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-28 Phase 10K-4 Composition Space Product Surface
+
+- Added exactly one public executable identity, `dataset.composition_space`,
+  implemented by `CompositionSpaceAdapter`. It represents one coherent
+  composition-space workflow rather than separate PCA, KMeans, scatter, or
+  outlier tools.
+- The tool requires Profile 2.0 plus explicitly bound canonical DataFrames.
+  Formula, property, and stable sample semantics come from the profile; optional
+  ML colors require an explicitly supplied validated Phase 10K-3 artifact.
+- Strict parameters fix normalized atomic-fraction features and two-dimensional
+  PCA, bound KMeans controls, require explicit comparison identity, and cap
+  rows, analyzed samples, elements, clusters, display points, outliers, color
+  properties, warnings, artifact bytes, and execution time.
+- Mock Planner routing is limited to explicit composition-space intent plus
+  `composition_space` readiness and Registry availability. PlanValidator and
+  QueueWorkerRuntime authority remain unchanged.
+- Historical composition-clustering planning identities are not aliases.
+  UMAP/t-SNE, model training, inferred scientific cluster labels, arbitrary
+  code, external services, and capability-aware orchestration remain outside
+  this product surface.
+
 ## 2026-07-28 Phase 10K-3 Materials ML Evaluation Product Surface
 
 - Added exactly three public executable identities: `ml.regression_evaluation`,

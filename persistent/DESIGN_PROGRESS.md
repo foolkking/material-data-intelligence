@@ -1,5 +1,25 @@
 # DESIGN_PROGRESS
 
+## 2026-07-28 Phase 10K-4 Composition Space Implementation In Progress
+
+- Added the formal `dataset.composition_space` product over Profile 2.0
+  formula/property semantics and explicitly bound canonical DataFrames.
+- The backend builds atomic-number-ordered normalized atomic-fraction vectors,
+  deterministic center-only two-dimensional PCA, optional bounded KMeans in
+  feature space, explicit group/resource comparison, descriptive outlier
+  candidates, property coloring, and Phase 10K-3 artifact-linked ML coloring.
+- Stable identity is `objectId + sampleRef`; projection coordinates and array
+  positions are never identity. Invalid formulas and partial color coverage are
+  disclosed rather than silently removed.
+- Added strict Registry parameters/caps, an explicit Mock Planner route,
+  persisted runtime integration, an application-owned SVG/table explorer, and
+  inert JSON fallback. UMAP, t-SNE, model training, scientific cluster naming,
+  frontend PCA/KMeans, real LLM, external services, and Phase 10L behavior are
+  unchanged.
+- Focused backend and frontend tests pass locally. Runtime/browser evidence,
+  full regression, exact-SHA CI, completion record, and queue archive remain
+  open; Phase 10K-5 has not started.
+
 ## 2026-07-28 Phase 10K-3 Materials ML Evaluation Implementation
 
 - Added three product-level Registry/Adapter capabilities for regression,

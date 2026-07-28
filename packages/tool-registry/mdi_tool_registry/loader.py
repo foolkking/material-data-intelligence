@@ -99,7 +99,7 @@ def _cost_for(entry: dict[str, Any]) -> str:
 def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
     if entry["tool_id"] in {"structure.trajectory_import", "structure.trajectory_viewer", "structure.volumetric_data"}:
         return 120, 300
-    if entry["tool_id"] == "dataset.materials_explorer" or entry["tool_id"] in {
+    if entry["tool_id"] in {"dataset.materials_explorer", "dataset.composition_space"} or entry["tool_id"] in {
         "ml.regression_evaluation",
         "ml.uncertainty_evaluation",
         "ml.classification_evaluation",
@@ -114,6 +114,18 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
+    if tool_id == "dataset.composition_space":
+        return {
+            "maxRows": 100000,
+            "maxAnalyzedSamples": 20000,
+            "maxElements": 118,
+            "maxClusters": 12,
+            "maxPlotPoints": 10000,
+            "maxOutlierRows": 200,
+            "maxColorProperties": 16,
+            "maxWarnings": 128,
+            "maxArtifactBytes": 16000000,
+        }
     if tool_id == "dataset.materials_explorer":
         return {
             "maxRows": 100000,
@@ -279,6 +291,22 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
     tool_id = entry["tool_id"]
+    if tool_id == "dataset.composition_space":
+        return ToolInputSchema(
+            periodicity="any",
+            inputOptions=[
+                ToolInputOption(
+                    name="profile_bound_composition_tables",
+                    requiredObjectTypes=[MaterialObjectType.DataFrame],
+                    requiredFields=[],
+                    description=(
+                        "Use exactly one Material Data Profile 2.0 ref and one or two explicitly identified "
+                        "DataFrames with canonical material_formula semantics. Optional ML coloring requires an "
+                        "explicit sample-bound Phase 10K-3 artifact."
+                    ),
+                )
+            ],
+        )
     if tool_id == "dataset.materials_explorer":
         return ToolInputSchema(
             periodicity="any",
@@ -500,6 +528,31 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    if tool_id == "dataset.composition_space":
+        scalar = {"anyOf": [{"type": "string", "maxLength": 256}, {"type": "number"}, {"type": "boolean"}]}
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "tableObjectId": {"type": "string", "minLength": 1, "maxLength": 256},
+                "comparisonMode": {"enum": ["none", "group", "resources"]},
+                "groupColumn": {"type": "string", "minLength": 1, "maxLength": 256},
+                "groupA": scalar,
+                "groupB": scalar,
+                "leftObjectId": {"type": "string", "minLength": 1, "maxLength": 256},
+                "rightObjectId": {"type": "string", "minLength": 1, "maxLength": 256},
+                "projectionDimensions": {"const": 2},
+                "clusteringEnabled": {"type": "boolean"},
+                "nClusters": {"type": "integer", "minimum": 2, "maximum": 12},
+                "randomState": {"type": "integer", "minimum": 0, "maximum": 2147483647},
+                "nInit": {"type": "integer", "minimum": 1, "maximum": 100},
+                "maxIterations": {"type": "integer", "minimum": 1, "maximum": 1000},
+                "tolerance": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+                "colorBy": {"type": "string", "minLength": 1, "maxLength": 256},
+                "maxPlotPoints": {"type": "integer", "minimum": 10, "maximum": 10000},
+                "maxOutlierRows": {"type": "integer", "minimum": 1, "maximum": 200},
+            },
+        }
     if tool_id == "dataset.materials_explorer":
         scalar = {"anyOf": [{"type": "string", "maxLength": 256}, {"type": "number"}, {"type": "boolean"}]}
         return {
