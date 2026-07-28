@@ -16,10 +16,11 @@
 - Added typed product states, stale-artifact rejection, settled partial refresh,
   runtime/API A-H cases, Chromium/Firefox/WebKit/mobile evidence, deterministic
   replay, near-cap performance, accessibility, network, and security evidence.
-- Local focused checks and the new browser matrix pass. The implementation
-  commit, exact-head CI, completion record, second exact-head CI, and queue
-  archive remain pending; Phase 10K is therefore not yet marked COMPLETE and
-  Phase 10L remains unstarted.
+- Local full/focused checks and the new browser matrix pass. Implementation
+  commit `e4639a1` passed exact-SHA CI run `30382233569`, including Unit,
+  Frontend, service-backed integration, and no-skipped. The completion record,
+  second exact-SHA CI, and queue archive remain pending; Phase 10K is therefore
+  not yet marked COMPLETE and Phase 10L remains unstarted.
 
 ## 2026-07-28 Phase 10K-4 Composition Space Implementation Complete
 

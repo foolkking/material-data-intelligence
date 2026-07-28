@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 你现在执行：
 
 # Phase 10K-5：Material Intelligence Integration + Browser/API Evidence
@@ -2730,6 +2730,29 @@ Audit 完成后直接修复 integration gaps、补充证据并完成 CI/归档�
 本轮最终停在：
 
 **Phase 10L-0：Agent / Planner Capability Audit = NEXT / AWAITING COMPLETE PROMPT**
+
+## 完成记录
+
+* 完成时间：`2026-07-29 01:19:33 +08:00`
+* 修改文件：backend Adapter/context/runtime/Profile resolution/Mock Planner
+  safety guard；Material Intelligence frontend integration 与 K2/K3/K4 panels；
+  unit/component/integration/browser/evidence tests；Phase 10K-5 evidence、docs
+  与 persistent records。
+* 修改摘要：冻结 Profile-authoritative exact dataset/version/content/resource
+  binding 和 `objectId:sampleRef` identity；拒绝 stale/ambiguous cross-artifact
+  links；增加 typed product availability、partial-failure isolation、真实
+  Runtime/API/browser A-H evidence、三浏览器/mobile/accessibility/performance/
+  network/security closure。没有新增 public tool、dependency、科学算法、
+  multi-tool Agent、browser scientific calculation 或 Phase 10L 实现。
+* 测试结果：backend `837 passed, 27 skipped`；frontend `323 passed`；
+  typecheck/build PASS；focused/evidence/Phase 10 closure PASS；Chromium、Firefox、
+  WebKit、mobile PASS；`uv lock --check`、docs/TASKS/evidence integrity、network
+  和 secret scans PASS。本机 service-backed 为 `UNAVAILABLE`（无 Docker）；
+  exact-SHA CI service-backed/no-skipped PASS。
+* 提交/CI：implementation `e4639a1168f4bac7f4c786c48657559038bd7230`；
+  exact-SHA CI run `30382233569` success（Unit、Frontend Typecheck & Build、
+  PostgreSQL/Redis/MinIO service-backed integration、no-skipped assertion）。
+  completion-record commit/CI 与 verified queue archive 待本记录提交后闭合。
 
 ---END---
 

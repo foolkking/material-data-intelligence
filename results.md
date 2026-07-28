@@ -1299,3 +1299,270 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
   block is removed by the verified queue archive commit.
 * Phase 10K-4: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 * Phase 10K-5 remains pending and was not implemented by this task.
+
+# Phase 10K-5 Material Intelligence Integration + Browser/API Evidence Result
+
+## 1. Conclusion
+
+`PASS` for implementation and evidence. Completion-record CI and verified
+queue archival are recorded in a closure addendum after this record commit.
+
+## 2. Baseline
+
+* Phase 10K-4 implementation: `fb9d720b9d6009ebecab8eeff7fc60c2080a67c6`.
+* Phase 10K-4 completion record: `97a07814d4b7c7cfe9d086aedc094cf46cc0368b`.
+* Phase 10K-4 archive: `0707fa7773cda57ba283cbfde5310f3e2aa99b7f`,
+  exact-SHA CI run `30373921429` success.
+* branch: `master`.
+* initial HEAD/origin: `0707fa7773cda57ba283cbfde5310f3e2aa99b7f`.
+* initial status: clean before K5 execution.
+
+## 3. Phase 10K Component Status
+
+### 10K-1
+
+* Profile: Material Data Profile 2.0 is the deterministic data authority.
+* semantics: formula, property, task/model, uncertainty/class, resource and
+  sample roles are Profile-owned.
+* readiness: data readiness remains separate from executable platform support.
+
+### 10K-2
+
+* Dataset Explorer: bounded overview, composition, canonical Structure
+  statistics, properties, quality, comparison, and stable sample links.
+
+### 10K-3
+
+* Materials ML: Profile-bound regression, uncertainty, conditional
+  classification, chemistry-conditioned diagnostics, and model comparison.
+
+### 10K-4
+
+* Composition Space: normalized atomic fractions, deterministic 2D PCA,
+  bounded KMeans, property/K3 coloring, comparison, and linked inspection.
+
+## 4. Integration Architecture
+
+* dataset identity: exact dataset ID plus version.
+* version binding: Profile ID/contract/semantic hash, complete dataset content
+  hash, and sorted canonical resource hashes must all match.
+* sample identity: immutable `objectId:sampleRef`; array position is forbidden.
+* semantic authority: Profile 2.0 facts; Adapters own bounded analyses.
+* artifact relationships: K4 accepts only exact allowlisted K3 artifacts with
+  matching binding and bounded sample rows.
+* frontend organization: one typed product-status surface plus independent
+  K2/K3/K4 panels; no global Phase 10M workspace redesign.
+
+## 5. Cross-Artifact Identity
+
+* Dataset Explorer: every linked sample emits object-qualified `sampleKey`.
+* ML: high-error/high-uncertainty/misclassification rows retain the same key.
+* Composition Space: points and dependent ML colors use exact sample keys.
+* sorted/filtered tests: different table, error, and PCA orders preserve links.
+* result: `MATERIAL_INTELLIGENCE_SAMPLE_IDENTITY_EVIDENCE_PASS`.
+
+## 6. Version / Cache Binding
+
+* dataset version: exact, not latest-wins.
+* profile: QueueWorkerRuntime resolves the persisted plan's exact `profileId`.
+* artifacts: carry full deterministic content/resource binding.
+* stale protection: missing/mismatched fields are `REJECTED`/`STALE`, never
+  wildcarded or silently repaired.
+* result: `MATERIAL_INTELLIGENCE_VERSION_BINDING_EVIDENCE_PASS`.
+
+## 7. Capability Availability
+
+* DataProfile readiness: deterministic data-side eligibility.
+* actual Tool availability: Registry/Adapter capability is checked separately.
+* frontend capability gating: combines validated Profile and product artifacts.
+* ambiguous semantics: safely blocked; no first-column or legacy metric guess.
+* partial data: independent coverage and product states remain visible.
+
+## 8. Dataset Product
+
+* Overview: PASS.
+* Composition: PASS with eligible/excluded coverage.
+* Structure: PASS for canonical Structure-backed resources.
+* Properties: PASS with Profile-owned identity and units.
+* Quality: PASS as factual diagnostics, not anomaly authority.
+* Comparison: PASS with explicit dataset/group identity.
+
+## 9. ML Integration
+
+* regression: PASS.
+* uncertainty: PASS where Profile semantics are complete.
+* classification: PASS where class/probability semantics are complete.
+* multiple models: exact target/prediction/model identity retained.
+* chemistry: adapter-produced element/system diagnostics, no browser recompute.
+* task identity: explicit Profile group; ambiguous groups are blocked.
+
+## 10. Composition Space Integration
+
+* composition semantics: Profile-authorized formulas only.
+* property binding: exact semantic property and unit.
+* ML binding: validated K3 artifact values, hashes, task/model and coverage.
+* comparison: explicit resources/groups on one shared feature/PCA basis.
+* sample inspection: object-qualified links survive ordering changes.
+
+## 11. API
+
+* job: real persisted Mock Planner jobs captured for cases A-H and replay.
+* plan: validated single-tool AnalysisPlans; no K5 run-everything plan.
+* runtime: QueueWorkerRuntime plus Registry/Adapter execution.
+* artifacts: persisted inert products, summaries, recipes, and plots.
+* retrieval: API-style job/artifact captures include persisted IDs and hashes.
+* version/provenance: exact Profile/dataset/resource/params bindings retained.
+
+## 12. Frontend
+
+* Profile: authoritative readiness/status source.
+* Dataset Overview, Properties, Data Quality: validated K2 artifact views.
+* ML: validated K3 numeric/accessible views.
+* Composition Space and Comparison: validated K4 views.
+* partial states: `PRODUCED`, `READY_NOT_RUN`, `UNAVAILABLE`,
+  `PROFILE_AUTHORITY_UNAVAILABLE`, `REJECTED`, `STALE`, and
+  `CAPABILITY_MISMATCH`.
+* error isolation: settled endpoint refresh preserves valid sibling products.
+
+## 13. Report / Recipe
+
+* artifact inclusion: persisted K2/K3/K4 artifact IDs and hashes are captured.
+* provenance: dataset/Profile/resource/tool identities are exact.
+* recipe: complete tool params and resource binding.
+* deterministic rerun: structured results replay identically after removing
+  runtime-owned IDs.
+
+## 14. Evidence Cases
+
+* materials table: PASS; ML is N/A.
+* structure-enriched: PASS; ML and Composition Space are N/A where inapplicable.
+* regression: PASS.
+* uncertainty: PASS.
+* classification: PASS; Composition Space is N/A for this case.
+* comparison: PASS; ML is N/A.
+* partial capability: PASS; ML correctly reports UNAVAILABLE.
+* ambiguous semantics: PASS; ML is SAFELY_BLOCKED and composition is conditional.
+
+## 15. Cross-Product Consistency
+
+* units/property/task/model identity: exact and never inferred by display label.
+* sample/dataset identity: exact object-qualified and version-bound.
+* coverage disclosure: total, eligible/evaluated, excluded/matched/missing as
+  appropriate for each product.
+
+## 16. Partial Failure Isolation
+
+* tested failure: insufficient/stale Composition Space and missing Profile
+  authority while valid siblings remain.
+* unaffected capabilities: validated Dataset Explorer or ML products remain.
+* frontend behavior: typed partial state with independent panels.
+* result: `MATERIAL_INTELLIGENCE_PARTIAL_FAILURE_ISOLATION_PASS`.
+
+## 17. Browser Matrix
+
+* Chromium: all A-H product cases, screenshots, keyboard and network audits.
+* Firefox: major dataset, ML, composition, partial and ambiguity paths.
+* WebKit: major dataset, ML, composition, partial and ambiguity paths.
+* mobile: Dataset Overview, Regression, and Composition Space at 390x844.
+
+## 18. Accessibility
+
+* keyboard/labels: interactive controls and selectors are labeled and operable.
+* chart alternatives/tables: numeric summaries and bounded tables are retained.
+* warnings: textual states do not rely on color.
+* mobile: controls and sample details remain readable without catastrophic
+  viewport overflow.
+
+## 19. Performance
+
+* small (40): Dataset 24.766 ms/13,558 B; Regression 33.043 ms/29,910 B;
+  Composition 56.437 ms/27,177 B.
+* medium (5,000): Dataset 411.196 ms/28,114 B; Regression 1,473.496 ms/
+  679,932 B; Composition 980.987 ms/2,028,220 B.
+* near-cap: Dataset 100,000 rows 7,554.176 ms/28,597 B; Regression 100,000
+  rows 28,068.832 ms/699,850 B; Composition 20,000 rows 3,579.665 ms/
+  8,063,785 B.
+* frontend/memory: bounded display rows/points and no duplicate source table.
+* overall envelope: PASS; products measured independently because Phase 10L
+  multi-tool planning does not exist.
+
+## 20. Security
+
+* untrusted text remains React/plain JSON text; no raw HTML.
+* arbitrary code/artifact JS: none.
+* external network: `NO_MATERIAL_INTELLIGENCE_EXTERNAL_NETWORK_REQUESTS`.
+* secrets: `NO_SECRET_PATTERN_HITS`.
+
+## 21. Tool Registry Final Phase 10K Surface
+
+* general tools: existing table/composition capabilities remain unchanged.
+* dataset: `dataset.materials_explorer`.
+* ML: `ml.regression_evaluation`, `ml.uncertainty_evaluation`, and
+  `ml.classification_evaluation`.
+* composition: `dataset.composition_space`.
+* requirements: exact Profile 2.0 semantics and canonical resource bindings.
+* outputs/readiness: inert structured artifacts; each capability independent.
+* no K5 integration or run-everything Tool ID was added.
+
+## 22. Explicit Phase 10K Limits
+
+Not implemented: capability-aware Agent, automatic multi-tool planning, LLM
+result interpretation, Unified Scientific Workspace, CrystalNN/VoronoiNN,
+experimental XRD, trajectory analytics, Electronic Band/DOS, or Future advanced
+capabilities. These are assigned to later approved phases, not K5 failures.
+
+## 23. Files Changed
+
+* backend: hashing, K2-K4 binding, exact Profile resolution/runtime guard, and
+  ambiguity safety.
+* frontend: integration mapper/panel and K2-K4 product composition.
+* tests/evidence: unit, component, integration, A-H runtime/API/browser,
+  identity, replay, performance, accessibility, network, and security.
+* docs/persistent: K5 contracts, evidence matrices, Phase 10K summary, next
+  scope, schema/index/capability matrix, ADR, board, progress, and changelog.
+* dependency/lockfile: unchanged.
+
+## 24. Checks
+
+* git diff --check: PASS.
+* uv lock: PASS.
+* backend: PASS, `837 passed, 27 skipped, 63 warnings`.
+* frontend: PASS, `52 files, 323 tests`.
+* typecheck/build: PASS.
+* service-backed local: UNAVAILABLE (Docker absent); CI: PASS.
+* no-skipped CI assertion: PASS.
+* docs/TASKS/evidence integrity/security: PASS.
+
+## 25. Commit / CI
+
+### Integration Implementation
+
+* commit/exact SHA: `e4639a1168f4bac7f4c786c48657559038bd7230`.
+* CI run: `30382233569`.
+* Unit, Frontend Typecheck & Build, service-backed integration, and no-skipped:
+  all success.
+
+### Completion Record
+
+* commit/exact SHA/CI: pending this completion-record commit.
+
+## 26. Queue State
+
+* Phase 10K-5: `COMPLETED_AWAITING_COMPLETION_RECORD_CI_AND_ARCHIVE`.
+* Phase 10K: `READY_WITH_EXPLICIT_LIMITS_AWAITING_ARCHIVE`.
+* Phase 10L-0: `NEXT / AWAITING COMPLETE PROMPT`, not started.
+
+## 27. Phase 10K Final Readiness
+
+* DataProfile, Dataset Explorer, Materials ML, Composition Space, API,
+  frontend, sample identity, version binding, browser, accessibility,
+  performance, and security: READY within documented caps.
+* overall: `READY_WITH_EXPLICIT_LIMITS` pending completion-record CI/archive.
+
+## 28. Whether Allowed to Enter Phase 10L-0
+
+不可以：completion-record exact-SHA CI 与 verified K5 archive 尚未闭合。
+
+## 29. Next Phase
+
+**Phase 10L-0：Agent / Planner Capability Audit**，仅为 NEXT；本任务未实现。

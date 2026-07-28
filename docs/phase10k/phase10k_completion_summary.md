@@ -45,5 +45,6 @@ is Phase 10M.
 ## Readiness
 
 The Phase 10K implementation and evidence establish
-`READY_WITH_EXPLICIT_LIMITS`. Queue archival and final COMPLETE state require
-the repository's implementation-head and completion-record exact-SHA CI gates.
+`READY_WITH_EXPLICIT_LIMITS`. Implementation commit `e4639a1` passed exact-SHA
+CI run `30382233569`. Queue archival and final COMPLETE state still require the
+completion-record exact-SHA CI gate.

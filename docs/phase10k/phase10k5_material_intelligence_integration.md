@@ -1,6 +1,7 @@
 # Phase 10K-5 Material Intelligence Integration
 
-Status: IMPLEMENTED; exact-head CI and queue closure are recorded separately.
+Status: IMPLEMENTED; implementation exact-SHA CI run `30382233569` passed.
+Completion-record CI and queue closure are recorded separately.
 
 ## Product Boundary
 
