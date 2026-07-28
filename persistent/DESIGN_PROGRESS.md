@@ -16,7 +16,11 @@
 - Real API/runtime evidence covers all three tools; Chromium, Firefox, WebKit,
   and mobile evidence records zero console/page errors and external requests.
   Performance evidence covers 4, 5,000, and 100,000 rows without unbounded
-  display arrays. Exact-HEAD CI and queue closure remain pending.
+  display arrays. Current implementation/evidence-closure HEAD
+  `a1e05ee5b0f1affa91183e681b1678d4419cedc4` passed exact-SHA CI run
+  `30363719393`, including Unit, Frontend Typecheck & Build,
+  PostgreSQL/Redis/MinIO service-backed integration, and the no-skipped gate.
+  Completion-record CI and verified queue archive remain pending.
 - No model training, embedding/clustering, real LLM, arbitrary code, dependency,
   external service, Phase 10L orchestration, or workspace redesign was added.
 

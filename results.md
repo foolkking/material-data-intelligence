@@ -1115,3 +1115,98 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
   for verified queue archival.
 * Phase 10K-2: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 * Phase 10K-3: `NEXT / NOT_STARTED`.
+
+# Phase 10K-3 Materials ML Evaluation Result
+
+## 1. Conclusion
+
+`PASS_PENDING_COMPLETION_RECORD_CI`.
+
+## 2. Baseline
+
+* Phase 10K-2: archived after implementation `35c0fc6`, completion record
+  `8dc2545`, and exact-SHA CI `30355282590`.
+* initial HEAD: `4ae8afde126765367ad0a17aad1271a812cdf68f` on `master`, clean.
+* current implementation/evidence-closure HEAD: `a1e05ee5b0f1affa91183e681b1678d4419cedc4`.
+
+## 3. ML Product Architecture
+
+* Profile 2.0 remains the only target/prediction/uncertainty/classification
+  semantic authority. Three product tools bind one explicit canonical table and
+  complete semantic task groups; artifacts retain dataset/profile/semantic hash
+  and stable sample references.
+
+## 4. Regression and Chemistry
+
+* `ml.regression_evaluation` reports MAE, RMSE, defined-or-null R2, signed
+  bias, fixed `prediction_minus_target` residuals, parity/residual/histogram
+  data, high-error sample links, element-overlap error summaries, exact
+  chemical-system summaries, and bounded common-valid-sample model comparison.
+
+## 5. Uncertainty and Classification
+
+* `ml.uncertainty_evaluation` provides source-defined uncertainty association,
+  equal-count mean-uncertainty/mean-absolute-error bins, retained-lowest-
+  uncertainty error decay, and linked high-uncertainty samples.
+* `ml.classification_evaluation` provides raw confusion counts, support,
+  accuracy, per-class/macro metrics with undefined values as null, linked
+  misclassifications, and ROC/PR only for explicit binary positive classes with
+  validated matching probabilities. Multiclass curves remain typed unavailable.
+
+## 6. Runtime, Frontend, and Artifacts
+
+* Mock Planner emits only explicit, profile-ready evaluation plans; existing
+  PlanValidator and QueueWorkerRuntime authority is unchanged. Service-backed
+  CI covers all three tools through persisted jobs, PostgreSQL, Redis, MinIO,
+  and S3-compatible artifact retrieval.
+* Results renders responsive numeric SVG/table panels and inert JSON fallback;
+  Dataset Explorer exposes an availability-driven Model evaluation tab. Browser
+  evidence covers Chromium, Firefox, WebKit, and 390x844 mobile.
+
+## 7. Caps, Security, and Explicit Limits
+
+* Caps: 100,000 rows, 16 models, 64 classes, 256 chemistry groups, 200 table
+  rows, 10,000 plot points, 5,000 curve points, 50 uncertainty bins, 8 MB
+  artifacts, and bounded time.
+* No model training, AutoML, SHAP, feature-importance suite, PCA/UMAP,
+  clustering, Agent interpretation, or workspace redesign was added. No
+  arbitrary code, real LLM, artifact JavaScript, external assets, or runtime
+  network authority was introduced.
+
+## 8. Evidence and Checks
+
+* Evidence: `docs/phase10k/evidence/phase10k3_materials_ml_evaluation/`;
+  includes runtime/API captures, inert artifacts, 4/5,000/100,000-row metrics,
+  browser/mobile screenshots, accessibility/network/security audits, and hashes.
+* backend: `808 passed, 25 skipped, 63 warnings`; frontend: `50 files, 307
+  tests passed`; typecheck/build, `uv lock --check`, `git diff --check`, focused
+  evidence tests, Phase 10 closure integrity, trajectory evidence integrity,
+  docs/TASKS checks, and K2/K3 browser runners passed.
+* local service-backed: `UNAVAILABLE` (4 gated skips), not represented as pass.
+  CI service-backed/no-skipped: success. `npm audit`: `UNAVAILABLE` because the
+  configured npmmirror audit endpoint returns `404 NOT_IMPLEMENTED`; no
+  dependency or lockfile changed.
+* markers: `MATERIALS_ML_REGRESSION_RUNTIME_EVIDENCE_PASS`,
+  `MATERIALS_ML_UNCERTAINTY_RUNTIME_EVIDENCE_PASS`,
+  `MATERIALS_ML_CLASSIFICATION_RUNTIME_EVIDENCE_PASS`,
+  `MATERIALS_ML_REGRESSION_BROWSER_EVIDENCE_PASS`,
+  `MATERIALS_ML_CHEMISTRY_ERROR_EVIDENCE_PASS`,
+  `MATERIALS_ML_UNCERTAINTY_BROWSER_EVIDENCE_PASS`,
+  `MATERIALS_ML_CLASSIFICATION_BROWSER_EVIDENCE_PASS`,
+  `MATERIALS_ML_PERFORMANCE_EVIDENCE_PASS`,
+  `NO_MATERIALS_ML_EXTERNAL_NETWORK_REQUESTS`, and `NO_SECRET_PATTERN_HITS`.
+
+## 9. Commit / CI / Queue
+
+* implementation: `4574cef`; evidence-closure/current implementation:
+  `a1e05ee5b0f1affa91183e681b1678d4419cedc4`; exact-SHA CI run `30363719393`
+  passed Unit, Frontend Typecheck & Build, PostgreSQL/Redis/MinIO service-backed
+  integration, and no-skipped assertion.
+* completion record: pending this record commit and its exact-SHA CI.
+* queue: Phase 10K-3 is `已完成` but remains in `TASKS.md` until completion-record
+  CI passes. Phase 10K-4 remains `NEXT / AWAITING COMPLETE PROMPT`; Phase 10K-5
+  remains planned and unstarted.
+
+## 10. Next Phase
+
+**Phase 10K-4：Composition Space / Embedding / Clustering**

@@ -12,7 +12,9 @@
   model comparison, reliability/error-decay diagnostics, raw confusion/per-class
   metrics, and binary ROC/PR with explicit positive-class/probability gates.
 - Added focused/full-contract tests and real three-browser/mobile, 100,000-row,
-  network, security, and evidence-integrity captures. Exact-HEAD CI and task
+  network, security, and evidence-integrity captures. Current implementation
+  head `a1e05ee` passed exact-SHA CI run `30363719393`, including Unit,
+  Frontend, service-backed, and no-skipped gates. Completion-record CI and task
   archive remain pending; Phase 10K-4 has not started.
 
 ## 2026-07-28 - Phase 10K-2 Dataset Materials Explorer

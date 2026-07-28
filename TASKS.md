@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 
 你现在执行：
 
@@ -2820,6 +2820,24 @@ Audit 完成后直接继续 implementation。
 最终停在：
 
 **Phase 10K-4：Composition Space / Embedding / Clustering = NEXT / AWAITING COMPLETE PROMPT**
+
+## 完成记录
+
+- 完成时间：`2026-07-28 21:32:13 +08:00`
+- 修改文件：Materials ML adapters/Registry/semantic-profile/Mock Planner、Results 和
+  Dataset Explorer frontend、K3 browser/evidence generator、backend/frontend/integration
+  tests、shared schema、K3 contracts/evidence/persistent records，以及 K3 evidence pack。
+- 修改摘要：交付 Profile 2.0 绑定的 regression、uncertainty、classification 三个
+  受限产品；保持稳定 sample identity、化学分组、multiple-model common-sample
+  比较、binary-only ROC/PR 和 inert artifacts。K2 历史 evidence 保持未改写。
+- 测试结果：backend `808 passed, 25 skipped, 63 warnings`；frontend `50 files,
+  307 tests passed`；typecheck/build、lock/diff、focused evidence、Chromium/Firefox/
+  WebKit/mobile browser runners、docs/TASKS/evidence/security checks 均通过。本机
+  service-backed 为环境门禁 skip；exact implementation SHA CI `30363719393` 的
+  Unit、Frontend、PostgreSQL/Redis/MinIO service-backed 和 no-skipped 全部成功。
+- 提交/CI：实现 `4574cef`；evidence-closure fix/current implementation
+  `a1e05ee5b0f1affa91183e681b1678d4419cedc4`，CI `30363719393` success。completion
+  record exact-SHA CI 与 verified queue archive 待完成，当前 task block 不得删除。
 
 ---END---
 

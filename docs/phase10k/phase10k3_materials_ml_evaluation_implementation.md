@@ -1,6 +1,7 @@
 # Phase 10K-3 Materials ML Evaluation Implementation
 
-Status: IMPLEMENTED, pending exact-HEAD CI and queue closure.
+Status: IMPLEMENTATION_CI_PASSED, pending completion-record CI and verified
+queue closure.
 
 The CI integration gate executes regression, uncertainty, and classification
 through persisted jobs and S3-compatible artifact storage; local in-memory
