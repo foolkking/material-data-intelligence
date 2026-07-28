@@ -1,0 +1,49 @@
+{
+  "columnIssues": [
+    {
+      "ambiguities": [],
+      "column": "formation_energy",
+      "missingCount": 1,
+      "nonFiniteCount": 0
+    },
+    {
+      "ambiguities": [],
+      "column": "band_gap",
+      "missingCount": 0,
+      "nonFiniteCount": 1
+    }
+  ],
+  "duplicateReducedFormulaGroups": [
+    {
+      "count": 2,
+      "reducedFormula": "Si",
+      "rowIndices": [
+        0,
+        2
+      ]
+    }
+  ],
+  "duplicateSampleIdentityValues": [
+    {
+      "column": "material_id",
+      "count": 2,
+      "value": "sample-nacl"
+    }
+  ],
+  "invalidFormulaCount": 1,
+  "nearDuplicateAnalysis": "NOT_IMPLEMENTED_BY_DESIGN",
+  "profileIssues": [
+    {
+      "code": "FORMULA_VALUES_PARTIALLY_INVALID",
+      "message": "Some inspected formula values could not be parsed; row-level validation remains required.",
+      "refs": [
+        {
+          "id": "obj_materials:formula",
+          "type": "column"
+        }
+      ],
+      "severity": "warning"
+    }
+  ],
+  "sampleLinksMaterialized": 4
+}

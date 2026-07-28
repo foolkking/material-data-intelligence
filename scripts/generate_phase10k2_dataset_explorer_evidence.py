@@ -124,10 +124,13 @@ def _profile(objects: list[NormalizedObjectDraft]):
 def _write(relative: str, value: Any) -> None:
     target = EVIDENCE / relative
     target.parent.mkdir(parents=True, exist_ok=True)
+    payload: str
     if isinstance(value, str):
-        target.write_text(value, encoding="utf-8")
+        payload = value
     else:
-        target.write_text(json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
+        payload = json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\n"
+    with target.open("w", encoding="utf-8", newline="\n") as stream:
+        stream.write(payload)
 
 
 def _sanitized(value: Any) -> Any:

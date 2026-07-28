@@ -4,7 +4,7 @@
     "version": "128.0.6613.18",
     "available": true,
     "desktop": {
-      "firstProductMs": 1636,
+      "firstProductMs": 1857,
       "snapshots": {
         "Overview": "SAMPLES\n4\nTABLES\n1\nSTRUCTURES\n3\nPROPERTIES\n2\nAvailable analyses\ndataset_materials_explorer\ntable_distribution\nscatter\nhistogram\ncorrelation\ncomposition_summary\nformula_statistics\nelement_distribution\nchemical_system_visualization\nstructure_summary\ndataset_structure_statistics\nUnavailable analyses\ntrajectory_visualization\nphonon_visualization\nvolumetric_visualization\nregression_evaluation\nuncertainty_evaluation\nclassification_evaluation\ncomposition_space\nWarnings\nDATASET_FORMULA_PARSE_FAILURES\nFORMULA_VALUES_PARTIALLY_INVALID",
         "Composition": "STATUS\nREADY\nFORMULA COLUMN\nformula\nUNIQUE FORMULAS\n2\nUNIQUE REDUCED FORMULAS\n2\nElement coverage\nCl\n1\nNa\n1\nSi\n2\nChemical systems\nCHEMICAL SYSTEM\tCOUNT\nSi\t2\nCl-Na\t1",
@@ -25,7 +25,7 @@
       }
     },
     "mobile": {
-      "firstProductMs": 1604,
+      "firstProductMs": 1582,
       "snapshots": {
         "Overview": "SAMPLES\n4\nTABLES\n1\nSTRUCTURES\n3\nPROPERTIES\n2\nAvailable analyses\ndataset_materials_explorer\ntable_distribution\nscatter\nhistogram\ncorrelation\ncomposition_summary\nformula_statistics\nelement_distribution\nchemical_system_visualization\nstructure_summary\ndataset_structure_statistics\nUnavailable analyses\ntrajectory_visualization\nphonon_visualization\nvolumetric_visualization\nregression_evaluation\nuncertainty_evaluation\nclassification_evaluation\ncomposition_space\nWarnings\nDATASET_FORMULA_PARSE_FAILURES\nFORMULA_VALUES_PARTIALLY_INVALID",
         "Composition": "STATUS\nREADY\nFORMULA COLUMN\nformula\nUNIQUE FORMULAS\n2\nUNIQUE REDUCED FORMULAS\n2\nElement coverage\nCl\n1\nNa\n1\nSi\n2\nChemical systems\nCHEMICAL SYSTEM\tCOUNT\nSi\t2\nCl-Na\t1",
@@ -54,7 +54,7 @@
     "version": "128.0",
     "available": true,
     "desktop": {
-      "firstProductMs": 2308,
+      "firstProductMs": 2567,
       "snapshots": {
         "Overview": "SAMPLES\n4\nTABLES\n1\nSTRUCTURES\n3\nPROPERTIES\n2\nAvailable analyses\ndataset_materials_explorer\ntable_distribution\nscatter\nhistogram\ncorrelation\ncomposition_summary\nformula_statistics\nelement_distribution\nchemical_system_visualization\nstructure_summary\ndataset_structure_statistics\nUnavailable analyses\ntrajectory_visualization\nphonon_visualization\nvolumetric_visualization\nregression_evaluation\nuncertainty_evaluation\nclassification_evaluation\ncomposition_space\nWarnings\nDATASET_FORMULA_PARSE_FAILURES\nFORMULA_VALUES_PARTIALLY_INVALID",
         "Composition": "STATUS\nREADY\nFORMULA COLUMN\nformula\nUNIQUE FORMULAS\n2\nUNIQUE REDUCED FORMULAS\n2\nElement coverage\nCl\n1\nNa\n1\nSi\n2\nChemical systems\nCHEMICAL SYSTEM\tCOUNT\nSi\t2\nCl-Na\t1",
@@ -84,7 +84,7 @@
     "version": "18.0",
     "available": true,
     "desktop": {
-      "firstProductMs": 3487,
+      "firstProductMs": 3608,
       "snapshots": {
         "Overview": "SAMPLES\n4\nTABLES\n1\nSTRUCTURES\n3\nPROPERTIES\n2\nAvailable analyses\ndataset_materials_explorer\ntable_distribution\nscatter\nhistogram\ncorrelation\ncomposition_summary\nformula_statistics\nelement_distribution\nchemical_system_visualization\nstructure_summary\ndataset_structure_statistics\nUnavailable analyses\ntrajectory_visualization\nphonon_visualization\nvolumetric_visualization\nregression_evaluation\nuncertainty_evaluation\nclassification_evaluation\ncomposition_space\nWarnings\nDATASET_FORMULA_PARSE_FAILURES\nFORMULA_VALUES_PARTIALLY_INVALID\n",
         "Composition": "STATUS\nREADY\nFORMULA COLUMN\nformula\nUNIQUE FORMULAS\n2\nUNIQUE REDUCED FORMULAS\n2\nElement coverage\nCl\n1\nNa\n1\nSi\n2\nChemical systems\nCHEMICAL SYSTEM\tCOUNT\nSi\t2\nCl-Na\t1\n",

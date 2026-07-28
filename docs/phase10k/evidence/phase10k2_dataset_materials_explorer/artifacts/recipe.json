@@ -1,0 +1,49 @@
+{
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Dataset Materials Explorer",
+  "profileBinding": {
+    "profileId": "profile_dataset_phase10k2_evidence_v2",
+    "roleInferenceRepeated": false,
+    "semanticHash": "812a587b08476b904999afde3a2ab0dc773ac7af1ef389832221b8d345266ea7"
+  },
+  "projectId": "project_phase10k2_evidence",
+  "recipeId": "recipe_call_job_000000000000000000000000_step_001",
+  "schemaVersion": "0.1",
+  "sourceJobId": "job_000000000000000000000000",
+  "steps": [
+    {
+      "artifactTypes": [
+        "quality_issues_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "comparisonMode": "group",
+        "groupA": "train",
+        "groupB": "test",
+        "groupColumn": "split",
+        "histogramBins": 20,
+        "maxCategories": 50,
+        "maxProperties": 32,
+        "maxStructures": 256,
+        "maxTableRows": 100,
+        "symprec": 0.01,
+        "tableObjectId": "obj_materials"
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "dataset.materials_explorer",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

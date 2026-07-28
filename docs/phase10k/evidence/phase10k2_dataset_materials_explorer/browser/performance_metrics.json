@@ -2,17 +2,17 @@
   "browsers": [
     {
       "browser": "chromium",
-      "firstProductMs": 1636
+      "firstProductMs": 1857
     },
     {
       "browser": "firefox",
-      "firstProductMs": 2308
+      "firstProductMs": 2567
     },
     {
       "browser": "webkit",
-      "firstProductMs": 3487
+      "firstProductMs": 3608
     }
   ],
-  "mobileFirstProductMs": 1604,
+  "mobileFirstProductMs": 1582,
   "acceptance": "PASS"
 }
