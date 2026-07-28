@@ -1,0 +1,50 @@
+{
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Materials ML Regression Evaluation",
+  "projectId": "project_phase10k3_evidence",
+  "recipeId": "recipe_call_job_000000000000000000000000_step_001",
+  "schemaVersion": "0.1",
+  "semanticBinding": {
+    "groupIds": [
+      "obj_regression:regression:model_a",
+      "obj_regression:regression:model_b"
+    ],
+    "profileId": "profile_dataset_phase10k3_regression_v2",
+    "roleInferenceRepeated": false,
+    "semanticHash": "a52c92d0ef6238ceb139ec94ceaa8afe7f1d5dcc833c98cbdfdbe1cf9a11c3a4"
+  },
+  "sourceJobId": "job_000000000000000000000000",
+  "steps": [
+    {
+      "artifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "groupIds": [
+          "obj_regression:regression:model_a",
+          "obj_regression:regression:model_b"
+        ],
+        "histogramBins": 30,
+        "maxChemistryGroups": 128,
+        "maxPlotPoints": 2000,
+        "maxTableRows": 100,
+        "minGroupSize": 3
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "ml.regression_evaluation",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

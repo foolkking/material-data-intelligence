@@ -315,7 +315,7 @@ def test_phase10k3_service_backed_materials_ml_product_closure(tmp_path: Path) -
         assert {item["name"] for item in artifacts} == {product_name, "summary.md", "recipe.json"}
         assert all(item["storageProvider"] == "s3" and storage.exists(item["storageKey"]) for item in artifacts)
         product = storage.get_json(next(item["storageKey"] for item in artifacts if item["name"] == product_name))
-        assert product["profileVersion"] == "phase10k1.material_data_profile.v2"
+        assert product["dataset"]["profileContractVersion"] == "2.0"
         assert product["schemaVersion"].startswith("phase10k3.materials_ml_")
     engine.dispose()
 

@@ -1,0 +1,223 @@
+{
+  "artifactType": "ml.uncertainty_evaluation",
+  "dataset": {
+    "datasetId": "dataset_phase10k3_uncertainty",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k3_uncertainty_v2",
+    "semanticHash": "26f8c0f86ce118358407f374cf1591dd6adcabfe22e8503cf80cc1f698396b8c"
+  },
+  "evaluations": [
+    {
+      "association": {
+        "pearson": 0.9999999999999998,
+        "spearman": 1.0
+      },
+      "coverage": {
+        "evaluatedSamples": 4,
+        "excludedSamples": 0,
+        "totalSamples": 4
+      },
+      "errorDecay": {
+        "method": "retain_lowest_uncertainty_first",
+        "metric": "mae",
+        "points": [
+          {
+            "mae": 0.2375,
+            "retainedFraction": 1.0,
+            "retainedSamples": 4
+          },
+          {
+            "mae": 0.2375,
+            "retainedFraction": 0.8,
+            "retainedSamples": 4
+          },
+          {
+            "mae": 0.07499999999999984,
+            "retainedFraction": 0.5,
+            "retainedSamples": 2
+          },
+          {
+            "mae": 0.050000000000000044,
+            "retainedFraction": 0.2,
+            "retainedSamples": 1
+          }
+        ]
+      },
+      "groupId": "obj_uncertainty:regression:default",
+      "highUncertaintySamples": [
+        {
+          "absoluteError": 0.6000000000000001,
+          "chemicalSystem": "F-Li",
+          "formula": "LiF",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 3.6,
+          "reducedFormula": "LiF",
+          "rowIndex": 2,
+          "sampleRef": "lif-1",
+          "target": 3.0,
+          "uncertainty": 0.6
+        },
+        {
+          "absoluteError": 0.20000000000000018,
+          "chemicalSystem": "Cl-Na",
+          "formula": "NaCl",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 2.2,
+          "reducedFormula": "NaCl",
+          "rowIndex": 1,
+          "sampleRef": "nacl-1",
+          "target": 2.0,
+          "uncertainty": 0.2
+        },
+        {
+          "absoluteError": 0.09999999999999964,
+          "chemicalSystem": "As-Ga",
+          "formula": "GaAs",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 4.1,
+          "reducedFormula": "GaAs",
+          "rowIndex": 3,
+          "sampleRef": "gaas-1",
+          "target": 4.0,
+          "uncertainty": 0.1
+        },
+        {
+          "absoluteError": 0.050000000000000044,
+          "chemicalSystem": "Si",
+          "formula": "Si",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 1.05,
+          "reducedFormula": "Si",
+          "rowIndex": 0,
+          "sampleRef": "si-1",
+          "target": 1.0,
+          "uncertainty": 0.05
+        }
+      ],
+      "objectId": "obj_uncertainty",
+      "predictionColumn": "y_pred",
+      "reliability": {
+        "bins": [
+          {
+            "bin": 0,
+            "meanAbsoluteError": 0.050000000000000044,
+            "meanUncertainty": 0.05,
+            "sampleCount": 1
+          },
+          {
+            "bin": 1,
+            "meanAbsoluteError": 0.09999999999999964,
+            "meanUncertainty": 0.1,
+            "sampleCount": 1
+          },
+          {
+            "bin": 2,
+            "meanAbsoluteError": 0.20000000000000018,
+            "meanUncertainty": 0.2,
+            "sampleCount": 1
+          },
+          {
+            "bin": 3,
+            "meanAbsoluteError": 0.6000000000000001,
+            "meanUncertainty": 0.6,
+            "sampleCount": 1
+          }
+        ],
+        "method": "equal_count_mean_uncertainty_vs_mean_absolute_error"
+      },
+      "seriesId": "default",
+      "targetColumn": "y_true",
+      "taskId": "obj_uncertainty:regression:default:default:y_std",
+      "uncertaintyColumn": "y_std",
+      "uncertaintyErrorPoints": [
+        {
+          "absoluteError": 0.050000000000000044,
+          "chemicalSystem": "Si",
+          "formula": "Si",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 1.05,
+          "reducedFormula": "Si",
+          "rowIndex": 0,
+          "sampleRef": "si-1",
+          "target": 1.0,
+          "uncertainty": 0.05
+        },
+        {
+          "absoluteError": 0.20000000000000018,
+          "chemicalSystem": "Cl-Na",
+          "formula": "NaCl",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 2.2,
+          "reducedFormula": "NaCl",
+          "rowIndex": 1,
+          "sampleRef": "nacl-1",
+          "target": 2.0,
+          "uncertainty": 0.2
+        },
+        {
+          "absoluteError": 0.6000000000000001,
+          "chemicalSystem": "F-Li",
+          "formula": "LiF",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 3.6,
+          "reducedFormula": "LiF",
+          "rowIndex": 2,
+          "sampleRef": "lif-1",
+          "target": 3.0,
+          "uncertainty": 0.6
+        },
+        {
+          "absoluteError": 0.09999999999999964,
+          "chemicalSystem": "As-Ga",
+          "formula": "GaAs",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 4.1,
+          "reducedFormula": "GaAs",
+          "rowIndex": 3,
+          "sampleRef": "gaas-1",
+          "target": 4.0,
+          "uncertainty": 0.1
+        }
+      ],
+      "uncertaintyKind": "source_defined_uncertainty",
+      "warnings": [
+        "UNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITY"
+      ]
+    }
+  ],
+  "limits": {
+    "histogramBins": 30,
+    "maxChemistryGroups": 128,
+    "maxClasses": 64,
+    "maxCurvePoints": 1000,
+    "maxHighErrorRows": 100,
+    "maxModels": 16,
+    "maxPlotPoints": 2000,
+    "maxRows": 100000,
+    "maxTableRows": 100,
+    "maxUncertaintyBins": 10,
+    "minGroupSize": 3
+  },
+  "schemaVersion": "phase10k3.materials_ml_uncertainty.v1",
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  },
+  "semantics": {
+    "backendScientificAuthority": true,
+    "roleInferenceRepeated": false,
+    "sampleIdentityPreserved": true,
+    "source": "material_data_profile_2"
+  }
+}
