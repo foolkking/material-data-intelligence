@@ -1,0 +1,59 @@
+{
+  "algorithm": {
+    "clustering": "kmeans_lloyd",
+    "clusteringFeatureSpace": "normalized_atomic_fraction",
+    "features": "normalized_atomic_fraction",
+    "pcaSignConvention": "largest_absolute_loading_is_positive",
+    "projection": "centered_unscaled_pca_full_svd"
+  },
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Composition Space Explorer",
+  "projectId": "project_phase10k4_evidence",
+  "recipeId": "recipe_call_job_1dd95f474034588493ec0604_step_001",
+  "schemaVersion": "0.1",
+  "semanticBinding": {
+    "profileId": "profile_dataset_phase10k4_normal_v2",
+    "roleInferenceRepeated": false,
+    "semanticHash": "cf68eacfdfa464ae760ab2d7fac570e063a8a9e5c01d52cd3f655501e59af570"
+  },
+  "sourceJobId": "job_1dd95f474034588493ec0604",
+  "steps": [
+    {
+      "artifactTypes": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "clusteringEnabled": true,
+        "comparisonMode": "group",
+        "groupA": "train",
+        "groupB": "test",
+        "groupColumn": "split",
+        "maxIterations": 300,
+        "maxOutlierRows": 50,
+        "maxPlotPoints": 5000,
+        "nClusters": 3,
+        "nInit": 10,
+        "projectionDimensions": 2,
+        "randomState": 0,
+        "tableObjectId": "obj_materials",
+        "tolerance": 0.0001
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "dataset.composition_space",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

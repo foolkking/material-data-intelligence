@@ -1,0 +1,548 @@
+{
+  "artifactType": "dataset.composition_space",
+  "clustering": {
+    "clusters": [
+      {
+        "centroid": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.75,
+          0.0,
+          0.0,
+          0.25,
+          0.0
+        ],
+        "cluster": 0,
+        "dominantElements": [
+          {
+            "element": "Si",
+            "meanFraction": 0.75
+          },
+          {
+            "element": "Ge",
+            "meanFraction": 0.25
+          }
+        ],
+        "sampleCount": 2,
+        "topChemicalSystems": [
+          {
+            "chemicalSystem": "Ge-Si",
+            "count": 1
+          },
+          {
+            "chemicalSystem": "Si",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "centroid": [
+          0.0,
+          0.5,
+          0.0,
+          0.0,
+          0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cluster": 1,
+        "dominantElements": [
+          {
+            "element": "O",
+            "meanFraction": 0.5
+          },
+          {
+            "element": "Mg",
+            "meanFraction": 0.5
+          }
+        ],
+        "sampleCount": 1,
+        "topChemicalSystems": [
+          {
+            "chemicalSystem": "Mg-O",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "centroid": [
+          0.16666666666666669,
+          0.0,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.0,
+          0.0,
+          0.16666666666666669,
+          0.16666666666666666,
+          0.0,
+          0.16666666666666666
+        ],
+        "cluster": 2,
+        "dominantElements": [
+          {
+            "element": "Li",
+            "meanFraction": 0.16666666666666666
+          },
+          {
+            "element": "F",
+            "meanFraction": 0.16666666666666666
+          },
+          {
+            "element": "Na",
+            "meanFraction": 0.16666666666666666
+          },
+          {
+            "element": "Cl",
+            "meanFraction": 0.16666666666666666
+          },
+          {
+            "element": "Ga",
+            "meanFraction": 0.16666666666666666
+          }
+        ],
+        "sampleCount": 3,
+        "topChemicalSystems": [
+          {
+            "chemicalSystem": "As-Ga",
+            "count": 1
+          },
+          {
+            "chemicalSystem": "Cl-Na",
+            "count": 1
+          },
+          {
+            "chemicalSystem": "F-Li",
+            "count": 1
+          }
+        ]
+      }
+    ],
+    "featureSpace": "normalized_atomic_fraction",
+    "inertia": 1.25,
+    "iterations": 2,
+    "method": "kmeans_lloyd",
+    "parameters": {
+      "labelOrdering": "centroid_lexicographic",
+      "maxIterations": 300,
+      "nClusters": 3,
+      "nInit": 10,
+      "randomState": 0,
+      "tolerance": 0.0001
+    },
+    "scientificAuthority": "descriptive_composition_clusters_not_material_families",
+    "status": "READY"
+  },
+  "coloring": {
+    "available": [
+      {
+        "id": "cluster",
+        "kind": "categorical",
+        "label": "Composition cluster",
+        "source": "composition_space"
+      },
+      {
+        "id": "chemical_system",
+        "kind": "categorical",
+        "label": "Chemical system",
+        "source": "composition_semantics"
+      },
+      {
+        "id": "group",
+        "kind": "categorical",
+        "label": "Dataset / group",
+        "source": "explicit_comparison_binding"
+      },
+      {
+        "id": "property:band_gap",
+        "kind": "continuous",
+        "label": "band_gap",
+        "source": "material_data_profile_2_material_property",
+        "unit": "eV"
+      },
+      {
+        "id": "ml:obj_materials:regression:default:default:absolute_error",
+        "kind": "continuous",
+        "label": "obj_materials:regression:default:default:absolute_error",
+        "source": "phase10k3_sample_bound_artifact",
+        "unit": null
+      },
+      {
+        "id": "ml:obj_materials:regression:default:default:residual",
+        "kind": "continuous",
+        "label": "obj_materials:regression:default:default:residual",
+        "source": "phase10k3_sample_bound_artifact",
+        "unit": null
+      }
+    ],
+    "default": "cluster",
+    "scientificAuthority": "descriptive_visual_encoding_only"
+  },
+  "comparison": {
+    "mode": "none",
+    "status": "NOT_REQUESTED"
+  },
+  "coverage": {
+    "invalidCompositionSamples": 1,
+    "invalidExamples": [
+      {
+        "objectId": "obj_materials",
+        "reason": "invalid_formula",
+        "rowIndex": 6
+      }
+    ],
+    "invalidExamplesTruncated": false,
+    "selectedRows": 7,
+    "silentDrops": false,
+    "validCompositionSamples": 6
+  },
+  "dataset": {
+    "datasetContentHash": "fc21ac4ffad859c849bbf31903cc8bb4e58c61381a02e230ace619e586e0076e",
+    "datasetId": "dataset_phase10k4_normal",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k4_normal_v2",
+    "semanticHash": "cf68eacfdfa464ae760ab2d7fac570e063a8a9e5c01d52cd3f655501e59af570"
+  },
+  "displayPointKeys": [
+    "obj_materials:si-1",
+    "obj_materials:sige-1",
+    "obj_materials:nacl-1",
+    "obj_materials:lif-1",
+    "obj_materials:mgo-1",
+    "obj_materials:gaas-1"
+  ],
+  "displaySampleRefs": [
+    "si-1",
+    "sige-1",
+    "nacl-1",
+    "lif-1",
+    "mgo-1",
+    "gaas-1"
+  ],
+  "featureRepresentation": {
+    "basisOrder": "atomic_number_ascending",
+    "elementBasis": [
+      "Li",
+      "O",
+      "F",
+      "Na",
+      "Mg",
+      "Si",
+      "Cl",
+      "Ga",
+      "Ge",
+      "As"
+    ],
+    "featureDimensions": 10,
+    "fractionalOccupancySupported": true,
+    "missingElementValue": 0.0,
+    "normalization": "element_amount_divided_by_total_amount",
+    "parser": "pymatgen.core.Composition via application composition semantics",
+    "type": "normalized_atomic_fraction"
+  },
+  "limits": {
+    "maxAnalyzedSamples": 20000,
+    "maxArtifactBytes": 16000000,
+    "maxClusters": 12,
+    "maxColorProperties": 16,
+    "maxElements": 118,
+    "maxOutlierRows": 50,
+    "maxPlotPoints": 5000,
+    "maxRows": 100000,
+    "maxWarnings": 128
+  },
+  "outlierCandidates": [
+    {
+      "distance": 0.7905694150420948,
+      "interpretation": "composition_space_candidate_not_invalid_material",
+      "objectId": "obj_materials",
+      "policy": "euclidean_distance_to_combined_feature_centroid",
+      "rank": 1,
+      "rowIndex": 0,
+      "sampleRef": "si-1"
+    },
+    {
+      "distance": 0.6770032003863301,
+      "interpretation": "composition_space_candidate_not_invalid_material",
+      "objectId": "obj_materials",
+      "policy": "euclidean_distance_to_combined_feature_centroid",
+      "rank": 2,
+      "rowIndex": 5,
+      "sampleRef": "gaas-1"
+    },
+    {
+      "distance": 0.6770032003863301,
+      "interpretation": "composition_space_candidate_not_invalid_material",
+      "objectId": "obj_materials",
+      "policy": "euclidean_distance_to_combined_feature_centroid",
+      "rank": 3,
+      "rowIndex": 3,
+      "sampleRef": "lif-1"
+    },
+    {
+      "distance": 0.67700320038633,
+      "interpretation": "composition_space_candidate_not_invalid_material",
+      "objectId": "obj_materials",
+      "policy": "euclidean_distance_to_combined_feature_centroid",
+      "rank": 4,
+      "rowIndex": 4,
+      "sampleRef": "mgo-1"
+    },
+    {
+      "distance": 0.67700320038633,
+      "interpretation": "composition_space_candidate_not_invalid_material",
+      "objectId": "obj_materials",
+      "policy": "euclidean_distance_to_combined_feature_centroid",
+      "rank": 5,
+      "rowIndex": 2,
+      "sampleRef": "nacl-1"
+    },
+    {
+      "distance": 0.5400617248673217,
+      "interpretation": "composition_space_candidate_not_invalid_material",
+      "objectId": "obj_materials",
+      "policy": "euclidean_distance_to_combined_feature_centroid",
+      "rank": 6,
+      "rowIndex": 1,
+      "sampleRef": "sige-1"
+    }
+  ],
+  "points": [
+    {
+      "chemicalSystem": "Si",
+      "cluster": 0,
+      "coordinates": [
+        0.7527553679629353,
+        -4.268560056396611e-32
+      ],
+      "elementFractions": {
+        "Si": 1.0
+      },
+      "formula": "Si",
+      "group": "obj_materials",
+      "identitySource": "explicit_column",
+      "mlValues": {
+        "obj_materials:regression:default:default:absolute_error": 0.10000000000000009,
+        "obj_materials:regression:default:default:residual": 0.10000000000000009
+      },
+      "objectId": "obj_materials",
+      "propertyValues": {
+        "band_gap": 1.1
+      },
+      "reducedFormula": "Si",
+      "rowIndex": 0,
+      "sampleKey": "obj_materials:si-1",
+      "sampleRef": "si-1"
+    },
+    {
+      "chemicalSystem": "Ge-Si",
+      "cluster": 0,
+      "coordinates": [
+        0.3949670354513325,
+        1.1110109222418205e-16
+      ],
+      "elementFractions": {
+        "Ge": 0.5,
+        "Si": 0.5
+      },
+      "formula": "Si0.5Ge0.5",
+      "group": "obj_materials",
+      "identitySource": "explicit_column",
+      "mlValues": {
+        "obj_materials:regression:default:default:absolute_error": 0.19999999999999996,
+        "obj_materials:regression:default:default:residual": -0.19999999999999996
+      },
+      "objectId": "obj_materials",
+      "propertyValues": {
+        "band_gap": 0.75
+      },
+      "reducedFormula": "Si0.5Ge0.5",
+      "rowIndex": 1,
+      "sampleKey": "obj_materials:sige-1",
+      "sampleRef": "sige-1"
+    },
+    {
+      "chemicalSystem": "Cl-Na",
+      "cluster": 2,
+      "coordinates": [
+        -0.2869306008535669,
+        -0.4258214287634249
+      ],
+      "elementFractions": {
+        "Cl": 0.5,
+        "Na": 0.5
+      },
+      "formula": "NaCl",
+      "group": "obj_materials",
+      "identitySource": "explicit_column",
+      "mlValues": {
+        "obj_materials:regression:default:default:absolute_error": 0.2999999999999998,
+        "obj_materials:regression:default:default:residual": 0.2999999999999998
+      },
+      "objectId": "obj_materials",
+      "propertyValues": {
+        "band_gap": 5.6
+      },
+      "reducedFormula": "NaCl",
+      "rowIndex": 2,
+      "sampleKey": "obj_materials:nacl-1",
+      "sampleRef": "nacl-1"
+    },
+    {
+      "chemicalSystem": "F-Li",
+      "cluster": 2,
+      "coordinates": [
+        -0.2869306008535674,
+        0.07305355571333774
+      ],
+      "elementFractions": {
+        "F": 0.5,
+        "Li": 0.5
+      },
+      "formula": "LiF",
+      "group": "obj_materials",
+      "identitySource": "explicit_column",
+      "mlValues": {
+        "obj_materials:regression:default:default:absolute_error": 0.5,
+        "obj_materials:regression:default:default:residual": -0.5
+      },
+      "objectId": "obj_materials",
+      "propertyValues": {
+        "band_gap": 11.8
+      },
+      "reducedFormula": "LiF",
+      "rowIndex": 3,
+      "sampleKey": "obj_materials:lif-1",
+      "sampleRef": "lif-1"
+    },
+    {
+      "chemicalSystem": "Mg-O",
+      "cluster": 1,
+      "coordinates": [
+        -0.2869306008535669,
+        -0.17795820228670745
+      ],
+      "elementFractions": {
+        "Mg": 0.5,
+        "O": 0.5
+      },
+      "formula": "MgO",
+      "group": "obj_materials",
+      "identitySource": "explicit_column",
+      "mlValues": {
+        "obj_materials:regression:default:default:absolute_error": 0.09999999999999964,
+        "obj_materials:regression:default:default:residual": 0.09999999999999964
+      },
+      "objectId": "obj_materials",
+      "propertyValues": {
+        "band_gap": 7.8
+      },
+      "reducedFormula": "MgO",
+      "rowIndex": 4,
+      "sampleKey": "obj_materials:mgo-1",
+      "sampleRef": "mgo-1"
+    },
+    {
+      "chemicalSystem": "As-Ga",
+      "cluster": 2,
+      "coordinates": [
+        -0.2869306008535669,
+        0.5307260753367946
+      ],
+      "elementFractions": {
+        "As": 0.5,
+        "Ga": 0.5
+      },
+      "formula": "GaAs",
+      "group": "obj_materials",
+      "identitySource": "explicit_column",
+      "mlValues": {
+        "obj_materials:regression:default:default:absolute_error": 0.20000000000000018,
+        "obj_materials:regression:default:default:residual": -0.20000000000000018
+      },
+      "objectId": "obj_materials",
+      "propertyValues": {
+        "band_gap": 1.42
+      },
+      "reducedFormula": "GaAs",
+      "rowIndex": 5,
+      "sampleKey": "obj_materials:gaas-1",
+      "sampleRef": "gaas-1"
+    }
+  ],
+  "projection": {
+    "centering": true,
+    "components": [
+      [
+        -0.13637952726098002,
+        -0.13637952726097974,
+        -0.13637952726097993,
+        -0.13637952726097977,
+        -0.13637952726097977,
+        0.9033064415555222,
+        -0.13637952726097977,
+        -0.13637952726097977,
+        0.18772977653231632,
+        -0.13637952726097977
+      ],
+      [
+        0.07305355571333763,
+        -0.17795820228670742,
+        0.07305355571333765,
+        -0.42582142876342505,
+        -0.17795820228670742,
+        -4.163336342344337e-17,
+        -0.4258214287634249,
+        0.5307260753367946,
+        -1.214306433183765e-17,
+        0.5307260753367946
+      ]
+    ],
+    "cumulativeExplainedVarianceRatio": 0.5643477388781759,
+    "dimensions": 2,
+    "explainedVarianceRatio": [
+      0.38252955705999403,
+      0.18181818181818185
+    ],
+    "mean": [
+      0.08333333333333333,
+      0.08333333333333333,
+      0.08333333333333333,
+      0.08333333333333333,
+      0.08333333333333333,
+      0.25,
+      0.08333333333333333,
+      0.08333333333333333,
+      0.08333333333333333,
+      0.08333333333333333
+    ],
+    "method": "PCA",
+    "rank": 5,
+    "scaling": "none",
+    "signConvention": "largest_absolute_loading_is_positive",
+    "solver": "sklearn_full_svd"
+  },
+  "schemaVersion": "phase10k4.composition_space.v1",
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  },
+  "semantics": {
+    "chemicalFamilyClaimed": false,
+    "clusterMeaning": "composition_cluster_only",
+    "outlierMeaning": "distance_to_feature_centroid_candidate_only",
+    "projectionIsNotCanonicalMaterialIdentity": true,
+    "roleInferenceRepeated": false,
+    "sampleIdentityPreserved": true,
+    "source": "material_data_profile_2",
+    "structuralSimilarityClaimed": false
+  }
+}
