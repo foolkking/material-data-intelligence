@@ -1,7 +1,8 @@
 # Phase 10K-3 Materials ML Evaluation Implementation
 
-Status: IMPLEMENTATION_CI_PASSED, pending completion-record CI and verified
-queue closure.
+Status: READY_WITH_EXPLICIT_LIMITS. Implementation and completion-record CI are
+passed; the verified queue task is archived while result and evidence remain
+retained.
 
 The CI integration gate executes regression, uncertainty, and classification
 through persisted jobs and S3-compatible artifact storage; local in-memory

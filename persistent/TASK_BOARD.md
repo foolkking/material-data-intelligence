@@ -18,10 +18,12 @@
   passed exact-SHA CI run `30355075439`; completion record `8dc2545` passed
   exact-SHA CI run `30355282590`, including service-backed/no-skipped. The
   permanent result is retained and the verified queue block is archived.
-- [ ] Phase 10K-3 Materials ML Evaluation implementation/evidence-closure HEAD
-  `a1e05ee` passed exact-SHA CI run `30363719393`, including service-backed and
-  no-skipped. Its completion record CI and verified queue archive remain; Phase
-  10K-4, 10K-5, and 10L have not started.
+- [x] Phase 10K-3 Materials ML Evaluation implementation/evidence-closure HEAD
+  `a1e05ee` and completion record `c5483d6` passed exact-SHA CI runs
+  `30363719393` and `30364098180`, including service-backed/no-skipped. The
+  result and evidence are retained and the verified queue block is archived.
+- [ ] Phase 10K-4 is next but awaiting its complete approved prompt; Phase 10K-5
+  and 10L have not started.
 
 `TASKS.md` contains the approved executable Phase 10K queue. Future Scope and
 Not Planned items are not queue work.

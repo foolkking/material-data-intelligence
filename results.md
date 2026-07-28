@@ -1120,7 +1120,7 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
 
 ## 1. Conclusion
 
-`PASS_PENDING_COMPLETION_RECORD_CI`.
+`PASS`.
 
 ## 2. Baseline
 
@@ -1202,11 +1202,24 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
   `a1e05ee5b0f1affa91183e681b1678d4419cedc4`; exact-SHA CI run `30363719393`
   passed Unit, Frontend Typecheck & Build, PostgreSQL/Redis/MinIO service-backed
   integration, and no-skipped assertion.
-* completion record: pending this record commit and its exact-SHA CI.
-* queue: Phase 10K-3 is `已完成` but remains in `TASKS.md` until completion-record
-  CI passes. Phase 10K-4 remains `NEXT / AWAITING COMPLETE PROMPT`; Phase 10K-5
-  remains planned and unstarted.
+* completion record: `c5483d6f609ff21f9b7c06ce7bff88ec583d52c5`; exact-SHA CI
+  run `30364098180` passed Unit, Frontend Typecheck & Build,
+  PostgreSQL/Redis/MinIO service-backed integration, and no-skipped assertion.
+* archive decision: implementation, completion record, retained result,
+  required checks, retained evidence, and both exact-SHA CI gates are
+  consistent. The verified task block is eligible for queue archival.
+* queue after archive: Phase 10K-3 `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`; Phase
+  10K-4 remains `NEXT / AWAITING COMPLETE PROMPT`; Phase 10K-5 remains planned
+  and unstarted.
 
 ## 10. Next Phase
 
 **Phase 10K-4：Composition Space / Embedding / Clustering**
+
+## 11. Completion-Record CI and Queue Closure
+
+* closure status: `PASS`.
+* completion-record exact-SHA CI: `30364098180`, success for Unit, Frontend,
+  service-backed integration, and the no-skipped assertion.
+* archive eligibility: confirmed before deletion; results/evidence are retained
+  permanently and only the complete K3 `---TASK---` block is removed.

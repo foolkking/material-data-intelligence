@@ -20,7 +20,8 @@
   `a1e05ee5b0f1affa91183e681b1678d4419cedc4` passed exact-SHA CI run
   `30363719393`, including Unit, Frontend Typecheck & Build,
   PostgreSQL/Redis/MinIO service-backed integration, and the no-skipped gate.
-  Completion-record CI and verified queue archive remain pending.
+  Completion record `c5483d6` passed exact-SHA CI run `30364098180` with the
+  same gates. The verified queue task is archived; Phase 10K-4 remains next.
 - No model training, embedding/clustering, real LLM, arbitrary code, dependency,
   external service, Phase 10L orchestration, or workspace redesign was added.
 
