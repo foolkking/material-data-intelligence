@@ -16,22 +16,13 @@ phase plans remain useful records, but they do not authorize future work.
 * Phase 10I: Brillouin zone and reciprocal-space linking.
 * Phase 10J through 10J-6: volumetric contracts, parsing, isosurfaces,
   charge/spin, potential, ELF/orbital, Slice, and Direct Volume.
+* Phase 10K: Material Data Profile 2.0, Dataset Materials Explorer, Materials
+  ML Evaluation, Composition Space, and exact Browser/API product integration.
 
 Phase 10J-6 is archived. The implementation, completion record, exact-SHA CI,
 result history, and evidence are retained.
 
 ## Initial Complete Product - Remaining
-
-### Phase 10K - Material Intelligence Layer
-
-* 10K-0: capability gap audit of DataProfile, dataset tools, model-result
-  handling, Planner profile use, and the user-facing dataset experience.
-* 10K-1: Material Data Profile 2.0 and capability discovery.
-* 10K-2: dataset materials explorer, distributions, and comparisons.
-* 10K-3: materials ML regression, uncertainty, and conditional classification
-  evaluation.
-* 10K-4: bounded composition embedding and clustering.
-* 10K-5: browser/API/evidence closure from data selection through report.
 
 ### Phase 10L - Intelligent Analysis Agent
 

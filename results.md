@@ -1566,3 +1566,17 @@ capabilities. These are assigned to later approved phases, not K5 failures.
 ## 29. Next Phase
 
 **Phase 10L-0：Agent / Planner Capability Audit**，仅为 NEXT；本任务未实现。
+
+## 30. Completion-Record CI and Queue Closure
+
+* closure status: `PASS`.
+* completion-record commit: `81d44467c9b0d9e8bef3d4dec38d6a85e3d2aebe`.
+* completion-record exact-SHA CI run: `30382583135`, success.
+* CI jobs: Unit Tests, Frontend Typecheck & Build, and PostgreSQL/Redis/MinIO
+  Service-backed Integration all succeeded; the no-skipped assertion passed.
+* archive verification: implementation/evidence, permanent result, required
+  checks, and both exact-SHA CI gates are consistent. Only the completed K5
+  `---TASK---` block is removed; evidence and result history are retained.
+* Phase 10K-5: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
+* Phase 10K: `COMPLETE / READY_WITH_EXPLICIT_LIMITS`.
+* Phase 10L-0: `NEXT / NOT_STARTED`.

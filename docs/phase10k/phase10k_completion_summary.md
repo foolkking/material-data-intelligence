@@ -45,6 +45,7 @@ is Phase 10M.
 ## Readiness
 
 The Phase 10K implementation and evidence establish
-`READY_WITH_EXPLICIT_LIMITS`. Implementation commit `e4639a1` passed exact-SHA
-CI run `30382233569`. Queue archival and final COMPLETE state still require the
-completion-record exact-SHA CI gate.
+`READY_WITH_EXPLICIT_LIMITS`. Implementation commit `e4639a1` and completion
+record `81d4446` passed exact-SHA CI runs `30382233569` and `30382583135`.
+The verified K5 queue block is archived and Phase 10K is complete. Phase 10L-0
+remains NEXT and unstarted.
