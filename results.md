@@ -1100,3 +1100,18 @@ PASS for the implementation and current implementation-HEAD CI. Queue archival r
 * completion-record commit/CI: pending this record commit.
 * Phase 10K-2 remains in `TASKS.md` until completion-record exact-SHA CI passes.
 * Phase 10K-3 remains pending and was not implemented by this task.
+
+## Phase 10K-2 Completion-Record CI and Queue Closure
+
+* closure status: `PASS`
+* completion-record commit: `8dc2545fd1f88bc63d6dc281643c96d43ab3679e`
+* completion-record exact-SHA CI: run `30355282590`, success.
+* CI jobs: Unit Tests, Frontend Typecheck & Build, and PostgreSQL/Redis/MinIO
+  Service-backed Integration all succeeded; the integration no-skipped
+  assertion succeeded.
+* archive decision: the implementation commits, both exact-SHA CI runs,
+  completion record, permanent result, required local checks, and retained
+  evidence are consistent. The completed Phase 10K-2 task block is eligible
+  for verified queue archival.
+* Phase 10K-2: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
+* Phase 10K-3: `NEXT / NOT_STARTED`.

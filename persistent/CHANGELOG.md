@@ -16,8 +16,9 @@
 - No dependency, arbitrary execution, real LLM, embedding/clustering, ML
   evaluator, or unified-workspace feature was added. Current implementation
   HEAD `35c0fc6` passed exact-SHA CI run `30355075439`, including Unit,
-  Frontend, service-backed, and no-skipped gates; completion-record CI remains
-  pending.
+  Frontend, service-backed, and no-skipped gates. Completion record `8dc2545`
+  passed exact-SHA CI run `30355282590`; the permanent result is retained and
+  the verified queue block is archived without starting 10K-3.
 
 ## 2026-07-28 - Phase 10K-1 Material Data Profile 2.0
 

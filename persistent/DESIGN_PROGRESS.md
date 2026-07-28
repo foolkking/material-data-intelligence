@@ -18,8 +18,10 @@
   train/test comparison, 4/5,000/100,000-row performance, network isolation,
   and security. Current implementation HEAD `35c0fc6` passed exact-SHA CI run
   `30355075439`, including Unit, Frontend, service-backed, and no-skipped gates.
-- The completion record is written in `TASKS.md` and `results.md`; its own
-  exact-SHA CI and verified queue archival remain pending.
+- Completion record `8dc2545` passed exact-SHA CI run `30355282590`; Unit,
+  Frontend Typecheck & Build, service-backed integration, and no-skipped all
+  succeeded. The permanent result is retained and the verified 10K-2 queue
+  block is archived; 10K-3 remains not started.
 - ML evaluation remains Phase 10K-3, composition space remains Phase 10K-4,
   and capability-aware planning remains Phase 10L.
 

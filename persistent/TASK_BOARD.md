@@ -14,10 +14,12 @@
   completion record `b5a464e` passed exact-SHA CI runs `30346512968` and
   `30346686652`, including service-backed/no-skipped. The result is retained and
   the verified queue block is archived.
-- [ ] Phase 10K-2 Dataset Materials Explorer implementation HEAD `35c0fc6`
-  passed exact-SHA CI run `30355075439`. The completion record is written;
-  completion-record CI and verified queue archival remain pending. Later queue
-  blocks must not start early.
+- [x] Phase 10K-2 Dataset Materials Explorer implementation HEAD `35c0fc6`
+  passed exact-SHA CI run `30355075439`; completion record `8dc2545` passed
+  exact-SHA CI run `30355282590`, including service-backed/no-skipped. The
+  permanent result is retained and the verified queue block is archived.
+- [ ] Phase 10K-3 Materials ML Evaluation is the next approved queue task and
+  remains not started until its task status is explicitly changed.
 
 `TASKS.md` contains the approved executable Phase 10K queue. Future Scope and
 Not Planned items are not queue work.
