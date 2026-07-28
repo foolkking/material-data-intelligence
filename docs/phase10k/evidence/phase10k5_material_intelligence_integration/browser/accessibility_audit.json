@@ -1,0 +1,140 @@
+{
+  "desktop": {
+    "dataset": {
+      "firstProductMs": 1617,
+      "mobile": false,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "dataset",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nBound\nDATASET\ndataset_phase10k5_integrated\nDATASET VERSION\n2\nPROFILE\nprofile_dataset_phase10k5_integrated_v2\nSEMANTIC HASH\n6c8aefd9...c2248af5\nDataset Explorer\ndataset_materials_explorer\nPRODUCED\nComposition Space\ncomposition_space\nREADY_NOT_RUN\nMATERIAL_INTELLIGENCE_PRODUCT_NOT_RUN\nRegression\nregression_evaluation\nREADY_NOT_RUN\nMATERIAL_INTELLIGENCE_PRODUCT_NOT_RUN\nUncertainty\nuncertainty_evaluation\nREADY_NOT_RUN\nMATERIAL_INTELLIGENCE_PRODUCT_NOT_RUN\nClassification\nclassification_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "comparison": "MODE\ngroup\nBINDING\n{\"groupA\":\"train\",\"groupB\":\"test\",\"groupColumn\":\"split\"}\nShared elements\n\nNone\n\nLeft only\nCl\nNa\nSi\nRight only\nAs\nF\nGa\nLi\nMg\nO\nPROPERTY\tUNIT\tCOMPARABLE\tLEFT MEDIAN\tRIGHT MEDIAN\nband_gap\teV\ttrue\t3.35\t7.8\n\nexplicitly bound groups/resources; no row-order inference",
+        "dataset": "Profile 2.0 product\nDataset Materials Explorer\nml_results\nDATASET\ndataset_phase10k5_integrated\nPROFILE\nprofile_dataset_phase10k5_integrated_v2\nSEMANTIC CONTRACT\n2.0\nSEMANTIC HASH\n6c8aefd9b7da...248af5\nOverview\nComposition\nStructures\nProperties\nModel evaluation\nData quality\nComparison\nSamples\nSAMPLE KEY\nobj_integrated:si-1\nSAMPLE\nsi-1\nFORMULA\nSi\nREDUCED FORMULA\nSi\nSOURCE\nobj_integrated row 0\nBounded stable sample index\nSAMPLE REFERENCE\tFORMULA\tREDUCED FORMULA\tOBJECT\tROW\nsi-1\tSi\tSi\tobj_integrated\t0\nnacl-1\tNaCl\tNaCl\tobj_integrated\t1\nlif-1\tLiF\tLiF\tobj_integrated\t2\nmgo-1\tMgO\tMgO\tobj_integrated\t3\ngaas-1\tGaAs\tGaAs\tobj_integrated\t4\ninvalid-1\tnot-a-formula\t-\tobj_integrated\t5",
+        "tableCount": 1
+      }
+    },
+    "structure": {
+      "firstProductMs": 1509,
+      "mobile": false,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "dataset",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nBound\nDATASET\ndataset_phase10k2_evidence\nDATASET VERSION\n2\nPROFILE\nprofile_dataset_phase10k2_evidence_v2\nSEMANTIC HASH\n3607e959...14430d9f\nDataset Explorer\ndataset_materials_explorer\nPRODUCED\nComposition Space\ncomposition_space\nREADY_NOT_RUN\nMATERIAL_INTELLIGENCE_PRODUCT_NOT_RUN\nRegression\nregression_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\nUncertainty\nuncertainty_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\nClassification\nclassification_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "dataset": "Profile 2.0 product\nDataset Materials Explorer\nmixed_material_dataset\nDATASET\ndataset_phase10k2_evidence\nPROFILE\nprofile_dataset_phase10k2_evidence_v2\nSEMANTIC CONTRACT\n2.0\nSEMANTIC HASH\n3607e9595518...430d9f\nOverview\nComposition\nStructures\nProperties\nModel evaluation\nData quality\nComparison\nSamples\nSAMPLE KEY\nobj_materials:dataset_phase10k2_evidence@2:6f626a5f6d617465:0\nSAMPLE\ndataset_phase10k2_evidence@2:6f626a5f6d617465:0\nFORMULA\nSi\nREDUCED FORMULA\nSi\nSOURCE\nobj_materials row 0\nBounded stable sample index\nSAMPLE REFERENCE\tFORMULA\tREDUCED FORMULA\tOBJECT\tROW\ndataset_phase10k2_evidence@2:6f626a5f6d617465:0\tSi\tSi\tobj_materials\t0\ndataset_phase10k2_evidence@2:6f626a5f6d617465:1\tNaCl\tNaCl\tobj_materials\t1\ndataset_phase10k2_evidence@2:6f626a5f6d617465:2\tSi\tSi\tobj_materials\t2\ndataset_phase10k2_evidence@2:6f626a5f6d617465:3\tinvalid formula\t-\tobj_materials\t3",
+        "tableCount": 1
+      }
+    },
+    "regression": {
+      "firstProductMs": 1537,
+      "mobile": false,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "ml",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nPartial\n\nProfile authority is unavailable. Independently valid products remain accessible, but cross-artifact linking is disabled.\n\nDataset Explorer\ndataset_materials_explorer\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_ARTIFACT_NOT_PRODUCED\nComposition Space\ncomposition_space\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nRegression\nregression_evaluation\nPRODUCED\nUncertainty\nuncertainty_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nClassification\nclassification_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "ml": "Deterministic materials model diagnostics\nMaterials ML Evaluation\nRegression\nDATASET\ndataset_phase10k5_integrated\nPROFILE\nprofile_dataset_phase10k5_integrated_v2\nSEMANTIC CONTRACT\n2.0\nRESIDUAL\nprediction_minus_target\nMAE\n0.25\nRMSE\n0.29155\nR2\n0.97086\nMEAN ERROR\n0.01667\nEVALUATED\n6 / 6\nUNIT\nunavailable\nParity\nTarget x; prediction y; dashed line is y=x.\ntarget\nprediction\nResidual vs target\nResidual = prediction - target; points use the same bounded evaluated-sample set.\ntarget\nresidual\nResidual distribution\nResidual = prediction - target.\nLargest prediction errors\nSAMPLE KEY\tSAMPLE\tFORMULA\tSYSTEM\tTARGET\tPREDICTION\tRESIDUAL\tABSOLUTE ERROR\tUNCERTAINTY\nobj_integrated:lif-1\tlif-1\tLiF\tF-Li\t3\t2.5\t-0.5\t0.5\t0.6\nobj_integrated:nacl-1\tnacl-1\tNaCl\tCl-Na\t2\t2.4\t0.4\t0.4\t0.4\nobj_integrated:gaas-1\tgaas-1\tGaAs\tAs-Ga\t5\t4.8\t-0.2\t0.2\t0.2\nobj_integrated:invalid-1\tinvalid-1\tnot-a-formula\t-\t6\t6.2\t0.2\t0.2\t0.2\nobj_integrated:si-1\tsi-1\tSi\tSi\t1\t1.1\t0.1\t0.1\t0.1\nobj_integrated:mgo-1\tmgo-1\tMgO\tMg-O\t4\t4.1\t0.1\t0.1\t0.1\nError by element\n\nElement groups overlap; a material can appear in multiple rows.\n\nGROUP\tSAMPLES\tMAE\tRMSE\nF\t1\t0.5\t0.5\nLi\t1\t0.5\t0.5\nCl\t1\t0.4\t0.4\nNa\t1\t0.4\t0.4\nAs\t1\t0.2\t0.2\nGa\t1\t0.2\t0.2\nSi\t1\t0.1\t0.1\nMg\t1\t0.1\t0.1\nO\t1\t0.1\t0.1\nError by chemical system\n\nSmall groups remain visible and are marked by sample count.\n\nGROUP\tSAMPLES\tMAE\tRMSE\nF-Li\t1\t0.5\t0.5\nCl-Na\t1\t0.4\t0.4\nAs-Ga\t1\t0.2\t0.2\nSi\t1\t0.1\t0.1\nMg-O\t1\t0.1\t0.1\nUNIT_UNAVAILABLE\n\nPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth.",
+        "tableCount": 3,
+        "chartCount": 2
+      }
+    },
+    "uncertainty": {
+      "firstProductMs": 1550,
+      "mobile": false,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "ml",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nPartial\n\nProfile authority is unavailable. Independently valid products remain accessible, but cross-artifact linking is disabled.\n\nDataset Explorer\ndataset_materials_explorer\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_ARTIFACT_NOT_PRODUCED\nComposition Space\ncomposition_space\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nRegression\nregression_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nUncertainty\nuncertainty_evaluation\nPRODUCED\nClassification\nclassification_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "ml": "Deterministic materials model diagnostics\nMaterials ML Evaluation\nUncertainty\nDATASET\ndataset_phase10k5_uncertainty\nPROFILE\nprofile_dataset_phase10k5_uncertainty_v2\nSEMANTIC CONTRACT\n2.0\nRESIDUAL\nnot applicable\nPEARSON\n0.99028\nSPEARMAN\n0.97468\nEVALUATED\n5 / 5\nUNCERTAINTY KIND\nsource_defined_uncertainty\nUncertainty vs absolute error\nEach point retains its stable material sample reference.\nuncertainty\nabsoluteError\nError decay\nRetain the lowest-uncertainty samples first.\nretainedFraction\nmae\nEqual-count reliability bins\nBIN\tSAMPLES\tMEAN UNCERTAINTY\tMEAN ABSOLUTE ERROR\n0\t1\t0.1\t0.1\n1\t1\t0.1\t0.1\n2\t1\t0.2\t0.2\n3\t1\t0.4\t0.4\n4\t1\t0.6\t0.5\nHighest uncertainty samples\nSAMPLE KEY\tSAMPLE\tFORMULA\tUNCERTAINTY\tABSOLUTE ERROR\nobj_uncertainty:lif-1\tlif-1\tLiF\t0.6\t0.5\nobj_uncertainty:nacl-1\tnacl-1\tNaCl\t0.4\t0.4\nobj_uncertainty:gaas-1\tgaas-1\tGaAs\t0.2\t0.2\nobj_uncertainty:mgo-1\tmgo-1\tMgO\t0.1\t0.1\nobj_uncertainty:si-1\tsi-1\tSi\t0.1\t0.1\nUNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITY\n\nPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth.",
+        "tableCount": 2,
+        "chartCount": 2
+      }
+    },
+    "classification": {
+      "firstProductMs": 1548,
+      "mobile": false,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "ml",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nPartial\n\nProfile authority is unavailable. Independently valid products remain accessible, but cross-artifact linking is disabled.\n\nDataset Explorer\ndataset_materials_explorer\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_ARTIFACT_NOT_PRODUCED\nComposition Space\ncomposition_space\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nRegression\nregression_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nUncertainty\nuncertainty_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nClassification\nclassification_evaluation\nPRODUCED\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "ml": "Deterministic materials model diagnostics\nMaterials ML Evaluation\nClassification\nDATASET\ndataset_phase10k5_classification\nPROFILE\nprofile_dataset_phase10k5_classification_v2\nSEMANTIC CONTRACT\n2.0\nRESIDUAL\nnot applicable\nACCURACY\n0.75\nMACRO PRECISION\n0.83333\nMACRO RECALL\n0.75\nMACRO F1\n0.73333\nEVALUATED\n4\nCURVE STATUS\nREADY\nConfusion matrix (raw counts)\nACTUAL / PREDICTED\tA\tB\nA\t1\t1\nB\t0\t2\nPer-class metrics\nCLASS\tSUPPORT\tPRECISION\tRECALL\tF1\nA\t2\t1\t0.5\t0.66667\nB\t2\t0.66667\t1\t0.8\nROC - positive class B\nAUC 1\nfpr\ntpr\nPrecision-recall\nAverage precision 1\nrecall\nprecision\nMisclassified samples\nSAMPLE KEY\tSAMPLE\tFORMULA\tACTUAL\tPREDICTED\nobj_classification:lif-1\tlif-1\tLiF\tA\tB\nCLASSIFICATION_PERFORMANCE_NOT_SCIENTIFIC_VALIDITY\n\nPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth.",
+        "tableCount": 3,
+        "chartCount": 2
+      }
+    },
+    "composition": {
+      "firstProductMs": 1517,
+      "mobile": false,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "composition",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nPartial\n\nProfile authority is unavailable. Independently valid products remain accessible, but cross-artifact linking is disabled.\n\nDataset Explorer\ndataset_materials_explorer\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_ARTIFACT_NOT_PRODUCED\nComposition Space\ncomposition_space\nPRODUCED\nRegression\nregression_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nUncertainty\nuncertainty_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nClassification\nclassification_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "composition": "Deterministic composition informatics\nComposition Space Explorer\nPCA 2D\nDATASET\ndataset_phase10k5_integrated\nPROFILE\nprofile_dataset_phase10k5_integrated_v2\nVALID SAMPLES\n5\nINVALID SAMPLES\n1\nELEMENT DIMENSIONS\n9\nEXPLAINED VARIANCE\n58.33%\nColor by\nComposition cluster\nChemical system\nDataset / group\nband_gap (eV)\nobj_integrated:regression:default:default:absolute_error\nobj_integrated:regression:default:default:residual\nobj_integrated:regression:default:default:uncertainty\nFEATURES\nNormalized atomic fractions\nPROJECTION\nPCA / sklearn_full_svd\nCLUSTERING\nkmeans_lloyd on feature space\nComposition projection\nComposition cluster; 3 categories; colors are display-only.\nPC1\nPC2\nSample inspector\ncluster 1\nSAMPLE REFERENCE\nnacl-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_integrated\nROW\n1\nFORMULA\nNaCl\nREDUCED FORMULA\nNaCl\nCHEMICAL SYSTEM\nCl-Na\nDATASET / GROUP\ntrain\nAtomic fractions\nCL\n0.5\nNA\n0.5\nProfile properties\nBAND_GAP\n5.6\nLinked ML values\nOBJ_INTEGRATED:REGRESSION:DEFAULT:DEFAULT:ABSOLUTE_ERROR\n0.4\nOBJ_INTEGRATED:REGRESSION:DEFAULT:DEFAULT:RESIDUAL\n0.4\nOBJ_INTEGRATED:REGRESSION:DEFAULT:DEFAULT:UNCERTAINTY\n0.4\n\nPCA proximity and composition clusters are descriptive views of normalized composition only. They do not establish structural similarity, material families, validity, or chemical truth.\n\nDataset comparison\nMODE\ngroup\nPOLICY\nexploratory_combined_projection\nSHARED BASIS\nyes\nSHARED PCA FIT\nyes\nDATASET / GROUP\tSAMPLES\ntest\t3\ntrain\t2\n\nThe combined projection is exploratory and is not evidence that a split is safe for model training.\n\nComposition clusters\nCLUSTER\tSAMPLES\tDOMINANT ELEMENTS\tTOP CHEMICAL SYSTEMS\n0\t1\tSi 100%\tSi (1)\n1\t2\tO 25%, Na 25%, Mg 25%, Cl 25%\tCl-Na (1), Mg-O (1)\n2\t2\tLi 25%, F 25%, Ga 25%, As 25%\tAs-Ga (1), F-Li (1)\nComposition-space candidates\nRANK\tSAMPLE\tOBJECT\tROW\tFEATURE-CENTROID DISTANCE\n1\tsi-1\tobj_integrated\t0\t0.848528\n2\tnacl-1\tobj_integrated\t1\t0.648074\n3\tgaas-1\tobj_integrated\t4\t0.648074\n4\tlif-1\tobj_integrated\t2\t0.648074\n5\tmgo-1\tobj_integrated\t3\t0.648074\n\nDistance ranking identifies composition-space candidates only; it does not label a material invalid or anomalous.\n\nAccessible sample table (5 of 5)\nWarnings\n1 composition rows were excluded by the backend parser; no silent drops were used.\nobj_integrated row 5: invalid_formula",
+        "tableCount": 4,
+        "keyboardPoints": 1
+      }
+    },
+    "partial": {
+      "firstProductMs": 1489,
+      "mobile": false,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "partial",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nBound\nDATASET\ndataset_phase10k5_partial\nDATASET VERSION\n2\nPROFILE\nprofile_dataset_phase10k5_partial_v2\nSEMANTIC HASH\nd47e239b...7604fb53\nDataset Explorer\ndataset_materials_explorer\nPRODUCED\nComposition Space\ncomposition_space\nREADY_NOT_RUN\nMATERIAL_INTELLIGENCE_PRODUCT_NOT_RUN\nRegression\nregression_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\nUncertainty\nuncertainty_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\nClassification\nclassification_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "dataset": "Profile 2.0 product\nDataset Materials Explorer\ntable\nDATASET\ndataset_phase10k5_partial\nPROFILE\nprofile_dataset_phase10k5_partial_v2\nSEMANTIC CONTRACT\n2.0\nSEMANTIC HASH\nd47e239be4c9...04fb53\nOverview\nComposition\nStructures\nProperties\nModel evaluation\nData quality\nComparison\nSamples\nSAMPLE KEY\nobj_partial:p1\nSAMPLE\np1\nFORMULA\nSi\nREDUCED FORMULA\nSi\nSOURCE\nobj_partial row 0\nBounded stable sample index\nSAMPLE REFERENCE\tFORMULA\tREDUCED FORMULA\tOBJECT\tROW\np1\tSi\tSi\tobj_partial\t0\np2\tNaCl\tNaCl\tobj_partial\t1\np3\tLiF\tLiF\tobj_partial\t2",
+        "tableCount": 1
+      }
+    },
+    "ambiguous": {
+      "firstProductMs": 1476,
+      "mobile": false,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "ambiguous",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nBound\nDATASET\ndataset_phase10k5_ambiguous\nDATASET VERSION\n2\nPROFILE\nprofile_dataset_phase10k5_ambiguous_v2\nSEMANTIC HASH\nd84921ae...323a7d93\nDataset Explorer\ndataset_materials_explorer\nPRODUCED\nComposition Space\ncomposition_space\nREADY_NOT_RUN\nMATERIAL_INTELLIGENCE_PRODUCT_NOT_RUN\nRegression\nregression_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\nUncertainty\nuncertainty_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\nClassification\nclassification_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "ambiguity": "SAMPLES\n3\nTABLES\n1\nSTRUCTURES\n0\nPROPERTIES\n0\nAvailable analyses\ndataset_materials_explorer\ntable_distribution\nscatter\nhistogram\ncorrelation\ncomposition_summary\nformula_statistics\nelement_distribution\nchemical_system_visualization\ncomposition_space\nUnavailable analyses\nstructure_summary\ntrajectory_visualization\nphonon_visualization\nvolumetric_visualization\nregression_evaluation\nuncertainty_evaluation\nclassification_evaluation\ndataset_structure_statistics\nWarnings\nSEMANTIC_GROUP_AMBIGUOUS",
+        "dataset": "Profile 2.0 product\nDataset Materials Explorer\nml_results\nDATASET\ndataset_phase10k5_ambiguous\nPROFILE\nprofile_dataset_phase10k5_ambiguous_v2\nSEMANTIC CONTRACT\n2.0\nSEMANTIC HASH\nd84921ae75be...3a7d93\nOverview\nComposition\nStructures\nProperties\nModel evaluation\nData quality\nComparison\nSamples\nSAMPLE KEY\nobj_ambiguous:a1\nSAMPLE\na1\nFORMULA\nSi\nREDUCED FORMULA\nSi\nSOURCE\nobj_ambiguous row 0\nBounded stable sample index\nSAMPLE REFERENCE\tFORMULA\tREDUCED FORMULA\tOBJECT\tROW\na1\tSi\tSi\tobj_ambiguous\t0\na2\tNaCl\tNaCl\tobj_ambiguous\t1\na3\tLiF\tLiF\tobj_ambiguous\t2",
+        "tableCount": 1
+      }
+    }
+  },
+  "mobile": [
+    {
+      "case": "dataset",
+      "firstProductMs": 1540,
+      "mobile": true,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "dataset",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nBound\nDATASET\ndataset_phase10k5_integrated\nDATASET VERSION\n2\nPROFILE\nprofile_dataset_phase10k5_integrated_v2\nSEMANTIC HASH\n6c8aefd9...c2248af5\nDataset Explorer\ndataset_materials_explorer\nPRODUCED\nComposition Space\ncomposition_space\nREADY_NOT_RUN\nMATERIAL_INTELLIGENCE_PRODUCT_NOT_RUN\nRegression\nregression_evaluation\nREADY_NOT_RUN\nMATERIAL_INTELLIGENCE_PRODUCT_NOT_RUN\nUncertainty\nuncertainty_evaluation\nREADY_NOT_RUN\nMATERIAL_INTELLIGENCE_PRODUCT_NOT_RUN\nClassification\nclassification_evaluation\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_DATA_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "comparison": "MODE\ngroup\nBINDING\n{\"groupA\":\"train\",\"groupB\":\"test\",\"groupColumn\":\"split\"}\nShared elements\n\nNone\n\nLeft only\nCl\nNa\nSi\nRight only\nAs\nF\nGa\nLi\nMg\nO\nPROPERTY\tUNIT\tCOMPARABLE\tLEFT MEDIAN\tRIGHT MEDIAN\nband_gap\teV\ttrue\t3.35\t7.8\n\nexplicitly bound groups/resources; no row-order inference",
+        "dataset": "Profile 2.0 product\nDataset Materials Explorer\nml_results\nDATASET\ndataset_phase10k5_integrated\nPROFILE\nprofile_dataset_phase10k5_integrated_v2\nSEMANTIC CONTRACT\n2.0\nSEMANTIC HASH\n6c8aefd9b7da...248af5\nOverview\nComposition\nStructures\nProperties\nModel evaluation\nData quality\nComparison\nSamples\nSAMPLE KEY\nobj_integrated:si-1\nSAMPLE\nsi-1\nFORMULA\nSi\nREDUCED FORMULA\nSi\nSOURCE\nobj_integrated row 0\nBounded stable sample index\nSAMPLE REFERENCE\tFORMULA\tREDUCED FORMULA\tOBJECT\tROW\nsi-1\tSi\tSi\tobj_integrated\t0\nnacl-1\tNaCl\tNaCl\tobj_integrated\t1\nlif-1\tLiF\tLiF\tobj_integrated\t2\nmgo-1\tMgO\tMgO\tobj_integrated\t3\ngaas-1\tGaAs\tGaAs\tobj_integrated\t4\ninvalid-1\tnot-a-formula\t-\tobj_integrated\t5",
+        "tableCount": 1
+      }
+    },
+    {
+      "case": "regression",
+      "firstProductMs": 1510,
+      "mobile": true,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "ml",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nPartial\n\nProfile authority is unavailable. Independently valid products remain accessible, but cross-artifact linking is disabled.\n\nDataset Explorer\ndataset_materials_explorer\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_ARTIFACT_NOT_PRODUCED\nComposition Space\ncomposition_space\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nRegression\nregression_evaluation\nPRODUCED\nUncertainty\nuncertainty_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nClassification\nclassification_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "ml": "Deterministic materials model diagnostics\nMaterials ML Evaluation\nRegression\nDATASET\ndataset_phase10k5_integrated\nPROFILE\nprofile_dataset_phase10k5_integrated_v2\nSEMANTIC CONTRACT\n2.0\nRESIDUAL\nprediction_minus_target\nMAE\n0.25\nRMSE\n0.29155\nR2\n0.97086\nMEAN ERROR\n0.01667\nEVALUATED\n6 / 6\nUNIT\nunavailable\nParity\nTarget x; prediction y; dashed line is y=x.\ntarget\nprediction\nResidual vs target\nResidual = prediction - target; points use the same bounded evaluated-sample set.\ntarget\nresidual\nResidual distribution\nResidual = prediction - target.\nLargest prediction errors\nSAMPLE KEY\tSAMPLE\tFORMULA\tSYSTEM\tTARGET\tPREDICTION\tRESIDUAL\tABSOLUTE ERROR\tUNCERTAINTY\nobj_integrated:lif-1\tlif-1\tLiF\tF-Li\t3\t2.5\t-0.5\t0.5\t0.6\nobj_integrated:nacl-1\tnacl-1\tNaCl\tCl-Na\t2\t2.4\t0.4\t0.4\t0.4\nobj_integrated:gaas-1\tgaas-1\tGaAs\tAs-Ga\t5\t4.8\t-0.2\t0.2\t0.2\nobj_integrated:invalid-1\tinvalid-1\tnot-a-formula\t-\t6\t6.2\t0.2\t0.2\t0.2\nobj_integrated:si-1\tsi-1\tSi\tSi\t1\t1.1\t0.1\t0.1\t0.1\nobj_integrated:mgo-1\tmgo-1\tMgO\tMg-O\t4\t4.1\t0.1\t0.1\t0.1\nError by element\n\nElement groups overlap; a material can appear in multiple rows.\n\nGROUP\tSAMPLES\tMAE\tRMSE\nF\t1\t0.5\t0.5\nLi\t1\t0.5\t0.5\nCl\t1\t0.4\t0.4\nNa\t1\t0.4\t0.4\nAs\t1\t0.2\t0.2\nGa\t1\t0.2\t0.2\nSi\t1\t0.1\t0.1\nMg\t1\t0.1\t0.1\nO\t1\t0.1\t0.1\nError by chemical system\n\nSmall groups remain visible and are marked by sample count.\n\nGROUP\tSAMPLES\tMAE\tRMSE\nF-Li\t1\t0.5\t0.5\nCl-Na\t1\t0.4\t0.4\nAs-Ga\t1\t0.2\t0.2\nSi\t1\t0.1\t0.1\nMg-O\t1\t0.1\t0.1\nUNIT_UNAVAILABLE\n\nPerformance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth.",
+        "tableCount": 3,
+        "chartCount": 2
+      }
+    },
+    {
+      "case": "composition",
+      "firstProductMs": 1526,
+      "mobile": true,
+      "horizontalOverflow": false,
+      "checks": {
+        "product": "composition",
+        "integration": "Profile-authoritative product surface\nMaterial Intelligence\nPartial\n\nProfile authority is unavailable. Independently valid products remain accessible, but cross-artifact linking is disabled.\n\nDataset Explorer\ndataset_materials_explorer\nUNAVAILABLE\nMATERIAL_INTELLIGENCE_ARTIFACT_NOT_PRODUCED\nComposition Space\ncomposition_space\nPRODUCED\nRegression\nregression_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nUncertainty\nuncertainty_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\nClassification\nclassification_evaluation\nPROFILE_AUTHORITY_UNAVAILABLE\nMATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_UNAVAILABLE\n\nAvailability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.",
+        "composition": "Deterministic composition informatics\nComposition Space Explorer\nPCA 2D\nDATASET\ndataset_phase10k5_integrated\nPROFILE\nprofile_dataset_phase10k5_integrated_v2\nVALID SAMPLES\n5\nINVALID SAMPLES\n1\nELEMENT DIMENSIONS\n9\nEXPLAINED VARIANCE\n58.33%\nColor by\nComposition cluster\nChemical system\nDataset / group\nband_gap (eV)\nobj_integrated:regression:default:default:absolute_error\nobj_integrated:regression:default:default:residual\nobj_integrated:regression:default:default:uncertainty\nFEATURES\nNormalized atomic fractions\nPROJECTION\nPCA / sklearn_full_svd\nCLUSTERING\nkmeans_lloyd on feature space\nComposition projection\nComposition cluster; 3 categories; colors are display-only.\nPC1\nPC2\nSample inspector\ncluster 1\nSAMPLE REFERENCE\nnacl-1\nIDENTITY SOURCE\nexplicit_column\nOBJECT\nobj_integrated\nROW\n1\nFORMULA\nNaCl\nREDUCED FORMULA\nNaCl\nCHEMICAL SYSTEM\nCl-Na\nDATASET / GROUP\ntrain\nAtomic fractions\nCL\n0.5\nNA\n0.5\nProfile properties\nBAND_GAP\n5.6\nLinked ML values\nOBJ_INTEGRATED:REGRESSION:DEFAULT:DEFAULT:ABSOLUTE_ERROR\n0.4\nOBJ_INTEGRATED:REGRESSION:DEFAULT:DEFAULT:RESIDUAL\n0.4\nOBJ_INTEGRATED:REGRESSION:DEFAULT:DEFAULT:UNCERTAINTY\n0.4\n\nPCA proximity and composition clusters are descriptive views of normalized composition only. They do not establish structural similarity, material families, validity, or chemical truth.\n\nDataset comparison\nMODE\ngroup\nPOLICY\nexploratory_combined_projection\nSHARED BASIS\nyes\nSHARED PCA FIT\nyes\nDATASET / GROUP\tSAMPLES\ntest\t3\ntrain\t2\n\nThe combined projection is exploratory and is not evidence that a split is safe for model training.\n\nComposition clusters\nCLUSTER\tSAMPLES\tDOMINANT ELEMENTS\tTOP CHEMICAL SYSTEMS\n0\t1\tSi 100%\tSi (1)\n1\t2\tO 25%, Na 25%, Mg 25%, Cl 25%\tCl-Na (1), Mg-O (1)\n2\t2\tLi 25%, F 25%, Ga 25%, As 25%\tAs-Ga (1), F-Li (1)\nComposition-space candidates\nRANK\tSAMPLE\tOBJECT\tROW\tFEATURE-CENTROID DISTANCE\n1\tsi-1\tobj_integrated\t0\t0.848528\n2\tnacl-1\tobj_integrated\t1\t0.648074\n3\tgaas-1\tobj_integrated\t4\t0.648074\n4\tlif-1\tobj_integrated\t2\t0.648074\n5\tmgo-1\tobj_integrated\t3\t0.648074\n\nDistance ranking identifies composition-space candidates only; it does not label a material invalid or anomalous.\n\nAccessible sample table (5 of 5)\nWarnings\n1 composition rows were excluded by the backend parser; no silent drops were used.\nobj_integrated row 5: invalid_formula",
+        "tableCount": 4,
+        "keyboardPoints": 1
+      }
+    }
+  ],
+  "marker": "MATERIAL_INTELLIGENCE_ACCESSIBILITY_EVIDENCE_PASS"
+}

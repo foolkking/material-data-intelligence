@@ -15,6 +15,7 @@ import { VolumetricPreviewPanel } from "./volumetric-viewer/VolumetricPreviewPan
 import { DatasetMaterialsExplorerPanel } from "./dataset-explorer/DatasetMaterialsExplorerPanel";
 import { MaterialsMlEvaluationPanel } from "./materials-ml/MaterialsMlEvaluationPanel";
 import { CompositionSpaceExplorerPanel } from "./composition-space/CompositionSpaceExplorerPanel";
+import { assessMaterialIntelligenceProducts, MaterialIntelligenceIntegrationPanel } from "./material-intelligence/MaterialIntelligenceIntegrationPanel";
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
@@ -67,6 +68,8 @@ type WorkspaceSnapshot = {
   artifacts: Artifact[];
   result?: JobResult;
 };
+
+type SnapshotSlice = "job" | "events" | "tool_calls" | "artifacts" | "result";
 
 type ConversationChunk = {
   id: string;
@@ -129,6 +132,7 @@ export function PlannerWorkbench() {
   const [prompt, setPrompt] = useState(() => createTranslator("zh-CN")("examplePromptMetrics"));
   const [createdResult, setCreatedResult] = useState<PlannerJobCreateResult | null>(null);
   const [snapshot, setSnapshot] = useState<WorkspaceSnapshot>({ events: [], toolCalls: [], artifacts: [] });
+  const [snapshotErrors, setSnapshotErrors] = useState<SnapshotSlice[]>([]);
   const [validationFailure, setValidationFailure] = useState<ValidationError[] | null>(null);
   const [submitError, setSubmitError] = useState<PlannerApiError | Error | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -357,6 +361,7 @@ export function PlannerWorkbench() {
   async function handleSubmit() {
     setSubmitting(true);
     setSubmitError(null);
+    setSnapshotErrors([]);
     setValidationFailure(null);
     setCreatedResult(null);
     setActiveMainTab("conversation_plan");
@@ -400,17 +405,33 @@ export function PlannerWorkbench() {
   }
 
   async function refreshSnapshot(nextJobId: string): Promise<WorkspaceSnapshot> {
-    const [job, events, toolCalls, artifacts, result] = await Promise.all([
+    const settled = await Promise.allSettled([
       getPlannerJob(nextJobId),
       getPlannerJobEvents(nextJobId),
       getPlannerJobToolCalls(nextJobId),
       getPlannerJobArtifacts(nextJobId),
       getPlannerJobResult(nextJobId)
     ]);
-    const nextSnapshot = { job, events, toolCalls, artifacts, result };
-    setSnapshot(nextSnapshot);
-    if (artifacts[0] && !selectedResultArtifactId) {
-      setSelectedResultArtifactId(artifacts[0].artifactId || artifacts[0].id || "");
+    const labels: SnapshotSlice[] = ["job", "events", "tool_calls", "artifacts", "result"];
+    const failures = settled.flatMap((item, index) => item.status === "rejected" ? [labels[index]] : []);
+    setSnapshotErrors(failures);
+    const [job, events, toolCalls, artifacts, result] = settled;
+    const nextSnapshot: WorkspaceSnapshot = {
+      job: job.status === "fulfilled" ? job.value : snapshot.job,
+      events: events.status === "fulfilled" ? events.value : snapshot.events,
+      toolCalls: toolCalls.status === "fulfilled" ? toolCalls.value : snapshot.toolCalls,
+      artifacts: artifacts.status === "fulfilled" ? artifacts.value : snapshot.artifacts,
+      result: result.status === "fulfilled" ? result.value : snapshot.result,
+    };
+    setSnapshot((current) => ({
+      job: job.status === "fulfilled" ? job.value : current.job,
+      events: events.status === "fulfilled" ? events.value : current.events,
+      toolCalls: toolCalls.status === "fulfilled" ? toolCalls.value : current.toolCalls,
+      artifacts: artifacts.status === "fulfilled" ? artifacts.value : current.artifacts,
+      result: result.status === "fulfilled" ? result.value : current.result,
+    }));
+    if (artifacts.status === "fulfilled" && artifacts.value[0] && !selectedResultArtifactId) {
+      setSelectedResultArtifactId(artifacts.value[0].artifactId || artifacts.value[0].id || "");
     }
     return nextSnapshot;
   }
@@ -567,6 +588,7 @@ export function PlannerWorkbench() {
               planId={planId}
               planHash={planHash}
               developerMode={developerMode}
+              snapshotErrors={snapshotErrors}
             />
           }
         />
@@ -1214,12 +1236,14 @@ function ResultsExportTab(props: {
   planId: string;
   planHash: string;
   developerMode: boolean;
+  snapshotErrors: SnapshotSlice[];
 }) {
   const { t } = props;
   if (!props.selectedChunk) {
     return (
       <section className="panel" data-testid="results-export-tab">
         <PanelHeading title={t("resultsExportTab")} badge={t("emptyResultSelection")} />
+        <SnapshotPartialFailure slices={props.snapshotErrors} />
         <p className="empty-state">{t("emptyResultSelection")}</p>
       </section>
     );
@@ -1227,8 +1251,10 @@ function ResultsExportTab(props: {
   const hasResults = Boolean(props.result || props.artifacts.length || props.toolCalls.length);
   const hasCombinedPhonon = props.artifacts.some((artifact) => artifact.type === "phonon_band_dos_json" || artifact.name === "phonon_band_dos.json");
   const hasBandBZLinkInputs = ["phonon_band.json", "reciprocal_lattice.json", "brillouin_zone.json", "brillouin_zone_manifest.json"].every((name) => props.artifacts.some((artifact) => artifact.name === name));
+  const materialIntelligence = assessMaterialIntelligenceProducts(props.artifacts);
   return (
     <div className="results-export-tab" data-testid="results-export-tab">
+      <SnapshotPartialFailure slices={props.snapshotErrors} />
       <section className="panel selected-result-header">
         <PanelHeading title={t("selectedResultContext")} badge={props.selectedChunk.title} />
         <dl className="mini-grid">
@@ -1244,8 +1270,9 @@ function ResultsExportTab(props: {
         </section>
       ) : null}
       <ReportRecipeSummaryPanel t={t} result={props.result} artifacts={props.artifacts} datasetId={props.datasetId} profileId={props.profileId} planId={props.planId} planHash={props.planHash} />
+      <MaterialIntelligenceIntegrationPanel artifacts={props.artifacts} />
       <DatasetMaterialsExplorerPanel artifacts={props.artifacts} />
-      {!props.artifacts.some((artifact) => artifact.name === "dataset_materials_explorer.json") ? <CompositionSpaceExplorerPanel artifacts={props.artifacts} /> : null}
+      {!materialIntelligence.hasCompatibleEmbeddedCompositionSpace ? <CompositionSpaceExplorerPanel artifacts={props.artifacts} /> : null}
       <MaterialsMlEvaluationPanel artifacts={props.artifacts} />
       <MaterialResultRenderer t={t} artifacts={props.artifacts} />
       <MetricsResultRenderer t={t} artifact={props.artifacts.find((artifact) => artifact.type === "metrics_json")} />
@@ -1263,6 +1290,16 @@ function ResultsExportTab(props: {
       <ExportControls t={t} artifacts={props.artifacts} />
     </div>
   );
+}
+
+function SnapshotPartialFailure({ slices }: { slices: SnapshotSlice[] }) {
+  if (!slices.length) return null;
+  return <section className="panel warning-panel" data-testid="workspace-partial-failure" role="status" aria-label="Partial result loading status">
+    <PanelHeading title="Some result data could not be refreshed" badge="Partial" />
+    <p>Successful job slices remain available. Retry the failed endpoints without rerunning scientific tools.</p>
+    <code>MATERIAL_INTELLIGENCE_PARTIAL_RESULT_LOAD</code>
+    <ul>{slices.map((slice) => <li key={slice}>{slice}</li>)}</ul>
+  </section>;
 }
 
 function PlanPreviewPanel({ t, plan, planId, planHash, developerMode }: { t: ReturnType<typeof createTranslator>; plan: AnalysisPlan | null; planId: string; planHash: string; developerMode: boolean }) {

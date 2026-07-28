@@ -1,5 +1,29 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-28 ADR: Profile Is Data Truth, Tools Are Analysis Authority
+
+**Context:** linking Profile, dataset exploration, model evaluation, and
+composition-space artifacts by filenames, row positions, partial hashes, or
+artifact presence can silently combine different dataset revisions and assign
+scientific values to the wrong material. Treating the frontend or Planner as a
+second semantic authority would make the same drift possible.
+
+**Decision:** Material Data Profile 2.0 is the deterministic authority for data
+kind, semantic roles, readiness, resource identity, and stable samples. A
+Registry-backed Adapter is the deterministic authority for one bounded
+analysis capability. Cross-product links require exact dataset/version,
+Profile/semantic, full-content, and resource-hash agreement plus the canonical
+`objectId:sampleRef` key. Frontends revalidate and present inert artifacts but
+do not calculate scientific results. The current Planner may select an explicit
+single capability and must safely decline ambiguity; capability-aware selection
+and bounded composition remain Phase 10L.
+
+**Consequences:** stale or incomplete artifacts produce typed independent
+states, not inferred links. There is no integration super-tool, no hidden
+browser calculation, and no new execution authority. This boundary permits
+Phase 10L to improve planning without changing Profile facts or Adapter-owned
+scientific semantics.
+
 ## 2026-07-28 ADR: Composition Space Is Profile-Bound and Exploratory
 
 **Context:** composition exploration requires one canonical formula meaning,

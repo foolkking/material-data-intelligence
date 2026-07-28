@@ -1,5 +1,22 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-28 Phase 10K Final Capability Surface
+
+- Phase 10K adds no integration or run-everything tool. Its product surface is
+  `dataset.materials_explorer`, `ml.regression_evaluation`,
+  `ml.uncertainty_evaluation`, `ml.classification_evaluation`, and
+  `dataset.composition_space`, backed by Material Data Profile 2.0 facts.
+- Each identity remains independently executable, strictly parameterized,
+  bounded, artifact-producing, and exact-resource-bound. Profile readiness is
+  not execution authority and an artifact's presence is not capability proof.
+- These tools are future Agent planning vocabulary, not identifiers users must
+  memorize. Phase 10L may select and compose them only through a validated,
+  bounded AnalysisPlan; it may not merge their scientific semantics or execute
+  code directly.
+- Historical atomic ML/planning identities remain non-executable where no
+  Registry-to-adapter closure exists. This phase adds no alias, dependency,
+  external service, or automatic multi-tool route.
+
 ## 2026-07-28 Phase 10K-4 Composition Space Product Surface
 
 - Added exactly one public executable identity, `dataset.composition_space`,

@@ -1,0 +1,57 @@
+{
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Dataset Materials Explorer",
+  "profileBinding": {
+    "datasetContentHash": "c2539a35888463f23d4c4005a4e9484ec6cf4d37d33babfa18f62c54c7bb6742",
+    "datasetId": "dataset_phase10k5_ambiguous",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_ambiguous_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "2be75aba62c2f758b80056614743d537542381da55c0fc2502fce15476217b4a",
+        "objectId": "obj_ambiguous",
+        "objectType": "DataFrame"
+      }
+    ],
+    "roleInferenceRepeated": false,
+    "semanticHash": "d84921ae75bef70cf6871beba67bbacc87b8f24d656d9e44e707ea2b323a7d93"
+  },
+  "projectId": "project_phase10k4_evidence",
+  "recipeId": "recipe_call_job_2c367496342858fdb3824c52_step_001",
+  "schemaVersion": "0.1",
+  "sourceJobId": "job_2c367496342858fdb3824c52",
+  "steps": [
+    {
+      "artifactTypes": [
+        "quality_issues_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "comparisonMode": "none",
+        "histogramBins": 20,
+        "maxCategories": 50,
+        "maxProperties": 32,
+        "maxStructures": 256,
+        "maxTableRows": 100,
+        "symprec": 0.01,
+        "tableObjectId": "obj_ambiguous"
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "dataset.materials_explorer",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

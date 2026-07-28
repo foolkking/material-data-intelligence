@@ -1,0 +1,13 @@
+{
+  "hashes": {
+    "dataset": [
+      "f43f0ab19f16d672e4db7ddf32d9ed75a0545a422f702355464b413a195ddd45",
+      "f43f0ab19f16d672e4db7ddf32d9ed75a0545a422f702355464b413a195ddd45"
+    ],
+    "regression": [
+      "4e8f106dd531022974bd56af5e2e05f30e0699e29359422d8eafa9897c260b2d",
+      "4e8f106dd531022974bd56af5e2e05f30e0699e29359422d8eafa9897c260b2d"
+    ]
+  },
+  "marker": "MATERIAL_INTELLIGENCE_REPRODUCIBILITY_PASS"
+}

@@ -3,9 +3,14 @@
 import { useMemo, useState } from "react";
 
 import type { Artifact } from "../../lib/planner-api";
-import { CompositionSpaceExplorerBody } from "../composition-space/CompositionSpaceExplorerPanel";
+import { CompositionSpaceExplorerBody, validateCompositionSpacePayload } from "../composition-space/CompositionSpaceExplorerPanel";
+import {
+  artifactPayload,
+  canonicalSampleKey,
+  inspectMaterialIntelligenceArtifacts,
+  type JsonRecord,
+} from "../material-intelligence/materialIntelligenceIntegration";
 
-type JsonRecord = Record<string, unknown>;
 type ExplorerTab = "overview" | "composition" | "composition_space" | "structures" | "properties" | "model" | "quality" | "comparison" | "samples";
 
 const TABS: readonly { id: ExplorerTab; label: string }[] = [
@@ -30,11 +35,22 @@ const MAX_HISTOGRAM_BINS = 100;
 export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifact[] }) {
   const artifact = artifacts.find((item) => item.name === "dataset_materials_explorer.json");
   const payload = useMemo(() => artifactPayload(artifact), [artifact]);
-  const validation = useMemo(() => validateExplorer(payload), [payload]);
+  const validation = useMemo(() => validateDatasetExplorerPayload(payload), [payload]);
+  const integration = useMemo(() => inspectMaterialIntelligenceArtifacts(artifacts, (id, candidate) => {
+    if (id === "dataset_explorer") {
+      const result = validateDatasetExplorerPayload(candidate);
+      return result.ok ? null : result.reason;
+    }
+    if (id === "composition_space") {
+      const result = validateCompositionSpacePayload(candidate);
+      return result.ok ? null : result.reason;
+    }
+    return null;
+  }), [artifacts]);
   const [tab, setTab] = useState<ExplorerTab>("overview");
   const [selectedProperty, setSelectedProperty] = useState("");
   const [selectedSample, setSelectedSample] = useState("");
-  const tabs = artifacts.some((item) => item.name === "composition_space.json")
+  const tabs = integration.hasCompatibleEmbeddedCompositionSpace
     ? [...TABS.slice(0, 2), { id: "composition_space" as const, label: "Composition space" }, ...TABS.slice(2)]
     : TABS;
 
@@ -60,7 +76,7 @@ export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifa
   const comparison = record(explorer.comparison);
   const samples = records(explorer.sampleIndex).slice(0, MAX_ROWS);
   const activeProperty = properties.find((item) => text(item.column) === selectedProperty) || properties[0];
-  const activeSample = samples.find((item) => text(item.sampleRef) === selectedSample);
+  const activeSample = samples.find((item) => canonicalSampleKey(item) === selectedSample);
 
   return (
     <section className="panel dataset-explorer" data-testid="dataset-materials-explorer" aria-label="Dataset Materials Explorer">
@@ -95,7 +111,7 @@ export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifa
         {tab === "properties" ? (
           <PropertiesView properties={properties} active={activeProperty} onSelect={setSelectedProperty} />
         ) : null}
-        {tab === "model" ? <ModelEvaluationView overview={overview} /> : null}
+        {tab === "model" ? <ModelEvaluationView overview={overview} products={integration.products} /> : null}
         {tab === "quality" ? <QualityView quality={quality} /> : null}
         {tab === "comparison" ? <ComparisonView comparison={comparison} /> : null}
         {tab === "samples" ? (
@@ -183,17 +199,20 @@ function PropertiesView({ properties, active, onSelect }: { properties: JsonReco
   </div>;
 }
 
-function ModelEvaluationView({ overview }: { overview: JsonRecord }) {
+function ModelEvaluationView({ overview, products }: { overview: JsonRecord; products: readonly { id: string; label: string; state: string; reason: string }[] }) {
   const capabilities = ["regression_evaluation", "uncertainty_evaluation", "classification_evaluation"];
   const available = textList(overview.availableAnalyses).filter((item) => capabilities.includes(item));
   const unavailable = textList(overview.unavailableAnalyses).filter((item) => capabilities.includes(item));
+  const actual = products.filter((item) => ["regression", "uncertainty", "classification"].includes(item.id));
   return <div data-testid="dataset-explorer-model-evaluation">
     {!available.length ? <p className="empty-state">No model-result semantics detected.</p> : <>
       <h3>Profile-ready model evaluations</h3>
       <ul>{available.map((item) => <li key={item}>{item}</li>)}</ul>
-      <p className="dataset-method-note">Run the matching Materials ML Evaluation tool to create deterministic diagnostics linked to stable material samples.</p>
+      <p className="dataset-method-note">Profile readiness is the semantic authority. Produced diagnostics are shown only after exact dataset/Profile binding validation over stable material samples.</p>
     </>}
     {unavailable.length ? <><h3>Unavailable for this dataset</h3><ul>{unavailable.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
+    <h3>Product execution state</h3>
+    <ul className="material-product-state-list">{actual.map((item) => <li key={item.id}><strong>{item.label}</strong><span className="badge">{item.state}</span>{item.state !== "PRODUCED" ? <code>{item.reason}</code> : null}</li>)}</ul>
   </div>;
 }
 
@@ -231,9 +250,9 @@ function ComparisonView({ comparison }: { comparison: JsonRecord }) {
 
 function SamplesView({ samples, active, onSelect }: { samples: JsonRecord[]; active?: JsonRecord; onSelect: (value: string) => void }) {
   return <div data-testid="dataset-explorer-samples">
-    {active ? <dl className="mini-grid dataset-sample-inspector" aria-live="polite" data-testid="dataset-sample-inspector"><Field label="Sample" value={text(active.sampleRef)} /><Field label="Formula" value={text(active.formula)} /><Field label="Reduced formula" value={text(active.reducedFormula)} /><Field label="Source" value={`${text(active.objectId)} row ${numberText(active.rowIndex)}`} /></dl> : <p className="empty-state">Select a stable sample reference to inspect its source row.</p>}
+    {active ? <dl className="mini-grid dataset-sample-inspector" aria-live="polite" data-testid="dataset-sample-inspector"><Field label="Sample key" value={canonicalSampleKey(active)} /><Field label="Sample" value={text(active.sampleRef)} /><Field label="Formula" value={text(active.formula)} /><Field label="Reduced formula" value={text(active.reducedFormula)} /><Field label="Source" value={`${text(active.objectId)} row ${numberText(active.rowIndex)}`} /></dl> : <p className="empty-state">Select a stable sample reference to inspect its source row.</p>}
     <div className="compact-table-wrap"><table className="compact-table"><caption>Bounded stable sample index</caption><thead><tr><th>Sample reference</th><th>Formula</th><th>Reduced formula</th><th>Object</th><th>Row</th></tr></thead><tbody>
-      {samples.map((item) => <tr key={`${text(item.sampleRef)}:${numberText(item.rowIndex)}`}><td><button type="button" className="link-button" onClick={() => onSelect(text(item.sampleRef))}>{text(item.sampleRef)}</button></td><td>{text(item.formula) || "-"}</td><td>{text(item.reducedFormula) || "-"}</td><td>{text(item.objectId)}</td><td>{numberText(item.rowIndex)}</td></tr>)}
+      {samples.map((item) => <tr key={canonicalSampleKey(item)}><td><button type="button" className="link-button" aria-label={`${text(item.sampleRef)} from ${text(item.objectId) || "legacy source"}`} onClick={() => onSelect(canonicalSampleKey(item))}>{text(item.sampleRef)}</button></td><td>{text(item.formula) || "-"}</td><td>{text(item.reducedFormula) || "-"}</td><td>{text(item.objectId)}</td><td>{numberText(item.rowIndex)}</td></tr>)}
     </tbody></table></div>
   </div>;
 }
@@ -254,7 +273,7 @@ function DataTable({ columns, rows, empty }: { columns: string[]; rows: string[]
   return <div className="compact-table-wrap"><table className="compact-table"><thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={index}>{row.map((value, column) => <td key={column}>{value || "-"}</td>)}</tr>)}</tbody></table></div>;
 }
 
-function validateExplorer(payload: JsonRecord | null): { ok: true; payload: JsonRecord } | { ok: false; reason: string } {
+export function validateDatasetExplorerPayload(payload: JsonRecord | null): { ok: true; payload: JsonRecord } | { ok: false; reason: string } {
   if (!payload || payload.schemaVersion !== "phase10k2.dataset_materials_explorer.v1") return { ok: false, reason: "DATASET_EXPLORER_SCHEMA_UNSUPPORTED" };
   if (!record(payload.dataset).profileId || record(payload.dataset).profileContractVersion !== "2.0") return { ok: false, reason: "DATASET_EXPLORER_PROFILE_BINDING_INVALID" };
   const composition = record(payload.composition);
@@ -274,17 +293,18 @@ function validateExplorer(payload: JsonRecord | null): { ok: true; payload: Json
     || records(payload.sampleIndex).length > MAX_ROWS
     || textList(payload.warnings).length > MAX_WARNINGS;
   if (overCap) return { ok: false, reason: "DATASET_EXPLORER_PREVIEW_CAP_EXCEEDED" };
+  const samples = records(payload.sampleIndex);
+  const sampleKeys = samples.map((item) => text(item.sampleKey));
+  if (samples.some((item) => !validSampleIdentity(item)) || new Set(sampleKeys).size !== sampleKeys.length) {
+    return { ok: false, reason: "DATASET_EXPLORER_SAMPLE_IDENTITY_INVALID" };
+  }
   return { ok: true, payload };
 }
 
-function artifactPayload(artifact?: Artifact): JsonRecord | null {
-  if (!artifact) return null;
-  const metadata = record(artifact.metadata);
-  for (const candidate of [artifact.content, artifact.payload, metadata.content, metadata.payload, metadata.preview]) {
-    if (isRecord(candidate)) return candidate;
-    if (typeof candidate === "string") { try { const parsed = JSON.parse(candidate); if (isRecord(parsed)) return parsed; } catch { /* inert fallback */ } }
-  }
-  return null;
+function validSampleIdentity(value: JsonRecord): boolean {
+  const objectId = text(value.objectId);
+  const sampleRef = text(value.sampleRef);
+  return Boolean(objectId && sampleRef && value.sampleKey === `${objectId}:${sampleRef}` && Number.isSafeInteger(value.rowIndex) && Number(value.rowIndex) >= 0);
 }
 
 function isRecord(value: unknown): value is JsonRecord { return Boolean(value && typeof value === "object" && !Array.isArray(value)); }

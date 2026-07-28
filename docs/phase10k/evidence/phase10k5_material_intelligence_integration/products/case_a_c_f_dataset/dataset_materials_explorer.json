@@ -1,0 +1,421 @@
+{
+  "artifactType": "dataset.materials_explorer",
+  "comparison": {
+    "binding": {
+      "groupA": "train",
+      "groupB": "test",
+      "groupColumn": "split"
+    },
+    "elementOverlap": {
+      "leftOnly": [
+        "Cl",
+        "Na",
+        "Si"
+      ],
+      "rightOnly": [
+        "As",
+        "F",
+        "Ga",
+        "Li",
+        "Mg",
+        "O"
+      ],
+      "shared": []
+    },
+    "labels": [
+      "train",
+      "test"
+    ],
+    "mode": "group",
+    "propertyComparison": [
+      {
+        "column": "band_gap",
+        "comparable": true,
+        "left": {
+          "max": 5.6,
+          "mean": 3.3499999999999996,
+          "median": 3.3499999999999996,
+          "min": 1.1,
+          "q1": 2.225,
+          "q3": 4.475,
+          "std": 3.181980515339464
+        },
+        "leftMissingCount": 0,
+        "right": {
+          "max": 11.8,
+          "mean": 7.006666666666668,
+          "median": 7.8,
+          "min": 1.42,
+          "q1": 4.609999999999999,
+          "q3": 9.8,
+          "std": 5.235277770408494
+        },
+        "rightMissingCount": 1,
+        "unit": "eV"
+      }
+    ],
+    "sampleCounts": {
+      "test": 4,
+      "train": 2
+    },
+    "semantics": "explicitly bound groups/resources; no row-order inference",
+    "status": "READY"
+  },
+  "composition": {
+    "chemicalSystems": [
+      {
+        "chemicalSystem": "As-Ga",
+        "count": 1
+      },
+      {
+        "chemicalSystem": "Cl-Na",
+        "count": 1
+      },
+      {
+        "chemicalSystem": "F-Li",
+        "count": 1
+      },
+      {
+        "chemicalSystem": "Mg-O",
+        "count": 1
+      },
+      {
+        "chemicalSystem": "Si",
+        "count": 1
+      }
+    ],
+    "coverage": {
+      "invalid": 1,
+      "nonNull": 6,
+      "total": 6,
+      "valid": 5
+    },
+    "duplicateReducedFormulaGroups": [],
+    "elements": [
+      {
+        "element": "As",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Cl",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "F",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Ga",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Li",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Mg",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Na",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "O",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Si",
+        "fractionalSum": 1.0,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      }
+    ],
+    "failedExamples": [
+      {
+        "formula": "not-a-formula",
+        "warning": "invalid_formula"
+      }
+    ],
+    "formulaColumn": "formula",
+    "status": "READY",
+    "systemTypeCounts": {
+      "binary": 4,
+      "quaternary": 0,
+      "quinary_plus": 0,
+      "ternary": 0,
+      "unary": 1
+    },
+    "uniqueFormulaCount": 5,
+    "uniqueReducedFormulaCount": 5
+  },
+  "coverage": {
+    "columnsInspected": 7,
+    "limits": {
+      "maxColumns": 512,
+      "maxFormulaLength": 256,
+      "maxFormulaValues": 1024,
+      "maxGroupIdLength": 128,
+      "maxObjects": 256,
+      "maxProbabilityColumns": 64,
+      "maxRows": 4096,
+      "maxUnitLength": 64
+    },
+    "policy": "complete",
+    "rowsInspected": 6,
+    "totalColumns": 7,
+    "totalRows": 6,
+    "warnings": []
+  },
+  "dataset": {
+    "datasetContentHash": "bd6519b6af7f40937447297a7298ba11c826fd2812d6cdbe572e2a1d21274f99",
+    "datasetId": "dataset_phase10k5_integrated",
+    "datasetType": "ml_results",
+    "datasetVersion": "2",
+    "primaryTableObjectId": "obj_integrated",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_integrated_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "d1d5b083252ba556cb950453e129ab1b98db9f1067d5c5ec9b8fbdfb963c367e",
+        "objectId": "obj_integrated",
+        "objectType": "DataFrame"
+      }
+    ],
+    "semanticHash": "6c8aefd9b7da5b4e512d2346b5e68bd6cf3343ab1755116657f4eab3c2248af5"
+  },
+  "limits": {
+    "histogramBins": 20,
+    "maxAtomsPerStructure": 5000,
+    "maxCategories": 50,
+    "maxColumns": 512,
+    "maxProperties": 32,
+    "maxRows": 100000,
+    "maxStructures": 256,
+    "maxTableRows": 100
+  },
+  "overview": {
+    "availableAnalyses": [
+      "dataset_materials_explorer",
+      "table_distribution",
+      "scatter",
+      "histogram",
+      "correlation",
+      "composition_summary",
+      "formula_statistics",
+      "element_distribution",
+      "chemical_system_visualization",
+      "regression_evaluation",
+      "uncertainty_evaluation",
+      "composition_space"
+    ],
+    "formulaCoverage": {
+      "invalid": 1,
+      "nonNull": 6,
+      "total": 6,
+      "valid": 5
+    },
+    "propertyCount": 1,
+    "sampleCount": 6,
+    "structureCount": 0,
+    "tableCount": 1,
+    "unavailableAnalyses": [
+      "structure_summary",
+      "trajectory_visualization",
+      "phonon_visualization",
+      "volumetric_visualization",
+      "classification_evaluation",
+      "dataset_structure_statistics"
+    ]
+  },
+  "properties": {
+    "properties": [
+      {
+        "column": "band_gap",
+        "count": 5,
+        "histogram": {
+          "binEdges": [
+            1.1,
+            3.24,
+            5.380000000000001,
+            7.52,
+            9.66,
+            11.8
+          ],
+          "counts": [
+            2,
+            0,
+            1,
+            1,
+            1
+          ]
+        },
+        "missingCount": 1,
+        "nonFiniteCount": 0,
+        "outlierCandidates": [],
+        "outlierPolicy": "iqr_1_5_statistical_candidate_only",
+        "statistics": {
+          "max": 11.8,
+          "mean": 5.544,
+          "median": 5.6,
+          "min": 1.1,
+          "q1": 1.42,
+          "q3": 7.8,
+          "std": 4.499631095989981
+        },
+        "unit": "eV"
+      }
+    ],
+    "status": "READY"
+  },
+  "quality": {
+    "columnIssues": [
+      {
+        "ambiguities": [],
+        "column": "band_gap",
+        "missingCount": 1,
+        "nonFiniteCount": 0
+      }
+    ],
+    "duplicateReducedFormulaGroups": [],
+    "duplicateSampleIdentityValues": [],
+    "invalidFormulaCount": 1,
+    "nearDuplicateAnalysis": "NOT_IMPLEMENTED_BY_DESIGN",
+    "profileIssues": [
+      {
+        "code": "FORMULA_VALUES_PARTIALLY_INVALID",
+        "message": "Some inspected formula values could not be parsed; row-level validation remains required.",
+        "refs": [
+          {
+            "id": "obj_integrated:formula",
+            "type": "column"
+          }
+        ],
+        "severity": "warning"
+      }
+    ],
+    "sampleLinksMaterialized": 6
+  },
+  "sampleIndex": [
+    {
+      "formula": "Si",
+      "identitySource": "explicit_column",
+      "objectId": "obj_integrated",
+      "properties": {
+        "band_gap": 1.1
+      },
+      "reducedFormula": "Si",
+      "rowIndex": 0,
+      "sampleKey": "obj_integrated:si-1",
+      "sampleRef": "si-1"
+    },
+    {
+      "formula": "NaCl",
+      "identitySource": "explicit_column",
+      "objectId": "obj_integrated",
+      "properties": {
+        "band_gap": 5.6
+      },
+      "reducedFormula": "NaCl",
+      "rowIndex": 1,
+      "sampleKey": "obj_integrated:nacl-1",
+      "sampleRef": "nacl-1"
+    },
+    {
+      "formula": "LiF",
+      "identitySource": "explicit_column",
+      "objectId": "obj_integrated",
+      "properties": {
+        "band_gap": 11.8
+      },
+      "reducedFormula": "LiF",
+      "rowIndex": 2,
+      "sampleKey": "obj_integrated:lif-1",
+      "sampleRef": "lif-1"
+    },
+    {
+      "formula": "MgO",
+      "identitySource": "explicit_column",
+      "objectId": "obj_integrated",
+      "properties": {
+        "band_gap": 7.8
+      },
+      "reducedFormula": "MgO",
+      "rowIndex": 3,
+      "sampleKey": "obj_integrated:mgo-1",
+      "sampleRef": "mgo-1"
+    },
+    {
+      "formula": "GaAs",
+      "identitySource": "explicit_column",
+      "objectId": "obj_integrated",
+      "properties": {
+        "band_gap": 1.42
+      },
+      "reducedFormula": "GaAs",
+      "rowIndex": 4,
+      "sampleKey": "obj_integrated:gaas-1",
+      "sampleRef": "gaas-1"
+    },
+    {
+      "formula": "not-a-formula",
+      "identitySource": "explicit_column",
+      "objectId": "obj_integrated",
+      "properties": {
+        "band_gap": null
+      },
+      "reducedFormula": null,
+      "rowIndex": 5,
+      "sampleKey": "obj_integrated:invalid-1",
+      "sampleRef": "invalid-1"
+    }
+  ],
+  "schemaVersion": "phase10k2.dataset_materials_explorer.v1",
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  },
+  "semantics": {
+    "comparisonRequiresExplicitBinding": true,
+    "nearDuplicateInference": false,
+    "outlierPolicy": "iqr_1_5_statistical_candidate_only",
+    "roleInferenceRepeated": false,
+    "source": "material_data_profile_2"
+  },
+  "structures": {
+    "distributions": {
+      "crystalSystems": [],
+      "densityGramCm3": null,
+      "siteCount": null,
+      "spacegroups": [],
+      "volumeAngstrom3": null
+    },
+    "duplicatePolicy": "equal canonical normalized object hash only",
+    "exactStructureDuplicateGroups": [],
+    "records": [],
+    "status": "UNAVAILABLE",
+    "structureCount": 0
+  },
+  "warnings": [
+    "DATASET_FORMULA_PARSE_FAILURES",
+    "FORMULA_VALUES_PARTIALLY_INVALID"
+  ]
+}

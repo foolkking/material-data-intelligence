@@ -1,0 +1,72 @@
+{
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Dataset Materials Explorer",
+  "profileBinding": {
+    "datasetContentHash": "9e5be5bbdd40605acdeccc6ecd7b6dc88b3bcff0ec73ec3fb9a2cc6b8148fcbc",
+    "datasetId": "dataset_phase10k2_evidence",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k2_evidence_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+        "objectId": "obj_materials",
+        "objectType": "DataFrame"
+      },
+      {
+        "objectHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "objectId": "obj_nacl",
+        "objectType": "Structure"
+      },
+      {
+        "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "objectId": "obj_si_a",
+        "objectType": "Structure"
+      },
+      {
+        "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "objectId": "obj_si_b",
+        "objectType": "Structure"
+      }
+    ],
+    "roleInferenceRepeated": false,
+    "semanticHash": "3607e95955187272e381ffa2b1a71eaba5d662ab4faa4cb70da7ed8614430d9f"
+  },
+  "projectId": "project_phase10k4_evidence",
+  "recipeId": "recipe_call_job_bc52acfddabc545ab48b3388_step_001",
+  "schemaVersion": "0.1",
+  "sourceJobId": "job_bc52acfddabc545ab48b3388",
+  "steps": [
+    {
+      "artifactTypes": [
+        "quality_issues_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "comparisonMode": "none",
+        "histogramBins": 20,
+        "maxCategories": 50,
+        "maxProperties": 32,
+        "maxStructures": 256,
+        "maxTableRows": 100,
+        "symprec": 0.01,
+        "tableObjectId": "obj_materials"
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "dataset.materials_explorer",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

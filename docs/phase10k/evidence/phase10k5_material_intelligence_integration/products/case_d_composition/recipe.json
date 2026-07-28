@@ -1,0 +1,83 @@
+{
+  "algorithm": {
+    "clustering": "kmeans_lloyd",
+    "clusteringFeatureSpace": "normalized_atomic_fraction",
+    "features": "normalized_atomic_fraction",
+    "pcaSignConvention": "largest_absolute_loading_is_positive",
+    "projection": "centered_unscaled_pca_full_svd"
+  },
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Composition Space Explorer",
+  "projectId": "project_phase10k4_evidence",
+  "recipeId": "recipe_call_job_4090a666e20159d6946d3875_step_001",
+  "schemaVersion": "0.1",
+  "semanticBinding": {
+    "datasetContentHash": "526d9488717504c122aae086dbcab983c41836e5af504858ab7674b5c647770f",
+    "datasetId": "dataset_phase10k5_uncertainty",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_uncertainty_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "d9bd4a1bd943c1be208b7db37a9000f50420fc7ada7c84dac35befd5df0fcc9c",
+        "objectId": "obj_uncertainty",
+        "objectType": "DataFrame"
+      }
+    ],
+    "roleInferenceRepeated": false,
+    "semanticHash": "15b3cdf4a65e1210c34bf9251296c09fb29a87816a45cf4e00419874d3db7754",
+    "upstreamMlBindings": [
+      {
+        "artifactType": "ml.uncertainty_evaluation",
+        "contentHash": "0726e6c5976297d58a9994bf3dd1a011fbedfcf797c711d679ffdc6a1340084c",
+        "dataset": {
+          "datasetContentHash": "526d9488717504c122aae086dbcab983c41836e5af504858ab7674b5c647770f",
+          "datasetId": "dataset_phase10k5_uncertainty",
+          "datasetVersion": "2",
+          "profileContractVersion": "2.0",
+          "profileId": "profile_dataset_phase10k5_uncertainty_v2",
+          "semanticHash": "15b3cdf4a65e1210c34bf9251296c09fb29a87816a45cf4e00419874d3db7754"
+        },
+        "schemaVersion": "phase10k3.materials_ml_uncertainty.v1"
+      }
+    ]
+  },
+  "sourceJobId": "job_4090a666e20159d6946d3875",
+  "steps": [
+    {
+      "artifactTypes": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "clusteringEnabled": true,
+        "colorBy": "ml:obj_uncertainty:regression:default:default:y_std:uncertainty",
+        "comparisonMode": "none",
+        "maxIterations": 300,
+        "maxOutlierRows": 50,
+        "maxPlotPoints": 5000,
+        "nClusters": 3,
+        "nInit": 10,
+        "projectionDimensions": 2,
+        "randomState": 0,
+        "tableObjectId": "obj_uncertainty",
+        "tolerance": 0.0001
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "dataset.composition_space",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

@@ -1,0 +1,273 @@
+{
+  "artifactType": "ml.uncertainty_evaluation",
+  "dataset": {
+    "datasetContentHash": "526d9488717504c122aae086dbcab983c41836e5af504858ab7674b5c647770f",
+    "datasetId": "dataset_phase10k5_uncertainty",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_uncertainty_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "d9bd4a1bd943c1be208b7db37a9000f50420fc7ada7c84dac35befd5df0fcc9c",
+        "objectId": "obj_uncertainty",
+        "objectType": "DataFrame"
+      }
+    ],
+    "semanticHash": "15b3cdf4a65e1210c34bf9251296c09fb29a87816a45cf4e00419874d3db7754"
+  },
+  "evaluations": [
+    {
+      "association": {
+        "pearson": 0.9902815964321,
+        "spearman": 0.9746794344808963
+      },
+      "coverage": {
+        "evaluatedSamples": 5,
+        "excludedSamples": 0,
+        "totalSamples": 5
+      },
+      "errorDecay": {
+        "method": "retain_lowest_uncertainty_first",
+        "metric": "mae",
+        "points": [
+          {
+            "mae": 0.25999999999999995,
+            "retainedFraction": 1.0,
+            "retainedSamples": 5
+          },
+          {
+            "mae": 0.19999999999999996,
+            "retainedFraction": 0.8,
+            "retainedSamples": 4
+          },
+          {
+            "mae": 0.1333333333333333,
+            "retainedFraction": 0.5,
+            "retainedSamples": 3
+          },
+          {
+            "mae": 0.10000000000000009,
+            "retainedFraction": 0.2,
+            "retainedSamples": 1
+          }
+        ]
+      },
+      "groupId": "obj_uncertainty:regression:default",
+      "highUncertaintySamples": [
+        {
+          "absoluteError": 0.5,
+          "chemicalSystem": "F-Li",
+          "formula": "LiF",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 2.5,
+          "reducedFormula": "LiF",
+          "rowIndex": 2,
+          "sampleKey": "obj_uncertainty:lif-1",
+          "sampleRef": "lif-1",
+          "target": 3.0,
+          "uncertainty": 0.6
+        },
+        {
+          "absoluteError": 0.3999999999999999,
+          "chemicalSystem": "Cl-Na",
+          "formula": "NaCl",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 2.4,
+          "reducedFormula": "NaCl",
+          "rowIndex": 1,
+          "sampleKey": "obj_uncertainty:nacl-1",
+          "sampleRef": "nacl-1",
+          "target": 2.0,
+          "uncertainty": 0.4
+        },
+        {
+          "absoluteError": 0.20000000000000018,
+          "chemicalSystem": "As-Ga",
+          "formula": "GaAs",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 4.8,
+          "reducedFormula": "GaAs",
+          "rowIndex": 4,
+          "sampleKey": "obj_uncertainty:gaas-1",
+          "sampleRef": "gaas-1",
+          "target": 5.0,
+          "uncertainty": 0.2
+        },
+        {
+          "absoluteError": 0.09999999999999964,
+          "chemicalSystem": "Mg-O",
+          "formula": "MgO",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 4.1,
+          "reducedFormula": "MgO",
+          "rowIndex": 3,
+          "sampleKey": "obj_uncertainty:mgo-1",
+          "sampleRef": "mgo-1",
+          "target": 4.0,
+          "uncertainty": 0.1
+        },
+        {
+          "absoluteError": 0.10000000000000009,
+          "chemicalSystem": "Si",
+          "formula": "Si",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 1.1,
+          "reducedFormula": "Si",
+          "rowIndex": 0,
+          "sampleKey": "obj_uncertainty:si-1",
+          "sampleRef": "si-1",
+          "target": 1.0,
+          "uncertainty": 0.1
+        }
+      ],
+      "objectId": "obj_uncertainty",
+      "predictionColumn": "y_pred",
+      "reliability": {
+        "bins": [
+          {
+            "bin": 0,
+            "meanAbsoluteError": 0.10000000000000009,
+            "meanUncertainty": 0.1,
+            "sampleCount": 1
+          },
+          {
+            "bin": 1,
+            "meanAbsoluteError": 0.09999999999999964,
+            "meanUncertainty": 0.1,
+            "sampleCount": 1
+          },
+          {
+            "bin": 2,
+            "meanAbsoluteError": 0.20000000000000018,
+            "meanUncertainty": 0.2,
+            "sampleCount": 1
+          },
+          {
+            "bin": 3,
+            "meanAbsoluteError": 0.3999999999999999,
+            "meanUncertainty": 0.4,
+            "sampleCount": 1
+          },
+          {
+            "bin": 4,
+            "meanAbsoluteError": 0.5,
+            "meanUncertainty": 0.6,
+            "sampleCount": 1
+          }
+        ],
+        "method": "equal_count_mean_uncertainty_vs_mean_absolute_error"
+      },
+      "seriesId": "default",
+      "targetColumn": "y_true",
+      "taskId": "obj_uncertainty:regression:default:default:y_std",
+      "uncertaintyColumn": "y_std",
+      "uncertaintyErrorPoints": [
+        {
+          "absoluteError": 0.10000000000000009,
+          "chemicalSystem": "Si",
+          "formula": "Si",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 1.1,
+          "reducedFormula": "Si",
+          "rowIndex": 0,
+          "sampleKey": "obj_uncertainty:si-1",
+          "sampleRef": "si-1",
+          "target": 1.0,
+          "uncertainty": 0.1
+        },
+        {
+          "absoluteError": 0.3999999999999999,
+          "chemicalSystem": "Cl-Na",
+          "formula": "NaCl",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 2.4,
+          "reducedFormula": "NaCl",
+          "rowIndex": 1,
+          "sampleKey": "obj_uncertainty:nacl-1",
+          "sampleRef": "nacl-1",
+          "target": 2.0,
+          "uncertainty": 0.4
+        },
+        {
+          "absoluteError": 0.5,
+          "chemicalSystem": "F-Li",
+          "formula": "LiF",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 2.5,
+          "reducedFormula": "LiF",
+          "rowIndex": 2,
+          "sampleKey": "obj_uncertainty:lif-1",
+          "sampleRef": "lif-1",
+          "target": 3.0,
+          "uncertainty": 0.6
+        },
+        {
+          "absoluteError": 0.09999999999999964,
+          "chemicalSystem": "Mg-O",
+          "formula": "MgO",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 4.1,
+          "reducedFormula": "MgO",
+          "rowIndex": 3,
+          "sampleKey": "obj_uncertainty:mgo-1",
+          "sampleRef": "mgo-1",
+          "target": 4.0,
+          "uncertainty": 0.1
+        },
+        {
+          "absoluteError": 0.20000000000000018,
+          "chemicalSystem": "As-Ga",
+          "formula": "GaAs",
+          "identitySource": "explicit_column",
+          "objectId": "obj_uncertainty",
+          "prediction": 4.8,
+          "reducedFormula": "GaAs",
+          "rowIndex": 4,
+          "sampleKey": "obj_uncertainty:gaas-1",
+          "sampleRef": "gaas-1",
+          "target": 5.0,
+          "uncertainty": 0.2
+        }
+      ],
+      "uncertaintyKind": "source_defined_uncertainty",
+      "warnings": [
+        "UNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITY"
+      ]
+    }
+  ],
+  "limits": {
+    "histogramBins": 30,
+    "maxChemistryGroups": 128,
+    "maxClasses": 64,
+    "maxCurvePoints": 1000,
+    "maxHighErrorRows": 100,
+    "maxModels": 16,
+    "maxPlotPoints": 2000,
+    "maxRows": 100000,
+    "maxTableRows": 100,
+    "maxUncertaintyBins": 10,
+    "minGroupSize": 3
+  },
+  "schemaVersion": "phase10k3.materials_ml_uncertainty.v1",
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  },
+  "semantics": {
+    "backendScientificAuthority": true,
+    "roleInferenceRepeated": false,
+    "sampleIdentityPreserved": true,
+    "source": "material_data_profile_2"
+  }
+}

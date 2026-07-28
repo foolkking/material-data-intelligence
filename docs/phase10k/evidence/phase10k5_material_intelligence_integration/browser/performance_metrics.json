@@ -1,0 +1,48 @@
+{
+  "browsers": [
+    {
+      "browser": "chromium",
+      "cases": {
+        "dataset": 1617,
+        "structure": 1509,
+        "regression": 1537,
+        "uncertainty": 1550,
+        "classification": 1548,
+        "composition": 1517,
+        "partial": 1489,
+        "ambiguous": 1476
+      }
+    },
+    {
+      "browser": "firefox",
+      "cases": {
+        "dataset": 1994,
+        "regression": 1772,
+        "composition": 1469
+      }
+    },
+    {
+      "browser": "webkit",
+      "cases": {
+        "dataset": 2961,
+        "regression": 2856,
+        "composition": 2862
+      }
+    }
+  ],
+  "mobile": [
+    {
+      "case": "dataset",
+      "firstProductMs": 1540
+    },
+    {
+      "case": "regression",
+      "firstProductMs": 1510
+    },
+    {
+      "case": "composition",
+      "firstProductMs": 1526
+    }
+  ],
+  "acceptance": "PASS"
+}

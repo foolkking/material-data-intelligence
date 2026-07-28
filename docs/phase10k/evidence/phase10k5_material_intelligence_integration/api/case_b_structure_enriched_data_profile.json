@@ -1,0 +1,646 @@
+{
+  "analysisReadiness": [
+    {
+      "capability": "dataset_materials_explorer",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "profile_2"
+      ]
+    },
+    {
+      "capability": "table_distribution",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "scatter",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "histogram",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "correlation",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "composition_summary",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "formula_statistics",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "element_distribution",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "chemical_system_visualization",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "structure_summary",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "structure"
+      ]
+    },
+    {
+      "capability": "trajectory_visualization",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:trajectory"
+      ],
+      "requiredSemantics": [
+        "trajectory"
+      ]
+    },
+    {
+      "capability": "phonon_visualization",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:phonon"
+      ],
+      "requiredSemantics": [
+        "phonon"
+      ]
+    },
+    {
+      "capability": "volumetric_visualization",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:volumetric"
+      ],
+      "requiredSemantics": [
+        "volumetric"
+      ]
+    },
+    {
+      "capability": "regression_evaluation",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:regression_prediction",
+        "MISSING:regression_target"
+      ],
+      "requiredSemantics": [
+        "regression_prediction",
+        "regression_target"
+      ]
+    },
+    {
+      "capability": "uncertainty_evaluation",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:regression_prediction",
+        "MISSING:regression_target",
+        "MISSING:regression_uncertainty"
+      ],
+      "requiredSemantics": [
+        "regression_prediction",
+        "regression_target",
+        "regression_uncertainty"
+      ]
+    },
+    {
+      "capability": "classification_evaluation",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:classification_output",
+        "MISSING:classification_target"
+      ],
+      "requiredSemantics": [
+        "classification_output",
+        "classification_target"
+      ]
+    },
+    {
+      "capability": "composition_space",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "dataset_structure_statistics",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "structure"
+      ]
+    }
+  ],
+  "datasetId": "dataset_phase10k2_evidence",
+  "datasetType": "mixed_material_dataset",
+  "files": [
+    {
+      "detectedFormat": "json_limited",
+      "fileId": "file_phase10k2_evidence",
+      "fileName": "materials_fixture.json",
+      "parseStatus": "success"
+    }
+  ],
+  "objects": [
+    {
+      "count": 1,
+      "objectHash": "6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+      "objectId": "obj_materials",
+      "objectType": "DataFrame",
+      "periodicity": null,
+      "sourceFileIds": [
+        "obj_materials.json"
+      ]
+    },
+    {
+      "count": 1,
+      "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "objectId": "obj_si_a",
+      "objectType": "Structure",
+      "periodicity": "periodic",
+      "sourceFileIds": [
+        "obj_si_a.cif"
+      ]
+    },
+    {
+      "count": 1,
+      "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "objectId": "obj_si_b",
+      "objectType": "Structure",
+      "periodicity": "periodic",
+      "sourceFileIds": [
+        "obj_si_b.cif"
+      ]
+    },
+    {
+      "count": 1,
+      "objectHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "objectId": "obj_nacl",
+      "objectType": "Structure",
+      "periodicity": "periodic",
+      "sourceFileIds": [
+        "obj_nacl.cif"
+      ]
+    }
+  ],
+  "phononSummary": null,
+  "profileContractVersion": "2.0",
+  "profileCoverage": {
+    "columnsInspected": 5,
+    "limits": {
+      "maxColumns": 512,
+      "maxFormulaLength": 256,
+      "maxFormulaValues": 1024,
+      "maxGroupIdLength": 128,
+      "maxObjects": 256,
+      "maxProbabilityColumns": 64,
+      "maxRows": 4096,
+      "maxUnitLength": 64
+    },
+    "policy": "complete",
+    "rowsInspected": 4,
+    "totalColumns": 5,
+    "totalRows": 4,
+    "warnings": []
+  },
+  "profileId": "profile_dataset_phase10k2_evidence_v2",
+  "qualityIssues": [
+    {
+      "code": "FORMULA_VALUES_PARTIALLY_INVALID",
+      "message": "Some inspected formula values could not be parsed; row-level validation remains required.",
+      "refs": [
+        {
+          "id": "obj_materials:formula",
+          "type": "column"
+        }
+      ],
+      "severity": "warning"
+    }
+  ],
+  "recommendedTasks": [
+    {
+      "availableNow": true,
+      "label": "Composition overview",
+      "reason": "Periodic structures contain composition information.",
+      "requiredTools": [
+        "composition.ptable_heatmap"
+      ],
+      "stage": "mvp",
+      "taskId": "composition.overview",
+      "taskType": "composition_overview"
+    },
+    {
+      "availableNow": true,
+      "label": "Representative structure viewer",
+      "reason": "Periodic Structure objects are available.",
+      "requiredTools": [
+        "structure.structure_3d",
+        "structure.viewer_3d"
+      ],
+      "stage": "mvp",
+      "taskId": "structure.viewer",
+      "taskType": "structure_quality"
+    }
+  ],
+  "resourceSemantics": [
+    {
+      "capabilities": [
+        "table"
+      ],
+      "facts": {
+        "columnCount": 5,
+        "rowCount": 4,
+        "sourceFileIds": [
+          "obj_materials.json"
+        ]
+      },
+      "kind": "dataframe",
+      "objectHash": "6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+      "objectId": "obj_materials",
+      "objectType": "DataFrame",
+      "warnings": []
+    },
+    {
+      "capabilities": [
+        "composition",
+        "structure"
+      ],
+      "facts": {
+        "chemicalSystem": "Cl-Na",
+        "elements": [
+          "Cl",
+          "Na"
+        ],
+        "formula": "NaCl",
+        "periodicity": "periodic",
+        "siteCount": 2,
+        "sourceFileIds": [
+          "obj_nacl.cif"
+        ]
+      },
+      "kind": "structure",
+      "objectHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "objectId": "obj_nacl",
+      "objectType": "Structure",
+      "warnings": []
+    },
+    {
+      "capabilities": [
+        "composition",
+        "structure"
+      ],
+      "facts": {
+        "chemicalSystem": "Si",
+        "elements": [
+          "Si"
+        ],
+        "formula": "Si",
+        "periodicity": "periodic",
+        "siteCount": 2,
+        "sourceFileIds": [
+          "obj_si_a.cif"
+        ]
+      },
+      "kind": "structure",
+      "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "objectId": "obj_si_a",
+      "objectType": "Structure",
+      "warnings": []
+    },
+    {
+      "capabilities": [
+        "composition",
+        "structure"
+      ],
+      "facts": {
+        "chemicalSystem": "Si",
+        "elements": [
+          "Si"
+        ],
+        "formula": "Si",
+        "periodicity": "periodic",
+        "siteCount": 2,
+        "sourceFileIds": [
+          "obj_si_b.cif"
+        ]
+      },
+      "kind": "structure",
+      "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "objectId": "obj_si_b",
+      "objectType": "Structure",
+      "warnings": []
+    }
+  ],
+  "sampleIdentity": {
+    "datasetVersion": "2",
+    "explicitColumn": null,
+    "fallbackPolicy": "dataset_version_object_hash_row_index",
+    "objectIds": [
+      "obj_materials"
+    ],
+    "policy": "object_hash_row_index"
+  },
+  "schemaVersion": "0.1",
+  "semanticColumns": [
+    {
+      "ambiguities": [],
+      "column": "material_id",
+      "dtype": "string",
+      "finiteCount": null,
+      "missingCount": 0,
+      "nonFiniteCount": null,
+      "objectId": "obj_materials",
+      "roles": [
+        {
+          "authority": "alias_match",
+          "details": {},
+          "groupId": null,
+          "role": "sample_identity"
+        }
+      ],
+      "rowsInspected": 4,
+      "totalRows": 4,
+      "uniqueCount": 3,
+      "unit": null
+    },
+    {
+      "ambiguities": [],
+      "column": "formula",
+      "dtype": "string",
+      "finiteCount": null,
+      "missingCount": 0,
+      "nonFiniteCount": null,
+      "objectId": "obj_materials",
+      "roles": [
+        {
+          "authority": "canonical_name",
+          "details": {
+            "inspectedCount": 4,
+            "invalidCount": 1,
+            "tooLongCount": 0,
+            "validCount": 3
+          },
+          "groupId": null,
+          "role": "material_formula"
+        }
+      ],
+      "rowsInspected": 4,
+      "totalRows": 4,
+      "uniqueCount": 3,
+      "unit": null
+    },
+    {
+      "ambiguities": [],
+      "column": "formation_energy",
+      "dtype": "number",
+      "finiteCount": 3,
+      "missingCount": 1,
+      "nonFiniteCount": 0,
+      "objectId": "obj_materials",
+      "roles": [
+        {
+          "authority": "canonical_name",
+          "details": {
+            "property": "formation_energy"
+          },
+          "groupId": null,
+          "role": "material_property"
+        }
+      ],
+      "rowsInspected": 4,
+      "totalRows": 4,
+      "uniqueCount": 3,
+      "unit": "eV/atom"
+    },
+    {
+      "ambiguities": [],
+      "column": "band_gap",
+      "dtype": "number",
+      "finiteCount": 3,
+      "missingCount": 0,
+      "nonFiniteCount": 1,
+      "objectId": "obj_materials",
+      "roles": [
+        {
+          "authority": "canonical_name",
+          "details": {
+            "property": "band_gap"
+          },
+          "groupId": null,
+          "role": "material_property"
+        }
+      ],
+      "rowsInspected": 4,
+      "totalRows": 4,
+      "uniqueCount": 4,
+      "unit": "eV"
+    },
+    {
+      "ambiguities": [],
+      "column": "split",
+      "dtype": "string",
+      "finiteCount": null,
+      "missingCount": 0,
+      "nonFiniteCount": null,
+      "objectId": "obj_materials",
+      "roles": [],
+      "rowsInspected": 4,
+      "totalRows": 4,
+      "uniqueCount": 2,
+      "unit": null
+    }
+  ],
+  "semanticGroups": [],
+  "semanticHash": "3607e95955187272e381ffa2b1a71eaba5d662ab4faa4cb70da7ed8614430d9f",
+  "semanticRulesVersion": "phase10k1.material_profile_semantics.v1",
+  "structureSummary": {
+    "atomCountStats": {
+      "max": 2,
+      "median": 2,
+      "min": 2
+    },
+    "chemicalSystemStats": {
+      "topChemicalSystems": [
+        {
+          "chemSys": "Si",
+          "count": 2
+        },
+        {
+          "chemSys": "Cl-Na",
+          "count": 1
+        }
+      ],
+      "uniqueCount": 2
+    },
+    "elements": [
+      "Cl",
+      "Na",
+      "Si"
+    ],
+    "formulaStats": {
+      "topFormulas": [
+        {
+          "count": 2,
+          "formula": "Si"
+        },
+        {
+          "count": 1,
+          "formula": "NaCl"
+        }
+      ],
+      "total": 3,
+      "uniqueCount": 2
+    },
+    "hasForces": false,
+    "hasMagmoms": false,
+    "nStructures": 3,
+    "representativeStructureIds": [
+      "obj_si_a",
+      "obj_si_b",
+      "obj_nacl"
+    ]
+  },
+  "tableSummary": {
+    "columns": [
+      {
+        "dtype": "string",
+        "finiteCount": null,
+        "missingCount": 0,
+        "name": "material_id",
+        "uniqueCount": 3,
+        "unit": null
+      },
+      {
+        "dtype": "string",
+        "finiteCount": null,
+        "missingCount": 0,
+        "name": "formula",
+        "uniqueCount": 3,
+        "unit": null
+      },
+      {
+        "dtype": "number",
+        "finiteCount": 3,
+        "missingCount": 1,
+        "name": "formation_energy",
+        "uniqueCount": 3,
+        "unit": "eV/atom"
+      },
+      {
+        "dtype": "number",
+        "finiteCount": 3,
+        "missingCount": 0,
+        "name": "band_gap",
+        "uniqueCount": 4,
+        "unit": "eV"
+      },
+      {
+        "dtype": "string",
+        "finiteCount": null,
+        "missingCount": 0,
+        "name": "split",
+        "uniqueCount": 2,
+        "unit": null
+      }
+    ],
+    "inferredTask": "unknown",
+    "nColumns": 5,
+    "nRows": 4
+  },
+  "trajectorySummary": null,
+  "version": "2"
+}

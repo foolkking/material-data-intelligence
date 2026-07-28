@@ -1,0 +1,9 @@
+{
+  "datasetArtifactRetained": true,
+  "datasetJobStatus": "completed",
+  "executedTool": "dataset.materials_explorer",
+  "marker": "MATERIAL_INTELLIGENCE_PARTIAL_FAILURE_ISOLATION_PASS",
+  "mlRequestJobStatus": "completed",
+  "mlToolExecuted": false,
+  "profileDataStatus": "AMBIGUOUS"
+}

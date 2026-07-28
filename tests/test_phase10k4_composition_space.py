@@ -8,6 +8,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import pytest
+
+from mdi_artifact_core import content_hash
 from jsonschema import Draft202012Validator
 
 from mdi_adapters import CompositionSpaceAdapter, ToolExecutionContext, ToolExecutionError
@@ -493,8 +495,22 @@ def test_property_and_explicit_k3_ml_coloring_preserve_backend_values(tmp_path: 
         records,
         units={"band_gap": "eV"},
     )
+    resource_bindings = [
+        {"objectId": item.objectId, "objectHash": item.objectHash, "objectType": item.objectType}
+        for item in sorted(profile.resourceSemantics, key=lambda item: item.objectId)
+    ]
     ml_artifact = {
         "schemaVersion": "phase10k3.materials_ml_regression.v1",
+        "artifactType": "ml.regression_evaluation",
+        "dataset": {
+            "datasetId": profile.datasetId,
+            "datasetVersion": profile.version,
+            "profileId": profile.profileId,
+            "profileContractVersion": profile.profileContractVersion,
+            "semanticHash": profile.semanticHash,
+            "datasetContentHash": content_hash(resource_bindings),
+            "resourceBindings": resource_bindings,
+        },
         "security": {
             "artifactJavaScript": False,
             "externalUrls": False,
@@ -504,10 +520,13 @@ def test_property_and_explicit_k3_ml_coloring_preserve_backend_values(tmp_path: 
         "evaluations": [
             {
                 "taskId": "regression:default",
+                "unit": "eV",
                 "highErrorSamples": [
                     {
                         "objectId": "obj_compositions",
                         "sampleRef": "m1",
+                        "sampleKey": "obj_compositions:m1",
+                        "rowIndex": 0,
                         "absoluteError": 99.0,
                         "residual": -12.5,
                     }
@@ -532,6 +551,12 @@ def test_property_and_explicit_k3_ml_coloring_preserve_backend_values(tmp_path: 
         "source": "material_data_profile_2_material_property",
     }
     assert options["ml:regression:default:absolute_error"]["source"] == "phase10k3_sample_bound_artifact"
+    assert options["ml:regression:default:absolute_error"]["unit"] == "eV"
+    assert options["ml:regression:default:absolute_error"]["coverage"] == {
+        "totalSamples": 6,
+        "matchedSamples": 1,
+        "missingSamples": 5,
+    }
     point = next(item for item in payload["points"] if item["sampleRef"] == "m1")
     assert point["propertyValues"]["band_gap"] == 0.0
     assert point["mlValues"] == {
@@ -540,6 +565,94 @@ def test_property_and_explicit_k3_ml_coloring_preserve_backend_values(tmp_path: 
     }
     assert point["mlValues"]["regression:default:absolute_error"] != abs(
         float(records[0]["y_pred"]) - float(records[0]["y_true"])
+    )
+    assert payload["upstreamMlBindings"][0]["schemaVersion"] == (
+        "phase10k3.materials_ml_regression.v1"
+    )
+    assert payload["upstreamMlBindings"][0]["contentHash"]
+
+
+def test_k3_ml_binding_rejects_stale_foreign_and_unknown_artifacts(tmp_path: Path) -> None:
+    profile, objects = _single_table_profile("binding", _representative_records())
+    resource_bindings = [
+        {"objectId": item.objectId, "objectHash": item.objectHash, "objectType": item.objectType}
+        for item in sorted(profile.resourceSemantics, key=lambda item: item.objectId)
+    ]
+    base_artifact = {
+        "schemaVersion": "phase10k3.materials_ml_regression.v1",
+        "artifactType": "ml.regression_evaluation",
+        "dataset": {
+            "datasetId": profile.datasetId,
+            "datasetVersion": profile.version,
+            "profileId": profile.profileId,
+            "profileContractVersion": profile.profileContractVersion,
+            "semanticHash": profile.semanticHash,
+            "datasetContentHash": content_hash(resource_bindings),
+            "resourceBindings": resource_bindings,
+        },
+        "security": {
+            "artifactJavaScript": False,
+            "externalUrls": False,
+            "externalAssets": False,
+            "executableContent": False,
+        },
+        "evaluations": [],
+    }
+
+    for field, stale_value in (
+        ("datasetId", "foreign_dataset"),
+        ("datasetVersion", "stale_version"),
+        ("profileId", "stale_profile"),
+        ("profileContractVersion", "1.0"),
+        ("semanticHash", "stale_semantics"),
+        ("datasetContentHash", "stale_content"),
+        ("resourceBindings", []),
+    ):
+        stale = json.loads(json.dumps(base_artifact))
+        stale["dataset"][field] = stale_value
+        with pytest.raises(ToolExecutionError) as mismatch:
+            _execute(tmp_path / field, profile, objects, ml_artifact=stale)
+        assert mismatch.value.details == {
+            "errorType": "ml_artifact_binding_mismatch",
+            "fields": [field],
+        }
+
+    missing = json.loads(json.dumps(base_artifact))
+    del missing["dataset"]
+    with pytest.raises(ToolExecutionError) as missing_binding:
+        _execute(tmp_path / "missing", profile, objects, ml_artifact=missing)
+    assert missing_binding.value.details["errorType"] == "ml_artifact_binding_missing"
+
+    unknown = json.loads(json.dumps(base_artifact))
+    unknown["schemaVersion"] = "phase10k3.materials_ml_regression.v2"
+    with pytest.raises(ToolExecutionError) as unsupported:
+        _execute(tmp_path / "unknown", profile, objects, ml_artifact=unknown)
+    assert unsupported.value.details["errorType"] == "unsupported_input"
+
+    inconsistent_identity = json.loads(json.dumps(base_artifact))
+    inconsistent_identity["evaluations"] = [
+        {
+            "taskId": "regression:default",
+            "highErrorSamples": [
+                {
+                    "objectId": "obj_compositions",
+                    "sampleRef": "m1",
+                    "sampleKey": "obj_compositions:another_sample",
+                    "rowIndex": 0,
+                    "absoluteError": 1.0,
+                }
+            ],
+        }
+    ]
+    with pytest.raises(ToolExecutionError) as sample_identity:
+        _execute(
+            tmp_path / "sample_identity",
+            profile,
+            objects,
+            ml_artifact=inconsistent_identity,
+        )
+    assert sample_identity.value.details["errorType"] == (
+        "ml_artifact_sample_identity_mismatch"
     )
 
 

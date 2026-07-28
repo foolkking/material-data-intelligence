@@ -7,7 +7,7 @@ from typing import Any, Iterable, Mapping
 import numpy as np
 import pandas as pd
 
-from mdi_artifact_core import ArtifactPayload, stable_json_dumps
+from mdi_artifact_core import ArtifactPayload, content_hash, stable_json_dumps
 from mdi_material_parsers import stable_sample_reference
 from mdi_schemas import Artifact, ArtifactType, DataProfile
 
@@ -122,8 +122,13 @@ class _MaterialsMLAdapter(BaseToolAdapter):
                 artifact_types=sorted(requested, key=lambda item: item.value),
             )
             recipe["semanticBinding"] = {
+                "datasetId": result.payload["dataset"]["datasetId"],
+                "datasetVersion": result.payload["dataset"]["datasetVersion"],
                 "profileId": result.payload["dataset"]["profileId"],
+                "profileContractVersion": result.payload["dataset"]["profileContractVersion"],
                 "semanticHash": result.payload["dataset"]["semanticHash"],
+                "datasetContentHash": result.payload["dataset"]["datasetContentHash"],
+                "resourceBindings": result.payload["dataset"]["resourceBindings"],
                 "groupIds": [item["groupId"] for item in result.payload["evaluations"]],
                 "roleInferenceRepeated": False,
             }
@@ -411,7 +416,7 @@ def _regression_evaluation(
         "parityPoints": [sample_records[index] for index in display_indices],
         "visualizationSampling": {"policy": "deterministic_even_index", "sourceCount": len(sample_records), "displayCount": len(display_indices)},
         "residualHistogram": {"counts": histogram_counts.astype(int).tolist(), "edges": histogram_edges.astype(float).tolist()},
-        "highErrorSamples": sorted(sample_records, key=lambda item: (-item["absoluteError"], item["sampleRef"]))[: limits["maxHighErrorRows"]],
+        "highErrorSamples": sorted(sample_records, key=lambda item: (-item["absoluteError"], item["sampleKey"]))[: limits["maxHighErrorRows"]],
         "chemistryConditioned": chemistry,
         "warnings": warnings,
     }
@@ -461,7 +466,7 @@ def _uncertainty_evaluation(
         "uncertaintyErrorPoints": [samples[index] for index in display_indices],
         "reliability": {"method": "equal_count_mean_uncertainty_vs_mean_absolute_error", "bins": _reliability_bins(frame, limits["maxUncertaintyBins"])},
         "errorDecay": {"method": "retain_lowest_uncertainty_first", "metric": "mae", "points": _error_decay(frame)},
-        "highUncertaintySamples": sorted(samples, key=lambda item: (-item["uncertainty"], item["sampleRef"]))[: limits["maxHighErrorRows"]],
+        "highUncertaintySamples": sorted(samples, key=lambda item: (-item["uncertainty"], item["sampleKey"]))[: limits["maxHighErrorRows"]],
         "warnings": ["UNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITY"],
     }
 
@@ -734,10 +739,24 @@ def _probability_argmax(row: pd.Series) -> str | None:
 def _sample_identity(profile: DataProfile, object_id: str, table: pd.DataFrame, row_index: int) -> dict[str, Any]:
     explicit = profile.sampleIdentity.explicitColumn if profile.sampleIdentity and profile.sampleIdentity.policy == "explicit_column" else None
     if explicit and explicit in table.columns and not pd.isna(table.at[row_index, explicit]):
-        return {"sampleRef": str(table.at[row_index, explicit]), "identitySource": "explicit_column", "objectId": object_id, "rowIndex": row_index}
+        sample_ref = str(table.at[row_index, explicit])
+        return {
+            "sampleRef": sample_ref,
+            "sampleKey": f"{object_id}:{sample_ref}",
+            "identitySource": "explicit_column",
+            "objectId": object_id,
+            "rowIndex": row_index,
+        }
     object_hash = next((item.objectHash for item in profile.resourceSemantics if item.objectId == object_id), profile.semanticHash or "unknown")
+    sample_ref = stable_sample_reference(
+        dataset_id=profile.datasetId,
+        dataset_version=profile.version,
+        object_hash=object_hash,
+        row_index=row_index,
+    )
     return {
-        "sampleRef": stable_sample_reference(dataset_id=profile.datasetId, dataset_version=profile.version, object_hash=object_hash, row_index=row_index),
+        "sampleRef": sample_ref,
+        "sampleKey": f"{object_id}:{sample_ref}",
         "identitySource": "dataset_version_object_hash_row_index",
         "objectId": object_id,
         "rowIndex": row_index,
@@ -847,12 +866,18 @@ def _coerce_profile(value: Any, tool_id: str) -> DataProfile | None:
 
 
 def _dataset_binding(profile: DataProfile) -> dict[str, Any]:
+    resource_bindings = [
+        {"objectId": item.objectId, "objectType": item.objectType, "objectHash": item.objectHash}
+        for item in sorted(profile.resourceSemantics, key=lambda item: item.objectId)
+    ]
     return {
         "datasetId": profile.datasetId,
         "datasetVersion": profile.version,
         "profileId": profile.profileId,
         "profileContractVersion": profile.profileContractVersion,
         "semanticHash": profile.semanticHash,
+        "datasetContentHash": content_hash(resource_bindings),
+        "resourceBindings": resource_bindings,
     }
 
 

@@ -1,0 +1,260 @@
+{
+  "artifactType": "ml.classification_evaluation",
+  "dataset": {
+    "datasetContentHash": "9fee893fe7546c92ef817ec4232a50c8dbc9a70b82691a2a355b075beb9a32ac",
+    "datasetId": "dataset_phase10k5_classification",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_classification_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "991f568cdcfbd8ece6b32c09eb87d5fc5a74f5282e8fbaf0468346d0f1c2ed9f",
+        "objectId": "obj_classification",
+        "objectType": "DataFrame"
+      }
+    ],
+    "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9"
+  },
+  "evaluations": [
+    {
+      "coverage": {
+        "evaluatedSamples": 4,
+        "excludedSamples": 0,
+        "totalSamples": 4
+      },
+      "curves": {
+        "positiveClass": "B",
+        "precisionRecall": {
+          "averagePrecision": 1.0,
+          "points": [
+            {
+              "precision": 1.0,
+              "recall": 0.0,
+              "threshold": null
+            },
+            {
+              "precision": 1.0,
+              "recall": 0.5,
+              "threshold": 0.9
+            },
+            {
+              "precision": 1.0,
+              "recall": 1.0,
+              "threshold": 0.8
+            },
+            {
+              "precision": 0.6666666666666666,
+              "recall": 1.0,
+              "threshold": 0.6
+            },
+            {
+              "precision": 0.5,
+              "recall": 1.0,
+              "threshold": 0.1
+            }
+          ]
+        },
+        "roc": {
+          "auc": 1.0,
+          "points": [
+            {
+              "fpr": 0.0,
+              "threshold": null,
+              "tpr": 0.0
+            },
+            {
+              "fpr": 0.0,
+              "threshold": 0.9,
+              "tpr": 0.5
+            },
+            {
+              "fpr": 0.0,
+              "threshold": 0.8,
+              "tpr": 1.0
+            },
+            {
+              "fpr": 0.5,
+              "threshold": 0.6,
+              "tpr": 1.0
+            },
+            {
+              "fpr": 1.0,
+              "threshold": 0.1,
+              "tpr": 1.0
+            }
+          ]
+        },
+        "status": "READY"
+      },
+      "groupId": "obj_classification:classification:default",
+      "metrics": {
+        "accuracy": 0.75,
+        "classes": [
+          "A",
+          "B"
+        ],
+        "confusionMatrix": {
+          "labels": [
+            "A",
+            "B"
+          ],
+          "normalization": "raw_counts",
+          "values": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        },
+        "macroF1": 0.7333333333333334,
+        "macroPrecision": 0.8333333333333333,
+        "macroRecall": 0.75,
+        "perClass": [
+          {
+            "class": "A",
+            "f1": 0.6666666666666666,
+            "precision": 1.0,
+            "recall": 0.5,
+            "support": 2
+          },
+          {
+            "class": "B",
+            "f1": 0.8,
+            "precision": 0.6666666666666666,
+            "recall": 1.0,
+            "support": 2
+          }
+        ],
+        "sampleCount": 4,
+        "zeroDivisionPolicy": "undefined_null"
+      },
+      "misclassifiedSamples": [
+        {
+          "actualClass": "A",
+          "chemicalSystem": "F-Li",
+          "formula": "LiF",
+          "identitySource": "explicit_column",
+          "misclassified": true,
+          "objectId": "obj_classification",
+          "predictedClass": "B",
+          "probabilities": {
+            "A": 0.4,
+            "B": 0.6
+          },
+          "reducedFormula": "LiF",
+          "rowIndex": 2,
+          "sampleKey": "obj_classification:lif-1",
+          "sampleRef": "lif-1"
+        }
+      ],
+      "objectId": "obj_classification",
+      "predictionColumn": "class_pred",
+      "predictionSource": "profile_classification_prediction",
+      "sampleRows": [
+        {
+          "actualClass": "A",
+          "chemicalSystem": "Si",
+          "formula": "Si",
+          "identitySource": "explicit_column",
+          "misclassified": false,
+          "objectId": "obj_classification",
+          "predictedClass": "A",
+          "probabilities": {
+            "A": 0.9,
+            "B": 0.1
+          },
+          "reducedFormula": "Si",
+          "rowIndex": 0,
+          "sampleKey": "obj_classification:si-1",
+          "sampleRef": "si-1"
+        },
+        {
+          "actualClass": "B",
+          "chemicalSystem": "Cl-Na",
+          "formula": "NaCl",
+          "identitySource": "explicit_column",
+          "misclassified": false,
+          "objectId": "obj_classification",
+          "predictedClass": "B",
+          "probabilities": {
+            "A": 0.2,
+            "B": 0.8
+          },
+          "reducedFormula": "NaCl",
+          "rowIndex": 1,
+          "sampleKey": "obj_classification:nacl-1",
+          "sampleRef": "nacl-1"
+        },
+        {
+          "actualClass": "A",
+          "chemicalSystem": "F-Li",
+          "formula": "LiF",
+          "identitySource": "explicit_column",
+          "misclassified": true,
+          "objectId": "obj_classification",
+          "predictedClass": "B",
+          "probabilities": {
+            "A": 0.4,
+            "B": 0.6
+          },
+          "reducedFormula": "LiF",
+          "rowIndex": 2,
+          "sampleKey": "obj_classification:lif-1",
+          "sampleRef": "lif-1"
+        },
+        {
+          "actualClass": "B",
+          "chemicalSystem": "As-Ga",
+          "formula": "GaAs",
+          "identitySource": "explicit_column",
+          "misclassified": false,
+          "objectId": "obj_classification",
+          "predictedClass": "B",
+          "probabilities": {
+            "A": 0.1,
+            "B": 0.9
+          },
+          "reducedFormula": "GaAs",
+          "rowIndex": 3,
+          "sampleKey": "obj_classification:gaas-1",
+          "sampleRef": "gaas-1"
+        }
+      ],
+      "targetColumn": "class_true",
+      "taskId": "obj_classification:classification:default",
+      "warnings": [
+        "CLASSIFICATION_PERFORMANCE_NOT_SCIENTIFIC_VALIDITY"
+      ]
+    }
+  ],
+  "limits": {
+    "histogramBins": 30,
+    "maxChemistryGroups": 128,
+    "maxClasses": 64,
+    "maxCurvePoints": 1000,
+    "maxHighErrorRows": 100,
+    "maxModels": 16,
+    "maxPlotPoints": 2000,
+    "maxRows": 100000,
+    "maxTableRows": 100,
+    "maxUncertaintyBins": 10,
+    "minGroupSize": 3
+  },
+  "schemaVersion": "phase10k3.materials_ml_classification.v1",
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  },
+  "semantics": {
+    "backendScientificAuthority": true,
+    "roleInferenceRepeated": false,
+    "sampleIdentityPreserved": true,
+    "source": "material_data_profile_2"
+  }
+}

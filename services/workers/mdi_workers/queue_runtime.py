@@ -158,7 +158,15 @@ class QueueWorkerRuntime:
             return self._result(repos, job_id, message="job completed", plan_record=plan_record)
 
         try:
-            effective_object_store = dict(object_store or self._resolve_object_store(repos, job))
+            expected_profile_id = str((plan_payload or {}).get("profileId") or "") or None
+            effective_object_store = dict(
+                object_store or self._resolve_object_store(repos, job, profile_id=expected_profile_id)
+            )
+            _validate_profile_binding(
+                effective_object_store,
+                dataset_id=str(job.get("datasetId") or job.get("dataset_id") or ""),
+                profile_id=expected_profile_id,
+            )
             for index, step in enumerate(steps, start=1):
                 self._run_step(repos, job, step, index=index, object_store=effective_object_store, plan_record=plan_record)
         except Exception as exc:
@@ -205,12 +213,23 @@ class QueueWorkerRuntime:
         repos.job_events.append_event(job_id, event_type="job.running", status="running", message="Queue worker started job.", progress=0.0)
         return repos.jobs.get(job_id)
 
-    def _resolve_object_store(self, repos: Any, job: Mapping[str, Any]) -> Mapping[str, Any]:
+    def _resolve_object_store(
+        self,
+        repos: Any,
+        job: Mapping[str, Any],
+        *,
+        profile_id: str | None,
+    ) -> Mapping[str, Any]:
         dataset_id = job.get("datasetId") or job.get("dataset_id")
         if not dataset_id or self.object_store_resolver is None:
             return {}
         job_id = str(job.get("jobId") or job["id"])
-        resolved = self.object_store_resolver(str(dataset_id)) or {}
+        exact_resolver = getattr(self.object_store_resolver, "resolve", None)
+        resolved = (
+            exact_resolver(str(dataset_id), profile_id=profile_id)
+            if callable(exact_resolver)
+            else self.object_store_resolver(str(dataset_id))
+        ) or {}
         if resolved:
             repos.job_events.append_event(
                 job_id,
@@ -505,6 +524,27 @@ class QueueWorkerRuntime:
             plan_id=str(plan_record.get("id") or plan_record.get("planId")) if plan_record else None,
             plan_hash=str(plan_record.get("planHash") or plan_record.get("plan_hash")) if plan_record else None,
         )
+
+
+def _validate_profile_binding(
+    object_store: Mapping[str, Any],
+    *,
+    dataset_id: str,
+    profile_id: str | None,
+) -> None:
+    profile = object_store.get("profile")
+    if profile is None:
+        return
+    actual_dataset_id = (
+        profile.get("datasetId") if isinstance(profile, Mapping) else getattr(profile, "datasetId", None)
+    )
+    actual_profile_id = (
+        profile.get("profileId") if isinstance(profile, Mapping) else getattr(profile, "profileId", None)
+    )
+    if str(actual_dataset_id or "") != dataset_id or (
+        profile_id is not None and str(actual_profile_id or "") != profile_id
+    ):
+        raise ValueError("Resolved DataProfile does not match the persisted AnalysisPlan binding.")
 
 
 def create_queue_worker_runtime_from_settings() -> QueueWorkerRuntime:

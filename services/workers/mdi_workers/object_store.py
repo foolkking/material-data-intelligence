@@ -31,6 +31,9 @@ class DurableObjectStoreResolver:
         self.repository_factory = repository_factory
 
     def __call__(self, dataset_id: str) -> Mapping[str, Any] | None:
+        return self.resolve(dataset_id)
+
+    def resolve(self, dataset_id: str, *, profile_id: str | None = None) -> Mapping[str, Any] | None:
         repos = self.repositories or self._repositories_from_factory()
         if repos is None:
             return None
@@ -79,10 +82,20 @@ class DurableObjectStoreResolver:
 
         object_store: dict[str, Any] = {}
         profiles = repos.data_profiles.list_for_dataset(dataset_id)
-        current_profiles = [item for item in profiles if item.get("profileContractVersion") == "2.0"]
-        if current_profiles:
+        eligible_profiles = (
+            [
+                item
+                for item in profiles
+                if str(item.get("profileId") or item.get("id") or "") == profile_id
+            ]
+            if profile_id is not None
+            else [item for item in profiles if item.get("profileContractVersion") == "2.0"]
+        )
+        if profile_id is not None and not eligible_profiles:
+            raise LookupError("Requested DataProfile is unavailable for this dataset.")
+        if eligible_profiles:
             selected = sorted(
-                current_profiles,
+                eligible_profiles,
                 key=lambda item: (str(item.get("version") or ""), str(item.get("profileId") or "")),
             )[-1]
             object_store["profile"] = DataProfile.model_validate(selected)

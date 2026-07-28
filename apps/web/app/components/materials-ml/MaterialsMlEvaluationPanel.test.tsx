@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import type { Artifact } from "../../lib/planner-api";
 import { MaterialsMlEvaluationPanel } from "./MaterialsMlEvaluationPanel";
 
-const dataset = { datasetId: "materials", profileId: "profile_materials_v2", profileContractVersion: "2.0", semanticHash: "a".repeat(64) };
+const dataset = { datasetId: "materials", datasetVersion: "2", profileId: "profile_materials_v2", profileContractVersion: "2.0", semanticHash: "a".repeat(64), datasetContentHash: "b".repeat(64), resourceBindings: [{ objectId: "obj_table", objectType: "table", objectHash: "c".repeat(64) }] };
 const security = { artifactJavaScript: false, externalUrls: false, externalAssets: false, executableContent: false };
 
 function artifact(name: string, content: unknown): Artifact {
@@ -23,11 +23,11 @@ function regression() {
       coverage: { totalSamples: 3, evaluatedSamples: 3 },
       metrics: { mae: 0.2, rmse: 0.25, r2: 0.9, meanSignedError: 0.05 },
       parityPoints: [
-        { sampleRef: "s1", formula: "Si", chemicalSystem: "Si", target: 1, prediction: 1.1, residual: 0.1, absoluteError: 0.1 },
-        { sampleRef: "s2", formula: "NaCl", chemicalSystem: "Cl-Na", target: 2, prediction: 2.5, residual: 0.5, absoluteError: 0.5 },
+        { sampleKey: "obj_table:s1", sampleRef: "s1", objectId: "obj_table", rowIndex: 0, formula: "Si", chemicalSystem: "Si", target: 1, prediction: 1.1, residual: 0.1, absoluteError: 0.1 },
+        { sampleKey: "obj_table:s2", sampleRef: "s2", objectId: "obj_table", rowIndex: 1, formula: "NaCl", chemicalSystem: "Cl-Na", target: 2, prediction: 2.5, residual: 0.5, absoluteError: 0.5 },
       ],
       residualHistogram: { counts: [1, 2, 1], edges: [-1, 0, 1, 2] },
-      highErrorSamples: [{ sampleRef: "s2", formula: "NaCl", chemicalSystem: "Cl-Na", target: 2, prediction: 2.5, residual: 0.5, absoluteError: 0.5 }],
+      highErrorSamples: [{ sampleKey: "obj_table:s2", sampleRef: "s2", objectId: "obj_table", rowIndex: 1, formula: "NaCl", chemicalSystem: "Cl-Na", target: 2, prediction: 2.5, residual: 0.5, absoluteError: 0.5 }],
       chemistryConditioned: { byElement: [{ group: "Na", sampleCount: 1, mae: 0.5, rmse: 0.5 }], byChemicalSystem: [{ group: "Cl-Na", sampleCount: 1, mae: 0.5, rmse: 0.5 }] },
       warnings: [],
     }],
@@ -39,7 +39,7 @@ function regression() {
 function uncertainty() {
   return {
     schemaVersion: "phase10k3.materials_ml_uncertainty.v1", artifactType: "ml.uncertainty_evaluation", dataset,
-    evaluations: [{ taskId: "uncertainty:model_a", uncertaintyKind: "source_defined_uncertainty", coverage: { totalSamples: 3, evaluatedSamples: 3 }, association: { pearson: 0.8, spearman: 1 }, uncertaintyErrorPoints: [{ sampleRef: "s1", uncertainty: 0.1, absoluteError: 0.05 }, { sampleRef: "s2", uncertainty: 0.5, absoluteError: 0.4 }], reliability: { bins: [{ bin: 0, sampleCount: 2, meanUncertainty: 0.15, meanAbsoluteError: 0.1 }] }, errorDecay: { points: [{ retainedFraction: 1, mae: 0.2 }, { retainedFraction: 0.5, mae: 0.1 }] }, highUncertaintySamples: [{ sampleRef: "s2", formula: "NaCl", uncertainty: 0.5, absoluteError: 0.4 }], warnings: ["UNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITY"] }],
+    evaluations: [{ taskId: "uncertainty:model_a", uncertaintyKind: "source_defined_uncertainty", coverage: { totalSamples: 3, evaluatedSamples: 3 }, association: { pearson: 0.8, spearman: 1 }, uncertaintyErrorPoints: [{ sampleKey: "obj_table:s1", sampleRef: "s1", objectId: "obj_table", rowIndex: 0, uncertainty: 0.1, absoluteError: 0.05 }, { sampleKey: "obj_table:s2", sampleRef: "s2", objectId: "obj_table", rowIndex: 1, uncertainty: 0.5, absoluteError: 0.4 }], reliability: { bins: [{ bin: 0, sampleCount: 2, meanUncertainty: 0.15, meanAbsoluteError: 0.1 }] }, errorDecay: { points: [{ retainedFraction: 1, mae: 0.2 }, { retainedFraction: 0.5, mae: 0.1 }] }, highUncertaintySamples: [{ sampleKey: "obj_table:s2", sampleRef: "s2", objectId: "obj_table", rowIndex: 1, formula: "NaCl", uncertainty: 0.5, absoluteError: 0.4 }], warnings: ["UNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITY"] }],
     security: { ...security },
   };
 }
@@ -47,7 +47,7 @@ function uncertainty() {
 function classification() {
   return {
     schemaVersion: "phase10k3.materials_ml_classification.v1", artifactType: "ml.classification_evaluation", dataset,
-    evaluations: [{ taskId: "classification:default", coverage: { totalSamples: 4, evaluatedSamples: 4 }, metrics: { accuracy: 0.75, macroPrecision: 0.83, macroRecall: 0.75, macroF1: 0.73, confusionMatrix: { labels: ["a", "b"], values: [[1, 1], [0, 2]] }, perClass: [{ class: "a", support: 2, precision: 1, recall: 0.5, f1: 0.67 }, { class: "b", support: 2, precision: 0.67, recall: 1, f1: 0.8 }] }, curves: { status: "READY", positiveClass: "b", roc: { auc: 0.9, points: [{ fpr: 0, tpr: 0 }, { fpr: 0, tpr: 1 }, { fpr: 1, tpr: 1 }] }, precisionRecall: { averagePrecision: 0.88, points: [{ recall: 0, precision: 1 }, { recall: 1, precision: 0.5 }] } }, misclassifiedSamples: [{ sampleRef: "s2", formula: "NaCl", actualClass: "a", predictedClass: "b" }], sampleRows: [], warnings: ["CLASSIFICATION_PERFORMANCE_NOT_SCIENTIFIC_VALIDITY"] }],
+    evaluations: [{ taskId: "classification:default", coverage: { totalSamples: 4, evaluatedSamples: 4 }, metrics: { accuracy: 0.75, macroPrecision: 0.83, macroRecall: 0.75, macroF1: 0.73, confusionMatrix: { labels: ["a", "b"], values: [[1, 1], [0, 2]] }, perClass: [{ class: "a", support: 2, precision: 1, recall: 0.5, f1: 0.67 }, { class: "b", support: 2, precision: 0.67, recall: 1, f1: 0.8 }] }, curves: { status: "READY", positiveClass: "b", roc: { auc: 0.9, points: [{ fpr: 0, tpr: 0 }, { fpr: 0, tpr: 1 }, { fpr: 1, tpr: 1 }] }, precisionRecall: { averagePrecision: 0.88, points: [{ recall: 0, precision: 1 }, { recall: 1, precision: 0.5 }] } }, misclassifiedSamples: [{ sampleKey: "obj_table:s2", sampleRef: "s2", objectId: "obj_table", rowIndex: 1, formula: "NaCl", actualClass: "a", predictedClass: "b" }], sampleRows: [], warnings: ["CLASSIFICATION_PERFORMANCE_NOT_SCIENTIFIC_VALIDITY"] }],
     security: { ...security },
   };
 }
@@ -112,7 +112,10 @@ describe("MaterialsMlEvaluationPanel", () => {
 
     const overCap = regression();
     overCap.evaluations[0].highErrorSamples = Array.from({ length: 201 }, (_, index) => ({
+      sampleKey: `obj_table:s${index}`,
       sampleRef: `s${index}`,
+      objectId: "obj_table",
+      rowIndex: index,
       formula: "Si",
       chemicalSystem: "Si",
       target: 1,
@@ -122,5 +125,18 @@ describe("MaterialsMlEvaluationPanel", () => {
     }));
     rerender(<MaterialsMlEvaluationPanel artifacts={[artifact("materials_ml_regression.json", overCap)]} />);
     expect(screen.getByTestId("materials-ml-invalid")).toHaveTextContent("MATERIALS_ML_PREVIEW_CAP_EXCEEDED");
+  });
+
+  it("defaults to the first valid sibling and keeps a rejected product selectable", async () => {
+    const user = userEvent.setup();
+    const invalid = regression();
+    invalid.schemaVersion = "unknown";
+    render(<MaterialsMlEvaluationPanel artifacts={[
+      artifact("materials_ml_regression.json", invalid),
+      artifact("materials_ml_uncertainty.json", uncertainty()),
+    ]} />);
+    expect(screen.getByTestId("materials-ml-uncertainty")).toBeTruthy();
+    await user.selectOptions(screen.getByRole("combobox", { name: "Product" }), "materials_ml_regression.json");
+    expect(screen.getByTestId("materials-ml-invalid")).toHaveTextContent("MATERIALS_ML_SCHEMA_UNSUPPORTED");
   });
 });

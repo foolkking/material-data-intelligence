@@ -1,5 +1,26 @@
 # DESIGN_PROGRESS
 
+## 2026-07-28 Phase 10K-5 Material Intelligence Integration Implemented
+
+- Integrated the completed Profile 2.0, Dataset Explorer, Materials ML, and
+  Composition Space products without adding a run-everything tool or moving
+  scientific calculation into the browser.
+- Froze one exact cross-product binding over dataset/version, Profile 2.0,
+  semantic hash, full dataset content hash, and canonical resource hashes.
+  Stable linked-sample identity is `objectId:sampleRef`; row/plot position is
+  never used as scientific identity.
+- Queue execution now resolves the exact AnalysisPlan Profile revision before
+  tool execution. K4 accepts only bounded, exact-binding K3 artifacts and
+  preserves source units and coverage. Ambiguous ML intent is safely exposed as
+  a diagnostic state instead of falling back to guessed legacy columns.
+- Added typed product states, stale-artifact rejection, settled partial refresh,
+  runtime/API A-H cases, Chromium/Firefox/WebKit/mobile evidence, deterministic
+  replay, near-cap performance, accessibility, network, and security evidence.
+- Local focused checks and the new browser matrix pass. The implementation
+  commit, exact-head CI, completion record, second exact-head CI, and queue
+  archive remain pending; Phase 10K is therefore not yet marked COMPLETE and
+  Phase 10L remains unstarted.
+
 ## 2026-07-28 Phase 10K-4 Composition Space Implementation Complete
 
 - Added the formal `dataset.composition_space` product over Profile 2.0

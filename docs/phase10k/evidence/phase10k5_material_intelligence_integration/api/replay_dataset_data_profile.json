@@ -1,0 +1,560 @@
+{
+  "analysisReadiness": [
+    {
+      "capability": "dataset_materials_explorer",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "profile_2"
+      ]
+    },
+    {
+      "capability": "table_distribution",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "scatter",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "histogram",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "correlation",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "composition_summary",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "formula_statistics",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "element_distribution",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "chemical_system_visualization",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "structure_summary",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:structure"
+      ],
+      "requiredSemantics": [
+        "structure"
+      ]
+    },
+    {
+      "capability": "trajectory_visualization",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:trajectory"
+      ],
+      "requiredSemantics": [
+        "trajectory"
+      ]
+    },
+    {
+      "capability": "phonon_visualization",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:phonon"
+      ],
+      "requiredSemantics": [
+        "phonon"
+      ]
+    },
+    {
+      "capability": "volumetric_visualization",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:volumetric"
+      ],
+      "requiredSemantics": [
+        "volumetric"
+      ]
+    },
+    {
+      "capability": "regression_evaluation",
+      "dataStatus": "READY",
+      "matchingGroups": [
+        "obj_integrated:regression:default"
+      ],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "regression_prediction",
+        "regression_target"
+      ]
+    },
+    {
+      "capability": "uncertainty_evaluation",
+      "dataStatus": "READY",
+      "matchingGroups": [
+        "obj_integrated:regression:default"
+      ],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "regression_prediction",
+        "regression_target",
+        "regression_uncertainty"
+      ]
+    },
+    {
+      "capability": "classification_evaluation",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:classification_output",
+        "MISSING:classification_target"
+      ],
+      "requiredSemantics": [
+        "classification_output",
+        "classification_target"
+      ]
+    },
+    {
+      "capability": "composition_space",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "dataset_structure_statistics",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:structure"
+      ],
+      "requiredSemantics": [
+        "structure"
+      ]
+    }
+  ],
+  "datasetId": "dataset_phase10k5_integrated",
+  "datasetType": "ml_results",
+  "files": [
+    {
+      "detectedFormat": "json_limited",
+      "fileId": "file_dataset_phase10k5_integrated",
+      "fileName": "dataset_phase10k5_integrated.json",
+      "parseStatus": "success"
+    }
+  ],
+  "objects": [
+    {
+      "count": 1,
+      "objectHash": "d1d5b083252ba556cb950453e129ab1b98db9f1067d5c5ec9b8fbdfb963c367e",
+      "objectId": "obj_integrated",
+      "objectType": "DataFrame",
+      "periodicity": null,
+      "sourceFileIds": [
+        "obj_integrated.csv"
+      ]
+    }
+  ],
+  "phononSummary": null,
+  "profileContractVersion": "2.0",
+  "profileCoverage": {
+    "columnsInspected": 7,
+    "limits": {
+      "maxColumns": 512,
+      "maxFormulaLength": 256,
+      "maxFormulaValues": 1024,
+      "maxGroupIdLength": 128,
+      "maxObjects": 256,
+      "maxProbabilityColumns": 64,
+      "maxRows": 4096,
+      "maxUnitLength": 64
+    },
+    "policy": "complete",
+    "rowsInspected": 6,
+    "totalColumns": 7,
+    "totalRows": 6,
+    "warnings": []
+  },
+  "profileId": "profile_dataset_phase10k5_integrated_v2",
+  "qualityIssues": [
+    {
+      "code": "FORMULA_VALUES_PARTIALLY_INVALID",
+      "message": "Some inspected formula values could not be parsed; row-level validation remains required.",
+      "refs": [
+        {
+          "id": "obj_integrated:formula",
+          "type": "column"
+        }
+      ],
+      "severity": "warning"
+    }
+  ],
+  "recommendedTasks": [],
+  "resourceSemantics": [
+    {
+      "capabilities": [
+        "table"
+      ],
+      "facts": {
+        "columnCount": 7,
+        "rowCount": 6,
+        "sourceFileIds": [
+          "obj_integrated.csv"
+        ]
+      },
+      "kind": "dataframe",
+      "objectHash": "d1d5b083252ba556cb950453e129ab1b98db9f1067d5c5ec9b8fbdfb963c367e",
+      "objectId": "obj_integrated",
+      "objectType": "DataFrame",
+      "warnings": []
+    }
+  ],
+  "sampleIdentity": {
+    "datasetVersion": "2",
+    "explicitColumn": "material_id",
+    "fallbackPolicy": "dataset_version_object_hash_row_index",
+    "objectIds": [
+      "obj_integrated"
+    ],
+    "policy": "explicit_column"
+  },
+  "schemaVersion": "0.1",
+  "semanticColumns": [
+    {
+      "ambiguities": [],
+      "column": "material_id",
+      "dtype": "string",
+      "finiteCount": null,
+      "missingCount": 0,
+      "nonFiniteCount": null,
+      "objectId": "obj_integrated",
+      "roles": [
+        {
+          "authority": "alias_match",
+          "details": {},
+          "groupId": null,
+          "role": "sample_identity"
+        }
+      ],
+      "rowsInspected": 6,
+      "totalRows": 6,
+      "uniqueCount": 6,
+      "unit": null
+    },
+    {
+      "ambiguities": [],
+      "column": "formula",
+      "dtype": "string",
+      "finiteCount": null,
+      "missingCount": 0,
+      "nonFiniteCount": null,
+      "objectId": "obj_integrated",
+      "roles": [
+        {
+          "authority": "canonical_name",
+          "details": {
+            "inspectedCount": 6,
+            "invalidCount": 1,
+            "tooLongCount": 0,
+            "validCount": 5
+          },
+          "groupId": null,
+          "role": "material_formula"
+        }
+      ],
+      "rowsInspected": 6,
+      "totalRows": 6,
+      "uniqueCount": 6,
+      "unit": null
+    },
+    {
+      "ambiguities": [],
+      "column": "band_gap",
+      "dtype": "number",
+      "finiteCount": 5,
+      "missingCount": 1,
+      "nonFiniteCount": 0,
+      "objectId": "obj_integrated",
+      "roles": [
+        {
+          "authority": "canonical_name",
+          "details": {
+            "property": "band_gap"
+          },
+          "groupId": null,
+          "role": "material_property"
+        }
+      ],
+      "rowsInspected": 6,
+      "totalRows": 6,
+      "uniqueCount": 5,
+      "unit": "eV"
+    },
+    {
+      "ambiguities": [],
+      "column": "split",
+      "dtype": "string",
+      "finiteCount": null,
+      "missingCount": 0,
+      "nonFiniteCount": null,
+      "objectId": "obj_integrated",
+      "roles": [],
+      "rowsInspected": 6,
+      "totalRows": 6,
+      "uniqueCount": 2,
+      "unit": null
+    },
+    {
+      "ambiguities": [],
+      "column": "y_true",
+      "dtype": "number",
+      "finiteCount": 6,
+      "missingCount": 0,
+      "nonFiniteCount": 0,
+      "objectId": "obj_integrated",
+      "roles": [
+        {
+          "authority": "canonical_name",
+          "details": {},
+          "groupId": "obj_integrated:regression:default",
+          "role": "regression_target"
+        }
+      ],
+      "rowsInspected": 6,
+      "totalRows": 6,
+      "uniqueCount": 6,
+      "unit": null
+    },
+    {
+      "ambiguities": [],
+      "column": "y_pred",
+      "dtype": "number",
+      "finiteCount": 6,
+      "missingCount": 0,
+      "nonFiniteCount": 0,
+      "objectId": "obj_integrated",
+      "roles": [
+        {
+          "authority": "canonical_name",
+          "details": {},
+          "groupId": "obj_integrated:regression:default",
+          "role": "regression_prediction"
+        }
+      ],
+      "rowsInspected": 6,
+      "totalRows": 6,
+      "uniqueCount": 6,
+      "unit": null
+    },
+    {
+      "ambiguities": [],
+      "column": "y_std",
+      "dtype": "number",
+      "finiteCount": 6,
+      "missingCount": 0,
+      "nonFiniteCount": 0,
+      "objectId": "obj_integrated",
+      "roles": [
+        {
+          "authority": "canonical_name",
+          "details": {},
+          "groupId": "obj_integrated:regression:default",
+          "role": "regression_uncertainty"
+        }
+      ],
+      "rowsInspected": 6,
+      "totalRows": 6,
+      "uniqueCount": 4,
+      "unit": null
+    }
+  ],
+  "semanticGroups": [
+    {
+      "classes": [],
+      "groupId": "obj_integrated:regression:default",
+      "kind": "regression",
+      "predictionColumns": [
+        "y_pred"
+      ],
+      "probabilityColumns": [],
+      "reasons": [],
+      "seriesBindings": [
+        {
+          "predictionColumn": "y_pred",
+          "seriesId": "default",
+          "uncertaintyColumns": [
+            "y_std"
+          ]
+        }
+      ],
+      "status": "COMPLETE",
+      "targetColumns": [
+        "y_true"
+      ],
+      "uncertaintyColumns": [
+        "y_std"
+      ]
+    }
+  ],
+  "semanticHash": "6c8aefd9b7da5b4e512d2346b5e68bd6cf3343ab1755116657f4eab3c2248af5",
+  "semanticRulesVersion": "phase10k1.material_profile_semantics.v1",
+  "structureSummary": null,
+  "tableSummary": {
+    "columns": [
+      {
+        "dtype": "string",
+        "finiteCount": null,
+        "missingCount": 0,
+        "name": "material_id",
+        "uniqueCount": 6,
+        "unit": null
+      },
+      {
+        "dtype": "string",
+        "finiteCount": null,
+        "missingCount": 0,
+        "name": "formula",
+        "uniqueCount": 6,
+        "unit": null
+      },
+      {
+        "dtype": "number",
+        "finiteCount": 5,
+        "missingCount": 1,
+        "name": "band_gap",
+        "uniqueCount": 5,
+        "unit": "eV"
+      },
+      {
+        "dtype": "string",
+        "finiteCount": null,
+        "missingCount": 0,
+        "name": "split",
+        "uniqueCount": 2,
+        "unit": null
+      },
+      {
+        "dtype": "number",
+        "finiteCount": 6,
+        "missingCount": 0,
+        "name": "y_true",
+        "uniqueCount": 6,
+        "unit": null
+      },
+      {
+        "dtype": "number",
+        "finiteCount": 6,
+        "missingCount": 0,
+        "name": "y_pred",
+        "uniqueCount": 6,
+        "unit": null
+      },
+      {
+        "dtype": "number",
+        "finiteCount": 6,
+        "missingCount": 0,
+        "name": "y_std",
+        "uniqueCount": 4,
+        "unit": null
+      }
+    ],
+    "inferredTask": "unknown",
+    "nColumns": 7,
+    "nRows": 6
+  },
+  "trajectorySummary": null,
+  "version": "2"
+}

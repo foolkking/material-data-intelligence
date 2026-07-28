@@ -1,0 +1,350 @@
+{
+  "artifactType": "dataset.composition_space",
+  "clustering": {
+    "clusters": [
+      {
+        "centroid": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "cluster": 0,
+        "dominantElements": [
+          {
+            "element": "Si",
+            "meanFraction": 1.0
+          }
+        ],
+        "sampleCount": 1,
+        "topChemicalSystems": [
+          {
+            "chemicalSystem": "Si",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "centroid": [
+          0.0,
+          0.0,
+          0.5,
+          0.0,
+          0.5
+        ],
+        "cluster": 1,
+        "dominantElements": [
+          {
+            "element": "Na",
+            "meanFraction": 0.5
+          },
+          {
+            "element": "Cl",
+            "meanFraction": 0.5
+          }
+        ],
+        "sampleCount": 1,
+        "topChemicalSystems": [
+          {
+            "chemicalSystem": "Cl-Na",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "centroid": [
+          0.5,
+          0.5,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cluster": 2,
+        "dominantElements": [
+          {
+            "element": "Li",
+            "meanFraction": 0.5
+          },
+          {
+            "element": "F",
+            "meanFraction": 0.5
+          }
+        ],
+        "sampleCount": 1,
+        "topChemicalSystems": [
+          {
+            "chemicalSystem": "F-Li",
+            "count": 1
+          }
+        ]
+      }
+    ],
+    "featureSpace": "normalized_atomic_fraction",
+    "inertia": 0.0,
+    "iterations": 1,
+    "method": "kmeans_lloyd",
+    "parameters": {
+      "labelOrdering": "centroid_lexicographic",
+      "maxIterations": 300,
+      "nClusters": 3,
+      "nInit": 10,
+      "randomState": 0,
+      "tolerance": 0.0001
+    },
+    "scientificAuthority": "descriptive_composition_clusters_not_material_families",
+    "status": "READY"
+  },
+  "coloring": {
+    "available": [
+      {
+        "id": "cluster",
+        "kind": "categorical",
+        "label": "Composition cluster",
+        "source": "composition_space"
+      },
+      {
+        "id": "chemical_system",
+        "kind": "categorical",
+        "label": "Chemical system",
+        "source": "composition_semantics"
+      },
+      {
+        "id": "group",
+        "kind": "categorical",
+        "label": "Dataset / group",
+        "source": "explicit_comparison_binding"
+      },
+      {
+        "id": "property:band_gap",
+        "kind": "continuous",
+        "label": "band_gap",
+        "source": "material_data_profile_2_material_property",
+        "unit": "eV"
+      }
+    ],
+    "default": "cluster",
+    "scientificAuthority": "descriptive_visual_encoding_only"
+  },
+  "comparison": {
+    "mode": "none",
+    "status": "NOT_REQUESTED"
+  },
+  "coverage": {
+    "invalidCompositionSamples": 0,
+    "invalidExamples": [],
+    "invalidExamplesTruncated": false,
+    "selectedRows": 3,
+    "silentDrops": false,
+    "validCompositionSamples": 3
+  },
+  "dataset": {
+    "datasetContentHash": "3edac3cf62b4dc6f457696dabce3b1e707ab6f199666511265f337b9b56236d0",
+    "datasetId": "dataset_phase10k5_partial",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_partial_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "ce96d0d5aa9069ee1ebaf94867b6d964432b417f38f9007ec2aabdfcee8ae0cd",
+        "objectId": "obj_partial",
+        "objectType": "DataFrame"
+      }
+    ],
+    "semanticHash": "d47e239be4c94db630449940d733b25cbfa436d06625b1f3c1ccb0d87604fb53"
+  },
+  "displayPointKeys": [
+    "obj_partial:p1",
+    "obj_partial:p2",
+    "obj_partial:p3"
+  ],
+  "displaySampleRefs": [
+    "p1",
+    "p2",
+    "p3"
+  ],
+  "featureRepresentation": {
+    "basisOrder": "atomic_number_ascending",
+    "elementBasis": [
+      "Li",
+      "F",
+      "Na",
+      "Si",
+      "Cl"
+    ],
+    "featureDimensions": 5,
+    "fractionalOccupancySupported": true,
+    "missingElementValue": 0.0,
+    "normalization": "element_amount_divided_by_total_amount",
+    "parser": "pymatgen.core.Composition via application composition semantics",
+    "type": "normalized_atomic_fraction"
+  },
+  "limits": {
+    "maxAnalyzedSamples": 20000,
+    "maxArtifactBytes": 16000000,
+    "maxClusters": 12,
+    "maxColorProperties": 16,
+    "maxElements": 118,
+    "maxOutlierRows": 50,
+    "maxPlotPoints": 5000,
+    "maxRows": 100000,
+    "maxWarnings": 128
+  },
+  "outlierCandidates": [
+    {
+      "distance": 0.74535599249993,
+      "interpretation": "composition_space_candidate_not_invalid_material",
+      "objectId": "obj_partial",
+      "policy": "euclidean_distance_to_combined_feature_centroid",
+      "rank": 1,
+      "rowIndex": 0,
+      "sampleRef": "p1"
+    },
+    {
+      "distance": 0.6236095644623236,
+      "interpretation": "composition_space_candidate_not_invalid_material",
+      "objectId": "obj_partial",
+      "policy": "euclidean_distance_to_combined_feature_centroid",
+      "rank": 2,
+      "rowIndex": 1,
+      "sampleRef": "p2"
+    },
+    {
+      "distance": 0.6236095644623236,
+      "interpretation": "composition_space_candidate_not_invalid_material",
+      "objectId": "obj_partial",
+      "policy": "euclidean_distance_to_combined_feature_centroid",
+      "rank": 3,
+      "rowIndex": 2,
+      "sampleRef": "p3"
+    }
+  ],
+  "points": [
+    {
+      "chemicalSystem": "Si",
+      "cluster": 0,
+      "coordinates": [
+        0.7453559924999299,
+        1.4716670155454334e-16
+      ],
+      "elementFractions": {
+        "Si": 1.0
+      },
+      "formula": "Si",
+      "group": "obj_partial",
+      "identitySource": "explicit_column",
+      "mlValues": {},
+      "objectId": "obj_partial",
+      "propertyValues": {
+        "band_gap": 1.1
+      },
+      "reducedFormula": "Si",
+      "rowIndex": 0,
+      "sampleKey": "obj_partial:p1",
+      "sampleRef": "p1"
+    },
+    {
+      "chemicalSystem": "Cl-Na",
+      "cluster": 1,
+      "coordinates": [
+        -0.37267799624996495,
+        -0.49999999999999983
+      ],
+      "elementFractions": {
+        "Cl": 0.5,
+        "Na": 0.5
+      },
+      "formula": "NaCl",
+      "group": "obj_partial",
+      "identitySource": "explicit_column",
+      "mlValues": {},
+      "objectId": "obj_partial",
+      "propertyValues": {
+        "band_gap": 5.6
+      },
+      "reducedFormula": "NaCl",
+      "rowIndex": 1,
+      "sampleKey": "obj_partial:p2",
+      "sampleRef": "p2"
+    },
+    {
+      "chemicalSystem": "F-Li",
+      "cluster": 2,
+      "coordinates": [
+        -0.3726779962499651,
+        0.5
+      ],
+      "elementFractions": {
+        "F": 0.5,
+        "Li": 0.5
+      },
+      "formula": "LiF",
+      "group": "obj_partial",
+      "identitySource": "explicit_column",
+      "mlValues": {},
+      "objectId": "obj_partial",
+      "propertyValues": {
+        "band_gap": 11.8
+      },
+      "reducedFormula": "LiF",
+      "rowIndex": 2,
+      "sampleKey": "obj_partial:p3",
+      "sampleRef": "p3"
+    }
+  ],
+  "projection": {
+    "centering": true,
+    "components": [
+      [
+        -0.22360679774997894,
+        -0.223606797749979,
+        -0.223606797749979,
+        0.8944271909999161,
+        -0.223606797749979
+      ],
+      [
+        0.5000000000000001,
+        0.4999999999999999,
+        -0.49999999999999994,
+        -1.95182303036516e-16,
+        -0.49999999999999994
+      ]
+    ],
+    "cumulativeExplainedVarianceRatio": 1.0,
+    "dimensions": 2,
+    "explainedVarianceRatio": [
+      0.6250000000000001,
+      0.37499999999999994
+    ],
+    "mean": [
+      0.16666666666666666,
+      0.16666666666666666,
+      0.16666666666666666,
+      0.3333333333333333,
+      0.16666666666666666
+    ],
+    "method": "PCA",
+    "rank": 2,
+    "scaling": "none",
+    "signConvention": "largest_absolute_loading_is_positive",
+    "solver": "sklearn_full_svd"
+  },
+  "schemaVersion": "phase10k4.composition_space.v1",
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  },
+  "semantics": {
+    "chemicalFamilyClaimed": false,
+    "clusterMeaning": "composition_cluster_only",
+    "outlierMeaning": "distance_to_feature_centroid_candidate_only",
+    "projectionIsNotCanonicalMaterialIdentity": true,
+    "roleInferenceRepeated": false,
+    "sampleIdentityPreserved": true,
+    "source": "material_data_profile_2",
+    "structuralSimilarityClaimed": false
+  },
+  "upstreamMlBindings": []
+}

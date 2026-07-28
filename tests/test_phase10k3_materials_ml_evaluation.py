@@ -124,7 +124,16 @@ def test_regression_product_uses_profile_groups_and_material_identity(tmp_path: 
         "excludedSamples": 1,
     }
     assert first["highErrorSamples"][0]["sampleRef"] == "s3"
+    assert first["highErrorSamples"][0]["sampleKey"] == f"{objects[0].id}:s3"
     assert first["highErrorSamples"][0]["chemicalSystem"] == "F-Li"
+    assert payload["dataset"]["datasetContentHash"]
+    assert payload["dataset"]["resourceBindings"] == [
+        {
+            "objectId": objects[0].id,
+            "objectType": "DataFrame",
+            "objectHash": payload["dataset"]["resourceBindings"][0]["objectHash"],
+        }
+    ]
     assert {item["group"] for item in first["chemistryConditioned"]["byElement"]} >= {"Si", "Na", "Cl"}
     assert payload["modelComparisons"][0]["policy"] == "common_valid_samples"
     assert payload["modelComparisons"][0]["commonSampleCount"] == 4
@@ -156,6 +165,7 @@ def test_uncertainty_product_has_explicit_association_and_retention_policy(tmp_p
     assert len(evaluation["reliability"]["bins"]) == 2
     assert evaluation["errorDecay"]["method"] == "retain_lowest_uncertainty_first"
     assert evaluation["highUncertaintySamples"][0]["sampleRef"] == "s3"
+    assert evaluation["highUncertaintySamples"][0]["sampleKey"] == f"{objects[0].id}:s3"
     assert evaluation["warnings"] == ["UNCERTAINTY_DIAGNOSTIC_NOT_CALIBRATION_AUTHORITY"]
 
 
@@ -189,6 +199,7 @@ def test_classification_product_preserves_class_labels_and_binary_curves(tmp_pat
     assert evaluation["curves"]["positiveClass"] == "B"
     assert evaluation["sampleRows"][0]["probabilities"] == {"A": 0.9, "B": 0.1}
     assert evaluation["misclassifiedSamples"][0]["sampleRef"] == "s3"
+    assert evaluation["misclassifiedSamples"][0]["sampleKey"] == f"{objects[0].id}:s3"
     assert {item.name for item in artifacts} == {"materials_ml_classification.json", "summary.md", "recipe.json"}
 
 
@@ -433,6 +444,29 @@ def test_planner_routes_classification_with_explicit_positive_class(tmp_path: Pa
     validation = validate_plan(invalid, registry=registry)
     assert not validation.ok
     assert any(error.code == "PARAMS_SCHEMA_INVALID" for error in validation.errors)
+
+
+def test_planner_does_not_fall_back_to_basic_metrics_for_ambiguous_profile(tmp_path: Path) -> None:
+    profile, _ = _profiled_csv(
+        tmp_path,
+        "material_id,formula,y_true,target,y_pred\ns1,Si,1.0,1.0,1.1\ns2,NaCl,2.0,2.0,2.2\n",
+        dataset_id="planner_ambiguous_regression",
+    )
+    registry = load_manifests()
+    plan = MockLLMProvider().generate_plan(
+        PlannerRequest(
+            user_prompt="Analyze model performance and prediction error.",
+            dataset_id=profile.datasetId,
+            profile_id=profile.profileId,
+            tool_registry_version=registry.version,
+        ),
+        tools=registry.list_mvp_tools(),
+        data_profile=profile,
+    ).raw_json
+    assert plan is not None
+    assert plan["steps"][0]["toolId"] == "dataset.materials_explorer"
+    assert "ambiguous" in plan["steps"][0]["purpose"].lower()
+    assert validate_plan(plan, registry=registry).ok
 
 
 def test_persisted_regression_plan_executes_through_queue_runtime(tmp_path: Path) -> None:

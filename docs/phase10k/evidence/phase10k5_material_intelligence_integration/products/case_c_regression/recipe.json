@@ -1,0 +1,59 @@
+{
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Materials ML Regression Evaluation",
+  "projectId": "project_phase10k4_evidence",
+  "recipeId": "recipe_call_job_4a2bbbcd34d35c6e96b90353_step_001",
+  "schemaVersion": "0.1",
+  "semanticBinding": {
+    "datasetContentHash": "bd6519b6af7f40937447297a7298ba11c826fd2812d6cdbe572e2a1d21274f99",
+    "datasetId": "dataset_phase10k5_integrated",
+    "datasetVersion": "2",
+    "groupIds": [
+      "obj_integrated:regression:default"
+    ],
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_integrated_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "d1d5b083252ba556cb950453e129ab1b98db9f1067d5c5ec9b8fbdfb963c367e",
+        "objectId": "obj_integrated",
+        "objectType": "DataFrame"
+      }
+    ],
+    "roleInferenceRepeated": false,
+    "semanticHash": "6c8aefd9b7da5b4e512d2346b5e68bd6cf3343ab1755116657f4eab3c2248af5"
+  },
+  "sourceJobId": "job_4a2bbbcd34d35c6e96b90353",
+  "steps": [
+    {
+      "artifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "groupIds": [
+          "obj_integrated:regression:default"
+        ],
+        "histogramBins": 30,
+        "maxChemistryGroups": 128,
+        "maxPlotPoints": 2000,
+        "maxTableRows": 100,
+        "minGroupSize": 3
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "ml.regression_evaluation",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

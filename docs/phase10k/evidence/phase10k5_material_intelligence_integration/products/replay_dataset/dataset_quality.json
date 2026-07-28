@@ -1,0 +1,28 @@
+{
+  "columnIssues": [
+    {
+      "ambiguities": [],
+      "column": "band_gap",
+      "missingCount": 1,
+      "nonFiniteCount": 0
+    }
+  ],
+  "duplicateReducedFormulaGroups": [],
+  "duplicateSampleIdentityValues": [],
+  "invalidFormulaCount": 1,
+  "nearDuplicateAnalysis": "NOT_IMPLEMENTED_BY_DESIGN",
+  "profileIssues": [
+    {
+      "code": "FORMULA_VALUES_PARTIALLY_INVALID",
+      "message": "Some inspected formula values could not be parsed; row-level validation remains required.",
+      "refs": [
+        {
+          "id": "obj_integrated:formula",
+          "type": "column"
+        }
+      ],
+      "severity": "warning"
+    }
+  ],
+  "sampleLinksMaterialized": 6
+}

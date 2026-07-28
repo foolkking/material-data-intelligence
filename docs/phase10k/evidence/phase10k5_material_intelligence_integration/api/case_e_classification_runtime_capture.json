@@ -1,0 +1,776 @@
+{
+  "apiContentRetrieval": {
+    "allContentRoutesValidated": true,
+    "artifactNames": [
+      "materials_ml_classification.json",
+      "recipe.json",
+      "summary.md"
+    ]
+  },
+  "artifacts": [
+    {
+      "contentHash": "ca2b1294cfe69e5dcec5643a168d3a22f60e0c7a110bded1c079b1f8b1b6c5b0",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k5_classification",
+      "id": "call_job_95e3168e2a2b5d2cbe203624_step_001-table_json",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "1bd2e46196714192cc46ff438245d3a6fdcc35d309cb733312d617e438356389",
+          "8556ace59d2cd73733cec8da4ea6ec4398d1f366f917bd4cabb89f0db661147d"
+        ],
+        "paramsHash": "769fee89a32d404f67f62a133837a9d7ea4420b184dc2a70b7ac9cb80021bbde",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+          "planId": "plan_f973a46b4bf25f4abe353004",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+          "sourceFunction": "platform_builtin.ml_classification_evaluation",
+          "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+          "toolId": "ml.classification_evaluation"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "ml.classification_evaluation",
+        "toolVersion": "0.1.0"
+      },
+      "name": "materials_ml_classification.json",
+      "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+      "planId": "plan_f973a46b4bf25f4abe353004",
+      "previewKey": null,
+      "projectId": "project_phase10k4_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+        "sourceFunction": "platform_builtin.ml_classification_evaluation",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+        "toolId": "ml.classification_evaluation"
+      },
+      "sha256": "ca2b1294cfe69e5dcec5643a168d3a22f60e0c7a110bded1c079b1f8b1b6c5b0",
+      "sizeBytes": 4055,
+      "storageProvider": "local",
+      "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+      "type": "table_json",
+      "version": "1"
+    },
+    {
+      "contentHash": "a4ae948fe66c64859f9f403418b8dbf63aeee2d1768d38e29211d598da904cdd",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k5_classification",
+      "id": "call_job_95e3168e2a2b5d2cbe203624_step_001-summary_md",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "1bd2e46196714192cc46ff438245d3a6fdcc35d309cb733312d617e438356389",
+          "8556ace59d2cd73733cec8da4ea6ec4398d1f366f917bd4cabb89f0db661147d"
+        ],
+        "paramsHash": "769fee89a32d404f67f62a133837a9d7ea4420b184dc2a70b7ac9cb80021bbde",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "text/markdown",
+          "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+          "planId": "plan_f973a46b4bf25f4abe353004",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+          "sourceFunction": "platform_builtin.ml_classification_evaluation",
+          "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+          "toolId": "ml.classification_evaluation"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "ml.classification_evaluation",
+        "toolVersion": "0.1.0"
+      },
+      "name": "summary.md",
+      "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+      "planId": "plan_f973a46b4bf25f4abe353004",
+      "previewKey": null,
+      "projectId": "project_phase10k4_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "text/markdown",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+        "sourceFunction": "platform_builtin.ml_classification_evaluation",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+        "toolId": "ml.classification_evaluation"
+      },
+      "sha256": "a4ae948fe66c64859f9f403418b8dbf63aeee2d1768d38e29211d598da904cdd",
+      "sizeBytes": 323,
+      "storageProvider": "local",
+      "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+      "type": "summary_md",
+      "version": "1"
+    },
+    {
+      "contentHash": "59782ca2536b76cda305f5080d958e7fc23480a34b5f6200cb6a360925d9302d",
+      "contentType": "application/json",
+      "datasetId": "dataset_phase10k5_classification",
+      "id": "call_job_95e3168e2a2b5d2cbe203624_step_001-recipe_json",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "metadata": {
+        "adapterVersion": "0.1.0",
+        "inputHashes": [
+          "1bd2e46196714192cc46ff438245d3a6fdcc35d309cb733312d617e438356389",
+          "8556ace59d2cd73733cec8da4ea6ec4398d1f366f917bd4cabb89f0db661147d"
+        ],
+        "paramsHash": "769fee89a32d404f67f62a133837a9d7ea4420b184dc2a70b7ac9cb80021bbde",
+        "profileId": null,
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+          "planId": "plan_f973a46b4bf25f4abe353004",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+          "sourceFunction": "platform_builtin.ml_classification_evaluation",
+          "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+          "toolId": "ml.classification_evaluation"
+        },
+        "recipeId": null,
+        "reportId": null,
+        "storageProvider": "local",
+        "toolId": "ml.classification_evaluation",
+        "toolVersion": "0.1.0"
+      },
+      "name": "recipe.json",
+      "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+      "planId": "plan_f973a46b4bf25f4abe353004",
+      "previewKey": null,
+      "projectId": "project_phase10k4_evidence",
+      "provenance": {
+        "aseVersion": "3.29.0",
+        "deterministic": true,
+        "mediaType": "application/json",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm",
+        "plotlyVersion": "6.8.0",
+        "profileContractVersion": "2.0",
+        "pymatgenVersion": "2026.5.4",
+        "pymatvizVersion": "0.18.0",
+        "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+        "sourceFunction": "platform_builtin.ml_classification_evaluation",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+        "toolId": "ml.classification_evaluation"
+      },
+      "sha256": "59782ca2536b76cda305f5080d958e7fc23480a34b5f6200cb6a360925d9302d",
+      "sizeBytes": 1334,
+      "storageProvider": "local",
+      "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+      "type": "recipe_json",
+      "version": "1"
+    }
+  ],
+  "caseId": "case_e_classification",
+  "events": [
+    {
+      "eventType": "job.created",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0001",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Planner job created with persisted AnalysisPlan.",
+      "payload": {
+        "datasetId": "dataset_phase10k5_classification",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "projectId": "project_phase10k4_evidence"
+      },
+      "progress": 0.0,
+      "seq": 1,
+      "status": "info"
+    },
+    {
+      "eventType": "plan.persisted",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0002",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Persisted validated AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm",
+        "plannerProvider": "mock"
+      },
+      "progress": 0.0,
+      "seq": 2,
+      "status": "success"
+    },
+    {
+      "eventType": "job.running",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0003",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Queue worker started job.",
+      "payload": {},
+      "progress": 0.0,
+      "seq": 3,
+      "status": "running"
+    },
+    {
+      "eventType": "plan.loaded",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0004",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Loaded persisted AnalysisPlan with 1 step(s).",
+      "payload": {
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm"
+      },
+      "progress": 0.05,
+      "seq": 4,
+      "status": "success"
+    },
+    {
+      "eventType": "tool.started",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0005",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Started tool ml.classification_evaluation.",
+      "payload": {
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm",
+        "stepId": "step_001",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+        "toolId": "ml.classification_evaluation"
+      },
+      "progress": 0.0,
+      "seq": 5,
+      "status": "running"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0006",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Artifact ready: materials_ml_classification.json",
+      "payload": {
+        "artifactId": "call_job_95e3168e2a2b5d2cbe203624_step_001-table_json",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001"
+      },
+      "progress": null,
+      "seq": 6,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0007",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Artifact ready: summary.md",
+      "payload": {
+        "artifactId": "call_job_95e3168e2a2b5d2cbe203624_step_001-summary_md",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001"
+      },
+      "progress": null,
+      "seq": 7,
+      "status": "success"
+    },
+    {
+      "eventType": "artifact.ready",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0008",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Artifact ready: recipe.json",
+      "payload": {
+        "artifactId": "call_job_95e3168e2a2b5d2cbe203624_step_001-recipe_json",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001"
+      },
+      "progress": null,
+      "seq": 8,
+      "status": "success"
+    },
+    {
+      "eventType": "tool.completed",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0009",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Completed tool ml.classification_evaluation.",
+      "payload": {
+        "artifactIds": [
+          "call_job_95e3168e2a2b5d2cbe203624_step_001-table_json",
+          "call_job_95e3168e2a2b5d2cbe203624_step_001-summary_md",
+          "call_job_95e3168e2a2b5d2cbe203624_step_001-recipe_json"
+        ],
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001"
+      },
+      "progress": 1.0,
+      "seq": 9,
+      "status": "success"
+    },
+    {
+      "eventType": "job.completed",
+      "id": "evt_job_95e3168e2a2b5d2cbe203624_0010",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "message": "Job completed.",
+      "payload": {
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "planSource": "llm"
+      },
+      "progress": 1.0,
+      "seq": 10,
+      "status": "success"
+    }
+  ],
+  "expectedStatus": "completed",
+  "job": {
+    "analysisPlan": {
+      "assumptions": [
+        "Generated by MockLLMProvider for testing."
+      ],
+      "datasetId": "dataset_phase10k5_classification",
+      "expectedArtifacts": [
+        {
+          "fromStepId": "step_001",
+          "name": "materials_ml_classification.json",
+          "type": "table_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "goal": "Evaluate the classification confusion matrix and ROC with positive class B.",
+      "profileId": "profile_dataset_phase10k5_classification_v2",
+      "schemaVersion": "0.1",
+      "steps": [
+        {
+          "constraints": null,
+          "inputRefs": [
+            {
+              "columnName": null,
+              "fieldRole": null,
+              "objectType": null,
+              "ref": "profile",
+              "refType": "profile"
+            },
+            {
+              "columnName": null,
+              "fieldRole": "ml_result_table",
+              "objectType": "DataFrame",
+              "ref": "obj_classification",
+              "refType": "normalized_object"
+            }
+          ],
+          "output": {
+            "artifactTypes": [
+              "table_json",
+              "summary_md",
+              "recipe_json"
+            ]
+          },
+          "params": {
+            "groupIds": [
+              "obj_classification:classification:default"
+            ],
+            "maxCurvePoints": 1000,
+            "maxPlotPoints": 2000,
+            "maxTableRows": 100,
+            "positiveClass": "b"
+          },
+          "purpose": "Evaluate Profile-bound classification results and valid explicit-positive-class binary curves.",
+          "reason": "The request and Material Data Profile 2.0 expose a complete compatible evaluation task.",
+          "stepId": "step_001",
+          "toolId": "ml.classification_evaluation"
+        }
+      ],
+      "toolRegistryVersion": "0.1.0",
+      "warnings": []
+    },
+    "artifactCount": 3,
+    "createdBy": "user_local",
+    "datasetId": "dataset_phase10k5_classification",
+    "eventCount": 10,
+    "id": "job_95e3168e2a2b5d2cbe203624",
+    "jobId": "job_95e3168e2a2b5d2cbe203624",
+    "kind": "analysis",
+    "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+    "planId": "plan_f973a46b4bf25f4abe353004",
+    "planSource": "llm",
+    "plan_id": "plan_f973a46b4bf25f4abe353004",
+    "projectId": "project_phase10k4_evidence",
+    "provenance": {
+      "binding": "jobs.plan_id -> analysis_plans.id",
+      "fallbackUsed": false,
+      "loadedFrom": "persisted_analysis_plan",
+      "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+      "planId": "plan_f973a46b4bf25f4abe353004",
+      "planSource": "llm",
+      "toolPath": "Tool Registry + Adapter"
+    },
+    "status": "completed",
+    "toolCallCount": 1,
+    "validationStatus": "validated"
+  },
+  "plan": {
+    "assumptions": [
+      "Generated by MockLLMProvider for testing."
+    ],
+    "datasetId": "dataset_phase10k5_classification",
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_001",
+        "name": "materials_ml_classification.json",
+        "type": "table_json"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "summary.md",
+        "type": "summary_md"
+      },
+      {
+        "fromStepId": "step_001",
+        "name": "recipe.json",
+        "type": "recipe_json"
+      }
+    ],
+    "goal": "Evaluate the classification confusion matrix and ROC with positive class B.",
+    "profileId": "profile_dataset_phase10k5_classification_v2",
+    "schemaVersion": "0.1",
+    "steps": [
+      {
+        "constraints": null,
+        "inputRefs": [
+          {
+            "columnName": null,
+            "fieldRole": null,
+            "objectType": null,
+            "ref": "profile",
+            "refType": "profile"
+          },
+          {
+            "columnName": null,
+            "fieldRole": "ml_result_table",
+            "objectType": "DataFrame",
+            "ref": "obj_classification",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "table_json",
+            "summary_md",
+            "recipe_json"
+          ]
+        },
+        "params": {
+          "groupIds": [
+            "obj_classification:classification:default"
+          ],
+          "maxCurvePoints": 1000,
+          "maxPlotPoints": 2000,
+          "maxTableRows": 100,
+          "positiveClass": "b"
+        },
+        "purpose": "Evaluate Profile-bound classification results and valid explicit-positive-class binary curves.",
+        "reason": "The request and Material Data Profile 2.0 expose a complete compatible evaluation task.",
+        "stepId": "step_001",
+        "toolId": "ml.classification_evaluation"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "planValidation": {
+    "errors": [],
+    "ok": true
+  },
+  "request": {
+    "datasetId": "dataset_phase10k5_classification",
+    "enqueue": true,
+    "profileId": "profile_dataset_phase10k5_classification_v2",
+    "provider": "MockLLMProvider"
+  },
+  "result": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "contentHash": "ca2b1294cfe69e5dcec5643a168d3a22f60e0c7a110bded1c079b1f8b1b6c5b0",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k5_classification",
+        "id": "call_job_95e3168e2a2b5d2cbe203624_step_001-table_json",
+        "jobId": "job_95e3168e2a2b5d2cbe203624",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "inputHashes": [
+            "1bd2e46196714192cc46ff438245d3a6fdcc35d309cb733312d617e438356389",
+            "8556ace59d2cd73733cec8da4ea6ec4398d1f366f917bd4cabb89f0db661147d"
+          ],
+          "paramsHash": "769fee89a32d404f67f62a133837a9d7ea4420b184dc2a70b7ac9cb80021bbde",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+            "planId": "plan_f973a46b4bf25f4abe353004",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+            "sourceFunction": "platform_builtin.ml_classification_evaluation",
+            "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+            "toolId": "ml.classification_evaluation"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "ml.classification_evaluation",
+          "toolVersion": "0.1.0"
+        },
+        "name": "materials_ml_classification.json",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "previewKey": null,
+        "projectId": "project_phase10k4_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+          "planId": "plan_f973a46b4bf25f4abe353004",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+          "sourceFunction": "platform_builtin.ml_classification_evaluation",
+          "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+          "toolId": "ml.classification_evaluation"
+        },
+        "sha256": "ca2b1294cfe69e5dcec5643a168d3a22f60e0c7a110bded1c079b1f8b1b6c5b0",
+        "sizeBytes": 4055,
+        "storageProvider": "local",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+        "type": "table_json",
+        "version": "1"
+      },
+      {
+        "contentHash": "a4ae948fe66c64859f9f403418b8dbf63aeee2d1768d38e29211d598da904cdd",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k5_classification",
+        "id": "call_job_95e3168e2a2b5d2cbe203624_step_001-summary_md",
+        "jobId": "job_95e3168e2a2b5d2cbe203624",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "inputHashes": [
+            "1bd2e46196714192cc46ff438245d3a6fdcc35d309cb733312d617e438356389",
+            "8556ace59d2cd73733cec8da4ea6ec4398d1f366f917bd4cabb89f0db661147d"
+          ],
+          "paramsHash": "769fee89a32d404f67f62a133837a9d7ea4420b184dc2a70b7ac9cb80021bbde",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "text/markdown",
+            "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+            "planId": "plan_f973a46b4bf25f4abe353004",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+            "sourceFunction": "platform_builtin.ml_classification_evaluation",
+            "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+            "toolId": "ml.classification_evaluation"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "ml.classification_evaluation",
+          "toolVersion": "0.1.0"
+        },
+        "name": "summary.md",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "previewKey": null,
+        "projectId": "project_phase10k4_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "text/markdown",
+          "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+          "planId": "plan_f973a46b4bf25f4abe353004",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+          "sourceFunction": "platform_builtin.ml_classification_evaluation",
+          "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+          "toolId": "ml.classification_evaluation"
+        },
+        "sha256": "a4ae948fe66c64859f9f403418b8dbf63aeee2d1768d38e29211d598da904cdd",
+        "sizeBytes": 323,
+        "storageProvider": "local",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+        "type": "summary_md",
+        "version": "1"
+      },
+      {
+        "contentHash": "59782ca2536b76cda305f5080d958e7fc23480a34b5f6200cb6a360925d9302d",
+        "contentType": "application/json",
+        "datasetId": "dataset_phase10k5_classification",
+        "id": "call_job_95e3168e2a2b5d2cbe203624_step_001-recipe_json",
+        "jobId": "job_95e3168e2a2b5d2cbe203624",
+        "metadata": {
+          "adapterVersion": "0.1.0",
+          "inputHashes": [
+            "1bd2e46196714192cc46ff438245d3a6fdcc35d309cb733312d617e438356389",
+            "8556ace59d2cd73733cec8da4ea6ec4398d1f366f917bd4cabb89f0db661147d"
+          ],
+          "paramsHash": "769fee89a32d404f67f62a133837a9d7ea4420b184dc2a70b7ac9cb80021bbde",
+          "profileId": null,
+          "provenance": {
+            "aseVersion": "3.29.0",
+            "deterministic": true,
+            "mediaType": "application/json",
+            "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+            "planId": "plan_f973a46b4bf25f4abe353004",
+            "planSource": "llm",
+            "plotlyVersion": "6.8.0",
+            "profileContractVersion": "2.0",
+            "pymatgenVersion": "2026.5.4",
+            "pymatvizVersion": "0.18.0",
+            "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+            "sourceFunction": "platform_builtin.ml_classification_evaluation",
+            "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+            "toolId": "ml.classification_evaluation"
+          },
+          "recipeId": null,
+          "reportId": null,
+          "storageProvider": "local",
+          "toolId": "ml.classification_evaluation",
+          "toolVersion": "0.1.0"
+        },
+        "name": "recipe.json",
+        "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+        "planId": "plan_f973a46b4bf25f4abe353004",
+        "previewKey": null,
+        "projectId": "project_phase10k4_evidence",
+        "provenance": {
+          "aseVersion": "3.29.0",
+          "deterministic": true,
+          "mediaType": "application/json",
+          "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+          "planId": "plan_f973a46b4bf25f4abe353004",
+          "planSource": "llm",
+          "plotlyVersion": "6.8.0",
+          "profileContractVersion": "2.0",
+          "pymatgenVersion": "2026.5.4",
+          "pymatvizVersion": "0.18.0",
+          "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9",
+          "sourceFunction": "platform_builtin.ml_classification_evaluation",
+          "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+          "toolId": "ml.classification_evaluation"
+        },
+        "sha256": "59782ca2536b76cda305f5080d958e7fc23480a34b5f6200cb6a360925d9302d",
+        "sizeBytes": 1334,
+        "storageProvider": "local",
+        "toolCallId": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+        "type": "recipe_json",
+        "version": "1"
+      }
+    ],
+    "jobId": "job_95e3168e2a2b5d2cbe203624",
+    "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+    "planId": "plan_f973a46b4bf25f4abe353004",
+    "provenance": {
+      "binding": "jobs.plan_id -> analysis_plans.id",
+      "fallbackUsed": false,
+      "loadedFrom": "persisted_analysis_plan",
+      "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+      "planId": "plan_f973a46b4bf25f4abe353004",
+      "planSource": "llm",
+      "toolPath": "Tool Registry + Adapter"
+    },
+    "status": "completed",
+    "summary": "Job completed with 1 ToolCall(s) and 3 Artifact(s).",
+    "toolCallCount": 1
+  },
+  "toolCalls": [
+    {
+      "artifactIds": [
+        "call_job_95e3168e2a2b5d2cbe203624_step_001-table_json",
+        "call_job_95e3168e2a2b5d2cbe203624_step_001-summary_md",
+        "call_job_95e3168e2a2b5d2cbe203624_step_001-recipe_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_95e3168e2a2b5d2cbe203624_step_001",
+      "idempotencyKey": "job_95e3168e2a2b5d2cbe203624:step_001",
+      "inputSummary": "Params: groupIds, maxCurvePoints, maxPlotPoints, maxTableRows, positiveClass",
+      "jobId": "job_95e3168e2a2b5d2cbe203624",
+      "outputSummary": "3 artifact(s)",
+      "params": {
+        "groupIds": [
+          "obj_classification:classification:default"
+        ],
+        "maxCurvePoints": 1000,
+        "maxPlotPoints": 2000,
+        "maxTableRows": 100,
+        "positiveClass": "b"
+      },
+      "planHash": "8dc79d709876d30ad9b7e9fb5b733ce3c007790420aae7dae8d665daf2d17c1d",
+      "planId": "plan_f973a46b4bf25f4abe353004",
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "ml.classification_evaluation"
+    }
+  ]
+}

@@ -27,8 +27,9 @@
   runs `30372914960` and `30373474557`, including Unit, Frontend,
   service-backed integration, and no-skipped. The permanent result/evidence are
   retained and the verified queue block is archived.
-- [ ] Phase 10K-5 Material Intelligence Integration + Browser/API Evidence is
-  next and has not started. Phase 10L remains unstarted.
+- [~] Phase 10K-5 Material Intelligence Integration + Browser/API Evidence is
+  the sole active task after verified K4 archive commit `0707fa7` and exact-SHA
+  CI run `30373921429`. Phase 10L remains unstarted.
 
 `TASKS.md` contains the approved executable Phase 10K queue. Future Scope and
 Not Planned items are not queue work.

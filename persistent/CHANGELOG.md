@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2026-07-28 - Phase 10K-5 Material Intelligence Integration
+
+- Unified the Profile 2.0, Dataset Explorer, Materials ML, and Composition
+  Space product contracts around exact dataset/Profile/content/resource
+  bindings and stable `objectId:sampleRef` identity.
+- Hardened persisted Profile resolution, complete deterministic input hashing,
+  stale upstream ML rejection, bounded upstream artifact validation, unit and
+  coverage preservation, and ambiguous-ML safety routing.
+- Added a typed Material Intelligence product-status surface, independent
+  partial-failure handling, real runtime/API A-H evidence, three-browser and
+  mobile replay, accessibility checks, near-cap measurements, deterministic
+  replay, and network/security evidence.
+- No public tool, dependency, scientific algorithm, multi-tool planning,
+  arbitrary execution, external service, real LLM behavior, or Phase 10L
+  capability was added. Exact-head CI and queue closure remain pending.
+
 ## 2026-07-28 - Phase 10K-4 Composition Space
 
 - Added `dataset.composition_space`, a Profile 2.0-bound product capability

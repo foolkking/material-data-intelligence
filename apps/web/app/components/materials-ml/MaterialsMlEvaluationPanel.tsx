@@ -3,35 +3,57 @@
 import { useMemo, useState, type ReactNode } from "react";
 
 import type { Artifact } from "../../lib/planner-api";
+import {
+  artifactPayload,
+  canonicalSampleKey,
+  inspectMaterialIntelligenceArtifacts,
+  type JsonRecord,
+  type MaterialIntelligenceProductId,
+} from "../material-intelligence/materialIntelligenceIntegration";
 
-type JsonRecord = Record<string, unknown>;
 type ProductKind = "regression" | "uncertainty" | "classification";
 
-const PRODUCTS: readonly { name: string; schema: string; kind: ProductKind; label: string }[] = [
-  { name: "materials_ml_regression.json", schema: "phase10k3.materials_ml_regression.v1", kind: "regression", label: "Regression" },
-  { name: "materials_ml_uncertainty.json", schema: "phase10k3.materials_ml_uncertainty.v1", kind: "uncertainty", label: "Uncertainty" },
-  { name: "materials_ml_classification.json", schema: "phase10k3.materials_ml_classification.v1", kind: "classification", label: "Classification" },
+const PRODUCTS: readonly { id: MaterialIntelligenceProductId; name: string; schema: string; kind: ProductKind; label: string }[] = [
+  { id: "regression", name: "materials_ml_regression.json", schema: "phase10k3.materials_ml_regression.v1", kind: "regression", label: "Regression" },
+  { id: "uncertainty", name: "materials_ml_uncertainty.json", schema: "phase10k3.materials_ml_uncertainty.v1", kind: "uncertainty", label: "Uncertainty" },
+  { id: "classification", name: "materials_ml_classification.json", schema: "phase10k3.materials_ml_classification.v1", kind: "classification", label: "Classification" },
 ];
 
 const CAPS = { evaluations: 32, points: 10_000, rows: 200, groups: 256, histogramBins: 100, classes: 64, curvePoints: 5_000 };
 
 export function MaterialsMlEvaluationPanel({ artifacts }: { artifacts: Artifact[] }) {
+  const integration = useMemo(() => inspectMaterialIntelligenceArtifacts(artifacts, (id, payload) => {
+    const product = PRODUCTS.find((item) => item.id === id);
+    if (!product) return null;
+    const result = validateMaterialsMlPayload(payload, product);
+    return result.ok ? null : result.reason;
+  }), [artifacts]);
   const available = useMemo(
     () => PRODUCTS.flatMap((product) => {
       const artifact = artifacts.find((item) => item.name === product.name);
-      return artifact ? [{ product, artifact, payload: artifactPayload(artifact) }] : [];
+      if (!artifact) return [];
+      const assessment = integration.products.find((item) => item.id === product.id);
+      const payload = artifactPayload(artifact);
+      const local = validateMaterialsMlPayload(payload, product);
+      const validation = assessment?.state === "PRODUCED"
+        ? local
+        : { ok: false as const, reason: assessment?.reason || (local.ok ? "MATERIALS_ML_INTEGRATION_INVALID" : local.reason) };
+      return [{ product, artifact, payload, validation, state: assessment?.state || "REJECTED" }];
     }),
-    [artifacts],
+    [artifacts, integration],
   );
   const [selectedName, setSelectedName] = useState("");
-  const active = available.find((item) => item.product.name === selectedName) || available[0];
-  const validation = useMemo(() => active ? validatePayload(active.payload, active.product) : null, [active]);
+  const active = available.find((item) => item.product.name === selectedName)
+    || available.find((item) => item.validation.ok)
+    || available[0];
+  const validation = active?.validation || null;
   const [selectedTask, setSelectedTask] = useState("");
 
   if (!active) return null;
   if (!validation?.ok) {
     return <section className="panel materials-ml" data-testid="materials-ml-invalid" role="status" aria-label="Materials ML validation status">
       <header className="panel-heading"><div><span>Profile 2.0 product</span><h2>Materials ML Evaluation unavailable</h2></div><span className="badge">Rejected</span></header>
+      {available.length > 1 ? <div className="materials-ml-selectors"><label>Product<select value={active.product.name} onChange={(event) => { setSelectedName(event.target.value); setSelectedTask(""); }}>{available.map((item) => <option key={item.product.name} value={item.product.name}>{item.product.label} ({item.state})</option>)}</select></label></div> : null}
       <p>The artifact was rejected before product rendering. Inert JSON remains available.</p>
       <code>{validation?.reason || "MATERIALS_ML_ARTIFACT_INVALID"}</code>
       <details><summary>Artifact JSON</summary><pre>{JSON.stringify(active.payload, null, 2)}</pre></details>
@@ -54,7 +76,7 @@ export function MaterialsMlEvaluationPanel({ artifacts }: { artifacts: Artifact[
       <Field label="Residual" value={active.product.kind === "regression" ? text(payload.residualConvention) : "not applicable"} />
     </dl>
     <div className="materials-ml-selectors">
-      {available.length > 1 ? <label>Product<select value={active.product.name} onChange={(event) => { setSelectedName(event.target.value); setSelectedTask(""); }}>{available.map((item) => <option key={item.product.name} value={item.product.name}>{item.product.label}</option>)}</select></label> : null}
+      {available.length > 1 ? <label>Product<select value={active.product.name} onChange={(event) => { setSelectedName(event.target.value); setSelectedTask(""); }}>{available.map((item) => <option key={item.product.name} value={item.product.name}>{item.product.label} ({item.state})</option>)}</select></label> : null}
       {evaluations.length > 1 ? <label>Task / model<select value={text(evaluation?.taskId)} onChange={(event) => setSelectedTask(event.target.value)}>{evaluations.map((item) => <option key={text(item.taskId)} value={text(item.taskId)}>{text(item.taskId)}</option>)}</select></label> : null}
     </div>
     {!evaluation ? <p className="empty-state">No bounded evaluation result.</p> : null}
@@ -84,7 +106,7 @@ function RegressionView({ evaluation, comparisons }: { evaluation: JsonRecord; c
       <ChartFrame title="Residual distribution" note="Residual = prediction - target."><Histogram counts={counts} /></ChartFrame>
     </div>
     <h3>Largest prediction errors</h3>
-    <DataTable columns={["Sample", "Formula", "System", "Target", "Prediction", "Residual", "Absolute error", "Uncertainty"]} rows={highError.map((row) => [text(row.sampleRef), text(row.formula), text(row.chemicalSystem), format(row.target), format(row.prediction), format(row.residual), format(row.absoluteError), format(row.uncertainty)])} empty="No aligned high-error samples." testId="materials-ml-high-error-table" />
+    <DataTable columns={["Sample key", "Sample", "Formula", "System", "Target", "Prediction", "Residual", "Absolute error", "Uncertainty"]} rows={highError.map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), text(row.chemicalSystem), format(row.target), format(row.prediction), format(row.residual), format(row.absoluteError), format(row.uncertainty)])} rowKeys={highError.map(canonicalSampleKey)} empty="No aligned high-error samples." testId="materials-ml-high-error-table" />
     <div className="materials-ml-columns">
       <section><h3>Error by element</h3><p className="dataset-method-note">Element groups overlap; a material can appear in multiple rows.</p><GroupTable rows={records(chemistry.byElement)} /></section>
       <section><h3>Error by chemical system</h3><p className="dataset-method-note">Small groups remain visible and are marked by sample count.</p><GroupTable rows={records(chemistry.byChemicalSystem)} /></section>
@@ -109,7 +131,7 @@ function UncertaintyView({ evaluation }: { evaluation: JsonRecord }) {
     <h3>Equal-count reliability bins</h3>
     <DataTable columns={["Bin", "Samples", "Mean uncertainty", "Mean absolute error"]} rows={records(reliability.bins).map((row) => [integer(row.bin), integer(row.sampleCount), format(row.meanUncertainty), format(row.meanAbsoluteError)])} empty="No reliability bins." testId="materials-ml-reliability-table" />
     <h3>Highest uncertainty samples</h3>
-    <DataTable columns={["Sample", "Formula", "Uncertainty", "Absolute error"]} rows={records(evaluation.highUncertaintySamples).map((row) => [text(row.sampleRef), text(row.formula), format(row.uncertainty), format(row.absoluteError)])} empty="No aligned uncertainty samples." testId="materials-ml-high-uncertainty-table" />
+    <DataTable columns={["Sample key", "Sample", "Formula", "Uncertainty", "Absolute error"]} rows={records(evaluation.highUncertaintySamples).map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), format(row.uncertainty), format(row.absoluteError)])} rowKeys={records(evaluation.highUncertaintySamples).map(canonicalSampleKey)} empty="No aligned uncertainty samples." testId="materials-ml-high-uncertainty-table" />
     <Warnings values={textList(evaluation.warnings)} />
   </div>;
 }
@@ -131,7 +153,7 @@ function ClassificationView({ evaluation }: { evaluation: JsonRecord }) {
       <ChartFrame title="Precision-recall" note={`Average precision ${format(record(curves.precisionRecall).averagePrecision)}`}><LineChart points={records(record(curves.precisionRecall).points)} x="recall" y="precision" /></ChartFrame>
     </div> : <p className="empty-state" data-testid="materials-ml-curves-unavailable">ROC/PR unavailable: {text(curves.status)}.</p>}
     <h3>Misclassified samples</h3>
-    <DataTable columns={["Sample", "Formula", "Actual", "Predicted"]} rows={records(evaluation.misclassifiedSamples).map((row) => [text(row.sampleRef), text(row.formula), text(row.actualClass), text(row.predictedClass)])} empty="No bounded misclassified samples." testId="materials-ml-misclassified-table" />
+    <DataTable columns={["Sample key", "Sample", "Formula", "Actual", "Predicted"]} rows={records(evaluation.misclassifiedSamples).map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), text(row.actualClass), text(row.predictedClass)])} rowKeys={records(evaluation.misclassifiedSamples).map(canonicalSampleKey)} empty="No bounded misclassified samples." testId="materials-ml-misclassified-table" />
     <Warnings values={textList(evaluation.warnings)} />
   </div>;
 }
@@ -147,7 +169,7 @@ function ScatterChart({ points, x, y, reference = false }: { points: JsonRecord[
   return <svg className="materials-ml-chart" viewBox="0 0 560 260" role="img" aria-label={`${x} versus ${y}`}>
     <ChartAxes />
     {reference ? <line x1="42" y1="226" x2="536" y2="18" className="chart-reference" /> : null}
-    {mapped.map((point, index) => <circle key={index} cx={scale(point.x, bounds.minX, bounds.maxX, 42, 536)} cy={scale(point.y, bounds.minY, bounds.maxY, 226, 18)} r="3.5"><title>{[text(point.source.sampleRef), text(point.source.formula), `${x}=${format(point.x)}`, `${y}=${format(point.y)}`, point.source.absoluteError !== undefined ? `absolute error=${format(point.source.absoluteError)}` : ""].filter(Boolean).join("; ")}</title></circle>)}
+    {mapped.map((point) => <circle key={canonicalSampleKey(point.source)} cx={scale(point.x, bounds.minX, bounds.maxX, 42, 536)} cy={scale(point.y, bounds.minY, bounds.maxY, 226, 18)} r="3.5"><title>{[canonicalSampleKey(point.source), text(point.source.formula), `${x}=${format(point.x)}`, `${y}=${format(point.y)}`, point.source.absoluteError !== undefined ? `absolute error=${format(point.source.absoluteError)}` : ""].filter(Boolean).join("; ")}</title></circle>)}
     <text x="280" y="255">{x}</text><text x="12" y="130" transform="rotate(-90 12 130)">{y}</text>
   </svg>;
 }
@@ -171,12 +193,12 @@ function Field({ label, value }: { label: string; value: string }) { return <div
 function GroupTable({ rows }: { rows: JsonRecord[] }) { return <DataTable columns={["Group", "Samples", "MAE", "RMSE"]} rows={rows.map((row) => [text(row.group), integer(row.sampleCount), format(row.mae), format(row.rmse)])} empty="No chemistry grouping." />; }
 function Warnings({ values }: { values: string[] }) { return values.length ? <div className="warning-list" role="status">{values.map((value) => <span className="badge" key={value}>{value}</span>)}</div> : null; }
 
-function DataTable({ columns, rows, empty, testId }: { columns: string[]; rows: string[][]; empty: string; testId?: string }) {
+function DataTable({ columns, rows, rowKeys, empty, testId }: { columns: string[]; rows: string[][]; rowKeys?: string[]; empty: string; testId?: string }) {
   if (!rows.length) return <p className="empty-state">{empty}</p>;
-  return <div className="compact-table-wrap" data-testid={testId}><table className="compact-table"><thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={index}>{row.map((value, column) => <td key={column}>{value || "-"}</td>)}</tr>)}</tbody></table></div>;
+  return <div className="compact-table-wrap" data-testid={testId}><table className="compact-table"><thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={rowKeys?.[index] || index}>{row.map((value, column) => <td key={column}>{value || "-"}</td>)}</tr>)}</tbody></table></div>;
 }
 
-function validatePayload(payload: JsonRecord | null, product: typeof PRODUCTS[number]): { ok: true; payload: JsonRecord } | { ok: false; reason: string } {
+export function validateMaterialsMlPayload(payload: JsonRecord | null, product: typeof PRODUCTS[number]): { ok: true; payload: JsonRecord } | { ok: false; reason: string } {
   if (!payload || payload.schemaVersion !== product.schema || payload.artifactType !== `ml.${product.kind}_evaluation`) return { ok: false, reason: "MATERIALS_ML_SCHEMA_UNSUPPORTED" };
   const dataset = record(payload.dataset);
   const security = record(payload.security);
@@ -197,16 +219,27 @@ function validatePayload(payload: JsonRecord | null, product: typeof PRODUCTS[nu
     || records(record(record(item.curves).roc).points).length > CAPS.curvePoints
     || records(record(record(item.curves).precisionRecall).points).length > CAPS.curvePoints);
   if (overCap) return { ok: false, reason: "MATERIALS_ML_PREVIEW_CAP_EXCEEDED" };
+  const sampleRows = evaluations.flatMap((item) => [
+    ...records(item.parityPoints),
+    ...records(item.uncertaintyErrorPoints),
+    ...records(item.highErrorSamples),
+    ...records(item.highUncertaintySamples),
+    ...records(item.misclassifiedSamples),
+    ...records(item.sampleRows),
+  ]);
+  if (sampleRows.some((item) => !validSampleIdentity(item))) return { ok: false, reason: "MATERIALS_ML_SAMPLE_IDENTITY_INVALID" };
   return { ok: true, payload };
 }
 
-function artifactPayload(artifact: Artifact): JsonRecord | null {
-  const metadata = record(artifact.metadata);
-  for (const candidate of [artifact.content, artifact.payload, metadata.content, metadata.payload, metadata.preview]) {
-    if (isRecord(candidate)) return candidate;
-    if (typeof candidate === "string") { try { const parsed = JSON.parse(candidate); if (isRecord(parsed)) return parsed; } catch { /* inert fallback */ } }
-  }
-  return null;
+function validSampleIdentity(value: JsonRecord): boolean {
+  const objectId = text(value.objectId);
+  const sampleRef = text(value.sampleRef);
+  return Boolean(objectId && sampleRef && value.sampleKey === `${objectId}:${sampleRef}` && Number.isSafeInteger(value.rowIndex) && Number(value.rowIndex) >= 0);
+}
+
+export function validateMaterialsMlProductPayload(id: MaterialIntelligenceProductId, payload: JsonRecord | null): { ok: true; payload: JsonRecord } | { ok: false; reason: string } {
+  const product = PRODUCTS.find((item) => item.id === id);
+  return product ? validateMaterialsMlPayload(payload, product) : { ok: false, reason: "MATERIALS_ML_PRODUCT_UNKNOWN" };
 }
 
 function chartBounds(points: { x: number; y: number }[]) { const xs = points.map((item) => item.x); const ys = points.map((item) => item.y); return { minX: Math.min(...xs, 0), maxX: Math.max(...xs, 1), minY: Math.min(...ys, 0), maxY: Math.max(...ys, 1) }; }

@@ -1,0 +1,10 @@
+{
+  "marker": "MATERIAL_INTELLIGENCE_PROFILE_AUTHORITY_EVIDENCE_PASS",
+  "products": [
+    "10K-2",
+    "10K-3",
+    "10K-4"
+  ],
+  "profileContractVersion": "2.0",
+  "roleInferenceRepeated": false
+}

@@ -21,6 +21,7 @@ implementation.
 | Dataset | ML error/uncertainty coloring | READY | Conditional | No | Explicit Phase 10K-3 artifact binding by `objectId + sampleRef` |
 | Dataset | Shared composition-space dataset comparison | READY | Conditional | No | Explicit group/resource identity and one shared basis/PCA fit |
 | Dataset | Composition-space sample inspection | READY | Yes | No | Stable object-qualified sample keys with numeric table fallback |
+| Dataset | Integrated Material Intelligence product surface | READY | Yes | No | Profile-authoritative K2/K3/K4 states with exact revision/resource binding and partial-failure isolation |
 | Dataset | UMAP projection | FUTURE | No | Yes | No dependency or implementation in Phase 10K-4 |
 | Dataset | t-SNE projection | FUTURE | No | Yes | Not implemented; no baseline requirement |
 | Dataset | Learned material embeddings | FUTURE | No | Yes | No pretrained/foundation-model embedding authority |

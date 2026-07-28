@@ -24,10 +24,12 @@ from ..ml_common import coerce_dataframe
 
 COMPOSITION_SPACE_SCHEMA_VERSION = "phase10k4.composition_space.v1"
 COMPOSITION_SPACE_TOOL_ID = "dataset.composition_space"
-_ML_SCHEMA_PREFIXES = (
-    "phase10k3.materials_ml_regression.",
-    "phase10k3.materials_ml_uncertainty.",
+_ML_SCHEMA_VERSIONS = (
+    "phase10k3.materials_ml_regression.v1",
+    "phase10k3.materials_ml_uncertainty.v1",
 )
+_MAX_UPSTREAM_ML_EVALUATIONS = 32
+_MAX_UPSTREAM_ML_SAMPLE_ROWS = 50_000
 
 
 @dataclass(frozen=True)
@@ -103,6 +105,8 @@ class CompositionSpaceAdapter(BaseToolAdapter):
                 "object_not_profiled",
                 objectIds=unknown,
             )
+        for artifact in ml_artifacts:
+            _validate_ml_artifact_binding(artifact, profile)
         return PreparedCompositionSpace(profile=profile, tables=tables, ml_artifacts=tuple(ml_artifacts))
 
     def run(self, prepared: PreparedCompositionSpace, params: dict[str, Any]) -> CompositionSpaceResult:
@@ -169,6 +173,7 @@ class CompositionSpaceAdapter(BaseToolAdapter):
         outliers = _outlier_candidates(matrix, samples, limits["maxOutlierRows"])
         comparison = _comparison_payload(params, samples, matrix)
         available_colors = _color_options(points, property_units, prepared.ml_artifacts, params)
+        upstream_ml_bindings = _upstream_ml_bindings(prepared.ml_artifacts)
 
         explained = [float(value) for value in pca.explained_variance_ratio_]
         payload = {
@@ -206,6 +211,7 @@ class CompositionSpaceAdapter(BaseToolAdapter):
                 "default": "cluster" if clustering["status"] == "READY" else "chemical_system",
                 "scientificAuthority": "descriptive_visual_encoding_only",
             },
+            "upstreamMlBindings": upstream_ml_bindings,
             "points": points,
             "displaySampleRefs": display_sample_refs,
             "displayPointKeys": display_point_keys,
@@ -254,8 +260,14 @@ class CompositionSpaceAdapter(BaseToolAdapter):
                 artifact_types=sorted(requested, key=lambda item: item.value),
             )
             recipe["semanticBinding"] = {
+                "datasetId": result.payload["dataset"]["datasetId"],
+                "datasetVersion": result.payload["dataset"]["datasetVersion"],
                 "profileId": result.payload["dataset"]["profileId"],
+                "profileContractVersion": result.payload["dataset"]["profileContractVersion"],
                 "semanticHash": result.payload["dataset"]["semanticHash"],
+                "datasetContentHash": result.payload["dataset"]["datasetContentHash"],
+                "resourceBindings": result.payload["dataset"]["resourceBindings"],
+                "upstreamMlBindings": result.payload["upstreamMlBindings"],
                 "roleInferenceRepeated": False,
             }
             recipe["algorithm"] = {
@@ -559,7 +571,13 @@ def _ml_values(artifacts: tuple[Mapping[str, Any], ...]) -> dict[tuple[str, str]
 def _outlier_candidates(matrix: np.ndarray, samples: list[_Sample], limit: int) -> list[dict[str, Any]]:
     centroid = np.mean(matrix, axis=0)
     distances = np.linalg.norm(matrix - centroid, axis=1)
-    ordered = sorted(range(len(samples)), key=lambda index: (-float(distances[index]), samples[index].sample_ref))
+    ordered = sorted(
+        range(len(samples)),
+        key=lambda index: (
+            -float(distances[index]),
+            f"{samples[index].object_id}:{samples[index].sample_ref}",
+        ),
+    )
     return [
         {
             "rank": rank + 1,
@@ -622,15 +640,22 @@ def _color_options(
                     "source": "material_data_profile_2_material_property",
                 }
             )
+    ml_metadata = _ml_color_metadata(ml_artifacts)
     ml_keys = sorted({key for point in points for key in point["mlValues"]})
     for key in ml_keys:
+        matched_samples = sum(key in point["mlValues"] for point in points)
         options.append(
             {
                 "id": f"ml:{key}",
                 "kind": "continuous",
                 "label": key,
-                "unit": None,
+                "unit": ml_metadata.get(key),
                 "source": "phase10k3_sample_bound_artifact",
+                "coverage": {
+                    "totalSamples": len(points),
+                    "matchedSamples": matched_samples,
+                    "missingSamples": len(points) - matched_samples,
+                },
             }
         )
     requested = params.get("colorBy")
@@ -730,20 +755,18 @@ def _limits(context: ToolExecutionContext, params: Mapping[str, Any]) -> dict[st
 
 
 def _dataset_binding(profile: DataProfile) -> dict[str, Any]:
+    resource_bindings = [
+        {"objectId": item.objectId, "objectHash": item.objectHash, "objectType": item.objectType}
+        for item in sorted(profile.resourceSemantics, key=lambda value: value.objectId)
+    ]
     return {
         "datasetId": profile.datasetId,
         "datasetVersion": profile.version,
         "profileId": profile.profileId,
         "profileContractVersion": profile.profileContractVersion,
         "semanticHash": profile.semanticHash,
-        "datasetContentHash": content_hash(
-            stable_json_dumps(
-                [
-                    {"objectId": item.objectId, "objectHash": item.objectHash, "objectType": item.objectType}
-                    for item in sorted(profile.resourceSemantics, key=lambda value: value.objectId)
-                ]
-            )
-        ),
+        "datasetContentHash": content_hash(resource_bindings),
+        "resourceBindings": resource_bindings,
     }
 
 
@@ -775,9 +798,13 @@ def _coerce_profile(value: Any) -> DataProfile | None:
 
 
 def _is_supported_ml_artifact(value: Any) -> bool:
-    if not isinstance(value, Mapping) or not any(
-        str(value.get("schemaVersion") or "").startswith(prefix) for prefix in _ML_SCHEMA_PREFIXES
-    ):
+    if not isinstance(value, Mapping) or str(value.get("schemaVersion") or "") not in _ML_SCHEMA_VERSIONS:
+        return False
+    expected_type = {
+        "phase10k3.materials_ml_regression.v1": "ml.regression_evaluation",
+        "phase10k3.materials_ml_uncertainty.v1": "ml.uncertainty_evaluation",
+    }[str(value.get("schemaVersion"))]
+    if value.get("artifactType") != expected_type:
         return False
     security = value.get("security")
     return (
@@ -785,6 +812,117 @@ def _is_supported_ml_artifact(value: Any) -> bool:
         and isinstance(security, Mapping)
         and security == _security()
     )
+
+
+def _validate_ml_artifact_binding(artifact: Mapping[str, Any], profile: DataProfile) -> None:
+    dataset = artifact.get("dataset")
+    if not isinstance(dataset, Mapping):
+        raise _input_error(
+            "Phase 10K-3 artifact is missing its dataset/Profile binding.",
+            "ml_artifact_binding_missing",
+        )
+    expected = _dataset_binding(profile)
+    fields = (
+        "datasetId",
+        "datasetVersion",
+        "profileId",
+        "profileContractVersion",
+        "semanticHash",
+        "datasetContentHash",
+        "resourceBindings",
+    )
+    mismatches = [field for field in fields if dataset.get(field) != expected[field]]
+    if mismatches:
+        raise _input_error(
+            "Phase 10K-3 artifact does not match the active dataset/Profile revision.",
+            "ml_artifact_binding_mismatch",
+            fields=mismatches,
+        )
+    evaluations = artifact.get("evaluations")
+    if not isinstance(evaluations, list) or len(evaluations) > _MAX_UPSTREAM_ML_EVALUATIONS or not all(isinstance(item, Mapping) for item in evaluations):
+        raise _input_error(
+            "Phase 10K-3 artifact evaluations are malformed or exceed the integration cap.",
+            "ml_artifact_shape_invalid",
+        )
+    sample_row_count = 0
+    for evaluation in evaluations:
+        for collection in (
+            "parityPoints",
+            "uncertaintyErrorPoints",
+            "highErrorSamples",
+            "sampleRows",
+            "highUncertaintySamples",
+        ):
+            samples = evaluation.get(collection) or []
+            if not isinstance(samples, list) or not all(isinstance(item, Mapping) for item in samples):
+                raise _input_error(
+                    "Phase 10K-3 artifact sample rows are malformed.",
+                    "ml_artifact_shape_invalid",
+                    collection=collection,
+                )
+            sample_row_count += len(samples)
+            if sample_row_count > _MAX_UPSTREAM_ML_SAMPLE_ROWS:
+                raise _input_error(
+                    "Phase 10K-3 artifact sample rows exceed the integration cap.",
+                    "ml_artifact_sample_cap_exceeded",
+                    maxSampleRows=_MAX_UPSTREAM_ML_SAMPLE_ROWS,
+                )
+            for sample in samples:
+                object_id = sample.get("objectId")
+                sample_ref = sample.get("sampleRef")
+                sample_key = sample.get("sampleKey")
+                row_index = sample.get("rowIndex")
+                if (
+                    not isinstance(object_id, str)
+                    or not object_id
+                    or not isinstance(sample_ref, str)
+                    or not sample_ref
+                    or sample_key != f"{object_id}:{sample_ref}"
+                    or isinstance(row_index, bool)
+                    or not isinstance(row_index, int)
+                    or row_index < 0
+                ):
+                    raise _input_error(
+                        "Phase 10K-3 artifact contains an inconsistent sample identity.",
+                        "ml_artifact_sample_identity_mismatch",
+                    )
+
+
+def _ml_color_metadata(artifacts: tuple[Mapping[str, Any], ...]) -> dict[str, str | None]:
+    metadata_by_key: dict[str, str | None] = {}
+    for artifact in artifacts:
+        for evaluation in artifact.get("evaluations") or []:
+            task_id = str(evaluation.get("taskId") or evaluation.get("groupId") or "task")
+            result_unit = evaluation.get("unit")
+            uncertainty_unit = evaluation.get("uncertaintyUnit", result_unit)
+            metadata_by_key[f"{task_id}:absolute_error"] = str(result_unit) if result_unit else None
+            metadata_by_key[f"{task_id}:residual"] = str(result_unit) if result_unit else None
+            metadata_by_key[f"{task_id}:uncertainty"] = str(uncertainty_unit) if uncertainty_unit else None
+    return metadata_by_key
+
+
+def _upstream_ml_bindings(artifacts: tuple[Mapping[str, Any], ...]) -> list[dict[str, Any]]:
+    dataset_fields = (
+        "datasetId",
+        "datasetVersion",
+        "profileId",
+        "profileContractVersion",
+        "semanticHash",
+        "datasetContentHash",
+    )
+    return [
+        {
+            "schemaVersion": str(artifact.get("schemaVersion")),
+            "artifactType": str(artifact.get("artifactType") or ""),
+            "contentHash": content_hash(artifact),
+            "dataset": {
+                field: artifact["dataset"].get(field)
+                for field in dataset_fields
+                if artifact["dataset"].get(field) is not None
+            },
+        }
+        for artifact in artifacts
+    ]
 
 
 def _looks_like_table(value: Any) -> bool:

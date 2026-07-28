@@ -1,0 +1,60 @@
+{
+  "compositionSpace": {
+    "chemicalSystem": "As-Ga",
+    "cluster": 2,
+    "coordinates": [
+      -0.21213203435596423,
+      -0.3932548469799634
+    ],
+    "elementFractions": {
+      "As": 0.5,
+      "Ga": 0.5
+    },
+    "formula": "GaAs",
+    "group": "test",
+    "identitySource": "explicit_column",
+    "mlValues": {
+      "obj_integrated:regression:default:default:absolute_error": 0.20000000000000018,
+      "obj_integrated:regression:default:default:residual": -0.20000000000000018,
+      "obj_integrated:regression:default:default:uncertainty": 0.2
+    },
+    "objectId": "obj_integrated",
+    "propertyValues": {
+      "band_gap": 1.42
+    },
+    "reducedFormula": "GaAs",
+    "rowIndex": 4,
+    "sampleKey": "obj_integrated:gaas-1",
+    "sampleRef": "gaas-1"
+  },
+  "datasetExplorer": {
+    "formula": "GaAs",
+    "identitySource": "explicit_column",
+    "objectId": "obj_integrated",
+    "properties": {
+      "band_gap": 1.42
+    },
+    "reducedFormula": "GaAs",
+    "rowIndex": 4,
+    "sampleKey": "obj_integrated:gaas-1",
+    "sampleRef": "gaas-1"
+  },
+  "marker": "MATERIAL_INTELLIGENCE_SAMPLE_IDENTITY_EVIDENCE_PASS",
+  "materialsMl": {
+    "absoluteError": 0.20000000000000018,
+    "chemicalSystem": "As-Ga",
+    "formula": "GaAs",
+    "identitySource": "explicit_column",
+    "objectId": "obj_integrated",
+    "prediction": 4.8,
+    "reducedFormula": "GaAs",
+    "residual": -0.20000000000000018,
+    "rowIndex": 4,
+    "sampleKey": "obj_integrated:gaas-1",
+    "sampleRef": "gaas-1",
+    "target": 5.0,
+    "uncertainty": 0.2
+  },
+  "sampleKey": "obj_integrated:gaas-1",
+  "sourcePolicy": "objectId:sampleRef"
+}

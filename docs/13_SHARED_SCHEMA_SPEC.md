@@ -1708,3 +1708,40 @@ PCA coordinates and clusters are descriptive. They are not canonical material
 identity, structural similarity, material-family classification, or scientific
 validity. UMAP, t-SNE, learned embeddings, model fitting, external calls, and
 browser-side scientific calculation are not part of this contract.
+
+## Phase 10K-5 Material Intelligence Integration Binding
+
+Current K2/K3/K4 product artifacts carry one exact application-owned binding:
+
+```json
+{
+  "datasetId": "dataset-id",
+  "datasetVersion": "2",
+  "profileId": "profile-id",
+  "profileContractVersion": "2.0",
+  "semanticHash": "sha256",
+  "datasetContentHash": "sha256",
+  "resourceBindings": [
+    {"objectId": "object-id", "objectType": "DataFrame", "objectHash": "sha256"}
+  ]
+}
+```
+
+Cross-product consumption requires exact equality of every field. Resource
+binding order is canonicalized by object ID before hashing/signature checks.
+Missing values do not act as wildcards. A mismatch is stale/foreign input and
+cannot be repaired by selecting the latest Profile.
+
+Sample-bearing K2/K3/K4 records use:
+
+```text
+sampleKey = objectId + ":" + sampleRef
+```
+
+The key is immutable within the artifact. Array position, plot order, PCA
+coordinates, row order across resources, or display sampling cannot replace
+it. K4 dependent ML inputs additionally record the exact upstream artifact
+schema, type, content hash, and dataset binding.
+
+These additive artifact fields do not change AnalysisPlan, PlanValidator, or
+QueueWorkerRuntime step semantics.

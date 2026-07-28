@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Artifact } from "../../lib/planner-api";
+import { artifactPayload, inspectMaterialIntelligenceArtifacts, type JsonRecord } from "../material-intelligence/materialIntelligenceIntegration";
 
-type JsonRecord = Record<string, unknown>;
 type ValidationResult = { ok: true; payload: JsonRecord } | { ok: false; reason: string };
 
 const SCHEMA_VERSION = "phase10k4.composition_space.v1";
@@ -28,9 +28,15 @@ const COLOR_SOURCES = new Set([
 export function CompositionSpaceExplorerPanel({ artifacts }: { artifacts: Artifact[] }) {
   const artifact = artifacts.find((item) => item.name === "composition_space.json");
   if (!artifact) return null;
+  const integration = inspectMaterialIntelligenceArtifacts(artifacts, (id, payload) => {
+    if (id !== "composition_space") return null;
+    const validation = validateCompositionSpacePayload(payload);
+    return validation.ok ? null : validation.reason;
+  });
+  const assessment = integration.products.find((item) => item.id === "composition_space");
   return (
     <section className="panel composition-space" data-testid="composition-space-explorer" aria-label="Composition Space Explorer">
-      <CompositionSpaceContent artifact={artifact} standalone />
+      <CompositionSpaceContent artifact={artifact} standalone integrationReason={assessment?.state !== "PRODUCED" ? assessment?.reason : undefined} />
     </section>
   );
 }
@@ -41,17 +47,17 @@ export function CompositionSpaceExplorerBody({ artifacts }: { artifacts: Artifac
   return <CompositionSpaceContent artifact={artifact} standalone={false} />;
 }
 
-function CompositionSpaceContent({ artifact, standalone }: { artifact: Artifact; standalone: boolean }) {
+function CompositionSpaceContent({ artifact, standalone, integrationReason }: { artifact: Artifact; standalone: boolean; integrationReason?: string }) {
   const payload = useMemo(() => artifactPayload(artifact), [artifact]);
-  const validation = useMemo(() => validatePayload(payload), [payload]);
+  const validation = useMemo(() => validateCompositionSpacePayload(payload), [payload]);
   const [requestedColor, setRequestedColor] = useState("");
   const [selectedKey, setSelectedKey] = useState("");
 
-  if (!validation.ok) {
+  if (!validation.ok || integrationReason) {
     return <div className="composition-space-invalid" data-testid="composition-space-invalid" role="status" aria-label="Composition Space validation status">
       {standalone ? <header className="panel-heading"><div><span>Profile 2.0 product</span><h2>Composition Space Explorer unavailable</h2></div><span className="badge">Rejected</span></header> : <h3>Composition Space unavailable</h3>}
       <p>The artifact was rejected before product rendering. Inert JSON remains available.</p>
-      <code>{validation.reason}</code>
+      <code>{integrationReason || (validation.ok ? "COMPOSITION_SPACE_INTEGRATION_INVALID" : validation.reason)}</code>
       <details><summary>Artifact JSON</summary><pre>{JSON.stringify(payload, null, 2)}</pre></details>
     </div>;
   }
@@ -169,6 +175,8 @@ function CompositionSpaceContent({ artifact, standalone }: { artifact: Artifact;
 }
 
 function CompositionScatter({ points, colorId, selectedKey, onSelect }: { points: JsonRecord[]; colorId: string; selectedKey: string; onSelect: (key: string) => void }) {
+  const [focusIndex, setFocusIndex] = useState(0);
+  const pointRefs = useRef<Array<SVGCircleElement | null>>([]);
   const mapped = points.map((point) => {
     const coordinates = numberList(point.coordinates);
     return { point, x: coordinates[0], y: coordinates[1], color: colorValue(point, colorId) };
@@ -179,10 +187,18 @@ function CompositionScatter({ points, colorId, selectedKey, onSelect }: { points
   const yBounds = paddedBounds(ys);
   const continuous = mapped.map((item) => typeof item.color === "number" ? item.color : null).filter((value): value is number => value !== null);
   const colorBounds = simpleBounds(continuous);
+  useEffect(() => {
+    if (focusIndex >= mapped.length) setFocusIndex(Math.max(0, mapped.length - 1));
+  }, [focusIndex, mapped.length]);
+  function moveFocus(index: number) {
+    const bounded = Math.max(0, Math.min(mapped.length - 1, index));
+    setFocusIndex(bounded);
+    pointRefs.current[bounded]?.focus();
+  }
   return <svg className="composition-space-chart" viewBox="0 0 720 400" role="img" aria-label={`PCA composition scatter colored by ${colorId}`}>
     <line x1="58" y1="350" x2="694" y2="350" className="composition-space-axis" />
     <line x1="58" y1="24" x2="58" y2="350" className="composition-space-axis" />
-    {mapped.map(({ point, x, y, color }) => {
+    {mapped.map(({ point, x, y, color }, index) => {
       const key = pointKey(point);
       const selected = key === selectedKey;
       const label = `${text(point.sampleRef)}, ${text(point.formula) || "formula unavailable"}, PC1 ${format(x)}, PC2 ${format(y)}`;
@@ -194,14 +210,27 @@ function CompositionScatter({ points, colorId, selectedKey, onSelect }: { points
         fill={pointColor(color, colorBounds)}
         className={selected ? "selected" : ""}
         role="button"
-        tabIndex={0}
+        tabIndex={index === focusIndex ? 0 : -1}
+        ref={(node) => { pointRefs.current[index] = node; }}
         aria-label={label}
         aria-pressed={selected}
-        onClick={() => onSelect(key)}
+        onClick={() => { setFocusIndex(index); onSelect(key); }}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
             onSelect(key);
+          } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+            event.preventDefault();
+            moveFocus((index + 1) % mapped.length);
+          } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+            event.preventDefault();
+            moveFocus((index - 1 + mapped.length) % mapped.length);
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            moveFocus(0);
+          } else if (event.key === "End") {
+            event.preventDefault();
+            moveFocus(mapped.length - 1);
           }
         }}
       ><title>{label}; {colorId}={String(color ?? "unavailable")}</title></circle>;
@@ -249,7 +278,7 @@ function Field({ label, value }: { label: string; value: string }) {
   return <div><dt>{label}</dt><dd>{value || "-"}</dd></div>;
 }
 
-function validatePayload(payload: JsonRecord | null): ValidationResult {
+export function validateCompositionSpacePayload(payload: JsonRecord | null): ValidationResult {
   if (!payload || payload.schemaVersion !== SCHEMA_VERSION || payload.artifactType !== "dataset.composition_space") return { ok: false, reason: "COMPOSITION_SPACE_SCHEMA_UNSUPPORTED" };
   const dataset = record(payload.dataset);
   if (!safeText(dataset.datasetId) || !safeText(dataset.profileId) || dataset.profileContractVersion !== "2.0" || !hashText(dataset.semanticHash)) return { ok: false, reason: "COMPOSITION_SPACE_PROFILE_BINDING_INVALID" };
@@ -376,17 +405,6 @@ function collectWarnings(payload: JsonRecord, coverage: JsonRecord): string[] {
   if (Number.isFinite(invalidCount) && invalidCount > 0) values.push(`${invalidCount} composition rows were excluded by the backend parser; no silent drops were used.`);
   for (const item of records(coverage.invalidExamples)) values.push(`${text(item.objectId)} row ${integer(item.rowIndex)}: ${text(item.reason)}`);
   return values.slice(0, MAX_WARNINGS);
-}
-
-function artifactPayload(artifact: Artifact): JsonRecord | null {
-  const metadata = record(artifact.metadata);
-  for (const candidate of [artifact.content, artifact.payload, metadata.content, metadata.payload, metadata.preview]) {
-    if (isRecord(candidate)) return candidate;
-    if (typeof candidate === "string") {
-      try { const parsed = JSON.parse(candidate); if (isRecord(parsed)) return parsed; } catch { /* inert fallback */ }
-    }
-  }
-  return null;
 }
 
 function pointKey(point: JsonRecord): string { return text(point.sampleKey); }

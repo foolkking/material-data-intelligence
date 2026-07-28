@@ -393,6 +393,120 @@ def test_phase10k4_service_backed_composition_space_product_closure(tmp_path: Pa
 
 
 @pytest.mark.integration
+def test_phase10k5_service_backed_material_intelligence_integration_closure(tmp_path: Path) -> None:
+    if os.getenv("MDI_RUN_INTEGRATION") != "1":
+        pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
+    database_url = os.getenv("MDI_TEST_DATABASE_URL") or os.getenv("DATABASE_URL")
+    redis_url = os.getenv("REDIS_URL") or os.getenv("MDI_REDIS_URL")
+    if not database_url or "postgres" not in database_url or not redis_url:
+        pytest.skip("Service-backed Phase 10K-5 environment is incomplete")
+
+    engine = create_engine(database_url, future=True)
+    try:
+        metadata.create_all(engine)
+        repos = SqlAlchemyRepositoryBundle.create(engine)
+        suffix = uuid.uuid4().hex[:10]
+        project_id = f"project_phase10k5_{suffix}"
+        dataset_id = f"dataset_phase10k5_{suffix}"
+        repos.projects.save({"id": project_id, "name": project_id, "createdBy": "test_user"})
+        repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": dataset_id, "createdBy": "test_user"})
+
+        profile, objects = _materials_ml_profile(tmp_path, dataset_id)
+        assert profile.profileContractVersion == "2.0"
+        object_store, _ = build_object_store(objects, profile=profile)
+        registry = load_manifests()
+        storage = _minio_storage(f"phase10k5-material-intelligence-{suffix}")
+        runtime = QueueWorkerRuntime(
+            repository_factory=create_repository_factory(load_settings()),
+            queue_backend=RedisRQQueueBackend(redis_url=redis_url, queue_name="mdi-test-phase10k5-material-intelligence"),
+            artifact_storage=storage,
+            registry=registry,
+            artifact_root=tmp_path / "adapter-artifacts",
+        )
+        cases = (
+            (
+                "Explore this materials dataset and summarize composition and properties.",
+                "dataset.materials_explorer",
+                "dataset_materials_explorer.json",
+            ),
+            (
+                "Analyze model performance and prediction error.",
+                "ml.regression_evaluation",
+                "materials_ml_regression.json",
+            ),
+            (
+                "Explore this composition space with PCA and composition clustering.",
+                "dataset.composition_space",
+                "composition_space.json",
+            ),
+        )
+        products: dict[str, dict[str, Any]] = {}
+        job_ids: list[str] = []
+
+        for prompt, tool_id, product_name in cases:
+            plan = _planner_plan(prompt, profile)
+            assert len(plan["steps"]) == 1
+            assert plan["steps"][0]["toolId"] == tool_id
+            assert validate_plan(plan, registry=registry).ok
+            created = planner_jobs(
+                PlannerJobsRequest(
+                    userPrompt=prompt,
+                    projectId=project_id,
+                    datasetId=dataset_id,
+                    profileId=profile.profileId,
+                    enqueue=True,
+                ),
+                provider=MockLLMProvider(fixed_plan=plan),
+                repositories=repos,
+                queue_runtime=runtime,
+                registry=registry,
+            )
+            assert created.ok and created.job_id and created.plan_id and created.enqueued
+            result = runtime.handle_job(created.job_id, object_store=object_store)
+            artifacts = repos.artifacts.list_for_job(created.job_id)
+            calls = repos.tool_calls.list_for_job(created.job_id)
+            assert result.status == "completed"
+            assert len(calls) == 1 and calls[0]["toolId"] == tool_id
+            assert all(item["storageProvider"] == "s3" for item in artifacts)
+            assert all(storage.exists(item["storageKey"]) for item in artifacts)
+            product_record = next(item for item in artifacts if item["name"] == product_name)
+            products[tool_id] = storage.get_json(product_record["storageKey"])
+            job_ids.append(created.job_id)
+
+        assert len(set(job_ids)) == len(cases)
+        binding_keys = ("datasetId", "datasetVersion", "profileId", "profileContractVersion", "semanticHash")
+        bindings = {
+            tuple(product["dataset"][key] for key in binding_keys)
+            for product in products.values()
+        }
+        assert bindings == {
+            (dataset_id, profile.version, profile.profileId, "2.0", profile.semanticHash)
+        }
+
+        dataset_product = products["dataset.materials_explorer"]
+        regression_product = products["ml.regression_evaluation"]
+        composition_product = products["dataset.composition_space"]
+        dataset_samples = dataset_product["sampleIndex"]
+        regression_samples = [
+            sample
+            for evaluation in regression_product["evaluations"]
+            for sample in evaluation["highErrorSamples"]
+        ]
+        composition_samples = composition_product["points"]
+        for sample in (*dataset_samples, *regression_samples, *composition_samples):
+            assert sample["sampleKey"] == f'{sample["objectId"]}:{sample["sampleRef"]}'
+
+        dataset_sample_keys = {sample["sampleKey"] for sample in dataset_samples}
+        regression_sample_keys = {sample["sampleKey"] for sample in regression_samples}
+        composition_sample_keys = {sample["sampleKey"] for sample in composition_samples}
+        assert dataset_sample_keys == composition_sample_keys
+        assert regression_sample_keys
+        assert regression_sample_keys.issubset(dataset_sample_keys)
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.integration
 def test_phase10j1_service_backed_volumetric_parser_adapter_closure(tmp_path: Path) -> None:
     if os.getenv("MDI_RUN_INTEGRATION") != "1":
         pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")

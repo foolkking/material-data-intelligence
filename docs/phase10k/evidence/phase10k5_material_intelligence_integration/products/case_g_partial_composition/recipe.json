@@ -1,0 +1,68 @@
+{
+  "algorithm": {
+    "clustering": "kmeans_lloyd",
+    "clusteringFeatureSpace": "normalized_atomic_fraction",
+    "features": "normalized_atomic_fraction",
+    "pcaSignConvention": "largest_absolute_loading_is_positive",
+    "projection": "centered_unscaled_pca_full_svd"
+  },
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Composition Space Explorer",
+  "projectId": "project_phase10k4_evidence",
+  "recipeId": "recipe_call_job_05b6e894bdec58a2b67720a0_step_001",
+  "schemaVersion": "0.1",
+  "semanticBinding": {
+    "datasetContentHash": "3edac3cf62b4dc6f457696dabce3b1e707ab6f199666511265f337b9b56236d0",
+    "datasetId": "dataset_phase10k5_partial",
+    "datasetVersion": "2",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_partial_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "ce96d0d5aa9069ee1ebaf94867b6d964432b417f38f9007ec2aabdfcee8ae0cd",
+        "objectId": "obj_partial",
+        "objectType": "DataFrame"
+      }
+    ],
+    "roleInferenceRepeated": false,
+    "semanticHash": "d47e239be4c94db630449940d733b25cbfa436d06625b1f3c1ccb0d87604fb53",
+    "upstreamMlBindings": []
+  },
+  "sourceJobId": "job_05b6e894bdec58a2b67720a0",
+  "steps": [
+    {
+      "artifactTypes": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "clusteringEnabled": true,
+        "comparisonMode": "none",
+        "maxIterations": 300,
+        "maxOutlierRows": 50,
+        "maxPlotPoints": 5000,
+        "nClusters": 3,
+        "nInit": 10,
+        "projectionDimensions": 2,
+        "randomState": 0,
+        "tableObjectId": "obj_partial",
+        "tolerance": 0.0001
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "dataset.composition_space",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

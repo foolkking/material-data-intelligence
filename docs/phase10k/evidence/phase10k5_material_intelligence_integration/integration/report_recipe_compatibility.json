@@ -1,0 +1,138 @@
+{
+  "marker": "MATERIAL_INTELLIGENCE_REPORT_RECIPE_COMPATIBILITY_PASS",
+  "recipeCompatibility": [
+    {
+      "binding": {
+        "datasetContentHash": "bd6519b6af7f40937447297a7298ba11c826fd2812d6cdbe572e2a1d21274f99",
+        "datasetId": "dataset_phase10k5_integrated",
+        "datasetVersion": "2",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_dataset_phase10k5_integrated_v2",
+        "resourceBindings": [
+          {
+            "objectHash": "d1d5b083252ba556cb950453e129ab1b98db9f1067d5c5ec9b8fbdfb963c367e",
+            "objectId": "obj_integrated",
+            "objectType": "DataFrame"
+          }
+        ],
+        "semanticHash": "6c8aefd9b7da5b4e512d2346b5e68bd6cf3343ab1755116657f4eab3c2248af5"
+      },
+      "params": {
+        "comparisonMode": "group",
+        "groupA": "train",
+        "groupB": "test",
+        "groupColumn": "split",
+        "histogramBins": 20,
+        "maxCategories": 50,
+        "maxProperties": 32,
+        "maxStructures": 256,
+        "maxTableRows": 100,
+        "symprec": 0.01,
+        "tableObjectId": "obj_integrated"
+      },
+      "recipeId": "recipe_call_job_2cb6790f23375c9baeaef31d_step_001",
+      "toolId": "dataset.materials_explorer"
+    },
+    {
+      "binding": {
+        "datasetContentHash": "bd6519b6af7f40937447297a7298ba11c826fd2812d6cdbe572e2a1d21274f99",
+        "datasetId": "dataset_phase10k5_integrated",
+        "datasetVersion": "2",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_dataset_phase10k5_integrated_v2",
+        "resourceBindings": [
+          {
+            "objectHash": "d1d5b083252ba556cb950453e129ab1b98db9f1067d5c5ec9b8fbdfb963c367e",
+            "objectId": "obj_integrated",
+            "objectType": "DataFrame"
+          }
+        ],
+        "semanticHash": "6c8aefd9b7da5b4e512d2346b5e68bd6cf3343ab1755116657f4eab3c2248af5"
+      },
+      "params": {
+        "groupIds": [
+          "obj_integrated:regression:default"
+        ],
+        "histogramBins": 30,
+        "maxChemistryGroups": 128,
+        "maxPlotPoints": 2000,
+        "maxTableRows": 100,
+        "minGroupSize": 3
+      },
+      "recipeId": "recipe_call_job_4a2bbbcd34d35c6e96b90353_step_001",
+      "toolId": "ml.regression_evaluation"
+    },
+    {
+      "binding": {
+        "datasetContentHash": "bd6519b6af7f40937447297a7298ba11c826fd2812d6cdbe572e2a1d21274f99",
+        "datasetId": "dataset_phase10k5_integrated",
+        "datasetVersion": "2",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_dataset_phase10k5_integrated_v2",
+        "resourceBindings": [
+          {
+            "objectHash": "d1d5b083252ba556cb950453e129ab1b98db9f1067d5c5ec9b8fbdfb963c367e",
+            "objectId": "obj_integrated",
+            "objectType": "DataFrame"
+          }
+        ],
+        "semanticHash": "6c8aefd9b7da5b4e512d2346b5e68bd6cf3343ab1755116657f4eab3c2248af5"
+      },
+      "params": {
+        "clusteringEnabled": true,
+        "colorBy": "ml:obj_integrated:regression:default:default:absolute_error",
+        "comparisonMode": "group",
+        "groupA": "train",
+        "groupB": "test",
+        "groupColumn": "split",
+        "maxIterations": 300,
+        "maxOutlierRows": 50,
+        "maxPlotPoints": 5000,
+        "nClusters": 3,
+        "nInit": 10,
+        "projectionDimensions": 2,
+        "randomState": 0,
+        "tableObjectId": "obj_integrated",
+        "tolerance": 0.0001
+      },
+      "recipeId": "recipe_call_job_0a8f27ae79425a63af4b9b69_step_001",
+      "toolId": "dataset.composition_space"
+    }
+  ],
+  "reportCompatibility": {
+    "artifactReferences": [
+      {
+        "artifactId": "call_job_2cb6790f23375c9baeaef31d_step_001-table_json",
+        "contentHash": "f43f0ab19f16d672e4db7ddf32d9ed75a0545a422f702355464b413a195ddd45",
+        "name": "dataset_materials_explorer.json",
+        "type": "table_json"
+      },
+      {
+        "artifactId": "call_job_2cb6790f23375c9baeaef31d_step_001-quality_issues_json",
+        "contentHash": "88988584ccc8e17a578f4831b6c2e10b8f886ec57b70c1fe87261f16c569496c",
+        "name": "dataset_quality.json",
+        "type": "quality_issues_json"
+      },
+      {
+        "artifactId": "call_job_4a2bbbcd34d35c6e96b90353_step_001-table_json",
+        "contentHash": "4e8f106dd531022974bd56af5e2e05f30e0699e29359422d8eafa9897c260b2d",
+        "name": "materials_ml_regression.json",
+        "type": "table_json"
+      },
+      {
+        "artifactId": "call_job_0a8f27ae79425a63af4b9b69_step_001-table_json",
+        "contentHash": "1ed4e0cf611c1897408844d31539be107736e08968f8e7c3f984b2ff771e44ea",
+        "name": "composition_space.json",
+        "type": "table_json"
+      },
+      {
+        "artifactId": "call_job_0a8f27ae79425a63af4b9b69_step_001-plotly_json",
+        "contentHash": "127ff3b8ad40ffffaaf1448b161466fc91da242942e1334d838b3816bc1aac10",
+        "name": "composition_space_plot.json",
+        "type": "plotly_json"
+      }
+    ],
+    "bindingPolicy": "persisted_artifact_id_and_content_hash",
+    "newReportImplementation": false
+  }
+}

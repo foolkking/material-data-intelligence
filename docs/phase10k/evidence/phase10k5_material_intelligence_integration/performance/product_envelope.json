@@ -1,0 +1,95 @@
+{
+  "acceptance": "PASS",
+  "marker": "MATERIAL_INTELLIGENCE_PERFORMANCE_EVIDENCE_PASS",
+  "medium": {
+    "composition": {
+      "artifactBytes": 2028220,
+      "caseId": "k5_medium",
+      "clusterCount": 3,
+      "displayPoints": 1000,
+      "elapsedMs": 980.987,
+      "featureDimensions": 10,
+      "inputRows": 5000,
+      "validSamples": 5000
+    },
+    "dataset": {
+      "artifactBytes": 28114,
+      "caseId": "k5_medium",
+      "chemicalSystemsMaterialized": 4,
+      "elapsedMs": 411.196,
+      "inputRows": 5000,
+      "propertyCount": 1,
+      "sampleRowsMaterialized": 100
+    },
+    "regression": {
+      "artifactBytes": 679932,
+      "caseId": "k5_medium",
+      "displayPoints": 2000,
+      "elapsedMs": 1473.496,
+      "evaluatedSamples": 5000,
+      "inputRows": 5000,
+      "toolId": "ml.regression_evaluation"
+    }
+  },
+  "nearCap": {
+    "composition": {
+      "artifactBytes": 8063785,
+      "caseId": "k5_near_cap",
+      "clusterCount": 3,
+      "displayPoints": 1000,
+      "elapsedMs": 3579.665,
+      "featureDimensions": 10,
+      "inputRows": 20000,
+      "validSamples": 20000
+    },
+    "dataset": {
+      "artifactBytes": 28597,
+      "caseId": "k5_near_cap",
+      "chemicalSystemsMaterialized": 4,
+      "elapsedMs": 7554.176,
+      "inputRows": 100000,
+      "propertyCount": 1,
+      "sampleRowsMaterialized": 100
+    },
+    "regression": {
+      "artifactBytes": 699850,
+      "caseId": "k5_near_cap",
+      "displayPoints": 2000,
+      "elapsedMs": 28068.832,
+      "evaluatedSamples": 100000,
+      "inputRows": 100000,
+      "toolId": "ml.regression_evaluation"
+    }
+  },
+  "small": {
+    "composition": {
+      "artifactBytes": 27177,
+      "caseId": "k5_small",
+      "clusterCount": 3,
+      "displayPoints": 40,
+      "elapsedMs": 56.437,
+      "featureDimensions": 10,
+      "inputRows": 40,
+      "validSamples": 40
+    },
+    "dataset": {
+      "artifactBytes": 13558,
+      "caseId": "k5_small",
+      "chemicalSystemsMaterialized": 4,
+      "elapsedMs": 24.766,
+      "inputRows": 40,
+      "propertyCount": 1,
+      "sampleRowsMaterialized": 40
+    },
+    "regression": {
+      "artifactBytes": 29910,
+      "caseId": "k5_small",
+      "displayPoints": 40,
+      "elapsedMs": 33.043,
+      "evaluatedSamples": 40,
+      "inputRows": 40,
+      "toolId": "ml.regression_evaluation"
+    }
+  },
+  "wallClockMs": 44058.646
+}

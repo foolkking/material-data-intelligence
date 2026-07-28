@@ -10,7 +10,7 @@ function payload() {
   return {
     schemaVersion: "phase10k2.dataset_materials_explorer.v1",
     artifactType: "dataset.materials_explorer",
-    dataset: { datasetId: "dataset_demo", profileId: "profile_demo", profileContractVersion: "2.0", semanticHash: "a".repeat(64), datasetType: "mixed_material_dataset" },
+    dataset: { datasetId: "dataset_demo", datasetVersion: "2", profileId: "profile_demo", profileContractVersion: "2.0", semanticHash: "a".repeat(64), datasetContentHash: "b".repeat(64), resourceBindings: [{ objectId: "obj_table", objectType: "table", objectHash: "c".repeat(64) }], datasetType: "mixed_material_dataset" },
     overview: { sampleCount: 4, tableCount: 1, structureCount: 2, propertyCount: 2, availableAnalyses: ["dataset_materials_explorer", "composition_summary"], unavailableAnalyses: ["regression_evaluation"] },
     composition: { status: "READY", formulaColumn: "formula", uniqueFormulaCount: 3, uniqueReducedFormulaCount: 2, elements: [{ element: "Si", materialsContainingElement: 2 }, { element: "Na", materialsContainingElement: 1 }], chemicalSystems: [{ chemicalSystem: "Si", count: 2 }, { chemicalSystem: "Cl-Na", count: 1 }] },
     structures: { status: "READY", structureCount: 1, records: [{ objectId: "obj_si", formula: "Si", siteCount: 2, volumeAngstrom3: 40.1, densityGramCm3: 2.33, spacegroup: "Fd-3m", crystalSystem: "cubic" }] },
@@ -20,7 +20,8 @@ function payload() {
     ] },
     quality: { invalidFormulaCount: 1, sampleLinksMaterialized: 2, nearDuplicateAnalysis: "NOT_IMPLEMENTED_BY_DESIGN", columnIssues: [{ column: "density", missingCount: 1, nonFiniteCount: 0, ambiguities: [] }], duplicateSampleIdentityValues: [] },
     comparison: { status: "READY", mode: "group", binding: { groupColumn: "split", groupA: "train", groupB: "test" }, elementOverlap: { shared: ["Si"], leftOnly: ["Na"], rightOnly: ["Li"] }, propertyComparison: [{ column: "band_gap", unit: "eV", comparable: true, left: { median: 2 }, right: { median: 3 } }], semantics: "explicitly bound groups/resources; no row-order inference" },
-    sampleIndex: [{ sampleRef: "sample-1", objectId: "obj_table", rowIndex: 0, formula: "Si", reducedFormula: "Si" }, { sampleRef: "sample-2", objectId: "obj_table", rowIndex: 1, formula: "NaCl", reducedFormula: "NaCl" }],
+    sampleIndex: [{ sampleKey: "obj_table:sample-1", sampleRef: "sample-1", objectId: "obj_table", rowIndex: 0, formula: "Si", reducedFormula: "Si" }, { sampleKey: "obj_table:sample-2", sampleRef: "sample-2", objectId: "obj_table", rowIndex: 1, formula: "NaCl", reducedFormula: "NaCl" }],
+    security: { artifactJavaScript: false, externalUrls: false, externalAssets: false, executableContent: false },
     warnings: ["FORMULA_VALUES_PARTIALLY_INVALID"],
   };
 }
@@ -53,7 +54,7 @@ describe("DatasetMaterialsExplorerPanel", () => {
     expect(screen.getByTestId("dataset-property-histogram").children).toHaveLength(3);
 
     await user.click(screen.getByRole("tab", { name: "Samples" }));
-    await user.click(screen.getByRole("button", { name: "sample-2" }));
+    await user.click(screen.getByRole("button", { name: "sample-2 from obj_table" }));
     expect(screen.getByTestId("dataset-sample-inspector")).toHaveTextContent("NaCl");
     expect(container.querySelector("script")).toBeNull();
     expect(container.querySelector("iframe")).toBeNull();
@@ -108,11 +109,28 @@ describe("DatasetMaterialsExplorerPanel", () => {
 
   it("integrates Composition Space as a dataset tab when both artifacts are present", async () => {
     const user = userEvent.setup();
-    render(<DatasetMaterialsExplorerPanel artifacts={[artifact(), compositionSpaceArtifact()]} />);
+    const explorer = payload();
+    explorer.dataset = { ...explorer.dataset, datasetId: "materials", datasetVersion: "1", profileId: "profile_materials_v2", semanticHash: "a".repeat(64), datasetContentHash: "b".repeat(64) };
+    explorer.overview.availableAnalyses.push("composition_space");
+    render(<DatasetMaterialsExplorerPanel artifacts={[artifact(explorer), compositionSpaceArtifact()]} />);
     expect(screen.getAllByRole("tab")).toHaveLength(9);
     await user.click(screen.getByRole("tab", { name: "Composition space" }));
     expect(screen.getByRole("tabpanel")).toHaveTextContent("Backend-computed atomic-fraction PCA");
     expect(screen.getByRole("img", { name: "PCA composition scatter colored by cluster" })).toBeTruthy();
+  });
+
+  it("keeps duplicate sample references object-qualified", async () => {
+    const user = userEvent.setup();
+    const duplicate = payload();
+    duplicate.sampleIndex = [
+      { sampleKey: "obj_a:shared", sampleRef: "shared", objectId: "obj_a", rowIndex: 0, formula: "Si", reducedFormula: "Si" },
+      { sampleKey: "obj_b:shared", sampleRef: "shared", objectId: "obj_b", rowIndex: 0, formula: "NaCl", reducedFormula: "NaCl" },
+    ];
+    render(<DatasetMaterialsExplorerPanel artifacts={[artifact(duplicate)]} />);
+    await user.click(screen.getByRole("tab", { name: "Samples" }));
+    await user.click(screen.getByRole("button", { name: "shared from obj_b" }));
+    expect(screen.getByTestId("dataset-sample-inspector")).toHaveTextContent("obj_b:shared");
+    expect(screen.getByTestId("dataset-sample-inspector")).toHaveTextContent("NaCl");
   });
 
   it("renders malicious labels as inert text", async () => {
@@ -133,6 +151,7 @@ describe("DatasetMaterialsExplorerPanel", () => {
 
     const overCap = payload();
     overCap.sampleIndex = Array.from({ length: 201 }, (_, index) => ({
+      sampleKey: `obj_materials:sample-${index}`,
       sampleRef: `sample-${index}`,
       objectId: "obj_materials",
       rowIndex: index,

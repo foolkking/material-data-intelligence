@@ -1,0 +1,58 @@
+{
+  "A_materials_table": {
+    "api": "PASS",
+    "compositionSpace": "completed",
+    "dataset": "completed",
+    "ml": "N/A",
+    "profile": "profile_dataset_phase10k5_integrated_v2"
+  },
+  "B_structure_enriched": {
+    "api": "PASS",
+    "compositionSpace": "N/A",
+    "dataset": "completed",
+    "ml": "N/A",
+    "profile": "profile_dataset_phase10k2_evidence_v2"
+  },
+  "C_regression": {
+    "api": "PASS",
+    "compositionSpace": "completed",
+    "dataset": "completed",
+    "ml": "completed",
+    "profile": "profile_dataset_phase10k5_integrated_v2"
+  },
+  "D_uncertainty": {
+    "api": "PASS",
+    "compositionSpace": "completed",
+    "dataset": "completed",
+    "ml": "completed",
+    "profile": "profile_dataset_phase10k5_uncertainty_v2"
+  },
+  "E_classification": {
+    "api": "PASS",
+    "compositionSpace": "N/A",
+    "dataset": "completed",
+    "ml": "completed",
+    "profile": "profile_dataset_phase10k5_classification_v2"
+  },
+  "F_comparison": {
+    "api": "PASS",
+    "compositionSpace": "completed",
+    "dataset": "completed",
+    "ml": "N/A",
+    "profile": "profile_dataset_phase10k5_integrated_v2"
+  },
+  "G_partial": {
+    "api": "PASS",
+    "compositionSpace": "completed",
+    "dataset": "completed",
+    "ml": "UNAVAILABLE",
+    "profile": "profile_dataset_phase10k5_partial_v2"
+  },
+  "H_ambiguous": {
+    "api": "PASS",
+    "compositionSpace": "CONDITIONAL",
+    "dataset": "completed",
+    "ml": "SAFELY_BLOCKED",
+    "profile": "profile_dataset_phase10k5_ambiguous_v2"
+  }
+}

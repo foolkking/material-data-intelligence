@@ -51,6 +51,13 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase10k/phase10k4_evidence.md`](phase10k/phase10k4_evidence.md): runtime, API, browser, performance, network, and integrity evidence index.
 - [`phase10k/evidence/phase10k4_composition_space/`](phase10k/evidence/phase10k4_composition_space/): sanitized captures, artifacts, metrics, screenshots, and audits.
 - [`phase10k/phase10k5_next_scope.md`](phase10k/phase10k5_next_scope.md): Phase 10K integration entry boundary; no Phase 10K-5 implementation is included.
+- [`phase10k/phase10k5_material_intelligence_integration.md`](phase10k/phase10k5_material_intelligence_integration.md): exact product binding, stable identity, runtime, frontend, and partial-state integration.
+- [`phase10k/phase10k5_end_to_end_evidence_matrix.md`](phase10k/phase10k5_end_to_end_evidence_matrix.md): required A-H runtime/API/browser cases and markers.
+- [`phase10k/phase10k5_cross_artifact_identity_evidence.md`](phase10k/phase10k5_cross_artifact_identity_evidence.md): Profile, dataset revision, resource, sample, and upstream ML identity closure.
+- [`phase10k/phase10k5_performance_security_closure.md`](phase10k/phase10k5_performance_security_closure.md): performance envelope, bounded failures, browser isolation, and security.
+- [`phase10k/phase10k_completion_summary.md`](phase10k/phase10k_completion_summary.md): formal meaning, readiness, and limits of the completed Material Intelligence layer.
+- [`phase10k/phase10l0_next_scope.md`](phase10k/phase10l0_next_scope.md): Phase 10L-0 entry gates and audit-only boundary.
+- [`phase10k/evidence/phase10k5_material_intelligence_integration/`](phase10k/evidence/phase10k5_material_intelligence_integration/): persisted jobs, products, identity, performance, browser, screenshot, and security evidence.
 
 ## Historical Gate J6-A Roadmap Record
 

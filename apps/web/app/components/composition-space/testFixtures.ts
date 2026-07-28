@@ -9,7 +9,7 @@ export function compositionSpacePayload() {
   return {
     schemaVersion: "phase10k4.composition_space.v1",
     artifactType: "dataset.composition_space",
-    dataset: { datasetId: "materials", datasetVersion: 1, profileId: "profile_materials_v2", profileContractVersion: "2.0", semanticHash: "a".repeat(64), datasetContentHash: "b".repeat(64) },
+    dataset: { datasetId: "materials", datasetVersion: "1", profileId: "profile_materials_v2", profileContractVersion: "2.0", semanticHash: "a".repeat(64), datasetContentHash: "b".repeat(64), resourceBindings: [{ objectId: "obj_table", objectType: "table", objectHash: "c".repeat(64) }] },
     coverage: { selectedRows: 4, validCompositionSamples: 3, invalidCompositionSamples: 1, invalidExamples: [{ objectId: "obj_table", rowIndex: 3, reason: "invalid_formula" }], invalidExamplesTruncated: false, silentDrops: false },
     featureRepresentation: { type: "normalized_atomic_fraction", elementBasis: ["Li", "O", "Na", "Si", "Cl"], basisOrder: "atomic_number_ascending", normalization: "element_amount_divided_by_total_amount", missingElementValue: 0, fractionalOccupancySupported: true, featureDimensions: 5, parser: "pymatgen.core.Composition via application composition semantics" },
     projection: { method: "PCA", dimensions: 2, centering: true, scaling: "none", solver: "sklearn_full_svd", signConvention: "largest_absolute_loading_is_positive", rank: 2, components: [[0, 0, 0, 1, 0], [1, 0, 0, 0, -1]], explainedVarianceRatio: [0.7, 0.25], cumulativeExplainedVarianceRatio: 0.95, mean: [0.2, 0.1, 0.1, 0.3, 0.3] },

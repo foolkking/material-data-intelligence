@@ -42,6 +42,17 @@ describe("CompositionSpaceExplorerPanel", () => {
     expect(points[1]).toHaveAccessibleName(/s1, Si/);
   });
 
+  it("uses roving focus for bounded keyboard navigation", () => {
+    render(<CompositionSpaceExplorerPanel artifacts={[compositionSpaceArtifact()]} />);
+    const points = within(screen.getByRole("img", { name: "PCA composition scatter colored by cluster" })).getAllByRole("button");
+    expect(points.map((point) => point.getAttribute("tabindex"))).toEqual(["0", "-1", "-1"]);
+    fireEvent.keyDown(points[0], { key: "ArrowRight" });
+    expect(points[1]).toHaveFocus();
+    expect(points.map((point) => point.getAttribute("tabindex"))).toEqual(["-1", "0", "-1"]);
+    fireEvent.keyDown(points[1], { key: "End" });
+    expect(points[2]).toHaveFocus();
+  });
+
   it("uses only allowlisted artifact color modes without recomputing science", async () => {
     const user = userEvent.setup();
     render(<CompositionSpaceExplorerPanel artifacts={[compositionSpaceArtifact()]} />);

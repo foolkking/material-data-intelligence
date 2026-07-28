@@ -1,0 +1,62 @@
+{
+  "config": {
+    "displaylogo": false,
+    "responsive": true
+  },
+  "data": [
+    {
+      "customdata": [
+        "obj_uncertainty:si-1",
+        "obj_uncertainty:nacl-1",
+        "obj_uncertainty:lif-1",
+        "obj_uncertainty:mgo-1",
+        "obj_uncertainty:gaas-1"
+      ],
+      "hovertemplate": "sample=%{customdata}<extra></extra>",
+      "marker": {
+        "color": [
+          0,
+          1,
+          2,
+          1,
+          2
+        ],
+        "colorscale": "Viridis",
+        "showscale": false,
+        "size": 7
+      },
+      "mode": "markers",
+      "type": "scattergl",
+      "x": [
+        0.8485281374238571,
+        -0.21213203435596426,
+        -0.21213203435596417,
+        -0.21213203435596426,
+        -0.21213203435596423
+      ],
+      "y": [
+        9.48266336198094e-17,
+        0.5240654979750183,
+        0.11087607731071991,
+        -0.24168672830577453,
+        -0.3932548469799634
+      ]
+    }
+  ],
+  "layout": {
+    "showlegend": false,
+    "title": "PCA Composition Space",
+    "xaxis": {
+      "title": "PC1"
+    },
+    "yaxis": {
+      "title": "PC2"
+    }
+  },
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "adapters": [
+    "dataset.materials_explorer",
+    "ml.regression_evaluation",
+    "ml.uncertainty_evaluation",
+    "ml.classification_evaluation",
+    "dataset.composition_space"
+  ],
+  "marker": "MATERIAL_INTELLIGENCE_RUNTIME_INTEGRATION_PASS",
+  "planValidation": true,
+  "planner": "MockLLMProvider",
+  "queueWorkerRuntime": true,
+  "toolRegistry": true
+}

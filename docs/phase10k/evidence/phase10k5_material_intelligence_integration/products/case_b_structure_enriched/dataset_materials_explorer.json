@@ -1,0 +1,468 @@
+{
+  "artifactType": "dataset.materials_explorer",
+  "comparison": {
+    "mode": "none",
+    "status": "NOT_REQUESTED"
+  },
+  "composition": {
+    "chemicalSystems": [
+      {
+        "chemicalSystem": "Si",
+        "count": 2
+      },
+      {
+        "chemicalSystem": "Cl-Na",
+        "count": 1
+      }
+    ],
+    "coverage": {
+      "invalid": 1,
+      "nonNull": 4,
+      "total": 4,
+      "valid": 3
+    },
+    "duplicateReducedFormulaGroups": [
+      {
+        "count": 2,
+        "reducedFormula": "Si",
+        "rowIndices": [
+          0,
+          2
+        ]
+      }
+    ],
+    "elements": [
+      {
+        "element": "Cl",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Na",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Si",
+        "fractionalSum": 2.0,
+        "materialsContainingElement": 2,
+        "stoichiometricSum": 2.0
+      }
+    ],
+    "failedExamples": [
+      {
+        "formula": "invalid formula",
+        "warning": "invalid_formula"
+      }
+    ],
+    "formulaColumn": "formula",
+    "status": "READY",
+    "systemTypeCounts": {
+      "binary": 1,
+      "quaternary": 0,
+      "quinary_plus": 0,
+      "ternary": 0,
+      "unary": 2
+    },
+    "uniqueFormulaCount": 2,
+    "uniqueReducedFormulaCount": 2
+  },
+  "coverage": {
+    "columnsInspected": 5,
+    "limits": {
+      "maxColumns": 512,
+      "maxFormulaLength": 256,
+      "maxFormulaValues": 1024,
+      "maxGroupIdLength": 128,
+      "maxObjects": 256,
+      "maxProbabilityColumns": 64,
+      "maxRows": 4096,
+      "maxUnitLength": 64
+    },
+    "policy": "complete",
+    "rowsInspected": 4,
+    "totalColumns": 5,
+    "totalRows": 4,
+    "warnings": []
+  },
+  "dataset": {
+    "datasetContentHash": "9e5be5bbdd40605acdeccc6ecd7b6dc88b3bcff0ec73ec3fb9a2cc6b8148fcbc",
+    "datasetId": "dataset_phase10k2_evidence",
+    "datasetType": "mixed_material_dataset",
+    "datasetVersion": "2",
+    "primaryTableObjectId": "obj_materials",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k2_evidence_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+        "objectId": "obj_materials",
+        "objectType": "DataFrame"
+      },
+      {
+        "objectHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "objectId": "obj_nacl",
+        "objectType": "Structure"
+      },
+      {
+        "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "objectId": "obj_si_a",
+        "objectType": "Structure"
+      },
+      {
+        "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "objectId": "obj_si_b",
+        "objectType": "Structure"
+      }
+    ],
+    "semanticHash": "3607e95955187272e381ffa2b1a71eaba5d662ab4faa4cb70da7ed8614430d9f"
+  },
+  "limits": {
+    "histogramBins": 20,
+    "maxAtomsPerStructure": 5000,
+    "maxCategories": 50,
+    "maxColumns": 512,
+    "maxProperties": 32,
+    "maxRows": 100000,
+    "maxStructures": 256,
+    "maxTableRows": 100
+  },
+  "overview": {
+    "availableAnalyses": [
+      "dataset_materials_explorer",
+      "table_distribution",
+      "scatter",
+      "histogram",
+      "correlation",
+      "composition_summary",
+      "formula_statistics",
+      "element_distribution",
+      "chemical_system_visualization",
+      "structure_summary",
+      "composition_space",
+      "dataset_structure_statistics"
+    ],
+    "formulaCoverage": {
+      "invalid": 1,
+      "nonNull": 4,
+      "total": 4,
+      "valid": 3
+    },
+    "propertyCount": 2,
+    "sampleCount": 4,
+    "structureCount": 3,
+    "tableCount": 1,
+    "unavailableAnalyses": [
+      "trajectory_visualization",
+      "phonon_visualization",
+      "volumetric_visualization",
+      "regression_evaluation",
+      "uncertainty_evaluation",
+      "classification_evaluation"
+    ]
+  },
+  "properties": {
+    "properties": [
+      {
+        "column": "band_gap",
+        "count": 3,
+        "histogram": {
+          "binEdges": [
+            1.1,
+            2.6,
+            4.1,
+            5.6
+          ],
+          "counts": [
+            2,
+            0,
+            1
+          ]
+        },
+        "missingCount": 0,
+        "nonFiniteCount": 1,
+        "outlierCandidates": [],
+        "outlierPolicy": "iqr_1_5_statistical_candidate_only",
+        "statistics": {
+          "max": 5.6,
+          "mean": 2.6666666666666665,
+          "median": 1.3,
+          "min": 1.1,
+          "q1": 1.2000000000000002,
+          "q3": 3.4499999999999997,
+          "std": 2.542308662089112
+        },
+        "unit": "eV"
+      },
+      {
+        "column": "formation_energy",
+        "count": 3,
+        "histogram": {
+          "binEdges": [
+            -5.42,
+            -4.683333333333334,
+            -3.9466666666666663,
+            -3.21
+          ],
+          "counts": [
+            2,
+            0,
+            1
+          ]
+        },
+        "missingCount": 1,
+        "nonFiniteCount": 0,
+        "outlierCandidates": [],
+        "outlierPolicy": "iqr_1_5_statistical_candidate_only",
+        "statistics": {
+          "max": -3.21,
+          "mean": -4.646666666666666,
+          "median": -5.31,
+          "min": -5.42,
+          "q1": -5.365,
+          "q3": -4.26,
+          "std": 1.2454048873090764
+        },
+        "unit": "eV/atom"
+      }
+    ],
+    "status": "READY"
+  },
+  "quality": {
+    "columnIssues": [
+      {
+        "ambiguities": [],
+        "column": "formation_energy",
+        "missingCount": 1,
+        "nonFiniteCount": 0
+      },
+      {
+        "ambiguities": [],
+        "column": "band_gap",
+        "missingCount": 0,
+        "nonFiniteCount": 1
+      }
+    ],
+    "duplicateReducedFormulaGroups": [
+      {
+        "count": 2,
+        "reducedFormula": "Si",
+        "rowIndices": [
+          0,
+          2
+        ]
+      }
+    ],
+    "duplicateSampleIdentityValues": [
+      {
+        "column": "material_id",
+        "count": 2,
+        "value": "sample-nacl"
+      }
+    ],
+    "invalidFormulaCount": 1,
+    "nearDuplicateAnalysis": "NOT_IMPLEMENTED_BY_DESIGN",
+    "profileIssues": [
+      {
+        "code": "FORMULA_VALUES_PARTIALLY_INVALID",
+        "message": "Some inspected formula values could not be parsed; row-level validation remains required.",
+        "refs": [
+          {
+            "id": "obj_materials:formula",
+            "type": "column"
+          }
+        ],
+        "severity": "warning"
+      }
+    ],
+    "sampleLinksMaterialized": 4
+  },
+  "sampleIndex": [
+    {
+      "formula": "Si",
+      "identitySource": "dataset_version_object_hash_row_index",
+      "objectId": "obj_materials",
+      "properties": {
+        "band_gap": 1.1,
+        "formation_energy": -5.42
+      },
+      "reducedFormula": "Si",
+      "rowIndex": 0,
+      "sampleKey": "obj_materials:dataset_phase10k2_evidence@2:6f626a5f6d617465:0",
+      "sampleRef": "dataset_phase10k2_evidence@2:6f626a5f6d617465:0"
+    },
+    {
+      "formula": "NaCl",
+      "identitySource": "dataset_version_object_hash_row_index",
+      "objectId": "obj_materials",
+      "properties": {
+        "band_gap": 5.6,
+        "formation_energy": -3.21
+      },
+      "reducedFormula": "NaCl",
+      "rowIndex": 1,
+      "sampleKey": "obj_materials:dataset_phase10k2_evidence@2:6f626a5f6d617465:1",
+      "sampleRef": "dataset_phase10k2_evidence@2:6f626a5f6d617465:1"
+    },
+    {
+      "formula": "Si",
+      "identitySource": "dataset_version_object_hash_row_index",
+      "objectId": "obj_materials",
+      "properties": {
+        "band_gap": 1.3,
+        "formation_energy": -5.31
+      },
+      "reducedFormula": "Si",
+      "rowIndex": 2,
+      "sampleKey": "obj_materials:dataset_phase10k2_evidence@2:6f626a5f6d617465:2",
+      "sampleRef": "dataset_phase10k2_evidence@2:6f626a5f6d617465:2"
+    },
+    {
+      "formula": "invalid formula",
+      "identitySource": "dataset_version_object_hash_row_index",
+      "objectId": "obj_materials",
+      "properties": {
+        "band_gap": null,
+        "formation_energy": null
+      },
+      "reducedFormula": null,
+      "rowIndex": 3,
+      "sampleKey": "obj_materials:dataset_phase10k2_evidence@2:6f626a5f6d617465:3",
+      "sampleRef": "dataset_phase10k2_evidence@2:6f626a5f6d617465:3"
+    }
+  ],
+  "schemaVersion": "phase10k2.dataset_materials_explorer.v1",
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  },
+  "semantics": {
+    "comparisonRequiresExplicitBinding": true,
+    "nearDuplicateInference": false,
+    "outlierPolicy": "iqr_1_5_statistical_candidate_only",
+    "roleInferenceRepeated": false,
+    "source": "material_data_profile_2"
+  },
+  "structures": {
+    "distributions": {
+      "crystalSystems": [
+        {
+          "count": 2,
+          "value": "trigonal"
+        },
+        {
+          "count": 1,
+          "value": "cubic"
+        }
+      ],
+      "densityGramCm3": {
+        "count": 3,
+        "max": 0.5825883085400471,
+        "mean": 0.5687028303679905,
+        "median": 0.5825883085400471,
+        "min": 0.5409318740238773
+      },
+      "siteCount": {
+        "count": 3,
+        "max": 2.0,
+        "mean": 2.0,
+        "median": 2.0,
+        "min": 2.0
+      },
+      "spacegroups": [
+        {
+          "count": 2,
+          "value": "R-3m"
+        },
+        {
+          "count": 1,
+          "value": "Pm-3m"
+        }
+      ],
+      "volumeAngstrom3": {
+        "count": 3,
+        "max": 179.40614399999995,
+        "mean": 166.53738599999997,
+        "median": 160.10300699999996,
+        "min": 160.10300699999996
+      }
+    },
+    "duplicatePolicy": "equal canonical normalized object hash only",
+    "exactStructureDuplicateGroups": [
+      {
+        "count": 2,
+        "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "objectIds": [
+          "obj_si_a",
+          "obj_si_b"
+        ]
+      }
+    ],
+    "records": [
+      {
+        "crystalSystem": "cubic",
+        "densityGramCm3": 0.5409318740238773,
+        "formula": "NaCl",
+        "lattice": {
+          "a": 5.64,
+          "alpha": 90.0,
+          "b": 5.64,
+          "beta": 90.0,
+          "c": 5.64,
+          "gamma": 90.0
+        },
+        "objectId": "obj_nacl",
+        "siteCount": 2,
+        "spacegroup": "Pm-3m",
+        "spacegroupNumber": 221,
+        "volumeAngstrom3": 179.40614399999995
+      },
+      {
+        "crystalSystem": "trigonal",
+        "densityGramCm3": 0.5825883085400471,
+        "formula": "Si",
+        "lattice": {
+          "a": 5.43,
+          "alpha": 90.0,
+          "b": 5.43,
+          "beta": 90.0,
+          "c": 5.43,
+          "gamma": 90.0
+        },
+        "objectId": "obj_si_a",
+        "siteCount": 2,
+        "spacegroup": "R-3m",
+        "spacegroupNumber": 166,
+        "volumeAngstrom3": 160.10300699999996
+      },
+      {
+        "crystalSystem": "trigonal",
+        "densityGramCm3": 0.5825883085400471,
+        "formula": "Si",
+        "lattice": {
+          "a": 5.43,
+          "alpha": 90.0,
+          "b": 5.43,
+          "beta": 90.0,
+          "c": 5.43,
+          "gamma": 90.0
+        },
+        "objectId": "obj_si_b",
+        "siteCount": 2,
+        "spacegroup": "R-3m",
+        "spacegroupNumber": 166,
+        "volumeAngstrom3": 160.10300699999996
+      }
+    ],
+    "status": "READY",
+    "structureCount": 3
+  },
+  "warnings": [
+    "DATASET_FORMULA_PARSE_FAILURES",
+    "FORMULA_VALUES_PARTIALLY_INVALID"
+  ]
+}

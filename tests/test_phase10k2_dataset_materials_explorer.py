@@ -229,6 +229,12 @@ def test_materials_explorer_builds_coherent_profile_bound_product(tmp_path: Path
     assert payload["quality"]["invalidFormulaCount"] == 1
     assert payload["quality"]["nearDuplicateAnalysis"] == "NOT_IMPLEMENTED_BY_DESIGN"
     assert [item["sampleRef"] for item in payload["sampleIndex"]] == ["m1", "m2", "m3", "m4"]
+    assert [item["sampleKey"] for item in payload["sampleIndex"]] == [
+        "obj_materials:m1",
+        "obj_materials:m2",
+        "obj_materials:m3",
+        "obj_materials:m4",
+    ]
     assert {item.name for item in artifacts} == {
         "dataset_materials_explorer.json",
         "dataset_quality.json",
@@ -415,6 +421,9 @@ def test_fallback_sample_identity_and_resource_caps_are_deterministic(tmp_path: 
     second, _ = _execute(tmp_path / "second", profile, objects)
     assert first["sampleIndex"] == second["sampleIndex"]
     assert first["sampleIndex"][0]["sampleRef"].startswith("dataset_10k2@2:")
+    assert first["sampleIndex"][0]["sampleKey"] == (
+        f"obj_materials:{first['sampleIndex'][0]['sampleRef']}"
+    )
 
     tool = load_manifests().get_tool_by_id("dataset.materials_explorer")
     store, _ = build_object_store(objects, profile=profile)

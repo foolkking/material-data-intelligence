@@ -1,0 +1,241 @@
+{
+  "artifactType": "dataset.materials_explorer",
+  "comparison": {
+    "mode": "none",
+    "status": "NOT_REQUESTED"
+  },
+  "composition": {
+    "chemicalSystems": [
+      {
+        "chemicalSystem": "Cl-Na",
+        "count": 1
+      },
+      {
+        "chemicalSystem": "F-Li",
+        "count": 1
+      },
+      {
+        "chemicalSystem": "Si",
+        "count": 1
+      }
+    ],
+    "coverage": {
+      "invalid": 0,
+      "nonNull": 3,
+      "total": 3,
+      "valid": 3
+    },
+    "duplicateReducedFormulaGroups": [],
+    "elements": [
+      {
+        "element": "Cl",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "F",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Li",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Na",
+        "fractionalSum": 0.5,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      },
+      {
+        "element": "Si",
+        "fractionalSum": 1.0,
+        "materialsContainingElement": 1,
+        "stoichiometricSum": 1.0
+      }
+    ],
+    "failedExamples": [],
+    "formulaColumn": "formula",
+    "status": "READY",
+    "systemTypeCounts": {
+      "binary": 2,
+      "quaternary": 0,
+      "quinary_plus": 0,
+      "ternary": 0,
+      "unary": 1
+    },
+    "uniqueFormulaCount": 3,
+    "uniqueReducedFormulaCount": 3
+  },
+  "coverage": {
+    "columnsInspected": 5,
+    "limits": {
+      "maxColumns": 512,
+      "maxFormulaLength": 256,
+      "maxFormulaValues": 1024,
+      "maxGroupIdLength": 128,
+      "maxObjects": 256,
+      "maxProbabilityColumns": 64,
+      "maxRows": 4096,
+      "maxUnitLength": 64
+    },
+    "policy": "complete",
+    "rowsInspected": 3,
+    "totalColumns": 5,
+    "totalRows": 3,
+    "warnings": []
+  },
+  "dataset": {
+    "datasetContentHash": "c2539a35888463f23d4c4005a4e9484ec6cf4d37d33babfa18f62c54c7bb6742",
+    "datasetId": "dataset_phase10k5_ambiguous",
+    "datasetType": "ml_results",
+    "datasetVersion": "2",
+    "primaryTableObjectId": "obj_ambiguous",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_ambiguous_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "2be75aba62c2f758b80056614743d537542381da55c0fc2502fce15476217b4a",
+        "objectId": "obj_ambiguous",
+        "objectType": "DataFrame"
+      }
+    ],
+    "semanticHash": "d84921ae75bef70cf6871beba67bbacc87b8f24d656d9e44e707ea2b323a7d93"
+  },
+  "limits": {
+    "histogramBins": 20,
+    "maxAtomsPerStructure": 5000,
+    "maxCategories": 50,
+    "maxColumns": 512,
+    "maxProperties": 32,
+    "maxRows": 100000,
+    "maxStructures": 256,
+    "maxTableRows": 100
+  },
+  "overview": {
+    "availableAnalyses": [
+      "dataset_materials_explorer",
+      "table_distribution",
+      "scatter",
+      "histogram",
+      "correlation",
+      "composition_summary",
+      "formula_statistics",
+      "element_distribution",
+      "chemical_system_visualization",
+      "composition_space"
+    ],
+    "formulaCoverage": {
+      "invalid": 0,
+      "nonNull": 3,
+      "total": 3,
+      "valid": 3
+    },
+    "propertyCount": 0,
+    "sampleCount": 3,
+    "structureCount": 0,
+    "tableCount": 1,
+    "unavailableAnalyses": [
+      "structure_summary",
+      "trajectory_visualization",
+      "phonon_visualization",
+      "volumetric_visualization",
+      "regression_evaluation",
+      "uncertainty_evaluation",
+      "classification_evaluation",
+      "dataset_structure_statistics"
+    ]
+  },
+  "properties": {
+    "properties": [],
+    "status": "UNAVAILABLE"
+  },
+  "quality": {
+    "columnIssues": [],
+    "duplicateReducedFormulaGroups": [],
+    "duplicateSampleIdentityValues": [],
+    "invalidFormulaCount": 0,
+    "nearDuplicateAnalysis": "NOT_IMPLEMENTED_BY_DESIGN",
+    "profileIssues": [
+      {
+        "code": "SEMANTIC_GROUP_AMBIGUOUS",
+        "message": "Multiple deterministic semantic candidates prevent automatic task binding.",
+        "refs": [
+          {
+            "id": "obj_ambiguous:regression:default",
+            "type": "semantic_group"
+          }
+        ],
+        "severity": "warning"
+      }
+    ],
+    "sampleLinksMaterialized": 3
+  },
+  "sampleIndex": [
+    {
+      "formula": "Si",
+      "identitySource": "explicit_column",
+      "objectId": "obj_ambiguous",
+      "properties": {},
+      "reducedFormula": "Si",
+      "rowIndex": 0,
+      "sampleKey": "obj_ambiguous:a1",
+      "sampleRef": "a1"
+    },
+    {
+      "formula": "NaCl",
+      "identitySource": "explicit_column",
+      "objectId": "obj_ambiguous",
+      "properties": {},
+      "reducedFormula": "NaCl",
+      "rowIndex": 1,
+      "sampleKey": "obj_ambiguous:a2",
+      "sampleRef": "a2"
+    },
+    {
+      "formula": "LiF",
+      "identitySource": "explicit_column",
+      "objectId": "obj_ambiguous",
+      "properties": {},
+      "reducedFormula": "LiF",
+      "rowIndex": 2,
+      "sampleKey": "obj_ambiguous:a3",
+      "sampleRef": "a3"
+    }
+  ],
+  "schemaVersion": "phase10k2.dataset_materials_explorer.v1",
+  "security": {
+    "artifactJavaScript": false,
+    "executableContent": false,
+    "externalAssets": false,
+    "externalUrls": false
+  },
+  "semantics": {
+    "comparisonRequiresExplicitBinding": true,
+    "nearDuplicateInference": false,
+    "outlierPolicy": "iqr_1_5_statistical_candidate_only",
+    "roleInferenceRepeated": false,
+    "source": "material_data_profile_2"
+  },
+  "structures": {
+    "distributions": {
+      "crystalSystems": [],
+      "densityGramCm3": null,
+      "siteCount": null,
+      "spacegroups": [],
+      "volumeAngstrom3": null
+    },
+    "duplicatePolicy": "equal canonical normalized object hash only",
+    "exactStructureDuplicateGroups": [],
+    "records": [],
+    "status": "UNAVAILABLE",
+    "structureCount": 0
+  },
+  "warnings": [
+    "SEMANTIC_GROUP_AMBIGUOUS"
+  ]
+}

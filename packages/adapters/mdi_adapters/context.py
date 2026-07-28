@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import math
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -14,11 +15,31 @@ def _input_ref_value(input_ref: Any, field: str) -> Any:
 
 
 def hashable_material(value: Any) -> Any:
+    if isinstance(value, float) and not math.isfinite(value):
+        return {"nonFiniteFloat": "nan" if math.isnan(value) else ("positive_infinity" if value > 0 else "negative_infinity")}
     object_type = getattr(getattr(value, "object_type", None), "value", getattr(value, "object_type", None))
     if object_type == "VolumetricData" and isinstance(getattr(value, "hash", None), str):
         return {"objectType": "VolumetricData", "contentHash": value.hash}
+    if hasattr(value, "model_dump"):
+        return hashable_material(value.model_dump(mode="json"))
     if hasattr(value, "as_dict"):
-        return value.as_dict()
+        return hashable_material(value.as_dict())
+    if _is_dataframe(value):
+        return {
+            "kind": "pandas.DataFrame",
+            "columns": [str(column) for column in value.columns.tolist()],
+            "dtypes": [str(dtype) for dtype in value.dtypes.tolist()],
+            "index": hashable_material(value.index.tolist()),
+            "values": hashable_material(value.to_numpy(dtype=object).tolist()),
+        }
+    if _is_series(value):
+        return {
+            "kind": "pandas.Series",
+            "name": None if value.name is None else str(value.name),
+            "dtype": str(value.dtype),
+            "index": hashable_material(value.index.tolist()),
+            "values": hashable_material(value.tolist()),
+        }
     if isinstance(value, dict):
         return {str(key): hashable_material(item) for key, item in sorted(value.items(), key=lambda item: str(item[0]))}
     if isinstance(value, (list, tuple)):
@@ -26,6 +47,16 @@ def hashable_material(value: Any) -> Any:
     if hasattr(value, "tolist"):
         return value.tolist()
     return value
+
+
+def _is_dataframe(value: Any) -> bool:
+    value_type = type(value)
+    return value_type.__name__ == "DataFrame" and value_type.__module__.startswith("pandas.")
+
+
+def _is_series(value: Any) -> bool:
+    value_type = type(value)
+    return value_type.__name__ == "Series" and value_type.__module__.startswith("pandas.")
 
 
 @dataclass

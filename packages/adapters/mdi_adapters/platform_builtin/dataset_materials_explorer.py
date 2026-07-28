@@ -267,8 +267,13 @@ class DatasetMaterialsExplorerAdapter(BaseToolAdapter):
                 artifact_types=sorted(requested, key=lambda item: item.value),
             )
             recipe["profileBinding"] = {
+                "datasetId": result.payload["dataset"]["datasetId"],
+                "datasetVersion": result.payload["dataset"]["datasetVersion"],
                 "profileId": result.payload["dataset"]["profileId"],
+                "profileContractVersion": result.payload["dataset"]["profileContractVersion"],
                 "semanticHash": result.payload["dataset"]["semanticHash"],
+                "datasetContentHash": result.payload["dataset"]["datasetContentHash"],
+                "resourceBindings": result.payload["dataset"]["resourceBindings"],
                 "roleInferenceRepeated": False,
             }
             payloads.append(_json_payload(ArtifactType.recipe_json, "recipe.json", recipe))
@@ -600,6 +605,7 @@ def _sample_index(
         records.append(
             {
                 "sampleRef": sample_ref,
+                "sampleKey": f"{object_id}:{sample_ref}",
                 "identitySource": identity_source,
                 "objectId": object_id,
                 "rowIndex": row_index,

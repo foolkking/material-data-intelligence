@@ -1,0 +1,58 @@
+{
+  "environment": {
+    "aseVersion": "3.29.0",
+    "plotlyVersion": "6.8.0",
+    "pymatgenVersion": "2026.5.4",
+    "pymatvizVersion": "0.18.0"
+  },
+  "inputRequirements": [],
+  "name": "Materials ML Classification Evaluation",
+  "projectId": "project_phase10k4_evidence",
+  "recipeId": "recipe_call_job_95e3168e2a2b5d2cbe203624_step_001",
+  "schemaVersion": "0.1",
+  "semanticBinding": {
+    "datasetContentHash": "9fee893fe7546c92ef817ec4232a50c8dbc9a70b82691a2a355b075beb9a32ac",
+    "datasetId": "dataset_phase10k5_classification",
+    "datasetVersion": "2",
+    "groupIds": [
+      "obj_classification:classification:default"
+    ],
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_phase10k5_classification_v2",
+    "resourceBindings": [
+      {
+        "objectHash": "991f568cdcfbd8ece6b32c09eb87d5fc5a74f5282e8fbaf0468346d0f1c2ed9f",
+        "objectId": "obj_classification",
+        "objectType": "DataFrame"
+      }
+    ],
+    "roleInferenceRepeated": false,
+    "semanticHash": "674e18d4d52b439782c2ea25f31aa4643f10b51b3262f8d4f9a6daabfbc767d9"
+  },
+  "sourceJobId": "job_95e3168e2a2b5d2cbe203624",
+  "steps": [
+    {
+      "artifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "inputBindings": {
+        "inputRefs": "resolved_by_tool_call"
+      },
+      "params": {
+        "groupIds": [
+          "obj_classification:classification:default"
+        ],
+        "maxCurvePoints": 1000,
+        "maxPlotPoints": 2000,
+        "maxTableRows": 100,
+        "positiveClass": "b"
+      },
+      "stepId": "step_from_adapter",
+      "toolId": "ml.classification_evaluation",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "version": "1"
+}

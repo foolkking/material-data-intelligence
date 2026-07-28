@@ -1,0 +1,21 @@
+{
+  "columnIssues": [],
+  "duplicateReducedFormulaGroups": [],
+  "duplicateSampleIdentityValues": [],
+  "invalidFormulaCount": 0,
+  "nearDuplicateAnalysis": "NOT_IMPLEMENTED_BY_DESIGN",
+  "profileIssues": [
+    {
+      "code": "SEMANTIC_GROUP_AMBIGUOUS",
+      "message": "Multiple deterministic semantic candidates prevent automatic task binding.",
+      "refs": [
+        {
+          "id": "obj_ambiguous:regression:default",
+          "type": "semantic_group"
+        }
+      ],
+      "severity": "warning"
+    }
+  ],
+  "sampleLinksMaterialized": 3
+}

@@ -24,6 +24,23 @@ assigned phases rather than by this roadmap gate:
 
 ## Closed Product-Scope Questions
 
+* Material Intelligence integration authority: **CLOSED FOR PHASE 10K-5** -
+  Profile 2.0 owns deterministic data semantics; K2-K4 tools own bounded
+  deterministic analyses; the browser validates and presents artifacts only.
+* Cross-product revision binding: **CLOSED FOR PHASE 10K-5** - linked products
+  must match dataset ID/version, Profile ID/contract, semantic hash, full
+  dataset content hash, and canonical resource hashes. Missing or mismatched
+  bindings are rejected or stale rather than heuristically linked.
+* Cross-product sample identity: **CLOSED FOR PHASE 10K-5** - the canonical key
+  is `objectId:sampleRef`; array position, row ordering across resources, and
+  plot coordinates have no identity authority.
+* Partial product failure: **CLOSED FOR PHASE 10K-5** - Profile readiness and
+  each validated product have independent typed states; one failed/stale
+  product does not invalidate successful sibling products.
+* Phase 10L boundary: **OPEN FOR PHASE 10L** - intent representation,
+  capability-aware tool selection, bounded dependency planning, and scientific
+  result interpretation remain separate Agent work.
+
 * Composition-space baseline: **CLOSED FOR PHASE 10K-4** - normalized
   atomic-fraction features ordered by atomic number, deterministic center-only
   two-dimensional PCA, and optional bounded KMeans in the original feature

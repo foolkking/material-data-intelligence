@@ -103,6 +103,10 @@ class MockLLMProvider:
             plan = _mock_composition_space_plan(request, data_profile)
         elif materials_ml_tool is not None:
             plan = _mock_materials_ml_plan(request, data_profile, materials_ml_tool)
+        elif _should_generate_ambiguous_ml_diagnostic(request, tools, data_profile):
+            plan = _mock_dataset_materials_explorer_plan(request, data_profile)
+            plan["steps"][0]["purpose"] = "Expose ambiguous Profile 2.0 model semantics without selecting a target or prediction column."
+            plan["steps"][0]["reason"] = "Material Data Profile 2.0 marks the requested ML capability ambiguous; only the diagnostic dataset product is safe to execute."
         elif _should_generate_dataset_materials_explorer(request, tools, data_profile):
             plan = _mock_dataset_materials_explorer_plan(request, data_profile)
         elif _should_generate_band_bz_link(request, tools, data_profile):
@@ -1327,6 +1331,37 @@ def _select_materials_ml_tool(
             if groups:
                 return tool_id
     return None
+
+
+def _should_generate_ambiguous_ml_diagnostic(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> bool:
+    if data_profile.profileContractVersion != "2.0" or not _has_tool(tools, "dataset.materials_explorer"):
+        return False
+    prompt = request.user_prompt.lower()
+    markers = (
+        "model performance",
+        "prediction error",
+        "parity",
+        "residual",
+        "regression evaluation",
+        "uncertainty",
+        "classification",
+        "模型表现",
+        "预测误差",
+        "回归评估",
+        "不确定性",
+        "分类",
+    )
+    if not any(marker in prompt for marker in markers):
+        return False
+    return any(
+        item.capability in {"regression_evaluation", "uncertainty_evaluation", "classification_evaluation"}
+        and item.dataStatus == "AMBIGUOUS"
+        for item in data_profile.analysisReadiness
+    )
 
 
 def _materials_ml_groups(data_profile: DataProfile, capability: str) -> list[Any]:

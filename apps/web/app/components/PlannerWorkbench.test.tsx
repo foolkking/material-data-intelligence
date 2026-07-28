@@ -928,6 +928,26 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(screen.getByTestId("results-export-tab").querySelector(".empty-state")).not.toBeNull();
   });
 
+  it("keeps successful job slices visible when artifact refresh fails", async () => {
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      if (String(input).endsWith("/planner/jobs/job_1/artifacts")) {
+        return jsonResponse({ detail: "artifact storage temporarily unavailable" }, 503);
+      }
+      return mockPlannerFetch(input, init);
+    });
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await openResultsTab(user);
+
+    expect(await screen.findByTestId("workspace-partial-failure")).not.toBeNull();
+    expect(screen.getByText("MATERIAL_INTELLIGENCE_PARTIAL_RESULT_LOAD")).not.toBeNull();
+    expect(screen.getByText("artifacts")).not.toBeNull();
+    expect(screen.getAllByText("job_1").length).toBeGreaterThan(0);
+  });
+
   it("explains validation failure without creating job, plan, enqueue, polling, or SSE", async () => {
     fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);

@@ -1,0 +1,22 @@
+{
+  "browsers": [
+    "chromium",
+    "firefox",
+    "webkit"
+  ],
+  "desktopProducts": [
+    "profile",
+    "dataset",
+    "materials_ml",
+    "composition_space",
+    "comparison",
+    "partial",
+    "ambiguous"
+  ],
+  "mobileProducts": [
+    "dataset",
+    "materials_ml",
+    "composition_space"
+  ],
+  "marker": "MATERIAL_INTELLIGENCE_BROWSER_INTEGRATION_PASS"
+}
