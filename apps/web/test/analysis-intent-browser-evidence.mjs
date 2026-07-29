@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -294,10 +294,13 @@ async function listFiles(directory) {
 async function hashEvidence() {
   const files = (await listFiles(EVIDENCE)).filter((file) => !file.endsWith("evidence_manifest.json"));
   await writeJson("evidence_manifest.json", {
-    algorithm: "sha256",
+    algorithm: "sha256-lf-normalized-text-v1",
     files: await Promise.all(files.map(async (file) => {
       const payload = await readFile(file);
-      return { path: path.relative(EVIDENCE, file).replaceAll("\\", "/"), bytes: (await stat(file)).size, sha256: createHash("sha256").update(payload).digest("hex") };
+      const canonical = file.toLowerCase().endsWith(".png")
+        ? payload
+        : Buffer.from(payload.toString("utf8").replaceAll("\r\n", "\n"), "utf8");
+      return { path: path.relative(EVIDENCE, file).replaceAll("\\", "/"), bytes: canonical.length, sha256: createHash("sha256").update(canonical).digest("hex") };
     })),
   });
 }

@@ -6,7 +6,7 @@
       "ready": {
         "initialOutcome": "READY",
         "mobile": false,
-        "firstIntentMs": 1610,
+        "firstIntentMs": 1585,
         "auditText": "{\n  \"ambiguities\": [],\n  \"clarification\": {\n    \"answers\": [],\n    \"maxQuestionsPerRound\": 3,\n    \"maxRounds\": 1,\n    \"questions\": [],\n    \"round\": 0\n  },\n  \"constraints\": {\n    \"clarificationAllowed\": true,\n    \"costPreference\": null,\n    \"descriptiveOnly\": false,\n    \"excludeResourceIds\": [],\n    \"excludeScientificIntents\": [],\n    \"forbidDerivedInterpretation\": false,\n    \"groupIds\": [],\n    \"includeResourceIds\": [],\n    \"includeScientificIntents\": [],\n    \"maxAnalyses\": null,\n    \"maxToolCalls\": null,\n    \"modelIds\": [],\n    \"outputPreferences\": [],\n    \"targetIds\": [],\n    \"timePreference\": null\n  },\n  \"dataScope\": {\n    \"datasetId\": \"dataset_demo\",\n    \"datasetVersion\": \"2\",\n    \"groupIds\": [],\n    \"modelIds\": [],\n    \"origin\": \"USER_EXPLICIT\",\n    \"profileContractVersion\": \"2.0\",\n    \"profileId\": \"profile_dataset_demo_v2\",\n    \"profileSemanticHash\": \"e9f6466874f89e9ec0e30cc0a8bad1f3427e4fa57e69300c6c3682106e47bcf2\",\n    \"resourceRefs\": [\n      {\n        \"kind\": \"dataframe\",\n        \"objectHash\": \"8f6a530dc19018d6ba405249c42ff98f73e13a76890ca780355d7a078658ed5e\",\n        \"objectId\": \"obj_dataframe_8f6a530dc190\",\n        \"objectType\": \"DataFrame\",\n        \"origin\": \"USER_EXPLICIT\"\n      }\n    ],\n    \"sampleIds\": []\n  },\n  \"datasetId\": \"dataset_demo\",\n  \"desiredOutputs\": [\n    \"summary\",\n    \"warnings\",\n    \"linked_samples\",\n    \"plot\",\n    \"table\"\n  ],\n  \"intentHash\": \"dad3fd4a192b57aa29fa90cf1d5050ee145b3094191bbf443f8db95cd4fc2f69\",\n  \"intentId\": \"intent_dad3fd4a192b57aa29fa90cf\",\n  \"language\": \"en\",\n  \"missingFacts\": [],\n  \"normalizedGoal\": \"Analyze this materials dataset composition distribution and anomaly candidates.\",\n  \"optionalCapabilityNeeds\": [\n    \"sample_identity\"\n  ],\n  \"outcome\": \"READY\",\n  \"profileId\": \"profile_dataset_demo_v2\",\n  \"provenance\": {\n    \"answerBindings\": [],\n    \"createdAt\": \"2026-07-29T00:00:00+00:00\",\n    \"model\": \"bounded-rules-v1\",\n    \"parentIntentId\": null,\n    \"promptVersion\": \"phase10l1.intent.v1\",\n    \"provider\": \"deterministic_mock\"\n  },\n  \"rawGoal\": \"Analyze this materials dataset composition distribution and anomaly candidates.\",\n  \"requiredCapabilityNeeds\": [\n    \"composition_data\",\n    \"material_property_data\",\n    \"tabular_data\"\n  ],\n  \"schemaVersion\": \"1.0\",\n  \"scientificIntents\": [\n    \"composition_analysis\",\n    \"property_distribution\",\n    \"dataset_overview\",\n    \"anomaly_candidate_review\"\n  ],\n  \"targetSemantics\": [],\n  \"unsupportedReasons\": [],\n  \"warnings\": []\n}",
         "domSha256": "f12c8b2bfedf4f107e9f46208a07bc443009d90ae447759e00cd6852dfb5ddac",
         "horizontalOverflow": false,
@@ -20,7 +20,7 @@
       "clarification": {
         "initialOutcome": "NEEDS_CLARIFICATION",
         "mobile": false,
-        "firstIntentMs": 1492,
+        "firstIntentMs": 1547,
         "revisedOutcome": "READY",
         "target": "Analysis intent\nREADY\nORIGINAL GOAL\nAnalyze where the regression model predictions are wrong and whether uncertainty is credible.\nSCIENTIFIC INTENT\nml_uncertainty_evaluation, ml_regression_evaluation\nDATASET / PROFILE\ndataset_phase10l1 / profile_phase10l1\nDATASET VERSION\ndataset_phase10l1_version_2\nRESOURCES\ndataframe:table_phase10l1\nTARGETS\nregression_0:target:formation_energy, regression_0:prediction:formation_energy_pred, regression_0:uncertainty:formation_energy_std\nDESIRED OUTPUTS\nsummary, warnings, metrics, plot, table\nPROVIDER\ndeterministic_mock / bounded-rules-v1\n\nIntent confirmed. The existing planner can generate a plan.",
         "domSha256": "39706ade17a4e633a995fbd7d03a477cd6312dcfabffd406eacc5ec8e9183fe4",
@@ -35,7 +35,7 @@
       "unsupported": {
         "initialOutcome": "UNSUPPORTED",
         "mobile": false,
-        "firstIntentMs": 1442,
+        "firstIntentMs": 1470,
         "reason": "Request is outside the current safe capability boundary.\nINTENT_FUTURE_FERMI_SURFACE / FUTURE_SCOPE: Fermi Surface is Future Scope.",
         "runDisabled": true,
         "domSha256": "587f60f77bbcc9a533a421eae9187cd62ee4f3b5f1b264421c28f83cf0848f9d",
@@ -51,7 +51,7 @@
     "mobile": {
       "initialOutcome": "NEEDS_CLARIFICATION",
       "mobile": true,
-      "firstIntentMs": 1449,
+      "firstIntentMs": 1487,
       "revisedOutcome": "READY",
       "target": "Analysis intent\nREADY\nORIGINAL GOAL\nAnalyze where the regression model predictions are wrong and whether uncertainty is credible.\nSCIENTIFIC INTENT\nml_uncertainty_evaluation, ml_regression_evaluation\nDATASET / PROFILE\ndataset_phase10l1 / profile_phase10l1\nDATASET VERSION\ndataset_phase10l1_version_2\nRESOURCES\ndataframe:table_phase10l1\nTARGETS\nregression_0:target:formation_energy, regression_0:prediction:formation_energy_pred, regression_0:uncertainty:formation_energy_std\nDESIRED OUTPUTS\nsummary, warnings, metrics, plot, table\nPROVIDER\ndeterministic_mock / bounded-rules-v1\n\nIntent confirmed. The existing planner can generate a plan.",
       "domSha256": "39706ade17a4e633a995fbd7d03a477cd6312dcfabffd406eacc5ec8e9183fe4",
@@ -74,7 +74,7 @@
       "ready": {
         "initialOutcome": "READY",
         "mobile": false,
-        "firstIntentMs": 2556,
+        "firstIntentMs": 2307,
         "auditText": "{\n  \"ambiguities\": [],\n  \"clarification\": {\n    \"answers\": [],\n    \"maxQuestionsPerRound\": 3,\n    \"maxRounds\": 1,\n    \"questions\": [],\n    \"round\": 0\n  },\n  \"constraints\": {\n    \"clarificationAllowed\": true,\n    \"costPreference\": null,\n    \"descriptiveOnly\": false,\n    \"excludeResourceIds\": [],\n    \"excludeScientificIntents\": [],\n    \"forbidDerivedInterpretation\": false,\n    \"groupIds\": [],\n    \"includeResourceIds\": [],\n    \"includeScientificIntents\": [],\n    \"maxAnalyses\": null,\n    \"maxToolCalls\": null,\n    \"modelIds\": [],\n    \"outputPreferences\": [],\n    \"targetIds\": [],\n    \"timePreference\": null\n  },\n  \"dataScope\": {\n    \"datasetId\": \"dataset_demo\",\n    \"datasetVersion\": \"2\",\n    \"groupIds\": [],\n    \"modelIds\": [],\n    \"origin\": \"USER_EXPLICIT\",\n    \"profileContractVersion\": \"2.0\",\n    \"profileId\": \"profile_dataset_demo_v2\",\n    \"profileSemanticHash\": \"e9f6466874f89e9ec0e30cc0a8bad1f3427e4fa57e69300c6c3682106e47bcf2\",\n    \"resourceRefs\": [\n      {\n        \"kind\": \"dataframe\",\n        \"objectHash\": \"8f6a530dc19018d6ba405249c42ff98f73e13a76890ca780355d7a078658ed5e\",\n        \"objectId\": \"obj_dataframe_8f6a530dc190\",\n        \"objectType\": \"DataFrame\",\n        \"origin\": \"USER_EXPLICIT\"\n      }\n    ],\n    \"sampleIds\": []\n  },\n  \"datasetId\": \"dataset_demo\",\n  \"desiredOutputs\": [\n    \"summary\",\n    \"warnings\",\n    \"linked_samples\",\n    \"plot\",\n    \"table\"\n  ],\n  \"intentHash\": \"dad3fd4a192b57aa29fa90cf1d5050ee145b3094191bbf443f8db95cd4fc2f69\",\n  \"intentId\": \"intent_dad3fd4a192b57aa29fa90cf\",\n  \"language\": \"en\",\n  \"missingFacts\": [],\n  \"normalizedGoal\": \"Analyze this materials dataset composition distribution and anomaly candidates.\",\n  \"optionalCapabilityNeeds\": [\n    \"sample_identity\"\n  ],\n  \"outcome\": \"READY\",\n  \"profileId\": \"profile_dataset_demo_v2\",\n  \"provenance\": {\n    \"answerBindings\": [],\n    \"createdAt\": \"2026-07-29T00:00:00+00:00\",\n    \"model\": \"bounded-rules-v1\",\n    \"parentIntentId\": null,\n    \"promptVersion\": \"phase10l1.intent.v1\",\n    \"provider\": \"deterministic_mock\"\n  },\n  \"rawGoal\": \"Analyze this materials dataset composition distribution and anomaly candidates.\",\n  \"requiredCapabilityNeeds\": [\n    \"composition_data\",\n    \"material_property_data\",\n    \"tabular_data\"\n  ],\n  \"schemaVersion\": \"1.0\",\n  \"scientificIntents\": [\n    \"composition_analysis\",\n    \"property_distribution\",\n    \"dataset_overview\",\n    \"anomaly_candidate_review\"\n  ],\n  \"targetSemantics\": [],\n  \"unsupportedReasons\": [],\n  \"warnings\": []\n}",
         "domSha256": "f12c8b2bfedf4f107e9f46208a07bc443009d90ae447759e00cd6852dfb5ddac",
         "horizontalOverflow": false,
@@ -88,7 +88,7 @@
       "clarification": {
         "initialOutcome": "NEEDS_CLARIFICATION",
         "mobile": false,
-        "firstIntentMs": 1790,
+        "firstIntentMs": 1744,
         "revisedOutcome": "READY",
         "target": "Analysis intent\nREADY\nORIGINAL GOAL\nAnalyze where the regression model predictions are wrong and whether uncertainty is credible.\nSCIENTIFIC INTENT\nml_uncertainty_evaluation, ml_regression_evaluation\nDATASET / PROFILE\ndataset_phase10l1 / profile_phase10l1\nDATASET VERSION\ndataset_phase10l1_version_2\nRESOURCES\ndataframe:table_phase10l1\nTARGETS\nregression_0:target:formation_energy, regression_0:prediction:formation_energy_pred, regression_0:uncertainty:formation_energy_std\nDESIRED OUTPUTS\nsummary, warnings, metrics, plot, table\nPROVIDER\ndeterministic_mock / bounded-rules-v1\n\nIntent confirmed. The existing planner can generate a plan.",
         "domSha256": "39706ade17a4e633a995fbd7d03a477cd6312dcfabffd406eacc5ec8e9183fe4",
@@ -103,7 +103,7 @@
       "unsupported": {
         "initialOutcome": "UNSUPPORTED",
         "mobile": false,
-        "firstIntentMs": 1476,
+        "firstIntentMs": 1449,
         "reason": "Request is outside the current safe capability boundary.\nINTENT_FUTURE_FERMI_SURFACE / FUTURE_SCOPE: Fermi Surface is Future Scope.",
         "runDisabled": true,
         "domSha256": "587f60f77bbcc9a533a421eae9187cd62ee4f3b5f1b264421c28f83cf0848f9d",
@@ -128,7 +128,7 @@
       "ready": {
         "initialOutcome": "READY",
         "mobile": false,
-        "firstIntentMs": 2726,
+        "firstIntentMs": 2741,
         "auditText": "{\n  \"ambiguities\": [],\n  \"clarification\": {\n    \"answers\": [],\n    \"maxQuestionsPerRound\": 3,\n    \"maxRounds\": 1,\n    \"questions\": [],\n    \"round\": 0\n  },\n  \"constraints\": {\n    \"clarificationAllowed\": true,\n    \"costPreference\": null,\n    \"descriptiveOnly\": false,\n    \"excludeResourceIds\": [],\n    \"excludeScientificIntents\": [],\n    \"forbidDerivedInterpretation\": false,\n    \"groupIds\": [],\n    \"includeResourceIds\": [],\n    \"includeScientificIntents\": [],\n    \"maxAnalyses\": null,\n    \"maxToolCalls\": null,\n    \"modelIds\": [],\n    \"outputPreferences\": [],\n    \"targetIds\": [],\n    \"timePreference\": null\n  },\n  \"dataScope\": {\n    \"datasetId\": \"dataset_demo\",\n    \"datasetVersion\": \"2\",\n    \"groupIds\": [],\n    \"modelIds\": [],\n    \"origin\": \"USER_EXPLICIT\",\n    \"profileContractVersion\": \"2.0\",\n    \"profileId\": \"profile_dataset_demo_v2\",\n    \"profileSemanticHash\": \"e9f6466874f89e9ec0e30cc0a8bad1f3427e4fa57e69300c6c3682106e47bcf2\",\n    \"resourceRefs\": [\n      {\n        \"kind\": \"dataframe\",\n        \"objectHash\": \"8f6a530dc19018d6ba405249c42ff98f73e13a76890ca780355d7a078658ed5e\",\n        \"objectId\": \"obj_dataframe_8f6a530dc190\",\n        \"objectType\": \"DataFrame\",\n        \"origin\": \"USER_EXPLICIT\"\n      }\n    ],\n    \"sampleIds\": []\n  },\n  \"datasetId\": \"dataset_demo\",\n  \"desiredOutputs\": [\n    \"summary\",\n    \"warnings\",\n    \"linked_samples\",\n    \"plot\",\n    \"table\"\n  ],\n  \"intentHash\": \"dad3fd4a192b57aa29fa90cf1d5050ee145b3094191bbf443f8db95cd4fc2f69\",\n  \"intentId\": \"intent_dad3fd4a192b57aa29fa90cf\",\n  \"language\": \"en\",\n  \"missingFacts\": [],\n  \"normalizedGoal\": \"Analyze this materials dataset composition distribution and anomaly candidates.\",\n  \"optionalCapabilityNeeds\": [\n    \"sample_identity\"\n  ],\n  \"outcome\": \"READY\",\n  \"profileId\": \"profile_dataset_demo_v2\",\n  \"provenance\": {\n    \"answerBindings\": [],\n    \"createdAt\": \"2026-07-29T00:00:00+00:00\",\n    \"model\": \"bounded-rules-v1\",\n    \"parentIntentId\": null,\n    \"promptVersion\": \"phase10l1.intent.v1\",\n    \"provider\": \"deterministic_mock\"\n  },\n  \"rawGoal\": \"Analyze this materials dataset composition distribution and anomaly candidates.\",\n  \"requiredCapabilityNeeds\": [\n    \"composition_data\",\n    \"material_property_data\",\n    \"tabular_data\"\n  ],\n  \"schemaVersion\": \"1.0\",\n  \"scientificIntents\": [\n    \"composition_analysis\",\n    \"property_distribution\",\n    \"dataset_overview\",\n    \"anomaly_candidate_review\"\n  ],\n  \"targetSemantics\": [],\n  \"unsupportedReasons\": [],\n  \"warnings\": []\n}",
         "domSha256": "587ae0078a87b3c2200d2b7bcaa904ab7e4e75410d2a48e7c2f6a71bf21aa9e3",
         "horizontalOverflow": false,
@@ -142,7 +142,7 @@
       "clarification": {
         "initialOutcome": "NEEDS_CLARIFICATION",
         "mobile": false,
-        "firstIntentMs": 2454,
+        "firstIntentMs": 2437,
         "revisedOutcome": "READY",
         "target": "Analysis intent\nREADY\nORIGINAL GOAL\nAnalyze where the regression model predictions are wrong and whether uncertainty is credible.\nSCIENTIFIC INTENT\nml_uncertainty_evaluation, ml_regression_evaluation\nDATASET / PROFILE\ndataset_phase10l1 / profile_phase10l1\nDATASET VERSION\ndataset_phase10l1_version_2\nRESOURCES\ndataframe:table_phase10l1\nTARGETS\nregression_0:target:formation_energy, regression_0:prediction:formation_energy_pred, regression_0:uncertainty:formation_energy_std\nDESIRED OUTPUTS\nsummary, warnings, metrics, plot, table\nPROVIDER\ndeterministic_mock / bounded-rules-v1\nIntent confirmed. The existing planner can generate a plan.\n",
         "domSha256": "eb6638efe5c09fd90473e112b8a266c5aacef0c2100762071e03ce48a1ca78c6",
@@ -157,7 +157,7 @@
       "unsupported": {
         "initialOutcome": "UNSUPPORTED",
         "mobile": false,
-        "firstIntentMs": 2460,
+        "firstIntentMs": 2436,
         "reason": "Request is outside the current safe capability boundary.\nINTENT_FUTURE_FERMI_SURFACE / FUTURE_SCOPE: Fermi Surface is Future Scope.\n",
         "runDisabled": true,
         "domSha256": "b4fed982452a0bc026805afa3648e8fd6e4c5fbdf498caba356d2f3bbd4f762f",

@@ -316,14 +316,15 @@ def evidence_manifest() -> None:
         if not path.is_file() or path.name == "evidence_manifest.json":
             continue
         payload = path.read_bytes()
+        canonical = payload if path.suffix.lower() == ".png" else payload.replace(b"\r\n", b"\n")
         records.append(
             {
                 "path": path.relative_to(EVIDENCE).as_posix(),
-                "bytes": len(payload),
-                "sha256": sha256(payload).hexdigest(),
+                "bytes": len(canonical),
+                "sha256": sha256(canonical).hexdigest(),
             }
         )
-    write_json("evidence_manifest.json", {"algorithm": "sha256", "files": records})
+    write_json("evidence_manifest.json", {"algorithm": "sha256-lf-normalized-text-v1", "files": records})
 
 
 def main() -> None:
@@ -382,6 +383,7 @@ def main() -> None:
         "# Phase 10L-1 Analysis Intent Evidence\n\n"
         "Sanitized API, persistence, bounded performance, browser and security evidence for the independent "
         "AnalysisIntent v1 gate. Browser captures are generated separately from these exact typed API fixtures. "
+        "Text manifest entries use LF-normalized canonical bytes; PNG entries use raw bytes. "
         "No real LLM, arbitrary code, artifact JavaScript, external asset, or external network request is used.\n",
         encoding="utf-8",
     )

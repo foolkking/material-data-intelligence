@@ -97,6 +97,7 @@ def test_phase10l1_security_markers_and_manifest_integrity() -> None:
     assert network == {"externalRequests": 0, "marker": "NO_PHASE10L1_EXTERNAL_NETWORK_REQUESTS"}
 
     manifest = load("evidence_manifest.json")
+    assert manifest["algorithm"] == "sha256-lf-normalized-text-v1"
     expected_files = {
         path.relative_to(EVIDENCE).as_posix()
         for path in EVIDENCE.rglob("*")
@@ -105,5 +106,6 @@ def test_phase10l1_security_markers_and_manifest_integrity() -> None:
     assert {entry["path"] for entry in manifest["files"]} == expected_files
     for entry in manifest["files"]:
         payload = (EVIDENCE / entry["path"]).read_bytes()
-        assert len(payload) == entry["bytes"]
-        assert sha256(payload).hexdigest() == entry["sha256"]
+        canonical = payload if entry["path"].lower().endswith(".png") else payload.replace(b"\r\n", b"\n")
+        assert len(canonical) == entry["bytes"]
+        assert sha256(canonical).hexdigest() == entry["sha256"]
