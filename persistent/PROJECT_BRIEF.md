@@ -39,8 +39,9 @@ Data -> Profile -> Natural Language -> AnalysisIntent v1
 Phase 10J-6 is archived and Phase 10K Material Intelligence is complete with
 explicit limits. Phase 10L-0 is archived. Phase 10L-1 implemented the
 independent AnalysisIntent v1 and one bounded clarification round upstream of
-the unchanged existing Planner; implementation exact-SHA CI passed and record/
-archive closure remains. The remaining
+the unchanged existing Planner; implementation and completion-record exact-SHA
+CI passed, and the completed queue block is archived. Phase 10L-2 remains a
+reviewer gate and is not queued. The remaining
 initial-release route is:
 
 ```text

@@ -22,8 +22,10 @@
 - Corrected implementation HEAD `844eb149a4c528d28db9fdf70dddfaf015e91d5a`
   passed exact-SHA CI run `30425804801`: Unit, Frontend typecheck/build,
   PostgreSQL/Redis/MinIO migration/integration, and no-skipped all succeeded.
-  Completion-record CI and verified queue archive remain pending. Phase 10L-2
-  remains a reviewer gate and is not queued.
+- Completion record `b4cd656e1c03bb7d6ea406ed0f2dbd828dfb2dd9`
+  passed exact-SHA CI run `30426248141` with the same required gates. The
+  completed queue block is archived; Phase 10L-2 remains a reviewer gate and
+  is not queued.
 
 ## 2026-07-29 Phase 10L-0 Agent / Planner Capability Audit
 

@@ -1194,8 +1194,12 @@ and persistent records. Dependency and lock files are unchanged.
   `844eb149a4c528d28db9fdf70dddfaf015e91d5a`.
 * implementation exact-SHA CI: run `30425804801`, Unit, Frontend,
   PostgreSQL/Redis/MinIO, migration, and no-skipped success.
-* completion-record commit/CI: pending this record commit.
-* archive commit/CI: pending completion-record CI.
+* completion-record commit:
+  `b4cd656e1c03bb7d6ea406ed0f2dbd828dfb2dd9`.
+* completion-record exact-SHA CI: run `30426248141`, Unit, Frontend,
+  PostgreSQL/Redis/MinIO, migration, and no-skipped success.
+* archive commit/CI: this verified queue archive change; exact SHA and CI are
+  reported after the commit gate closes.
 
 ## 21. Explicit Non-Scope Confirmation
 
@@ -1214,7 +1218,7 @@ These are gaps only, not executable tasks.
 
 ## 23. Queue State
 
-* Phase 10L-1: `COMPLETED_AWAITING_COMPLETION_RECORD_CI_AND_ARCHIVE`.
+* Phase 10L-1: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 * Phase 10L-2: `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
 
 ## 24. Whether Allowed to Enter Phase 10L-2 Automatically
@@ -1223,6 +1227,18 @@ These are gaps only, not executable tasks.
 
 ## 25. Next Action
 
-Verify this completion-record exact SHA, then archive only the completed 10L-1
-TASKS block by a verified queue commit. Return the complete result to the
-reviewer and do not queue or execute Phase 10L-2.
+Return the complete Phase 10L-1 result to the reviewer after the queue archive
+commit passes exact-SHA CI. Do not queue or execute Phase 10L-2.
+
+### Completion-record CI and queue archive authorization
+
+* 核验时间：2026-07-29 13:52:25 +08:00。
+* completion-record commit：
+  `b4cd656e1c03bb7d6ea406ed0f2dbd828dfb2dd9`。
+* exact-SHA CI：run `30426248141` success；Unit Tests、Frontend Typecheck &
+  Build、PostgreSQL/Redis/MinIO migration/service-backed integration 和
+  no-skipped assertion 均成功。
+* 归档决定：implementation、evidence、测试、永久结果、completion record、
+  两次 exact-SHA CI 和 persistent 状态一致，允许在本次 queue archive commit
+  中删除已完成的 Phase 10L-1 task block。Phase 10L-2 保持
+  `REVIEWER_GATE / AWAITING REVIEWER PROMPT`，未创建 executable task。

@@ -31,7 +31,7 @@ implementation.
 | ML | Chemistry-conditioned error | READY | Conditional | No | Phase 10K-3 descriptive element/system groups with small-group disclosure |
 | ML | Common-sample model comparison | READY | Conditional | No | Phase 10K-3 shared-target finite-sample intersection |
 | Agent | Structured validated planning | READY | Yes | No | AnalysisPlan/PlanValidator |
-| Agent | AnalysisIntent v1 and bounded clarification | READY | Yes | No | Phase 10L-1 implementation exact-SHA CI passed; record/archive closure pending |
+| Agent | AnalysisIntent v1 and bounded clarification | READY | Yes | No | Phase 10L-1 implementation/completion exact-SHA CI passed; queue archived |
 | Agent | Capability-aware planning | PARTIAL_READY | Yes | No | Phase 10L-2 |
 | Agent | Bounded multi-tool analysis | PARTIAL_READY | Yes | No | Phase 10L-3 |
 | Agent | Scientific result interpretation | PLANNED | Yes | No | Phase 10L-4 |

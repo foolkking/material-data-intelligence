@@ -15,10 +15,12 @@
 - Corrected implementation HEAD `844eb149` passed exact-SHA CI run
   `30425804801`, including Unit, Frontend, PostgreSQL migration/service-backed
   integration, and no-skipped.
+- Completion record `b4cd656` passed exact-SHA CI run `30426248141`; the
+  completed Phase 10L-1 queue block is archived and Phase 10L-2 remains an
+  unqueued reviewer gate.
 - AnalysisPlan 0.1, PlanValidator, Tool Registry metadata, Planner route
   precedence, QueueWorkerRuntime semantics, dependencies, scientific tools, and
-  workspace architecture are unchanged. Completion-record CI and archive
-  closure are still pending.
+  workspace architecture are unchanged.
 
 ## 2026-07-29 - Phase 10L-0 Agent / Planner Capability Audit
 
