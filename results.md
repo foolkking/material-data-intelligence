@@ -1580,3 +1580,294 @@ capabilities. These are assigned to later approved phases, not K5 failures.
 * Phase 10K-5: `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 * Phase 10K: `COMPLETE / READY_WITH_EXPLICIT_LIMITS`.
 * Phase 10L-0: `NEXT / NOT_STARTED`.
+
+# Phase 10L-0 Agent / Planner Capability Audit Result
+
+## 1. Conclusion
+
+`PASS` for the architecture/capability audit. Completion-record CI and verified
+queue archival are recorded in a closure addendum after that gate succeeds.
+
+## 2. Baseline
+
+* Phase 10K: `COMPLETE / READY_WITH_EXPLICIT_LIMITS`.
+* Phase 10K-5 archive: `17de1f91cef6e94a5a1f4ae684fb3e1b756f0906`,
+  exact-SHA CI run `30382914410` success.
+* branch: `master`.
+* initial HEAD/origin: `17de1f91cef6e94a5a1f4ae684fb3e1b756f0906`.
+* initial status: clean before Phase 10L-0 execution.
+
+## 3. Current Planner Architecture
+
+```text
+POST /planner/jobs
+  -> persisted DataProfile + Registry snapshot
+  -> Mock deterministic router OR optional OpenAI-compatible JSON provider
+  -> AnalysisPlan 0.1
+  -> PlanValidator
+  -> persisted plan/hash + job
+  -> QueueWorkerRuntime
+  -> Registry lookup + registered Adapter
+  -> ToolCalls/events/artifacts
+  -> PlannerWorkbench timeline and results
+```
+
+The Mock path reads selected Profile 2.0 facts directly. The live-LLM prompt
+receives only a shallow table/structure Profile summary and a reduced MVP tool
+inventory. PlanValidator receives no Profile.
+
+## 4. Current AnalysisPlan
+
+* schema/version: `AnalysisPlan` schema version `0.1`.
+* ToolCall count: a non-empty ordered `steps` array; no plan-level maximum.
+* ordering: deterministic list order and unique step IDs.
+* dependencies: absent.
+* artifact binding: artifact-shaped input refs exist syntactically, but no
+  producer-step identity or previous-output runtime injection exists.
+* persistence: canonical plan JSON, hash, provider, job binding, events,
+  ToolCalls, and artifacts are persisted.
+* versioning: provider is stored; model/prompt version and complete provider
+  configuration are not.
+* failure: first failed step stops later execution, job fails, and already
+  written artifacts remain; no partial-success status or automatic retry.
+
+## 5. Multi-Tool Reality
+
+`SEQUENTIAL_INDEPENDENT`.
+
+QueueWorkerRuntime executes multiple steps in order, and the existing phonon
+band plus Brillouin-zone test proves a real two-step job. Both steps consume
+independent pre-existing inputs. There is no dependency graph or prior-step
+artifact binding, so the product is not dependency-aware multi-tool planning.
+
+## 6. Mock Planner
+
+* routing: fixed-priority phrase/substring predicates and named plan builders.
+* keyword dependence: high; 34 route predicates and 56 prompt-check sites.
+* resource/Profile awareness: partial and strongest for Phase 10K ML and
+  Composition Space; selected structure/trajectory/phonon/volume checks exist.
+* Registry awareness: verifies fixed IDs exist; it does not rank eligible
+  tools from capability metadata.
+* ambiguity: selected ML ambiguity routes safely to diagnostics, but no general
+  clarification state exists.
+* params: exact Profile semantic binding for K3/K4; heuristic/default binding
+  remains in older routes.
+* classification: `PARTIAL_PROFILE_AWARE`.
+
+## 7. LLM Planner
+
+* architecture: explicit opt-in OpenAI-compatible JSON completion; Mock is the
+  default and CI path.
+* prompt: raw goal, dataset/Profile IDs, shallow table/structure facts, quality
+  count, and 41 MVP IDs/descriptions/artifact types/parameter names.
+* missing context: full Profile semantic groups/readiness, trajectory/phonon/
+  volumetric facts, full parameter constraints, input schemas, caps, ranking,
+  prior plans, and prior errors.
+* enforcement: JSON object parsing followed by mandatory PlanValidator.
+* retry/repair/fallback: one response-format compatibility retry on HTTP 400 is
+  transport handling, not plan repair; no validation repair or Mock fallback.
+* `REAL_LLM_CALLS = 0` for this audit.
+
+## 8. DataProfile to Planner Integration
+
+* Mock: resource kind, composition, structure, trajectory, phonon, volumetric,
+  regression, uncertainty, classification, and readiness are consumed unevenly;
+  K3/K4 are the strongest Profile-aware paths.
+* LLM: table columns and a shallow structure summary only; no full Profile 2.0
+  semantic groups/readiness.
+* Validator: no Profile or semantic-readiness validation.
+
+## 9. Tool Registry Planner Readiness
+
+* inventory: 53 tools, 41 MVP, 11 V1, one V2 across eight domains.
+* present: identity, descriptions, input object options, params JSON Schema,
+  output artifact metadata, costs, timeout, permissions, and resource caps.
+* missing: uniform semantic prerequisites, Profile readiness mapping, planner
+  ranking hints, collision groups, and composition constraints.
+* classification: `PARTIAL_PLANNER_CAPABILITY_REGISTRY`.
+
+## 10. PlanValidator
+
+* validates Pydantic plan shape, non-empty/unique steps, known MVP tool,
+  credential-like parameter rejection, parameter JSON Schema, and known enum
+  values.
+* does not validate resource kind/existence, Profile readiness, scientific
+  semantics, produced-artifact compatibility, explicit dependencies, max step
+  count, duplicate calls, or cross-step bindings.
+* classification: `SCHEMA_AND_REGISTRY_VALIDATOR`.
+
+## 11. Tool Selection
+
+* table/viz and older ML: phrase routes plus column heuristics/defaults.
+* dataset and Phase 10K ML/composition space: product-specific Profile facts,
+  readiness, semantic groups, and fixed Registry IDs.
+* structure/trajectory/phonon/BZ/volumetric: phrase plus resource-presence
+  predicates and approved fixed parameters.
+* there is no cross-domain candidate ranking or capability composition pass.
+
+## 12. Representative Prompt Audit
+
+* composition distribution: `dataset.materials_explorer`; coherent single
+  product, no element/system-specific composition.
+* structure reasonableness: `structure.summary`; no coordination/RDF/XRD/viewer
+  composition.
+* poor model predictions: `ml.basic_metrics`; misses product regression and
+  linked chemistry/sample diagnostics.
+* uncertainty trust: `ml.basic_metrics`; misses ready uncertainty evaluator.
+* broad phonon quality: `ml.basic_metrics`; resource-incompatible fallback.
+* charge-density features: `structure.volumetric_data`; correct preparation,
+  no interpretation.
+* broad dataset analysis: `dataset.materials_explorer`; no ranked composition.
+* explicit `formation_energy` distribution: `viz.histogram` incorrectly binds
+  `band_gap`, proving heuristic parameter drift.
+
+## 13. Analysis Intent
+
+No structured intent object exists. The request is raw prompt plus dataset,
+Profile, and Registry IDs; `AnalysisPlan.goal` repeats the raw prompt. Decision:
+`REQUIRED`, subject to reviewer approval of its exact shape.
+
+## 14. Ambiguity / Clarification
+
+Some Phase 10K ML ambiguity is typed and safely redirected, but there is no
+general clarification state, follow-up answer binding, or conversation context.
+
+## 15. Plan Repair
+
+There is no JSON/schema/scientific validation repair loop. Invalid provider
+output is rejected and persists no plan/job. Retry limits for repair therefore
+do not exist.
+
+## 16. Result Interpretation
+
+Deterministic Adapter summaries, warnings, recipes, and historical report paths
+exist. No LLM receives bounded scientific result context, and no grounded
+interpretation/no-invention contract or recommendation stage exists.
+
+## 17. Frontend Planner UX
+
+The UI supports prompt/resource selection, create-and-run, plan/timeline/call/
+artifact inspection, and typed errors. The generated plan becomes visible only
+after create/enqueue. Plan editing, approval-before-run, clarification, cancel,
+and same-job retry are absent.
+
+## 18. Security Boundary
+
+The LLM cannot execute Python, shell, filesystem, adapters, or scientific
+libraries. Unknown/non-MVP tools, credential-shaped params, and schema-invalid
+params are rejected. BYOK is resolved separately. Missing caps include prompt
+length, plan step count, Registry prompt budget, and API upper bounds for some
+provider tuning fields. Future interpretation requires an explicit untrusted
+artifact-content boundary.
+
+## 19. Planner Test Coverage
+
+Existing coverage includes deterministic Mock routes, fake live-provider JSON/
+error cases, PlanValidator rejection, persistence/hash, sequential Runtime,
+read APIs, frontend PlannerWorkbench, service-backed jobs, and default-Mock
+network isolation. It does not prove capability-ranked planning, dependencies,
+repair, clarification, or result interpretation.
+
+## 20. Planner Maturity
+
+`CURRENT_LEVEL = 3` on the audited Level 0-5 scale: data/profile-aware tool
+selection exists but is uneven. Overall product classification:
+`PROFILE_AWARE_SINGLE_TOOL_PLANNER_WITH_NARROW_SEQUENTIAL_INDEPENDENT_COMPOSITION`.
+
+## 21. Gap Matrix
+
+* READY: Profile transport, strict Registry execution metadata, deterministic
+  single-tool plans, persisted plans/hashes, timeline/artifacts.
+* REUSABLE_FOUNDATION: Profile 2.0, ordered steps, sequential Runtime,
+  summaries/recipes.
+* PARTIAL: Profile-aware routing, parameter binding, ambiguity, failure
+  isolation, Planner provenance, plan preview.
+* MISSING_10L: Analysis Intent, capability eligibility/ranking, semantic
+  validation, dependencies/artifact binding, caps, repair, interpretation, and
+  broad Agent evidence.
+* DEFER_10M: plan editing/approval and unified workspace UX.
+* DEFER_10N: professional tool coverage.
+* FUTURE/NOT_NEEDED: long-term memory and generic workflow/DAG products;
+  arbitrary code remains prohibited.
+
+## 22. Recommended Phase 10L Scope
+
+* 10L-1: strict lightweight Analysis Intent and ambiguity outcome.
+* 10L-2: capability-aware selection over Profile plus planner-facing metadata,
+  uniform binding, typed unsupported outcomes, and plan/prompt caps.
+* 10L-3: smallest approved bounded dependency/artifact model, not a generic DAG.
+* 10L-4: bounded structured interpretation over computed facts with explicit
+  no-invention rules.
+* 10L-5: five real natural-language Profile-to-plan-to-runtime-to-artifact-to-
+  interpretation evidence cases.
+
+## 23. Reviewer Decisions Required
+
+Reviewer approval is required for intent shape, ambiguity/clarification,
+capability metadata ownership, AnalysisPlan evolution, sequence versus
+restricted dependencies, failure/cancellation, repair policy, pre-execution
+control ownership, and interpretation provider/context policy.
+
+## 24. Production Behavior Changes
+
+```text
+Production Planner Behavior Changes:
+NONE
+```
+
+No AnalysisPlan schema, Registry contract, PlanValidator, Runtime, dependency,
+public tool, Adapter, Planner route, or frontend behavior changed.
+
+## 25. Files Changed
+
+Only `TASKS.md`, `results.md`, Phase 10L docs/evidence, `docs/index.md`, and
+persistent project-memory files. No production source, dependency, or lockfile
+changed.
+
+## 26. Checks
+
+* Planner focused: PASS, `92 passed, 1 skipped, 1 warning`; skip disclosed.
+* backend full: PASS, `837 passed, 27 skipped, 63 warnings`.
+* frontend full: PASS, 52 files and 323 tests.
+* typecheck/build: PASS.
+* Phase 10 closure/evidence and trajectory performance integrity: PASS.
+* `uv lock --check`, `git diff --check`, docs links, TASKS structure, and Phase
+  10L-0 evidence integrity: PASS.
+* local service-backed: UNAVAILABLE, Docker absent; `25 skipped, 12 deselected`.
+* audit exact-SHA CI service-backed/no-skipped: PASS.
+
+## 27. Security
+
+```text
+REAL_LLM_CALLS = 0
+NO_PHASE10L0_EXTERNAL_NETWORK_REQUESTS
+NO_SECRET_PATTERN_HITS
+```
+
+## 28. Commit / CI
+
+### Audit Commit
+
+* commit/exact SHA: `a7f8b143129d4cf3ced95373d8d81199b06f7ca6`.
+* CI run `30414233888`: Unit, Frontend Typecheck & Build, service-backed
+  integration, and no-skipped all success.
+
+### Completion Record
+
+* commit/exact SHA/CI: pending this completion-record commit.
+
+## 29. Queue State
+
+* Phase 10L-0: `COMPLETED_AWAITING_COMPLETION_RECORD_CI_AND_ARCHIVE`.
+* Phase 10L-1: `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+
+## 30. Whether Allowed to Enter Phase 10L-1 Automatically
+
+`NO`. Phase 10L-1 requires reviewer review of the real Phase 10L-0 architecture
+audit and an explicit complete execution prompt.
+
+## 31. Next Action
+
+Return Phase 10K-5 and Phase 10L-0 results to the reviewer for Phase 10L
+architecture decision and Phase 10L-1 execution prompt. Do not implement or
+queue Phase 10L-1 automatically.

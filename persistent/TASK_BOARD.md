@@ -32,13 +32,15 @@
   runs `30382233569` and `30382583135`, including Unit, Frontend,
   service-backed integration, and no-skipped. The permanent result/evidence are
   retained and the verified queue block is archived.
-- [~] Phase 10L-0 Agent / Planner Capability Audit is the sole active task after
-  verified Phase 10K archive commit `17de1f9` and exact-SHA CI run
-  `30382914410`. Phase 10L-1 remains unstarted.
+- [x] Phase 10L-0 Agent / Planner Capability Audit is complete at audit commit
+  `a7f8b14`; exact-SHA CI run `30414233888` passed Unit, Frontend,
+  service-backed integration, and no-skipped. Completion-record CI and verified
+  queue archival remain open. Phase 10L-1 remains unstarted behind its reviewer
+  gate.
 
-`TASKS.md` contains only the active Phase 10L-0 audit. Phase 10L-1 is not
-queued and remains behind a reviewer gate. Future Scope and Not Planned items
-are not queue work.
+`TASKS.md` retains the completed Phase 10L-0 block only until completion-record
+CI permits archival. Phase 10L-1 is not queued and remains behind a reviewer
+gate. Future Scope and Not Planned items are not queue work.
 
 The remaining sections are historical task records and do not override the
 current board above.
