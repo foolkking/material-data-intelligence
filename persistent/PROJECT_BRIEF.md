@@ -37,9 +37,10 @@ Data -> Profile -> Natural Language -> AnalysisIntent v1
 ### Current Focus and Initial Release Route
 
 Phase 10J-6 is archived and Phase 10K Material Intelligence is complete with
-explicit limits. Phase 10L-0 is archived. Phase 10L-1 is implementing the
+explicit limits. Phase 10L-0 is archived. Phase 10L-1 implemented the
 independent AnalysisIntent v1 and one bounded clarification round upstream of
-the unchanged existing Planner; exact-SHA closure is pending. The remaining
+the unchanged existing Planner; implementation exact-SHA CI passed and record/
+archive closure remains. The remaining
 initial-release route is:
 
 ```text

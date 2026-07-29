@@ -2,10 +2,11 @@
 
 ## Current Approved Work
 
-- [ ] Phase 10L-1 Analysis Intent Contract + Bounded Clarification is
-  `IN_PROGRESS`: implementation and local browser/API evidence exist;
-  implementation exact-SHA CI, completion record exact-SHA CI, and verified
-  queue archive remain required.
+- [x] Phase 10L-1 Analysis Intent Contract + Bounded Clarification implementation
+  HEAD `844eb149` passed exact-SHA CI run `30425804801`, including Unit,
+  Frontend, PostgreSQL/Redis/MinIO service-backed integration, migration, and
+  no-skipped. Completion-record exact-SHA CI and verified queue archive remain
+  required before the completed TASKS block may be removed.
 - [ ] Phase 10L-2 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; it must not be
   queued or executed automatically from Phase 10L-1.
 

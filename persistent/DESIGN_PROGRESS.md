@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-07-29 Phase 10L-1 Analysis Intent Implementation In Progress
+## 2026-07-29 Phase 10L-1 Analysis Intent Implementation Complete
 
 - Added independent `AnalysisIntent` schema `1.0` across Python, checked-in JSON
   Schema, and TypeScript with deterministic semantic hash/ID, exact Profile 2.0
@@ -19,8 +19,11 @@
 - Added the minimal PlannerWorkbench summary, clarification, unsupported, Run
   gate, and inert audit JSON. Chromium, Firefox, WebKit, and 390x844 mobile
   evidence pass with zero external requests and console/page errors.
-- Implementation exact-SHA CI, completion record CI, and verified queue archive
-  remain pending. Phase 10L-2 remains a reviewer gate and is not queued.
+- Corrected implementation HEAD `844eb149a4c528d28db9fdf70dddfaf015e91d5a`
+  passed exact-SHA CI run `30425804801`: Unit, Frontend typecheck/build,
+  PostgreSQL/Redis/MinIO migration/integration, and no-skipped all succeeded.
+  Completion-record CI and verified queue archive remain pending. Phase 10L-2
+  remains a reviewer gate and is not queued.
 
 ## 2026-07-29 Phase 10L-0 Agent / Planner Capability Audit
 
