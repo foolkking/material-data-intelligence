@@ -5,6 +5,23 @@
 The following questions can affect Initial Release and must be decided in their
 assigned phases rather than by this roadmap gate:
 
+### Phase 10L Reviewer Gate
+
+* What is the minimum standalone Analysis Intent schema, and which unresolved
+  choices require typed clarification rather than rejection?
+* Does planner-facing semantic eligibility belong in additive Registry
+  metadata or in a separate resolver over Profile 2.0 readiness facts?
+* How should AnalysisPlan evolve to record intent identity, bounded provider
+  provenance, maximum step count, dependencies, and produced-artifact binding?
+* Should bounded composition remain an ordered sequence or permit a restricted
+  dependency graph, and what are the failure, partial-result, cancellation,
+  and replay semantics?
+* Is one bounded validation-guided plan repair attempt allowed, or should the
+  system reject and require a new request?
+* Is plan approval/editing owned by Phase 10L or deferred to Phase 10M?
+* Which structured result facts, budgets, and no-invention rules govern the
+  future interpretation provider?
+
 * Which exact units and domain property registries should be admitted beyond
   the conservative Phase 10K-1 numeric property allowlist?
 * What intent vocabulary, plan-size bound, typed artifact binding, and failure

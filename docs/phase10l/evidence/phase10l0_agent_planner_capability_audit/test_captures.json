@@ -1,0 +1,59 @@
+{
+  "status": "LOCAL_CHECKS_COMPLETE_AWAITING_AUDIT_COMMIT_CI",
+  "planner_tests": {
+    "status": "PASS",
+    "result": "92 passed, 1 skipped, 1 warning",
+    "note": "The existing skip is reported and is not represented as a pass."
+  },
+  "backend_full": {
+    "status": "PASS",
+    "result": "837 passed, 27 skipped, 63 warnings"
+  },
+  "frontend_full": {
+    "status": "PASS",
+    "result": "52 files, 323 tests passed"
+  },
+  "frontend_typecheck": {
+    "status": "PASS"
+  },
+  "frontend_build": {
+    "status": "PASS",
+    "result": "Next.js production build completed"
+  },
+  "phase10_closure": {
+    "status": "PASS",
+    "frontend_tests": "2 passed",
+    "evidence_marker": "PHASE10_CLOSURE_EVIDENCE_INTEGRITY_PASS",
+    "trajectory_marker": "TRAJECTORY_PERFORMANCE_EVIDENCE_INTEGRITY_PASS"
+  },
+  "service_backed_local": {
+    "status": "UNAVAILABLE",
+    "result": "25 skipped, 12 deselected",
+    "reason": "Docker CLI and local PostgreSQL/Redis/MinIO service stack are unavailable."
+  },
+  "no_skipped": {
+    "status": "PENDING_EXACT_SHA_CI"
+  },
+  "docs_tasks_evidence": {
+    "status": "PASS",
+    "markers": [
+      "TASKS_QUEUE_STRUCTURE_PASS",
+      "PHASE10L0_DOCS_INDEX_LINKS_PASS",
+      "PHASE10L0_EVIDENCE_INTEGRITY_PASS"
+    ]
+  },
+  "lock_and_diff": {
+    "uv_lock": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "security": {
+    "status": "PASS",
+    "markers": [
+      "REAL_LLM_CALLS = 0",
+      "NO_PHASE10L0_EXTERNAL_NETWORK_REQUESTS",
+      "NO_SECRET_PATTERN_HITS"
+    ]
+  },
+  "audit_commit_ci": null,
+  "completion_record_ci": null
+}

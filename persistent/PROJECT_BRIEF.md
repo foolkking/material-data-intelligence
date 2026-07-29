@@ -35,9 +35,10 @@ Data -> Profile -> Natural Language -> Validated Plan -> Execute
 
 ### Current Focus and Initial Release Route
 
-Phase 10J-6 is archived. The next approved direction is Phase 10K-0, Material
-Intelligence Capability Gap Audit, after a full reviewer task prompt is supplied.
-The remaining initial-release route is:
+Phase 10J-6 is archived and Phase 10K Material Intelligence is complete with
+explicit limits. Phase 10L-0 is auditing the actual Agent/Planner architecture;
+Phase 10L-1 remains behind a reviewer gate and is not queued. The remaining
+initial-release route is:
 
 ```text
 10K Material Intelligence

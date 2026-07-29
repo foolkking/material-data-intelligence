@@ -1,0 +1,48 @@
+{
+  "registry_version": "0.1.0",
+  "total_tools": 53,
+  "stages": {
+    "mvp": 41,
+    "v1": 11,
+    "v2": 1
+  },
+  "domains": {
+    "composition": 11,
+    "dataset": 2,
+    "ml": 11,
+    "phonon": 4,
+    "structure": 19,
+    "table": 2,
+    "trajectory": 1,
+    "viz": 3
+  },
+  "metadata": {
+    "tool_identity": true,
+    "domain_and_category": true,
+    "description": true,
+    "input_object_options": true,
+    "params_json_schema": true,
+    "output_artifacts": true,
+    "display_target": true,
+    "cost_timeout_cache_permissions": true,
+    "resource_limits": true,
+    "semantic_eligibility_requirements": false,
+    "profile_readiness_mapping": false,
+    "planner_ranking_hints": false,
+    "collision_groups": false
+  },
+  "classification": "PARTIAL_PLANNER_CAPABILITY_REGISTRY",
+  "product_level_tools": [
+    "dataset.materials_explorer",
+    "dataset.composition_space",
+    "ml.regression_evaluation",
+    "ml.uncertainty_evaluation",
+    "ml.classification_evaluation"
+  ],
+  "representative_overlap_risks": [
+    ["viz.histogram", "table.distribution_summary", "dataset.materials_explorer"],
+    ["ml.basic_metrics", "ml.density_scatter", "ml.regression_evaluation"],
+    ["structure.structure_3d", "structure.viewer_scene", "structure.viewer_3d"],
+    ["structure.viewer_scene_metadata", "structure.viewer_export_package", "structure.viewer_3d"]
+  ]
+}

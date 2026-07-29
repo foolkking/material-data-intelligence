@@ -1,5 +1,28 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-29 ADR: Phase 10L-0 Records Planner Facts, Not a New Architecture
+
+**Context:** the repository already has deterministic Mock routing, an optional
+OpenAI-compatible JSON Planner, Profile 2.0, AnalysisPlan 0.1, strict Registry
+validation, persisted plans, and sequential QueueWorkerRuntime execution. The
+presence of these components can be mistaken for capability-aware multi-tool
+planning unless their actual data and execution boundaries are recorded.
+
+**Decision:** classify the audited baseline as a Profile-aware single-tool
+Planner with one narrow sequential-independent two-tool composition. Ordered
+steps are not an explicit dependency graph, and an artifact-shaped input ref
+is not produced-artifact binding. PlanValidator remains the schema/Registry/
+parameter security gate; it is not currently a Profile eligibility validator.
+Agent denotes the user-facing orchestration concept, Planner produces the
+validated plan, and Runtime executes registered Adapters. Phase 10L-0 makes no
+production change and does not decide the Phase 10L-1 schema.
+
+**Consequences:** the existing Profile, Registry, persisted plan/hash, Runtime,
+events, artifacts, summaries, and recipes are retained as foundations. Intent
+shape, planner-facing capability metadata, ambiguity, dependency binding,
+failure/cancellation, repair, approval UX, and interpretation policy remain
+explicit reviewer decisions. Phase 10L-1 cannot be queued from this audit.
+
 ## 2026-07-28 ADR: Profile Is Data Truth, Tools Are Analysis Authority
 
 **Context:** linking Profile, dataset exploration, model evaluation, and

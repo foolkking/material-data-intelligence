@@ -1,0 +1,20 @@
+{
+  "schema_version": "phase10l0.agent_planner_audit_evidence.v1",
+  "audit_only": true,
+  "production_behavior_changes": false,
+  "files": [
+    "README.md",
+    "baseline.json",
+    "architecture_inventory.json",
+    "registry_inventory.json",
+    "representative_prompt_audit.json",
+    "validator_runtime_matrix.json",
+    "security_audit.json",
+    "test_captures.json"
+  ],
+  "markers": [
+    "REAL_LLM_CALLS = 0",
+    "NO_PHASE10L0_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ]
+}

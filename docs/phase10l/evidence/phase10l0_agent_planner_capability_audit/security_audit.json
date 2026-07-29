@@ -1,0 +1,28 @@
+{
+  "real_llm_calls": 0,
+  "external_network_requests": 0,
+  "production_planner_behavior_changes": "NONE",
+  "new_dependencies": false,
+  "planner_direct_code_execution": false,
+  "planner_direct_shell": false,
+  "planner_direct_filesystem": false,
+  "planner_direct_scientific_execution": false,
+  "unknown_tool_rejected": true,
+  "non_mvp_tool_rejected": true,
+  "credential_like_params_rejected": true,
+  "params_schema_enforced": true,
+  "default_provider": "mock",
+  "known_gaps": [
+    "no_prompt_length_cap",
+    "no_plan_step_count_cap",
+    "no_registry_prompt_budget",
+    "provider_max_tokens_and_temperature_request_fields_have_no_api_upper_bound",
+    "no_explicit_untrusted_profile_or_tool_description_delimiters",
+    "future_interpretation_requires_artifact_prompt_injection_boundary"
+  ],
+  "markers": [
+    "REAL_LLM_CALLS = 0",
+    "NO_PHASE10L0_EXTERNAL_NETWORK_REQUESTS",
+    "NO_SECRET_PATTERN_HITS"
+  ]
+}

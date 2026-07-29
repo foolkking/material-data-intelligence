@@ -1,0 +1,38 @@
+{
+  "validator_classification": "SCHEMA_AND_REGISTRY_VALIDATOR",
+  "validator": {
+    "analysis_plan_schema": true,
+    "non_empty_steps": true,
+    "unique_step_ids": true,
+    "tool_allowlist": true,
+    "mvp_stage_only": true,
+    "credential_param_rejection": true,
+    "params_json_schema": true,
+    "known_ref_type": true,
+    "known_artifact_enum": true,
+    "profile_readiness": false,
+    "resource_kind_eligibility": false,
+    "expected_artifact_producer_binding": false,
+    "output_allowed_by_selected_tool": false,
+    "max_step_count": false,
+    "dependency_validation": false,
+    "artifact_compatibility": false
+  },
+  "api_input_ref_gate": {
+    "enabled_when_object_store_exists": true,
+    "checks_ref_presence": true,
+    "checks_profile_semantic_eligibility": false
+  },
+  "runtime": {
+    "multiple_steps_execute": true,
+    "order": "analysis_plan_list_order",
+    "dependency_binding": false,
+    "reference_case": "phonon.band_then_structure.brillouin_zone",
+    "reference_case_inputs": "independent_preexisting_objects",
+    "first_failure": "job_failed_later_steps_not_run",
+    "prior_artifacts": "retained",
+    "partial_success_status": false,
+    "automatic_retry": false,
+    "cancellation": false
+  }
+}

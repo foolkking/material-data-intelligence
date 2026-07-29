@@ -59,6 +59,15 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase10k/phase10l0_next_scope.md`](phase10k/phase10l0_next_scope.md): Phase 10L-0 entry gates and audit-only boundary.
 - [`phase10k/evidence/phase10k5_material_intelligence_integration/`](phase10k/evidence/phase10k5_material_intelligence_integration/): persisted jobs, products, identity, performance, browser, screenshot, and security evidence.
 
+## Phase 10L Intelligent Analysis Agent
+
+- [`phase10l/phase10l0_current_planner_architecture.md`](phase10l/phase10l0_current_planner_architecture.md): implementation-grounded Planner, Registry, Validator, Runtime, persistence, and UI flow.
+- [`phase10l/phase10l0_agent_planner_capability_audit.md`](phase10l/phase10l0_agent_planner_capability_audit.md): Phase 10L-0 capability inventory, representative prompts, maturity decision, and explicit gaps.
+- [`phase10l/phase10l0_agent_planner_gap_matrix.md`](phase10l/phase10l0_agent_planner_gap_matrix.md): reusable foundations, missing Phase 10L capabilities, and deferred ownership.
+- [`phase10l/phase10l0_phase10l_scope_recommendation.md`](phase10l/phase10l0_phase10l_scope_recommendation.md): audit-only recommendations for 10L-1 through 10L-5.
+- [`phase10l/phase10l0_reviewer_decisions.md`](phase10l/phase10l0_reviewer_decisions.md): unresolved architecture decisions and the mandatory reviewer gate.
+- [`phase10l/evidence/phase10l0_agent_planner_capability_audit/`](phase10l/evidence/phase10l0_agent_planner_capability_audit/): machine-readable inventories, prompt probes, security record, and test captures.
+
 ## Historical Gate J6-A Roadmap Record
 
 - [`phase10j/phase10j_post_j6_roadmap_reconciliation.md`](phase10j/phase10j_post_j6_roadmap_reconciliation.md) records the superseded J-7 through J-12 proposal.

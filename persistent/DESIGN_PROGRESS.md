@@ -1,5 +1,25 @@
 # DESIGN_PROGRESS
 
+## 2026-07-29 Phase 10L-0 Agent / Planner Capability Audit
+
+- Audited the real Mock and optional OpenAI-compatible Planner paths,
+  AnalysisPlan 0.1, Tool Registry, PlanValidator, persisted job boundary,
+  QueueWorkerRuntime, PlannerWorkbench, and representative cross-domain
+  prompts. This phase changes no production behavior.
+- Classified the current system as `PROFILE_AWARE_SINGLE_TOOL_PLANNER` with one
+  narrow sequential-independent two-tool composition. It is maturity Level 3:
+  Profile-aware selection exists, but it is uneven and is not capability-aware
+  multi-tool planning.
+- Confirmed reusable foundations: deterministic Profile 2.0, strict Registry
+  execution metadata, validated/persisted plans and hashes, sequential Runtime,
+  events, artifacts, summaries, and recipes.
+- Confirmed gaps: no structured Analysis Intent, no uniform Profile-to-tool
+  eligibility/ranking model, no explicit step dependency or produced-artifact
+  binding, no plan complexity caps, no clarification/repair contract, no
+  bounded result interpretation, and no pre-execution approval/edit flow.
+- Phase 10L-1 remains behind `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; this
+  audit does not freeze an implementation architecture or queue the next task.
+
 ## 2026-07-29 Phase 10K Material Intelligence Layer Complete
 
 - Integrated the completed Profile 2.0, Dataset Explorer, Materials ML, and
@@ -20,8 +40,9 @@
   `e4639a1` passed exact-SHA CI run `30382233569`; completion record `81d4446`
   passed exact-SHA CI run `30382583135`, including Unit, Frontend,
   service-backed integration, and no-skipped. The verified K5 queue block is
-  archived, Phase 10K is `COMPLETE` with explicit limits, and Phase 10L-0
-  remains unstarted/NEXT.
+  archived and Phase 10K is `COMPLETE` with explicit limits. Phase 10L-0 then
+  entered its audit-only gate; the dated record above supersedes the old NEXT
+  status without changing the Phase 10K result.
 
 ## 2026-07-28 Phase 10K-4 Composition Space Implementation Complete
 

@@ -1,0 +1,45 @@
+{
+  "analysis_plan": {
+    "schema_version": "0.1",
+    "ordered_steps": true,
+    "non_empty_enforced": true,
+    "unique_step_ids_enforced": true,
+    "explicit_dependencies": false,
+    "prior_step_artifact_binding": false,
+    "canonical_hash_persisted": true,
+    "provider_name_persisted": true,
+    "model_and_prompt_version_persisted": false
+  },
+  "planner": {
+    "default_provider": "mock",
+    "mock_routing_predicates": 34,
+    "mock_plan_builders": 19,
+    "prompt_check_sites": 56,
+    "live_provider": "openai_compatible_opt_in",
+    "real_llm_calls": 0,
+    "clarification": false,
+    "plan_repair": false,
+    "conversation_history": false
+  },
+  "runtime": {
+    "multi_tool_classification": "SEQUENTIAL_INDEPENDENT",
+    "executes_steps_in_list_order": true,
+    "persists_artifacts_per_step": true,
+    "stops_after_first_failure": true,
+    "preserves_prior_artifacts_on_failure": true,
+    "dependency_graph": false,
+    "job_cancellation_check": false,
+    "automatic_retry": false
+  },
+  "frontend": {
+    "shows_plan": true,
+    "shows_validation": true,
+    "shows_timeline_tool_calls_artifacts": true,
+    "inspect_before_enqueue": false,
+    "edit_plan": false,
+    "cancel_job": false,
+    "same_job_retry": false
+  },
+  "overall_classification": "PROFILE_AWARE_SINGLE_TOOL_PLANNER_WITH_NARROW_SEQUENTIAL_INDEPENDENT_COMPOSITION",
+  "maturity_level": 3
+}

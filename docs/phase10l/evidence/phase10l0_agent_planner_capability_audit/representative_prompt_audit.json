@@ -1,0 +1,64 @@
+{
+  "provider": "MockLLMProvider",
+  "external_network_requests": 0,
+  "real_llm_calls": 0,
+  "cases": [
+    {
+      "id": "composition",
+      "prompt": "分析这批材料主要有哪些元素和化学体系。",
+      "profile": "phase10k5_case_a_c_f_composition",
+      "selected_tools": ["dataset.materials_explorer"],
+      "assessment": "coherent_single_product_not_composed_analysis"
+    },
+    {
+      "id": "structure",
+      "prompt": "看看这个晶体结构是否合理。",
+      "profile": "phase10k5_case_b_structure_enriched",
+      "selected_tools": ["structure.summary"],
+      "assessment": "broad_intent_reduced_to_summary"
+    },
+    {
+      "id": "materials_ml",
+      "prompt": "分析这个模型在哪些材料上预测得不好。",
+      "profile": "phase10k5_case_c_regression",
+      "selected_tools": ["ml.basic_metrics"],
+      "assessment": "product_level_regression_diagnostics_not_selected"
+    },
+    {
+      "id": "uncertainty",
+      "prompt": "这些不确定度可信吗？",
+      "profile": "phase10k5_case_d_uncertainty",
+      "selected_tools": ["ml.basic_metrics"],
+      "assessment": "uncertainty_readiness_not_used_for_this_phrase"
+    },
+    {
+      "id": "phonon",
+      "prompt": "检查这个声子计算有没有明显问题。",
+      "profile": "synthetic_structure_phononband",
+      "selected_tools": ["ml.basic_metrics"],
+      "assessment": "resource_incompatible_generic_fallback"
+    },
+    {
+      "id": "volumetric",
+      "prompt": "看看这个电荷密度里主要有什么特征。",
+      "profile": "synthetic_volumetric",
+      "selected_tools": ["structure.volumetric_data"],
+      "assessment": "correct_bounded_artifact_consumer_without_interpretation"
+    },
+    {
+      "id": "broad_dataset",
+      "prompt": "帮我全面分析一下这批材料。",
+      "profile": "phase10k5_case_a_c_f_composition",
+      "selected_tools": ["dataset.materials_explorer"],
+      "assessment": "single_product_no_capability_ranked_multi_tool_plan"
+    },
+    {
+      "id": "explicit_distribution",
+      "prompt": "画 formation_energy 的分布。",
+      "profile": "phase10k5_case_a_c_f_composition",
+      "selected_tools": ["viz.histogram"],
+      "selected_column": "band_gap",
+      "assessment": "tool_class_correct_requested_column_binding_incorrect"
+    }
+  ]
+}

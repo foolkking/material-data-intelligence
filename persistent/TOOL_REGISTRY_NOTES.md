@@ -1,5 +1,21 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-29 Phase 10L-0 Planner-Readiness Audit
+
+- The audited Registry contains 53 normalized entries: 41 MVP, 11 V1, and one
+  V2. Domain counts are composition 11, dataset 2, ML 11, phonon 4, structure
+  19, table 2, trajectory 1, and visualization 3.
+- Registry records already provide strict input object options, parameter JSON
+  schema, output artifact types, timeout/cost/permission metadata, and resource
+  limits. This remains the execution authority.
+- The Registry does not yet provide a uniform machine-readable bridge from
+  Profile 2.0 semantic readiness to tool eligibility, planner ranking hints,
+  collision groups, or composition constraints. Fixed Mock routing and the
+  shallow live-LLM tool summary do not supply that missing contract.
+- Phase 10L-0 changes no manifest, public tool identity, stage, parameter,
+  Adapter, PlanValidator, or Runtime behavior. Metadata ownership and schema
+  shape require reviewer approval before Phase 10L-1.
+
 ## 2026-07-28 Phase 10K Final Capability Surface
 
 - Phase 10K adds no integration or run-everything tool. Its product surface is

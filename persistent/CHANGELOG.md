@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-07-29 - Phase 10L-0 Agent / Planner Capability Audit
+
+- Added an implementation-grounded inventory of Mock and live-provider
+  planning, Profile consumption, AnalysisPlan, Registry, PlanValidator,
+  QueueWorkerRuntime, persistence, frontend behavior, and security boundaries.
+- Classified the current product as a Profile-aware single-tool Planner with
+  one narrow sequential-independent two-tool composition, not a
+  capability-aware multi-tool Planner.
+- Recorded representative prompt failures, a gap matrix, machine-readable
+  evidence, and reviewer decisions required before Phase 10L-1. No production
+  Planner, Registry, Validator, Runtime, dependency, or scientific behavior
+  changed.
+
 ## 2026-07-28 - Phase 10K-5 Material Intelligence Integration
 
 - Unified the Profile 2.0, Dataset Explorer, Materials ML, and Composition
