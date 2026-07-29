@@ -27,10 +27,15 @@ from mdi_api.routers.auth import CurrentUser, get_current_user_stub
 from mdi_api.routers.datasets import DatasetSummary, create_upload_session_stub
 from mdi_api.routers.health import health, runtime_health
 from mdi_api.routers.planner import (
+    PlannerIntentClarificationRequest,
+    PlannerIntentCreateRequest,
     PlannerJobsRequest,
     PlannerPreviewRequest,
     PlannerValidateRequest,
+    clarify_planner_intent_route,
+    create_planner_intent_route,
     get_planner_analysis_plan,
+    get_planner_intent_route,
     get_planner_job,
     get_planner_job_artifacts,
     get_planner_job_artifact_content_route,
@@ -103,6 +108,9 @@ ROUTES: tuple[RouteSpec, ...] = (
     # Phase 7: Planner API
     RouteSpec("/planner/preview", planner_preview_route, ("POST",), ("planner",)),
     RouteSpec("/planner/validate", planner_validate_route, ("POST",), ("planner",)),
+    RouteSpec("/planner/intents", create_planner_intent_route, ("POST",), ("planner",)),
+    RouteSpec("/planner/intents/{intent_id}", get_planner_intent_route, ("GET",), ("planner",)),
+    RouteSpec("/planner/intents/{intent_id}/clarification", clarify_planner_intent_route, ("POST",), ("planner",)),
     RouteSpec("/planner/jobs", planner_jobs_route, ("POST",), ("planner",)),
     RouteSpec("/planner/providers", list_planner_providers, ("GET",), ("planner",)),
     RouteSpec("/planner/providers/status", planner_provider_status, ("GET",), ("planner",)),

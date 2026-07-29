@@ -11,6 +11,8 @@ from sqlalchemy import and_, delete, func, insert, or_, select, text
 from sqlalchemy.engine import Connection, Engine
 
 from mdi_api.db import (
+    analysis_intent_executions,
+    analysis_intents,
     analysis_plans,
     artifacts,
     data_profiles,
@@ -24,7 +26,19 @@ from mdi_api.db import (
     users,
     visualization_recipes,
 )
-from mdi_schemas import AnalysisPlan, Artifact, DataProfile, JobEvent, JobEventStatus, JobStatus, ToolCall, VisualizationRecipe
+from mdi_schemas import (
+    AnalysisIntent,
+    AnalysisPlan,
+    Artifact,
+    DataProfile,
+    JobEvent,
+    JobEventStatus,
+    JobStatus,
+    ToolCall,
+    VisualizationRecipe,
+    compute_analysis_intent_hash,
+    deterministic_intent_id,
+)
 
 from mdi_api.state_machine import (
     validate_job_status,
@@ -81,6 +95,23 @@ class AnalysisPlanRepository(Protocol):
         ...
 
     def attach_plan_to_job(self, plan_id: str, job_id: str) -> dict[str, Any]:
+        ...
+
+
+class AnalysisIntentRepository(Protocol):
+    def save_intent(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def get_intent(self, intent_id: str) -> dict[str, Any]:
+        ...
+
+    def attach_execution(self, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
+        ...
+
+    def get_execution(self, intent_id: str) -> dict[str, Any] | None:
+        ...
+
+    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
         ...
 
 
@@ -164,6 +195,7 @@ class InMemoryRepositoryBundle:
     projects: "InMemoryProjectRepository"
     datasets: "InMemoryDatasetRepository"
     data_profiles: "InMemoryDataProfileRepository"
+    analysis_intents: "InMemoryAnalysisIntentRepository"
     analysis_plans: "InMemoryAnalysisPlanRepository"
     jobs: "InMemoryJobRepository"
     job_events: "InMemoryJobEventRepository"
@@ -180,6 +212,7 @@ class InMemoryRepositoryBundle:
             projects=InMemoryProjectRepository(),
             datasets=datasets,
             data_profiles=InMemoryDataProfileRepository(datasets),
+            analysis_intents=InMemoryAnalysisIntentRepository(),
             analysis_plans=InMemoryAnalysisPlanRepository(jobs),
             jobs=jobs,
             job_events=InMemoryJobEventRepository(),
@@ -262,6 +295,48 @@ class InMemoryDataProfileRepository(_InMemoryRecordRepository):
             if record.get("datasetId") or record.get("id")
         }
         return [_json_copy(record) for record in self.records.values() if record.get("datasetId") in dataset_ids]
+
+
+class InMemoryAnalysisIntentRepository(_InMemoryRecordRepository):
+    def __init__(self) -> None:
+        super().__init__()
+        self.executions: dict[str, dict[str, Any]] = {}
+
+    def save_intent(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        normalized = _normalize_analysis_intent_record(record)
+        intent_id = _required_id(normalized, "intentId")
+        existing = self.records.get(intent_id)
+        if existing is not None:
+            if existing.get("intentHash") != normalized.get("intentHash"):
+                raise ValueError("AnalysisIntent records are immutable")
+            return _analysis_intent_from_record(existing)
+        return _analysis_intent_from_record(self._save(normalized, record_id=intent_id))
+
+    def get_intent(self, intent_id: str) -> dict[str, Any]:
+        return _analysis_intent_from_record(self._get(intent_id))
+
+    def attach_execution(self, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
+        self.get_intent(intent_id)
+        current = self.executions.get(intent_id)
+        binding = {
+            "id": f"intent_exec_{intent_id.removeprefix('intent_')[:16]}",
+            "intentId": intent_id,
+            "planId": plan_id,
+            "jobId": job_id,
+            "createdAt": _utc_now(),
+        }
+        if current is not None and (current["planId"] != plan_id or current["jobId"] != job_id):
+            raise ValueError("AnalysisIntent execution association is immutable")
+        self.executions[intent_id] = current or binding
+        return _json_copy(self.executions[intent_id])
+
+    def get_execution(self, intent_id: str) -> dict[str, Any] | None:
+        value = self.executions.get(intent_id)
+        return _json_copy(value) if value is not None else None
+
+    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
+        value = next((item for item in self.executions.values() if item["jobId"] == job_id), None)
+        return _json_copy(value) if value is not None else None
 
 
 class InMemoryAnalysisPlanRepository(_InMemoryRecordRepository):
@@ -493,6 +568,7 @@ class SqlAlchemyRepositoryBundle:
     projects: "SqlAlchemyProjectRepository"
     datasets: "SqlAlchemyDatasetRepository"
     data_profiles: "SqlAlchemyDataProfileRepository"
+    analysis_intents: "SqlAlchemyAnalysisIntentRepository"
     analysis_plans: "SqlAlchemyAnalysisPlanRepository"
     jobs: "SqlAlchemyJobRepository"
     job_events: "SqlAlchemyJobEventRepository"
@@ -507,6 +583,7 @@ class SqlAlchemyRepositoryBundle:
             projects=SqlAlchemyProjectRepository(bind),
             datasets=SqlAlchemyDatasetRepository(bind),
             data_profiles=SqlAlchemyDataProfileRepository(bind),
+            analysis_intents=SqlAlchemyAnalysisIntentRepository(bind),
             analysis_plans=SqlAlchemyAnalysisPlanRepository(bind),
             jobs=SqlAlchemyJobRepository(bind),
             job_events=SqlAlchemyJobEventRepository(bind),
@@ -646,6 +723,83 @@ class SqlAlchemyDataProfileRepository(_SqlAlchemyRepository):
             .order_by(data_profiles.c.created_at, data_profiles.c.id)
         )
         return [_data_profile_from_row(row) for row in self._fetch_all_dicts(statement)]
+
+
+class SqlAlchemyAnalysisIntentRepository(_SqlAlchemyRepository):
+    def save_intent(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        normalized = _normalize_analysis_intent_record(record)
+        intent_id = _required_id(normalized, "intentId")
+        values = _analysis_intent_values(normalized)
+
+        def run(connection: Connection) -> None:
+            existing = connection.execute(
+                select(analysis_intents).where(analysis_intents.c.id == intent_id)
+            ).mappings().first()
+            if existing is None:
+                connection.execute(insert(analysis_intents).values(**values))
+                return
+            current = _analysis_intent_from_row(_row_to_json_dict(existing))
+            if current["intentHash"] != normalized["intentHash"]:
+                raise ValueError("AnalysisIntent records are immutable")
+
+        self._with_connection(run)
+        return self.get_intent(intent_id)
+
+    def get_intent(self, intent_id: str) -> dict[str, Any]:
+        return _analysis_intent_from_row(
+            self._fetch_one_dict(select(analysis_intents).where(analysis_intents.c.id == intent_id))
+        )
+
+    def attach_execution(self, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
+        binding_id = f"intent_exec_{intent_id.removeprefix('intent_')[:16]}"
+
+        def run(connection: Connection) -> None:
+            existing = connection.execute(
+                select(analysis_intent_executions).where(
+                    or_(
+                        analysis_intent_executions.c.intent_id == intent_id,
+                        analysis_intent_executions.c.plan_id == plan_id,
+                        analysis_intent_executions.c.job_id == job_id,
+                    )
+                )
+            ).mappings().first()
+            if existing is None:
+                connection.execute(
+                    insert(analysis_intent_executions).values(
+                        id=binding_id,
+                        intent_id=intent_id,
+                        plan_id=plan_id,
+                        job_id=job_id,
+                    )
+                )
+                return
+            current = _row_to_json_dict(existing)
+            if current["intent_id"] != intent_id or current["plan_id"] != plan_id or current["job_id"] != job_id:
+                raise ValueError("AnalysisIntent execution association is immutable")
+
+        self._with_connection(run)
+        result = self.get_execution(intent_id)
+        if result is None:
+            raise LookupError(f"Unknown AnalysisIntent execution association: {intent_id}")
+        return result
+
+    def get_execution(self, intent_id: str) -> dict[str, Any] | None:
+        def run(connection: Connection) -> dict[str, Any] | None:
+            row = connection.execute(
+                select(analysis_intent_executions).where(analysis_intent_executions.c.intent_id == intent_id)
+            ).mappings().first()
+            return _intent_execution_from_row(_row_to_json_dict(row)) if row is not None else None
+
+        return self._with_connection(run)
+
+    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
+        def run(connection: Connection) -> dict[str, Any] | None:
+            row = connection.execute(
+                select(analysis_intent_executions).where(analysis_intent_executions.c.job_id == job_id)
+            ).mappings().first()
+            return _intent_execution_from_row(_row_to_json_dict(row)) if row is not None else None
+
+        return self._with_connection(run)
 
 
 class SqlAlchemyAnalysisPlanRepository(_SqlAlchemyRepository):
@@ -1099,6 +1253,91 @@ def canonical_analysis_plan_json(plan: AnalysisPlan | Mapping[str, Any]) -> str:
 
 def compute_plan_hash(plan: AnalysisPlan | Mapping[str, Any]) -> str:
     return hashlib.sha256(canonical_analysis_plan_json(plan).encode("utf-8")).hexdigest()
+
+
+def _normalize_analysis_intent_record(record: Mapping[str, Any]) -> dict[str, Any]:
+    source = _json_copy(record)
+    intent_json = source.get("analysisIntent") or source.get("intentJson") or source.get("intent_json")
+    if intent_json is None:
+        raise ValueError("AnalysisIntent record is missing intent_json")
+    parsed = AnalysisIntent.model_validate(intent_json)
+    computed_hash = compute_analysis_intent_hash(parsed)
+    if parsed.intentHash != computed_hash or parsed.intentId != deterministic_intent_id(computed_hash):
+        raise ValueError("AnalysisIntent identity does not match canonical JSON")
+    intent_id = str(source.get("id") or source.get("intentId") or parsed.intentId)
+    if intent_id != parsed.intentId:
+        raise ValueError("AnalysisIntent record id does not match contract identity")
+    provided_hash = source.get("intentHash") or source.get("intent_hash")
+    if provided_hash and str(provided_hash) != parsed.intentHash:
+        raise ValueError("AnalysisIntent record hash does not match contract identity")
+    payload = parsed.model_dump(mode="json")
+    return {
+        "id": intent_id,
+        "intentId": intent_id,
+        "projectId": str(source.get("projectId") or source.get("project_id") or ""),
+        "datasetId": parsed.datasetId,
+        "profileId": parsed.profileId,
+        "schemaVersion": parsed.schemaVersion,
+        "intentHash": parsed.intentHash,
+        "outcome": parsed.outcome.value,
+        "parentIntentId": parsed.provenance.parentIntentId,
+        "clarificationRound": parsed.clarification.round,
+        "provider": parsed.provenance.provider,
+        "model": parsed.provenance.model,
+        "promptVersion": parsed.provenance.promptVersion,
+        "analysisIntent": payload,
+        "intentJson": payload,
+        "createdBy": str(source.get("createdBy") or source.get("created_by") or "user_local"),
+        "createdAt": source.get("createdAt") or source.get("created_at") or parsed.provenance.createdAt,
+    }
+
+
+def _analysis_intent_values(record: Mapping[str, Any]) -> dict[str, Any]:
+    normalized = _normalize_analysis_intent_record(record)
+    if not normalized["projectId"]:
+        raise ValueError("AnalysisIntent record is missing projectId")
+    return {
+        "id": normalized["intentId"],
+        "project_id": normalized["projectId"],
+        "dataset_id": normalized["datasetId"],
+        "profile_id": normalized["profileId"],
+        "schema_version": normalized["schemaVersion"],
+        "intent_hash": normalized["intentHash"],
+        "outcome": normalized["outcome"],
+        "parent_intent_id": normalized["parentIntentId"],
+        "clarification_round": normalized["clarificationRound"],
+        "provider": normalized["provider"],
+        "model": normalized["model"],
+        "prompt_version": normalized["promptVersion"],
+        "intent_json": _json_copy(normalized["analysisIntent"]),
+        "created_by": normalized["createdBy"],
+    }
+
+
+def _analysis_intent_from_record(record: Mapping[str, Any]) -> dict[str, Any]:
+    return _json_copy(_normalize_analysis_intent_record(record))
+
+
+def _analysis_intent_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
+    return _analysis_intent_from_record(
+        {
+            "id": row["id"],
+            "projectId": row["project_id"],
+            "analysisIntent": _json_copy(row.get("intent_json") or {}),
+            "createdBy": row["created_by"],
+            "createdAt": _iso(row["created_at"]),
+        }
+    )
+
+
+def _intent_execution_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "intentId": row["intent_id"],
+        "planId": row["plan_id"],
+        "jobId": row["job_id"],
+        "createdAt": _iso(row["created_at"]),
+    }
 
 
 def _normalize_analysis_plan_record(record: Mapping[str, Any]) -> dict[str, Any]:

@@ -1,5 +1,29 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-29 ADR: Independent AnalysisIntent and Bounded Clarification
+
+**Context:** the existing API sends raw natural-language goals directly into a
+Profile-aware but uneven Planner. AnalysisPlan 0.1 records executable intent
+only after tool selection, so ambiguous data/target/resource meaning cannot be
+persisted or clarified safely before job creation.
+
+**Decision:** add an independent, versioned, inert AnalysisIntent v1 upstream
+of the Planner. Preserve a bounded secret-redacted raw goal and conservative
+normalized goal; bind exact DataProfile 2.0 dataset version, semantic hash,
+resources, and target semantics; use only READY, NEEDS_CLARIFICATION, and
+UNSUPPORTED. Permit one clarification round with at most three typed,
+Profile-derived questions. Clarification creates an immutable child intent.
+Persist intent-plan-job association outside unchanged AnalysisPlan 0.1.
+Non-READY states stop before Planner, plan/job persistence, or enqueue; READY
+uses the existing Planner, PlanValidator, Registry, and Runtime behavior.
+
+**Consequences:** requests become auditable and ambiguity cannot silently pick
+the first target/resource. The strict optional LLM path emits one JSON object
+with no repair/fallback; the deterministic path supports CI. Phase 10L-1 adds
+no Registry planner metadata, eligibility/ranking, AnalysisPlan dependency,
+artifact binding, Runtime behavior, interpretation, or workspace authority.
+Those remain reviewer-gated Phase 10L-2 through 10L-5 work.
+
 ## 2026-07-29 ADR: Phase 10L-0 Records Planner Facts, Not a New Architecture
 
 **Context:** the repository already has deterministic Mock routing, an optional

@@ -1,0 +1,549 @@
+{
+  "clarification": {
+    "error_code": null,
+    "errors": [],
+    "intent": {
+      "ambiguities": [
+        {
+          "blocking": true,
+          "candidates": [
+            {
+              "label": "formation_energy (regression_0)",
+              "semanticId": "regression_0:target:formation_energy",
+              "value": "regression_0:target:formation_energy"
+            },
+            {
+              "label": "band_gap (regression_1)",
+              "semanticId": "regression_1:target:band_gap",
+              "value": "regression_1:target:band_gap"
+            }
+          ],
+          "code": "TARGET_SEMANTICS_AMBIGUOUS",
+          "field": "targetSemantics",
+          "message": "Multiple valid model targets are available.",
+          "source": "SEMANTIC_BINDING"
+        }
+      ],
+      "clarification": {
+        "answers": [],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [
+          {
+            "bindsTo": "targetSemantics",
+            "code": "SELECT_TARGET",
+            "options": [
+              {
+                "label": "formation_energy (regression_0)",
+                "semanticId": "regression_0:target:formation_energy",
+                "value": "regression_0:target:formation_energy"
+              },
+              {
+                "label": "band_gap (regression_1)",
+                "semanticId": "regression_1:target:band_gap",
+                "value": "regression_1:target:band_gap"
+              }
+            ],
+            "prompt": "Which model target should be evaluated?",
+            "questionId": "select_model_target",
+            "required": true,
+            "type": "SELECT_ONE"
+          }
+        ],
+        "round": 0
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_phase10l1",
+        "datasetVersion": "dataset_phase10l1_version_2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "USER_EXPLICIT",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_phase10l1",
+        "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "objectId": "table_phase10l1",
+            "objectType": "DataFrame",
+            "origin": "USER_EXPLICIT"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_phase10l1",
+      "desiredOutputs": [
+        "summary",
+        "warnings",
+        "metrics",
+        "plot",
+        "table"
+      ],
+      "intentHash": "a4b65f832b1177d4e152bc95da0684737a80631e7c83758c2683bec1f8279ac1",
+      "intentId": "intent_a4b65f832b1177d4e152bc95",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "optionalCapabilityNeeds": [],
+      "outcome": "NEEDS_CLARIFICATION",
+      "profileId": "profile_phase10l1",
+      "provenance": {
+        "answerBindings": [],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": null,
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "requiredCapabilityNeeds": [
+        "regression_semantics",
+        "uncertainty_semantics"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_uncertainty_evaluation",
+        "ml_regression_evaluation"
+      ],
+      "targetSemantics": [],
+      "unsupportedReasons": [],
+      "warnings": []
+    },
+    "intent_id": "intent_a4b65f832b1177d4e152bc95",
+    "ok": true,
+    "outcome": "NEEDS_CLARIFICATION"
+  },
+  "ready": {
+    "enqueued": false,
+    "error_code": null,
+    "executed": false,
+    "intent": {
+      "ambiguities": [],
+      "clarification": {
+        "answers": [],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [],
+        "round": 0
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_demo",
+        "datasetVersion": "2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "USER_EXPLICIT",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_dataset_demo_v2",
+        "profileSemanticHash": "e9f6466874f89e9ec0e30cc0a8bad1f3427e4fa57e69300c6c3682106e47bcf2",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "8f6a530dc19018d6ba405249c42ff98f73e13a76890ca780355d7a078658ed5e",
+            "objectId": "obj_dataframe_8f6a530dc190",
+            "objectType": "DataFrame",
+            "origin": "USER_EXPLICIT"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_demo",
+      "desiredOutputs": [
+        "summary",
+        "warnings",
+        "linked_samples",
+        "plot",
+        "table"
+      ],
+      "intentHash": "dad3fd4a192b57aa29fa90cf1d5050ee145b3094191bbf443f8db95cd4fc2f69",
+      "intentId": "intent_dad3fd4a192b57aa29fa90cf",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Analyze this materials dataset composition distribution and anomaly candidates.",
+      "optionalCapabilityNeeds": [
+        "sample_identity"
+      ],
+      "outcome": "READY",
+      "profileId": "profile_dataset_demo_v2",
+      "provenance": {
+        "answerBindings": [],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": null,
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Analyze this materials dataset composition distribution and anomaly candidates.",
+      "requiredCapabilityNeeds": [
+        "composition_data",
+        "material_property_data",
+        "tabular_data"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "property_distribution",
+        "dataset_overview",
+        "anomaly_candidate_review"
+      ],
+      "targetSemantics": [],
+      "unsupportedReasons": [],
+      "warnings": []
+    },
+    "intent_id": "intent_dad3fd4a192b57aa29fa90cf",
+    "intent_outcome": "READY",
+    "job_id": "job_phase10l1_ready",
+    "ok": true,
+    "plan": {
+      "assumptions": [
+        "Generated by MockLLMProvider for testing."
+      ],
+      "datasetId": "dataset_demo",
+      "expectedArtifacts": [
+        {
+          "fromStepId": "step_001",
+          "name": "dataset_materials_explorer.json",
+          "type": "table_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "dataset_quality.json",
+          "type": "quality_issues_json"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "summary.md",
+          "type": "summary_md"
+        },
+        {
+          "fromStepId": "step_001",
+          "name": "recipe.json",
+          "type": "recipe_json"
+        }
+      ],
+      "goal": "Analyze this materials dataset composition distribution and anomaly candidates.",
+      "profileId": "profile_dataset_demo_v2",
+      "schemaVersion": "0.1",
+      "steps": [
+        {
+          "constraints": null,
+          "inputRefs": [
+            {
+              "columnName": null,
+              "fieldRole": null,
+              "objectType": null,
+              "ref": "profile",
+              "refType": "profile"
+            },
+            {
+              "columnName": null,
+              "fieldRole": "primary_table",
+              "objectType": "DataFrame",
+              "ref": "obj_dataframe_8f6a530dc190",
+              "refType": "normalized_object"
+            }
+          ],
+          "output": {
+            "artifactTypes": [
+              "table_json",
+              "quality_issues_json",
+              "summary_md",
+              "recipe_json"
+            ]
+          },
+          "params": {
+            "comparisonMode": "none",
+            "histogramBins": 20,
+            "maxCategories": 50,
+            "maxProperties": 32,
+            "maxStructures": 256,
+            "maxTableRows": 100,
+            "symprec": 0.01,
+            "tableObjectId": "obj_dataframe_8f6a530dc190"
+          },
+          "purpose": "Build a bounded Profile 2.0-backed materials dataset overview and explicit comparison.",
+          "reason": "The request asks for one coherent dataset-level materials analysis product.",
+          "stepId": "step_001",
+          "toolId": "dataset.materials_explorer"
+        }
+      ],
+      "toolRegistryVersion": "0.1.0",
+      "warnings": []
+    },
+    "plan_hash": "1e5ca16dd893313607de999ab987e27defb381a2bc0fc55b69122f9bc240a812",
+    "plan_id": "plan_phase10l1_ready",
+    "plan_source": "llm",
+    "planner_provider": "mock",
+    "validation_errors": []
+  },
+  "revised": {
+    "error_code": null,
+    "errors": [],
+    "intent": {
+      "ambiguities": [],
+      "clarification": {
+        "answers": [
+          {
+            "questionId": "select_model_target",
+            "selectedValues": [
+              "regression_0:target:formation_energy"
+            ]
+          }
+        ],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [],
+        "round": 1
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [
+          "regression_0:target:formation_energy"
+        ],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_phase10l1",
+        "datasetVersion": "dataset_phase10l1_version_2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "CLARIFICATION_ANSWER",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_phase10l1",
+        "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "objectId": "table_phase10l1",
+            "objectType": "DataFrame",
+            "origin": "CLARIFICATION_ANSWER"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_phase10l1",
+      "desiredOutputs": [
+        "summary",
+        "warnings",
+        "metrics",
+        "plot",
+        "table"
+      ],
+      "intentHash": "b4bf4bf343e6b6db432b1d35a5045df88de1cd27b88c4b4ae215ae7a7df6d879",
+      "intentId": "intent_b4bf4bf343e6b6db432b1d35",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "optionalCapabilityNeeds": [],
+      "outcome": "READY",
+      "profileId": "profile_phase10l1",
+      "provenance": {
+        "answerBindings": [
+          {
+            "questionId": "select_model_target",
+            "selectedValues": [
+              "regression_0:target:formation_energy"
+            ]
+          }
+        ],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": "intent_a4b65f832b1177d4e152bc95",
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "requiredCapabilityNeeds": [
+        "regression_semantics",
+        "uncertainty_semantics"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_uncertainty_evaluation",
+        "ml_regression_evaluation"
+      ],
+      "targetSemantics": [
+        {
+          "column": "formation_energy",
+          "groupId": "regression_0",
+          "objectId": "table_phase10l1",
+          "origin": "CLARIFICATION_ANSWER",
+          "role": "regression_target",
+          "semanticId": "regression_0:target:formation_energy",
+          "seriesId": null,
+          "unit": "eV"
+        },
+        {
+          "column": "formation_energy_pred",
+          "groupId": "regression_0",
+          "objectId": "table_phase10l1",
+          "origin": "CLARIFICATION_ANSWER",
+          "role": "regression_prediction",
+          "semanticId": "regression_0:prediction:formation_energy_pred",
+          "seriesId": null,
+          "unit": null
+        },
+        {
+          "column": "formation_energy_std",
+          "groupId": "regression_0",
+          "objectId": "table_phase10l1",
+          "origin": "CLARIFICATION_ANSWER",
+          "role": "regression_uncertainty",
+          "semanticId": "regression_0:uncertainty:formation_energy_std",
+          "seriesId": null,
+          "unit": null
+        }
+      ],
+      "unsupportedReasons": [],
+      "warnings": []
+    },
+    "intent_id": "intent_b4bf4bf343e6b6db432b1d35",
+    "ok": true,
+    "outcome": "READY"
+  },
+  "unsupported": {
+    "enqueued": false,
+    "error_code": "INTENT_UNSUPPORTED",
+    "executed": false,
+    "intent": {
+      "ambiguities": [],
+      "clarification": {
+        "answers": [],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [],
+        "round": 0
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_demo",
+        "datasetVersion": "2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "USER_EXPLICIT",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_dataset_demo_v2",
+        "profileSemanticHash": "e9f6466874f89e9ec0e30cc0a8bad1f3427e4fa57e69300c6c3682106e47bcf2",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "8f6a530dc19018d6ba405249c42ff98f73e13a76890ca780355d7a078658ed5e",
+            "objectId": "obj_dataframe_8f6a530dc190",
+            "objectType": "DataFrame",
+            "origin": "USER_EXPLICIT"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_demo",
+      "desiredOutputs": [
+        "summary",
+        "warnings"
+      ],
+      "intentHash": "ef3e2053a18f68108a7d30780016a67d09273b8c5d171a1afa073530b8106b37",
+      "intentId": "intent_ef3e2053a18f68108a7d3078",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Generate a Fermi surface.",
+      "optionalCapabilityNeeds": [],
+      "outcome": "UNSUPPORTED",
+      "profileId": "profile_dataset_demo_v2",
+      "provenance": {
+        "answerBindings": [],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": null,
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Generate a Fermi surface.",
+      "requiredCapabilityNeeds": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [],
+      "targetSemantics": [],
+      "unsupportedReasons": [
+        {
+          "boundary": "FUTURE_SCOPE",
+          "code": "INTENT_FUTURE_FERMI_SURFACE",
+          "field": "rawGoal",
+          "message": "Fermi Surface is Future Scope.",
+          "source": "USER_GOAL"
+        }
+      ],
+      "warnings": []
+    },
+    "intent_id": "intent_ef3e2053a18f68108a7d3078",
+    "intent_outcome": "UNSUPPORTED",
+    "job_id": null,
+    "ok": false,
+    "plan": null,
+    "plan_hash": null,
+    "plan_id": null,
+    "plan_source": "llm",
+    "planner_provider": "mock",
+    "validation_errors": []
+  }
+}

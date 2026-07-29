@@ -7,8 +7,6 @@ assigned phases rather than by this roadmap gate:
 
 ### Phase 10L Reviewer Gate
 
-* What is the minimum standalone Analysis Intent schema, and which unresolved
-  choices require typed clarification rather than rejection?
 * Does planner-facing semantic eligibility belong in additive Registry
   metadata or in a separate resolver over Profile 2.0 readiness facts?
 * How should AnalysisPlan evolve to record intent identity, bounded provider
@@ -41,6 +39,15 @@ assigned phases rather than by this roadmap gate:
 
 ## Closed Product-Scope Questions
 
+* Independent AnalysisIntent: **CLOSED FOR PHASE 10L-1 - YES**. A versioned,
+  persisted inert contract exists upstream of the existing Planner.
+* Bounded clarification: **CLOSED FOR PHASE 10L-1 - YES**. At most one round
+  and three Profile/resource-derived typed questions are permitted.
+* AnalysisPlan 0.2 in Phase 10L-1: **CLOSED - NO**. AnalysisPlan remains 0.1;
+  intent-plan-job association is external.
+* Registry planner capability metadata in Phase 10L-1: **CLOSED - NO**. This is
+  an unresolved Phase 10L-2 design question.
+
 * Material Intelligence integration authority: **CLOSED FOR PHASE 10K-5** -
   Profile 2.0 owns deterministic data semantics; K2-K4 tools own bounded
   deterministic analyses; the browser validates and presents artifacts only.
@@ -54,9 +61,10 @@ assigned phases rather than by this roadmap gate:
 * Partial product failure: **CLOSED FOR PHASE 10K-5** - Profile readiness and
   each validated product have independent typed states; one failed/stale
   product does not invalidate successful sibling products.
-* Phase 10L boundary: **OPEN FOR PHASE 10L** - intent representation,
-  capability-aware tool selection, bounded dependency planning, and scientific
-  result interpretation remain separate Agent work.
+* Phase 10L boundary: **PARTIALLY CLOSED** - intent representation and bounded
+  clarification are fixed by Phase 10L-1; capability-aware tool selection,
+  bounded dependency planning, and scientific result interpretation remain
+  separate reviewer-gated Agent work.
 
 * Composition-space baseline: **CLOSED FOR PHASE 10K-4** - normalized
   atomic-fraction features ordered by atomic number, deterministic center-only

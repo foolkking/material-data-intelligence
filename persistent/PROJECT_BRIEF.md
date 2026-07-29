@@ -29,15 +29,17 @@ program, deployment product, or plugin marketplace.
 ### Core User Journey
 
 ```text
-Data -> Profile -> Natural Language -> Validated Plan -> Execute
+Data -> Profile -> Natural Language -> AnalysisIntent v1
+     -> bounded clarification -> existing Validated Plan -> Execute
      -> Visualize -> Interpret -> Report / Recipe
 ```
 
 ### Current Focus and Initial Release Route
 
 Phase 10J-6 is archived and Phase 10K Material Intelligence is complete with
-explicit limits. Phase 10L-0 is auditing the actual Agent/Planner architecture;
-Phase 10L-1 remains behind a reviewer gate and is not queued. The remaining
+explicit limits. Phase 10L-0 is archived. Phase 10L-1 is implementing the
+independent AnalysisIntent v1 and one bounded clarification round upstream of
+the unchanged existing Planner; exact-SHA closure is pending. The remaining
 initial-release route is:
 
 ```text

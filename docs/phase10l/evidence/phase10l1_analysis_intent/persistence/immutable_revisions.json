@@ -1,0 +1,551 @@
+{
+  "intentCount": 2,
+  "jobCount": 0,
+  "parent": {
+    "analysisIntent": {
+      "ambiguities": [
+        {
+          "blocking": true,
+          "candidates": [
+            {
+              "label": "formation_energy (regression_0)",
+              "semanticId": "regression_0:target:formation_energy",
+              "value": "regression_0:target:formation_energy"
+            },
+            {
+              "label": "band_gap (regression_1)",
+              "semanticId": "regression_1:target:band_gap",
+              "value": "regression_1:target:band_gap"
+            }
+          ],
+          "code": "TARGET_SEMANTICS_AMBIGUOUS",
+          "field": "targetSemantics",
+          "message": "Multiple valid model targets are available.",
+          "source": "SEMANTIC_BINDING"
+        }
+      ],
+      "clarification": {
+        "answers": [],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [
+          {
+            "bindsTo": "targetSemantics",
+            "code": "SELECT_TARGET",
+            "options": [
+              {
+                "label": "formation_energy (regression_0)",
+                "semanticId": "regression_0:target:formation_energy",
+                "value": "regression_0:target:formation_energy"
+              },
+              {
+                "label": "band_gap (regression_1)",
+                "semanticId": "regression_1:target:band_gap",
+                "value": "regression_1:target:band_gap"
+              }
+            ],
+            "prompt": "Which model target should be evaluated?",
+            "questionId": "select_model_target",
+            "required": true,
+            "type": "SELECT_ONE"
+          }
+        ],
+        "round": 0
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_phase10l1",
+        "datasetVersion": "dataset_phase10l1_version_2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "USER_EXPLICIT",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_phase10l1",
+        "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "objectId": "table_phase10l1",
+            "objectType": "DataFrame",
+            "origin": "USER_EXPLICIT"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_phase10l1",
+      "desiredOutputs": [
+        "summary",
+        "warnings",
+        "metrics",
+        "plot",
+        "table"
+      ],
+      "intentHash": "a4b65f832b1177d4e152bc95da0684737a80631e7c83758c2683bec1f8279ac1",
+      "intentId": "intent_a4b65f832b1177d4e152bc95",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "optionalCapabilityNeeds": [],
+      "outcome": "NEEDS_CLARIFICATION",
+      "profileId": "profile_phase10l1",
+      "provenance": {
+        "answerBindings": [],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": null,
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "requiredCapabilityNeeds": [
+        "regression_semantics",
+        "uncertainty_semantics"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_uncertainty_evaluation",
+        "ml_regression_evaluation"
+      ],
+      "targetSemantics": [],
+      "unsupportedReasons": [],
+      "warnings": []
+    },
+    "clarificationRound": 0,
+    "createdAt": "2026-07-29T00:00:00+00:00",
+    "createdBy": "user_local",
+    "datasetId": "dataset_phase10l1",
+    "id": "intent_a4b65f832b1177d4e152bc95",
+    "intentHash": "a4b65f832b1177d4e152bc95da0684737a80631e7c83758c2683bec1f8279ac1",
+    "intentId": "intent_a4b65f832b1177d4e152bc95",
+    "intentJson": {
+      "ambiguities": [
+        {
+          "blocking": true,
+          "candidates": [
+            {
+              "label": "formation_energy (regression_0)",
+              "semanticId": "regression_0:target:formation_energy",
+              "value": "regression_0:target:formation_energy"
+            },
+            {
+              "label": "band_gap (regression_1)",
+              "semanticId": "regression_1:target:band_gap",
+              "value": "regression_1:target:band_gap"
+            }
+          ],
+          "code": "TARGET_SEMANTICS_AMBIGUOUS",
+          "field": "targetSemantics",
+          "message": "Multiple valid model targets are available.",
+          "source": "SEMANTIC_BINDING"
+        }
+      ],
+      "clarification": {
+        "answers": [],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [
+          {
+            "bindsTo": "targetSemantics",
+            "code": "SELECT_TARGET",
+            "options": [
+              {
+                "label": "formation_energy (regression_0)",
+                "semanticId": "regression_0:target:formation_energy",
+                "value": "regression_0:target:formation_energy"
+              },
+              {
+                "label": "band_gap (regression_1)",
+                "semanticId": "regression_1:target:band_gap",
+                "value": "regression_1:target:band_gap"
+              }
+            ],
+            "prompt": "Which model target should be evaluated?",
+            "questionId": "select_model_target",
+            "required": true,
+            "type": "SELECT_ONE"
+          }
+        ],
+        "round": 0
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_phase10l1",
+        "datasetVersion": "dataset_phase10l1_version_2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "USER_EXPLICIT",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_phase10l1",
+        "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "objectId": "table_phase10l1",
+            "objectType": "DataFrame",
+            "origin": "USER_EXPLICIT"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_phase10l1",
+      "desiredOutputs": [
+        "summary",
+        "warnings",
+        "metrics",
+        "plot",
+        "table"
+      ],
+      "intentHash": "a4b65f832b1177d4e152bc95da0684737a80631e7c83758c2683bec1f8279ac1",
+      "intentId": "intent_a4b65f832b1177d4e152bc95",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "optionalCapabilityNeeds": [],
+      "outcome": "NEEDS_CLARIFICATION",
+      "profileId": "profile_phase10l1",
+      "provenance": {
+        "answerBindings": [],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": null,
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "requiredCapabilityNeeds": [
+        "regression_semantics",
+        "uncertainty_semantics"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_uncertainty_evaluation",
+        "ml_regression_evaluation"
+      ],
+      "targetSemantics": [],
+      "unsupportedReasons": [],
+      "warnings": []
+    },
+    "model": "bounded-rules-v1",
+    "outcome": "NEEDS_CLARIFICATION",
+    "parentIntentId": null,
+    "profileId": "profile_phase10l1",
+    "projectId": "project_phase10l1",
+    "promptVersion": "phase10l1.intent.v1",
+    "provider": "deterministic_mock",
+    "schemaVersion": "1.0"
+  },
+  "planCount": 0,
+  "revision": {
+    "analysisIntent": {
+      "ambiguities": [],
+      "clarification": {
+        "answers": [
+          {
+            "questionId": "select_model_target",
+            "selectedValues": [
+              "regression_0:target:formation_energy"
+            ]
+          }
+        ],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [],
+        "round": 1
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [
+          "regression_0:target:formation_energy"
+        ],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_phase10l1",
+        "datasetVersion": "dataset_phase10l1_version_2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "CLARIFICATION_ANSWER",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_phase10l1",
+        "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "objectId": "table_phase10l1",
+            "objectType": "DataFrame",
+            "origin": "CLARIFICATION_ANSWER"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_phase10l1",
+      "desiredOutputs": [
+        "summary",
+        "warnings",
+        "metrics",
+        "plot",
+        "table"
+      ],
+      "intentHash": "b4bf4bf343e6b6db432b1d35a5045df88de1cd27b88c4b4ae215ae7a7df6d879",
+      "intentId": "intent_b4bf4bf343e6b6db432b1d35",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "optionalCapabilityNeeds": [],
+      "outcome": "READY",
+      "profileId": "profile_phase10l1",
+      "provenance": {
+        "answerBindings": [
+          {
+            "questionId": "select_model_target",
+            "selectedValues": [
+              "regression_0:target:formation_energy"
+            ]
+          }
+        ],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": "intent_a4b65f832b1177d4e152bc95",
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "requiredCapabilityNeeds": [
+        "regression_semantics",
+        "uncertainty_semantics"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_uncertainty_evaluation",
+        "ml_regression_evaluation"
+      ],
+      "targetSemantics": [
+        {
+          "column": "formation_energy",
+          "groupId": "regression_0",
+          "objectId": "table_phase10l1",
+          "origin": "CLARIFICATION_ANSWER",
+          "role": "regression_target",
+          "semanticId": "regression_0:target:formation_energy",
+          "seriesId": null,
+          "unit": "eV"
+        },
+        {
+          "column": "formation_energy_pred",
+          "groupId": "regression_0",
+          "objectId": "table_phase10l1",
+          "origin": "CLARIFICATION_ANSWER",
+          "role": "regression_prediction",
+          "semanticId": "regression_0:prediction:formation_energy_pred",
+          "seriesId": null,
+          "unit": null
+        },
+        {
+          "column": "formation_energy_std",
+          "groupId": "regression_0",
+          "objectId": "table_phase10l1",
+          "origin": "CLARIFICATION_ANSWER",
+          "role": "regression_uncertainty",
+          "semanticId": "regression_0:uncertainty:formation_energy_std",
+          "seriesId": null,
+          "unit": null
+        }
+      ],
+      "unsupportedReasons": [],
+      "warnings": []
+    },
+    "clarificationRound": 1,
+    "createdAt": "2026-07-29T00:00:00+00:00",
+    "createdBy": "user_local",
+    "datasetId": "dataset_phase10l1",
+    "id": "intent_b4bf4bf343e6b6db432b1d35",
+    "intentHash": "b4bf4bf343e6b6db432b1d35a5045df88de1cd27b88c4b4ae215ae7a7df6d879",
+    "intentId": "intent_b4bf4bf343e6b6db432b1d35",
+    "intentJson": {
+      "ambiguities": [],
+      "clarification": {
+        "answers": [
+          {
+            "questionId": "select_model_target",
+            "selectedValues": [
+              "regression_0:target:formation_energy"
+            ]
+          }
+        ],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [],
+        "round": 1
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [
+          "regression_0:target:formation_energy"
+        ],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_phase10l1",
+        "datasetVersion": "dataset_phase10l1_version_2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "CLARIFICATION_ANSWER",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_phase10l1",
+        "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "objectId": "table_phase10l1",
+            "objectType": "DataFrame",
+            "origin": "CLARIFICATION_ANSWER"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_phase10l1",
+      "desiredOutputs": [
+        "summary",
+        "warnings",
+        "metrics",
+        "plot",
+        "table"
+      ],
+      "intentHash": "b4bf4bf343e6b6db432b1d35a5045df88de1cd27b88c4b4ae215ae7a7df6d879",
+      "intentId": "intent_b4bf4bf343e6b6db432b1d35",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "optionalCapabilityNeeds": [],
+      "outcome": "READY",
+      "profileId": "profile_phase10l1",
+      "provenance": {
+        "answerBindings": [
+          {
+            "questionId": "select_model_target",
+            "selectedValues": [
+              "regression_0:target:formation_energy"
+            ]
+          }
+        ],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": "intent_a4b65f832b1177d4e152bc95",
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "requiredCapabilityNeeds": [
+        "regression_semantics",
+        "uncertainty_semantics"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_uncertainty_evaluation",
+        "ml_regression_evaluation"
+      ],
+      "targetSemantics": [
+        {
+          "column": "formation_energy",
+          "groupId": "regression_0",
+          "objectId": "table_phase10l1",
+          "origin": "CLARIFICATION_ANSWER",
+          "role": "regression_target",
+          "semanticId": "regression_0:target:formation_energy",
+          "seriesId": null,
+          "unit": "eV"
+        },
+        {
+          "column": "formation_energy_pred",
+          "groupId": "regression_0",
+          "objectId": "table_phase10l1",
+          "origin": "CLARIFICATION_ANSWER",
+          "role": "regression_prediction",
+          "semanticId": "regression_0:prediction:formation_energy_pred",
+          "seriesId": null,
+          "unit": null
+        },
+        {
+          "column": "formation_energy_std",
+          "groupId": "regression_0",
+          "objectId": "table_phase10l1",
+          "origin": "CLARIFICATION_ANSWER",
+          "role": "regression_uncertainty",
+          "semanticId": "regression_0:uncertainty:formation_energy_std",
+          "seriesId": null,
+          "unit": null
+        }
+      ],
+      "unsupportedReasons": [],
+      "warnings": []
+    },
+    "model": "bounded-rules-v1",
+    "outcome": "READY",
+    "parentIntentId": "intent_a4b65f832b1177d4e152bc95",
+    "profileId": "profile_phase10l1",
+    "projectId": "project_phase10l1",
+    "promptVersion": "phase10l1.intent.v1",
+    "provider": "deterministic_mock",
+    "schemaVersion": "1.0"
+  }
+}

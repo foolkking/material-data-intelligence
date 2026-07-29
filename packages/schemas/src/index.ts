@@ -251,6 +251,187 @@ export type AnalysisPlan = {
   expectedArtifacts: ExpectedArtifact[];
 };
 
+export type AnalysisIntentOutcome = "READY" | "NEEDS_CLARIFICATION" | "UNSUPPORTED";
+
+export type ScientificIntent =
+  | "dataset_overview"
+  | "composition_analysis"
+  | "property_distribution"
+  | "dataset_comparison"
+  | "composition_space"
+  | "structure_analysis"
+  | "trajectory_analysis"
+  | "phonon_analysis"
+  | "reciprocal_space_analysis"
+  | "volumetric_analysis"
+  | "ml_regression_evaluation"
+  | "ml_uncertainty_evaluation"
+  | "ml_classification_evaluation"
+  | "sample_inspection"
+  | "comparison"
+  | "anomaly_candidate_review"
+  | "visualization"
+  | "report_or_export";
+
+export type AnalysisIntentDesiredOutput =
+  | "summary"
+  | "metrics"
+  | "plot"
+  | "table"
+  | "linked_samples"
+  | "three_dimensional_view"
+  | "comparison"
+  | "warnings"
+  | "recipe"
+  | "report"
+  | "downloadable_artifact";
+
+export type AnalysisIntentCapabilityNeed =
+  | "tabular_data"
+  | "composition_data"
+  | "material_property_data"
+  | "comparison_groups"
+  | "structure_resource"
+  | "trajectory_resource"
+  | "phonon_resource"
+  | "reciprocal_space_resource"
+  | "volumetric_resource"
+  | "regression_semantics"
+  | "uncertainty_semantics"
+  | "classification_semantics"
+  | "sample_identity";
+
+export type AnalysisIntentBindingOrigin = "USER_EXPLICIT" | "PROFILE_EXACT" | "CLARIFICATION_ANSWER";
+export type AnalysisIntentAmbiguitySource = "USER_GOAL" | "DATA_PROFILE" | "RESOURCE_SELECTION" | "SEMANTIC_BINDING";
+
+export type AnalysisIntentResourceRef = {
+  objectId: string;
+  objectType: string;
+  objectHash: string;
+  kind: string;
+  origin: AnalysisIntentBindingOrigin;
+};
+
+export type AnalysisIntentDataScope = {
+  datasetId: string;
+  datasetVersion: string;
+  profileId: string;
+  profileContractVersion: string;
+  profileSemanticHash: string;
+  resourceRefs: AnalysisIntentResourceRef[];
+  sampleIds: string[];
+  groupIds: string[];
+  modelIds: string[];
+  origin: AnalysisIntentBindingOrigin;
+};
+
+export type AnalysisIntentTargetSemantic = {
+  semanticId: string;
+  role:
+    | "material_property"
+    | "regression_target"
+    | "regression_prediction"
+    | "regression_uncertainty"
+    | "classification_target"
+    | "classification_prediction"
+    | "class_probability"
+    | "model_identity"
+    | "resource_identity"
+    | "comparison_group";
+  objectId: string;
+  column?: string;
+  unit?: string;
+  groupId?: string;
+  seriesId?: string;
+  origin: AnalysisIntentBindingOrigin;
+};
+
+export type AnalysisIntentCandidate = { value: string; label: string; semanticId: string };
+
+export type AnalysisIntentAmbiguity = {
+  code: string;
+  field: string;
+  message: string;
+  candidates: AnalysisIntentCandidate[];
+  blocking: boolean;
+  source: AnalysisIntentAmbiguitySource;
+};
+
+export type AnalysisIntentDiagnostic = {
+  code: string;
+  field: string;
+  message: string;
+  source: AnalysisIntentAmbiguitySource;
+  boundary: "CURRENT" | "FUTURE_SCOPE" | "NOT_PLANNED" | "EXECUTION_BOUNDARY" | "MISSING_DATA";
+};
+
+export type AnalysisIntentClarificationOption = AnalysisIntentCandidate;
+export type AnalysisIntentClarificationQuestion = {
+  questionId: string;
+  code: string;
+  prompt: string;
+  type: "SELECT_ONE" | "SELECT_MANY" | "CONFIRM";
+  options: AnalysisIntentClarificationOption[];
+  required: boolean;
+  bindsTo: string;
+};
+
+export type AnalysisIntentClarificationAnswer = { questionId: string; selectedValues: string[] };
+
+export type AnalysisIntent = {
+  schemaVersion: "1.0";
+  intentId: string;
+  intentHash: string;
+  datasetId: string;
+  profileId: string;
+  rawGoal: string;
+  normalizedGoal: string;
+  language: "zh" | "en" | "mixed" | "und";
+  dataScope: AnalysisIntentDataScope;
+  scientificIntents: ScientificIntent[];
+  targetSemantics: AnalysisIntentTargetSemantic[];
+  desiredOutputs: AnalysisIntentDesiredOutput[];
+  constraints: {
+    includeResourceIds: string[];
+    excludeResourceIds: string[];
+    includeScientificIntents: ScientificIntent[];
+    excludeScientificIntents: ScientificIntent[];
+    targetIds: string[];
+    modelIds: string[];
+    groupIds: string[];
+    outputPreferences: AnalysisIntentDesiredOutput[];
+    maxAnalyses?: number;
+    maxToolCalls?: number;
+    timePreference?: "FAST" | "BALANCED" | "THOROUGH";
+    costPreference?: "LOW" | "BALANCED";
+    clarificationAllowed: boolean;
+    descriptiveOnly: boolean;
+    forbidDerivedInterpretation: boolean;
+  };
+  requiredCapabilityNeeds: AnalysisIntentCapabilityNeed[];
+  optionalCapabilityNeeds: AnalysisIntentCapabilityNeed[];
+  ambiguities: AnalysisIntentAmbiguity[];
+  missingFacts: AnalysisIntentDiagnostic[];
+  unsupportedReasons: AnalysisIntentDiagnostic[];
+  outcome: AnalysisIntentOutcome;
+  clarification: {
+    round: 0 | 1;
+    maxRounds: 1;
+    maxQuestionsPerRound: 3;
+    questions: AnalysisIntentClarificationQuestion[];
+    answers: AnalysisIntentClarificationAnswer[];
+  };
+  provenance: {
+    provider: "deterministic_mock" | "openai_compatible";
+    model: string;
+    promptVersion: string;
+    createdAt: string;
+    parentIntentId?: string | null;
+    answerBindings: AnalysisIntentClarificationAnswer[];
+  };
+  warnings: AnalysisIntentDiagnostic[];
+};
+
 export type DataProfile = {
   schemaVersion: "0.1";
   profileId: string;

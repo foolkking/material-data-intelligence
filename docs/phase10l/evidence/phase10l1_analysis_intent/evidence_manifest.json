@@ -1,0 +1,105 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 348,
+      "sha256": "c0c3946b11528e5a1b182a024bab124e08e3318c0b659c292638e8ed00564417"
+    },
+    {
+      "path": "api/clarification_revision.json",
+      "bytes": 4871,
+      "sha256": "143bd9f4a76568385371308b7ed308f16a0723bfe6132607f76294e6a9752b0d"
+    },
+    {
+      "path": "api/needs_clarification.json",
+      "bytes": 5515,
+      "sha256": "ac4e20e197e25a6eb9d4e0a8c0bd7554599b409441869a0f27ac09c477b87342"
+    },
+    {
+      "path": "api/ready_planner_job.json",
+      "bytes": 6074,
+      "sha256": "5a76a29d5936684a7ff48e10fa149241843125de0a76b534738f0588b3f95ea9"
+    },
+    {
+      "path": "api/unsupported_no_job.json",
+      "bytes": 3388,
+      "sha256": "a49f032c4b439373c03fcd781990e15301f5951873289dc6f789d6da66429bd3"
+    },
+    {
+      "path": "browser/browser_matrix.json",
+      "bytes": 16217,
+      "sha256": "5d5ac1f7d7a88864a019de5a5a2518d2ed318f30543e771c2510f1b29bb599bd"
+    },
+    {
+      "path": "browser/console_audit.json",
+      "bytes": 46,
+      "sha256": "4e768728e3a6785221f219d056cf4ea9120cacce6a06cb227a52f422ec9c27fd"
+    },
+    {
+      "path": "browser/fixtures.json",
+      "bytes": 17958,
+      "sha256": "412a40c3e2d5c416775c2a16c611777a72397bf9a12df38fae95bc724e2ad6b2"
+    },
+    {
+      "path": "browser/network_audit.json",
+      "bytes": 82,
+      "sha256": "fc871158a32b0abf8f72170b07325288ecfa919e7f60f9e4f07cc94b15db1e6a"
+    },
+    {
+      "path": "performance/near_cap.json",
+      "bytes": 367,
+      "sha256": "5bc4909dd38fe2b3bd1e87bcd1492211958511f11a36cb625bd525177401cb9e"
+    },
+    {
+      "path": "persistence/immutable_revisions.json",
+      "bytes": 18888,
+      "sha256": "fb049fdd6a711d7854b41ffc1435dea61be2fd456f18d24acdd199340a10f706"
+    },
+    {
+      "path": "persistence/sqlite_and_postgres_gate.json",
+      "bytes": 407,
+      "sha256": "53fbd38cf02ce4299bf0d9ad83f89ad46715dd32e3860c634c2d5cedf68ddb55"
+    },
+    {
+      "path": "screenshots/01_ready_intent_audit.png",
+      "bytes": 132007,
+      "sha256": "b4a2793012f731e92a79fd375e1572547500e0a07615730e83d8f13e8c1cc512"
+    },
+    {
+      "path": "screenshots/02_needs_clarification.png",
+      "bytes": 27925,
+      "sha256": "d5f5823f4790eda22994bc2632b1a67b63441df7afe7ec75abe7ded24a14a381"
+    },
+    {
+      "path": "screenshots/03_revised_ready.png",
+      "bytes": 28322,
+      "sha256": "2ddf0fa270329767ddd7602a5e2e4d2f1beeed67733521f104abd2b128c405ed"
+    },
+    {
+      "path": "screenshots/04_mobile_needs_clarification.png",
+      "bytes": 29563,
+      "sha256": "78d4dfe9475c584f7ff5f44e36e4a6d9eed4b2c4402d36de7f9749f86528242d"
+    },
+    {
+      "path": "screenshots/05_mobile_revised_ready.png",
+      "bytes": 28250,
+      "sha256": "ed5249b36f6570ecfd9859ea9a588b11c113322fc544b2d44e2bb89f5c966b90"
+    },
+    {
+      "path": "screenshots/06_unsupported_future_scope.png",
+      "bytes": 26140,
+      "sha256": "3f9455a8fd85da2bc4c2cccc58d9aa132845ce957dd7bb192a41e27f707cb29e"
+    },
+    {
+      "path": "security/security_audit.json",
+      "bytes": 412,
+      "sha256": "d1cc3e630eead21db8f0e3269731cd3aa764653fcc056d06a99935fc163b9dd5"
+    },
+    {
+      "path": "test_captures.json",
+      "bytes": 346,
+      "sha256": "4ee82c65e869bc1186313254a065a82f1605d32fffa45add1669be6ea45f5134"
+    }
+  ]
+}

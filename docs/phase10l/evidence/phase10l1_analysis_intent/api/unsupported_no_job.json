@@ -1,0 +1,109 @@
+{
+  "request": {
+    "datasetId": "dataset_demo",
+    "enqueue": true,
+    "intentSchemaVersion": "1.0",
+    "profileId": "profile_dataset_demo_v2",
+    "projectId": "project_local",
+    "provider": "mock",
+    "userPrompt": "Generate a Fermi surface."
+  },
+  "response": {
+    "enqueued": false,
+    "error_code": "INTENT_UNSUPPORTED",
+    "executed": false,
+    "intent": {
+      "ambiguities": [],
+      "clarification": {
+        "answers": [],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [],
+        "round": 0
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_demo",
+        "datasetVersion": "2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "USER_EXPLICIT",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_dataset_demo_v2",
+        "profileSemanticHash": "e9f6466874f89e9ec0e30cc0a8bad1f3427e4fa57e69300c6c3682106e47bcf2",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "8f6a530dc19018d6ba405249c42ff98f73e13a76890ca780355d7a078658ed5e",
+            "objectId": "obj_dataframe_8f6a530dc190",
+            "objectType": "DataFrame",
+            "origin": "USER_EXPLICIT"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_demo",
+      "desiredOutputs": [
+        "summary",
+        "warnings"
+      ],
+      "intentHash": "ef3e2053a18f68108a7d30780016a67d09273b8c5d171a1afa073530b8106b37",
+      "intentId": "intent_ef3e2053a18f68108a7d3078",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Generate a Fermi surface.",
+      "optionalCapabilityNeeds": [],
+      "outcome": "UNSUPPORTED",
+      "profileId": "profile_dataset_demo_v2",
+      "provenance": {
+        "answerBindings": [],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": null,
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Generate a Fermi surface.",
+      "requiredCapabilityNeeds": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [],
+      "targetSemantics": [],
+      "unsupportedReasons": [
+        {
+          "boundary": "FUTURE_SCOPE",
+          "code": "INTENT_FUTURE_FERMI_SURFACE",
+          "field": "rawGoal",
+          "message": "Fermi Surface is Future Scope.",
+          "source": "USER_GOAL"
+        }
+      ],
+      "warnings": []
+    },
+    "intent_id": "intent_ef3e2053a18f68108a7d3078",
+    "intent_outcome": "UNSUPPORTED",
+    "job_id": null,
+    "ok": false,
+    "plan": null,
+    "plan_hash": null,
+    "plan_id": null,
+    "plan_source": "llm",
+    "planner_provider": "mock",
+    "validation_errors": []
+  }
+}

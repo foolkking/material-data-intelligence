@@ -1,5 +1,27 @@
 # DESIGN_PROGRESS
 
+## 2026-07-29 Phase 10L-1 Analysis Intent Implementation In Progress
+
+- Added independent `AnalysisIntent` schema `1.0` across Python, checked-in JSON
+  Schema, and TypeScript with deterministic semantic hash/ID, exact Profile 2.0
+  dataset/resource/target binding, bounded vocabulary, desired outputs,
+  constraints, diagnostics, and strict READY/NEEDS_CLARIFICATION/UNSUPPORTED
+  consistency.
+- Added deterministic and strict OpenAI-compatible Intent builders, an
+  independent validator, one-round/three-question Profile-derived
+  clarification, immutable revision, and typed Future/Not Planned/execution
+  rejection. Default tests make zero real LLM calls and perform no silent
+  repair or Mock fallback.
+- Added in-memory/SQL repositories, Alembic revision 0003, additive Intent API,
+  and an upstream Planner Gate. Non-READY states stop before plan/job/enqueue;
+  READY passes the preserved goal to the existing Planner path and stores the
+  association outside AnalysisPlan 0.1.
+- Added the minimal PlannerWorkbench summary, clarification, unsupported, Run
+  gate, and inert audit JSON. Chromium, Firefox, WebKit, and 390x844 mobile
+  evidence pass with zero external requests and console/page errors.
+- Implementation exact-SHA CI, completion record CI, and verified queue archive
+  remain pending. Phase 10L-2 remains a reviewer gate and is not queued.
+
 ## 2026-07-29 Phase 10L-0 Agent / Planner Capability Audit
 
 - Audited the real Mock and optional OpenAI-compatible Planner paths,

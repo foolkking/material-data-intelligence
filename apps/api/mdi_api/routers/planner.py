@@ -17,13 +17,27 @@ from mdi_api.database import create_repository_factory
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
 from mdi_api.secrets import InMemorySecretStore
 from mdi_llm import (
+    AnalysisIntentError,
+    AnalysisIntentRequest,
+    AnalysisIntentValidator,
+    ClarificationSubmission,
+    DeterministicAnalysisIntentBuilder,
     LLMProviderError,
     MockLLMProvider,
+    OpenAICompatibleAnalysisIntentBuilder,
     OpenAICompatibleProvider,
     PlannerRawResponse,
     PlannerRequest,
     PlannerUserConfig,
+    redact_credential_values,
     redact_params_for_log,
+)
+from mdi_schemas import (
+    AnalysisIntent,
+    AnalysisIntentConstraints,
+    AnalysisIntentOutcome,
+    ClarificationAnswer,
+    DataProfile,
 )
 from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime, RedisRQQueueBackend
 from mdi_workers.object_store import DurableObjectStoreResolver
@@ -77,6 +91,32 @@ class PlannerJobsRequest(BaseModel):
     temperature: float | None = None
     maxTokens: int | None = None
     timeoutSeconds: float | None = None
+    intentSchemaVersion: str | None = None
+    intentId: str | None = None
+    selectedResourceIds: list[str] = Field(default_factory=list, max_length=32)
+    selectedTargetIds: list[str] = Field(default_factory=list, max_length=32)
+
+
+class PlannerIntentCreateRequest(BaseModel):
+    rawGoal: str = Field(min_length=1, max_length=16_384)
+    projectId: str = Field(default="project_local", min_length=1)
+    datasetId: str = Field(min_length=1)
+    profileId: str = Field(min_length=1)
+    selectedResourceIds: list[str] = Field(default_factory=list, max_length=32)
+    selectedTargetIds: list[str] = Field(default_factory=list, max_length=32)
+    constraints: AnalysisIntentConstraints = Field(default_factory=AnalysisIntentConstraints)
+    provider: str | None = None
+    baseUrl: str | None = None
+    model: str | None = None
+    secretId: str | None = None
+    temperature: float | None = None
+    maxTokens: int | None = None
+    timeoutSeconds: float | None = None
+
+
+class PlannerIntentClarificationRequest(BaseModel):
+    expectedProfileSemanticHash: str = Field(min_length=1, max_length=128)
+    answers: list[ClarificationAnswer] = Field(min_length=1, max_length=3)
 
 
 @dataclass
@@ -106,6 +146,108 @@ class PlannerJobsResult:
     planner_provider: str | None = None
     enqueued: bool = False
     executed: bool = False
+    intent_id: str | None = None
+    intent_outcome: str | None = None
+    intent: dict[str, Any] | None = None
+    error_code: str | None = None
+
+
+@dataclass
+class PlannerIntentResult:
+    ok: bool
+    intent_id: str | None
+    outcome: str | None
+    intent: dict[str, Any] | None
+    error_code: str | None = None
+    errors: list[dict[str, Any]] = field(default_factory=list)
+
+
+def create_planner_intent(
+    request: PlannerIntentCreateRequest,
+    *,
+    provider: Any = None,
+    repositories: Any = None,
+    queue_runtime: Any = None,
+) -> PlannerIntentResult:
+    repos, _runtime = _planner_repositories_and_runtime(repositories=repositories, queue_runtime=queue_runtime)
+    created_by = "user_local"
+    _ensure_planner_project_dataset(
+        repos,
+        project_id=request.projectId,
+        dataset_id=request.datasetId,
+        created_by=created_by,
+    )
+    try:
+        profile = _planner_exact_data_profile(repos, request.datasetId, request.profileId)
+        intent = _build_planner_intent(
+            raw_goal=request.rawGoal,
+            dataset_id=request.datasetId,
+            profile_id=request.profileId,
+            selected_resource_ids=request.selectedResourceIds,
+            selected_target_ids=request.selectedTargetIds,
+            constraints=request.constraints,
+            requested_provider=request.provider,
+            provider=provider,
+            user_config=_planner_user_config_from_request(request),
+            profile=profile,
+        )
+        _persist_planner_intent(repos, request.projectId, intent, created_by=created_by)
+        return _intent_result(intent)
+    except (AnalysisIntentError, LLMProviderError) as exc:
+        return _intent_error_result(exc)
+
+
+def get_planner_intent(intent_id: str, *, repositories: Any = None) -> PlannerIntentResult:
+    repos = _planner_read_repositories(repositories)
+    try:
+        record = repos.analysis_intents.get_intent(intent_id)
+        intent = AnalysisIntent.model_validate(record["analysisIntent"])
+        return _intent_result(intent)
+    except LookupError:
+        return PlannerIntentResult(
+            ok=False,
+            intent_id=None,
+            outcome=None,
+            intent=None,
+            error_code="INTENT_NOT_FOUND",
+            errors=[{"code": "INTENT_NOT_FOUND", "message": "AnalysisIntent was not found.", "field": "intentId"}],
+        )
+
+
+def clarify_planner_intent(
+    intent_id: str,
+    request: PlannerIntentClarificationRequest,
+    *,
+    repositories: Any = None,
+    queue_runtime: Any = None,
+) -> PlannerIntentResult:
+    repos, _runtime = _planner_repositories_and_runtime(repositories=repositories, queue_runtime=queue_runtime)
+    try:
+        record = repos.analysis_intents.get_intent(intent_id)
+        parent = AnalysisIntent.model_validate(record["analysisIntent"])
+        profile = _planner_exact_data_profile(repos, parent.datasetId, parent.profileId)
+        revised = DeterministicAnalysisIntentBuilder().clarify(
+            parent,
+            ClarificationSubmission(
+                intent_id=intent_id,
+                answers=tuple(request.answers),
+                expected_profile_semantic_hash=request.expectedProfileSemanticHash,
+            ),
+            profile=profile,
+        )
+        _persist_planner_intent(repos, str(record["projectId"]), revised, created_by=str(record.get("createdBy") or "user_local"))
+        return _intent_result(revised)
+    except LookupError:
+        return PlannerIntentResult(
+            ok=False,
+            intent_id=intent_id,
+            outcome=None,
+            intent=None,
+            error_code="INTENT_NOT_FOUND",
+            errors=[{"code": "INTENT_NOT_FOUND", "message": "AnalysisIntent was not found.", "field": "intentId"}],
+        )
+    except AnalysisIntentError as exc:
+        return _intent_error_result(exc, intent_id=intent_id)
 
 
 # ── POST /planner/preview ──────────────────────────────────────────
@@ -205,14 +347,70 @@ def planner_jobs(
         return _planner_jobs_provider_error(exc, planner_provider=request.provider)
     tools = [t for t in reg.tools if t.stage == "mvp"]
 
+    repos, runtime = _planner_repositories_and_runtime(repositories=repositories, queue_runtime=queue_runtime)
+    created_by = "user_local"
+    project_id = request.projectId
+    dataset_id = request.datasetId
+    profile_id = request.profileId or request.datasetId
+    intent: AnalysisIntent | None = None
+    if request.intentSchemaVersion is not None or request.intentId is not None:
+        _ensure_planner_project_dataset(repos, project_id=project_id, dataset_id=dataset_id, created_by=created_by)
+        if request.intentSchemaVersion not in {None, "1.0"}:
+            return _planner_jobs_intent_error("INTENT_SCHEMA_UNSUPPORTED", "Only AnalysisIntent schema 1.0 is supported.")
+        try:
+            dp = _planner_exact_data_profile(repos, dataset_id, profile_id)
+            if request.intentId:
+                record = repos.analysis_intents.get_intent(request.intentId)
+                intent = AnalysisIntent.model_validate(record["analysisIntent"])
+                AnalysisIntentValidator().validate(intent, profile=dp)
+                if intent.datasetId != dataset_id or intent.profileId != profile_id or intent.rawGoal != redact_credential_values(request.userPrompt):
+                    raise AnalysisIntentError("Planner request does not match the persisted Intent.", code="INTENT_REQUEST_MISMATCH")
+            else:
+                intent = _build_planner_intent(
+                    raw_goal=request.userPrompt,
+                    dataset_id=dataset_id,
+                    profile_id=profile_id,
+                    selected_resource_ids=request.selectedResourceIds,
+                    selected_target_ids=request.selectedTargetIds,
+                    constraints=AnalysisIntentConstraints(
+                        includeResourceIds=request.selectedResourceIds,
+                        targetIds=request.selectedTargetIds,
+                    ),
+                    requested_provider=request.provider,
+                    provider=llm,
+                    user_config=user_config,
+                    profile=dp,
+                )
+                _persist_planner_intent(repos, project_id, intent, created_by=created_by)
+        except LookupError:
+            return _planner_jobs_intent_error("INTENT_NOT_FOUND", "The requested AnalysisIntent was not found.")
+        except (AnalysisIntentError, LLMProviderError) as exc:
+            code = exc.code
+            message = exc.safe_message if isinstance(exc, LLMProviderError) else str(exc)
+            return _planner_jobs_intent_error(code, message)
+        if intent.outcome is not AnalysisIntentOutcome.ready:
+            return PlannerJobsResult(
+                ok=False,
+                job_id=None,
+                plan_id=None,
+                plan_hash=None,
+                validation_errors=[],
+                plan=None,
+                planner_provider=_provider_name(llm),
+                intent_id=intent.intentId,
+                intent_outcome=intent.outcome.value,
+                intent=intent.model_dump(mode="json"),
+                error_code="INTENT_CLARIFICATION_REQUIRED" if intent.outcome is AnalysisIntentOutcome.needs_clarification else "INTENT_UNSUPPORTED",
+            )
+    else:
+        dp = _planner_data_profile(dataset_id, profile_id)
+
     planner_req = PlannerRequest(
-        user_prompt=request.userPrompt,
-        dataset_id=request.datasetId,
-        profile_id=request.profileId or request.datasetId,
+        user_prompt=intent.rawGoal if intent is not None else request.userPrompt,
+        dataset_id=dataset_id,
+        profile_id=profile_id,
         tool_registry_version=reg.version,
     )
-
-    dp = _planner_data_profile(request.datasetId, request.profileId or request.datasetId)
 
     try:
         resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp, user_config=user_config)
@@ -229,6 +427,9 @@ def planner_jobs(
             validation_errors=[{"code": "PLAN_EMPTY", "message": "LLM returned no plan.", "detail": None}],
             plan=None,
             planner_provider=_provider_name(llm),
+            intent_id=intent.intentId if intent else None,
+            intent_outcome=intent.outcome.value if intent else None,
+            intent=intent.model_dump(mode="json") if intent else None,
         )
 
     validation = validate_plan(plan, registry=reg)
@@ -241,6 +442,9 @@ def planner_jobs(
             validation_errors=[{"code": e.code, "message": e.message, "detail": e.detail} for e in validation.errors],
             plan=None,
             planner_provider=_provider_name(llm),
+            intent_id=intent.intentId if intent else None,
+            intent_outcome=intent.outcome.value if intent else None,
+            intent=intent.model_dump(mode="json") if intent else None,
         )
 
     from mdi_schemas import AnalysisPlan
@@ -256,14 +460,12 @@ def planner_jobs(
             validation_errors=input_ref_errors,
             plan=None,
             planner_provider=_provider_name(llm),
+            intent_id=intent.intentId if intent else None,
+            intent_outcome=intent.outcome.value if intent else None,
+            intent=intent.model_dump(mode="json") if intent else None,
         )
 
     plan_hash = compute_plan_hash(validated_plan)
-    repos, runtime = _planner_repositories_and_runtime(repositories=repositories, queue_runtime=queue_runtime)
-    created_by = "user_local"
-    project_id = request.projectId
-    dataset_id = request.datasetId
-    profile_id = request.profileId or request.datasetId
     planner_provider = _provider_name(llm)
     plan_id = f"plan_{uuid.uuid4().hex[:24]}"
     job_id = f"job_{uuid.uuid4().hex[:24]}"
@@ -295,6 +497,8 @@ def planner_jobs(
         }
     )
     repos.analysis_plans.attach_plan_to_job(plan_id, job_id)
+    if intent is not None:
+        repos.analysis_intents.attach_execution(intent.intentId, plan_id, job_id)
     repos.job_events.append_event(
         job_id,
         event_type="job.created",
@@ -334,6 +538,9 @@ def planner_jobs(
         planner_provider=planner_provider,
         enqueued=enqueued,
         executed=executed,
+        intent_id=intent.intentId if intent else None,
+        intent_outcome=intent.outcome.value if intent else None,
+        intent=intent.model_dump(mode="json") if intent else None,
     )
 
 
@@ -347,6 +554,18 @@ def planner_validate_route(request: PlannerValidateRequest) -> PlannerValidateRe
 
 def planner_jobs_route(request: PlannerJobsRequest) -> PlannerJobsResult:
     return planner_jobs(request)
+
+
+def create_planner_intent_route(request: PlannerIntentCreateRequest) -> PlannerIntentResult:
+    return create_planner_intent(request)
+
+
+def get_planner_intent_route(intent_id: str) -> PlannerIntentResult:
+    return get_planner_intent(intent_id)
+
+
+def clarify_planner_intent_route(intent_id: str, request: PlannerIntentClarificationRequest) -> PlannerIntentResult:
+    return clarify_planner_intent(intent_id, request)
 
 
 def get_planner_analysis_plan(plan_id: str, *, repositories: Any = None) -> dict[str, Any]:
@@ -364,6 +583,9 @@ def get_planner_job(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
     tool_calls = repos.tool_calls.list_for_job(job_id)
     artifacts = repos.artifacts.list_for_job(job_id)
     plan_hash = _plan_hash(plan)
+    intent_binding = repos.analysis_intents.get_execution_for_job(job_id)
+    intent_record = repos.analysis_intents.get_intent(intent_binding["intentId"]) if intent_binding else None
+    intent_payload = (intent_record or {}).get("analysisIntent")
     return {
         **job,
         "jobId": job.get("jobId") or job.get("id"),
@@ -376,6 +598,9 @@ def get_planner_job(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
         "artifactCount": len(artifacts),
         "eventCount": len(events),
         "provenance": _planner_job_provenance(job, plan),
+        "intentId": (intent_binding or {}).get("intentId"),
+        "intentOutcome": (intent_payload or {}).get("outcome"),
+        "analysisIntent": intent_payload,
     }
 
 
@@ -615,6 +840,111 @@ def _planner_data_profile(dataset_id: str, profile_id: str) -> Any:
             datasetType="ml",
             createdAt="2026-06-27T00:00:00+00:00",
         )
+
+
+def _planner_exact_data_profile(repos: Any, dataset_id: str, profile_id: str) -> DataProfile:
+    try:
+        stored = repos.data_profiles.get(profile_id)
+        profile = DataProfile.model_validate(stored)
+    except LookupError:
+        try:
+            from mdi_api.phase2_runtime import get_phase2_dataset_profile_model
+
+            profile = get_phase2_dataset_profile_model(dataset_id)
+        except Exception as exc:
+            raise AnalysisIntentError(
+                "The exact DataProfile 2.0 record is unavailable.",
+                code="STALE_PROFILE",
+                field="profileId",
+            ) from exc
+        if profile.profileId == profile_id:
+            repos.data_profiles.save(profile)
+    if profile.datasetId != dataset_id or profile.profileId != profile_id:
+        raise AnalysisIntentError(
+            "The requested dataset/profile identity does not match the current profile.",
+            code="STALE_PROFILE",
+            field="profileId",
+        )
+    if profile.profileContractVersion != "2.0" or not profile.semanticHash:
+        raise AnalysisIntentError(
+            "AnalysisIntent requires an exact DataProfile 2.0 semantic identity.",
+            code="PROFILE_2_REQUIRED",
+            field="profileId",
+        )
+    return profile
+
+
+def _build_planner_intent(
+    *,
+    raw_goal: str,
+    dataset_id: str,
+    profile_id: str,
+    selected_resource_ids: list[str],
+    selected_target_ids: list[str],
+    constraints: AnalysisIntentConstraints,
+    requested_provider: str | None,
+    provider: Any,
+    user_config: PlannerUserConfig | None,
+    profile: DataProfile,
+) -> AnalysisIntent:
+    intent_request = AnalysisIntentRequest(
+        raw_goal=raw_goal,
+        dataset_id=dataset_id,
+        profile_id=profile_id,
+        selected_resource_ids=tuple(selected_resource_ids),
+        selected_target_ids=tuple(selected_target_ids),
+        constraints=constraints,
+    )
+    provider_name = (requested_provider or "mock").strip().lower()
+    if provider_name == "openai_compatible":
+        llm = provider if isinstance(provider, OpenAICompatibleProvider) else OpenAICompatibleProvider()
+        return OpenAICompatibleAnalysisIntentBuilder(llm).build(intent_request, profile=profile, user_config=user_config)
+    return DeterministicAnalysisIntentBuilder().build(intent_request, profile=profile)
+
+
+def _persist_planner_intent(repos: Any, project_id: str, intent: AnalysisIntent, *, created_by: str) -> dict[str, Any]:
+    return repos.analysis_intents.save_intent(
+        {
+            "projectId": project_id,
+            "analysisIntent": intent.model_dump(mode="json"),
+            "createdBy": created_by,
+        }
+    )
+
+
+def _intent_result(intent: AnalysisIntent) -> PlannerIntentResult:
+    return PlannerIntentResult(
+        ok=True,
+        intent_id=intent.intentId,
+        outcome=intent.outcome.value,
+        intent=intent.model_dump(mode="json"),
+    )
+
+
+def _intent_error_result(error: AnalysisIntentError | LLMProviderError, *, intent_id: str | None = None) -> PlannerIntentResult:
+    code = error.code
+    message = error.safe_message if isinstance(error, LLMProviderError) else str(error)
+    field = getattr(error, "field", None)
+    return PlannerIntentResult(
+        ok=False,
+        intent_id=intent_id,
+        outcome=None,
+        intent=None,
+        error_code=code,
+        errors=[{"code": code, "message": message, "field": field}],
+    )
+
+
+def _planner_jobs_intent_error(code: str, message: str) -> PlannerJobsResult:
+    return PlannerJobsResult(
+        ok=False,
+        job_id=None,
+        plan_id=None,
+        plan_hash=None,
+        validation_errors=[{"code": code, "message": message, "detail": None}],
+        plan=None,
+        error_code=code,
+    )
 
 
 def _phase2_object_store_for_dataset(dataset_id: str) -> dict[str, Any] | None:

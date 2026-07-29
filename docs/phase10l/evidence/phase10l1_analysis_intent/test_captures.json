@@ -1,0 +1,11 @@
+{
+  "build": "PASS",
+  "focusedBackend": "27 passed",
+  "focusedFrontend": "22 passed",
+  "fullBackend": "864 passed, 28 skipped, 63 warnings",
+  "fullFrontend": "325 passed",
+  "serviceBackedCi": "REQUIRED_EXACT_SHA_GATE",
+  "serviceBackedLocal": "UNAVAILABLE_WITHOUT_CONFIGURED_SERVICES",
+  "typecheck": "PASS",
+  "uvLock": "PASS"
+}

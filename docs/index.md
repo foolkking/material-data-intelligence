@@ -61,6 +61,15 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 
 ## Phase 10L Intelligent Analysis Agent
 
+- [`phase10l/phase10l1_analysis_intent_contract.md`](phase10l/phase10l1_analysis_intent_contract.md): versioned AnalysisIntent v1 identity, exact scope, vocabulary, and outcomes.
+- [`phase10l/phase10l1_bounded_clarification_contract.md`](phase10l/phase10l1_bounded_clarification_contract.md): one-round, three-question Profile-derived clarification policy.
+- [`phase10l/phase10l1_intent_persistence_and_api.md`](phase10l/phase10l1_intent_persistence_and_api.md): immutable repository, Alembic migration, typed API, and Planner Gate.
+- [`phase10l/phase10l1_planner_compatibility.md`](phase10l/phase10l1_planner_compatibility.md): unchanged READY Planner/PlanValidator/Runtime behavior and legacy strategy.
+- [`phase10l/phase10l1_security_and_caps.md`](phase10l/phase10l1_security_and_caps.md): numeric, prompt, JSON, execution, and rendering trust boundaries.
+- [`phase10l/phase10l1_evidence_matrix.md`](phase10l/phase10l1_evidence_matrix.md): API, persistence, browser, mobile, performance, and security evidence.
+- [`phase10l/phase10l1_readiness.md`](phase10l/phase10l1_readiness.md): implementation readiness and exact-SHA closure gates.
+- [`phase10l/phase10l1_phase10l2_handoff.md`](phase10l/phase10l1_phase10l2_handoff.md): factual gaps and mandatory reviewer handoff; not an executable next task.
+- [`phase10l/evidence/phase10l1_analysis_intent/`](phase10l/evidence/phase10l1_analysis_intent/): sanitized typed captures, browser matrix, screenshots, hashes, and security markers.
 - [`phase10l/phase10l0_current_planner_architecture.md`](phase10l/phase10l0_current_planner_architecture.md): implementation-grounded Planner, Registry, Validator, Runtime, persistence, and UI flow.
 - [`phase10l/phase10l0_agent_planner_capability_audit.md`](phase10l/phase10l0_agent_planner_capability_audit.md): Phase 10L-0 capability inventory, representative prompts, maturity decision, and explicit gaps.
 - [`phase10l/phase10l0_agent_planner_gap_matrix.md`](phase10l/phase10l0_agent_planner_gap_matrix.md): reusable foundations, missing Phase 10L capabilities, and deferred ownership.

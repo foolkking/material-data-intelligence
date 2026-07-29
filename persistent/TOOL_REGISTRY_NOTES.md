@@ -1,5 +1,16 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-29 Phase 10L-1 Intent Boundary
+
+- AnalysisIntent is request meaning and exact data scope; it is not a Tool,
+  capability ranking result, Registry alias, or execution authority.
+- Phase 10L-1 adds no public tool, manifest field, stage, parameter, Adapter,
+  collision group, or planner-facing capability metadata. The Registry remains
+  the validated execution authority after AnalysisPlan generation.
+- Phase 10L-2, only after reviewer approval, owns any planner-facing capability
+  metadata and Profile-to-tool eligibility design. Intent fields cannot bypass
+  Registry validation or select arbitrary tool calls.
+
 ## 2026-07-29 Phase 10L-0 Planner-Readiness Audit
 
 - The audited Registry contains 53 normalized entries: 41 MVP, 11 V1, and one

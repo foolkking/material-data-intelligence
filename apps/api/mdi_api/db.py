@@ -133,6 +133,31 @@ analysis_plans = Table(
     CheckConstraint("validation_status in ('validated', 'rejected')", name="analysis_plan_validation_status"),
 )
 
+analysis_intents = Table(
+    "analysis_intents",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id"), nullable=False),
+    Column("dataset_id", String(64), ForeignKey("datasets.id"), nullable=False),
+    Column("profile_id", String(64), nullable=False),
+    Column("schema_version", String(16), nullable=False),
+    Column("intent_hash", String(64), nullable=False, unique=True),
+    Column("outcome", String(32), nullable=False),
+    Column("parent_intent_id", String(96), ForeignKey("analysis_intents.id"), nullable=True),
+    Column("clarification_round", Integer, nullable=False, server_default="0"),
+    Column("provider", String(64), nullable=False),
+    Column("model", String(128), nullable=False),
+    Column("prompt_version", String(64), nullable=False),
+    Column("intent_json", JSON, nullable=False),
+    Column("created_by", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("outcome in ('READY', 'NEEDS_CLARIFICATION', 'UNSUPPORTED')", name="analysis_intent_outcome"),
+    CheckConstraint("clarification_round >= 0 and clarification_round <= 1", name="analysis_intent_round"),
+)
+
+Index("idx_analysis_intents_dataset_created", analysis_intents.c.dataset_id, analysis_intents.c.created_at)
+Index("idx_analysis_intents_parent", analysis_intents.c.parent_intent_id)
+
 field_mappings = Table(
     "field_mappings",
     metadata,
@@ -184,6 +209,19 @@ jobs = Table(
         name="job_status",
     ),
 )
+
+analysis_intent_executions = Table(
+    "analysis_intent_executions",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("intent_id", String(96), ForeignKey("analysis_intents.id"), nullable=False),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=False, unique=True),
+    Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False, unique=True),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("intent_id", "plan_id", "job_id", name="uq_intent_execution_binding"),
+)
+
+Index("idx_intent_executions_intent", analysis_intent_executions.c.intent_id)
 
 job_events = Table(
     "job_events",

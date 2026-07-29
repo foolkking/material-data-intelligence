@@ -1,5 +1,27 @@
 # 共享 Schema 规范
 
+## AnalysisIntent v1 (Phase 10L-1)
+
+`AnalysisIntent` schema version `1.0` is the inert, persisted request contract
+upstream of the existing Planner. The checked-in Python, JSON Schema, and
+TypeScript authorities are listed in
+`docs/phase10l/phase10l1_analysis_intent_contract.md`.
+
+The semantic hash is SHA-256 over canonical UTF-8 JSON with sorted keys,
+compact separators, unescaped Unicode, and without `intentId`, `intentHash`, or
+`provenance.createdAt`. The deterministic ID is derived from the first 24 hash
+hex characters. Clarification creates a new immutable intent and parent link.
+
+Exact scope requires dataset version, DataProfile 2.0 semantic hash, and
+resource ID/type/hash/kind. Target and clarification candidates must match
+Profile facts. Outcomes are only `READY`, `NEEDS_CLARIFICATION`, and
+`UNSUPPORTED`; READY cannot contain blocking ambiguity or missing/unsupported
+facts. Clarification is capped at one round and three questions.
+
+AnalysisIntent is not AnalysisPlan, does not select tools, and does not grant
+execution authority. `AnalysisPlan 0.1`, PlanValidator, Tool Registry, and
+QueueWorkerRuntime contracts remain unchanged.
+
 ## Phase 10K-3 Materials ML Evaluation artifacts
 
 Phase 10K-3 adds three inert product schemas:

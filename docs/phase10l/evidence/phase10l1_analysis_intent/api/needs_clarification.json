@@ -1,0 +1,166 @@
+{
+  "request": {
+    "baseUrl": null,
+    "constraints": {
+      "clarificationAllowed": true,
+      "costPreference": null,
+      "descriptiveOnly": false,
+      "excludeResourceIds": [],
+      "excludeScientificIntents": [],
+      "forbidDerivedInterpretation": false,
+      "groupIds": [],
+      "includeResourceIds": [],
+      "includeScientificIntents": [],
+      "maxAnalyses": null,
+      "maxToolCalls": null,
+      "modelIds": [],
+      "outputPreferences": [],
+      "targetIds": [],
+      "timePreference": null
+    },
+    "datasetId": "dataset_phase10l1",
+    "maxTokens": null,
+    "model": null,
+    "profileId": "profile_phase10l1",
+    "projectId": "project_phase10l1",
+    "provider": null,
+    "rawGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+    "secretId": null,
+    "selectedResourceIds": [],
+    "selectedTargetIds": [],
+    "temperature": null,
+    "timeoutSeconds": null
+  },
+  "response": {
+    "error_code": null,
+    "errors": [],
+    "intent": {
+      "ambiguities": [
+        {
+          "blocking": true,
+          "candidates": [
+            {
+              "label": "formation_energy (regression_0)",
+              "semanticId": "regression_0:target:formation_energy",
+              "value": "regression_0:target:formation_energy"
+            },
+            {
+              "label": "band_gap (regression_1)",
+              "semanticId": "regression_1:target:band_gap",
+              "value": "regression_1:target:band_gap"
+            }
+          ],
+          "code": "TARGET_SEMANTICS_AMBIGUOUS",
+          "field": "targetSemantics",
+          "message": "Multiple valid model targets are available.",
+          "source": "SEMANTIC_BINDING"
+        }
+      ],
+      "clarification": {
+        "answers": [],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [
+          {
+            "bindsTo": "targetSemantics",
+            "code": "SELECT_TARGET",
+            "options": [
+              {
+                "label": "formation_energy (regression_0)",
+                "semanticId": "regression_0:target:formation_energy",
+                "value": "regression_0:target:formation_energy"
+              },
+              {
+                "label": "band_gap (regression_1)",
+                "semanticId": "regression_1:target:band_gap",
+                "value": "regression_1:target:band_gap"
+              }
+            ],
+            "prompt": "Which model target should be evaluated?",
+            "questionId": "select_model_target",
+            "required": true,
+            "type": "SELECT_ONE"
+          }
+        ],
+        "round": 0
+      },
+      "constraints": {
+        "clarificationAllowed": true,
+        "costPreference": null,
+        "descriptiveOnly": false,
+        "excludeResourceIds": [],
+        "excludeScientificIntents": [],
+        "forbidDerivedInterpretation": false,
+        "groupIds": [],
+        "includeResourceIds": [],
+        "includeScientificIntents": [],
+        "maxAnalyses": null,
+        "maxToolCalls": null,
+        "modelIds": [],
+        "outputPreferences": [],
+        "targetIds": [],
+        "timePreference": null
+      },
+      "dataScope": {
+        "datasetId": "dataset_phase10l1",
+        "datasetVersion": "dataset_phase10l1_version_2",
+        "groupIds": [],
+        "modelIds": [],
+        "origin": "USER_EXPLICIT",
+        "profileContractVersion": "2.0",
+        "profileId": "profile_phase10l1",
+        "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resourceRefs": [
+          {
+            "kind": "dataframe",
+            "objectHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "objectId": "table_phase10l1",
+            "objectType": "DataFrame",
+            "origin": "USER_EXPLICIT"
+          }
+        ],
+        "sampleIds": []
+      },
+      "datasetId": "dataset_phase10l1",
+      "desiredOutputs": [
+        "summary",
+        "warnings",
+        "metrics",
+        "plot",
+        "table"
+      ],
+      "intentHash": "a4b65f832b1177d4e152bc95da0684737a80631e7c83758c2683bec1f8279ac1",
+      "intentId": "intent_a4b65f832b1177d4e152bc95",
+      "language": "en",
+      "missingFacts": [],
+      "normalizedGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "optionalCapabilityNeeds": [],
+      "outcome": "NEEDS_CLARIFICATION",
+      "profileId": "profile_phase10l1",
+      "provenance": {
+        "answerBindings": [],
+        "createdAt": "2026-07-29T00:00:00+00:00",
+        "model": "bounded-rules-v1",
+        "parentIntentId": null,
+        "promptVersion": "phase10l1.intent.v1",
+        "provider": "deterministic_mock"
+      },
+      "rawGoal": "Analyze where the regression model predictions are wrong and whether uncertainty is credible.",
+      "requiredCapabilityNeeds": [
+        "regression_semantics",
+        "uncertainty_semantics"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_uncertainty_evaluation",
+        "ml_regression_evaluation"
+      ],
+      "targetSemantics": [],
+      "unsupportedReasons": [],
+      "warnings": []
+    },
+    "intent_id": "intent_a4b65f832b1177d4e152bc95",
+    "ok": true,
+    "outcome": "NEEDS_CLARIFICATION"
+  }
+}

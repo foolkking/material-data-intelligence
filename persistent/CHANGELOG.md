@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2026-07-29 - Phase 10L-1 Analysis Intent Implementation
+
+- Added versioned, inert AnalysisIntent v1 with exact DataProfile 2.0 binding,
+  deterministic canonical identity, bounded scientific vocabulary, typed
+  outcomes, and one Profile-derived clarification round of at most three
+  questions.
+- Added independent validation, deterministic/strict-JSON provider paths,
+  immutable SQL/in-memory persistence, Alembic migration, additive typed API,
+  and an upstream Planner job Gate that prevents non-READY plan/job/enqueue.
+- Added PlannerWorkbench Intent, clarification, unsupported and inert audit
+  surfaces plus API, persistence, near-cap, Chromium/Firefox/WebKit/mobile,
+  network, and security evidence.
+- AnalysisPlan 0.1, PlanValidator, Tool Registry metadata, Planner route
+  precedence, QueueWorkerRuntime semantics, dependencies, scientific tools, and
+  workspace architecture are unchanged. Exact-SHA CI and archive closure are
+  still pending.
+
 ## 2026-07-29 - Phase 10L-0 Agent / Planner Capability Audit
 
 - Added an implementation-grounded inventory of Mock and live-provider

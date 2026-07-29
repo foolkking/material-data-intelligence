@@ -1,0 +1,17 @@
+{
+  "bounded": true,
+  "buildValidateMs": 10.539,
+  "caps": {
+    "ambiguities": 32,
+    "clarificationRounds": 1,
+    "questions": 3,
+    "rawGoal": 16384,
+    "resourceRefs": 32
+  },
+  "goalCharacters": 16384,
+  "outcome": "READY",
+  "resourceRefs": 32,
+  "serializedByteCap": 262144,
+  "serializedBytes": 23700,
+  "tracemallocPeakBytes": 180706
+}

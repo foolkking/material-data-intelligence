@@ -2,6 +2,13 @@
 
 ## Current Approved Work
 
+- [ ] Phase 10L-1 Analysis Intent Contract + Bounded Clarification is
+  `IN_PROGRESS`: implementation and local browser/API evidence exist;
+  implementation exact-SHA CI, completion record exact-SHA CI, and verified
+  queue archive remain required.
+- [ ] Phase 10L-2 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; it must not be
+  queued or executed automatically from Phase 10L-1.
+
 - [x] Phase 10J-6 implementation, completion record, exact-SHA CI, result
   retention, evidence integrity, and queue archive are closed.
 - [x] Gate J6-R replaces the superseded J-7 through J-12 plan with the canonical
@@ -36,11 +43,11 @@
   `a7f8b14`; exact-SHA CI run `30414233888` passed Unit, Frontend,
   service-backed integration, and no-skipped. Completion record `ee86745`
   passed exact-SHA CI run `30414599167`; the permanent result is retained and
-  the verified queue block is archived. Phase 10L-1 remains unstarted behind
-  its reviewer gate.
+  the verified queue block is archived. Phase 10L-1 subsequently entered its
+  reviewer-approved implementation task as recorded above.
 
-`TASKS.md` contains no executable task. Phase 10L-1 is not queued and remains
-behind a reviewer gate. Future Scope and Not Planned items are not queue work.
+`TASKS.md` contains Phase 10L-1 as its only executable task. Future Scope, Not
+Planned, and Phase 10L-2 are not queue work.
 
 The remaining sections are historical task records and do not override the
 current board above.

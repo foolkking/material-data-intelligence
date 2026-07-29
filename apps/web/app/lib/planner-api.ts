@@ -11,6 +11,126 @@ export type PlannerJobRequest = {
   temperature?: number;
   maxTokens?: number;
   timeoutSeconds?: number;
+  intentSchemaVersion?: "1.0";
+  intentId?: string;
+  selectedResourceIds?: string[];
+  selectedTargetIds?: string[];
+};
+
+export type AnalysisIntentOption = { value: string; label: string; semanticId: string };
+export type AnalysisIntentScientificIntent =
+  | "dataset_overview"
+  | "composition_analysis"
+  | "property_distribution"
+  | "dataset_comparison"
+  | "composition_space"
+  | "structure_analysis"
+  | "trajectory_analysis"
+  | "phonon_analysis"
+  | "reciprocal_space_analysis"
+  | "volumetric_analysis"
+  | "ml_regression_evaluation"
+  | "ml_uncertainty_evaluation"
+  | "ml_classification_evaluation"
+  | "sample_inspection"
+  | "comparison"
+  | "anomaly_candidate_review"
+  | "visualization"
+  | "report_or_export";
+export type AnalysisIntentDesiredOutput =
+  | "summary"
+  | "metrics"
+  | "plot"
+  | "table"
+  | "linked_samples"
+  | "three_dimensional_view"
+  | "comparison"
+  | "warnings"
+  | "recipe"
+  | "report"
+  | "downloadable_artifact";
+export type AnalysisIntentCapabilityNeed =
+  | "tabular_data"
+  | "composition_data"
+  | "material_property_data"
+  | "comparison_groups"
+  | "structure_resource"
+  | "trajectory_resource"
+  | "phonon_resource"
+  | "reciprocal_space_resource"
+  | "volumetric_resource"
+  | "regression_semantics"
+  | "uncertainty_semantics"
+  | "classification_semantics"
+  | "sample_identity";
+export type AnalysisIntentQuestion = {
+  questionId: string;
+  code: string;
+  prompt: string;
+  type: "SELECT_ONE" | "SELECT_MANY" | "CONFIRM";
+  options: AnalysisIntentOption[];
+  required: boolean;
+  bindsTo: string;
+};
+export type AnalysisIntent = {
+  schemaVersion: "1.0";
+  intentId: string;
+  intentHash: string;
+  datasetId: string;
+  profileId: string;
+  rawGoal: string;
+  normalizedGoal: string;
+  language: "zh" | "en" | "mixed" | "und";
+  dataScope: {
+    datasetId: string;
+    datasetVersion: string;
+    profileId: string;
+    profileContractVersion: string;
+    profileSemanticHash: string;
+    resourceRefs: Array<{ objectId: string; objectType: string; objectHash: string; kind: string; origin: string }>;
+    sampleIds: string[];
+    modelIds: string[];
+    groupIds: string[];
+    origin: "USER_EXPLICIT" | "PROFILE_EXACT" | "CLARIFICATION_ANSWER";
+  };
+  scientificIntents: AnalysisIntentScientificIntent[];
+  targetSemantics: Array<{ semanticId: string; role: string; objectId: string; column?: string | null; unit?: string | null; groupId?: string | null; seriesId?: string | null; origin: string }>;
+  desiredOutputs: AnalysisIntentDesiredOutput[];
+  constraints: {
+    includeResourceIds: string[];
+    excludeResourceIds: string[];
+    includeScientificIntents: AnalysisIntentScientificIntent[];
+    excludeScientificIntents: AnalysisIntentScientificIntent[];
+    targetIds: string[];
+    modelIds: string[];
+    groupIds: string[];
+    outputPreferences: AnalysisIntentDesiredOutput[];
+    maxAnalyses?: number | null;
+    maxToolCalls?: number | null;
+    timePreference?: "FAST" | "BALANCED" | "THOROUGH" | null;
+    costPreference?: "LOW" | "BALANCED" | null;
+    clarificationAllowed: boolean;
+    descriptiveOnly: boolean;
+    forbidDerivedInterpretation: boolean;
+  };
+  requiredCapabilityNeeds: AnalysisIntentCapabilityNeed[];
+  optionalCapabilityNeeds: AnalysisIntentCapabilityNeed[];
+  ambiguities: Array<{ code: string; field: string; message: string; candidates: AnalysisIntentOption[]; blocking: boolean; source: string }>;
+  missingFacts: Array<{ code: string; field: string; message: string; source: string; boundary: string }>;
+  unsupportedReasons: Array<{ code: string; field: string; message: string; source: string; boundary: string }>;
+  outcome: "READY" | "NEEDS_CLARIFICATION" | "UNSUPPORTED";
+  clarification: { round: 0 | 1; maxRounds: 1; maxQuestionsPerRound: 3; questions: AnalysisIntentQuestion[]; answers: Array<{ questionId: string; selectedValues: string[] }> };
+  provenance: { provider: "deterministic_mock" | "openai_compatible"; model: string; promptVersion: string; createdAt: string; parentIntentId?: string | null; answerBindings: Array<{ questionId: string; selectedValues: string[] }> };
+  warnings: Array<{ code: string; field: string; message: string; source: string; boundary: string }>;
+};
+
+export type PlannerIntentResult = {
+  ok: boolean;
+  intent_id?: string | null;
+  outcome?: AnalysisIntent["outcome"] | null;
+  intent?: AnalysisIntent | null;
+  error_code?: string | null;
+  errors?: ValidationError[];
 };
 
 export type ValidationError = {
@@ -57,6 +177,10 @@ export type PlannerJobCreateResult = {
   planner_provider?: string | null;
   enqueued?: boolean;
   executed?: boolean;
+  intent_id?: string | null;
+  intent_outcome?: AnalysisIntent["outcome"] | null;
+  intent?: AnalysisIntent | null;
+  error_code?: string | null;
 };
 
 export type PlannerJobDetail = {
@@ -74,6 +198,9 @@ export type PlannerJobDetail = {
   artifactCount?: number;
   eventCount?: number;
   provenance?: PlanProvenance;
+  intentId?: string | null;
+  intentOutcome?: AnalysisIntent["outcome"] | null;
+  analysisIntent?: AnalysisIntent | null;
 };
 
 export type AnalysisPlanRecord = {
@@ -375,6 +502,17 @@ export async function createPlannerJob(payload: PlannerJobRequest): Promise<Plan
   return apiFetch<PlannerJobCreateResult>("/planner/jobs", {
     method: "POST",
     body: JSON.stringify(payload)
+  });
+}
+
+export async function clarifyAnalysisIntent(
+  intentId: string,
+  expectedProfileSemanticHash: string,
+  answers: Array<{ questionId: string; selectedValues: string[] }>,
+): Promise<PlannerIntentResult> {
+  return apiFetch<PlannerIntentResult>(`/planner/intents/${encodeURIComponent(intentId)}/clarification`, {
+    method: "POST",
+    body: JSON.stringify({ expectedProfileSemanticHash, answers }),
   });
 }
 

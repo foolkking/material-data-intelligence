@@ -1,0 +1,983 @@
+{
+  "$defs": {
+    "AmbiguitySource": {
+      "enum": [
+        "USER_GOAL",
+        "DATA_PROFILE",
+        "RESOURCE_SELECTION",
+        "SEMANTIC_BINDING"
+      ],
+      "title": "AmbiguitySource",
+      "type": "string"
+    },
+    "AnalysisIntentClarification": {
+      "additionalProperties": false,
+      "properties": {
+        "round": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Round",
+          "type": "integer"
+        },
+        "maxRounds": {
+          "const": 1,
+          "default": 1,
+          "title": "Maxrounds",
+          "type": "integer"
+        },
+        "maxQuestionsPerRound": {
+          "const": 3,
+          "default": 3,
+          "title": "Maxquestionsperround",
+          "type": "integer"
+        },
+        "questions": {
+          "items": {
+            "$ref": "#/$defs/ClarificationQuestion"
+          },
+          "maxItems": 3,
+          "title": "Questions",
+          "type": "array"
+        },
+        "answers": {
+          "items": {
+            "$ref": "#/$defs/ClarificationAnswer"
+          },
+          "maxItems": 3,
+          "title": "Answers",
+          "type": "array"
+        }
+      },
+      "title": "AnalysisIntentClarification",
+      "type": "object"
+    },
+    "AnalysisIntentConstraints": {
+      "additionalProperties": false,
+      "properties": {
+        "includeResourceIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Includeresourceids",
+          "type": "array"
+        },
+        "excludeResourceIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Excluderesourceids",
+          "type": "array"
+        },
+        "includeScientificIntents": {
+          "items": {
+            "$ref": "#/$defs/ScientificIntent"
+          },
+          "maxItems": 16,
+          "title": "Includescientificintents",
+          "type": "array"
+        },
+        "excludeScientificIntents": {
+          "items": {
+            "$ref": "#/$defs/ScientificIntent"
+          },
+          "maxItems": 16,
+          "title": "Excludescientificintents",
+          "type": "array"
+        },
+        "targetIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Targetids",
+          "type": "array"
+        },
+        "modelIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Modelids",
+          "type": "array"
+        },
+        "groupIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Groupids",
+          "type": "array"
+        },
+        "outputPreferences": {
+          "items": {
+            "$ref": "#/$defs/DesiredOutput"
+          },
+          "maxItems": 32,
+          "title": "Outputpreferences",
+          "type": "array"
+        },
+        "maxAnalyses": {
+          "anyOf": [
+            {
+              "maximum": 16,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maxanalyses"
+        },
+        "maxToolCalls": {
+          "anyOf": [
+            {
+              "maximum": 16,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maxtoolcalls"
+        },
+        "timePreference": {
+          "anyOf": [
+            {
+              "enum": [
+                "FAST",
+                "BALANCED",
+                "THOROUGH"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timepreference"
+        },
+        "costPreference": {
+          "anyOf": [
+            {
+              "enum": [
+                "LOW",
+                "BALANCED"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Costpreference"
+        },
+        "clarificationAllowed": {
+          "default": true,
+          "title": "Clarificationallowed",
+          "type": "boolean"
+        },
+        "descriptiveOnly": {
+          "default": false,
+          "title": "Descriptiveonly",
+          "type": "boolean"
+        },
+        "forbidDerivedInterpretation": {
+          "default": false,
+          "title": "Forbidderivedinterpretation",
+          "type": "boolean"
+        }
+      },
+      "title": "AnalysisIntentConstraints",
+      "type": "object"
+    },
+    "AnalysisIntentOutcome": {
+      "enum": [
+        "READY",
+        "NEEDS_CLARIFICATION",
+        "UNSUPPORTED"
+      ],
+      "title": "AnalysisIntentOutcome",
+      "type": "string"
+    },
+    "AnalysisIntentProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "enum": [
+            "deterministic_mock",
+            "openai_compatible"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "model": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "promptVersion": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Promptversion",
+          "type": "string"
+        },
+        "createdAt": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Createdat",
+          "type": "string"
+        },
+        "parentIntentId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parentintentid"
+        },
+        "answerBindings": {
+          "items": {
+            "$ref": "#/$defs/IntentAnswerProvenance"
+          },
+          "maxItems": 3,
+          "title": "Answerbindings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "provider",
+        "model",
+        "promptVersion",
+        "createdAt"
+      ],
+      "title": "AnalysisIntentProvenance",
+      "type": "object"
+    },
+    "CapabilityNeed": {
+      "enum": [
+        "tabular_data",
+        "composition_data",
+        "material_property_data",
+        "comparison_groups",
+        "structure_resource",
+        "trajectory_resource",
+        "phonon_resource",
+        "reciprocal_space_resource",
+        "volumetric_resource",
+        "regression_semantics",
+        "uncertainty_semantics",
+        "classification_semantics",
+        "sample_identity"
+      ],
+      "title": "CapabilityNeed",
+      "type": "string"
+    },
+    "ClarificationAnswer": {
+      "additionalProperties": false,
+      "properties": {
+        "questionId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Questionid",
+          "type": "string"
+        },
+        "selectedValues": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Selectedvalues",
+          "type": "array"
+        }
+      },
+      "required": [
+        "questionId",
+        "selectedValues"
+      ],
+      "title": "ClarificationAnswer",
+      "type": "object"
+    },
+    "ClarificationOption": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "semanticId": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Semanticid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "label",
+        "semanticId"
+      ],
+      "title": "ClarificationOption",
+      "type": "object"
+    },
+    "ClarificationQuestion": {
+      "additionalProperties": false,
+      "properties": {
+        "questionId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Questionid",
+          "type": "string"
+        },
+        "code": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "prompt": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/ClarificationQuestionType"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/ClarificationOption"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Options",
+          "type": "array"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "bindsTo": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Bindsto",
+          "type": "string"
+        }
+      },
+      "required": [
+        "questionId",
+        "code",
+        "prompt",
+        "type",
+        "options",
+        "bindsTo"
+      ],
+      "title": "ClarificationQuestion",
+      "type": "object"
+    },
+    "ClarificationQuestionType": {
+      "enum": [
+        "SELECT_ONE",
+        "SELECT_MANY",
+        "CONFIRM"
+      ],
+      "title": "ClarificationQuestionType",
+      "type": "string"
+    },
+    "DesiredOutput": {
+      "enum": [
+        "summary",
+        "metrics",
+        "plot",
+        "table",
+        "linked_samples",
+        "three_dimensional_view",
+        "comparison",
+        "warnings",
+        "recipe",
+        "report",
+        "downloadable_artifact"
+      ],
+      "title": "DesiredOutput",
+      "type": "string"
+    },
+    "IntentAmbiguity": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "field": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Field",
+          "type": "string"
+        },
+        "message": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/IntentCandidate"
+          },
+          "maxItems": 32,
+          "title": "Candidates",
+          "type": "array"
+        },
+        "blocking": {
+          "title": "Blocking",
+          "type": "boolean"
+        },
+        "source": {
+          "$ref": "#/$defs/AmbiguitySource"
+        }
+      },
+      "required": [
+        "code",
+        "field",
+        "message",
+        "blocking",
+        "source"
+      ],
+      "title": "IntentAmbiguity",
+      "type": "object"
+    },
+    "IntentAnswerProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "questionId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Questionid",
+          "type": "string"
+        },
+        "selectedValues": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Selectedvalues",
+          "type": "array"
+        }
+      },
+      "required": [
+        "questionId",
+        "selectedValues"
+      ],
+      "title": "IntentAnswerProvenance",
+      "type": "object"
+    },
+    "IntentBindingOrigin": {
+      "enum": [
+        "USER_EXPLICIT",
+        "PROFILE_EXACT",
+        "CLARIFICATION_ANSWER"
+      ],
+      "title": "IntentBindingOrigin",
+      "type": "string"
+    },
+    "IntentCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "semanticId": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Semanticid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "label",
+        "semanticId"
+      ],
+      "title": "IntentCandidate",
+      "type": "object"
+    },
+    "IntentDataScope": {
+      "additionalProperties": false,
+      "properties": {
+        "datasetId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Datasetid",
+          "type": "string"
+        },
+        "datasetVersion": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Datasetversion",
+          "type": "string"
+        },
+        "profileId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Profileid",
+          "type": "string"
+        },
+        "profileContractVersion": {
+          "maxLength": 32,
+          "minLength": 1,
+          "title": "Profilecontractversion",
+          "type": "string"
+        },
+        "profileSemanticHash": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Profilesemantichash",
+          "type": "string"
+        },
+        "resourceRefs": {
+          "items": {
+            "$ref": "#/$defs/IntentResourceRef"
+          },
+          "maxItems": 32,
+          "title": "Resourcerefs",
+          "type": "array"
+        },
+        "sampleIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Sampleids",
+          "type": "array"
+        },
+        "groupIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Groupids",
+          "type": "array"
+        },
+        "modelIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Modelids",
+          "type": "array"
+        },
+        "origin": {
+          "$ref": "#/$defs/IntentBindingOrigin"
+        }
+      },
+      "required": [
+        "datasetId",
+        "datasetVersion",
+        "profileId",
+        "profileContractVersion",
+        "profileSemanticHash",
+        "origin"
+      ],
+      "title": "IntentDataScope",
+      "type": "object"
+    },
+    "IntentDiagnostic": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "field": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Field",
+          "type": "string"
+        },
+        "message": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/AmbiguitySource"
+        },
+        "boundary": {
+          "default": "CURRENT",
+          "enum": [
+            "CURRENT",
+            "FUTURE_SCOPE",
+            "NOT_PLANNED",
+            "EXECUTION_BOUNDARY",
+            "MISSING_DATA"
+          ],
+          "title": "Boundary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "field",
+        "message",
+        "source"
+      ],
+      "title": "IntentDiagnostic",
+      "type": "object"
+    },
+    "IntentResourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "objectId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Objectid",
+          "type": "string"
+        },
+        "objectType": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Objecttype",
+          "type": "string"
+        },
+        "objectHash": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Objecthash",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/IntentBindingOrigin"
+        }
+      },
+      "required": [
+        "objectId",
+        "objectType",
+        "objectHash",
+        "kind",
+        "origin"
+      ],
+      "title": "IntentResourceRef",
+      "type": "object"
+    },
+    "IntentTargetSemantic": {
+      "additionalProperties": false,
+      "properties": {
+        "semanticId": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Semanticid",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "material_property",
+            "regression_target",
+            "regression_prediction",
+            "regression_uncertainty",
+            "classification_target",
+            "classification_prediction",
+            "class_probability",
+            "model_identity",
+            "resource_identity",
+            "comparison_group"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "objectId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Objectid",
+          "type": "string"
+        },
+        "column": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Column"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "groupId": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Groupid"
+        },
+        "seriesId": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seriesid"
+        },
+        "origin": {
+          "$ref": "#/$defs/IntentBindingOrigin"
+        }
+      },
+      "required": [
+        "semanticId",
+        "role",
+        "objectId",
+        "origin"
+      ],
+      "title": "IntentTargetSemantic",
+      "type": "object"
+    },
+    "ScientificIntent": {
+      "enum": [
+        "dataset_overview",
+        "composition_analysis",
+        "property_distribution",
+        "dataset_comparison",
+        "composition_space",
+        "structure_analysis",
+        "trajectory_analysis",
+        "phonon_analysis",
+        "reciprocal_space_analysis",
+        "volumetric_analysis",
+        "ml_regression_evaluation",
+        "ml_uncertainty_evaluation",
+        "ml_classification_evaluation",
+        "sample_inspection",
+        "comparison",
+        "anomaly_candidate_review",
+        "visualization",
+        "report_or_export"
+      ],
+      "title": "ScientificIntent",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "intentId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Intentid",
+      "type": "string"
+    },
+    "intentHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Intenthash",
+      "type": "string"
+    },
+    "datasetId": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Datasetid",
+      "type": "string"
+    },
+    "profileId": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Profileid",
+      "type": "string"
+    },
+    "rawGoal": {
+      "maxLength": 16384,
+      "minLength": 1,
+      "title": "Rawgoal",
+      "type": "string"
+    },
+    "normalizedGoal": {
+      "maxLength": 16384,
+      "minLength": 1,
+      "title": "Normalizedgoal",
+      "type": "string"
+    },
+    "language": {
+      "enum": [
+        "zh",
+        "en",
+        "mixed",
+        "und"
+      ],
+      "title": "Language",
+      "type": "string"
+    },
+    "dataScope": {
+      "$ref": "#/$defs/IntentDataScope"
+    },
+    "scientificIntents": {
+      "items": {
+        "$ref": "#/$defs/ScientificIntent"
+      },
+      "maxItems": 16,
+      "title": "Scientificintents",
+      "type": "array"
+    },
+    "targetSemantics": {
+      "items": {
+        "$ref": "#/$defs/IntentTargetSemantic"
+      },
+      "maxItems": 32,
+      "title": "Targetsemantics",
+      "type": "array"
+    },
+    "desiredOutputs": {
+      "items": {
+        "$ref": "#/$defs/DesiredOutput"
+      },
+      "maxItems": 32,
+      "title": "Desiredoutputs",
+      "type": "array"
+    },
+    "constraints": {
+      "$ref": "#/$defs/AnalysisIntentConstraints"
+    },
+    "requiredCapabilityNeeds": {
+      "items": {
+        "$ref": "#/$defs/CapabilityNeed"
+      },
+      "maxItems": 16,
+      "title": "Requiredcapabilityneeds",
+      "type": "array"
+    },
+    "optionalCapabilityNeeds": {
+      "items": {
+        "$ref": "#/$defs/CapabilityNeed"
+      },
+      "maxItems": 16,
+      "title": "Optionalcapabilityneeds",
+      "type": "array"
+    },
+    "ambiguities": {
+      "items": {
+        "$ref": "#/$defs/IntentAmbiguity"
+      },
+      "maxItems": 32,
+      "title": "Ambiguities",
+      "type": "array"
+    },
+    "missingFacts": {
+      "items": {
+        "$ref": "#/$defs/IntentDiagnostic"
+      },
+      "maxItems": 32,
+      "title": "Missingfacts",
+      "type": "array"
+    },
+    "unsupportedReasons": {
+      "items": {
+        "$ref": "#/$defs/IntentDiagnostic"
+      },
+      "maxItems": 32,
+      "title": "Unsupportedreasons",
+      "type": "array"
+    },
+    "outcome": {
+      "$ref": "#/$defs/AnalysisIntentOutcome"
+    },
+    "clarification": {
+      "$ref": "#/$defs/AnalysisIntentClarification"
+    },
+    "provenance": {
+      "$ref": "#/$defs/AnalysisIntentProvenance"
+    },
+    "warnings": {
+      "items": {
+        "$ref": "#/$defs/IntentDiagnostic"
+      },
+      "maxItems": 32,
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "intentId",
+    "intentHash",
+    "datasetId",
+    "profileId",
+    "rawGoal",
+    "normalizedGoal",
+    "language",
+    "dataScope",
+    "outcome",
+    "provenance"
+  ],
+  "title": "AnalysisIntent",
+  "type": "object"
+}

@@ -19,6 +19,7 @@ import { assessMaterialIntelligenceProducts, MaterialIntelligenceIntegrationPane
 import { viewerManifestCompatibility, viewerSceneCompatibility } from "./viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
+  type AnalysisIntent,
   type Artifact,
   type DataProfileSummary,
   type DatasetOption,
@@ -36,6 +37,7 @@ import {
   type ToolCall,
   type ValidationError,
   createDatasetProfile,
+  clarifyAnalysisIntent,
   createPlannerJob,
   createSecret,
   deleteSecret,
@@ -131,6 +133,7 @@ export function PlannerWorkbench() {
 
   const [prompt, setPrompt] = useState(() => createTranslator("zh-CN")("examplePromptMetrics"));
   const [createdResult, setCreatedResult] = useState<PlannerJobCreateResult | null>(null);
+  const [analysisIntent, setAnalysisIntent] = useState<AnalysisIntent | null>(null);
   const [snapshot, setSnapshot] = useState<WorkspaceSnapshot>({ events: [], toolCalls: [], artifacts: [] });
   const [snapshotErrors, setSnapshotErrors] = useState<SnapshotSlice[]>([]);
   const [validationFailure, setValidationFailure] = useState<ValidationError[] | null>(null);
@@ -145,6 +148,7 @@ export function PlannerWorkbench() {
   const planId = createdResult?.plan_id || snapshot.job?.planId || snapshot.result?.planId || "";
   const planHash = createdResult?.plan_hash || snapshot.job?.planHash || snapshot.result?.planHash || "";
   const jobStatus = snapshot.job?.status || (jobId ? "queued" : "");
+  const displayedIntent = analysisIntent || snapshot.job?.analysisIntent || null;
   const isTerminal = ["completed", "failed", "cancelled"].includes(String(jobStatus));
   const selectedDataset = datasets.find((dataset) => (dataset.datasetId || dataset.id) === datasetId);
   const providerLabel =
@@ -359,11 +363,16 @@ export function PlannerWorkbench() {
   }
 
   async function handleSubmit() {
+    await submitPlannerRequest();
+  }
+
+  async function submitPlannerRequest(intentId?: string, revisedIntent?: AnalysisIntent) {
     setSubmitting(true);
     setSubmitError(null);
     setSnapshotErrors([]);
     setValidationFailure(null);
     setCreatedResult(null);
+    if (!intentId) setAnalysisIntent(null);
     setActiveMainTab("conversation_plan");
     if (!datasetId) {
       setSubmitting(false);
@@ -383,9 +392,12 @@ export function PlannerWorkbench() {
         secretId: providerMode === "openai_compatible" ? selectedSecretId : undefined,
         temperature,
         maxTokens,
-        timeoutSeconds
+        timeoutSeconds,
+        intentSchemaVersion: "1.0",
+        intentId
       });
       setCreatedResult(result);
+      setAnalysisIntent(result.intent || revisedIntent || null);
       setSelectedChunkId(result.ok ? "plan_preview" : "validation_result");
       if (!result.ok) {
         setValidationFailure(result.validation_errors || []);
@@ -396,6 +408,31 @@ export function PlannerWorkbench() {
       if (nextJobId) {
         const nextSnapshot = await refreshSnapshot(nextJobId);
         startEventSource(nextJobId, maxSeq(nextSnapshot.events));
+      }
+    } catch (error) {
+      setSubmitError(error as Error);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleClarification(answers: Array<{ questionId: string; selectedValues: string[] }>) {
+    if (!analysisIntent) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const revised = await clarifyAnalysisIntent(
+        analysisIntent.intentId,
+        analysisIntent.dataScope.profileSemanticHash,
+        answers,
+      );
+      if (!revised.ok || !revised.intent) {
+        setValidationFailure(revised.errors || [{ code: revised.error_code || "CLARIFICATION_FAILED", message: "Clarification could not be applied." }]);
+        return;
+      }
+      setAnalysisIntent(revised.intent);
+      if (revised.intent.outcome === "READY") {
+        await submitPlannerRequest(revised.intent.intentId, revised.intent);
       }
     } catch (error) {
       setSubmitError(error as Error);
@@ -559,6 +596,8 @@ export function PlannerWorkbench() {
               onSubmit={handleSubmit}
               submitError={submitError}
               validationFailure={validationFailure}
+              intent={displayedIntent}
+              onClarify={handleClarification}
               plan={plan}
               planId={planId}
               planHash={planHash}
@@ -1167,6 +1206,8 @@ function ConversationPlanTab(props: {
   onSubmit: () => Promise<void>;
   submitError: PlannerApiError | Error | null;
   validationFailure: ValidationError[] | null;
+  intent: AnalysisIntent | null;
+  onClarify: (answers: Array<{ questionId: string; selectedValues: string[] }>) => Promise<void>;
   plan: AnalysisPlan | null;
   planId: string;
   planHash: string;
@@ -1200,6 +1241,12 @@ function ConversationPlanTab(props: {
       </section>
       {props.submitError ? <ErrorExplainer t={t} error={props.submitError} /> : null}
       {props.validationFailure ? <ValidationResultPanel t={t} errors={props.validationFailure} /> : null}
+      <AnalysisIntentPanel
+        intent={props.intent}
+        developerMode={props.developerMode}
+        submitting={props.submitting}
+        onClarify={props.onClarify}
+      />
       <section className="chunk-list-panel" data-testid="conversation-chunks">
         <PanelHeading title={t("conversationChunks")} badge={String(props.chunks.length)} />
         <div className="chunk-list">
@@ -1218,8 +1265,90 @@ function ConversationPlanTab(props: {
         </div>
       </section>
       <PlanPreviewPanel t={t} plan={props.plan} planId={props.planId} planHash={props.planHash} developerMode={props.developerMode} />
-      <RunControls t={t} jobId={props.jobId} planId={props.planId} planHash={props.planHash} enqueued={props.enqueued} status={props.jobStatus} onRun={props.onSubmit} submitting={props.submitting} />
+      <RunControls
+        t={t}
+        jobId={props.jobId}
+        planId={props.planId}
+        planHash={props.planHash}
+        enqueued={props.enqueued}
+        status={props.jobStatus}
+        onRun={props.onSubmit}
+        submitting={props.submitting}
+        blocked={Boolean(props.intent && props.intent.outcome !== "READY")}
+      />
     </div>
+  );
+}
+
+function AnalysisIntentPanel(props: {
+  intent: AnalysisIntent | null;
+  developerMode: boolean;
+  submitting: boolean;
+  onClarify: (answers: Array<{ questionId: string; selectedValues: string[] }>) => Promise<void>;
+}) {
+  const [answers, setAnswers] = useState<Record<string, string[]>>({});
+  useEffect(() => setAnswers({}), [props.intent?.intentId]);
+  const intent = props.intent;
+  if (!intent) return null;
+  const questions = intent.clarification.questions || [];
+  const readyToSubmit = questions.length > 0 && questions.every((question) => (answers[question.questionId] || []).length > 0);
+  return (
+    <section className="panel" data-testid="analysis-intent-panel" aria-live="polite">
+      <PanelHeading title="Analysis intent" badge={intent.outcome} />
+      <dl className="mini-grid">
+        <Field label="Original goal" value={intent.rawGoal} />
+        <Field label="Scientific intent" value={intent.scientificIntents.join(", ") || "Unsupported request"} />
+        <Field label="Dataset / profile" value={`${intent.dataScope.datasetId} / ${intent.dataScope.profileId}`} />
+        <Field label="Dataset version" value={intent.dataScope.datasetVersion} />
+        <Field label="Resources" value={intent.dataScope.resourceRefs.map((item) => `${item.kind}:${item.objectId}`).join(", ") || "None selected"} />
+        <Field label="Targets" value={intent.targetSemantics.map((item) => item.semanticId).join(", ") || "Not required"} />
+        <Field label="Desired outputs" value={intent.desiredOutputs.join(", ") || "None"} />
+        <Field label="Provider" value={`${intent.provenance.provider} / ${intent.provenance.model}`} />
+      </dl>
+      {intent.outcome === "READY" ? <p role="status">Intent confirmed. The existing planner can generate a plan.</p> : null}
+      {intent.warnings.length ? <ul data-testid="analysis-intent-warnings">{intent.warnings.map((item) => <li key={item.code}><strong>{item.code}</strong>: {item.message}</li>)}</ul> : null}
+      {intent.outcome === "UNSUPPORTED" ? (
+        <div className="validation-failure" data-testid="analysis-intent-unsupported" role="alert">
+          <strong>Request is outside the current safe capability boundary.</strong>
+          <ul>{intent.unsupportedReasons.map((item) => <li key={item.code}>{item.code} / {item.boundary}: {item.message}</li>)}</ul>
+        </div>
+      ) : null}
+      {intent.outcome === "NEEDS_CLARIFICATION" ? (
+        <form
+          data-testid="analysis-intent-clarification"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void props.onClarify(questions.map((question) => ({ questionId: question.questionId, selectedValues: answers[question.questionId] || [] })));
+          }}
+        >
+          {questions.map((question) => (
+            <label key={question.questionId}>
+              <span>{question.prompt}</span>
+              <select
+                aria-label={question.prompt}
+                multiple={question.type === "SELECT_MANY"}
+                required={question.required}
+                value={question.type === "SELECT_MANY" ? (answers[question.questionId] || []) : (answers[question.questionId]?.[0] || "")}
+                onChange={(event) => {
+                  const selected = Array.from(event.currentTarget.selectedOptions, (option) => option.value);
+                  setAnswers((current) => ({ ...current, [question.questionId]: selected }));
+                }}
+              >
+                {question.type !== "SELECT_MANY" ? <option value="">Select one</option> : null}
+                {question.options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
+            </label>
+          ))}
+          <button type="submit" disabled={!readyToSubmit || props.submitting}>Confirm intent</button>
+        </form>
+      ) : null}
+      {props.developerMode ? (
+        <details className="raw-json" data-testid="analysis-intent-audit-json">
+          <summary>AnalysisIntent v1 audit JSON</summary>
+          <pre>{JSON.stringify(intent, null, 2)}</pre>
+        </details>
+      ) : null}
+    </section>
   );
 }
 
@@ -1363,7 +1492,7 @@ function ValidationResultPanel({ t, errors }: { t: ReturnType<typeof createTrans
   );
 }
 
-function RunControls(props: { t: ReturnType<typeof createTranslator>; jobId: string; planId: string; planHash: string; enqueued?: boolean; status: string; submitting: boolean; onRun: () => Promise<void> }) {
+function RunControls(props: { t: ReturnType<typeof createTranslator>; jobId: string; planId: string; planHash: string; enqueued?: boolean; status: string; submitting: boolean; blocked: boolean; onRun: () => Promise<void> }) {
   const { t } = props;
   return (
     <section className="panel" data-testid="run-controls">
@@ -1374,7 +1503,7 @@ function RunControls(props: { t: ReturnType<typeof createTranslator>; jobId: str
         <Field label="planHash" value={props.planHash || t("emptyProvenance")} />
         <Field label="enqueued" value={String(Boolean(props.enqueued))} />
       </dl>
-      <button type="button" onClick={props.onRun} disabled={props.submitting}>
+      <button type="button" onClick={props.onRun} disabled={props.submitting || props.blocked}>
         {props.submitting ? t("submitting") : t("createAndRun")}
       </button>
     </section>

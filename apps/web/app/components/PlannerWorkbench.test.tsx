@@ -88,6 +88,71 @@ const createdJob = {
   executed: false
 };
 
+const baseIntent = {
+  schemaVersion: "1.0" as const,
+  intentId: "intent_ready",
+  intentHash: "a".repeat(64),
+  datasetId: "dataset_demo",
+  profileId: "profile_demo",
+  rawGoal: "Analyze this dataset.",
+  normalizedGoal: "Analyze this dataset.",
+  language: "en" as const,
+  dataScope: {
+    datasetId: "dataset_demo",
+    datasetVersion: "2",
+    profileId: "profile_demo",
+    profileContractVersion: "2.0",
+    profileSemanticHash: "b".repeat(64),
+    resourceRefs: [{ objectId: "table_1", objectType: "DataFrame", objectHash: "c".repeat(64), kind: "dataframe", origin: "PROFILE_EXACT" }],
+    modelIds: [],
+    groupIds: []
+  },
+  scientificIntents: ["dataset_overview"],
+  targetSemantics: [],
+  desiredOutputs: ["summary", "plot"],
+  requiredCapabilityNeeds: ["tabular_data"],
+  optionalCapabilityNeeds: [],
+  ambiguities: [],
+  missingFacts: [],
+  unsupportedReasons: [],
+  outcome: "READY" as const,
+  clarification: { round: 0, maxRounds: 1 as const, maxQuestionsPerRound: 3 as const, questions: [] },
+  provenance: { provider: "deterministic_mock", model: "bounded-rules-v1", promptVersion: "phase10l1.intent.v1", parentIntentId: null },
+  warnings: []
+};
+
+const clarificationIntent = {
+  ...baseIntent,
+  intentId: "intent_needs_clarification",
+  outcome: "NEEDS_CLARIFICATION" as const,
+  ambiguities: [{ code: "TARGET_SEMANTICS_AMBIGUOUS", field: "targetSemantics", message: "Multiple targets are available.", blocking: true }],
+  clarification: {
+    round: 0,
+    maxRounds: 1 as const,
+    maxQuestionsPerRound: 3 as const,
+    questions: [{
+      questionId: "select_model_target",
+      code: "SELECT_TARGET",
+      prompt: "Which model target should be evaluated?",
+      type: "SELECT_ONE" as const,
+      options: [
+        { value: "target_a", label: "Formation energy", semanticId: "target_a" },
+        { value: "target_b", label: "Band gap", semanticId: "target_b" }
+      ],
+      required: true,
+      bindsTo: "targetSemantics"
+    }]
+  }
+};
+
+const unsupportedIntent = {
+  ...baseIntent,
+  intentId: "intent_unsupported",
+  scientificIntents: [],
+  outcome: "UNSUPPORTED" as const,
+  unsupportedReasons: [{ code: "INTENT_FUTURE_FERMI_SURFACE", message: "Fermi Surface is Future Scope.", boundary: "FUTURE_SCOPE" }]
+};
+
 const jobDetail = {
   jobId: "job_1",
   projectId: "project_local",
@@ -978,6 +1043,91 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(fetchMock).not.toHaveBeenCalledWith(expect.stringContaining("/planner/jobs/job_1"), expect.anything());
     expect(eventSources).toHaveLength(0);
   });
+
+  it("uses the v1 intent gate and completes one bounded clarification before planning", async () => {
+    const jobBodies: Array<Record<string, unknown>> = [];
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
+        const body = JSON.parse(String(init.body || "{}")) as Record<string, unknown>;
+        jobBodies.push(body);
+        if (!body.intentId) {
+          return jsonResponse({
+            ok: false,
+            job_id: null,
+            plan_id: null,
+            plan_hash: null,
+            validation_errors: [],
+            intent_id: clarificationIntent.intentId,
+            intent_outcome: clarificationIntent.outcome,
+            intent: clarificationIntent,
+            error_code: "INTENT_CLARIFICATION_REQUIRED",
+            enqueued: false,
+            executed: false
+          });
+        }
+        return jsonResponse({ ...createdJob, intent_id: baseIntent.intentId, intent_outcome: "READY", intent: baseIntent });
+      }
+      if (init?.method === "POST" && url.endsWith(`/planner/intents/${clarificationIntent.intentId}/clarification`)) {
+        const body = JSON.parse(String(init.body || "{}"));
+        expect(body.answers).toEqual([{ questionId: "select_model_target", selectedValues: ["target_b"] }]);
+        return jsonResponse({ ok: true, intent_id: baseIntent.intentId, outcome: "READY", intent: { ...baseIntent, provenance: { ...baseIntent.provenance, parentIntentId: clarificationIntent.intentId } } });
+      }
+      return mockPlannerFetch(input, init);
+    });
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+
+    const panel = await screen.findByTestId("analysis-intent-panel");
+    expect(within(panel).getByText("NEEDS_CLARIFICATION")).not.toBeNull();
+    expect(jobBodies[0]?.intentSchemaVersion).toBe("1.0");
+    const runControlButton = within(screen.getByTestId("run-controls")).getByRole("button");
+    expect(runControlButton).toBeDisabled();
+
+    await user.selectOptions(within(panel).getByLabelText("Which model target should be evaluated?"), "target_b");
+    await user.click(within(panel).getByRole("button", { name: "Confirm intent" }));
+    await waitFor(() => expect(jobBodies).toHaveLength(2));
+    expect(jobBodies[1]?.intentId).toBe(baseIntent.intentId);
+    expect(await screen.findByTestId("plan-preview-panel")).not.toBeNull();
+  });
+
+  it("shows unsupported boundary, disables Run, and renders audit JSON as inert text", async () => {
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
+        return jsonResponse({
+          ok: false,
+          job_id: null,
+          plan_id: null,
+          plan_hash: null,
+          validation_errors: [],
+          intent_id: unsupportedIntent.intentId,
+          intent_outcome: unsupportedIntent.outcome,
+          intent: unsupportedIntent,
+          error_code: "INTENT_UNSUPPORTED",
+          enqueued: false,
+          executed: false
+        });
+      }
+      return mockPlannerFetch(input, init);
+    });
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+
+    const panel = await screen.findByTestId("analysis-intent-panel");
+    expect(within(panel).getByTestId("analysis-intent-unsupported").textContent).toContain("FUTURE_SCOPE");
+    expect(within(screen.getByTestId("run-controls")).getByRole("button")).toBeDisabled();
+
+    await user.click(screen.getByRole("checkbox"));
+    const audit = await screen.findByTestId("analysis-intent-audit-json");
+    expect(audit.querySelector("pre")?.textContent).toContain("INTENT_FUTURE_FERMI_SURFACE");
+    expect(audit.querySelector("script")).toBeNull();
+    expect(document.querySelector("iframe")).toBeNull();
+  });
 });
 
 async function loadDemoFromTopBar(user: ReturnType<typeof userEvent.setup>) {
@@ -1207,6 +1357,7 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
   if (method === "POST" && url.endsWith("/planner/jobs")) {
     const body = JSON.parse(String(init?.body || "{}"));
     expect(JSON.stringify(body)).not.toContain("sk-ui-secret-value");
+    expect(body.intentSchemaVersion).toBe("1.0");
     return jsonResponse(createdJob);
   }
   if (url.endsWith("/planner/jobs/job_1")) {

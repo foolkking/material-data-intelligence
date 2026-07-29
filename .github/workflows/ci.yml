@@ -184,7 +184,8 @@ jobs:
               ))
               tables = {row[0] for row in r}
           expected = {
-              'projects', 'datasets', 'data_profiles', 'analysis_plans',
+              'projects', 'datasets', 'data_profiles', 'analysis_intents',
+              'analysis_intent_executions', 'analysis_plans',
               'jobs', 'job_events', 'tool_calls',
               'artifacts', 'visualization_recipes', 'reports',
           }
@@ -210,6 +211,9 @@ jobs:
               'idx_analysis_plans_project_created',
               'idx_analysis_plans_job',
               'idx_analysis_plans_plan_hash',
+              'idx_analysis_intents_dataset_created',
+              'idx_analysis_intents_parent',
+              'idx_intent_executions_intent',
               'idx_jobs_project_created',
               'idx_jobs_plan_id',
               'idx_tool_calls_job',
@@ -238,7 +242,7 @@ jobs:
 
       - name: Run integration tests (capture output)
         run: |
-          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py -q -m integration \
+          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py -q -m integration \
             --tb=long --color=yes 2>&1 | tee integration.log
         # Don't fail on pytest exit code yet — we parse the log below
         continue-on-error: true
@@ -274,11 +278,11 @@ jobs:
             exit 1
           fi
 
-          # P0: at least 20 passed (18 Phase 6 + 1 Phase 8B + 1 Phase 10 closure)
-          if [ "${PASSED:-0}" -lt 20 ]; then
+          # P0: at least 21 passed (18 Phase 6 + Phase 8B + Phase 10 closure + Phase 10L-1)
+          if [ "${PASSED:-0}" -lt 21 ]; then
             echo ""
-            echo "ERROR: Only ${PASSED:-0}/20 integration tests passed."
-            echo "Expected: at least 20 passed."
+            echo "ERROR: Only ${PASSED:-0}/21 integration tests passed."
+            echo "Expected: at least 21 passed."
             exit 1
           fi
 

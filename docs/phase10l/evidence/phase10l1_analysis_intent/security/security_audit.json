@@ -1,0 +1,15 @@
+{
+  "arbitraryCodeExecution": false,
+  "artifactJavaScript": false,
+  "externalNetworkRequests": 0,
+  "markers": [
+    "REAL_LLM_CALLS = 0",
+    "NO_PHASE10L1_EXTERNAL_NETWORK_REQUESTS",
+    "NO_ANALYSIS_INTENT_ARBITRARY_CODE_EXECUTION",
+    "NO_ANALYSIS_INTENT_ARTIFACT_JAVASCRIPT",
+    "NO_SECRET_PATTERN_HITS"
+  ],
+  "newDependencies": false,
+  "rawHtmlExecution": false,
+  "realLlmCalls": 0
+}

@@ -437,17 +437,25 @@ class OpenAICompatibleProvider:
         data_profile: DataProfile,
         user_config: PlannerUserConfig | None = None,
     ) -> PlannerRawResponse:
-        config = user_config or PlannerUserConfig()
-        resolved = _resolve_openai_config(config, prefer_config=user_config is not None)
-
         from .planner_prompt import build_planner_prompt
         system_prompt, user_prompt_str = build_planner_prompt(request, tools=tools, data_profile=data_profile)
+        return self.complete_json(
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt_str},
+            ],
+            user_config=user_config,
+        )
 
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt_str},
-        ]
-
+    def complete_json(
+        self,
+        *,
+        messages: list[dict[str, str]],
+        user_config: PlannerUserConfig | None = None,
+    ) -> PlannerRawResponse:
+        """Use the existing bounded transport for a strict JSON contract."""
+        config = user_config or PlannerUserConfig()
+        resolved = _resolve_openai_config(config, prefer_config=user_config is not None)
         if self._transport is not None:
             response = _call_fake_transport(
                 self._transport,

@@ -1,0 +1,9 @@
+{
+  "backend": "SQLite transaction-compatible repository",
+  "idempotentReplay": true,
+  "immutableHistory": true,
+  "intentHash": "b4bf4bf343e6b6db432b1d35a5045df88de1cd27b88c4b4ae215ae7a7df6d879",
+  "intentId": "intent_b4bf4bf343e6b6db432b1d35",
+  "postgresqlCiGate": "tests/integration/test_phase10l1_analysis_intent_service_backed.py",
+  "postgresqlLocal": "UNAVAILABLE_WITHOUT_DATABASE_URL"
+}
