@@ -13,8 +13,9 @@
   Planner, Registry, Validator, Runtime, dependency, or scientific behavior
   changed.
 - Audit commit `a7f8b14` passed exact-SHA CI run `30414233888`, including Unit,
-  Frontend, service-backed integration, and no-skipped. Completion-record CI
-  remains the queue-archive gate.
+  Frontend, service-backed integration, and no-skipped. Completion record
+  `ee86745` passed exact-SHA CI run `30414599167`; the verified queue block is
+  archived and Phase 10L-1 remains behind reviewer approval.
 
 ## 2026-07-28 - Phase 10K-5 Material Intelligence Integration
 

@@ -1,5 +1,5 @@
 {
-  "status": "AUDIT_COMMIT_CI_COMPLETE_AWAITING_COMPLETION_RECORD_CI",
+  "status": "COMPLETE_QUEUE_ARCHIVE_ELIGIBLE",
   "planner_tests": {
     "status": "PASS",
     "result": "92 passed, 1 skipped, 1 warning",
@@ -65,5 +65,14 @@
       "Service-backed Integration (PostgreSQL + Redis + MinIO)"
     ]
   },
-  "completion_record_ci": null
+  "completion_record_ci": {
+    "status": "PASS",
+    "commit": "ee86745707d9388b28f85051c5994e403c095c21",
+    "run": "30414599167",
+    "jobs": [
+      "Unit Tests (Python 3.11)",
+      "Frontend Typecheck & Build",
+      "Service-backed Integration (PostgreSQL + Redis + MinIO)"
+    ]
+  }
 }
