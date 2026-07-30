@@ -43,10 +43,9 @@ explicit limits. Phase 10L-0 and Phase 10L-1 are archived. Phase 10L-2 has
 implemented strict Registry planner metadata, deterministic Profile/Intent
 eligibility, eligible-only capability selection, exact parameter provenance,
 and an independent validation gate while keeping AnalysisPlan 0.1 and Runtime
-semantics unchanged. Its implementation CI is green; completion-record and
-verified queue archive gates remain. Phase 10L-3 remains reviewer-gated and is
-not queued. The
-remaining initial-release route is:
+semantics unchanged. Its implementation and completion-record exact-SHA CI are
+green, and its verified TASKS block is archived. Phase 10L-3 remains
+reviewer-gated and is not queued. The remaining initial-release route is:
 
 ```text
 10K Material Intelligence

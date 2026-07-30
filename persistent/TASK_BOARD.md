@@ -2,11 +2,11 @@
 
 ## Current Approved Work
 
-- [ ] Phase 10L-2 Capability-Aware Planner + Eligibility Resolver is
-  `IMPLEMENTATION_COMPLETE / COMPLETION_RECORD_CI_PENDING`: corrected
+- [x] Phase 10L-2 Capability-Aware Planner + Eligibility Resolver is
+  `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`: corrected
   implementation `9786e405` passed exact-SHA CI run `30511654404`, including
-  service-backed `27 passed, 0 skipped, 0 failed`. The TASKS block remains until
-  the completion record and verified queue archive gates close.
+  service-backed `27 passed, 0 skipped, 0 failed`; completion record `f62630b`
+  passed exact-SHA CI run `30513319990`. Its verified TASKS block is archived.
 - [ ] Phase 10L-3 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; it must not be
   queued or executed automatically from Phase 10L-2.
 

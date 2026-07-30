@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-07-30 Phase 10L-2 Capability-Aware Planner Implementation Complete
+## 2026-07-30 Phase 10L-2 Capability-Aware Planner Complete and Archived
 
 - Added strict planner metadata for all 53 Registry entries; 38 current
   available entries can be considered, while deployment-unavailable and
@@ -20,9 +20,11 @@
   and evidence-integrity checks pass locally. Corrected implementation HEAD
   `9786e405f1938b514b95ccbeb1cdb6d4b26dde18` passed exact-SHA CI run
   `30511654404`: Unit, Frontend typecheck/build, PostgreSQL/Redis/MinIO
-  migration/integration, and no-skipped all succeeded. The permanent result is
-  recorded; completion-record CI and verified queue archive remain open. Phase
-  10L-3 is still `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+  migration/integration, and no-skipped all succeeded. Completion record
+  `f62630bef53fc797705683753fbc8d5eca595c98` passed exact-SHA CI run
+  `30513319990`; the verified TASKS block is archived and the permanent result
+  remains in `results.md`. Phase 10L-3 is still
+  `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
 
 ## 2026-07-29 Phase 10L-1 Analysis Intent Implementation Complete
 

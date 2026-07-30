@@ -1494,3 +1494,19 @@ These are gaps, not executable tasks.
 
 Verify completion-record exact-SHA CI, then create and verify the queue-archive
 commit. Return the result and stop; do not queue or execute Phase 10L-3.
+
+## Phase 10L-2 Closure Addendum - 2026-07-30 12:16:43 +08:00
+
+- Completion record commit:
+  `f62630bef53fc797705683753fbc8d5eca595c98`.
+- Completion-record exact-SHA CI: run `30513319990`, `success`.
+- Required jobs: Unit Tests `success`; Frontend Typecheck & Build `success`;
+  PostgreSQL + Redis + MinIO service-backed integration `success`; no-skipped
+  assertion `success`.
+- Queue verification: permanent result, corrected implementation CI, browser
+  and evidence records, completion record, and completion-record CI agree.
+- Archive action: the complete Phase 10L-2 `---TASK---` block is authorized for
+  deletion by the verified queue-archive commit; Phase 10L-3 remains only a
+  reviewer gate and no executable Phase 10L-3 task exists.
+- Archive commit exact SHA and CI run are reported in the reviewer return after
+  the final exact-SHA gate; this addendum is not rewritten after archive.

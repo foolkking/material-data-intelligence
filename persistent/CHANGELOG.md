@@ -15,8 +15,9 @@
 - Added deterministic Registry/API/persistence/performance/security evidence
   and Chromium/Firefox/WebKit/390x844 browser replay. Corrected implementation
   `9786e405` passed exact-SHA CI run `30511654404`, including service-backed
-  `27 passed, 0 skipped, 0 failed`; completion-record CI and verified queue
-  archive remain required before final closure.
+  `27 passed, 0 skipped, 0 failed`. Completion record `f62630b` passed exact-SHA
+  CI run `30513319990`, and the verified Phase 10L-2 TASKS block was archived;
+  Phase 10L-3 remains a reviewer gate.
 
 ## 2026-07-29 - Phase 10L-1 Analysis Intent Implementation
 
