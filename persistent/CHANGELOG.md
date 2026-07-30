@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2026-07-30 - Phase 10L-3 Bounded Dependency Execution (In Progress)
+
+- Added additive AnalysisPlan 0.2, deterministic typed artifact bindings,
+  explicit Registry artifact ports, compatibility resolution, bounded
+  composition, dependency validation, and immutable persistence outside the
+  unchanged 0.1 document path.
+- QueueWorkerRuntime now executes validated 0.2 plans in deterministic serial
+  topological order, resolves exact platform-created artifact references, keeps
+  successful artifacts, blocks descendants of failures, and continues
+  independent branches with a typed partial execution record.
+- Added dependency/execution/lineage read APIs and an accessible responsive
+  PlannerWorkbench surface. Local registered-adapter runtime, security,
+  performance, Chromium/Firefox/WebKit, and mobile evidence pass.
+- No generic workflow engine, parallel scheduler, runtime LLM/replanning,
+  cross-job artifact reuse, arbitrary execution, new scientific capability, or
+  new dependency was introduced. Exact-SHA CI and queue archive are pending.
+
 ## 2026-07-30 - Phase 10L-2 Capability-Aware Planner
 
 - Added versioned, strict Registry planner metadata, deterministic Registry

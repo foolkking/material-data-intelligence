@@ -164,6 +164,72 @@ export type AnalysisPlan = {
   warnings?: string[];
   steps?: AnalysisStep[];
   expectedArtifacts?: Array<Record<string, unknown>>;
+  graphHash?: string;
+  dependencyBindings?: DependencyBinding[];
+};
+
+export type DependencyBinding = {
+  bindingId: string;
+  producerStepId: string;
+  producerOutputPort: string;
+  consumerStepId: string;
+  consumerInputPort: string;
+  artifactKind: string;
+  artifactContractVersion: string;
+  mediaType: string;
+  cardinality: "EXACTLY_ONE";
+};
+
+export type DependencyStepExecution = {
+  stepId: string;
+  toolId: string;
+  state: "PENDING" | "READY" | "RUNNING" | "SUCCEEDED" | "FAILED" | "BLOCKED_DEPENDENCY" | "NOT_STARTED";
+  toolCallId?: string | null;
+  artifactIds: string[];
+  blockedByStepIds: string[];
+  errorCode?: string | null;
+  errorMessage?: string | null;
+};
+
+export type DependencyExecutionRecord = {
+  executionId: string;
+  executionHash: string;
+  outcome: "ALL_SUCCEEDED" | "PARTIAL_RESULTS" | "ALL_FAILED" | "VALIDATION_ABORTED";
+  graphHash: string;
+  topologicalOrder: string[];
+  steps: DependencyStepExecution[];
+  bindings: Array<{ bindingId: string; state: string; artifactId?: string | null; errorCode?: string | null }>;
+  succeededCount: number;
+  failedCount: number;
+  blockedCount: number;
+  notStartedCount: number;
+  partialArtifactIds: string[];
+};
+
+export type ArtifactLineage = {
+  lineageId: string;
+  artifactId: string;
+  artifactKind: string;
+  producerStepId: string;
+  producerToolId: string;
+  outputPort: string;
+  upstreamArtifactIds: string[];
+  bindingIds: string[];
+  contentHash: string;
+};
+
+export type DependencyAudit = {
+  jobId?: string;
+  planId?: string | null;
+  planHash?: string | null;
+  planSchemaVersion?: string | null;
+  graphHash?: string | null;
+  dependencyBindings: DependencyBinding[];
+  plannedBindingRecords: Array<Record<string, unknown>>;
+  topologicalOrder: string[];
+  execution?: DependencyExecutionRecord | null;
+  bindingResolutions: Array<Record<string, unknown>>;
+  artifactLineage: ArtifactLineage[];
 };
 
 export type CapabilityPlanningOutcome =
@@ -273,6 +339,10 @@ export type PlannerJobCreateResult = {
   eligibility_resolution?: EligibilityResolution | null;
   capability_decision?: CapabilityPlanningDecision | null;
   provider_visible_tool_ids?: string[];
+  plan_schema_version?: string | null;
+  graph_hash?: string | null;
+  dependency_bindings?: DependencyBinding[];
+  topological_order?: string[];
 };
 
 export type PlannerJobDetail = {
@@ -296,6 +366,7 @@ export type PlannerJobDetail = {
   capabilityPlanningOutcome?: CapabilityPlanningOutcome | null;
   eligibilityResolution?: EligibilityResolution | null;
   capabilityDecision?: CapabilityPlanningDecision | null;
+  dependencyExecutionSummary?: { executionId?: string; outcome?: string; graphHash?: string; succeededCount?: number; failedCount?: number; blockedCount?: number; notStartedCount?: number } | null;
 };
 
 export type AnalysisPlanRecord = {
@@ -631,6 +702,10 @@ export async function getPlannerJobToolCalls(jobId: string): Promise<ToolCall[]>
 
 export async function getPlannerJobArtifacts(jobId: string): Promise<Artifact[]> {
   return apiFetch<Artifact[]>(`/planner/jobs/${encodeURIComponent(jobId)}/artifacts`);
+}
+
+export async function getPlannerJobDependencies(jobId: string): Promise<DependencyAudit> {
+  return apiFetch<DependencyAudit>(`/planner/jobs/${encodeURIComponent(jobId)}/dependencies`);
 }
 
 export async function getPlannerArtifactContent(

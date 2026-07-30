@@ -1,0 +1,441 @@
+{
+  "chromium": {
+    "browser": "chromium",
+    "version": "128.0.6613.18",
+    "cases": {
+      "success": {
+        "case": "success",
+        "outcome": "ALL_SUCCEEDED",
+        "mobile": false,
+        "firstDependencyPanelMs": 2003,
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "topologicalOrder": [
+          "step_001",
+          "step_003",
+          "step_002"
+        ],
+        "binding": "step_001:canonical-band -> step_002:band",
+        "lineageIds": [
+          "lineage_26751dec4c73ca92c98c9e3262c6d9c0",
+          "lineage_1f2cec522edde2616eaa6e045f1e223e",
+          "lineage_33f7d790e6ab74538959893744dfd8af",
+          "lineage_aef6f0714e5f69081311f48dc57fa953",
+          "lineage_82e032133b26487c25b71405db9a6228",
+          "lineage_e61542173fff47057972df3b5cb062e7",
+          "lineage_a64bf9e9a55bd827e1aa92afd3b23bdf",
+          "lineage_651060789e8f86988ce4e8b1c305cbd4",
+          "lineage_18be27d1115ca14c474d78107e4a64b1",
+          "lineage_5d6689e959f27ee2cd6e62aace4bc7ce",
+          "lineage_d69d0defeb689d277e395c38bea2275b",
+          "lineage_0587b4b522b9ccae022389984e055f59",
+          "lineage_55f444e6ab0463b3f7cbeedf416dbd9e",
+          "lineage_3baa0cab1ecf26aa436697a88887d280",
+          "lineage_62d8c37bff989c92a33874fddcff697b",
+          "lineage_1b7492fdf105c2045aebee8b7568ad2e",
+          "lineage_712c94bf98ca236f7ae37b74e826bec2",
+          "lineage_c6417112de45f12f44cf42a37e15ff78",
+          "lineage_244e43dcce14b3183719176174a42611",
+          "lineage_d04fa48674be7e13d0e3cfdfab28b9fd",
+          "lineage_331c55ad8a51c0b7dc965147588b83c5"
+        ],
+        "blockedDependent": null,
+        "independentSucceeded": null,
+        "accessibility": {
+          "ariaLive": "polite",
+          "bindingTabIndex": "0",
+          "stepListLabel": "Dependency execution states",
+          "focusedTag": "ARTICLE",
+          "focusedClass": "dependency-card"
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "auditScripts": 0,
+          "auditHtmlNodes": 0
+        },
+        "secretPatternHits": 0,
+        "domText": "Typed artifact dependencies\nALL_SUCCEEDED\nGRAPH HASH\n815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f\nTOPOLOGICAL ORDER\nstep_001 -> step_003 -> step_002\nBINDINGS\n2\nEXECUTION\nexecution_e9145045666fd95ccd192ae004762cda\nstep_001:canonical-band -> step_002:band\nphonon_band_json / phase10h.phonon_band.v1\nRESOLVED\nstep_003:canonical-dos -> step_002:dos\nphonon_dos_json / phase10h.phonon_dos.v1\nRESOLVED\nstep_001\nphonon.band\nSUCCEEDED\nstep_003\nphonon.dos\nSUCCEEDED\nstep_002\nphonon.band_dos\nSUCCEEDED\nArtifact lineage\nphonon_band_json\nphonon.band / step_001 / canonical-band\nUpstream: source data\nphonon_manifest_json\nphonon.band / step_001 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.band / step_001 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.band / step_001 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.band / step_001 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.band / step_001 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.band / step_001 / result-table_json\nUpstream: source data\nphonon_band_dos_json\nphonon.band_dos / step_002 / combined-band-dos\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_compatibility_json\nphonon.band_dos / step_002 / result-phonon_compatibility_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_manifest_json\nphonon.band_dos / step_002 / result-phonon_manifest_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_summary_json\nphonon.band_dos / step_002 / result-phonon_summary_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nplotly_json\nphonon.band_dos / step_002 / result-plotly_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nrecipe_json\nphonon.band_dos / step_002 / result-recipe_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\ntable_json\nphonon.band_dos / step_002 / result-table_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_dos_json\nphonon.dos / step_003 / canonical-dos\nUpstream: source data\nphonon_manifest_json\nphonon.dos / step_003 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.dos / step_003 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.dos / step_003 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.dos / step_003 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.dos / step_003 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.dos / step_003 / result-table_json\nUpstream: source data",
+        "domSha256": "dd82c58df2d8fbbd1319e189f1078bd2fa963417ce82dcac3804246131a70443",
+        "auditBytes": 125077,
+        "auditSha256": "b429d62390b950470c1711ff328f16b1aa69d8841e2add42e5f1d6792bc64f95"
+      },
+      "partial": {
+        "case": "partial",
+        "outcome": "PARTIAL_RESULTS",
+        "mobile": false,
+        "firstDependencyPanelMs": 1864,
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "topologicalOrder": [
+          "step_001",
+          "step_003",
+          "step_002"
+        ],
+        "binding": "step_001:canonical-band -> step_002:band",
+        "lineageIds": [
+          "lineage_62d8c37bff989c92a33874fddcff697b",
+          "lineage_1b7492fdf105c2045aebee8b7568ad2e",
+          "lineage_712c94bf98ca236f7ae37b74e826bec2",
+          "lineage_c6417112de45f12f44cf42a37e15ff78",
+          "lineage_244e43dcce14b3183719176174a42611",
+          "lineage_d04fa48674be7e13d0e3cfdfab28b9fd",
+          "lineage_331c55ad8a51c0b7dc965147588b83c5"
+        ],
+        "blockedDependent": "step_002",
+        "independentSucceeded": "step_003",
+        "accessibility": {
+          "ariaLive": "polite",
+          "bindingTabIndex": "0",
+          "stepListLabel": "Dependency execution states",
+          "focusedTag": "ARTICLE",
+          "focusedClass": "dependency-card"
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "auditScripts": 0,
+          "auditHtmlNodes": 0
+        },
+        "secretPatternHits": 0,
+        "domText": "Typed artifact dependencies\nPARTIAL_RESULTS\nGRAPH HASH\n815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f\nTOPOLOGICAL ORDER\nstep_001 -> step_003 -> step_002\nBINDINGS\n2\nEXECUTION\nexecution_80a398bb96fd6c0e8b598d34ac70a6da\nstep_001:canonical-band -> step_002:band\nphonon_band_json / phase10h.phonon_band.v1\nFAILED_PRODUCER\nstep_003:canonical-dos -> step_002:dos\nphonon_dos_json / phase10h.phonon_dos.v1\nCONSUMER_NOT_RUN\nstep_001\nphonon.band\nFAILED\nADAPTER_EXECUTION_FAILED: TOOL_INPUT_INVALID: Expected canonical JSON or an approved phonopy_band_yaml wrapper.\nstep_003\nphonon.dos\nSUCCEEDED\nstep_002\nphonon.band_dos\nBLOCKED_DEPENDENCY\nBlocked by step_001\nUPSTREAM_STEP_NOT_SUCCEEDED: A required producer did not succeed; the Adapter was not invoked.\nArtifact lineage\nphonon_dos_json\nphonon.dos / step_003 / canonical-dos\nUpstream: source data\nphonon_manifest_json\nphonon.dos / step_003 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.dos / step_003 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.dos / step_003 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.dos / step_003 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.dos / step_003 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.dos / step_003 / result-table_json\nUpstream: source data",
+        "domSha256": "76763b41ce03addcff3e6ce57b68475330334d088229e1ff92994424419d56fb",
+        "auditBytes": 47259,
+        "auditSha256": "6369c18514df31a04e059c31abd44314f5927ed885b54f3e1ec18a6929e2664c"
+      }
+    },
+    "mobile": {
+      "success": {
+        "case": "success",
+        "outcome": "ALL_SUCCEEDED",
+        "mobile": true,
+        "firstDependencyPanelMs": 2054,
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "topologicalOrder": [
+          "step_001",
+          "step_003",
+          "step_002"
+        ],
+        "binding": "step_001:canonical-band -> step_002:band",
+        "lineageIds": [
+          "lineage_26751dec4c73ca92c98c9e3262c6d9c0",
+          "lineage_1f2cec522edde2616eaa6e045f1e223e",
+          "lineage_33f7d790e6ab74538959893744dfd8af",
+          "lineage_aef6f0714e5f69081311f48dc57fa953",
+          "lineage_82e032133b26487c25b71405db9a6228",
+          "lineage_e61542173fff47057972df3b5cb062e7",
+          "lineage_a64bf9e9a55bd827e1aa92afd3b23bdf",
+          "lineage_651060789e8f86988ce4e8b1c305cbd4",
+          "lineage_18be27d1115ca14c474d78107e4a64b1",
+          "lineage_5d6689e959f27ee2cd6e62aace4bc7ce",
+          "lineage_d69d0defeb689d277e395c38bea2275b",
+          "lineage_0587b4b522b9ccae022389984e055f59",
+          "lineage_55f444e6ab0463b3f7cbeedf416dbd9e",
+          "lineage_3baa0cab1ecf26aa436697a88887d280",
+          "lineage_62d8c37bff989c92a33874fddcff697b",
+          "lineage_1b7492fdf105c2045aebee8b7568ad2e",
+          "lineage_712c94bf98ca236f7ae37b74e826bec2",
+          "lineage_c6417112de45f12f44cf42a37e15ff78",
+          "lineage_244e43dcce14b3183719176174a42611",
+          "lineage_d04fa48674be7e13d0e3cfdfab28b9fd",
+          "lineage_331c55ad8a51c0b7dc965147588b83c5"
+        ],
+        "blockedDependent": null,
+        "independentSucceeded": null,
+        "accessibility": {
+          "ariaLive": "polite",
+          "bindingTabIndex": "0",
+          "stepListLabel": "Dependency execution states",
+          "focusedTag": "ARTICLE",
+          "focusedClass": "dependency-card"
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "auditScripts": 0,
+          "auditHtmlNodes": 0
+        },
+        "secretPatternHits": 0,
+        "domText": "Typed artifact dependencies\nALL_SUCCEEDED\nGRAPH HASH\n815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f\nTOPOLOGICAL ORDER\nstep_001 -> step_003 -> step_002\nBINDINGS\n2\nEXECUTION\nexecution_e9145045666fd95ccd192ae004762cda\nstep_001:canonical-band -> step_002:band\nphonon_band_json / phase10h.phonon_band.v1\nRESOLVED\nstep_003:canonical-dos -> step_002:dos\nphonon_dos_json / phase10h.phonon_dos.v1\nRESOLVED\nstep_001\nphonon.band\nSUCCEEDED\nstep_003\nphonon.dos\nSUCCEEDED\nstep_002\nphonon.band_dos\nSUCCEEDED\nArtifact lineage\nphonon_band_json\nphonon.band / step_001 / canonical-band\nUpstream: source data\nphonon_manifest_json\nphonon.band / step_001 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.band / step_001 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.band / step_001 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.band / step_001 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.band / step_001 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.band / step_001 / result-table_json\nUpstream: source data\nphonon_band_dos_json\nphonon.band_dos / step_002 / combined-band-dos\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_compatibility_json\nphonon.band_dos / step_002 / result-phonon_compatibility_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_manifest_json\nphonon.band_dos / step_002 / result-phonon_manifest_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_summary_json\nphonon.band_dos / step_002 / result-phonon_summary_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nplotly_json\nphonon.band_dos / step_002 / result-plotly_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nrecipe_json\nphonon.band_dos / step_002 / result-recipe_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\ntable_json\nphonon.band_dos / step_002 / result-table_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_dos_json\nphonon.dos / step_003 / canonical-dos\nUpstream: source data\nphonon_manifest_json\nphonon.dos / step_003 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.dos / step_003 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.dos / step_003 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.dos / step_003 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.dos / step_003 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.dos / step_003 / result-table_json\nUpstream: source data",
+        "domSha256": "dd82c58df2d8fbbd1319e189f1078bd2fa963417ce82dcac3804246131a70443",
+        "auditBytes": 125077,
+        "auditSha256": "b429d62390b950470c1711ff328f16b1aa69d8841e2add42e5f1d6792bc64f95"
+      },
+      "partial": {
+        "case": "partial",
+        "outcome": "PARTIAL_RESULTS",
+        "mobile": true,
+        "firstDependencyPanelMs": 1879,
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "topologicalOrder": [
+          "step_001",
+          "step_003",
+          "step_002"
+        ],
+        "binding": "step_001:canonical-band -> step_002:band",
+        "lineageIds": [
+          "lineage_62d8c37bff989c92a33874fddcff697b",
+          "lineage_1b7492fdf105c2045aebee8b7568ad2e",
+          "lineage_712c94bf98ca236f7ae37b74e826bec2",
+          "lineage_c6417112de45f12f44cf42a37e15ff78",
+          "lineage_244e43dcce14b3183719176174a42611",
+          "lineage_d04fa48674be7e13d0e3cfdfab28b9fd",
+          "lineage_331c55ad8a51c0b7dc965147588b83c5"
+        ],
+        "blockedDependent": "step_002",
+        "independentSucceeded": "step_003",
+        "accessibility": {
+          "ariaLive": "polite",
+          "bindingTabIndex": "0",
+          "stepListLabel": "Dependency execution states",
+          "focusedTag": "ARTICLE",
+          "focusedClass": "dependency-card"
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "auditScripts": 0,
+          "auditHtmlNodes": 0
+        },
+        "secretPatternHits": 0,
+        "domText": "Typed artifact dependencies\nPARTIAL_RESULTS\nGRAPH HASH\n815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f\nTOPOLOGICAL ORDER\nstep_001 -> step_003 -> step_002\nBINDINGS\n2\nEXECUTION\nexecution_80a398bb96fd6c0e8b598d34ac70a6da\nstep_001:canonical-band -> step_002:band\nphonon_band_json / phase10h.phonon_band.v1\nFAILED_PRODUCER\nstep_003:canonical-dos -> step_002:dos\nphonon_dos_json / phase10h.phonon_dos.v1\nCONSUMER_NOT_RUN\nstep_001\nphonon.band\nFAILED\nADAPTER_EXECUTION_FAILED: TOOL_INPUT_INVALID: Expected canonical JSON or an approved phonopy_band_yaml wrapper.\nstep_003\nphonon.dos\nSUCCEEDED\nstep_002\nphonon.band_dos\nBLOCKED_DEPENDENCY\nBlocked by step_001\nUPSTREAM_STEP_NOT_SUCCEEDED: A required producer did not succeed; the Adapter was not invoked.\nArtifact lineage\nphonon_dos_json\nphonon.dos / step_003 / canonical-dos\nUpstream: source data\nphonon_manifest_json\nphonon.dos / step_003 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.dos / step_003 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.dos / step_003 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.dos / step_003 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.dos / step_003 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.dos / step_003 / result-table_json\nUpstream: source data",
+        "domSha256": "76763b41ce03addcff3e6ce57b68475330334d088229e1ff92994424419d56fb",
+        "auditBytes": 47259,
+        "auditSha256": "6369c18514df31a04e059c31abd44314f5927ed885b54f3e1ec18a6929e2664c"
+      }
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "firefox": {
+    "browser": "firefox",
+    "version": "128.0",
+    "cases": {
+      "success": {
+        "case": "success",
+        "outcome": "ALL_SUCCEEDED",
+        "mobile": false,
+        "firstDependencyPanelMs": 2526,
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "topologicalOrder": [
+          "step_001",
+          "step_003",
+          "step_002"
+        ],
+        "binding": "step_001:canonical-band -> step_002:band",
+        "lineageIds": [
+          "lineage_26751dec4c73ca92c98c9e3262c6d9c0",
+          "lineage_1f2cec522edde2616eaa6e045f1e223e",
+          "lineage_33f7d790e6ab74538959893744dfd8af",
+          "lineage_aef6f0714e5f69081311f48dc57fa953",
+          "lineage_82e032133b26487c25b71405db9a6228",
+          "lineage_e61542173fff47057972df3b5cb062e7",
+          "lineage_a64bf9e9a55bd827e1aa92afd3b23bdf",
+          "lineage_651060789e8f86988ce4e8b1c305cbd4",
+          "lineage_18be27d1115ca14c474d78107e4a64b1",
+          "lineage_5d6689e959f27ee2cd6e62aace4bc7ce",
+          "lineage_d69d0defeb689d277e395c38bea2275b",
+          "lineage_0587b4b522b9ccae022389984e055f59",
+          "lineage_55f444e6ab0463b3f7cbeedf416dbd9e",
+          "lineage_3baa0cab1ecf26aa436697a88887d280",
+          "lineage_62d8c37bff989c92a33874fddcff697b",
+          "lineage_1b7492fdf105c2045aebee8b7568ad2e",
+          "lineage_712c94bf98ca236f7ae37b74e826bec2",
+          "lineage_c6417112de45f12f44cf42a37e15ff78",
+          "lineage_244e43dcce14b3183719176174a42611",
+          "lineage_d04fa48674be7e13d0e3cfdfab28b9fd",
+          "lineage_331c55ad8a51c0b7dc965147588b83c5"
+        ],
+        "blockedDependent": null,
+        "independentSucceeded": null,
+        "accessibility": {
+          "ariaLive": "polite",
+          "bindingTabIndex": "0",
+          "stepListLabel": "Dependency execution states",
+          "focusedTag": "ARTICLE",
+          "focusedClass": "dependency-card"
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "auditScripts": 0,
+          "auditHtmlNodes": 0
+        },
+        "secretPatternHits": 0,
+        "domText": "Typed artifact dependencies\nALL_SUCCEEDED\nGRAPH HASH\n815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f\nTOPOLOGICAL ORDER\nstep_001 -> step_003 -> step_002\nBINDINGS\n2\nEXECUTION\nexecution_e9145045666fd95ccd192ae004762cda\nstep_001:canonical-band -> step_002:band\nphonon_band_json / phase10h.phonon_band.v1\nRESOLVED\nstep_003:canonical-dos -> step_002:dos\nphonon_dos_json / phase10h.phonon_dos.v1\nRESOLVED\nstep_001\nphonon.band\nSUCCEEDED\nstep_003\nphonon.dos\nSUCCEEDED\nstep_002\nphonon.band_dos\nSUCCEEDED\nArtifact lineage\nphonon_band_json\nphonon.band / step_001 / canonical-band\nUpstream: source data\nphonon_manifest_json\nphonon.band / step_001 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.band / step_001 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.band / step_001 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.band / step_001 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.band / step_001 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.band / step_001 / result-table_json\nUpstream: source data\nphonon_band_dos_json\nphonon.band_dos / step_002 / combined-band-dos\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_compatibility_json\nphonon.band_dos / step_002 / result-phonon_compatibility_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_manifest_json\nphonon.band_dos / step_002 / result-phonon_manifest_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_summary_json\nphonon.band_dos / step_002 / result-phonon_summary_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nplotly_json\nphonon.band_dos / step_002 / result-plotly_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nrecipe_json\nphonon.band_dos / step_002 / result-recipe_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\ntable_json\nphonon.band_dos / step_002 / result-table_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_dos_json\nphonon.dos / step_003 / canonical-dos\nUpstream: source data\nphonon_manifest_json\nphonon.dos / step_003 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.dos / step_003 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.dos / step_003 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.dos / step_003 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.dos / step_003 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.dos / step_003 / result-table_json\nUpstream: source data",
+        "domSha256": "dd82c58df2d8fbbd1319e189f1078bd2fa963417ce82dcac3804246131a70443",
+        "auditBytes": 125077,
+        "auditSha256": "b429d62390b950470c1711ff328f16b1aa69d8841e2add42e5f1d6792bc64f95"
+      },
+      "partial": {
+        "case": "partial",
+        "outcome": "PARTIAL_RESULTS",
+        "mobile": false,
+        "firstDependencyPanelMs": 2011,
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "topologicalOrder": [
+          "step_001",
+          "step_003",
+          "step_002"
+        ],
+        "binding": "step_001:canonical-band -> step_002:band",
+        "lineageIds": [
+          "lineage_62d8c37bff989c92a33874fddcff697b",
+          "lineage_1b7492fdf105c2045aebee8b7568ad2e",
+          "lineage_712c94bf98ca236f7ae37b74e826bec2",
+          "lineage_c6417112de45f12f44cf42a37e15ff78",
+          "lineage_244e43dcce14b3183719176174a42611",
+          "lineage_d04fa48674be7e13d0e3cfdfab28b9fd",
+          "lineage_331c55ad8a51c0b7dc965147588b83c5"
+        ],
+        "blockedDependent": "step_002",
+        "independentSucceeded": "step_003",
+        "accessibility": {
+          "ariaLive": "polite",
+          "bindingTabIndex": "0",
+          "stepListLabel": "Dependency execution states",
+          "focusedTag": "ARTICLE",
+          "focusedClass": "dependency-card"
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "auditScripts": 0,
+          "auditHtmlNodes": 0
+        },
+        "secretPatternHits": 0,
+        "domText": "Typed artifact dependencies\nPARTIAL_RESULTS\nGRAPH HASH\n815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f\nTOPOLOGICAL ORDER\nstep_001 -> step_003 -> step_002\nBINDINGS\n2\nEXECUTION\nexecution_80a398bb96fd6c0e8b598d34ac70a6da\nstep_001:canonical-band -> step_002:band\nphonon_band_json / phase10h.phonon_band.v1\nFAILED_PRODUCER\nstep_003:canonical-dos -> step_002:dos\nphonon_dos_json / phase10h.phonon_dos.v1\nCONSUMER_NOT_RUN\nstep_001\nphonon.band\nFAILED\nADAPTER_EXECUTION_FAILED: TOOL_INPUT_INVALID: Expected canonical JSON or an approved phonopy_band_yaml wrapper.\nstep_003\nphonon.dos\nSUCCEEDED\nstep_002\nphonon.band_dos\nBLOCKED_DEPENDENCY\nBlocked by step_001\nUPSTREAM_STEP_NOT_SUCCEEDED: A required producer did not succeed; the Adapter was not invoked.\nArtifact lineage\nphonon_dos_json\nphonon.dos / step_003 / canonical-dos\nUpstream: source data\nphonon_manifest_json\nphonon.dos / step_003 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.dos / step_003 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.dos / step_003 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.dos / step_003 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.dos / step_003 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.dos / step_003 / result-table_json\nUpstream: source data",
+        "domSha256": "76763b41ce03addcff3e6ce57b68475330334d088229e1ff92994424419d56fb",
+        "auditBytes": 47259,
+        "auditSha256": "6369c18514df31a04e059c31abd44314f5927ed885b54f3e1ec18a6929e2664c"
+      }
+    },
+    "mobile": {},
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "webkit": {
+    "browser": "webkit",
+    "version": "18.0",
+    "cases": {
+      "success": {
+        "case": "success",
+        "outcome": "ALL_SUCCEEDED",
+        "mobile": false,
+        "firstDependencyPanelMs": 3965,
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "topologicalOrder": [
+          "step_001",
+          "step_003",
+          "step_002"
+        ],
+        "binding": "step_001:canonical-band -> step_002:band",
+        "lineageIds": [
+          "lineage_26751dec4c73ca92c98c9e3262c6d9c0",
+          "lineage_1f2cec522edde2616eaa6e045f1e223e",
+          "lineage_33f7d790e6ab74538959893744dfd8af",
+          "lineage_aef6f0714e5f69081311f48dc57fa953",
+          "lineage_82e032133b26487c25b71405db9a6228",
+          "lineage_e61542173fff47057972df3b5cb062e7",
+          "lineage_a64bf9e9a55bd827e1aa92afd3b23bdf",
+          "lineage_651060789e8f86988ce4e8b1c305cbd4",
+          "lineage_18be27d1115ca14c474d78107e4a64b1",
+          "lineage_5d6689e959f27ee2cd6e62aace4bc7ce",
+          "lineage_d69d0defeb689d277e395c38bea2275b",
+          "lineage_0587b4b522b9ccae022389984e055f59",
+          "lineage_55f444e6ab0463b3f7cbeedf416dbd9e",
+          "lineage_3baa0cab1ecf26aa436697a88887d280",
+          "lineage_62d8c37bff989c92a33874fddcff697b",
+          "lineage_1b7492fdf105c2045aebee8b7568ad2e",
+          "lineage_712c94bf98ca236f7ae37b74e826bec2",
+          "lineage_c6417112de45f12f44cf42a37e15ff78",
+          "lineage_244e43dcce14b3183719176174a42611",
+          "lineage_d04fa48674be7e13d0e3cfdfab28b9fd",
+          "lineage_331c55ad8a51c0b7dc965147588b83c5"
+        ],
+        "blockedDependent": null,
+        "independentSucceeded": null,
+        "accessibility": {
+          "ariaLive": "polite",
+          "bindingTabIndex": "0",
+          "stepListLabel": "Dependency execution states",
+          "focusedTag": "ARTICLE",
+          "focusedClass": "dependency-card"
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "auditScripts": 0,
+          "auditHtmlNodes": 0
+        },
+        "secretPatternHits": 0,
+        "domText": "Typed artifact dependencies\nALL_SUCCEEDED\nGRAPH HASH\n815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f\nTOPOLOGICAL ORDER\nstep_001 -> step_003 -> step_002\nBINDINGS\n2\nEXECUTION\nexecution_e9145045666fd95ccd192ae004762cda\nstep_001:canonical-band -> step_002:band\nphonon_band_json / phase10h.phonon_band.v1\nRESOLVED\nstep_003:canonical-dos -> step_002:dos\nphonon_dos_json / phase10h.phonon_dos.v1\nRESOLVED\nstep_001\nphonon.band\nSUCCEEDED\nstep_003\nphonon.dos\nSUCCEEDED\nstep_002\nphonon.band_dos\nSUCCEEDED\nArtifact lineage\nphonon_band_json\nphonon.band / step_001 / canonical-band\nUpstream: source data\nphonon_manifest_json\nphonon.band / step_001 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.band / step_001 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.band / step_001 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.band / step_001 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.band / step_001 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.band / step_001 / result-table_json\nUpstream: source data\nphonon_band_dos_json\nphonon.band_dos / step_002 / combined-band-dos\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_compatibility_json\nphonon.band_dos / step_002 / result-phonon_compatibility_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_manifest_json\nphonon.band_dos / step_002 / result-phonon_manifest_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_summary_json\nphonon.band_dos / step_002 / result-phonon_summary_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nplotly_json\nphonon.band_dos / step_002 / result-plotly_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nrecipe_json\nphonon.band_dos / step_002 / result-recipe_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\ntable_json\nphonon.band_dos / step_002 / result-table_json\nUpstream: call_job_222222222222222222222222_step_001-phonon_band_json, call_job_222222222222222222222222_step_003-phonon_dos_json\nphonon_dos_json\nphonon.dos / step_003 / canonical-dos\nUpstream: source data\nphonon_manifest_json\nphonon.dos / step_003 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.dos / step_003 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.dos / step_003 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.dos / step_003 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.dos / step_003 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.dos / step_003 / result-table_json\nUpstream: source data\n",
+        "domSha256": "34aa70c8012713474a67fdab5aa0c8d7916093e8ff844e8fd011d3f3e6bdfed2",
+        "auditBytes": 125077,
+        "auditSha256": "b429d62390b950470c1711ff328f16b1aa69d8841e2add42e5f1d6792bc64f95"
+      },
+      "partial": {
+        "case": "partial",
+        "outcome": "PARTIAL_RESULTS",
+        "mobile": false,
+        "firstDependencyPanelMs": 3181,
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "topologicalOrder": [
+          "step_001",
+          "step_003",
+          "step_002"
+        ],
+        "binding": "step_001:canonical-band -> step_002:band",
+        "lineageIds": [
+          "lineage_62d8c37bff989c92a33874fddcff697b",
+          "lineage_1b7492fdf105c2045aebee8b7568ad2e",
+          "lineage_712c94bf98ca236f7ae37b74e826bec2",
+          "lineage_c6417112de45f12f44cf42a37e15ff78",
+          "lineage_244e43dcce14b3183719176174a42611",
+          "lineage_d04fa48674be7e13d0e3cfdfab28b9fd",
+          "lineage_331c55ad8a51c0b7dc965147588b83c5"
+        ],
+        "blockedDependent": "step_002",
+        "independentSucceeded": "step_003",
+        "accessibility": {
+          "ariaLive": "polite",
+          "bindingTabIndex": "0",
+          "stepListLabel": "Dependency execution states",
+          "focusedTag": "ARTICLE",
+          "focusedClass": "dependency-card"
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "auditScripts": 0,
+          "auditHtmlNodes": 0
+        },
+        "secretPatternHits": 0,
+        "domText": "Typed artifact dependencies\nPARTIAL_RESULTS\nGRAPH HASH\n815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f\nTOPOLOGICAL ORDER\nstep_001 -> step_003 -> step_002\nBINDINGS\n2\nEXECUTION\nexecution_80a398bb96fd6c0e8b598d34ac70a6da\nstep_001:canonical-band -> step_002:band\nphonon_band_json / phase10h.phonon_band.v1\nFAILED_PRODUCER\nstep_003:canonical-dos -> step_002:dos\nphonon_dos_json / phase10h.phonon_dos.v1\nCONSUMER_NOT_RUN\nstep_001\nphonon.band\nFAILED\nADAPTER_EXECUTION_FAILED: TOOL_INPUT_INVALID: Expected canonical JSON or an approved phonopy_band_yaml wrapper.\nstep_003\nphonon.dos\nSUCCEEDED\nstep_002\nphonon.band_dos\nBLOCKED_DEPENDENCY\nBlocked by step_001\nUPSTREAM_STEP_NOT_SUCCEEDED: A required producer did not succeed; the Adapter was not invoked.\nArtifact lineage\nphonon_dos_json\nphonon.dos / step_003 / canonical-dos\nUpstream: source data\nphonon_manifest_json\nphonon.dos / step_003 / result-phonon_manifest_json\nUpstream: source data\nphonon_report_json\nphonon.dos / step_003 / result-phonon_report_json\nUpstream: source data\nphonon_summary_json\nphonon.dos / step_003 / result-phonon_summary_json\nUpstream: source data\nplotly_json\nphonon.dos / step_003 / result-plotly_json\nUpstream: source data\nrecipe_json\nphonon.dos / step_003 / result-recipe_json\nUpstream: source data\ntable_json\nphonon.dos / step_003 / result-table_json\nUpstream: source data\n",
+        "domSha256": "311752a19d0fdedf7442537281dc03166497fa634b8e199588a9de96b6338e62",
+        "auditBytes": 47259,
+        "auditSha256": "6369c18514df31a04e059c31abd44314f5927ed885b54f3e1ec18a6929e2664c"
+      }
+    },
+    "mobile": {},
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+}

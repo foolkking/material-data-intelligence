@@ -7,19 +7,12 @@ assigned phases rather than by this roadmap gate:
 
 ### Phase 10L Reviewer Gate
 
-* How should AnalysisPlan evolve to record intent identity, bounded provider
-  provenance, maximum step count, dependencies, and produced-artifact binding?
-* Should bounded composition remain an ordered sequence or permit a restricted
-  dependency graph, and what are the failure, partial-result, cancellation,
-  and replay semantics?
 * Is plan approval/editing owned by Phase 10L or deferred to Phase 10M?
 * Which structured result facts, budgets, and no-invention rules govern the
   future interpretation provider?
 
 * Which exact units and domain property registries should be admitted beyond
   the conservative Phase 10K-1 numeric property allowlist?
-* What intent vocabulary, plan-size bound, typed artifact binding, and failure
-  policy are required for capability-aware multi-tool analysis?
 * Which scientific summary fields may be provided to bounded interpretation,
   and how are unsupported claims blocked?
 * What cross-artifact identities are required by the unified workspace?
@@ -52,6 +45,19 @@ assigned phases rather than by this roadmap gate:
   the unchanged candidate/binding domain; there is no Mock fallback.
 * AnalysisPlan version in Phase 10L-2: **CLOSED - REMAINS 0.1**. Resolution,
   decision, binding provenance, and plan/job association are external records.
+* AnalysisPlan dependency evolution: **CLOSED FOR PHASE 10L-3 - ADDITIVE
+  0.2**. Version 0.1 remains unchanged; only canonical Intent/L2 paths may
+  produce 0.2 when a declared typed artifact port pair exists.
+* Dependency representation: **CLOSED FOR PHASE 10L-3 - ONE SOURCE**.
+  Plan-level `dependencyBindings` simultaneously identifies the producer port,
+  artifact contract, and consumer port. List order has no dependency authority
+  and order-only edges are prohibited.
+* Dependency caps and execution: **CLOSED FOR PHASE 10L-3**. At most four
+  steps, six bindings, depth four, three incoming/outgoing bindings, serial
+  deterministic topology, one shared repair, and no semantic truncation.
+* Partial results: **CLOSED FOR PHASE 10L-3**. Producer/consumer failures block
+  descendants only; independent branches continue and successful artifacts are
+  retained. There is no new per-step retry engine.
 
 * Material Intelligence integration authority: **CLOSED FOR PHASE 10K-5** -
   Profile 2.0 owns deterministic data semantics; K2-K4 tools own bounded
@@ -67,9 +73,9 @@ assigned phases rather than by this roadmap gate:
   each validated product have independent typed states; one failed/stale
   product does not invalidate successful sibling products.
 * Phase 10L boundary: **PARTIALLY CLOSED** - intent/clarification are fixed by
-  Phase 10L-1 and capability-aware selection/exact binding by Phase 10L-2;
-  dependency planning and scientific result interpretation remain separate
-  reviewer-gated Agent work.
+  Phase 10L-1, capability-aware selection/exact binding by Phase 10L-2, and
+  bounded dependency execution by Phase 10L-3; scientific result
+  interpretation remains separate reviewer-gated Agent work.
 
 * Composition-space baseline: **CLOSED FOR PHASE 10K-4** - normalized
   atomic-fraction features ordered by atomic number, deterministic center-only

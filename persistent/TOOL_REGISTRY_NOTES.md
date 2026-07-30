@@ -1,5 +1,22 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-30 Phase 10L-3 Typed Artifact Ports
+
+- ToolPlannerMetadata 1.0 remains valid for all independent tools. Additive
+  artifact-port metadata 1.1 is required before a tool can be a dependency
+  producer or consumer; absence of ports never makes a 1.0 tool unavailable.
+- The audit found one production-safe chain among 38 available tools:
+  `phonon.band:canonical-band` and `phonon.dos:canonical-dos` feed the declared
+  `phonon.band_dos:band/dos` inputs. This reuses existing scientific contracts
+  and registered Adapters; no new scientific tool or algorithm was added.
+- Compatibility requires exact tool/version, artifact kind, contract version,
+  media type, cardinality, planner visibility, deterministic output, caps, and
+  identity scope. Registry/list order, filenames, labels, paths, URLs, wildcard
+  ports, and artifact payload text have no authority.
+- Runtime still executes only through Tool Registry and registered Adapters.
+  Resolved artifact refs are platform-created, job/plan/project scoped,
+  checksum-bound, and never user/provider-authored.
+
 ## 2026-07-30 Phase 10L-2 Planner Metadata and Eligibility
 
 - All 53 current Registry entries now have strict planner metadata derived from

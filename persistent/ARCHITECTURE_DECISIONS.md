@@ -1,5 +1,31 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-30 ADR: One Typed Artifact Edge for Bounded AnalysisPlan 0.2
+
+**Context:** AnalysisPlan 0.1 can record up to four independent selected tools,
+but list order is not dependency semantics and runtime artifact IDs do not
+exist at planning time. Treating filenames, array position, paths, URLs, or
+generic JSON as an edge would bypass scientific contracts and Registry
+authority.
+
+**Decision:** preserve AnalysisPlan 0.1 unchanged and introduce additive 0.2
+only for canonical dependency-aware requests. One plan-level
+`dependencyBindings` record is the sole edge authority: exact producer step and
+output port, exact inert artifact kind/contract/media type/cardinality, and
+exact consumer step/input port. ToolPlannerMetadata 1.1 ports define the only
+compatible domain. Runtime recomputes validation and deterministic topology,
+executes serially through registered Adapters, resolves checksummed same-job
+artifacts through ArtifactStorage, and persists immutable execution and lineage
+records. Producer/consumer failure blocks descendants while independent
+branches continue and successful artifacts remain.
+
+**Consequences:** 0.2 is capped at four steps, six bindings, depth four, and
+three incoming/outgoing bindings. There are no order-only edges, parallelism,
+loops, conditions, dynamic fan-out, cross-job reuse, external artifact URLs,
+runtime LLM/replanning, arbitrary code, or new retry engine. The one L2 repair
+budget is shared with composition. Phase 10L-4 interpretation remains a
+reviewer gate and receives no execution authority from artifact content.
+
 ## 2026-07-30 ADR: Registry-Derived Eligibility Before AnalysisPlan
 
 **Context:** AnalysisIntent 1.0 preserves user meaning and exact Profile scope,

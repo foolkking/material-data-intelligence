@@ -1,0 +1,1003 @@
+{
+  "api": {
+    "artifactLineage": [
+      {
+        "adapterVersion": "0.1.0",
+        "artifactContractVersion": "phase10h.phonon_band.v1",
+        "artifactId": "call_job_l3_runtime_step_band-phonon_band_json",
+        "artifactKind": "phonon_band_json",
+        "artifactLineageRecord": {
+          "adapterVersion": "0.1.0",
+          "artifactContractVersion": "phase10h.phonon_band.v1",
+          "artifactId": "call_job_l3_runtime_step_band-phonon_band_json",
+          "artifactKind": "phonon_band_json",
+          "bindingIds": [],
+          "caps": {
+            "bindings": 6,
+            "depth": 4,
+            "steps": 4
+          },
+          "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+          "createdAt": "2026-07-30T00:00:00+00:00",
+          "datasetId": "dataset_l3_runtime",
+          "datasetVersion": null,
+          "decisionHash": null,
+          "decisionId": null,
+          "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+          "intentHash": null,
+          "intentId": null,
+          "jobId": "job_l3_runtime",
+          "lineageHash": "04b2ec376478f42a3f4ebc59c65e5d79bb4ae50c4ca20077ea60a6d02f84f4e6",
+          "lineageId": "lineage_04b2ec376478f42a3f4ebc59c65e5d79",
+          "mediaType": "application/json",
+          "outputPort": "canonical-band",
+          "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+          "planId": "plan_l3_runtime",
+          "planSchemaVersion": "0.2",
+          "producerStepId": "step_band",
+          "producerToolCallId": "call_job_l3_runtime_step_band",
+          "producerToolId": "phonon.band",
+          "producerToolVersion": "0.1.0",
+          "profileId": "profile_l3_runtime",
+          "profileSemanticHash": null,
+          "projectId": "project_l3_runtime",
+          "resolutionHash": null,
+          "resolutionId": null,
+          "runtimeVersion": "queue_worker_dependency_1.0",
+          "schemaVersion": "1.0",
+          "upstreamArtifactHashes": [],
+          "upstreamArtifactIds": [],
+          "warnings": []
+        },
+        "bindingIds": [],
+        "caps": {
+          "bindings": 6,
+          "depth": 4,
+          "steps": 4
+        },
+        "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+        "createdAt": "2026-07-30T00:00:00+00:00",
+        "datasetId": "dataset_l3_runtime",
+        "datasetVersion": null,
+        "decisionHash": null,
+        "decisionId": null,
+        "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+        "id": "lineage_04b2ec376478f42a3f4ebc59c65e5d79",
+        "intentHash": null,
+        "intentId": null,
+        "jobId": "job_l3_runtime",
+        "lineageHash": "04b2ec376478f42a3f4ebc59c65e5d79bb4ae50c4ca20077ea60a6d02f84f4e6",
+        "lineageId": "lineage_04b2ec376478f42a3f4ebc59c65e5d79",
+        "mediaType": "application/json",
+        "outputPort": "canonical-band",
+        "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+        "planId": "plan_l3_runtime",
+        "planSchemaVersion": "0.2",
+        "producerStepId": "step_band",
+        "producerToolCallId": "call_job_l3_runtime_step_band",
+        "producerToolId": "phonon.band",
+        "producerToolVersion": "0.1.0",
+        "profileId": "profile_l3_runtime",
+        "profileSemanticHash": null,
+        "projectId": "project_l3_runtime",
+        "resolutionHash": null,
+        "resolutionId": null,
+        "runtimeVersion": "queue_worker_dependency_1.0",
+        "schemaVersion": "1.0",
+        "upstreamArtifactHashes": [],
+        "upstreamArtifactIds": [],
+        "warnings": []
+      },
+      {
+        "adapterVersion": "0.1.0",
+        "artifactContractVersion": "phase10h.phonon_dos.v1",
+        "artifactId": "call_job_l3_runtime_step_dos-phonon_dos_json",
+        "artifactKind": "phonon_dos_json",
+        "artifactLineageRecord": {
+          "adapterVersion": "0.1.0",
+          "artifactContractVersion": "phase10h.phonon_dos.v1",
+          "artifactId": "call_job_l3_runtime_step_dos-phonon_dos_json",
+          "artifactKind": "phonon_dos_json",
+          "bindingIds": [],
+          "caps": {
+            "bindings": 6,
+            "depth": 4,
+            "steps": 4
+          },
+          "contentHash": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+          "createdAt": "2026-07-30T00:00:00+00:00",
+          "datasetId": "dataset_l3_runtime",
+          "datasetVersion": null,
+          "decisionHash": null,
+          "decisionId": null,
+          "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+          "intentHash": null,
+          "intentId": null,
+          "jobId": "job_l3_runtime",
+          "lineageHash": "17a16e5a5ea2d9426f00d72789ac034445b16b871f693e552ce833c5b0c42d13",
+          "lineageId": "lineage_17a16e5a5ea2d9426f00d72789ac0344",
+          "mediaType": "application/json",
+          "outputPort": "canonical-dos",
+          "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+          "planId": "plan_l3_runtime",
+          "planSchemaVersion": "0.2",
+          "producerStepId": "step_dos",
+          "producerToolCallId": "call_job_l3_runtime_step_dos",
+          "producerToolId": "phonon.dos",
+          "producerToolVersion": "0.1.0",
+          "profileId": "profile_l3_runtime",
+          "profileSemanticHash": null,
+          "projectId": "project_l3_runtime",
+          "resolutionHash": null,
+          "resolutionId": null,
+          "runtimeVersion": "queue_worker_dependency_1.0",
+          "schemaVersion": "1.0",
+          "upstreamArtifactHashes": [],
+          "upstreamArtifactIds": [],
+          "warnings": []
+        },
+        "bindingIds": [],
+        "caps": {
+          "bindings": 6,
+          "depth": 4,
+          "steps": 4
+        },
+        "contentHash": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+        "createdAt": "2026-07-30T00:00:00+00:00",
+        "datasetId": "dataset_l3_runtime",
+        "datasetVersion": null,
+        "decisionHash": null,
+        "decisionId": null,
+        "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+        "id": "lineage_17a16e5a5ea2d9426f00d72789ac0344",
+        "intentHash": null,
+        "intentId": null,
+        "jobId": "job_l3_runtime",
+        "lineageHash": "17a16e5a5ea2d9426f00d72789ac034445b16b871f693e552ce833c5b0c42d13",
+        "lineageId": "lineage_17a16e5a5ea2d9426f00d72789ac0344",
+        "mediaType": "application/json",
+        "outputPort": "canonical-dos",
+        "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+        "planId": "plan_l3_runtime",
+        "planSchemaVersion": "0.2",
+        "producerStepId": "step_dos",
+        "producerToolCallId": "call_job_l3_runtime_step_dos",
+        "producerToolId": "phonon.dos",
+        "producerToolVersion": "0.1.0",
+        "profileId": "profile_l3_runtime",
+        "profileSemanticHash": null,
+        "projectId": "project_l3_runtime",
+        "resolutionHash": null,
+        "resolutionId": null,
+        "runtimeVersion": "queue_worker_dependency_1.0",
+        "schemaVersion": "1.0",
+        "upstreamArtifactHashes": [],
+        "upstreamArtifactIds": [],
+        "warnings": []
+      }
+    ],
+    "bindingResolutions": [
+      {
+        "artifactChecksum": null,
+        "artifactContractVersion": null,
+        "artifactId": null,
+        "artifactKind": null,
+        "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+        "consumerInputPort": "dos",
+        "consumerStepId": "step_combined",
+        "consumerToolCallId": null,
+        "errorCode": "CHECKSUM_MISMATCH",
+        "id": "binding_resolution_83d4c56b7ca3ad4ee938aab82cae6dd4",
+        "jobId": "job_l3_runtime",
+        "mediaType": null,
+        "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+        "planId": "plan_l3_runtime",
+        "producerStepId": "step_dos",
+        "producerToolCallId": null,
+        "recordHash": "83d4c56b7ca3ad4ee938aab82cae6dd401b439f50fd22ea2e71ad4847e129be1",
+        "resolvedArtifactInputRef": null,
+        "resolvedAt": "2026-07-30T00:00:00+00:00",
+        "validationOutcome": "CHECKSUM_MISMATCH"
+      }
+    ],
+    "dependencyBindings": [
+      {
+        "artifactContractVersion": "phase10h.phonon_band.v1",
+        "artifactKind": "phonon_band_json",
+        "bindingId": "binding_9b8824574aac2bd496160290cc830eeb",
+        "cardinality": "EXACTLY_ONE",
+        "consumerInputPort": "band",
+        "consumerStepId": "step_combined",
+        "mediaType": "application/json",
+        "producerOutputPort": "canonical-band",
+        "producerStepId": "step_band"
+      },
+      {
+        "artifactContractVersion": "phase10h.phonon_dos.v1",
+        "artifactKind": "phonon_dos_json",
+        "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+        "cardinality": "EXACTLY_ONE",
+        "consumerInputPort": "dos",
+        "consumerStepId": "step_combined",
+        "mediaType": "application/json",
+        "producerOutputPort": "canonical-dos",
+        "producerStepId": "step_dos"
+      }
+    ],
+    "execution": {
+      "bindings": [
+        {
+          "artifactChecksum": null,
+          "artifactId": null,
+          "bindingId": "binding_9b8824574aac2bd496160290cc830eeb",
+          "consumerToolCallId": null,
+          "errorCode": null,
+          "producerToolCallId": null,
+          "state": "PENDING"
+        },
+        {
+          "artifactChecksum": null,
+          "artifactId": null,
+          "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+          "consumerToolCallId": null,
+          "errorCode": "CHECKSUM_MISMATCH",
+          "producerToolCallId": null,
+          "state": "CHECKSUM_MISMATCH"
+        }
+      ],
+      "blockedCount": 0,
+      "createdAt": "2026-07-30T00:00:00+00:00",
+      "dependencyExecutionRecord": {
+        "bindings": [
+          {
+            "artifactChecksum": null,
+            "artifactId": null,
+            "bindingId": "binding_9b8824574aac2bd496160290cc830eeb",
+            "consumerToolCallId": null,
+            "errorCode": null,
+            "producerToolCallId": null,
+            "state": "PENDING"
+          },
+          {
+            "artifactChecksum": null,
+            "artifactId": null,
+            "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+            "consumerToolCallId": null,
+            "errorCode": "CHECKSUM_MISMATCH",
+            "producerToolCallId": null,
+            "state": "CHECKSUM_MISMATCH"
+          }
+        ],
+        "blockedCount": 0,
+        "createdAt": "2026-07-30T00:00:00+00:00",
+        "executionHash": "53e2206e15cbaf64bc00f951d030079ddd159d3b8b3bf875bcf295357abf150c",
+        "executionId": "execution_53e2206e15cbaf64bc00f951d030079d",
+        "failedCount": 1,
+        "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+        "jobId": "job_l3_runtime",
+        "notStartedCount": 0,
+        "outcome": "PARTIAL_RESULTS",
+        "partialArtifactIds": [
+          "call_job_l3_runtime_step_band-phonon_band_json",
+          "call_job_l3_runtime_step_dos-phonon_dos_json"
+        ],
+        "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+        "planId": "plan_l3_runtime",
+        "runtimeVersion": "queue_worker_dependency_1.0",
+        "schemaVersion": "1.0",
+        "steps": [
+          {
+            "artifactIds": [
+              "call_job_l3_runtime_step_band-phonon_band_json"
+            ],
+            "blockedByStepIds": [],
+            "errorCode": null,
+            "errorMessage": null,
+            "state": "SUCCEEDED",
+            "stepId": "step_band",
+            "toolCallId": "call_job_l3_runtime_step_band",
+            "toolId": "phonon.band"
+          },
+          {
+            "artifactIds": [
+              "call_job_l3_runtime_step_dos-phonon_dos_json"
+            ],
+            "blockedByStepIds": [],
+            "errorCode": null,
+            "errorMessage": null,
+            "state": "SUCCEEDED",
+            "stepId": "step_dos",
+            "toolCallId": "call_job_l3_runtime_step_dos",
+            "toolId": "phonon.dos"
+          },
+          {
+            "artifactIds": [],
+            "blockedByStepIds": [],
+            "errorCode": "CHECKSUM_MISMATCH",
+            "errorMessage": "Artifact bytes failed exact size/checksum verification.",
+            "state": "FAILED",
+            "stepId": "step_combined",
+            "toolCallId": null,
+            "toolId": "phonon.band_dos"
+          }
+        ],
+        "succeededCount": 2,
+        "topologicalOrder": [
+          "step_band",
+          "step_dos",
+          "step_combined"
+        ],
+        "updatedAt": "2026-07-30T00:00:00+00:00"
+      },
+      "executionHash": "53e2206e15cbaf64bc00f951d030079ddd159d3b8b3bf875bcf295357abf150c",
+      "executionId": "execution_53e2206e15cbaf64bc00f951d030079d",
+      "failedCount": 1,
+      "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+      "id": "execution_53e2206e15cbaf64bc00f951d030079d",
+      "jobId": "job_l3_runtime",
+      "notStartedCount": 0,
+      "outcome": "PARTIAL_RESULTS",
+      "partialArtifactIds": [
+        "call_job_l3_runtime_step_band-phonon_band_json",
+        "call_job_l3_runtime_step_dos-phonon_dos_json"
+      ],
+      "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+      "planId": "plan_l3_runtime",
+      "runtimeVersion": "queue_worker_dependency_1.0",
+      "schemaVersion": "1.0",
+      "steps": [
+        {
+          "artifactIds": [
+            "call_job_l3_runtime_step_band-phonon_band_json"
+          ],
+          "blockedByStepIds": [],
+          "errorCode": null,
+          "errorMessage": null,
+          "state": "SUCCEEDED",
+          "stepId": "step_band",
+          "toolCallId": "call_job_l3_runtime_step_band",
+          "toolId": "phonon.band"
+        },
+        {
+          "artifactIds": [
+            "call_job_l3_runtime_step_dos-phonon_dos_json"
+          ],
+          "blockedByStepIds": [],
+          "errorCode": null,
+          "errorMessage": null,
+          "state": "SUCCEEDED",
+          "stepId": "step_dos",
+          "toolCallId": "call_job_l3_runtime_step_dos",
+          "toolId": "phonon.dos"
+        },
+        {
+          "artifactIds": [],
+          "blockedByStepIds": [],
+          "errorCode": "CHECKSUM_MISMATCH",
+          "errorMessage": "Artifact bytes failed exact size/checksum verification.",
+          "state": "FAILED",
+          "stepId": "step_combined",
+          "toolCallId": null,
+          "toolId": "phonon.band_dos"
+        }
+      ],
+      "succeededCount": 2,
+      "topologicalOrder": [
+        "step_band",
+        "step_dos",
+        "step_combined"
+      ],
+      "updatedAt": "2026-07-30T00:00:00+00:00"
+    },
+    "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+    "jobId": "job_l3_runtime",
+    "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+    "planId": "plan_l3_runtime",
+    "planSchemaVersion": "0.2",
+    "plannedBindingRecords": [
+      {
+        "artifactContractVersion": "phase10h.phonon_dos.v1",
+        "artifactKind": "phonon_dos_json",
+        "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+        "cardinality": "EXACTLY_ONE",
+        "consumerInputPort": "dos",
+        "consumerStepId": "step_combined",
+        "dependencyBinding": {
+          "artifactContractVersion": "phase10h.phonon_dos.v1",
+          "artifactKind": "phonon_dos_json",
+          "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+          "cardinality": "EXACTLY_ONE",
+          "consumerInputPort": "dos",
+          "consumerStepId": "step_combined",
+          "mediaType": "application/json",
+          "producerOutputPort": "canonical-dos",
+          "producerStepId": "step_dos"
+        },
+        "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+        "mediaType": "application/json",
+        "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+        "planId": "plan_l3_runtime",
+        "producerOutputPort": "canonical-dos",
+        "producerStepId": "step_dos",
+        "semanticRecordHash": "80b6aa480cb1b21e65acca935f11714e9e4f966153524c5d6bccf992cf11bb8a"
+      },
+      {
+        "artifactContractVersion": "phase10h.phonon_band.v1",
+        "artifactKind": "phonon_band_json",
+        "bindingId": "binding_9b8824574aac2bd496160290cc830eeb",
+        "cardinality": "EXACTLY_ONE",
+        "consumerInputPort": "band",
+        "consumerStepId": "step_combined",
+        "dependencyBinding": {
+          "artifactContractVersion": "phase10h.phonon_band.v1",
+          "artifactKind": "phonon_band_json",
+          "bindingId": "binding_9b8824574aac2bd496160290cc830eeb",
+          "cardinality": "EXACTLY_ONE",
+          "consumerInputPort": "band",
+          "consumerStepId": "step_combined",
+          "mediaType": "application/json",
+          "producerOutputPort": "canonical-band",
+          "producerStepId": "step_band"
+        },
+        "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+        "mediaType": "application/json",
+        "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+        "planId": "plan_l3_runtime",
+        "producerOutputPort": "canonical-band",
+        "producerStepId": "step_band",
+        "semanticRecordHash": "bbe65022832be58cba63a4e83e3307d1c27521fadb7d256e65010d84f856ee34"
+      }
+    ],
+    "topologicalOrder": [
+      "step_band",
+      "step_dos",
+      "step_combined"
+    ]
+  },
+  "artifacts": [
+    {
+      "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "id": "call_job_l3_runtime_step_band-phonon_band_json",
+      "sizeBytes": 2152,
+      "toolCallId": "call_job_l3_runtime_step_band",
+      "type": "phonon_band_json"
+    },
+    {
+      "contentHash": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "id": "call_job_l3_runtime_step_dos-phonon_dos_json",
+      "sizeBytes": 1638,
+      "toolCallId": "call_job_l3_runtime_step_dos",
+      "type": "phonon_dos_json"
+    }
+  ],
+  "bindingResolutions": [
+    {
+      "artifactChecksum": null,
+      "artifactContractVersion": null,
+      "artifactId": null,
+      "artifactKind": null,
+      "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+      "consumerInputPort": "dos",
+      "consumerStepId": "step_combined",
+      "consumerToolCallId": null,
+      "errorCode": "CHECKSUM_MISMATCH",
+      "id": "binding_resolution_83d4c56b7ca3ad4ee938aab82cae6dd4",
+      "jobId": "job_l3_runtime",
+      "mediaType": null,
+      "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+      "planId": "plan_l3_runtime",
+      "producerStepId": "step_dos",
+      "producerToolCallId": null,
+      "recordHash": "83d4c56b7ca3ad4ee938aab82cae6dd401b439f50fd22ea2e71ad4847e129be1",
+      "resolvedArtifactInputRef": null,
+      "resolvedAt": "2026-07-30T00:00:00+00:00",
+      "validationOutcome": "CHECKSUM_MISMATCH"
+    }
+  ],
+  "execution": {
+    "bindings": [
+      {
+        "artifactChecksum": null,
+        "artifactId": null,
+        "bindingId": "binding_9b8824574aac2bd496160290cc830eeb",
+        "consumerToolCallId": null,
+        "errorCode": null,
+        "producerToolCallId": null,
+        "state": "PENDING"
+      },
+      {
+        "artifactChecksum": null,
+        "artifactId": null,
+        "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+        "consumerToolCallId": null,
+        "errorCode": "CHECKSUM_MISMATCH",
+        "producerToolCallId": null,
+        "state": "CHECKSUM_MISMATCH"
+      }
+    ],
+    "blockedCount": 0,
+    "createdAt": "2026-07-30T00:00:00+00:00",
+    "dependencyExecutionRecord": {
+      "bindings": [
+        {
+          "artifactChecksum": null,
+          "artifactId": null,
+          "bindingId": "binding_9b8824574aac2bd496160290cc830eeb",
+          "consumerToolCallId": null,
+          "errorCode": null,
+          "producerToolCallId": null,
+          "state": "PENDING"
+        },
+        {
+          "artifactChecksum": null,
+          "artifactId": null,
+          "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+          "consumerToolCallId": null,
+          "errorCode": "CHECKSUM_MISMATCH",
+          "producerToolCallId": null,
+          "state": "CHECKSUM_MISMATCH"
+        }
+      ],
+      "blockedCount": 0,
+      "createdAt": "2026-07-30T00:00:00+00:00",
+      "executionHash": "53e2206e15cbaf64bc00f951d030079ddd159d3b8b3bf875bcf295357abf150c",
+      "executionId": "execution_53e2206e15cbaf64bc00f951d030079d",
+      "failedCount": 1,
+      "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+      "jobId": "job_l3_runtime",
+      "notStartedCount": 0,
+      "outcome": "PARTIAL_RESULTS",
+      "partialArtifactIds": [
+        "call_job_l3_runtime_step_band-phonon_band_json",
+        "call_job_l3_runtime_step_dos-phonon_dos_json"
+      ],
+      "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+      "planId": "plan_l3_runtime",
+      "runtimeVersion": "queue_worker_dependency_1.0",
+      "schemaVersion": "1.0",
+      "steps": [
+        {
+          "artifactIds": [
+            "call_job_l3_runtime_step_band-phonon_band_json"
+          ],
+          "blockedByStepIds": [],
+          "errorCode": null,
+          "errorMessage": null,
+          "state": "SUCCEEDED",
+          "stepId": "step_band",
+          "toolCallId": "call_job_l3_runtime_step_band",
+          "toolId": "phonon.band"
+        },
+        {
+          "artifactIds": [
+            "call_job_l3_runtime_step_dos-phonon_dos_json"
+          ],
+          "blockedByStepIds": [],
+          "errorCode": null,
+          "errorMessage": null,
+          "state": "SUCCEEDED",
+          "stepId": "step_dos",
+          "toolCallId": "call_job_l3_runtime_step_dos",
+          "toolId": "phonon.dos"
+        },
+        {
+          "artifactIds": [],
+          "blockedByStepIds": [],
+          "errorCode": "CHECKSUM_MISMATCH",
+          "errorMessage": "Artifact bytes failed exact size/checksum verification.",
+          "state": "FAILED",
+          "stepId": "step_combined",
+          "toolCallId": null,
+          "toolId": "phonon.band_dos"
+        }
+      ],
+      "succeededCount": 2,
+      "topologicalOrder": [
+        "step_band",
+        "step_dos",
+        "step_combined"
+      ],
+      "updatedAt": "2026-07-30T00:00:00+00:00"
+    },
+    "executionHash": "53e2206e15cbaf64bc00f951d030079ddd159d3b8b3bf875bcf295357abf150c",
+    "executionId": "execution_53e2206e15cbaf64bc00f951d030079d",
+    "failedCount": 1,
+    "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+    "id": "execution_53e2206e15cbaf64bc00f951d030079d",
+    "jobId": "job_l3_runtime",
+    "notStartedCount": 0,
+    "outcome": "PARTIAL_RESULTS",
+    "partialArtifactIds": [
+      "call_job_l3_runtime_step_band-phonon_band_json",
+      "call_job_l3_runtime_step_dos-phonon_dos_json"
+    ],
+    "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+    "planId": "plan_l3_runtime",
+    "runtimeVersion": "queue_worker_dependency_1.0",
+    "schemaVersion": "1.0",
+    "steps": [
+      {
+        "artifactIds": [
+          "call_job_l3_runtime_step_band-phonon_band_json"
+        ],
+        "blockedByStepIds": [],
+        "errorCode": null,
+        "errorMessage": null,
+        "state": "SUCCEEDED",
+        "stepId": "step_band",
+        "toolCallId": "call_job_l3_runtime_step_band",
+        "toolId": "phonon.band"
+      },
+      {
+        "artifactIds": [
+          "call_job_l3_runtime_step_dos-phonon_dos_json"
+        ],
+        "blockedByStepIds": [],
+        "errorCode": null,
+        "errorMessage": null,
+        "state": "SUCCEEDED",
+        "stepId": "step_dos",
+        "toolCallId": "call_job_l3_runtime_step_dos",
+        "toolId": "phonon.dos"
+      },
+      {
+        "artifactIds": [],
+        "blockedByStepIds": [],
+        "errorCode": "CHECKSUM_MISMATCH",
+        "errorMessage": "Artifact bytes failed exact size/checksum verification.",
+        "state": "FAILED",
+        "stepId": "step_combined",
+        "toolCallId": null,
+        "toolId": "phonon.band_dos"
+      }
+    ],
+    "succeededCount": 2,
+    "topologicalOrder": [
+      "step_band",
+      "step_dos",
+      "step_combined"
+    ],
+    "updatedAt": "2026-07-30T00:00:00+00:00"
+  },
+  "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+  "lineage": [
+    {
+      "adapterVersion": "0.1.0",
+      "artifactContractVersion": "phase10h.phonon_band.v1",
+      "artifactId": "call_job_l3_runtime_step_band-phonon_band_json",
+      "artifactKind": "phonon_band_json",
+      "artifactLineageRecord": {
+        "adapterVersion": "0.1.0",
+        "artifactContractVersion": "phase10h.phonon_band.v1",
+        "artifactId": "call_job_l3_runtime_step_band-phonon_band_json",
+        "artifactKind": "phonon_band_json",
+        "bindingIds": [],
+        "caps": {
+          "bindings": 6,
+          "depth": 4,
+          "steps": 4
+        },
+        "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+        "createdAt": "2026-07-30T00:00:00+00:00",
+        "datasetId": "dataset_l3_runtime",
+        "datasetVersion": null,
+        "decisionHash": null,
+        "decisionId": null,
+        "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+        "intentHash": null,
+        "intentId": null,
+        "jobId": "job_l3_runtime",
+        "lineageHash": "04b2ec376478f42a3f4ebc59c65e5d79bb4ae50c4ca20077ea60a6d02f84f4e6",
+        "lineageId": "lineage_04b2ec376478f42a3f4ebc59c65e5d79",
+        "mediaType": "application/json",
+        "outputPort": "canonical-band",
+        "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+        "planId": "plan_l3_runtime",
+        "planSchemaVersion": "0.2",
+        "producerStepId": "step_band",
+        "producerToolCallId": "call_job_l3_runtime_step_band",
+        "producerToolId": "phonon.band",
+        "producerToolVersion": "0.1.0",
+        "profileId": "profile_l3_runtime",
+        "profileSemanticHash": null,
+        "projectId": "project_l3_runtime",
+        "resolutionHash": null,
+        "resolutionId": null,
+        "runtimeVersion": "queue_worker_dependency_1.0",
+        "schemaVersion": "1.0",
+        "upstreamArtifactHashes": [],
+        "upstreamArtifactIds": [],
+        "warnings": []
+      },
+      "bindingIds": [],
+      "caps": {
+        "bindings": 6,
+        "depth": 4,
+        "steps": 4
+      },
+      "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "createdAt": "2026-07-30T00:00:00+00:00",
+      "datasetId": "dataset_l3_runtime",
+      "datasetVersion": null,
+      "decisionHash": null,
+      "decisionId": null,
+      "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+      "id": "lineage_04b2ec376478f42a3f4ebc59c65e5d79",
+      "intentHash": null,
+      "intentId": null,
+      "jobId": "job_l3_runtime",
+      "lineageHash": "04b2ec376478f42a3f4ebc59c65e5d79bb4ae50c4ca20077ea60a6d02f84f4e6",
+      "lineageId": "lineage_04b2ec376478f42a3f4ebc59c65e5d79",
+      "mediaType": "application/json",
+      "outputPort": "canonical-band",
+      "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+      "planId": "plan_l3_runtime",
+      "planSchemaVersion": "0.2",
+      "producerStepId": "step_band",
+      "producerToolCallId": "call_job_l3_runtime_step_band",
+      "producerToolId": "phonon.band",
+      "producerToolVersion": "0.1.0",
+      "profileId": "profile_l3_runtime",
+      "profileSemanticHash": null,
+      "projectId": "project_l3_runtime",
+      "resolutionHash": null,
+      "resolutionId": null,
+      "runtimeVersion": "queue_worker_dependency_1.0",
+      "schemaVersion": "1.0",
+      "upstreamArtifactHashes": [],
+      "upstreamArtifactIds": [],
+      "warnings": []
+    },
+    {
+      "adapterVersion": "0.1.0",
+      "artifactContractVersion": "phase10h.phonon_dos.v1",
+      "artifactId": "call_job_l3_runtime_step_dos-phonon_dos_json",
+      "artifactKind": "phonon_dos_json",
+      "artifactLineageRecord": {
+        "adapterVersion": "0.1.0",
+        "artifactContractVersion": "phase10h.phonon_dos.v1",
+        "artifactId": "call_job_l3_runtime_step_dos-phonon_dos_json",
+        "artifactKind": "phonon_dos_json",
+        "bindingIds": [],
+        "caps": {
+          "bindings": 6,
+          "depth": 4,
+          "steps": 4
+        },
+        "contentHash": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+        "createdAt": "2026-07-30T00:00:00+00:00",
+        "datasetId": "dataset_l3_runtime",
+        "datasetVersion": null,
+        "decisionHash": null,
+        "decisionId": null,
+        "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+        "intentHash": null,
+        "intentId": null,
+        "jobId": "job_l3_runtime",
+        "lineageHash": "17a16e5a5ea2d9426f00d72789ac034445b16b871f693e552ce833c5b0c42d13",
+        "lineageId": "lineage_17a16e5a5ea2d9426f00d72789ac0344",
+        "mediaType": "application/json",
+        "outputPort": "canonical-dos",
+        "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+        "planId": "plan_l3_runtime",
+        "planSchemaVersion": "0.2",
+        "producerStepId": "step_dos",
+        "producerToolCallId": "call_job_l3_runtime_step_dos",
+        "producerToolId": "phonon.dos",
+        "producerToolVersion": "0.1.0",
+        "profileId": "profile_l3_runtime",
+        "profileSemanticHash": null,
+        "projectId": "project_l3_runtime",
+        "resolutionHash": null,
+        "resolutionId": null,
+        "runtimeVersion": "queue_worker_dependency_1.0",
+        "schemaVersion": "1.0",
+        "upstreamArtifactHashes": [],
+        "upstreamArtifactIds": [],
+        "warnings": []
+      },
+      "bindingIds": [],
+      "caps": {
+        "bindings": 6,
+        "depth": 4,
+        "steps": 4
+      },
+      "contentHash": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "createdAt": "2026-07-30T00:00:00+00:00",
+      "datasetId": "dataset_l3_runtime",
+      "datasetVersion": null,
+      "decisionHash": null,
+      "decisionId": null,
+      "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+      "id": "lineage_17a16e5a5ea2d9426f00d72789ac0344",
+      "intentHash": null,
+      "intentId": null,
+      "jobId": "job_l3_runtime",
+      "lineageHash": "17a16e5a5ea2d9426f00d72789ac034445b16b871f693e552ce833c5b0c42d13",
+      "lineageId": "lineage_17a16e5a5ea2d9426f00d72789ac0344",
+      "mediaType": "application/json",
+      "outputPort": "canonical-dos",
+      "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+      "planId": "plan_l3_runtime",
+      "planSchemaVersion": "0.2",
+      "producerStepId": "step_dos",
+      "producerToolCallId": "call_job_l3_runtime_step_dos",
+      "producerToolId": "phonon.dos",
+      "producerToolVersion": "0.1.0",
+      "profileId": "profile_l3_runtime",
+      "profileSemanticHash": null,
+      "projectId": "project_l3_runtime",
+      "resolutionHash": null,
+      "resolutionId": null,
+      "runtimeVersion": "queue_worker_dependency_1.0",
+      "schemaVersion": "1.0",
+      "upstreamArtifactHashes": [],
+      "upstreamArtifactIds": [],
+      "warnings": []
+    }
+  ],
+  "plan": {
+    "assumptions": [],
+    "datasetId": "dataset_l3_runtime",
+    "dependencyBindings": [
+      {
+        "artifactContractVersion": "phase10h.phonon_band.v1",
+        "artifactKind": "phonon_band_json",
+        "bindingId": "binding_9b8824574aac2bd496160290cc830eeb",
+        "cardinality": "EXACTLY_ONE",
+        "consumerInputPort": "band",
+        "consumerStepId": "step_combined",
+        "mediaType": "application/json",
+        "producerOutputPort": "canonical-band",
+        "producerStepId": "step_band"
+      },
+      {
+        "artifactContractVersion": "phase10h.phonon_dos.v1",
+        "artifactKind": "phonon_dos_json",
+        "bindingId": "binding_586d8f6c3f86b81430d91d95544fb912",
+        "cardinality": "EXACTLY_ONE",
+        "consumerInputPort": "dos",
+        "consumerStepId": "step_combined",
+        "mediaType": "application/json",
+        "producerOutputPort": "canonical-dos",
+        "producerStepId": "step_dos"
+      }
+    ],
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_band",
+        "name": "phonon_band.json",
+        "type": "phonon_band_json"
+      },
+      {
+        "fromStepId": "step_dos",
+        "name": "phonon_dos.json",
+        "type": "phonon_dos_json"
+      },
+      {
+        "fromStepId": "step_combined",
+        "name": "phonon_band_dos.json",
+        "type": "phonon_band_dos_json"
+      }
+    ],
+    "goal": "Build an exact phonon band and DOS linked product.",
+    "graphHash": "ce680b70cf1c9ede263ed4d4adaaa128f5f0d6a607bd1089c31f9f5f4c01dd9c",
+    "profileId": "profile_l3_runtime",
+    "schemaVersion": "0.2",
+    "steps": [
+      {
+        "constraints": null,
+        "inputRefs": [],
+        "output": {
+          "artifactTypes": [
+            "phonon_band_dos_json"
+          ],
+          "displayTarget": "result"
+        },
+        "params": {},
+        "purpose": "Execute phonon.band_dos",
+        "reason": "Phase 10L-3 real registered Adapter execution fixture.",
+        "stepId": "step_combined",
+        "toolId": "phonon.band_dos"
+      },
+      {
+        "constraints": null,
+        "inputRefs": [
+          {
+            "columnName": null,
+            "fieldRole": null,
+            "objectType": "PhononDos",
+            "ref": "source_dos",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "phonon_dos_json"
+          ],
+          "displayTarget": "result"
+        },
+        "params": {},
+        "purpose": "Execute phonon.dos",
+        "reason": "Phase 10L-3 real registered Adapter execution fixture.",
+        "stepId": "step_dos",
+        "toolId": "phonon.dos"
+      },
+      {
+        "constraints": null,
+        "inputRefs": [
+          {
+            "columnName": null,
+            "fieldRole": null,
+            "objectType": "PhononBand",
+            "ref": "source_band",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "phonon_band_json"
+          ],
+          "displayTarget": "result"
+        },
+        "params": {},
+        "purpose": "Execute phonon.band",
+        "reason": "Phase 10L-3 real registered Adapter execution fixture.",
+        "stepId": "step_band",
+        "toolId": "phonon.band"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "planHash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+  "result": {
+    "artifact_count": 2,
+    "event_count": 10,
+    "job_id": "job_l3_runtime",
+    "message": "dependency execution partial_results",
+    "plan_hash": "629834d94b914d59a872d9d213036bcf49d32878950ea5bdcf7ae03d6e1a9d17",
+    "plan_id": "plan_l3_runtime",
+    "status": "partial_success",
+    "tool_call_count": 2
+  },
+  "scenario": "binding_mismatch",
+  "storedStepOrder": [
+    "step_combined",
+    "step_dos",
+    "step_band"
+  ],
+  "toolCalls": [
+    {
+      "artifactIds": [
+        "call_job_l3_runtime_step_band-phonon_band_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_l3_runtime_step_band",
+      "idempotencyKey": "job_l3_runtime:step_band",
+      "jobId": "job_l3_runtime",
+      "params": {},
+      "status": "completed",
+      "stepId": "step_band",
+      "toolId": "phonon.band"
+    },
+    {
+      "artifactIds": [
+        "call_job_l3_runtime_step_dos-phonon_dos_json"
+      ],
+      "attempt": 1,
+      "id": "call_job_l3_runtime_step_dos",
+      "idempotencyKey": "job_l3_runtime:step_dos",
+      "jobId": "job_l3_runtime",
+      "params": {},
+      "status": "completed",
+      "stepId": "step_dos",
+      "toolId": "phonon.dos"
+    }
+  ],
+  "topologicalOrder": [
+    "step_band",
+    "step_dos",
+    "step_combined"
+  ]
+}

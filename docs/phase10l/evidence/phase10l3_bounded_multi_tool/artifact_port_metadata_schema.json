@@ -1,0 +1,300 @@
+{
+  "$defs": {
+    "ArtifactInputPort": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptedArtifactKinds": {
+          "items": {
+            "$ref": "#/$defs/ArtifactType"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Acceptedartifactkinds",
+          "type": "array"
+        },
+        "acceptedContractVersions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Acceptedcontractversions",
+          "type": "array"
+        },
+        "baseResourceRequired": {
+          "default": false,
+          "title": "Baseresourcerequired",
+          "type": "boolean"
+        },
+        "cardinality": {
+          "const": "EXACTLY_ONE",
+          "default": "EXACTLY_ONE",
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "contentTrust": {
+          "const": "INERT_DATA",
+          "default": "INERT_DATA",
+          "title": "Contenttrust",
+          "type": "string"
+        },
+        "identityPolicy": {
+          "const": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "default": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "title": "Identitypolicy",
+          "type": "string"
+        },
+        "inputFieldRole": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Inputfieldrole",
+          "type": "string"
+        },
+        "inputObjectType": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Inputobjecttype",
+          "type": "string"
+        },
+        "materializationPermitted": {
+          "default": true,
+          "title": "Materializationpermitted",
+          "type": "boolean"
+        },
+        "maxBytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 268435456,
+          "title": "Maxbytes",
+          "type": "integer"
+        },
+        "mediaTypes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Mediatypes",
+          "type": "array"
+        },
+        "plannerVisible": {
+          "default": true,
+          "title": "Plannervisible",
+          "type": "boolean"
+        },
+        "portId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Portid",
+          "type": "string"
+        },
+        "requiredSemanticRoles": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Requiredsemanticroles",
+          "type": "array"
+        }
+      },
+      "required": [
+        "portId",
+        "acceptedArtifactKinds",
+        "acceptedContractVersions",
+        "mediaTypes",
+        "maxBytes",
+        "requiredSemanticRoles",
+        "inputFieldRole",
+        "inputObjectType"
+      ],
+      "title": "ArtifactInputPort",
+      "type": "object"
+    },
+    "ArtifactOutputPort": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactKind": {
+          "$ref": "#/$defs/ArtifactType"
+        },
+        "cardinality": {
+          "const": "EXACTLY_ONE",
+          "default": "EXACTLY_ONE",
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "contentTrust": {
+          "const": "INERT_DATA",
+          "default": "INERT_DATA",
+          "title": "Contenttrust",
+          "type": "string"
+        },
+        "contractFamily": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Contractfamily",
+          "type": "string"
+        },
+        "contractVersions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Contractversions",
+          "type": "array"
+        },
+        "deterministic": {
+          "default": true,
+          "title": "Deterministic",
+          "type": "boolean"
+        },
+        "identityPolicy": {
+          "const": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "default": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "title": "Identitypolicy",
+          "type": "string"
+        },
+        "maxBytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 268435456,
+          "title": "Maxbytes",
+          "type": "integer"
+        },
+        "mediaTypes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Mediatypes",
+          "type": "array"
+        },
+        "plannerVisible": {
+          "default": true,
+          "title": "Plannervisible",
+          "type": "boolean"
+        },
+        "portId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Portid",
+          "type": "string"
+        },
+        "requiredProvenanceFields": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Requiredprovenancefields",
+          "type": "array"
+        }
+      },
+      "required": [
+        "portId",
+        "artifactKind",
+        "contractFamily",
+        "contractVersions",
+        "mediaTypes",
+        "maxBytes"
+      ],
+      "title": "ArtifactOutputPort",
+      "type": "object"
+    },
+    "ArtifactType": {
+      "enum": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "figure_svg",
+        "figure_pdf",
+        "matterviz_html",
+        "matterviz_snapshot_png",
+        "structure_json",
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json",
+        "phonon_band_json",
+        "phonon_band_dos_json",
+        "phonon_compatibility_json",
+        "phonon_dos_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "phonon_animation_json",
+        "phonon_animation_summary_json",
+        "phonon_animation_manifest_json",
+        "reciprocal_lattice_json",
+        "brillouin_zone_json",
+        "kpath_json",
+        "brillouin_zone_manifest_json",
+        "volumetric_grid_json",
+        "volumetric_payload_json",
+        "volumetric_field_json",
+        "volumetric_dataset_json",
+        "volumetric_manifest_json",
+        "volumetric_structure_overlay_json",
+        "volumetric_binary",
+        "metrics_json",
+        "table_json",
+        "table_csv",
+        "quality_issues_json",
+        "summary_md",
+        "report_md",
+        "report_html",
+        "recipe_json",
+        "analysis_plan_json"
+      ],
+      "title": "ArtifactType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "dependencyCompositionAllowed": {
+      "default": false,
+      "title": "Dependencycompositionallowed",
+      "type": "boolean"
+    },
+    "inputPorts": {
+      "items": {
+        "$ref": "#/$defs/ArtifactInputPort"
+      },
+      "maxItems": 16,
+      "title": "Inputports",
+      "type": "array"
+    },
+    "outputPorts": {
+      "items": {
+        "$ref": "#/$defs/ArtifactOutputPort"
+      },
+      "maxItems": 16,
+      "title": "Outputports",
+      "type": "array"
+    },
+    "schemaVersion": {
+      "const": "1.1",
+      "default": "1.1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "toolId": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Toolid",
+      "type": "string"
+    },
+    "toolVersion": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Toolversion",
+      "type": "string"
+    }
+  },
+  "required": [
+    "toolId",
+    "toolVersion"
+  ],
+  "title": "ToolArtifactPortMetadata",
+  "type": "object"
+}

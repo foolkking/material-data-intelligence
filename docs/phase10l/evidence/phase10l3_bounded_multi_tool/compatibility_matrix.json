@@ -1,0 +1,105 @@
+{
+  "matrixHash": "05e164a7f994860066a59f3bb74e02d2952318ccad4581de6423fbdfa0d09fb0",
+  "matrixId": "compatibility_05e164a7f994860066a59f3bb74e02d2",
+  "pairs": [
+    {
+      "artifactContractVersion": "phase10h.phonon_band.v1",
+      "artifactKind": "phonon_band_json",
+      "compatible": true,
+      "consumerInputPort": "band",
+      "consumerToolId": "phonon.band_dos",
+      "consumerToolVersion": "0.1.0",
+      "diagnostics": [],
+      "mediaType": "application/json",
+      "pairId": "port_pair_0d29fd0580508fb15011269c89994854",
+      "producerOutputPort": "canonical-band",
+      "producerToolId": "phonon.band",
+      "producerToolVersion": "0.1.0"
+    },
+    {
+      "artifactContractVersion": null,
+      "artifactKind": null,
+      "compatible": false,
+      "consumerInputPort": "dos",
+      "consumerToolId": "phonon.band_dos",
+      "consumerToolVersion": "0.1.0",
+      "diagnostics": [
+        {
+          "bindingId": null,
+          "code": "ARTIFACT_KIND_MISMATCH",
+          "field": "artifactKind",
+          "message": "Artifact kinds do not match.",
+          "stepId": null
+        },
+        {
+          "bindingId": null,
+          "code": "CONTRACT_VERSION_MISMATCH",
+          "field": "contractVersion",
+          "message": "Artifact contract versions do not match.",
+          "stepId": null
+        }
+      ],
+      "mediaType": null,
+      "pairId": "port_pair_52133cecd64a95336293596f6240d26f",
+      "producerOutputPort": "canonical-band",
+      "producerToolId": "phonon.band",
+      "producerToolVersion": "0.1.0"
+    },
+    {
+      "artifactContractVersion": null,
+      "artifactKind": null,
+      "compatible": false,
+      "consumerInputPort": "band",
+      "consumerToolId": "phonon.band_dos",
+      "consumerToolVersion": "0.1.0",
+      "diagnostics": [
+        {
+          "bindingId": null,
+          "code": "ARTIFACT_KIND_MISMATCH",
+          "field": "artifactKind",
+          "message": "Artifact kinds do not match.",
+          "stepId": null
+        },
+        {
+          "bindingId": null,
+          "code": "CONTRACT_VERSION_MISMATCH",
+          "field": "contractVersion",
+          "message": "Artifact contract versions do not match.",
+          "stepId": null
+        }
+      ],
+      "mediaType": null,
+      "pairId": "port_pair_bcf6208856b80e71668cee906e63afaf",
+      "producerOutputPort": "canonical-dos",
+      "producerToolId": "phonon.dos",
+      "producerToolVersion": "0.1.0"
+    },
+    {
+      "artifactContractVersion": "phase10h.phonon_dos.v1",
+      "artifactKind": "phonon_dos_json",
+      "compatible": true,
+      "consumerInputPort": "dos",
+      "consumerToolId": "phonon.band_dos",
+      "consumerToolVersion": "0.1.0",
+      "diagnostics": [],
+      "mediaType": "application/json",
+      "pairId": "port_pair_fe61e91c8580350481bff6e339e0d8e2",
+      "producerOutputPort": "canonical-dos",
+      "producerToolId": "phonon.dos",
+      "producerToolVersion": "0.1.0"
+    }
+  ],
+  "portMetadataHashes": {
+    "phonon.band": "f7df166106fa5626fc0674309fc3fe69f87605fc01b81bd076a26b9ab56c96ef",
+    "phonon.band_dos": "48270b5f1ace1880732ce8062f050319a18ba5e9414fb301e06ca27c66c26057",
+    "phonon.dos": "949e97d3cd94a1ad67918b8ce68000d2f546c10ee714040266458cd3d2229514"
+  },
+  "registrySnapshotHash": "465482cd226ed056aec57ab4437f90d85b4c8c12507ca62a50f6574b3f8cade0",
+  "registrySnapshotId": "registry_465482cd226ed056aec57ab4",
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "phonon.band",
+    "phonon.band_dos",
+    "phonon.dos"
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "phase10l3.artifact_contract_inventory.v1",
+  "sourceCommit": "7d032a9c1dafd2a4a76522bcfcd1321fb08b20f9",
+  "registryVersion": "0.1.0",
+  "availabilityFilter": "AVAILABLE",
+  "toolCount": 38,
+  "auditPolicy": {
+    "manifestArtifactTypeIsDependencyPort": false,
+    "genericJsonIsTypedScientificInput": false,
+    "displayArtifactIsExecutionAuthority": false,
+    "dependencyReadyChainCount": 1
+  },
+  "artifactMediaTypes": {
+    "brillouin_zone_json": "application/json",
+    "brillouin_zone_manifest_json": "application/json",
+    "kpath_json": "application/json",
+    "metrics_json": "application/json",
+    "phonon_animation_json": "application/json",
+    "phonon_animation_manifest_json": "application/json",
+    "phonon_animation_summary_json": "application/json",
+    "phonon_band_dos_json": "application/json",
+    "phonon_band_json": "application/json",
+    "phonon_compatibility_json": "application/json",
+    "phonon_dos_json": "application/json",
+    "phonon_manifest_json": "application/json",
+    "phonon_report_json": "application/json",
+    "phonon_summary_json": "application/json",
+    "plotly_html": "text/html",
+    "plotly_json": "application/json",
+    "preview_png": "image/png",
+    "quality_issues_json": "application/json",
+    "recipe_json": "application/json",
+    "reciprocal_lattice_json": "application/json",
+    "structure_json": "application/json",
+    "summary_md": "text/markdown",
+    "table_csv": "text/csv",
+    "table_json": "application/json",
+    "trajectory_json": "application/json",
+    "trajectory_manifest_json": "application/json",
+    "trajectory_report_json": "application/json",
+    "trajectory_summary_json": "application/json",
+    "volumetric_binary": null,
+    "volumetric_dataset_json": "application/json",
+    "volumetric_field_json": "application/json",
+    "volumetric_grid_json": "application/json",
+    "volumetric_manifest_json": "application/json",
+    "volumetric_payload_json": "application/json",
+    "volumetric_structure_overlay_json": "application/json"
+  },
+  "dependencyReadyChains": [
+    {
+      "chainId": "phonon-band-and-dos-to-combined-view",
+      "producers": [
+        {
+          "toolId": "phonon.band",
+          "outputRole": "canonical-band",
+          "artifactType": "phonon_band_json",
+          "contractVersion": "phase10h.phonon_band.v1",
+          "mediaType": "application/json"
+        },
+        {
+          "toolId": "phonon.dos",
+          "outputRole": "canonical-dos",
+          "artifactType": "phonon_dos_json",
+          "contractVersion": "phase10h.phonon_dos.v1",
+          "mediaType": "application/json"
+        }
+      ],
+      "consumer": {
+        "toolId": "phonon.band_dos",
+        "inputPorts": [
+          {
+            "portId": "band",
+            "objectType": "PhononBand",
+            "artifactType": "phonon_band_json",
+            "contractVersion": "phase10h.phonon_band.v1",
+            "mediaType": "application/json",
+            "cardinality": "EXACTLY_ONE"
+          },
+          {
+            "portId": "dos",
+            "objectType": "PhononDos",
+            "artifactType": "phonon_dos_json",
+            "contractVersion": "phase10h.phonon_dos.v1",
+            "mediaType": "application/json",
+            "cardinality": "EXACTLY_ONE"
+          }
+        ],
+        "outputContractVersion": "phase10h.phonon_band_dos.v1"
+      },
+      "scientificCompatibility": "Existing strict band/DOS composition validates structure identity, atom ordering, lineage, force constants, frequency conventions, normalization, imaginary modes, NAC metadata, projections, caps, and frequency domain.",
+      "newScientificAlgorithmRequired": false
+    }
+  ],
+  "tools": [
+    {"toolId":"composition.chem_sys_sunburst","toolVersion":"0.1.0","currentOutputs":["plotly_json","plotly_html","preview_png","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"composition.chem_sys_treemap","toolVersion":"0.1.0","currentOutputs":["plotly_json","plotly_html","preview_png","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"composition.elements_hist","toolVersion":"0.1.0","currentOutputs":["plotly_json","plotly_html","preview_png","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"composition.formula_statistics","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"composition.ptable_heatmap","toolVersion":"0.1.0","currentOutputs":["plotly_json","plotly_html","preview_png","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"composition.summary","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"dataset.composition_space","toolVersion":"0.1.0","currentOutputs":["table_json","plotly_json","summary_md","recipe_json"],"knownStableOutputs":[{"stableRole":"composition-space","artifactType":"table_json","contractVersion":"phase10k4.composition_space.v1","mediaType":"application/json"}],"artifactInputSupport":"BOUNDED_PHASE10K3_CONTENT_INPUT_WITH_PROFILE_AND_TABLE","classification":"INPUT_CAPABLE_AND_PRODUCER","dependencyReadiness":"NOT_DEPENDENCY_READY","reason":"Upstream ML outputs are generic table_json in current Registry metadata and no complete planner-visible producer/input-port closure is declared."},
+    {"toolId":"dataset.materials_explorer","toolVersion":"0.1.0","currentOutputs":["table_json","quality_issues_json","summary_md","recipe_json"],"knownStableOutputs":[{"stableRole":"dataset-materials-explorer","artifactType":"table_json","contractVersion":"phase10k2.dataset_materials_explorer.v1","mediaType":"application/json"}],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"ml.basic_metrics","toolVersion":"0.1.0","currentOutputs":["metrics_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"ml.classification_evaluation","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[{"stableRole":"materials-ml-classification","artifactType":"table_json","contractVersion":"phase10k3.materials_ml_classification.v1","mediaType":"application/json"}],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"ml.density_scatter","toolVersion":"0.1.0","currentOutputs":["plotly_json","plotly_html","preview_png","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"ml.error_distribution","toolVersion":"0.1.0","currentOutputs":["plotly_json","plotly_html","preview_png","metrics_json","table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"ml.outlier_table","toolVersion":"0.1.0","currentOutputs":["table_json","table_csv","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"ml.regression_evaluation","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[{"stableRole":"materials-ml-regression","artifactType":"table_json","contractVersion":"phase10k3.materials_ml_regression.v1","mediaType":"application/json"}],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"ml.uncertainty_evaluation","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[{"stableRole":"materials-ml-uncertainty","artifactType":"table_json","contractVersion":"phase10k3.materials_ml_uncertainty.v1","mediaType":"application/json"}],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"phonon.animation","toolVersion":"0.1.0","currentOutputs":["phonon_animation_json","phonon_animation_summary_json","phonon_animation_manifest_json","recipe_json"],"knownStableOutputs":[{"stableRole":"phonon-animation","artifactType":"phonon_animation_json","contractVersion":"phase10h5.phonon_animation.v1","mediaType":"application/json"}],"artifactInputSupport":"STRICT_STRUCTURE_BAND_EIGENVECTOR_ROLES","classification":"INPUT_CAPABLE_AND_PRODUCER","dependencyReadiness":"NOT_DEPENDENCY_READY","reason":"The AVAILABLE Registry inventory has no planner-visible producer for the required PhononEigenvector input, so producer closure is incomplete."},
+    {"toolId":"phonon.band","toolVersion":"0.1.0","currentOutputs":["phonon_band_json","phonon_summary_json","phonon_report_json","phonon_manifest_json","plotly_json","table_json","recipe_json"],"knownStableOutputs":[{"stableRole":"canonical-band","artifactType":"phonon_band_json","contractVersion":"phase10h.phonon_band.v1","mediaType":"application/json"}],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"SELECTED_CHAIN_PRODUCER","dependencyReadiness":"DEPENDENCY_READY"},
+    {"toolId":"phonon.band_dos","toolVersion":"0.1.0","currentOutputs":["phonon_band_dos_json","phonon_summary_json","phonon_compatibility_json","plotly_json","table_json","phonon_manifest_json","recipe_json"],"knownStableOutputs":[{"stableRole":"combined-band-dos","artifactType":"phonon_band_dos_json","contractVersion":"phase10h.phonon_band_dos.v1","mediaType":"application/json"}],"artifactInputSupport":"STRICT_ROLE_BOUND_BAND_AND_DOS_ARTIFACTS","classification":"SELECTED_CHAIN_CONSUMER_AND_PRODUCER","dependencyReadiness":"DEPENDENCY_READY"},
+    {"toolId":"phonon.dos","toolVersion":"0.1.0","currentOutputs":["phonon_dos_json","phonon_summary_json","phonon_report_json","phonon_manifest_json","plotly_json","table_json","recipe_json"],"knownStableOutputs":[{"stableRole":"canonical-dos","artifactType":"phonon_dos_json","contractVersion":"phase10h.phonon_dos.v1","mediaType":"application/json"}],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"SELECTED_CHAIN_PRODUCER","dependencyReadiness":"DEPENDENCY_READY"},
+    {"toolId":"structure.brillouin_zone","toolVersion":"0.1.0","currentOutputs":["reciprocal_lattice_json","brillouin_zone_json","kpath_json","brillouin_zone_manifest_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.composition_from_structure","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.coordination_hist","toolVersion":"0.1.0","currentOutputs":["table_json","plotly_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.lattice_summary","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.preview_metadata","toolVersion":"0.1.0","currentOutputs":["structure_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.rdf","toolVersion":"0.1.0","currentOutputs":["table_json","plotly_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.spacegroup_summary","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.structure_3d","toolVersion":"0.1.0","currentOutputs":["plotly_json","plotly_html","preview_png","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.summary","toolVersion":"0.1.0","currentOutputs":["structure_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.trajectory_viewer","toolVersion":"0.1.0","currentOutputs":["trajectory_json","trajectory_summary_json","trajectory_report_json","trajectory_manifest_json"],"knownStableOutputs":[{"stableRole":"canonical-trajectory","artifactType":"trajectory_json","contractVersion":"phase10g.trajectory.v1","mediaType":"application/json"}],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.viewer_3d","toolVersion":"0.1.0","currentOutputs":["structure_json","table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.viewer_scene","toolVersion":"0.1.0","currentOutputs":["structure_json","table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.volumetric_data","toolVersion":"0.1.0","currentOutputs":["volumetric_grid_json","volumetric_payload_json","volumetric_field_json","volumetric_dataset_json","volumetric_manifest_json","volumetric_binary","volumetric_structure_overlay_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"structure.xrd","toolVersion":"0.1.0","currentOutputs":["table_json","plotly_json","summary_md","recipe_json"],"knownStableOutputs":[{"stableRole":"calculated-xrd-pattern","artifactType":"table_json","contractVersion":"phase10e4.xrd_pattern.v1","mediaType":"application/json"}],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"table.distribution_summary","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"table.numeric_summary","toolVersion":"0.1.0","currentOutputs":["table_json","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"viz.correlation","toolVersion":"0.1.0","currentOutputs":["table_json","plotly_json","plotly_html","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"viz.histogram","toolVersion":"0.1.0","currentOutputs":["plotly_json","plotly_html","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"},
+    {"toolId":"viz.scatter","toolVersion":"0.1.0","currentOutputs":["plotly_json","plotly_html","summary_md","recipe_json"],"knownStableOutputs":[],"artifactInputSupport":"NO_DECLARED_TYPED_ARTIFACT_PORT","classification":"PRODUCER_ONLY","dependencyReadiness":"NOT_DEPENDENCY_READY"}
+  ]
+}

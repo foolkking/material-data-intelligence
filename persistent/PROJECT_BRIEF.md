@@ -31,7 +31,8 @@ program, deployment product, or plugin marketplace.
 ```text
 Data -> Profile -> Natural Language -> AnalysisIntent v1
      -> bounded clarification -> Registry/Profile eligibility
-     -> capability-aware selection + exact binding -> AnalysisPlan 0.1
+     -> capability-aware selection + exact binding
+     -> AnalysisPlan 0.1 or bounded dependency-aware AnalysisPlan 0.2
      -> Execute
      -> Visualize -> Interpret -> Report / Recipe
 ```
@@ -44,8 +45,13 @@ implemented strict Registry planner metadata, deterministic Profile/Intent
 eligibility, eligible-only capability selection, exact parameter provenance,
 and an independent validation gate while keeping AnalysisPlan 0.1 and Runtime
 semantics unchanged. Its implementation and completion-record exact-SHA CI are
-green, and its verified TASKS block is archived. Phase 10L-3 remains
-reviewer-gated and is not queued. The remaining initial-release route is:
+green, and its verified TASKS block is archived. Phase 10L-3 is the sole active
+task. It adds a strict four-step/six-binding AnalysisPlan 0.2 path, typed
+artifact ports, deterministic serial dependency execution, partial-result
+records, and artifact lineage while preserving all 0.1 behavior. Local focused
+and three-browser/mobile evidence is green; exact-SHA CI and verified archive
+remain required. Phase 10L-4 remains reviewer-gated. The remaining
+initial-release route is:
 
 ```text
 10K Material Intelligence

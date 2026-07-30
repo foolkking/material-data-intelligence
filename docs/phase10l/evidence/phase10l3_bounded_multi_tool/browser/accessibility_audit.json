@@ -1,0 +1,72 @@
+{
+  "chromium": {
+    "desktop": {
+      "success": {
+        "ariaLive": "polite",
+        "bindingTabIndex": "0",
+        "stepListLabel": "Dependency execution states",
+        "focusedTag": "ARTICLE",
+        "focusedClass": "dependency-card"
+      },
+      "partial": {
+        "ariaLive": "polite",
+        "bindingTabIndex": "0",
+        "stepListLabel": "Dependency execution states",
+        "focusedTag": "ARTICLE",
+        "focusedClass": "dependency-card"
+      }
+    },
+    "mobile": {
+      "success": {
+        "ariaLive": "polite",
+        "bindingTabIndex": "0",
+        "stepListLabel": "Dependency execution states",
+        "focusedTag": "ARTICLE",
+        "focusedClass": "dependency-card"
+      },
+      "partial": {
+        "ariaLive": "polite",
+        "bindingTabIndex": "0",
+        "stepListLabel": "Dependency execution states",
+        "focusedTag": "ARTICLE",
+        "focusedClass": "dependency-card"
+      }
+    }
+  },
+  "firefox": {
+    "desktop": {
+      "success": {
+        "ariaLive": "polite",
+        "bindingTabIndex": "0",
+        "stepListLabel": "Dependency execution states",
+        "focusedTag": "ARTICLE",
+        "focusedClass": "dependency-card"
+      },
+      "partial": {
+        "ariaLive": "polite",
+        "bindingTabIndex": "0",
+        "stepListLabel": "Dependency execution states",
+        "focusedTag": "ARTICLE",
+        "focusedClass": "dependency-card"
+      }
+    }
+  },
+  "webkit": {
+    "desktop": {
+      "success": {
+        "ariaLive": "polite",
+        "bindingTabIndex": "0",
+        "stepListLabel": "Dependency execution states",
+        "focusedTag": "ARTICLE",
+        "focusedClass": "dependency-card"
+      },
+      "partial": {
+        "ariaLive": "polite",
+        "bindingTabIndex": "0",
+        "stepListLabel": "Dependency execution states",
+        "focusedTag": "ARTICLE",
+        "focusedClass": "dependency-card"
+      }
+    }
+  }
+}

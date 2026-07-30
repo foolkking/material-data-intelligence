@@ -61,6 +61,21 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 
 ## Phase 10L Intelligent Analysis Agent
 
+- [`phase10l/phase10l3_bounded_multi_tool_architecture.md`](phase10l/phase10l3_bounded_multi_tool_architecture.md): bounded composition architecture, authority boundaries, and the real phonon chain.
+- [`phase10l/phase10l3_analysis_plan_02_contract.md`](phase10l/phase10l3_analysis_plan_02_contract.md): additive AnalysisPlan 0.2, deterministic graph/plan identity, and hard caps.
+- [`phase10l/phase10l3_dependency_binding_contract.md`](phase10l/phase10l3_dependency_binding_contract.md): the single authoritative typed artifact edge model.
+- [`phase10l/phase10l3_artifact_port_metadata.md`](phase10l/phase10l3_artifact_port_metadata.md): 38-tool artifact audit, ToolArtifactPortMetadata 1.1, and selected producer/consumer ports.
+- [`phase10l/phase10l3_dependency_validation.md`](phase10l/phase10l3_dependency_validation.md): validation order, diagnostics, graph checks, and no-side-effect failures.
+- [`phase10l/phase10l3_runtime_execution.md`](phase10l/phase10l3_runtime_execution.md): exact persisted-plan loading, serial topological execution, and platform-created artifact refs.
+- [`phase10l/phase10l3_partial_execution_semantics.md`](phase10l/phase10l3_partial_execution_semantics.md): step/binding states, descendant blocking, independent branches, and retained artifacts.
+- [`phase10l/phase10l3_artifact_lineage.md`](phase10l/phase10l3_artifact_lineage.md): immutable producer, consumer, upstream, plan, and checksum lineage.
+- [`phase10l/phase10l3_api_frontend.md`](phase10l/phase10l3_api_frontend.md): additive Planner API/read surface and accessible PlannerWorkbench dependency panel.
+- [`phase10l/phase10l3_security.md`](phase10l/phase10l3_security.md): provider isolation, inert artifacts, exact scope checks, and required closure markers.
+- [`phase10l/phase10l3_caps_performance.md`](phase10l/phase10l3_caps_performance.md): graph/artifact limits and pending near-cap measurement contract.
+- [`phase10l/phase10l3_compatibility.md`](phase10l/phase10l3_compatibility.md): preserved 0.1/L1/L2 behavior and additive 0.2 compatibility.
+- [`phase10l/phase10l3_evidence.md`](phase10l/phase10l3_evidence.md): required runtime, browser, service-backed, performance, security, and manifest evidence.
+- [`phase10l/phase10l3_readiness_matrix.md`](phase10l/phase10l3_readiness_matrix.md): implementation-candidate state and exact closure gates.
+- [`phase10l/phase10l4_reviewer_gate.md`](phase10l/phase10l4_reviewer_gate.md): reviewer-only L4 admission record; not an executable task.
 - [`phase10l/phase10l2_capability_planner_contract.md`](phase10l/phase10l2_capability_planner_contract.md): Registry metadata, deterministic eligibility, eligible-only selection, exact binding, validation, and one-repair contract.
 - [`phase10l/phase10l2_persistence_api_compatibility.md`](phase10l/phase10l2_persistence_api_compatibility.md): immutable audit persistence, canonical API gate, and AnalysisPlan 0.1 compatibility.
 - [`phase10l/phase10l2_security_caps.md`](phase10l/phase10l2_security_caps.md): caps, provider isolation, execution boundary, and required markers.

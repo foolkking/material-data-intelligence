@@ -1,0 +1,23 @@
+{
+  "cycle": {
+    "accepted": false,
+    "code": "CYCLE_WOULD_BE_CREATED",
+    "message": "Dependency graph contains a cycle."
+  },
+  "planningTimeInvalidCreates": {
+    "artifact": 0,
+    "job": 0,
+    "plan": 0,
+    "queueMessage": 0,
+    "toolCall": 0
+  },
+  "tamperedGraph": [
+    {
+      "bindingId": null,
+      "code": "GRAPH_IDENTITY_INVALID",
+      "field": "plan",
+      "message": "AnalysisPlan 0.2 schema/graph validation failed: 1 validation error for AnalysisPlanV02\n  Value error, graphHash does not match dependencyBindings. [type=value_error, input_value={'schemaVersion': '0.2', ...pId': 'step_combined'}]}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+      "stepId": null
+    }
+  ]
+}

@@ -1,0 +1,322 @@
+{
+  "$defs": {
+    "BindingExecutionState": {
+      "enum": [
+        "PENDING",
+        "RESOLVED",
+        "FAILED_PRODUCER",
+        "MISSING_ARTIFACT",
+        "CONTRACT_MISMATCH",
+        "SCOPE_MISMATCH",
+        "CHECKSUM_MISMATCH",
+        "SIZE_REJECTED",
+        "CONSUMER_NOT_RUN"
+      ],
+      "title": "BindingExecutionState",
+      "type": "string"
+    },
+    "DependencyBindingExecution": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactChecksum": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactchecksum"
+        },
+        "artifactId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactid"
+        },
+        "bindingId": {
+          "title": "Bindingid",
+          "type": "string"
+        },
+        "consumerToolCallId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Consumertoolcallid"
+        },
+        "errorCode": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Errorcode"
+        },
+        "producerToolCallId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Producertoolcallid"
+        },
+        "state": {
+          "$ref": "#/$defs/BindingExecutionState"
+        }
+      },
+      "required": [
+        "bindingId",
+        "state"
+      ],
+      "title": "DependencyBindingExecution",
+      "type": "object"
+    },
+    "DependencyExecutionOutcome": {
+      "enum": [
+        "ALL_SUCCEEDED",
+        "PARTIAL_RESULTS",
+        "ALL_FAILED",
+        "VALIDATION_ABORTED"
+      ],
+      "title": "DependencyExecutionOutcome",
+      "type": "string"
+    },
+    "DependencyStepExecution": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Artifactids",
+          "type": "array"
+        },
+        "blockedByStepIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 4,
+          "title": "Blockedbystepids",
+          "type": "array"
+        },
+        "errorCode": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Errorcode"
+        },
+        "errorMessage": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Errormessage"
+        },
+        "state": {
+          "$ref": "#/$defs/StepExecutionState"
+        },
+        "stepId": {
+          "title": "Stepid",
+          "type": "string"
+        },
+        "toolCallId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Toolcallid"
+        },
+        "toolId": {
+          "title": "Toolid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "stepId",
+        "toolId",
+        "state"
+      ],
+      "title": "DependencyStepExecution",
+      "type": "object"
+    },
+    "StepExecutionState": {
+      "enum": [
+        "PENDING",
+        "READY",
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "BLOCKED_DEPENDENCY",
+        "NOT_STARTED"
+      ],
+      "title": "StepExecutionState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "bindings": {
+      "items": {
+        "$ref": "#/$defs/DependencyBindingExecution"
+      },
+      "maxItems": 6,
+      "title": "Bindings",
+      "type": "array"
+    },
+    "blockedCount": {
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Blockedcount",
+      "type": "integer"
+    },
+    "createdAt": "2026-07-30T00:00:00+00:00",
+    "executionHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Executionhash",
+      "type": "string"
+    },
+    "executionId": {
+      "title": "Executionid",
+      "type": "string"
+    },
+    "failedCount": {
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Failedcount",
+      "type": "integer"
+    },
+    "graphHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Graphhash",
+      "type": "string"
+    },
+    "jobId": {
+      "title": "Jobid",
+      "type": "string"
+    },
+    "notStartedCount": {
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Notstartedcount",
+      "type": "integer"
+    },
+    "outcome": {
+      "$ref": "#/$defs/DependencyExecutionOutcome"
+    },
+    "partialArtifactIds": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Partialartifactids",
+      "type": "array"
+    },
+    "planHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Planhash",
+      "type": "string"
+    },
+    "planId": {
+      "title": "Planid",
+      "type": "string"
+    },
+    "runtimeVersion": {
+      "title": "Runtimeversion",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/DependencyStepExecution"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Steps",
+      "type": "array"
+    },
+    "succeededCount": {
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Succeededcount",
+      "type": "integer"
+    },
+    "topologicalOrder": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Topologicalorder",
+      "type": "array"
+    },
+    "updatedAt": "2026-07-30T00:00:00+00:00"
+  },
+  "required": [
+    "executionId",
+    "executionHash",
+    "planId",
+    "planHash",
+    "jobId",
+    "graphHash",
+    "topologicalOrder",
+    "steps",
+    "succeededCount",
+    "failedCount",
+    "blockedCount",
+    "notStartedCount",
+    "outcome",
+    "runtimeVersion",
+    "createdAt",
+    "updatedAt"
+  ],
+  "title": "DependencyExecutionRecord",
+  "type": "object"
+}

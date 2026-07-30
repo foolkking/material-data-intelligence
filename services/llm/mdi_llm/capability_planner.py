@@ -10,6 +10,7 @@ from mdi_schemas import (
     AnalysisIntent,
     AnalysisIntentOutcome,
     AnalysisPlan,
+    AnalysisPlanV02,
     BoundParameter,
     CapabilityDecisionProvenance,
     CapabilityDiagnostic,
@@ -39,6 +40,12 @@ from mdi_tool_registry.plan_validator import validate_plan
 from mdi_tool_registry.planner_metadata import build_registry_snapshot
 
 from .analysis_intent import AnalysisIntentError, AnalysisIntentValidator
+from .dependency_planner import (
+    DependencyCompositionError,
+    compose_analysis_plan_v02,
+    compose_analysis_plan_with_provider,
+    expand_selected_dependency_closure,
+)
 from .providers import LLMProviderError, MockLLMProvider, OpenAICompatibleProvider, PlannerUserConfig
 
 
@@ -66,7 +73,7 @@ class CapabilityPlanningResult:
     resolution: EligibilityResolution
     projection: EligibleCandidateProjection
     decision: CapabilityPlanningDecision
-    plan: AnalysisPlan | None
+    plan: AnalysisPlan | AnalysisPlanV02 | None
     provider_visible_tool_ids: tuple[str, ...]
 
 
@@ -253,6 +260,11 @@ def plan_capabilities(
     if isinstance(provider, MockLLMProvider):
         try:
             selected_ids = _deterministic_selection(intent, projection)
+            selected_ids = expand_selected_dependency_closure(
+                selected_ids,
+                projection=projection,
+                limit=min(intent.constraints.maxToolCalls or 4, intent.constraints.maxAnalyses or 4, 4),
+            )
             decision, plan = _build_ready_decision_and_plan(
                 intent, profile, registry, resolution, projection, selected_ids,
                 provider_name="deterministic_mock", model="mock", repair_count=0,
@@ -455,7 +467,9 @@ def _build_ready_decision_and_plan(
     repair_count: int,
     initial_decision_hash: str | None = None,
     repair_diagnostics: list[CapabilityDiagnostic] | None = None,
-) -> tuple[CapabilityPlanningDecision, AnalysisPlan]:
+    composition_provider: OpenAICompatibleProvider | None = None,
+    user_config: PlannerUserConfig | None = None,
+) -> tuple[CapabilityPlanningDecision, AnalysisPlan | AnalysisPlanV02]:
     by_id = {item.toolId: item for item in projection.candidates}
     requested_ids = sorted(selected_ids)
     if not set(requested_ids).issubset(by_id):
@@ -527,16 +541,62 @@ def _build_ready_decision_and_plan(
         decisionHash=decision_hash,
         **draft,
     )
-    plan = _build_analysis_plan(intent, profile, registry, decision)
+    base_plan = _build_analysis_plan(intent, profile, registry, decision)
     CapabilityContextValidator().validate(
         intent=intent,
         profile=profile,
         registry=registry,
         resolution=resolution,
         decision=decision,
-        plan=plan,
+        plan=base_plan,
     )
+    try:
+        if composition_provider is None:
+            plan = compose_analysis_plan_v02(base_plan, registry=registry, decision=decision)
+        else:
+            plan, composition_repairs, composition_initial_hash, composition_diagnostics = compose_analysis_plan_with_provider(
+                base_plan,
+                registry=registry,
+                decision=decision,
+                provider=composition_provider,
+                user_config=user_config,
+                repair_budget=1 - repair_count,
+            )
+            if composition_repairs:
+                decision = _decision_with_composition_repair(
+                    decision,
+                    initial_hash=composition_initial_hash,
+                    diagnostics=composition_diagnostics,
+                )
+    except DependencyCompositionError as exc:
+        raise CapabilityPlanningError(str(exc), code=exc.code, repairable=False) from exc
     return decision, plan
+
+
+def _decision_with_composition_repair(
+    decision: CapabilityPlanningDecision,
+    *,
+    initial_hash: str | None,
+    diagnostics: list[dict[str, str]],
+) -> CapabilityPlanningDecision:
+    repair_diagnostics = list(decision.provenance.repairDiagnostics)
+    repair_diagnostics.extend(
+        _diagnostic(item["code"], "dependencyComposition", item["message"], repairable=True)
+        for item in diagnostics
+    )
+    draft = decision.model_dump(mode="json", exclude={"decisionId", "decisionHash"})
+    draft["provenance"] = {
+        **draft["provenance"],
+        "repairCount": 1,
+        "initialDecisionHash": initial_hash,
+        "repairDiagnostics": [item.model_dump(mode="json") for item in repair_diagnostics],
+    }
+    decision_hash = capability_semantic_hash(draft, identity_fields=())
+    return CapabilityPlanningDecision(
+        decisionId=deterministic_capability_id("decision", decision_hash),
+        decisionHash=decision_hash,
+        **draft,
+    )
 
 
 def _build_analysis_plan(
@@ -605,9 +665,14 @@ def _llm_selection_with_repair(
     proposal, model = _request_llm_proposal(provider, intent, profile, projection, user_config=user_config)
     initial_hash = capability_semantic_hash(proposal, identity_fields=())
     try:
+        selected_ids = expand_selected_dependency_closure(
+            proposal.selectedToolIds, projection=projection,
+            limit=min(intent.constraints.maxToolCalls or 4, intent.constraints.maxAnalyses or 4, 4),
+        )
         return _build_ready_decision_and_plan(
-            intent, profile, registry, resolution, projection, proposal.selectedToolIds,
+            intent, profile, registry, resolution, projection, selected_ids,
             provider_name="openai_compatible", model=model, repair_count=0,
+            composition_provider=provider, user_config=user_config,
         )
     except CapabilityPlanningError as exc:
         if not exc.repairable:
@@ -633,10 +698,15 @@ def _llm_selection_with_repair(
             )
             return decision, None
         try:
+            selected_ids = expand_selected_dependency_closure(
+                repaired.selectedToolIds, projection=projection,
+                limit=min(intent.constraints.maxToolCalls or 4, intent.constraints.maxAnalyses or 4, 4),
+            )
             return _build_ready_decision_and_plan(
-                intent, profile, registry, resolution, projection, repaired.selectedToolIds,
+                intent, profile, registry, resolution, projection, selected_ids,
                 provider_name="openai_compatible", model=repaired_model, repair_count=1,
                 initial_decision_hash=initial_hash, repair_diagnostics=[diagnostic],
+                composition_provider=provider, user_config=user_config,
             )
         except CapabilityPlanningError as final_exc:
             final_diagnostic = _diagnostic(final_exc.code, "selection", str(final_exc), repairable=False)

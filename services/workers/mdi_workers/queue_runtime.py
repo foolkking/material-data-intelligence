@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, Protocol
 
@@ -12,14 +13,41 @@ from mdi_api.config import load_settings
 from mdi_api.database import create_repository_factory
 from mdi_api.repositories import InMemoryRepositoryBundle
 from mdi_api.unit_of_work import RepositoryFactory
-from mdi_schemas import AnalysisPlan, JobStatus, ToolExecutionRequest
-from mdi_tool_registry import ToolRegistry, load_manifests
+from mdi_schemas import (
+    AnalysisPlan,
+    AnalysisPlanV02,
+    ArtifactLineageRecord,
+    BindingExecutionState,
+    DependencyBindingExecution,
+    DependencyExecutionOutcome,
+    DependencyExecutionRecord,
+    DependencyStepExecution,
+    JobStatus,
+    ResolvedArtifactInputRef,
+    StepExecutionState,
+    ToolExecutionRequest,
+    dependency_semantic_hash,
+    deterministic_dependency_id,
+)
+from mdi_tool_registry import (
+    ToolRegistry,
+    build_artifact_port_inventory,
+    load_manifests,
+    validate_dependency_plan,
+)
+from mdi_tool_registry.plan_validator import validate_plan
 
 from .object_store import DurableObjectStoreResolver
 
 
 ToolExecutor = Callable[[ToolExecutionRequest, "QueueWorkerContext"], Any]
 ObjectStoreResolver = Callable[[str], Mapping[str, Any] | None]
+
+
+class DependencyBindingError(ValueError):
+    def __init__(self, code: str, message: str) -> None:
+        super().__init__(message)
+        self.code = code
 
 
 class QueueBackend(Protocol):
@@ -146,8 +174,19 @@ class QueueWorkerRuntime:
         repos = self._repositories()
         job = repos.jobs.get(job_id)
         status = str(job.get("status") or JobStatus.created.value)
-        if status == JobStatus.completed.value:
+        if status in {JobStatus.completed.value, JobStatus.partial_success.value}:
             return self._result(repos, job_id, message="job already completed")
+        if status == JobStatus.failed.value:
+            dependency_execution = repos.dependency_execution.get_execution_for_job(job_id)
+            if dependency_execution is not None and dependency_execution.get("outcome") in {
+                "ALL_FAILED", "VALIDATION_ABORTED"
+            }:
+                return self._result(
+                    repos,
+                    job_id,
+                    message="dependency execution already finalized",
+                    plan_record=repos.analysis_plans.get_plan_for_job(job_id),
+                )
 
         job = self._start_job(repos, job)
         plan_payload, plan_record = self._load_execution_plan(repos, job, explicit_plan=plan)
@@ -167,6 +206,14 @@ class QueueWorkerRuntime:
                 dataset_id=str(job.get("datasetId") or job.get("dataset_id") or ""),
                 profile_id=expected_profile_id,
             )
+            if (plan_payload or {}).get("schemaVersion") == "0.2":
+                return self._handle_dependency_plan(
+                    repos,
+                    job,
+                    plan_payload=plan_payload or {},
+                    plan_record=plan_record,
+                    object_store=effective_object_store,
+                )
             for index, step in enumerate(steps, start=1):
                 self._run_step(repos, job, step, index=index, object_store=effective_object_store, plan_record=plan_record)
         except Exception as exc:
@@ -191,6 +238,444 @@ class QueueWorkerRuntime:
         )
         repos.jobs.set_status(job_id, JobStatus.completed)
         return self._result(repos, job_id, message="job completed", plan_record=plan_record)
+
+    def _handle_dependency_plan(
+        self,
+        repos: Any,
+        job: Mapping[str, Any],
+        *,
+        plan_payload: Mapping[str, Any],
+        plan_record: Mapping[str, Any] | None,
+        object_store: dict[str, Any],
+    ) -> QueueWorkerResult:
+        job_id = str(job.get("jobId") or job["id"])
+        if plan_record is None:
+            raise ValueError("AnalysisPlan 0.2 must be loaded from exact persisted plan state.")
+        plan = AnalysisPlanV02.model_validate(plan_payload)
+        plan_id = str(plan_record.get("planId") or plan_record.get("id"))
+        plan_hash = str(plan_record.get("planHash") or plan_record.get("plan_hash"))
+        if _runtime_plan_hash(plan) != plan_hash:
+            raise ValueError("Persisted AnalysisPlan 0.2 hash verification failed.")
+        dependency_validation = validate_dependency_plan(plan, registry=self.registry)
+        if not dependency_validation.ok:
+            return self._abort_dependency_validation(
+                repos, job, plan, plan_record,
+                code=dependency_validation.errors[0].code.value,
+                message=dependency_validation.errors[0].message,
+            )
+        ordinary_validation = validate_plan(plan.model_dump(mode="json"), registry=self.registry)
+        if not ordinary_validation.ok:
+            return self._abort_dependency_validation(
+                repos, job, plan, plan_record,
+                code=ordinary_validation.errors[0].code,
+                message=ordinary_validation.errors[0].message,
+            )
+        existing_execution = repos.dependency_execution.get_execution_for_job(job_id)
+        if existing_execution is not None and existing_execution.get("outcome") in {
+            "ALL_SUCCEEDED", "PARTIAL_RESULTS", "ALL_FAILED", "VALIDATION_ABORTED"
+        }:
+            return self._result(repos, job_id, message="dependency execution already finalized", plan_record=plan_record)
+
+        step_by_id = {item.stepId: item for item in plan.steps}
+        bindings_by_consumer: dict[str, list[Any]] = {}
+        parents: dict[str, set[str]] = {item.stepId: set() for item in plan.steps}
+        for binding in plan.dependencyBindings:
+            bindings_by_consumer.setdefault(binding.consumerStepId, []).append(binding)
+            parents[binding.consumerStepId].add(binding.producerStepId)
+        states: dict[str, DependencyStepExecution] = {
+            item.stepId: DependencyStepExecution(stepId=item.stepId, toolId=item.toolId, state=StepExecutionState.pending)
+            for item in plan.steps
+        }
+        binding_states: dict[str, DependencyBindingExecution] = {
+            item.bindingId: DependencyBindingExecution(bindingId=item.bindingId, state=BindingExecutionState.pending)
+            for item in plan.dependencyBindings
+        }
+        artifacts_by_step: dict[str, list[dict[str, Any]]] = {}
+        resolved_by_consumer: dict[str, list[ResolvedArtifactInputRef]] = {}
+        ports = build_artifact_port_inventory(self.registry)
+
+        for index, step_id in enumerate(dependency_validation.topological_order, start=1):
+            step = step_by_id[step_id]
+            blocked_by = sorted(
+                parent for parent in parents[step_id]
+                if states[parent].state is not StepExecutionState.succeeded
+            )
+            if blocked_by:
+                states[step_id] = DependencyStepExecution(
+                    stepId=step_id,
+                    toolId=step.toolId,
+                    state=StepExecutionState.blocked_dependency,
+                    blockedByStepIds=blocked_by,
+                    errorCode="UPSTREAM_STEP_NOT_SUCCEEDED",
+                    errorMessage="A required producer did not succeed; the Adapter was not invoked.",
+                )
+                for binding in bindings_by_consumer.get(step_id, []):
+                    producer_state = states[binding.producerStepId].state
+                    binding_states[binding.bindingId] = DependencyBindingExecution(
+                        bindingId=binding.bindingId,
+                        state=(BindingExecutionState.failed_producer if producer_state is StepExecutionState.failed else BindingExecutionState.consumer_not_run),
+                        errorCode="UPSTREAM_STEP_NOT_SUCCEEDED",
+                    )
+                continue
+
+            step_store = dict(object_store)
+            step_payload = step.model_dump(mode="json")
+            incoming_refs: list[ResolvedArtifactInputRef] = []
+            binding_failure: tuple[str, str] | None = None
+            for binding in sorted(bindings_by_consumer.get(step_id, []), key=lambda item: item.bindingId):
+                try:
+                    resolved, materialized = self._resolve_artifact_binding(
+                        repos,
+                        job=job,
+                        plan=plan,
+                        plan_id=plan_id,
+                        plan_hash=plan_hash,
+                        binding=binding,
+                        producer_artifacts=artifacts_by_step.get(binding.producerStepId, []),
+                        output_port=next(
+                            item
+                            for item in ports[step_by_id[binding.producerStepId].toolId].outputPorts
+                            if item.portId == binding.producerOutputPort
+                        ),
+                        input_port=next(
+                            item for item in ports[step.toolId].inputPorts if item.portId == binding.consumerInputPort
+                        ),
+                    )
+                    step_store[resolved.materializedObjectRef] = materialized
+                    step_payload["inputRefs"].append(
+                        {
+                            "refType": "artifact",
+                            "ref": resolved.materializedObjectRef,
+                            "fieldRole": next(item.inputFieldRole for item in ports[step.toolId].inputPorts if item.portId == binding.consumerInputPort),
+                            "objectType": next(item.inputObjectType for item in ports[step.toolId].inputPorts if item.portId == binding.consumerInputPort),
+                        }
+                    )
+                    incoming_refs.append(resolved)
+                    binding_states[binding.bindingId] = DependencyBindingExecution(
+                        bindingId=binding.bindingId,
+                        state=BindingExecutionState.resolved,
+                        producerToolCallId=resolved.producerToolCallId,
+                        artifactId=resolved.artifactId,
+                        artifactChecksum=resolved.checksum,
+                    )
+                    repos.dependency_execution.save_binding_resolution(
+                        {
+                            "resolvedArtifactInputRef": resolved.model_dump(mode="json"),
+                            "validationOutcome": "RESOLVED",
+                        }
+                    )
+                except Exception as exc:
+                    code, state = _binding_error(exc)
+                    binding_states[binding.bindingId] = DependencyBindingExecution(
+                        bindingId=binding.bindingId,
+                        state=state,
+                        errorCode=code,
+                    )
+                    repos.dependency_execution.save_binding_resolution(
+                        {
+                            "planId": plan_id,
+                            "planHash": plan_hash,
+                            "jobId": job_id,
+                            "bindingId": binding.bindingId,
+                            "producerStepId": binding.producerStepId,
+                            "consumerStepId": binding.consumerStepId,
+                            "consumerInputPort": binding.consumerInputPort,
+                            "validationOutcome": state.value,
+                            "errorCode": code,
+                            "resolvedArtifactInputRef": None,
+                        }
+                    )
+                    binding_failure = (code, str(exc))
+                    break
+            if binding_failure is not None:
+                states[step_id] = DependencyStepExecution(
+                    stepId=step_id,
+                    toolId=step.toolId,
+                    state=StepExecutionState.failed,
+                    errorCode=binding_failure[0],
+                    errorMessage=binding_failure[1][:1024],
+                )
+                repos.job_events.append_event(
+                    job_id,
+                    event_type="dependency.binding_failed",
+                    status="error",
+                    message=binding_failure[1],
+                    payload={"stepId": step_id, "errorCode": binding_failure[0]},
+                    progress=1.0,
+                )
+                continue
+
+            states[step_id] = DependencyStepExecution(stepId=step_id, toolId=step.toolId, state=StepExecutionState.ready)
+            try:
+                states[step_id] = DependencyStepExecution(stepId=step_id, toolId=step.toolId, state=StepExecutionState.running)
+                produced = self._run_step(
+                    repos, job, step_payload, index=index, object_store=step_store, plan_record=plan_record
+                )
+                artifacts_by_step[step_id] = produced
+                resolved_by_consumer[step_id] = incoming_refs
+                call = _find_tool_call(repos, job_id=job_id, step_id=step_id)
+                tool_call_id = str((call or {}).get("id") or "")
+                artifact_ids = [str(item["id"]) for item in produced]
+                states[step_id] = DependencyStepExecution(
+                    stepId=step_id,
+                    toolId=step.toolId,
+                    state=StepExecutionState.succeeded,
+                    toolCallId=tool_call_id,
+                    artifactIds=artifact_ids,
+                )
+                for binding in bindings_by_consumer.get(step_id, []):
+                    current = binding_states[binding.bindingId]
+                    binding_states[binding.bindingId] = current.model_copy(update={"consumerToolCallId": tool_call_id})
+                for artifact in produced:
+                    lineage = self._artifact_lineage(
+                        repos,
+                        job=job,
+                        plan=plan,
+                        plan_record=plan_record,
+                        step=step,
+                        artifact=artifact,
+                        upstream=incoming_refs,
+                        ports=ports,
+                    )
+                    repos.dependency_execution.save_lineage(lineage.model_dump(mode="json"))
+            except Exception as exc:
+                states[step_id] = DependencyStepExecution(
+                    stepId=step_id,
+                    toolId=step.toolId,
+                    state=StepExecutionState.failed,
+                    toolCallId=str((_find_tool_call(repos, job_id=job_id, step_id=step_id) or {}).get("id") or "") or None,
+                    errorCode="ADAPTER_EXECUTION_FAILED",
+                    errorMessage=str(exc)[:1024],
+                )
+
+        ordered_states = [states[item] for item in dependency_validation.topological_order]
+        succeeded = sum(item.state is StepExecutionState.succeeded for item in ordered_states)
+        failed = sum(item.state is StepExecutionState.failed for item in ordered_states)
+        blocked = sum(item.state is StepExecutionState.blocked_dependency for item in ordered_states)
+        not_started = sum(item.state in {StepExecutionState.pending, StepExecutionState.ready, StepExecutionState.running, StepExecutionState.not_started} for item in ordered_states)
+        if succeeded == len(ordered_states):
+            outcome = DependencyExecutionOutcome.all_succeeded
+            job_status = JobStatus.completed
+        elif succeeded > 0:
+            outcome = DependencyExecutionOutcome.partial_results
+            job_status = JobStatus.partial_success
+        else:
+            outcome = DependencyExecutionOutcome.all_failed
+            job_status = JobStatus.failed
+        all_artifacts = [artifact_id for item in ordered_states for artifact_id in item.artifactIds]
+        record = _dependency_execution_record(
+            plan=plan,
+            plan_id=plan_id,
+            plan_hash=plan_hash,
+            job_id=job_id,
+            topological_order=dependency_validation.topological_order,
+            steps=ordered_states,
+            bindings=[binding_states[item.bindingId] for item in plan.dependencyBindings],
+            succeeded=succeeded,
+            failed=failed,
+            blocked=blocked,
+            not_started=not_started,
+            artifacts=all_artifacts,
+            outcome=outcome,
+        )
+        repos.dependency_execution.save_execution(record.model_dump(mode="json"))
+        repos.jobs.set_status(job_id, job_status)
+        repos.job_events.append_event(
+            job_id,
+            event_type="dependency.execution_completed",
+            status="success" if outcome is DependencyExecutionOutcome.all_succeeded else "warning",
+            message=f"Dependency execution finished with {outcome.value}.",
+            payload={"executionId": record.executionId, "outcome": outcome.value, "graphHash": plan.graphHash},
+            progress=1.0,
+        )
+        return self._result(repos, job_id, message=f"dependency execution {outcome.value.lower()}", plan_record=plan_record)
+
+    def _abort_dependency_validation(
+        self,
+        repos: Any,
+        job: Mapping[str, Any],
+        plan: AnalysisPlanV02,
+        plan_record: Mapping[str, Any],
+        *,
+        code: str,
+        message: str,
+    ) -> QueueWorkerResult:
+        job_id = str(job.get("jobId") or job["id"])
+        plan_id = str(plan_record.get("planId") or plan_record.get("id"))
+        plan_hash = str(plan_record.get("planHash") or plan_record.get("plan_hash"))
+        steps = [
+            DependencyStepExecution(
+                stepId=item.stepId,
+                toolId=item.toolId,
+                state=StepExecutionState.not_started,
+                errorCode=code,
+                errorMessage=message[:1024],
+            )
+            for item in plan.steps
+        ]
+        record = _dependency_execution_record(
+            plan=plan, plan_id=plan_id, plan_hash=plan_hash, job_id=job_id,
+            topological_order=[item.stepId for item in plan.steps], steps=steps,
+            bindings=[DependencyBindingExecution(bindingId=item.bindingId, state=BindingExecutionState.consumer_not_run, errorCode=code) for item in plan.dependencyBindings],
+            succeeded=0, failed=0, blocked=0, not_started=len(steps), artifacts=[],
+            outcome=DependencyExecutionOutcome.validation_aborted,
+        )
+        repos.dependency_execution.save_execution(record.model_dump(mode="json"))
+        repos.jobs.set_status(job_id, JobStatus.failed)
+        repos.job_events.append_event(
+            job_id, event_type="dependency.validation_aborted", status="error", message=message,
+            payload={"errorCode": code, "executionId": record.executionId}, progress=1.0,
+        )
+        return self._result(repos, job_id, message=f"dependency validation aborted: {message}", plan_record=plan_record)
+
+    def _resolve_artifact_binding(
+        self,
+        repos: Any,
+        *,
+        job: Mapping[str, Any],
+        plan: AnalysisPlanV02,
+        plan_id: str,
+        plan_hash: str,
+        binding: Any,
+        producer_artifacts: list[dict[str, Any]],
+        output_port: Any,
+        input_port: Any,
+    ) -> tuple[ResolvedArtifactInputRef, Any]:
+        job_id = str(job.get("jobId") or job["id"])
+        project_id = str(job.get("projectId") or job.get("project_id") or "")
+        dataset_id = str(job.get("datasetId") or job.get("dataset_id") or "")
+        expected = [item for item in producer_artifacts if str(item.get("type")) == binding.artifactKind.value]
+        if len(expected) != 1:
+            raise DependencyBindingError("MISSING_ARTIFACT", "Producer did not emit exactly one declared artifact kind.")
+        artifact = expected[0]
+        if (
+            str(artifact.get("jobId")) != job_id
+            or str(artifact.get("projectId")) != project_id
+            or str(artifact.get("datasetId") or "") != dataset_id
+        ):
+            raise DependencyBindingError("SCOPE_MISMATCH", "Artifact project/job/dataset scope does not match the current execution.")
+        metadata = artifact.get("metadata") or {}
+        provenance = metadata.get("provenance") or {}
+        if str(provenance.get("planId") or "") != plan_id or str(provenance.get("planHash") or "") != plan_hash:
+            raise DependencyBindingError("SCOPE_MISMATCH", "Artifact plan identity does not match the current persisted plan.")
+        if (
+            str(provenance.get("schemaVersion") or "") != binding.artifactContractVersion
+            or binding.artifactContractVersion not in output_port.contractVersions
+            or binding.artifactKind != output_port.artifactKind
+            or binding.artifactKind not in input_port.acceptedArtifactKinds
+        ):
+            raise DependencyBindingError("CONTRACT_MISMATCH", "Artifact contract version does not match the declared binding.")
+        missing_provenance = [field for field in output_port.requiredProvenanceFields if not provenance.get(field)]
+        if missing_provenance:
+            raise DependencyBindingError(
+                "CONTRACT_MISMATCH",
+                f"Artifact provenance is missing required fields: {', '.join(missing_provenance)}.",
+            )
+        content_type = str(artifact.get("contentType") or "application/octet-stream")
+        if content_type != binding.mediaType or content_type not in input_port.mediaTypes:
+            raise DependencyBindingError("CONTRACT_MISMATCH", "Artifact media type does not match the consumer port.")
+        size = int(artifact.get("sizeBytes") or 0)
+        if size <= 0 or size > min(output_port.maxBytes, input_port.maxBytes, 268_435_456):
+            raise DependencyBindingError("SIZE_REJECTED", "Artifact size violates the declared consumer cap.")
+        storage_key = str(artifact.get("storageKey") or "")
+        content = self.artifact_storage.get_bytes(storage_key)
+        checksum = hashlib.sha256(content).hexdigest()
+        if len(content) != size or checksum != str(artifact.get("sha256") or artifact.get("contentHash") or ""):
+            raise DependencyBindingError("CHECKSUM_MISMATCH", "Artifact bytes failed exact size/checksum verification.")
+        try:
+            materialized = json.loads(content.decode("utf-8"))
+        except Exception as exc:
+            raise DependencyBindingError("CONTRACT_MISMATCH", "Artifact is not strict inert JSON.") from exc
+        internal_ref = f"resolved:{binding.bindingId}"
+        resolved = ResolvedArtifactInputRef(
+            bindingId=binding.bindingId,
+            planId=plan_id,
+            planHash=plan_hash,
+            jobId=job_id,
+            producerStepId=binding.producerStepId,
+            producerToolCallId=str(artifact.get("toolCallId") or ""),
+            artifactId=str(artifact["id"]),
+            artifactKind=binding.artifactKind,
+            artifactContractVersion=binding.artifactContractVersion,
+            mediaType=binding.mediaType,
+            sizeBytes=size,
+            checksum=checksum,
+            consumerStepId=binding.consumerStepId,
+            consumerInputPort=binding.consumerInputPort,
+            materializedObjectRef=internal_ref,
+        )
+        return resolved, materialized
+
+    def _artifact_lineage(
+        self,
+        repos: Any,
+        *,
+        job: Mapping[str, Any],
+        plan: AnalysisPlanV02,
+        plan_record: Mapping[str, Any],
+        step: Any,
+        artifact: Mapping[str, Any],
+        upstream: list[ResolvedArtifactInputRef],
+        ports: Mapping[str, Any],
+    ) -> ArtifactLineageRecord:
+        job_id = str(job.get("jobId") or job["id"])
+        plan_id = str(plan_record.get("planId") or plan_record.get("id"))
+        plan_hash = str(plan_record.get("planHash") or plan_record.get("plan_hash"))
+        capability = repos.capability_planning.get_execution_for_job(job_id)
+        decision = repos.capability_planning.get_decision(capability["decisionId"])["capabilityDecision"] if capability else {}
+        intent_binding = repos.analysis_intents.get_execution_for_job(job_id)
+        intent = repos.analysis_intents.get_intent(intent_binding["intentId"])["analysisIntent"] if intent_binding else {}
+        output_port = next(
+            (item for item in ports[step.toolId].outputPorts if item.artifactKind.value == str(artifact.get("type"))),
+            None,
+        )
+        metadata = artifact.get("metadata") or {}
+        provenance = metadata.get("provenance") or {}
+        contract_version = str(provenance.get("schemaVersion") or artifact.get("version") or "1")
+        port_id = output_port.portId if output_port is not None else f"result-{artifact.get('type')}"
+        draft = {
+            "schemaVersion": "1.0",
+            "projectId": str(job.get("projectId") or job.get("project_id") or ""),
+            "datasetId": job.get("datasetId") or job.get("dataset_id"),
+            "datasetVersion": (intent.get("dataScope") or {}).get("datasetVersion"),
+            "profileId": plan.profileId,
+            "profileSemanticHash": decision.get("profileSemanticHash"),
+            "intentId": decision.get("intentId"),
+            "intentHash": decision.get("intentHash"),
+            "resolutionId": decision.get("resolutionId"),
+            "resolutionHash": decision.get("resolutionHash"),
+            "decisionId": decision.get("decisionId"),
+            "decisionHash": decision.get("decisionHash"),
+            "planId": plan_id,
+            "planHash": plan_hash,
+            "planSchemaVersion": "0.2",
+            "graphHash": plan.graphHash,
+            "jobId": job_id,
+            "producerStepId": step.stepId,
+            "producerToolCallId": str(artifact.get("toolCallId") or ""),
+            "producerToolId": step.toolId,
+            "producerToolVersion": self.registry.get_tool_by_id(step.toolId).version,
+            "outputPort": port_id,
+            "artifactId": str(artifact["id"]),
+            "artifactKind": str(artifact.get("type")),
+            "artifactContractVersion": contract_version,
+            "mediaType": str(artifact.get("contentType") or "application/octet-stream"),
+            "contentHash": str(artifact.get("sha256") or artifact.get("contentHash")),
+            "upstreamArtifactIds": sorted(item.artifactId for item in upstream),
+            "upstreamArtifactHashes": sorted(item.checksum for item in upstream),
+            "bindingIds": sorted(item.bindingId for item in upstream),
+            "adapterVersion": (metadata.get("adapterVersion") or provenance.get("adapterVersion")),
+            "runtimeVersion": "queue_worker_dependency_1.0",
+            "warnings": [],
+            "caps": {"steps": 4, "bindings": 6, "depth": 4},
+            "createdAt": str(artifact.get("createdAt") or metadata.get("createdAt") or _utc_now()),
+        }
+        lineage_hash = dependency_semantic_hash(draft, identity_fields=("createdAt",))
+        return ArtifactLineageRecord(
+            lineageId=deterministic_dependency_id("lineage", lineage_hash),
+            lineageHash=lineage_hash,
+            **draft,
+        )
 
     def _repositories(self) -> Any:
         if self.repository_factory is not None:
@@ -252,7 +737,7 @@ class QueueWorkerRuntime:
         plan_id = job.get("planId") or job.get("plan_id")
         if plan_id:
             plan_record = repos.analysis_plans.get_plan(str(plan_id))
-            plan_payload = AnalysisPlan.model_validate(plan_record["analysisPlan"]).model_dump(mode="json")
+            plan_payload = _parse_plan_payload(plan_record["analysisPlan"])
             repos.job_events.append_event(
                 job_id,
                 event_type="plan.loaded",
@@ -265,7 +750,7 @@ class QueueWorkerRuntime:
 
         if explicit_plan is not None:
             try:
-                plan_payload = AnalysisPlan.model_validate(explicit_plan).model_dump(mode="json")
+                plan_payload = _parse_plan_payload(explicit_plan)
             except Exception:
                 plan_payload = dict(explicit_plan)
             repos.job_events.append_event(
@@ -282,7 +767,7 @@ class QueueWorkerRuntime:
             plan_record = repos.analysis_plans.get_plan_for_job(job_id)
         except (AttributeError, LookupError):
             return None, None
-        plan_payload = AnalysisPlan.model_validate(plan_record["analysisPlan"]).model_dump(mode="json")
+        plan_payload = _parse_plan_payload(plan_record["analysisPlan"])
         repos.job_events.append_event(
             job_id,
             event_type="plan.loaded",
@@ -302,7 +787,7 @@ class QueueWorkerRuntime:
         index: int,
         object_store: Mapping[str, Any] | None,
         plan_record: Mapping[str, Any] | None,
-    ) -> None:
+    ) -> list[dict[str, Any]]:
         job_id = str(job.get("jobId") or job["id"])
         project_id = str(job.get("projectId") or job["project_id"])
         dataset_id = job.get("datasetId")
@@ -311,7 +796,10 @@ class QueueWorkerRuntime:
         tool_call_id = _safe_id(f"call_{job_id}_{step_id}")
         existing = _find_tool_call(repos, job_id=job_id, step_id=step_id)
         if existing and existing.get("status") == "completed":
-            return
+            return [
+                item for item in repos.artifacts.list_for_job(job_id)
+                if str(item.get("toolCallId") or item.get("tool_call_id") or "") == str(existing.get("id"))
+            ]
 
         request = ToolExecutionRequest(
             jobId=job_id,
@@ -389,6 +877,7 @@ class QueueWorkerRuntime:
             raise
 
         artifact_ids: list[str] = []
+        persisted_artifacts: list[dict[str, Any]] = []
         for artifact in _execution_artifacts(execution):
             record = self._persist_artifact_metadata(
                 artifact,
@@ -401,6 +890,7 @@ class QueueWorkerRuntime:
             )
             repos.artifacts.save(record)
             artifact_ids.append(str(record["id"]))
+            persisted_artifacts.append(record)
             repos.job_events.append_event(
                 job_id,
                 event_type="artifact.ready",
@@ -429,6 +919,7 @@ class QueueWorkerRuntime:
             payload={"toolCallId": tool_call_id, "artifactIds": artifact_ids, **_plan_provenance(plan_record)},
             progress=1.0,
         )
+        return persisted_artifacts
 
     def _execute_tool(self, request: ToolExecutionRequest, context: QueueWorkerContext, *, object_store: Mapping[str, Any] | None) -> Any:
         if self.tool_executor is not None:
@@ -545,6 +1036,78 @@ def _validate_profile_binding(
         profile_id is not None and str(actual_profile_id or "") != profile_id
     ):
         raise ValueError("Resolved DataProfile does not match the persisted AnalysisPlan binding.")
+
+
+def _parse_plan_payload(value: Mapping[str, Any]) -> dict[str, Any]:
+    version = str(value.get("schemaVersion") or "0.1")
+    parsed = AnalysisPlanV02.model_validate(value) if version == "0.2" else AnalysisPlan.model_validate(value)
+    return parsed.model_dump(mode="json")
+
+
+def _runtime_plan_hash(plan: AnalysisPlan | AnalysisPlanV02 | Mapping[str, Any]) -> str:
+    payload = _parse_plan_payload(plan.model_dump(mode="json") if hasattr(plan, "model_dump") else plan)
+    canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _binding_error(exc: Exception) -> tuple[str, BindingExecutionState]:
+    code = exc.code if isinstance(exc, DependencyBindingError) else "CONTRACT_MISMATCH"
+    state = {
+        "MISSING_ARTIFACT": BindingExecutionState.missing_artifact,
+        "CONTRACT_MISMATCH": BindingExecutionState.contract_mismatch,
+        "SCOPE_MISMATCH": BindingExecutionState.scope_mismatch,
+        "CHECKSUM_MISMATCH": BindingExecutionState.checksum_mismatch,
+        "SIZE_REJECTED": BindingExecutionState.size_rejected,
+    }.get(code, BindingExecutionState.contract_mismatch)
+    return code, state
+
+
+def _dependency_execution_record(
+    *,
+    plan: AnalysisPlanV02,
+    plan_id: str,
+    plan_hash: str,
+    job_id: str,
+    topological_order: list[str],
+    steps: list[DependencyStepExecution],
+    bindings: list[DependencyBindingExecution],
+    succeeded: int,
+    failed: int,
+    blocked: int,
+    not_started: int,
+    artifacts: list[str],
+    outcome: DependencyExecutionOutcome,
+) -> DependencyExecutionRecord:
+    now = _utc_now()
+    draft = {
+        "schemaVersion": "1.0",
+        "planId": plan_id,
+        "planHash": plan_hash,
+        "jobId": job_id,
+        "graphHash": plan.graphHash,
+        "topologicalOrder": topological_order,
+        "steps": [item.model_dump(mode="json") for item in steps],
+        "bindings": [item.model_dump(mode="json") for item in bindings],
+        "succeededCount": succeeded,
+        "failedCount": failed,
+        "blockedCount": blocked,
+        "notStartedCount": not_started,
+        "partialArtifactIds": sorted(set(artifacts)),
+        "outcome": outcome.value,
+        "runtimeVersion": "queue_worker_dependency_1.0",
+        "createdAt": now,
+        "updatedAt": now,
+    }
+    semantic_hash = dependency_semantic_hash(draft, identity_fields=("createdAt", "updatedAt"))
+    return DependencyExecutionRecord(
+        executionId=deterministic_dependency_id("execution", semantic_hash),
+        executionHash=semantic_hash,
+        **draft,
+    )
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 def create_queue_worker_runtime_from_settings() -> QueueWorkerRuntime:

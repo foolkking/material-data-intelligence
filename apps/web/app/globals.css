@@ -1556,7 +1556,48 @@ pre {
   vertical-align: top;
 }
 
+.dependency-execution-panel,
+.dependency-card-list,
+.artifact-lineage-list,
+.dependency-step-list {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.dependency-card-list {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+
+.dependency-card,
+.dependency-step {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+.dependency-card:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.dependency-step-list {
+  list-style-position: inside;
+  margin: 0;
+  padding: 0;
+}
+
+.dependency-step.state-blocked_dependency,
+.dependency-step.state-failed {
+  border-left: 4px solid var(--danger);
+}
+
 @media (max-width: 600px) {
+  .dependency-card-list { grid-template-columns: 1fr; }
   .capability-selection table,
   .capability-selection tbody,
   .capability-selection tr,

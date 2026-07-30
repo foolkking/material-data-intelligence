@@ -1,0 +1,29 @@
+{
+  "nearCap": {
+    "bindings": 6,
+    "bounded": true,
+    "depth": 4,
+    "graphHash": "d6cd19688557b25e144bbd48c382c2102193036e0d23d4264db91d4ff9c9a8b0",
+    "limits": {
+      "bindings": 6,
+      "depth": 4,
+      "incoming": 3,
+      "outgoing": 3,
+      "repair": 1,
+      "steps": 4
+    },
+    "planHash": "2ef5550e463609037350df161efd94b18668368a46288ff294b8128448642a0d",
+    "serializedByteCap": 524288,
+    "serializedBytes": 3619,
+    "steps": 4,
+    "topologicalOrder": [
+      "step_0",
+      "step_1",
+      "step_2",
+      "step_3"
+    ],
+    "tracemallocPeakBytes": 43486,
+    "validationAndSortMs": 2.523
+  },
+  "overflowPolicy": "typed reject; no truncation"
+}

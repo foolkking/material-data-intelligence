@@ -1,5 +1,27 @@
 # DESIGN_PROGRESS
 
+## 2026-07-30 Phase 10L-3 Bounded Dependency Execution In Progress
+
+- Added strict additive AnalysisPlan 0.2 with one authoritative typed
+  `dependencyBindings` representation, deterministic binding/graph/plan
+  identities, and hard caps of four steps, six bindings, depth four, and three
+  incoming/outgoing bindings. AnalysisPlan 0.1 remains unchanged.
+- Audited all 38 available tools and admitted only the existing typed phonon
+  chain: `phonon.band` and `phonon.dos` produce canonical artifacts consumed by
+  `phonon.band_dos`. ToolPlannerMetadata 1.0 remains valid; explicit 1.1 ports
+  alone grant dependency composition eligibility.
+- Added exact compatible-pair composition, one shared L2/L3 repair budget,
+  dependency validation, Alembic 0005 persistence, serial topological
+  QueueWorkerRuntime execution, platform-created resolved artifact refs,
+  immutable binding/execution/lineage records, and minimal partial semantics.
+- Added additive API and PlannerWorkbench dependency/lineage surfaces. Real
+  registered-adapter runtime captures and Chromium/Firefox/WebKit/390x844
+  browser evidence pass locally with zero unapproved network and inert artifact
+  content. Local service-backed execution is unavailable without configured
+  services; exact-SHA CI remains required before completion.
+- Phase 10L-3 remains `IN_PROGRESS`. Phase 10L-4 remains
+  `REVIEWER_GATE / AWAITING REVIEWER PROMPT` and has no executable task.
+
 ## 2026-07-30 Phase 10L-2 Capability-Aware Planner Complete and Archived
 
 - Added strict planner metadata for all 53 Registry entries; 38 current

@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "ArtifactType": {
+      "enum": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "figure_svg",
+        "figure_pdf",
+        "matterviz_html",
+        "matterviz_snapshot_png",
+        "structure_json",
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json",
+        "phonon_band_json",
+        "phonon_band_dos_json",
+        "phonon_compatibility_json",
+        "phonon_dos_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "phonon_animation_json",
+        "phonon_animation_summary_json",
+        "phonon_animation_manifest_json",
+        "reciprocal_lattice_json",
+        "brillouin_zone_json",
+        "kpath_json",
+        "brillouin_zone_manifest_json",
+        "volumetric_grid_json",
+        "volumetric_payload_json",
+        "volumetric_field_json",
+        "volumetric_dataset_json",
+        "volumetric_manifest_json",
+        "volumetric_structure_overlay_json",
+        "volumetric_binary",
+        "metrics_json",
+        "table_json",
+        "table_csv",
+        "quality_issues_json",
+        "summary_md",
+        "report_md",
+        "report_html",
+        "recipe_json",
+        "analysis_plan_json"
+      ],
+      "title": "ArtifactType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "artifactContractVersion": {
+      "title": "Artifactcontractversion",
+      "type": "string"
+    },
+    "artifactId": {
+      "title": "Artifactid",
+      "type": "string"
+    },
+    "artifactKind": {
+      "$ref": "#/$defs/ArtifactType"
+    },
+    "bindingId": {
+      "title": "Bindingid",
+      "type": "string"
+    },
+    "checksum": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Checksum",
+      "type": "string"
+    },
+    "consumerInputPort": {
+      "title": "Consumerinputport",
+      "type": "string"
+    },
+    "consumerStepId": {
+      "title": "Consumerstepid",
+      "type": "string"
+    },
+    "jobId": {
+      "title": "Jobid",
+      "type": "string"
+    },
+    "materializedObjectRef": {
+      "title": "Materializedobjectref",
+      "type": "string"
+    },
+    "mediaType": {
+      "title": "Mediatype",
+      "type": "string"
+    },
+    "planHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Planhash",
+      "type": "string"
+    },
+    "planId": {
+      "title": "Planid",
+      "type": "string"
+    },
+    "producerStepId": {
+      "title": "Producerstepid",
+      "type": "string"
+    },
+    "producerToolCallId": {
+      "title": "Producertoolcallid",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "sizeBytes": {
+      "minimum": 0,
+      "title": "Sizebytes",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "bindingId",
+    "planId",
+    "planHash",
+    "jobId",
+    "producerStepId",
+    "producerToolCallId",
+    "artifactId",
+    "artifactKind",
+    "artifactContractVersion",
+    "mediaType",
+    "sizeBytes",
+    "checksum",
+    "consumerStepId",
+    "consumerInputPort",
+    "materializedObjectRef"
+  ],
+  "title": "ResolvedArtifactInputRef",
+  "type": "object"
+}

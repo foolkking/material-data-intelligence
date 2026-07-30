@@ -1,5 +1,81 @@
 # 共享 Schema 规范
 
+## Bounded Dependency Planning v1 (Phase 10L-3)
+
+`dependency-planning-v1.schema.json` defines the strict additive Phase 10L-3
+family. Python authority is `mdi_schemas.dependency_planning`; TypeScript
+parity is exported from `packages/schemas/src/index.ts`.
+
+### AnalysisPlan 0.2
+
+AnalysisPlan `0.1` remains unchanged. AnalysisPlan `0.2` reuses its existing
+step and expected-artifact models and adds `graphHash` plus one authoritative
+plan-level `dependencyBindings` collection. Artifact `inputRefs` are forbidden
+inside persisted 0.2 steps because only a runtime-validated binding can create
+a `ResolvedArtifactInputRef 1.0`. There is no `dependsOn` field, order-only
+edge, implicit migration, or reinterpretation of a 0.1 step list.
+
+Each binding fixes producer step/output port, consumer step/input port,
+artifact kind, exact contract version, media type, and `EXACTLY_ONE`
+cardinality. Binding ID, graph hash, and plan hash use canonical UTF-8 JSON,
+sorted keys, compact separators, unescaped Unicode, and SHA-256. Binding
+sorting is producer step, producer port, consumer step, consumer port, then
+binding ID. Runtime timestamps and runtime Artifact/ToolCall IDs do not affect
+plan identity.
+
+Hard bounds are four steps, six bindings, graph depth four, three incoming and
+three outgoing bindings per step, JSON depth 14, and 524,288 serialized bytes.
+Unknown fields, duplicate consumer ports, unknown steps, cycles, non-finite
+numbers, and cap overflow fail; they are never truncated.
+
+### ToolArtifactPortMetadata 1.1
+
+The artifact-port contract is an additive overlay to Phase 10L-2
+ToolPlannerMetadata 1.0. A 1.0 tool remains eligible for independent planning,
+but only an exact 1.1 input/output port pair can create a dependency. Ports
+declare stable IDs, artifact kind, contract versions, media types,
+`EXACTLY_ONE`, byte caps, exact plan/job/dataset/resource identity, inert
+content trust, planner visibility, semantic input role, and required
+provenance. A deterministic compatibility matrix records every evaluated pair
+as compatible or as bounded typed diagnostics.
+
+The current production dependency surface is:
+
+```text
+phonon.band:canonical-band -> phonon.band_dos:band
+phonon.dos:canonical-dos   -> phonon.band_dos:dos
+```
+
+The contracts are `phase10h.phonon_band.v1` and
+`phase10h.phonon_dos.v1`, both `application/json` and capped at 16,000,000
+bytes per port. The existing `phonon.band_dos` Adapter remains the scientific
+consumer.
+
+### Runtime and Audit Contracts
+
+`ResolvedArtifactInputRef 1.0` is platform-created after same-project,
+same-dataset, same-job, same-plan, contract, media, provenance, size, and
+checksum verification through ArtifactStorage. It grants no path, URL, object
+store, or external fetch authority.
+
+`DependencyExecutionRecord 1.0` stores deterministic topological order,
+per-step and per-binding state, retained artifact IDs, counts, and one of
+`ALL_SUCCEEDED`, `PARTIAL_RESULTS`, `ALL_FAILED`, or `VALIDATION_ABORTED`.
+Step states are `PENDING`, `READY`, `RUNNING`, `SUCCEEDED`, `FAILED`,
+`BLOCKED_DEPENDENCY`, and `NOT_STARTED`. Binding states are `PENDING`,
+`RESOLVED`, `FAILED_PRODUCER`, `MISSING_ARTIFACT`, `CONTRACT_MISMATCH`,
+`SCOPE_MISMATCH`, `CHECKSUM_MISMATCH`, `SIZE_REJECTED`, and
+`CONSUMER_NOT_RUN`.
+
+`ArtifactLineageRecord 1.0` binds each 0.2 Artifact to the Profile, Intent,
+eligibility decision, plan/graph/job, producer ToolCall/tool/output port,
+artifact checksum/contract/media type, upstream artifacts, and binding IDs.
+Array position and report prose are not lineage authority.
+
+These contracts do not add loops, conditions, parallel scheduling, runtime
+LLM calls, cross-job reuse, remote artifact input, arbitrary code, result
+interpretation, or a generic workflow engine.
+
 ## Capability Planning v1 (Phase 10L-2)
 
 `capability-planning-v1.schema.json` defines strict version `1.0` contracts for

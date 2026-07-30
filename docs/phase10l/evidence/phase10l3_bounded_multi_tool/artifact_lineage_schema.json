@@ -1,0 +1,337 @@
+{
+  "$defs": {
+    "ArtifactType": {
+      "enum": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "figure_svg",
+        "figure_pdf",
+        "matterviz_html",
+        "matterviz_snapshot_png",
+        "structure_json",
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json",
+        "phonon_band_json",
+        "phonon_band_dos_json",
+        "phonon_compatibility_json",
+        "phonon_dos_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "phonon_animation_json",
+        "phonon_animation_summary_json",
+        "phonon_animation_manifest_json",
+        "reciprocal_lattice_json",
+        "brillouin_zone_json",
+        "kpath_json",
+        "brillouin_zone_manifest_json",
+        "volumetric_grid_json",
+        "volumetric_payload_json",
+        "volumetric_field_json",
+        "volumetric_dataset_json",
+        "volumetric_manifest_json",
+        "volumetric_structure_overlay_json",
+        "volumetric_binary",
+        "metrics_json",
+        "table_json",
+        "table_csv",
+        "quality_issues_json",
+        "summary_md",
+        "report_md",
+        "report_html",
+        "recipe_json",
+        "analysis_plan_json"
+      ],
+      "title": "ArtifactType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "adapterVersion": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Adapterversion"
+    },
+    "artifactContractVersion": {
+      "title": "Artifactcontractversion",
+      "type": "string"
+    },
+    "artifactId": {
+      "title": "Artifactid",
+      "type": "string"
+    },
+    "artifactKind": {
+      "$ref": "#/$defs/ArtifactType"
+    },
+    "bindingIds": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 6,
+      "title": "Bindingids",
+      "type": "array"
+    },
+    "caps": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Caps",
+      "type": "object"
+    },
+    "contentHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Contenthash",
+      "type": "string"
+    },
+    "createdAt": "2026-07-30T00:00:00+00:00",
+    "datasetId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Datasetid"
+    },
+    "datasetVersion": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Datasetversion"
+    },
+    "decisionHash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decisionhash"
+    },
+    "decisionId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decisionid"
+    },
+    "graphHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Graphhash",
+      "type": "string"
+    },
+    "intentHash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Intenthash"
+    },
+    "intentId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Intentid"
+    },
+    "jobId": {
+      "title": "Jobid",
+      "type": "string"
+    },
+    "lineageHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Lineagehash",
+      "type": "string"
+    },
+    "lineageId": {
+      "title": "Lineageid",
+      "type": "string"
+    },
+    "mediaType": {
+      "title": "Mediatype",
+      "type": "string"
+    },
+    "outputPort": {
+      "title": "Outputport",
+      "type": "string"
+    },
+    "planHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Planhash",
+      "type": "string"
+    },
+    "planId": {
+      "title": "Planid",
+      "type": "string"
+    },
+    "planSchemaVersion": {
+      "const": "0.2",
+      "default": "0.2",
+      "title": "Planschemaversion",
+      "type": "string"
+    },
+    "producerStepId": {
+      "title": "Producerstepid",
+      "type": "string"
+    },
+    "producerToolCallId": {
+      "title": "Producertoolcallid",
+      "type": "string"
+    },
+    "producerToolId": {
+      "title": "Producertoolid",
+      "type": "string"
+    },
+    "producerToolVersion": {
+      "title": "Producertoolversion",
+      "type": "string"
+    },
+    "profileId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Profileid"
+    },
+    "profileSemanticHash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Profilesemantichash"
+    },
+    "projectId": {
+      "title": "Projectid",
+      "type": "string"
+    },
+    "resolutionHash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resolutionhash"
+    },
+    "resolutionId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resolutionid"
+    },
+    "runtimeVersion": {
+      "title": "Runtimeversion",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "upstreamArtifactHashes": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 6,
+      "title": "Upstreamartifacthashes",
+      "type": "array"
+    },
+    "upstreamArtifactIds": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 6,
+      "title": "Upstreamartifactids",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "lineageId",
+    "lineageHash",
+    "projectId",
+    "planId",
+    "planHash",
+    "graphHash",
+    "jobId",
+    "producerStepId",
+    "producerToolCallId",
+    "producerToolId",
+    "producerToolVersion",
+    "outputPort",
+    "artifactId",
+    "artifactKind",
+    "artifactContractVersion",
+    "mediaType",
+    "contentHash",
+    "runtimeVersion",
+    "createdAt"
+  ],
+  "title": "ArtifactLineageRecord",
+  "type": "object"
+}

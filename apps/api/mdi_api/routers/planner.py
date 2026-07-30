@@ -44,7 +44,7 @@ from mdi_schemas import (
 )
 from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime, RedisRQQueueBackend
 from mdi_workers.object_store import DurableObjectStoreResolver
-from mdi_tool_registry import ToolRegistry, load_manifests
+from mdi_tool_registry import ToolRegistry, load_manifests, validate_dependency_plan
 from mdi_tool_registry.plan_validator import PlanValidationError, PlanValidationResult, validate_plan
 
 
@@ -157,6 +157,10 @@ class PlannerJobsResult:
     eligibility_resolution: dict[str, Any] | None = None
     capability_decision: dict[str, Any] | None = None
     provider_visible_tool_ids: list[str] = field(default_factory=list)
+    plan_schema_version: str | None = None
+    graph_hash: str | None = None
+    dependency_bindings: list[dict[str, Any]] = field(default_factory=list)
+    topological_order: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -480,6 +484,40 @@ def planner_jobs(
             intent=intent.model_dump(mode="json") if intent else None,
         )
 
+    dependency_order: list[str] = []
+    if plan.get("schemaVersion") == "0.2":
+        selected_ids = sorted(item.toolId for item in capability_result.decision.selections) if capability_result else None
+        dependency_validation = validate_dependency_plan(plan, registry=reg, selected_tool_ids=selected_ids)
+        if not dependency_validation.ok:
+            return PlannerJobsResult(
+                ok=False,
+                job_id=None,
+                plan_id=None,
+                plan_hash=None,
+                validation_errors=[
+                    {
+                        "code": item.code.value,
+                        "message": item.message,
+                        "detail": {"field": item.field, "bindingId": item.bindingId},
+                    }
+                    for item in dependency_validation.errors
+                ],
+                plan=None,
+                plan_source=plan_source,
+                planner_provider=_provider_name(llm),
+                intent_id=intent.intentId if intent else None,
+                intent_outcome=intent.outcome.value if intent else None,
+                intent=intent.model_dump(mode="json") if intent else None,
+                error_code="VALIDATION_FAILED",
+                capability_outcome="VALIDATION_FAILED",
+                eligibility_resolution=capability_result.resolution.model_dump(mode="json") if capability_result else None,
+                capability_decision=capability_result.decision.model_dump(mode="json") if capability_result else None,
+                provider_visible_tool_ids=list(capability_result.provider_visible_tool_ids) if capability_result else [],
+                plan_schema_version="0.2",
+                graph_hash=plan.get("graphHash"),
+                dependency_bindings=list(plan.get("dependencyBindings") or []),
+            )
+        dependency_order = dependency_validation.topological_order
     validation = validate_plan(plan, registry=reg)
     if not validation.ok:
         return PlannerJobsResult(
@@ -495,9 +533,9 @@ def planner_jobs(
             intent=intent.model_dump(mode="json") if intent else None,
         )
 
-    from mdi_schemas import AnalysisPlan
+    from mdi_schemas import AnalysisPlan, AnalysisPlanV02
 
-    validated_plan = AnalysisPlan.model_validate(plan)
+    validated_plan = AnalysisPlanV02.model_validate(plan) if plan.get("schemaVersion") == "0.2" else AnalysisPlan.model_validate(plan)
     input_ref_errors = _validate_executable_input_refs(validated_plan, request.datasetId)
     if input_ref_errors:
         return PlannerJobsResult(
@@ -533,6 +571,13 @@ def planner_jobs(
             "createdBy": created_by,
         }
     )
+    if validated_plan.schemaVersion == "0.2":
+        repos.dependency_execution.save_plan_bindings(
+            plan_id,
+            plan_hash,
+            validated_plan.graphHash,
+            [item.model_dump(mode="json") for item in validated_plan.dependencyBindings],
+        )
     repos.jobs.save(
         {
             "id": job_id,
@@ -600,6 +645,10 @@ def planner_jobs(
         eligibility_resolution=capability_result.resolution.model_dump(mode="json") if capability_result else None,
         capability_decision=capability_result.decision.model_dump(mode="json") if capability_result else None,
         provider_visible_tool_ids=list(capability_result.provider_visible_tool_ids) if capability_result else [],
+        plan_schema_version=validated_plan.schemaVersion,
+        graph_hash=getattr(validated_plan, "graphHash", None),
+        dependency_bindings=[item.model_dump(mode="json") for item in getattr(validated_plan, "dependencyBindings", [])],
+        topological_order=dependency_order,
     )
 
 
@@ -657,6 +706,7 @@ def get_planner_job(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
         if capability_decision
         else None
     )
+    dependency_execution = repos.dependency_execution.get_execution_for_job(job_id)
     return {
         **job,
         "jobId": job.get("jobId") or job.get("id"),
@@ -675,6 +725,45 @@ def get_planner_job(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
         "capabilityPlanningOutcome": (capability_decision or {}).get("outcome"),
         "eligibilityResolution": (capability_resolution_record or {}).get("eligibilityResolution"),
         "capabilityDecision": capability_decision,
+        "dependencyExecutionSummary": _dependency_execution_summary(dependency_execution),
+    }
+
+
+def get_planner_job_dependencies(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
+    """Read the immutable 0.2 graph, execution states, resolutions, and lineage."""
+    repos = _planner_read_repositories(repositories)
+    job = repos.jobs.get(job_id)
+    plan_record = _try_get_job_plan(repos, job)
+    plan = (plan_record or {}).get("analysisPlan") or {}
+    plan_id = str((plan_record or {}).get("planId") or (plan_record or {}).get("id") or "")
+    is_dependency_plan = plan.get("schemaVersion") == "0.2"
+    execution = repos.dependency_execution.get_execution_for_job(job_id) if is_dependency_plan else None
+    return {
+        "jobId": job.get("jobId") or job.get("id"),
+        "planId": plan_id or None,
+        "planHash": _plan_hash(plan_record),
+        "planSchemaVersion": plan.get("schemaVersion"),
+        "graphHash": plan.get("graphHash"),
+        "dependencyBindings": list(plan.get("dependencyBindings") or []),
+        "plannedBindingRecords": repos.dependency_execution.list_plan_bindings(plan_id) if is_dependency_plan else [],
+        "topologicalOrder": list((execution or {}).get("topologicalOrder") or []),
+        "execution": execution,
+        "bindingResolutions": repos.dependency_execution.list_binding_resolutions(job_id) if is_dependency_plan else [],
+        "artifactLineage": repos.dependency_execution.list_lineage_for_job(job_id) if is_dependency_plan else [],
+    }
+
+
+def _dependency_execution_summary(execution: dict[str, Any] | None) -> dict[str, Any] | None:
+    if execution is None:
+        return None
+    return {
+        "executionId": execution.get("executionId"),
+        "outcome": execution.get("outcome"),
+        "graphHash": execution.get("graphHash"),
+        "succeededCount": execution.get("succeededCount"),
+        "failedCount": execution.get("failedCount"),
+        "blockedCount": execution.get("blockedCount"),
+        "notStartedCount": execution.get("notStartedCount"),
     }
 
 

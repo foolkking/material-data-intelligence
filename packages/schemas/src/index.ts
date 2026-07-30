@@ -251,6 +251,270 @@ export type AnalysisPlan = {
   expectedArtifacts: ExpectedArtifact[];
 };
 
+export type ArtifactCardinality = "EXACTLY_ONE";
+export type ArtifactContentTrust = "INERT_DATA";
+export type IdentityCompatibility = "EXACT_PLAN_JOB_DATASET_RESOURCE";
+
+export type DependencyDiagnosticCode =
+  | "OUTPUT_PORT_NOT_DECLARED"
+  | "INPUT_PORT_NOT_DECLARED"
+  | "ARTIFACT_KIND_MISMATCH"
+  | "CONTRACT_VERSION_MISMATCH"
+  | "MEDIA_TYPE_MISMATCH"
+  | "CARDINALITY_MISMATCH"
+  | "IDENTITY_SCOPE_MISMATCH"
+  | "RESOURCE_VERSION_MISMATCH"
+  | "ARTIFACT_TOO_LARGE"
+  | "NON_DETERMINISTIC_OUTPUT_NOT_ALLOWED"
+  | "UNTRUSTED_OR_EXECUTABLE_ARTIFACT"
+  | "CONSUMER_REQUIRES_UNAVAILABLE_BASE_RESOURCE"
+  | "PORT_NOT_PLANNER_VISIBLE"
+  | "DEPENDENCY_COMPOSITION_NOT_ALLOWED"
+  | "CYCLE_WOULD_BE_CREATED"
+  | "GRAPH_CAP_EXCEEDED"
+  | "UNKNOWN_STEP"
+  | "DUPLICATE_BINDING"
+  | "DUPLICATE_CONSUMER_PORT"
+  | "SELECTED_TOOL_MISMATCH"
+  | "BINDING_IDENTITY_INVALID"
+  | "GRAPH_IDENTITY_INVALID"
+  | "EXTERNAL_AUTHORITY_REJECTED";
+
+export type DependencyDiagnostic = {
+  code: DependencyDiagnosticCode;
+  field: string;
+  message: string;
+  bindingId?: string | null;
+  stepId?: string | null;
+};
+
+export type ArtifactOutputPort = {
+  portId: string;
+  artifactKind: ArtifactType;
+  contractFamily: string;
+  contractVersions: string[];
+  mediaTypes: string[];
+  cardinality: ArtifactCardinality;
+  maxBytes: number;
+  deterministic: boolean;
+  requiredProvenanceFields: string[];
+  identityPolicy: IdentityCompatibility;
+  contentTrust: ArtifactContentTrust;
+  plannerVisible: boolean;
+};
+
+export type ArtifactInputPort = {
+  portId: string;
+  acceptedArtifactKinds: ArtifactType[];
+  acceptedContractVersions: string[];
+  mediaTypes: string[];
+  cardinality: ArtifactCardinality;
+  maxBytes: number;
+  identityPolicy: IdentityCompatibility;
+  requiredSemanticRoles: string[];
+  materializationPermitted: boolean;
+  baseResourceRequired: boolean;
+  inputFieldRole: string;
+  inputObjectType: string;
+  plannerVisible: boolean;
+  contentTrust: ArtifactContentTrust;
+};
+
+export type ToolArtifactPortMetadata = {
+  schemaVersion: "1.1";
+  toolId: string;
+  toolVersion: string;
+  inputPorts: ArtifactInputPort[];
+  outputPorts: ArtifactOutputPort[];
+  dependencyCompositionAllowed: boolean;
+};
+
+export type DependencyBinding = {
+  bindingId: string;
+  producerStepId: string;
+  producerOutputPort: string;
+  consumerStepId: string;
+  consumerInputPort: string;
+  artifactKind: ArtifactType;
+  artifactContractVersion: string;
+  mediaType: string;
+  cardinality: ArtifactCardinality;
+};
+
+export type AnalysisPlanV02 = {
+  schemaVersion: "0.2";
+  goal: string;
+  datasetId: string;
+  profileId: string;
+  toolRegistryVersion: string;
+  graphHash: string;
+  assumptions: string[];
+  warnings: string[];
+  steps: AnalysisStep[];
+  dependencyBindings: DependencyBinding[];
+  expectedArtifacts: ExpectedArtifact[];
+};
+
+export type ArtifactPortCompatibility = {
+  pairId: string;
+  producerToolId: string;
+  producerToolVersion: string;
+  producerOutputPort: string;
+  consumerToolId: string;
+  consumerToolVersion: string;
+  consumerInputPort: string;
+  compatible: boolean;
+  artifactKind?: ArtifactType | null;
+  artifactContractVersion?: string | null;
+  mediaType?: string | null;
+  diagnostics: DependencyDiagnostic[];
+};
+
+export type DependencyCompositionProposal = {
+  schemaVersion: "1.0";
+  matrixId: string;
+  selectedPairIds: string[];
+};
+
+export type ArtifactCompatibilityMatrix = {
+  schemaVersion: "1.0";
+  matrixId: string;
+  matrixHash: string;
+  registrySnapshotId: string;
+  registrySnapshotHash: string;
+  selectedToolIds: string[];
+  portMetadataHashes: Record<string, string>;
+  pairs: ArtifactPortCompatibility[];
+};
+
+export type StepExecutionState =
+  | "PENDING"
+  | "READY"
+  | "RUNNING"
+  | "SUCCEEDED"
+  | "FAILED"
+  | "BLOCKED_DEPENDENCY"
+  | "NOT_STARTED";
+
+export type BindingExecutionState =
+  | "PENDING"
+  | "RESOLVED"
+  | "FAILED_PRODUCER"
+  | "MISSING_ARTIFACT"
+  | "CONTRACT_MISMATCH"
+  | "SCOPE_MISMATCH"
+  | "CHECKSUM_MISMATCH"
+  | "SIZE_REJECTED"
+  | "CONSUMER_NOT_RUN";
+
+export type DependencyExecutionOutcome =
+  | "ALL_SUCCEEDED"
+  | "PARTIAL_RESULTS"
+  | "ALL_FAILED"
+  | "VALIDATION_ABORTED";
+
+export type DependencyStepExecution = {
+  stepId: string;
+  toolId: string;
+  state: StepExecutionState;
+  toolCallId?: string | null;
+  artifactIds: string[];
+  blockedByStepIds: string[];
+  errorCode?: string | null;
+  errorMessage?: string | null;
+};
+
+export type DependencyBindingExecution = {
+  bindingId: string;
+  state: BindingExecutionState;
+  producerToolCallId?: string | null;
+  artifactId?: string | null;
+  artifactChecksum?: string | null;
+  consumerToolCallId?: string | null;
+  errorCode?: string | null;
+};
+
+export type DependencyExecutionRecord = {
+  schemaVersion: "1.0";
+  executionId: string;
+  executionHash: string;
+  planId: string;
+  planHash: string;
+  jobId: string;
+  graphHash: string;
+  topologicalOrder: string[];
+  steps: DependencyStepExecution[];
+  bindings: DependencyBindingExecution[];
+  succeededCount: number;
+  failedCount: number;
+  blockedCount: number;
+  notStartedCount: number;
+  partialArtifactIds: string[];
+  outcome: DependencyExecutionOutcome;
+  runtimeVersion: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ResolvedArtifactInputRef = {
+  schemaVersion: "1.0";
+  bindingId: string;
+  planId: string;
+  planHash: string;
+  jobId: string;
+  producerStepId: string;
+  producerToolCallId: string;
+  artifactId: string;
+  artifactKind: ArtifactType;
+  artifactContractVersion: string;
+  mediaType: string;
+  sizeBytes: number;
+  checksum: string;
+  consumerStepId: string;
+  consumerInputPort: string;
+  materializedObjectRef: string;
+};
+
+export type ArtifactLineageRecord = {
+  schemaVersion: "1.0";
+  lineageId: string;
+  lineageHash: string;
+  projectId: string;
+  datasetId?: string | null;
+  datasetVersion?: string | null;
+  profileId?: string | null;
+  profileSemanticHash?: string | null;
+  intentId?: string | null;
+  intentHash?: string | null;
+  resolutionId?: string | null;
+  resolutionHash?: string | null;
+  decisionId?: string | null;
+  decisionHash?: string | null;
+  planId: string;
+  planHash: string;
+  planSchemaVersion: "0.2";
+  graphHash: string;
+  jobId: string;
+  producerStepId: string;
+  producerToolCallId: string;
+  producerToolId: string;
+  producerToolVersion: string;
+  outputPort: string;
+  artifactId: string;
+  artifactKind: ArtifactType;
+  artifactContractVersion: string;
+  mediaType: string;
+  contentHash: string;
+  upstreamArtifactIds: string[];
+  upstreamArtifactHashes: string[];
+  bindingIds: string[];
+  adapterVersion?: string | null;
+  runtimeVersion: string;
+  warnings: string[];
+  caps: Record<string, number>;
+  createdAt: string;
+};
+
 export type AnalysisIntentOutcome = "READY" | "NEEDS_CLARIFICATION" | "UNSUPPORTED";
 
 export type ScientificIntent =

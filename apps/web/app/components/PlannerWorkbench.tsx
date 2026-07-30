@@ -24,6 +24,7 @@ import {
   type CapabilityPlanningDecision,
   type CapabilityPlanningOutcome,
   type DataProfileSummary,
+  type DependencyAudit,
   type DatasetOption,
   type JobEvent,
   type JobResult,
@@ -47,6 +48,7 @@ import {
   getDatasetProfile,
   getPlannerJob,
   getPlannerJobArtifacts,
+  getPlannerJobDependencies,
   getPlannerJobEvents,
   getPlannerJobEventsStreamUrl,
   getPlannerJobResult,
@@ -72,9 +74,10 @@ type WorkspaceSnapshot = {
   toolCalls: ToolCall[];
   artifacts: Artifact[];
   result?: JobResult;
+  dependencyAudit?: DependencyAudit;
 };
 
-type SnapshotSlice = "job" | "events" | "tool_calls" | "artifacts" | "result";
+type SnapshotSlice = "job" | "events" | "tool_calls" | "artifacts" | "result" | "dependencies";
 
 type ConversationChunk = {
   id: string;
@@ -453,18 +456,20 @@ export function PlannerWorkbench() {
       getPlannerJobEvents(nextJobId),
       getPlannerJobToolCalls(nextJobId),
       getPlannerJobArtifacts(nextJobId),
-      getPlannerJobResult(nextJobId)
+      getPlannerJobResult(nextJobId),
+      getPlannerJobDependencies(nextJobId)
     ]);
-    const labels: SnapshotSlice[] = ["job", "events", "tool_calls", "artifacts", "result"];
+    const labels: SnapshotSlice[] = ["job", "events", "tool_calls", "artifacts", "result", "dependencies"];
     const failures = settled.flatMap((item, index) => item.status === "rejected" ? [labels[index]] : []);
     setSnapshotErrors(failures);
-    const [job, events, toolCalls, artifacts, result] = settled;
+    const [job, events, toolCalls, artifacts, result, dependencies] = settled;
     const nextSnapshot: WorkspaceSnapshot = {
       job: job.status === "fulfilled" ? job.value : snapshot.job,
       events: events.status === "fulfilled" ? events.value : snapshot.events,
       toolCalls: toolCalls.status === "fulfilled" ? toolCalls.value : snapshot.toolCalls,
       artifacts: artifacts.status === "fulfilled" ? artifacts.value : snapshot.artifacts,
       result: result.status === "fulfilled" ? result.value : snapshot.result,
+      dependencyAudit: dependencies.status === "fulfilled" ? dependencies.value : snapshot.dependencyAudit,
     };
     setSnapshot((current) => ({
       job: job.status === "fulfilled" ? job.value : current.job,
@@ -472,6 +477,7 @@ export function PlannerWorkbench() {
       toolCalls: toolCalls.status === "fulfilled" ? toolCalls.value : current.toolCalls,
       artifacts: artifacts.status === "fulfilled" ? artifacts.value : current.artifacts,
       result: result.status === "fulfilled" ? result.value : current.result,
+      dependencyAudit: dependencies.status === "fulfilled" ? dependencies.value : current.dependencyAudit,
     }));
     if (artifacts.status === "fulfilled" && artifacts.value[0] && !selectedResultArtifactId) {
       setSelectedResultArtifactId(artifacts.value[0].artifactId || artifacts.value[0].id || "");
@@ -610,6 +616,7 @@ export function PlannerWorkbench() {
               plan={plan}
               planId={planId}
               planHash={planHash}
+              dependencyAudit={snapshot.dependencyAudit}
               developerMode={developerMode}
               chunks={chunks}
               selectedChunkId={selectedChunkId}
@@ -1161,6 +1168,7 @@ function AgentProcessTab(props: {
   mode: "sse" | "polling" | "idle";
   planId: string;
   planHash: string;
+  dependencyAudit?: DependencyAudit;
   health: RuntimeHealth | null;
   providerStatus: ProviderStatus | null;
 }) {
@@ -1223,6 +1231,7 @@ function ConversationPlanTab(props: {
   plan: AnalysisPlan | null;
   planId: string;
   planHash: string;
+  dependencyAudit?: DependencyAudit;
   developerMode: boolean;
   chunks: ConversationChunk[];
   selectedChunkId: string;
@@ -1283,6 +1292,7 @@ function ConversationPlanTab(props: {
         </div>
       </section>
       <PlanPreviewPanel t={t} plan={props.plan} planId={props.planId} planHash={props.planHash} developerMode={props.developerMode} />
+      <DependencyExecutionPanel plan={props.plan} audit={props.dependencyAudit} developerMode={props.developerMode} />
       <RunControls
         t={t}
         jobId={props.jobId}
@@ -1528,6 +1538,7 @@ function PlanPreviewPanel({ t, plan, planId, planHash, developerMode }: { t: Ret
   return (
     <section className="panel" data-testid="plan-preview-panel">
       <PanelHeading title={t("planPreview")} badge={steps.length ? `${steps.length} steps` : t("emptyPlan")} />
+      {plan ? <p><strong>AnalysisPlan {plan.schemaVersion || "0.1"}</strong>{plan.graphHash ? ` / graph ${compactIdentity(plan.graphHash)}` : " / independent steps"}</p> : null}
       {!steps.length ? <p className="empty-state">{t("emptyPlan")}</p> : null}
       <div className="step-list">
         {steps.map((step, index) => (
@@ -1556,6 +1567,66 @@ function PlanPreviewPanel({ t, plan, planId, planHash, developerMode }: { t: Ret
         <details className="raw-json">
           <summary>raw AnalysisPlan JSON</summary>
           <pre>{JSON.stringify({ planId, planHash, plan }, null, 2)}</pre>
+        </details>
+      ) : null}
+    </section>
+  );
+}
+
+function DependencyExecutionPanel({ plan, audit, developerMode }: { plan: AnalysisPlan | null; audit?: DependencyAudit; developerMode: boolean }) {
+  if (plan?.schemaVersion !== "0.2") return null;
+  const bindings = audit?.dependencyBindings || plan.dependencyBindings || [];
+  const execution = audit?.execution;
+  const states = execution?.steps || [];
+  return (
+    <section className="panel dependency-execution-panel" data-testid="dependency-execution-panel" aria-live="polite">
+      <PanelHeading title="Typed artifact dependencies" badge={execution?.outcome || "VALIDATED GRAPH"} />
+      <dl className="mini-grid">
+        <Field label="Graph hash" value={audit?.graphHash || plan.graphHash || "Unavailable"} />
+        <Field label="Topological order" value={audit?.topologicalOrder.join(" -> ") || "Pending execution"} />
+        <Field label="Bindings" value={String(bindings.length)} />
+        <Field label="Execution" value={execution?.executionId || "Not started"} />
+      </dl>
+      <div className="dependency-card-list" aria-label="Dependency bindings">
+        {bindings.map((binding) => {
+          const resolution = audit?.bindingResolutions.find((item) => item.bindingId === binding.bindingId);
+          const runtimeBinding = execution?.bindings.find((item) => item.bindingId === binding.bindingId);
+          return (
+            <article className="dependency-card" key={binding.bindingId} tabIndex={0}>
+              <strong>{binding.producerStepId}:{binding.producerOutputPort} -&gt; {binding.consumerStepId}:{binding.consumerInputPort}</strong>
+              <span>{binding.artifactKind} / {binding.artifactContractVersion}</span>
+              <small>{runtimeBinding?.state || String(resolution?.validationOutcome || "PENDING")}</small>
+            </article>
+          );
+        })}
+      </div>
+      {states.length ? (
+        <ol className="dependency-step-list" aria-label="Dependency execution states">
+          {states.map((step) => (
+            <li key={step.stepId} className={`dependency-step state-${step.state.toLowerCase()}`}>
+              <strong>{step.stepId}</strong><span>{step.toolId}</span><span>{step.state}</span>
+              {step.blockedByStepIds.length ? <small>Blocked by {step.blockedByStepIds.join(", ")}</small> : null}
+              {step.errorCode ? <small>{step.errorCode}: {step.errorMessage || "Execution did not run."}</small> : null}
+            </li>
+          ))}
+        </ol>
+      ) : null}
+      {audit?.artifactLineage.length ? (
+        <div className="artifact-lineage-list" data-testid="artifact-lineage-list">
+          <h3>Artifact lineage</h3>
+          {audit.artifactLineage.map((item) => (
+            <article key={item.lineageId} className="dependency-card">
+              <strong>{item.artifactKind}</strong>
+              <span>{item.producerToolId} / {item.producerStepId} / {item.outputPort}</span>
+              <small>Upstream: {item.upstreamArtifactIds.join(", ") || "source data"}</small>
+            </article>
+          ))}
+        </div>
+      ) : null}
+      {developerMode ? (
+        <details className="raw-json" data-testid="dependency-audit-json">
+          <summary>Dependency execution audit JSON</summary>
+          <pre>{JSON.stringify({ plan, audit }, null, 2)}</pre>
         </details>
       ) : null}
     </section>

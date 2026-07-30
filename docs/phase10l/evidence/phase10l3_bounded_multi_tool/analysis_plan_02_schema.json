@@ -1,0 +1,376 @@
+{
+  "$defs": {
+    "AnalysisStep": {
+      "properties": {
+        "constraints": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Constraints"
+        },
+        "inputRefs": {
+          "items": {
+            "$ref": "#/$defs/InputRef"
+          },
+          "title": "Inputrefs",
+          "type": "array"
+        },
+        "output": {
+          "additionalProperties": true,
+          "title": "Output",
+          "type": "object"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "purpose": {
+          "title": "Purpose",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "stepId": {
+          "title": "Stepid",
+          "type": "string"
+        },
+        "toolId": {
+          "title": "Toolid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "stepId",
+        "toolId",
+        "purpose",
+        "reason",
+        "inputRefs",
+        "output"
+      ],
+      "title": "AnalysisStep",
+      "type": "object"
+    },
+    "ArtifactType": {
+      "enum": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "figure_svg",
+        "figure_pdf",
+        "matterviz_html",
+        "matterviz_snapshot_png",
+        "structure_json",
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json",
+        "phonon_band_json",
+        "phonon_band_dos_json",
+        "phonon_compatibility_json",
+        "phonon_dos_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "phonon_animation_json",
+        "phonon_animation_summary_json",
+        "phonon_animation_manifest_json",
+        "reciprocal_lattice_json",
+        "brillouin_zone_json",
+        "kpath_json",
+        "brillouin_zone_manifest_json",
+        "volumetric_grid_json",
+        "volumetric_payload_json",
+        "volumetric_field_json",
+        "volumetric_dataset_json",
+        "volumetric_manifest_json",
+        "volumetric_structure_overlay_json",
+        "volumetric_binary",
+        "metrics_json",
+        "table_json",
+        "table_csv",
+        "quality_issues_json",
+        "summary_md",
+        "report_md",
+        "report_html",
+        "recipe_json",
+        "analysis_plan_json"
+      ],
+      "title": "ArtifactType",
+      "type": "string"
+    },
+    "DependencyBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactContractVersion": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Artifactcontractversion",
+          "type": "string"
+        },
+        "artifactKind": {
+          "$ref": "#/$defs/ArtifactType"
+        },
+        "bindingId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Bindingid",
+          "type": "string"
+        },
+        "cardinality": {
+          "const": "EXACTLY_ONE",
+          "default": "EXACTLY_ONE",
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "consumerInputPort": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Consumerinputport",
+          "type": "string"
+        },
+        "consumerStepId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Consumerstepid",
+          "type": "string"
+        },
+        "mediaType": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Mediatype",
+          "type": "string"
+        },
+        "producerOutputPort": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Produceroutputport",
+          "type": "string"
+        },
+        "producerStepId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Producerstepid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bindingId",
+        "producerStepId",
+        "producerOutputPort",
+        "consumerStepId",
+        "consumerInputPort",
+        "artifactKind",
+        "artifactContractVersion",
+        "mediaType"
+      ],
+      "title": "DependencyBinding",
+      "type": "object"
+    },
+    "ExpectedArtifact": {
+      "properties": {
+        "fromStepId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fromstepid"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/ArtifactType"
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ],
+      "title": "ExpectedArtifact",
+      "type": "object"
+    },
+    "InputRef": {
+      "properties": {
+        "columnName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Columnname"
+        },
+        "fieldRole": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fieldrole"
+        },
+        "objectType": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MaterialObjectType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ref": {
+          "title": "Ref",
+          "type": "string"
+        },
+        "refType": {
+          "enum": [
+            "dataset",
+            "profile",
+            "normalized_object",
+            "dataframe_column",
+            "artifact"
+          ],
+          "title": "Reftype",
+          "type": "string"
+        }
+      },
+      "required": [
+        "refType",
+        "ref"
+      ],
+      "title": "InputRef",
+      "type": "object"
+    },
+    "MaterialObjectType": {
+      "enum": [
+        "Composition",
+        "Structure",
+        "Atoms",
+        "Molecule",
+        "DataFrame",
+        "PhononBand",
+        "PhononDos",
+        "PhononEigenvector",
+        "Trajectory",
+        "VolumetricData",
+        "ElementValueMap",
+        "RawUnsupported"
+      ],
+      "title": "MaterialObjectType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "datasetId": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Datasetid",
+      "type": "string"
+    },
+    "dependencyBindings": {
+      "items": {
+        "$ref": "#/$defs/DependencyBinding"
+      },
+      "maxItems": 6,
+      "title": "Dependencybindings",
+      "type": "array"
+    },
+    "expectedArtifacts": {
+      "items": {
+        "$ref": "#/$defs/ExpectedArtifact"
+      },
+      "maxItems": 64,
+      "title": "Expectedartifacts",
+      "type": "array"
+    },
+    "goal": {
+      "maxLength": 16384,
+      "minLength": 1,
+      "title": "Goal",
+      "type": "string"
+    },
+    "graphHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Graphhash",
+      "type": "string"
+    },
+    "profileId": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Profileid",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "0.2",
+      "default": "0.2",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/AnalysisStep"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Steps",
+      "type": "array"
+    },
+    "toolRegistryVersion": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Toolregistryversion",
+      "type": "string"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "goal",
+    "datasetId",
+    "profileId",
+    "toolRegistryVersion",
+    "graphHash",
+    "steps"
+  ],
+  "title": "AnalysisPlanV02",
+  "type": "object"
+}

@@ -88,6 +88,71 @@ const createdJob = {
   executed: false
 };
 
+const dependencyBindings = [
+  {
+    bindingId: "binding_band_combined",
+    producerStepId: "step_band",
+    producerOutputPort: "canonical-band",
+    consumerStepId: "step_combined",
+    consumerInputPort: "band",
+    artifactKind: "phonon_band_json",
+    artifactContractVersion: "phase10h.phonon_band.v1",
+    mediaType: "application/json",
+    cardinality: "EXACTLY_ONE" as const
+  }
+];
+
+const dependencyPlan = {
+  ...plan,
+  schemaVersion: "0.2",
+  graphHash: "f".repeat(64),
+  steps: [
+    { ...plan.steps[0], stepId: "step_combined", toolId: "phonon.band_dos", inputRefs: [], output: { artifactTypes: ["phonon_band_dos_json"] } },
+    { ...plan.steps[0], stepId: "step_band", toolId: "phonon.band", inputRefs: [{ refType: "normalized_object", ref: "band_source", objectType: "PhononBand" }], output: { artifactTypes: ["phonon_band_json"] } }
+  ],
+  dependencyBindings
+};
+
+const dependencyAudit = {
+  jobId: "job_1",
+  planId: "plan_1",
+  planHash: "hash_1",
+  planSchemaVersion: "0.2",
+  graphHash: dependencyPlan.graphHash,
+  dependencyBindings,
+  plannedBindingRecords: [],
+  topologicalOrder: ["step_band", "step_combined"],
+  bindingResolutions: [{ bindingId: dependencyBindings[0].bindingId, validationOutcome: "FAILED_PRODUCER" }],
+  execution: {
+    executionId: "execution_partial",
+    executionHash: "a".repeat(64),
+    outcome: "PARTIAL_RESULTS",
+    graphHash: dependencyPlan.graphHash,
+    topologicalOrder: ["step_band", "step_combined"],
+    steps: [
+      { stepId: "step_band", toolId: "phonon.band", state: "FAILED", artifactIds: [], blockedByStepIds: [], errorCode: "ADAPTER_EXECUTION_FAILED", errorMessage: "Fixture failure" },
+      { stepId: "step_combined", toolId: "phonon.band_dos", state: "BLOCKED_DEPENDENCY", artifactIds: [], blockedByStepIds: ["step_band"] }
+    ],
+    bindings: [{ bindingId: dependencyBindings[0].bindingId, state: "FAILED_PRODUCER", errorCode: "FAILED_PRODUCER" }],
+    succeededCount: 1,
+    failedCount: 1,
+    blockedCount: 1,
+    notStartedCount: 0,
+    partialArtifactIds: ["artifact_independent"]
+  },
+  artifactLineage: [{
+    lineageId: "lineage_independent",
+    artifactId: "artifact_independent",
+    artifactKind: "table_json",
+    producerStepId: "step_independent",
+    producerToolId: "composition.summary",
+    outputPort: "result-table_json",
+    upstreamArtifactIds: [],
+    bindingIds: [],
+    contentHash: "b".repeat(64)
+  }]
+};
+
 const baseIntent = {
   schemaVersion: "1.0" as const,
   intentId: "intent_ready",
@@ -1256,6 +1321,42 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(within(panel).getByTestId("capability-planning-diagnostics")).toHaveTextContent("CAPABILITY_COVERAGE_INCOMPLETE");
     expect(within(screen.getByTestId("run-controls")).getByRole("button")).toBeDisabled();
   });
+
+  it("shows the typed dependency graph, partial execution, blocked step, and inert lineage audit", async () => {
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
+        return jsonResponse({
+          ...createdJob,
+          plan: dependencyPlan,
+          plan_schema_version: "0.2",
+          graph_hash: dependencyPlan.graphHash,
+          dependency_bindings: dependencyBindings,
+          topological_order: dependencyAudit.topologicalOrder
+        });
+      }
+      if (url.endsWith("/planner/jobs/job_1/dependencies")) return jsonResponse(dependencyAudit);
+      return mockPlannerFetch(input, init);
+    });
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+
+    const panel = await screen.findByTestId("dependency-execution-panel");
+    expect(within(panel).getByText("PARTIAL_RESULTS")).not.toBeNull();
+    expect(within(panel).getByText("step_band:canonical-band -> step_combined:band")).not.toBeNull();
+    expect(within(panel).getByText("BLOCKED_DEPENDENCY")).not.toBeNull();
+    expect(within(panel).getByText("Blocked by step_band")).not.toBeNull();
+    expect(within(panel).getByTestId("artifact-lineage-list")).toHaveTextContent("composition.summary");
+    expect(document.body.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth || document.body.scrollWidth);
+
+    await user.click(screen.getByRole("checkbox"));
+    const audit = await screen.findByTestId("dependency-audit-json");
+    expect(audit.querySelector("pre")?.textContent).toContain("binding_band_combined");
+    expect(audit.querySelector("script")).toBeNull();
+    expect(document.querySelector("iframe")).toBeNull();
+  });
 });
 
 async function loadDemoFromTopBar(user: ReturnType<typeof userEvent.setup>) {
@@ -1499,6 +1600,13 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
   }
   if (url.endsWith("/planner/jobs/job_1/artifacts")) {
     return jsonResponse(activeArtifacts);
+  }
+  if (url.endsWith("/planner/jobs/job_1/dependencies")) {
+    return jsonResponse({
+      jobId: "job_1", planId: "plan_1", planHash: "hash_1", planSchemaVersion: "0.1",
+      graphHash: null, dependencyBindings: [], plannedBindingRecords: [], topologicalOrder: [],
+      execution: null, bindingResolutions: [], artifactLineage: []
+    });
   }
   if (url.endsWith("/planner/jobs/job_1/result")) {
     return jsonResponse(activeResult);

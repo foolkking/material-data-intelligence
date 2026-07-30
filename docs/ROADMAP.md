@@ -34,6 +34,11 @@ result history, and evidence are retained.
 * 10L-5: natural-language end-to-end evidence across dataset, structure, ML,
   phonon, and volumetric cases.
 
+Current status: 10L-0, 10L-1, and 10L-2 are archived. 10L-3 is the sole active
+task and is not complete until implementation, completion-record, and verified
+queue-archive exact-SHA CI all pass. 10L-4 remains reviewer-gated and is not an
+executable task.
+
 ### Phase 10M - Unified Scientific Workspace
 
 * 10M-0: workspace information architecture and identity contract.

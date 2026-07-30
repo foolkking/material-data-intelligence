@@ -1,0 +1,1637 @@
+{
+  "analysisPlanV02": {
+    "$defs": {
+      "AnalysisStep": {
+        "properties": {
+          "stepId": {
+            "title": "Stepid",
+            "type": "string"
+          },
+          "toolId": {
+            "title": "Toolid",
+            "type": "string"
+          },
+          "purpose": {
+            "title": "Purpose",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "inputRefs": {
+            "items": {
+              "$ref": "#/$defs/InputRef"
+            },
+            "title": "Inputrefs",
+            "type": "array"
+          },
+          "params": {
+            "additionalProperties": true,
+            "title": "Params",
+            "type": "object"
+          },
+          "output": {
+            "additionalProperties": true,
+            "title": "Output",
+            "type": "object"
+          },
+          "constraints": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Constraints"
+          }
+        },
+        "required": [
+          "stepId",
+          "toolId",
+          "purpose",
+          "reason",
+          "inputRefs",
+          "output"
+        ],
+        "title": "AnalysisStep",
+        "type": "object"
+      },
+      "ArtifactType": {
+        "enum": [
+          "plotly_json",
+          "plotly_html",
+          "preview_png",
+          "figure_svg",
+          "figure_pdf",
+          "matterviz_html",
+          "matterviz_snapshot_png",
+          "structure_json",
+          "trajectory_json",
+          "trajectory_summary_json",
+          "trajectory_report_json",
+          "trajectory_manifest_json",
+          "phonon_band_json",
+          "phonon_band_dos_json",
+          "phonon_compatibility_json",
+          "phonon_dos_json",
+          "phonon_summary_json",
+          "phonon_report_json",
+          "phonon_manifest_json",
+          "phonon_animation_json",
+          "phonon_animation_summary_json",
+          "phonon_animation_manifest_json",
+          "reciprocal_lattice_json",
+          "brillouin_zone_json",
+          "kpath_json",
+          "brillouin_zone_manifest_json",
+          "volumetric_grid_json",
+          "volumetric_payload_json",
+          "volumetric_field_json",
+          "volumetric_dataset_json",
+          "volumetric_manifest_json",
+          "volumetric_structure_overlay_json",
+          "volumetric_binary",
+          "metrics_json",
+          "table_json",
+          "table_csv",
+          "quality_issues_json",
+          "summary_md",
+          "report_md",
+          "report_html",
+          "recipe_json",
+          "analysis_plan_json"
+        ],
+        "title": "ArtifactType",
+        "type": "string"
+      },
+      "DependencyBinding": {
+        "additionalProperties": false,
+        "properties": {
+          "bindingId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Bindingid",
+            "type": "string"
+          },
+          "producerStepId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Producerstepid",
+            "type": "string"
+          },
+          "producerOutputPort": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Produceroutputport",
+            "type": "string"
+          },
+          "consumerStepId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Consumerstepid",
+            "type": "string"
+          },
+          "consumerInputPort": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Consumerinputport",
+            "type": "string"
+          },
+          "artifactKind": {
+            "$ref": "#/$defs/ArtifactType"
+          },
+          "artifactContractVersion": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Artifactcontractversion",
+            "type": "string"
+          },
+          "mediaType": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Mediatype",
+            "type": "string"
+          },
+          "cardinality": {
+            "const": "EXACTLY_ONE",
+            "default": "EXACTLY_ONE",
+            "title": "Cardinality",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bindingId",
+          "producerStepId",
+          "producerOutputPort",
+          "consumerStepId",
+          "consumerInputPort",
+          "artifactKind",
+          "artifactContractVersion",
+          "mediaType"
+        ],
+        "title": "DependencyBinding",
+        "type": "object"
+      },
+      "ExpectedArtifact": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/$defs/ArtifactType"
+          },
+          "fromStepId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fromstepid"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "title": "ExpectedArtifact",
+        "type": "object"
+      },
+      "InputRef": {
+        "properties": {
+          "refType": {
+            "enum": [
+              "dataset",
+              "profile",
+              "normalized_object",
+              "dataframe_column",
+              "artifact"
+            ],
+            "title": "Reftype",
+            "type": "string"
+          },
+          "ref": {
+            "title": "Ref",
+            "type": "string"
+          },
+          "fieldRole": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fieldrole"
+          },
+          "columnName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Columnname"
+          },
+          "objectType": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/MaterialObjectType"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "refType",
+          "ref"
+        ],
+        "title": "InputRef",
+        "type": "object"
+      },
+      "MaterialObjectType": {
+        "enum": [
+          "Composition",
+          "Structure",
+          "Atoms",
+          "Molecule",
+          "DataFrame",
+          "PhononBand",
+          "PhononDos",
+          "PhononEigenvector",
+          "Trajectory",
+          "VolumetricData",
+          "ElementValueMap",
+          "RawUnsupported"
+        ],
+        "title": "MaterialObjectType",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": "0.2",
+        "default": "0.2",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "goal": {
+        "maxLength": 16384,
+        "minLength": 1,
+        "title": "Goal",
+        "type": "string"
+      },
+      "datasetId": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Datasetid",
+        "type": "string"
+      },
+      "profileId": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Profileid",
+        "type": "string"
+      },
+      "toolRegistryVersion": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Toolregistryversion",
+        "type": "string"
+      },
+      "graphHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Graphhash",
+        "type": "string"
+      },
+      "assumptions": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "title": "Assumptions",
+        "type": "array"
+      },
+      "warnings": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "title": "Warnings",
+        "type": "array"
+      },
+      "steps": {
+        "items": {
+          "$ref": "#/$defs/AnalysisStep"
+        },
+        "maxItems": 4,
+        "minItems": 1,
+        "title": "Steps",
+        "type": "array"
+      },
+      "dependencyBindings": {
+        "items": {
+          "$ref": "#/$defs/DependencyBinding"
+        },
+        "maxItems": 6,
+        "title": "Dependencybindings",
+        "type": "array"
+      },
+      "expectedArtifacts": {
+        "items": {
+          "$ref": "#/$defs/ExpectedArtifact"
+        },
+        "maxItems": 64,
+        "title": "Expectedartifacts",
+        "type": "array"
+      }
+    },
+    "required": [
+      "goal",
+      "datasetId",
+      "profileId",
+      "toolRegistryVersion",
+      "graphHash",
+      "steps"
+    ],
+    "title": "AnalysisPlanV02",
+    "type": "object"
+  },
+  "dependencyBinding": {
+    "$defs": {
+      "ArtifactType": {
+        "enum": [
+          "plotly_json",
+          "plotly_html",
+          "preview_png",
+          "figure_svg",
+          "figure_pdf",
+          "matterviz_html",
+          "matterviz_snapshot_png",
+          "structure_json",
+          "trajectory_json",
+          "trajectory_summary_json",
+          "trajectory_report_json",
+          "trajectory_manifest_json",
+          "phonon_band_json",
+          "phonon_band_dos_json",
+          "phonon_compatibility_json",
+          "phonon_dos_json",
+          "phonon_summary_json",
+          "phonon_report_json",
+          "phonon_manifest_json",
+          "phonon_animation_json",
+          "phonon_animation_summary_json",
+          "phonon_animation_manifest_json",
+          "reciprocal_lattice_json",
+          "brillouin_zone_json",
+          "kpath_json",
+          "brillouin_zone_manifest_json",
+          "volumetric_grid_json",
+          "volumetric_payload_json",
+          "volumetric_field_json",
+          "volumetric_dataset_json",
+          "volumetric_manifest_json",
+          "volumetric_structure_overlay_json",
+          "volumetric_binary",
+          "metrics_json",
+          "table_json",
+          "table_csv",
+          "quality_issues_json",
+          "summary_md",
+          "report_md",
+          "report_html",
+          "recipe_json",
+          "analysis_plan_json"
+        ],
+        "title": "ArtifactType",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "bindingId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Bindingid",
+        "type": "string"
+      },
+      "producerStepId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Producerstepid",
+        "type": "string"
+      },
+      "producerOutputPort": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Produceroutputport",
+        "type": "string"
+      },
+      "consumerStepId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Consumerstepid",
+        "type": "string"
+      },
+      "consumerInputPort": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Consumerinputport",
+        "type": "string"
+      },
+      "artifactKind": {
+        "$ref": "#/$defs/ArtifactType"
+      },
+      "artifactContractVersion": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Artifactcontractversion",
+        "type": "string"
+      },
+      "mediaType": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Mediatype",
+        "type": "string"
+      },
+      "cardinality": {
+        "const": "EXACTLY_ONE",
+        "default": "EXACTLY_ONE",
+        "title": "Cardinality",
+        "type": "string"
+      }
+    },
+    "required": [
+      "bindingId",
+      "producerStepId",
+      "producerOutputPort",
+      "consumerStepId",
+      "consumerInputPort",
+      "artifactKind",
+      "artifactContractVersion",
+      "mediaType"
+    ],
+    "title": "DependencyBinding",
+    "type": "object"
+  },
+  "dependencyCompositionProposal": {
+    "additionalProperties": false,
+    "description": "The complete authority an optional provider receives for dependency composition.",
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "matrixId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Matrixid",
+        "type": "string"
+      },
+      "selectedPairIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 6,
+        "title": "Selectedpairids",
+        "type": "array"
+      }
+    },
+    "required": [
+      "matrixId"
+    ],
+    "title": "DependencyCompositionProposal",
+    "type": "object"
+  },
+  "toolArtifactPortMetadata": {
+    "$defs": {
+      "ArtifactInputPort": {
+        "additionalProperties": false,
+        "properties": {
+          "portId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Portid",
+            "type": "string"
+          },
+          "acceptedArtifactKinds": {
+            "items": {
+              "$ref": "#/$defs/ArtifactType"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Acceptedartifactkinds",
+            "type": "array"
+          },
+          "acceptedContractVersions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Acceptedcontractversions",
+            "type": "array"
+          },
+          "mediaTypes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Mediatypes",
+            "type": "array"
+          },
+          "cardinality": {
+            "const": "EXACTLY_ONE",
+            "default": "EXACTLY_ONE",
+            "title": "Cardinality",
+            "type": "string"
+          },
+          "maxBytes": {
+            "exclusiveMinimum": 0,
+            "maximum": 268435456,
+            "title": "Maxbytes",
+            "type": "integer"
+          },
+          "identityPolicy": {
+            "const": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+            "default": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+            "title": "Identitypolicy",
+            "type": "string"
+          },
+          "requiredSemanticRoles": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Requiredsemanticroles",
+            "type": "array"
+          },
+          "materializationPermitted": {
+            "default": true,
+            "title": "Materializationpermitted",
+            "type": "boolean"
+          },
+          "baseResourceRequired": {
+            "default": false,
+            "title": "Baseresourcerequired",
+            "type": "boolean"
+          },
+          "inputFieldRole": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Inputfieldrole",
+            "type": "string"
+          },
+          "inputObjectType": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Inputobjecttype",
+            "type": "string"
+          },
+          "plannerVisible": {
+            "default": true,
+            "title": "Plannervisible",
+            "type": "boolean"
+          },
+          "contentTrust": {
+            "const": "INERT_DATA",
+            "default": "INERT_DATA",
+            "title": "Contenttrust",
+            "type": "string"
+          }
+        },
+        "required": [
+          "portId",
+          "acceptedArtifactKinds",
+          "acceptedContractVersions",
+          "mediaTypes",
+          "maxBytes",
+          "requiredSemanticRoles",
+          "inputFieldRole",
+          "inputObjectType"
+        ],
+        "title": "ArtifactInputPort",
+        "type": "object"
+      },
+      "ArtifactOutputPort": {
+        "additionalProperties": false,
+        "properties": {
+          "portId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Portid",
+            "type": "string"
+          },
+          "artifactKind": {
+            "$ref": "#/$defs/ArtifactType"
+          },
+          "contractFamily": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Contractfamily",
+            "type": "string"
+          },
+          "contractVersions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Contractversions",
+            "type": "array"
+          },
+          "mediaTypes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Mediatypes",
+            "type": "array"
+          },
+          "cardinality": {
+            "const": "EXACTLY_ONE",
+            "default": "EXACTLY_ONE",
+            "title": "Cardinality",
+            "type": "string"
+          },
+          "maxBytes": {
+            "exclusiveMinimum": 0,
+            "maximum": 268435456,
+            "title": "Maxbytes",
+            "type": "integer"
+          },
+          "deterministic": {
+            "default": true,
+            "title": "Deterministic",
+            "type": "boolean"
+          },
+          "requiredProvenanceFields": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Requiredprovenancefields",
+            "type": "array"
+          },
+          "identityPolicy": {
+            "const": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+            "default": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+            "title": "Identitypolicy",
+            "type": "string"
+          },
+          "contentTrust": {
+            "const": "INERT_DATA",
+            "default": "INERT_DATA",
+            "title": "Contenttrust",
+            "type": "string"
+          },
+          "plannerVisible": {
+            "default": true,
+            "title": "Plannervisible",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "portId",
+          "artifactKind",
+          "contractFamily",
+          "contractVersions",
+          "mediaTypes",
+          "maxBytes"
+        ],
+        "title": "ArtifactOutputPort",
+        "type": "object"
+      },
+      "ArtifactType": {
+        "enum": [
+          "plotly_json",
+          "plotly_html",
+          "preview_png",
+          "figure_svg",
+          "figure_pdf",
+          "matterviz_html",
+          "matterviz_snapshot_png",
+          "structure_json",
+          "trajectory_json",
+          "trajectory_summary_json",
+          "trajectory_report_json",
+          "trajectory_manifest_json",
+          "phonon_band_json",
+          "phonon_band_dos_json",
+          "phonon_compatibility_json",
+          "phonon_dos_json",
+          "phonon_summary_json",
+          "phonon_report_json",
+          "phonon_manifest_json",
+          "phonon_animation_json",
+          "phonon_animation_summary_json",
+          "phonon_animation_manifest_json",
+          "reciprocal_lattice_json",
+          "brillouin_zone_json",
+          "kpath_json",
+          "brillouin_zone_manifest_json",
+          "volumetric_grid_json",
+          "volumetric_payload_json",
+          "volumetric_field_json",
+          "volumetric_dataset_json",
+          "volumetric_manifest_json",
+          "volumetric_structure_overlay_json",
+          "volumetric_binary",
+          "metrics_json",
+          "table_json",
+          "table_csv",
+          "quality_issues_json",
+          "summary_md",
+          "report_md",
+          "report_html",
+          "recipe_json",
+          "analysis_plan_json"
+        ],
+        "title": "ArtifactType",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": "1.1",
+        "default": "1.1",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "toolId": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Toolid",
+        "type": "string"
+      },
+      "toolVersion": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Toolversion",
+        "type": "string"
+      },
+      "inputPorts": {
+        "items": {
+          "$ref": "#/$defs/ArtifactInputPort"
+        },
+        "maxItems": 16,
+        "title": "Inputports",
+        "type": "array"
+      },
+      "outputPorts": {
+        "items": {
+          "$ref": "#/$defs/ArtifactOutputPort"
+        },
+        "maxItems": 16,
+        "title": "Outputports",
+        "type": "array"
+      },
+      "dependencyCompositionAllowed": {
+        "default": false,
+        "title": "Dependencycompositionallowed",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "toolId",
+      "toolVersion"
+    ],
+    "title": "ToolArtifactPortMetadata",
+    "type": "object"
+  },
+  "dependencyExecutionRecord": {
+    "$defs": {
+      "BindingExecutionState": {
+        "enum": [
+          "PENDING",
+          "RESOLVED",
+          "FAILED_PRODUCER",
+          "MISSING_ARTIFACT",
+          "CONTRACT_MISMATCH",
+          "SCOPE_MISMATCH",
+          "CHECKSUM_MISMATCH",
+          "SIZE_REJECTED",
+          "CONSUMER_NOT_RUN"
+        ],
+        "title": "BindingExecutionState",
+        "type": "string"
+      },
+      "DependencyBindingExecution": {
+        "additionalProperties": false,
+        "properties": {
+          "bindingId": {
+            "title": "Bindingid",
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/$defs/BindingExecutionState"
+          },
+          "producerToolCallId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Producertoolcallid"
+          },
+          "artifactId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactid"
+          },
+          "artifactChecksum": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactchecksum"
+          },
+          "consumerToolCallId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Consumertoolcallid"
+          },
+          "errorCode": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Errorcode"
+          }
+        },
+        "required": [
+          "bindingId",
+          "state"
+        ],
+        "title": "DependencyBindingExecution",
+        "type": "object"
+      },
+      "DependencyExecutionOutcome": {
+        "enum": [
+          "ALL_SUCCEEDED",
+          "PARTIAL_RESULTS",
+          "ALL_FAILED",
+          "VALIDATION_ABORTED"
+        ],
+        "title": "DependencyExecutionOutcome",
+        "type": "string"
+      },
+      "DependencyStepExecution": {
+        "additionalProperties": false,
+        "properties": {
+          "stepId": {
+            "title": "Stepid",
+            "type": "string"
+          },
+          "toolId": {
+            "title": "Toolid",
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/$defs/StepExecutionState"
+          },
+          "toolCallId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Toolcallid"
+          },
+          "artifactIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 64,
+            "title": "Artifactids",
+            "type": "array"
+          },
+          "blockedByStepIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 4,
+            "title": "Blockedbystepids",
+            "type": "array"
+          },
+          "errorCode": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Errorcode"
+          },
+          "errorMessage": {
+            "anyOf": [
+              {
+                "maxLength": 1024,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Errormessage"
+          }
+        },
+        "required": [
+          "stepId",
+          "toolId",
+          "state"
+        ],
+        "title": "DependencyStepExecution",
+        "type": "object"
+      },
+      "StepExecutionState": {
+        "enum": [
+          "PENDING",
+          "READY",
+          "RUNNING",
+          "SUCCEEDED",
+          "FAILED",
+          "BLOCKED_DEPENDENCY",
+          "NOT_STARTED"
+        ],
+        "title": "StepExecutionState",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "executionId": {
+        "title": "Executionid",
+        "type": "string"
+      },
+      "executionHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Executionhash",
+        "type": "string"
+      },
+      "planId": {
+        "title": "Planid",
+        "type": "string"
+      },
+      "planHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Planhash",
+        "type": "string"
+      },
+      "jobId": {
+        "title": "Jobid",
+        "type": "string"
+      },
+      "graphHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Graphhash",
+        "type": "string"
+      },
+      "topologicalOrder": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 4,
+        "minItems": 1,
+        "title": "Topologicalorder",
+        "type": "array"
+      },
+      "steps": {
+        "items": {
+          "$ref": "#/$defs/DependencyStepExecution"
+        },
+        "maxItems": 4,
+        "minItems": 1,
+        "title": "Steps",
+        "type": "array"
+      },
+      "bindings": {
+        "items": {
+          "$ref": "#/$defs/DependencyBindingExecution"
+        },
+        "maxItems": 6,
+        "title": "Bindings",
+        "type": "array"
+      },
+      "succeededCount": {
+        "maximum": 4,
+        "minimum": 0,
+        "title": "Succeededcount",
+        "type": "integer"
+      },
+      "failedCount": {
+        "maximum": 4,
+        "minimum": 0,
+        "title": "Failedcount",
+        "type": "integer"
+      },
+      "blockedCount": {
+        "maximum": 4,
+        "minimum": 0,
+        "title": "Blockedcount",
+        "type": "integer"
+      },
+      "notStartedCount": {
+        "maximum": 4,
+        "minimum": 0,
+        "title": "Notstartedcount",
+        "type": "integer"
+      },
+      "partialArtifactIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 256,
+        "title": "Partialartifactids",
+        "type": "array"
+      },
+      "outcome": {
+        "$ref": "#/$defs/DependencyExecutionOutcome"
+      },
+      "runtimeVersion": {
+        "title": "Runtimeversion",
+        "type": "string"
+      },
+      "createdAt": {
+        "title": "Createdat",
+        "type": "string"
+      },
+      "updatedAt": {
+        "title": "Updatedat",
+        "type": "string"
+      }
+    },
+    "required": [
+      "executionId",
+      "executionHash",
+      "planId",
+      "planHash",
+      "jobId",
+      "graphHash",
+      "topologicalOrder",
+      "steps",
+      "succeededCount",
+      "failedCount",
+      "blockedCount",
+      "notStartedCount",
+      "outcome",
+      "runtimeVersion",
+      "createdAt",
+      "updatedAt"
+    ],
+    "title": "DependencyExecutionRecord",
+    "type": "object"
+  },
+  "resolvedArtifactInputRef": {
+    "$defs": {
+      "ArtifactType": {
+        "enum": [
+          "plotly_json",
+          "plotly_html",
+          "preview_png",
+          "figure_svg",
+          "figure_pdf",
+          "matterviz_html",
+          "matterviz_snapshot_png",
+          "structure_json",
+          "trajectory_json",
+          "trajectory_summary_json",
+          "trajectory_report_json",
+          "trajectory_manifest_json",
+          "phonon_band_json",
+          "phonon_band_dos_json",
+          "phonon_compatibility_json",
+          "phonon_dos_json",
+          "phonon_summary_json",
+          "phonon_report_json",
+          "phonon_manifest_json",
+          "phonon_animation_json",
+          "phonon_animation_summary_json",
+          "phonon_animation_manifest_json",
+          "reciprocal_lattice_json",
+          "brillouin_zone_json",
+          "kpath_json",
+          "brillouin_zone_manifest_json",
+          "volumetric_grid_json",
+          "volumetric_payload_json",
+          "volumetric_field_json",
+          "volumetric_dataset_json",
+          "volumetric_manifest_json",
+          "volumetric_structure_overlay_json",
+          "volumetric_binary",
+          "metrics_json",
+          "table_json",
+          "table_csv",
+          "quality_issues_json",
+          "summary_md",
+          "report_md",
+          "report_html",
+          "recipe_json",
+          "analysis_plan_json"
+        ],
+        "title": "ArtifactType",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "bindingId": {
+        "title": "Bindingid",
+        "type": "string"
+      },
+      "planId": {
+        "title": "Planid",
+        "type": "string"
+      },
+      "planHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Planhash",
+        "type": "string"
+      },
+      "jobId": {
+        "title": "Jobid",
+        "type": "string"
+      },
+      "producerStepId": {
+        "title": "Producerstepid",
+        "type": "string"
+      },
+      "producerToolCallId": {
+        "title": "Producertoolcallid",
+        "type": "string"
+      },
+      "artifactId": {
+        "title": "Artifactid",
+        "type": "string"
+      },
+      "artifactKind": {
+        "$ref": "#/$defs/ArtifactType"
+      },
+      "artifactContractVersion": {
+        "title": "Artifactcontractversion",
+        "type": "string"
+      },
+      "mediaType": {
+        "title": "Mediatype",
+        "type": "string"
+      },
+      "sizeBytes": {
+        "minimum": 0,
+        "title": "Sizebytes",
+        "type": "integer"
+      },
+      "checksum": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Checksum",
+        "type": "string"
+      },
+      "consumerStepId": {
+        "title": "Consumerstepid",
+        "type": "string"
+      },
+      "consumerInputPort": {
+        "title": "Consumerinputport",
+        "type": "string"
+      },
+      "materializedObjectRef": {
+        "title": "Materializedobjectref",
+        "type": "string"
+      }
+    },
+    "required": [
+      "bindingId",
+      "planId",
+      "planHash",
+      "jobId",
+      "producerStepId",
+      "producerToolCallId",
+      "artifactId",
+      "artifactKind",
+      "artifactContractVersion",
+      "mediaType",
+      "sizeBytes",
+      "checksum",
+      "consumerStepId",
+      "consumerInputPort",
+      "materializedObjectRef"
+    ],
+    "title": "ResolvedArtifactInputRef",
+    "type": "object"
+  },
+  "artifactLineageRecord": {
+    "$defs": {
+      "ArtifactType": {
+        "enum": [
+          "plotly_json",
+          "plotly_html",
+          "preview_png",
+          "figure_svg",
+          "figure_pdf",
+          "matterviz_html",
+          "matterviz_snapshot_png",
+          "structure_json",
+          "trajectory_json",
+          "trajectory_summary_json",
+          "trajectory_report_json",
+          "trajectory_manifest_json",
+          "phonon_band_json",
+          "phonon_band_dos_json",
+          "phonon_compatibility_json",
+          "phonon_dos_json",
+          "phonon_summary_json",
+          "phonon_report_json",
+          "phonon_manifest_json",
+          "phonon_animation_json",
+          "phonon_animation_summary_json",
+          "phonon_animation_manifest_json",
+          "reciprocal_lattice_json",
+          "brillouin_zone_json",
+          "kpath_json",
+          "brillouin_zone_manifest_json",
+          "volumetric_grid_json",
+          "volumetric_payload_json",
+          "volumetric_field_json",
+          "volumetric_dataset_json",
+          "volumetric_manifest_json",
+          "volumetric_structure_overlay_json",
+          "volumetric_binary",
+          "metrics_json",
+          "table_json",
+          "table_csv",
+          "quality_issues_json",
+          "summary_md",
+          "report_md",
+          "report_html",
+          "recipe_json",
+          "analysis_plan_json"
+        ],
+        "title": "ArtifactType",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "lineageId": {
+        "title": "Lineageid",
+        "type": "string"
+      },
+      "lineageHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Lineagehash",
+        "type": "string"
+      },
+      "projectId": {
+        "title": "Projectid",
+        "type": "string"
+      },
+      "datasetId": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Datasetid"
+      },
+      "datasetVersion": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Datasetversion"
+      },
+      "profileId": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Profileid"
+      },
+      "profileSemanticHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Profilesemantichash"
+      },
+      "intentId": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Intentid"
+      },
+      "intentHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Intenthash"
+      },
+      "resolutionId": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Resolutionid"
+      },
+      "resolutionHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Resolutionhash"
+      },
+      "decisionId": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Decisionid"
+      },
+      "decisionHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Decisionhash"
+      },
+      "planId": {
+        "title": "Planid",
+        "type": "string"
+      },
+      "planHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Planhash",
+        "type": "string"
+      },
+      "planSchemaVersion": {
+        "const": "0.2",
+        "default": "0.2",
+        "title": "Planschemaversion",
+        "type": "string"
+      },
+      "graphHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Graphhash",
+        "type": "string"
+      },
+      "jobId": {
+        "title": "Jobid",
+        "type": "string"
+      },
+      "producerStepId": {
+        "title": "Producerstepid",
+        "type": "string"
+      },
+      "producerToolCallId": {
+        "title": "Producertoolcallid",
+        "type": "string"
+      },
+      "producerToolId": {
+        "title": "Producertoolid",
+        "type": "string"
+      },
+      "producerToolVersion": {
+        "title": "Producertoolversion",
+        "type": "string"
+      },
+      "outputPort": {
+        "title": "Outputport",
+        "type": "string"
+      },
+      "artifactId": {
+        "title": "Artifactid",
+        "type": "string"
+      },
+      "artifactKind": {
+        "$ref": "#/$defs/ArtifactType"
+      },
+      "artifactContractVersion": {
+        "title": "Artifactcontractversion",
+        "type": "string"
+      },
+      "mediaType": {
+        "title": "Mediatype",
+        "type": "string"
+      },
+      "contentHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Contenthash",
+        "type": "string"
+      },
+      "upstreamArtifactIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 6,
+        "title": "Upstreamartifactids",
+        "type": "array"
+      },
+      "upstreamArtifactHashes": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 6,
+        "title": "Upstreamartifacthashes",
+        "type": "array"
+      },
+      "bindingIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 6,
+        "title": "Bindingids",
+        "type": "array"
+      },
+      "adapterVersion": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Adapterversion"
+      },
+      "runtimeVersion": {
+        "title": "Runtimeversion",
+        "type": "string"
+      },
+      "warnings": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "title": "Warnings",
+        "type": "array"
+      },
+      "caps": {
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "title": "Caps",
+        "type": "object"
+      },
+      "createdAt": {
+        "title": "Createdat",
+        "type": "string"
+      }
+    },
+    "required": [
+      "lineageId",
+      "lineageHash",
+      "projectId",
+      "planId",
+      "planHash",
+      "graphHash",
+      "jobId",
+      "producerStepId",
+      "producerToolCallId",
+      "producerToolId",
+      "producerToolVersion",
+      "outputPort",
+      "artifactId",
+      "artifactKind",
+      "artifactContractVersion",
+      "mediaType",
+      "contentHash",
+      "runtimeVersion",
+      "createdAt"
+    ],
+    "title": "ArtifactLineageRecord",
+    "type": "object"
+  }
+}

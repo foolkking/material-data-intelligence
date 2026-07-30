@@ -1,0 +1,38 @@
+{
+  "compatiblePairs": [
+    {
+      "artifactContractVersion": "phase10h.phonon_band.v1",
+      "artifactKind": "phonon_band_json",
+      "compatible": true,
+      "consumerInputPort": "band",
+      "consumerToolId": "phonon.band_dos",
+      "consumerToolVersion": "0.1.0",
+      "diagnostics": [],
+      "mediaType": "application/json",
+      "pairId": "port_pair_0d29fd0580508fb15011269c89994854",
+      "producerOutputPort": "canonical-band",
+      "producerToolId": "phonon.band",
+      "producerToolVersion": "0.1.0"
+    },
+    {
+      "artifactContractVersion": "phase10h.phonon_dos.v1",
+      "artifactKind": "phonon_dos_json",
+      "compatible": true,
+      "consumerInputPort": "dos",
+      "consumerToolId": "phonon.band_dos",
+      "consumerToolVersion": "0.1.0",
+      "diagnostics": [],
+      "mediaType": "application/json",
+      "pairId": "port_pair_fe61e91c8580350481bff6e339e0d8e2",
+      "producerOutputPort": "canonical-dos",
+      "producerToolId": "phonon.dos",
+      "producerToolVersion": "0.1.0"
+    }
+  ],
+  "consumerTool": "phonon.band_dos",
+  "newScientificAlgorithm": false,
+  "producerTools": [
+    "phonon.band",
+    "phonon.dos"
+  ]
+}

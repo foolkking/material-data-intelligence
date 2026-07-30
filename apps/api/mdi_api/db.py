@@ -280,6 +280,101 @@ capability_planning_executions = Table(
 
 Index("idx_capability_executions_intent", capability_planning_executions.c.intent_id)
 
+plan_dependency_bindings = Table(
+    "plan_dependency_bindings",
+    metadata,
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), primary_key=True),
+    Column("binding_id", String(96), primary_key=True),
+    Column("plan_hash", String(64), nullable=False),
+    Column("graph_hash", String(64), nullable=False),
+    Column("producer_step_id", String(96), nullable=False),
+    Column("producer_output_port", String(96), nullable=False),
+    Column("consumer_step_id", String(96), nullable=False),
+    Column("consumer_input_port", String(96), nullable=False),
+    Column("artifact_kind", String(64), nullable=False),
+    Column("artifact_contract_version", String(128), nullable=False),
+    Column("media_type", String(128), nullable=False),
+    Column("cardinality", String(32), nullable=False),
+    Column("binding_json", JSON, nullable=False),
+    Column("semantic_record_hash", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("plan_id", "consumer_step_id", "consumer_input_port", name="uq_plan_binding_consumer_port"),
+)
+
+Index("idx_plan_dependency_bindings_plan", plan_dependency_bindings.c.plan_id)
+Index("idx_plan_dependency_bindings_graph", plan_dependency_bindings.c.graph_hash)
+
+dependency_execution_records = Table(
+    "dependency_execution_records",
+    metadata,
+    Column("execution_id", String(96), primary_key=True),
+    Column("execution_hash", String(64), nullable=False, unique=True),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=False),
+    Column("plan_hash", String(64), nullable=False),
+    Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False, unique=True),
+    Column("graph_hash", String(64), nullable=False),
+    Column("outcome", String(32), nullable=False),
+    Column("record_json", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint(
+        "outcome in ('ALL_SUCCEEDED', 'PARTIAL_RESULTS', 'ALL_FAILED', 'VALIDATION_ABORTED')",
+        name="dependency_execution_outcome",
+    ),
+)
+
+Index("idx_dependency_execution_plan", dependency_execution_records.c.plan_id)
+Index("idx_dependency_execution_job", dependency_execution_records.c.job_id)
+
+runtime_artifact_binding_resolutions = Table(
+    "runtime_artifact_binding_resolutions",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("record_hash", String(64), nullable=False, unique=True),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=False),
+    Column("plan_hash", String(64), nullable=False),
+    Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False),
+    Column("binding_id", String(96), nullable=False),
+    Column("producer_tool_call_id", String(64), ForeignKey("tool_calls.id"), nullable=True),
+    Column("producer_step_id", String(96), nullable=False),
+    Column("artifact_id", String(96), ForeignKey("artifacts.id"), nullable=True),
+    Column("artifact_checksum", String(64), nullable=True),
+    Column("artifact_kind", String(64), nullable=True),
+    Column("artifact_contract_version", String(128), nullable=True),
+    Column("media_type", String(128), nullable=True),
+    Column("consumer_tool_call_id", String(64), ForeignKey("tool_calls.id"), nullable=True),
+    Column("consumer_step_id", String(96), nullable=False),
+    Column("consumer_input_port", String(96), nullable=False),
+    Column("validation_outcome", String(32), nullable=False),
+    Column("error_code", String(96), nullable=True),
+    Column("resolved_ref_json", JSON, nullable=True),
+    Column("resolved_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("job_id", "binding_id", name="uq_runtime_binding_job_binding"),
+)
+
+Index("idx_runtime_binding_job", runtime_artifact_binding_resolutions.c.job_id)
+Index("idx_runtime_binding_artifact", runtime_artifact_binding_resolutions.c.artifact_id)
+
+artifact_lineage_records = Table(
+    "artifact_lineage_records",
+    metadata,
+    Column("lineage_id", String(96), primary_key=True),
+    Column("lineage_hash", String(64), nullable=False, unique=True),
+    Column("artifact_id", String(96), ForeignKey("artifacts.id"), nullable=False, unique=True),
+    Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=False),
+    Column("plan_hash", String(64), nullable=False),
+    Column("graph_hash", String(64), nullable=False),
+    Column("producer_tool_call_id", String(64), ForeignKey("tool_calls.id"), nullable=False),
+    Column("producer_step_id", String(96), nullable=False),
+    Column("output_port", String(96), nullable=False),
+    Column("record_json", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+Index("idx_artifact_lineage_job", artifact_lineage_records.c.job_id)
+Index("idx_artifact_lineage_plan", artifact_lineage_records.c.plan_id)
+
 job_events = Table(
     "job_events",
     metadata,

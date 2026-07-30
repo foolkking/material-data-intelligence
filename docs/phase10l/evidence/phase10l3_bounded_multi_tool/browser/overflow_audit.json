@@ -1,0 +1,24 @@
+{
+  "chromium": {
+    "desktop": {
+      "success": false,
+      "partial": false
+    },
+    "mobile": {
+      "success": false,
+      "partial": false
+    }
+  },
+  "firefox": {
+    "desktop": {
+      "success": false,
+      "partial": false
+    }
+  },
+  "webkit": {
+    "desktop": {
+      "success": false,
+      "partial": false
+    }
+  }
+}

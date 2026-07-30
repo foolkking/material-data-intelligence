@@ -1,0 +1,118 @@
+{
+  "$defs": {
+    "ArtifactType": {
+      "enum": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "figure_svg",
+        "figure_pdf",
+        "matterviz_html",
+        "matterviz_snapshot_png",
+        "structure_json",
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json",
+        "phonon_band_json",
+        "phonon_band_dos_json",
+        "phonon_compatibility_json",
+        "phonon_dos_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "phonon_animation_json",
+        "phonon_animation_summary_json",
+        "phonon_animation_manifest_json",
+        "reciprocal_lattice_json",
+        "brillouin_zone_json",
+        "kpath_json",
+        "brillouin_zone_manifest_json",
+        "volumetric_grid_json",
+        "volumetric_payload_json",
+        "volumetric_field_json",
+        "volumetric_dataset_json",
+        "volumetric_manifest_json",
+        "volumetric_structure_overlay_json",
+        "volumetric_binary",
+        "metrics_json",
+        "table_json",
+        "table_csv",
+        "quality_issues_json",
+        "summary_md",
+        "report_md",
+        "report_html",
+        "recipe_json",
+        "analysis_plan_json"
+      ],
+      "title": "ArtifactType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "artifactContractVersion": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Artifactcontractversion",
+      "type": "string"
+    },
+    "artifactKind": {
+      "$ref": "#/$defs/ArtifactType"
+    },
+    "bindingId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Bindingid",
+      "type": "string"
+    },
+    "cardinality": {
+      "const": "EXACTLY_ONE",
+      "default": "EXACTLY_ONE",
+      "title": "Cardinality",
+      "type": "string"
+    },
+    "consumerInputPort": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Consumerinputport",
+      "type": "string"
+    },
+    "consumerStepId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Consumerstepid",
+      "type": "string"
+    },
+    "mediaType": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Mediatype",
+      "type": "string"
+    },
+    "producerOutputPort": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Produceroutputport",
+      "type": "string"
+    },
+    "producerStepId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Producerstepid",
+      "type": "string"
+    }
+  },
+  "required": [
+    "bindingId",
+    "producerStepId",
+    "producerOutputPort",
+    "consumerStepId",
+    "consumerInputPort",
+    "artifactKind",
+    "artifactContractVersion",
+    "mediaType"
+  ],
+  "title": "DependencyBinding",
+  "type": "object"
+}

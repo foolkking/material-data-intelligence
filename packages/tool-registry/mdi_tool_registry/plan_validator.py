@@ -14,7 +14,7 @@ from typing import Any
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
 
-from mdi_schemas import AnalysisPlan, ArtifactType
+from mdi_schemas import AnalysisPlan, AnalysisPlanV02, ArtifactType
 from mdi_tool_registry import ToolRegistry
 
 
@@ -39,7 +39,7 @@ class PlanValidationResult:
         return self.ok
 
 
-def validate_plan(plan: dict[str, Any] | AnalysisPlan, *, registry: ToolRegistry) -> PlanValidationResult:
+def validate_plan(plan: dict[str, Any] | AnalysisPlan | AnalysisPlanV02, *, registry: ToolRegistry) -> PlanValidationResult:
     """Validate an LLM-produced AnalysisPlan dict against the registry.
 
     Returns PlanValidationResult with ok=True only when ALL checks pass.
@@ -52,7 +52,8 @@ def validate_plan(plan: dict[str, Any] | AnalysisPlan, *, registry: ToolRegistry
 
     # 2. Must parse as AnalysisPlan
     try:
-        parsed = AnalysisPlan.model_validate(plan)
+        version = plan.get("schemaVersion") if isinstance(plan, dict) else plan.schemaVersion
+        parsed = AnalysisPlanV02.model_validate(plan) if version == "0.2" else AnalysisPlan.model_validate(plan)
     except Exception as exc:
         return PlanValidationResult(ok=False, errors=[_error("PLAN_SCHEMA_INVALID", "Plan does not match AnalysisPlan schema.", detail=str(exc))])
 
