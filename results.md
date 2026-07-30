@@ -1800,3 +1800,19 @@ queue, or execute Phase 10L-4.
 - implementation CI: `30542148803`, success.
 - completion-record CI: pending this record's commit.
 - archive CI: pending completion-record success.
+
+## Phase 10L-3 Closure Addendum - 2026-07-30 20:32:51 +08:00
+
+- Completion record commit:
+  `2bd06f22562a9fb1baf65730d30682c1d0ca6c54`.
+- Completion-record exact-SHA CI: run `30542844246`, `success`.
+- Required jobs: Unit Tests `success`; Frontend Typecheck & Build `success`;
+  PostgreSQL + Redis + MinIO migration/service-backed integration `success`;
+  28 selected integration tests passed with zero skipped/failed.
+- Queue verification: permanent result, implementation CI, browser/evidence,
+  completion record, and completion-record CI agree.
+- Archive action: the complete Phase 10L-3 `---TASK---` block is deleted by
+  the queue-archive commit; Phase 10L-4 remains only a reviewer gate and no
+  executable Phase 10L-4 task exists.
+- Archive commit exact SHA and CI run are reported in the reviewer return after
+  the final exact-SHA gate; this addendum is not rewritten after archive.

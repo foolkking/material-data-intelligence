@@ -1,6 +1,6 @@
 # Phase 10L-3 Readiness Matrix
 
-Status: `IMPLEMENTATION_PASS / AWAITING_COMPLETION_RECORD_CI`.
+Status: `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 
 | Area | Current state | Closure requirement |
 |---|---|---|
@@ -20,8 +20,8 @@ Status: `IMPLEMENTATION_PASS / AWAITING_COMPLETION_RECORD_CI`.
 | Performance | Bounded PASS | evidence retained and verified |
 | Security | PASS | markers, isolation, and secret scan verified |
 | Implementation CI | `30542148803` success | exact `d395db2...` |
-| Completion record CI | Pending | exact completion-record SHA jobs success |
-| Queue archive CI | Pending | exact archive SHA jobs success |
+| Completion record CI | `30542844246` success | exact `2bd06f2...` |
+| Queue archive CI | Required on the archive commit | exact result reported in reviewer return |
 
 Phase 10L-3 must not be marked ready or archived from documentation alone.
 PASS requires the real producer/consumer chain, service-backed/no-skipped gate,

@@ -17,7 +17,8 @@
   cross-job artifact reuse, arbitrary execution, new scientific capability, or
   new dependency was introduced. Implementation `d395db2` passed exact-SHA CI
   run `30542148803`, including service-backed `28 passed, 0 skipped, 0 failed`;
-  completion-record CI and verified queue archive remain pending.
+  completion record `2bd06f2` passed exact-SHA CI run `30542844246`, and the
+  verified Phase 10L-3 queue block is archived. Phase 10L-4 remains gated.
 
 ## 2026-07-30 - Phase 10L-2 Capability-Aware Planner
 

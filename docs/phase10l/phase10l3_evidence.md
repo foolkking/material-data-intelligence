@@ -46,8 +46,8 @@ evidence manifest = PASS
 service-backed local = UNAVAILABLE (services not configured)
 service-backed exact-SHA CI = PASS (28 passed, 0 skipped, 0 failed)
 implementation exact-SHA CI = PASS (run 30542148803)
-completion-record exact-SHA CI = PENDING
-verified queue archive = PENDING
+completion-record exact-SHA CI = PASS (run 30542844246)
+verified queue archive = THIS ARCHIVE COMMIT; exact-SHA result reported in reviewer return
 ```
 
 The browser replay consumes the real generator's persisted plan/runtime/API
