@@ -7,13 +7,12 @@
   implementation `9786e405` passed exact-SHA CI run `30511654404`, including
   service-backed `27 passed, 0 skipped, 0 failed`; completion record `f62630b`
   passed exact-SHA CI run `30513319990`. Its verified TASKS block is archived.
-- [ ] Phase 10L-3 Bounded Multi-Tool Analysis + Typed Artifact Dependency
-  Execution is `IN_PROGRESS`: audit a real registered producer/consumer pair,
-  then implement additive AnalysisPlan 0.2, one typed binding graph,
-  dependency-aware serial Runtime, partial execution, and artifact lineage
-  without changing the 0.1 path. Core implementation, focused tests, real
-  registered-adapter evidence, and Chromium/Firefox/WebKit/mobile replay pass
-  locally; full regression and exact-SHA CI/completion/archive remain open.
+- [x] Phase 10L-3 Bounded Multi-Tool Analysis + Typed Artifact Dependency
+  Execution implementation is `COMPLETE / AWAITING_COMPLETION_RECORD_CI`.
+  Implementation `d395db2` passed exact-SHA CI run `30542148803`, including
+  Unit, Frontend, PostgreSQL/Redis/MinIO migration/integration, 28 selected
+  service tests with zero skips, and evidence integrity. Completion-record CI
+  and verified queue archive remain open, so its TASKS block is retained.
 - [ ] Phase 10L-4 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; it must not be
   queued or executed automatically from Phase 10L-3.
 
@@ -60,8 +59,9 @@
   the verified queue block is archived. Phase 10L-1 subsequently entered its
   reviewer-approved implementation task as recorded above.
 
-`TASKS.md` contains Phase 10L-3 as its only executable task. Future Scope, Not
-Planned, and Phase 10L-4 are not queue work.
+`TASKS.md` retains the completed Phase 10L-3 block only for completion-record
+CI and verified archive. Future Scope, Not Planned, and Phase 10L-4 are not
+executable queue work.
 
 The remaining sections are historical task records and do not override the
 current board above.

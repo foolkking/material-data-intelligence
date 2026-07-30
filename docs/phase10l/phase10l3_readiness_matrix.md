@@ -1,25 +1,25 @@
 # Phase 10L-3 Readiness Matrix
 
-Status: `IMPLEMENTATION_IN_PROGRESS`.
+Status: `IMPLEMENTATION_PASS / AWAITING_COMPLETION_RECORD_CI`.
 
 | Area | Current state | Closure requirement |
 |---|---|---|
-| AnalysisPlan 0.2 contract | Local PASS | full regression and exact-SHA CI |
-| 0.1 compatibility | Local PASS | full regression and exact-SHA CI |
-| Binding and graph identity | Local PASS | exact-SHA CI |
-| Artifact ports | Local PASS for selected phonon chain | exact-SHA CI |
-| Deterministic composer | Local PASS | exact-SHA CI |
-| Optional provider composer | Local PASS with fake provider | exact-SHA CI |
-| Dependency validator | Local PASS | exact-SHA CI |
-| Persistence/migration | SQLite local PASS | PostgreSQL exact-SHA CI |
-| Runtime | Registered-adapter local PASS | service-backed exact-SHA CI |
-| Partial semantics | Local PASS | service-backed exact-SHA CI |
-| Lineage | Local PASS | service-backed exact-SHA CI |
-| API | Local PASS | exact-SHA CI |
-| PlannerWorkbench | Chromium/Firefox/WebKit/mobile PASS | frontend exact-SHA CI |
-| Performance | Local bounded PASS | retain evidence and exact-SHA integrity |
-| Security | Local markers/scan PASS | exact-SHA security gates |
-| Implementation CI | Pending | exact implementation SHA jobs success |
+| AnalysisPlan 0.2 contract | PASS | closed by implementation CI |
+| 0.1 compatibility | PASS | closed by implementation CI |
+| Binding and graph identity | PASS | closed by implementation CI |
+| Artifact ports | PASS for selected phonon chain | closed by implementation CI |
+| Deterministic composer | PASS | closed by implementation CI |
+| Optional provider composer | PASS with fake provider | closed by implementation CI |
+| Dependency validator | PASS | closed by implementation CI |
+| Persistence/migration | SQLite and PostgreSQL PASS | closed by implementation CI |
+| Runtime | Registered-adapter/service-backed PASS | 28 tests, zero skipped |
+| Partial semantics | PASS | closed by implementation CI |
+| Lineage | PASS | closed by implementation CI |
+| API | PASS | closed by implementation CI |
+| PlannerWorkbench | Chromium/Firefox/WebKit/mobile PASS | frontend CI PASS |
+| Performance | Bounded PASS | evidence retained and verified |
+| Security | PASS | markers, isolation, and secret scan verified |
+| Implementation CI | `30542148803` success | exact `d395db2...` |
 | Completion record CI | Pending | exact completion-record SHA jobs success |
 | Queue archive CI | Pending | exact archive SHA jobs success |
 

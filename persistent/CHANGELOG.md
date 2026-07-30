@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2026-07-30 - Phase 10L-3 Bounded Dependency Execution (In Progress)
+## 2026-07-30 - Phase 10L-3 Bounded Dependency Execution
 
 - Added additive AnalysisPlan 0.2, deterministic typed artifact bindings,
   explicit Registry artifact ports, compatibility resolution, bounded
@@ -11,11 +11,13 @@
   successful artifacts, blocks descendants of failures, and continues
   independent branches with a typed partial execution record.
 - Added dependency/execution/lineage read APIs and an accessible responsive
-  PlannerWorkbench surface. Local registered-adapter runtime, security,
-  performance, Chromium/Firefox/WebKit, and mobile evidence pass.
+  PlannerWorkbench surface. Registered-adapter runtime, security, performance,
+  Chromium/Firefox/WebKit, and mobile evidence pass.
 - No generic workflow engine, parallel scheduler, runtime LLM/replanning,
   cross-job artifact reuse, arbitrary execution, new scientific capability, or
-  new dependency was introduced. Exact-SHA CI and queue archive are pending.
+  new dependency was introduced. Implementation `d395db2` passed exact-SHA CI
+  run `30542148803`, including service-backed `28 passed, 0 skipped, 0 failed`;
+  completion-record CI and verified queue archive remain pending.
 
 ## 2026-07-30 - Phase 10L-2 Capability-Aware Planner
 

@@ -1510,3 +1510,293 @@ commit. Return the result and stop; do not queue or execute Phase 10L-3.
   reviewer gate and no executable Phase 10L-3 task exists.
 - Archive commit exact SHA and CI run are reported in the reviewer return after
   the final exact-SHA gate; this addendum is not rewritten after archive.
+
+# Phase 10L-3 Bounded Multi-Tool Analysis + Typed Artifact Dependency Execution Result
+
+Completed: 2026-07-30 20:26:23 +08:00
+
+## 1. Conclusion
+
+`PASS` for implementation and implementation exact-SHA CI. The task remains
+in `TASKS.md` until this completion record passes exact-SHA CI and a separate
+verified queue-archive commit succeeds.
+
+## 2. Baseline and Entry Gate
+
+- Phase 10L-2 archive: `7d032a9c1dafd2a4a76522bcfcd1321fb08b20f9`.
+- Phase 10L-2 archive CI: run `30513584587`, success.
+- initial branch/HEAD/origin: `master` / `7d032a9c...` / `7d032a9c...`.
+- initial worktree: clean; task-block count zero before reviewer-approved L3
+  admission, then exactly one L3 block; L4 remained reviewer-gated.
+
+## 3. Pre-Implementation Audit
+
+AnalysisPlan 0.1 represented ordered, sequential independent tool calls; list
+order was not a graph and no produced-artifact binding existed. The 38
+available tools were audited. One real typed producer/consumer family exists:
+`phonon.band` and `phonon.dos` produce canonical artifacts that the registered
+`phonon.band_dos` Adapter already consumes. Readiness therefore passed without
+adding a scientific algorithm or test-only production tool.
+
+```text
+CURRENT_MULTI_TOOL_LEVEL = SEQUENTIAL_INDEPENDENT
+SELECTED_PRODUCER_TOOLS = phonon.band, phonon.dos
+SELECTED_CONSUMER_TOOL = phonon.band_dos
+```
+
+## 4. AnalysisPlan 0.2
+
+Strict additive Python, JSON Schema, and TypeScript contracts add up to four
+steps and one plan-level `dependencyBindings` list. Canonical serialization,
+deterministic binding/graph/plan hashes, strict unknown-field rejection, and
+stable topological ordering are implemented. AnalysisPlan 0.1 remains valid,
+unchanged, and is never reinterpreted as dependency-aware.
+
+## 5. Dependency Binding Contract
+
+Each binding owns exact producer step/output port, artifact kind/contract/media
+type/cardinality, and exact consumer step/input port. It is the sole graph-edge
+authority. List position, filename, display label, array index, wildcard,
+path, URL, runtime Artifact ID, and previous-job identity have no authority.
+
+## 6. Artifact Port Metadata
+
+ToolPlannerMetadata 1.1 adds strict output/input ports while 1.0 tools remain
+valid independent tools. Exact artifact kind, allowlisted contract version,
+media type, cardinality, byte cap, determinism, identity scope, provenance,
+visibility, and Adapter binding rules form the deterministic compatibility
+matrix. Every mismatch has a typed rejection.
+
+## 7. Bounded Composer
+
+The deterministic composer uses only L2-selected tools and compatible ports;
+it never infers edges from co-occurrence or wording. The optional fake-provider
+path sees selected IDs and compatible pairs only, accepts one strict JSON
+object, shares L2's total one-repair budget, and cannot expand tools, targets,
+resources, ports, contracts, or caps. There is no Mock fallback.
+
+## 8. Validation
+
+An independent dependency validator recomputes identities, ports, binding IDs,
+caps, acyclicity, depth, deterministic topology, eligibility membership,
+parameter provenance, collision/composition, and scope before existing
+capability-context and PlanValidator gates. Self/two-node/transitive cycles,
+unknown or duplicate edges/ports, invented/rejected tools, wildcard/path/URL,
+cross-job/project, stale identity, checksum/contract/media/size mismatch, and
+cap overflow fail with bounded typed diagnostics.
+
+## 9. Persistence and Migration
+
+Alembic `0005_phase10l3_dependency_execution` adds relational audit storage for
+planned bindings, runtime binding resolutions, dependency execution records,
+and artifact lineage while plan JSON remains semantic authority. In-memory,
+SQLite upgrade/downgrade/re-upgrade, and PostgreSQL paths preserve immutable,
+idempotent records and reject conflicting semantic writes. AnalysisPlan 0.1
+and 0.2 round-trip through the existing repository.
+
+## 10. QueueWorkerRuntime
+
+Only the 0.2 path loads the exact persisted plan, verifies its hash, revalidates
+dependencies, computes deterministic topology, and executes serially through
+Tool Registry and registered Adapters. Runtime resolves platform-created,
+checksummed, same-plan/job/project artifact refs through ArtifactStorage before
+consumer invocation. It never replans, calls an LLM, or falls back to source
+data when an artifact is missing.
+
+## 11. Partial Execution Semantics
+
+Producer or consumer failure blocks descendants only. Independent branches
+continue; successful artifacts remain; binding failures occur before consumer
+Adapter invocation. Step and binding states distinguish failures from
+`BLOCKED_DEPENDENCY`. The additive overall record reports `ALL_SUCCEEDED`,
+`PARTIAL_RESULTS`, `ALL_FAILED`, or `VALIDATION_ABORTED` while legacy Job status
+semantics remain compatible. Replay creates no duplicate calls/artifacts/edges.
+
+## 12. Artifact Lineage
+
+Lineage records exact project/dataset/Profile/Intent/eligibility/decision/plan/
+graph/job identities, producer tool/step/call/output port, artifact kind/
+contract/media/checksum, upstream artifact and binding IDs, runtime/Adapter
+provenance, caps, and warnings. Lineage never depends on array position or
+report text.
+
+## 13. Real Dependent Chain Evidence
+
+- `phonon.band:canonical-band` -> `phonon.band_dos:band` using
+  `phonon_band_json / phase10h.phonon_band.v1 / application/json`.
+- `phonon.dos:canonical-dos` -> `phonon.band_dos:dos` using
+  `phonon_dos_json / phase10h.phonon_dos.v1 / application/json`.
+- The persisted three-step plan executes `step_001`, `step_003`, then
+  `step_002`; both bindings resolve and the result is `ALL_SUCCEEDED`.
+- Replay retains the same semantic plan/graph hashes and no duplicate runtime
+  records.
+
+## 14. Failure and Rejection Evidence
+
+Producer-failure evidence records the producer `FAILED`, combined consumer
+`BLOCKED_DEPENDENCY` without Adapter invocation, independent DOS producer
+`SUCCEEDED`, retained DOS artifacts, and `PARTIAL_RESULTS`. Consumer failure,
+checksum/contract/media/identity/size/port mismatch, cycles, and graph caps are
+also retained as typed captures.
+
+## 15. API
+
+Canonical READY requests compose/validate/persist 0.2 before job creation and
+enqueue. Additive responses and `/planner/jobs/{job_id}/dependencies` expose
+schema/hash/graph/topology/bindings/execution/lineage. Non-ready and invalid
+dependency cases create no plan, job, ToolCall, Artifact, or queue message.
+Legacy 0.1 APIs remain readable and executable through their unchanged path.
+
+## 16. Frontend and Browser
+
+PlannerWorkbench additively shows schema version, exact tools/params, dependent
+and independent steps, ports/contracts, topology, validation, runtime states,
+blocked causes, partial results, lineage, and inert audit JSON. It is an
+accessible list/card/table surface, not an editor. Chromium 128, Firefox 128,
+WebKit 18, and Chromium 390x844 passed success/partial cases, keyboard focus,
+status labels, zero horizontal overflow, zero console/page errors, and zero
+external requests.
+
+## 17. Compatibility
+
+AnalysisIntent 1.0 and EligibilityResolution 1.0 are unchanged. AnalysisPlan
+0.1 schemas and hashes remain unchanged/readable, and only 0.2 receives
+dependency runtime semantics. Registry execution authority, PlanValidator,
+L1/L2 candidate isolation/exact binding, historical jobs/artifacts, Phase 10K,
+and legacy API behavior remain intact.
+
+## 18. Caps and Performance
+
+Caps are four steps, six bindings, depth four, three incoming/outgoing edges,
+one total repair, and 524,288 serialized planning bytes. The legal near-cap
+fixture used four steps/six bindings/depth four, 3,619 serialized bytes,
+43,486 traced peak bytes, and 2.523 ms local validation/sort time. This proves
+bounded behavior only, not production capacity.
+
+## 19. Security
+
+```text
+REAL_LLM_CALLS = 0
+NO_PHASE10L3_UNAPPROVED_EXTERNAL_NETWORK_REQUESTS
+NO_DEPENDENCY_ARBITRARY_CODE_EXECUTION
+NO_DEPENDENCY_SHELL_OR_FILESYSTEM_AUTHORITY
+NO_ARTIFACT_JAVASCRIPT
+NO_ARTIFACT_HTML_EXECUTION
+NO_ARTIFACT_CALLBACK
+NO_ARTIFACT_SHADER
+NO_ARTIFACT_MODULE
+NO_EVAL
+NO_FUNCTION_CONSTRUCTOR
+NO_EXTERNAL_ARTIFACT_URL
+NO_CROSS_JOB_ARTIFACT_BINDING
+NO_CROSS_PROJECT_ARTIFACT_BINDING
+NO_STALE_RESOURCE_BINDING
+NO_UNDECLARED_ARTIFACT_PORT
+NO_PROVIDER_ARTIFACT_PAYLOAD_EXPOSURE
+NO_REJECTED_CANDIDATE_LEAK_TO_LLM
+NO_FULL_REGISTRY_LEAK_TO_LLM
+NO_PLAN_JOB_OR_ENQUEUE_FOR_NON_READY_OUTCOMES
+NO_SECRET_PATTERN_HITS
+```
+
+Prompt/artifact injection, HTML/script, credentials, duplicate keys, path/URL,
+oversized/nested content, stale/foreign artifacts, and hash/contract/media
+tampering remain inert or typed failures. No new dependency or execution
+authority was added.
+
+## 20. Evidence Inventory
+
+`docs/phase10l/evidence/phase10l3_bounded_multi_tool/` retains entry/schema,
+38-tool inventory, compatibility/real chain, success/partial/failure runtime,
+API, migration/persistence, lineage, performance/security, browser DOM/network/
+console/accessibility, desktop/mobile PNGs, and an LF-normalized text/raw-PNG
+SHA-256 manifest.
+
+## 21. Tests
+
+- local full backend: `917 passed, 30 skipped, 63 warnings`.
+- exact-SHA CI unit: `917 passed, 1 skipped, 29 deselected, 63 warnings`;
+  Phase 10 closure `3 passed, 6 deselected`.
+- final L1/L2/L3 focused backend: `70 passed`.
+- L3 persistence/service-local: `5 passed, 1 skipped`; local services are
+  `UNAVAILABLE`, not reported as PASS.
+- exact-SHA service-backed: `28 passed, 0 skipped, 0 failed`; PostgreSQL,
+  Redis, MinIO, Alembic head, tables/indexes, and no-skipped PASS.
+- frontend: 52 files / `328 passed`; typecheck and production build PASS.
+- browser: Chromium/Firefox/WebKit and 390x844 mobile PASS.
+- lock, npm dependency tree, diff, evidence manifest, Phase 10 closure, docs/
+  TASKS checks, and secret scan PASS.
+- npm audit: `UNAVAILABLE`; configured mirror returned `404 NOT_IMPLEMENTED`,
+  so no clean claim is made.
+
+## 22. Production Behavior Changes
+
+- Canonical dependent work can now produce AnalysisPlan 0.2.
+- Only 0.2 uses deterministic dependency validation/topological Runtime.
+- Runtime creates exact artifact refs and immutable execution/lineage records.
+- Failed branches block descendants while independent work continues.
+- API and PlannerWorkbench expose additive graph/partial/lineage state.
+- AnalysisPlan 0.1 and its Runtime behavior remain unchanged.
+
+## 23. Files Changed
+
+Backend schemas, repositories/API and Alembic migration; Tool Registry port
+metadata/validator; Planner composer; QueueWorkerRuntime; TypeScript/shared
+schemas; PlannerWorkbench/styles/API types; focused/integration/browser tests;
+CI; evidence and screenshots; Phase 10L/shared docs; persistent records and
+TASKS. Dependency and lock files are unchanged.
+
+## 24. Commit and Exact-SHA CI History
+
+- implementation: `d395db2a4f59e2f5fb72e0b33b45161b2bcb5670`.
+- implementation exact-SHA CI: run `30542148803`, all required jobs success.
+- failed implementation CI attempts: none.
+- completion-record and archive SHA/CI follow in the closure addendum.
+
+## 25. Explicit Non-Scope Confirmation
+
+No generic DAG/workflow engine, parallel scheduler, loops/conditions/fan-out,
+runtime replanning/LLM, extra repair or retry redesign, plan editor/approval,
+cross-job/remote artifact input, arbitrary artifact binding, Python/shell/
+filesystem/notebook/script authority, external science API, interpretation,
+full natural-language evidence closure, Workspace, professional science,
+Fermi surface, CrystalNN, experimental XRD, advanced trajectory, Band/DOS,
+enterprise infrastructure, plugin ecosystem, new LLM SDK, or uncontrolled
+dependency was implemented.
+
+## 26. Remaining Phase 10L Gaps
+
+```text
+Phase 10L-4: Grounded Scientific Result Interpretation
+Phase 10L-5: Natural-Language Analysis Evidence Closure
+```
+
+These are reviewer-gated gaps, not executable tasks.
+
+## 27. Queue State
+
+```text
+Phase 10L-3 = COMPLETE / AWAITING_COMPLETION_RECORD_CI
+Phase 10L-4 = REVIEWER_GATE / AWAITING REVIEWER PROMPT
+TASK_BLOCK_COUNT = 1 pending verified archive
+```
+
+## 28. Whether Phase 10L-4 Was Entered Automatically
+
+```text
+NO
+PHASE_10L4_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 29. Next Action
+
+Verify this completion-record exact-SHA CI, then create and verify the separate
+queue-archive commit. Return the complete result and stop. Do not create,
+queue, or execute Phase 10L-4.
+
+## 30. Repository State at Completion Record
+
+- implementation HEAD/origin: `d395db2a4f59e2f5fb72e0b33b45161b2bcb5670`.
+- implementation CI: `30542148803`, success.
+- completion-record CI: pending this record's commit.
+- archive CI: pending completion-record success.

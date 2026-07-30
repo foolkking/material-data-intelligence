@@ -44,8 +44,10 @@ runtime/API/browser/performance/security captures = PASS
 Chromium/Firefox/WebKit/390x844 = PASS
 evidence manifest = PASS
 service-backed local = UNAVAILABLE (services not configured)
-service-backed exact-SHA CI = PENDING
-exact-SHA CI = PENDING
+service-backed exact-SHA CI = PASS (28 passed, 0 skipped, 0 failed)
+implementation exact-SHA CI = PASS (run 30542148803)
+completion-record exact-SHA CI = PENDING
+verified queue archive = PENDING
 ```
 
 The browser replay consumes the real generator's persisted plan/runtime/API
