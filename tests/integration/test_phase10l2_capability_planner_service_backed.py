@@ -38,7 +38,14 @@ def _service_profile(*, dataset_id: str, profile_id: str) -> DataProfile:
                     "column": "formula",
                     "dtype": "string",
                     "roles": [{"role": "material_formula", "authority": "canonical_name"}],
-                }
+                },
+                {
+                    "objectId": "table_1",
+                    "column": "formation_energy",
+                    "dtype": "float64",
+                    "unit": "eV",
+                    "roles": [{"role": "material_property", "authority": "profile_exact"}],
+                },
             ],
             "resourceSemantics": [
                 {
@@ -81,6 +88,17 @@ def test_capability_planner_postgres_ready_and_non_ready_persistence() -> None:
         {"datasetId": dataset_id, "projectId": project_id, "name": dataset_id, "createdBy": "user_local"}
     )
     repos.data_profiles.save(profile)
+    persisted_profile = DataProfile.model_validate(repos.data_profiles.get(profile_id))
+    assert persisted_profile == profile
+    persisted_intent = DeterministicAnalysisIntentBuilder().build(
+        AnalysisIntentRequest(
+            raw_goal="Analyze this dataset composition distribution and anomaly candidates.",
+            dataset_id=dataset_id,
+            profile_id=profile_id,
+        ),
+        profile=persisted_profile,
+    )
+    assert persisted_intent.outcome.value == "READY"
 
     ready = planner_jobs(
         PlannerJobsRequest(

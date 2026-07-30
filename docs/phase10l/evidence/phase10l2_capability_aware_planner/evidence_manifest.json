@@ -24,7 +24,7 @@
     {
       "path": "browser/browser_matrix.json",
       "bytes": 7084,
-      "sha256": "6ded5eed201c3b05874a526412692f75f8229bc51fbad29ce43f3a46c0821579"
+      "sha256": "64dd25d1538d1df8aa18fd5e4d18d2c5098bd5234d408fc29794b49c1939cd03"
     },
     {
       "path": "browser/console_audit.json",

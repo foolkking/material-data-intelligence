@@ -6,7 +6,7 @@
       "ready": {
         "outcome": "PLAN_READY",
         "mobile": false,
-        "firstCapabilityMs": 1449,
+        "firstCapabilityMs": 1739,
         "selectedText": "Dataset Materials Explorer\ndataset.materials_explorer@0.1.0\nINTENT COVERAGE\nanomaly_candidate_review, composition_analysis, dataset_overview, property_distribution\nOUTPUT COVERAGE\nlinked_samples, summary, table, warnings\nRESOURCES\nobj_dataframe_8f6a530dc190\nTARGETS\nNot required\nExact parameter bindings\nParameter\tValue\tSource\ntableObjectId\tobj_dataframe_8f6a530dc190\tRESOURCE_ID / resource:obj_dataframe_8...355d7a078658ed5e",
         "auditBytes": 155944,
         "auditSha256": "cd73d32221bd155996b2b7c414491bfc49666f4c30a432cdfeac4fa01c3834d4",
@@ -23,7 +23,7 @@
       "blocked": {
         "outcome": "CAPABILITY_MISMATCH",
         "mobile": false,
-        "firstCapabilityMs": 1380,
+        "firstCapabilityMs": 1640,
         "diagnosticText": "Capability planning did not produce an executable plan.\nNO_ELIGIBLE_CAPABILITY: No current registered capability satisfies the exact Intent/Profile scope.",
         "runDisabled": true,
         "domSha256": "c6e98010f2c8dfd505e8ecfe279dea02011bd31b47f06cb64fa131fd16dd10bc",
@@ -40,7 +40,7 @@
       "ready": {
         "outcome": "PLAN_READY",
         "mobile": true,
-        "firstCapabilityMs": 1368,
+        "firstCapabilityMs": 1598,
         "selectedText": "Dataset Materials Explorer\ndataset.materials_explorer@0.1.0\nINTENT COVERAGE\nanomaly_candidate_review, composition_analysis, dataset_overview, property_distribution\nOUTPUT COVERAGE\nlinked_samples, summary, table, warnings\nRESOURCES\nobj_dataframe_8f6a530dc190\nTARGETS\nNot required\nExact parameter bindings\ntableObjectId\nobj_dataframe_8f6a530dc190\nRESOURCE_ID / resource:obj_dataframe_8...355d7a078658ed5e",
         "auditBytes": 155944,
         "auditSha256": "cd73d32221bd155996b2b7c414491bfc49666f4c30a432cdfeac4fa01c3834d4",
@@ -57,7 +57,7 @@
       "blocked": {
         "outcome": "CAPABILITY_MISMATCH",
         "mobile": true,
-        "firstCapabilityMs": 1355,
+        "firstCapabilityMs": 1435,
         "diagnosticText": "Capability planning did not produce an executable plan.\nNO_ELIGIBLE_CAPABILITY: No current registered capability satisfies the exact Intent/Profile scope.",
         "runDisabled": true,
         "domSha256": "c6e98010f2c8dfd505e8ecfe279dea02011bd31b47f06cb64fa131fd16dd10bc",
@@ -81,7 +81,7 @@
       "ready": {
         "outcome": "PLAN_READY",
         "mobile": false,
-        "firstCapabilityMs": 2314,
+        "firstCapabilityMs": 2277,
         "selectedText": "Dataset Materials Explorer\ndataset.materials_explorer@0.1.0\nINTENT COVERAGE\nanomaly_candidate_review, composition_analysis, dataset_overview, property_distribution\nOUTPUT COVERAGE\nlinked_samples, summary, table, warnings\nRESOURCES\nobj_dataframe_8f6a530dc190\nTARGETS\nNot required\nExact parameter bindings\nParameter\tValue\tSource\ntableObjectId\tobj_dataframe_8f6a530dc190\tRESOURCE_ID / resource:obj_dataframe_8...355d7a078658ed5e",
         "auditBytes": 155944,
         "auditSha256": "cd73d32221bd155996b2b7c414491bfc49666f4c30a432cdfeac4fa01c3834d4",
@@ -98,7 +98,7 @@
       "blocked": {
         "outcome": "CAPABILITY_MISMATCH",
         "mobile": false,
-        "firstCapabilityMs": 1635,
+        "firstCapabilityMs": 1834,
         "diagnosticText": "Capability planning did not produce an executable plan.\nNO_ELIGIBLE_CAPABILITY: No current registered capability satisfies the exact Intent/Profile scope.",
         "runDisabled": true,
         "domSha256": "c6e98010f2c8dfd505e8ecfe279dea02011bd31b47f06cb64fa131fd16dd10bc",
@@ -123,7 +123,7 @@
       "ready": {
         "outcome": "PLAN_READY",
         "mobile": false,
-        "firstCapabilityMs": 2600,
+        "firstCapabilityMs": 2686,
         "selectedText": "Dataset Materials Explorer\ndataset.materials_explorer@0.1.0\nINTENT COVERAGE\nanomaly_candidate_review, composition_analysis, dataset_overview, property_distribution\nOUTPUT COVERAGE\nlinked_samples, summary, table, warnings\nRESOURCES\nobj_dataframe_8f6a530dc190\nTARGETS\nNot required\nExact parameter bindings\nParameter\tValue\tSource\ntableObjectId\tobj_dataframe_8f6a530dc190\tRESOURCE_ID / resource:obj_dataframe_8...355d7a078658ed5e\n",
         "auditBytes": 155944,
         "auditSha256": "cd73d32221bd155996b2b7c414491bfc49666f4c30a432cdfeac4fa01c3834d4",
@@ -140,7 +140,7 @@
       "blocked": {
         "outcome": "CAPABILITY_MISMATCH",
         "mobile": false,
-        "firstCapabilityMs": 2171,
+        "firstCapabilityMs": 2518,
         "diagnosticText": "Capability planning did not produce an executable plan.\nNO_ELIGIBLE_CAPABILITY: No current registered capability satisfies the exact Intent/Profile scope.\n",
         "runDisabled": true,
         "domSha256": "ca6ed77a8f97b1f72761eea84f7c99b8ef23d5fb0e9c1447b6fb13e114b0309c",
