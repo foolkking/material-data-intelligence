@@ -44,7 +44,7 @@ def _service_profile(*, dataset_id: str, profile_id: str) -> DataProfile:
                     "column": "formation_energy",
                     "dtype": "float64",
                     "unit": "eV",
-                    "roles": [{"role": "material_property", "authority": "profile_exact"}],
+                    "roles": [{"role": "material_property", "authority": "explicit_metadata"}],
                 },
             ],
             "resourceSemantics": [
@@ -64,6 +64,19 @@ def _service_profile(*, dataset_id: str, profile_id: str) -> DataProfile:
             "createdAt": "2026-07-29T00:00:00+00:00",
         }
     )
+
+
+def test_service_profile_fixture_is_a_ready_exact_profile() -> None:
+    profile = _service_profile(dataset_id="dataset_fixture", profile_id="profile_fixture")
+    intent = DeterministicAnalysisIntentBuilder().build(
+        AnalysisIntentRequest(
+            raw_goal="Analyze this dataset composition distribution and anomaly candidates.",
+            dataset_id=profile.datasetId,
+            profile_id=profile.profileId,
+        ),
+        profile=profile,
+    )
+    assert intent.outcome.value == "READY"
 
 
 @pytest.mark.integration
