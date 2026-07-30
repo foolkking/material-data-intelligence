@@ -153,8 +153,8 @@
     },
     {
       "path": "test_captures.json",
-      "bytes": 652,
-      "sha256": "0c6d47f6e75c022d98ae0b687335588bc378245abc2aaa994b4a8ba8e5540a8b"
+      "bytes": 676,
+      "sha256": "9408862e22d6d5c2a95368a17740ada6c352dc62a204cd8008155db33e0dd178"
     }
   ]
 }

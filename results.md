@@ -1242,3 +1242,255 @@ commit passes exact-SHA CI. Do not queue or execute Phase 10L-2.
   两次 exact-SHA CI 和 persistent 状态一致，允许在本次 queue archive commit
   中删除已完成的 Phase 10L-1 task block。Phase 10L-2 保持
   `REVIEWER_GATE / AWAITING REVIEWER PROMPT`，未创建 executable task。
+
+# Phase 10L-2 Capability-Aware Planner + Eligibility Resolver Result
+
+## 1. Conclusion
+
+`PASS` for corrected implementation
+`9786e405f1938b514b95ccbeb1cdb6d4b26dde18`, exact-SHA CI run
+`30511654404`. Completion-record CI and verified queue archive remain separate
+gates and will be recorded in a closure addendum.
+
+## 2. Baseline and Entry Gate
+
+- Phase 10K: `COMPLETE / READY_WITH_EXPLICIT_LIMITS`.
+- Phase 10L-0 and 10L-1: archived; L1 archive baseline `dbcda192...`.
+- initial branch/HEAD/origin: `master` / `dbcda192...` / `dbcda192...`.
+- initial worktree: clean; one L2 task block; L3 reviewer gate only.
+
+## 3. Entry Audit and Previous Failure Modes
+
+The prior READY path used fixed Mock routes or a broad provider Registry
+summary without one auditable contextual gate. The new path inserts Registry
+snapshot, eligibility, selection, exact binding, and independent context
+validation before unchanged AnalysisPlan 0.1.
+
+## 4. Registry Planner-Metadata Contract
+
+`ToolPlannerMetadata 1.0` records stable tool/version, availability, intents,
+needs, outputs, resource/object kinds, Profile prerequisites, targets,
+cardinality, bindings, existing artifact outputs, cost, collision/composition,
+and the registered-adapter-only execution boundary.
+
+## 5. Metadata Validation and Capability Inventory
+
+All 53 Registry entries are covered; 38 are currently available. Entries are
+stable-key sorted. Deployment-unavailable/Future entries are non-selectable.
+Unknown fields/enums, invalid params/outputs, impossible cardinality,
+executable content, and availability contradictions are rejected.
+
+## 6. Eligibility Resolution Contract
+
+`EligibilityResolution 1.0` has deterministic ID/hash and exact Intent,
+Profile, dataset/resource, Registry snapshot, candidate, eligible/rejected,
+reason, prerequisite, binding-domain, ordering, diagnostic, and resolver
+provenance fields. Runtime timestamps do not affect semantic identity.
+
+## 7. Eligibility Rules and Typed Rejections
+
+Candidates must exist, be invocable, have valid metadata, cover exact
+intent/need/output facts, accept exact resources/targets, satisfy Profile
+facts/cardinality/bindings/caps, and preserve safety/collision boundaries.
+Every rejected candidate has bounded typed reasons; caps never truncate
+semantics.
+
+## 8. Candidate Projection and LLM Isolation
+
+Providers receive eligible stable IDs, exact accepted identities/bindings,
+coverage, cost, and collision facts only. They do not receive rejected tools,
+the full Registry, paths, code, secrets, or unbounded Profile data.
+
+```text
+PROVIDER_VISIBLE_TOOL_IDS == ELIGIBLE_TOOL_IDS: PASS
+NO_REJECTED_CANDIDATE_LEAK_TO_LLM: PASS
+```
+
+## 9. Deterministic Ranking and Selection
+
+Mock ranking uses exact intent, need, output, resource/target applicability,
+binding completeness, warnings, cost, then stable tool identity. Registry/UI
+order has no authority. Independent multi-selection is bounded and rejects
+duplicates/collisions; no dependency edge is created.
+
+## 10. Exact Semantic Parameter Binding
+
+Bindings come only from exact Intent identities, declared Profile facts,
+bounded literals, or declared repository defaults and retain source identity.
+First-column/display-label/fuzzy target, guessed units/models, raw LLM IDs,
+code/path/URL, and unrelated-fact substitution are prohibited.
+
+## 11. LLM Selection and Strict Parsing
+
+The existing OpenAI-compatible transport receives the eligible projection and
+strict schema. Only one bare JSON object is accepted. Fences, prose,
+duplicate/unknown fields, invented IDs, invalid domains, dependencies,
+code/path/URL, over-cap content, and inconsistent outcomes fail. No Mock
+fallback or new LLM dependency exists.
+
+## 12. One Validation-Guided Repair
+
+Only a strictly parsed repairable LLM decision can receive one repair over the
+unchanged candidate/binding domain. Hashes, typed diagnostics, repair count,
+and outcome are retained. Exhaustion returns `VALIDATION_FAILED`; Mock output
+is never repaired.
+
+## 13. Capability-Context Validation
+
+The independent validator recomputes Intent/Profile/Registry identity,
+eligibility, coverage, parameter provenance, caps, duplicates/collisions,
+independent composition, and no-dependency boundaries. The unchanged plan then
+passes the existing PlanValidator.
+
+## 14. Planning Outcomes and No-Job Semantics
+
+Outcomes are `PLAN_READY`, `NEEDS_CLARIFICATION`, `UNSUPPORTED`,
+`CAPABILITY_MISMATCH`, and `VALIDATION_FAILED`. Only PLAN_READY persists a
+plan/job or enqueues Runtime work.
+
+```text
+NO_PLAN_JOB_OR_ENQUEUE_FOR_NON_READY_OUTCOMES: PASS
+ANALYSIS_PLAN_SCHEMA_VERSION = 0.1
+```
+
+## 15. Persistence and Migration
+
+Alembic `0004_phase10l2_capability_planning` adds immutable resolution,
+decision, and execution-association tables. In-memory, SQLite migration, and
+PostgreSQL paths verify identity, idempotency, conflicting-write rejection,
+and external Intent/plan/job association. Upgrade/downgrade/re-upgrade pass.
+
+## 16. API Behavior
+
+The canonical Intent path loads exact READY Intent/Profile, resolves,
+selects/binds/validates, and creates unchanged plan/job/runtime state only for
+PLAN_READY. Responses add outcome, resolution, decision, eligible IDs,
+diagnostics, and job association. Legacy behavior remains explicit.
+
+## 17. Frontend and Browser Evidence
+
+PlannerWorkbench shows outcome, scope, capability/tool IDs, output coverage,
+exact bindings/provenance, warnings, repair state, failures, and inert JSON.
+Run is disabled unless PLAN_READY. Chromium 128, Firefox 128, WebKit 18, and
+Chromium 390x844 passed focus/status, console/network, inert-content, and
+overflow checks.
+
+## 18. Compatibility
+
+AnalysisIntent remains 1.0; AnalysisPlan remains 0.1. Historical plan hashes,
+jobs, and artifacts remain readable. Existing PlanValidator, Registry
+execution contracts, route precedence, QueueWorkerRuntime, Phase 10K, and
+Phase 10L-1 behavior are not weakened.
+
+## 19. Caps and Performance
+
+Caps are 64 Registry candidates, 32 eligible, 256 diagnostics, 64 binding
+values, 4 independent tools, depth 14, and 524,288 serialized bytes. Near-cap:
+53 tools, 174 diagnostics, 101,213-byte resolution, 1,967-byte decision,
+209.439 ms, and 2,339,126 traced peak bytes. This is bounded local evidence,
+not a production capacity claim.
+
+## 20. Security
+
+```text
+REAL_LLM_CALLS = 0
+NO_PHASE10L2_UNAPPROVED_EXTERNAL_NETWORK_REQUESTS
+NO_CAPABILITY_PLANNER_ARBITRARY_CODE_EXECUTION
+NO_CAPABILITY_PLANNER_SHELL_OR_FILESYSTEM_AUTHORITY
+NO_CAPABILITY_PLANNER_ARTIFACT_JAVASCRIPT
+NO_FULL_REGISTRY_LEAK_TO_LLM
+NO_REJECTED_CANDIDATE_LEAK_TO_LLM
+NO_SECRET_PATTERN_HITS
+NO_PLAN_JOB_OR_ENQUEUE_FOR_NON_READY_OUTCOMES
+```
+
+Prompt injection, HTML/script, credential text, duplicate JSON keys, invented
+or stale IDs, oversized content, and executable strings remain inert or typed
+failures. No new dependency/external authority was added.
+
+## 21. Required Audit Regressions
+
+Formation energy/band gap bind distinct targets; prediction does not fall back
+to basic metrics; uncertainty selects only explicit support; phonon never falls
+through to ML/table/visual tools; broad dataset analysis is not Registry-first;
+resource kinds do not interchange; candidate isolation and binding provenance
+are retained.
+
+## 22. Evidence Inventory and Manifest
+
+`docs/phase10l/evidence/phase10l2_capability_aware_planner/` retains entry,
+metadata/snapshot, eligibility/rejection, isolation, ranking, binding,
+regression, strict LLM/repair, API, persistence, performance, security,
+browser/mobile, screenshots, captures, and LF-normalized text/raw-PNG SHA-256
+manifest evidence.
+
+## 23. Test Results
+
+- focused L2 backend/evidence: `27 passed`; L1 regression: `23 passed`.
+- full local backend: `892 passed, 29 skipped, 63 warnings`; corrected CI unit:
+  `892 passed, 1 skipped, 28 deselected, 63 warnings`.
+- full frontend: 52 files / `327 passed`; PlannerWorkbench: `24 passed`.
+- typecheck, build, lock, diff, evidence, Phase 10 closure: PASS.
+- local service-backed: UNAVAILABLE (Docker absent), not reported as passed.
+- exact-SHA CI service-backed: `27 passed, 0 skipped, 0 failed`.
+- browser: Chromium/Firefox/WebKit and 390x844 mobile PASS.
+- npm audit: UNAVAILABLE; configured mirror audit endpoint returned
+  `404 NOT_IMPLEMENTED`, so no clean claim is made.
+
+## 24. Production Behavior Changes
+
+- Canonical READY requests now resolve Registry eligibility first.
+- Selection uses structured capability facts and exact bindings.
+- Non-ready outcomes stop before plan/job/enqueue/tool execution.
+- LLM sees eligible candidates only and receives at most one repair.
+- Resolution/decision/execution records persist externally.
+- PlannerWorkbench adds a capability gate/audit surface.
+- AnalysisPlan, PlanValidator, Registry execution, Runtime, historical jobs,
+  and legacy API semantics remain unchanged.
+
+## 25. Files Changed
+
+Backend/API repositories and migration; shared Python/JSON/TypeScript schemas;
+Registry metadata; resolver/selector/binder/validator; Planner API;
+PlannerWorkbench/types/styles; focused/integration/browser tests; CI; evidence;
+Phase 10L/shared docs; persistent records and TASKS. Dependencies/lock unchanged.
+
+## 26. Commit and Exact-SHA CI History
+
+- `ed880b313bed8d5bea36e5f8995f08bf48844023`, CI `30507612860`: failed
+  service-backed because the fixture lacked the material-property fact required
+  by its property-distribution goal.
+- `c7c6081abda172756d48090d6000670bf6684d68`, CI `30510563999`: failed because
+  the new fixture role used invalid authority `profile_exact`; a local fixture
+  contract test was then added.
+- corrected implementation: `9786e405f1938b514b95ccbeb1cdb6d4b26dde18`.
+- corrected exact-SHA CI: `30511654404`, all required jobs PASS.
+- completion-record/archive SHA and CI follow in the closure addendum.
+
+## 27. Explicit Non-Scope Confirmation
+
+No AnalysisPlan 0.2, dependency/DAG, prior-artifact binding, Runtime partial
+success/failure redesign, plan editor/approval, interpretation, Workspace,
+professional science, Fermi surface, arbitrary code, external science API,
+new LLM SDK, enterprise infrastructure, or plugin ecosystem was implemented.
+
+## 28. Remaining Phase 10L Gaps
+
+10L-3 may define a reviewer-approved minimal dependency/artifact model; 10L-4
+owns grounded interpretation; 10L-5 owns natural-language evidence closure.
+These are gaps, not executable tasks.
+
+## 29. Queue State
+
+- Phase 10L-2: `COMPLETE / AWAITING_COMPLETION_RECORD_CI`.
+- Phase 10L-3: `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+- `PHASE_10L3_EXECUTABLE_TASK_CREATED = NO`.
+
+## 30. Whether Phase 10L-3 Was Entered Automatically
+
+`NO`.
+
+## 31. Next Action
+
+Verify completion-record exact-SHA CI, then create and verify the queue-archive
+commit. Return the result and stop; do not queue or execute Phase 10L-3.

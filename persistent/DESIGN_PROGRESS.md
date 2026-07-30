@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-07-30 Phase 10L-2 Capability-Aware Planner Implemented, Awaiting CI
+## 2026-07-30 Phase 10L-2 Capability-Aware Planner Implementation Complete
 
 - Added strict planner metadata for all 53 Registry entries; 38 current
   available entries can be considered, while deployment-unavailable and
@@ -17,9 +17,12 @@
   capability surface. AnalysisIntent remains 1.0; AnalysisPlan remains 0.1;
   PlanValidator and QueueWorkerRuntime semantics are unchanged.
 - Focused contract/backend/frontend, browser matrix, performance, security,
-  and evidence-integrity checks pass locally. Full regression and exact-SHA
-  implementation/service CI remain the completion gate. Phase 10L-3 is still
-  `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+  and evidence-integrity checks pass locally. Corrected implementation HEAD
+  `9786e405f1938b514b95ccbeb1cdb6d4b26dde18` passed exact-SHA CI run
+  `30511654404`: Unit, Frontend typecheck/build, PostgreSQL/Redis/MinIO
+  migration/integration, and no-skipped all succeeded. The permanent result is
+  recorded; completion-record CI and verified queue archive remain open. Phase
+  10L-3 is still `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
 
 ## 2026-07-29 Phase 10L-1 Analysis Intent Implementation Complete
 

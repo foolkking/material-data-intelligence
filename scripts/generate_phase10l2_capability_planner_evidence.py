@@ -533,11 +533,11 @@ def main() -> None:
     write_json(
         "test_captures.json",
         {
-            "focusedBackend": "22 passed",
+            "focusedBackend": "27 passed",
             "focusedPhase10L1L2": "50 passed",
             "plannerAndPhase10KRegression": "169 passed, 1 skipped, 1 warning",
             "focusedFrontend": "24 passed",
-            "fullBackend": "891 passed, 29 skipped, 63 warnings",
+            "fullBackend": "892 passed, 29 skipped, 63 warnings",
             "fullFrontend": "327 passed",
             "typecheck": "PASS",
             "build": "PASS_WITH_EXISTING_CSS_AUTOPREFIXER_WARNINGS",
@@ -547,7 +547,7 @@ def main() -> None:
             "trajectoryEvidenceIntegrity": "PASS",
             "npmAudit": "UNAVAILABLE_REGISTRY_ENDPOINT_NOT_IMPLEMENTED",
             "serviceBackedLocal": "UNAVAILABLE_WITHOUT_CONFIGURED_SERVICES",
-            "serviceBackedCi": "REQUIRED_EXACT_SHA_GATE",
+            "serviceBackedCi": "27 passed, 0 skipped, 0 failed; run 30511654404",
         },
     )
     (EVIDENCE / "README.md").write_text(

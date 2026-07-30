@@ -13,8 +13,10 @@
   path. No scientific tool, dependency/artifact binding, Runtime semantic,
   PlanValidator relaxation, external service, or new dependency was added.
 - Added deterministic Registry/API/persistence/performance/security evidence
-  and Chromium/Firefox/WebKit/390x844 browser replay. Implementation exact-SHA
-  CI and completion/archive records remain required before final closure.
+  and Chromium/Firefox/WebKit/390x844 browser replay. Corrected implementation
+  `9786e405` passed exact-SHA CI run `30511654404`, including service-backed
+  `27 passed, 0 skipped, 0 failed`; completion-record CI and verified queue
+  archive remain required before final closure.
 
 ## 2026-07-29 - Phase 10L-1 Analysis Intent Implementation
 

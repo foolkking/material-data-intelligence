@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
 
 # Phase 10L-2: Capability-Aware Planner + Eligibility Resolver
 
@@ -40,12 +40,30 @@ successful and evidence/results/persistent records agree. Archive only by
 deleting this complete block after verification. Do not queue or execute Phase
 10L-3.
 
+## Completion Record
+
+- 完成时间：2026-07-30 11:45:38 +08:00
+- 修改文件：Registry planner metadata、capability-planning shared schemas、
+  Eligibility Resolver/selector/binder/validator、API persistence/migration、
+  PlannerWorkbench、focused/service-backed/browser tests、Phase 10L-2 evidence、
+  docs、persistent records 和 `results.md`。
+- 修改摘要：在 canonical READY AnalysisIntent path 上增加 Registry-derived
+  eligibility、eligible-only provider projection、deterministic selection、
+  exact binding provenance、one-shot strict LLM repair 和 independent context
+  validation；只有 PLAN_READY 进入 unchanged AnalysisPlan 0.1/job/runtime。
+- 测试结果：本地 focused 10L-1/10L-2、full backend/frontend、typecheck/build、
+  Chromium/Firefox/WebKit/mobile、evidence/security PASS；corrected implementation
+  `9786e405f1938b514b95ccbeb1cdb6d4b26dde18` exact-SHA CI run
+  `30511654404` PASS，service-backed `27 passed, 0 skipped, 0 failed`。
+- 提交/CI：completion-record commit 和其 exact-SHA CI 待本 block 保留状态下
+  完成；成功后才允许 verified queue archive。
+
 ---END---
 
 # REVIEWER GATE AFTER PHASE 10L-2
 
 ```text
-Phase 10L-2: IN_PROGRESS
+Phase 10L-2: COMPLETE / AWAITING_COMPLETION_RECORD_CI
 Phase 10L-3: REVIEWER_GATE / AWAITING REVIEWER PROMPT
 ```
 

@@ -3,9 +3,10 @@
 ## Current Approved Work
 
 - [ ] Phase 10L-2 Capability-Aware Planner + Eligibility Resolver is
-  `IN_PROGRESS`: implement Registry-derived eligibility and exact bindings on
-  the canonical READY Intent path without changing AnalysisPlan 0.1,
-  PlanValidator, Registry execution contracts, or QueueWorkerRuntime.
+  `IMPLEMENTATION_COMPLETE / COMPLETION_RECORD_CI_PENDING`: corrected
+  implementation `9786e405` passed exact-SHA CI run `30511654404`, including
+  service-backed `27 passed, 0 skipped, 0 failed`. The TASKS block remains until
+  the completion record and verified queue archive gates close.
 - [ ] Phase 10L-3 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; it must not be
   queued or executed automatically from Phase 10L-2.
 
