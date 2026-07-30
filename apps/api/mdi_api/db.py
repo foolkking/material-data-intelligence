@@ -223,6 +223,63 @@ analysis_intent_executions = Table(
 
 Index("idx_intent_executions_intent", analysis_intent_executions.c.intent_id)
 
+capability_eligibility_resolutions = Table(
+    "capability_eligibility_resolutions",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("resolution_hash", String(64), nullable=False, unique=True),
+    Column("intent_id", String(96), ForeignKey("analysis_intents.id"), nullable=False),
+    Column("profile_id", String(64), nullable=False),
+    Column("profile_semantic_hash", String(128), nullable=False),
+    Column("registry_snapshot_id", String(96), nullable=False),
+    Column("registry_snapshot_hash", String(64), nullable=False),
+    Column("resolver_version", String(32), nullable=False),
+    Column("resolution_json", JSON, nullable=False),
+    Column("created_by", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+Index("idx_capability_resolutions_intent", capability_eligibility_resolutions.c.intent_id)
+
+capability_planning_decisions = Table(
+    "capability_planning_decisions",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("decision_hash", String(64), nullable=False, unique=True),
+    Column("intent_id", String(96), ForeignKey("analysis_intents.id"), nullable=False),
+    Column("resolution_id", String(96), ForeignKey("capability_eligibility_resolutions.id"), nullable=False),
+    Column("outcome", String(32), nullable=False),
+    Column("provider", String(64), nullable=False),
+    Column("provider_contract_version", String(32), nullable=False),
+    Column("model", String(128), nullable=False),
+    Column("repair_count", Integer, nullable=False, server_default="0"),
+    Column("decision_json", JSON, nullable=False),
+    Column("created_by", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint(
+        "outcome in ('PLAN_READY', 'NEEDS_CLARIFICATION', 'UNSUPPORTED', 'CAPABILITY_MISMATCH', 'VALIDATION_FAILED')",
+        name="capability_planning_decision_outcome",
+    ),
+    CheckConstraint("repair_count >= 0 and repair_count <= 1", name="capability_planning_repair_count"),
+)
+
+Index("idx_capability_decisions_intent", capability_planning_decisions.c.intent_id)
+Index("idx_capability_decisions_resolution", capability_planning_decisions.c.resolution_id)
+
+capability_planning_executions = Table(
+    "capability_planning_executions",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("decision_id", String(96), ForeignKey("capability_planning_decisions.id"), nullable=False, unique=True),
+    Column("intent_id", String(96), ForeignKey("analysis_intents.id"), nullable=False),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=False, unique=True),
+    Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False, unique=True),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("decision_id", "intent_id", "plan_id", "job_id", name="uq_capability_planning_execution"),
+)
+
+Index("idx_capability_executions_intent", capability_planning_executions.c.intent_id)
+
 job_events = Table(
     "job_events",
     metadata,

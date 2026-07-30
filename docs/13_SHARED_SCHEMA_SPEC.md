@@ -1,5 +1,33 @@
 # 共享 Schema 规范
 
+## Capability Planning v1 (Phase 10L-2)
+
+`capability-planning-v1.schema.json` defines strict version `1.0` contracts for
+Registry planner metadata, deterministic Registry snapshots, eligibility
+resolutions, eligible-candidate projections, capability selection proposals,
+exact parameter bindings, capability decisions, and bounded diagnostics.
+Python is implemented in `mdi_schemas.capability_planning`; TypeScript parity is
+exported from `packages/schemas/src/index.ts`.
+
+Semantic hashes use canonical UTF-8 JSON with sorted keys, compact separators,
+and unescaped Unicode. Runtime timestamps are excluded. Resolution identity
+binds exact AnalysisIntent 1.0, DataProfile 2.0, dataset/resource hashes, and
+Registry snapshot identity. Decision identity additionally binds provider,
+selection coverage, exact parameter provenance, repair count, diagnostics, and
+final planning outcome.
+
+Outcomes are `PLAN_READY`, `NEEDS_CLARIFICATION`, `UNSUPPORTED`,
+`CAPABILITY_MISMATCH`, and `VALIDATION_FAILED`. Only `PLAN_READY` may produce
+the existing AnalysisPlan 0.1 and continue to job/enqueue. The contract caps 64
+Registry entries, 32 eligible entries, 256 diagnostics, 64 values per binding
+domain, four independent selections, JSON depth 14, and serialized content at
+524,288 bytes. Cap overflow is failure, never semantic truncation.
+
+Planner metadata is declarative and inert. It cannot grant execution authority,
+and provider projection includes eligible candidates only. Tool execution
+continues to require unchanged AnalysisPlan 0.1, PlanValidator, Tool Registry,
+Adapter, and QueueWorkerRuntime validation.
+
 ## AnalysisIntent v1 (Phase 10L-1)
 
 `AnalysisIntent` schema version `1.0` is the inert, persisted request contract

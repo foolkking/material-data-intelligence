@@ -1,0 +1,91 @@
+{
+  "decision": {
+    "decisionHash": "44d72f1583558a072e58e9541ca300f95ce2440af3206cd6e3c681773e8724ef",
+    "decisionId": "decision_44d72f1583558a072e58e954",
+    "diagnostics": [],
+    "intentHash": "63944eeab26f444f7900874d96432268affe11148d615076b08597a0f184ea14",
+    "intentId": "intent_63944eeab26f444f7900874d",
+    "outcome": "PLAN_READY",
+    "profileId": "profile_phase10l2",
+    "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "provenance": {
+      "initialDecisionHash": null,
+      "model": "mock",
+      "provider": "deterministic_mock",
+      "providerContractVersion": "1.0",
+      "repairCount": 0,
+      "repairDiagnostics": []
+    },
+    "registrySnapshotHash": "465482cd226ed056aec57ab4437f90d85b4c8c12507ca62a50f6574b3f8cade0",
+    "registrySnapshotId": "registry_465482cd226ed056aec57ab4",
+    "resolutionHash": "3227eef25c5f159a1075b5f839d1dbfa611517fbd0a890bfad36a25af31da4d6",
+    "resolutionId": "resolution_3227eef25c5f159a1075b5f8",
+    "schemaVersion": "1.0",
+    "selections": [
+      {
+        "artifactTypes": [
+          "table_json",
+          "quality_issues_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "boundParameters": [
+          {
+            "parameter": "tableObjectId",
+            "source": "RESOURCE_ID",
+            "sourceIdentity": "resource:table_phase10l2:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "value": "table_phase10l2",
+            "valueId": "table_phase10l2"
+          }
+        ],
+        "coveredCapabilityNeeds": [
+          "composition_data",
+          "material_property_data",
+          "tabular_data"
+        ],
+        "coveredDesiredOutputs": [
+          "linked_samples",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "anomaly_candidate_review",
+          "composition_analysis",
+          "dataset_overview",
+          "property_distribution"
+        ],
+        "inputResourceIds": [
+          "table_phase10l2"
+        ],
+        "rankFacts": [
+          4,
+          3,
+          4,
+          1,
+          0,
+          2,
+          "dataset.materials_explorer",
+          "0.1.0"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "dataset.materials_explorer",
+        "toolName": "Dataset Materials Explorer",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": [
+      "plot"
+    ],
+    "warnings": [
+      {
+        "code": "DESIRED_OUTPUT_UNFULFILLED",
+        "field": "desiredOutputs",
+        "message": "Some requested delivery formats are not produced by the selected current capabilities.",
+        "repairable": false,
+        "toolId": null
+      }
+    ]
+  },
+  "replayStable": true
+}

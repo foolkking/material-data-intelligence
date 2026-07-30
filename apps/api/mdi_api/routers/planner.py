@@ -20,6 +20,8 @@ from mdi_llm import (
     AnalysisIntentError,
     AnalysisIntentRequest,
     AnalysisIntentValidator,
+    CapabilityPlanningError,
+    CapabilityPlanningResult,
     ClarificationSubmission,
     DeterministicAnalysisIntentBuilder,
     LLMProviderError,
@@ -29,6 +31,7 @@ from mdi_llm import (
     PlannerRawResponse,
     PlannerRequest,
     PlannerUserConfig,
+    plan_capabilities,
     redact_credential_values,
     redact_params_for_log,
 )
@@ -150,6 +153,10 @@ class PlannerJobsResult:
     intent_outcome: str | None = None
     intent: dict[str, Any] | None = None
     error_code: str | None = None
+    capability_outcome: str | None = None
+    eligibility_resolution: dict[str, Any] | None = None
+    capability_decision: dict[str, Any] | None = None
+    provider_visible_tool_ids: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -353,6 +360,7 @@ def planner_jobs(
     dataset_id = request.datasetId
     profile_id = request.profileId or request.datasetId
     intent: AnalysisIntent | None = None
+    capability_result: CapabilityPlanningResult | None = None
     if request.intentSchemaVersion is not None or request.intentId is not None:
         _ensure_planner_project_dataset(repos, project_id=project_id, dataset_id=dataset_id, created_by=created_by)
         if request.intentSchemaVersion not in {None, "1.0"}:
@@ -405,19 +413,59 @@ def planner_jobs(
     else:
         dp = _planner_data_profile(dataset_id, profile_id)
 
-    planner_req = PlannerRequest(
-        user_prompt=intent.rawGoal if intent is not None else request.userPrompt,
-        dataset_id=dataset_id,
-        profile_id=profile_id,
-        tool_registry_version=reg.version,
-    )
-
-    try:
-        resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp, user_config=user_config)
-    except LLMProviderError as exc:
-        return _planner_jobs_provider_error(exc, planner_provider=_provider_name(llm))
-
-    plan = resp.raw_json
+    plan_source = "llm"
+    if intent is not None:
+        try:
+            capability_result = plan_capabilities(
+                intent,
+                profile=dp,
+                registry=reg,
+                provider=llm,
+                user_config=user_config,
+            )
+        except CapabilityPlanningError as exc:
+            return _planner_jobs_capability_error(exc, intent=intent, planner_provider=_provider_name(llm))
+        _persist_capability_planning(repos, capability_result, created_by=created_by)
+        if capability_result.outcome.value != "PLAN_READY" or capability_result.plan is None:
+            return PlannerJobsResult(
+                ok=False,
+                job_id=None,
+                plan_id=None,
+                plan_hash=None,
+                validation_errors=[
+                    {
+                        "code": item.code,
+                        "message": item.message,
+                        "detail": {"field": item.field, "toolId": item.toolId},
+                    }
+                    for item in capability_result.decision.diagnostics
+                ],
+                plan=None,
+                plan_source="capability_planner",
+                planner_provider=_provider_name(llm),
+                intent_id=intent.intentId,
+                intent_outcome=intent.outcome.value,
+                intent=intent.model_dump(mode="json"),
+                error_code=capability_result.outcome.value,
+                capability_outcome=capability_result.outcome.value,
+                eligibility_resolution=capability_result.resolution.model_dump(mode="json"),
+                capability_decision=capability_result.decision.model_dump(mode="json"),
+                provider_visible_tool_ids=list(capability_result.provider_visible_tool_ids),
+            )
+        plan = capability_result.plan.model_dump(mode="json")
+        plan_source = "capability_planner"
+    else:
+        planner_req = PlannerRequest(
+            user_prompt=request.userPrompt,
+            dataset_id=dataset_id,
+            profile_id=profile_id,
+            tool_registry_version=reg.version,
+        )
+        try:
+            resp: PlannerRawResponse = llm.generate_plan(planner_req, tools=tools, data_profile=dp, user_config=user_config)
+        except LLMProviderError as exc:
+            return _planner_jobs_provider_error(exc, planner_provider=_provider_name(llm))
+        plan = resp.raw_json
     if plan is None:
         return PlannerJobsResult(
             ok=False,
@@ -477,7 +525,7 @@ def planner_jobs(
             "projectId": project_id,
             "datasetId": dataset_id,
             "profileId": profile_id,
-            "planSource": "llm",
+            "planSource": plan_source,
             "plannerProvider": planner_provider,
             "analysisPlan": validated_plan.model_dump(mode="json"),
             "planHash": plan_hash,
@@ -499,6 +547,13 @@ def planner_jobs(
     repos.analysis_plans.attach_plan_to_job(plan_id, job_id)
     if intent is not None:
         repos.analysis_intents.attach_execution(intent.intentId, plan_id, job_id)
+    if capability_result is not None:
+        repos.capability_planning.attach_execution(
+            capability_result.decision.decisionId,
+            intent.intentId,
+            plan_id,
+            job_id,
+        )
     repos.job_events.append_event(
         job_id,
         event_type="job.created",
@@ -512,7 +567,7 @@ def planner_jobs(
         event_type="plan.persisted",
         status="success",
         message=f"Persisted validated AnalysisPlan with {len(validated_plan.steps)} step(s).",
-        payload={"planId": plan_id, "planHash": plan_hash, "planSource": "llm", "plannerProvider": planner_provider},
+        payload={"planId": plan_id, "planHash": plan_hash, "planSource": plan_source, "plannerProvider": planner_provider},
         progress=0.0,
     )
 
@@ -534,13 +589,17 @@ def planner_jobs(
         plan_hash=plan_hash,
         validation_errors=[],
         plan=validated_plan.model_dump(mode="json"),
-        plan_source="llm",
+        plan_source=plan_source,
         planner_provider=planner_provider,
         enqueued=enqueued,
         executed=executed,
         intent_id=intent.intentId if intent else None,
         intent_outcome=intent.outcome.value if intent else None,
         intent=intent.model_dump(mode="json") if intent else None,
+        capability_outcome=capability_result.outcome.value if capability_result else None,
+        eligibility_resolution=capability_result.resolution.model_dump(mode="json") if capability_result else None,
+        capability_decision=capability_result.decision.model_dump(mode="json") if capability_result else None,
+        provider_visible_tool_ids=list(capability_result.provider_visible_tool_ids) if capability_result else [],
     )
 
 
@@ -586,6 +645,18 @@ def get_planner_job(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
     intent_binding = repos.analysis_intents.get_execution_for_job(job_id)
     intent_record = repos.analysis_intents.get_intent(intent_binding["intentId"]) if intent_binding else None
     intent_payload = (intent_record or {}).get("analysisIntent")
+    capability_binding = repos.capability_planning.get_execution_for_job(job_id)
+    capability_decision_record = (
+        repos.capability_planning.get_decision(capability_binding["decisionId"])
+        if capability_binding
+        else None
+    )
+    capability_decision = (capability_decision_record or {}).get("capabilityDecision")
+    capability_resolution_record = (
+        repos.capability_planning.get_resolution(capability_decision["resolutionId"])
+        if capability_decision
+        else None
+    )
     return {
         **job,
         "jobId": job.get("jobId") or job.get("id"),
@@ -601,6 +672,9 @@ def get_planner_job(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
         "intentId": (intent_binding or {}).get("intentId"),
         "intentOutcome": (intent_payload or {}).get("outcome"),
         "analysisIntent": intent_payload,
+        "capabilityPlanningOutcome": (capability_decision or {}).get("outcome"),
+        "eligibilityResolution": (capability_resolution_record or {}).get("eligibilityResolution"),
+        "capabilityDecision": capability_decision,
     }
 
 
@@ -912,6 +986,26 @@ def _persist_planner_intent(repos: Any, project_id: str, intent: AnalysisIntent,
     )
 
 
+def _persist_capability_planning(
+    repos: Any,
+    result: CapabilityPlanningResult,
+    *,
+    created_by: str,
+) -> None:
+    repos.capability_planning.save_resolution(
+        {
+            "eligibilityResolution": result.resolution.model_dump(mode="json"),
+            "createdBy": created_by,
+        }
+    )
+    repos.capability_planning.save_decision(
+        {
+            "capabilityDecision": result.decision.model_dump(mode="json"),
+            "createdBy": created_by,
+        }
+    )
+
+
 def _intent_result(intent: AnalysisIntent) -> PlannerIntentResult:
     return PlannerIntentResult(
         ok=True,
@@ -944,6 +1038,29 @@ def _planner_jobs_intent_error(code: str, message: str) -> PlannerJobsResult:
         validation_errors=[{"code": code, "message": message, "detail": None}],
         plan=None,
         error_code=code,
+    )
+
+
+def _planner_jobs_capability_error(
+    error: CapabilityPlanningError,
+    *,
+    intent: AnalysisIntent,
+    planner_provider: str,
+) -> PlannerJobsResult:
+    return PlannerJobsResult(
+        ok=False,
+        job_id=None,
+        plan_id=None,
+        plan_hash=None,
+        validation_errors=[{"code": error.code, "message": str(error), "detail": None}],
+        plan=None,
+        plan_source="capability_planner",
+        planner_provider=planner_provider,
+        intent_id=intent.intentId,
+        intent_outcome=intent.outcome.value,
+        intent=intent.model_dump(mode="json"),
+        error_code=error.code,
+        capability_outcome=error.outcome.value,
     )
 
 

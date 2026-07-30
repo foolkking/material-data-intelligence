@@ -15,6 +15,9 @@ from mdi_api.db import (
     analysis_intents,
     analysis_plans,
     artifacts,
+    capability_eligibility_resolutions,
+    capability_planning_decisions,
+    capability_planning_executions,
     data_profiles,
     datasets,
     job_events,
@@ -30,13 +33,17 @@ from mdi_schemas import (
     AnalysisIntent,
     AnalysisPlan,
     Artifact,
+    CapabilityPlanningDecision,
     DataProfile,
+    EligibilityResolution,
     JobEvent,
     JobEventStatus,
     JobStatus,
     ToolCall,
     VisualizationRecipe,
     compute_analysis_intent_hash,
+    capability_semantic_hash,
+    deterministic_capability_id,
     deterministic_intent_id,
 )
 
@@ -109,6 +116,26 @@ class AnalysisIntentRepository(Protocol):
         ...
 
     def get_execution(self, intent_id: str) -> dict[str, Any] | None:
+        ...
+
+    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
+        ...
+
+
+class CapabilityPlanningRepository(Protocol):
+    def save_resolution(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def get_resolution(self, resolution_id: str) -> dict[str, Any]:
+        ...
+
+    def save_decision(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def get_decision(self, decision_id: str) -> dict[str, Any]:
+        ...
+
+    def attach_execution(self, decision_id: str, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
         ...
 
     def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
@@ -196,6 +223,7 @@ class InMemoryRepositoryBundle:
     datasets: "InMemoryDatasetRepository"
     data_profiles: "InMemoryDataProfileRepository"
     analysis_intents: "InMemoryAnalysisIntentRepository"
+    capability_planning: "InMemoryCapabilityPlanningRepository"
     analysis_plans: "InMemoryAnalysisPlanRepository"
     jobs: "InMemoryJobRepository"
     job_events: "InMemoryJobEventRepository"
@@ -213,6 +241,7 @@ class InMemoryRepositoryBundle:
             datasets=datasets,
             data_profiles=InMemoryDataProfileRepository(datasets),
             analysis_intents=InMemoryAnalysisIntentRepository(),
+            capability_planning=InMemoryCapabilityPlanningRepository(),
             analysis_plans=InMemoryAnalysisPlanRepository(jobs),
             jobs=jobs,
             job_events=InMemoryJobEventRepository(),
@@ -333,6 +362,69 @@ class InMemoryAnalysisIntentRepository(_InMemoryRecordRepository):
     def get_execution(self, intent_id: str) -> dict[str, Any] | None:
         value = self.executions.get(intent_id)
         return _json_copy(value) if value is not None else None
+
+    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
+        value = next((item for item in self.executions.values() if item["jobId"] == job_id), None)
+        return _json_copy(value) if value is not None else None
+
+
+class InMemoryCapabilityPlanningRepository:
+    def __init__(self) -> None:
+        self.resolutions: dict[str, dict[str, Any]] = {}
+        self.decisions: dict[str, dict[str, Any]] = {}
+        self.executions: dict[str, dict[str, Any]] = {}
+
+    def save_resolution(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        normalized = _normalize_capability_resolution_record(record)
+        resolution_id = normalized["resolutionId"]
+        existing = self.resolutions.get(resolution_id)
+        if existing is not None and existing["resolutionHash"] != normalized["resolutionHash"]:
+            raise ValueError("Eligibility Resolution records are immutable")
+        self.resolutions.setdefault(resolution_id, normalized)
+        return _json_copy(self.resolutions[resolution_id])
+
+    def get_resolution(self, resolution_id: str) -> dict[str, Any]:
+        try:
+            return _json_copy(self.resolutions[resolution_id])
+        except KeyError as exc:
+            raise LookupError(f"Unknown Eligibility Resolution: {resolution_id}") from exc
+
+    def save_decision(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        normalized = _normalize_capability_decision_record(record)
+        self.get_resolution(normalized["resolutionId"])
+        decision_id = normalized["decisionId"]
+        existing = self.decisions.get(decision_id)
+        if existing is not None and existing["decisionHash"] != normalized["decisionHash"]:
+            raise ValueError("Capability Planning Decision records are immutable")
+        self.decisions.setdefault(decision_id, normalized)
+        return _json_copy(self.decisions[decision_id])
+
+    def get_decision(self, decision_id: str) -> dict[str, Any]:
+        try:
+            return _json_copy(self.decisions[decision_id])
+        except KeyError as exc:
+            raise LookupError(f"Unknown Capability Planning Decision: {decision_id}") from exc
+
+    def attach_execution(self, decision_id: str, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
+        decision = self.get_decision(decision_id)
+        if decision["intentId"] != intent_id or decision["outcome"] != "PLAN_READY":
+            raise ValueError("Only a matching PLAN_READY decision can be attached to execution")
+        binding = {
+            "id": f"cap_exec_{decision_id.removeprefix('decision_')[:16]}",
+            "decisionId": decision_id,
+            "intentId": intent_id,
+            "planId": plan_id,
+            "jobId": job_id,
+            "createdAt": _utc_now(),
+        }
+        current = self.executions.get(decision_id)
+        if current is not None and current != binding:
+            comparable = {key: value for key, value in current.items() if key != "createdAt"}
+            requested = {key: value for key, value in binding.items() if key != "createdAt"}
+            if comparable != requested:
+                raise ValueError("Capability Planning execution association is immutable")
+        self.executions.setdefault(decision_id, binding)
+        return _json_copy(self.executions[decision_id])
 
     def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
         value = next((item for item in self.executions.values() if item["jobId"] == job_id), None)
@@ -569,6 +661,7 @@ class SqlAlchemyRepositoryBundle:
     datasets: "SqlAlchemyDatasetRepository"
     data_profiles: "SqlAlchemyDataProfileRepository"
     analysis_intents: "SqlAlchemyAnalysisIntentRepository"
+    capability_planning: "SqlAlchemyCapabilityPlanningRepository"
     analysis_plans: "SqlAlchemyAnalysisPlanRepository"
     jobs: "SqlAlchemyJobRepository"
     job_events: "SqlAlchemyJobEventRepository"
@@ -584,6 +677,7 @@ class SqlAlchemyRepositoryBundle:
             datasets=SqlAlchemyDatasetRepository(bind),
             data_profiles=SqlAlchemyDataProfileRepository(bind),
             analysis_intents=SqlAlchemyAnalysisIntentRepository(bind),
+            capability_planning=SqlAlchemyCapabilityPlanningRepository(bind),
             analysis_plans=SqlAlchemyAnalysisPlanRepository(bind),
             jobs=SqlAlchemyJobRepository(bind),
             job_events=SqlAlchemyJobEventRepository(bind),
@@ -798,6 +892,109 @@ class SqlAlchemyAnalysisIntentRepository(_SqlAlchemyRepository):
                 select(analysis_intent_executions).where(analysis_intent_executions.c.job_id == job_id)
             ).mappings().first()
             return _intent_execution_from_row(_row_to_json_dict(row)) if row is not None else None
+
+        return self._with_connection(run)
+
+
+class SqlAlchemyCapabilityPlanningRepository(_SqlAlchemyRepository):
+    def save_resolution(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        normalized = _normalize_capability_resolution_record(record)
+        resolution_id = normalized["resolutionId"]
+        values = _capability_resolution_values(normalized)
+
+        def run(connection: Connection) -> None:
+            existing = connection.execute(
+                select(capability_eligibility_resolutions).where(capability_eligibility_resolutions.c.id == resolution_id)
+            ).mappings().first()
+            if existing is None:
+                connection.execute(insert(capability_eligibility_resolutions).values(**values))
+                return
+            if str(existing["resolution_hash"]) != normalized["resolutionHash"]:
+                raise ValueError("Eligibility Resolution records are immutable")
+
+        self._with_connection(run)
+        return self.get_resolution(resolution_id)
+
+    def get_resolution(self, resolution_id: str) -> dict[str, Any]:
+        return _capability_resolution_from_row(
+            self._fetch_one_dict(
+                select(capability_eligibility_resolutions).where(capability_eligibility_resolutions.c.id == resolution_id)
+            )
+        )
+
+    def save_decision(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        normalized = _normalize_capability_decision_record(record)
+        decision_id = normalized["decisionId"]
+        values = _capability_decision_values(normalized)
+
+        def run(connection: Connection) -> None:
+            existing = connection.execute(
+                select(capability_planning_decisions).where(capability_planning_decisions.c.id == decision_id)
+            ).mappings().first()
+            if existing is None:
+                connection.execute(insert(capability_planning_decisions).values(**values))
+                return
+            if str(existing["decision_hash"]) != normalized["decisionHash"]:
+                raise ValueError("Capability Planning Decision records are immutable")
+
+        self._with_connection(run)
+        return self.get_decision(decision_id)
+
+    def get_decision(self, decision_id: str) -> dict[str, Any]:
+        return _capability_decision_from_row(
+            self._fetch_one_dict(
+                select(capability_planning_decisions).where(capability_planning_decisions.c.id == decision_id)
+            )
+        )
+
+    def attach_execution(self, decision_id: str, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
+        decision = self.get_decision(decision_id)
+        if decision["intentId"] != intent_id or decision["outcome"] != "PLAN_READY":
+            raise ValueError("Only a matching PLAN_READY decision can be attached to execution")
+        binding_id = f"cap_exec_{decision_id.removeprefix('decision_')[:16]}"
+
+        def run(connection: Connection) -> None:
+            existing = connection.execute(
+                select(capability_planning_executions).where(
+                    or_(
+                        capability_planning_executions.c.decision_id == decision_id,
+                        capability_planning_executions.c.plan_id == plan_id,
+                        capability_planning_executions.c.job_id == job_id,
+                    )
+                )
+            ).mappings().first()
+            if existing is None:
+                connection.execute(
+                    insert(capability_planning_executions).values(
+                        id=binding_id,
+                        decision_id=decision_id,
+                        intent_id=intent_id,
+                        plan_id=plan_id,
+                        job_id=job_id,
+                    )
+                )
+                return
+            current = _row_to_json_dict(existing)
+            if (
+                current["decision_id"] != decision_id
+                or current["intent_id"] != intent_id
+                or current["plan_id"] != plan_id
+                or current["job_id"] != job_id
+            ):
+                raise ValueError("Capability Planning execution association is immutable")
+
+        self._with_connection(run)
+        result = self.get_execution_for_job(job_id)
+        if result is None:
+            raise LookupError(f"Unknown Capability Planning execution association: {job_id}")
+        return result
+
+    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
+        def run(connection: Connection) -> dict[str, Any] | None:
+            row = connection.execute(
+                select(capability_planning_executions).where(capability_planning_executions.c.job_id == job_id)
+            ).mappings().first()
+            return _capability_execution_from_row(_row_to_json_dict(row)) if row is not None else None
 
         return self._with_connection(run)
 
@@ -1333,6 +1530,125 @@ def _analysis_intent_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
 def _intent_execution_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "id": row["id"],
+        "intentId": row["intent_id"],
+        "planId": row["plan_id"],
+        "jobId": row["job_id"],
+        "createdAt": _iso(row["created_at"]),
+    }
+
+
+def _normalize_capability_resolution_record(record: Mapping[str, Any]) -> dict[str, Any]:
+    source = _json_copy(record)
+    payload = source.get("eligibilityResolution") or source.get("resolutionJson") or source.get("resolution_json")
+    if payload is None:
+        raise ValueError("Eligibility Resolution record is missing resolution_json")
+    parsed = EligibilityResolution.model_validate(payload)
+    computed_hash = capability_semantic_hash(parsed, identity_fields=("resolutionId", "resolutionHash"))
+    if parsed.resolutionHash != computed_hash or parsed.resolutionId != deterministic_capability_id("resolution", computed_hash):
+        raise ValueError("Eligibility Resolution identity does not match canonical JSON")
+    return {
+        "id": parsed.resolutionId,
+        "resolutionId": parsed.resolutionId,
+        "resolutionHash": parsed.resolutionHash,
+        "intentId": parsed.intentId,
+        "profileId": parsed.profileId,
+        "profileSemanticHash": parsed.profileSemanticHash,
+        "registrySnapshotId": parsed.registrySnapshotId,
+        "registrySnapshotHash": parsed.registrySnapshotHash,
+        "resolverVersion": parsed.provenance.resolverVersion,
+        "eligibilityResolution": parsed.model_dump(mode="json"),
+        "createdBy": str(source.get("createdBy") or source.get("created_by") or "user_local"),
+        "createdAt": source.get("createdAt") or source.get("created_at"),
+    }
+
+
+def _capability_resolution_values(record: Mapping[str, Any]) -> dict[str, Any]:
+    normalized = _normalize_capability_resolution_record(record)
+    return {
+        "id": normalized["resolutionId"],
+        "resolution_hash": normalized["resolutionHash"],
+        "intent_id": normalized["intentId"],
+        "profile_id": normalized["profileId"],
+        "profile_semantic_hash": normalized["profileSemanticHash"],
+        "registry_snapshot_id": normalized["registrySnapshotId"],
+        "registry_snapshot_hash": normalized["registrySnapshotHash"],
+        "resolver_version": normalized["resolverVersion"],
+        "resolution_json": _json_copy(normalized["eligibilityResolution"]),
+        "created_by": normalized["createdBy"],
+    }
+
+
+def _capability_resolution_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
+    record = _normalize_capability_resolution_record(
+        {
+            "eligibilityResolution": _json_copy(row.get("resolution_json") or {}),
+            "createdBy": row["created_by"],
+            "createdAt": _iso(row["created_at"]),
+        }
+    )
+    record["createdAt"] = _iso(row["created_at"])
+    return record
+
+
+def _normalize_capability_decision_record(record: Mapping[str, Any]) -> dict[str, Any]:
+    source = _json_copy(record)
+    payload = source.get("capabilityDecision") or source.get("decisionJson") or source.get("decision_json")
+    if payload is None:
+        raise ValueError("Capability Planning Decision record is missing decision_json")
+    parsed = CapabilityPlanningDecision.model_validate(payload)
+    computed_hash = capability_semantic_hash(parsed, identity_fields=("decisionId", "decisionHash"))
+    if parsed.decisionHash != computed_hash or parsed.decisionId != deterministic_capability_id("decision", computed_hash):
+        raise ValueError("Capability Planning Decision identity does not match canonical JSON")
+    return {
+        "id": parsed.decisionId,
+        "decisionId": parsed.decisionId,
+        "decisionHash": parsed.decisionHash,
+        "intentId": parsed.intentId,
+        "resolutionId": parsed.resolutionId,
+        "outcome": parsed.outcome.value,
+        "provider": parsed.provenance.provider,
+        "providerContractVersion": parsed.provenance.providerContractVersion,
+        "model": parsed.provenance.model,
+        "repairCount": parsed.provenance.repairCount,
+        "capabilityDecision": parsed.model_dump(mode="json"),
+        "createdBy": str(source.get("createdBy") or source.get("created_by") or "user_local"),
+        "createdAt": source.get("createdAt") or source.get("created_at"),
+    }
+
+
+def _capability_decision_values(record: Mapping[str, Any]) -> dict[str, Any]:
+    normalized = _normalize_capability_decision_record(record)
+    return {
+        "id": normalized["decisionId"],
+        "decision_hash": normalized["decisionHash"],
+        "intent_id": normalized["intentId"],
+        "resolution_id": normalized["resolutionId"],
+        "outcome": normalized["outcome"],
+        "provider": normalized["provider"],
+        "provider_contract_version": normalized["providerContractVersion"],
+        "model": normalized["model"],
+        "repair_count": normalized["repairCount"],
+        "decision_json": _json_copy(normalized["capabilityDecision"]),
+        "created_by": normalized["createdBy"],
+    }
+
+
+def _capability_decision_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
+    record = _normalize_capability_decision_record(
+        {
+            "capabilityDecision": _json_copy(row.get("decision_json") or {}),
+            "createdBy": row["created_by"],
+            "createdAt": _iso(row["created_at"]),
+        }
+    )
+    record["createdAt"] = _iso(row["created_at"])
+    return record
+
+
+def _capability_execution_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "decisionId": row["decision_id"],
         "intentId": row["intent_id"],
         "planId": row["plan_id"],
         "jobId": row["job_id"],

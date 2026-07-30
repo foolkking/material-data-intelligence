@@ -61,6 +61,13 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 
 ## Phase 10L Intelligent Analysis Agent
 
+- [`phase10l/phase10l2_capability_planner_contract.md`](phase10l/phase10l2_capability_planner_contract.md): Registry metadata, deterministic eligibility, eligible-only selection, exact binding, validation, and one-repair contract.
+- [`phase10l/phase10l2_persistence_api_compatibility.md`](phase10l/phase10l2_persistence_api_compatibility.md): immutable audit persistence, canonical API gate, and AnalysisPlan 0.1 compatibility.
+- [`phase10l/phase10l2_security_caps.md`](phase10l/phase10l2_security_caps.md): caps, provider isolation, execution boundary, and required markers.
+- [`phase10l/phase10l2_evidence_matrix.md`](phase10l/phase10l2_evidence_matrix.md): API, Registry, resolver, repair, browser, performance, and security evidence inventory.
+- [`phase10l/phase10l2_readiness.md`](phase10l/phase10l2_readiness.md): implementation readiness and explicit remaining limits.
+- [`phase10l/phase10l2_phase10l3_handoff.md`](phase10l/phase10l2_phase10l3_handoff.md): reviewer-only Phase 10L-3 handoff; not an executable task.
+- [`phase10l/evidence/phase10l2_capability_aware_planner/`](phase10l/evidence/phase10l2_capability_aware_planner/): sanitized Registry, resolution, binding, API, persistence, browser, performance, and security captures.
 - [`phase10l/phase10l1_analysis_intent_contract.md`](phase10l/phase10l1_analysis_intent_contract.md): versioned AnalysisIntent v1 identity, exact scope, vocabulary, and outcomes.
 - [`phase10l/phase10l1_bounded_clarification_contract.md`](phase10l/phase10l1_bounded_clarification_contract.md): one-round, three-question Profile-derived clarification policy.
 - [`phase10l/phase10l1_intent_persistence_and_api.md`](phase10l/phase10l1_intent_persistence_and_api.md): immutable repository, Alembic migration, typed API, and Planner Gate.

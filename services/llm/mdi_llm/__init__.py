@@ -23,12 +23,25 @@ from .providers import (
     PlannerRequest,
     PlannerUserConfig,
 )
+from .capability_planner import (
+    CAPABILITY_PLANNER_VERSION,
+    CapabilityContextValidator,
+    CapabilityPlanningError,
+    CapabilityPlanningResult,
+    plan_capabilities,
+    project_eligible_candidates,
+    resolve_eligibility,
+)
 from .redaction import is_credential_key, redact_credential_values, redact_params_for_log
 
 __all__ = [
     "AnalysisIntentError",
     "AnalysisIntentRequest",
     "AnalysisIntentValidator",
+    "CAPABILITY_PLANNER_VERSION",
+    "CapabilityContextValidator",
+    "CapabilityPlanningError",
+    "CapabilityPlanningResult",
     "ClarificationSubmission",
     "DeterministicAnalysisIntentBuilder",
     "OpenAICompatibleAnalysisIntentBuilder",
@@ -43,7 +56,10 @@ __all__ = [
     "PlannerRawResponse",
     "PlannerRequest",
     "PlannerUserConfig",
+    "plan_capabilities",
+    "project_eligible_candidates",
     "redact_credential_values",
     "redact_params_for_log",
+    "resolve_eligibility",
     "normalize_analysis_goal",
 ]

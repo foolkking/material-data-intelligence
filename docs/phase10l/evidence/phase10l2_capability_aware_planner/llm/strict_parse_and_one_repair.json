@@ -1,0 +1,109 @@
+{
+  "calls": 2,
+  "decision": {
+    "decisionHash": "21a3bce96cd7077f079619848e3e159eb41fe200d02d4739232159efe7954dbb",
+    "decisionId": "decision_21a3bce96cd7077f07961984",
+    "diagnostics": [],
+    "intentHash": "63944eeab26f444f7900874d96432268affe11148d615076b08597a0f184ea14",
+    "intentId": "intent_63944eeab26f444f7900874d",
+    "outcome": "PLAN_READY",
+    "profileId": "profile_phase10l2",
+    "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "provenance": {
+      "initialDecisionHash": "ecd8f076eb1d1b61e2d97bebb426b2f83aebbd4c60174f584149aece66a46b1b",
+      "model": "gpt-4o",
+      "provider": "openai_compatible",
+      "providerContractVersion": "1.0",
+      "repairCount": 1,
+      "repairDiagnostics": [
+        {
+          "code": "CAPABILITY_COVERAGE_INCOMPLETE",
+          "field": "selection",
+          "message": "Selected tools do not cover the structured Intent.",
+          "repairable": true,
+          "toolId": null
+        }
+      ]
+    },
+    "registrySnapshotHash": "465482cd226ed056aec57ab4437f90d85b4c8c12507ca62a50f6574b3f8cade0",
+    "registrySnapshotId": "registry_465482cd226ed056aec57ab4",
+    "resolutionHash": "3227eef25c5f159a1075b5f839d1dbfa611517fbd0a890bfad36a25af31da4d6",
+    "resolutionId": "resolution_3227eef25c5f159a1075b5f8",
+    "schemaVersion": "1.0",
+    "selections": [
+      {
+        "artifactTypes": [
+          "table_json",
+          "quality_issues_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "boundParameters": [
+          {
+            "parameter": "tableObjectId",
+            "source": "RESOURCE_ID",
+            "sourceIdentity": "resource:table_phase10l2:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "value": "table_phase10l2",
+            "valueId": "table_phase10l2"
+          }
+        ],
+        "coveredCapabilityNeeds": [
+          "composition_data",
+          "material_property_data",
+          "tabular_data"
+        ],
+        "coveredDesiredOutputs": [
+          "linked_samples",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "anomaly_candidate_review",
+          "composition_analysis",
+          "dataset_overview",
+          "property_distribution"
+        ],
+        "inputResourceIds": [
+          "table_phase10l2"
+        ],
+        "rankFacts": [
+          4,
+          3,
+          4,
+          1,
+          0,
+          2,
+          "dataset.materials_explorer",
+          "0.1.0"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "dataset.materials_explorer",
+        "toolName": "Dataset Materials Explorer",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": [
+      "plot"
+    ],
+    "warnings": [
+      {
+        "code": "DESIRED_OUTPUT_UNFULFILLED",
+        "field": "desiredOutputs",
+        "message": "Some requested delivery formats are not produced by the selected current capabilities.",
+        "repairable": false,
+        "toolId": null
+      }
+    ]
+  },
+  "initialProviderVisibleIds": [
+    "dataset.composition_space",
+    "dataset.materials_explorer"
+  ],
+  "outcome": "PLAN_READY",
+  "rejectedCandidateLeak": false,
+  "repairProviderVisibleIds": [
+    "dataset.composition_space",
+    "dataset.materials_explorer"
+  ]
+}

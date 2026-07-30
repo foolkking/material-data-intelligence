@@ -1,0 +1,13 @@
+{
+  "migration": "0004_phase10l2_capability",
+  "migrationUnit": "upgrade/downgrade/re-upgrade PASS",
+  "postgresqlCiGate": "tests/integration/test_phase10l2_capability_planner_service_backed.py",
+  "postgresqlLocal": "UNAVAILABLE_WITHOUT_DATABASE_URL",
+  "sqlite": {
+    "decisionId": "decision_44d72f1583558a072e58e954",
+    "decisionIdempotent": true,
+    "immutable": true,
+    "resolutionId": "resolution_3227eef25c5f159a1075b5f8",
+    "resolutionIdempotent": true
+  }
+}

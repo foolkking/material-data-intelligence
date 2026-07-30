@@ -1,0 +1,1331 @@
+{
+  "eligibilityResolution": {
+    "$defs": {
+      "CapabilityDiagnostic": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Code",
+            "type": "string"
+          },
+          "field": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Field",
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "toolId": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Toolid"
+          },
+          "repairable": {
+            "default": false,
+            "title": "Repairable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "field",
+          "message"
+        ],
+        "title": "CapabilityDiagnostic",
+        "type": "object"
+      },
+      "CapabilityNeed": {
+        "enum": [
+          "tabular_data",
+          "composition_data",
+          "material_property_data",
+          "comparison_groups",
+          "structure_resource",
+          "trajectory_resource",
+          "phonon_resource",
+          "reciprocal_space_resource",
+          "volumetric_resource",
+          "regression_semantics",
+          "uncertainty_semantics",
+          "classification_semantics",
+          "sample_identity"
+        ],
+        "title": "CapabilityNeed",
+        "type": "string"
+      },
+      "DesiredOutput": {
+        "enum": [
+          "summary",
+          "metrics",
+          "plot",
+          "table",
+          "linked_samples",
+          "three_dimensional_view",
+          "comparison",
+          "warnings",
+          "recipe",
+          "report",
+          "downloadable_artifact"
+        ],
+        "title": "DesiredOutput",
+        "type": "string"
+      },
+      "EligibilityResolutionProvenance": {
+        "additionalProperties": false,
+        "properties": {
+          "resolver": {
+            "const": "deterministic_eligibility_resolver",
+            "default": "deterministic_eligibility_resolver",
+            "title": "Resolver",
+            "type": "string"
+          },
+          "resolverVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Resolverversion",
+            "type": "string"
+          }
+        },
+        "title": "EligibilityResolutionProvenance",
+        "type": "object"
+      },
+      "EvaluatedToolCandidate": {
+        "additionalProperties": false,
+        "properties": {
+          "toolId": {
+            "title": "Toolid",
+            "type": "string"
+          },
+          "toolName": {
+            "title": "Toolname",
+            "type": "string"
+          },
+          "toolVersion": {
+            "title": "Toolversion",
+            "type": "string"
+          },
+          "eligible": {
+            "title": "Eligible",
+            "type": "boolean"
+          },
+          "matchedScientificIntents": {
+            "items": {
+              "$ref": "#/$defs/ScientificIntent"
+            },
+            "maxItems": 16,
+            "title": "Matchedscientificintents",
+            "type": "array"
+          },
+          "matchedCapabilityNeeds": {
+            "items": {
+              "$ref": "#/$defs/CapabilityNeed"
+            },
+            "maxItems": 16,
+            "title": "Matchedcapabilityneeds",
+            "type": "array"
+          },
+          "matchedDesiredOutputs": {
+            "items": {
+              "$ref": "#/$defs/DesiredOutput"
+            },
+            "maxItems": 16,
+            "title": "Matcheddesiredoutputs",
+            "type": "array"
+          },
+          "acceptedResourceIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 32,
+            "title": "Acceptedresourceids",
+            "type": "array"
+          },
+          "satisfiedProfileCapabilities": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Satisfiedprofilecapabilities",
+            "type": "array"
+          },
+          "unsatisfiedProfileCapabilities": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Unsatisfiedprofilecapabilities",
+            "type": "array"
+          },
+          "targetSemanticIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 32,
+            "title": "Targetsemanticids",
+            "type": "array"
+          },
+          "bindingDomains": {
+            "items": {
+              "$ref": "#/$defs/PlannerBindingDomain"
+            },
+            "maxItems": 32,
+            "title": "Bindingdomains",
+            "type": "array"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/$defs/CapabilityDiagnostic"
+            },
+            "maxItems": 32,
+            "title": "Reasons",
+            "type": "array"
+          },
+          "rankFacts": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "maxItems": 16,
+            "title": "Rankfacts",
+            "type": "array"
+          },
+          "costClass": {
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "title": "Costclass",
+            "type": "integer"
+          },
+          "independentComposable": {
+            "title": "Independentcomposable",
+            "type": "boolean"
+          },
+          "collisionGroup": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Collisiongroup"
+          }
+        },
+        "required": [
+          "toolId",
+          "toolName",
+          "toolVersion",
+          "eligible",
+          "costClass",
+          "independentComposable"
+        ],
+        "title": "EvaluatedToolCandidate",
+        "type": "object"
+      },
+      "PlannerBindingDomain": {
+        "additionalProperties": false,
+        "properties": {
+          "parameter": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Parameter",
+            "type": "string"
+          },
+          "required": {
+            "title": "Required",
+            "type": "boolean"
+          },
+          "values": {
+            "items": {
+              "$ref": "#/$defs/PlannerBindingValue"
+            },
+            "maxItems": 64,
+            "title": "Values",
+            "type": "array"
+          }
+        },
+        "required": [
+          "parameter",
+          "required",
+          "values"
+        ],
+        "title": "PlannerBindingDomain",
+        "type": "object"
+      },
+      "PlannerBindingSource": {
+        "enum": [
+          "RESOURCE_ID",
+          "TARGET_COLUMN",
+          "TARGET_GROUP_IDS",
+          "SEMANTIC_COLUMNS",
+          "PROFILE_ID",
+          "RESOURCE_FACT",
+          "LITERAL"
+        ],
+        "title": "PlannerBindingSource",
+        "type": "string"
+      },
+      "PlannerBindingValue": {
+        "additionalProperties": false,
+        "properties": {
+          "valueId": {
+            "maxLength": 192,
+            "minLength": 1,
+            "title": "Valueid",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Value"
+          },
+          "source": {
+            "$ref": "#/$defs/PlannerBindingSource"
+          },
+          "sourceIdentity": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Sourceidentity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "valueId",
+          "value",
+          "source",
+          "sourceIdentity"
+        ],
+        "title": "PlannerBindingValue",
+        "type": "object"
+      },
+      "PlannerResourceIdentity": {
+        "additionalProperties": false,
+        "properties": {
+          "objectId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Objectid",
+            "type": "string"
+          },
+          "objectType": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Objecttype",
+            "type": "string"
+          },
+          "objectHash": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Objecthash",
+            "type": "string"
+          },
+          "kind": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "objectId",
+          "objectType",
+          "objectHash",
+          "kind"
+        ],
+        "title": "PlannerResourceIdentity",
+        "type": "object"
+      },
+      "ScientificIntent": {
+        "enum": [
+          "dataset_overview",
+          "composition_analysis",
+          "property_distribution",
+          "dataset_comparison",
+          "composition_space",
+          "structure_analysis",
+          "trajectory_analysis",
+          "phonon_analysis",
+          "reciprocal_space_analysis",
+          "volumetric_analysis",
+          "ml_regression_evaluation",
+          "ml_uncertainty_evaluation",
+          "ml_classification_evaluation",
+          "sample_inspection",
+          "comparison",
+          "anomaly_candidate_review",
+          "visualization",
+          "report_or_export"
+        ],
+        "title": "ScientificIntent",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "resolutionId": {
+        "title": "Resolutionid",
+        "type": "string"
+      },
+      "resolutionHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Resolutionhash",
+        "type": "string"
+      },
+      "intentId": {
+        "title": "Intentid",
+        "type": "string"
+      },
+      "intentHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Intenthash",
+        "type": "string"
+      },
+      "profileId": {
+        "title": "Profileid",
+        "type": "string"
+      },
+      "profileContractVersion": {
+        "title": "Profilecontractversion",
+        "type": "string"
+      },
+      "profileSemanticHash": {
+        "title": "Profilesemantichash",
+        "type": "string"
+      },
+      "datasetId": {
+        "title": "Datasetid",
+        "type": "string"
+      },
+      "datasetVersion": {
+        "title": "Datasetversion",
+        "type": "string"
+      },
+      "registrySnapshotId": {
+        "title": "Registrysnapshotid",
+        "type": "string"
+      },
+      "registrySnapshotHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Registrysnapshothash",
+        "type": "string"
+      },
+      "resourceIdentities": {
+        "items": {
+          "$ref": "#/$defs/PlannerResourceIdentity"
+        },
+        "maxItems": 32,
+        "title": "Resourceidentities",
+        "type": "array"
+      },
+      "evaluatedCandidates": {
+        "items": {
+          "$ref": "#/$defs/EvaluatedToolCandidate"
+        },
+        "maxItems": 64,
+        "title": "Evaluatedcandidates",
+        "type": "array"
+      },
+      "eligibleToolIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "title": "Eligibletoolids",
+        "type": "array"
+      },
+      "rejectedToolIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 64,
+        "title": "Rejectedtoolids",
+        "type": "array"
+      },
+      "diagnostics": {
+        "items": {
+          "$ref": "#/$defs/CapabilityDiagnostic"
+        },
+        "maxItems": 256,
+        "title": "Diagnostics",
+        "type": "array"
+      },
+      "warnings": {
+        "items": {
+          "$ref": "#/$defs/CapabilityDiagnostic"
+        },
+        "maxItems": 32,
+        "title": "Warnings",
+        "type": "array"
+      },
+      "provenance": {
+        "$ref": "#/$defs/EligibilityResolutionProvenance"
+      }
+    },
+    "required": [
+      "resolutionId",
+      "resolutionHash",
+      "intentId",
+      "intentHash",
+      "profileId",
+      "profileContractVersion",
+      "profileSemanticHash",
+      "datasetId",
+      "datasetVersion",
+      "registrySnapshotId",
+      "registrySnapshotHash",
+      "resourceIdentities",
+      "evaluatedCandidates",
+      "eligibleToolIds",
+      "rejectedToolIds"
+    ],
+    "title": "EligibilityResolution",
+    "type": "object"
+  },
+  "planningDecision": {
+    "$defs": {
+      "BoundParameter": {
+        "additionalProperties": false,
+        "properties": {
+          "parameter": {
+            "title": "Parameter",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Value"
+          },
+          "valueId": {
+            "title": "Valueid",
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/$defs/PlannerBindingSource"
+          },
+          "sourceIdentity": {
+            "title": "Sourceidentity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parameter",
+          "value",
+          "valueId",
+          "source",
+          "sourceIdentity"
+        ],
+        "title": "BoundParameter",
+        "type": "object"
+      },
+      "CapabilityDecisionProvenance": {
+        "additionalProperties": false,
+        "properties": {
+          "provider": {
+            "enum": [
+              "deterministic_mock",
+              "openai_compatible"
+            ],
+            "title": "Provider",
+            "type": "string"
+          },
+          "providerContractVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Providercontractversion",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "repairCount": {
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ],
+            "title": "Repaircount",
+            "type": "integer"
+          },
+          "initialDecisionHash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Initialdecisionhash"
+          },
+          "repairDiagnostics": {
+            "items": {
+              "$ref": "#/$defs/CapabilityDiagnostic"
+            },
+            "maxItems": 32,
+            "title": "Repairdiagnostics",
+            "type": "array"
+          }
+        },
+        "required": [
+          "provider",
+          "model"
+        ],
+        "title": "CapabilityDecisionProvenance",
+        "type": "object"
+      },
+      "CapabilityDiagnostic": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Code",
+            "type": "string"
+          },
+          "field": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Field",
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "toolId": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Toolid"
+          },
+          "repairable": {
+            "default": false,
+            "title": "Repairable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "field",
+          "message"
+        ],
+        "title": "CapabilityDiagnostic",
+        "type": "object"
+      },
+      "CapabilityNeed": {
+        "enum": [
+          "tabular_data",
+          "composition_data",
+          "material_property_data",
+          "comparison_groups",
+          "structure_resource",
+          "trajectory_resource",
+          "phonon_resource",
+          "reciprocal_space_resource",
+          "volumetric_resource",
+          "regression_semantics",
+          "uncertainty_semantics",
+          "classification_semantics",
+          "sample_identity"
+        ],
+        "title": "CapabilityNeed",
+        "type": "string"
+      },
+      "CapabilityPlanningOutcome": {
+        "enum": [
+          "PLAN_READY",
+          "NEEDS_CLARIFICATION",
+          "UNSUPPORTED",
+          "CAPABILITY_MISMATCH",
+          "VALIDATION_FAILED"
+        ],
+        "title": "CapabilityPlanningOutcome",
+        "type": "string"
+      },
+      "DesiredOutput": {
+        "enum": [
+          "summary",
+          "metrics",
+          "plot",
+          "table",
+          "linked_samples",
+          "three_dimensional_view",
+          "comparison",
+          "warnings",
+          "recipe",
+          "report",
+          "downloadable_artifact"
+        ],
+        "title": "DesiredOutput",
+        "type": "string"
+      },
+      "PlannerBindingSource": {
+        "enum": [
+          "RESOURCE_ID",
+          "TARGET_COLUMN",
+          "TARGET_GROUP_IDS",
+          "SEMANTIC_COLUMNS",
+          "PROFILE_ID",
+          "RESOURCE_FACT",
+          "LITERAL"
+        ],
+        "title": "PlannerBindingSource",
+        "type": "string"
+      },
+      "ScientificIntent": {
+        "enum": [
+          "dataset_overview",
+          "composition_analysis",
+          "property_distribution",
+          "dataset_comparison",
+          "composition_space",
+          "structure_analysis",
+          "trajectory_analysis",
+          "phonon_analysis",
+          "reciprocal_space_analysis",
+          "volumetric_analysis",
+          "ml_regression_evaluation",
+          "ml_uncertainty_evaluation",
+          "ml_classification_evaluation",
+          "sample_inspection",
+          "comparison",
+          "anomaly_candidate_review",
+          "visualization",
+          "report_or_export"
+        ],
+        "title": "ScientificIntent",
+        "type": "string"
+      },
+      "SelectedCapability": {
+        "additionalProperties": false,
+        "properties": {
+          "toolId": {
+            "title": "Toolid",
+            "type": "string"
+          },
+          "toolName": {
+            "title": "Toolname",
+            "type": "string"
+          },
+          "toolVersion": {
+            "title": "Toolversion",
+            "type": "string"
+          },
+          "coveredScientificIntents": {
+            "items": {
+              "$ref": "#/$defs/ScientificIntent"
+            },
+            "title": "Coveredscientificintents",
+            "type": "array"
+          },
+          "coveredCapabilityNeeds": {
+            "items": {
+              "$ref": "#/$defs/CapabilityNeed"
+            },
+            "title": "Coveredcapabilityneeds",
+            "type": "array"
+          },
+          "coveredDesiredOutputs": {
+            "items": {
+              "$ref": "#/$defs/DesiredOutput"
+            },
+            "title": "Covereddesiredoutputs",
+            "type": "array"
+          },
+          "inputResourceIds": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Inputresourceids",
+            "type": "array"
+          },
+          "targetSemanticIds": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Targetsemanticids",
+            "type": "array"
+          },
+          "boundParameters": {
+            "items": {
+              "$ref": "#/$defs/BoundParameter"
+            },
+            "title": "Boundparameters",
+            "type": "array"
+          },
+          "artifactTypes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Artifacttypes",
+            "type": "array"
+          },
+          "rankFacts": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "title": "Rankfacts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "toolId",
+          "toolName",
+          "toolVersion",
+          "coveredScientificIntents",
+          "coveredCapabilityNeeds",
+          "coveredDesiredOutputs",
+          "inputResourceIds",
+          "targetSemanticIds",
+          "boundParameters",
+          "artifactTypes",
+          "rankFacts"
+        ],
+        "title": "SelectedCapability",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "decisionId": {
+        "title": "Decisionid",
+        "type": "string"
+      },
+      "decisionHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Decisionhash",
+        "type": "string"
+      },
+      "intentId": {
+        "title": "Intentid",
+        "type": "string"
+      },
+      "intentHash": {
+        "title": "Intenthash",
+        "type": "string"
+      },
+      "profileId": {
+        "title": "Profileid",
+        "type": "string"
+      },
+      "profileSemanticHash": {
+        "title": "Profilesemantichash",
+        "type": "string"
+      },
+      "registrySnapshotId": {
+        "title": "Registrysnapshotid",
+        "type": "string"
+      },
+      "registrySnapshotHash": {
+        "title": "Registrysnapshothash",
+        "type": "string"
+      },
+      "resolutionId": {
+        "title": "Resolutionid",
+        "type": "string"
+      },
+      "resolutionHash": {
+        "title": "Resolutionhash",
+        "type": "string"
+      },
+      "outcome": {
+        "$ref": "#/$defs/CapabilityPlanningOutcome"
+      },
+      "selections": {
+        "items": {
+          "$ref": "#/$defs/SelectedCapability"
+        },
+        "maxItems": 4,
+        "title": "Selections",
+        "type": "array"
+      },
+      "unfulfilledDesiredOutputs": {
+        "items": {
+          "$ref": "#/$defs/DesiredOutput"
+        },
+        "maxItems": 16,
+        "title": "Unfulfilleddesiredoutputs",
+        "type": "array"
+      },
+      "diagnostics": {
+        "items": {
+          "$ref": "#/$defs/CapabilityDiagnostic"
+        },
+        "maxItems": 256,
+        "title": "Diagnostics",
+        "type": "array"
+      },
+      "warnings": {
+        "items": {
+          "$ref": "#/$defs/CapabilityDiagnostic"
+        },
+        "maxItems": 32,
+        "title": "Warnings",
+        "type": "array"
+      },
+      "provenance": {
+        "$ref": "#/$defs/CapabilityDecisionProvenance"
+      }
+    },
+    "required": [
+      "decisionId",
+      "decisionHash",
+      "intentId",
+      "intentHash",
+      "profileId",
+      "profileSemanticHash",
+      "registrySnapshotId",
+      "registrySnapshotHash",
+      "resolutionId",
+      "resolutionHash",
+      "outcome",
+      "provenance"
+    ],
+    "title": "CapabilityPlanningDecision",
+    "type": "object"
+  },
+  "toolPlannerMetadata": {
+    "$defs": {
+      "CapabilityNeed": {
+        "enum": [
+          "tabular_data",
+          "composition_data",
+          "material_property_data",
+          "comparison_groups",
+          "structure_resource",
+          "trajectory_resource",
+          "phonon_resource",
+          "reciprocal_space_resource",
+          "volumetric_resource",
+          "regression_semantics",
+          "uncertainty_semantics",
+          "classification_semantics",
+          "sample_identity"
+        ],
+        "title": "CapabilityNeed",
+        "type": "string"
+      },
+      "DesiredOutput": {
+        "enum": [
+          "summary",
+          "metrics",
+          "plot",
+          "table",
+          "linked_samples",
+          "three_dimensional_view",
+          "comparison",
+          "warnings",
+          "recipe",
+          "report",
+          "downloadable_artifact"
+        ],
+        "title": "DesiredOutput",
+        "type": "string"
+      },
+      "PlannerAvailability": {
+        "enum": [
+          "AVAILABLE",
+          "DEPLOYMENT_UNAVAILABLE",
+          "FUTURE",
+          "NOT_PLANNED"
+        ],
+        "title": "PlannerAvailability",
+        "type": "string"
+      },
+      "PlannerBindingSource": {
+        "enum": [
+          "RESOURCE_ID",
+          "TARGET_COLUMN",
+          "TARGET_GROUP_IDS",
+          "SEMANTIC_COLUMNS",
+          "PROFILE_ID",
+          "RESOURCE_FACT",
+          "LITERAL"
+        ],
+        "title": "PlannerBindingSource",
+        "type": "string"
+      },
+      "PlannerParameterBinding": {
+        "additionalProperties": false,
+        "properties": {
+          "parameter": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Parameter",
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/$defs/PlannerBindingSource"
+          },
+          "required": {
+            "default": true,
+            "title": "Required",
+            "type": "boolean"
+          },
+          "targetRoles": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Targetroles",
+            "type": "array"
+          },
+          "objectTypes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Objecttypes",
+            "type": "array"
+          },
+          "factKeys": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "title": "Factkeys",
+            "type": "array"
+          },
+          "literalValue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Literalvalue"
+          },
+          "multiple": {
+            "default": false,
+            "title": "Multiple",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "parameter",
+          "source"
+        ],
+        "title": "PlannerParameterBinding",
+        "type": "object"
+      },
+      "ScientificIntent": {
+        "enum": [
+          "dataset_overview",
+          "composition_analysis",
+          "property_distribution",
+          "dataset_comparison",
+          "composition_space",
+          "structure_analysis",
+          "trajectory_analysis",
+          "phonon_analysis",
+          "reciprocal_space_analysis",
+          "volumetric_analysis",
+          "ml_regression_evaluation",
+          "ml_uncertainty_evaluation",
+          "ml_classification_evaluation",
+          "sample_inspection",
+          "comparison",
+          "anomaly_candidate_review",
+          "visualization",
+          "report_or_export"
+        ],
+        "title": "ScientificIntent",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "toolId": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Toolid",
+        "type": "string"
+      },
+      "toolName": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Toolname",
+        "type": "string"
+      },
+      "toolVersion": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Toolversion",
+        "type": "string"
+      },
+      "availability": {
+        "$ref": "#/$defs/PlannerAvailability"
+      },
+      "scientificIntents": {
+        "items": {
+          "$ref": "#/$defs/ScientificIntent"
+        },
+        "maxItems": 16,
+        "minItems": 1,
+        "title": "Scientificintents",
+        "type": "array"
+      },
+      "capabilityNeeds": {
+        "items": {
+          "$ref": "#/$defs/CapabilityNeed"
+        },
+        "maxItems": 16,
+        "title": "Capabilityneeds",
+        "type": "array"
+      },
+      "desiredOutputs": {
+        "items": {
+          "$ref": "#/$defs/DesiredOutput"
+        },
+        "maxItems": 16,
+        "minItems": 1,
+        "title": "Desiredoutputs",
+        "type": "array"
+      },
+      "acceptedObjectTypes": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "minItems": 1,
+        "title": "Acceptedobjecttypes",
+        "type": "array"
+      },
+      "inputObjectTypeOptions": {
+        "items": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "maxItems": 16,
+        "minItems": 1,
+        "title": "Inputobjecttypeoptions",
+        "type": "array"
+      },
+      "requiredProfileCapabilities": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "title": "Requiredprofilecapabilities",
+        "type": "array"
+      },
+      "requiredTargetRoles": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "title": "Requiredtargetroles",
+        "type": "array"
+      },
+      "minInputs": {
+        "default": 1,
+        "maximum": 32,
+        "minimum": 1,
+        "title": "Mininputs",
+        "type": "integer"
+      },
+      "maxInputs": {
+        "default": 1,
+        "maximum": 32,
+        "minimum": 1,
+        "title": "Maxinputs",
+        "type": "integer"
+      },
+      "minTargets": {
+        "default": 0,
+        "maximum": 32,
+        "minimum": 0,
+        "title": "Mintargets",
+        "type": "integer"
+      },
+      "maxTargets": {
+        "default": 32,
+        "maximum": 32,
+        "minimum": 0,
+        "title": "Maxtargets",
+        "type": "integer"
+      },
+      "parameterBindings": {
+        "items": {
+          "$ref": "#/$defs/PlannerParameterBinding"
+        },
+        "maxItems": 32,
+        "title": "Parameterbindings",
+        "type": "array"
+      },
+      "declaredArtifactTypes": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "minItems": 1,
+        "title": "Declaredartifacttypes",
+        "type": "array"
+      },
+      "costClass": {
+        "enum": [
+          1,
+          2,
+          3
+        ],
+        "title": "Costclass",
+        "type": "integer"
+      },
+      "independentComposable": {
+        "default": true,
+        "title": "Independentcomposable",
+        "type": "boolean"
+      },
+      "collisionGroup": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Collisiongroup"
+      },
+      "executionBoundary": {
+        "const": "REGISTERED_ADAPTER_ONLY",
+        "default": "REGISTERED_ADAPTER_ONLY",
+        "title": "Executionboundary",
+        "type": "string"
+      }
+    },
+    "required": [
+      "toolId",
+      "toolName",
+      "toolVersion",
+      "availability",
+      "scientificIntents",
+      "desiredOutputs",
+      "acceptedObjectTypes",
+      "inputObjectTypeOptions",
+      "declaredArtifactTypes",
+      "costClass"
+    ],
+    "title": "ToolPlannerMetadata",
+    "type": "object"
+  }
+}

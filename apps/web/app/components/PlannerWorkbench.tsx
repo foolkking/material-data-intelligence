@@ -21,6 +21,8 @@ import {
   type AnalysisPlan,
   type AnalysisIntent,
   type Artifact,
+  type CapabilityPlanningDecision,
+  type CapabilityPlanningOutcome,
   type DataProfileSummary,
   type DatasetOption,
   type JobEvent,
@@ -28,6 +30,7 @@ import {
   type PlannerApiError,
   type PlannerJobCreateResult,
   type PlannerJobDetail,
+  type EligibilityResolution,
   type ProviderOption,
   type ProviderResolveResult,
   type ProviderStatus,
@@ -149,6 +152,9 @@ export function PlannerWorkbench() {
   const planHash = createdResult?.plan_hash || snapshot.job?.planHash || snapshot.result?.planHash || "";
   const jobStatus = snapshot.job?.status || (jobId ? "queued" : "");
   const displayedIntent = analysisIntent || snapshot.job?.analysisIntent || null;
+  const capabilityOutcome = createdResult?.capability_outcome || snapshot.job?.capabilityPlanningOutcome || null;
+  const eligibilityResolution = createdResult?.eligibility_resolution || snapshot.job?.eligibilityResolution || null;
+  const capabilityDecision = createdResult?.capability_decision || snapshot.job?.capabilityDecision || null;
   const isTerminal = ["completed", "failed", "cancelled"].includes(String(jobStatus));
   const selectedDataset = datasets.find((dataset) => (dataset.datasetId || dataset.id) === datasetId);
   const providerLabel =
@@ -597,6 +603,9 @@ export function PlannerWorkbench() {
               submitError={submitError}
               validationFailure={validationFailure}
               intent={displayedIntent}
+              capabilityOutcome={capabilityOutcome}
+              eligibilityResolution={eligibilityResolution}
+              capabilityDecision={capabilityDecision}
               onClarify={handleClarification}
               plan={plan}
               planId={planId}
@@ -1207,6 +1216,9 @@ function ConversationPlanTab(props: {
   submitError: PlannerApiError | Error | null;
   validationFailure: ValidationError[] | null;
   intent: AnalysisIntent | null;
+  capabilityOutcome: CapabilityPlanningOutcome | null;
+  eligibilityResolution: EligibilityResolution | null;
+  capabilityDecision: CapabilityPlanningDecision | null;
   onClarify: (answers: Array<{ questionId: string; selectedValues: string[] }>) => Promise<void>;
   plan: AnalysisPlan | null;
   planId: string;
@@ -1247,6 +1259,12 @@ function ConversationPlanTab(props: {
         submitting={props.submitting}
         onClarify={props.onClarify}
       />
+      <CapabilityPlanningPanel
+        outcome={props.capabilityOutcome}
+        resolution={props.eligibilityResolution}
+        decision={props.capabilityDecision}
+        developerMode={props.developerMode}
+      />
       <section className="chunk-list-panel" data-testid="conversation-chunks">
         <PanelHeading title={t("conversationChunks")} badge={String(props.chunks.length)} />
         <div className="chunk-list">
@@ -1274,7 +1292,10 @@ function ConversationPlanTab(props: {
         status={props.jobStatus}
         onRun={props.onSubmit}
         submitting={props.submitting}
-        blocked={Boolean(props.intent && props.intent.outcome !== "READY")}
+        blocked={Boolean(
+          (props.intent && props.intent.outcome !== "READY")
+          || (props.capabilityOutcome && props.capabilityOutcome !== "PLAN_READY")
+        )}
       />
     </div>
   );
@@ -1350,6 +1371,77 @@ function AnalysisIntentPanel(props: {
       ) : null}
     </section>
   );
+}
+
+function CapabilityPlanningPanel(props: {
+  outcome: CapabilityPlanningOutcome | null;
+  resolution: EligibilityResolution | null;
+  decision: CapabilityPlanningDecision | null;
+  developerMode: boolean;
+}) {
+  if (!props.outcome && !props.resolution && !props.decision) return null;
+  const outcome = props.outcome || props.decision?.outcome || "VALIDATION_FAILED";
+  const diagnostics = props.decision?.diagnostics || props.resolution?.diagnostics || [];
+  return (
+    <section className="panel" data-testid="capability-planning-panel" aria-live="polite">
+      <PanelHeading title="Capability gate" badge={outcome} />
+      <dl className="mini-grid">
+        <Field label="Eligible capabilities" value={props.resolution?.eligibleToolIds.join(", ") || "None"} />
+        <Field label="Rejected candidates" value={String(props.resolution?.rejectedToolIds.length || 0)} />
+        <Field label="Selected tools" value={props.decision?.selections.map((item) => item.toolName).join(", ") || "None"} />
+        <Field label="Provider" value={props.decision ? `${props.decision.provenance.provider} / ${props.decision.provenance.model}` : "Not selected"} />
+        <Field label="Repair attempted" value={props.decision?.provenance.repairCount ? "Yes (one bounded repair)" : "No"} />
+        <Field label="Unfulfilled outputs" value={props.decision?.unfulfilledDesiredOutputs.join(", ") || "None"} />
+      </dl>
+      {props.decision?.selections.length ? (
+        <div className="capability-selections" data-testid="capability-planning-selections">
+          {props.decision.selections.map((selection) => (
+            <section key={`${selection.toolId}@${selection.toolVersion}`} className="capability-selection" aria-label={selection.toolName}>
+              <h3>{selection.toolName}</h3>
+              <code>{selection.toolId}@{selection.toolVersion}</code>
+              <dl className="mini-grid">
+                <Field label="Intent coverage" value={selection.coveredScientificIntents.join(", ")} />
+                <Field label="Output coverage" value={selection.coveredDesiredOutputs.join(", ")} />
+                <Field label="Resources" value={selection.inputResourceIds.join(", ") || "None"} />
+                <Field label="Targets" value={selection.targetSemanticIds.join(", ") || "Not required"} />
+              </dl>
+              {selection.boundParameters.length ? (
+                <table>
+                  <caption>Exact parameter bindings</caption>
+                  <thead><tr><th scope="col">Parameter</th><th scope="col">Value</th><th scope="col">Source</th></tr></thead>
+                  <tbody>{selection.boundParameters.map((binding) => (
+                    <tr key={binding.parameter}>
+                      <th scope="row" data-label="Parameter">{binding.parameter}</th>
+                      <td data-label="Value">{Array.isArray(binding.value) ? binding.value.join(", ") : String(binding.value)}</td>
+                      <td data-label="Source" title={`${binding.source} / ${binding.sourceIdentity}`}>
+                        {binding.source} / {compactIdentity(binding.sourceIdentity)}
+                      </td>
+                    </tr>
+                  ))}</tbody>
+                </table>
+              ) : null}
+            </section>
+          ))}
+        </div>
+      ) : null}
+      {diagnostics.length ? (
+        <div className="validation-failure" data-testid="capability-planning-diagnostics" role="alert">
+          <strong>Capability planning did not produce an executable plan.</strong>
+          <ul>{diagnostics.map((item, index) => <li key={`${item.code}-${item.toolId || index}`}><strong>{item.code}</strong>: {item.message}</li>)}</ul>
+        </div>
+      ) : null}
+      {props.developerMode ? (
+        <details className="raw-json" data-testid="capability-planning-audit-json">
+          <summary>Capability planning v1 audit JSON</summary>
+          <pre>{JSON.stringify({ outcome, resolution: props.resolution, decision: props.decision }, null, 2)}</pre>
+        </details>
+      ) : null}
+    </section>
+  );
+}
+
+function compactIdentity(value: string): string {
+  return value.length <= 48 ? value : `${value.slice(0, 24)}...${value.slice(-16)}`;
 }
 
 function ResultsExportTab(props: {

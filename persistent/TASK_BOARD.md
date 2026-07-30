@@ -2,13 +2,18 @@
 
 ## Current Approved Work
 
+- [ ] Phase 10L-2 Capability-Aware Planner + Eligibility Resolver is
+  `IN_PROGRESS`: implement Registry-derived eligibility and exact bindings on
+  the canonical READY Intent path without changing AnalysisPlan 0.1,
+  PlanValidator, Registry execution contracts, or QueueWorkerRuntime.
+- [ ] Phase 10L-3 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; it must not be
+  queued or executed automatically from Phase 10L-2.
+
 - [x] Phase 10L-1 Analysis Intent Contract + Bounded Clarification implementation
   `844eb149` and completion record `b4cd656` passed exact-SHA CI runs
   `30425804801` and `30426248141`, including Unit, Frontend,
   PostgreSQL/Redis/MinIO service-backed integration, migration, and no-skipped.
   The verified completed TASKS block is archived.
-- [ ] Phase 10L-2 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; it must not be
-  queued or executed automatically from Phase 10L-1.
 
 - [x] Phase 10J-6 implementation, completion record, exact-SHA CI, result
   retention, evidence integrity, and queue archive are closed.
@@ -47,8 +52,8 @@
   the verified queue block is archived. Phase 10L-1 subsequently entered its
   reviewer-approved implementation task as recorded above.
 
-`TASKS.md` contains Phase 10L-1 as its only executable task. Future Scope, Not
-Planned, and Phase 10L-2 are not queue work.
+`TASKS.md` contains Phase 10L-2 as its only executable task. Future Scope, Not
+Planned, and Phase 10L-3 are not queue work.
 
 The remaining sections are historical task records and do not override the
 current board above.

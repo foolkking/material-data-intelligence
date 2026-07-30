@@ -7,15 +7,11 @@ assigned phases rather than by this roadmap gate:
 
 ### Phase 10L Reviewer Gate
 
-* Does planner-facing semantic eligibility belong in additive Registry
-  metadata or in a separate resolver over Profile 2.0 readiness facts?
 * How should AnalysisPlan evolve to record intent identity, bounded provider
   provenance, maximum step count, dependencies, and produced-artifact binding?
 * Should bounded composition remain an ordered sequence or permit a restricted
   dependency graph, and what are the failure, partial-result, cancellation,
   and replay semantics?
-* Is one bounded validation-guided plan repair attempt allowed, or should the
-  system reject and require a new request?
 * Is plan approval/editing owned by Phase 10L or deferred to Phase 10M?
 * Which structured result facts, budgets, and no-invention rules govern the
   future interpretation provider?
@@ -46,7 +42,16 @@ assigned phases rather than by this roadmap gate:
 * AnalysisPlan 0.2 in Phase 10L-1: **CLOSED - NO**. AnalysisPlan remains 0.1;
   intent-plan-job association is external.
 * Registry planner capability metadata in Phase 10L-1: **CLOSED - NO**. This is
-  an unresolved Phase 10L-2 design question.
+  owned by Phase 10L-2 rather than retrofitted into Phase 10L-1.
+* Planner metadata and contextual eligibility ownership: **CLOSED FOR PHASE
+  10L-2**. Static facts are additive strict Registry metadata; request-specific
+  eligibility is a separate deterministic resolver over exact Intent/Profile/
+  Registry identities.
+* Phase 10L-2 LLM repair budget: **CLOSED - ONE**. Only strictly parsed,
+  repairable selection failures may receive one validation-guided repair over
+  the unchanged candidate/binding domain; there is no Mock fallback.
+* AnalysisPlan version in Phase 10L-2: **CLOSED - REMAINS 0.1**. Resolution,
+  decision, binding provenance, and plan/job association are external records.
 
 * Material Intelligence integration authority: **CLOSED FOR PHASE 10K-5** -
   Profile 2.0 owns deterministic data semantics; K2-K4 tools own bounded
@@ -61,10 +66,10 @@ assigned phases rather than by this roadmap gate:
 * Partial product failure: **CLOSED FOR PHASE 10K-5** - Profile readiness and
   each validated product have independent typed states; one failed/stale
   product does not invalidate successful sibling products.
-* Phase 10L boundary: **PARTIALLY CLOSED** - intent representation and bounded
-  clarification are fixed by Phase 10L-1; capability-aware tool selection,
-  bounded dependency planning, and scientific result interpretation remain
-  separate reviewer-gated Agent work.
+* Phase 10L boundary: **PARTIALLY CLOSED** - intent/clarification are fixed by
+  Phase 10L-1 and capability-aware selection/exact binding by Phase 10L-2;
+  dependency planning and scientific result interpretation remain separate
+  reviewer-gated Agent work.
 
 * Composition-space baseline: **CLOSED FOR PHASE 10K-4** - normalized
   atomic-fraction features ordered by atomic number, deterministic center-only

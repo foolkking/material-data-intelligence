@@ -1,0 +1,3105 @@
+{
+  "availableCount": 38,
+  "toolCount": 53,
+  "tools": [
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "composition_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "formulaColumn",
+          "required": false,
+          "source": "SEMANTIC_COLUMNS",
+          "targetRoles": [
+            "material_formula"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "visualization"
+      ],
+      "toolId": "composition.chem_sys_sunburst",
+      "toolName": "Composition Chem Sys Sunburst",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "composition_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "formulaColumn",
+          "required": false,
+          "source": "SEMANTIC_COLUMNS",
+          "targetRoles": [
+            "material_formula"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "visualization"
+      ],
+      "toolId": "composition.chem_sys_treemap",
+      "toolName": "Composition Chem Sys Treemap",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "composition_data",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_space",
+        "composition_analysis",
+        "comparison",
+        "anomaly_candidate_review",
+        "sample_inspection",
+        "visualization"
+      ],
+      "toolId": "composition.cluster_2d",
+      "toolName": "Composition Cluster 2D",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "composition_data",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_space",
+        "composition_analysis",
+        "comparison",
+        "anomaly_candidate_review",
+        "sample_inspection",
+        "visualization"
+      ],
+      "toolId": "composition.cluster_3d",
+      "toolName": "Composition Cluster 3D",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "composition_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "formulaColumn",
+          "required": false,
+          "source": "SEMANTIC_COLUMNS",
+          "targetRoles": [
+            "material_formula"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "visualization"
+      ],
+      "toolId": "composition.elements_hist",
+      "toolName": "Composition Elements Hist",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "composition_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "formulaColumn",
+          "required": false,
+          "source": "SEMANTIC_COLUMNS",
+          "targetRoles": [
+            "material_formula"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "visualization"
+      ],
+      "toolId": "composition.formula_statistics",
+      "toolName": "Composition Formula Statistics",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "composition_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "formulaColumn",
+          "required": false,
+          "source": "SEMANTIC_COLUMNS",
+          "targetRoles": [
+            "material_formula"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "visualization"
+      ],
+      "toolId": "composition.ptable_heatmap",
+      "toolName": "Composition Ptable Heatmap",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "composition_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "visualization"
+      ],
+      "toolId": "composition.ptable_heatmap_splits",
+      "toolName": "Composition Ptable Heatmap Splits",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "composition_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "visualization"
+      ],
+      "toolId": "composition.ptable_hists",
+      "toolName": "Composition Ptable Hists",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "composition_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "visualization"
+      ],
+      "toolId": "composition.ptable_scatter",
+      "toolName": "Composition Ptable Scatter",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Composition",
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "composition_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Composition"
+        ],
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "formulaColumn",
+          "required": false,
+          "source": "SEMANTIC_COLUMNS",
+          "targetRoles": [
+            "material_formula"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_analysis",
+        "visualization"
+      ],
+      "toolId": "composition.summary",
+      "toolName": "Composition Summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "comparison_groups",
+        "composition_data",
+        "material_property_data",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "comparison",
+        "downloadable_artifact",
+        "linked_samples",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "tableObjectId",
+          "required": true,
+          "source": "RESOURCE_ID",
+          "targetRoles": []
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "composition_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "composition_space",
+        "composition_analysis",
+        "comparison",
+        "anomaly_candidate_review",
+        "sample_inspection",
+        "visualization"
+      ],
+      "toolId": "dataset.composition_space",
+      "toolName": "Dataset Composition Space",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame",
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "comparison_groups",
+        "composition_data",
+        "material_property_data",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "table_json",
+        "quality_issues_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "comparison",
+        "downloadable_artifact",
+        "linked_samples",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ],
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "tableObjectId",
+          "required": true,
+          "source": "RESOURCE_ID",
+          "targetRoles": []
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "dataset_overview",
+        "composition_analysis",
+        "property_distribution",
+        "dataset_comparison",
+        "comparison",
+        "anomaly_candidate_review",
+        "sample_inspection"
+      ],
+      "toolId": "dataset.materials_explorer",
+      "toolName": "Dataset Materials Explorer",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "regression_semantics",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "metrics_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "metrics",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 2,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "targetColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_target"
+          ]
+        },
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "predictionColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_prediction"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics"
+      ],
+      "requiredTargetRoles": [
+        "regression_target",
+        "regression_prediction"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "comparison"
+      ],
+      "toolId": "ml.basic_metrics",
+      "toolName": "Ml Basic Metrics",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "classification_semantics",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "linked_samples",
+        "metrics",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 2,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "groupIds",
+          "required": true,
+          "source": "TARGET_GROUP_IDS",
+          "targetRoles": []
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "classification_semantics"
+      ],
+      "requiredTargetRoles": [
+        "classification_target",
+        "classification_prediction"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_classification_evaluation",
+        "sample_inspection",
+        "comparison",
+        "visualization"
+      ],
+      "toolId": "ml.classification_evaluation",
+      "toolName": "Ml Classification Evaluation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "regression_semantics",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 2,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "targetColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_target"
+          ]
+        },
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "predictionColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_prediction"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics"
+      ],
+      "requiredTargetRoles": [
+        "regression_target",
+        "regression_prediction"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "comparison",
+        "visualization"
+      ],
+      "toolId": "ml.density_scatter",
+      "toolName": "Ml Density Scatter",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "regression_semantics",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_regression_evaluation",
+        "visualization"
+      ],
+      "toolId": "ml.error_by_chem_sys",
+      "toolName": "Ml Error By Chem Sys",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "regression_semantics",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_regression_evaluation",
+        "visualization"
+      ],
+      "toolId": "ml.error_by_element",
+      "toolName": "Ml Error By Element",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "regression_semantics",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "metrics_json",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "metrics",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 2,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "targetColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_target"
+          ]
+        },
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "predictionColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_prediction"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics"
+      ],
+      "requiredTargetRoles": [
+        "regression_target",
+        "regression_prediction"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "property_distribution",
+        "anomaly_candidate_review",
+        "visualization"
+      ],
+      "toolId": "ml.error_distribution",
+      "toolName": "Ml Error Distribution",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "regression_semantics",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "table_json",
+        "table_csv",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "linked_samples",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 2,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "targetColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_target"
+          ]
+        },
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "predictionColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_prediction"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics"
+      ],
+      "requiredTargetRoles": [
+        "regression_target",
+        "regression_prediction"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "sample_inspection",
+        "anomaly_candidate_review"
+      ],
+      "toolId": "ml.outlier_table",
+      "toolName": "Ml Outlier Table",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "regression_semantics",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_regression_evaluation",
+        "visualization"
+      ],
+      "toolId": "ml.parity_plot",
+      "toolName": "Ml Parity Plot",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "comparison_groups",
+        "composition_data",
+        "material_property_data",
+        "regression_semantics",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "linked_samples",
+        "metrics",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 2,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "groupIds",
+          "required": true,
+          "source": "TARGET_GROUP_IDS",
+          "targetRoles": []
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics"
+      ],
+      "requiredTargetRoles": [
+        "regression_target",
+        "regression_prediction"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_regression_evaluation",
+        "sample_inspection",
+        "comparison",
+        "visualization"
+      ],
+      "toolId": "ml.regression_evaluation",
+      "toolName": "Ml Regression Evaluation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "regression_semantics",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "metrics_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "metrics",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_regression_evaluation",
+        "visualization"
+      ],
+      "toolId": "ml.uncertainty_calibration",
+      "toolName": "Ml Uncertainty Calibration",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "material_property_data",
+        "regression_semantics",
+        "sample_identity",
+        "tabular_data",
+        "uncertainty_semantics"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "linked_samples",
+        "metrics",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 3,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "groupIds",
+          "required": true,
+          "source": "TARGET_GROUP_IDS",
+          "targetRoles": []
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data",
+        "regression_semantics",
+        "uncertainty_semantics"
+      ],
+      "requiredTargetRoles": [
+        "regression_target",
+        "regression_prediction",
+        "regression_uncertainty"
+      ],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "ml_uncertainty_evaluation",
+        "ml_regression_evaluation",
+        "sample_inspection",
+        "comparison",
+        "visualization"
+      ],
+      "toolId": "ml.uncertainty_evaluation",
+      "toolName": "Ml Uncertainty Evaluation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "PhononBand",
+        "PhononEigenvector",
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "phonon_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "phonon_animation_json",
+        "phonon_animation_summary_json",
+        "phonon_animation_manifest_json",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "three_dimensional_view"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "PhononBand",
+          "PhononEigenvector",
+          "Structure"
+        ]
+      ],
+      "maxInputs": 3,
+      "maxTargets": 32,
+      "minInputs": 3,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [
+            "modeId"
+          ],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [
+            "PhononEigenvector"
+          ],
+          "parameter": "mode_id",
+          "required": true,
+          "source": "RESOURCE_FACT",
+          "targetRoles": []
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "phonon_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "phonon_analysis",
+        "visualization"
+      ],
+      "toolId": "phonon.animation",
+      "toolName": "Phonon Animation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "PhononBand"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "phonon_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "phonon_band_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "plotly_json",
+        "table_json",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "PhononBand"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "phonon_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "phonon_analysis",
+        "visualization"
+      ],
+      "toolId": "phonon.band",
+      "toolName": "Phonon Band",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "PhononBand",
+        "PhononDos"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "phonon_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "phonon_band_dos_json",
+        "phonon_summary_json",
+        "phonon_compatibility_json",
+        "plotly_json",
+        "table_json",
+        "phonon_manifest_json",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "PhononBand",
+          "PhononDos"
+        ]
+      ],
+      "maxInputs": 2,
+      "maxTargets": 32,
+      "minInputs": 2,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "phonon_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "phonon_analysis",
+        "visualization"
+      ],
+      "toolId": "phonon.band_dos",
+      "toolName": "Phonon Band Dos",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "PhononDos"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "phonon_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "phonon_dos_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "plotly_json",
+        "table_json",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "PhononDos"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "phonon_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "phonon_analysis",
+        "visualization"
+      ],
+      "toolId": "phonon.dos",
+      "toolName": "Phonon Dos",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "reciprocal_space_resource",
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "reciprocal_lattice_json",
+        "brillouin_zone_json",
+        "kpath_json",
+        "brillouin_zone_manifest_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource",
+        "reciprocal_space_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "reciprocal_space_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.brillouin_zone",
+      "toolName": "Structure Brillouin Zone",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis"
+      ],
+      "toolId": "structure.chem_env_sunburst",
+      "toolName": "Structure Chem Env Sunburst",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis"
+      ],
+      "toolId": "structure.composition_from_structure",
+      "toolName": "Structure Composition From Structure",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.coordination_hist",
+      "toolName": "Structure Coordination Hist",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis"
+      ],
+      "toolId": "structure.lattice_summary",
+      "toolName": "Structure Lattice Summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "structure_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis"
+      ],
+      "toolId": "structure.preview_metadata",
+      "toolName": "Structure Preview Metadata",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.rdf",
+      "toolName": "Structure Rdf",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis"
+      ],
+      "toolId": "structure.spacegroup_summary",
+      "toolName": "Structure Spacegroup Summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis"
+      ],
+      "toolId": "structure.structure_2d",
+      "toolName": "Structure Structure 2D",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": "primary_interactive_structure_view",
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.structure_3d",
+      "toolName": "Structure Structure 3D",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "structure_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis"
+      ],
+      "toolId": "structure.summary",
+      "toolName": "Structure Summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Trajectory"
+      ],
+      "availability": "DEPLOYMENT_UNAVAILABLE",
+      "capabilityNeeds": [
+        "trajectory_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Trajectory"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "trajectory_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "trajectory_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.trajectory_import",
+      "toolName": "Structure Trajectory Import",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Trajectory"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "trajectory_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "summary",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Trajectory"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "trajectory_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "trajectory_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.trajectory_viewer",
+      "toolName": "Structure Trajectory Viewer",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": "primary_interactive_structure_view",
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "structure_json",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.viewer_3d",
+      "toolName": "Structure Viewer 3D",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "DEPLOYMENT_UNAVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "structure_json",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis"
+      ],
+      "toolId": "structure.viewer_export_package",
+      "toolName": "Structure Viewer Export Package",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": "primary_interactive_structure_view",
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "structure_json",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.viewer_scene",
+      "toolName": "Structure Viewer Scene",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "DEPLOYMENT_UNAVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "structure_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis"
+      ],
+      "toolId": "structure.viewer_scene_metadata",
+      "toolName": "Structure Viewer Scene Metadata",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "VolumetricData"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "volumetric_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "volumetric_grid_json",
+        "volumetric_payload_json",
+        "volumetric_field_json",
+        "volumetric_dataset_json",
+        "volumetric_manifest_json",
+        "volumetric_binary",
+        "volumetric_structure_overlay_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "VolumetricData"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "volumetric_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "volumetric_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.volumetric_data",
+      "toolName": "Structure Volumetric Data",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "Structure"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "structure_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "Structure"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "structure_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "structure_analysis",
+        "visualization"
+      ],
+      "toolId": "structure.xrd",
+      "toolName": "Structure Xrd",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "material_property_data",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": true,
+          "objectTypes": [],
+          "parameter": "numericColumns",
+          "required": true,
+          "source": "SEMANTIC_COLUMNS",
+          "targetRoles": [
+            "material_property"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "dataset_overview",
+        "property_distribution"
+      ],
+      "toolId": "table.distribution_summary",
+      "toolName": "Table Distribution Summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "material_property_data",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": true,
+          "objectTypes": [],
+          "parameter": "numericColumns",
+          "required": true,
+          "source": "SEMANTIC_COLUMNS",
+          "targetRoles": [
+            "material_property"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "dataset_overview",
+        "property_distribution"
+      ],
+      "toolId": "table.numeric_summary",
+      "toolName": "Table Numeric Summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "RawUnsupported"
+      ],
+      "availability": "FUTURE",
+      "capabilityNeeds": [
+        "trajectory_resource"
+      ],
+      "collisionGroup": null,
+      "costClass": 2,
+      "declaredArtifactTypes": [
+        "matterviz_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": false,
+      "inputObjectTypeOptions": [
+        [
+          "RawUnsupported"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [],
+      "requiredProfileCapabilities": [
+        "trajectory_resource"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "trajectory_analysis",
+        "visualization"
+      ],
+      "toolId": "trajectory.viewer",
+      "toolName": "Trajectory Viewer",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "material_property_data",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "table_json",
+        "plotly_json",
+        "plotly_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": true,
+          "objectTypes": [],
+          "parameter": "numericColumns",
+          "required": true,
+          "source": "SEMANTIC_COLUMNS",
+          "targetRoles": [
+            "material_property"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "property_distribution",
+        "visualization"
+      ],
+      "toolId": "viz.correlation",
+      "toolName": "Viz Correlation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "material_property_data",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "column",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "material_property"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "property_distribution",
+        "visualization"
+      ],
+      "toolId": "viz.histogram",
+      "toolName": "Viz Histogram",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "acceptedObjectTypes": [
+        "DataFrame"
+      ],
+      "availability": "AVAILABLE",
+      "capabilityNeeds": [
+        "material_property_data",
+        "tabular_data"
+      ],
+      "collisionGroup": null,
+      "costClass": 1,
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "warnings"
+      ],
+      "executionBoundary": "REGISTERED_ADAPTER_ONLY",
+      "independentComposable": true,
+      "inputObjectTypeOptions": [
+        [
+          "DataFrame"
+        ]
+      ],
+      "maxInputs": 1,
+      "maxTargets": 32,
+      "minInputs": 1,
+      "minTargets": 0,
+      "parameterBindings": [
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "xColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_target",
+            "material_property"
+          ]
+        },
+        {
+          "factKeys": [],
+          "literalValue": null,
+          "multiple": false,
+          "objectTypes": [],
+          "parameter": "yColumn",
+          "required": true,
+          "source": "TARGET_COLUMN",
+          "targetRoles": [
+            "regression_prediction",
+            "material_property"
+          ]
+        }
+      ],
+      "requiredProfileCapabilities": [
+        "tabular_data"
+      ],
+      "requiredTargetRoles": [],
+      "schemaVersion": "1.0",
+      "scientificIntents": [
+        "property_distribution",
+        "visualization"
+      ],
+      "toolId": "viz.scatter",
+      "toolName": "Viz Scatter",
+      "toolVersion": "0.1.0"
+    }
+  ]
+}

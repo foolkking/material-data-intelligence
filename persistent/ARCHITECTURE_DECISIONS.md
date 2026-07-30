@@ -1,5 +1,30 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-30 ADR: Registry-Derived Eligibility Before AnalysisPlan
+
+**Context:** AnalysisIntent 1.0 preserves user meaning and exact Profile scope,
+but the prior Planner could still use fixed routes or shallow provider tool
+summaries. That allowed Registry/column/display order and broad keyword routing
+to influence tool selection without an independently auditable eligibility and
+binding record.
+
+**Decision:** add strict inert planner metadata to every Registry entry and
+derive a deterministic Registry snapshot. A standalone resolver evaluates all
+tools against exact READY Intent, Profile, resource, target, availability, cap,
+and safety facts. Providers see eligible candidates only. Deterministic ranking
+uses structured coverage and cost; every parameter retains exact binding
+provenance. An independent capability-context validator recomputes these facts
+before unchanged AnalysisPlan 0.1 and existing PlanValidator. Optional LLM
+selection receives one strict JSON contract and at most one validation-guided
+repair, with no candidate-domain expansion and no Mock fallback.
+
+**Consequences:** canonical non-ready outcomes create no plan, job, queue
+message, or tool execution. Eligibility/decision records and successful
+plan/job association are persisted outside AnalysisPlan. PlanValidator,
+Registry execution contracts, Adapters, and QueueWorkerRuntime remain
+unchanged. Dependency/artifact binding, partial Runtime semantics, plan repair,
+interpretation, and Workspace behavior remain reviewer-gated later phases.
+
 ## 2026-07-29 ADR: Independent AnalysisIntent and Bounded Clarification
 
 **Context:** the existing API sends raw natural-language goals directly into a

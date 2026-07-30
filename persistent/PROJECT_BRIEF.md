@@ -30,19 +30,21 @@ program, deployment product, or plugin marketplace.
 
 ```text
 Data -> Profile -> Natural Language -> AnalysisIntent v1
-     -> bounded clarification -> existing Validated Plan -> Execute
+     -> bounded clarification -> Registry/Profile eligibility
+     -> capability-aware selection + exact binding -> AnalysisPlan 0.1
+     -> Execute
      -> Visualize -> Interpret -> Report / Recipe
 ```
 
 ### Current Focus and Initial Release Route
 
 Phase 10J-6 is archived and Phase 10K Material Intelligence is complete with
-explicit limits. Phase 10L-0 is archived. Phase 10L-1 implemented the
-independent AnalysisIntent v1 and one bounded clarification round upstream of
-the unchanged existing Planner; implementation and completion-record exact-SHA
-CI passed, and the completed queue block is archived. Phase 10L-2 remains a
-reviewer gate and is not queued. The remaining
-initial-release route is:
+explicit limits. Phase 10L-0 and Phase 10L-1 are archived. Phase 10L-2 is
+implementing strict Registry planner metadata, deterministic Profile/Intent
+eligibility, eligible-only capability selection, exact parameter provenance,
+and an independent validation gate while keeping AnalysisPlan 0.1 and Runtime
+semantics unchanged. Phase 10L-3 remains reviewer-gated and is not queued. The
+remaining initial-release route is:
 
 ```text
 10K Material Intelligence

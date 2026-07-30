@@ -1,0 +1,161 @@
+{
+  "chromium": {
+    "browser": "chromium",
+    "version": "128.0.6613.18",
+    "cases": {
+      "ready": {
+        "outcome": "PLAN_READY",
+        "mobile": false,
+        "firstCapabilityMs": 1449,
+        "selectedText": "Dataset Materials Explorer\ndataset.materials_explorer@0.1.0\nINTENT COVERAGE\nanomaly_candidate_review, composition_analysis, dataset_overview, property_distribution\nOUTPUT COVERAGE\nlinked_samples, summary, table, warnings\nRESOURCES\nobj_dataframe_8f6a530dc190\nTARGETS\nNot required\nExact parameter bindings\nParameter\tValue\tSource\ntableObjectId\tobj_dataframe_8f6a530dc190\tRESOURCE_ID / resource:obj_dataframe_8...355d7a078658ed5e",
+        "auditBytes": 155944,
+        "auditSha256": "cd73d32221bd155996b2b7c414491bfc49666f4c30a432cdfeac4fa01c3834d4",
+        "auditContractVisible": true,
+        "domSha256": "a7c1e6815f07ebc20e550561dfd142ad2e18a4e11b87fee21ec513042e89aa2d",
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "capabilityScripts": 0
+        }
+      },
+      "blocked": {
+        "outcome": "CAPABILITY_MISMATCH",
+        "mobile": false,
+        "firstCapabilityMs": 1380,
+        "diagnosticText": "Capability planning did not produce an executable plan.\nNO_ELIGIBLE_CAPABILITY: No current registered capability satisfies the exact Intent/Profile scope.",
+        "runDisabled": true,
+        "domSha256": "c6e98010f2c8dfd505e8ecfe279dea02011bd31b47f06cb64fa131fd16dd10bc",
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "capabilityScripts": 0
+        }
+      }
+    },
+    "mobile": {
+      "ready": {
+        "outcome": "PLAN_READY",
+        "mobile": true,
+        "firstCapabilityMs": 1368,
+        "selectedText": "Dataset Materials Explorer\ndataset.materials_explorer@0.1.0\nINTENT COVERAGE\nanomaly_candidate_review, composition_analysis, dataset_overview, property_distribution\nOUTPUT COVERAGE\nlinked_samples, summary, table, warnings\nRESOURCES\nobj_dataframe_8f6a530dc190\nTARGETS\nNot required\nExact parameter bindings\ntableObjectId\nobj_dataframe_8f6a530dc190\nRESOURCE_ID / resource:obj_dataframe_8...355d7a078658ed5e",
+        "auditBytes": 155944,
+        "auditSha256": "cd73d32221bd155996b2b7c414491bfc49666f4c30a432cdfeac4fa01c3834d4",
+        "auditContractVisible": true,
+        "domSha256": "5c098c76ffd77c611542351753e31b40e92dbe699e9a34a687fac430e8c5f00c",
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "capabilityScripts": 0
+        }
+      },
+      "blocked": {
+        "outcome": "CAPABILITY_MISMATCH",
+        "mobile": true,
+        "firstCapabilityMs": 1355,
+        "diagnosticText": "Capability planning did not produce an executable plan.\nNO_ELIGIBLE_CAPABILITY: No current registered capability satisfies the exact Intent/Profile scope.",
+        "runDisabled": true,
+        "domSha256": "c6e98010f2c8dfd505e8ecfe279dea02011bd31b47f06cb64fa131fd16dd10bc",
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "capabilityScripts": 0
+        }
+      }
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "firefox": {
+    "browser": "firefox",
+    "version": "128.0",
+    "cases": {
+      "ready": {
+        "outcome": "PLAN_READY",
+        "mobile": false,
+        "firstCapabilityMs": 2314,
+        "selectedText": "Dataset Materials Explorer\ndataset.materials_explorer@0.1.0\nINTENT COVERAGE\nanomaly_candidate_review, composition_analysis, dataset_overview, property_distribution\nOUTPUT COVERAGE\nlinked_samples, summary, table, warnings\nRESOURCES\nobj_dataframe_8f6a530dc190\nTARGETS\nNot required\nExact parameter bindings\nParameter\tValue\tSource\ntableObjectId\tobj_dataframe_8f6a530dc190\tRESOURCE_ID / resource:obj_dataframe_8...355d7a078658ed5e",
+        "auditBytes": 155944,
+        "auditSha256": "cd73d32221bd155996b2b7c414491bfc49666f4c30a432cdfeac4fa01c3834d4",
+        "auditContractVisible": true,
+        "domSha256": "a7c1e6815f07ebc20e550561dfd142ad2e18a4e11b87fee21ec513042e89aa2d",
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "capabilityScripts": 0
+        }
+      },
+      "blocked": {
+        "outcome": "CAPABILITY_MISMATCH",
+        "mobile": false,
+        "firstCapabilityMs": 1635,
+        "diagnosticText": "Capability planning did not produce an executable plan.\nNO_ELIGIBLE_CAPABILITY: No current registered capability satisfies the exact Intent/Profile scope.",
+        "runDisabled": true,
+        "domSha256": "c6e98010f2c8dfd505e8ecfe279dea02011bd31b47f06cb64fa131fd16dd10bc",
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "capabilityScripts": 0
+        }
+      }
+    },
+    "mobile": {},
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "webkit": {
+    "browser": "webkit",
+    "version": "18.0",
+    "cases": {
+      "ready": {
+        "outcome": "PLAN_READY",
+        "mobile": false,
+        "firstCapabilityMs": 2600,
+        "selectedText": "Dataset Materials Explorer\ndataset.materials_explorer@0.1.0\nINTENT COVERAGE\nanomaly_candidate_review, composition_analysis, dataset_overview, property_distribution\nOUTPUT COVERAGE\nlinked_samples, summary, table, warnings\nRESOURCES\nobj_dataframe_8f6a530dc190\nTARGETS\nNot required\nExact parameter bindings\nParameter\tValue\tSource\ntableObjectId\tobj_dataframe_8f6a530dc190\tRESOURCE_ID / resource:obj_dataframe_8...355d7a078658ed5e\n",
+        "auditBytes": 155944,
+        "auditSha256": "cd73d32221bd155996b2b7c414491bfc49666f4c30a432cdfeac4fa01c3834d4",
+        "auditContractVisible": true,
+        "domSha256": "7f1b9e52d5ab76d497dfa780cf4b269d79dfeee76e63abe9e80adfa14336cc54",
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "capabilityScripts": 0
+        }
+      },
+      "blocked": {
+        "outcome": "CAPABILITY_MISMATCH",
+        "mobile": false,
+        "firstCapabilityMs": 2171,
+        "diagnosticText": "Capability planning did not produce an executable plan.\nNO_ELIGIBLE_CAPABILITY: No current registered capability satisfies the exact Intent/Profile scope.\n",
+        "runDisabled": true,
+        "domSha256": "ca6ed77a8f97b1f72761eea84f7c99b8ef23d5fb0e9c1447b6fb13e114b0309c",
+        "horizontalOverflow": false,
+        "inert": {
+          "iframe": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "capabilityScripts": 0
+        }
+      }
+    },
+    "mobile": {},
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+}

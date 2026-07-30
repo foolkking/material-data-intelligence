@@ -153,6 +153,63 @@ const unsupportedIntent = {
   unsupportedReasons: [{ code: "INTENT_FUTURE_FERMI_SURFACE", message: "Fermi Surface is Future Scope.", boundary: "FUTURE_SCOPE" }]
 };
 
+const capabilityResolution = {
+  schemaVersion: "1.0",
+  resolutionId: "resolution_demo",
+  resolutionHash: "d".repeat(64),
+  intentId: baseIntent.intentId,
+  intentHash: baseIntent.intentHash,
+  profileId: baseIntent.profileId,
+  profileContractVersion: "2.0",
+  profileSemanticHash: baseIntent.dataScope.profileSemanticHash,
+  datasetId: baseIntent.datasetId,
+  datasetVersion: baseIntent.dataScope.datasetVersion,
+  registrySnapshotId: "registry_demo",
+  registrySnapshotHash: "e".repeat(64),
+  resourceIdentities: baseIntent.dataScope.resourceRefs,
+  evaluatedCandidates: [
+    { toolId: "dataset.materials_explorer", toolName: "Dataset Materials Explorer", toolVersion: "0.1.0", eligible: true, reasons: [] },
+    { toolId: "ml.basic_metrics", toolName: "Basic Metrics", toolVersion: "0.1.0", eligible: false, reasons: [{ code: "SCIENTIFIC_INTENT_UNSUPPORTED", field: "scientificIntents", message: "Intent is not supported.", toolId: "ml.basic_metrics", repairable: false }] }
+  ],
+  eligibleToolIds: ["dataset.materials_explorer"],
+  rejectedToolIds: ["ml.basic_metrics"],
+  diagnostics: [],
+  warnings: [],
+  provenance: { resolver: "deterministic_eligibility_resolver", resolverVersion: "1.0" }
+};
+
+const capabilityDecision = {
+  schemaVersion: "1.0",
+  decisionId: "decision_demo",
+  decisionHash: "f".repeat(64),
+  intentId: baseIntent.intentId,
+  intentHash: baseIntent.intentHash,
+  profileId: baseIntent.profileId,
+  profileSemanticHash: baseIntent.dataScope.profileSemanticHash,
+  registrySnapshotId: capabilityResolution.registrySnapshotId,
+  registrySnapshotHash: capabilityResolution.registrySnapshotHash,
+  resolutionId: capabilityResolution.resolutionId,
+  resolutionHash: capabilityResolution.resolutionHash,
+  outcome: "PLAN_READY",
+  selections: [{
+    toolId: "dataset.materials_explorer",
+    toolName: "Dataset Materials Explorer",
+    toolVersion: "0.1.0",
+    coveredScientificIntents: ["dataset_overview"],
+    coveredCapabilityNeeds: ["tabular_data"],
+    coveredDesiredOutputs: ["summary"],
+    inputResourceIds: ["table_1"],
+    targetSemanticIds: [],
+    boundParameters: [{ parameter: "tableObjectId", value: "table_1", valueId: "resource:table_1", source: "RESOURCE_ID", sourceIdentity: "table_1" }],
+    artifactTypes: ["table_json", "summary_md"],
+    rankFacts: [1, 1, 1]
+  }],
+  unfulfilledDesiredOutputs: ["plot"],
+  diagnostics: [],
+  warnings: [{ code: "DESIRED_OUTPUT_UNFULFILLED", field: "desiredOutputs", message: "Plot is unavailable.", repairable: false }],
+  provenance: { provider: "deterministic_mock", providerContractVersion: "1.0", model: "capability-ranker-v1", repairCount: 0, repairDiagnostics: [] }
+};
+
 const jobDetail = {
   jobId: "job_1",
   projectId: "project_local",
@@ -1127,6 +1184,77 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(audit.querySelector("pre")?.textContent).toContain("INTENT_FUTURE_FERMI_SURFACE");
     expect(audit.querySelector("script")).toBeNull();
     expect(document.querySelector("iframe")).toBeNull();
+  });
+
+  it("shows the capability-aware selection, exact bindings, and inert audit record", async () => {
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
+        return jsonResponse({
+          ...createdJob,
+          plan_source: "capability_planner",
+          intent_id: baseIntent.intentId,
+          intent_outcome: "READY",
+          intent: baseIntent,
+          capability_outcome: "PLAN_READY",
+          eligibility_resolution: capabilityResolution,
+          capability_decision: capabilityDecision,
+          provider_visible_tool_ids: capabilityResolution.eligibleToolIds
+        });
+      }
+      return mockPlannerFetch(input, init);
+    });
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+
+    const panel = await screen.findByTestId("capability-planning-panel");
+    expect(within(panel).getByText("PLAN_READY")).not.toBeNull();
+    expect(within(panel).getByRole("heading", { name: "Dataset Materials Explorer" })).not.toBeNull();
+    expect(within(panel).getByText("dataset.materials_explorer@0.1.0")).not.toBeNull();
+    expect(within(panel).getByText("RESOURCE_ID / table_1")).not.toBeNull();
+    expect(within(screen.getByTestId("run-controls")).getByRole("button")).toBeEnabled();
+
+    await user.click(screen.getByRole("checkbox"));
+    const audit = await screen.findByTestId("capability-planning-audit-json");
+    expect(audit.querySelector("pre")?.textContent).toContain("resolution_demo");
+    expect(audit.querySelector("script")).toBeNull();
+  });
+
+  it("shows typed capability mismatch and keeps Run disabled", async () => {
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (init?.method === "POST" && url.endsWith("/planner/jobs")) {
+        return jsonResponse({
+          ok: false,
+          job_id: null,
+          plan_id: null,
+          plan_hash: null,
+          plan: null,
+          validation_errors: [{ code: "CAPABILITY_COVERAGE_INCOMPLETE", message: "No current capability covers the request." }],
+          intent_id: baseIntent.intentId,
+          intent_outcome: "READY",
+          intent: baseIntent,
+          capability_outcome: "CAPABILITY_MISMATCH",
+          eligibility_resolution: { ...capabilityResolution, eligibleToolIds: [], rejectedToolIds: ["dataset.materials_explorer", "ml.basic_metrics"], diagnostics: [{ code: "CAPABILITY_COVERAGE_INCOMPLETE", field: "scientificIntents", message: "No current capability covers the request.", repairable: false }] },
+          capability_decision: { ...capabilityDecision, outcome: "CAPABILITY_MISMATCH", selections: [], diagnostics: [{ code: "CAPABILITY_COVERAGE_INCOMPLETE", field: "scientificIntents", message: "No current capability covers the request.", repairable: false }] },
+          provider_visible_tool_ids: [],
+          enqueued: false,
+          executed: false
+        });
+      }
+      return mockPlannerFetch(input, init);
+    });
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+
+    const panel = await screen.findByTestId("capability-planning-panel");
+    expect(within(panel).getByText("CAPABILITY_MISMATCH")).not.toBeNull();
+    expect(within(panel).getByTestId("capability-planning-diagnostics")).toHaveTextContent("CAPABILITY_COVERAGE_INCOMPLETE");
+    expect(within(screen.getByTestId("run-controls")).getByRole("button")).toBeDisabled();
   });
 });
 

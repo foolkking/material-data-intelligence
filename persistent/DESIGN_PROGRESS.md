@@ -1,5 +1,26 @@
 # DESIGN_PROGRESS
 
+## 2026-07-30 Phase 10L-2 Capability-Aware Planner Implemented, Awaiting CI
+
+- Added strict planner metadata for all 53 Registry entries; 38 current
+  available entries can be considered, while deployment-unavailable and
+  Future entries remain non-selectable.
+- Added deterministic Registry snapshot, Eligibility Resolution 1.0,
+  eligible-only provider projection, structured ranking, exact parameter
+  binding/provenance, Capability Decision 1.0, and independent context
+  validation. Only `PLAN_READY` can create a plan/job or enqueue.
+- Added strict optional OpenAI-compatible selection over eligible candidates,
+  one validation-guided repair, no Mock fallback, and default
+  `REAL_LLM_CALLS = 0` evidence.
+- Added immutable external resolution/decision/execution associations through
+  Alembic 0004, additive API summaries, and an accessible PlannerWorkbench
+  capability surface. AnalysisIntent remains 1.0; AnalysisPlan remains 0.1;
+  PlanValidator and QueueWorkerRuntime semantics are unchanged.
+- Focused contract/backend/frontend, browser matrix, performance, security,
+  and evidence-integrity checks pass locally. Full regression and exact-SHA
+  implementation/service CI remain the completion gate. Phase 10L-3 is still
+  `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+
 ## 2026-07-29 Phase 10L-1 Analysis Intent Implementation Complete
 
 - Added independent `AnalysisIntent` schema `1.0` across Python, checked-in JSON

@@ -18,12 +18,24 @@ from .loader import (
     validateManifest,
     validate_manifest,
 )
+from .planner_metadata import (
+    PLANNER_HIDDEN_TOOL_IDS,
+    PLANNER_METADATA_VERSION,
+    build_registry_snapshot,
+    build_tool_planner_metadata,
+    planner_visible_tools,
+    validate_tool_planner_metadata,
+)
 
 __all__ = [
     "ManifestValidationError",
+    "PLANNER_HIDDEN_TOOL_IDS",
+    "PLANNER_METADATA_VERSION",
     "ToolRegistry",
     "getToolById",
     "get_tool_by_id",
+    "build_registry_snapshot",
+    "build_tool_planner_metadata",
     "listMvpTools",
     "listTools",
     "listToolsByDomain",
@@ -34,7 +46,9 @@ __all__ = [
     "list_tools_by_stage",
     "loadManifests",
     "load_manifests",
+    "planner_visible_tools",
     "validateManifest",
     "validate_manifest",
+    "validate_tool_planner_metadata",
 ]
 

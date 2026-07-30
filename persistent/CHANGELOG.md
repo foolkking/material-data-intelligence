@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2026-07-30 - Phase 10L-2 Capability-Aware Planner
+
+- Added versioned, strict Registry planner metadata, deterministic Registry
+  snapshots and eligibility resolutions, eligible-only provider projection,
+  capability ranking, exact parameter provenance, and independent context
+  validation before unchanged AnalysisPlan 0.1 generation.
+- Added one strict validation-guided LLM repair with no fallback, immutable
+  resolution/decision/execution associations, additive API responses, and a
+  responsive accessible PlannerWorkbench capability audit surface.
+- Non-ready outcomes now stop before plan/job/enqueue on the canonical Intent
+  path. No scientific tool, dependency/artifact binding, Runtime semantic,
+  PlanValidator relaxation, external service, or new dependency was added.
+- Added deterministic Registry/API/persistence/performance/security evidence
+  and Chromium/Firefox/WebKit/390x844 browser replay. Implementation exact-SHA
+  CI and completion/archive records remain required before final closure.
+
 ## 2026-07-29 - Phase 10L-1 Analysis Intent Implementation
 
 - Added versioned, inert AnalysisIntent v1 with exact DataProfile 2.0 binding,

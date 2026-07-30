@@ -62,6 +62,16 @@ class ToolRegistry:
     def list_mvp_tools(self) -> list[RegisteredTool]:
         return self.list_tools_by_stage("mvp")
 
+    def planner_snapshot(self) -> Any:
+        from .planner_metadata import build_registry_snapshot
+
+        return build_registry_snapshot(self)
+
+    def list_planner_visible_tools(self) -> list[RegisteredTool]:
+        from .planner_metadata import planner_visible_tools
+
+        return planner_visible_tools(self)
+
 
 _REGISTRY: ToolRegistry | None = None
 

@@ -1,0 +1,273 @@
+{
+  "registryVersion": "0.1.0",
+  "schemaVersion": "1.0",
+  "snapshotHash": "465482cd226ed056aec57ab4437f90d85b4c8c12507ca62a50f6574b3f8cade0",
+  "snapshotId": "registry_465482cd226ed056aec57ab4",
+  "tools": [
+    {
+      "metadataHash": "509693d5c29fc17343d9818c34aa6a9d953ef834e9f6cbeacd068d1ffc8ed1aa",
+      "toolId": "composition.chem_sys_sunburst",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "0126c9da7be0db06b858cceff5141a5caa3fc56aff3b13108a2e36f16ae6ffb3",
+      "toolId": "composition.chem_sys_treemap",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "94006a9dca69e470f9a4d7fda1a8f50f679b395228b73d53916ce3c34d363368",
+      "toolId": "composition.cluster_2d",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "87471a36dd95472b63f8be12f6f9b44e0fa063f6d0b210986b171412e835c604",
+      "toolId": "composition.cluster_3d",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "72df31b81e4198f512350bcc9a4007d6c1f263c1ce0361419ae4b16fbcb8bc7d",
+      "toolId": "composition.elements_hist",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "8d4afa5a74eae8351f04eb78de514bf900777bf7d0f785ba0fd5933677f84ade",
+      "toolId": "composition.formula_statistics",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "38ac5eacac4d51381d02e6f4cfc830ca68104d359043da4da0004d63f8fcc9cf",
+      "toolId": "composition.ptable_heatmap",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "1ec5a8df04983f1a89a93cecd39c8bd200b36b38709c53298b4e2bb91898a364",
+      "toolId": "composition.ptable_heatmap_splits",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "69476c26039c7d1e28960329c8632b108420793e5ece9e7a6797e831588a07cb",
+      "toolId": "composition.ptable_hists",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "33066960879825cf153136957eabf9876111d512626acd4fd6c8758717cf7195",
+      "toolId": "composition.ptable_scatter",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "76ea2fd08ae1b26c74a29ec2640b6d88bb01a4494b54f0485eaed906d0388310",
+      "toolId": "composition.summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "e1b07939e44b606a2b82482d8bef0dae4705fcf6da3de101ccaebce439759f23",
+      "toolId": "dataset.composition_space",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "32307b3c3395b2a668cad66ea235e6cb1ce1754fe237aa4eae14dae5bf4ac0ff",
+      "toolId": "dataset.materials_explorer",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "09796f7f30eb630bd73ac6f490dc17a8738a7268bd8195dd7f060f74d725a613",
+      "toolId": "ml.basic_metrics",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "93b9aaeddaba1a3b2a5cafce97e566c31605c8e3416cf35b599e0d73b2270273",
+      "toolId": "ml.classification_evaluation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "a085e2c8c615d25e23aa7375752a3259a23e612bb66fbac169c8b02a37872c42",
+      "toolId": "ml.density_scatter",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "fdbb7b45ab0a2316c4e1f06238af1278b1f3bb5043cb3789d41abc92ce9f586d",
+      "toolId": "ml.error_by_chem_sys",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "ede9c76f01fc679f206d1ec257e3ed0a9daa6e5e851f4fb02af1fe0e84c3ec03",
+      "toolId": "ml.error_by_element",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "9dc4acb1a2f9fe64abf7cb2024de9ef3d1777c96bed302ba218abdd8e57952d6",
+      "toolId": "ml.error_distribution",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "687ca43c703fe0a414abff701fd3dc676667350b242be08f077a6adeed87cbfc",
+      "toolId": "ml.outlier_table",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "33b1149c73c87bead529fa18f1dc5ac16cd0bd1adf680243ab18f6e852f9546b",
+      "toolId": "ml.parity_plot",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "eaa9d86663f7cb12ba681703d9028ef4f38e853494ac736f530b4e7cc1f1725b",
+      "toolId": "ml.regression_evaluation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "0f259ef0fe7425db55f527a15f6208546ef078d854fd56d0a1f93d177bf326d0",
+      "toolId": "ml.uncertainty_calibration",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "e9e6392b9f1bd17d689755371a0d269f18b6a9370e3f4313aae57c84b0aeb2b0",
+      "toolId": "ml.uncertainty_evaluation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "95ab0171d522fb7f6917c74ef5f8cbe4bbc26d465c3bf9bc89162a05b4aa7df8",
+      "toolId": "phonon.animation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "6b43f0626b3ee6b718838de7aa821d8c1decb7b0b3d7e5320fbd548582958108",
+      "toolId": "phonon.band",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "3b0bf540dc2214e8357ad9895ebccf9dcb29411a44cf6f8224470e6129046538",
+      "toolId": "phonon.band_dos",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "c9f823955e7e1a98caaab78fc797a7cbb0be0a9397d3bd0e6cee699705b39099",
+      "toolId": "phonon.dos",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "96511203cb30bc7fd8af0bbe5d0d9f5bca195199975f5287292a7d0b7eb05870",
+      "toolId": "structure.brillouin_zone",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "2ef40dbc4562d043e4c2b268fefa2b0ca8e512aec33ed102dff41ceb10e3fdf0",
+      "toolId": "structure.chem_env_sunburst",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "77b49f7091423ed03b640d5749e43965a32331d840c6e58f86fba59c303afb18",
+      "toolId": "structure.composition_from_structure",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "3084eea084e2b559dbbe18721b9b5e0375dddb97b2b810a79e0fd3267006de11",
+      "toolId": "structure.coordination_hist",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "6867b98c10ca7b35a193877c0b054aee1dd3ff317ad02e7822c32e5d456d0751",
+      "toolId": "structure.lattice_summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "4911bee0394611db3c0b34498c40b1baefdb2cd893a170c71555c1e449fa05d3",
+      "toolId": "structure.preview_metadata",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "b677467ecc9ad945b25a65f705f5d502f285a4d7d74af844d8e842b5601fb7bc",
+      "toolId": "structure.rdf",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "0252b095767ab85371394df055a962653914cd96b661c6fe433a6158d4398e8a",
+      "toolId": "structure.spacegroup_summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "ec12893d331aeb89519421ac2dbaafb5bc64f8f8c5c49337b4ecb597a71f05d8",
+      "toolId": "structure.structure_2d",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "9fa0b2f7d643635033f438e3ea0cc67b345e88a483101eda9623191da0d918bf",
+      "toolId": "structure.structure_3d",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "0242fd8a975865eba2c0824b330b680b93fbcfe2e374377763fa5440c7173012",
+      "toolId": "structure.summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "ed8430a296bfd4cf7d5578f71922d228c5d6cd0ec8f93c144e56272041e23f41",
+      "toolId": "structure.trajectory_import",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "a5a69b2f6e1823b930260fe99ba1ea6d0b4de43074f83162a57275b32866edb2",
+      "toolId": "structure.trajectory_viewer",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "f25cf3541a5041359e96e5d9b79ad50073b512f989b43acd1116718c328f2fef",
+      "toolId": "structure.viewer_3d",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "5ad76331a0cfc40a0bb2e16a2b0cc2d2af52934f5f984d4439bbe5145d7cf724",
+      "toolId": "structure.viewer_export_package",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "565870f7b01b41a22f5ac2f89ed94192e5920507da7007fe0a3d3426d0fb3641",
+      "toolId": "structure.viewer_scene",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "4ea40461afa5968c2f72dd0d889a2803ee6e8cc74c9c61e9fb822259caeaf6ef",
+      "toolId": "structure.viewer_scene_metadata",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "8b15caf48e4aaae91930da6c2124ecbcc5c20593c817533b21aa39175c11ffd2",
+      "toolId": "structure.volumetric_data",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "cf84d99e5d92511a5e598f43e4f6ecf65cf558bb2416a6011b43e8968857ce6f",
+      "toolId": "structure.xrd",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "b206991b7aedf08390f4352b82b8572a74b9c9853d094f304bde0e14f8661018",
+      "toolId": "table.distribution_summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "e23e6d833df202e21bf38be88c5775701f92f85b5fcffc1caefbda503c679b71",
+      "toolId": "table.numeric_summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "7dd5fb187db510122e2343efb83216e7a9f1a2fe2e296ae16eb498617e32c560",
+      "toolId": "trajectory.viewer",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "45211a281c1cfa71c0b25992ef7b223cdf3d1e0513476b132b2bc90ca3750db5",
+      "toolId": "viz.correlation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "7a2b8c13ee788f3b927df802baeeb1109b00f65f02d41a1774e5c11b1b70331e",
+      "toolId": "viz.histogram",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "metadataHash": "d61a16baafb22a892f8aaf41b9840f0afb93b66aa4d7e7216c607eeef7996355",
+      "toolId": "viz.scatter",
+      "toolVersion": "0.1.0"
+    }
+  ]
+}

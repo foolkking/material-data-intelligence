@@ -1,0 +1,17 @@
+{
+  "build": "PASS_WITH_EXISTING_CSS_AUTOPREFIXER_WARNINGS",
+  "focusedBackend": "22 passed",
+  "focusedFrontend": "24 passed",
+  "focusedPhase10L1L2": "50 passed",
+  "fullBackend": "891 passed, 29 skipped, 63 warnings",
+  "fullFrontend": "327 passed",
+  "npmAudit": "UNAVAILABLE_REGISTRY_ENDPOINT_NOT_IMPLEMENTED",
+  "phase10Closure": "PASS",
+  "phase10EvidenceIntegrity": "PASS",
+  "plannerAndPhase10KRegression": "169 passed, 1 skipped, 1 warning",
+  "serviceBackedCi": "REQUIRED_EXACT_SHA_GATE",
+  "serviceBackedLocal": "UNAVAILABLE_WITHOUT_CONFIGURED_SERVICES",
+  "trajectoryEvidenceIntegrity": "PASS",
+  "typecheck": "PASS",
+  "uvLock": "PASS"
+}

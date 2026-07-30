@@ -1,0 +1,87 @@
+{
+  "decisionHash": "40a17ac7f3ad76d42e2f2e6351dca0fdef1fcea5689681e828444f73209f537d",
+  "decisionId": "decision_40a17ac7f3ad76d42e2f2e63",
+  "diagnostics": [],
+  "intentHash": "f7d54423dd80a4ec00e515926770801e58805aef3e1ebfe642e60541a5cafdb8",
+  "intentId": "intent_f7d54423dd80a4ec00e51592",
+  "outcome": "PLAN_READY",
+  "profileId": "profile_phase10l2",
+  "profileSemanticHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "provenance": {
+    "initialDecisionHash": null,
+    "model": "mock",
+    "provider": "deterministic_mock",
+    "providerContractVersion": "1.0",
+    "repairCount": 0,
+    "repairDiagnostics": []
+  },
+  "registrySnapshotHash": "465482cd226ed056aec57ab4437f90d85b4c8c12507ca62a50f6574b3f8cade0",
+  "registrySnapshotId": "registry_465482cd226ed056aec57ab4",
+  "resolutionHash": "d7e067f135653ba30e5cf54cc791da57d924f7328433d6ccafebe0224b32ee32",
+  "resolutionId": "resolution_d7e067f135653ba30e5cf54c",
+  "schemaVersion": "1.0",
+  "selections": [
+    {
+      "artifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "boundParameters": [
+        {
+          "parameter": "groupIds",
+          "source": "TARGET_GROUP_IDS",
+          "sourceIdentity": "regression_0",
+          "value": [
+            "regression_0"
+          ],
+          "valueId": "groups:regression_0"
+        }
+      ],
+      "coveredCapabilityNeeds": [
+        "regression_semantics"
+      ],
+      "coveredDesiredOutputs": [
+        "metrics",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "coveredScientificIntents": [
+        "ml_regression_evaluation"
+      ],
+      "inputResourceIds": [
+        "table_phase10l2"
+      ],
+      "rankFacts": [
+        1,
+        1,
+        4,
+        1,
+        2,
+        1,
+        "ml.regression_evaluation",
+        "0.1.0"
+      ],
+      "targetSemanticIds": [
+        "regression_0:target:formation_energy",
+        "regression_0:prediction:formation_energy_pred"
+      ],
+      "toolId": "ml.regression_evaluation",
+      "toolName": "Ml Regression Evaluation",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "unfulfilledDesiredOutputs": [
+    "plot"
+  ],
+  "warnings": [
+    {
+      "code": "DESIRED_OUTPUT_UNFULFILLED",
+      "field": "desiredOutputs",
+      "message": "Some requested delivery formats are not produced by the selected current capabilities.",
+      "repairable": false,
+      "toolId": null
+    }
+  ]
+}

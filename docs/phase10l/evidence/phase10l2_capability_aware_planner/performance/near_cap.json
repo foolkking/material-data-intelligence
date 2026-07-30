@@ -1,0 +1,17 @@
+{
+  "bounded": true,
+  "decisionBytes": 1967,
+  "diagnosticCap": 256,
+  "diagnostics": 174,
+  "eligibleCandidateCap": 32,
+  "eligibleCandidates": 2,
+  "jsonDepthCap": 14,
+  "registryCandidateCap": 64,
+  "registryCandidates": 53,
+  "resolutionBytes": 101213,
+  "resolveSelectBindValidateMs": 209.439,
+  "selectedToolCap": 4,
+  "selectedTools": 1,
+  "serializedByteCap": 524288,
+  "tracemallocPeakBytes": 2339126
+}

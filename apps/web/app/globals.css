@@ -1524,6 +1524,79 @@ pre {
   padding-left: 20px;
 }
 
+.capability-selections {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.capability-selection {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.capability-selection code,
+.capability-selection td,
+.capability-selection th {
+  overflow-wrap: anywhere;
+}
+
+.capability-selection table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.capability-selection th,
+.capability-selection td {
+  padding: 6px;
+  text-align: left;
+  vertical-align: top;
+}
+
+@media (max-width: 600px) {
+  .capability-selection table,
+  .capability-selection tbody,
+  .capability-selection tr,
+  .capability-selection th,
+  .capability-selection td {
+    display: block;
+    width: 100%;
+  }
+
+  .capability-selection thead {
+    display: none;
+  }
+
+  .capability-selection caption {
+    display: block;
+    padding: 6px 0;
+    text-align: left;
+    width: 100%;
+  }
+
+  .capability-selection tr {
+    border-top: 1px solid var(--border);
+    padding: 8px 0;
+  }
+
+  .capability-selection th,
+  .capability-selection td {
+    padding: 3px 0;
+  }
+
+  .capability-selection th::before,
+  .capability-selection td::before {
+    color: var(--muted);
+    content: attr(data-label) ": ";
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+
 .dialog-backdrop {
   position: fixed;
   inset: 0;

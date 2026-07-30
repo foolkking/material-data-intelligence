@@ -432,6 +432,178 @@ export type AnalysisIntent = {
   warnings: AnalysisIntentDiagnostic[];
 };
 
+export type CapabilityPlanningOutcome =
+  | "PLAN_READY"
+  | "NEEDS_CLARIFICATION"
+  | "UNSUPPORTED"
+  | "CAPABILITY_MISMATCH"
+  | "VALIDATION_FAILED";
+
+export type PlannerAvailability = "AVAILABLE" | "DEPLOYMENT_UNAVAILABLE" | "FUTURE" | "NOT_PLANNED";
+export type PlannerBindingSource =
+  | "RESOURCE_ID"
+  | "TARGET_COLUMN"
+  | "TARGET_GROUP_IDS"
+  | "SEMANTIC_COLUMNS"
+  | "PROFILE_ID"
+  | "RESOURCE_FACT"
+  | "LITERAL";
+
+export type CapabilityDiagnostic = {
+  code: string;
+  field: string;
+  message: string;
+  toolId?: string | null;
+  repairable: boolean;
+};
+
+export type PlannerBindingValue = {
+  valueId: string;
+  value: string | number | boolean | string[];
+  source: PlannerBindingSource;
+  sourceIdentity: string;
+};
+
+export type PlannerBindingDomain = {
+  parameter: string;
+  required: boolean;
+  values: PlannerBindingValue[];
+};
+
+export type PlannerParameterBinding = {
+  parameter: string;
+  source: PlannerBindingSource;
+  required: boolean;
+  targetRoles: string[];
+  objectTypes: string[];
+  factKeys: string[];
+  literalValue?: string | number | boolean | string[] | null;
+  multiple: boolean;
+};
+
+export type ToolPlannerMetadata = {
+  schemaVersion: "1.0";
+  toolId: string;
+  toolName: string;
+  toolVersion: string;
+  availability: PlannerAvailability;
+  scientificIntents: ScientificIntent[];
+  capabilityNeeds: AnalysisIntentCapabilityNeed[];
+  desiredOutputs: AnalysisIntentDesiredOutput[];
+  acceptedObjectTypes: string[];
+  inputObjectTypeOptions: string[][];
+  requiredProfileCapabilities: string[];
+  requiredTargetRoles: string[];
+  minInputs: number;
+  maxInputs: number;
+  minTargets: number;
+  maxTargets: number;
+  parameterBindings: PlannerParameterBinding[];
+  declaredArtifactTypes: string[];
+  costClass: 1 | 2 | 3;
+  independentComposable: boolean;
+  collisionGroup?: string | null;
+  executionBoundary: "REGISTERED_ADAPTER_ONLY";
+};
+
+export type PlannerResourceIdentity = {
+  objectId: string;
+  objectType: string;
+  objectHash: string;
+  kind: string;
+};
+
+export type EvaluatedToolCandidate = {
+  toolId: string;
+  toolName: string;
+  toolVersion: string;
+  eligible: boolean;
+  matchedScientificIntents: ScientificIntent[];
+  matchedCapabilityNeeds: AnalysisIntentCapabilityNeed[];
+  matchedDesiredOutputs: AnalysisIntentDesiredOutput[];
+  acceptedResourceIds: string[];
+  satisfiedProfileCapabilities: string[];
+  unsatisfiedProfileCapabilities: string[];
+  targetSemanticIds: string[];
+  bindingDomains: PlannerBindingDomain[];
+  reasons: CapabilityDiagnostic[];
+  rankFacts: Array<number | string>;
+  costClass: 1 | 2 | 3;
+  independentComposable: boolean;
+  collisionGroup?: string | null;
+};
+
+export type EligibilityResolution = {
+  schemaVersion: "1.0";
+  resolutionId: string;
+  resolutionHash: string;
+  intentId: string;
+  intentHash: string;
+  profileId: string;
+  profileContractVersion: string;
+  profileSemanticHash: string;
+  datasetId: string;
+  datasetVersion: string;
+  registrySnapshotId: string;
+  registrySnapshotHash: string;
+  resourceIdentities: PlannerResourceIdentity[];
+  evaluatedCandidates: EvaluatedToolCandidate[];
+  eligibleToolIds: string[];
+  rejectedToolIds: string[];
+  diagnostics: CapabilityDiagnostic[];
+  warnings: CapabilityDiagnostic[];
+  provenance: { resolver: "deterministic_eligibility_resolver"; resolverVersion: "1.0" };
+};
+
+export type BoundParameter = {
+  parameter: string;
+  value: string | number | boolean | string[];
+  valueId: string;
+  source: PlannerBindingSource;
+  sourceIdentity: string;
+};
+
+export type SelectedCapability = {
+  toolId: string;
+  toolName: string;
+  toolVersion: string;
+  coveredScientificIntents: ScientificIntent[];
+  coveredCapabilityNeeds: AnalysisIntentCapabilityNeed[];
+  coveredDesiredOutputs: AnalysisIntentDesiredOutput[];
+  inputResourceIds: string[];
+  targetSemanticIds: string[];
+  boundParameters: BoundParameter[];
+  artifactTypes: string[];
+  rankFacts: Array<number | string>;
+};
+
+export type CapabilityPlanningDecision = {
+  schemaVersion: "1.0";
+  decisionId: string;
+  decisionHash: string;
+  intentId: string;
+  intentHash: string;
+  profileId: string;
+  profileSemanticHash: string;
+  registrySnapshotId: string;
+  registrySnapshotHash: string;
+  resolutionId: string;
+  resolutionHash: string;
+  outcome: CapabilityPlanningOutcome;
+  selections: SelectedCapability[];
+  unfulfilledDesiredOutputs: AnalysisIntentDesiredOutput[];
+  diagnostics: CapabilityDiagnostic[];
+  warnings: CapabilityDiagnostic[];
+  provenance: {
+    provider: "deterministic_mock" | "openai_compatible";
+    providerContractVersion: "1.0";
+    model: string;
+    repairCount: 0 | 1;
+    initialDecisionHash?: string | null;
+    repairDiagnostics: CapabilityDiagnostic[];
+  };
+};
+
 export type DataProfile = {
   schemaVersion: "0.1";
   profileId: string;

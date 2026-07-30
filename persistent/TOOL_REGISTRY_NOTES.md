@@ -1,5 +1,23 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-30 Phase 10L-2 Planner Metadata and Eligibility
+
+- All 53 current Registry entries now have strict planner metadata derived from
+  existing tool contracts. Metadata is an inert selection description, not a
+  public tool, alias, Adapter, capability implementation, or execution grant.
+- Thirty-eight currently available/invocable tools can become eligible.
+  Deployment-unavailable and Future entries remain auditable but non-selectable;
+  Not Planned declarations cannot become candidates.
+- Eligibility consumes exact AnalysisIntent 1.0, DataProfile 2.0, resource and
+  target identities, plus a deterministic Registry snapshot. The provider sees
+  only eligible candidates and exact binding domains. Registry order, display
+  labels, first columns, and LLM-invented IDs have no authority.
+- Registry metadata is validated against accepted inputs, parameters, declared
+  artifacts, Adapter presence, cardinality, safety boundary, and bounded enums.
+  Existing Registry execution validation remains unchanged and authoritative.
+- Phase 10L-3, only after reviewer approval, owns dependency/artifact-binding
+  design. This phase adds no producer-consumer edge or Runtime behavior.
+
 ## 2026-07-29 Phase 10L-1 Intent Boundary
 
 - AnalysisIntent is request meaning and exact data scope; it is not a Tool,

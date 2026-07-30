@@ -166,6 +166,94 @@ export type AnalysisPlan = {
   expectedArtifacts?: Array<Record<string, unknown>>;
 };
 
+export type CapabilityPlanningOutcome =
+  | "PLAN_READY"
+  | "NEEDS_CLARIFICATION"
+  | "UNSUPPORTED"
+  | "CAPABILITY_MISMATCH"
+  | "VALIDATION_FAILED";
+
+export type CapabilityDiagnostic = {
+  code: string;
+  field: string;
+  message: string;
+  toolId?: string | null;
+  repairable: boolean;
+};
+
+export type EligibilityResolution = {
+  schemaVersion: "1.0";
+  resolutionId: string;
+  resolutionHash: string;
+  intentId: string;
+  intentHash: string;
+  profileId: string;
+  profileContractVersion: string;
+  profileSemanticHash: string;
+  datasetId: string;
+  datasetVersion: string;
+  registrySnapshotId: string;
+  registrySnapshotHash: string;
+  resourceIdentities: Array<{ objectId: string; objectType: string; objectHash: string; kind: string }>;
+  evaluatedCandidates: Array<{
+    toolId: string;
+    toolName: string;
+    toolVersion: string;
+    eligible: boolean;
+    reasons: CapabilityDiagnostic[];
+  }>;
+  eligibleToolIds: string[];
+  rejectedToolIds: string[];
+  diagnostics: CapabilityDiagnostic[];
+  warnings: CapabilityDiagnostic[];
+  provenance: { resolver: string; resolverVersion: string };
+};
+
+export type CapabilityPlanningDecision = {
+  schemaVersion: "1.0";
+  decisionId: string;
+  decisionHash: string;
+  intentId: string;
+  intentHash: string;
+  profileId: string;
+  profileSemanticHash: string;
+  registrySnapshotId: string;
+  registrySnapshotHash: string;
+  resolutionId: string;
+  resolutionHash: string;
+  outcome: CapabilityPlanningOutcome;
+  selections: Array<{
+    toolId: string;
+    toolName: string;
+    toolVersion: string;
+    coveredScientificIntents: AnalysisIntentScientificIntent[];
+    coveredCapabilityNeeds: AnalysisIntentCapabilityNeed[];
+    coveredDesiredOutputs: AnalysisIntentDesiredOutput[];
+    inputResourceIds: string[];
+    targetSemanticIds: string[];
+    boundParameters: Array<{
+      parameter: string;
+      value: string | number | boolean | string[];
+      valueId: string;
+      source: string;
+      sourceIdentity: string;
+    }>;
+    artifactTypes: string[];
+    rankFacts: Array<number | string>;
+  }>;
+  unfulfilledDesiredOutputs: AnalysisIntentDesiredOutput[];
+  diagnostics: CapabilityDiagnostic[];
+  warnings: CapabilityDiagnostic[];
+  provenance: {
+    provider: "deterministic_mock" | "openai_compatible";
+    providerContractVersion: "1.0";
+    model: string;
+    repairCount: 0 | 1;
+    initialDecisionHash?: string | null;
+    repairDiagnostics: CapabilityDiagnostic[];
+  };
+};
+
 export type PlannerJobCreateResult = {
   ok: boolean;
   job_id?: string | null;
@@ -181,6 +269,10 @@ export type PlannerJobCreateResult = {
   intent_outcome?: AnalysisIntent["outcome"] | null;
   intent?: AnalysisIntent | null;
   error_code?: string | null;
+  capability_outcome?: CapabilityPlanningOutcome | null;
+  eligibility_resolution?: EligibilityResolution | null;
+  capability_decision?: CapabilityPlanningDecision | null;
+  provider_visible_tool_ids?: string[];
 };
 
 export type PlannerJobDetail = {
@@ -201,6 +293,9 @@ export type PlannerJobDetail = {
   intentId?: string | null;
   intentOutcome?: AnalysisIntent["outcome"] | null;
   analysisIntent?: AnalysisIntent | null;
+  capabilityPlanningOutcome?: CapabilityPlanningOutcome | null;
+  eligibilityResolution?: EligibilityResolution | null;
+  capabilityDecision?: CapabilityPlanningDecision | null;
 };
 
 export type AnalysisPlanRecord = {
