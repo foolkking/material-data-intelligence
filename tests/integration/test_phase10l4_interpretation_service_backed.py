@@ -16,8 +16,8 @@ from mdi_api.routers.planner import (
     get_planner_interpretation_evidence,
     planner_jobs,
 )
-from mdi_llm import MockLLMProvider
-from mdi_schemas import AnalysisPlan, DataProfile
+from mdi_llm import ARTIFACT_PROJECTOR_CONTRACTS, MockLLMProvider
+from mdi_schemas import AnalysisPlan, AnalysisPlanV02, DataProfile
 from mdi_tool_registry import load_manifests
 from mdi_workers import QueueWorkerRuntime
 
@@ -232,7 +232,7 @@ def test_phase10l4_postgres_redis_minio_phonon_chain_interpretation() -> None:
         repositories=repos,
         queue_runtime=runtime,
     )
-    assert interpreted["outcome"] == "INTERPRETATION_READY"
+    assert interpreted["outcome"] == "INTERPRETATION_READY_WITH_LIMITS"
     assert interpreted["noExecution"] == {
         "toolCallCreated": False,
         "planCreated": False,
@@ -246,9 +246,20 @@ def test_phase10l4_postgres_redis_minio_phonon_chain_interpretation() -> None:
         len(repos.artifacts.list_for_job(job_id)),
     )
     evidence = get_planner_interpretation_evidence(interpreted["interpretationId"], repositories=repos)
-    assert set(evidence["sourceArtifactIds"]) == {
-        artifact["id"] for artifact in repos.artifacts.list_for_job(job_id)
+    tool_calls = {
+        tool_call["id"]: tool_call
+        for tool_call in repos.tool_calls.list_for_job(job_id)
     }
+    supported_artifact_ids = {
+        artifact["id"]
+        for artifact in repos.artifacts.list_for_job(job_id)
+        if (
+            tool_calls[artifact["toolCallId"]]["toolId"],
+            artifact["type"],
+        ) in ARTIFACT_PROJECTOR_CONTRACTS
+    }
+    assert set(evidence["sourceArtifactIds"]) == supported_artifact_ids
+    assert evidence["unsupportedArtifactCount"] > 0
     assert {item["sourceToolId"] for item in evidence["evidenceItems"]} == {
         "phonon.band",
         "phonon.dos",
