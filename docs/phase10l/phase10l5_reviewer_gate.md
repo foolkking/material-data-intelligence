@@ -3,8 +3,9 @@
 Status: QUEUED BY REVIEWER / BLOCKED BY PHASE 10L-4 ARCHIVE
 
 The reviewer has supplied a complete Phase 10L-5 task in `TASKS.md`. It is not
-active while Phase 10L-4 remains first and `IN_PROGRESS`. Phase 10L-5 may begin
-only after the L4 implementation, completion record, and verified queue archive
-exact-SHA CI have succeeded and the complete L4 task block has been removed.
+active while the completed Phase 10L-4 block remains first pending closure.
+L4 implementation `02a9e33` and exact-SHA CI `30606774006` passed. Phase 10L-5
+may begin only after the completion record and verified queue archive exact-SHA
+CI succeed and the complete L4 task block is removed.
 
 This file is an admission-state record, not a second executable task.

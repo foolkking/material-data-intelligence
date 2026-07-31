@@ -46,13 +46,16 @@ eligibility, eligible-only capability selection, exact parameter provenance,
 and an independent validation gate. Phase 10L-3 is archived with additive
 AnalysisPlan 0.2, typed Artifact ports, deterministic serial dependency
 execution, partial-result records, and Artifact lineage while preserving all
-0.1 behavior. Phase 10L-4 is the sole active task. Its local implementation
-adds post-execution ScientificEvidenceBundle 1.0 projection, deterministic and
-strict-provider interpretation, grounded claims, immutable persistence, and an
-additive findings/evidence UI without changing Plan, Runtime, Registry, Job, or
-Artifact execution authority. Exact-SHA implementation/completion/archive CI
-remain required. Phase 10L-5 was supplied by the reviewer and remains queued
-behind that archive gate. The remaining initial-release route is:
+0.1 behavior. Phase 10L-4 implementation is complete at corrected commit
+`02a9e33b93f96aa99413dc49ca2dabca652679c9`; exact-SHA CI run `30606774006`
+passed Unit, Frontend/browser/build, PostgreSQL/Redis/MinIO, and the zero-skip
+service gate. It adds post-execution ScientificEvidenceBundle 1.0 projection,
+deterministic and strict-provider interpretation, grounded claims, immutable
+persistence, and an additive findings/evidence UI without changing Plan,
+Runtime, Registry, Job, or Artifact execution authority. Completion-record and
+verified archive CI remain before archival. Phase 10L-5 was supplied by the
+reviewer and remains queued behind that archive gate. The remaining
+initial-release route is:
 
 ```text
 10K Material Intelligence

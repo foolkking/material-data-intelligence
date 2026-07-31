@@ -1,5 +1,21 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-31 ADR Addendum: Project Exact Production Artifact Contracts
+
+**Context:** service-backed replay showed that the initial ML evidence fixture
+modeled four metrics while the registered `ml.basic_metrics` Adapter emits six.
+A fixture-only projector could reject a valid production artifact despite
+passing isolated contract tests.
+
+**Decision:** the ML projector strictly validates and projects the exact
+six-field production contract, including cross-metric consistency, and local
+CI includes a real registered Adapter -> QueueWorkerRuntime -> interpretation
+regression. Projectors remain contract-specific and do not accept generic JSON.
+
+**Consequences:** production and fixture evidence domains agree; provider-safe
+projection remains bounded and read-only. No Registry, Adapter algorithm,
+AnalysisPlan, Runtime, job, queue, or scientific execution authority changes.
+
 ## 2026-07-30 ADR: Contract-Specific Evidence Before Read-Only Interpretation
 
 **Context:** successful Artifacts and lineage are execution records, but raw

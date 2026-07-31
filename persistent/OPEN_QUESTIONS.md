@@ -8,8 +8,11 @@ assigned phases rather than by this roadmap gate:
 ### Phase 10L Reviewer Gate
 
 * Is plan approval/editing owned by Phase 10L or deferred to Phase 10M?
-* Which cross-case provider policy and DeepSeek-only evidence requirements are
-  required for the reviewer-supplied Phase 10L-5 closure?
+* Phase 10L-4 interpretation architecture is closed: post-execution read-only
+  evidence projection, claim grounding, one interpretation repair, and no
+  execution authority are fixed. The reviewer-supplied Phase 10L-5 owns only
+  cross-case natural-language evidence closure and its approved DeepSeek-only
+  provider policy; it remains blocked until L4 archive CI succeeds.
 
 * Which exact units and domain property registries should be admitted beyond
   the conservative Phase 10K-1 numeric property allowlist?

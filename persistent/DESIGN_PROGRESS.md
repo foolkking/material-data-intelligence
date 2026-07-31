@@ -1,5 +1,22 @@
 # DESIGN_PROGRESS
 
+## 2026-07-31 Phase 10L-4 Grounded Interpretation Complete, Awaiting Archive
+
+- Corrected implementation `02a9e33b93f96aa99413dc49ca2dabca652679c9`
+  passed exact-SHA CI run `30606774006`: unit `955 passed, 1 skipped,
+  32 deselected`, service-backed `31 passed, 0 skipped, 0 failed`, and
+  Frontend typecheck/build plus committed Chromium/Firefox/WebKit/mobile replay.
+- The ML projector now validates the real six-field `ml.basic_metrics` payload
+  (`n`, MAE, RMSE, R2, mean error, max absolute error) and a non-service real
+  Adapter/Runtime regression prevents fixture-only drift.
+- Two failed CI runs remain in provenance: `3336d9f` / `30604842478` exposed a
+  missing service fixture import and honest phonon limited outcome;
+  `0d37ea9` / `30605450973` exposed the real ML payload mismatch and a test-only
+  unsupported-count assertion. Both root causes are corrected without history
+  rewrite.
+- L4 is `COMPLETE / AWAITING_COMPLETION_RECORD_CI`; L5 remains reviewer-supplied
+  and blocked until the verified L4 queue archive.
+
 ## 2026-07-30 Phase 10L-4 Grounded Interpretation Implementation Candidate
 
 - Added strict ScientificEvidenceBundle/Item/Ref, ScientificClaim,

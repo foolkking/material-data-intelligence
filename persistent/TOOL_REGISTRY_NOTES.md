@@ -12,6 +12,9 @@
   recommendation.
 - Phase 10L-4 adds no Registry metadata, public tool, parameter, Adapter,
   scientific algorithm, dependency port, or Runtime behavior.
+- Corrected implementation `02a9e33` preserves that boundary and only aligns
+  the read-only ML projector with the existing registered Adapter's real
+  six-field artifact contract.
 
 ## 2026-07-30 Phase 10L-3 Typed Artifact Ports
 

@@ -8,8 +8,9 @@ persistence audits, performance/security markers, Chromium/Firefox/WebKit and
 390x844 captures, DOM/network/console audits, raw PNG hashes, and an
 LF-normalized SHA-256 manifest.
 
-Local evidence does not substitute for PostgreSQL/Redis/MinIO exact-SHA CI or
-verified queue closure.
+Local evidence does not substitute for verified queue closure. Corrected
+implementation exact-SHA CI run `30606774006` passed PostgreSQL/Redis/MinIO,
+Alembic, all 31 selected service-backed tests, and the zero-skip assertion.
 
 Browser captures are real Chromium/Firefox/WebKit UI runs over route-fulfilled
 fixtures generated from persisted API/runtime cases. They prove rendering,

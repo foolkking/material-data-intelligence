@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-07-31 - Phase 10L-4 Grounded Interpretation Corrected Implementation
+
+- Corrected the approved ML evidence projector to match the real registered
+  `ml.basic_metrics` six-field artifact and added real Adapter/Runtime coverage
+  outside the service-only test gate.
+- Regenerated and replayed the sanitized L4 evidence/browser matrix; strict
+  evidence IDs, screenshots, provider isolation, partial results, and manifest
+  remain mutually consistent.
+- Corrected implementation `02a9e33` passed exact-SHA CI run `30606774006`,
+  including service-backed `31 passed, 0 skipped, 0 failed`; L4 now awaits only
+  completion-record and verified queue-archive CI.
+
 ## 2026-07-30 - Phase 10L-4 Grounded Interpretation Candidate
 
 - Added post-execution, read-only evidence projection and grounded scientific

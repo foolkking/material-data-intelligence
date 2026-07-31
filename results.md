@@ -1511,6 +1511,394 @@ commit. Return the result and stop; do not queue or execute Phase 10L-3.
 - Archive commit exact SHA and CI run are reported in the reviewer return after
   the final exact-SHA gate; this addendum is not rewritten after archive.
 
+# Phase 10L-4 Grounded Scientific Result Interpretation Result
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
+```
+
+The implementation, local gates, permanent evidence, and corrected exact-SHA
+implementation CI are complete. The task remains in `TASKS.md` until this
+completion record and the subsequent verified queue archive each pass their
+own exact-SHA CI.
+
+## 2. Baseline and Entry Gate
+
+- Phase 10L-3 archive: `8026cb15658f35a8f4c59ef312bd519cead778ae`.
+- Phase 10L-3 archive CI: run `30543213225`, success.
+- Initial branch/HEAD/origin: `master` / `8026cb15658f35a8f4c59ef312bd519cead778ae`
+  / same origin; worktree clean.
+- Initial TASKS: one admitted L4 block first and in progress; reviewer-supplied
+  L5 pending and blocked by L4 archive.
+- Entry gate and current Plan/lineage/migration source audit passed.
+
+## 3. Pre-Implementation Audit
+
+- Existing Adapter summaries, reports, and `summary.md` were reusable display
+  foundations but not grounded scientific authority.
+- No first-class evidence bundle, claims, numeric/unit/entity grounding,
+  interpretation persistence, API, or findings UI existed.
+- Existing provider transport was reusable, but raw Artifact text and prior
+  summaries were excluded from the L4 provider domain.
+- Current Job, ToolCall, ArtifactStorage, dependency execution, and lineage
+  repositories supplied exact post-execution authority.
+- At least five safe structured contracts were available: numeric table
+  summary, ML basic metrics, structure summary, phonon band/DOS/combined, and
+  volumetric manifest. Readiness was `PASS`.
+
+## 4. Interpretation Architecture
+
+Terminal Job, exact persisted Plan/execution/lineage, and successful validated
+Artifacts feed contract-specific projectors. The resulting immutable evidence
+bundle feeds deterministic or strict-provider interpretation and an independent
+grounding validator. This service is post-execution and read-only: it cannot
+select tools, change Intent/Plan/Job/Artifact, create ToolCalls, or enqueue work.
+
+## 5. Scientific Evidence Contracts
+
+- `ScientificEvidenceBundle 1.0`, `ScientificEvidenceItem 1.0`, and
+  `ScientificEvidenceRef 1.0` exist as strict Python, checked-in JSON Schema,
+  and TypeScript contracts.
+- Identity includes exact project/dataset/Profile/Intent/eligibility/decision/
+  plan/graph/job/execution/ToolCall/Artifact checksum/lineage facts.
+- Field locators are projector-owned semantic field/entity IDs; path, URL,
+  filename, fuzzy label, arbitrary JSON pointer, code, and array-index-only
+  authority are rejected.
+- Canonical JSON and deterministic hashes exclude runtime timestamps from
+  semantic identity. Unknown fields, duplicate JSON keys, non-finite values,
+  depth/count/byte overflow, and cross-scope evidence fail typed validation.
+
+## 6. Supported Artifact Families
+
+1. Dataset/property: `table.numeric_summary` / `table_json`.
+2. Materials ML: `ml.basic_metrics` / `metrics_json`, using the real six-field
+   `n`, MAE, RMSE, R2, mean-error, and max-absolute-error contract.
+3. Structure: `structure.summary` / `structure_json`.
+4. Phonon: `phonon.band`, `phonon.dos`, and the real L3
+   `phonon.band + phonon.dos -> phonon.band_dos` chain.
+5. Volumetric: `structure.volumetric_data` structured manifest scope.
+
+The complete Registry inventory is classified in the evidence matrix as
+interpretation-ready, deterministic-only, display-only, unsupported-contract,
+unsafe-untrusted-text, no-structured-facts, or Future. Unsupported contracts
+are not coerced into these five families.
+
+## 7. Evidence Projectors
+
+Projectors are deterministic, exact-contract/version aware, identity/unit
+preserving, bounded, no-network, and no-LLM. They project already-computed
+facts and warnings only. The corrected ML projector validates the exact real
+Adapter payload and cross-metric consistency. It performs no new scientific
+analysis, generic JSON parsing, image extraction, unit guessing, or raw text
+interpretation. Unsupported or malformed artifacts produce typed source or
+no-supported-evidence outcomes.
+
+## 8. Scientific Claim Contract
+
+`ScientificClaim 1.0` supports OBSERVATION, COMPARISON, ANOMALY, WARNING,
+LIMITATION, RECOMMENDATION, and NO_SUPPORTED_CONCLUSION with allowlisted
+predicates. Confidence is DIRECT, QUALIFIED, or LIMITED, never an invented
+probability. Every claim has exact subject/supporting and optional limiting or
+contradicting evidence IDs. Platform templates render normal scientific text;
+provider proposals cannot add free numeric/unit/entity authority.
+
+## 9. Grounding Validator
+
+The independent validator verifies bundle/artifact/lineage identity, evidence
+membership, subject scope, allowlisted predicate, numeric tokens and display
+rounding, units/references, comparison compatibility, partial-result
+limitations, forbidden conclusions, inert text, and caps. It rejects invented
+numbers, units, entities, thresholds, evidence IDs, causal/superlative claims,
+unsupported stability/confirmation/deployment/generalization/Bader/charge-
+transfer conclusions, and evidence from failed or blocked steps.
+
+## 10. Deterministic Interpreter
+
+The default interpreter creates useful bounded direct observations, propagates
+source warnings and partial limitations, emits NO_SUPPORTED_CONCLUSION when
+needed, deduplicates and orders claims deterministically, and produces stable
+semantic hashes. It does not dump raw JSON, recalculate science, or call an LLM.
+
+## 11. Strict Provider Interpreter
+
+- Reuses the existing bounded OpenAI-compatible transport; no new dependency.
+- Provider sees only provider-safe evidence IDs and structured facts plus
+  allowlisted claim/predicate/schema/boundary rules.
+- Raw Artifact payloads, arrays, paths, URLs, bucket keys, source code,
+  Registry, rejected candidates, secrets, and execution APIs are absent.
+- Exactly one strict JSON object is accepted. Prose, fences, duplicate keys,
+  unknown fields, invented evidence/facts, HTML/script/code/path/URL, non-finite
+  values, and over-cap output fail.
+- At most one interpretation-specific validation repair is permitted with no
+  evidence-domain expansion and no deterministic fallback.
+- `REAL_LLM_CALLS = 0`; evidence uses deterministic and fake transport only.
+
+## 12. Interpretation Outcomes
+
+Implemented typed outcomes:
+
+```text
+INTERPRETATION_READY
+INTERPRETATION_READY_WITH_LIMITS
+NO_SUPPORTED_EVIDENCE
+SOURCE_NOT_TERMINAL
+SOURCE_INTEGRITY_FAILED
+EVIDENCE_CAP_EXCEEDED
+PROVIDER_FAILED
+VALIDATION_FAILED
+```
+
+Only grounded READY states persist a ready interpretation. Provider failure is
+not relabeled as deterministic success; source integrity failures call no
+provider and create no claims.
+
+## 13. Partial Execution Interpretation
+
+ALL_SUCCEEDED uses all supported successful artifacts. PARTIAL_RESULTS uses
+only successful lineage-complete artifacts, shows failed/blocked steps and
+missing desired outputs first-class, limits every claim, and returns
+`INTERPRETATION_READY_WITH_LIMITS`. ALL_FAILED yields no scientific finding.
+Successful independent-branch artifacts remain available without extending
+their claims to the failed plan scope.
+
+## 14. Recommendations
+
+Recommendations are bounded, evidence-linked, non-executable records with
+`executionAuthorized=false`, `planCreated=false`, and `jobCreated=false`.
+They contain no tool parameters, code, paths, URLs, shell/notebook content, or
+enqueue token. PlannerWorkbench does not render them as Run actions.
+
+## 15. Persistence and Migration
+
+- Alembic `0006_phase10l4_interpretation` adds immutable evidence bundles,
+  interpretation runs/records, claims, and evidence links.
+- Bundle/run/claim/link/execution identities are deterministic and idempotent;
+  conflicting semantic writes fail.
+- In-memory, SQLite 0005->0006 upgrade/downgrade/re-upgrade, and PostgreSQL
+  full-chain behavior pass.
+- No provider authorization or secret is stored.
+- Interpretation remains a first-class API/persistence record; no fake
+  registered Adapter or ToolCall-produced interpretation artifact was created.
+
+## 16. API
+
+Additive create/list/read/evidence endpoints load the exact terminal job,
+verify expected plan and source integrity, project evidence, run the requested
+mode, validate, and persist immutable records. Responses expose bounded claims,
+evidence links, warnings, limitations, recommendations, partial and repair
+state, diagnostics, provenance, and explicit no-execution markers. Running,
+tampered, unsupported, provider-failed, and validation-failed cases do not
+create ToolCall, Plan, Job, queue message, or scientific Artifact. Legacy API
+behavior is unchanged.
+
+## 17. Frontend and Browser
+
+PlannerWorkbench additively displays availability/outcome/mode, findings,
+warnings, limitations, non-executable recommendations, evidence counts,
+partial banners, provider/repair provenance, and inert audit JSON. Each claim
+has keyboard-accessible evidence drill-down with exact value/unit/subject,
+contract, tool/version, checksum abbreviation, locator, warning/limitation,
+and lineage. Chromium, Firefox, WebKit, and Chromium 390x844 passed deterministic,
+strict-fake-provider, partial/no-evidence/failure states, focus/accessibility,
+zero horizontal overflow, zero console/page errors, and zero unapproved network.
+
+## 18. Real Evidence Cases
+
+- Dataset/property: exact counts, ranges, missingness, and no anomaly-cause
+  invention.
+- ML: real registered `ml.basic_metrics` Adapter -> QueueWorkerRuntime ->
+  Artifact -> interpretation, with exact target and six metrics.
+- Structure: exact structure/site/lattice facts without stability, phase, bond,
+  or correctness claims.
+- Phonon: persisted AnalysisPlan 0.2 band+DOS->band_dos chain with multi-artifact
+  refs, source warnings, and no unconditional stability claim.
+- Volumetric: exact quantity/range/reference facts without Bader, topology, or
+  charge-transfer claims.
+- Partial execution: successful independent DOS evidence only, failed producer
+  and blocked consumer limitations, READY_WITH_LIMITS.
+- Unsupported contract: NO_SUPPORTED_EVIDENCE and no fake findings.
+- Integrity tampering: wrong plan/checksum/cross-job/stale/broken lineage gives
+  SOURCE_INTEGRITY_FAILED with zero provider calls and claims.
+
+## 19. Adversarial Evidence
+
+Invented number, unit, entity, evidence ID, threshold, failed-artifact result,
+forbidden stability/phase/model/Bader/charge-transfer/structure claims,
+duplicate keys, prose/fence, HTML/script, code/path/URL, non-finite values,
+oversized/deep payload, and Artifact prompt-injection fixtures are rejected or
+exhaust the single repair with `VALIDATION_FAILED`. Artifact strings remain
+inert and never enter provider semantic facts or execution authority.
+
+## 20. Compatibility
+
+AnalysisIntent 1.0, DataProfile 2.0, EligibilityResolution 1.0, Tool planner
+metadata 1.0/1.1, AnalysisPlan 0.1/0.2, dependency bindings, PlanValidator,
+QueueWorkerRuntime, Registry/Adapter execution, Job statuses, Artifact lineage,
+historical hashes/jobs/artifacts, and L1-L3 API behavior are unchanged. L4 is
+an additive read-only post-execution layer.
+
+## 21. Caps and Performance
+
+- source Artifacts <= 16; evidence items <= 256; warnings <= 128;
+  limitations <= 64; table rows/series summaries <= 64;
+  refs per claim <= 8; claims <= 32; recommendations <= 8; JSON depth <= 14.
+- bundle/provider payload <= 262,144 bytes; interpretation <= 131,072 bytes.
+- The near-cap fixture requested 256 evidence items across four source
+  Artifacts and produced typed `EVIDENCE_CAP_EXCEEDED` rather than semantic
+  truncation; measured local projection was 320.909 ms with 1,207,810 traced
+  peak bytes. This is bounded fixture evidence, not a production capacity claim.
+- Bounded reads avoid binary/full-array provider payloads; replay is idempotent
+  and does not grow duplicate persistence rows.
+
+## 22. Security
+
+```text
+REAL_LLM_CALLS = 0
+NO_PHASE10L4_UNAPPROVED_EXTERNAL_NETWORK_REQUESTS
+NO_INTERPRETATION_ARBITRARY_CODE_EXECUTION
+NO_INTERPRETATION_SHELL_OR_FILESYSTEM_AUTHORITY
+NO_INTERPRETATION_TOOL_EXECUTION_AUTHORITY
+NO_INTERPRETATION_PLAN_MUTATION
+NO_INTERPRETATION_JOB_OR_ENQUEUE
+NO_RAW_ARTIFACT_PAYLOAD_TO_PROVIDER
+NO_UNSUPPORTED_ARTIFACT_TO_PROVIDER
+NO_PROVIDER_ARTIFACT_PATH_OR_URL
+NO_PROVIDER_SECRET_EXPOSURE
+NO_PROVIDER_FULL_REGISTRY_EXPOSURE
+NO_REJECTED_CANDIDATE_LEAK_TO_LLM
+NO_ARTIFACT_JAVASCRIPT
+NO_ARTIFACT_HTML_EXECUTION
+NO_ARTIFACT_IFRAME
+NO_EXTERNAL_ARTIFACT_URL
+NO_CROSS_JOB_INTERPRETATION_EVIDENCE
+NO_CROSS_PROJECT_INTERPRETATION_EVIDENCE
+NO_STALE_RESOURCE_INTERPRETATION
+NO_UNGROUNDED_NUMERIC_CLAIMS
+NO_UNGROUNDED_UNIT_CLAIMS
+NO_UNGROUNDED_ENTITY_CLAIMS
+NO_UNSUPPORTED_SCIENTIFIC_CONCLUSIONS
+NO_SECRET_PATTERN_HITS
+```
+
+L1-L3 security regressions remain green. No dependency or execution authority
+was added.
+
+## 23. Evidence Inventory
+
+`docs/phase10l/evidence/phase10l4_grounded_interpretation/` retains entry and
+interpretability audits, six strict schema projections, five family cases,
+real phonon/partial runtime, provider isolation, adversarial/integrity cases,
+API/persistence/migration/grounding/performance/security audits, browser DOM/
+network/console/mobile matrices, desktop/mobile raw PNGs, and an LF-normalized
+text/raw-PNG SHA-256 manifest. Committed browser semantics replay exactly in CI.
+
+## 24. Tests
+
+- Focused corrected L4: `37 passed, 3 skipped`; skips are local service cases.
+- Local full backend: `955 passed, 33 skipped, 63 warnings`.
+- Local frontend: 52 files / `333 passed`; typecheck and production build PASS.
+- Local browser: Chromium/Firefox/WebKit and 390x844 mobile PASS.
+- Evidence/manifest focused: `4 passed`; lock, dependency tree, diff, migration,
+  Phase 10 closure, security and secret markers PASS.
+- Local service-backed: `UNAVAILABLE` because Docker is not installed; no PASS
+  claim is made.
+- Corrected exact-SHA unit: `955 passed, 1 skipped, 32 deselected, 63 warnings`.
+- Corrected exact-SHA service-backed: `31 passed, 0 skipped, 0 failed`; Alembic,
+  PostgreSQL, Redis, MinIO and no-skipped assertion PASS.
+- Corrected exact-SHA frontend: closure, evidence integrity, typecheck,
+  Chromium/Firefox/WebKit/mobile semantic replay, and build PASS.
+- npm audit: `UNAVAILABLE`; configured mirror status is not reported as clean.
+
+## 25. Production Behavior Changes
+
+- Adds post-execution scientific evidence projection and immutable grounded
+  interpretation for terminal persisted jobs.
+- Adds deterministic and strict-provider modes with one interpretation repair.
+- Adds grounded findings/evidence/limitation UI and read APIs.
+- Does not modify Planner selection, AnalysisPlan, PlanValidator, Runtime,
+  Registry/Adapter execution, job status, queue, or Artifact execution.
+- Recommendations remain non-executable.
+
+## 26. Files Changed
+
+- Backend/contracts: interpretation schemas/models, projectors/interpreters,
+  grounding validator, repository/db/API, Alembic 0006.
+- Frontend/shared: TypeScript contracts, API types, PlannerWorkbench and styles.
+- Tests: contract/projector/provider/validator/persistence/API/Runtime/service/
+  frontend/browser/security/evidence cases.
+- Evidence/docs: L4 architecture/contracts/boundaries/caps/compatibility/
+  readiness, browser runner, captures, screenshots, and manifest.
+- Persistent/queue/result records updated. Dependency and lock files unchanged.
+
+## 27. Commit and Exact-SHA CI History
+
+- Initial local implementation: `262ec0e937894990fc800edb2899c0884169d265`.
+- First pushed hardening: `3336d9f2ec14153063fe3b2bd1c552e96ed13f82`,
+  CI `30604842478` failed service-backed (missing AnalysisPlanV02 fixture import;
+  phonon chain honestly returned READY_WITH_LIMITS rather than READY).
+- First correction: `0d37ea967b314cb920ac8537e3f75df66fd83918`,
+  CI `30605450973` failed service-backed (projector fixture omitted two real ML
+  fields; one test queried a non-public evidence response field).
+- Corrected implementation: `02a9e33b93f96aa99413dc49ca2dabca652679c9`.
+- Corrected implementation exact-SHA CI: run `30606774006`, all required jobs
+  success. Failed provenance is retained; history was not rewritten.
+- Completion-record SHA/CI: pending this record's commit.
+- Verified queue-archive SHA/CI: pending completion-record success.
+
+## 28. Explicit Non-Scope Confirmation
+
+No Phase 10L-5 full evidence closure, Workspace, Report/Recipe productization,
+RAG/vector DB/literature/web retrieval, autonomous research loop, runtime LLM/
+replanning, interpretation tool selection, recommendation auto-execution, new
+Intent/Plan/dependency model, Runtime redesign, arbitrary artifact/JSON/Markdown
+authority, arbitrary Python/shell/filesystem/notebook/script, external Artifact
+URL or science API, cross-job reuse, new scientific algorithm, CrystalNN/
+VoronoiNN, experimental XRD, trajectory analytics, electronic Band/DOS, Fermi
+surface, enterprise infrastructure, plugin ecosystem, new LLM SDK, or
+uncontrolled dependency was implemented.
+
+## 29. Remaining Phase 10L Gap
+
+```text
+Phase 10L-5:
+Natural-Language Analysis Evidence Closure + DeepSeek-Only Provider Freeze
+```
+
+This is the reviewer-supplied pending task, not work executed during L4.
+
+## 30. Queue State
+
+```text
+Phase 10L-4 = COMPLETE / AWAITING_COMPLETION_RECORD_CI
+Phase 10L-5 = REVIEWER_APPROVED / QUEUED / BLOCKED_BY_PHASE_10L4_ARCHIVE
+TASK_BLOCK_COUNT = 2 pending verified L4 archive
+```
+
+## 31. Whether Phase 10L-5 Was Entered Automatically
+
+```text
+NO
+PHASE_10L5_EXECUTABLE_TASK_CREATED = NO
+```
+
+The L5 task was supplied explicitly by the reviewer/user and has not started.
+
+## 32. Next Action
+
+Verify this completion-record exact-SHA CI, then remove only the completed L4
+task block in a verified queue-archive commit. After archive CI succeeds, begin
+the already reviewer-supplied L5 task under normal queue rules.
+
+## 33. Repository State at Completion Record
+
+- corrected implementation HEAD/origin:
+  `02a9e33b93f96aa99413dc49ca2dabca652679c9`.
+- corrected implementation CI: `30606774006`, success.
+- completion-record CI: pending this record's commit.
+- archive CI: pending completion-record success.
+
 # Phase 10L-3 Bounded Multi-Tool Analysis + Typed Artifact Dependency Execution Result
 
 Completed: 2026-07-30 20:26:23 +08:00

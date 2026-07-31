@@ -1,6 +1,6 @@
 {
-  "activeExecutableTaskCount": 1,
-  "activeTask": "Phase 10L-4",
+  "activeExecutableTaskCount": 0,
+  "activeTask": null,
   "archiveCi": 30543213225,
   "baseline": "8026cb15658f35a8f4c59ef312bd519cead778ae",
   "branch": "master",
@@ -12,11 +12,11 @@
     "Phase 10L-5"
   ],
   "schemaHeadBeforeL4": "0005_phase10l3_dependency",
-  "snapshotState": "L4_IN_PROGRESS_WITH_L5_PRE_ADMITTED",
+  "snapshotState": "L4_COMPLETE_AWAITING_CLOSURE_WITH_L5_PRE_ADMITTED",
   "taskBlockCountAfterAdmission": 2,
   "taskBlocks": [
     {
-      "status": "处理中",
+      "status": "已完成",
       "title": "Phase 10L-4"
     },
     {
