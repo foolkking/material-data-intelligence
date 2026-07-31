@@ -1,0 +1,1272 @@
+{
+  "bundle": {
+    "allSucceeded": true,
+    "blockedStepCount": 0,
+    "bundleCompleteness": "COMPLETE",
+    "bundleHash": "3f006e7e795b9373d702e046be115d1d668f7aa96b82f22772b28cc897a8549e",
+    "bundleId": "bundle_3f006e7e795b9373d702e046be115d1d",
+    "bundleLimitations": [],
+    "bundleWarnings": [
+      "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+    ],
+    "datasetId": "dataset_l4",
+    "datasetVersion": "2.0",
+    "eligibilityResolutionHash": "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+    "eligibilityResolutionId": "resolution_l4",
+    "evidenceItems": [
+      {
+        "artifactContract": "phase10h.phonon_band_dos",
+        "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+        "datasetId": "dataset_l4",
+        "datasetVersion": "2.0",
+        "displayValue": "6",
+        "evidenceItemId": "evidence_51b44dd7a44ab2a25e0f958c85b4df94",
+        "evidenceKind": "COUNT",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "branch_count",
+          "semanticKey": "phonon.branch_count"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": null,
+          "minimum": null,
+          "scalar": 6,
+          "values": []
+        },
+        "producerStepId": "step_phonon",
+        "producerToolCallId": "tool_call_phonon",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "artifact_contract",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.branch_count",
+        "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+        "sourceArtifactId": "artifact_phonon",
+        "sourceToolId": "phonon.band_dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": null,
+        "unitAuthority": null,
+        "valueKind": "count",
+        "warnings": [
+          "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+        ]
+      },
+      {
+        "artifactContract": "phase10h.phonon_band_dos",
+        "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+        "datasetId": "dataset_l4",
+        "datasetVersion": "2.0",
+        "displayValue": "1",
+        "evidenceItemId": "evidence_7c8995d1f995e9b3ee47368a256e0a6d",
+        "evidenceKind": "COUNT",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "segment_count",
+          "semanticKey": "phonon.segment_count"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": null,
+          "minimum": null,
+          "scalar": 1,
+          "values": []
+        },
+        "producerStepId": "step_phonon",
+        "producerToolCallId": "tool_call_phonon",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "artifact_contract",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.segment_count",
+        "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+        "sourceArtifactId": "artifact_phonon",
+        "sourceToolId": "phonon.band_dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": null,
+        "unitAuthority": null,
+        "valueKind": "count",
+        "warnings": [
+          "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+        ]
+      },
+      {
+        "artifactContract": "phase10h.phonon_band_dos",
+        "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+        "datasetId": "dataset_l4",
+        "datasetVersion": "2.0",
+        "displayValue": "3",
+        "evidenceItemId": "evidence_b5e699062383880482049035ac56ce3c",
+        "evidenceKind": "COUNT",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "qpoint_count",
+          "semanticKey": "phonon.qpoint_count"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": null,
+          "minimum": null,
+          "scalar": 3,
+          "values": []
+        },
+        "producerStepId": "step_phonon",
+        "producerToolCallId": "tool_call_phonon",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "artifact_contract",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.qpoint_count",
+        "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+        "sourceArtifactId": "artifact_phonon",
+        "sourceToolId": "phonon.band_dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": null,
+        "unitAuthority": null,
+        "valueKind": "count",
+        "warnings": [
+          "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+        ]
+      },
+      {
+        "artifactContract": "phase10h.phonon_band_dos",
+        "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+        "datasetId": "dataset_l4",
+        "datasetVersion": "2.0",
+        "displayValue": "-1 to 5 terahertz",
+        "evidenceItemId": "evidence_b9ffb5e6aac2f045d54e613f4cfd0e3e",
+        "evidenceKind": "RANGE",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "frequency_range",
+          "semanticKey": "phonon.frequency_range"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": 5.0,
+          "minimum": -1.0,
+          "scalar": null,
+          "values": []
+        },
+        "producerStepId": "step_phonon",
+        "producerToolCallId": "tool_call_phonon",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "artifact_contract",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.frequency_range",
+        "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+        "sourceArtifactId": "artifact_phonon",
+        "sourceToolId": "phonon.band_dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": "terahertz",
+        "unitAuthority": "artifact_contract",
+        "valueKind": "frequency_range",
+        "warnings": [
+          "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+        ]
+      },
+      {
+        "artifactContract": "phase10h.phonon_band_dos",
+        "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+        "datasetId": "dataset_l4",
+        "datasetVersion": "2.0",
+        "displayValue": "compatible",
+        "evidenceItemId": "evidence_ca431899aa60ad1ef5343c8569ce34b3",
+        "evidenceKind": "CATEGORY",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "status",
+          "semanticKey": "phonon.status"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": null,
+          "minimum": null,
+          "scalar": "compatible",
+          "values": []
+        },
+        "producerStepId": "step_phonon",
+        "producerToolCallId": "tool_call_phonon",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "artifact_contract",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.status",
+        "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+        "sourceArtifactId": "artifact_phonon",
+        "sourceToolId": "phonon.band_dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": null,
+        "unitAuthority": null,
+        "valueKind": "category",
+        "warnings": [
+          "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+        ]
+      },
+      {
+        "artifactContract": "phase10h.phonon_band_dos",
+        "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+        "datasetId": "dataset_l4",
+        "datasetVersion": "2.0",
+        "displayValue": "2",
+        "evidenceItemId": "evidence_d1ea13be24749669973b6b713ac4fbd9",
+        "evidenceKind": "COUNT",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "atom_count",
+          "semanticKey": "phonon.atom_count"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": null,
+          "minimum": null,
+          "scalar": 2,
+          "values": []
+        },
+        "producerStepId": "step_phonon",
+        "producerToolCallId": "tool_call_phonon",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "artifact_contract",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.atom_count",
+        "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+        "sourceArtifactId": "artifact_phonon",
+        "sourceToolId": "phonon.band_dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": null,
+        "unitAuthority": null,
+        "valueKind": "count",
+        "warnings": [
+          "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+        ]
+      },
+      {
+        "artifactContract": "phase10h.phonon_band_dos",
+        "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+        "datasetId": "dataset_l4",
+        "datasetVersion": "2.0",
+        "displayValue": "2",
+        "evidenceItemId": "evidence_f829b0f6320896b2e53a6d8bac756e39",
+        "evidenceKind": "COUNT",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "projection_count",
+          "semanticKey": "phonon.projection_count"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": null,
+          "minimum": null,
+          "scalar": 2,
+          "values": []
+        },
+        "producerStepId": "step_phonon",
+        "producerToolCallId": "tool_call_phonon",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "artifact_contract",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.projection_count",
+        "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+        "sourceArtifactId": "artifact_phonon",
+        "sourceToolId": "phonon.band_dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": null,
+        "unitAuthority": null,
+        "valueKind": "count",
+        "warnings": [
+          "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+        ]
+      }
+    ],
+    "executionOutcome": "ALL_SUCCEEDED",
+    "failedStepCount": 0,
+    "graphHash": null,
+    "intentHash": "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+    "intentId": "intent_l4",
+    "jobId": "job_l4",
+    "partialResults": false,
+    "planHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "planId": "plan_l4",
+    "planSchemaVersion": "0.1",
+    "profileId": "profile_l4",
+    "profileSemanticHash": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+    "projectId": "project_l4",
+    "projectorVersions": {
+      "artifact_phonon": "phase10l4.projectors.v1"
+    },
+    "schemaVersion": "1.0",
+    "selectionDecisionHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "selectionDecisionId": "decision_l4",
+    "sourceArtifactIds": [
+      "artifact_phonon"
+    ],
+    "sourceJobTerminalState": "completed",
+    "supportedArtifactCount": 1,
+    "unsupportedArtifactCount": 0
+  },
+  "deterministic": {
+    "bundle": {
+      "allSucceeded": true,
+      "blockedStepCount": 0,
+      "bundleCompleteness": "COMPLETE",
+      "bundleHash": "3f006e7e795b9373d702e046be115d1d668f7aa96b82f22772b28cc897a8549e",
+      "bundleId": "bundle_3f006e7e795b9373d702e046be115d1d",
+      "bundleLimitations": [],
+      "bundleWarnings": [
+        "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+      ],
+      "datasetId": "dataset_l4",
+      "datasetVersion": "2.0",
+      "eligibilityResolutionHash": "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+      "eligibilityResolutionId": "resolution_l4",
+      "evidenceItems": [
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "6",
+          "evidenceItemId": "evidence_51b44dd7a44ab2a25e0f958c85b4df94",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "branch_count",
+            "semanticKey": "phonon.branch_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 6,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.branch_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "1",
+          "evidenceItemId": "evidence_7c8995d1f995e9b3ee47368a256e0a6d",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "segment_count",
+            "semanticKey": "phonon.segment_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 1,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.segment_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "3",
+          "evidenceItemId": "evidence_b5e699062383880482049035ac56ce3c",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "qpoint_count",
+            "semanticKey": "phonon.qpoint_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 3,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.qpoint_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "-1 to 5 terahertz",
+          "evidenceItemId": "evidence_b9ffb5e6aac2f045d54e613f4cfd0e3e",
+          "evidenceKind": "RANGE",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "frequency_range",
+            "semanticKey": "phonon.frequency_range"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": 5.0,
+            "minimum": -1.0,
+            "scalar": null,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.frequency_range",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": "terahertz",
+          "unitAuthority": "artifact_contract",
+          "valueKind": "frequency_range",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "compatible",
+          "evidenceItemId": "evidence_ca431899aa60ad1ef5343c8569ce34b3",
+          "evidenceKind": "CATEGORY",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "status",
+            "semanticKey": "phonon.status"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": "compatible",
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.status",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "category",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "2",
+          "evidenceItemId": "evidence_d1ea13be24749669973b6b713ac4fbd9",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "atom_count",
+            "semanticKey": "phonon.atom_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 2,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.atom_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "2",
+          "evidenceItemId": "evidence_f829b0f6320896b2e53a6d8bac756e39",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "projection_count",
+            "semanticKey": "phonon.projection_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 2,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.projection_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        }
+      ],
+      "executionOutcome": "ALL_SUCCEEDED",
+      "failedStepCount": 0,
+      "graphHash": null,
+      "intentHash": "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+      "intentId": "intent_l4",
+      "jobId": "job_l4",
+      "partialResults": false,
+      "planHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "planId": "plan_l4",
+      "planSchemaVersion": "0.1",
+      "profileId": "profile_l4",
+      "profileSemanticHash": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+      "projectId": "project_l4",
+      "projectorVersions": {
+        "artifact_phonon": "phase10l4.projectors.v1"
+      },
+      "schemaVersion": "1.0",
+      "selectionDecisionHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "selectionDecisionId": "decision_l4",
+      "sourceArtifactIds": [
+        "artifact_phonon"
+      ],
+      "sourceJobTerminalState": "completed",
+      "supportedArtifactCount": 1,
+      "unsupportedArtifactCount": 0
+    },
+    "diagnostics": [],
+    "execution_record": {
+      "caps": {
+        "artifacts": 16,
+        "claims": 32,
+        "evidenceItems": 256,
+        "repair": 1
+      },
+      "claimCount": 6,
+      "createdAt": "2026-07-30T00:00:00+00:00",
+      "diagnostics": [],
+      "elapsedMs": 1.3391,
+      "evidenceItemCount": 7,
+      "executionRecordHash": "3ff65ccc7d570568b30b4d553f918ea086b72ef677b57b80b0eb00a7b4715714",
+      "executionRecordId": "interpretation_execution_3ff65ccc7d570568b30b4d553f918ea0",
+      "idempotencyKeyHash": null,
+      "initialResponseHash": null,
+      "limitationCount": 0,
+      "mode": "DETERMINISTIC",
+      "outcome": "INTERPRETATION_READY",
+      "promptProjectionHash": null,
+      "provider": "deterministic",
+      "providerConfigHash": null,
+      "providerModel": null,
+      "providerVersion": "phase10l4.deterministic.v1",
+      "repairCount": 0,
+      "repairedResponseHash": null,
+      "responseHash": null,
+      "schemaVersion": "1.0",
+      "sourceBundleHash": "3f006e7e795b9373d702e046be115d1d668f7aa96b82f22772b28cc897a8549e",
+      "sourceBundleId": "bundle_3f006e7e795b9373d702e046be115d1d",
+      "sourceGraphHash": null,
+      "sourceJobId": "job_l4",
+      "sourcePlanHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sourcePlanId": "plan_l4",
+      "warningCount": 1
+    },
+    "interpretation": {
+      "claims": [
+        {
+          "claimId": "claim_eb92fc7f64f6808c48617232bfa4fac5",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "DIRECT",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 0,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.",
+          "schemaVersion": "1.0",
+          "scope": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "semanticPredicate": "HAS_CATEGORY",
+          "structuredPayload": {
+            "displayValue": "compatible",
+            "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "subjectEvidenceIds": [
+            "evidence_ca431899aa60ad1ef5343c8569ce34b3"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_ca431899aa60ad1ef5343c8569ce34b3"
+          ]
+        },
+        {
+          "claimId": "claim_9e486347d748a34085a9ad74b4b5c803",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "DIRECT",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 1,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.",
+          "schemaVersion": "1.0",
+          "scope": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "semanticPredicate": "HAS_COUNT",
+          "structuredPayload": {
+            "displayValue": "2",
+            "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "subjectEvidenceIds": [
+            "evidence_d1ea13be24749669973b6b713ac4fbd9"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_d1ea13be24749669973b6b713ac4fbd9"
+          ]
+        },
+        {
+          "claimId": "claim_c4409bae41b9f12a8835481292c28a4f",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "DIRECT",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 2,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.",
+          "schemaVersion": "1.0",
+          "scope": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "semanticPredicate": "HAS_COUNT",
+          "structuredPayload": {
+            "displayValue": "6",
+            "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "subjectEvidenceIds": [
+            "evidence_51b44dd7a44ab2a25e0f958c85b4df94"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_51b44dd7a44ab2a25e0f958c85b4df94"
+          ]
+        },
+        {
+          "claimId": "claim_7efa277737038642b7e8d21b24a4a688",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "DIRECT",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 3,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.",
+          "schemaVersion": "1.0",
+          "scope": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "semanticPredicate": "HAS_COUNT",
+          "structuredPayload": {
+            "displayValue": "3",
+            "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "subjectEvidenceIds": [
+            "evidence_b5e699062383880482049035ac56ce3c"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_b5e699062383880482049035ac56ce3c"
+          ]
+        },
+        {
+          "claimId": "claim_cf11f1cbe1fb2d028f2f52333a56d5de",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "DIRECT",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 4,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.",
+          "schemaVersion": "1.0",
+          "scope": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "semanticPredicate": "HAS_COUNT",
+          "structuredPayload": {
+            "displayValue": "1",
+            "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "subjectEvidenceIds": [
+            "evidence_7c8995d1f995e9b3ee47368a256e0a6d"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_7c8995d1f995e9b3ee47368a256e0a6d"
+          ]
+        },
+        {
+          "claimId": "claim_0817b31019fcc944f0e8662aaf5d4877",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "DIRECT",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 5,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.",
+          "schemaVersion": "1.0",
+          "scope": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "semanticPredicate": "HAS_RANGE",
+          "structuredPayload": {
+            "displayValue": "-1 to 5 terahertz",
+            "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "subjectEvidenceIds": [
+            "evidence_b9ffb5e6aac2f045d54e613f4cfd0e3e"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_b9ffb5e6aac2f045d54e613f4cfd0e3e"
+          ]
+        }
+      ],
+      "completeness": "COMPLETE",
+      "createdAt": "2026-07-30T00:00:00+00:00",
+      "executionRecordId": "interpretation_execution_3ff65ccc7d570568b30b4d553f918ea0",
+      "globalLimitations": [],
+      "globalWarnings": [
+        "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+      ],
+      "interpretationHash": "60e3bf046c667c779b1968797f1207317f35cdded7387b86de5618b24a9da051",
+      "interpretationId": "interpretation_60e3bf046c667c779b1968797f120731",
+      "mode": "DETERMINISTIC",
+      "outcome": "INTERPRETATION_READY",
+      "partialResultState": false,
+      "provider": "deterministic",
+      "providerVersion": "phase10l4.deterministic.v1",
+      "recommendations": [],
+      "repairCount": 0,
+      "schemaVersion": "1.0",
+      "sourceBundleHash": "3f006e7e795b9373d702e046be115d1d668f7aa96b82f22772b28cc897a8549e",
+      "sourceBundleId": "bundle_3f006e7e795b9373d702e046be115d1d",
+      "sourceGraphHash": null,
+      "sourceJobId": "job_l4",
+      "sourcePlanHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sourcePlanId": "plan_l4",
+      "validationOutcome": "VALID"
+    },
+    "outcome": "INTERPRETATION_READY"
+  },
+  "strictFakeProvider": {
+    "bundle": {
+      "allSucceeded": true,
+      "blockedStepCount": 0,
+      "bundleCompleteness": "COMPLETE",
+      "bundleHash": "3f006e7e795b9373d702e046be115d1d668f7aa96b82f22772b28cc897a8549e",
+      "bundleId": "bundle_3f006e7e795b9373d702e046be115d1d",
+      "bundleLimitations": [],
+      "bundleWarnings": [
+        "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+      ],
+      "datasetId": "dataset_l4",
+      "datasetVersion": "2.0",
+      "eligibilityResolutionHash": "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+      "eligibilityResolutionId": "resolution_l4",
+      "evidenceItems": [
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "6",
+          "evidenceItemId": "evidence_51b44dd7a44ab2a25e0f958c85b4df94",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "branch_count",
+            "semanticKey": "phonon.branch_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 6,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.branch_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "1",
+          "evidenceItemId": "evidence_7c8995d1f995e9b3ee47368a256e0a6d",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "segment_count",
+            "semanticKey": "phonon.segment_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 1,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.segment_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "3",
+          "evidenceItemId": "evidence_b5e699062383880482049035ac56ce3c",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "qpoint_count",
+            "semanticKey": "phonon.qpoint_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 3,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.qpoint_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "-1 to 5 terahertz",
+          "evidenceItemId": "evidence_b9ffb5e6aac2f045d54e613f4cfd0e3e",
+          "evidenceKind": "RANGE",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "frequency_range",
+            "semanticKey": "phonon.frequency_range"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": 5.0,
+            "minimum": -1.0,
+            "scalar": null,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.frequency_range",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": "terahertz",
+          "unitAuthority": "artifact_contract",
+          "valueKind": "frequency_range",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "compatible",
+          "evidenceItemId": "evidence_ca431899aa60ad1ef5343c8569ce34b3",
+          "evidenceKind": "CATEGORY",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "status",
+            "semanticKey": "phonon.status"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": "compatible",
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.status",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "category",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "2",
+          "evidenceItemId": "evidence_d1ea13be24749669973b6b713ac4fbd9",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "atom_count",
+            "semanticKey": "phonon.atom_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 2,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.atom_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        },
+        {
+          "artifactContract": "phase10h.phonon_band_dos",
+          "artifactContractVersion": "phase10h.phonon_band_dos_summary.v1",
+          "datasetId": "dataset_l4",
+          "datasetVersion": "2.0",
+          "displayValue": "2",
+          "evidenceItemId": "evidence_f829b0f6320896b2e53a6d8bac756e39",
+          "evidenceKind": "COUNT",
+          "fieldLocator": {
+            "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "fieldId": "projection_count",
+            "semanticKey": "phonon.projection_count"
+          },
+          "limitations": [],
+          "normalizedValue": {
+            "maximum": null,
+            "minimum": null,
+            "scalar": 2,
+            "values": []
+          },
+          "producerStepId": "step_phonon",
+          "producerToolCallId": "tool_call_phonon",
+          "projectorVersion": "phase10l4.projectors.v1",
+          "providerSafe": true,
+          "referenceConvention": "artifact_contract",
+          "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "schemaVersion": "1.0",
+          "semanticRole": "phonon.projection_count",
+          "sourceArtifactChecksum": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sourceArtifactId": "artifact_phonon",
+          "sourceToolId": "phonon.band_dos",
+          "sourceToolVersion": "0.1.0",
+          "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "unit": null,
+          "unitAuthority": null,
+          "valueKind": "count",
+          "warnings": [
+            "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+          ]
+        }
+      ],
+      "executionOutcome": "ALL_SUCCEEDED",
+      "failedStepCount": 0,
+      "graphHash": null,
+      "intentHash": "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+      "intentId": "intent_l4",
+      "jobId": "job_l4",
+      "partialResults": false,
+      "planHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "planId": "plan_l4",
+      "planSchemaVersion": "0.1",
+      "profileId": "profile_l4",
+      "profileSemanticHash": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+      "projectId": "project_l4",
+      "projectorVersions": {
+        "artifact_phonon": "phase10l4.projectors.v1"
+      },
+      "schemaVersion": "1.0",
+      "selectionDecisionHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "selectionDecisionId": "decision_l4",
+      "sourceArtifactIds": [
+        "artifact_phonon"
+      ],
+      "sourceJobTerminalState": "completed",
+      "supportedArtifactCount": 1,
+      "unsupportedArtifactCount": 0
+    },
+    "diagnostics": [],
+    "execution_record": {
+      "caps": {
+        "artifacts": 16,
+        "claims": 32,
+        "evidenceItems": 256,
+        "repair": 1
+      },
+      "claimCount": 1,
+      "createdAt": "2026-07-30T00:00:00+00:00",
+      "diagnostics": [],
+      "elapsedMs": 3.3055,
+      "evidenceItemCount": 7,
+      "executionRecordHash": "e7063cf1763b9eb2a34a9a32a73c927a4a89ca9c5ecabadbebf673a681a462cf",
+      "executionRecordId": "interpretation_execution_e7063cf1763b9eb2a34a9a32a73c927a",
+      "idempotencyKeyHash": null,
+      "initialResponseHash": "ad3cd6105a949bdae18890ded5cb37faa302e07778431f513007043f0bc4cc08",
+      "limitationCount": 0,
+      "mode": "STRICT_PROVIDER",
+      "outcome": "INTERPRETATION_READY",
+      "promptProjectionHash": "2bec4754137ffeba74496475ee016fbe3d1e016c202f49c0116f9444a24144c9",
+      "provider": "openai_compatible",
+      "providerConfigHash": null,
+      "providerModel": null,
+      "providerVersion": "phase10l4.provider.v1",
+      "repairCount": 0,
+      "repairedResponseHash": null,
+      "responseHash": "ad3cd6105a949bdae18890ded5cb37faa302e07778431f513007043f0bc4cc08",
+      "schemaVersion": "1.0",
+      "sourceBundleHash": "3f006e7e795b9373d702e046be115d1d668f7aa96b82f22772b28cc897a8549e",
+      "sourceBundleId": "bundle_3f006e7e795b9373d702e046be115d1d",
+      "sourceGraphHash": null,
+      "sourceJobId": "job_l4",
+      "sourcePlanHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sourcePlanId": "plan_l4",
+      "warningCount": 1
+    },
+    "interpretation": {
+      "claims": [
+        {
+          "claimId": "claim_e56316ca7b80ab30c11bbe3272efb35b",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "QUALIFIED",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 0,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.",
+          "schemaVersion": "1.0",
+          "scope": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "semanticPredicate": "HAS_COUNT",
+          "structuredPayload": {
+            "displayValue": "6",
+            "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "subjectEvidenceIds": [
+            "evidence_51b44dd7a44ab2a25e0f958c85b4df94"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_51b44dd7a44ab2a25e0f958c85b4df94"
+          ]
+        }
+      ],
+      "completeness": "COMPLETE",
+      "createdAt": "2026-07-30T00:00:00+00:00",
+      "executionRecordId": "interpretation_execution_e7063cf1763b9eb2a34a9a32a73c927a",
+      "globalLimitations": [],
+      "globalWarnings": [
+        "PHONON_BAND_DOS_ASR_METADATA_PARTIAL"
+      ],
+      "interpretationHash": "988ff7148d50f45978ccf02286a43ae6cdbb78a04c0a4698785763df68294dbb",
+      "interpretationId": "interpretation_988ff7148d50f45978ccf02286a43ae6",
+      "mode": "STRICT_PROVIDER",
+      "outcome": "INTERPRETATION_READY",
+      "partialResultState": false,
+      "provider": "openai_compatible",
+      "providerVersion": "phase10l4.provider.v1",
+      "recommendations": [],
+      "repairCount": 0,
+      "schemaVersion": "1.0",
+      "sourceBundleHash": "3f006e7e795b9373d702e046be115d1d668f7aa96b82f22772b28cc897a8549e",
+      "sourceBundleId": "bundle_3f006e7e795b9373d702e046be115d1d",
+      "sourceGraphHash": null,
+      "sourceJobId": "job_l4",
+      "sourcePlanHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sourcePlanId": "plan_l4",
+      "validationOutcome": "VALID"
+    },
+    "outcome": "INTERPRETATION_READY"
+  }
+}

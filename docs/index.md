@@ -61,6 +61,23 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 
 ## Phase 10L Intelligent Analysis Agent
 
+- [`phase10l/phase10l4_grounded_interpretation_architecture.md`](phase10l/phase10l4_grounded_interpretation_architecture.md): post-execution, read-only evidence and interpretation architecture.
+- [`phase10l/phase10l4_scientific_evidence_bundle.md`](phase10l/phase10l4_scientific_evidence_bundle.md): exact source identity, evidence item/ref contracts, and caps.
+- [`phase10l/phase10l4_evidence_projectors.md`](phase10l/phase10l4_evidence_projectors.md): approved dataset, ML, structure, phonon, and volumetric projectors.
+- [`phase10l/phase10l4_scientific_claim_contract.md`](phase10l/phase10l4_scientific_claim_contract.md): claim vocabulary, confidence, rendering, and non-executable recommendations.
+- [`phase10l/phase10l4_grounding_validator.md`](phase10l/phase10l4_grounding_validator.md): evidence, number, unit, entity, partial, and forbidden-conclusion validation.
+- [`phase10l/phase10l4_deterministic_interpreter.md`](phase10l/phase10l4_deterministic_interpreter.md): deterministic findings and limitation behavior.
+- [`phase10l/phase10l4_provider_interpreter.md`](phase10l/phase10l4_provider_interpreter.md): strict provider projection, parsing, one repair, and no fallback.
+- [`phase10l/phase10l4_partial_execution_policy.md`](phase10l/phase10l4_partial_execution_policy.md): successful, partial, failed, and integrity-abort interpretation policy.
+- [`phase10l/phase10l4_scientific_boundaries.md`](phase10l/phase10l4_scientific_boundaries.md): permitted facts and forbidden conclusions by family.
+- [`phase10l/phase10l4_api_frontend.md`](phase10l/phase10l4_api_frontend.md): additive API and accessible PlannerWorkbench findings/evidence surface.
+- [`phase10l/phase10l4_security.md`](phase10l/phase10l4_security.md): inert Artifact and provider isolation boundary.
+- [`phase10l/phase10l4_caps_performance.md`](phase10l/phase10l4_caps_performance.md): hard caps and bounded near-cap evidence.
+- [`phase10l/phase10l4_compatibility.md`](phase10l/phase10l4_compatibility.md): unchanged Intent/Eligibility/Plan/Runtime/Registry semantics.
+- [`phase10l/phase10l4_evidence.md`](phase10l/phase10l4_evidence.md): browser, API, persistence, performance, security, and manifest inventory.
+- [`phase10l/phase10l4_readiness_matrix.md`](phase10l/phase10l4_readiness_matrix.md): local implementation state and remaining exact-SHA closure gates.
+- [`phase10l/phase10l5_reviewer_gate.md`](phase10l/phase10l5_reviewer_gate.md): reviewer-queued L5 admission blocked by the L4 verified archive.
+- [`phase10l/evidence/phase10l4_grounded_interpretation/`](phase10l/evidence/phase10l4_grounded_interpretation/): sanitized contracts, real source cases, adversarial checks, browser captures, and manifest.
 - [`phase10l/phase10l3_bounded_multi_tool_architecture.md`](phase10l/phase10l3_bounded_multi_tool_architecture.md): bounded composition architecture, authority boundaries, and the real phonon chain.
 - [`phase10l/phase10l3_analysis_plan_02_contract.md`](phase10l/phase10l3_analysis_plan_02_contract.md): additive AnalysisPlan 0.2, deterministic graph/plan identity, and hard caps.
 - [`phase10l/phase10l3_dependency_binding_contract.md`](phase10l/phase10l3_dependency_binding_contract.md): the single authoritative typed artifact edge model.
@@ -75,7 +92,7 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase10l/phase10l3_compatibility.md`](phase10l/phase10l3_compatibility.md): preserved 0.1/L1/L2 behavior and additive 0.2 compatibility.
 - [`phase10l/phase10l3_evidence.md`](phase10l/phase10l3_evidence.md): required runtime, browser, service-backed, performance, security, and manifest evidence.
 - [`phase10l/phase10l3_readiness_matrix.md`](phase10l/phase10l3_readiness_matrix.md): implementation-candidate state and exact closure gates.
-- [`phase10l/phase10l4_reviewer_gate.md`](phase10l/phase10l4_reviewer_gate.md): reviewer-only L4 admission record; not an executable task.
+- [`phase10l/phase10l4_reviewer_gate.md`](phase10l/phase10l4_reviewer_gate.md): historical L4 gate, superseded by reviewer admission.
 - [`phase10l/phase10l2_capability_planner_contract.md`](phase10l/phase10l2_capability_planner_contract.md): Registry metadata, deterministic eligibility, eligible-only selection, exact binding, validation, and one-repair contract.
 - [`phase10l/phase10l2_persistence_api_compatibility.md`](phase10l/phase10l2_persistence_api_compatibility.md): immutable audit persistence, canonical API gate, and AnalysisPlan 0.1 compatibility.
 - [`phase10l/phase10l2_security_caps.md`](phase10l/phase10l2_security_caps.md): caps, provider isolation, execution boundary, and required markers.

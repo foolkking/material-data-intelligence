@@ -722,6 +722,7 @@ def test_openai_provider_retries_without_response_format_on_400(monkeypatch: pyt
         return FakeResponse()
 
     monkeypatch.setattr(provider_module.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setenv("MDI_LLM_ALLOWED_BASE_URLS", "https://llm.example.test/v1")
 
     response = provider_module._post_chat_completion(
         base_url="https://llm.example.test/v1",
@@ -738,6 +739,34 @@ def test_openai_provider_retries_without_response_format_on_400(monkeypatch: pyt
     assert "response_format" not in calls[1]
     assert response["choices"][0]["finish_reason"] == "stop"
     assert "sk-phase9d-secret" not in json.dumps(calls)
+
+
+def test_openai_provider_rejects_unapproved_or_local_base_url_before_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    called = False
+
+    def forbidden_urlopen(*args, **kwargs):
+        nonlocal called
+        called = True
+        raise AssertionError("unapproved endpoint must not reach urllib")
+
+    monkeypatch.setattr(provider_module.urllib.request, "urlopen", forbidden_urlopen)
+    monkeypatch.setenv("MDI_LLM_ALLOWED_BASE_URLS", "https://approved.example.test/v1")
+
+    for base_url in ("http://127.0.0.1:8000/v1", "https://unapproved.example.test/v1"):
+        with pytest.raises(LLMProviderError) as exc:
+            provider_module._post_chat_completion(
+                base_url=base_url,
+                api_key="test-key",
+                model="test-model",
+                messages=[{"role": "user", "content": "return json"}],
+                temperature=0.0,
+                max_tokens=32,
+                timeout_seconds=1.0,
+            )
+        assert exc.value.code == "LLM_BASE_URL_NOT_ALLOWED"
+    assert called is False
 
 
 def test_openai_provider_omits_response_format_for_gemini_openai_endpoint(monkeypatch: pytest.MonkeyPatch) -> None:

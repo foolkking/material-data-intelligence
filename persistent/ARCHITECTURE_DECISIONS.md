@@ -1,5 +1,29 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-07-30 ADR: Contract-Specific Evidence Before Read-Only Interpretation
+
+**Context:** successful Artifacts and lineage are execution records, but raw
+JSON, filenames, screenshots, Markdown summaries, or fluent provider text are
+not automatically safe scientific evidence. Allowing an interpretation model
+to inspect raw Artifacts or invent its own field locators would bypass exact
+identity, scientific contracts, and the Agent execution boundary.
+
+**Decision:** add a post-execution, read-only interpretation service. Exact
+terminal Job/Plan/execution/ToolCall/Artifact checksum/lineage records feed only
+approved contract-specific projectors, producing ScientificEvidenceBundle 1.0.
+Deterministic and strict-provider interpreters emit allowlisted ScientificClaim
+1.0 objects; an independent validator grounds every evidence reference,
+number, unit, entity, qualifier, partial limitation, and scientific predicate.
+Provider context contains only provider-safe projected items, allows one
+interpretation repair, and has no fallback or raw Artifact access.
+
+**Consequences:** grounded findings can be persisted and displayed without
+granting interpretation any Intent, Plan, Job, ToolCall, queue, Registry,
+Adapter, Runtime, Artifact mutation, filesystem, network, or recommendation
+execution authority. Unsupported contracts yield no fabricated findings;
+partial runs remain explicitly limited. Phase 10L-5 owns end-to-end evidence
+closure, not a new interpretation architecture.
+
 ## 2026-07-30 ADR: One Typed Artifact Edge for Bounded AnalysisPlan 0.2
 
 **Context:** AnalysisPlan 0.1 can record up to four independent selected tools,

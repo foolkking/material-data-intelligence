@@ -1,5 +1,28 @@
 # DESIGN_PROGRESS
 
+## 2026-07-30 Phase 10L-4 Grounded Interpretation Implementation Candidate
+
+- Added strict ScientificEvidenceBundle/Item/Ref, ScientificClaim,
+  GroundedScientificInterpretation, and InterpretationExecutionRecord 1.0
+  contracts across Python, checked-in JSON Schema, and TypeScript.
+- Added deterministic, contract-specific projection for dataset/property, ML,
+  structure, phonon, and volumetric Artifacts. The real L3
+  `phonon.band + phonon.dos -> phonon.band_dos` chain is included; raw Artifact
+  text, filenames, paths, URLs, `summary.md`, and failed/blocked outputs are not
+  scientific authority.
+- Added deterministic and strict OpenAI-compatible interpretation modes, one
+  interpretation-only repair, provider-safe evidence isolation, and independent
+  numeric/unit/entity/forbidden-conclusion grounding. Default evidence uses
+  `REAL_LLM_CALLS = 0` and has no deterministic fallback after provider failure.
+- Added Alembic 0006 immutable bundle/run/claim/evidence-link persistence,
+  additive interpretation API routes, and an accessible responsive
+  PlannerWorkbench findings/evidence surface. Interpretation cannot mutate or
+  create Intent, Plan, Job, ToolCall, queue work, Artifact, or Runtime state.
+- Focused backend/frontend, evidence integrity, Chromium/Firefox/WebKit, and
+  390x844 mobile checks pass locally. Full regression and implementation,
+  completion-record, and archive exact-SHA CI remain required before L4 can be
+  complete. Reviewer-supplied L5 remains queued and blocked by the L4 archive.
+
 ## 2026-07-30 Phase 10L-3 Bounded Dependency Execution Complete and Archived
 
 - Added strict additive AnalysisPlan 0.2 with one authoritative typed

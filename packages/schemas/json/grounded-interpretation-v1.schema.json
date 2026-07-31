@@ -1,0 +1,1912 @@
+{
+  "groundedScientificInterpretation": {
+    "$defs": {
+      "BundleCompleteness": {
+        "enum": [
+          "COMPLETE",
+          "PARTIAL",
+          "UNSUPPORTED"
+        ],
+        "title": "BundleCompleteness",
+        "type": "string"
+      },
+      "ClaimConfidence": {
+        "enum": [
+          "DIRECT",
+          "QUALIFIED",
+          "LIMITED"
+        ],
+        "title": "ClaimConfidence",
+        "type": "string"
+      },
+      "ClaimPredicate": {
+        "enum": [
+          "HAS_VALUE",
+          "HAS_RANGE",
+          "HAS_COUNT",
+          "HAS_CATEGORY",
+          "REPORTS_WARNING",
+          "REPORTS_LIMITATION",
+          "DIFFERS_FROM",
+          "EXCEEDS_DECLARED_THRESHOLD",
+          "IS_MISSING",
+          "IS_PARTIAL",
+          "SUGGESTS_FOLLOW_UP",
+          "NO_SUPPORTED_CONCLUSION"
+        ],
+        "title": "ClaimPredicate",
+        "type": "string"
+      },
+      "ClaimType": {
+        "enum": [
+          "OBSERVATION",
+          "COMPARISON",
+          "ANOMALY",
+          "WARNING",
+          "LIMITATION",
+          "RECOMMENDATION",
+          "NO_SUPPORTED_CONCLUSION"
+        ],
+        "title": "ClaimType",
+        "type": "string"
+      },
+      "GroundingStatus": {
+        "enum": [
+          "GROUNDED",
+          "REJECTED"
+        ],
+        "title": "GroundingStatus",
+        "type": "string"
+      },
+      "InterpretationMode": {
+        "enum": [
+          "DETERMINISTIC",
+          "STRICT_PROVIDER"
+        ],
+        "title": "InterpretationMode",
+        "type": "string"
+      },
+      "InterpretationOutcome": {
+        "enum": [
+          "INTERPRETATION_READY",
+          "INTERPRETATION_READY_WITH_LIMITS",
+          "NO_SUPPORTED_EVIDENCE",
+          "SOURCE_NOT_TERMINAL",
+          "SOURCE_INTEGRITY_FAILED",
+          "EVIDENCE_CAP_EXCEEDED",
+          "PROVIDER_FAILED",
+          "VALIDATION_FAILED"
+        ],
+        "title": "InterpretationOutcome",
+        "type": "string"
+      },
+      "ScientificClaim": {
+        "additionalProperties": false,
+        "properties": {
+          "claimId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Claimid",
+            "type": "string"
+          },
+          "claimType": {
+            "$ref": "#/$defs/ClaimType"
+          },
+          "confidenceClass": {
+            "$ref": "#/$defs/ClaimConfidence"
+          },
+          "contradictingEvidenceIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "title": "Contradictingevidenceids",
+            "type": "array"
+          },
+          "displayOrder": {
+            "exclusiveMaximum": 32,
+            "minimum": 0,
+            "title": "Displayorder",
+            "type": "integer"
+          },
+          "groundingStatus": {
+            "$ref": "#/$defs/GroundingStatus",
+            "default": "GROUNDED"
+          },
+          "limitingEvidenceIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "title": "Limitingevidenceids",
+            "type": "array"
+          },
+          "qualifiers": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Qualifiers",
+            "type": "array"
+          },
+          "renderedText": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "title": "Renderedtext",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Schemaversion",
+            "type": "string"
+          },
+          "scope": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Scope",
+            "type": "string"
+          },
+          "semanticPredicate": {
+            "$ref": "#/$defs/ClaimPredicate"
+          },
+          "structuredPayload": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "maxProperties": 16,
+            "title": "Structuredpayload",
+            "type": "object"
+          },
+          "subjectEvidenceIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Subjectevidenceids",
+            "type": "array"
+          },
+          "supportingEvidenceIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Supportingevidenceids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "claimId",
+          "claimType",
+          "subjectEvidenceIds",
+          "supportingEvidenceIds",
+          "semanticPredicate",
+          "renderedText",
+          "scope",
+          "confidenceClass",
+          "displayOrder"
+        ],
+        "title": "ScientificClaim",
+        "type": "object"
+      },
+      "ScientificRecommendation": {
+        "additionalProperties": false,
+        "properties": {
+          "executionAuthorized": {
+            "const": false,
+            "default": false,
+            "title": "Executionauthorized",
+            "type": "boolean"
+          },
+          "expectedMissingEvidence": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "title": "Expectedmissingevidence",
+            "type": "array"
+          },
+          "jobCreated": {
+            "const": false,
+            "default": false,
+            "title": "Jobcreated",
+            "type": "boolean"
+          },
+          "limitation": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Limitation",
+            "type": "string"
+          },
+          "planCreated": {
+            "const": false,
+            "default": false,
+            "title": "Plancreated",
+            "type": "boolean"
+          },
+          "reasonEvidenceIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Reasonevidenceids",
+            "type": "array"
+          },
+          "recommendationId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Recommendationid",
+            "type": "string"
+          },
+          "suggestedGoalCategory": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Suggestedgoalcategory",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recommendationId",
+          "reasonEvidenceIds",
+          "suggestedGoalCategory",
+          "limitation"
+        ],
+        "title": "ScientificRecommendation",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "claims": {
+        "items": {
+          "$ref": "#/$defs/ScientificClaim"
+        },
+        "maxItems": 32,
+        "title": "Claims",
+        "type": "array"
+      },
+      "completeness": {
+        "$ref": "#/$defs/BundleCompleteness"
+      },
+      "createdAt": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Createdat",
+        "type": "string"
+      },
+      "executionRecordId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Executionrecordid",
+        "type": "string"
+      },
+      "globalLimitations": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 64,
+        "title": "Globallimitations",
+        "type": "array"
+      },
+      "globalWarnings": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 128,
+        "title": "Globalwarnings",
+        "type": "array"
+      },
+      "interpretationHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Interpretationhash",
+        "type": "string"
+      },
+      "interpretationId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Interpretationid",
+        "type": "string"
+      },
+      "mode": {
+        "$ref": "#/$defs/InterpretationMode"
+      },
+      "outcome": {
+        "$ref": "#/$defs/InterpretationOutcome"
+      },
+      "partialResultState": {
+        "title": "Partialresultstate",
+        "type": "boolean"
+      },
+      "provider": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Provider",
+        "type": "string"
+      },
+      "providerVersion": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Providerversion",
+        "type": "string"
+      },
+      "recommendations": {
+        "items": {
+          "$ref": "#/$defs/ScientificRecommendation"
+        },
+        "maxItems": 8,
+        "title": "Recommendations",
+        "type": "array"
+      },
+      "repairCount": {
+        "maximum": 1,
+        "minimum": 0,
+        "title": "Repaircount",
+        "type": "integer"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "sourceBundleHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Sourcebundlehash",
+        "type": "string"
+      },
+      "sourceBundleId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Sourcebundleid",
+        "type": "string"
+      },
+      "sourceGraphHash": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Sourcegraphhash"
+      },
+      "sourceJobId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Sourcejobid",
+        "type": "string"
+      },
+      "sourcePlanHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Sourceplanhash",
+        "type": "string"
+      },
+      "sourcePlanId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Sourceplanid",
+        "type": "string"
+      },
+      "validationOutcome": {
+        "enum": [
+          "VALID",
+          "INVALID"
+        ],
+        "title": "Validationoutcome",
+        "type": "string"
+      }
+    },
+    "required": [
+      "interpretationId",
+      "interpretationHash",
+      "sourceBundleId",
+      "sourceBundleHash",
+      "sourceJobId",
+      "sourcePlanId",
+      "sourcePlanHash",
+      "mode",
+      "provider",
+      "providerVersion",
+      "completeness",
+      "partialResultState",
+      "repairCount",
+      "outcome",
+      "validationOutcome",
+      "executionRecordId",
+      "createdAt"
+    ],
+    "title": "GroundedScientificInterpretation",
+    "type": "object"
+  },
+  "interpretationExecutionRecord": {
+    "$defs": {
+      "InterpretationMode": {
+        "enum": [
+          "DETERMINISTIC",
+          "STRICT_PROVIDER"
+        ],
+        "title": "InterpretationMode",
+        "type": "string"
+      },
+      "InterpretationOutcome": {
+        "enum": [
+          "INTERPRETATION_READY",
+          "INTERPRETATION_READY_WITH_LIMITS",
+          "NO_SUPPORTED_EVIDENCE",
+          "SOURCE_NOT_TERMINAL",
+          "SOURCE_INTEGRITY_FAILED",
+          "EVIDENCE_CAP_EXCEEDED",
+          "PROVIDER_FAILED",
+          "VALIDATION_FAILED"
+        ],
+        "title": "InterpretationOutcome",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "caps": {
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "maxProperties": 16,
+        "title": "Caps",
+        "type": "object"
+      },
+      "claimCount": {
+        "maximum": 32,
+        "minimum": 0,
+        "title": "Claimcount",
+        "type": "integer"
+      },
+      "createdAt": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Createdat",
+        "type": "string"
+      },
+      "diagnostics": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 128,
+        "title": "Diagnostics",
+        "type": "array"
+      },
+      "elapsedMs": {
+        "minimum": 0,
+        "title": "Elapsedms",
+        "type": "number"
+      },
+      "evidenceItemCount": {
+        "maximum": 256,
+        "minimum": 0,
+        "title": "Evidenceitemcount",
+        "type": "integer"
+      },
+      "executionRecordHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Executionrecordhash",
+        "type": "string"
+      },
+      "executionRecordId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Executionrecordid",
+        "type": "string"
+      },
+      "idempotencyKeyHash": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Idempotencykeyhash"
+      },
+      "initialResponseHash": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Initialresponsehash"
+      },
+      "limitationCount": {
+        "maximum": 64,
+        "minimum": 0,
+        "title": "Limitationcount",
+        "type": "integer"
+      },
+      "mode": {
+        "$ref": "#/$defs/InterpretationMode"
+      },
+      "outcome": {
+        "$ref": "#/$defs/InterpretationOutcome"
+      },
+      "promptProjectionHash": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Promptprojectionhash"
+      },
+      "provider": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Provider",
+        "type": "string"
+      },
+      "providerConfigHash": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Providerconfighash"
+      },
+      "providerModel": {
+        "anyOf": [
+          {
+            "maxLength": 128,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Providermodel"
+      },
+      "providerVersion": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Providerversion",
+        "type": "string"
+      },
+      "repairCount": {
+        "maximum": 1,
+        "minimum": 0,
+        "title": "Repaircount",
+        "type": "integer"
+      },
+      "repairedResponseHash": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Repairedresponsehash"
+      },
+      "responseHash": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Responsehash"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "sourceBundleHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Sourcebundlehash",
+        "type": "string"
+      },
+      "sourceBundleId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Sourcebundleid",
+        "type": "string"
+      },
+      "sourceGraphHash": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Sourcegraphhash"
+      },
+      "sourceJobId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Sourcejobid",
+        "type": "string"
+      },
+      "sourcePlanHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Sourceplanhash",
+        "type": "string"
+      },
+      "sourcePlanId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Sourceplanid",
+        "type": "string"
+      },
+      "warningCount": {
+        "maximum": 128,
+        "minimum": 0,
+        "title": "Warningcount",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "executionRecordId",
+      "executionRecordHash",
+      "sourceJobId",
+      "sourcePlanId",
+      "sourcePlanHash",
+      "sourceBundleId",
+      "sourceBundleHash",
+      "mode",
+      "provider",
+      "providerVersion",
+      "repairCount",
+      "evidenceItemCount",
+      "claimCount",
+      "warningCount",
+      "limitationCount",
+      "outcome",
+      "elapsedMs",
+      "createdAt"
+    ],
+    "title": "InterpretationExecutionRecord",
+    "type": "object"
+  },
+  "scientificClaim": {
+    "$defs": {
+      "ClaimConfidence": {
+        "enum": [
+          "DIRECT",
+          "QUALIFIED",
+          "LIMITED"
+        ],
+        "title": "ClaimConfidence",
+        "type": "string"
+      },
+      "ClaimPredicate": {
+        "enum": [
+          "HAS_VALUE",
+          "HAS_RANGE",
+          "HAS_COUNT",
+          "HAS_CATEGORY",
+          "REPORTS_WARNING",
+          "REPORTS_LIMITATION",
+          "DIFFERS_FROM",
+          "EXCEEDS_DECLARED_THRESHOLD",
+          "IS_MISSING",
+          "IS_PARTIAL",
+          "SUGGESTS_FOLLOW_UP",
+          "NO_SUPPORTED_CONCLUSION"
+        ],
+        "title": "ClaimPredicate",
+        "type": "string"
+      },
+      "ClaimType": {
+        "enum": [
+          "OBSERVATION",
+          "COMPARISON",
+          "ANOMALY",
+          "WARNING",
+          "LIMITATION",
+          "RECOMMENDATION",
+          "NO_SUPPORTED_CONCLUSION"
+        ],
+        "title": "ClaimType",
+        "type": "string"
+      },
+      "GroundingStatus": {
+        "enum": [
+          "GROUNDED",
+          "REJECTED"
+        ],
+        "title": "GroundingStatus",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "claimId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Claimid",
+        "type": "string"
+      },
+      "claimType": {
+        "$ref": "#/$defs/ClaimType"
+      },
+      "confidenceClass": {
+        "$ref": "#/$defs/ClaimConfidence"
+      },
+      "contradictingEvidenceIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 8,
+        "title": "Contradictingevidenceids",
+        "type": "array"
+      },
+      "displayOrder": {
+        "exclusiveMaximum": 32,
+        "minimum": 0,
+        "title": "Displayorder",
+        "type": "integer"
+      },
+      "groundingStatus": {
+        "$ref": "#/$defs/GroundingStatus",
+        "default": "GROUNDED"
+      },
+      "limitingEvidenceIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 8,
+        "title": "Limitingevidenceids",
+        "type": "array"
+      },
+      "qualifiers": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "title": "Qualifiers",
+        "type": "array"
+      },
+      "renderedText": {
+        "maxLength": 2048,
+        "minLength": 1,
+        "title": "Renderedtext",
+        "type": "string"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "scope": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Scope",
+        "type": "string"
+      },
+      "semanticPredicate": {
+        "$ref": "#/$defs/ClaimPredicate"
+      },
+      "structuredPayload": {
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "maxProperties": 16,
+        "title": "Structuredpayload",
+        "type": "object"
+      },
+      "subjectEvidenceIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 8,
+        "minItems": 1,
+        "title": "Subjectevidenceids",
+        "type": "array"
+      },
+      "supportingEvidenceIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 8,
+        "minItems": 1,
+        "title": "Supportingevidenceids",
+        "type": "array"
+      }
+    },
+    "required": [
+      "claimId",
+      "claimType",
+      "subjectEvidenceIds",
+      "supportingEvidenceIds",
+      "semanticPredicate",
+      "renderedText",
+      "scope",
+      "confidenceClass",
+      "displayOrder"
+    ],
+    "title": "ScientificClaim",
+    "type": "object"
+  },
+  "scientificEvidenceBundle": {
+    "$defs": {
+      "BundleCompleteness": {
+        "enum": [
+          "COMPLETE",
+          "PARTIAL",
+          "UNSUPPORTED"
+        ],
+        "title": "BundleCompleteness",
+        "type": "string"
+      },
+      "EvidenceFieldLocator": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Entityid"
+          },
+          "fieldId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Fieldid",
+            "type": "string"
+          },
+          "semanticKey": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Semantickey",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fieldId",
+          "semanticKey"
+        ],
+        "title": "EvidenceFieldLocator",
+        "type": "object"
+      },
+      "EvidenceKind": {
+        "enum": [
+          "SCALAR",
+          "RANGE",
+          "CATEGORY",
+          "COUNT",
+          "BOOLEAN",
+          "ORDERED_SERIES_SUMMARY",
+          "TABLE_ROW",
+          "WARNING",
+          "LIMITATION",
+          "EXECUTION_STATE",
+          "PROVENANCE"
+        ],
+        "title": "EvidenceKind",
+        "type": "string"
+      },
+      "EvidenceValue": {
+        "additionalProperties": false,
+        "properties": {
+          "maximum": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Maximum"
+          },
+          "minimum": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Minimum"
+          },
+          "scalar": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Scalar"
+          },
+          "values": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "maxItems": 64,
+            "title": "Values",
+            "type": "array"
+          }
+        },
+        "title": "EvidenceValue",
+        "type": "object"
+      },
+      "ScientificEvidenceItem": {
+        "additionalProperties": false,
+        "properties": {
+          "artifactContract": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Artifactcontract",
+            "type": "string"
+          },
+          "artifactContractVersion": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Artifactcontractversion",
+            "type": "string"
+          },
+          "datasetId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Datasetid",
+            "type": "string"
+          },
+          "datasetVersion": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Datasetversion",
+            "type": "string"
+          },
+          "displayValue": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Displayvalue",
+            "type": "string"
+          },
+          "evidenceItemId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Evidenceitemid",
+            "type": "string"
+          },
+          "evidenceKind": {
+            "$ref": "#/$defs/EvidenceKind"
+          },
+          "fieldLocator": {
+            "$ref": "#/$defs/EvidenceFieldLocator"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Limitations",
+            "type": "array"
+          },
+          "normalizedValue": {
+            "$ref": "#/$defs/EvidenceValue"
+          },
+          "producerStepId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Producerstepid",
+            "type": "string"
+          },
+          "producerToolCallId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Producertoolcallid",
+            "type": "string"
+          },
+          "projectorVersion": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Projectorversion",
+            "type": "string"
+          },
+          "providerSafe": {
+            "default": true,
+            "title": "Providersafe",
+            "type": "boolean"
+          },
+          "referenceConvention": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Referenceconvention"
+          },
+          "resourceId": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Resourceid"
+          },
+          "schemaVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Schemaversion",
+            "type": "string"
+          },
+          "semanticRole": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Semanticrole",
+            "type": "string"
+          },
+          "sourceArtifactChecksum": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Sourceartifactchecksum",
+            "type": "string"
+          },
+          "sourceArtifactId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Sourceartifactid",
+            "type": "string"
+          },
+          "sourceToolId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Sourcetoolid",
+            "type": "string"
+          },
+          "sourceToolVersion": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Sourcetoolversion",
+            "type": "string"
+          },
+          "subjectId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Subjectid",
+            "type": "string"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Unit"
+          },
+          "unitAuthority": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Unitauthority"
+          },
+          "valueKind": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Valuekind",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "evidenceItemId",
+          "semanticRole",
+          "evidenceKind",
+          "subjectId",
+          "valueKind",
+          "normalizedValue",
+          "displayValue",
+          "sourceArtifactId",
+          "sourceArtifactChecksum",
+          "artifactContract",
+          "artifactContractVersion",
+          "sourceToolId",
+          "sourceToolVersion",
+          "producerStepId",
+          "producerToolCallId",
+          "fieldLocator",
+          "datasetId",
+          "datasetVersion",
+          "projectorVersion"
+        ],
+        "title": "ScientificEvidenceItem",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "allSucceeded": {
+        "title": "Allsucceeded",
+        "type": "boolean"
+      },
+      "blockedStepCount": {
+        "maximum": 4,
+        "minimum": 0,
+        "title": "Blockedstepcount",
+        "type": "integer"
+      },
+      "bundleCompleteness": {
+        "$ref": "#/$defs/BundleCompleteness"
+      },
+      "bundleHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Bundlehash",
+        "type": "string"
+      },
+      "bundleId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Bundleid",
+        "type": "string"
+      },
+      "bundleLimitations": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 64,
+        "title": "Bundlelimitations",
+        "type": "array"
+      },
+      "bundleWarnings": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 128,
+        "title": "Bundlewarnings",
+        "type": "array"
+      },
+      "datasetId": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Datasetid",
+        "type": "string"
+      },
+      "datasetVersion": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Datasetversion",
+        "type": "string"
+      },
+      "eligibilityResolutionHash": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Eligibilityresolutionhash"
+      },
+      "eligibilityResolutionId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Eligibilityresolutionid"
+      },
+      "evidenceItems": {
+        "items": {
+          "$ref": "#/$defs/ScientificEvidenceItem"
+        },
+        "maxItems": 256,
+        "title": "Evidenceitems",
+        "type": "array"
+      },
+      "executionOutcome": {
+        "enum": [
+          "ALL_SUCCEEDED",
+          "PARTIAL_RESULTS",
+          "ALL_FAILED",
+          "VALIDATION_ABORTED",
+          "LEGACY_TERMINAL"
+        ],
+        "title": "Executionoutcome",
+        "type": "string"
+      },
+      "failedStepCount": {
+        "maximum": 4,
+        "minimum": 0,
+        "title": "Failedstepcount",
+        "type": "integer"
+      },
+      "graphHash": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Graphhash"
+      },
+      "intentHash": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Intenthash"
+      },
+      "intentId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Intentid"
+      },
+      "jobId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Jobid",
+        "type": "string"
+      },
+      "partialResults": {
+        "title": "Partialresults",
+        "type": "boolean"
+      },
+      "planHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Planhash",
+        "type": "string"
+      },
+      "planId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Planid",
+        "type": "string"
+      },
+      "planSchemaVersion": {
+        "enum": [
+          "0.1",
+          "0.2"
+        ],
+        "title": "Planschemaversion",
+        "type": "string"
+      },
+      "profileId": {
+        "anyOf": [
+          {
+            "maxLength": 160,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Profileid"
+      },
+      "profileSemanticHash": {
+        "anyOf": [
+          {
+            "maxLength": 128,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Profilesemantichash"
+      },
+      "projectId": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Projectid",
+        "type": "string"
+      },
+      "projectorVersions": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "maxProperties": 16,
+        "title": "Projectorversions",
+        "type": "object"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "selectionDecisionHash": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Selectiondecisionhash"
+      },
+      "selectionDecisionId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Selectiondecisionid"
+      },
+      "sourceArtifactIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "title": "Sourceartifactids",
+        "type": "array"
+      },
+      "sourceJobTerminalState": {
+        "enum": [
+          "completed",
+          "failed",
+          "partial_success"
+        ],
+        "title": "Sourcejobterminalstate",
+        "type": "string"
+      },
+      "supportedArtifactCount": {
+        "maximum": 16,
+        "minimum": 0,
+        "title": "Supportedartifactcount",
+        "type": "integer"
+      },
+      "unsupportedArtifactCount": {
+        "maximum": 128,
+        "minimum": 0,
+        "title": "Unsupportedartifactcount",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "bundleId",
+      "bundleHash",
+      "projectId",
+      "datasetId",
+      "datasetVersion",
+      "planId",
+      "planHash",
+      "planSchemaVersion",
+      "jobId",
+      "sourceJobTerminalState",
+      "executionOutcome",
+      "allSucceeded",
+      "partialResults",
+      "supportedArtifactCount",
+      "unsupportedArtifactCount",
+      "failedStepCount",
+      "blockedStepCount",
+      "bundleCompleteness"
+    ],
+    "title": "ScientificEvidenceBundle",
+    "type": "object"
+  },
+  "scientificEvidenceItem": {
+    "$defs": {
+      "EvidenceFieldLocator": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Entityid"
+          },
+          "fieldId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Fieldid",
+            "type": "string"
+          },
+          "semanticKey": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Semantickey",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fieldId",
+          "semanticKey"
+        ],
+        "title": "EvidenceFieldLocator",
+        "type": "object"
+      },
+      "EvidenceKind": {
+        "enum": [
+          "SCALAR",
+          "RANGE",
+          "CATEGORY",
+          "COUNT",
+          "BOOLEAN",
+          "ORDERED_SERIES_SUMMARY",
+          "TABLE_ROW",
+          "WARNING",
+          "LIMITATION",
+          "EXECUTION_STATE",
+          "PROVENANCE"
+        ],
+        "title": "EvidenceKind",
+        "type": "string"
+      },
+      "EvidenceValue": {
+        "additionalProperties": false,
+        "properties": {
+          "maximum": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Maximum"
+          },
+          "minimum": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Minimum"
+          },
+          "scalar": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Scalar"
+          },
+          "values": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "maxItems": 64,
+            "title": "Values",
+            "type": "array"
+          }
+        },
+        "title": "EvidenceValue",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "artifactContract": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Artifactcontract",
+        "type": "string"
+      },
+      "artifactContractVersion": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Artifactcontractversion",
+        "type": "string"
+      },
+      "datasetId": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Datasetid",
+        "type": "string"
+      },
+      "datasetVersion": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Datasetversion",
+        "type": "string"
+      },
+      "displayValue": {
+        "maxLength": 512,
+        "minLength": 1,
+        "title": "Displayvalue",
+        "type": "string"
+      },
+      "evidenceItemId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Evidenceitemid",
+        "type": "string"
+      },
+      "evidenceKind": {
+        "$ref": "#/$defs/EvidenceKind"
+      },
+      "fieldLocator": {
+        "$ref": "#/$defs/EvidenceFieldLocator"
+      },
+      "limitations": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "title": "Limitations",
+        "type": "array"
+      },
+      "normalizedValue": {
+        "$ref": "#/$defs/EvidenceValue"
+      },
+      "producerStepId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Producerstepid",
+        "type": "string"
+      },
+      "producerToolCallId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Producertoolcallid",
+        "type": "string"
+      },
+      "projectorVersion": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Projectorversion",
+        "type": "string"
+      },
+      "providerSafe": {
+        "default": true,
+        "title": "Providersafe",
+        "type": "boolean"
+      },
+      "referenceConvention": {
+        "anyOf": [
+          {
+            "maxLength": 160,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Referenceconvention"
+      },
+      "resourceId": {
+        "anyOf": [
+          {
+            "maxLength": 160,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Resourceid"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "semanticRole": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Semanticrole",
+        "type": "string"
+      },
+      "sourceArtifactChecksum": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Sourceartifactchecksum",
+        "type": "string"
+      },
+      "sourceArtifactId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Sourceartifactid",
+        "type": "string"
+      },
+      "sourceToolId": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Sourcetoolid",
+        "type": "string"
+      },
+      "sourceToolVersion": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Sourcetoolversion",
+        "type": "string"
+      },
+      "subjectId": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Subjectid",
+        "type": "string"
+      },
+      "unit": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Unit"
+      },
+      "unitAuthority": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Unitauthority"
+      },
+      "valueKind": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Valuekind",
+        "type": "string"
+      },
+      "warnings": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "title": "Warnings",
+        "type": "array"
+      }
+    },
+    "required": [
+      "evidenceItemId",
+      "semanticRole",
+      "evidenceKind",
+      "subjectId",
+      "valueKind",
+      "normalizedValue",
+      "displayValue",
+      "sourceArtifactId",
+      "sourceArtifactChecksum",
+      "artifactContract",
+      "artifactContractVersion",
+      "sourceToolId",
+      "sourceToolVersion",
+      "producerStepId",
+      "producerToolCallId",
+      "fieldLocator",
+      "datasetId",
+      "datasetVersion",
+      "projectorVersion"
+    ],
+    "title": "ScientificEvidenceItem",
+    "type": "object"
+  },
+  "scientificEvidenceRef": {
+    "$defs": {
+      "EvidenceLinkRole": {
+        "enum": [
+          "SUPPORTING",
+          "LIMITING",
+          "CONTRADICTING"
+        ],
+        "title": "EvidenceLinkRole",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "evidenceItemId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Evidenceitemid",
+        "type": "string"
+      },
+      "role": {
+        "$ref": "#/$defs/EvidenceLinkRole",
+        "default": "SUPPORTING"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      }
+    },
+    "required": [
+      "evidenceItemId"
+    ],
+    "title": "ScientificEvidenceRef",
+    "type": "object"
+  }
+}

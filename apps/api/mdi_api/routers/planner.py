@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass, field
 import hashlib
 import json
 import os
-from typing import Any
+from typing import Any, Literal
 import uuid
 
 from pydantic import BaseModel, Field
@@ -34,13 +35,30 @@ from mdi_llm import (
     plan_capabilities,
     redact_credential_values,
     redact_params_for_log,
+    ArtifactProjectionInput,
+    InterpretationError,
+    InterpretationSource,
+    build_scientific_evidence_bundle,
+    deterministic_interpret,
+    no_supported_evidence_result,
+    strict_provider_interpret,
 )
 from mdi_schemas import (
     AnalysisIntent,
     AnalysisIntentConstraints,
     AnalysisIntentOutcome,
+    CapabilityPlanningDecision,
+    CapabilityPlanningOutcome,
     ClarificationAnswer,
     DataProfile,
+    DependencyExecutionRecord,
+    EligibilityResolution,
+    InterpretationMode,
+    capability_semantic_hash,
+    compute_analysis_intent_hash,
+    deterministic_capability_id,
+    deterministic_intent_id,
+    validate_interpretation_json_bounds,
 )
 from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime, RedisRQQueueBackend
 from mdi_workers.object_store import DurableObjectStoreResolver
@@ -120,6 +138,19 @@ class PlannerIntentCreateRequest(BaseModel):
 class PlannerIntentClarificationRequest(BaseModel):
     expectedProfileSemanticHash: str = Field(min_length=1, max_length=128)
     answers: list[ClarificationAnswer] = Field(min_length=1, max_length=3)
+
+
+class PlannerInterpretationRequest(BaseModel):
+    mode: Literal["DETERMINISTIC", "STRICT_PROVIDER"] = "DETERMINISTIC"
+    expectedPlanHash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    idempotencyKey: str | None = Field(default=None, min_length=1, max_length=128)
+    provider: str | None = Field(default=None, min_length=1, max_length=64, pattern=r"^[A-Za-z0-9_.-]+$")
+    baseUrl: str | None = Field(default=None, min_length=1, max_length=512)
+    model: str | None = Field(default=None, min_length=1, max_length=128, pattern=r"^[A-Za-z0-9_./:-]+$")
+    secretId: str | None = Field(default=None, min_length=1, max_length=128, pattern=r"^[A-Za-z0-9_.:-]+$")
+    temperature: float | None = Field(default=None, ge=0, le=2)
+    maxTokens: int | None = Field(default=None, ge=1, le=32_768)
+    timeoutSeconds: float | None = Field(default=None, ge=1, le=120)
 
 
 @dataclass
@@ -751,6 +782,511 @@ def get_planner_job_dependencies(job_id: str, *, repositories: Any = None) -> di
         "bindingResolutions": repos.dependency_execution.list_binding_resolutions(job_id) if is_dependency_plan else [],
         "artifactLineage": repos.dependency_execution.list_lineage_for_job(job_id) if is_dependency_plan else [],
     }
+
+
+def create_planner_job_interpretation(
+    job_id: str,
+    request: PlannerInterpretationRequest,
+    *,
+    repositories: Any = None,
+    queue_runtime: QueueWorkerRuntime | None = None,
+    provider: Any = None,
+) -> dict[str, Any]:
+    """Create a read-only, evidence-grounded interpretation for a terminal planner job."""
+    repos, runtime = _planner_repositories_and_runtime(repositories=repositories, queue_runtime=queue_runtime)
+    idempotency_key_hash = (
+        hashlib.sha256(request.idempotencyKey.encode("utf-8")).hexdigest()
+        if request.idempotencyKey
+        else None
+    )
+    guard = (
+        repos.interpretations.idempotency_guard(job_id, request.mode, idempotency_key_hash)
+        if idempotency_key_hash
+        else nullcontext()
+    )
+    with guard:
+        return _create_planner_job_interpretation_locked(
+            job_id,
+            request,
+            repos=repos,
+            runtime=runtime,
+            provider=provider,
+            idempotency_key_hash=idempotency_key_hash,
+        )
+
+
+def _create_planner_job_interpretation_locked(
+    job_id: str,
+    request: PlannerInterpretationRequest,
+    *,
+    repos: Any,
+    runtime: QueueWorkerRuntime,
+    provider: Any,
+    idempotency_key_hash: str | None,
+) -> dict[str, Any]:
+    try:
+        job = repos.jobs.get(job_id)
+        plan_record = _try_get_job_plan(repos, job)
+        if plan_record is None:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "The job has no exact persisted AnalysisPlan.")
+        plan = plan_record.get("analysisPlan") or {}
+        plan_hash = _plan_hash(plan_record)
+        if not plan_hash or plan_hash != request.expectedPlanHash:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "The expected AnalysisPlan hash is stale or mismatched.")
+        source = _interpretation_source(repos, job, plan_record)
+        candidates, unsupported_artifact_count = _interpretation_artifact_candidates(repos, runtime, source)
+        bundle = build_scientific_evidence_bundle(
+            source,
+            candidates,
+            unsupported_artifact_count=unsupported_artifact_count,
+        )
+        repos.interpretations.save_bundle(bundle)
+        if idempotency_key_hash:
+            existing_run = repos.interpretations.get_run_by_idempotency(job_id, request.mode, idempotency_key_hash)
+            if existing_run is not None:
+                if existing_run["bundleId"] != bundle.bundleId:
+                    raise InterpretationError("SOURCE_INTEGRITY_FAILED", "The idempotency key is bound to different scientific evidence.")
+                stored_interpretation = None
+                if existing_run.get("interpretationId"):
+                    stored_interpretation = repos.interpretations.get_interpretation(existing_run["interpretationId"])["interpretation"]
+                execution = existing_run["execution"]
+                return _interpretation_response(
+                    outcome=execution["outcome"],
+                    bundle=bundle.model_dump(mode="json"),
+                    interpretation=stored_interpretation,
+                    execution=execution,
+                    diagnostics=list(execution.get("diagnostics") or []),
+                )
+        provider_identity = "deterministic"
+        provider_model = None
+        provider_config_hash = None
+        if request.mode == "STRICT_PROVIDER":
+            provider_identity = "openai_compatible"
+            provider_model = request.model or "configured-model"
+            provider_config_hash = hashlib.sha256(json.dumps({
+                "provider": request.provider or "openai_compatible",
+                "baseUrl": request.baseUrl,
+                "model": request.model,
+                "temperature": request.temperature,
+                "maxTokens": request.maxTokens,
+                "timeoutSeconds": request.timeoutSeconds,
+            }, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+        if not bundle.evidenceItems:
+            result = no_supported_evidence_result(
+                bundle,
+                mode=InterpretationMode(request.mode),
+                provider_identity=provider_identity,
+                provider_model=provider_model,
+                provider_config_hash=provider_config_hash,
+                idempotency_key_hash=idempotency_key_hash,
+            )
+            repos.interpretations.save_run(bundle, result.execution_record)
+            return _interpretation_response(
+                outcome=result.outcome.value,
+                bundle=bundle.model_dump(mode="json"),
+                interpretation=None,
+                execution=result.execution_record.model_dump(mode="json"),
+                diagnostics=list(result.diagnostics),
+            )
+        if request.mode == "DETERMINISTIC":
+            result = deterministic_interpret(bundle, idempotency_key_hash=idempotency_key_hash)
+        else:
+            user_config = _planner_user_config_from_request(request)
+            try:
+                selected_provider = _select_interpretation_provider(request, provider=provider)
+            except LLMProviderError as selection_error:
+                def call_provider(
+                    _projection: dict[str, Any],
+                    _repair: bool,
+                    error: LLMProviderError = selection_error,
+                ) -> str:
+                    raise error
+            else:
+                def call_provider(projection: dict[str, Any], repair: bool) -> str:
+                    system = (
+                        "Return exactly one JSON object matching the supplied Phase 10L-4 claim-selection contract. "
+                        "Use only providerVisibleEvidenceIds. Do not add text, numbers, units, entities, tools, plans, code, paths, or URLs."
+                    )
+                    user_payload = {"projection": projection, "repair": repair}
+                    response = selected_provider.complete_json(
+                        messages=[
+                            {"role": "system", "content": system},
+                            {"role": "user", "content": json.dumps(user_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))},
+                        ],
+                        user_config=user_config,
+                    )
+                    return response.raw_text or json.dumps(response.raw_json, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+            result = strict_provider_interpret(
+                bundle,
+                call_provider,
+                provider_identity=provider_identity,
+                provider_model=provider_model,
+                provider_config_hash=provider_config_hash,
+                idempotency_key_hash=idempotency_key_hash,
+            )
+        if result.interpretation is not None and result.execution_record is not None:
+            stored = repos.interpretations.save_interpretation(bundle, result.interpretation, result.execution_record)
+            return _interpretation_response(
+                outcome=result.outcome.value,
+                bundle=bundle.model_dump(mode="json"),
+                interpretation=stored["interpretation"],
+                execution=stored["execution"],
+                diagnostics=list(result.diagnostics),
+            )
+        if result.execution_record is not None:
+            stored_run = repos.interpretations.save_run(bundle, result.execution_record)
+            execution = stored_run["execution"]
+        else:
+            execution = None
+        return _interpretation_response(
+            outcome=result.outcome.value,
+            bundle=bundle.model_dump(mode="json"),
+            interpretation=None,
+            execution=execution,
+            diagnostics=list(result.diagnostics),
+        )
+    except InterpretationError as error:
+        return _interpretation_response(
+            outcome=error.code,
+            bundle=None,
+            interpretation=None,
+            execution=None,
+            diagnostics=[str(error)],
+        )
+    except LLMProviderError as error:
+        return _interpretation_response(
+            outcome="PROVIDER_FAILED",
+            bundle=None,
+            interpretation=None,
+            execution=None,
+            diagnostics=[error.safe_message],
+        )
+
+
+def create_planner_job_interpretation_route(job_id: str, request: PlannerInterpretationRequest) -> dict[str, Any]:
+    return create_planner_job_interpretation(job_id, request)
+
+
+def list_planner_job_interpretations(job_id: str, *, repositories: Any = None) -> dict[str, Any]:
+    repos = _planner_read_repositories(repositories)
+    repos.jobs.get(job_id)
+    records = repos.interpretations.list_for_job(job_id)
+    runs = repos.interpretations.list_runs_for_job(job_id)
+    return {
+        "jobId": job_id,
+        "interpretations": [item["interpretation"] for item in records],
+        "runs": [item["execution"] for item in runs],
+        "count": len(records),
+        "runCount": len(runs),
+    }
+
+
+def get_planner_interpretation(interpretation_id: str, *, repositories: Any = None) -> dict[str, Any]:
+    repos = _planner_read_repositories(repositories)
+    return repos.interpretations.get_interpretation(interpretation_id)
+
+
+def get_planner_interpretation_evidence(interpretation_id: str, *, repositories: Any = None) -> dict[str, Any]:
+    repos = _planner_read_repositories(repositories)
+    record = repos.interpretations.get_interpretation(interpretation_id)
+    bundle = repos.interpretations.get_bundle(record["bundleId"])
+    return {
+        "interpretationId": interpretation_id,
+        "bundleId": bundle["bundleId"],
+        "bundleHash": bundle["bundleHash"],
+        "evidenceItems": bundle["evidenceItems"],
+        "sourceArtifactIds": bundle["sourceArtifactIds"],
+        "bundleWarnings": bundle["bundleWarnings"],
+        "bundleLimitations": bundle["bundleLimitations"],
+    }
+
+
+def _interpretation_response(
+    *,
+    outcome: str,
+    bundle: dict[str, Any] | None,
+    interpretation: dict[str, Any] | None,
+    execution: dict[str, Any] | None,
+    diagnostics: list[str],
+) -> dict[str, Any]:
+    return {
+        "outcome": outcome,
+        "interpretationId": interpretation.get("interpretationId") if interpretation else None,
+        "bundleId": bundle.get("bundleId") if bundle else None,
+        "bundleHash": bundle.get("bundleHash") if bundle else None,
+        "sourceJobId": bundle.get("jobId") if bundle else None,
+        "sourcePlanId": bundle.get("planId") if bundle else None,
+        "sourcePlanHash": bundle.get("planHash") if bundle else None,
+        "sourceGraphHash": bundle.get("graphHash") if bundle else None,
+        "mode": interpretation.get("mode") if interpretation else (execution.get("mode") if execution else None),
+        "claims": interpretation.get("claims", []) if interpretation else [],
+        "warnings": interpretation.get("globalWarnings", []) if interpretation else (bundle.get("bundleWarnings", []) if bundle else []),
+        "limitations": interpretation.get("globalLimitations", []) if interpretation else (bundle.get("bundleLimitations", []) if bundle else []),
+        "recommendations": interpretation.get("recommendations", []) if interpretation else [],
+        "partialResultState": interpretation.get("partialResultState", False) if interpretation else (bundle.get("partialResults", False) if bundle else False),
+        "repairCount": interpretation.get("repairCount", 0) if interpretation else (execution.get("repairCount", 0) if execution else 0),
+        "diagnostics": diagnostics[:128],
+        "evidenceItemCount": len(bundle.get("evidenceItems", [])) if bundle else 0,
+        "noExecution": {
+            "toolCallCreated": False,
+            "planCreated": False,
+            "jobCreated": False,
+            "enqueued": False,
+            "recommendationExecutionAuthorized": False,
+        },
+        "execution": execution,
+        "interpretation": interpretation,
+    }
+
+
+def _interpretation_source(repos: Any, job: dict[str, Any], plan_record: dict[str, Any]) -> InterpretationSource:
+    plan = plan_record.get("analysisPlan") or {}
+    status = str(job.get("status") or "")
+    if status not in {"completed", "failed", "partial_success"}:
+        raise InterpretationError("SOURCE_NOT_TERMINAL", "Interpretation requires a terminal job.")
+    job_id = str(job.get("jobId") or job.get("id"))
+    plan_id = str(plan_record.get("planId") or plan_record.get("id") or job.get("planId") or "")
+    schema_version = str(plan.get("schemaVersion") or "0.1")
+    dependency = repos.dependency_execution.get_execution_for_job(job_id) if schema_version == "0.2" else None
+    if schema_version == "0.2":
+        if dependency is None:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "AnalysisPlan 0.2 requires an exact dependency execution record.")
+        try:
+            dependency = DependencyExecutionRecord.model_validate(
+                dependency.get("dependencyExecutionRecord") or dependency
+            ).model_dump(mode="json")
+        except Exception as exc:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dependency execution identity is invalid.") from exc
+        exact_plan_hash = str(_plan_hash(plan_record) or "")
+        if (
+            dependency.get("jobId") != job_id
+            or dependency.get("planId") != plan_id
+            or dependency.get("planHash") != exact_plan_hash
+            or dependency.get("graphHash") != plan.get("graphHash")
+        ):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dependency execution does not match the exact job, plan, or graph.")
+    tool_calls = repos.tool_calls.list_for_job(job_id)
+    completed_tool_calls = sum(str(item.get("status") or "") == "completed" for item in tool_calls)
+    failed_tool_calls = sum(str(item.get("status") or "") == "failed" for item in tool_calls)
+    if dependency is not None:
+        execution_outcome = str(dependency.get("outcome"))
+    elif status == "completed" and failed_tool_calls == 0:
+        execution_outcome = "ALL_SUCCEEDED"
+    elif completed_tool_calls > 0:
+        execution_outcome = "PARTIAL_RESULTS"
+    else:
+        execution_outcome = "ALL_FAILED"
+    intent_execution = repos.analysis_intents.get_execution_for_job(job_id)
+    capability_execution = repos.capability_planning.get_execution_for_job(job_id)
+    intent = None
+    resolution = None
+    decision = None
+    if intent_execution:
+        try:
+            intent = repos.analysis_intents.get_intent(str(intent_execution.get("intentId")))
+        except (LookupError, ValueError):
+            intent = None
+    if capability_execution:
+        try:
+            decision = repos.capability_planning.get_decision(str(capability_execution.get("decisionId")))
+            decision_payload = decision.get("capabilityDecision") or decision
+            resolution = repos.capability_planning.get_resolution(str(decision_payload.get("resolutionId")))
+        except (LookupError, ValueError):
+            decision = None
+            resolution = None
+    profile_id = str(plan_record.get("profileId") or plan.get("profileId") or "") or None
+    profile = None
+    if profile_id:
+        try:
+            profile = repos.data_profiles.get(profile_id)
+        except LookupError:
+            profile = None
+    profile_payload = profile or {}
+    if schema_version == "0.2" and (
+        profile_payload.get("datasetId") != str(job.get("datasetId") or plan_record.get("datasetId") or plan.get("datasetId") or "")
+        or profile_payload.get("profileContractVersion") != "2.0"
+        or not profile_payload.get("semanticHash")
+    ):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "AnalysisPlan 0.2 interpretation requires the exact DataProfile 2.0 identity.")
+    intent_payload = (intent or {}).get("analysisIntent") or intent or {}
+    decision_payload = (decision or {}).get("capabilityDecision") or decision or {}
+    resolution_payload = (resolution or {}).get("eligibilityResolution") or resolution or {}
+    if schema_version == "0.2":
+        try:
+            parsed_intent = AnalysisIntent.model_validate(intent_payload)
+            parsed_decision = CapabilityPlanningDecision.model_validate(decision_payload)
+            parsed_resolution = EligibilityResolution.model_validate(resolution_payload)
+            parsed_profile = DataProfile.model_validate(profile_payload)
+        except Exception as exc:
+            raise InterpretationError(
+                "SOURCE_INTEGRITY_FAILED",
+                "AnalysisPlan 0.2 interpretation requires persisted, valid Intent and capability-planning records.",
+            ) from exc
+        if (
+            intent_execution is None
+            or capability_execution is None
+            or intent_execution.get("planId") != plan_id
+            or intent_execution.get("jobId") != job_id
+            or capability_execution.get("planId") != plan_id
+            or capability_execution.get("jobId") != job_id
+            or intent_execution.get("intentId") != parsed_intent.intentId
+            or capability_execution.get("intentId") != parsed_intent.intentId
+            or capability_execution.get("decisionId") != parsed_decision.decisionId
+        ):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Intent and capability execution associations are stale or mismatched.")
+        if (
+            parsed_intent.outcome is not AnalysisIntentOutcome.ready
+            or compute_analysis_intent_hash(parsed_intent) != parsed_intent.intentHash
+            or deterministic_intent_id(parsed_intent.intentHash) != parsed_intent.intentId
+            or parsed_intent.datasetId != parsed_profile.datasetId
+            or parsed_intent.profileId != parsed_profile.profileId
+        ):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "AnalysisIntent identity or DataProfile binding is invalid.")
+        if (
+            capability_semantic_hash(parsed_resolution, identity_fields=("resolutionId", "resolutionHash"))
+            != parsed_resolution.resolutionHash
+            or deterministic_capability_id("resolution", parsed_resolution.resolutionHash) != parsed_resolution.resolutionId
+            or capability_semantic_hash(parsed_decision, identity_fields=("decisionId", "decisionHash"))
+            != parsed_decision.decisionHash
+            or deterministic_capability_id("decision", parsed_decision.decisionHash) != parsed_decision.decisionId
+        ):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Capability resolution or decision semantic identity is invalid.")
+        dataset_version = str((parsed_profile.sampleIdentity or {}).datasetVersion if parsed_profile.sampleIdentity else parsed_profile.version)
+        if (
+            parsed_resolution.intentId != parsed_intent.intentId
+            or parsed_resolution.intentHash != parsed_intent.intentHash
+            or parsed_resolution.profileId != parsed_profile.profileId
+            or parsed_resolution.profileSemanticHash != parsed_profile.semanticHash
+            or parsed_resolution.profileContractVersion != parsed_profile.profileContractVersion
+            or parsed_resolution.datasetId != parsed_profile.datasetId
+            or parsed_resolution.datasetVersion != dataset_version
+            or parsed_decision.outcome is not CapabilityPlanningOutcome.plan_ready
+            or parsed_decision.intentId != parsed_intent.intentId
+            or parsed_decision.intentHash != parsed_intent.intentHash
+            or parsed_decision.profileId != parsed_profile.profileId
+            or parsed_decision.profileSemanticHash != parsed_profile.semanticHash
+            or parsed_decision.resolutionId != parsed_resolution.resolutionId
+            or parsed_decision.resolutionHash != parsed_resolution.resolutionHash
+            or parsed_decision.registrySnapshotId != parsed_resolution.registrySnapshotId
+            or parsed_decision.registrySnapshotHash != parsed_resolution.registrySnapshotHash
+        ):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Capability planning provenance does not match the exact source scope.")
+    return InterpretationSource(
+        project_id=str(job.get("projectId") or plan_record.get("projectId") or ""),
+        dataset_id=str(job.get("datasetId") or plan_record.get("datasetId") or plan.get("datasetId") or ""),
+        dataset_version=str(
+            ((profile_payload.get("sampleIdentity") or {}).get("datasetVersion"))
+            or profile_payload.get("version")
+            or profile_payload.get("profileVersion")
+            or f"legacy-plan:{plan_id}"
+        ),
+        profile_id=profile_id,
+        profile_semantic_hash=profile_payload.get("semanticHash"),
+        intent_id=intent_payload.get("intentId"),
+        intent_hash=intent_payload.get("intentHash"),
+        resolution_id=resolution_payload.get("resolutionId"),
+        resolution_hash=resolution_payload.get("resolutionHash"),
+        decision_id=decision_payload.get("decisionId"),
+        decision_hash=decision_payload.get("decisionHash"),
+        plan_id=plan_id,
+        plan_hash=str(_plan_hash(plan_record) or ""),
+        plan_schema_version=schema_version,
+        graph_hash=plan.get("graphHash"),
+        job_id=job_id,
+        job_status=status,
+        execution_outcome=execution_outcome,
+        failed_step_count=int((dependency or {}).get("failedCount") or failed_tool_calls or (1 if status == "failed" else 0)),
+        blocked_step_count=int((dependency or {}).get("blockedCount") or 0),
+    )
+
+
+def _interpretation_artifact_candidates(
+    repos: Any,
+    runtime: QueueWorkerRuntime,
+    source: InterpretationSource,
+) -> tuple[list[ArtifactProjectionInput], int]:
+    tool_calls = {str(item.get("id")): item for item in repos.tool_calls.list_for_job(source.job_id)}
+    lineage = {str(item.get("artifactId")): item for item in repos.dependency_execution.list_lineage_for_job(source.job_id)}
+    candidates: list[ArtifactProjectionInput] = []
+    unsupported_artifact_count = 0
+    for artifact in sorted(repos.artifacts.list_for_job(source.job_id), key=lambda item: str(item.get("artifactId") or item.get("id"))):
+        if str(artifact.get("type") or "") not in {
+            "table_json",
+            "metrics_json",
+            "structure_json",
+            "phonon_band_json",
+            "phonon_dos_json",
+            "phonon_band_dos_json",
+            "phonon_summary_json",
+            "volumetric_field_json",
+        }:
+            unsupported_artifact_count += 1
+            continue
+        tool_call = tool_calls.get(str(artifact.get("toolCallId") or ""))
+        if not tool_call or tool_call.get("status") != "completed":
+            unsupported_artifact_count += 1
+            continue
+        size = int(artifact.get("sizeBytes") or 0)
+        if size <= 0 or size > 262_144:
+            raise InterpretationError("EVIDENCE_CAP_EXCEEDED", "A structured interpretation artifact exceeds 262144 bytes.")
+        if str(artifact.get("contentType") or "").split(";", 1)[0].strip().lower() != "application/json":
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Structured interpretation artifacts require application/json media type.")
+        storage_key = str(artifact.get("storageKey") or "")
+        try:
+            raw = runtime.artifact_storage.get_bytes_bounded(storage_key, max_bytes=262_144)
+        except (OSError, ValueError) as exc:
+            raise InterpretationError(
+                "SOURCE_INTEGRITY_FAILED",
+                "Structured artifact bytes could not be read within the interpretation limit.",
+            ) from exc
+        checksum = hashlib.sha256(raw).hexdigest()
+        if len(raw) != size or checksum != str(artifact.get("sha256") or artifact.get("contentHash") or ""):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Artifact bytes failed size or checksum validation.")
+        try:
+            payload = json.loads(
+                raw.decode("utf-8"),
+                object_pairs_hook=_reject_duplicate_json_pairs,
+                parse_constant=lambda value: (_ for _ in ()).throw(ValueError(f"non-finite JSON: {value}")),
+            )
+        except (UnicodeDecodeError, ValueError, TypeError) as exc:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Structured artifact JSON is invalid.") from exc
+        try:
+            validate_interpretation_json_bounds(payload, max_bytes=262_144)
+        except (ValueError, RecursionError) as exc:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Structured artifact JSON exceeds depth or byte limits.") from exc
+        if not isinstance(payload, dict):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Structured interpretation artifact must be one JSON object.")
+        candidates.append(ArtifactProjectionInput(
+            artifact=artifact,
+            payload=payload,
+            tool_call=tool_call,
+            lineage=lineage.get(str(artifact.get("artifactId") or artifact.get("id"))),
+            raw_checksum=checksum,
+            raw_size_bytes=len(raw),
+        ))
+    if len(candidates) > 16 or unsupported_artifact_count > 128:
+        raise InterpretationError(
+            "EVIDENCE_CAP_EXCEEDED",
+            "Interpretation exceeds the 16 projected-source or 128 unsupported-artifact audit cap.",
+        )
+    return candidates, unsupported_artifact_count
+
+
+def _reject_duplicate_json_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"Duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
+def _select_interpretation_provider(request: PlannerInterpretationRequest, *, provider: Any = None) -> Any:
+    selected = provider or _select_planner_provider(request.provider or "openai_compatible")
+    if not isinstance(selected, OpenAICompatibleProvider) and not hasattr(selected, "complete_json"):
+        raise LLMProviderError("Strict interpretation requires the existing OpenAI-compatible JSON transport.", code="LLM_PROVIDER_UNSUPPORTED")
+    return selected
 
 
 def _dependency_execution_summary(execution: dict[str, Any] | None) -> dict[str, Any] | None:

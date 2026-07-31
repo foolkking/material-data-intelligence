@@ -1,5 +1,36 @@
 # 共享 Schema 规范
 
+## Grounded Scientific Interpretation v1 (Phase 10L-4)
+
+`grounded-interpretation-v1.schema.json` defines strict version `1.0`
+contracts for `ScientificEvidenceBundle`, `ScientificEvidenceItem`,
+`ScientificEvidenceRef`, `ScientificClaim`,
+`GroundedScientificInterpretation`, and `InterpretationExecutionRecord`.
+Python authority is `mdi_schemas.interpretation`; TypeScript parity is exported
+from `packages/schemas/src/index.ts`.
+
+The evidence bundle is platform-created only from a terminal exact Job,
+persisted Plan, execution record, successful ToolCalls, validated Artifact
+checksums, and lineage. Approved contract-specific projectors support bounded
+dataset/table statistics, ML metrics, structure summaries, phonon band/DOS/
+combined summaries, and volumetric fields. Filenames, screenshots, arbitrary
+Markdown, raw provider text, paths, URLs, and unvalidated `summary.md` are not
+scientific authority.
+
+Claims use allowlisted types and predicates, exact evidence references,
+bounded confidence classes, and numeric/unit/entity grounding. Deterministic
+and strict-provider modes share the same validator. Provider projection
+contains only provider-safe evidence items and never raw Artifact payloads.
+One interpretation-specific repair is permitted; there is no silent fallback.
+
+Outcomes are `INTERPRETATION_READY`,
+`INTERPRETATION_READY_WITH_LIMITS`, `NO_SUPPORTED_EVIDENCE`,
+`SOURCE_NOT_TERMINAL`, `SOURCE_INTEGRITY_FAILED`,
+`EVIDENCE_CAP_EXCEEDED`, `PROVIDER_FAILED`, and `VALIDATION_FAILED`.
+Interpretation is post-execution and read-only: it cannot create or mutate an
+Intent, Plan, Job, ToolCall, Artifact, queue message, or recommendation
+execution authority.
+
 ## Bounded Dependency Planning v1 (Phase 10L-3)
 
 `dependency-planning-v1.schema.json` defines the strict additive Phase 10L-3

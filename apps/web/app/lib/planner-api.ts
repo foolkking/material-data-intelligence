@@ -17,6 +17,10 @@ export type PlannerJobRequest = {
   selectedTargetIds?: string[];
 };
 
+export function isTerminalPlannerJobStatus(status: string): boolean {
+  return ["completed", "failed", "partial_success"].includes(status);
+}
+
 export type AnalysisIntentOption = { value: string; label: string; semanticId: string };
 export type AnalysisIntentScientificIntent =
   | "dataset_overview"
@@ -457,6 +461,143 @@ export type JobResult = {
   provenance?: PlanProvenance;
 };
 
+export type ScientificEvidenceItem = {
+  schemaVersion: "1.0";
+  evidenceItemId: string;
+  semanticRole: string;
+  evidenceKind: "SCALAR" | "RANGE" | "CATEGORY" | "COUNT" | "BOOLEAN" | "ORDERED_SERIES_SUMMARY" | "TABLE_ROW" | "WARNING" | "LIMITATION" | "EXECUTION_STATE" | "PROVENANCE";
+  subjectId: string;
+  displayValue: string;
+  unit?: string | null;
+  sourceArtifactId: string;
+  sourceArtifactChecksum: string;
+  artifactContract: string;
+  artifactContractVersion: string;
+  sourceToolId: string;
+  sourceToolVersion: string;
+  fieldLocator: { fieldId: string; semanticKey?: string | null; entityId?: string | null };
+  warnings: string[];
+  limitations: string[];
+};
+
+export type ScientificClaim = {
+  schemaVersion: "1.0";
+  claimId: string;
+  claimType: "OBSERVATION" | "COMPARISON" | "ANOMALY" | "WARNING" | "LIMITATION" | "RECOMMENDATION" | "NO_SUPPORTED_CONCLUSION";
+  subjectEvidenceIds: string[];
+  supportingEvidenceIds: string[];
+  limitingEvidenceIds: string[];
+  contradictingEvidenceIds: string[];
+  semanticPredicate: string;
+  qualifiers: string[];
+  renderedText: string;
+  scope: string;
+  confidenceClass: "DIRECT" | "QUALIFIED" | "LIMITED";
+  groundingStatus: "GROUNDED" | "REJECTED";
+  displayOrder: number;
+};
+
+export type GroundedScientificInterpretation = {
+  schemaVersion: "1.0";
+  interpretationId: string;
+  interpretationHash: string;
+  sourceBundleId: string;
+  sourceBundleHash: string;
+  sourceJobId: string;
+  sourcePlanId: string;
+  sourcePlanHash: string;
+  sourceGraphHash?: string | null;
+  mode: "DETERMINISTIC" | "STRICT_PROVIDER";
+  provider: string;
+  providerVersion: string;
+  claims: ScientificClaim[];
+  globalWarnings: string[];
+  globalLimitations: string[];
+  recommendations: Array<{
+    recommendationId: string;
+    reasonEvidenceIds: string[];
+    suggestedGoalCategory: string;
+    expectedMissingEvidence: string[];
+    limitation: string;
+    executionAuthorized: false;
+    planCreated: false;
+    jobCreated: false;
+  }>;
+  completeness: "COMPLETE" | "PARTIAL" | "NONE";
+  partialResultState: boolean;
+  repairCount: 0 | 1;
+  validationOutcome: string;
+  executionRecordId: string;
+};
+
+export type InterpretationExecutionRecord = {
+  schemaVersion: "1.0";
+  executionRecordId: string;
+  executionRecordHash: string;
+  sourceJobId: string;
+  sourcePlanId: string;
+  sourcePlanHash: string;
+  sourceGraphHash?: string | null;
+  sourceBundleId: string;
+  sourceBundleHash: string;
+  mode: "DETERMINISTIC" | "STRICT_PROVIDER";
+  provider: string;
+  providerVersion: string;
+  providerModel?: string | null;
+  repairCount: 0 | 1;
+  outcome: InterpretationResponse["outcome"];
+  diagnostics: string[];
+  evidenceItemCount: number;
+  claimCount: number;
+};
+
+export type InterpretationResponse = {
+  outcome: "INTERPRETATION_READY" | "INTERPRETATION_READY_WITH_LIMITS" | "NO_SUPPORTED_EVIDENCE" | "SOURCE_NOT_TERMINAL" | "SOURCE_INTEGRITY_FAILED" | "EVIDENCE_CAP_EXCEEDED" | "PROVIDER_FAILED" | "VALIDATION_FAILED";
+  interpretationId?: string | null;
+  bundleId?: string | null;
+  bundleHash?: string | null;
+  sourceJobId?: string | null;
+  sourcePlanId?: string | null;
+  sourcePlanHash?: string | null;
+  sourceGraphHash?: string | null;
+  mode?: "DETERMINISTIC" | "STRICT_PROVIDER" | null;
+  claims: ScientificClaim[];
+  warnings: string[];
+  limitations: string[];
+  recommendations: GroundedScientificInterpretation["recommendations"];
+  partialResultState: boolean;
+  repairCount: number;
+  diagnostics: string[];
+  evidenceItemCount: number;
+  noExecution: {
+    toolCallCreated: false;
+    planCreated: false;
+    jobCreated: false;
+    enqueued: false;
+    recommendationExecutionAuthorized: false;
+  };
+  execution?: InterpretationExecutionRecord | null;
+  interpretation?: GroundedScientificInterpretation | null;
+};
+
+export type PlannerJobInterpretationsResponse = {
+  jobId: string;
+  interpretations: GroundedScientificInterpretation[];
+  runs: InterpretationExecutionRecord[];
+  count: number;
+  runCount: number;
+};
+
+export type InterpretationEvidenceResponse = {
+  interpretationId: string;
+  bundleId: string;
+  bundleHash: string;
+  evidenceItems: ScientificEvidenceItem[];
+  sourceArtifactIds: string[];
+  bundleWarnings: string[];
+  bundleLimitations: string[];
+};
+
 export type DatasetOption = {
   id: string;
   datasetId?: string;
@@ -706,6 +847,39 @@ export async function getPlannerJobArtifacts(jobId: string): Promise<Artifact[]>
 
 export async function getPlannerJobDependencies(jobId: string): Promise<DependencyAudit> {
   return apiFetch<DependencyAudit>(`/planner/jobs/${encodeURIComponent(jobId)}/dependencies`);
+}
+
+export async function createPlannerJobInterpretation(
+  jobId: string,
+  expectedPlanHash: string,
+  options: Readonly<{
+    mode?: "DETERMINISTIC" | "STRICT_PROVIDER";
+    provider?: string;
+    baseUrl?: string;
+    model?: string;
+    secretId?: string;
+    temperature?: number;
+    maxTokens?: number;
+    timeoutSeconds?: number;
+    idempotencyKey?: string;
+  }> = {},
+): Promise<InterpretationResponse> {
+  return apiFetch<InterpretationResponse>(`/planner/jobs/${encodeURIComponent(jobId)}/interpretations`, {
+    method: "POST",
+    body: JSON.stringify({ mode: options.mode || "DETERMINISTIC", expectedPlanHash, ...options }),
+  });
+}
+
+export async function getPlannerJobInterpretations(jobId: string): Promise<PlannerJobInterpretationsResponse> {
+  return apiFetch<PlannerJobInterpretationsResponse>(
+    `/planner/jobs/${encodeURIComponent(jobId)}/interpretations`,
+  );
+}
+
+export async function getPlannerInterpretationEvidence(interpretationId: string): Promise<InterpretationEvidenceResponse> {
+  return apiFetch<InterpretationEvidenceResponse>(
+    `/planner/interpretations/${encodeURIComponent(interpretationId)}/evidence`,
+  );
 }
 
 export async function getPlannerArtifactContent(

@@ -57,6 +57,9 @@ class ArtifactStorage(Protocol):
     def get_bytes(self, storage_key: str) -> bytes:
         ...
 
+    def get_bytes_bounded(self, storage_key: str, *, max_bytes: int) -> bytes:
+        ...
+
     def put_text(
         self,
         storage_key: str,
@@ -125,6 +128,18 @@ class LocalFileArtifactStorage:
 
     def get_bytes(self, storage_key: str) -> bytes:
         return self._resolve(storage_key).read_bytes()
+
+    def get_bytes_bounded(self, storage_key: str, *, max_bytes: int) -> bytes:
+        if max_bytes < 0:
+            raise ValueError("max_bytes must be non-negative")
+        target = self._resolve(storage_key)
+        if target.stat().st_size > max_bytes:
+            raise ValueError("Artifact exceeds the bounded read limit")
+        with target.open("rb") as handle:
+            data = handle.read(max_bytes + 1)
+        if len(data) > max_bytes:
+            raise ValueError("Artifact exceeds the bounded read limit")
+        return data
 
     def put_text(
         self,
@@ -267,6 +282,28 @@ class S3CompatibleArtifactStorage:
         body = response["Body"]
         data = body.read()
         return data if isinstance(data, bytes) else bytes(data)
+
+    def get_bytes_bounded(self, storage_key: str, *, max_bytes: int) -> bytes:
+        if max_bytes < 0:
+            raise ValueError("max_bytes must be non-negative")
+        client = self._require_client()
+        response = client.get_object(Bucket=self.bucket, Key=self._full_key(storage_key))
+        content_length = response.get("ContentLength")
+        if isinstance(content_length, int) and content_length > max_bytes:
+            body = response.get("Body")
+            if hasattr(body, "close"):
+                body.close()
+            raise ValueError("Artifact exceeds the bounded read limit")
+        body = response["Body"]
+        try:
+            data = body.read(max_bytes + 1)
+        finally:
+            if hasattr(body, "close"):
+                body.close()
+        bounded = data if isinstance(data, bytes) else bytes(data)
+        if len(bounded) > max_bytes:
+            raise ValueError("Artifact exceeds the bounded read limit")
+        return bounded
 
     def put_text(
         self,

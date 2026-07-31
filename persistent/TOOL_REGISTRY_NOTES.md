@@ -1,5 +1,18 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-07-30 Phase 10L-4 Interpretation Is Not a Registry Tool
+
+- Scientific evidence projectors and interpreters are a post-execution,
+  read-only platform service. They are not Tool Registry entries, Adapters,
+  planner candidates, Artifact consumers with execution authority, or a new
+  route around PlanValidator/QueueWorkerRuntime.
+- Projectors may inspect only validated persisted Artifact contracts and
+  lineage. Raw Artifact payloads are not sent to the provider, and Artifact
+  text cannot select a tool, change a Plan, enqueue work, or authorize a
+  recommendation.
+- Phase 10L-4 adds no Registry metadata, public tool, parameter, Adapter,
+  scientific algorithm, dependency port, or Runtime behavior.
+
 ## 2026-07-30 Phase 10L-3 Typed Artifact Ports
 
 - ToolPlannerMetadata 1.0 remains valid for all independent tools. Additive

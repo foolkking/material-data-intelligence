@@ -1,0 +1,339 @@
+{
+  "$defs": {
+    "EvidenceFieldLocator": {
+      "additionalProperties": false,
+      "properties": {
+        "entityId": {
+          "anyOf": [
+            {
+              "maxLength": 160,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Entityid"
+        },
+        "fieldId": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Fieldid",
+          "type": "string"
+        },
+        "semanticKey": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Semantickey",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fieldId",
+        "semanticKey"
+      ],
+      "title": "EvidenceFieldLocator",
+      "type": "object"
+    },
+    "EvidenceKind": {
+      "enum": [
+        "SCALAR",
+        "RANGE",
+        "CATEGORY",
+        "COUNT",
+        "BOOLEAN",
+        "ORDERED_SERIES_SUMMARY",
+        "TABLE_ROW",
+        "WARNING",
+        "LIMITATION",
+        "EXECUTION_STATE",
+        "PROVENANCE"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "EvidenceValue": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum"
+        },
+        "minimum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minimum"
+        },
+        "scalar": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scalar"
+        },
+        "values": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "maxItems": 64,
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "title": "EvidenceValue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "artifactContract": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Artifactcontract",
+      "type": "string"
+    },
+    "artifactContractVersion": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Artifactcontractversion",
+      "type": "string"
+    },
+    "datasetId": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Datasetid",
+      "type": "string"
+    },
+    "datasetVersion": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Datasetversion",
+      "type": "string"
+    },
+    "displayValue": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Displayvalue",
+      "type": "string"
+    },
+    "evidenceItemId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Evidenceitemid",
+      "type": "string"
+    },
+    "evidenceKind": {
+      "$ref": "#/$defs/EvidenceKind"
+    },
+    "fieldLocator": {
+      "$ref": "#/$defs/EvidenceFieldLocator"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "normalizedValue": {
+      "$ref": "#/$defs/EvidenceValue"
+    },
+    "producerStepId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Producerstepid",
+      "type": "string"
+    },
+    "producerToolCallId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Producertoolcallid",
+      "type": "string"
+    },
+    "projectorVersion": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Projectorversion",
+      "type": "string"
+    },
+    "providerSafe": {
+      "default": true,
+      "title": "Providersafe",
+      "type": "boolean"
+    },
+    "referenceConvention": {
+      "anyOf": [
+        {
+          "maxLength": 160,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Referenceconvention"
+    },
+    "resourceId": {
+      "anyOf": [
+        {
+          "maxLength": 160,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resourceid"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "semanticRole": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Semanticrole",
+      "type": "string"
+    },
+    "sourceArtifactChecksum": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Sourceartifactchecksum",
+      "type": "string"
+    },
+    "sourceArtifactId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Sourceartifactid",
+      "type": "string"
+    },
+    "sourceToolId": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Sourcetoolid",
+      "type": "string"
+    },
+    "sourceToolVersion": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Sourcetoolversion",
+      "type": "string"
+    },
+    "subjectId": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Subjectid",
+      "type": "string"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unit"
+    },
+    "unitAuthority": {
+      "anyOf": [
+        {
+          "maxLength": 96,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unitauthority"
+    },
+    "valueKind": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Valuekind",
+      "type": "string"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "evidenceItemId",
+    "semanticRole",
+    "evidenceKind",
+    "subjectId",
+    "valueKind",
+    "normalizedValue",
+    "displayValue",
+    "sourceArtifactId",
+    "sourceArtifactChecksum",
+    "artifactContract",
+    "artifactContractVersion",
+    "sourceToolId",
+    "sourceToolVersion",
+    "producerStepId",
+    "producerToolCallId",
+    "fieldLocator",
+    "datasetId",
+    "datasetVersion",
+    "projectorVersion"
+  ],
+  "title": "ScientificEvidenceItem",
+  "type": "object"
+}

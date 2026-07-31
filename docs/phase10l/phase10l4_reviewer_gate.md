@@ -1,6 +1,10 @@
 # Phase 10L-4 Reviewer Gate
 
-Status: `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+Status: `HISTORICAL / ADMITTED BY REVIEWER`.
+
+The reviewer supplied the Phase 10L-4 implementation prompt after the verified
+Phase 10L-3 archive. Current execution state is authoritative in `TASKS.md` and
+`persistent/TASK_BOARD.md`; this file no longer blocks admission.
 
 Phase 10L-4 is expected to address Grounded Scientific Result Interpretation,
 but this document is not an executable task or implementation prompt.
@@ -16,5 +20,6 @@ Reviewer admission requires the real Phase 10L-3 result, including:
 - final clean `master` with `HEAD == origin/master`;
 - no remaining Phase 10L-3 executable task.
 
-Do not create, queue, or execute Phase 10L-4 automatically. Only a new
-reviewer/user prompt may define its exact scope.
+This historical gate did not authorize automatic admission. The later reviewer
+prompt did authorize Phase 10L-4. Phase 10L-5 remains blocked until Phase
+10L-4 completes its verified queue archive.

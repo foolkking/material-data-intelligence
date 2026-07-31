@@ -8,13 +8,11 @@ assigned phases rather than by this roadmap gate:
 ### Phase 10L Reviewer Gate
 
 * Is plan approval/editing owned by Phase 10L or deferred to Phase 10M?
-* Which structured result facts, budgets, and no-invention rules govern the
-  future interpretation provider?
+* Which cross-case provider policy and DeepSeek-only evidence requirements are
+  required for the reviewer-supplied Phase 10L-5 closure?
 
 * Which exact units and domain property registries should be admitted beyond
   the conservative Phase 10K-1 numeric property allowlist?
-* Which scientific summary fields may be provided to bounded interpretation,
-  and how are unsupported claims blocked?
 * What cross-artifact identities are required by the unified workspace?
 * What provider/version/parameter and disagreement policies govern
   CrystalNN/VoronoiNN and local environments?
@@ -58,6 +56,19 @@ assigned phases rather than by this roadmap gate:
 * Partial results: **CLOSED FOR PHASE 10L-3**. Producer/consumer failures block
   descendants only; independent branches continue and successful artifacts are
   retained. There is no new per-step retry engine.
+* Interpretation evidence authority: **CLOSED FOR PHASE 10L-4**. Only exact,
+  terminal Job/Plan/execution/ToolCall/Artifact checksum/lineage records and
+  approved contract projectors create ScientificEvidenceBundle facts.
+  Filenames, arbitrary Markdown, screenshots, provider text, paths, URLs, and
+  unvalidated summaries have no authority.
+* Interpretation grounding: **CLOSED FOR PHASE 10L-4**. Claims require exact
+  evidence IDs and allowlisted predicates with numeric, unit, entity, scope,
+  partial-result, and forbidden-conclusion validation. Provider mode sees only
+  provider-safe projected evidence, permits one repair, and has no silent
+  deterministic fallback.
+* Interpretation authority: **CLOSED FOR PHASE 10L-4 - READ ONLY**. It cannot
+  mutate execution records or create Intent, Plan, Job, ToolCall, queue work,
+  Artifact execution authority, or an executable recommendation.
 
 * Material Intelligence integration authority: **CLOSED FOR PHASE 10K-5** -
   Profile 2.0 owns deterministic data semantics; K2-K4 tools own bounded
@@ -73,9 +84,10 @@ assigned phases rather than by this roadmap gate:
   each validated product have independent typed states; one failed/stale
   product does not invalidate successful sibling products.
 * Phase 10L boundary: **PARTIALLY CLOSED** - intent/clarification are fixed by
-  Phase 10L-1, capability-aware selection/exact binding by Phase 10L-2, and
-  bounded dependency execution by Phase 10L-3; scientific result
-  interpretation remains separate reviewer-gated Agent work.
+  Phase 10L-1, capability-aware selection/exact binding by Phase 10L-2,
+  bounded dependency execution by Phase 10L-3, and grounded post-execution
+  interpretation by Phase 10L-4. Reviewer-supplied Phase 10L-5 still owns the
+  natural-language end-to-end evidence closure.
 
 * Composition-space baseline: **CLOSED FOR PHASE 10K-4** - normalized
   atomic-fraction features ordered by atomic number, deterministic center-only

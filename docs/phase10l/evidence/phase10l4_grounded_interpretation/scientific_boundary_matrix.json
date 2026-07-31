@@ -1,0 +1,56 @@
+{
+  "dataset": {
+    "allowed": [
+      "counts",
+      "ranges",
+      "missingness"
+    ],
+    "forbidden": [
+      "causality",
+      "best material"
+    ]
+  },
+  "ml": {
+    "allowed": [
+      "exact metrics"
+    ],
+    "forbidden": [
+      "deployment",
+      "generalization guarantee"
+    ]
+  },
+  "phonon": {
+    "allowed": [
+      "contract range",
+      "integration status",
+      "conventions"
+    ],
+    "forbidden": [
+      "unqualified stability",
+      "anharmonic conclusions"
+    ]
+  },
+  "structure": {
+    "allowed": [
+      "lattice",
+      "site counts"
+    ],
+    "forbidden": [
+      "stability",
+      "phase confirmation",
+      "bond truth"
+    ]
+  },
+  "volumetric": {
+    "allowed": [
+      "quantity",
+      "scalar range",
+      "reference"
+    ],
+    "forbidden": [
+      "Bader",
+      "charge transfer",
+      "bond topology"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "artifactPromptInjectionBoundary": "RAW_TEXT_EXCLUDED_FROM_PROVIDER_SAFE_PROJECTION",
+  "claimEvidenceRefsBeforeL4": "MISSING",
+  "entireDatasetSentToProvider": false,
+  "existingReportText": "REUSABLE_FOUNDATION_NOT_GROUNDED",
+  "existingSummary": "REUSABLE_FOUNDATION_NOT_GROUNDED",
+  "fileMap": {
+    "artifactStorage": "apps/api/mdi_api/artifact_storage.py",
+    "browserRunner": "apps/web/test/grounded-interpretation-browser-evidence.mjs",
+    "canonicalHash": "packages/schemas/mdi_schemas/interpretation.py",
+    "frontend": "apps/web/app/components/PlannerWorkbench.tsx",
+    "lineageRepository": "apps/api/mdi_api/repositories.py",
+    "migration": "apps/api/alembic/versions/0006_phase10l4_grounded_interpretation.py",
+    "persistenceSchema": "apps/api/mdi_api/db.py",
+    "providerTransport": "services/llm/mdi_llm/providers.py",
+    "redaction": "services/llm/mdi_llm/redaction.py",
+    "strictInterpretation": "services/llm/mdi_llm/grounded_interpretation.py",
+    "terminalSourceGateAndApi": "apps/api/mdi_api/routers/planner.py"
+  },
+  "groundingValidatorBeforeL4": "MISSING",
+  "l4Decision": "independent post-execution read-only service",
+  "numericUnitEntityGroundingBeforeL4": "MISSING",
+  "partialAndFailedStepPolicyBeforeL4": "EXECUTION_RECORD_AVAILABLE_INTERPRETATION_MISSING",
+  "providerCanModifyIntentPlanOrJob": false,
+  "rawArtifactSentToProvider": false,
+  "rawSummaryTrusted": false,
+  "strictProviderOutputBeforeL4": "PARTIAL_PROVIDER_TRANSPORT_ONLY",
+  "untrustedArtifactTextIsScientificAuthority": false
+}

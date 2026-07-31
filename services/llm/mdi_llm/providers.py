@@ -8,12 +8,14 @@ variables or injected configuration.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import ipaddress
 import json
 import os
 import re
 import socket
 from typing import Any, Protocol
 import urllib.error
+import urllib.parse
 import urllib.request
 
 from mdi_schemas import DataProfile, RegisteredTool
@@ -589,6 +591,7 @@ def _post_chat_completion(
     max_tokens: int,
     timeout_seconds: float,
 ) -> dict[str, Any]:
+    base_url = _validated_llm_base_url(base_url)
     url = f"{base_url}/chat/completions"
     headers = {
         "Content-Type": "application/json",
@@ -624,6 +627,69 @@ def _post_chat_completion(
             raise LLMProviderError("OpenAI-compatible LLM response was not valid JSON.", code="LLM_RESPONSE_INVALID") from None
 
     raise LLMProviderError("OpenAI-compatible LLM request failed.", code="LLM_PROVIDER_ERROR")
+
+
+_DEFAULT_ALLOWED_LLM_BASE_URLS = frozenset(
+    {
+        "https://api.openai.com/v1",
+        "https://api.deepseek.com/v1",
+        "https://generativelanguage.googleapis.com/v1beta/openai",
+    }
+)
+
+
+def _validated_llm_base_url(base_url: str) -> str:
+    """Return an exact server-approved HTTPS provider endpoint."""
+    normalized = _normalize_llm_base_url(base_url)
+    allowed = set(_DEFAULT_ALLOWED_LLM_BASE_URLS)
+    for name in ("MDI_LLM_BASE_URL", "OPENAI_BASE_URL"):
+        configured = os.environ.get(name)
+        if configured:
+            allowed.add(_normalize_llm_base_url(configured))
+    for configured in (os.environ.get("MDI_LLM_ALLOWED_BASE_URLS") or "").split(","):
+        if configured.strip():
+            allowed.add(_normalize_llm_base_url(configured.strip()))
+    if normalized not in allowed:
+        raise LLMProviderError(
+            "OpenAI-compatible LLM endpoint is not approved by server configuration.",
+            code="LLM_BASE_URL_NOT_ALLOWED",
+        )
+    return normalized
+
+
+def _normalize_llm_base_url(base_url: str) -> str:
+    try:
+        parsed = urllib.parse.urlsplit(base_url)
+        port = parsed.port
+    except (TypeError, ValueError):
+        raise LLMProviderError("OpenAI-compatible LLM endpoint is invalid.", code="LLM_BASE_URL_NOT_ALLOWED") from None
+    if (
+        parsed.scheme.lower() != "https"
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise LLMProviderError(
+            "OpenAI-compatible LLM endpoint must be an approved HTTPS base URL.",
+            code="LLM_BASE_URL_NOT_ALLOWED",
+        )
+    try:
+        address = ipaddress.ip_address(parsed.hostname)
+    except ValueError:
+        address = None
+    if address is not None and not address.is_global:
+        raise LLMProviderError(
+            "OpenAI-compatible LLM endpoint cannot use a private or local address.",
+            code="LLM_BASE_URL_NOT_ALLOWED",
+        )
+    host = parsed.hostname.lower()
+    if ":" in host:
+        host = f"[{host}]"
+    authority = f"{host}:{port}" if port is not None else host
+    path = parsed.path.rstrip("/")
+    return f"https://{authority}{path}"
 
 
 def _base_url_disables_response_format(base_url: str) -> bool:

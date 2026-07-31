@@ -33,11 +33,29 @@ from .capability_planner import (
     resolve_eligibility,
 )
 from .redaction import is_credential_key, redact_credential_values, redact_params_for_log
+from .grounded_interpretation import (
+    ArtifactProjectionInput,
+    InterpretationError,
+    InterpretationResult,
+    InterpretationSource,
+    ProviderInterpretationProposal,
+    build_scientific_evidence_bundle,
+    deterministic_interpret,
+    no_supported_evidence_result,
+    project_artifact,
+    provider_safe_projection,
+    strict_provider_interpret,
+    validate_grounded_interpretation,
+)
 
 __all__ = [
+    "ArtifactProjectionInput",
     "AnalysisIntentError",
     "AnalysisIntentRequest",
     "AnalysisIntentValidator",
+    "InterpretationError",
+    "InterpretationResult",
+    "InterpretationSource",
     "CAPABILITY_PLANNER_VERSION",
     "CapabilityContextValidator",
     "CapabilityPlanningError",
@@ -56,10 +74,18 @@ __all__ = [
     "PlannerRawResponse",
     "PlannerRequest",
     "PlannerUserConfig",
+    "ProviderInterpretationProposal",
+    "build_scientific_evidence_bundle",
+    "deterministic_interpret",
+    "no_supported_evidence_result",
     "plan_capabilities",
     "project_eligible_candidates",
+    "project_artifact",
+    "provider_safe_projection",
     "redact_credential_values",
     "redact_params_for_log",
     "resolve_eligibility",
+    "strict_provider_interpret",
+    "validate_grounded_interpretation",
     "normalize_analysis_goal",
 ]

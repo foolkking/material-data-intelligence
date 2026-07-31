@@ -1,0 +1,433 @@
+{
+  "$defs": {
+    "BundleCompleteness": {
+      "enum": [
+        "COMPLETE",
+        "PARTIAL",
+        "UNSUPPORTED"
+      ],
+      "title": "BundleCompleteness",
+      "type": "string"
+    },
+    "ClaimConfidence": {
+      "enum": [
+        "DIRECT",
+        "QUALIFIED",
+        "LIMITED"
+      ],
+      "title": "ClaimConfidence",
+      "type": "string"
+    },
+    "ClaimPredicate": {
+      "enum": [
+        "HAS_VALUE",
+        "HAS_RANGE",
+        "HAS_COUNT",
+        "HAS_CATEGORY",
+        "REPORTS_WARNING",
+        "REPORTS_LIMITATION",
+        "DIFFERS_FROM",
+        "EXCEEDS_DECLARED_THRESHOLD",
+        "IS_MISSING",
+        "IS_PARTIAL",
+        "SUGGESTS_FOLLOW_UP",
+        "NO_SUPPORTED_CONCLUSION"
+      ],
+      "title": "ClaimPredicate",
+      "type": "string"
+    },
+    "ClaimType": {
+      "enum": [
+        "OBSERVATION",
+        "COMPARISON",
+        "ANOMALY",
+        "WARNING",
+        "LIMITATION",
+        "RECOMMENDATION",
+        "NO_SUPPORTED_CONCLUSION"
+      ],
+      "title": "ClaimType",
+      "type": "string"
+    },
+    "GroundingStatus": {
+      "enum": [
+        "GROUNDED",
+        "REJECTED"
+      ],
+      "title": "GroundingStatus",
+      "type": "string"
+    },
+    "InterpretationMode": {
+      "enum": [
+        "DETERMINISTIC",
+        "STRICT_PROVIDER"
+      ],
+      "title": "InterpretationMode",
+      "type": "string"
+    },
+    "InterpretationOutcome": {
+      "enum": [
+        "INTERPRETATION_READY",
+        "INTERPRETATION_READY_WITH_LIMITS",
+        "NO_SUPPORTED_EVIDENCE",
+        "SOURCE_NOT_TERMINAL",
+        "SOURCE_INTEGRITY_FAILED",
+        "EVIDENCE_CAP_EXCEEDED",
+        "PROVIDER_FAILED",
+        "VALIDATION_FAILED"
+      ],
+      "title": "InterpretationOutcome",
+      "type": "string"
+    },
+    "ScientificClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "claimId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Claimid",
+          "type": "string"
+        },
+        "claimType": {
+          "$ref": "#/$defs/ClaimType"
+        },
+        "confidenceClass": {
+          "$ref": "#/$defs/ClaimConfidence"
+        },
+        "contradictingEvidenceIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Contradictingevidenceids",
+          "type": "array"
+        },
+        "displayOrder": {
+          "exclusiveMaximum": 32,
+          "minimum": 0,
+          "title": "Displayorder",
+          "type": "integer"
+        },
+        "groundingStatus": {
+          "$ref": "#/$defs/GroundingStatus",
+          "default": "GROUNDED"
+        },
+        "limitingEvidenceIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Limitingevidenceids",
+          "type": "array"
+        },
+        "qualifiers": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Qualifiers",
+          "type": "array"
+        },
+        "renderedText": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "title": "Renderedtext",
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schemaversion",
+          "type": "string"
+        },
+        "scope": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Scope",
+          "type": "string"
+        },
+        "semanticPredicate": {
+          "$ref": "#/$defs/ClaimPredicate"
+        },
+        "structuredPayload": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "maxProperties": 16,
+          "title": "Structuredpayload",
+          "type": "object"
+        },
+        "subjectEvidenceIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Subjectevidenceids",
+          "type": "array"
+        },
+        "supportingEvidenceIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Supportingevidenceids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claimId",
+        "claimType",
+        "subjectEvidenceIds",
+        "supportingEvidenceIds",
+        "semanticPredicate",
+        "renderedText",
+        "scope",
+        "confidenceClass",
+        "displayOrder"
+      ],
+      "title": "ScientificClaim",
+      "type": "object"
+    },
+    "ScientificRecommendation": {
+      "additionalProperties": false,
+      "properties": {
+        "executionAuthorized": {
+          "const": false,
+          "default": false,
+          "title": "Executionauthorized",
+          "type": "boolean"
+        },
+        "expectedMissingEvidence": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Expectedmissingevidence",
+          "type": "array"
+        },
+        "jobCreated": {
+          "const": false,
+          "default": false,
+          "title": "Jobcreated",
+          "type": "boolean"
+        },
+        "limitation": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Limitation",
+          "type": "string"
+        },
+        "planCreated": {
+          "const": false,
+          "default": false,
+          "title": "Plancreated",
+          "type": "boolean"
+        },
+        "reasonEvidenceIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Reasonevidenceids",
+          "type": "array"
+        },
+        "recommendationId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Recommendationid",
+          "type": "string"
+        },
+        "suggestedGoalCategory": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Suggestedgoalcategory",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recommendationId",
+        "reasonEvidenceIds",
+        "suggestedGoalCategory",
+        "limitation"
+      ],
+      "title": "ScientificRecommendation",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "claims": {
+      "items": {
+        "$ref": "#/$defs/ScientificClaim"
+      },
+      "maxItems": 32,
+      "title": "Claims",
+      "type": "array"
+    },
+    "completeness": {
+      "$ref": "#/$defs/BundleCompleteness"
+    },
+    "createdAt": "2026-07-30T00:00:00+00:00",
+    "executionRecordId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Executionrecordid",
+      "type": "string"
+    },
+    "globalLimitations": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Globallimitations",
+      "type": "array"
+    },
+    "globalWarnings": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 128,
+      "title": "Globalwarnings",
+      "type": "array"
+    },
+    "interpretationHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Interpretationhash",
+      "type": "string"
+    },
+    "interpretationId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Interpretationid",
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "#/$defs/InterpretationMode"
+    },
+    "outcome": {
+      "$ref": "#/$defs/InterpretationOutcome"
+    },
+    "partialResultState": {
+      "title": "Partialresultstate",
+      "type": "boolean"
+    },
+    "provider": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Provider",
+      "type": "string"
+    },
+    "providerVersion": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Providerversion",
+      "type": "string"
+    },
+    "recommendations": {
+      "items": {
+        "$ref": "#/$defs/ScientificRecommendation"
+      },
+      "maxItems": 8,
+      "title": "Recommendations",
+      "type": "array"
+    },
+    "repairCount": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Repaircount",
+      "type": "integer"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "sourceBundleHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Sourcebundlehash",
+      "type": "string"
+    },
+    "sourceBundleId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Sourcebundleid",
+      "type": "string"
+    },
+    "sourceGraphHash": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sourcegraphhash"
+    },
+    "sourceJobId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Sourcejobid",
+      "type": "string"
+    },
+    "sourcePlanHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Sourceplanhash",
+      "type": "string"
+    },
+    "sourcePlanId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Sourceplanid",
+      "type": "string"
+    },
+    "validationOutcome": {
+      "enum": [
+        "VALID",
+        "INVALID"
+      ],
+      "title": "Validationoutcome",
+      "type": "string"
+    }
+  },
+  "required": [
+    "interpretationId",
+    "interpretationHash",
+    "sourceBundleId",
+    "sourceBundleHash",
+    "sourceJobId",
+    "sourcePlanId",
+    "sourcePlanHash",
+    "mode",
+    "provider",
+    "providerVersion",
+    "completeness",
+    "partialResultState",
+    "repairCount",
+    "outcome",
+    "validationOutcome",
+    "executionRecordId",
+    "createdAt"
+  ],
+  "title": "GroundedScientificInterpretation",
+  "type": "object"
+}

@@ -43,15 +43,16 @@ Phase 10J-6 is archived and Phase 10K Material Intelligence is complete with
 explicit limits. Phase 10L-0 and Phase 10L-1 are archived. Phase 10L-2 has
 implemented strict Registry planner metadata, deterministic Profile/Intent
 eligibility, eligible-only capability selection, exact parameter provenance,
-and an independent validation gate while keeping AnalysisPlan 0.1 and Runtime
-semantics unchanged. Its implementation and completion-record exact-SHA CI are
-green, and its verified TASKS block is archived. Phase 10L-3 is the sole active
-task. It adds a strict four-step/six-binding AnalysisPlan 0.2 path, typed
-artifact ports, deterministic serial dependency execution, partial-result
-records, and artifact lineage while preserving all 0.1 behavior. Local focused
-and three-browser/mobile evidence is green; exact-SHA CI and verified archive
-remain required. Phase 10L-4 remains reviewer-gated. The remaining
-initial-release route is:
+and an independent validation gate. Phase 10L-3 is archived with additive
+AnalysisPlan 0.2, typed Artifact ports, deterministic serial dependency
+execution, partial-result records, and Artifact lineage while preserving all
+0.1 behavior. Phase 10L-4 is the sole active task. Its local implementation
+adds post-execution ScientificEvidenceBundle 1.0 projection, deterministic and
+strict-provider interpretation, grounded claims, immutable persistence, and an
+additive findings/evidence UI without changing Plan, Runtime, Registry, Job, or
+Artifact execution authority. Exact-SHA implementation/completion/archive CI
+remain required. Phase 10L-5 was supplied by the reviewer and remains queued
+behind that archive gate. The remaining initial-release route is:
 
 ```text
 10K Material Intelligence

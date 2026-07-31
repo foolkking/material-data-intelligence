@@ -13,8 +13,12 @@
   Unit, Frontend, PostgreSQL/Redis/MinIO migration/integration, 28 selected
   service tests with zero skips, and evidence integrity. Completion record
   `2bd06f2` passed exact-SHA CI run `30542844246`; its TASKS block is archived.
-- [ ] Phase 10L-4 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; it must not be
-  queued or executed automatically from Phase 10L-3.
+- [ ] Phase 10L-4 Grounded Scientific Result Interpretation is `IN_PROGRESS`
+  and is the sole active task. Local implementation/browser/evidence checks are
+  green; full regression and three exact-SHA closure stages remain pending.
+- [ ] Phase 10L-5 was explicitly supplied by the reviewer and is
+  `QUEUED / BLOCKED_BY_PHASE_10L4_ARCHIVE`. It must not start while the L4 task
+  remains in `TASKS.md`.
 
 - [x] Phase 10L-1 Analysis Intent Contract + Bounded Clarification implementation
   `844eb149` and completion record `b4cd656` passed exact-SHA CI runs
@@ -59,8 +63,9 @@
   the verified queue block is archived. Phase 10L-1 subsequently entered its
   reviewer-approved implementation task as recorded above.
 
-`TASKS.md` has zero executable task blocks. Future Scope, Not Planned, and
-Phase 10L-4 are not executable queue work.
+`TASKS.md` has two executable task blocks: Phase 10L-4 first and in progress,
+followed by reviewer-supplied Phase 10L-5 pending. Continuous-task rules permit
+only the first block to execute. Future Scope and Not Planned remain absent.
 
 The remaining sections are historical task records and do not override the
 current board above.

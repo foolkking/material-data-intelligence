@@ -1,0 +1,174 @@
+{
+  "$defs": {
+    "ClaimConfidence": {
+      "enum": [
+        "DIRECT",
+        "QUALIFIED",
+        "LIMITED"
+      ],
+      "title": "ClaimConfidence",
+      "type": "string"
+    },
+    "ClaimPredicate": {
+      "enum": [
+        "HAS_VALUE",
+        "HAS_RANGE",
+        "HAS_COUNT",
+        "HAS_CATEGORY",
+        "REPORTS_WARNING",
+        "REPORTS_LIMITATION",
+        "DIFFERS_FROM",
+        "EXCEEDS_DECLARED_THRESHOLD",
+        "IS_MISSING",
+        "IS_PARTIAL",
+        "SUGGESTS_FOLLOW_UP",
+        "NO_SUPPORTED_CONCLUSION"
+      ],
+      "title": "ClaimPredicate",
+      "type": "string"
+    },
+    "ClaimType": {
+      "enum": [
+        "OBSERVATION",
+        "COMPARISON",
+        "ANOMALY",
+        "WARNING",
+        "LIMITATION",
+        "RECOMMENDATION",
+        "NO_SUPPORTED_CONCLUSION"
+      ],
+      "title": "ClaimType",
+      "type": "string"
+    },
+    "GroundingStatus": {
+      "enum": [
+        "GROUNDED",
+        "REJECTED"
+      ],
+      "title": "GroundingStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "claimId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Claimid",
+      "type": "string"
+    },
+    "claimType": {
+      "$ref": "#/$defs/ClaimType"
+    },
+    "confidenceClass": {
+      "$ref": "#/$defs/ClaimConfidence"
+    },
+    "contradictingEvidenceIds": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 8,
+      "title": "Contradictingevidenceids",
+      "type": "array"
+    },
+    "displayOrder": {
+      "exclusiveMaximum": 32,
+      "minimum": 0,
+      "title": "Displayorder",
+      "type": "integer"
+    },
+    "groundingStatus": {
+      "$ref": "#/$defs/GroundingStatus",
+      "default": "GROUNDED"
+    },
+    "limitingEvidenceIds": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 8,
+      "title": "Limitingevidenceids",
+      "type": "array"
+    },
+    "qualifiers": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Qualifiers",
+      "type": "array"
+    },
+    "renderedText": {
+      "maxLength": 2048,
+      "minLength": 1,
+      "title": "Renderedtext",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "scope": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Scope",
+      "type": "string"
+    },
+    "semanticPredicate": {
+      "$ref": "#/$defs/ClaimPredicate"
+    },
+    "structuredPayload": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "maxProperties": 16,
+      "title": "Structuredpayload",
+      "type": "object"
+    },
+    "subjectEvidenceIds": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "title": "Subjectevidenceids",
+      "type": "array"
+    },
+    "supportingEvidenceIds": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "title": "Supportingevidenceids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "claimId",
+    "claimType",
+    "subjectEvidenceIds",
+    "supportingEvidenceIds",
+    "semanticPredicate",
+    "renderedText",
+    "scope",
+    "confidenceClass",
+    "displayOrder"
+  ],
+  "title": "ScientificClaim",
+  "type": "object"
+}

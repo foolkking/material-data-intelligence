@@ -1006,3 +1006,177 @@ export type VisualizationRecipe = {
   steps: VisualizationRecipeStep[];
   environment: Record<string, unknown>;
 };
+
+export type ScientificEvidenceKind =
+  | "SCALAR" | "RANGE" | "CATEGORY" | "COUNT" | "BOOLEAN"
+  | "ORDERED_SERIES_SUMMARY" | "TABLE_ROW" | "WARNING" | "LIMITATION"
+  | "EXECUTION_STATE" | "PROVENANCE";
+
+export type ScientificEvidenceItem = {
+  schemaVersion: "1.0";
+  evidenceItemId: string;
+  semanticRole: string;
+  evidenceKind: ScientificEvidenceKind;
+  subjectId: string;
+  valueKind: string;
+  normalizedValue: {
+    scalar?: boolean | number | string | null;
+    minimum?: number | null;
+    maximum?: number | null;
+    values: Array<boolean | number | string>;
+  };
+  displayValue: string;
+  unit?: string | null;
+  unitAuthority?: string | null;
+  referenceConvention?: string | null;
+  sourceArtifactId: string;
+  sourceArtifactChecksum: string;
+  artifactContract: string;
+  artifactContractVersion: string;
+  sourceToolId: string;
+  sourceToolVersion: string;
+  producerStepId: string;
+  producerToolCallId: string;
+  fieldLocator: { fieldId: string; semanticKey: string; entityId?: string | null };
+  datasetId: string;
+  datasetVersion: string;
+  resourceId?: string | null;
+  warnings: string[];
+  limitations: string[];
+  projectorVersion: string;
+  providerSafe: boolean;
+};
+
+export type ScientificEvidenceRef = {
+  schemaVersion: "1.0";
+  evidenceItemId: string;
+  role: "SUPPORTING" | "LIMITING" | "CONTRADICTING";
+};
+
+export type ScientificEvidenceBundle = {
+  schemaVersion: "1.0";
+  bundleId: string;
+  bundleHash: string;
+  projectId: string;
+  datasetId: string;
+  datasetVersion: string;
+  profileId?: string | null;
+  profileSemanticHash?: string | null;
+  intentId?: string | null;
+  intentHash?: string | null;
+  eligibilityResolutionId?: string | null;
+  eligibilityResolutionHash?: string | null;
+  selectionDecisionId?: string | null;
+  selectionDecisionHash?: string | null;
+  planId: string;
+  planHash: string;
+  planSchemaVersion: "0.1" | "0.2";
+  graphHash?: string | null;
+  jobId: string;
+  sourceJobTerminalState: "completed" | "failed" | "partial_success";
+  executionOutcome: "ALL_SUCCEEDED" | "PARTIAL_RESULTS" | "ALL_FAILED" | "VALIDATION_ABORTED" | "LEGACY_TERMINAL";
+  allSucceeded: boolean;
+  partialResults: boolean;
+  supportedArtifactCount: number;
+  unsupportedArtifactCount: number;
+  failedStepCount: number;
+  blockedStepCount: number;
+  bundleCompleteness: "COMPLETE" | "PARTIAL" | "UNSUPPORTED";
+  bundleWarnings: string[];
+  bundleLimitations: string[];
+  sourceArtifactIds: string[];
+  projectorVersions: Record<string, string>;
+  evidenceItems: ScientificEvidenceItem[];
+};
+
+export type ScientificClaim = {
+  schemaVersion: "1.0";
+  claimId: string;
+  claimType: "OBSERVATION" | "COMPARISON" | "ANOMALY" | "WARNING" | "LIMITATION" | "RECOMMENDATION" | "NO_SUPPORTED_CONCLUSION";
+  subjectEvidenceIds: string[];
+  supportingEvidenceIds: string[];
+  limitingEvidenceIds: string[];
+  contradictingEvidenceIds: string[];
+  semanticPredicate: "HAS_VALUE" | "HAS_RANGE" | "HAS_COUNT" | "HAS_CATEGORY" | "REPORTS_WARNING" | "REPORTS_LIMITATION" | "DIFFERS_FROM" | "EXCEEDS_DECLARED_THRESHOLD" | "IS_MISSING" | "IS_PARTIAL" | "SUGGESTS_FOLLOW_UP" | "NO_SUPPORTED_CONCLUSION";
+  qualifiers: string[];
+  structuredPayload: Record<string, boolean | number | string>;
+  renderedText: string;
+  scope: string;
+  confidenceClass: "DIRECT" | "QUALIFIED" | "LIMITED";
+  groundingStatus: "GROUNDED" | "REJECTED";
+  displayOrder: number;
+};
+
+export type ScientificRecommendation = {
+  recommendationId: string;
+  reasonEvidenceIds: string[];
+  suggestedGoalCategory: string;
+  expectedMissingEvidence: string[];
+  limitation: string;
+  executionAuthorized: false;
+  planCreated: false;
+  jobCreated: false;
+};
+
+export type InterpretationOutcome =
+  | "INTERPRETATION_READY" | "INTERPRETATION_READY_WITH_LIMITS"
+  | "NO_SUPPORTED_EVIDENCE" | "SOURCE_NOT_TERMINAL" | "SOURCE_INTEGRITY_FAILED"
+  | "EVIDENCE_CAP_EXCEEDED" | "PROVIDER_FAILED" | "VALIDATION_FAILED";
+
+export type GroundedScientificInterpretation = {
+  schemaVersion: "1.0";
+  interpretationId: string;
+  interpretationHash: string;
+  sourceBundleId: string;
+  sourceBundleHash: string;
+  sourceJobId: string;
+  sourcePlanId: string;
+  sourcePlanHash: string;
+  sourceGraphHash?: string | null;
+  mode: "DETERMINISTIC" | "STRICT_PROVIDER";
+  provider: string;
+  providerVersion: string;
+  claims: ScientificClaim[];
+  globalWarnings: string[];
+  globalLimitations: string[];
+  recommendations: ScientificRecommendation[];
+  completeness: "COMPLETE" | "PARTIAL" | "UNSUPPORTED";
+  partialResultState: boolean;
+  repairCount: 0 | 1;
+  outcome: InterpretationOutcome;
+  validationOutcome: "VALID" | "INVALID";
+  executionRecordId: string;
+  createdAt: string;
+};
+
+export type InterpretationExecutionRecord = {
+  schemaVersion: "1.0";
+  executionRecordId: string;
+  executionRecordHash: string;
+  sourceJobId: string;
+  sourcePlanId: string;
+  sourcePlanHash: string;
+  sourceGraphHash?: string | null;
+  sourceBundleId: string;
+  sourceBundleHash: string;
+  mode: "DETERMINISTIC" | "STRICT_PROVIDER";
+  provider: string;
+  providerVersion: string;
+  providerModel?: string | null;
+  providerConfigHash?: string | null;
+  idempotencyKeyHash?: string | null;
+  promptProjectionHash?: string | null;
+  initialResponseHash?: string | null;
+  repairedResponseHash?: string | null;
+  responseHash?: string | null;
+  repairCount: 0 | 1;
+  evidenceItemCount: number;
+  claimCount: number;
+  warningCount: number;
+  limitationCount: number;
+  outcome: InterpretationOutcome;
+  diagnostics: string[];
+  caps: Record<string, number>;
+  elapsedMs: number;
+  createdAt: string;
+};

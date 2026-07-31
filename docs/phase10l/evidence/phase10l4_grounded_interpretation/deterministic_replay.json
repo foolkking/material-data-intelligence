@@ -1,0 +1,23 @@
+{
+  "chromium": {
+    "firstSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
+    "secondSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
+    "firstDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
+    "secondDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
+    "stable": true
+  },
+  "firefox": {
+    "firstSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
+    "secondSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
+    "firstDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
+    "secondDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
+    "stable": true
+  },
+  "webkit": {
+    "firstSemanticSha256": "1300eb2986a95e0656c899f4d923471270797feb9f64da839a9a64d50e754ec4",
+    "secondSemanticSha256": "1300eb2986a95e0656c899f4d923471270797feb9f64da839a9a64d50e754ec4",
+    "firstDomSha256": "665bfa7715c2d70c623230d45fd488d87fa6928f649b2f193ec8ccc259fef773",
+    "secondDomSha256": "665bfa7715c2d70c623230d45fd488d87fa6928f649b2f193ec8ccc259fef773",
+    "stable": true
+  }
+}

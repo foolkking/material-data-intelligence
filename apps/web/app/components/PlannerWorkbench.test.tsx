@@ -10,6 +10,7 @@ import bzZone from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_
 import bzKpath from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/kpath.json";
 import bzManifest from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/brillouin_zone_manifest.json";
 import { PlannerWorkbench, VolumetricMetadataPreviewPanel } from "./PlannerWorkbench";
+import { isTerminalPlannerJobStatus } from "../lib/planner-api";
 import { periodicBoundaryScene } from "./viewer-scene/viewerScenePeriodicBondTestFixture";
 
 type CapturedLiveArtifact = { name?: string; content?: Record<string, unknown> };
@@ -642,12 +643,117 @@ let eventSources: MockEventSource[];
 let savedSecrets: Array<Record<string, unknown>>;
 let activeArtifacts: unknown[];
 let activeResult: Record<string, unknown>;
+let interpretationCreated: boolean;
+let activeInterpretation: Record<string, unknown> | null;
+let activeInterpretationRuns: Array<Record<string, unknown>>;
+let lastInterpretationRequest: Record<string, unknown> | null;
+
+const interpretationEvidenceId = "evidence_" + "e".repeat(64);
+const interpretationFixture = {
+  schemaVersion: "1.0",
+  interpretationId: "interpretation_" + "i".repeat(64),
+  interpretationHash: "a".repeat(64),
+  sourceBundleId: "evidence_bundle_" + "b".repeat(64),
+  sourceBundleHash: "b".repeat(64),
+  sourceJobId: "job_1",
+  sourcePlanId: "plan_1",
+  sourcePlanHash: "hash_1",
+  sourceGraphHash: null,
+  mode: "DETERMINISTIC",
+  provider: "deterministic",
+  providerVersion: "1.0",
+  claims: [{
+    schemaVersion: "1.0",
+    claimId: "claim_" + "c".repeat(64),
+    claimType: "OBSERVATION",
+    subjectEvidenceIds: [interpretationEvidenceId],
+    supportingEvidenceIds: [interpretationEvidenceId],
+    limitingEvidenceIds: [],
+    contradictingEvidenceIds: [],
+    semanticPredicate: "HAS_VALUE",
+    qualifiers: [],
+    renderedText: "formation_energy reported value: 0.12.",
+    scope: "formation_energy",
+    confidenceClass: "DIRECT",
+    groundingStatus: "GROUNDED",
+    displayOrder: 0,
+  }],
+  globalWarnings: ["Source warning retained."],
+  globalLimitations: ["Interpretation is limited to computed metrics."],
+  recommendations: [{
+    recommendationId: "recommendation_1",
+    reasonEvidenceIds: [interpretationEvidenceId],
+    suggestedGoalCategory: "sample_inspection",
+    expectedMissingEvidence: ["sample-level errors"],
+    limitation: "Requires a separate reviewed analysis request.",
+    executionAuthorized: false,
+    planCreated: false,
+    jobCreated: false,
+  }],
+  completeness: "COMPLETE",
+  partialResultState: false,
+  repairCount: 0,
+  validationOutcome: "VALID",
+  executionRecordId: "interpretation_execution_" + "x".repeat(64),
+};
+
+const interpretationExecutionFixture = {
+  schemaVersion: "1.0",
+  executionRecordId: interpretationFixture.executionRecordId,
+  executionRecordHash: "f".repeat(64),
+  sourceJobId: "job_1",
+  sourcePlanId: "plan_1",
+  sourcePlanHash: "hash_1",
+  sourceGraphHash: null,
+  sourceBundleId: interpretationFixture.sourceBundleId,
+  sourceBundleHash: interpretationFixture.sourceBundleHash,
+  mode: "DETERMINISTIC",
+  provider: "deterministic",
+  providerVersion: "phase10l4.deterministic.v1",
+  providerModel: null,
+  repairCount: 0,
+  outcome: "INTERPRETATION_READY",
+  diagnostics: [],
+  evidenceItemCount: 1,
+  claimCount: 1,
+};
+
+const interpretationEvidenceFixture = {
+  interpretationId: interpretationFixture.interpretationId,
+  bundleId: interpretationFixture.sourceBundleId,
+  bundleHash: interpretationFixture.sourceBundleHash,
+  evidenceItems: [{
+    schemaVersion: "1.0",
+    evidenceItemId: interpretationEvidenceId,
+    semanticRole: "ml.rmse",
+    evidenceKind: "SCALAR",
+    subjectId: "formation_energy",
+    displayValue: "0.12",
+    unit: null,
+    sourceArtifactId: "artifact_metrics",
+    sourceArtifactChecksum: "d".repeat(64),
+    artifactContract: "platform.ml.basic_metrics",
+    artifactContractVersion: "1.0",
+    sourceToolId: "ml.basic_metrics",
+    sourceToolVersion: "0.1.0",
+    fieldLocator: { fieldId: "metrics.rmse", semanticKey: "ml.rmse", entityId: "formation_energy" },
+    warnings: [],
+    limitations: [],
+  }],
+  sourceArtifactIds: ["artifact_metrics"],
+  bundleWarnings: ["Source warning retained."],
+  bundleLimitations: ["Interpretation is limited to computed metrics."],
+};
 
 beforeEach(() => {
   eventSources = [];
   savedSecrets = [];
   activeArtifacts = artifacts;
   activeResult = result;
+  interpretationCreated = false;
+  activeInterpretation = null;
+  activeInterpretationRuns = [];
+  lastInterpretationRequest = null;
   window.localStorage.clear();
   window.sessionStorage.clear();
   fetchMock = vi.fn(mockPlannerFetch);
@@ -660,6 +766,12 @@ afterEach(() => {
 });
 
 describe("Phase 9C PlannerWorkbench", () => {
+  it("treats Phase 10L-3 partial execution as terminal for interpretation", () => {
+    expect(isTerminalPlannerJobStatus("partial_success")).toBe(true);
+    expect(isTerminalPlannerJobStatus("running")).toBe(false);
+    expect(isTerminalPlannerJobStatus("cancelled")).toBe(false);
+  });
+
   it("renders bounded volumetric metadata without binary values or executable content", () => {
     const dataset = {
       schema_version: "phase10j.volumetric_dataset.v1",
@@ -866,6 +978,105 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(container.querySelector("iframe")).toBeNull();
     expect(screen.queryByText(/Three\.js/i)).toBeNull();
     expect(screen.queryByText("structure.viewer_3d")).toBeNull();
+  });
+
+  it("renders grounded findings with evidence and keeps recommendations non-executable", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<PlannerWorkbench />);
+
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const panel = screen.getByTestId("grounded-interpretation-panel");
+    const createButton = within(panel).getByRole("button", { name: "Generate grounded interpretation" });
+    expect(createButton).not.toBeDisabled();
+    await user.click(createButton);
+
+    expect(await within(panel).findByText("INTERPRETATION_READY")).not.toBeNull();
+    expect(within(panel).getByTestId("interpretation-limitations").textContent).toContain("computed metrics");
+    expect(within(panel).getByText("formation_energy reported value: 0.12.")).not.toBeNull();
+    await user.click(within(panel).getByText("Show evidence (1)"));
+    expect(within(panel).getByText("platform.ml.basic_metrics @ 1.0")).not.toBeNull();
+    expect(within(panel).getByText("ml.basic_metrics @ 0.1.0")).not.toBeNull();
+    expect(within(panel).getByTestId("interpretation-recommendations").textContent).toContain("execution authorized: no");
+    expect(within(panel).queryByRole("button", { name: /sample_inspection/i })).toBeNull();
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.querySelector("iframe")).toBeNull();
+    expect(container.innerHTML).not.toContain("dangerouslySetInnerHTML");
+  });
+
+  it("submits strict-provider interpretation mode through the bounded existing transport", async () => {
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const panel = screen.getByTestId("grounded-interpretation-panel");
+    await user.click(within(panel).getByRole("button", { name: "Strict provider" }));
+    await user.click(within(panel).getByRole("button", { name: "Generate grounded interpretation" }));
+
+    expect(await within(panel).findByText("INTERPRETATION_READY")).not.toBeNull();
+    expect(lastInterpretationRequest?.mode).toBe("STRICT_PROVIDER");
+    expect(lastInterpretationRequest?.provider).toBe("openai_compatible");
+    expect(within(panel).getByTestId("interpretation-provenance").textContent).toContain("STRICT_PROVIDER");
+    expect(within(panel).getByTestId("interpretation-provenance").textContent).toContain("openai_compatible");
+  });
+
+  it("restores a persisted non-ready interpretation run for audit", async () => {
+    activeInterpretationRuns = [{
+      ...interpretationExecutionFixture,
+      executionRecordId: "interpretation_execution_" + "v".repeat(64),
+      executionRecordHash: "9".repeat(64),
+      mode: "STRICT_PROVIDER",
+      provider: "openai_compatible",
+      repairCount: 1,
+      outcome: "VALIDATION_FAILED",
+      diagnostics: ["UNGROUNDED_NUMERIC_CLAIM"],
+      claimCount: 0,
+    }];
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const panel = screen.getByTestId("grounded-interpretation-panel");
+    expect(await within(panel).findByText("VALIDATION_FAILED")).not.toBeNull();
+    expect(within(panel).getByTestId("interpretation-provenance").textContent).toContain("openai_compatible");
+    expect(within(panel).getByText("UNGROUNDED_NUMERIC_CLAIM")).not.toBeNull();
+    await user.click(screen.getByRole("checkbox", { name: "用户模式" }));
+    expect(within(panel).getByTestId("interpretation-audit-json")).not.toBeNull();
+  });
+
+  it("does not pair an older ready interpretation with a newer failed run", async () => {
+    interpretationCreated = true;
+    activeInterpretation = interpretationFixture;
+    activeInterpretationRuns = [{
+      ...interpretationExecutionFixture,
+      executionRecordId: "interpretation_execution_" + "w".repeat(64),
+      executionRecordHash: "8".repeat(64),
+      mode: "STRICT_PROVIDER",
+      provider: "openai_compatible",
+      outcome: "VALIDATION_FAILED",
+      diagnostics: ["PROVIDER_RESULT_NOT_GROUNDED"],
+      claimCount: 0,
+    }];
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+    await loadDemoFromTopBar(user);
+    await user.click(primaryRunButton());
+    await waitForViewerArtifacts();
+    await openResultsTab(user);
+
+    const panel = screen.getByTestId("grounded-interpretation-panel");
+    expect(await within(panel).findByText("VALIDATION_FAILED")).not.toBeNull();
+    expect(within(panel).queryByText("formation_energy reported value: 0.12.")).toBeNull();
+    expect(within(panel).getByText("PROVIDER_RESULT_NOT_GROUNDED")).not.toBeNull();
   });
 
   it("offers the validated Brillouin-zone renderer product with JSON and manifest fallbacks", async () => {
@@ -1588,6 +1799,57 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
     expect(JSON.stringify(body)).not.toContain("sk-ui-secret-value");
     expect(body.intentSchemaVersion).toBe("1.0");
     return jsonResponse(createdJob);
+  }
+  if (url.endsWith("/planner/jobs/job_1/interpretations") && method === "POST") {
+    const body = JSON.parse(String(init?.body || "{}"));
+    expect(["DETERMINISTIC", "STRICT_PROVIDER"]).toContain(body.mode);
+    expect(body.expectedPlanHash).toBe("hash_1");
+    expect(JSON.stringify(body)).not.toContain("artifact_metrics");
+    lastInterpretationRequest = body;
+    interpretationCreated = true;
+    activeInterpretation = body.mode === "STRICT_PROVIDER"
+      ? { ...interpretationFixture, mode: "STRICT_PROVIDER", provider: "openai_compatible" }
+      : interpretationFixture;
+    const execution = body.mode === "STRICT_PROVIDER"
+      ? { ...interpretationExecutionFixture, mode: "STRICT_PROVIDER", provider: "openai_compatible" }
+      : interpretationExecutionFixture;
+    return jsonResponse({
+      outcome: "INTERPRETATION_READY",
+      interpretationId: interpretationFixture.interpretationId,
+      bundleId: interpretationFixture.sourceBundleId,
+      bundleHash: interpretationFixture.sourceBundleHash,
+      sourceJobId: "job_1",
+      sourcePlanId: "plan_1",
+      sourcePlanHash: "hash_1",
+      sourceGraphHash: null,
+      mode: activeInterpretation.mode,
+      claims: interpretationFixture.claims,
+      warnings: interpretationFixture.globalWarnings,
+      limitations: interpretationFixture.globalLimitations,
+      recommendations: interpretationFixture.recommendations,
+      partialResultState: false,
+      repairCount: 0,
+      diagnostics: [],
+      evidenceItemCount: 1,
+      noExecution: { toolCallCreated: false, planCreated: false, jobCreated: false, enqueued: false, recommendationExecutionAuthorized: false },
+      execution,
+      interpretation: activeInterpretation,
+    });
+  }
+  if (url.endsWith("/planner/jobs/job_1/interpretations") && method === "GET") {
+    const runs = activeInterpretationRuns.length
+      ? activeInterpretationRuns
+      : interpretationCreated ? [interpretationExecutionFixture] : [];
+    return jsonResponse({
+      jobId: "job_1",
+      interpretations: interpretationCreated && activeInterpretation ? [activeInterpretation] : [],
+      runs,
+      count: interpretationCreated ? 1 : 0,
+      runCount: runs.length,
+    });
+  }
+  if (url.endsWith(`/planner/interpretations/${interpretationFixture.interpretationId}/evidence`)) {
+    return jsonResponse(interpretationEvidenceFixture);
   }
   if (url.endsWith("/planner/jobs/job_1")) {
     return jsonResponse(jobDetail);

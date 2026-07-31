@@ -28,6 +28,10 @@ import {
   type DatasetOption,
   type JobEvent,
   type JobResult,
+  type GroundedScientificInterpretation,
+  type InterpretationEvidenceResponse,
+  type InterpretationExecutionRecord,
+  type InterpretationResponse,
   type PlannerApiError,
   type PlannerJobCreateResult,
   type PlannerJobDetail,
@@ -42,6 +46,7 @@ import {
   type ValidationError,
   createDatasetProfile,
   clarifyAnalysisIntent,
+  createPlannerJobInterpretation,
   createPlannerJob,
   createSecret,
   deleteSecret,
@@ -51,6 +56,9 @@ import {
   getPlannerJobDependencies,
   getPlannerJobEvents,
   getPlannerJobEventsStreamUrl,
+  getPlannerJobInterpretations,
+  getPlannerInterpretationEvidence,
+  isTerminalPlannerJobStatus,
   getPlannerJobResult,
   getPlannerJobToolCalls,
   getPlannerProviderStatus,
@@ -147,6 +155,13 @@ export function PlannerWorkbench() {
   const [submitting, setSubmitting] = useState(false);
   const [health, setHealth] = useState<RuntimeHealth | null>(null);
   const [timelineMode, setTimelineMode] = useState<"sse" | "polling" | "idle">("idle");
+  const [interpretation, setInterpretation] = useState<GroundedScientificInterpretation | null>(null);
+  const [interpretationEvidence, setInterpretationEvidence] = useState<InterpretationEvidenceResponse | null>(null);
+  const [interpretationExecution, setInterpretationExecution] = useState<InterpretationExecutionRecord | null>(null);
+  const [interpretationMode, setInterpretationMode] = useState<"DETERMINISTIC" | "STRICT_PROVIDER">("DETERMINISTIC");
+  const [interpretationOutcome, setInterpretationOutcome] = useState<InterpretationResponse["outcome"] | "">("");
+  const [interpretationDiagnostics, setInterpretationDiagnostics] = useState<string[]>([]);
+  const [interpretationBusy, setInterpretationBusy] = useState(false);
   const eventSourceRef = useRef<EventSource | null>(null);
 
   const plan = createdResult?.plan || snapshot.job?.analysisPlan || null;
@@ -158,7 +173,7 @@ export function PlannerWorkbench() {
   const capabilityOutcome = createdResult?.capability_outcome || snapshot.job?.capabilityPlanningOutcome || null;
   const eligibilityResolution = createdResult?.eligibility_resolution || snapshot.job?.eligibilityResolution || null;
   const capabilityDecision = createdResult?.capability_decision || snapshot.job?.capabilityDecision || null;
-  const isTerminal = ["completed", "failed", "cancelled"].includes(String(jobStatus));
+  const isTerminal = isTerminalPlannerJobStatus(String(jobStatus));
   const selectedDataset = datasets.find((dataset) => (dataset.datasetId || dataset.id) === datasetId);
   const providerLabel =
     providerMode === "mock"
@@ -207,6 +222,84 @@ export function PlannerWorkbench() {
     }, 2500);
     return () => window.clearInterval(interval);
   }, [jobId, timelineMode, isTerminal]);
+
+  useEffect(() => {
+    setInterpretation(null);
+    setInterpretationEvidence(null);
+    setInterpretationExecution(null);
+    setInterpretationOutcome("");
+    setInterpretationDiagnostics([]);
+    if (!jobId || !isTerminal) return;
+    void loadExistingInterpretation(jobId);
+  }, [jobId, isTerminal]);
+
+  async function loadExistingInterpretation(nextJobId: string) {
+    try {
+      const records = await getPlannerJobInterpretations(nextJobId);
+      const latestRun = records.runs?.at(-1) || null;
+      const latest = latestRun
+        ? records.interpretations.find((item) => item.executionRecordId === latestRun.executionRecordId) || null
+        : records.interpretations.at(-1) || null;
+      setInterpretationExecution(latestRun);
+      if (!latest) {
+        if (latestRun) {
+          setInterpretationOutcome(latestRun.outcome);
+          setInterpretationDiagnostics(latestRun.diagnostics || []);
+          setInterpretationMode(latestRun.mode);
+        }
+        return;
+      }
+      setInterpretation(latest);
+      setInterpretationMode(latest.mode);
+      setInterpretationOutcome(latest.partialResultState ? "INTERPRETATION_READY_WITH_LIMITS" : "INTERPRETATION_READY");
+      try {
+        setInterpretationEvidence(await getPlannerInterpretationEvidence(latest.interpretationId));
+      } catch {
+        setInterpretationDiagnostics([...(latestRun?.diagnostics || []), "EVIDENCE_RETRIEVAL_FAILED"]);
+      }
+    } catch {
+      // Result slices remain usable when the optional interpretation read is unavailable.
+    }
+  }
+
+  async function handleCreateInterpretation() {
+    if (!jobId || !planHash || !isTerminal) return;
+    setInterpretationBusy(true);
+    setInterpretationDiagnostics([]);
+    try {
+      const created = await createPlannerJobInterpretation(jobId, planHash, {
+        mode: interpretationMode,
+        ...(interpretationMode === "STRICT_PROVIDER" ? {
+          provider: "openai_compatible",
+          baseUrl,
+          model,
+          secretId: selectedSecretId || undefined,
+          temperature,
+          maxTokens,
+          timeoutSeconds,
+        } : {}),
+      });
+      setInterpretationOutcome(created.outcome);
+      setInterpretationDiagnostics(created.diagnostics);
+      setInterpretationExecution(created.execution || null);
+      setInterpretation(created.interpretation || null);
+      if (created.interpretationId) {
+        try {
+          setInterpretationEvidence(await getPlannerInterpretationEvidence(created.interpretationId));
+        } catch {
+          setInterpretationEvidence(null);
+          setInterpretationDiagnostics([...created.diagnostics, "EVIDENCE_RETRIEVAL_FAILED"]);
+        }
+      } else {
+        setInterpretationEvidence(null);
+      }
+    } catch (error) {
+      setInterpretationOutcome("VALIDATION_FAILED");
+      setInterpretationDiagnostics([error instanceof Error ? error.message : "Interpretation request failed."]);
+    } finally {
+      setInterpretationBusy(false);
+    }
+  }
 
   async function loadInitialState() {
     const [healthResult, datasetResult, providersResult, statusResult, secretsResult] = await Promise.allSettled([
@@ -644,6 +737,16 @@ export function PlannerWorkbench() {
               planHash={planHash}
               developerMode={developerMode}
               snapshotErrors={snapshotErrors}
+              interpretation={interpretation}
+              interpretationEvidence={interpretationEvidence}
+              interpretationExecution={interpretationExecution}
+              interpretationMode={interpretationMode}
+              interpretationOutcome={interpretationOutcome}
+              interpretationDiagnostics={interpretationDiagnostics}
+              interpretationBusy={interpretationBusy}
+              canInterpret={Boolean(jobId && planHash && isTerminal)}
+              onInterpretationModeChange={setInterpretationMode}
+              onInterpret={handleCreateInterpretation}
             />
           }
         />
@@ -1468,6 +1571,16 @@ function ResultsExportTab(props: {
   planHash: string;
   developerMode: boolean;
   snapshotErrors: SnapshotSlice[];
+  interpretation: GroundedScientificInterpretation | null;
+  interpretationEvidence: InterpretationEvidenceResponse | null;
+  interpretationExecution: InterpretationExecutionRecord | null;
+  interpretationMode: "DETERMINISTIC" | "STRICT_PROVIDER";
+  interpretationOutcome: InterpretationResponse["outcome"] | "";
+  interpretationDiagnostics: string[];
+  interpretationBusy: boolean;
+  canInterpret: boolean;
+  onInterpretationModeChange: (mode: "DETERMINISTIC" | "STRICT_PROVIDER") => void;
+  onInterpret: () => void;
 }) {
   const { t } = props;
   if (!props.selectedChunk) {
@@ -1501,6 +1614,19 @@ function ResultsExportTab(props: {
         </section>
       ) : null}
       <ReportRecipeSummaryPanel t={t} result={props.result} artifacts={props.artifacts} datasetId={props.datasetId} profileId={props.profileId} planId={props.planId} planHash={props.planHash} />
+      <GroundedInterpretationPanel
+        interpretation={props.interpretation}
+        evidence={props.interpretationEvidence}
+        execution={props.interpretationExecution}
+        selectedMode={props.interpretationMode}
+        outcome={props.interpretationOutcome}
+        diagnostics={props.interpretationDiagnostics}
+        busy={props.interpretationBusy}
+        enabled={props.canInterpret}
+        developerMode={props.developerMode}
+        onModeChange={props.onInterpretationModeChange}
+        onCreate={props.onInterpret}
+      />
       <MaterialIntelligenceIntegrationPanel artifacts={props.artifacts} />
       <DatasetMaterialsExplorerPanel artifacts={props.artifacts} />
       {!materialIntelligence.hasCompatibleEmbeddedCompositionSpace ? <CompositionSpaceExplorerPanel artifacts={props.artifacts} /> : null}
@@ -1520,6 +1646,110 @@ function ResultsExportTab(props: {
       <ToolCallList t={t} toolCalls={props.toolCalls} developerMode={props.developerMode} />
       <ExportControls t={t} artifacts={props.artifacts} />
     </div>
+  );
+}
+
+function GroundedInterpretationPanel(props: {
+  interpretation: GroundedScientificInterpretation | null;
+  evidence: InterpretationEvidenceResponse | null;
+  execution: InterpretationExecutionRecord | null;
+  selectedMode: "DETERMINISTIC" | "STRICT_PROVIDER";
+  outcome: InterpretationResponse["outcome"] | "";
+  diagnostics: string[];
+  busy: boolean;
+  enabled: boolean;
+  developerMode: boolean;
+  onModeChange: (mode: "DETERMINISTIC" | "STRICT_PROVIDER") => void;
+  onCreate: () => void;
+}) {
+  const evidenceById = new Map((props.evidence?.evidenceItems || []).map((item) => [item.evidenceItemId, item]));
+  const limitations = props.interpretation?.globalLimitations || props.evidence?.bundleLimitations || [];
+  const warnings = props.interpretation?.globalWarnings || props.evidence?.bundleWarnings || [];
+  return (
+    <section className="panel grounded-interpretation-panel" data-testid="grounded-interpretation-panel" aria-live="polite">
+      <PanelHeading title="Scientific interpretation" badge={props.outcome || "NOT GENERATED"} />
+      <div className="segmented interpretation-mode" role="group" aria-label="Interpretation mode">
+        <button type="button" className={props.selectedMode === "DETERMINISTIC" ? "active" : ""} aria-pressed={props.selectedMode === "DETERMINISTIC"} disabled={props.busy} onClick={() => props.onModeChange("DETERMINISTIC")}>Deterministic</button>
+        <button type="button" className={props.selectedMode === "STRICT_PROVIDER" ? "active" : ""} aria-pressed={props.selectedMode === "STRICT_PROVIDER"} disabled={props.busy} onClick={() => props.onModeChange("STRICT_PROVIDER")}>Strict provider</button>
+      </div>
+      <div className="command-row">
+        <button type="button" className="primary-button" disabled={!props.enabled || props.busy} onClick={props.onCreate}>
+          {props.busy ? "Interpreting..." : "Generate grounded interpretation"}
+        </button>
+        <span>Read-only / no tool, plan, job, or queue authority</span>
+      </div>
+      {(props.interpretation || props.execution) ? (
+        <dl className="mini-grid interpretation-provenance" data-testid="interpretation-provenance">
+          <Field label="Mode" value={props.interpretation?.mode || props.execution?.mode || props.selectedMode} />
+          <Field label="Provider" value={props.interpretation?.provider || props.execution?.provider || "Not recorded"} />
+          <Field label="Repair count" value={String(props.interpretation?.repairCount ?? props.execution?.repairCount ?? 0)} />
+          <Field label="Execution record" value={compactIdentity(props.execution?.executionRecordId || props.interpretation?.executionRecordId || "Not recorded")} />
+        </dl>
+      ) : null}
+      {limitations.length ? (
+        <div className="interpretation-limitations" role="status" data-testid="interpretation-limitations">
+          <h3>Limitations</h3>
+          <ul>{limitations.map((item) => <li key={item}>{item}</li>)}</ul>
+        </div>
+      ) : null}
+      {warnings.length ? (
+        <div className="interpretation-warnings">
+          <h3>Warnings</h3>
+          <ul>{warnings.map((item) => <li key={item}>{item}</li>)}</ul>
+        </div>
+      ) : null}
+      {props.interpretation?.claims.length ? (
+        <div className="interpretation-claims" aria-label={`${props.interpretation.claims.length} grounded scientific claims`}>
+          <h3>Findings</h3>
+          {props.interpretation.claims.map((claim) => (
+            <article className="interpretation-claim" key={claim.claimId} data-testid="grounded-claim">
+              <header>
+                <strong>{claim.claimType}</strong>
+                <span>{claim.confidenceClass} / {claim.groundingStatus}</span>
+              </header>
+              <p>{claim.renderedText}</p>
+              <details>
+                <summary>Show evidence ({claim.supportingEvidenceIds.length})</summary>
+                <div className="interpretation-evidence-list">
+                  {claim.supportingEvidenceIds.map((evidenceId) => {
+                    const item = evidenceById.get(evidenceId);
+                    return item ? (
+                      <dl className="mini-grid interpretation-evidence" key={evidenceId} tabIndex={0}>
+                        <Field label="Calculated result" value={item.displayValue} />
+                        <Field label="Subject" value={item.subjectId} />
+                        <Field label="Unit" value={item.unit || "Not applicable"} />
+                        <Field label="Source tool" value={`${item.sourceToolId} @ ${item.sourceToolVersion}`} />
+                        <Field label="Artifact contract" value={`${item.artifactContract} @ ${item.artifactContractVersion}`} />
+                        <Field label="Artifact hash" value={compactIdentity(item.sourceArtifactChecksum)} />
+                        <Field label="Field locator" value={item.fieldLocator.fieldId} />
+                        <Field label="Lineage" value={`${item.sourceArtifactId} / ${item.evidenceItemId}`} />
+                        {item.warnings.length ? <Field label="Evidence warnings" value={item.warnings.join("; ")} /> : null}
+                        {item.limitations.length ? <Field label="Evidence limitations" value={item.limitations.join("; ")} /> : null}
+                      </dl>
+                    ) : <p key={evidenceId}>Evidence unavailable: {evidenceId}</p>;
+                  })}
+                </div>
+              </details>
+            </article>
+          ))}
+        </div>
+      ) : <p className="empty-state">No grounded findings are available.</p>}
+      {props.interpretation?.recommendations.length ? (
+        <div className="interpretation-recommendations" data-testid="interpretation-recommendations">
+          <h3>Suggested next analysis</h3>
+          <ul>{props.interpretation.recommendations.map((item) => (
+            <li key={item.recommendationId}>{item.suggestedGoalCategory} / execution authorized: no</li>
+          ))}</ul>
+        </div>
+      ) : null}
+      {props.diagnostics.length ? <ul className="error-list">{props.diagnostics.map((item) => <li key={item}>{item}</li>)}</ul> : null}
+      {props.developerMode && (props.interpretation || props.execution || props.evidence) ? (
+        <details className="raw-json" data-testid="interpretation-audit-json">
+          <summary>Grounded interpretation audit JSON</summary>
+          <pre>{JSON.stringify({ interpretation: props.interpretation, execution: props.execution, evidence: props.evidence }, null, 2)}</pre>
+        </details>
+      ) : null}
+    </section>
   );
 }
 

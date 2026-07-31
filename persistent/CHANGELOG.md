@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2026-07-30 - Phase 10L-4 Grounded Interpretation Candidate
+
+- Added post-execution, read-only evidence projection and grounded scientific
+  interpretation contracts for five existing Artifact families, including the
+  L3 phonon dependent chain.
+- Added deterministic and strict-provider modes, one bounded repair, exact
+  claim-evidence/numeric/unit/entity validation, partial-result limitations,
+  and explicit forbidden scientific conclusions.
+- Added immutable Alembic 0006 persistence, additive create/read APIs, an
+  accessible PlannerWorkbench findings/evidence surface, sanitized evidence,
+  browser matrix, performance caps, and security checks.
+- AnalysisIntent, EligibilityResolution, AnalysisPlan 0.1/0.2,
+  QueueWorkerRuntime, Registry/Adapter execution, Job status, ToolCalls, and
+  Artifacts remain unchanged. Exact-SHA implementation/completion/archive CI
+  are still required before this phase can be called complete.
+
 ## 2026-07-30 - Phase 10L-3 Bounded Dependency Execution
 
 - Added additive AnalysisPlan 0.2, deterministic typed artifact bindings,

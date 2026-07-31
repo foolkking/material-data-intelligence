@@ -1,0 +1,119 @@
+{
+  "allowedClaimTypes": [
+    "OBSERVATION",
+    "COMPARISON",
+    "ANOMALY",
+    "WARNING",
+    "LIMITATION",
+    "RECOMMENDATION",
+    "NO_SUPPORTED_CONCLUSION"
+  ],
+  "allowedPredicates": [
+    "HAS_VALUE",
+    "HAS_RANGE",
+    "HAS_COUNT",
+    "HAS_CATEGORY",
+    "REPORTS_WARNING",
+    "REPORTS_LIMITATION",
+    "DIFFERS_FROM",
+    "EXCEEDS_DECLARED_THRESHOLD",
+    "IS_MISSING",
+    "IS_PARTIAL",
+    "SUGGESTS_FOLLOW_UP",
+    "NO_SUPPORTED_CONCLUSION"
+  ],
+  "bundleHash": "48e0a6fd6ad003d0dd1ecebbd04e6b669502df650030afb9b05a093060efa8af",
+  "bundleId": "bundle_48e0a6fd6ad003d0dd1ecebbd04e6b66",
+  "bundleLimitations": [],
+  "bundleWarnings": [],
+  "evidenceItems": [
+    {
+      "displayValue": "0.93",
+      "evidenceItemId": "evidence_54914504c30aa952ab1fcc63a2f5a162",
+      "evidenceKind": "SCALAR",
+      "limitations": [],
+      "normalizedValue": {
+        "maximum": null,
+        "minimum": null,
+        "scalar": 0.93,
+        "values": []
+      },
+      "referenceConvention": "artifact_contract",
+      "semanticRole": "ml.r2",
+      "subjectId": "target:formation_energy",
+      "unit": null,
+      "valueKind": "metric",
+      "warnings": []
+    },
+    {
+      "displayValue": "0.1",
+      "evidenceItemId": "evidence_a1b57066ea3a0edbfe251322a4731400",
+      "evidenceKind": "SCALAR",
+      "limitations": [],
+      "normalizedValue": {
+        "maximum": null,
+        "minimum": null,
+        "scalar": 0.1,
+        "values": []
+      },
+      "referenceConvention": "artifact_contract",
+      "semanticRole": "ml.mae",
+      "subjectId": "target:formation_energy",
+      "unit": null,
+      "valueKind": "metric",
+      "warnings": []
+    },
+    {
+      "displayValue": "4",
+      "evidenceItemId": "evidence_b715eddd7bcf7bd15375a728f372753f",
+      "evidenceKind": "COUNT",
+      "limitations": [],
+      "normalizedValue": {
+        "maximum": null,
+        "minimum": null,
+        "scalar": 4,
+        "values": []
+      },
+      "referenceConvention": "artifact_contract",
+      "semanticRole": "ml.n",
+      "subjectId": "target:formation_energy",
+      "unit": null,
+      "valueKind": "count",
+      "warnings": []
+    },
+    {
+      "displayValue": "0.12",
+      "evidenceItemId": "evidence_c7bf3ec2fa0a9b0c498a367d87c6ed5a",
+      "evidenceKind": "SCALAR",
+      "limitations": [],
+      "normalizedValue": {
+        "maximum": null,
+        "minimum": null,
+        "scalar": 0.12,
+        "values": []
+      },
+      "referenceConvention": "artifact_contract",
+      "semanticRole": "ml.rmse",
+      "subjectId": "target:formation_energy",
+      "unit": null,
+      "valueKind": "metric",
+      "warnings": []
+    }
+  ],
+  "partialResults": false,
+  "providerVisibleEvidenceIds": [
+    "evidence_54914504c30aa952ab1fcc63a2f5a162",
+    "evidence_a1b57066ea3a0edbfe251322a4731400",
+    "evidence_b715eddd7bcf7bd15375a728f372753f",
+    "evidence_c7bf3ec2fa0a9b0c498a367d87c6ed5a"
+  ],
+  "rules": {
+    "freeTextClaimsAccepted": false,
+    "pathsOrUrlsAvailable": false,
+    "planMutationAuthorized": false,
+    "rawArtifactsAvailable": false,
+    "recommendationsExecutable": false,
+    "toolExecutionAuthorized": false
+  },
+  "schemaVersion": "1.0"
+}

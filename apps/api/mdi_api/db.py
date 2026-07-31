@@ -464,6 +464,96 @@ reports = Table(
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
 
+scientific_evidence_bundles = Table(
+    "scientific_evidence_bundles",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("bundle_hash", String(64), nullable=False, unique=True),
+    Column("project_id", String(64), ForeignKey("projects.id"), nullable=False),
+    Column("dataset_id", String(64), ForeignKey("datasets.id"), nullable=False),
+    Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=False),
+    Column("plan_hash", String(64), nullable=False),
+    Column("schema_version", String(16), nullable=False),
+    Column("execution_outcome", String(32), nullable=False),
+    Column("evidence_item_count", Integer, nullable=False),
+    Column("warning_count", Integer, nullable=False),
+    Column("limitation_count", Integer, nullable=False),
+    Column("bundle_json", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("evidence_item_count >= 0 and evidence_item_count <= 256", name="scientific_evidence_item_count"),
+)
+
+scientific_interpretation_runs = Table(
+    "scientific_interpretation_runs",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("execution_record_hash", String(64), nullable=False, unique=True),
+    Column("bundle_id", String(96), ForeignKey("scientific_evidence_bundles.id"), nullable=False),
+    Column("project_id", String(64), ForeignKey("projects.id"), nullable=False),
+    Column("dataset_id", String(64), ForeignKey("datasets.id"), nullable=False),
+    Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=False),
+    Column("mode", String(32), nullable=False),
+    Column("provider", String(64), nullable=False),
+    Column("provider_model", String(128), nullable=True),
+    Column("provider_config_hash", String(64), nullable=True),
+    Column("idempotency_key_hash", String(64), nullable=True),
+    Column("repair_count", Integer, nullable=False, server_default="0"),
+    Column("outcome", String(48), nullable=False),
+    Column("interpretation_id", String(96), nullable=True, unique=True),
+    Column("execution_json", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("repair_count >= 0 and repair_count <= 1", name="scientific_interpretation_run_repair_count"),
+    UniqueConstraint("job_id", "mode", "idempotency_key_hash", name="uq_scientific_interpretation_run_idempotency"),
+)
+
+scientific_interpretations = Table(
+    "scientific_interpretations",
+    metadata,
+    Column("id", String(96), primary_key=True),
+    Column("interpretation_hash", String(64), nullable=False, unique=True),
+    Column("bundle_id", String(96), ForeignKey("scientific_evidence_bundles.id"), nullable=False),
+    Column("project_id", String(64), ForeignKey("projects.id"), nullable=False),
+    Column("dataset_id", String(64), ForeignKey("datasets.id"), nullable=False),
+    Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=False),
+    Column("mode", String(32), nullable=False),
+    Column("provider", String(64), nullable=False),
+    Column("repair_count", Integer, nullable=False, server_default="0"),
+    Column("outcome", String(48), nullable=False),
+    Column("execution_record_id", String(96), ForeignKey("scientific_interpretation_runs.id"), nullable=False, unique=True),
+    Column("interpretation_json", JSON, nullable=False),
+    Column("execution_json", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("repair_count >= 0 and repair_count <= 1", name="scientific_interpretation_repair_count"),
+)
+
+scientific_interpretation_claims = Table(
+    "scientific_interpretation_claims",
+    metadata,
+    Column("interpretation_id", String(96), ForeignKey("scientific_interpretations.id"), primary_key=True),
+    Column("claim_id", String(96), primary_key=True),
+    Column("claim_type", String(40), nullable=False),
+    Column("predicate", String(64), nullable=False),
+    Column("confidence_class", String(24), nullable=False),
+    Column("grounding_status", String(24), nullable=False),
+    Column("display_order", Integer, nullable=False),
+    Column("claim_json", JSON, nullable=False),
+)
+
+scientific_interpretation_evidence_links = Table(
+    "scientific_interpretation_evidence_links",
+    metadata,
+    Column("interpretation_id", String(96), ForeignKey("scientific_interpretations.id"), primary_key=True),
+    Column("claim_id", String(96), primary_key=True),
+    Column("evidence_item_id", String(96), primary_key=True),
+    Column("role", String(24), primary_key=True),
+    Column("source_artifact_id", String(96), ForeignKey("artifacts.id"), nullable=False),
+    Column("source_artifact_hash", String(64), nullable=False),
+    Column("field_locator_json", JSON, nullable=False),
+)
+
 user_configs = Table(
     "user_configs",
     metadata,
@@ -522,6 +612,10 @@ Index("idx_artifacts_job", artifacts.c.job_id)
 Index("idx_artifacts_project_created", artifacts.c.project_id, artifacts.c.created_at)
 Index("idx_recipes_project_created", visualization_recipes.c.project_id, visualization_recipes.c.created_at)
 Index("idx_reports_job", reports.c.job_id)
+Index("idx_scientific_evidence_job", scientific_evidence_bundles.c.job_id)
+Index("idx_scientific_interpretation_runs_job", scientific_interpretation_runs.c.job_id)
+Index("idx_scientific_interpretations_job", scientific_interpretations.c.job_id)
+Index("idx_scientific_interpretations_bundle", scientific_interpretations.c.bundle_id)
 Index("idx_audit_logs_project_created", audit_logs.c.project_id, audit_logs.c.created_at)
 
 

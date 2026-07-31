@@ -32,9 +32,9 @@ implementation.
 | ML | Common-sample model comparison | READY | Conditional | No | Phase 10K-3 shared-target finite-sample intersection |
 | Agent | Structured validated planning | READY | Yes | No | AnalysisPlan/PlanValidator |
 | Agent | AnalysisIntent v1 and bounded clarification | READY | Yes | No | Phase 10L-1 implementation/completion exact-SHA CI passed; queue archived |
-| Agent | Capability-aware planning | PARTIAL_READY | Yes | No | Phase 10L-2 |
-| Agent | Bounded multi-tool analysis | PARTIAL_READY | Yes | No | Phase 10L-3 |
-| Agent | Scientific result interpretation | PLANNED | Yes | No | Phase 10L-4 |
+| Agent | Capability-aware planning | READY | Yes | No | Phase 10L-2 archived |
+| Agent | Bounded multi-tool analysis | READY | Yes | No | Phase 10L-3 archived |
+| Agent | Scientific result interpretation | PARTIAL_READY | Yes | No | Phase 10L-4 implementation candidate verified locally; exact-SHA CI and archive pending |
 | Workspace | Phase 9C workspace foundation | READY | Yes | No | PlannerWorkbench |
 | Workspace | Unified scientific workspace | PLANNED | Yes | No | Phase 10M |
 | Structure | Production periodic viewer/inspection | READY | Yes | No | `structure.viewer_3d` |

@@ -1,0 +1,578 @@
+{
+  "availabilityFilter": "AVAILABLE",
+  "policy": {
+    "displayArtifactTrusted": false,
+    "manifestArtifactTypeIsScientificEvidence": false,
+    "summaryMarkdownTrusted": false,
+    "unsupportedArtifactOutcome": "NO_SUPPORTED_EVIDENCE or INTERPRETATION_READY_WITH_LIMITS"
+  },
+  "registrySnapshotHash": "465482cd226ed056aec57ab4437f90d85b4c8c12507ca62a50f6574b3f8cade0",
+  "registrySnapshotId": "registry_465482cd226ed056aec57ab4",
+  "registryVersion": "0.1.0",
+  "schemaVersion": "phase10l4.interpretability_inventory.v1",
+  "toolCount": 38,
+  "tools": [
+    {
+      "declaredArtifactTypes": [
+        "plotly_html",
+        "plotly_json",
+        "preview_png",
+        "recipe_json",
+        "summary_md"
+      ],
+      "domain": "composition",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "composition.chem_sys_sunburst",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_html",
+        "plotly_json",
+        "preview_png",
+        "recipe_json",
+        "summary_md"
+      ],
+      "domain": "composition",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "composition.chem_sys_treemap",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_html",
+        "plotly_json",
+        "preview_png",
+        "recipe_json",
+        "summary_md"
+      ],
+      "domain": "composition",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "composition.elements_hist",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "composition",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "composition.formula_statistics",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_html",
+        "plotly_json",
+        "preview_png",
+        "recipe_json",
+        "summary_md"
+      ],
+      "domain": "composition",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "composition.ptable_heatmap",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "composition",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "composition.summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "dataset",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "dataset.composition_space",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "quality_issues_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "dataset",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "dataset.materials_explorer",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "metrics_json",
+        "recipe_json",
+        "summary_md"
+      ],
+      "domain": "ml",
+      "projectedArtifactTypes": [
+        "metrics_json"
+      ],
+      "reason": "Exact tool/artifact contract pair has an approved deterministic projector.",
+      "state": "INTERPRETATION_READY",
+      "toolId": "ml.basic_metrics",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "ml",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "ml.classification_evaluation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_html",
+        "plotly_json",
+        "preview_png",
+        "recipe_json",
+        "summary_md"
+      ],
+      "domain": "ml",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "ml.density_scatter",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "metrics_json",
+        "plotly_html",
+        "plotly_json",
+        "preview_png",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "ml",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "ml.error_distribution",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_csv",
+        "table_json"
+      ],
+      "domain": "ml",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "ml.outlier_table",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "ml",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "ml.regression_evaluation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "ml",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "ml.uncertainty_evaluation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "phonon_animation_json",
+        "phonon_animation_manifest_json",
+        "phonon_animation_summary_json",
+        "recipe_json"
+      ],
+      "domain": "phonon",
+      "projectedArtifactTypes": [],
+      "reason": "No exact Phase 10L-4 contract-specific projector is registered for this tool output.",
+      "state": "UNSUPPORTED_CONTRACT",
+      "toolId": "phonon.animation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "phonon_band_json",
+        "phonon_manifest_json",
+        "phonon_report_json",
+        "phonon_summary_json",
+        "plotly_json",
+        "recipe_json",
+        "table_json"
+      ],
+      "domain": "phonon",
+      "projectedArtifactTypes": [
+        "phonon_band_json",
+        "phonon_summary_json"
+      ],
+      "reason": "Exact tool/artifact contract pair has an approved deterministic projector.",
+      "state": "INTERPRETATION_READY",
+      "toolId": "phonon.band",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "phonon_band_dos_json",
+        "phonon_compatibility_json",
+        "phonon_manifest_json",
+        "phonon_summary_json",
+        "plotly_json",
+        "recipe_json",
+        "table_json"
+      ],
+      "domain": "phonon",
+      "projectedArtifactTypes": [
+        "phonon_band_dos_json",
+        "phonon_summary_json"
+      ],
+      "reason": "Exact tool/artifact contract pair has an approved deterministic projector.",
+      "state": "INTERPRETATION_READY",
+      "toolId": "phonon.band_dos",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "phonon_dos_json",
+        "phonon_manifest_json",
+        "phonon_report_json",
+        "phonon_summary_json",
+        "plotly_json",
+        "recipe_json",
+        "table_json"
+      ],
+      "domain": "phonon",
+      "projectedArtifactTypes": [
+        "phonon_dos_json",
+        "phonon_summary_json"
+      ],
+      "reason": "Exact tool/artifact contract pair has an approved deterministic projector.",
+      "state": "INTERPRETATION_READY",
+      "toolId": "phonon.dos",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "brillouin_zone_json",
+        "brillouin_zone_manifest_json",
+        "kpath_json",
+        "recipe_json",
+        "reciprocal_lattice_json",
+        "summary_md"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "structure.brillouin_zone",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "structure.composition_from_structure",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "structure.coordination_hist",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "structure.lattice_summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "structure_json",
+        "summary_md"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "structure.preview_metadata",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "structure.rdf",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "structure.spacegroup_summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_html",
+        "plotly_json",
+        "preview_png",
+        "recipe_json",
+        "summary_md"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "structure.structure_3d",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "structure_json",
+        "summary_md"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [
+        "structure_json"
+      ],
+      "reason": "Exact tool/artifact contract pair has an approved deterministic projector.",
+      "state": "INTERPRETATION_READY",
+      "toolId": "structure.summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "trajectory_json",
+        "trajectory_manifest_json",
+        "trajectory_report_json",
+        "trajectory_summary_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "No exact Phase 10L-4 contract-specific projector is registered for this tool output.",
+      "state": "UNSUPPORTED_CONTRACT",
+      "toolId": "structure.trajectory_viewer",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "structure_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "structure.viewer_3d",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "structure_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "structure.viewer_scene",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "volumetric_binary",
+        "volumetric_dataset_json",
+        "volumetric_field_json",
+        "volumetric_grid_json",
+        "volumetric_manifest_json",
+        "volumetric_payload_json",
+        "volumetric_structure_overlay_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [
+        "volumetric_field_json"
+      ],
+      "reason": "Exact tool/artifact contract pair has an approved deterministic projector.",
+      "state": "INTERPRETATION_READY",
+      "toolId": "structure.volumetric_data",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "structure",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "structure.xrd",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "table",
+      "projectedArtifactTypes": [],
+      "reason": "summary_md remains untrusted text and is never projected as a scientific fact.",
+      "state": "UNSAFE_UNTRUSTED_TEXT",
+      "toolId": "table.distribution_summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "table",
+      "projectedArtifactTypes": [
+        "table_json"
+      ],
+      "reason": "Exact tool/artifact contract pair has an approved deterministic projector.",
+      "state": "INTERPRETATION_READY",
+      "toolId": "table.numeric_summary",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_html",
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "domain": "viz",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "viz.correlation",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_html",
+        "plotly_json",
+        "recipe_json",
+        "summary_md"
+      ],
+      "domain": "viz",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "viz.histogram",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "declaredArtifactTypes": [
+        "plotly_html",
+        "plotly_json",
+        "recipe_json",
+        "summary_md"
+      ],
+      "domain": "viz",
+      "projectedArtifactTypes": [],
+      "reason": "Rendered or Plotly artifacts remain display data and are not scientific evidence authority.",
+      "state": "DISPLAY_ONLY",
+      "toolId": "viz.scatter",
+      "toolVersion": "0.1.0"
+    }
+  ]
+}
