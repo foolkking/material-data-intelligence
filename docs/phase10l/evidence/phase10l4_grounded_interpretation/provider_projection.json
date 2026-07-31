@@ -22,32 +22,14 @@
     "SUGGESTS_FOLLOW_UP",
     "NO_SUPPORTED_CONCLUSION"
   ],
-  "bundleHash": "48e0a6fd6ad003d0dd1ecebbd04e6b669502df650030afb9b05a093060efa8af",
-  "bundleId": "bundle_48e0a6fd6ad003d0dd1ecebbd04e6b66",
+  "bundleHash": "39203a158cfeff9f3a0acb487548d80150a7b2d92ad7213551a95724b7c9b39d",
+  "bundleId": "bundle_39203a158cfeff9f3a0acb487548d801",
   "bundleLimitations": [],
   "bundleWarnings": [],
   "evidenceItems": [
     {
-      "displayValue": "0.93",
-      "evidenceItemId": "evidence_54914504c30aa952ab1fcc63a2f5a162",
-      "evidenceKind": "SCALAR",
-      "limitations": [],
-      "normalizedValue": {
-        "maximum": null,
-        "minimum": null,
-        "scalar": 0.93,
-        "values": []
-      },
-      "referenceConvention": "artifact_contract",
-      "semanticRole": "ml.r2",
-      "subjectId": "target:formation_energy",
-      "unit": null,
-      "valueKind": "metric",
-      "warnings": []
-    },
-    {
       "displayValue": "0.1",
-      "evidenceItemId": "evidence_a1b57066ea3a0edbfe251322a4731400",
+      "evidenceItemId": "evidence_2e7234ab60246c55b32ee9f70ec85a16",
       "evidenceKind": "SCALAR",
       "limitations": [],
       "normalizedValue": {
@@ -64,8 +46,62 @@
       "warnings": []
     },
     {
+      "displayValue": "0.02",
+      "evidenceItemId": "evidence_40386c6d464a5c84a015e5692044ec05",
+      "evidenceKind": "SCALAR",
+      "limitations": [],
+      "normalizedValue": {
+        "maximum": null,
+        "minimum": null,
+        "scalar": 0.02,
+        "values": []
+      },
+      "referenceConvention": "artifact_contract",
+      "semanticRole": "ml.mean_error",
+      "subjectId": "target:formation_energy",
+      "unit": null,
+      "valueKind": "metric",
+      "warnings": []
+    },
+    {
+      "displayValue": "0.2",
+      "evidenceItemId": "evidence_444790f22b540f698e7708f0ae2aff20",
+      "evidenceKind": "SCALAR",
+      "limitations": [],
+      "normalizedValue": {
+        "maximum": null,
+        "minimum": null,
+        "scalar": 0.2,
+        "values": []
+      },
+      "referenceConvention": "artifact_contract",
+      "semanticRole": "ml.max_abs_error",
+      "subjectId": "target:formation_energy",
+      "unit": null,
+      "valueKind": "metric",
+      "warnings": []
+    },
+    {
+      "displayValue": "0.12",
+      "evidenceItemId": "evidence_4f962443cede922271f44748765f909f",
+      "evidenceKind": "SCALAR",
+      "limitations": [],
+      "normalizedValue": {
+        "maximum": null,
+        "minimum": null,
+        "scalar": 0.12,
+        "values": []
+      },
+      "referenceConvention": "artifact_contract",
+      "semanticRole": "ml.rmse",
+      "subjectId": "target:formation_energy",
+      "unit": null,
+      "valueKind": "metric",
+      "warnings": []
+    },
+    {
       "displayValue": "4",
-      "evidenceItemId": "evidence_b715eddd7bcf7bd15375a728f372753f",
+      "evidenceItemId": "evidence_541ff0bffdeaf8a707cef133ce718321",
       "evidenceKind": "COUNT",
       "limitations": [],
       "normalizedValue": {
@@ -82,18 +118,18 @@
       "warnings": []
     },
     {
-      "displayValue": "0.12",
-      "evidenceItemId": "evidence_c7bf3ec2fa0a9b0c498a367d87c6ed5a",
+      "displayValue": "0.93",
+      "evidenceItemId": "evidence_8acd8e60bfb767a2ccd8598a5f00a409",
       "evidenceKind": "SCALAR",
       "limitations": [],
       "normalizedValue": {
         "maximum": null,
         "minimum": null,
-        "scalar": 0.12,
+        "scalar": 0.93,
         "values": []
       },
       "referenceConvention": "artifact_contract",
-      "semanticRole": "ml.rmse",
+      "semanticRole": "ml.r2",
       "subjectId": "target:formation_energy",
       "unit": null,
       "valueKind": "metric",
@@ -102,10 +138,12 @@
   ],
   "partialResults": false,
   "providerVisibleEvidenceIds": [
-    "evidence_54914504c30aa952ab1fcc63a2f5a162",
-    "evidence_a1b57066ea3a0edbfe251322a4731400",
-    "evidence_b715eddd7bcf7bd15375a728f372753f",
-    "evidence_c7bf3ec2fa0a9b0c498a367d87c6ed5a"
+    "evidence_2e7234ab60246c55b32ee9f70ec85a16",
+    "evidence_40386c6d464a5c84a015e5692044ec05",
+    "evidence_444790f22b540f698e7708f0ae2aff20",
+    "evidence_4f962443cede922271f44748765f909f",
+    "evidence_541ff0bffdeaf8a707cef133ce718321",
+    "evidence_8acd8e60bfb767a2ccd8598a5f00a409"
   ],
   "rules": {
     "freeTextClaimsAccepted": false,

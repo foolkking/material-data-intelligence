@@ -259,7 +259,7 @@ def test_phase10l4_postgres_redis_minio_phonon_chain_interpretation() -> None:
         ) in ARTIFACT_PROJECTOR_CONTRACTS
     }
     assert set(evidence["sourceArtifactIds"]) == supported_artifact_ids
-    assert evidence["unsupportedArtifactCount"] > 0
+    assert any("no approved structured evidence projector" in item for item in evidence["bundleLimitations"])
     assert {item["sourceToolId"] for item in evidence["evidenceItems"]} == {
         "phonon.band",
         "phonon.dos",

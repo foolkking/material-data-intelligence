@@ -5,11 +5,11 @@
     "toolCalls": 2
   },
   "api": {
-    "bundleHash": "24a3c5335012d116cc2f3ed3c8dfcdd502cb32eaf2f3f40ab96b506c9037752b",
-    "bundleId": "bundle_24a3c5335012d116cc2f3ed3c8dfcdd5",
+    "bundleHash": "913356a988fabe44456d29834d45ed077c713286148d509b7ce885d834723d66",
+    "bundleId": "bundle_913356a988fabe44456d29834d45ed07",
     "claims": [
       {
-        "claimId": "claim_29edb9571bcabb380d7a86952eb6c591",
+        "claimId": "claim_58549627c868acdbee0ee09d509d9fa6",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -26,14 +26,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_c59e274340304b7e0017c0e1c7ccaf60"
+          "evidence_3e216bc9b47ac3734b882858a1bceeea"
         ],
         "supportingEvidenceIds": [
-          "evidence_c59e274340304b7e0017c0e1c7ccaf60"
+          "evidence_3e216bc9b47ac3734b882858a1bceeea"
         ]
       },
       {
-        "claimId": "claim_b0b57c1b5d737e545153ed2f11387530",
+        "claimId": "claim_cdbe8014f580852531a82b118863b1b6",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -50,14 +50,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_be640325e3816664283d0469d12aaabf"
+          "evidence_63dc33fdb0ae4c57dfb3f30fd3997aa7"
         ],
         "supportingEvidenceIds": [
-          "evidence_be640325e3816664283d0469d12aaabf"
+          "evidence_63dc33fdb0ae4c57dfb3f30fd3997aa7"
         ]
       },
       {
-        "claimId": "claim_77b9b51f06fd80fb370cff5d111319fe",
+        "claimId": "claim_22aae3d01e0722591d59792245138cf1",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -74,14 +74,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_fe37ea480450cd0f2572ebb0f5d11b08"
+          "evidence_a55df004083f38a7fb11bea46c48d720"
         ],
         "supportingEvidenceIds": [
-          "evidence_fe37ea480450cd0f2572ebb0f5d11b08"
+          "evidence_a55df004083f38a7fb11bea46c48d720"
         ]
       },
       {
-        "claimId": "claim_5034c4d63f3eb4d270ab85696bb2963d",
+        "claimId": "claim_bfd74642f55dd175c54b55d5f3f43171",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -98,14 +98,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_eb6b0d561218a11fa414289ab18f89d8"
+          "evidence_9161c7f53161b71de88d43d7d84e02e8"
         ],
         "supportingEvidenceIds": [
-          "evidence_eb6b0d561218a11fa414289ab18f89d8"
+          "evidence_9161c7f53161b71de88d43d7d84e02e8"
         ]
       },
       {
-        "claimId": "claim_072b2091ded436395db40c270f2575a4",
+        "claimId": "claim_2729b7d5970149b5bd7069912e48971d",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -122,10 +122,10 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_8ed075f03a2297ea16d8945407661988"
+          "evidence_49e6dfded7678856f785e8405ea1191d"
         ],
         "supportingEvidenceIds": [
-          "evidence_8ed075f03a2297ea16d8945407661988"
+          "evidence_49e6dfded7678856f785e8405ea1191d"
         ]
       }
     ],
@@ -141,10 +141,10 @@
       "claimCount": 5,
       "createdAt": "2026-07-30T00:00:00+00:00",
       "diagnostics": [],
-      "elapsedMs": 0.588,
+      "elapsedMs": 0.6397,
       "evidenceItemCount": 7,
-      "executionRecordHash": "2b1db4702bd16e7e29fa84f11d55d8ab49c72a33d2b177ddad7de61486042edb",
-      "executionRecordId": "interpretation_execution_2b1db4702bd16e7e29fa84f11d55d8ab",
+      "executionRecordHash": "66ba1ec8dd201b1495cc72d76dc0224f82cec81f1f04ad9cbe9bf1022642937b",
+      "executionRecordId": "interpretation_execution_66ba1ec8dd201b1495cc72d76dc0224f",
       "idempotencyKeyHash": null,
       "initialResponseHash": null,
       "limitationCount": 2,
@@ -159,18 +159,18 @@
       "repairedResponseHash": null,
       "responseHash": null,
       "schemaVersion": "1.0",
-      "sourceBundleHash": "24a3c5335012d116cc2f3ed3c8dfcdd502cb32eaf2f3f40ab96b506c9037752b",
-      "sourceBundleId": "bundle_24a3c5335012d116cc2f3ed3c8dfcdd5",
+      "sourceBundleHash": "913356a988fabe44456d29834d45ed077c713286148d509b7ce885d834723d66",
+      "sourceBundleId": "bundle_913356a988fabe44456d29834d45ed07",
       "sourceGraphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "sourceJobId": "job_6f7feabff9ec414e984acecd",
+      "sourceJobId": "job_3c536b2309394527b088ef0e",
       "sourcePlanHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "sourcePlanId": "plan_88577e9b6f424de694f58f39",
+      "sourcePlanId": "plan_78f67f2053334250984d1cec",
       "warningCount": 0
     },
     "interpretation": {
       "claims": [
         {
-          "claimId": "claim_29edb9571bcabb380d7a86952eb6c591",
+          "claimId": "claim_58549627c868acdbee0ee09d509d9fa6",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -187,14 +187,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_c59e274340304b7e0017c0e1c7ccaf60"
+            "evidence_3e216bc9b47ac3734b882858a1bceeea"
           ],
           "supportingEvidenceIds": [
-            "evidence_c59e274340304b7e0017c0e1c7ccaf60"
+            "evidence_3e216bc9b47ac3734b882858a1bceeea"
           ]
         },
         {
-          "claimId": "claim_b0b57c1b5d737e545153ed2f11387530",
+          "claimId": "claim_cdbe8014f580852531a82b118863b1b6",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -211,14 +211,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_be640325e3816664283d0469d12aaabf"
+            "evidence_63dc33fdb0ae4c57dfb3f30fd3997aa7"
           ],
           "supportingEvidenceIds": [
-            "evidence_be640325e3816664283d0469d12aaabf"
+            "evidence_63dc33fdb0ae4c57dfb3f30fd3997aa7"
           ]
         },
         {
-          "claimId": "claim_77b9b51f06fd80fb370cff5d111319fe",
+          "claimId": "claim_22aae3d01e0722591d59792245138cf1",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -235,14 +235,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_fe37ea480450cd0f2572ebb0f5d11b08"
+            "evidence_a55df004083f38a7fb11bea46c48d720"
           ],
           "supportingEvidenceIds": [
-            "evidence_fe37ea480450cd0f2572ebb0f5d11b08"
+            "evidence_a55df004083f38a7fb11bea46c48d720"
           ]
         },
         {
-          "claimId": "claim_5034c4d63f3eb4d270ab85696bb2963d",
+          "claimId": "claim_bfd74642f55dd175c54b55d5f3f43171",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -259,14 +259,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_eb6b0d561218a11fa414289ab18f89d8"
+            "evidence_9161c7f53161b71de88d43d7d84e02e8"
           ],
           "supportingEvidenceIds": [
-            "evidence_eb6b0d561218a11fa414289ab18f89d8"
+            "evidence_9161c7f53161b71de88d43d7d84e02e8"
           ]
         },
         {
-          "claimId": "claim_072b2091ded436395db40c270f2575a4",
+          "claimId": "claim_2729b7d5970149b5bd7069912e48971d",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -283,23 +283,23 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_8ed075f03a2297ea16d8945407661988"
+            "evidence_49e6dfded7678856f785e8405ea1191d"
           ],
           "supportingEvidenceIds": [
-            "evidence_8ed075f03a2297ea16d8945407661988"
+            "evidence_49e6dfded7678856f785e8405ea1191d"
           ]
         }
       ],
       "completeness": "PARTIAL",
       "createdAt": "2026-07-30T00:00:00+00:00",
-      "executionRecordId": "interpretation_execution_2b1db4702bd16e7e29fa84f11d55d8ab",
+      "executionRecordId": "interpretation_execution_66ba1ec8dd201b1495cc72d76dc0224f",
       "globalLimitations": [
         "Execution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.",
         "5 artifact(s) have no approved structured evidence projector."
       ],
       "globalWarnings": [],
-      "interpretationHash": "fa432db46d20e3cd28e3a2c51041ddab5888425677e24a98df706a68c38eb508",
-      "interpretationId": "interpretation_fa432db46d20e3cd28e3a2c51041ddab",
+      "interpretationHash": "8c77812ab5f8ebf8bbf9938ea043b5408bb318a5d1fd339ed02b617bdc932397",
+      "interpretationId": "interpretation_8c77812ab5f8ebf8bbf9938ea043b540",
       "mode": "DETERMINISTIC",
       "outcome": "INTERPRETATION_READY_WITH_LIMITS",
       "partialResultState": true,
@@ -308,15 +308,15 @@
       "recommendations": [],
       "repairCount": 0,
       "schemaVersion": "1.0",
-      "sourceBundleHash": "24a3c5335012d116cc2f3ed3c8dfcdd502cb32eaf2f3f40ab96b506c9037752b",
-      "sourceBundleId": "bundle_24a3c5335012d116cc2f3ed3c8dfcdd5",
+      "sourceBundleHash": "913356a988fabe44456d29834d45ed077c713286148d509b7ce885d834723d66",
+      "sourceBundleId": "bundle_913356a988fabe44456d29834d45ed07",
       "sourceGraphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "sourceJobId": "job_6f7feabff9ec414e984acecd",
+      "sourceJobId": "job_3c536b2309394527b088ef0e",
       "sourcePlanHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "sourcePlanId": "plan_88577e9b6f424de694f58f39",
+      "sourcePlanId": "plan_78f67f2053334250984d1cec",
       "validationOutcome": "VALID"
     },
-    "interpretationId": "interpretation_fa432db46d20e3cd28e3a2c51041ddab",
+    "interpretationId": "interpretation_8c77812ab5f8ebf8bbf9938ea043b540",
     "limitations": [
       "Execution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.",
       "5 artifact(s) have no approved structured evidence projector."
@@ -334,9 +334,9 @@
     "recommendations": [],
     "repairCount": 0,
     "sourceGraphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-    "sourceJobId": "job_6f7feabff9ec414e984acecd",
+    "sourceJobId": "job_3c536b2309394527b088ef0e",
     "sourcePlanHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-    "sourcePlanId": "plan_88577e9b6f424de694f58f39",
+    "sourcePlanId": "plan_78f67f2053334250984d1cec",
     "warnings": []
   },
   "before": {
@@ -345,8 +345,8 @@
     "toolCalls": 2
   },
   "evidence": {
-    "bundleHash": "24a3c5335012d116cc2f3ed3c8dfcdd502cb32eaf2f3f40ab96b506c9037752b",
-    "bundleId": "bundle_24a3c5335012d116cc2f3ed3c8dfcdd5",
+    "bundleHash": "913356a988fabe44456d29834d45ed077c713286148d509b7ce885d834723d66",
+    "bundleId": "bundle_913356a988fabe44456d29834d45ed07",
     "bundleLimitations": [
       "Execution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.",
       "5 artifact(s) have no approved structured evidence projector."
@@ -359,7 +359,7 @@
         "datasetId": "dataset_1",
         "datasetVersion": "dataset_version_2",
         "displayValue": "2",
-        "evidenceItemId": "evidence_3a5e6296a725518b5645efcb80860c7a",
+        "evidenceItemId": "evidence_2cd19610c18c4876a360035b9e05635c",
         "evidenceKind": "COUNT",
         "fieldLocator": {
           "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -374,7 +374,7 @@
           "values": []
         },
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "projectorVersion": "phase10l4.projectors.v1",
         "providerSafe": true,
         "referenceConvention": "total_modes",
@@ -382,7 +382,7 @@
         "schemaVersion": "1.0",
         "semanticRole": "phonon.projection_count",
         "sourceArtifactChecksum": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
-        "sourceArtifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
+        "sourceArtifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
         "sourceToolId": "phonon.dos",
         "sourceToolVersion": "0.1.0",
         "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -396,122 +396,8 @@
         "artifactContractVersion": "phase10h.phonon_dos.v1",
         "datasetId": "dataset_1",
         "datasetVersion": "dataset_version_2",
-        "displayValue": "6",
-        "evidenceItemId": "evidence_8ed075f03a2297ea16d8945407661988",
-        "evidenceKind": "SCALAR",
-        "fieldLocator": {
-          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "fieldId": "integration.observed_integral",
-          "semanticKey": "phonon.dos_integral"
-        },
-        "limitations": [],
-        "normalizedValue": {
-          "maximum": null,
-          "minimum": null,
-          "scalar": 6.0,
-          "values": []
-        },
-        "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
-        "projectorVersion": "phase10l4.projectors.v1",
-        "providerSafe": true,
-        "referenceConvention": "total_modes",
-        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "schemaVersion": "1.0",
-        "semanticRole": "phonon.dos_integral",
-        "sourceArtifactChecksum": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
-        "sourceArtifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
-        "sourceToolId": "phonon.dos",
-        "sourceToolVersion": "0.1.0",
-        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "unit": null,
-        "unitAuthority": null,
-        "valueKind": "mode_count",
-        "warnings": []
-      },
-      {
-        "artifactContract": "phase10h.phonon",
-        "artifactContractVersion": "phase10h2.phonon_dos_summary.v1",
-        "datasetId": "dataset_1",
-        "datasetVersion": "dataset_version_2",
-        "displayValue": "within_tolerance",
-        "evidenceItemId": "evidence_b3c3cefb076b7fd7416edf4dd06cb374",
-        "evidenceKind": "CATEGORY",
-        "fieldLocator": {
-          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "fieldId": "status",
-          "semanticKey": "phonon.status"
-        },
-        "limitations": [],
-        "normalizedValue": {
-          "maximum": null,
-          "minimum": null,
-          "scalar": "within_tolerance",
-          "values": []
-        },
-        "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
-        "projectorVersion": "phase10l4.projectors.v1",
-        "providerSafe": true,
-        "referenceConvention": "total_modes",
-        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "schemaVersion": "1.0",
-        "semanticRole": "phonon.status",
-        "sourceArtifactChecksum": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
-        "sourceArtifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
-        "sourceToolId": "phonon.dos",
-        "sourceToolVersion": "0.1.0",
-        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "unit": null,
-        "unitAuthority": null,
-        "valueKind": "category",
-        "warnings": []
-      },
-      {
-        "artifactContract": "phase10h.phonon",
-        "artifactContractVersion": "phase10h.phonon_dos.v1",
-        "datasetId": "dataset_1",
-        "datasetVersion": "dataset_version_2",
-        "displayValue": "within_tolerance",
-        "evidenceItemId": "evidence_be640325e3816664283d0469d12aaabf",
-        "evidenceKind": "CATEGORY",
-        "fieldLocator": {
-          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "fieldId": "integration.status",
-          "semanticKey": "phonon.dos_integration_status"
-        },
-        "limitations": [],
-        "normalizedValue": {
-          "maximum": null,
-          "minimum": null,
-          "scalar": "within_tolerance",
-          "values": []
-        },
-        "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
-        "projectorVersion": "phase10l4.projectors.v1",
-        "providerSafe": true,
-        "referenceConvention": "total_modes",
-        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "schemaVersion": "1.0",
-        "semanticRole": "phonon.dos_integration_status",
-        "sourceArtifactChecksum": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
-        "sourceArtifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
-        "sourceToolId": "phonon.dos",
-        "sourceToolVersion": "0.1.0",
-        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "unit": null,
-        "unitAuthority": null,
-        "valueKind": "category",
-        "warnings": []
-      },
-      {
-        "artifactContract": "phase10h.phonon",
-        "artifactContractVersion": "phase10h.phonon_dos.v1",
-        "datasetId": "dataset_1",
-        "datasetVersion": "dataset_version_2",
         "displayValue": "modes_per_terahertz",
-        "evidenceItemId": "evidence_c59e274340304b7e0017c0e1c7ccaf60",
+        "evidenceItemId": "evidence_3e216bc9b47ac3734b882858a1bceeea",
         "evidenceKind": "CATEGORY",
         "fieldLocator": {
           "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -526,7 +412,7 @@
           "values": []
         },
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "projectorVersion": "phase10l4.projectors.v1",
         "providerSafe": true,
         "referenceConvention": "total_modes",
@@ -534,7 +420,7 @@
         "schemaVersion": "1.0",
         "semanticRole": "phonon.dos_density_unit",
         "sourceArtifactChecksum": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
-        "sourceArtifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
+        "sourceArtifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
         "sourceToolId": "phonon.dos",
         "sourceToolVersion": "0.1.0",
         "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -545,11 +431,87 @@
       },
       {
         "artifactContract": "phase10h.phonon",
+        "artifactContractVersion": "phase10h.phonon_dos.v1",
+        "datasetId": "dataset_1",
+        "datasetVersion": "dataset_version_2",
+        "displayValue": "6",
+        "evidenceItemId": "evidence_49e6dfded7678856f785e8405ea1191d",
+        "evidenceKind": "SCALAR",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "integration.observed_integral",
+          "semanticKey": "phonon.dos_integral"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": null,
+          "minimum": null,
+          "scalar": 6.0,
+          "values": []
+        },
+        "producerStepId": "step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "total_modes",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.dos_integral",
+        "sourceArtifactChecksum": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+        "sourceArtifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
+        "sourceToolId": "phonon.dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": null,
+        "unitAuthority": null,
+        "valueKind": "mode_count",
+        "warnings": []
+      },
+      {
+        "artifactContract": "phase10h.phonon",
+        "artifactContractVersion": "phase10h.phonon_dos.v1",
+        "datasetId": "dataset_1",
+        "datasetVersion": "dataset_version_2",
+        "displayValue": "within_tolerance",
+        "evidenceItemId": "evidence_63dc33fdb0ae4c57dfb3f30fd3997aa7",
+        "evidenceKind": "CATEGORY",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "integration.status",
+          "semanticKey": "phonon.dos_integration_status"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": null,
+          "minimum": null,
+          "scalar": "within_tolerance",
+          "values": []
+        },
+        "producerStepId": "step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "total_modes",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.dos_integration_status",
+        "sourceArtifactChecksum": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+        "sourceArtifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
+        "sourceToolId": "phonon.dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": null,
+        "unitAuthority": null,
+        "valueKind": "category",
+        "warnings": []
+      },
+      {
+        "artifactContract": "phase10h.phonon",
         "artifactContractVersion": "phase10h2.phonon_dos_summary.v1",
         "datasetId": "dataset_1",
         "datasetVersion": "dataset_version_2",
         "displayValue": "-1 to 5 terahertz",
-        "evidenceItemId": "evidence_eb6b0d561218a11fa414289ab18f89d8",
+        "evidenceItemId": "evidence_9161c7f53161b71de88d43d7d84e02e8",
         "evidenceKind": "RANGE",
         "fieldLocator": {
           "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -564,7 +526,7 @@
           "values": []
         },
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "projectorVersion": "phase10l4.projectors.v1",
         "providerSafe": true,
         "referenceConvention": "total_modes",
@@ -572,7 +534,7 @@
         "schemaVersion": "1.0",
         "semanticRole": "phonon.frequency_range",
         "sourceArtifactChecksum": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
-        "sourceArtifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
+        "sourceArtifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
         "sourceToolId": "phonon.dos",
         "sourceToolVersion": "0.1.0",
         "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -587,7 +549,7 @@
         "datasetId": "dataset_1",
         "datasetVersion": "dataset_version_2",
         "displayValue": "2",
-        "evidenceItemId": "evidence_fe37ea480450cd0f2572ebb0f5d11b08",
+        "evidenceItemId": "evidence_a55df004083f38a7fb11bea46c48d720",
         "evidenceKind": "COUNT",
         "fieldLocator": {
           "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -602,7 +564,7 @@
           "values": []
         },
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "projectorVersion": "phase10l4.projectors.v1",
         "providerSafe": true,
         "referenceConvention": "total_modes",
@@ -610,7 +572,7 @@
         "schemaVersion": "1.0",
         "semanticRole": "phonon.atom_count",
         "sourceArtifactChecksum": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
-        "sourceArtifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
+        "sourceArtifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
         "sourceToolId": "phonon.dos",
         "sourceToolVersion": "0.1.0",
         "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -618,12 +580,50 @@
         "unitAuthority": null,
         "valueKind": "count",
         "warnings": []
+      },
+      {
+        "artifactContract": "phase10h.phonon",
+        "artifactContractVersion": "phase10h2.phonon_dos_summary.v1",
+        "datasetId": "dataset_1",
+        "datasetVersion": "dataset_version_2",
+        "displayValue": "within_tolerance",
+        "evidenceItemId": "evidence_b77f6a4121becf996ae55abd9f8f0eee",
+        "evidenceKind": "CATEGORY",
+        "fieldLocator": {
+          "entityId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fieldId": "status",
+          "semanticKey": "phonon.status"
+        },
+        "limitations": [],
+        "normalizedValue": {
+          "maximum": null,
+          "minimum": null,
+          "scalar": "within_tolerance",
+          "values": []
+        },
+        "producerStepId": "step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
+        "projectorVersion": "phase10l4.projectors.v1",
+        "providerSafe": true,
+        "referenceConvention": "total_modes",
+        "resourceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schemaVersion": "1.0",
+        "semanticRole": "phonon.status",
+        "sourceArtifactChecksum": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
+        "sourceArtifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
+        "sourceToolId": "phonon.dos",
+        "sourceToolVersion": "0.1.0",
+        "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "unit": null,
+        "unitAuthority": null,
+        "valueKind": "category",
+        "warnings": []
       }
     ],
-    "interpretationId": "interpretation_fa432db46d20e3cd28e3a2c51041ddab",
+    "interpretationId": "interpretation_8c77812ab5f8ebf8bbf9938ea043b540",
     "sourceArtifactIds": [
-      "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
-      "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json"
+      "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
+      "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json"
     ]
   },
   "execution": {
@@ -672,24 +672,24 @@
       ],
       "blockedCount": 1,
       "createdAt": "2026-07-30T00:00:00+00:00",
-      "executionHash": "b58780139f4a7c0b85b0c273e7309d484c029e985fc20ed7b5100587faeb2c91",
-      "executionId": "execution_b58780139f4a7c0b85b0c273e7309d48",
+      "executionHash": "3d98e26403580cbb15c60d5433f3b8efd41be632ab272de1d9fb99cd21c67f86",
+      "executionId": "execution_3d98e26403580cbb15c60d5433f3b8ef",
       "failedCount": 1,
       "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "jobId": "job_6f7feabff9ec414e984acecd",
+      "jobId": "job_3c536b2309394527b088ef0e",
       "notStartedCount": 0,
       "outcome": "PARTIAL_RESULTS",
       "partialArtifactIds": [
-        "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
-        "call_job_6f7feabff9ec414e984acecd_step_003-phonon_manifest_json",
-        "call_job_6f7feabff9ec414e984acecd_step_003-phonon_report_json",
-        "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
-        "call_job_6f7feabff9ec414e984acecd_step_003-plotly_json",
-        "call_job_6f7feabff9ec414e984acecd_step_003-recipe_json",
-        "call_job_6f7feabff9ec414e984acecd_step_003-table_json"
+        "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
+        "call_job_3c536b2309394527b088ef0e_step_003-phonon_manifest_json",
+        "call_job_3c536b2309394527b088ef0e_step_003-phonon_report_json",
+        "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
+        "call_job_3c536b2309394527b088ef0e_step_003-plotly_json",
+        "call_job_3c536b2309394527b088ef0e_step_003-recipe_json",
+        "call_job_3c536b2309394527b088ef0e_step_003-table_json"
       ],
       "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "planId": "plan_88577e9b6f424de694f58f39",
+      "planId": "plan_78f67f2053334250984d1cec",
       "runtimeVersion": "queue_worker_dependency_1.0",
       "schemaVersion": "1.0",
       "steps": [
@@ -700,25 +700,25 @@
           "errorMessage": "TOOL_INPUT_INVALID: Expected canonical JSON or an approved phonopy_band_yaml wrapper.",
           "state": "FAILED",
           "stepId": "step_001",
-          "toolCallId": "call_job_6f7feabff9ec414e984acecd_step_001",
+          "toolCallId": "call_job_3c536b2309394527b088ef0e_step_001",
           "toolId": "phonon.band"
         },
         {
           "artifactIds": [
-            "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
-            "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
-            "call_job_6f7feabff9ec414e984acecd_step_003-phonon_report_json",
-            "call_job_6f7feabff9ec414e984acecd_step_003-phonon_manifest_json",
-            "call_job_6f7feabff9ec414e984acecd_step_003-plotly_json",
-            "call_job_6f7feabff9ec414e984acecd_step_003-table_json",
-            "call_job_6f7feabff9ec414e984acecd_step_003-recipe_json"
+            "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
+            "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
+            "call_job_3c536b2309394527b088ef0e_step_003-phonon_report_json",
+            "call_job_3c536b2309394527b088ef0e_step_003-phonon_manifest_json",
+            "call_job_3c536b2309394527b088ef0e_step_003-plotly_json",
+            "call_job_3c536b2309394527b088ef0e_step_003-table_json",
+            "call_job_3c536b2309394527b088ef0e_step_003-recipe_json"
           ],
           "blockedByStepIds": [],
           "errorCode": null,
           "errorMessage": null,
           "state": "SUCCEEDED",
           "stepId": "step_003",
-          "toolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+          "toolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
           "toolId": "phonon.dos"
         },
         {
@@ -742,25 +742,25 @@
       ],
       "updatedAt": "2026-07-30T00:00:00+00:00"
     },
-    "executionHash": "b58780139f4a7c0b85b0c273e7309d484c029e985fc20ed7b5100587faeb2c91",
-    "executionId": "execution_b58780139f4a7c0b85b0c273e7309d48",
+    "executionHash": "3d98e26403580cbb15c60d5433f3b8efd41be632ab272de1d9fb99cd21c67f86",
+    "executionId": "execution_3d98e26403580cbb15c60d5433f3b8ef",
     "failedCount": 1,
     "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-    "id": "execution_b58780139f4a7c0b85b0c273e7309d48",
-    "jobId": "job_6f7feabff9ec414e984acecd",
+    "id": "execution_3d98e26403580cbb15c60d5433f3b8ef",
+    "jobId": "job_3c536b2309394527b088ef0e",
     "notStartedCount": 0,
     "outcome": "PARTIAL_RESULTS",
     "partialArtifactIds": [
-      "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
-      "call_job_6f7feabff9ec414e984acecd_step_003-phonon_manifest_json",
-      "call_job_6f7feabff9ec414e984acecd_step_003-phonon_report_json",
-      "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
-      "call_job_6f7feabff9ec414e984acecd_step_003-plotly_json",
-      "call_job_6f7feabff9ec414e984acecd_step_003-recipe_json",
-      "call_job_6f7feabff9ec414e984acecd_step_003-table_json"
+      "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
+      "call_job_3c536b2309394527b088ef0e_step_003-phonon_manifest_json",
+      "call_job_3c536b2309394527b088ef0e_step_003-phonon_report_json",
+      "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
+      "call_job_3c536b2309394527b088ef0e_step_003-plotly_json",
+      "call_job_3c536b2309394527b088ef0e_step_003-recipe_json",
+      "call_job_3c536b2309394527b088ef0e_step_003-table_json"
     ],
     "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-    "planId": "plan_88577e9b6f424de694f58f39",
+    "planId": "plan_78f67f2053334250984d1cec",
     "runtimeVersion": "queue_worker_dependency_1.0",
     "schemaVersion": "1.0",
     "steps": [
@@ -771,25 +771,25 @@
         "errorMessage": "TOOL_INPUT_INVALID: Expected canonical JSON or an approved phonopy_band_yaml wrapper.",
         "state": "FAILED",
         "stepId": "step_001",
-        "toolCallId": "call_job_6f7feabff9ec414e984acecd_step_001",
+        "toolCallId": "call_job_3c536b2309394527b088ef0e_step_001",
         "toolId": "phonon.band"
       },
       {
         "artifactIds": [
-          "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
-          "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
-          "call_job_6f7feabff9ec414e984acecd_step_003-phonon_report_json",
-          "call_job_6f7feabff9ec414e984acecd_step_003-phonon_manifest_json",
-          "call_job_6f7feabff9ec414e984acecd_step_003-plotly_json",
-          "call_job_6f7feabff9ec414e984acecd_step_003-table_json",
-          "call_job_6f7feabff9ec414e984acecd_step_003-recipe_json"
+          "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
+          "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
+          "call_job_3c536b2309394527b088ef0e_step_003-phonon_report_json",
+          "call_job_3c536b2309394527b088ef0e_step_003-phonon_manifest_json",
+          "call_job_3c536b2309394527b088ef0e_step_003-plotly_json",
+          "call_job_3c536b2309394527b088ef0e_step_003-table_json",
+          "call_job_3c536b2309394527b088ef0e_step_003-recipe_json"
         ],
         "blockedByStepIds": [],
         "errorCode": null,
         "errorMessage": null,
         "state": "SUCCEEDED",
         "stepId": "step_003",
-        "toolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "toolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "toolId": "phonon.dos"
       },
       {
@@ -818,12 +818,12 @@
     {
       "adapterVersion": "0.1.0",
       "artifactContractVersion": "phase10h.phonon_dos.v1",
-      "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
+      "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
       "artifactKind": "phonon_dos_json",
       "artifactLineageRecord": {
         "adapterVersion": "0.1.0",
         "artifactContractVersion": "phase10h.phonon_dos.v1",
-        "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_dos_json",
+        "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_dos_json",
         "artifactKind": "phonon_dos_json",
         "bindingIds": [],
         "caps": {
@@ -840,16 +840,16 @@
         "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
         "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
         "intentId": "intent_af647d24626215fa9a56999c",
-        "jobId": "job_6f7feabff9ec414e984acecd",
-        "lineageHash": "6253ad9eb681e65ce411ac2ad312fcfa8c0efb054212b6336910bfcb548bf2e0",
-        "lineageId": "lineage_6253ad9eb681e65ce411ac2ad312fcfa",
+        "jobId": "job_3c536b2309394527b088ef0e",
+        "lineageHash": "56b7dc48f312643590973855124bd45aa21b31c0dd86c48dff00f86055aab58b",
+        "lineageId": "lineage_56b7dc48f312643590973855124bd45a",
         "mediaType": "application/json",
         "outputPort": "canonical-dos",
         "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-        "planId": "plan_88577e9b6f424de694f58f39",
+        "planId": "plan_78f67f2053334250984d1cec",
         "planSchemaVersion": "0.2",
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "producerToolId": "phonon.dos",
         "producerToolVersion": "0.1.0",
         "profileId": "profile_1",
@@ -876,19 +876,19 @@
       "decisionHash": "cc6222c2b00369b8ad5417eeae015a3bf4724907e24b056111842623ba8e4823",
       "decisionId": "decision_cc6222c2b00369b8ad5417ee",
       "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "id": "lineage_6253ad9eb681e65ce411ac2ad312fcfa",
+      "id": "lineage_56b7dc48f312643590973855124bd45a",
       "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
       "intentId": "intent_af647d24626215fa9a56999c",
-      "jobId": "job_6f7feabff9ec414e984acecd",
-      "lineageHash": "6253ad9eb681e65ce411ac2ad312fcfa8c0efb054212b6336910bfcb548bf2e0",
-      "lineageId": "lineage_6253ad9eb681e65ce411ac2ad312fcfa",
+      "jobId": "job_3c536b2309394527b088ef0e",
+      "lineageHash": "56b7dc48f312643590973855124bd45aa21b31c0dd86c48dff00f86055aab58b",
+      "lineageId": "lineage_56b7dc48f312643590973855124bd45a",
       "mediaType": "application/json",
       "outputPort": "canonical-dos",
       "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "planId": "plan_88577e9b6f424de694f58f39",
+      "planId": "plan_78f67f2053334250984d1cec",
       "planSchemaVersion": "0.2",
       "producerStepId": "step_003",
-      "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+      "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
       "producerToolId": "phonon.dos",
       "producerToolVersion": "0.1.0",
       "profileId": "profile_1",
@@ -905,12 +905,12 @@
     {
       "adapterVersion": "0.1.0",
       "artifactContractVersion": "phase10h.phonon_dos.v1",
-      "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_manifest_json",
+      "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_manifest_json",
       "artifactKind": "phonon_manifest_json",
       "artifactLineageRecord": {
         "adapterVersion": "0.1.0",
         "artifactContractVersion": "phase10h.phonon_dos.v1",
-        "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_manifest_json",
+        "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_manifest_json",
         "artifactKind": "phonon_manifest_json",
         "bindingIds": [],
         "caps": {
@@ -927,16 +927,16 @@
         "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
         "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
         "intentId": "intent_af647d24626215fa9a56999c",
-        "jobId": "job_6f7feabff9ec414e984acecd",
-        "lineageHash": "1411780eba7815c7ac106d9f3840ecda48dca393b980b3bca61f84df53d1708f",
-        "lineageId": "lineage_1411780eba7815c7ac106d9f3840ecda",
+        "jobId": "job_3c536b2309394527b088ef0e",
+        "lineageHash": "f5b1187516473e8e4aa60be919741603c2b7d422239640c6e222b2cb4942fff8",
+        "lineageId": "lineage_f5b1187516473e8e4aa60be919741603",
         "mediaType": "application/json",
         "outputPort": "result-phonon_manifest_json",
         "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-        "planId": "plan_88577e9b6f424de694f58f39",
+        "planId": "plan_78f67f2053334250984d1cec",
         "planSchemaVersion": "0.2",
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "producerToolId": "phonon.dos",
         "producerToolVersion": "0.1.0",
         "profileId": "profile_1",
@@ -963,19 +963,19 @@
       "decisionHash": "cc6222c2b00369b8ad5417eeae015a3bf4724907e24b056111842623ba8e4823",
       "decisionId": "decision_cc6222c2b00369b8ad5417ee",
       "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "id": "lineage_1411780eba7815c7ac106d9f3840ecda",
+      "id": "lineage_f5b1187516473e8e4aa60be919741603",
       "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
       "intentId": "intent_af647d24626215fa9a56999c",
-      "jobId": "job_6f7feabff9ec414e984acecd",
-      "lineageHash": "1411780eba7815c7ac106d9f3840ecda48dca393b980b3bca61f84df53d1708f",
-      "lineageId": "lineage_1411780eba7815c7ac106d9f3840ecda",
+      "jobId": "job_3c536b2309394527b088ef0e",
+      "lineageHash": "f5b1187516473e8e4aa60be919741603c2b7d422239640c6e222b2cb4942fff8",
+      "lineageId": "lineage_f5b1187516473e8e4aa60be919741603",
       "mediaType": "application/json",
       "outputPort": "result-phonon_manifest_json",
       "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "planId": "plan_88577e9b6f424de694f58f39",
+      "planId": "plan_78f67f2053334250984d1cec",
       "planSchemaVersion": "0.2",
       "producerStepId": "step_003",
-      "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+      "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
       "producerToolId": "phonon.dos",
       "producerToolVersion": "0.1.0",
       "profileId": "profile_1",
@@ -992,12 +992,12 @@
     {
       "adapterVersion": "0.1.0",
       "artifactContractVersion": "phase10h.phonon_dos.v1",
-      "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_report_json",
+      "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_report_json",
       "artifactKind": "phonon_report_json",
       "artifactLineageRecord": {
         "adapterVersion": "0.1.0",
         "artifactContractVersion": "phase10h.phonon_dos.v1",
-        "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_report_json",
+        "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_report_json",
         "artifactKind": "phonon_report_json",
         "bindingIds": [],
         "caps": {
@@ -1014,16 +1014,16 @@
         "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
         "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
         "intentId": "intent_af647d24626215fa9a56999c",
-        "jobId": "job_6f7feabff9ec414e984acecd",
-        "lineageHash": "6efbc6aa829e1b5ec10f384f3424aa37752859f26fbcffc8097a9c8689bc2484",
-        "lineageId": "lineage_6efbc6aa829e1b5ec10f384f3424aa37",
+        "jobId": "job_3c536b2309394527b088ef0e",
+        "lineageHash": "6e155638bc6f74c549e6f1e831e9b5fa66fbb7cdbe8be9a9f977d36bfddc7b9a",
+        "lineageId": "lineage_6e155638bc6f74c549e6f1e831e9b5fa",
         "mediaType": "application/json",
         "outputPort": "result-phonon_report_json",
         "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-        "planId": "plan_88577e9b6f424de694f58f39",
+        "planId": "plan_78f67f2053334250984d1cec",
         "planSchemaVersion": "0.2",
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "producerToolId": "phonon.dos",
         "producerToolVersion": "0.1.0",
         "profileId": "profile_1",
@@ -1050,19 +1050,19 @@
       "decisionHash": "cc6222c2b00369b8ad5417eeae015a3bf4724907e24b056111842623ba8e4823",
       "decisionId": "decision_cc6222c2b00369b8ad5417ee",
       "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "id": "lineage_6efbc6aa829e1b5ec10f384f3424aa37",
+      "id": "lineage_6e155638bc6f74c549e6f1e831e9b5fa",
       "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
       "intentId": "intent_af647d24626215fa9a56999c",
-      "jobId": "job_6f7feabff9ec414e984acecd",
-      "lineageHash": "6efbc6aa829e1b5ec10f384f3424aa37752859f26fbcffc8097a9c8689bc2484",
-      "lineageId": "lineage_6efbc6aa829e1b5ec10f384f3424aa37",
+      "jobId": "job_3c536b2309394527b088ef0e",
+      "lineageHash": "6e155638bc6f74c549e6f1e831e9b5fa66fbb7cdbe8be9a9f977d36bfddc7b9a",
+      "lineageId": "lineage_6e155638bc6f74c549e6f1e831e9b5fa",
       "mediaType": "application/json",
       "outputPort": "result-phonon_report_json",
       "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "planId": "plan_88577e9b6f424de694f58f39",
+      "planId": "plan_78f67f2053334250984d1cec",
       "planSchemaVersion": "0.2",
       "producerStepId": "step_003",
-      "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+      "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
       "producerToolId": "phonon.dos",
       "producerToolVersion": "0.1.0",
       "profileId": "profile_1",
@@ -1079,12 +1079,12 @@
     {
       "adapterVersion": "0.1.0",
       "artifactContractVersion": "phase10h.phonon_dos.v1",
-      "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
+      "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
       "artifactKind": "phonon_summary_json",
       "artifactLineageRecord": {
         "adapterVersion": "0.1.0",
         "artifactContractVersion": "phase10h.phonon_dos.v1",
-        "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-phonon_summary_json",
+        "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-phonon_summary_json",
         "artifactKind": "phonon_summary_json",
         "bindingIds": [],
         "caps": {
@@ -1101,16 +1101,16 @@
         "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
         "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
         "intentId": "intent_af647d24626215fa9a56999c",
-        "jobId": "job_6f7feabff9ec414e984acecd",
-        "lineageHash": "3b6c077bddce613684837fcba9c27b8758b5533f150a7ade7ee105b551482636",
-        "lineageId": "lineage_3b6c077bddce613684837fcba9c27b87",
+        "jobId": "job_3c536b2309394527b088ef0e",
+        "lineageHash": "60dc5d77f4ae87b16d813b956bd3d8fec739e65cae3f37cc61e411271e607ec3",
+        "lineageId": "lineage_60dc5d77f4ae87b16d813b956bd3d8fe",
         "mediaType": "application/json",
         "outputPort": "result-phonon_summary_json",
         "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-        "planId": "plan_88577e9b6f424de694f58f39",
+        "planId": "plan_78f67f2053334250984d1cec",
         "planSchemaVersion": "0.2",
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "producerToolId": "phonon.dos",
         "producerToolVersion": "0.1.0",
         "profileId": "profile_1",
@@ -1137,19 +1137,19 @@
       "decisionHash": "cc6222c2b00369b8ad5417eeae015a3bf4724907e24b056111842623ba8e4823",
       "decisionId": "decision_cc6222c2b00369b8ad5417ee",
       "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "id": "lineage_3b6c077bddce613684837fcba9c27b87",
+      "id": "lineage_60dc5d77f4ae87b16d813b956bd3d8fe",
       "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
       "intentId": "intent_af647d24626215fa9a56999c",
-      "jobId": "job_6f7feabff9ec414e984acecd",
-      "lineageHash": "3b6c077bddce613684837fcba9c27b8758b5533f150a7ade7ee105b551482636",
-      "lineageId": "lineage_3b6c077bddce613684837fcba9c27b87",
+      "jobId": "job_3c536b2309394527b088ef0e",
+      "lineageHash": "60dc5d77f4ae87b16d813b956bd3d8fec739e65cae3f37cc61e411271e607ec3",
+      "lineageId": "lineage_60dc5d77f4ae87b16d813b956bd3d8fe",
       "mediaType": "application/json",
       "outputPort": "result-phonon_summary_json",
       "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "planId": "plan_88577e9b6f424de694f58f39",
+      "planId": "plan_78f67f2053334250984d1cec",
       "planSchemaVersion": "0.2",
       "producerStepId": "step_003",
-      "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+      "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
       "producerToolId": "phonon.dos",
       "producerToolVersion": "0.1.0",
       "profileId": "profile_1",
@@ -1166,12 +1166,12 @@
     {
       "adapterVersion": "0.1.0",
       "artifactContractVersion": "phase10h.phonon_dos.v1",
-      "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-plotly_json",
+      "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-plotly_json",
       "artifactKind": "plotly_json",
       "artifactLineageRecord": {
         "adapterVersion": "0.1.0",
         "artifactContractVersion": "phase10h.phonon_dos.v1",
-        "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-plotly_json",
+        "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-plotly_json",
         "artifactKind": "plotly_json",
         "bindingIds": [],
         "caps": {
@@ -1188,16 +1188,16 @@
         "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
         "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
         "intentId": "intent_af647d24626215fa9a56999c",
-        "jobId": "job_6f7feabff9ec414e984acecd",
-        "lineageHash": "31bea831673a28e753e0feb417ea38c16f54742223584304e4af995f8681f776",
-        "lineageId": "lineage_31bea831673a28e753e0feb417ea38c1",
+        "jobId": "job_3c536b2309394527b088ef0e",
+        "lineageHash": "30a90e8995e2f000dfb484401346278bb399821c8d3e9a3f2d8d8159406169b8",
+        "lineageId": "lineage_30a90e8995e2f000dfb484401346278b",
         "mediaType": "application/json",
         "outputPort": "result-plotly_json",
         "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-        "planId": "plan_88577e9b6f424de694f58f39",
+        "planId": "plan_78f67f2053334250984d1cec",
         "planSchemaVersion": "0.2",
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "producerToolId": "phonon.dos",
         "producerToolVersion": "0.1.0",
         "profileId": "profile_1",
@@ -1224,19 +1224,19 @@
       "decisionHash": "cc6222c2b00369b8ad5417eeae015a3bf4724907e24b056111842623ba8e4823",
       "decisionId": "decision_cc6222c2b00369b8ad5417ee",
       "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "id": "lineage_31bea831673a28e753e0feb417ea38c1",
+      "id": "lineage_30a90e8995e2f000dfb484401346278b",
       "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
       "intentId": "intent_af647d24626215fa9a56999c",
-      "jobId": "job_6f7feabff9ec414e984acecd",
-      "lineageHash": "31bea831673a28e753e0feb417ea38c16f54742223584304e4af995f8681f776",
-      "lineageId": "lineage_31bea831673a28e753e0feb417ea38c1",
+      "jobId": "job_3c536b2309394527b088ef0e",
+      "lineageHash": "30a90e8995e2f000dfb484401346278bb399821c8d3e9a3f2d8d8159406169b8",
+      "lineageId": "lineage_30a90e8995e2f000dfb484401346278b",
       "mediaType": "application/json",
       "outputPort": "result-plotly_json",
       "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "planId": "plan_88577e9b6f424de694f58f39",
+      "planId": "plan_78f67f2053334250984d1cec",
       "planSchemaVersion": "0.2",
       "producerStepId": "step_003",
-      "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+      "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
       "producerToolId": "phonon.dos",
       "producerToolVersion": "0.1.0",
       "profileId": "profile_1",
@@ -1253,12 +1253,12 @@
     {
       "adapterVersion": "0.1.0",
       "artifactContractVersion": "phase10h.phonon_dos.v1",
-      "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-recipe_json",
+      "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-recipe_json",
       "artifactKind": "recipe_json",
       "artifactLineageRecord": {
         "adapterVersion": "0.1.0",
         "artifactContractVersion": "phase10h.phonon_dos.v1",
-        "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-recipe_json",
+        "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-recipe_json",
         "artifactKind": "recipe_json",
         "bindingIds": [],
         "caps": {
@@ -1275,16 +1275,16 @@
         "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
         "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
         "intentId": "intent_af647d24626215fa9a56999c",
-        "jobId": "job_6f7feabff9ec414e984acecd",
-        "lineageHash": "dd32d71b127f0a08e46dbf53e550f42f00efe3194837f3851863bdc2bbdf83e5",
-        "lineageId": "lineage_dd32d71b127f0a08e46dbf53e550f42f",
+        "jobId": "job_3c536b2309394527b088ef0e",
+        "lineageHash": "d8b6edb3c3e4ba0918c31a25e9dbf9cba1a812316f964e12852b4491441b2f49",
+        "lineageId": "lineage_d8b6edb3c3e4ba0918c31a25e9dbf9cb",
         "mediaType": "application/json",
         "outputPort": "result-recipe_json",
         "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-        "planId": "plan_88577e9b6f424de694f58f39",
+        "planId": "plan_78f67f2053334250984d1cec",
         "planSchemaVersion": "0.2",
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "producerToolId": "phonon.dos",
         "producerToolVersion": "0.1.0",
         "profileId": "profile_1",
@@ -1311,19 +1311,19 @@
       "decisionHash": "cc6222c2b00369b8ad5417eeae015a3bf4724907e24b056111842623ba8e4823",
       "decisionId": "decision_cc6222c2b00369b8ad5417ee",
       "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "id": "lineage_dd32d71b127f0a08e46dbf53e550f42f",
+      "id": "lineage_d8b6edb3c3e4ba0918c31a25e9dbf9cb",
       "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
       "intentId": "intent_af647d24626215fa9a56999c",
-      "jobId": "job_6f7feabff9ec414e984acecd",
-      "lineageHash": "dd32d71b127f0a08e46dbf53e550f42f00efe3194837f3851863bdc2bbdf83e5",
-      "lineageId": "lineage_dd32d71b127f0a08e46dbf53e550f42f",
+      "jobId": "job_3c536b2309394527b088ef0e",
+      "lineageHash": "d8b6edb3c3e4ba0918c31a25e9dbf9cba1a812316f964e12852b4491441b2f49",
+      "lineageId": "lineage_d8b6edb3c3e4ba0918c31a25e9dbf9cb",
       "mediaType": "application/json",
       "outputPort": "result-recipe_json",
       "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "planId": "plan_88577e9b6f424de694f58f39",
+      "planId": "plan_78f67f2053334250984d1cec",
       "planSchemaVersion": "0.2",
       "producerStepId": "step_003",
-      "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+      "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
       "producerToolId": "phonon.dos",
       "producerToolVersion": "0.1.0",
       "profileId": "profile_1",
@@ -1340,12 +1340,12 @@
     {
       "adapterVersion": "0.1.0",
       "artifactContractVersion": "phase10h.phonon_dos.v1",
-      "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-table_json",
+      "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-table_json",
       "artifactKind": "table_json",
       "artifactLineageRecord": {
         "adapterVersion": "0.1.0",
         "artifactContractVersion": "phase10h.phonon_dos.v1",
-        "artifactId": "call_job_6f7feabff9ec414e984acecd_step_003-table_json",
+        "artifactId": "call_job_3c536b2309394527b088ef0e_step_003-table_json",
         "artifactKind": "table_json",
         "bindingIds": [],
         "caps": {
@@ -1362,16 +1362,16 @@
         "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
         "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
         "intentId": "intent_af647d24626215fa9a56999c",
-        "jobId": "job_6f7feabff9ec414e984acecd",
-        "lineageHash": "f61e9ee64bba0803a33e0bb154dd00825c76aa20e8e14de289ff053c22c6b0a3",
-        "lineageId": "lineage_f61e9ee64bba0803a33e0bb154dd0082",
+        "jobId": "job_3c536b2309394527b088ef0e",
+        "lineageHash": "5cf6cc44ec9ac46803db75da02f25bcfcd801db9e143c6f0a7cf93e3daceb6cc",
+        "lineageId": "lineage_5cf6cc44ec9ac46803db75da02f25bcf",
         "mediaType": "application/json",
         "outputPort": "result-table_json",
         "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-        "planId": "plan_88577e9b6f424de694f58f39",
+        "planId": "plan_78f67f2053334250984d1cec",
         "planSchemaVersion": "0.2",
         "producerStepId": "step_003",
-        "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+        "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
         "producerToolId": "phonon.dos",
         "producerToolVersion": "0.1.0",
         "profileId": "profile_1",
@@ -1398,19 +1398,19 @@
       "decisionHash": "cc6222c2b00369b8ad5417eeae015a3bf4724907e24b056111842623ba8e4823",
       "decisionId": "decision_cc6222c2b00369b8ad5417ee",
       "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "id": "lineage_f61e9ee64bba0803a33e0bb154dd0082",
+      "id": "lineage_5cf6cc44ec9ac46803db75da02f25bcf",
       "intentHash": "af647d24626215fa9a56999c46e5154aef6baf3bc9a77f688049b7bc9cb7d9d3",
       "intentId": "intent_af647d24626215fa9a56999c",
-      "jobId": "job_6f7feabff9ec414e984acecd",
-      "lineageHash": "f61e9ee64bba0803a33e0bb154dd00825c76aa20e8e14de289ff053c22c6b0a3",
-      "lineageId": "lineage_f61e9ee64bba0803a33e0bb154dd0082",
+      "jobId": "job_3c536b2309394527b088ef0e",
+      "lineageHash": "5cf6cc44ec9ac46803db75da02f25bcfcd801db9e143c6f0a7cf93e3daceb6cc",
+      "lineageId": "lineage_5cf6cc44ec9ac46803db75da02f25bcf",
       "mediaType": "application/json",
       "outputPort": "result-table_json",
       "planHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "planId": "plan_88577e9b6f424de694f58f39",
+      "planId": "plan_78f67f2053334250984d1cec",
       "planSchemaVersion": "0.2",
       "producerStepId": "step_003",
-      "producerToolCallId": "call_job_6f7feabff9ec414e984acecd_step_003",
+      "producerToolCallId": "call_job_3c536b2309394527b088ef0e_step_003",
       "producerToolId": "phonon.dos",
       "producerToolVersion": "0.1.0",
       "profileId": "profile_1",
@@ -1564,10 +1564,10 @@
   "runtime": {
     "artifact_count": 7,
     "event_count": 16,
-    "job_id": "job_6f7feabff9ec414e984acecd",
+    "job_id": "job_3c536b2309394527b088ef0e",
     "message": "dependency execution partial_results",
     "plan_hash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-    "plan_id": "plan_88577e9b6f424de694f58f39",
+    "plan_id": "plan_78f67f2053334250984d1cec",
     "status": "partial_success",
     "tool_call_count": 2
   },

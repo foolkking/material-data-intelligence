@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "fixtureContractHash": "bbe0731003013090d1068d2e02f4d82c086b56fe9a19b55b2732aeb9759855c7",
+  "fixtureContractHash": "3c15aa80608d95ede52ae70f59cf2d696cdda2bacbec0067855dca30daf83a66",
   "browsers": {
     "chromium": {
       "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",

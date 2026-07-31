@@ -199,6 +199,53 @@ def test_interpretation_api_create_read_is_idempotent_and_read_only(tmp_path: Pa
     assert listed["count"] == 1
 
 
+def test_real_ml_adapter_artifact_is_interpretable_without_service_dependencies(tmp_path: Path) -> None:
+    from tests.integration.test_phase10l4_interpretation_service_backed import (
+        _metrics_table,
+        _persist_job,
+        _single_metrics_plan,
+    )
+
+    repos = InMemoryRepositoryBundle.create()
+    plan = _single_metrics_plan(dataset_id="dataset_l4_real_ml", profile_id="profile_l4_real_ml")
+    plan_hash = _persist_job(
+        repos,
+        project_id="project_l4_real_ml",
+        dataset_id="dataset_l4_real_ml",
+        profile_id="profile_l4_real_ml",
+        plan_id="plan_l4_real_ml",
+        job_id="job_l4_real_ml",
+        plan=plan,
+        dataset_type="table",
+    )
+    runtime = QueueWorkerRuntime(
+        repositories=repos,
+        artifact_storage=LocalFileArtifactStorage(tmp_path / "real-ml-artifacts"),
+        queue_backend=InMemoryQueueBackend(),
+        registry=load_manifests(),
+    )
+    executed = runtime.handle_job("job_l4_real_ml", object_store={"ml_table": _metrics_table()})
+    assert executed.status == "completed"
+
+    interpreted = create_planner_job_interpretation(
+        "job_l4_real_ml",
+        PlannerInterpretationRequest(mode="DETERMINISTIC", expectedPlanHash=plan_hash),
+        repositories=repos,
+        queue_runtime=runtime,
+    )
+    assert interpreted["outcome"] == "INTERPRETATION_READY"
+    evidence = get_planner_interpretation_evidence(interpreted["interpretationId"], repositories=repos)
+    assert {item["semanticRole"] for item in evidence["evidenceItems"]}.issuperset({
+        "ml.n",
+        "ml.mae",
+        "ml.rmse",
+        "ml.r2",
+        "ml.mean_error",
+        "ml.max_abs_error",
+    })
+    assert {item["sourceToolId"] for item in evidence["evidenceItems"]} == {"ml.basic_metrics"}
+
+
 def test_concurrent_idempotent_requests_execute_interpreter_once(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

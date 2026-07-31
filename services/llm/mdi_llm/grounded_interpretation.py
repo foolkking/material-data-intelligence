@@ -678,17 +678,47 @@ def _project_ml_metrics(source: InterpretationSource, candidate: ArtifactProject
     if not isinstance(payload, dict) or set(payload) != {"metrics", "targetColumn", "predictionColumn"} or not isinstance(payload["metrics"], dict):
         raise InterpretationError("SOURCE_INTEGRITY_FAILED", "ML metrics contract is invalid.")
     metrics = payload["metrics"]
-    required = {"n", "mae", "rmse", "r2"}
-    if set(metrics) != required or not _nonnegative_int(metrics.get("n")) or metrics["n"] == 0 or any(not _finite(metrics[key]) for key in ("mae", "rmse", "r2")):
+    metric_fields = (
+        ("n", "n", EvidenceKind.count),
+        ("mae", "mae", EvidenceKind.scalar),
+        ("rmse", "rmse", EvidenceKind.scalar),
+        ("r2", "r2", EvidenceKind.scalar),
+        ("mean_error", "meanError", EvidenceKind.scalar),
+        ("max_abs_error", "maxAbsError", EvidenceKind.scalar),
+    )
+    required = {payload_key for _, payload_key, _ in metric_fields}
+    if (
+        set(metrics) != required
+        or not _nonnegative_int(metrics.get("n"))
+        or metrics["n"] == 0
+        or any(not _finite(metrics[key]) for key in required - {"n"})
+    ):
         raise InterpretationError("SOURCE_INTEGRITY_FAILED", "ML metrics contain missing or non-finite values.")
-    if metrics["mae"] < 0 or metrics["rmse"] < 0 or metrics["rmse"] + 1e-12 < metrics["mae"]:
+    if (
+        metrics["mae"] < 0
+        or metrics["rmse"] < 0
+        or metrics["maxAbsError"] < 0
+        or metrics["rmse"] + 1e-12 < metrics["mae"]
+        or metrics["maxAbsError"] + 1e-12 < metrics["rmse"]
+        or abs(metrics["meanError"]) > metrics["maxAbsError"] + 1e-12
+    ):
         raise InterpretationError("SOURCE_INTEGRITY_FAILED", "ML error metrics are inconsistent.")
     if not _safe_semantic_name(payload.get("targetColumn")) or not _safe_semantic_name(payload.get("predictionColumn")) or payload["targetColumn"] == payload["predictionColumn"]:
         raise InterpretationError("SOURCE_INTEGRITY_FAILED", "ML target and prediction identities are invalid.")
     subject = f"target:{payload['targetColumn']}"
     return [
-        _item(source, candidate, f"ml.{key}", EvidenceKind.count if key == "n" else EvidenceKind.scalar, subject, "count" if key == "n" else "metric", metrics[key], field=f"metrics.{key}", entity=str(payload["targetColumn"]))
-        for key in ("n", "mae", "rmse", "r2")
+        _item(
+            source,
+            candidate,
+            f"ml.{semantic_key}",
+            evidence_kind,
+            subject,
+            "count" if payload_key == "n" else "metric",
+            metrics[payload_key],
+            field=f"metrics.{payload_key}",
+            entity=str(payload["targetColumn"]),
+        )
+        for semantic_key, payload_key, evidence_kind in metric_fields
     ]
 
 

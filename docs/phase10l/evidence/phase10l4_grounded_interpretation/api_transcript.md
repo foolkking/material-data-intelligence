@@ -3,11 +3,11 @@
 ```json
 {
   "partial": {
-    "bundleHash": "24a3c5335012d116cc2f3ed3c8dfcdd502cb32eaf2f3f40ab96b506c9037752b",
-    "bundleId": "bundle_24a3c5335012d116cc2f3ed3c8dfcdd5",
+    "bundleHash": "913356a988fabe44456d29834d45ed077c713286148d509b7ce885d834723d66",
+    "bundleId": "bundle_913356a988fabe44456d29834d45ed07",
     "claims": [
       {
-        "claimId": "claim_29edb9571bcabb380d7a86952eb6c591",
+        "claimId": "claim_58549627c868acdbee0ee09d509d9fa6",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -24,14 +24,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_c59e274340304b7e0017c0e1c7ccaf60"
+          "evidence_3e216bc9b47ac3734b882858a1bceeea"
         ],
         "supportingEvidenceIds": [
-          "evidence_c59e274340304b7e0017c0e1c7ccaf60"
+          "evidence_3e216bc9b47ac3734b882858a1bceeea"
         ]
       },
       {
-        "claimId": "claim_b0b57c1b5d737e545153ed2f11387530",
+        "claimId": "claim_cdbe8014f580852531a82b118863b1b6",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -48,14 +48,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_be640325e3816664283d0469d12aaabf"
+          "evidence_63dc33fdb0ae4c57dfb3f30fd3997aa7"
         ],
         "supportingEvidenceIds": [
-          "evidence_be640325e3816664283d0469d12aaabf"
+          "evidence_63dc33fdb0ae4c57dfb3f30fd3997aa7"
         ]
       },
       {
-        "claimId": "claim_77b9b51f06fd80fb370cff5d111319fe",
+        "claimId": "claim_22aae3d01e0722591d59792245138cf1",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -72,14 +72,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_fe37ea480450cd0f2572ebb0f5d11b08"
+          "evidence_a55df004083f38a7fb11bea46c48d720"
         ],
         "supportingEvidenceIds": [
-          "evidence_fe37ea480450cd0f2572ebb0f5d11b08"
+          "evidence_a55df004083f38a7fb11bea46c48d720"
         ]
       },
       {
-        "claimId": "claim_5034c4d63f3eb4d270ab85696bb2963d",
+        "claimId": "claim_bfd74642f55dd175c54b55d5f3f43171",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -96,14 +96,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_eb6b0d561218a11fa414289ab18f89d8"
+          "evidence_9161c7f53161b71de88d43d7d84e02e8"
         ],
         "supportingEvidenceIds": [
-          "evidence_eb6b0d561218a11fa414289ab18f89d8"
+          "evidence_9161c7f53161b71de88d43d7d84e02e8"
         ]
       },
       {
-        "claimId": "claim_072b2091ded436395db40c270f2575a4",
+        "claimId": "claim_2729b7d5970149b5bd7069912e48971d",
         "claimType": "OBSERVATION",
         "confidenceClass": "LIMITED",
         "contradictingEvidenceIds": [],
@@ -120,10 +120,10 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_8ed075f03a2297ea16d8945407661988"
+          "evidence_49e6dfded7678856f785e8405ea1191d"
         ],
         "supportingEvidenceIds": [
-          "evidence_8ed075f03a2297ea16d8945407661988"
+          "evidence_49e6dfded7678856f785e8405ea1191d"
         ]
       }
     ],
@@ -139,10 +139,10 @@
       "claimCount": 5,
       "createdAt": "2026-07-30T00:00:00+00:00",
       "diagnostics": [],
-      "elapsedMs": 0.588,
+      "elapsedMs": 0.6397,
       "evidenceItemCount": 7,
-      "executionRecordHash": "2b1db4702bd16e7e29fa84f11d55d8ab49c72a33d2b177ddad7de61486042edb",
-      "executionRecordId": "interpretation_execution_2b1db4702bd16e7e29fa84f11d55d8ab",
+      "executionRecordHash": "66ba1ec8dd201b1495cc72d76dc0224f82cec81f1f04ad9cbe9bf1022642937b",
+      "executionRecordId": "interpretation_execution_66ba1ec8dd201b1495cc72d76dc0224f",
       "idempotencyKeyHash": null,
       "initialResponseHash": null,
       "limitationCount": 2,
@@ -157,18 +157,18 @@
       "repairedResponseHash": null,
       "responseHash": null,
       "schemaVersion": "1.0",
-      "sourceBundleHash": "24a3c5335012d116cc2f3ed3c8dfcdd502cb32eaf2f3f40ab96b506c9037752b",
-      "sourceBundleId": "bundle_24a3c5335012d116cc2f3ed3c8dfcdd5",
+      "sourceBundleHash": "913356a988fabe44456d29834d45ed077c713286148d509b7ce885d834723d66",
+      "sourceBundleId": "bundle_913356a988fabe44456d29834d45ed07",
       "sourceGraphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "sourceJobId": "job_6f7feabff9ec414e984acecd",
+      "sourceJobId": "job_3c536b2309394527b088ef0e",
       "sourcePlanHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "sourcePlanId": "plan_88577e9b6f424de694f58f39",
+      "sourcePlanId": "plan_78f67f2053334250984d1cec",
       "warningCount": 0
     },
     "interpretation": {
       "claims": [
         {
-          "claimId": "claim_29edb9571bcabb380d7a86952eb6c591",
+          "claimId": "claim_58549627c868acdbee0ee09d509d9fa6",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -185,14 +185,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_c59e274340304b7e0017c0e1c7ccaf60"
+            "evidence_3e216bc9b47ac3734b882858a1bceeea"
           ],
           "supportingEvidenceIds": [
-            "evidence_c59e274340304b7e0017c0e1c7ccaf60"
+            "evidence_3e216bc9b47ac3734b882858a1bceeea"
           ]
         },
         {
-          "claimId": "claim_b0b57c1b5d737e545153ed2f11387530",
+          "claimId": "claim_cdbe8014f580852531a82b118863b1b6",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -209,14 +209,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_be640325e3816664283d0469d12aaabf"
+            "evidence_63dc33fdb0ae4c57dfb3f30fd3997aa7"
           ],
           "supportingEvidenceIds": [
-            "evidence_be640325e3816664283d0469d12aaabf"
+            "evidence_63dc33fdb0ae4c57dfb3f30fd3997aa7"
           ]
         },
         {
-          "claimId": "claim_77b9b51f06fd80fb370cff5d111319fe",
+          "claimId": "claim_22aae3d01e0722591d59792245138cf1",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -233,14 +233,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_fe37ea480450cd0f2572ebb0f5d11b08"
+            "evidence_a55df004083f38a7fb11bea46c48d720"
           ],
           "supportingEvidenceIds": [
-            "evidence_fe37ea480450cd0f2572ebb0f5d11b08"
+            "evidence_a55df004083f38a7fb11bea46c48d720"
           ]
         },
         {
-          "claimId": "claim_5034c4d63f3eb4d270ab85696bb2963d",
+          "claimId": "claim_bfd74642f55dd175c54b55d5f3f43171",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -257,14 +257,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_eb6b0d561218a11fa414289ab18f89d8"
+            "evidence_9161c7f53161b71de88d43d7d84e02e8"
           ],
           "supportingEvidenceIds": [
-            "evidence_eb6b0d561218a11fa414289ab18f89d8"
+            "evidence_9161c7f53161b71de88d43d7d84e02e8"
           ]
         },
         {
-          "claimId": "claim_072b2091ded436395db40c270f2575a4",
+          "claimId": "claim_2729b7d5970149b5bd7069912e48971d",
           "claimType": "OBSERVATION",
           "confidenceClass": "LIMITED",
           "contradictingEvidenceIds": [],
@@ -281,23 +281,23 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_8ed075f03a2297ea16d8945407661988"
+            "evidence_49e6dfded7678856f785e8405ea1191d"
           ],
           "supportingEvidenceIds": [
-            "evidence_8ed075f03a2297ea16d8945407661988"
+            "evidence_49e6dfded7678856f785e8405ea1191d"
           ]
         }
       ],
       "completeness": "PARTIAL",
       "createdAt": "2026-07-30T00:00:00+00:00",
-      "executionRecordId": "interpretation_execution_2b1db4702bd16e7e29fa84f11d55d8ab",
+      "executionRecordId": "interpretation_execution_66ba1ec8dd201b1495cc72d76dc0224f",
       "globalLimitations": [
         "Execution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.",
         "5 artifact(s) have no approved structured evidence projector."
       ],
       "globalWarnings": [],
-      "interpretationHash": "fa432db46d20e3cd28e3a2c51041ddab5888425677e24a98df706a68c38eb508",
-      "interpretationId": "interpretation_fa432db46d20e3cd28e3a2c51041ddab",
+      "interpretationHash": "8c77812ab5f8ebf8bbf9938ea043b5408bb318a5d1fd339ed02b617bdc932397",
+      "interpretationId": "interpretation_8c77812ab5f8ebf8bbf9938ea043b540",
       "mode": "DETERMINISTIC",
       "outcome": "INTERPRETATION_READY_WITH_LIMITS",
       "partialResultState": true,
@@ -306,15 +306,15 @@
       "recommendations": [],
       "repairCount": 0,
       "schemaVersion": "1.0",
-      "sourceBundleHash": "24a3c5335012d116cc2f3ed3c8dfcdd502cb32eaf2f3f40ab96b506c9037752b",
-      "sourceBundleId": "bundle_24a3c5335012d116cc2f3ed3c8dfcdd5",
+      "sourceBundleHash": "913356a988fabe44456d29834d45ed077c713286148d509b7ce885d834723d66",
+      "sourceBundleId": "bundle_913356a988fabe44456d29834d45ed07",
       "sourceGraphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "sourceJobId": "job_6f7feabff9ec414e984acecd",
+      "sourceJobId": "job_3c536b2309394527b088ef0e",
       "sourcePlanHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "sourcePlanId": "plan_88577e9b6f424de694f58f39",
+      "sourcePlanId": "plan_78f67f2053334250984d1cec",
       "validationOutcome": "VALID"
     },
-    "interpretationId": "interpretation_fa432db46d20e3cd28e3a2c51041ddab",
+    "interpretationId": "interpretation_8c77812ab5f8ebf8bbf9938ea043b540",
     "limitations": [
       "Execution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.",
       "5 artifact(s) have no approved structured evidence projector."
@@ -332,17 +332,17 @@
     "recommendations": [],
     "repairCount": 0,
     "sourceGraphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-    "sourceJobId": "job_6f7feabff9ec414e984acecd",
+    "sourceJobId": "job_3c536b2309394527b088ef0e",
     "sourcePlanHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-    "sourcePlanId": "plan_88577e9b6f424de694f58f39",
+    "sourcePlanId": "plan_78f67f2053334250984d1cec",
     "warnings": []
   },
   "ready": {
-    "bundleHash": "db8c5d2817240b2c049cec35d29c76efdaf9d1c7000af572f35cc7ef8af56cff",
-    "bundleId": "bundle_db8c5d2817240b2c049cec35d29c76ef",
+    "bundleHash": "9754034892532180704e93dc990ab6348da5bce5a3a9bbaea441cdd020a277f9",
+    "bundleId": "bundle_9754034892532180704e93dc990ab634",
     "claims": [
       {
-        "claimId": "claim_097a99a164fd4f9004daddef56158d82",
+        "claimId": "claim_fa05ce8ad3b9e313aca5f91b7abd1481",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -359,14 +359,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_7d727c94e6415515d634c4aaa68d6770"
+          "evidence_60ea7b690f1b02a3fcc9e111d5ba6512"
         ],
         "supportingEvidenceIds": [
-          "evidence_7d727c94e6415515d634c4aaa68d6770"
+          "evidence_60ea7b690f1b02a3fcc9e111d5ba6512"
         ]
       },
       {
-        "claimId": "claim_f7e2e29f58c34424050eb98fa6bef478",
+        "claimId": "claim_3ff4a7549ad0e6908e484e801def259a",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -383,14 +383,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_e719ef02f2961a88373186fd459c99d1"
+          "evidence_9f043c08f023c2e5d292069eb0d37c61"
         ],
         "supportingEvidenceIds": [
-          "evidence_e719ef02f2961a88373186fd459c99d1"
+          "evidence_9f043c08f023c2e5d292069eb0d37c61"
         ]
       },
       {
-        "claimId": "claim_0c0cc2237dd5974d63ccd9c75dff991c",
+        "claimId": "claim_9a106de022ab83cc9839e9a604855f63",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -407,14 +407,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_0a6e5bebda16696df11cab4490af75f3"
+          "evidence_8799d5542e96b7711756a3df5eb80d46"
         ],
         "supportingEvidenceIds": [
-          "evidence_0a6e5bebda16696df11cab4490af75f3"
+          "evidence_8799d5542e96b7711756a3df5eb80d46"
         ]
       },
       {
-        "claimId": "claim_a6a73c74fcedaefca7a8bebf01f94db1",
+        "claimId": "claim_1e41ae2ae385715f5869cedf688b7172",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -431,14 +431,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_9fefbf7d5c697ac88e60629660735a7c"
+          "evidence_d9fc34e063ed9ee938d7275d167ee0d7"
         ],
         "supportingEvidenceIds": [
-          "evidence_9fefbf7d5c697ac88e60629660735a7c"
+          "evidence_d9fc34e063ed9ee938d7275d167ee0d7"
         ]
       },
       {
-        "claimId": "claim_e258eab0ae21d674871e610e7b749178",
+        "claimId": "claim_d86809bc0aa99cde32df1f55510deaad",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -455,14 +455,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_7b2f0964cc4b033165a1238469980e3d"
+          "evidence_5d5ce75e346539b4d03bd592156c6695"
         ],
         "supportingEvidenceIds": [
-          "evidence_7b2f0964cc4b033165a1238469980e3d"
+          "evidence_5d5ce75e346539b4d03bd592156c6695"
         ]
       },
       {
-        "claimId": "claim_4b66a889b7a2009f21a484be9451341b",
+        "claimId": "claim_ccf056b87bd08b6cdc4cf9bee171cba4",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -479,14 +479,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_08ea5a75c3fad7180d56b521f58da720"
+          "evidence_4229444c7e4a2c81cd242be68ad1a470"
         ],
         "supportingEvidenceIds": [
-          "evidence_08ea5a75c3fad7180d56b521f58da720"
+          "evidence_4229444c7e4a2c81cd242be68ad1a470"
         ]
       },
       {
-        "claimId": "claim_37c22d349eccecee4cf27004713e878b",
+        "claimId": "claim_94f19b81e0f738c42067dd27790f849c",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -503,14 +503,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_90a11036d0207ab1da42a481a67d54b1"
+          "evidence_4bc87d29af3b8c9de101daf3e9c8ded8"
         ],
         "supportingEvidenceIds": [
-          "evidence_90a11036d0207ab1da42a481a67d54b1"
+          "evidence_4bc87d29af3b8c9de101daf3e9c8ded8"
         ]
       },
       {
-        "claimId": "claim_611ecdec1a14fc137b8bd9562b8b46fd",
+        "claimId": "claim_168e0ffc90db8821c9541a6f15051c36",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -527,14 +527,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_426f442b5ae25dedf53e315e10c2883a"
+          "evidence_dc0ac308bfbc7ec48aadb3ae19199d2e"
         ],
         "supportingEvidenceIds": [
-          "evidence_426f442b5ae25dedf53e315e10c2883a"
+          "evidence_dc0ac308bfbc7ec48aadb3ae19199d2e"
         ]
       },
       {
-        "claimId": "claim_74c92058449316070077a086f9263b71",
+        "claimId": "claim_b5cf535afeb74782e2e2e21cdec78779",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -551,14 +551,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_61080e1fc0fdd4c38c3ff19e4ffa706f"
+          "evidence_6c18945fa0dedc0cf0c2c7593c377836"
         ],
         "supportingEvidenceIds": [
-          "evidence_61080e1fc0fdd4c38c3ff19e4ffa706f"
+          "evidence_6c18945fa0dedc0cf0c2c7593c377836"
         ]
       },
       {
-        "claimId": "claim_c88a6e4084e168c5705dcfd8808344bd",
+        "claimId": "claim_6b021cb9bfd7ac98e997c99933101897",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -575,14 +575,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_43a6c354aa4384ffc363c134fe865b02"
+          "evidence_0d7fbdc44967ad1cb09900a27d5353bc"
         ],
         "supportingEvidenceIds": [
-          "evidence_43a6c354aa4384ffc363c134fe865b02"
+          "evidence_0d7fbdc44967ad1cb09900a27d5353bc"
         ]
       },
       {
-        "claimId": "claim_62b843bdb0cf2eff7aad76d773680ff6",
+        "claimId": "claim_e95b455aea07e2155ad331af8ef6e2e7",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -599,14 +599,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_1d21d0b59de9c74f73eef3e19717bdc2"
+          "evidence_31eabf9d280f34e47edb33a332d3dc4d"
         ],
         "supportingEvidenceIds": [
-          "evidence_1d21d0b59de9c74f73eef3e19717bdc2"
+          "evidence_31eabf9d280f34e47edb33a332d3dc4d"
         ]
       },
       {
-        "claimId": "claim_b1009f7bf3e861ff8d406af28ac3f0c4",
+        "claimId": "claim_f4fc9045e212356805db59ee6906b02e",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -623,14 +623,14 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_b02f3d4b24deaa8246e75ffe09715b93"
+          "evidence_89690bd8316d5ad78807c868f907492d"
         ],
         "supportingEvidenceIds": [
-          "evidence_b02f3d4b24deaa8246e75ffe09715b93"
+          "evidence_89690bd8316d5ad78807c868f907492d"
         ]
       },
       {
-        "claimId": "claim_6fa9e1d0b21dfbcd9afcb19de930673b",
+        "claimId": "claim_7ac6de1ae267ef54883526f77c43cb57",
         "claimType": "OBSERVATION",
         "confidenceClass": "DIRECT",
         "contradictingEvidenceIds": [],
@@ -647,10 +647,10 @@
           "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         },
         "subjectEvidenceIds": [
-          "evidence_37194416c44ea975841c1f82d06f6408"
+          "evidence_80912340af485f0774cbf817e8d5c188"
         ],
         "supportingEvidenceIds": [
-          "evidence_37194416c44ea975841c1f82d06f6408"
+          "evidence_80912340af485f0774cbf817e8d5c188"
         ]
       }
     ],
@@ -666,10 +666,10 @@
       "claimCount": 13,
       "createdAt": "2026-07-30T00:00:00+00:00",
       "diagnostics": [],
-      "elapsedMs": 1.4371,
+      "elapsedMs": 1.4266,
       "evidenceItemCount": 26,
-      "executionRecordHash": "2e424532cf0fdb0bd98eb4849a55a0fa70eb13ac8f6e9b0e29e513b922d10062",
-      "executionRecordId": "interpretation_execution_2e424532cf0fdb0bd98eb4849a55a0fa",
+      "executionRecordHash": "d39d7eaf37d4ab6034f9cf08b3aea4c2f30dfe21a681e30d7473bcdec896b3e9",
+      "executionRecordId": "interpretation_execution_d39d7eaf37d4ab6034f9cf08b3aea4c2",
       "idempotencyKeyHash": null,
       "initialResponseHash": null,
       "limitationCount": 1,
@@ -684,18 +684,18 @@
       "repairedResponseHash": null,
       "responseHash": null,
       "schemaVersion": "1.0",
-      "sourceBundleHash": "db8c5d2817240b2c049cec35d29c76efdaf9d1c7000af572f35cc7ef8af56cff",
-      "sourceBundleId": "bundle_db8c5d2817240b2c049cec35d29c76ef",
+      "sourceBundleHash": "9754034892532180704e93dc990ab6348da5bce5a3a9bbaea441cdd020a277f9",
+      "sourceBundleId": "bundle_9754034892532180704e93dc990ab634",
       "sourceGraphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "sourceJobId": "job_28e0cd58050046a894b73f22",
+      "sourceJobId": "job_a23dfb320a594237a1254a67",
       "sourcePlanHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "sourcePlanId": "plan_d45123dd5d4546b08197ef56",
+      "sourcePlanId": "plan_84a3b40187f945a59d7fa209",
       "warningCount": 4
     },
     "interpretation": {
       "claims": [
         {
-          "claimId": "claim_097a99a164fd4f9004daddef56158d82",
+          "claimId": "claim_fa05ce8ad3b9e313aca5f91b7abd1481",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -712,14 +712,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_7d727c94e6415515d634c4aaa68d6770"
+            "evidence_60ea7b690f1b02a3fcc9e111d5ba6512"
           ],
           "supportingEvidenceIds": [
-            "evidence_7d727c94e6415515d634c4aaa68d6770"
+            "evidence_60ea7b690f1b02a3fcc9e111d5ba6512"
           ]
         },
         {
-          "claimId": "claim_f7e2e29f58c34424050eb98fa6bef478",
+          "claimId": "claim_3ff4a7549ad0e6908e484e801def259a",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -736,14 +736,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_e719ef02f2961a88373186fd459c99d1"
+            "evidence_9f043c08f023c2e5d292069eb0d37c61"
           ],
           "supportingEvidenceIds": [
-            "evidence_e719ef02f2961a88373186fd459c99d1"
+            "evidence_9f043c08f023c2e5d292069eb0d37c61"
           ]
         },
         {
-          "claimId": "claim_0c0cc2237dd5974d63ccd9c75dff991c",
+          "claimId": "claim_9a106de022ab83cc9839e9a604855f63",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -760,14 +760,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_0a6e5bebda16696df11cab4490af75f3"
+            "evidence_8799d5542e96b7711756a3df5eb80d46"
           ],
           "supportingEvidenceIds": [
-            "evidence_0a6e5bebda16696df11cab4490af75f3"
+            "evidence_8799d5542e96b7711756a3df5eb80d46"
           ]
         },
         {
-          "claimId": "claim_a6a73c74fcedaefca7a8bebf01f94db1",
+          "claimId": "claim_1e41ae2ae385715f5869cedf688b7172",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -784,14 +784,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_9fefbf7d5c697ac88e60629660735a7c"
+            "evidence_d9fc34e063ed9ee938d7275d167ee0d7"
           ],
           "supportingEvidenceIds": [
-            "evidence_9fefbf7d5c697ac88e60629660735a7c"
+            "evidence_d9fc34e063ed9ee938d7275d167ee0d7"
           ]
         },
         {
-          "claimId": "claim_e258eab0ae21d674871e610e7b749178",
+          "claimId": "claim_d86809bc0aa99cde32df1f55510deaad",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -808,14 +808,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_7b2f0964cc4b033165a1238469980e3d"
+            "evidence_5d5ce75e346539b4d03bd592156c6695"
           ],
           "supportingEvidenceIds": [
-            "evidence_7b2f0964cc4b033165a1238469980e3d"
+            "evidence_5d5ce75e346539b4d03bd592156c6695"
           ]
         },
         {
-          "claimId": "claim_4b66a889b7a2009f21a484be9451341b",
+          "claimId": "claim_ccf056b87bd08b6cdc4cf9bee171cba4",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -832,14 +832,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_08ea5a75c3fad7180d56b521f58da720"
+            "evidence_4229444c7e4a2c81cd242be68ad1a470"
           ],
           "supportingEvidenceIds": [
-            "evidence_08ea5a75c3fad7180d56b521f58da720"
+            "evidence_4229444c7e4a2c81cd242be68ad1a470"
           ]
         },
         {
-          "claimId": "claim_37c22d349eccecee4cf27004713e878b",
+          "claimId": "claim_94f19b81e0f738c42067dd27790f849c",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -856,14 +856,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_90a11036d0207ab1da42a481a67d54b1"
+            "evidence_4bc87d29af3b8c9de101daf3e9c8ded8"
           ],
           "supportingEvidenceIds": [
-            "evidence_90a11036d0207ab1da42a481a67d54b1"
+            "evidence_4bc87d29af3b8c9de101daf3e9c8ded8"
           ]
         },
         {
-          "claimId": "claim_611ecdec1a14fc137b8bd9562b8b46fd",
+          "claimId": "claim_168e0ffc90db8821c9541a6f15051c36",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -880,14 +880,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_426f442b5ae25dedf53e315e10c2883a"
+            "evidence_dc0ac308bfbc7ec48aadb3ae19199d2e"
           ],
           "supportingEvidenceIds": [
-            "evidence_426f442b5ae25dedf53e315e10c2883a"
+            "evidence_dc0ac308bfbc7ec48aadb3ae19199d2e"
           ]
         },
         {
-          "claimId": "claim_74c92058449316070077a086f9263b71",
+          "claimId": "claim_b5cf535afeb74782e2e2e21cdec78779",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -904,14 +904,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_61080e1fc0fdd4c38c3ff19e4ffa706f"
+            "evidence_6c18945fa0dedc0cf0c2c7593c377836"
           ],
           "supportingEvidenceIds": [
-            "evidence_61080e1fc0fdd4c38c3ff19e4ffa706f"
+            "evidence_6c18945fa0dedc0cf0c2c7593c377836"
           ]
         },
         {
-          "claimId": "claim_c88a6e4084e168c5705dcfd8808344bd",
+          "claimId": "claim_6b021cb9bfd7ac98e997c99933101897",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -928,14 +928,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_43a6c354aa4384ffc363c134fe865b02"
+            "evidence_0d7fbdc44967ad1cb09900a27d5353bc"
           ],
           "supportingEvidenceIds": [
-            "evidence_43a6c354aa4384ffc363c134fe865b02"
+            "evidence_0d7fbdc44967ad1cb09900a27d5353bc"
           ]
         },
         {
-          "claimId": "claim_62b843bdb0cf2eff7aad76d773680ff6",
+          "claimId": "claim_e95b455aea07e2155ad331af8ef6e2e7",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -952,14 +952,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_1d21d0b59de9c74f73eef3e19717bdc2"
+            "evidence_31eabf9d280f34e47edb33a332d3dc4d"
           ],
           "supportingEvidenceIds": [
-            "evidence_1d21d0b59de9c74f73eef3e19717bdc2"
+            "evidence_31eabf9d280f34e47edb33a332d3dc4d"
           ]
         },
         {
-          "claimId": "claim_b1009f7bf3e861ff8d406af28ac3f0c4",
+          "claimId": "claim_f4fc9045e212356805db59ee6906b02e",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -976,14 +976,14 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_b02f3d4b24deaa8246e75ffe09715b93"
+            "evidence_89690bd8316d5ad78807c868f907492d"
           ],
           "supportingEvidenceIds": [
-            "evidence_b02f3d4b24deaa8246e75ffe09715b93"
+            "evidence_89690bd8316d5ad78807c868f907492d"
           ]
         },
         {
-          "claimId": "claim_6fa9e1d0b21dfbcd9afcb19de930673b",
+          "claimId": "claim_7ac6de1ae267ef54883526f77c43cb57",
           "claimType": "OBSERVATION",
           "confidenceClass": "DIRECT",
           "contradictingEvidenceIds": [],
@@ -1000,16 +1000,16 @@
             "subjectId": "structure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           "subjectEvidenceIds": [
-            "evidence_37194416c44ea975841c1f82d06f6408"
+            "evidence_80912340af485f0774cbf817e8d5c188"
           ],
           "supportingEvidenceIds": [
-            "evidence_37194416c44ea975841c1f82d06f6408"
+            "evidence_80912340af485f0774cbf817e8d5c188"
           ]
         }
       ],
       "completeness": "PARTIAL",
       "createdAt": "2026-07-30T00:00:00+00:00",
-      "executionRecordId": "interpretation_execution_2e424532cf0fdb0bd98eb4849a55a0fa",
+      "executionRecordId": "interpretation_execution_d39d7eaf37d4ab6034f9cf08b3aea4c2",
       "globalLimitations": [
         "15 artifact(s) have no approved structured evidence projector."
       ],
@@ -1019,8 +1019,8 @@
         "PHONON_BAND_DOS_ASR_METADATA_PARTIAL",
         "PHONON_HIGH_SYMMETRY_LABEL_NORMALIZED"
       ],
-      "interpretationHash": "ba82efd1ad100dd0b78a68cb9a238c4f89c22149fdbd8c5ef2be82a0c49ca2af",
-      "interpretationId": "interpretation_ba82efd1ad100dd0b78a68cb9a238c4f",
+      "interpretationHash": "c14c5c030bec3de903df1dc4a8c594610fd1c68bdcc3a6cc520a5f438a0d777f",
+      "interpretationId": "interpretation_c14c5c030bec3de903df1dc4a8c59461",
       "mode": "DETERMINISTIC",
       "outcome": "INTERPRETATION_READY_WITH_LIMITS",
       "partialResultState": false,
@@ -1029,15 +1029,15 @@
       "recommendations": [],
       "repairCount": 0,
       "schemaVersion": "1.0",
-      "sourceBundleHash": "db8c5d2817240b2c049cec35d29c76efdaf9d1c7000af572f35cc7ef8af56cff",
-      "sourceBundleId": "bundle_db8c5d2817240b2c049cec35d29c76ef",
+      "sourceBundleHash": "9754034892532180704e93dc990ab6348da5bce5a3a9bbaea441cdd020a277f9",
+      "sourceBundleId": "bundle_9754034892532180704e93dc990ab634",
       "sourceGraphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-      "sourceJobId": "job_28e0cd58050046a894b73f22",
+      "sourceJobId": "job_a23dfb320a594237a1254a67",
       "sourcePlanHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-      "sourcePlanId": "plan_d45123dd5d4546b08197ef56",
+      "sourcePlanId": "plan_84a3b40187f945a59d7fa209",
       "validationOutcome": "VALID"
     },
-    "interpretationId": "interpretation_ba82efd1ad100dd0b78a68cb9a238c4f",
+    "interpretationId": "interpretation_c14c5c030bec3de903df1dc4a8c59461",
     "limitations": [
       "15 artifact(s) have no approved structured evidence projector."
     ],
@@ -1054,9 +1054,9 @@
     "recommendations": [],
     "repairCount": 0,
     "sourceGraphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
-    "sourceJobId": "job_28e0cd58050046a894b73f22",
+    "sourceJobId": "job_a23dfb320a594237a1254a67",
     "sourcePlanHash": "e774978ac1f1ed04ab13ff6940c6f87749878a0a52eb1f7de4cbdfed1d0fff29",
-    "sourcePlanId": "plan_d45123dd5d4546b08197ef56",
+    "sourcePlanId": "plan_84a3b40187f945a59d7fa209",
     "warnings": [
       "PHONON_ACOUSTIC_MODES_NOT_CORRECTED",
       "PHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY",

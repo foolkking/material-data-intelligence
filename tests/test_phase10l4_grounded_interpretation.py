@@ -113,7 +113,18 @@ def _numeric_candidate() -> ArtifactProjectionInput:
 
 def _ml_candidate() -> ArtifactProjectionInput:
     return _candidate(
-        {"metrics": {"n": 4, "mae": 0.1, "rmse": 0.12, "r2": 0.93}, "targetColumn": "formation_energy", "predictionColumn": "prediction"},
+        {
+            "metrics": {
+                "n": 4,
+                "mae": 0.1,
+                "rmse": 0.12,
+                "r2": 0.93,
+                "meanError": 0.02,
+                "maxAbsError": 0.2,
+            },
+            "targetColumn": "formation_energy",
+            "predictionColumn": "prediction",
+        },
         artifact_type="metrics_json",
         tool_id="ml.basic_metrics",
         suffix="ml",
@@ -203,7 +214,15 @@ def test_five_real_contract_families_project_and_interpret_deterministically() -
     assert first.supportedArtifactCount == 5
     assert first.unsupportedArtifactCount == 0
     roles = {item.semanticRole for item in first.evidenceItems}
-    assert {"dataset.row_count", "ml.mae", "structure.site_count", "phonon.frequency_range", "volumetric.scalar_range"}.issubset(roles)
+    assert {
+        "dataset.row_count",
+        "ml.mae",
+        "ml.mean_error",
+        "ml.max_abs_error",
+        "structure.site_count",
+        "phonon.frequency_range",
+        "volumetric.scalar_range",
+    }.issubset(roles)
 
     result = deterministic_interpret(first)
     assert result.outcome == InterpretationOutcome.ready
@@ -449,6 +468,7 @@ def test_strict_provider_rejects_incompatible_comparison_after_one_repair() -> N
     bundle = build_scientific_evidence_bundle(_source(), [_numeric_candidate(), _ml_candidate()])
     row_count = next(item for item in bundle.evidenceItems if item.semanticRole == "dataset.row_count")
     mae = next(item for item in bundle.evidenceItems if item.semanticRole == "ml.mae")
+    evidence_refs = sorted([row_count.evidenceItemId, mae.evidenceItemId])
     calls: list[bool] = []
 
     def provider(_projection: dict, repair: bool) -> str:
@@ -458,8 +478,8 @@ def test_strict_provider_rejects_incompatible_comparison_after_one_repair() -> N
             "claims": [{
                 "claimType": "COMPARISON",
                 "semanticPredicate": "DIFFERS_FROM",
-                "subjectEvidenceIds": [row_count.evidenceItemId, mae.evidenceItemId],
-                "supportingEvidenceIds": [row_count.evidenceItemId, mae.evidenceItemId],
+                "subjectEvidenceIds": evidence_refs,
+                "supportingEvidenceIds": evidence_refs,
                 "limitingEvidenceIds": [],
                 "contradictingEvidenceIds": [],
                 "qualifiers": [],
