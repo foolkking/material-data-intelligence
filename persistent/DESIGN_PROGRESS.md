@@ -14,8 +14,10 @@
   `0d37ea9` / `30605450973` exposed the real ML payload mismatch and a test-only
   unsupported-count assertion. Both root causes are corrected without history
   rewrite.
-- L4 is `COMPLETE / AWAITING_COMPLETION_RECORD_CI`; L5 remains reviewer-supplied
-  and blocked until the verified L4 queue archive.
+- Completion record `45af09e` passed exact-SHA CI run `30607509775`, including
+  all required Unit, Frontend/browser/build, PostgreSQL/Redis/MinIO, and
+  no-skipped jobs. L4 is `COMPLETE / AWAITING_ARCHIVE_CI`; L5 remains
+  reviewer-supplied and blocked until the verified L4 queue archive.
 
 ## 2026-07-30 Phase 10L-4 Grounded Interpretation Implementation Candidate
 

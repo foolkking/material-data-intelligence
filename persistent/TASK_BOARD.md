@@ -14,11 +14,12 @@
   service tests with zero skips, and evidence integrity. Completion record
   `2bd06f2` passed exact-SHA CI run `30542844246`; its TASKS block is archived.
 - [x] Phase 10L-4 Grounded Scientific Result Interpretation implementation is
-  `COMPLETE / AWAITING_COMPLETION_RECORD_CI`. Corrected implementation
+  `COMPLETE / AWAITING_ARCHIVE_CI`. Corrected implementation
   `02a9e33` passed exact-SHA CI run `30606774006`, including Unit, Frontend,
   browser replay, PostgreSQL/Redis/MinIO migration/integration, and service
-  `31 passed, 0 skipped, 0 failed`. Its TASKS block remains until completion
-  record and verified archive CI pass.
+  `31 passed, 0 skipped, 0 failed`. Completion record `45af09e` passed
+  exact-SHA CI run `30607509775`; its TASKS block is removed by the pending
+  verified archive commit.
 - [ ] Phase 10L-5 was explicitly supplied by the reviewer and is
   `QUEUED / BLOCKED_BY_PHASE_10L4_ARCHIVE`. It must not start while the L4 task
   remains in `TASKS.md`.
@@ -66,9 +67,9 @@
   the verified queue block is archived. Phase 10L-1 subsequently entered its
   reviewer-approved implementation task as recorded above.
 
-`TASKS.md` has two task blocks: completed L4 remains first pending closure CI,
-followed by reviewer-supplied L5 pending and blocked by the L4 verified archive.
-Future Scope and Not Planned remain absent.
+`TASKS.md` has one task block: reviewer-supplied L5 remains pending and blocked
+until this L4 archive commit passes exact-SHA CI. Future Scope and Not Planned
+remain absent.
 
 The remaining sections are historical task records and do not override the
 current board above.

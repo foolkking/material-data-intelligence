@@ -52,10 +52,10 @@ passed Unit, Frontend/browser/build, PostgreSQL/Redis/MinIO, and the zero-skip
 service gate. It adds post-execution ScientificEvidenceBundle 1.0 projection,
 deterministic and strict-provider interpretation, grounded claims, immutable
 persistence, and an additive findings/evidence UI without changing Plan,
-Runtime, Registry, Job, or Artifact execution authority. Completion-record and
-verified archive CI remain before archival. Phase 10L-5 was supplied by the
-reviewer and remains queued behind that archive gate. The remaining
-initial-release route is:
+Runtime, Registry, Job, or Artifact execution authority. Completion record
+`45af09e` passed exact-SHA CI run `30607509775`; only verified archive CI
+remains before archival. Phase 10L-5 was supplied by the reviewer and remains
+queued behind that archive gate. The remaining initial-release route is:
 
 ```text
 10K Material Intelligence

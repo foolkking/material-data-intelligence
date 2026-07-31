@@ -36,9 +36,9 @@ result history, and evidence are retained.
 
 Current status: 10L-0 through 10L-3 are archived. Phase 10L-4 corrected
 implementation `02a9e33` passed exact-SHA CI run `30606774006` and is
-`COMPLETE / AWAITING_COMPLETION_RECORD_CI`; its task remains until completion
-record and verified queue-archive CI pass. Phase 10L-5 was explicitly supplied
-by the reviewer and remains queued behind the Phase 10L-4 archive gate.
+`COMPLETE / AWAITING_ARCHIVE_CI`; completion record `45af09e` passed exact-SHA
+CI run `30607509775`. Phase 10L-5 was explicitly supplied by the reviewer and
+remains queued behind the Phase 10L-4 archive CI gate.
 
 ### Phase 10M - Unified Scientific Workspace
 

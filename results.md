@@ -1899,6 +1899,25 @@ the already reviewer-supplied L5 task under normal queue rules.
 - completion-record CI: pending this record's commit.
 - archive CI: pending completion-record success.
 
+## Phase 10L-4 Closure Addendum - 2026-07-31 13:46:09 +08:00
+
+- Completion record commit:
+  `45af09e9a0a46f4cdbdb136d979649d2b65f0ff7`.
+- Completion-record exact-SHA CI: run `30607509775`, `success`.
+- Required jobs: Unit Tests `success`; Frontend Typecheck & Build, evidence
+  integrity, Chromium/Firefox/WebKit/mobile replay `success`; PostgreSQL +
+  Redis + MinIO migration/service-backed integration `success`; 31 selected
+  integration tests passed with zero skipped/failed.
+- Queue verification: permanent result, corrected implementation CI, browser/
+  evidence, completion record, and completion-record CI agree.
+- Archive action: the complete Phase 10L-4 `---TASK---` block is deleted by
+  the queue-archive commit. The reviewer-supplied Phase 10L-5 block remains
+  `待处理` and is not executed before archive exact-SHA CI succeeds.
+- Historical `entry_gate.json` is fixed to the actual L4 admission snapshot;
+  future queue changes cannot rewrite L4 evidence.
+- Archive commit exact SHA and CI run are reported after the final exact-SHA
+  gate; this addendum is not rewritten after archive.
+
 # Phase 10L-3 Bounded Multi-Tool Analysis + Typed Artifact Dependency Execution Result
 
 Completed: 2026-07-30 20:26:23 +08:00

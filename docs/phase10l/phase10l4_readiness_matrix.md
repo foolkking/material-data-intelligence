@@ -10,8 +10,8 @@
 | Full repository regression | Corrected local run passes: 955 passed, 33 skipped, 63 warnings; skips are service/environment gated and are not reported as local service PASS |
 | Local service-backed | UNAVAILABLE: Docker CLI is not installed; PostgreSQL/Redis/MinIO and no-skipped closure require exact-SHA CI |
 | Implementation exact-SHA CI | PASS: corrected `02a9e33`, run `30606774006`; service-backed 31 passed, 0 skipped, 0 failed |
-| Completion-record exact-SHA CI | Pending |
+| Completion-record exact-SHA CI | PASS: `45af09e`, run `30607509775` |
 | Verified queue archive CI | Pending |
 
-Implementation is complete. The L4 task remains in `TASKS.md` until the two
-remaining closure commits and exact-SHA CI gates succeed.
+Implementation and completion record are complete. The L4 task block is removed
+by the pending verified archive commit; L5 remains blocked until archive CI.

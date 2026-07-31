@@ -1,23 +1,4 @@
 ---TASK---
-Phase 10L-4：Grounded Scientific Result Interpretation
-状态：已完成
-
-目标：在不改变 AnalysisIntent、Eligibility Resolver、AnalysisPlan、依赖图、QueueWorkerRuntime 或 Tool Registry 执行权的前提下，实现 post-execution、read-only 的 ScientificEvidenceBundle 1.0、contract-specific evidence projectors、GroundedScientificInterpretation 1.0、ScientificClaim 1.0、claim-evidence grounding、确定性解释与严格可选 provider 路径、持久化/API/PlannerWorkbench/evidence。
-
-边界：不得信任 summary.md 作为科学事实来源；不得把 raw artifact 发送给 provider；不得生成未计算的数字、单位、实体、因果或稳定性结论；不得创建 ToolCall/Plan/Job/Queue；不得自动进入 Phase 10L-5。必须覆盖 dataset/property、ML、structure、phonon（包含 L3 phonon.band + phonon.dos -> phonon.band_dos）和 volumetric 五类真实结构化 artifact family，并完成 focused/full regression、service-backed/browser/security evidence、completion record 和 verified queue archive。
-
-完成条件：实现事实追加到 results.md；更新 canonical docs 与 persistent records；implementation、completion-record、queue-archive 均完成 exact-SHA CI；最终保留 reviewer 已预先批准的 Phase 10L-5 待处理 block，TASK_BLOCK_COUNT 为 1。
-
-完成时间：2026-07-31 13:31:39 +08:00
-
-修改文件：L4 strict contracts/projectors/interpreters/validator、Alembic 0006 与 repositories、planner interpretation API、PlannerWorkbench/TypeScript、focused/service/browser tests、`docs/phase10l/`、L4 evidence、canonical/persistent records、`results.md`。
-
-修改摘要：实现 post-execution、read-only grounded interpretation；修正 ML projector 以严格匹配真实 `ml.basic_metrics` 六字段 artifact contract；保留 deterministic/strict-provider、one-repair、partial-result、claim-evidence grounding 和 no-execution authority 边界。
-
-测试结果：本地 backend `955 passed, 33 skipped, 63 warnings`；frontend `52 files / 333 passed`；typecheck/build、Chromium/Firefox/WebKit/mobile、evidence/manifest、lock/diff/security PASS。Corrected implementation `02a9e33b93f96aa99413dc49ca2dabca652679c9` 的 exact-SHA CI run `30606774006` PASS：unit `955 passed, 1 skipped, 32 deselected, 63 warnings`，service-backed `31 passed, 0 skipped, 0 failed`，frontend/browser/build PASS。Completion-record CI 和 verified queue archive CI 尚待本 block 删除前完成。
----END---
-
----TASK---
 状态：待处理
 # Phase 10L-5 Reviewer Prompt
 ## Natural-Language Analysis Evidence Closure + DeepSeek-Only LLM Provider Freeze

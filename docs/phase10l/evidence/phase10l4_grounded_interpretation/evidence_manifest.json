@@ -53,8 +53,8 @@
     },
     {
       "path": "entry_gate.json",
-      "bytes": 738,
-      "sha256": "cdf382f517c0199896020e00eac2d00ad2ec11a0716d2d5c6ce59335f33de6bf"
+      "bytes": 733,
+      "sha256": "167ed0b908a3ae69b69aa43775e57c26f05a451a97a8d47e3a1610e8b67ce073"
     },
     {
       "path": "forbidden_claim_rejections.json",

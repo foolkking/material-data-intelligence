@@ -13,24 +13,17 @@ ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs/phase10l/evidence/phase10l4_grounded_interpretation"
 
 
-def _task_snapshot() -> dict:
-    blocks = []
-    for raw_block in (ROOT / "TASKS.md").read_text(encoding="utf-8").split("---TASK---")[1:]:
-        body, separator, _ = raw_block.partition("---END---")
-        if not separator:
-            continue
-        match = re.search(r"Phase 10L-[0-9]+", body)
-        status = re.search(r"^\u72b6\u6001\uff1a(.+)$", body, re.MULTILINE)
-        blocks.append({"title": match.group(0) if match else "UNKNOWN", "status": status.group(1).strip() if status else "UNKNOWN"})
-    processing = [block for block in blocks if block["status"] == "\u5904\u7406\u4e2d"]
-    pending = [block for block in blocks if block["status"] == "\u5f85\u5904\u7406"]
+def _entry_task_snapshot() -> dict:
     return {
-        "taskBlockCountAfterAdmission": len(blocks),
-        "activeExecutableTaskCount": len(processing),
-        "activeTask": processing[0]["title"] if len(processing) == 1 else None,
-        "reviewerQueuedPendingTaskCount": len(pending),
-        "reviewerQueuedPendingTasks": [block["title"] for block in pending],
-        "taskBlocks": blocks,
+        "taskBlockCountAfterAdmission": 2,
+        "activeExecutableTaskCount": 1,
+        "activeTask": "Phase 10L-4",
+        "reviewerQueuedPendingTaskCount": 1,
+        "reviewerQueuedPendingTasks": ["Phase 10L-5"],
+        "taskBlocks": [
+            {"title": "Phase 10L-4", "status": "\u5904\u7406\u4e2d"},
+            {"title": "Phase 10L-5", "status": "\u5f85\u5904\u7406"},
+        ],
     }
 
 
@@ -131,7 +124,7 @@ def test_phase10l4_evidence_manifest_and_required_inventory() -> None:
     assert current["recommendations"]["executionAuthority"] == "NON_EXECUTABLE"
 
     gate = _load("entry_gate.json")
-    expected_queue = _task_snapshot()
+    expected_queue = _entry_task_snapshot()
     assert {key: gate[key] for key in expected_queue} == expected_queue
 
     manifest = _load("evidence_manifest.json")
