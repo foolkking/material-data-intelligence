@@ -9,6 +9,7 @@ import json
 import math
 import re
 import time
+from types import MappingProxyType
 from typing import Any, Callable, Mapping
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
@@ -58,16 +59,34 @@ PROJECTOR_VERSION = "phase10l4.projectors.v1"
 DETERMINISTIC_INTERPRETER_VERSION = "phase10l4.deterministic.v1"
 STRICT_PROVIDER_CONTRACT_VERSION = "phase10l4.provider.v1"
 TERMINAL_JOB_STATES = {"completed", "failed", "partial_success"}
-SUPPORTED_ARTIFACT_TYPES = {
-    "table_json",
-    "metrics_json",
-    "structure_json",
-    "phonon_band_json",
-    "phonon_dos_json",
-    "phonon_band_dos_json",
-    "phonon_summary_json",
-    "volumetric_field_json",
-}
+
+
+@dataclass(frozen=True)
+class ArtifactProjectorContract:
+    tool_id: str
+    artifact_type: str
+    contract_family: str
+    accepted_versions: tuple[str, ...]
+    media_types: tuple[str, ...] = ("application/json",)
+    projector_version: str = PROJECTOR_VERSION
+
+
+ARTIFACT_PROJECTOR_CONTRACTS: Mapping[tuple[str, str], ArtifactProjectorContract] = MappingProxyType({
+    (contract.tool_id, contract.artifact_type): contract
+    for contract in (
+        ArtifactProjectorContract("table.numeric_summary", "table_json", "platform.table.numeric_summary", ("platform.table.numeric_summary.v1",)),
+        ArtifactProjectorContract("ml.basic_metrics", "metrics_json", "platform.ml.basic_metrics", ("platform.ml.basic_metrics.v1",)),
+        ArtifactProjectorContract("structure.summary", "structure_json", "platform.structure.summary", ("platform.structure.summary.v1",)),
+        ArtifactProjectorContract("phonon.band", "phonon_band_json", "phase10h.phonon", (PHONON_BAND_SCHEMA_VERSION,)),
+        ArtifactProjectorContract("phonon.band", "phonon_summary_json", "phase10h.phonon", (PHONON_SUMMARY_SCHEMA_VERSION,)),
+        ArtifactProjectorContract("phonon.dos", "phonon_dos_json", "phase10h.phonon", (PHONON_DOS_SCHEMA_VERSION,)),
+        ArtifactProjectorContract("phonon.dos", "phonon_summary_json", "phase10h.phonon", (PHONON_DOS_SUMMARY_SCHEMA_VERSION,)),
+        ArtifactProjectorContract("phonon.band_dos", "phonon_band_dos_json", "phase10h.phonon_band_dos", (PHONON_BAND_DOS_SCHEMA_VERSION,)),
+        ArtifactProjectorContract("phonon.band_dos", "phonon_summary_json", "phase10h.phonon_band_dos", (PHONON_BAND_DOS_SUMMARY_SCHEMA_VERSION,)),
+        ArtifactProjectorContract("structure.volumetric_data", "volumetric_field_json", "phase10j.volumetric", (VOLUMETRIC_FIELD_SCHEMA_VERSION,)),
+    )
+})
+SUPPORTED_ARTIFACT_TYPES = frozenset(artifact_type for _, artifact_type in ARTIFACT_PROJECTOR_CONTRACTS)
 FORBIDDEN_CONCLUSIONS = (
     "material is stable",
     "material is unstable",
@@ -283,7 +302,7 @@ def project_artifact(source: InterpretationSource, candidate: ArtifactProjection
     artifact_type = str(candidate.artifact.get("type") or "")
     payload = candidate.payload
     tool_id = str(candidate.tool_call.get("toolId") or candidate.tool_call.get("tool_id") or "")
-    if artifact_type not in SUPPORTED_ARTIFACT_TYPES or not isinstance(payload, dict):
+    if (tool_id, artifact_type) not in ARTIFACT_PROJECTOR_CONTRACTS or not isinstance(payload, dict):
         return []
     if artifact_type == "table_json" and tool_id == "table.numeric_summary":
         return _project_numeric_summary(source, candidate)
@@ -1337,23 +1356,18 @@ def _artifact_id(artifact: Mapping[str, Any]) -> str:
 
 def _contract_family(candidate: ArtifactProjectionInput) -> str:
     tool_id = str(candidate.tool_call.get("toolId") or candidate.tool_call.get("tool_id"))
-    return {
-        "table.numeric_summary": "platform.table.numeric_summary",
-        "ml.basic_metrics": "platform.ml.basic_metrics",
-        "structure.summary": "platform.structure.summary",
-        "phonon.band": "phase10h.phonon",
-        "phonon.dos": "phase10h.phonon",
-        "phonon.band_dos": "phase10h.phonon_band_dos",
-        "structure.volumetric_data": "phase10j.volumetric",
-    }.get(tool_id, "unsupported")
+    artifact_type = str(candidate.artifact.get("type") or "")
+    contract = ARTIFACT_PROJECTOR_CONTRACTS.get((tool_id, artifact_type))
+    return contract.contract_family if contract is not None else "unsupported"
 
 
 def _fallback_contract(candidate: ArtifactProjectionInput) -> str:
-    return {
-        "table.numeric_summary": "platform.table.numeric_summary.v1",
-        "ml.basic_metrics": "platform.ml.basic_metrics.v1",
-        "structure.summary": "platform.structure.summary.v1",
-    }.get(str(candidate.tool_call.get("toolId") or ""), str(candidate.artifact.get("version") or "1"))
+    tool_id = str(candidate.tool_call.get("toolId") or candidate.tool_call.get("tool_id"))
+    artifact_type = str(candidate.artifact.get("type") or "")
+    contract = ARTIFACT_PROJECTOR_CONTRACTS.get((tool_id, artifact_type))
+    if contract is not None:
+        return contract.accepted_versions[0]
+    return str(candidate.artifact.get("version") or "1")
 
 
 def _display_value(value: EvidenceValue, unit: str | None) -> str:

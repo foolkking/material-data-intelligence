@@ -10,3 +10,9 @@ LF-normalized SHA-256 manifest.
 
 Local evidence does not substitute for PostgreSQL/Redis/MinIO exact-SHA CI or
 verified queue closure.
+
+Browser captures are real Chromium/Firefox/WebKit UI runs over route-fulfilled
+fixtures generated from persisted API/runtime cases. They prove rendering,
+interaction, accessibility, inert content, network isolation, and semantic
+replay. They do not substitute for service-backed backend E2E, which remains an
+exact-SHA CI gate.

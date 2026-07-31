@@ -1,8 +1,9 @@
 {
   "schemaVersion": "1.0",
-  "fixtureContractHash": "ada45f9a0a28158958fc7dbcbe8ff4854c4c5d90dbb02410a29e189022ea1a4e",
+  "fixtureContractHash": "bbe0731003013090d1068d2e02f4d82c086b56fe9a19b55b2732aeb9759855c7",
   "browsers": {
     "chromium": {
+      "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
       "cases": {
         "deterministic": {
           "outcome": "INTERPRETATION_READY_WITH_LIMITS",
@@ -220,6 +221,7 @@
       "pageErrorCount": 0
     },
     "firefox": {
+      "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
       "cases": {
         "deterministic": {
           "outcome": "INTERPRETATION_READY_WITH_LIMITS",
@@ -367,6 +369,7 @@
       "pageErrorCount": 0
     },
     "webkit": {
+      "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
       "cases": {
         "deterministic": {
           "outcome": "INTERPRETATION_READY_WITH_LIMITS",

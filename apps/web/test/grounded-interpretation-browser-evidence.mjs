@@ -151,7 +151,16 @@ function validateFixtures() {
 }
 
 async function runBrowser(browser, browserName) {
-  const result = { browser: browserName, version: browser.version(), cases: {}, mobile: {}, externalRequests: 0, consoleErrors: [], pageErrors: [] };
+  const result = {
+    browser: browserName,
+    version: browser.version(),
+    backendMode: "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
+    cases: {},
+    mobile: {},
+    externalRequests: 0,
+    consoleErrors: [],
+    pageErrors: [],
+  };
   for (const caseName of Object.keys(CASES)) {
     const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
     const audit = newAudit(caseName);
@@ -449,6 +458,7 @@ function browserSemanticContract(matrix) {
     schemaVersion: "1.0",
     fixtureContractHash: createHash("sha256").update(canonicalJson(CAPTURES)).digest("hex"),
     browsers: Object.fromEntries(Object.entries(matrix).map(([name, result]) => [name, {
+      backendMode: result.backendMode,
       cases: Object.fromEntries(Object.entries(result.cases).map(([caseName, value]) => [caseName, caseProjection(value)])),
       mobile: Object.fromEntries(Object.entries(result.mobile).map(([caseName, value]) => [caseName, caseProjection(value)])),
       deterministicReplayStable: result.deterministicReplay.stable,

@@ -1,6 +1,66 @@
 {
   "artifactPromptInjectionBoundary": "RAW_TEXT_EXCLUDED_FROM_PROVIDER_SAFE_PROJECTION",
   "claimEvidenceRefsBeforeL4": "MISSING",
+  "currentL4Authority": {
+    "api": {
+      "executionAuthority": "READ_ONLY",
+      "sourceFiles": [
+        "apps/api/mdi_api/routers/planner.py"
+      ],
+      "status": "READY"
+    },
+    "frontendFindings": {
+      "executionAuthority": "INERT_RENDERING",
+      "sourceFiles": [
+        "apps/web/app/components/PlannerWorkbench.tsx"
+      ],
+      "status": "READY"
+    },
+    "groundingValidator": {
+      "executionAuthority": "READ_ONLY",
+      "sourceFiles": [
+        "services/llm/mdi_llm/grounded_interpretation.py"
+      ],
+      "status": "READY"
+    },
+    "interpretationProjectors": {
+      "executionAuthority": "READ_ONLY",
+      "sourceFiles": [
+        "services/llm/mdi_llm/grounded_interpretation.py"
+      ],
+      "status": "READY"
+    },
+    "partialExecutionPolicy": {
+      "executionAuthority": "READ_ONLY",
+      "sourceFiles": [
+        "services/llm/mdi_llm/grounded_interpretation.py"
+      ],
+      "status": "READY"
+    },
+    "persistence": {
+      "executionAuthority": "NO_EXECUTION",
+      "sourceFiles": [
+        "apps/api/mdi_api/repositories.py",
+        "apps/api/alembic/versions/0006_phase10l4_grounded_interpretation.py"
+      ],
+      "status": "READY"
+    },
+    "recommendations": {
+      "executionAuthority": "NON_EXECUTABLE",
+      "sourceFiles": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/web/app/components/PlannerWorkbench.tsx"
+      ],
+      "status": "READY"
+    },
+    "strictProviderProjection": {
+      "executionAuthority": "NO_TOOL_PLAN_JOB_QUEUE",
+      "sourceFiles": [
+        "services/llm/mdi_llm/grounded_interpretation.py"
+      ],
+      "status": "READY"
+    }
+  },
   "entireDatasetSentToProvider": false,
   "existingReportText": "REUSABLE_FOUNDATION_NOT_GROUNDED",
   "existingSummary": "REUSABLE_FOUNDATION_NOT_GROUNDED",
@@ -21,6 +81,152 @@
   "l4Decision": "independent post-execution read-only service",
   "numericUnitEntityGroundingBeforeL4": "MISSING",
   "partialAndFailedStepPolicyBeforeL4": "EXECUTION_RECORD_AVAILABLE_INTERPRETATION_MISSING",
+  "preImplementationInventory": [
+    {
+      "component": "deterministic summary",
+      "currentBehavior": "Adapters may emit summaries without claim-evidence validation.",
+      "l4Decision": "Do not trust summaries; project exact structured artifacts.",
+      "sourceFiles": [
+        "packages/adapters/mdi_adapters",
+        "packages/tool-registry"
+      ],
+      "status": "REUSABLE_FOUNDATION"
+    },
+    {
+      "component": "LLM summary",
+      "currentBehavior": "Bounded provider transport existed without grounded interpretation output.",
+      "l4Decision": "Use strict provider-safe evidence projection and grounding.",
+      "sourceFiles": [
+        "services/llm/mdi_llm/providers.py"
+      ],
+      "status": "UNSAFE_FOR_L4"
+    },
+    {
+      "component": "findings",
+      "currentBehavior": "No first-class grounded claims existed.",
+      "l4Decision": "Add ScientificClaim 1.0.",
+      "sourceFiles": [],
+      "status": "MISSING"
+    },
+    {
+      "component": "warnings",
+      "currentBehavior": "Tool and execution warnings existed but were not interpretation evidence.",
+      "l4Decision": "Project only exact contract warnings.",
+      "sourceFiles": [
+        "apps/api/mdi_api/repositories.py"
+      ],
+      "status": "PARTIAL"
+    },
+    {
+      "component": "recommendations",
+      "currentBehavior": "No grounded non-executable recommendation contract existed.",
+      "l4Decision": "Add bounded recommendations with executionAuthorized=false.",
+      "sourceFiles": [],
+      "status": "MISSING"
+    },
+    {
+      "component": "artifact explanation",
+      "currentBehavior": "Artifact previews existed without scientific claim grounding.",
+      "l4Decision": "Add evidence drill-down separate from calculated artifacts.",
+      "sourceFiles": [
+        "apps/web/app/components/PlannerWorkbench.tsx"
+      ],
+      "status": "PARTIAL"
+    },
+    {
+      "component": "report text",
+      "currentBehavior": "Report/summary text could contain unvalidated narrative.",
+      "l4Decision": "Exclude from evidence authority.",
+      "sourceFiles": [
+        "packages/adapters/mdi_adapters"
+      ],
+      "status": "UNSAFE_FOR_L4"
+    },
+    {
+      "component": "recipe text",
+      "currentBehavior": "Recipe provenance is auditable but not a scientific fact source.",
+      "l4Decision": "Keep as provenance only.",
+      "sourceFiles": [
+        "docs/09_ARTIFACT_AND_RECIPE_SYSTEM.md"
+      ],
+      "status": "REUSABLE_FOUNDATION"
+    },
+    {
+      "component": "artifact-specific summary builders",
+      "currentBehavior": "Contract-specific products existed without a common evidence layer.",
+      "l4Decision": "Introduce explicit projector allowlist.",
+      "sourceFiles": [
+        "packages/adapters/mdi_adapters"
+      ],
+      "status": "PARTIAL"
+    },
+    {
+      "component": "frontend findings UI",
+      "currentBehavior": "No claim/evidence surface existed before L4.",
+      "l4Decision": "Add accessible inert findings and evidence UI.",
+      "sourceFiles": [
+        "apps/web/app/components/PlannerWorkbench.tsx"
+      ],
+      "status": "MISSING"
+    },
+    {
+      "component": "persistence",
+      "currentBehavior": "No evidence bundle, claim, or interpretation records existed.",
+      "l4Decision": "Add immutable Alembic 0006 records.",
+      "sourceFiles": [
+        "apps/api/mdi_api/repositories.py"
+      ],
+      "status": "MISSING"
+    },
+    {
+      "component": "API",
+      "currentBehavior": "No interpretation create/read API existed.",
+      "l4Decision": "Add terminal-job read-only endpoints.",
+      "sourceFiles": [
+        "apps/api/mdi_api/routers/planner.py"
+      ],
+      "status": "MISSING"
+    },
+    {
+      "component": "provider prompt",
+      "currentBehavior": "Strict transport existed, but no interpretation evidence projection.",
+      "l4Decision": "Expose only provider-safe evidence IDs and structured facts.",
+      "sourceFiles": [
+        "services/llm/mdi_llm/providers.py"
+      ],
+      "status": "PARTIAL"
+    },
+    {
+      "component": "provider output schema",
+      "currentBehavior": "No grounded claim schema existed.",
+      "l4Decision": "Add strict GroundedScientificInterpretation 1.0.",
+      "sourceFiles": [],
+      "status": "MISSING"
+    },
+    {
+      "component": "grounding validator",
+      "currentBehavior": "Numbers, units, entities, evidence refs, and partial policy were not jointly validated.",
+      "l4Decision": "Add independent claim-evidence validator.",
+      "sourceFiles": [],
+      "status": "MISSING"
+    },
+    {
+      "component": "full natural-language evidence closure",
+      "currentBehavior": "L4 starts from terminal persisted jobs.",
+      "l4Decision": "Keep full NL-to-interpretation scenarios in L5.",
+      "sourceFiles": [],
+      "status": "DEFER_10L5"
+    },
+    {
+      "component": "unified workspace",
+      "currentBehavior": "Phase 9C workbench remains canonical.",
+      "l4Decision": "Only add findings/evidence surface.",
+      "sourceFiles": [
+        "apps/web/app/components/PlannerWorkbench.tsx"
+      ],
+      "status": "DEFER_10M"
+    }
+  ],
   "providerCanModifyIntentPlanOrJob": false,
   "rawArtifactSentToProvider": false,
   "rawSummaryTrusted": false,

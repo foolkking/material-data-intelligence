@@ -1,6 +1,8 @@
 {
   "availabilityFilter": "AVAILABLE",
   "policy": {
+    "aggregateStateIsSummaryOnly": true,
+    "artifactLevelStateIsAuthority": true,
     "displayArtifactTrusted": false,
     "manifestArtifactTypeIsScientificEvidence": false,
     "summaryMarkdownTrusted": false,
@@ -13,6 +15,89 @@
   "toolCount": 38,
   "tools": [
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "preview_png",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_html",
         "plotly_json",
@@ -28,6 +113,89 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "preview_png",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_html",
         "plotly_json",
@@ -43,6 +211,89 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "preview_png",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_html",
         "plotly_json",
@@ -58,6 +309,57 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -71,6 +373,89 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "preview_png",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_html",
         "plotly_json",
@@ -86,6 +471,57 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -99,6 +535,75 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10k4.composition_space.v1"
+          ],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "DECLARED_STABLE_CONTRACT",
+          "declaredStableContractVersion": "phase10k4.composition_space.v1",
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_json",
         "recipe_json",
@@ -113,6 +618,75 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "quality_issues_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10k2.dataset_materials_explorer.v1"
+          ],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "DECLARED_STABLE_CONTRACT",
+          "declaredStableContractVersion": "phase10k2.dataset_materials_explorer.v1",
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "quality_issues_json",
         "recipe_json",
@@ -127,6 +701,61 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "INTERPRETATION_READY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [
+            "platform.ml.basic_metrics.v1"
+          ],
+          "artifactType": "metrics_json",
+          "contractFamily": "platform.ml.basic_metrics",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": null,
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "metrics_json",
         "recipe_json",
@@ -142,6 +771,59 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10k3.materials_ml_classification.v1"
+          ],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "DECLARED_STABLE_CONTRACT",
+          "declaredStableContractVersion": "phase10k3.materials_ml_classification.v1",
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -155,6 +837,89 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "preview_png",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_html",
         "plotly_json",
@@ -170,6 +935,121 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "metrics_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "preview_png",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "metrics_json",
         "plotly_html",
@@ -187,6 +1067,73 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_csv",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -201,6 +1148,59 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10k3.materials_ml_regression.v1"
+          ],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "DECLARED_STABLE_CONTRACT",
+          "declaredStableContractVersion": "phase10k3.materials_ml_regression.v1",
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -214,6 +1214,59 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10k3.materials_ml_uncertainty.v1"
+          ],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "DECLARED_STABLE_CONTRACT",
+          "declaredStableContractVersion": "phase10k3.materials_ml_uncertainty.v1",
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -227,6 +1280,75 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSUPPORTED_CONTRACT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [
+            "phase10h5.phonon_animation.v1"
+          ],
+          "artifactType": "phonon_animation_json",
+          "contractFamily": null,
+          "contractStatus": "DECLARED_STABLE_CONTRACT",
+          "declaredStableContractVersion": "phase10h5.phonon_animation.v1",
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "phonon_animation_manifest_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "phonon_animation_summary_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "phonon_animation_json",
         "phonon_animation_manifest_json",
@@ -241,6 +1363,129 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "INTERPRETATION_READY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [
+            "phase10h.phonon_band.v1"
+          ],
+          "artifactType": "phonon_band_json",
+          "contractFamily": "phase10h.phonon",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": "phase10h.phonon_band.v1",
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "phonon_manifest_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "phonon_report_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10h.phonon_summary.v1"
+          ],
+          "artifactType": "phonon_summary_json",
+          "contractFamily": "phase10h.phonon",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": null,
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "phonon_band_json",
         "phonon_manifest_json",
@@ -261,6 +1506,129 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "INTERPRETATION_READY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [
+            "phase10h.phonon_band_dos.v1"
+          ],
+          "artifactType": "phonon_band_dos_json",
+          "contractFamily": "phase10h.phonon_band_dos",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": "phase10h.phonon_band_dos.v1",
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "phonon_compatibility_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "phonon_manifest_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10h.phonon_band_dos_summary.v1"
+          ],
+          "artifactType": "phonon_summary_json",
+          "contractFamily": "phase10h.phonon_band_dos",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": null,
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "phonon_band_dos_json",
         "phonon_compatibility_json",
@@ -281,6 +1649,129 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "INTERPRETATION_READY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [
+            "phase10h.phonon_dos.v1"
+          ],
+          "artifactType": "phonon_dos_json",
+          "contractFamily": "phase10h.phonon",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": "phase10h.phonon_dos.v1",
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "phonon_manifest_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "phonon_report_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10h2.phonon_dos_summary.v1"
+          ],
+          "artifactType": "phonon_summary_json",
+          "contractFamily": "phase10h.phonon",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": null,
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "phonon_dos_json",
         "phonon_manifest_json",
@@ -301,6 +1792,105 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "brillouin_zone_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "brillouin_zone_manifest_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "kpath_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "reciprocal_lattice_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "brillouin_zone_json",
         "brillouin_zone_manifest_json",
@@ -317,6 +1907,57 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -330,6 +1971,73 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_json",
         "recipe_json",
@@ -344,6 +2052,57 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -357,6 +2116,57 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "structure_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "structure_json",
@@ -370,6 +2180,73 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_json",
         "recipe_json",
@@ -384,6 +2261,57 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -397,6 +2325,89 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "preview_png",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_html",
         "plotly_json",
@@ -412,6 +2423,61 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "INTERPRETATION_READY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "platform.structure.summary.v1"
+          ],
+          "artifactType": "structure_json",
+          "contractFamily": "platform.structure.summary",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": null,
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "structure_json",
@@ -427,6 +2493,75 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSUPPORTED_CONTRACT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [
+            "phase10g.trajectory.v1"
+          ],
+          "artifactType": "trajectory_json",
+          "contractFamily": null,
+          "contractStatus": "DECLARED_STABLE_CONTRACT",
+          "declaredStableContractVersion": "phase10g.trajectory.v1",
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "trajectory_manifest_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "trajectory_report_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "trajectory_summary_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "trajectory_json",
         "trajectory_manifest_json",
@@ -441,6 +2576,73 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "structure_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "structure_json",
@@ -455,6 +2657,73 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "structure_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "structure_json",
@@ -469,6 +2738,157 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "INTERPRETATION_READY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "volumetric_binary",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "volumetric_dataset_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10j.volumetric_field.v1"
+          ],
+          "artifactType": "volumetric_field_json",
+          "contractFamily": "phase10j.volumetric",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": null,
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "volumetric_grid_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "volumetric_manifest_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "volumetric_payload_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "volumetric_structure_overlay_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -490,6 +2910,75 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "phase10e4.xrd_pattern.v1"
+          ],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "DECLARED_STABLE_CONTRACT",
+          "declaredStableContractVersion": "phase10e4.xrd_pattern.v1",
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_json",
         "recipe_json",
@@ -504,6 +2993,57 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "UNSAFE_UNTRUSTED_TEXT",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -517,6 +3057,61 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "INTERPRETATION_READY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [
+            "platform.table.numeric_summary.v1"
+          ],
+          "artifactType": "table_json",
+          "contractFamily": "platform.table.numeric_summary",
+          "contractStatus": "PROJECTOR_CONTRACT_ALLOWLIST",
+          "declaredStableContractVersion": null,
+          "identityAuthority": true,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "projectorVersion": "phase10l4.projectors.v1",
+          "reason": "The exact tool/artifact pair has a deterministic contract-specific projector.",
+          "safeProjectorReady": true,
+          "state": "INTERPRETATION_READY",
+          "structuredFactsAuthority": true,
+          "unitAuthority": true,
+          "warningAuthority": true
+        }
+      ],
       "declaredArtifactTypes": [
         "recipe_json",
         "summary_md",
@@ -532,6 +3127,89 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "table_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "No Phase 10L-4 contract-specific projector is registered for this exact artifact output.",
+          "safeProjectorReady": false,
+          "state": "UNSUPPORTED_CONTRACT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_html",
         "plotly_json",
@@ -547,6 +3225,73 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_html",
         "plotly_json",
@@ -561,6 +3306,73 @@
       "toolVersion": "0.1.0"
     },
     {
+      "aggregateState": "DISPLAY_ONLY",
+      "artifacts": [
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_html",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "plotly_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority.",
+          "safeProjectorReady": false,
+          "state": "DISPLAY_ONLY",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "recipe_json",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts.",
+          "safeProjectorReady": false,
+          "state": "NO_STRUCTURED_FACTS",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        },
+        {
+          "acceptedContractVersions": [],
+          "artifactType": "summary_md",
+          "contractFamily": null,
+          "contractStatus": "UNVERSIONED_REGISTRY_ARTIFACT_TYPE",
+          "declaredStableContractVersion": null,
+          "identityAuthority": false,
+          "mediaTypes": [],
+          "projectorVersion": null,
+          "reason": "Free-form summary/report text is inert and cannot supply scientific evidence facts.",
+          "safeProjectorReady": false,
+          "state": "UNSAFE_UNTRUSTED_TEXT",
+          "structuredFactsAuthority": false,
+          "unitAuthority": false,
+          "warningAuthority": false
+        }
+      ],
       "declaredArtifactTypes": [
         "plotly_html",
         "plotly_json",

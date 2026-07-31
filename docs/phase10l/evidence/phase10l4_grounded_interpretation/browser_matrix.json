@@ -2,6 +2,7 @@
   "chromium": {
     "browser": "chromium",
     "version": "129.0.6668.29",
+    "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
     "cases": {
       "deterministic": {
         "case": "deterministic",
@@ -9,7 +10,7 @@
         "mode": "DETERMINISTIC",
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 3191,
+        "elapsedMs": 2979,
         "claimCount": 13,
         "evidenceItemCount": 26,
         "repairCount": 0,
@@ -28,9 +29,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...93324b09055ed00e\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
-        "domSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
-        "semanticReplaySha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...d98eb4849a55a0fa\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
+        "semanticReplaySha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02"
       },
       "strict_provider": {
         "case": "strict_provider",
@@ -38,7 +39,7 @@
         "mode": "STRICT_PROVIDER",
         "requestMode": "STRICT_PROVIDER",
         "mobile": false,
-        "elapsedMs": 2498,
+        "elapsedMs": 2691,
         "claimCount": 1,
         "evidenceItemCount": 26,
         "repairCount": 0,
@@ -57,9 +58,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nSTRICT_PROVIDER\nPROVIDER\nopenai_compatible\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...3eb507ae9dc65534\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nQUALIFIED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)",
-        "domSha256": "a2b6922f2ffb8a019f034f1b3650d41c2ba159394d8b184bf2aa9d0a0eff9f30",
-        "semanticReplaySha256": "9198643d45f2b26b159b5fbd71ee45098a1bc9a22f24c8a183288c96f47a2245"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nSTRICT_PROVIDER\nPROVIDER\nopenai_compatible\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...d05f27ea4a47d936\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nQUALIFIED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)",
+        "domSha256": "6d5c91b539881d3d4d4eebb84ee883f767db4578ce2d781f26cd5f9030d28986",
+        "semanticReplaySha256": "aaabcb9cea63bb37649ad7ba6b2f240c836f140a417dfcdd41d654ea61b80649"
       },
       "partial": {
         "case": "partial",
@@ -67,7 +68,7 @@
         "mode": "DETERMINISTIC",
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 2179,
+        "elapsedMs": 2315,
         "claimCount": 5,
         "evidenceItemCount": 7,
         "repairCount": 0,
@@ -86,9 +87,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...e60f7a091ca739e0\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
-        "domSha256": "775c72a9c7d6d9152d5df748cd954f2b92dc50cad24fbc94eba67de57a56d962",
-        "semanticReplaySha256": "84d198669f1e4d522376ae90c3d209d812c37ea86a0495fe3249ff261774da02"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...29fa84f11d55d8ab\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "14345501e40d2800bd0d66c76d8778c8872ca8304cf9a5cb9da772177fdc1df7",
+        "semanticReplaySha256": "0c46c17b6e139f7faaaad18b55fda4836d77294ad5a228032588071f37c0e975"
       },
       "no_supported_evidence": {
         "case": "no_supported_evidence",
@@ -96,7 +97,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 1783,
+        "elapsedMs": 2087,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -125,7 +126,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 1784,
+        "elapsedMs": 2095,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -154,7 +155,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 1752,
+        "elapsedMs": 1750,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -185,7 +186,7 @@
         "mode": "DETERMINISTIC",
         "requestMode": "DETERMINISTIC",
         "mobile": true,
-        "elapsedMs": 3967,
+        "elapsedMs": 4340,
         "claimCount": 13,
         "evidenceItemCount": 26,
         "repairCount": 0,
@@ -204,9 +205,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...93324b09055ed00e\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
-        "domSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
-        "semanticReplaySha256": "f78b845e841b1b0a6af0df615f115969abe2d9df8e0dc19b4c69281fb59fbeb6"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...d98eb4849a55a0fa\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
+        "semanticReplaySha256": "30385533e68b1ec57c407505fc95d70d8022a7954e3d4291dfa24d0c10dbe898"
       },
       "partial": {
         "case": "partial",
@@ -214,7 +215,7 @@
         "mode": "DETERMINISTIC",
         "requestMode": "DETERMINISTIC",
         "mobile": true,
-        "elapsedMs": 2678,
+        "elapsedMs": 3071,
         "claimCount": 5,
         "evidenceItemCount": 7,
         "repairCount": 0,
@@ -233,9 +234,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...e60f7a091ca739e0\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
-        "domSha256": "775c72a9c7d6d9152d5df748cd954f2b92dc50cad24fbc94eba67de57a56d962",
-        "semanticReplaySha256": "db4f08bafba9940dde3ad8d56307d1eae3e9eed1508a3303ad7b5298578cbdab"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...29fa84f11d55d8ab\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "14345501e40d2800bd0d66c76d8778c8872ca8304cf9a5cb9da772177fdc1df7",
+        "semanticReplaySha256": "e7cb4595b85b646cbaa0785583861e58b8906ca5b9a071b684d4539ba11e98d2"
       },
       "no_supported_evidence": {
         "case": "no_supported_evidence",
@@ -243,7 +244,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": true,
-        "elapsedMs": 1817,
+        "elapsedMs": 1908,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -271,16 +272,17 @@
     "consoleErrors": [],
     "pageErrors": [],
     "deterministicReplay": {
-      "firstSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
-      "secondSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
-      "firstDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
-      "secondDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
+      "firstSemanticSha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02",
+      "secondSemanticSha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02",
+      "firstDomSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
+      "secondDomSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
       "stable": true
     }
   },
   "firefox": {
     "browser": "firefox",
     "version": "130.0",
+    "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
     "cases": {
       "deterministic": {
         "case": "deterministic",
@@ -288,7 +290,7 @@
         "mode": "DETERMINISTIC",
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 3099,
+        "elapsedMs": 3248,
         "claimCount": 13,
         "evidenceItemCount": 26,
         "repairCount": 0,
@@ -307,9 +309,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...93324b09055ed00e\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
-        "domSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
-        "semanticReplaySha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...d98eb4849a55a0fa\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
+        "semanticReplaySha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02"
       },
       "strict_provider": {
         "case": "strict_provider",
@@ -317,7 +319,7 @@
         "mode": "STRICT_PROVIDER",
         "requestMode": "STRICT_PROVIDER",
         "mobile": false,
-        "elapsedMs": 2453,
+        "elapsedMs": 2761,
         "claimCount": 1,
         "evidenceItemCount": 26,
         "repairCount": 0,
@@ -336,9 +338,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nSTRICT_PROVIDER\nPROVIDER\nopenai_compatible\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...3eb507ae9dc65534\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nQUALIFIED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)",
-        "domSha256": "a2b6922f2ffb8a019f034f1b3650d41c2ba159394d8b184bf2aa9d0a0eff9f30",
-        "semanticReplaySha256": "9198643d45f2b26b159b5fbd71ee45098a1bc9a22f24c8a183288c96f47a2245"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nSTRICT_PROVIDER\nPROVIDER\nopenai_compatible\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...d05f27ea4a47d936\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nQUALIFIED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)",
+        "domSha256": "6d5c91b539881d3d4d4eebb84ee883f767db4578ce2d781f26cd5f9030d28986",
+        "semanticReplaySha256": "aaabcb9cea63bb37649ad7ba6b2f240c836f140a417dfcdd41d654ea61b80649"
       },
       "partial": {
         "case": "partial",
@@ -346,7 +348,7 @@
         "mode": "DETERMINISTIC",
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 2007,
+        "elapsedMs": 2292,
         "claimCount": 5,
         "evidenceItemCount": 7,
         "repairCount": 0,
@@ -365,9 +367,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...e60f7a091ca739e0\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
-        "domSha256": "775c72a9c7d6d9152d5df748cd954f2b92dc50cad24fbc94eba67de57a56d962",
-        "semanticReplaySha256": "84d198669f1e4d522376ae90c3d209d812c37ea86a0495fe3249ff261774da02"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...29fa84f11d55d8ab\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "14345501e40d2800bd0d66c76d8778c8872ca8304cf9a5cb9da772177fdc1df7",
+        "semanticReplaySha256": "0c46c17b6e139f7faaaad18b55fda4836d77294ad5a228032588071f37c0e975"
       },
       "no_supported_evidence": {
         "case": "no_supported_evidence",
@@ -375,7 +377,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 1738,
+        "elapsedMs": 1966,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -404,7 +406,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 1626,
+        "elapsedMs": 1899,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -433,7 +435,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 1765,
+        "elapsedMs": 1894,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -462,16 +464,17 @@
     "consoleErrors": [],
     "pageErrors": [],
     "deterministicReplay": {
-      "firstSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
-      "secondSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
-      "firstDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
-      "secondDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
+      "firstSemanticSha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02",
+      "secondSemanticSha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02",
+      "firstDomSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
+      "secondDomSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
       "stable": true
     }
   },
   "webkit": {
     "browser": "webkit",
     "version": "18.0",
+    "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
     "cases": {
       "deterministic": {
         "case": "deterministic",
@@ -479,7 +482,7 @@
         "mode": "DETERMINISTIC",
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 4300,
+        "elapsedMs": 4534,
         "claimCount": 13,
         "evidenceItemCount": 26,
         "repairCount": 0,
@@ -498,9 +501,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...93324b09055ed00e\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\nShow evidence (1)\n",
-        "domSha256": "665bfa7715c2d70c623230d45fd488d87fa6928f649b2f193ec8ccc259fef773",
-        "semanticReplaySha256": "1300eb2986a95e0656c899f4d923471270797feb9f64da839a9a64d50e754ec4"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...d98eb4849a55a0fa\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\nShow evidence (1)\n",
+        "domSha256": "378f7f80e1f2e088bb44ec50c1db2f0155fc3f3d0e891a803329fd7507da7f70",
+        "semanticReplaySha256": "a514e96e5edeaa9311a992ba1a1f34b2fcbac7fd54809c95be53031cf312c3c3"
       },
       "strict_provider": {
         "case": "strict_provider",
@@ -508,7 +511,7 @@
         "mode": "STRICT_PROVIDER",
         "requestMode": "STRICT_PROVIDER",
         "mobile": false,
-        "elapsedMs": 3836,
+        "elapsedMs": 4531,
         "claimCount": 1,
         "evidenceItemCount": 26,
         "repairCount": 0,
@@ -527,9 +530,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nSTRICT_PROVIDER\nPROVIDER\nopenai_compatible\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...3eb507ae9dc65534\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nQUALIFIED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\nShow evidence (1)\n",
-        "domSha256": "030fec7371c9a4861892e8c4614157d0b5b3b947ae835b6160b93ea9a8e5298c",
-        "semanticReplaySha256": "4bdcc82109f904a8336912294d0e5a7e3fb9c40c8cdaeba7be0b1b11314fe595"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nSTRICT_PROVIDER\nPROVIDER\nopenai_compatible\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...d05f27ea4a47d936\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nQUALIFIED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\nShow evidence (1)\n",
+        "domSha256": "95d131b8164469e9022561827843477485e213933b1223ac2726e697e0629610",
+        "semanticReplaySha256": "3bbb72302b10ae60ed538839802941e898aac14c80937410dabf59e940cb14ca"
       },
       "partial": {
         "case": "partial",
@@ -537,7 +540,7 @@
         "mode": "DETERMINISTIC",
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 4032,
+        "elapsedMs": 4142,
         "claimCount": 5,
         "evidenceItemCount": 7,
         "repairCount": 0,
@@ -556,9 +559,9 @@
           "javascriptUris": 0
         },
         "focusedTag": "SUMMARY",
-        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...e60f7a091ca739e0\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\nShow evidence (1)\n",
-        "domSha256": "3bc392ef26d262e262669a1c43fa37003a61604be066d03aa0c4c879c0d78874",
-        "semanticReplaySha256": "3378f81176ccdc49d21e09986a4ad54c7266e62682229989a632903fb1a8d739"
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...29fa84f11d55d8ab\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\nShow evidence (1)\n",
+        "domSha256": "417e2140c0cbf0a3f67c08907b8122b5c0991cc2ef8becb863bd686a613dfd11",
+        "semanticReplaySha256": "3152d377de864da32bcdd546d2a53c22394e6d9363a6b1af3d249ed090fa83b4"
       },
       "no_supported_evidence": {
         "case": "no_supported_evidence",
@@ -566,7 +569,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 3327,
+        "elapsedMs": 3542,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -595,7 +598,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 3420,
+        "elapsedMs": 3768,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -624,7 +627,7 @@
         "mode": null,
         "requestMode": "DETERMINISTIC",
         "mobile": false,
-        "elapsedMs": 3443,
+        "elapsedMs": 3874,
         "claimCount": 0,
         "evidenceItemCount": 0,
         "repairCount": 0,
@@ -653,10 +656,10 @@
     "consoleErrors": [],
     "pageErrors": [],
     "deterministicReplay": {
-      "firstSemanticSha256": "1300eb2986a95e0656c899f4d923471270797feb9f64da839a9a64d50e754ec4",
-      "secondSemanticSha256": "1300eb2986a95e0656c899f4d923471270797feb9f64da839a9a64d50e754ec4",
-      "firstDomSha256": "665bfa7715c2d70c623230d45fd488d87fa6928f649b2f193ec8ccc259fef773",
-      "secondDomSha256": "665bfa7715c2d70c623230d45fd488d87fa6928f649b2f193ec8ccc259fef773",
+      "firstSemanticSha256": "a514e96e5edeaa9311a992ba1a1f34b2fcbac7fd54809c95be53031cf312c3c3",
+      "secondSemanticSha256": "a514e96e5edeaa9311a992ba1a1f34b2fcbac7fd54809c95be53031cf312c3c3",
+      "firstDomSha256": "378f7f80e1f2e088bb44ec50c1db2f0155fc3f3d0e891a803329fd7507da7f70",
+      "secondDomSha256": "378f7f80e1f2e088bb44ec50c1db2f0155fc3f3d0e891a803329fd7507da7f70",
       "stable": true
     }
   }

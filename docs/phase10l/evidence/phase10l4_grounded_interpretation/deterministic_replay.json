@@ -1,23 +1,23 @@
 {
   "chromium": {
-    "firstSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
-    "secondSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
-    "firstDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
-    "secondDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
+    "firstSemanticSha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02",
+    "secondSemanticSha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02",
+    "firstDomSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
+    "secondDomSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
     "stable": true
   },
   "firefox": {
-    "firstSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
-    "secondSemanticSha256": "8f459abe7b01343fb751f75c4305bca637f0e28c835e2fae33ef695a7f20845d",
-    "firstDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
-    "secondDomSha256": "7b36c672e0343da3a7f5613b5d357c00b1c9440380bb38c93fb9462cf487e5b6",
+    "firstSemanticSha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02",
+    "secondSemanticSha256": "8a3b033373ac8fa7b6b99189552aff0423d8931cbe9993cf3c40940584844d02",
+    "firstDomSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
+    "secondDomSha256": "c4ff522b14a1f35c912dce61e3bb5b6799989438630c3a5b9c2262b14bab6b76",
     "stable": true
   },
   "webkit": {
-    "firstSemanticSha256": "1300eb2986a95e0656c899f4d923471270797feb9f64da839a9a64d50e754ec4",
-    "secondSemanticSha256": "1300eb2986a95e0656c899f4d923471270797feb9f64da839a9a64d50e754ec4",
-    "firstDomSha256": "665bfa7715c2d70c623230d45fd488d87fa6928f649b2f193ec8ccc259fef773",
-    "secondDomSha256": "665bfa7715c2d70c623230d45fd488d87fa6928f649b2f193ec8ccc259fef773",
+    "firstSemanticSha256": "a514e96e5edeaa9311a992ba1a1f34b2fcbac7fd54809c95be53031cf312c3c3",
+    "secondSemanticSha256": "a514e96e5edeaa9311a992ba1a1f34b2fcbac7fd54809c95be53031cf312c3c3",
+    "firstDomSha256": "378f7f80e1f2e088bb44ec50c1db2f0155fc3f3d0e891a803329fd7507da7f70",
+    "secondDomSha256": "378f7f80e1f2e088bb44ec50c1db2f0155fc3f3d0e891a803329fd7507da7f70",
     "stable": true
   }
 }

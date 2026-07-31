@@ -7,7 +7,7 @@ The near-cap case is bounded and does not silently truncate semantic evidence.
   "boundedOutcome": "EVIDENCE_CAP_EXCEEDED",
   "bundleByteCap": 262144,
   "evidenceItems": 256,
-  "projectionElapsedMs": 274.386,
+  "projectionElapsedMs": 296.794,
   "requestedEvidenceItems": 256,
   "serializedBytes": 0,
   "silentTruncation": false,

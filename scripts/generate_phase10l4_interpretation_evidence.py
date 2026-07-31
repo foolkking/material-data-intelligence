@@ -5,6 +5,7 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import sys
 from tempfile import TemporaryDirectory
@@ -24,6 +25,8 @@ from mdi_api.routers.planner import (
     planner_jobs,
 )
 from mdi_llm import (
+    ARTIFACT_PROJECTOR_CONTRACTS,
+    PROJECTOR_VERSION,
     InterpretationError,
     OpenAICompatibleProvider,
     build_scientific_evidence_bundle,
@@ -346,22 +349,83 @@ def _near_cap() -> dict[str, Any]:
     }
 
 
-_INTERPRETATION_READY_ARTIFACTS = {
-    "ml.basic_metrics": {"metrics_json"},
-    "phonon.band": {"phonon_band_json", "phonon_summary_json"},
-    "phonon.band_dos": {"phonon_band_dos_json", "phonon_summary_json"},
-    "phonon.dos": {"phonon_dos_json", "phonon_summary_json"},
-    "structure.summary": {"structure_json"},
-    "structure.volumetric_data": {"volumetric_field_json"},
-    "table.numeric_summary": {"table_json"},
-}
+_INTERPRETATION_READY_ARTIFACTS: dict[str, set[str]] = {}
+for _tool_id, _artifact_type in ARTIFACT_PROJECTOR_CONTRACTS:
+    _INTERPRETATION_READY_ARTIFACTS.setdefault(_tool_id, set()).add(_artifact_type)
 _DISPLAY_ARTIFACTS = {"plotly_json", "plotly_html", "preview_png"}
 _UNTRUSTED_TEXT_ARTIFACTS = {"summary_md"}
+_NO_SCIENTIFIC_FACT_ARTIFACTS = {
+    "recipe_json",
+    "phonon_manifest_json",
+    "brillouin_zone_manifest_json",
+    "trajectory_manifest_json",
+    "volumetric_manifest_json",
+}
+
+
+def _known_artifact_contracts() -> dict[tuple[str, str], str]:
+    inventory_path = EVIDENCE.parent / "phase10l3_bounded_multi_tool" / "artifact_contract_inventory.json"
+    inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
+    return {
+        (tool["toolId"], artifact["artifactType"]): artifact["contractVersion"]
+        for tool in inventory["tools"]
+        for artifact in tool.get("knownStableOutputs", [])
+    }
+
+
+def _artifact_interpretability(
+    *,
+    tool_id: str,
+    artifact_type: str,
+    known_contracts: dict[tuple[str, str], str],
+) -> dict[str, Any]:
+    projector_contract = ARTIFACT_PROJECTOR_CONTRACTS.get((tool_id, artifact_type))
+    ready = projector_contract is not None
+    if ready:
+        state = "INTERPRETATION_READY"
+        reason = "The exact tool/artifact pair has a deterministic contract-specific projector."
+    elif artifact_type in _DISPLAY_ARTIFACTS:
+        state = "DISPLAY_ONLY"
+        reason = "Rendered, Plotly, and image artifacts are display data, not scientific evidence authority."
+    elif artifact_type in _UNTRUSTED_TEXT_ARTIFACTS or artifact_type.endswith("_report_json"):
+        state = "UNSAFE_UNTRUSTED_TEXT"
+        reason = "Free-form summary/report text is inert and cannot supply scientific evidence facts."
+    elif artifact_type in _NO_SCIENTIFIC_FACT_ARTIFACTS:
+        state = "NO_STRUCTURED_FACTS"
+        reason = "Recipe/manifest provenance is auditable but does not itself provide interpreted scientific facts."
+    else:
+        state = "UNSUPPORTED_CONTRACT"
+        reason = "No Phase 10L-4 contract-specific projector is registered for this exact artifact output."
+    declared_contract_version = known_contracts.get((tool_id, artifact_type))
+    contract_status = (
+        "PROJECTOR_CONTRACT_ALLOWLIST"
+        if projector_contract is not None
+        else "DECLARED_STABLE_CONTRACT"
+        if declared_contract_version is not None
+        else "UNVERSIONED_REGISTRY_ARTIFACT_TYPE"
+    )
+    return {
+        "artifactType": artifact_type,
+        "contractStatus": contract_status,
+        "contractFamily": projector_contract.contract_family if projector_contract is not None else None,
+        "acceptedContractVersions": list(projector_contract.accepted_versions) if projector_contract is not None else ([declared_contract_version] if declared_contract_version else []),
+        "declaredStableContractVersion": declared_contract_version,
+        "mediaTypes": list(projector_contract.media_types) if projector_contract is not None else [],
+        "projectorVersion": projector_contract.projector_version if projector_contract is not None else None,
+        "state": state,
+        "safeProjectorReady": ready,
+        "structuredFactsAuthority": ready,
+        "unitAuthority": ready,
+        "warningAuthority": ready,
+        "identityAuthority": ready,
+        "reason": reason,
+    }
 
 
 def _interpretability_inventory() -> dict[str, Any]:
     registry = load_manifests()
     snapshot, metadata_by_id = build_registry_snapshot(registry)
+    known_contracts = _known_artifact_contracts()
     rows: list[dict[str, Any]] = []
     for tool in sorted(registry.tools, key=lambda item: item.toolId):
         metadata = metadata_by_id[tool.toolId]
@@ -369,6 +433,14 @@ def _interpretability_inventory() -> dict[str, Any]:
             continue
         artifacts = set(metadata.declaredArtifactTypes)
         ready_artifacts = sorted(artifacts & _INTERPRETATION_READY_ARTIFACTS.get(tool.toolId, set()))
+        artifact_rows = [
+            _artifact_interpretability(
+                tool_id=tool.toolId,
+                artifact_type=artifact_type,
+                known_contracts=known_contracts,
+            )
+            for artifact_type in sorted(artifacts)
+        ]
         if ready_artifacts:
             state = "INTERPRETATION_READY"
             reason = "Exact tool/artifact contract pair has an approved deterministic projector."
@@ -387,6 +459,8 @@ def _interpretability_inventory() -> dict[str, Any]:
             "domain": tool.domain,
             "declaredArtifactTypes": sorted(artifacts),
             "projectedArtifactTypes": ready_artifacts,
+            "artifacts": artifact_rows,
+            "aggregateState": state,
             "state": state,
             "reason": reason,
         })
@@ -399,6 +473,8 @@ def _interpretability_inventory() -> dict[str, Any]:
         "toolCount": len(rows),
         "tools": rows,
         "policy": {
+            "artifactLevelStateIsAuthority": True,
+            "aggregateStateIsSummaryOnly": True,
             "manifestArtifactTypeIsScientificEvidence": False,
             "summaryMarkdownTrusted": False,
             "displayArtifactTrusted": False,
@@ -413,7 +489,7 @@ def _manifest() -> None:
         if not path.is_file() or path.name == "evidence_manifest.json":
             continue
         payload = path.read_bytes()
-        canonical = payload if path.suffix.lower() == ".png" else payload.replace(b"\r\n", b"\n")
+        canonical = payload if path.suffix.lower() == ".png" else payload.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
         records.append({"path": path.relative_to(EVIDENCE).as_posix(), "bytes": len(canonical), "sha256": sha256(canonical).hexdigest()})
     _write_json("evidence_manifest.json", {"algorithm": "sha256-lf-normalized-text-v1", "files": records})
 
@@ -432,6 +508,31 @@ def _reset_browser_outputs() -> None:
     shutil.rmtree(EVIDENCE / "screenshots", ignore_errors=True)
 
 
+def _task_queue_snapshot() -> dict[str, Any]:
+    content = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    blocks = []
+    for raw_block in content.split("---TASK---")[1:]:
+        body, separator, _ = raw_block.partition("---END---")
+        if not separator:
+            continue
+        lines = [line.strip() for line in body.splitlines() if line.strip()]
+        title_match = re.search(r"Phase 10L-[0-9]+", body)
+        title = title_match.group(0) if title_match else "UNKNOWN"
+        status_line = next((line for line in lines if line.startswith("状态：")), "状态：UNKNOWN")
+        blocks.append({"title": title, "status": status_line.split("：", 1)[1]})
+    processing = [block for block in blocks if block["status"] == "处理中"]
+    pending = [block for block in blocks if block["status"] == "待处理"]
+    return {
+        "taskBlockCountAfterAdmission": len(blocks),
+        "activeExecutableTaskCount": len(processing),
+        "activeTask": processing[0]["title"] if len(processing) == 1 else None,
+        "reviewerQueuedPendingTaskCount": len(pending),
+        "reviewerQueuedPendingTasks": [block["title"] for block in pending],
+        "taskBlocks": blocks,
+        "snapshotState": "L4_IN_PROGRESS_WITH_L5_PRE_ADMITTED",
+    }
+
+
 def main() -> None:
     EVIDENCE.mkdir(parents=True, exist_ok=True)
     _reset_browser_outputs()
@@ -448,14 +549,14 @@ def main() -> None:
     adversarial = _adversarial(cases["ml_case.json"]["bundle"])
     near_cap = _near_cap()
     schemas = json.loads((ROOT / "packages/schemas/json/grounded-interpretation-v1.schema.json").read_text(encoding="utf-8"))
+    queue_snapshot = _task_queue_snapshot()
 
     _write_json("entry_gate.json", {
         "baseline": "8026cb15658f35a8f4c59ef312bd519cead778ae",
         "branch": "master",
         "phase10l3": "ARCHIVED_BY_VERIFIED_QUEUE_COMMIT",
         "archiveCi": 30543213225,
-        "taskBlockCountAfterAdmission": 2,
-        "activeTask": "Phase 10L-4",
+        **queue_snapshot,
         "queuedBlockedTask": "Phase 10L-5",
         "schemaHeadBeforeL4": "0005_phase10l3_dependency",
         "migrationHeadAfterL4": "0006_phase10l4_interpretation",
@@ -475,6 +576,35 @@ def main() -> None:
         "artifactPromptInjectionBoundary": "RAW_TEXT_EXCLUDED_FROM_PROVIDER_SAFE_PROJECTION",
         "groundingValidatorBeforeL4": "MISSING",
         "l4Decision": "independent post-execution read-only service",
+        "preImplementationInventory": [
+            {"component": "deterministic summary", "status": "REUSABLE_FOUNDATION", "sourceFiles": ["packages/adapters/mdi_adapters", "packages/tool-registry"], "currentBehavior": "Adapters may emit summaries without claim-evidence validation.", "l4Decision": "Do not trust summaries; project exact structured artifacts."},
+            {"component": "LLM summary", "status": "UNSAFE_FOR_L4", "sourceFiles": ["services/llm/mdi_llm/providers.py"], "currentBehavior": "Bounded provider transport existed without grounded interpretation output.", "l4Decision": "Use strict provider-safe evidence projection and grounding."},
+            {"component": "findings", "status": "MISSING", "sourceFiles": [], "currentBehavior": "No first-class grounded claims existed.", "l4Decision": "Add ScientificClaim 1.0."},
+            {"component": "warnings", "status": "PARTIAL", "sourceFiles": ["apps/api/mdi_api/repositories.py"], "currentBehavior": "Tool and execution warnings existed but were not interpretation evidence.", "l4Decision": "Project only exact contract warnings."},
+            {"component": "recommendations", "status": "MISSING", "sourceFiles": [], "currentBehavior": "No grounded non-executable recommendation contract existed.", "l4Decision": "Add bounded recommendations with executionAuthorized=false."},
+            {"component": "artifact explanation", "status": "PARTIAL", "sourceFiles": ["apps/web/app/components/PlannerWorkbench.tsx"], "currentBehavior": "Artifact previews existed without scientific claim grounding.", "l4Decision": "Add evidence drill-down separate from calculated artifacts."},
+            {"component": "report text", "status": "UNSAFE_FOR_L4", "sourceFiles": ["packages/adapters/mdi_adapters"], "currentBehavior": "Report/summary text could contain unvalidated narrative.", "l4Decision": "Exclude from evidence authority."},
+            {"component": "recipe text", "status": "REUSABLE_FOUNDATION", "sourceFiles": ["docs/09_ARTIFACT_AND_RECIPE_SYSTEM.md"], "currentBehavior": "Recipe provenance is auditable but not a scientific fact source.", "l4Decision": "Keep as provenance only."},
+            {"component": "artifact-specific summary builders", "status": "PARTIAL", "sourceFiles": ["packages/adapters/mdi_adapters"], "currentBehavior": "Contract-specific products existed without a common evidence layer.", "l4Decision": "Introduce explicit projector allowlist."},
+            {"component": "frontend findings UI", "status": "MISSING", "sourceFiles": ["apps/web/app/components/PlannerWorkbench.tsx"], "currentBehavior": "No claim/evidence surface existed before L4.", "l4Decision": "Add accessible inert findings and evidence UI."},
+            {"component": "persistence", "status": "MISSING", "sourceFiles": ["apps/api/mdi_api/repositories.py"], "currentBehavior": "No evidence bundle, claim, or interpretation records existed.", "l4Decision": "Add immutable Alembic 0006 records."},
+            {"component": "API", "status": "MISSING", "sourceFiles": ["apps/api/mdi_api/routers/planner.py"], "currentBehavior": "No interpretation create/read API existed.", "l4Decision": "Add terminal-job read-only endpoints."},
+            {"component": "provider prompt", "status": "PARTIAL", "sourceFiles": ["services/llm/mdi_llm/providers.py"], "currentBehavior": "Strict transport existed, but no interpretation evidence projection.", "l4Decision": "Expose only provider-safe evidence IDs and structured facts."},
+            {"component": "provider output schema", "status": "MISSING", "sourceFiles": [], "currentBehavior": "No grounded claim schema existed.", "l4Decision": "Add strict GroundedScientificInterpretation 1.0."},
+            {"component": "grounding validator", "status": "MISSING", "sourceFiles": [], "currentBehavior": "Numbers, units, entities, evidence refs, and partial policy were not jointly validated.", "l4Decision": "Add independent claim-evidence validator."},
+            {"component": "full natural-language evidence closure", "status": "DEFER_10L5", "sourceFiles": [], "currentBehavior": "L4 starts from terminal persisted jobs.", "l4Decision": "Keep full NL-to-interpretation scenarios in L5."},
+            {"component": "unified workspace", "status": "DEFER_10M", "sourceFiles": ["apps/web/app/components/PlannerWorkbench.tsx"], "currentBehavior": "Phase 9C workbench remains canonical.", "l4Decision": "Only add findings/evidence surface."},
+        ],
+        "currentL4Authority": {
+            "interpretationProjectors": {"status": "READY", "sourceFiles": ["services/llm/mdi_llm/grounded_interpretation.py"], "executionAuthority": "READ_ONLY"},
+            "strictProviderProjection": {"status": "READY", "sourceFiles": ["services/llm/mdi_llm/grounded_interpretation.py"], "executionAuthority": "NO_TOOL_PLAN_JOB_QUEUE"},
+            "groundingValidator": {"status": "READY", "sourceFiles": ["services/llm/mdi_llm/grounded_interpretation.py"], "executionAuthority": "READ_ONLY"},
+            "persistence": {"status": "READY", "sourceFiles": ["apps/api/mdi_api/repositories.py", "apps/api/alembic/versions/0006_phase10l4_grounded_interpretation.py"], "executionAuthority": "NO_EXECUTION"},
+            "api": {"status": "READY", "sourceFiles": ["apps/api/mdi_api/routers/planner.py"], "executionAuthority": "READ_ONLY"},
+            "frontendFindings": {"status": "READY", "sourceFiles": ["apps/web/app/components/PlannerWorkbench.tsx"], "executionAuthority": "INERT_RENDERING"},
+            "partialExecutionPolicy": {"status": "READY", "sourceFiles": ["services/llm/mdi_llm/grounded_interpretation.py"], "executionAuthority": "READ_ONLY"},
+            "recommendations": {"status": "READY", "sourceFiles": ["packages/schemas/mdi_schemas/interpretation.py", "apps/web/app/components/PlannerWorkbench.tsx"], "executionAuthority": "NON_EXECUTABLE"},
+        },
         "fileMap": {
             "providerTransport": "services/llm/mdi_llm/providers.py",
             "strictInterpretation": "services/llm/mdi_llm/grounded_interpretation.py",
@@ -522,7 +652,7 @@ def main() -> None:
         "REAL_LLM_CALLS = 0", "NO_PHASE10L4_UNAPPROVED_EXTERNAL_NETWORK_REQUESTS", "NO_INTERPRETATION_ARBITRARY_CODE_EXECUTION", "NO_INTERPRETATION_SHELL_OR_FILESYSTEM_AUTHORITY", "NO_INTERPRETATION_TOOL_EXECUTION_AUTHORITY", "NO_INTERPRETATION_PLAN_MUTATION", "NO_INTERPRETATION_JOB_OR_ENQUEUE", "NO_RAW_ARTIFACT_PAYLOAD_TO_PROVIDER", "NO_UNSUPPORTED_ARTIFACT_TO_PROVIDER", "NO_PROVIDER_ARTIFACT_PATH_OR_URL", "NO_PROVIDER_SECRET_EXPOSURE", "NO_PROVIDER_FULL_REGISTRY_EXPOSURE", "NO_REJECTED_CANDIDATE_LEAK_TO_LLM", "NO_ARTIFACT_JAVASCRIPT", "NO_ARTIFACT_HTML_EXECUTION", "NO_ARTIFACT_IFRAME", "NO_EXTERNAL_ARTIFACT_URL", "NO_CROSS_JOB_INTERPRETATION_EVIDENCE", "NO_CROSS_PROJECT_INTERPRETATION_EVIDENCE", "NO_STALE_RESOURCE_INTERPRETATION", "NO_UNGROUNDED_NUMERIC_CLAIMS", "NO_UNGROUNDED_UNIT_CLAIMS", "NO_UNGROUNDED_ENTITY_CLAIMS", "NO_UNSUPPORTED_SCIENTIFIC_CONCLUSIONS", "NO_SECRET_PATTERN_HITS",
     ]
     _write_text("security_audit.md", "# Security Audit\n\n" + "\n".join(f"- {item}" for item in markers) + "\n")
-    _write_text("README.md", "# Phase 10L-4 Grounded Interpretation Evidence\n\nCaptures use strict contracts, current registered artifact families, a real persisted L3 phonon dependency runtime, read-only L4 API, deterministic or fake-provider interpretation, and LF-normalized evidence hashing. No real LLM or external science network is used.\n")
+    _write_text("README.md", "# Phase 10L-4 Grounded Interpretation Evidence\n\nAPI/runtime captures use strict contracts, current registered artifact families, a real persisted L3 phonon dependency runtime, and the read-only L4 API. Browser evidence is real Chromium/Firefox/WebKit rendering, interaction, DOM, accessibility, and PNG capture over Playwright route-fulfilled fixtures generated from those persisted API/runtime cases; it is not service-backed browser E2E. PostgreSQL/Redis/MinIO proof belongs to exact-SHA CI. All interpretation uses deterministic or fake-provider transport, LF-normalized evidence hashing, no real LLM, and no external science network.\n")
     _manifest()
 
 

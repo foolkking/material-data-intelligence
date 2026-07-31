@@ -34,6 +34,9 @@ from .capability_planner import (
 )
 from .redaction import is_credential_key, redact_credential_values, redact_params_for_log
 from .grounded_interpretation import (
+    ARTIFACT_PROJECTOR_CONTRACTS,
+    PROJECTOR_VERSION,
+    ArtifactProjectorContract,
     ArtifactProjectionInput,
     InterpretationError,
     InterpretationResult,
@@ -49,6 +52,9 @@ from .grounded_interpretation import (
 )
 
 __all__ = [
+    "ARTIFACT_PROJECTOR_CONTRACTS",
+    "PROJECTOR_VERSION",
+    "ArtifactProjectorContract",
     "ArtifactProjectionInput",
     "AnalysisIntentError",
     "AnalysisIntentRequest",

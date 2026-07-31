@@ -1,4 +1,5 @@
 {
+  "activeExecutableTaskCount": 1,
   "activeTask": "Phase 10L-4",
   "archiveCi": 30543213225,
   "baseline": "8026cb15658f35a8f4c59ef312bd519cead778ae",
@@ -6,6 +7,21 @@
   "migrationHeadAfterL4": "0006_phase10l4_interpretation",
   "phase10l3": "ARCHIVED_BY_VERIFIED_QUEUE_COMMIT",
   "queuedBlockedTask": "Phase 10L-5",
+  "reviewerQueuedPendingTaskCount": 1,
+  "reviewerQueuedPendingTasks": [
+    "Phase 10L-5"
+  ],
   "schemaHeadBeforeL4": "0005_phase10l3_dependency",
-  "taskBlockCountAfterAdmission": 2
+  "snapshotState": "L4_IN_PROGRESS_WITH_L5_PRE_ADMITTED",
+  "taskBlockCountAfterAdmission": 2,
+  "taskBlocks": [
+    {
+      "status": "处理中",
+      "title": "Phase 10L-4"
+    },
+    {
+      "status": "待处理",
+      "title": "Phase 10L-5"
+    }
+  ]
 }
