@@ -147,7 +147,6 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         monkeypatch.delenv("POSTGRES_HOST", raising=False)
         config = AlembicConfig("apps/api/alembic.ini")
         config.set_main_option("script_location", "apps/api/alembic")
-        config.set_main_option("sqlalchemy.url", schema_url)
         alembic_upgrade(config, "head")
 
         engine = create_engine(schema_url, future=True)

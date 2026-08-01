@@ -1,9 +1,10 @@
 {
   "backend":"PostgreSQL",
-  "status":"PENDING_EXACT_SHA_CI",
+  "status":"CORRECTED_PENDING_EXACT_SHA_CI",
   "local_services":"UNAVAILABLE",
   "required_fixture":"tests/integration/test_phase10m1_workspace_service_backed.py",
   "required_services":["PostgreSQL","Redis","MinIO"],
   "skipped_locally":true,
-  "claim_policy":"not counted as PASS until exact-SHA CI reports zero skipped and zero failed"
+  "failedAttempt":{"sha":"d39687f7fe5ce39de0fe375a2b5d3068626b74f0","run":30704917567,"result":"36 passed, 0 skipped, 1 fixture failure","cause":"ConfigParser interpolation rejected percent-encoded isolated-schema URL before migration"},
+  "claim_policy":"not counted as PASS until corrected exact-SHA CI reports zero skipped and zero failed"
 }
