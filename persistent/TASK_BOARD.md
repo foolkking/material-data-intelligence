@@ -1,12 +1,11 @@
 # TASK_BOARD
 
-## 2026-08-01 Phase 10M-1 Active Implementation
+## 2026-08-01 Phase 10M-1 Complete, Awaiting Verified Archive
 
-- [ ] Phase 10M-1 Scientific Workspace Domain Contract + Persistence is the
-  sole active `TASKS.md` block. Focused contract, migration, persistence,
-  projection/API, performance, lock, and typecheck gates currently pass.
-  Full regression, service-backed exact-SHA CI, completion record, and queue
-  archive are still required.
+- [x] Phase 10M-1 implementation is complete and remains the sole `TASKS.md`
+  block pending verified archive. Corrected implementation `27c5aa9` passed
+  exact-SHA CI `30705503707`, including service-backed `37 passed, 0 skipped,
+  0 failed, 0 errors`. Completion-record and queue-archive CI remain required.
 - [ ] Phase 10M-2 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; no
   executable M2 task exists.
 

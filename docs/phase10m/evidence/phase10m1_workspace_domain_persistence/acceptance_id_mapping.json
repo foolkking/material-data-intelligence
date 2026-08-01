@@ -1,6 +1,6 @@
 {
   "schemaVersion": "phase10m1.acceptance.v1",
-  "status": "IMPLEMENTED_PENDING_LIFECYCLE_CLOSURE",
+  "status": "IMPLEMENTED_AND_IMPLEMENTATION_CI_VERIFIED",
   "expected": 8,
   "implemented": 8,
   "missing": 0,

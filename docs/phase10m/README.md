@@ -1,9 +1,8 @@
 # Phase 10M Unified Scientific Workspace
 
-Status: Phase 10M-1 implementation is in progress. Contracts, migration,
-repositories, explicit historical projection, and additive APIs are present in
-the worktree; exact-SHA CI, service-backed evidence, completion, and queue
-archive remain required before this phase can be called archived.
+Status: Phase 10M-1 implementation is complete and corrected implementation
+exact-SHA CI is verified. The completion-record and verified queue-archive CI
+gates remain required before this phase can be called archived.
 
 ## Reading order
 
@@ -30,6 +29,6 @@ archive remain required before this phase can be called archived.
 - **UNRESOLVED BLOCKER**: none affecting Phase 10M-1.
 - **FUTURE SCOPE**: Phase 10N or later work excluded from Phase 10M.
 
-Phase 10M-0 remains the sealed architecture authority. Phase 10M-1 is the
-sole active implementation task. The Workspace page and M2 presentation
-surface are intentionally deferred.
+Phase 10M-0 remains the sealed architecture authority. Phase 10M-1 is complete
+and retained as the sole TASKS block pending verified archive. The Workspace
+page and M2 presentation surface are intentionally deferred.

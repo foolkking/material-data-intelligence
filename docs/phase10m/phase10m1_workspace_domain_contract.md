@@ -1,8 +1,8 @@
 # Phase 10M-1 Workspace Domain Contract
 
-Status: current M1 implementation contract. This document records the
-implemented worktree contract; completion, service-backed evidence, and
-exact-SHA CI are still required before PASS.
+Status: current M1 implementation contract. Corrected implementation exact-SHA
+CI and service-backed evidence pass; completion-record and queue-archive CI are
+still required before archive.
 
 ## Scope
 
@@ -78,7 +78,8 @@ Contract and focused persistence/projection tests are present in
 `tests/test_phase10m1_workspace_contracts.py`,
 `tests/test_phase10m1_workspace_persistence.py`, and
 `tests/test_phase10m1_workspace_projection_api.py`. Full local regression,
-PostgreSQL service-backed verification, browser regression, evidence manifest
-verification, and exact-SHA CI are **PENDING**.
+browser regression, evidence manifest verification, and corrected exact-SHA
+CI pass. PostgreSQL/Redis/MinIO reports `37 passed, 0 skipped, 0 failed, 0
+errors`.
 
 `REAL_LLM_CALLS = 0`. M1 does not call DeepSeek or any other LLM.

@@ -1,14 +1,17 @@
 # CHANGELOG
 
-## 2026-08-01 - Phase 10M-1 Workspace Domain Implementation In Progress
+## 2026-08-01 - Phase 10M-1 Implementation Exact-SHA CI Complete
 
 - Added strict Workspace, Panel, and Selection contracts, migration 0007,
   in-memory/SQL repositories, explicit historical projection, optimistic
   revisions, and additive metadata-only APIs.
 - Preserved one Workspace per exact Project/Job, immutable source bindings,
   no Artifact payload copy, no hidden GET writes, and no execution authority.
-- Focused local verification is passing; service-backed and exact-SHA lifecycle
-  gates remain pending. No Workspace page or M2 behavior was added.
+- Corrected implementation `27c5aa9` passed exact-SHA CI `30705503707`: Unit,
+  Frontend, and PostgreSQL/Redis/MinIO service-backed succeeded with `37
+  passed, 0 skipped, 0 failed, 0 errors`.
+- Two earlier failed CI attempts remain retained with exact root causes. No
+  Workspace page or M2 behavior was added; completion and archive gates remain.
 
 ## 2026-08-01 - Phase 10M-0 Workspace Audit and Architecture Seal
 

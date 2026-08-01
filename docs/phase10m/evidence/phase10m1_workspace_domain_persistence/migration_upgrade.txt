@@ -3,4 +3,5 @@ tables=scientific_workspaces,workspace_panels,workspace_layout_revisions
 foreign_keys=source references restricted; child ownership cascades
 indexes=project/job lookup and workspace child lookup present
 fresh_sqlite_0001_to_0007=PASS
-postgresql=NOT_RUN_LOCALLY; exact-SHA service-backed CI required
+postgresql=PASS at exact SHA 27c5aa98138f882a750dc76a402ee2afe2151b72, CI 30705503707
+postgresql_service_summary=37 passed, 0 skipped, 0 failed, 0 errors

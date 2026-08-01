@@ -1,15 +1,16 @@
 # PROJECT_BRIEF
 
-## 2026-08-01 Phase 10M-1 Implementation In Progress
+## 2026-08-01 Phase 10M-1 Complete, Awaiting Verified Archive
 
 The reviewer-approved Phase 10M-1 task is the sole active implementation.
 ScientificWorkspace 1.0, WorkspacePanel 1.0, WorkspaceSelectionContext 1.0,
 Alembic 0007, repositories, explicit historical Job projection, and additive
-metadata APIs are implemented in the worktree. Workspace stores source
+metadata APIs are implemented. Workspace stores source
 references and durable presentation state only; it has no scientific,
-execution, provider, or artifact-payload authority. Focused local gates pass;
-service-backed exact-SHA CI and the verified lifecycle remain open. The
-Workspace page and Phase 10M-2 remain reviewer-gated.
+execution, provider, or artifact-payload authority. Corrected implementation
+`27c5aa9` passed exact-SHA CI `30705503707`, including service-backed `37
+passed, 0 skipped, 0 failed, 0 errors`. Completion-record and queue-archive CI
+remain. The Workspace page and Phase 10M-2 remain reviewer-gated.
 
 ## 2026-08-01 Current Phase Status
 

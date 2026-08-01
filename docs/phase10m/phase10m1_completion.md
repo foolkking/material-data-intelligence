@@ -1,7 +1,8 @@
 # Phase 10M-1 Completion Record Guidance
 
-This file is a completion-record sidecar only. Phase 10M-1 is not being
-declared PASS or archived by this document.
+This file is a completion-record sidecar. Phase 10M-1 implementation is
+complete and implementation exact-SHA CI is successful; it is not archived by
+this document.
 
 ## Current implementation scope
 
@@ -20,7 +21,7 @@ strict value contract, and Workspace stores no Artifact payload.
 
 The following local gates pass:
 
-1. Focused M1: 25 passed.
+1. Focused M1: 26 passed.
 2. Full backend: 1103 passed, 39 local service/integration skips, 63 warnings.
 3. Frontend: 333 tests, typecheck, and production build pass.
 4. SQLite focused and fresh-chain migration paths pass.
@@ -29,14 +30,26 @@ The following local gates pass:
 6. Existing Chromium/Firefox/WebKit/mobile browser replay passes with no new
    console/network regressions; Workspace UI remains deferred.
 
+## Verified implementation CI
+
+Corrected implementation `27c5aa98138f882a750dc76a402ee2afe2151b72`
+passed exact-SHA CI run `30705503707`: Unit, Frontend typecheck/build/browser,
+and PostgreSQL/Redis/MinIO service-backed all succeeded. Service summary:
+`37 passed, 0 skipped, 0 failed, 0 errors`.
+
+Two failed implementation attempts remain retained as provenance:
+
+1. `d39687f...`, run `30704917567`: fixture-level ConfigParser handling of a
+   percent-encoded isolated-schema URL failed before migration.
+2. `7d0a16d...`, run `30705191850`: production Alembic `env.py` still passed
+   a percent-encoded environment URL through ConfigParser unescaped.
+
 ## Gates still required
 
-1. Implementation commit and PostgreSQL/Redis/MinIO zero-skip exact-SHA CI.
-2. Completion-record commit and exact-SHA CI.
-3. Verified queue archive commit and exact-SHA CI.
+1. Completion-record commit and exact-SHA CI.
+2. Verified queue archive commit and exact-SHA CI.
 
-Until those gates are verified, CI/service evidence is `PENDING` and the
-completion state is not PASS.
+Until those gates are verified, the task remains complete but not archived.
 
 ## Required final state
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion":"phase10m1.security.v1",
-  "status":"FOCUSED_PASS_PENDING_FULL_SECRET_SCAN",
+  "status":"PASS",
   "markers":[
     "NO_WORKSPACE_ARBITRARY_CODE_EXECUTION",
     "NO_WORKSPACE_SHELL_OR_FILESYSTEM_AUTHORITY",
@@ -14,6 +14,7 @@
     "NO_WORKSPACE_STALE_IDENTITY_REBINDING",
     "NO_WORKSPACE_SECRET_OR_PRIVATE_PATH_DISCLOSURE",
     "NO_RECOMMENDATION_TO_EXECUTION_AUTHORITY",
+    "NO_SECRET_PATTERN_HITS",
     "REAL_LLM_CALLS = 0"
   ],
   "testedInputs":["HTML/script","prototype keys","URL/path","component name","cross-project Job","foreign Artifact","stale hash","oversize/deep JSON","panel/revision overflow","immutable patch","malformed ETag","prompt injection","credential-shaped text"],

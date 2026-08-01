@@ -1,4 +1,5 @@
 ---TASK---
+Status: completed / awaiting verified queue archive
 状态：处理中
 # Phase 10M-1
 ## Scientific Workspace Domain Contract + Persistence
@@ -69,6 +70,20 @@ verify completion-record exact-SHA CI, then remove only this block in a
 separate queue-archive commit and verify archive exact-SHA CI.
 
 Do not create, queue, or execute Phase 10M-2 automatically.
+
+### Completion Record
+
+- Completed: 2026-08-01 23:32:58 +08:00.
+- Modified: Workspace contracts/schemas, Alembic 0007, repositories,
+  projection/API/client, tests/CI, evidence, docs, and persistent records.
+- Summary: Implemented the sealed reference-only Workspace domain with exact
+  source binding, bounded panels/revisions, idempotent projection, and
+  optimistic concurrency; no Workspace UI or M2 behavior was added.
+- Verification: focused M1 26 passed; full local backend 1103 passed with 39
+  unavailable local integration skips; frontend 333 passed plus typecheck/build;
+  corrected exact-SHA CI 30705503707 passed all jobs, including service-backed
+  37 passed, 0 skipped, 0 failed, 0 errors.
+- Lifecycle: completion-record CI and verified queue archive remain required.
 ---END TASK---
 
 REVIEWER GATE AFTER PHASE 10M-1

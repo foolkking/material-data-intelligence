@@ -2924,3 +2924,371 @@ Do not create, queue, or execute Phase 10M-1.
   final reviewer return after its required exact-SHA gate.
 - Expected final state after that gate: `HEAD == origin/master`, clean,
   `TASK_BLOCK_COUNT = 0`, production source unchanged.
+
+# Phase 10M-1 Scientific Workspace Domain Contract + Persistence Result
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
+```
+
+The reviewer-sealed Workspace domain, persistence, migration, projection, and
+API scope is implemented. Corrected implementation exact-SHA CI is successful;
+the task remains in `TASKS.md` until completion-record and queue-archive CI
+succeed.
+
+## 2. Baseline and Entry Gate
+
+- Phase 10M-0 audit/planning: `4c5d25ef00b2213683a3115febc5f482546cc522`,
+  CI `30698489359` success.
+- Phase 10M-0 completion: `2f4a5682fbc2adb0fdc487a982ec508f138eb41a`,
+  CI `30698988085` success and reviewer approved.
+- Initial `HEAD == origin/master == 2f4a5682fbc2adb0fdc487a982ec508f138eb41a`,
+  branch `master`, worktree clean, migration head `0006`.
+- Queue admission produced one exact M1 block; M2 remained a reviewer gate.
+
+## 3. Phase 10M-0 Decision Compliance
+
+M-D001 through M-D025 remain unchanged. One Workspace per Job, the three-table
+schema, explicit projection, reference-only science authority, API ownership,
+Panel/Selection contracts, route ownership, compatibility, security, and
+M1-M7 ordering were implemented without redesign.
+
+## 4. ScientificWorkspace 1.0
+
+The strict contract binds deterministic Workspace identity to exact
+`(projectId, sourceJobId)`, records immutable dataset/Profile/Intent/Plan source
+versions and hashes, and permits only bounded title, active-panel, pinned exact
+selection, durable metadata, and revision changes. Unknown fields, invalid
+IDs/hashes, prototype keys, non-finite values, deep/oversized payloads, and
+executable content are rejected. `executionAuthorized=false` and
+`scientificAuthority=false` are explicit.
+
+## 5. WorkspacePanel 1.0
+
+Panel descriptors retain exact Workspace/source/Artifact/ToolCall/step and
+renderer-contract references, projected state, evidence/provenance links,
+layout and accessibility metadata, and deterministic order. Unsupported sources
+become inert fallback descriptors. `MAX_PANELS_PER_WORKSPACE=32`; panel 33 is a
+typed rejection. Artifact payloads and arbitrary component/module authority are
+not stored.
+
+## 6. WorkspaceSelectionContext 1.0
+
+The strict value contract uses exact source-scoped identities, bounded
+multi-selection, exact-only propagation, deterministic serialization, and a
+2,048-byte URL representation. Display labels, row/array position, fuzzy/latest
+rebinding, raw prompts/payloads, URLs, paths, credentials, and expressions are
+rejected. M1 implements validation/serialization only; ephemeral selection is
+not persisted and propagation remains M3 scope.
+
+## 7. Canonical Identity and Source Binding
+
+Workspace source bindings point to existing Project, Job, dataset/version,
+Profile/hash, Intent/hash, Eligibility/decision where available, Plan/hash,
+dependency execution, Artifacts/hashes/contracts, interpretation, Report, and
+Recipe records. Sources remain immutable; stale or missing identities produce
+typed projection state rather than latest-wins substitution.
+
+## 8. Persistence Architecture
+
+Repository protocols, in-memory implementation, and SQLAlchemy implementation
+share create/get/list/update, panel, and layout-history semantics. Immutable
+source conflicts, stale compare-and-set updates, cross-project access, duplicate
+records, cap overflow, and SQL integrity failures are translated to bounded
+typed errors. Workspace records store references and durable presentation data,
+not source scientific values.
+
+## 9. Database Migration
+
+Alembic `0007_phase10m1_workspace_domain` creates exactly:
+
+- `scientific_workspaces`;
+- `workspace_panels`;
+- `workspace_layout_revisions`.
+
+It adds project/job and child lookup indexes, one-row-per-project/job uniqueness,
+unique Workspace revision ordering, sealed foreign keys and `ON DELETE
+RESTRICT` source behavior. SQLite `0006 -> 0007 -> 0006 -> 0007`, fresh
+`0001 -> 0007`, and PostgreSQL migration/service inspection pass. There is no
+backfill and `metadata.create_all()` is not migration authority.
+
+## 10. Repository Implementations
+
+In-memory and SQLAlchemy repositories pass parity tests for idempotent create,
+conflicting create, exact lookup, project list, mutable title/layout update,
+immutable source rejection, stale revision conflict, panel order, history,
+rollback, cap handling, and project isolation.
+
+## 11. Workspace Creation
+
+Explicit create/project validates the exact Project and source Job, computes
+immutable source bindings, projects bounded panel descriptors, appends initial
+layout revision, and returns the same Workspace for semantic retries. Ordinary
+GET/list operations never create a Workspace. No tool, provider, planner, Job,
+enqueue, or Artifact payload read is part of creation.
+
+## 12. Layout Revisions
+
+Layout revisions are immutable, monotonic, canonically serialized, and bound to
+panels owned by the Workspace. PATCH uses quoted `If-Match`; stale or malformed
+ETags are typed errors. `MAX_LAYOUT_REVISIONS=128`; revision 129 returns
+`REVISION_CAP_EXCEEDED` without deleting history.
+
+## 13. Historical Job Projection
+
+Explicit lazy projection covers Plan 0.2 and historical 0.1 Jobs, graph/no-graph,
+all-succeeded/partial/failed/running states allowed by the seal, missing
+interpretation/Profile/Artifact, stale datasets, legacy Artifacts, and
+Report/Recipe presence or absence. Legacy records remain read-only where
+required; no graph, interpretation, Artifact, or identity is invented. Repeated
+projection is idempotent; there is no bulk backfill or hidden GET write.
+
+## 14. Workspace API
+
+Implemented additive routes:
+
+- `POST /workspaces`;
+- `GET|PATCH /workspaces/{workspaceId}`;
+- `GET /projects/{projectId}/workspaces`;
+- `GET /projects/{projectId}/analysis-jobs`;
+- `GET /workspaces/{workspaceId}/panels`;
+- `GET /workspaces/{workspaceId}/panels/{panelId}`;
+- `GET /workspaces/{workspaceId}/layout-revisions`;
+- `GET /workspaces/{workspaceId}/layout-revisions/{revision}`.
+
+Create uses `Idempotency-Key`; PATCH uses `If-Match`; reads are metadata-only
+and bounded. Strict duplicate-key/unknown-field/UTF-8/size validation and typed
+error envelopes prevent stack, SQL, path, storage-key, secret, or provider
+disclosure. TypeScript client functions match these contracts.
+
+## 15. Optimistic Concurrency
+
+Workspace revision and ETag are exact compare-and-set identities. A valid PATCH
+appends an immutable revision and advances the current pointer atomically;
+stale writes return a typed conflict and cannot overwrite newer state.
+
+## 16. Project and Source Isolation
+
+Project, Job, Workspace, panel, layout, and source Artifact scopes are checked
+before reads or writes. Cross-project Jobs, foreign Artifacts, stale hashes,
+unknown panels, and cross-Workspace layout references are rejected.
+
+## 17. Scientific Integrity
+
+```text
+WORKSPACE_COPIED_ARTIFACT_PAYLOADS = 0
+FRONTEND_DUPLICATE_SCIENTIFIC_AUTHORITY = NONE
+```
+
+Workspace performs no scientific calculation and does not infer identity from
+filenames, MIME labels, display labels, or array positions. Registered Adapter
+to Runtime to persisted Artifact remains the scientific authority chain.
+
+## 18. Compatibility
+
+`/` remains PlannerWorkbench. AnalysisIntent 1.0, EligibilityResolution 1.0,
+AnalysisPlan 0.1/0.2, PlanValidator, QueueWorkerRuntime, Registry/Adapters,
+Job/ToolCall/Artifact, interpretation, Report/Recipe, historical APIs, and the
+DeepSeek-only provider policy remain semantically unchanged. Workspace APIs are
+additive and do not require existing clients to migrate.
+
+## 19. Caps and Performance
+
+Caps include 32 panels, 128 revisions, 16 secondary selections, 2,048-byte
+selection URLs, 131,072-byte mutations, 524,288-byte snapshots, and JSON depth
+14. Focused development evidence reports two project-list queries for both one
+and five Workspaces, zero Artifact payload reads during projection, no bulk
+backfill, full backend 208.26 s, frontend tests 60.71 s, and build 95.8 s.
+These are development/service-backed acceptance measurements, not production
+capacity claims.
+
+## 20. Security
+
+```text
+NO_WORKSPACE_ARBITRARY_CODE_EXECUTION = PASS
+NO_WORKSPACE_SHELL_OR_FILESYSTEM_AUTHORITY = PASS
+NO_WORKSPACE_PROVIDER_AUTHORITY = PASS
+NO_WORKSPACE_TOOLCALL_JOB_OR_ENQUEUE_AUTHORITY = PASS
+NO_WORKSPACE_ARTIFACT_JAVASCRIPT = PASS
+NO_WORKSPACE_ARTIFACT_HTML_EXECUTION = PASS
+NO_WORKSPACE_EXTERNAL_ARTIFACT_URL_EXECUTION = PASS
+NO_WORKSPACE_CROSS_PROJECT_SOURCE_ACCESS = PASS
+NO_WORKSPACE_CROSS_JOB_ARTIFACT_INJECTION = PASS
+NO_WORKSPACE_STALE_IDENTITY_REBINDING = PASS
+NO_WORKSPACE_SECRET_OR_PRIVATE_PATH_DISCLOSURE = PASS
+NO_RECOMMENDATION_TO_EXECUTION_AUTHORITY = PASS
+NO_SECRET_PATTERN_HITS = PASS
+REAL_LLM_CALLS = 0
+```
+
+HTML/script/Markdown, prototype keys, URL/path/module injection, foreign source,
+stale hashes, malformed ETag, deep/oversized JSON, prompt injection, and
+credential-shaped text are inert or typed rejection.
+
+## 21. Service-Backed Evidence
+
+Local Docker/services were unavailable: `LOCAL_SERVICE_BACKED=UNAVAILABLE`.
+Corrected exact-SHA CI run `30705503707` used PostgreSQL 16, Redis 7, and MinIO
+with the full migration chain, repositories, source records, API lifecycle,
+scope and `ON DELETE RESTRICT` checks: `37 passed, 0 skipped, 0 failed, 0
+errors`. Therefore `CI_SERVICE_BACKED=PASS` and `SERVICE_TESTS_SKIPPED=0`.
+
+## 22. Browser Regression
+
+Existing PlannerWorkbench and L4/L5 findings/evidence browser replays pass on
+Chromium, Firefox, WebKit, and Chromium 390x844 mobile with no new console,
+network, overflow, HTML/JS, or secret regressions.
+
+```text
+WORKSPACE_UI = NOT_IMPLEMENTED_BY_DESIGN
+WORKSPACE_ROUTE_PAGE = DEFERRED_TO_PHASE_10M2
+```
+
+## 23. Acceptance IDs
+
+```text
+M1 expected = 8
+implemented = 8
+missing = 0
+extra = 0
+duplicate = 0
+```
+
+- M1-A01: Python/JSON Schema/TypeScript contracts and strict caps.
+- M1-A02: in-memory/SQLite persistence, immutable refs, idempotency/revisions.
+- M1-A03: 0007 upgrade/downgrade/re-upgrade.
+- M1-A04: PostgreSQL Workspace/panel/revision zero-skip round trip.
+- M1-A05: additive typed APIs, ETag, idempotency.
+- M1-A06: scope, identity, deletion, and cap rejection.
+- M1-A07: modern and explicit legacy read-only projection.
+- M1-A08: no payload copy, disclosure, execution authority, or cross-project
+  access.
+
+## 24. Tests
+
+- Focused M1: 26 passed; final migration/evidence subset: 4 passed.
+- Full local backend: 1103 passed, 39 skipped, 63 warnings. Local service skips
+  are not claimed as service PASS.
+- Corrected CI Unit: 1104 passed, 1 skipped, 38 deselected, 63 warnings;
+  Phase 10 backend closure 3 passed and L5 closure 99 passed.
+- Frontend: 52 files, 333 tests; typecheck and production build PASS.
+- Browser: L4/L5 Chromium, Firefox, WebKit, and mobile replay PASS.
+- SQLite/PostgreSQL migration, evidence manifest, docs links, TASKS structure,
+  secret scan, dependency/lock consistency, and service no-skipped gate PASS.
+- `npm audit = UNAVAILABLE` because the configured mirror returned
+  `404_NOT_IMPLEMENTED`; it is not reported clean.
+- Known non-blocking warnings: existing pymatgen/spglib warnings and GitHub
+  Actions Node 20 deprecation notices.
+
+## 25. Production Behavior Changes
+
+Added only ScientificWorkspace/Panel/Selection contracts, Workspace persistence
+and repositories, explicit historical projection, additive Workspace APIs and
+typed client, layout revisions, and optimistic concurrency.
+
+```text
+Planner behavior changes = NONE
+AnalysisIntent behavior changes = NONE
+Eligibility behavior changes = NONE
+AnalysisPlan behavior changes = NONE
+QueueWorkerRuntime behavior changes = NONE
+Tool Registry behavior changes = NONE
+Adapter behavior changes = NONE
+Scientific calculation changes = NONE
+Interpretation behavior changes = NONE
+Real LLM calls = 0
+Workspace UI changes = NONE
+```
+
+## 26. Files Changed
+
+- Backend/API: Workspace contracts, repository models/implementations,
+  projection service, router registration, strict request handling.
+- Migration: Alembic env compatibility, SQLite-safe historical migration paths,
+  and `0007_phase10m1_workspace_domain`.
+- TypeScript: strict Workspace contracts and API client only.
+- Tests/CI: contract, migration, persistence, projection/API, performance,
+  service-backed, evidence, and existing browser-runner reliability.
+- Evidence/docs/persistent/TASKS: Phase M1 records and deterministic manifest.
+
+```text
+dependencies = unchanged
+lockfile = unchanged
+```
+
+## 27. Commit and CI History
+
+- Failed implementation `d39687f7fe5ce39de0fe375a2b5d3068626b74f0`,
+  run `30704917567`: Unit/Frontend passed; service was `36 passed, 0 skipped,
+  1 failed`. Fixture passed a percent-encoded isolated-schema URL through
+  ConfigParser interpolation before migration.
+- Failed correction `7d0a16d1be7dadd3dffa17adc3d22f3e12a618f4`,
+  run `30705191850`: Unit/Frontend passed; service was `36 passed, 0 skipped,
+  1 failed`. Production Alembic `env.py` still passed percent-encoded
+  `DATABASE_URL` through ConfigParser unescaped.
+- Corrected implementation `27c5aa98138f882a750dc76a402ee2afe2151b72`,
+  run `30705503707`: Unit, Frontend, and service-backed all success.
+- Completion-record SHA/CI: this commit, pending exact-SHA CI.
+- Queue-archive SHA/CI: not created before completion-record CI.
+
+## 28. Explicit Non-Scope
+
+Not implemented: M2 Workspace page/shell/navigation/panel UI; M3 selection
+propagation/URL runtime; M4 Artifact Gallery/renderers/WebGL/trajectory/phonon/
+volumetric Workspace integration; M5 Report/Recipe composition; M6 save/reload,
+recovery, responsive/mobile Workspace UX; M7 final Workspace closure; Phase 10N
+science; CrystalNN/VoronoiNN, experimental XRD, trajectory analytics,
+Electronic Band/DOS; arbitrary code/shell/notebook/filesystem/external science
+API; new LLM dependency or real DeepSeek call; autonomous replanning, generic
+workflow, multi-job Workspace, RAG/memory/multi-agent, plugin marketplace, or
+enterprise SaaS.
+
+## 29. Phase 10M Readiness
+
+```text
+Phase 10M-1:
+READY_WITH_EXPLICIT_LIMITS
+
+Phase 10M-2:
+REVIEWER_GATE
+```
+
+Phase 10M as a whole is not complete.
+
+## 30. Queue State
+
+```text
+Phase 10M-1:
+COMPLETE / AWAITING_VERIFIED_QUEUE_ARCHIVE
+
+Phase 10M-2:
+REVIEWER_GATE / AWAITING REVIEWER PROMPT
+
+TASK_BLOCK_COUNT = 1
+```
+
+## 31. Automatic Phase 10M-2 Entry
+
+```text
+NO
+PHASE_10M2_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 32. Next Action
+
+```text
+Verify this completion-record exact-SHA CI, then archive only the completed
+Phase 10M-1 task by a separate verified queue commit. Do not create, queue, or
+execute Phase 10M-2.
+```
+
+## 33. Final Repository State
+
+- Corrected implementation SHA: `27c5aa98138f882a750dc76a402ee2afe2151b72`.
+- Implementation exact-SHA CI: `30705503707`, success.
+- Completion-record SHA/CI: this commit / pending.
+- Queue-archive SHA/CI: not created / pending.
+- Expected current post-commit state: `HEAD == origin/master`, clean except for
+  lifecycle commits in progress, migration head `0007`, task count 1.

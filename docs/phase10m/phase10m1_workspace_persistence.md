@@ -1,7 +1,8 @@
 # Phase 10M-1 Workspace Persistence
 
-Status: current M1 implementation sidecar. Migration and repository tests are
-implemented; service-backed closure and exact-SHA CI remain pending.
+Status: current M1 implementation sidecar. Migration and repository tests plus
+corrected service-backed exact-SHA CI are verified; completion and archive
+lifecycle gates remain.
 
 ## Tables
 
@@ -51,7 +52,7 @@ and re-upgrade against an explicit `0006` parent fixture and a fresh SQLite
 `0001 -> 0007` chain. Historical PostgreSQL-specific DDL is normalized only
 for SQLite execution; the PostgreSQL path remains unchanged. Full PostgreSQL
 migration, foreign-key/index inspection, and service-backed no-skipped
-evidence are **PENDING** until exact-SHA CI.
+evidence passed exact-SHA CI run `30705503707`.
 
 ## Caps
 
@@ -71,4 +72,4 @@ make room for a new one.
 Existing Job, Plan, Artifact, Interpretation, Report, Recipe, and Runtime
 records remain authoritative and are not rewritten. SQLite and in-memory
 repository tests are focused coverage; PostgreSQL and full migration/service
-evidence remain **PENDING**.
+evidence are verified by corrected exact-SHA CI.

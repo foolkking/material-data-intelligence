@@ -1,8 +1,8 @@
 # Phase 10M-1 Workspace API
 
-Status: additive API implementation and local regression are verified.
-Service-backed and exact-SHA verification remain pending; no archive claim is
-made.
+Status: additive API implementation, local regression, and corrected
+implementation exact-SHA CI are verified. Completion-record and queue-archive
+CI remain; no archive claim is made.
 
 ## Implemented routes
 
@@ -53,8 +53,8 @@ selection store.
 
 API-focused tests in `tests/test_phase10m1_workspace_projection_api.py`, full
 backend regression, frontend regression, and existing browser replay pass.
-PostgreSQL/Redis/MinIO and exact-SHA CI are **PENDING**. Workspace UI is
-intentionally not implemented in M1.
+PostgreSQL/Redis/MinIO exact-SHA CI is **PASS** with `37 passed, 0 skipped,
+0 failed, 0 errors`. Workspace UI is intentionally not implemented in M1.
 
 `REAL_LLM_CALLS = 0`; no API route in this scope invokes an LLM, ToolCall,
 Job enqueue, or scientific adapter.

@@ -1,7 +1,8 @@
 # Phase 10M-1 Evidence
 
 Status: sanitized local evidence and manifest are implemented and verified.
-PostgreSQL/Redis/MinIO execution and exact-SHA CI remain **PENDING**.
+Corrected implementation exact-SHA CI `30705503707` is successful, including
+PostgreSQL/Redis/MinIO `37 passed, 0 skipped, 0 failed, 0 errors`.
 
 ## Evidence directory
 
@@ -37,7 +38,7 @@ sidecar:
 
 ## Verification status
 
-Focused M1 tests pass (`25 passed`). Full backend passes with `1103 passed,
+Focused M1 tests pass (`26 passed`). Full backend passes with `1103 passed,
 39 skipped, 63 warnings`; skips are local service/integration gates and are
 not counted as service PASS. Frontend passes `333` tests, typecheck, and build.
 Phase 10 closure plus L4/L5 Chromium/Firefox/WebKit/mobile replay pass with no
@@ -45,8 +46,9 @@ unapproved network, console, HTML/JS, overflow, or secret findings.
 
 SQLite verifies focused `0006 -> 0007 -> 0006 -> 0007` and fresh
 `0001 -> 0007`. PostgreSQL full-chain upgrade/downgrade/re-upgrade,
-repository/API service evidence, and zero-skip assertions remain pending
-exact-SHA CI because local Docker/services are unavailable.
+repository/API service evidence, and the zero-skip assertion passed corrected
+exact-SHA CI. Local Docker/services remain unavailable and are not reported as
+a local PASS.
 
 Evidence must remain LF-normalized for text, hash raw binary files, and omit
 secrets, private paths, credentials, provider payloads, Artifact bodies, and

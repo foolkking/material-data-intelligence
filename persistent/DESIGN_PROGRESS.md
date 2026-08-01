@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-08-01 Phase 10M-1 Implementation In Progress
+## 2026-08-01 Phase 10M-1 Complete, Awaiting Verified Archive
 
 - Implemented the sealed Workspace domain contracts across Python, checked-in
   JSON Schema, and TypeScript, including strict identity, caps, selection, and
@@ -8,9 +8,11 @@
 - Added Alembic `0007_phase10m1_workspace_domain`, in-memory/SQLAlchemy
   repositories, explicit historical Job projection, optimistic layout
   revisions, and additive Workspace metadata APIs.
-- Focused M1 tests pass, including fresh SQLite migration and constant-query
-  project listing. PostgreSQL/Redis/MinIO, browser regression, full suites,
-  exact-SHA CI, completion record, and queue archive remain open.
+- Focused/full tests, fresh SQLite migration, constant-query project listing,
+  browser regression, and evidence checks pass. Corrected implementation
+  `27c5aa9` passed exact-SHA CI `30705503707`; service-backed integration is
+  `37 passed, 0 skipped, 0 failed, 0 errors`. Completion-record and queue
+  archive remain open.
 - Workspace UI, panel renderers, selection propagation, and M2 behavior remain
   explicitly deferred.
 
