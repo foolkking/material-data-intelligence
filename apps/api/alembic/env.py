@@ -17,7 +17,7 @@ if config.config_file_name is not None:
 
 runtime_database_url = load_settings().database_url
 if os.getenv("DATABASE_URL") or os.getenv("MDI_DATABASE_URL") or os.getenv("POSTGRES_HOST"):
-    config.set_main_option("sqlalchemy.url", runtime_database_url)
+    config.set_main_option("sqlalchemy.url", runtime_database_url.replace("%", "%%"))
 
 target_metadata = metadata
 

@@ -135,10 +135,10 @@
       "sha256": "6e1d840e7cc5497a272868b357c610155f088d6fb7bdba58a39ef48e9ee6a4e6"
     },
     {
-      "bytes": 617,
+      "bytes": 852,
       "hashMode": "LF_TEXT",
       "path": "postgresql_repository_evidence.json",
-      "sha256": "65cb0dc1e714a68f6d4d6f0a8ff9dacb79d02185a76c22c00a796e81d26f3b8d"
+      "sha256": "4d6dad82a984c565be845138d123207a0fc952a28629e7ebe20c099d2dc6a833"
     },
     {
       "bytes": 203,
@@ -159,10 +159,10 @@
       "sha256": "d7eeaedd93b1191af230749c02f57bf1d522c0ebe0976dc968b4a132e62cb919"
     },
     {
-      "bytes": 715,
+      "bytes": 1080,
       "hashMode": "LF_TEXT",
       "path": "service_backed.txt",
-      "sha256": "969c6ad608783a16ebd1586167e13ece47824d6c8fe62b9ea50662f2fc0e2d47"
+      "sha256": "624d30367766d084494c0f60a968db9b5b64f6979c556f43789756db54333eb3"
     },
     {
       "bytes": 336,
@@ -171,10 +171,10 @@
       "sha256": "9df56687cb970b2cd39628991b0f4cdefbd1d8e9aa3b869ef9d59185cc116752"
     },
     {
-      "bytes": 1119,
+      "bytes": 1411,
       "hashMode": "LF_TEXT",
       "path": "test_summary.txt",
-      "sha256": "18e2dbdf07445081137af0ae0b6d3b7fc4376e9dedd789131e34279410f5a038"
+      "sha256": "24934f43b487c725d2fb172d5ee7e460b6d6561d3637f23d0a1aaf2674ae918d"
     },
     {
       "bytes": 156,

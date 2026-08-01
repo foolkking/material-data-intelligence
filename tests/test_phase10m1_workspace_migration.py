@@ -21,6 +21,16 @@ def _config(path: Path) -> AlembicConfig:
     return config
 
 
+def test_percent_encoded_database_url_round_trips_through_alembic_config() -> None:
+    database_url = (
+        "postgresql+psycopg://user:pass@localhost/db"
+        "?options=-csearch_path%3Dphase10m1_test%2Cpublic"
+    )
+    config = AlembicConfig()
+    config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
+    assert config.get_main_option("sqlalchemy.url") == database_url
+
+
 def _create_exact_parent_fixture(path: Path) -> None:
     engine = create_engine(f"sqlite:///{path.as_posix()}")
     with engine.begin() as connection:

@@ -5,6 +5,9 @@
   "required_fixture":"tests/integration/test_phase10m1_workspace_service_backed.py",
   "required_services":["PostgreSQL","Redis","MinIO"],
   "skipped_locally":true,
-  "failedAttempt":{"sha":"d39687f7fe5ce39de0fe375a2b5d3068626b74f0","run":30704917567,"result":"36 passed, 0 skipped, 1 fixture failure","cause":"ConfigParser interpolation rejected percent-encoded isolated-schema URL before migration"},
+  "failedAttempts":[
+    {"sha":"d39687f7fe5ce39de0fe375a2b5d3068626b74f0","run":30704917567,"result":"36 passed, 0 skipped, 1 fixture failure","cause":"test fixture passed percent-encoded isolated-schema URL directly to ConfigParser"},
+    {"sha":"7d0a16d1be7dadd3dffa17adc3d22f3e12a618f4","run":30705191850,"result":"36 passed, 0 skipped, 1 migration-config failure","cause":"Alembic env.py passed environment URL to ConfigParser without escaping percent encoding"}
+  ],
   "claim_policy":"not counted as PASS until corrected exact-SHA CI reports zero skipped and zero failed"
 }
