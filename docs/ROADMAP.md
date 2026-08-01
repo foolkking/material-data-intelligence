@@ -38,8 +38,9 @@ Current status: 10L-0 through 10L-4 are archived. Phase 10L-4 corrected
 implementation `02a9e33` passed exact-SHA CI run `30606774006`, completion
 record `45af09e` passed run `30607509775`, and archive `58ee943` passed run
 `30608078520`. Phase 10L-5 implementation `bfc43bd` passed exact-SHA CI run
-`30693848581`; its completed task remains queued until completion-record and
-verified queue-archive exact-SHA CI close. Its required
+`30693848581`; completion record `e4b0a8f` passed exact-SHA CI run
+`30694747664`, and the verified queue-archive commit removes the completed task.
+Phase 10L is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`. Its required
 live gate covers all five natural-language cases through DeepSeek with
 `DEEPSEEK_KEY`; a separate 40-case real-DeepSeek replay covers useful retained
 historical browser/Mock-LLM semantics and documents exclusions by reason.

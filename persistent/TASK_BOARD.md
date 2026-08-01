@@ -20,18 +20,17 @@
   `31 passed, 0 skipped, 0 failed`. Completion record `45af09e` passed
   exact-SHA CI run `30607509775`; archive `58ee943` passed exact-SHA CI run
   `30608078520` and removed only the completed L4 block.
-- [x] Phase 10L-5 implementation is
-  `COMPLETE / AWAITING_COMPLETION_RECORD_CI`. Implementation `bfc43bd` passed exact-SHA
-  CI run `30693848581`: Unit, Frontend/browser/build, and PostgreSQL/Redis/
-  MinIO service-backed `36 passed, 0 skipped, 0 failed`. Phase 10M-0 remains
+- [x] Phase 10L-5 is `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
+  Implementation `bfc43bd` passed exact-SHA CI run `30693848581`; completion
+  record `e4b0a8f` passed exact-SHA CI run `30694747664`. The archive commit
+  removes the completed task block. Phase 10M-0 remains
   `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
 
 Live evidence progress: all five required DeepSeek cases pass with verification
 suite `deepseek_suite_ee5a0e9700d1a70787fc060fda274171`; the supplemental
 historical replay passes 40/40 with suite
-`historical_deepseek_suite_dde5218a3d2121fc038bb90d6daa044a`. The implementation
-gate is closed. The completed task block remains until completion-record and
-verified queue-archive exact-SHA CI close. No Phase 10M executable task exists.
+`historical_deepseek_suite_dde5218a3d2121fc038bb90d6daa044a`. Phase 10L is
+`COMPLETE / READY_WITH_EXPLICIT_LIMITS`; no Phase 10M executable task exists.
 
 - [x] Phase 10L-1 Analysis Intent Contract + Bounded Clarification implementation
   `844eb149` and completion record `b4cd656` passed exact-SHA CI runs
@@ -76,8 +75,8 @@ verified queue-archive exact-SHA CI close. No Phase 10M executable task exists.
   the verified queue block is archived. Phase 10L-1 subsequently entered its
   reviewer-approved implementation task as recorded above.
 
-`TASKS.md` has one task block: reviewer-supplied L5 is the sole active task.
-Future Scope and Not Planned remain absent.
+`TASKS.md` has zero task blocks. Phase 10M-0 remains a reviewer gate; Future
+Scope and Not Planned remain absent.
 
 The remaining sections are historical task records and do not override the
 current board above.

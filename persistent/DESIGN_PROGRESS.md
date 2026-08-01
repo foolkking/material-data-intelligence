@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-08-01 Phase 10L-5 Implementation Complete, Awaiting Completion CI
+## 2026-08-01 Phase 10L Complete / Ready With Explicit Limits
 
 - Phase 10L-4 verified queue archive `58ee943` passed exact-SHA CI run
   `30608078520`: Unit, Frontend/browser/build, and PostgreSQL/Redis/MinIO
@@ -33,8 +33,9 @@
 - Implementation `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37` passed
   exact-SHA CI run `30693848581`: Unit Tests, Frontend typecheck/build/browser
   replay, and PostgreSQL/Redis/MinIO service-backed `36 passed, 0 skipped,
-  0 failed`. Completion-record and archive CI remain; Phase 10M-0 is still a
-  reviewer gate.
+  0 failed`. Completion record `e4b0a8f5619cbb1001ef64809db6400729a99d8d`
+  passed exact-SHA CI run `30694747664`. The verified queue-archive commit
+  removes the completed task; Phase 10M-0 remains reviewer-gated.
 
 ## 2026-07-31 Phase 10L-4 Grounded Interpretation Complete, Awaiting Archive
 

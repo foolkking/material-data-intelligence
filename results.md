@@ -1789,6 +1789,23 @@ or execute Phase 10M-0.
 - completion-record exact-SHA CI: pending this record's commit.
 - archive exact-SHA CI: pending completion-record success.
 
+## Phase 10L-5 Closure Addendum - 2026-08-01 18:03 +08:00
+
+- Completion-record commit:
+  `e4b0a8f5619cbb1001ef64809db6400729a99d8d`.
+- Completion-record exact-SHA CI: run `30694747664`, `success`.
+- Required jobs: Unit Tests `success`; Frontend typecheck/build and L4/L5
+  browser replay `success`; PostgreSQL/Redis/MinIO service-backed integration
+  `36 passed, 0 skipped, 0 failed`.
+- Queue verification: implementation, real DeepSeek evidence, browser/service
+  evidence, permanent result, implementation CI, completion record, and
+  completion-record CI agree.
+- Archive action: the complete Phase 10L-5 `---TASK---` block is deleted by the
+  queue-archive commit. Phase 10M-0 remains only a reviewer gate and no
+  executable Phase 10M task exists.
+- Archive exact SHA and CI run are reported in the reviewer return after the
+  final exact-SHA gate; this permanent addendum is not rewritten after archive.
+
 # Phase 10L-4 Grounded Scientific Result Interpretation Result
 
 ## 1. Conclusion

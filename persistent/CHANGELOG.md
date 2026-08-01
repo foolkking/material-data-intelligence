@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-08-01 - Phase 10L-5 Completion Record and Queue Archive
+
+- Completion record `e4b0a8f5619cbb1001ef64809db6400729a99d8d`
+  passed exact-SHA CI run `30694747664`, including Unit, Frontend/browser/build,
+  and PostgreSQL/Redis/MinIO `36 passed, 0 skipped, 0 failed`.
+- Removed only the verified completed L5 task block. Phase 10L is
+  `COMPLETE / READY_WITH_EXPLICIT_LIMITS`; Phase 10M-0 remains a reviewer gate
+  with no executable task.
+
 ## 2026-08-01 - Phase 10L-5 Implementation Exact-SHA CI Complete
 
 - Implementation `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37` passed

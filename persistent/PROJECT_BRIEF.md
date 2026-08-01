@@ -2,11 +2,12 @@
 
 ## 2026-08-01 Current Phase Status
 
-Phase 10L-5 implementation `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37`
-passed exact-SHA CI run `30693848581`. The Agent chain is verified across five
+Phase 10L is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`. L5 implementation
+`bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37` and completion record
+`e4b0a8f5619cbb1001ef64809db6400729a99d8d` passed exact-SHA CI runs
+`30693848581` and `30694747664`. The Agent chain is verified across five
 current real-DeepSeek product cases and 40 useful historical Mock/Fake LLM
-semantic replays. Phase 10L remains pending only completion-record and verified
-queue-archive CI. Phase 10M-0 is a reviewer gate, not an executable task.
+semantic replays. Phase 10M-0 is a reviewer gate, not an executable task.
 
 ## 2026-07-27 Canonical Product Brief
 

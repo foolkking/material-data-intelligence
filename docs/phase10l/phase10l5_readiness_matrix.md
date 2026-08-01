@@ -12,8 +12,9 @@
 | Security and secret scan | PASS | closure security markers and manifest |
 | Service-backed | PASS locally and exact-SHA CI | local 5/5 live DeepSeek plus 21/21 default integration; CI 36/36, zero skips/failures |
 | Implementation exact-SHA CI | PASS | `bfc43bd`, run `30693848581` |
-| Completion-record/archive exact-SHA CI | Pending | completed task remains in queue |
+| Completion-record exact-SHA CI | PASS | `e4b0a8f`, run `30694747664` |
+| Verified queue archive | COMPLETE / exact-SHA CI gate | completed L5 block removed; final SHA/run returned to reviewer |
 | Phase 10M-0 | Reviewer gate | no executable task created |
 
-The implementation gate is closed. The phase is not archived until the
-`results.md` completion record and verified queue-archive exact-SHA CI close.
+All implementation and completion-record gates are closed. This archive commit
+removes the completed task; its exact-SHA CI is the final Phase 10L gate.
