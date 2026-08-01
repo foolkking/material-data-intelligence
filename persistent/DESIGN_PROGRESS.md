@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-08-01 Phase 10M-0 Audit and IA Seal Candidate
+## 2026-08-01 Phase 10M-0 Audit and IA Seal Complete / Reviewer Approval Required
 
 - Direct reviewer authorization admitted a documentation-only Workspace audit
   without changing `TASKS.md`; task-block count remains zero.
@@ -11,8 +11,10 @@
   `0007`, additive APIs, `/workspaces/{workspaceId}`, strict Panel/Selection
   contracts, historical lazy projection, and M1-M7 ordering for reviewer approval.
 - Production source, dependencies, lockfiles, current scientific contracts,
-  Runtime, Registry, and `TASKS.md` remain unchanged. Audit/planning exact-SHA
-  CI is still required before a completion record can be written.
+  Runtime, Registry, and `TASKS.md` remain unchanged. Audit/planning commit
+  `4c5d25e` passed exact-SHA CI run `30698489359`; the separate completion
+  record is accepted only after its own exact-SHA CI and is identified in the
+  final reviewer return.
 
 ## 2026-08-01 Phase 10L Complete / Ready With Explicit Limits
 

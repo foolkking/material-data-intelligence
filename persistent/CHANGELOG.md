@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2026-08-01 - Phase 10M-0 Workspace Audit and Architecture Seal Candidate
+## 2026-08-01 - Phase 10M-0 Workspace Audit and Architecture Seal
 
 - Audited current routes, PlannerWorkbench, APIs, persistence, artifact
   renderers, exact identities, browser behavior, Report/Recipe ownership, and
@@ -10,7 +10,10 @@
 - Added current Chromium/Firefox/WebKit/mobile capture replay with zero live
   LLM/API forwarding and retained the explicit fixture/service limitations.
 - No production source, migration, API, UI, dependency, lockfile, or
-  `TASKS.md` change is part of this audit candidate.
+  `TASKS.md` change is part of this audit.
+- Audit/planning commit `4c5d25e` passed exact-SHA CI run `30698489359`; the
+  completion-record commit remains separate and is gated by its own exact-SHA
+  CI.
 
 ## 2026-08-01 - Phase 10L-5 Completion Record and Queue Archive
 

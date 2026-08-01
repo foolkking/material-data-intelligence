@@ -8,8 +8,10 @@ Phase 10L is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`. L5 implementation
 `30693848581` and `30694747664`. The Agent chain is verified across five
 current real-DeepSeek product cases and 40 useful historical Mock/Fake LLM
 semantic replays. Queue archive `8f304fa` passed exact-SHA CI run
-`30695065220`. Phase 10M-0 is a directly authorized documentation-only audit;
-its sealed proposal is awaiting reviewer approval and Phase 10M-1 is not active.
+`30695065220`. Phase 10M-0 is a directly authorized documentation-only audit.
+Its sealed proposal and retained evidence are complete at audit/planning commit
+`4c5d25e` with exact-SHA CI `30698489359` success; the completion-record CI is
+the final audit gate. Phase 10M-1 is not active and remains reviewer-gated.
 
 ## 2026-07-27 Canonical Product Brief
 

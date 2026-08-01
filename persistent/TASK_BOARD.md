@@ -2,9 +2,12 @@
 
 ## Current Approved Work
 
-- [ ] Phase 10M-0 is a `REVIEWER_AUTHORIZED_DIRECT_AUDIT`, not a TASKS queue
-  item. Its documentation/evidence seal is being validated; production source
-  is unchanged. Phase 10M-1 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+- [x] Phase 10M-0 is a `REVIEWER_AUTHORIZED_DIRECT_AUDIT`, not a TASKS queue
+  item. Its documentation/evidence seal is complete at audit/planning commit
+  `4c5d25e` with exact-SHA CI run `30698489359` success. The separate
+  completion record is accepted only after its exact-SHA CI succeeds and is
+  identified in the final reviewer return. Production source is unchanged.
+  Phase 10M-1 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
   `TASK_BLOCK_COUNT = 0` and no executable Phase 10M task exists.
 
 - [x] Phase 10L-2 Capability-Aware Planner + Eligibility Resolver is

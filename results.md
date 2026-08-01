@@ -2518,3 +2518,409 @@ queue, or execute Phase 10L-4.
   executable Phase 10L-4 task exists.
 - Archive commit exact SHA and CI run are reported in the reviewer return after
   the final exact-SHA gate; this addendum is not rewritten after archive.
+
+# Phase 10M-0 Unified Scientific Workspace Fact Audit + Information Architecture Seal Result
+
+Completion date: 2026-08-01 (Asia/Shanghai)
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / REVIEWER_APPROVAL_REQUIRED
+```
+
+The repository fact audit, information architecture seal, implementation
+backlog, acceptance map, execution lock, and execution manifest are complete.
+No Phase 10M production implementation was performed.
+
+## 2. Baseline
+
+- Branch: `master`.
+- Initial `HEAD == origin/master`:
+  `8f304fa08ddab1cefd69848f621f8438fc2038d5`.
+- Phase 10L-5 implementation:
+  `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37`; CI `30693848581`, success.
+- Phase 10L-5 completion record:
+  `e4b0a8f5619cbb1001ef64809db6400729a99d8d`; CI `30694747664`, success.
+- Phase 10L-5 verified queue archive:
+  `8f304fa08ddab1cefd69848f621f8438fc2038d5`; CI `30695065220`, success.
+- Entry worktree: clean. `TASK_BLOCK_COUNT = 0`.
+- Phase 10M production source implementation at entry: absent.
+
+## 3. Production Behavior Changes
+
+```text
+Production Behavior Changes:
+NONE
+```
+
+Production source, schemas, migrations, API, frontend behavior, Tool Registry,
+Adapters, Runtime, dependencies, lockfile, and `TASKS.md` are unchanged.
+
+## 4. Current Workspace Maturity
+
+```text
+CURRENT_WORKSPACE_LEVEL = WORKSPACE_LIKE_SINGLE_PAGE
+```
+
+PlannerWorkbench on `/` exposes data setup, intent/planning, execution,
+artifacts, interpretation/evidence, report/recipe summaries, and audit JSON in
+one page. It is not a formal Workspace: there is no Workspace identity, route,
+aggregate persistence/API, history browser, deep link, saved layout, or global
+canonical selection context.
+
+## 5. Current Route / Component / API Map
+
+The current product has root `/`, framework 404/icon routes, PlannerWorkbench,
+product-specific preview panels, timeline/dependency/interpretation sections,
+and six independent read paths for plans/jobs/events/tool calls/artifacts and
+interpretations. The complete implementation-grounded map is retained in
+`docs/phase10m/phase10m0_current_page_route_component_map.md` and evidence
+`route_inventory.md`, `component_inventory.md`, and `api_inventory.md`.
+
+## 6. Current Domain / Persistence
+
+Job is the current analysis container. Persisted Plan -> Job -> ToolCall ->
+Artifact relations, dependency execution, lineage, evidence bundles,
+interpretations, Reports, and Recipes are sufficient for deterministic lazy
+Workspace projection. No Workspace/session projection or UI-state persistence
+currently exists.
+
+## 7. Current Artifact / Renderer Surface
+
+The audit covers Registry `0.1.0`, 53 registered tools, 38 Planner-visible
+tools, typed artifacts, viewers, generic inert fallback, download behavior,
+lineage, and 12 grounded projector combinations. Product-specific scientific
+renderers are reusable; generic JSON/text preview is not classified as a ready
+scientific panel. The full matrix is retained in
+`phase10m0_artifact_renderer_matrix.md`.
+
+## 8. Current Interpretation / Evidence Surface
+
+ScientificEvidenceBundle 1.0 and GroundedScientificInterpretation 1.0 are
+persisted per terminal Job. PlannerWorkbench shows findings, warnings,
+limitations, evidence drill-down, partial disclosure, provider/repair state,
+and inert audit JSON. There is no cross-panel evidence inspector or Workspace
+deep link today.
+
+## 9. Current Report / Recipe Surface
+
+Report and Recipe are existing persisted first-class records, but current UI
+exposes summary/inert preview rather than composition, selection, export, and
+history workflows. Phase 10M reuses their ownership and does not create a
+second report/recipe authority.
+
+## 10. Identity and Lineage
+
+The audit maps Project, Dataset/version, Profile, object/sample, structure/site,
+trajectory atom/frame, phonon q-point/branch, reciprocal point, volumetric
+field, Intent, Eligibility, Plan/step/binding, Job, ToolCall, Artifact/lineage,
+Evidence, Claim, Interpretation, Report, and Recipe identities. Cross-panel
+selection must use exact stable IDs and source versions; array index, display
+label, row order, fuzzy matching, and unit guessing are forbidden.
+
+## 11. Current State and Error Taxonomy
+
+Existing Job, ToolCall, dependency execution, binding, interpretation, and
+renderer states remain sources of truth. The sealed Workspace/panel taxonomy is
+an explicit UI/domain projection over those states; it does not rename or
+rewrite historical execution records.
+
+## 12. Browser / Responsive / Accessibility Facts
+
+- Current L5 replay: Chromium, Firefox, WebKit desktop and Chromium 390x844;
+  five ready cases plus clarification, unsupported, and capability mismatch.
+- Current L4 replay: three desktop browsers and Chromium mobile for findings,
+  evidence, partial, no-evidence, validation, and integrity states.
+- Console/page errors: 0. Unapproved external requests: 0. Live API/provider
+  forwarding: 0. `REAL_LLM_CALLS = 0`.
+- Firefox/WebKit mobile: `UNAVAILABLE`; not inferred from desktop.
+- Current long expanded audit JSON produces a very tall mobile document and is
+  an explicit Phase 10M-6 presentation target, not a false current PASS claim.
+
+## 13. Frontend Scientific Authority Audit
+
+```text
+FRONTEND_DUPLICATE_SCIENTIFIC_AUTHORITY = NONE
+```
+
+Current scientific authority remains Registered Adapter -> QueueWorkerRuntime
+-> persisted Artifact -> validated frontend mapper. Frontend calculations are
+limited to display formatting, sorting/filtering, camera/coordinate display,
+and contract-approved bounded presentation behavior.
+
+## 14. Workspace Information Architecture Decision
+
+The sealed desktop IA is Workspace header plus side navigation for Data, Plan,
+Execution, Results, Findings, Evidence, Provenance, and Report; a central panel
+stack; and one exact-identity inspector. PlannerWorkbench remains the `/`
+analysis entry and successful persisted Jobs navigate to the Workspace route.
+
+## 15. Workspace Entity / Cardinality Decision
+
+```text
+WORKSPACE_IS_FIRST_CLASS_PERSISTED_ENTITY = YES
+WORKSPACE_CARDINALITY = ONE_WORKSPACE_PER_JOB
+```
+
+ScientificWorkspace 1.0 stores exact source references and version/hash
+bindings. It never copies source science or caches Artifact payload as source
+of truth. Mutable user layout/title state is separated from immutable runtime
+references and revisioned.
+
+## 16. Persistence Decision
+
+Server persistence owns Workspace identity, panel membership/layout revisions,
+title, and durable user state. URL owns active panel and exact shareable
+selection; memory owns transient camera/expanded-row state. Canonical state is
+not stored in localStorage/sessionStorage.
+
+## 17. Database Migration Decision
+
+```text
+DATABASE_MIGRATION_REQUIRED = YES
+```
+
+Phase 10M-1 adds Alembic `0007_phase10m1_workspace_domain` with
+`scientific_workspaces`, `workspace_panels`, and
+`workspace_layout_revisions`; exact nullability, defaults, FKs, uniqueness,
+indexes, `ON DELETE RESTRICT`, upgrade/downgrade, and no-backfill lazy projection
+policy are sealed. No migration was created in Phase 10M-0.
+
+## 18. API Decision
+
+```text
+NEW_WORKSPACE_API_REQUIRED = YES
+```
+
+Sealed additive endpoints cover create/project, get, patch with `If-Match`,
+project list, source-Job projection, panel/history reads, and exact M5
+Report/Recipe composition endpoints. Create is idempotent on
+`(projectId, sourceJobId)` and does not require `If-Match`. No API was added in
+Phase 10M-0.
+
+## 19. Route / Navigation Decision
+
+Canonical route: `/workspaces/{workspaceId}`. `/` remains PlannerWorkbench.
+Query state carries `panel` and versioned exact selection only. Browser
+back/forward restores those states; missing/stale sources render typed
+read-only states rather than silent rebinding.
+
+## 20. Panel Contract Decision
+
+```text
+PANEL_CONTRACT_REQUIRED = YES
+```
+
+WorkspacePanel 1.0 owns panel ID/kind/title, source refs, renderer contract,
+state/error/partial projections, exact selection I/O, evidence/provenance,
+layout/mobile/accessibility metadata, capability requirement, and inert
+unsupported fallback. Maximum panels per Workspace: 32.
+
+## 21. Selection Context Decision
+
+WorkspaceSelectionContext 1.0 is required. It carries exact identity kind/ID,
+source dataset/resource/artifact version and hash, scope, propagation,
+compatibility, clearing, bounded multi-selection, URL encoding, subscriptions,
+and typed stale/unsupported mapping. The server does not persist ephemeral
+selection.
+
+## 22. Report / Recipe Decision
+
+Existing Report and Recipe persistence remains authoritative. M5 adds
+composition APIs without new report/recipe tables. Reports retain partial and
+failed disclosures, evidence, lineage, selected panels/findings, and export.
+Recipes bind exact Profile, Intent, Plan, tool versions, parameters,
+dependencies, and artifact contracts.
+
+```text
+recommendation != executable plan
+```
+
+## 23. Historical Compatibility Decision
+
+Historical Jobs use idempotent lazy Workspace projection, not bulk backfill.
+AnalysisPlan 0.1/0.2, old Jobs/Artifacts, jobs without interpretation or graph,
+partial execution, missing Profile, stale dataset versions, legacy reports and
+recipes are preserved and projected as typed read-only/stale/unsupported states.
+Scientific identities are never silently upgraded.
+
+## 24. Mobile / Accessibility Decision
+
+Mobile uses one active panel, a dataset/context drawer, a panel switcher, and
+an inspector bottom sheet; it is not a compressed desktop split view. Sealed
+accessibility includes deterministic focus order, visible focus, semantic
+headings, status announcements, non-color state, table/chart/WebGL text
+alternatives, reduced motion, zoom, and at least 44x44 CSS-pixel touch targets.
+
+## 25. Performance / Loading Decision
+
+Workspace loads identity/status/panel metadata first, then lazy artifact data.
+Heavy viewers load on activation; requests are cancellable; WebGL contexts and
+observers are disposed on unmount. Cache keys include Workspace revision and
+source hashes; stale invalidation is exact. Adjacent panel metadata prefetch is
+disabled. Limits include 32 panels and 128 layout revisions; revision 129 is a
+typed `REVISION_CAP_EXCEEDED` rejection. Targets are development/browser
+acceptance targets, not production capacity claims.
+
+## 26. Security Boundary
+
+Artifact content remains inert data: no artifact HTML/JavaScript/iframe/module,
+no external artifact URL execution, no arbitrary code/shell/filesystem, no
+provider authority, no recommendation-to-plan/job/enqueue, no cross-job or
+cross-project artifact access, no stale identity rebinding, and no credential,
+path, or stack disclosure. New/changed audit content has zero secret-pattern
+or private-path hits.
+
+## 27. Decision Log
+
+M-D001 through M-D025 are all
+`SEALED_FOR_REVIEWER_APPROVAL`: Workspace entity/cardinality, persistence,
+migration, API, route, historical projection, Panel/renderer/selection,
+Report/Recipe, partial/error, mobile/accessibility/performance/WebGL/security,
+compatibility, PlannerWorkbench transition, save/recovery, deep links,
+staleness, and Phase ordering. No implementation-affecting decision is blocked.
+
+## 28. Phase 10M Implementation Sequence
+
+1. 10M-1: Workspace Domain Contract + Persistence.
+2. 10M-2: Unified Workspace Shell.
+3. 10M-3: Cross-Artifact Navigation + Canonical Selection.
+4. 10M-4: Typed Artifact Gallery + Scientific Viewer Integration.
+5. 10M-5: Scientific Report + Recipe Composition.
+6. 10M-6: Save / Reload / Recovery / Responsive Closure.
+7. 10M-7: Workspace Integration + Browser/API/Service Evidence Closure.
+
+Each phase has exact source/schema/database/API/frontend/test/browser/service/
+security scope, entry/exit gates, dependencies, and non-scope in
+`phase10m_implementation_backlog.md`.
+
+## 29. Acceptance and Test Plan
+
+The plan defines 53 unique acceptance IDs: M1=8, M2=7, M3=7, M4=8, M5=7,
+M6=8, M7=8. The acceptance plan and execution lock contain exactly the same
+ID set with zero missing, extra, duplicate, or shorthand entries.
+
+## 30. Execution Lock
+
+`phase10m_execution_lock.md` freezes facts, 25 decisions, files, migration,
+API/schema/route/panel/selection/report/security/performance/compatibility
+boundaries, M1-M7 order, stop conditions, and reviewer gates.
+
+```text
+The implementation agent is not authorized to redesign
+Workspace identity, persistence, API, migration, routing,
+panel contracts, selection identity, report ownership,
+compatibility, security, or Phase ordering.
+```
+
+## 31. Execution Manifest
+
+`phase10m_execution_manifest.md` is the sole high-level implementation entry.
+It records baseline, canonical docs, decision IDs, phases, modules, migration,
+APIs, schemas, routes/components, tests, browsers, services, CI, evidence,
+security markers, completion format, stop conditions, and reviewer gates.
+
+## 32. Files Changed
+
+- Audit/planning commit: 156 files, all under `docs/` or `persistent/`.
+- Added 22 canonical Phase 10M documents and the retained audit evidence tree.
+- Updated docs index/roadmap/shared-schema proposal and seven persistent records.
+- `production source = unchanged`.
+- `dependencies = unchanged`; `lockfile = unchanged`.
+- `TASKS.md = unchanged`.
+- This completion record appends `results.md` and updates persistent completion
+  state only.
+
+## 33. Checks
+
+- `git diff --check`: PASS.
+- `uv lock --check`: PASS, 108 packages resolved; lock unchanged.
+- Focused backend: 292 passed.
+- Full local backend: 1078 passed, 38 skipped, 63 warnings; local services were
+  unavailable, so integration skips are not claimed as service PASS.
+- Full local frontend: 52 files, 333 tests passed; focused: 15 files, 129 passed.
+- Typecheck/build/npm dependency tree: PASS.
+- Current browser audit: Chromium/Firefox/WebKit desktop and Chromium 390x844
+  capture replay PASS for the audited current surfaces.
+- Exact-SHA CI Unit: 1078 passed, 1 skipped, 37 deselected, 63 warnings;
+  Phase 10L-5 closure 99 passed.
+- Exact-SHA CI service-backed: 36 passed, 0 skipped, 0 failed, 0 errors.
+- Evidence manifest: 123 retained files, zero hash/membership mismatches.
+- Docs links: 40 documents checked, zero invalid local links.
+- `TASK_BLOCK_COUNT = 0`; `TASKS.md` diff zero.
+- New/changed secret scan: PASS; `NO_SECRET_PATTERN_HITS`.
+- `LOCAL_SERVICE_BACKED = UNAVAILABLE`; `CI_SERVICE_BACKED = PASS`.
+- `npm audit = UNAVAILABLE` because the configured mirror returned
+  `404 NOT_IMPLEMENTED`; it is not reported clean.
+- Known non-blocking warnings: existing pymatgen/spglib warnings and GitHub
+  Actions Node 20 deprecation notices.
+
+## 34. Commit / CI
+
+- Audit/planning commit:
+  `4c5d25ef00b2213683a3115febc5f482546cc522`.
+- Audit/planning exact-SHA CI: run `30698489359`, success; Unit, Frontend,
+  browser replay/build, PostgreSQL/Redis/MinIO, and no-skipped jobs succeeded.
+- Completion record: the commit containing this append-only section.
+- Completion-record exact-SHA CI: required before final reviewer return; exact
+  SHA and run are reported from immutable Git history in the final return.
+- Failed audit/planning CI attempts: none.
+
+## 35. Explicit Non-Scope
+
+No Workspace production contract, migration, API, UI, route, panel renderer,
+selection runtime, report productization, save/reload behavior, Phase 10N
+science, source code, dependency, lockfile, real DeepSeek, or other real LLM
+call was implemented. No Workspace/DAG/workflow editor, new scientific
+algorithm/tool, arbitrary code/shell/filesystem/network authority, RAG,
+memory, multi-agent product, plugin market, or autonomous replanning was added.
+
+## 36. Reviewer Decisions
+
+```text
+NO IMPLEMENTATION DECISION IS LEFT TO THE EXECUTION AGENT
+```
+
+The reviewer only approves or revises this sealed proposal. Any revision to
+identity, cardinality, migration, API, route, Panel/Selection contract,
+Report/Recipe ownership, compatibility, security, or phase ordering requires a
+new reviewer decision.
+
+## 37. Queue State
+
+```text
+Phase 10M-0:
+COMPLETE / REVIEWER_APPROVAL_REQUIRED
+
+Phase 10M-1:
+REVIEWER_GATE / AWAITING REVIEWER PROMPT
+
+TASK_BLOCK_COUNT = 0
+
+TASKS.md:
+UNCHANGED
+```
+
+## 38. Automatic Phase 10M-1 Entry
+
+```text
+NO
+PHASE_10M1_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 39. Next Action
+
+```text
+Return the complete Phase 10M-0 result to the reviewer.
+Do not create, queue, or execute Phase 10M-1.
+```
+
+## 40. Final Repository State
+
+- Audit/planning SHA: `4c5d25ef00b2213683a3115febc5f482546cc522`.
+- Audit/planning CI: `30698489359`, success.
+- Completion record: this results-bearing commit; exact SHA/CI reported in the
+  final reviewer return after its required exact-SHA gate.
+- Expected final state after that gate: `HEAD == origin/master`, clean,
+  `TASK_BLOCK_COUNT = 0`, production source unchanged.

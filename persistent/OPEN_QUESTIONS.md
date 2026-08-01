@@ -10,6 +10,9 @@ and Phase M1-M7 ordering are closed by M-D001 through M-D025 for this proposal.
 No implementation decision affecting Phase 10M-1 remains open. The reviewer
 may approve or revise the complete seal; Phase 10M-1 does not start automatically.
 
+Audit/planning commit `4c5d25e` and exact-SHA CI run `30698489359` are
+complete. The completion-record exact-SHA CI is the final record gate.
+
 ## 2026-07-31 Phase 10L-5 decisions closed
 
 - Real LLM provider for the current gate: DeepSeek only. `DEEPSEEK_KEY` is the
@@ -33,15 +36,13 @@ the L5 evidence matrix.
 The following questions can affect Initial Release and must be decided in their
 assigned phases rather than by this roadmap gate:
 
-### Phase 10L Reviewer Gate
+### Historical Phase 10L Reviewer Gate (closed)
 
 * Is plan approval/editing owned by Phase 10L or deferred to Phase 10M?
-* Phase 10L-4 interpretation architecture is closed: post-execution read-only
-  evidence projection, claim grounding, one interpretation repair, and no
-  execution authority are fixed. The reviewer-supplied Phase 10L-5 owns only
-  cross-case natural-language evidence closure and its approved DeepSeek-only
-  provider policy; its only remaining gate is its own implementation,
-  completion-record, and verified queue-archive CI.
+* Phase 10L-4 interpretation and the reviewer-supplied Phase 10L-5 cross-case
+  natural-language evidence closure are closed by verified implementation,
+  completion-record, and queue-archive CI. These questions are retained as
+  historical decisions, not active queue work.
 
 * Which exact units and domain property registries should be admitted beyond
   the conservative Phase 10K-1 numeric property allowlist?
