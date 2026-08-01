@@ -860,6 +860,13 @@ def build_object_store(
         elif obj.object_type == MaterialObjectType.Structure:
             object_store[obj.id] = obj.payload
             structure_resources[obj.id] = obj.payload
+        elif obj.object_type == MaterialObjectType.VolumetricData:
+            object_store[obj.id] = obj
+            object_refs.setdefault("volumetric", obj.id)
+            object_store.setdefault("volumetric", obj)
+        elif obj.object_type == MaterialObjectType.Trajectory:
+            object_store[obj.id] = obj
+            object_refs.setdefault("trajectory", obj.id)
     if formulas:
         object_refs["formulas"] = "formulas"
         object_store["formulas"] = formulas

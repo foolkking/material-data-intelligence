@@ -1,0 +1,316 @@
+{
+  "chromium": {
+    "desktop": {
+      "case_1": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_2": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_3": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_4": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_5": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 2
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 0,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      },
+      "unsupported": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 1,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      },
+      "capability_mismatch": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 1,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      }
+    },
+    "mobile": {
+      "case_1": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_2": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_3": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_4": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_5": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 2
+      }
+    },
+    "nonReadyMobile": {
+      "needs_clarification": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 0,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      },
+      "unsupported": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 1,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      },
+      "capability_mismatch": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 1,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      }
+    }
+  },
+  "firefox": {
+    "desktop": {
+      "case_1": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_2": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_3": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_4": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_5": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 2
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 0,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      },
+      "unsupported": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 1,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      },
+      "capability_mismatch": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 1,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      }
+    },
+    "mobile": {},
+    "nonReadyMobile": {}
+  },
+  "webkit": {
+    "desktop": {
+      "case_1": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_2": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_3": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_4": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 4
+      },
+      "case_5": {
+        "pass": true,
+        "ariaLive": "polite",
+        "tabCount": 3,
+        "unnamedControls": 0,
+        "evidenceFocusable": "0",
+        "evidenceFocusedByKeyboardFlow": true,
+        "claimCount": 2
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 0,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      },
+      "unsupported": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 1,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      },
+      "capability_mismatch": {
+        "pass": true,
+        "ariaLive": "polite",
+        "statusOrAlertCount": 1,
+        "stateMarkerCount": 1,
+        "headingCount": 1,
+        "unnamedControls": 0,
+        "focusedByKeyboard": true
+      }
+    },
+    "mobile": {},
+    "nonReadyMobile": {}
+  }
+}

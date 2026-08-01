@@ -1,0 +1,59 @@
+[
+  {
+    "elapsedMs": 38918.343,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 23192,
+    "promptHash": "be6b6338c53934ea7e5f24c82af630f2f436225287affa80540d13139b590e23",
+    "purpose": "INTENT_EXTRACTION",
+    "realCall": true,
+    "responseBytes": 3416,
+    "responseContentBytes": 2642,
+    "responseHash": "efa3298bfe4869267fedff756debcb08fb34f9853d0ea156fdcac2d229d0a305",
+    "tokenUsage": {
+      "completionTokens": 856,
+      "estimated": false,
+      "promptTokens": 5518,
+      "totalTokens": 6374
+    }
+  },
+  {
+    "elapsedMs": 1562.583,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 3508,
+    "promptHash": "0dedbcf0eccbadba7768f86e56aab76925eb24547cbdcae83cd86aaa594af82c",
+    "purpose": "CAPABILITY_PLAN_SELECTION",
+    "realCall": true,
+    "responseBytes": 609,
+    "responseContentBytes": 124,
+    "responseHash": "a9754bf4724d7ba11410cdb30105fa72ceec6260146a051dfdbe0cf59a338fc0",
+    "tokenUsage": {
+      "completionTokens": 39,
+      "estimated": false,
+      "promptTokens": 953,
+      "totalTokens": 992
+    }
+  },
+  {
+    "elapsedMs": 1995.36,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 5475,
+    "promptHash": "ddc396aba4345ab7c05b1bec05c121be06415b37b4f582e7f99f24ee13ca211b",
+    "purpose": "GROUNDED_INTERPRETATION",
+    "realCall": true,
+    "responseBytes": 1124,
+    "responseContentBytes": 594,
+    "responseHash": "ff9cd6efcbc10100e6429932c0ddf84e0e132deb5d0d43b01f0b55cf65633667",
+    "tokenUsage": {
+      "completionTokens": 207,
+      "estimated": false,
+      "promptTokens": 1449,
+      "totalTokens": 1656
+    }
+  }
+]

@@ -18,6 +18,17 @@
 Historical phase planning and evidence are retained below. They are not
 authoritative for future scope when they conflict with `ROADMAP.md`.
 
+Current Phase 10L-5 closure references:
+
+- [`phase10l/phase10l5_natural_language_evidence_architecture.md`](phase10l/phase10l5_natural_language_evidence_architecture.md)
+- [`phase10l/phase10l5_real_provider_verification.md`](phase10l/phase10l5_real_provider_verification.md)
+- [`phase10l/phase10l5_historical_browser_replay.md`](phase10l/phase10l5_historical_browser_replay.md)
+- [`phase10l/phase10l5_deepseek_only_provider_policy.md`](phase10l/phase10l5_deepseek_only_provider_policy.md)
+- [`phase10l/phase10l5_evidence_contracts.md`](phase10l/phase10l5_evidence_contracts.md)
+- [`phase10l/phase10l5_api_browser_evidence.md`](phase10l/phase10l5_api_browser_evidence.md)
+- [`phase10l/phase10l5_readiness_matrix.md`](phase10l/phase10l5_readiness_matrix.md)
+- [`phase10m/phase10m0_reviewer_gate.md`](phase10m/phase10m0_reviewer_gate.md)
+
 ## Phase 10K Material Intelligence
 
 - [`phase10k/phase10k0_material_intelligence_capability_gap_audit.md`](phase10k/phase10k0_material_intelligence_capability_gap_audit.md): implementation-grounded input, profile, tool, Planner, frontend, artifact, cap, and dependency audit.

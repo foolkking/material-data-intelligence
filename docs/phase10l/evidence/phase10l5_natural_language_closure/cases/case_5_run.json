@@ -1,0 +1,185 @@
+{
+  "apiRefs": [
+    "interpretations/interpretation_1cb7ebae253df3b372a4e63bf3da2c43/evidence",
+    "planner/jobs/job_65170c14100d59d49d792335",
+    "planner/jobs/job_65170c14100d59d49d792335/dependencies",
+    "planner/jobs/job_65170c14100d59d49d792335/interpretations"
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "bd15769722d33a6dd927a8858295beb601265eb137763150f6ed2f7adb9b810e",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 1700
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "21105175f3cde12aa91a7790bd3acd89c497ea14515aa1a1509e83762de33fe2",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 751
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_binary",
+      "artifactType": "volumetric_binary",
+      "contentHash": "6f360e74fd5959280762f657d434c72771146205e8ef12b611fa562ba1a55904",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 47
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_dataset_json",
+      "artifactType": "volumetric_dataset_json",
+      "contentHash": "92bb606d8e376a69888ab031de6580a3fe46b57a08810154bd0efbe032342c39",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 6110
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_field_json",
+      "artifactType": "volumetric_field_json",
+      "contentHash": "97b003f125eefaf14d24ee22fa0ab64b2376e98351f7714a3a75cdaf6f27bb58",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 2244
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_grid_json",
+      "artifactType": "volumetric_grid_json",
+      "contentHash": "5ea9a9394c977aa285cbf39c30db5af798b3cc73abe07f115edc6927d5bb9e14",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 1304
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_manifest_json",
+      "artifactType": "volumetric_manifest_json",
+      "contentHash": "4bd7713f2c1de3f359c5f46f47f1e9026c21dd433d60f8dfa96de801dd24b52f",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 2233
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_payload_json",
+      "artifactType": "volumetric_payload_json",
+      "contentHash": "84157c48820972ab6deaa6f0eab51d0d40a908df237426832b8a5ea7b26b0994",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 1018
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_structure_overlay_json",
+      "artifactType": "volumetric_structure_overlay_json",
+      "contentHash": "bf3d8673e0a91860c90ed41ca492a498ea0aa99933d87593a4c1647d3645c42c",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 4925
+    }
+  ],
+  "browserRefs": [],
+  "caseSpecHash": "5c68afd711f2349471f0192b8335041b6eac7e8106726c6bae04d6bffd17a4a3",
+  "caseSpecId": "caseSpec_5c68afd711f2349471f0192b8335041b",
+  "claimEvidenceLinks": [
+    {
+      "claimId": "claim_6a18f80f08b26118a1740513db9ec76e",
+      "evidenceItemIds": [
+        "evidence_b9d0b2b6ba1f44a8f5e8e6dfd6c3d924"
+      ]
+    },
+    {
+      "claimId": "claim_96b4db6cd9f68bcedd465c70d189850a",
+      "evidenceItemIds": [
+        "evidence_cef6fa746651432625d1b37338bd5786"
+      ]
+    }
+  ],
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 3064.6467,
+  "eligibility": {
+    "recordHash": "dc85e0be8bc4e94c85f4787f5453331833386585517ae9df7b960e747f33080b",
+    "recordId": "resolution_dc85e0be8bc4e94c85f4787f",
+    "schemaVersion": "1.0"
+  },
+  "evidenceBundle": {
+    "recordHash": "9cdfebc926d64082bea172fbc011508519cfa8b1c899621159cead3b97fc4259",
+    "recordId": "bundle_9cdfebc926d64082bea172fbc0115085",
+    "schemaVersion": "1.0"
+  },
+  "executionOutcome": "LEGACY_TERMINAL",
+  "intent": {
+    "clarificationRound": 0,
+    "intentHash": "d85174058f589ab6d7e44a3bcb53115c32c78cbd7c5ac6e092ad81717712e02b",
+    "intentId": "intent_d85174058f589ab6d7e44a3b",
+    "outcome": "READY"
+  },
+  "interpretation": {
+    "recordHash": "1cb7ebae253df3b372a4e63bf3da2c43d47fc1d6343aafcd1d0f3f642af0f9dd",
+    "recordId": "interpretation_1cb7ebae253df3b372a4e63bf3da2c43",
+    "schemaVersion": "1.0"
+  },
+  "job": {
+    "recordId": "job_65170c14100d59d49d792335",
+    "semanticHash": "25f8a23f6dba14f773d65b7a3ef1d3beda844b62ade7b55a789deab192bc7004",
+    "state": "completed"
+  },
+  "lineage": [],
+  "plan": {
+    "graphHash": null,
+    "planHash": "25f8a23f6dba14f773d65b7a3ef1d3beda844b62ade7b55a789deab192bc7004",
+    "planId": "plan_e602bb37e1e08cff4cf978cf",
+    "schemaVersion": "0.1"
+  },
+  "profile": {
+    "recordHash": "4f4ffc7b4f7e8da783c06258028cd807e28cf65571550ae833e03c8675085e80",
+    "recordId": "profile_dataset_phase10l5_volumetric_v2",
+    "schemaVersion": "2.0"
+  },
+  "provider": {
+    "keySource": "NONE",
+    "mode": "DETERMINISTIC",
+    "model": "deterministic-capability-planner",
+    "promptHashes": [],
+    "provider": "deterministic_mock",
+    "purposes": [],
+    "realCallCount": 0,
+    "responseHashes": []
+  },
+  "resourceManifest": [
+    {
+      "kind": "volumetricdata",
+      "objectHash": "5ef6442c2627412b27afaf726f67c43242adad7b1c880fcb4231ec2c3ad32374",
+      "objectId": "obj_volumetric_5ef6442c2627",
+      "objectType": "VolumetricData"
+    }
+  ],
+  "runHash": "16152364f63796b7c0d513f288167f3fcfc1d5aa6cef477779bd358bb9eeecda",
+  "runId": "run_16152364f63796b7c0d513f288167f3f",
+  "schemaVersion": "1.0",
+  "securityMarkers": [
+    "NO_ALTERNATIVE_PROVIDER_REAL_CALLS",
+    "NO_ARBITRARY_CODE",
+    "NO_ARTIFACT_HTML_OR_JAVASCRIPT",
+    "NO_CROSS_JOB_OR_PROJECT_BINDING",
+    "NO_DIRECT_TOOL_PLAN_OR_ADAPTER_IN_USER_REQUEST",
+    "NO_EXTERNAL_SCIENTIFIC_API",
+    "NO_RAW_ARTIFACT_TO_PROVIDER",
+    "NO_RECOMMENDATION_AUTO_EXECUTION",
+    "NO_SECRET_IN_EVIDENCE"
+  ],
+  "selectedTools": [
+    {
+      "bindingHash": "4c01dd11f6000c8f23e1390d1525d41029d1a63b2a0b117079a8cea60cb4d2c8",
+      "toolId": "structure.volumetric_data",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "tokenUsage": {
+    "completionTokens": 0,
+    "estimated": false,
+    "promptTokens": 0,
+    "totalTokens": 0
+  },
+  "toolCalls": [
+    {
+      "recordId": "call_job_65170c14100d59d49d792335_step_001",
+      "semanticHash": "e05cb104b0edc1a6349dfa982005d00b0a51aab55a1ecc0f12efb1d3d72fdff4",
+      "state": "completed"
+    }
+  ],
+  "userText": "查看这个 charge density，并解释主要特征。",
+  "verdict": "PASS"
+}

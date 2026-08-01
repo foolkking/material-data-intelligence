@@ -590,7 +590,8 @@
           "provider": {
             "enum": [
               "deterministic_mock",
-              "openai_compatible"
+              "openai_compatible",
+              "deepseek"
             ],
             "title": "Provider",
             "type": "string"

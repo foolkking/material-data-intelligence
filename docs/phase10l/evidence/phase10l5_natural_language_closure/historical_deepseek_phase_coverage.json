@@ -1,0 +1,71 @@
+{
+  "phaseSummary": {
+    "Phase 10A": {
+      "failed": 0,
+      "passed": 6,
+      "realCalls": 11
+    },
+    "Phase 10B": {
+      "failed": 0,
+      "passed": 5,
+      "realCalls": 10
+    },
+    "Phase 10C": {
+      "failed": 0,
+      "passed": 4,
+      "realCalls": 8
+    },
+    "Phase 10E": {
+      "failed": 0,
+      "passed": 3,
+      "realCalls": 6
+    },
+    "Phase 10F": {
+      "failed": 0,
+      "passed": 2,
+      "realCalls": 4
+    },
+    "Phase 10G": {
+      "failed": 0,
+      "passed": 1,
+      "realCalls": 2
+    },
+    "Phase 10H": {
+      "failed": 0,
+      "passed": 3,
+      "realCalls": 6
+    },
+    "Phase 10I": {
+      "failed": 0,
+      "passed": 2,
+      "realCalls": 4
+    },
+    "Phase 10J": {
+      "failed": 0,
+      "passed": 4,
+      "realCalls": 8
+    },
+    "Phase 10K": {
+      "failed": 0,
+      "passed": 3,
+      "realCalls": 6
+    },
+    "Phase 10L-1": {
+      "failed": 0,
+      "passed": 2,
+      "realCalls": 2
+    },
+    "Phase 10L-2": {
+      "failed": 0,
+      "passed": 3,
+      "realCalls": 5
+    },
+    "Phase 9": {
+      "failed": 0,
+      "passed": 2,
+      "realCalls": 4
+    }
+  },
+  "schemaVersion": "1.0",
+  "verdict": "PASS"
+}

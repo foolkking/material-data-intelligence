@@ -1,0 +1,235 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.xrd"
+    ]
+  ],
+  "caseNumber": 24,
+  "createdAt": "2026-08-01T07:31:04.249242+00:00",
+  "decision": {
+    "decisionHash": "19b539481eabdceff3283e4e26a159b03eae306679312b0a88dfa849ae81cb45",
+    "decisionId": "decision_19b539481eabdceff3283e4e",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "structure_analysis"
+        ],
+        "toolId": "structure.xrd",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "providerVisibleToolIds": [
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "rejectedToolCount": 42,
+    "resolutionHash": "ee987fe2e978c24ec17333718febe566e81956e19a8c48af089bbdbc50c9ccb1",
+    "resolutionId": "resolution_ee987fe2e978c24ec1733371"
+  },
+  "historicalExpectedToolIds": [
+    "structure.xrd"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot",
+      "summary",
+      "table",
+      "warnings"
+    ],
+    "intentHash": "153e9e86b9403688a5b3f1dea603cf703655738d3c791ff7d4bf02c5b312caf7",
+    "intentId": "intent_153e9e86b9403688a5b3f1de",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "structure_resource"
+    ],
+    "scientificIntents": [
+      "structure_analysis"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "obj_nacl",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:obj_nacl:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10E",
+  "plan": {
+    "graphHash": null,
+    "planHash": "3917c458eb774c398cb2177a8e88ae8bac244a16bbea39e4063fa6fc766bb85a",
+    "planId": "plan_9aea6c88eaf58bf81911bda0",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_phase10k2_evidence",
+    "profileId": "profile_historical_structure_v2",
+    "profileSemanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+    "selectedResourceIds": [
+      "obj_nacl"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5298.145,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 22995,
+      "promptHash": "d75b33f41fa21d3c6eb6664bb3b9638f7e34b65cf3ab3f44fa9eca0caf85c29f",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3299,
+      "responseContentBytes": 2527,
+      "responseHash": "5bd75e9b43e87c8cc64c414fd7a1e439f32646a25b29fdcde9df3b7f214ef688",
+      "tokenUsage": {
+        "completionTokens": 779,
+        "estimated": false,
+        "promptTokens": 5403,
+        "totalTokens": 6182
+      }
+    },
+    {
+      "elapsedMs": 1673.843,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 9611,
+      "promptHash": "de2f1fe5064c849b1967136b3c6e0dad58954810c8cce51e3c4b881151978153",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 601,
+      "responseContentBytes": 112,
+      "responseHash": "e411cf35037b10491021baac715ae3884b74885327c1353b3a39a40a44ad88d5",
+      "tokenUsage": {
+        "completionTokens": 36,
+        "estimated": false,
+        "promptTokens": 2674,
+        "totalTokens": 2710
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Generate a powder XRD pattern for this crystal structure.",
+  "replayPromptHash": "1dd1945e5a038db5d112d00c29d33724ec5b2d9fed493e97a5a9768271b471fe",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "12fd318d997e5e14a378a3f161b2ccaecd581cb3e736f57a96b59ffa598d9076",
+  "runId": "historical_live_run_12fd318d997e5e14a378a3f161b2ccae",
+  "runtime": {
+    "artifactCount": 4,
+    "artifacts": [
+      {
+        "id": "call_job_4d2f54aef7f2f23e86dff621_step_001-table_json",
+        "name": "xrd_pattern.json",
+        "sha256": "750948e0c79d41a32024c5eb63740c3ce0ce2a3609838983e2aa82256c3c68b3",
+        "sizeBytes": 4917,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_4d2f54aef7f2f23e86dff621_step_001-plotly_json",
+        "name": "xrd_plot.json",
+        "sha256": "afdb5f9e7e9a579cf693b628f2fb7e138cb8e2bbea093ffd7860e1675703d662",
+        "sizeBytes": 1357,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_4d2f54aef7f2f23e86dff621_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "9ec733bff062d03fcb38ce0abcedd49fd2bdaeaf69e74026df9ecaa2d152bdfb",
+        "sizeBytes": 1143,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_4d2f54aef7f2f23e86dff621_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "559b21a3f0e7f574786cc5a293a51796a24ee9047203315b889c6b42b5d1b544",
+        "sizeBytes": 1334,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_4d2f54aef7f2f23e86dff621_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.xrd"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.xrd"
+  ],
+  "slug": "xrd",
+  "sourcePaths": [
+    "docs/phase10e/browser_api_evidence/phase10e5_xrd"
+  ],
+  "timing": {
+    "plannerElapsedMs": 7062.902
+  },
+  "tokenUsage": {
+    "completionTokens": 815,
+    "estimated": false,
+    "promptTokens": 8077,
+    "totalTokens": 8892
+  },
+  "verdict": "PASS"
+}

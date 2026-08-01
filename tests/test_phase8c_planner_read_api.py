@@ -22,7 +22,8 @@ from mdi_tool_registry import load_manifests
 from mdi_workers import QueueToolExecution, QueueWorkerRuntime
 
 
-def test_planner_read_routes_return_persisted_job_and_plan_from_same_repository() -> None:
+def test_planner_read_routes_return_persisted_job_and_plan_from_same_repository(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("MDI_ALLOW_TEST_PROVIDERS", "1")
     client = TestClient(create_app())
 
     created = client.post(
@@ -32,6 +33,7 @@ def test_planner_read_routes_return_persisted_job_and_plan_from_same_repository(
             "projectId": "project_8c_route",
             "datasetId": "dataset_8c_route",
             "profileId": "profile_8c_route",
+            "provider": "mock",
             "enqueue": False,
         },
     ).json()

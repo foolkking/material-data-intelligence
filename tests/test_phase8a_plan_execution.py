@@ -10,6 +10,7 @@ import pytest
 
 from mdi_api.phase2_runtime import Phase2ProductRuntime
 from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
+from mdi_llm import MockLLMProvider
 from mdi_schemas import AnalysisPlan
 from mdi_tool_registry import load_manifests
 
@@ -185,6 +186,7 @@ def test_runtime_planned_only_does_not_execute() -> None:
 def test_planner_jobs_execute_true_enqueues_without_sync_execution() -> None:
     result = planner_jobs(
         PlannerJobsRequest(userPrompt="metrics", datasetId="ds8a", profileId="p8a", execute=True),
+        provider=MockLLMProvider(),
         registry=load_manifests(),
     )
     assert result.ok
@@ -202,6 +204,7 @@ def test_planner_jobs_execute_true_enqueues_without_sync_execution() -> None:
 def test_planner_jobs_execute_false_is_planned_only() -> None:
     result = planner_jobs(
         PlannerJobsRequest(userPrompt="metrics", datasetId="ds8a", profileId="p8a", execute=False),
+        provider=MockLLMProvider(),
         registry=load_manifests(),
     )
     assert result.ok

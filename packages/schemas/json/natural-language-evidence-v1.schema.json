@@ -1,0 +1,1193 @@
+{
+  "deepSeekVerificationRecord": {
+    "$defs": {
+      "EvidenceTokenUsage": {
+        "additionalProperties": false,
+        "properties": {
+          "completionTokens": {
+            "default": 0,
+            "maximum": 1000000,
+            "minimum": 0,
+            "title": "Completiontokens",
+            "type": "integer"
+          },
+          "estimated": {
+            "default": false,
+            "title": "Estimated",
+            "type": "boolean"
+          },
+          "promptTokens": {
+            "default": 0,
+            "maximum": 1000000,
+            "minimum": 0,
+            "title": "Prompttokens",
+            "type": "integer"
+          },
+          "totalTokens": {
+            "default": 0,
+            "maximum": 2000000,
+            "minimum": 0,
+            "title": "Totaltokens",
+            "type": "integer"
+          }
+        },
+        "title": "EvidenceTokenUsage",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "baseUrl": {
+        "const": "https://api.deepseek.com",
+        "default": "https://api.deepseek.com",
+        "title": "Baseurl",
+        "type": "string"
+      },
+      "configured": {
+        "title": "Configured",
+        "type": "boolean"
+      },
+      "createdAt": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Createdat",
+        "type": "string"
+      },
+      "keySource": {
+        "const": "DEEPSEEK_KEY",
+        "default": "DEEPSEEK_KEY",
+        "title": "Keysource",
+        "type": "string"
+      },
+      "model": {
+        "enum": [
+          "deepseek-v4-flash",
+          "deepseek-v4-pro"
+        ],
+        "title": "Model",
+        "type": "string"
+      },
+      "otherRealProviderCalls": {
+        "const": 0,
+        "default": 0,
+        "title": "Otherrealprovidercalls",
+        "type": "integer"
+      },
+      "outcomes": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 12,
+        "title": "Outcomes",
+        "type": "array"
+      },
+      "provider": {
+        "const": "deepseek",
+        "default": "deepseek",
+        "title": "Provider",
+        "type": "string"
+      },
+      "purposes": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 8,
+        "minItems": 1,
+        "title": "Purposes",
+        "type": "array"
+      },
+      "realCallCount": {
+        "maximum": 12,
+        "minimum": 0,
+        "title": "Realcallcount",
+        "type": "integer"
+      },
+      "runIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 5,
+        "title": "Runids",
+        "type": "array"
+      },
+      "sanitized": {
+        "const": true,
+        "default": true,
+        "title": "Sanitized",
+        "type": "boolean"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "tokenUsage": {
+        "$ref": "#/$defs/EvidenceTokenUsage"
+      },
+      "verdict": {
+        "enum": [
+          "PASS",
+          "FAIL",
+          "BLOCKED"
+        ],
+        "title": "Verdict",
+        "type": "string"
+      },
+      "verificationHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Verificationhash",
+        "type": "string"
+      },
+      "verificationId": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Verificationid",
+        "type": "string"
+      }
+    },
+    "required": [
+      "verificationId",
+      "verificationHash",
+      "configured",
+      "model",
+      "purposes",
+      "realCallCount",
+      "verdict",
+      "createdAt"
+    ],
+    "title": "DeepSeekVerificationRecord",
+    "type": "object"
+  },
+  "deepSeekVerificationSuite": {
+    "$defs": {
+      "DeepSeekCaseVerificationRef": {
+        "additionalProperties": false,
+        "properties": {
+          "caseSpecId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Casespecid",
+            "type": "string"
+          },
+          "realCallCount": {
+            "maximum": 12,
+            "minimum": 3,
+            "title": "Realcallcount",
+            "type": "integer"
+          },
+          "runId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Runid",
+            "type": "string"
+          },
+          "verdict": {
+            "const": "PASS",
+            "default": "PASS",
+            "title": "Verdict",
+            "type": "string"
+          },
+          "verificationHash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Verificationhash",
+            "type": "string"
+          },
+          "verificationId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Verificationid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "caseSpecId",
+          "runId",
+          "verificationId",
+          "verificationHash",
+          "realCallCount"
+        ],
+        "title": "DeepSeekCaseVerificationRef",
+        "type": "object"
+      },
+      "EvidenceTokenUsage": {
+        "additionalProperties": false,
+        "properties": {
+          "completionTokens": {
+            "default": 0,
+            "maximum": 1000000,
+            "minimum": 0,
+            "title": "Completiontokens",
+            "type": "integer"
+          },
+          "estimated": {
+            "default": false,
+            "title": "Estimated",
+            "type": "boolean"
+          },
+          "promptTokens": {
+            "default": 0,
+            "maximum": 1000000,
+            "minimum": 0,
+            "title": "Prompttokens",
+            "type": "integer"
+          },
+          "totalTokens": {
+            "default": 0,
+            "maximum": 2000000,
+            "minimum": 0,
+            "title": "Totaltokens",
+            "type": "integer"
+          }
+        },
+        "title": "EvidenceTokenUsage",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "baseUrl": {
+        "const": "https://api.deepseek.com",
+        "default": "https://api.deepseek.com",
+        "title": "Baseurl",
+        "type": "string"
+      },
+      "cases": {
+        "items": {
+          "$ref": "#/$defs/DeepSeekCaseVerificationRef"
+        },
+        "maxItems": 5,
+        "minItems": 5,
+        "title": "Cases",
+        "type": "array"
+      },
+      "configured": {
+        "const": true,
+        "default": true,
+        "title": "Configured",
+        "type": "boolean"
+      },
+      "createdAt": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Createdat",
+        "type": "string"
+      },
+      "keySource": {
+        "const": "DEEPSEEK_KEY",
+        "default": "DEEPSEEK_KEY",
+        "title": "Keysource",
+        "type": "string"
+      },
+      "model": {
+        "enum": [
+          "deepseek-v4-flash",
+          "deepseek-v4-pro"
+        ],
+        "title": "Model",
+        "type": "string"
+      },
+      "otherRealProviderCalls": {
+        "const": 0,
+        "default": 0,
+        "title": "Otherrealprovidercalls",
+        "type": "integer"
+      },
+      "provider": {
+        "const": "deepseek",
+        "default": "deepseek",
+        "title": "Provider",
+        "type": "string"
+      },
+      "sanitized": {
+        "const": true,
+        "default": true,
+        "title": "Sanitized",
+        "type": "boolean"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "suiteHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Suitehash",
+        "type": "string"
+      },
+      "suiteId": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Suiteid",
+        "type": "string"
+      },
+      "tokenUsage": {
+        "$ref": "#/$defs/EvidenceTokenUsage"
+      },
+      "totalRealCallCount": {
+        "maximum": 60,
+        "minimum": 15,
+        "title": "Totalrealcallcount",
+        "type": "integer"
+      },
+      "verdict": {
+        "const": "PASS",
+        "default": "PASS",
+        "title": "Verdict",
+        "type": "string"
+      }
+    },
+    "required": [
+      "suiteId",
+      "suiteHash",
+      "model",
+      "cases",
+      "totalRealCallCount",
+      "createdAt"
+    ],
+    "title": "DeepSeekVerificationSuite",
+    "type": "object"
+  },
+  "naturalLanguageEvidenceCase": {
+    "additionalProperties": false,
+    "properties": {
+      "acceptableToolIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "minItems": 1,
+        "title": "Acceptabletoolids",
+        "type": "array"
+      },
+      "caseSpecHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Casespechash",
+        "type": "string"
+      },
+      "caseSpecId": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Casespecid",
+        "type": "string"
+      },
+      "forbiddenFallbacks": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "title": "Forbiddenfallbacks",
+        "type": "array"
+      },
+      "requiredCapabilityNeeds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "minItems": 1,
+        "title": "Requiredcapabilityneeds",
+        "type": "array"
+      },
+      "requiredOutputs": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "minItems": 1,
+        "title": "Requiredoutputs",
+        "type": "array"
+      },
+      "requiresClarification": {
+        "default": false,
+        "title": "Requiresclarification",
+        "type": "boolean"
+      },
+      "requiresDependencyPlan": {
+        "default": false,
+        "title": "Requiresdependencyplan",
+        "type": "boolean"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "title": {
+        "maxLength": 160,
+        "minLength": 1,
+        "title": "Title",
+        "type": "string"
+      },
+      "userText": {
+        "maxLength": 16384,
+        "minLength": 1,
+        "title": "Usertext",
+        "type": "string"
+      }
+    },
+    "required": [
+      "caseSpecId",
+      "caseSpecHash",
+      "title",
+      "userText",
+      "requiredCapabilityNeeds",
+      "acceptableToolIds",
+      "requiredOutputs"
+    ],
+    "title": "NaturalLanguageEvidenceCase",
+    "type": "object"
+  },
+  "naturalLanguageEvidenceRun": {
+    "$defs": {
+      "EvidenceArtifactRef": {
+        "additionalProperties": false,
+        "properties": {
+          "artifactId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Artifactid",
+            "type": "string"
+          },
+          "artifactType": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Artifacttype",
+            "type": "string"
+          },
+          "contentHash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Contenthash",
+            "type": "string"
+          },
+          "producerToolCallId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Producertoolcallid",
+            "type": "string"
+          },
+          "sizeBytes": {
+            "maximum": 536870912,
+            "minimum": 0,
+            "title": "Sizebytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "artifactId",
+          "artifactType",
+          "contentHash",
+          "sizeBytes",
+          "producerToolCallId"
+        ],
+        "title": "EvidenceArtifactRef",
+        "type": "object"
+      },
+      "EvidenceClaimLink": {
+        "additionalProperties": false,
+        "properties": {
+          "claimId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Claimid",
+            "type": "string"
+          },
+          "evidenceItemIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Evidenceitemids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "claimId",
+          "evidenceItemIds"
+        ],
+        "title": "EvidenceClaimLink",
+        "type": "object"
+      },
+      "EvidenceExecutionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "recordId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Recordid",
+            "type": "string"
+          },
+          "semanticHash": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Semantichash"
+          },
+          "state": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recordId",
+          "state"
+        ],
+        "title": "EvidenceExecutionRef",
+        "type": "object"
+      },
+      "EvidenceIntentRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "clarificationRound": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Clarificationround",
+            "type": "integer"
+          },
+          "intentHash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Intenthash",
+            "type": "string"
+          },
+          "intentId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Intentid",
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "READY",
+              "NEEDS_CLARIFICATION",
+              "UNSUPPORTED"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intentId",
+          "intentHash",
+          "outcome",
+          "clarificationRound"
+        ],
+        "title": "EvidenceIntentRecord",
+        "type": "object"
+      },
+      "EvidencePlanRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "graphHash": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Graphhash"
+          },
+          "planHash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Planhash",
+            "type": "string"
+          },
+          "planId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Planid",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              "0.1",
+              "0.2"
+            ],
+            "title": "Schemaversion",
+            "type": "string"
+          }
+        },
+        "required": [
+          "planId",
+          "planHash",
+          "schemaVersion"
+        ],
+        "title": "EvidencePlanRecord",
+        "type": "object"
+      },
+      "EvidenceProviderRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "keySource": {
+            "enum": [
+              "NONE",
+              "DEEPSEEK_KEY"
+            ],
+            "title": "Keysource",
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "DETERMINISTIC",
+              "FAKE_DEEPSEEK",
+              "REAL_DEEPSEEK"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "model": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Model",
+            "type": "string"
+          },
+          "promptHashes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 12,
+            "title": "Prompthashes",
+            "type": "array"
+          },
+          "provider": {
+            "enum": [
+              "deterministic_mock",
+              "deepseek"
+            ],
+            "title": "Provider",
+            "type": "string"
+          },
+          "purposes": {
+            "items": {
+              "enum": [
+                "INTENT_EXTRACTION",
+                "CLARIFICATION_RESOLUTION",
+                "CAPABILITY_PLAN_SELECTION",
+                "MULTI_TOOL_COMPOSITION",
+                "GROUNDED_INTERPRETATION",
+                "PROVIDER_CONNECTION_TEST"
+              ],
+              "type": "string"
+            },
+            "maxItems": 8,
+            "title": "Purposes",
+            "type": "array"
+          },
+          "realCallCount": {
+            "maximum": 12,
+            "minimum": 0,
+            "title": "Realcallcount",
+            "type": "integer"
+          },
+          "responseHashes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 12,
+            "title": "Responsehashes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "mode",
+          "provider",
+          "model",
+          "keySource",
+          "realCallCount"
+        ],
+        "title": "EvidenceProviderRecord",
+        "type": "object"
+      },
+      "EvidenceRecordRef": {
+        "additionalProperties": false,
+        "properties": {
+          "recordHash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Recordhash",
+            "type": "string"
+          },
+          "recordId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Recordid",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Schemaversion",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recordId",
+          "recordHash",
+          "schemaVersion"
+        ],
+        "title": "EvidenceRecordRef",
+        "type": "object"
+      },
+      "EvidenceResourceRef": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Kind",
+            "type": "string"
+          },
+          "objectHash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Objecthash",
+            "type": "string"
+          },
+          "objectId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Objectid",
+            "type": "string"
+          },
+          "objectType": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Objecttype",
+            "type": "string"
+          }
+        },
+        "required": [
+          "objectId",
+          "objectType",
+          "objectHash",
+          "kind"
+        ],
+        "title": "EvidenceResourceRef",
+        "type": "object"
+      },
+      "EvidenceSelectionRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "bindingHash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Bindinghash",
+            "type": "string"
+          },
+          "toolId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Toolid",
+            "type": "string"
+          },
+          "toolVersion": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Toolversion",
+            "type": "string"
+          }
+        },
+        "required": [
+          "toolId",
+          "toolVersion",
+          "bindingHash"
+        ],
+        "title": "EvidenceSelectionRecord",
+        "type": "object"
+      },
+      "EvidenceTokenUsage": {
+        "additionalProperties": false,
+        "properties": {
+          "completionTokens": {
+            "default": 0,
+            "maximum": 1000000,
+            "minimum": 0,
+            "title": "Completiontokens",
+            "type": "integer"
+          },
+          "estimated": {
+            "default": false,
+            "title": "Estimated",
+            "type": "boolean"
+          },
+          "promptTokens": {
+            "default": 0,
+            "maximum": 1000000,
+            "minimum": 0,
+            "title": "Prompttokens",
+            "type": "integer"
+          },
+          "totalTokens": {
+            "default": 0,
+            "maximum": 2000000,
+            "minimum": 0,
+            "title": "Totaltokens",
+            "type": "integer"
+          }
+        },
+        "title": "EvidenceTokenUsage",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "apiRefs": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 64,
+        "title": "Apirefs",
+        "type": "array"
+      },
+      "artifacts": {
+        "items": {
+          "$ref": "#/$defs/EvidenceArtifactRef"
+        },
+        "maxItems": 64,
+        "title": "Artifacts",
+        "type": "array"
+      },
+      "browserRefs": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 64,
+        "title": "Browserrefs",
+        "type": "array"
+      },
+      "caseSpecHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Casespechash",
+        "type": "string"
+      },
+      "caseSpecId": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Casespecid",
+        "type": "string"
+      },
+      "claimEvidenceLinks": {
+        "items": {
+          "$ref": "#/$defs/EvidenceClaimLink"
+        },
+        "maxItems": 32,
+        "title": "Claimevidencelinks",
+        "type": "array"
+      },
+      "createdAt": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Createdat",
+        "type": "string"
+      },
+      "elapsedMs": {
+        "minimum": 0,
+        "title": "Elapsedms",
+        "type": "number"
+      },
+      "eligibility": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/EvidenceRecordRef"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "evidenceBundle": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/EvidenceRecordRef"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "executionOutcome": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Executionoutcome",
+        "type": "string"
+      },
+      "intent": {
+        "$ref": "#/$defs/EvidenceIntentRecord"
+      },
+      "interpretation": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/EvidenceRecordRef"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "job": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/EvidenceExecutionRef"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "lineage": {
+        "items": {
+          "$ref": "#/$defs/EvidenceExecutionRef"
+        },
+        "maxItems": 64,
+        "title": "Lineage",
+        "type": "array"
+      },
+      "plan": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/EvidencePlanRecord"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "profile": {
+        "$ref": "#/$defs/EvidenceRecordRef"
+      },
+      "provider": {
+        "$ref": "#/$defs/EvidenceProviderRecord"
+      },
+      "resourceManifest": {
+        "items": {
+          "$ref": "#/$defs/EvidenceResourceRef"
+        },
+        "maxItems": 32,
+        "title": "Resourcemanifest",
+        "type": "array"
+      },
+      "runHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Runhash",
+        "type": "string"
+      },
+      "runId": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Runid",
+        "type": "string"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "securityMarkers": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 64,
+        "title": "Securitymarkers",
+        "type": "array"
+      },
+      "selectedTools": {
+        "items": {
+          "$ref": "#/$defs/EvidenceSelectionRecord"
+        },
+        "maxItems": 4,
+        "title": "Selectedtools",
+        "type": "array"
+      },
+      "tokenUsage": {
+        "$ref": "#/$defs/EvidenceTokenUsage"
+      },
+      "toolCalls": {
+        "items": {
+          "$ref": "#/$defs/EvidenceExecutionRef"
+        },
+        "maxItems": 4,
+        "title": "Toolcalls",
+        "type": "array"
+      },
+      "userText": {
+        "maxLength": 16384,
+        "minLength": 1,
+        "title": "Usertext",
+        "type": "string"
+      },
+      "verdict": {
+        "enum": [
+          "PASS",
+          "FAIL",
+          "BLOCKED"
+        ],
+        "title": "Verdict",
+        "type": "string"
+      }
+    },
+    "required": [
+      "runId",
+      "runHash",
+      "caseSpecId",
+      "caseSpecHash",
+      "userText",
+      "provider",
+      "profile",
+      "intent",
+      "executionOutcome",
+      "elapsedMs",
+      "verdict",
+      "createdAt"
+    ],
+    "title": "NaturalLanguageEvidenceRun",
+    "type": "object"
+  },
+  "phase10LClosureManifest": {
+    "$defs": {
+      "ClosureEvidenceEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "bytes": {
+            "maximum": 536870912,
+            "minimum": 0,
+            "title": "Bytes",
+            "type": "integer"
+          },
+          "path": {
+            "maxLength": 320,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_./-]+$",
+            "title": "Path",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "bytes"
+        ],
+        "title": "ClosureEvidenceEntry",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "caseSpecIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 5,
+        "minItems": 5,
+        "title": "Casespecids",
+        "type": "array"
+      },
+      "createdAt": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Createdat",
+        "type": "string"
+      },
+      "deepSeekVerificationId": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Deepseekverificationid",
+        "type": "string"
+      },
+      "entries": {
+        "items": {
+          "$ref": "#/$defs/ClosureEvidenceEntry"
+        },
+        "maxItems": 512,
+        "minItems": 1,
+        "title": "Entries",
+        "type": "array"
+      },
+      "manifestHash": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Manifesthash",
+        "type": "string"
+      },
+      "manifestId": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Manifestid",
+        "type": "string"
+      },
+      "phase": {
+        "const": "10L",
+        "default": "10L",
+        "title": "Phase",
+        "type": "string"
+      },
+      "runIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 5,
+        "minItems": 5,
+        "title": "Runids",
+        "type": "array"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "securityMarkers": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 64,
+        "minItems": 1,
+        "title": "Securitymarkers",
+        "type": "array"
+      },
+      "verdict": {
+        "enum": [
+          "PASS",
+          "READY_WITH_EXPLICIT_LIMITS",
+          "FAIL",
+          "BLOCKED"
+        ],
+        "title": "Verdict",
+        "type": "string"
+      }
+    },
+    "required": [
+      "manifestId",
+      "manifestHash",
+      "caseSpecIds",
+      "runIds",
+      "deepSeekVerificationId",
+      "entries",
+      "securityMarkers",
+      "verdict",
+      "createdAt"
+    ],
+    "title": "Phase10LClosureManifest",
+    "type": "object"
+  }
+}

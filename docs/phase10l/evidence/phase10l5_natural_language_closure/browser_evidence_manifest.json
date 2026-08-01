@@ -1,0 +1,235 @@
+{
+  "algorithm": "sha256-lf-normalized-text-v1-raw-png",
+  "evidenceMode": "OFFLINE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+  "disclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+  "liveApiCalls": 0,
+  "realDeepSeekCalls": 0,
+  "requiredBrowsers": [
+    "chromium",
+    "firefox",
+    "webkit"
+  ],
+  "requiredMobileViewport": [
+    390,
+    844
+  ],
+  "readyScreenshotCount": 20,
+  "nonReadyScreenshotCount": 12,
+  "files": [
+    {
+      "path": "accessibility_audit.json",
+      "bytes": 8034,
+      "sha256": "d822746702d7439717be280bda3a77430abb39b18f9d7883e3ec787a17306421"
+    },
+    {
+      "path": "browser_capture_index.json",
+      "bytes": 19046,
+      "sha256": "e26430a7189eb5c54b738f10c2c3c551aa4729708f83563a7dc49c8d615be8fe"
+    },
+    {
+      "path": "browser_matrix.json",
+      "bytes": 85531,
+      "sha256": "cd6e0c036536b054967dc5d63c456445e6c7ea00e60901cdd83ca59b92d61d00"
+    },
+    {
+      "path": "browser_semantic_contract.json",
+      "bytes": 61774,
+      "sha256": "99118c91921a69de8cdebb3f4f236ac2639ea08493e1e813cfd1fd5a9e7e64b1"
+    },
+    {
+      "path": "console_audit.json",
+      "bytes": 97,
+      "sha256": "59f08fdc8922d52254e7fed227cc0fc5069a454292e35099b8257d89d7fcb525"
+    },
+    {
+      "path": "deterministic_replay.json",
+      "bytes": 2891,
+      "sha256": "8d1db4d7b329571a9d7840d76bdf7442b8c581985cbf6c1436a73edb16e933f7"
+    },
+    {
+      "path": "dom_snapshot.json",
+      "bytes": 95068,
+      "sha256": "fcf1138dcfbf388e9cf0d5d28801f8e97602aba9d91d0ddf5f446715e1d394ed"
+    },
+    {
+      "path": "inert_rendering_audit.json",
+      "bytes": 6630,
+      "sha256": "9eeb218b1eea4f3ad8011119767e88e5c3f1acbdbdfd1f4cdecab3cbbeea16a4"
+    },
+    {
+      "path": "mobile_smoke.json",
+      "bytes": 43760,
+      "sha256": "22208cbe7aa6120c7cab30a8149325b1e87feea2e3271dd4caa9a1ed7685aa6c"
+    },
+    {
+      "path": "network_audit.json",
+      "bytes": 97,
+      "sha256": "f67c11fa9fadf3a0aa174796810f5dc9577f8e559961b1c818fd476f93760959"
+    },
+    {
+      "path": "overflow_audit.json",
+      "bytes": 6803,
+      "sha256": "8259ba0de3d9605cf72b3e26b6f7d6f6633e94fcd2fb75bf3573d52c214671e1"
+    },
+    {
+      "path": "screenshots/chromium_desktop_ready_case_1.png",
+      "bytes": 89886,
+      "sha256": "90af65741143785d4724c82b834029bb61e3ebb9a6c1983c148bb7ce3fda43c3"
+    },
+    {
+      "path": "screenshots/chromium_desktop_ready_case_2.png",
+      "bytes": 79899,
+      "sha256": "26b68e2ca15fb5dfa605eff893277fdaf54625463de7128baa58219623314014"
+    },
+    {
+      "path": "screenshots/chromium_desktop_ready_case_3.png",
+      "bytes": 85632,
+      "sha256": "4b13c6b27590eddfbe075d1a3a87651f7238b37298b1c3df83f1d0e0659ea1f9"
+    },
+    {
+      "path": "screenshots/chromium_desktop_ready_case_4.png",
+      "bytes": 79860,
+      "sha256": "c89eea27094a2c28894af1c2bf6b54b009718df44f18a15d37634fcfc7493001"
+    },
+    {
+      "path": "screenshots/chromium_desktop_ready_case_5.png",
+      "bytes": 78432,
+      "sha256": "969a60e357d28e5a52b3de24de1ec602ad9eaa92a63e554dfb026f1b153c0ddc"
+    },
+    {
+      "path": "screenshots/chromium_desktop_non_ready_needs_clarification.png",
+      "bytes": 27720,
+      "sha256": "b88b34ba0454653174bf4539d279e48349c7e950c40b3bc22c07f1190eca7f29"
+    },
+    {
+      "path": "screenshots/chromium_desktop_non_ready_unsupported.png",
+      "bytes": 29248,
+      "sha256": "5d9f430c64e179f3207936b9ee2753a62fbaa9bc6813e57c2b91285aaa4b94a8"
+    },
+    {
+      "path": "screenshots/chromium_desktop_non_ready_capability_mismatch.png",
+      "bytes": 33134,
+      "sha256": "b556557466234a0a3c4685ccfb0804d116ed6c95d4eda1198cec3befec595d98"
+    },
+    {
+      "path": "screenshots/chromium_mobile_390x844_ready_case_1.png",
+      "bytes": 370171,
+      "sha256": "bf972d23f50af067069657085800e94007e1cb0c6ea962f97c1b2e77b01eb9a8"
+    },
+    {
+      "path": "screenshots/chromium_mobile_390x844_ready_case_2.png",
+      "bytes": 331443,
+      "sha256": "f58fa9c19a01f228eaf91c626b4f4dd79f930bf5547bf21c04474f4a8476fdbf"
+    },
+    {
+      "path": "screenshots/chromium_mobile_390x844_ready_case_3.png",
+      "bytes": 365830,
+      "sha256": "92a6b73b8154fd0730c3e7373dafbbeb55502b827d31b127526f6554b8aaea84"
+    },
+    {
+      "path": "screenshots/chromium_mobile_390x844_ready_case_4.png",
+      "bytes": 393263,
+      "sha256": "e5cd21f4002695c458f7b28689278182240d669831a371ba00938c40fce95963"
+    },
+    {
+      "path": "screenshots/chromium_mobile_390x844_ready_case_5.png",
+      "bytes": 355195,
+      "sha256": "abd70e190c7e06c6a373ed93df0c11ba9bd05bbd079247ed242fc1bf7c2920d9"
+    },
+    {
+      "path": "screenshots/chromium_mobile_390x844_non_ready_needs_clarification.png",
+      "bytes": 110905,
+      "sha256": "1420b93be9f02a7e116ab06aa227c80f3fa2ed06f25e646abd61f4eef407cadd"
+    },
+    {
+      "path": "screenshots/chromium_mobile_390x844_non_ready_unsupported.png",
+      "bytes": 120199,
+      "sha256": "e452a02d0a32447732e9ec31ac9999c94f14f25ca17d323def4b1d2a3c2f998e"
+    },
+    {
+      "path": "screenshots/chromium_mobile_390x844_non_ready_capability_mismatch.png",
+      "bytes": 130492,
+      "sha256": "9ecd3b5c50862d185a673f583f138786fc2b5909752aadceb974e6aa2df4a1ed"
+    },
+    {
+      "path": "screenshots/firefox_desktop_ready_case_1.png",
+      "bytes": 82706,
+      "sha256": "8828a5890d383f3bd5ed9f7f9e56121650f9c7b7617005e64c997508b76f27a6"
+    },
+    {
+      "path": "screenshots/firefox_desktop_ready_case_2.png",
+      "bytes": 72567,
+      "sha256": "d0d47c191bab659b2638d9c5a626a76e71d681d128029f1e72ca904ae6aa9de3"
+    },
+    {
+      "path": "screenshots/firefox_desktop_ready_case_3.png",
+      "bytes": 77080,
+      "sha256": "da74674370c0ff660e37a86d0acf96cfbb5a5e259b9afd017b85b0d99468fc9e"
+    },
+    {
+      "path": "screenshots/firefox_desktop_ready_case_4.png",
+      "bytes": 89560,
+      "sha256": "63af5c364188eca5fa407c6d172fcd945ab72500eb6a642c7ccf76343e5b5b97"
+    },
+    {
+      "path": "screenshots/firefox_desktop_ready_case_5.png",
+      "bytes": 72153,
+      "sha256": "709f43792e2a2387d9e45d9629e470d0249de949407a8385b7f13bfca3b94982"
+    },
+    {
+      "path": "screenshots/firefox_desktop_non_ready_needs_clarification.png",
+      "bytes": 32555,
+      "sha256": "fb49fe258a65bbdd46788760531431e06f61359d5257f921890704dd3f6fbdcd"
+    },
+    {
+      "path": "screenshots/firefox_desktop_non_ready_unsupported.png",
+      "bytes": 33684,
+      "sha256": "a23b6cf2490b5254f17c2002a7b2e009074d48ce33ce1a5c0ccd107a72776fba"
+    },
+    {
+      "path": "screenshots/firefox_desktop_non_ready_capability_mismatch.png",
+      "bytes": 34309,
+      "sha256": "9d1f2254cab674eb469e118271b987aa303506397da5616576be7c6c994666c1"
+    },
+    {
+      "path": "screenshots/webkit_desktop_ready_case_1.png",
+      "bytes": 56267,
+      "sha256": "bf511a9dc21ddd948c173c7e44227c3b094f4096fd9d60ac8c3335005de2761d"
+    },
+    {
+      "path": "screenshots/webkit_desktop_ready_case_2.png",
+      "bytes": 49525,
+      "sha256": "587618581461de49688b157bcb92a5d996237a8106121dcb049eaa716c90d694"
+    },
+    {
+      "path": "screenshots/webkit_desktop_ready_case_3.png",
+      "bytes": 52480,
+      "sha256": "cb7b81ee8e5c8b8fe3f2c1cd3f189a2a919502020896d58fb0e86424d4261439"
+    },
+    {
+      "path": "screenshots/webkit_desktop_ready_case_4.png",
+      "bytes": 57261,
+      "sha256": "0c476afe58793d7f4c6b67333c77611238fccf720e8e7dae0144c50352935969"
+    },
+    {
+      "path": "screenshots/webkit_desktop_ready_case_5.png",
+      "bytes": 47184,
+      "sha256": "de27cf6b456593391942b4348dcdc71470e485ba53757bc98dc33de2e8ec3fd4"
+    },
+    {
+      "path": "screenshots/webkit_desktop_non_ready_needs_clarification.png",
+      "bytes": 20216,
+      "sha256": "64fbfdf52caeeef23e84a1b3f6dac895977b0d979df71128897cc2356b3c75a4"
+    },
+    {
+      "path": "screenshots/webkit_desktop_non_ready_unsupported.png",
+      "bytes": 21011,
+      "sha256": "ad4ae6bc24825193656a725b35f3f45719a9f0ef4022c40a7316c4d9123fab50"
+    },
+    {
+      "path": "screenshots/webkit_desktop_non_ready_capability_mismatch.png",
+      "bytes": 21436,
+      "sha256": "5e266b519fc8018367428e6f099bafc99980ae57969b4bda1df9f13663d3a45e"
+    }
+  ]
+}

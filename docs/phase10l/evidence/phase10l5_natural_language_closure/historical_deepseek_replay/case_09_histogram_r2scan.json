@@ -1,0 +1,229 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "viz.histogram"
+    ]
+  ],
+  "caseNumber": 9,
+  "createdAt": "2026-08-01T07:24:19.919931+00:00",
+  "decision": {
+    "decisionHash": "dceaee9151523f4afa98476e70f06f584bac310dde9540b2b12aecab0ab71341",
+    "decisionId": "decision_dceaee9151523f4afa98476e",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "column",
+            "source": "TARGET_COLUMN",
+            "sourceIdentity": "table_historical:material_property:r2SCAN",
+            "value": "r2SCAN",
+            "valueId": "table_historical:material_property:r2SCAN"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "plot"
+        ],
+        "coveredScientificIntents": [
+          "visualization"
+        ],
+        "toolId": "viz.histogram",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.ptable_heatmap",
+      "dataset.composition_space",
+      "viz.correlation",
+      "viz.histogram",
+      "viz.scatter"
+    ],
+    "providerVisibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.ptable_heatmap",
+      "dataset.composition_space",
+      "viz.correlation",
+      "viz.histogram",
+      "viz.scatter"
+    ],
+    "rejectedToolCount": 45,
+    "resolutionHash": "be86758922a793f4840136e2566bbbf1a3f3599a8a1f6b60ecb457c63f284c68",
+    "resolutionId": "resolution_be86758922a793f4840136e2"
+  },
+  "historicalExpectedToolIds": [
+    "viz.histogram"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot"
+    ],
+    "intentHash": "29f1f54405090c09cf23ed40f585e78b94e84706825dddf2c685df00944d5fb4",
+    "intentId": "intent_29f1f54405090c09cf23ed40",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [],
+    "scientificIntents": [
+      "visualization"
+    ],
+    "targetSemantics": [
+      {
+        "column": "r2SCAN",
+        "groupId": null,
+        "objectId": "table_historical",
+        "origin": "PROFILE_EXACT",
+        "role": "material_property",
+        "semanticId": "table_historical:material_property:r2SCAN",
+        "seriesId": null,
+        "unit": "eV/atom"
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10A",
+  "plan": {
+    "graphHash": null,
+    "planHash": "11640e3acb4006c116dab30c53e8a6d196b7c47a15a688fa12ded54ecbf8803f",
+    "planId": "plan_3d5a9fab6f28edaa23994bdb",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4800.977,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25491,
+      "promptHash": "202e394afb9588488ec8fea48feba274867ed991f39da93244bdc323e58f8e23",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3219,
+      "responseContentBytes": 2457,
+      "responseHash": "4840958221bc1b1679f9309cff48f4b9f03fc98dce5769fc290fa91309ead0fb",
+      "tokenUsage": {
+        "completionTokens": 746,
+        "estimated": false,
+        "promptTokens": 6032,
+        "totalTokens": 6778
+      }
+    },
+    {
+      "elapsedMs": 1751.457,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 9209,
+      "promptHash": "7b9cd7dcdc230a5793df164d62e356e401c0652b40402f41ce40f6b06b828842",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 601,
+      "responseContentBytes": 112,
+      "responseHash": "ee9be026261b4f6cce9f351917375100f04d4b6249e9b20eb7eb1c790e2f3b43",
+      "tokenUsage": {
+        "completionTokens": 36,
+        "estimated": false,
+        "promptTokens": 2540,
+        "totalTokens": 2576
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Create only a one-variable histogram using the exact r2SCAN property column.",
+  "replayPromptHash": "3a104f646ba9df2e4229ffa5d4c10134fa61b586f57400eefd1fdd9b38f91b3b",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "5867fed50cf36598ab2a343ebcd4b675e295124bc01e8121876405f2d3b93f47",
+  "runId": "historical_live_run_5867fed50cf36598ab2a343ebcd4b675",
+  "runtime": {
+    "artifactCount": 4,
+    "artifacts": [
+      {
+        "id": "call_job_36e8e071383ec7a852ff8beb_step_001-plotly_json",
+        "name": "histogram.json",
+        "sha256": "11ef7da91c4cb0cd6a838388323888ccbd76bc15594e1abf80b52f56eeb2499f",
+        "sizeBytes": 7619,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_36e8e071383ec7a852ff8beb_step_001-plotly_html",
+        "name": "histogram.html",
+        "sha256": "f52439fc0060f7e129d535982a92374bbd5490a32af875e707411ecb4eec6f55",
+        "sizeBytes": 8160,
+        "type": "plotly_html"
+      },
+      {
+        "id": "call_job_36e8e071383ec7a852ff8beb_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "aa2e63ca8a971834062c9fed67dd92519792d996f8a0116d42c059e4b0ff1dde",
+        "sizeBytes": 63,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_36e8e071383ec7a852ff8beb_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "c106cbb01a018c54716bac4481c665f37fe86c0265a5a071e6ad0d82b803484d",
+        "sizeBytes": 594,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_36e8e071383ec7a852ff8beb_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "viz.histogram"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "viz.histogram"
+  ],
+  "slug": "histogram_r2scan",
+  "sourcePaths": [
+    "docs/phase10a/browser_api_evidence/matpes_histogram"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6625.612
+  },
+  "tokenUsage": {
+    "completionTokens": 782,
+    "estimated": false,
+    "promptTokens": 8572,
+    "totalTokens": 9354
+  },
+  "verdict": "PASS"
+}

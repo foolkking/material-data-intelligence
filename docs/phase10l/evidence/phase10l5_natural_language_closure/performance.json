@@ -1,0 +1,47 @@
+{
+  "caseCount": 5,
+  "costAmount": null,
+  "costCurrency": null,
+  "costPolicy": "TOKEN_USAGE_RECORDED_NO_PRICING_ASSUMPTION",
+  "defaultCiRealLlmCalls": 0,
+  "elapsedMs": 23517.798,
+  "liveGateByPurpose": {
+    "CAPABILITY_PLAN_SELECTION": {
+      "calls": 5,
+      "completionTokens": 194,
+      "elapsedMs": 8639.777,
+      "promptTokens": 8082
+    },
+    "GROUNDED_INTERPRETATION": {
+      "calls": 5,
+      "completionTokens": 1799,
+      "elapsedMs": 14443.481,
+      "promptTokens": 10356
+    },
+    "INTENT_EXTRACTION": {
+      "calls": 5,
+      "completionTokens": 4089,
+      "elapsedMs": 58513.717,
+      "promptTokens": 28869
+    },
+    "MULTI_TOOL_COMPOSITION": {
+      "calls": 1,
+      "completionTokens": 80,
+      "elapsedMs": 9058.661,
+      "promptTokens": 607
+    }
+  },
+  "liveGateElapsedMs": 90655.636,
+  "liveGateRealLlmCalls": 16,
+  "liveGateTokenUsage": {
+    "completionTokens": 6162,
+    "estimated": false,
+    "promptTokens": 47914,
+    "totalTokens": 54076
+  },
+  "maxRunBytes": 14365,
+  "schemaVersion": "1.0",
+  "scope": "DETERMINISTIC_FIVE_CASE_REPLAY_AND_SEPARATE_LIVE_DEEPSEEK_GATE",
+  "silentTruncation": false,
+  "tracemallocPeakBytes": 5983178
+}

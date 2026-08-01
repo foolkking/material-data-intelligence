@@ -1,0 +1,75 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 4539.249,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 27118,
+      "promptHash": "d9fba5d923facbcc4b7ff89e30fe0fee0df30e7a4219b1975c89c3ed3b02b37c",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3012,
+      "responseContentBytes": 2271,
+      "responseHash": "65525607fade3d674ef3a261b671a96f043dbf08d7609a5a5eb88302da3deacb",
+      "tokenUsage": {
+        "completionTokens": 690,
+        "estimated": false,
+        "promptTokens": 6430,
+        "totalTokens": 7120
+      }
+    },
+    {
+      "elapsedMs": 1913.391,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 8052,
+      "promptHash": "08c917918883f208b88f4d089d2cbd93079573aaf86e19e06bc7398adb7938c5",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 707,
+      "responseContentBytes": 216,
+      "responseHash": "4ddaa43276e5667aff14f2dbbb4cf98913e8456ef55cd8ffa299d8fea486d3ca",
+      "tokenUsage": {
+        "completionTokens": 64,
+        "estimated": false,
+        "promptTokens": 2184,
+        "totalTokens": 2248
+      }
+    },
+    {
+      "elapsedMs": 1697.971,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 8465,
+      "promptHash": "17c3edddf55e4b32a8b4d7ed0cffa321a02d8e8072999292653d9e12de4d773c",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 707,
+      "responseContentBytes": 216,
+      "responseHash": "f02ad324f0e7bfcb0a96f290b25b8f30c2e32ba98b99d05780ade5d54be51055",
+      "tokenUsage": {
+        "completionTokens": 64,
+        "estimated": false,
+        "promptTokens": 2286,
+        "totalTokens": 2350
+      }
+    }
+  ],
+  "caseIndex": 0,
+  "caseSpecId": "caseSpec_57f7ec437d831dd18eddf66edfa96ec4",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 8502.278,
+  "errorCode": "LIVE_PLAN_NOT_READY",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "realCallCount": 3,
+  "safeDetails": "LIVE_PLAN_NOT_READY:{\"desiredOutputs\":[\"summary\",\"table\",\"linked_samples\",\"warnings\"],\"diagnosticMessages\":[\"Provider selection contains semantically redundant tools.\"],\"diagnostics\":[\"CAPABILITY_LLM_SELECTION_REDUNDANT\"],\"eligibleToolIds\":[\"composition.chem_sys_sunburst\",\"composition.chem_sys_treemap\",\"composition.elements_hist\",\"composition.formula_statistics\",\"composition.ptable_heatmap\",\"composition.summary\",\"dataset.materials_explorer\"],\"executionSideEffects\":{\"artifactCount\":0,\"bindingResolutionCount\":0,\"dependencyExecutionCount\":0,\"jobCount\":0,\"lineageCount\":0,\"planCount\":0,\"plannedBindingCount\":0,\"queueMessageCount\":0,\"toolCallCount\":0},\"outcome\":\"VALIDATION_FAILED\",\"rejectionCodes\":[\"CAPABILITY_NEED_UNSUPPORTED\",\"DESIRED_OUTPUT_UNSUPPORTED\",\"FORMULA_SEMANTIC_BINDING_REQUIRED\",\"PROFILE_PREREQUISITE_MISSING\",\"REQUIRED_PARAMETER_UNBOUND\",\"RESOURCE_KIND_MISMATCH\",\"SCIENTIFIC_INTENT_UNSUPPORTED\",\"TARGET_SEMANTICS_MISMATCH\",\"TOOL_NOT_AVAILABLE\"],\"requiredCapabilityNeeds\":[\"composition_data\",\"sample_identity\"],\"resourceBindings\":[{\"kind\":\"dataframe\",\"objectId\":\"obj_materials\",\"origin\":\"PROFILE_EXACT\"}],\"scientificIntents\":[\"composition_analysis\",\"anomaly_candidate_review\"],\"targetSemanticIds\":[]}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

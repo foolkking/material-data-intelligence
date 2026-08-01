@@ -1,0 +1,4167 @@
+{
+  "artifactLineage": [],
+  "artifacts": [
+    {
+      "contentHash": "f5490115ca5f8736b6be5f78aa5c570a10861649f8d3c353b50f43f5ad3639a9",
+      "id": "call_job_40eaabf4a5324c0ca3a801b8_step_001-table_json",
+      "sizeBytes": 6672,
+      "storageProvider": "s3",
+      "type": "table_json"
+    },
+    {
+      "contentHash": "fc9dff98c48d97b7c6a7119c21be21f3be13e5c84d3431140d15bbc71a462794",
+      "id": "call_job_40eaabf4a5324c0ca3a801b8_step_001-quality_issues_json",
+      "sizeBytes": 699,
+      "storageProvider": "s3",
+      "type": "quality_issues_json"
+    },
+    {
+      "contentHash": "88459e72d81213ced2b9f04512bf48046a29ed3b0a230ce7b6d3b182c765cc1c",
+      "id": "call_job_40eaabf4a5324c0ca3a801b8_step_001-summary_md",
+      "sizeBytes": 369,
+      "storageProvider": "s3",
+      "type": "summary_md"
+    },
+    {
+      "contentHash": "6a83668b843d132d53bbc273996b2dbe4096fa9644d9232e45782b2f8fa12bf2",
+      "id": "call_job_40eaabf4a5324c0ca3a801b8_step_001-recipe_json",
+      "sizeBytes": 1551,
+      "storageProvider": "s3",
+      "type": "recipe_json"
+    }
+  ],
+  "capabilityDecision": {
+    "decisionHash": "19a0617e1f2a316648c6226d5cab97dfda810c9d4032868f087a8ea5ac3fddd6",
+    "decisionId": "decision_19a0617e1f2a316648c6226d",
+    "diagnostics": [],
+    "intentHash": "312457b140e247ff32dd8831256aa71109f660a6443bee7ff5e7c92dca951481",
+    "intentId": "intent_312457b140e247ff32dd8831",
+    "outcome": "PLAN_READY",
+    "profileId": "profile_l5_dataset_e040b188e076",
+    "profileSemanticHash": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c",
+    "provenance": {
+      "initialDecisionHash": null,
+      "model": "deepseek-v4-flash",
+      "provider": "deepseek",
+      "providerContractVersion": "1.0",
+      "repairCount": 0,
+      "repairDiagnostics": []
+    },
+    "registrySnapshotHash": "0f1cad8632c7b15180c75c0d4547d656791fd1e1398f8ecbc99358d5843909db",
+    "registrySnapshotId": "registry_0f1cad8632c7b15180c75c0d",
+    "resolutionHash": "b0cd4b96780ed3cf16780a181b5ef84a35257853d1a770833e0d62cdd469b2c5",
+    "resolutionId": "resolution_b0cd4b96780ed3cf16780a18",
+    "schemaVersion": "1.0",
+    "selections": [
+      {
+        "artifactTypes": [
+          "table_json",
+          "quality_issues_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "boundParameters": [
+          {
+            "parameter": "tableObjectId",
+            "source": "RESOURCE_ID",
+            "sourceIdentity": "resource:obj_materials:6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+            "value": "obj_materials",
+            "valueId": "obj_materials"
+          }
+        ],
+        "coveredCapabilityNeeds": [
+          "composition_data",
+          "sample_identity"
+        ],
+        "coveredDesiredOutputs": [
+          "linked_samples",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "anomaly_candidate_review",
+          "composition_analysis"
+        ],
+        "inputResourceIds": [
+          "obj_materials"
+        ],
+        "rankFacts": [
+          2,
+          2,
+          4,
+          1,
+          0,
+          2,
+          "dataset.materials_explorer",
+          "0.1.0"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "dataset.materials_explorer",
+        "toolName": "Dataset Materials Explorer",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": [],
+    "warnings": []
+  },
+  "caseSpecHash": "57f7ec437d831dd18eddf66edfa96ec468b002627f30d0f5e5e7413bc74a0fe6",
+  "caseSpecId": "caseSpec_57f7ec437d831dd18eddf66edfa96ec4",
+  "dependencyExecution": null,
+  "eligibilityResolution": {
+    "datasetId": "dataset_l5_dataset_e040b188e076",
+    "datasetVersion": "2",
+    "diagnostics": [
+      {
+        "code": "CAPABILITY_NEED_UNSUPPORTED",
+        "field": "requiredCapabilityNeeds",
+        "message": "The tool does not support a relevant required capability need.",
+        "repairable": false,
+        "toolId": null
+      },
+      {
+        "code": "DESIRED_OUTPUT_UNSUPPORTED",
+        "field": "desiredOutputs",
+        "message": "The tool cannot produce a requested output.",
+        "repairable": false,
+        "toolId": null
+      },
+      {
+        "code": "FORMULA_SEMANTIC_BINDING_REQUIRED",
+        "field": "parameterBindings",
+        "message": "DataFrame composition analysis requires one exact formula semantic.",
+        "repairable": false,
+        "toolId": null
+      },
+      {
+        "code": "PROFILE_PREREQUISITE_MISSING",
+        "field": "profile",
+        "message": "Required exact DataProfile facts are unavailable.",
+        "repairable": false,
+        "toolId": null
+      },
+      {
+        "code": "REQUIRED_PARAMETER_UNBOUND",
+        "field": "parameterBindings",
+        "message": "A required parameter has no exact permitted binding.",
+        "repairable": false,
+        "toolId": null
+      },
+      {
+        "code": "RESOURCE_KIND_MISMATCH",
+        "field": "dataScope.resourceRefs",
+        "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+        "repairable": false,
+        "toolId": null
+      },
+      {
+        "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+        "field": "scientificIntents",
+        "message": "The tool does not support a requested scientific intent.",
+        "repairable": false,
+        "toolId": null
+      },
+      {
+        "code": "TARGET_SEMANTICS_MISMATCH",
+        "field": "targetSemantics",
+        "message": "Exact target/model semantics do not satisfy the tool contract.",
+        "repairable": false,
+        "toolId": null
+      },
+      {
+        "code": "TOOL_NOT_AVAILABLE",
+        "field": "availability",
+        "message": "The tool is not available in the current product/runtime.",
+        "repairable": false,
+        "toolId": null
+      }
+    ],
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.materials_explorer"
+    ],
+    "evaluatedCandidates": [
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "formulaColumn",
+            "required": false,
+            "values": [
+              {
+                "source": "SEMANTIC_COLUMNS",
+                "sourceIdentity": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c:material_formula",
+                "value": "formula",
+                "valueId": "column:obj_materials:formula"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": true,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          2,
+          1,
+          0,
+          1,
+          "composition.chem_sys_sunburst",
+          "0.1.0"
+        ],
+        "reasons": [],
+        "satisfiedProfileCapabilities": [
+          "composition_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.chem_sys_sunburst",
+        "toolName": "Composition Chem Sys Sunburst",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "formulaColumn",
+            "required": false,
+            "values": [
+              {
+                "source": "SEMANTIC_COLUMNS",
+                "sourceIdentity": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c:material_formula",
+                "value": "formula",
+                "valueId": "column:obj_materials:formula"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": true,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          2,
+          1,
+          0,
+          1,
+          "composition.chem_sys_treemap",
+          "0.1.0"
+        ],
+        "reasons": [],
+        "satisfiedProfileCapabilities": [
+          "composition_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.chem_sys_treemap",
+        "toolName": "Composition Chem Sys Treemap",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          1,
+          2,
+          1,
+          0,
+          1,
+          "composition.cluster_2d",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "composition.cluster_2d"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "composition.cluster_2d"
+          },
+          {
+            "code": "FORMULA_SEMANTIC_BINDING_REQUIRED",
+            "field": "parameterBindings",
+            "message": "DataFrame composition analysis requires one exact formula semantic.",
+            "repairable": false,
+            "toolId": "composition.cluster_2d"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "composition_data",
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.cluster_2d",
+        "toolName": "Composition Cluster 2D",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          1,
+          2,
+          1,
+          0,
+          1,
+          "composition.cluster_3d",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "composition.cluster_3d"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "composition.cluster_3d"
+          },
+          {
+            "code": "FORMULA_SEMANTIC_BINDING_REQUIRED",
+            "field": "parameterBindings",
+            "message": "DataFrame composition analysis requires one exact formula semantic.",
+            "repairable": false,
+            "toolId": "composition.cluster_3d"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "composition_data",
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.cluster_3d",
+        "toolName": "Composition Cluster 3D",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "formulaColumn",
+            "required": false,
+            "values": [
+              {
+                "source": "SEMANTIC_COLUMNS",
+                "sourceIdentity": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c:material_formula",
+                "value": "formula",
+                "valueId": "column:obj_materials:formula"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": true,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          2,
+          1,
+          0,
+          1,
+          "composition.elements_hist",
+          "0.1.0"
+        ],
+        "reasons": [],
+        "satisfiedProfileCapabilities": [
+          "composition_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.elements_hist",
+        "toolName": "Composition Elements Hist",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "formulaColumn",
+            "required": false,
+            "values": [
+              {
+                "source": "SEMANTIC_COLUMNS",
+                "sourceIdentity": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c:material_formula",
+                "value": "formula",
+                "valueId": "column:obj_materials:formula"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": true,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          3,
+          1,
+          0,
+          1,
+          "composition.formula_statistics",
+          "0.1.0"
+        ],
+        "reasons": [],
+        "satisfiedProfileCapabilities": [
+          "composition_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.formula_statistics",
+        "toolName": "Composition Formula Statistics",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "formulaColumn",
+            "required": false,
+            "values": [
+              {
+                "source": "SEMANTIC_COLUMNS",
+                "sourceIdentity": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c:material_formula",
+                "value": "formula",
+                "valueId": "column:obj_materials:formula"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": true,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          2,
+          1,
+          0,
+          1,
+          "composition.ptable_heatmap",
+          "0.1.0"
+        ],
+        "reasons": [],
+        "satisfiedProfileCapabilities": [
+          "composition_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.ptable_heatmap",
+        "toolName": "Composition Ptable Heatmap",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          2,
+          1,
+          0,
+          1,
+          "composition.ptable_heatmap_splits",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "composition.ptable_heatmap_splits"
+          },
+          {
+            "code": "FORMULA_SEMANTIC_BINDING_REQUIRED",
+            "field": "parameterBindings",
+            "message": "DataFrame composition analysis requires one exact formula semantic.",
+            "repairable": false,
+            "toolId": "composition.ptable_heatmap_splits"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "composition_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.ptable_heatmap_splits",
+        "toolName": "Composition Ptable Heatmap Splits",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          2,
+          1,
+          0,
+          1,
+          "composition.ptable_hists",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "composition.ptable_hists"
+          },
+          {
+            "code": "FORMULA_SEMANTIC_BINDING_REQUIRED",
+            "field": "parameterBindings",
+            "message": "DataFrame composition analysis requires one exact formula semantic.",
+            "repairable": false,
+            "toolId": "composition.ptable_hists"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "composition_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.ptable_hists",
+        "toolName": "Composition Ptable Hists",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          2,
+          1,
+          0,
+          1,
+          "composition.ptable_scatter",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "composition.ptable_scatter"
+          },
+          {
+            "code": "FORMULA_SEMANTIC_BINDING_REQUIRED",
+            "field": "parameterBindings",
+            "message": "DataFrame composition analysis requires one exact formula semantic.",
+            "repairable": false,
+            "toolId": "composition.ptable_scatter"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "composition_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.ptable_scatter",
+        "toolName": "Composition Ptable Scatter",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "formulaColumn",
+            "required": false,
+            "values": [
+              {
+                "source": "SEMANTIC_COLUMNS",
+                "sourceIdentity": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c:material_formula",
+                "value": "formula",
+                "valueId": "column:obj_materials:formula"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": true,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          3,
+          1,
+          0,
+          1,
+          "composition.summary",
+          "0.1.0"
+        ],
+        "reasons": [],
+        "satisfiedProfileCapabilities": [
+          "composition_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "composition.summary",
+        "toolName": "Composition Summary",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "tableObjectId",
+            "required": true,
+            "values": [
+              {
+                "source": "RESOURCE_ID",
+                "sourceIdentity": "resource:obj_materials:6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+                "value": "obj_materials",
+                "valueId": "obj_materials"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data",
+          "sample_identity"
+        ],
+        "matchedDesiredOutputs": [
+          "linked_samples",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          2,
+          4,
+          1,
+          0,
+          2,
+          "dataset.composition_space",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "dataset.composition_space"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "composition_data",
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "dataset.composition_space",
+        "toolName": "Dataset Composition Space",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "tableObjectId",
+            "required": true,
+            "values": [
+              {
+                "source": "RESOURCE_ID",
+                "sourceIdentity": "resource:obj_materials:6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+                "value": "obj_materials",
+                "valueId": "obj_materials"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": true,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data",
+          "sample_identity"
+        ],
+        "matchedDesiredOutputs": [
+          "linked_samples",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "anomaly_candidate_review",
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          2,
+          2,
+          4,
+          1,
+          0,
+          2,
+          "dataset.materials_explorer",
+          "0.1.0"
+        ],
+        "reasons": [],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "dataset.materials_explorer",
+        "toolName": "Dataset Materials Explorer",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          1,
+          0,
+          1,
+          "ml.basic_metrics",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "ml.basic_metrics"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "ml.basic_metrics"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.basic_metrics"
+          },
+          {
+            "code": "TARGET_SEMANTICS_MISMATCH",
+            "field": "targetSemantics",
+            "message": "Exact target/model semantics do not satisfy the tool contract.",
+            "repairable": false,
+            "toolId": "ml.basic_metrics"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.basic_metrics"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.basic_metrics"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.basic_metrics",
+        "toolName": "Ml Basic Metrics",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "sample_identity"
+        ],
+        "matchedDesiredOutputs": [
+          "linked_samples",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          1,
+          4,
+          1,
+          0,
+          1,
+          "ml.classification_evaluation",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "ml.classification_evaluation"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.classification_evaluation"
+          },
+          {
+            "code": "TARGET_SEMANTICS_MISMATCH",
+            "field": "targetSemantics",
+            "message": "Exact target/model semantics do not satisfy the tool contract.",
+            "repairable": false,
+            "toolId": "ml.classification_evaluation"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.classification_evaluation"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.classification_evaluation",
+        "toolName": "Ml Classification Evaluation",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "classification_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          1,
+          0,
+          1,
+          "ml.density_scatter",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "ml.density_scatter"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "ml.density_scatter"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.density_scatter"
+          },
+          {
+            "code": "TARGET_SEMANTICS_MISMATCH",
+            "field": "targetSemantics",
+            "message": "Exact target/model semantics do not satisfy the tool contract.",
+            "repairable": false,
+            "toolId": "ml.density_scatter"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.density_scatter"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.density_scatter"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.density_scatter",
+        "toolName": "Ml Density Scatter",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          1,
+          0,
+          1,
+          "ml.error_by_chem_sys",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "ml.error_by_chem_sys"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "ml.error_by_chem_sys"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "ml.error_by_chem_sys"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.error_by_chem_sys"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.error_by_chem_sys",
+        "toolName": "Ml Error By Chem Sys",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          1,
+          0,
+          1,
+          "ml.error_by_element",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "ml.error_by_element"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "ml.error_by_element"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "ml.error_by_element"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.error_by_element"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.error_by_element",
+        "toolName": "Ml Error By Element",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "anomaly_candidate_review"
+        ],
+        "rankFacts": [
+          1,
+          0,
+          3,
+          1,
+          0,
+          1,
+          "ml.error_distribution",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "ml.error_distribution"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.error_distribution"
+          },
+          {
+            "code": "TARGET_SEMANTICS_MISMATCH",
+            "field": "targetSemantics",
+            "message": "Exact target/model semantics do not satisfy the tool contract.",
+            "repairable": false,
+            "toolId": "ml.error_distribution"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.error_distribution"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.error_distribution"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.error_distribution",
+        "toolName": "Ml Error Distribution",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "linked_samples",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "anomaly_candidate_review"
+        ],
+        "rankFacts": [
+          1,
+          0,
+          4,
+          1,
+          0,
+          1,
+          "ml.outlier_table",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "ml.outlier_table"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.outlier_table"
+          },
+          {
+            "code": "TARGET_SEMANTICS_MISMATCH",
+            "field": "targetSemantics",
+            "message": "Exact target/model semantics do not satisfy the tool contract.",
+            "repairable": false,
+            "toolId": "ml.outlier_table"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.outlier_table"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.outlier_table"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.outlier_table",
+        "toolName": "Ml Outlier Table",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          1,
+          0,
+          1,
+          "ml.parity_plot",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "ml.parity_plot"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "ml.parity_plot"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "ml.parity_plot"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.parity_plot"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.parity_plot",
+        "toolName": "Ml Parity Plot",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data",
+          "sample_identity"
+        ],
+        "matchedDesiredOutputs": [
+          "linked_samples",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          2,
+          4,
+          1,
+          0,
+          1,
+          "ml.regression_evaluation",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "ml.regression_evaluation"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.regression_evaluation"
+          },
+          {
+            "code": "TARGET_SEMANTICS_MISMATCH",
+            "field": "targetSemantics",
+            "message": "Exact target/model semantics do not satisfy the tool contract.",
+            "repairable": false,
+            "toolId": "ml.regression_evaluation"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.regression_evaluation"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.regression_evaluation",
+        "toolName": "Ml Regression Evaluation",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          1,
+          0,
+          1,
+          "ml.uncertainty_calibration",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "ml.uncertainty_calibration"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "ml.uncertainty_calibration"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "ml.uncertainty_calibration"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.uncertainty_calibration"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.uncertainty_calibration",
+        "toolName": "Ml Uncertainty Calibration",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "sample_identity"
+        ],
+        "matchedDesiredOutputs": [
+          "linked_samples",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          1,
+          4,
+          1,
+          0,
+          1,
+          "ml.uncertainty_evaluation",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "ml.uncertainty_evaluation"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "ml.uncertainty_evaluation"
+          },
+          {
+            "code": "TARGET_SEMANTICS_MISMATCH",
+            "field": "targetSemantics",
+            "message": "Exact target/model semantics do not satisfy the tool contract.",
+            "repairable": false,
+            "toolId": "ml.uncertainty_evaluation"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "ml.uncertainty_evaluation"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "ml.uncertainty_evaluation",
+        "toolName": "Ml Uncertainty Evaluation",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "regression_semantics",
+          "uncertainty_semantics"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          "phonon.animation",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "phonon.animation"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "phonon.animation"
+          },
+          {
+            "code": "DESIRED_OUTPUT_UNSUPPORTED",
+            "field": "desiredOutputs",
+            "message": "The tool cannot produce a requested output.",
+            "repairable": false,
+            "toolId": "phonon.animation"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "phonon.animation"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "phonon.animation"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "phonon.animation"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "phonon.animation",
+        "toolName": "Phonon Animation",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "phonon_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "phonon.band",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "phonon.band"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "phonon.band"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "phonon.band"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "phonon.band"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "phonon.band",
+        "toolName": "Phonon Band",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "phonon_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "phonon.band_dos",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "phonon.band_dos"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "phonon.band_dos"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "phonon.band_dos"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "phonon.band_dos"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "phonon.band_dos",
+        "toolName": "Phonon Band Dos",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "phonon_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "phonon.dos",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "phonon.dos"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "phonon.dos"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "phonon.dos"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "phonon.dos"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "phonon.dos",
+        "toolName": "Phonon Dos",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "phonon_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "structure.brillouin_zone",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.brillouin_zone"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.brillouin_zone"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.brillouin_zone"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.brillouin_zone"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.brillouin_zone",
+        "toolName": "Structure Brillouin Zone",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "reciprocal_space_resource",
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "structure.chem_env_sunburst",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "structure.chem_env_sunburst"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.chem_env_sunburst"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.chem_env_sunburst"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.chem_env_sunburst"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.chem_env_sunburst"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.chem_env_sunburst",
+        "toolName": "Structure Chem Env Sunburst",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [
+          "composition_data"
+        ],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [
+          "composition_analysis"
+        ],
+        "rankFacts": [
+          1,
+          1,
+          3,
+          0,
+          0,
+          2,
+          "structure.composition_from_structure",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.composition_from_structure"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.composition_from_structure"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.composition_from_structure",
+        "toolName": "Structure Composition From Structure",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "structure.coordination_hist",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.coordination_hist"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.coordination_hist"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.coordination_hist"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.coordination_hist"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.coordination_hist",
+        "toolName": "Structure Coordination Hist",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "structure.lattice_summary",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.lattice_summary"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.lattice_summary"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.lattice_summary"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.lattice_summary"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.lattice_summary",
+        "toolName": "Structure Lattice Summary",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "structure.preview_metadata",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.preview_metadata"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.preview_metadata"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.preview_metadata"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.preview_metadata"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.preview_metadata",
+        "toolName": "Structure Preview Metadata",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "structure.rdf",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.rdf"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.rdf"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.rdf"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.rdf"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.rdf",
+        "toolName": "Structure Rdf",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "structure.spacegroup_summary",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.spacegroup_summary"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.spacegroup_summary"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.spacegroup_summary"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.spacegroup_summary"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.spacegroup_summary",
+        "toolName": "Structure Spacegroup Summary",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "structure.structure_2d",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "structure.structure_2d"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.structure_2d"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.structure_2d"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.structure_2d"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.structure_2d"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.structure_2d",
+        "toolName": "Structure Structure 2D",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": "primary_interactive_structure_view",
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "structure.structure_3d",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.structure_3d"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.structure_3d"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.structure_3d"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.structure_3d"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.structure_3d",
+        "toolName": "Structure Structure 3D",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          1,
+          "structure.summary",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.summary"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.summary"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.summary"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.summary"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.summary",
+        "toolName": "Structure Summary",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "structure.trajectory_import",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "structure.trajectory_import"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.trajectory_import"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.trajectory_import"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.trajectory_import"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.trajectory_import"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.trajectory_import",
+        "toolName": "Structure Trajectory Import",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "trajectory_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "structure.trajectory_viewer",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.trajectory_viewer"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.trajectory_viewer"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.trajectory_viewer"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.trajectory_viewer"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.trajectory_viewer",
+        "toolName": "Structure Trajectory Viewer",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "trajectory_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": "primary_interactive_structure_view",
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "structure.viewer_3d",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.viewer_3d"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.viewer_3d"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.viewer_3d"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.viewer_3d"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.viewer_3d",
+        "toolName": "Structure Viewer 3D",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "structure.viewer_export_package",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "structure.viewer_export_package"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.viewer_export_package"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.viewer_export_package"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.viewer_export_package"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.viewer_export_package"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.viewer_export_package",
+        "toolName": "Structure Viewer Export Package",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": "primary_interactive_structure_view",
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "structure.viewer_scene",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.viewer_scene"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.viewer_scene"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.viewer_scene"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.viewer_scene"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.viewer_scene",
+        "toolName": "Structure Viewer Scene",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "structure.viewer_scene_metadata",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "structure.viewer_scene_metadata"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.viewer_scene_metadata"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.viewer_scene_metadata"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.viewer_scene_metadata"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.viewer_scene_metadata"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.viewer_scene_metadata",
+        "toolName": "Structure Viewer Scene Metadata",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "structure.volumetric_data",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.volumetric_data"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.volumetric_data"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.volumetric_data"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.volumetric_data"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.volumetric_data",
+        "toolName": "Structure Volumetric Data",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "volumetric_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          0,
+          0,
+          2,
+          "structure.xrd",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "structure.xrd"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "structure.xrd"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "structure.xrd"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "structure.xrd"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "structure.xrd",
+        "toolName": "Structure Xrd",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "structure_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "numericColumns",
+            "required": true,
+            "values": [
+              {
+                "source": "SEMANTIC_COLUMNS",
+                "sourceIdentity": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c",
+                "value": [
+                  "band_gap",
+                  "formation_energy"
+                ],
+                "valueId": "columns:band_gap:formation_energy"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          1,
+          0,
+          1,
+          "table.distribution_summary",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "table.distribution_summary"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "table.distribution_summary"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "table.distribution_summary",
+        "toolName": "Table Distribution Summary",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "numericColumns",
+            "required": true,
+            "values": [
+              {
+                "source": "SEMANTIC_COLUMNS",
+                "sourceIdentity": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c",
+                "value": [
+                  "band_gap",
+                  "formation_energy"
+                ],
+                "valueId": "columns:band_gap:formation_energy"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          1,
+          0,
+          1,
+          "table.numeric_summary",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "table.numeric_summary"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "table.numeric_summary"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "table.numeric_summary",
+        "toolName": "Table Numeric Summary",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 2,
+        "eligible": false,
+        "independentComposable": false,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          "trajectory.viewer",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "TOOL_NOT_AVAILABLE",
+            "field": "availability",
+            "message": "The tool is not available in the current product/runtime.",
+            "repairable": false,
+            "toolId": "trajectory.viewer"
+          },
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "trajectory.viewer"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "trajectory.viewer"
+          },
+          {
+            "code": "PROFILE_PREREQUISITE_MISSING",
+            "field": "profile",
+            "message": "Required exact DataProfile facts are unavailable.",
+            "repairable": false,
+            "toolId": "trajectory.viewer"
+          },
+          {
+            "code": "RESOURCE_KIND_MISMATCH",
+            "field": "dataScope.resourceRefs",
+            "message": "Exact resource kinds or cardinality do not satisfy the tool input contract.",
+            "repairable": false,
+            "toolId": "trajectory.viewer"
+          }
+        ],
+        "satisfiedProfileCapabilities": [],
+        "targetSemanticIds": [],
+        "toolId": "trajectory.viewer",
+        "toolName": "Trajectory Viewer",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": [
+          "trajectory_resource"
+        ]
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [
+          {
+            "parameter": "numericColumns",
+            "required": true,
+            "values": [
+              {
+                "source": "SEMANTIC_COLUMNS",
+                "sourceIdentity": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c",
+                "value": [
+                  "band_gap",
+                  "formation_energy"
+                ],
+                "valueId": "columns:band_gap:formation_energy"
+              }
+            ]
+          }
+        ],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          3,
+          1,
+          0,
+          1,
+          "viz.correlation",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "viz.correlation"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "viz.correlation"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "viz.correlation",
+        "toolName": "Viz Correlation",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          1,
+          0,
+          1,
+          "viz.histogram",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "viz.histogram"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "viz.histogram"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "viz.histogram"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "viz.histogram",
+        "toolName": "Viz Histogram",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      },
+      {
+        "acceptedResourceIds": [
+          "obj_materials"
+        ],
+        "bindingDomains": [],
+        "collisionGroup": null,
+        "costClass": 1,
+        "eligible": false,
+        "independentComposable": true,
+        "matchedCapabilityNeeds": [],
+        "matchedDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "matchedScientificIntents": [],
+        "rankFacts": [
+          0,
+          0,
+          2,
+          1,
+          0,
+          1,
+          "viz.scatter",
+          "0.1.0"
+        ],
+        "reasons": [
+          {
+            "code": "SCIENTIFIC_INTENT_UNSUPPORTED",
+            "field": "scientificIntents",
+            "message": "The tool does not support a requested scientific intent.",
+            "repairable": false,
+            "toolId": "viz.scatter"
+          },
+          {
+            "code": "CAPABILITY_NEED_UNSUPPORTED",
+            "field": "requiredCapabilityNeeds",
+            "message": "The tool does not support a relevant required capability need.",
+            "repairable": false,
+            "toolId": "viz.scatter"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "viz.scatter"
+          },
+          {
+            "code": "REQUIRED_PARAMETER_UNBOUND",
+            "field": "parameterBindings",
+            "message": "A required parameter has no exact permitted binding.",
+            "repairable": false,
+            "toolId": "viz.scatter"
+          }
+        ],
+        "satisfiedProfileCapabilities": [
+          "tabular_data"
+        ],
+        "targetSemanticIds": [],
+        "toolId": "viz.scatter",
+        "toolName": "Viz Scatter",
+        "toolVersion": "0.1.0",
+        "unsatisfiedProfileCapabilities": []
+      }
+    ],
+    "intentHash": "312457b140e247ff32dd8831256aa71109f660a6443bee7ff5e7c92dca951481",
+    "intentId": "intent_312457b140e247ff32dd8831",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_l5_dataset_e040b188e076",
+    "profileSemanticHash": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c",
+    "provenance": {
+      "resolver": "deterministic_eligibility_resolver",
+      "resolverVersion": "1.0"
+    },
+    "registrySnapshotHash": "0f1cad8632c7b15180c75c0d4547d656791fd1e1398f8ecbc99358d5843909db",
+    "registrySnapshotId": "registry_0f1cad8632c7b15180c75c0d",
+    "rejectedToolIds": [
+      "composition.cluster_2d",
+      "composition.cluster_3d",
+      "composition.ptable_heatmap_splits",
+      "composition.ptable_hists",
+      "composition.ptable_scatter",
+      "dataset.composition_space",
+      "ml.basic_metrics",
+      "ml.classification_evaluation",
+      "ml.density_scatter",
+      "ml.error_by_chem_sys",
+      "ml.error_by_element",
+      "ml.error_distribution",
+      "ml.outlier_table",
+      "ml.parity_plot",
+      "ml.regression_evaluation",
+      "ml.uncertainty_calibration",
+      "ml.uncertainty_evaluation",
+      "phonon.animation",
+      "phonon.band",
+      "phonon.band_dos",
+      "phonon.dos",
+      "structure.brillouin_zone",
+      "structure.chem_env_sunburst",
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_2d",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.trajectory_import",
+      "structure.trajectory_viewer",
+      "structure.viewer_3d",
+      "structure.viewer_export_package",
+      "structure.viewer_scene",
+      "structure.viewer_scene_metadata",
+      "structure.volumetric_data",
+      "structure.xrd",
+      "table.distribution_summary",
+      "table.numeric_summary",
+      "trajectory.viewer",
+      "viz.correlation",
+      "viz.histogram",
+      "viz.scatter"
+    ],
+    "resolutionHash": "b0cd4b96780ed3cf16780a181b5ef84a35257853d1a770833e0d62cdd469b2c5",
+    "resolutionId": "resolution_b0cd4b96780ed3cf16780a18",
+    "resourceIdentities": [
+      {
+        "kind": "dataframe",
+        "objectHash": "6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+        "objectId": "obj_materials",
+        "objectType": "DataFrame"
+      }
+    ],
+    "schemaVersion": "1.0",
+    "warnings": []
+  },
+  "enqueued": true,
+  "evidenceItemCount": 13,
+  "intent": {
+    "ambiguities": [],
+    "clarification": {
+      "answers": [],
+      "maxQuestionsPerRound": 3,
+      "maxRounds": 1,
+      "questions": [],
+      "round": 0
+    },
+    "constraints": {
+      "clarificationAllowed": true,
+      "costPreference": null,
+      "descriptiveOnly": false,
+      "excludeResourceIds": [],
+      "excludeScientificIntents": [],
+      "forbidDerivedInterpretation": false,
+      "groupIds": [],
+      "includeResourceIds": [
+        "obj_materials"
+      ],
+      "includeScientificIntents": [],
+      "maxAnalyses": null,
+      "maxToolCalls": null,
+      "modelIds": [],
+      "outputPreferences": [],
+      "targetIds": [],
+      "timePreference": null
+    },
+    "dataScope": {
+      "datasetId": "dataset_l5_dataset_e040b188e076",
+      "datasetVersion": "2",
+      "groupIds": [],
+      "modelIds": [],
+      "origin": "PROFILE_EXACT",
+      "profileContractVersion": "2.0",
+      "profileId": "profile_l5_dataset_e040b188e076",
+      "profileSemanticHash": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c",
+      "resourceRefs": [
+        {
+          "kind": "dataframe",
+          "objectHash": "6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+          "objectId": "obj_materials",
+          "objectType": "DataFrame",
+          "origin": "USER_EXPLICIT"
+        }
+      ],
+      "sampleIds": []
+    },
+    "datasetId": "dataset_l5_dataset_e040b188e076",
+    "desiredOutputs": [
+      "summary",
+      "table",
+      "linked_samples",
+      "warnings"
+    ],
+    "intentHash": "312457b140e247ff32dd8831256aa71109f660a6443bee7ff5e7c92dca951481",
+    "intentId": "intent_312457b140e247ff32dd8831",
+    "language": "zh",
+    "missingFacts": [],
+    "normalizedGoal": "分析这批材料的组成分布和异常样本。",
+    "optionalCapabilityNeeds": [],
+    "outcome": "READY",
+    "profileId": "profile_l5_dataset_e040b188e076",
+    "provenance": {
+      "answerBindings": [],
+      "createdAt": "2026-07-31T00:00:00+00:00",
+      "model": "deepseek-v4-flash",
+      "parentIntentId": null,
+      "promptVersion": "phase10l5.intent.v5",
+      "provider": "deepseek"
+    },
+    "rawGoal": "分析这批材料的组成分布和异常样本。",
+    "requiredCapabilityNeeds": [
+      "composition_data",
+      "sample_identity"
+    ],
+    "schemaVersion": "1.0",
+    "scientificIntents": [
+      "composition_analysis",
+      "anomaly_candidate_review"
+    ],
+    "targetSemantics": [],
+    "unsupportedReasons": [],
+    "warnings": []
+  },
+  "interpretation": {
+    "bundleHash": "b48f95846fb76751f34164b1fce0e7950d5cdbc2650fdd59957bed00274b2747",
+    "bundleId": "bundle_b48f95846fb76751f34164b1fce0e795",
+    "claims": [
+      {
+        "claimId": "claim_41202f057557abf620af0c6ac8a172bf",
+        "claimType": "OBSERVATION",
+        "confidenceClass": "QUALIFIED",
+        "contradictingEvidenceIds": [],
+        "displayOrder": 0,
+        "groundingStatus": "GROUNDED",
+        "limitingEvidenceIds": [],
+        "qualifiers": [],
+        "renderedText": "dataset reported count: 1.",
+        "schemaVersion": "1.0",
+        "scope": "dataset",
+        "semanticPredicate": "HAS_COUNT",
+        "structuredPayload": {
+          "displayValue": "1",
+          "subjectId": "dataset"
+        },
+        "subjectEvidenceIds": [
+          "evidence_d677392d4b7dbc07f91d1a9a57934176"
+        ],
+        "supportingEvidenceIds": [
+          "evidence_d677392d4b7dbc07f91d1a9a57934176"
+        ]
+      },
+      {
+        "claimId": "claim_909f0a3cda6f94d877546c6824834ff4",
+        "claimType": "OBSERVATION",
+        "confidenceClass": "QUALIFIED",
+        "contradictingEvidenceIds": [],
+        "displayOrder": 1,
+        "groundingStatus": "GROUNDED",
+        "limitingEvidenceIds": [],
+        "qualifiers": [],
+        "renderedText": "dataset reported count: 2.",
+        "schemaVersion": "1.0",
+        "scope": "dataset",
+        "semanticPredicate": "HAS_COUNT",
+        "structuredPayload": {
+          "displayValue": "2",
+          "subjectId": "dataset"
+        },
+        "subjectEvidenceIds": [
+          "evidence_6af30ea9e94ffe507a2113ec25b78cd6"
+        ],
+        "supportingEvidenceIds": [
+          "evidence_6af30ea9e94ffe507a2113ec25b78cd6"
+        ]
+      },
+      {
+        "claimId": "claim_44543e9773c1bff1c7b499f08b349f81",
+        "claimType": "OBSERVATION",
+        "confidenceClass": "QUALIFIED",
+        "contradictingEvidenceIds": [],
+        "displayOrder": 2,
+        "groundingStatus": "GROUNDED",
+        "limitingEvidenceIds": [],
+        "qualifiers": [],
+        "renderedText": "dataset reported count: 3.",
+        "schemaVersion": "1.0",
+        "scope": "dataset",
+        "semanticPredicate": "HAS_COUNT",
+        "structuredPayload": {
+          "displayValue": "3",
+          "subjectId": "dataset"
+        },
+        "subjectEvidenceIds": [
+          "evidence_c354805a415ceb0b4b0bc6b30b7d1f46"
+        ],
+        "supportingEvidenceIds": [
+          "evidence_c354805a415ceb0b4b0bc6b30b7d1f46"
+        ]
+      },
+      {
+        "claimId": "claim_c14496ec1660ebbecb62cb35b428f536",
+        "claimType": "OBSERVATION",
+        "confidenceClass": "QUALIFIED",
+        "contradictingEvidenceIds": [],
+        "displayOrder": 3,
+        "groundingStatus": "GROUNDED",
+        "limitingEvidenceIds": [],
+        "qualifiers": [],
+        "renderedText": "dataset reported count: 2.",
+        "schemaVersion": "1.0",
+        "scope": "dataset",
+        "semanticPredicate": "HAS_COUNT",
+        "structuredPayload": {
+          "displayValue": "2",
+          "subjectId": "dataset"
+        },
+        "subjectEvidenceIds": [
+          "evidence_9333a9909f8914302826b66c92e0a263"
+        ],
+        "supportingEvidenceIds": [
+          "evidence_9333a9909f8914302826b66c92e0a263"
+        ]
+      }
+    ],
+    "diagnostics": [],
+    "evidenceItemCount": 13,
+    "execution": {
+      "caps": {
+        "artifacts": 16,
+        "claims": 32,
+        "evidenceItems": 256,
+        "repair": 1
+      },
+      "claimCount": 4,
+      "createdAt": "2026-07-31T00:00:00+00:00",
+      "diagnostics": [],
+      "elapsedMs": 3237.0432,
+      "evidenceItemCount": 13,
+      "executionRecordHash": "403205a1ed9e2dde6955ec884dc78332917ccdbc3d41c6913b421dc34eb8d1dd",
+      "executionRecordId": "interpretation_execution_403205a1ed9e2dde6955ec884dc78332",
+      "idempotencyKeyHash": "67fc8c009e925821e45bfb5eb7a79be95f01e95a837df03fe7873921a9bba8b9",
+      "initialResponseHash": "3e798c3a159e2bc18796ed2e9da81e9d365dbe9c79882d55795b347589fd3f25",
+      "limitationCount": 1,
+      "mode": "STRICT_PROVIDER",
+      "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+      "promptProjectionHash": "dd56ca9feabe5ed582b6fdddb0abdec0c496af3e847f4c537a07cdcd68e9a987",
+      "provider": "deepseek",
+      "providerConfigHash": "4b66d35e0ff527b338930652c0b78a6e4da3c7bd65448457641bb47e8c033a5a",
+      "providerModel": "deepseek-v4-flash",
+      "providerVersion": "phase10l4.provider.v1",
+      "repairCount": 0,
+      "repairedResponseHash": null,
+      "responseHash": "3e798c3a159e2bc18796ed2e9da81e9d365dbe9c79882d55795b347589fd3f25",
+      "schemaVersion": "1.0",
+      "sourceBundleHash": "b48f95846fb76751f34164b1fce0e7950d5cdbc2650fdd59957bed00274b2747",
+      "sourceBundleId": "bundle_b48f95846fb76751f34164b1fce0e795",
+      "sourceGraphHash": null,
+      "sourceJobId": "job_40eaabf4a5324c0ca3a801b8",
+      "sourcePlanHash": "9d91f22178a30bfe9498effa1664bc71eb332361e840fd8c7af2ade62d492a2e",
+      "sourcePlanId": "plan_9b33ed34f314465d868deb2f",
+      "warningCount": 2
+    },
+    "interpretation": {
+      "claims": [
+        {
+          "claimId": "claim_41202f057557abf620af0c6ac8a172bf",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "QUALIFIED",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 0,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "dataset reported count: 1.",
+          "schemaVersion": "1.0",
+          "scope": "dataset",
+          "semanticPredicate": "HAS_COUNT",
+          "structuredPayload": {
+            "displayValue": "1",
+            "subjectId": "dataset"
+          },
+          "subjectEvidenceIds": [
+            "evidence_d677392d4b7dbc07f91d1a9a57934176"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_d677392d4b7dbc07f91d1a9a57934176"
+          ]
+        },
+        {
+          "claimId": "claim_909f0a3cda6f94d877546c6824834ff4",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "QUALIFIED",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 1,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "dataset reported count: 2.",
+          "schemaVersion": "1.0",
+          "scope": "dataset",
+          "semanticPredicate": "HAS_COUNT",
+          "structuredPayload": {
+            "displayValue": "2",
+            "subjectId": "dataset"
+          },
+          "subjectEvidenceIds": [
+            "evidence_6af30ea9e94ffe507a2113ec25b78cd6"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_6af30ea9e94ffe507a2113ec25b78cd6"
+          ]
+        },
+        {
+          "claimId": "claim_44543e9773c1bff1c7b499f08b349f81",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "QUALIFIED",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 2,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "dataset reported count: 3.",
+          "schemaVersion": "1.0",
+          "scope": "dataset",
+          "semanticPredicate": "HAS_COUNT",
+          "structuredPayload": {
+            "displayValue": "3",
+            "subjectId": "dataset"
+          },
+          "subjectEvidenceIds": [
+            "evidence_c354805a415ceb0b4b0bc6b30b7d1f46"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_c354805a415ceb0b4b0bc6b30b7d1f46"
+          ]
+        },
+        {
+          "claimId": "claim_c14496ec1660ebbecb62cb35b428f536",
+          "claimType": "OBSERVATION",
+          "confidenceClass": "QUALIFIED",
+          "contradictingEvidenceIds": [],
+          "displayOrder": 3,
+          "groundingStatus": "GROUNDED",
+          "limitingEvidenceIds": [],
+          "qualifiers": [],
+          "renderedText": "dataset reported count: 2.",
+          "schemaVersion": "1.0",
+          "scope": "dataset",
+          "semanticPredicate": "HAS_COUNT",
+          "structuredPayload": {
+            "displayValue": "2",
+            "subjectId": "dataset"
+          },
+          "subjectEvidenceIds": [
+            "evidence_9333a9909f8914302826b66c92e0a263"
+          ],
+          "supportingEvidenceIds": [
+            "evidence_9333a9909f8914302826b66c92e0a263"
+          ]
+        }
+      ],
+      "completeness": "PARTIAL",
+      "createdAt": "2026-07-31T00:00:00+00:00",
+      "executionRecordId": "interpretation_execution_403205a1ed9e2dde6955ec884dc78332",
+      "globalLimitations": [
+        "3 artifact(s) have no approved structured evidence projector."
+      ],
+      "globalWarnings": [
+        "DATASET_FORMULA_PARSE_FAILURES",
+        "FORMULA_VALUES_PARTIALLY_INVALID"
+      ],
+      "interpretationHash": "712701b9aaa7939ad3f68d8f0973278e84e0b45985c2cc30193bf040c4ca0aa2",
+      "interpretationId": "interpretation_712701b9aaa7939ad3f68d8f0973278e",
+      "mode": "STRICT_PROVIDER",
+      "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+      "partialResultState": false,
+      "provider": "deepseek",
+      "providerVersion": "phase10l4.provider.v1",
+      "recommendations": [],
+      "repairCount": 0,
+      "schemaVersion": "1.0",
+      "sourceBundleHash": "b48f95846fb76751f34164b1fce0e7950d5cdbc2650fdd59957bed00274b2747",
+      "sourceBundleId": "bundle_b48f95846fb76751f34164b1fce0e795",
+      "sourceGraphHash": null,
+      "sourceJobId": "job_40eaabf4a5324c0ca3a801b8",
+      "sourcePlanHash": "9d91f22178a30bfe9498effa1664bc71eb332361e840fd8c7af2ade62d492a2e",
+      "sourcePlanId": "plan_9b33ed34f314465d868deb2f",
+      "validationOutcome": "VALID"
+    },
+    "interpretationId": "interpretation_712701b9aaa7939ad3f68d8f0973278e",
+    "limitations": [
+      "3 artifact(s) have no approved structured evidence projector."
+    ],
+    "mode": "STRICT_PROVIDER",
+    "noExecution": {
+      "enqueued": false,
+      "jobCreated": false,
+      "planCreated": false,
+      "recommendationExecutionAuthorized": false,
+      "toolCallCreated": false
+    },
+    "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+    "partialResultState": false,
+    "recommendations": [],
+    "repairCount": 0,
+    "sourceGraphHash": null,
+    "sourceJobId": "job_40eaabf4a5324c0ca3a801b8",
+    "sourcePlanHash": "9d91f22178a30bfe9498effa1664bc71eb332361e840fd8c7af2ade62d492a2e",
+    "sourcePlanId": "plan_9b33ed34f314465d868deb2f",
+    "warnings": [
+      "DATASET_FORMULA_PARSE_FAILURES",
+      "FORMULA_VALUES_PARTIALLY_INVALID"
+    ]
+  },
+  "jobId": "job_40eaabf4a5324c0ca3a801b8",
+  "jobStatus": "completed",
+  "mode": "REAL_DEEPSEEK_POSTGRES_REDIS_MINIO",
+  "otherRealProviderCalls": 0,
+  "plan": {
+    "assumptions": [
+      "Capability selection used exact persisted Intent/Profile/Registry identities."
+    ],
+    "datasetId": "dataset_l5_dataset_e040b188e076",
+    "expectedArtifacts": [
+      {
+        "fromStepId": "step_001",
+        "name": "dataset_materials_explorer_table_json.json",
+        "type": "table_json"
+      }
+    ],
+    "goal": "分析这批材料的组成分布和异常样本。",
+    "profileId": "profile_l5_dataset_e040b188e076",
+    "schemaVersion": "0.1",
+    "steps": [
+      {
+        "constraints": null,
+        "inputRefs": [
+          {
+            "columnName": null,
+            "fieldRole": null,
+            "objectType": null,
+            "ref": "profile",
+            "refType": "profile"
+          },
+          {
+            "columnName": null,
+            "fieldRole": "table",
+            "objectType": "DataFrame",
+            "ref": "obj_materials",
+            "refType": "normalized_object"
+          }
+        ],
+        "output": {
+          "artifactTypes": [
+            "table_json",
+            "quality_issues_json",
+            "summary_md",
+            "recipe_json"
+          ],
+          "displayTarget": "overview"
+        },
+        "params": {
+          "tableObjectId": "obj_materials"
+        },
+        "purpose": "Satisfy the validated structured AnalysisIntent with an eligible registered capability.",
+        "reason": "Selected from exact Intent, DataProfile, Registry, and parameter-binding facts.",
+        "stepId": "step_001",
+        "toolId": "dataset.materials_explorer"
+      }
+    ],
+    "toolRegistryVersion": "0.1.0",
+    "warnings": []
+  },
+  "planHash": "9d91f22178a30bfe9498effa1664bc71eb332361e840fd8c7af2ade62d492a2e",
+  "planId": "plan_9b33ed34f314465d868deb2f",
+  "profile": {
+    "contractVersion": "2.0",
+    "profileId": "profile_l5_dataset_e040b188e076",
+    "semanticHash": "322a89345761609415078dc8983dd6fccb2ed43b4ca6190d8c62e4ab0da3903c"
+  },
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5172.406,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 27115,
+      "promptHash": "88fea8430fc52de3c857d33e8df6a5b5299773668507a488896fbf0b5262500b",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3079,
+      "responseContentBytes": 2325,
+      "responseHash": "1fe4b6e7879a72dfd749cccbdd0d59a74b89262489bca778a4f5672e888ad5ac",
+      "tokenUsage": {
+        "completionTokens": 712,
+        "estimated": false,
+        "promptTokens": 6431,
+        "totalTokens": 7143
+      }
+    },
+    {
+      "elapsedMs": 1300.694,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 8265,
+      "promptHash": "0890e42b46d13d23df80a834a2a6379e8793d178ec757a6719b2738ef842050b",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 614,
+      "responseContentBytes": 125,
+      "responseHash": "1b6fcaa05079714c4e732218df372c7c7f36372f55b44d4e28d48909bc12fc80",
+      "tokenUsage": {
+        "completionTokens": 40,
+        "estimated": false,
+        "promptTokens": 2223,
+        "totalTokens": 2263
+      }
+    },
+    {
+      "elapsedMs": 3231.883,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 9090,
+      "promptHash": "683827a9f12291483acd04c8b5b6d76466b512647184dc58240a845fee29c9a8",
+      "purpose": "GROUNDED_INTERPRETATION",
+      "realCall": true,
+      "responseBytes": 1701,
+      "responseContentBytes": 1127,
+      "responseHash": "0fc420ff781980c54c755e3723bfab74f8613d8b6716c8cfca3be654c503e91e",
+      "tokenUsage": {
+        "completionTokens": 400,
+        "estimated": false,
+        "promptTokens": 2419,
+        "totalTokens": 2819
+      }
+    }
+  ],
+  "providerVisibleToolIds": [
+    "composition.chem_sys_sunburst",
+    "composition.chem_sys_treemap",
+    "composition.elements_hist",
+    "composition.formula_statistics",
+    "composition.ptable_heatmap",
+    "composition.summary",
+    "dataset.materials_explorer"
+  ],
+  "realLlmCalls": 3,
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "dataset.materials_explorer"
+  ],
+  "toolCalls": [
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_40eaabf4a5324c0ca3a801b8_step_001",
+      "idempotencyKey": "job_40eaabf4a5324c0ca3a801b8:step_001",
+      "jobId": "job_40eaabf4a5324c0ca3a801b8",
+      "params": {
+        "tableObjectId": "obj_materials"
+      },
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "dataset.materials_explorer"
+    }
+  ],
+  "userText": "分析这批材料的组成分布和异常样本。",
+  "verdict": "PASS"
+}

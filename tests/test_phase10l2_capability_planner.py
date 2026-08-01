@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from alembic.command import downgrade as alembic_downgrade
@@ -34,6 +35,8 @@ from mdi_schemas import (
     deterministic_intent_id,
 )
 from mdi_tool_registry import build_registry_snapshot, load_manifests
+from mdi_llm.capability_planner import _explicit_visual_capability_gap, _validate_minimal_provider_selection
+from mdi_llm.capability_planner import resolve_eligibility
 
 from tests.test_phase10l1_analysis_intent import _profile, _request
 
@@ -187,6 +190,28 @@ def test_phonon_request_never_falls_through_to_ml_table_or_generic_visualization
     assert {"ml.basic_metrics", "table.numeric_summary", "viz.scatter"}.issubset(result.resolution.rejectedToolIds)
 
 
+def test_resolution_diagnostic_index_is_bounded_without_losing_candidate_reasons() -> None:
+    profile = _resource_profile(
+        object_id="phonon_dos_1", object_type="PhononDos", kind="phonon", capabilities=["phonon"]
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Plot only the phonon density of states."), profile=profile
+    )
+    resolution = resolve_eligibility(intent, profile=profile, registry=load_manifests())
+    candidate_reason_types = {
+        (reason.code, reason.field, reason.message, reason.repairable)
+        for candidate in resolution.evaluatedCandidates
+        for reason in candidate.reasons
+    }
+    indexed_reason_types = {
+        (reason.code, reason.field, reason.message, reason.repairable)
+        for reason in resolution.diagnostics
+    }
+    assert indexed_reason_types == candidate_reason_types
+    assert len(resolution.diagnostics) <= 256
+    assert all(reason.toolId is None for reason in resolution.diagnostics)
+
+
 def test_resource_kinds_are_not_interchangeable() -> None:
     profile = _resource_profile(
         object_id="structure_1", object_type="Structure", kind="structure", capabilities=["structure"]
@@ -214,6 +239,86 @@ def test_broad_dataset_analysis_uses_structured_baseline_not_first_registry_tool
     assert result.outcome.value == "PLAN_READY"
     assert [item.toolId for item in result.decision.selections] == ["dataset.materials_explorer"]
     assert result.decision.selections[0].toolId != load_manifests().tools[0].toolId
+
+
+def test_independent_cross_domain_request_is_covered_by_multiple_exact_candidates() -> None:
+    profile = _profile(
+        resources=[
+            {
+                "objectId": "structure_bz",
+                "objectType": "Structure",
+                "objectHash": "d" * 64,
+                "kind": "structure",
+                "capabilities": ["structure", "reciprocal"],
+            },
+            {
+                "objectId": "phonon_band_1",
+                "objectType": "PhononBand",
+                "objectHash": "e" * 64,
+                "kind": "phonon",
+                "capabilities": ["phonon"],
+            },
+        ]
+    )
+    source_intent = DeterministicAnalysisIntentBuilder().build(
+        _request(
+            "Create a phonon-band plot and a Brillouin-zone view for these exact resources.",
+            selected_resource_ids=("structure_bz", "phonon_band_1"),
+        ),
+        profile=profile,
+    )
+    payload = source_intent.model_dump(mode="json")
+    payload["outcome"] = "READY"
+    payload["unsupportedReasons"] = []
+    payload["missingFacts"] = []
+    payload["ambiguities"] = []
+    payload["dataScope"]["resourceRefs"] = [
+        {
+            "objectId": "phonon_band_1",
+            "objectType": "PhononBand",
+            "objectHash": "e" * 64,
+            "kind": "phonon",
+            "origin": "USER_EXPLICIT",
+        },
+        {
+            "objectId": "structure_bz",
+            "objectType": "Structure",
+            "objectHash": "d" * 64,
+            "kind": "structure",
+            "origin": "USER_EXPLICIT",
+        },
+    ]
+    payload["intentHash"] = compute_analysis_intent_hash(payload)
+    payload["intentId"] = deterministic_intent_id(payload["intentHash"])
+    intent = AnalysisIntent.model_validate(payload)
+    result = plan_capabilities(intent, profile=profile, registry=load_manifests(), provider=MockLLMProvider())
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == ["phonon.band", "structure.brillouin_zone"]
+    assert set(result.resolution.eligibleToolIds) == {"phonon.band", "structure.brillouin_zone"}
+
+
+def test_structure_composition_uses_executable_structure_adapter_not_generic_formula_tool() -> None:
+    profile = _resource_profile(
+        object_id="structure_composition_exact",
+        object_type="Structure",
+        kind="structure",
+        capabilities=["structure", "composition"],
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(
+            "Extract composition statistics from this structure.",
+            selected_resource_ids=("structure_composition_exact",),
+        ),
+        profile=profile,
+    )
+    result = plan_capabilities(intent, profile=profile, registry=load_manifests(), provider=MockLLMProvider())
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == ["structure.composition_from_structure"]
+    generic = next(
+        item for item in result.resolution.evaluatedCandidates if item.toolId == "composition.formula_statistics"
+    )
+    assert generic.eligible is False
+    assert "RESOURCE_KIND_MISMATCH" in {reason.code for reason in generic.reasons}
 
 
 def test_strict_llm_candidate_isolation_and_one_repair() -> None:
@@ -258,6 +363,8 @@ def test_strict_llm_candidate_isolation_and_one_repair() -> None:
     assert len(calls) == 2
     for call in calls:
         context = json.loads(call["messages"][-1]["content"])
+        assert context["intent"]["rawGoal"] == intent.rawGoal
+        assert context["intent"]["normalizedGoal"] == intent.normalizedGoal
         exposed = {item["toolId"] for item in context["eligibleCandidates"]["candidates"]}
         assert exposed == set(result.resolution.eligibleToolIds)
         assert exposed.isdisjoint(result.resolution.rejectedToolIds)
@@ -290,6 +397,146 @@ def test_llm_invented_candidate_fails_without_mock_fallback() -> None:
     assert result.decision.provenance.provider == "openai_compatible"
     assert result.decision.provenance.repairCount == 0
     assert result.decision.diagnostics[0].code == "CAPABILITY_LLM_CANDIDATE_INVALID"
+
+
+def test_explicit_visual_form_mismatch_consumes_repairable_validation_gate() -> None:
+    intent = SimpleNamespace(
+        rawGoal="Create only a scatter plot of PBE against r2SCAN.",
+        scientificIntents=[],
+        requiredCapabilityNeeds=[],
+        desiredOutputs=[],
+    )
+    projection = SimpleNamespace(
+        candidates=[
+            SimpleNamespace(
+                toolId="viz.correlation",
+                toolName="Correlation matrix",
+                matchedScientificIntents=[],
+                matchedCapabilityNeeds=[],
+                matchedDesiredOutputs=[],
+            ),
+            SimpleNamespace(
+                toolId="viz.scatter",
+                toolName="Scatter plot",
+                matchedScientificIntents=[],
+                matchedCapabilityNeeds=[],
+                matchedDesiredOutputs=[],
+            ),
+        ]
+    )
+    with pytest.raises(CapabilityPlanningError) as error:
+        _validate_minimal_provider_selection(intent, projection, ["viz.correlation"])
+    assert error.value.code == "EXPLICIT_VISUAL_FORM_MISMATCH"
+    assert error.value.repairable is True
+    _validate_minimal_provider_selection(intent, projection, ["viz.scatter"])
+
+
+def test_explicit_visual_form_with_only_rejected_matching_tool_reports_gap() -> None:
+    intent = SimpleNamespace(rawGoal="Create only a scatter plot of PBE against r2SCAN.")
+    resolution = SimpleNamespace(
+        evaluatedCandidates=[
+            SimpleNamespace(
+                toolId="viz.scatter",
+                toolName="Scatter plot",
+                eligible=False,
+                reasons=[SimpleNamespace(code="PARAMETER_BINDING_AMBIGUOUS")],
+            ),
+            SimpleNamespace(
+                toolId="viz.correlation",
+                toolName="Correlation matrix",
+                eligible=True,
+                reasons=[],
+            ),
+        ]
+    )
+    projection = SimpleNamespace(candidates=[SimpleNamespace(toolId="viz.correlation")])
+    assert _explicit_visual_capability_gap(intent, resolution, projection) == (
+        "scatter",
+        ["viz.scatter"],
+        ["PARAMETER_BINDING_AMBIGUOUS"],
+    )
+
+
+def test_unregistered_explicit_reliability_curve_is_capability_mismatch_before_provider() -> None:
+    intent = SimpleNamespace(rawGoal="Plot a calibrated reliability curve for model uncertainty.")
+    resolution = SimpleNamespace(evaluatedCandidates=[])
+    projection = SimpleNamespace(candidates=[])
+    assert _explicit_visual_capability_gap(intent, resolution, projection) == (
+        "calibrated reliability curve",
+        [],
+        ["NO_REGISTERED_EXPLICIT_VISUAL_FORM"],
+    )
+
+
+def test_composition_space_tool_is_not_eligible_for_generic_composition_distribution() -> None:
+    _, metadata = build_registry_snapshot(load_manifests())
+    composition_space_intents = {item.value for item in metadata["dataset.composition_space"].scientificIntents}
+    explorer_intents = {item.value for item in metadata["dataset.materials_explorer"].scientificIntents}
+    assert "composition_space" in composition_space_intents
+    assert "composition_analysis" not in composition_space_intents
+    assert "anomaly_candidate_review" not in composition_space_intents
+    assert {"composition_analysis", "anomaly_candidate_review"}.issubset(explorer_intents)
+
+
+def test_element_histogram_tool_id_is_an_explicit_histogram_match() -> None:
+    intent = SimpleNamespace(rawGoal="Plot an element-frequency histogram.")
+    element_hist = SimpleNamespace(
+        toolId="composition.elements_hist",
+        toolName="Element frequency",
+        eligible=True,
+        reasons=[],
+    )
+    resolution = SimpleNamespace(evaluatedCandidates=[element_hist])
+    projection = SimpleNamespace(candidates=[element_hist])
+    assert _explicit_visual_capability_gap(intent, resolution, projection) is None
+
+
+def test_llm_redundant_semantic_selection_uses_the_single_repair_budget() -> None:
+    profile = _resource_profile(
+        object_id="structure_exact",
+        object_type="Structure",
+        kind="structure",
+        capabilities=["structure"],
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("看看这个结构是否合理。", selected_resource_ids=("structure_exact",)),
+        profile=profile,
+    )
+    calls = 0
+
+    def transport(**kwargs: object) -> dict[str, object]:
+        nonlocal calls
+        calls += 1
+        context = json.loads(kwargs["messages"][-1]["content"])
+        assert "structure.summary" in context["singleCandidateCoverageCompleteToolIds"]
+        selected = (
+            [
+                "structure.composition_from_structure",
+                "structure.lattice_summary",
+                "structure.spacegroup_summary",
+                "structure.summary",
+            ]
+            if calls == 1
+            else ["structure.summary"]
+        )
+        payload = {
+            "schemaVersion": "1.0",
+            "resolutionId": context["eligibleCandidates"]["resolutionId"],
+            "selectedToolIds": selected,
+        }
+        return {"choices": [{"message": {"content": json.dumps(payload, separators=(",", ":"))}, "finish_reason": "stop"}]}
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=OpenAICompatibleProvider(transport=transport),
+    )
+    assert calls == 2
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == ["structure.summary"]
+    assert result.decision.provenance.repairCount == 1
+    assert result.decision.provenance.repairDiagnostics[0].code == "CAPABILITY_LLM_SELECTION_REDUNDANT"
 
 
 @pytest.mark.parametrize(
@@ -499,6 +746,7 @@ def test_canonical_api_uses_capability_path_and_non_ready_creates_no_job() -> No
             provider="mock",
             enqueue=True,
         ),
+        provider=MockLLMProvider(fixed_plan={"invalid": "legacy provider must not be called"}),
         repositories=non_ready_repos,
     )
     assert blocked.ok is False

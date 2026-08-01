@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 import hashlib
 import json
 from pathlib import Path
@@ -231,6 +232,42 @@ def test_five_real_contract_families_project_and_interpret_deterministically() -
     assert all("material is stable" not in claim.renderedText.lower() for claim in result.interpretation.claims)
 
 
+def test_phase10k_product_artifacts_project_without_scientific_recalculation() -> None:
+    cases = (
+        (
+            ROOT / "docs/phase10k/evidence/phase10k2_dataset_materials_explorer/artifacts/dataset_materials_explorer.json",
+            "dataset_phase10k2_evidence",
+            "2",
+            "table_json",
+            "dataset.materials_explorer",
+            "dataset_product",
+            {"dataset.sample_count", "composition.invalid_count", "property.range", "property.outlier_candidate_count"},
+        ),
+        (
+            ROOT / "docs/phase10k/evidence/phase10k3_materials_ml_evaluation/artifacts/regression/materials_ml_regression.json",
+            "dataset_phase10k3_regression",
+            "2",
+            "table_json",
+            "ml.regression_evaluation",
+            "ml_product",
+            {"ml.sample_count", "ml.mae", "ml.rmse", "ml.r2", "ml.high_error_sample_count"},
+        ),
+    )
+    for path, dataset_id, dataset_version, artifact_type, tool_id, suffix, expected_roles in cases:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        base = _candidate(payload, artifact_type=artifact_type, tool_id=tool_id, suffix=suffix)
+        candidate = replace(base, artifact={**base.artifact, "datasetId": dataset_id})
+        source = replace(_source(), dataset_id=dataset_id, dataset_version=dataset_version)
+        bundle = build_scientific_evidence_bundle(source, [candidate])
+        assert bundle.supportedArtifactCount == 1
+        assert expected_roles.issubset({item.semanticRole for item in bundle.evidenceItems})
+        result = deterministic_interpret(bundle)
+        assert result.outcome == InterpretationOutcome.ready
+        assert result.interpretation is not None
+        assert all(claim.supportingEvidenceIds for claim in result.interpretation.claims)
+        assert all("material is stable" not in claim.renderedText.lower() for claim in result.interpretation.claims)
+
+
 def test_unsupported_artifact_total_obeys_the_schema_cap_with_typed_failure() -> None:
     unsupported = _candidate({}, artifact_type="report_md", tool_id="report.generate", suffix="unsupported")
     at_cap = build_scientific_evidence_bundle(
@@ -321,6 +358,32 @@ def test_provider_projection_contains_only_projected_evidence_and_no_artifact_au
     assert "storageKey" not in raw
     assert "raw artifact" not in raw.lower()
     assert projection["rules"]["toolExecutionAuthorized"] is False
+    assert projection["claimBudget"] == 4
+    assert projection["outputSchema"]["properties"]["claims"]["maxItems"] == 4
+    assert projection["projectionReduction"] == {
+        "applied": False,
+        "policy": "stable_semantic_role_subject_artifact_v1",
+        "originalSafeEvidenceCount": len(bundle.evidenceItems),
+        "retainedSafeEvidenceCount": len(bundle.evidenceItems),
+        "cap": 8,
+    }
+
+
+def test_provider_projection_reduction_is_explicit_and_deterministic() -> None:
+    bundle = build_scientific_evidence_bundle(
+        _source(),
+        [_numeric_candidate(), _ml_candidate(), _structure_candidate(), _phonon_candidate(), _volumetric_candidate()],
+    )
+    first = provider_safe_projection(bundle)
+    second = provider_safe_projection(bundle)
+    assert first == second
+    assert first["projectionReduction"]["applied"] is True
+    assert first["projectionReduction"]["originalSafeEvidenceCount"] > 8
+    assert first["projectionReduction"]["retainedSafeEvidenceCount"] == 8
+    assert len(first["providerVisibleEvidenceIds"]) == 8
+    assert first["providerVisibleEvidenceIds"] == sorted(
+        item["evidenceItemId"] for item in first["evidenceItems"]
+    )
 
 
 def test_projector_drops_prompt_injection_paths_html_and_credentials_from_warnings() -> None:

@@ -1,0 +1,29 @@
+{
+  "allCasesPassed": true,
+  "baseUrl": "https://api.deepseek.com",
+  "caseCount": 5,
+  "caseRunIds": [
+    "live_run_28f09af3b53a75170a8850d6ca45f8b3",
+    "live_run_89ff5988240b2246dec4adb371deacdb",
+    "live_run_b135271f0ff8102fa42b0102aa8b8d0c",
+    "live_run_ceaef0c7168892dd5ed9d0a7da7bb7c1",
+    "live_run_d11315ef07ae3cb3bf09295fdd1254b2"
+  ],
+  "caseVerificationIds": [
+    "deepseek_verification_4121dda1ad4ac16952107c0b2b65bd54",
+    "deepseek_verification_1d29a0f1615810675ab1cc3a01a23f2d",
+    "deepseek_verification_138c28db3449a71589e9233a7e9a1bcf",
+    "deepseek_verification_edae79c82519cd8bcb635bcf6d338a90",
+    "deepseek_verification_4838241146c4637abb3873d1e2f334b5"
+  ],
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "noSilentFallback": true,
+  "otherRealProviderCalls": 0,
+  "perCaseCallCap": 12,
+  "previousFailedAttemptsRetained": 17,
+  "provider": "deepseek",
+  "sanitized": true,
+  "schemaVersion": "1.0",
+  "totalRealCallCount": 16
+}

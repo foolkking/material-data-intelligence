@@ -13,16 +13,23 @@
   Unit, Frontend, PostgreSQL/Redis/MinIO migration/integration, 28 selected
   service tests with zero skips, and evidence integrity. Completion record
   `2bd06f2` passed exact-SHA CI run `30542844246`; its TASKS block is archived.
-- [x] Phase 10L-4 Grounded Scientific Result Interpretation implementation is
-  `COMPLETE / AWAITING_ARCHIVE_CI`. Corrected implementation
+- [x] Phase 10L-4 Grounded Scientific Result Interpretation is
+  `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`. Corrected implementation
   `02a9e33` passed exact-SHA CI run `30606774006`, including Unit, Frontend,
   browser replay, PostgreSQL/Redis/MinIO migration/integration, and service
   `31 passed, 0 skipped, 0 failed`. Completion record `45af09e` passed
-  exact-SHA CI run `30607509775`; its TASKS block is removed by the pending
-  verified archive commit.
+  exact-SHA CI run `30607509775`; archive `58ee943` passed exact-SHA CI run
+  `30608078520` and removed only the completed L4 block.
 - [ ] Phase 10L-5 was explicitly supplied by the reviewer and is
-  `QUEUED / BLOCKED_BY_PHASE_10L4_ARCHIVE`. It must not start while the L4 task
-  remains in `TASKS.md`.
+  `IN_PROGRESS / SOLE_ACTIVE_TASK`. Phase 10M-0 remains
+  `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+
+Live evidence progress: all five required DeepSeek cases pass with verification
+suite `deepseek_suite_ee5a0e9700d1a70787fc060fda274171`; the supplemental
+historical replay passes 40/40 with suite
+`historical_deepseek_suite_dde5218a3d2121fc038bb90d6daa044a`. The task remains
+active until exact-SHA implementation, completion-record, and verified
+queue-archive CI are closed. No Phase 10M executable task exists.
 
 - [x] Phase 10L-1 Analysis Intent Contract + Bounded Clarification implementation
   `844eb149` and completion record `b4cd656` passed exact-SHA CI runs
@@ -67,9 +74,8 @@
   the verified queue block is archived. Phase 10L-1 subsequently entered its
   reviewer-approved implementation task as recorded above.
 
-`TASKS.md` has one task block: reviewer-supplied L5 remains pending and blocked
-until this L4 archive commit passes exact-SHA CI. Future Scope and Not Planned
-remain absent.
+`TASKS.md` has one task block: reviewer-supplied L5 is the sole active task.
+Future Scope and Not Planned remain absent.
 
 The remaining sections are historical task records and do not override the
 current board above.

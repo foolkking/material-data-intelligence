@@ -1,0 +1,234 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "composition.ptable_heatmap"
+    ]
+  ],
+  "caseNumber": 16,
+  "createdAt": "2026-08-01T07:32:10.147025+00:00",
+  "decision": {
+    "decisionHash": "4f2cb9d45394e4530a65a522be23b662e42039bb4725faeb9a54dd5722ea2f79",
+    "decisionId": "decision_4f2cb9d45394e4530a65a522",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "formulaColumn",
+            "source": "SEMANTIC_COLUMNS",
+            "sourceIdentity": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57:material_formula",
+            "value": "formula",
+            "valueId": "column:table_historical:formula"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "plot",
+          "summary"
+        ],
+        "coveredScientificIntents": [
+          "composition_analysis",
+          "visualization"
+        ],
+        "toolId": "composition.ptable_heatmap",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": [
+      "table"
+    ]
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.composition_space",
+      "dataset.materials_explorer"
+    ],
+    "providerVisibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.composition_space",
+      "dataset.materials_explorer"
+    ],
+    "rejectedToolCount": 45,
+    "resolutionHash": "ea95a1ad93d02c2cf110a32966d1d14a7c2462050b4896c36ce29aeb6dcd31ae",
+    "resolutionId": "resolution_ea95a1ad93d02c2cf110a329"
+  },
+  "historicalExpectedToolIds": [
+    "composition.ptable_heatmap"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot",
+      "summary",
+      "table"
+    ],
+    "intentHash": "bda19ef10d8fc11ab766049182ecf39d65062744acd56f56f396fc4ef00a6023",
+    "intentId": "intent_bda19ef10d8fc11ab7660491",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "composition_data"
+    ],
+    "scientificIntents": [
+      "composition_analysis",
+      "visualization"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10B",
+  "plan": {
+    "graphHash": null,
+    "planHash": "7ec58abad3c05f89add82bddcb32265a262c8686dd1c450fbc8b77c37c342f78",
+    "planId": "plan_db98fc34d4c3765f668aaede",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4811.087,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25376,
+      "promptHash": "7917cc5c22a9d28fd4341e4a9200833fb54a252a1311d12ef8c9aa181e4c5920",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2975,
+      "responseContentBytes": 2237,
+      "responseHash": "2ac70b7d474f081427ef6fe3cb375bcbe49d463e956bad81337b7fd1fb36529b",
+      "tokenUsage": {
+        "completionTokens": 672,
+        "estimated": false,
+        "promptTokens": 5997,
+        "totalTokens": 6669
+      }
+    },
+    {
+      "elapsedMs": 1798.294,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 9185,
+      "promptHash": "57e1c95fa5242bc94fc3012ee7c27eb3330bddf5a57222d0a19baa2695bac8aa",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 614,
+      "responseContentBytes": 125,
+      "responseHash": "6ab851922fc4abe9b44dd6cb5e108cdb43e33b1885bb4eeac21a0505689ebf33",
+      "tokenUsage": {
+        "completionTokens": 42,
+        "estimated": false,
+        "promptTokens": 2468,
+        "totalTokens": 2510
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Show element frequencies as a periodic-table heatmap.",
+  "replayPromptHash": "3d310206ffe315e3e01fc0daba8705bb63b7932ac29c38bc8ec525a6ad1a8a08",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "7872253cd99e0733bcd8329a5043de67b049547c840ccaec7bf4f16e09d83374",
+  "runId": "historical_live_run_7872253cd99e0733bcd8329a5043de67",
+  "runtime": {
+    "artifactCount": 5,
+    "artifacts": [
+      {
+        "id": "call_job_0ae1f4138efe059d87a6746c_step_001-plotly_json",
+        "name": "ptable_heatmap.json",
+        "sha256": "b7b31692757303fb74e02152a6811fbdcd08659973238fae8412390cebac43c4",
+        "sizeBytes": 40834,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_0ae1f4138efe059d87a6746c_step_001-plotly_html",
+        "name": "ptable_heatmap.html",
+        "sha256": "56ac5bfbc26a3f492eef6064848a5067043ff5fbafa7db87637c9443d0cf89c9",
+        "sizeBytes": 46428,
+        "type": "plotly_html"
+      },
+      {
+        "id": "call_job_0ae1f4138efe059d87a6746c_step_001-preview_png",
+        "name": "preview.png",
+        "sha256": "ad6bc0025a798fe0ebe49f41f1aaaaaeadb5c8bb081b1bf9dac341bdf680b57c",
+        "sizeBytes": 69,
+        "type": "preview_png"
+      },
+      {
+        "id": "call_job_0ae1f4138efe059d87a6746c_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "8abcae28092f750d0a398d2ce697c508368a70184c0ab564bcaa334f7eb94417",
+        "sizeBytes": 237,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_0ae1f4138efe059d87a6746c_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "aa010b1df70f808bd195354e2724ddf26fae78626ee401acf6f440acea292e4f",
+        "sizeBytes": 642,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_0ae1f4138efe059d87a6746c_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "composition.ptable_heatmap"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "composition.ptable_heatmap"
+  ],
+  "slug": "ptable_heatmap",
+  "sourcePaths": [
+    "docs/phase10b/browser_api_evidence/ward_ptable_heatmap"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6682.64
+  },
+  "tokenUsage": {
+    "completionTokens": 714,
+    "estimated": false,
+    "promptTokens": 8465,
+    "totalTokens": 9179
+  },
+  "verdict": "PASS"
+}

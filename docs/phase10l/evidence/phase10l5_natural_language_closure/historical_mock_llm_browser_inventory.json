@@ -1,0 +1,859 @@
+{
+  "additionalHistoricalCases": 40,
+  "cases": [
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "ml.basic_metrics"
+        ],
+        [
+          "ml.regression_evaluation"
+        ]
+      ],
+      "caseNumber": 6,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "ml.basic_metrics"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 9",
+      "replayPrompt": "Calculate basic regression metrics for y_true and y_pred.",
+      "slug": "basic_metrics",
+      "sourcePaths": [
+        "docs/phase9/evidence"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "table.numeric_summary"
+        ],
+        [
+          "table.distribution_summary"
+        ],
+        [
+          "dataset.materials_explorer"
+        ]
+      ],
+      "caseNumber": 7,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "table.numeric_summary"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 9",
+      "replayPrompt": "Summarize all numeric material-property columns in this table.",
+      "slug": "numeric_summary",
+      "sourcePaths": [
+        "docs/phase9/evidence"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "viz.scatter"
+        ]
+      ],
+      "caseNumber": 8,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "CAPABILITY_MISMATCH",
+      "expectedToolIds": [
+        "viz.scatter"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10A",
+      "replayPrompt": "Create only a two-axis scatter plot with PBE on the x axis and r2SCAN on the y axis. Do not use composition embedding or dimensionality reduction.",
+      "slug": "scatter",
+      "sourcePaths": [
+        "docs/phase10a/browser_api_evidence/matpes_scatter"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "viz.histogram"
+        ]
+      ],
+      "caseNumber": 9,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "viz.histogram"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10A",
+      "replayPrompt": "Create only a one-variable histogram using the exact r2SCAN property column.",
+      "slug": "histogram_r2scan",
+      "sourcePaths": [
+        "docs/phase10a/browser_api_evidence/matpes_histogram"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "viz.histogram"
+        ]
+      ],
+      "caseNumber": 10,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "viz.histogram"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10A",
+      "replayPrompt": "Plot a histogram of the D_max property.",
+      "slug": "histogram_dmax",
+      "sourcePaths": [
+        "docs/phase10a/browser_api_evidence/ward_histogram"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "viz.correlation"
+        ]
+      ],
+      "caseNumber": 11,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "viz.correlation"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10A",
+      "replayPrompt": "Create a correlation matrix for the numeric material properties.",
+      "slug": "correlation",
+      "sourcePaths": [
+        "docs/phase10a/browser_api_evidence/ward_correlation"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "table.distribution_summary"
+        ],
+        [
+          "dataset.materials_explorer"
+        ]
+      ],
+      "caseNumber": 12,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "table.distribution_summary"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10A",
+      "replayPrompt": "Summarize numeric distributions, missing values, and quantiles.",
+      "slug": "distribution_summary",
+      "sourcePaths": [
+        "docs/phase10a/browser_api_evidence/ward_distribution"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "composition.summary"
+        ],
+        [
+          "composition.formula_statistics"
+        ]
+      ],
+      "caseNumber": 13,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "composition.summary"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10A",
+      "replayPrompt": "Summarize the element composition distribution.",
+      "slug": "composition_summary",
+      "sourcePaths": [
+        "docs/phase10a/browser_api_evidence/ward_composition_summary"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "composition.formula_statistics"
+        ]
+      ],
+      "caseNumber": 14,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "composition.formula_statistics"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10B",
+      "replayPrompt": "Calculate formula statistics for this materials table.",
+      "slug": "formula_statistics",
+      "sourcePaths": [
+        "docs/phase10b/browser_api_evidence/ward_formula_statistics"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "composition.elements_hist"
+        ]
+      ],
+      "caseNumber": 15,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "composition.elements_hist"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10B",
+      "replayPrompt": "Plot an element-frequency histogram from the formula column.",
+      "slug": "elements_hist",
+      "sourcePaths": [
+        "docs/phase10b/browser_api_evidence/ward_elements_hist"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "composition.ptable_heatmap"
+        ]
+      ],
+      "caseNumber": 16,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "composition.ptable_heatmap"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10B",
+      "replayPrompt": "Show element frequencies as a periodic-table heatmap.",
+      "slug": "ptable_heatmap",
+      "sourcePaths": [
+        "docs/phase10b/browser_api_evidence/ward_ptable_heatmap"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "composition.chem_sys_treemap"
+        ]
+      ],
+      "caseNumber": 17,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "composition.chem_sys_treemap"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10B",
+      "replayPrompt": "Show the chemical-system distribution as a treemap.",
+      "slug": "chem_sys_treemap",
+      "sourcePaths": [
+        "docs/phase10b/browser_api_evidence/ward_chem_sys_treemap"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "composition.chem_sys_sunburst"
+        ]
+      ],
+      "caseNumber": 18,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "composition.chem_sys_sunburst"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10B",
+      "replayPrompt": "Show arity, chemical-system, and formula hierarchy as a sunburst.",
+      "slug": "chem_sys_sunburst",
+      "sourcePaths": [
+        "docs/phase10b/browser_api_evidence/ward_chem_sys_sunburst"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.lattice_summary"
+        ],
+        [
+          "structure.summary"
+        ]
+      ],
+      "caseNumber": 19,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.lattice_summary"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10C",
+      "replayPrompt": "Summarize lattice parameters and crystal system for this structure.",
+      "slug": "lattice_summary",
+      "sourcePaths": [
+        "docs/phase10c/browser_api_evidence/simple_cubic_lattice_summary"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.spacegroup_summary"
+        ]
+      ],
+      "caseNumber": 20,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.spacegroup_summary"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10C",
+      "replayPrompt": "Summarize the space group and crystal system for this structure.",
+      "slug": "spacegroup_summary",
+      "sourcePaths": [
+        "docs/phase10c/browser_api_evidence/simple_cubic_spacegroup_summary"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.composition_from_structure"
+        ]
+      ],
+      "caseNumber": 21,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.composition_from_structure"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10C",
+      "replayPrompt": "Extract composition statistics from this structure.",
+      "slug": "composition_from_structure",
+      "sourcePaths": [
+        "docs/phase10c/browser_api_evidence/simple_cubic_composition_from_structure"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.preview_metadata"
+        ]
+      ],
+      "caseNumber": 22,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.preview_metadata"
+      ],
+      "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+      "phase": "Phase 10C",
+      "replayPrompt": "Generate structure preview metadata and coordinate ranges.",
+      "slug": "preview_metadata",
+      "sourcePaths": [
+        "docs/phase10c/browser_api_evidence/simple_cubic_preview_metadata"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.coordination_hist"
+        ]
+      ],
+      "caseNumber": 23,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.coordination_hist"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10E",
+      "replayPrompt": "Count neighbors and plot a coordination-number histogram for this structure.",
+      "slug": "coordination_hist",
+      "sourcePaths": [
+        "docs/phase10e/browser_api_evidence/phase10e2_coordination_hist"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.xrd"
+        ]
+      ],
+      "caseNumber": 24,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.xrd"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10E",
+      "replayPrompt": "Generate a powder XRD pattern for this crystal structure.",
+      "slug": "xrd",
+      "sourcePaths": [
+        "docs/phase10e/browser_api_evidence/phase10e5_xrd"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.rdf"
+        ]
+      ],
+      "caseNumber": 25,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.rdf"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10E",
+      "replayPrompt": "Generate the radial distribution function for this structure.",
+      "slug": "rdf",
+      "sourcePaths": [
+        "docs/phase10e/browser_api_evidence/phase10e8_rdf"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.viewer_scene"
+        ]
+      ],
+      "caseNumber": 26,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.viewer_scene"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10F",
+      "replayPrompt": "Build inert viewer scene data for this structure.",
+      "slug": "viewer_scene",
+      "sourcePaths": [
+        "docs/phase10f/evidence/phase10f13_viewer_scene_live_adapter"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.viewer_3d"
+        ],
+        [
+          "structure.structure_3d"
+        ]
+      ],
+      "caseNumber": 27,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.viewer_3d"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10F",
+      "replayPrompt": "Open an interactive 3D view of this crystal structure.",
+      "slug": "viewer_3d",
+      "sourcePaths": [
+        "docs/phase10/evidence/phase10_closure_regression_pack"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.trajectory_viewer"
+        ]
+      ],
+      "caseNumber": 28,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.trajectory_viewer"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10G",
+      "replayPrompt": "Play this molecular-dynamics trajectory.",
+      "slug": "trajectory_viewer",
+      "sourcePaths": [
+        "docs/phase10g/evidence/phase10g3_trajectory_performance_browser"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "phonon.band"
+        ]
+      ],
+      "caseNumber": 29,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "phonon.band"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10H",
+      "replayPrompt": "Plot only the phonon band structure.",
+      "slug": "phonon_band",
+      "sourcePaths": [
+        "docs/phase10h/evidence/phase10h1_phonon_bands"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "phonon.dos"
+        ]
+      ],
+      "caseNumber": 30,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "phonon.dos"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10H",
+      "replayPrompt": "Plot only the phonon density of states.",
+      "slug": "phonon_dos",
+      "sourcePaths": [
+        "docs/phase10h/evidence/phase10h2_phonon_dos"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "phonon.animation"
+        ]
+      ],
+      "caseNumber": 31,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "phonon.animation"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10H",
+      "replayPrompt": "Animate the selected phonon mode.",
+      "slug": "phonon_animation",
+      "sourcePaths": [
+        "docs/phase10h/evidence/phase10h5_phonon_animation"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.brillouin_zone"
+        ]
+      ],
+      "caseNumber": 32,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.brillouin_zone"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10I",
+      "replayPrompt": "Generate first Brillouin-zone data for this structure.",
+      "slug": "brillouin_zone",
+      "sourcePaths": [
+        "docs/phase10i/evidence/phase10i1_brillouin_zone_adapter"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "phonon.band",
+          "structure.brillouin_zone"
+        ]
+      ],
+      "caseNumber": 33,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "phonon.band",
+        "structure.brillouin_zone"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10I",
+      "replayPrompt": "Create a phonon-band plot and a Brillouin-zone view for these exact resources.",
+      "slug": "linked_band_bz",
+      "sourcePaths": [
+        "docs/phase10i/evidence/phase10i3_band_bz_linked_view"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.volumetric_data"
+        ]
+      ],
+      "caseNumber": 34,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.volumetric_data"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10J",
+      "replayPrompt": "Visualize local electrostatic potential and planar averages from this LOCPOT.",
+      "slug": "potential",
+      "sourcePaths": [
+        "docs/phase10j/evidence/phase10j4_electrostatic_potential_product"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.volumetric_data"
+        ]
+      ],
+      "caseNumber": 35,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.volumetric_data"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10J",
+      "replayPrompt": "Show an ELF isosurface at 0.7 from this ELFCAR.",
+      "slug": "elf",
+      "sourcePaths": [
+        "docs/phase10j/evidence/phase10j5_elf_orbital_product"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.volumetric_data"
+        ]
+      ],
+      "caseNumber": 36,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.volumetric_data"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10J",
+      "replayPrompt": "Visualize the source-defined partial density from this PARCHG.",
+      "slug": "partial_density",
+      "sourcePaths": [
+        "docs/phase10j/evidence/phase10j5_elf_orbital_product"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "structure.volumetric_data"
+        ]
+      ],
+      "caseNumber": 37,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "structure.volumetric_data"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10J",
+      "replayPrompt": "Show a quantitative slice and direct-volume view of this charge density.",
+      "slug": "slice_volume",
+      "sourcePaths": [
+        "docs/phase10j/evidence/phase10j6_volumetric_slice_volume_rendering"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "dataset.composition_space"
+        ]
+      ],
+      "caseNumber": 38,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "dataset.composition_space"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10K",
+      "replayPrompt": "Explore composition space with deterministic PCA and bounded clusters.",
+      "slug": "composition_space",
+      "sourcePaths": [
+        "docs/phase10k/evidence/phase10k4_composition_space"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "ml.uncertainty_evaluation"
+        ]
+      ],
+      "caseNumber": 39,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "ml.uncertainty_evaluation"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10K",
+      "replayPrompt": "Analyze whether model uncertainty is trustworthy and show error decay.",
+      "slug": "uncertainty",
+      "sourcePaths": [
+        "docs/phase10k/evidence/phase10k3_materials_ml_evaluation"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "ml.classification_evaluation"
+        ]
+      ],
+      "caseNumber": 40,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "ml.classification_evaluation"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10K",
+      "replayPrompt": "Evaluate classification confusion matrix, ROC, and PR for positive class B.",
+      "slug": "classification",
+      "sourcePaths": [
+        "docs/phase10k/evidence/phase10k3_materials_ml_evaluation"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        []
+      ],
+      "caseNumber": 41,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "NEEDS_CLARIFICATION",
+      "expectedToolIds": [],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10L-1",
+      "replayPrompt": "Analyze where the regression model predictions are wrong.",
+      "slug": "multi_target_clarification",
+      "sourcePaths": [
+        "docs/phase10l/evidence/phase10l1_analysis_intent"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        []
+      ],
+      "caseNumber": 42,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "UNSUPPORTED",
+      "expectedToolIds": [],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10L-1",
+      "replayPrompt": "Generate a Fermi surface.",
+      "slug": "fermi_unsupported",
+      "sourcePaths": [
+        "docs/phase10l/evidence/phase10l1_analysis_intent"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        []
+      ],
+      "caseNumber": 43,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "CAPABILITY_MISMATCH",
+      "expectedToolIds": [],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10L-2",
+      "replayPrompt": "Plot a calibrated reliability curve for model uncertainty.",
+      "slug": "uncertainty_plot_mismatch",
+      "sourcePaths": [
+        "docs/phase10l/evidence/phase10l2_capability_aware_planner"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "ml.regression_evaluation"
+        ]
+      ],
+      "caseNumber": 44,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "ml.regression_evaluation"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10L-2",
+      "replayPrompt": "Analyze formation-energy prediction errors.",
+      "slug": "formation_energy_exact",
+      "sourcePaths": [
+        "docs/phase10l/evidence/phase10l2_capability_aware_planner/regressions/formation_energy_vs_band_gap.json"
+      ]
+    },
+    {
+      "acceptedCurrentToolSets": [
+        [
+          "ml.regression_evaluation"
+        ]
+      ],
+      "caseNumber": 45,
+      "classification": "REAL_REPLAY_REQUIRED",
+      "expectedOutcome": "PLAN_READY",
+      "expectedToolIds": [
+        "ml.regression_evaluation"
+      ],
+      "historicalPromptIntegrity": "EXACT",
+      "phase": "Phase 10L-2",
+      "replayPrompt": "Analyze band-gap prediction errors.",
+      "slug": "band_gap_exact",
+      "sourcePaths": [
+        "docs/phase10l/evidence/phase10l2_capability_aware_planner/regressions/formation_energy_vs_band_gap.json"
+      ]
+    }
+  ],
+  "classificationPolicy": {
+    "COVERED_BY_L5_FIVE_CASES": "The exact current semantic family already passed the full live L5 chain.",
+    "NON_LLM_BROWSER_ONLY": "The flow begins after planning and tests rendering or interaction only.",
+    "REAL_REPLAY_REQUIRED": "A historical Mock/Fake LLM choice remains a useful current product path.",
+    "SUPERSEDED": "The historical tool is intentionally unavailable and mapped to its current canonical replacement.",
+    "TEST_ONLY_NEGATIVE": "A deterministic malformed-output, injection, or runtime failure fixture must not spend a live call."
+  },
+  "existingL5Cases": 5,
+  "nonLlmBrowserOnly": [
+    "Phase 10F camera, clipping, picking, measurement, context-loss, and export interactions",
+    "Phase 10G trajectory playback and frame controls after the viewer tool has been selected",
+    "Phase 10H/10I/10J renderer interaction matrices after persisted artifacts exist"
+  ],
+  "schemaVersion": "1.0",
+  "superseded": [
+    {
+      "reason": "DEPLOYMENT_UNAVAILABLE",
+      "replacement": "structure.viewer_scene",
+      "toolId": "structure.viewer_scene_metadata"
+    },
+    {
+      "reason": "DEPLOYMENT_UNAVAILABLE",
+      "replacement": "structure.viewer_scene",
+      "toolId": "structure.viewer_export_package"
+    },
+    {
+      "reason": "DEPLOYMENT_UNAVAILABLE",
+      "replacement": "structure.trajectory_viewer",
+      "toolId": "structure.trajectory_import"
+    },
+    {
+      "reason": "TEST_FIXTURE_ONLY",
+      "replacement": "structure.viewer_3d",
+      "toolId": "viewer_scene.preview_fixture"
+    }
+  ],
+  "testOnlyNegative": [
+    "duplicate JSON keys and fenced/prose provider output",
+    "prompt-injection and invented identifier fixtures",
+    "dependency producer/consumer failure injection",
+    "checksum, cycle, cap, cross-job, and cross-project tampering"
+  ],
+  "totalFiniteReplayCases": 45
+}

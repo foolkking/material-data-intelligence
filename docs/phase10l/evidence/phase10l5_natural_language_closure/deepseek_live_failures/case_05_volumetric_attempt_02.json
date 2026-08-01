@@ -1,0 +1,35 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 228.1,
+      "model": "deepseek-v4-pro",
+      "outcome": "DEEPSEEK_PROVIDER_FAILED",
+      "promptBytes": 21069,
+      "promptHash": "122463a41de8f46749d9e1cb0ed819d35ef3972be9de8c7150ecf084e2a515db",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 0,
+      "responseHash": null,
+      "tokenUsage": {
+        "completionTokens": 0,
+        "estimated": true,
+        "promptTokens": 5268,
+        "totalTokens": 5268
+      }
+    }
+  ],
+  "caseIndex": 4,
+  "caseSpecId": "caseSpec_5c68afd711f2349471f0192b8335041b",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 376.51,
+  "errorCode": "LIVE_PLAN_NOT_READY",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-pro",
+  "realCallCount": 1,
+  "safeDetails": "LIVE_PLAN_NOT_READY:{\"desiredOutputs\":[],\"diagnostics\":[\"DEEPSEEK_PROVIDER_FAILED\"],\"eligibleToolIds\":[],\"executionSideEffects\":{\"artifactCount\":0,\"bindingResolutionCount\":0,\"dependencyExecutionCount\":0,\"jobCount\":0,\"lineageCount\":0,\"planCount\":0,\"plannedBindingCount\":0,\"queueMessageCount\":0,\"toolCallCount\":0},\"outcome\":\"DEEPSEEK_PROVIDER_FAILED\",\"rejectionCodes\":[],\"requiredCapabilityNeeds\":[],\"scientificIntents\":[]}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

@@ -1,0 +1,155 @@
+{
+  "apiRefs": [
+    "interpretations/interpretation_d6c4353d16fd514e189f6501a7a4f871/evidence",
+    "planner/jobs/job_7437db7b7a209669e95fc6e1",
+    "planner/jobs/job_7437db7b7a209669e95fc6e1/dependencies",
+    "planner/jobs/job_7437db7b7a209669e95fc6e1/interpretations"
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_7437db7b7a209669e95fc6e1_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "0e09471839a73c992eebff2427a33b57e558a6965ec2b0e46d42e782c30f9eac",
+      "producerToolCallId": "call_job_7437db7b7a209669e95fc6e1_step_001",
+      "sizeBytes": 1176
+    },
+    {
+      "artifactId": "call_job_7437db7b7a209669e95fc6e1_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "767d0ad169c39efaac92c26654aff2f77d29a095b8807ec2c11aaa5587cc0125",
+      "producerToolCallId": "call_job_7437db7b7a209669e95fc6e1_step_001",
+      "sizeBytes": 295
+    },
+    {
+      "artifactId": "call_job_7437db7b7a209669e95fc6e1_step_001-table_json",
+      "artifactType": "table_json",
+      "contentHash": "c09b74e16859f9d093fbfbf9a568509146f62922b4e89428fcf352949e0b667d",
+      "producerToolCallId": "call_job_7437db7b7a209669e95fc6e1_step_001",
+      "sizeBytes": 6357
+    }
+  ],
+  "browserRefs": [],
+  "caseSpecHash": "52cb8135b823a3d621cd660fb5b38c4cc8c51438b827878c7c19fa099c93fabf",
+  "caseSpecId": "caseSpec_52cb8135b823a3d621cd660fb5b38c4c",
+  "claimEvidenceLinks": [
+    {
+      "claimId": "claim_1c2f2352f376736a43e35c6b61a266b4",
+      "evidenceItemIds": [
+        "evidence_43a0d9190339c1933c546dbc753a2f07"
+      ]
+    },
+    {
+      "claimId": "claim_3c70afae99b73fb05aca01bd57469ea4",
+      "evidenceItemIds": [
+        "evidence_bb145eaf8d808bdfe0fbdbf684204b8c"
+      ]
+    },
+    {
+      "claimId": "claim_4cc556efce333cb1f0f98e5bf08624c1",
+      "evidenceItemIds": [
+        "evidence_d18157d71ef43ed6f358361420d4f6b5"
+      ]
+    },
+    {
+      "claimId": "claim_838e9149373ae6764c1588b42cfb4598",
+      "evidenceItemIds": [
+        "evidence_3491dd00bffa32e08793b1640757731a"
+      ]
+    }
+  ],
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 2709.1627,
+  "eligibility": {
+    "recordHash": "47bdf2ea7c4fbb995e45ad4d3513fb1ed70cba55f8c009115b081cff8bbbd010",
+    "recordId": "resolution_47bdf2ea7c4fbb995e45ad4d",
+    "schemaVersion": "1.0"
+  },
+  "evidenceBundle": {
+    "recordHash": "0f758c97b7aa92501a081a8f3a73e6ab226d793a53e718b8080a9c88f65655a8",
+    "recordId": "bundle_0f758c97b7aa92501a081a8f3a73e6ab",
+    "schemaVersion": "1.0"
+  },
+  "executionOutcome": "LEGACY_TERMINAL",
+  "intent": {
+    "clarificationRound": 0,
+    "intentHash": "51c8801e074903de22478008772aec8b8bcc1d623205988e5078899f79538d4d",
+    "intentId": "intent_51c8801e074903de22478008",
+    "outcome": "READY"
+  },
+  "interpretation": {
+    "recordHash": "d6c4353d16fd514e189f6501a7a4f8713c4fb0e64ec921310e125dab637edde7",
+    "recordId": "interpretation_d6c4353d16fd514e189f6501a7a4f871",
+    "schemaVersion": "1.0"
+  },
+  "job": {
+    "recordId": "job_7437db7b7a209669e95fc6e1",
+    "semanticHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44",
+    "state": "completed"
+  },
+  "lineage": [],
+  "plan": {
+    "graphHash": null,
+    "planHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44",
+    "planId": "plan_6840acc00e2f097841fd9d44",
+    "schemaVersion": "0.1"
+  },
+  "profile": {
+    "recordHash": "f7b81a05fa714199d2c648e1c0181fc6ce1cddc8109e8c64891f64b5d6c009b2",
+    "recordId": "profile_dataset_phase10l5_ml_v2",
+    "schemaVersion": "2.0"
+  },
+  "provider": {
+    "keySource": "NONE",
+    "mode": "DETERMINISTIC",
+    "model": "deterministic-capability-planner",
+    "promptHashes": [],
+    "provider": "deterministic_mock",
+    "purposes": [],
+    "realCallCount": 0,
+    "responseHashes": []
+  },
+  "resourceManifest": [
+    {
+      "kind": "dataframe",
+      "objectHash": "6f626a5f6d6c0000000000000000000000000000000000000000000000000000",
+      "objectId": "obj_ml",
+      "objectType": "DataFrame"
+    }
+  ],
+  "runHash": "bfcf017f9b830d504cbabd6bd52576b0b476b4e2c63b9dbcedf4ba97963da969",
+  "runId": "run_bfcf017f9b830d504cbabd6bd52576b0",
+  "schemaVersion": "1.0",
+  "securityMarkers": [
+    "NO_ALTERNATIVE_PROVIDER_REAL_CALLS",
+    "NO_ARBITRARY_CODE",
+    "NO_ARTIFACT_HTML_OR_JAVASCRIPT",
+    "NO_CROSS_JOB_OR_PROJECT_BINDING",
+    "NO_DIRECT_TOOL_PLAN_OR_ADAPTER_IN_USER_REQUEST",
+    "NO_EXTERNAL_SCIENTIFIC_API",
+    "NO_RAW_ARTIFACT_TO_PROVIDER",
+    "NO_RECOMMENDATION_AUTO_EXECUTION",
+    "NO_SECRET_IN_EVIDENCE"
+  ],
+  "selectedTools": [
+    {
+      "bindingHash": "564949e10f20860baff8b7549050ee24fcb1ba69fada69c51de08c7c8419e27d",
+      "toolId": "ml.regression_evaluation",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "tokenUsage": {
+    "completionTokens": 0,
+    "estimated": false,
+    "promptTokens": 0,
+    "totalTokens": 0
+  },
+  "toolCalls": [
+    {
+      "recordId": "call_job_7437db7b7a209669e95fc6e1_step_001",
+      "semanticHash": "282d798bfeecf360f0c3eb90775879c98cc236b19cf3d1047d97a173de8f9204",
+      "state": "completed"
+    }
+  ],
+  "userText": "分析这个机器学习模型表现。",
+  "verdict": "PASS"
+}

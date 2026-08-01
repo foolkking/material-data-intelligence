@@ -1,0 +1,160 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "viz.scatter"
+    ]
+  ],
+  "caseNumber": 8,
+  "createdAt": "2026-08-01T07:24:02.832112+00:00",
+  "decision": {
+    "decisionHash": "ff0e302c629d89eaf430f4728a3b27dd43036c474395de342771a53fb98b8295",
+    "decisionId": "decision_ff0e302c629d89eaf430f472",
+    "outcome": "CAPABILITY_MISMATCH",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [],
+    "unfulfilledDesiredOutputs": [
+      "plot"
+    ]
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.ptable_heatmap",
+      "dataset.composition_space",
+      "viz.correlation"
+    ],
+    "providerVisibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.ptable_heatmap",
+      "dataset.composition_space",
+      "viz.correlation"
+    ],
+    "rejectedToolCount": 47,
+    "resolutionHash": "d50c9dc9167ff97504763da29021401db4f90e7f1503c474bcde9bcf32bbbe6e",
+    "resolutionId": "resolution_d50c9dc9167ff97504763da2"
+  },
+  "historicalExpectedToolIds": [
+    "viz.scatter"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot"
+    ],
+    "intentHash": "12025290b7a3b1039b7ffc0d3466ffe3358166ba2ada114c44e8f6f10e42cbd6",
+    "intentId": "intent_12025290b7a3b1039b7ffc0d",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [],
+    "scientificIntents": [
+      "visualization"
+    ],
+    "targetSemantics": [
+      {
+        "column": "PBE",
+        "groupId": null,
+        "objectId": "table_historical",
+        "origin": "PROFILE_EXACT",
+        "role": "material_property",
+        "semanticId": "table_historical:material_property:PBE",
+        "seriesId": null,
+        "unit": "eV/atom"
+      },
+      {
+        "column": "r2SCAN",
+        "groupId": null,
+        "objectId": "table_historical",
+        "origin": "PROFILE_EXACT",
+        "role": "material_property",
+        "semanticId": "table_historical:material_property:r2SCAN",
+        "seriesId": null,
+        "unit": "eV/atom"
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "The historical Mock path guessed x/y column order. Current exact binding correctly rejects the ambiguous scalar binding without substituting correlation.",
+  "phase": "Phase 10A",
+  "plan": {
+    "graphHash": null,
+    "planHash": null,
+    "planId": null,
+    "schemaVersion": null,
+    "stepCount": 0
+  },
+  "planningOutcome": "CAPABILITY_MISMATCH",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5291.521,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25841,
+      "promptHash": "4770e2e40959ab4fb33a8ae69e446e5f1245c3dc1f64e0151f028d6c4eb36138",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3619,
+      "responseContentBytes": 2825,
+      "responseHash": "8f3fddd41e3be285b32fc3f87ebc801727ba82b83febfd729efcdb4730a76fdc",
+      "tokenUsage": {
+        "completionTokens": 845,
+        "estimated": false,
+        "promptTokens": 6112,
+        "totalTokens": 6957
+      }
+    }
+  ],
+  "providerCallCount": 1,
+  "replayPrompt": "Create only a two-axis scatter plot with PBE on the x axis and r2SCAN on the y axis. Do not use composition embedding or dimensionality reduction.",
+  "replayPromptHash": "49a81e63cd8e9d61b579da9398b2a60418a20c1ec5f177d286ac0e44a12f7d6d",
+  "routeClassification": "EXACT_BINDING_GAP_REPORTED",
+  "runHash": "ae93088a6b14255880e51b6e6b4871cb35abe6ca9bebfe7b6c14183d46e7cd73",
+  "runId": "historical_live_run_ae93088a6b14255880e51b6e6b4871cb",
+  "runtime": {
+    "artifactCount": 0,
+    "artifacts": [],
+    "resultStatus": null,
+    "status": "NOT_CREATED",
+    "toolCallCount": 0,
+    "toolCalls": []
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [],
+  "slug": "scatter",
+  "sourcePaths": [
+    "docs/phase10a/browser_api_evidence/matpes_scatter"
+  ],
+  "timing": {
+    "plannerElapsedMs": 5330.78
+  },
+  "tokenUsage": {
+    "completionTokens": 845,
+    "estimated": false,
+    "promptTokens": 6112,
+    "totalTokens": 6957
+  },
+  "verdict": "PASS"
+}

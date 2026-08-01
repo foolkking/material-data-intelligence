@@ -1,0 +1,213 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.trajectory_viewer"
+    ]
+  ],
+  "caseNumber": 28,
+  "createdAt": "2026-08-01T07:34:29.271088+00:00",
+  "decision": {
+    "decisionHash": "4a6e17231e29d273a6120801f861213b58ac6d2e9acc8ee58ea31066fd80acfd",
+    "decisionId": "decision_4a6e17231e29d273a6120801",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot",
+          "summary",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "trajectory_analysis"
+        ],
+        "toolId": "structure.trajectory_viewer",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.trajectory_viewer"
+    ],
+    "providerVisibleToolIds": [
+      "structure.trajectory_viewer"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "f632486b2a488b99a0981484eef4c034f1ee51e1173a1259c3098302330f96d5",
+    "resolutionId": "resolution_f632486b2a488b99a0981484"
+  },
+  "historicalExpectedToolIds": [
+    "structure.trajectory_viewer"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot",
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "f4d03816e315895fcf05a5c244434905b72c48547c381a464a8d77c819164c0b",
+    "intentId": "intent_f4d03816e315895fcf05a5c2",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "trajectory_resource"
+    ],
+    "scientificIntents": [
+      "trajectory_analysis"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "obj_trajectory_65749455aac8",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:obj_trajectory_65749455aac8:65749455aac895c271907ff169b5a4b9dc7bc99c2189538768565c7d91098a62",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10G",
+  "plan": {
+    "graphHash": null,
+    "planHash": "31cc3ff452a67512c92782d5e298d7625453ba6f85eaa29602d22f2688a3d159",
+    "planId": "plan_23fc9595f4ab8e65d27fec79",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_trajectory",
+    "profileId": "profile_dataset_historical_trajectory_v2",
+    "profileSemanticHash": "798cd49858b431f20d25e86fe56af694928628429cadbc181f25bd4d5535dd37",
+    "selectedResourceIds": [
+      "obj_trajectory_65749455aac8"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5277.031,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23170,
+      "promptHash": "96810ec1ec48810f1d4d4a362a22cea1ee9b4b831b26d600d2e95031754de44b",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3342,
+      "responseContentBytes": 2572,
+      "responseHash": "64493a9dd6bc8a5d95d90ba9be8672bb33b27b1275b2bbbeb8a5c86276ae41f5",
+      "tokenUsage": {
+        "completionTokens": 812,
+        "estimated": false,
+        "promptTokens": 5466,
+        "totalTokens": 6278
+      }
+    },
+    {
+      "elapsedMs": 1621.685,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3425,
+      "promptHash": "661b6242b1c66d5640159655cda90bc257f74ac23f543d668379b50f378c54f5",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 612,
+      "responseContentBytes": 126,
+      "responseHash": "c3f38bc70b94d773ce7c3242784af948fe2b2ec283f4e3e41cf78fe9d1609cd0",
+      "tokenUsage": {
+        "completionTokens": 40,
+        "estimated": false,
+        "promptTokens": 916,
+        "totalTokens": 956
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Play this molecular-dynamics trajectory.",
+  "replayPromptHash": "8bb79c0ab0f21aba4ebb0a860fc38809b9d5754dd06e2a5971786aee221ec0ec",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "7c90ddb66ff12a5d3bb0a964af470ce830c44c50ecafcb7215921698ff4dee5b",
+  "runId": "historical_live_run_7c90ddb66ff12a5d3bb0a964af470ce8",
+  "runtime": {
+    "artifactCount": 4,
+    "artifacts": [
+      {
+        "id": "call_job_d7fbbf4ee61b72f4cc5d7174_step_001-trajectory_json",
+        "name": "trajectory.json",
+        "sha256": "65749455aac895c271907ff169b5a4b9dc7bc99c2189538768565c7d91098a62",
+        "sizeBytes": 2383,
+        "type": "trajectory_json"
+      },
+      {
+        "id": "call_job_d7fbbf4ee61b72f4cc5d7174_step_001-trajectory_summary_json",
+        "name": "trajectory_summary.json",
+        "sha256": "a826130aecbfa9ced97115ba70de6f30475a62c044f028bc126b86126ef553fe",
+        "sizeBytes": 507,
+        "type": "trajectory_summary_json"
+      },
+      {
+        "id": "call_job_d7fbbf4ee61b72f4cc5d7174_step_001-trajectory_report_json",
+        "name": "trajectory_parse_report.json",
+        "sha256": "7da8bba9c70c3b1c78ab2efce0b534fdeabe00e3ce34fb345ca3747d2d37fa01",
+        "sizeBytes": 465,
+        "type": "trajectory_report_json"
+      },
+      {
+        "id": "call_job_d7fbbf4ee61b72f4cc5d7174_step_001-trajectory_manifest_json",
+        "name": "trajectory_manifest.json",
+        "sha256": "4c7f8b898c13c265685abf6604a33e94e7b312d25db36f274dad810c89540495",
+        "sizeBytes": 970,
+        "type": "trajectory_manifest_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_d7fbbf4ee61b72f4cc5d7174_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.trajectory_viewer"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.trajectory_viewer"
+  ],
+  "slug": "trajectory_viewer",
+  "sourcePaths": [
+    "docs/phase10g/evidence/phase10g3_trajectory_performance_browser"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6986.175
+  },
+  "tokenUsage": {
+    "completionTokens": 852,
+    "estimated": false,
+    "promptTokens": 6382,
+    "totalTokens": 7234
+  },
+  "verdict": "PASS"
+}

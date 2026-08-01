@@ -1,0 +1,37 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 4833.118,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25098,
+      "promptHash": "03a083c798bb91c5bd8dcf959b57651240a729ac806a0dc1c0d6c2d824174a0b",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3283,
+      "responseContentBytes": 2499,
+      "responseHash": "8b7d7bc63e69634ac4b642de52370f8f68477fbebb59a636918b174aea4541ae",
+      "tokenUsage": {
+        "completionTokens": 779,
+        "estimated": false,
+        "promptTokens": 5978,
+        "totalTokens": 6757
+      }
+    }
+  ],
+  "caseIndex": 2,
+  "caseSpecId": "caseSpec_52cb8135b823a3d621cd660fb5b38c4c",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 5014.04,
+  "errorCode": "LIVE_PLAN_NOT_READY",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "realCallCount": 1,
+  "safeDetails": "LIVE_PLAN_NOT_READY:{\"desiredOutputs\":[\"metrics\",\"summary\",\"warnings\"],\"diagnosticMessages\":[\"No current registered capability satisfies the exact Intent/Profile scope.\"],\"diagnostics\":[\"NO_ELIGIBLE_CAPABILITY\"],\"eligibleToolIds\":[],\"executionSideEffects\":{\"artifactCount\":0,\"bindingResolutionCount\":0,\"dependencyExecutionCount\":0,\"jobCount\":0,\"lineageCount\":0,\"planCount\":0,\"plannedBindingCount\":0,\"queueMessageCount\":0,\"toolCallCount\":0},\"outcome\":\"CAPABILITY_MISMATCH\",\"rejectionCodes\":[\"CAPABILITY_NEED_UNSUPPORTED\",\"DESIRED_OUTPUT_UNSUPPORTED\",\"PROFILE_PREREQUISITE_MISSING\",\"REQUIRED_PARAMETER_UNBOUND\",\"RESOURCE_KIND_MISMATCH\",\"SCIENTIFIC_INTENT_UNSUPPORTED\",\"TARGET_SEMANTICS_MISMATCH\",\"TOOL_NOT_AVAILABLE\"],\"requiredCapabilityNeeds\":[\"regression_semantics\"],\"resourceBindings\":[],\"scientificIntents\":[\"ml_regression_evaluation\"],\"targetSemanticIds\":[\"obj_ml:regression:default:target:y_true\",\"obj_ml:regression:default:prediction:y_pred\"]}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

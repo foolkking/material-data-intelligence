@@ -1,0 +1,239 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.coordination_hist"
+    ]
+  ],
+  "caseNumber": 23,
+  "createdAt": "2026-08-01T07:30:47.017354+00:00",
+  "decision": {
+    "decisionHash": "66ced2e7ed4f00d5cf9d6aa783114a5c9b2e6d167259c35277361c9379325cd8",
+    "decisionId": "decision_66ced2e7ed4f00d5cf9d6aa7",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot",
+          "summary",
+          "table",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "structure_analysis",
+          "visualization"
+        ],
+        "toolId": "structure.coordination_hist",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.brillouin_zone",
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "providerVisibleToolIds": [
+      "structure.brillouin_zone",
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "rejectedToolCount": 41,
+    "resolutionHash": "b4744bd1bba503d8769f05cc8337f5dcc83121cba0c189928d095f088e5415a9",
+    "resolutionId": "resolution_b4744bd1bba503d8769f05cc"
+  },
+  "historicalExpectedToolIds": [
+    "structure.coordination_hist"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot",
+      "summary",
+      "table",
+      "warnings"
+    ],
+    "intentHash": "526d3fd75d8029a609cf907e5c5ba37a9f7e8af4f50007d19ce71e74ac6d264f",
+    "intentId": "intent_526d3fd75d8029a609cf907e",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "structure_resource"
+    ],
+    "scientificIntents": [
+      "structure_analysis",
+      "visualization"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "obj_nacl",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:obj_nacl:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10E",
+  "plan": {
+    "graphHash": null,
+    "planHash": "4312f7f1a3d19d6911d72b9a9df00421350bc355c5972cccf13934f591b703df",
+    "planId": "plan_914c645f93b7cd2a161796fd",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_phase10k2_evidence",
+    "profileId": "profile_historical_structure_v2",
+    "profileSemanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+    "selectedResourceIds": [
+      "obj_nacl"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4765.383,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23090,
+      "promptHash": "ae876267f953a9fd69662f748d9861c116ca876609c3b59422081368bdd62031",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3356,
+      "responseContentBytes": 2582,
+      "responseHash": "59e7d0cffb663297d11f9052f19161e6586f36515d70d5526f63a6cb9894fa31",
+      "tokenUsage": {
+        "completionTokens": 787,
+        "estimated": false,
+        "promptTokens": 5413,
+        "totalTokens": 6200
+      }
+    },
+    {
+      "elapsedMs": 1482.248,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 10201,
+      "promptHash": "6756c99a8dfa3fa2585fa15bfb9621e04a7a2a2378ed87d510d2f6cc40adbbe7",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 615,
+      "responseContentBytes": 126,
+      "responseHash": "bbd84de5d64b4a82df508090332934aacc54322051a35b7c067a4c72ba9946d8",
+      "tokenUsage": {
+        "completionTokens": 38,
+        "estimated": false,
+        "promptTokens": 2844,
+        "totalTokens": 2882
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Count neighbors and plot a coordination-number histogram for this structure.",
+  "replayPromptHash": "a838ea6fe24217a530ddae0b0326f05d18203d46cb0d6de72facef9ba2d9f6ed",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "96ebb8c39d17f51da2168090a246e5340bf07cde94c0b104133d89e58a18763e",
+  "runId": "historical_live_run_96ebb8c39d17f51da2168090a246e534",
+  "runtime": {
+    "artifactCount": 4,
+    "artifacts": [
+      {
+        "id": "call_job_8b63b9dd833de1f09677fe2d_step_001-table_json",
+        "name": "coordination_hist.json",
+        "sha256": "3f13c95fc7ce9791bbf5cc8a2cced925c5b1a01001736d834c6b6a07045e650a",
+        "sizeBytes": 1904,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_8b63b9dd833de1f09677fe2d_step_001-plotly_json",
+        "name": "coordination_hist_plot.json",
+        "sha256": "b48f0577b0989fad35c80c99d0d908e47c42d8d08f7f6d55ba36abc021c3cacf",
+        "sizeBytes": 595,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_8b63b9dd833de1f09677fe2d_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "d764a8a2fed33b46e51780b6e9be762854e6beb11bdb6652b8e6b40df5d199e4",
+        "sizeBytes": 690,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_8b63b9dd833de1f09677fe2d_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "a6d46a91ed4b0632b0721d06fe8df47fae51ee8055800f22b02b92843b3c7c60",
+        "sizeBytes": 1365,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_8b63b9dd833de1f09677fe2d_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.coordination_hist"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.coordination_hist"
+  ],
+  "slug": "coordination_hist",
+  "sourcePaths": [
+    "docs/phase10e/browser_api_evidence/phase10e2_coordination_hist"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6320.672
+  },
+  "tokenUsage": {
+    "completionTokens": 825,
+    "estimated": false,
+    "promptTokens": 8257,
+    "totalTokens": 9082
+  },
+  "verdict": "PASS"
+}

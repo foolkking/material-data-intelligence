@@ -29,6 +29,8 @@ PLANNER_HIDDEN_TOOL_IDS = frozenset(
 
 
 def _intents(tool_id: str) -> list[ScientificIntent]:
+    if tool_id == "structure.composition_from_structure":
+        return [ScientificIntent.composition_analysis, ScientificIntent.structure_analysis]
     if tool_id == "dataset.materials_explorer":
         return [
             ScientificIntent.dataset_overview,
@@ -42,9 +44,7 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
     if tool_id == "dataset.composition_space" or tool_id.startswith("composition.cluster_"):
         return [
             ScientificIntent.composition_space,
-            ScientificIntent.composition_analysis,
             ScientificIntent.comparison,
-            ScientificIntent.anomaly_candidate_review,
             ScientificIntent.sample_inspection,
             ScientificIntent.visualization,
         ]
@@ -133,6 +133,8 @@ def _needs(tool_id: str) -> list[CapabilityNeed]:
 
 def _supported_needs(tool_id: str) -> list[CapabilityNeed]:
     values = set(_needs(tool_id))
+    if tool_id == "structure.composition_from_structure":
+        values.add(CapabilityNeed.composition_data)
     if tool_id in {"dataset.materials_explorer", "dataset.composition_space"}:
         values.update({CapabilityNeed.composition_data, CapabilityNeed.material_property_data, CapabilityNeed.comparison_groups, CapabilityNeed.sample_identity})
     if tool_id == "ml.regression_evaluation":
@@ -271,7 +273,7 @@ def build_tool_planner_metadata(tool: Any) -> ToolPlannerMetadata:
         maxTargets=32,
         parameterBindings=_bindings(tool.toolId),
         declaredArtifactTypes=[item.value for item in tool.artifactTypes],
-        costClass=1 if tool.toolId == "structure.viewer_3d" else {"low": 1, "medium": 2, "high": 3}[tool.costLevel],
+        costClass=1 if tool.toolId == "structure.summary" else {"low": 1, "medium": 2, "high": 3}[tool.costLevel],
         independentComposable=availability is PlannerAvailability.available,
         collisionGroup="primary_interactive_structure_view" if tool.toolId in {"structure.structure_3d", "structure.viewer_scene", "structure.viewer_3d"} else None,
     )

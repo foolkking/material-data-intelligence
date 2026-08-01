@@ -1,0 +1,225 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "viz.correlation"
+    ]
+  ],
+  "caseNumber": 11,
+  "createdAt": "2026-08-01T07:24:52.981012+00:00",
+  "decision": {
+    "decisionHash": "15325de2b5ad1c5ee20240a64a13bc7e7b19e4ee0ff07b2b0e2b03c631f1d8b0",
+    "decisionId": "decision_15325de2b5ad1c5ee20240a6",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "numericColumns",
+            "source": "SEMANTIC_COLUMNS",
+            "sourceIdentity": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+            "value": [
+              "D_max",
+              "PBE",
+              "r2SCAN"
+            ],
+            "valueId": "columns:D_max:PBE:r2SCAN"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "plot"
+        ],
+        "coveredScientificIntents": [
+          "visualization"
+        ],
+        "toolId": "viz.correlation",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.ptable_heatmap",
+      "dataset.composition_space",
+      "viz.correlation"
+    ],
+    "providerVisibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.ptable_heatmap",
+      "dataset.composition_space",
+      "viz.correlation"
+    ],
+    "rejectedToolCount": 47,
+    "resolutionHash": "52ab9cfe8da7bff21d86038e6ea672d91f4e038909eaafbae283bfc7fe659152",
+    "resolutionId": "resolution_52ab9cfe8da7bff21d86038e"
+  },
+  "historicalExpectedToolIds": [
+    "viz.correlation"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot"
+    ],
+    "intentHash": "84182fd7caab03eac9be6fdf58d27ada965241b60ddbad19ad0cebc32ff337b0",
+    "intentId": "intent_84182fd7caab03eac9be6fdf",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [],
+    "scientificIntents": [
+      "visualization"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10A",
+  "plan": {
+    "graphHash": null,
+    "planHash": "4b35257650da2b5c6f5e6f7fa597c664c22bf93ddf4458e8be427f4da29f2cca",
+    "planId": "plan_a59cedea102669ffb40f498d",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5031.955,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25431,
+      "promptHash": "2667433c4cef44ce8417864efe112e8fa87f4f77a95c9de3a92bb9ee38cd2381",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2926,
+      "responseContentBytes": 2197,
+      "responseHash": "52d1bddf9234f1aca921b848802a4c94a970c9e656384fbb7d5c31b1ce2e517a",
+      "tokenUsage": {
+        "completionTokens": 658,
+        "estimated": false,
+        "promptTokens": 5997,
+        "totalTokens": 6655
+      }
+    },
+    {
+      "elapsedMs": 1528.131,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 7203,
+      "promptHash": "728dfcbb672f344af9ac9d52470578b8683e349bc2c940b3908672e0845d5b5c",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 603,
+      "responseContentBytes": 114,
+      "responseHash": "1bfc3383960819216ba5e8b45bca74f66eae02274aa1e582758a34955457b0fc",
+      "tokenUsage": {
+        "completionTokens": 39,
+        "estimated": false,
+        "promptTokens": 1976,
+        "totalTokens": 2015
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Create a correlation matrix for the numeric material properties.",
+  "replayPromptHash": "11d9c027c2dface58d872e8b0f4e2c7e98ef2153250055c30875f5b8784fce65",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "ec921cd49226576ccab43ce94db620d0f6ab0a0d03c44eae142927160b6edb67",
+  "runId": "historical_live_run_ec921cd49226576ccab43ce94db620d0",
+  "runtime": {
+    "artifactCount": 5,
+    "artifacts": [
+      {
+        "id": "call_job_47d7edb9672176f1c465d602_step_001-table_json",
+        "name": "correlation_matrix.json",
+        "sha256": "0543499d52d4b6d6e486e23b308b119c4e3c3c6a9cd2b6c68a693b7492896747",
+        "sizeBytes": 266,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_47d7edb9672176f1c465d602_step_001-plotly_json",
+        "name": "correlation_heatmap.json",
+        "sha256": "e4080bd5d30291dc3cf460e56254acf8777df682bca4b32f21bbd8e50732046b",
+        "sizeBytes": 18851,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_47d7edb9672176f1c465d602_step_001-plotly_html",
+        "name": "correlation_heatmap.html",
+        "sha256": "8a5eac381c1d148b7c29f5c7d62716414eb877d25eb72da9b3856cab972bf8ad",
+        "sizeBytes": 8176,
+        "type": "plotly_html"
+      },
+      {
+        "id": "call_job_47d7edb9672176f1c465d602_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "b26082d60a31da42519950291212ab78c40cb08c9fd7722f4584d7189f0cfdfd",
+        "sizeBytes": 87,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_47d7edb9672176f1c465d602_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "26d6b232b2377368605762fa664e25b490acd8efcccf0861599b3d5cc5bc0511",
+        "sizeBytes": 642,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_47d7edb9672176f1c465d602_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "viz.correlation"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "viz.correlation"
+  ],
+  "slug": "correlation",
+  "sourcePaths": [
+    "docs/phase10a/browser_api_evidence/ward_correlation"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6654.186
+  },
+  "tokenUsage": {
+    "completionTokens": 697,
+    "estimated": false,
+    "promptTokens": 7973,
+    "totalTokens": 8670
+  },
+  "verdict": "PASS"
+}

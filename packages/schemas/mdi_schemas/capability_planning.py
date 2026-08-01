@@ -304,7 +304,7 @@ class SelectedCapability(StrictCapabilityModel):
 
 
 class CapabilityDecisionProvenance(StrictCapabilityModel):
-    provider: Literal["deterministic_mock", "openai_compatible"]
+    provider: Literal["deterministic_mock", "openai_compatible", "deepseek"]
     providerContractVersion: Literal["1.0"] = "1.0"
     model: str
     repairCount: Literal[0, 1] = 0

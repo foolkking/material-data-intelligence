@@ -1,0 +1,517 @@
+{
+  "acceptedCurrentToolSets": [
+    []
+  ],
+  "browserContract": {
+    "noPlanJobEnqueue": true,
+    "profile": {
+      "analysisReadiness": [],
+      "createdAt": "2026-07-31T00:00:00+00:00",
+      "datasetId": "dataset_historical_dual_target",
+      "datasetType": "tabular_materials",
+      "files": [],
+      "objects": [],
+      "phononSummary": null,
+      "profileContractVersion": "2.0",
+      "profileCoverage": null,
+      "profileId": "profile_dataset_historical_dual_target_v2",
+      "qualityIssues": [],
+      "recommendedTasks": [],
+      "resourceSemantics": [
+        {
+          "capabilities": [
+            "table",
+            "composition"
+          ],
+          "facts": {
+            "columnCount": 6,
+            "rowCount": 3
+          },
+          "kind": "dataframe",
+          "objectHash": "07affa1a0be4d418fc27fdb42db2400cf167cd4060019328a9aeabd9daddfae2",
+          "objectId": "table_dual_target",
+          "objectType": "DataFrame",
+          "warnings": []
+        }
+      ],
+      "sampleIdentity": {
+        "datasetVersion": "dataset_version_2",
+        "explicitColumn": null,
+        "fallbackPolicy": "dataset_version_object_hash_row_index",
+        "objectIds": [
+          "table_dual_target"
+        ],
+        "policy": "object_hash_row_index"
+      },
+      "schemaVersion": "0.1",
+      "semanticColumns": [
+        {
+          "ambiguities": [],
+          "column": "material_id",
+          "dtype": "string",
+          "finiteCount": null,
+          "missingCount": 0,
+          "nonFiniteCount": null,
+          "objectId": "table_dual_target",
+          "roles": [
+            {
+              "authority": "user_declared",
+              "details": {},
+              "groupId": null,
+              "role": "sample_identity"
+            }
+          ],
+          "rowsInspected": 3,
+          "totalRows": 3,
+          "uniqueCount": 3,
+          "unit": null
+        },
+        {
+          "ambiguities": [],
+          "column": "formula",
+          "dtype": "string",
+          "finiteCount": null,
+          "missingCount": 0,
+          "nonFiniteCount": null,
+          "objectId": "table_dual_target",
+          "roles": [
+            {
+              "authority": "user_declared",
+              "details": {},
+              "groupId": null,
+              "role": "material_formula"
+            }
+          ],
+          "rowsInspected": 3,
+          "totalRows": 3,
+          "uniqueCount": 3,
+          "unit": null
+        },
+        {
+          "ambiguities": [],
+          "column": "formation_energy",
+          "dtype": "number",
+          "finiteCount": 3,
+          "missingCount": 0,
+          "nonFiniteCount": null,
+          "objectId": "table_dual_target",
+          "roles": [
+            {
+              "authority": "user_declared",
+              "details": {},
+              "groupId": "formation_energy_model",
+              "role": "regression_target"
+            }
+          ],
+          "rowsInspected": 3,
+          "totalRows": 3,
+          "uniqueCount": 3,
+          "unit": "eV/atom"
+        },
+        {
+          "ambiguities": [],
+          "column": "formation_energy_pred",
+          "dtype": "number",
+          "finiteCount": 3,
+          "missingCount": 0,
+          "nonFiniteCount": null,
+          "objectId": "table_dual_target",
+          "roles": [
+            {
+              "authority": "user_declared",
+              "details": {},
+              "groupId": "formation_energy_model",
+              "role": "regression_prediction"
+            }
+          ],
+          "rowsInspected": 3,
+          "totalRows": 3,
+          "uniqueCount": 3,
+          "unit": null
+        },
+        {
+          "ambiguities": [],
+          "column": "band_gap",
+          "dtype": "number",
+          "finiteCount": 3,
+          "missingCount": 0,
+          "nonFiniteCount": null,
+          "objectId": "table_dual_target",
+          "roles": [
+            {
+              "authority": "user_declared",
+              "details": {},
+              "groupId": "band_gap_model",
+              "role": "regression_target"
+            }
+          ],
+          "rowsInspected": 3,
+          "totalRows": 3,
+          "uniqueCount": 3,
+          "unit": "eV"
+        },
+        {
+          "ambiguities": [],
+          "column": "band_gap_pred",
+          "dtype": "number",
+          "finiteCount": 3,
+          "missingCount": 0,
+          "nonFiniteCount": null,
+          "objectId": "table_dual_target",
+          "roles": [
+            {
+              "authority": "user_declared",
+              "details": {},
+              "groupId": "band_gap_model",
+              "role": "regression_prediction"
+            }
+          ],
+          "rowsInspected": 3,
+          "totalRows": 3,
+          "uniqueCount": 3,
+          "unit": null
+        }
+      ],
+      "semanticGroups": [
+        {
+          "classes": [],
+          "groupId": "formation_energy_model",
+          "kind": "regression",
+          "predictionColumns": [
+            "formation_energy_pred"
+          ],
+          "probabilityColumns": [],
+          "reasons": [],
+          "seriesBindings": [],
+          "status": "COMPLETE",
+          "targetColumns": [
+            "formation_energy"
+          ],
+          "uncertaintyColumns": []
+        },
+        {
+          "classes": [],
+          "groupId": "band_gap_model",
+          "kind": "regression",
+          "predictionColumns": [
+            "band_gap_pred"
+          ],
+          "probabilityColumns": [],
+          "reasons": [],
+          "seriesBindings": [],
+          "status": "COMPLETE",
+          "targetColumns": [
+            "band_gap"
+          ],
+          "uncertaintyColumns": []
+        }
+      ],
+      "semanticHash": "132950a9ea821d6b15d36ffb646f332da3b84e3a3a03a55d7f0956d073191e46",
+      "semanticRulesVersion": "phase10k1.material_profile_semantics.v1",
+      "structureSummary": null,
+      "tableSummary": null,
+      "trajectorySummary": null,
+      "version": "2"
+    },
+    "providerCallAudit": [
+      {
+        "elapsedMs": 5839.045,
+        "finishReason": "stop",
+        "model": "deepseek-v4-flash",
+        "outcome": "SUCCESS",
+        "promptBytes": 26786,
+        "promptHash": "424b59da63bb10548f784b72c08c5895fdc4883a070b0183f083955db3373553",
+        "purpose": "INTENT_EXTRACTION",
+        "realCall": true,
+        "responseBytes": 4001,
+        "responseContentBytes": 3149,
+        "responseHash": "ddcf8ec4c4cb1c6781878cdab1cf236209c8749a91abe82b2646edfb41f1a272",
+        "tokenUsage": {
+          "completionTokens": 919,
+          "estimated": false,
+          "promptTokens": 6325,
+          "totalTokens": 7244
+        }
+      }
+    ],
+    "request": {
+      "baseUrl": null,
+      "datasetId": "dataset_historical_dual_target",
+      "enqueue": false,
+      "execute": false,
+      "intentId": null,
+      "intentSchemaVersion": "1.0",
+      "maxTokens": 8192,
+      "model": "deepseek-v4-flash",
+      "profileId": "profile_dataset_historical_dual_target_v2",
+      "projectId": "project_historical_deepseek_41",
+      "provider": "deepseek",
+      "secretId": null,
+      "selectedResourceIds": [
+        "table_dual_target"
+      ],
+      "selectedTargetIds": [],
+      "temperature": 0.0,
+      "timeoutSeconds": 120.0,
+      "userPrompt": "Analyze where the regression model predictions are wrong."
+    },
+    "response": {
+      "capability_decision": null,
+      "capability_outcome": null,
+      "dependency_bindings": [],
+      "eligibility_resolution": null,
+      "enqueued": false,
+      "error_code": "INTENT_CLARIFICATION_REQUIRED",
+      "executed": false,
+      "graph_hash": null,
+      "intent": {
+        "ambiguities": [
+          {
+            "blocking": true,
+            "candidates": [
+              {
+                "label": "formation_energy (formation_energy_model)",
+                "semanticId": "formation_energy_model:target:formation_energy",
+                "value": "formation_energy_model:target:formation_energy"
+              },
+              {
+                "label": "band_gap (band_gap_model)",
+                "semanticId": "band_gap_model:target:band_gap",
+                "value": "band_gap_model:target:band_gap"
+              }
+            ],
+            "code": "TARGET_SEMANTICS_AMBIGUOUS",
+            "field": "targetSemantics",
+            "message": "Multiple valid model targets are available.",
+            "source": "SEMANTIC_BINDING"
+          }
+        ],
+        "clarification": {
+          "answers": [],
+          "maxQuestionsPerRound": 3,
+          "maxRounds": 1,
+          "questions": [
+            {
+              "bindsTo": "targetSemantics",
+              "code": "SELECT_TARGET",
+              "options": [
+                {
+                  "label": "formation_energy (formation_energy_model)",
+                  "semanticId": "formation_energy_model:target:formation_energy",
+                  "value": "formation_energy_model:target:formation_energy"
+                },
+                {
+                  "label": "band_gap (band_gap_model)",
+                  "semanticId": "band_gap_model:target:band_gap",
+                  "value": "band_gap_model:target:band_gap"
+                }
+              ],
+              "prompt": "Which model target should be evaluated?",
+              "questionId": "select_model_target",
+              "required": true,
+              "type": "SELECT_ONE"
+            }
+          ],
+          "round": 0
+        },
+        "constraints": {
+          "clarificationAllowed": true,
+          "costPreference": null,
+          "descriptiveOnly": false,
+          "excludeResourceIds": [],
+          "excludeScientificIntents": [],
+          "forbidDerivedInterpretation": false,
+          "groupIds": [],
+          "includeResourceIds": [
+            "table_dual_target"
+          ],
+          "includeScientificIntents": [],
+          "maxAnalyses": null,
+          "maxToolCalls": null,
+          "modelIds": [],
+          "outputPreferences": [],
+          "targetIds": [],
+          "timePreference": null
+        },
+        "dataScope": {
+          "datasetId": "dataset_historical_dual_target",
+          "datasetVersion": "dataset_version_2",
+          "groupIds": [],
+          "modelIds": [],
+          "origin": "PROFILE_EXACT",
+          "profileContractVersion": "2.0",
+          "profileId": "profile_dataset_historical_dual_target_v2",
+          "profileSemanticHash": "132950a9ea821d6b15d36ffb646f332da3b84e3a3a03a55d7f0956d073191e46",
+          "resourceRefs": [
+            {
+              "kind": "dataframe",
+              "objectHash": "07affa1a0be4d418fc27fdb42db2400cf167cd4060019328a9aeabd9daddfae2",
+              "objectId": "table_dual_target",
+              "objectType": "DataFrame",
+              "origin": "USER_EXPLICIT"
+            }
+          ],
+          "sampleIds": []
+        },
+        "datasetId": "dataset_historical_dual_target",
+        "desiredOutputs": [
+          "metrics",
+          "summary",
+          "warnings"
+        ],
+        "intentHash": "b07e5903b634218d577b9947a6cf4b93136c689ab32621b05979261cf2ea8b1d",
+        "intentId": "intent_b07e5903b634218d577b9947",
+        "language": "en",
+        "missingFacts": [],
+        "normalizedGoal": "Analyze where the regression model predictions are wrong.",
+        "optionalCapabilityNeeds": [],
+        "outcome": "NEEDS_CLARIFICATION",
+        "profileId": "profile_dataset_historical_dual_target_v2",
+        "provenance": {
+          "answerBindings": [],
+          "createdAt": "2026-08-01T08:19:41.413353+00:00",
+          "model": "deepseek-v4-flash",
+          "parentIntentId": null,
+          "promptVersion": "phase10l5.intent.v5",
+          "provider": "deepseek"
+        },
+        "rawGoal": "Analyze where the regression model predictions are wrong.",
+        "requiredCapabilityNeeds": [
+          "regression_semantics"
+        ],
+        "schemaVersion": "1.0",
+        "scientificIntents": [
+          "ml_regression_evaluation"
+        ],
+        "targetSemantics": [],
+        "unsupportedReasons": [],
+        "warnings": []
+      },
+      "intent_id": "intent_b07e5903b634218d577b9947",
+      "intent_outcome": "NEEDS_CLARIFICATION",
+      "job_id": null,
+      "ok": false,
+      "plan": null,
+      "plan_hash": null,
+      "plan_id": null,
+      "plan_schema_version": null,
+      "plan_source": "llm",
+      "planner_provider": "deepseek",
+      "provider_visible_tool_ids": [],
+      "topological_order": [],
+      "validation_errors": []
+    },
+    "sourceModel": "deepseek-v4-flash",
+    "sourceProvider": "deepseek"
+  },
+  "caseNumber": 41,
+  "createdAt": "2026-08-01T08:19:41.415373+00:00",
+  "decision": null,
+  "eligibility": {
+    "eligibleToolIds": [],
+    "providerVisibleToolIds": [],
+    "rejectedToolCount": 0,
+    "resolutionHash": null,
+    "resolutionId": null
+  },
+  "historicalExpectedToolIds": [],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 1,
+    "desiredOutputs": [
+      "metrics",
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "b07e5903b634218d577b9947a6cf4b93136c689ab32621b05979261cf2ea8b1d",
+    "intentId": "intent_b07e5903b634218d577b9947",
+    "outcome": "NEEDS_CLARIFICATION",
+    "requiredCapabilityNeeds": [
+      "regression_semantics"
+    ],
+    "scientificIntents": [
+      "ml_regression_evaluation"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10L-1",
+  "plan": {
+    "graphHash": null,
+    "planHash": null,
+    "planId": null,
+    "schemaVersion": null,
+    "stepCount": 0
+  },
+  "planningOutcome": "NEEDS_CLARIFICATION",
+  "profile": {
+    "datasetId": "dataset_historical_dual_target",
+    "profileId": "profile_dataset_historical_dual_target_v2",
+    "profileSemanticHash": "132950a9ea821d6b15d36ffb646f332da3b84e3a3a03a55d7f0956d073191e46",
+    "selectedResourceIds": [
+      "table_dual_target"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5839.045,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 26786,
+      "promptHash": "424b59da63bb10548f784b72c08c5895fdc4883a070b0183f083955db3373553",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 4001,
+      "responseContentBytes": 3149,
+      "responseHash": "ddcf8ec4c4cb1c6781878cdab1cf236209c8749a91abe82b2646edfb41f1a272",
+      "tokenUsage": {
+        "completionTokens": 919,
+        "estimated": false,
+        "promptTokens": 6325,
+        "totalTokens": 7244
+      }
+    }
+  ],
+  "providerCallCount": 1,
+  "replayPrompt": "Analyze where the regression model predictions are wrong.",
+  "replayPromptHash": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+  "routeClassification": "EXACT_BINDING_GAP_REPORTED",
+  "runHash": "c1a1f4a10020db19fc847e100029c835406e9bdda1538cc1be645185814c40a2",
+  "runId": "historical_live_run_c1a1f4a10020db19fc847e100029c835",
+  "runtime": {
+    "artifactCount": 0,
+    "artifacts": [],
+    "resultStatus": null,
+    "status": "NOT_CREATED",
+    "toolCallCount": 0,
+    "toolCalls": []
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [],
+  "slug": "multi_target_clarification",
+  "sourcePaths": [
+    "docs/phase10l/evidence/phase10l1_analysis_intent"
+  ],
+  "timing": {
+    "plannerElapsedMs": 5856.903
+  },
+  "tokenUsage": {
+    "completionTokens": 919,
+    "estimated": false,
+    "promptTokens": 6325,
+    "totalTokens": 7244
+  },
+  "verdict": "PASS"
+}

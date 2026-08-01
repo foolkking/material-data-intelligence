@@ -1,0 +1,309 @@
+{
+  "acceptedCurrentToolSets": [
+    []
+  ],
+  "browserContract": {
+    "noPlanJobEnqueue": true,
+    "profile": {
+      "analysisReadiness": [],
+      "createdAt": "2026-07-31T00:00:00+00:00",
+      "datasetId": "dataset_phase10k2_evidence",
+      "datasetType": "structure_collection",
+      "files": [],
+      "objects": [],
+      "phononSummary": null,
+      "profileContractVersion": "2.0",
+      "profileCoverage": null,
+      "profileId": "profile_historical_structure_v2",
+      "qualityIssues": [],
+      "recommendedTasks": [],
+      "resourceSemantics": [
+        {
+          "capabilities": [
+            "structure",
+            "composition"
+          ],
+          "facts": {
+            "formula": "NaCl",
+            "periodicity": "periodic",
+            "siteCount": 2
+          },
+          "kind": "structure",
+          "objectHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "objectId": "obj_nacl",
+          "objectType": "Structure",
+          "warnings": []
+        }
+      ],
+      "sampleIdentity": {
+        "datasetVersion": "dataset_version_2",
+        "explicitColumn": null,
+        "fallbackPolicy": "dataset_version_object_hash_row_index",
+        "objectIds": [
+          "obj_nacl"
+        ],
+        "policy": "object_hash_row_index"
+      },
+      "schemaVersion": "0.1",
+      "semanticColumns": [],
+      "semanticGroups": [],
+      "semanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+      "semanticRulesVersion": "phase10k1.material_profile_semantics.v1",
+      "structureSummary": null,
+      "tableSummary": null,
+      "trajectorySummary": null,
+      "version": "2"
+    },
+    "providerCallAudit": [
+      {
+        "elapsedMs": 4786.044,
+        "finishReason": "stop",
+        "model": "deepseek-v4-flash",
+        "outcome": "SUCCESS",
+        "promptBytes": 22835,
+        "promptHash": "dbe874849de97956455e0220a925023e03f86af3eed5a60ede595b1e59dd79d0",
+        "purpose": "INTENT_EXTRACTION",
+        "realCall": true,
+        "responseBytes": 3027,
+        "responseContentBytes": 2280,
+        "responseHash": "3c3ca9ffab0298d541b53048ba98f8b87f7161d98e2c2c504770bfdb5f4c3fde",
+        "tokenUsage": {
+          "completionTokens": 702,
+          "estimated": false,
+          "promptTokens": 5378,
+          "totalTokens": 6080
+        }
+      }
+    ],
+    "request": {
+      "baseUrl": null,
+      "datasetId": "dataset_phase10k2_evidence",
+      "enqueue": false,
+      "execute": false,
+      "intentId": null,
+      "intentSchemaVersion": "1.0",
+      "maxTokens": 8192,
+      "model": "deepseek-v4-flash",
+      "profileId": "profile_historical_structure_v2",
+      "projectId": "project_historical_deepseek_42",
+      "provider": "deepseek",
+      "secretId": null,
+      "selectedResourceIds": [
+        "obj_nacl"
+      ],
+      "selectedTargetIds": [],
+      "temperature": 0.0,
+      "timeoutSeconds": 120.0,
+      "userPrompt": "Generate a Fermi surface."
+    },
+    "response": {
+      "capability_decision": null,
+      "capability_outcome": null,
+      "dependency_bindings": [],
+      "eligibility_resolution": null,
+      "enqueued": false,
+      "error_code": "INTENT_UNSUPPORTED",
+      "executed": false,
+      "graph_hash": null,
+      "intent": {
+        "ambiguities": [],
+        "clarification": {
+          "answers": [],
+          "maxQuestionsPerRound": 3,
+          "maxRounds": 1,
+          "questions": [],
+          "round": 0
+        },
+        "constraints": {
+          "clarificationAllowed": true,
+          "costPreference": null,
+          "descriptiveOnly": false,
+          "excludeResourceIds": [],
+          "excludeScientificIntents": [],
+          "forbidDerivedInterpretation": false,
+          "groupIds": [],
+          "includeResourceIds": [
+            "obj_nacl"
+          ],
+          "includeScientificIntents": [],
+          "maxAnalyses": null,
+          "maxToolCalls": null,
+          "modelIds": [],
+          "outputPreferences": [],
+          "targetIds": [],
+          "timePreference": null
+        },
+        "dataScope": {
+          "datasetId": "dataset_phase10k2_evidence",
+          "datasetVersion": "dataset_version_2",
+          "groupIds": [],
+          "modelIds": [],
+          "origin": "PROFILE_EXACT",
+          "profileContractVersion": "2.0",
+          "profileId": "profile_historical_structure_v2",
+          "profileSemanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+          "resourceRefs": [
+            {
+              "kind": "structure",
+              "objectHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "objectId": "obj_nacl",
+              "objectType": "Structure",
+              "origin": "USER_EXPLICIT"
+            }
+          ],
+          "sampleIds": []
+        },
+        "datasetId": "dataset_phase10k2_evidence",
+        "desiredOutputs": [],
+        "intentHash": "b3c2cc923d1a6c8bb7c24cd612e1fbbf6bbad976af3f91ff879b8d1efae19fc8",
+        "intentId": "intent_b3c2cc923d1a6c8bb7c24cd6",
+        "language": "en",
+        "missingFacts": [],
+        "normalizedGoal": "Generate a Fermi surface.",
+        "optionalCapabilityNeeds": [],
+        "outcome": "UNSUPPORTED",
+        "profileId": "profile_historical_structure_v2",
+        "provenance": {
+          "answerBindings": [],
+          "createdAt": "2026-08-01T08:19:46.278899+00:00",
+          "model": "deepseek-v4-flash",
+          "parentIntentId": null,
+          "promptVersion": "phase10l5.intent.v5",
+          "provider": "deepseek"
+        },
+        "rawGoal": "Generate a Fermi surface.",
+        "requiredCapabilityNeeds": [],
+        "schemaVersion": "1.0",
+        "scientificIntents": [],
+        "targetSemantics": [],
+        "unsupportedReasons": [
+          {
+            "boundary": "CURRENT",
+            "code": "UNSUPPORTED_GOAL",
+            "field": "rawGoal",
+            "message": "Fermi surface generation is not supported by the available data profile.",
+            "source": "USER_GOAL"
+          }
+        ],
+        "warnings": []
+      },
+      "intent_id": "intent_b3c2cc923d1a6c8bb7c24cd6",
+      "intent_outcome": "UNSUPPORTED",
+      "job_id": null,
+      "ok": false,
+      "plan": null,
+      "plan_hash": null,
+      "plan_id": null,
+      "plan_schema_version": null,
+      "plan_source": "llm",
+      "planner_provider": "deepseek",
+      "provider_visible_tool_ids": [],
+      "topological_order": [],
+      "validation_errors": []
+    },
+    "sourceModel": "deepseek-v4-flash",
+    "sourceProvider": "deepseek"
+  },
+  "caseNumber": 42,
+  "createdAt": "2026-08-01T08:19:46.280904+00:00",
+  "decision": null,
+  "eligibility": {
+    "eligibleToolIds": [],
+    "providerVisibleToolIds": [],
+    "rejectedToolCount": 0,
+    "resolutionHash": null,
+    "resolutionId": null
+  },
+  "historicalExpectedToolIds": [],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [],
+    "intentHash": "b3c2cc923d1a6c8bb7c24cd612e1fbbf6bbad976af3f91ff879b8d1efae19fc8",
+    "intentId": "intent_b3c2cc923d1a6c8bb7c24cd6",
+    "outcome": "UNSUPPORTED",
+    "requiredCapabilityNeeds": [],
+    "scientificIntents": [],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10L-1",
+  "plan": {
+    "graphHash": null,
+    "planHash": null,
+    "planId": null,
+    "schemaVersion": null,
+    "stepCount": 0
+  },
+  "planningOutcome": "UNSUPPORTED",
+  "profile": {
+    "datasetId": "dataset_phase10k2_evidence",
+    "profileId": "profile_historical_structure_v2",
+    "profileSemanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+    "selectedResourceIds": [
+      "obj_nacl"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4786.044,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 22835,
+      "promptHash": "dbe874849de97956455e0220a925023e03f86af3eed5a60ede595b1e59dd79d0",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3027,
+      "responseContentBytes": 2280,
+      "responseHash": "3c3ca9ffab0298d541b53048ba98f8b87f7161d98e2c2c504770bfdb5f4c3fde",
+      "tokenUsage": {
+        "completionTokens": 702,
+        "estimated": false,
+        "promptTokens": 5378,
+        "totalTokens": 6080
+      }
+    }
+  ],
+  "providerCallCount": 1,
+  "replayPrompt": "Generate a Fermi surface.",
+  "replayPromptHash": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+  "routeClassification": "EXACT_BINDING_GAP_REPORTED",
+  "runHash": "3f6802efd0fced08d27846529371ef30ce55d3c9abbdf7a4b98566712ed015a4",
+  "runId": "historical_live_run_3f6802efd0fced08d27846529371ef30",
+  "runtime": {
+    "artifactCount": 0,
+    "artifacts": [],
+    "resultStatus": null,
+    "status": "NOT_CREATED",
+    "toolCallCount": 0,
+    "toolCalls": []
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [],
+  "slug": "fermi_unsupported",
+  "sourcePaths": [
+    "docs/phase10l/evidence/phase10l1_analysis_intent"
+  ],
+  "timing": {
+    "plannerElapsedMs": 4800.16
+  },
+  "tokenUsage": {
+    "completionTokens": 702,
+    "estimated": false,
+    "promptTokens": 5378,
+    "totalTokens": 6080
+  },
+  "verdict": "PASS"
+}

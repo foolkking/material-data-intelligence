@@ -1,0 +1,18 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-08-01T07:23:48.253080+00:00",
+      "errorCode": "HISTORICAL_REPLAY_TOOL_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_TOOL_MISMATCH:7:['dataset.materials_explorer']:(('table.numeric_summary',), ('table.distribution_summary',)):eligible=['dataset.materials_explorer', 'table.distribution_summary', 'table.numeric_summary', 'viz.correlation']:targets=['table_historical:material_property:PBE', 'table_historical:material_property:r2SCAN', 'table_historical:material_property:D_max']"
+    }
+  ],
+  "caseNumber": 7,
+  "createdAt": "2026-08-01T07:23:48.253080+00:00",
+  "errorCode": "HISTORICAL_REPLAY_TOOL_MISMATCH",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_TOOL_MISMATCH:7:['dataset.materials_explorer']:(('table.numeric_summary',), ('table.distribution_summary',)):eligible=['dataset.materials_explorer', 'table.distribution_summary', 'table.numeric_summary', 'viz.correlation']:targets=['table_historical:material_property:PBE', 'table_historical:material_property:r2SCAN', 'table_historical:material_property:D_max']",
+  "slug": "numeric_summary",
+  "verdict": "FAIL"
+}

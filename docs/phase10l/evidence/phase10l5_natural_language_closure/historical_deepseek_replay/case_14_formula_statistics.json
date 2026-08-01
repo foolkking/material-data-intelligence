@@ -1,0 +1,213 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "composition.formula_statistics"
+    ]
+  ],
+  "caseNumber": 14,
+  "createdAt": "2026-08-01T07:25:39.537282+00:00",
+  "decision": {
+    "decisionHash": "e82971a1acbcff002b5e0648ad47f419964637a6834d725b937db892e9faa7dd",
+    "decisionId": "decision_e82971a1acbcff002b5e0648",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "formulaColumn",
+            "source": "SEMANTIC_COLUMNS",
+            "sourceIdentity": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57:material_formula",
+            "value": "formula",
+            "valueId": "column:table_historical:formula"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "summary",
+          "table"
+        ],
+        "coveredScientificIntents": [
+          "composition_analysis"
+        ],
+        "toolId": "composition.formula_statistics",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.materials_explorer"
+    ],
+    "providerVisibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.materials_explorer"
+    ],
+    "rejectedToolCount": 46,
+    "resolutionHash": "186bd80ba4e72fd234ac268ad09ea8523085b8a3a02c0f07aea4f1c316933e8e",
+    "resolutionId": "resolution_186bd80ba4e72fd234ac268a"
+  },
+  "historicalExpectedToolIds": [
+    "composition.formula_statistics"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "summary",
+      "table"
+    ],
+    "intentHash": "4d5c99088c6fb98be69f252f2cdbd32e18622b158129179e02259d14804cd069",
+    "intentId": "intent_4d5c99088c6fb98be69f252f",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "composition_data"
+    ],
+    "scientificIntents": [
+      "composition_analysis"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10B",
+  "plan": {
+    "graphHash": null,
+    "planHash": "ac5964886ef0d519723b90f3199d9d46d5b794860287e4bb7f739bb37ee4c6e6",
+    "planId": "plan_08ac44a78c292cff119d7f0f",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4523.952,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25381,
+      "promptHash": "2d307e54caec1f63a45a024a98a91e61aefe8b3a5b0acd25d94dd6549c06c18a",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2947,
+      "responseContentBytes": 2214,
+      "responseHash": "c014dd18b8374ad3740781a9e6ffd8f46a576e1df1b5a254be79e681beb287f3",
+      "tokenUsage": {
+        "completionTokens": 661,
+        "estimated": false,
+        "promptTokens": 5987,
+        "totalTokens": 6648
+      }
+    },
+    {
+      "elapsedMs": 1749.436,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 8273,
+      "promptHash": "2a6ce0af9ba21fc9e668661b00977af237cd3d32e24ebacbda8f3e56b93d8003",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 618,
+      "responseContentBytes": 129,
+      "responseHash": "b154e7461c164f72db4c3a9dd2c06d2673538364797cca502acf089313855ef1",
+      "tokenUsage": {
+        "completionTokens": 38,
+        "estimated": false,
+        "promptTokens": 2228,
+        "totalTokens": 2266
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Calculate formula statistics for this materials table.",
+  "replayPromptHash": "827ef615c0df61c917e8d08278d9ecd377360a6da37bf64197964cb011372ae6",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "81671686b5ea64909a46b85af18e0a357464ddf2f1554a0fe9679b79732d1408",
+  "runId": "historical_live_run_81671686b5ea64909a46b85af18e0a35",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_adae821f3dc36910f55b62e0_step_001-table_json",
+        "name": "formula_statistics.json",
+        "sha256": "7972dea414b285841bfb71a32aefaffaa63cf3a3eb3b3651c9c50c43159d6890",
+        "sizeBytes": 1014,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_adae821f3dc36910f55b62e0_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "a7bbcf874462f3b49d15275b469df03c54f0b086461a4dba9e00c22d566d480e",
+        "sizeBytes": 190,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_adae821f3dc36910f55b62e0_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "3c028786cee97fdbcacec6bc590879dc5ee1c5358888eeadef476a7ca4d22d05",
+        "sizeBytes": 613,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_adae821f3dc36910f55b62e0_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "composition.formula_statistics"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "composition.formula_statistics"
+  ],
+  "slug": "formula_statistics",
+  "sourcePaths": [
+    "docs/phase10b/browser_api_evidence/ward_formula_statistics"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6350.44
+  },
+  "tokenUsage": {
+    "completionTokens": 699,
+    "estimated": false,
+    "promptTokens": 8215,
+    "totalTokens": 8914
+  },
+  "verdict": "PASS"
+}

@@ -1,0 +1,216 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "composition.summary"
+    ],
+    [
+      "composition.formula_statistics"
+    ]
+  ],
+  "caseNumber": 13,
+  "createdAt": "2026-08-01T07:25:23.565131+00:00",
+  "decision": {
+    "decisionHash": "a3e9c12808217ed6c2e592e19f7b6e8a01f7847db4bfdda758f416e689d91158",
+    "decisionId": "decision_a3e9c12808217ed6c2e592e1",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "formulaColumn",
+            "source": "SEMANTIC_COLUMNS",
+            "sourceIdentity": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57:material_formula",
+            "value": "formula",
+            "valueId": "column:table_historical:formula"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "summary",
+          "table"
+        ],
+        "coveredScientificIntents": [
+          "composition_analysis"
+        ],
+        "toolId": "composition.summary",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.materials_explorer"
+    ],
+    "providerVisibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.materials_explorer"
+    ],
+    "rejectedToolCount": 46,
+    "resolutionHash": "2a79a4c8f06ef6e62e47817b908dbcee867994ec2b7767cd05653dea0d0112c7",
+    "resolutionId": "resolution_2a79a4c8f06ef6e62e47817b"
+  },
+  "historicalExpectedToolIds": [
+    "composition.summary"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "summary",
+      "table"
+    ],
+    "intentHash": "0993c609ee69d1972af44258e882c627e1914787a58ad2a7c3568aea7451b599",
+    "intentId": "intent_0993c609ee69d1972af44258",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "composition_data"
+    ],
+    "scientificIntents": [
+      "composition_analysis"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "Current canonical formula-statistics route supersedes the historical composition summary route.",
+  "phase": "Phase 10A",
+  "plan": {
+    "graphHash": null,
+    "planHash": "beb3bf4c90930f5b3d4b765967e25ca06faf8a1cda36f785669670fe5bf588a7",
+    "planId": "plan_25638168308fd30de1475f24",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4388.758,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25346,
+      "promptHash": "2da7347e4619de810dbff56e2d2bcb9f89f51a1942350f2b4cdbd84da763b5c6",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2933,
+      "responseContentBytes": 2200,
+      "responseHash": "c0a25dd598d1e2fdf0130f3c0a3aec642f939214a86d7abf043bf4ba6b7dd367",
+      "tokenUsage": {
+        "completionTokens": 659,
+        "estimated": false,
+        "promptTokens": 5982,
+        "totalTokens": 6641
+      }
+    },
+    {
+      "elapsedMs": 1391.53,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 8259,
+      "promptHash": "f760f85c6ac09d2ff5e3186ed89e58409deb9734e19344a40f67daf531099105",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 607,
+      "responseContentBytes": 118,
+      "responseHash": "946a8ced3763d6b0fcbbf5c39dabbe7fa9eea01558bf9fb8e49ecf609f7451ba",
+      "tokenUsage": {
+        "completionTokens": 41,
+        "estimated": false,
+        "promptTokens": 2229,
+        "totalTokens": 2270
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Summarize the element composition distribution.",
+  "replayPromptHash": "c77f952d1d277be61e8c316199f93257ab11af458ff4ec58d1def398f7f319b3",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "7721daa4c7b0d437359924d53333aa2a7eb18014fa705ea0eea962af22e1ae2b",
+  "runId": "historical_live_run_7721daa4c7b0d437359924d53333aa2a",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_55b962f3663103d6b2ff649e_step_001-table_json",
+        "name": "composition_summary.json",
+        "sha256": "0fcb35fc17b7c6de3bc561b71281a6c1e5efe6c44747303fc5794f375be878ad",
+        "sizeBytes": 414,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_55b962f3663103d6b2ff649e_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "3301475968f9c271eeb087d0038c646170326979f180dcd4a2ef0c6cfd28d7ad",
+        "sizeBytes": 119,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_55b962f3663103d6b2ff649e_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "c21e3b78281ec2028d99a5f28e4b4da7d8d8f03cb07daecf045aa515626c05ca",
+        "sizeBytes": 603,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_55b962f3663103d6b2ff649e_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "composition.summary"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "composition.summary"
+  ],
+  "slug": "composition_summary",
+  "sourcePaths": [
+    "docs/phase10a/browser_api_evidence/ward_composition_summary"
+  ],
+  "timing": {
+    "plannerElapsedMs": 5860.756
+  },
+  "tokenUsage": {
+    "completionTokens": 700,
+    "estimated": false,
+    "promptTokens": 8211,
+    "totalTokens": 8911
+  },
+  "verdict": "PASS"
+}

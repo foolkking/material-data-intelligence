@@ -221,7 +221,7 @@ class IntentAnswerProvenance(StrictIntentModel):
 
 
 class AnalysisIntentProvenance(StrictIntentModel):
-    provider: Literal["deterministic_mock", "openai_compatible"]
+    provider: Literal["deterministic_mock", "openai_compatible", "deepseek"]
     model: str = Field(min_length=1, max_length=128)
     promptVersion: str = Field(min_length=1, max_length=64)
     createdAt: str = Field(min_length=1, max_length=64)

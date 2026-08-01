@@ -1,0 +1,224 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.spacegroup_summary"
+    ]
+  ],
+  "caseNumber": 20,
+  "createdAt": "2026-08-01T07:29:58.279383+00:00",
+  "decision": {
+    "decisionHash": "83a444f959b7a14916b72c8bc46f248ed0b855d82f6cd92304f2e970e059ede3",
+    "decisionId": "decision_83a444f959b7a14916b72c8b",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "structure_analysis"
+        ],
+        "toolId": "structure.spacegroup_summary",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "providerVisibleToolIds": [
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "rejectedToolCount": 42,
+    "resolutionHash": "1a8137bfc7674ac9303e4f2ce122e4fa8d476a45a5d464090ee13e9f79430dba",
+    "resolutionId": "resolution_1a8137bfc7674ac9303e4f2c"
+  },
+  "historicalExpectedToolIds": [
+    "structure.spacegroup_summary"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "4993c86e091ee2737889c247bf23b92c79859c72de80ccaaf645213a44b4eebb",
+    "intentId": "intent_4993c86e091ee2737889c247",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "structure_resource"
+    ],
+    "scientificIntents": [
+      "structure_analysis"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "obj_nacl",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:obj_nacl:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10C",
+  "plan": {
+    "graphHash": null,
+    "planHash": "b19a8e8adced9a620f46c488f83fd11ba9899e38b0164657655dc5cd0e65b52d",
+    "planId": "plan_be982cb9df5a83c0c7386c99",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_phase10k2_evidence",
+    "profileId": "profile_historical_structure_v2",
+    "profileSemanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+    "selectedResourceIds": [
+      "obj_nacl"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5174.467,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23030,
+      "promptHash": "0e5a88e2795cc9c87da44f0ffa7417e028005547f08ec34c45d697061dc50f9b",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3292,
+      "responseContentBytes": 2524,
+      "responseHash": "804c604ca83a8208666d50a94b3f6cfd4034bc51d17629c77a54fb8f74a1185e",
+      "tokenUsage": {
+        "completionTokens": 777,
+        "estimated": false,
+        "promptTokens": 5413,
+        "totalTokens": 6190
+      }
+    },
+    {
+      "elapsedMs": 1392.586,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 9472,
+      "promptHash": "5058a08bb959818ffef4ecec629aa0ecbfce8be7622a79ca8bad26064fc83416",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 617,
+      "responseContentBytes": 127,
+      "responseHash": "efd660d26130ce0faa3e976018fe3c91f0c5cefe02ae83f8c6f0be788263864d",
+      "tokenUsage": {
+        "completionTokens": 43,
+        "estimated": false,
+        "promptTokens": 2646,
+        "totalTokens": 2689
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Summarize the space group and crystal system for this structure.",
+  "replayPromptHash": "61df98b8056a992b0b79a1304371e04aee01f7925ca80a90ef0bfe4f293d0431",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "ee5e92915917c416e31a51adcf07ff2ea0c7777a5da31b6a6ce42505a445f1bb",
+  "runId": "historical_live_run_ee5e92915917c416e31a51adcf07ff2e",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_a1ab2b873b2b7aa0439f682f_step_001-table_json",
+        "name": "spacegroup_summary.json",
+        "sha256": "a55ffd51e7a14191f3d4b58b3cf9f8781408967e660c2de4aabccbb186283350",
+        "sizeBytes": 289,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_a1ab2b873b2b7aa0439f682f_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "4e7461fdbbc01456e2a04b556db186b95f1ad54374118b407bcd851031010d6b",
+        "sizeBytes": 166,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_a1ab2b873b2b7aa0439f682f_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "471b38245db9bbe4f227da014fbd07c1cfb397950765859d9c183680226536d6",
+        "sizeBytes": 587,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_a1ab2b873b2b7aa0439f682f_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.spacegroup_summary"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.spacegroup_summary"
+  ],
+  "slug": "spacegroup_summary",
+  "sourcePaths": [
+    "docs/phase10c/browser_api_evidence/simple_cubic_spacegroup_summary"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6642.808
+  },
+  "tokenUsage": {
+    "completionTokens": 820,
+    "estimated": false,
+    "promptTokens": 8059,
+    "totalTokens": 8879
+  },
+  "verdict": "PASS"
+}

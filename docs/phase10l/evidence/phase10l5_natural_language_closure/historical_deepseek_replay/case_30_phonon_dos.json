@@ -1,0 +1,232 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "phonon.dos"
+    ]
+  ],
+  "caseNumber": 30,
+  "createdAt": "2026-08-01T07:35:00.091582+00:00",
+  "decision": {
+    "decisionHash": "4dd2cbb019d42728d6726e01913724760988e97b79ccbcf46d3dfe2fb7902ac3",
+    "decisionId": "decision_4dd2cbb019d42728d6726e01",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot"
+        ],
+        "coveredScientificIntents": [
+          "phonon_analysis",
+          "visualization"
+        ],
+        "toolId": "phonon.dos",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "phonon.dos"
+    ],
+    "providerVisibleToolIds": [
+      "phonon.dos"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "96d536d2f74457377d72971be0e23330c1942bd3d33c94076ecf7b39b5ae75e0",
+    "resolutionId": "resolution_96d536d2f74457377d72971b"
+  },
+  "historicalExpectedToolIds": [
+    "phonon.dos"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot"
+    ],
+    "intentHash": "385081750c3e30032f0ba92e4a520d9070e2639412dc078c34ceacae0fa13c67",
+    "intentId": "intent_385081750c3e30032f0ba92e",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "phonon_resource"
+    ],
+    "scientificIntents": [
+      "phonon_analysis",
+      "visualization"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "phonon_dos_1",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:phonon_dos_1:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10H",
+  "plan": {
+    "graphHash": null,
+    "planHash": "2279a19eba574fb75ff60729069b99861e0c980ce7f71bd3997132fd0caf7632",
+    "planId": "plan_e5efb8d0de2a819fbbe543bf",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_1",
+    "profileId": "profile_1",
+    "profileSemanticHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "selectedResourceIds": [
+      "phonon_dos_1"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4282.97,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23542,
+      "promptHash": "14aff110488f0ab6dd0b2302a097736a0c92d68f5fe793b31839c3ba1ed393b2",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3072,
+      "responseContentBytes": 2316,
+      "responseHash": "b0fdb4ef4d69a0153d5f2cf7382653b262fe38e18832574120bb36e953d7699d",
+      "tokenUsage": {
+        "completionTokens": 685,
+        "estimated": false,
+        "promptTokens": 5529,
+        "totalTokens": 6214
+      }
+    },
+    {
+      "elapsedMs": 1299.541,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3234,
+      "promptHash": "ab1540e608778c408be0a3f36e873a4368cf2a1d03cf3f2dd8fc0389fa291a63",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 595,
+      "responseContentBytes": 109,
+      "responseHash": "11b6b376eef52367d77e6a4705cb6a9d90c5ced12747ea0bf69657bf4468726d",
+      "tokenUsage": {
+        "completionTokens": 38,
+        "estimated": false,
+        "promptTokens": 812,
+        "totalTokens": 850
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Plot only the phonon density of states.",
+  "replayPromptHash": "c95763b94593e7a3a8ea3da93eae0013dba07c9cf5bf1dbafce941faa12d2539",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "31562773efb3f469b47addb55222b98f9f23ada90213d6730eb7749ea0ed2d32",
+  "runId": "historical_live_run_31562773efb3f469b47addb55222b98f",
+  "runtime": {
+    "artifactCount": 7,
+    "artifacts": [
+      {
+        "id": "call_job_a5fc6fffd53162f7b4579779_step_001-phonon_dos_json",
+        "name": "phonon_dos.json",
+        "sha256": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+        "sizeBytes": 1638,
+        "type": "phonon_dos_json"
+      },
+      {
+        "id": "call_job_a5fc6fffd53162f7b4579779_step_001-phonon_summary_json",
+        "name": "phonon_dos_summary.json",
+        "sha256": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
+        "sizeBytes": 1071,
+        "type": "phonon_summary_json"
+      },
+      {
+        "id": "call_job_a5fc6fffd53162f7b4579779_step_001-phonon_report_json",
+        "name": "phonon_dos_parse_report.json",
+        "sha256": "36fe187028ad825492b158c484061957cf6bf076203f125425a81af127f2a5b6",
+        "sizeBytes": 1659,
+        "type": "phonon_report_json"
+      },
+      {
+        "id": "call_job_a5fc6fffd53162f7b4579779_step_001-phonon_manifest_json",
+        "name": "phonon_manifest.json",
+        "sha256": "43f74006506745bfd6494da656fa6540d9b81569567aa4055adab56da628ec4d",
+        "sizeBytes": 816,
+        "type": "phonon_manifest_json"
+      },
+      {
+        "id": "call_job_a5fc6fffd53162f7b4579779_step_001-plotly_json",
+        "name": "phonon_dos_plot.json",
+        "sha256": "ee1a78cdec593cdaa62e7bfb81db72427882591e5266ec8c92e5f3ddb14287a8",
+        "sizeBytes": 1361,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_a5fc6fffd53162f7b4579779_step_001-table_json",
+        "name": "phonon_dos_table.json",
+        "sha256": "715bbe1b1742e93f51ceb3280fb0893574127fcd0e964bf7cacf7744acf20d6b",
+        "sizeBytes": 1205,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_a5fc6fffd53162f7b4579779_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "2b6339b0d8f40b5f404a550b5d0f7139ee734dbaa69a223ab50ff42385642c9c",
+        "sizeBytes": 890,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_a5fc6fffd53162f7b4579779_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "phonon.dos"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "phonon.dos"
+  ],
+  "slug": "phonon_dos",
+  "sourcePaths": [
+    "docs/phase10h/evidence/phase10h2_phonon_dos"
+  ],
+  "timing": {
+    "plannerElapsedMs": 5656.291
+  },
+  "tokenUsage": {
+    "completionTokens": 723,
+    "estimated": false,
+    "promptTokens": 6341,
+    "totalTokens": 7064
+  },
+  "verdict": "PASS"
+}

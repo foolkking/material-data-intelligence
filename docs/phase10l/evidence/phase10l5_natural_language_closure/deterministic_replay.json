@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1.0",
+  "evidenceMode": "OFFLINE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+  "cases": {
+    "case_1": {
+      "desktopHashes": {
+        "chromium": "5bcb00be52efb9e65625910c3b07b4038f2287141c6ce9b1785115158f8cfab1",
+        "firefox": "5bcb00be52efb9e65625910c3b07b4038f2287141c6ce9b1785115158f8cfab1",
+        "webkit": "5bcb00be52efb9e65625910c3b07b4038f2287141c6ce9b1785115158f8cfab1"
+      },
+      "stable": true
+    },
+    "case_2": {
+      "desktopHashes": {
+        "chromium": "ecfb7eaf3129b7d3efecd46e83a08e0b9049874a19f63676a563c3821504789e",
+        "firefox": "ecfb7eaf3129b7d3efecd46e83a08e0b9049874a19f63676a563c3821504789e",
+        "webkit": "ecfb7eaf3129b7d3efecd46e83a08e0b9049874a19f63676a563c3821504789e"
+      },
+      "stable": true
+    },
+    "case_3": {
+      "desktopHashes": {
+        "chromium": "6ec5aa0f5a9ae511771788affd7e964bbd770c5779aa55cc8672f0f21bf1e89c",
+        "firefox": "6ec5aa0f5a9ae511771788affd7e964bbd770c5779aa55cc8672f0f21bf1e89c",
+        "webkit": "6ec5aa0f5a9ae511771788affd7e964bbd770c5779aa55cc8672f0f21bf1e89c"
+      },
+      "stable": true
+    },
+    "case_4": {
+      "desktopHashes": {
+        "chromium": "deed18761ebbe19c780bfc8e5c8c9184ff516eb85f3472afbb339c72aca0d1e9",
+        "firefox": "deed18761ebbe19c780bfc8e5c8c9184ff516eb85f3472afbb339c72aca0d1e9",
+        "webkit": "deed18761ebbe19c780bfc8e5c8c9184ff516eb85f3472afbb339c72aca0d1e9"
+      },
+      "stable": true
+    },
+    "case_5": {
+      "desktopHashes": {
+        "chromium": "0662db5ce9b7bc35be01ad605f5d3cab28f766b0a8e6ff65a231c1a95537dc9b",
+        "firefox": "0662db5ce9b7bc35be01ad605f5d3cab28f766b0a8e6ff65a231c1a95537dc9b",
+        "webkit": "0662db5ce9b7bc35be01ad605f5d3cab28f766b0a8e6ff65a231c1a95537dc9b"
+      },
+      "stable": true
+    }
+  },
+  "nonReadyStates": {
+    "needs_clarification": {
+      "desktopHashes": {
+        "chromium": "ceea7d8bfe49bc13df26ffb707447284842cc1c265467aaaddc4f1db91c74463",
+        "firefox": "ceea7d8bfe49bc13df26ffb707447284842cc1c265467aaaddc4f1db91c74463",
+        "webkit": "ceea7d8bfe49bc13df26ffb707447284842cc1c265467aaaddc4f1db91c74463"
+      },
+      "stable": true
+    },
+    "unsupported": {
+      "desktopHashes": {
+        "chromium": "2eb973e677097d45f8db13a19e258044e952384b7b6e1a50fe564ef2870f4dc7",
+        "firefox": "2eb973e677097d45f8db13a19e258044e952384b7b6e1a50fe564ef2870f4dc7",
+        "webkit": "2eb973e677097d45f8db13a19e258044e952384b7b6e1a50fe564ef2870f4dc7"
+      },
+      "stable": true
+    },
+    "capability_mismatch": {
+      "desktopHashes": {
+        "chromium": "b581b3b2f577d38d4341fb1b4d9daf3de1244374e2714c2e117bbc9171d91440",
+        "firefox": "b581b3b2f577d38d4341fb1b4d9daf3de1244374e2714c2e117bbc9171d91440",
+        "webkit": "b581b3b2f577d38d4341fb1b4d9daf3de1244374e2714c2e117bbc9171d91440"
+      },
+      "stable": true
+    }
+  },
+  "allStable": true
+}

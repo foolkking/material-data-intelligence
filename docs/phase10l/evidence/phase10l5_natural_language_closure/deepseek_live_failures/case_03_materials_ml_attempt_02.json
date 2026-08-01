@@ -1,0 +1,69 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 32386.278,
+      "model": "deepseek-v4-pro",
+      "outcome": "SUCCESS",
+      "promptBytes": 23061,
+      "promptHash": "ed436c529f86cc0bf8a6b247666b8ea58e75ab04764af773eebe92f4f5b0db60",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 8730,
+      "responseHash": "84f48c2fdab52713660df42b15ef2020c0091b26b9483b4a7ae2a9a126a2a646",
+      "tokenUsage": {
+        "completionTokens": 2125,
+        "estimated": false,
+        "promptTokens": 5454,
+        "totalTokens": 7579
+      }
+    },
+    {
+      "elapsedMs": 15588.247,
+      "model": "deepseek-v4-pro",
+      "outcome": "SUCCESS",
+      "promptBytes": 3536,
+      "promptHash": "2c495d33c30844b84305dd143297bb5d0100d12f77203d204d1041bb3d063da2",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 5957,
+      "responseHash": "8a98f2979e6e48012b6552052e59967aa58f8b7abc15f97b66eb731e3f36a463",
+      "tokenUsage": {
+        "completionTokens": 1429,
+        "estimated": false,
+        "promptTokens": 960,
+        "totalTokens": 2389
+      }
+    },
+    {
+      "elapsedMs": 241.112,
+      "model": "deepseek-v4-pro",
+      "outcome": "DEEPSEEK_PROVIDER_FAILED",
+      "promptBytes": 6717,
+      "promptHash": "2d49f55aec23d7c0d3dd6d62c1c9a2ae4e5690b82f4cd1c86a3700cc649973b7",
+      "purpose": "GROUNDED_INTERPRETATION",
+      "realCall": true,
+      "responseBytes": 0,
+      "responseHash": null,
+      "tokenUsage": {
+        "completionTokens": 0,
+        "estimated": true,
+        "promptTokens": 1680,
+        "totalTokens": 1680
+      }
+    }
+  ],
+  "caseIndex": 2,
+  "caseSpecId": "caseSpec_52cb8135b823a3d621cd660fb5b38c4c",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 48497.05,
+  "errorCode": "LIVE_INTERPRETATION_FAILED",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-pro",
+  "realCallCount": 3,
+  "safeDetails": "LIVE_INTERPRETATION_FAILED:{\"diagnostics\":[\"STRICT_PROVIDER_TRANSPORT_FAILED:LLMProviderError\"],\"evidenceItemCount\":0,\"outcome\":\"PROVIDER_FAILED\",\"repairCount\":0}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

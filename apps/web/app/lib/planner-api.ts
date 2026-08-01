@@ -124,7 +124,7 @@ export type AnalysisIntent = {
   unsupportedReasons: Array<{ code: string; field: string; message: string; source: string; boundary: string }>;
   outcome: "READY" | "NEEDS_CLARIFICATION" | "UNSUPPORTED";
   clarification: { round: 0 | 1; maxRounds: 1; maxQuestionsPerRound: 3; questions: AnalysisIntentQuestion[]; answers: Array<{ questionId: string; selectedValues: string[] }> };
-  provenance: { provider: "deterministic_mock" | "openai_compatible"; model: string; promptVersion: string; createdAt: string; parentIntentId?: string | null; answerBindings: Array<{ questionId: string; selectedValues: string[] }> };
+  provenance: { provider: "deterministic_mock" | "openai_compatible" | "deepseek"; model: string; promptVersion: string; createdAt: string; parentIntentId?: string | null; answerBindings: Array<{ questionId: string; selectedValues: string[] }> };
   warnings: Array<{ code: string; field: string; message: string; source: string; boundary: string }>;
 };
 
@@ -315,7 +315,7 @@ export type CapabilityPlanningDecision = {
   diagnostics: CapabilityDiagnostic[];
   warnings: CapabilityDiagnostic[];
   provenance: {
-    provider: "deterministic_mock" | "openai_compatible";
+    provider: "deterministic_mock" | "openai_compatible" | "deepseek";
     providerContractVersion: "1.0";
     model: string;
     repairCount: 0 | 1;

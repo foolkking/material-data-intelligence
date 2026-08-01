@@ -488,7 +488,7 @@ def _resource_semantic(obj: NormalizedObjectDraft) -> dict[str, Any]:
                 "quantities": sorted(
                     str(channel.get("quantity")) for channel in channels if isinstance(channel, dict) and channel.get("quantity")
                 ),
-                "structureBound": bool(payload.get("structure_hash")),
+                "structureBound": bool(payload.get("structure_sha256") or payload.get("structure_hash")),
             }
         )
         capabilities.append("volumetric")

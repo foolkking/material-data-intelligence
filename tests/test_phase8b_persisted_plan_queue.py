@@ -62,6 +62,7 @@ def test_planner_jobs_success_persists_plan_and_job_with_plan_id() -> None:
     repos = InMemoryRepositoryBundle.create()
     result = planner_jobs(
         PlannerJobsRequest(userPrompt="metrics", projectId="project_8b", datasetId="dataset_8b", profileId="profile_8b"),
+        provider=MockLLMProvider(),
         repositories=repos,
         registry=load_manifests(),
     )
@@ -100,6 +101,7 @@ def test_planner_jobs_enqueue_false_does_not_enqueue_or_execute() -> None:
 
     result = planner_jobs(
         PlannerJobsRequest(userPrompt="metrics", projectId="project_8b", datasetId="dataset_8b", enqueue=False),
+        provider=MockLLMProvider(),
         repositories=repos,
         queue_runtime=runtime,
         registry=load_manifests(),
@@ -119,6 +121,7 @@ def test_planner_jobs_enqueue_true_enqueues_only_job_id() -> None:
 
     result = planner_jobs(
         PlannerJobsRequest(userPrompt="metrics", projectId="project_8b", datasetId="dataset_8b", enqueue=True),
+        provider=MockLLMProvider(),
         repositories=repos,
         queue_runtime=runtime,
         registry=load_manifests(),

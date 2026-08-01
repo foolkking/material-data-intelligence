@@ -176,23 +176,26 @@ def test_demo_dataset_detail_and_profile_are_backend_generated() -> None:
     assert profile["semanticHash"] == demo_body["profile"]["semanticHash"]
 
 
-def test_provider_catalog_status_and_mock_test_endpoint() -> None:
+def test_provider_catalog_status_and_mock_test_endpoint(monkeypatch) -> None:
+    monkeypatch.setenv("MDI_ALLOW_TEST_PROVIDERS", "1")
     client = TestClient(create_app())
 
     catalog = client.get("/planner/providers").json()
     provider_ids = {provider["id"] for provider in catalog["providers"]}
-    assert {"mock", "openai", "deepseek", "custom"}.issubset(provider_ids)
+    assert provider_ids == {"mock", "deepseek"}
 
     status = client.get("/planner/providers/status").json()
-    assert status["provider"] in {"mock", "openai_compatible"}
-    assert "api" not in json.dumps(status).lower()
+    assert status["provider"] == "deepseek"
+    assert status["configurationSource"] == "server_environment"
+    assert "DEEPSEEK_KEY" not in json.dumps(status)
 
     result = client.post("/planner/providers/test", json={"provider": "mock"}).json()
     assert result["ok"] is True
     assert result["validated"] is True
 
 
-def test_provider_resolve_reflects_current_ui_config_without_network() -> None:
+def test_provider_resolve_rejects_legacy_config_and_uses_only_server_environment(monkeypatch) -> None:
+    monkeypatch.setenv("MDI_ALLOW_TEST_PROVIDERS", "1")
     client = TestClient(create_app())
     secret_value = "sk-provider-resolve"
 
@@ -201,7 +204,7 @@ def test_provider_resolve_reflects_current_ui_config_without_network() -> None:
     assert mock_result["provider"] == "mock"
     assert mock_result["willUseLiveProvider"] is False
 
-    live_result = resolve_planner_provider(
+    legacy = resolve_planner_provider(
         ProviderResolveRequest(
             provider="openai_compatible",
             baseUrl="https://api.deepseek.com/v1",
@@ -210,22 +213,17 @@ def test_provider_resolve_reflects_current_ui_config_without_network() -> None:
         ),
         secret_resolver=lambda secret_id: secret_value if secret_id == "secret_resolve" else None,
     )
-    assert live_result["ok"] is True
-    assert live_result["provider"] == "openai_compatible"
-    assert live_result["model"] == "deepseek-chat"
-    assert live_result["willUseLiveProvider"] is True
-    assert live_result["secretConfigured"] is True
-    assert live_result["source"] == "secret"
-    assert secret_value not in json.dumps(live_result, ensure_ascii=False)
+    assert legacy["ok"] is False
+    assert legacy["errorType"] == "provider_not_allowed"
+    assert legacy["willUseLiveProvider"] is False
+    assert secret_value not in json.dumps(legacy, ensure_ascii=False)
 
-    missing = resolve_planner_provider(
-        ProviderResolveRequest(provider="openai_compatible", model="deepseek-chat", secretId="missing"),
-        secret_resolver=lambda _: None,
-    )
-    assert missing["ok"] is False
-    assert missing["status"] == "not_configured"
-    assert missing["willUseLiveProvider"] is False
-    assert missing["redacted"] is True
+    monkeypatch.setenv("DEEPSEEK_KEY", "test-only-value")
+    live = resolve_planner_provider(ProviderResolveRequest(provider="deepseek", model="deepseek-v4-flash"))
+    assert live["ok"] is True
+    assert live["source"] == "server_environment"
+    assert live["secretConfigured"] is False
+    assert "test-only-value" not in json.dumps(live)
 
 
 def test_secret_list_never_returns_plaintext_key() -> None:
@@ -245,66 +243,55 @@ def test_secret_list_never_returns_plaintext_key() -> None:
     assert created["status"] == "active"
 
 
-def test_openai_compatible_provider_test_fake_success_and_redaction() -> None:
-    secret_value = "sk-provider-success"
-
+def test_deepseek_provider_test_fake_success_and_redaction() -> None:
     def fake_transport(**_: object) -> dict[str, object]:
-        return {"choices": [{"message": {"content": json.dumps(_valid_plan())}, "finish_reason": "stop"}]}
+        return {"choices": [{"message": {"content": '{"status":"ok"}'}, "finish_reason": "stop"}]}
 
     result = run_provider_test(
         ProviderTestRequest(
-            provider="openai_compatible",
-            baseUrl="https://api.deepseek.com/v1",
-            model="deepseek-chat",
-            secretId="secret_success",
+            provider="deepseek",
+            model="deepseek-v4-flash",
         ),
         transport=fake_transport,
-        secret_resolver=lambda secret_id: secret_value if secret_id == "secret_success" else None,
     )
 
     assert result["ok"] is True
     assert result["validated"] is True
-    assert secret_value not in json.dumps(result, ensure_ascii=False)
+    assert result["provider"] == "deepseek"
+    assert result["realLlmCalls"] == 0
+    assert "DEEPSEEK_KEY" not in json.dumps(result)
 
 
 def test_provider_test_failures_are_safe_and_redacted() -> None:
-    secret_value = "sk-provider-error"
-
     def non_json_transport(**_: object) -> dict[str, object]:
         return {"choices": [{"message": {"content": "not json"}, "finish_reason": "stop"}]}
 
     non_json = run_provider_test(
-        ProviderTestRequest(provider="openai_compatible", secretId="secret_error"),
+        ProviderTestRequest(provider="deepseek"),
         transport=non_json_transport,
-        secret_resolver=lambda _: secret_value,
     )
     assert non_json["ok"] is False
-    assert non_json["errorType"] == "provider_response_invalid"
-    assert secret_value not in json.dumps(non_json, ensure_ascii=False)
+    assert non_json["errorType"] == "deepseek_response_invalid"
 
     def auth_failed_transport(**_: object) -> dict[str, object]:
         raise urllib.error.HTTPError("https://provider.test", 401, "Unauthorized", {}, None)
 
     auth_failed = run_provider_test(
-        ProviderTestRequest(provider="openai_compatible", secretId="secret_error"),
+        ProviderTestRequest(provider="deepseek"),
         transport=auth_failed_transport,
-        secret_resolver=lambda _: secret_value,
     )
     assert auth_failed["ok"] is False
-    assert auth_failed["errorType"] == "provider_auth_failed"
-    assert secret_value not in json.dumps(auth_failed, ensure_ascii=False)
+    assert auth_failed["errorType"] == "deepseek_auth_failed"
 
     def timeout_transport(**_: object) -> dict[str, object]:
         raise socket.timeout()
 
     timeout = run_provider_test(
-        ProviderTestRequest(provider="openai_compatible", secretId="secret_error"),
+        ProviderTestRequest(provider="deepseek"),
         transport=timeout_transport,
-        secret_resolver=lambda _: secret_value,
     )
     assert timeout["ok"] is False
-    assert timeout["errorType"] == "provider_timeout"
-    assert secret_value not in json.dumps(timeout, ensure_ascii=False)
+    assert timeout["errorType"] == "deepseek_timeout"
 
 
 def test_validation_failure_still_persists_no_plan_job_or_enqueue() -> None:

@@ -1,0 +1,237 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "ml.uncertainty_evaluation"
+    ]
+  ],
+  "caseNumber": 39,
+  "createdAt": "2026-08-01T07:44:07.596369+00:00",
+  "decision": {
+    "decisionHash": "4f6931d00d8009ee93348b864d183de5cc647b92d8bfac8aeb4aa63c39c426c3",
+    "decisionId": "decision_4f6931d00d8009ee93348b86",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "groupIds",
+            "source": "TARGET_GROUP_IDS",
+            "sourceIdentity": "obj_dataframe_026fdc125bb0:regression:default",
+            "value": [
+              "obj_dataframe_026fdc125bb0:regression:default"
+            ],
+            "valueId": "groups:obj_dataframe_026fdc125bb0:regression:default"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "metrics",
+          "summary",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "ml_uncertainty_evaluation"
+        ],
+        "toolId": "ml.uncertainty_evaluation",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "ml.uncertainty_evaluation"
+    ],
+    "providerVisibleToolIds": [
+      "ml.uncertainty_evaluation"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "dbf8d882d37f393b2a82050501458552ef9075aa8a464b914892520c9977f277",
+    "resolutionId": "resolution_dbf8d882d37f393b2a820505"
+  },
+  "historicalExpectedToolIds": [
+    "ml.uncertainty_evaluation"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "metrics",
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "4ab7e0d7b5ceaccd2cf62588df52170f849476c42db78e314a195e7528ac9102",
+    "intentId": "intent_4ab7e0d7b5ceaccd2cf62588",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "regression_semantics",
+      "uncertainty_semantics"
+    ],
+    "scientificIntents": [
+      "ml_uncertainty_evaluation"
+    ],
+    "targetSemantics": [
+      {
+        "column": "y_true",
+        "groupId": "obj_dataframe_026fdc125bb0:regression:default",
+        "objectId": "obj_dataframe_026fdc125bb0",
+        "origin": "PROFILE_EXACT",
+        "role": "regression_target",
+        "semanticId": "obj_dataframe_026fdc125bb0:regression:default:target:y_true",
+        "seriesId": null,
+        "unit": null
+      },
+      {
+        "column": "y_pred",
+        "groupId": "obj_dataframe_026fdc125bb0:regression:default",
+        "objectId": "obj_dataframe_026fdc125bb0",
+        "origin": "PROFILE_EXACT",
+        "role": "regression_prediction",
+        "semanticId": "obj_dataframe_026fdc125bb0:regression:default:prediction:y_pred",
+        "seriesId": null,
+        "unit": null
+      },
+      {
+        "column": "y_std",
+        "groupId": "obj_dataframe_026fdc125bb0:regression:default",
+        "objectId": "obj_dataframe_026fdc125bb0",
+        "origin": "PROFILE_EXACT",
+        "role": "regression_uncertainty",
+        "semanticId": "obj_dataframe_026fdc125bb0:regression:default:uncertainty:y_std",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10K",
+  "plan": {
+    "graphHash": null,
+    "planHash": "559680f1e37e66c64d8381c512b31b0f0ec90064a141da5b435b6c93ba04f2b3",
+    "planId": "plan_1d65aa0f8bfc0bbb79256a71",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_uncertainty",
+    "profileId": "profile_dataset_historical_uncertainty_v2",
+    "profileSemanticHash": "f02d03ae3dc7feae75095552c817fbbaf52b3c87304823d34568ba8f3fcecbf0",
+    "selectedResourceIds": [
+      "obj_dataframe_026fdc125bb0"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 6425.517,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 26418,
+      "promptHash": "94ec9908041532c52677b556260115ada99671e81dd6b23570340cbe2da9bbbf",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 4293,
+      "responseContentBytes": 3429,
+      "responseHash": "aa060e9667cdf32cb3a0ecd05f41a3e90149b7158009e81e4b357f5424a2db99",
+      "tokenUsage": {
+        "completionTokens": 1070,
+        "estimated": false,
+        "promptTokens": 6351,
+        "totalTokens": 7421
+      }
+    },
+    {
+      "elapsedMs": 1379.447,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 4029,
+      "promptHash": "b724e47ad0c054c44764d6bead8c762f258d9fc784e65d5abc123c6d5dbb26c8",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 612,
+      "responseContentBytes": 124,
+      "responseHash": "7ffa9a417eceb6641b2d1b83eab100230a5cc6d35408b29941ea8e58f7f1f2c6",
+      "tokenUsage": {
+        "completionTokens": 41,
+        "estimated": false,
+        "promptTokens": 1063,
+        "totalTokens": 1104
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Analyze whether model uncertainty is trustworthy and show error decay.",
+  "replayPromptHash": "28677dd310c8cdc0d7ad346f8f46efaf950f1e89a91dccb3e0f394ac7cd46981",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "3b6511944922be0cf7823d57cc59ec9495359c1261db4d7afadf13b0cbfa75db",
+  "runId": "historical_live_run_3b6511944922be0cf7823d57cc59ec94",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_2ec2fbcd54b208f3af4216a1_step_001-table_json",
+        "name": "materials_ml_uncertainty.json",
+        "sha256": "6df2e7eea03e87561768ee3cdc4e4a187866777cbffa74d608dc8109e9bcb75d",
+        "sizeBytes": 4837,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_2ec2fbcd54b208f3af4216a1_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "48ca9ff21a8e14bb7b5f3d6a65d36e1ca6f4a64baba4181462b61ed5ae327bc6",
+        "sizeBytes": 316,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_2ec2fbcd54b208f3af4216a1_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "f0e959ae33d794aa4ecb3bfd29527bc8f66aedc306425aa2af5cb15a97a7b45f",
+        "sizeBytes": 1262,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_2ec2fbcd54b208f3af4216a1_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "ml.uncertainty_evaluation"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "ml.uncertainty_evaluation"
+  ],
+  "slug": "uncertainty",
+  "sourcePaths": [
+    "docs/phase10k/evidence/phase10k3_materials_ml_evaluation"
+  ],
+  "timing": {
+    "plannerElapsedMs": 7880.585
+  },
+  "tokenUsage": {
+    "completionTokens": 1111,
+    "estimated": false,
+    "promptTokens": 7414,
+    "totalTokens": 8525
+  },
+  "verdict": "PASS"
+}

@@ -1,0 +1,78 @@
+[
+  {
+    "elapsedMs": 5227.455,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 23559,
+    "promptHash": "20a1f3f73be60a0849da81425d04e2fed243a7d0acb4385fbfd31ee37d38ae0a",
+    "purpose": "INTENT_EXTRACTION",
+    "realCall": true,
+    "responseBytes": 3820,
+    "responseContentBytes": 2985,
+    "responseHash": "e3297a3bafd3956e3680edfa9ee15afb0aa5656c53d73c32480cd5d185db174d",
+    "tokenUsage": {
+      "completionTokens": 915,
+      "estimated": false,
+      "promptTokens": 5528,
+      "totalTokens": 6443
+    }
+  },
+  {
+    "elapsedMs": 1617.677,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 4833,
+    "promptHash": "2236a60e0f0ecc9c268d8dade64c1caee5185c24b6028d794298c1344e10cde1",
+    "purpose": "CAPABILITY_PLAN_SELECTION",
+    "realCall": true,
+    "responseBytes": 603,
+    "responseContentBytes": 114,
+    "responseHash": "39af6d90c787c220ed2aad5e2d9ebebc9c3ec6d051e4d8e350746b9fddb4bbdd",
+    "tokenUsage": {
+      "completionTokens": 41,
+      "estimated": false,
+      "promptTokens": 1352,
+      "totalTokens": 1393
+    }
+  },
+  {
+    "elapsedMs": 9058.661,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 2273,
+    "promptHash": "0b8993758ce31ecb502a93c565712402b3a1dad33d081ea46b8999bb62743eb2",
+    "purpose": "MULTI_TOOL_COMPOSITION",
+    "realCall": true,
+    "responseBytes": 680,
+    "responseContentBytes": 193,
+    "responseHash": "560bfb05e703313a3f563217f04fbb36e962ef48706da41b576bda82106b2d4c",
+    "tokenUsage": {
+      "completionTokens": 80,
+      "estimated": false,
+      "promptTokens": 607,
+      "totalTokens": 687
+    }
+  },
+  {
+    "elapsedMs": 3372.026,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 9526,
+    "promptHash": "8a0c510f98ab962fa359039dea6ea2ab57f6fbfc7e530419b522817933adac4f",
+    "purpose": "GROUNDED_INTERPRETATION",
+    "realCall": true,
+    "responseBytes": 1707,
+    "responseContentBytes": 1133,
+    "responseHash": "ee9bd6398b7e5cc9df5cf1dd337daba3d2ca841d2f1f826f47449b180f61ba26",
+    "tokenUsage": {
+      "completionTokens": 400,
+      "estimated": false,
+      "promptTokens": 2524,
+      "totalTokens": 2924
+    }
+  }
+]

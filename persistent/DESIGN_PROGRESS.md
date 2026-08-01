@@ -1,5 +1,36 @@
 # DESIGN_PROGRESS
 
+## 2026-07-31 Phase 10L-5 Natural-Language Closure In Progress
+
+- Phase 10L-4 verified queue archive `58ee943` passed exact-SHA CI run
+  `30608078520`: Unit, Frontend/browser/build, and PostgreSQL/Redis/MinIO
+  service-backed/no-skipped jobs all succeeded. L4 is
+  `ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
+- Reviewer-approved Phase 10L-5 is the sole active TASKS block. Entry audit
+  confirms the canonical Profile -> Intent -> Eligibility -> Plan -> Runtime ->
+  Artifact -> Interpretation chain and five required current capability
+  families are available. The controlled process uses `DEEPSEEK_KEY` only.
+- L5 is implementing a DeepSeek-only real-provider boundary, five genuine
+  natural-language closure cases, provider/browser/security evidence, and the
+  final Phase 10L lifecycle. Phase 10M-0 remains reviewer-gated.
+
+### Live verification update
+
+- All five frozen natural-language cases passed the real DeepSeek gate.
+- Per-case real calls were `3, 3, 3, 4, 3`; total `16`; other real providers
+  `0`.
+- Each case completed exact Profile -> Intent -> eligibility -> plan -> Job ->
+  QueueWorkerRuntime -> artifacts/lineage -> grounded interpretation.
+- Dataset and phonon failures from earlier live attempts remain sanitized under
+  the evidence directory as regression provenance; they were fixed by strict
+  intent disambiguation and exact dependency proposal schema/template context.
+- Browser evidence is capture-backed and separately proves the five-case
+  UI/API replay across Chromium, Firefox, WebKit, and 390x844 mobile.
+- The expanded historical audit is also complete: 40 supplemental semantic
+  browser/Mock-LLM cases passed with 92 real DeepSeek calls, for 45/45 total
+  current-plus-historical cases. Exclusions are documented by reason and are
+  not counted as live LLM coverage.
+
 ## 2026-07-31 Phase 10L-4 Grounded Interpretation Complete, Awaiting Archive
 
 - Corrected implementation `02a9e33b93f96aa99413dc49ca2dabca652679c9`

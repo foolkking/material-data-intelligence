@@ -1,0 +1,35 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 11770.727,
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23061,
+      "promptHash": "ed436c529f86cc0bf8a6b247666b8ea58e75ab04764af773eebe92f4f5b0db60",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 6422,
+      "responseHash": "7f40fc4e5cb8bc5d81f3214664c2e71d4f783ab44592ca3f07052ad3d395bbbc",
+      "tokenUsage": {
+        "completionTokens": 1394,
+        "estimated": false,
+        "promptTokens": 5533,
+        "totalTokens": 6927
+      }
+    }
+  ],
+  "caseIndex": 2,
+  "caseSpecId": "caseSpec_52cb8135b823a3d621cd660fb5b38c4c",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 11904.238,
+  "errorCode": "LIVE_PLAN_NOT_READY",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "realCallCount": 1,
+  "safeDetails": "LIVE_PLAN_NOT_READY:{\"desiredOutputs\":[],\"diagnostics\":[\"INTENT_TARGET_SEMANTIC_INVALID\"],\"eligibleToolIds\":[],\"executionSideEffects\":{\"artifactCount\":0,\"bindingResolutionCount\":0,\"dependencyExecutionCount\":0,\"jobCount\":0,\"lineageCount\":0,\"planCount\":0,\"plannedBindingCount\":0,\"queueMessageCount\":0,\"toolCallCount\":0},\"outcome\":\"INTENT_TARGET_SEMANTIC_INVALID\",\"rejectionCodes\":[],\"requiredCapabilityNeeds\":[],\"scientificIntents\":[]}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

@@ -1,0 +1,228 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "ml.regression_evaluation"
+    ]
+  ],
+  "caseNumber": 45,
+  "createdAt": "2026-08-01T07:47:14.264235+00:00",
+  "decision": {
+    "decisionHash": "cc65cdfe64766019388384047e965d7ff00eceb03f941217a92171e96b19c034",
+    "decisionId": "decision_cc65cdfe6476601938838404",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "groupIds",
+            "source": "TARGET_GROUP_IDS",
+            "sourceIdentity": "band_gap_model",
+            "value": [
+              "band_gap_model"
+            ],
+            "valueId": "groups:band_gap_model"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "metrics",
+          "summary",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "ml_regression_evaluation"
+        ],
+        "toolId": "ml.regression_evaluation",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "ml.regression_evaluation"
+    ],
+    "providerVisibleToolIds": [
+      "ml.regression_evaluation"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "f804e58feafafe6d0cb00ca7cb421f202faf81422a779ad8ad5a4b9e303a9c66",
+    "resolutionId": "resolution_f804e58feafafe6d0cb00ca7"
+  },
+  "historicalExpectedToolIds": [
+    "ml.regression_evaluation"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "metrics",
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "e55c550a60c42547bb7a353d9a096806e0dadb7da7990959894e2573f03ee468",
+    "intentId": "intent_e55c550a60c42547bb7a353d",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "regression_semantics"
+    ],
+    "scientificIntents": [
+      "ml_regression_evaluation"
+    ],
+    "targetSemantics": [
+      {
+        "column": "band_gap",
+        "groupId": "band_gap_model",
+        "objectId": "table_dual_target",
+        "origin": "PROFILE_EXACT",
+        "role": "regression_target",
+        "semanticId": "band_gap_model:target:band_gap",
+        "seriesId": null,
+        "unit": "eV"
+      },
+      {
+        "column": "band_gap_pred",
+        "groupId": "band_gap_model",
+        "objectId": "table_dual_target",
+        "origin": "PROFILE_EXACT",
+        "role": "regression_prediction",
+        "semanticId": "band_gap_model:prediction:band_gap_pred",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "Exact target: band_gap_model",
+  "phase": "Phase 10L-2",
+  "plan": {
+    "graphHash": null,
+    "planHash": "791ef1d269122b39abb122e8c13bcccca1722651ed9f61a4c06b4f7a8c5de2e7",
+    "planId": "plan_a1e799a18fee38e482078f0e",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_dual_target",
+    "profileId": "profile_dataset_historical_dual_target_v2",
+    "profileSemanticHash": "132950a9ea821d6b15d36ffb646f332da3b84e3a3a03a55d7f0956d073191e46",
+    "selectedResourceIds": [
+      "table_dual_target"
+    ],
+    "selectedTargetIds": [
+      "band_gap_model:target:band_gap"
+    ]
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5439.407,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 26744,
+      "promptHash": "a4308f0ff78b98e05df5fd6222d0fbb13f7ce3a4fda07346d75c66a2a335f950",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3316,
+      "responseContentBytes": 2538,
+      "responseHash": "82a154b618d6a2947607c4974c766afd37a12994701a2ed8df9fc62f5149d7f0",
+      "tokenUsage": {
+        "completionTokens": 777,
+        "estimated": false,
+        "promptTokens": 6337,
+        "totalTokens": 7114
+      }
+    },
+    {
+      "elapsedMs": 1585.758,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3548,
+      "promptHash": "35023f689776d6201c1af427b2b7690ce357f4354f0338df20b195a8597518e6",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 609,
+      "responseContentBytes": 123,
+      "responseHash": "b78e5306632163478b1f3372d23c24f49b47d1f92e02b2777e5ac45ba0728280",
+      "tokenUsage": {
+        "completionTokens": 40,
+        "estimated": false,
+        "promptTokens": 905,
+        "totalTokens": 945
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Analyze band-gap prediction errors.",
+  "replayPromptHash": "0e561ba0b4ee71d75acaa65759da846cbb7a1e8b1adc40c41129532a6d22d9f4",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "5a9983af42322bbd58891c77a66bf74267ce5f2bdb891480539f84a651228cb3",
+  "runId": "historical_live_run_5a9983af42322bbd58891c77a66bf742",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_4bf91c2ecbc8dfeb6c6d27be_step_001-table_json",
+        "name": "materials_ml_regression.json",
+        "sha256": "6a2ddfaa2561069ad6b5578d175e784b925b31206b59c89c04f924373c11de16",
+        "sizeBytes": 6328,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_4bf91c2ecbc8dfeb6c6d27be_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "8866d55c3b701f271c947c9a3843b0f3805d34071db0f25f9bcdf8c97e802c0d",
+        "sizeBytes": 315,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_4bf91c2ecbc8dfeb6c6d27be_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "63ba1c81e91d39a7e1d1c47ecbebe0a6c0b024ca29e97d8df7834d8f54ce2a8a",
+        "sizeBytes": 1189,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_4bf91c2ecbc8dfeb6c6d27be_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "ml.regression_evaluation"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "ml.regression_evaluation"
+  ],
+  "slug": "band_gap_exact",
+  "sourcePaths": [
+    "docs/phase10l/evidence/phase10l2_capability_aware_planner/regressions/formation_energy_vs_band_gap.json"
+  ],
+  "timing": {
+    "plannerElapsedMs": 7105.444
+  },
+  "tokenUsage": {
+    "completionTokens": 817,
+    "estimated": false,
+    "promptTokens": 7242,
+    "totalTokens": 8059
+  },
+  "verdict": "PASS"
+}

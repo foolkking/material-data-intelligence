@@ -1902,3 +1902,19 @@ schema, type, content hash, and dataset binding.
 
 These additive artifact fields do not change AnalysisPlan, PlanValidator, or
 QueueWorkerRuntime step semantics.
+
+## Phase 10L-5 Natural-Language Evidence Contracts
+
+Phase 10L-5 adds versioned evidence-run contracts without changing scientific
+execution schemas. `NaturalLanguageEvidenceCase 1.0` records the frozen raw
+goal and approved tool domain. `NaturalLanguageEvidenceRun 1.0` records exact
+Profile, Intent, Eligibility, Plan, Job, artifact, lineage, evidence, and
+interpretation identities. `DeepSeekVerificationRecord 1.0` is capped at 12
+real calls per case. `DeepSeekVerificationSuite 1.0` aggregates exactly five
+passing per-case records; it does not raise the per-case cap. The closure
+manifest uses canonical LF-normalized text hashing and raw PNG hashing.
+
+The real provider contract is fixed to DeepSeek at `https://api.deepseek.com`
+with `DEEPSEEK_KEY` as the only key source. Default CI evidence has zero real
+LLM calls. Provider payloads, credentials, paths, and raw artifacts are never
+stored in these contracts.

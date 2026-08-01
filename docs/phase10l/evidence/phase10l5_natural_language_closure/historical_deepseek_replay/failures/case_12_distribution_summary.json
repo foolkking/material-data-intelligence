@@ -1,0 +1,18 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-08-01T07:25:08.629586+00:00",
+      "errorCode": "HISTORICAL_REPLAY_TOOL_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_TOOL_MISMATCH:12:['dataset.materials_explorer']:(('table.distribution_summary',),):eligible=['dataset.materials_explorer', 'table.distribution_summary', 'table.numeric_summary', 'viz.correlation']:targets=[]"
+    }
+  ],
+  "caseNumber": 12,
+  "createdAt": "2026-08-01T07:25:08.629586+00:00",
+  "errorCode": "HISTORICAL_REPLAY_TOOL_MISMATCH",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_TOOL_MISMATCH:12:['dataset.materials_explorer']:(('table.distribution_summary',),):eligible=['dataset.materials_explorer', 'table.distribution_summary', 'table.numeric_summary', 'viz.correlation']:targets=[]",
+  "slug": "distribution_summary",
+  "verdict": "FAIL"
+}

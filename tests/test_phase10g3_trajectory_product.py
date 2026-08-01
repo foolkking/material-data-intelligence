@@ -14,6 +14,7 @@ from mdi_adapters.platform_builtin import (
     TrajectoryViewerAdapter,
 )
 from mdi_api.repositories import InMemoryRepositoryBundle
+from mdi_api.phase2_runtime import build_object_store
 from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
 from mdi_artifact_core import (
     validate_trajectory,
@@ -247,6 +248,13 @@ def test_formal_adapter_emits_canonical_artifacts_and_inert_product_provenance(t
     assert provenance["viewerBudgets"] == TRAJECTORY_VIEWER_BUDGETS
     assert provenance["viewerCapabilities"]["dynamic_bonds"] is False
     assert provenance["viewerCapabilities"]["ensemble_rdf"] is False
+
+
+def test_phase2_object_store_preserves_exact_normalized_trajectory_identity() -> None:
+    parsed = parse_file(FIXTURE, dataset_id="dataset_trajectory_viewer", file_id="trajectory").objects[0]
+    store, refs = build_object_store([parsed])
+    assert store[parsed.id] is parsed
+    assert refs["trajectory"] == parsed.id
 
 
 def test_formal_product_job_is_persisted_executed_and_deterministic(tmp_path: Path) -> None:

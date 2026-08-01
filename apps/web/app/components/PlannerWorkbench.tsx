@@ -41,15 +41,12 @@ import {
   type ProviderStatus,
   type ProviderTestResult,
   type RuntimeHealth,
-  type SecretSummary,
   type ToolCall,
   type ValidationError,
   createDatasetProfile,
   clarifyAnalysisIntent,
   createPlannerJobInterpretation,
   createPlannerJob,
-  createSecret,
-  deleteSecret,
   getDatasetProfile,
   getPlannerJob,
   getPlannerJobArtifacts,
@@ -65,7 +62,6 @@ import {
   getRuntimeHealth,
   listDatasets,
   listPlannerProviders,
-  listSecrets,
   loadDemoDataset,
   resolvePlannerProvider,
   testPlannerProvider,
@@ -73,7 +69,7 @@ import {
 } from "../lib/planner-api";
 
 type MainWorkspaceTab = "agent_process" | "conversation_plan" | "results_export";
-type ProviderPreset = "openai" | "deepseek" | "custom";
+type ProviderMode = "mock" | "deepseek";
 type ChunkKind = "user_request" | "plan_preview" | "validation_result" | "run_status" | "result_reference";
 
 type WorkspaceSnapshot = {
@@ -101,11 +97,8 @@ type JsonRecord = Record<string, unknown>;
 
 const examplePromptKeys: MessageKey[] = ["examplePromptMetrics", "examplePromptElements", "examplePromptOutliers", "examplePromptStructure"];
 
-const presetDefaults: Record<ProviderPreset, { baseUrl: string; model: string }> = {
-  openai: { baseUrl: "https://api.openai.com/v1", model: "gpt-4o" },
-  deepseek: { baseUrl: "https://api.deepseek.com/v1", model: "deepseek-chat" },
-  custom: { baseUrl: "", model: "" }
-};
+const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
+const DEEPSEEK_MODELS = ["deepseek-v4-flash", "deepseek-v4-pro"] as const;
 
 export function PlannerWorkbench() {
   const [locale, setLocale] = useState<Locale>("zh-CN");
@@ -129,21 +122,12 @@ export function PlannerWorkbench() {
   const [dataMessage, setDataMessage] = useState(t("emptyDataset"));
   const [dataBusy, setDataBusy] = useState(false);
 
-  const [providerMode, setProviderMode] = useState<"mock" | "openai_compatible">("mock");
-  const [providerPreset, setProviderPreset] = useState<ProviderPreset>("deepseek");
+  const [providerMode, setProviderMode] = useState<ProviderMode>("deepseek");
   const [providerOptions, setProviderOptions] = useState<ProviderOption[]>([]);
   const [providerStatus, setProviderStatus] = useState<ProviderStatus | null>(null);
   const [providerResolution, setProviderResolution] = useState<ProviderResolveResult | null>(null);
   const [providerResult, setProviderResult] = useState<ProviderTestResult | null>(null);
-  const [baseUrl, setBaseUrl] = useState(presetDefaults.deepseek.baseUrl);
-  const [model, setModel] = useState(presetDefaults.deepseek.model);
-  const [temperature, setTemperature] = useState(0.1);
-  const [maxTokens, setMaxTokens] = useState(1024);
-  const [timeoutSeconds, setTimeoutSeconds] = useState(60);
-  const [secretAlias, setSecretAlias] = useState("Demo LLM Key");
-  const [apiKey, setApiKey] = useState("");
-  const [secrets, setSecrets] = useState<SecretSummary[]>([]);
-  const [selectedSecretId, setSelectedSecretId] = useState("");
+  const [model, setModel] = useState<(typeof DEEPSEEK_MODELS)[number]>("deepseek-v4-flash");
 
   const [prompt, setPrompt] = useState(() => createTranslator("zh-CN")("examplePromptMetrics"));
   const [createdResult, setCreatedResult] = useState<PlannerJobCreateResult | null>(null);
@@ -179,8 +163,8 @@ export function PlannerWorkbench() {
     providerMode === "mock"
       ? t("mockPlanner")
       : providerResolution?.willUseLiveProvider
-        ? `Live LLM / ${providerResolution.model || model || t("notConfigured")}`
-        : `${providerPreset} / ${model || t("notConfigured")} / ${providerResolution?.status || t("notConfigured")}`;
+        ? `DeepSeek / ${providerResolution.model || model}`
+        : `DeepSeek / ${model} / ${providerResolution?.status || t("notConfigured")}`;
   const chunks = useMemo(
     () =>
       buildConversationChunks({
@@ -211,7 +195,7 @@ export function PlannerWorkbench() {
 
   useEffect(() => {
     void refreshProviderResolution();
-  }, [providerMode, baseUrl, model, selectedSecretId, temperature, maxTokens, timeoutSeconds]);
+  }, [providerMode, model]);
 
   useEffect(() => {
     if (!jobId || timelineMode !== "polling" || isTerminal) {
@@ -270,13 +254,8 @@ export function PlannerWorkbench() {
       const created = await createPlannerJobInterpretation(jobId, planHash, {
         mode: interpretationMode,
         ...(interpretationMode === "STRICT_PROVIDER" ? {
-          provider: "openai_compatible",
-          baseUrl,
+          provider: "deepseek",
           model,
-          secretId: selectedSecretId || undefined,
-          temperature,
-          maxTokens,
-          timeoutSeconds,
         } : {}),
       });
       setInterpretationOutcome(created.outcome);
@@ -302,21 +281,16 @@ export function PlannerWorkbench() {
   }
 
   async function loadInitialState() {
-    const [healthResult, datasetResult, providersResult, statusResult, secretsResult] = await Promise.allSettled([
+    const [healthResult, datasetResult, providersResult, statusResult] = await Promise.allSettled([
       getRuntimeHealth(),
       listDatasets(),
       listPlannerProviders(),
-      getPlannerProviderStatus(),
-      listSecrets()
+      getPlannerProviderStatus()
     ]);
     if (healthResult.status === "fulfilled") setHealth(healthResult.value);
     if (datasetResult.status === "fulfilled") setDatasets(datasetResult.value);
     if (providersResult.status === "fulfilled") setProviderOptions(providersResult.value.providers);
     if (statusResult.status === "fulfilled") setProviderStatus(statusResult.value);
-    if (secretsResult.status === "fulfilled") {
-      setSecrets(secretsResult.value);
-      setSelectedSecretId(secretsResult.value[0]?.id || "");
-    }
   }
 
   async function refreshDatasets() {
@@ -412,37 +386,11 @@ export function PlannerWorkbench() {
     }
   }
 
-  async function handleSaveSecret() {
-    if (!apiKey.trim()) return;
-    const saved = await createSecret({
-      provider: providerPreset,
-      alias: secretAlias || `${providerPreset} API Key`,
-      value: apiKey.trim()
-    });
-    setApiKey("");
-    const nextSecrets = await listSecrets();
-    setSecrets(nextSecrets);
-    setSelectedSecretId(saved.id);
-  }
-
-  async function handleDeleteSecret() {
-    if (!selectedSecretId) return;
-    await deleteSecret(selectedSecretId);
-    const nextSecrets = await listSecrets();
-    setSecrets(nextSecrets);
-    setSelectedSecretId(nextSecrets[0]?.id || "");
-  }
-
   async function handleProviderTest() {
     setProviderResult(null);
     const result = await testPlannerProvider({
       provider: providerMode,
-      baseUrl: providerMode === "openai_compatible" ? baseUrl : undefined,
-      model: providerMode === "openai_compatible" ? model : undefined,
-      secretId: providerMode === "openai_compatible" ? selectedSecretId : undefined,
-      temperature,
-      maxTokens,
-      timeoutSeconds
+      model: providerMode === "deepseek" ? model : undefined
     });
     setProviderResult(result);
   }
@@ -451,12 +399,7 @@ export function PlannerWorkbench() {
     try {
       const result = await resolvePlannerProvider({
         provider: providerMode,
-        baseUrl: providerMode === "openai_compatible" ? baseUrl : undefined,
-        model: providerMode === "openai_compatible" ? model : undefined,
-        secretId: providerMode === "openai_compatible" ? selectedSecretId : undefined,
-        temperature,
-        maxTokens,
-        timeoutSeconds
+        model: providerMode === "deepseek" ? model : undefined
       });
       setProviderResolution(result);
     } catch {
@@ -489,12 +432,7 @@ export function PlannerWorkbench() {
         profileId: profileId || datasetId,
         enqueue: true,
         provider: providerMode,
-        baseUrl: providerMode === "openai_compatible" ? baseUrl : undefined,
-        model: providerMode === "openai_compatible" ? model : undefined,
-        secretId: providerMode === "openai_compatible" ? selectedSecretId : undefined,
-        temperature,
-        maxTokens,
-        timeoutSeconds,
+        model: providerMode === "deepseek" ? model : undefined,
         intentSchemaVersion: "1.0",
         intentId
       });
@@ -614,12 +552,6 @@ export function PlannerWorkbench() {
       source.close();
       setTimelineMode("polling");
     };
-  }
-
-  function handlePresetChange(next: ProviderPreset) {
-    setProviderPreset(next);
-    setBaseUrl(presetDefaults[next].baseUrl);
-    setModel(presetDefaults[next].model);
   }
 
   function startResize(event: React.MouseEvent<HTMLButtonElement>) {
@@ -778,31 +710,13 @@ export function PlannerWorkbench() {
           t={t}
           providerMode={providerMode}
           setProviderMode={setProviderMode}
-          providerPreset={providerPreset}
-          onPresetChange={handlePresetChange}
+          developerMode={developerMode}
           providerOptions={providerOptions}
           providerStatus={providerStatus}
           providerResolution={providerResolution}
           providerResult={providerResult}
-          baseUrl={baseUrl}
-          setBaseUrl={setBaseUrl}
           model={model}
           setModel={setModel}
-          temperature={temperature}
-          setTemperature={setTemperature}
-          maxTokens={maxTokens}
-          setMaxTokens={setMaxTokens}
-          timeoutSeconds={timeoutSeconds}
-          setTimeoutSeconds={setTimeoutSeconds}
-          secretAlias={secretAlias}
-          setSecretAlias={setSecretAlias}
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-          secrets={secrets}
-          selectedSecretId={selectedSecretId}
-          setSelectedSecretId={setSelectedSecretId}
-          onSaveSecret={handleSaveSecret}
-          onDeleteSecret={handleDeleteSecret}
           onTestProvider={handleProviderTest}
           onClose={() => setModelDialogOpen(false)}
         />
@@ -1098,33 +1012,15 @@ function DatasetCommandDialog(props: {
 
 function ModelProviderDialog(props: {
   t: ReturnType<typeof createTranslator>;
-  providerMode: "mock" | "openai_compatible";
-  setProviderMode: (value: "mock" | "openai_compatible") => void;
-  providerPreset: ProviderPreset;
-  onPresetChange: (value: ProviderPreset) => void;
+  providerMode: ProviderMode;
+  setProviderMode: (value: ProviderMode) => void;
+  developerMode: boolean;
   providerOptions: ProviderOption[];
   providerStatus: ProviderStatus | null;
   providerResolution: ProviderResolveResult | null;
   providerResult: ProviderTestResult | null;
-  baseUrl: string;
-  setBaseUrl: (value: string) => void;
-  model: string;
-  setModel: (value: string) => void;
-  temperature: number;
-  setTemperature: (value: number) => void;
-  maxTokens: number;
-  setMaxTokens: (value: number) => void;
-  timeoutSeconds: number;
-  setTimeoutSeconds: (value: number) => void;
-  secretAlias: string;
-  setSecretAlias: (value: string) => void;
-  apiKey: string;
-  setApiKey: (value: string) => void;
-  secrets: SecretSummary[];
-  selectedSecretId: string;
-  setSelectedSecretId: (value: string) => void;
-  onSaveSecret: () => Promise<void>;
-  onDeleteSecret: () => Promise<void>;
+  model: (typeof DEEPSEEK_MODELS)[number];
+  setModel: (value: (typeof DEEPSEEK_MODELS)[number]) => void;
   onTestProvider: () => Promise<void>;
   onClose: () => void;
 }) {
@@ -1137,74 +1033,31 @@ function ModelProviderDialog(props: {
           <div className="panel compact-panel">
             <label>
               {t("providerMode")}
-              <select aria-label={t("providerMode")} value={props.providerMode} onChange={(event) => props.setProviderMode(event.target.value as "mock" | "openai_compatible")}>
-                <option value="mock">{t("mockPlanner")}</option>
-                <option value="openai_compatible">{t("openaiCompatible")}</option>
-              </select>
-            </label>
-            <label>
-              {t("preset")}
-              <select value={props.providerPreset} onChange={(event) => props.onPresetChange(event.target.value as ProviderPreset)}>
-                <option value="openai">OpenAI</option>
+              <select aria-label={t("providerMode")} value={props.providerMode} onChange={(event) => props.setProviderMode(event.target.value as ProviderMode)}>
                 <option value="deepseek">DeepSeek</option>
-                <option value="custom">{t("customOpenAI")}</option>
+                {props.developerMode ? <option value="mock">{t("mockPlanner")}</option> : null}
               </select>
             </label>
             <label>
               {t("baseUrl")}
-              <input value={props.baseUrl} onChange={(event) => props.setBaseUrl(event.target.value)} />
+              <output>{DEEPSEEK_BASE_URL}</output>
             </label>
             <label>
               {t("model")}
-              <input value={props.model} onChange={(event) => props.setModel(event.target.value)} />
+              <select value={props.model} onChange={(event) => props.setModel(event.target.value as (typeof DEEPSEEK_MODELS)[number])} disabled={props.providerMode === "mock"}>
+                {DEEPSEEK_MODELS.map((allowedModel) => <option value={allowedModel} key={allowedModel}>{allowedModel}</option>)}
+              </select>
             </label>
-            <div className="triple-grid">
-              <label>
-                {t("temperature")}
-                <input type="number" step="0.1" value={props.temperature} onChange={(event) => props.setTemperature(Number(event.target.value))} />
-              </label>
-              <label>
-                {t("maxTokens")}
-                <input type="number" value={props.maxTokens} onChange={(event) => props.setMaxTokens(Number(event.target.value))} />
-              </label>
-              <label>
-                {t("timeout")}
-                <input type="number" value={props.timeoutSeconds} onChange={(event) => props.setTimeoutSeconds(Number(event.target.value))} />
-              </label>
-            </div>
             <p className="selector-status">{props.providerResolution?.message || t("emptyProvider")}</p>
             <small>
               Default service provider: {props.providerStatus?.provider || "unknown"} / {props.providerStatus?.status || "unknown"}
             </small>
           </div>
           <div className="panel compact-panel">
-            <PanelHeading title={t("savedSecret")} badge={t("providerNotice")} />
-            <label>
-              {t("secretAlias")}
-              <input value={props.secretAlias} onChange={(event) => props.setSecretAlias(event.target.value)} />
-            </label>
-            <label>
-              {t("apiKey")}
-              <input aria-label={t("apiKey")} type="password" value={props.apiKey} onChange={(event) => props.setApiKey(event.target.value)} />
-            </label>
-            <label>
-              {t("savedSecret")}
-              <select value={props.selectedSecretId} onChange={(event) => props.setSelectedSecretId(event.target.value)}>
-                <option value="">{t("notConfigured")}</option>
-                {props.secrets.map((secret) => (
-                  <option value={secret.id} key={secret.id}>
-                    {secret.alias || secret.id} · {secret.maskedPreview || "********"}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <PanelHeading title="DeepSeek" badge="Server environment" />
+            <p className="selector-status">Configuration source: server environment</p>
+            <p className="selector-status">Status: {props.providerStatus?.status || t("notConfigured")}</p>
             <div className="button-row">
-              <button type="button" onClick={props.onSaveSecret}>
-                {t("saveSecret")}
-              </button>
-              <button type="button" className="secondary" onClick={props.onDeleteSecret}>
-                {t("deleteSecret")}
-              </button>
               <button type="button" className="secondary" onClick={props.onTestProvider}>
                 {t("testConnection")}
               </button>

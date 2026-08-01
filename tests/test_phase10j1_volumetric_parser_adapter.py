@@ -9,6 +9,7 @@ import pytest
 from mdi_adapters import ToolExecutionContext, VolumetricDataAdapter
 from mdi_adapters.errors import ToolExecutionError
 from mdi_api.repositories import InMemoryRepositoryBundle
+from mdi_api.phase2_runtime import build_object_store
 from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
 from mdi_artifact_core import (
     decode_volumetric_payload,
@@ -17,7 +18,13 @@ from mdi_artifact_core import (
     validate_volumetric_manifest,
 )
 from mdi_llm import MockLLMProvider, PlannerRequest
-from mdi_material_parsers import VolumetricParseError, detect_volumetric_format, parse_file, parse_volumetric_file
+from mdi_material_parsers import (
+    VolumetricParseError,
+    build_data_profile,
+    detect_volumetric_format,
+    parse_file,
+    parse_volumetric_file,
+)
 from mdi_schemas import DataProfile, MaterialObjectType, ToolExecutionRequest
 from mdi_tool_registry import load_manifests
 from mdi_tool_registry.plan_validator import validate_plan
@@ -55,6 +62,13 @@ def test_vasp_source_order_normalization_and_electron_integral() -> None:
     voxel_volume = 1.0
     assert sum(source["channels"][0]["values"]) * voxel_volume == pytest.approx(36.0)
     assert parsed.report["source_order"] == "x_fastest_then_y_then_z"
+
+
+def test_chgcar_profile_preserves_exact_structure_binding() -> None:
+    parsed = parse_file(FIXTURES / "CHGCAR", dataset_id="dataset_bound", file_id="file_bound")
+    profile = build_data_profile(dataset_id="dataset_bound", parse_results=[parsed])
+    volumetric = next(item for item in profile.resourceSemantics if item.objectType == "VolumetricData")
+    assert volumetric.facts["structureBound"] is True
 
 
 @pytest.mark.parametrize(
@@ -151,6 +165,14 @@ def test_parse_file_and_adapter_emit_valid_deterministic_binary_package(tmp_path
     for payload in dataset["payloads"]:
         assert len(decode_volumetric_payload(payload, binaries)) == 8
     assert all(item.metadata.provenance["rendererIncluded"] is False for item in first)
+
+
+def test_phase2_object_store_preserves_exact_volumetric_identity() -> None:
+    source = parse_file(FIXTURES / "CHGCAR", dataset_id="dataset_volume_store").objects[0]
+    store, refs = build_object_store([source])
+    assert store[source.id] is source
+    assert store["volumetric"] is source
+    assert refs["volumetric"] == source.id
 
 
 def test_adapter_vectorizes_noncollinear_and_rejects_unsafe_params(tmp_path: Path) -> None:

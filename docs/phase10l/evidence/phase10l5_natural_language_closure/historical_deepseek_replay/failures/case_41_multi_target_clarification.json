@@ -1,0 +1,36 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-08-01T04:27:24.257854+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:41:NEEDS_CLARIFICATION:INTENT_QUESTION_INVALID:errors=['INTENT_QUESTION_INVALID']:selected=[]"
+    },
+    {
+      "createdAt": "2026-08-01T04:36:51.620779+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-pro",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:41:NEEDS_CLARIFICATION:INTENT_QUESTION_CANDIDATE_INVALID:errors=['INTENT_QUESTION_CANDIDATE_INVALID']:selected=[]"
+    },
+    {
+      "createdAt": "2026-08-01T05:13:16.861342+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-pro",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:41:NEEDS_CLARIFICATION:PLAN_READY:errors=[]:selected=['ml.regression_evaluation']"
+    },
+    {
+      "createdAt": "2026-08-01T08:18:35.850296+00:00",
+      "errorCode": "'PlannerJobsResult' object has no attribute 'model_dump'",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "'PlannerJobsResult' object has no attribute 'model_dump'"
+    }
+  ],
+  "caseNumber": 41,
+  "createdAt": "2026-08-01T08:18:35.850296+00:00",
+  "errorCode": "'PlannerJobsResult' object has no attribute 'model_dump'",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "'PlannerJobsResult' object has no attribute 'model_dump'",
+  "slug": "multi_target_clarification",
+  "verdict": "FAIL"
+}

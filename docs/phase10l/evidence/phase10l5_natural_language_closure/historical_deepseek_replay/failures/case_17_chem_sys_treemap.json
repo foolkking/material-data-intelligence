@@ -1,0 +1,24 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-08-01T07:29:10.511012+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:17:PLAN_READY:INTENT_LLM_SCHEMA_INVALID:errors=['INTENT_LLM_SCHEMA_INVALID']:selected=[]"
+    },
+    {
+      "createdAt": "2026-08-01T07:32:23.968181+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:17:PLAN_READY:INTENT_LLM_SCHEMA_INVALID:errors=['INTENT_LLM_SCHEMA_INVALID']:selected=[]"
+    }
+  ],
+  "caseNumber": 17,
+  "createdAt": "2026-08-01T07:32:23.968181+00:00",
+  "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:17:PLAN_READY:INTENT_LLM_SCHEMA_INVALID:errors=['INTENT_LLM_SCHEMA_INVALID']:selected=[]",
+  "slug": "chem_sys_treemap",
+  "verdict": "FAIL"
+}

@@ -1,5 +1,19 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-08-01 Phase 10L-5 Historical Real-Provider Replay
+
+- The five current natural-language cases and 40 supplemental historical
+  semantic cases were replayed through current Intent/Eligibility/Registry
+  authority with real DeepSeek. Historical MockLLM browser captures are not
+  treated as live proof unless the semantic case was replayed and recorded.
+- Current canonical replacements are allowed only when exact binding and the
+  registered Adapter contract pass; missing or superseded tools remain typed
+  exclusions. Registry order, first-column guesses, and display labels never
+  become a historical replay fallback.
+- Pure UI, deterministic negative/security, infrastructure-only, and damaged
+  prompt cases remain separately classified and are not counted as live LLM
+  coverage.
+
 ## 2026-07-30 Phase 10L-4 Interpretation Is Not a Registry Tool
 
 - Scientific evidence projectors and interpreters are a post-execution,
@@ -1393,3 +1407,15 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - `structure.volumetric_data` remains the sole public parser tool; potential inspection is an application-owned consumer.
 - Natural LOCPOT/local-potential/equipotential/planar-profile/point-difference requests route to the existing tool.
 - Work function, vacuum/Fermi detection, cross-potential alignment, electric-field calculation, DFT, macro-average, arbitrary slice/path, and direct volume requests remain rejected.
+
+## 2026-07-31 Phase 10L-5 Provider Boundary
+
+- Natural-language closure uses DeepSeek only for the real-provider gate.
+- `DEEPSEEK_KEY` is the sole accepted credential source and `DEEPSEEK_MODEL`
+  is restricted to the approved DeepSeek model allowlist.
+- DeepSeek interprets only bounded, projected scientific evidence. It does not
+  select tools, execute tools, create plans/jobs, enqueue work, or receive raw
+  artifacts, paths, URLs, secrets, or full Registry data.
+- Default CI and deterministic/fake regression paths remain
+  `REAL_LLM_CALLS = 0`; the five-case live suite is separately captured,
+  sanitized, and auditable.

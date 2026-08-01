@@ -831,28 +831,24 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(profileIntelligence.textContent).toContain("FORMULA_VALUES_PARTIALLY_INVALID");
   });
 
-  it("opens model dialog from the top bar, saves a secret without browser storage leakage, and tests the provider", async () => {
+  it("shows only server-owned DeepSeek configuration with no browser key or custom endpoint input", async () => {
     const user = userEvent.setup();
-    const apiKey = "sk-ui-secret-value";
     render(<PlannerWorkbench />);
 
     await user.click(contextButton(1));
     const modelDialog = screen.getByRole("dialog");
     expect(modelDialog).not.toBeNull();
-    await user.selectOptions(modelDialog.querySelectorAll("select")[0], "openai_compatible");
-    await user.clear(screen.getByLabelText("API Key"));
-    await user.type(screen.getByLabelText("API Key"), apiKey);
+    expect(within(modelDialog).getByText("https://api.deepseek.com")).not.toBeNull();
+    expect(within(modelDialog).getByText("Configuration source: server environment")).not.toBeNull();
+    expect(within(modelDialog).queryByLabelText("API Key")).toBeNull();
+    expect(within(modelDialog).queryByDisplayValue("https://api.deepseek.com")).toBeNull();
+    expect(within(modelDialog).queryByText("OpenAI")).toBeNull();
+    expect(within(modelDialog).queryByText("Custom OpenAI-compatible")).toBeNull();
     await user.click(within(modelDialog).getAllByRole("button")[1]);
 
-    await waitFor(() => expect((screen.getByLabelText("API Key") as HTMLInputElement).value).toBe(""));
-    expect(document.body.textContent).not.toContain(apiKey);
-    expect(JSON.stringify(window.localStorage)).not.toContain(apiKey);
-    expect(JSON.stringify(window.sessionStorage)).not.toContain(apiKey);
-    expect(await screen.findByText(/Demo LLM Key/)).not.toBeNull();
-    expect((await screen.findAllByText("Live LLM / deepseek-chat")).length).toBeGreaterThan(0);
-
-    await user.click(within(modelDialog).getAllByRole("button")[3]);
-    expect(await screen.findByText("Provider connection succeeded and returned a valid AnalysisPlan.")).not.toBeNull();
+    expect(await screen.findByText("DeepSeek connection succeeded with a strict JSON response.")).not.toBeNull();
+    expect(JSON.stringify(window.localStorage)).not.toContain("DEEPSEEK_KEY");
+    expect(JSON.stringify(window.sessionStorage)).not.toContain("DEEPSEEK_KEY");
   });
 
   it("keeps main tabs mutually exclusive and routes job evidence into Agent process and Results/export", async () => {
@@ -1021,9 +1017,9 @@ describe("Phase 9C PlannerWorkbench", () => {
 
     expect(await within(panel).findByText("INTERPRETATION_READY")).not.toBeNull();
     expect(lastInterpretationRequest?.mode).toBe("STRICT_PROVIDER");
-    expect(lastInterpretationRequest?.provider).toBe("openai_compatible");
+    expect(lastInterpretationRequest?.provider).toBe("deepseek");
     expect(within(panel).getByTestId("interpretation-provenance").textContent).toContain("STRICT_PROVIDER");
-    expect(within(panel).getByTestId("interpretation-provenance").textContent).toContain("openai_compatible");
+    expect(within(panel).getByTestId("interpretation-provenance").textContent).toContain("deepseek");
   });
 
   it("restores a persisted non-ready interpretation run for audit", async () => {
@@ -1704,46 +1700,34 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
       redis: { status: "unknown", reason: "not configured" },
       artifactStorage: { status: "ok", backend: "local" },
       worker: { status: "ok", backend: "local" },
-      llmProvider: { status: "ok", provider: "mock", model: "mock" }
+      llmProvider: { status: "ok", provider: "deepseek", model: "deepseek-v4-flash" }
     });
   }
   if (url.endsWith("/planner/providers")) {
     return jsonResponse({
       providers: [
-        { id: "mock", label: "Mock Planner", provider: "mock", requiresSecret: false },
-        { id: "deepseek", label: "DeepSeek", provider: "openai_compatible", baseUrl: "https://api.deepseek.com/v1", defaultModel: "deepseek-chat", requiresSecret: true }
+        { id: "deepseek", label: "DeepSeek", provider: "deepseek", baseUrl: "https://api.deepseek.com", defaultModel: "deepseek-v4-flash", allowedModels: ["deepseek-v4-flash", "deepseek-v4-pro"], requiresSecret: false, configurationSource: "server_environment" },
+        { id: "mock", label: "Deterministic test provider", provider: "mock", requiresSecret: false, developerOnly: true }
       ]
     });
   }
   if (url.endsWith("/planner/providers/status")) {
-    return jsonResponse({ ok: true, provider: "mock", model: "mock", status: "ready", message: "Mock Planner is active." });
+    return jsonResponse({ ok: true, provider: "deepseek", model: "deepseek-v4-flash", status: "ready", configured: true, configurationSource: "server_environment", message: "DeepSeek is configured." });
   }
   if (method === "POST" && url.endsWith("/planner/providers/resolve")) {
     const body = JSON.parse(String(init?.body || "{}"));
-    expect(JSON.stringify(body)).not.toContain("sk-ui-secret-value");
-    if (body.provider === "openai_compatible" && body.secretId) {
+    expect(body).not.toHaveProperty("baseUrl");
+    expect(body).not.toHaveProperty("secretId");
+    if (body.provider === "deepseek") {
       return jsonResponse({
         ok: true,
-        provider: "openai_compatible",
-        model: body.model || "deepseek-chat",
+        provider: "deepseek",
+        model: body.model || "deepseek-v4-flash",
         status: "ready",
         willUseLiveProvider: true,
-        secretConfigured: true,
-        source: "secret",
-        message: "Current planner job configuration will use an OpenAI-compatible LLM.",
-        redacted: true
-      });
-    }
-    if (body.provider === "openai_compatible") {
-      return jsonResponse({
-        ok: false,
-        provider: "openai_compatible",
-        model: body.model || "deepseek-chat",
-        status: "not_configured",
-        willUseLiveProvider: false,
         secretConfigured: false,
-        source: "missing_secret",
-        message: "Current planner job configuration needs a saved API key before it can use a live LLM.",
+        source: "server_environment",
+        message: "DeepSeek is configured.",
         redacted: true
       });
     }
@@ -1761,8 +1745,9 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
   }
   if (method === "POST" && url.endsWith("/planner/providers/test")) {
     const body = JSON.parse(String(init?.body || "{}"));
-    expect(JSON.stringify(body)).not.toContain("sk-ui-secret-value");
-    return jsonResponse({ ok: true, provider: body.provider, model: body.model || "mock", latencyMs: 9, validated: true, message: "Provider connection succeeded and returned a valid AnalysisPlan.", redacted: true });
+    expect(body).not.toHaveProperty("baseUrl");
+    expect(body).not.toHaveProperty("secretId");
+    return jsonResponse({ ok: true, provider: body.provider, model: body.model || "mock", latencyMs: 9, validated: true, message: "DeepSeek connection succeeded with a strict JSON response.", redacted: true, realLlmCalls: 0 });
   }
   if (url.endsWith("/me/secrets") && method === "GET") {
     return jsonResponse(savedSecrets);
@@ -1796,7 +1781,8 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
   }
   if (method === "POST" && url.endsWith("/planner/jobs")) {
     const body = JSON.parse(String(init?.body || "{}"));
-    expect(JSON.stringify(body)).not.toContain("sk-ui-secret-value");
+    expect(body).not.toHaveProperty("baseUrl");
+    expect(body).not.toHaveProperty("secretId");
     expect(body.intentSchemaVersion).toBe("1.0");
     return jsonResponse(createdJob);
   }
@@ -1808,10 +1794,10 @@ function mockPlannerFetch(input: RequestInfo | URL, init?: RequestInit): Promise
     lastInterpretationRequest = body;
     interpretationCreated = true;
     activeInterpretation = body.mode === "STRICT_PROVIDER"
-      ? { ...interpretationFixture, mode: "STRICT_PROVIDER", provider: "openai_compatible" }
+      ? { ...interpretationFixture, mode: "STRICT_PROVIDER", provider: "deepseek" }
       : interpretationFixture;
     const execution = body.mode === "STRICT_PROVIDER"
-      ? { ...interpretationExecutionFixture, mode: "STRICT_PROVIDER", provider: "openai_compatible" }
+      ? { ...interpretationExecutionFixture, mode: "STRICT_PROVIDER", provider: "deepseek" }
       : interpretationExecutionFixture;
     return jsonResponse({
       outcome: "INTERPRETATION_READY",

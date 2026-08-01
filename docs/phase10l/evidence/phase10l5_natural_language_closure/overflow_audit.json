@@ -1,0 +1,252 @@
+{
+  "chromium": {
+    "desktop": {
+      "case_1": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_2": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_3": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_4": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_5": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "unsupported": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "capability_mismatch": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      }
+    },
+    "mobile": {
+      "case_1": {
+        "document": false,
+        "panelInternalScroll": true,
+        "viewportEscapingElements": 0,
+        "documentWidth": 390,
+        "documentScrollWidth": 390
+      },
+      "case_2": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 390,
+        "documentScrollWidth": 390
+      },
+      "case_3": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 390,
+        "documentScrollWidth": 390
+      },
+      "case_4": {
+        "document": false,
+        "panelInternalScroll": true,
+        "viewportEscapingElements": 0,
+        "documentWidth": 390,
+        "documentScrollWidth": 390
+      },
+      "case_5": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 390,
+        "documentScrollWidth": 390
+      }
+    },
+    "nonReadyMobile": {
+      "needs_clarification": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 390,
+        "documentScrollWidth": 390
+      },
+      "unsupported": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 390,
+        "documentScrollWidth": 390
+      },
+      "capability_mismatch": {
+        "document": false,
+        "panelInternalScroll": true,
+        "viewportEscapingElements": 0,
+        "documentWidth": 390,
+        "documentScrollWidth": 390
+      }
+    }
+  },
+  "firefox": {
+    "desktop": {
+      "case_1": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_2": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_3": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_4": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_5": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "unsupported": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "capability_mismatch": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      }
+    },
+    "mobile": {},
+    "nonReadyMobile": {}
+  },
+  "webkit": {
+    "desktop": {
+      "case_1": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_2": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_3": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_4": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "case_5": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "unsupported": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      },
+      "capability_mismatch": {
+        "document": false,
+        "panelInternalScroll": false,
+        "viewportEscapingElements": 0,
+        "documentWidth": 1440,
+        "documentScrollWidth": 1440
+      }
+    },
+    "mobile": {},
+    "nonReadyMobile": {}
+  }
+}

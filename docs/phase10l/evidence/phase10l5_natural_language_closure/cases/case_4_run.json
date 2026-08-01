@@ -1,0 +1,467 @@
+{
+  "apiRefs": [
+    "interpretations/interpretation_0597bc56108ce3bc9dcf73ca59ea413c/evidence",
+    "planner/jobs/job_16dd0c91cbf2c10c9def4725",
+    "planner/jobs/job_16dd0c91cbf2c10c9def4725/dependencies",
+    "planner/jobs/job_16dd0c91cbf2c10c9def4725/interpretations"
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-phonon_band_json",
+      "artifactType": "phonon_band_json",
+      "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 2152
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-phonon_manifest_json",
+      "artifactType": "phonon_manifest_json",
+      "contentHash": "d3a37e57f4fcbdcf9624c96eceffab183c8a1558eac110509b20098e73e4ccd5",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 826
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-phonon_report_json",
+      "artifactType": "phonon_report_json",
+      "contentHash": "10a228a1693a16dc760f4d6044bf91a72c63dbf9befe144f19b72d0f748ab4a1",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 1338
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-phonon_summary_json",
+      "artifactType": "phonon_summary_json",
+      "contentHash": "4ce5290d692161051847be730df2951e397868a58ed92b6ac0c6454dc81f3dc8",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 531
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-plotly_json",
+      "artifactType": "plotly_json",
+      "contentHash": "3f579988f015640c3492e3dbb378ff99be15c599e3904cfbd0aef8c04990a1f1",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 2170
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "bae4297205f6f64ccb5627ffcebb3d825ab1e0d9eed2379d83179431473e29a3",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 711
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-table_json",
+      "artifactType": "table_json",
+      "contentHash": "d5c7587c3eb2f2992364dfeb31c786448687adf5b50a6ef8be64f9955deb8eb4",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 3732
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-phonon_band_dos_json",
+      "artifactType": "phonon_band_dos_json",
+      "contentHash": "de8710a8dd86e8b9867b02615cde88c8fed21a5c5840e9ab40d72d3429ea6feb",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 1655
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-phonon_compatibility_json",
+      "artifactType": "phonon_compatibility_json",
+      "contentHash": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 3954
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-phonon_manifest_json",
+      "artifactType": "phonon_manifest_json",
+      "contentHash": "8b1aa9cf62383107e5b9090d34eb51276bb0617d7f0a322229ccfdc4dcaece36",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 2406
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-phonon_summary_json",
+      "artifactType": "phonon_summary_json",
+      "contentHash": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 977
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-plotly_json",
+      "artifactType": "plotly_json",
+      "contentHash": "06ecd1c157e309402bd2eb03d3c4365f29d6722ed75a1ef16428899e6e6ae668",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 2458
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "7f0bc5f994b1092c32dae8f710c2395ddbab115caadfb0bd42cf057143201181",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 1681
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-table_json",
+      "artifactType": "table_json",
+      "contentHash": "0eaff3531926c5aed317b6ef0c0e194c5b0a8cc8800f3b37f937bf6b9de8641b",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 3618
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-phonon_dos_json",
+      "artifactType": "phonon_dos_json",
+      "contentHash": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1638
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-phonon_manifest_json",
+      "artifactType": "phonon_manifest_json",
+      "contentHash": "43f74006506745bfd6494da656fa6540d9b81569567aa4055adab56da628ec4d",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 816
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-phonon_report_json",
+      "artifactType": "phonon_report_json",
+      "contentHash": "36fe187028ad825492b158c484061957cf6bf076203f125425a81af127f2a5b6",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1659
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-phonon_summary_json",
+      "artifactType": "phonon_summary_json",
+      "contentHash": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1071
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-plotly_json",
+      "artifactType": "plotly_json",
+      "contentHash": "ee1a78cdec593cdaa62e7bfb81db72427882591e5266ec8c92e5f3ddb14287a8",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1361
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "2b6339b0d8f40b5f404a550b5d0f7139ee734dbaa69a223ab50ff42385642c9c",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 890
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-table_json",
+      "artifactType": "table_json",
+      "contentHash": "715bbe1b1742e93f51ceb3280fb0893574127fcd0e964bf7cacf7744acf20d6b",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1205
+    }
+  ],
+  "browserRefs": [],
+  "caseSpecHash": "ad4b6e323a807050b50625ae8c7d94248d3285b72ab23ea75ce217a8a7a975b5",
+  "caseSpecId": "caseSpec_ad4b6e323a807050b50625ae8c7d9424",
+  "claimEvidenceLinks": [
+    {
+      "claimId": "claim_0edcd9c76df84185f6e6adb20393db66",
+      "evidenceItemIds": [
+        "evidence_89c19ba9abbbe40dc57348bc89bf8c7d"
+      ]
+    },
+    {
+      "claimId": "claim_2079853f84e745703f6cc3a0ab684cbb",
+      "evidenceItemIds": [
+        "evidence_121a9101b5c874efd4f22ae2abe71523"
+      ]
+    },
+    {
+      "claimId": "claim_3ecfe637b759ac808ec8df8f42144cc7",
+      "evidenceItemIds": [
+        "evidence_f39a36a29929e781213cc3faba79d083"
+      ]
+    },
+    {
+      "claimId": "claim_43d8535d44fc437ad49b3dbe6b30feaf",
+      "evidenceItemIds": [
+        "evidence_9bb47180555ba9236c8d50d11aad9322"
+      ]
+    },
+    {
+      "claimId": "claim_4f8166bd23b017652a55a1f400f0d67c",
+      "evidenceItemIds": [
+        "evidence_b258965b965f5c90534a54e0838ce5b8"
+      ]
+    },
+    {
+      "claimId": "claim_5761468d7368ebbfd094572af0959eb3",
+      "evidenceItemIds": [
+        "evidence_1545d35d352581f0755261c77df8ca55"
+      ]
+    },
+    {
+      "claimId": "claim_729a3f03288f698c49be75f3d115a726",
+      "evidenceItemIds": [
+        "evidence_ede3103f04ca5b8fcf2f5a72aeb9b8f0"
+      ]
+    },
+    {
+      "claimId": "claim_82253c1eb2dbe6f6dd4460cb35955d98",
+      "evidenceItemIds": [
+        "evidence_20ceae45143357e665b9d3d91029de08"
+      ]
+    },
+    {
+      "claimId": "claim_ae26b02c5607fe2787f1b0703801fa0a",
+      "evidenceItemIds": [
+        "evidence_126000014673ed1b22a78f932c8ebf9d"
+      ]
+    },
+    {
+      "claimId": "claim_be9a9c39294f3bdf3361aaa5b612832d",
+      "evidenceItemIds": [
+        "evidence_09cde9dfbdede03cc1042376430207a7"
+      ]
+    },
+    {
+      "claimId": "claim_c1209ad18225dbb16db2f99568e68c49",
+      "evidenceItemIds": [
+        "evidence_6af3d69b74078225dd9467b97730f6ee"
+      ]
+    },
+    {
+      "claimId": "claim_cd91451e0bf371d8439fe34ef2712ed1",
+      "evidenceItemIds": [
+        "evidence_1a29ac9446aa493a5911d36b3c0a6ccc"
+      ]
+    },
+    {
+      "claimId": "claim_cf4c7b4a77be7b7c2966810cb52fdcb5",
+      "evidenceItemIds": [
+        "evidence_fe74677f1abfae521c8093d54718a8aa"
+      ]
+    }
+  ],
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 3669.7132,
+  "eligibility": {
+    "recordHash": "5fb265946d1fec22e660588883443e7782fa9b87fc32399fe44edc85c5e6f8c8",
+    "recordId": "resolution_5fb265946d1fec22e6605888",
+    "schemaVersion": "1.0"
+  },
+  "evidenceBundle": {
+    "recordHash": "54894e59e78b1bdad92f252d5b2d13f152e0a418cf3fbb201b9bff74ac9ddc69",
+    "recordId": "bundle_54894e59e78b1bdad92f252d5b2d13f1",
+    "schemaVersion": "1.0"
+  },
+  "executionOutcome": "LEGACY_TERMINAL",
+  "intent": {
+    "clarificationRound": 0,
+    "intentHash": "a0194b8121d3885413b9f9ea8dc2f29fb644411b40c8cb2c390264753848b624",
+    "intentId": "intent_a0194b8121d3885413b9f9ea",
+    "outcome": "READY"
+  },
+  "interpretation": {
+    "recordHash": "0597bc56108ce3bc9dcf73ca59ea413ca6b4aefa2d957407c371b3f8f630c1a9",
+    "recordId": "interpretation_0597bc56108ce3bc9dcf73ca59ea413c",
+    "schemaVersion": "1.0"
+  },
+  "job": {
+    "recordId": "job_16dd0c91cbf2c10c9def4725",
+    "semanticHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a",
+    "state": "completed"
+  },
+  "lineage": [
+    {
+      "recordId": "lineage_11ebbe59223ada9e78e32d9867e50c7b",
+      "semanticHash": "11ebbe59223ada9e78e32d9867e50c7b43778e9538f6f573ef15b01230ca033e",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_1d1d0240c8f53216dcb6df8e3ce51210",
+      "semanticHash": "1d1d0240c8f53216dcb6df8e3ce51210fe9b5e6fb1a59546919d275066c8e905",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_2ee248966a08a4199da99692c073a434",
+      "semanticHash": "2ee248966a08a4199da99692c073a434353a86f63d6588011c5e835e8f6e0d52",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_40eef3a2870437b3f1797fce73f8ebee",
+      "semanticHash": "40eef3a2870437b3f1797fce73f8ebeede5e413d47fd51e2dcff3bafabb9a74d",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_41b8af3dcb6942a7b8bbb6db9c8a86fc",
+      "semanticHash": "41b8af3dcb6942a7b8bbb6db9c8a86fcc73cfd542ebb934c6cf5a9d0b1afef44",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_45a702f820c1fa7c5a707a819eadc795",
+      "semanticHash": "45a702f820c1fa7c5a707a819eadc7952cb32316e1675b2076615f11f397ec2f",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_4aa18f5e496f3a487a91c40e4bade531",
+      "semanticHash": "4aa18f5e496f3a487a91c40e4bade53124cd614260f96a07cd375f0e177c0ff7",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_6f2fb6d536278846ad394e5551d46b90",
+      "semanticHash": "6f2fb6d536278846ad394e5551d46b9023a856edb96a8079e8280984423f6034",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_70ae676dc8839f5ab64459b8e757b434",
+      "semanticHash": "70ae676dc8839f5ab64459b8e757b434b0170d0f84672ec70a9a2719d73da779",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_742d7aa8b8c67ca1815ec8be8680915f",
+      "semanticHash": "742d7aa8b8c67ca1815ec8be8680915f53703fe89d460e4c9b122aff2b5f11cc",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_87a9c76d68c9a0d8df373ba6b08b7972",
+      "semanticHash": "87a9c76d68c9a0d8df373ba6b08b7972e3c2913cedc2dbc17c9ab2e113d5a7b8",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_88cce26db9c10a0c82110c2a43aabfbe",
+      "semanticHash": "88cce26db9c10a0c82110c2a43aabfbe21effe635edbd03749079983f7d380ea",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_8bfc7d3b5679e17e94fe7897beff770b",
+      "semanticHash": "8bfc7d3b5679e17e94fe7897beff770b83377441e845e10c39b49dc05a91169e",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_8fd74f22c66c6512ea6bb586f39adb9a",
+      "semanticHash": "8fd74f22c66c6512ea6bb586f39adb9a1a3464bf6c0720599819f1a87a1c1b7e",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_9edcefc642e0574aa2d996c61ed51f1a",
+      "semanticHash": "9edcefc642e0574aa2d996c61ed51f1a6712615050468a739edac453323f9dac",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_a51e5d8e400b681cb422bd1bd186962f",
+      "semanticHash": "a51e5d8e400b681cb422bd1bd186962fd9eed5222dc892c9bb4d146b95832353",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_b75ff87eabfdb3d91af4c208d6a506ca",
+      "semanticHash": "b75ff87eabfdb3d91af4c208d6a506caa9a935e8dc3a9a94fa2e64092a3b03af",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_c24a76637f08fed664ae4a11986a96b4",
+      "semanticHash": "c24a76637f08fed664ae4a11986a96b43e704829c509be993d53af70fb314eb6",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_e526b068eca5a24301947bb0737e532f",
+      "semanticHash": "e526b068eca5a24301947bb0737e532f5f326ca367f127336d2be5bf7a0da837",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_f00f789bd7b7691adb5e9d3963afef89",
+      "semanticHash": "f00f789bd7b7691adb5e9d3963afef89bb9ece8078a2ee5d958207e328aff819",
+      "state": "VERIFIED"
+    },
+    {
+      "recordId": "lineage_f7e5ac55abea8aed303ee8925d89af0e",
+      "semanticHash": "f7e5ac55abea8aed303ee8925d89af0ee92dc6b7d907784348be8fa153bb6a36",
+      "state": "VERIFIED"
+    }
+  ],
+  "plan": {
+    "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+    "planHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a",
+    "planId": "plan_503d749c7fda42ad8cbb237c",
+    "schemaVersion": "0.2"
+  },
+  "profile": {
+    "recordHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "recordId": "profile_1",
+    "schemaVersion": "2.0"
+  },
+  "provider": {
+    "keySource": "NONE",
+    "mode": "DETERMINISTIC",
+    "model": "deterministic-capability-planner",
+    "promptHashes": [],
+    "provider": "deterministic_mock",
+    "purposes": [],
+    "realCallCount": 0,
+    "responseHashes": []
+  },
+  "resourceManifest": [
+    {
+      "kind": "phonon",
+      "objectHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "objectId": "phonon_band_1",
+      "objectType": "PhononBand"
+    },
+    {
+      "kind": "phonon",
+      "objectHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "objectId": "phonon_dos_1",
+      "objectType": "PhononDos"
+    }
+  ],
+  "runHash": "26874831b26f331f0e547baa6bd91a14f7d4dad065deedfc82a4821b02cf5d39",
+  "runId": "run_26874831b26f331f0e547baa6bd91a14",
+  "schemaVersion": "1.0",
+  "securityMarkers": [
+    "NO_ALTERNATIVE_PROVIDER_REAL_CALLS",
+    "NO_ARBITRARY_CODE",
+    "NO_ARTIFACT_HTML_OR_JAVASCRIPT",
+    "NO_CROSS_JOB_OR_PROJECT_BINDING",
+    "NO_DIRECT_TOOL_PLAN_OR_ADAPTER_IN_USER_REQUEST",
+    "NO_EXTERNAL_SCIENTIFIC_API",
+    "NO_RAW_ARTIFACT_TO_PROVIDER",
+    "NO_RECOMMENDATION_AUTO_EXECUTION",
+    "NO_SECRET_IN_EVIDENCE"
+  ],
+  "selectedTools": [
+    {
+      "bindingHash": "7ad4aacc649dde2aef78130a57d72def1538deb0eb2890401ba4934eadba371e",
+      "toolId": "phonon.band",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "bindingHash": "1d00bd814f9df4ecf6e690f96146210a9a29dcd4b35cbb7d8ed379610cc2ec42",
+      "toolId": "phonon.band_dos",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "bindingHash": "0c6afed561af675ba01b0409e5b72e2c7a6308eaaa9b26662fb86cf072b3288d",
+      "toolId": "phonon.dos",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "tokenUsage": {
+    "completionTokens": 0,
+    "estimated": false,
+    "promptTokens": 0,
+    "totalTokens": 0
+  },
+  "toolCalls": [
+    {
+      "recordId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "semanticHash": "3ed6315c82ce158b023bbc9aa8b30051f3f2c4cb5aa5ebf28b5996c902d5468f",
+      "state": "completed"
+    },
+    {
+      "recordId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "semanticHash": "cc7c9f4ba8f3e697f4d22893bcb5db333d8150fe31e2df917fd7bd20c977c5cd",
+      "state": "completed"
+    },
+    {
+      "recordId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "semanticHash": "e541c1a20a5ad2d3b4d823bcd0ca69c8602878823eb83b15f3d35b2767c826e4",
+      "state": "completed"
+    }
+  ],
+  "userText": "分析这个 phonon calculation。",
+  "verdict": "PASS"
+}

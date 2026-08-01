@@ -1,0 +1,646 @@
+{
+  "algorithm": "sha256",
+  "records": [
+    {
+      "artifactId": "call_job_79ba32c3e1fd536c367fe20f_step_001-quality_issues_json",
+      "artifactType": "quality_issues_json",
+      "contentHash": "fc9dff98c48d97b7c6a7119c21be21f3be13e5c84d3431140d15bbc71a462794",
+      "producerToolCallId": "call_job_79ba32c3e1fd536c367fe20f_step_001",
+      "sizeBytes": 699,
+      "source": "cases/case_1_capture.json"
+    },
+    {
+      "artifactId": "call_job_79ba32c3e1fd536c367fe20f_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "5d6dd4b045114db7bd3f8430da94ad0d1050faa4efb67fbb46a1e56e40a00879",
+      "producerToolCallId": "call_job_79ba32c3e1fd536c367fe20f_step_001",
+      "sizeBytes": 1547,
+      "source": "cases/case_1_capture.json"
+    },
+    {
+      "artifactId": "call_job_79ba32c3e1fd536c367fe20f_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "ca2315c03b200414325148c152a71d5b9ad9563b61f56e9ba6d49a0c1721e103",
+      "producerToolCallId": "call_job_79ba32c3e1fd536c367fe20f_step_001",
+      "sizeBytes": 370,
+      "source": "cases/case_1_capture.json"
+    },
+    {
+      "artifactId": "call_job_79ba32c3e1fd536c367fe20f_step_001-table_json",
+      "artifactType": "table_json",
+      "contentHash": "9cab1b92620f7ba9cecebbe1da36abec95beca881fd19950a640249ff8eb7044",
+      "producerToolCallId": "call_job_79ba32c3e1fd536c367fe20f_step_001",
+      "sizeBytes": 6633,
+      "source": "cases/case_1_capture.json"
+    },
+    {
+      "artifactId": "call_job_e931e1ae64dec09f3a9dab26_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "8f32ea66fb29605349071713d90168fc94c4b9d11963a4c1c592912486204cf8",
+      "producerToolCallId": "call_job_e931e1ae64dec09f3a9dab26_step_001",
+      "sizeBytes": 574,
+      "source": "cases/case_2_capture.json"
+    },
+    {
+      "artifactId": "call_job_e931e1ae64dec09f3a9dab26_step_001-structure_json",
+      "artifactType": "structure_json",
+      "contentHash": "2d7894fd0e011171db6759ece6f146000a33fb65c6ecb7be8b199f9175eaa5a6",
+      "producerToolCallId": "call_job_e931e1ae64dec09f3a9dab26_step_001",
+      "sizeBytes": 662,
+      "source": "cases/case_2_capture.json"
+    },
+    {
+      "artifactId": "call_job_e931e1ae64dec09f3a9dab26_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "269d1828e0c5ad13e8b876dc10877f4e6d64dedfc2e8fcd0b09830f9efa3d319",
+      "producerToolCallId": "call_job_e931e1ae64dec09f3a9dab26_step_001",
+      "sizeBytes": 111,
+      "source": "cases/case_2_capture.json"
+    },
+    {
+      "artifactId": "call_job_7437db7b7a209669e95fc6e1_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "0e09471839a73c992eebff2427a33b57e558a6965ec2b0e46d42e782c30f9eac",
+      "producerToolCallId": "call_job_7437db7b7a209669e95fc6e1_step_001",
+      "sizeBytes": 1176,
+      "source": "cases/case_3_capture.json"
+    },
+    {
+      "artifactId": "call_job_7437db7b7a209669e95fc6e1_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "767d0ad169c39efaac92c26654aff2f77d29a095b8807ec2c11aaa5587cc0125",
+      "producerToolCallId": "call_job_7437db7b7a209669e95fc6e1_step_001",
+      "sizeBytes": 295,
+      "source": "cases/case_3_capture.json"
+    },
+    {
+      "artifactId": "call_job_7437db7b7a209669e95fc6e1_step_001-table_json",
+      "artifactType": "table_json",
+      "contentHash": "c09b74e16859f9d093fbfbf9a568509146f62922b4e89428fcf352949e0b667d",
+      "producerToolCallId": "call_job_7437db7b7a209669e95fc6e1_step_001",
+      "sizeBytes": 6357,
+      "source": "cases/case_3_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-phonon_band_json",
+      "artifactType": "phonon_band_json",
+      "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 2152,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-phonon_manifest_json",
+      "artifactType": "phonon_manifest_json",
+      "contentHash": "d3a37e57f4fcbdcf9624c96eceffab183c8a1558eac110509b20098e73e4ccd5",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 826,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-phonon_report_json",
+      "artifactType": "phonon_report_json",
+      "contentHash": "10a228a1693a16dc760f4d6044bf91a72c63dbf9befe144f19b72d0f748ab4a1",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 1338,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-phonon_summary_json",
+      "artifactType": "phonon_summary_json",
+      "contentHash": "4ce5290d692161051847be730df2951e397868a58ed92b6ac0c6454dc81f3dc8",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 531,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-plotly_json",
+      "artifactType": "plotly_json",
+      "contentHash": "3f579988f015640c3492e3dbb378ff99be15c599e3904cfbd0aef8c04990a1f1",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 2170,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "bae4297205f6f64ccb5627ffcebb3d825ab1e0d9eed2379d83179431473e29a3",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 711,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_001-table_json",
+      "artifactType": "table_json",
+      "contentHash": "d5c7587c3eb2f2992364dfeb31c786448687adf5b50a6ef8be64f9955deb8eb4",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_001",
+      "sizeBytes": 3732,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-phonon_band_dos_json",
+      "artifactType": "phonon_band_dos_json",
+      "contentHash": "de8710a8dd86e8b9867b02615cde88c8fed21a5c5840e9ab40d72d3429ea6feb",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 1655,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-phonon_compatibility_json",
+      "artifactType": "phonon_compatibility_json",
+      "contentHash": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 3954,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-phonon_manifest_json",
+      "artifactType": "phonon_manifest_json",
+      "contentHash": "8b1aa9cf62383107e5b9090d34eb51276bb0617d7f0a322229ccfdc4dcaece36",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 2406,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-phonon_summary_json",
+      "artifactType": "phonon_summary_json",
+      "contentHash": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 977,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-plotly_json",
+      "artifactType": "plotly_json",
+      "contentHash": "06ecd1c157e309402bd2eb03d3c4365f29d6722ed75a1ef16428899e6e6ae668",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 2458,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "7f0bc5f994b1092c32dae8f710c2395ddbab115caadfb0bd42cf057143201181",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 1681,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_002-table_json",
+      "artifactType": "table_json",
+      "contentHash": "0eaff3531926c5aed317b6ef0c0e194c5b0a8cc8800f3b37f937bf6b9de8641b",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_002",
+      "sizeBytes": 3618,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-phonon_dos_json",
+      "artifactType": "phonon_dos_json",
+      "contentHash": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1638,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-phonon_manifest_json",
+      "artifactType": "phonon_manifest_json",
+      "contentHash": "43f74006506745bfd6494da656fa6540d9b81569567aa4055adab56da628ec4d",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 816,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-phonon_report_json",
+      "artifactType": "phonon_report_json",
+      "contentHash": "36fe187028ad825492b158c484061957cf6bf076203f125425a81af127f2a5b6",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1659,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-phonon_summary_json",
+      "artifactType": "phonon_summary_json",
+      "contentHash": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1071,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-plotly_json",
+      "artifactType": "plotly_json",
+      "contentHash": "ee1a78cdec593cdaa62e7bfb81db72427882591e5266ec8c92e5f3ddb14287a8",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1361,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "2b6339b0d8f40b5f404a550b5d0f7139ee734dbaa69a223ab50ff42385642c9c",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 890,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_16dd0c91cbf2c10c9def4725_step_003-table_json",
+      "artifactType": "table_json",
+      "contentHash": "715bbe1b1742e93f51ceb3280fb0893574127fcd0e964bf7cacf7744acf20d6b",
+      "producerToolCallId": "call_job_16dd0c91cbf2c10c9def4725_step_003",
+      "sizeBytes": 1205,
+      "source": "cases/case_4_capture.json"
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "bd15769722d33a6dd927a8858295beb601265eb137763150f6ed2f7adb9b810e",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 1700,
+      "source": "cases/case_5_capture.json"
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "21105175f3cde12aa91a7790bd3acd89c497ea14515aa1a1509e83762de33fe2",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 751,
+      "source": "cases/case_5_capture.json"
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_binary",
+      "artifactType": "volumetric_binary",
+      "contentHash": "6f360e74fd5959280762f657d434c72771146205e8ef12b611fa562ba1a55904",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 47,
+      "source": "cases/case_5_capture.json"
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_dataset_json",
+      "artifactType": "volumetric_dataset_json",
+      "contentHash": "92bb606d8e376a69888ab031de6580a3fe46b57a08810154bd0efbe032342c39",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 6110,
+      "source": "cases/case_5_capture.json"
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_field_json",
+      "artifactType": "volumetric_field_json",
+      "contentHash": "97b003f125eefaf14d24ee22fa0ab64b2376e98351f7714a3a75cdaf6f27bb58",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 2244,
+      "source": "cases/case_5_capture.json"
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_grid_json",
+      "artifactType": "volumetric_grid_json",
+      "contentHash": "5ea9a9394c977aa285cbf39c30db5af798b3cc73abe07f115edc6927d5bb9e14",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 1304,
+      "source": "cases/case_5_capture.json"
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_manifest_json",
+      "artifactType": "volumetric_manifest_json",
+      "contentHash": "4bd7713f2c1de3f359c5f46f47f1e9026c21dd433d60f8dfa96de801dd24b52f",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 2233,
+      "source": "cases/case_5_capture.json"
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_payload_json",
+      "artifactType": "volumetric_payload_json",
+      "contentHash": "84157c48820972ab6deaa6f0eab51d0d40a908df237426832b8a5ea7b26b0994",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 1018,
+      "source": "cases/case_5_capture.json"
+    },
+    {
+      "artifactId": "call_job_65170c14100d59d49d792335_step_001-volumetric_structure_overlay_json",
+      "artifactType": "volumetric_structure_overlay_json",
+      "contentHash": "bf3d8673e0a91860c90ed41ca492a498ea0aa99933d87593a4c1647d3645c42c",
+      "producerToolCallId": "call_job_65170c14100d59d49d792335_step_001",
+      "sizeBytes": 4925,
+      "source": "cases/case_5_capture.json"
+    },
+    {
+      "artifactId": "call_job_28fd09a2e892756d845d8f19_step_001-quality_issues_json",
+      "artifactType": "quality_issues_json",
+      "contentHash": "fc9dff98c48d97b7c6a7119c21be21f3be13e5c84d3431140d15bbc71a462794",
+      "producerToolCallId": "call_job_28fd09a2e892756d845d8f19_step_001",
+      "sizeBytes": 699,
+      "source": "deepseek_live/case_01_dataset.json"
+    },
+    {
+      "artifactId": "call_job_28fd09a2e892756d845d8f19_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "8f42a5323a182396743eaf0df044d00679124b1b0322dc06855941459772fce0",
+      "producerToolCallId": "call_job_28fd09a2e892756d845d8f19_step_001",
+      "sizeBytes": 1552,
+      "source": "deepseek_live/case_01_dataset.json"
+    },
+    {
+      "artifactId": "call_job_28fd09a2e892756d845d8f19_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "ca2315c03b200414325148c152a71d5b9ad9563b61f56e9ba6d49a0c1721e103",
+      "producerToolCallId": "call_job_28fd09a2e892756d845d8f19_step_001",
+      "sizeBytes": 370,
+      "source": "deepseek_live/case_01_dataset.json"
+    },
+    {
+      "artifactId": "call_job_28fd09a2e892756d845d8f19_step_001-table_json",
+      "artifactType": "table_json",
+      "contentHash": "9cab1b92620f7ba9cecebbe1da36abec95beca881fd19950a640249ff8eb7044",
+      "producerToolCallId": "call_job_28fd09a2e892756d845d8f19_step_001",
+      "sizeBytes": 6633,
+      "source": "deepseek_live/case_01_dataset.json"
+    },
+    {
+      "artifactId": "call_job_1fbb89c4172769cfe562cd99_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "146aabc6f2759d3d1c55d907e86f89887753072b7f5d0618b39ca91c2a8c68a3",
+      "producerToolCallId": "call_job_1fbb89c4172769cfe562cd99_step_001",
+      "sizeBytes": 579,
+      "source": "deepseek_live/case_02_structure.json"
+    },
+    {
+      "artifactId": "call_job_1fbb89c4172769cfe562cd99_step_001-structure_json",
+      "artifactType": "structure_json",
+      "contentHash": "2d7894fd0e011171db6759ece6f146000a33fb65c6ecb7be8b199f9175eaa5a6",
+      "producerToolCallId": "call_job_1fbb89c4172769cfe562cd99_step_001",
+      "sizeBytes": 662,
+      "source": "deepseek_live/case_02_structure.json"
+    },
+    {
+      "artifactId": "call_job_1fbb89c4172769cfe562cd99_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "269d1828e0c5ad13e8b876dc10877f4e6d64dedfc2e8fcd0b09830f9efa3d319",
+      "producerToolCallId": "call_job_1fbb89c4172769cfe562cd99_step_001",
+      "sizeBytes": 111,
+      "source": "deepseek_live/case_02_structure.json"
+    },
+    {
+      "artifactId": "call_job_d1b51eee5b1edb53055330c7_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "284dcd13d1fee9c7dea7d095d043c98466eeea23e930e1d4019b2fa4b696561b",
+      "producerToolCallId": "call_job_d1b51eee5b1edb53055330c7_step_001",
+      "sizeBytes": 1181,
+      "source": "deepseek_live/case_03_materials_ml.json"
+    },
+    {
+      "artifactId": "call_job_d1b51eee5b1edb53055330c7_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "767d0ad169c39efaac92c26654aff2f77d29a095b8807ec2c11aaa5587cc0125",
+      "producerToolCallId": "call_job_d1b51eee5b1edb53055330c7_step_001",
+      "sizeBytes": 295,
+      "source": "deepseek_live/case_03_materials_ml.json"
+    },
+    {
+      "artifactId": "call_job_d1b51eee5b1edb53055330c7_step_001-table_json",
+      "artifactType": "table_json",
+      "contentHash": "c09b74e16859f9d093fbfbf9a568509146f62922b4e89428fcf352949e0b667d",
+      "producerToolCallId": "call_job_d1b51eee5b1edb53055330c7_step_001",
+      "sizeBytes": 6357,
+      "source": "deepseek_live/case_03_materials_ml.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-phonon_band_json",
+      "artifactType": "phonon_band_json",
+      "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001",
+      "sizeBytes": 2152,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-phonon_manifest_json",
+      "artifactType": "phonon_manifest_json",
+      "contentHash": "d3a37e57f4fcbdcf9624c96eceffab183c8a1558eac110509b20098e73e4ccd5",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001",
+      "sizeBytes": 826,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-phonon_report_json",
+      "artifactType": "phonon_report_json",
+      "contentHash": "10a228a1693a16dc760f4d6044bf91a72c63dbf9befe144f19b72d0f748ab4a1",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001",
+      "sizeBytes": 1338,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-phonon_summary_json",
+      "artifactType": "phonon_summary_json",
+      "contentHash": "4ce5290d692161051847be730df2951e397868a58ed92b6ac0c6454dc81f3dc8",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001",
+      "sizeBytes": 531,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-plotly_json",
+      "artifactType": "plotly_json",
+      "contentHash": "3f579988f015640c3492e3dbb378ff99be15c599e3904cfbd0aef8c04990a1f1",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001",
+      "sizeBytes": 2170,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "bae4297205f6f64ccb5627ffcebb3d825ab1e0d9eed2379d83179431473e29a3",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001",
+      "sizeBytes": 711,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-table_json",
+      "artifactType": "table_json",
+      "contentHash": "d5c7587c3eb2f2992364dfeb31c786448687adf5b50a6ef8be64f9955deb8eb4",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001",
+      "sizeBytes": 3732,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-phonon_band_dos_json",
+      "artifactType": "phonon_band_dos_json",
+      "contentHash": "de8710a8dd86e8b9867b02615cde88c8fed21a5c5840e9ab40d72d3429ea6feb",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002",
+      "sizeBytes": 1655,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-phonon_compatibility_json",
+      "artifactType": "phonon_compatibility_json",
+      "contentHash": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002",
+      "sizeBytes": 3954,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-phonon_manifest_json",
+      "artifactType": "phonon_manifest_json",
+      "contentHash": "8b1aa9cf62383107e5b9090d34eb51276bb0617d7f0a322229ccfdc4dcaece36",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002",
+      "sizeBytes": 2406,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-phonon_summary_json",
+      "artifactType": "phonon_summary_json",
+      "contentHash": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002",
+      "sizeBytes": 977,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-plotly_json",
+      "artifactType": "plotly_json",
+      "contentHash": "06ecd1c157e309402bd2eb03d3c4365f29d6722ed75a1ef16428899e6e6ae668",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002",
+      "sizeBytes": 2458,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "7f0bc5f994b1092c32dae8f710c2395ddbab115caadfb0bd42cf057143201181",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002",
+      "sizeBytes": 1681,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-table_json",
+      "artifactType": "table_json",
+      "contentHash": "0eaff3531926c5aed317b6ef0c0e194c5b0a8cc8800f3b37f937bf6b9de8641b",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002",
+      "sizeBytes": 3618,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-phonon_dos_json",
+      "artifactType": "phonon_dos_json",
+      "contentHash": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003",
+      "sizeBytes": 1638,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-phonon_manifest_json",
+      "artifactType": "phonon_manifest_json",
+      "contentHash": "43f74006506745bfd6494da656fa6540d9b81569567aa4055adab56da628ec4d",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003",
+      "sizeBytes": 816,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-phonon_report_json",
+      "artifactType": "phonon_report_json",
+      "contentHash": "36fe187028ad825492b158c484061957cf6bf076203f125425a81af127f2a5b6",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003",
+      "sizeBytes": 1659,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-phonon_summary_json",
+      "artifactType": "phonon_summary_json",
+      "contentHash": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003",
+      "sizeBytes": 1071,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-plotly_json",
+      "artifactType": "plotly_json",
+      "contentHash": "ee1a78cdec593cdaa62e7bfb81db72427882591e5266ec8c92e5f3ddb14287a8",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003",
+      "sizeBytes": 1361,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "2b6339b0d8f40b5f404a550b5d0f7139ee734dbaa69a223ab50ff42385642c9c",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003",
+      "sizeBytes": 890,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-table_json",
+      "artifactType": "table_json",
+      "contentHash": "715bbe1b1742e93f51ceb3280fb0893574127fcd0e964bf7cacf7744acf20d6b",
+      "producerToolCallId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003",
+      "sizeBytes": 1205,
+      "source": "deepseek_live/case_04_phonon.json"
+    },
+    {
+      "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "6807cc21453afa31b8e4f7623c39f185d1cea970e659260cb9e98c9b9c8ae1cc",
+      "producerToolCallId": "call_job_bb6c8d39c067c8198349357f_step_001",
+      "sizeBytes": 1705,
+      "source": "deepseek_live/case_05_volumetric.json"
+    },
+    {
+      "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "21105175f3cde12aa91a7790bd3acd89c497ea14515aa1a1509e83762de33fe2",
+      "producerToolCallId": "call_job_bb6c8d39c067c8198349357f_step_001",
+      "sizeBytes": 751,
+      "source": "deepseek_live/case_05_volumetric.json"
+    },
+    {
+      "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_binary",
+      "artifactType": "volumetric_binary",
+      "contentHash": "6f360e74fd5959280762f657d434c72771146205e8ef12b611fa562ba1a55904",
+      "producerToolCallId": "call_job_bb6c8d39c067c8198349357f_step_001",
+      "sizeBytes": 47,
+      "source": "deepseek_live/case_05_volumetric.json"
+    },
+    {
+      "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_dataset_json",
+      "artifactType": "volumetric_dataset_json",
+      "contentHash": "92bb606d8e376a69888ab031de6580a3fe46b57a08810154bd0efbe032342c39",
+      "producerToolCallId": "call_job_bb6c8d39c067c8198349357f_step_001",
+      "sizeBytes": 6110,
+      "source": "deepseek_live/case_05_volumetric.json"
+    },
+    {
+      "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_field_json",
+      "artifactType": "volumetric_field_json",
+      "contentHash": "97b003f125eefaf14d24ee22fa0ab64b2376e98351f7714a3a75cdaf6f27bb58",
+      "producerToolCallId": "call_job_bb6c8d39c067c8198349357f_step_001",
+      "sizeBytes": 2244,
+      "source": "deepseek_live/case_05_volumetric.json"
+    },
+    {
+      "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_grid_json",
+      "artifactType": "volumetric_grid_json",
+      "contentHash": "5ea9a9394c977aa285cbf39c30db5af798b3cc73abe07f115edc6927d5bb9e14",
+      "producerToolCallId": "call_job_bb6c8d39c067c8198349357f_step_001",
+      "sizeBytes": 1304,
+      "source": "deepseek_live/case_05_volumetric.json"
+    },
+    {
+      "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_manifest_json",
+      "artifactType": "volumetric_manifest_json",
+      "contentHash": "4bd7713f2c1de3f359c5f46f47f1e9026c21dd433d60f8dfa96de801dd24b52f",
+      "producerToolCallId": "call_job_bb6c8d39c067c8198349357f_step_001",
+      "sizeBytes": 2233,
+      "source": "deepseek_live/case_05_volumetric.json"
+    },
+    {
+      "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_payload_json",
+      "artifactType": "volumetric_payload_json",
+      "contentHash": "84157c48820972ab6deaa6f0eab51d0d40a908df237426832b8a5ea7b26b0994",
+      "producerToolCallId": "call_job_bb6c8d39c067c8198349357f_step_001",
+      "sizeBytes": 1018,
+      "source": "deepseek_live/case_05_volumetric.json"
+    },
+    {
+      "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_structure_overlay_json",
+      "artifactType": "volumetric_structure_overlay_json",
+      "contentHash": "bf3d8673e0a91860c90ed41ca492a498ea0aa99933d87593a4c1647d3645c42c",
+      "producerToolCallId": "call_job_bb6c8d39c067c8198349357f_step_001",
+      "sizeBytes": 4925,
+      "source": "deepseek_live/case_05_volumetric.json"
+    }
+  ],
+  "schemaVersion": "1.0"
+}

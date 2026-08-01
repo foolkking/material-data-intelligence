@@ -1,0 +1,234 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "composition.elements_hist"
+    ]
+  ],
+  "caseNumber": 15,
+  "createdAt": "2026-08-01T07:25:56.255396+00:00",
+  "decision": {
+    "decisionHash": "54d7a785c9a5bed4fbbf558f233f96e4413e5dcd9a9a6d3ae3b7ca6a06b54eb7",
+    "decisionId": "decision_54d7a785c9a5bed4fbbf558f",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "formulaColumn",
+            "source": "SEMANTIC_COLUMNS",
+            "sourceIdentity": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57:material_formula",
+            "value": "formula",
+            "valueId": "column:table_historical:formula"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "plot",
+          "summary"
+        ],
+        "coveredScientificIntents": [
+          "composition_analysis",
+          "visualization"
+        ],
+        "toolId": "composition.elements_hist",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": [
+      "table"
+    ]
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.composition_space",
+      "dataset.materials_explorer"
+    ],
+    "providerVisibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.composition_space",
+      "dataset.materials_explorer"
+    ],
+    "rejectedToolCount": 45,
+    "resolutionHash": "8c30e0590eb8b6d7958369fc4be19fb906b7bdbf654709b12df61d30ad759848",
+    "resolutionId": "resolution_8c30e0590eb8b6d7958369fc"
+  },
+  "historicalExpectedToolIds": [
+    "composition.elements_hist"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot",
+      "summary",
+      "table"
+    ],
+    "intentHash": "27ac51b5dcc8daf0f48ffc22232d9dd235871e665d16cccbc31022529608a8ae",
+    "intentId": "intent_27ac51b5dcc8daf0f48ffc22",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "composition_data"
+    ],
+    "scientificIntents": [
+      "composition_analysis",
+      "visualization"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10B",
+  "plan": {
+    "graphHash": null,
+    "planHash": "024f3e8563e8b797ecbd508b8c2b7064ef724eff931aafc483b14d5586638507",
+    "planId": "plan_9911406043fcc81317af75b7",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4407.873,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25411,
+      "promptHash": "27c803895229a32a37832d0f8b7de3149fd20294253ec6a8a3c4e4d3cd7b31ef",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2988,
+      "responseContentBytes": 2251,
+      "responseHash": "1e6204c678fa67cc4b4d8d4775d52e3224a8aeb5a6906116377f5f4105dff46b",
+      "tokenUsage": {
+        "completionTokens": 672,
+        "estimated": false,
+        "promptTokens": 5997,
+        "totalTokens": 6669
+      }
+    },
+    {
+      "elapsedMs": 1695.827,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 9199,
+      "promptHash": "6874f941d1aac8dac81182dbf310267b7503f1e5384d475da79c9f1462fafde8",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 613,
+      "responseContentBytes": 124,
+      "responseHash": "6a3ff693623ecc3b3cd5294599d547480afc8401c80c3653edf8d3449d73b255",
+      "tokenUsage": {
+        "completionTokens": 41,
+        "estimated": false,
+        "promptTokens": 2470,
+        "totalTokens": 2511
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Plot an element-frequency histogram from the formula column.",
+  "replayPromptHash": "5dafffc8f58435cafb36435064907839d3a7ee60a9ad95d864ffc12dc88faf57",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "574e584f693040194876d73a8458e6fbf4c8ecc6afc587485cad7b546254ac58",
+  "runId": "historical_live_run_574e584f693040194876d73a8458e6fb",
+  "runtime": {
+    "artifactCount": 5,
+    "artifacts": [
+      {
+        "id": "call_job_bae869432cad5b47c39c3679_step_001-plotly_json",
+        "name": "elements_hist.json",
+        "sha256": "2a53cbe5eb8d85c6b82cbc238199571d04020e2c059158974d64f20332739626",
+        "sizeBytes": 7766,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_bae869432cad5b47c39c3679_step_001-plotly_html",
+        "name": "elements_hist.html",
+        "sha256": "fdf56528ff1fa8fdecf505112ac254bd36bba5e75a2c482ae76d90a7762a9b22",
+        "sizeBytes": 8050,
+        "type": "plotly_html"
+      },
+      {
+        "id": "call_job_bae869432cad5b47c39c3679_step_001-preview_png",
+        "name": "preview.png",
+        "sha256": "ad6bc0025a798fe0ebe49f41f1aaaaaeadb5c8bb081b1bf9dac341bdf680b57c",
+        "sizeBytes": 69,
+        "type": "preview_png"
+      },
+      {
+        "id": "call_job_bae869432cad5b47c39c3679_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "2ffa1ed8850bdd942c6c18aa4017b460b52a899fef6b62cf07bdd20f52ba53f7",
+        "sizeBytes": 253,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_bae869432cad5b47c39c3679_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "ac7cd790f8670a1596b9dc1da2195004d66a8b67f02c0721d0f9a900832fbb07",
+        "sizeBytes": 636,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_bae869432cad5b47c39c3679_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "composition.elements_hist"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "composition.elements_hist"
+  ],
+  "slug": "elements_hist",
+  "sourcePaths": [
+    "docs/phase10b/browser_api_evidence/ward_elements_hist"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6189.116
+  },
+  "tokenUsage": {
+    "completionTokens": 713,
+    "estimated": false,
+    "promptTokens": 8467,
+    "totalTokens": 9180
+  },
+  "verdict": "PASS"
+}

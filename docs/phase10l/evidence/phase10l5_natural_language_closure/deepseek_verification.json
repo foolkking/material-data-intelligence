@@ -1,0 +1,63 @@
+{
+  "baseUrl": "https://api.deepseek.com",
+  "cases": [
+    {
+      "caseSpecId": "caseSpec_52cb8135b823a3d621cd660fb5b38c4c",
+      "realCallCount": 3,
+      "runId": "live_run_28f09af3b53a75170a8850d6ca45f8b3",
+      "verdict": "PASS",
+      "verificationHash": "4121dda1ad4ac16952107c0b2b65bd54f0d8c40545c48dd1d39d0a2ab454f261",
+      "verificationId": "deepseek_verification_4121dda1ad4ac16952107c0b2b65bd54"
+    },
+    {
+      "caseSpecId": "caseSpec_57f7ec437d831dd18eddf66edfa96ec4",
+      "realCallCount": 3,
+      "runId": "live_run_ceaef0c7168892dd5ed9d0a7da7bb7c1",
+      "verdict": "PASS",
+      "verificationHash": "1d29a0f1615810675ab1cc3a01a23f2dfaf2334aef8c1318c8791de19fb41a96",
+      "verificationId": "deepseek_verification_1d29a0f1615810675ab1cc3a01a23f2d"
+    },
+    {
+      "caseSpecId": "caseSpec_5c68afd711f2349471f0192b8335041b",
+      "realCallCount": 3,
+      "runId": "live_run_89ff5988240b2246dec4adb371deacdb",
+      "verdict": "PASS",
+      "verificationHash": "138c28db3449a71589e9233a7e9a1bcf1fe65032a0c3c83596fae6c8a24bfca9",
+      "verificationId": "deepseek_verification_138c28db3449a71589e9233a7e9a1bcf"
+    },
+    {
+      "caseSpecId": "caseSpec_90efe2220bf9a9601e731721308f5085",
+      "realCallCount": 3,
+      "runId": "live_run_d11315ef07ae3cb3bf09295fdd1254b2",
+      "verdict": "PASS",
+      "verificationHash": "edae79c82519cd8bcb635bcf6d338a90fa590cc62f6e822454a1b1db5ffc1b80",
+      "verificationId": "deepseek_verification_edae79c82519cd8bcb635bcf6d338a90"
+    },
+    {
+      "caseSpecId": "caseSpec_ad4b6e323a807050b50625ae8c7d9424",
+      "realCallCount": 4,
+      "runId": "live_run_b135271f0ff8102fa42b0102aa8b8d0c",
+      "verdict": "PASS",
+      "verificationHash": "4838241146c4637abb3873d1e2f334b51295bc9acd261db54eadb5833b491fa9",
+      "verificationId": "deepseek_verification_4838241146c4637abb3873d1e2f334b5"
+    }
+  ],
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "otherRealProviderCalls": 0,
+  "provider": "deepseek",
+  "sanitized": true,
+  "schemaVersion": "1.0",
+  "suiteHash": "ee5a0e9700d1a70787fc060fda2741716b5ab4ae1f47eab5f68d508bb85f2066",
+  "suiteId": "deepseek_suite_ee5a0e9700d1a70787fc060fda274171",
+  "tokenUsage": {
+    "completionTokens": 6162,
+    "estimated": false,
+    "promptTokens": 47914,
+    "totalTokens": 54076
+  },
+  "totalRealCallCount": 16,
+  "verdict": "PASS"
+}

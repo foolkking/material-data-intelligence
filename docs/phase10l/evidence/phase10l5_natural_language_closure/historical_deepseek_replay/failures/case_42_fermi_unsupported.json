@@ -1,0 +1,24 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-08-01T04:28:01.179838+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:42:UNSUPPORTED:INTENT_LLM_SCHEMA_INVALID:errors=['INTENT_LLM_SCHEMA_INVALID']:selected=[]"
+    },
+    {
+      "createdAt": "2026-08-01T08:18:40.623562+00:00",
+      "errorCode": "'PlannerJobsResult' object has no attribute 'model_dump'",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "'PlannerJobsResult' object has no attribute 'model_dump'"
+    }
+  ],
+  "caseNumber": 42,
+  "createdAt": "2026-08-01T08:18:40.623562+00:00",
+  "errorCode": "'PlannerJobsResult' object has no attribute 'model_dump'",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "'PlannerJobsResult' object has no attribute 'model_dump'",
+  "slug": "fermi_unsupported",
+  "verdict": "FAIL"
+}

@@ -1,0 +1,18 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-08-01T04:25:52.145792+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:39:PLAN_READY:VALIDATION_FAILED:errors=['CAPABILITY_LLM_SELECTION_REDUNDANT']:selected=[]"
+    }
+  ],
+  "caseNumber": 39,
+  "createdAt": "2026-08-01T04:25:52.145792+00:00",
+  "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:39:PLAN_READY:VALIDATION_FAILED:errors=['CAPABILITY_LLM_SELECTION_REDUNDANT']:selected=[]",
+  "slug": "uncertainty",
+  "verdict": "FAIL"
+}

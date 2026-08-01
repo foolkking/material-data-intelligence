@@ -127,6 +127,8 @@ def _plan(*, dataset_id: str, profile_id: str) -> AnalysisPlanV02:
 def _postgres_url() -> str:
     url = os.getenv("MDI_TEST_DATABASE_URL") or os.getenv("DATABASE_URL")
     if not url or "postgres" not in url:
+        if os.getenv("MDI_RUN_INTEGRATION") == "1":
+            raise RuntimeError("PostgreSQL DATABASE_URL is required for the enabled integration gate")
         pytest.skip("No PostgreSQL DATABASE_URL configured")
     return url
 
@@ -145,7 +147,9 @@ def _redis_backend(*, queue_name: str) -> tuple[RedisRQQueueBackend, Any]:
             queue_name,
             connection=connection,
         )
-    except Exception:
+    except Exception as exc:
+        if os.getenv("MDI_RUN_INTEGRATION") == "1":
+            raise RuntimeError("Redis/RQ is not reachable for the enabled integration gate") from exc
         pytest.skip("Redis/RQ not reachable")
 
 
@@ -168,7 +172,9 @@ def _minio_storage(*, prefix: str) -> S3CompatibleArtifactStorage:
             client.head_bucket(Bucket=bucket)
         except Exception:
             client.create_bucket(Bucket=bucket)
-    except Exception:
+    except Exception as exc:
+        if os.getenv("MDI_RUN_INTEGRATION") == "1":
+            raise RuntimeError("MinIO is not reachable for the enabled integration gate") from exc
         pytest.skip("MinIO not reachable")
     return S3CompatibleArtifactStorage(
         bucket=bucket,

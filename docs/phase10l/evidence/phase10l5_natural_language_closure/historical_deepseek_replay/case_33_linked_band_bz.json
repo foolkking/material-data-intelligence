@@ -1,0 +1,309 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "phonon.band",
+      "structure.brillouin_zone"
+    ]
+  ],
+  "caseNumber": 33,
+  "createdAt": "2026-08-01T07:35:47.494559+00:00",
+  "decision": {
+    "decisionHash": "645fdcdc6f25fe7f14412ff9b7330dc315965a417483f9e24776554175ed16f1",
+    "decisionId": "decision_645fdcdc6f25fe7f14412ff9",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot"
+        ],
+        "coveredScientificIntents": [
+          "phonon_analysis"
+        ],
+        "toolId": "phonon.band",
+        "toolVersion": "0.1.0"
+      },
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot",
+          "three_dimensional_view"
+        ],
+        "coveredScientificIntents": [
+          "reciprocal_space_analysis"
+        ],
+        "toolId": "structure.brillouin_zone",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "phonon.band",
+      "structure.brillouin_zone"
+    ],
+    "providerVisibleToolIds": [
+      "phonon.band",
+      "structure.brillouin_zone"
+    ],
+    "rejectedToolCount": 51,
+    "resolutionHash": "7892d127e01ea87e7d95dcf9db3c4c3c2aa7a413cb84100f845eae0e00fe18a6",
+    "resolutionId": "resolution_7892d127e01ea87e7d95dcf9"
+  },
+  "historicalExpectedToolIds": [
+    "phonon.band",
+    "structure.brillouin_zone"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot",
+      "three_dimensional_view"
+    ],
+    "intentHash": "0def4b35627b2bb0b0b98e822440495506d185c607babd792106da59d276aa8d",
+    "intentId": "intent_0def4b35627b2bb0b0b98e82",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "phonon_resource",
+      "reciprocal_space_resource"
+    ],
+    "scientificIntents": [
+      "phonon_analysis",
+      "reciprocal_space_analysis"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "phonon_band_1",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:phonon_band_1:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "seriesId": null,
+        "unit": null
+      },
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "structure_bz",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:structure_bz:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10I",
+  "plan": {
+    "graphHash": null,
+    "planHash": "1407f07f10e9cd5c1b2004578c1b90851f8fb3e158fb1748e149ce798deeec3a",
+    "planId": "plan_24d7b7c79b595fd21b134fdc",
+    "schemaVersion": "0.1",
+    "stepCount": 2
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_bz",
+    "profileId": "profile_historical_bz_v2",
+    "profileSemanticHash": "bf8cbcc22f7421c1d58d3798b8866e149c905ebcb4f2394fa1d392806283a450",
+    "selectedResourceIds": [
+      "structure_bz",
+      "phonon_band_1"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5648.378,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23545,
+      "promptHash": "2a02ac90809888dfbc6abb156d1315223946ac610de4fe566cb1915f88563744",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 4014,
+      "responseContentBytes": 3179,
+      "responseHash": "cf5f2f62d77792a863b93fb8db686a4191f6a57ff8a16bafeae9005c4e295e29",
+      "tokenUsage": {
+        "completionTokens": 969,
+        "estimated": false,
+        "promptTokens": 5559,
+        "totalTokens": 6528
+      }
+    },
+    {
+      "elapsedMs": 1357.881,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 4274,
+      "promptHash": "b9de80ede5bee27a7d79896aec37d1ad525cbea58884593b0951e0f1bb2e8bb0",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 627,
+      "responseContentBytes": 137,
+      "responseHash": "edd7c88903d7eeee6c75bf365af28e7e746b29bec2024df9428ffb5a15dbdae9",
+      "tokenUsage": {
+        "completionTokens": 47,
+        "estimated": false,
+        "promptTokens": 1161,
+        "totalTokens": 1208
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Create a phonon-band plot and a Brillouin-zone view for these exact resources.",
+  "replayPromptHash": "deeda136d17510d4358658170298ae9bdb690e2152f5109275b956a8255547dc",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "5fa1e1a37f1ec7e29c1216897b08e672493288db3a48bb714677d3056995e6ca",
+  "runId": "historical_live_run_5fa1e1a37f1ec7e29c1216897b08e672",
+  "runtime": {
+    "artifactCount": 13,
+    "artifacts": [
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_001-phonon_band_json",
+        "name": "phonon_band.json",
+        "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+        "sizeBytes": 2152,
+        "type": "phonon_band_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_001-phonon_summary_json",
+        "name": "phonon_summary.json",
+        "sha256": "4ce5290d692161051847be730df2951e397868a58ed92b6ac0c6454dc81f3dc8",
+        "sizeBytes": 531,
+        "type": "phonon_summary_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_001-phonon_report_json",
+        "name": "phonon_band_parse_report.json",
+        "sha256": "10a228a1693a16dc760f4d6044bf91a72c63dbf9befe144f19b72d0f748ab4a1",
+        "sizeBytes": 1338,
+        "type": "phonon_report_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_001-phonon_manifest_json",
+        "name": "phonon_manifest.json",
+        "sha256": "d3a37e57f4fcbdcf9624c96eceffab183c8a1558eac110509b20098e73e4ccd5",
+        "sizeBytes": 826,
+        "type": "phonon_manifest_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_001-plotly_json",
+        "name": "phonon_band_plot.json",
+        "sha256": "3f579988f015640c3492e3dbb378ff99be15c599e3904cfbd0aef8c04990a1f1",
+        "sizeBytes": 2170,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_001-table_json",
+        "name": "phonon_band_table.json",
+        "sha256": "d5c7587c3eb2f2992364dfeb31c786448687adf5b50a6ef8be64f9955deb8eb4",
+        "sizeBytes": 3732,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "bae4297205f6f64ccb5627ffcebb3d825ab1e0d9eed2379d83179431473e29a3",
+        "sizeBytes": 711,
+        "type": "recipe_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_002-reciprocal_lattice_json",
+        "name": "reciprocal_lattice.json",
+        "sha256": "82ea8804643b1c85f2093428d7ed44a97363849d033e1ac13bb466192a9b7e30",
+        "sizeBytes": 2684,
+        "type": "reciprocal_lattice_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_002-brillouin_zone_json",
+        "name": "brillouin_zone.json",
+        "sha256": "e7b9cded78f3b044d71829b4b6f9426dc6d1828116b0177269cd98f1f9d50375",
+        "sizeBytes": 6891,
+        "type": "brillouin_zone_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_002-kpath_json",
+        "name": "kpath.json",
+        "sha256": "864c8849cd82f1de1ec053bcf65c72025c1a5655789c4dae5818f72da3acbac7",
+        "sizeBytes": 6466,
+        "type": "kpath_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_002-brillouin_zone_manifest_json",
+        "name": "brillouin_zone_manifest.json",
+        "sha256": "558696316009ec1ebc7449cf0b51973c6a19e5b30188dade1d3f2080881220a6",
+        "sizeBytes": 1822,
+        "type": "brillouin_zone_manifest_json"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_002-summary_md",
+        "name": "summary.md",
+        "sha256": "4e81660cf9aed404f305ce20deb3866fb12d4af33844221cf793288790b0b48b",
+        "sizeBytes": 543,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_002-recipe_json",
+        "name": "recipe.json",
+        "sha256": "520241bb8ebd19e1e49453443122392af287b14c56703d231b9933d2a52fc5d2",
+        "sizeBytes": 1597,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 2,
+    "toolCalls": [
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "phonon.band"
+      },
+      {
+        "id": "call_job_fa19bf9c67965ee137c78543_step_002",
+        "status": "completed",
+        "stepId": "step_002",
+        "toolId": "structure.brillouin_zone"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "phonon.band",
+    "structure.brillouin_zone"
+  ],
+  "slug": "linked_band_bz",
+  "sourcePaths": [
+    "docs/phase10i/evidence/phase10i3_band_bz_linked_view"
+  ],
+  "timing": {
+    "plannerElapsedMs": 7080.459
+  },
+  "tokenUsage": {
+    "completionTokens": 1016,
+    "estimated": false,
+    "promptTokens": 6720,
+    "totalTokens": 7736
+  },
+  "verdict": "PASS"
+}

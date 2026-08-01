@@ -1,0 +1,224 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.preview_metadata"
+    ]
+  ],
+  "caseNumber": 22,
+  "createdAt": "2026-08-01T07:30:30.743026+00:00",
+  "decision": {
+    "decisionHash": "4fd31cc800cf21787ed07332d3fdb5d095ea9994eb25e2820c8d725e70a6e3c5",
+    "decisionId": "decision_4fd31cc800cf21787ed07332",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "structure_analysis"
+        ],
+        "toolId": "structure.preview_metadata",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "providerVisibleToolIds": [
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "rejectedToolCount": 42,
+    "resolutionHash": "3031dd69a02f664448313e510e864f82f3a83275e46d66bc5d523d2b878814d7",
+    "resolutionId": "resolution_3031dd69a02f664448313e51"
+  },
+  "historicalExpectedToolIds": [
+    "structure.preview_metadata"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "52d96914a176b5b159bcdc06823bf1747f6c32f6d70d50c7378f83f57e578c35",
+    "intentId": "intent_52d96914a176b5b159bcdc06",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "structure_resource"
+    ],
+    "scientificIntents": [
+      "structure_analysis"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "obj_nacl",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:obj_nacl:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10C",
+  "plan": {
+    "graphHash": null,
+    "planHash": "a82a00b85986761362fc5533d83c0810205bd04ce5f877c96f1b28d4e6075987",
+    "planId": "plan_25c374a1cbdb6920b7b0c833",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_phase10k2_evidence",
+    "profileId": "profile_historical_structure_v2",
+    "profileSemanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+    "selectedResourceIds": [
+      "obj_nacl"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4828.001,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23000,
+      "promptHash": "2a6a90d6ed956fce316b0920e359035066f0deba6a7b7630494215b8d6944a2d",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3329,
+      "responseContentBytes": 2552,
+      "responseHash": "a09cd4ed3c9e7a3238f6dfb77ef6eed8a6d1a30888c6fe186e5a85ebe6da62ab",
+      "tokenUsage": {
+        "completionTokens": 786,
+        "estimated": false,
+        "promptTokens": 5393,
+        "totalTokens": 6179
+      }
+    },
+    {
+      "elapsedMs": 1487.149,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 9460,
+      "promptHash": "5d7933b0664099a68adb339bca6b07a8ec42b6bb559be247ed7ed8a05c6280f7",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 615,
+      "responseContentBytes": 125,
+      "responseHash": "62f38e1d0859be3d91114817686d84d43519268582e44b89d512b7a177bb61f9",
+      "tokenUsage": {
+        "completionTokens": 38,
+        "estimated": false,
+        "promptTokens": 2639,
+        "totalTokens": 2677
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Generate structure preview metadata and coordinate ranges.",
+  "replayPromptHash": "cd144a344144cf012397b2a14ea916fc64b1564f69f61a7802be59410d84afd6",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "701c9fedd1bbc53d8975975e91687d22266ff98647951838ff4de4bddbc9f96f",
+  "runId": "historical_live_run_701c9fedd1bbc53d8975975e91687d22",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_bb6720e70372541fa28181f0_step_001-structure_json",
+        "name": "structure_preview_metadata.json",
+        "sha256": "bcf3a7e896ecaeb00ba7c604979fdc4ee525c625103e8d9cb8aa559703882c4b",
+        "sizeBytes": 526,
+        "type": "structure_json"
+      },
+      {
+        "id": "call_job_bb6720e70372541fa28181f0_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "f52b723865f210a2fa5499fb01a72dc7c2d6535ca19f19e67e341a00fd34de27",
+        "sizeBytes": 205,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_bb6720e70372541fa28181f0_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "758a31e1fba224fd1cab17959d53ae115dec67f767caa3f7496724bd5adbee17",
+        "sizeBytes": 596,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_bb6720e70372541fa28181f0_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.preview_metadata"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.preview_metadata"
+  ],
+  "slug": "preview_metadata",
+  "sourcePaths": [
+    "docs/phase10c/browser_api_evidence/simple_cubic_preview_metadata"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6403.356
+  },
+  "tokenUsage": {
+    "completionTokens": 824,
+    "estimated": false,
+    "promptTokens": 8032,
+    "totalTokens": 8856
+  },
+  "verdict": "PASS"
+}

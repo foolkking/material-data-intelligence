@@ -1,0 +1,37 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 4212.853,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 27118,
+      "promptHash": "d9fba5d923facbcc4b7ff89e30fe0fee0df30e7a4219b1975c89c3ed3b02b37c",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2738,
+      "responseContentBytes": 2025,
+      "responseHash": "2df13a8943290e4877afb63625fd137b5687c2e3c88dc0682042107082147b71",
+      "tokenUsage": {
+        "completionTokens": 612,
+        "estimated": false,
+        "promptTokens": 6430,
+        "totalTokens": 7042
+      }
+    }
+  ],
+  "caseIndex": 0,
+  "caseSpecId": "caseSpec_57f7ec437d831dd18eddf66edfa96ec4",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 4637.542,
+  "errorCode": "LIVE_PLAN_NOT_READY",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "realCallCount": 1,
+  "safeDetails": "LIVE_PLAN_NOT_READY:{\"desiredOutputs\":[\"summary\",\"table\",\"linked_samples\",\"warnings\"],\"diagnosticMessages\":[\"No current registered capability satisfies the exact Intent/Profile scope.\"],\"diagnostics\":[\"NO_ELIGIBLE_CAPABILITY\"],\"eligibleToolIds\":[],\"executionSideEffects\":{\"artifactCount\":0,\"bindingResolutionCount\":0,\"dependencyExecutionCount\":0,\"jobCount\":0,\"lineageCount\":0,\"planCount\":0,\"plannedBindingCount\":0,\"queueMessageCount\":0,\"toolCallCount\":0},\"outcome\":\"CAPABILITY_MISMATCH\",\"rejectionCodes\":[\"CAPABILITY_NEED_UNSUPPORTED\",\"DESIRED_OUTPUT_UNSUPPORTED\",\"PROFILE_PREREQUISITE_MISSING\",\"REQUIRED_PARAMETER_UNBOUND\",\"RESOURCE_KIND_MISMATCH\",\"SCIENTIFIC_INTENT_UNSUPPORTED\",\"TARGET_SEMANTICS_MISMATCH\",\"TOOL_NOT_AVAILABLE\"],\"requiredCapabilityNeeds\":[\"composition_data\",\"sample_identity\"],\"scientificIntents\":[\"composition_analysis\",\"anomaly_candidate_review\"]}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

@@ -292,6 +292,7 @@ def test_planner_preview_creates_no_job() -> None:
 
     result = planner_preview(
         PlannerPreviewRequest(userPrompt="Analyze this dataset", datasetId="ds_test", profileId="p_test"),
+        provider=MockLLMProvider(),
         registry=_registry(),
     )
     assert result.plan is not None
@@ -338,6 +339,7 @@ def test_planner_jobs_creates_job_only_after_valid_plan() -> None:
 
     result = planner_jobs(
         PlannerJobsRequest(userPrompt="run metrics", datasetId="ds_test", profileId="p_test"),
+        provider=MockLLMProvider(),
         registry=_registry(),
     )
     assert result.ok
@@ -633,7 +635,7 @@ def test_openai_provider_request_config_overrides_env_with_fake_transport(monkey
     assert "sk-phase9a-request-secret" not in json.dumps(captured["messages"])
 
 
-def test_openai_provider_missing_api_key_fails_safely(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_historical_openai_provider_cannot_make_new_real_call(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("MDI_LLM_API_KEY", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     provider = OpenAICompatibleProvider()
@@ -643,7 +645,7 @@ def test_openai_provider_missing_api_key_fails_safely(monkeypatch: pytest.Monkey
     with pytest.raises(LLMProviderError) as exc:
         provider.generate_plan(req, tools=list(reg.tools), data_profile=_data_profile())
 
-    assert exc.value.code == "LLM_API_KEY_MISSING"
+    assert exc.value.code == "PROVIDER_NOT_ALLOWED"
     assert "sk-phase9a-secret" not in str(exc.value)
     assert "MDI_LLM_API_KEY" not in str(exc.value)
 
@@ -812,26 +814,33 @@ def test_openai_provider_omits_response_format_for_gemini_openai_endpoint(monkey
     assert response["choices"][0]["finish_reason"] == "stop"
 
 
-def test_default_planner_jobs_uses_mock_provider_without_openai_network(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_default_planner_jobs_requires_deepseek_without_falling_back_to_mock(monkeypatch: pytest.MonkeyPatch) -> None:
     import mdi_api.routers.planner as planner_router
 
-    def forbidden_openai_provider():
-        raise AssertionError("OpenAICompatibleProvider must not be instantiated by default")
-
     monkeypatch.delenv("MDI_LLM_PROVIDER", raising=False)
-    monkeypatch.setattr(planner_router, "OpenAICompatibleProvider", forbidden_openai_provider)
+    monkeypatch.delenv("DEEPSEEK_KEY", raising=False)
+    repos = InMemoryRepositoryBundle.create()
+    queue = InMemoryQueueBackend()
+    runtime = QueueWorkerRuntime(repositories=repos, queue_backend=queue)
 
     result = planner_router.planner_jobs(
         planner_router.PlannerJobsRequest(userPrompt="run metrics", projectId="project_9a", datasetId="dataset_9a"),
-        repositories=InMemoryRepositoryBundle.create(),
+        repositories=repos,
+        queue_runtime=runtime,
         registry=_registry(),
     )
 
-    assert result.ok
-    assert result.planner_provider == "mock"
+    assert not result.ok
+    assert result.planner_provider == "deepseek"
+    assert result.plan_id is None
+    assert result.job_id is None
+    assert any(error["code"] == "DEEPSEEK_NOT_CONFIGURED" for error in result.validation_errors)
+    assert repos.analysis_plans.records == {}
+    assert repos.jobs.records == {}
+    assert queue.pop_next() is None
 
 
-def test_planner_jobs_openai_compatible_valid_plan_enters_persisted_plan_path(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_planner_jobs_openai_compatible_is_rejected_before_provider_or_persistence(monkeypatch: pytest.MonkeyPatch) -> None:
     import mdi_api.routers.planner as planner_router
 
     class FakeOpenAIProvider:
@@ -866,20 +875,16 @@ def test_planner_jobs_openai_compatible_valid_plan_enters_persisted_plan_path(mo
         registry=_registry(),
     )
 
-    assert result.ok
-    assert result.planner_provider == "openai_compatible"
-    assert result.job_id is not None
-    assert result.plan_id is not None
-    assert result.plan_hash is not None
-    assert queue.pop_next() == result.job_id
-    job = repos.jobs.get(result.job_id)
-    plan = repos.analysis_plans.get_plan(result.plan_id)
-    assert job["planId"] == result.plan_id
-    assert plan["plannerProvider"] == "openai_compatible"
-    assert plan["analysisPlan"]["steps"][0]["toolId"] == "ml.basic_metrics"
+    assert not result.ok
+    assert result.job_id is None
+    assert result.plan_id is None
+    assert any(error["code"] == "PROVIDER_NOT_ALLOWED" for error in result.validation_errors)
+    assert repos.analysis_plans.records == {}
+    assert repos.jobs.records == {}
+    assert queue.pop_next() is None
 
 
-def test_planner_jobs_provider_only_openai_compatible_keeps_env_config_path(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_planner_jobs_openai_environment_cannot_bypass_deepseek_policy(monkeypatch: pytest.MonkeyPatch) -> None:
     import mdi_api.routers.planner as planner_router
 
     captured: dict[str, object] = {}
@@ -914,12 +919,12 @@ def test_planner_jobs_provider_only_openai_compatible_keeps_env_config_path(monk
         registry=_registry(),
     )
 
-    assert result.ok
-    assert result.planner_provider == "openai_compatible"
-    assert captured["user_config"] is None
+    assert not result.ok
+    assert any(error["code"] == "PROVIDER_NOT_ALLOWED" for error in result.validation_errors)
+    assert captured == {}
 
 
-def test_planner_jobs_openai_compatible_invalid_plan_persists_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_planner_jobs_openai_compatible_never_reaches_invalid_plan_payload(monkeypatch: pytest.MonkeyPatch) -> None:
     import mdi_api.routers.planner as planner_router
 
     class FakeOpenAIProvider:
@@ -954,14 +959,14 @@ def test_planner_jobs_openai_compatible_invalid_plan_persists_nothing(monkeypatc
     assert result.job_id is None
     assert result.plan_id is None
     assert result.enqueued is False
-    assert any(error["code"] == "CREDENTIAL_IN_PARAMS" for error in result.validation_errors)
+    assert any(error["code"] == "PROVIDER_NOT_ALLOWED" for error in result.validation_errors)
     assert repos.analysis_plans.records == {}
     assert repos.jobs.records == {}
     assert queue.pop_next() is None
     assert "sk-phase9a-secret" not in json.dumps(result.validation_errors)
 
 
-def test_planner_jobs_openai_provider_error_persists_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_planner_jobs_openai_provider_policy_error_persists_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
     import mdi_api.routers.planner as planner_router
 
     monkeypatch.delenv("MDI_LLM_API_KEY", raising=False)
@@ -987,7 +992,7 @@ def test_planner_jobs_openai_provider_error_persists_nothing(monkeypatch: pytest
     assert result.job_id is None
     assert result.plan_id is None
     assert result.enqueued is False
-    assert any(error["code"] == "LLM_API_KEY_MISSING" for error in result.validation_errors)
+    assert any(error["code"] == "PROVIDER_NOT_ALLOWED" for error in result.validation_errors)
     assert repos.analysis_plans.records == {}
     assert repos.jobs.records == {}
     assert queue.pop_next() is None

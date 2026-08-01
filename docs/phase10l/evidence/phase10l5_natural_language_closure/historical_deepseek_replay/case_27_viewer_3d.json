@@ -1,0 +1,235 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.viewer_3d"
+    ],
+    [
+      "structure.structure_3d"
+    ]
+  ],
+  "caseNumber": 27,
+  "createdAt": "2026-08-01T07:38:08.355146+00:00",
+  "decision": {
+    "decisionHash": "533a44adf3843ceba8c7ab23ecf1146e935242a26b636c168a1b4c64fb8be143",
+    "decisionId": "decision_533a44adf3843ceba8c7ab23",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot",
+          "three_dimensional_view"
+        ],
+        "coveredScientificIntents": [
+          "structure_analysis",
+          "visualization"
+        ],
+        "toolId": "structure.structure_3d",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.brillouin_zone",
+      "structure.coordination_hist",
+      "structure.rdf",
+      "structure.structure_3d",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "providerVisibleToolIds": [
+      "structure.brillouin_zone",
+      "structure.coordination_hist",
+      "structure.rdf",
+      "structure.structure_3d",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "rejectedToolCount": 46,
+    "resolutionHash": "f8df9d9455da7541a1407c76065a9fd1c29bc58595ef2d703bcc74db0cf263a5",
+    "resolutionId": "resolution_f8df9d9455da7541a1407c76"
+  },
+  "historicalExpectedToolIds": [
+    "structure.viewer_3d"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "three_dimensional_view",
+      "plot"
+    ],
+    "intentHash": "583b2754c969a95a29289d654e423a92591abe360faf7a58e6c22de81522ad8a",
+    "intentId": "intent_583b2754c969a95a29289d65",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "structure_resource"
+    ],
+    "scientificIntents": [
+      "structure_analysis",
+      "visualization"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "obj_nacl",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:obj_nacl:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "The current structure.structure_3d product is the canonical interactive three-dimensional viewer replacement.",
+  "phase": "Phase 10F",
+  "plan": {
+    "graphHash": null,
+    "planHash": "ff0605f4dc93179590cefe0da198b00597e5f43e9a5887f74b3446bd4cc1d502",
+    "planId": "plan_37db643a3f35a74176e70736",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_phase10k2_evidence",
+    "profileId": "profile_historical_structure_v2",
+    "profileSemanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+    "selectedResourceIds": [
+      "obj_nacl"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4798.185,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 22980,
+      "promptHash": "4d3d6b43ab198f3991f3f770e05537c6e8f952e62faabf2649d86a2e8a0ca798",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3302,
+      "responseContentBytes": 2532,
+      "responseHash": "1c92c568c71d18382e8a7c9360c009d106b04b978fc8208d4454cf780149feeb",
+      "tokenUsage": {
+        "completionTokens": 783,
+        "estimated": false,
+        "promptTokens": 5413,
+        "totalTokens": 6196
+      }
+    },
+    {
+      "elapsedMs": 1741.55,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 7071,
+      "promptHash": "0b349d5c72ed13bf79a8bf5c8ebc55d43e2e5b0c6620af9a37d330e96dafd2f3",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 610,
+      "responseContentBytes": 121,
+      "responseHash": "c466a93603d1e535aa3fbd00ac074fec421443f60cc5888e10b71ffa061841db",
+      "tokenUsage": {
+        "completionTokens": 41,
+        "estimated": false,
+        "promptTokens": 1958,
+        "totalTokens": 1999
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Open an interactive 3D view of this crystal structure.",
+  "replayPromptHash": "f28f8959912a9341a3e7b865a4a75a324789a7dc18d49153b5839de46782a196",
+  "routeClassification": "CURRENT_CANONICAL_REPLACEMENT",
+  "runHash": "a1d23a73459d50b1897fb6d3ce55934fe9ecd1f9632edd78bec99f6a1d619fb3",
+  "runId": "historical_live_run_a1d23a73459d50b1897fb6d3ce55934f",
+  "runtime": {
+    "artifactCount": 5,
+    "artifacts": [
+      {
+        "id": "call_job_36123f00d8704e411ab4fbc7_step_001-plotly_json",
+        "name": "figure.json",
+        "sha256": "0afceb257732456c827961249a7d399a74f1961a58a7682f7a6cd6b1e7249841",
+        "sizeBytes": 44233,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_36123f00d8704e411ab4fbc7_step_001-plotly_html",
+        "name": "figure.html",
+        "sha256": "8a96fee7e230af9339bd32b65b3d86d5ab9f19f1cb017d5fc4bad6915d0b99dc",
+        "sizeBytes": 23423,
+        "type": "plotly_html"
+      },
+      {
+        "id": "call_job_36123f00d8704e411ab4fbc7_step_001-preview_png",
+        "name": "preview.png",
+        "sha256": "ad6bc0025a798fe0ebe49f41f1aaaaaeadb5c8bb081b1bf9dac341bdf680b57c",
+        "sizeBytes": 69,
+        "type": "preview_png"
+      },
+      {
+        "id": "call_job_36123f00d8704e411ab4fbc7_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "e4f1b92ef44142bb3fd0ba08a74b0a83c686a793f09a2a08aa763af73f7ac18e",
+        "sizeBytes": 104,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_36123f00d8704e411ab4fbc7_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "cf23f4ee8f481b04f0761b42255f48c0bb84d9bbfaf3c3665ee7c7d47b75f937",
+        "sizeBytes": 802,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_36123f00d8704e411ab4fbc7_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.structure_3d"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.structure_3d"
+  ],
+  "slug": "viewer_3d",
+  "sourcePaths": [
+    "docs/phase10/evidence/phase10_closure_regression_pack"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6612.591
+  },
+  "tokenUsage": {
+    "completionTokens": 824,
+    "estimated": false,
+    "promptTokens": 7371,
+    "totalTokens": 8195
+  },
+  "verdict": "PASS"
+}

@@ -1,0 +1,2258 @@
+{
+  "chromium": {
+    "browser": "chromium",
+    "version": "129.0.6668.29",
+    "evidenceMode": "OFFLINE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+    "backendMode": "INTERCEPTED_PERSISTED_CAPTURE_AND_TYPED_CONTRACT_REPLAY",
+    "disclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+    "liveApiCalls": 0,
+    "realDeepSeekCalls": 0,
+    "desktop": {
+      "case_1": {
+        "caseId": "case_1",
+        "runId": "live_run_ceaef0c7168892dd5ed9d0a7da7bb7c1",
+        "userTextSha256": "b472c8ff27d67eac1d31b877884f9964a7b60cd80292e93f5e69c57ef097cc17",
+        "intentId": "intent_5fb52bd022fe27a94703d04d",
+        "selectedToolIds": [
+          "dataset.materials_explorer"
+        ],
+        "planId": "plan_a78c7c800e4f23b64f9a055b",
+        "planHash": "346d840833081f9168571fe7a65956c971212c5fabcca9c3875b7a35c8fa4982",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_28fd09a2e892756d845d8f19",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_c36497b13fcfeaba565ff948f0c46997",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 13,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_desktop_ready_case_1.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 2167,
+        "plannerRequest": {
+          "userPromptSha256": "b472c8ff27d67eac1d31b877884f9964a7b60cd80292e93f5e69c57ef097cc17",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_dataset_phase10k2_evidence_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "346d840833081f9168571fe7a65956c971212c5fabcca9c3875b7a35c8fa4982"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "0da9e5a6eba07bb9104b9aed8d323c5e8e4d2a39f4e849ce4b16c92ad065dc4e",
+        "semanticSha256": "5bcb00be52efb9e65625910c3b07b4038f2287141c6ce9b1785115158f8cfab1"
+      },
+      "case_2": {
+        "caseId": "case_2",
+        "runId": "live_run_d11315ef07ae3cb3bf09295fdd1254b2",
+        "userTextSha256": "37c451ad58bf5935ed5de6dd64d6b0bebfe38a51b89cee4fea19085c5e871a35",
+        "intentId": "intent_bcbcda2b98663701a26fe397",
+        "selectedToolIds": [
+          "structure.summary"
+        ],
+        "planId": "plan_11474bbd75379882b4d59ba4",
+        "planHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_1fbb89c4172769cfe562cd99",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_2625faf93e4717f51ac3983f2cc56728",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 7,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_desktop_ready_case_2.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 2087,
+        "plannerRequest": {
+          "userPromptSha256": "37c451ad58bf5935ed5de6dd64d6b0bebfe38a51b89cee4fea19085c5e871a35",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_dataset_phase10k2_evidence_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "86a7f5f21ae105f5dd97cf34709f0edec7497958fdc9a6c17dfebefc4fee67c7",
+        "semanticSha256": "ecfb7eaf3129b7d3efecd46e83a08e0b9049874a19f63676a563c3821504789e"
+      },
+      "case_3": {
+        "caseId": "case_3",
+        "runId": "live_run_28f09af3b53a75170a8850d6ca45f8b3",
+        "userTextSha256": "1bd43ad3a29ce07138a8a11996728872f8fe1b35d291d15510fee8381c433986",
+        "intentId": "intent_2934def24b46872cecaeed54",
+        "selectedToolIds": [
+          "ml.regression_evaluation"
+        ],
+        "planId": "plan_3d688c559c4de42f072b1869",
+        "planHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_d1b51eee5b1edb53055330c7",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_a050a197037b2f9212d2f9d041fa7ed1",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 5,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_desktop_ready_case_3.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 2096,
+        "plannerRequest": {
+          "userPromptSha256": "1bd43ad3a29ce07138a8a11996728872f8fe1b35d291d15510fee8381c433986",
+          "datasetId": "dataset_phase10l5_ml",
+          "profileId": "profile_dataset_phase10l5_ml_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "3dad5338459974cfd882e6821f5ac8f69d317e83f4eabc5e3633778aebf09ba3",
+        "semanticSha256": "6ec5aa0f5a9ae511771788affd7e964bbd770c5779aa55cc8672f0f21bf1e89c"
+      },
+      "case_4": {
+        "caseId": "case_4",
+        "runId": "live_run_b135271f0ff8102fa42b0102aa8b8d0c",
+        "userTextSha256": "402793984b23daa85f79150dafcd3ed1cfbe7032eb2f75699598c29de45a494d",
+        "intentId": "intent_f70b3eb21ba613f05c5ddf1f",
+        "selectedToolIds": [
+          "phonon.band",
+          "phonon.band_dos",
+          "phonon.dos"
+        ],
+        "planId": "plan_f51417c7f8a11af44c512ec7",
+        "planHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a",
+        "planSchemaVersion": "0.2",
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "jobId": "job_7fb4e1d2b9db58a02d1e56ac",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_22b10eee36e3b9bbc20757e47fb70048",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 26,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_desktop_ready_case_4.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 2092,
+        "plannerRequest": {
+          "userPromptSha256": "402793984b23daa85f79150dafcd3ed1cfbe7032eb2f75699598c29de45a494d",
+          "datasetId": "dataset_1",
+          "profileId": "profile_1",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "9850a223ff6b36b46ac141d8d650dfa7b8e8bcbdd4f30a011e5ae23a08683a71",
+        "semanticSha256": "deed18761ebbe19c780bfc8e5c8c9184ff516eb85f3472afbb339c72aca0d1e9"
+      },
+      "case_5": {
+        "caseId": "case_5",
+        "runId": "live_run_89ff5988240b2246dec4adb371deacdb",
+        "userTextSha256": "4d2243cf3a80f3911d731bf697ee64fcebafa5f6d3f4e5fd946666624303c28b",
+        "intentId": "intent_8a855ab14a7e244b09b320c2",
+        "selectedToolIds": [
+          "structure.volumetric_data"
+        ],
+        "planId": "plan_ebd94fdfc2245e026bfd43e9",
+        "planHash": "3cb907a7aff5a41bfca59fe58e16668268088c94e0044351617fec7676448c3c",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_bb6c8d39c067c8198349357f",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_cb651436eaf3f3eb7eb768b6938bd0e1",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 2,
+        "evidenceItemCount": 2,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 2
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_desktop_ready_case_5.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 1979,
+        "plannerRequest": {
+          "userPromptSha256": "4d2243cf3a80f3911d731bf697ee64fcebafa5f6d3f4e5fd946666624303c28b",
+          "datasetId": "dataset_phase10l5_volumetric",
+          "profileId": "profile_dataset_phase10l5_volumetric_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "3cb907a7aff5a41bfca59fe58e16668268088c94e0044351617fec7676448c3c"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "bccbaa5a7d3282a54d1069aaba97ace8ef20c11eb8c10619363aa0411829f87d",
+        "semanticSha256": "0662db5ce9b7bc35be01ad605f5d3cab28f766b0a8e6ff65a231c1a95537dc9b"
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "stateId": "needs_clarification",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+        "outcome": "NEEDS_CLARIFICATION",
+        "intentId": "intent_b07e5903b634218d577b9947",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 0,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/chromium_desktop_non_ready_needs_clarification.png",
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 1610,
+        "plannerRequest": {
+          "userPromptSha256": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+          "datasetId": "dataset_historical_dual_target",
+          "profileId": "profile_dataset_historical_dual_target_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "ceea7d8bfe49bc13df26ffb707447284842cc1c265467aaaddc4f1db91c74463"
+      },
+      "unsupported": {
+        "stateId": "unsupported",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+        "outcome": "UNSUPPORTED",
+        "intentId": "intent_b3c2cc923d1a6c8bb7c24cd6",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 1,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/chromium_desktop_non_ready_unsupported.png",
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 1679,
+        "plannerRequest": {
+          "userPromptSha256": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_historical_structure_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "2eb973e677097d45f8db13a19e258044e952384b7b6e1a50fe564ef2870f4dc7"
+      },
+      "capability_mismatch": {
+        "stateId": "capability_mismatch",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "cbc31365fac8c189783eb90fd1cefe4d288f55b878a25fe1c816da1605d0c599",
+        "outcome": "CAPABILITY_MISMATCH",
+        "intentId": "intent_3d899df819b10c472d865fdd",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 1,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/chromium_desktop_non_ready_capability_mismatch.png",
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 1825,
+        "plannerRequest": {
+          "userPromptSha256": "cbc31365fac8c189783eb90fd1cefe4d288f55b878a25fe1c816da1605d0c599",
+          "datasetId": "dataset_historical_uncertainty",
+          "profileId": "profile_dataset_historical_uncertainty_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "b581b3b2f577d38d4341fb1b4d9daf3de1244374e2714c2e117bbc9171d91440"
+      }
+    },
+    "mobile": {
+      "case_1": {
+        "caseId": "case_1",
+        "runId": "live_run_ceaef0c7168892dd5ed9d0a7da7bb7c1",
+        "userTextSha256": "b472c8ff27d67eac1d31b877884f9964a7b60cd80292e93f5e69c57ef097cc17",
+        "intentId": "intent_5fb52bd022fe27a94703d04d",
+        "selectedToolIds": [
+          "dataset.materials_explorer"
+        ],
+        "planId": "plan_a78c7c800e4f23b64f9a055b",
+        "planHash": "346d840833081f9168571fe7a65956c971212c5fabcca9c3875b7a35c8fa4982",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_28fd09a2e892756d845d8f19",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_c36497b13fcfeaba565ff948f0c46997",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 13,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": true,
+          "viewportEscapingElements": 0,
+          "documentWidth": 390,
+          "documentScrollWidth": 390
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_mobile_390x844_ready_case_1.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": true,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "elapsedMs": 2264,
+        "plannerRequest": {
+          "userPromptSha256": "b472c8ff27d67eac1d31b877884f9964a7b60cd80292e93f5e69c57ef097cc17",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_dataset_phase10k2_evidence_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "346d840833081f9168571fe7a65956c971212c5fabcca9c3875b7a35c8fa4982"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "0da9e5a6eba07bb9104b9aed8d323c5e8e4d2a39f4e849ce4b16c92ad065dc4e",
+        "semanticSha256": "29f51881c83100b4f32bb15d5ce87275c7c698e70e92513f968aafceeb892408"
+      },
+      "case_2": {
+        "caseId": "case_2",
+        "runId": "live_run_d11315ef07ae3cb3bf09295fdd1254b2",
+        "userTextSha256": "37c451ad58bf5935ed5de6dd64d6b0bebfe38a51b89cee4fea19085c5e871a35",
+        "intentId": "intent_bcbcda2b98663701a26fe397",
+        "selectedToolIds": [
+          "structure.summary"
+        ],
+        "planId": "plan_11474bbd75379882b4d59ba4",
+        "planHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_1fbb89c4172769cfe562cd99",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_2625faf93e4717f51ac3983f2cc56728",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 7,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 390,
+          "documentScrollWidth": 390
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_mobile_390x844_ready_case_2.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": true,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "elapsedMs": 2134,
+        "plannerRequest": {
+          "userPromptSha256": "37c451ad58bf5935ed5de6dd64d6b0bebfe38a51b89cee4fea19085c5e871a35",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_dataset_phase10k2_evidence_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "86a7f5f21ae105f5dd97cf34709f0edec7497958fdc9a6c17dfebefc4fee67c7",
+        "semanticSha256": "f49c437ca0295cb100dfef4fcc9db6db7d4e4c3676a9bef9fd70a72a01e3d8eb"
+      },
+      "case_3": {
+        "caseId": "case_3",
+        "runId": "live_run_28f09af3b53a75170a8850d6ca45f8b3",
+        "userTextSha256": "1bd43ad3a29ce07138a8a11996728872f8fe1b35d291d15510fee8381c433986",
+        "intentId": "intent_2934def24b46872cecaeed54",
+        "selectedToolIds": [
+          "ml.regression_evaluation"
+        ],
+        "planId": "plan_3d688c559c4de42f072b1869",
+        "planHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_d1b51eee5b1edb53055330c7",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_a050a197037b2f9212d2f9d041fa7ed1",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 5,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 390,
+          "documentScrollWidth": 390
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_mobile_390x844_ready_case_3.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": true,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "elapsedMs": 2212,
+        "plannerRequest": {
+          "userPromptSha256": "1bd43ad3a29ce07138a8a11996728872f8fe1b35d291d15510fee8381c433986",
+          "datasetId": "dataset_phase10l5_ml",
+          "profileId": "profile_dataset_phase10l5_ml_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "3dad5338459974cfd882e6821f5ac8f69d317e83f4eabc5e3633778aebf09ba3",
+        "semanticSha256": "da848dea241e8f712f3c751f25d1000875909a29452cea7e60f391fa17f8a6b6"
+      },
+      "case_4": {
+        "caseId": "case_4",
+        "runId": "live_run_b135271f0ff8102fa42b0102aa8b8d0c",
+        "userTextSha256": "402793984b23daa85f79150dafcd3ed1cfbe7032eb2f75699598c29de45a494d",
+        "intentId": "intent_f70b3eb21ba613f05c5ddf1f",
+        "selectedToolIds": [
+          "phonon.band",
+          "phonon.band_dos",
+          "phonon.dos"
+        ],
+        "planId": "plan_f51417c7f8a11af44c512ec7",
+        "planHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a",
+        "planSchemaVersion": "0.2",
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "jobId": "job_7fb4e1d2b9db58a02d1e56ac",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_22b10eee36e3b9bbc20757e47fb70048",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 26,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": true,
+          "viewportEscapingElements": 0,
+          "documentWidth": 390,
+          "documentScrollWidth": 390
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_mobile_390x844_ready_case_4.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": true,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "elapsedMs": 2222,
+        "plannerRequest": {
+          "userPromptSha256": "402793984b23daa85f79150dafcd3ed1cfbe7032eb2f75699598c29de45a494d",
+          "datasetId": "dataset_1",
+          "profileId": "profile_1",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "9850a223ff6b36b46ac141d8d650dfa7b8e8bcbdd4f30a011e5ae23a08683a71",
+        "semanticSha256": "f7f8dae8a9af6c23f243f3d53529c69151a12fc273ba01a0562e3d30feafcfe0"
+      },
+      "case_5": {
+        "caseId": "case_5",
+        "runId": "live_run_89ff5988240b2246dec4adb371deacdb",
+        "userTextSha256": "4d2243cf3a80f3911d731bf697ee64fcebafa5f6d3f4e5fd946666624303c28b",
+        "intentId": "intent_8a855ab14a7e244b09b320c2",
+        "selectedToolIds": [
+          "structure.volumetric_data"
+        ],
+        "planId": "plan_ebd94fdfc2245e026bfd43e9",
+        "planHash": "3cb907a7aff5a41bfca59fe58e16668268088c94e0044351617fec7676448c3c",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_bb6c8d39c067c8198349357f",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_cb651436eaf3f3eb7eb768b6938bd0e1",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 2,
+        "evidenceItemCount": 2,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 390,
+          "documentScrollWidth": 390
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 2
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/chromium_mobile_390x844_ready_case_5.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": true,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "elapsedMs": 2125,
+        "plannerRequest": {
+          "userPromptSha256": "4d2243cf3a80f3911d731bf697ee64fcebafa5f6d3f4e5fd946666624303c28b",
+          "datasetId": "dataset_phase10l5_volumetric",
+          "profileId": "profile_dataset_phase10l5_volumetric_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "3cb907a7aff5a41bfca59fe58e16668268088c94e0044351617fec7676448c3c"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "bccbaa5a7d3282a54d1069aaba97ace8ef20c11eb8c10619363aa0411829f87d",
+        "semanticSha256": "4310166fd29d5fb2415feb8e6cd621b38612193a2c789563be05c57c57e9dec0"
+      }
+    },
+    "nonReadyMobile": {
+      "needs_clarification": {
+        "stateId": "needs_clarification",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+        "outcome": "NEEDS_CLARIFICATION",
+        "intentId": "intent_b07e5903b634218d577b9947",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 390,
+          "documentScrollWidth": 390
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 0,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/chromium_mobile_390x844_non_ready_needs_clarification.png",
+        "mobile": true,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "elapsedMs": 1694,
+        "plannerRequest": {
+          "userPromptSha256": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+          "datasetId": "dataset_historical_dual_target",
+          "profileId": "profile_dataset_historical_dual_target_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "19783125948be2c0c07464a54d17b0d12393965a1f8acb4d6735bc66643cd90c"
+      },
+      "unsupported": {
+        "stateId": "unsupported",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+        "outcome": "UNSUPPORTED",
+        "intentId": "intent_b3c2cc923d1a6c8bb7c24cd6",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 390,
+          "documentScrollWidth": 390
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 1,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/chromium_mobile_390x844_non_ready_unsupported.png",
+        "mobile": true,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "elapsedMs": 1654,
+        "plannerRequest": {
+          "userPromptSha256": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_historical_structure_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "30918ef3ffc7d1aa79dd28147d7b834786daced7b68f5a82c3986bc169a23257"
+      },
+      "capability_mismatch": {
+        "stateId": "capability_mismatch",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "cbc31365fac8c189783eb90fd1cefe4d288f55b878a25fe1c816da1605d0c599",
+        "outcome": "CAPABILITY_MISMATCH",
+        "intentId": "intent_3d899df819b10c472d865fdd",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": true,
+          "viewportEscapingElements": 0,
+          "documentWidth": 390,
+          "documentScrollWidth": 390
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 1,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/chromium_mobile_390x844_non_ready_capability_mismatch.png",
+        "mobile": true,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "elapsedMs": 1817,
+        "plannerRequest": {
+          "userPromptSha256": "cbc31365fac8c189783eb90fd1cefe4d288f55b878a25fe1c816da1605d0c599",
+          "datasetId": "dataset_historical_uncertainty",
+          "profileId": "profile_dataset_historical_uncertainty_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "6a81b33de7d904b4b9d2da6038869b32f870e52c9c1d2fc3ccbd39744d819b04"
+      }
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "firefox": {
+    "browser": "firefox",
+    "version": "130.0",
+    "evidenceMode": "OFFLINE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+    "backendMode": "INTERCEPTED_PERSISTED_CAPTURE_AND_TYPED_CONTRACT_REPLAY",
+    "disclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+    "liveApiCalls": 0,
+    "realDeepSeekCalls": 0,
+    "desktop": {
+      "case_1": {
+        "caseId": "case_1",
+        "runId": "live_run_ceaef0c7168892dd5ed9d0a7da7bb7c1",
+        "userTextSha256": "b472c8ff27d67eac1d31b877884f9964a7b60cd80292e93f5e69c57ef097cc17",
+        "intentId": "intent_5fb52bd022fe27a94703d04d",
+        "selectedToolIds": [
+          "dataset.materials_explorer"
+        ],
+        "planId": "plan_a78c7c800e4f23b64f9a055b",
+        "planHash": "346d840833081f9168571fe7a65956c971212c5fabcca9c3875b7a35c8fa4982",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_28fd09a2e892756d845d8f19",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_c36497b13fcfeaba565ff948f0c46997",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 13,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/firefox_desktop_ready_case_1.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 4595,
+        "plannerRequest": {
+          "userPromptSha256": "b472c8ff27d67eac1d31b877884f9964a7b60cd80292e93f5e69c57ef097cc17",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_dataset_phase10k2_evidence_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "346d840833081f9168571fe7a65956c971212c5fabcca9c3875b7a35c8fa4982"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "0da9e5a6eba07bb9104b9aed8d323c5e8e4d2a39f4e849ce4b16c92ad065dc4e",
+        "semanticSha256": "5bcb00be52efb9e65625910c3b07b4038f2287141c6ce9b1785115158f8cfab1"
+      },
+      "case_2": {
+        "caseId": "case_2",
+        "runId": "live_run_d11315ef07ae3cb3bf09295fdd1254b2",
+        "userTextSha256": "37c451ad58bf5935ed5de6dd64d6b0bebfe38a51b89cee4fea19085c5e871a35",
+        "intentId": "intent_bcbcda2b98663701a26fe397",
+        "selectedToolIds": [
+          "structure.summary"
+        ],
+        "planId": "plan_11474bbd75379882b4d59ba4",
+        "planHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_1fbb89c4172769cfe562cd99",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_2625faf93e4717f51ac3983f2cc56728",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 7,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/firefox_desktop_ready_case_2.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 2418,
+        "plannerRequest": {
+          "userPromptSha256": "37c451ad58bf5935ed5de6dd64d6b0bebfe38a51b89cee4fea19085c5e871a35",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_dataset_phase10k2_evidence_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "86a7f5f21ae105f5dd97cf34709f0edec7497958fdc9a6c17dfebefc4fee67c7",
+        "semanticSha256": "ecfb7eaf3129b7d3efecd46e83a08e0b9049874a19f63676a563c3821504789e"
+      },
+      "case_3": {
+        "caseId": "case_3",
+        "runId": "live_run_28f09af3b53a75170a8850d6ca45f8b3",
+        "userTextSha256": "1bd43ad3a29ce07138a8a11996728872f8fe1b35d291d15510fee8381c433986",
+        "intentId": "intent_2934def24b46872cecaeed54",
+        "selectedToolIds": [
+          "ml.regression_evaluation"
+        ],
+        "planId": "plan_3d688c559c4de42f072b1869",
+        "planHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_d1b51eee5b1edb53055330c7",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_a050a197037b2f9212d2f9d041fa7ed1",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 5,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/firefox_desktop_ready_case_3.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 2086,
+        "plannerRequest": {
+          "userPromptSha256": "1bd43ad3a29ce07138a8a11996728872f8fe1b35d291d15510fee8381c433986",
+          "datasetId": "dataset_phase10l5_ml",
+          "profileId": "profile_dataset_phase10l5_ml_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "3dad5338459974cfd882e6821f5ac8f69d317e83f4eabc5e3633778aebf09ba3",
+        "semanticSha256": "6ec5aa0f5a9ae511771788affd7e964bbd770c5779aa55cc8672f0f21bf1e89c"
+      },
+      "case_4": {
+        "caseId": "case_4",
+        "runId": "live_run_b135271f0ff8102fa42b0102aa8b8d0c",
+        "userTextSha256": "402793984b23daa85f79150dafcd3ed1cfbe7032eb2f75699598c29de45a494d",
+        "intentId": "intent_f70b3eb21ba613f05c5ddf1f",
+        "selectedToolIds": [
+          "phonon.band",
+          "phonon.band_dos",
+          "phonon.dos"
+        ],
+        "planId": "plan_f51417c7f8a11af44c512ec7",
+        "planHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a",
+        "planSchemaVersion": "0.2",
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "jobId": "job_7fb4e1d2b9db58a02d1e56ac",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_22b10eee36e3b9bbc20757e47fb70048",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 26,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/firefox_desktop_ready_case_4.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 2090,
+        "plannerRequest": {
+          "userPromptSha256": "402793984b23daa85f79150dafcd3ed1cfbe7032eb2f75699598c29de45a494d",
+          "datasetId": "dataset_1",
+          "profileId": "profile_1",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "9850a223ff6b36b46ac141d8d650dfa7b8e8bcbdd4f30a011e5ae23a08683a71",
+        "semanticSha256": "deed18761ebbe19c780bfc8e5c8c9184ff516eb85f3472afbb339c72aca0d1e9"
+      },
+      "case_5": {
+        "caseId": "case_5",
+        "runId": "live_run_89ff5988240b2246dec4adb371deacdb",
+        "userTextSha256": "4d2243cf3a80f3911d731bf697ee64fcebafa5f6d3f4e5fd946666624303c28b",
+        "intentId": "intent_8a855ab14a7e244b09b320c2",
+        "selectedToolIds": [
+          "structure.volumetric_data"
+        ],
+        "planId": "plan_ebd94fdfc2245e026bfd43e9",
+        "planHash": "3cb907a7aff5a41bfca59fe58e16668268088c94e0044351617fec7676448c3c",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_bb6c8d39c067c8198349357f",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_cb651436eaf3f3eb7eb768b6938bd0e1",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 2,
+        "evidenceItemCount": 2,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 2
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/firefox_desktop_ready_case_5.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 1976,
+        "plannerRequest": {
+          "userPromptSha256": "4d2243cf3a80f3911d731bf697ee64fcebafa5f6d3f4e5fd946666624303c28b",
+          "datasetId": "dataset_phase10l5_volumetric",
+          "profileId": "profile_dataset_phase10l5_volumetric_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "3cb907a7aff5a41bfca59fe58e16668268088c94e0044351617fec7676448c3c"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "bccbaa5a7d3282a54d1069aaba97ace8ef20c11eb8c10619363aa0411829f87d",
+        "semanticSha256": "0662db5ce9b7bc35be01ad605f5d3cab28f766b0a8e6ff65a231c1a95537dc9b"
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "stateId": "needs_clarification",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+        "outcome": "NEEDS_CLARIFICATION",
+        "intentId": "intent_b07e5903b634218d577b9947",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 0,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/firefox_desktop_non_ready_needs_clarification.png",
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 1786,
+        "plannerRequest": {
+          "userPromptSha256": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+          "datasetId": "dataset_historical_dual_target",
+          "profileId": "profile_dataset_historical_dual_target_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "ceea7d8bfe49bc13df26ffb707447284842cc1c265467aaaddc4f1db91c74463"
+      },
+      "unsupported": {
+        "stateId": "unsupported",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+        "outcome": "UNSUPPORTED",
+        "intentId": "intent_b3c2cc923d1a6c8bb7c24cd6",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 1,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/firefox_desktop_non_ready_unsupported.png",
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 1685,
+        "plannerRequest": {
+          "userPromptSha256": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_historical_structure_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "2eb973e677097d45f8db13a19e258044e952384b7b6e1a50fe564ef2870f4dc7"
+      },
+      "capability_mismatch": {
+        "stateId": "capability_mismatch",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "cbc31365fac8c189783eb90fd1cefe4d288f55b878a25fe1c816da1605d0c599",
+        "outcome": "CAPABILITY_MISMATCH",
+        "intentId": "intent_3d899df819b10c472d865fdd",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 1,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/firefox_desktop_non_ready_capability_mismatch.png",
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 1824,
+        "plannerRequest": {
+          "userPromptSha256": "cbc31365fac8c189783eb90fd1cefe4d288f55b878a25fe1c816da1605d0c599",
+          "datasetId": "dataset_historical_uncertainty",
+          "profileId": "profile_dataset_historical_uncertainty_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "b581b3b2f577d38d4341fb1b4d9daf3de1244374e2714c2e117bbc9171d91440"
+      }
+    },
+    "mobile": {},
+    "nonReadyMobile": {},
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "webkit": {
+    "browser": "webkit",
+    "version": "18.0",
+    "evidenceMode": "OFFLINE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+    "backendMode": "INTERCEPTED_PERSISTED_CAPTURE_AND_TYPED_CONTRACT_REPLAY",
+    "disclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+    "liveApiCalls": 0,
+    "realDeepSeekCalls": 0,
+    "desktop": {
+      "case_1": {
+        "caseId": "case_1",
+        "runId": "live_run_ceaef0c7168892dd5ed9d0a7da7bb7c1",
+        "userTextSha256": "b472c8ff27d67eac1d31b877884f9964a7b60cd80292e93f5e69c57ef097cc17",
+        "intentId": "intent_5fb52bd022fe27a94703d04d",
+        "selectedToolIds": [
+          "dataset.materials_explorer"
+        ],
+        "planId": "plan_a78c7c800e4f23b64f9a055b",
+        "planHash": "346d840833081f9168571fe7a65956c971212c5fabcca9c3875b7a35c8fa4982",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_28fd09a2e892756d845d8f19",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_c36497b13fcfeaba565ff948f0c46997",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 13,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/webkit_desktop_ready_case_1.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 4668,
+        "plannerRequest": {
+          "userPromptSha256": "b472c8ff27d67eac1d31b877884f9964a7b60cd80292e93f5e69c57ef097cc17",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_dataset_phase10k2_evidence_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "346d840833081f9168571fe7a65956c971212c5fabcca9c3875b7a35c8fa4982"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "e3cac3635f2a614a1edfaf9541ae6e67d605748f83a0d11f23a370a34d7cf2da",
+        "semanticSha256": "5bcb00be52efb9e65625910c3b07b4038f2287141c6ce9b1785115158f8cfab1"
+      },
+      "case_2": {
+        "caseId": "case_2",
+        "runId": "live_run_d11315ef07ae3cb3bf09295fdd1254b2",
+        "userTextSha256": "37c451ad58bf5935ed5de6dd64d6b0bebfe38a51b89cee4fea19085c5e871a35",
+        "intentId": "intent_bcbcda2b98663701a26fe397",
+        "selectedToolIds": [
+          "structure.summary"
+        ],
+        "planId": "plan_11474bbd75379882b4d59ba4",
+        "planHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_1fbb89c4172769cfe562cd99",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_2625faf93e4717f51ac3983f2cc56728",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 7,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/webkit_desktop_ready_case_2.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 4332,
+        "plannerRequest": {
+          "userPromptSha256": "37c451ad58bf5935ed5de6dd64d6b0bebfe38a51b89cee4fea19085c5e871a35",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_dataset_phase10k2_evidence_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "ef3bc00eff8b0e88dd90dbd2dde88a1ac14fc45779dae4fe4c87c18e0e094bde",
+        "semanticSha256": "ecfb7eaf3129b7d3efecd46e83a08e0b9049874a19f63676a563c3821504789e"
+      },
+      "case_3": {
+        "caseId": "case_3",
+        "runId": "live_run_28f09af3b53a75170a8850d6ca45f8b3",
+        "userTextSha256": "1bd43ad3a29ce07138a8a11996728872f8fe1b35d291d15510fee8381c433986",
+        "intentId": "intent_2934def24b46872cecaeed54",
+        "selectedToolIds": [
+          "ml.regression_evaluation"
+        ],
+        "planId": "plan_3d688c559c4de42f072b1869",
+        "planHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_d1b51eee5b1edb53055330c7",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_a050a197037b2f9212d2f9d041fa7ed1",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 5,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/webkit_desktop_ready_case_3.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 4391,
+        "plannerRequest": {
+          "userPromptSha256": "1bd43ad3a29ce07138a8a11996728872f8fe1b35d291d15510fee8381c433986",
+          "datasetId": "dataset_phase10l5_ml",
+          "profileId": "profile_dataset_phase10l5_ml_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "9fef33e12364687cfb627c01fa5fd1e6bd5ddb6a2143f0fe01f197578fb0dd61",
+        "semanticSha256": "6ec5aa0f5a9ae511771788affd7e964bbd770c5779aa55cc8672f0f21bf1e89c"
+      },
+      "case_4": {
+        "caseId": "case_4",
+        "runId": "live_run_b135271f0ff8102fa42b0102aa8b8d0c",
+        "userTextSha256": "402793984b23daa85f79150dafcd3ed1cfbe7032eb2f75699598c29de45a494d",
+        "intentId": "intent_f70b3eb21ba613f05c5ddf1f",
+        "selectedToolIds": [
+          "phonon.band",
+          "phonon.band_dos",
+          "phonon.dos"
+        ],
+        "planId": "plan_f51417c7f8a11af44c512ec7",
+        "planHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a",
+        "planSchemaVersion": "0.2",
+        "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+        "jobId": "job_7fb4e1d2b9db58a02d1e56ac",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_22b10eee36e3b9bbc20757e47fb70048",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 4,
+        "evidenceItemCount": 26,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 4
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/webkit_desktop_ready_case_4.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 4414,
+        "plannerRequest": {
+          "userPromptSha256": "402793984b23daa85f79150dafcd3ed1cfbe7032eb2f75699598c29de45a494d",
+          "datasetId": "dataset_1",
+          "profileId": "profile_1",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "6208af067a05e275fd21cbab4fbf755fd278919b37fb69f9c946ab602edfb941",
+        "semanticSha256": "deed18761ebbe19c780bfc8e5c8c9184ff516eb85f3472afbb339c72aca0d1e9"
+      },
+      "case_5": {
+        "caseId": "case_5",
+        "runId": "live_run_89ff5988240b2246dec4adb371deacdb",
+        "userTextSha256": "4d2243cf3a80f3911d731bf697ee64fcebafa5f6d3f4e5fd946666624303c28b",
+        "intentId": "intent_8a855ab14a7e244b09b320c2",
+        "selectedToolIds": [
+          "structure.volumetric_data"
+        ],
+        "planId": "plan_ebd94fdfc2245e026bfd43e9",
+        "planHash": "3cb907a7aff5a41bfca59fe58e16668268088c94e0044351617fec7676448c3c",
+        "planSchemaVersion": "0.1",
+        "graphHash": null,
+        "jobId": "job_bb6c8d39c067c8198349357f",
+        "jobStatus": "completed",
+        "interpretationId": "interpretation_cb651436eaf3f3eb7eb768b6938bd0e1",
+        "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "claimCount": 2,
+        "evidenceItemCount": 2,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "tabCount": 3,
+          "unnamedControls": 0,
+          "evidenceFocusable": "0",
+          "evidenceFocusedByKeyboardFlow": true,
+          "claimCount": 2
+        },
+        "evidenceMode": "PERSISTED_CAPTURE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "screenshotFile": "screenshots/webkit_desktop_ready_case_5.png",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 4466,
+        "plannerRequest": {
+          "userPromptSha256": "4d2243cf3a80f3911d731bf697ee64fcebafa5f6d3f4e5fd946666624303c28b",
+          "datasetId": "dataset_phase10l5_volumetric",
+          "profileId": "profile_dataset_phase10l5_volumetric_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "interpretationRequest": {
+          "mode": "DETERMINISTIC",
+          "expectedPlanHash": "3cb907a7aff5a41bfca59fe58e16668268088c94e0044351617fec7676448c3c"
+        },
+        "focusedTag": "SUMMARY",
+        "domSha256": "f0609e483718b6579cf6c58e5919fa288d930cc7ffffe1ba37212b449a1698f0",
+        "semanticSha256": "0662db5ce9b7bc35be01ad605f5d3cab28f766b0a8e6ff65a231c1a95537dc9b"
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "stateId": "needs_clarification",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+        "outcome": "NEEDS_CLARIFICATION",
+        "intentId": "intent_b07e5903b634218d577b9947",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 0,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/webkit_desktop_non_ready_needs_clarification.png",
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 3239,
+        "plannerRequest": {
+          "userPromptSha256": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+          "datasetId": "dataset_historical_dual_target",
+          "profileId": "profile_dataset_historical_dual_target_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "ceea7d8bfe49bc13df26ffb707447284842cc1c265467aaaddc4f1db91c74463"
+      },
+      "unsupported": {
+        "stateId": "unsupported",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+        "outcome": "UNSUPPORTED",
+        "intentId": "intent_b3c2cc923d1a6c8bb7c24cd6",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 1,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/webkit_desktop_non_ready_unsupported.png",
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 3086,
+        "plannerRequest": {
+          "userPromptSha256": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+          "datasetId": "dataset_phase10k2_evidence",
+          "profileId": "profile_historical_structure_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "2eb973e677097d45f8db13a19e258044e952384b7b6e1a50fe564ef2870f4dc7"
+      },
+      "capability_mismatch": {
+        "stateId": "capability_mismatch",
+        "sourceCaseId": "case_1",
+        "userTextSha256": "cbc31365fac8c189783eb90fd1cefe4d288f55b878a25fe1c816da1605d0c599",
+        "outcome": "CAPABILITY_MISMATCH",
+        "intentId": "intent_3d899df819b10c472d865fdd",
+        "jobId": null,
+        "planId": null,
+        "enqueued": false,
+        "executed": false,
+        "runEnabled": false,
+        "evidenceMode": "TYPED_NON_READY_UI_CONTRACT_REPLAY_NO_LIVE_API_OR_PROVIDER",
+        "replayDisclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+        "liveApiCalls": 0,
+        "realDeepSeekCalls": 0,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0,
+          "externalUris": 0,
+          "rawHtmlElements": 0
+        },
+        "overflow": {
+          "document": false,
+          "panelInternalScroll": false,
+          "viewportEscapingElements": 0,
+          "documentWidth": 1440,
+          "documentScrollWidth": 1440
+        },
+        "accessibility": {
+          "pass": true,
+          "ariaLive": "polite",
+          "statusOrAlertCount": 1,
+          "stateMarkerCount": 1,
+          "headingCount": 1,
+          "unnamedControls": 0,
+          "focusedByKeyboard": true
+        },
+        "screenshotFile": "screenshots/webkit_desktop_non_ready_capability_mismatch.png",
+        "mobile": false,
+        "viewport": {
+          "width": 1440,
+          "height": 1100
+        },
+        "elapsedMs": 3300,
+        "plannerRequest": {
+          "userPromptSha256": "cbc31365fac8c189783eb90fd1cefe4d288f55b878a25fe1c816da1605d0c599",
+          "datasetId": "dataset_historical_uncertainty",
+          "profileId": "profile_dataset_historical_uncertainty_v2",
+          "intercepted": true,
+          "forwardedToLiveApi": false,
+          "realDeepSeekCall": false
+        },
+        "semanticSha256": "b581b3b2f577d38d4341fb1b4d9daf3de1244374e2714c2e117bbc9171d91440"
+      }
+    },
+    "mobile": {},
+    "nonReadyMobile": {},
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+}

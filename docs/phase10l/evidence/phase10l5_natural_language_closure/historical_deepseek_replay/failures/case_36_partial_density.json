@@ -1,0 +1,24 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-07-31T13:22:02.214025+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:36:PLAN_READY:INTENT_LLM_SCHEMA_INVALID:errors=['INTENT_LLM_SCHEMA_INVALID']:selected=[]"
+    },
+    {
+      "createdAt": "2026-07-31T13:33:01.005534+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:36:PLAN_READY:DEEPSEEK_RESPONSE_INVALID:errors=['DEEPSEEK_RESPONSE_INVALID']:selected=[]"
+    }
+  ],
+  "caseNumber": 36,
+  "createdAt": "2026-07-31T13:33:01.005534+00:00",
+  "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:36:PLAN_READY:DEEPSEEK_RESPONSE_INVALID:errors=['DEEPSEEK_RESPONSE_INVALID']:selected=[]",
+  "slug": "partial_density",
+  "verdict": "FAIL"
+}

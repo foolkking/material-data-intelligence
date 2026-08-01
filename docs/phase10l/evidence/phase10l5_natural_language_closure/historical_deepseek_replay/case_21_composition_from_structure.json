@@ -1,0 +1,204 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.composition_from_structure"
+    ]
+  ],
+  "caseNumber": 21,
+  "createdAt": "2026-08-01T07:30:14.430686+00:00",
+  "decision": {
+    "decisionHash": "83685492cbe712c724d1266d917226e62d54cf4a8052a65688b3b84a3d10c854",
+    "decisionId": "decision_83685492cbe712c724d1266d",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "summary",
+          "table"
+        ],
+        "coveredScientificIntents": [
+          "composition_analysis"
+        ],
+        "toolId": "structure.composition_from_structure",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.composition_from_structure"
+    ],
+    "providerVisibleToolIds": [
+      "structure.composition_from_structure"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "1d08bd0c119866d6b8cc22b640612d54fe1fad36c8fcd2d24bc9037ec797b7cf",
+    "resolutionId": "resolution_1d08bd0c119866d6b8cc22b6"
+  },
+  "historicalExpectedToolIds": [
+    "structure.composition_from_structure"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "summary",
+      "table"
+    ],
+    "intentHash": "f183dff0781a4353a2d311b9b3b056057facff2398dd35369c25f5ee8ac48ada",
+    "intentId": "intent_f183dff0781a4353a2d311b9",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "composition_data"
+    ],
+    "scientificIntents": [
+      "composition_analysis"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "obj_nacl",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:obj_nacl:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10C",
+  "plan": {
+    "graphHash": null,
+    "planHash": "e31d1ce3da11d45b0d78836b2c9f9a9debf2cdafc5c41ef6e76582e4c5cb230e",
+    "planId": "plan_148eb58b098ebe63f0cd7887",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_phase10k2_evidence",
+    "profileId": "profile_historical_structure_v2",
+    "profileSemanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+    "selectedResourceIds": [
+      "obj_nacl"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4926.527,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 22965,
+      "promptHash": "085c45f15f5ac912f611226787ba63679e879388b69179ac1254454e4550aaa8",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3263,
+      "responseContentBytes": 2495,
+      "responseHash": "7715dc9fd9d49893a376e3ea9471e63527df09ad1640cc6ac7f2373f2a9307bb",
+      "tokenUsage": {
+        "completionTokens": 768,
+        "estimated": false,
+        "promptTokens": 5393,
+        "totalTokens": 6161
+      }
+    },
+    {
+      "elapsedMs": 1477.619,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3370,
+      "promptHash": "47be64b74cabe3537cc08d9c6265be6d3e8b43108aa50e05a9f7994ff1908df6",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 621,
+      "responseContentBytes": 135,
+      "responseHash": "589271ad7e0a12fb18391c74e6769ae9445965aa48d8f00dda00192bb839d941",
+      "tokenUsage": {
+        "completionTokens": 43,
+        "estimated": false,
+        "promptTokens": 870,
+        "totalTokens": 913
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Extract composition statistics from this structure.",
+  "replayPromptHash": "33e72550002225946e11ac095dc0b3d207eabe3c912ff9f3244fd53cd8a1218c",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "3744ed875ad66539c7bb1f946ea0d4326c5042681416c897849d326e35fb9a19",
+  "runId": "historical_live_run_3744ed875ad66539c7bb1f946ea0d432",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_357f6c7fc2f5011b68996b54_step_001-table_json",
+        "name": "structure_composition.json",
+        "sha256": "b26d7ed5732dd6e31d1d8dd38b72503f4bf90651dc5c946570119b3570d94e59",
+        "sizeBytes": 497,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_357f6c7fc2f5011b68996b54_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "0bf6755a068840e9eb4a0969c4afb44545730cd757255564bfc2417990bee89f",
+        "sizeBytes": 243,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_357f6c7fc2f5011b68996b54_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "b1e00d4adeb5599c3a2f1b3ea946f57c27851bbb2fd60b4667da955c8644da68",
+        "sizeBytes": 597,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_357f6c7fc2f5011b68996b54_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.composition_from_structure"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.composition_from_structure"
+  ],
+  "slug": "composition_from_structure",
+  "sourcePaths": [
+    "docs/phase10c/browser_api_evidence/simple_cubic_composition_from_structure"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6482.791
+  },
+  "tokenUsage": {
+    "completionTokens": 811,
+    "estimated": false,
+    "promptTokens": 6263,
+    "totalTokens": 7074
+  },
+  "verdict": "PASS"
+}

@@ -1,0 +1,12 @@
+{
+  "caseCount": 5,
+  "runIds": [
+    "run_16152364f63796b7c0d513f288167f3f",
+    "run_26874831b26f331f0e547baa6bd91a14",
+    "run_3f5b97992f893361d013c9799c1c654c",
+    "run_b767fb159052759485cefc93b3166d0d",
+    "run_bfcf017f9b830d504cbabd6bd52576b0"
+  ],
+  "schemaVersion": "1.0",
+  "verdict": "PASS"
+}

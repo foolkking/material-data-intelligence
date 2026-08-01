@@ -162,6 +162,7 @@ def test_capability_planner_postgres_ready_and_non_ready_persistence() -> None:
             provider="mock",
             enqueue=True,
         ),
+        provider=MockLLMProvider(fixed_plan={"invalid": "legacy provider must not be called"}),
         repositories=repos,
     )
     assert blocked.ok is False

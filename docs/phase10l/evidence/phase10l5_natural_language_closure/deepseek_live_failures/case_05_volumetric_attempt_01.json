@@ -1,0 +1,52 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 46305.317,
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 21069,
+      "promptHash": "122463a41de8f46749d9e1cb0ed819d35ef3972be9de8c7150ecf084e2a515db",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 23877,
+      "responseHash": "8ce4fdda6fc5608aa697e354f5745e46d9ee6195ac245e83786e2e2ece76d235",
+      "tokenUsage": {
+        "completionTokens": 5559,
+        "estimated": false,
+        "promptTokens": 5052,
+        "totalTokens": 10611
+      }
+    },
+    {
+      "elapsedMs": 4231.467,
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3290,
+      "promptHash": "9d44c019afb1bca1be9f562d758bced8021327d8b510cbb3d3a17f0bcb36ebdc",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 2348,
+      "responseHash": "6581c4a797c77aaf7058685eb2d73c8834b9d2c1c95721258facf3fb4c0a5893",
+      "tokenUsage": {
+        "completionTokens": 388,
+        "estimated": false,
+        "promptTokens": 983,
+        "totalTokens": 1371
+      }
+    }
+  ],
+  "caseIndex": 4,
+  "caseSpecId": "caseSpec_5c68afd711f2349471f0192b8335041b",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 50701.893,
+  "errorCode": "LIVE_PLAN_NOT_READY",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "realCallCount": 2,
+  "safeDetails": "LIVE_PLAN_NOT_READY:{\"desiredOutputs\":[\"plot\",\"summary\",\"table\",\"three_dimensional_view\",\"warnings\"],\"diagnostics\":[\"CAPABILITY_LLM_RESOLUTION_MISMATCH\"],\"eligibleToolIds\":[\"structure.volumetric_data\"],\"executionSideEffects\":{\"artifactCount\":0,\"bindingResolutionCount\":0,\"dependencyExecutionCount\":0,\"jobCount\":0,\"lineageCount\":0,\"planCount\":0,\"plannedBindingCount\":0,\"queueMessageCount\":0,\"toolCallCount\":0},\"outcome\":\"VALIDATION_FAILED\",\"rejectionCodes\":[\"CAPABILITY_NEED_UNSUPPORTED\",\"PROFILE_PREREQUISITE_MISSING\",\"REQUIRED_PARAMETER_UNBOUND\",\"RESOURCE_KIND_MISMATCH\",\"SCIENTIFIC_INTENT_UNSUPPORTED\",\"TARGET_SEMANTICS_MISMATCH\",\"TOOL_NOT_AVAILABLE\"],\"requiredCapabilityNeeds\":[\"volumetric_resource\"],\"scientificIntents\":[\"volumetric_analysis\"]}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

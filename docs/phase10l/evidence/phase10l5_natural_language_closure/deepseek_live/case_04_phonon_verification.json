@@ -1,0 +1,35 @@
+{
+  "baseUrl": "https://api.deepseek.com",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "otherRealProviderCalls": 0,
+  "outcomes": [
+    "CASE_4_PLAN_READY",
+    "CASE_4_RUNTIME_COMPLETED",
+    "CASE_4_INTERPRETATION_READY"
+  ],
+  "provider": "deepseek",
+  "purposes": [
+    "CAPABILITY_PLAN_SELECTION",
+    "GROUNDED_INTERPRETATION",
+    "INTENT_EXTRACTION",
+    "MULTI_TOOL_COMPOSITION"
+  ],
+  "realCallCount": 4,
+  "runIds": [
+    "live_run_b135271f0ff8102fa42b0102aa8b8d0c"
+  ],
+  "sanitized": true,
+  "schemaVersion": "1.0",
+  "tokenUsage": {
+    "completionTokens": 1436,
+    "estimated": false,
+    "promptTokens": 10011,
+    "totalTokens": 11447
+  },
+  "verdict": "PASS",
+  "verificationHash": "4838241146c4637abb3873d1e2f334b51295bc9acd261db54eadb5833b491fa9",
+  "verificationId": "deepseek_verification_4838241146c4637abb3873d1e2f334b5"
+}

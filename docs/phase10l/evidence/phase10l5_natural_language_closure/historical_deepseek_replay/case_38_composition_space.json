@@ -1,0 +1,211 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "dataset.composition_space"
+    ]
+  ],
+  "caseNumber": 38,
+  "createdAt": "2026-08-01T07:43:51.012475+00:00",
+  "decision": {
+    "decisionHash": "583e8b3c19f5755dc9a9a25f8729655d2fb2c40fcac2318710a2108397241c3e",
+    "decisionId": "decision_583e8b3c19f5755dc9a9a25f",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "tableObjectId",
+            "source": "RESOURCE_ID",
+            "sourceIdentity": "resource:table_composition_space:f58875d72972f3b132aed55c708f2a66e4b027e13e4475a350ee33eeb0a865d0",
+            "value": "table_composition_space",
+            "valueId": "table_composition_space"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "linked_samples",
+          "plot",
+          "table"
+        ],
+        "coveredScientificIntents": [
+          "composition_space"
+        ],
+        "toolId": "dataset.composition_space",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "dataset.composition_space"
+    ],
+    "providerVisibleToolIds": [
+      "dataset.composition_space"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "049cb466897822944af465520abce3fccbbb70a1831297402c2a9fbbc68ae8f2",
+    "resolutionId": "resolution_049cb466897822944af46552"
+  },
+  "historicalExpectedToolIds": [
+    "dataset.composition_space"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "linked_samples",
+      "plot",
+      "table"
+    ],
+    "intentHash": "660b624fb497ede04902cf5f3433359748564ff60c91454a61be65c6b69953db",
+    "intentId": "intent_660b624fb497ede04902cf5f",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "composition_data",
+      "tabular_data"
+    ],
+    "scientificIntents": [
+      "composition_space"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10K",
+  "plan": {
+    "graphHash": null,
+    "planHash": "8dfa60c83d3c79f1aec30ccd15cf3d5fc5f53da34040bcf9e46c1727d68dce7f",
+    "planId": "plan_a3fe4555ce88de4eeff22765",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_composition_space",
+    "profileId": "profile_dataset_historical_composition_space_v2",
+    "profileSemanticHash": "5d4889488234766d9e7ea31f3b429063ad39ed9c561f62292b2a14ed4d933496",
+    "selectedResourceIds": [
+      "table_composition_space"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4643.459,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 26539,
+      "promptHash": "215db5eb1d3d646fb3fade1d6185df3066fd280c7773a7bdbe58e8898358b11d",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3057,
+      "responseContentBytes": 2320,
+      "responseHash": "4f7502251d40dd2d1736ee425c9a97f350f5e87728d76157ebdc65550b64470f",
+      "tokenUsage": {
+        "completionTokens": 679,
+        "estimated": false,
+        "promptTokens": 6230,
+        "totalTokens": 6909
+      }
+    },
+    {
+      "elapsedMs": 1401.11,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3590,
+      "promptHash": "e2591c5fdaa021ac4e48e59d821abc7150aa21e14815f09bb9c5848c7fff2357",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 610,
+      "responseContentBytes": 124,
+      "responseHash": "a1dbf94e9b90c3bc05c7490ddab506880d50855651b1f327614fcbad43ad029c",
+      "tokenUsage": {
+        "completionTokens": 34,
+        "estimated": false,
+        "promptTokens": 864,
+        "totalTokens": 898
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Explore composition space with deterministic PCA and bounded clusters.",
+  "replayPromptHash": "b207ae693b8a30d3a028a288f3a24cd768fa35c2f21c69fca6587234b9fdef1a",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "9bcde5598122c9cd0ee832a87a814874d5a54d12008c4951ac4b9613902aae03",
+  "runId": "historical_live_run_9bcde5598122c9cd0ee832a87a814874",
+  "runtime": {
+    "artifactCount": 4,
+    "artifacts": [
+      {
+        "id": "call_job_543b0f7201866ca396160d01_step_001-table_json",
+        "name": "composition_space.json",
+        "sha256": "847a1504af307e1de082046bbc4bd73497064ddf3a957b973ee145f9e549389c",
+        "sizeBytes": 8967,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_543b0f7201866ca396160d01_step_001-plotly_json",
+        "name": "composition_space_plot.json",
+        "sha256": "adb665c2a38788d7e61a8522399cc400681f8a71a747609e407a90dc83786c0a",
+        "sizeBytes": 919,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_543b0f7201866ca396160d01_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "e4efa82b943368cc37f764b0ea31f1611fc93ab80ccd15bd023b601d9de1b80e",
+        "sizeBytes": 338,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_543b0f7201866ca396160d01_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "ca08306be963c61cc254f01f3bbb3ecde1188b17fcf5f598f8d0e20c8bc0c5b8",
+        "sizeBytes": 1461,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_543b0f7201866ca396160d01_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "dataset.composition_space"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "dataset.composition_space"
+  ],
+  "slug": "composition_space",
+  "sourcePaths": [
+    "docs/phase10k/evidence/phase10k4_composition_space"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6126.558
+  },
+  "tokenUsage": {
+    "completionTokens": 713,
+    "estimated": false,
+    "promptTokens": 7094,
+    "totalTokens": 7807
+  },
+  "verdict": "PASS"
+}

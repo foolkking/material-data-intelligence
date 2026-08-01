@@ -686,7 +686,7 @@ export type AnalysisIntent = {
     answers: AnalysisIntentClarificationAnswer[];
   };
   provenance: {
-    provider: "deterministic_mock" | "openai_compatible";
+    provider: "deterministic_mock" | "openai_compatible" | "deepseek";
     model: string;
     promptVersion: string;
     createdAt: string;
@@ -859,13 +859,119 @@ export type CapabilityPlanningDecision = {
   diagnostics: CapabilityDiagnostic[];
   warnings: CapabilityDiagnostic[];
   provenance: {
-    provider: "deterministic_mock" | "openai_compatible";
+    provider: "deterministic_mock" | "openai_compatible" | "deepseek";
     providerContractVersion: "1.0";
     model: string;
     repairCount: 0 | 1;
     initialDecisionHash?: string | null;
     repairDiagnostics: CapabilityDiagnostic[];
   };
+};
+
+export type NaturalLanguageEvidenceCase = {
+  schemaVersion: "1.0";
+  caseSpecId: string;
+  caseSpecHash: string;
+  title: string;
+  userText: string;
+  requiredCapabilityNeeds: string[];
+  acceptableToolIds: string[];
+  requiredOutputs: string[];
+  forbiddenFallbacks: string[];
+  requiresClarification: boolean;
+  requiresDependencyPlan: boolean;
+};
+
+export type NaturalLanguageEvidenceRun = {
+  schemaVersion: "1.0";
+  runId: string;
+  runHash: string;
+  caseSpecId: string;
+  caseSpecHash: string;
+  userText: string;
+  resourceManifest: Array<{ objectId: string; objectType: string; objectHash: string; kind: string }>;
+  provider: { mode: "DETERMINISTIC" | "FAKE_DEEPSEEK" | "REAL_DEEPSEEK"; provider: "deterministic_mock" | "deepseek"; model: string; purposes: string[]; keySource: "NONE" | "DEEPSEEK_KEY"; realCallCount: number; promptHashes: string[]; responseHashes: string[] };
+  profile: { recordId: string; recordHash: string; schemaVersion: string };
+  intent: { intentId: string; intentHash: string; outcome: "READY" | "NEEDS_CLARIFICATION" | "UNSUPPORTED"; clarificationRound: number };
+  eligibility?: { recordId: string; recordHash: string; schemaVersion: string } | null;
+  selectedTools: Array<{ toolId: string; toolVersion: string; bindingHash: string }>;
+  plan?: { planId: string; planHash: string; schemaVersion: "0.1" | "0.2"; graphHash?: string | null } | null;
+  job?: { recordId: string; state: string; semanticHash?: string | null } | null;
+  toolCalls: Array<{ recordId: string; state: string; semanticHash?: string | null }>;
+  artifacts: Array<{ artifactId: string; artifactType: string; contentHash: string; sizeBytes: number; producerToolCallId: string }>;
+  executionOutcome: string;
+  lineage: Array<{ recordId: string; state: string; semanticHash?: string | null }>;
+  evidenceBundle?: { recordId: string; recordHash: string; schemaVersion: string } | null;
+  interpretation?: { recordId: string; recordHash: string; schemaVersion: string } | null;
+  claimEvidenceLinks: Array<{ claimId: string; evidenceItemIds: string[] }>;
+  apiRefs: string[];
+  browserRefs: string[];
+  securityMarkers: string[];
+  tokenUsage: { promptTokens: number; completionTokens: number; totalTokens: number; estimated: boolean };
+  elapsedMs: number;
+  verdict: "PASS" | "FAIL" | "BLOCKED";
+  createdAt: string;
+};
+
+export type DeepSeekVerificationRecord = {
+  schemaVersion: "1.0";
+  verificationId: string;
+  verificationHash: string;
+  provider: "deepseek";
+  baseUrl: "https://api.deepseek.com";
+  keySource: "DEEPSEEK_KEY";
+  configured: boolean;
+  model: "deepseek-v4-flash" | "deepseek-v4-pro";
+  purposes: string[];
+  realCallCount: number;
+  otherRealProviderCalls: 0;
+  runIds: string[];
+  outcomes: string[];
+  tokenUsage: { promptTokens: number; completionTokens: number; totalTokens: number; estimated: boolean };
+  sanitized: true;
+  verdict: "PASS" | "FAIL" | "BLOCKED";
+  createdAt: string;
+};
+
+export type DeepSeekCaseVerificationRef = {
+  caseSpecId: string;
+  runId: string;
+  verificationId: string;
+  verificationHash: string;
+  realCallCount: number;
+  verdict: "PASS";
+};
+
+export type DeepSeekVerificationSuite = {
+  schemaVersion: "1.0";
+  suiteId: string;
+  suiteHash: string;
+  provider: "deepseek";
+  baseUrl: "https://api.deepseek.com";
+  keySource: "DEEPSEEK_KEY";
+  configured: true;
+  model: "deepseek-v4-flash" | "deepseek-v4-pro";
+  cases: [DeepSeekCaseVerificationRef, DeepSeekCaseVerificationRef, DeepSeekCaseVerificationRef, DeepSeekCaseVerificationRef, DeepSeekCaseVerificationRef];
+  totalRealCallCount: number;
+  otherRealProviderCalls: 0;
+  tokenUsage: { promptTokens: number; completionTokens: number; totalTokens: number; estimated: boolean };
+  sanitized: true;
+  verdict: "PASS";
+  createdAt: string;
+};
+
+export type Phase10LClosureManifest = {
+  schemaVersion: "1.0";
+  manifestId: string;
+  manifestHash: string;
+  phase: "10L";
+  caseSpecIds: [string, string, string, string, string];
+  runIds: [string, string, string, string, string];
+  deepSeekVerificationId: string;
+  entries: Array<{ path: string; sha256: string; bytes: number }>;
+  securityMarkers: string[];
+  verdict: "PASS" | "READY_WITH_EXPLICIT_LIMITS" | "FAIL" | "BLOCKED";
+  createdAt: string;
 };
 
 export type DataProfile = {

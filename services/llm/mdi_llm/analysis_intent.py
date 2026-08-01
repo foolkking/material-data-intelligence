@@ -13,6 +13,8 @@ import json
 import re
 from typing import Any, Mapping, Sequence
 
+from pydantic import ValidationError
+
 from mdi_schemas import (
     ANALYSIS_INTENT_MAX_CLARIFICATION_ROUNDS,
     ANALYSIS_INTENT_MAX_QUESTIONS,
@@ -50,7 +52,35 @@ from .redaction import redact_credential_values
 
 
 INTENT_PROMPT_VERSION = "phase10l1.intent.v1"
+LLM_INTENT_PROMPT_VERSION = "phase10l5.intent.v5"
 DETERMINISTIC_INTENT_MODEL = "bounded-rules-v1"
+
+_DEFAULT_OUTPUTS_BY_INTENT: dict[ScientificIntent, tuple[DesiredOutput, ...]] = {
+    ScientificIntent.dataset_overview: (DesiredOutput.summary, DesiredOutput.warnings, DesiredOutput.table),
+    ScientificIntent.composition_analysis: (DesiredOutput.summary, DesiredOutput.table),
+    ScientificIntent.property_distribution: (DesiredOutput.summary, DesiredOutput.table),
+    ScientificIntent.dataset_comparison: (DesiredOutput.summary, DesiredOutput.comparison, DesiredOutput.table),
+    ScientificIntent.composition_space: (DesiredOutput.plot, DesiredOutput.table, DesiredOutput.linked_samples),
+    ScientificIntent.structure_analysis: (DesiredOutput.summary, DesiredOutput.warnings),
+    ScientificIntent.trajectory_analysis: (DesiredOutput.summary, DesiredOutput.plot, DesiredOutput.warnings),
+    ScientificIntent.phonon_analysis: (DesiredOutput.summary, DesiredOutput.warnings, DesiredOutput.plot, DesiredOutput.table),
+    ScientificIntent.reciprocal_space_analysis: (DesiredOutput.summary, DesiredOutput.plot, DesiredOutput.three_dimensional_view),
+    ScientificIntent.volumetric_analysis: (
+        DesiredOutput.summary,
+        DesiredOutput.warnings,
+        DesiredOutput.three_dimensional_view,
+        DesiredOutput.plot,
+        DesiredOutput.table,
+    ),
+    ScientificIntent.ml_regression_evaluation: (DesiredOutput.summary, DesiredOutput.warnings, DesiredOutput.metrics),
+    ScientificIntent.ml_uncertainty_evaluation: (DesiredOutput.summary, DesiredOutput.warnings, DesiredOutput.metrics),
+    ScientificIntent.ml_classification_evaluation: (DesiredOutput.summary, DesiredOutput.warnings, DesiredOutput.metrics),
+    ScientificIntent.sample_inspection: (DesiredOutput.summary, DesiredOutput.table, DesiredOutput.linked_samples),
+    ScientificIntent.comparison: (DesiredOutput.summary, DesiredOutput.comparison),
+    ScientificIntent.anomaly_candidate_review: (DesiredOutput.warnings, DesiredOutput.table, DesiredOutput.linked_samples),
+    ScientificIntent.visualization: (DesiredOutput.plot,),
+    ScientificIntent.report_or_export: (DesiredOutput.report,),
+}
 
 
 class AnalysisIntentError(ValueError):
@@ -192,6 +222,21 @@ class AnalysisIntentValidator:
 
         if validated.normalizedGoal != normalize_analysis_goal(validated.rawGoal):
             raise AnalysisIntentError("normalizedGoal expands or changes rawGoal semantics.", code="INTENT_GOAL_EXPANSION")
+        if ScientificIntent.composition_space in validated.scientificIntents and not _contains(
+            validated.normalizedGoal,
+            "embedding",
+            "cluster",
+            "composition space",
+            "dimensional reduction",
+            "聚类",
+            "嵌入",
+            "成分空间",
+            "降维",
+        ):
+            raise AnalysisIntentError(
+                "composition_space requires an explicit embedding, clustering, or composition-space goal.",
+                code="INTENT_SEMANTIC_EXPANSION",
+            )
         _validate_profile_derived_questions(validated, profile)
 
         if parent is not None:
@@ -224,7 +269,7 @@ class DeterministicAnalysisIntentBuilder:
         _validate_request_identity(request, profile)
         normalized = normalize_analysis_goal(request.raw_goal)
         safe_raw = redact_credential_values(request.raw_goal)
-        classification = _classify_goal(normalized)
+        classification = _specialize_profile_dependent_classification(_classify_goal(normalized), profile)
         unsupported = _unsupported_reasons(normalized)
         warnings: list[IntentDiagnostic] = []
         if safe_raw != request.raw_goal:
@@ -423,7 +468,11 @@ class OpenAICompatibleAnalysisIntentBuilder:
     ) -> AnalysisIntent:
         _validate_request_identity(request, profile)
         messages = build_analysis_intent_messages(request, profile=profile)
-        response = self.provider.complete_json(messages=messages, user_config=user_config)
+        response = self.provider.complete_json(
+            messages=messages,
+            user_config=user_config,
+            purpose="INTENT_EXTRACTION",
+        )
         raw = response.raw_text
         if not isinstance(raw, str) or raw.strip().startswith("```"):
             raise AnalysisIntentError("LLM Intent output must be one strict JSON object.", code="INTENT_LLM_JSON_INVALID")
@@ -442,6 +491,15 @@ class OpenAICompatibleAnalysisIntentBuilder:
                 raise AnalysisIntentError("LLM Intent output contains extra prose.", code="INTENT_LLM_JSON_INVALID")
         if parsed.get("datasetId") != profile.datasetId or parsed.get("profileId") != profile.profileId:
             raise AnalysisIntentError("LLM Intent invented dataset/profile identity.", code="INTENT_LLM_IDENTITY_INVALID")
+        expected_normalized = normalize_analysis_goal(request.raw_goal)
+        expected_language = detect_goal_language(expected_normalized)
+        if parsed.get("rawGoal") != request.raw_goal:
+            raise AnalysisIntentError("LLM Intent changed the exact raw goal.", code="INTENT_LLM_RAW_GOAL_MISMATCH")
+        if parsed.get("normalizedGoal") != expected_normalized:
+            raise AnalysisIntentError("LLM Intent changed the application-owned normalized goal.", code="INTENT_LLM_NORMALIZED_GOAL_MISMATCH")
+        if parsed.get("language") != expected_language:
+            raise AnalysisIntentError("LLM Intent changed the application-owned goal language.", code="INTENT_LLM_LANGUAGE_MISMATCH")
+        _canonicalize_llm_profile_bindings(parsed, request=request, profile=profile)
         supplied_provenance = parsed.get("provenance")
         if supplied_provenance is not None and (
             not isinstance(supplied_provenance, dict)
@@ -451,21 +509,115 @@ class OpenAICompatibleAnalysisIntentBuilder:
         parsed["intentId"] = "pending"
         parsed["intentHash"] = "0" * 64
         parsed["provenance"] = {
-            "provider": "openai_compatible",
+            "provider": str(getattr(getattr(self.provider, "meta", None), "name", "openai_compatible")),
             "model": response.model,
-            "promptVersion": INTENT_PROMPT_VERSION,
+            "promptVersion": LLM_INTENT_PROMPT_VERSION,
             "createdAt": datetime.now(timezone.utc).isoformat(),
             "parentIntentId": None,
             "answerBindings": [],
         }
-        intent_hash = compute_analysis_intent_hash(parsed)
-        parsed["intentHash"] = intent_hash
-        parsed["intentId"] = deterministic_intent_id(intent_hash)
         try:
-            intent = AnalysisIntent.model_validate(parsed)
+            provisional = AnalysisIntent.model_validate(parsed)
+        except ValidationError as exc:
+            diagnostics = sorted(
+                {
+                    ".".join(str(part) for part in error.get("loc", ())) + ":" + str(error.get("type") or "invalid")
+                    for error in exc.errors(include_url=False, include_context=False, include_input=False)
+                }
+            )
+            bounded = ",".join(diagnostics[:16])
+            raise AnalysisIntentError(
+                f"LLM Intent failed schema validation at {bounded or 'unknown' }.",
+                code="INTENT_LLM_SCHEMA_INVALID",
+            ) from exc
         except Exception as exc:
             raise AnalysisIntentError("LLM Intent failed schema validation.", code="INTENT_LLM_SCHEMA_INVALID") from exc
+        canonical = provisional.model_dump(mode="json")
+        intent_hash = compute_analysis_intent_hash(canonical)
+        canonical["intentHash"] = intent_hash
+        canonical["intentId"] = deterministic_intent_id(intent_hash)
+        intent = AnalysisIntent.model_validate(canonical)
         return self.validator.validate(intent, profile=profile)
+
+
+def _canonicalize_llm_profile_bindings(
+    parsed: dict[str, Any],
+    *,
+    request: AnalysisIntentRequest,
+    profile: DataProfile,
+) -> None:
+    """Replace provider-authored resource/target choices with Profile-owned facts."""
+    try:
+        intents = {ScientificIntent(value) for value in parsed.get("scientificIntents", [])}
+    except (TypeError, ValueError):
+        return
+    ml_kind = None
+    if ScientificIntent.ml_uncertainty_evaluation in intents:
+        ml_kind = "regression_uncertainty"
+    elif ScientificIntent.ml_regression_evaluation in intents:
+        ml_kind = "regression"
+    elif ScientificIntent.ml_classification_evaluation in intents:
+        ml_kind = "classification"
+
+    required_kinds = {
+        kind
+        for intent, kind in {
+            ScientificIntent.structure_analysis: "structure",
+            ScientificIntent.trajectory_analysis: "trajectory",
+            ScientificIntent.phonon_analysis: "phonon",
+            ScientificIntent.reciprocal_space_analysis: "reciprocal",
+            ScientificIntent.volumetric_analysis: "volumetric",
+        }.items()
+        if intent in intents
+    }
+    required_kind = next(iter(required_kinds)) if len(required_kinds) == 1 else None
+    resource_refs, resource_ambiguities, resource_missing, resource_questions = _resolve_resources(
+        request,
+        profile,
+        required_kind=required_kind,
+    )
+    targets, target_ambiguities, target_missing, target_questions = _resolve_targets(
+        request,
+        profile,
+        ml_kind=ml_kind,
+    )
+    scope = dict(parsed.get("dataScope") or {})
+    scope.update(
+        {
+            "datasetId": profile.datasetId,
+            "datasetVersion": profile.sampleIdentity.datasetVersion if profile.sampleIdentity else profile.version,
+            "profileId": profile.profileId,
+            "profileContractVersion": profile.profileContractVersion,
+            "profileSemanticHash": profile.semanticHash,
+            "resourceRefs": [item.model_dump(mode="json") for item in resource_refs],
+        }
+    )
+    parsed["dataScope"] = scope
+    if ml_kind is not None:
+        parsed["targetSemantics"] = [item.model_dump(mode="json") for item in targets]
+
+    questions = [*resource_questions, *target_questions][:ANALYSIS_INTENT_MAX_QUESTIONS]
+    ambiguities = [*resource_ambiguities, *target_ambiguities]
+    missing = [*resource_missing, *target_missing]
+    if missing:
+        parsed["ambiguities"] = [item.model_dump(mode="json") for item in ambiguities if not item.blocking]
+        parsed["missingFacts"] = [item.model_dump(mode="json") for item in missing]
+        parsed["unsupportedReasons"] = [item.model_dump(mode="json") for item in missing]
+        parsed["outcome"] = AnalysisIntentOutcome.unsupported.value
+        parsed["clarification"] = AnalysisIntentClarification().model_dump(mode="json")
+        return
+    if not questions or not any(item.blocking for item in ambiguities):
+        return
+
+    parsed["ambiguities"] = [item.model_dump(mode="json") for item in ambiguities]
+    parsed["missingFacts"] = []
+    parsed["unsupportedReasons"] = []
+    parsed["outcome"] = AnalysisIntentOutcome.needs_clarification.value
+    parsed["clarification"] = {
+        "round": 0,
+        "questions": [item.model_dump(mode="json") for item in questions],
+        "answers": [],
+    }
 
 
 def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: DataProfile) -> list[dict[str, str]]:
@@ -485,9 +637,85 @@ def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: D
         ],
     }
     schema = AnalysisIntent.model_json_schema()
+    normalized_goal = normalize_analysis_goal(request.raw_goal)
+    language = detect_goal_language(normalized_goal)
+    output_template = {
+        "schemaVersion": "1.0",
+        "intentId": "application-owned",
+        "intentHash": "0" * 64,
+        "datasetId": profile.datasetId,
+        "profileId": profile.profileId,
+        "rawGoal": redact_credential_values(request.raw_goal),
+        "normalizedGoal": normalized_goal,
+        "language": language,
+        "dataScope": {
+            "datasetId": profile.datasetId,
+            "datasetVersion": profile_facts["datasetVersion"],
+            "profileId": profile.profileId,
+            "profileContractVersion": profile.profileContractVersion,
+            "profileSemanticHash": profile.semanticHash,
+            "resourceRefs": [],
+            "sampleIds": [],
+            "groupIds": [],
+            "modelIds": [],
+            "origin": "PROFILE_EXACT",
+        },
+        "scientificIntents": [],
+        "targetSemantics": [],
+        "desiredOutputs": [],
+        "constraints": {
+            "includeResourceIds": list(request.selected_resource_ids),
+            "excludeResourceIds": [],
+            "includeScientificIntents": [],
+            "excludeScientificIntents": [],
+            "targetIds": list(request.selected_target_ids),
+            "modelIds": [],
+            "groupIds": [],
+            "outputPreferences": [],
+            "maxAnalyses": None,
+            "maxToolCalls": None,
+            "timePreference": None,
+            "costPreference": None,
+            "clarificationAllowed": request.constraints.clarificationAllowed,
+            "descriptiveOnly": request.constraints.descriptiveOnly,
+            "forbidDerivedInterpretation": request.constraints.forbidDerivedInterpretation,
+        },
+        "requiredCapabilityNeeds": [],
+        "optionalCapabilityNeeds": [],
+        "ambiguities": [],
+        "missingFacts": [],
+        "unsupportedReasons": [],
+        "outcome": "READY",
+        "clarification": {
+            "round": 0,
+            "maxRounds": 1,
+            "maxQuestionsPerRound": 3,
+            "questions": [],
+            "answers": [],
+        },
+        "provenance": {
+            "provider": "deepseek",
+            "model": "application-owned",
+            "promptVersion": LLM_INTENT_PROMPT_VERSION,
+            "createdAt": "application-owned",
+            "parentIntentId": None,
+            "answerBindings": [],
+        },
+        "warnings": [],
+    }
     system = (
         "Produce exactly one JSON object matching AnalysisIntent v1. Use placeholder values for intentId, intentHash, "
         "and provenance because the application owns those fields. "
+        "Use outputTemplate as the required object shape, replacing semantic placeholder arrays only with exact allowed values. "
+        "clarification must always be an object with round, maxRounds, maxQuestionsPerRound, questions, and answers; "
+        "for READY use the empty clarification object shown in outputTemplate, never null, an array, a string, or a boolean. "
+        "Copy exactRawGoal into rawGoal, exactNormalizedGoal into normalizedGoal, and exactLanguage into language without changes. "
+        "Set requiredCapabilityNeeds to the sorted union declared by requiredCapabilityNeedsByScientificIntent for every selected scientific intent. "
+        "When the user did not specify a delivery format, set desiredOutputs to the sorted union declared by defaultDesiredOutputsByScientificIntent. "
+        "When the raw goal explicitly requests a delivery format, include only the explicitly requested delivery outputs; do not add default summary, table, comparison, report, or warning outputs. "
+        "A named chart form such as scatter, histogram, correlation matrix, heatmap, treemap, or sunburst is an explicit visualization request: include visualization and plot, preserve the named form in rawGoal, and do not substitute another chart form. "
+        "Composition distribution is composition_analysis, not composition_space. Select composition_space only when the raw goal explicitly asks for "
+        "embedding, clustering, or composition space. Do not add visualization merely because a plot-capable tool may exist. "
         "Do not choose tools, execute code, invent identifiers, use Markdown, or add prose. "
         "Only candidates in the supplied DataProfile are valid. Future/Not Planned and arbitrary "
         "code requests must be UNSUPPORTED. READY cannot contain a blocking ambiguity."
@@ -495,12 +723,30 @@ def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: D
     user = json.dumps(
         {
             "rawGoal": redact_credential_values(request.raw_goal),
+            "exactRawGoal": redact_credential_values(request.raw_goal),
+            "exactNormalizedGoal": normalized_goal,
+            "exactLanguage": language,
             "selectedResourceIds": list(request.selected_resource_ids),
             "selectedTargetIds": list(request.selected_target_ids),
             "profile": profile_facts,
             "scientificIntentVocabulary": [value.value for value in ScientificIntent],
+            "requiredCapabilityNeedsByScientificIntent": {
+                intent.value: sorted(need.value for need in _required_needs_for_intents((intent,)))
+                for intent in ScientificIntent
+            },
+            "defaultDesiredOutputsByScientificIntent": {
+                intent.value: sorted(output.value for output in _DEFAULT_OUTPUTS_BY_INTENT.get(intent, ()))
+                for intent in ScientificIntent
+            },
+            "scientificIntentDisambiguation": {
+                "composition_analysis": "composition, formula, element or composition distribution facts",
+                "composition_space": "only explicit embedding, clustering, dimensional reduction or composition-space requests",
+                "property_distribution": "property coverage or distribution facts",
+                "visualization": "only an explicit visualization request, never inferred from tool availability",
+            },
             "outcomes": [value.value for value in AnalysisIntentOutcome],
             "clarificationPolicy": {"maxRounds": 1, "maxQuestionsPerRound": 3},
+            "outputTemplate": output_template,
             "schema": schema,
         },
         ensure_ascii=False,
@@ -755,11 +1001,22 @@ def _classify_goal(goal: str) -> _Classification:
         required.append(CapabilityNeed.classification_semantics)
         ml_kind = "classification"
         outputs.append(DesiredOutput.metrics)
+    if ml_kind is None and _contains(
+        value,
+        "machine learning model",
+        "ml model",
+        "model performance",
+        "机器学习模型",
+        "模型表现",
+    ):
+        ml_kind = "profile_exact"
+    structure_review = _contains(value, "reasonable", "reasonableness", "合理", "是否合理")
     if _contains(value, "structure", "crystal", "coordination", "晶体", "结构", "配位"):
         add_intent(ScientificIntent.structure_analysis)
         required.append(CapabilityNeed.structure_resource)
         required_kind = "structure"
-        outputs.append(DesiredOutput.three_dimensional_view)
+        if not structure_review:
+            outputs.append(DesiredOutput.three_dimensional_view)
     if _contains(value, "trajectory", "msd", "diffusion", "轨迹", "扩散"):
         add_intent(ScientificIntent.trajectory_analysis)
         required.append(CapabilityNeed.trajectory_resource)
@@ -783,7 +1040,7 @@ def _classify_goal(goal: str) -> _Classification:
     if _contains(value, "report", "export", "download", "报告", "导出", "下载"):
         add_intent(ScientificIntent.report_or_export)
         outputs.extend([DesiredOutput.report, DesiredOutput.downloadable_artifact, DesiredOutput.recipe])
-    if intents and DesiredOutput.plot not in outputs:
+    if intents and DesiredOutput.plot not in outputs and not structure_review:
         outputs.extend([DesiredOutput.plot, DesiredOutput.table])
     return _Classification(
         tuple(intents),
@@ -792,6 +1049,45 @@ def _classify_goal(goal: str) -> _Classification:
         tuple(dict.fromkeys(outputs)),
         required_kind,
         ml_kind,
+    )
+
+
+def _specialize_profile_dependent_classification(
+    classification: _Classification,
+    profile: DataProfile,
+) -> _Classification:
+    if classification.ml_kind != "profile_exact":
+        return classification
+    group_kinds = {
+        "classification" if item.kind in {"classification", "class_probability"} else item.kind
+        for item in profile.semanticGroups
+        if item.status == "COMPLETE"
+    }
+    if group_kinds == {"regression"}:
+        return _Classification(
+            (*classification.intents, ScientificIntent.ml_regression_evaluation),
+            (*classification.required, CapabilityNeed.regression_semantics),
+            classification.optional,
+            (*classification.outputs, DesiredOutput.metrics),
+            classification.required_resource_kind,
+            "regression",
+        )
+    if group_kinds == {"classification"}:
+        return _Classification(
+            (*classification.intents, ScientificIntent.ml_classification_evaluation),
+            (*classification.required, CapabilityNeed.classification_semantics),
+            classification.optional,
+            (*classification.outputs, DesiredOutput.metrics),
+            classification.required_resource_kind,
+            "classification",
+        )
+    return _Classification(
+        classification.intents,
+        classification.required,
+        classification.optional,
+        classification.outputs,
+        classification.required_resource_kind,
+        None,
     )
 
 
@@ -826,7 +1122,7 @@ def _resolve_resources(
     candidates = [item for item in resources if item.objectId not in excluded and _resource_matches(item.kind, item.capabilities, required_kind)]
     if selected:
         candidates = [by_id[value] for value in selected if by_id[value].objectId not in excluded]
-        if required_kind and any(not _resource_matches(item.kind, item.capabilities, required_kind) for item in candidates):
+        if required_kind and not any(_resource_matches(item.kind, item.capabilities, required_kind) for item in candidates):
             return [], [], [_diagnostic("RESOURCE_KIND_MISMATCH", "dataScope.resourceRefs", "The selected resource has the wrong scientific kind.", boundary="MISSING_DATA")], []
     if required_kind and not candidates:
         return [], [], [_diagnostic("REQUIRED_RESOURCE_MISSING", "dataScope.resourceRefs", f"No {required_kind} resource is available.", boundary="MISSING_DATA")], []

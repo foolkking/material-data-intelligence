@@ -1,0 +1,448 @@
+{
+  "schemaVersion": "1.0",
+  "evidenceMode": "OFFLINE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
+  "disclosure": "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.",
+  "liveApiCalls": 0,
+  "realDeepSeekCalls": 0,
+  "replayMode": "PERSISTED_CAPTURE_UI_REPLAY",
+  "cases": [
+    {
+      "caseId": "case_1",
+      "runId": "live_run_ceaef0c7168892dd5ed9d0a7da7bb7c1",
+      "userTextSha256": "b472c8ff27d67eac1d31b877884f9964a7b60cd80292e93f5e69c57ef097cc17",
+      "intentId": "intent_5fb52bd022fe27a94703d04d",
+      "eligibleToolIds": [
+        "composition.chem_sys_sunburst",
+        "composition.chem_sys_treemap",
+        "composition.elements_hist",
+        "composition.formula_statistics",
+        "composition.ptable_heatmap",
+        "composition.summary",
+        "dataset.materials_explorer"
+      ],
+      "selectedToolIds": [
+        "dataset.materials_explorer"
+      ],
+      "planId": "plan_a78c7c800e4f23b64f9a055b",
+      "planHash": "346d840833081f9168571fe7a65956c971212c5fabcca9c3875b7a35c8fa4982",
+      "planSchemaVersion": "0.1",
+      "graphHash": null,
+      "jobId": "job_28fd09a2e892756d845d8f19",
+      "interpretationId": "interpretation_c36497b13fcfeaba565ff948f0c46997",
+      "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+      "sourceProvider": "deepseek",
+      "intentProvider": "deepseek",
+      "plannerProvider": "deepseek",
+      "artifactProjection": "METADATA_INDEX_ONLY_NO_RAW_ARTIFACT_CONTENT",
+      "artifacts": [
+        {
+          "artifactId": "call_job_28fd09a2e892756d845d8f19_step_001-table_json",
+          "artifactType": "table_json",
+          "contentHash": "9cab1b92620f7ba9cecebbe1da36abec95beca881fd19950a640249ff8eb7044",
+          "sizeBytes": 6633
+        },
+        {
+          "artifactId": "call_job_28fd09a2e892756d845d8f19_step_001-quality_issues_json",
+          "artifactType": "quality_issues_json",
+          "contentHash": "fc9dff98c48d97b7c6a7119c21be21f3be13e5c84d3431140d15bbc71a462794",
+          "sizeBytes": 699
+        },
+        {
+          "artifactId": "call_job_28fd09a2e892756d845d8f19_step_001-summary_md",
+          "artifactType": "summary_md",
+          "contentHash": "ca2315c03b200414325148c152a71d5b9ad9563b61f56e9ba6d49a0c1721e103",
+          "sizeBytes": 370
+        },
+        {
+          "artifactId": "call_job_28fd09a2e892756d845d8f19_step_001-recipe_json",
+          "artifactType": "recipe_json",
+          "contentHash": "8f42a5323a182396743eaf0df044d00679124b1b0322dc06855941459772fce0",
+          "sizeBytes": 1552
+        }
+      ]
+    },
+    {
+      "caseId": "case_2",
+      "runId": "live_run_d11315ef07ae3cb3bf09295fdd1254b2",
+      "userTextSha256": "37c451ad58bf5935ed5de6dd64d6b0bebfe38a51b89cee4fea19085c5e871a35",
+      "intentId": "intent_bcbcda2b98663701a26fe397",
+      "eligibleToolIds": [
+        "structure.composition_from_structure",
+        "structure.coordination_hist",
+        "structure.lattice_summary",
+        "structure.preview_metadata",
+        "structure.rdf",
+        "structure.spacegroup_summary",
+        "structure.structure_3d",
+        "structure.summary",
+        "structure.viewer_3d",
+        "structure.viewer_scene",
+        "structure.xrd"
+      ],
+      "selectedToolIds": [
+        "structure.summary"
+      ],
+      "planId": "plan_11474bbd75379882b4d59ba4",
+      "planHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5",
+      "planSchemaVersion": "0.1",
+      "graphHash": null,
+      "jobId": "job_1fbb89c4172769cfe562cd99",
+      "interpretationId": "interpretation_2625faf93e4717f51ac3983f2cc56728",
+      "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+      "sourceProvider": "deepseek",
+      "intentProvider": "deepseek",
+      "plannerProvider": "deepseek",
+      "artifactProjection": "METADATA_INDEX_ONLY_NO_RAW_ARTIFACT_CONTENT",
+      "artifacts": [
+        {
+          "artifactId": "call_job_1fbb89c4172769cfe562cd99_step_001-structure_json",
+          "artifactType": "structure_json",
+          "contentHash": "2d7894fd0e011171db6759ece6f146000a33fb65c6ecb7be8b199f9175eaa5a6",
+          "sizeBytes": 662
+        },
+        {
+          "artifactId": "call_job_1fbb89c4172769cfe562cd99_step_001-summary_md",
+          "artifactType": "summary_md",
+          "contentHash": "269d1828e0c5ad13e8b876dc10877f4e6d64dedfc2e8fcd0b09830f9efa3d319",
+          "sizeBytes": 111
+        },
+        {
+          "artifactId": "call_job_1fbb89c4172769cfe562cd99_step_001-recipe_json",
+          "artifactType": "recipe_json",
+          "contentHash": "146aabc6f2759d3d1c55d907e86f89887753072b7f5d0618b39ca91c2a8c68a3",
+          "sizeBytes": 579
+        }
+      ]
+    },
+    {
+      "caseId": "case_3",
+      "runId": "live_run_28f09af3b53a75170a8850d6ca45f8b3",
+      "userTextSha256": "1bd43ad3a29ce07138a8a11996728872f8fe1b35d291d15510fee8381c433986",
+      "intentId": "intent_2934def24b46872cecaeed54",
+      "eligibleToolIds": [
+        "ml.regression_evaluation"
+      ],
+      "selectedToolIds": [
+        "ml.regression_evaluation"
+      ],
+      "planId": "plan_3d688c559c4de42f072b1869",
+      "planHash": "6ab891d787762969840ff04832223f20f574b199fc08b82fca141012974b0c44",
+      "planSchemaVersion": "0.1",
+      "graphHash": null,
+      "jobId": "job_d1b51eee5b1edb53055330c7",
+      "interpretationId": "interpretation_a050a197037b2f9212d2f9d041fa7ed1",
+      "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+      "sourceProvider": "deepseek",
+      "intentProvider": "deepseek",
+      "plannerProvider": "deepseek",
+      "artifactProjection": "METADATA_INDEX_ONLY_NO_RAW_ARTIFACT_CONTENT",
+      "artifacts": [
+        {
+          "artifactId": "call_job_d1b51eee5b1edb53055330c7_step_001-table_json",
+          "artifactType": "table_json",
+          "contentHash": "c09b74e16859f9d093fbfbf9a568509146f62922b4e89428fcf352949e0b667d",
+          "sizeBytes": 6357
+        },
+        {
+          "artifactId": "call_job_d1b51eee5b1edb53055330c7_step_001-summary_md",
+          "artifactType": "summary_md",
+          "contentHash": "767d0ad169c39efaac92c26654aff2f77d29a095b8807ec2c11aaa5587cc0125",
+          "sizeBytes": 295
+        },
+        {
+          "artifactId": "call_job_d1b51eee5b1edb53055330c7_step_001-recipe_json",
+          "artifactType": "recipe_json",
+          "contentHash": "284dcd13d1fee9c7dea7d095d043c98466eeea23e930e1d4019b2fa4b696561b",
+          "sizeBytes": 1181
+        }
+      ]
+    },
+    {
+      "caseId": "case_4",
+      "runId": "live_run_b135271f0ff8102fa42b0102aa8b8d0c",
+      "userTextSha256": "402793984b23daa85f79150dafcd3ed1cfbe7032eb2f75699598c29de45a494d",
+      "intentId": "intent_f70b3eb21ba613f05c5ddf1f",
+      "eligibleToolIds": [
+        "phonon.band",
+        "phonon.band_dos",
+        "phonon.dos"
+      ],
+      "selectedToolIds": [
+        "phonon.band",
+        "phonon.band_dos",
+        "phonon.dos"
+      ],
+      "planId": "plan_f51417c7f8a11af44c512ec7",
+      "planHash": "9f723155e24cfa4f3c2f7e3313f14ae1321b26f5eb8f52721e9987669c13862a",
+      "planSchemaVersion": "0.2",
+      "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+      "jobId": "job_7fb4e1d2b9db58a02d1e56ac",
+      "interpretationId": "interpretation_22b10eee36e3b9bbc20757e47fb70048",
+      "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+      "sourceProvider": "deepseek",
+      "intentProvider": "deepseek",
+      "plannerProvider": "deepseek",
+      "artifactProjection": "METADATA_INDEX_ONLY_NO_RAW_ARTIFACT_CONTENT",
+      "artifacts": [
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-phonon_band_json",
+          "artifactType": "phonon_band_json",
+          "contentHash": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+          "sizeBytes": 2152
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-phonon_summary_json",
+          "artifactType": "phonon_summary_json",
+          "contentHash": "4ce5290d692161051847be730df2951e397868a58ed92b6ac0c6454dc81f3dc8",
+          "sizeBytes": 531
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-phonon_report_json",
+          "artifactType": "phonon_report_json",
+          "contentHash": "10a228a1693a16dc760f4d6044bf91a72c63dbf9befe144f19b72d0f748ab4a1",
+          "sizeBytes": 1338
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-phonon_manifest_json",
+          "artifactType": "phonon_manifest_json",
+          "contentHash": "d3a37e57f4fcbdcf9624c96eceffab183c8a1558eac110509b20098e73e4ccd5",
+          "sizeBytes": 826
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-plotly_json",
+          "artifactType": "plotly_json",
+          "contentHash": "3f579988f015640c3492e3dbb378ff99be15c599e3904cfbd0aef8c04990a1f1",
+          "sizeBytes": 2170
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-table_json",
+          "artifactType": "table_json",
+          "contentHash": "d5c7587c3eb2f2992364dfeb31c786448687adf5b50a6ef8be64f9955deb8eb4",
+          "sizeBytes": 3732
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_001-recipe_json",
+          "artifactType": "recipe_json",
+          "contentHash": "bae4297205f6f64ccb5627ffcebb3d825ab1e0d9eed2379d83179431473e29a3",
+          "sizeBytes": 711
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-phonon_dos_json",
+          "artifactType": "phonon_dos_json",
+          "contentHash": "f47bdecb4954cc9e63512b8de2d7be290ed4e4584f6bf20db60d269a9c66acfe",
+          "sizeBytes": 1638
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-phonon_summary_json",
+          "artifactType": "phonon_summary_json",
+          "contentHash": "59696eb76530bd65944336ca2bffbebda9d2b398d57ee49fa881d6d12458a4cf",
+          "sizeBytes": 1071
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-phonon_report_json",
+          "artifactType": "phonon_report_json",
+          "contentHash": "36fe187028ad825492b158c484061957cf6bf076203f125425a81af127f2a5b6",
+          "sizeBytes": 1659
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-phonon_manifest_json",
+          "artifactType": "phonon_manifest_json",
+          "contentHash": "43f74006506745bfd6494da656fa6540d9b81569567aa4055adab56da628ec4d",
+          "sizeBytes": 816
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-plotly_json",
+          "artifactType": "plotly_json",
+          "contentHash": "ee1a78cdec593cdaa62e7bfb81db72427882591e5266ec8c92e5f3ddb14287a8",
+          "sizeBytes": 1361
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-table_json",
+          "artifactType": "table_json",
+          "contentHash": "715bbe1b1742e93f51ceb3280fb0893574127fcd0e964bf7cacf7744acf20d6b",
+          "sizeBytes": 1205
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_003-recipe_json",
+          "artifactType": "recipe_json",
+          "contentHash": "2b6339b0d8f40b5f404a550b5d0f7139ee734dbaa69a223ab50ff42385642c9c",
+          "sizeBytes": 890
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-phonon_band_dos_json",
+          "artifactType": "phonon_band_dos_json",
+          "contentHash": "de8710a8dd86e8b9867b02615cde88c8fed21a5c5840e9ab40d72d3429ea6feb",
+          "sizeBytes": 1655
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-phonon_summary_json",
+          "artifactType": "phonon_summary_json",
+          "contentHash": "237190bb75a8f48449547cca6e73cbb040fc5e3c1122cdb59077b69eb786aa1e",
+          "sizeBytes": 977
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-phonon_compatibility_json",
+          "artifactType": "phonon_compatibility_json",
+          "contentHash": "d3df1cdcaaeed56b1cc4cc77e489018ebd64564096bbe84ec3aed549a2b65e3d",
+          "sizeBytes": 3954
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-plotly_json",
+          "artifactType": "plotly_json",
+          "contentHash": "06ecd1c157e309402bd2eb03d3c4365f29d6722ed75a1ef16428899e6e6ae668",
+          "sizeBytes": 2458
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-table_json",
+          "artifactType": "table_json",
+          "contentHash": "0eaff3531926c5aed317b6ef0c0e194c5b0a8cc8800f3b37f937bf6b9de8641b",
+          "sizeBytes": 3618
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-phonon_manifest_json",
+          "artifactType": "phonon_manifest_json",
+          "contentHash": "8b1aa9cf62383107e5b9090d34eb51276bb0617d7f0a322229ccfdc4dcaece36",
+          "sizeBytes": 2406
+        },
+        {
+          "artifactId": "call_job_7fb4e1d2b9db58a02d1e56ac_step_002-recipe_json",
+          "artifactType": "recipe_json",
+          "contentHash": "7f0bc5f994b1092c32dae8f710c2395ddbab115caadfb0bd42cf057143201181",
+          "sizeBytes": 1681
+        }
+      ]
+    },
+    {
+      "caseId": "case_5",
+      "runId": "live_run_89ff5988240b2246dec4adb371deacdb",
+      "userTextSha256": "4d2243cf3a80f3911d731bf697ee64fcebafa5f6d3f4e5fd946666624303c28b",
+      "intentId": "intent_8a855ab14a7e244b09b320c2",
+      "eligibleToolIds": [
+        "structure.volumetric_data"
+      ],
+      "selectedToolIds": [
+        "structure.volumetric_data"
+      ],
+      "planId": "plan_ebd94fdfc2245e026bfd43e9",
+      "planHash": "3cb907a7aff5a41bfca59fe58e16668268088c94e0044351617fec7676448c3c",
+      "planSchemaVersion": "0.1",
+      "graphHash": null,
+      "jobId": "job_bb6c8d39c067c8198349357f",
+      "interpretationId": "interpretation_cb651436eaf3f3eb7eb768b6938bd0e1",
+      "interpretationOutcome": "INTERPRETATION_READY_WITH_LIMITS",
+      "sourceProvider": "deepseek",
+      "intentProvider": "deepseek",
+      "plannerProvider": "deepseek",
+      "artifactProjection": "METADATA_INDEX_ONLY_NO_RAW_ARTIFACT_CONTENT",
+      "artifacts": [
+        {
+          "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_grid_json",
+          "artifactType": "volumetric_grid_json",
+          "contentHash": "5ea9a9394c977aa285cbf39c30db5af798b3cc73abe07f115edc6927d5bb9e14",
+          "sizeBytes": 1304
+        },
+        {
+          "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_payload_json",
+          "artifactType": "volumetric_payload_json",
+          "contentHash": "84157c48820972ab6deaa6f0eab51d0d40a908df237426832b8a5ea7b26b0994",
+          "sizeBytes": 1018
+        },
+        {
+          "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_field_json",
+          "artifactType": "volumetric_field_json",
+          "contentHash": "97b003f125eefaf14d24ee22fa0ab64b2376e98351f7714a3a75cdaf6f27bb58",
+          "sizeBytes": 2244
+        },
+        {
+          "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_binary",
+          "artifactType": "volumetric_binary",
+          "contentHash": "6f360e74fd5959280762f657d434c72771146205e8ef12b611fa562ba1a55904",
+          "sizeBytes": 47
+        },
+        {
+          "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_dataset_json",
+          "artifactType": "volumetric_dataset_json",
+          "contentHash": "92bb606d8e376a69888ab031de6580a3fe46b57a08810154bd0efbe032342c39",
+          "sizeBytes": 6110
+        },
+        {
+          "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_manifest_json",
+          "artifactType": "volumetric_manifest_json",
+          "contentHash": "4bd7713f2c1de3f359c5f46f47f1e9026c21dd433d60f8dfa96de801dd24b52f",
+          "sizeBytes": 2233
+        },
+        {
+          "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-volumetric_structure_overlay_json",
+          "artifactType": "volumetric_structure_overlay_json",
+          "contentHash": "bf3d8673e0a91860c90ed41ca492a498ea0aa99933d87593a4c1647d3645c42c",
+          "sizeBytes": 4925
+        },
+        {
+          "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-summary_md",
+          "artifactType": "summary_md",
+          "contentHash": "21105175f3cde12aa91a7790bd3acd89c497ea14515aa1a1509e83762de33fe2",
+          "sizeBytes": 751
+        },
+        {
+          "artifactId": "call_job_bb6c8d39c067c8198349357f_step_001-recipe_json",
+          "artifactType": "recipe_json",
+          "contentHash": "6807cc21453afa31b8e4f7623c39f185d1cea970e659260cb9e98c9b9c8ae1cc",
+          "sizeBytes": 1705
+        }
+      ]
+    }
+  ],
+  "nonReadyStates": [
+    {
+      "stateId": "needs_clarification",
+      "source": "PERSISTED_REAL_DEEPSEEK_NON_READY_CONTRACT",
+      "sourceRunId": "historical_live_run_c1a1f4a10020db19fc847e100029c835",
+      "sourceRunHash": "c1a1f4a10020db19fc847e100029c835406e9bdda1538cc1be645185814c40a2",
+      "expectedOutcome": "NEEDS_CLARIFICATION",
+      "userTextSha256": "71793da2cf9a5b22f0da471275f93ca9ce25c3dda26efd4e26e469e29f7dbbb7",
+      "intentId": "intent_b07e5903b634218d577b9947",
+      "jobId": null,
+      "planId": null,
+      "enqueued": false,
+      "executed": false,
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "sourceRealDeepSeekCall": true,
+      "browserReplayRealDeepSeekCall": false
+    },
+    {
+      "stateId": "unsupported",
+      "source": "PERSISTED_REAL_DEEPSEEK_NON_READY_CONTRACT",
+      "sourceRunId": "historical_live_run_3f6802efd0fced08d27846529371ef30",
+      "sourceRunHash": "3f6802efd0fced08d27846529371ef30ce55d3c9abbdf7a4b98566712ed015a4",
+      "expectedOutcome": "UNSUPPORTED",
+      "userTextSha256": "279a55352b30c0775edf940fa4a4f102e11cf4d4204cb30ffadcfc9b823fe740",
+      "intentId": "intent_b3c2cc923d1a6c8bb7c24cd6",
+      "jobId": null,
+      "planId": null,
+      "enqueued": false,
+      "executed": false,
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "sourceRealDeepSeekCall": true,
+      "browserReplayRealDeepSeekCall": false
+    },
+    {
+      "stateId": "capability_mismatch",
+      "source": "PERSISTED_REAL_DEEPSEEK_NON_READY_CONTRACT",
+      "sourceRunId": "historical_live_run_97c68b4b337754fb64e64ed3e742c432",
+      "sourceRunHash": "97c68b4b337754fb64e64ed3e742c4325f223025679da15bc7171d38d3c7fada",
+      "expectedOutcome": "CAPABILITY_MISMATCH",
+      "userTextSha256": "cbc31365fac8c189783eb90fd1cefe4d288f55b878a25fe1c816da1605d0c599",
+      "intentId": "intent_3d899df819b10c472d865fdd",
+      "jobId": null,
+      "planId": null,
+      "enqueued": false,
+      "executed": false,
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "sourceRealDeepSeekCall": true,
+      "browserReplayRealDeepSeekCall": false
+    }
+  ]
+}

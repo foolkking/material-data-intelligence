@@ -1,0 +1,18 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-08-01T07:45:35.155184+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:45:PLAN_READY:UNSUPPORTED:details={\"selected\":[],\"unsupported\":[{\"boundary\":\"MISSING_DATA\",\"code\":\"TARGET_SEMANTIC_NOT_FOUND\",\"field\":\"targetSemantics\"}],\"validation\":[]}"
+    }
+  ],
+  "caseNumber": 45,
+  "createdAt": "2026-08-01T07:45:35.155184+00:00",
+  "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:45:PLAN_READY:UNSUPPORTED:details={\"selected\":[],\"unsupported\":[{\"boundary\":\"MISSING_DATA\",\"code\":\"TARGET_SEMANTIC_NOT_FOUND\",\"field\":\"targetSemantics\"}],\"validation\":[]}",
+  "slug": "band_gap_exact",
+  "verdict": "FAIL"
+}

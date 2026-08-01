@@ -1,0 +1,24 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-07-31T13:19:51.724582+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:33:PLAN_READY:CAPABILITY_MISMATCH:errors=['NO_ELIGIBLE_CAPABILITY']:selected=[]"
+    },
+    {
+      "createdAt": "2026-07-31T13:31:55.778713+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:33:PLAN_READY:DEEPSEEK_RESPONSE_INVALID:errors=['DEEPSEEK_RESPONSE_INVALID']:selected=[]"
+    }
+  ],
+  "caseNumber": 33,
+  "createdAt": "2026-07-31T13:31:55.778713+00:00",
+  "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:33:PLAN_READY:DEEPSEEK_RESPONSE_INVALID:errors=['DEEPSEEK_RESPONSE_INVALID']:selected=[]",
+  "slug": "linked_band_bz",
+  "verdict": "FAIL"
+}

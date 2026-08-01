@@ -460,9 +460,9 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
             inputOptions=[
                 ToolInputOption(
                     name="formula_or_composition_collection",
-                    requiredObjectTypes=[MaterialObjectType.DataFrame, MaterialObjectType.Composition, MaterialObjectType.Structure],
+                    requiredObjectTypes=[MaterialObjectType.DataFrame, MaterialObjectType.Composition],
                     requiredFields=[{"role": "formula", "dtype": "string"}],
-                    description="Use formulas, Composition objects, or structures with compositions.",
+                    description="Use formulas from DataFrames or normalized Composition objects.",
                 )
             ]
         )

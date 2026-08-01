@@ -1,0 +1,232 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "phonon.band"
+    ]
+  ],
+  "caseNumber": 29,
+  "createdAt": "2026-08-01T07:34:45.071032+00:00",
+  "decision": {
+    "decisionHash": "67536fc3b4fa4142bcd8af4c383a0e72b893d9689f31a05caf27deffe03df0a9",
+    "decisionId": "decision_67536fc3b4fa4142bcd8af4c",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot"
+        ],
+        "coveredScientificIntents": [
+          "phonon_analysis",
+          "visualization"
+        ],
+        "toolId": "phonon.band",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "phonon.band"
+    ],
+    "providerVisibleToolIds": [
+      "phonon.band"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "1da4c0336335443f2d167188459bed33f493c7ef13d65dde6af95b339d116ef4",
+    "resolutionId": "resolution_1da4c0336335443f2d167188"
+  },
+  "historicalExpectedToolIds": [
+    "phonon.band"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot"
+    ],
+    "intentHash": "47b6b7f8a11d2cbba97036187e381b6d2f7ea51be38825ea90b9d6966dbb6253",
+    "intentId": "intent_47b6b7f8a11d2cbba9703618",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "phonon_resource"
+    ],
+    "scientificIntents": [
+      "phonon_analysis",
+      "visualization"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "phonon_band_1",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:phonon_band_1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10H",
+  "plan": {
+    "graphHash": null,
+    "planHash": "d2dd3533ea20edb5516364bd67ee4f50645c9ee827dd1be2e4c50b1201eebef6",
+    "planId": "plan_f9c87424c80f5e52c2e61f75",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_1",
+    "profileId": "profile_1",
+    "profileSemanticHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "selectedResourceIds": [
+      "phonon_band_1"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4867.126,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23529,
+      "promptHash": "de477b826e27653f9229b7f2b17ff1bcc4271b32d61e66bcfac1d9dfcf6cd7e9",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3172,
+      "responseContentBytes": 2404,
+      "responseHash": "1a4980ee10c7027e72d3aa3c693682bc0755b0f8cb038f65c27a5c4c0bad1b09",
+      "tokenUsage": {
+        "completionTokens": 739,
+        "estimated": false,
+        "promptTokens": 5524,
+        "totalTokens": 6263
+      }
+    },
+    {
+      "elapsedMs": 1649.667,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3236,
+      "promptHash": "1da3be737b6389277e86f58b725c15427656f1f82fe1b528006e505ede0edf79",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 596,
+      "responseContentBytes": 110,
+      "responseHash": "bf8d02fca8553d67317433c5f900ba2461c0d2d81b4a32c42b8153cdbac4a59e",
+      "tokenUsage": {
+        "completionTokens": 38,
+        "estimated": false,
+        "promptTokens": 847,
+        "totalTokens": 885
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Plot only the phonon band structure.",
+  "replayPromptHash": "1f9778c5532af260d1d281b34c0fcda428b6bd55caafa38c9be4fbca7316599b",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "71231dcff7f443429fe479e7caa29d1fda2fd6b325ba21c54102929fb97af9d3",
+  "runId": "historical_live_run_71231dcff7f443429fe479e7caa29d1f",
+  "runtime": {
+    "artifactCount": 7,
+    "artifacts": [
+      {
+        "id": "call_job_e422a1a48e3880bf12d8e072_step_001-phonon_band_json",
+        "name": "phonon_band.json",
+        "sha256": "d0820733b4427d12609549d6cb204f62b7292dbe6abb2eec97cdd63219c737d2",
+        "sizeBytes": 2152,
+        "type": "phonon_band_json"
+      },
+      {
+        "id": "call_job_e422a1a48e3880bf12d8e072_step_001-phonon_summary_json",
+        "name": "phonon_summary.json",
+        "sha256": "4ce5290d692161051847be730df2951e397868a58ed92b6ac0c6454dc81f3dc8",
+        "sizeBytes": 531,
+        "type": "phonon_summary_json"
+      },
+      {
+        "id": "call_job_e422a1a48e3880bf12d8e072_step_001-phonon_report_json",
+        "name": "phonon_band_parse_report.json",
+        "sha256": "10a228a1693a16dc760f4d6044bf91a72c63dbf9befe144f19b72d0f748ab4a1",
+        "sizeBytes": 1338,
+        "type": "phonon_report_json"
+      },
+      {
+        "id": "call_job_e422a1a48e3880bf12d8e072_step_001-phonon_manifest_json",
+        "name": "phonon_manifest.json",
+        "sha256": "d3a37e57f4fcbdcf9624c96eceffab183c8a1558eac110509b20098e73e4ccd5",
+        "sizeBytes": 826,
+        "type": "phonon_manifest_json"
+      },
+      {
+        "id": "call_job_e422a1a48e3880bf12d8e072_step_001-plotly_json",
+        "name": "phonon_band_plot.json",
+        "sha256": "3f579988f015640c3492e3dbb378ff99be15c599e3904cfbd0aef8c04990a1f1",
+        "sizeBytes": 2170,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_e422a1a48e3880bf12d8e072_step_001-table_json",
+        "name": "phonon_band_table.json",
+        "sha256": "d5c7587c3eb2f2992364dfeb31c786448687adf5b50a6ef8be64f9955deb8eb4",
+        "sizeBytes": 3732,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_e422a1a48e3880bf12d8e072_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "bae4297205f6f64ccb5627ffcebb3d825ab1e0d9eed2379d83179431473e29a3",
+        "sizeBytes": 711,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_e422a1a48e3880bf12d8e072_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "phonon.band"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "phonon.band"
+  ],
+  "slug": "phonon_band",
+  "sourcePaths": [
+    "docs/phase10h/evidence/phase10h1_phonon_bands"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6591.952
+  },
+  "tokenUsage": {
+    "completionTokens": 777,
+    "estimated": false,
+    "promptTokens": 6371,
+    "totalTokens": 7148
+  },
+  "verdict": "PASS"
+}

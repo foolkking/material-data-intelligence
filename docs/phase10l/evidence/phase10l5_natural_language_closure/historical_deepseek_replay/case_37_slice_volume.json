@@ -1,0 +1,253 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.volumetric_data"
+    ]
+  ],
+  "caseNumber": 37,
+  "createdAt": "2026-08-01T07:43:34.499895+00:00",
+  "decision": {
+    "decisionHash": "c087417991e45f6adb7483af2eab4ff579deed92dd0617f43de2bcfd09386642",
+    "decisionId": "decision_c087417991e45f6adb7483af",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot",
+          "summary",
+          "three_dimensional_view",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "volumetric_analysis"
+        ],
+        "toolId": "structure.volumetric_data",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": [
+      "table"
+    ]
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.volumetric_data"
+    ],
+    "providerVisibleToolIds": [
+      "structure.volumetric_data"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "057b037b99d542a9c58218689a0ef754c523bc5fbaa3065b18257f06367685ea",
+    "resolutionId": "resolution_057b037b99d542a9c5821868"
+  },
+  "historicalExpectedToolIds": [
+    "structure.volumetric_data"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot",
+      "summary",
+      "table",
+      "three_dimensional_view",
+      "warnings"
+    ],
+    "intentHash": "d1c63b19bc916b6c6bd0c36dfbb8f9abfda33d301ffa8bf07d31640f299ea993",
+    "intentId": "intent_d1c63b19bc916b6c6bd0c36d",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "volumetric_resource"
+    ],
+    "scientificIntents": [
+      "volumetric_analysis"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "obj_volumetric_5ef6442c2627",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:obj_volumetric_5ef6442c2627:5ef6442c2627412b27afaf726f67c43242adad7b1c880fcb4231ec2c3ad32374",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10J",
+  "plan": {
+    "graphHash": null,
+    "planHash": "8e3c41862e95218893271240b6fbfe9a6090a95b05fbc669ada4ffd70f8c7e8d",
+    "planId": "plan_fb787019396fea6d43acd9b6",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_chgcar",
+    "profileId": "profile_dataset_historical_chgcar_v2",
+    "profileSemanticHash": "601ae4436beb4c4f160e428dc6ef644fdc52cbdeb0b645c6991df32023f35691",
+    "selectedResourceIds": [
+      "obj_volumetric_5ef6442c2627"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5075.47,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23243,
+      "promptHash": "101c62fa4d4e7fc25a3737f50688c27cc30bc5c2ff190e26c5f506fddddfef28",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2888,
+      "responseContentBytes": 2196,
+      "responseHash": "37f45affa10992d0b47fb43e5951a7b2a974aa01bdac134d611c06e0f422281e",
+      "tokenUsage": {
+        "completionTokens": 671,
+        "estimated": false,
+        "promptTokens": 5499,
+        "totalTokens": 6170
+      }
+    },
+    {
+      "elapsedMs": 1537.703,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3541,
+      "promptHash": "6c9ddc6928eeba72599d9bc2159c4332557f2c873717642242be1ce1387e2586",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 610,
+      "responseContentBytes": 124,
+      "responseHash": "f52f89c4fb02eba8294bfe153aa0fe394ebbaacfe6c2eff8d549dfdf4d1237a6",
+      "tokenUsage": {
+        "completionTokens": 40,
+        "estimated": false,
+        "promptTokens": 950,
+        "totalTokens": 990
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Show a quantitative slice and direct-volume view of this charge density.",
+  "replayPromptHash": "0f2637687deff2a414cad1cc75d9ff03e8fdc2f3bae992de29c769a617a175b0",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "efa343be86e95dfd1b33fb2bfa3f7527fced29f7016f5ed04d37394aa792a014",
+  "runId": "historical_live_run_efa343be86e95dfd1b33fb2bfa3f7527",
+  "runtime": {
+    "artifactCount": 9,
+    "artifacts": [
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001-volumetric_grid_json",
+        "name": "volumetric_grid.json",
+        "sha256": "5ea9a9394c977aa285cbf39c30db5af798b3cc73abe07f115edc6927d5bb9e14",
+        "sizeBytes": 1304,
+        "type": "volumetric_grid_json"
+      },
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001-volumetric_payload_json",
+        "name": "volumetric_payload_01.json",
+        "sha256": "84157c48820972ab6deaa6f0eab51d0d40a908df237426832b8a5ea7b26b0994",
+        "sizeBytes": 1018,
+        "type": "volumetric_payload_json"
+      },
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001-volumetric_field_json",
+        "name": "volumetric_field_01.json",
+        "sha256": "97b003f125eefaf14d24ee22fa0ab64b2376e98351f7714a3a75cdaf6f27bb58",
+        "sizeBytes": 2244,
+        "type": "volumetric_field_json"
+      },
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001-volumetric_binary",
+        "name": "volumetric_field_01.f64.gz",
+        "sha256": "6f360e74fd5959280762f657d434c72771146205e8ef12b611fa562ba1a55904",
+        "sizeBytes": 47,
+        "type": "volumetric_binary"
+      },
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001-volumetric_dataset_json",
+        "name": "volumetric_dataset.json",
+        "sha256": "92bb606d8e376a69888ab031de6580a3fe46b57a08810154bd0efbe032342c39",
+        "sizeBytes": 6110,
+        "type": "volumetric_dataset_json"
+      },
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001-volumetric_manifest_json",
+        "name": "volumetric_manifest.json",
+        "sha256": "4bd7713f2c1de3f359c5f46f47f1e9026c21dd433d60f8dfa96de801dd24b52f",
+        "sizeBytes": 2233,
+        "type": "volumetric_manifest_json"
+      },
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001-volumetric_structure_overlay_json",
+        "name": "volumetric_structure_overlay.json",
+        "sha256": "de5ed5b03f133de7b908a082f3ae25ea3bb95b38a1ca6c10fc0b8696c2ce534c",
+        "sizeBytes": 4922,
+        "type": "volumetric_structure_overlay_json"
+      },
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "21105175f3cde12aa91a7790bd3acd89c497ea14515aa1a1509e83762de33fe2",
+        "sizeBytes": 751,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "736ad7914a7aa9b5a48dd79acb53b1a7abe73694603b83a11b5eb4ea3081061e",
+        "sizeBytes": 1704,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_93d6cf0b76791a4a053697f3_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.volumetric_data"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.volumetric_data"
+  ],
+  "slug": "slice_volume",
+  "sourcePaths": [
+    "docs/phase10j/evidence/phase10j6_volumetric_slice_volume_rendering"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6685.756
+  },
+  "tokenUsage": {
+    "completionTokens": 711,
+    "estimated": false,
+    "promptTokens": 6449,
+    "totalTokens": 7160
+  },
+  "verdict": "PASS"
+}

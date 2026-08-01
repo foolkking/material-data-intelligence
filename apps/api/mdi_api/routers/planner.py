@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from contextlib import nullcontext
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import os
@@ -25,6 +25,8 @@ from mdi_llm import (
     CapabilityPlanningResult,
     ClarificationSubmission,
     DeterministicAnalysisIntentBuilder,
+    DEEPSEEK_DEFAULT_MODEL,
+    DeepSeekProvider,
     LLMProviderError,
     MockLLMProvider,
     OpenAICompatibleAnalysisIntentBuilder,
@@ -230,7 +232,7 @@ def create_planner_intent(
             constraints=request.constraints,
             requested_provider=request.provider,
             provider=provider,
-            user_config=_planner_user_config_from_request(request),
+            user_config=_planner_user_config_from_request(request, selected_provider=provider),
             profile=profile,
         )
         _persist_planner_intent(repos, request.projectId, intent, created_by=created_by)
@@ -304,7 +306,7 @@ def planner_preview(
     reg = registry or _get_registry()
     try:
         llm = _select_planner_provider(request.provider, provider=provider)
-        user_config = _planner_user_config_from_request(request)
+        user_config = _planner_user_config_from_request(request, selected_provider=llm)
     except LLMProviderError as exc:
         return PlannerPreviewResult(
             plan=None,
@@ -342,7 +344,7 @@ def planner_preview(
 
     return PlannerPreviewResult(
         plan=plan,
-        raw_response=resp.raw_text,
+        raw_response=None if _provider_name(llm) == "deepseek" else resp.raw_text,
         validation=validation,
         model=resp.model,
         planner_provider=_provider_name(llm),
@@ -384,7 +386,7 @@ def planner_jobs(
     reg = registry or _get_registry()
     try:
         llm = _select_planner_provider(request.provider, provider=provider)
-        user_config = _planner_user_config_from_request(request)
+        user_config = _planner_user_config_from_request(request, selected_provider=llm)
     except LLMProviderError as exc:
         return _planner_jobs_provider_error(exc, planner_provider=request.provider)
     tools = [t for t in reg.tools if t.stage == "mvp"]
@@ -861,13 +863,13 @@ def _create_planner_job_interpretation_locked(
         provider_model = None
         provider_config_hash = None
         if request.mode == "STRICT_PROVIDER":
-            provider_identity = "openai_compatible"
-            provider_model = request.model or "configured-model"
+            provider_identity = "deepseek"
+            provider_model = request.model or os.getenv("DEEPSEEK_MODEL") or DEEPSEEK_DEFAULT_MODEL
             provider_config_hash = hashlib.sha256(json.dumps({
-                "provider": request.provider or "openai_compatible",
-                "baseUrl": request.baseUrl,
-                "model": request.model,
-                "temperature": request.temperature,
+                "provider": request.provider or "deepseek",
+                "baseUrl": "https://api.deepseek.com",
+                "model": provider_model,
+                "temperature": 0,
                 "maxTokens": request.maxTokens,
                 "timeoutSeconds": request.timeoutSeconds,
             }, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
@@ -892,6 +894,8 @@ def _create_planner_job_interpretation_locked(
             result = deterministic_interpret(bundle, idempotency_key_hash=idempotency_key_hash)
         else:
             user_config = _planner_user_config_from_request(request)
+            if user_config is not None:
+                user_config = replace(user_config, max_tokens=min(user_config.max_tokens, 2_048))
             try:
                 selected_provider = _select_interpretation_provider(request, provider=provider)
             except LLMProviderError as selection_error:
@@ -905,7 +909,13 @@ def _create_planner_job_interpretation_locked(
                 def call_provider(projection: dict[str, Any], repair: bool) -> str:
                     system = (
                         "Return exactly one JSON object matching the supplied Phase 10L-4 claim-selection contract. "
-                        "Use only providerVisibleEvidenceIds. Do not add text, numbers, units, entities, tools, plans, code, paths, or URLs."
+                        "Use only providerVisibleEvidenceIds. For a direct claim, copy claimType and semanticPredicate "
+                        "from that evidence item's allowedDirectClaim, use exactly one subjectEvidenceId, include the same "
+                        "ID in supportingEvidenceIds, and use empty limitingEvidenceIds, contradictingEvidenceIds, qualifiers, "
+                        "and recommendations unless the projection supplies an exact permitted value. Return between one and "
+                        "four non-duplicate direct claims total; never enumerate every evidence item. Do not add text, numbers, "
+                        "units, entities, tools, plans, code, "
+                        "paths, URLs, fields, or a second JSON value."
                     )
                     user_payload = {"projection": projection, "repair": repair}
                     response = selected_provider.complete_json(
@@ -914,6 +924,7 @@ def _create_planner_job_interpretation_locked(
                             {"role": "user", "content": json.dumps(user_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))},
                         ],
                         user_config=user_config,
+                        purpose="GROUNDED_INTERPRETATION",
                     )
                     return response.raw_text or json.dumps(response.raw_json, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
@@ -1283,9 +1294,9 @@ def _reject_duplicate_json_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]
 
 
 def _select_interpretation_provider(request: PlannerInterpretationRequest, *, provider: Any = None) -> Any:
-    selected = provider or _select_planner_provider(request.provider or "openai_compatible")
-    if not isinstance(selected, OpenAICompatibleProvider) and not hasattr(selected, "complete_json"):
-        raise LLMProviderError("Strict interpretation requires the existing OpenAI-compatible JSON transport.", code="LLM_PROVIDER_UNSUPPORTED")
+    selected = provider or _select_planner_provider(request.provider or "deepseek")
+    if not isinstance(selected, (DeepSeekProvider, OpenAICompatibleProvider)) and not hasattr(selected, "complete_json"):
+        raise LLMProviderError("Strict interpretation requires the bounded DeepSeek JSON transport.", code="LLM_PROVIDER_UNSUPPORTED")
     return selected
 
 
@@ -1594,11 +1605,23 @@ def _build_planner_intent(
         selected_target_ids=tuple(selected_target_ids),
         constraints=constraints,
     )
-    provider_name = (requested_provider or "mock").strip().lower()
-    if provider_name == "openai_compatible":
-        llm = provider if isinstance(provider, OpenAICompatibleProvider) else OpenAICompatibleProvider()
+    provider_name = _requested_planner_provider_name(requested_provider)
+    if provider is not None and requested_provider is None and not os.getenv("MDI_LLM_PROVIDER"):
+        provider_name = "deepseek" if isinstance(provider, DeepSeekProvider) else "mock"
+    if provider_name == "deepseek":
+        llm = provider or DeepSeekProvider()
         return OpenAICompatibleAnalysisIntentBuilder(llm).build(intent_request, profile=profile, user_config=user_config)
-    return DeterministicAnalysisIntentBuilder().build(intent_request, profile=profile)
+    if provider_name in {"", "mock", "mock_llm", "deterministic", "safe_mock"}:
+        if provider is None and not _test_providers_allowed():
+            raise LLMProviderError(
+                "Test and deterministic providers require the explicit offline test gate.",
+                code="PROVIDER_NOT_ALLOWED",
+            )
+        return DeterministicAnalysisIntentBuilder().build(intent_request, profile=profile)
+    raise LLMProviderError(
+        "New real LLM calls are restricted to DeepSeek.",
+        code="PROVIDER_NOT_ALLOWED",
+    )
 
 
 def _persist_planner_intent(repos: Any, project_id: str, intent: AnalysisIntent, *, created_by: str) -> dict[str, Any]:
@@ -1774,47 +1797,58 @@ def _provider_model(provider: Any) -> str:
 def _select_planner_provider(requested_provider: str | None, *, provider: Any = None) -> Any:
     if provider is not None:
         return provider
-    provider_name = (requested_provider or os.getenv("MDI_LLM_PROVIDER") or "mock").strip().lower()
+    provider_name = _requested_planner_provider_name(requested_provider)
     if provider_name in {"", "mock", "mock_llm", "deterministic", "safe_mock"}:
+        if not _test_providers_allowed():
+            raise LLMProviderError(
+                "Test and deterministic providers require the explicit offline test gate.",
+                code="PROVIDER_NOT_ALLOWED",
+            )
         return _LLM_PROVIDER
-    if provider_name == "openai_compatible":
-        return OpenAICompatibleProvider()
+    if provider_name == "deepseek":
+        return DeepSeekProvider()
     raise LLMProviderError(
-        f"Unsupported planner provider '{provider_name}'.",
-        code="LLM_PROVIDER_UNSUPPORTED",
+        "New real LLM calls are restricted to DeepSeek.",
+        code="PROVIDER_NOT_ALLOWED",
     )
 
 
-def _planner_user_config_from_request(request: Any) -> PlannerUserConfig | None:
+def _requested_planner_provider_name(requested_provider: str | None) -> str:
+    return (requested_provider or os.getenv("MDI_LLM_PROVIDER") or "deepseek").strip().lower()
+
+
+def _test_providers_allowed() -> bool:
+    return os.getenv("MDI_ALLOW_TEST_PROVIDERS", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _planner_user_config_from_request(request: Any, *, selected_provider: Any = None) -> PlannerUserConfig | None:
     fields = ("baseUrl", "model", "secretId", "temperature", "maxTokens", "timeoutSeconds")
-    provider_name = (getattr(request, "provider", None) or os.getenv("MDI_LLM_PROVIDER") or "mock").strip().lower()
+    if selected_provider is not None and not isinstance(selected_provider, DeepSeekProvider):
+        return None
+    provider_name = _requested_planner_provider_name(getattr(request, "provider", None))
     has_explicit_config = any(getattr(request, field, None) not in (None, "") for field in fields)
+    if provider_name != "deepseek":
+        return None
+    if getattr(request, "baseUrl", None) or getattr(request, "secretId", None):
+        raise LLMProviderError(
+            "DeepSeek endpoint and credentials are server-owned and cannot be supplied per request.",
+            code="DEEPSEEK_CONFIGURATION_NOT_ALLOWED",
+        )
+    temperature = getattr(request, "temperature", None)
+    if temperature not in (None, 0, 0.0):
+        raise LLMProviderError(
+            "DeepSeek temperature is fixed at zero.",
+            code="DEEPSEEK_CONFIGURATION_NOT_ALLOWED",
+        )
     if not has_explicit_config:
         return None
-    if provider_name not in {"openai_compatible"}:
-        return None
-
-    api_key = None
-    secret_id = getattr(request, "secretId", None)
-    if secret_id:
-        from mdi_api.routers.secrets import get_secret_value, mark_secret_used
-
-        api_key = get_secret_value(secret_id)
-        if not api_key:
-            raise LLMProviderError(
-                "OpenAI-compatible LLM provider is not configured: missing API key.",
-                code="LLM_API_KEY_MISSING",
-            )
-        mark_secret_used(secret_id)
 
     return PlannerUserConfig(
-        provider="openai_compatible",
-        model=getattr(request, "model", None) or "gpt-4o",
-        base_url=getattr(request, "baseUrl", None),
-        api_key=api_key,
-        timeout_seconds=float(getattr(request, "timeoutSeconds", None) or 30.0),
-        temperature=float(getattr(request, "temperature", None) if getattr(request, "temperature", None) is not None else 0.2),
-        max_tokens=int(getattr(request, "maxTokens", None) or 4096),
+        provider="deepseek",
+        model=getattr(request, "model", None) or os.getenv("DEEPSEEK_MODEL") or DEEPSEEK_DEFAULT_MODEL,
+        timeout_seconds=float(getattr(request, "timeoutSeconds", None) or 120.0),
+        temperature=0.0,
+        max_tokens=int(getattr(request, "maxTokens", None) or 8192),
     )
 
 

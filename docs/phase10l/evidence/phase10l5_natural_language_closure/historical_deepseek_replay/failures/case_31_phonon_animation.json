@@ -1,0 +1,36 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-08-01T07:35:14.593831+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:31:PLAN_READY:UNSUPPORTED:errors=[]:selected=[]"
+    },
+    {
+      "createdAt": "2026-08-01T07:38:22.624294+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:31:PLAN_READY:UNSUPPORTED:errors=[]:selected=[]"
+    },
+    {
+      "createdAt": "2026-08-01T07:39:08.100160+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-pro",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:31:PLAN_READY:UNSUPPORTED:errors=[]:selected=[]"
+    },
+    {
+      "createdAt": "2026-08-01T07:40:39.598006+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-pro",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:31:PLAN_READY:UNSUPPORTED:details={\"selected\":[],\"unsupported\":[{\"boundary\":\"MISSING_DATA\",\"code\":\"RESOURCE_KIND_MISMATCH\",\"field\":\"dataScope.resourceRefs\"}],\"validation\":[]}"
+    }
+  ],
+  "caseNumber": 31,
+  "createdAt": "2026-08-01T07:40:39.598006+00:00",
+  "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+  "model": "deepseek-v4-pro",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:31:PLAN_READY:UNSUPPORTED:details={\"selected\":[],\"unsupported\":[{\"boundary\":\"MISSING_DATA\",\"code\":\"RESOURCE_KIND_MISMATCH\",\"field\":\"dataScope.resourceRefs\"}],\"validation\":[]}",
+  "slug": "phonon_animation",
+  "verdict": "FAIL"
+}

@@ -1,0 +1,204 @@
+{
+  "apiRefs": [
+    "interpretations/interpretation_a02524cfc5dedf0488b955e4da547ef3/evidence",
+    "planner/jobs/job_79ba32c3e1fd536c367fe20f",
+    "planner/jobs/job_79ba32c3e1fd536c367fe20f/dependencies",
+    "planner/jobs/job_79ba32c3e1fd536c367fe20f/interpretations"
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_79ba32c3e1fd536c367fe20f_step_001-quality_issues_json",
+      "artifactType": "quality_issues_json",
+      "contentHash": "fc9dff98c48d97b7c6a7119c21be21f3be13e5c84d3431140d15bbc71a462794",
+      "producerToolCallId": "call_job_79ba32c3e1fd536c367fe20f_step_001",
+      "sizeBytes": 699
+    },
+    {
+      "artifactId": "call_job_79ba32c3e1fd536c367fe20f_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "5d6dd4b045114db7bd3f8430da94ad0d1050faa4efb67fbb46a1e56e40a00879",
+      "producerToolCallId": "call_job_79ba32c3e1fd536c367fe20f_step_001",
+      "sizeBytes": 1547
+    },
+    {
+      "artifactId": "call_job_79ba32c3e1fd536c367fe20f_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "ca2315c03b200414325148c152a71d5b9ad9563b61f56e9ba6d49a0c1721e103",
+      "producerToolCallId": "call_job_79ba32c3e1fd536c367fe20f_step_001",
+      "sizeBytes": 370
+    },
+    {
+      "artifactId": "call_job_79ba32c3e1fd536c367fe20f_step_001-table_json",
+      "artifactType": "table_json",
+      "contentHash": "9cab1b92620f7ba9cecebbe1da36abec95beca881fd19950a640249ff8eb7044",
+      "producerToolCallId": "call_job_79ba32c3e1fd536c367fe20f_step_001",
+      "sizeBytes": 6633
+    }
+  ],
+  "browserRefs": [],
+  "caseSpecHash": "57f7ec437d831dd18eddf66edfa96ec468b002627f30d0f5e5e7413bc74a0fe6",
+  "caseSpecId": "caseSpec_57f7ec437d831dd18eddf66edfa96ec4",
+  "claimEvidenceLinks": [
+    {
+      "claimId": "claim_1ca91ff4a0b57885971b5a525636a7a3",
+      "evidenceItemIds": [
+        "evidence_dff7cc5c2464a1ba70805355d7147948"
+      ]
+    },
+    {
+      "claimId": "claim_1d66e336bda0d60681b1a68a3c7dd2cd",
+      "evidenceItemIds": [
+        "evidence_cfe4b079837b19dd11341c9b877ca0e7"
+      ]
+    },
+    {
+      "claimId": "claim_31d0836a2c2473d75cb7abb9a5dc9922",
+      "evidenceItemIds": [
+        "evidence_d97750ac7716c77cd40425904f6f4134"
+      ]
+    },
+    {
+      "claimId": "claim_354b05a51c639a364304a447f3545b04",
+      "evidenceItemIds": [
+        "evidence_8eb6a2e8900b38aa8960d9a043a020ea"
+      ]
+    },
+    {
+      "claimId": "claim_36bb1038298e261424ca74fbc7f2e8f5",
+      "evidenceItemIds": [
+        "evidence_5a53e5dba307f19e23e5c42c8b720b48"
+      ]
+    },
+    {
+      "claimId": "claim_41ab906c44c6999c276b072d6b2b6cf3",
+      "evidenceItemIds": [
+        "evidence_d07c87a7a610b12f362781018d711d70"
+      ]
+    },
+    {
+      "claimId": "claim_6d2e516e217183a53e9b132b9deba3b2",
+      "evidenceItemIds": [
+        "evidence_1d305f7260c04736ba4beeb68686b3eb"
+      ]
+    },
+    {
+      "claimId": "claim_906f4cf91603851a4024c098c21a8b53",
+      "evidenceItemIds": [
+        "evidence_590d131e40da12bdc599874646c89364"
+      ]
+    },
+    {
+      "claimId": "claim_accd5a9c5e83ac5354e2f7169b109b3e",
+      "evidenceItemIds": [
+        "evidence_e132525947a8cdee47a7740b538122ca"
+      ]
+    },
+    {
+      "claimId": "claim_bd5835f643616028cfc3315bcd38c716",
+      "evidenceItemIds": [
+        "evidence_d038caef7ffce045e6b8277a33b3d11f"
+      ]
+    },
+    {
+      "claimId": "claim_e9100a0746db1da8dec3df8e0740ec09",
+      "evidenceItemIds": [
+        "evidence_ec120ceaa1e5b0bda8a895937bf26b2f"
+      ]
+    }
+  ],
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 3419.5669,
+  "eligibility": {
+    "recordHash": "c4f2b87014609a10cd94628f7a4fb48e627097fc5635f85e61f43c60c2de15d6",
+    "recordId": "resolution_c4f2b87014609a10cd94628f",
+    "schemaVersion": "1.0"
+  },
+  "evidenceBundle": {
+    "recordHash": "03308faca3fe4bff7d4564b7881fbf89ff91bf75fbce61cf400884904fa7616b",
+    "recordId": "bundle_03308faca3fe4bff7d4564b7881fbf89",
+    "schemaVersion": "1.0"
+  },
+  "executionOutcome": "LEGACY_TERMINAL",
+  "intent": {
+    "clarificationRound": 0,
+    "intentHash": "c4259c678fd43a1f1219bf23dd95f08f33e0c2f480b4011cc2a2c7192b82157d",
+    "intentId": "intent_c4259c678fd43a1f1219bf23",
+    "outcome": "READY"
+  },
+  "interpretation": {
+    "recordHash": "a02524cfc5dedf0488b955e4da547ef3256d3b42fccdb5cdcfadcb8ae96837a7",
+    "recordId": "interpretation_a02524cfc5dedf0488b955e4da547ef3",
+    "schemaVersion": "1.0"
+  },
+  "job": {
+    "recordId": "job_79ba32c3e1fd536c367fe20f",
+    "semanticHash": "f56c3c0fa6e75e7919ea5719c8d3d0b7b6a66d0031110189961e240d874ae8b8",
+    "state": "completed"
+  },
+  "lineage": [],
+  "plan": {
+    "graphHash": null,
+    "planHash": "f56c3c0fa6e75e7919ea5719c8d3d0b7b6a66d0031110189961e240d874ae8b8",
+    "planId": "plan_62a418f31e87822d1be7c3fe",
+    "schemaVersion": "0.1"
+  },
+  "profile": {
+    "recordHash": "3607e95955187272e381ffa2b1a71eaba5d662ab4faa4cb70da7ed8614430d9f",
+    "recordId": "profile_dataset_phase10k2_evidence_v2",
+    "schemaVersion": "2.0"
+  },
+  "provider": {
+    "keySource": "NONE",
+    "mode": "DETERMINISTIC",
+    "model": "deterministic-capability-planner",
+    "promptHashes": [],
+    "provider": "deterministic_mock",
+    "purposes": [],
+    "realCallCount": 0,
+    "responseHashes": []
+  },
+  "resourceManifest": [
+    {
+      "kind": "dataframe",
+      "objectHash": "6f626a5f6d6174657269616c7300000000000000000000000000000000000000",
+      "objectId": "obj_materials",
+      "objectType": "DataFrame"
+    }
+  ],
+  "runHash": "b767fb159052759485cefc93b3166d0da3e9ce0e730ef3d669978031fc3c68a4",
+  "runId": "run_b767fb159052759485cefc93b3166d0d",
+  "schemaVersion": "1.0",
+  "securityMarkers": [
+    "NO_ALTERNATIVE_PROVIDER_REAL_CALLS",
+    "NO_ARBITRARY_CODE",
+    "NO_ARTIFACT_HTML_OR_JAVASCRIPT",
+    "NO_CROSS_JOB_OR_PROJECT_BINDING",
+    "NO_DIRECT_TOOL_PLAN_OR_ADAPTER_IN_USER_REQUEST",
+    "NO_EXTERNAL_SCIENTIFIC_API",
+    "NO_RAW_ARTIFACT_TO_PROVIDER",
+    "NO_RECOMMENDATION_AUTO_EXECUTION",
+    "NO_SECRET_IN_EVIDENCE"
+  ],
+  "selectedTools": [
+    {
+      "bindingHash": "8674329f2e7034e7d1bf0b0f8d4380bf197fdad8966791c34bbfdc293fd7147d",
+      "toolId": "dataset.materials_explorer",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "tokenUsage": {
+    "completionTokens": 0,
+    "estimated": false,
+    "promptTokens": 0,
+    "totalTokens": 0
+  },
+  "toolCalls": [
+    {
+      "recordId": "call_job_79ba32c3e1fd536c367fe20f_step_001",
+      "semanticHash": "0fa874fc54099b3b62f8f3977b05f6aa4736d12e954e794333fc670140bdcfb7",
+      "state": "completed"
+    }
+  ],
+  "userText": "分析这批材料的组成分布和异常样本。",
+  "verdict": "PASS"
+}

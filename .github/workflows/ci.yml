@@ -15,6 +15,8 @@ jobs:
   unit:
     name: Unit Tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    env:
+      DEEPSEEK_KEY: ""
     strategy:
       matrix:
         python-version: ["3.11"]
@@ -31,6 +33,9 @@ jobs:
 
       - name: Phase 10 backend closure
         run: uv run python -m pytest -q tests/integration/test_phase10_product_closure.py -m "not integration" --tb=short
+
+      - name: Phase 10L-5 natural-language evidence closure
+        run: uv run python -m pytest -q tests/test_phase10l5_deepseek_provider.py tests/test_phase10l5_natural_language_evidence.py --tb=short
 
       - name: Run unit tests
         run: uv run python -m pytest -q -m "not integration" --tb=short
@@ -90,6 +95,18 @@ jobs:
             --compare-with "${GITHUB_WORKSPACE}/docs/phase10l/evidence/phase10l4_grounded_interpretation/browser_semantic_contract.json"
         working-directory: apps/web
 
+      - name: Replay Phase 10L-5 natural-language browser evidence
+        env:
+          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
+          MDI_PHASE10L5_BROWSERS: chromium,firefox,webkit
+          MDI_PHASE10L5_EVIDENCE_PORT: "3223"
+        run: |
+          node test/natural-language-closure-browser-evidence.mjs --validate-fixtures
+          node test/natural-language-closure-browser-evidence.mjs \
+            --output-dir "${RUNNER_TEMP}/phase10l5-browser-replay" \
+            --compare-with "${GITHUB_WORKSPACE}/docs/phase10l/evidence/phase10l5_natural_language_closure/browser_semantic_contract.json"
+        working-directory: apps/web
+
       - name: Build
         run: npm run build
         working-directory: apps/web
@@ -98,7 +115,6 @@ jobs:
   integration:
     name: Service-backed Integration (PostgreSQL + Redis + MinIO)
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres:16-alpine
@@ -145,6 +161,7 @@ jobs:
           "
 
     env:
+      DEEPSEEK_KEY: ""
       MDI_RUN_INTEGRATION: "1"
       DATABASE_URL: "postgresql+psycopg://mdi:mdi-ci-pass@localhost:5432/mdi"
       MDI_TEST_DATABASE_URL: "postgresql+psycopg://mdi:mdi-ci-pass@localhost:5432/mdi"
@@ -284,7 +301,7 @@ jobs:
       - name: Run integration tests (capture output)
         run: |
           set +e
-          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py -vv -m integration \
+          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py -vv -m integration \
             --tb=long --color=yes 2>&1 | tee integration.log
           PYTEST_EXIT=${PIPESTATUS[0]}
           set -e
@@ -332,19 +349,24 @@ jobs:
           fi
 
           # P0: every explicitly selected integration test must be collected and pass.
-          if [ "${PASSED:-0}" -lt 31 ]; then
+          if [ "${PASSED:-0}" -lt 36 ]; then
             echo ""
-            echo "ERROR: Only ${PASSED:-0}/31 integration tests passed."
-            echo "Expected: at least 31 passed."
+            echo "ERROR: Only ${PASSED:-0}/36 integration tests passed."
+            echo "Expected: at least 36 passed."
             exit 1
           fi
 
           for REQUIRED_TEST in \
             test_phase10l4_postgres_redis_minio_phonon_chain_interpretation \
             test_phase10l4_postgres_redis_minio_single_tool_interpretation \
-            test_phase10l4_postgres_redis_minio_partial_execution_interpretation; do
+            test_phase10l4_postgres_redis_minio_partial_execution_interpretation \
+            'test_phase10l5_postgres_redis_minio_natural_language_closure\[dataset\]' \
+            'test_phase10l5_postgres_redis_minio_natural_language_closure\[structure\]' \
+            'test_phase10l5_postgres_redis_minio_natural_language_closure\[materials_ml\]' \
+            'test_phase10l5_postgres_redis_minio_natural_language_closure\[phonon\]' \
+            'test_phase10l5_postgres_redis_minio_natural_language_closure\[volumetric\]'; do
             if ! grep -q "${REQUIRED_TEST}.*PASSED" integration.log; then
-              echo "ERROR: Required Phase 10L-4 service-backed test did not pass: ${REQUIRED_TEST}"
+              echo "ERROR: Required Phase 10L service-backed test did not pass: ${REQUIRED_TEST}"
               exit 1
             fi
           done

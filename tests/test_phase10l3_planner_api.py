@@ -92,6 +92,7 @@ def test_unselected_multi_resource_intent_creates_no_plan_job_or_queue_message()
             provider="mock",
             enqueue=True,
         ),
+        provider=MockLLMProvider(fixed_plan={"invalid": "legacy path must not run"}),
         repositories=repos,
     )
 

@@ -1,0 +1,24 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-07-31T13:09:21.762253+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:28:PLAN_READY:VALIDATION_FAILED:errors=['DEEPSEEK_PROVIDER_FAILED']:selected=[]"
+    },
+    {
+      "createdAt": "2026-07-31T13:14:24.945641+00:00",
+      "errorCode": "HISTORICAL_REPLAY_RUNTIME_FAILED",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_RUNTIME_FAILED:28:failed:job failed: TOOL_INPUT_INVALID: 'Unknown input ref: obj_trajectory_65749455aac8'"
+    }
+  ],
+  "caseNumber": 28,
+  "createdAt": "2026-07-31T13:14:24.945641+00:00",
+  "errorCode": "HISTORICAL_REPLAY_RUNTIME_FAILED",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_RUNTIME_FAILED:28:failed:job failed: TOOL_INPUT_INVALID: 'Unknown input ref: obj_trajectory_65749455aac8'",
+  "slug": "trajectory_viewer",
+  "verdict": "FAIL"
+}

@@ -267,6 +267,12 @@ def test_llm_composer_sees_only_compatible_pair_ids_and_uses_one_shared_repair()
         calls.append(kwargs)
         context = json.loads(kwargs["messages"][-1]["content"])
         assert sorted(item["pairId"] for item in context["compatiblePairs"]) == compatible_ids
+        assert context["outputTemplate"] == {
+            "schemaVersion": "1.0",
+            "matrixId": context["matrixId"],
+            "selectedPairIds": compatible_ids,
+        }
+        assert context["outputSchema"]["additionalProperties"] is False
         assert "artifactPayload" not in json.dumps(context)
         selected_pair_ids = [] if len(calls) == 1 else compatible_ids
         payload = {

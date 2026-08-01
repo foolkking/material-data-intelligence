@@ -1,5 +1,23 @@
 # OPEN_QUESTIONS
 
+## 2026-07-31 Phase 10L-5 decisions closed
+
+- Real LLM provider for the current gate: DeepSeek only. `DEEPSEEK_KEY` is the
+  only accepted key source; no alternate provider or key alias is allowed.
+- All five frozen natural-language cases require real gated verification, not
+  only the single-tool and phonon examples.
+- Default CI remains deterministic/fake with `REAL_LLM_CALLS = 0`; local live
+  evidence is recorded separately and never represented as CI live coverage.
+- Per-case live call cap is 12; five per-case records form the current-product
+  suite. A separate 40-case historical replay is bounded and audited.
+  Historical failed attempts remain evidence and are not deleted.
+
+Open for later reviewer decisions: GitHub live DeepSeek secret/workflow policy,
+Phase 10M workspace information architecture, and final Phase 10L product
+closure wording. None is an executable task in the current queue.
+The local historical replay coverage and its exclusions are now recorded in
+the L5 evidence matrix.
+
 ## Active Questions
 
 The following questions can affect Initial Release and must be decided in their
@@ -12,7 +30,8 @@ assigned phases rather than by this roadmap gate:
   evidence projection, claim grounding, one interpretation repair, and no
   execution authority are fixed. The reviewer-supplied Phase 10L-5 owns only
   cross-case natural-language evidence closure and its approved DeepSeek-only
-  provider policy; it remains blocked until L4 archive CI succeeds.
+  provider policy; its only remaining gate is its own implementation,
+  completion-record, and verified queue-archive CI.
 
 * Which exact units and domain property registries should be admitted beyond
   the conservative Phase 10K-1 numeric property allowlist?

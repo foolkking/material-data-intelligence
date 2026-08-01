@@ -226,6 +226,12 @@ def _request_composition_proposal(
         "matrixId": matrix.matrixId,
         "selectedToolIds": matrix.selectedToolIds,
         "compatiblePairs": visible_pairs,
+        "outputSchema": DependencyCompositionProposal.model_json_schema(),
+        "outputTemplate": {
+            "schemaVersion": "1.0",
+            "matrixId": matrix.matrixId,
+            "selectedPairIds": sorted(item["pairId"] for item in visible_pairs),
+        },
         "invalidProposal": invalid_proposal.model_dump(mode="json") if invalid_proposal else None,
         "diagnostics": diagnostics or [],
     }
@@ -234,7 +240,9 @@ def _request_composition_proposal(
             "role": "system",
             "content": (
                 "Return exactly one bare JSON object matching DependencyCompositionProposal 1.0. "
-                "Select only pairId values in compatiblePairs. Do not invent tools, steps, ports, contracts, "
+                "Copy outputTemplate exactly: matrixId must equal the supplied matrixId and selectedPairIds must be the "
+                "sorted list of every pairId in compatiblePairs. Include no fields outside outputSchema. "
+                "Do not invent tools, steps, ports, contracts, "
                 "artifact payloads, paths, URLs, code, dependencies, conditions, retries, or callbacks."
             ),
         },
@@ -244,7 +252,11 @@ def _request_composition_proposal(
         },
     ]
     try:
-        response = provider.complete_json(messages=messages, user_config=user_config)
+        response = provider.complete_json(
+            messages=messages,
+            user_config=user_config,
+            purpose="MULTI_TOOL_COMPOSITION",
+        )
     except LLMProviderError as exc:
         raise DependencyCompositionError(exc.safe_message, code=exc.code, repairable=False) from exc
     parsed = _strict_json_object(response.raw_text)

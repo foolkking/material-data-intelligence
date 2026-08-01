@@ -1,0 +1,226 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "ml.classification_evaluation"
+    ]
+  ],
+  "caseNumber": 40,
+  "createdAt": "2026-08-01T07:44:24.923226+00:00",
+  "decision": {
+    "decisionHash": "a07822e3544f41ff0b8b7a8fc5e82714760e64da580de32ad03ab1475c35871d",
+    "decisionId": "decision_a07822e3544f41ff0b8b7a8f",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "groupIds",
+            "source": "TARGET_GROUP_IDS",
+            "sourceIdentity": "classification_default",
+            "value": [
+              "classification_default"
+            ],
+            "valueId": "groups:classification_default"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "metrics",
+          "summary",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "ml_classification_evaluation"
+        ],
+        "toolId": "ml.classification_evaluation",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "ml.classification_evaluation"
+    ],
+    "providerVisibleToolIds": [
+      "ml.classification_evaluation"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "666699c1ac7e061c4e6244362ed53c846183e4e41b8c28525e2c3748de4aa8ad",
+    "resolutionId": "resolution_666699c1ac7e061c4e624436"
+  },
+  "historicalExpectedToolIds": [
+    "ml.classification_evaluation"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "metrics",
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "c68a1419fec38ab696240f018d3491f2b662d3b55cf8ac2776e73b02e815b86d",
+    "intentId": "intent_c68a1419fec38ab696240f01",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "classification_semantics"
+    ],
+    "scientificIntents": [
+      "ml_classification_evaluation"
+    ],
+    "targetSemantics": [
+      {
+        "column": "class_true",
+        "groupId": "classification_default",
+        "objectId": "table_classification",
+        "origin": "PROFILE_EXACT",
+        "role": "classification_target",
+        "semanticId": "classification_default:target:class_true",
+        "seriesId": null,
+        "unit": null
+      },
+      {
+        "column": "class_pred",
+        "groupId": "classification_default",
+        "objectId": "table_classification",
+        "origin": "PROFILE_EXACT",
+        "role": "classification_prediction",
+        "semanticId": "classification_default:prediction:class_pred",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10K",
+  "plan": {
+    "graphHash": null,
+    "planHash": "90b39aa9cd1653b631bbf3acc6f2d281303f2fe0937d1a4124a532988fab1c32",
+    "planId": "plan_ec30f1f016d64fbd1abac8c9",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_classification",
+    "profileId": "profile_dataset_historical_classification_v2",
+    "profileSemanticHash": "9051800b276eb30107453c33680b3f31c51b0438c11bd42efb1631444cd74df8",
+    "selectedResourceIds": [
+      "table_classification"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 6537.891,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 26659,
+      "promptHash": "d6ead0b78c940f5c4297e6ad80e16475fa04d1f497b2d1bf24e6545138eff8ae",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 4442,
+      "responseContentBytes": 3554,
+      "responseHash": "615a52533b0fde6b279dbe20cb6d81d8ee686dba25ee7b723ae701de8525bd34",
+      "tokenUsage": {
+        "completionTokens": 991,
+        "estimated": false,
+        "promptTokens": 6196,
+        "totalTokens": 7187
+      }
+    },
+    {
+      "elapsedMs": 1826.087,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3723,
+      "promptHash": "f5403de515460f74e41a7eefe8b035b8dcb5a4f59a0de5666fdd262ba699f1c1",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 613,
+      "responseContentBytes": 127,
+      "responseHash": "0745ac4ac144aee0a2921197f66a02cbc19f0c2500ff04c4e98e071e2e3e36d1",
+      "tokenUsage": {
+        "completionTokens": 39,
+        "estimated": false,
+        "promptTokens": 886,
+        "totalTokens": 925
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Evaluate classification confusion matrix, ROC, and PR for positive class B.",
+  "replayPromptHash": "ced0140e5d6dffcbc9282cb54a8e7cfd83b0d6ca0e51c7e40bf9ae7b062033c7",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "52abf5e260a127a5ac9276a5a96f807fc9fb4ec3a4a8f015888431fa86e1a553",
+  "runId": "historical_live_run_52abf5e260a127a5ac9276a5a96f807f",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_6621689f25b5637941e95be6_step_001-table_json",
+        "name": "materials_ml_classification.json",
+        "sha256": "b72ade83a4063a14e76f45a27252340b52f13cdd9eead9ace77f30f6ba1d5fcf",
+        "sizeBytes": 4105,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_6621689f25b5637941e95be6_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "2246d09a0ecf8969fbac2a2cae95fb72889475f82d17e6e3bc3f0f148180661a",
+        "sizeBytes": 325,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_6621689f25b5637941e95be6_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "fe11240dbafe77c3146f28517faf7cab8b3daadeaa9b7683c256b62528a2f7d3",
+        "sizeBytes": 1222,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_6621689f25b5637941e95be6_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "ml.classification_evaluation"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "ml.classification_evaluation"
+  ],
+  "slug": "classification",
+  "sourcePaths": [
+    "docs/phase10k/evidence/phase10k3_materials_ml_evaluation"
+  ],
+  "timing": {
+    "plannerElapsedMs": 8452.626
+  },
+  "tokenUsage": {
+    "completionTokens": 1030,
+    "estimated": false,
+    "promptTokens": 7082,
+    "totalTokens": 8112
+  },
+  "verdict": "PASS"
+}

@@ -1,0 +1,69 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 27628.584,
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25026,
+      "promptHash": "e5a2bf3635280900e5a5324818dda37c9865bb7e84b0b99119336dad91f11b62",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 14736,
+      "responseHash": "49b1f47b3c9a4463412d17b2fbdba62b52e826772cb22c2cfccec4d3d1affaa3",
+      "tokenUsage": {
+        "completionTokens": 3243,
+        "estimated": false,
+        "promptTokens": 5983,
+        "totalTokens": 9226
+      }
+    },
+    {
+      "elapsedMs": 12532.041,
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 8012,
+      "promptHash": "4de937c739824e0862ee76941a0f8b15c0516da512e2444896e82b94d635d065",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 6331,
+      "responseHash": "c4ba1b8d197b00fa95e7ea51920ea4c41d25771f1cfd382f145fb64e559c9f34",
+      "tokenUsage": {
+        "completionTokens": 1177,
+        "estimated": false,
+        "promptTokens": 2267,
+        "totalTokens": 3444
+      }
+    },
+    {
+      "elapsedMs": 284.649,
+      "model": "deepseek-v4-flash",
+      "outcome": "DEEPSEEK_PROVIDER_FAILED",
+      "promptBytes": 11985,
+      "promptHash": "029dd73437e89bda29fefc43d1bf92bb95205d924abd1aa07e0ade80f4f977f5",
+      "purpose": "GROUNDED_INTERPRETATION",
+      "realCall": true,
+      "responseBytes": 0,
+      "responseHash": null,
+      "tokenUsage": {
+        "completionTokens": 0,
+        "estimated": true,
+        "promptTokens": 2997,
+        "totalTokens": 2997
+      }
+    }
+  ],
+  "caseIndex": 0,
+  "caseSpecId": "caseSpec_57f7ec437d831dd18eddf66edfa96ec4",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 41045.97,
+  "errorCode": "LIVE_INTERPRETATION_FAILED",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "realCallCount": 3,
+  "safeDetails": "LIVE_INTERPRETATION_FAILED:{\"diagnostics\":[\"STRICT_PROVIDER_TRANSPORT_FAILED:LLMProviderError\"],\"evidenceItemCount\":0,\"outcome\":\"PROVIDER_FAILED\",\"repairCount\":0}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

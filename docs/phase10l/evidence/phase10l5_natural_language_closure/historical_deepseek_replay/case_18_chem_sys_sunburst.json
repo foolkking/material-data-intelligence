@@ -1,0 +1,221 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "composition.chem_sys_sunburst"
+    ]
+  ],
+  "caseNumber": 18,
+  "createdAt": "2026-08-01T07:29:26.684923+00:00",
+  "decision": {
+    "decisionHash": "b59f4d0474cdd66fe82d8729783d3f4de0103b675e51ed8357bb222566612947",
+    "decisionId": "decision_b59f4d0474cdd66fe82d8729",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "formulaColumn",
+            "source": "SEMANTIC_COLUMNS",
+            "sourceIdentity": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57:material_formula",
+            "value": "formula",
+            "valueId": "column:table_historical:formula"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "plot"
+        ],
+        "coveredScientificIntents": [
+          "visualization"
+        ],
+        "toolId": "composition.chem_sys_sunburst",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.ptable_heatmap",
+      "dataset.composition_space",
+      "viz.correlation"
+    ],
+    "providerVisibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.ptable_heatmap",
+      "dataset.composition_space",
+      "viz.correlation"
+    ],
+    "rejectedToolCount": 47,
+    "resolutionHash": "1b963f6d2d06aad6a3fc7602239ca5985092a06aefac40d961dae7e2247a2efd",
+    "resolutionId": "resolution_1b963f6d2d06aad6a3fc7602"
+  },
+  "historicalExpectedToolIds": [
+    "composition.chem_sys_sunburst"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot"
+    ],
+    "intentHash": "6e0d5cb872cff9fbc047794d37dd391f450b58a332cb17132ba64cc777f76677",
+    "intentId": "intent_6e0d5cb872cff9fbc047794d",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [],
+    "scientificIntents": [
+      "visualization"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10B",
+  "plan": {
+    "graphHash": null,
+    "planHash": "104fa2ba5ff7188a2b5b4d5fafcb69adafc12f498c52a3a2d25fb5c3ed144524",
+    "planId": "plan_86bcd65aa0f3e01808fc81ca",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4775.517,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25436,
+      "promptHash": "061480a9c34d255dc953925a54e680a2608a107041a2b54fdd0ffdd2ec46b4ba",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2928,
+      "responseContentBytes": 2199,
+      "responseHash": "d7e69ff514f1036b306211ab52e0a92a9a0b922a438faa464d88f6dd01eab8f0",
+      "tokenUsage": {
+        "completionTokens": 668,
+        "estimated": false,
+        "promptTokens": 6022,
+        "totalTokens": 6690
+      }
+    },
+    {
+      "elapsedMs": 1942.452,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 7205,
+      "promptHash": "1a950915e7da59285d3e36d35ce07d2e2c346763c540b96e6d4cca2c7e97516a",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 617,
+      "responseContentBytes": 128,
+      "responseHash": "ed8478636ac99635ec7d2a4ffa906997cbf5eb3e80a81e320c1b4a6b635b128a",
+      "tokenUsage": {
+        "completionTokens": 46,
+        "estimated": false,
+        "promptTokens": 1993,
+        "totalTokens": 2039
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Show arity, chemical-system, and formula hierarchy as a sunburst.",
+  "replayPromptHash": "9dcc8489c4c787ac8c47f888a2e4e9c937e7d1f112238095b0010f6b680ce10b",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "3b6f555ab29a04fbc8c5226acaeea4741f3dfe5b8e20afc2ec380d36b5f8d155",
+  "runId": "historical_live_run_3b6f555ab29a04fbc8c5226acaeea474",
+  "runtime": {
+    "artifactCount": 5,
+    "artifacts": [
+      {
+        "id": "call_job_979addc92af1709320091ccd_step_001-plotly_json",
+        "name": "chem_sys_sunburst.json",
+        "sha256": "165304e1537f51a38e75078fc2ff65b2e9c7397017c6c31128549bb599a7c73f",
+        "sizeBytes": 8896,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_979addc92af1709320091ccd_step_001-plotly_html",
+        "name": "chem_sys_sunburst.html",
+        "sha256": "5035a1901ca6f55be369e9862ef7939546286bb0cfece6d1f150632fb9e659d4",
+        "sizeBytes": 8797,
+        "type": "plotly_html"
+      },
+      {
+        "id": "call_job_979addc92af1709320091ccd_step_001-preview_png",
+        "name": "preview.png",
+        "sha256": "ad6bc0025a798fe0ebe49f41f1aaaaaeadb5c8bb081b1bf9dac341bdf680b57c",
+        "sizeBytes": 69,
+        "type": "preview_png"
+      },
+      {
+        "id": "call_job_979addc92af1709320091ccd_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "6c9b1fbf5b205a486fe54b6826369fcc58d78e858b40e2c20585c2497483e5aa",
+        "sizeBytes": 186,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_979addc92af1709320091ccd_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "2b5f513c7113f7af67728d38f374b5a43edc5dc8b41b27e4e06563dfced26148",
+        "sizeBytes": 647,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_979addc92af1709320091ccd_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "composition.chem_sys_sunburst"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "composition.chem_sys_sunburst"
+  ],
+  "slug": "chem_sys_sunburst",
+  "sourcePaths": [
+    "docs/phase10b/browser_api_evidence/ward_chem_sys_sunburst"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6790.34
+  },
+  "tokenUsage": {
+    "completionTokens": 714,
+    "estimated": false,
+    "promptTokens": 8015,
+    "totalTokens": 8729
+  },
+  "verdict": "PASS"
+}

@@ -1,0 +1,227 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.brillouin_zone"
+    ]
+  ],
+  "caseNumber": 32,
+  "createdAt": "2026-08-01T07:35:30.800533+00:00",
+  "decision": {
+    "decisionHash": "fda7f22ad6fce6b33fb5f06aead0646833032f3b90e56662e040e5ab5cafe537",
+    "decisionId": "decision_fda7f22ad6fce6b33fb5f06a",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "plot",
+          "summary",
+          "three_dimensional_view"
+        ],
+        "coveredScientificIntents": [
+          "reciprocal_space_analysis"
+        ],
+        "toolId": "structure.brillouin_zone",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.brillouin_zone"
+    ],
+    "providerVisibleToolIds": [
+      "structure.brillouin_zone"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "e07a4752a406aa1133c617585705ec3b51688f4a4aeb9d510172c2f0357bbeb7",
+    "resolutionId": "resolution_e07a4752a406aa1133c61758"
+  },
+  "historicalExpectedToolIds": [
+    "structure.brillouin_zone"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot",
+      "summary",
+      "three_dimensional_view"
+    ],
+    "intentHash": "3c4a6a8be592f911e5f14d38866afe43963c02ec0f945ae742fddd6eec1af166",
+    "intentId": "intent_3c4a6a8be592f911e5f14d38",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "reciprocal_space_resource"
+    ],
+    "scientificIntents": [
+      "reciprocal_space_analysis"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "structure_bz",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:structure_bz:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "",
+  "phase": "Phase 10I",
+  "plan": {
+    "graphHash": null,
+    "planHash": "2d4938dbc219a74350cd2bb36c8afd19b79e0476655b259d568e7e5d3bebe681",
+    "planId": "plan_28ba8f7e4ce2bf6ce0b63ffa",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_bz",
+    "profileId": "profile_historical_bz_v2",
+    "profileSemanticHash": "06b0aade1802bab3d533df92fa399722128765a64a927f55475f1fcff2ad48ae",
+    "selectedResourceIds": [
+      "structure_bz"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5116.168,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 22898,
+      "promptHash": "8d9bd72dae1bd4ec3d9cf5d5ad8f4b5c455ed2ec3a3aea94fe3df9579b92d2c1",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3302,
+      "responseContentBytes": 2532,
+      "responseHash": "7dc9d5a64c4083211937e4572f27ed2b4a4f7e86e96739185caf36654b7670c0",
+      "tokenUsage": {
+        "completionTokens": 773,
+        "estimated": false,
+        "promptTokens": 5374,
+        "totalTokens": 6147
+      }
+    },
+    {
+      "elapsedMs": 1360.951,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3417,
+      "promptHash": "a3d3141c68d6b27a24980baa2b6c9d437678d98650f39d439049ad9256ac5565",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 609,
+      "responseContentBytes": 123,
+      "responseHash": "003efdcb4dd9888df779b5e345576f2228eea1fb9343b6915137face6d706509",
+      "tokenUsage": {
+        "completionTokens": 39,
+        "estimated": false,
+        "promptTokens": 887,
+        "totalTokens": 926
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Generate first Brillouin-zone data for this structure.",
+  "replayPromptHash": "21ba4f36f53e5952709e01ef74f093d36a8838db97a19c8c7ab1562cb9cf952a",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "b9749f50bd13dcad72feadbc8025ca0d951bc308f4739bfce090d18b040da850",
+  "runId": "historical_live_run_b9749f50bd13dcad72feadbc8025ca0d",
+  "runtime": {
+    "artifactCount": 6,
+    "artifacts": [
+      {
+        "id": "call_job_969767c3e96d8d59ae0a9c9c_step_001-reciprocal_lattice_json",
+        "name": "reciprocal_lattice.json",
+        "sha256": "82ea8804643b1c85f2093428d7ed44a97363849d033e1ac13bb466192a9b7e30",
+        "sizeBytes": 2684,
+        "type": "reciprocal_lattice_json"
+      },
+      {
+        "id": "call_job_969767c3e96d8d59ae0a9c9c_step_001-brillouin_zone_json",
+        "name": "brillouin_zone.json",
+        "sha256": "e7b9cded78f3b044d71829b4b6f9426dc6d1828116b0177269cd98f1f9d50375",
+        "sizeBytes": 6891,
+        "type": "brillouin_zone_json"
+      },
+      {
+        "id": "call_job_969767c3e96d8d59ae0a9c9c_step_001-kpath_json",
+        "name": "kpath.json",
+        "sha256": "864c8849cd82f1de1ec053bcf65c72025c1a5655789c4dae5818f72da3acbac7",
+        "sizeBytes": 6466,
+        "type": "kpath_json"
+      },
+      {
+        "id": "call_job_969767c3e96d8d59ae0a9c9c_step_001-brillouin_zone_manifest_json",
+        "name": "brillouin_zone_manifest.json",
+        "sha256": "558696316009ec1ebc7449cf0b51973c6a19e5b30188dade1d3f2080881220a6",
+        "sizeBytes": 1822,
+        "type": "brillouin_zone_manifest_json"
+      },
+      {
+        "id": "call_job_969767c3e96d8d59ae0a9c9c_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "4e81660cf9aed404f305ce20deb3866fb12d4af33844221cf793288790b0b48b",
+        "sizeBytes": 543,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_969767c3e96d8d59ae0a9c9c_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "266a3635aeff5f35df84cda3c0b597ebfb4f9e3ac6aea323dfe4f52f2478b5e0",
+        "sizeBytes": 1597,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_969767c3e96d8d59ae0a9c9c_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.brillouin_zone"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.brillouin_zone"
+  ],
+  "slug": "brillouin_zone",
+  "sourcePaths": [
+    "docs/phase10i/evidence/phase10i1_brillouin_zone_adapter"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6569.859
+  },
+  "tokenUsage": {
+    "completionTokens": 812,
+    "estimated": false,
+    "promptTokens": 6261,
+    "totalTokens": 7073
+  },
+  "verdict": "PASS"
+}

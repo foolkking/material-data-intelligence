@@ -1,0 +1,18 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-08-01T07:45:21.785215+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:44:PLAN_READY:UNSUPPORTED:details={\"selected\":[],\"unsupported\":[{\"boundary\":\"MISSING_DATA\",\"code\":\"TARGET_SEMANTIC_NOT_FOUND\",\"field\":\"targetSemantics\"}],\"validation\":[]}"
+    }
+  ],
+  "caseNumber": 44,
+  "createdAt": "2026-08-01T07:45:21.785215+00:00",
+  "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:44:PLAN_READY:UNSUPPORTED:details={\"selected\":[],\"unsupported\":[{\"boundary\":\"MISSING_DATA\",\"code\":\"TARGET_SEMANTIC_NOT_FOUND\",\"field\":\"targetSemantics\"}],\"validation\":[]}",
+  "slug": "formation_energy_exact",
+  "verdict": "FAIL"
+}

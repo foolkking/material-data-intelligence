@@ -6,6 +6,7 @@ from typing import Any
 
 from mdi_api.config import load_settings
 from mdi_api.database import create_engine_from_settings
+from mdi_llm import DEEPSEEK_ALLOWED_MODELS, DEEPSEEK_DEFAULT_MODEL
 
 try:
     from sqlalchemy import text
@@ -26,7 +27,10 @@ def health() -> dict[str, str]:
 
 def runtime_health() -> dict[str, Any]:
     settings = load_settings()
-    provider = (os.getenv("MDI_LLM_PROVIDER") or "mock").strip().lower() or "mock"
+    provider = "deepseek"
+    model = os.getenv("DEEPSEEK_MODEL") or DEEPSEEK_DEFAULT_MODEL
+    model_allowed = model in DEEPSEEK_ALLOWED_MODELS
+    llm_configured = bool(os.getenv("DEEPSEEK_KEY")) and model_allowed
     database = _check_database(settings)
     redis = _check_redis(settings)
     artifact_storage = _check_artifact_storage(settings)
@@ -41,10 +45,13 @@ def runtime_health() -> dict[str, Any]:
             reason=None if settings.queue_backend == "local" or redis["status"] == "ok" else "queue backend not reachable",
         ),
         "llmProvider": _component(
-            "ok" if provider in {"mock", "mock_llm", "deterministic", "safe_mock"} else "unknown",
+            "ok" if llm_configured else "unknown",
             provider=provider,
-            model=os.getenv("MDI_LLM_MODEL") or os.getenv("OPENAI_MODEL") or ("mock" if provider.startswith("mock") else None),
-            reason=None if provider.startswith("mock") else "configured provider requires explicit connection test",
+            model=model,
+            configured=llm_configured,
+            reason=None if llm_configured else (
+                "DEEPSEEK_MODEL_NOT_ALLOWED" if not model_allowed else "DEEPSEEK_NOT_CONFIGURED"
+            ),
         ),
     }
 

@@ -1,0 +1,227 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "structure.lattice_summary"
+    ],
+    [
+      "structure.summary"
+    ]
+  ],
+  "caseNumber": 19,
+  "createdAt": "2026-08-01T07:29:42.365455+00:00",
+  "decision": {
+    "decisionHash": "1a392c95e259f26688c54f9dc5382a4a8380ffa8292628d26835f1ca9602329a",
+    "decisionId": "decision_1a392c95e259f26688c54f9d",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [],
+        "coveredDesiredOutputs": [
+          "summary",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "structure_analysis"
+        ],
+        "toolId": "structure.lattice_summary",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "providerVisibleToolIds": [
+      "structure.composition_from_structure",
+      "structure.coordination_hist",
+      "structure.lattice_summary",
+      "structure.preview_metadata",
+      "structure.rdf",
+      "structure.spacegroup_summary",
+      "structure.structure_3d",
+      "structure.summary",
+      "structure.viewer_3d",
+      "structure.viewer_scene",
+      "structure.xrd"
+    ],
+    "rejectedToolCount": 42,
+    "resolutionHash": "3c90e18393296d7536bee33856edb096a9b781ec73a744520dabeaaf9841c1c9",
+    "resolutionId": "resolution_3c90e18393296d7536bee338"
+  },
+  "historicalExpectedToolIds": [
+    "structure.lattice_summary"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "8462c4b776cfbb6a6ef3fbf917f9800307bc46d053cf707f4244ccc5ad7f768d",
+    "intentId": "intent_8462c4b776cfbb6a6ef3fbf9",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "structure_resource"
+    ],
+    "scientificIntents": [
+      "structure_analysis"
+    ],
+    "targetSemantics": [
+      {
+        "column": null,
+        "groupId": null,
+        "objectId": "obj_nacl",
+        "origin": "PROFILE_EXACT",
+        "role": "resource_identity",
+        "semanticId": "resource:obj_nacl:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "The current integrated structure summary includes the requested lattice and crystal-system facts.",
+  "phase": "Phase 10C",
+  "plan": {
+    "graphHash": null,
+    "planHash": "bb9d4dfb49229c7c6ab408b0a409de52dd31ee0df9e702d3af9873cce7dbaa8f",
+    "planId": "plan_9874e52e5f11b499d97bda2b",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_phase10k2_evidence",
+    "profileId": "profile_historical_structure_v2",
+    "profileSemanticHash": "0613a8bdd76fc442c3ec09c47ba04e7ce3ef60caf0cf1aba29045a1bb4ea5282",
+    "selectedResourceIds": [
+      "obj_nacl"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4822.673,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 23045,
+      "promptHash": "ad4df4ac8f74fda3cabd56b2a6087a333edefbabcc8873af21291cf1323af998",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3298,
+      "responseContentBytes": 2530,
+      "responseHash": "acfdc3315c7cfbf78fc1049d34d46cd56ab5b5b65bce632d375183d386a2c55b",
+      "tokenUsage": {
+        "completionTokens": 775,
+        "estimated": false,
+        "promptTokens": 5408,
+        "totalTokens": 6183
+      }
+    },
+    {
+      "elapsedMs": 1542.148,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 9478,
+      "promptHash": "e48f11e0a574d334566d5d7ea0c8f7d2decad42f73507ce69e531d1e15287bc5",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 613,
+      "responseContentBytes": 124,
+      "responseHash": "ceb1882bdb9a89f8750552beb95ff9a1645f5a952aa677272b5a12b5d24ab06d",
+      "tokenUsage": {
+        "completionTokens": 38,
+        "estimated": false,
+        "promptTokens": 2643,
+        "totalTokens": 2681
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Summarize lattice parameters and crystal system for this structure.",
+  "replayPromptHash": "8f00e1e9d31ec8eada9aa06fd5e566bf49eccd6fc828f91625e475a1840d6281",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "25c31855fbdcb6fa4257faf3cfdc55b349e030b26bae972dbcea3bb9a4d9403a",
+  "runId": "historical_live_run_25c31855fbdcb6fa4257faf3cfdc55b3",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_10a1064a6731c9ead41275e8_step_001-table_json",
+        "name": "lattice_summary.json",
+        "sha256": "7f90acf832af0b610b14fb1cfb8d2572176d54b48a5f09d1f295e82d0cb03cfc",
+        "sizeBytes": 601,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_10a1064a6731c9ead41275e8_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "4138cacfe8b1e2bbf145aed2712b2e3e35e7001397f2f66d7e422d60b8a358aa",
+        "sizeBytes": 117,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_10a1064a6731c9ead41275e8_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "28e827c3f8beb91497d48f927b8756762130e8024fc4e2c89665da9d68c8c7c0",
+        "sizeBytes": 580,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_10a1064a6731c9ead41275e8_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "structure.lattice_summary"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "structure.lattice_summary"
+  ],
+  "slug": "lattice_summary",
+  "sourcePaths": [
+    "docs/phase10c/browser_api_evidence/simple_cubic_lattice_summary"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6436.508
+  },
+  "tokenUsage": {
+    "completionTokens": 813,
+    "estimated": false,
+    "promptTokens": 8051,
+    "totalTokens": 8864
+  },
+  "verdict": "PASS"
+}

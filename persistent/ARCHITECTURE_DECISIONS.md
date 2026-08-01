@@ -1,5 +1,26 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-01 ADR Addendum: Historical Real-DeepSeek Replay Boundary
+
+**Context:** Earlier browser evidence mixed real browser rendering with
+MockLLMProvider planning. The five L5 end-to-end cases were not sufficient to
+claim that useful historical planner flows had been revalidated with a real
+provider.
+
+**Decision:** Keep the five current-product DeepSeek cases as the primary live
+gate and add a separate bounded historical replay runner. It replays 40 useful
+historical semantic cases through current exact Profile, Intent, Eligibility,
+Registry, Plan, Runtime, and Adapter boundaries. It records 45/45 PASS across
+the combined set, 92 supplemental real DeepSeek calls, and sanitized
+reconstruction/supersession reasons. Browser captures replay the real persisted
+responses offline and make no provider call.
+
+**Consequences:** Pure UI interactions, deterministic negative/security cases,
+infrastructure-only phases, missing/superseded tools, and damaged prompts are
+explicitly excluded or semantically reconstructed; none is counted as live
+LLM coverage. No historical artifact, tool, planner, runtime, or scientific
+algorithm is reintroduced solely to make the replay pass.
+
 ## 2026-07-31 ADR Addendum: Project Exact Production Artifact Contracts
 
 **Context:** service-backed replay showed that the initial ML evidence fixture
@@ -4226,3 +4247,20 @@ pass, and surface layers preserve source contour identity across display-gauge
 changes. No vacuum, Fermi, work-function, component,
 cross-calculation alignment, smoothing, arbitrary path, or slice inference is
 authorized.
+
+## 2026-07-31 Phase 10L-5 ADR: Real Provider Closure Boundary
+
+- The canonical natural-language closure gate uses a DeepSeek-only provider
+  boundary. `DEEPSEEK_KEY` is the only accepted key source; provider identity,
+  model, request/response hashes, token usage, and call counts are persisted,
+  while raw prompts, responses, credentials, and authorization headers are
+  never stored.
+- All five frozen user goals must traverse the real Profile -> Intent ->
+  eligibility -> selection -> persisted plan/job -> QueueWorkerRuntime ->
+  artifact/lineage -> grounded interpretation path. A simulated success is not
+  evidence of real-provider closure.
+- Default CI remains deterministic and fake with `REAL_LLM_CALLS = 0`; live
+  DeepSeek evidence is a separately gated local verification suite with a
+  per-case call cap and sanitized failure provenance.
+- DeepSeek cannot select new tools, alter plans, execute code, access raw
+  artifacts, or trigger recommendations. Phase 10M remains reviewer-gated.

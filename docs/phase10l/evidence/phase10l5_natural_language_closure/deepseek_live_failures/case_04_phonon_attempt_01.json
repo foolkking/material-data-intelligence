@@ -1,0 +1,86 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 14055.329,
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 21555,
+      "promptHash": "90c48887100c4cf9fa6484ee587e327db7453d1ac021820c2723a7f0c8ca15ad",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 7210,
+      "responseHash": "2fb069469d43e81283d708fe04c1267faef75c0feac16765ce18856503647057",
+      "tokenUsage": {
+        "completionTokens": 1583,
+        "estimated": false,
+        "promptTokens": 5129,
+        "totalTokens": 6712
+      }
+    },
+    {
+      "elapsedMs": 8093.908,
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 4594,
+      "promptHash": "a9715abc08f8d6ec226491a949298dc4bba74572601553ee2768b73e598f59cd",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 3809,
+      "responseHash": "be0f1392fa99cfe75c25d94b39a5b15add1b0b1e21b2c4d8eff5ae68f34af854",
+      "tokenUsage": {
+        "completionTokens": 729,
+        "estimated": false,
+        "promptTokens": 1353,
+        "totalTokens": 2082
+      }
+    },
+    {
+      "elapsedMs": 4817.797,
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 2273,
+      "promptHash": "0b8993758ce31ecb502a93c565712402b3a1dad33d081ea46b8999bb62743eb2",
+      "purpose": "MULTI_TOOL_COMPOSITION",
+      "realCall": true,
+      "responseBytes": 2493,
+      "responseHash": "6db04926e07e093debb53b071fa6fa0f67b04e6ae97f0e4769b78fbff5e6d5aa",
+      "tokenUsage": {
+        "completionTokens": 536,
+        "estimated": false,
+        "promptTokens": 686,
+        "totalTokens": 1222
+      }
+    },
+    {
+      "elapsedMs": 70428.049,
+      "model": "deepseek-v4-flash",
+      "outcome": "DEEPSEEK_RESPONSE_INVALID",
+      "promptBytes": 21140,
+      "promptHash": "3d036e7cc5a2e4d45ec97776a196a90f989cb591287deedf873d89ead23346a4",
+      "purpose": "GROUNDED_INTERPRETATION",
+      "realCall": true,
+      "responseBytes": 33569,
+      "responseHash": "1babd7efff3bf3bcd2e8d15f23923fdb289012fe561f6643af854b83815bd45b",
+      "tokenUsage": {
+        "completionTokens": 8192,
+        "estimated": false,
+        "promptTokens": 5730,
+        "totalTokens": 13922
+      }
+    }
+  ],
+  "caseIndex": 3,
+  "caseSpecId": "caseSpec_ad4b6e323a807050b50625ae8c7d9424",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 97789.194,
+  "errorCode": "LIVE_INTERPRETATION_FAILED",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "realCallCount": 4,
+  "safeDetails": "LIVE_INTERPRETATION_FAILED:{\"diagnostics\":[\"STRICT_PROVIDER_TRANSPORT_FAILED:LLMProviderError\"],\"evidenceItemCount\":0,\"outcome\":\"PROVIDER_FAILED\",\"repairCount\":0}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

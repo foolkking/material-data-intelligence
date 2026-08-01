@@ -25,8 +25,10 @@ from mdi_llm import (
     AnalysisIntentRequest,
     ClarificationSubmission,
     DeterministicAnalysisIntentBuilder,
+    MockLLMProvider,
     OpenAICompatibleAnalysisIntentBuilder,
     OpenAICompatibleProvider,
+    build_analysis_intent_messages,
 )
 from mdi_schemas import (
     AnalysisIntent,
@@ -206,6 +208,33 @@ def test_missing_structure_is_unsupported_without_fabricated_resource() -> None:
     assert intent.dataScope.resourceRefs == []
 
 
+def test_phonon_intent_accepts_exact_composite_resources_but_rejects_wrong_kind_only() -> None:
+    resources = [
+        {"objectId": "structure", "objectType": "Structure", "objectHash": "1" * 64, "kind": "structure", "capabilities": ["structure"]},
+        {"objectId": "band", "objectType": "PhononBand", "objectHash": "2" * 64, "kind": "phonon", "capabilities": ["phonon"]},
+        {"objectId": "eigenvectors", "objectType": "PhononEigenvector", "objectHash": "3" * 64, "kind": "phonon", "capabilities": ["phonon"]},
+    ]
+    profile = _profile(resources=resources)
+    builder = DeterministicAnalysisIntentBuilder()
+
+    composite = builder.build(
+        _request(
+            "Animate the selected phonon mode.",
+            selected_resource_ids=("structure", "band", "eigenvectors"),
+        ),
+        profile=profile,
+    )
+    assert composite.outcome.value == "READY"
+    assert {item.objectId for item in composite.dataScope.resourceRefs} == {"structure", "band", "eigenvectors"}
+
+    wrong_kind = builder.build(
+        _request("Animate the selected phonon mode.", selected_resource_ids=("structure",)),
+        profile=profile,
+    )
+    assert wrong_kind.outcome.value == "UNSUPPORTED"
+    assert {item.code for item in wrong_kind.unsupportedReasons} == {"RESOURCE_KIND_MISMATCH"}
+
+
 def test_multiple_structure_resources_create_profile_derived_question() -> None:
     resources = [
         {"objectId": "structure_a", "objectType": "Structure", "objectHash": "1" * 64, "kind": "structure", "capabilities": ["structure"]},
@@ -275,6 +304,7 @@ def test_typed_intent_api_create_get_and_clarification_revision() -> None:
             datasetId=profile.datasetId,
             profileId=profile.profileId,
         ),
+        provider=MockLLMProvider(),
         repositories=repos,
     )
     assert created.ok is True
@@ -309,6 +339,7 @@ def test_stale_profile_rejects_clarification_without_revision() -> None:
             datasetId=profile.datasetId,
             profileId=profile.profileId,
         ),
+        provider=MockLLMProvider(),
         repositories=repos,
     )
     assert created.intent is not None
@@ -353,7 +384,8 @@ def test_intent_repository_is_idempotent_and_execution_binding_is_immutable() ->
     assert repos.analysis_intents.get_execution(intent.intentId) is None
 
 
-def test_planner_api_non_ready_does_not_create_plan_job_or_enqueue() -> None:
+def test_planner_api_non_ready_does_not_create_plan_job_or_enqueue(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("MDI_ALLOW_TEST_PROVIDERS", "1")
     reset_phase2_runtime()
     reset_planner_runtime()
     client = TestClient(app)
@@ -379,7 +411,8 @@ def test_planner_api_non_ready_does_not_create_plan_job_or_enqueue() -> None:
     assert payload["enqueued"] is False
 
 
-def test_ready_gate_preserves_existing_mock_planner_path() -> None:
+def test_ready_gate_preserves_existing_mock_planner_path(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("MDI_ALLOW_TEST_PROVIDERS", "1")
     reset_phase2_runtime()
     reset_planner_runtime()
     client = TestClient(app)
@@ -424,6 +457,174 @@ def test_strict_llm_intent_rejects_duplicate_json_keys() -> None:
     assert error.value.code == "INTENT_LLM_JSON_INVALID"
 
 
+def test_llm_intent_prompt_includes_a_complete_typed_clarification_template() -> None:
+    request = _request("Analyze the phonon band and density of states.")
+    messages = build_analysis_intent_messages(request, profile=_profile())
+    payload = json.loads(messages[1]["content"])
+
+    template = payload["outputTemplate"]
+    assert template["schemaVersion"] == "1.0"
+    assert template["datasetId"] == payload["profile"]["datasetId"]
+    assert template["profileId"] == payload["profile"]["profileId"]
+    assert template["clarification"] == {
+        "answers": [],
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
+        "questions": [],
+        "round": 0,
+    }
+    assert template["provenance"]["promptVersion"] == "phase10l5.intent.v5"
+    assert "clarification must always be an object" in messages[0]["content"]
+
+
+def test_strict_llm_intent_identity_is_computed_from_canonical_validated_contract() -> None:
+    profile = _profile(targets=(), uncertainty=False)
+    request = _request("Analyze this dataset.")
+    deterministic = DeterministicAnalysisIntentBuilder().build(request, profile=profile)
+    provider_payload = deterministic.model_dump(mode="json")
+    provider_payload.pop("warnings")
+    provider_payload["intentId"] = "provider-placeholder"
+    provider_payload["intentHash"] = "0" * 64
+    provider_payload["provenance"] = {}
+
+    def transport(**_: object) -> dict[str, object]:
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(provider_payload, ensure_ascii=False, separators=(",", ":"))},
+                "finish_reason": "stop",
+            }]
+        }
+
+    intent = OpenAICompatibleAnalysisIntentBuilder(OpenAICompatibleProvider(transport=transport)).build(
+        request,
+        profile=profile,
+    )
+    assert intent.intentHash == compute_analysis_intent_hash(intent)
+    assert intent.intentId == deterministic_intent_id(intent.intentHash)
+    assert intent.warnings == []
+
+
+def test_strict_llm_ready_intent_rebuilds_exact_profile_owned_resources() -> None:
+    profile = _profile(targets=(), uncertainty=False)
+    request = _request("Analyze this dataset composition distribution.")
+    provider_payload = DeterministicAnalysisIntentBuilder().build(request, profile=profile).model_dump(mode="json")
+    provider_payload["dataScope"]["resourceRefs"] = []
+
+    def transport(**_: object) -> dict[str, object]:
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(provider_payload, ensure_ascii=False, separators=(",", ":"))},
+                "finish_reason": "stop",
+            }]
+        }
+
+    intent = OpenAICompatibleAnalysisIntentBuilder(OpenAICompatibleProvider(transport=transport)).build(
+        request,
+        profile=profile,
+    )
+    assert [(item.objectId, item.kind, item.origin.value) for item in intent.dataScope.resourceRefs] == [
+        ("table_1", "dataframe", "PROFILE_EXACT")
+    ]
+
+
+def test_strict_llm_clarification_rebuilds_exact_profile_owned_target_options() -> None:
+    profile = _profile(targets=("formation_energy", "band_gap"), uncertainty=False)
+    request = _request("Analyze where the regression model predictions are wrong.")
+    provider_payload = DeterministicAnalysisIntentBuilder().build(request, profile=profile).model_dump(mode="json")
+    provider_payload["clarification"]["questions"][0]["options"] = [
+        {"value": "invented", "label": "Invented target", "semanticId": "invented"}
+    ]
+    provider_payload["ambiguities"][0]["candidates"] = [
+        {"value": "invented", "label": "Invented target", "semanticId": "invented"}
+    ]
+
+    def transport(**_: object) -> dict[str, object]:
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(provider_payload, ensure_ascii=False, separators=(",", ":"))},
+                "finish_reason": "stop",
+            }]
+        }
+
+    intent = OpenAICompatibleAnalysisIntentBuilder(OpenAICompatibleProvider(transport=transport)).build(
+        request,
+        profile=profile,
+    )
+    question = intent.clarification.questions[0]
+    expected = {f"{group.groupId}:target:{target}" for group in profile.semanticGroups for target in group.targetColumns}
+    assert intent.outcome.value == "NEEDS_CLARIFICATION"
+    assert {item.value for item in question.options} == expected
+    assert "invented" not in {item.value for item in question.options}
+
+
+def test_strict_llm_cannot_silently_choose_one_of_multiple_profile_targets() -> None:
+    profile = _profile(targets=("formation_energy", "band_gap"), uncertainty=False)
+    request = _request("Analyze where the regression model predictions are wrong.")
+    provider_request = _request(
+        request.raw_goal,
+        selected_target_ids=("regression_0:target:formation_energy",),
+    )
+    provider_payload = DeterministicAnalysisIntentBuilder().build(
+        provider_request,
+        profile=profile,
+    ).model_dump(mode="json")
+    provider_payload["constraints"]["targetIds"] = []
+    provider_payload["dataScope"]["origin"] = "PROFILE_EXACT"
+
+    def transport(**_: object) -> dict[str, object]:
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(provider_payload, ensure_ascii=False, separators=(",", ":"))},
+                "finish_reason": "stop",
+            }]
+        }
+
+    intent = OpenAICompatibleAnalysisIntentBuilder(OpenAICompatibleProvider(transport=transport)).build(
+        request,
+        profile=profile,
+    )
+    assert intent.outcome.value == "NEEDS_CLARIFICATION"
+    assert intent.targetSemantics == []
+    assert {item.value for item in intent.clarification.questions[0].options} == {
+        "regression_0:target:formation_energy",
+        "regression_1:target:band_gap",
+    }
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "code"),
+    [
+        ("rawGoal", "Provider-rewritten goal", "INTENT_LLM_RAW_GOAL_MISMATCH"),
+        ("normalizedGoal", "Provider expanded goal", "INTENT_LLM_NORMALIZED_GOAL_MISMATCH"),
+        ("language", "zh", "INTENT_LLM_LANGUAGE_MISMATCH"),
+    ],
+)
+def test_strict_llm_intent_rejects_provider_changes_to_application_owned_goal_fields(
+    field: str,
+    value: str,
+    code: str,
+) -> None:
+    profile = _profile(targets=(), uncertainty=False)
+    request = _request("Analyze this dataset.")
+    provider_payload = DeterministicAnalysisIntentBuilder().build(request, profile=profile).model_dump(mode="json")
+    provider_payload[field] = value
+
+    def transport(**_: object) -> dict[str, object]:
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(provider_payload, ensure_ascii=False, separators=(",", ":"))},
+                "finish_reason": "stop",
+            }]
+        }
+
+    with pytest.raises(AnalysisIntentError) as error:
+        OpenAICompatibleAnalysisIntentBuilder(OpenAICompatibleProvider(transport=transport)).build(
+            request,
+            profile=profile,
+        )
+    assert error.value.code == code
+
+
 def test_validator_rejects_invented_target_semantic_even_with_valid_hash() -> None:
     profile = _profile()
     intent = DeterministicAnalysisIntentBuilder().build(
@@ -445,6 +646,24 @@ def test_validator_rejects_invented_target_semantic_even_with_valid_hash() -> No
     with pytest.raises(AnalysisIntentError) as error:
         AnalysisIntentValidator().validate(payload, profile=profile)
     assert error.value.code == "INTENT_TARGET_SEMANTIC_INVALID"
+
+
+def test_validator_rejects_unrequested_composition_space_expansion() -> None:
+    profile = _profile(targets=(), uncertainty=False)
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Analyze the composition distribution."),
+        profile=profile,
+    )
+    payload = intent.model_dump(mode="json")
+    payload["scientificIntents"] = sorted([*payload["scientificIntents"], "composition_space"])
+    payload["requiredCapabilityNeeds"] = sorted(
+        set([*payload["requiredCapabilityNeeds"], "composition_data", "tabular_data"])
+    )
+    payload["intentHash"] = compute_analysis_intent_hash(payload)
+    payload["intentId"] = deterministic_intent_id(payload["intentHash"])
+    with pytest.raises(AnalysisIntentError) as error:
+        AnalysisIntentValidator().validate(payload, profile=profile)
+    assert error.value.code == "INTENT_SEMANTIC_EXPANSION"
 
 
 def test_validator_rejects_invented_clarification_candidate_label() -> None:
@@ -484,6 +703,7 @@ def test_legacy_planner_request_without_intent_version_remains_compatible() -> N
     repos = InMemoryRepositoryBundle.create()
     result = planner_jobs(
         PlannerJobsRequest(userPrompt="Show basic metrics", datasetId="legacy_dataset", profileId="legacy_profile"),
+        provider=MockLLMProvider(),
         repositories=repos,
     )
     assert result.ok is True

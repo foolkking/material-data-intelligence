@@ -8,11 +8,13 @@ variables or injected configuration.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from hashlib import sha256
 import ipaddress
 import json
 import os
 import re
 import socket
+from time import perf_counter
 from typing import Any, Protocol
 import urllib.error
 import urllib.parse
@@ -21,6 +23,25 @@ import urllib.request
 from mdi_schemas import DataProfile, RegisteredTool
 
 from .redaction import redact_credential_values
+
+
+DEEPSEEK_PROVIDER_NAME = "deepseek"
+DEEPSEEK_BASE_URL = "https://api.deepseek.com"
+DEEPSEEK_DEFAULT_MODEL = "deepseek-v4-flash"
+DEEPSEEK_ALLOWED_MODELS = frozenset({DEEPSEEK_DEFAULT_MODEL, "deepseek-v4-pro"})
+DEEPSEEK_ALLOWED_PURPOSES = frozenset(
+    {
+        "INTENT_EXTRACTION",
+        "CLARIFICATION_RESOLUTION",
+        "CAPABILITY_PLAN_SELECTION",
+        "MULTI_TOOL_COMPOSITION",
+        "GROUNDED_INTERPRETATION",
+        "PROVIDER_CONNECTION_TEST",
+    }
+)
+DEEPSEEK_MAX_OUTPUT_TOKENS = 8192
+DEEPSEEK_MAX_TIMEOUT_SECONDS = 120.0
+DEEPSEEK_MAX_PROMPT_BYTES = 524_288
 
 
 @dataclass(frozen=True)
@@ -419,13 +440,11 @@ class MockLLMProvider:
 
 
 class OpenAICompatibleProvider:
-    """OpenAI-compatible provider for gated Phase 9A planner integration.
+    """Historical OpenAI-compatible provider retained for fake-test compatibility.
 
-    Configuration is resolved at call time. Explicit per-request
-    PlannerUserConfig values win when provided; otherwise MDI_LLM_* and
-    OPENAI_* environment variables are used for gated integration tests. The
-    default test path still uses MockLLMProvider, so this class contacts the
-    network only when explicitly selected and no fake transport is injected.
+    Phase 10L-5 forbids this class from making a real network request. Existing
+    tests and historical replay may inject a bounded fake transport; new live
+    execution must use :class:`DeepSeekProvider`.
     """
 
     def __init__(self, *, transport: Any = None) -> None:
@@ -454,36 +473,25 @@ class OpenAICompatibleProvider:
         *,
         messages: list[dict[str, str]],
         user_config: PlannerUserConfig | None = None,
+        purpose: str | None = None,
     ) -> PlannerRawResponse:
-        """Use the existing bounded transport for a strict JSON contract."""
+        """Use an injected fake transport for historical deterministic replay."""
+        if self._transport is None:
+            raise LLMProviderError(
+                "New real LLM calls must use the DeepSeek provider.",
+                code="PROVIDER_NOT_ALLOWED",
+            )
         config = user_config or PlannerUserConfig()
         resolved = _resolve_openai_config(config, prefer_config=user_config is not None)
-        if self._transport is not None:
-            response = _call_fake_transport(
-                self._transport,
-                model=resolved["model"],
-                messages=messages,
-                temperature=resolved["temperature"],
-                max_tokens=resolved["max_tokens"],
-                timeout_seconds=resolved["timeout_seconds"],
-                response_format={"type": "json_object"},
-            )
-        else:
-            api_key = resolved["api_key"]
-            if not api_key:
-                raise LLMProviderError(
-                    "OpenAI-compatible LLM provider is not configured: missing API key.",
-                    code="LLM_API_KEY_MISSING",
-                )
-            response = _post_chat_completion(
-                base_url=resolved["base_url"],
-                api_key=api_key,
-                model=resolved["model"],
-                messages=messages,
-                temperature=resolved["temperature"],
-                max_tokens=resolved["max_tokens"],
-                timeout_seconds=resolved["timeout_seconds"],
-            )
+        response = _call_fake_transport(
+            self._transport,
+            model=resolved["model"],
+            messages=messages,
+            temperature=resolved["temperature"],
+            max_tokens=resolved["max_tokens"],
+            timeout_seconds=resolved["timeout_seconds"],
+            response_format={"type": "json_object"},
+        )
 
         choice = _first_choice(response)
         content = _choice_content(choice)
@@ -501,6 +509,255 @@ class OpenAICompatibleProvider:
             name="openai_compatible",
             model=os.environ.get("MDI_LLM_MODEL") or os.environ.get("OPENAI_MODEL") or "gpt-4o",
         )
+
+
+class DeepSeekProvider:
+    """The sole provider authorized for new real LLM calls.
+
+    Live configuration is intentionally non-extensible: the endpoint is fixed,
+    the key comes only from ``DEEPSEEK_KEY``, and the model and purpose are
+    bounded allowlists. An injected transport is a fake/offline test path and
+    never reads a key.
+    """
+
+    def __init__(self, *, transport: Any = None, urlopen: Any = None) -> None:
+        self._transport = transport
+        self._urlopen = urlopen
+        self._call_audit: list[dict[str, Any]] = []
+
+    def generate_plan(
+        self,
+        request: PlannerRequest,
+        *,
+        tools: list[RegisteredTool],
+        data_profile: DataProfile,
+        user_config: PlannerUserConfig | None = None,
+    ) -> PlannerRawResponse:
+        from .planner_prompt import build_planner_prompt
+
+        system_prompt, user_prompt_str = build_planner_prompt(request, tools=tools, data_profile=data_profile)
+        return self.complete_json(
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt_str},
+            ],
+            user_config=user_config,
+            purpose="CAPABILITY_PLAN_SELECTION",
+        )
+
+    def complete_json(
+        self,
+        *,
+        messages: list[dict[str, str]],
+        user_config: PlannerUserConfig | None = None,
+        purpose: str,
+    ) -> PlannerRawResponse:
+        resolved = _resolve_deepseek_config(user_config, fake=self._transport is not None, purpose=purpose)
+        started = perf_counter()
+        safe_messages = [
+            {
+                "role": str(message.get("role", "user")),
+                "content": redact_credential_values(str(message.get("content", ""))),
+            }
+            for message in messages
+        ]
+        prompt_bytes = json.dumps(
+            safe_messages,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        if len(prompt_bytes) > DEEPSEEK_MAX_PROMPT_BYTES:
+            raise LLMProviderError(
+                "DeepSeek prompt exceeds the bounded provider payload.",
+                code="DEEPSEEK_PROMPT_TOO_LARGE",
+            )
+        try:
+            if self._transport is not None:
+                response = _call_fake_transport(
+                    self._transport,
+                    model=resolved["model"],
+                    messages=safe_messages,
+                    temperature=0.0,
+                    max_tokens=resolved["max_tokens"],
+                    timeout_seconds=resolved["timeout_seconds"],
+                    response_format={"type": "json_object"},
+                )
+            else:
+                response = _post_deepseek_completion(
+                    api_key=resolved["api_key"],
+                    model=resolved["model"],
+                    messages=safe_messages,
+                    max_tokens=resolved["max_tokens"],
+                    timeout_seconds=resolved["timeout_seconds"],
+                    urlopen=self._urlopen or urllib.request.urlopen,
+                )
+        except LLMProviderError as exc:
+            deepseek_error = _as_deepseek_error(exc)
+            self._record_call(
+                purpose=purpose,
+                model=resolved["model"],
+                prompt_bytes=prompt_bytes,
+                response=None,
+                elapsed_ms=(perf_counter() - started) * 1000,
+                outcome=deepseek_error.code,
+            )
+            raise deepseek_error from None
+
+        try:
+            choice = _first_choice(response)
+            content = _choice_content(choice)
+            if not isinstance(content, str):
+                raise LLMProviderError(
+                    "DeepSeek response content was not strict JSON text.",
+                    code="DEEPSEEK_RESPONSE_INVALID",
+                )
+            parsed = _strict_json_object(content, error_code="DEEPSEEK_RESPONSE_INVALID")
+        except LLMProviderError as exc:
+            response_error = (
+                exc
+                if exc.code == "DEEPSEEK_RESPONSE_INVALID"
+                else LLMProviderError(
+                    "DeepSeek response envelope was invalid.",
+                    code="DEEPSEEK_RESPONSE_INVALID",
+                )
+            )
+            self._record_call(
+                purpose=purpose,
+                model=resolved["model"],
+                prompt_bytes=prompt_bytes,
+                response=response,
+                elapsed_ms=(perf_counter() - started) * 1000,
+                outcome=response_error.code,
+            )
+            raise response_error from None
+        self._record_call(
+            purpose=purpose,
+            model=resolved["model"],
+            prompt_bytes=prompt_bytes,
+            response=response,
+            elapsed_ms=(perf_counter() - started) * 1000,
+            outcome="SUCCESS",
+        )
+        return PlannerRawResponse(
+            raw_json=parsed,
+            raw_text=content,
+            model=resolved["model"],
+            finish_reason=choice.get("finish_reason"),
+        )
+
+    @property
+    def meta(self) -> _ProviderMeta:
+        model = os.environ.get("DEEPSEEK_MODEL") or DEEPSEEK_DEFAULT_MODEL
+        return _ProviderMeta(name=DEEPSEEK_PROVIDER_NAME, model=model)
+
+    @property
+    def call_audit(self) -> tuple[dict[str, Any], ...]:
+        return tuple(dict(item) for item in self._call_audit)
+
+    def _record_call(
+        self,
+        *,
+        purpose: str,
+        model: str,
+        prompt_bytes: bytes,
+        response: dict[str, Any] | None,
+        elapsed_ms: float,
+        outcome: str,
+    ) -> None:
+        usage = response.get("usage") if isinstance(response, dict) else None
+        prompt_tokens = usage.get("prompt_tokens") if isinstance(usage, dict) else None
+        completion_tokens = usage.get("completion_tokens") if isinstance(usage, dict) else None
+        estimated = not isinstance(prompt_tokens, int) or not isinstance(completion_tokens, int)
+        prompt_tokens = prompt_tokens if isinstance(prompt_tokens, int) else max(1, (len(prompt_bytes) + 3) // 4)
+        response_bytes = (
+            json.dumps(response, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            if response is not None
+            else b""
+        )
+        completion_tokens = (
+            completion_tokens if isinstance(completion_tokens, int) else ((len(response_bytes) + 3) // 4 if response_bytes else 0)
+        )
+        finish_reason = None
+        response_content_bytes = 0
+        if isinstance(response, dict):
+            choices = response.get("choices")
+            if isinstance(choices, list) and choices and isinstance(choices[0], dict):
+                finish_reason = choices[0].get("finish_reason")
+                message = choices[0].get("message")
+                if isinstance(message, dict) and isinstance(message.get("content"), str):
+                    response_content_bytes = len(message["content"].encode("utf-8"))
+        self._call_audit.append({
+            "purpose": purpose,
+            "model": model,
+            "realCall": self._transport is None and self._urlopen is None,
+            "promptHash": sha256(prompt_bytes).hexdigest(),
+            "responseHash": sha256(response_bytes).hexdigest() if response_bytes else None,
+            "promptBytes": len(prompt_bytes),
+            "responseBytes": len(response_bytes),
+            "responseContentBytes": response_content_bytes,
+            "finishReason": finish_reason,
+            "tokenUsage": {
+                "promptTokens": prompt_tokens,
+                "completionTokens": completion_tokens,
+                "totalTokens": prompt_tokens + completion_tokens,
+                "estimated": estimated,
+            },
+            "elapsedMs": round(elapsed_ms, 3),
+            "outcome": outcome,
+        })
+
+
+def _resolve_deepseek_config(
+    config: PlannerUserConfig | None,
+    *,
+    fake: bool,
+    purpose: str,
+) -> dict[str, Any]:
+    if purpose not in DEEPSEEK_ALLOWED_PURPOSES:
+        raise LLMProviderError(
+            "The requested LLM call purpose is not allowed.",
+            code="LLM_CALL_PURPOSE_NOT_ALLOWED",
+        )
+    if config is not None and (config.api_key or config.base_url):
+        raise LLMProviderError(
+            "DeepSeek credentials and endpoint cannot be supplied per request.",
+            code="DEEPSEEK_CONFIGURATION_NOT_ALLOWED",
+        )
+    if config is not None and config.provider != DEEPSEEK_PROVIDER_NAME:
+        raise LLMProviderError(
+            "Only the DeepSeek provider is allowed for this request.",
+            code="PROVIDER_NOT_ALLOWED",
+        )
+    requested_model = config.model if config is not None and config.model else None
+    model = requested_model or os.environ.get("DEEPSEEK_MODEL") or DEEPSEEK_DEFAULT_MODEL
+    if model not in DEEPSEEK_ALLOWED_MODELS:
+        raise LLMProviderError(
+            "The requested DeepSeek model is not allowed.",
+            code="DEEPSEEK_MODEL_NOT_ALLOWED",
+        )
+    max_tokens = min(
+        DEEPSEEK_MAX_OUTPUT_TOKENS,
+        max(1, int(config.max_tokens if config is not None else DEEPSEEK_MAX_OUTPUT_TOKENS)),
+    )
+    timeout_seconds = min(
+        DEEPSEEK_MAX_TIMEOUT_SECONDS,
+        max(1.0, float(config.timeout_seconds if config is not None else DEEPSEEK_MAX_TIMEOUT_SECONDS)),
+    )
+    api_key = None if fake else os.environ.get("DEEPSEEK_KEY")
+    if not fake and not api_key:
+        raise LLMProviderError(
+            "DeepSeek is not configured.",
+            code="DEEPSEEK_NOT_CONFIGURED",
+        )
+    return {
+        "api_key": api_key,
+        "base_url": DEEPSEEK_BASE_URL,
+        "model": model,
+        "max_tokens": max_tokens,
+        "timeout_seconds": timeout_seconds,
+        "purpose": purpose,
+    }
 
 
 def _resolve_openai_config(config: PlannerUserConfig, *, prefer_config: bool = False) -> dict[str, Any]:
@@ -627,6 +884,106 @@ def _post_chat_completion(
             raise LLMProviderError("OpenAI-compatible LLM response was not valid JSON.", code="LLM_RESPONSE_INVALID") from None
 
     raise LLMProviderError("OpenAI-compatible LLM request failed.", code="LLM_PROVIDER_ERROR")
+
+
+def _post_deepseek_completion(
+    *,
+    api_key: str,
+    model: str,
+    messages: list[dict[str, str]],
+    max_tokens: int,
+    timeout_seconds: float,
+    urlopen: Any = urllib.request.urlopen,
+) -> dict[str, Any]:
+    """Send one bounded strict-JSON request to the fixed DeepSeek endpoint."""
+    url = f"{DEEPSEEK_BASE_URL}/chat/completions"
+    body = json.dumps(
+        {
+            "model": model,
+            "messages": messages,
+            "temperature": 0,
+            "max_tokens": max_tokens,
+            "response_format": {"type": "json_object"},
+            "thinking": {"type": "disabled"},
+        },
+        ensure_ascii=False,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    request = urllib.request.Request(
+        url,
+        data=body,
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
+        method="POST",
+    )
+    try:
+        with urlopen(request, timeout=timeout_seconds) as response:
+            payload = response.read(1_048_577)
+    except (TimeoutError, socket.timeout):
+        raise LLMProviderError("DeepSeek request timed out.", code="DEEPSEEK_TIMEOUT") from None
+    except urllib.error.HTTPError as exc:
+        raise _http_error(exc) from None
+    except urllib.error.URLError:
+        raise LLMProviderError("DeepSeek request failed before a response was received.", code="DEEPSEEK_PROVIDER_FAILED") from None
+    if len(payload) > 1_048_576:
+        raise LLMProviderError("DeepSeek response exceeded the bounded byte limit.", code="DEEPSEEK_RESPONSE_INVALID")
+    try:
+        parsed = json.loads(
+            payload.decode("utf-8"),
+            object_pairs_hook=_reject_duplicate_object_keys,
+            parse_constant=lambda _value: (_ for _ in ()).throw(ValueError("non-finite number")),
+        )
+    except (UnicodeDecodeError, ValueError, TypeError):
+        raise LLMProviderError("DeepSeek response envelope was not strict JSON.", code="DEEPSEEK_RESPONSE_INVALID") from None
+    if not isinstance(parsed, dict):
+        raise LLMProviderError("DeepSeek response envelope was not a JSON object.", code="DEEPSEEK_RESPONSE_INVALID")
+    return parsed
+
+
+def _strict_json_object(raw: str, *, error_code: str) -> dict[str, Any]:
+    if not isinstance(raw, str) or raw != raw.strip() or raw.startswith("```") or len(raw.encode("utf-8")) > 524_288:
+        raise LLMProviderError("Provider output must be one bounded bare JSON object.", code=error_code)
+    try:
+        decoder = json.JSONDecoder(
+            object_pairs_hook=_reject_duplicate_object_keys,
+            parse_constant=lambda _value: (_ for _ in ()).throw(ValueError("non-finite number")),
+        )
+        value, end = decoder.raw_decode(raw)
+    except (ValueError, TypeError):
+        raise LLMProviderError("Provider output was not strict JSON.", code=error_code) from None
+    if end != len(raw) or not isinstance(value, dict):
+        raise LLMProviderError("Provider output must contain exactly one JSON object.", code=error_code)
+    return value
+
+
+def _reject_duplicate_object_keys(items: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in items:
+        if key in result:
+            raise ValueError("duplicate JSON key")
+        result[key] = value
+    return result
+
+
+def _as_deepseek_error(error: LLMProviderError) -> LLMProviderError:
+    if error.code in {
+        "DEEPSEEK_NOT_CONFIGURED",
+        "DEEPSEEK_CONFIGURATION_NOT_ALLOWED",
+        "DEEPSEEK_MODEL_NOT_ALLOWED",
+        "DEEPSEEK_RESPONSE_INVALID",
+        "DEEPSEEK_TIMEOUT",
+        "LLM_CALL_PURPOSE_NOT_ALLOWED",
+    }:
+        return error
+    if error.status_code == 401:
+        return LLMProviderError("DeepSeek authentication failed.", code="DEEPSEEK_AUTH_FAILED", status_code=401)
+    if error.status_code == 429:
+        return LLMProviderError("DeepSeek rate limit was reached.", code="DEEPSEEK_RATE_LIMITED", status_code=429)
+    if error.status_code and error.status_code >= 500:
+        return LLMProviderError("DeepSeek provider failed.", code="DEEPSEEK_PROVIDER_FAILED", status_code=error.status_code)
+    if error.code == "LLM_TIMEOUT":
+        return LLMProviderError("DeepSeek request timed out.", code="DEEPSEEK_TIMEOUT")
+    return LLMProviderError("DeepSeek provider failed.", code="DEEPSEEK_PROVIDER_FAILED", status_code=error.status_code)
 
 
 _DEFAULT_ALLOWED_LLM_BASE_URLS = frozenset(

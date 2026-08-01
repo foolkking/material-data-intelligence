@@ -1,0 +1,18 @@
+{
+  "attempts": [
+    {
+      "createdAt": "2026-07-31T13:09:22.054000+00:00",
+      "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+      "model": "deepseek-v4-flash",
+      "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:30:PLAN_READY:DEEPSEEK_PROVIDER_FAILED:errors=['DEEPSEEK_PROVIDER_FAILED']:selected=[]"
+    }
+  ],
+  "caseNumber": 30,
+  "createdAt": "2026-07-31T13:09:22.054000+00:00",
+  "errorCode": "HISTORICAL_REPLAY_OUTCOME_MISMATCH",
+  "model": "deepseek-v4-flash",
+  "provider": "deepseek",
+  "safeDetails": "HISTORICAL_REPLAY_OUTCOME_MISMATCH:30:PLAN_READY:DEEPSEEK_PROVIDER_FAILED:errors=['DEEPSEEK_PROVIDER_FAILED']:selected=[]",
+  "slug": "phonon_dos",
+  "verdict": "FAIL"
+}

@@ -1,0 +1,737 @@
+{
+  "additionalHistoricalCaseCount": 40,
+  "baseUrl": "https://api.deepseek.com",
+  "caseCount": 45,
+  "cases": [
+    {
+      "caseNumber": 1,
+      "caseSpecId": "caseSpec_52cb8135b823a3d621cd660fb5b38c4c",
+      "coverage": "COVERED_BY_EXISTING_L5_LIVE_SUITE",
+      "realCallCount": 3,
+      "runId": "live_run_28f09af3b53a75170a8850d6ca45f8b3",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 2,
+      "caseSpecId": "caseSpec_57f7ec437d831dd18eddf66edfa96ec4",
+      "coverage": "COVERED_BY_EXISTING_L5_LIVE_SUITE",
+      "realCallCount": 3,
+      "runId": "live_run_ceaef0c7168892dd5ed9d0a7da7bb7c1",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 3,
+      "caseSpecId": "caseSpec_5c68afd711f2349471f0192b8335041b",
+      "coverage": "COVERED_BY_EXISTING_L5_LIVE_SUITE",
+      "realCallCount": 3,
+      "runId": "live_run_89ff5988240b2246dec4adb371deacdb",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 4,
+      "caseSpecId": "caseSpec_90efe2220bf9a9601e731721308f5085",
+      "coverage": "COVERED_BY_EXISTING_L5_LIVE_SUITE",
+      "realCallCount": 3,
+      "runId": "live_run_d11315ef07ae3cb3bf09295fdd1254b2",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 5,
+      "caseSpecId": "caseSpec_ad4b6e323a807050b50625ae8c7d9424",
+      "coverage": "COVERED_BY_EXISTING_L5_LIVE_SUITE",
+      "realCallCount": 4,
+      "runId": "live_run_b135271f0ff8102fa42b0102aa8b8d0c",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 6,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 9",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "08fb059b43f3f6fc1d38045bc26b5ce04a78bc282bc08a6f24502eae55b430b9",
+      "runId": "historical_live_run_08fb059b43f3f6fc1d38045bc26b5ce0",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "ml.regression_evaluation"
+      ],
+      "slug": "basic_metrics",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 7,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 9",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "dc4000233860392ea3acc251919fa02b41e159fc96750d0d58de1b97b97c177e",
+      "runId": "historical_live_run_dc4000233860392ea3acc251919fa02b",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "dataset.materials_explorer"
+      ],
+      "slug": "numeric_summary",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 8,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10A",
+      "planningOutcome": "CAPABILITY_MISMATCH",
+      "realCallCount": 1,
+      "runHash": "ae93088a6b14255880e51b6e6b4871cb35abe6ca9bebfe7b6c14183d46e7cd73",
+      "runId": "historical_live_run_ae93088a6b14255880e51b6e6b4871cb",
+      "runtimeStatus": "NOT_CREATED",
+      "selectedToolIds": [],
+      "slug": "scatter",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 9,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10A",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "5867fed50cf36598ab2a343ebcd4b675e295124bc01e8121876405f2d3b93f47",
+      "runId": "historical_live_run_5867fed50cf36598ab2a343ebcd4b675",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "viz.histogram"
+      ],
+      "slug": "histogram_r2scan",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 10,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10A",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "a36e7a5e7442edb879fbcadac02c24611452368d63eb6a93003e86826978dbf7",
+      "runId": "historical_live_run_a36e7a5e7442edb879fbcadac02c2461",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "viz.histogram"
+      ],
+      "slug": "histogram_dmax",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 11,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10A",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "ec921cd49226576ccab43ce94db620d0f6ab0a0d03c44eae142927160b6edb67",
+      "runId": "historical_live_run_ec921cd49226576ccab43ce94db620d0",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "viz.correlation"
+      ],
+      "slug": "correlation",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 12,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10A",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "71b90df548118e90ee98cf007537262eac439f229537d829520e632213b313ce",
+      "runId": "historical_live_run_71b90df548118e90ee98cf007537262e",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "dataset.materials_explorer"
+      ],
+      "slug": "distribution_summary",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 13,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10A",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "7721daa4c7b0d437359924d53333aa2a7eb18014fa705ea0eea962af22e1ae2b",
+      "runId": "historical_live_run_7721daa4c7b0d437359924d53333aa2a",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "composition.summary"
+      ],
+      "slug": "composition_summary",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 14,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10B",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "81671686b5ea64909a46b85af18e0a357464ddf2f1554a0fe9679b79732d1408",
+      "runId": "historical_live_run_81671686b5ea64909a46b85af18e0a35",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "composition.formula_statistics"
+      ],
+      "slug": "formula_statistics",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 15,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10B",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "574e584f693040194876d73a8458e6fbf4c8ecc6afc587485cad7b546254ac58",
+      "runId": "historical_live_run_574e584f693040194876d73a8458e6fb",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "composition.elements_hist"
+      ],
+      "slug": "elements_hist",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 16,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10B",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "7872253cd99e0733bcd8329a5043de67b049547c840ccaec7bf4f16e09d83374",
+      "runId": "historical_live_run_7872253cd99e0733bcd8329a5043de67",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "composition.ptable_heatmap"
+      ],
+      "slug": "ptable_heatmap",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 17,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10B",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "72cc4747c798b83f9bea14b62bc07f61b5d351bbc41aba7eb12d967622773c7b",
+      "runId": "historical_live_run_72cc4747c798b83f9bea14b62bc07f61",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "composition.chem_sys_treemap"
+      ],
+      "slug": "chem_sys_treemap",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 18,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10B",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "3b6f555ab29a04fbc8c5226acaeea4741f3dfe5b8e20afc2ec380d36b5f8d155",
+      "runId": "historical_live_run_3b6f555ab29a04fbc8c5226acaeea474",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "composition.chem_sys_sunburst"
+      ],
+      "slug": "chem_sys_sunburst",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 19,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10C",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "25c31855fbdcb6fa4257faf3cfdc55b349e030b26bae972dbcea3bb9a4d9403a",
+      "runId": "historical_live_run_25c31855fbdcb6fa4257faf3cfdc55b3",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.lattice_summary"
+      ],
+      "slug": "lattice_summary",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 20,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10C",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "ee5e92915917c416e31a51adcf07ff2ea0c7777a5da31b6a6ce42505a445f1bb",
+      "runId": "historical_live_run_ee5e92915917c416e31a51adcf07ff2e",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.spacegroup_summary"
+      ],
+      "slug": "spacegroup_summary",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 21,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10C",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "3744ed875ad66539c7bb1f946ea0d4326c5042681416c897849d326e35fb9a19",
+      "runId": "historical_live_run_3744ed875ad66539c7bb1f946ea0d432",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.composition_from_structure"
+      ],
+      "slug": "composition_from_structure",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 22,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10C",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "701c9fedd1bbc53d8975975e91687d22266ff98647951838ff4de4bddbc9f96f",
+      "runId": "historical_live_run_701c9fedd1bbc53d8975975e91687d22",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.preview_metadata"
+      ],
+      "slug": "preview_metadata",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 23,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10E",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "96ebb8c39d17f51da2168090a246e5340bf07cde94c0b104133d89e58a18763e",
+      "runId": "historical_live_run_96ebb8c39d17f51da2168090a246e534",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.coordination_hist"
+      ],
+      "slug": "coordination_hist",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 24,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10E",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "12fd318d997e5e14a378a3f161b2ccaecd581cb3e736f57a96b59ffa598d9076",
+      "runId": "historical_live_run_12fd318d997e5e14a378a3f161b2ccae",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.xrd"
+      ],
+      "slug": "xrd",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 25,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10E",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "1030e1bec642945c393cffbdbc5ae62ecb305c2e13275eb4e66f86a2599bb120",
+      "runId": "historical_live_run_1030e1bec642945c393cffbdbc5ae62e",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.rdf"
+      ],
+      "slug": "rdf",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 26,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10F",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "04f399ea46b895bd697d072738b025a70478a7a264b6438c76dbc9b6894cac8b",
+      "runId": "historical_live_run_04f399ea46b895bd697d072738b025a7",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.viewer_scene"
+      ],
+      "slug": "viewer_scene",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 27,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10F",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "a1d23a73459d50b1897fb6d3ce55934fe9ecd1f9632edd78bec99f6a1d619fb3",
+      "runId": "historical_live_run_a1d23a73459d50b1897fb6d3ce55934f",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.structure_3d"
+      ],
+      "slug": "viewer_3d",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 28,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10G",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "7c90ddb66ff12a5d3bb0a964af470ce830c44c50ecafcb7215921698ff4dee5b",
+      "runId": "historical_live_run_7c90ddb66ff12a5d3bb0a964af470ce8",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.trajectory_viewer"
+      ],
+      "slug": "trajectory_viewer",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 29,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10H",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "71231dcff7f443429fe479e7caa29d1fda2fd6b325ba21c54102929fb97af9d3",
+      "runId": "historical_live_run_71231dcff7f443429fe479e7caa29d1f",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "phonon.band"
+      ],
+      "slug": "phonon_band",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 30,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10H",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "31562773efb3f469b47addb55222b98f9f23ada90213d6730eb7749ea0ed2d32",
+      "runId": "historical_live_run_31562773efb3f469b47addb55222b98f",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "phonon.dos"
+      ],
+      "slug": "phonon_dos",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 31,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10H",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "1879bef23972f14e7a7e0bce36e041d894a3c556eb6a60f4ca8ff9623cae214e",
+      "runId": "historical_live_run_1879bef23972f14e7a7e0bce36e041d8",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "phonon.animation"
+      ],
+      "slug": "phonon_animation",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 32,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10I",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "b9749f50bd13dcad72feadbc8025ca0d951bc308f4739bfce090d18b040da850",
+      "runId": "historical_live_run_b9749f50bd13dcad72feadbc8025ca0d",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.brillouin_zone"
+      ],
+      "slug": "brillouin_zone",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 33,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10I",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "5fa1e1a37f1ec7e29c1216897b08e672493288db3a48bb714677d3056995e6ca",
+      "runId": "historical_live_run_5fa1e1a37f1ec7e29c1216897b08e672",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "phonon.band",
+        "structure.brillouin_zone"
+      ],
+      "slug": "linked_band_bz",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 34,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10J",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "8a5110cfd0f1d5e67c35db725fafd9c8037005ca77b64b4baf7f49f429ad38bb",
+      "runId": "historical_live_run_8a5110cfd0f1d5e67c35db725fafd9c8",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.volumetric_data"
+      ],
+      "slug": "potential",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 35,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10J",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "fbb1ead8e96f7958f1cd0e900e2e5252178ea60a948626e217cbbf9b36e8ad53",
+      "runId": "historical_live_run_fbb1ead8e96f7958f1cd0e900e2e5252",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.volumetric_data"
+      ],
+      "slug": "elf",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 36,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10J",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "673898307afe8359e5843dd5d53025a5d9e748a6578c978fce7c330ded4f7b0c",
+      "runId": "historical_live_run_673898307afe8359e5843dd5d53025a5",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.volumetric_data"
+      ],
+      "slug": "partial_density",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 37,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10J",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "efa343be86e95dfd1b33fb2bfa3f7527fced29f7016f5ed04d37394aa792a014",
+      "runId": "historical_live_run_efa343be86e95dfd1b33fb2bfa3f7527",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "structure.volumetric_data"
+      ],
+      "slug": "slice_volume",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 38,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10K",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "9bcde5598122c9cd0ee832a87a814874d5a54d12008c4951ac4b9613902aae03",
+      "runId": "historical_live_run_9bcde5598122c9cd0ee832a87a814874",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "dataset.composition_space"
+      ],
+      "slug": "composition_space",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 39,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10K",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "3b6511944922be0cf7823d57cc59ec9495359c1261db4d7afadf13b0cbfa75db",
+      "runId": "historical_live_run_3b6511944922be0cf7823d57cc59ec94",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "ml.uncertainty_evaluation"
+      ],
+      "slug": "uncertainty",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 40,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10K",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "52abf5e260a127a5ac9276a5a96f807fc9fb4ec3a4a8f015888431fa86e1a553",
+      "runId": "historical_live_run_52abf5e260a127a5ac9276a5a96f807f",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "ml.classification_evaluation"
+      ],
+      "slug": "classification",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 41,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10L-1",
+      "planningOutcome": "NEEDS_CLARIFICATION",
+      "realCallCount": 1,
+      "runHash": "c1a1f4a10020db19fc847e100029c835406e9bdda1538cc1be645185814c40a2",
+      "runId": "historical_live_run_c1a1f4a10020db19fc847e100029c835",
+      "runtimeStatus": "NOT_CREATED",
+      "selectedToolIds": [],
+      "slug": "multi_target_clarification",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 42,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10L-1",
+      "planningOutcome": "UNSUPPORTED",
+      "realCallCount": 1,
+      "runHash": "3f6802efd0fced08d27846529371ef30ce55d3c9abbdf7a4b98566712ed015a4",
+      "runId": "historical_live_run_3f6802efd0fced08d27846529371ef30",
+      "runtimeStatus": "NOT_CREATED",
+      "selectedToolIds": [],
+      "slug": "fermi_unsupported",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 43,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10L-2",
+      "planningOutcome": "CAPABILITY_MISMATCH",
+      "realCallCount": 1,
+      "runHash": "97c68b4b337754fb64e64ed3e742c4325f223025679da15bc7171d38d3c7fada",
+      "runId": "historical_live_run_97c68b4b337754fb64e64ed3e742c432",
+      "runtimeStatus": "NOT_CREATED",
+      "selectedToolIds": [],
+      "slug": "uncertainty_plot_mismatch",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 44,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10L-2",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "1687d91d2f90fe60bb1bf0c5e74a3c7061ffe4d632045c9fe44528a4c4af8c4c",
+      "runId": "historical_live_run_1687d91d2f90fe60bb1bf0c5e74a3c70",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "ml.regression_evaluation"
+      ],
+      "slug": "formation_energy_exact",
+      "verdict": "PASS"
+    },
+    {
+      "caseNumber": 45,
+      "coverage": "REAL_DEEPSEEK_REPLAY_PASS",
+      "phase": "Phase 10L-2",
+      "planningOutcome": "PLAN_READY",
+      "realCallCount": 2,
+      "runHash": "5a9983af42322bbd58891c77a66bf74267ce5f2bdb891480539f84a651228cb3",
+      "runId": "historical_live_run_5a9983af42322bbd58891c77a66bf742",
+      "runtimeStatus": "completed",
+      "selectedToolIds": [
+        "ml.regression_evaluation"
+      ],
+      "slug": "band_gap_exact",
+      "verdict": "PASS"
+    }
+  ],
+  "createdAt": "2026-08-01T08:22:46.841048+00:00",
+  "defaultModel": "deepseek-v4-flash",
+  "existingL5CaseCount": 5,
+  "failedCaseCount": 0,
+  "keySource": "DEEPSEEK_KEY",
+  "modelPolicy": "Each case records its explicit allowlisted model; model changes are never silent fallback.",
+  "modelsUsed": [
+    "deepseek-v4-flash",
+    "deepseek-v4-pro"
+  ],
+  "otherRealProviderCalls": 0,
+  "passedCaseCount": 45,
+  "phaseSummary": {
+    "Phase 10A": {
+      "failed": 0,
+      "passed": 6,
+      "realCalls": 11
+    },
+    "Phase 10B": {
+      "failed": 0,
+      "passed": 5,
+      "realCalls": 10
+    },
+    "Phase 10C": {
+      "failed": 0,
+      "passed": 4,
+      "realCalls": 8
+    },
+    "Phase 10E": {
+      "failed": 0,
+      "passed": 3,
+      "realCalls": 6
+    },
+    "Phase 10F": {
+      "failed": 0,
+      "passed": 2,
+      "realCalls": 4
+    },
+    "Phase 10G": {
+      "failed": 0,
+      "passed": 1,
+      "realCalls": 2
+    },
+    "Phase 10H": {
+      "failed": 0,
+      "passed": 3,
+      "realCalls": 6
+    },
+    "Phase 10I": {
+      "failed": 0,
+      "passed": 2,
+      "realCalls": 4
+    },
+    "Phase 10J": {
+      "failed": 0,
+      "passed": 4,
+      "realCalls": 8
+    },
+    "Phase 10K": {
+      "failed": 0,
+      "passed": 3,
+      "realCalls": 6
+    },
+    "Phase 10L-1": {
+      "failed": 0,
+      "passed": 2,
+      "realCalls": 2
+    },
+    "Phase 10L-2": {
+      "failed": 0,
+      "passed": 3,
+      "realCalls": 5
+    },
+    "Phase 9": {
+      "failed": 0,
+      "passed": 2,
+      "realCalls": 4
+    }
+  },
+  "provider": "deepseek",
+  "schemaVersion": "1.0",
+  "security": {
+    "browserReceivesSecret": false,
+    "providerFallback": false,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true
+  },
+  "suiteHash": "dde5218a3d2121fc038bb90d6daa044aee4db4b6d0bb4f7d2b33ae12fb082f3e",
+  "suiteId": "historical_deepseek_suite_dde5218a3d2121fc038bb90d6daa044a",
+  "tokenUsage": {
+    "completionTokens": 38479,
+    "estimated": false,
+    "promptTokens": 339879,
+    "totalTokens": 378358
+  },
+  "totalRealCallCount": 92,
+  "verdict": "PASS"
+}

@@ -1,0 +1,230 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "composition.chem_sys_treemap"
+    ]
+  ],
+  "caseNumber": 17,
+  "createdAt": "2026-08-01T07:33:13.389579+00:00",
+  "decision": {
+    "decisionHash": "01ae25eba1388c5ebc0587d2b637903487a1b4c4118ffc41b738bd741c758c2c",
+    "decisionId": "decision_01ae25eba1388c5ebc0587d2",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "formulaColumn",
+            "source": "SEMANTIC_COLUMNS",
+            "sourceIdentity": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57:material_formula",
+            "value": "formula",
+            "valueId": "column:table_historical:formula"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "plot",
+          "summary"
+        ],
+        "coveredScientificIntents": [
+          "composition_analysis"
+        ],
+        "toolId": "composition.chem_sys_treemap",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": [
+      "table"
+    ]
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.materials_explorer"
+    ],
+    "providerVisibleToolIds": [
+      "composition.chem_sys_sunburst",
+      "composition.chem_sys_treemap",
+      "composition.elements_hist",
+      "composition.formula_statistics",
+      "composition.ptable_heatmap",
+      "composition.summary",
+      "dataset.materials_explorer"
+    ],
+    "rejectedToolCount": 46,
+    "resolutionHash": "2d3c077f34e3bc3a6c11b69211eddce24d3a36242d309e691ab34c8cd420daf0",
+    "resolutionId": "resolution_2d3c077f34e3bc3a6c11b692"
+  },
+  "historicalExpectedToolIds": [
+    "composition.chem_sys_treemap"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "plot",
+      "summary",
+      "table"
+    ],
+    "intentHash": "9040a4cd25fef55d8ac9f24c064c0f764389670331f46e78b69d4a2a898e6cd7",
+    "intentId": "intent_9040a4cd25fef55d8ac9f24c",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "composition_data"
+    ],
+    "scientificIntents": [
+      "composition_analysis"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-pro",
+  "notes": "",
+  "phase": "Phase 10B",
+  "plan": {
+    "graphHash": null,
+    "planHash": "4fd3930402a6f949bd43ef946473c03241d0eb4d7b0d7ffcc431a8e30347449b",
+    "planId": "plan_b6af4f8bbe74badcdd82c397",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 7380.239,
+      "finishReason": "stop",
+      "model": "deepseek-v4-pro",
+      "outcome": "SUCCESS",
+      "promptBytes": 25366,
+      "promptHash": "17f4ca3a7f8029591c6bc79d269db74b55256ed48afabe1105462fa63d56bddc",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2668,
+      "responseContentBytes": 1967,
+      "responseHash": "a1df34bf1abe6b71d4abf40d436e8044e59201f2583854a982b4789293a29a82",
+      "tokenUsage": {
+        "completionTokens": 582,
+        "estimated": false,
+        "promptTokens": 6002,
+        "totalTokens": 6584
+      }
+    },
+    {
+      "elapsedMs": 1859.418,
+      "finishReason": "stop",
+      "model": "deepseek-v4-pro",
+      "outcome": "SUCCESS",
+      "promptBytes": 8312,
+      "promptHash": "a661a2efea210b3d256a359275e15ad2930e139521886cc7ddc5813ad4411e77",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 637,
+      "responseContentBytes": 148,
+      "responseHash": "bc2caf6ff85d68c211491ea815bd9af178e49fc3138dc419e3c6bce968402939",
+      "tokenUsage": {
+        "completionTokens": 59,
+        "estimated": false,
+        "promptTokens": 2258,
+        "totalTokens": 2317
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Show the chemical-system distribution as a treemap.",
+  "replayPromptHash": "b6aad7b056757c4169b0cb5ee3ebbfbb8fc1c0b79523ef983d330cc87dc9314a",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "72cc4747c798b83f9bea14b62bc07f61b5d351bbc41aba7eb12d967622773c7b",
+  "runId": "historical_live_run_72cc4747c798b83f9bea14b62bc07f61",
+  "runtime": {
+    "artifactCount": 5,
+    "artifacts": [
+      {
+        "id": "call_job_7f93df4a7cce0c99b4e2338f_step_001-plotly_json",
+        "name": "chem_sys_treemap.json",
+        "sha256": "d3c7d63d46569224fd865def11d36f1f140fcae7a93cc996ae58dccd091471c9",
+        "sizeBytes": 8190,
+        "type": "plotly_json"
+      },
+      {
+        "id": "call_job_7f93df4a7cce0c99b4e2338f_step_001-plotly_html",
+        "name": "chem_sys_treemap.html",
+        "sha256": "f627dfa0986ff7e648cbefcf1752eb1806a4b614e2d110ad365564779c95786d",
+        "sizeBytes": 8766,
+        "type": "plotly_html"
+      },
+      {
+        "id": "call_job_7f93df4a7cce0c99b4e2338f_step_001-preview_png",
+        "name": "preview.png",
+        "sha256": "ad6bc0025a798fe0ebe49f41f1aaaaaeadb5c8bb081b1bf9dac341bdf680b57c",
+        "sizeBytes": 69,
+        "type": "preview_png"
+      },
+      {
+        "id": "call_job_7f93df4a7cce0c99b4e2338f_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "d9fd1e7a74f5274daa223e7b41e83713eca2a7e3bb9fae0477236d13e69dff27",
+        "sizeBytes": 241,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_7f93df4a7cce0c99b4e2338f_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "2b46ea7ec8e20da2e9f2ab820079b15da8ac5db80446035de05ae42c02954c23",
+        "sizeBytes": 645,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_7f93df4a7cce0c99b4e2338f_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "composition.chem_sys_treemap"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "composition.chem_sys_treemap"
+  ],
+  "slug": "chem_sys_treemap",
+  "sourcePaths": [
+    "docs/phase10b/browser_api_evidence/ward_chem_sys_treemap"
+  ],
+  "timing": {
+    "plannerElapsedMs": 9313.453
+  },
+  "tokenUsage": {
+    "completionTokens": 641,
+    "estimated": false,
+    "promptTokens": 8260,
+    "totalTokens": 8901
+  },
+  "verdict": "PASS"
+}

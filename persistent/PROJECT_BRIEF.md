@@ -53,9 +53,11 @@ service gate. It adds post-execution ScientificEvidenceBundle 1.0 projection,
 deterministic and strict-provider interpretation, grounded claims, immutable
 persistence, and an additive findings/evidence UI without changing Plan,
 Runtime, Registry, Job, or Artifact execution authority. Completion record
-`45af09e` passed exact-SHA CI run `30607509775`; only verified archive CI
-remains before archival. Phase 10L-5 was supplied by the reviewer and remains
-queued behind that archive gate. The remaining initial-release route is:
+`45af09e` passed exact-SHA CI run `30607509775`; verified queue archive
+`58ee943` passed exact-SHA CI run `30608078520`. Phase 10L-4 is archived and
+reviewer-approved Phase 10L-5 is now the sole active task, closing the five
+natural-language evidence cases and freezing new real LLM calls to DeepSeek
+with `DEEPSEEK_KEY` as the only key source. The remaining initial-release route is:
 
 ```text
 10K Material Intelligence
@@ -69,6 +71,22 @@ queued behind that archive gate. The remaining initial-release route is:
 Professional completion includes CrystalNN/VoronoiNN, local environments and
 polyhedra, experimental XRD comparison, basic trajectory analytics, and
 Electronic Band/DOS. Fermi Surface is Future Scope, not an initial blocker.
+
+### Phase 10L-5 Live Closure State
+
+The five frozen natural-language cases have been replayed through the real
+DeepSeek provider using `DEEPSEEK_KEY` only. Dataset, structure, ML, phonon
+dependency, and volumetric cases all reached persisted Plan/Job, Runtime
+artifacts, grounded interpretation, and PASS. The suite used 16 real calls in
+total, with an independent maximum of 12 per case and no other real provider.
+The repository-wide historical audit additionally replayed 40 useful
+browser/Mock-LLM semantic cases through the current canonical path: 45/45
+passed with 92 supplemental real DeepSeek calls. Pure browser-only checks,
+deterministic negative/security fixtures, infrastructure-only phases, and
+superseded tools remain explicitly excluded rather than misreported as live
+LLM coverage; see the historical replay matrix.
+Default CI remains real-call-free. Phase 10M remains reviewer-gated until the
+L5 exact-SHA implementation, completion, and queue archive lifecycle closes.
 
 Canonical authority:
 

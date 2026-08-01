@@ -1,0 +1,161 @@
+{
+  "apiRefs": [
+    "interpretations/interpretation_7fa2f2961af137b6c375ca50ffb8e975/evidence",
+    "planner/jobs/job_e931e1ae64dec09f3a9dab26",
+    "planner/jobs/job_e931e1ae64dec09f3a9dab26/dependencies",
+    "planner/jobs/job_e931e1ae64dec09f3a9dab26/interpretations"
+  ],
+  "artifacts": [
+    {
+      "artifactId": "call_job_e931e1ae64dec09f3a9dab26_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "contentHash": "8f32ea66fb29605349071713d90168fc94c4b9d11963a4c1c592912486204cf8",
+      "producerToolCallId": "call_job_e931e1ae64dec09f3a9dab26_step_001",
+      "sizeBytes": 574
+    },
+    {
+      "artifactId": "call_job_e931e1ae64dec09f3a9dab26_step_001-structure_json",
+      "artifactType": "structure_json",
+      "contentHash": "2d7894fd0e011171db6759ece6f146000a33fb65c6ecb7be8b199f9175eaa5a6",
+      "producerToolCallId": "call_job_e931e1ae64dec09f3a9dab26_step_001",
+      "sizeBytes": 662
+    },
+    {
+      "artifactId": "call_job_e931e1ae64dec09f3a9dab26_step_001-summary_md",
+      "artifactType": "summary_md",
+      "contentHash": "269d1828e0c5ad13e8b876dc10877f4e6d64dedfc2e8fcd0b09830f9efa3d319",
+      "producerToolCallId": "call_job_e931e1ae64dec09f3a9dab26_step_001",
+      "sizeBytes": 111
+    }
+  ],
+  "browserRefs": [],
+  "caseSpecHash": "90efe2220bf9a9601e731721308f5085718e235b044f43eea2e6190dee36e205",
+  "caseSpecId": "caseSpec_90efe2220bf9a9601e731721308f5085",
+  "claimEvidenceLinks": [
+    {
+      "claimId": "claim_233ffad2e437b3a2c07dd52303f8b53b",
+      "evidenceItemIds": [
+        "evidence_e6de56737c0cd035ae4ce625e8f7ee87"
+      ]
+    },
+    {
+      "claimId": "claim_5f42f84787549f7e289ec9f2c2276e96",
+      "evidenceItemIds": [
+        "evidence_55fbb744f3ab9c40838d813610a0c21d"
+      ]
+    },
+    {
+      "claimId": "claim_742c3dd86bc144949fc7c1d6097c06f3",
+      "evidenceItemIds": [
+        "evidence_61426a034857bc8242c3ac9c944d4ffa"
+      ]
+    },
+    {
+      "claimId": "claim_824aa3c27d4e84486f03608f1e233f2c",
+      "evidenceItemIds": [
+        "evidence_307c092a690cb8df498147de045f7074"
+      ]
+    },
+    {
+      "claimId": "claim_8cce2ca396b4495f2dd9bc5ac6390647",
+      "evidenceItemIds": [
+        "evidence_9c521199a20d05e52bd9f49a93d6757b"
+      ]
+    }
+  ],
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 2788.3846,
+  "eligibility": {
+    "recordHash": "1ec5edf6abcb2a9ca3a01be887d38de4a7f76cc5e5fab4075c434a9c86bf37c8",
+    "recordId": "resolution_1ec5edf6abcb2a9ca3a01be8",
+    "schemaVersion": "1.0"
+  },
+  "evidenceBundle": {
+    "recordHash": "e812793ba5e1b258371d88b823da3cb4ce40e38035b731c3f9bdc0bd17bd7c60",
+    "recordId": "bundle_e812793ba5e1b258371d88b823da3cb4",
+    "schemaVersion": "1.0"
+  },
+  "executionOutcome": "LEGACY_TERMINAL",
+  "intent": {
+    "clarificationRound": 0,
+    "intentHash": "39d93b1a05c54c518c4264ceff89461d7b17429ba3b3112e093645186495d516",
+    "intentId": "intent_39d93b1a05c54c518c4264ce",
+    "outcome": "READY"
+  },
+  "interpretation": {
+    "recordHash": "7fa2f2961af137b6c375ca50ffb8e97565f1d29cc58ce9c065d0a7df9a239d11",
+    "recordId": "interpretation_7fa2f2961af137b6c375ca50ffb8e975",
+    "schemaVersion": "1.0"
+  },
+  "job": {
+    "recordId": "job_e931e1ae64dec09f3a9dab26",
+    "semanticHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5",
+    "state": "completed"
+  },
+  "lineage": [],
+  "plan": {
+    "graphHash": null,
+    "planHash": "ff3064449f663f942ab55fc18fa28aca372f839f1a648d43a304aa55e85277c5",
+    "planId": "plan_71fdf5355282277be038525f",
+    "schemaVersion": "0.1"
+  },
+  "profile": {
+    "recordHash": "791525a68e6bd69951ea623fe68053a761a7dd519b6e64ce9e9dad90a2ebaa96",
+    "recordId": "profile_dataset_phase10k2_evidence_v2",
+    "schemaVersion": "2.0"
+  },
+  "provider": {
+    "keySource": "NONE",
+    "mode": "DETERMINISTIC",
+    "model": "deterministic-capability-planner",
+    "promptHashes": [],
+    "provider": "deterministic_mock",
+    "purposes": [],
+    "realCallCount": 0,
+    "responseHashes": []
+  },
+  "resourceManifest": [
+    {
+      "kind": "structure",
+      "objectHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "objectId": "obj_nacl",
+      "objectType": "Structure"
+    }
+  ],
+  "runHash": "3f5b97992f893361d013c9799c1c654c98697d93d09a20599d0bfc030143cf7d",
+  "runId": "run_3f5b97992f893361d013c9799c1c654c",
+  "schemaVersion": "1.0",
+  "securityMarkers": [
+    "NO_ALTERNATIVE_PROVIDER_REAL_CALLS",
+    "NO_ARBITRARY_CODE",
+    "NO_ARTIFACT_HTML_OR_JAVASCRIPT",
+    "NO_CROSS_JOB_OR_PROJECT_BINDING",
+    "NO_DIRECT_TOOL_PLAN_OR_ADAPTER_IN_USER_REQUEST",
+    "NO_EXTERNAL_SCIENTIFIC_API",
+    "NO_RAW_ARTIFACT_TO_PROVIDER",
+    "NO_RECOMMENDATION_AUTO_EXECUTION",
+    "NO_SECRET_IN_EVIDENCE"
+  ],
+  "selectedTools": [
+    {
+      "bindingHash": "bce30d5a4fa9df29226c4a7c86133741285abd6a12ba58d7c1c89069583ab5fc",
+      "toolId": "structure.summary",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "tokenUsage": {
+    "completionTokens": 0,
+    "estimated": false,
+    "promptTokens": 0,
+    "totalTokens": 0
+  },
+  "toolCalls": [
+    {
+      "recordId": "call_job_e931e1ae64dec09f3a9dab26_step_001",
+      "semanticHash": "c8b1d11a0465405660be0c0d356765e50d8c1cde5493eccef622556117a5c4c8",
+      "state": "completed"
+    }
+  ],
+  "userText": "看看这个晶体结构是否合理。",
+  "verdict": "PASS"
+}

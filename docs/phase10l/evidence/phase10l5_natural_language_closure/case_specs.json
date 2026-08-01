@@ -1,0 +1,119 @@
+[
+  {
+    "acceptableToolIds": [
+      "dataset.materials_explorer"
+    ],
+    "caseSpecHash": "57f7ec437d831dd18eddf66edfa96ec468b002627f30d0f5e5e7413bc74a0fe6",
+    "caseSpecId": "caseSpec_57f7ec437d831dd18eddf66edfa96ec4",
+    "forbiddenFallbacks": [
+      "ml.basic_metrics"
+    ],
+    "requiredCapabilityNeeds": [
+      "composition_data",
+      "tabular_data"
+    ],
+    "requiredOutputs": [
+      "summary",
+      "table",
+      "warnings"
+    ],
+    "requiresClarification": false,
+    "requiresDependencyPlan": false,
+    "schemaVersion": "1.0",
+    "title": "Dataset Composition And Anomaly Candidates",
+    "userText": "分析这批材料的组成分布和异常样本。"
+  },
+  {
+    "acceptableToolIds": [
+      "structure.summary"
+    ],
+    "caseSpecHash": "90efe2220bf9a9601e731721308f5085718e235b044f43eea2e6190dee36e205",
+    "caseSpecId": "caseSpec_90efe2220bf9a9601e731721308f5085",
+    "forbiddenFallbacks": [
+      "structure.viewer_3d"
+    ],
+    "requiredCapabilityNeeds": [
+      "structure_data"
+    ],
+    "requiredOutputs": [
+      "summary",
+      "warnings"
+    ],
+    "requiresClarification": false,
+    "requiresDependencyPlan": false,
+    "schemaVersion": "1.0",
+    "title": "Structure Reasonableness Review",
+    "userText": "看看这个晶体结构是否合理。"
+  },
+  {
+    "acceptableToolIds": [
+      "ml.regression_evaluation"
+    ],
+    "caseSpecHash": "52cb8135b823a3d621cd660fb5b38c4cc8c51438b827878c7c19fa099c93fabf",
+    "caseSpecId": "caseSpec_52cb8135b823a3d621cd660fb5b38c4c",
+    "forbiddenFallbacks": [
+      "ml.basic_metrics",
+      "table.numeric_summary"
+    ],
+    "requiredCapabilityNeeds": [
+      "regression_predictions",
+      "tabular_data"
+    ],
+    "requiredOutputs": [
+      "metrics",
+      "summary",
+      "warnings"
+    ],
+    "requiresClarification": false,
+    "requiresDependencyPlan": false,
+    "schemaVersion": "1.0",
+    "title": "ML Model Performance",
+    "userText": "分析这个机器学习模型表现。"
+  },
+  {
+    "acceptableToolIds": [
+      "phonon.band",
+      "phonon.band_dos",
+      "phonon.dos"
+    ],
+    "caseSpecHash": "ad4b6e323a807050b50625ae8c7d94248d3285b72ab23ea75ce217a8a7a975b5",
+    "caseSpecId": "caseSpec_ad4b6e323a807050b50625ae8c7d9424",
+    "forbiddenFallbacks": [],
+    "requiredCapabilityNeeds": [
+      "phonon_data"
+    ],
+    "requiredOutputs": [
+      "plot",
+      "summary",
+      "warnings"
+    ],
+    "requiresClarification": false,
+    "requiresDependencyPlan": true,
+    "schemaVersion": "1.0",
+    "title": "Phonon Dependent Analysis",
+    "userText": "分析这个 phonon calculation。"
+  },
+  {
+    "acceptableToolIds": [
+      "structure.volumetric_data"
+    ],
+    "caseSpecHash": "5c68afd711f2349471f0192b8335041b6eac7e8106726c6bae04d6bffd17a4a3",
+    "caseSpecId": "caseSpec_5c68afd711f2349471f0192b8335041b",
+    "forbiddenFallbacks": [
+      "structure.viewer_3d"
+    ],
+    "requiredCapabilityNeeds": [
+      "volumetric_data"
+    ],
+    "requiredOutputs": [
+      "summary",
+      "three_dimensional_view",
+      "warnings"
+    ],
+    "requiresClarification": false,
+    "requiresDependencyPlan": false,
+    "schemaVersion": "1.0",
+    "title": "Charge Density Analysis",
+    "userText": "查看这个 charge density，并解释主要特征。"
+  }
+]

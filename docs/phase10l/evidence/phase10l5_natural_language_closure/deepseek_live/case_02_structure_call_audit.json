@@ -1,0 +1,59 @@
+[
+  {
+    "elapsedMs": 4716.444,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 22986,
+    "promptHash": "049363d0f88239b54d3878096b6f246f5df9202b266b624716151d427c8fa34d",
+    "purpose": "INTENT_EXTRACTION",
+    "realCall": true,
+    "responseBytes": 3238,
+    "responseContentBytes": 2470,
+    "responseHash": "04aff0a7a732eedaa8e94e8469ca6300cfd6678b04470a24ef066d78c5a88888",
+    "tokenUsage": {
+      "completionTokens": 771,
+      "estimated": false,
+      "promptTokens": 5415,
+      "totalTokens": 6186
+    }
+  },
+  {
+    "elapsedMs": 1604.646,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 9428,
+    "promptHash": "131e13270b58cf083caf9b1a77693f151d86c6a98e209857330a53e99b04b709",
+    "purpose": "CAPABILITY_PLAN_SELECTION",
+    "realCall": true,
+    "responseBytes": 605,
+    "responseContentBytes": 116,
+    "responseHash": "92feb31d35ee2bd1555d69c181d98e907c992c40bb9535e568c81f67bb311323",
+    "tokenUsage": {
+      "completionTokens": 36,
+      "estimated": false,
+      "promptTokens": 2628,
+      "totalTokens": 2664
+    }
+  },
+  {
+    "elapsedMs": 2802.009,
+    "finishReason": "stop",
+    "model": "deepseek-v4-flash",
+    "outcome": "SUCCESS",
+    "promptBytes": 8070,
+    "promptHash": "68d44fa2fa682b296595e83f670421a1c78cfc02110befbf4d7e3111a0e71d36",
+    "purpose": "GROUNDED_INTERPRETATION",
+    "realCall": true,
+    "responseBytes": 1704,
+    "responseContentBytes": 1130,
+    "responseHash": "273647a6fc343b3b9190cedbbfa51b12df9ada9d0a2a06cd9027244c872cd3dd",
+    "tokenUsage": {
+      "completionTokens": 393,
+      "estimated": false,
+      "promptTokens": 2116,
+      "totalTokens": 2509
+    }
+  }
+]

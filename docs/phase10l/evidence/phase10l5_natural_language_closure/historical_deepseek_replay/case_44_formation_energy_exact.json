@@ -1,0 +1,228 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "ml.regression_evaluation"
+    ]
+  ],
+  "caseNumber": 44,
+  "createdAt": "2026-08-01T07:46:59.169812+00:00",
+  "decision": {
+    "decisionHash": "f2fd58e35c32b90cd37e8ed5558515441a4f41cdce363d1dbceb4e9ce4f54b38",
+    "decisionId": "decision_f2fd58e35c32b90cd37e8ed5",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "groupIds",
+            "source": "TARGET_GROUP_IDS",
+            "sourceIdentity": "formation_energy_model",
+            "value": [
+              "formation_energy_model"
+            ],
+            "valueId": "groups:formation_energy_model"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "metrics",
+          "summary",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "ml_regression_evaluation"
+        ],
+        "toolId": "ml.regression_evaluation",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "ml.regression_evaluation"
+    ],
+    "providerVisibleToolIds": [
+      "ml.regression_evaluation"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "ae071bbd6152f3afc216705b23e6211dbb811412a9048ad160340d042a4c8f41",
+    "resolutionId": "resolution_ae071bbd6152f3afc216705b"
+  },
+  "historicalExpectedToolIds": [
+    "ml.regression_evaluation"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "metrics",
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "a4913106d3193957eb4128f60e07a577b4616af915c5eaecc2671772f51e0edb",
+    "intentId": "intent_a4913106d3193957eb4128f6",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "regression_semantics"
+    ],
+    "scientificIntents": [
+      "ml_regression_evaluation"
+    ],
+    "targetSemantics": [
+      {
+        "column": "formation_energy",
+        "groupId": "formation_energy_model",
+        "objectId": "table_dual_target",
+        "origin": "PROFILE_EXACT",
+        "role": "regression_target",
+        "semanticId": "formation_energy_model:target:formation_energy",
+        "seriesId": null,
+        "unit": "eV/atom"
+      },
+      {
+        "column": "formation_energy_pred",
+        "groupId": "formation_energy_model",
+        "objectId": "table_dual_target",
+        "origin": "PROFILE_EXACT",
+        "role": "regression_prediction",
+        "semanticId": "formation_energy_model:prediction:formation_energy_pred",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "Exact target: formation_energy_model",
+  "phase": "Phase 10L-2",
+  "plan": {
+    "graphHash": null,
+    "planHash": "dd2690c5b2c36640c9063a912de23e6bbacb64e80025b9c13afa5b0c8a48029d",
+    "planId": "plan_48b64913a5fc749e52e51389",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_dual_target",
+    "profileId": "profile_dataset_historical_dual_target_v2",
+    "profileSemanticHash": "132950a9ea821d6b15d36ffb646f332da3b84e3a3a03a55d7f0956d073191e46",
+    "selectedResourceIds": [
+      "table_dual_target"
+    ],
+    "selectedTargetIds": [
+      "formation_energy_model:target:formation_energy"
+    ]
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4878.539,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 26816,
+      "promptHash": "f01f59a5f317a521285b1c662acc3e1b27b15fb0888299336c1ee395da95ad01",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3107,
+      "responseContentBytes": 2357,
+      "responseHash": "4858bff764d9dad65b0352429dc400b9941d05d261a272c65bad54b20787976b",
+      "tokenUsage": {
+        "completionTokens": 691,
+        "estimated": false,
+        "promptTokens": 6332,
+        "totalTokens": 7023
+      }
+    },
+    {
+      "elapsedMs": 1239.798,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3652,
+      "promptHash": "b87aea16ac6736f850bff1c1cecb92a861747c77fbd9c77f01938a6c4ea0f877",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 609,
+      "responseContentBytes": 123,
+      "responseHash": "159a827a16bf932bb080ed407c060d0770e498e82fe121920307aa2b22e0cf77",
+      "tokenUsage": {
+        "completionTokens": 40,
+        "estimated": false,
+        "promptTokens": 900,
+        "totalTokens": 940
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Analyze formation-energy prediction errors.",
+  "replayPromptHash": "6d017da408cb7ff7147147355af65858628c768952df979e47eecc0ecbbe9b76",
+  "routeClassification": "EXACT_HISTORICAL_ROUTE",
+  "runHash": "1687d91d2f90fe60bb1bf0c5e74a3c7061ffe4d632045c9fe44528a4c4af8c4c",
+  "runId": "historical_live_run_1687d91d2f90fe60bb1bf0c5e74a3c70",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_a4175e80acb1cf80116053cf_step_001-table_json",
+        "name": "materials_ml_regression.json",
+        "sha256": "626d08e3cca3309a882d162aa0daba5fa08f01c2ccaef6ba1295c785ed42809b",
+        "sizeBytes": 6382,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_a4175e80acb1cf80116053cf_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "8866d55c3b701f271c947c9a3843b0f3805d34071db0f25f9bcdf8c97e802c0d",
+        "sizeBytes": 315,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_a4175e80acb1cf80116053cf_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "6d30e6d0871f10a5502f264cedd6d07d0ab90cda8e7b9879ea68efc41c766702",
+        "sizeBytes": 1205,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_a4175e80acb1cf80116053cf_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "ml.regression_evaluation"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "ml.regression_evaluation"
+  ],
+  "slug": "formation_energy_exact",
+  "sourcePaths": [
+    "docs/phase10l/evidence/phase10l2_capability_aware_planner/regressions/formation_energy_vs_band_gap.json"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6185.921
+  },
+  "tokenUsage": {
+    "completionTokens": 731,
+    "estimated": false,
+    "promptTokens": 7232,
+    "totalTokens": 7963
+  },
+  "verdict": "PASS"
+}

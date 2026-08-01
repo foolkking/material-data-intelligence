@@ -1,0 +1,37 @@
+{
+  "baseUrl": "http***REDACTED_PATH***",
+  "callAudit": [
+    {
+      "elapsedMs": 5094.516,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 21555,
+      "promptHash": "90c48887100c4cf9fa6484ee587e327db7453d1ac021820c2723a7f0c8ca15ad",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3488,
+      "responseContentBytes": 2689,
+      "responseHash": "5e50e013e7f4339cfbba37304e9fbf7125bd47ebb2fb7a7cfa9ae82385a11867",
+      "tokenUsage": {
+        "completionTokens": 840,
+        "estimated": false,
+        "promptTokens": 5050,
+        "totalTokens": 5890
+      }
+    }
+  ],
+  "caseIndex": 3,
+  "caseSpecId": "caseSpec_ad4b6e323a807050b50625ae8c7d9424",
+  "configured": true,
+  "createdAt": "2026-07-31T00:00:00+00:00",
+  "elapsedMs": 5180.943,
+  "errorCode": "LIVE_PLAN_NOT_READY",
+  "errorType": "RuntimeError",
+  "keySource": "DEEPSEEK_KEY",
+  "model": "deepseek-v4-flash",
+  "realCallCount": 1,
+  "safeDetails": "LIVE_PLAN_NOT_READY:{\"desiredOutputs\":[],\"diagnosticMessages\":[\"LLM Intent failed schema validation at clarification:model_type.\"],\"diagnostics\":[\"INTENT_LLM_SCHEMA_INVALID\"],\"eligibleToolIds\":[],\"executionSideEffects\":{\"artifactCount\":0,\"bindingResolutionCount\":0,\"dependencyExecutionCount\":0,\"jobCount\":0,\"lineageCount\":0,\"planCount\":0,\"plannedBindingCount\":0,\"queueMessageCount\":0,\"toolCallCount\":0},\"outcome\":\"INTENT_LLM_SCHEMA_INVALID\",\"rejectionCodes\":[],\"requiredCapabilityNeeds\":[],\"scientificIntents\":[]}",
+  "sanitized": true,
+  "verdict": "FAIL"
+}

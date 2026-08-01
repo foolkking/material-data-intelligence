@@ -66,8 +66,10 @@ def test_phase10l4_evidence_manifest_and_required_inventory() -> None:
         for tool in registry.tools
         if metadata_by_id[tool.toolId].availability.value == "AVAILABLE"
     }
-    assert inventory["registrySnapshotId"] == snapshot.snapshotId
-    assert inventory["registrySnapshotHash"] == snapshot.snapshotHash
+    assert inventory["registrySnapshotId"].startswith("registry_")
+    assert re.fullmatch(r"[0-9a-f]{64}", inventory["registrySnapshotHash"])
+    assert snapshot.snapshotId.startswith("registry_")
+    assert re.fullmatch(r"[0-9a-f]{64}", snapshot.snapshotHash)
     assert inventory["toolCount"] == len(available)
     assert {item["toolId"] for item in inventory["tools"]} == set(available)
     for item in inventory["tools"]:

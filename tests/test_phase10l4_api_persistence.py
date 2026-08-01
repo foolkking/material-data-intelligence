@@ -329,7 +329,7 @@ def test_strict_provider_selection_failure_is_persisted_and_idempotent(tmp_path:
     assert first["outcome"] == "PROVIDER_FAILED"
     assert first["execution"] is not None
     assert first["execution"]["outcome"] == "PROVIDER_FAILED"
-    assert first["execution"]["provider"] == "openai_compatible"
+    assert first["execution"]["provider"] == "deepseek"
     assert first["execution"]["providerConfigHash"]
     assert first["execution"]["idempotencyKeyHash"] == hashlib.sha256(b"provider-failure-key").hexdigest()
     assert first["execution"]["executionRecordId"] == second["execution"]["executionRecordId"]

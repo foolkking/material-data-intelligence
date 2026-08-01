@@ -75,7 +75,19 @@ ARTIFACT_PROJECTOR_CONTRACTS: Mapping[tuple[str, str], ArtifactProjectorContract
     (contract.tool_id, contract.artifact_type): contract
     for contract in (
         ArtifactProjectorContract("table.numeric_summary", "table_json", "platform.table.numeric_summary", ("platform.table.numeric_summary.v1",)),
+        ArtifactProjectorContract(
+            "dataset.materials_explorer",
+            "table_json",
+            "phase10k2.dataset_materials_explorer",
+            ("phase10k2.dataset_materials_explorer.v1",),
+        ),
         ArtifactProjectorContract("ml.basic_metrics", "metrics_json", "platform.ml.basic_metrics", ("platform.ml.basic_metrics.v1",)),
+        ArtifactProjectorContract(
+            "ml.regression_evaluation",
+            "table_json",
+            "phase10k3.materials_ml_regression",
+            ("phase10k3.materials_ml_regression.v1",),
+        ),
         ArtifactProjectorContract("structure.summary", "structure_json", "platform.structure.summary", ("platform.structure.summary.v1",)),
         ArtifactProjectorContract("phonon.band", "phonon_band_json", "phase10h.phonon", (PHONON_BAND_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.band", "phonon_summary_json", "phase10h.phonon", (PHONON_SUMMARY_SCHEMA_VERSION,)),
@@ -187,9 +199,16 @@ class ProviderClaimProposal(_StrictProposalModel):
         return self
 
 
+PROVIDER_INTERPRETATION_MAX_CLAIMS = 4
+PROVIDER_SAFE_EVIDENCE_ITEM_CAP = 8
+
+
 class ProviderInterpretationProposal(_StrictProposalModel):
     schemaVersion: str = Field(pattern=r"^1\.0$")
-    claims: list[ProviderClaimProposal] = Field(default_factory=list, max_length=32)
+    claims: list[ProviderClaimProposal] = Field(
+        default_factory=list,
+        max_length=PROVIDER_INTERPRETATION_MAX_CLAIMS,
+    )
     recommendations: list[dict[str, Any]] = Field(default_factory=list, max_length=8)
 
     @model_validator(mode="after")
@@ -306,8 +325,12 @@ def project_artifact(source: InterpretationSource, candidate: ArtifactProjection
         return []
     if artifact_type == "table_json" and tool_id == "table.numeric_summary":
         return _project_numeric_summary(source, candidate)
+    if artifact_type == "table_json" and tool_id == "dataset.materials_explorer":
+        return _project_dataset_materials_explorer(source, candidate)
     if artifact_type == "metrics_json" and tool_id == "ml.basic_metrics":
         return _project_ml_metrics(source, candidate)
+    if artifact_type == "table_json" and tool_id == "ml.regression_evaluation":
+        return _project_ml_regression_evaluation(source, candidate)
     if artifact_type == "structure_json" and tool_id == "structure.summary":
         return _project_structure_summary(source, candidate)
     if artifact_type in {"phonon_band_json", "phonon_dos_json", "phonon_band_dos_json", "phonon_summary_json"} and tool_id in {"phonon.band", "phonon.dos", "phonon.band_dos"}:
@@ -508,8 +531,25 @@ def strict_provider_interpret(
 
 
 def provider_safe_projection(bundle: ScientificEvidenceBundle) -> dict[str, Any]:
-    items = [
-        {
+    safe_evidence = [
+        item
+        for item in bundle.evidenceItems
+        if item.providerSafe and _provider_safe_evidence_item(item)
+    ]
+    safe_evidence.sort(
+        key=lambda item: (
+            item.semanticRole,
+            item.subjectId,
+            item.sourceArtifactId,
+            item.evidenceItemId,
+        )
+    )
+    original_safe_count = len(safe_evidence)
+    safe_evidence = safe_evidence[:PROVIDER_SAFE_EVIDENCE_ITEM_CAP]
+    items = []
+    for item in safe_evidence:
+        predicate, claim_type = _claim_semantics(item)
+        items.append({
             "evidenceItemId": item.evidenceItemId,
             "semanticRole": item.semanticRole,
             "evidenceKind": item.evidenceKind.value,
@@ -521,10 +561,11 @@ def provider_safe_projection(bundle: ScientificEvidenceBundle) -> dict[str, Any]
             "referenceConvention": item.referenceConvention,
             "warnings": item.warnings,
             "limitations": item.limitations,
-        }
-        for item in bundle.evidenceItems
-        if item.providerSafe and _provider_safe_evidence_item(item)
-    ]
+            "allowedDirectClaim": {
+                "claimType": claim_type.value,
+                "semanticPredicate": predicate.value,
+            },
+        })
     projection = {
         "schemaVersion": "1.0",
         "bundleId": bundle.bundleId,
@@ -534,8 +575,22 @@ def provider_safe_projection(bundle: ScientificEvidenceBundle) -> dict[str, Any]
         "bundleLimitations": bundle.bundleLimitations,
         "allowedClaimTypes": [item.value for item in ClaimType],
         "allowedPredicates": [item.value for item in ClaimPredicate],
+        "outputSchema": ProviderInterpretationProposal.model_json_schema(),
+        "outputTemplate": {
+            "schemaVersion": "1.0",
+            "claims": [],
+            "recommendations": [],
+        },
+        "claimBudget": PROVIDER_INTERPRETATION_MAX_CLAIMS,
         "evidenceItems": items,
         "providerVisibleEvidenceIds": sorted(item["evidenceItemId"] for item in items),
+        "projectionReduction": {
+            "applied": original_safe_count > len(items),
+            "policy": "stable_semantic_role_subject_artifact_v1",
+            "originalSafeEvidenceCount": original_safe_count,
+            "retainedSafeEvidenceCount": len(items),
+            "cap": PROVIDER_SAFE_EVIDENCE_ITEM_CAP,
+        },
         "rules": {
             "rawArtifactsAvailable": False,
             "pathsOrUrlsAvailable": False,
@@ -543,6 +598,9 @@ def provider_safe_projection(bundle: ScientificEvidenceBundle) -> dict[str, Any]
             "planMutationAuthorized": False,
             "recommendationsExecutable": False,
             "freeTextClaimsAccepted": False,
+            "directClaimMustMatchEvidenceDeclaration": True,
+            "supportingEvidenceMustIncludeSubjectEvidence": True,
+            "evidenceReferencesMustBeUniqueAndSorted": True,
         },
     }
     raw = json.dumps(projection, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
@@ -722,6 +780,168 @@ def _project_ml_metrics(source: InterpretationSource, candidate: ArtifactProject
     ]
 
 
+def _project_dataset_materials_explorer(
+    source: InterpretationSource,
+    candidate: ArtifactProjectionInput,
+) -> list[ScientificEvidenceItem]:
+    payload = candidate.payload
+    required = {"artifactType", "schemaVersion", "dataset", "overview", "composition", "properties", "warnings"}
+    if (
+        not isinstance(payload, dict)
+        or not required.issubset(payload)
+        or payload.get("artifactType") != "dataset.materials_explorer"
+        or payload.get("schemaVersion") != "phase10k2.dataset_materials_explorer.v1"
+    ):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dataset explorer contract is invalid.")
+    dataset = payload.get("dataset")
+    overview = payload.get("overview")
+    composition = payload.get("composition")
+    properties = payload.get("properties")
+    if (
+        not isinstance(dataset, dict)
+        or dataset.get("datasetId") != source.dataset_id
+        or str(dataset.get("datasetVersion")) != source.dataset_version
+        or not isinstance(overview, dict)
+        or not isinstance(composition, dict)
+        or not isinstance(properties, dict)
+    ):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dataset explorer identity or sections are invalid.")
+    sample_count = overview.get("sampleCount")
+    property_count = overview.get("propertyCount")
+    coverage = composition.get("coverage")
+    if (
+        not _nonnegative_int(sample_count)
+        or not _nonnegative_int(property_count)
+        or not isinstance(coverage, dict)
+        or any(not _nonnegative_int(coverage.get(key)) for key in ("total", "nonNull", "valid", "invalid"))
+        or coverage["total"] != sample_count
+        or coverage["valid"] + coverage["invalid"] != coverage["nonNull"]
+    ):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dataset explorer coverage is inconsistent.")
+    records = properties.get("properties")
+    if properties.get("status") != "READY" or not isinstance(records, list) or len(records) != property_count or len(records) > 32:
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dataset explorer properties are invalid.")
+
+    items = [
+        _item(source, candidate, "dataset.sample_count", EvidenceKind.count, "dataset", "count", sample_count, field="overview.sampleCount"),
+        _item(source, candidate, "dataset.property_count", EvidenceKind.count, "dataset", "count", property_count, field="overview.propertyCount"),
+        _item(source, candidate, "composition.valid_count", EvidenceKind.count, "dataset", "count", coverage["valid"], field="composition.coverage.valid"),
+        _item(source, candidate, "composition.invalid_count", EvidenceKind.count, "dataset", "count", coverage["invalid"], field="composition.coverage.invalid"),
+    ]
+    unique_formula_count = composition.get("uniqueFormulaCount")
+    if _nonnegative_int(unique_formula_count):
+        items.append(_item(source, candidate, "composition.unique_formula_count", EvidenceKind.count, "dataset", "count", unique_formula_count, field="composition.uniqueFormulaCount"))
+    seen: set[str] = set()
+    for record in records:
+        if not isinstance(record, dict):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dataset explorer property record is invalid.")
+        column = record.get("column")
+        count = record.get("count")
+        missing_count = record.get("missingCount")
+        non_finite_count = record.get("nonFiniteCount")
+        statistics = record.get("statistics")
+        outliers = record.get("outlierCandidates")
+        if (
+            not _safe_semantic_name(column)
+            or column in seen
+            or not _nonnegative_int(count)
+            or not _nonnegative_int(missing_count)
+            or not _nonnegative_int(non_finite_count)
+            or count + missing_count + non_finite_count > sample_count
+            or not isinstance(statistics, dict)
+            or any(not _finite(statistics.get(key)) for key in ("min", "max"))
+            or statistics["min"] > statistics["max"]
+            or not isinstance(outliers, list)
+            or len(outliers) > sample_count
+        ):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dataset explorer property semantics are invalid.")
+        seen.add(column)
+        unit = record.get("unit")
+        if unit is not None and (not isinstance(unit, str) or not unit or len(unit) > 64):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dataset explorer property unit is invalid.")
+        subject = f"property:{column}"
+        items.extend(
+            [
+                _item(source, candidate, "property.range", EvidenceKind.range, subject, "numeric_range", None, minimum=statistics["min"], maximum=statistics["max"], unit=unit, field=f"properties.{column}.statistics.range", entity=column),
+                _item(source, candidate, "property.observed_count", EvidenceKind.count, subject, "count", count, field=f"properties.{column}.count", entity=column),
+                _item(source, candidate, "property.missing_count", EvidenceKind.count, subject, "count", missing_count, field=f"properties.{column}.missingCount", entity=column),
+                _item(source, candidate, "property.outlier_candidate_count", EvidenceKind.count, subject, "count", len(outliers), field=f"properties.{column}.outlierCandidates.count", entity=column),
+            ]
+        )
+    return items
+
+
+def _project_ml_regression_evaluation(
+    source: InterpretationSource,
+    candidate: ArtifactProjectionInput,
+) -> list[ScientificEvidenceItem]:
+    payload = candidate.payload
+    if (
+        not isinstance(payload, dict)
+        or payload.get("artifactType") != "ml.regression_evaluation"
+        or payload.get("schemaVersion") != "phase10k3.materials_ml_regression.v1"
+        or not isinstance(payload.get("dataset"), dict)
+        or payload["dataset"].get("datasetId") != source.dataset_id
+        or str(payload["dataset"].get("datasetVersion")) != source.dataset_version
+        or not isinstance(payload.get("evaluations"), list)
+        or not payload["evaluations"]
+        or len(payload["evaluations"]) > 16
+    ):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Materials ML regression contract is invalid.")
+
+    items: list[ScientificEvidenceItem] = []
+    seen: set[str] = set()
+    for evaluation in sorted(payload["evaluations"], key=lambda value: str(value.get("groupId")) if isinstance(value, dict) else ""):
+        if not isinstance(evaluation, dict):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Regression evaluation record is invalid.")
+        group_id = evaluation.get("groupId")
+        object_id = evaluation.get("objectId")
+        target = evaluation.get("targetColumn")
+        prediction = evaluation.get("predictionColumn")
+        metrics = evaluation.get("metrics")
+        coverage = evaluation.get("coverage")
+        high_errors = evaluation.get("highErrorSamples")
+        if (
+            not _safe_semantic_name(group_id)
+            or group_id in seen
+            or not _safe_semantic_name(object_id)
+            or not _safe_semantic_name(target)
+            or not _safe_semantic_name(prediction)
+            or target == prediction
+            or not isinstance(metrics, dict)
+            or not isinstance(coverage, dict)
+            or not isinstance(high_errors, list)
+            or len(high_errors) > 100
+        ):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Regression semantic identities are invalid.")
+        seen.add(group_id)
+        required_metrics = ("sampleCount", "mae", "rmse", "r2")
+        if (
+            not _nonnegative_int(metrics.get("sampleCount"))
+            or metrics["sampleCount"] == 0
+            or any(not _finite(metrics.get(key)) for key in required_metrics[1:])
+            or metrics["mae"] < 0
+            or metrics["rmse"] < metrics["mae"] - 1e-12
+            or not _nonnegative_int(coverage.get("evaluatedSamples"))
+            or coverage["evaluatedSamples"] != metrics["sampleCount"]
+        ):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Regression metrics are invalid or inconsistent.")
+        unit = evaluation.get("unit")
+        if unit is not None and (not isinstance(unit, str) or not unit or len(unit) > 64):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Regression metric unit is invalid.")
+        subject = f"model:{group_id}"
+        items.extend(
+            [
+                _item(source, candidate, "ml.sample_count", EvidenceKind.count, subject, "count", metrics["sampleCount"], field=f"evaluations.{group_id}.metrics.sampleCount", entity=group_id),
+                _item(source, candidate, "ml.mae", EvidenceKind.scalar, subject, "metric", metrics["mae"], unit=unit, field=f"evaluations.{group_id}.metrics.mae", entity=group_id),
+                _item(source, candidate, "ml.rmse", EvidenceKind.scalar, subject, "metric", metrics["rmse"], unit=unit, field=f"evaluations.{group_id}.metrics.rmse", entity=group_id),
+                _item(source, candidate, "ml.r2", EvidenceKind.scalar, subject, "metric", metrics["r2"], field=f"evaluations.{group_id}.metrics.r2", entity=group_id),
+                _item(source, candidate, "ml.high_error_sample_count", EvidenceKind.count, subject, "count", len(high_errors), field=f"evaluations.{group_id}.highErrorSamples.count", entity=group_id),
+            ]
+        )
+    return items
+
+
 def _project_structure_summary(source: InterpretationSource, candidate: ArtifactProjectionInput) -> list[ScientificEvidenceItem]:
     payload = candidate.payload
     if not isinstance(payload, dict) or set(payload) != {"artifactType", "structureCount", "structures", "warnings"} or payload.get("artifactType") != "structure.summary":
@@ -849,7 +1069,7 @@ def _item(
     artifact = candidate.artifact
     lineage = candidate.lineage or {}
     checksum = str(artifact.get("sha256") or artifact.get("contentHash") or "")
-    contract = str(candidate.payload.get("schema_version") or lineage.get("artifactContractVersion") or _fallback_contract(candidate))
+    contract = str(candidate.payload.get("schema_version") or candidate.payload.get("schemaVersion") or lineage.get("artifactContractVersion") or _fallback_contract(candidate))
     normalized = EvidenceValue(scalar=scalar, minimum=minimum, maximum=maximum)
     display = _display_value(normalized, unit)
     reference = candidate.payload.get("reference_convention") or candidate.payload.get("normalization")
@@ -1255,7 +1475,22 @@ def _validate_claim_text(claim: ScientificClaim, evidence: list[ScientificEviden
         for raw in (value.scalar, value.minimum, value.maximum, *value.values):
             if isinstance(raw, (int, float)) and not isinstance(raw, bool):
                 allowed_numbers.update(_number_variants(float(raw)))
-    for token in _NUMBER.findall(semantic_text):
+    numeric_text = semantic_text
+    for item in evidence:
+        for opaque_identity in (
+            item.evidenceItemId,
+            item.subjectId,
+            item.sourceArtifactId,
+            item.producerStepId,
+            item.producerToolCallId,
+            item.resourceId,
+        ):
+            if opaque_identity:
+                numeric_text = numeric_text.replace(opaque_identity, "")
+    for key, value in claim.structuredPayload.items():
+        if key.casefold().endswith("id") and isinstance(value, str):
+            numeric_text = numeric_text.replace(value, "")
+    for token in _NUMBER.findall(numeric_text):
         normalized = token.replace(",", "").rstrip("%")
         try:
             number = float(normalized)

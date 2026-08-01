@@ -1,0 +1,217 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "table.distribution_summary"
+    ],
+    [
+      "dataset.materials_explorer"
+    ]
+  ],
+  "caseNumber": 12,
+  "createdAt": "2026-08-01T07:28:19.513090+00:00",
+  "decision": {
+    "decisionHash": "4e0e674e5446e29dc559f5dc9901f0e136620acd39ebd0a678c422fcda30a0ad",
+    "decisionId": "decision_4e0e674e5446e29dc559f5dc",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "tableObjectId",
+            "source": "RESOURCE_ID",
+            "sourceIdentity": "resource:table_historical:6c5c8407dbe27837fbfcf52da3288cecb3bb2449c90b869b6e135fc45aa7fc1a",
+            "value": "table_historical",
+            "valueId": "table_historical"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "summary",
+          "table"
+        ],
+        "coveredScientificIntents": [
+          "property_distribution"
+        ],
+        "toolId": "dataset.materials_explorer",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "dataset.materials_explorer",
+      "table.distribution_summary",
+      "table.numeric_summary",
+      "viz.correlation"
+    ],
+    "providerVisibleToolIds": [
+      "dataset.materials_explorer",
+      "table.distribution_summary",
+      "table.numeric_summary",
+      "viz.correlation"
+    ],
+    "rejectedToolCount": 49,
+    "resolutionHash": "53df0045fb782513e9fab7904ea717d369897ee5f52542368dc137ea2e71db10",
+    "resolutionId": "resolution_53df0045fb782513e9fab790"
+  },
+  "historicalExpectedToolIds": [
+    "table.distribution_summary"
+  ],
+  "historicalPromptIntegrity": "CORRUPTED_REPLACEMENT_CHARACTERS_SEMANTIC_RECONSTRUCTION",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "summary",
+      "table"
+    ],
+    "intentHash": "abd49c2afcfc871fb975f1bea025bc8b908fca66f71b2750c4ff8ab1183ed4eb",
+    "intentId": "intent_abd49c2afcfc871fb975f1be",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "material_property_data"
+    ],
+    "scientificIntents": [
+      "property_distribution"
+    ],
+    "targetSemantics": []
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "The integrated Materials Explorer is an approved broader replacement because it produces the requested exact numeric-distribution, missingness, and quantile facts.",
+  "phase": "Phase 10A",
+  "plan": {
+    "graphHash": null,
+    "planHash": "726be47a46191fa1a64383c1d45171904dfab4b8ab4bcb6dacb28d977d7bd257",
+    "planId": "plan_f061fdbfec41788d341301c8",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_table",
+    "profileId": "profile_dataset_historical_table_v2",
+    "profileSemanticHash": "55ad8dc0cb9ad5a449eb171a9a076a03ed539b08a565923701d2021e6f5dbb57",
+    "selectedResourceIds": [
+      "table_historical"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 4713.42,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25426,
+      "promptHash": "f91611eedb5012a2569c7201ec0700e9bb8a1e997b81e289faca1dc2a23a7a8f",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 2973,
+      "responseContentBytes": 2239,
+      "responseHash": "d21d4b4478096c91c5510a5f0a0bf80fcafe7315d2b638dc51a3c9c16ab7a96d",
+      "tokenUsage": {
+        "completionTokens": 671,
+        "estimated": false,
+        "promptTokens": 6007,
+        "totalTokens": 6678
+      }
+    },
+    {
+      "elapsedMs": 1559.335,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 5856,
+      "promptHash": "beaaf6f071c8c7729c3f661667b058ae1cf38512b1220b295f948887579e47b8",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 614,
+      "responseContentBytes": 125,
+      "responseHash": "2325dbaa3621da1c23df4e0741feba1a188ee2f447cd1a5c48d29ece18f62a68",
+      "tokenUsage": {
+        "completionTokens": 38,
+        "estimated": false,
+        "promptTokens": 1562,
+        "totalTokens": 1600
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Summarize numeric distributions, missing values, and quantiles.",
+  "replayPromptHash": "c17e34ca021242412b0f9bea61856955550d1fe37435a355246ca079766aa7a3",
+  "routeClassification": "CURRENT_CANONICAL_REPLACEMENT",
+  "runHash": "71b90df548118e90ee98cf007537262eac439f229537d829520e632213b313ce",
+  "runId": "historical_live_run_71b90df548118e90ee98cf007537262e",
+  "runtime": {
+    "artifactCount": 4,
+    "artifacts": [
+      {
+        "id": "call_job_3dd047efdc5a72cf50f38ada_step_001-table_json",
+        "name": "dataset_materials_explorer.json",
+        "sha256": "b5af6e4cea89cca23bbeac8eb29a5a657aa0cbac76b7f345d09254e2e2940fd0",
+        "sizeBytes": 5500,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_3dd047efdc5a72cf50f38ada_step_001-quality_issues_json",
+        "name": "dataset_quality.json",
+        "sha256": "78bd24f0d06f15e736f2c5b0d263acd6186e7fd1e37f4423c0e1e1385a72230e",
+        "sizeBytes": 212,
+        "type": "quality_issues_json"
+      },
+      {
+        "id": "call_job_3dd047efdc5a72cf50f38ada_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "1f5b128a630574fdaf6c5ccc54523d39b9ea605edd999c179a15ed9dfda7cd5e",
+        "sizeBytes": 366,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_3dd047efdc5a72cf50f38ada_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "f3f1cd32fb1b99128d775d34c3479e1c516426a7d09d4b54b4415b3811f19299",
+        "sizeBytes": 1166,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_3dd047efdc5a72cf50f38ada_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "dataset.materials_explorer"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "dataset.materials_explorer"
+  ],
+  "slug": "distribution_summary",
+  "sourcePaths": [
+    "docs/phase10a/browser_api_evidence/ward_distribution"
+  ],
+  "timing": {
+    "plannerElapsedMs": 6347.038
+  },
+  "tokenUsage": {
+    "completionTokens": 709,
+    "estimated": false,
+    "promptTokens": 7569,
+    "totalTokens": 8278
+  },
+  "verdict": "PASS"
+}

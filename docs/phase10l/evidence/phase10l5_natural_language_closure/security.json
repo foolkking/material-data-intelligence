@@ -1,0 +1,25 @@
+{
+  "arbitraryExecutionAuthority": false,
+  "defaultCiRealLlmCalls": 0,
+  "keySource": "DEEPSEEK_KEY",
+  "liveGateOtherRealProviderCalls": 0,
+  "liveGateProvider": "deepseek",
+  "liveGateRealLlmCalls": 16,
+  "markers": [
+    "NO_ALTERNATIVE_PROVIDER_REAL_CALLS",
+    "NO_ARBITRARY_CODE",
+    "NO_ARTIFACT_HTML_OR_JAVASCRIPT",
+    "NO_CROSS_JOB_OR_PROJECT_BINDING",
+    "NO_DIRECT_TOOL_PLAN_OR_ADAPTER_IN_USER_REQUEST",
+    "NO_EXTERNAL_SCIENTIFIC_API",
+    "NO_RAW_ARTIFACT_TO_PROVIDER",
+    "NO_RECOMMENDATION_AUTO_EXECUTION",
+    "NO_SECRET_IN_EVIDENCE",
+    "NO_DEFAULT_CI_REAL_LLM_CALLS"
+  ],
+  "rawArtifactPayloadSentToProvider": false,
+  "schemaVersion": "1.0",
+  "scope": "DEFAULT_CI_AND_CONTROLLED_LIVE_GATE",
+  "secretValuesPersisted": false,
+  "verdict": "PASS"
+}

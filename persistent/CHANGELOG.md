@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2026-08-01 - Phase 10L-5 Historical Real-Provider Replay Expansion
+
+- Replayed the five current natural-language closure cases with real DeepSeek
+  (`DEEPSEEK_KEY`) and 16 calls, then replayed 40 useful historical
+  browser/Mock-LLM semantic cases with 92 additional DeepSeek calls.
+- Retained exact sanitized contracts for clarification, unsupported, and
+  capability-mismatch states; all 45 semantic cases passed without silent
+  Mock fallback or non-ready execution.
+- Documented exclusions for pure UI/negative fixtures, infrastructure-only
+  phases, superseded tools, and damaged prompts. Browser replay remains offline
+  capture replay and makes zero live provider calls.
+
+## 2026-07-31 - Phase 10L-5 Admitted After Verified L4 Archive
+
+- Phase 10L-4 archive `58ee943` passed exact-SHA CI run `30608078520`; L4 is
+  now archived with Unit, Frontend/browser/build, PostgreSQL/Redis/MinIO, and
+  no-skipped closure intact.
+- Admitted reviewer-supplied Phase 10L-5 as the sole active task. It owns five
+  natural-language E2E evidence cases and the repository-wide DeepSeek-only
+  policy for new real LLM calls. Phase 10M-0 remains reviewer-gated.
+
 ## 2026-07-31 - Phase 10L-4 Grounded Interpretation Corrected Implementation
 
 - Corrected the approved ML evidence projector to match the real registered
@@ -2112,3 +2133,15 @@
 - Implemented the validated volumetric isosurface product with bounded artifact content retrieval, gzip decoding, Worker extraction, and Three.js rendering.
 - Added an inert grid-bound structure overlay artifact, strict frontend mapper, controls, picking, clipping, PNG, lifecycle cleanup, and JSON/manifest fallback.
 - Added extraction, payload, Worker, component, overlay, API, browser, performance, mobile, network, and security evidence.
+
+## 2026-07-31 Phase 10L-5 live verification update
+
+- Added DeepSeek-only real provider policy with `DEEPSEEK_KEY` as the sole key
+  source and no live OpenAI/custom/Anthropic fallback.
+- Re-tested all five frozen natural-language cases through real Intent,
+  capability selection, Runtime, artifacts, lineage, and grounded
+  interpretation. Total live calls: 16; per-case cap: 12.
+- Added per-case and suite evidence contracts, sanitized live audits, closure
+  manifest, and browser replay evidence.
+- Earlier live contract failures remain preserved as sanitized diagnostics; no
+  simulated result was relabeled as live success.

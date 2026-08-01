@@ -1,0 +1,229 @@
+{
+  "acceptedCurrentToolSets": [
+    [
+      "ml.basic_metrics"
+    ],
+    [
+      "ml.regression_evaluation"
+    ]
+  ],
+  "caseNumber": 6,
+  "createdAt": "2026-08-01T07:23:30.558643+00:00",
+  "decision": {
+    "decisionHash": "f0c3c7f262cfcaba807142083c0e02d9a2d65af2a6a48d9351e16303901c5518",
+    "decisionId": "decision_f0c3c7f262cfcaba80714208",
+    "outcome": "PLAN_READY",
+    "repairCount": 0,
+    "selectedToolIds": [],
+    "selections": [
+      {
+        "boundParameters": [
+          {
+            "parameter": "groupIds",
+            "source": "TARGET_GROUP_IDS",
+            "sourceIdentity": "obj_dataframe_eb7bf94484fc:regression:default",
+            "value": [
+              "obj_dataframe_eb7bf94484fc:regression:default"
+            ],
+            "valueId": "groups:obj_dataframe_eb7bf94484fc:regression:default"
+          }
+        ],
+        "coveredDesiredOutputs": [
+          "metrics",
+          "summary",
+          "warnings"
+        ],
+        "coveredScientificIntents": [
+          "ml_regression_evaluation"
+        ],
+        "toolId": "ml.regression_evaluation",
+        "toolVersion": "0.1.0"
+      }
+    ],
+    "unfulfilledDesiredOutputs": []
+  },
+  "eligibility": {
+    "eligibleToolIds": [
+      "ml.regression_evaluation"
+    ],
+    "providerVisibleToolIds": [
+      "ml.regression_evaluation"
+    ],
+    "rejectedToolCount": 52,
+    "resolutionHash": "bb87b35f0c65e07db30d2293d277ead1bf19a76ef4aa4a2b980741c2d5eaa571",
+    "resolutionId": "resolution_bb87b35f0c65e07db30d2293"
+  },
+  "historicalExpectedToolIds": [
+    "ml.basic_metrics"
+  ],
+  "historicalPromptIntegrity": "EXACT",
+  "intent": {
+    "clarificationQuestionCount": 0,
+    "desiredOutputs": [
+      "metrics",
+      "summary",
+      "warnings"
+    ],
+    "intentHash": "1b121b50627c6f91b9dd55e97598c5355c90e0bdcdf8c2e94ff0055f32d12f92",
+    "intentId": "intent_1b121b50627c6f91b9dd55e9",
+    "outcome": "READY",
+    "requiredCapabilityNeeds": [
+      "regression_semantics"
+    ],
+    "scientificIntents": [
+      "ml_regression_evaluation"
+    ],
+    "targetSemantics": [
+      {
+        "column": "y_true",
+        "groupId": "obj_dataframe_eb7bf94484fc:regression:default",
+        "objectId": "obj_dataframe_eb7bf94484fc",
+        "origin": "PROFILE_EXACT",
+        "role": "regression_target",
+        "semanticId": "obj_dataframe_eb7bf94484fc:regression:default:target:y_true",
+        "seriesId": null,
+        "unit": null
+      },
+      {
+        "column": "y_pred",
+        "groupId": "obj_dataframe_eb7bf94484fc:regression:default",
+        "objectId": "obj_dataframe_eb7bf94484fc",
+        "origin": "PROFILE_EXACT",
+        "role": "regression_prediction",
+        "semanticId": "obj_dataframe_eb7bf94484fc:regression:default:prediction:y_pred",
+        "seriesId": null,
+        "unit": null
+      }
+    ]
+  },
+  "invariants": {
+    "browserReceivesSecret": false,
+    "noPlanJobEnqueueForNonReady": true,
+    "providerVisibleEqualsEligible": true,
+    "rawProviderPayloadPersisted": false,
+    "realDeepSeekOnly": true,
+    "selectedWithinEligible": true
+  },
+  "model": "deepseek-v4-flash",
+  "notes": "Current canonical integrated regression evaluation supersedes the narrower historical route.",
+  "phase": "Phase 9",
+  "plan": {
+    "graphHash": null,
+    "planHash": "9632faed9ddcd9d28c84d9b068d4fb4026a4ea20dc51655dd89fea1b1c13d628",
+    "planId": "plan_6b7ab416446fa38096fba7b7",
+    "schemaVersion": "0.1",
+    "stepCount": 1
+  },
+  "planningOutcome": "PLAN_READY",
+  "profile": {
+    "datasetId": "dataset_historical_regression",
+    "profileId": "profile_dataset_historical_regression_v2",
+    "profileSemanticHash": "36048233f83d6566338282f3ffcc21c0502202756146644c9fc1d3cbca152448",
+    "selectedResourceIds": [
+      "obj_dataframe_eb7bf94484fc"
+    ],
+    "selectedTargetIds": []
+  },
+  "provider": "deepseek",
+  "providerCallAudit": [
+    {
+      "elapsedMs": 5971.852,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 25626,
+      "promptHash": "05827412e68a1f0d614d70b2c7a9c5e0824dfde7d7c59587377230dafe8d6eaf",
+      "purpose": "INTENT_EXTRACTION",
+      "realCall": true,
+      "responseBytes": 3782,
+      "responseContentBytes": 2970,
+      "responseHash": "372e1bb149bcb8533bebeb8b8aaebd03e38a211d57e3a18b993b2640678b5498",
+      "tokenUsage": {
+        "completionTokens": 908,
+        "estimated": false,
+        "promptTokens": 6111,
+        "totalTokens": 7019
+      }
+    },
+    {
+      "elapsedMs": 1294.331,
+      "finishReason": "stop",
+      "model": "deepseek-v4-flash",
+      "outcome": "SUCCESS",
+      "promptBytes": 3808,
+      "promptHash": "219b70906b5f6b4bc8613edd2dacea989467a923e8f1a69b7bef829c9d693f5b",
+      "purpose": "CAPABILITY_PLAN_SELECTION",
+      "realCall": true,
+      "responseBytes": 610,
+      "responseContentBytes": 123,
+      "responseHash": "29cf74a7fdce40e2309a4f0eac739cd79620a1221df08400b41fa522179722b8",
+      "tokenUsage": {
+        "completionTokens": 42,
+        "estimated": false,
+        "promptTokens": 998,
+        "totalTokens": 1040
+      }
+    }
+  ],
+  "providerCallCount": 2,
+  "replayPrompt": "Calculate basic regression metrics for y_true and y_pred.",
+  "replayPromptHash": "8d77da62a63a9ca6f1fdaa68ccb1cf7cb9ec086153a00cc66ef45c489a39f7cf",
+  "routeClassification": "CURRENT_CANONICAL_REPLACEMENT",
+  "runHash": "08fb059b43f3f6fc1d38045bc26b5ce04a78bc282bc08a6f24502eae55b430b9",
+  "runId": "historical_live_run_08fb059b43f3f6fc1d38045bc26b5ce0",
+  "runtime": {
+    "artifactCount": 3,
+    "artifacts": [
+      {
+        "id": "call_job_2d12ec593d88db894302d967_step_001-table_json",
+        "name": "materials_ml_regression.json",
+        "sha256": "d1d4ef91dee16b0ea92bfcd94ec96d7fb9e93406db0fdfad2e62cde1885cb90b",
+        "sizeBytes": 6542,
+        "type": "table_json"
+      },
+      {
+        "id": "call_job_2d12ec593d88db894302d967_step_001-summary_md",
+        "name": "summary.md",
+        "sha256": "648118d567fe9b1947834ccc51b30914fc2692eaabc5154dea12fcb8abc172d0",
+        "sizeBytes": 313,
+        "type": "summary_md"
+      },
+      {
+        "id": "call_job_2d12ec593d88db894302d967_step_001-recipe_json",
+        "name": "recipe.json",
+        "sha256": "2f903b5dbb768ef2120d88b8bd1b9d5ef611a9349c046bb3fefc3bf57714c883",
+        "sizeBytes": 1258,
+        "type": "recipe_json"
+      }
+    ],
+    "resultStatus": "completed",
+    "status": "completed",
+    "toolCallCount": 1,
+    "toolCalls": [
+      {
+        "id": "call_job_2d12ec593d88db894302d967_step_001",
+        "status": "completed",
+        "stepId": "step_001",
+        "toolId": "ml.regression_evaluation"
+      }
+    ]
+  },
+  "schemaVersion": "1.0",
+  "selectedToolIds": [
+    "ml.regression_evaluation"
+  ],
+  "slug": "basic_metrics",
+  "sourcePaths": [
+    "docs/phase9/evidence"
+  ],
+  "timing": {
+    "plannerElapsedMs": 7357.207
+  },
+  "tokenUsage": {
+    "completionTokens": 950,
+    "estimated": false,
+    "promptTokens": 7109,
+    "totalTokens": 8059
+  },
+  "verdict": "PASS"
+}
