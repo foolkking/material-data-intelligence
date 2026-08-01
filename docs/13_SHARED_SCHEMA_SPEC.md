@@ -1,5 +1,23 @@
 # 共享 Schema 规范
 
+## Proposed Unified Scientific Workspace Contracts (Phase 10M-0)
+
+Status: `SEALED_FOR_REVIEWER_APPROVAL / NOT IMPLEMENTED`.
+
+Phase 10M-0 proposes, but does not add to production schemas:
+
+- `ScientificWorkspace 1.0`: one persisted presentation/recovery entity per exact Job;
+- `WorkspacePanel 1.0`: bounded source-reference and renderer projection;
+- `WorkspaceSelectionContext 1.0`: exact version-bound cross-panel selection;
+- `WorkspaceRendererRegistry 1.0`: checked-in presentation mapping only;
+- `WorkspaceReportComposition 1.0` and `WorkspaceRecipe 1.0`: additive JSON contracts in existing Report/Recipe ownership.
+
+Workspace copies no scientific payload. Existing Profile, Intent, Eligibility,
+Plan, Job, Artifact, lineage, evidence, interpretation, Report, and Recipe
+records remain authority. Exact fields, caps, migration, API, compatibility,
+and acceptance are sealed in `docs/phase10m/phase10m_execution_manifest.md` and
+must not be treated as implemented until their reviewer-approved phases close.
+
 ## Grounded Scientific Interpretation v1 (Phase 10L-4)
 
 `grounded-interpretation-v1.schema.json` defines strict version `1.0`

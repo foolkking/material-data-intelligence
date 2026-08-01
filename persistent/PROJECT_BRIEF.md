@@ -7,7 +7,9 @@ Phase 10L is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`. L5 implementation
 `e4b0a8f5619cbb1001ef64809db6400729a99d8d` passed exact-SHA CI runs
 `30693848581` and `30694747664`. The Agent chain is verified across five
 current real-DeepSeek product cases and 40 useful historical Mock/Fake LLM
-semantic replays. Phase 10M-0 is a reviewer gate, not an executable task.
+semantic replays. Queue archive `8f304fa` passed exact-SHA CI run
+`30695065220`. Phase 10M-0 is a directly authorized documentation-only audit;
+its sealed proposal is awaiting reviewer approval and Phase 10M-1 is not active.
 
 ## 2026-07-27 Canonical Product Brief
 
@@ -63,10 +65,10 @@ deterministic and strict-provider interpretation, grounded claims, immutable
 persistence, and an additive findings/evidence UI without changing Plan,
 Runtime, Registry, Job, or Artifact execution authority. Completion record
 `45af09e` passed exact-SHA CI run `30607509775`; verified queue archive
-`58ee943` passed exact-SHA CI run `30608078520`. Phase 10L-4 is archived and
-reviewer-approved Phase 10L-5 is now the sole active task, closing the five
-natural-language evidence cases and freezing new real LLM calls to DeepSeek
-with `DEEPSEEK_KEY` as the only key source. The remaining initial-release route is:
+`58ee943` passed exact-SHA CI run `30608078520`. Phase 10L-5 subsequently
+closed the five natural-language evidence cases, froze new real LLM calls to
+DeepSeek with `DEEPSEEK_KEY` as the only key source, and was archived at
+`8f304fa`. The remaining initial-release route is:
 
 ```text
 10K Material Intelligence
@@ -94,8 +96,9 @@ passed with 92 supplemental real DeepSeek calls. Pure browser-only checks,
 deterministic negative/security fixtures, infrastructure-only phases, and
 superseded tools remain explicitly excluded rather than misreported as live
 LLM coverage; see the historical replay matrix.
-Default CI remains real-call-free. Phase 10M remains reviewer-gated until the
-L5 exact-SHA implementation, completion, and queue archive lifecycle closes.
+Default CI remains real-call-free. The L5 lifecycle is closed. Phase 10M-0 now
+seals a one-Workspace-per-Job proposal; Phase 10M implementation remains
+reviewer-gated.
 
 Canonical authority:
 

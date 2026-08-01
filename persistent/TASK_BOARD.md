@@ -2,6 +2,11 @@
 
 ## Current Approved Work
 
+- [ ] Phase 10M-0 is a `REVIEWER_AUTHORIZED_DIRECT_AUDIT`, not a TASKS queue
+  item. Its documentation/evidence seal is being validated; production source
+  is unchanged. Phase 10M-1 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+  `TASK_BLOCK_COUNT = 0` and no executable Phase 10M task exists.
+
 - [x] Phase 10L-2 Capability-Aware Planner + Eligibility Resolver is
   `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`: corrected
   implementation `9786e405` passed exact-SHA CI run `30511654404`, including
@@ -23,8 +28,8 @@
 - [x] Phase 10L-5 is `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
   Implementation `bfc43bd` passed exact-SHA CI run `30693848581`; completion
   record `e4b0a8f` passed exact-SHA CI run `30694747664`. The archive commit
-  removes the completed task block. Phase 10M-0 remains
-  `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+  removes the completed task block. Phase 10M-0 is now a directly authorized
+  audit with no TASKS block.
 
 Live evidence progress: all five required DeepSeek cases pass with verification
 suite `deepseek_suite_ee5a0e9700d1a70787fc060fda274171`; the supplemental
@@ -75,7 +80,7 @@ historical replay passes 40/40 with suite
   the verified queue block is archived. Phase 10L-1 subsequently entered its
   reviewer-approved implementation task as recorded above.
 
-`TASKS.md` has zero task blocks. Phase 10M-0 remains a reviewer gate; Future
+`TASKS.md` has zero task blocks. Phase 10M-1 remains a reviewer gate; Future
 Scope and Not Planned remain absent.
 
 The remaining sections are historical task records and do not override the

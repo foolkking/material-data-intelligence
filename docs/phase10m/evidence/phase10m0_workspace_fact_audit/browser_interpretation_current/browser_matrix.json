@@ -1,0 +1,666 @@
+{
+  "chromium": {
+    "browser": "chromium",
+    "version": "129.0.6668.29",
+    "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
+    "cases": {
+      "deterministic": {
+        "case": "deterministic",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "DETERMINISTIC",
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 2887,
+        "claimCount": 13,
+        "evidenceItemCount": 26,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...34f9cf08b3aea4c2\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "40fcdf4dd10f7ba9ba10d7cb8b4924068b8b151fa4fef4b51c638428ef6f1dcf",
+        "semanticReplaySha256": "ff01b0c203d3831de198d8f38f401777044def2eec19a13cff3a0c85274631ae"
+      },
+      "strict_provider": {
+        "case": "strict_provider",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "STRICT_PROVIDER",
+        "requestMode": "STRICT_PROVIDER",
+        "mobile": false,
+        "elapsedMs": 2871,
+        "claimCount": 1,
+        "evidenceItemCount": 26,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nSTRICT_PROVIDER\nPROVIDER\nopenai_compatible\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...df028ea43bf7aa86\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nQUALIFIED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)",
+        "domSha256": "840027db312361f7fcd552dabd766b4fda09d30450b8f927c873f0ea90f95156",
+        "semanticReplaySha256": "7e2ede61dbccef4eba2f4ad9fcfcd57976ec4c5af44b0f50cc04662e4a55f9d1"
+      },
+      "partial": {
+        "case": "partial",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "DETERMINISTIC",
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 2314,
+        "claimCount": 5,
+        "evidenceItemCount": 7,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...95cc72d76dc0224f\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "8698c11cfa2d53e74b090807bb18d260623401204bacb67761a2652dd3cc4397",
+        "semanticReplaySha256": "fd837aaabd9facd0d85a9dfc1b101887ea7add63b82697ec97120662118198b9"
+      },
+      "no_supported_evidence": {
+        "case": "no_supported_evidence",
+        "outcome": "NO_SUPPORTED_EVIDENCE",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 1818,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "INPUT",
+        "domText": "Scientific interpretation\nNO_SUPPORTED_EVIDENCE\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\n\nNo grounded findings are available.",
+        "domSha256": "5383a7ad852b4a326e7b5d1e123b04a2561ee6cc9dd1b0659aa05104b38d8744",
+        "semanticReplaySha256": "096c5247631b18777a7f811e40fe16bde00b389787de26936916fbdd3b83800a"
+      },
+      "validation_failure": {
+        "case": "validation_failure",
+        "outcome": "VALIDATION_FAILED",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 2017,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "INPUT",
+        "domText": "Scientific interpretation\nVALIDATION_FAILED\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\n\nNo grounded findings are available.\n\nUNGROUNDED_NUMERIC_CLAIM",
+        "domSha256": "c736305df82792cd31969766e016a63bb612122fdcea74a97c5f81e3cf9cd2a8",
+        "semanticReplaySha256": "981e038d6ccabedc44aa87890662c7bce0df371b9faba0147e5282f82c208d4a"
+      },
+      "source_integrity_failure": {
+        "case": "source_integrity_failure",
+        "outcome": "SOURCE_INTEGRITY_FAILED",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 1912,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "INPUT",
+        "domText": "Scientific interpretation\nSOURCE_INTEGRITY_FAILED\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\n\nNo grounded findings are available.\n\nArtifact checksum mismatch",
+        "domSha256": "0e4d87dbfd1ef3bb9041d2c2e71cfb48879a2181f5eaf15348e34f623585ec87",
+        "semanticReplaySha256": "30723c5031ac3b0a2aea3fc71f07098be12a5e421b8a952482d99cff7e58ed70"
+      }
+    },
+    "mobile": {
+      "deterministic": {
+        "case": "deterministic",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "DETERMINISTIC",
+        "requestMode": "DETERMINISTIC",
+        "mobile": true,
+        "elapsedMs": 4745,
+        "claimCount": 13,
+        "evidenceItemCount": 26,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...34f9cf08b3aea4c2\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "40fcdf4dd10f7ba9ba10d7cb8b4924068b8b151fa4fef4b51c638428ef6f1dcf",
+        "semanticReplaySha256": "cce451a5302943e0ca4857972b31ccec52492f5a549f4c7be3353fbd14348d42"
+      },
+      "partial": {
+        "case": "partial",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "DETERMINISTIC",
+        "requestMode": "DETERMINISTIC",
+        "mobile": true,
+        "elapsedMs": 3180,
+        "claimCount": 5,
+        "evidenceItemCount": 7,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...95cc72d76dc0224f\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "8698c11cfa2d53e74b090807bb18d260623401204bacb67761a2652dd3cc4397",
+        "semanticReplaySha256": "1985d0884855ddeaa833484c99be9d46fd39e5a8f8c4bc18a8e6578009b0a063"
+      },
+      "no_supported_evidence": {
+        "case": "no_supported_evidence",
+        "outcome": "NO_SUPPORTED_EVIDENCE",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": true,
+        "elapsedMs": 2028,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "INPUT",
+        "domText": "Scientific interpretation\nNO_SUPPORTED_EVIDENCE\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\n\nNo grounded findings are available.",
+        "domSha256": "5383a7ad852b4a326e7b5d1e123b04a2561ee6cc9dd1b0659aa05104b38d8744",
+        "semanticReplaySha256": "d554e2c96a9009e64ab6f45ab986131e7e6161b127453a6048f54b1a1e73b9a1"
+      }
+    },
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "deterministicReplay": {
+      "firstSemanticSha256": "ff01b0c203d3831de198d8f38f401777044def2eec19a13cff3a0c85274631ae",
+      "secondSemanticSha256": "ff01b0c203d3831de198d8f38f401777044def2eec19a13cff3a0c85274631ae",
+      "firstDomSha256": "40fcdf4dd10f7ba9ba10d7cb8b4924068b8b151fa4fef4b51c638428ef6f1dcf",
+      "secondDomSha256": "40fcdf4dd10f7ba9ba10d7cb8b4924068b8b151fa4fef4b51c638428ef6f1dcf",
+      "stable": true
+    }
+  },
+  "firefox": {
+    "browser": "firefox",
+    "version": "130.0",
+    "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
+    "cases": {
+      "deterministic": {
+        "case": "deterministic",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "DETERMINISTIC",
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 3511,
+        "claimCount": 13,
+        "evidenceItemCount": 26,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...34f9cf08b3aea4c2\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "40fcdf4dd10f7ba9ba10d7cb8b4924068b8b151fa4fef4b51c638428ef6f1dcf",
+        "semanticReplaySha256": "ff01b0c203d3831de198d8f38f401777044def2eec19a13cff3a0c85274631ae"
+      },
+      "strict_provider": {
+        "case": "strict_provider",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "STRICT_PROVIDER",
+        "requestMode": "STRICT_PROVIDER",
+        "mobile": false,
+        "elapsedMs": 2462,
+        "claimCount": 1,
+        "evidenceItemCount": 26,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nSTRICT_PROVIDER\nPROVIDER\nopenai_compatible\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...df028ea43bf7aa86\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nQUALIFIED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\n\nShow evidence (1)",
+        "domSha256": "840027db312361f7fcd552dabd766b4fda09d30450b8f927c873f0ea90f95156",
+        "semanticReplaySha256": "7e2ede61dbccef4eba2f4ad9fcfcd57976ec4c5af44b0f50cc04662e4a55f9d1"
+      },
+      "partial": {
+        "case": "partial",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "DETERMINISTIC",
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 1956,
+        "claimCount": 5,
+        "evidenceItemCount": 7,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...95cc72d76dc0224f\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\n\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\n\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\n\nShow evidence (1)",
+        "domSha256": "8698c11cfa2d53e74b090807bb18d260623401204bacb67761a2652dd3cc4397",
+        "semanticReplaySha256": "fd837aaabd9facd0d85a9dfc1b101887ea7add63b82697ec97120662118198b9"
+      },
+      "no_supported_evidence": {
+        "case": "no_supported_evidence",
+        "outcome": "NO_SUPPORTED_EVIDENCE",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 1768,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "INPUT",
+        "domText": "Scientific interpretation\nNO_SUPPORTED_EVIDENCE\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\n\nNo grounded findings are available.",
+        "domSha256": "5383a7ad852b4a326e7b5d1e123b04a2561ee6cc9dd1b0659aa05104b38d8744",
+        "semanticReplaySha256": "096c5247631b18777a7f811e40fe16bde00b389787de26936916fbdd3b83800a"
+      },
+      "validation_failure": {
+        "case": "validation_failure",
+        "outcome": "VALIDATION_FAILED",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 1942,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "INPUT",
+        "domText": "Scientific interpretation\nVALIDATION_FAILED\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\n\nNo grounded findings are available.\n\nUNGROUNDED_NUMERIC_CLAIM",
+        "domSha256": "c736305df82792cd31969766e016a63bb612122fdcea74a97c5f81e3cf9cd2a8",
+        "semanticReplaySha256": "981e038d6ccabedc44aa87890662c7bce0df371b9faba0147e5282f82c208d4a"
+      },
+      "source_integrity_failure": {
+        "case": "source_integrity_failure",
+        "outcome": "SOURCE_INTEGRITY_FAILED",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 1782,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "INPUT",
+        "domText": "Scientific interpretation\nSOURCE_INTEGRITY_FAILED\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\n\nNo grounded findings are available.\n\nArtifact checksum mismatch",
+        "domSha256": "0e4d87dbfd1ef3bb9041d2c2e71cfb48879a2181f5eaf15348e34f623585ec87",
+        "semanticReplaySha256": "30723c5031ac3b0a2aea3fc71f07098be12a5e421b8a952482d99cff7e58ed70"
+      }
+    },
+    "mobile": {},
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "deterministicReplay": {
+      "firstSemanticSha256": "ff01b0c203d3831de198d8f38f401777044def2eec19a13cff3a0c85274631ae",
+      "secondSemanticSha256": "ff01b0c203d3831de198d8f38f401777044def2eec19a13cff3a0c85274631ae",
+      "firstDomSha256": "40fcdf4dd10f7ba9ba10d7cb8b4924068b8b151fa4fef4b51c638428ef6f1dcf",
+      "secondDomSha256": "40fcdf4dd10f7ba9ba10d7cb8b4924068b8b151fa4fef4b51c638428ef6f1dcf",
+      "stable": true
+    }
+  },
+  "webkit": {
+    "browser": "webkit",
+    "version": "18.0",
+    "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
+    "cases": {
+      "deterministic": {
+        "case": "deterministic",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "DETERMINISTIC",
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 4720,
+        "claimCount": 13,
+        "evidenceItemCount": 26,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...34f9cf08b3aea4c2\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: compatible.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: physics_2pi.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 6.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 0.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 1.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: 0 to 5 terahertz.\nShow evidence (1)\nOBSERVATION\nDIRECT / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\nShow evidence (1)\n",
+        "domSha256": "10cf6084af882bd65e73797e4fa4ff88a9c6631f040419e2929962b185ed2541",
+        "semanticReplaySha256": "e510342161669f0a488f96ed48f9f840106b349a2d1e6cb4ab323ef2db7b865b"
+      },
+      "strict_provider": {
+        "case": "strict_provider",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "STRICT_PROVIDER",
+        "requestMode": "STRICT_PROVIDER",
+        "mobile": false,
+        "elapsedMs": 3823,
+        "claimCount": 1,
+        "evidenceItemCount": 26,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nSTRICT_PROVIDER\nPROVIDER\nopenai_compatible\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...df028ea43bf7aa86\nLimitations\n15 artifact(s) have no approved structured evidence projector.\nWarnings\nPHONON_ACOUSTIC_MODES_NOT_CORRECTED\nPHONON_BAND_CONNECTIVITY_SOURCE_ORDER_ONLY\nPHONON_BAND_DOS_ASR_METADATA_PARTIAL\nPHONON_HIGH_SYMMETRY_LABEL_NORMALIZED\nFindings\nOBSERVATION\nQUALIFIED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 3.\nShow evidence (1)\n",
+        "domSha256": "7e7d4fdcd7fef88202d9912e78e37b9c905e72cbe71079b0a05782dd8432b9f6",
+        "semanticReplaySha256": "b6661d52841f2ab0d116adb9f90d27ad133fbc3a687ec7c4c6ecad4018f63b9b"
+      },
+      "partial": {
+        "case": "partial",
+        "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+        "mode": "DETERMINISTIC",
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 4315,
+        "claimCount": 5,
+        "evidenceItemCount": 7,
+        "repairCount": 0,
+        "noExecution": {
+          "enqueued": false,
+          "jobCreated": false,
+          "planCreated": false,
+          "recommendationExecutionAuthorized": false,
+          "toolCallCreated": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "SUMMARY",
+        "domText": "Scientific interpretation\nINTERPRETATION_READY_WITH_LIMITS\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nMODE\nDETERMINISTIC\nPROVIDER\ndeterministic\nREPAIR COUNT\n0\nEXECUTION RECORD\ninterpretation_execution...95cc72d76dc0224f\nLimitations\nExecution was partial: 1 failed step(s) and 1 blocked step(s); only successful artifacts are interpreted.\n5 artifact(s) have no approved structured evidence projector.\nFindings\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: modes_per_terahertz.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported category: within_tolerance.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported count: 2.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported range: -1 to 5 terahertz.\nShow evidence (1)\nOBSERVATION\nLIMITED / GROUNDED\nstructure:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa reported value: 6.\nShow evidence (1)\n",
+        "domSha256": "e28d85fa80e33d9de6ff58cd376757d4f6d30176efe8fd19c8978b4ec9f2f476",
+        "semanticReplaySha256": "7bee900582b5426d7eea73730c37c4c46a1de35506205ae148d5b4fa4be9f30d"
+      },
+      "no_supported_evidence": {
+        "case": "no_supported_evidence",
+        "outcome": "NO_SUPPORTED_EVIDENCE",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 3848,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "BODY",
+        "domText": "Scientific interpretation\nNO_SUPPORTED_EVIDENCE\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nNo grounded findings are available.\n",
+        "domSha256": "1afe7656dba3f34fc9c87679be3b6ac1335396b252845eaf5cd3a92096be432d",
+        "semanticReplaySha256": "0cf61cf0695ebe8e9729093dca272ec68b4ccba219fd6b14c49cadb57a0ceb12"
+      },
+      "validation_failure": {
+        "case": "validation_failure",
+        "outcome": "VALIDATION_FAILED",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 3393,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "BODY",
+        "domText": "Scientific interpretation\nVALIDATION_FAILED\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nNo grounded findings are available.\nUNGROUNDED_NUMERIC_CLAIM\n",
+        "domSha256": "b4ed7c814d19735f5b82d83d9bef6eec6e032ecf8287ee424dc47532d265f8c0",
+        "semanticReplaySha256": "ac276a419d960f5462ea35d2ef5017d4bda9dca52347b37b6b99efba4c20c54d"
+      },
+      "source_integrity_failure": {
+        "case": "source_integrity_failure",
+        "outcome": "SOURCE_INTEGRITY_FAILED",
+        "mode": null,
+        "requestMode": "DETERMINISTIC",
+        "mobile": false,
+        "elapsedMs": 3623,
+        "claimCount": 0,
+        "evidenceItemCount": 0,
+        "repairCount": 0,
+        "noExecution": {
+          "toolCallCreated": false,
+          "planCreated": false,
+          "jobCreated": false,
+          "enqueued": false,
+          "recommendationExecutionAuthorized": false
+        },
+        "horizontalOverflow": false,
+        "inert": {
+          "iframes": 0,
+          "scriptsInPanel": 0,
+          "inlineHandlers": 0,
+          "javascriptUris": 0
+        },
+        "focusedTag": "BODY",
+        "domText": "Scientific interpretation\nSOURCE_INTEGRITY_FAILED\nDeterministic\nStrict provider\nGenerate grounded interpretation\nRead-only / no tool, plan, job, or queue authority\nNo grounded findings are available.\nArtifact checksum mismatch\n",
+        "domSha256": "d7417c33df07f6ff84a0cb7b855ecc1342f84a52b50cdde0cd075d13f4aaddbc",
+        "semanticReplaySha256": "365d0cda4e65d22bc04e697799d9ea8febb85604da6fbdb09ca562b501fd8cdf"
+      }
+    },
+    "mobile": {},
+    "externalRequests": 0,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "deterministicReplay": {
+      "firstSemanticSha256": "e510342161669f0a488f96ed48f9f840106b349a2d1e6cb4ab323ef2db7b865b",
+      "secondSemanticSha256": "e510342161669f0a488f96ed48f9f840106b349a2d1e6cb4ab323ef2db7b865b",
+      "firstDomSha256": "10cf6084af882bd65e73797e4fa4ff88a9c6631f040419e2929962b185ed2541",
+      "secondDomSha256": "10cf6084af882bd65e73797e4fa4ff88a9c6631f040419e2929962b185ed2541",
+      "stable": true
+    }
+  }
+}

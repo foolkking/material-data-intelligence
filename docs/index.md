@@ -29,6 +29,34 @@ Current Phase 10L-5 closure references:
 - [`phase10l/phase10l5_readiness_matrix.md`](phase10l/phase10l5_readiness_matrix.md)
 - [`phase10m/phase10m0_reviewer_gate.md`](phase10m/phase10m0_reviewer_gate.md)
 
+## Phase 10M Unified Scientific Workspace Audit Seal
+
+Phase 10M-0 is a direct reviewer-authorized documentation audit. The following
+records are proposals sealed for reviewer approval; they are not deployed
+Workspace behavior:
+
+- [`phase10m/README.md`](phase10m/README.md): Phase 10M canonical documentation entry.
+- [`phase10m/phase10m0_workspace_fact_audit.md`](phase10m/phase10m0_workspace_fact_audit.md): current product maturity and authority audit.
+- [`phase10m/phase10m0_current_page_route_component_map.md`](phase10m/phase10m0_current_page_route_component_map.md): current route, page, and component map.
+- [`phase10m/phase10m0_current_workspace_capability_inventory.md`](phase10m/phase10m0_current_workspace_capability_inventory.md): READY/foundation/partial/missing matrix.
+- [`phase10m/phase10m0_workspace_source_of_truth_map.md`](phase10m/phase10m0_workspace_source_of_truth_map.md): implementation-grounded ownership map.
+- [`phase10m/phase10m0_artifact_renderer_matrix.md`](phase10m/phase10m0_artifact_renderer_matrix.md): current scientific renderer readiness.
+- [`phase10m/phase10m0_identity_and_lineage_map.md`](phase10m/phase10m0_identity_and_lineage_map.md): canonical identities and cross-artifact limits.
+- [`phase10m/phase10m0_state_and_error_taxonomy.md`](phase10m/phase10m0_state_and_error_taxonomy.md): sealed UI projection taxonomy.
+- [`phase10m/phase10m0_workspace_information_architecture.md`](phase10m/phase10m0_workspace_information_architecture.md): route and nine-group IA.
+- [`phase10m/phase10m0_workspace_domain_contract_proposal.md`](phase10m/phase10m0_workspace_domain_contract_proposal.md): `ScientificWorkspace 1.0` proposal.
+- [`phase10m/phase10m0_workspace_persistence_api_migration_decision.md`](phase10m/phase10m0_workspace_persistence_api_migration_decision.md): exact migration and API seal.
+- [`phase10m/phase10m0_workspace_panel_contract_proposal.md`](phase10m/phase10m0_workspace_panel_contract_proposal.md): `WorkspacePanel 1.0` proposal.
+- [`phase10m/phase10m0_workspace_selection_context_decision.md`](phase10m/phase10m0_workspace_selection_context_decision.md): exact selection identity and propagation.
+- [`phase10m/phase10m0_report_recipe_integration_decision.md`](phase10m/phase10m0_report_recipe_integration_decision.md): existing Report/Recipe ownership integration.
+- [`phase10m/phase10m0_responsive_accessibility_performance_security.md`](phase10m/phase10m0_responsive_accessibility_performance_security.md): measurable UX and trust boundary.
+- [`phase10m/phase10m0_compatibility_strategy.md`](phase10m/phase10m0_compatibility_strategy.md): historical projection policy.
+- [`phase10m/phase10m_implementation_backlog.md`](phase10m/phase10m_implementation_backlog.md): sealed M1-M7 sequence.
+- [`phase10m/phase10m_acceptance_and_test_plan.md`](phase10m/phase10m_acceptance_and_test_plan.md): backlog-linked acceptance IDs.
+- [`phase10m/phase10m_execution_lock.md`](phase10m/phase10m_execution_lock.md): M-D001 through M-D025.
+- [`phase10m/phase10m_execution_manifest.md`](phase10m/phase10m_execution_manifest.md): sole future implementation entry.
+- [`phase10m/evidence/phase10m0_workspace_fact_audit/`](phase10m/evidence/phase10m0_workspace_fact_audit/): current fact-audit evidence.
+
 ## Phase 10K Material Intelligence
 
 - [`phase10k/phase10k0_material_intelligence_capability_gap_audit.md`](phase10k/phase10k0_material_intelligence_capability_gap_audit.md): implementation-grounded input, profile, tool, Planner, frontend, artifact, cap, and dependency audit.

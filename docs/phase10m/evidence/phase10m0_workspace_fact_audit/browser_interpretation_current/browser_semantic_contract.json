@@ -1,0 +1,520 @@
+{
+  "schemaVersion": "1.0",
+  "fixtureContractHash": "3c15aa80608d95ede52ae70f59cf2d696cdda2bacbec0067855dca30daf83a66",
+  "browsers": {
+    "chromium": {
+      "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
+      "cases": {
+        "deterministic": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "DETERMINISTIC",
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 13,
+          "evidenceItemCount": 26,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "strict_provider": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "STRICT_PROVIDER",
+          "requestMode": "STRICT_PROVIDER",
+          "mobile": false,
+          "claimCount": 1,
+          "evidenceItemCount": 26,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "partial": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "DETERMINISTIC",
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 5,
+          "evidenceItemCount": 7,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "no_supported_evidence": {
+          "outcome": "NO_SUPPORTED_EVIDENCE",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "validation_failure": {
+          "outcome": "VALIDATION_FAILED",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "source_integrity_failure": {
+          "outcome": "SOURCE_INTEGRITY_FAILED",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        }
+      },
+      "mobile": {
+        "deterministic": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "DETERMINISTIC",
+          "requestMode": "DETERMINISTIC",
+          "mobile": true,
+          "claimCount": 13,
+          "evidenceItemCount": 26,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "partial": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "DETERMINISTIC",
+          "requestMode": "DETERMINISTIC",
+          "mobile": true,
+          "claimCount": 5,
+          "evidenceItemCount": 7,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "no_supported_evidence": {
+          "outcome": "NO_SUPPORTED_EVIDENCE",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": true,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        }
+      },
+      "deterministicReplayStable": true,
+      "externalRequests": 0,
+      "consoleErrorCount": 0,
+      "pageErrorCount": 0
+    },
+    "firefox": {
+      "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
+      "cases": {
+        "deterministic": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "DETERMINISTIC",
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 13,
+          "evidenceItemCount": 26,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "strict_provider": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "STRICT_PROVIDER",
+          "requestMode": "STRICT_PROVIDER",
+          "mobile": false,
+          "claimCount": 1,
+          "evidenceItemCount": 26,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "partial": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "DETERMINISTIC",
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 5,
+          "evidenceItemCount": 7,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "no_supported_evidence": {
+          "outcome": "NO_SUPPORTED_EVIDENCE",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "validation_failure": {
+          "outcome": "VALIDATION_FAILED",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "source_integrity_failure": {
+          "outcome": "SOURCE_INTEGRITY_FAILED",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        }
+      },
+      "mobile": {},
+      "deterministicReplayStable": true,
+      "externalRequests": 0,
+      "consoleErrorCount": 0,
+      "pageErrorCount": 0
+    },
+    "webkit": {
+      "backendMode": "FIXTURE_REPLAY_FROM_PERSISTED_API_CASES",
+      "cases": {
+        "deterministic": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "DETERMINISTIC",
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 13,
+          "evidenceItemCount": 26,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "strict_provider": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "STRICT_PROVIDER",
+          "requestMode": "STRICT_PROVIDER",
+          "mobile": false,
+          "claimCount": 1,
+          "evidenceItemCount": 26,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "partial": {
+          "outcome": "INTERPRETATION_READY_WITH_LIMITS",
+          "mode": "DETERMINISTIC",
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 5,
+          "evidenceItemCount": 7,
+          "repairCount": 0,
+          "noExecution": {
+            "enqueued": false,
+            "jobCreated": false,
+            "planCreated": false,
+            "recommendationExecutionAuthorized": false,
+            "toolCallCreated": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "no_supported_evidence": {
+          "outcome": "NO_SUPPORTED_EVIDENCE",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "validation_failure": {
+          "outcome": "VALIDATION_FAILED",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        },
+        "source_integrity_failure": {
+          "outcome": "SOURCE_INTEGRITY_FAILED",
+          "mode": null,
+          "requestMode": "DETERMINISTIC",
+          "mobile": false,
+          "claimCount": 0,
+          "evidenceItemCount": 0,
+          "repairCount": 0,
+          "noExecution": {
+            "toolCallCreated": false,
+            "planCreated": false,
+            "jobCreated": false,
+            "enqueued": false,
+            "recommendationExecutionAuthorized": false
+          },
+          "horizontalOverflow": false,
+          "inert": {
+            "iframes": 0,
+            "scriptsInPanel": 0,
+            "inlineHandlers": 0,
+            "javascriptUris": 0
+          }
+        }
+      },
+      "mobile": {},
+      "deterministicReplayStable": true,
+      "externalRequests": 0,
+      "consoleErrorCount": 0,
+      "pageErrorCount": 0
+    }
+  }
+}

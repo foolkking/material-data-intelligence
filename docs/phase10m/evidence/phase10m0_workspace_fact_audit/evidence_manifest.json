@@ -1,0 +1,869 @@
+{
+    "schemaVersion":  "Phase10M0EvidenceManifest/1.0",
+    "sourceCommit":  "8f304fa08ddab1cefd69848f621f8438fc2038d5",
+    "textNormalization":  "UTF-8 text with CRLF/CR normalized to LF; PNG and other binary evidence hashed as raw bytes",
+    "fileCount":  123,
+    "files":  [
+                  {
+                      "path":  "api_inventory.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  847,
+                      "normalizedBytes":  847,
+                      "sha256":  "97e19fae12ed192d521d2a8518ad16a83a99beb9f22cb6f7c62095e5ae3df796"
+                  },
+                  {
+                      "path":  "artifact_renderer_matrix.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  668,
+                      "normalizedBytes":  668,
+                      "sha256":  "33b64e6297a2c80e581d019441ce5dc6fa4ff3af11d8cf7a9031ae20e7d39900"
+                  },
+                  {
+                      "path":  "baseline.txt",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  641,
+                      "normalizedBytes":  641,
+                      "sha256":  "60719f04780a98cbb9379842badea73f88b49fd0968b02514cfc587467281ece"
+                  },
+                  {
+                      "path":  "browser_audit_method.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  944,
+                      "normalizedBytes":  944,
+                      "sha256":  "c2df9e9c3370a37abaa2ee7ae386078e7c3db1f21bca342e42eb2d21e4dbc87a"
+                  },
+                  {
+                      "path":  "browser_current/accessibility_audit.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  8034,
+                      "normalizedBytes":  8034,
+                      "sha256":  "d822746702d7439717be280bda3a77430abb39b18f9d7883e3ec787a17306421"
+                  },
+                  {
+                      "path":  "browser_current/browser_capture_index.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  19046,
+                      "normalizedBytes":  19046,
+                      "sha256":  "e26430a7189eb5c54b738f10c2c3c551aa4729708f83563a7dc49c8d615be8fe"
+                  },
+                  {
+                      "path":  "browser_current/browser_evidence_manifest.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  8209,
+                      "normalizedBytes":  8209,
+                      "sha256":  "cfa24f237e5cef58d99c06fb671d3426172ac0c9889200b24b900f49e63d0fae"
+                  },
+                  {
+                      "path":  "browser_current/browser_matrix.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  85531,
+                      "normalizedBytes":  85531,
+                      "sha256":  "2f48c653e3278af8b3da127bf985c740320489193d4b5a5c21720ea530f99a49"
+                  },
+                  {
+                      "path":  "browser_current/browser_semantic_contract.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  61774,
+                      "normalizedBytes":  61774,
+                      "sha256":  "99118c91921a69de8cdebb3f4f236ac2639ea08493e1e813cfd1fd5a9e7e64b1"
+                  },
+                  {
+                      "path":  "browser_current/console_audit.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  97,
+                      "normalizedBytes":  97,
+                      "sha256":  "59f08fdc8922d52254e7fed227cc0fc5069a454292e35099b8257d89d7fcb525"
+                  },
+                  {
+                      "path":  "browser_current/deterministic_replay.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  2891,
+                      "normalizedBytes":  2891,
+                      "sha256":  "8d1db4d7b329571a9d7840d76bdf7442b8c581985cbf6c1436a73edb16e933f7"
+                  },
+                  {
+                      "path":  "browser_current/dom_snapshot.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  95068,
+                      "normalizedBytes":  95068,
+                      "sha256":  "fcf1138dcfbf388e9cf0d5d28801f8e97602aba9d91d0ddf5f446715e1d394ed"
+                  },
+                  {
+                      "path":  "browser_current/inert_rendering_audit.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  6630,
+                      "normalizedBytes":  6630,
+                      "sha256":  "9eeb218b1eea4f3ad8011119767e88e5c3f1acbdbdfd1f4cdecab3cbbeea16a4"
+                  },
+                  {
+                      "path":  "browser_current/mobile_smoke.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  43760,
+                      "normalizedBytes":  43760,
+                      "sha256":  "95f6cd47109f4efc9f8254b096b0a2c1138b55032e1c4edf039b2dfb31e78ce9"
+                  },
+                  {
+                      "path":  "browser_current/network_audit.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  97,
+                      "normalizedBytes":  97,
+                      "sha256":  "f67c11fa9fadf3a0aa174796810f5dc9577f8e559961b1c818fd476f93760959"
+                  },
+                  {
+                      "path":  "browser_current/overflow_audit.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  6803,
+                      "normalizedBytes":  6803,
+                      "sha256":  "8259ba0de3d9605cf72b3e26b6f7d6f6633e94fcd2fb75bf3573d52c214671e1"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_desktop_non_ready_capability_mismatch.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  33134,
+                      "normalizedBytes":  null,
+                      "sha256":  "b556557466234a0a3c4685ccfb0804d116ed6c95d4eda1198cec3befec595d98"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_desktop_non_ready_needs_clarification.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  27720,
+                      "normalizedBytes":  null,
+                      "sha256":  "b88b34ba0454653174bf4539d279e48349c7e950c40b3bc22c07f1190eca7f29"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_desktop_non_ready_unsupported.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  29248,
+                      "normalizedBytes":  null,
+                      "sha256":  "5d9f430c64e179f3207936b9ee2753a62fbaa9bc6813e57c2b91285aaa4b94a8"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_desktop_ready_case_1.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  89886,
+                      "normalizedBytes":  null,
+                      "sha256":  "90af65741143785d4724c82b834029bb61e3ebb9a6c1983c148bb7ce3fda43c3"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_desktop_ready_case_2.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  79899,
+                      "normalizedBytes":  null,
+                      "sha256":  "26b68e2ca15fb5dfa605eff893277fdaf54625463de7128baa58219623314014"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_desktop_ready_case_3.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  85632,
+                      "normalizedBytes":  null,
+                      "sha256":  "4b13c6b27590eddfbe075d1a3a87651f7238b37298b1c3df83f1d0e0659ea1f9"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_desktop_ready_case_4.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  79860,
+                      "normalizedBytes":  null,
+                      "sha256":  "c89eea27094a2c28894af1c2bf6b54b009718df44f18a15d37634fcfc7493001"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_desktop_ready_case_5.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  78432,
+                      "normalizedBytes":  null,
+                      "sha256":  "969a60e357d28e5a52b3de24de1ec602ad9eaa92a63e554dfb026f1b153c0ddc"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_mobile_390x844_non_ready_capability_mismatch.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  130492,
+                      "normalizedBytes":  null,
+                      "sha256":  "9ecd3b5c50862d185a673f583f138786fc2b5909752aadceb974e6aa2df4a1ed"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_mobile_390x844_non_ready_needs_clarification.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  110905,
+                      "normalizedBytes":  null,
+                      "sha256":  "1420b93be9f02a7e116ab06aa227c80f3fa2ed06f25e646abd61f4eef407cadd"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_mobile_390x844_non_ready_unsupported.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  120199,
+                      "normalizedBytes":  null,
+                      "sha256":  "e452a02d0a32447732e9ec31ac9999c94f14f25ca17d323def4b1d2a3c2f998e"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_mobile_390x844_ready_case_1.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  370171,
+                      "normalizedBytes":  null,
+                      "sha256":  "bf972d23f50af067069657085800e94007e1cb0c6ea962f97c1b2e77b01eb9a8"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_mobile_390x844_ready_case_2.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  331443,
+                      "normalizedBytes":  null,
+                      "sha256":  "f58fa9c19a01f228eaf91c626b4f4dd79f930bf5547bf21c04474f4a8476fdbf"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_mobile_390x844_ready_case_3.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  365830,
+                      "normalizedBytes":  null,
+                      "sha256":  "92a6b73b8154fd0730c3e7373dafbbeb55502b827d31b127526f6554b8aaea84"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_mobile_390x844_ready_case_4.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  393263,
+                      "normalizedBytes":  null,
+                      "sha256":  "e5cd21f4002695c458f7b28689278182240d669831a371ba00938c40fce95963"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/chromium_mobile_390x844_ready_case_5.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  355195,
+                      "normalizedBytes":  null,
+                      "sha256":  "abd70e190c7e06c6a373ed93df0c11ba9bd05bbd079247ed242fc1bf7c2920d9"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/firefox_desktop_non_ready_capability_mismatch.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  34309,
+                      "normalizedBytes":  null,
+                      "sha256":  "9d1f2254cab674eb469e118271b987aa303506397da5616576be7c6c994666c1"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/firefox_desktop_non_ready_needs_clarification.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  32555,
+                      "normalizedBytes":  null,
+                      "sha256":  "fb49fe258a65bbdd46788760531431e06f61359d5257f921890704dd3f6fbdcd"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/firefox_desktop_non_ready_unsupported.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  33684,
+                      "normalizedBytes":  null,
+                      "sha256":  "a23b6cf2490b5254f17c2002a7b2e009074d48ce33ce1a5c0ccd107a72776fba"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/firefox_desktop_ready_case_1.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  82706,
+                      "normalizedBytes":  null,
+                      "sha256":  "8828a5890d383f3bd5ed9f7f9e56121650f9c7b7617005e64c997508b76f27a6"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/firefox_desktop_ready_case_2.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  72567,
+                      "normalizedBytes":  null,
+                      "sha256":  "d0d47c191bab659b2638d9c5a626a76e71d681d128029f1e72ca904ae6aa9de3"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/firefox_desktop_ready_case_3.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  77080,
+                      "normalizedBytes":  null,
+                      "sha256":  "da74674370c0ff660e37a86d0acf96cfbb5a5e259b9afd017b85b0d99468fc9e"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/firefox_desktop_ready_case_4.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  89560,
+                      "normalizedBytes":  null,
+                      "sha256":  "63af5c364188eca5fa407c6d172fcd945ab72500eb6a642c7ccf76343e5b5b97"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/firefox_desktop_ready_case_5.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  72153,
+                      "normalizedBytes":  null,
+                      "sha256":  "709f43792e2a2387d9e45d9629e470d0249de949407a8385b7f13bfca3b94982"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/webkit_desktop_non_ready_capability_mismatch.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  21436,
+                      "normalizedBytes":  null,
+                      "sha256":  "5e266b519fc8018367428e6f099bafc99980ae57969b4bda1df9f13663d3a45e"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/webkit_desktop_non_ready_needs_clarification.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  20216,
+                      "normalizedBytes":  null,
+                      "sha256":  "64fbfdf52caeeef23e84a1b3f6dac895977b0d979df71128897cc2356b3c75a4"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/webkit_desktop_non_ready_unsupported.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  21011,
+                      "normalizedBytes":  null,
+                      "sha256":  "ad4ae6bc24825193656a725b35f3f45719a9f0ef4022c40a7316c4d9123fab50"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/webkit_desktop_ready_case_1.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  56267,
+                      "normalizedBytes":  null,
+                      "sha256":  "bf511a9dc21ddd948c173c7e44227c3b094f4096fd9d60ac8c3335005de2761d"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/webkit_desktop_ready_case_2.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  49525,
+                      "normalizedBytes":  null,
+                      "sha256":  "587618581461de49688b157bcb92a5d996237a8106121dcb049eaa716c90d694"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/webkit_desktop_ready_case_3.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  52480,
+                      "normalizedBytes":  null,
+                      "sha256":  "cb7b81ee8e5c8b8fe3f2c1cd3f189a2a919502020896d58fb0e86424d4261439"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/webkit_desktop_ready_case_4.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  57261,
+                      "normalizedBytes":  null,
+                      "sha256":  "0c476afe58793d7f4c6b67333c77611238fccf720e8e7dae0144c50352935969"
+                  },
+                  {
+                      "path":  "browser_current/screenshots/webkit_desktop_ready_case_5.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  47184,
+                      "normalizedBytes":  null,
+                      "sha256":  "de27cf6b456593391942b4348dcdc71470e485ba53757bc98dc33de2e8ec3fd4"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/browser_matrix.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  42381,
+                      "normalizedBytes":  42381,
+                      "sha256":  "5603065e533171f7d8749d96c9b427ff80c70eb6f3a3b2c3aae2dc31636e5afe"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/browser_semantic_contract.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  15796,
+                      "normalizedBytes":  15796,
+                      "sha256":  "edc4931a9ff8e35acee64d373324dfe776517f9862bcd9a955808d92974023f4"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/console_audit.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  46,
+                      "normalizedBytes":  46,
+                      "sha256":  "4e768728e3a6785221f219d056cf4ea9120cacce6a06cb227a52f422ec9c27fd"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/deterministic_replay.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1236,
+                      "normalizedBytes":  1236,
+                      "sha256":  "6cd2e4d74fc2ef71abe0aef1ef863ba3ec49a5629771f4a32f596a0551f57709"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/dom_snapshot.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  20791,
+                      "normalizedBytes":  20791,
+                      "sha256":  "b1bbdd792cb905da1099a895582f6ad837cc094034ec65a2fb7b31393462161d"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/evidence_manifest.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  2740,
+                      "normalizedBytes":  2740,
+                      "sha256":  "6a8fe5cc3162af76e8d0b659e6ed5c48f7ece9d0a40e60ebd34361aa4c79cfa8"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/mobile_smoke.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  6681,
+                      "normalizedBytes":  6681,
+                      "sha256":  "50c1915f52e623adae7a96f4e89119e420d9474ef2443d1ea97034fd1ce1ab0a"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/network_audit.json",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  93,
+                      "normalizedBytes":  93,
+                      "sha256":  "6262a5fc43c41ae3272f16c31a57ff19a41b40e71cf0c464c07e0ff71aaeeced"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/screenshots/desktop_deterministic.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  1486049,
+                      "normalizedBytes":  null,
+                      "sha256":  "1d8daa144f29623e2696764f457e21ca14764b91e587b928d1aef9a10397a812"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/screenshots/desktop_no_supported_evidence.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  15035,
+                      "normalizedBytes":  null,
+                      "sha256":  "ea6bedcb57e6bd7c3e51e54d2dc0e798bc523f1323b29fa2ae2dff47912331c3"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/screenshots/desktop_partial.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  509863,
+                      "normalizedBytes":  null,
+                      "sha256":  "de904696ff3fd398dbebd720f01864155f01819b308966e466502f0ccba9683e"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/screenshots/desktop_source_integrity_failure.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  16928,
+                      "normalizedBytes":  null,
+                      "sha256":  "38fc915828848643f0b172398c77fe51960f45ec8a0ade01805537ed9919f0b5"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/screenshots/desktop_strict_provider.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  1162138,
+                      "normalizedBytes":  null,
+                      "sha256":  "1ae90282837b1781abc16d9fef695023e752def036b6cfb4d04aec2f63d53c13"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/screenshots/desktop_validation_failure.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  16671,
+                      "normalizedBytes":  null,
+                      "sha256":  "eaed3702b82a0a51c574f20702389d49e7d8ea3fbc53358995faabb6c25b4a8f"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/screenshots/mobile_deterministic.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  6188462,
+                      "normalizedBytes":  null,
+                      "sha256":  "ad4beb0618f290a76f6484c5c8d1465798edce816230cc83361b6badf34a6ba8"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/screenshots/mobile_no_supported_evidence.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  51769,
+                      "normalizedBytes":  null,
+                      "sha256":  "2817374401968a04420828d5c32ce98fbb15db9da3e6f3927a15802d19d8ae23"
+                  },
+                  {
+                      "path":  "browser_interpretation_current/screenshots/mobile_partial.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  2167479,
+                      "normalizedBytes":  null,
+                      "sha256":  "e3ced2a899859dce0db732de50cbd80734bd485e4f1d00b9dc07d489a34c4964"
+                  },
+                  {
+                      "path":  "browser_summary.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1955,
+                      "normalizedBytes":  1955,
+                      "sha256":  "1b7c609712ad2c4306998604dc3861961258c57fb788065e8482c89161b0ce44"
+                  },
+                  {
+                      "path":  "component_inventory.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1705,
+                      "normalizedBytes":  1705,
+                      "sha256":  "1e07261935ffbefff649b3b599e4969764affe80d9bb425e3121e796e02fffff"
+                  },
+                  {
+                      "path":  "decision_manifest.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1047,
+                      "normalizedBytes":  1047,
+                      "sha256":  "be5004aecce028b84dfd6252fe2e162e445a44c4f5ceebe239893f245baf6cd5"
+                  },
+                  {
+                      "path":  "git_history.txt",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1468,
+                      "normalizedBytes":  1468,
+                      "sha256":  "e2fb44ccf46b7ac8c2a5090f545cab0a98f50917bbfee9534a1ecafb54065523"
+                  },
+                  {
+                      "path":  "identity_map.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  855,
+                      "normalizedBytes":  855,
+                      "sha256":  "345757b59f4b318e49806d6a165a8ee07019d3237c8dd1944dc533de6a8417f4"
+                  },
+                  {
+                      "path":  "integrity_checks.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  595,
+                      "normalizedBytes":  595,
+                      "sha256":  "cff9c18934b3d6aa63e4e03a4325871ba0faca07313fc14382051d68e1054924"
+                  },
+                  {
+                      "path":  "l5_archive_verification.txt",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  431,
+                      "normalizedBytes":  431,
+                      "sha256":  "c5bf2610d05c989a1bda11337fe43b2403d163a637ee41f46a82e68a77e134b2"
+                  },
+                  {
+                      "path":  "performance_audit.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1138,
+                      "normalizedBytes":  1138,
+                      "sha256":  "703931a9aea07f89ecfbdbc4787aa2ad4ea10a38ace9fafa5ef9df0a4da9a87b"
+                  },
+                  {
+                      "path":  "persistence_inventory.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1010,
+                      "normalizedBytes":  1010,
+                      "sha256":  "86d3d52aa0e814d03a612576da3feb77ed73c4ee3a14a6bf2b4489680f81512a"
+                  },
+                  {
+                      "path":  "README.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  2453,
+                      "normalizedBytes":  2453,
+                      "sha256":  "56caa3ded2d07726e12d13b298253a82e4143a456904edc5be03130d0ccd4c06"
+                  },
+                  {
+                      "path":  "route_inventory.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  964,
+                      "normalizedBytes":  964,
+                      "sha256":  "c75b960ba5c9c80eb616b7edbf91f6fa62e9a835135c8b1f2010ceb13f8f9871"
+                  },
+                  {
+                      "path":  "screenshot_metadata.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1577,
+                      "normalizedBytes":  1577,
+                      "sha256":  "8fc257d052b3325ae1d64b6490a6a9479a1e2481369a66c76938a3ec47577793"
+                  },
+                  {
+                      "path":  "screenshots/chromium_desktop_non_ready_capability_mismatch.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  33134,
+                      "normalizedBytes":  null,
+                      "sha256":  "b556557466234a0a3c4685ccfb0804d116ed6c95d4eda1198cec3befec595d98"
+                  },
+                  {
+                      "path":  "screenshots/chromium_desktop_non_ready_needs_clarification.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  27720,
+                      "normalizedBytes":  null,
+                      "sha256":  "b88b34ba0454653174bf4539d279e48349c7e950c40b3bc22c07f1190eca7f29"
+                  },
+                  {
+                      "path":  "screenshots/chromium_desktop_non_ready_unsupported.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  29248,
+                      "normalizedBytes":  null,
+                      "sha256":  "5d9f430c64e179f3207936b9ee2753a62fbaa9bc6813e57c2b91285aaa4b94a8"
+                  },
+                  {
+                      "path":  "screenshots/chromium_desktop_ready_case_1.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  89886,
+                      "normalizedBytes":  null,
+                      "sha256":  "90af65741143785d4724c82b834029bb61e3ebb9a6c1983c148bb7ce3fda43c3"
+                  },
+                  {
+                      "path":  "screenshots/chromium_desktop_ready_case_2.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  79899,
+                      "normalizedBytes":  null,
+                      "sha256":  "26b68e2ca15fb5dfa605eff893277fdaf54625463de7128baa58219623314014"
+                  },
+                  {
+                      "path":  "screenshots/chromium_desktop_ready_case_3.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  85632,
+                      "normalizedBytes":  null,
+                      "sha256":  "4b13c6b27590eddfbe075d1a3a87651f7238b37298b1c3df83f1d0e0659ea1f9"
+                  },
+                  {
+                      "path":  "screenshots/chromium_desktop_ready_case_4.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  79860,
+                      "normalizedBytes":  null,
+                      "sha256":  "c89eea27094a2c28894af1c2bf6b54b009718df44f18a15d37634fcfc7493001"
+                  },
+                  {
+                      "path":  "screenshots/chromium_desktop_ready_case_5.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  78432,
+                      "normalizedBytes":  null,
+                      "sha256":  "969a60e357d28e5a52b3de24de1ec602ad9eaa92a63e554dfb026f1b153c0ddc"
+                  },
+                  {
+                      "path":  "screenshots/chromium_mobile_390x844_non_ready_capability_mismatch.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  130492,
+                      "normalizedBytes":  null,
+                      "sha256":  "9ecd3b5c50862d185a673f583f138786fc2b5909752aadceb974e6aa2df4a1ed"
+                  },
+                  {
+                      "path":  "screenshots/chromium_mobile_390x844_non_ready_needs_clarification.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  110905,
+                      "normalizedBytes":  null,
+                      "sha256":  "1420b93be9f02a7e116ab06aa227c80f3fa2ed06f25e646abd61f4eef407cadd"
+                  },
+                  {
+                      "path":  "screenshots/chromium_mobile_390x844_non_ready_unsupported.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  120199,
+                      "normalizedBytes":  null,
+                      "sha256":  "e452a02d0a32447732e9ec31ac9999c94f14f25ca17d323def4b1d2a3c2f998e"
+                  },
+                  {
+                      "path":  "screenshots/chromium_mobile_390x844_ready_case_1.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  370171,
+                      "normalizedBytes":  null,
+                      "sha256":  "bf972d23f50af067069657085800e94007e1cb0c6ea962f97c1b2e77b01eb9a8"
+                  },
+                  {
+                      "path":  "screenshots/chromium_mobile_390x844_ready_case_2.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  331443,
+                      "normalizedBytes":  null,
+                      "sha256":  "f58fa9c19a01f228eaf91c626b4f4dd79f930bf5547bf21c04474f4a8476fdbf"
+                  },
+                  {
+                      "path":  "screenshots/chromium_mobile_390x844_ready_case_3.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  365830,
+                      "normalizedBytes":  null,
+                      "sha256":  "92a6b73b8154fd0730c3e7373dafbbeb55502b827d31b127526f6554b8aaea84"
+                  },
+                  {
+                      "path":  "screenshots/chromium_mobile_390x844_ready_case_4.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  393263,
+                      "normalizedBytes":  null,
+                      "sha256":  "e5cd21f4002695c458f7b28689278182240d669831a371ba00938c40fce95963"
+                  },
+                  {
+                      "path":  "screenshots/chromium_mobile_390x844_ready_case_5.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  355195,
+                      "normalizedBytes":  null,
+                      "sha256":  "abd70e190c7e06c6a373ed93df0c11ba9bd05bbd079247ed242fc1bf7c2920d9"
+                  },
+                  {
+                      "path":  "screenshots/desktop_deterministic.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  1486049,
+                      "normalizedBytes":  null,
+                      "sha256":  "1d8daa144f29623e2696764f457e21ca14764b91e587b928d1aef9a10397a812"
+                  },
+                  {
+                      "path":  "screenshots/desktop_no_supported_evidence.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  15035,
+                      "normalizedBytes":  null,
+                      "sha256":  "ea6bedcb57e6bd7c3e51e54d2dc0e798bc523f1323b29fa2ae2dff47912331c3"
+                  },
+                  {
+                      "path":  "screenshots/desktop_partial.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  509863,
+                      "normalizedBytes":  null,
+                      "sha256":  "de904696ff3fd398dbebd720f01864155f01819b308966e466502f0ccba9683e"
+                  },
+                  {
+                      "path":  "screenshots/desktop_source_integrity_failure.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  16928,
+                      "normalizedBytes":  null,
+                      "sha256":  "38fc915828848643f0b172398c77fe51960f45ec8a0ade01805537ed9919f0b5"
+                  },
+                  {
+                      "path":  "screenshots/desktop_strict_provider.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  1162138,
+                      "normalizedBytes":  null,
+                      "sha256":  "1ae90282837b1781abc16d9fef695023e752def036b6cfb4d04aec2f63d53c13"
+                  },
+                  {
+                      "path":  "screenshots/desktop_validation_failure.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  16671,
+                      "normalizedBytes":  null,
+                      "sha256":  "eaed3702b82a0a51c574f20702389d49e7d8ea3fbc53358995faabb6c25b4a8f"
+                  },
+                  {
+                      "path":  "screenshots/firefox_desktop_non_ready_capability_mismatch.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  34309,
+                      "normalizedBytes":  null,
+                      "sha256":  "9d1f2254cab674eb469e118271b987aa303506397da5616576be7c6c994666c1"
+                  },
+                  {
+                      "path":  "screenshots/firefox_desktop_non_ready_needs_clarification.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  32555,
+                      "normalizedBytes":  null,
+                      "sha256":  "fb49fe258a65bbdd46788760531431e06f61359d5257f921890704dd3f6fbdcd"
+                  },
+                  {
+                      "path":  "screenshots/firefox_desktop_non_ready_unsupported.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  33684,
+                      "normalizedBytes":  null,
+                      "sha256":  "a23b6cf2490b5254f17c2002a7b2e009074d48ce33ce1a5c0ccd107a72776fba"
+                  },
+                  {
+                      "path":  "screenshots/firefox_desktop_ready_case_1.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  82706,
+                      "normalizedBytes":  null,
+                      "sha256":  "8828a5890d383f3bd5ed9f7f9e56121650f9c7b7617005e64c997508b76f27a6"
+                  },
+                  {
+                      "path":  "screenshots/firefox_desktop_ready_case_2.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  72567,
+                      "normalizedBytes":  null,
+                      "sha256":  "d0d47c191bab659b2638d9c5a626a76e71d681d128029f1e72ca904ae6aa9de3"
+                  },
+                  {
+                      "path":  "screenshots/firefox_desktop_ready_case_3.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  77080,
+                      "normalizedBytes":  null,
+                      "sha256":  "da74674370c0ff660e37a86d0acf96cfbb5a5e259b9afd017b85b0d99468fc9e"
+                  },
+                  {
+                      "path":  "screenshots/firefox_desktop_ready_case_4.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  89560,
+                      "normalizedBytes":  null,
+                      "sha256":  "63af5c364188eca5fa407c6d172fcd945ab72500eb6a642c7ccf76343e5b5b97"
+                  },
+                  {
+                      "path":  "screenshots/firefox_desktop_ready_case_5.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  72153,
+                      "normalizedBytes":  null,
+                      "sha256":  "709f43792e2a2387d9e45d9629e470d0249de949407a8385b7f13bfca3b94982"
+                  },
+                  {
+                      "path":  "screenshots/mobile_deterministic.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  6188462,
+                      "normalizedBytes":  null,
+                      "sha256":  "ad4beb0618f290a76f6484c5c8d1465798edce816230cc83361b6badf34a6ba8"
+                  },
+                  {
+                      "path":  "screenshots/mobile_no_supported_evidence.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  51769,
+                      "normalizedBytes":  null,
+                      "sha256":  "2817374401968a04420828d5c32ce98fbb15db9da3e6f3927a15802d19d8ae23"
+                  },
+                  {
+                      "path":  "screenshots/mobile_partial.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  2167479,
+                      "normalizedBytes":  null,
+                      "sha256":  "e3ced2a899859dce0db732de50cbd80734bd485e4f1d00b9dc07d489a34c4964"
+                  },
+                  {
+                      "path":  "screenshots/webkit_desktop_non_ready_capability_mismatch.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  21436,
+                      "normalizedBytes":  null,
+                      "sha256":  "5e266b519fc8018367428e6f099bafc99980ae57969b4bda1df9f13663d3a45e"
+                  },
+                  {
+                      "path":  "screenshots/webkit_desktop_non_ready_needs_clarification.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  20216,
+                      "normalizedBytes":  null,
+                      "sha256":  "64fbfdf52caeeef23e84a1b3f6dac895977b0d979df71128897cc2356b3c75a4"
+                  },
+                  {
+                      "path":  "screenshots/webkit_desktop_non_ready_unsupported.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  21011,
+                      "normalizedBytes":  null,
+                      "sha256":  "ad4ae6bc24825193656a725b35f3f45719a9f0ef4022c40a7316c4d9123fab50"
+                  },
+                  {
+                      "path":  "screenshots/webkit_desktop_ready_case_1.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  56267,
+                      "normalizedBytes":  null,
+                      "sha256":  "bf511a9dc21ddd948c173c7e44227c3b094f4096fd9d60ac8c3335005de2761d"
+                  },
+                  {
+                      "path":  "screenshots/webkit_desktop_ready_case_2.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  49525,
+                      "normalizedBytes":  null,
+                      "sha256":  "587618581461de49688b157bcb92a5d996237a8106121dcb049eaa716c90d694"
+                  },
+                  {
+                      "path":  "screenshots/webkit_desktop_ready_case_3.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  52480,
+                      "normalizedBytes":  null,
+                      "sha256":  "cb7b81ee8e5c8b8fe3f2c1cd3f189a2a919502020896d58fb0e86424d4261439"
+                  },
+                  {
+                      "path":  "screenshots/webkit_desktop_ready_case_4.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  57261,
+                      "normalizedBytes":  null,
+                      "sha256":  "0c476afe58793d7f4c6b67333c77611238fccf720e8e7dae0144c50352935969"
+                  },
+                  {
+                      "path":  "screenshots/webkit_desktop_ready_case_5.png",
+                      "mode":  "RAW_BYTES",
+                      "bytes":  47184,
+                      "normalizedBytes":  null,
+                      "sha256":  "de27cf6b456593391942b4348dcdc71470e485ba53757bc98dc33de2e8ec3fd4"
+                  },
+                  {
+                      "path":  "security_audit.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1057,
+                      "normalizedBytes":  1057,
+                      "sha256":  "d31202271224e54c17f50d7097d603a357e1f307bad3f3115d124a29d08c1794"
+                  },
+                  {
+                      "path":  "service_state.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  539,
+                      "normalizedBytes":  539,
+                      "sha256":  "7ec1930984815e776f55a6ac97da1cc8531ad9421770c9a467745cfbb3e0e32d"
+                  },
+                  {
+                      "path":  "task_state.txt",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  235,
+                      "normalizedBytes":  235,
+                      "sha256":  "4a9b68d880bbbccf222e223cb76bffab31bbcd1e6bf18f50ce08c2d8b574a99e"
+                  },
+                  {
+                      "path":  "test_command_summary.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  1420,
+                      "normalizedBytes":  1420,
+                      "sha256":  "4a8e1f0deda2fec140064769b5fa2be67cc3e277876c8bba80f52917897bf7c9"
+                  },
+                  {
+                      "path":  "visual_qa.md",
+                      "mode":  "LF_NORMALIZED_TEXT",
+                      "bytes":  862,
+                      "normalizedBytes":  862,
+                      "sha256":  "246ca0a3db102659d6f3cfdb348c66bf802eb57bbb6a1f8b3baaf7dc88be50b2"
+                  }
+              ]
+}

@@ -1,0 +1,284 @@
+{
+  "chromium": {
+    "desktop": {
+      "case_1": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_2": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_3": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_4": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_5": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "unsupported": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "capability_mismatch": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      }
+    },
+    "mobile": {
+      "case_1": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_2": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_3": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_4": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_5": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      }
+    },
+    "nonReadyMobile": {
+      "needs_clarification": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "unsupported": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "capability_mismatch": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      }
+    }
+  },
+  "firefox": {
+    "desktop": {
+      "case_1": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_2": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_3": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_4": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_5": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "unsupported": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "capability_mismatch": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      }
+    },
+    "mobile": {},
+    "nonReadyMobile": {}
+  },
+  "webkit": {
+    "desktop": {
+      "case_1": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_2": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_3": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_4": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "case_5": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      }
+    },
+    "nonReadyDesktop": {
+      "needs_clarification": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "unsupported": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      },
+      "capability_mismatch": {
+        "iframes": 0,
+        "scriptsInPanel": 0,
+        "inlineHandlers": 0,
+        "javascriptUris": 0,
+        "externalUris": 0,
+        "rawHtmlElements": 0
+      }
+    },
+    "mobile": {},
+    "nonReadyMobile": {}
+  }
+}

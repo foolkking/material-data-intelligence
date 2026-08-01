@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-08-01 - Phase 10M-0 Workspace Audit and Architecture Seal Candidate
+
+- Audited current routes, PlannerWorkbench, APIs, persistence, artifact
+  renderers, exact identities, browser behavior, Report/Recipe ownership, and
+  historical compatibility without changing production behavior.
+- Classified the product as `WORKSPACE_LIKE_SINGLE_PAGE` and sealed M-D001
+  through M-D025 plus the M1-M7 implementation/acceptance sequence for reviewer approval.
+- Added current Chromium/Firefox/WebKit/mobile capture replay with zero live
+  LLM/API forwarding and retained the explicit fixture/service limitations.
+- No production source, migration, API, UI, dependency, lockfile, or
+  `TASKS.md` change is part of this audit candidate.
+
 ## 2026-08-01 - Phase 10L-5 Completion Record and Queue Archive
 
 - Completion record `e4b0a8f5619cbb1001ef64809db6400729a99d8d`

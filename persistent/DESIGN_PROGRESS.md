@@ -1,5 +1,19 @@
 # DESIGN_PROGRESS
 
+## 2026-08-01 Phase 10M-0 Audit and IA Seal Candidate
+
+- Direct reviewer authorization admitted a documentation-only Workspace audit
+  without changing `TASKS.md`; task-block count remains zero.
+- Current product maturity is `WORKSPACE_LIKE_SINGLE_PAGE`: PlannerWorkbench
+  presents the complete chain but has no Workspace entity, route, history,
+  aggregate API, saved layout, or global exact selection context.
+- M-D001 through M-D025 seal a first-class one-per-Job Workspace, migration
+  `0007`, additive APIs, `/workspaces/{workspaceId}`, strict Panel/Selection
+  contracts, historical lazy projection, and M1-M7 ordering for reviewer approval.
+- Production source, dependencies, lockfiles, current scientific contracts,
+  Runtime, Registry, and `TASKS.md` remain unchanged. Audit/planning exact-SHA
+  CI is still required before a completion record can be written.
+
 ## 2026-08-01 Phase 10L Complete / Ready With Explicit Limits
 
 - Phase 10L-4 verified queue archive `58ee943` passed exact-SHA CI run

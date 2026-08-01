@@ -1,5 +1,20 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-01 ADR: Phase 10M Workspace Seal
+
+**Decision:** Seal M-D001 through M-D025 in
+`docs/phase10m/phase10m_execution_lock.md`. The proposal uses one first-class
+Workspace per Job, reference-only scientific authority, migration `0007`,
+additive aggregate APIs, route `/workspaces/{workspaceId}`, strict Panel and
+Selection contracts, lazy historical projection, existing Report/Recipe
+ownership, and reviewer-gated M1-M7 implementation order.
+
+**Consequences:** PlannerWorkbench remains the current `/` analysis entry.
+Phase 10M-0 changes no production behavior, source schema, database, API,
+frontend, Registry, Runtime, dependency, Artifact, interpretation, dependency,
+or lockfile. Phase 10M-1 requires a new reviewer prompt after this seal's
+exact-SHA audit and completion CI.
+
 ## 2026-08-01 ADR Addendum: Historical Real-DeepSeek Replay Boundary
 
 **Context:** Earlier browser evidence mixed real browser rendering with

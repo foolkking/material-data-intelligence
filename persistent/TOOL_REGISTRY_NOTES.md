@@ -1,5 +1,15 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-08-01 Phase 10M-0 Workspace Audit Boundary
+
+- Registry `0.1.0` currently contains 53 registered tools, of which 38 are
+  Planner-visible; the audited snapshot hash is
+  `0f1cad8632c7b15180c75c0d4547d656791fd1e1398f8ecbc99358d5843909db`.
+- Workspace panel and renderer proposals are presentation contracts, not Tool
+  Registry metadata, Planner candidates, Adapters, or execution authority.
+- Phase 10M-0 changes no tool ID, contract, parameter, artifact port,
+  capability, availability, Registry ordering, Adapter, or Runtime behavior.
+
 ## 2026-08-01 Phase 10L-5 Historical Real-Provider Replay
 
 - The five current natural-language cases and 40 supplemental historical

@@ -1,0 +1,30 @@
+8f304fa Archive Phase 10L-5 task
+e4b0a8f Record Phase 10L-5 completion
+bfc43bd Close Phase 10L natural language evidence
+58ee943 Archive Phase 10L-4 task
+45af09e Record Phase 10L-4 completion
+02a9e33 Align interpretation projector with runtime artifacts
+0d37ea9 Fix grounded interpretation service gate
+3336d9f Harden grounded interpretation evidence contracts
+262ec0e Add grounded scientific interpretation
+8026cb1 Archive Phase 10L-3 task
+2bd06f2 Record Phase 10L-3 completion
+d395db2 Add bounded multi-tool dependency execution
+7d032a9 Archive capability-aware planner task
+f62630b Record capability-aware planner completion
+9786e40 Validate capability planner service fixture locally
+c7c6081 Fix capability planner service-backed profile fixture
+ed880b3 Implement capability-aware planner eligibility
+dbcda19 Archive analysis intent task
+b4cd656 Record analysis intent completion
+844eb14 Make intent evidence hashes cross-platform
+365953f Implement analysis intent and bounded clarification
+83f5c44 Archive agent planner capability audit task
+ee86745 Record agent planner capability audit completion
+a7f8b14 Audit agent planner capabilities
+17de1f9 Archive material intelligence integration task
+81d4446 Record material intelligence integration completion
+e4639a1 Integrate material intelligence product layer
+0707fa7 Archive composition space explorer task
+97a0781 Record composition space explorer completion
+fb9d720 Include composition space evidence artifacts

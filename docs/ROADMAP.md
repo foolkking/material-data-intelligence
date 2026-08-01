@@ -44,17 +44,28 @@ Phase 10L is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`. Its required
 live gate covers all five natural-language cases through DeepSeek with
 `DEEPSEEK_KEY`; a separate 40-case real-DeepSeek replay covers useful retained
 historical browser/Mock-LLM semantics and documents exclusions by reason.
-Deterministic/fake paths remain default-CI only. Phase 10M-0 remains a reviewer
-gate and is not an executable task.
+Deterministic/fake paths remain default-CI only. Phase 10M-0 is a directly
+reviewer-authorized audit and information-architecture seal. It changes no
+production behavior and does not authorize Phase 10M-1.
 
 ### Phase 10M - Unified Scientific Workspace
 
-* 10M-0: workspace information architecture and identity contract.
-* 10M-1: one analysis task, one unified workspace.
-* 10M-2: cross-artifact navigation and canonical identity binding.
-* 10M-3: scientific artifact gallery.
-* 10M-4: report, recipe, and export productization.
-* 10M-5: user-facing workspace browser and UI closure.
+* 10M-0: current-fact audit, information architecture, and execution seal.
+* 10M-1: Workspace domain contract and persistence.
+* 10M-2: Unified Workspace shell.
+* 10M-3: cross-artifact navigation and canonical selection.
+* 10M-4: typed Artifact Gallery and scientific viewer integration.
+* 10M-5: scientific Report and Recipe composition.
+* 10M-6: save, reload, recovery, responsive, accessibility, and performance closure.
+* 10M-7: Workspace integration and browser/API/service evidence closure.
+
+Phase 10M-0 classifies the current product as `WORKSPACE_LIKE_SINGLE_PAGE`.
+The reviewer-sealed proposal makes Workspace a first-class one-per-Job entity,
+adds strict Workspace/Panel/Selection contracts, migration `0007`, additive
+Workspace APIs, route `/workspaces/{workspaceId}`, exact historical projection,
+and a seven-phase reviewer-gated implementation sequence. These are planning
+decisions, not current product capabilities. Phase 10M-1 remains
+`REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
 
 ### Phase 10N - Professional Scientific Completion
 

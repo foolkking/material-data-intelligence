@@ -1,5 +1,15 @@
 # OPEN_QUESTIONS
 
+## 2026-08-01 Phase 10M-0 decisions sealed for reviewer approval
+
+Workspace identity, cardinality, source ownership, migration, API, route,
+historical projection, Panel contract, renderer model, exact selection,
+Report/Recipe integration, partial/error projection, mobile, accessibility,
+performance, security, compatibility, save/recovery, deep links, staleness,
+and Phase M1-M7 ordering are closed by M-D001 through M-D025 for this proposal.
+No implementation decision affecting Phase 10M-1 remains open. The reviewer
+may approve or revise the complete seal; Phase 10M-1 does not start automatically.
+
 ## 2026-07-31 Phase 10L-5 decisions closed
 
 - Real LLM provider for the current gate: DeepSeek only. `DEEPSEEK_KEY` is the
@@ -12,9 +22,9 @@
   suite. A separate 40-case historical replay is bounded and audited.
   Historical failed attempts remain evidence and are not deleted.
 
-Open for later reviewer decisions: GitHub live DeepSeek secret/workflow policy,
-Phase 10M workspace information architecture, and final Phase 10L product
-closure wording. None is an executable task in the current queue.
+Open outside the Phase 10M-0 implementation seal: GitHub live DeepSeek
+secret/workflow policy. Phase 10L product closure is complete. No open item is
+an executable task in the current queue.
 The local historical replay coverage and its exclusions are now recorded in
 the L5 evidence matrix.
 
