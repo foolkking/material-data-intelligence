@@ -1,0 +1,8 @@
+{
+  "backend":"SQLite",
+  "status":"FOCUSED_PASS",
+  "cases":["create/read","one-per-project-job","idempotent projection","immutable source refs","If-Match conflict","panel cap","layout revision cap","project isolation","legacy projection"],
+  "artifact_payload_reads":0,
+  "focused_test_result":"24 passed",
+  "service_backed":false
+}

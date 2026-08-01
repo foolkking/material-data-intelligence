@@ -1,0 +1,13 @@
+phase=10M-1
+initial_head=2f4a5682fbc2adb0fdc487a982ec508f138eb41a
+initial_origin_master=2f4a5682fbc2adb0fdc487a982ec508f138eb41a
+branch=master
+initial_worktree=clean
+m0_audit_sha=4c5d25ef00b2213683a3115febc5f482546cc522
+m0_audit_ci=30698489359 success
+m0_completion_sha=2f4a5682fbc2adb0fdc487a982ec508f138eb41a
+m0_completion_ci=30698988085 success
+migration_parent=0006
+task_admission=one active Phase 10M-1 block
+m2_state=REVIEWER_GATE / AWAITING REVIEWER PROMPT
+redaction=sanitized; no credentials, private paths, provider payloads, or artifact bodies

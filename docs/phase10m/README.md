@@ -1,6 +1,9 @@
 # Phase 10M Unified Scientific Workspace
 
-Status: Phase 10M-0 audit and information architecture are sealed for reviewer approval. No Phase 10M production implementation is included.
+Status: Phase 10M-1 implementation is in progress. Contracts, migration,
+repositories, explicit historical projection, and additive APIs are present in
+the worktree; exact-SHA CI, service-backed evidence, completion, and queue
+archive remain required before this phase can be called archived.
 
 ## Reading order
 
@@ -12,6 +15,11 @@ Status: Phase 10M-0 audit and information architecture are sealed for reviewer a
 6. [Implementation backlog](phase10m_implementation_backlog.md)
 7. [Acceptance and test plan](phase10m_acceptance_and_test_plan.md)
 8. [Execution manifest](phase10m_execution_manifest.md)
+9. [M1 domain contract](phase10m1_workspace_domain_contract.md)
+10. [M1 persistence](phase10m1_workspace_persistence.md)
+11. [M1 API](phase10m1_workspace_api.md)
+12. [M1 historical projection](phase10m1_historical_job_projection.md)
+13. [M1 evidence](phase10m1_evidence.md)
 
 ## Status vocabulary
 
@@ -22,4 +30,6 @@ Status: Phase 10M-0 audit and information architecture are sealed for reviewer a
 - **UNRESOLVED BLOCKER**: none affecting Phase 10M-1.
 - **FUTURE SCOPE**: Phase 10N or later work excluded from Phase 10M.
 
-Production source, dependencies, lockfiles, migrations, APIs, frontend behavior, and `TASKS.md` are unchanged by Phase 10M-0.
+Phase 10M-0 remains the sealed architecture authority. Phase 10M-1 is the
+sole active implementation task. The Workspace page and M2 presentation
+surface are intentionally deferred.

@@ -1,5 +1,16 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-01 ADR Addendum: Phase 10M-1 Implementation Boundary
+
+The M0-sealed Workspace architecture is now implemented additively in M1.
+ScientificWorkspace is one-per-Project/Job and stores exact source references,
+bounded panel descriptors, durable metadata, and append-only layout revisions.
+Job, Plan, Artifact, Interpretation, Report, Recipe, Runtime, and Registry
+remain their own authorities. Historical projection is explicit and
+idempotent; ordinary reads do not write and no bulk backfill occurs. The
+Workspace page, renderer integration, selection propagation, Report/Recipe
+composition, and M2 remain reviewer-gated.
+
 ## 2026-08-01 ADR: Phase 10M Workspace Seal
 
 **Decision:** Seal M-D001 through M-D025 in

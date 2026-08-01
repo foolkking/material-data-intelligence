@@ -1286,3 +1286,403 @@ export type InterpretationExecutionRecord = {
   elapsedMs: number;
   createdAt: string;
 };
+
+export const WORKSPACE_SCHEMA_VERSION = "1.0" as const;
+export const WORKSPACE_PANEL_SCHEMA_VERSION = "1.0" as const;
+export const WORKSPACE_SELECTION_SCHEMA_VERSION = "1.0" as const;
+export const WORKSPACE_LAYOUT_SCHEMA_VERSION = "1.0" as const;
+
+export const WORKSPACE_MAX_PANELS = 32 as const;
+export const WORKSPACE_MAX_LAYOUT_REVISIONS = 128 as const;
+export const WORKSPACE_MAX_SECONDARY_SELECTIONS = 16 as const;
+export const WORKSPACE_MAX_SELECTION_URL_BYTES = 2_048 as const;
+export const WORKSPACE_MAX_MUTATION_BYTES = 131_072 as const;
+export const WORKSPACE_MAX_SNAPSHOT_BYTES = 524_288 as const;
+export const WORKSPACE_MAX_JSON_DEPTH = 14 as const;
+export const WORKSPACE_MAX_WARNINGS = 64 as const;
+export const WORKSPACE_MAX_DIAGNOSTICS = 64 as const;
+
+export const WORKSPACE_RENDERER_CONTRACTS = [
+  "workspace.overview/1.0",
+  "workspace.data/1.0",
+  "workspace.plan/1.0",
+  "workspace.execution/1.0",
+  "workspace.artifact-metadata/1.0",
+  "workspace.findings/1.0",
+  "workspace.evidence/1.0",
+  "workspace.provenance/1.0",
+  "workspace.report/1.0",
+  "workspace.inert-fallback/1.0",
+] as const;
+export type WorkspaceRendererContract = (typeof WORKSPACE_RENDERER_CONTRACTS)[number];
+
+export const WORKSPACE_STATUS_VALUES = [
+  "SOURCE_MISSING",
+  "UNSUPPORTED",
+  "LEGACY_READ_ONLY",
+  "STALE",
+  "RUNNING",
+  "PARTIAL_RESULTS",
+  "COMPLETE",
+  "FAILED",
+  "READY",
+  "INITIALIZING",
+] as const;
+export type WorkspaceStatus = (typeof WORKSPACE_STATUS_VALUES)[number];
+
+export const WORKSPACE_PANEL_STATE_VALUES = [
+  "NOT_APPLICABLE",
+  "READY_NOT_RUN",
+  "LOADING",
+  "PRODUCED",
+  "PARTIAL",
+  "UNAVAILABLE",
+  "FAILED",
+  "BLOCKED_BY_DEPENDENCY",
+  "STALE",
+  "CAP_EXCEEDED",
+  "CONTRACT_UNSUPPORTED",
+  "SOURCE_DELETED",
+  "PROFILE_AUTHORITY_UNAVAILABLE",
+] as const;
+export type WorkspacePanelState = (typeof WORKSPACE_PANEL_STATE_VALUES)[number];
+
+export const WORKSPACE_PANEL_KIND_VALUES = [
+  "OVERVIEW",
+  "DATA",
+  "PLAN",
+  "EXECUTION",
+  "SCIENTIFIC_RESULT",
+  "FINDINGS",
+  "EVIDENCE",
+  "PROVENANCE",
+  "REPORT",
+] as const;
+export type WorkspacePanelKind = (typeof WORKSPACE_PANEL_KIND_VALUES)[number];
+
+export const WORKSPACE_SELECTION_KIND_VALUES = [
+  "DATASET_SAMPLE",
+  "MATERIAL_OBJECT",
+  "STRUCTURE",
+  "PERIODIC_SITE",
+  "TRAJECTORY_ATOM",
+  "TRAJECTORY_FRAME",
+  "PHONON_Q_POINT",
+  "PHONON_BRANCH",
+  "RECIPROCAL_POINT",
+  "VOLUMETRIC_FIELD",
+  "ARTIFACT",
+  "EVIDENCE_ITEM",
+  "CLAIM",
+] as const;
+export type WorkspaceSelectionKind = (typeof WORKSPACE_SELECTION_KIND_VALUES)[number];
+
+export const WORKSPACE_SOURCE_KIND_VALUES = [
+  "PROJECT",
+  "DATASET",
+  "PROFILE",
+  "INTENT",
+  "ELIGIBILITY_RESOLUTION",
+  "SELECTION_DECISION",
+  "PLAN",
+  "JOB",
+  "TOOL_CALL",
+  "ARTIFACT",
+  "DEPENDENCY_EXECUTION",
+  "INTERPRETATION",
+  "EVIDENCE_BUNDLE",
+  "REPORT",
+  "RECIPE",
+] as const;
+export type WorkspaceSourceKind = (typeof WORKSPACE_SOURCE_KIND_VALUES)[number];
+
+export type WorkspaceWarning = {
+  code: string;
+  message: string;
+  sourceId?: string | null;
+};
+
+export type WorkspaceDurableMetadata = {
+  tags: string[];
+  note?: string | null;
+};
+
+export type WorkspaceSourceRef = {
+  kind: WorkspaceSourceKind;
+  sourceId: string;
+  sourceHash?: string | null;
+  contract?: string | null;
+  contractVersion?: string | null;
+  mediaType?: string | null;
+  projectId: string;
+  jobId?: string | null;
+  toolCallId?: string | null;
+  stepId?: string | null;
+};
+
+export type WorkspacePanelLayout = {
+  region: "PRIMARY" | "SECONDARY" | "DETAILS" | "HIDDEN";
+  order: number;
+  width: number;
+  height: number;
+  collapsed: boolean;
+};
+
+export type WorkspacePanelPlacement = WorkspacePanelLayout & {
+  panelId: string;
+};
+
+export type WorkspacePanel = {
+  schemaVersion: "1.0";
+  panelId: string;
+  workspaceId: string;
+  panelKind: WorkspacePanelKind;
+  title: string;
+  ordinal: number;
+  visible: boolean;
+  sourceRefs: WorkspaceSourceRef[];
+  sourceReferenceHash: string;
+  rendererContract: WorkspaceRendererContract;
+  state: WorkspacePanelState;
+  acceptedSelectionKinds: WorkspaceSelectionKind[];
+  emittedSelectionKinds: WorkspaceSelectionKind[];
+  evidenceRefs: string[];
+  provenanceRefs: string[];
+  capabilityRequirement?: string | null;
+  layout: WorkspacePanelLayout;
+  mobilePresentationMode: "STACKED" | "FULL_WIDTH" | "HIDDEN";
+  accessibleName: string;
+  unsupportedReason?: string | null;
+  panelStateHash: string;
+  contractProvenance: string;
+};
+
+type WorkspaceSelectionRefCommon = {
+  selectionSchemaVersion: "1.0";
+  sourceScopeHash: string;
+  projectId: string;
+};
+
+type WorkspaceSelectionValueFields = {
+  datasetId: string | null;
+  datasetVersion: string | null;
+  jobId: string | null;
+  objectId: string | null;
+  sampleRef: string | null;
+  structureId: string | null;
+  siteId: string | null;
+  trajectoryId: string | null;
+  atomId: string | null;
+  frameId: string | null;
+  phononArtifactId: string | null;
+  qPointId: string | null;
+  branchId: string | null;
+  reciprocalArtifactId: string | null;
+  reciprocalPointId: string | null;
+  segmentId: string | null;
+  fieldId: string | null;
+  regionId: string | null;
+  artifactId: string | null;
+  artifactChecksum: string | null;
+  artifactContract: string | null;
+  artifactVersion: string | null;
+  toolCallId: string | null;
+  bundleId: string | null;
+  bundleHash: string | null;
+  evidenceItemId: string | null;
+  sourceArtifactId: string | null;
+  sourceArtifactChecksum: string | null;
+  fieldLocator: string | null;
+  interpretationId: string | null;
+  interpretationHash: string | null;
+  claimId: string | null;
+};
+
+type WorkspaceSelectionField = keyof WorkspaceSelectionValueFields;
+type WorkspaceRequiredSelectionFields<RequiredFields extends WorkspaceSelectionField> = {
+  [Field in RequiredFields]-?: Exclude<WorkspaceSelectionValueFields[Field], null>;
+};
+type WorkspaceOptionalSelectionFields<OptionalFields extends WorkspaceSelectionField> = Partial<
+  Pick<WorkspaceSelectionValueFields, OptionalFields>
+>;
+type WorkspaceForbiddenSelectionFields<AllowedFields extends WorkspaceSelectionField> = {
+  [Field in Exclude<WorkspaceSelectionField, AllowedFields>]?: never;
+};
+type WorkspaceSelectionRefFor<
+  Kind extends WorkspaceSelectionKind,
+  RequiredFields extends WorkspaceSelectionField,
+  AllowedFields extends WorkspaceSelectionField,
+> = WorkspaceSelectionRefCommon &
+  { kind: Kind } &
+  WorkspaceRequiredSelectionFields<RequiredFields> &
+  WorkspaceOptionalSelectionFields<Exclude<AllowedFields, RequiredFields>> &
+  WorkspaceForbiddenSelectionFields<AllowedFields>;
+
+export type WorkspaceDatasetSampleSelectionRef = WorkspaceSelectionRefFor<
+  "DATASET_SAMPLE",
+  "datasetId" | "datasetVersion" | "objectId" | "sampleRef",
+  "datasetId" | "datasetVersion" | "objectId" | "sampleRef" | "artifactId" | "artifactChecksum"
+>;
+
+export type WorkspaceMaterialObjectSelectionRef = WorkspaceSelectionRefFor<
+  "MATERIAL_OBJECT",
+  "datasetId" | "datasetVersion" | "objectId",
+  "datasetId" | "datasetVersion" | "objectId" | "sampleRef" | "artifactId" | "artifactChecksum"
+>;
+
+export type WorkspaceStructureSelectionRef = WorkspaceSelectionRefFor<
+  "STRUCTURE",
+  "datasetId" | "datasetVersion" | "objectId" | "structureId",
+  "datasetId" | "datasetVersion" | "objectId" | "structureId" | "artifactId" | "artifactChecksum"
+>;
+
+export type WorkspacePeriodicSiteSelectionRef = WorkspaceSelectionRefFor<
+  "PERIODIC_SITE",
+  "datasetId" | "datasetVersion" | "objectId" | "structureId" | "siteId",
+  | "datasetId" | "datasetVersion" | "objectId" | "structureId" | "siteId"
+  | "artifactId" | "artifactChecksum"
+>;
+
+export type WorkspaceTrajectoryAtomSelectionRef = WorkspaceSelectionRefFor<
+  "TRAJECTORY_ATOM",
+  "datasetId" | "datasetVersion" | "trajectoryId" | "atomId",
+  "datasetId" | "datasetVersion" | "trajectoryId" | "atomId" | "artifactId" | "artifactChecksum"
+>;
+
+export type WorkspaceTrajectoryFrameSelectionRef = WorkspaceSelectionRefFor<
+  "TRAJECTORY_FRAME",
+  "datasetId" | "datasetVersion" | "trajectoryId" | "frameId",
+  "datasetId" | "datasetVersion" | "trajectoryId" | "frameId" | "artifactId" | "artifactChecksum"
+>;
+
+export type WorkspacePhononQPointSelectionRef = WorkspaceSelectionRefFor<
+  "PHONON_Q_POINT",
+  "datasetId" | "datasetVersion" | "phononArtifactId" | "artifactChecksum" | "qPointId",
+  | "datasetId" | "datasetVersion" | "phononArtifactId" | "artifactChecksum" | "qPointId"
+  | "branchId"
+>;
+
+export type WorkspacePhononBranchSelectionRef = WorkspaceSelectionRefFor<
+  "PHONON_BRANCH",
+  "datasetId" | "datasetVersion" | "phononArtifactId" | "artifactChecksum" | "branchId",
+  | "datasetId" | "datasetVersion" | "phononArtifactId" | "artifactChecksum" | "branchId"
+  | "qPointId"
+>;
+
+export type WorkspaceReciprocalPointSelectionRef = WorkspaceSelectionRefFor<
+  "RECIPROCAL_POINT",
+  "datasetId" | "datasetVersion" | "reciprocalArtifactId" | "artifactChecksum" | "reciprocalPointId",
+  | "datasetId" | "datasetVersion" | "reciprocalArtifactId" | "artifactChecksum"
+  | "reciprocalPointId" | "segmentId"
+>;
+
+export type WorkspaceVolumetricFieldSelectionRef = WorkspaceSelectionRefFor<
+  "VOLUMETRIC_FIELD",
+  "datasetId" | "datasetVersion" | "fieldId" | "artifactId" | "artifactChecksum",
+  "datasetId" | "datasetVersion" | "fieldId" | "artifactId" | "artifactChecksum" | "regionId"
+>;
+
+export type WorkspaceArtifactSelectionRef = WorkspaceSelectionRefFor<
+  "ARTIFACT",
+  "jobId" | "artifactId" | "artifactChecksum" | "artifactContract" | "artifactVersion",
+  "jobId" | "artifactId" | "artifactChecksum" | "artifactContract" | "artifactVersion" | "toolCallId"
+>;
+
+export type WorkspaceEvidenceItemSelectionRef = WorkspaceSelectionRefFor<
+  "EVIDENCE_ITEM",
+  | "jobId" | "bundleId" | "bundleHash" | "evidenceItemId"
+  | "sourceArtifactId" | "sourceArtifactChecksum" | "fieldLocator",
+  | "jobId" | "bundleId" | "bundleHash" | "evidenceItemId"
+  | "sourceArtifactId" | "sourceArtifactChecksum" | "fieldLocator" | "claimId"
+>;
+
+export type WorkspaceClaimSelectionRef = WorkspaceSelectionRefFor<
+  "CLAIM",
+  "jobId" | "interpretationId" | "interpretationHash" | "claimId",
+  "jobId" | "interpretationId" | "interpretationHash" | "claimId" | "evidenceItemId"
+>;
+
+export type WorkspaceSelectionRef =
+  | WorkspaceDatasetSampleSelectionRef
+  | WorkspaceMaterialObjectSelectionRef
+  | WorkspaceStructureSelectionRef
+  | WorkspacePeriodicSiteSelectionRef
+  | WorkspaceTrajectoryAtomSelectionRef
+  | WorkspaceTrajectoryFrameSelectionRef
+  | WorkspacePhononQPointSelectionRef
+  | WorkspacePhononBranchSelectionRef
+  | WorkspaceReciprocalPointSelectionRef
+  | WorkspaceVolumetricFieldSelectionRef
+  | WorkspaceArtifactSelectionRef
+  | WorkspaceEvidenceItemSelectionRef
+  | WorkspaceClaimSelectionRef;
+
+export type WorkspaceSelectionContext = {
+  schemaVersion: "1.0";
+  sourceScopeHash: string;
+  primary?: WorkspaceSelectionRef | null;
+  secondary: WorkspaceSelectionRef[];
+  propagation: "EXACT_COMPATIBLE_ONLY";
+  compatibility: "EXACT" | "NOT_APPLICABLE" | "STALE" | "UNSUPPORTED";
+  cleared: boolean;
+};
+
+export type WorkspaceLayoutState = {
+  schemaVersion: "1.0";
+  activePanelId?: string | null;
+  panelOrder: string[];
+  visiblePanelIds: string[];
+  panelLayouts: WorkspacePanelPlacement[];
+  durableMetadata: WorkspaceDurableMetadata;
+};
+
+export type WorkspaceLayoutRevision = {
+  schemaVersion: "1.0";
+  workspaceId: string;
+  revision: number;
+  layout: WorkspaceLayoutState;
+  selection?: WorkspaceSelectionContext | null;
+  semanticHash: string;
+  createdBy: string;
+  createdAt: string;
+};
+
+export type ScientificWorkspace = {
+  schemaVersion: "1.0";
+  workspaceId: string;
+  projectId: string;
+  sourceJobId: string;
+  sourceReferenceHash: string;
+  datasetId?: string | null;
+  datasetVersion?: string | null;
+  profileId?: string | null;
+  profileSemanticHash?: string | null;
+  intentId?: string | null;
+  intentSemanticHash?: string | null;
+  planId?: string | null;
+  planHash?: string | null;
+  planSchemaVersion?: "0.1" | "0.2" | null;
+  title: string;
+  activePanelId?: string | null;
+  pinnedSelection?: WorkspaceSelectionContext | null;
+  durableMetadata: WorkspaceDurableMetadata;
+  panelIds: string[];
+  currentLayoutRevision: number;
+  revision: number;
+  projectedStatus: WorkspaceStatus;
+  historicalProjection: boolean;
+  readOnly: boolean;
+  warnings: WorkspaceWarning[];
+  diagnostics: WorkspaceWarning[];
+  artifactCount: number;
+  toolCallCount: number;
+  interpretationCount: number;
+  reportCount: number;
+  recipeCount: number;
+  createdByKind: "USER";
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  executionAuthorized: false;
+  scientificAuthority: false;
+};

@@ -1,0 +1,207 @@
+{
+  "algorithm": "sha256",
+  "binaryNormalization": "none",
+  "entries": [
+    {
+      "bytes": 2708,
+      "hashMode": "LF_TEXT",
+      "path": "acceptance_id_mapping.json",
+      "sha256": "0dbb6c80a273435b732841e372130f192f34f96ac3c99a26fd59f85ab140a312"
+    },
+    {
+      "bytes": 189,
+      "hashMode": "LF_TEXT",
+      "path": "api_create.json",
+      "sha256": "324dc6209f24b9c1ea6f61c55b4ed13389cf92e816cf916a850b6680aa52bde1"
+    },
+    {
+      "bytes": 158,
+      "hashMode": "LF_TEXT",
+      "path": "api_get.json",
+      "sha256": "25187d19bbb6e75656e61a860be751b72afb61b780383f33bfbe431cf4addf96"
+    },
+    {
+      "bytes": 187,
+      "hashMode": "LF_TEXT",
+      "path": "api_job_projection.json",
+      "sha256": "c0fab6c2b036096f27580e4147ba79ba6156ba71792bbab79ad78a539b54680f"
+    },
+    {
+      "bytes": 167,
+      "hashMode": "LF_TEXT",
+      "path": "api_layout_history.json",
+      "sha256": "a481dde5700343723d25e71aeddd396f4b7d1477c9f78ae90e4a992fac15aa1b"
+    },
+    {
+      "bytes": 168,
+      "hashMode": "LF_TEXT",
+      "path": "api_panels.json",
+      "sha256": "9a61109ae634c8f0bb1b60bb338a973741d269be9e0d46d81fbbf5bae22e6064"
+    },
+    {
+      "bytes": 184,
+      "hashMode": "LF_TEXT",
+      "path": "api_patch.json",
+      "sha256": "c6ea09360cfb9d747b469b8b484c996981fb1048aee8ee50ced9b3ad91d94748"
+    },
+    {
+      "bytes": 197,
+      "hashMode": "LF_TEXT",
+      "path": "api_project_list.json",
+      "sha256": "19d6a98022285b89b1fe319827793d967f924e89f1273ea5a2d2266d9266be31"
+    },
+    {
+      "bytes": 554,
+      "hashMode": "LF_TEXT",
+      "path": "baseline.txt",
+      "sha256": "1768de9e174665b4674813aa005ce65dce92657a076add4bc5e9a90dda47f66d"
+    },
+    {
+      "bytes": 480,
+      "hashMode": "LF_TEXT",
+      "path": "browser_regression.txt",
+      "sha256": "cb54316d861c666c1effa9ca2cf587dd6964f1761a0efd4af3eaf68a1d842ca8"
+    },
+    {
+      "bytes": 439,
+      "hashMode": "LF_TEXT",
+      "path": "compatibility.txt",
+      "sha256": "705feef97dd839d86b1b17c54acd9e45c9ffda7aef84051e35264cb785c34aa1"
+    },
+    {
+      "bytes": 213,
+      "hashMode": "LF_TEXT",
+      "path": "console_summary.json",
+      "sha256": "4236061414bd460d83a0fface17168c91626f924747a8d095a826c1b168e3edc"
+    },
+    {
+      "bytes": 240,
+      "hashMode": "LF_TEXT",
+      "path": "contract_fixtures/README.md",
+      "sha256": "a55808240070ba43320ee7dea295aba8f5291884f472c880366e594bcdcaf1f4"
+    },
+    {
+      "bytes": 989,
+      "hashMode": "LF_TEXT",
+      "path": "contract_schema_manifest.json",
+      "sha256": "49e05f2df3e064a0ac86bd3b7112eee45ff09010ed7f700dfa82c9a1bed1b34b"
+    },
+    {
+      "bytes": 380,
+      "hashMode": "LF_TEXT",
+      "path": "entry_gate.txt",
+      "sha256": "deb0f0aaa4a8917acea05a2ceefc8c9c4280a8a45790fc4a497d655c78c8516e"
+    },
+    {
+      "bytes": 858,
+      "hashMode": "LF_TEXT",
+      "path": "historical_projection_cases.json",
+      "sha256": "25eb4069521c2e24cdb682b4d8671559c98476a04492bbf312787365d87ba19a"
+    },
+    {
+      "bytes": 609,
+      "hashMode": "LF_TEXT",
+      "path": "m0_decision_verification.txt",
+      "sha256": "62933a992d623db19aad21b5a3a604162067a3fafbba4aabe50200ce8b04cf72"
+    },
+    {
+      "bytes": 286,
+      "hashMode": "LF_TEXT",
+      "path": "migration_downgrade.txt",
+      "sha256": "55ec0a3eee94aba50fb457d9ceaf5c5d02fa66a79c4429e5ac6be0ac3f55bcf9"
+    },
+    {
+      "bytes": 226,
+      "hashMode": "LF_TEXT",
+      "path": "migration_reupgrade.txt",
+      "sha256": "1677672a8ed5c43a4c90f254cab816d51f7c9e56d129e8c2901df4bad7c68c7b"
+    },
+    {
+      "bytes": 332,
+      "hashMode": "LF_TEXT",
+      "path": "migration_upgrade.txt",
+      "sha256": "d414e27efd84eb10a12c3f9bb35d71dbcc9746337df3c7adf39ec7720812dc6a"
+    },
+    {
+      "bytes": 138,
+      "hashMode": "LF_TEXT",
+      "path": "network_summary.json",
+      "sha256": "1a252b23070d3ccd4f935d0dcd912b71c7b5d1fde3418aa2d53dcfb6562516ac"
+    },
+    {
+      "bytes": 517,
+      "hashMode": "LF_TEXT",
+      "path": "performance.json",
+      "sha256": "6e1d840e7cc5497a272868b357c610155f088d6fb7bdba58a39ef48e9ee6a4e6"
+    },
+    {
+      "bytes": 359,
+      "hashMode": "LF_TEXT",
+      "path": "postgresql_repository_evidence.json",
+      "sha256": "284d61ec47177a44a58365bb6fbdc9af9a8672e0ebf39784c747e519d8667c6f"
+    },
+    {
+      "bytes": 203,
+      "hashMode": "LF_TEXT",
+      "path": "screenshots/README.md",
+      "sha256": "eacd83c94fc30c0c18b4fef8533f6826fd50a493c13ad2181be7da13348f1600"
+    },
+    {
+      "bytes": 185,
+      "hashMode": "LF_TEXT",
+      "path": "secret_scan.txt",
+      "sha256": "cf23f6095709e6d73c79487b4acc08883cefe966a22d1b49c998e2a7995d0979"
+    },
+    {
+      "bytes": 996,
+      "hashMode": "LF_TEXT",
+      "path": "security_cases.json",
+      "sha256": "d7eeaedd93b1191af230749c02f57bf1d522c0ebe0976dc968b4a132e62cb919"
+    },
+    {
+      "bytes": 360,
+      "hashMode": "LF_TEXT",
+      "path": "service_backed.txt",
+      "sha256": "dad2523a146f91c8bb51bede2b0894cc8392b7129af70581d6f57779328a3920"
+    },
+    {
+      "bytes": 336,
+      "hashMode": "LF_TEXT",
+      "path": "sqlite_repository_evidence.json",
+      "sha256": "9df56687cb970b2cd39628991b0f4cdefbd1d8e9aa3b869ef9d59185cc116752"
+    },
+    {
+      "bytes": 808,
+      "hashMode": "LF_TEXT",
+      "path": "test_summary.txt",
+      "sha256": "fcef1fde8910dcd0d6d057be52133dcc7b98be099749902fa9055688d7306ee6"
+    },
+    {
+      "bytes": 156,
+      "hashMode": "LF_TEXT",
+      "path": "workspace_create_idempotency.json",
+      "sha256": "486f6842ffedb6e12095031d52ce126399820c6dc4a8119244d97829d515b2e4"
+    },
+    {
+      "bytes": 117,
+      "hashMode": "LF_TEXT",
+      "path": "workspace_panel_cap.json",
+      "sha256": "94f30a6d4c662e1b5fff70158e5121d01e25de907302955257ef5c4c4c5c117e"
+    },
+    {
+      "bytes": 183,
+      "hashMode": "LF_TEXT",
+      "path": "workspace_patch_concurrency.json",
+      "sha256": "9f505a4ac97e689b7d8ec40dce59b31cbb446e6f96d4db9478bf4a3fcff1d618"
+    },
+    {
+      "bytes": 131,
+      "hashMode": "LF_TEXT",
+      "path": "workspace_revision_cap.json",
+      "sha256": "774ccaa544b05be0a91c4ebe3c692916c6d0ab69658634fa912c8cf548f85b00"
+    }
+  ],
+  "entryCount": 33,
+  "schemaVersion": "phase10m1.evidence-manifest.v1",
+  "textNormalization": "CRLF and CR normalized to LF before hashing"
+}

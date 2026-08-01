@@ -1,0 +1,21 @@
+{
+  "schemaVersion":"phase10m1.security.v1",
+  "status":"FOCUSED_PASS_PENDING_FULL_SECRET_SCAN",
+  "markers":[
+    "NO_WORKSPACE_ARBITRARY_CODE_EXECUTION",
+    "NO_WORKSPACE_SHELL_OR_FILESYSTEM_AUTHORITY",
+    "NO_WORKSPACE_PROVIDER_AUTHORITY",
+    "NO_WORKSPACE_TOOLCALL_JOB_OR_ENQUEUE_AUTHORITY",
+    "NO_WORKSPACE_ARTIFACT_JAVASCRIPT",
+    "NO_WORKSPACE_ARTIFACT_HTML_EXECUTION",
+    "NO_WORKSPACE_EXTERNAL_ARTIFACT_URL_EXECUTION",
+    "NO_WORKSPACE_CROSS_PROJECT_SOURCE_ACCESS",
+    "NO_WORKSPACE_CROSS_JOB_ARTIFACT_INJECTION",
+    "NO_WORKSPACE_STALE_IDENTITY_REBINDING",
+    "NO_WORKSPACE_SECRET_OR_PRIVATE_PATH_DISCLOSURE",
+    "NO_RECOMMENDATION_TO_EXECUTION_AUTHORITY",
+    "REAL_LLM_CALLS = 0"
+  ],
+  "testedInputs":["HTML/script","prototype keys","URL/path","component name","cross-project Job","foreign Artifact","stale hash","oversize/deep JSON","panel/revision overflow","immutable patch","malformed ETag","prompt injection","credential-shaped text"],
+  "artifactPayloadCopies":0
+}

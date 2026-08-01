@@ -68,6 +68,17 @@ from mdi_api.routers.secrets import (
     list_secrets,
 )
 from mdi_api.routers.tools import list_mvp_tools, list_tools
+from mdi_api.routers.workspaces import (
+    create_workspace,
+    get_workspace,
+    get_workspace_layout_revision,
+    get_workspace_panel,
+    list_analysis_jobs,
+    list_project_workspaces,
+    list_workspace_layout_revisions,
+    list_workspace_panels,
+    patch_workspace,
+)
 
 
 @dataclass(frozen=True)
@@ -135,6 +146,26 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/planner/interpretations/{interpretation_id}", get_planner_interpretation, ("GET",), ("planner",)),
     RouteSpec("/planner/interpretations/{interpretation_id}/evidence", get_planner_interpretation_evidence, ("GET",), ("planner",)),
     RouteSpec("/planner/analysis-plans/{plan_id}", get_planner_analysis_plan, ("GET",), ("planner",)),
+    # Phase 10M-1: metadata-only Scientific Workspace API
+    RouteSpec("/workspaces", create_workspace, ("POST",), ("workspaces",)),
+    RouteSpec("/workspaces/{workspace_id}", get_workspace, ("GET",), ("workspaces",)),
+    RouteSpec("/workspaces/{workspace_id}", patch_workspace, ("PATCH",), ("workspaces",)),
+    RouteSpec("/projects/{project_id}/workspaces", list_project_workspaces, ("GET",), ("workspaces",)),
+    RouteSpec("/projects/{project_id}/analysis-jobs", list_analysis_jobs, ("GET",), ("workspaces",)),
+    RouteSpec("/workspaces/{workspace_id}/panels", list_workspace_panels, ("GET",), ("workspaces",)),
+    RouteSpec("/workspaces/{workspace_id}/panels/{panel_id}", get_workspace_panel, ("GET",), ("workspaces",)),
+    RouteSpec(
+        "/workspaces/{workspace_id}/layout-revisions",
+        list_workspace_layout_revisions,
+        ("GET",),
+        ("workspaces",),
+    ),
+    RouteSpec(
+        "/workspaces/{workspace_id}/layout-revisions/{revision}",
+        get_workspace_layout_revision,
+        ("GET",),
+        ("workspaces",),
+    ),
     # Phase 7: Secrets API
     RouteSpec("/me/secrets", create_secret, ("POST",), ("secrets",)),
     RouteSpec("/me/secrets", list_secrets, ("GET",), ("secrets",), list[SecretSummary]),
@@ -157,8 +188,9 @@ def create_app() -> Any:
             CORSMiddleware,
             allow_origins=list(settings.cors_origins),
             allow_credentials=False,
-            allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+            allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
             allow_headers=["*"],
+            expose_headers=["ETag", "X-Idempotent-Replay"],
         )
         for route in ROUTES:
             app.add_api_route(

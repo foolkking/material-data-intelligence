@@ -1,0 +1,12 @@
+{
+  "scope":"development acceptance evidence; not a production capacity claim",
+  "status":"FOCUSED_PASS",
+  "projectListQueries":{"oneWorkspace":2,"fiveWorkspaces":2},
+  "caps":{"panels":32,"layoutRevisions":128,"snapshotBytes":524288},
+  "artifactPayloadReadsDuringProjection":0,
+  "bulkBackfill":false,
+  "fullBackendElapsedSeconds":208.26,
+  "frontendTestElapsedSeconds":60.71,
+  "frontendBuildElapsedSeconds":95.8,
+  "notes":"Timings are local development acceptance evidence, not production capacity claims."
+}

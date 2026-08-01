@@ -1,0 +1,1 @@
+{"method":"PATCH","path":"/workspaces/{workspaceId}","status":"FOCUSED_PASS","ifMatchRequired":true,"mutableWhitelist":true,"sourceMutationRejected":true,"revisionConflictTyped":true}

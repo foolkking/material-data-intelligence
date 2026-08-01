@@ -548,7 +548,14 @@ async function preparePlanner(page, audit, userText) {
   await dialog.waitFor({ state: "hidden" });
   const form = page.getByTestId("planner-form");
   await form.locator("textarea").fill(userText);
+  const plannerResponse = page.waitForResponse((response) => {
+    const url = new URL(response.url());
+    return url.origin === API_ORIGIN
+      && url.pathname === "/planner/jobs"
+      && response.request().method() === "POST";
+  });
   await form.locator("button").last().click();
+  await plannerResponse;
   if (!audit.plannerRequest || audit.plannerRequest.forwardedToLiveApi || audit.plannerRequest.realDeepSeekCall) {
     throw new Error(`${audit.stateId || audit.caseId}: intercepted replay request audit is missing`);
   }

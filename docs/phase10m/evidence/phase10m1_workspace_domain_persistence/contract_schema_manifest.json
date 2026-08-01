@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "phase10m1.contract-manifest.v1",
+  "contracts": [
+    {"name":"ScientificWorkspace","version":"1.0","python":"mdi_schemas.workspace.ScientificWorkspace","jsonSchema":"packages/schemas/json/workspace-v1.schema.json","typescript":"ScientificWorkspace"},
+    {"name":"WorkspacePanel","version":"1.0","python":"mdi_schemas.workspace.WorkspacePanel","jsonSchema":"packages/schemas/json/workspace-v1.schema.json","typescript":"WorkspacePanel"},
+    {"name":"WorkspaceSelectionContext","version":"1.0","python":"mdi_schemas.workspace.WorkspaceSelectionContext","jsonSchema":"packages/schemas/json/workspace-v1.schema.json","typescript":"WorkspaceSelectionContext"}
+  ],
+  "caps":{"panels":32,"layoutRevisions":128,"secondarySelections":16,"selectionUrlBytes":2048,"mutationBytes":131072,"snapshotBytes":524288,"jsonDepth":14},
+  "strictness":["unknown fields rejected","duplicate keys rejected","prototype keys rejected","non-finite values rejected","inert content only"]
+}

@@ -1,0 +1,10 @@
+repository=Material Data Intelligence
+branch=master
+head_at_entry=2f4a5682fbc2adb0fdc487a982ec508f138eb41a
+origin_at_entry=2f4a5682fbc2adb0fdc487a982ec508f138eb41a
+worktree_at_entry=clean
+m0_ancestor=PASS
+m0_decisions=M-D001..M-D025 consistent
+m1_acceptance_ids=M1-A01..M1-A08 consistent across sealed documents
+unknown_active_tasks=none
+source_changes_before_implementation=none

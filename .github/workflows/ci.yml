@@ -228,6 +228,7 @@ jobs:
               'scientific_evidence_bundles', 'scientific_interpretations',
               'scientific_interpretation_runs',
               'scientific_interpretation_claims', 'scientific_interpretation_evidence_links',
+              'scientific_workspaces', 'workspace_panels', 'workspace_layout_revisions',
               'jobs', 'job_events', 'tool_calls',
               'artifacts', 'visualization_recipes', 'reports',
           }
@@ -272,6 +273,9 @@ jobs:
               'idx_scientific_interpretation_runs_job',
               'idx_scientific_interpretations_job',
               'idx_scientific_interpretations_bundle',
+              'idx_workspaces_project_updated',
+              'idx_workspaces_source_job',
+              'idx_workspace_panels_order',
               'idx_jobs_project_created',
               'idx_jobs_plan_id',
               'idx_tool_calls_job',
@@ -301,7 +305,7 @@ jobs:
       - name: Run integration tests (capture output)
         run: |
           set +e
-          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py -vv -m integration \
+          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py tests/integration/test_phase10m1_workspace_service_backed.py -vv -m integration \
             --tb=long --color=yes 2>&1 | tee integration.log
           PYTEST_EXIT=${PIPESTATUS[0]}
           set -e
@@ -349,10 +353,10 @@ jobs:
           fi
 
           # P0: every explicitly selected integration test must be collected and pass.
-          if [ "${PASSED:-0}" -lt 36 ]; then
+          if [ "${PASSED:-0}" -lt 37 ]; then
             echo ""
-            echo "ERROR: Only ${PASSED:-0}/36 integration tests passed."
-            echo "Expected: at least 36 passed."
+            echo "ERROR: Only ${PASSED:-0}/37 integration tests passed."
+            echo "Expected: at least 37 passed."
             exit 1
           fi
 
@@ -360,6 +364,7 @@ jobs:
             test_phase10l4_postgres_redis_minio_phonon_chain_interpretation \
             test_phase10l4_postgres_redis_minio_single_tool_interpretation \
             test_phase10l4_postgres_redis_minio_partial_execution_interpretation \
+            test_phase10m1_postgres_redis_minio_workspace_domain_persistence \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[dataset\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[structure\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[materials_ml\]' \

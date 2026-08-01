@@ -1,0 +1,1 @@
+{"method":"GET","path":"/projects/{projectId}/workspaces","status":"FOCUSED_PASS","projectScoped":true,"metadataOnly":true,"deterministic":true,"queriesForOne":2,"queriesForFive":2,"bounded":true}

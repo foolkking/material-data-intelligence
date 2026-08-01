@@ -1,0 +1,14 @@
+AnalysisIntent 1.0=unchanged
+EligibilityResolution 1.0=unchanged
+AnalysisPlan 0.1/0.2=unchanged
+PlanValidator=unchanged
+QueueWorkerRuntime=unchanged
+Tool Registry and Adapters=unchanged
+Interpretation contracts=unchanged
+Report/Recipe persistence=unchanged
+root route /=unchanged PlannerWorkbench
+Workspace UI=NOT_IMPLEMENTED_BY_DESIGN
+Workspace route page=DEFERRED_TO_PHASE_10M2
+dependencies=unchanged
+lockfile=unchanged
+REAL_LLM_CALLS=0

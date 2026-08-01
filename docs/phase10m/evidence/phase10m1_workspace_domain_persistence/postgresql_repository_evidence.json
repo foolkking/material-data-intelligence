@@ -1,0 +1,9 @@
+{
+  "backend":"PostgreSQL",
+  "status":"PENDING_EXACT_SHA_CI",
+  "local_services":"UNAVAILABLE",
+  "required_fixture":"tests/integration/test_phase10m1_workspace_service_backed.py",
+  "required_services":["PostgreSQL","Redis","MinIO"],
+  "skipped_locally":true,
+  "claim_policy":"not counted as PASS until exact-SHA CI reports zero skipped and zero failed"
+}

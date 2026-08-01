@@ -1,0 +1,9 @@
+M-D001..M-D025=preserved
+workspace_cardinality=one per exact (projectId, sourceJobId)
+source_authority=Project/Job/Plan/Artifact/Interpretation/Report/Recipe remain authoritative
+workspace_authority=reference-only durable presentation state
+migration=0007_phase10m1_workspace_domain
+page_route=/workspaces/{workspaceId} deferred to Phase 10M-2
+selection=contract and validation only; no propagation runtime
+projection=explicit idempotent lazy projection; no bulk backfill; ordinary GET has no write side effect
+security=artifact content inert; no tool, plan, job, enqueue, provider, or payload-copy authority

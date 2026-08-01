@@ -1,0 +1,13 @@
+scope=existing PlannerWorkbench regression only
+workspace_page=NOT_IMPLEMENTED_BY_DESIGN
+workspace_route_page=DEFERRED_TO_PHASE_10M2
+browser_matrix=PASS Chromium/Firefox/WebKit plus Chromium 390x844 replay
+phase10_closure=PASS
+phase10l4_replay=PASS
+phase10l5_replay=PASS
+console_errors=0
+unapproved_network_requests=0
+horizontal_overflow=0
+real_llm_calls=0
+evidence_mode=persisted capture and typed contract replay; no live API/provider call
+external_network_authority=none added

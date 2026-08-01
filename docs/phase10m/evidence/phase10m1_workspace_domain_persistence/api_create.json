@@ -1,0 +1,1 @@
+{"method":"POST","path":"/workspaces","status":"FOCUSED_PASS","explicitWrite":true,"idempotencyKey":true,"sameWorkspaceOnReplay":true,"artifactPayloadCopied":false,"toolOrProviderCalls":0}

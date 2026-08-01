@@ -1,0 +1,1 @@
+{"method":"POST","path":"/workspaces","source":"exact sourceJobId","status":"FOCUSED_PASS","explicitProjection":true,"legacyReadOnly":true,"bulkBackfill":false,"ordinaryJobReadWrites":0}

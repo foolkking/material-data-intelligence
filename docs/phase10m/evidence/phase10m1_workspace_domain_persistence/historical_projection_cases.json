@@ -1,0 +1,16 @@
+{
+  "schemaVersion":"phase10m1.projection-cases.v1",
+  "status":"FOCUSED_PASS",
+  "ordinaryGetWrites":0,
+  "bulkBackfill":false,
+  "cases":[
+    {"source":"AnalysisPlan 0.2","state":"NORMAL_OR_SOURCE_STATE","identityUpgrade":false},
+    {"source":"AnalysisPlan 0.1","state":"LEGACY_READ_ONLY","identityUpgrade":false},
+    {"source":"no plan/dependency graph","state":"LEGACY_READ_ONLY","graphInvented":false},
+    {"source":"partial result","state":"PARTIAL","failedStepsHidden":false},
+    {"source":"failed job","state":"FAILED","rewritten":false},
+    {"source":"missing interpretation","state":"MISSING_INTERPRETATION","interpretationInvented":false},
+    {"source":"missing profile/stale identity","state":"STALE_OR_LEGACY_READ_ONLY","latestRebinding":false},
+    {"source":"unsupported artifact","state":"INERT_UNSUPPORTED","payloadRead":false}
+  ]
+}

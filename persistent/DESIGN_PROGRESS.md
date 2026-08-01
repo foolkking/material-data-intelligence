@@ -1,5 +1,19 @@
 # DESIGN_PROGRESS
 
+## 2026-08-01 Phase 10M-1 Implementation In Progress
+
+- Implemented the sealed Workspace domain contracts across Python, checked-in
+  JSON Schema, and TypeScript, including strict identity, caps, selection, and
+  inert-content validation.
+- Added Alembic `0007_phase10m1_workspace_domain`, in-memory/SQLAlchemy
+  repositories, explicit historical Job projection, optimistic layout
+  revisions, and additive Workspace metadata APIs.
+- Focused M1 tests pass, including fresh SQLite migration and constant-query
+  project listing. PostgreSQL/Redis/MinIO, browser regression, full suites,
+  exact-SHA CI, completion record, and queue archive remain open.
+- Workspace UI, panel renderers, selection propagation, and M2 behavior remain
+  explicitly deferred.
+
 ## 2026-08-01 Phase 10M-0 Audit and IA Seal Complete / Reviewer Approval Required
 
 - Direct reviewer authorization admitted a documentation-only Workspace audit

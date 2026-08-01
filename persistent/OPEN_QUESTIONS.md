@@ -1,5 +1,13 @@
 # OPEN_QUESTIONS
 
+## 2026-08-01 Phase 10M-1 Implementation State
+
+The sealed M1 design is implemented in the current worktree. Remaining open
+items are verification gates only: PostgreSQL/Redis/MinIO service evidence,
+full regression/browser/evidence checks, exact-SHA implementation CI,
+completion-record CI, and verified queue archive. No design question is being
+used to expand M1 or enter M2.
+
 ## 2026-08-01 Phase 10M-0 decisions sealed for reviewer approval
 
 Workspace identity, cardinality, source ownership, migration, API, route,

@@ -59,13 +59,12 @@ production behavior and does not authorize Phase 10M-1.
 * 10M-6: save, reload, recovery, responsive, accessibility, and performance closure.
 * 10M-7: Workspace integration and browser/API/service evidence closure.
 
-Phase 10M-0 classifies the current product as `WORKSPACE_LIKE_SINGLE_PAGE`.
-The reviewer-sealed proposal makes Workspace a first-class one-per-Job entity,
-adds strict Workspace/Panel/Selection contracts, migration `0007`, additive
-Workspace APIs, route `/workspaces/{workspaceId}`, exact historical projection,
-and a seven-phase reviewer-gated implementation sequence. These are planning
-decisions, not current product capabilities. Phase 10M-1 remains
-`REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+Phase 10M-0 classified the product as `WORKSPACE_LIKE_SINGLE_PAGE` and sealed
+the first-class one-per-Job Workspace design. Phase 10M-1 is implementing the
+strict Workspace/Panel/Selection contracts, migration `0007`, repositories,
+additive APIs, and explicit historical projection. The `/workspaces/{id}` page,
+panel renderers, selection propagation, and save/recovery UX remain M2+ scope.
+Phase 10M-2 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
 
 ### Phase 10N - Professional Scientific Completion
 

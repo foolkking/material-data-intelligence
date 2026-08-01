@@ -32,15 +32,32 @@ def upgrade() -> None:
     op.create_index("idx_analysis_plans_job", "analysis_plans", ["job_id"])
     op.create_index("idx_analysis_plans_plan_hash", "analysis_plans", ["plan_hash"])
 
-    op.add_column("jobs", sa.Column("plan_id", sa.String(length=96), nullable=True))
-    op.create_foreign_key("fk_jobs_plan_id_analysis_plans", "jobs", "analysis_plans", ["plan_id"], ["id"])
-    op.create_index("idx_jobs_plan_id", "jobs", ["plan_id"])
+    if op.get_bind().dialect.name == "sqlite":
+        with op.batch_alter_table("jobs") as batch:
+            batch.add_column(sa.Column("plan_id", sa.String(length=96), nullable=True))
+            batch.create_foreign_key(
+                "fk_jobs_plan_id_analysis_plans",
+                "analysis_plans",
+                ["plan_id"],
+                ["id"],
+            )
+            batch.create_index("idx_jobs_plan_id", ["plan_id"])
+    else:
+        op.add_column("jobs", sa.Column("plan_id", sa.String(length=96), nullable=True))
+        op.create_foreign_key("fk_jobs_plan_id_analysis_plans", "jobs", "analysis_plans", ["plan_id"], ["id"])
+        op.create_index("idx_jobs_plan_id", "jobs", ["plan_id"])
 
 
 def downgrade() -> None:
-    op.drop_index("idx_jobs_plan_id", table_name="jobs")
-    op.drop_constraint("fk_jobs_plan_id_analysis_plans", "jobs", type_="foreignkey")
-    op.drop_column("jobs", "plan_id")
+    if op.get_bind().dialect.name == "sqlite":
+        with op.batch_alter_table("jobs") as batch:
+            batch.drop_index("idx_jobs_plan_id")
+            batch.drop_constraint("fk_jobs_plan_id_analysis_plans", type_="foreignkey")
+            batch.drop_column("plan_id")
+    else:
+        op.drop_index("idx_jobs_plan_id", table_name="jobs")
+        op.drop_constraint("fk_jobs_plan_id_analysis_plans", "jobs", type_="foreignkey")
+        op.drop_column("jobs", "plan_id")
 
     op.drop_index("idx_analysis_plans_plan_hash", table_name="analysis_plans")
     op.drop_index("idx_analysis_plans_job", table_name="analysis_plans")

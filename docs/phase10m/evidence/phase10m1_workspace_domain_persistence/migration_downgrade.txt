@@ -1,0 +1,4 @@
+sqlite_0007_to_0006=PASS
+workspace_tables_removed=verified by focused migration test
+historical_records=not present in migration fixture; no bulk backfill performed
+postgresql=fixture now performs 0007 -> 0006 and table-removal assertions; execution pending exact-SHA service-backed CI

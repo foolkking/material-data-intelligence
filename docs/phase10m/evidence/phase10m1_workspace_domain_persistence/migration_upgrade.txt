@@ -1,0 +1,6 @@
+sqlite_minimal_0006_to_0007=PASS
+tables=scientific_workspaces,workspace_panels,workspace_layout_revisions
+foreign_keys=source references restricted; child ownership cascades
+indexes=project/job lookup and workspace child lookup present
+fresh_sqlite_0001_to_0007=PASS
+postgresql=NOT_RUN_LOCALLY; exact-SHA service-backed CI required

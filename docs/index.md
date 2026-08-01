@@ -29,11 +29,11 @@ Current Phase 10L-5 closure references:
 - [`phase10l/phase10l5_readiness_matrix.md`](phase10l/phase10l5_readiness_matrix.md)
 - [`phase10m/phase10m0_reviewer_gate.md`](phase10m/phase10m0_reviewer_gate.md)
 
-## Phase 10M Unified Scientific Workspace Audit Seal
+## Phase 10M Unified Scientific Workspace
 
-Phase 10M-0 is a direct reviewer-authorized documentation audit. The following
-records are proposals sealed for reviewer approval; they are not deployed
-Workspace behavior:
+Phase 10M-0 sealed the architecture. Phase 10M-1 now implements the first
+reference-only Workspace domain/persistence boundary; the Workspace page
+remains deferred to M2:
 
 - [`phase10m/README.md`](phase10m/README.md): Phase 10M canonical documentation entry.
 - [`phase10m/phase10m0_workspace_fact_audit.md`](phase10m/phase10m0_workspace_fact_audit.md): current product maturity and authority audit.
@@ -56,6 +56,12 @@ Workspace behavior:
 - [`phase10m/phase10m_execution_lock.md`](phase10m/phase10m_execution_lock.md): M-D001 through M-D025.
 - [`phase10m/phase10m_execution_manifest.md`](phase10m/phase10m_execution_manifest.md): sole future implementation entry.
 - [`phase10m/evidence/phase10m0_workspace_fact_audit/`](phase10m/evidence/phase10m0_workspace_fact_audit/): current fact-audit evidence.
+- [`phase10m/phase10m1_workspace_domain_contract.md`](phase10m/phase10m1_workspace_domain_contract.md): implemented M1 contracts and boundaries.
+- [`phase10m/phase10m1_workspace_persistence.md`](phase10m/phase10m1_workspace_persistence.md): migration and repository behavior.
+- [`phase10m/phase10m1_workspace_api.md`](phase10m/phase10m1_workspace_api.md): additive API contract.
+- [`phase10m/phase10m1_historical_job_projection.md`](phase10m/phase10m1_historical_job_projection.md): explicit lazy projection policy.
+- [`phase10m/evidence/phase10m1_workspace_domain_persistence/`](phase10m/evidence/phase10m1_workspace_domain_persistence/): sanitized M1 evidence.
+- [`phase10m/phase10m2_next_scope.md`](phase10m/phase10m2_next_scope.md): reviewer gate after M1.
 
 ## Phase 10K Material Intelligence
 

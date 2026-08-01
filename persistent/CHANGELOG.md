@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-08-01 - Phase 10M-1 Workspace Domain Implementation In Progress
+
+- Added strict Workspace, Panel, and Selection contracts, migration 0007,
+  in-memory/SQL repositories, explicit historical projection, optimistic
+  revisions, and additive metadata-only APIs.
+- Preserved one Workspace per exact Project/Job, immutable source bindings,
+  no Artifact payload copy, no hidden GET writes, and no execution authority.
+- Focused local verification is passing; service-backed and exact-SHA lifecycle
+  gates remain pending. No Workspace page or M2 behavior was added.
+
 ## 2026-08-01 - Phase 10M-0 Workspace Audit and Architecture Seal
 
 - Audited current routes, PlannerWorkbench, APIs, persistence, artifact

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "phase10m1.acceptance.v1",
+  "status": "IMPLEMENTED_PENDING_LIFECYCLE_CLOSURE",
+  "expected": 8,
+  "implemented": 8,
+  "missing": 0,
+  "extra": 0,
+  "duplicate": 0,
+  "items": [
+    {"id":"M1-A01","requirement":"Python/JSON/TypeScript contract parity and strict caps","implementation":"packages/schemas/mdi_schemas/workspace.py; packages/schemas/json/workspace-v1.schema.json; packages/schemas/src/index.ts","test":"tests/test_phase10m1_workspace_contracts.py","evidence":"contract_schema_manifest.json"},
+    {"id":"M1-A02","requirement":"In-memory and SQLite persistence, immutable refs, idempotency, revisions","implementation":"apps/api/mdi_api/repositories.py","test":"tests/test_phase10m1_workspace_persistence.py","evidence":"sqlite_repository_evidence.json"},
+    {"id":"M1-A03","requirement":"0007 upgrade/downgrade/re-upgrade","implementation":"apps/api/alembic/versions/0007_phase10m1_workspace_domain.py","test":"tests/test_phase10m1_workspace_migration.py","evidence":"migration_upgrade.txt; migration_downgrade.txt; migration_reupgrade.txt"},
+    {"id":"M1-A04","requirement":"PostgreSQL Workspace/panel/revision round trip with zero skips","implementation":"tests/integration/test_phase10m1_workspace_service_backed.py","test":"exact-SHA CI service job required; local Docker unavailable","evidence":"postgresql_repository_evidence.json; service_backed.txt"},
+    {"id":"M1-A05","requirement":"Additive create/read/patch/list/projection APIs with ETag/idempotency","implementation":"apps/api/mdi_api/routers/workspaces.py; apps/web/app/lib/workspace-api.ts","test":"tests/test_phase10m1_workspace_projection_api.py","evidence":"api_create.json; api_patch.json; api_project_list.json"},
+    {"id":"M1-A06","requirement":"Scope, stale identity, deletion, IDs, and caps rejected","implementation":"apps/api/mdi_api/workspaces.py; apps/api/mdi_api/repositories.py","test":"tests/test_phase10m1_workspace_contracts.py; tests/test_phase10m1_workspace_persistence.py","evidence":"security_cases.json; workspace_panel_cap.json; workspace_revision_cap.json"},
+    {"id":"M1-A07","requirement":"Modern projection and explicit legacy read-only behavior","implementation":"apps/api/mdi_api/workspaces.py","test":"tests/test_phase10m1_workspace_projection_api.py","evidence":"historical_projection_cases.json"},
+    {"id":"M1-A08","requirement":"No payload copy, secret/path disclosure, execution authority, or cross-project access","implementation":"apps/api/mdi_api/workspaces.py; apps/api/mdi_api/routers/workspaces.py","test":"tests/test_phase10m1_workspace_contracts.py; tests/test_phase10m1_workspace_projection_api.py","evidence":"security_cases.json; compatibility.txt"}
+  ]
+}

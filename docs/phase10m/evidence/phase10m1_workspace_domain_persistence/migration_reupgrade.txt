@@ -1,0 +1,4 @@
+sqlite_0006_to_0007_after_downgrade=PASS
+fresh_chain_to_head=PASS
+metadata_create_all_as_migration_authority=NO
+postgresql=fixture now performs re-upgrade to 0007 before repository/API evidence; execution pending exact-SHA CI

@@ -1,0 +1,3474 @@
+{
+  "scientificWorkspace": {
+    "$defs": {
+      "WorkspaceDurableMetadata": {
+        "additionalProperties": false,
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Note"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "title": "WorkspaceDurableMetadata",
+        "type": "object"
+      },
+      "WorkspaceSelectionContext": {
+        "additionalProperties": false,
+        "properties": {
+          "cleared": {
+            "default": false,
+            "title": "Cleared",
+            "type": "boolean"
+          },
+          "compatibility": {
+            "default": "EXACT",
+            "enum": [
+              "EXACT",
+              "NOT_APPLICABLE",
+              "STALE",
+              "UNSUPPORTED"
+            ],
+            "title": "Compatibility",
+            "type": "string"
+          },
+          "primary": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/WorkspaceSelectionRef"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "propagation": {
+            "const": "EXACT_COMPATIBLE_ONLY",
+            "default": "EXACT_COMPATIBLE_ONLY",
+            "title": "Propagation",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Schemaversion",
+            "type": "string"
+          },
+          "secondary": {
+            "items": {
+              "$ref": "#/$defs/WorkspaceSelectionRef"
+            },
+            "maxItems": 16,
+            "title": "Secondary",
+            "type": "array"
+          },
+          "sourceScopeHash": {
+            "title": "Sourcescopehash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceScopeHash"
+        ],
+        "title": "WorkspaceSelectionContext",
+        "type": "object"
+      },
+      "WorkspaceSelectionKind": {
+        "enum": [
+          "DATASET_SAMPLE",
+          "MATERIAL_OBJECT",
+          "STRUCTURE",
+          "PERIODIC_SITE",
+          "TRAJECTORY_ATOM",
+          "TRAJECTORY_FRAME",
+          "PHONON_Q_POINT",
+          "PHONON_BRANCH",
+          "RECIPROCAL_POINT",
+          "VOLUMETRIC_FIELD",
+          "ARTIFACT",
+          "EVIDENCE_ITEM",
+          "CLAIM"
+        ],
+        "title": "WorkspaceSelectionKind",
+        "type": "string"
+      },
+      "WorkspaceSelectionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "artifactChecksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactchecksum"
+          },
+          "artifactContract": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactcontract"
+          },
+          "artifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactid"
+          },
+          "artifactVersion": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactversion"
+          },
+          "atomId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Atomid"
+          },
+          "branchId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Branchid"
+          },
+          "bundleHash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bundlehash"
+          },
+          "bundleId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bundleid"
+          },
+          "claimId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claimid"
+          },
+          "datasetId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Datasetid"
+          },
+          "datasetVersion": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Datasetversion"
+          },
+          "evidenceItemId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Evidenceitemid"
+          },
+          "fieldId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fieldid"
+          },
+          "fieldLocator": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fieldlocator"
+          },
+          "frameId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Frameid"
+          },
+          "interpretationHash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Interpretationhash"
+          },
+          "interpretationId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Interpretationid"
+          },
+          "jobId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Jobid"
+          },
+          "kind": {
+            "$ref": "#/$defs/WorkspaceSelectionKind"
+          },
+          "objectId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Objectid"
+          },
+          "phononArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Phononartifactid"
+          },
+          "projectId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Projectid",
+            "type": "string"
+          },
+          "qPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Qpointid"
+          },
+          "reciprocalArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reciprocalartifactid"
+          },
+          "reciprocalPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reciprocalpointid"
+          },
+          "regionId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Regionid"
+          },
+          "sampleRef": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sampleref"
+          },
+          "segmentId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segmentid"
+          },
+          "selectionSchemaVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Selectionschemaversion",
+            "type": "string"
+          },
+          "siteId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Siteid"
+          },
+          "sourceArtifactChecksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sourceartifactchecksum"
+          },
+          "sourceArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sourceartifactid"
+          },
+          "sourceScopeHash": {
+            "title": "Sourcescopehash",
+            "type": "string"
+          },
+          "structureId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Structureid"
+          },
+          "toolCallId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Toolcallid"
+          },
+          "trajectoryId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Trajectoryid"
+          }
+        },
+        "required": [
+          "kind",
+          "sourceScopeHash",
+          "projectId"
+        ],
+        "title": "WorkspaceSelectionRef",
+        "type": "object"
+      },
+      "WorkspaceStatus": {
+        "enum": [
+          "SOURCE_MISSING",
+          "UNSUPPORTED",
+          "LEGACY_READ_ONLY",
+          "STALE",
+          "RUNNING",
+          "PARTIAL_RESULTS",
+          "COMPLETE",
+          "FAILED",
+          "READY",
+          "INITIALIZING"
+        ],
+        "title": "WorkspaceStatus",
+        "type": "string"
+      },
+      "WorkspaceWarning": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "maxLength": 96,
+            "minLength": 1,
+            "pattern": "^[A-Z][A-Z0-9_]*$",
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "sourceId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sourceid"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "WorkspaceWarning",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "activePanelId": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Activepanelid"
+      },
+      "artifactCount": {
+        "default": 0,
+        "minimum": 0,
+        "title": "Artifactcount",
+        "type": "integer"
+      },
+      "createdAt": {
+        "format": "date-time",
+        "title": "Createdat",
+        "type": "string"
+      },
+      "createdBy": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Createdby",
+        "type": "string"
+      },
+      "createdByKind": {
+        "const": "USER",
+        "title": "Createdbykind",
+        "type": "string"
+      },
+      "currentLayoutRevision": {
+        "maximum": 128,
+        "minimum": 0,
+        "title": "Currentlayoutrevision",
+        "type": "integer"
+      },
+      "datasetId": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Datasetid"
+      },
+      "datasetVersion": {
+        "anyOf": [
+          {
+            "maxLength": 128,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Datasetversion"
+      },
+      "diagnostics": {
+        "items": {
+          "$ref": "#/$defs/WorkspaceWarning"
+        },
+        "maxItems": 64,
+        "title": "Diagnostics",
+        "type": "array"
+      },
+      "durableMetadata": {
+        "$ref": "#/$defs/WorkspaceDurableMetadata"
+      },
+      "executionAuthorized": {
+        "const": false,
+        "default": false,
+        "title": "Executionauthorized",
+        "type": "boolean"
+      },
+      "historicalProjection": {
+        "default": false,
+        "title": "Historicalprojection",
+        "type": "boolean"
+      },
+      "intentId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Intentid"
+      },
+      "intentSemanticHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Intentsemantichash"
+      },
+      "interpretationCount": {
+        "default": 0,
+        "minimum": 0,
+        "title": "Interpretationcount",
+        "type": "integer"
+      },
+      "panelIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "title": "Panelids",
+        "type": "array"
+      },
+      "pinnedSelection": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/WorkspaceSelectionContext"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "planHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Planhash"
+      },
+      "planId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Planid"
+      },
+      "planSchemaVersion": {
+        "anyOf": [
+          {
+            "enum": [
+              "0.1",
+              "0.2"
+            ],
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Planschemaversion"
+      },
+      "profileId": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Profileid"
+      },
+      "profileSemanticHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Profilesemantichash"
+      },
+      "projectId": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Projectid",
+        "type": "string"
+      },
+      "projectedStatus": {
+        "$ref": "#/$defs/WorkspaceStatus"
+      },
+      "readOnly": {
+        "default": false,
+        "title": "Readonly",
+        "type": "boolean"
+      },
+      "recipeCount": {
+        "default": 0,
+        "minimum": 0,
+        "title": "Recipecount",
+        "type": "integer"
+      },
+      "reportCount": {
+        "default": 0,
+        "minimum": 0,
+        "title": "Reportcount",
+        "type": "integer"
+      },
+      "revision": {
+        "maximum": 128,
+        "minimum": 0,
+        "title": "Revision",
+        "type": "integer"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "scientificAuthority": {
+        "const": false,
+        "default": false,
+        "title": "Scientificauthority",
+        "type": "boolean"
+      },
+      "sourceJobId": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Sourcejobid",
+        "type": "string"
+      },
+      "sourceReferenceHash": {
+        "title": "Sourcereferencehash",
+        "type": "string"
+      },
+      "title": {
+        "maxLength": 256,
+        "minLength": 1,
+        "title": "Title",
+        "type": "string"
+      },
+      "toolCallCount": {
+        "default": 0,
+        "minimum": 0,
+        "title": "Toolcallcount",
+        "type": "integer"
+      },
+      "updatedAt": {
+        "format": "date-time",
+        "title": "Updatedat",
+        "type": "string"
+      },
+      "warnings": {
+        "items": {
+          "$ref": "#/$defs/WorkspaceWarning"
+        },
+        "maxItems": 64,
+        "title": "Warnings",
+        "type": "array"
+      },
+      "workspaceId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Workspaceid",
+        "type": "string"
+      }
+    },
+    "required": [
+      "workspaceId",
+      "projectId",
+      "sourceJobId",
+      "sourceReferenceHash",
+      "title",
+      "currentLayoutRevision",
+      "revision",
+      "projectedStatus",
+      "createdByKind",
+      "createdBy",
+      "createdAt",
+      "updatedAt"
+    ],
+    "title": "ScientificWorkspace",
+    "type": "object"
+  },
+  "workspaceDurableMetadata": {
+    "additionalProperties": false,
+    "properties": {
+      "note": {
+        "anyOf": [
+          {
+            "maxLength": 2048,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Note"
+      },
+      "tags": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 16,
+        "title": "Tags",
+        "type": "array"
+      }
+    },
+    "title": "WorkspaceDurableMetadata",
+    "type": "object"
+  },
+  "workspaceLayoutRevision": {
+    "$defs": {
+      "WorkspaceDurableMetadata": {
+        "additionalProperties": false,
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Note"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "title": "WorkspaceDurableMetadata",
+        "type": "object"
+      },
+      "WorkspaceLayoutState": {
+        "additionalProperties": false,
+        "properties": {
+          "activePanelId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Activepanelid"
+          },
+          "durableMetadata": {
+            "$ref": "#/$defs/WorkspaceDurableMetadata"
+          },
+          "panelLayouts": {
+            "items": {
+              "$ref": "#/$defs/WorkspacePanelPlacement"
+            },
+            "maxItems": 32,
+            "title": "Panellayouts",
+            "type": "array"
+          },
+          "panelOrder": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 32,
+            "title": "Panelorder",
+            "type": "array"
+          },
+          "schemaVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Schemaversion",
+            "type": "string"
+          },
+          "visiblePanelIds": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 32,
+            "title": "Visiblepanelids",
+            "type": "array"
+          }
+        },
+        "title": "WorkspaceLayoutState",
+        "type": "object"
+      },
+      "WorkspacePanelPlacement": {
+        "additionalProperties": false,
+        "properties": {
+          "collapsed": {
+            "default": false,
+            "title": "Collapsed",
+            "type": "boolean"
+          },
+          "height": {
+            "default": 1,
+            "maximum": 12,
+            "minimum": 1,
+            "title": "Height",
+            "type": "integer"
+          },
+          "order": {
+            "maximum": 31,
+            "minimum": 0,
+            "title": "Order",
+            "type": "integer"
+          },
+          "panelId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Panelid",
+            "type": "string"
+          },
+          "region": {
+            "default": "PRIMARY",
+            "enum": [
+              "PRIMARY",
+              "SECONDARY",
+              "DETAILS",
+              "HIDDEN"
+            ],
+            "title": "Region",
+            "type": "string"
+          },
+          "width": {
+            "default": 1,
+            "maximum": 12,
+            "minimum": 1,
+            "title": "Width",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "panelId",
+          "order"
+        ],
+        "title": "WorkspacePanelPlacement",
+        "type": "object"
+      },
+      "WorkspaceSelectionContext": {
+        "additionalProperties": false,
+        "properties": {
+          "cleared": {
+            "default": false,
+            "title": "Cleared",
+            "type": "boolean"
+          },
+          "compatibility": {
+            "default": "EXACT",
+            "enum": [
+              "EXACT",
+              "NOT_APPLICABLE",
+              "STALE",
+              "UNSUPPORTED"
+            ],
+            "title": "Compatibility",
+            "type": "string"
+          },
+          "primary": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/WorkspaceSelectionRef"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "propagation": {
+            "const": "EXACT_COMPATIBLE_ONLY",
+            "default": "EXACT_COMPATIBLE_ONLY",
+            "title": "Propagation",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Schemaversion",
+            "type": "string"
+          },
+          "secondary": {
+            "items": {
+              "$ref": "#/$defs/WorkspaceSelectionRef"
+            },
+            "maxItems": 16,
+            "title": "Secondary",
+            "type": "array"
+          },
+          "sourceScopeHash": {
+            "title": "Sourcescopehash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceScopeHash"
+        ],
+        "title": "WorkspaceSelectionContext",
+        "type": "object"
+      },
+      "WorkspaceSelectionKind": {
+        "enum": [
+          "DATASET_SAMPLE",
+          "MATERIAL_OBJECT",
+          "STRUCTURE",
+          "PERIODIC_SITE",
+          "TRAJECTORY_ATOM",
+          "TRAJECTORY_FRAME",
+          "PHONON_Q_POINT",
+          "PHONON_BRANCH",
+          "RECIPROCAL_POINT",
+          "VOLUMETRIC_FIELD",
+          "ARTIFACT",
+          "EVIDENCE_ITEM",
+          "CLAIM"
+        ],
+        "title": "WorkspaceSelectionKind",
+        "type": "string"
+      },
+      "WorkspaceSelectionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "artifactChecksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactchecksum"
+          },
+          "artifactContract": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactcontract"
+          },
+          "artifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactid"
+          },
+          "artifactVersion": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactversion"
+          },
+          "atomId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Atomid"
+          },
+          "branchId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Branchid"
+          },
+          "bundleHash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bundlehash"
+          },
+          "bundleId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bundleid"
+          },
+          "claimId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claimid"
+          },
+          "datasetId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Datasetid"
+          },
+          "datasetVersion": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Datasetversion"
+          },
+          "evidenceItemId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Evidenceitemid"
+          },
+          "fieldId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fieldid"
+          },
+          "fieldLocator": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fieldlocator"
+          },
+          "frameId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Frameid"
+          },
+          "interpretationHash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Interpretationhash"
+          },
+          "interpretationId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Interpretationid"
+          },
+          "jobId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Jobid"
+          },
+          "kind": {
+            "$ref": "#/$defs/WorkspaceSelectionKind"
+          },
+          "objectId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Objectid"
+          },
+          "phononArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Phononartifactid"
+          },
+          "projectId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Projectid",
+            "type": "string"
+          },
+          "qPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Qpointid"
+          },
+          "reciprocalArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reciprocalartifactid"
+          },
+          "reciprocalPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reciprocalpointid"
+          },
+          "regionId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Regionid"
+          },
+          "sampleRef": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sampleref"
+          },
+          "segmentId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segmentid"
+          },
+          "selectionSchemaVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Selectionschemaversion",
+            "type": "string"
+          },
+          "siteId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Siteid"
+          },
+          "sourceArtifactChecksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sourceartifactchecksum"
+          },
+          "sourceArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sourceartifactid"
+          },
+          "sourceScopeHash": {
+            "title": "Sourcescopehash",
+            "type": "string"
+          },
+          "structureId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Structureid"
+          },
+          "toolCallId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Toolcallid"
+          },
+          "trajectoryId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Trajectoryid"
+          }
+        },
+        "required": [
+          "kind",
+          "sourceScopeHash",
+          "projectId"
+        ],
+        "title": "WorkspaceSelectionRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "createdAt": {
+        "format": "date-time",
+        "title": "Createdat",
+        "type": "string"
+      },
+      "createdBy": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Createdby",
+        "type": "string"
+      },
+      "layout": {
+        "$ref": "#/$defs/WorkspaceLayoutState"
+      },
+      "revision": {
+        "maximum": 128,
+        "minimum": 0,
+        "title": "Revision",
+        "type": "integer"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "selection": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/WorkspaceSelectionContext"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "semanticHash": {
+        "title": "Semantichash",
+        "type": "string"
+      },
+      "workspaceId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Workspaceid",
+        "type": "string"
+      }
+    },
+    "required": [
+      "workspaceId",
+      "revision",
+      "layout",
+      "semanticHash",
+      "createdBy",
+      "createdAt"
+    ],
+    "title": "WorkspaceLayoutRevision",
+    "type": "object"
+  },
+  "workspaceLayoutState": {
+    "$defs": {
+      "WorkspaceDurableMetadata": {
+        "additionalProperties": false,
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Note"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "title": "WorkspaceDurableMetadata",
+        "type": "object"
+      },
+      "WorkspacePanelPlacement": {
+        "additionalProperties": false,
+        "properties": {
+          "collapsed": {
+            "default": false,
+            "title": "Collapsed",
+            "type": "boolean"
+          },
+          "height": {
+            "default": 1,
+            "maximum": 12,
+            "minimum": 1,
+            "title": "Height",
+            "type": "integer"
+          },
+          "order": {
+            "maximum": 31,
+            "minimum": 0,
+            "title": "Order",
+            "type": "integer"
+          },
+          "panelId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Panelid",
+            "type": "string"
+          },
+          "region": {
+            "default": "PRIMARY",
+            "enum": [
+              "PRIMARY",
+              "SECONDARY",
+              "DETAILS",
+              "HIDDEN"
+            ],
+            "title": "Region",
+            "type": "string"
+          },
+          "width": {
+            "default": 1,
+            "maximum": 12,
+            "minimum": 1,
+            "title": "Width",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "panelId",
+          "order"
+        ],
+        "title": "WorkspacePanelPlacement",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "activePanelId": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Activepanelid"
+      },
+      "durableMetadata": {
+        "$ref": "#/$defs/WorkspaceDurableMetadata"
+      },
+      "panelLayouts": {
+        "items": {
+          "$ref": "#/$defs/WorkspacePanelPlacement"
+        },
+        "maxItems": 32,
+        "title": "Panellayouts",
+        "type": "array"
+      },
+      "panelOrder": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "title": "Panelorder",
+        "type": "array"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "visiblePanelIds": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "title": "Visiblepanelids",
+        "type": "array"
+      }
+    },
+    "title": "WorkspaceLayoutState",
+    "type": "object"
+  },
+  "workspacePanel": {
+    "$defs": {
+      "WorkspacePanelKind": {
+        "enum": [
+          "OVERVIEW",
+          "DATA",
+          "PLAN",
+          "EXECUTION",
+          "SCIENTIFIC_RESULT",
+          "FINDINGS",
+          "EVIDENCE",
+          "PROVENANCE",
+          "REPORT"
+        ],
+        "title": "WorkspacePanelKind",
+        "type": "string"
+      },
+      "WorkspacePanelLayout": {
+        "additionalProperties": false,
+        "properties": {
+          "collapsed": {
+            "default": false,
+            "title": "Collapsed",
+            "type": "boolean"
+          },
+          "height": {
+            "default": 1,
+            "maximum": 12,
+            "minimum": 1,
+            "title": "Height",
+            "type": "integer"
+          },
+          "order": {
+            "maximum": 31,
+            "minimum": 0,
+            "title": "Order",
+            "type": "integer"
+          },
+          "region": {
+            "default": "PRIMARY",
+            "enum": [
+              "PRIMARY",
+              "SECONDARY",
+              "DETAILS",
+              "HIDDEN"
+            ],
+            "title": "Region",
+            "type": "string"
+          },
+          "width": {
+            "default": 1,
+            "maximum": 12,
+            "minimum": 1,
+            "title": "Width",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "order"
+        ],
+        "title": "WorkspacePanelLayout",
+        "type": "object"
+      },
+      "WorkspacePanelState": {
+        "enum": [
+          "NOT_APPLICABLE",
+          "READY_NOT_RUN",
+          "LOADING",
+          "PRODUCED",
+          "PARTIAL",
+          "UNAVAILABLE",
+          "FAILED",
+          "BLOCKED_BY_DEPENDENCY",
+          "STALE",
+          "CAP_EXCEEDED",
+          "CONTRACT_UNSUPPORTED",
+          "SOURCE_DELETED",
+          "PROFILE_AUTHORITY_UNAVAILABLE"
+        ],
+        "title": "WorkspacePanelState",
+        "type": "string"
+      },
+      "WorkspaceSelectionKind": {
+        "enum": [
+          "DATASET_SAMPLE",
+          "MATERIAL_OBJECT",
+          "STRUCTURE",
+          "PERIODIC_SITE",
+          "TRAJECTORY_ATOM",
+          "TRAJECTORY_FRAME",
+          "PHONON_Q_POINT",
+          "PHONON_BRANCH",
+          "RECIPROCAL_POINT",
+          "VOLUMETRIC_FIELD",
+          "ARTIFACT",
+          "EVIDENCE_ITEM",
+          "CLAIM"
+        ],
+        "title": "WorkspaceSelectionKind",
+        "type": "string"
+      },
+      "WorkspaceSourceKind": {
+        "enum": [
+          "PROJECT",
+          "DATASET",
+          "PROFILE",
+          "INTENT",
+          "ELIGIBILITY_RESOLUTION",
+          "SELECTION_DECISION",
+          "PLAN",
+          "JOB",
+          "TOOL_CALL",
+          "ARTIFACT",
+          "DEPENDENCY_EXECUTION",
+          "INTERPRETATION",
+          "EVIDENCE_BUNDLE",
+          "REPORT",
+          "RECIPE"
+        ],
+        "title": "WorkspaceSourceKind",
+        "type": "string"
+      },
+      "WorkspaceSourceRef": {
+        "additionalProperties": false,
+        "properties": {
+          "contract": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contract"
+          },
+          "contractVersion": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contractversion"
+          },
+          "jobId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Jobid"
+          },
+          "kind": {
+            "$ref": "#/$defs/WorkspaceSourceKind"
+          },
+          "mediaType": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mediatype"
+          },
+          "projectId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Projectid",
+            "type": "string"
+          },
+          "sourceHash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sourcehash"
+          },
+          "sourceId": {
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Sourceid",
+            "type": "string"
+          },
+          "stepId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Stepid"
+          },
+          "toolCallId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Toolcallid"
+          }
+        },
+        "required": [
+          "kind",
+          "sourceId",
+          "projectId"
+        ],
+        "title": "WorkspaceSourceRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "acceptedSelectionKinds": {
+        "items": {
+          "$ref": "#/$defs/WorkspaceSelectionKind"
+        },
+        "maxItems": 13,
+        "title": "Acceptedselectionkinds",
+        "type": "array"
+      },
+      "accessibleName": {
+        "maxLength": 256,
+        "minLength": 1,
+        "title": "Accessiblename",
+        "type": "string"
+      },
+      "capabilityRequirement": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Capabilityrequirement"
+      },
+      "contractProvenance": {
+        "default": "workspace-projection/1.0",
+        "maxLength": 128,
+        "title": "Contractprovenance",
+        "type": "string"
+      },
+      "emittedSelectionKinds": {
+        "items": {
+          "$ref": "#/$defs/WorkspaceSelectionKind"
+        },
+        "maxItems": 13,
+        "title": "Emittedselectionkinds",
+        "type": "array"
+      },
+      "evidenceRefs": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "title": "Evidencerefs",
+        "type": "array"
+      },
+      "layout": {
+        "$ref": "#/$defs/WorkspacePanelLayout"
+      },
+      "mobilePresentationMode": {
+        "default": "STACKED",
+        "enum": [
+          "STACKED",
+          "FULL_WIDTH",
+          "HIDDEN"
+        ],
+        "title": "Mobilepresentationmode",
+        "type": "string"
+      },
+      "ordinal": {
+        "maximum": 31,
+        "minimum": 0,
+        "title": "Ordinal",
+        "type": "integer"
+      },
+      "panelId": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Panelid",
+        "type": "string"
+      },
+      "panelKind": {
+        "$ref": "#/$defs/WorkspacePanelKind"
+      },
+      "panelStateHash": {
+        "title": "Panelstatehash",
+        "type": "string"
+      },
+      "provenanceRefs": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 32,
+        "title": "Provenancerefs",
+        "type": "array"
+      },
+      "rendererContract": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Renderercontract",
+        "type": "string"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "sourceReferenceHash": {
+        "title": "Sourcereferencehash",
+        "type": "string"
+      },
+      "sourceRefs": {
+        "items": {
+          "$ref": "#/$defs/WorkspaceSourceRef"
+        },
+        "maxItems": 32,
+        "title": "Sourcerefs",
+        "type": "array"
+      },
+      "state": {
+        "$ref": "#/$defs/WorkspacePanelState"
+      },
+      "title": {
+        "maxLength": 256,
+        "minLength": 1,
+        "title": "Title",
+        "type": "string"
+      },
+      "unsupportedReason": {
+        "anyOf": [
+          {
+            "maxLength": 512,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Unsupportedreason"
+      },
+      "visible": {
+        "default": true,
+        "title": "Visible",
+        "type": "boolean"
+      },
+      "workspaceId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Workspaceid",
+        "type": "string"
+      }
+    },
+    "required": [
+      "panelId",
+      "workspaceId",
+      "panelKind",
+      "title",
+      "ordinal",
+      "sourceReferenceHash",
+      "rendererContract",
+      "state",
+      "layout",
+      "accessibleName",
+      "panelStateHash"
+    ],
+    "title": "WorkspacePanel",
+    "type": "object"
+  },
+  "workspacePanelLayout": {
+    "additionalProperties": false,
+    "properties": {
+      "collapsed": {
+        "default": false,
+        "title": "Collapsed",
+        "type": "boolean"
+      },
+      "height": {
+        "default": 1,
+        "maximum": 12,
+        "minimum": 1,
+        "title": "Height",
+        "type": "integer"
+      },
+      "order": {
+        "maximum": 31,
+        "minimum": 0,
+        "title": "Order",
+        "type": "integer"
+      },
+      "region": {
+        "default": "PRIMARY",
+        "enum": [
+          "PRIMARY",
+          "SECONDARY",
+          "DETAILS",
+          "HIDDEN"
+        ],
+        "title": "Region",
+        "type": "string"
+      },
+      "width": {
+        "default": 1,
+        "maximum": 12,
+        "minimum": 1,
+        "title": "Width",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "order"
+    ],
+    "title": "WorkspacePanelLayout",
+    "type": "object"
+  },
+  "workspacePanelPlacement": {
+    "additionalProperties": false,
+    "properties": {
+      "collapsed": {
+        "default": false,
+        "title": "Collapsed",
+        "type": "boolean"
+      },
+      "height": {
+        "default": 1,
+        "maximum": 12,
+        "minimum": 1,
+        "title": "Height",
+        "type": "integer"
+      },
+      "order": {
+        "maximum": 31,
+        "minimum": 0,
+        "title": "Order",
+        "type": "integer"
+      },
+      "panelId": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Panelid",
+        "type": "string"
+      },
+      "region": {
+        "default": "PRIMARY",
+        "enum": [
+          "PRIMARY",
+          "SECONDARY",
+          "DETAILS",
+          "HIDDEN"
+        ],
+        "title": "Region",
+        "type": "string"
+      },
+      "width": {
+        "default": 1,
+        "maximum": 12,
+        "minimum": 1,
+        "title": "Width",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "panelId",
+      "order"
+    ],
+    "title": "WorkspacePanelPlacement",
+    "type": "object"
+  },
+  "workspaceSelectionContext": {
+    "$defs": {
+      "WorkspaceSelectionKind": {
+        "enum": [
+          "DATASET_SAMPLE",
+          "MATERIAL_OBJECT",
+          "STRUCTURE",
+          "PERIODIC_SITE",
+          "TRAJECTORY_ATOM",
+          "TRAJECTORY_FRAME",
+          "PHONON_Q_POINT",
+          "PHONON_BRANCH",
+          "RECIPROCAL_POINT",
+          "VOLUMETRIC_FIELD",
+          "ARTIFACT",
+          "EVIDENCE_ITEM",
+          "CLAIM"
+        ],
+        "title": "WorkspaceSelectionKind",
+        "type": "string"
+      },
+      "WorkspaceSelectionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "artifactChecksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactchecksum"
+          },
+          "artifactContract": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactcontract"
+          },
+          "artifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactid"
+          },
+          "artifactVersion": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifactversion"
+          },
+          "atomId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Atomid"
+          },
+          "branchId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Branchid"
+          },
+          "bundleHash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bundlehash"
+          },
+          "bundleId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bundleid"
+          },
+          "claimId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claimid"
+          },
+          "datasetId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Datasetid"
+          },
+          "datasetVersion": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Datasetversion"
+          },
+          "evidenceItemId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Evidenceitemid"
+          },
+          "fieldId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fieldid"
+          },
+          "fieldLocator": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fieldlocator"
+          },
+          "frameId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Frameid"
+          },
+          "interpretationHash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Interpretationhash"
+          },
+          "interpretationId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Interpretationid"
+          },
+          "jobId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Jobid"
+          },
+          "kind": {
+            "$ref": "#/$defs/WorkspaceSelectionKind"
+          },
+          "objectId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Objectid"
+          },
+          "phononArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Phononartifactid"
+          },
+          "projectId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Projectid",
+            "type": "string"
+          },
+          "qPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Qpointid"
+          },
+          "reciprocalArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reciprocalartifactid"
+          },
+          "reciprocalPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reciprocalpointid"
+          },
+          "regionId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Regionid"
+          },
+          "sampleRef": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sampleref"
+          },
+          "segmentId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segmentid"
+          },
+          "selectionSchemaVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Selectionschemaversion",
+            "type": "string"
+          },
+          "siteId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Siteid"
+          },
+          "sourceArtifactChecksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sourceartifactchecksum"
+          },
+          "sourceArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sourceartifactid"
+          },
+          "sourceScopeHash": {
+            "title": "Sourcescopehash",
+            "type": "string"
+          },
+          "structureId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Structureid"
+          },
+          "toolCallId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Toolcallid"
+          },
+          "trajectoryId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Trajectoryid"
+          }
+        },
+        "required": [
+          "kind",
+          "sourceScopeHash",
+          "projectId"
+        ],
+        "title": "WorkspaceSelectionRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "cleared": {
+        "default": false,
+        "title": "Cleared",
+        "type": "boolean"
+      },
+      "compatibility": {
+        "default": "EXACT",
+        "enum": [
+          "EXACT",
+          "NOT_APPLICABLE",
+          "STALE",
+          "UNSUPPORTED"
+        ],
+        "title": "Compatibility",
+        "type": "string"
+      },
+      "primary": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/WorkspaceSelectionRef"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "propagation": {
+        "const": "EXACT_COMPATIBLE_ONLY",
+        "default": "EXACT_COMPATIBLE_ONLY",
+        "title": "Propagation",
+        "type": "string"
+      },
+      "schemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Schemaversion",
+        "type": "string"
+      },
+      "secondary": {
+        "items": {
+          "$ref": "#/$defs/WorkspaceSelectionRef"
+        },
+        "maxItems": 16,
+        "title": "Secondary",
+        "type": "array"
+      },
+      "sourceScopeHash": {
+        "title": "Sourcescopehash",
+        "type": "string"
+      }
+    },
+    "required": [
+      "sourceScopeHash"
+    ],
+    "title": "WorkspaceSelectionContext",
+    "type": "object"
+  },
+  "workspaceSelectionRef": {
+    "$defs": {
+      "WorkspaceSelectionKind": {
+        "enum": [
+          "DATASET_SAMPLE",
+          "MATERIAL_OBJECT",
+          "STRUCTURE",
+          "PERIODIC_SITE",
+          "TRAJECTORY_ATOM",
+          "TRAJECTORY_FRAME",
+          "PHONON_Q_POINT",
+          "PHONON_BRANCH",
+          "RECIPROCAL_POINT",
+          "VOLUMETRIC_FIELD",
+          "ARTIFACT",
+          "EVIDENCE_ITEM",
+          "CLAIM"
+        ],
+        "title": "WorkspaceSelectionKind",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "artifactChecksum": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Artifactchecksum"
+      },
+      "artifactContract": {
+        "anyOf": [
+          {
+            "maxLength": 128,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Artifactcontract"
+      },
+      "artifactId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Artifactid"
+      },
+      "artifactVersion": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Artifactversion"
+      },
+      "atomId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Atomid"
+      },
+      "branchId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Branchid"
+      },
+      "bundleHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Bundlehash"
+      },
+      "bundleId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Bundleid"
+      },
+      "claimId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Claimid"
+      },
+      "datasetId": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Datasetid"
+      },
+      "datasetVersion": {
+        "anyOf": [
+          {
+            "maxLength": 128,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Datasetversion"
+      },
+      "evidenceItemId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Evidenceitemid"
+      },
+      "fieldId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Fieldid"
+      },
+      "fieldLocator": {
+        "anyOf": [
+          {
+            "maxLength": 160,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Fieldlocator"
+      },
+      "frameId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Frameid"
+      },
+      "interpretationHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Interpretationhash"
+      },
+      "interpretationId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Interpretationid"
+      },
+      "jobId": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Jobid"
+      },
+      "kind": {
+        "$ref": "#/$defs/WorkspaceSelectionKind"
+      },
+      "objectId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Objectid"
+      },
+      "phononArtifactId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Phononartifactid"
+      },
+      "projectId": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Projectid",
+        "type": "string"
+      },
+      "qPointId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Qpointid"
+      },
+      "reciprocalArtifactId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Reciprocalartifactid"
+      },
+      "reciprocalPointId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Reciprocalpointid"
+      },
+      "regionId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Regionid"
+      },
+      "sampleRef": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Sampleref"
+      },
+      "segmentId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Segmentid"
+      },
+      "selectionSchemaVersion": {
+        "const": "1.0",
+        "default": "1.0",
+        "title": "Selectionschemaversion",
+        "type": "string"
+      },
+      "siteId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Siteid"
+      },
+      "sourceArtifactChecksum": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Sourceartifactchecksum"
+      },
+      "sourceArtifactId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Sourceartifactid"
+      },
+      "sourceScopeHash": {
+        "title": "Sourcescopehash",
+        "type": "string"
+      },
+      "structureId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Structureid"
+      },
+      "toolCallId": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Toolcallid"
+      },
+      "trajectoryId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Trajectoryid"
+      }
+    },
+    "required": [
+      "kind",
+      "sourceScopeHash",
+      "projectId"
+    ],
+    "title": "WorkspaceSelectionRef",
+    "type": "object"
+  },
+  "workspaceSourceRef": {
+    "$defs": {
+      "WorkspaceSourceKind": {
+        "enum": [
+          "PROJECT",
+          "DATASET",
+          "PROFILE",
+          "INTENT",
+          "ELIGIBILITY_RESOLUTION",
+          "SELECTION_DECISION",
+          "PLAN",
+          "JOB",
+          "TOOL_CALL",
+          "ARTIFACT",
+          "DEPENDENCY_EXECUTION",
+          "INTERPRETATION",
+          "EVIDENCE_BUNDLE",
+          "REPORT",
+          "RECIPE"
+        ],
+        "title": "WorkspaceSourceKind",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "contract": {
+        "anyOf": [
+          {
+            "maxLength": 128,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Contract"
+      },
+      "contractVersion": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Contractversion"
+      },
+      "jobId": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Jobid"
+      },
+      "kind": {
+        "$ref": "#/$defs/WorkspaceSourceKind"
+      },
+      "mediaType": {
+        "anyOf": [
+          {
+            "maxLength": 128,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Mediatype"
+      },
+      "projectId": {
+        "maxLength": 64,
+        "minLength": 1,
+        "title": "Projectid",
+        "type": "string"
+      },
+      "sourceHash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Sourcehash"
+      },
+      "sourceId": {
+        "maxLength": 96,
+        "minLength": 1,
+        "title": "Sourceid",
+        "type": "string"
+      },
+      "stepId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Stepid"
+      },
+      "toolCallId": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Toolcallid"
+      }
+    },
+    "required": [
+      "kind",
+      "sourceId",
+      "projectId"
+    ],
+    "title": "WorkspaceSourceRef",
+    "type": "object"
+  },
+  "workspaceWarning": {
+    "additionalProperties": false,
+    "properties": {
+      "code": {
+        "maxLength": 96,
+        "minLength": 1,
+        "pattern": "^[A-Z][A-Z0-9_]*$",
+        "title": "Code",
+        "type": "string"
+      },
+      "message": {
+        "maxLength": 512,
+        "minLength": 1,
+        "title": "Message",
+        "type": "string"
+      },
+      "sourceId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Sourceid"
+      }
+    },
+    "required": [
+      "code",
+      "message"
+    ],
+    "title": "WorkspaceWarning",
+    "type": "object"
+  }
+}

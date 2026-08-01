@@ -1,0 +1,7 @@
+LOCAL_SERVICE_BACKED = UNAVAILABLE
+reason=Docker and service environment variables unavailable locally
+local_claim=NOT_PASS
+ci_fixture=tests/integration/test_phase10m1_workspace_service_backed.py
+ci_required=PostgreSQL + Redis + MinIO + migration head 0007 + zero skipped
+CI_SERVICE_BACKED = PENDING_EXACT_SHA_CI
+SERVICE_TESTS_SKIPPED = NOT_YET_MEASURED_IN_CI

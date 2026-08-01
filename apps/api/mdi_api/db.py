@@ -11,6 +11,7 @@ from sqlalchemy import (
     Integer,
     JSON,
     MetaData,
+    SmallInteger,
     String,
     Table,
     Text,
@@ -462,6 +463,86 @@ reports = Table(
     Column("report_json", JSON, nullable=False, server_default="{}"),
     Column("created_by", String(64), ForeignKey("users.id"), nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+scientific_workspaces = Table(
+    "scientific_workspaces",
+    metadata,
+    Column("workspace_id", String(96), primary_key=True),
+    Column("schema_version", String(16), nullable=False),
+    Column("project_id", String(64), ForeignKey("projects.id", ondelete="RESTRICT"), nullable=False),
+    Column("source_job_id", String(64), ForeignKey("jobs.id", ondelete="RESTRICT"), nullable=False),
+    Column("source_reference_hash", String(64), nullable=False, unique=True),
+    Column("dataset_id", String(64), ForeignKey("datasets.id", ondelete="RESTRICT"), nullable=True),
+    Column("dataset_version", String(128), nullable=True),
+    Column("profile_id", String(64), ForeignKey("data_profiles.id", ondelete="RESTRICT"), nullable=True),
+    Column("profile_semantic_hash", String(64), nullable=True),
+    Column("intent_id", String(96), ForeignKey("analysis_intents.id", ondelete="RESTRICT"), nullable=True),
+    Column("intent_semantic_hash", String(64), nullable=True),
+    Column("plan_id", String(96), ForeignKey("analysis_plans.id", ondelete="RESTRICT"), nullable=True),
+    Column("plan_hash", String(64), nullable=True),
+    Column("plan_schema_version", String(16), nullable=True),
+    Column("title", String(256), nullable=False),
+    Column("active_panel_id", String(64), nullable=True),
+    Column("pinned_selection_json", JSON, nullable=True),
+    Column("revision", Integer, nullable=False, server_default="0"),
+    Column("created_by", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("project_id", "source_job_id", name="uq_scientific_workspaces_project_job"),
+    CheckConstraint("revision >= 0", name="scientific_workspace_revision_non_negative"),
+)
+
+Index(
+    "idx_workspaces_project_updated",
+    scientific_workspaces.c.project_id,
+    scientific_workspaces.c.updated_at,
+)
+Index("idx_workspaces_source_job", scientific_workspaces.c.source_job_id)
+
+workspace_panels = Table(
+    "workspace_panels",
+    metadata,
+    Column(
+        "workspace_id",
+        String(96),
+        ForeignKey("scientific_workspaces.workspace_id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    Column("panel_id", String(64), primary_key=True),
+    Column("panel_kind", String(32), nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("ordinal", SmallInteger, nullable=False),
+    Column("visible", Boolean, nullable=False, server_default="true"),
+    Column("source_refs_json", JSON, nullable=False),
+    Column("renderer_contract", String(128), nullable=False),
+    Column("accepted_selection_kinds_json", JSON, nullable=False),
+    Column("layout_json", JSON, nullable=False),
+    Column("panel_state_hash", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("ordinal >= 0", name="workspace_panel_ordinal_non_negative"),
+)
+
+Index("idx_workspace_panels_order", workspace_panels.c.workspace_id, workspace_panels.c.ordinal)
+
+workspace_layout_revisions = Table(
+    "workspace_layout_revisions",
+    metadata,
+    Column(
+        "workspace_id",
+        String(96),
+        ForeignKey("scientific_workspaces.workspace_id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    Column("revision", Integer, primary_key=True),
+    Column("layout_json", JSON, nullable=False),
+    Column("selection_json", JSON, nullable=True),
+    Column("semantic_hash", String(64), nullable=False),
+    Column("created_by", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("workspace_id", "semantic_hash", name="uq_workspace_layout_semantic_hash"),
+    CheckConstraint("revision >= 0", name="workspace_layout_revision_non_negative"),
 )
 
 scientific_evidence_bundles = Table(
