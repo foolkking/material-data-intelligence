@@ -10,9 +10,10 @@
 | Grounded interpretation | PASS | per-case interpretation and evidence |
 | Browser matrix | PASS | Chromium/Firefox/WebKit plus 390x844 |
 | Security and secret scan | PASS | closure security markers and manifest |
-| Service-backed | PASS locally; exact-SHA CI required | PostgreSQL/Redis/MinIO, 5/5 live DeepSeek cases, 21/21 default integration tests, zero skips |
-| Exact-SHA implementation/completion/archive | Pending until commits | current task lifecycle |
+| Service-backed | PASS locally and exact-SHA CI | local 5/5 live DeepSeek plus 21/21 default integration; CI 36/36, zero skips/failures |
+| Implementation exact-SHA CI | PASS | `bfc43bd`, run `30693848581` |
+| Completion-record/archive exact-SHA CI | Pending | completed task remains in queue |
 | Phase 10M-0 | Reviewer gate | no executable task created |
 
-The current implementation is not archived until the exact-SHA CI lifecycle
-and `results.md` completion record are closed.
+The implementation gate is closed. The phase is not archived until the
+`results.md` completion record and verified queue-archive exact-SHA CI close.

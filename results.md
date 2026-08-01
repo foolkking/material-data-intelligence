@@ -1511,6 +1511,284 @@ commit. Return the result and stop; do not queue or execute Phase 10L-3.
 - Archive commit exact SHA and CI run are reported in the reviewer return after
   the final exact-SHA gate; this addendum is not rewritten after archive.
 
+# Phase 10L-5 Natural-Language Analysis Evidence Closure + DeepSeek-Only Provider Result
+
+Completion time: `2026-08-01T17:44:20.0686283+08:00`
+
+## 1. Conclusion
+
+`PASS / COMPLETE_AWAITING_COMPLETION_RECORD_CI`. The implementation and its
+exact-SHA CI are complete. The task remains in `TASKS.md` until this record and
+the subsequent queue archive each pass exact-SHA CI.
+
+## 2. Phase 10L Closure Status
+
+Phase 10L-0 through 10L-4 remain archived. Phase 10L-5 closes the approved
+natural-language evidence scope without entering Phase 10M. Phase 10L becomes
+`READY_WITH_EXPLICIT_LIMITS` only after verified queue archive.
+
+## 3. Baseline and Entry Gate
+
+- branch: `master`.
+- initial HEAD/origin: `58ee9432f708324636a7226df8f417e7c3c52d09`.
+- Phase 10L-4 archive CI: run `30608078520`, success.
+- initial worktree: clean; initial active task count: one L5 block.
+- `DEEPSEEK_KEY` was configured for controlled live evidence without exposing
+  its value, prefix, length, or hash.
+
+## 4. LLM Call-Site Audit
+
+All production provider construction, Intent, capability selection,
+dependency composition, grounded interpretation, health/API, and historical
+compatibility call sites were audited. Deterministic and fake providers remain
+explicit test paths. Browser evidence is offline replay and never calls a
+provider directly.
+
+## 5. DeepSeek-Only Provider Policy
+
+`DeepSeekProvider` uses fixed `https://api.deepseek.com`, allowlisted
+`deepseek-v4-flash` and `deepseek-v4-pro`, and `DEEPSEEK_KEY` as the sole key
+source. OpenAI, custom OpenAI-compatible, and Anthropic real transports return
+typed `PROVIDER_NOT_ALLOWED`; there is no key or provider fallback. Injected
+fake transport remains test-only.
+
+## 6. Provider Security
+
+Requests are purpose-bounded, redacted, byte/depth capped strict JSON. Duplicate
+keys, non-finite values, prose/fences, unsupported models, unknown fields,
+secrets, URLs/paths/code, and invented identities are rejected. Provider
+responses cannot execute tools or bypass Registry/Plan validation.
+
+## 7. Default CI vs Real Verification
+
+Default CI sets an empty `DEEPSEEK_KEY` and makes zero real calls. Controlled
+live verification used the environment key and persisted only sanitized hashes,
+token/call metadata, typed diagnostics, selected identities, and outcomes.
+No authorization material or raw secret was retained.
+
+## 8. Evidence Contracts
+
+Added strict Python, JSON Schema, and TypeScript parity for
+`NaturalLanguageEvidenceCase/Run`, `DeepSeekVerificationRecord/Suite`, and the
+Phase 10L closure manifest. Canonical serialization, deterministic hashes,
+unknown-field rejection, and count/byte/depth caps are enforced.
+
+## 9. Dataset Case
+
+Real DeepSeek completed DataProfile -> Intent -> eligibility -> plan -> job ->
+Runtime -> registered dataset adapters -> artifacts/lineage -> grounded
+interpretation. Run ID: `live_run_ceaef0c7168892dd5ed9d0a7da7bb7c1`.
+
+## 10. Structure Case
+
+Exact structure resource identity and supported structure capability completed
+through registered adapters with grounded findings. Run ID:
+`live_run_d11315ef07ae3cb3bf09295fdd1254b2`.
+
+## 11. Materials ML Case
+
+Exact target/model semantics and ML evaluation artifacts completed without
+first-column or broad-metrics fallback. Run ID:
+`live_run_28f09af3b53a75170a8850d6ca45f8b3`.
+
+## 12. Phonon Case
+
+AnalysisPlan 0.2 executed the real `phonon.band + phonon.dos ->
+phonon.band_dos` typed chain, preserved graph/lineage identities, and produced
+grounded interpretation. Run ID:
+`live_run_b135271f0ff8102fa42b0102aa8b8d0c`.
+
+## 13. Volumetric Case
+
+Exact volumetric quantity/resource binding executed the registered capability
+and grounded only supported range/reference/unit facts. Run ID:
+`live_run_89ff5988240b2246dec4adb371deacdb`.
+
+The five-case suite is
+`deepseek_suite_ee5a0e9700d1a70787fc060fda274171`: `5/5 PASS`, per-case
+calls `3, 3, 3, 4, 3`, total `16`.
+
+## 14. Negative and Boundary Cases
+
+The real-provider suite also verifies bounded clarification, Future Fermi
+unsupported, capability mismatch, exact formation-energy/band-gap separation,
+and no non-ready execution. Historical scatter behavior that depended on
+first-column guessing is now a typed mismatch, not a fabricated success.
+
+## 15. API
+
+Canonical planner/API requests explicitly select DeepSeek and expose sanitized
+provider identity, call audit, planning state, persisted job/artifacts, and
+interpretation. Non-ready responses create no plan, job, enqueue, ToolCall, or
+artifact. Legacy test compatibility is explicit and not counted as live proof.
+
+## 16. Browser
+
+Sanitized real-DeepSeek captures replayed in Chromium, Firefox, WebKit, and
+Chromium `390x844` for five ready and three non-ready states. Console/page
+errors, external requests, horizontal overflow, raw HTML/script/iframe, and
+secret/path exposure were zero. Browser replay made zero live provider calls.
+
+## 17. Service-Backed
+
+Local PostgreSQL/Redis/MinIO live verification passed five real-DeepSeek cases
+with zero skips; default local service integration passed `21/21`. Exact-SHA CI
+service integration passed `36`, skipped `0`, failed `0`, including migration,
+object storage, queue/runtime, L5 contracts, and no-skipped assertion.
+
+## 18. Compatibility
+
+AnalysisIntent remains `1.0`; EligibilityResolution remains `1.0`;
+AnalysisPlan remains `0.1/0.2`; ToolPlannerMetadata remains `1.0/1.1`.
+Existing PlanValidator, capability validator, QueueWorkerRuntime, dependency
+execution, lineage, historical jobs/artifacts, L1-L4, and Phase 10K behavior
+remain compatible. No migration or lockfile change was required.
+
+## 19. Caps, Cost and Performance
+
+Per-case live calls are capped at 12; suite calls at 60; provider request,
+response, depth, timeout, model, and purpose are bounded. Recorded five-case
+calls total 16 and historical supplemental calls total 92. Performance evidence
+records bounded elapsed/token/call data without claiming production capacity.
+
+## 20. Security Markers
+
+```text
+REAL_LLM_PROVIDER = DEEPSEEK_ONLY
+REAL_LLM_KEY_SOURCE = DEEPSEEK_KEY_ONLY
+REAL_LLM_CALLS_DEFAULT_CI = 0
+REAL_DEEPSEEK_CALLS_CURRENT_SUITE = 16
+REAL_DEEPSEEK_CALLS_HISTORICAL_SUPPLEMENTAL = 92
+OTHER_REAL_PROVIDER_CALLS = 0
+NO_OPENAI_REAL_CALLS
+NO_CUSTOM_OPENAI_COMPATIBLE_REAL_CALLS
+NO_ANTHROPIC_REAL_CALLS
+NO_DEEPSEEK_API_KEY_FALLBACK
+NO_OPENAI_API_KEY_FALLBACK
+NO_FRONTEND_LLM_KEY_INPUT
+NO_BROWSER_TO_DEEPSEEK_DIRECT_CALL
+NO_RAW_ARTIFACT_TO_LLM
+NO_UNGROUNDED_INTERPRETATION
+NO_PLAN_JOB_OR_ENQUEUE_FOR_NON_READY_OUTCOMES
+NO_LLM_ARBITRARY_PYTHON_SHELL_FILESYSTEM_AUTHORITY
+NO_LLM_TOOL_REGISTRY_BYPASS
+NO_SECRET_PATTERN_HITS
+PHASE_10M0_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 21. Evidence Inventory
+
+Evidence is under
+`docs/phase10l/evidence/phase10l5_natural_language_closure/`. Manifest
+`phase10l_closure_a273910a7174c9d33898660c0981ab5a` contains 166 LF-normalized
+text/raw-PNG SHA-256 entries. It includes live cases, failed-attempt provenance,
+historical inventory/replay, API, browser matrix/screenshots, service,
+performance, security, and artifact hashes.
+
+Historical suite
+`historical_deepseek_suite_dde5218a3d2121fc038bb90d6daa044a` passed 40/40
+supplemental scenarios. Combined current plus historical semantic coverage is
+45/45. Pure UI/renderer/accessibility/performance/security flows,
+deterministic negative/fault-injection paths, infrastructure-only phases,
+superseded tools, and unrecoverable damaged prompt text are explicitly
+classified rather than falsely counted as byte-for-byte LLM replay.
+
+## 22. Tests
+
+- focused L1-L5: `199 passed`.
+- local full backend: `1078 passed, 38 skipped, 63 warnings`.
+- implementation CI unit: `1078 passed, 1 skipped, 37 deselected, 63 warnings`;
+  focused L5 closure `99 passed`.
+- frontend: 52 files, `333 passed`; typecheck and production build passed.
+- service-backed CI: `36 passed, 0 skipped, 0 failed`.
+- Chromium/Firefox/WebKit/mobile, evidence finalizer, manifest replay,
+  `uv lock --check`, dependency listing, diff check, and secret scan passed.
+- `npm audit`: `UNAVAILABLE` because the configured mirror returned
+  `404 NOT_IMPLEMENTED`; it is not reported clean.
+- existing warnings: pymatgen CIF/spglib deprecations and CI action Node 20
+  deprecation notices; none failed a required gate.
+
+## 23. Production Behavior Changes
+
+Real provider selection is DeepSeek-only and environment-key-only. Canonical
+Intent/provider output authority is stricter; exact visual forms and the
+smallest complete eligible selection are validated. Planner/Runtime authority
+is unchanged: persisted validated plans and registered adapters alone execute.
+PlannerWorkbench adds sanitized provider/evidence state and never accepts a key
+or calls DeepSeek directly.
+
+## 24. Files Changed
+
+- backend/provider: API planner/provider routes, LLM provider, Intent,
+  capability/dependency/interpretation guards, redaction, runtime health.
+- contracts: Python, JSON Schema, TypeScript natural-language evidence models.
+- frontend: PlannerWorkbench, API types, tests, browser runner.
+- tests/CI: L1-L5 regressions, service-backed L5, provider strictness, CI gates.
+- evidence/docs: 45 semantic cases, browser screenshots/captures/manifests,
+  Phase 10L-5 architecture/policy/security/cost/compatibility/closure docs.
+- persistent/queue: project state, ADR/registry/open questions, TASKS/results.
+- dependency/lockfile/migration changes: none.
+
+## 25. Commit and Exact-SHA CI History
+
+- implementation: `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37`.
+- implementation exact-SHA CI: run `30693848581`, success.
+- required jobs: Unit `91353182658`, Frontend `91353182650`, Service-backed
+  `91353182660`, all success.
+- failed implementation CI SHA/runs: none.
+- local live-provider failed attempts are retained as sanitized evidence; the
+  final five-case and 40-case suites pass.
+- completion-record and archive SHA/CI: pending this lifecycle.
+
+## 26. Explicit Non-Scope
+
+No Phase 10M Workspace implementation, report/recipe productization,
+professional-science expansion, Fermi surface, CrystalNN/VoronoiNN,
+experimental XRD comparison engine, advanced trajectory analytics, electronic
+Band/DOS, generic workflow/agent/RAG framework, runtime LLM/replanning,
+arbitrary Python/shell/filesystem/notebook/script, external scientific API,
+enterprise SaaS, plugin marketplace, new LLM SDK, dependency, migration, or
+deployment productization was added.
+
+## 27. Remaining Roadmap
+
+```text
+Phase 10M-0:
+Workspace Information Architecture / Contract
+```
+
+This is a reviewer-gated roadmap item, not an executable task.
+
+## 28. Queue State
+
+```text
+Phase 10L-5 = COMPLETE / AWAITING_COMPLETION_RECORD_CI
+Phase 10L = READY_WITH_EXPLICIT_LIMITS / AWAITING_VERIFIED_ARCHIVE
+Phase 10M-0 = REVIEWER_GATE / AWAITING REVIEWER PROMPT
+TASK_BLOCK_COUNT = 1
+```
+
+## 29. Automatic Phase 10M-0 Entry
+
+```text
+NO
+PHASE_10M0_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 30. Next Action
+
+Verify this completion-record exact-SHA CI, then remove only the completed L5
+task block in a separate verified queue-archive commit. Do not create, queue,
+or execute Phase 10M-0.
+
+## 31. Final Repository State at Completion Record
+
+- implementation HEAD/origin:
+  `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37`.
+- implementation exact-SHA CI: `30693848581`, success.
+- completion-record exact-SHA CI: pending this record's commit.
+- archive exact-SHA CI: pending completion-record success.
+
 # Phase 10L-4 Grounded Scientific Result Interpretation Result
 
 ## 1. Conclusion

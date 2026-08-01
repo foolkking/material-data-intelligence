@@ -20,16 +20,18 @@
   `31 passed, 0 skipped, 0 failed`. Completion record `45af09e` passed
   exact-SHA CI run `30607509775`; archive `58ee943` passed exact-SHA CI run
   `30608078520` and removed only the completed L4 block.
-- [ ] Phase 10L-5 was explicitly supplied by the reviewer and is
-  `IN_PROGRESS / SOLE_ACTIVE_TASK`. Phase 10M-0 remains
+- [x] Phase 10L-5 implementation is
+  `COMPLETE / AWAITING_COMPLETION_RECORD_CI`. Implementation `bfc43bd` passed exact-SHA
+  CI run `30693848581`: Unit, Frontend/browser/build, and PostgreSQL/Redis/
+  MinIO service-backed `36 passed, 0 skipped, 0 failed`. Phase 10M-0 remains
   `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
 
 Live evidence progress: all five required DeepSeek cases pass with verification
 suite `deepseek_suite_ee5a0e9700d1a70787fc060fda274171`; the supplemental
 historical replay passes 40/40 with suite
-`historical_deepseek_suite_dde5218a3d2121fc038bb90d6daa044a`. The task remains
-active until exact-SHA implementation, completion-record, and verified
-queue-archive CI are closed. No Phase 10M executable task exists.
+`historical_deepseek_suite_dde5218a3d2121fc038bb90d6daa044a`. The implementation
+gate is closed. The completed task block remains until completion-record and
+verified queue-archive exact-SHA CI close. No Phase 10M executable task exists.
 
 - [x] Phase 10L-1 Analysis Intent Contract + Bounded Clarification implementation
   `844eb149` and completion record `b4cd656` passed exact-SHA CI runs

@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-07-31 Phase 10L-5 Natural-Language Closure In Progress
+## 2026-08-01 Phase 10L-5 Implementation Complete, Awaiting Completion CI
 
 - Phase 10L-4 verified queue archive `58ee943` passed exact-SHA CI run
   `30608078520`: Unit, Frontend/browser/build, and PostgreSQL/Redis/MinIO
@@ -30,6 +30,11 @@
   browser/Mock-LLM cases passed with 92 real DeepSeek calls, for 45/45 total
   current-plus-historical cases. Exclusions are documented by reason and are
   not counted as live LLM coverage.
+- Implementation `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37` passed
+  exact-SHA CI run `30693848581`: Unit Tests, Frontend typecheck/build/browser
+  replay, and PostgreSQL/Redis/MinIO service-backed `36 passed, 0 skipped,
+  0 failed`. Completion-record and archive CI remain; Phase 10M-0 is still a
+  reviewer gate.
 
 ## 2026-07-31 Phase 10L-4 Grounded Interpretation Complete, Awaiting Archive
 

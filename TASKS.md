@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
 # Phase 10L-5 Reviewer Prompt
 ## Natural-Language Analysis Evidence Closure + DeepSeek-Only LLM Provider Freeze
 
@@ -1446,12 +1446,31 @@ Phase 10L-5 Entry Gate + Pre-Implementation Audit
 12. 是否具备进入L5的真实条件。
 
 完成审计和必要的provider policy准备后，才允许第一次真实DeepSeek调用。
+
+完成时间：2026-08-01T17:44:20.0686283+08:00
+
+修改文件：Phase 10L-5 provider/backend、shared contracts/JSON Schema/TypeScript、
+Planner/Intent reliability、API/frontend/browser runner、tests/CI、sanitized
+evidence、docs、persistent records、TASKS.md 和 results.md。
+
+修改摘要：冻结 DeepSeek 为唯一真实 LLM provider，完成五类正式自然语言
+端到端链路和 40 个历史 Mock/Fake LLM 语义回放；保持非 READY 无
+plan/job/enqueue、Tool Registry 执行边界和 grounded interpretation 验证。
+
+测试结果：本地 focused 199 passed；backend 1078 passed、38 skipped、63
+warnings；frontend 333 passed；typecheck/build/browser/evidence/secret scan PASS；
+本地 service-backed 5/5 live DeepSeek 和 21/21 default integration，0 skipped。
+Implementation `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37` 的 exact-SHA CI
+run `30693848581` 成功：Unit 1078 passed、1 skipped、37 deselected、63
+warnings；Frontend/Browser/Build success；PostgreSQL/Redis/MinIO 36 passed、
+0 skipped、0 failed。Completion-record 和 verified archive CI 待后续闭环；
+在此之前本任务块继续保留。
 ---END---
 
 # REVIEWER GATE AFTER PHASE 10L-5
 
 Phase 10L-4: ARCHIVED_BY_VERIFIED_QUEUE_COMMIT
-Phase 10L-5: IN_PROGRESS / REVIEWER_APPROVED
+Phase 10L-5: COMPLETE / AWAITING_COMPLETION_RECORD_CI
 Phase 10M-0: REVIEWER_GATE / AWAITING REVIEWER PROMPT
 TASK_BLOCK_COUNT: 1
 

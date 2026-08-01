@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-08-01 - Phase 10L-5 Implementation Exact-SHA CI Complete
+
+- Implementation `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37` passed
+  exact-SHA CI run `30693848581`, including Unit, Frontend typecheck/build and
+  L4/L5 browser replay, plus PostgreSQL/Redis/MinIO service-backed integration
+  with `36 passed, 0 skipped, 0 failed`.
+- The permanent completion record is now being committed. Phase 10L-5 remains
+  in `TASKS.md` until completion-record and verified queue-archive CI succeed;
+  Phase 10M-0 remains reviewer-gated.
+
 ## 2026-08-01 - Phase 10L-5 Historical Real-Provider Replay Expansion
 
 - Replayed the five current natural-language closure cases with real DeepSeek
