@@ -714,8 +714,8 @@ def test_phase10m3_postgres_redis_minio_canonical_selection_and_pinning(
             stale["sourceScopeHash"] = "b" * 64
             stale["primary"]["sourceScopeHash"] = "b" * 64
             rejected = client.patch(f"/workspaces/{workspace['workspaceId']}", headers={"If-Match": pinned.headers["etag"]}, json={"pinnedSelection": stale})
-            assert rejected.status_code == 409
-            assert rejected.json()["detail"]["code"] == "SELECTION_STALE"
+            assert rejected.status_code == 422, rejected.json()
+            assert rejected.json()["detail"]["code"] == "SELECTION_SCOPE_MISMATCH"
         finally:
             client.close()
 
