@@ -80,13 +80,21 @@ async function main() {
     "console_errors=0",
     "unapproved_external_requests=0",
     "local_service_backed=UNAVAILABLE because Docker CLI is not installed",
-    "exact_sha_ci=required before completion",
+    "implementation_sha=d18097101cdf999b76be1f2da1cf4f3d67fb9c48",
+    "implementation_exact_sha_ci=30729180057 PASS",
+    "ci_unit=1107 passed, 1 skipped, 39 deselected, 63 warnings",
+    "ci_service_backed=38 passed, 0 skipped, 0 failed, 0 errors",
   ]);
   await textFile("service_backed.txt", [
     "LOCAL_SERVICE_BACKED=UNAVAILABLE",
     "reason=Docker CLI is not installed in the local execution environment",
-    "CI_SERVICE_BACKED=AWAITING_IMPLEMENTATION_EXACT_SHA_CI",
-    "SERVICE_TESTS_SKIPPED=AWAITING_IMPLEMENTATION_EXACT_SHA_CI",
+    "implementation_sha=d18097101cdf999b76be1f2da1cf4f3d67fb9c48",
+    "implementation_exact_sha_ci=30729180057 success",
+    "CI_SERVICE_BACKED=PASS",
+    "CI_SERVICE_TESTS_PASSED=38",
+    "SERVICE_TESTS_SKIPPED=0",
+    "CI_SERVICE_TESTS_FAILED=0",
+    "CI_SERVICE_TEST_ERRORS=0",
     "No local service-backed PASS is claimed.",
   ]);
   await textFile("secret_scan.txt", ["NO_SECRET_PATTERN_HITS", "DEEPSEEK_KEY value not read or persisted", "Authorization headers not recorded", "private absolute paths excluded from evidence payloads"]);

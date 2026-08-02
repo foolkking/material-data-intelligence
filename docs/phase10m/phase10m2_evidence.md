@@ -12,4 +12,6 @@ and LLM behavior are not simulated or claimed by this browser fixture.
 The service-backed gate uses PostgreSQL, Redis, MinIO, migration head 0007,
 the real Workspace API, persisted source Job, explicit projection, panels,
 layout revision, ETag, idempotent replay, and hidden-write assertions. The
-manifest hashes LF-normalized text and raw PNG bytes.
+corrected implementation exact-SHA run `30729180057` passed with `38 passed, 0
+skipped, 0 failed, 0 errors`. The manifest hashes LF-normalized text and raw
+PNG bytes.

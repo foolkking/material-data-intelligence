@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-08-02 Phase 10M-2 Workspace Shell Candidate
+## 2026-08-02 Phase 10M-2 Workspace Shell Complete, Awaiting Archive
 
 - Added `/workspaces/{workspaceId}` with cancellable metadata loading, stale
   response prevention, the sealed nine navigation groups, one active panel,
@@ -8,9 +8,11 @@
 - Added mobile context/panel drawer and inspector bottom sheet, visible typed
   running/partial/failed/stale/legacy/unsupported states, inert audit JSON,
   and PlannerWorkspace history/idempotent current-Job entry points.
-- Focused frontend and M1 backend regressions pass. Current browser evidence
-  passes Chromium/Firefox/WebKit/390x844 with zero overflow and external
-  requests. Full regression and exact-SHA lifecycle remain open.
+- Focused/full frontend and backend regressions pass. Browser evidence passes
+  Chromium/Firefox/WebKit/390x844 with zero overflow and external requests.
+  Corrected implementation `d180971` passed exact-SHA CI `30729180057`,
+  including PostgreSQL/Redis/MinIO `38 passed, 0 skipped, 0 failed, 0 errors`.
+  Completion-record and verified queue archive remain open.
 
 ## 2026-08-01 Phase 10M-1 Complete, Awaiting Verified Archive
 

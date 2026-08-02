@@ -11,6 +11,11 @@ panel plus context drawer and inspector bottom sheet. Artifact payloads,
 selection propagation, renderer science, and execution authority remain
 outside M2.
 
+The implementation is verified at `d18097101cdf999b76be1f2da1cf4f3d67fb9c48`
+by exact-SHA CI run `30729180057`. PostgreSQL schema-isolated service evidence
+uses the real metadata API and closes with `38 passed, 0 skipped`; this does not
+change the sealed M1 persistence contract or create an M3 selection authority.
+
 ## 2026-08-01 ADR Addendum: Phase 10M-1 Implementation Boundary
 
 The M0-sealed Workspace architecture is now implemented additively in M1.

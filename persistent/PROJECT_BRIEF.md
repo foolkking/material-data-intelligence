@@ -1,6 +1,6 @@
 # PROJECT_BRIEF
 
-## 2026-08-02 Phase 10M-2 Workspace Shell Implementation
+## 2026-08-02 Phase 10M-2 Workspace Shell Complete, Awaiting Archive
 
 Phase 10M-1 is archived. The active reviewer-approved M2 task adds the exact
 `/workspaces/{workspaceId}` metadata shell, nine-group information
@@ -8,7 +8,10 @@ architecture, URL active-panel state, Planner history/projection transition,
 responsive context drawer, overlay inspector, and typed state/error surfaces.
 It consumes existing Workspace APIs and adds no migration, scientific
 calculation, renderer authority, selection propagation, or LLM call site.
-Implementation/completion/archive exact-SHA gates remain required.
+Corrected implementation `d18097101cdf999b76be1f2da1cf4f3d67fb9c48`
+passed exact-SHA CI run `30729180057`, including Unit, Frontend/browser/build,
+and PostgreSQL/Redis/MinIO `38 passed, 0 skipped, 0 failed, 0 errors`.
+Completion-record and verified queue-archive CI remain required.
 
 ## 2026-08-01 Phase 10M-1 Complete, Awaiting Verified Archive
 

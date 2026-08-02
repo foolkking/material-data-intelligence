@@ -244,9 +244,9 @@
     },
     {
       "path": "service_backed.txt",
-      "bytes": 258,
+      "bytes": 377,
       "hashMode": "lf_normalized_text",
-      "sha256": "543b4560e4a2ff33c41ea660ed8116b7151372ceca0d292af79345e90ef404ec"
+      "sha256": "a9c573b7588219f61bdde53b2c64357703ecb9d0e1f3b15713cd8435fdd2f4a6"
     },
     {
       "path": "stale_missing_workspace.json",
@@ -256,9 +256,9 @@
     },
     {
       "path": "test_summary.txt",
-      "bytes": 556,
+      "bytes": 739,
       "hashMode": "lf_normalized_text",
-      "sha256": "a1386c1667ed66c930120410f242627e2facb48e337f21beb218289563bbe653"
+      "sha256": "60ee32a5f02b032c1c922c6336710d85155fac90dd77b4647b5885ebc909f000"
     },
     {
       "path": "unsupported_panel.json",

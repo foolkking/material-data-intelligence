@@ -3292,3 +3292,332 @@ execute Phase 10M-2.
 - Queue-archive SHA/CI: not created / pending.
 - Expected current post-commit state: `HEAD == origin/master`, clean except for
   lifecycle commits in progress, migration head `0007`, task count 1.
+
+# Phase 10M-2 Unified Scientific Workspace Shell Result
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
+```
+
+The corrected implementation exact-SHA CI is complete. The task remains in
+`TASKS.md` until this completion record and the separate queue archive each pass
+their own exact-SHA CI.
+
+## 2. Baseline and Entry Gate
+
+- M1 implementation `27c5aa98138f882a750dc76a402ee2afe2151b72`, CI
+  `30705503707`, success.
+- M1 completion `7f6a3fa66236fdcdcaab5d12e515c201ab2a63bd`, CI
+  `30706195493`, success.
+- M1 archive `08f2133c6a02b64a199f40a0b17ccfa5d0e68cc7`, CI
+  `30706443734`, success.
+- Initial `HEAD == origin/master == 08f2133c...`, branch `master`, clean
+  worktree, migration head `0007_phase10m1_workspace_domain`.
+- M2 was admitted as the active task. A later reviewer/user-supplied M3 block
+  is pending and was not entered during M2 implementation.
+
+## 3. M0/M1 Decision Compliance
+
+M-D001 through M-D025 remain unchanged. M2 consumes the one-Workspace-per-Job
+M1 contracts, immutable source bindings, panel descriptors, layout revisions,
+metadata APIs, explicit projection, ETag, and project scope. It adds no schema,
+migration, repository, scientific authority, or hidden Workspace creation.
+
+## 4. Workspace Route
+
+Added `/workspaces/{workspaceId}` with Next loading/error boundaries and exact
+metadata loading. `/` remains PlannerWorkbench. Unknown or inaccessible
+Workspace IDs show typed errors; the route does not create a Workspace.
+
+## 5. PlannerWorkbench Transition
+
+PlannerWorkbench can explicitly project/open the current Job through the M1
+idempotent POST and can list metadata-only project Workspace history. Exact
+Workspace links are used; GET remains side-effect free.
+
+## 6. Workspace Data Loading
+
+The shell requests only `GET /workspaces/{workspaceId}` metadata. Abort signals
+and request identities suppress stale responses. Initial load requests no
+Artifact payload, object-store key, full array, provider data, or scientific
+recalculation.
+
+## 7. Workspace Header
+
+The header shows exact Workspace title, projected state, source Job, revision,
+panel count, and bounded provenance actions. Long identities wrap without
+changing layout authority.
+
+## 8. Desktop Information Architecture
+
+Desktop uses the sealed global header, collapsible data/context rail, nine
+navigation groups, one active panel, and overlay inspector. Panel descriptor
+order is deterministic and does not imply scientific dependency.
+
+## 9. Mobile Information Architecture
+
+At 390x844 the shell presents one active panel, a context/navigation drawer,
+and inspector bottom sheet. It does not shrink the desktop three-column layout.
+
+## 10. Panel Switcher and Panel Shell
+
+Exact visible panel IDs drive the switcher. Unknown IDs never select by label
+or array position. One active panel is mounted; unsupported and failed panels
+remain isolated typed surfaces.
+
+## 11. Dataset/Context Drawer
+
+The drawer exposes bounded source references and panel membership metadata. It
+does not copy Artifact content or infer identity from filenames/MIME labels.
+
+## 12. Inspector Shell
+
+The inspector provides metadata, status, provenance links, and inert audit JSON
+for the active panel.
+
+```text
+CANONICAL_SELECTION_PROPAGATION = NOT_IMPLEMENTED_BY_DESIGN
+```
+
+## 13. Active Panel URL State
+
+The `panel` query stores one exact active panel ID. PushState/popstate,
+back/forward, direct deep link, and refresh are deterministic. Unknown IDs show
+a typed state and are not silently rebound.
+
+## 14. Workspace Status UI
+
+Complete, running, partial, failed, stale, legacy-read-only, missing-source,
+and unsupported states are visibly distinct with semantic status text.
+
+## 15. Partial Execution UI
+
+Partial Workspace state and failed/blocked panel descriptors remain visible.
+Successful independent panel metadata remains accessible; UI does not rewrite
+Job, ToolCall, dependency, or execution outcomes.
+
+## 16. Legacy / Stale / Missing UI
+
+Legacy and stale Workspaces display read-only/source-integrity guidance.
+Missing source and unsupported panels are not upgraded, rebound to latest, or
+shown as successful scientific results.
+
+## 17. Existing Surface Reuse
+
+M2 reuses existing Workspace API/client contracts and established UI controls.
+It does not introduce a second scientific mapper or the M4 renderer registry.
+
+## 18. Findings / Evidence / Provenance
+
+Existing interpretation, evidence, provenance, lineage, report, and recipe
+panel descriptors are navigable metadata surfaces. M2 does not regenerate
+findings or interpret raw Artifact content.
+
+## 19. Report / Recipe Boundary
+
+Report and Recipe remain references to existing authorities. No composition,
+editing, publishing, or replay product behavior is added.
+
+## 20. Scientific Integrity
+
+```text
+WORKSPACE_COPIED_ARTIFACT_PAYLOADS = 0
+FRONTEND_DUPLICATE_SCIENTIFIC_AUTHORITY = NONE
+```
+
+No metrics, structures, trajectories, phonons, volumetric values, claims, or
+units are computed in the shell.
+
+## 21. LLM / DeepSeek Compliance
+
+```text
+NEW_LLM_CALL_SITES = 0
+REAL_LLM_CALLS = 0
+M2_CORE_REQUIRES_LLM = NO
+DEEPSEEK_POLICY_REGRESSION = PASS
+```
+
+Persisted Job/Workspace state is consumed without a provider call. The existing
+DeepSeek-only policy and `DEEPSEEK_KEY` boundary remain unchanged.
+
+## 22. Accessibility
+
+Semantic landmarks/headings, named controls, visible focus, keyboard-operated
+drawers/sheets, focus restoration, status announcements, and non-color-only
+state are covered. Touch targets are at least 44px in mobile evidence.
+
+## 23. Responsive / Mobile
+
+Desktop and 390x844 layouts have zero measured horizontal overflow. Long panel
+and source identities wrap; drawers and sheets do not obscure active content.
+
+## 24. Browser Matrix
+
+Chromium, Firefox, WebKit, and Chromium 390x844 replay pass. Deep links,
+back/forward, refresh, complete/running/partial/legacy/stale/unsupported states,
+1/8/32 panels, and 20 repeated switches pass with zero console/page errors,
+zero external requests, and zero Artifact payload requests.
+
+## 25. Performance
+
+Development evidence: 1/8/32-panel metadata payloads are 3,106/11,515/40,089
+bytes; one active panel remains mounted after 20 switches; maximum observed
+metadata concurrency is one; no listener growth was observed. These are bounded
+development acceptance measurements, not production capacity claims.
+
+## 26. Security
+
+```text
+NO_WORKSPACE_SHELL_ARBITRARY_CODE_EXECUTION = PASS
+NO_WORKSPACE_SHELL_ARTIFACT_JAVASCRIPT = PASS
+NO_WORKSPACE_SHELL_ARTIFACT_HTML_EXECUTION = PASS
+NO_WORKSPACE_SHELL_IFRAME_EXECUTION = PASS
+NO_WORKSPACE_SHELL_EXTERNAL_ARTIFACT_URL_EXECUTION = PASS
+NO_WORKSPACE_SHELL_DYNAMIC_ARTIFACT_MODULE = PASS
+NO_WORKSPACE_SHELL_CROSS_PROJECT_ACCESS = PASS
+NO_WORKSPACE_SHELL_CROSS_JOB_ARTIFACT_INJECTION = PASS
+NO_WORKSPACE_SHELL_STALE_IDENTITY_REBINDING = PASS
+NO_WORKSPACE_SHELL_SECRET_DISCLOSURE = PASS
+NO_WORKSPACE_SHELL_PRIVATE_PATH_DISCLOSURE = PASS
+NO_WORKSPACE_SHELL_RECOMMENDATION_EXECUTION = PASS
+NO_SECRET_PATTERN_HITS = PASS
+```
+
+HTML/script/Markdown, `javascript:`, SVG script, external URLs, prototype keys,
+credential-shaped text, unknown panels, stale sources, and oversized query
+inputs are inert or typed rejection.
+
+## 27. Acceptance IDs
+
+```text
+M2_ACCEPTANCE_IDS_EXPECTED = 7
+M2_ACCEPTANCE_IDS_IMPLEMENTED = 7
+M2_ACCEPTANCE_IDS_MISSING = 0
+M2_ACCEPTANCE_IDS_EXTRA = 0
+M2_ACCEPTANCE_IDS_DUPLICATE = 0
+```
+
+- M2-A01 routing/root compatibility/direct source states: PASS.
+- M2-A02 nine-group IA/one active panel/data rail/inspector: PASS.
+- M2-A03 exact panel URL/back-forward/refresh: PASS.
+- M2-A04 typed running/partial/failed/stale/legacy states: PASS.
+- M2-A05 authorized project history/idempotent open: PASS.
+- M2-A06 Chromium/Firefox/WebKit/390x844: PASS.
+- M2-A07 landmarks/focus/status/no overflow: PASS.
+
+## 28. Tests
+
+- Focused Workspace frontend: 48 passed; Planner transition regression: 31
+  passed; focused M1 backend: 24 passed.
+- Local backend: 1107 passed, 1 skipped, 39 deselected, 63 warnings.
+- Full frontend: 351 passed across 54 files; typecheck/build PASS.
+- Corrected CI Unit: 1107 passed, 1 skipped, 39 deselected, 63 warnings.
+- Corrected CI Frontend: Phase 10 closure, L4/L5/M2 browser replay, typecheck,
+  and build PASS.
+- Corrected CI service-backed: 38 passed, 0 skipped, 0 failed, 0 errors with
+  PostgreSQL, Redis, MinIO, migration head 0007, API and idempotency checks.
+- Evidence manifest, secret scan, docs/TASKS integrity, `uv lock --check`, and
+  dependency listing PASS.
+- Local service-backed: `UNAVAILABLE` because Docker CLI is absent.
+- `npm audit = UNAVAILABLE`: configured mirror returned `404_NOT_IMPLEMENTED`;
+  it is not reported clean.
+- Non-blocking warnings: existing pymatgen/spglib warnings and GitHub Actions
+  Node 20 deprecation notices.
+
+## 29. Production Behavior Changes
+
+Added only the Workspace route/shell, metadata loader, exact active-panel URL,
+typed state UI, Planner transition/history, responsive shell, and inert
+inspector. Planner, Intent, Eligibility, Plan, Runtime, Registry, Adapter,
+scientific calculation, interpretation, Report/Recipe, and LLM behavior are
+unchanged.
+
+## 30. Files Changed
+
+- Frontend: Workspace route, shell/model, Planner transition, scoped CSS.
+- Tests/evidence: focused frontend, browser runner, service-backed API gate,
+  evidence generator/checker and sanitized screenshots/manifest.
+- CI: M2 browser replay and 38-test service no-skipped threshold.
+- Docs/persistent/TASKS/results: M2 contracts, evidence and lifecycle records.
+
+```text
+migration = unchanged
+dependencies = unchanged
+lockfile = unchanged
+```
+
+## 31. Commit / CI History
+
+- Failed implementation `8429a8da6c701dee33e6d3d71fa6c069bbd502ea`, run
+  `30727814090`: Unit passed; Frontend found a 390px historical L5 overflow;
+  service-backed Workspace API used the wrong schema and returned 500.
+- Failed correction `42fa0db84b7315e9b5d97fc537795ae49e2b5404`, run
+  `30728411811`: Unit/Frontend passed; service remained 37/38 because only the
+  repository helper, not the Workspace service, was bound to the test bundle.
+- Failed correction `f7d099c490379c10bfdd0efa0f3a8aac918c757a`, run
+  `30728878630`: Unit/Frontend passed; service remained 37/38 because the
+  isolated PostgreSQL search path could fall through to public migration state.
+- Corrected implementation `d18097101cdf999b76be1f2da1cf4f3d67fb9c48`, run
+  `30729180057`: Unit, Frontend, and service-backed all success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: not created before completion-record CI.
+
+## 32. Explicit Non-Scope
+
+Not implemented: M3 canonical selection/propagation/URL selection runtime;
+M4 typed Artifact Gallery and renderer integration; M5 Report/Recipe
+composition; M6 save/reload/recovery product flow; M7 final Workspace closure;
+Phase 10N science; new scientific algorithms; cross-Workspace/multi-Job state;
+arbitrary code/shell/filesystem/notebook/external science API; RAG/memory/
+multi-agent/plugin/enterprise systems; new dependency or LLM SDK.
+
+## 33. Phase 10M Readiness
+
+```text
+Phase 10M-2:
+READY_WITH_EXPLICIT_LIMITS
+
+Phase 10M-3:
+USER_SUPPLIED_TASK_PENDING_M2_ARCHIVE
+```
+
+Phase 10M as a whole is not complete.
+
+## 34. Queue State
+
+```text
+Phase 10M-2:
+COMPLETE / AWAITING_VERIFIED_QUEUE_ARCHIVE
+
+Phase 10M-3:
+USER_SUPPLIED / PENDING
+
+TASK_BLOCK_COUNT = 2
+```
+
+## 35. Automatic M3 Entry
+
+```text
+NO
+PHASE_10M3_EXECUTABLE_TASK_CREATED_BY_M2 = NO
+```
+
+The pending M3 block was supplied by the user and has not been executed.
+
+## 36. Next Action
+
+```text
+Verify this completion-record exact-SHA CI, then archive only Phase 10M-2.
+After the verified archive, follow the user-controlled TASKS queue.
+```
+
+## 37. Final Repository State
+
+- Corrected implementation SHA: `d18097101cdf999b76be1f2da1cf4f3d67fb9c48`.
+- Implementation exact-SHA CI: `30729180057`, success.
+- Completion-record SHA/CI: this commit / pending.
+- Queue-archive SHA/CI: not created / pending.
+- Expected post-commit: `HEAD == origin/master`, clean, migration head 0007,
+  M2 complete block retained and M3 pending.

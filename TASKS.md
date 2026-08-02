@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
 
 # Phase 10M-2 Reviewer Prompt
 
@@ -2469,6 +2469,24 @@ Entry Gate 和 Pre-Implementation Audit 均 PASS 后，才允许修改生产代�
 完成 Phase 10M-2 后，返回完整 result，然后停止。
 
 不得创建、排队或执行 Phase 10M-3。
+
+## 完成记录
+
+- 完成时间：2026-08-02 10:45:52 +08:00
+- 修改文件：Workspace route/shell/model/tests、PlannerWorkbench transition、
+  responsive CSS、browser/evidence runners、service-backed integration、CI、
+  Phase 10M docs/evidence、persistent records、`results.md`、`TASKS.md`。
+- 修改摘要：实现 metadata-only Unified Scientific Workspace shell、sealed
+  nine-group IA、exact active-panel URL、desktop/mobile context and inspector、
+  typed source states、Planner Workspace transition/history，以及 additive
+  browser/service evidence；未改变 M1 contracts、migration、scientific
+  authority、Runtime 或 LLM policy。
+- 测试结果：local backend `1107 passed, 1 skipped, 39 deselected`；frontend
+  `351 passed`；Chromium/Firefox/WebKit/390x844 PASS；corrected implementation
+  `d18097101cdf999b76be1f2da1cf4f3d67fb9c48` exact-SHA CI `30729180057`
+  success，service-backed `38 passed, 0 skipped, 0 failed, 0 errors`。
+- 生命周期：completion-record exact-SHA CI 与 verified queue archive 待完成；
+  在两者完成前不得删除本 block。用户提供的 M3 block 保持待处理。
 
 ---END---
 

@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2026-08-02 - Phase 10M-2 Unified Workspace Shell Candidate
+## 2026-08-02 - Phase 10M-2 Corrected Implementation Exact-SHA CI Complete
 
 - Added the additive Workspace route, metadata-only shell, nine-group
   navigation, exact panel deep links, status/error projections, desktop/mobile
@@ -11,6 +11,12 @@
 - Workspace contracts/migration/API semantics, scientific execution,
   interpretation, report/recipe persistence, dependencies, and DeepSeek policy
   are unchanged. `REAL_LLM_CALLS = 0`.
+- Corrected implementation `d180971` passed exact-SHA CI run `30729180057`:
+  Unit, Frontend typecheck/build/browser replay, and PostgreSQL/Redis/MinIO
+  service-backed `38 passed, 0 skipped, 0 failed, 0 errors` all succeeded.
+- Failed SHAs `8429a8d`, `42fa0db`, and `f7d099c` remain retained with their
+  exact browser/service fixture root causes. Completion-record and archive
+  gates remain.
 
 ## 2026-08-01 - Phase 10M-1 Implementation Exact-SHA CI Complete
 
