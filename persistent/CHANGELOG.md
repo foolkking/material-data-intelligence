@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2026-08-02 - Phase 10M-3 Canonical Selection Local Implementation
+## 2026-08-02 - Phase 10M-3 Corrected Implementation Exact-SHA CI Complete
 
 - Activated unchanged `WorkspaceSelectionContext 1.0` with a strict canonical
   URL codec, exact scope/version/hash checks, bounded selection store, formal
@@ -12,6 +12,13 @@
   Registry/Adapters, scientific calculation, dependencies, and lockfiles.
 - Added no LLM call site and made no real call. Existing DeepSeek-only policy
   and `DEEPSEEK_KEY` sole-key-source rule remain unchanged.
+- Corrected implementation `fe5353f25e45eb10d3a78fa148727071e84d89e2`
+  passed exact-SHA CI `30734974889`: Unit, Frontend typecheck/build and
+  L4/L5/M2/M3 browser replay, PostgreSQL/Redis/MinIO service-backed `39 passed,
+  0 skipped`, evidence integrity, and security gates all succeeded.
+- Failed runs `30733804796`, `30734288153`, and `30734708819` remain retained
+  with their browser comparison and service fixture root causes. Completion
+  record and verified queue archive remain.
 
 ## 2026-08-02 - Phase 10M-2 Corrected Implementation Exact-SHA CI Complete
 

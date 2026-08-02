@@ -3621,3 +3621,348 @@ After the verified archive, follow the user-controlled TASKS queue.
 - Queue-archive SHA/CI: not created / pending.
 - Expected post-commit: `HEAD == origin/master`, clean, migration head 0007,
   M2 complete block retained and M3 pending.
+
+# Phase 10M-3 Cross-Artifact Navigation + Canonical Selection Result
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
+```
+
+## 2. Baseline and Entry Gate
+
+- Phase 10M-2 implementation `d18097101cdf999b76be1f2da1cf4f3d67fb9c48`,
+  exact-SHA CI `30729180057`, success.
+- Phase 10M-2 completion `89da9c9bad07d906ab508d02cdeb26a212f24ac6`,
+  exact-SHA CI `30729587141`, success.
+- Phase 10M-2 archive `78bdec18b416a12f8878e602a552c27091f64c06`,
+  exact-SHA CI `30729804091`, success.
+- Initial `HEAD == origin/master == 78bdec18...`, branch `master`, clean
+  worktree, migration head `0007_phase10m1_workspace_domain`, one active M3
+  task, no M4 executable task: PASS.
+
+## 3. M0-M2 Decision Compliance
+
+M0-M2 Workspace identity, route, source authority, metadata-only shell,
+one-active-panel UX, migration, API, and persistence decisions remain intact.
+M3 adds no database table, API route, scientific authority, or contract version.
+
+## 4. WorkspaceSelectionContext Runtime
+
+The existing `WorkspaceSelectionContext 1.0` is activated with strict kind
+fields, exact source hashes/versions, max 16 secondary identities, finite and
+bounded JSON, prototype-key rejection, deterministic canonical serialization,
+and semantic replay suppression.
+
+## 5. URL Selection Codec
+
+Canonical sorted JSON is encoded as base64url with a 2,048-byte token cap.
+Recursive duplicate keys, noncanonical encodings, over-depth/over-size payloads,
+foreign scope, stale versions, URLs, paths, and executable fields are rejected.
+
+## 6. Selection Store
+
+The store is scoped to one Workspace and exact Project/Job/dataset version,
+supports at most 32 subscribers, records origin and transaction identity,
+suppresses semantic duplicates, and releases subscribers on cleanup.
+
+## 7. Panel Subscription Registry
+
+Renderer-contract declarations determine accepted/emitted kinds. Current
+overview/provenance consumers accept all 13 kinds; data, artifact, findings,
+and evidence panels declare bounded subsets. Only
+`workspace.artifact-metadata/1.0` is a production emitter in M3.
+
+## 8. Compatibility Resolver
+
+Outcomes are `EXACT`, `NOT_APPLICABLE`, `STALE`, and `UNSUPPORTED`. Exact
+source references, Project/Job/dataset version, Artifact checksum/contract,
+and panel declarations decide compatibility; registry/UI order does not.
+
+## 9. Selection Propagation
+
+Origin-aware delivery prevents echo loops and cross-Workspace leakage.
+Independent subscribers receive only exact compatible references; stale or
+unsupported panels receive typed diagnostics and no substitute selection.
+
+## 10. Canonical Identity Support
+
+- Dataset sample: `SUPPORTED` when exact object/sample identities exist.
+- Material object: `SUPPORTED` by exact Profile object identity.
+- Structure/site/atom: `SUPPORTED` by contract; missing formal IDs are
+  `UNSUPPORTED_WITH_TYPED_REASON`.
+- Trajectory frame/atom: `SUPPORTED` by contract; index-only records are
+  `UNSUPPORTED_WITH_TYPED_REASON`.
+- Phonon q-point/branch and reciprocal point: `SUPPORTED` by contract; formal
+  IDs are mandatory and array positions are not authority.
+- Volumetric field: `SUPPORTED` with exact field and Artifact checksum.
+- Evidence item/claim: `SUPPORTED` by strict bundle/interpretation identity;
+  production payload emitters remain `NOT_APPLICABLE` in M3.
+- Artifact: `SUPPORTED`; whole Artifact metadata is the current production
+  emission path.
+
+## 11. Dataset / ML / Composition Linkage
+
+Exact dataset sample/material object contexts are accepted by data, overview,
+and provenance panels. No row-order, first-column, display-label, or unit guess
+can create linkage.
+
+## 12. Structure Linkage
+
+Structure and periodic-site contexts require stable structure/site identities.
+Current Artifacts without those IDs remain typed unavailable.
+
+## 13. Trajectory Linkage
+
+Trajectory frame/atom contexts require stable trajectory and frame/atom IDs.
+Index-only trajectory payloads are not promoted to identity.
+
+## 14. Phonon / Reciprocal Linkage
+
+Q-point, branch, and reciprocal contexts require exact Artifact checksum and
+formal point/segment IDs. Array order is explicitly rejected.
+
+## 15. Volumetric Linkage
+
+Volumetric contexts require exact field ID, Artifact ID, checksum, and scope;
+no coordinate/label inference or frontend scientific calculation occurs.
+
+## 16. Findings / Evidence / Artifact Linkage
+
+Evidence/claim contracts are validated and consumable. Findings/evidence
+emitters remain empty until an M4-reviewed formal payload mapper exists.
+Whole Artifact selection is produced from metadata source references only.
+
+## 17. Lineage Navigation
+
+Inspector and compatible-panel navigation retain Artifact, ToolCall, Job,
+contract/version, checksum, and source-scope identity without reading or
+copying Artifact payloads.
+
+## 18. Inspector
+
+The Inspector displays exact kind, IDs, scope/hash/version, origin panel,
+compatibility, consumer panels, Pin/Clear/Copy commands, and inert audit JSON.
+
+## 19. Active Panel + Selection Navigation
+
+Selection and active panel are independent canonical URL fields. Navigation
+preserves valid selection, switches only to declared consumers, and rejects
+unknown panels without fallback.
+
+## 20. Refresh / Back / Forward
+
+Chromium/Firefox/WebKit evidence restores canonical selection on refresh,
+restores it with browser Back, and applies the pinned fallback after Forward
+when the URL selection is absent. No implicit server write occurs.
+
+## 21. Stale / Unsupported / Missing
+
+Stale tokens are rejected without substitution. API Pin rejects stale scope as
+`422 SELECTION_SCOPE_MISMATCH`. Missing formal identity is `UNSUPPORTED` or
+`NOT_APPLICABLE`; it is never rebound to latest, nearest, first, or matching
+display text.
+
+## 22. Historical Compatibility
+
+M1/M2 persisted panels with empty declarations remain readable. Known formal
+renderer contracts receive deterministic read-time declarations without a
+migration or hidden repository write. Historical Plan/Job/Artifact semantics
+remain unchanged.
+
+## 23. Scientific Integrity
+
+```text
+FRONTEND_DUPLICATE_SCIENTIFIC_AUTHORITY = NONE
+SELECTION_ARRAY_INDEX_AUTHORITY = NONE
+SELECTION_DISPLAY_LABEL_AUTHORITY = NONE
+SELECTION_FUZZY_MATCHING = NONE
+SELECTION_DATABASE_WRITES = 0
+```
+
+Selection maps exact identities only. It performs no metric, chemistry,
+trajectory, phonon, reciprocal, volumetric, or interpretation calculation.
+
+## 24. LLM / DeepSeek Compliance
+
+```text
+NEW_LLM_CALL_SITES = 0
+M3_SELECTION_REQUIRES_LLM = NO
+REAL_LLM_CALLS = 0
+DEEPSEEK_POLICY_REGRESSION = PASS
+```
+
+No provider call is required by M3. The existing policy remains: future real
+calls may use DeepSeek only, with the key sourced from `DEEPSEEK_KEY`.
+
+## 25. Accessibility
+
+Named controls, semantic status, visible focus, keyboard operation, focus
+restoration, expandable Inspector content, non-color state, and at least 44px
+mobile controls pass browser evidence.
+
+## 26. Mobile
+
+Chromium 390x844 uses stacked selection content and an Inspector bottom sheet.
+Measured body/root horizontal overflow is zero.
+
+## 27. Browser Matrix
+
+Chromium, Firefox, WebKit, and Chromium 390x844 pass URL restore, Artifact
+selection, Back/Forward, stale rejection, explicit Pin, Clear, focus, no
+overflow, zero console/page errors, and zero external/Artifact-payload requests.
+
+## 28. Performance
+
+Development acceptance evidence, not a production capacity claim: the complete
+runner took 53,731.246 ms; desktop selection cases took 5,033.677 ms Chromium,
+4,626.120 ms Firefox, and 4,575.813 ms WebKit; mobile took 1,533.428 ms. The
+bounded store passed 1/8/32 subscribers with cleanup and duplicate suppression.
+
+## 29. Security
+
+```text
+NO_SELECTION_ARBITRARY_CODE_EXECUTION = PASS
+NO_SELECTION_ARTIFACT_JAVASCRIPT = PASS
+NO_SELECTION_ARTIFACT_HTML_EXECUTION = PASS
+NO_SELECTION_IFRAME_EXECUTION = PASS
+NO_SELECTION_EXTERNAL_URL_EXECUTION = PASS
+NO_SELECTION_DYNAMIC_MODULE_EXECUTION = PASS
+NO_SELECTION_CROSS_WORKSPACE_LEAK = PASS
+NO_SELECTION_CROSS_PROJECT_ACCESS = PASS
+NO_SELECTION_CROSS_JOB_ARTIFACT_INJECTION = PASS
+NO_SELECTION_STALE_IDENTITY_REBINDING = PASS
+NO_SELECTION_ARRAY_INDEX_AUTHORITY = PASS
+NO_SELECTION_DISPLAY_LABEL_AUTHORITY = PASS
+NO_SELECTION_FUZZY_MATCH = PASS
+NO_SELECTION_SECRET_DISCLOSURE = PASS
+NO_SELECTION_PRIVATE_PATH_DISCLOSURE = PASS
+NO_RECOMMENDATION_EXECUTION = PASS
+NO_SECRET_PATTERN_HITS = PASS
+```
+
+## 30. Acceptance IDs
+
+```text
+expected = 7
+implemented = 7
+missing = 0
+extra = 0
+duplicate = 0
+```
+
+M3-A01 strict identity contract, M3-A02 exact propagation, M3-A03 forbidden
+mapping, M3-A04 canonical URL, M3-A05 explicit Pin, M3-A06 Inspector, and
+M3-A07 browser/mobile all pass with evidence.
+
+## 31. Tests
+
+- Focused frontend: 38 passed; focused M1 projection: 7 passed; focused backend
+  projection/evidence after CI fixes: 10 passed.
+- Full backend local: 1111 passed, 41 integration-marked skipped, 63 warnings.
+- Full frontend local: 376 passed across 56 files; typecheck/build PASS.
+- Corrected implementation CI Unit, lock check, evidence/closure: success.
+- Corrected implementation CI Frontend typecheck, L4/L5/M2/M3 browser replay,
+  and production build: success.
+- Corrected implementation CI PostgreSQL/Redis/MinIO: 39 passed, 0 skipped,
+  0 failed, 0 errors; migration head 0007 and no-skipped gate PASS.
+- Local service-backed: `UNAVAILABLE` because Docker CLI is absent.
+- `npm audit = UNAVAILABLE`: configured mirror returned `404_NOT_IMPLEMENTED`;
+  it is not reported clean.
+
+## 32. Production Behavior Changes
+
+Added the strict frontend selection codec/store, exact compatibility and panel
+subscription registry, origin-aware propagation, Inspector/URL/history state,
+whole Artifact selection, explicit Pin, and read-time declarations for formal
+renderer contracts. Planner, execution, science, persistence, and provider
+behavior are unchanged.
+
+## 33. Files Changed
+
+- Frontend: selection contract/runtime/tests, Workspace shell/tests, fixture,
+  responsive styles, browser/evidence generators.
+- Backend/tests: deterministic panel declaration projection, historical
+  compatibility, PostgreSQL/Redis/MinIO M3 service gate.
+- CI/evidence/docs/persistent/TASKS/results: browser replay, zero-skip gate,
+  sanitized manifest, architecture/compatibility/completion records.
+
+```text
+migration = unchanged
+database schema = unchanged
+dependencies = unchanged
+lockfile = unchanged
+Workspace contracts = unchanged
+```
+
+## 34. Commit / CI History
+
+- Failed `41c2d23ca5f1f29fccce07d06f7aceb676a26ae5`, run `30733804796`:
+  M2 browser semantic comparison included nonsemantic DOM count; M3 service
+  fixture referenced a missing ToolCall.
+- Failed `c3c029effdd2f77ce5aac1b60041c582bc477e54`, run `30734288153`:
+  ToolCall FK fixed; source Job lacked complete 0.2 identities and correctly
+  projected read-only.
+- Failed `9cb8fbc76d7d4808fd764196b9b4e5af0247fb54`, run `30734708819`:
+  integration reached a stale negative assertion whose expected HTTP/code pair
+  did not match the production contract.
+- Corrected implementation `fe5353f25e45eb10d3a78fa148727071e84d89e2`,
+  run `30734974889`: Unit, Frontend, Browser, Build, Service-backed/no-skipped,
+  evidence and security gates all success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: not created before completion-record CI.
+
+## 35. Explicit Non-Scope
+
+Not implemented: M4 typed Artifact Gallery/scientific renderer integration;
+M5 Report/Recipe composition; M6 full save/recovery; M7 Workspace closure;
+Phase 10N science; new scientific renderer/calculation; cross-Workspace or
+multi-Job selection; selection persistence beyond explicit existing Pin;
+database/migration/API redesign; arbitrary code/shell/filesystem/notebook;
+external scientific API; recommendation execution; new LLM SDK/dependency.
+
+## 36. Phase 10M Readiness
+
+```text
+Phase 10M-3:
+READY_WITH_EXPLICIT_LIMITS
+
+Phase 10M-4:
+REVIEWER_GATE
+```
+
+## 37. Queue State
+
+```text
+Phase 10M-3:
+COMPLETE / AWAITING_VERIFIED_QUEUE_ARCHIVE
+
+Phase 10M-4:
+REVIEWER_GATE / AWAITING REVIEWER PROMPT
+
+TASK_BLOCK_COUNT = 1
+```
+
+## 38. Automatic M4 Entry
+
+```text
+NO
+PHASE_10M4_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 39. Next Action
+
+```text
+Verify this completion-record exact-SHA CI, then archive only Phase 10M-3.
+Do not create, queue, or execute Phase 10M-4.
+```
+
+## 40. Final Repository State
+
+- Corrected implementation SHA: `fe5353f25e45eb10d3a78fa148727071e84d89e2`.
+- Implementation exact-SHA CI: `30734974889`, success.
+- Completion-record SHA/CI: this commit / pending.
+- Queue-archive SHA/CI: not created / pending.
+- Expected post-commit: `HEAD == origin/master`, clean, migration head 0007,
+  M3 completed block retained, task count 1, no M4 executable task.

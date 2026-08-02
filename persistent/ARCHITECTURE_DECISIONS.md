@@ -15,6 +15,10 @@ formal IDs remain typed unavailable until a later reviewed mapper exists.
 Selection cannot execute or compute science and creates no LLM call site. All
 future real LLM calls remain DeepSeek-only through `DEEPSEEK_KEY`.
 
+This decision is implemented at corrected SHA `fe5353f25e45eb10d3a78fa148727071e84d89e2`
+and verified by exact-SHA CI `30734974889`, including zero-skip service-backed
+coverage. It does not change the M1 contract, migration, or API authority.
+
 ## 2026-08-02 ADR Addendum: Metadata-Only Workspace Shell
 
 Implement M-D006, M-D013 through M-D017, M-D021, and the panel portion of

@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-08-02 Phase 10M-3 Canonical Selection Local Implementation
+## 2026-08-02 Phase 10M-3 Canonical Selection Complete, Awaiting Archive
 
 - Added strict canonical base64url parsing, duplicate-key/depth/cap rejection,
   exact semantic equality, 16-item bounded multi-selection, and typed stale or
@@ -9,12 +9,14 @@
   renderer-contract declarations, exact source compatibility, URL/history,
   Inspector, whole Artifact selection, and explicit ETag Pin.
 - Chromium, Firefox, WebKit, and Chromium 390x844 evidence pass with zero
-  external requests or console errors. Local service-backed tests are
-  unavailable and exact-SHA CI remains the required zero-skip gate.
+  external requests or console errors. Corrected implementation `fe5353f`
+  passed exact-SHA CI `30734974889`; service-backed PostgreSQL/Redis/MinIO is
+  `39 passed, 0 skipped`. Local service-backed remains unavailable.
 - Findings/evidence payload emitters and typed scientific renderers remain M4;
   M3 does not fabricate missing site/frame/q-point/claim identities.
 - `NEW_LLM_CALL_SITES = 0`, `REAL_LLM_CALLS = 0`. Future real calls remain
   DeepSeek-only with `DEEPSEEK_KEY`; selection has no provider authority.
+- Completion-record and verified queue-archive CI remain. M4 is reviewer-gated.
 
 ## 2026-08-02 Phase 10M-2 Workspace Shell Complete, Awaiting Archive
 

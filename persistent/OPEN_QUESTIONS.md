@@ -6,8 +6,9 @@ No design question blocks M3. Exact identities already present in the sealed
 contract are validated and propagated; current Artifacts that expose only an
 array index, label, or display coordinate remain typed unavailable. Formal
 payload-to-selection mappers for findings/evidence and scientific viewers are
-Phase 10M-4 scope, not an M3 reason to guess identity. M3 exact-SHA lifecycle
-remains open. Phase 10M-4 has no executable task.
+Phase 10M-4 scope, not an M3 reason to guess identity. Corrected implementation
+`fe5353f` passed exact-SHA CI `30734974889`; only completion-record and archive
+lifecycle gates remain. Phase 10M-4 has no executable task.
 
 ## 2026-08-02 Phase 10M-2 Completion State
 

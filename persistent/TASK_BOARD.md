@@ -1,13 +1,15 @@
 # TASK_BOARD
 
-## 2026-08-02 Phase 10M-3 In Progress
+## 2026-08-02 Phase 10M-3 Complete, Awaiting Verified Archive
 
 - [x] Strict contract runtime, URL codec, store, declarations, compatibility,
   propagation, Inspector, explicit Pin, browser runner, and sanitized evidence
   are implemented locally.
-- [x] Focused frontend `38 passed`, focused backend/evidence `9 passed`,
-  Chromium/Firefox/WebKit/mobile and typecheck pass.
-- [ ] Full regression and implementation exact-SHA CI remain.
+- [x] Focused frontend `38 passed`, focused backend/evidence `10 passed`,
+  full backend `1111 passed`, full frontend `376 passed`,
+  Chromium/Firefox/WebKit/mobile, typecheck, and build pass.
+- [x] Corrected implementation `fe5353f` passed exact-SHA CI `30734974889`,
+  including PostgreSQL/Redis/MinIO `39 passed, 0 skipped`.
 - [ ] Completion-record and verified queue archive remain.
 - [ ] Phase 10M-4 is reviewer-gated and has no executable task.
 

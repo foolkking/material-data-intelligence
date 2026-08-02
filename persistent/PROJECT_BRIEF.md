@@ -1,6 +1,6 @@
 # PROJECT_BRIEF
 
-## 2026-08-02 Phase 10M-3 Canonical Selection Implemented Locally
+## 2026-08-02 Phase 10M-3 Complete, Awaiting Verified Archive
 
 Phase 10M-2 is archived at `78bdec18` with exact-SHA CI `30729804091`.
 The sole active task activates the existing `WorkspaceSelectionContext 1.0`
@@ -10,7 +10,10 @@ explicit M1 PATCH/ETag Pin. Whole Artifact metadata is the only current panel
 emitter; object identities absent from formal Artifacts remain typed
 unavailable. No migration, API, shared contract, LLM call site, provider,
 scientific calculation, dependency, or lockfile changes are introduced.
-Implementation, completion-record, and archive exact-SHA CI remain required.
+Corrected implementation `fe5353f25e45eb10d3a78fa148727071e84d89e2`
+passed exact-SHA CI `30734974889`, including Unit, Frontend/browser/build, and
+PostgreSQL/Redis/MinIO service-backed `39 passed, 0 skipped`. Completion-record
+and queue-archive exact-SHA CI remain required.
 
 ## 2026-08-02 Phase 10M-2 Workspace Shell Complete, Awaiting Archive
 

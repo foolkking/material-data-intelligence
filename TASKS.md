@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
 
 # Phase 10M-3 Reviewer Prompt
 
@@ -2600,4 +2600,9 @@ Phase 10M-3 Entry Gate + Pre-Implementation Audit
 
 不得创建、排队或执行 Phase 10M-4。
 
+完成时间：2026-08-02 14:03:00 +08:00
+修改文件：Workspace selection contract/runtime、Workspace shell、panel projection、tests、browser/evidence、CI、docs、persistent。
+修改摘要：完成 canonical URL selection、Workspace-scoped propagation、exact compatibility、Inspector、explicit Pin 与 typed stale/unsupported handling；未新增 migration/API/LLM authority。
+测试结果：corrected implementation fe5353f25e45eb10d3a78fa148727071e84d89e2；exact-SHA CI 30734974889 success；Unit/Frontend/build/browser/service-backed 39 passed、0 skipped 全部通过。
+归档状态：等待 completion-record exact-SHA CI，任务块暂不删除；Phase 10M-4 仍为 reviewer gate。
 ---END---

@@ -1,6 +1,6 @@
 # Phase 10M-3 Canonical Selection Runtime
 
-Status: IMPLEMENTED LOCALLY / EXACT-SHA LIFECYCLE PENDING.
+Status: IMPLEMENTATION EXACT-SHA CI PASSED / COMPLETION-RECORD CI PENDING.
 
 Phase 10M-3 activates the existing `WorkspaceSelectionContext 1.0` contract in
 the `/workspaces/{workspaceId}` shell. A Workspace-scoped store validates exact
