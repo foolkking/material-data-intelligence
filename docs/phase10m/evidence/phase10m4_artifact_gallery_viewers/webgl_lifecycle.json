@@ -9,10 +9,11 @@
   "remainingCanvasesAfterDesktopRun":{"chromium":0,"firefox":0,"webkit":0},
   "duplicateCanvas":0,
   "leaseParallelAcquireRejected":true,
+  "chromiumEvidenceBackend":"Playwright Chromium SwiftShader WebGL",
   "cleanup":["AbortController","animation/playback owner","timers","ResizeObserver","event listeners","controls","geometry","material","texture","render target","worker","WebGLRenderer","canvas"],
   "webglContextGrowth":0,
   "instrumentedLifecycle":{
-    "chromium":{"baselineListeners":599,"finalListeners":599,"listenerGrowth":0,"observerGrowth":0,"pendingAnimationFrameGrowth":0,"activeWebglContextGrowth":0,"peakActiveWebglContexts":1,"usedJsHeapBytes":56800000,"heapGrowthBytes":0},
+    "chromium":{"baselineListeners":599,"finalListeners":599,"listenerGrowth":0,"observerGrowth":0,"pendingAnimationFrameGrowth":0,"activeWebglContextGrowth":0,"peakActiveWebglContexts":1,"usedJsHeapBytes":60300000,"heapGrowthBytes":0},
     "firefox":{"baselineListeners":599,"finalListeners":599,"listenerGrowth":0,"observerGrowth":0,"pendingAnimationFrameGrowth":0,"activeWebglContextGrowth":0,"peakActiveWebglContexts":1,"usedJsHeapBytes":null,"heapGrowthBytes":null},
     "webkit":{"baselineListeners":599,"finalListeners":599,"listenerGrowth":0,"observerGrowth":0,"pendingAnimationFrameGrowth":0,"activeWebglContextGrowth":0,"peakActiveWebglContexts":1,"usedJsHeapBytes":null,"heapGrowthBytes":null}
   },

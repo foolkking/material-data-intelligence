@@ -29,7 +29,7 @@
           "pendingAnimationFrames": 0,
           "activeWebglContexts": 0,
           "createdWebglContexts": 0,
-          "usedJsHeapBytes": 56800000
+          "usedJsHeapBytes": 60300000
         }
       },
       "Regression Evaluation": {
@@ -44,7 +44,7 @@
           "pendingAnimationFrames": 0,
           "activeWebglContexts": 0,
           "createdWebglContexts": 0,
-          "usedJsHeapBytes": 56800000
+          "usedJsHeapBytes": 60300000
         }
       },
       "Composition Space": {
@@ -59,7 +59,7 @@
           "pendingAnimationFrames": 0,
           "activeWebglContexts": 0,
           "createdWebglContexts": 0,
-          "usedJsHeapBytes": 56800000
+          "usedJsHeapBytes": 60300000
         }
       },
       "Structure Scene": {
@@ -74,7 +74,7 @@
           "pendingAnimationFrames": 0,
           "activeWebglContexts": 0,
           "createdWebglContexts": 3,
-          "usedJsHeapBytes": 56800000
+          "usedJsHeapBytes": 60300000
         }
       },
       "Trajectory": {
@@ -89,7 +89,7 @@
           "pendingAnimationFrames": 0,
           "activeWebglContexts": 0,
           "createdWebglContexts": 5,
-          "usedJsHeapBytes": 56800000
+          "usedJsHeapBytes": 60300000
         }
       },
       "Phonon Band": {
@@ -104,7 +104,7 @@
           "pendingAnimationFrames": 0,
           "activeWebglContexts": 0,
           "createdWebglContexts": 5,
-          "usedJsHeapBytes": 56800000
+          "usedJsHeapBytes": 60300000
         }
       },
       "Brillouin Zone": {
@@ -119,7 +119,7 @@
           "pendingAnimationFrames": 0,
           "activeWebglContexts": 0,
           "createdWebglContexts": 7,
-          "usedJsHeapBytes": 56800000
+          "usedJsHeapBytes": 60300000
         }
       },
       "Volumetric Dataset": {
@@ -134,7 +134,7 @@
           "pendingAnimationFrames": 0,
           "activeWebglContexts": 0,
           "createdWebglContexts": 8,
-          "usedJsHeapBytes": 56800000
+          "usedJsHeapBytes": 60300000
         }
       },
       "Generic Metrics": {
@@ -149,7 +149,7 @@
           "pendingAnimationFrames": 0,
           "activeWebglContexts": 0,
           "createdWebglContexts": 8,
-          "usedJsHeapBytes": 56800000
+          "usedJsHeapBytes": 60300000
         }
       }
     },
@@ -167,7 +167,7 @@
         "pendingAnimationFrames": 0,
         "activeWebglContexts": 0,
         "createdWebglContexts": 8,
-        "usedJsHeapBytes": 56800000
+        "usedJsHeapBytes": 60300000
       },
       "peak": {
         "listeners": 634,
@@ -176,7 +176,7 @@
         "pendingAnimationFrames": 0,
         "activeWebglContexts": 1,
         "createdWebglContexts": 108,
-        "usedJsHeapBytes": 56800000
+        "usedJsHeapBytes": 60300000
       },
       "final": {
         "listeners": 599,
@@ -185,7 +185,7 @@
         "pendingAnimationFrames": 0,
         "activeWebglContexts": 0,
         "createdWebglContexts": 108,
-        "usedJsHeapBytes": 56800000
+        "usedJsHeapBytes": 60300000
       },
       "growth": {
         "listeners": 0,

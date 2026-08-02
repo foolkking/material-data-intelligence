@@ -17,7 +17,7 @@
   "pendingAnimationFrameGrowth":{"chromium":0,"firefox":0,"webkit":0},
   "activeWebglContextGrowth":{"chromium":0,"firefox":0,"webkit":0},
   "peakActiveWebglContexts":{"chromium":1,"firefox":1,"webkit":1},
-  "tracedMemory":{"chromiumUsedJsHeapBytes":56800000,"chromiumHeapGrowthBytes":0,"firefox":null,"webkit":null},
+  "tracedMemory":{"chromiumUsedJsHeapBytes":60300000,"chromiumHeapGrowthBytes":0,"firefox":null,"webkit":null},
   "nearContractCapPayload":"Validated by focused loader and Gallery cap tests; browser sidecar uses 20 typed Artifacts",
   "status":"PASS"
 }

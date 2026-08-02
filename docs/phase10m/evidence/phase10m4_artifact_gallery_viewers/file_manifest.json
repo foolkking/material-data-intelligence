@@ -48,7 +48,7 @@
       "path": "browser_chromium/summary.json",
       "bytes": 5633,
       "hashMode": "lf_normalized_text",
-      "sha256": "348b52e774452c689877e3952622d77f25a7b9df0a0cf346b1d516bee6a73a98"
+      "sha256": "f227f54a986a328d7389f8237441521d903620d36dcac5e9fc4456cc8bd44cb2"
     },
     {
       "path": "browser_firefox/summary.json",
@@ -60,7 +60,7 @@
       "path": "browser_matrix.json",
       "bytes": 18100,
       "hashMode": "lf_normalized_text",
-      "sha256": "b2c60e6358f06f1e4320e8a65bf721d8de07108d59f7b80e87ad7c8869e2450b"
+      "sha256": "7b6b27cbf15fbb552687a5485e23802f7ac1fc20a213d4fcc55f20b18ef3fb4d"
     },
     {
       "path": "browser_mobile/summary.json",
@@ -156,7 +156,7 @@
       "path": "performance.json",
       "bytes": 1347,
       "hashMode": "lf_normalized_text",
-      "sha256": "efea43cb1b8015fe321e9c8561f40285b1f1ac3d558a0fca208b617dcd7da8a8"
+      "sha256": "cea78f0c3bdc637b16a31a3c434cacdab492abb4b76f1bb6f17aed43b26c2ea3"
     },
     {
       "path": "phonon_viewer.json",
@@ -184,21 +184,21 @@
     },
     {
       "path": "screenshots/chromium_gallery.png",
-      "bytes": 474099,
+      "bytes": 474151,
       "hashMode": "raw_binary",
-      "sha256": "53a6b98991a6b81e7684c7bd6c275407e9500ca25efb3d6a153cfc8221ece9a5"
+      "sha256": "1627d534f82c2d7f1346a563604f7a95522516d5f95ef69df7caec830d180652"
     },
     {
       "path": "screenshots/chromium_mobile_gallery.png",
-      "bytes": 590586,
+      "bytes": 630011,
       "hashMode": "raw_binary",
-      "sha256": "d3d5cdf952af0b9e27a3826f4ee34df4f2c9c6216e9fc796f758d7dc8416833c"
+      "sha256": "b09a1c9073bd1bb39c0512442692587396b415b397e6ce01750d42375a588c56"
     },
     {
       "path": "screenshots/chromium_partial.png",
-      "bytes": 475473,
+      "bytes": 475586,
       "hashMode": "raw_binary",
-      "sha256": "f2e5af1dba8ce806a6d69f20037ed00d2a95a76afadcd3f7482d54b4641bf0dc"
+      "sha256": "5986d99f9b201bd50c522bc602463e8f29d7eaccc9b418e8b40e17b3a6dd67d2"
     },
     {
       "path": "screenshots/firefox_gallery.png",
@@ -208,9 +208,9 @@
     },
     {
       "path": "screenshots/firefox_partial.png",
-      "bytes": 537908,
+      "bytes": 537846,
       "hashMode": "raw_binary",
-      "sha256": "f45976dadbfcd740b62ef222021d857411392f9496de6f35f76c118aeef4e086"
+      "sha256": "203a4f1d4f688b16f160f48d43009a9fce9f5d2754daa190dc773b185f489aec"
     },
     {
       "path": "screenshots/webkit_gallery.png",
@@ -220,9 +220,9 @@
     },
     {
       "path": "screenshots/webkit_partial.png",
-      "bytes": 326120,
+      "bytes": 326078,
       "hashMode": "raw_binary",
-      "sha256": "b09bffefabeab2963d0a8856513a0ec1e63a965b5f9ae10517118467924cca6f"
+      "sha256": "ee46cee44585d9616bad17ca9d639173943d0f9bee4cf043f6dd52799f506d7c"
     },
     {
       "path": "secret_scan.txt",
@@ -262,9 +262,9 @@
     },
     {
       "path": "test_summary.txt",
-      "bytes": 3953,
+      "bytes": 4440,
       "hashMode": "lf_normalized_text",
-      "sha256": "584c6fe7fb6b82686e17213c6a79b250dcf819b378b2b1d1a0ac6eca47cd6a19"
+      "sha256": "0deefb670a7a3c56e3333164d81fe2a7291b90e4a08dfd3e9de35323efb9e1a6"
     },
     {
       "path": "trajectory_viewer.json",
@@ -280,9 +280,9 @@
     },
     {
       "path": "webgl_lifecycle.json",
-      "bytes": 1617,
+      "bytes": 1686,
       "hashMode": "lf_normalized_text",
-      "sha256": "e8cee37c5ddda8e883d2a61bbeb329614ad8c0587dada506db7f908821e84dce"
+      "sha256": "6d99a38f2164277be8b909b4bf61a42823a5e8415a161ca19a0fee39a72ae406"
     },
     {
       "path": "webgl_ownership_audit.json",

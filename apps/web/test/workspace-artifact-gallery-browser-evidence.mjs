@@ -27,11 +27,11 @@ async function main() {
     await waitForApp();
     const matrix = {};
     for (const name of requested) {
-      const browser = await ({ chromium, firefox, webkit })[name].launch({ headless: true });
+      const browser = await ({ chromium, firefox, webkit })[name].launch(browserLaunchOptions(name));
       try { matrix[name] = await runDesktop(browser, name, artifacts); } finally { await browser.close(); }
       await writeJson(`browser_${name}/summary.json`, matrix[name]);
     }
-    const mobileBrowser = await chromium.launch({ headless: true });
+    const mobileBrowser = await chromium.launch(browserLaunchOptions("chromium"));
     let mobile;
     try { mobile = await runMobile(mobileBrowser, artifacts); } finally { await mobileBrowser.close(); }
     await writeJson("browser_mobile/summary.json", mobile);
@@ -385,6 +385,11 @@ function interpretationEvidenceFixture(artifact) {
 }
 
 function validateFixtures(artifacts) { if (artifacts.length < 16 || new Set(artifacts.map((item) => item.id)).size !== artifacts.length || artifacts.some((item) => item.sizeBytes !== item.bytes.length)) throw new Error("M4 artifact fixtures are invalid"); }
+function browserLaunchOptions(name) {
+  return name === "chromium"
+    ? { headless: true, args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"] }
+    : { headless: true };
+}
 function attachAudit(page) { const audit = { consoleErrors: [], pageErrors: [], failedResponses: [], externalRequests: [] }; page.on("console", (message) => { if (message.type() === "error") audit.consoleErrors.push(message.text()); }); page.on("pageerror", (error) => audit.pageErrors.push(error.message)); page.on("response", (response) => { if (response.status() >= 400) audit.failedResponses.push(`${response.status()} ${response.url()}`); }); page.on("request", (request) => { const url = new URL(request.url()); if (!["127.0.0.1", "localhost"].includes(url.hostname)) audit.externalRequests.push(request.url()); }); return audit; }
 function corsHeaders() { return { "access-control-allow-origin": ORIGIN, "access-control-allow-methods": "GET,OPTIONS", "access-control-allow-headers": "content-type", "access-control-expose-headers": "content-length,x-content-length-validated,x-content-type-options" }; }
 function jsonResponse(value, status = 200) { return { status, contentType: "application/json", headers: corsHeaders(), body: JSON.stringify(value) }; }
