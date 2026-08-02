@@ -388,9 +388,10 @@ function interpretationEvidenceFixture(artifact) {
 
 function validateFixtures(artifacts) { if (artifacts.length < 16 || new Set(artifacts.map((item) => item.id)).size !== artifacts.length || artifacts.some((item) => item.sizeBytes !== item.bytes.length)) throw new Error("M4 artifact fixtures are invalid"); }
 function browserLaunchOptions(name) {
+  const headless = process.env.MDI_PHASE10M4_HEADLESS !== "false";
   return name === "chromium"
-    ? { headless: true, args: ["--no-sandbox", "--use-gl=angle", "--use-angle=swiftshader-webgl", "--enable-unsafe-swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--disable-background-networking"] }
-    : { headless: true };
+    ? { headless, args: ["--no-sandbox", "--use-gl=angle", "--use-angle=swiftshader-webgl", "--enable-unsafe-swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--disable-background-networking"] }
+    : { headless };
 }
 async function probeWebgl(page) {
   return page.evaluate(() => {

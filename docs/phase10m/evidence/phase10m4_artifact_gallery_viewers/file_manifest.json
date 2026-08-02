@@ -262,9 +262,9 @@
     },
     {
       "path": "test_summary.txt",
-      "bytes": 4918,
+      "bytes": 5383,
       "hashMode": "lf_normalized_text",
-      "sha256": "5ede5bdbd9867fce87e6d39c5b80e0a30976739c09a96a1710a97c7ad7482430"
+      "sha256": "d1766d87a3624ce63d4b05f4bee3152e8fdb5eaff424d8a69f16c6b07f83455f"
     },
     {
       "path": "trajectory_viewer.json",
@@ -280,9 +280,9 @@
     },
     {
       "path": "webgl_lifecycle.json",
-      "bytes": 1765,
+      "bytes": 1869,
       "hashMode": "lf_normalized_text",
-      "sha256": "64511fd54bba58c67a9583669e59bb1f80d0f3ffd7de89dbc54c8e1657204f43"
+      "sha256": "59ea0d5dda8fbeb3937f2eb20ab9ad28165834d351dca6ca5f107aefcf7493d2"
     },
     {
       "path": "webgl_ownership_audit.json",

@@ -136,9 +136,10 @@ jobs:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
           MDI_PHASE10M4_EVIDENCE_PORT: "3226"
+          MDI_PHASE10M4_HEADLESS: "false"
         run: |
           node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures
-          node test/workspace-artifact-gallery-browser-evidence.mjs \
+          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
             --output-dir "${RUNNER_TEMP}/phase10m4-browser-replay"
         working-directory: apps/web
 
