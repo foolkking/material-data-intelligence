@@ -90,7 +90,7 @@ async function runDesktop(browser, browserName) {
   if ((await page.getByTestId("workspace-selection-status").innerText()).includes("DATASET_SAMPLE")) throw new Error(`${browserName}: stale token received a substitute selection`);
   const overflow = await page.evaluate(() => ({ body: document.body.scrollWidth - document.body.clientWidth, root: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
   if (audit.consoleErrors.length || audit.pageErrors.length || audit.failedResponses.length || audit.externalRequests.length) throw new Error(`${browserName}: browser audit failed ${JSON.stringify(audit)}`);
-  if (calls.some((call) => /planner|jobs|enqueue|tool-calls/i.test(call.path))) throw new Error(`${browserName}: selection attempted execution authority`);
+  if (calls.some((call) => !(call.method === "GET" && /^\/planner\/jobs\/job_[a-z0-9]+\/artifacts$/u.test(call.path)) && /planner|jobs|enqueue|tool-calls/i.test(call.path))) throw new Error(`${browserName}: selection attempted execution authority`);
   await context.close();
   return { browserName, urlRestore: true, artifactSelection: true, backForward: true, staleRejected: true, pinRequestCount: calls.filter((call) => call.method === "PATCH").length, elapsedMs: Number((performance.now() - startedAt).toFixed(3)), overflow, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, externalRequests: audit.externalRequests, apiCalls: calls };
 }
@@ -130,6 +130,7 @@ async function installApiFixture(page, calls) {
       if (!payload?.pinnedSelection?.primary?.artifactId) return route.fulfill(jsonResponse({ detail: { code: "SELECTION_INVALID", message: "Fixture rejects invalid pin", retryable: false } }, 422));
       return route.fulfill(jsonResponse(snapshot(payload.pinnedSelection)));
     }
+    if (request.method() === "GET" && /^\/planner\/jobs\/job_[a-z0-9]+\/artifacts$/u.test(url.pathname)) return route.fulfill(jsonResponse([]));
     return route.fulfill(jsonResponse({ detail: { code: "FIXTURE_NOT_FOUND", message: "Fixture route not found", retryable: false } }, 404));
   });
 }

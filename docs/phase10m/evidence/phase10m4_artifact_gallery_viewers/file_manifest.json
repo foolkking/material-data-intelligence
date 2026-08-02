@@ -262,9 +262,9 @@
     },
     {
       "path": "test_summary.txt",
-      "bytes": 2736,
+      "bytes": 3198,
       "hashMode": "lf_normalized_text",
-      "sha256": "1b76846806f998f093f54490f0cae400f148b11527afb9cf6571e2a0795de8ac"
+      "sha256": "9e3d02011790f60403c72ff07d10c54ccbeb5e5200ff65e882b13241fb512d80"
     },
     {
       "path": "trajectory_viewer.json",
