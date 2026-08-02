@@ -1,7 +1,7 @@
 {
   "browserName": "webkit",
   "metadataFirst": true,
-  "artifactCount": 21,
+  "artifactCount": 20,
   "exactReferenceNavigation": {
     "artifactId": "artifact_dataset",
     "evidenceItemId": "evidence_dataset_count",
@@ -122,7 +122,7 @@
       }
     },
     "Volumetric Dataset": {
-      "payloadRequests": 13,
+      "payloadRequests": 10,
       "rendererReady": true,
       "canvasCount": 1,
       "typedFallback": false,
@@ -205,7 +205,7 @@
     "body": 0,
     "root": 0
   },
-  "contentRequests": 25,
+  "contentRequests": 22,
   "consoleErrors": [],
   "pageErrors": [],
   "externalRequests": []

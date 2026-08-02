@@ -5,7 +5,7 @@
   "localServiceBacked":"UNAVAILABLE",
   "localReason":"MDI_RUN_INTEGRATION was not enabled for the local evidence run; enabled tests intentionally skipped instead of claiming PASS",
   "localCommand":"uv run python -m pytest -q tests/test_phase10m1_workspace_projection_api.py tests/integration/test_phase10m1_workspace_service_backed.py",
-  "localResult":{"passed":7,"skipped":3,"failed":0,"elapsedSeconds":16.22},
+  "localResult":{"passed":8,"skipped":3,"failed":0,"elapsedSeconds":9.72},
   "implementedServiceCases":[
     "full migration chain to 0007",
     "PostgreSQL Workspace and source Job persistence",

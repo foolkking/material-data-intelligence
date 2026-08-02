@@ -41,3 +41,6 @@ no_skipped_ci=PENDING_EXACT_SHA_CI
 npm_audit=UNAVAILABLE; npmmirror returned 404 NOT_IMPLEMENTED
 implementation_ci_attempt_1=197727e7f6dd1db7fa1433cb328ccf3c51784ca5; run 30748799607; FAILED in historical M2 browser fixture because additive Artifact metadata route returned fixture 404; Unit and service-backed jobs succeeded
 implementation_ci_attempt_2=edd5d585fdd50f56094272b51cb22ebb81ccb67d; run 30749134462; FAILED in historical M3 browser fixture because additive metadata GET was first absent and then classified by the local regression assertion as execution authority; M2, Unit and service-backed jobs succeeded
+implementation_ci_attempt_3=75038ac4481138f46eaf3f42ba35226eb642fa85; run 30749507123; FAILED in M4 browser replay because the runner referenced a locally present but gitignored Phase 10J generated volumetric payload; Unit, historical M2/M3 browser replays and service-backed jobs succeeded
+implementation_ci_attempt_3_correction=self-contained M4 volumetric browser fixture now derives exact dataset/grid/field/payload/manifest and checksum-matching Float64 bytes from checked-in docs/phase10j/fixtures/volumetric_contract/cubic_constant_scalar.json
+implementation_ci_attempt_3_correction_local_result=fixture validation PASS; Chromium PASS; Firefox PASS; WebKit PASS; Chromium 390x844 PASS; focused frontend 40 passed; evidence 3 passed; typecheck PASS

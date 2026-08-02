@@ -2,10 +2,10 @@
   "schemaVersion":"phase10m4.performance.v1",
   "claimScope":"development/browser acceptance evidence; not a production capacity claim",
   "caps":{"metadataArtifacts":256,"bundleArtifacts":16,"jsonDepth":14,"tableRows":1000,"tableColumns":32,"plotTraces":32,"plotPoints":100000,"jsonBytes":16777216,"textBytes":2097152,"volumetricBytes":67108864,"activeHeavyViewers":1},
-  "browserFixtureArtifacts":21,
+  "browserFixtureArtifacts":20,
   "initialWorkspaceArtifactPayloadRequests":0,
   "inactiveHeavyViewerPayloadRequests":0,
-  "desktopContentRequests":{"chromium":25,"firefox":22,"webkit":25},
+  "desktopContentRequests":{"chromium":22,"firefox":20,"webkit":22},
   "mobileContentRequests":1,
   "heavySwitchCycles":{"chromium":50,"firefox":3,"webkit":3},
   "maxActiveCanvases":1,
@@ -18,6 +18,6 @@
   "activeWebglContextGrowth":{"chromium":0,"firefox":0,"webkit":0},
   "peakActiveWebglContexts":{"chromium":1,"firefox":1,"webkit":1},
   "tracedMemory":{"chromiumUsedJsHeapBytes":56800000,"chromiumHeapGrowthBytes":0,"firefox":null,"webkit":null},
-  "nearContractCapPayload":"Validated by focused loader and Gallery cap tests; browser sidecar uses 21 typed Artifacts",
+  "nearContractCapPayload":"Validated by focused loader and Gallery cap tests; browser sidecar uses 20 typed Artifacts",
   "status":"PASS"
 }

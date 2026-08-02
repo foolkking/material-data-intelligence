@@ -5,7 +5,7 @@
   "initialPayloadRequests":0,
   "groupingAuthority":"renderer component derived only after exact contract resolution; group order is display-only",
   "cases":[
-    {"case":"metadata-first","result":"PASS","evidence":"all three desktop browsers observe 21 metadata cards before any /content request"},
+    {"case":"metadata-first","result":"PASS","evidence":"all three desktop browsers observe 20 metadata cards before any /content request"},
     {"case":"open active Artifact","result":"PASS","evidence":"only selected contract bundle is requested and exact renderer reaches ready state"},
     {"case":"close active Artifact","result":"PASS","evidence":"request revision advances, AbortController aborts, payload state clears"},
     {"case":"safe download","result":"PASS_UNIT","evidence":"exact scope and SHA-256 are checked before object URL; filename is sanitized"},
@@ -14,7 +14,7 @@
     {"case":"partial/failed panel gate","result":"IMPLEMENTED","evidence":"PRODUCED/PARTIAL permit load; all other panel states return PANEL_PAYLOAD_UNAVAILABLE"},
     {"case":"metadata cap","result":"PASS_UNIT","evidence":"256 exact records accepted; record 257 returns ARTIFACT_METADATA_CAP_EXCEEDED without rendering or truncation"}
   ],
-  "browserArtifactCount":21,
+  "browserArtifactCount":20,
   "browserMatrix":"PASS",
   "serviceAuthority":"separate service_backed.json"
 }

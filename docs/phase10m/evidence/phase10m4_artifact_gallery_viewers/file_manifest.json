@@ -24,7 +24,7 @@
       "path": "artifact_gallery_cases.json",
       "bytes": 1521,
       "hashMode": "lf_normalized_text",
-      "sha256": "131a875cae45f07c89cb0706671971bbdce574ce2dde41af5d9d2ca581ee7a58"
+      "sha256": "19ed7f22f133ab1579c20d1ce7614b0ac0024f3d19bf9bef9e59a71fd7508910"
     },
     {
       "path": "artifact_loader_cases.json",
@@ -48,19 +48,19 @@
       "path": "browser_chromium/summary.json",
       "bytes": 5633,
       "hashMode": "lf_normalized_text",
-      "sha256": "6e2ecb762b410b09ef3f7a0ac1874b217535abd75fd6d3ed69250dad87d94e3b"
+      "sha256": "348b52e774452c689877e3952622d77f25a7b9df0a0cf346b1d516bee6a73a98"
     },
     {
       "path": "browser_firefox/summary.json",
-      "bytes": 5579,
+      "bytes": 5578,
       "hashMode": "lf_normalized_text",
-      "sha256": "883c9e3d94761b5373220f9848e78ad3791e7913796c3e8fa27e84084fc40fe1"
+      "sha256": "697730e7bea4d357e45f1468cc35ee9cba4f68c3cd5e04d5532de3d79c448a99"
     },
     {
       "path": "browser_matrix.json",
-      "bytes": 18101,
+      "bytes": 18100,
       "hashMode": "lf_normalized_text",
-      "sha256": "83a9a1cff5fc885ed99a8fe05ecf3350b470a0082a22aa45ea735e9a14857f4f"
+      "sha256": "b2c60e6358f06f1e4320e8a65bf721d8de07108d59f7b80e87ad7c8869e2450b"
     },
     {
       "path": "browser_mobile/summary.json",
@@ -72,7 +72,7 @@
       "path": "browser_webkit/summary.json",
       "bytes": 5578,
       "hashMode": "lf_normalized_text",
-      "sha256": "0d420d77407cc382c65e784d396f3f3f70819c30c6a9baa9391f804c5521a574"
+      "sha256": "6c326e0add7c642266bb208278b2937544dc5abb3e162fd020e6eeaddd546785"
     },
     {
       "path": "composition_space_viewer.json",
@@ -156,7 +156,7 @@
       "path": "performance.json",
       "bytes": 1347,
       "hashMode": "lf_normalized_text",
-      "sha256": "f6f41780aa5b324a786ff8ec2e4d81770b39a0366f029f27d23e956873ad5a25"
+      "sha256": "efea43cb1b8015fe321e9c8561f40285b1f1ac3d558a0fca208b617dcd7da8a8"
     },
     {
       "path": "phonon_viewer.json",
@@ -184,45 +184,45 @@
     },
     {
       "path": "screenshots/chromium_gallery.png",
-      "bytes": 480423,
+      "bytes": 474099,
       "hashMode": "raw_binary",
-      "sha256": "485ba931b03b4377439d2f25ee6a83294c46129bea8e9c811bf362d8ade0d2bc"
+      "sha256": "53a6b98991a6b81e7684c7bd6c275407e9500ca25efb3d6a153cfc8221ece9a5"
     },
     {
       "path": "screenshots/chromium_mobile_gallery.png",
-      "bytes": 610517,
+      "bytes": 590586,
       "hashMode": "raw_binary",
-      "sha256": "068c328f4bae21c572a33c74e945d3eeb15f73c5ae02318d09d0850cae428c22"
+      "sha256": "d3d5cdf952af0b9e27a3826f4ee34df4f2c9c6216e9fc796f758d7dc8416833c"
     },
     {
       "path": "screenshots/chromium_partial.png",
-      "bytes": 481964,
+      "bytes": 475473,
       "hashMode": "raw_binary",
-      "sha256": "3aa71fa904554a011a5d1c5c190c13d557a1a2828dd79d1999f9b1305a0672de"
+      "sha256": "f2e5af1dba8ce806a6d69f20037ed00d2a95a76afadcd3f7482d54b4641bf0dc"
     },
     {
       "path": "screenshots/firefox_gallery.png",
-      "bytes": 544239,
+      "bytes": 537245,
       "hashMode": "raw_binary",
-      "sha256": "99bc13b81b3c4550e1732827670bbcb8b718f15fbc5ec9edb24ba2da6b30e54c"
+      "sha256": "704af1442a5d9d1b36c07c770cd7c7e97c402765a40c5541f650c20e656db486"
     },
     {
       "path": "screenshots/firefox_partial.png",
-      "bytes": 544830,
+      "bytes": 537908,
       "hashMode": "raw_binary",
-      "sha256": "0a4719b4fdf5fe755d4659460fc1b8ab47168084fc4e4ee4352320bac60c3af4"
+      "sha256": "f45976dadbfcd740b62ef222021d857411392f9496de6f35f76c118aeef4e086"
     },
     {
       "path": "screenshots/webkit_gallery.png",
-      "bytes": 327558,
+      "bytes": 325546,
       "hashMode": "raw_binary",
-      "sha256": "a112a8470fe864b6cbda7012a75e7bea1ba6a3e764b37ed294398ae013e4449e"
+      "sha256": "4b909e9397e4669caf917d973ac56f20aecdb807e2fbc4824d42c1ab7a5133ca"
     },
     {
       "path": "screenshots/webkit_partial.png",
-      "bytes": 328156,
+      "bytes": 326120,
       "hashMode": "raw_binary",
-      "sha256": "42176409715c2705472d4c02eb5825343cca2506bae4b6ac99f2c67ba42648e3"
+      "sha256": "b09bffefabeab2963d0a8856513a0ec1e63a965b5f9ae10517118467924cca6f"
     },
     {
       "path": "secret_scan.txt",
@@ -250,9 +250,9 @@
     },
     {
       "path": "service_backed.json",
-      "bytes": 1300,
+      "bytes": 1299,
       "hashMode": "lf_normalized_text",
-      "sha256": "500af22fc310bf16fec9b363ce1b233e8343148e515ee9ff5d3daa45e054d646"
+      "sha256": "9ea5ba1fc85ec0c45a73b32c1d95359cd7d47f4b9145bcd7512de0a11a1be8c0"
     },
     {
       "path": "structure_viewer.json",
@@ -262,9 +262,9 @@
     },
     {
       "path": "test_summary.txt",
-      "bytes": 3198,
+      "bytes": 3953,
       "hashMode": "lf_normalized_text",
-      "sha256": "9e3d02011790f60403c72ff07d10c54ccbeb5e5200ff65e882b13241fb512d80"
+      "sha256": "584c6fe7fb6b82686e17213c6a79b250dcf819b378b2b1d1a0ac6eca47cd6a19"
     },
     {
       "path": "trajectory_viewer.json",

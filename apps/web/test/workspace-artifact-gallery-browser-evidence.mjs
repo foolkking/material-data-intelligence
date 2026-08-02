@@ -324,16 +324,17 @@ async function artifactFixtures() {
   ];
   const items = [];
   for (const [id, type, name, toolCallId, relative] of sources) items.push(artifact(id, type, name, toolCallId, await readFile(path.join(ROOT, relative))));
-  const volumeRoot = path.join(ROOT, "docs/phase10j/evidence/phase10j6_volumetric_slice_volume_rendering/artifacts/live_charge");
-  for (const [id, type, name, file, mediaType] of [
-    ["volume_dataset", "volumetric_dataset_json", "Volumetric Dataset", "volumetric_dataset.json", "application/json"],
-    ["volume_grid", "volumetric_grid_json", "Volumetric Grid", "volumetric_grid.json", "application/json"],
-    ["volume_field", "volumetric_field_json", "Volumetric Field", "volumetric_field_01.json", "application/json"],
-    ["volume_payload", "volumetric_payload_json", "Volumetric Payload", "volumetric_payload_01.json", "application/json"],
-    ["volume_overlay", "volumetric_structure_overlay_json", "Volumetric Structure Overlay", "volumetric_structure_overlay.json", "application/json"],
-    ["volume_binary", "volumetric_binary", "volumetric_field_01.f64.gz", "volumetric_field_01.f64.gz", "application/gzip"],
-    ["volume_manifest", "volumetric_manifest_json", "Volumetric Manifest", "volumetric_manifest.json", "application/json"],
-  ]) items.push(artifact(id, type, name, "call_volume", await readFile(path.join(volumeRoot, file)), mediaType));
+  const volumeFixture = JSON.parse(await readFile(path.join(ROOT, "docs/phase10j/fixtures/volumetric_contract/cubic_constant_scalar.json"), "utf8"));
+  for (const [id, type, name, value] of [
+    ["volume_dataset", "volumetric_dataset_json", "Volumetric Dataset", volumeFixture.raw_dataset],
+    ["volume_grid", "volumetric_grid_json", "Volumetric Grid", volumeFixture.grid],
+    ["volume_field", "volumetric_field_json", "Volumetric Field", volumeFixture.raw_field],
+    ["volume_payload", "volumetric_payload_json", "Volumetric Payload", volumeFixture.raw_payload],
+    ["volume_manifest", "volumetric_manifest_json", "Volumetric Manifest", volumeFixture.manifest],
+  ]) items.push(artifact(id, type, name, "call_volume", Buffer.from(JSON.stringify(value))));
+  const volumeBinary = Buffer.alloc(volumeFixture.values.length * Float64Array.BYTES_PER_ELEMENT);
+  volumeFixture.values.forEach((value, index) => volumeBinary.writeDoubleLE(value, index * Float64Array.BYTES_PER_ELEMENT));
+  items.push(artifact("volume_binary", "volumetric_binary", "cubic-constant.f64", "call_volume", volumeBinary, "application/vnd.mdi.volumetric+float64"));
   items.push(artifact("metrics", "metrics_json", "Generic Metrics", "call_metrics", Buffer.from(JSON.stringify({ rows: [{ metric: "count", value: 3, unit: "count" }] }))));
   items.push({ ...artifact("legacy", "metrics_json", "Legacy Result", "call_legacy", Buffer.from("{}")), version: "0" });
   items.push(artifact("html", "report_html", "HTML Report", "call_report", Buffer.from("<script>window.__artifactExecuted=true</script>"), "text/html"));
