@@ -592,17 +592,91 @@ def test_phase10m3_postgres_redis_minio_canonical_selection_and_pinning(
 
         _redis_smoke(f"m3-{suffix}")
         minio, minio_bucket = _minio_client()
-        minio.put_object(Bucket=minio_bucket, Key=minio_key, Body=b'{"contract":"phase10m3.selection-metadata.v1"}', ContentType="application/json")
+        artifact_payload = b'{"contract":"phase10m3.selection-metadata.v1"}'
+        minio.put_object(
+            Bucket=minio_bucket,
+            Key=minio_key,
+            Body=artifact_payload,
+            ContentType="application/json",
+        )
         repos = SqlAlchemyRepositoryBundle.create(engine)
-        monkeypatch.setattr("mdi_api.routers.workspaces._repositories", lambda: repos)
-        monkeypatch.setattr("mdi_api.routers.workspaces._service", lambda: WorkspaceProjectionService(repos))
-        project_id, job_id, artifact_id = f"project_m3_{suffix}", f"job_m3_{suffix}", f"artifact_m3_{suffix}"
+        monkeypatch.setattr(
+            "mdi_api.routers.workspaces._repositories", lambda: repos
+        )
+        monkeypatch.setattr(
+            "mdi_api.routers.workspaces._service",
+            lambda: WorkspaceProjectionService(repos),
+        )
+        project_id = f"project_m3_{suffix}"
+        dataset_id = f"dataset_m3_{suffix}"
+        profile_id = f"profile_m3_{suffix}"
+        artifact_id = f"artifact_m3_{suffix}"
         tool_call_id = f"call_m3_{suffix}"
-        checksum = "a" * 64
-        repos.projects.save({"id": project_id, "name": project_id, "createdBy": "user_local"})
-        repos.jobs.save({"id": job_id, "projectId": project_id, "status": "completed", "kind": "analysis", "createdBy": "user_local"})
-        repos.tool_calls.save({"id": tool_call_id, "jobId": job_id, "stepId": "phonon_band", "toolId": "phonon.band", "status": "completed"})
-        repos.artifacts.save({"id": artifact_id, "projectId": project_id, "jobId": job_id, "toolCallId": tool_call_id, "type": "phonon_band_json", "version": "1.0", "contentType": "application/json", "contentHash": checksum, "sha256": checksum, "storageKey": minio_key})
+        checksum = sha256(artifact_payload).hexdigest()
+        repos.projects.save(
+            {"id": project_id, "name": project_id, "createdBy": "user_local"}
+        )
+        repos.datasets.save(
+            {
+                "id": dataset_id,
+                "projectId": project_id,
+                "name": dataset_id,
+                "status": "profile_ready",
+                "createdBy": "user_local",
+            }
+        )
+        profile = _exact_phonon_profile(
+            dataset_id=dataset_id,
+            profile_id=profile_id,
+            suffix=suffix,
+        )
+        repos.data_profiles.save(profile)
+        planned = planner_jobs(
+            PlannerJobsRequest(
+                userPrompt="Create a combined phonon band and density of states product.",
+                projectId=project_id,
+                datasetId=dataset_id,
+                profileId=profile_id,
+                intentSchemaVersion="1.0",
+                selectedResourceIds=["phonon_band_1", "phonon_dos_1"],
+                provider="mock",
+            ),
+            provider=MockLLMProvider(
+                fixed_plan={"invalid": "legacy planner path must not execute"}
+            ),
+            repositories=repos,
+        )
+        assert planned.ok is True
+        assert planned.job_id and planned.plan_id and planned.plan_hash
+        assert planned.plan_schema_version == "0.2"
+        job_id = planned.job_id
+        repos.jobs.set_status(job_id, "queued")
+        repos.jobs.set_status(job_id, "running")
+        repos.jobs.set_status(job_id, "completed")
+        repos.tool_calls.save(
+            {
+                "id": tool_call_id,
+                "jobId": job_id,
+                "stepId": "phonon_band",
+                "toolId": "phonon.band",
+                "status": "completed",
+            }
+        )
+        repos.artifacts.save(
+            {
+                "id": artifact_id,
+                "projectId": project_id,
+                "datasetId": dataset_id,
+                "jobId": job_id,
+                "toolCallId": tool_call_id,
+                "type": "phonon_band_json",
+                "version": "1.0",
+                "contentType": "application/json",
+                "contentHash": checksum,
+                "sha256": checksum,
+                "storageKey": minio_key,
+            }
+        )
 
         client = TestClient(create_app())
         try:
