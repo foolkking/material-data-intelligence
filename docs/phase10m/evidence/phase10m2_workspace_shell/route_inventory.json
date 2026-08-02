@@ -1,0 +1,22 @@
+{
+  "root": {
+    "route": "/",
+    "component": "PlannerWorkbench",
+    "compatibility": "UNCHANGED"
+  },
+  "workspace": {
+    "route": "/workspaces/{workspaceId}",
+    "component": "ScientificWorkspaceShell",
+    "loading": true,
+    "error": true
+  },
+  "activePanel": {
+    "query": "panel",
+    "exactMembershipRequired": true,
+    "unknownFallback": false
+  },
+  "deferred": {
+    "selection": "Phase 10M-3",
+    "typedRenderers": "Phase 10M-4"
+  }
+}

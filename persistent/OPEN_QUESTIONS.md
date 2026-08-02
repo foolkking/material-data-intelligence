@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-08-02 Phase 10M-2 Boundary
+
+No open design question blocks the sealed M2 shell. Canonical selection and
+cross-panel propagation remain M3; typed scientific renderers remain M4;
+report/recipe composition remains M5. These are phase boundaries, not M2
+implementation gaps to resolve implicitly.
+
 ## 2026-08-01 Phase 10M-1 Completion State
 
 The sealed M1 design is implemented and corrected implementation exact-SHA CI

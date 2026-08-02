@@ -1,0 +1,23 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "drawer": true,
+  "bottomSheet": true,
+  "focusedClose": true,
+  "focusRestored": true,
+  "overflow": {
+    "body": 0,
+    "root": 0
+  },
+  "minTouchTarget": 44,
+  "panel32SwitcherCount": 32,
+  "consoleErrors": [],
+  "pageErrors": [],
+  "externalRequests": [],
+  "calls": [
+    "/workspaces/workspace_partial",
+    "/workspaces/workspace_panel32"
+  ]
+}

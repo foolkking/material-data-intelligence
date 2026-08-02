@@ -1,0 +1,71 @@
+{
+  "browserName": "firefox",
+  "initialMetadataMs": 2348,
+  "navigationGroups": 9,
+  "selectedUrl": "panel_scientific_result",
+  "backForward": true,
+  "refresh": true,
+  "plannerTransition": true,
+  "states": {
+    "complete": {
+      "status": "COMPLETE",
+      "visible": true,
+      "sourceBanner": false,
+      "activePanelCount": 1
+    },
+    "running": {
+      "status": "RUNNING",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    },
+    "partial": {
+      "status": "PARTIAL_RESULTS",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    },
+    "legacy": {
+      "status": "LEGACY_READ_ONLY",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    },
+    "stale": {
+      "status": "STALE",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    },
+    "unsupported": {
+      "status": "UNSUPPORTED",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    }
+  },
+  "panelCapCases": {},
+  "metadataCalls": [
+    "/workspaces/workspace_complete",
+    "/workspaces/workspace_complete",
+    "/workspaces/workspace_complete",
+    "/workspaces/workspace_running",
+    "/workspaces/workspace_partial",
+    "/workspaces/workspace_legacy",
+    "/workspaces/workspace_stale",
+    "/workspaces/workspace_unsupported",
+    "/projects/project_local/workspaces?limit=25",
+    "/workspaces/workspace_complete"
+  ],
+  "artifactPayloadCalls": [],
+  "maxConcurrentRequests": 1,
+  "overflow": {
+    "body": 0,
+    "root": 0
+  },
+  "domCount": 181,
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failedResponses": [],
+  "externalRequests": []
+}

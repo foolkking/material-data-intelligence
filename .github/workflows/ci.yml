@@ -107,6 +107,18 @@ jobs:
             --compare-with "${GITHUB_WORKSPACE}/docs/phase10l/evidence/phase10l5_natural_language_closure/browser_semantic_contract.json"
         working-directory: apps/web
 
+      - name: Replay Phase 10M-2 Workspace shell browser evidence
+        env:
+          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
+          MDI_PHASE10M2_BROWSERS: chromium,firefox,webkit
+          MDI_PHASE10M2_EVIDENCE_PORT: "3224"
+        run: |
+          node test/workspace-shell-browser-evidence.mjs --validate-fixtures
+          node test/workspace-shell-browser-evidence.mjs \
+            --output-dir "${RUNNER_TEMP}/phase10m2-browser-replay" \
+            --compare-with "${GITHUB_WORKSPACE}/docs/phase10m/evidence/phase10m2_workspace_shell/browser_semantic_contract.json"
+        working-directory: apps/web
+
       - name: Build
         run: npm run build
         working-directory: apps/web
@@ -353,10 +365,10 @@ jobs:
           fi
 
           # P0: every explicitly selected integration test must be collected and pass.
-          if [ "${PASSED:-0}" -lt 37 ]; then
+          if [ "${PASSED:-0}" -lt 38 ]; then
             echo ""
-            echo "ERROR: Only ${PASSED:-0}/37 integration tests passed."
-            echo "Expected: at least 37 passed."
+            echo "ERROR: Only ${PASSED:-0}/38 integration tests passed."
+            echo "Expected: at least 38 passed."
             exit 1
           fi
 
@@ -365,6 +377,7 @@ jobs:
             test_phase10l4_postgres_redis_minio_single_tool_interpretation \
             test_phase10l4_postgres_redis_minio_partial_execution_interpretation \
             test_phase10m1_postgres_redis_minio_workspace_domain_persistence \
+            test_phase10m2_postgres_redis_minio_workspace_shell_api_contract \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[dataset\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[structure\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[materials_ml\]' \

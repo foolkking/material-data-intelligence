@@ -831,6 +831,41 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(profileIntelligence.textContent).toContain("FORMULA_VALUES_PARTIALLY_INVALID");
   });
 
+  it("loads metadata-only Workspace history and exposes exact Workspace routes", async () => {
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.includes("/projects/project_local/workspaces")) {
+        expect(init?.method).toBe("GET");
+        return jsonResponse({
+          items: [{
+            workspaceId: "workspace_history_1",
+            projectId: "project_local",
+            sourceJobId: "job_history_1",
+            title: "Historical phonon analysis",
+            projectedStatus: "LEGACY_READ_ONLY",
+            readOnly: true,
+            analysisPlanSchemaVersion: "0.1",
+            panelCount: 4,
+            artifactCount: 2,
+            interpretationCount: 0,
+            revision: 1,
+            updatedAt: "2026-08-01T00:00:00Z",
+            projectionHash: "a".repeat(64),
+          }],
+          nextCursor: null,
+          limit: 25,
+        });
+      }
+      return mockPlannerFetch(input, init);
+    });
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+    await user.click(screen.getByRole("button", { name: "Workspace history" }));
+    const dialog = await screen.findByRole("dialog", { name: "Scientific Workspaces" });
+    expect(within(dialog).getByText("Historical phonon analysis")).not.toBeNull();
+    expect(within(dialog).getByRole("link", { name: "Open" })).toHaveAttribute("href", "/workspaces/workspace_history_1");
+  });
+
   it("shows only server-owned DeepSeek configuration with no browser key or custom endpoint input", async () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);

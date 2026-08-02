@@ -1,0 +1,32 @@
+{
+  "metadataOnly": true,
+  "maxConcurrentRequests": 1,
+  "initialRouteDevelopmentMs": 3494,
+  "domCount": 181,
+  "panelCapCases": {
+    "1": {
+      "elapsedMs": 1204,
+      "apiPanelCount": 1,
+      "serializedBytes": 3106,
+      "domCount": 181
+    },
+    "8": {
+      "elapsedMs": 1201,
+      "apiPanelCount": 8,
+      "serializedBytes": 11515,
+      "domCount": 181
+    },
+    "32": {
+      "elapsedMs": 1209,
+      "apiPanelCount": 32,
+      "serializedBytes": 40089,
+      "domCount": 181
+    },
+    "repeatedSwitches": {
+      "count": 20,
+      "activePanelCount": 1,
+      "listenerGrowthObserved": false
+    }
+  },
+  "claim": "development/browser acceptance evidence, not a production capacity claim"
+}

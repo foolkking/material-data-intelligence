@@ -1,8 +1,7 @@
 # Phase 10M Unified Scientific Workspace
 
-Status: Phase 10M-1 implementation is complete and corrected implementation
-exact-SHA CI is verified. The completion-record and verified queue-archive CI
-gates remain required before this phase can be called archived.
+Status: Phase 10M-1 is archived. Phase 10M-2 Workspace shell implementation is
+active and its exact-SHA lifecycle remains required before archive.
 
 ## Reading order
 
@@ -19,6 +18,11 @@ gates remain required before this phase can be called archived.
 11. [M1 API](phase10m1_workspace_api.md)
 12. [M1 historical projection](phase10m1_historical_job_projection.md)
 13. [M1 evidence](phase10m1_evidence.md)
+14. [M2 Workspace shell](phase10m2_workspace_shell.md)
+15. [M2 route and navigation](phase10m2_route_and_navigation.md)
+16. [M2 state UI](phase10m2_workspace_state_ui.md)
+17. [M2 responsive/accessibility](phase10m2_responsive_accessibility.md)
+18. [M2 evidence](phase10m2_evidence.md)
 
 ## Status vocabulary
 
@@ -29,6 +33,6 @@ gates remain required before this phase can be called archived.
 - **UNRESOLVED BLOCKER**: none affecting Phase 10M-1.
 - **FUTURE SCOPE**: Phase 10N or later work excluded from Phase 10M.
 
-Phase 10M-0 remains the sealed architecture authority. Phase 10M-1 is complete
-and retained as the sole TASKS block pending verified archive. The Workspace
-page and M2 presentation surface are intentionally deferred.
+Phase 10M-0 remains the sealed architecture authority. M1 owns the persisted
+domain and API. M2 adds only the route and metadata shell; exact selection and
+typed scientific rendering remain M3 and M4 scope.

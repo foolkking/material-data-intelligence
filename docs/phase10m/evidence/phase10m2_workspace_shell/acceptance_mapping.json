@@ -1,0 +1,58 @@
+{
+  "expected": 7,
+  "implemented": 7,
+  "missing": 0,
+  "extra": 0,
+  "duplicate": 0,
+  "items": [
+    {
+      "id": "M2-A01",
+      "category": "Routing",
+      "requirement": "/workspaces/{workspaceId}, direct load, typed 404/source states, root compatibility",
+      "evidence": "ScientificWorkspaceShell.test.tsx and browser matrix",
+      "result": "PASS"
+    },
+    {
+      "id": "M2-A02",
+      "category": "IA",
+      "requirement": "Nine groups, one active panel, data rail and overlay inspector",
+      "evidence": "workspace-shell-model.test.ts and browser matrix",
+      "result": "PASS"
+    },
+    {
+      "id": "M2-A03",
+      "category": "Navigation",
+      "requirement": "Exact panel query, back/forward and refresh",
+      "evidence": "active_panel_url.json, back_forward.json and refresh.json",
+      "result": "PASS"
+    },
+    {
+      "id": "M2-A04",
+      "category": "State",
+      "requirement": "Running, partial, failed, stale, legacy and unsupported surfaces",
+      "evidence": "ScientificWorkspaceShell.test.tsx and state captures",
+      "result": "PASS"
+    },
+    {
+      "id": "M2-A05",
+      "category": "History",
+      "requirement": "Metadata-only Project history opens exact persisted Workspace",
+      "evidence": "PlannerWorkbench.test.tsx and planner_transition.json",
+      "result": "PASS"
+    },
+    {
+      "id": "M2-A06",
+      "category": "Browser",
+      "requirement": "Chromium, Firefox, WebKit and Chromium 390x844",
+      "evidence": "browser_matrix.json and screenshots",
+      "result": "PASS"
+    },
+    {
+      "id": "M2-A07",
+      "category": "Accessibility",
+      "requirement": "Landmarks, keyboard/focus, status text and no overflow",
+      "evidence": "accessibility.json and responsive.json",
+      "result": "PASS"
+    }
+  ]
+}

@@ -1,5 +1,16 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-02 ADR Addendum: Metadata-Only Workspace Shell
+
+Implement M-D006, M-D013 through M-D017, M-D021, and the panel portion of
+M-D023 without changing M1 contracts. `/` remains PlannerWorkbench and
+`/workspaces/{workspaceId}` loads one exact metadata snapshot. The `panel`
+query selects only an exact visible panel; unknown IDs do not fall back.
+Desktop uses data rail/navigation/one panel/overlay inspector; mobile uses one
+panel plus context drawer and inspector bottom sheet. Artifact payloads,
+selection propagation, renderer science, and execution authority remain
+outside M2.
+
 ## 2026-08-01 ADR Addendum: Phase 10M-1 Implementation Boundary
 
 The M0-sealed Workspace architecture is now implemented additively in M1.

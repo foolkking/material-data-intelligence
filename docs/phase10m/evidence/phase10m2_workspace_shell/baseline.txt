@@ -1,0 +1,7 @@
+Phase 10M-2 baseline
+branch=master
+initial_head=08f2133c6a02b64a199f40a0b17ccfa5d0e68cc7
+initial_origin_master=08f2133c6a02b64a199f40a0b17ccfa5d0e68cc7
+phase10m1_archive_ci=30706443734 success
+migration_head=0007_phase10m1_workspace_domain
+worktree_at_entry=TASKS admission only

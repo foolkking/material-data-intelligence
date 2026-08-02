@@ -31,9 +31,8 @@ Current Phase 10L-5 closure references:
 
 ## Phase 10M Unified Scientific Workspace
 
-Phase 10M-0 sealed the architecture. Phase 10M-1 now implements the first
-reference-only Workspace domain/persistence boundary; the Workspace page
-remains deferred to M2:
+Phase 10M-0 sealed the architecture, M1 archived the reference-only persisted
+domain/API, and M2 implements the additive metadata Workspace shell:
 
 - [`phase10m/README.md`](phase10m/README.md): Phase 10M canonical documentation entry.
 - [`phase10m/phase10m0_workspace_fact_audit.md`](phase10m/phase10m0_workspace_fact_audit.md): current product maturity and authority audit.
@@ -62,6 +61,11 @@ remains deferred to M2:
 - [`phase10m/phase10m1_historical_job_projection.md`](phase10m/phase10m1_historical_job_projection.md): explicit lazy projection policy.
 - [`phase10m/evidence/phase10m1_workspace_domain_persistence/`](phase10m/evidence/phase10m1_workspace_domain_persistence/): sanitized M1 evidence.
 - [`phase10m/phase10m2_next_scope.md`](phase10m/phase10m2_next_scope.md): reviewer gate after M1.
+- [`phase10m/phase10m2_workspace_shell.md`](phase10m/phase10m2_workspace_shell.md): implemented shell and authority boundary.
+- [`phase10m/phase10m2_route_and_navigation.md`](phase10m/phase10m2_route_and_navigation.md): route, exact panel URL, history, and Planner transition.
+- [`phase10m/phase10m2_workspace_state_ui.md`](phase10m/phase10m2_workspace_state_ui.md): typed Workspace/panel state projection.
+- [`phase10m/phase10m2_responsive_accessibility.md`](phase10m/phase10m2_responsive_accessibility.md): desktop/mobile/focus contract.
+- [`phase10m/phase10m2_evidence.md`](phase10m/phase10m2_evidence.md): browser, service, security, and manifest evidence.
 
 ## Phase 10K Material Intelligence
 

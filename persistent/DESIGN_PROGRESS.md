@@ -1,5 +1,17 @@
 # DESIGN_PROGRESS
 
+## 2026-08-02 Phase 10M-2 Workspace Shell Candidate
+
+- Added `/workspaces/{workspaceId}` with cancellable metadata loading, stale
+  response prevention, the sealed nine navigation groups, one active panel,
+  exact `panel` history state, desktop data rail, and overlay inspector.
+- Added mobile context/panel drawer and inspector bottom sheet, visible typed
+  running/partial/failed/stale/legacy/unsupported states, inert audit JSON,
+  and PlannerWorkspace history/idempotent current-Job entry points.
+- Focused frontend and M1 backend regressions pass. Current browser evidence
+  passes Chromium/Firefox/WebKit/390x844 with zero overflow and external
+  requests. Full regression and exact-SHA lifecycle remain open.
+
 ## 2026-08-01 Phase 10M-1 Complete, Awaiting Verified Archive
 
 - Implemented the sealed Workspace domain contracts across Python, checked-in

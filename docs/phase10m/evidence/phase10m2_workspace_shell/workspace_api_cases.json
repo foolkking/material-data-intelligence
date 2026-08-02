@@ -1,0 +1,9 @@
+{
+  "metadataFirst": true,
+  "endpoint": "GET /workspaces/{workspaceId}",
+  "abortSignal": true,
+  "staleResponseGuard": true,
+  "artifactPayloadRequests": 0,
+  "hiddenCreateOnGet": false,
+  "concurrencyObserved": 1
+}

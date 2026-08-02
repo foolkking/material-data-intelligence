@@ -1,0 +1,6 @@
+{
+  "realLlmCalls": 0,
+  "newLlmCallSites": 0,
+  "reason": "Phase 10M-2 consumes persisted Workspace and Job state",
+  "deepSeekPolicyRegression": "PASS"
+}

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { createTranslator, type Locale, type MessageKey } from "../lib/i18n";
+import { createWorkspace, listProjectWorkspaces, WorkspaceApiError, type WorkspaceSummary } from "../lib/workspace-api";
 import { ViewerSceneRendererSurface } from "./viewer-scene/ViewerSceneRendererSurface";
 import { TrajectoryViewerSurface } from "./trajectory-viewer/TrajectoryViewerSurface";
 import { PhononBandPreviewPanel } from "./phonon-band/PhononBandPreviewPanel";
@@ -146,6 +147,12 @@ export function PlannerWorkbench() {
   const [interpretationOutcome, setInterpretationOutcome] = useState<InterpretationResponse["outcome"] | "">("");
   const [interpretationDiagnostics, setInterpretationDiagnostics] = useState<string[]>([]);
   const [interpretationBusy, setInterpretationBusy] = useState(false);
+  const [workspaceBusy, setWorkspaceBusy] = useState(false);
+  const [workspaceError, setWorkspaceError] = useState("");
+  const [workspaceHistoryOpen, setWorkspaceHistoryOpen] = useState(false);
+  const [workspaceHistoryBusy, setWorkspaceHistoryBusy] = useState(false);
+  const [workspaceHistoryError, setWorkspaceHistoryError] = useState("");
+  const [workspaceHistory, setWorkspaceHistory] = useState<WorkspaceSummary[]>([]);
   const eventSourceRef = useRef<EventSource | null>(null);
 
   const plan = createdResult?.plan || snapshot.job?.analysisPlan || null;
@@ -481,6 +488,43 @@ export function PlannerWorkbench() {
     }
   }
 
+  async function handleOpenWorkspace() {
+    if (!jobId || workspaceBusy) return;
+    setWorkspaceBusy(true);
+    setWorkspaceError("");
+    try {
+      const response = await createWorkspace(
+        { sourceJobId: jobId },
+        `planner-workspace-${projectId}-${jobId}`.slice(0, 180),
+      );
+      const workspaceId = response.data?.workspace.workspaceId;
+      if (!workspaceId) throw new Error("Workspace projection returned no Workspace identity.");
+      window.location.assign(`/workspaces/${encodeURIComponent(workspaceId)}`);
+    } catch (error) {
+      const message = error instanceof WorkspaceApiError || error instanceof Error
+        ? error.message
+        : "Workspace projection failed.";
+      setWorkspaceError(message.replace(/[\r\n\t]+/g, " ").slice(0, 240));
+    } finally {
+      setWorkspaceBusy(false);
+    }
+  }
+
+  async function handleOpenWorkspaceHistory() {
+    setWorkspaceHistoryOpen(true);
+    setWorkspaceHistoryBusy(true);
+    setWorkspaceHistoryError("");
+    try {
+      const response = await listProjectWorkspaces(projectId, { limit: 25 });
+      setWorkspaceHistory(response.data?.items || []);
+    } catch (error) {
+      const message = error instanceof WorkspaceApiError || error instanceof Error ? error.message : "Workspace history failed.";
+      setWorkspaceHistoryError(message.replace(/[\r\n\t]+/g, " ").slice(0, 240));
+    } finally {
+      setWorkspaceHistoryBusy(false);
+    }
+  }
+
   async function refreshSnapshot(nextJobId: string): Promise<WorkspaceSnapshot> {
     const settled = await Promise.allSettled([
       getPlannerJob(nextJobId),
@@ -588,6 +632,7 @@ export function PlannerWorkbench() {
         jobLabel={jobId ? `${jobId} · ${statusLabel(jobStatus, t)}` : t("emptyJob")}
         onOpenDataset={() => setDatasetDialogOpen(true)}
         onOpenModel={() => setModelDialogOpen(true)}
+        onOpenWorkspaceHistory={handleOpenWorkspaceHistory}
       />
 
       <section
@@ -677,6 +722,10 @@ export function PlannerWorkbench() {
               interpretationDiagnostics={interpretationDiagnostics}
               interpretationBusy={interpretationBusy}
               canInterpret={Boolean(jobId && planHash && isTerminal)}
+              canOpenWorkspace={Boolean(jobId)}
+              workspaceBusy={workspaceBusy}
+              workspaceError={workspaceError}
+              onOpenWorkspace={handleOpenWorkspace}
               onInterpretationModeChange={setInterpretationMode}
               onInterpret={handleCreateInterpretation}
             />
@@ -721,6 +770,15 @@ export function PlannerWorkbench() {
           onClose={() => setModelDialogOpen(false)}
         />
       ) : null}
+
+      {workspaceHistoryOpen ? (
+        <WorkspaceHistoryDialog
+          items={workspaceHistory}
+          busy={workspaceHistoryBusy}
+          error={workspaceHistoryError}
+          onClose={() => setWorkspaceHistoryOpen(false)}
+        />
+      ) : null}
     </main>
   );
 }
@@ -737,6 +795,7 @@ function GlobalContextBar(props: {
   jobLabel: string;
   onOpenDataset: () => void;
   onOpenModel: () => void;
+  onOpenWorkspaceHistory: () => void;
 }) {
   const { t } = props;
   return (
@@ -760,6 +819,7 @@ function GlobalContextBar(props: {
         <strong>{props.jobLabel}</strong>
       </div>
       <div className="top-settings" aria-label={t("settings")}>
+        <button type="button" className="secondary" onClick={props.onOpenWorkspaceHistory}>Workspace history</button>
         <LanguageToggle locale={props.locale} setLocale={props.setLocale} t={t} />
         <button type="button" className="icon-button" aria-label={t("theme")}>
           ◐
@@ -776,6 +836,20 @@ function GlobalContextBar(props: {
         </label>
       </div>
     </header>
+  );
+}
+
+function WorkspaceHistoryDialog({ items, busy, error, onClose }: { items: WorkspaceSummary[]; busy: boolean; error: string; onClose: () => void }) {
+  return (
+    <div className="dialog-backdrop" onMouseDown={(event) => event.currentTarget === event.target && onClose()}>
+      <section className="dialog-panel workspace-history-dialog" role="dialog" aria-modal="true" aria-labelledby="workspace-history-title">
+        <header className="dialog-header"><div><span className="eyebrow">Project history</span><h2 id="workspace-history-title">Scientific Workspaces</h2></div><button type="button" className="icon-button" aria-label="Close Workspace history" onClick={onClose}>X</button></header>
+        {busy ? <p role="status">Loading Workspace history</p> : null}
+        {error ? <div className="validation-failure" role="alert">{error}</div> : null}
+        {!busy && !error && !items.length ? <p className="empty-state">No persisted Workspaces in this Project.</p> : null}
+        <ul className="workspace-history-list">{items.map((item) => <li key={item.workspaceId}><div><strong>{item.title}</strong><span>{item.projectedStatus} · Job {compactIdentity(item.sourceJobId)}</span><small>Plan {item.analysisPlanSchemaVersion || "legacy"} · revision {item.revision}</small></div><a href={`/workspaces/${encodeURIComponent(item.workspaceId)}`}>Open</a></li>)}</ul>
+      </section>
+    </div>
   );
 }
 
@@ -1432,6 +1506,10 @@ function ResultsExportTab(props: {
   interpretationDiagnostics: string[];
   interpretationBusy: boolean;
   canInterpret: boolean;
+  canOpenWorkspace: boolean;
+  workspaceBusy: boolean;
+  workspaceError: string;
+  onOpenWorkspace: () => void;
   onInterpretationModeChange: (mode: "DETERMINISTIC" | "STRICT_PROVIDER") => void;
   onInterpret: () => void;
 }) {
@@ -1460,6 +1538,13 @@ function ResultsExportTab(props: {
           <Field label="planId" value={props.planId || t("emptyProvenance")} />
           <Field label="planHash" value={props.planHash || t("emptyProvenance")} />
         </dl>
+        <div className="workspace-entry-command">
+          <button type="button" disabled={!props.canOpenWorkspace || props.workspaceBusy} onClick={props.onOpenWorkspace}>
+            {props.workspaceBusy ? "Opening Workspace" : "Open Workspace"}
+          </button>
+          <span>Persist or reopen the exact Workspace for this Job.</span>
+        </div>
+        {props.workspaceError ? <div className="validation-failure" role="alert"><strong>Workspace unavailable</strong><p>{props.workspaceError}</p></div> : null}
       </section>
       {!hasResults ? (
         <section className="panel">

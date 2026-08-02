@@ -1,0 +1,243 @@
+{
+  "chromium": {
+    "browserName": "chromium",
+    "initialMetadataMs": 3494,
+    "navigationGroups": 9,
+    "selectedUrl": "panel_scientific_result",
+    "backForward": true,
+    "refresh": true,
+    "plannerTransition": true,
+    "states": {
+      "complete": {
+        "status": "COMPLETE",
+        "visible": true,
+        "sourceBanner": false,
+        "activePanelCount": 1
+      },
+      "running": {
+        "status": "RUNNING",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "partial": {
+        "status": "PARTIAL_RESULTS",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "legacy": {
+        "status": "LEGACY_READ_ONLY",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "stale": {
+        "status": "STALE",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "unsupported": {
+        "status": "UNSUPPORTED",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      }
+    },
+    "panelCapCases": {
+      "1": {
+        "elapsedMs": 1204,
+        "apiPanelCount": 1,
+        "serializedBytes": 3106,
+        "domCount": 181
+      },
+      "8": {
+        "elapsedMs": 1201,
+        "apiPanelCount": 8,
+        "serializedBytes": 11515,
+        "domCount": 181
+      },
+      "32": {
+        "elapsedMs": 1209,
+        "apiPanelCount": 32,
+        "serializedBytes": 40089,
+        "domCount": 181
+      },
+      "repeatedSwitches": {
+        "count": 20,
+        "activePanelCount": 1,
+        "listenerGrowthObserved": false
+      }
+    },
+    "metadataCalls": [
+      "/workspaces/workspace_complete",
+      "/workspaces/workspace_complete",
+      "/workspaces/workspace_complete",
+      "/workspaces/workspace_running",
+      "/workspaces/workspace_partial",
+      "/workspaces/workspace_legacy",
+      "/workspaces/workspace_stale",
+      "/workspaces/workspace_unsupported",
+      "/workspaces/workspace_panel1",
+      "/workspaces/workspace_panel8",
+      "/workspaces/workspace_panel32",
+      "/workspaces/workspace_complete",
+      "/projects/project_local/workspaces?limit=25",
+      "/workspaces/workspace_complete"
+    ],
+    "artifactPayloadCalls": [],
+    "maxConcurrentRequests": 1,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "domCount": 181,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedResponses": [],
+    "externalRequests": []
+  },
+  "firefox": {
+    "browserName": "firefox",
+    "initialMetadataMs": 2348,
+    "navigationGroups": 9,
+    "selectedUrl": "panel_scientific_result",
+    "backForward": true,
+    "refresh": true,
+    "plannerTransition": true,
+    "states": {
+      "complete": {
+        "status": "COMPLETE",
+        "visible": true,
+        "sourceBanner": false,
+        "activePanelCount": 1
+      },
+      "running": {
+        "status": "RUNNING",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "partial": {
+        "status": "PARTIAL_RESULTS",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "legacy": {
+        "status": "LEGACY_READ_ONLY",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "stale": {
+        "status": "STALE",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "unsupported": {
+        "status": "UNSUPPORTED",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      }
+    },
+    "panelCapCases": {},
+    "metadataCalls": [
+      "/workspaces/workspace_complete",
+      "/workspaces/workspace_complete",
+      "/workspaces/workspace_complete",
+      "/workspaces/workspace_running",
+      "/workspaces/workspace_partial",
+      "/workspaces/workspace_legacy",
+      "/workspaces/workspace_stale",
+      "/workspaces/workspace_unsupported",
+      "/projects/project_local/workspaces?limit=25",
+      "/workspaces/workspace_complete"
+    ],
+    "artifactPayloadCalls": [],
+    "maxConcurrentRequests": 1,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "domCount": 181,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedResponses": [],
+    "externalRequests": []
+  },
+  "webkit": {
+    "browserName": "webkit",
+    "initialMetadataMs": 1739,
+    "navigationGroups": 9,
+    "selectedUrl": "panel_scientific_result",
+    "backForward": true,
+    "refresh": true,
+    "plannerTransition": true,
+    "states": {
+      "complete": {
+        "status": "COMPLETE",
+        "visible": true,
+        "sourceBanner": false,
+        "activePanelCount": 1
+      },
+      "running": {
+        "status": "RUNNING",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "partial": {
+        "status": "PARTIAL_RESULTS",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "legacy": {
+        "status": "LEGACY_READ_ONLY",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "stale": {
+        "status": "STALE",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      },
+      "unsupported": {
+        "status": "UNSUPPORTED",
+        "visible": true,
+        "sourceBanner": true,
+        "activePanelCount": 1
+      }
+    },
+    "panelCapCases": {},
+    "metadataCalls": [
+      "/workspaces/workspace_complete",
+      "/workspaces/workspace_complete",
+      "/workspaces/workspace_complete",
+      "/workspaces/workspace_running",
+      "/workspaces/workspace_partial",
+      "/workspaces/workspace_legacy",
+      "/workspaces/workspace_stale",
+      "/workspaces/workspace_unsupported",
+      "/projects/project_local/workspaces?limit=25",
+      "/workspaces/workspace_complete"
+    ],
+    "artifactPayloadCalls": [],
+    "maxConcurrentRequests": 1,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "domCount": 181,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedResponses": [],
+    "externalRequests": []
+  }
+}

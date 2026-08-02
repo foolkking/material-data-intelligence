@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "phase10m2.workspace_shell_browser.v1",
+  "route": "/workspaces/{workspaceId}",
+  "navigationGroups": 9,
+  "navigation": {
+    "selectedPanelId": "panel_scientific_result",
+    "backForward": true,
+    "refresh": true
+  },
+  "states": {
+    "complete": {
+      "status": "COMPLETE",
+      "visible": true,
+      "sourceBanner": false,
+      "activePanelCount": 1
+    },
+    "running": {
+      "status": "RUNNING",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    },
+    "partial": {
+      "status": "PARTIAL_RESULTS",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    },
+    "legacy": {
+      "status": "LEGACY_READ_ONLY",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    },
+    "stale": {
+      "status": "STALE",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    },
+    "unsupported": {
+      "status": "UNSUPPORTED",
+      "visible": true,
+      "sourceBanner": true,
+      "activePanelCount": 1
+    }
+  },
+  "plannerTransition": {
+    "exactHistoryWorkspace": true,
+    "newLlmCalls": 0
+  },
+  "accessibility": {
+    "landmarks": true,
+    "oneActivePanel": true,
+    "inspectorFocus": true,
+    "focusRestored": true
+  },
+  "responsive": {
+    "viewport": [
+      390,
+      844
+    ],
+    "drawer": true,
+    "bottomSheet": true,
+    "panel32SwitcherCount": 32,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    }
+  },
+  "performance": {
+    "metadataOnly": true,
+    "maxConcurrentRequests": 1,
+    "initialRouteDevelopmentMs": 3494,
+    "domCount": 181,
+    "panelCapCases": {
+      "1": {
+        "elapsedMs": 1204,
+        "apiPanelCount": 1,
+        "serializedBytes": 3106,
+        "domCount": 181
+      },
+      "8": {
+        "elapsedMs": 1201,
+        "apiPanelCount": 8,
+        "serializedBytes": 11515,
+        "domCount": 181
+      },
+      "32": {
+        "elapsedMs": 1209,
+        "apiPanelCount": 32,
+        "serializedBytes": 40089,
+        "domCount": 181
+      },
+      "repeatedSwitches": {
+        "count": 20,
+        "activePanelCount": 1,
+        "listenerGrowthObserved": false
+      }
+    },
+    "claim": "development/browser acceptance evidence, not a production capacity claim"
+  },
+  "security": {
+    "inertArtifactContent": true,
+    "artifactPayloadRequests": 0,
+    "externalRequests": 0,
+    "realLlmCalls": 0
+  }
+}

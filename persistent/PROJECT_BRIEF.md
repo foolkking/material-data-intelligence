@@ -1,5 +1,15 @@
 # PROJECT_BRIEF
 
+## 2026-08-02 Phase 10M-2 Workspace Shell Implementation
+
+Phase 10M-1 is archived. The active reviewer-approved M2 task adds the exact
+`/workspaces/{workspaceId}` metadata shell, nine-group information
+architecture, URL active-panel state, Planner history/projection transition,
+responsive context drawer, overlay inspector, and typed state/error surfaces.
+It consumes existing Workspace APIs and adds no migration, scientific
+calculation, renderer authority, selection propagation, or LLM call site.
+Implementation/completion/archive exact-SHA gates remain required.
+
 ## 2026-08-01 Phase 10M-1 Complete, Awaiting Verified Archive
 
 The reviewer-approved Phase 10M-1 task is the sole active implementation.

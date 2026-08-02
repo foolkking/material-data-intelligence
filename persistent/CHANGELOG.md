@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-08-02 - Phase 10M-2 Unified Workspace Shell Candidate
+
+- Added the additive Workspace route, metadata-only shell, nine-group
+  navigation, exact panel deep links, status/error projections, desktop/mobile
+  context and inspector surfaces, and PlannerWorkspace history/current-Job
+  transition.
+- Added focused frontend tests, browser matrix runner, PostgreSQL/Redis/MinIO
+  service gate extension, security/performance evidence, and M2 documentation.
+- Workspace contracts/migration/API semantics, scientific execution,
+  interpretation, report/recipe persistence, dependencies, and DeepSeek policy
+  are unchanged. `REAL_LLM_CALLS = 0`.
+
 ## 2026-08-01 - Phase 10M-1 Implementation Exact-SHA CI Complete
 
 - Added strict Workspace, Panel, and Selection contracts, migration 0007,

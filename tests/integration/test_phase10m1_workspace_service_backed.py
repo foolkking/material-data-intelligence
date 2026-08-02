@@ -6,6 +6,7 @@ import os
 import uuid
 
 import pytest
+from fastapi.testclient import TestClient
 from alembic.command import downgrade as alembic_downgrade
 from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
@@ -15,6 +16,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.schema import CreateSchema, DropSchema
 
 from mdi_api.repositories import SqlAlchemyRepositoryBundle
+from mdi_api.main import create_app
 from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
 from mdi_api.workspaces import WorkspaceProjectionService
 from mdi_llm import MockLLMProvider
@@ -408,6 +410,113 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         assert minio.list_objects_v2(
             Bucket=minio_bucket, Prefix=minio_key
         ).get("KeyCount", 0) == 0
+        minio = None
+    finally:
+        if minio is not None:
+            try:
+                minio.delete_object(Bucket=minio_bucket, Key=minio_key)
+            except Exception:
+                pass
+        if engine is not None:
+            engine.dispose()
+        try:
+            with base_engine.begin() as connection:
+                connection.execute(DropSchema(schema_name, cascade=True))
+        finally:
+            base_engine.dispose()
+
+
+@pytest.mark.integration
+def test_phase10m2_postgres_redis_minio_workspace_shell_api_contract(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Exercise the exact metadata APIs consumed by the M2 browser shell."""
+
+    if os.getenv("MDI_RUN_INTEGRATION") != "1":
+        pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
+
+    database_url = _required_postgres_url()
+    suffix = uuid.uuid4().hex[:12]
+    schema_name = f"phase10m2_{suffix}"
+    schema_url = _schema_database_url(database_url, schema_name)
+    base_engine = create_engine(database_url, future=True)
+    engine = None
+    minio = None
+    minio_bucket = ""
+    minio_key = f"phase10m2/{suffix}/metadata-source.json"
+    try:
+        with base_engine.begin() as connection:
+            connection.execute(CreateSchema(schema_name))
+        monkeypatch.setenv("DATABASE_URL", schema_url)
+        monkeypatch.delenv("MDI_DATABASE_URL", raising=False)
+        monkeypatch.delenv("POSTGRES_HOST", raising=False)
+        config = AlembicConfig("apps/api/alembic.ini")
+        config.set_main_option("script_location", "apps/api/alembic")
+        alembic_upgrade(config, "head")
+        engine = create_engine(schema_url, future=True)
+        with engine.begin() as connection:
+            connection.execute(text("CREATE TABLE IF NOT EXISTS organizations (id VARCHAR(64) PRIMARY KEY, name VARCHAR(160) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
+            connection.execute(text("CREATE TABLE IF NOT EXISTS users (id VARCHAR(64) PRIMARY KEY, email VARCHAR(320) NOT NULL UNIQUE, display_name VARCHAR(160) NOT NULL, is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
+
+        _redis_smoke(f"m2-{suffix}")
+        minio, minio_bucket = _minio_client()
+        payload = b'{"contract":"phase10m2.metadata-source.v1"}'
+        minio.put_object(Bucket=minio_bucket, Key=minio_key, Body=payload, ContentType="application/json")
+
+        repos = SqlAlchemyRepositoryBundle.create(engine)
+        project_id = f"project_m2_{suffix}"
+        job_id = f"job_m2_{suffix}"
+        repos.projects.save({"id": project_id, "name": project_id, "createdBy": "user_local"})
+        repos.jobs.save({"id": job_id, "projectId": project_id, "status": "completed", "kind": "analysis", "createdBy": "user_local"})
+
+        client = TestClient(create_app())
+        try:
+            before = client.get(f"/projects/{project_id}/workspaces")
+            candidates = client.get(f"/projects/{project_id}/analysis-jobs")
+            assert before.status_code == candidates.status_code == 200
+            assert before.json()["items"] == []
+            assert candidates.json()["items"][0]["jobId"] == job_id
+            assert client.get("/workspaces/workspace_missing").status_code == 404
+            assert client.get(f"/projects/{project_id}/workspaces").json()["items"] == []
+
+            created = client.post(
+                "/workspaces",
+                headers={"Idempotency-Key": f"phase10m2-{suffix}"},
+                json={"sourceJobId": job_id, "title": "Service-backed Workspace shell"},
+            )
+            assert created.status_code == 201
+            workspace_id = created.json()["workspace"]["workspaceId"]
+            etag = created.headers["etag"]
+            assert created.json()["sourceSummary"]["metadataOnly"] is True
+            assert "payload" not in json.dumps(created.json()).lower()
+            assert minio_key not in json.dumps(created.json())
+
+            loaded = client.get(f"/workspaces/{workspace_id}")
+            panels = client.get(f"/workspaces/{workspace_id}/panels")
+            history = client.get(f"/workspaces/{workspace_id}/layout-revisions")
+            listed = client.get(f"/projects/{project_id}/workspaces")
+            unchanged = client.get(f"/workspaces/{workspace_id}", headers={"If-None-Match": etag})
+            assert loaded.status_code == panels.status_code == history.status_code == listed.status_code == 200
+            assert unchanged.status_code == 304
+            assert loaded.json()["workspace"]["workspaceId"] == workspace_id
+            assert loaded.json()["currentLayoutRevision"]["layout"]["activePanelId"]
+            assert len(panels.json()["items"]) == len(loaded.json()["panels"])
+            assert listed.json()["items"][0]["workspaceId"] == workspace_id
+            assert len(repos.workspaces.list_by_project(project_id)) == 1
+
+            replay = client.post(
+                "/workspaces",
+                headers={"Idempotency-Key": f"phase10m2-{suffix}"},
+                json={"sourceJobId": job_id, "title": "Service-backed Workspace shell"},
+            )
+            assert replay.status_code == 200
+            assert replay.headers["x-idempotent-replay"] == "true"
+            assert replay.json()["workspace"]["workspaceId"] == workspace_id
+            assert len(repos.workspaces.list_by_project(project_id)) == 1
+        finally:
+            client.close()
+
+        minio.delete_object(Bucket=minio_bucket, Key=minio_key)
         minio = None
     finally:
         if minio is not None:

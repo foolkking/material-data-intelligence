@@ -1,5 +1,16 @@
 # TASK_BOARD
 
+## 2026-08-02 Phase 10M-2 In Progress
+
+- [x] Route, metadata loader, sealed IA, active-panel URL, state surfaces,
+  Planner history/transition, responsive shell, tests, browser runner, and
+  service-backed gate are implemented.
+- [ ] Complete full local regression, sanitized evidence manifest,
+  implementation exact-SHA CI, completion-record CI, and verified queue
+  archive.
+- [ ] Phase 10M-3 remains blocked until M2 archive verification; no M3 source
+  work is included in the M2 implementation.
+
 ## 2026-08-01 Phase 10M-1 Complete, Awaiting Verified Archive
 
 - [x] Phase 10M-1 implementation is complete and remains the sole `TASKS.md`

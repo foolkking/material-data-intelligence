@@ -1,0 +1,13 @@
+focused_workspace_frontend=48 passed
+planner_workspace_regression=31 passed
+focused_m1_backend=24 passed
+full_backend_non_integration=1107 passed, 1 skipped, 39 deselected, 63 warnings
+full_frontend=351 passed across 54 files
+frontend_typecheck=PASS
+frontend_production_build=PASS
+npm_audit=UNAVAILABLE (registry mirror 404 NOT_IMPLEMENTED)
+browser=Chromium Firefox WebKit and Chromium 390x844 PASS
+console_errors=0
+unapproved_external_requests=0
+local_service_backed=UNAVAILABLE because Docker CLI is not installed
+exact_sha_ci=required before completion
