@@ -2,20 +2,23 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getWorkspace } from "../../lib/workspace-api";
+import { getWorkspace, patchWorkspace } from "../../lib/workspace-api";
 import { ScientificWorkspaceShell } from "./ScientificWorkspaceShell";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
+import { encodeWorkspaceSelectionUrl, validateWorkspaceSelectionContext } from "./workspace-selection-contract";
 
 vi.mock("../../lib/workspace-api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../lib/workspace-api")>();
-  return { ...actual, getWorkspace: vi.fn() };
+  return { ...actual, getWorkspace: vi.fn(), patchWorkspace: vi.fn() };
 });
 
 const getWorkspaceMock = vi.mocked(getWorkspace);
+const patchWorkspaceMock = vi.mocked(patchWorkspace);
 
 beforeEach(() => {
   window.history.replaceState({}, "", "/workspaces/workspace_demo");
   getWorkspaceMock.mockReset();
+  patchWorkspaceMock.mockReset();
   getWorkspaceMock.mockResolvedValue({ data: workspaceSnapshotFixture(), status: 200, etag: "etag", idempotentReplay: null });
 });
 
@@ -93,6 +96,38 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(screen.getByRole("heading", { name: "Scientific results" })).not.toBeNull();
   });
 
+  it("restores, clears, and exposes canonical URL selection without a substitute", async () => {
+    const token = encodeWorkspaceSelectionUrl(datasetSelection());
+    window.history.replaceState({}, "", `/workspaces/workspace_demo?panel=panel_data&selection=${token}`);
+    const user = userEvent.setup();
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    expect(await screen.findByTestId("workspace-selection-status")).toHaveTextContent("Restored canonical selection");
+    expect(screen.getByTestId("workspace-selection-status")).toHaveTextContent("DATASET_SAMPLE");
+    await user.click(screen.getByRole("button", { name: "Inspector" }));
+    expect(screen.getByRole("heading", { name: "Canonical selection" })).not.toBeNull();
+    expect(screen.getAllByText("Exact kind and source scope match.").length).toBeGreaterThan(1);
+    await user.click(screen.getByRole("button", { name: "Clear selection" }));
+    expect(screen.getByTestId("workspace-selection-status")).toHaveTextContent("Canonical selection cleared");
+    expect(window.location.search).toBe("?panel=panel_data");
+  });
+
+  it("selects an exact Artifact and pins only through the existing ETag patch", async () => {
+    const snapshot = workspaceSnapshotFixture();
+    patchWorkspaceMock.mockResolvedValue({ data: snapshot, status: 200, etag: "etag_next", idempotentReplay: false });
+    const user = userEvent.setup();
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await screen.findByTestId("scientific-workspace-shell");
+    await user.click(screen.getByRole("button", { name: /Results/ }));
+    await user.click(screen.getByTestId("workspace-select-artifact-panel_results"));
+    expect(screen.getByTestId("workspace-selection-status")).toHaveTextContent("Selected exact ARTIFACT");
+    expect(window.location.search).toContain("selection=");
+    await user.click(screen.getByRole("button", { name: "Inspector" }));
+    await user.click(screen.getByRole("button", { name: "Pin selection" }));
+    await waitFor(() => expect(patchWorkspaceMock).toHaveBeenCalledWith("workspace_demo", "etag", expect.objectContaining({ pinnedSelection: expect.objectContaining({ primary: expect.objectContaining({ artifactId: "artifact_demo" }) }) })));
+    expect(screen.getByText(/Pin state: SAVED/u)).not.toBeNull();
+    expect(screen.getByRole("status", { name: "Panel selection compatibility" })).toHaveTextContent("EXACT");
+  });
+
   it("aborts stale metadata requests when the route identity changes", async () => {
     let firstSignal: AbortSignal | undefined;
     getWorkspaceMock
@@ -118,3 +153,11 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(screen.getByText("private stack message")).not.toBeNull();
   });
 });
+
+function datasetSelection() {
+  return validateWorkspaceSelectionContext({
+    schemaVersion: "1.0", sourceScopeHash: "a".repeat(64),
+    primary: { selectionSchemaVersion: "1.0", kind: "DATASET_SAMPLE", sourceScopeHash: "a".repeat(64), projectId: "project_demo", datasetId: "dataset_demo", datasetVersion: "v1", objectId: "object_1", sampleRef: "sample_1" },
+    secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false,
+  });
+}

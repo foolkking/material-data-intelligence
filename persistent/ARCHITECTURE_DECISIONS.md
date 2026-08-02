@@ -1,5 +1,20 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-02 ADR Addendum: Phase 10M-3 Selection Runtime
+
+**Decision:** Activate the existing `WorkspaceSelectionContext 1.0` without a
+contract version, migration, or API change. Use canonical JSON/base64url,
+exact source identity, a 32-subscriber Workspace-scoped in-memory store,
+renderer-contract declarations, and the existing explicit PATCH/ETag Pin.
+
+**Consequences:** Array order, labels, fuzzy matching, nearest values, latest
+versions, and Artifact payloads never become identity authority. Whole
+Artifact source metadata is the only M3 panel emitter. Exact identities may be
+restored from URL/Pin and consumed only by declared compatible panels; absent
+formal IDs remain typed unavailable until a later reviewed mapper exists.
+Selection cannot execute or compute science and creates no LLM call site. All
+future real LLM calls remain DeepSeek-only through `DEEPSEEK_KEY`.
+
 ## 2026-08-02 ADR Addendum: Metadata-Only Workspace Shell
 
 Implement M-D006, M-D013 through M-D017, M-D021, and the panel portion of

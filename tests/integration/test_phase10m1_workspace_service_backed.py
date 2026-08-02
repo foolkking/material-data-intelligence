@@ -21,6 +21,11 @@ from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
 from mdi_api.workspaces import WorkspaceProjectionService
 from mdi_llm import MockLLMProvider
 from mdi_schemas import DataProfile
+from mdi_schemas.workspace import (
+    WorkspaceSelectionContext,
+    WorkspaceSelectionKind,
+    WorkspaceSelectionRef,
+)
 
 from tests.test_phase10l3_planner_api import _phonon_profile
 
@@ -533,6 +538,108 @@ def test_phase10m2_postgres_redis_minio_workspace_shell_api_contract(
             assert replay.headers["x-idempotent-replay"] == "true"
             assert replay.json()["workspace"]["workspaceId"] == workspace_id
             assert len(repos.workspaces.list_by_project(project_id)) == 1
+        finally:
+            client.close()
+
+        minio.delete_object(Bucket=minio_bucket, Key=minio_key)
+        minio = None
+    finally:
+        if minio is not None:
+            try:
+                minio.delete_object(Bucket=minio_bucket, Key=minio_key)
+            except Exception:
+                pass
+        if engine is not None:
+            engine.dispose()
+        try:
+            with base_engine.begin() as connection:
+                connection.execute(DropSchema(schema_name, cascade=True))
+        finally:
+            base_engine.dispose()
+
+
+@pytest.mark.integration
+def test_phase10m3_postgres_redis_minio_canonical_selection_and_pinning(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Persist exact selection metadata without creating execution authority."""
+
+    if os.getenv("MDI_RUN_INTEGRATION") != "1":
+        pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
+
+    database_url = _required_postgres_url()
+    suffix = uuid.uuid4().hex[:12]
+    schema_name = f"phase10m3_{suffix}"
+    schema_url = _schema_database_url(database_url, schema_name)
+    base_engine = create_engine(database_url, future=True)
+    engine = None
+    minio = None
+    minio_bucket = ""
+    minio_key = f"phase10m3/{suffix}/selection-metadata.json"
+    try:
+        with base_engine.begin() as connection:
+            connection.execute(CreateSchema(schema_name))
+        monkeypatch.setenv("DATABASE_URL", schema_url)
+        monkeypatch.delenv("MDI_DATABASE_URL", raising=False)
+        monkeypatch.delenv("POSTGRES_HOST", raising=False)
+        config = AlembicConfig("apps/api/alembic.ini")
+        config.set_main_option("script_location", "apps/api/alembic")
+        alembic_upgrade(config, "head")
+        engine = create_engine(schema_url, future=True)
+        with engine.begin() as connection:
+            connection.execute(text("CREATE TABLE IF NOT EXISTS organizations (id VARCHAR(64) PRIMARY KEY, name VARCHAR(160) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
+            connection.execute(text("CREATE TABLE IF NOT EXISTS users (id VARCHAR(64) PRIMARY KEY, email VARCHAR(320) NOT NULL UNIQUE, display_name VARCHAR(160) NOT NULL, is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
+
+        _redis_smoke(f"m3-{suffix}")
+        minio, minio_bucket = _minio_client()
+        minio.put_object(Bucket=minio_bucket, Key=minio_key, Body=b'{"contract":"phase10m3.selection-metadata.v1"}', ContentType="application/json")
+        repos = SqlAlchemyRepositoryBundle.create(engine)
+        monkeypatch.setattr("mdi_api.routers.workspaces._repositories", lambda: repos)
+        monkeypatch.setattr("mdi_api.routers.workspaces._service", lambda: WorkspaceProjectionService(repos))
+        project_id, job_id, artifact_id = f"project_m3_{suffix}", f"job_m3_{suffix}", f"artifact_m3_{suffix}"
+        checksum = "a" * 64
+        repos.projects.save({"id": project_id, "name": project_id, "createdBy": "user_local"})
+        repos.jobs.save({"id": job_id, "projectId": project_id, "status": "completed", "kind": "analysis", "createdBy": "user_local"})
+        repos.artifacts.save({"id": artifact_id, "projectId": project_id, "jobId": job_id, "toolCallId": f"call_m3_{suffix}", "type": "phonon_band_json", "version": "1.0", "contentType": "application/json", "contentHash": checksum, "sha256": checksum, "storageKey": minio_key})
+
+        client = TestClient(create_app())
+        try:
+            created = client.post("/workspaces", headers={"Idempotency-Key": f"phase10m3-{suffix}"}, json={"sourceJobId": job_id, "title": "M3 canonical selection"})
+            assert created.status_code == 201, created.json()
+            body = created.json()
+            workspace = body["workspace"]
+            result_panel = next(item for item in body["panels"] if item["panelKind"] == "SCIENTIFIC_RESULT")
+            assert result_panel["emittedSelectionKinds"] == ["ARTIFACT"]
+            assert "ARTIFACT" in result_panel["acceptedSelectionKinds"]
+            selection = WorkspaceSelectionContext(
+                sourceScopeHash=workspace["sourceReferenceHash"],
+                primary=WorkspaceSelectionRef(
+                    kind=WorkspaceSelectionKind.ARTIFACT,
+                    sourceScopeHash=workspace["sourceReferenceHash"],
+                    projectId=project_id,
+                    jobId=job_id,
+                    artifactId=artifact_id,
+                    artifactChecksum=checksum,
+                    artifactContract="phonon_band_json",
+                    artifactVersion="1.0",
+                    toolCallId=f"call_m3_{suffix}",
+                ),
+                secondary=(),
+                compatibility="EXACT",
+                cleared=False,
+            )
+            pinned = client.patch(f"/workspaces/{workspace['workspaceId']}", headers={"If-Match": created.headers["etag"]}, json={"pinnedSelection": selection.model_dump(mode="json")})
+            assert pinned.status_code == 200, pinned.json()
+            assert pinned.json()["workspace"]["pinnedSelection"]["primary"]["artifactId"] == artifact_id
+            assert len(repos.jobs.list_by_project(project_id)) == 1
+            assert len(repos.artifacts.list_for_job(job_id)) == 1
+
+            stale = selection.model_dump(mode="json")
+            stale["sourceScopeHash"] = "b" * 64
+            stale["primary"]["sourceScopeHash"] = "b" * 64
+            rejected = client.patch(f"/workspaces/{workspace['workspaceId']}", headers={"If-Match": pinned.headers["etag"]}, json={"pinnedSelection": stale})
+            assert rejected.status_code == 409
+            assert rejected.json()["detail"]["code"] == "SELECTION_STALE"
         finally:
             client.close()
 

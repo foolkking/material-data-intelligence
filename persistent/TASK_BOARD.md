@@ -1,5 +1,16 @@
 # TASK_BOARD
 
+## 2026-08-02 Phase 10M-3 In Progress
+
+- [x] Strict contract runtime, URL codec, store, declarations, compatibility,
+  propagation, Inspector, explicit Pin, browser runner, and sanitized evidence
+  are implemented locally.
+- [x] Focused frontend `38 passed`, focused backend/evidence `9 passed`,
+  Chromium/Firefox/WebKit/mobile and typecheck pass.
+- [ ] Full regression and implementation exact-SHA CI remain.
+- [ ] Completion-record and verified queue archive remain.
+- [ ] Phase 10M-4 is reviewer-gated and has no executable task.
+
 ## 2026-08-02 Phase 10M-2 Complete, Awaiting Verified Archive
 
 - [x] Route, metadata loader, sealed IA, active-panel URL, state surfaces,
@@ -104,8 +115,9 @@ historical replay passes 40/40 with suite
   the verified queue block is archived. Phase 10L-1 subsequently entered its
   reviewer-approved implementation task as recorded above.
 
-`TASKS.md` has zero task blocks. Phase 10M-1 remains a reviewer gate; Future
-Scope and Not Planned remain absent.
+The statement below belonged to the earlier M0 closure. Current queue authority
+is the single Phase 10M-3 block described at the top of this file; Future Scope
+and Not Planned remain absent.
 
 The remaining sections are historical task records and do not override the
 current board above.

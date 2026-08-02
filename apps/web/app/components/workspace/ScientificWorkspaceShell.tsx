@@ -4,8 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   getWorkspace,
+  patchWorkspace,
   type WorkspaceApiError,
   type WorkspacePanel,
+  type WorkspaceSelectionContext,
   type WorkspaceSnapshot,
 } from "../../lib/workspace-api";
 import {
@@ -20,6 +22,16 @@ import {
   workspaceStatusCopy,
   workspaceStatusTone,
 } from "./workspace-shell-model";
+import {
+  decodeWorkspaceSelectionUrl,
+  encodeWorkspaceSelectionUrl,
+  WorkspaceSelectionError,
+} from "./workspace-selection-contract";
+import {
+  artifactSelectionFromPanel,
+  type WorkspaceSelectionDelivery,
+  WorkspaceSelectionStore,
+} from "./workspace-selection-runtime";
 
 type LoadState = "LOADING" | "READY" | "NOT_FOUND" | "ERROR";
 
@@ -32,15 +44,48 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
   const [dataRailOpen, setDataRailOpen] = useState(true);
   const [mobileContextOpen, setMobileContextOpen] = useState(false);
   const [inspectorOpen, setInspectorOpen] = useState(false);
+  const [etag, setEtag] = useState<string | null>(null);
+  const [selection, setSelection] = useState<WorkspaceSelectionContext | null>(null);
+  const [selectionOriginPanelId, setSelectionOriginPanelId] = useState<string | null>(null);
+  const [selectionMessage, setSelectionMessage] = useState("No canonical selection is active.");
+  const [deliveries, setDeliveries] = useState<Record<string, WorkspaceSelectionDelivery>>({});
+  const [pinState, setPinState] = useState<"IDLE" | "SAVING" | "SAVED" | "CONFLICT" | "ERROR">("IDLE");
   const inspectorCloseRef = useRef<HTMLButtonElement | null>(null);
   const inspectorTriggerRef = useRef<HTMLButtonElement | null>(null);
   const requestIdRef = useRef(0);
+  const selectionStoreRef = useRef<WorkspaceSelectionStore | null>(null);
 
-  const applyUrlPanel = useCallback((nextSnapshot: WorkspaceSnapshot) => {
+  const applyUrlState = useCallback((nextSnapshot: WorkspaceSnapshot) => {
     const requested = new URLSearchParams(window.location.search).get("panel");
     const selected = panelForRequestedId(nextSnapshot, requested);
     setInvalidPanelId(requested && !selected ? requested : null);
     setActivePanelId(selected?.panelId || null);
+    const token = new URLSearchParams(window.location.search).get("selection");
+    if (!token) {
+      setSelectionOriginPanelId(null);
+      try {
+        const pinned = nextSnapshot.workspace.pinnedSelection;
+        if (pinned) new WorkspaceSelectionStore(nextSnapshot.workspace, pinned);
+        setSelection(pinned);
+        setSelectionMessage(pinned ? "Restored the explicitly pinned canonical selection." : "No canonical selection is active.");
+      } catch {
+        setSelection(null);
+        setSelectionMessage("Pinned selection is stale and was not restored.");
+      }
+      return;
+    }
+    try {
+      const decoded = decodeWorkspaceSelectionUrl(token);
+      new WorkspaceSelectionStore(nextSnapshot.workspace, decoded);
+      setSelection(decoded);
+      setSelectionOriginPanelId(null);
+      setSelectionMessage("Restored canonical selection from the exact URL token.");
+    } catch (error) {
+      const code = error instanceof WorkspaceSelectionError ? error.code : boundedErrorMessage(String(error));
+      setSelection(null);
+      setSelectionOriginPanelId(null);
+      setSelectionMessage(`Selection URL rejected: ${code}`);
+    }
   }, []);
 
   const load = useCallback(() => {
@@ -52,7 +97,8 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
       .then((response) => {
         if (requestId !== requestIdRef.current || !response.data) return;
         setSnapshot(response.data);
-        applyUrlPanel(response.data);
+        setEtag(response.etag);
+        applyUrlState(response.data);
         setLoadState("READY");
       })
       .catch((error: WorkspaceApiError | Error) => {
@@ -62,17 +108,44 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
         setLoadMessage(status === 404 ? "Workspace not found" : boundedErrorMessage(error.message));
       });
     return () => controller.abort();
-  }, [applyUrlPanel, workspaceId]);
+  }, [applyUrlState, workspaceId]);
 
   useEffect(() => load(), [load]);
 
   useEffect(() => {
     const onPopState = () => {
-      if (snapshot) applyUrlPanel(snapshot);
+      if (snapshot) applyUrlState(snapshot);
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, [applyUrlPanel, snapshot]);
+  }, [applyUrlState, snapshot]);
+
+  useEffect(() => {
+    if (!snapshot) return;
+    const store = new WorkspaceSelectionStore(snapshot.workspace);
+    selectionStoreRef.current = store;
+    setDeliveries({});
+    const unsubscribe = snapshot.panels.map((panel) => store.subscribe(panel, (delivery) => {
+      setDeliveries((current) => ({ ...current, [panel.panelId]: delivery }));
+    }));
+    if (selection) store.set(selection);
+    return () => {
+      unsubscribe.forEach((dispose) => dispose());
+      if (selectionStoreRef.current === store) selectionStoreRef.current = null;
+    };
+  }, [snapshot]);
+
+  useEffect(() => {
+    const store = selectionStoreRef.current;
+    if (!store) return;
+    try {
+      if (selection) store.set(selection);
+      else store.clear();
+    } catch (error) {
+      setSelection(null);
+      setSelectionMessage(`Selection rejected: ${boundedErrorMessage(String(error))}`);
+    }
+  }, [selection]);
 
   useEffect(() => {
     if (!inspectorOpen) return;
@@ -99,6 +172,61 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
     setMobileContextOpen(false);
   }, []);
 
+  const activateSelection = useCallback((nextSelection: WorkspaceSelectionContext, originPanelId: string) => {
+    try {
+      selectionStoreRef.current?.set(nextSelection, originPanelId);
+      setSelection(nextSelection);
+      setSelectionOriginPanelId(originPanelId);
+      setSelectionMessage(`Selected exact ${nextSelection.primary?.kind || "identity"}.`);
+      setPinState("IDLE");
+      const next = new URL(window.location.href);
+      next.searchParams.set("selection", encodeWorkspaceSelectionUrl(nextSelection));
+      window.history.pushState({ panelId: activePanelId, selection: true }, "", next);
+    } catch (error) {
+      setSelectionMessage(`Selection rejected: ${boundedErrorMessage(String(error))}`);
+    }
+  }, [activePanelId]);
+
+  const clearSelection = useCallback(() => {
+    selectionStoreRef.current?.clear(activePanelId);
+    setSelection(null);
+    setSelectionOriginPanelId(null);
+    setSelectionMessage("Canonical selection cleared.");
+    setPinState("IDLE");
+    const next = new URL(window.location.href);
+    next.searchParams.delete("selection");
+    window.history.pushState({ panelId: activePanelId }, "", next);
+  }, [activePanelId]);
+
+  const pinSelection = useCallback(() => {
+    if (!snapshot || !selection || !etag || snapshot.workspace.readOnly) return;
+    setPinState("SAVING");
+    void patchWorkspace(snapshot.workspace.workspaceId, etag, { pinnedSelection: selection })
+      .then((response) => {
+        if (!response.data) throw new Error("Workspace PATCH returned no snapshot.");
+        setSnapshot(response.data);
+        setEtag(response.etag);
+        setPinState("SAVED");
+      })
+      .catch((error: WorkspaceApiError | Error) => {
+        setPinState("status" in error && error.status === 412 ? "CONFLICT" : "ERROR");
+      });
+  }, [etag, selection, snapshot]);
+
+  const copySelectionLink = useCallback(() => {
+    if (!selection) return;
+    if (!navigator.clipboard) {
+      setSelectionMessage("Selection link copy is unavailable.");
+      return;
+    }
+    const next = new URL(window.location.href);
+    next.searchParams.set("selection", encodeWorkspaceSelectionUrl(selection));
+    void navigator.clipboard.writeText(next.toString()).then(
+      () => setSelectionMessage("Canonical selection link copied."),
+      () => setSelectionMessage("Selection link copy is unavailable."),
+    );
+  }, [selection]);
+
   if (loadState === "LOADING") return <WorkspaceLoadState title="Loading Workspace" message={loadMessage} />;
   if (loadState === "NOT_FOUND") return <WorkspaceLoadState title="Workspace not found" message="The exact Workspace ID is unavailable in this project." actionHref="/" />;
   if (loadState === "ERROR" || !snapshot) return <WorkspaceLoadState title="Workspace unavailable" message={loadMessage} actionLabel="Retry" onAction={load} />;
@@ -123,6 +251,11 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
           <button ref={inspectorTriggerRef} type="button" className="secondary" onClick={() => setInspectorOpen(true)} aria-haspopup="dialog">Inspector</button>
         </div>
       </header>
+
+      <section className="workspace-selection-banner" role="status" aria-live="polite" data-testid="workspace-selection-status">
+        <strong>Canonical selection</strong><span>{selectionMessage}</span>
+        {selection?.primary ? <code>{selection.primary.kind}</code> : null}
+      </section>
 
       {workspace.readOnly || !["COMPLETE", "READY"].includes(workspace.projectedStatus) ? (
         <section className="workspace-state-banner" role="status" aria-label="Workspace source state">
@@ -159,7 +292,10 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
         </nav>
 
         <section className="workspace-main-panel" aria-labelledby="workspace-active-panel-title">
-          {activePanel ? <WorkspacePanelSurface panel={activePanel} workspace={workspace} snapshot={snapshot} /> : <WorkspaceEmptyState panelCount={visiblePanels.length} />}
+          {activePanel ? <WorkspacePanelSurface panel={activePanel} workspace={workspace} snapshot={snapshot} delivery={deliveries[activePanel.panelId] || null} onSelectArtifact={(panel) => {
+            const nextSelection = artifactSelectionFromPanel(panel, workspace);
+            if (nextSelection) activateSelection(nextSelection, panel.panelId);
+          }} /> : <WorkspaceEmptyState panelCount={visiblePanels.length} />}
         </section>
       </div>
 
@@ -175,7 +311,8 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
         <div className="workspace-inspector-backdrop" onMouseDown={(event) => event.currentTarget === event.target && setInspectorOpen(false)}>
           <aside className="workspace-inspector" role="dialog" aria-modal="true" aria-labelledby="workspace-inspector-title">
             <div className="workspace-drawer-header"><h2 id="workspace-inspector-title">Context inspector</h2><button ref={inspectorCloseRef} type="button" className="workspace-icon-button" aria-label="Close inspector" onClick={() => { setInspectorOpen(false); inspectorTriggerRef.current?.focus(); }}>X</button></div>
-            <p className="subtle">Exact source metadata for the active panel. Cross-panel selection is deferred to Phase 10M-3.</p>
+            <p className="subtle">Exact source metadata and canonical cross-panel selection state.</p>
+            <WorkspaceSelectionInspector selection={selection} originPanelId={selectionOriginPanelId} deliveries={deliveries} panels={visiblePanels} pinState={pinState} readOnly={workspace.readOnly} onClear={clearSelection} onCopy={copySelectionLink} onPin={pinSelection} onSelectPanel={selectPanel} />
             {activePanel ? <WorkspaceSourceList panel={activePanel} /> : <p>No active panel.</p>}
           </aside>
         </div>
@@ -184,7 +321,8 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
   );
 }
 
-function WorkspacePanelSurface({ panel, workspace, snapshot }: { panel: WorkspacePanel; workspace: WorkspaceSnapshot["workspace"]; snapshot: WorkspaceSnapshot }) {
+function WorkspacePanelSurface({ panel, workspace, snapshot, delivery, onSelectArtifact }: { panel: WorkspacePanel; workspace: WorkspaceSnapshot["workspace"]; snapshot: WorkspaceSnapshot; delivery: WorkspaceSelectionDelivery | null; onSelectArtifact: (panel: WorkspacePanel) => void }) {
+  const selectableArtifact = artifactSelectionFromPanel(panel, workspace);
   return (
     <article className="workspace-panel-surface" data-testid={`workspace-panel-${panel.panelKind.toLowerCase()}`}>
       <header className="workspace-panel-header">
@@ -192,6 +330,9 @@ function WorkspacePanelSurface({ panel, workspace, snapshot }: { panel: Workspac
         <span className={`workspace-status tone-${panelStateTone(panel.state)}`}>{panel.state}</span>
       </header>
       <p className="workspace-panel-state-copy">{panelStateCopy(panel.state)}</p>
+      <div className={`workspace-selection-delivery tone-${delivery?.compatibility === "EXACT" ? "success" : "muted"}`} role="status" aria-label="Panel selection compatibility">
+        <strong>Selection compatibility</strong><span>{delivery ? `${delivery.compatibility}: ${delivery.reason}` : "NOT_APPLICABLE: no selection runtime delivery yet."}</span>
+      </div>
       {panel.state === "PARTIAL" || panel.state === "BLOCKED_BY_DEPENDENCY" ? <div className="workspace-panel-warning" role="status">This panel reflects only successful source branches. Failed or blocked outputs are not presented as complete.</div> : null}
       <dl className="workspace-metadata-grid">
         <Metadata label="Renderer contract" value={panel.rendererContract} />
@@ -207,6 +348,7 @@ function WorkspacePanelSurface({ panel, workspace, snapshot }: { panel: Workspac
       {panel.panelKind === "EXECUTION" ? <WorkspaceExecutionSummary snapshot={snapshot} /> : null}
       {["FINDINGS", "EVIDENCE", "PROVENANCE", "REPORT"].includes(panel.panelKind) ? <WorkspaceReferenceSummary panel={panel} snapshot={snapshot} /> : null}
       {panel.panelKind === "SCIENTIFIC_RESULT" ? <p className="workspace-deferred-note">Scientific payload rendering is deferred to the typed renderer registry in Phase 10M-4. Exact metadata remains available here.</p> : null}
+      {selectableArtifact ? <button type="button" className="secondary workspace-selection-command" onClick={() => onSelectArtifact(panel)} data-testid={`workspace-select-artifact-${panel.panelId}`}>Select exact artifact</button> : null}
       <details className="workspace-audit-json"><summary>Audit JSON</summary><pre>{JSON.stringify({ panel, sourceSummary: snapshot.sourceSummary }, null, 2)}</pre></details>
     </article>
   );
@@ -237,6 +379,24 @@ function WorkspaceDataContext({ snapshot }: { snapshot: WorkspaceSnapshot }) {
 function WorkspaceSourceList({ panel }: { panel: WorkspacePanel }) {
   if (!panel.sourceRefs.length) return <p className="empty-state">This panel has no source references.</p>;
   return <ul className="workspace-source-list">{panel.sourceRefs.map((source) => <li key={`${source.kind}-${source.sourceId}`}><strong>{source.kind}</strong><span>{compactIdentity(source.sourceId, 36)}</span><small>{source.contract ? `${source.contract} ${source.contractVersion || ""}` : "Exact repository reference"}</small></li>)}</ul>;
+}
+
+function WorkspaceSelectionInspector({ selection, originPanelId, deliveries, panels, pinState, readOnly, onClear, onCopy, onPin, onSelectPanel }: { selection: WorkspaceSelectionContext | null; originPanelId: string | null; deliveries: Record<string, WorkspaceSelectionDelivery>; panels: WorkspacePanel[]; pinState: "IDLE" | "SAVING" | "SAVED" | "CONFLICT" | "ERROR"; readOnly: boolean; onClear: () => void; onCopy: () => void; onPin: () => void; onSelectPanel: (panel: WorkspacePanel) => void }) {
+  const primary = selection?.primary || null;
+  const originPanel = panels.find((panel) => panel.panelId === originPanelId);
+  const facts = primary ? Object.entries(primary).filter(([key, value]) => !["selectionSchemaVersion", "sourceScopeHash", "projectId", "kind"].includes(key) && value !== null) : [];
+  return <section className="workspace-selection-inspector" aria-label="Canonical selection inspector">
+    <h3>Canonical selection</h3>
+    {primary ? <><dl className="workspace-metadata-grid"><Metadata label="Kind" value={primary.kind} /><Metadata label="Origin panel" value={originPanel ? `${originPanel.title} (${originPanel.panelId})` : "URL or explicitly pinned state"} /><Metadata label="Project" value={compactIdentity(primary.projectId, 28)} /><Metadata label="Source scope" value={compactIdentity(primary.sourceScopeHash, 24)} />{facts.map(([key, value]) => <Metadata key={key} label={key} value={String(value)} />)}</dl>
+      <div className="workspace-selection-actions"><button type="button" className="secondary" onClick={onClear}>Clear selection</button><button type="button" className="secondary" onClick={onCopy}>Copy selection link</button><button type="button" onClick={onPin} disabled={readOnly || pinState === "SAVING"}>{pinState === "SAVING" ? "Pinning" : "Pin selection"}</button></div>
+      <p className="subtle" role="status">Pin state: {pinState}. Pinning is explicit; it never executes a tool, plan, or job.</p>
+    </> : <p className="empty-state">No canonical selection is active. Source metadata remains read-only.</p>}
+    <h3>Panel subscriptions</h3>
+    <ul className="workspace-selection-subscriptions">{panels.map((panel) => {
+      const delivery = deliveries[panel.panelId];
+      return <li key={panel.panelId}><div><strong>{panel.title}</strong><span>{delivery?.compatibility || "NOT_APPLICABLE"}</span><small>{delivery?.reason || "Awaiting selection runtime."}</small></div>{delivery?.compatibility === "EXACT" ? <button type="button" className="secondary" onClick={() => onSelectPanel(panel)}>Open panel</button> : null}</li>;
+    })}</ul>
+  </section>;
 }
 
 function WorkspaceEmptyState({ panelCount }: { panelCount: number }) {

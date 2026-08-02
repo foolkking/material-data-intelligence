@@ -1,0 +1,72 @@
+{
+  "registryVersion": "phase10m3.selection_registry.v1",
+  "declarations": {
+    "workspace.overview/1.0": {
+      "accepts": 13,
+      "emits": 0
+    },
+    "workspace.data/1.0": {
+      "accepts": [
+        "DATASET_SAMPLE",
+        "MATERIAL_OBJECT",
+        "STRUCTURE",
+        "PERIODIC_SITE",
+        "TRAJECTORY_ATOM",
+        "TRAJECTORY_FRAME"
+      ],
+      "emits": []
+    },
+    "workspace.artifact-metadata/1.0": {
+      "accepts": [
+        "PHONON_Q_POINT",
+        "PHONON_BRANCH",
+        "RECIPROCAL_POINT",
+        "VOLUMETRIC_FIELD",
+        "ARTIFACT"
+      ],
+      "emits": [
+        "ARTIFACT"
+      ]
+    },
+    "workspace.findings/1.0": {
+      "accepts": [
+        "PHONON_Q_POINT",
+        "PHONON_BRANCH",
+        "RECIPROCAL_POINT",
+        "VOLUMETRIC_FIELD",
+        "ARTIFACT",
+        "EVIDENCE_ITEM",
+        "CLAIM"
+      ],
+      "emits": []
+    },
+    "workspace.evidence/1.0": {
+      "accepts": [
+        "PHONON_Q_POINT",
+        "PHONON_BRANCH",
+        "RECIPROCAL_POINT",
+        "VOLUMETRIC_FIELD",
+        "ARTIFACT",
+        "EVIDENCE_ITEM",
+        "CLAIM"
+      ],
+      "emits": []
+    },
+    "workspace.provenance/1.0": {
+      "accepts": 13,
+      "emits": 0
+    }
+  },
+  "rejectedUnknownKind": true,
+  "rejectedForeignScope": true,
+  "rejectedWrongArtifact": true,
+  "actualEmitters": {
+    "workspace.artifact-metadata/1.0": [
+      "ARTIFACT"
+    ]
+  },
+  "deferredPayloadMappers": [
+    "workspace.findings/1.0",
+    "workspace.evidence/1.0"
+  ]
+}

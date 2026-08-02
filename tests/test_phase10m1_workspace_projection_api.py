@@ -11,6 +11,7 @@ from mdi_api.routers import planner
 from mdi_api.workspaces import WorkspaceDomainError, WorkspaceProjectionService
 from mdi_llm import DeterministicAnalysisIntentBuilder, MockLLMProvider, plan_capabilities
 from mdi_tool_registry import load_manifests
+from mdi_schemas.workspace import workspace_semantic_hash
 
 from tests.test_phase10l1_analysis_intent import _profile, _request
 
@@ -176,6 +177,19 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
     assert "artifact_1" in serialized
     assert "private/object/store/key" not in serialized
     assert "must-not-copy" not in serialized
+    panels = first.body["panels"]
+    overview = next(item for item in panels if item["panelKind"] == "OVERVIEW")
+    result_panel = next(item for item in panels if item["panelKind"] == "SCIENTIFIC_RESULT")
+    assert len(overview["acceptedSelectionKinds"]) == 13
+    assert overview["emittedSelectionKinds"] == []
+    assert result_panel["emittedSelectionKinds"] == ["ARTIFACT"]
+    assert result_panel["acceptedSelectionKinds"] == [
+        "PHONON_Q_POINT",
+        "PHONON_BRANCH",
+        "RECIPROCAL_POINT",
+        "VOLUMETRIC_FIELD",
+        "ARTIFACT",
+    ]
 
     with pytest.raises(WorkspaceDomainError) as conflict:
         service.project_job(
@@ -184,6 +198,49 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
             title="Conflicting title",
         )
     assert conflict.value.code == "WORKSPACE_CREATE_CONFLICT"
+
+
+def test_historical_empty_panel_declarations_are_read_projected_without_write() -> None:
+    repos = InMemoryRepositoryBundle.create()
+    _seed_modern(repos)
+    repos.artifacts.save(
+        {
+            "id": "artifact_historical",
+            "projectId": "project_1",
+            "datasetId": "dataset_1",
+            "jobId": "job_m1",
+            "toolCallId": "call_historical",
+            "type": "phonon_band_json",
+            "name": "phonon_band.json",
+            "storageKey": "artifact/historical",
+            "sizeBytes": 12,
+            "contentType": "application/json",
+            "contentHash": "e" * 64,
+            "sha256": "e" * 64,
+            "metadata": {"provenance": {}},
+        }
+    )
+    service = WorkspaceProjectionService(repos)
+    created, _ = service.project_job(source_job_id="job_m1", created_by="user_local")
+    workspace_id = created.body["workspace"]["workspaceId"]
+    result = next(item for item in created.body["panels"] if item["panelKind"] == "SCIENTIFIC_RESULT")
+
+    historical = {**result, "acceptedSelectionKinds": [], "emittedSelectionKinds": [], "contractProvenance": "phase10m1.workspace_projection.v1"}
+    historical["panelStateHash"] = workspace_semantic_hash({key: value for key, value in historical.items() if key != "panelStateHash"})
+    row = repos.workspaces.panels[(workspace_id, result["panelId"])]
+    row["accepted_selection_kinds_json"] = []
+    row["source_refs_json"]["emittedSelectionKinds"] = []
+    row["source_refs_json"]["contractProvenance"] = historical["contractProvenance"]
+    row["panel_state_hash"] = historical["panelStateHash"]
+
+    projected = service.get_snapshot(workspace_id)
+    projected_result = next(item for item in projected.body["panels"] if item["panelKind"] == "SCIENTIFIC_RESULT")
+    assert projected_result["emittedSelectionKinds"] == ["ARTIFACT"]
+    assert projected_result["contractProvenance"] == "phase10m3.selection_registry.v1"
+    persisted = repos.workspaces.get_panel(workspace_id, result["panelId"], project_id="project_1")
+    assert persisted["acceptedSelectionKinds"] == []
+    assert persisted["emittedSelectionKinds"] == []
+    assert persisted["contractProvenance"] == "phase10m1.workspace_projection.v1"
 
 
 def test_projection_states_cover_legacy_partial_stale_and_missing_sources() -> None:

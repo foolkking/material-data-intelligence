@@ -1,0 +1,5 @@
+{
+  "formalIdentity": "structureId/siteId when supplied",
+  "indexOnlyFallback": "TYPED_UNSUPPORTED",
+  "noFabricatedPass": true
+}

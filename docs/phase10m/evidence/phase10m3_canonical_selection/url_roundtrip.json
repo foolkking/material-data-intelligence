@@ -1,0 +1,8 @@
+{
+  "browser": "Chromium/Firefox/WebKit",
+  "canonical": true,
+  "maxEncodedBytes": 2048,
+  "restored": true,
+  "cleared": true,
+  "backForward": true
+}

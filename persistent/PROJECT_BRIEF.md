@@ -1,5 +1,17 @@
 # PROJECT_BRIEF
 
+## 2026-08-02 Phase 10M-3 Canonical Selection Implemented Locally
+
+Phase 10M-2 is archived at `78bdec18` with exact-SHA CI `30729804091`.
+The sole active task activates the existing `WorkspaceSelectionContext 1.0`
+as a strict frontend URL/runtime contract with exact panel subscriptions,
+typed compatibility, origin-aware propagation, Inspector navigation, and
+explicit M1 PATCH/ETag Pin. Whole Artifact metadata is the only current panel
+emitter; object identities absent from formal Artifacts remain typed
+unavailable. No migration, API, shared contract, LLM call site, provider,
+scientific calculation, dependency, or lockfile changes are introduced.
+Implementation, completion-record, and archive exact-SHA CI remain required.
+
 ## 2026-08-02 Phase 10M-2 Workspace Shell Complete, Awaiting Archive
 
 Phase 10M-1 is archived. The active reviewer-approved M2 task adds the exact

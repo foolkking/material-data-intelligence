@@ -87,6 +87,40 @@ export function workspaceSnapshotFixture(status: WorkspaceSnapshot["workspace"][
 }
 
 function panel(workspaceId: string, panelId: string, panelKind: WorkspacePanelKind, title: string, ordinal: number): WorkspacePanel {
+  const declarations: Record<WorkspacePanelKind, [WorkspacePanel["acceptedSelectionKinds"], WorkspacePanel["emittedSelectionKinds"]]> = {
+    OVERVIEW: [["DATASET_SAMPLE", "MATERIAL_OBJECT", "STRUCTURE", "PERIODIC_SITE", "TRAJECTORY_ATOM", "TRAJECTORY_FRAME", "PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT", "EVIDENCE_ITEM", "CLAIM"], []],
+    DATA: [["DATASET_SAMPLE", "MATERIAL_OBJECT", "STRUCTURE", "PERIODIC_SITE", "TRAJECTORY_ATOM", "TRAJECTORY_FRAME"], []],
+    PLAN: [[], []],
+    EXECUTION: [["ARTIFACT"], []],
+    SCIENTIFIC_RESULT: [["PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT"], ["ARTIFACT"]],
+    FINDINGS: [["PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT", "EVIDENCE_ITEM", "CLAIM"], []],
+    EVIDENCE: [["PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT", "EVIDENCE_ITEM", "CLAIM"], []],
+    PROVENANCE: [["DATASET_SAMPLE", "MATERIAL_OBJECT", "STRUCTURE", "PERIODIC_SITE", "TRAJECTORY_ATOM", "TRAJECTORY_FRAME", "PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT", "EVIDENCE_ITEM", "CLAIM"], []],
+    REPORT: [["ARTIFACT", "EVIDENCE_ITEM", "CLAIM"], []],
+  };
+  const renderer: Record<WorkspacePanelKind, string> = {
+    OVERVIEW: "workspace.overview/1.0", DATA: "workspace.data/1.0", PLAN: "workspace.plan/1.0",
+    EXECUTION: "workspace.execution/1.0", SCIENTIFIC_RESULT: "workspace.artifact-metadata/1.0",
+    FINDINGS: "workspace.findings/1.0", EVIDENCE: "workspace.evidence/1.0",
+    PROVENANCE: "workspace.provenance/1.0", REPORT: "workspace.report/1.0",
+  };
+  const source = panelKind === "SCIENTIFIC_RESULT" ? {
+    kind: "ARTIFACT" as const, sourceId: "artifact_demo", sourceHash: HASH,
+    contract: "platform.dataset.summary", contractVersion: "1.0", mediaType: "application/json",
+    projectId: "project_demo", jobId: "job_demo", toolCallId: "tool_call_demo", stepId: "step_demo",
+  } : panelKind === "FINDINGS" ? {
+    kind: "INTERPRETATION" as const, sourceId: "interpretation_demo", sourceHash: HASH,
+    contract: "grounded_interpretation", contractVersion: "1.0", mediaType: null,
+    projectId: "project_demo", jobId: "job_demo", toolCallId: null, stepId: null,
+  } : panelKind === "EVIDENCE" ? {
+    kind: "EVIDENCE_BUNDLE" as const, sourceId: "bundle_demo", sourceHash: HASH,
+    contract: "scientific_evidence_bundle", contractVersion: "1.0", mediaType: null,
+    projectId: "project_demo", jobId: "job_demo", toolCallId: null, stepId: null,
+  } : {
+    kind: "JOB" as const, sourceId: "job_demo", sourceHash: HASH, contract: null,
+    contractVersion: null, mediaType: null, projectId: "project_demo", jobId: "job_demo",
+    toolCallId: null, stepId: null,
+  };
   return {
     schemaVersion: "1.0",
     panelId,
@@ -95,23 +129,12 @@ function panel(workspaceId: string, panelId: string, panelKind: WorkspacePanelKi
     title,
     ordinal,
     visible: true,
-    sourceRefs: [{
-      kind: panelKind === "SCIENTIFIC_RESULT" ? "ARTIFACT" : "JOB",
-      sourceId: panelKind === "SCIENTIFIC_RESULT" ? "artifact_demo" : "job_demo",
-      sourceHash: HASH,
-      contract: panelKind === "SCIENTIFIC_RESULT" ? "platform.dataset.summary" : null,
-      contractVersion: panelKind === "SCIENTIFIC_RESULT" ? "1.0" : null,
-      mediaType: panelKind === "SCIENTIFIC_RESULT" ? "application/json" : null,
-      projectId: "project_demo",
-      jobId: "job_demo",
-      toolCallId: panelKind === "SCIENTIFIC_RESULT" ? "tool_call_demo" : null,
-      stepId: panelKind === "SCIENTIFIC_RESULT" ? "step_demo" : null,
-    }],
+    sourceRefs: [source],
     sourceReferenceHash: HASH,
-    rendererContract: `workspace.${panelKind.toLowerCase()}.metadata.v1`,
+    rendererContract: renderer[panelKind],
     state: "PRODUCED",
-    acceptedSelectionKinds: [],
-    emittedSelectionKinds: [],
+    acceptedSelectionKinds: declarations[panelKind][0],
+    emittedSelectionKinds: declarations[panelKind][1],
     evidenceRefs: panelKind === "EVIDENCE" ? ["evidence_demo"] : [],
     provenanceRefs: ["job_demo"],
     capabilityRequirement: null,

@@ -1,0 +1,8 @@
+{
+  "exactConsumer": "WorkspaceSelectionStore -> declared panel acceptedSelectionKinds -> source scope and source reference resolver",
+  "typedUnavailable": [
+    "index-only trajectory/phonon/BZ records",
+    "legacy artifact with no canonical ID"
+  ],
+  "noPayloadRead": true
+}

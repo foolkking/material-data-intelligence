@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "supportedKinds": [
+    "DATASET_SAMPLE",
+    "MATERIAL_OBJECT",
+    "STRUCTURE",
+    "PERIODIC_SITE",
+    "TRAJECTORY_ATOM",
+    "TRAJECTORY_FRAME",
+    "PHONON_Q_POINT",
+    "PHONON_BRANCH",
+    "RECIPROCAL_POINT",
+    "VOLUMETRIC_FIELD",
+    "ARTIFACT",
+    "EVIDENCE_ITEM",
+    "CLAIM"
+  ],
+  "maxSecondary": 16,
+  "urlMaxBytes": 2048,
+  "propagation": "EXACT_COMPATIBLE_ONLY",
+  "serverPersistence": "EXPLICIT_PIN_ONLY",
+  "realLlmCalls": 0
+}

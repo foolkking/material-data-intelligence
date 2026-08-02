@@ -1,0 +1,14 @@
+{
+  "keyboard": true,
+  "inspectorHeading": true,
+  "statusAnnouncement": true,
+  "focusReturn": true,
+  "bottomSheet": true,
+  "colorOnlyState": false,
+  "minTouchTarget": 44,
+  "overflow": {
+    "body": 0,
+    "root": 0
+  },
+  "reducedMotion": true
+}

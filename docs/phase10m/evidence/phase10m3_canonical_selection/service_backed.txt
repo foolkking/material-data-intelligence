@@ -1,0 +1,4 @@
+LOCAL_SERVICE_BACKED=UNAVAILABLE (docker CLI not available in the local environment)
+CI_SERVICE_BACKED=REQUIRED
+CI_SERVICE_TESTS_SKIPPED=0 required by exact-SHA CI
+Phase 10M-3 adds no migration or service-backed database behavior; Phase 10M-1 service-backed projection regression remains in CI.

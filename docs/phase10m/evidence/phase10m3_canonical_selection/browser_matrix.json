@@ -1,0 +1,92 @@
+{
+  "chromium": {
+    "browserName": "chromium",
+    "urlRestore": true,
+    "artifactSelection": true,
+    "backForward": true,
+    "staleRejected": true,
+    "pinRequestCount": 1,
+    "elapsedMs": 5033.677,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "externalRequests": [],
+    "apiCalls": [
+      {
+        "method": "GET",
+        "path": "/workspaces/workspace_select"
+      },
+      {
+        "method": "PATCH",
+        "path": "/workspaces/workspace_select"
+      },
+      {
+        "method": "GET",
+        "path": "/workspaces/workspace_select"
+      }
+    ]
+  },
+  "firefox": {
+    "browserName": "firefox",
+    "urlRestore": true,
+    "artifactSelection": true,
+    "backForward": true,
+    "staleRejected": true,
+    "pinRequestCount": 1,
+    "elapsedMs": 4626.12,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "externalRequests": [],
+    "apiCalls": [
+      {
+        "method": "GET",
+        "path": "/workspaces/workspace_select"
+      },
+      {
+        "method": "PATCH",
+        "path": "/workspaces/workspace_select"
+      },
+      {
+        "method": "GET",
+        "path": "/workspaces/workspace_select"
+      }
+    ]
+  },
+  "webkit": {
+    "browserName": "webkit",
+    "urlRestore": true,
+    "artifactSelection": true,
+    "backForward": true,
+    "staleRejected": true,
+    "pinRequestCount": 1,
+    "elapsedMs": 4575.813,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "externalRequests": [],
+    "apiCalls": [
+      {
+        "method": "GET",
+        "path": "/workspaces/workspace_select"
+      },
+      {
+        "method": "PATCH",
+        "path": "/workspaces/workspace_select"
+      },
+      {
+        "method": "GET",
+        "path": "/workspaces/workspace_select"
+      }
+    ]
+  }
+}

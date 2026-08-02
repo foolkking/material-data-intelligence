@@ -1,0 +1,7 @@
+{
+  "claim": "interpretationId/hash + claimId",
+  "evidence": "bundle/artifact checksum + field locator",
+  "artifact": "artifactId/checksum/contract/version",
+  "noAutomaticExecution": true,
+  "result": "PASS"
+}

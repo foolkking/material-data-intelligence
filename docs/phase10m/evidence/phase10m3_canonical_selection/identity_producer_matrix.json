@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "phase10m3.identity_matrix.v1",
+  "supported": [
+    [
+      "DATASET_SAMPLE",
+      "Dataset/Composition/ML exact objectId+sampleRef",
+      "EMIT_READY"
+    ],
+    [
+      "MATERIAL_OBJECT",
+      "Profile object identity",
+      "CONTRACT_READY"
+    ],
+    [
+      "STRUCTURE",
+      "Formal structureId when supplied",
+      "CONTRACT_READY"
+    ],
+    [
+      "PERIODIC_SITE",
+      "Formal siteId when supplied",
+      "CONTRACT_READY"
+    ],
+    [
+      "TRAJECTORY_ATOM",
+      "Formal atomId when supplied",
+      "CONTRACT_READY"
+    ],
+    [
+      "TRAJECTORY_FRAME",
+      "Formal frameId when supplied",
+      "CONTRACT_READY"
+    ],
+    [
+      "PHONON_Q_POINT",
+      "Formal qPointId only",
+      "CONTRACT_READY"
+    ],
+    [
+      "PHONON_BRANCH",
+      "Formal branchId only",
+      "CONTRACT_READY"
+    ],
+    [
+      "RECIPROCAL_POINT",
+      "Formal reciprocalPointId/segmentId only",
+      "CONTRACT_READY"
+    ],
+    [
+      "VOLUMETRIC_FIELD",
+      "fieldId + artifact checksum",
+      "EMIT_READY"
+    ],
+    [
+      "ARTIFACT",
+      "artifactId + checksum + contract/version",
+      "EMIT_READY"
+    ],
+    [
+      "EVIDENCE_ITEM",
+      "bundle/artifact/field locator identity",
+      "CONTRACT_READY"
+    ],
+    [
+      "CLAIM",
+      "interpretationId/hash + claimId",
+      "CONTRACT_READY"
+    ]
+  ],
+  "forbidden": [
+    "rowIndex",
+    "array position",
+    "qpoint_index without formal ID",
+    "branch_index without formal ID",
+    "display label",
+    "fuzzy label",
+    "unit guess"
+  ]
+}

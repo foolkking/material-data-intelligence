@@ -1,0 +1,5 @@
+{
+  "formalIdentity": "trajectoryId + atomId/frameId when supplied",
+  "indexOnlyFallback": "TYPED_UNSUPPORTED",
+  "noFabricatedPass": true
+}

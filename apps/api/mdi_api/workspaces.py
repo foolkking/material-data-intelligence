@@ -17,6 +17,7 @@ from mdi_schemas.workspace import (
     WorkspacePanelPlacement,
     WorkspacePanelState,
     WorkspaceSelectionContext,
+    WorkspaceSelectionKind,
     WorkspaceSourceKind,
     WorkspaceSourceRef,
     WorkspaceStatus,
@@ -26,6 +27,59 @@ from mdi_schemas.workspace import (
     make_layout_revision,
     workspace_semantic_hash,
 )
+
+
+_DATA_SELECTION_KINDS = (
+    WorkspaceSelectionKind.DATASET_SAMPLE,
+    WorkspaceSelectionKind.MATERIAL_OBJECT,
+    WorkspaceSelectionKind.STRUCTURE,
+    WorkspaceSelectionKind.PERIODIC_SITE,
+    WorkspaceSelectionKind.TRAJECTORY_ATOM,
+    WorkspaceSelectionKind.TRAJECTORY_FRAME,
+)
+_ARTIFACT_DERIVED_SELECTION_KINDS = (
+    WorkspaceSelectionKind.PHONON_Q_POINT,
+    WorkspaceSelectionKind.PHONON_BRANCH,
+    WorkspaceSelectionKind.RECIPROCAL_POINT,
+    WorkspaceSelectionKind.VOLUMETRIC_FIELD,
+    WorkspaceSelectionKind.ARTIFACT,
+)
+_EVIDENCE_SELECTION_KINDS = (
+    WorkspaceSelectionKind.EVIDENCE_ITEM,
+    WorkspaceSelectionKind.CLAIM,
+)
+_ALL_SELECTION_KINDS = (
+    *_DATA_SELECTION_KINDS,
+    *_ARTIFACT_DERIVED_SELECTION_KINDS,
+    *_EVIDENCE_SELECTION_KINDS,
+)
+
+_PANEL_SELECTION_DECLARATIONS: dict[
+    str, tuple[tuple[WorkspaceSelectionKind, ...], tuple[WorkspaceSelectionKind, ...]]
+] = {
+    "workspace.overview/1.0": (_ALL_SELECTION_KINDS, ()),
+    "workspace.data/1.0": (_DATA_SELECTION_KINDS, ()),
+    "workspace.plan/1.0": ((), ()),
+    "workspace.execution/1.0": ((WorkspaceSelectionKind.ARTIFACT,), ()),
+    "workspace.artifact-metadata/1.0": (
+        _ARTIFACT_DERIVED_SELECTION_KINDS,
+        (WorkspaceSelectionKind.ARTIFACT,),
+    ),
+    "workspace.findings/1.0": (
+        (*_ARTIFACT_DERIVED_SELECTION_KINDS, *_EVIDENCE_SELECTION_KINDS),
+        (),
+    ),
+    "workspace.evidence/1.0": (
+        (*_ARTIFACT_DERIVED_SELECTION_KINDS, *_EVIDENCE_SELECTION_KINDS),
+        (),
+    ),
+    "workspace.provenance/1.0": (_ALL_SELECTION_KINDS, ()),
+    "workspace.report/1.0": (
+        (WorkspaceSelectionKind.ARTIFACT, *_EVIDENCE_SELECTION_KINDS),
+        (),
+    ),
+    "workspace.inert-fallback/1.0": ((), ()),
+}
 
 
 @dataclass(frozen=True)
@@ -1567,6 +1621,9 @@ class WorkspaceProjectionService:
             source_ref_hash = workspace_semantic_hash(
                 [ref.model_dump(mode="json", by_alias=True) for ref in refs]
             )
+            accepted_selection_kinds, emitted_selection_kinds = (
+                _PANEL_SELECTION_DECLARATIONS[specification["renderer"]]
+            )
             payload: dict[str, Any] = {
                 "schemaVersion": "1.0",
                 "panelId": panel_id,
@@ -1581,8 +1638,12 @@ class WorkspaceProjectionService:
                 "sourceReferenceHash": source_ref_hash,
                 "rendererContract": specification["renderer"],
                 "state": specification["state"].value,
-                "acceptedSelectionKinds": [],
-                "emittedSelectionKinds": [],
+                "acceptedSelectionKinds": [
+                    item.value for item in accepted_selection_kinds
+                ],
+                "emittedSelectionKinds": [
+                    item.value for item in emitted_selection_kinds
+                ],
                 "evidenceRefs": [],
                 "provenanceRefs": [],
                 "capabilityRequirement": None,
@@ -1644,7 +1705,14 @@ class WorkspaceProjectionService:
                     state = self._artifact_panel_state(status)
                 else:
                     state = self._base_panel_state(status)
-            if state is panel.state:
+            declarations = _PANEL_SELECTION_DECLARATIONS.get(panel.rendererContract)
+            accepted = panel.acceptedSelectionKinds if declarations is None else declarations[0]
+            emitted = panel.emittedSelectionKinds if declarations is None else declarations[1]
+            if (
+                state is panel.state
+                and accepted == panel.acceptedSelectionKinds
+                and emitted == panel.emittedSelectionKinds
+            ):
                 projected.append(panel)
                 continue
             payload = panel.model_dump(
@@ -1653,6 +1721,9 @@ class WorkspaceProjectionService:
                 exclude={"panelStateHash"},
             )
             payload["state"] = state.value
+            payload["acceptedSelectionKinds"] = [item.value for item in accepted]
+            payload["emittedSelectionKinds"] = [item.value for item in emitted]
+            payload["contractProvenance"] = "phase10m3.selection_registry.v1"
             payload["panelStateHash"] = _semantic_hash(payload)
             projected.append(WorkspacePanel.model_validate(payload))
         return tuple(projected)

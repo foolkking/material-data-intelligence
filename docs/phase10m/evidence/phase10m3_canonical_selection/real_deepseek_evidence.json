@@ -1,0 +1,6 @@
+{
+  "realLlmCalls": 0,
+  "newLlmCallSites": 0,
+  "reason": "Canonical selection consumes persisted Workspace and Artifact identities",
+  "deepSeekPolicyRegression": "PASS"
+}

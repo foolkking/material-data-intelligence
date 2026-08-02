@@ -1,0 +1,10 @@
+{
+  "canonicalRoundTrip": "PASS",
+  "duplicateKey": "REJECT",
+  "unknownField": "REJECT",
+  "nonCanonicalKeyOrder": "REJECT",
+  "invalidBase64url": "REJECT",
+  "over2048Bytes": "REJECT",
+  "forbiddenPrototypeKeys": "REJECT",
+  "noURLOrPathExecution": "PASS"
+}

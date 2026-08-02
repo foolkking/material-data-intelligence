@@ -32,7 +32,8 @@ Current Phase 10L-5 closure references:
 ## Phase 10M Unified Scientific Workspace
 
 Phase 10M-0 sealed the architecture, M1 archived the reference-only persisted
-domain/API, and M2 implements the additive metadata Workspace shell:
+domain/API, M2 archived the additive metadata shell, and M3 implements exact
+canonical selection and cross-panel navigation:
 
 - [`phase10m/README.md`](phase10m/README.md): Phase 10M canonical documentation entry.
 - [`phase10m/phase10m0_workspace_fact_audit.md`](phase10m/phase10m0_workspace_fact_audit.md): current product maturity and authority audit.
@@ -66,6 +67,13 @@ domain/API, and M2 implements the additive metadata Workspace shell:
 - [`phase10m/phase10m2_workspace_state_ui.md`](phase10m/phase10m2_workspace_state_ui.md): typed Workspace/panel state projection.
 - [`phase10m/phase10m2_responsive_accessibility.md`](phase10m/phase10m2_responsive_accessibility.md): desktop/mobile/focus contract.
 - [`phase10m/phase10m2_evidence.md`](phase10m/phase10m2_evidence.md): browser, service, security, and manifest evidence.
+- [`phase10m/phase10m3_canonical_selection.md`](phase10m/phase10m3_canonical_selection.md): exact selection runtime and authority boundary.
+- [`phase10m/phase10m3_identity_compatibility.md`](phase10m/phase10m3_identity_compatibility.md): formal identity and typed unavailable matrix.
+- [`phase10m/phase10m3_panel_subscriptions.md`](phase10m/phase10m3_panel_subscriptions.md): renderer-keyed selection declarations.
+- [`phase10m/phase10m3_url_navigation.md`](phase10m/phase10m3_url_navigation.md): strict URL codec and history behavior.
+- [`phase10m/phase10m3_inspector.md`](phase10m/phase10m3_inspector.md): exact Inspector facts and explicit Pin.
+- [`phase10m/phase10m3_evidence.md`](phase10m/phase10m3_evidence.md): sanitized tests, browser matrix, and manifest.
+- [`phase10m/evidence/phase10m3_canonical_selection/`](phase10m/evidence/phase10m3_canonical_selection/): retained M3 evidence.
 
 ## Phase 10K Material Intelligence
 

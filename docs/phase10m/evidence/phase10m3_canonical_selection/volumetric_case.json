@@ -1,0 +1,5 @@
+{
+  "formalIdentity": "fieldId + artifactId + checksum",
+  "browserCalculation": false,
+  "result": "PASS"
+}

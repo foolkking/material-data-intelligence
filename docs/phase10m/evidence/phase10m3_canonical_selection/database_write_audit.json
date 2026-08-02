@@ -1,0 +1,9 @@
+{
+  "migration": "UNCHANGED",
+  "tablesAdded": 0,
+  "selectionAutoPersistence": false,
+  "explicitPinUses": "PATCH /workspaces/{id} with If-Match",
+  "sourcePayloadCopied": false,
+  "jobToolArtifactCreatedBySelection": false,
+  "noHiddenGETWrite": true
+}

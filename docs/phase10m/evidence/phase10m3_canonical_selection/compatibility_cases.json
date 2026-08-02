@@ -1,0 +1,12 @@
+{
+  "exact": "PASS",
+  "notApplicable": "PASS",
+  "staleScope": "PASS",
+  "unsupportedPanel": "PASS",
+  "foreignProject": "REJECT",
+  "foreignJob": "REJECT",
+  "staleDatasetVersion": "REJECT",
+  "wrongArtifactChecksum": "REJECT",
+  "wrongArtifactContract": "REJECT",
+  "crossWorkspace": "REJECT"
+}

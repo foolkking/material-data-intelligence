@@ -1,0 +1,7 @@
+{
+  "providerPolicy": "DEEPSEEK_ONLY",
+  "realLlmCalls": 0,
+  "newLlmCallSites": 0,
+  "reason": "Canonical selection consumes persisted Workspace and Artifact identities",
+  "result": "PASS"
+}

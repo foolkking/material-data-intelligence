@@ -2,7 +2,8 @@
 
 ## Unified Scientific Workspace Contracts (Phase 10M-1)
 
-Status: `IMPLEMENTED_IN_PHASE_10M1 / METADATA_SHELL_IN_PHASE_10M2`.
+Status: `IMPLEMENTED_IN_PHASE_10M1 / METADATA_SHELL_IN_PHASE_10M2 /
+CANONICAL_SELECTION_RUNTIME_IN_PHASE_10M3`.
 
 Phase 10M-1 adds the first three contracts to the shared Python, JSON Schema,
 and TypeScript surfaces:
@@ -17,8 +18,13 @@ Workspace copies no scientific payload. Existing Profile, Intent, Eligibility,
 Plan, Job, Artifact, lineage, evidence, interpretation, Report, and Recipe
 records remain authority. Exact fields, caps, migration, API, compatibility,
 and acceptance remain sealed in `docs/phase10m/phase10m_execution_manifest.md`.
-The M2 page consumes these contracts without changing them. Renderer registry,
-Report/Recipe composition, and selection propagation remain deferred.
+The M2 page consumes these contracts without changing them. M3 adds a strict
+frontend parser/canonical URL codec and Workspace-scoped runtime over the same
+`WorkspaceSelectionContext 1.0`; no Python, JSON Schema, or TypeScript shared
+contract version changes. Selection remains capped at 16 secondary refs and
+2,048 URL bytes, uses exact source identities, and is persisted only through
+the existing explicit Pin PATCH. Scientific renderer integration and
+Report/Recipe composition remain deferred.
 
 ## Grounded Scientific Interpretation v1 (Phase 10L-4)
 

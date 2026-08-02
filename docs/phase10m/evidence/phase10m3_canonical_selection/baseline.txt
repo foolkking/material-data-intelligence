@@ -1,0 +1,6 @@
+Phase 10M-3 entry baseline
+branch=master
+initial_head=78bdec18b416a12f8878e602a552c27091f64c06
+initial_origin_master=78bdec18b416a12f8878e602a552c27091f64c06
+phase10m2_archive_ci=30729804091 success
+worktree_at_entry=TASKS admission only

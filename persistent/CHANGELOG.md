@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-08-02 - Phase 10M-3 Canonical Selection Local Implementation
+
+- Activated unchanged `WorkspaceSelectionContext 1.0` with a strict canonical
+  URL codec, exact scope/version/hash checks, bounded selection store, formal
+  panel subscriptions, origin-aware delivery, and typed compatibility.
+- Added Workspace Inspector facts, compatible-panel navigation, whole Artifact
+  selection, explicit ETag Pin, desktop/mobile UX, tests, browser runner, and
+  sanitized SHA-256 evidence.
+- Preserved migration 0007, database/API/shared contracts, Planner/Runtime,
+  Registry/Adapters, scientific calculation, dependencies, and lockfiles.
+- Added no LLM call site and made no real call. Existing DeepSeek-only policy
+  and `DEEPSEEK_KEY` sole-key-source rule remain unchanged.
+
 ## 2026-08-02 - Phase 10M-2 Corrected Implementation Exact-SHA CI Complete
 
 - Added the additive Workspace route, metadata-only shell, nine-group

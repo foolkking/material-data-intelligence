@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "phase10m3.workspace_selection_browser.v1",
+  "route": "/workspaces/{workspaceId}",
+  "query": {
+    "panel": true,
+    "selection": "canonical-base64url-v1",
+    "maxBytes": 2048
+  },
+  "browsers": {
+    "chromium": {
+      "urlRestore": true,
+      "artifactSelection": true,
+      "backForward": true,
+      "staleRejected": true,
+      "pinRequestCount": 1,
+      "overflow": {
+        "body": 0,
+        "root": 0
+      }
+    },
+    "firefox": {
+      "urlRestore": true,
+      "artifactSelection": true,
+      "backForward": true,
+      "staleRejected": true,
+      "pinRequestCount": 1,
+      "overflow": {
+        "body": 0,
+        "root": 0
+      }
+    },
+    "webkit": {
+      "urlRestore": true,
+      "artifactSelection": true,
+      "backForward": true,
+      "staleRejected": true,
+      "pinRequestCount": 1,
+      "overflow": {
+        "body": 0,
+        "root": 0
+      }
+    }
+  },
+  "mobile": {
+    "viewport": [
+      390,
+      844
+    ],
+    "inspectorBottomSheet": true,
+    "focusedClose": true,
+    "focusRestored": true,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "minTouchTarget": 44
+  },
+  "security": {
+    "realLlmCalls": 0,
+    "noArtifactPayloadRequests": true,
+    "noExecutionAuthority": true,
+    "noExternalRequests": true
+  }
+}

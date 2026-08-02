@@ -1,7 +1,7 @@
 # Phase 10M Unified Scientific Workspace
 
-Status: Phase 10M-1 is archived. Phase 10M-2 Workspace shell implementation is
-active and its exact-SHA lifecycle remains required before archive.
+Status: Phase 10M-1 and Phase 10M-2 are archived. Phase 10M-3 canonical
+selection is implemented locally and its exact-SHA lifecycle remains required.
 
 ## Reading order
 
@@ -23,6 +23,13 @@ active and its exact-SHA lifecycle remains required before archive.
 16. [M2 state UI](phase10m2_workspace_state_ui.md)
 17. [M2 responsive/accessibility](phase10m2_responsive_accessibility.md)
 18. [M2 evidence](phase10m2_evidence.md)
+19. [M3 canonical selection](phase10m3_canonical_selection.md)
+20. [M3 identity compatibility](phase10m3_identity_compatibility.md)
+21. [M3 panel subscriptions](phase10m3_panel_subscriptions.md)
+22. [M3 URL navigation](phase10m3_url_navigation.md)
+23. [M3 Inspector](phase10m3_inspector.md)
+24. [M3 accessibility/performance/security](phase10m3_accessibility_performance_security.md)
+25. [M3 evidence](phase10m3_evidence.md)
 
 ## Status vocabulary
 
@@ -34,5 +41,5 @@ active and its exact-SHA lifecycle remains required before archive.
 - **FUTURE SCOPE**: Phase 10N or later work excluded from Phase 10M.
 
 Phase 10M-0 remains the sealed architecture authority. M1 owns the persisted
-domain and API. M2 adds only the route and metadata shell; exact selection and
-typed scientific rendering remain M3 and M4 scope.
+domain and API, M2 owns the metadata shell, and M3 activates exact canonical
+selection. Typed scientific rendering remains Phase 10M-4 reviewer-gated.

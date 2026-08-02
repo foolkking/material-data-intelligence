@@ -496,6 +496,94 @@ button:disabled {
   overflow-wrap: anywhere;
 }
 
+.workspace-selection-banner,
+.workspace-selection-delivery {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  border-bottom: 1px solid var(--border);
+  background: #eef5f3;
+  color: #173a34;
+  padding: 9px 16px;
+  overflow-wrap: anywhere;
+}
+
+.workspace-selection-banner span,
+.workspace-selection-delivery span {
+  min-width: 0;
+}
+
+.workspace-selection-banner code {
+  margin-left: auto;
+  border: 1px solid #9fc8bd;
+  background: #fff;
+  padding: 2px 5px;
+  overflow-wrap: anywhere;
+}
+
+.workspace-selection-delivery {
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  background: #f6f8fa;
+  color: var(--ink);
+  padding: 9px;
+}
+
+.workspace-selection-delivery.tone-success {
+  border-color: #9fc8bd;
+  background: #eef5f3;
+}
+
+.workspace-selection-command {
+  margin-top: 12px;
+}
+
+.workspace-selection-command,
+.workspace-selection-actions button,
+.workspace-selection-subscriptions button {
+  min-height: 44px;
+}
+
+.workspace-selection-inspector {
+  display: grid;
+  gap: 12px;
+}
+
+.workspace-selection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.workspace-selection-subscriptions {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workspace-selection-subscriptions li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+}
+
+.workspace-selection-subscriptions li > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  overflow-wrap: anywhere;
+}
+
+.workspace-selection-subscriptions small {
+  color: var(--muted);
+}
+
 .workspace-mobile-drawer {
   position: fixed;
   z-index: 70;
@@ -607,6 +695,31 @@ button:disabled {
   .workspace-panel-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .workspace-selection-banner,
+  .workspace-selection-delivery {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 10px 12px;
+  }
+
+  .workspace-selection-banner code {
+    margin-left: 0;
+  }
+
+  .workspace-selection-actions,
+  .workspace-selection-actions button {
+    width: 100%;
+  }
+
+  .workspace-selection-subscriptions li {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .workspace-selection-subscriptions button {
+    min-height: 44px;
   }
 
   .workspace-mobile-drawer button,

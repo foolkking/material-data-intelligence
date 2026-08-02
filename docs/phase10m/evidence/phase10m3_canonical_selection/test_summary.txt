@@ -1,0 +1,17 @@
+focused_selection_contract=18 passed
+focused_selection_runtime=5 passed
+focused_workspace_shell=15 passed
+focused_m1_projection=7 passed
+full_backend=1111 passed, 41 skipped, 63 warnings (local; integration-marked cases skipped)
+full_frontend=56 files, 376 tests passed
+frontend_typecheck=PASS
+production_build=PASS
+uv_lock_check=PASS
+npm_dependency_tree=PASS
+browser=Chromium Firefox WebKit and Chromium 390x844 PASS
+browser_console_errors=0
+browser_page_errors=0
+browser_external_requests=0
+local_service_backed=UNAVAILABLE unless Docker services are configured
+CI_SERVICE_TESTS_SKIPPED=0 required
+npm_audit=UNAVAILABLE (registry mirror status must not be called clean)

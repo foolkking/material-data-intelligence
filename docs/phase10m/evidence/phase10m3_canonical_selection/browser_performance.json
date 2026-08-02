@@ -1,0 +1,12 @@
+{
+  "basis": "development browser acceptance evidence, not a production capacity claim",
+  "elapsedMs": 53731.246,
+  "initialHeapBytes": 4948320,
+  "finalHeapBytes": 20058744,
+  "desktopElapsedMs": {
+    "chromium": 5033.677,
+    "firefox": 4626.12,
+    "webkit": 4575.813
+  },
+  "mobileElapsedMs": 1533.428
+}

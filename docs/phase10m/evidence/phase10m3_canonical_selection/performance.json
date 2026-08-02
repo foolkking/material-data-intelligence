@@ -1,0 +1,54 @@
+{
+  "basis": "development/browser acceptance evidence, not a production capacity claim",
+  "subscribers": [
+    1,
+    8,
+    32
+  ],
+  "semanticDuplicateSuppressed": true,
+  "cleanup": true,
+  "URLBounded": true,
+  "inactiveArtifactPayloadRequests": 0,
+  "runnerElapsedMs": 53731.246,
+  "nodeHeapBytes": {
+    "initial": 4948320,
+    "final": 20058744
+  },
+  "desktop": {
+    "chromium": {
+      "elapsedMs": 5033.677,
+      "overflow": {
+        "body": 0,
+        "root": 0
+      },
+      "apiCalls": 3,
+      "patchCalls": 1
+    },
+    "firefox": {
+      "elapsedMs": 4626.12,
+      "overflow": {
+        "body": 0,
+        "root": 0
+      },
+      "apiCalls": 3,
+      "patchCalls": 1
+    },
+    "webkit": {
+      "elapsedMs": 4575.813,
+      "overflow": {
+        "body": 0,
+        "root": 0
+      },
+      "apiCalls": 3,
+      "patchCalls": 1
+    }
+  },
+  "mobile": {
+    "elapsedMs": 1533.428,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "apiCalls": 1
+  }
+}

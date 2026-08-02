@@ -1,0 +1,24 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "inspectorBottomSheet": true,
+  "focusedClose": true,
+  "focusRestored": true,
+  "elapsedMs": 1533.428,
+  "overflow": {
+    "body": 0,
+    "root": 0
+  },
+  "minTouchTarget": 44,
+  "consoleErrors": [],
+  "pageErrors": [],
+  "externalRequests": [],
+  "apiCalls": [
+    {
+      "method": "GET",
+      "path": "/workspaces/workspace_select"
+    }
+  ]
+}

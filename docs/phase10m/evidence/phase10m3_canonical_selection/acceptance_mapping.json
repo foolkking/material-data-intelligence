@@ -1,0 +1,51 @@
+{
+  "expected": 7,
+  "implemented": 7,
+  "missing": 0,
+  "extra": 0,
+  "duplicate": 0,
+  "items": [
+    {
+      "id": "M3-A01",
+      "category": "Selection contract",
+      "requirement": "Every supported exact identity kind validates identity, version, scope, and caps.",
+      "result": "PASS"
+    },
+    {
+      "id": "M3-A02",
+      "category": "Propagation",
+      "requirement": "Subscribed panels receive only exact compatible references from the Workspace-scoped store.",
+      "result": "PASS"
+    },
+    {
+      "id": "M3-A03",
+      "category": "Forbidden mapping",
+      "requirement": "Array index, row order, display label, fuzzy match, and unit guessing cannot create selection.",
+      "result": "PASS"
+    },
+    {
+      "id": "M3-A04",
+      "category": "URL",
+      "requirement": "Canonical <=2048-byte URL state restores exactly and rejects stale/foreign/non-canonical tokens.",
+      "result": "PASS"
+    },
+    {
+      "id": "M3-A05",
+      "category": "Persistence",
+      "requirement": "Explicit Pin uses the existing Workspace PATCH/ETag path and survives reload without implicit writes.",
+      "result": "PASS"
+    },
+    {
+      "id": "M3-A06",
+      "category": "Inspector",
+      "requirement": "Inspector exposes exact selected identity, compatibility, source references, and bounded navigation.",
+      "result": "PASS"
+    },
+    {
+      "id": "M3-A07",
+      "category": "Browser",
+      "requirement": "Chromium/Firefox/WebKit, keyboard, mobile bottom sheet, clearing, and multi-selection evidence pass.",
+      "result": "PASS"
+    }
+  ]
+}

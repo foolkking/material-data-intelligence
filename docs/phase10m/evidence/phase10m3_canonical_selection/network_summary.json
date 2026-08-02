@@ -1,0 +1,8 @@
+{
+  "externalRequestCount": 0,
+  "allowedOrigins": [
+    "http://127.0.0.1:3225",
+    "http://localhost:8000"
+  ],
+  "marker": "NO_PHASE10M3_UNAPPROVED_EXTERNAL_REQUESTS"
+}
