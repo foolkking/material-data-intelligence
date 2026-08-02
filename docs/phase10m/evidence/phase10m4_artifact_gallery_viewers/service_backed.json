@@ -20,8 +20,11 @@
     "Workspace projection and APIs",
     "selection creates no database authority"
   ],
-  "ciServiceBacked":"PENDING_EXACT_SHA_CI",
+  "implementationSha":"6287785c26e7bfdb91664fb10e78aa3de87161f7",
+  "implementationCiRun":30751689618,
+  "ciServiceBacked":"PASS",
   "serviceTestsSkippedRequirement":0,
-  "serviceTestsSkippedObservedInCi":"PENDING_EXACT_SHA_CI",
-  "passClaim":false
+  "serviceTestsSkippedObservedInCi":0,
+  "ciResult":{"passed":39,"skipped":0,"failed":0,"errors":0},
+  "passClaim":true
 }

@@ -20,8 +20,8 @@ resources.
 M4 changes no Workspace/Selection contract, migration `0007`, database schema,
 Planner, Runtime, Tool Registry, Adapter calculation, dependency, lockfile, or
 LLM call site. `REAL_LLM_CALLS = 0`; future real calls remain DeepSeek-only
-through `DEEPSEEK_KEY`. This ADR records the local implementation decision, not
-implementation/completion/archive exact-SHA CI success.
+through `DEEPSEEK_KEY`. Corrected implementation `6287785c` passed exact-SHA
+CI `30751689618`; this lifecycle fact does not change the decision.
 
 ## 2026-08-02 ADR Addendum: Phase 10M-3 Selection Runtime
 

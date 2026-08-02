@@ -3966,3 +3966,363 @@ Do not create, queue, or execute Phase 10M-4.
 - Queue-archive SHA/CI: not created / pending.
 - Expected post-commit: `HEAD == origin/master`, clean, migration head 0007,
   M3 completed block retained, task count 1, no M4 executable task.
+
+# Phase 10M-4 Typed Artifact Gallery + Scientific Viewer Integration Result
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
+```
+
+## 2. Baseline and Entry Gate
+
+- M3 implementation `fe5353f25e45eb10d3a78fa148727071e84d89e2`, CI
+  `30734974889` success.
+- M3 completion `7ec413f226c82e6c9a5c6ff04336a675fb8897a3`, CI
+  `30735401732` success.
+- M3 archive `86fb69238f1c69e172ad1010cd70ff2c486f2a1c`, CI
+  `30735666842` success.
+- Initial HEAD/origin were the M3 archive SHA on `master`; worktree was clean,
+  migration head was `0007_phase10m1_workspace_domain`, task count was zero.
+- M4 was admitted as the sole executable task; M5 remained reviewer-gated.
+
+## 3. M0-M3 Decision Compliance
+
+ScientificWorkspace 1.0, WorkspacePanel 1.0, WorkspaceSelectionContext 1.0,
+M1 persistence/API, M2 shell, and M3 selection authority are unchanged. M4 is
+an additive read/render integration layer only.
+
+## 4. Artifact Contract Inventory
+
+All 42 shared Artifact types have an exact disposition in the checked-in
+registry and evidence inventory. Keys are Artifact type/version plus renderer
+contract/version; filenames, titles, MIME alone, URLs, and component names are
+not authority.
+
+## 5. Renderer Classification
+
+- `PRODUCTION_NATIVE_RENDERER`: existing Structure, Trajectory, Phonon,
+  Brillouin-zone, and Volumetric application-owned viewers.
+- `PRODUCTION_ADAPTED_RENDERER`: exact embedded Dataset, ML, and Composition
+  product contracts plus bounded generic numeric plot/table paths.
+- `CONSUMER_ONLY`: viewers without a formally stable emitted object identity.
+- `METADATA_ONLY`: static/binary formats that are listed but not rendered.
+- `INERT_FALLBACK`: bounded JSON/text and legacy/unsupported records.
+- `UNSUPPORTED`: unknown types and version mismatches, with no guessed renderer.
+
+## 6. Typed Renderer Registry
+
+The finite 42-entry registry declares payload mode, heavy/WebGL ownership,
+selection input/output, accessibility fallback, caps, lazy policy, bundle
+members, stale/legacy behavior, and inert security classification. Duplicate
+or malformed declarations fail tests.
+
+## 7. Artifact Gallery
+
+The Results panel now exposes a semantic metadata Gallery with contract,
+version, renderer, ToolCall/step, checksum, size, status, lineage, selection,
+safe open/download, partial/stale/legacy indicators, and exact provenance.
+The browser sidecar covers 20 mixed typed Artifacts without truncation.
+
+## 8. Artifact Metadata and Payload Loading
+
+Initial Workspace loading makes zero Artifact payload requests. Payloads load
+only for the active Artifact. The loader validates Workspace revision,
+Project/Job/Artifact scope, type/version, size, content type, exact SHA-256,
+JSON depth/finite/prototype constraints, cancellation, stale request identity,
+and a cache key containing all semantic renderer inputs.
+
+## 9. Generic Table / Plot / Text / JSON Fallbacks
+
+Tables and plots consume backend-produced values only and retain semantic
+table/text alternatives. Histogram bins, metrics, PCA, clustering, and other
+science are not recomputed. Text/JSON are bounded inert text; HTML, script,
+iframe, module, active SVG, and external assets never execute.
+
+## 10. Dataset Materials Explorer
+
+The existing Dataset Materials Explorer is integrated through exact K2
+contract validation. Overview, composition, structures, properties, quality,
+comparison, and sample surfaces retain Profile authority and stable
+`objectId + sampleRef` identity.
+
+## 11. Materials ML Viewers
+
+Existing regression, uncertainty, and classification products are adapted
+only for their exact formal schemas. Metrics, bins, target/model/unit identity,
+high-error/high-uncertainty samples, class metrics, and conditional curves are
+backend authority; the frontend does not recalculate or substitute metrics.
+
+## 12. Composition Space Viewer
+
+The existing Composition Space component consumes persisted coordinates,
+clusters, coloring, and sample identities. It emits exact Dataset sample
+selection and does not recompute PCA/KMeans or use point order as identity.
+
+## 13. Structure Viewer
+
+Existing canonical structure scene rendering is lazy-loaded with exact scene
+identity, lattice/species/site facts, accessibility summary, context-loss
+fallback/retry, and explicit Three.js disposal. No bond/coordination/validity
+science was added.
+
+## 14. Trajectory Viewer
+
+Existing bounded trajectory frames, navigation, playback, cell/species and
+numeric summaries are integrated. Panel close cancels work and stops playback;
+no RDF/MSD/diffusion/unwrapping/smoothing/event analysis was added.
+
+## 15. Phonon Viewer
+
+Existing band, DOS, combined band-DOS, and animation contracts retain exact
+q-point/branch/unit/path/imaginary-frequency semantics and dependency lineage.
+No interpolation, mode inference, or calculation was added.
+
+## 16. Brillouin Zone Viewer
+
+Existing reciprocal lattice, Brillouin-zone, persisted labels/path, and
+manifest artifacts load as one exact bundle. No cell/path regeneration,
+nearest-coordinate match, or label-only identity is introduced.
+
+## 17. Volumetric Viewer
+
+Existing grid/field/payload/manifest/binary contracts render active-only with
+exact checksum and source identity. The reproducible browser fixture derives
+its exact values from checked-in canonical Phase 10J contracts. No Bader,
+feature extraction, topology, or external texture/volume loading was added.
+
+## 18. Canonical Selection Integration
+
+- Artifact Gallery: `PRODUCTION_NATIVE_EMITTER` for exact `ARTIFACT` metadata.
+- Dataset and Composition: `PRODUCTION_ADAPTED_EMITTER` for exact
+  `DATASET_SAMPLE` identity.
+- ML, Structure, Trajectory, Phonon, BZ, Volumetric: `CONSUMER_ONLY` or
+  `NO_SELECTION_SUPPORT` where a stable emitted identity is absent.
+- All delivery reuses the M3 store, URL codec, declarations, resolver, and
+  Inspector. There is no second selection authority or fuzzy mapping.
+
+## 19. Inspector / Findings / Evidence / Provenance
+
+Gallery Evidence and Lineage actions navigate exact Artifact selection into
+existing persisted interpretation/evidence/provenance reads. Browser replay
+verifies Artifact -> Evidence item -> canonical selection and Artifact ->
+Provenance identity without copying payloads.
+
+## 20. Partial / Failure Isolation
+
+Successful Artifacts remain usable when sibling steps fail or are dependency
+blocked. Partial coverage and producer state remain visible. A Viewer failure
+does not blank the Workspace or mutate Job/ToolCall/Artifact state.
+
+## 21. Legacy / Unsupported Contracts
+
+Unknown contracts, old versions, missing payloads, stale/deleted sources,
+integrity mismatches, caps, and unsupported Profiles produce typed inert
+states. There is no latest rebinding, filename guess, or same-name replacement.
+
+## 22. WebGL Lifecycle
+
+```text
+MAX_ACTIVE_HEAVY_VIEWERS = 1
+WEBGL_CONTEXT_GROWTH = 0
+LISTENER_GROWTH = 0
+OBSERVER_GROWTH = 0
+DUPLICATE_CANVAS = 0
+```
+
+Chromium executes 50 heavy mount/unmount cycles plus context loss/recovery;
+Firefox/WebKit execute cross-engine cycles. Peak active contexts are one and
+final active contexts are zero. CI uses Xvfb for Firefox/WebKit and explicit
+SwiftShader WebGL for Chromium; all three report WebGL2 preflight.
+
+## 23. Scientific Integrity
+
+```text
+FRONTEND_DUPLICATE_SCIENTIFIC_AUTHORITY = NONE
+FRONTEND_SCIENTIFIC_RECOMPUTATION = NONE
+WORKSPACE_COPIED_ARTIFACT_PAYLOADS = 0
+ARTIFACT_FILENAME_RENDERER_AUTHORITY = NONE
+ARTIFACT_EXTERNAL_EXECUTION_AUTHORITY = NONE
+```
+
+## 24. LLM / DeepSeek Compliance
+
+```text
+NEW_LLM_CALL_SITES = 0
+M4_VIEWERS_REQUIRE_LLM = NO
+REAL_LLM_CALLS = 0
+DEEPSEEK_POLICY_REGRESSION = PASS
+```
+
+M4 renders persisted Artifacts. Existing policy remains DeepSeek-only for any
+future real call with `DEEPSEEK_KEY` as the sole key source.
+
+## 25. Accessibility
+
+Gallery and Viewer surfaces expose semantic headings/lists/tables/status,
+numeric/text alternatives, keyboard and focus-visible controls, non-color
+state, context-lost text, reduced-motion behavior, and named controls.
+
+## 26. Mobile / Responsive
+
+Chromium 390x844 passes one-active-viewer, 44px minimum targets, Inspector
+focus/return focus, stacked Gallery layout, and zero body/root overflow.
+
+## 27. Browser Matrix
+
+Chromium, Firefox, WebKit, and Chromium 390x844 pass. Console errors, page
+errors, failed responses, and unapproved external requests are zero. Legacy
+and HTML payloads remain inert.
+
+## 28. Performance
+
+Development/browser acceptance evidence, not a production capacity claim:
+20 metadata Artifacts, zero initial payload requests, zero inactive-heavy
+requests, 22/20/22 desktop content requests, one mobile request, one peak
+heavy context, zero retained canvas, zero resource growth, and Chromium traced
+heap delta zero. Registry/loader caps bound metadata, bundles, depth, bytes,
+rows, columns, traces, and points.
+
+## 29. Security
+
+```text
+NO_ARTIFACT_GALLERY_ARBITRARY_CODE_EXECUTION = PASS
+NO_ARTIFACT_HTML_EXECUTION = PASS
+NO_ARTIFACT_JAVASCRIPT_EXECUTION = PASS
+NO_ARTIFACT_IFRAME_EXECUTION = PASS
+NO_ARTIFACT_DYNAMIC_MODULE_EXECUTION = PASS
+NO_ARTIFACT_EXTERNAL_URL_EXECUTION = PASS
+NO_ARTIFACT_COMPONENT_NAME_AUTHORITY = PASS
+NO_ARTIFACT_FILENAME_RENDERER_AUTHORITY = PASS
+NO_CROSS_PROJECT_ARTIFACT_ACCESS = PASS
+NO_CROSS_JOB_ARTIFACT_INJECTION = PASS
+NO_STALE_ARTIFACT_REBINDING = PASS
+NO_ARTIFACT_CHECKSUM_BYPASS = PASS
+NO_FRONTEND_SCIENTIFIC_RECOMPUTATION = PASS
+NO_SELECTION_ARRAY_INDEX_AUTHORITY = PASS
+NO_SELECTION_DISPLAY_LABEL_AUTHORITY = PASS
+NO_SELECTION_FUZZY_MATCH = PASS
+NO_RECOMMENDATION_EXECUTION = PASS
+NO_SECRET_PATTERN_HITS = PASS
+```
+
+## 30. Acceptance IDs
+
+```text
+expected = 8
+implemented = 8
+missing = 0
+extra = 0
+duplicate = 0
+```
+
+M4-A01 through M4-A08 pass local, browser, service-backed, and corrected
+implementation exact-SHA CI evidence.
+
+## 31. Tests
+
+- Focused M4 frontend: 40 passed; M4 evidence: 3 passed.
+- Full backend local: 1115 passed, 41 explicitly gated skips, 63 warnings.
+- Full frontend local: 396 passed across 62 files; typecheck/build PASS.
+- Browser: Chromium/Firefox/WebKit/mobile PASS; 50-cycle/context-loss PASS.
+- Corrected exact-SHA CI `30751689618`: Unit SUCCESS, Frontend/browser/build
+  SUCCESS, PostgreSQL/Redis/MinIO 39 passed and 0 skipped.
+- `uv lock --check` and dependency tree PASS; no lock/dependency change.
+- `npm audit = UNAVAILABLE`: configured mirror returned
+  `404_NOT_IMPLEMENTED`; it is not reported clean.
+
+## 32. Production Behavior Changes
+
+Added the typed Gallery, exact renderer registry, metadata/payload loader,
+existing scientific Viewer dispatch, exact M3 selection integration, and
+heavy/WebGL lifecycle control. Workspace, Planner, Runtime, Registry execution,
+Adapters, scientific values, and interpretation behavior are unchanged.
+
+## 33. Files Changed
+
+- Backend/API: exact Artifact content read and interpretation source refs.
+- Frontend: registry, loader, Gallery, generic plot, scientific Viewer adapters,
+  selection integration, heavy/WebGL lifecycle and responsive styling.
+- Tests/CI: focused tests, service-backed content route, historical fixture
+  compatibility, three-browser/mobile runner and Xvfb replay.
+- Evidence/docs/persistent/TASKS/results: sanitized manifests and lifecycle.
+
+```text
+migration = unchanged
+database schema = unchanged
+dependencies = unchanged
+lockfile = unchanged
+Workspace contracts = unchanged
+Selection contract = unchanged
+```
+
+## 34. Commit / CI History
+
+- `197727e`, run `30748799607`: failed M2 fixture metadata route.
+- `edd5d58`, run `30749134462`: failed M3 metadata-GET authority assertion.
+- `75038ac`, run `30749507123`: failed gitignored volumetric fixture.
+- `f370795`, run `30750190137`: failed Linux Chromium software WebGL.
+- `61d20a9`, run `30750682966`: incomplete SwiftShader flag set.
+- `28625a2`, run `30751255622`: Linux Firefox headless WebGL unavailable.
+- Corrected implementation `6287785c26e7bfdb91664fb10e78aa3de87161f7`,
+  run `30751689618`: all required jobs success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: not created before completion-record CI.
+
+## 35. Explicit Non-Scope
+
+Not implemented: new scientific Adapter/algorithm; CrystalNN/VoronoiNN;
+experimental XRD; RDF/MSD/diffusion; electronic Band/DOS/Fermi surface; Bader
+or new volumetric extraction; new phonon/structure calculation; frontend
+scientific recomputation; migration/database change; selection persistence;
+cross-Workspace or multi-Job Workspace; M5 Report/Recipe composition;
+panel-to-report selection; M6 recovery/offline/collaboration; plan/DAG editor;
+recommendation execution; new LLM/provider/SDK; arbitrary Python/shell/
+filesystem/notebook; external science API; RAG/memory/multi-agent/plugins/
+enterprise SaaS.
+
+## 36. Phase 10M Readiness
+
+```text
+Phase 10M-4:
+READY_WITH_EXPLICIT_LIMITS
+
+Phase 10M-5:
+REVIEWER_GATE
+```
+
+## 37. Queue State
+
+```text
+Phase 10M-4:
+COMPLETE / AWAITING_VERIFIED_QUEUE_ARCHIVE
+
+Phase 10M-5:
+REVIEWER_GATE / AWAITING REVIEWER PROMPT
+
+TASK_BLOCK_COUNT = 1
+```
+
+## 38. Automatic M5 Entry
+
+```text
+NO
+PHASE_10M5_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 39. Next Action
+
+```text
+Verify this completion-record exact-SHA CI, then archive only Phase 10M-4.
+Do not create, queue, or execute Phase 10M-5.
+```
+
+## 40. Final Repository State
+
+- Corrected implementation SHA: `6287785c26e7bfdb91664fb10e78aa3de87161f7`.
+- Implementation exact-SHA CI: `30751689618`, success.
+- Completion-record SHA/CI: this commit / pending.
+- Queue-archive SHA/CI: not created / pending.
+- Expected post-commit: `HEAD == origin/master`, clean, migration head 0007,
+  M4 completed block retained, task count 1, no M5 executable task.

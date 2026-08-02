@@ -33,8 +33,9 @@ Current Phase 10L-5 closure references:
 
 Phase 10M-0 sealed the architecture; M1 archived the reference-only persisted
 domain/API; M2 archived the additive metadata shell; M3 archived exact
-canonical selection and cross-panel navigation; M4 is implementing the typed
-Artifact Gallery and existing scientific viewer integration:
+canonical selection and cross-panel navigation; M4 completed the typed
+Artifact Gallery and existing scientific viewer integration and awaits its
+verified completion/archive lifecycle:
 
 - [`phase10m/README.md`](phase10m/README.md): Phase 10M canonical documentation entry.
 - [`phase10m/phase10m0_workspace_fact_audit.md`](phase10m/phase10m0_workspace_fact_audit.md): current product maturity and authority audit.

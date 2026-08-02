@@ -1,6 +1,6 @@
 # DESIGN_PROGRESS
 
-## 2026-08-02 Phase 10M-4 Typed Artifact Gallery In Progress
+## 2026-08-02 Phase 10M-4 Typed Artifact Gallery Complete, Awaiting Archive
 
 - Added a complete exact type/version registry for all 42 shared Artifact
   types, including renderer classification, payload mode, heavy/WebGL flags,
@@ -18,8 +18,9 @@
   Local Chromium/Firefox/WebKit/mobile replay passes; Chromium covers context
   loss/recovery and 50 heavy switches.
 - No migration, database schema, dependency, lockfile, scientific Adapter,
-  algorithm, or LLM call-site change. `REAL_LLM_CALLS = 0`; exact-SHA CI,
-  service-backed zero-skip proof, final evidence, and lifecycle commits remain.
+  algorithm, or LLM call-site change. `REAL_LLM_CALLS = 0`. Corrected
+  implementation `6287785c` passed exact-SHA CI `30751689618`, including
+  browser and service-backed zero-skip gates; completion/archive CI remain.
 
 ## 2026-08-02 Phase 10M-3 Canonical Selection Complete, Awaiting Archive
 

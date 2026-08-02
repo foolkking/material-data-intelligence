@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2026-08-02 - Phase 10M-4 Local Renderer Integration
+## 2026-08-02 - Phase 10M-4 Corrected Implementation Exact-SHA CI Complete
 
 - Added an exact, application-owned renderer registry for all 42 shared
   Artifact types and strict K2/K3/K4 embedded product adaptations.
@@ -14,9 +14,12 @@
   states, WebGL canvases, Chromium context-loss recovery, 50 heavy switches,
   mobile focus/touch/overflow, zero console/page errors, and zero external
   requests.
+- Corrected implementation `6287785c26e7bfdb91664fb10e78aa3de87161f7`
+  passed exact-SHA CI `30751689618`: Unit, Frontend typecheck/build and browser
+  replay, PostgreSQL/Redis/MinIO `39 passed, 0 skipped`, evidence and security
+  gates all succeeded. Failed CI attempts remain preserved in M4 evidence.
 - No migration, database schema, dependency, lockfile, Adapter calculation, or
-  LLM call-site change. Exact-SHA CI and final lifecycle records are pending;
-  this entry is not an archive claim.
+  LLM call-site change. Completion-record and queue-archive CI remain.
 
 ## 2026-08-02 - Phase 10M-3 Corrected Implementation Exact-SHA CI Complete
 

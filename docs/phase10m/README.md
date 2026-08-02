@@ -1,9 +1,9 @@
 # Phase 10M Unified Scientific Workspace
 
 Status: Phase 10M-1 through Phase 10M-3 are archived. Phase 10M-4 typed
-Artifact Gallery and scientific viewer integration is implemented locally;
-implementation, completion-record, and queue-archive exact-SHA CI remain
-required.
+Artifact Gallery and scientific viewer integration is complete at corrected
+implementation `6287785c` with exact-SHA CI `30751689618` success;
+completion-record and queue-archive exact-SHA CI remain required.
 
 ## Reading order
 

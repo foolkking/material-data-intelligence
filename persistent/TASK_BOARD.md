@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-## 2026-08-02 Phase 10M-4 In Progress
+## 2026-08-02 Phase 10M-4 Complete, Awaiting Verified Archive
 
 - [x] M3 verified archive restored and M4 admitted as the sole active task.
 - [x] Exact renderer registry, metadata-first Gallery, payload loader, generic
@@ -8,11 +8,13 @@
   one-active-heavy-viewer lifecycle are implemented locally.
 - [x] Local focused tests, TypeScript checks, and Chromium/Firefox/WebKit/
   390x844 product replay pass for the implemented surfaces.
-- [ ] Complete exact claim/evidence/lineage navigation acceptance and the final
+- [x] Complete exact claim/evidence/lineage navigation acceptance and the final
   sanitized evidence manifest.
-- [ ] Run final full regression and PostgreSQL/Redis/MinIO zero-skipped gate.
-- [ ] Complete implementation, completion-record, and queue-archive exact-SHA
-  CI before marking M4 archived.
+- [x] Run final full regression and PostgreSQL/Redis/MinIO zero-skipped gate.
+- [x] Corrected implementation `6287785c` passed exact-SHA CI `30751689618`;
+  service-backed integration is `39 passed, 0 skipped`.
+- [ ] Complete completion-record and queue-archive exact-SHA CI before marking
+  M4 archived.
 - [ ] Phase 10M-5 remains reviewer-gated; no executable M5 task is authorized.
 
 ## 2026-08-02 Phase 10M-3 Complete, Awaiting Verified Archive

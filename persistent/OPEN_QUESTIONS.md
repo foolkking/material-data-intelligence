@@ -1,12 +1,10 @@
 # OPEN_QUESTIONS
 
-## 2026-08-02 Phase 10M-4 Remaining Gates
+## 2026-08-02 Phase 10M-4 Lifecycle Gates
 
-No architecture redesign is open. The remaining M4 work is bounded acceptance
-and lifecycle closure: verify exact claim/evidence/lineage navigation, finalize
-the sanitized evidence manifest, run final full regression, obtain
-PostgreSQL/Redis/MinIO zero-skipped exact-SHA proof, and complete the three
-commit/CI gates.
+No architecture redesign is open. Corrected implementation `6287785c` passed
+exact-SHA CI `30751689618`, including browser and PostgreSQL/Redis/MinIO
+zero-skipped proof. Only completion-record and verified queue-archive CI remain.
 
 Physical assistive-technology/device-lab coverage remains outside automated
 browser evidence. Firefox/WebKit receive cross-engine heavy-viewer smoke while

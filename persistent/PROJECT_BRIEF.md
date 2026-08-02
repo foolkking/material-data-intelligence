@@ -1,6 +1,6 @@
 # PROJECT_BRIEF
 
-## 2026-08-02 Phase 10M-4 Local Implementation, CI Pending
+## 2026-08-02 Phase 10M-4 Complete, Awaiting Verified Archive
 
 Phase 10M-3 is archived at `86fb69238f1c69e172ad1010cd70ff2c486f2a1c`
 with exact-SHA CI `30735666842`. The active M4 implementation adds an
@@ -11,9 +11,11 @@ viewer adapters, M3 selection reuse, and a one-active-heavy-viewer lifecycle.
 
 The implementation creates no new scientific authority, migration, database
 table, dependency, lockfile change, or LLM call site. `REAL_LLM_CALLS = 0`;
-future real calls remain DeepSeek-only with `DEEPSEEK_KEY`. Local browser replay
-passes, but implementation/completion/archive exact-SHA CI and zero-skipped
-service-backed proof remain open. Phase 10M-5 remains reviewer-gated.
+future real calls remain DeepSeek-only with `DEEPSEEK_KEY`. Corrected
+implementation `6287785c26e7bfdb91664fb10e78aa3de87161f7` passed exact-SHA CI
+`30751689618`, including Unit, Frontend/browser/build and PostgreSQL/Redis/MinIO
+`39 passed, 0 skipped`. Completion-record and queue-archive CI remain. Phase
+10M-5 remains reviewer-gated.
 
 ## 2026-08-02 Phase 10M-3 Complete, Awaiting Verified Archive
 

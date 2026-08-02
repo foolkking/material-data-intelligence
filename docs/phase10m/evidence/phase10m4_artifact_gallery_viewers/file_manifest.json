@@ -4,9 +4,9 @@
   "entries": [
     {
       "path": "acceptance_mapping.json",
-      "bytes": 3865,
+      "bytes": 3850,
       "hashMode": "lf_normalized_text",
-      "sha256": "291fa9291c0585911bf6d8fb42fb2401e1732bb32819a1e8bb4eb45bfb182237"
+      "sha256": "d317a09d6a3fd15c5cdb65b0a6f9a2abcfc070e7fb55c3c1332fb4337488a2a9"
     },
     {
       "path": "accessibility.json",
@@ -250,9 +250,9 @@
     },
     {
       "path": "service_backed.json",
-      "bytes": 1299,
+      "bytes": 1426,
       "hashMode": "lf_normalized_text",
-      "sha256": "9ea5ba1fc85ec0c45a73b32c1d95359cd7d47f4b9145bcd7512de0a11a1be8c0"
+      "sha256": "9827edc80a852c794d839b857e194122b823ba956f7a7be73137eafc58fbb3f1"
     },
     {
       "path": "structure_viewer.json",
@@ -262,9 +262,9 @@
     },
     {
       "path": "test_summary.txt",
-      "bytes": 5383,
+      "bytes": 5629,
       "hashMode": "lf_normalized_text",
-      "sha256": "d1766d87a3624ce63d4b05f4bee3152e8fdb5eaff424d8a69f16c6b07f83455f"
+      "sha256": "e213d80b88918c7d1d754e38bf9e7c552129c1ac4bd619cb92c7da9f159ca141"
     },
     {
       "path": "trajectory_viewer.json",
