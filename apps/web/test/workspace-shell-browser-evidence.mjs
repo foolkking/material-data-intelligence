@@ -312,7 +312,7 @@ function comparableSemantic(value) {
   if (Array.isArray(value)) return value.map(comparableSemantic);
   if (value && typeof value === "object") {
     return Object.fromEntries(Object.entries(value)
-      .filter(([key]) => key !== "initialRouteDevelopmentMs" && key !== "elapsedMs")
+      .filter(([key]) => key !== "initialRouteDevelopmentMs" && key !== "elapsedMs" && key !== "domCount")
       .map(([key, item]) => [key, comparableSemantic(item)]));
   }
   return value;

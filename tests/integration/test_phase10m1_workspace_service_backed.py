@@ -597,10 +597,12 @@ def test_phase10m3_postgres_redis_minio_canonical_selection_and_pinning(
         monkeypatch.setattr("mdi_api.routers.workspaces._repositories", lambda: repos)
         monkeypatch.setattr("mdi_api.routers.workspaces._service", lambda: WorkspaceProjectionService(repos))
         project_id, job_id, artifact_id = f"project_m3_{suffix}", f"job_m3_{suffix}", f"artifact_m3_{suffix}"
+        tool_call_id = f"call_m3_{suffix}"
         checksum = "a" * 64
         repos.projects.save({"id": project_id, "name": project_id, "createdBy": "user_local"})
         repos.jobs.save({"id": job_id, "projectId": project_id, "status": "completed", "kind": "analysis", "createdBy": "user_local"})
-        repos.artifacts.save({"id": artifact_id, "projectId": project_id, "jobId": job_id, "toolCallId": f"call_m3_{suffix}", "type": "phonon_band_json", "version": "1.0", "contentType": "application/json", "contentHash": checksum, "sha256": checksum, "storageKey": minio_key})
+        repos.tool_calls.save({"id": tool_call_id, "jobId": job_id, "stepId": "phonon_band", "toolId": "phonon.band", "status": "completed"})
+        repos.artifacts.save({"id": artifact_id, "projectId": project_id, "jobId": job_id, "toolCallId": tool_call_id, "type": "phonon_band_json", "version": "1.0", "contentType": "application/json", "contentHash": checksum, "sha256": checksum, "storageKey": minio_key})
 
         client = TestClient(create_app())
         try:
@@ -622,7 +624,7 @@ def test_phase10m3_postgres_redis_minio_canonical_selection_and_pinning(
                     artifactChecksum=checksum,
                     artifactContract="phonon_band_json",
                     artifactVersion="1.0",
-                    toolCallId=f"call_m3_{suffix}",
+                    toolCallId=tool_call_id,
                 ),
                 secondary=(),
                 compatibility="EXACT",
