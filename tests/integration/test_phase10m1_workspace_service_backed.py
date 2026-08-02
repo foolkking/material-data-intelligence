@@ -468,6 +468,10 @@ def test_phase10m2_postgres_redis_minio_workspace_shell_api_contract(
             "mdi_api.routers.workspaces._repositories",
             lambda: repos,
         )
+        monkeypatch.setattr(
+            "mdi_api.routers.workspaces._service",
+            lambda: WorkspaceProjectionService(repos),
+        )
         project_id = f"project_m2_{suffix}"
         job_id = f"job_m2_{suffix}"
         repos.projects.save({"id": project_id, "name": project_id, "createdBy": "user_local"})
