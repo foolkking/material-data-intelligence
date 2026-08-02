@@ -237,6 +237,7 @@ async function installApiFixture(page, calls) {
     if (url.pathname === "/planner/providers/resolve") { await route.fulfill(jsonResponse({ provider: "deepseek", status: "not_configured", model: "deepseek-v4-flash", willUseLiveProvider: false })); return; }
     if (url.pathname === "/runtime/health" || url.pathname === "/health/runtime") { await route.fulfill(jsonResponse({ status: "ok", queue: "fixture" })); return; }
     if (url.pathname === "/datasets") { await route.fulfill(jsonResponse([])); return; }
+    if (/^\/planner\/jobs\/job_[a-z0-9]+\/artifacts$/u.test(url.pathname)) { await route.fulfill(jsonResponse([])); return; }
     await route.fulfill(jsonResponse({ detail: { code: "FIXTURE_NOT_FOUND", message: "Fixture route not found", retryable: false } }, 404));
   });
 }
