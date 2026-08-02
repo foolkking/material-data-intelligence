@@ -1,0 +1,10 @@
+{
+  "schemaVersion":"phase10m4.accessibility.v1",
+  "gallery":{"semanticSections":true,"semanticList":true,"labeledOpenDownloadSelect":true,"statusText":true,"rendererAndContractLabels":true},
+  "plots":{"numericSummary":true,"boundedTableFallback":true,"seriesText":true,"colorOnlyMeaning":false},
+  "webgl":{"viewerStatus":true,"textMetadataFallback":true,"contextLostMessage":true,"keyboardControls":"existing viewer controls retained","pointerOnlyCriticalAction":false},
+  "mobile":{"viewport":[390,844],"minimumTouchTargetCssPx":44,"oneActiveViewer":true,"inspectorFocus":true,"returnFocus":true,"horizontalOverflow":0},
+  "browser":{"chromium":true,"firefox":true,"webkit":true,"mobileChromium":true,"consoleErrors":0,"pageErrors":0},
+  "automatedAxeAudit":"NOT_RUN; semantic and keyboard assertions are product tests/browser assertions",
+  "status":"PASS_WITH_EXPLICIT_AUTOMATION_LIMIT"
+}

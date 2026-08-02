@@ -1,0 +1,16 @@
+{
+  "schemaVersion":"phase10m4.webgl-ownership-audit.v1",
+  "maxActiveHeavyViewers":1,
+  "owners":[
+    {"family":"Structure and phonon animation","surface":"ViewerSceneRendererSurface / PhononAnimationSurface","engine":"viewerSceneRendererEngine","contextOwner":"application-owned THREE.WebGLRenderer","resizeOwner":"engine ResizeObserver","listeners":"engine controls/canvas/window","contextLost":"typed context_lost state","dispose":"observer disconnect; listeners/controls/geometries/materials; forceContextLoss; renderer.dispose; canvas removal"},
+    {"family":"Trajectory","surface":"TrajectoryViewerSurface","engine":"application-owned trajectory/viewer scene engine","contextOwner":"active surface","animationOwner":"surface playback + renderer","contextLost":"safe typed/degraded state","dispose":"surface cleanup stops playback and disposes renderer resources"},
+    {"family":"Brillouin Zone","surface":"BrillouinZonePreviewPanel","engine":"brillouinZoneEngine","contextOwner":"application-owned THREE.WebGLRenderer","resizeOwner":"engine observer/listener","contextLost":"typed state and retry","dispose":"observer/listeners/geometries/materials; forceContextLoss; renderer.dispose; canvas removal"},
+    {"family":"Volumetric","surface":"VolumetricPreviewPanel with isosurface/slice/volume surfaces","engine":"volumetricRendererEngine, volumetricSliceRendererEngine, volumetricVolumeRendererEngine","contextOwner":"active volumetric surface","resizeOwner":"engine ResizeObserver","listeners":"canvas/window/document; workers","contextLost":"typed fallback retaining metadata","dispose":"abort requests; terminate workers; disconnect observers; remove listeners; dispose texture/targets/geometries/materials/controls/renderer/canvas"}
+  ],
+  "leaseOwner":"WorkspaceHeavyViewerLease",
+  "mountPolicy":"only active Artifact renderer acquires a heavy lease and creates payload/canvas",
+  "unmountPolicy":"active request is aborted; lease released; child surface cleanup owns engine/resource disposal",
+  "browserEvidence":{"chromiumHeavySwitchCycles":50,"maxActiveCanvases":1,"remainingCanvases":0,"contextLossRecovered":true},
+  "unitEvidence":{"leaseCycles":50,"parallelAcquireRejected":true,"activeCountAfterRelease":0},
+  "status":"PASS_LOCAL_BROWSER"
+}

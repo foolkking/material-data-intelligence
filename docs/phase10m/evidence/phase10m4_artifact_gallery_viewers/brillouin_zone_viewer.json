@@ -1,0 +1,15 @@
+{
+  "schemaVersion":"phase10m4.viewer-case.v1",
+  "family":"Brillouin Zone",
+  "contracts":["reciprocal_lattice_json@1","brillouin_zone_json@1","kpath_json@1","brillouin_zone_manifest_json@1"],
+  "component":"BrillouinZonePreviewPanel",
+  "classification":"PRODUCTION_ADAPTED_RENDERER",
+  "heavy":true,
+  "webgl":true,
+  "scientificAuthority":"persisted reciprocal cell/path/high-symmetry point contracts",
+  "newScience":["no primitive/conventional-cell calculation","no path generation","no label-only or nearest-coordinate identity"],
+  "selection":{"classification":"CONSUMER_ONLY","declaredInputs":["RECIPROCAL_POINT","ARTIFACT"],"emittedByViewer":[]},
+  "browser":{"chromium":true,"firefox":true,"webkit":true,"canvasCount":1,"bundlePayloadRequestsPerBrowser":4},
+  "dispose":"application-owned engine cleanup including forceContextLoss and canvas removal",
+  "status":"PASS_BROWSER"
+}

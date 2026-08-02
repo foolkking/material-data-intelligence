@@ -24,17 +24,17 @@ const DOS_COLOR = "#a43f32";
 const PROJECTION_COLORS = ["#6b4fa1", "#2e7d5b", "#b36b1e", "#735c45"];
 
 export function PhononBandDosPreviewPanel({ artifacts, plotlyLoader = loadPlotly }: { artifacts: Artifact[]; plotlyLoader?: CombinedPlotlyLoader }) {
-  const combinedArtifact = findArtifact(artifacts, "phonon_band_dos_json", "phonon_band_dos.json");
+  const combinedArtifact = findArtifact(artifacts, "phonon_band_dos_json", "phase10h.phonon_band_dos.v1");
   const [tab, setTab] = useState<"plot" | "compatibility" | "band" | "dos" | "json">("plot");
   const [projectionId, setProjectionId] = useState("");
   if (!combinedArtifact) return null;
   const bundle = {
     combined: artifactPayload(combinedArtifact),
-    summary: artifactPayload(findArtifact(artifacts, "phonon_summary_json", "phonon_band_dos_summary.json")),
-    report: artifactPayload(findArtifact(artifacts, "phonon_compatibility_json", "phonon_band_dos_compatibility_report.json")),
-    plot: artifactPayload(findArtifact(artifacts, "plotly_json", "phonon_band_dos_plot.json")),
-    table: artifactPayload(findArtifact(artifacts, "table_json", "phonon_band_dos_table.json")),
-    manifest: artifactPayload(findArtifact(artifacts, "phonon_manifest_json", "phonon_band_dos_manifest.json")),
+    summary: artifactPayload(findArtifact(artifacts, "phonon_summary_json", "phase10h.phonon_band_dos_summary.v1")),
+    report: artifactPayload(findArtifact(artifacts, "phonon_compatibility_json", "phase10h.phonon_band_dos_compatibility_report.v1")),
+    plot: artifactPayload(findArtifact(artifacts, "plotly_json", "phase10h.phonon_band_dos_plot.v1")),
+    table: artifactPayload(findArtifact(artifacts, "table_json", "phase10h.phonon_band_dos_table.v1")),
+    manifest: artifactPayload(findArtifact(artifacts, "phonon_manifest_json", "phase10h.phonon_band_dos_manifest.v1")),
   };
   const validation = validatePhononBandDosBundle(bundle);
   if (!validation.valid || !Object.values(bundle).every(record)) {
@@ -214,7 +214,7 @@ async function loadPlotly(): Promise<PlotlyApi> {
   return plotly;
 }
 
-function findArtifact(artifacts: Artifact[], type: string, name: string): Artifact | undefined { return artifacts.find((artifact) => artifact.name === name || artifact.type === type && artifact.name === name); }
+function findArtifact(artifacts: Artifact[], type: string, schemaVersion: string): Artifact | undefined { return artifacts.find((artifact) => artifact.type === type && artifactPayload(artifact)?.schema_version === schemaVersion); }
 function artifactPayload(artifact?: Artifact): JsonRecord | null { if (!artifact) return null; const metadata = record(artifact.metadata) ? artifact.metadata : null; for (const candidate of [artifact.content, artifact.payload, metadata?.content, metadata?.payload, metadata?.preview]) { if (record(candidate)) return candidate; if (typeof candidate === "string") { try { const parsed = JSON.parse(candidate); if (record(parsed)) return parsed; } catch { /* inert fallback */ } } } return null; }
 function JsonDetails({ title, payload }: { title: string; payload: unknown }) { return <details><summary>{title}</summary><pre>{JSON.stringify(payload, null, 2)}</pre></details>; }
 function projectionLabel(projection: JsonRecord): string { return projection.projection_type === "atom" ? `Atom ${String(projection.atom_index)} (${String(projection.species)})` : `Species ${String(projection.species)}`; }

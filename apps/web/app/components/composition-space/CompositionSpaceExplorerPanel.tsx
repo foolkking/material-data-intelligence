@@ -25,29 +25,31 @@ const COLOR_SOURCES = new Set([
   "phase10k3_sample_bound_artifact",
 ]);
 
-export function CompositionSpaceExplorerPanel({ artifacts }: { artifacts: Artifact[] }) {
-  const artifact = artifacts.find((item) => item.name === "composition_space.json");
-  if (!artifact) return null;
+export type CompositionSampleSelection = Readonly<{ objectId: string; sampleRef: string; sampleKey: string }>;
+
+export function CompositionSpaceExplorerPanel({ artifacts, externalSampleKey, onSampleSelection }: { artifacts: Artifact[]; externalSampleKey?: string | null; onSampleSelection?: (selection: CompositionSampleSelection) => void }) {
   const integration = inspectMaterialIntelligenceArtifacts(artifacts, (id, payload) => {
     if (id !== "composition_space") return null;
     const validation = validateCompositionSpacePayload(payload);
     return validation.ok ? null : validation.reason;
   });
   const assessment = integration.products.find((item) => item.id === "composition_space");
+  const artifact = assessment?.artifact;
+  if (!artifact) return null;
   return (
     <section className="panel composition-space" data-testid="composition-space-explorer" aria-label="Composition Space Explorer">
-      <CompositionSpaceContent artifact={artifact} standalone integrationReason={assessment?.state !== "PRODUCED" ? assessment?.reason : undefined} />
+      <CompositionSpaceContent artifact={artifact} standalone externalSampleKey={externalSampleKey} onSampleSelection={onSampleSelection} integrationReason={assessment?.state !== "PRODUCED" ? assessment?.reason : undefined} />
     </section>
   );
 }
 
 export function CompositionSpaceExplorerBody({ artifacts }: { artifacts: Artifact[] }) {
-  const artifact = artifacts.find((item) => item.name === "composition_space.json");
+  const artifact = inspectMaterialIntelligenceArtifacts(artifacts).products.find((item) => item.id === "composition_space")?.artifact;
   if (!artifact) return <p className="empty-state">No Composition Space artifact is available.</p>;
   return <CompositionSpaceContent artifact={artifact} standalone={false} />;
 }
 
-function CompositionSpaceContent({ artifact, standalone, integrationReason }: { artifact: Artifact; standalone: boolean; integrationReason?: string }) {
+function CompositionSpaceContent({ artifact, standalone, integrationReason, externalSampleKey, onSampleSelection }: { artifact: Artifact; standalone: boolean; integrationReason?: string; externalSampleKey?: string | null; onSampleSelection?: (selection: CompositionSampleSelection) => void }) {
   const payload = useMemo(() => artifactPayload(artifact), [artifact]);
   const validation = useMemo(() => validateCompositionSpacePayload(payload), [payload]);
   const [requestedColor, setRequestedColor] = useState("");
@@ -75,7 +77,7 @@ function CompositionSpaceContent({ artifact, standalone, integrationReason }: { 
   const colorOptions = records(coloring.available);
   const defaultColor = colorOptions.some((option) => text(option.id) === text(coloring.default)) ? text(coloring.default) : text(colorOptions[0]?.id);
   const colorId = colorOptions.some((option) => text(option.id) === requestedColor) ? requestedColor : defaultColor;
-  const selected = points.find((point) => pointKey(point) === selectedKey);
+  const selected = points.find((point) => pointKey(point) === (externalSampleKey ?? selectedKey));
   const warnings = collectWarnings(data, coverage);
 
   return <div className="composition-space-content">
@@ -117,7 +119,11 @@ function CompositionSpaceContent({ artifact, standalone, integrationReason }: { 
           <strong>Composition projection</strong>
           <span>{colorDescription(colorId, colorOptions, displayed)}</span>
         </figcaption>
-        <CompositionScatter points={displayed} colorId={colorId} selectedKey={selectedKey} onSelect={setSelectedKey} />
+        <CompositionScatter points={displayed} colorId={colorId} selectedKey={externalSampleKey ?? selectedKey} onSelect={(key) => {
+          setSelectedKey(key);
+          const point = points.find((item) => pointKey(item) === key);
+          if (point && validPointIdentity(point)) onSampleSelection?.({ objectId: text(point.objectId), sampleRef: text(point.sampleRef), sampleKey: key });
+        }} />
       </figure>
       <SampleInspector sample={selected} />
     </div>
@@ -408,6 +414,7 @@ function collectWarnings(payload: JsonRecord, coverage: JsonRecord): string[] {
 }
 
 function pointKey(point: JsonRecord): string { return text(point.sampleKey); }
+function validPointIdentity(point: JsonRecord): boolean { const objectId = text(point.objectId); const sampleRef = text(point.sampleRef); return Boolean(objectId && sampleRef && point.sampleKey === `${objectId}:${sampleRef}`); }
 function stableIndex(value: string, size: number): number { let hash = 0; for (let index = 0; index < value.length; index += 1) hash = ((hash * 31) + value.charCodeAt(index)) >>> 0; return hash % size; }
 function simpleBounds(values: number[]): readonly [number, number] { return values.length ? [Math.min(...values), Math.max(...values)] : [0, 1]; }
 function paddedBounds(values: number[]): readonly [number, number] { const [minimum, maximum] = simpleBounds(values); if (minimum === maximum) return [minimum - 0.5, maximum + 0.5]; const padding = (maximum - minimum) * 0.06; return [minimum - padding, maximum + padding]; }

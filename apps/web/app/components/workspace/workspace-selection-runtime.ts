@@ -4,6 +4,14 @@ import type {
   WorkspaceSelectionContext,
   WorkspaceSelectionKind,
 } from "../../lib/workspace-api";
+import type {
+  Artifact,
+  GroundedScientificInterpretation,
+  InterpretationEvidenceResponse,
+  ScientificClaim,
+  ScientificEvidenceItem,
+} from "../../lib/planner-api";
+import { artifactChecksum, artifactIdentity, artifactVersion } from "./workspace-renderer-registry";
 import {
   clearedWorkspaceSelection,
   selectionsEqual,
@@ -133,6 +141,127 @@ export function artifactSelectionFromPanel(
   });
 }
 
+export function artifactSelectionFromArtifact(
+  artifact: Artifact,
+  workspace: ScientificWorkspace,
+): WorkspaceSelectionContext | null {
+  const artifactId = artifactIdentity(artifact);
+  const checksum = artifactChecksum(artifact);
+  if (!artifactId || !checksum || !artifact.type || artifact.jobId !== workspace.sourceJobId) return null;
+  const projectId = typeof artifact.metadata?.projectId === "string" ? artifact.metadata.projectId : workspace.projectId;
+  if (projectId !== workspace.projectId) return null;
+  return validateWorkspaceSelectionContext({
+    schemaVersion: "1.0",
+    sourceScopeHash: workspace.sourceReferenceHash,
+    primary: {
+      selectionSchemaVersion: "1.0",
+      kind: "ARTIFACT",
+      sourceScopeHash: workspace.sourceReferenceHash,
+      projectId: workspace.projectId,
+      jobId: workspace.sourceJobId,
+      artifactId,
+      artifactChecksum: checksum,
+      artifactContract: artifact.type,
+      artifactVersion: artifactVersion(artifact),
+      toolCallId: artifact.toolCallId ?? null,
+    },
+    secondary: [],
+    propagation: "EXACT_COMPATIBLE_ONLY",
+    compatibility: "EXACT",
+    cleared: false,
+  });
+}
+
+export function datasetSampleSelection(
+  workspace: ScientificWorkspace,
+  identity: Readonly<{ objectId: string; sampleRef: string; sampleKey: string }>,
+): WorkspaceSelectionContext {
+  if (!identity.objectId || !identity.sampleRef || identity.sampleKey !== `${identity.objectId}:${identity.sampleRef}`) throw new Error("SELECTION_SAMPLE_IDENTITY_INVALID");
+  if (!workspace.datasetId || !workspace.datasetVersion) throw new Error("SELECTION_DATASET_SCOPE_UNAVAILABLE");
+  return validateWorkspaceSelectionContext({
+    schemaVersion: "1.0",
+    sourceScopeHash: workspace.sourceReferenceHash,
+    primary: {
+      selectionSchemaVersion: "1.0",
+      kind: "DATASET_SAMPLE",
+      sourceScopeHash: workspace.sourceReferenceHash,
+      projectId: workspace.projectId,
+      datasetId: workspace.datasetId,
+      datasetVersion: workspace.datasetVersion,
+      objectId: identity.objectId,
+      sampleRef: identity.sampleRef,
+    },
+    secondary: [],
+    propagation: "EXACT_COMPATIBLE_ONLY",
+    compatibility: "EXACT",
+    cleared: false,
+  });
+}
+
+export function evidenceItemSelection(
+  workspace: ScientificWorkspace,
+  interpretation: GroundedScientificInterpretation,
+  evidence: InterpretationEvidenceResponse,
+  item: ScientificEvidenceItem,
+): WorkspaceSelectionContext {
+  if (
+    interpretation.sourceJobId !== workspace.sourceJobId
+    || interpretation.sourceBundleId !== evidence.bundleId
+    || interpretation.sourceBundleHash !== evidence.bundleHash
+    || evidence.interpretationId !== interpretation.interpretationId
+    || !evidence.sourceArtifactIds.includes(item.sourceArtifactId)
+  ) throw new Error("SELECTION_EVIDENCE_SCOPE_MISMATCH");
+  return validateWorkspaceSelectionContext({
+    schemaVersion: "1.0",
+    sourceScopeHash: workspace.sourceReferenceHash,
+    primary: {
+      selectionSchemaVersion: "1.0",
+      kind: "EVIDENCE_ITEM",
+      sourceScopeHash: workspace.sourceReferenceHash,
+      projectId: workspace.projectId,
+      jobId: workspace.sourceJobId,
+      bundleId: evidence.bundleId,
+      bundleHash: evidence.bundleHash,
+      evidenceItemId: item.evidenceItemId,
+      sourceArtifactId: item.sourceArtifactId,
+      sourceArtifactChecksum: item.sourceArtifactChecksum,
+      fieldLocator: item.fieldLocator.fieldId,
+    },
+    secondary: [],
+    propagation: "EXACT_COMPATIBLE_ONLY",
+    compatibility: "EXACT",
+    cleared: false,
+  });
+}
+
+export function claimSelection(
+  workspace: ScientificWorkspace,
+  interpretation: GroundedScientificInterpretation,
+  claim: ScientificClaim,
+): WorkspaceSelectionContext {
+  if (interpretation.sourceJobId !== workspace.sourceJobId || !interpretation.claims.some((item) => item.claimId === claim.claimId)) {
+    throw new Error("SELECTION_CLAIM_SCOPE_MISMATCH");
+  }
+  return validateWorkspaceSelectionContext({
+    schemaVersion: "1.0",
+    sourceScopeHash: workspace.sourceReferenceHash,
+    primary: {
+      selectionSchemaVersion: "1.0",
+      kind: "CLAIM",
+      sourceScopeHash: workspace.sourceReferenceHash,
+      projectId: workspace.projectId,
+      jobId: workspace.sourceJobId,
+      interpretationId: interpretation.interpretationId,
+      interpretationHash: interpretation.interpretationHash,
+      claimId: claim.claimId,
+    },
+    secondary: [],
+    propagation: "EXACT_COMPATIBLE_ONLY",
+    compatibility: "EXACT",
+    cleared: false,
+  });
+}
+
 function panelSourceCompatible(panel: WorkspacePanel, context: WorkspaceSelectionContext, workspace: ScientificWorkspace): boolean {
   const selected = context.primary;
   if (!selected) return false;
@@ -152,6 +281,11 @@ function panelSourceCompatible(panel: WorkspacePanel, context: WorkspaceSelectio
         : selected.kind === "VOLUMETRIC_FIELD" ? selected.artifactId : null;
   const checksum = "artifactChecksum" in selected ? selected.artifactChecksum : null;
   if (artifactId) return panel.sourceRefs.some((source) => source.kind === "ARTIFACT" && source.sourceId === artifactId && source.sourceHash === checksum && source.jobId === workspace.sourceJobId);
+  if (selected.kind === "DATASET_SAMPLE" || selected.kind === "MATERIAL_OBJECT") {
+    return ["DATA", "SCIENTIFIC_RESULT"].includes(panel.panelKind)
+      && selected.datasetId === workspace.datasetId
+      && selected.datasetVersion === workspace.datasetVersion;
+  }
   return panel.panelKind === "DATA";
 }
 

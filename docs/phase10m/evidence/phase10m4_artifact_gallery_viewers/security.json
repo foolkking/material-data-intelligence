@@ -1,0 +1,36 @@
+{
+  "schemaVersion":"phase10m4.security.v1",
+  "markers":{
+    "NO_ARTIFACT_GALLERY_ARBITRARY_CODE_EXECUTION":"PASS_STATIC_AND_UNIT",
+    "NO_ARTIFACT_HTML_EXECUTION":"PASS_BROWSER",
+    "NO_ARTIFACT_JAVASCRIPT_EXECUTION":"PASS_BROWSER_AND_STATIC",
+    "NO_ARTIFACT_IFRAME_EXECUTION":"PASS_STATIC",
+    "NO_ARTIFACT_DYNAMIC_MODULE_EXECUTION":"PASS_STATIC",
+    "NO_ARTIFACT_EXTERNAL_URL_EXECUTION":"PASS_BROWSER",
+    "NO_ARTIFACT_COMPONENT_NAME_AUTHORITY":"PASS_REGISTRY_TEST",
+    "NO_ARTIFACT_FILENAME_RENDERER_AUTHORITY":"PASS_REGISTRY_TEST",
+    "NO_CROSS_PROJECT_ARTIFACT_ACCESS":"IMPLEMENTED_SERVICE_EXACT_SHA_CI_PENDING",
+    "NO_CROSS_JOB_ARTIFACT_INJECTION":"PASS_UNIT; SERVICE_EXACT_SHA_CI_PENDING",
+    "NO_STALE_ARTIFACT_REBINDING":"PASS_STATIC",
+    "NO_ARTIFACT_CHECKSUM_BYPASS":"PASS_UNIT; SERVICE_EXACT_SHA_CI_PENDING",
+    "NO_FRONTEND_SCIENTIFIC_RECOMPUTATION":"PASS_STATIC_AND_COMPONENT_REGRESSION",
+    "NO_SELECTION_ARRAY_INDEX_AUTHORITY":"PASS_SELECTION_TEST",
+    "NO_SELECTION_DISPLAY_LABEL_AUTHORITY":"PASS_SELECTION_TEST",
+    "NO_SELECTION_FUZZY_MATCH":"PASS_SELECTION_TEST",
+    "NO_RECOMMENDATION_EXECUTION":"PASS_STATIC",
+    "NO_SECRET_PATTERN_HITS":"PASS_EVIDENCE_DIRECTORY_SCAN"
+  },
+  "adversarialCoverage":[
+    "malicious title rendered as React text",
+    "filename sanitized only for download and never selects renderer",
+    "MIME alone never selects renderer",
+    "HTML and legacy active content are download-only/inert",
+    "prototype keys and deep JSON rejected",
+    "non-finite values rejected or shown invalid",
+    "checksum and contract mismatch typed",
+    "foreign Job/Project scope typed",
+    "external requests observed in browser = 0"
+  ],
+  "unprovenUntilExactShaCi":["service-backed cross-project HTTP gate","MinIO tamper gate","CI secret scan"],
+  "status":"LOCAL_GATES_PASS_EXACT_SHA_CI_PENDING"
+}

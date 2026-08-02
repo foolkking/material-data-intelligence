@@ -182,8 +182,18 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
     result_panel = next(item for item in panels if item["panelKind"] == "SCIENTIFIC_RESULT")
     assert len(overview["acceptedSelectionKinds"]) == 13
     assert overview["emittedSelectionKinds"] == []
-    assert result_panel["emittedSelectionKinds"] == ["ARTIFACT"]
+    assert result_panel["emittedSelectionKinds"] == [
+        "DATASET_SAMPLE",
+        "MATERIAL_OBJECT",
+        "ARTIFACT",
+    ]
     assert result_panel["acceptedSelectionKinds"] == [
+        "DATASET_SAMPLE",
+        "MATERIAL_OBJECT",
+        "STRUCTURE",
+        "PERIODIC_SITE",
+        "TRAJECTORY_ATOM",
+        "TRAJECTORY_FRAME",
         "PHONON_Q_POINT",
         "PHONON_BRANCH",
         "RECIPROCAL_POINT",
@@ -235,7 +245,11 @@ def test_historical_empty_panel_declarations_are_read_projected_without_write() 
 
     projected = service.get_snapshot(workspace_id)
     projected_result = next(item for item in projected.body["panels"] if item["panelKind"] == "SCIENTIFIC_RESULT")
-    assert projected_result["emittedSelectionKinds"] == ["ARTIFACT"]
+    assert projected_result["emittedSelectionKinds"] == [
+        "DATASET_SAMPLE",
+        "MATERIAL_OBJECT",
+        "ARTIFACT",
+    ]
     assert projected_result["contractProvenance"] == "phase10m3.selection_registry.v1"
     persisted = repos.workspaces.get_panel(workspace_id, result["panelId"], project_id="project_1")
     assert persisted["acceptedSelectionKinds"] == []
@@ -463,3 +477,69 @@ def test_workspace_api_rejects_unsafe_conflicts_and_cross_project_access(
     )
     assert foreign.status_code == 403
     assert "Traceback" not in foreign.text and "E:\\" not in foreign.text
+
+
+def test_grounded_evidence_projection_preserves_exact_bundle_and_artifact_refs(
+    tmp_path,
+) -> None:
+    from mdi_api.routers.planner import (
+        PlannerInterpretationRequest,
+        create_planner_job_interpretation,
+    )
+    from tests.test_phase10l4_api_persistence import _seed_api_source
+
+    repos, runtime, plan_hash = _seed_api_source(tmp_path / "m4-evidence")
+    created = create_planner_job_interpretation(
+        "job_l4_api",
+        PlannerInterpretationRequest(
+            mode="DETERMINISTIC",
+            expectedPlanHash=plan_hash,
+            idempotencyKey="m4-workspace-evidence",
+        ),
+        repositories=repos,
+        queue_runtime=runtime,
+    )
+    assert created["outcome"] == "INTERPRETATION_READY"
+    repos.projects.save(
+        {"projectId": "project_l4_api", "name": "L4 source", "createdBy": "user_local"}
+    )
+    repos.datasets.save(
+        {
+            "datasetId": "dataset_l4_api",
+            "projectId": "project_l4_api",
+            "name": "L4 dataset",
+            "createdBy": "user_local",
+        }
+    )
+
+    snapshot, projected = WorkspaceProjectionService(repos).project_job(
+        source_job_id="job_l4_api",
+        created_by="user_local",
+        title="Grounded evidence workspace",
+    )
+
+    assert projected is True
+    evidence_panel = next(
+        panel for panel in snapshot.body["panels"] if panel["panelKind"] == "EVIDENCE"
+    )
+    findings_panel = next(
+        panel for panel in snapshot.body["panels"] if panel["panelKind"] == "FINDINGS"
+    )
+    bundle_refs = [
+        ref for ref in evidence_panel["sourceRefs"] if ref["kind"] == "EVIDENCE_BUNDLE"
+    ]
+    artifact_refs = [
+        ref for ref in evidence_panel["sourceRefs"] if ref["kind"] == "ARTIFACT"
+    ]
+    assert len(bundle_refs) == 1
+    assert bundle_refs[0]["sourceId"] == created["bundleId"]
+    assert bundle_refs[0]["sourceHash"] == created["bundleHash"]
+    assert bundle_refs[0]["projectId"] == "project_l4_api"
+    assert bundle_refs[0]["jobId"] == "job_l4_api"
+    assert artifact_refs
+    assert all(ref["sourceHash"] and ref["jobId"] == "job_l4_api" for ref in artifact_refs)
+    assert findings_panel["evidenceRefs"] == [created["bundleId"]]
+    assert evidence_panel["evidenceRefs"] == [created["bundleId"]]
+    assert set(evidence_panel["provenanceRefs"]) == {ref["sourceId"] for ref in artifact_refs}
+    serialized = json.dumps(snapshot.body, sort_keys=True)
+    assert "storageKey" not in serialized and "rawPayload" not in serialized

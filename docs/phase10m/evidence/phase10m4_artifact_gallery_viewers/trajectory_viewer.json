@@ -1,0 +1,15 @@
+{
+  "schemaVersion":"phase10m4.viewer-case.v1",
+  "family":"Trajectory",
+  "contract":"trajectory_json@1 with formal trajectory bundle",
+  "component":"TrajectoryViewerSurface",
+  "classification":"PRODUCTION_ADAPTED_RENDERER",
+  "heavy":true,
+  "webgl":true,
+  "scientificAuthority":"persisted bounded frames, cell, species and formal identities",
+  "newScience":["no RDF","no MSD","no diffusion","no unwrapping","no smoothing","no event detection"],
+  "selection":{"classification":"CONSUMER_ONLY","declaredInputs":["TRAJECTORY_ATOM","TRAJECTORY_FRAME","ARTIFACT"],"emittedByViewer":[]},
+  "lifecycle":"active-only bundle; close/switch aborts request and unmount stops active viewer",
+  "browser":{"chromium":true,"firefox":true,"webkit":true,"canvasCount":1,"payloadRequestsPerBrowser":1},
+  "status":"PASS_BROWSER"
+}

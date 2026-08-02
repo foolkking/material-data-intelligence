@@ -1,9 +1,12 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createHash } from "node:crypto";
 
 import { getWorkspace, patchWorkspace } from "../../lib/workspace-api";
+import { getPlannerArtifactContent, getPlannerInterpretationEvidence, getPlannerJobArtifacts, getPlannerJobInterpretations } from "../../lib/planner-api";
 import { ScientificWorkspaceShell } from "./ScientificWorkspaceShell";
+import { validateAndOrderArtifactMetadata } from "./WorkspaceArtifactGallery";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
 import { encodeWorkspaceSelectionUrl, validateWorkspaceSelectionContext } from "./workspace-selection-contract";
 
@@ -11,15 +14,42 @@ vi.mock("../../lib/workspace-api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../lib/workspace-api")>();
   return { ...actual, getWorkspace: vi.fn(), patchWorkspace: vi.fn() };
 });
+vi.mock("../../lib/planner-api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../lib/planner-api")>();
+  return { ...actual, getPlannerJobArtifacts: vi.fn(), getPlannerArtifactContent: vi.fn(), getPlannerJobInterpretations: vi.fn(), getPlannerInterpretationEvidence: vi.fn() };
+});
 
 const getWorkspaceMock = vi.mocked(getWorkspace);
 const patchWorkspaceMock = vi.mocked(patchWorkspace);
+const getArtifactsMock = vi.mocked(getPlannerJobArtifacts);
+const getContentMock = vi.mocked(getPlannerArtifactContent);
+const getInterpretationsMock = vi.mocked(getPlannerJobInterpretations);
+const getEvidenceMock = vi.mocked(getPlannerInterpretationEvidence);
+const HASH = "a".repeat(64);
 
 beforeEach(() => {
   window.history.replaceState({}, "", "/workspaces/workspace_demo");
   getWorkspaceMock.mockReset();
   patchWorkspaceMock.mockReset();
-  getWorkspaceMock.mockResolvedValue({ data: workspaceSnapshotFixture(), status: 200, etag: "etag", idempotentReplay: null });
+  getArtifactsMock.mockReset();
+  getContentMock.mockReset();
+  getInterpretationsMock.mockReset();
+  getEvidenceMock.mockReset();
+  const bytes = new TextEncoder().encode(JSON.stringify({ rows: [{ objectId: "object_1", value: 2 }] })).buffer;
+  const artifactHash = createHash("sha256").update(new Uint8Array(bytes)).digest("hex");
+  getArtifactsMock.mockResolvedValue([{ id: "artifact_demo", artifactId: "artifact_demo", jobId: "job_demo", toolCallId: "tool_call_demo", type: "metrics_json", version: "1", name: "Demo metrics", sizeBytes: bytes.byteLength, contentType: "application/json", sha256: artifactHash, metadata: { projectId: "project_demo", stepId: "step_demo" } }]);
+  getContentMock.mockResolvedValue(bytes);
+  const claim = { schemaVersion: "1.0" as const, claimId: "claim_demo", claimType: "OBSERVATION" as const, subjectEvidenceIds: ["evidence_demo"], supportingEvidenceIds: ["evidence_demo"], limitingEvidenceIds: [], contradictingEvidenceIds: [], semanticPredicate: "HAS_VALUE", qualifiers: [], renderedText: "Exact value reported.", scope: "artifact", confidenceClass: "DIRECT" as const, groundingStatus: "GROUNDED" as const, displayOrder: 0 };
+  const interpretation = { schemaVersion: "1.0" as const, interpretationId: "interpretation_demo", interpretationHash: HASH, sourceBundleId: "bundle_demo", sourceBundleHash: HASH, sourceJobId: "job_demo", sourcePlanId: "plan_demo", sourcePlanHash: HASH, mode: "DETERMINISTIC" as const, provider: "deterministic", providerVersion: "1.0", claims: [claim], globalWarnings: [], globalLimitations: [], recommendations: [], completeness: "COMPLETE" as const, partialResultState: false, repairCount: 0 as const, validationOutcome: "VALID", executionRecordId: "execution_demo" };
+  getInterpretationsMock.mockResolvedValue({ jobId: "job_demo", interpretations: [interpretation], runs: [], count: 1, runCount: 0 });
+  getEvidenceMock.mockResolvedValue({ interpretationId: "interpretation_demo", bundleId: "bundle_demo", bundleHash: HASH, sourceArtifactIds: ["artifact_demo"], bundleWarnings: [], bundleLimitations: [], evidenceItems: [{ schemaVersion: "1.0", evidenceItemId: "evidence_demo", semanticRole: "metric.value", evidenceKind: "SCALAR", subjectId: "artifact_demo", displayValue: "2", unit: null, sourceArtifactId: "artifact_demo", sourceArtifactChecksum: artifactHash, artifactContract: "platform.dataset.summary", artifactContractVersion: "1.0", sourceToolId: "tool.demo", sourceToolVersion: "1.0", fieldLocator: { fieldId: "metrics.value" }, warnings: [], limitations: [] }] });
+  vi.stubGlobal("crypto", { subtle: { digest: async (_algorithm: string, value: BufferSource) => { const input = ArrayBuffer.isView(value) ? new Uint8Array(value.buffer, value.byteOffset, value.byteLength) : new Uint8Array(value as ArrayBuffer); const digest = createHash("sha256").update(input).digest(); return digest.buffer.slice(digest.byteOffset, digest.byteOffset + digest.byteLength); } } });
+  const snapshot = workspaceSnapshotFixture();
+  for (const panel of snapshot.panels.filter((item) => item.panelKind === "FINDINGS" || item.panelKind === "EVIDENCE")) {
+    const source = panel.sourceRefs.find((item) => item.kind === "ARTIFACT");
+    if (source) source.sourceHash = artifactHash;
+  }
+  getWorkspaceMock.mockResolvedValue({ data: snapshot, status: 200, etag: "etag", idempotentReplay: null });
 });
 
 describe("Phase 10M-2 ScientificWorkspaceShell", () => {
@@ -126,6 +156,63 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     await waitFor(() => expect(patchWorkspaceMock).toHaveBeenCalledWith("workspace_demo", "etag", expect.objectContaining({ pinnedSelection: expect.objectContaining({ primary: expect.objectContaining({ artifactId: "artifact_demo" }) }) })));
     expect(screen.getByText(/Pin state: SAVED/u)).not.toBeNull();
     expect(screen.getByRole("status", { name: "Panel selection compatibility" })).toHaveTextContent("EXACT");
+  });
+
+  it("loads Artifact metadata first and requests the exact payload only after Open", async () => {
+    const user = userEvent.setup();
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await screen.findByTestId("scientific-workspace-shell");
+    await user.click(screen.getByRole("button", { name: /Results/ }));
+    expect(await screen.findByTestId("workspace-artifact-gallery")).toHaveTextContent("payload requests remain zero");
+    expect(getContentMock).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: "Open Demo metrics" }));
+    expect(await screen.findByText(/bounded payload record/u)).not.toBeNull();
+    expect(getContentMock).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("table")).toHaveTextContent("object_1");
+  });
+
+  it("accepts the exact 256-record metadata cap and rejects record 257 without truncation", async () => {
+    const artifact = (await getArtifactsMock("job_demo"))[0];
+    const bounded = Array.from({ length: 256 }, (_, index) => ({
+      ...artifact,
+      id: `artifact_${index.toString().padStart(3, "0")}`,
+      artifactId: `artifact_${index.toString().padStart(3, "0")}`,
+      name: `Bounded Artifact ${index.toString().padStart(3, "0")}`,
+    }));
+    const sourceScope = { workspaceId: "workspace_demo", workspaceRevision: 1, projectId: "project_demo", sourceJobId: "job_demo" };
+    expect(validateAndOrderArtifactMetadata(bounded, sourceScope)).toHaveLength(256);
+    expect(() => validateAndOrderArtifactMetadata([...bounded, { ...bounded[0], id: "artifact_256", artifactId: "artifact_256", name: "Rejected Artifact 256" }], sourceScope)).toThrow("ARTIFACT_METADATA_CAP_EXCEEDED: 257 exceeds 256.");
+  });
+
+  it("navigates exact Artifact lineage and grounded evidence through the M3 selection runtime", async () => {
+    const user = userEvent.setup();
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await screen.findByTestId("scientific-workspace-shell");
+    await user.click(screen.getByRole("button", { name: /Results/ }));
+    await screen.findByTestId("workspace-artifact-gallery");
+    await user.click(screen.getByRole("button", { name: "Evidence" }));
+    expect(await screen.findByRole("heading", { name: "Scientific evidence" })).not.toBeNull();
+    expect(await screen.findByTestId("workspace-grounded-evidence")).toHaveTextContent("metrics.value");
+    await user.click(screen.getByRole("button", { name: "Select exact evidence" }));
+    expect(screen.getByTestId("workspace-selection-status")).toHaveTextContent("EVIDENCE_ITEM");
+    await user.click(screen.getByRole("button", { name: /Results/ }));
+    await user.click(screen.getByRole("button", { name: "Lineage" }));
+    expect(await screen.findByRole("heading", { name: "Provenance" })).not.toBeNull();
+    expect(screen.getByTestId("workspace-artifact-lineage")).toHaveTextContent("artifact_demo");
+    expect(window.location.search).toContain("panel=panel_provenance");
+  });
+
+  it("does not request a stale panel payload and keeps the safe download action", async () => {
+    const snapshot = workspaceSnapshotFixture();
+    snapshot.panels.find((panel) => panel.panelKind === "SCIENTIFIC_RESULT")!.state = "STALE";
+    getWorkspaceMock.mockResolvedValue({ data: snapshot, status: 200, etag: "etag", idempotentReplay: null });
+    const user = userEvent.setup();
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await user.click(await screen.findByRole("button", { name: /Results/ }));
+    const open = await screen.findByRole("button", { name: /Open Demo metrics/ });
+    expect(open).toBeDisabled();
+    expect(screen.getByRole("button", { name: /Download Demo metrics/ })).not.toBeDisabled();
+    expect(getContentMock).not.toHaveBeenCalled();
   });
 
   it("aborts stale metadata requests when the route identity changes", async () => {

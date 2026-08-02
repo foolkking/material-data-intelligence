@@ -18,9 +18,9 @@ const MAX_PREVIEW_VALUES = 100_000;
 const MAX_TABLE_ROWS = 300;
 
 export function PhononDosPreviewPanel({ artifacts, plotlyLoader = loadPlotly }: { artifacts: Artifact[]; plotlyLoader?: PlotlyLoader }) {
-  const dosArtifact = artifacts.find((artifact) => artifact.type === "phonon_dos_json" || artifact.name === "phonon_dos.json");
-  const summaryArtifact = artifacts.find((artifact) => artifact.name === "phonon_dos_summary.json");
-  const manifestArtifact = artifacts.find((artifact) => artifact.type === "phonon_manifest_json" || artifact.name === "phonon_manifest.json");
+  const dosArtifact = artifacts.find((artifact) => artifact.type === "phonon_dos_json");
+  const summaryArtifact = artifacts.find((artifact) => artifact.type === "phonon_summary_json");
+  const manifestArtifact = artifacts.find((artifact) => artifact.type === "phonon_manifest_json");
   const [tab, setTab] = useState<"plot" | "table" | "json">("plot");
   const [projectionIndex, setProjectionIndex] = useState<number | null>(null);
   if (!dosArtifact) return null;

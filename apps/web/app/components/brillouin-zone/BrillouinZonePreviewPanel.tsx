@@ -14,12 +14,12 @@ export type BrillouinZonePreviewPanelProps = Readonly<{
 }>;
 
 export function BrillouinZonePreviewPanel({artifacts,capabilityOverride,engineFactory}:BrillouinZonePreviewPanelProps) {
-  const reciprocalArtifact=findArtifact(artifacts,"reciprocal_lattice_json","reciprocal_lattice.json");
-  const zoneArtifact=findArtifact(artifacts,"brillouin_zone_json","brillouin_zone.json");
-  const kpathArtifact=findArtifact(artifacts,"kpath_json","kpath.json");
-  const manifestArtifact=findArtifact(artifacts,"brillouin_zone_manifest_json","brillouin_zone_manifest.json");
-  const summaryArtifact=findArtifact(artifacts,"summary_md","summary.md");
-  const recipeArtifact=findArtifact(artifacts,"recipe_json","recipe.json");
+  const reciprocalArtifact=findArtifact(artifacts,"reciprocal_lattice_json");
+  const zoneArtifact=findArtifact(artifacts,"brillouin_zone_json");
+  const kpathArtifact=findArtifact(artifacts,"kpath_json");
+  const manifestArtifact=findArtifact(artifacts,"brillouin_zone_manifest_json");
+  const summaryArtifact=findArtifact(artifacts,"summary_md");
+  const recipeArtifact=findArtifact(artifacts,"recipe_json");
   const [active,setActive]=useState<PreviewTab>("renderer");
   const bundle=useMemo(()=>({reciprocal:payload(reciprocalArtifact),zone:payload(zoneArtifact),kpath:kpathArtifact?payload(kpathArtifact):undefined,manifest:payload(manifestArtifact)}),[reciprocalArtifact,zoneArtifact,kpathArtifact,manifestArtifact]);
   if(!reciprocalArtifact&&!zoneArtifact&&!manifestArtifact)return null;
@@ -43,6 +43,6 @@ export function BrillouinZonePreviewPanel({artifacts,capabilityOverride,engineFa
   </section>;
 }
 
-function findArtifact(artifacts:readonly Artifact[],type:string,name:string){return artifacts.find((item)=>item.type===type||item.name===name);}
+function findArtifact(artifacts:readonly Artifact[],type:string){return artifacts.find((item)=>item.type===type);}
 function payload(artifact:Artifact|undefined):unknown { if(!artifact)return null;const content=artifact.content??artifact.metadata;if(typeof content==="string")try{return JSON.parse(content);}catch{return content;}return content??artifact; }
 function textPayload(artifact:Artifact|undefined):string|undefined { const value=payload(artifact);return typeof value==="string"?value:undefined; }

@@ -431,6 +431,7 @@ export type Artifact = {
   jobId?: string;
   toolCallId?: string;
   type?: string;
+  version?: string;
   name?: string;
   downloadUrl?: string;
   storageKey?: string;
@@ -841,8 +842,8 @@ export async function getPlannerJobToolCalls(jobId: string): Promise<ToolCall[]>
   return apiFetch<ToolCall[]>(`/planner/jobs/${encodeURIComponent(jobId)}/tool-calls`);
 }
 
-export async function getPlannerJobArtifacts(jobId: string): Promise<Artifact[]> {
-  return apiFetch<Artifact[]>(`/planner/jobs/${encodeURIComponent(jobId)}/artifacts`);
+export async function getPlannerJobArtifacts(jobId: string, options: Readonly<{ signal?: AbortSignal }> = {}): Promise<Artifact[]> {
+  return apiFetch<Artifact[]>(`/planner/jobs/${encodeURIComponent(jobId)}/artifacts`, { signal: options.signal });
 }
 
 export async function getPlannerJobDependencies(jobId: string): Promise<DependencyAudit> {
@@ -870,15 +871,23 @@ export async function createPlannerJobInterpretation(
   });
 }
 
-export async function getPlannerJobInterpretations(jobId: string): Promise<PlannerJobInterpretationsResponse> {
+export async function getPlannerJobInterpretations(
+  jobId: string,
+  options: Readonly<{ signal?: AbortSignal }> = {},
+): Promise<PlannerJobInterpretationsResponse> {
   return apiFetch<PlannerJobInterpretationsResponse>(
     `/planner/jobs/${encodeURIComponent(jobId)}/interpretations`,
+    { signal: options.signal },
   );
 }
 
-export async function getPlannerInterpretationEvidence(interpretationId: string): Promise<InterpretationEvidenceResponse> {
+export async function getPlannerInterpretationEvidence(
+  interpretationId: string,
+  options: Readonly<{ signal?: AbortSignal }> = {},
+): Promise<InterpretationEvidenceResponse> {
   return apiFetch<InterpretationEvidenceResponse>(
     `/planner/interpretations/${encodeURIComponent(interpretationId)}/evidence`,
+    { signal: options.signal },
   );
 }
 

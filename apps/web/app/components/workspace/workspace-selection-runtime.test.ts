@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { WorkspacePanel } from "../../lib/workspace-api";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
 import { validateWorkspaceSelectionContext } from "./workspace-selection-contract";
-import { artifactSelectionFromPanel, resolvePanelSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
+import { artifactSelectionFromPanel, claimSelection, datasetSampleSelection, evidenceItemSelection, resolvePanelSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
 
 const HASH = "a".repeat(64);
 
@@ -55,6 +55,42 @@ describe("Phase 10M-3 exact selection runtime", () => {
     const injected = validateWorkspaceSelectionContext({ ...selection!, primary: { ...selection!.primary!, artifactId: "artifact_foreign" } });
     expect(resolvePanelSelection(result, injected, snapshot.workspace)).toMatchObject({ compatibility: "NOT_APPLICABLE", context: null });
     expect(artifactSelectionFromPanel({ ...result, emittedSelectionKinds: [] }, snapshot.workspace)).toBeNull();
+  });
+
+  it("emits exact Dataset sample identities through the declared Result panel", () => {
+    const snapshot = workspaceSnapshotFixture();
+    const result = snapshot.panels.find((panel) => panel.panelKind === "SCIENTIFIC_RESULT")!;
+    const selection = datasetSampleSelection(snapshot.workspace, {
+      objectId: "object_1",
+      sampleRef: "sample_1",
+      sampleKey: "object_1:sample_1",
+    });
+    expect(result.emittedSelectionKinds).toContain("DATASET_SAMPLE");
+    expect(resolvePanelSelection(result, selection, snapshot.workspace)).toMatchObject({ compatibility: "EXACT", context: selection });
+    expect(() => datasetSampleSelection(snapshot.workspace, {
+      objectId: "object_1",
+      sampleRef: "sample_1",
+      sampleKey: "display-row-0",
+    })).toThrowError("SELECTION_SAMPLE_IDENTITY_INVALID");
+    expect(() => new WorkspaceSelectionStore(snapshot.workspace, mutate(selection, { datasetVersion: "v2" }))).toThrowError("SELECTION_STALE_DATASET_VERSION");
+  });
+
+  it("constructs exact grounded evidence and claim identities without display-label authority", () => {
+    const snapshot = workspaceSnapshotFixture();
+    const interpretation = {
+      schemaVersion: "1.0" as const, interpretationId: "interpretation_demo", interpretationHash: HASH,
+      sourceBundleId: "bundle_demo", sourceBundleHash: HASH, sourceJobId: "job_demo", sourcePlanId: "plan_demo", sourcePlanHash: HASH,
+      mode: "DETERMINISTIC" as const, provider: "deterministic", providerVersion: "1.0", globalWarnings: [], globalLimitations: [], recommendations: [],
+      completeness: "COMPLETE" as const, partialResultState: false, repairCount: 0 as const, validationOutcome: "VALID", executionRecordId: "execution_demo",
+      claims: [{ schemaVersion: "1.0" as const, claimId: "claim_demo", claimType: "OBSERVATION" as const, subjectEvidenceIds: ["evidence_demo"], supportingEvidenceIds: ["evidence_demo"], limitingEvidenceIds: [], contradictingEvidenceIds: [], semanticPredicate: "HAS_VALUE", qualifiers: [], renderedText: "Exact value reported.", scope: "artifact", confidenceClass: "DIRECT" as const, groundingStatus: "GROUNDED" as const, displayOrder: 0 }],
+    };
+    const evidence = { interpretationId: "interpretation_demo", bundleId: "bundle_demo", bundleHash: HASH, sourceArtifactIds: ["artifact_demo"], bundleWarnings: [], bundleLimitations: [], evidenceItems: [{ schemaVersion: "1.0" as const, evidenceItemId: "evidence_demo", semanticRole: "metric.value", evidenceKind: "SCALAR" as const, subjectId: "artifact_demo", displayValue: "2", unit: null, sourceArtifactId: "artifact_demo", sourceArtifactChecksum: HASH, artifactContract: "platform.dataset.summary", artifactContractVersion: "1.0", sourceToolId: "tool.demo", sourceToolVersion: "1.0", fieldLocator: { fieldId: "metrics.value" }, warnings: [], limitations: [] }] };
+    const evidenceSelection = evidenceItemSelection(snapshot.workspace, interpretation, evidence, evidence.evidenceItems[0]);
+    const selectedClaim = claimSelection(snapshot.workspace, interpretation, interpretation.claims[0]);
+    expect(evidenceSelection.primary).toMatchObject({ kind: "EVIDENCE_ITEM", evidenceItemId: "evidence_demo", sourceArtifactId: "artifact_demo", fieldLocator: "metrics.value" });
+    expect(selectedClaim.primary).toMatchObject({ kind: "CLAIM", interpretationId: "interpretation_demo", claimId: "claim_demo" });
+    expect(resolvePanelSelection(snapshot.panels.find((panel) => panel.panelKind === "EVIDENCE")!, evidenceSelection, snapshot.workspace)).toMatchObject({ compatibility: "EXACT" });
+    expect(() => evidenceItemSelection(snapshot.workspace, interpretation, { ...evidence, sourceArtifactIds: [] }, evidence.evidenceItems[0])).toThrowError("SELECTION_EVIDENCE_SCOPE_MISMATCH");
   });
 
   it("bounds 32 subscribers, rapid changes, replay suppression, and cleanup", () => {

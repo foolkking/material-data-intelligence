@@ -1,0 +1,13 @@
+phase=Phase 10M-4
+baseline_phase=Phase 10M-3
+branch=master
+initial_head=86fb69238f1c69e172ad1010cd70ff2c486f2a1c
+initial_origin_master=86fb69238f1c69e172ad1010cd70ff2c486f2a1c
+initial_worktree=clean
+current_worktree=Phase 10M-4 implementation in progress
+migration_head=0007_phase10m1_workspace_domain
+database_migration_required=NO
+new_dependencies_required=NO
+new_llm_call_sites=0
+real_llm_calls=0
+source=git and checked-in implementation audit

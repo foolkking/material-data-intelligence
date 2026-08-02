@@ -1,0 +1,17 @@
+{
+  "schemaVersion":"phase10m4.viewer-case.v1",
+  "family":"Volumetric",
+  "contracts":["volumetric_grid_json@1","volumetric_payload_json@1","volumetric_field_json@1","volumetric_dataset_json@1","volumetric_manifest_json@1","volumetric_structure_overlay_json@1","volumetric_binary@1"],
+  "component":"VolumetricPreviewPanel",
+  "classification":"PRODUCTION_ADAPTED_RENDERER",
+  "heavy":true,
+  "webgl":true,
+  "maximumPayloadBytes":67108864,
+  "scientificAuthority":"validated persisted grid/field/quantity/unit/content hash and bounded binary payload",
+  "newScience":["no Bader","no basin","no new extrema extraction","no color-to-region inference","no quantity/unit substitution"],
+  "selection":{"classification":"CONSUMER_ONLY","declaredInputs":["VOLUMETRIC_FIELD","ARTIFACT"],"emittedByViewer":[]},
+  "browser":{"chromium":true,"firefox":true,"webkit":true,"canvasCount":1,"contentRequests":{"chromium":13,"firefox":10,"webkit":13}},
+  "lifecycle":"active-only; requests abort; workers terminate; observers/listeners/textures/targets/geometries/materials/renderers/canvas dispose",
+  "externalRequests":0,
+  "status":"PASS_BROWSER"
+}

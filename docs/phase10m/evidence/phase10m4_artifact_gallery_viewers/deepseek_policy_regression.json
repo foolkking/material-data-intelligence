@@ -1,0 +1,15 @@
+{
+  "schemaVersion":"phase10m4.deepseek-policy-regression.v1",
+  "m4RequiresNewLlmCallSite":false,
+  "newLlmCallSites":0,
+  "realLlmCalls":0,
+  "m4ViewersRequireLlm":false,
+  "sourceJobPolicy":"browser evidence replays checked-in persisted scientific Artifacts; no natural-language Job is created",
+  "allowedRealProvider":"DEEPSEEK",
+  "allowedKeySource":"DEEPSEEK_KEY",
+  "otherProviderCalls":0,
+  "providerFallbacks":0,
+  "keyReadByM4":false,
+  "keyMetadataRecorded":false,
+  "status":"PASS"
+}

@@ -1,5 +1,28 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-02 ADR Addendum: Phase 10M-4 Exact Renderer Authority
+
+**Decision:** Use one finite, application-owned registry keyed by exact
+Artifact type/version and renderer contract/version. Keep Workspace initial
+loading metadata-only; load payload only for the active Artifact and validate
+scope, length, checksum, contract, caps, and inert data shape before rendering.
+Reuse existing scientific components behind this registry and reuse the M3
+selection runtime without a second selection authority.
+
+**Consequences:** Filenames, display titles, MIME types alone, dynamic component
+names, modules, URLs, HTML, JavaScript, array positions, labels, and fuzzy
+coordinates grant no renderer or identity authority. Unknown/version-mismatched
+artifacts remain typed fallbacks. Existing scientific values are not
+recomputed in the browser. One application-owned heavy-viewer lease limits
+active WebGL viewers to one and unmount releases requests and renderer
+resources.
+
+M4 changes no Workspace/Selection contract, migration `0007`, database schema,
+Planner, Runtime, Tool Registry, Adapter calculation, dependency, lockfile, or
+LLM call site. `REAL_LLM_CALLS = 0`; future real calls remain DeepSeek-only
+through `DEEPSEEK_KEY`. This ADR records the local implementation decision, not
+implementation/completion/archive exact-SHA CI success.
+
 ## 2026-08-02 ADR Addendum: Phase 10M-3 Selection Runtime
 
 **Decision:** Activate the existing `WorkspaceSelectionContext 1.0` without a

@@ -31,9 +31,10 @@ Current Phase 10L-5 closure references:
 
 ## Phase 10M Unified Scientific Workspace
 
-Phase 10M-0 sealed the architecture, M1 archived the reference-only persisted
-domain/API, M2 archived the additive metadata shell, and M3 implements exact
-canonical selection and cross-panel navigation:
+Phase 10M-0 sealed the architecture; M1 archived the reference-only persisted
+domain/API; M2 archived the additive metadata shell; M3 archived exact
+canonical selection and cross-panel navigation; M4 is implementing the typed
+Artifact Gallery and existing scientific viewer integration:
 
 - [`phase10m/README.md`](phase10m/README.md): Phase 10M canonical documentation entry.
 - [`phase10m/phase10m0_workspace_fact_audit.md`](phase10m/phase10m0_workspace_fact_audit.md): current product maturity and authority audit.
@@ -73,6 +74,15 @@ canonical selection and cross-panel navigation:
 - [`phase10m/phase10m3_url_navigation.md`](phase10m/phase10m3_url_navigation.md): strict URL codec and history behavior.
 - [`phase10m/phase10m3_inspector.md`](phase10m/phase10m3_inspector.md): exact Inspector facts and explicit Pin.
 - [`phase10m/phase10m3_evidence.md`](phase10m/phase10m3_evidence.md): sanitized tests, browser matrix, and manifest.
+- [`phase10m/phase10m4_artifact_gallery.md`](phase10m/phase10m4_artifact_gallery.md): metadata-first Gallery and typed states.
+- [`phase10m/phase10m4_renderer_registry.md`](phase10m/phase10m4_renderer_registry.md): exact Artifact type/version to application renderer mapping.
+- [`phase10m/phase10m4_scientific_viewers.md`](phase10m/phase10m4_scientific_viewers.md): current Dataset, ML, Composition, Structure, Trajectory, Phonon, BZ, Volumetric, and fallback integration.
+- [`phase10m/phase10m4_selection_integration.md`](phase10m/phase10m4_selection_integration.md): M3 emitter/consumer reuse and identity limits.
+- [`phase10m/phase10m4_webgl_lifecycle.md`](phase10m/phase10m4_webgl_lifecycle.md): one-active-heavy-viewer and disposal policy.
+- [`phase10m/phase10m4_accessibility_performance_security.md`](phase10m/phase10m4_accessibility_performance_security.md): loading, mobile, accessibility, and inert rendering boundaries.
+- [`phase10m/phase10m4_evidence.md`](phase10m/phase10m4_evidence.md): local evidence and pending exact-SHA gates.
+- [`phase10m/phase10m4_completion.md`](phase10m/phase10m4_completion.md): in-progress lifecycle state without a premature completion claim.
+- [`phase10m/phase10m5_next_scope.md`](phase10m/phase10m5_next_scope.md): reviewer gate only; no executable M5 task.
 - [`phase10m/evidence/phase10m3_canonical_selection/`](phase10m/evidence/phase10m3_canonical_selection/): retained M3 evidence.
 
 ## Phase 10K Material Intelligence

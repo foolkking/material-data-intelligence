@@ -1,0 +1,21 @@
+{
+  "schemaVersion":"phase10m4.loader-cases.v1",
+  "implementation":"workspace-artifact-loader.ts and planner-api.ts",
+  "cacheKeyFields":["workspaceId","workspaceRevision","artifactId","artifactChecksum","artifactType","artifactVersion","rendererContract","rendererVersion"],
+  "caps":{"bundleArtifacts":16,"jsonDepth":14,"jsonBytes":16777216,"textBytes":2097152,"volumetricBytes":67108864,"downloadBytes":67108864},
+  "cases":[
+    {"case":"exact authorized content route","status":"PASS_UNIT","detail":"jobId and artifactId are passed to the existing planner content API"},
+    {"case":"exact checksum","status":"PASS_UNIT","detail":"Web Crypto SHA-256 mismatch returns ARTIFACT_INTEGRITY_MISMATCH"},
+    {"case":"foreign Job","status":"PASS_UNIT","detail":"ARTIFACT_FOREIGN_JOB before rendering"},
+    {"case":"foreign Project","status":"IMPLEMENTED_SERVICE_CI_PENDING","detail":"ARTIFACT_FOREIGN_PROJECT in frontend and exact Job-to-Artifact 404 in service test"},
+    {"case":"invalid ID/hash/size","status":"PASS_UNIT","detail":"typed validation before payload authority"},
+    {"case":"contract version mismatch","status":"PASS_UNIT","detail":"ARTIFACT_CONTRACT_VERSION_UNSUPPORTED"},
+    {"case":"deep JSON/prototype key","status":"PASS_UNIT","detail":"ARTIFACT_JSON_DEPTH_EXCEEDED and ARTIFACT_PROTOTYPE_KEY_REJECTED"},
+    {"case":"active request cancellation","status":"IMPLEMENTED_BROWSER_OBSERVED","detail":"AbortController on active Artifact, Workspace and route changes"},
+    {"case":"stale response suppression","status":"IMPLEMENTED","detail":"monotonic payload request identity ignores late responses"},
+    {"case":"bundle cap","status":"IMPLEMENTED","detail":"ARTIFACT_BUNDLE_CAP_EXCEEDED; no silent truncation"},
+    {"case":"MinIO HTTP integrity","status":"IMPLEMENTED_EXACT_SHA_CI_PENDING","detail":"service test checks length, SHA headers, nosniff/no-store and tamper 422"}
+  ],
+  "focusedTests":"5 passed",
+  "status":"LOCAL_UNIT_PASS_SERVICE_PENDING"
+}

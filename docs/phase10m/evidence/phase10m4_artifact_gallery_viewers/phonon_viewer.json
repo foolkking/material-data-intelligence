@@ -1,0 +1,13 @@
+{
+  "schemaVersion":"phase10m4.viewer-case.v1",
+  "family":"Phonon Band/DOS/Combined/Animation",
+  "contracts":["phonon_band_json@1","phonon_dos_json@1","phonon_band_dos_json@1","phonon_animation_json@1"],
+  "components":["PhononBandPreviewPanel","PhononDosPreviewPanel","PhononBandDosPreviewPanel","PhononAnimationSurface"],
+  "classification":"PRODUCTION_ADAPTED_RENDERER",
+  "scientificAuthority":"persisted q-point/path/branch/frequency/DOS products and L3 lineage",
+  "newScience":["no phonopy calculation","no interpolation","no index-based q-point inference"],
+  "selection":{"classification":"CONSUMER_ONLY","declaredInputs":["PHONON_Q_POINT","PHONON_BRANCH","ARTIFACT"],"emittedByViewer":[]},
+  "browser":{"band":{"chromium":true,"firefox":true,"webkit":true,"payloadRequestsPerBrowser":2},"dos":"component regression","combined":"component regression","animation":"heavy lifecycle covered by shared engine tests"},
+  "accessibility":"bounded tables and warnings",
+  "status":"BAND_BROWSER_PASS_FAMILY_COMPONENT_REGRESSION"
+}

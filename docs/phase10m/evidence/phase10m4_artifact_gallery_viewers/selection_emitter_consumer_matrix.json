@@ -1,0 +1,22 @@
+{
+  "schemaVersion":"phase10m4.selection-matrix.v1",
+  "selectionAuthority":"WorkspaceSelectionContext 1.0 and existing M3 store/resolver/URL codec only",
+  "alternateSelectionStoreCount":0,
+  "rows":[
+    {"renderer":"Artifact Gallery","classification":"PRODUCTION_NATIVE_EMITTER","emits":["ARTIFACT"],"consumes":["ARTIFACT"],"scope":"exact workspace/project/job/artifact/checksum","stableAcrossReload":true,"m3Declared":true},
+    {"renderer":"Dataset Materials Explorer","classification":"PRODUCTION_ADAPTED_EMITTER","emits":["DATASET_SAMPLE"],"consumes":["DATASET_SAMPLE"],"scope":"exact objectId + sampleRef + sampleKey and Workspace source","stableAcrossReload":true,"m3Declared":true},
+    {"renderer":"Composition Space","classification":"PRODUCTION_ADAPTED_EMITTER","emits":["DATASET_SAMPLE"],"consumes":["DATASET_SAMPLE"],"scope":"exact objectId + sampleRef + sampleKey and Workspace source","stableAcrossReload":true,"m3Declared":true},
+    {"renderer":"Materials ML","classification":"NO_SELECTION_SUPPORT","emits":[],"consumes":[],"scope":"Gallery-level ARTIFACT selection only","stableAcrossReload":true,"m3Declared":false},
+    {"renderer":"Structure","classification":"CONSUMER_ONLY","emits":[],"consumes":["STRUCTURE","PERIODIC_SITE","ARTIFACT"],"scope":"declared exact identities; no Workspace emitter wired in M4 implementation snapshot","stableAcrossReload":true,"m3Declared":true},
+    {"renderer":"Trajectory","classification":"CONSUMER_ONLY","emits":[],"consumes":["TRAJECTORY_ATOM","TRAJECTORY_FRAME","ARTIFACT"],"scope":"declared exact identities; no Workspace emitter wired in M4 implementation snapshot","stableAcrossReload":true,"m3Declared":true},
+    {"renderer":"Phonon Band/Combined","classification":"CONSUMER_ONLY","emits":[],"consumes":["PHONON_Q_POINT","PHONON_BRANCH","ARTIFACT"],"scope":"exact source hash and formal identities","stableAcrossReload":true,"m3Declared":true},
+    {"renderer":"Phonon DOS","classification":"CONSUMER_ONLY","emits":[],"consumes":["PHONON_BRANCH","ARTIFACT"],"scope":"exact source hash and formal identity","stableAcrossReload":true,"m3Declared":true},
+    {"renderer":"Brillouin Zone","classification":"CONSUMER_ONLY","emits":[],"consumes":["RECIPROCAL_POINT","ARTIFACT"],"scope":"exact source hash and formal identity","stableAcrossReload":true,"m3Declared":true},
+    {"renderer":"Volumetric","classification":"CONSUMER_ONLY","emits":[],"consumes":["VOLUMETRIC_FIELD","ARTIFACT"],"scope":"exact field/resource/checksum","stableAcrossReload":true,"m3Declared":true},
+    {"renderer":"Generic/Text/JSON/Download","classification":"NO_SELECTION_SUPPORT","emits":[],"consumes":[],"scope":"Gallery-level ARTIFACT selection only","stableAcrossReload":true,"m3Declared":false}
+  ],
+  "arrayIndexAuthority":"NONE",
+  "displayLabelAuthority":"NONE",
+  "fuzzyMatching":"NONE",
+  "status":"HONEST_CAPABILITY_CLASSIFICATION"
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion":"phase10m4.generic-fallbacks.v1",
+  "table":{"accepted":["metrics_json@1","table_json@1","quality_issues_json@1"],"rowCap":1000,"columnCap":32,"semanticTable":true,"scientificRecomputation":false,"formulaExecution":false},
+  "plot":{"accepted":"plotly_json@1","traceCap":32,"pointCap":100000,"histogramPolicy":"table-only; browser refuses to recompute bins","tableFallback":true,"unsafeTraceFieldsStripped":true},
+  "text":{"accepted":["summary_md@1","report_md@1"],"mode":"inert preformatted text","previewCharCap":80000,"rawHtml":false,"externalAssets":false},
+  "json":{"accepted":"formal JSON contracts@1","mode":"inert bounded preformatted JSON","previewCharCap":80000,"prototypeExecution":false},
+  "downloadOnly":{"accepted":["plotly_html@1","figure_svg@1","matterviz_html@1","table_csv@1","report_html@1"],"inlineExecution":false,"checksumRequired":true},
+  "unknown":{"result":"CONTRACT_UNSUPPORTED","rendererGuess":false,"safeDownloadAvailable":true},
+  "oldVersion":{"result":"ARTIFACT_CONTRACT_VERSION_UNSUPPORTED","rendererGuess":false,"safeDownloadAvailable":true},
+  "browser":{"genericMetricsReadyAllDesktopBrowsers":true,"legacyInertAllDesktopBrowsers":true,"htmlInertAllDesktopBrowsers":true},
+  "status":"PASS_LOCAL_BROWSER"
+}

@@ -1,0 +1,14 @@
+PHASE_10M4_ENTRY_GATE=PASS
+repository=Material Data Intelligence
+branch=master
+head_equals_origin_master=true
+head_at_entry=86fb69238f1c69e172ad1010cd70ff2c486f2a1c
+worktree_at_entry=clean
+migration_head=0007_phase10m1_workspace_domain
+task_block_count_before_admission=0
+active_task_after_admission=Phase 10M-4
+phase_10m5_queued=false
+deepseek_only_policy=INTACT
+m4_requires_new_llm_call_site=NO
+new_dependencies_required=NO
+entry_evidence_status=VERIFIED_BEFORE_SOURCE_CHANGES

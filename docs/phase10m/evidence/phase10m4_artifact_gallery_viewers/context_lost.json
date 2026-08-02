@@ -1,0 +1,17 @@
+{
+  "schemaVersion":"phase10m4.context-lost.v1",
+  "browser":"chromium",
+  "event":"webglcontextlost",
+  "dispatched":true,
+  "typedLostState":"context_lost",
+  "recoveryAction":"Retry",
+  "recovered":true,
+  "renderStateAfterRecovery":"rendered",
+  "canvasAfterRecovery":1,
+  "remainingCanvasAfterClose":0,
+  "pageCrash":false,
+  "externalRequest":false,
+  "firefox":"not separately dispatched; renderer and ordinary lifecycle passed",
+  "webkit":"not separately dispatched; renderer and ordinary lifecycle passed",
+  "status":"PASS_CHROMIUM_GATE"
+}

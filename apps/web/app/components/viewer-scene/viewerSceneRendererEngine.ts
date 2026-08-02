@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 import { cameraFrame, latticeEdges } from "./viewerSceneRendererGeometry";
+import { captureOrbitControlsDisposer } from "./orbitControlsLifecycle";
 import { assertViewerExportDimensions, type ViewerExportRequest } from "./viewerSceneExport";
 import { ViewerRendererError } from "./viewerSceneRendererErrors";
 import { periodicSiteKey } from "./viewerScenePeriodicGeometry";
@@ -51,6 +52,7 @@ export async function createThreeViewerEngine(args: {
   camera.up.set(0, 0, 1);
 
   const controls = new OrbitControls(camera, renderer.domElement);
+  const disposeControls = captureOrbitControlsDisposer(controls);
   renderer.domElement.style.touchAction = "pan-y";
   controls.enableDamping = false;
   controls.enablePan = true;
@@ -531,7 +533,7 @@ export async function createThreeViewerEngine(args: {
       resizeObserver?.disconnect();
       window.removeEventListener("resize", resize);
       controls.removeEventListener("change", onControlsChange);
-      controls.dispose();
+      disposeControls();
       renderer.domElement.removeEventListener("webglcontextlost", onLost);
       renderer.domElement.removeEventListener("pointerdown", onPointerDown);
       renderer.domElement.removeEventListener("pointerup", onPointerUp);
@@ -555,8 +557,8 @@ export async function createThreeViewerEngine(args: {
       displacementTrailMaterial.dispose();
       for (const material of highlightMaterials) material.dispose();
       for (const material of materials.values()) material.dispose();
-      renderer.dispose();
       renderer.forceContextLoss();
+      renderer.dispose();
       if (renderer.domElement.parentElement === container) renderer.domElement.remove();
       root.clear();
       threeScene.clear();

@@ -19,10 +19,10 @@ const MAX_PREVIEW_TRACES = 4_096;
 const MAX_TABLE_ROWS = 200;
 
 export function PhononBandPreviewPanel({ artifacts, plotlyLoader = loadPlotly }: { artifacts: Artifact[]; plotlyLoader?: PlotlyLoader }) {
-  const bandArtifact = artifacts.find((artifact) => artifact.type === "phonon_band_json" || artifact.name === "phonon_band.json");
-  const summaryArtifact = artifacts.find((artifact) => artifact.type === "phonon_summary_json" || artifact.name === "phonon_summary.json");
-  const manifestArtifact = artifacts.find((artifact) => artifact.type === "phonon_manifest_json" || artifact.name === "phonon_manifest.json");
-  const animationArtifact = artifacts.find((artifact) => artifact.type === "phonon_animation_json" || artifact.name === "phonon_animation.json");
+  const bandArtifact = artifacts.find((artifact) => artifact.type === "phonon_band_json");
+  const summaryArtifact = artifacts.find((artifact) => artifact.type === "phonon_summary_json");
+  const manifestArtifact = artifacts.find((artifact) => artifact.type === "phonon_manifest_json");
+  const animationArtifact = artifacts.find((artifact) => artifact.type === "phonon_animation_json");
   const [tab, setTab] = useState<"plot" | "table" | "json">("plot");
   if (!bandArtifact) return null;
   const payload = artifactPayload(bandArtifact);

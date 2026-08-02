@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 2026-08-02 - Phase 10M-4 Local Renderer Integration
+
+- Added an exact, application-owned renderer registry for all 42 shared
+  Artifact types and strict K2/K3/K4 embedded product adaptations.
+- Added the Workspace Artifact Gallery, metadata-first/active-only payload
+  loading, SHA-256 and scope checks, safe download, inert unsupported/legacy
+  fallback, and bounded generic plot/table/text/JSON rendering.
+- Integrated existing Dataset, ML, Composition, Structure, Trajectory, Phonon,
+  Brillouin-zone, and Volumetric components with M3 selection declarations and
+  one-active-heavy-viewer lifecycle control.
+- Local Chromium/Firefox/WebKit/mobile replay now exercises real component-ready
+  states, WebGL canvases, Chromium context-loss recovery, 50 heavy switches,
+  mobile focus/touch/overflow, zero console/page errors, and zero external
+  requests.
+- No migration, database schema, dependency, lockfile, Adapter calculation, or
+  LLM call-site change. Exact-SHA CI and final lifecycle records are pending;
+  this entry is not an archive claim.
+
 ## 2026-08-02 - Phase 10M-3 Corrected Implementation Exact-SHA CI Complete
 
 - Activated unchanged `WorkspaceSelectionContext 1.0` with a strict canonical

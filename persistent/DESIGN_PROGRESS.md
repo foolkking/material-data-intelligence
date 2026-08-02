@@ -1,5 +1,26 @@
 # DESIGN_PROGRESS
 
+## 2026-08-02 Phase 10M-4 Typed Artifact Gallery In Progress
+
+- Added a complete exact type/version registry for all 42 shared Artifact
+  types, including renderer classification, payload mode, heavy/WebGL flags,
+  selection declarations, accessibility fallback, caps, and inert security.
+- Added metadata-first Gallery behavior and active-only payload loading with
+  exact Workspace/Project/Job/Artifact scope, content length, checksum,
+  contract/version, bounded JSON/text, cancellation, and stale suppression.
+- Adapted existing Dataset, ML, Composition, Structure, Trajectory, Phonon,
+  Brillouin-zone, Volumetric, generic table/plot/text/JSON surfaces without
+  frontend scientific recomputation or filename/MIME renderer guessing.
+- Reused M3 selection authority. Dataset and Composition emit exact sample
+  identity; specialized scientific viewers remain consumer-only for identities
+  they cannot formally emit. Whole Artifact selection remains exact.
+- Enforced one active heavy viewer and strengthened Three.js context disposal.
+  Local Chromium/Firefox/WebKit/mobile replay passes; Chromium covers context
+  loss/recovery and 50 heavy switches.
+- No migration, database schema, dependency, lockfile, scientific Adapter,
+  algorithm, or LLM call-site change. `REAL_LLM_CALLS = 0`; exact-SHA CI,
+  service-backed zero-skip proof, final evidence, and lifecycle commits remain.
+
 ## 2026-08-02 Phase 10M-3 Canonical Selection Complete, Awaiting Archive
 
 - Added strict canonical base64url parsing, duplicate-key/depth/cap rejection,

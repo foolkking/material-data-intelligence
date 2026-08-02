@@ -1,0 +1,638 @@
+{
+  "chromium": {
+    "browserName": "chromium",
+    "metadataFirst": true,
+    "artifactCount": 21,
+    "exactReferenceNavigation": {
+      "artifactId": "artifact_dataset",
+      "evidenceItemId": "evidence_dataset_count",
+      "canonicalSelection": "EVIDENCE_ITEM",
+      "lineagePanel": "PROVENANCE",
+      "exact": true
+    },
+    "partialIsolation": {
+      "dependencyOutcome": "PARTIAL_RESULTS",
+      "panelState": "PARTIAL",
+      "warningVisible": true,
+      "successfulArtifactsRemainOpenable": true
+    },
+    "cases": {
+      "Dataset Explorer": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 0,
+          "usedJsHeapBytes": 56800000
+        }
+      },
+      "Regression Evaluation": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 0,
+          "usedJsHeapBytes": 56800000
+        }
+      },
+      "Composition Space": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 0,
+          "usedJsHeapBytes": 56800000
+        }
+      },
+      "Structure Scene": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 579,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 3,
+          "usedJsHeapBytes": 56800000
+        }
+      },
+      "Trajectory": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 579,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 5,
+          "usedJsHeapBytes": 56800000
+        }
+      },
+      "Phonon Band": {
+        "payloadRequests": 2,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 5,
+          "usedJsHeapBytes": 56800000
+        }
+      },
+      "Brillouin Zone": {
+        "payloadRequests": 4,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 7,
+          "usedJsHeapBytes": 56800000
+        }
+      },
+      "Volumetric Dataset": {
+        "payloadRequests": 13,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 8,
+          "usedJsHeapBytes": 56800000
+        }
+      },
+      "Generic Metrics": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 8,
+          "usedJsHeapBytes": 56800000
+        }
+      }
+    },
+    "contextLoss": {
+      "tested": true,
+      "lostState": "context_lost",
+      "recovered": true,
+      "remainingCanvases": 0
+    },
+    "lifecycleAudit": {
+      "baseline": {
+        "listeners": 599,
+        "resizeObservers": 1,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 0,
+        "createdWebglContexts": 8,
+        "usedJsHeapBytes": 56800000
+      },
+      "peak": {
+        "listeners": 634,
+        "resizeObservers": 2,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 1,
+        "createdWebglContexts": 108,
+        "usedJsHeapBytes": 56800000
+      },
+      "final": {
+        "listeners": 599,
+        "resizeObservers": 1,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 0,
+        "createdWebglContexts": 108,
+        "usedJsHeapBytes": 56800000
+      },
+      "growth": {
+        "listeners": 0,
+        "resizeObservers": 0,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 0,
+        "usedJsHeapBytes": 0
+      }
+    },
+    "legacyInert": true,
+    "htmlInert": true,
+    "heavySwitchCycles": 50,
+    "fullLifecycleGateBrowser": "chromium",
+    "maxActiveCanvases": 1,
+    "remainingCanvases": 0,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "contentRequests": 25,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "externalRequests": []
+  },
+  "firefox": {
+    "browserName": "firefox",
+    "metadataFirst": true,
+    "artifactCount": 21,
+    "exactReferenceNavigation": {
+      "artifactId": "artifact_dataset",
+      "evidenceItemId": "evidence_dataset_count",
+      "canonicalSelection": "EVIDENCE_ITEM",
+      "lineagePanel": "PROVENANCE",
+      "exact": true
+    },
+    "partialIsolation": {
+      "dependencyOutcome": "PARTIAL_RESULTS",
+      "panelState": "PARTIAL",
+      "warningVisible": true,
+      "successfulArtifactsRemainOpenable": true
+    },
+    "cases": {
+      "Dataset Explorer": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 0,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Regression Evaluation": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 0,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Composition Space": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 0,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Structure Scene": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 2,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Trajectory": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 4,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Phonon Band": {
+        "payloadRequests": 2,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 4,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Brillouin Zone": {
+        "payloadRequests": 4,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 6,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Volumetric Dataset": {
+        "payloadRequests": 10,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 7,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Generic Metrics": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 7,
+          "usedJsHeapBytes": null
+        }
+      }
+    },
+    "contextLoss": {
+      "tested": false,
+      "lostState": null,
+      "recovered": false,
+      "remainingCanvases": null
+    },
+    "lifecycleAudit": {
+      "baseline": {
+        "listeners": 599,
+        "resizeObservers": 1,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 0,
+        "createdWebglContexts": 7,
+        "usedJsHeapBytes": null
+      },
+      "peak": {
+        "listeners": 634,
+        "resizeObservers": 2,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 1,
+        "createdWebglContexts": 13,
+        "usedJsHeapBytes": null
+      },
+      "final": {
+        "listeners": 599,
+        "resizeObservers": 1,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 0,
+        "createdWebglContexts": 13,
+        "usedJsHeapBytes": null
+      },
+      "growth": {
+        "listeners": 0,
+        "resizeObservers": 0,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 0,
+        "usedJsHeapBytes": null
+      }
+    },
+    "legacyInert": true,
+    "htmlInert": true,
+    "heavySwitchCycles": 3,
+    "fullLifecycleGateBrowser": "chromium",
+    "maxActiveCanvases": 1,
+    "remainingCanvases": 0,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "contentRequests": 22,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "externalRequests": []
+  },
+  "webkit": {
+    "browserName": "webkit",
+    "metadataFirst": true,
+    "artifactCount": 21,
+    "exactReferenceNavigation": {
+      "artifactId": "artifact_dataset",
+      "evidenceItemId": "evidence_dataset_count",
+      "canonicalSelection": "EVIDENCE_ITEM",
+      "lineagePanel": "PROVENANCE",
+      "exact": true
+    },
+    "partialIsolation": {
+      "dependencyOutcome": "PARTIAL_RESULTS",
+      "panelState": "PARTIAL",
+      "warningVisible": true,
+      "successfulArtifactsRemainOpenable": true
+    },
+    "cases": {
+      "Dataset Explorer": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 0,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Regression Evaluation": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 0,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Composition Space": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 0,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Structure Scene": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 2,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Trajectory": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 566,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 4,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Phonon Band": {
+        "payloadRequests": 2,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 4,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Brillouin Zone": {
+        "payloadRequests": 4,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 6,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Volumetric Dataset": {
+        "payloadRequests": 13,
+        "rendererReady": true,
+        "canvasCount": 1,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 7,
+          "usedJsHeapBytes": null
+        }
+      },
+      "Generic Metrics": {
+        "payloadRequests": 1,
+        "rendererReady": true,
+        "canvasCount": 0,
+        "typedFallback": false,
+        "lifecycleAfterClose": {
+          "listeners": 599,
+          "resizeObservers": 1,
+          "intersectionObservers": 0,
+          "pendingAnimationFrames": 0,
+          "activeWebglContexts": 0,
+          "createdWebglContexts": 7,
+          "usedJsHeapBytes": null
+        }
+      }
+    },
+    "contextLoss": {
+      "tested": false,
+      "lostState": null,
+      "recovered": false,
+      "remainingCanvases": null
+    },
+    "lifecycleAudit": {
+      "baseline": {
+        "listeners": 599,
+        "resizeObservers": 1,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 0,
+        "createdWebglContexts": 7,
+        "usedJsHeapBytes": null
+      },
+      "peak": {
+        "listeners": 634,
+        "resizeObservers": 2,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 1,
+        "createdWebglContexts": 13,
+        "usedJsHeapBytes": null
+      },
+      "final": {
+        "listeners": 599,
+        "resizeObservers": 1,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 0,
+        "createdWebglContexts": 13,
+        "usedJsHeapBytes": null
+      },
+      "growth": {
+        "listeners": 0,
+        "resizeObservers": 0,
+        "intersectionObservers": 0,
+        "pendingAnimationFrames": 0,
+        "activeWebglContexts": 0,
+        "usedJsHeapBytes": null
+      }
+    },
+    "legacyInert": true,
+    "htmlInert": true,
+    "heavySwitchCycles": 3,
+    "fullLifecycleGateBrowser": "chromium",
+    "maxActiveCanvases": 1,
+    "remainingCanvases": 0,
+    "overflow": {
+      "body": 0,
+      "root": 0
+    },
+    "contentRequests": 25,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "externalRequests": []
+  }
+}

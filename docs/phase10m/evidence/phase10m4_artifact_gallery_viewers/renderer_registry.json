@@ -1,0 +1,19 @@
+{
+  "schemaVersion":"phase10m4.renderer-registry-audit.v1",
+  "implementation":"apps/web/app/components/workspace/workspace-renderer-registry.ts",
+  "key":["artifactType","artifactVersion","rendererContract","rendererVersion"],
+  "artifactTypeCount":42,
+  "registryEntryCount":42,
+  "duplicateKeys":0,
+  "missingArtifactTypes":0,
+  "artifactVersion":"1",
+  "rendererVersion":"1.0",
+  "resolutionAuthority":"exact Artifact type and version; table_json product adaptation additionally requires exact checked-in schemaVersion and artifactType",
+  "forbiddenAuthorities":["filename","extension","display title","MIME alone","ToolCall display name","dynamic component name","module path","external URL","user renderer name"],
+  "unknownContract":"CONTRACT_UNSUPPORTED",
+  "versionMismatch":"ARTIFACT_CONTRACT_VERSION_UNSUPPORTED",
+  "lazyPolicy":"ACTIVE_ONLY",
+  "security":"application-owned component with inert validated data or DOWNLOAD_ONLY",
+  "focusedTest":"4 passed",
+  "status":"PASS"
+}

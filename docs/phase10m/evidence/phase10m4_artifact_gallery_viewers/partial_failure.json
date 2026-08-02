@@ -1,0 +1,11 @@
+{
+  "schemaVersion":"phase10m4.partial-failure.v1",
+  "panelPayloadPolicy":{"PRODUCED":"load allowed","PARTIAL":"load allowed with projected partial state","FAILED":"blocked","BLOCKED_BY_DEPENDENCY":"blocked","STALE":"blocked","SOURCE_DELETED":"blocked","CONTRACT_UNSUPPORTED":"inert","ARTIFACT_INTEGRITY_MISMATCH":"typed failure","CAP_EXCEEDED":"typed failure","PROFILE_AUTHORITY_UNAVAILABLE":"blocked","LEGACY_READ_ONLY":"inert"},
+  "failureIsolation":"active Artifact load errors remain inside Gallery; Workspace shell and sibling panels remain mounted",
+  "staleRebinding":false,
+  "sameNameReplacement":false,
+  "failedArtifactScientificClaim":false,
+  "browserDedicatedPartialCase":{"chromium":"PASS","firefox":"PASS","webkit":"PASS","dependencyOutcome":"PARTIAL_RESULTS","panelState":"PARTIAL","warningVisible":true,"successfulArtifactsRemainOpenable":true},
+  "failedOrBlockedArtifactPolicy":"failed and blocked steps do not fabricate Artifact cards; their execution state remains in the existing execution projection",
+  "status":"PASS"
+}

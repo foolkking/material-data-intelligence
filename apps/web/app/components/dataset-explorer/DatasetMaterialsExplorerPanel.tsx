@@ -32,10 +32,9 @@ const MAX_COLUMNS = 512;
 const MAX_WARNINGS = 128;
 const MAX_HISTOGRAM_BINS = 100;
 
-export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifact[] }) {
-  const artifact = artifacts.find((item) => item.name === "dataset_materials_explorer.json");
-  const payload = useMemo(() => artifactPayload(artifact), [artifact]);
-  const validation = useMemo(() => validateDatasetExplorerPayload(payload), [payload]);
+export type DatasetExplorerSampleSelection = Readonly<{ objectId: string; sampleRef: string; sampleKey: string }>;
+
+export function DatasetMaterialsExplorerPanel({ artifacts, externalSampleKey, onSampleSelection }: { artifacts: Artifact[]; externalSampleKey?: string | null; onSampleSelection?: (selection: DatasetExplorerSampleSelection) => void }) {
   const integration = useMemo(() => inspectMaterialIntelligenceArtifacts(artifacts, (id, candidate) => {
     if (id === "dataset_explorer") {
       const result = validateDatasetExplorerPayload(candidate);
@@ -47,6 +46,9 @@ export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifa
     }
     return null;
   }), [artifacts]);
+  const artifact = integration.products.find((item) => item.id === "dataset_explorer")?.artifact;
+  const payload = useMemo(() => artifactPayload(artifact), [artifact]);
+  const validation = useMemo(() => validateDatasetExplorerPayload(payload), [payload]);
   const [tab, setTab] = useState<ExplorerTab>("overview");
   const [selectedProperty, setSelectedProperty] = useState("");
   const [selectedSample, setSelectedSample] = useState("");
@@ -76,7 +78,7 @@ export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifa
   const comparison = record(explorer.comparison);
   const samples = records(explorer.sampleIndex).slice(0, MAX_ROWS);
   const activeProperty = properties.find((item) => text(item.column) === selectedProperty) || properties[0];
-  const activeSample = samples.find((item) => canonicalSampleKey(item) === selectedSample);
+  const activeSample = samples.find((item) => canonicalSampleKey(item) === (externalSampleKey ?? selectedSample));
 
   return (
     <section className="panel dataset-explorer" data-testid="dataset-materials-explorer" aria-label="Dataset Materials Explorer">
@@ -115,7 +117,11 @@ export function DatasetMaterialsExplorerPanel({ artifacts }: { artifacts: Artifa
         {tab === "quality" ? <QualityView quality={quality} /> : null}
         {tab === "comparison" ? <ComparisonView comparison={comparison} /> : null}
         {tab === "samples" ? (
-          <SamplesView samples={samples} active={activeSample} onSelect={setSelectedSample} />
+          <SamplesView samples={samples} active={activeSample} onSelect={(key) => {
+            setSelectedSample(key);
+            const sample = samples.find((item) => canonicalSampleKey(item) === key);
+            if (sample && validSampleIdentity(sample)) onSampleSelection?.({ objectId: text(sample.objectId), sampleRef: text(sample.sampleRef), sampleKey: key });
+          }} />
         ) : null}
       </div>
     </section>

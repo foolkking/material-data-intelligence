@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import { captureOrbitControlsDisposer } from "../viewer-scene/orbitControlsLifecycle";
 import { domainBasis } from "./volumetricSliceModel";
 import { affineVolumeClipPlane, inspectVolumeGpuCapabilities } from "./volumetricVolumeModel";
 import { validateVolumeShaderProgram, VOLUME_FRAGMENT_SHADER, VOLUME_SHADER_VERSION, VOLUME_VERTEX_SHADER } from "./volumetricVolumeShader";
@@ -72,6 +73,7 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
   camera.position.copy(initialPosition);
   camera.updateProjectionMatrix();
   let controls = new OrbitControls<THREE.Camera>(camera, renderer.domElement);
+  let disposeControls = captureOrbitControlsDisposer(controls);
   controls.enableDamping = false;
   controls.screenSpacePanning = true;
   controls.target.copy(sphere.center);
@@ -242,10 +244,10 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
     setProjection: (value) => {
       if (value === projection) return;
       const previousPosition = camera.position.clone(); const previousTarget = controls.target.clone();
-      controls.removeEventListener("change", render); controls.dispose();
+      controls.removeEventListener("change", render); disposeControls();
       projection = value; camera = value === "orthographic" ? orthographicCamera : perspectiveCamera;
       camera.position.copy(previousPosition); camera.up.set(0, 1, 0); camera.lookAt(previousTarget); camera.updateProjectionMatrix();
-      controls = new OrbitControls<THREE.Camera>(camera, renderer.domElement); controls.enableDamping = false; controls.screenSpacePanning = true; controls.target.copy(previousTarget); bindControls(); controls.update(); render();
+      controls = new OrbitControls<THREE.Camera>(camera, renderer.domElement); disposeControls = captureOrbitControlsDisposer(controls); controls.enableDamping = false; controls.screenSpacePanning = true; controls.target.copy(previousTarget); bindControls(); controls.update(); render();
     },
     resetCamera: () => { camera.position.copy(initialPosition); if (camera instanceof THREE.OrthographicCamera) camera.zoom = 1; camera.updateProjectionMatrix(); controls.target.copy(sphere.center); controls.update(); render(); },
     render,
@@ -259,8 +261,8 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
     dispose: () => {
       if (disposed) return;
       disposed = true;
-      observer?.disconnect(); window.removeEventListener("resize", resize); document.removeEventListener("visibilitychange", onVisibility); renderer.domElement.removeEventListener("webglcontextlost", onLost); controls.removeEventListener("change", render); controls.dispose();
-      texture.dispose(); structureDepthTarget.dispose(); volumeGeometry.dispose(); volumeMaterial.dispose(); resources.forEach((resource) => resource.dispose()); renderer.dispose(); renderer.domElement.remove(); publish();
+      observer?.disconnect(); window.removeEventListener("resize", resize); document.removeEventListener("visibilitychange", onVisibility); renderer.domElement.removeEventListener("webglcontextlost", onLost); controls.removeEventListener("change", render); disposeControls();
+      texture.dispose(); structureDepthTarget.dispose(); volumeGeometry.dispose(); volumeMaterial.dispose(); resources.forEach((resource) => resource.dispose()); renderer.forceContextLoss(); renderer.dispose(); renderer.domElement.remove(); publish();
     },
   });
   return Object.freeze({ engine, capabilities, shaderVersion: VOLUME_SHADER_VERSION });

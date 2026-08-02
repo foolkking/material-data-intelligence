@@ -30,9 +30,9 @@ export function MaterialsMlEvaluationPanel({ artifacts }: { artifacts: Artifact[
   }), [artifacts]);
   const available = useMemo(
     () => PRODUCTS.flatMap((product) => {
-      const artifact = artifacts.find((item) => item.name === product.name);
-      if (!artifact) return [];
       const assessment = integration.products.find((item) => item.id === product.id);
+      const artifact = assessment?.artifact;
+      if (!artifact) return [];
       const payload = artifactPayload(artifact);
       const local = validateMaterialsMlPayload(payload, product);
       const validation = assessment?.state === "PRODUCED"

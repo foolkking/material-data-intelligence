@@ -1929,6 +1929,35 @@ schema, type, content hash, and dataset binding.
 These additive artifact fields do not change AnalysisPlan, PlanValidator, or
 QueueWorkerRuntime step semantics.
 
+## Phase 10M-4 Application Renderer Integration Addendum
+
+Phase 10M-4 does not add or revise a shared persisted schema. It preserves
+`ScientificWorkspace 1.0`, `WorkspacePanel 1.0`, and
+`WorkspaceSelectionContext 1.0`, and keeps migration head
+`0007_phase10m1_workspace_domain`.
+
+The application-owned renderer declaration is a finite frontend contract keyed
+by exact Artifact type/version and exact renderer contract/version. It also
+declares payload mode, heavy/WebGL ownership, selection inputs/outputs,
+accessibility fallback, byte/row/point caps, active-only loading, bundle member
+types, and inert security class. This declaration is not persisted scientific
+authority and is not accepted from Artifact content, filenames, MIME types,
+display labels, component names, modules, URLs, or user input.
+
+All 42 shared Artifact types have an explicit registry disposition. Unknown
+types and unsupported versions remain typed unavailable. Exact embedded K2/K3/
+K4 `schemaVersion + artifactType` pairs may adapt `table_json` to the existing
+Dataset, ML, or Composition product component only after payload validation;
+generic table rendering remains the safe fallback. HTML and active document
+formats are download-only and never execute.
+
+Payload cache identity includes Workspace ID/revision, Artifact ID/checksum/
+type/version, and renderer contract/version. Scope, length, checksum, content
+shape, depth, finite numbers, and prototype keys are validated before render.
+No Artifact payload is copied into Workspace persistence, no selection schema
+is expanded, and no frontend scientific recomputation or LLM authority is
+introduced.
+
 ## Phase 10L-5 Natural-Language Evidence Contracts
 
 Phase 10L-5 adds versioned evidence-run contracts without changing scientific

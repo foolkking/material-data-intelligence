@@ -1,0 +1,16 @@
+{
+  "schemaVersion":"phase10m4.viewer-case.v1",
+  "family":"Structure",
+  "contract":"structure_json@1",
+  "component":"ViewerSceneRendererSurface",
+  "classification":"PRODUCTION_ADAPTED_RENDERER",
+  "heavy":true,
+  "webgl":true,
+  "scientificAuthority":"validated persisted lattice, positions, species and declared scene fields",
+  "newScience":"NONE",
+  "selection":{"classification":"CONSUMER_ONLY","declaredInputs":["STRUCTURE","PERIODIC_SITE","ARTIFACT"],"emittedByViewer":[],"nearestNeighborGuess":false},
+  "accessibility":"structure text/status fallback and typed context-loss state",
+  "browser":{"chromium":true,"firefox":true,"webkit":true,"canvasCount":1,"contextLossRecoveredInChromium":true},
+  "dispose":"observer/listeners/controls/geometries/materials/context/renderer/canvas",
+  "status":"PASS_BROWSER"
+}

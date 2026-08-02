@@ -11,6 +11,12 @@ import {
   type WorkspaceSnapshot,
 } from "../../lib/workspace-api";
 import {
+  getPlannerInterpretationEvidence,
+  getPlannerJobInterpretations,
+  type GroundedScientificInterpretation,
+  type InterpretationEvidenceResponse,
+} from "../../lib/planner-api";
+import {
   WORKSPACE_NAVIGATION_GROUPS,
   compactIdentity,
   firstPanelForKind,
@@ -29,9 +35,13 @@ import {
 } from "./workspace-selection-contract";
 import {
   artifactSelectionFromPanel,
+  claimSelection,
+  evidenceItemSelection,
+  resolvePanelSelection,
   type WorkspaceSelectionDelivery,
   WorkspaceSelectionStore,
 } from "./workspace-selection-runtime";
+import { WorkspaceArtifactGallery } from "./WorkspaceArtifactGallery";
 
 type LoadState = "LOADING" | "READY" | "NOT_FOUND" | "ERROR";
 
@@ -187,6 +197,21 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
     }
   }, [activePanelId]);
 
+  const navigateArtifactReference = useCallback((nextSelection: WorkspaceSelectionContext, destination: "EVIDENCE" | "PROVENANCE", originPanelId: string) => {
+    if (!snapshot) return;
+    activateSelection(nextSelection, originPanelId);
+    const preferredKinds = destination === "EVIDENCE" ? ["EVIDENCE", "FINDINGS"] : ["PROVENANCE"];
+    const target = preferredKinds
+      .map((kind) => visiblePanels.find((panel) => panel.panelKind === kind
+        && resolvePanelSelection(panel, nextSelection, snapshot.workspace).compatibility === "EXACT"))
+      .find((panel): panel is WorkspacePanel => panel !== undefined);
+    if (!target) {
+      setSelectionMessage(`Exact ${destination.toLowerCase()} reference is unavailable for this Artifact.`);
+      return;
+    }
+    selectPanel(target);
+  }, [activateSelection, selectPanel, snapshot, visiblePanels]);
+
   const clearSelection = useCallback(() => {
     selectionStoreRef.current?.clear(activePanelId);
     setSelection(null);
@@ -292,7 +317,7 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
         </nav>
 
         <section className="workspace-main-panel" aria-labelledby="workspace-active-panel-title">
-          {activePanel ? <WorkspacePanelSurface panel={activePanel} workspace={workspace} snapshot={snapshot} delivery={deliveries[activePanel.panelId] || null} onSelectArtifact={(panel) => {
+          {activePanel ? <WorkspacePanelSurface panel={activePanel} workspace={workspace} snapshot={snapshot} delivery={deliveries[activePanel.panelId] || null} onActivateSelection={(nextSelection, panelId) => activateSelection(nextSelection, panelId)} onNavigateArtifactReference={(nextSelection, destination, panelId) => navigateArtifactReference(nextSelection, destination, panelId)} onSelectArtifact={(panel) => {
             const nextSelection = artifactSelectionFromPanel(panel, workspace);
             if (nextSelection) activateSelection(nextSelection, panel.panelId);
           }} /> : <WorkspaceEmptyState panelCount={visiblePanels.length} />}
@@ -321,7 +346,7 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
   );
 }
 
-function WorkspacePanelSurface({ panel, workspace, snapshot, delivery, onSelectArtifact }: { panel: WorkspacePanel; workspace: WorkspaceSnapshot["workspace"]; snapshot: WorkspaceSnapshot; delivery: WorkspaceSelectionDelivery | null; onSelectArtifact: (panel: WorkspacePanel) => void }) {
+function WorkspacePanelSurface({ panel, workspace, snapshot, delivery, onActivateSelection, onNavigateArtifactReference, onSelectArtifact }: { panel: WorkspacePanel; workspace: WorkspaceSnapshot["workspace"]; snapshot: WorkspaceSnapshot; delivery: WorkspaceSelectionDelivery | null; onActivateSelection: (selection: WorkspaceSelectionContext, panelId: string) => void; onNavigateArtifactReference: (selection: WorkspaceSelectionContext, destination: "EVIDENCE" | "PROVENANCE", panelId: string) => void; onSelectArtifact: (panel: WorkspacePanel) => void }) {
   const selectableArtifact = artifactSelectionFromPanel(panel, workspace);
   return (
     <article className="workspace-panel-surface" data-testid={`workspace-panel-${panel.panelKind.toLowerCase()}`}>
@@ -346,8 +371,8 @@ function WorkspacePanelSurface({ panel, workspace, snapshot, delivery, onSelectA
       {panel.panelKind === "OVERVIEW" ? <WorkspaceOverview snapshot={snapshot} /> : null}
       {panel.panelKind === "PLAN" ? <WorkspacePlanSummary snapshot={snapshot} /> : null}
       {panel.panelKind === "EXECUTION" ? <WorkspaceExecutionSummary snapshot={snapshot} /> : null}
-      {["FINDINGS", "EVIDENCE", "PROVENANCE", "REPORT"].includes(panel.panelKind) ? <WorkspaceReferenceSummary panel={panel} snapshot={snapshot} /> : null}
-      {panel.panelKind === "SCIENTIFIC_RESULT" ? <p className="workspace-deferred-note">Scientific payload rendering is deferred to the typed renderer registry in Phase 10M-4. Exact metadata remains available here.</p> : null}
+      {["FINDINGS", "EVIDENCE", "PROVENANCE", "REPORT"].includes(panel.panelKind) ? <WorkspaceReferenceSummary panel={panel} workspace={workspace} snapshot={snapshot} delivery={delivery} onSelection={(selection) => onActivateSelection(selection, panel.panelId)} /> : null}
+      {panel.panelKind === "SCIENTIFIC_RESULT" ? <WorkspaceArtifactGallery workspace={workspace} panel={panel} delivery={delivery} onSelection={(selection) => onActivateSelection(selection, panel.panelId)} onNavigateReference={(selection, destination) => onNavigateArtifactReference(selection, destination, panel.panelId)} /> : null}
       {selectableArtifact ? <button type="button" className="secondary workspace-selection-command" onClick={() => onSelectArtifact(panel)} data-testid={`workspace-select-artifact-${panel.panelId}`}>Select exact artifact</button> : null}
       <details className="workspace-audit-json"><summary>Audit JSON</summary><pre>{JSON.stringify({ panel, sourceSummary: snapshot.sourceSummary }, null, 2)}</pre></details>
     </article>
@@ -366,9 +391,52 @@ function WorkspaceExecutionSummary({ snapshot }: { snapshot: WorkspaceSnapshot }
   return <section className="workspace-summary-band"><h3>Execution projection</h3><dl className="workspace-metadata-grid"><Metadata label="Job" value={snapshot.sourceSummary.jobStatus || "Unknown"} /><Metadata label="Dependency outcome" value={snapshot.sourceSummary.dependencyOutcome || "Independent or unavailable"} /><Metadata label="Tool calls" value={String(snapshot.sourceSummary.toolCallCount)} /><Metadata label="Artifacts retained" value={String(snapshot.sourceSummary.artifactCount)} /></dl></section>;
 }
 
-function WorkspaceReferenceSummary({ panel, snapshot }: { panel: WorkspacePanel; snapshot: WorkspaceSnapshot }) {
+function WorkspaceReferenceSummary({ panel, workspace, snapshot, delivery, onSelection }: { panel: WorkspacePanel; workspace: WorkspaceSnapshot["workspace"]; snapshot: WorkspaceSnapshot; delivery: WorkspaceSelectionDelivery | null; onSelection: (selection: WorkspaceSelectionContext) => void }) {
   const labels: Record<string, string> = { FINDINGS: "Grounded interpretation", EVIDENCE: "Scientific evidence", PROVENANCE: "Source lineage", REPORT: "Report and recipe" };
-  return <section className="workspace-summary-band"><h3>{labels[panel.panelKind]}</h3><p>Exact references are available from {panel.sourceRefs.length} source record(s).</p><dl className="workspace-metadata-grid"><Metadata label="Interpretations" value={String(snapshot.sourceSummary.interpretationCount)} /><Metadata label="Reports" value={String(snapshot.sourceSummary.reportCount)} /><Metadata label="Recipes" value={String(snapshot.sourceSummary.recipeCount)} /><Metadata label="Metadata only" value="Yes" /></dl>{panel.panelKind === "REPORT" ? <p className="workspace-deferred-note">Report and recipe composition remain read-only entry points until Phase 10M-5.</p> : null}</section>;
+  const [interpretation, setInterpretation] = useState<GroundedScientificInterpretation | null>(null);
+  const [evidence, setEvidence] = useState<InterpretationEvidenceResponse | null>(null);
+  const [loadState, setLoadState] = useState<"IDLE" | "LOADING" | "READY" | "EMPTY" | "FAILED">("IDLE");
+  const [evidencePage, setEvidencePage] = useState(0);
+  const readsInterpretation = panel.panelKind === "FINDINGS" || panel.panelKind === "EVIDENCE";
+
+  useEffect(() => {
+    if (!readsInterpretation) return;
+    const controller = new AbortController();
+    setLoadState("LOADING");
+    setEvidencePage(0);
+    void getPlannerJobInterpretations(workspace.sourceJobId, { signal: controller.signal }).then(async (records) => {
+      const latest = records.interpretations.at(-1) ?? null;
+      if (!latest) {
+        setLoadState("EMPTY");
+        return;
+      }
+      const projectedEvidence = await getPlannerInterpretationEvidence(latest.interpretationId, { signal: controller.signal });
+      if (controller.signal.aborted) return;
+      if (latest.sourceJobId !== workspace.sourceJobId || projectedEvidence.interpretationId !== latest.interpretationId || projectedEvidence.bundleId !== latest.sourceBundleId || projectedEvidence.bundleHash !== latest.sourceBundleHash) {
+        throw new Error("WORKSPACE_INTERPRETATION_SCOPE_MISMATCH");
+      }
+      setInterpretation(latest);
+      setEvidence(projectedEvidence);
+      setLoadState("READY");
+    }).catch(() => {
+      if (!controller.signal.aborted) setLoadState("FAILED");
+    });
+    return () => controller.abort();
+  }, [panel.panelId, readsInterpretation, workspace.sourceJobId]);
+
+  const pageSize = 32;
+  const evidenceItems = evidence?.evidenceItems ?? [];
+  const pageCount = Math.max(1, Math.ceil(evidenceItems.length / pageSize));
+  const visibleEvidence = evidenceItems.slice(evidencePage * pageSize, (evidencePage + 1) * pageSize);
+  const selected = delivery?.context?.primary;
+  return <section className="workspace-summary-band"><h3>{labels[panel.panelKind]}</h3><p>Exact references are available from {panel.sourceRefs.length} source record(s).</p><dl className="workspace-metadata-grid"><Metadata label="Interpretations" value={String(snapshot.sourceSummary.interpretationCount)} /><Metadata label="Reports" value={String(snapshot.sourceSummary.reportCount)} /><Metadata label="Recipes" value={String(snapshot.sourceSummary.recipeCount)} /><Metadata label="Metadata only" value="Yes" /></dl>
+    {readsInterpretation && loadState === "LOADING" ? <p role="status">Loading persisted grounded references.</p> : null}
+    {readsInterpretation && loadState === "EMPTY" ? <p role="status">No persisted grounded interpretation is available.</p> : null}
+    {readsInterpretation && loadState === "FAILED" ? <p role="alert">Grounded references are unavailable or failed exact source validation.</p> : null}
+    {panel.panelKind === "FINDINGS" && interpretation ? <div className="workspace-grounded-reference-list" data-testid="workspace-grounded-claims"><h4>Grounded claims</h4>{interpretation.claims.map((claim) => <article key={claim.claimId}><strong>{claim.claimType}</strong><p>{claim.renderedText}</p><small>{claim.confidenceClass} / {claim.groundingStatus}</small><button type="button" className="secondary" aria-pressed={selected?.kind === "CLAIM" && selected.claimId === claim.claimId} onClick={() => onSelection(claimSelection(workspace, interpretation, claim))}>Select exact claim</button></article>)}</div> : null}
+    {panel.panelKind === "EVIDENCE" && interpretation && evidence ? <div className="workspace-grounded-reference-list" data-testid="workspace-grounded-evidence"><div className="workspace-reference-pagination"><h4>Evidence items</h4><span>Showing {evidenceItems.length ? evidencePage * pageSize + 1 : 0}-{Math.min((evidencePage + 1) * pageSize, evidenceItems.length)} of {evidenceItems.length}</span></div>{visibleEvidence.map((item) => <article key={item.evidenceItemId}><strong>{item.semanticRole}</strong><p>{item.displayValue}{item.unit ? ` ${item.unit}` : ""}</p><small>{item.artifactContract}@{item.artifactContractVersion} / {item.fieldLocator.fieldId}</small><button type="button" className="secondary" aria-pressed={selected?.kind === "EVIDENCE_ITEM" && selected.evidenceItemId === item.evidenceItemId} onClick={() => onSelection(evidenceItemSelection(workspace, interpretation, evidence, item))}>Select exact evidence</button></article>)}{pageCount > 1 ? <div className="workspace-selection-actions"><button type="button" className="secondary" disabled={evidencePage === 0} onClick={() => setEvidencePage((value) => value - 1)}>Previous evidence</button><button type="button" className="secondary" disabled={evidencePage + 1 >= pageCount} onClick={() => setEvidencePage((value) => value + 1)}>Next evidence</button></div> : null}</div> : null}
+    {panel.panelKind === "PROVENANCE" && selected?.kind === "ARTIFACT" ? <dl className="workspace-metadata-grid" data-testid="workspace-artifact-lineage"><Metadata label="Artifact" value={selected.artifactId || "Unavailable"} /><Metadata label="Checksum" value={compactIdentity(selected.artifactChecksum, 24)} /><Metadata label="Contract" value={`${selected.artifactContract || "unknown"}@${selected.artifactVersion || "unknown"}`} /><Metadata label="ToolCall" value={selected.toolCallId || "Unavailable"} /></dl> : null}
+    {panel.panelKind === "REPORT" ? <p className="workspace-deferred-note">Report and recipe composition remain read-only entry points until Phase 10M-5.</p> : null}</section>;
 }
 
 function WorkspaceDataContext({ snapshot }: { snapshot: WorkspaceSnapshot }) {

@@ -106,7 +106,8 @@ function assessCandidate(
   const matching = artifacts.flatMap((artifact) => {
     const payload = artifactPayload(artifact);
     const schemaMatch = payload?.schemaVersion === spec.schema && payload.artifactType === spec.artifactType;
-    return schemaMatch || artifact.name === spec.artifactName ? [{ artifact, payload }] : [];
+    const declaredProduct = payload?.artifactType === spec.artifactType;
+    return schemaMatch || declaredProduct ? [{ artifact, payload }] : [];
   });
   const base = { id: spec.id, label: spec.label, capability: spec.capability } as const;
   if (!matching.length) return { ...base, state: "UNAVAILABLE", reason: "MATERIAL_INTELLIGENCE_ARTIFACT_NOT_PRODUCED" };

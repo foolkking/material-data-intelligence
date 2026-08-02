@@ -1,0 +1,14 @@
+{
+  "schemaVersion":"phase10m4.viewer-case.v1",
+  "family":"Dataset Materials Explorer",
+  "contract":"table_json@1 + phase10k2.dataset_materials_explorer.v1/dataset.materials_explorer",
+  "component":"DatasetMaterialsExplorerPanel",
+  "classification":"PRODUCTION_ADAPTED_RENDERER",
+  "scientificAuthority":"validated backend product Artifact",
+  "frontendRecomputation":"NONE",
+  "selection":{"classification":"PRODUCTION_ADAPTED_EMITTER","identity":"objectId + sampleRef + sampleKey","arrayIndex":false,"sortFilterStable":true},
+  "accessibility":"semantic sections and data tables",
+  "browser":{"chromium":true,"firefox":true,"webkit":true,"payloadRequestsPerBrowser":1,"canvas":false},
+  "fixtureAuthority":"current Phase 10K-5 checked-in persisted Artifact replay through browser route interception",
+  "status":"PASS_BROWSER"
+}

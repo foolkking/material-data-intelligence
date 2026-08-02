@@ -1,7 +1,9 @@
 # Phase 10M Unified Scientific Workspace
 
-Status: Phase 10M-1 and Phase 10M-2 are archived. Phase 10M-3 canonical
-selection is implemented locally and its exact-SHA lifecycle remains required.
+Status: Phase 10M-1 through Phase 10M-3 are archived. Phase 10M-4 typed
+Artifact Gallery and scientific viewer integration is implemented locally;
+implementation, completion-record, and queue-archive exact-SHA CI remain
+required.
 
 ## Reading order
 
@@ -30,6 +32,15 @@ selection is implemented locally and its exact-SHA lifecycle remains required.
 23. [M3 Inspector](phase10m3_inspector.md)
 24. [M3 accessibility/performance/security](phase10m3_accessibility_performance_security.md)
 25. [M3 evidence](phase10m3_evidence.md)
+26. [M4 Artifact Gallery](phase10m4_artifact_gallery.md)
+27. [M4 renderer registry](phase10m4_renderer_registry.md)
+28. [M4 scientific viewers](phase10m4_scientific_viewers.md)
+29. [M4 selection integration](phase10m4_selection_integration.md)
+30. [M4 WebGL lifecycle](phase10m4_webgl_lifecycle.md)
+31. [M4 accessibility/performance/security](phase10m4_accessibility_performance_security.md)
+32. [M4 evidence](phase10m4_evidence.md)
+33. [M4 completion state](phase10m4_completion.md)
+34. [M5 reviewer gate](phase10m5_next_scope.md)
 
 ## Status vocabulary
 
@@ -42,4 +53,6 @@ selection is implemented locally and its exact-SHA lifecycle remains required.
 
 Phase 10M-0 remains the sealed architecture authority. M1 owns the persisted
 domain and API, M2 owns the metadata shell, and M3 activates exact canonical
-selection. Typed scientific rendering remains Phase 10M-4 reviewer-gated.
+selection. M4 adds application-owned exact contract-to-renderer mapping,
+metadata-first Gallery loading, existing viewer integration, and bounded WebGL
+lifecycle without changing those contracts. M5 remains reviewer-gated.

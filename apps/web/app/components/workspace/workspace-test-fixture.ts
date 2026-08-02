@@ -92,7 +92,7 @@ function panel(workspaceId: string, panelId: string, panelKind: WorkspacePanelKi
     DATA: [["DATASET_SAMPLE", "MATERIAL_OBJECT", "STRUCTURE", "PERIODIC_SITE", "TRAJECTORY_ATOM", "TRAJECTORY_FRAME"], []],
     PLAN: [[], []],
     EXECUTION: [["ARTIFACT"], []],
-    SCIENTIFIC_RESULT: [["PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT"], ["ARTIFACT"]],
+    SCIENTIFIC_RESULT: [["DATASET_SAMPLE", "MATERIAL_OBJECT", "STRUCTURE", "PERIODIC_SITE", "TRAJECTORY_ATOM", "TRAJECTORY_FRAME", "PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT"], ["DATASET_SAMPLE", "MATERIAL_OBJECT", "ARTIFACT"]],
     FINDINGS: [["PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT", "EVIDENCE_ITEM", "CLAIM"], []],
     EVIDENCE: [["PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT", "EVIDENCE_ITEM", "CLAIM"], []],
     PROVENANCE: [["DATASET_SAMPLE", "MATERIAL_OBJECT", "STRUCTURE", "PERIODIC_SITE", "TRAJECTORY_ATOM", "TRAJECTORY_FRAME", "PHONON_Q_POINT", "PHONON_BRANCH", "RECIPROCAL_POINT", "VOLUMETRIC_FIELD", "ARTIFACT", "EVIDENCE_ITEM", "CLAIM"], []],
@@ -121,6 +121,14 @@ function panel(workspaceId: string, panelId: string, panelKind: WorkspacePanelKi
     contractVersion: null, mediaType: null, projectId: "project_demo", jobId: "job_demo",
     toolCallId: null, stepId: null,
   };
+  const artifactSource = {
+    kind: "ARTIFACT" as const, sourceId: "artifact_demo", sourceHash: HASH,
+    contract: "platform.dataset.summary", contractVersion: "1.0", mediaType: "application/json",
+    projectId: "project_demo", jobId: "job_demo", toolCallId: "tool_call_demo", stepId: "step_demo",
+  };
+  const sourceRefs = panelKind === "EVIDENCE" || panelKind === "FINDINGS"
+    ? [source, artifactSource]
+    : [source];
   return {
     schemaVersion: "1.0",
     panelId,
@@ -129,7 +137,7 @@ function panel(workspaceId: string, panelId: string, panelKind: WorkspacePanelKi
     title,
     ordinal,
     visible: true,
-    sourceRefs: [source],
+    sourceRefs,
     sourceReferenceHash: HASH,
     rendererContract: renderer[panelKind],
     state: "PRODUCED",

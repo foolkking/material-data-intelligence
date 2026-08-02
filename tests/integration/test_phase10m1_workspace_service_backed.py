@@ -332,6 +332,54 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         assert artifact_record["sha256"] == payload_hash
         assert artifact_record["sizeBytes"] == len(artifact_payload)
 
+        # Exercise the real application route against the persisted PostgreSQL
+        # metadata and MinIO object. Direct storage reads above do not prove the
+        # HTTP scope, checksum, or response-header contract.
+        monkeypatch.setenv("MDI_ARTIFACT_BACKEND", "minio")
+        client = TestClient(create_app())
+        content_response = client.get(
+            f"/planner/jobs/{planned.job_id}/artifacts/{artifact_id}/content"
+        )
+        assert content_response.status_code == 200, content_response.json()
+        assert content_response.content == artifact_payload
+        assert content_response.headers["x-content-sha256"] == payload_hash
+        assert content_response.headers["x-content-length-validated"] == str(len(artifact_payload))
+        assert content_response.headers["x-content-type-options"] == "nosniff"
+        assert content_response.headers["cache-control"] == "private, no-store"
+
+        foreign_job_id = f"job_foreign_{suffix}"
+        repos.projects.save(
+            {
+                "id": f"project_foreign_{suffix}",
+                "name": f"project_foreign_{suffix}",
+                "createdBy": actor_id,
+            }
+        )
+        repos.jobs.save(
+            {
+                "id": foreign_job_id,
+                "projectId": f"project_foreign_{suffix}",
+                "status": "completed",
+                "kind": "analysis",
+                "createdBy": actor_id,
+            }
+        )
+        foreign_scope_response = client.get(
+            f"/planner/jobs/{foreign_job_id}/artifacts/{artifact_id}/content"
+        )
+        assert foreign_scope_response.status_code == 404
+
+        minio.put_object(
+            Bucket=minio_bucket,
+            Key=minio_key,
+            Body=artifact_payload + b"tampered",
+            ContentType="application/json",
+        )
+        tampered_response = client.get(
+            f"/planner/jobs/{planned.job_id}/artifacts/{artifact_id}/content"
+        )
+        assert tampered_response.status_code == 422
+
         service = WorkspaceProjectionService(repos)
         first, created = service.project_job(
             source_job_id=planned.job_id,
@@ -685,7 +733,11 @@ def test_phase10m3_postgres_redis_minio_canonical_selection_and_pinning(
             body = created.json()
             workspace = body["workspace"]
             result_panel = next(item for item in body["panels"] if item["panelKind"] == "SCIENTIFIC_RESULT")
-            assert result_panel["emittedSelectionKinds"] == ["ARTIFACT"]
+            assert result_panel["emittedSelectionKinds"] == [
+                "DATASET_SAMPLE",
+                "MATERIAL_OBJECT",
+                "ARTIFACT",
+            ]
             assert "ARTIFACT" in result_panel["acceptedSelectionKinds"]
             selection = WorkspaceSelectionContext(
                 sourceScopeHash=workspace["sourceReferenceHash"],

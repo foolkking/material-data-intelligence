@@ -62,8 +62,12 @@ _PANEL_SELECTION_DECLARATIONS: dict[
     "workspace.plan/1.0": ((), ()),
     "workspace.execution/1.0": ((WorkspaceSelectionKind.ARTIFACT,), ()),
     "workspace.artifact-metadata/1.0": (
-        _ARTIFACT_DERIVED_SELECTION_KINDS,
-        (WorkspaceSelectionKind.ARTIFACT,),
+        (*_DATA_SELECTION_KINDS, *_ARTIFACT_DERIVED_SELECTION_KINDS),
+        (
+            WorkspaceSelectionKind.DATASET_SAMPLE,
+            WorkspaceSelectionKind.MATERIAL_OBJECT,
+            WorkspaceSelectionKind.ARTIFACT,
+        ),
     ),
     "workspace.findings/1.0": (
         (*_ARTIFACT_DERIVED_SELECTION_KINDS, *_EVIDENCE_SELECTION_KINDS),
@@ -1486,6 +1490,7 @@ class WorkspaceProjectionService:
                 str(item.get("artifactId") or item.get("id") or ""),
             ),
         )
+        artifact_refs: list[WorkspaceSourceRef] = []
         for artifact in sorted_artifacts:
             artifact_id = _identity(artifact, "artifactId", "id")
             if not artifact_id:
@@ -1509,6 +1514,7 @@ class WorkspaceProjectionService:
                 contractVersion=_identity(artifact, "version"),
                 mediaType=(content_type if content_type and not unsupported else None),
             )
+            artifact_refs.append(artifact_ref)
             specifications.append(
                 {
                     "kind": WorkspacePanelKind.SCIENTIFIC_RESULT,
@@ -1534,7 +1540,11 @@ class WorkspaceProjectionService:
             )
 
         if source.interpretations:
-            refs = list(base_refs)
+            interpretation_refs: list[WorkspaceSourceRef] = []
+            evidence_bundle_refs: list[WorkspaceSourceRef] = []
+            evidence_artifact_ids: set[str] = set()
+            evidence_repository = getattr(self.repositories, "interpretations", None)
+            bundle_getter = getattr(evidence_repository, "get_bundle", None)
             for interpretation in sorted(
                 source.interpretations,
                 key=lambda item: str(
@@ -1552,7 +1562,7 @@ class WorkspaceProjectionService:
                     interpretation_payload, "interpretationId", "id"
                 )
                 if interpretation_id:
-                    refs.append(
+                    interpretation_refs.append(
                         WorkspaceSourceRef(
                             kind=WorkspaceSourceKind.INTERPRETATION,
                             sourceId=interpretation_id,
@@ -1571,16 +1581,125 @@ class WorkspaceProjectionService:
                             ),
                         )
                     )
+                bundle_id = _identity(
+                    interpretation,
+                    "bundleId",
+                ) or _identity(
+                    interpretation_payload,
+                    "sourceBundleId",
+                )
+                if not bundle_id or not callable(bundle_getter):
+                    continue
+                try:
+                    bundle = _record(bundle_getter(bundle_id))
+                except (KeyError, LookupError):
+                    bundle = None
+                if bundle is None:
+                    continue
+                if (
+                    _identity(bundle, "projectId") != project_id
+                    or _identity(bundle, "jobId") != job_id
+                ):
+                    raise WorkspaceDomainError(
+                        "EVIDENCE_SOURCE_SCOPE_MISMATCH",
+                        "A persisted evidence bundle does not belong to the Workspace source Job.",
+                        409,
+                    )
+                bundle_hash = _source_hash(bundle, "bundleHash", "semanticHash")
+                if bundle_hash is None:
+                    raise WorkspaceDomainError(
+                        "EVIDENCE_SOURCE_INTEGRITY_FAILED",
+                        "A persisted evidence bundle has no exact semantic hash.",
+                        409,
+                    )
+                evidence_bundle_refs.append(
+                    WorkspaceSourceRef(
+                        kind=WorkspaceSourceKind.EVIDENCE_BUNDLE,
+                        sourceId=bundle_id,
+                        sourceHash=bundle_hash,
+                        projectId=project_id,
+                        jobId=job_id,
+                        contract="scientific_evidence_bundle",
+                        contractVersion=_identity(bundle, "schemaVersion"),
+                    )
+                )
+                for evidence_item in _records(bundle.get("evidenceItems")):
+                    artifact_id = _identity(evidence_item, "sourceArtifactId")
+                    artifact_hash = _source_hash(
+                        evidence_item, "sourceArtifactChecksum"
+                    )
+                    matching_ref = next(
+                        (
+                            ref
+                            for ref in artifact_refs
+                            if ref.sourceId == artifact_id
+                            and ref.sourceHash == artifact_hash
+                        ),
+                        None,
+                    )
+                    if matching_ref is None:
+                        raise WorkspaceDomainError(
+                            "EVIDENCE_ARTIFACT_SCOPE_MISMATCH",
+                            "Grounded evidence references an Artifact outside the exact Workspace source.",
+                            409,
+                        )
+                    evidence_artifact_ids.add(matching_ref.sourceId)
+
+            evidence_artifact_refs = [
+                ref for ref in artifact_refs if ref.sourceId in evidence_artifact_ids
+            ]
+            findings_refs = [
+                *base_refs,
+                *interpretation_refs,
+                *evidence_bundle_refs,
+                *evidence_artifact_refs,
+            ]
+            if len(findings_refs) > 32:
+                raise WorkspaceDomainError(
+                    "PANEL_SOURCE_REF_CAP_EXCEEDED",
+                    "Grounded findings source references exceed the WorkspacePanel cap.",
+                    422,
+                )
             specifications.append(
                 {
                     "kind": WorkspacePanelKind.FINDINGS,
                     "title": "Grounded findings",
                     "identity": job_id,
-                    "refs": tuple(refs),
+                    "refs": tuple(findings_refs),
                     "renderer": "workspace.findings/1.0",
                     "state": self._artifact_panel_state(source.status),
+                    "evidence_refs": tuple(
+                        sorted(ref.sourceId for ref in evidence_bundle_refs)
+                    ),
+                    "provenance_refs": tuple(
+                        sorted(evidence_artifact_ids)
+                    ),
                 }
             )
+            if evidence_bundle_refs:
+                evidence_refs = [*evidence_bundle_refs, *evidence_artifact_refs]
+                if len(evidence_refs) > 32:
+                    raise WorkspaceDomainError(
+                        "PANEL_SOURCE_REF_CAP_EXCEEDED",
+                        "Scientific evidence source references exceed the WorkspacePanel cap.",
+                        422,
+                    )
+                specifications.append(
+                    {
+                        "kind": WorkspacePanelKind.EVIDENCE,
+                        "title": "Scientific evidence",
+                        "identity": job_id,
+                        "refs": tuple(evidence_refs),
+                        "renderer": "workspace.evidence/1.0",
+                        "state": self._artifact_panel_state(source.status),
+                        "evidence_refs": tuple(
+                            sorted(ref.sourceId for ref in evidence_bundle_refs)
+                        ),
+                        "provenance_refs": tuple(
+                            sorted(evidence_artifact_ids)
+                        ),
+                    }
+                )
 
         specifications.append(
             {
@@ -1644,8 +1763,8 @@ class WorkspaceProjectionService:
                 "emittedSelectionKinds": [
                     item.value for item in emitted_selection_kinds
                 ],
-                "evidenceRefs": [],
-                "provenanceRefs": [],
+                "evidenceRefs": list(specification.get("evidence_refs", ())),
+                "provenanceRefs": list(specification.get("provenance_refs", ())),
                 "capabilityRequirement": None,
                 "layout": WorkspacePanelLayout(
                     order=ordinal

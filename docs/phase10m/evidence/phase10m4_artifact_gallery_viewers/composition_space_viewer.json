@@ -1,0 +1,14 @@
+{
+  "schemaVersion":"phase10m4.viewer-case.v1",
+  "family":"Composition Space",
+  "contract":"table_json@1 + phase10k4.composition_space.v1/dataset.composition_space",
+  "component":"CompositionSpaceExplorerPanel",
+  "classification":"PRODUCTION_ADAPTED_RENDERER",
+  "scientificAuthority":"backend-produced coordinates, clustering and outlier candidate fields",
+  "frontendRecomputation":["no PCA","no KMeans","no outlier computation","no coordinate remapping"],
+  "selection":{"classification":"PRODUCTION_ADAPTED_EMITTER","identity":"objectId + sampleRef + sampleKey","plotIndexAuthority":false},
+  "accessibility":"sample inspector and numeric text alternative",
+  "browser":{"chromium":true,"firefox":true,"webkit":true,"payloadRequestsPerBrowser":1},
+  "fixtureAuthority":"current Phase 10K-5 checked-in persisted Artifact replay",
+  "status":"PASS_BROWSER"
+}

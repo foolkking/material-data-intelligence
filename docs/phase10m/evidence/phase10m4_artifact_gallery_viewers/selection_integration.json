@@ -1,0 +1,18 @@
+{
+  "schemaVersion":"phase10m4.selection-integration.v1",
+  "runtime":"existing M3 WorkspaceSelectionContext store, panel subscription registry, compatibility resolver, Inspector and URL codec",
+  "alternateStores":0,
+  "artifactSelection":{"implemented":true,"identity":"artifactId + checksum + exact workspace/project/job source","emitter":"Gallery Select action"},
+  "datasetSampleSelection":{"implemented":true,"identity":"objectId + sampleRef + sampleKey","emitters":["Dataset Materials Explorer","Composition Space"]},
+  "viewerSpecificSelection":{"structure":"CONSUMER_ONLY","trajectory":"CONSUMER_ONLY","phonon":"CONSUMER_ONLY","brillouinZone":"CONSUMER_ONLY","volumetric":"CONSUMER_ONLY","ml":"NO_SELECTION_SUPPORT"},
+  "compatibilityAuthority":"M3 resolver; renderer cannot widen scope/version/checksum/dataset/job/artifact/kind",
+  "arrayIndexAuthority":false,
+  "displayLabelAuthority":false,
+  "fuzzyMatch":false,
+  "urlRoundTrip":"PASS in M3/M4 focused shell and selection tests",
+  "lineageNavigation":"PASS: Gallery Lineage emits exact Artifact identity and opens the compatible Provenance panel; Chromium, Firefox and WebKit show exact artifact ID, checksum, contract and ToolCall",
+  "groundedEvidenceNavigation":"PASS: Gallery Evidence emits exact Artifact identity, opens the compatible Evidence panel, validates persisted interpretation/bundle scope, and emits exact EVIDENCE_ITEM through the M3 runtime",
+  "browserEvidence":{"chromium":true,"firefox":true,"webkit":true,"artifactId":"artifact_dataset","evidenceItemId":"evidence_dataset_count"},
+  "focusedTests":"7 selection tests plus 19 Workspace shell tests pass on the final local implementation tree",
+  "status":"PASS_LOCAL_AND_BROWSER"
+}

@@ -26,9 +26,9 @@ const asVolumetric = (artifact: Artifact): VolumetricArtifact => artifact as unk
 const artifactKey = (artifact?: Artifact) => artifact ? String(artifact.id || artifact.artifactId || artifact.name) : "missing";
 
 export function VolumetricIsosurfaceSurface({ artifacts, capabilityOverride, byteLoader, workerFactory }: Props) {
-  const datasetArtifact = artifacts.find((item) => item.type === "volumetric_dataset_json" || item.name === "volumetric_dataset.json");
-  const manifestArtifact = artifacts.find((item) => item.type === "volumetric_manifest_json" || item.name === "volumetric_manifest.json");
-  const overlayArtifact = artifacts.find((item) => item.type === "volumetric_structure_overlay_json" || item.name === "volumetric_structure_overlay.json");
+  const datasetArtifact = artifacts.find((item) => item.type === "volumetric_dataset_json");
+  const manifestArtifact = artifacts.find((item) => item.type === "volumetric_manifest_json");
+  const overlayArtifact = artifacts.find((item) => item.type === "volumetric_structure_overlay_json");
   const [state, setState] = useState<ViewState>("loading");
   const [message, setMessage] = useState("Loading validated volumetric artifacts...");
   const [bundle, setBundle] = useState<ValidatedVolumetricBundle | null>(null);

@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import { captureOrbitControlsDisposer } from "../viewer-scene/orbitControlsLifecycle";
 import { domainBasis } from "./volumetricSliceModel";
 import { sliceRgba } from "./volumetricSliceDisplay";
 import type { ValidatedVolumetricGrid, VolumeTransferFunction, VolumeVector3, VolumetricSlice, VolumetricStructureOverlay } from "./volumetricViewerTypes";
@@ -31,6 +32,7 @@ export async function createVolumetricSliceRendererEngine(args: Readonly<{
   const width = Math.max(320, container.clientWidth || 720); const height = Math.max(320, Math.min(620, container.clientHeight || 500)); renderer.setSize(width, height, false);
   renderer.domElement.dataset.testid = "volumetric-slice-3d-canvas"; renderer.domElement.setAttribute("aria-label", "Three-dimensional canonical lattice slice plane"); renderer.domElement.setAttribute("role", "img"); container.appendChild(renderer.domElement);
   const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(42, width / height, 0.01, 10000); const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = false;
+  const disposeControls = captureOrbitControlsDisposer(controls);
   const resources: Array<{ dispose: () => void }> = [];
   const rgba = sliceRgba(slice, args.transferFunction); const texture = new THREE.DataTexture(rgba, slice.outputShape[1], slice.outputShape[0], THREE.RGBAFormat, THREE.UnsignedByteType); texture.needsUpdate = true; texture.magFilter = THREE.LinearFilter; texture.minFilter = THREE.LinearFilter; texture.flipY = true; resources.push(texture);
   const { origin, basisU, basisV } = slice.plane; const corners: VolumeVector3[] = [origin, add(origin, basisU), add(add(origin, basisU), basisV), add(origin, basisV)];
@@ -55,7 +57,7 @@ export async function createVolumetricSliceRendererEngine(args: Readonly<{
     setCellVisible: (visible) => { cell.visible = visible; render(); },
     render,
     exportPng: () => new Promise<Blob>((resolve, reject) => { render(); renderer.domElement.toBlob((blob) => blob ? resolve(blob) : reject(new Error("blob")), "image/png"); }),
-    dispose: () => { if (disposed) return; disposed = true; observer?.disconnect(); window.removeEventListener("resize", resize); renderer.domElement.removeEventListener("pointerup", pick); renderer.domElement.removeEventListener("webglcontextlost", onLost); controls.removeEventListener("change", render); controls.dispose(); resources.forEach((resource) => resource.dispose()); renderer.dispose(); renderer.domElement.remove(); },
+    dispose: () => { if (disposed) return; disposed = true; observer?.disconnect(); window.removeEventListener("resize", resize); renderer.domElement.removeEventListener("pointerup", pick); renderer.domElement.removeEventListener("webglcontextlost", onLost); controls.removeEventListener("change", render); disposeControls(); resources.forEach((resource) => resource.dispose()); renderer.forceContextLoss(); renderer.dispose(); renderer.domElement.remove(); },
   });
 }
 

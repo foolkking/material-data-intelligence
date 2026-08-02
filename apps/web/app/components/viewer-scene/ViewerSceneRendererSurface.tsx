@@ -16,6 +16,7 @@ import { classifyViewerPerformance } from "./viewerScenePerformance";
 import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
 import { ViewerRendererError } from "./viewerSceneRendererErrors";
 import type { ImageOffset, PeriodicSiteRef, RenderVector3, ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot, ViewerRendererState } from "./viewerSceneRendererTypes";
+import { supportsManagedWebGL } from "./viewerWebglCapability";
 import { changeViewerSelectionMode, initialViewerSelection, selectViewerBondEndpoints, selectViewerSite, undoViewerSelection, type ViewerSelectionMode } from "./viewerSceneSelection";
 import { derivePeriodicSupercell, estimatePeriodicSupercell, type SupercellRepeat } from "./viewerSceneSupercell";
 import { buildViewerSupercellState } from "./viewerSceneSupercellState";
@@ -130,7 +131,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       setState("scene_over_renderer_cap");
       return;
     }
-    const supported = capabilityOverride ?? supportsWebGL();
+    const supported = capabilityOverride ?? supportsManagedWebGL();
     if (!supported) {
       setState("unsupported");
       return;
@@ -478,17 +479,6 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       ) : null}
     </section>
   );
-}
-
-function supportsWebGL() {
-  if (typeof window === "undefined" || typeof document === "undefined") return false;
-  if (/jsdom/i.test(window.navigator.userAgent)) return false;
-  try {
-    const canvas = document.createElement("canvas");
-    return Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
-  } catch {
-    return false;
-  }
 }
 
 function addOffset(value: RenderVector3, offset: ImageOffset): RenderVector3 {

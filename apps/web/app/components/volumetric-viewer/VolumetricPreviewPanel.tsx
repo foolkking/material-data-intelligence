@@ -8,8 +8,8 @@ import { VolumetricSliceVolumeSurface } from "./VolumetricSliceVolumeSurface";
 type JsonRecord = Record<string, unknown>;
 
 export function VolumetricPreviewPanel({ artifacts }: { artifacts: Artifact[] }) {
-  const datasetArtifact = artifacts.find((artifact) => artifact.type === "volumetric_dataset_json" || artifact.name === "volumetric_dataset.json");
-  const manifestArtifact = artifacts.find((artifact) => artifact.type === "volumetric_manifest_json" || artifact.name === "volumetric_manifest.json");
+  const datasetArtifact = artifacts.find((artifact) => artifact.type === "volumetric_dataset_json");
+  const manifestArtifact = artifacts.find((artifact) => artifact.type === "volumetric_manifest_json");
   const [tab, setTab] = useState<"surface" | "slice" | "volume" | "metadata" | "manifest">("surface");
   if (!datasetArtifact && !manifestArtifact) return null;
   const dataset = record(payload(datasetArtifact));

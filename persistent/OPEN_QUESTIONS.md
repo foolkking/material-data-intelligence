@@ -1,5 +1,19 @@
 # OPEN_QUESTIONS
 
+## 2026-08-02 Phase 10M-4 Remaining Gates
+
+No architecture redesign is open. The remaining M4 work is bounded acceptance
+and lifecycle closure: verify exact claim/evidence/lineage navigation, finalize
+the sanitized evidence manifest, run final full regression, obtain
+PostgreSQL/Redis/MinIO zero-skipped exact-SHA proof, and complete the three
+commit/CI gates.
+
+Physical assistive-technology/device-lab coverage remains outside automated
+browser evidence. Firefox/WebKit receive cross-engine heavy-viewer smoke while
+Chromium owns the 50-cycle/context-loss gate. This is an explicit evidence
+limit, not permission to relax one-active-heavy-viewer or disposal semantics.
+Phase 10M-5 Report/Recipe composition remains reviewer-gated.
+
 ## 2026-08-02 Phase 10M-3 Boundary
 
 No design question blocks M3. Exact identities already present in the sealed

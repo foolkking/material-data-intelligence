@@ -34,9 +34,9 @@ type SlicePointProbe = Readonly<{
 const SLICE_TABLE_PAGE_SIZE = 64;
 
 export function VolumetricSliceVolumeSurface({ artifacts, mode, capabilityOverride, byteLoader, sliceWorkerFactory }: Props) {
-  const datasetArtifact = artifacts.find((item) => item.type === "volumetric_dataset_json" || item.name === "volumetric_dataset.json");
-  const manifestArtifact = artifacts.find((item) => item.type === "volumetric_manifest_json" || item.name === "volumetric_manifest.json");
-  const overlayArtifact = artifacts.find((item) => item.type === "volumetric_structure_overlay_json" || item.name === "volumetric_structure_overlay.json");
+  const datasetArtifact = artifacts.find((item) => item.type === "volumetric_dataset_json");
+  const manifestArtifact = artifacts.find((item) => item.type === "volumetric_manifest_json");
+  const overlayArtifact = artifacts.find((item) => item.type === "volumetric_structure_overlay_json");
   const [state, setState] = useState<ProductState>("loading");
   const [message, setMessage] = useState("Validating canonical volumetric field...");
   const [bundle, setBundle] = useState<ValidatedVolumetricBundle | null>(null);

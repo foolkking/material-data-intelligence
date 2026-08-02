@@ -131,6 +131,17 @@ jobs:
             --compare-with "${GITHUB_WORKSPACE}/docs/phase10m/evidence/phase10m3_canonical_selection/browser_semantic_contract.json"
         working-directory: apps/web
 
+      - name: Replay Phase 10M-4 Artifact Gallery browser evidence
+        env:
+          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
+          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
+          MDI_PHASE10M4_EVIDENCE_PORT: "3226"
+        run: |
+          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures
+          node test/workspace-artifact-gallery-browser-evidence.mjs \
+            --output-dir "${RUNNER_TEMP}/phase10m4-browser-replay"
+        working-directory: apps/web
+
       - name: Build
         run: npm run build
         working-directory: apps/web

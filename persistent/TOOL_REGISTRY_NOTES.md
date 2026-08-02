@@ -1,5 +1,20 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-08-02 Phase 10M-4 Renderer Boundary
+
+- The Workspace renderer registry is application-owned presentation metadata,
+  not Tool Registry metadata, a planner candidate, an Adapter, or execution
+  authority.
+- It maps all 42 shared Artifact types by exact Artifact type/version and never
+  uses filename, display title, MIME alone, component names, modules, or URLs.
+- Existing K2/K3/K4 product components require exact embedded schema/type
+  identity. Existing structure, trajectory, phonon, BZ, and volumetric
+  components continue to consume their formal persisted contracts.
+- No tool ID, Planner-visible candidate, port, parameter schema, Adapter,
+  AnalysisPlan, PlanValidator, QueueWorkerRuntime, or scientific calculation is
+  changed. No new LLM call site exists; any future real call remains
+  DeepSeek-only through `DEEPSEEK_KEY`.
+
 ## 2026-08-01 Phase 10M-0 Workspace Audit Boundary
 
 - Registry `0.1.0` currently contains 53 registered tools, of which 38 are

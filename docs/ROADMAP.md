@@ -64,10 +64,14 @@ Phase 10M-0 sealed the first-class one-per-Job Workspace design and Phase
 and explicit historical projection. Phase 10M-2 archived the additive
 `/workspaces/{id}` metadata shell, nine-group navigation, exact active-panel
 URL state, Planner transition/history, and responsive state surfaces. Phase
-10M-3 implements strict `WorkspaceSelectionContext 1.0` URL/runtime behavior,
+10M-3 archived strict `WorkspaceSelectionContext 1.0` URL/runtime behavior,
 exact compatibility, panel subscriptions, Inspector navigation, explicit Pin,
-and typed unavailable identities. Typed scientific renderers and later
-composition/recovery remain reviewer-gated Phase 10M-4+ scope.
+and typed unavailable identities. Phase 10M-4 is the current reviewer-approved
+implementation: an exact application-owned renderer registry, metadata-first
+Artifact Gallery, existing scientific viewer adapters, M3 selection reuse, and
+bounded heavy-viewer lifecycle are present locally. Its implementation,
+completion-record, and queue-archive exact-SHA CI remain open. Report/Recipe
+composition and recovery remain reviewer-gated Phase 10M-5+ scope.
 
 ### Phase 10N - Professional Scientific Completion
 

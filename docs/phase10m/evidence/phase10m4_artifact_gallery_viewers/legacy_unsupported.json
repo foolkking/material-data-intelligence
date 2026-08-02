@@ -1,0 +1,11 @@
+{
+  "schemaVersion":"phase10m4.legacy-unsupported.v1",
+  "unknownContract":{"state":"CONTRACT_UNSUPPORTED","guessedRenderer":false,"payloadExecution":false},
+  "oldVersion":{"state":"ARTIFACT_CONTRACT_VERSION_UNSUPPORTED","latestWins":false,"payloadExecution":false},
+  "legacyHtml":{"state":"INERT_FALLBACK","htmlExecution":false,"javascriptExecution":false,"iframeExecution":false},
+  "missingPayload":{"state":"ARTIFACT_PAYLOAD_MISSING","sameNameSubstitution":false},
+  "oversized":{"state":"CAP_EXCEEDED or ARTIFACT_BUNDLE_CAP_EXCEEDED","silentTruncation":false},
+  "browser":{"legacyInert":{"chromium":true,"firefox":true,"webkit":true},"htmlInert":{"chromium":true,"firefox":true,"webkit":true}},
+  "safeDownload":"requires exact job/artifact scope and SHA-256",
+  "status":"PASS_LOCAL_BROWSER"
+}

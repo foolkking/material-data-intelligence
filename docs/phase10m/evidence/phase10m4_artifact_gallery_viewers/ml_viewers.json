@@ -1,0 +1,14 @@
+{
+  "schemaVersion":"phase10m4.viewer-case.v1",
+  "family":"Materials ML",
+  "contracts":["phase10k3.materials_ml_regression.v1/ml.regression_evaluation","phase10k3.materials_ml_uncertainty.v1/ml.uncertainty_evaluation","phase10k3.materials_ml_classification.v1/ml.classification_evaluation"],
+  "component":"MaterialsMlEvaluationPanel",
+  "classification":"PRODUCTION_ADAPTED_RENDERER",
+  "scientificAuthority":"backend-produced metrics, points, bins and class products",
+  "frontendRecomputation":["no MAE/RMSE/R2 recomputation","no uncertainty-bin recomputation","no positive-class inference","no target/unit guessing"],
+  "selection":{"classification":"NO_SELECTION_SUPPORT in content component","galleryArtifactSelection":true},
+  "accessibility":"metrics, tables and text diagnostics",
+  "browser":{"regression":{"chromium":true,"firefox":true,"webkit":true,"payloadRequestsPerBrowser":1},"uncertainty":"covered by component regression, not a separate M4 browser screenshot","classification":"covered by component regression, not a separate M4 browser screenshot"},
+  "fixtureAuthority":"current Phase 10K-5 checked-in regression Artifact replay",
+  "status":"REGRESSION_BROWSER_PASS_OTHER_VARIANTS_COMPONENT_REGRESSION"
+}
