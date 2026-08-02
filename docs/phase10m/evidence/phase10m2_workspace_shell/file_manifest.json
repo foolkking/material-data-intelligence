@@ -42,7 +42,7 @@
       "path": "browser_chromium/summary.json",
       "bytes": 2320,
       "hashMode": "lf_normalized_text",
-      "sha256": "3a700297dd3813cbff5fe885608725cec0e69f5724c9910d19fa75e7369386f4"
+      "sha256": "71841c35cb75923122c42f492e615a4fd7c8b943180e036c2216958265f480e0"
     },
     {
       "path": "browser_firefox/completed.png",
@@ -54,13 +54,13 @@
       "path": "browser_firefox/summary.json",
       "bytes": 1681,
       "hashMode": "lf_normalized_text",
-      "sha256": "c695189cff2884343a5ec1185ca5a669ff9d7483c1bcdcc7d4f4c0cdd767eed3"
+      "sha256": "df8c99c8d4c5000f0ea26f360c4259c7f827c289aeaa185585c4cd8ba6c27459"
     },
     {
       "path": "browser_matrix.json",
       "bytes": 6202,
       "hashMode": "lf_normalized_text",
-      "sha256": "06eca70f5556d6348504b48bc9ca4050106615779e08f26f1db33a4aa94a7342"
+      "sha256": "00d5fb44e69db42a8fb2b85980d3c39792fc78cd2ef0d12261a5c416f27e4b3f"
     },
     {
       "path": "browser_mobile/context_drawer.png",
@@ -70,9 +70,9 @@
     },
     {
       "path": "browser_mobile/inspector_sheet.png",
-      "bytes": 30200,
+      "bytes": 30197,
       "hashMode": "raw_binary",
-      "sha256": "d2d94a72098dda0de5006d47f6a35f1eb73b14c4a5e1b8f7f05a7c82baf03cb5"
+      "sha256": "c979e09fdf94e38181ebf3b77513733b5fb10a565597b833592fdc9461fc6f80"
     },
     {
       "path": "browser_mobile/summary.json",
@@ -84,7 +84,7 @@
       "path": "browser_semantic_contract.json",
       "bytes": 2418,
       "hashMode": "lf_normalized_text",
-      "sha256": "a6ec0aec362bb0afa39ce9e7fe7b17d345fcf2e70d760be1bfd4e35601effd8e"
+      "sha256": "4dd7728bb12cfc6a0792ffe17cda295bb49e07ea80ba44d729c2c5bf47a5fa2b"
     },
     {
       "path": "browser_webkit/completed.png",
@@ -96,7 +96,7 @@
       "path": "browser_webkit/summary.json",
       "bytes": 1680,
       "hashMode": "lf_normalized_text",
-      "sha256": "b32c3610071a6ed43ba5658f56c4cd1b496f00075c11546cc11a79a2b8912c19"
+      "sha256": "acb40ed854844fe30388a6e1785e68490dd2edc8dd6ee56e456c6927e7295c4d"
     },
     {
       "path": "completed_workspace.json",
@@ -156,7 +156,7 @@
       "path": "performance.json",
       "bytes": 714,
       "hashMode": "lf_normalized_text",
-      "sha256": "cdc9446090949f81b31ddbc4f839848ca35ff6183b53cdb93354e13aef3a4b41"
+      "sha256": "af3115d443de9e9e5dc767c62f2825b7bb5db70378ad2313262a6ed409c510e9"
     },
     {
       "path": "planner_transition.json",
@@ -208,9 +208,9 @@
     },
     {
       "path": "screenshots/chromium_mobile_inspector.png",
-      "bytes": 30161,
+      "bytes": 30165,
       "hashMode": "raw_binary",
-      "sha256": "b6308184429a66c563f5d90befaeaa5f4865036308f1e79b9decc9c0851f90b4"
+      "sha256": "3d0984a5391c67b852269d1337ce4e8fd6e0fda24aa871cf8b2aa64beadb05f4"
     },
     {
       "path": "screenshots/firefox_completed.png",

@@ -464,6 +464,10 @@ def test_phase10m2_postgres_redis_minio_workspace_shell_api_contract(
         minio.put_object(Bucket=minio_bucket, Key=minio_key, Body=payload, ContentType="application/json")
 
         repos = SqlAlchemyRepositoryBundle.create(engine)
+        monkeypatch.setattr(
+            "mdi_api.routers.workspaces._repositories",
+            lambda: repos,
+        )
         project_id = f"project_m2_{suffix}"
         job_id = f"job_m2_{suffix}"
         repos.projects.save({"id": project_id, "name": project_id, "createdBy": "user_local"})

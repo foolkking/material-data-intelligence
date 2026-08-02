@@ -300,7 +300,23 @@ function jsonResponse(value, status = 200) { return { status, contentType: "appl
 function validateFixture() { for (const key of Object.keys(STATES)) { const value = snapshot(key); if (value.panels.length !== 9 || value.sourceSummary.metadataOnly !== true) throw new Error(`${key}: invalid Workspace fixture`); } }
 
 async function writeJson(relative, value) { const destination = path.join(OUTPUT, relative); await mkdir(path.dirname(destination), { recursive: true }); await writeFile(destination, `${JSON.stringify(value, null, 2)}\n`, "utf8"); }
-async function compareSemantic(actual, expectedPath) { const expected = JSON.parse(await readFile(expectedPath, "utf8")); if (canonicalJson(actual) !== canonicalJson(expected)) throw new Error("M2 browser semantic contract differs from committed evidence"); }
+async function compareSemantic(actual, expectedPath) {
+  const expected = JSON.parse(await readFile(expectedPath, "utf8"));
+  // Development-server and browser startup times are measurements, not
+  // cross-machine semantic contract fields.
+  if (canonicalJson(comparableSemantic(actual)) !== canonicalJson(comparableSemantic(expected))) {
+    throw new Error("M2 browser semantic contract differs from committed evidence");
+  }
+}
+function comparableSemantic(value) {
+  if (Array.isArray(value)) return value.map(comparableSemantic);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value)
+      .filter(([key]) => key !== "initialRouteDevelopmentMs" && key !== "elapsedMs")
+      .map(([key, item]) => [key, comparableSemantic(item)]));
+  }
+  return value;
+}
 function canonicalJson(value) { if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`; if (value && typeof value === "object") return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(",")}}`; return JSON.stringify(value); }
 function argumentValue(name) { const index = process.argv.indexOf(name); return index >= 0 ? process.argv[index + 1] : null; }
 function startServer() { const command = process.platform === "win32" ? "cmd.exe" : "npm"; const args = process.platform === "win32" ? ["/c", "npm", "--prefix", "apps/web", "run", "dev", "--", "--hostname", "127.0.0.1", "--port", String(PORT)] : ["--prefix", "apps/web", "run", "dev", "--", "--hostname", "127.0.0.1", "--port", String(PORT)]; return spawn(command, args, { cwd: ROOT, env: { ...process.env, NEXT_PUBLIC_MDI_API_BASE_URL: API_ORIGIN }, stdio: "ignore" }); }

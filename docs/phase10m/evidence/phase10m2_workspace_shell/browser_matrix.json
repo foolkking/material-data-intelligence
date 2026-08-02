@@ -1,7 +1,7 @@
 {
   "chromium": {
     "browserName": "chromium",
-    "initialMetadataMs": 3494,
+    "initialMetadataMs": 3037,
     "navigationGroups": 9,
     "selectedUrl": "panel_scientific_result",
     "backForward": true,
@@ -47,19 +47,19 @@
     },
     "panelCapCases": {
       "1": {
-        "elapsedMs": 1204,
+        "elapsedMs": 1104,
         "apiPanelCount": 1,
         "serializedBytes": 3106,
         "domCount": 181
       },
       "8": {
-        "elapsedMs": 1201,
+        "elapsedMs": 1125,
         "apiPanelCount": 8,
         "serializedBytes": 11515,
         "domCount": 181
       },
       "32": {
-        "elapsedMs": 1209,
+        "elapsedMs": 1252,
         "apiPanelCount": 32,
         "serializedBytes": 40089,
         "domCount": 181
@@ -100,7 +100,7 @@
   },
   "firefox": {
     "browserName": "firefox",
-    "initialMetadataMs": 2348,
+    "initialMetadataMs": 2184,
     "navigationGroups": 9,
     "selectedUrl": "panel_scientific_result",
     "backForward": true,
@@ -171,7 +171,7 @@
   },
   "webkit": {
     "browserName": "webkit",
-    "initialMetadataMs": 1739,
+    "initialMetadataMs": 1563,
     "navigationGroups": 9,
     "selectedUrl": "panel_scientific_result",
     "backForward": true,

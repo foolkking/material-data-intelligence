@@ -747,6 +747,7 @@ small {
 
 .top-settings {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
   justify-content: flex-end;
@@ -2344,6 +2345,15 @@ pre {
   .mini-grid,
   .triple-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  .top-settings {
+    justify-content: flex-start;
+  }
+
+  .top-settings > .secondary {
+    flex: 1 1 160px;
+    max-width: 100%;
   }
 
   .resize-handle {
