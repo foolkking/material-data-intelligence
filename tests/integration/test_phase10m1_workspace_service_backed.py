@@ -38,7 +38,7 @@ def _required_postgres_url() -> str:
 def _schema_database_url(database_url: str, schema_name: str) -> str:
     url = make_url(database_url)
     query = dict(url.query)
-    query["options"] = f"-csearch_path={schema_name},public"
+    query["options"] = f"-csearch_path={schema_name}"
     return url.set(query=query).render_as_string(hide_password=False)
 
 
@@ -454,6 +454,17 @@ def test_phase10m2_postgres_redis_minio_workspace_shell_api_contract(
         config.set_main_option("script_location", "apps/api/alembic")
         alembic_upgrade(config, "head")
         engine = create_engine(schema_url, future=True)
+        db_inspector = inspect(engine)
+        assert {
+            "scientific_workspaces",
+            "workspace_panels",
+            "workspace_layout_revisions",
+        }.issubset(db_inspector.get_table_names())
+        with engine.connect() as connection:
+            assert connection.execute(text("SELECT current_schema()")).scalar_one() == schema_name
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
+                "0007_phase10m1_workspace_domain"
+            )
         with engine.begin() as connection:
             connection.execute(text("CREATE TABLE IF NOT EXISTS organizations (id VARCHAR(64) PRIMARY KEY, name VARCHAR(160) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
             connection.execute(text("CREATE TABLE IF NOT EXISTS users (id VARCHAR(64) PRIMARY KEY, email VARCHAR(320) NOT NULL UNIQUE, display_name VARCHAR(160) NOT NULL, is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
@@ -481,7 +492,8 @@ def test_phase10m2_postgres_redis_minio_workspace_shell_api_contract(
         try:
             before = client.get(f"/projects/{project_id}/workspaces")
             candidates = client.get(f"/projects/{project_id}/analysis-jobs")
-            assert before.status_code == candidates.status_code == 200
+            assert before.status_code == 200, before.json()
+            assert candidates.status_code == 200, candidates.json()
             assert before.json()["items"] == []
             assert candidates.json()["items"][0]["jobId"] == job_id
             assert client.get("/workspaces/workspace_missing").status_code == 404
