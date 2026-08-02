@@ -47,6 +47,8 @@ async function main() {
 async function runDesktop(browser, browserName, artifacts) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, reducedMotion: "reduce", acceptDownloads: true });
   const page = await context.newPage();
+  const webglPreflight = await probeWebgl(page);
+  if (!webglPreflight.available) throw new Error(`${browserName}: WebGL preflight unavailable`);
   await installLifecycleAudit(page);
   const audit = attachAudit(page), calls = [];
   await installApiFixture(page, calls, artifacts);
@@ -109,7 +111,7 @@ async function runDesktop(browser, browserName, artifacts) {
   const overflow = await page.evaluate(() => ({ body: document.body.scrollWidth - document.body.clientWidth, root: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
   if (audit.consoleErrors.length || audit.pageErrors.length || audit.failedResponses.length || audit.externalRequests.length) throw new Error(`${browserName}: browser audit failed ${JSON.stringify(audit)}`);
   await context.close();
-  return { browserName, metadataFirst: true, artifactCount: artifacts.length, exactReferenceNavigation, partialIsolation: { dependencyOutcome: "PARTIAL_RESULTS", panelState: "PARTIAL", warningVisible: true, successfulArtifactsRemainOpenable: Object.values(cases).every((item) => item.rendererReady) }, cases, contextLoss, lifecycleAudit: { baseline: lifecycleBaseline, peak: lifecyclePeak, final: lifecycleFinal, growth: lifecycleGrowth }, legacyInert: true, htmlInert: true, heavySwitchCycles: lifecycleCycles, fullLifecycleGateBrowser: "chromium", maxActiveCanvases: maxCanvases, remainingCanvases, overflow, contentRequests: calls.filter((call) => call.includes("/content")).length, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, externalRequests: audit.externalRequests };
+  return { browserName, webglPreflight, metadataFirst: true, artifactCount: artifacts.length, exactReferenceNavigation, partialIsolation: { dependencyOutcome: "PARTIAL_RESULTS", panelState: "PARTIAL", warningVisible: true, successfulArtifactsRemainOpenable: Object.values(cases).every((item) => item.rendererReady) }, cases, contextLoss, lifecycleAudit: { baseline: lifecycleBaseline, peak: lifecyclePeak, final: lifecycleFinal, growth: lifecycleGrowth }, legacyInert: true, htmlInert: true, heavySwitchCycles: lifecycleCycles, fullLifecycleGateBrowser: "chromium", maxActiveCanvases: maxCanvases, remainingCanvases, overflow, contentRequests: calls.filter((call) => call.includes("/content")).length, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, externalRequests: audit.externalRequests };
 }
 
 async function exerciseExactReferenceNavigation(page, artifact, browserName) {
@@ -387,8 +389,18 @@ function interpretationEvidenceFixture(artifact) {
 function validateFixtures(artifacts) { if (artifacts.length < 16 || new Set(artifacts.map((item) => item.id)).size !== artifacts.length || artifacts.some((item) => item.sizeBytes !== item.bytes.length)) throw new Error("M4 artifact fixtures are invalid"); }
 function browserLaunchOptions(name) {
   return name === "chromium"
-    ? { headless: true, args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"] }
+    ? { headless: true, args: ["--no-sandbox", "--use-gl=angle", "--use-angle=swiftshader-webgl", "--enable-unsafe-swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--disable-background-networking"] }
     : { headless: true };
+}
+async function probeWebgl(page) {
+  return page.evaluate(() => {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("webgl2") || canvas.getContext("webgl");
+    const kind = context instanceof WebGL2RenderingContext ? "webgl2" : context ? "webgl" : null;
+    context?.getExtension("WEBGL_lose_context")?.loseContext();
+    canvas.remove();
+    return { available: Boolean(context), kind };
+  });
 }
 function attachAudit(page) { const audit = { consoleErrors: [], pageErrors: [], failedResponses: [], externalRequests: [] }; page.on("console", (message) => { if (message.type() === "error") audit.consoleErrors.push(message.text()); }); page.on("pageerror", (error) => audit.pageErrors.push(error.message)); page.on("response", (response) => { if (response.status() >= 400) audit.failedResponses.push(`${response.status()} ${response.url()}`); }); page.on("request", (request) => { const url = new URL(request.url()); if (!["127.0.0.1", "localhost"].includes(url.hostname)) audit.externalRequests.push(request.url()); }); return audit; }
 function corsHeaders() { return { "access-control-allow-origin": ORIGIN, "access-control-allow-methods": "GET,OPTIONS", "access-control-allow-headers": "content-type", "access-control-expose-headers": "content-length,x-content-length-validated,x-content-type-options" }; }

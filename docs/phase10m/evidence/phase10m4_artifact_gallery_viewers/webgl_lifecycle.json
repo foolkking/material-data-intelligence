@@ -10,6 +10,7 @@
   "duplicateCanvas":0,
   "leaseParallelAcquireRejected":true,
   "chromiumEvidenceBackend":"Playwright Chromium SwiftShader WebGL",
+  "webglPreflight":{"chromium":"webgl2","firefox":"webgl2","webkit":"webgl2"},
   "cleanup":["AbortController","animation/playback owner","timers","ResizeObserver","event listeners","controls","geometry","material","texture","render target","worker","WebGLRenderer","canvas"],
   "webglContextGrowth":0,
   "instrumentedLifecycle":{

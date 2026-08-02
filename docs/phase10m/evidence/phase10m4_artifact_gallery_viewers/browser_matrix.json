@@ -1,6 +1,10 @@
 {
   "chromium": {
     "browserName": "chromium",
+    "webglPreflight": {
+      "available": true,
+      "kind": "webgl2"
+    },
     "metadataFirst": true,
     "artifactCount": 20,
     "exactReferenceNavigation": {
@@ -213,6 +217,10 @@
   },
   "firefox": {
     "browserName": "firefox",
+    "webglPreflight": {
+      "available": true,
+      "kind": "webgl2"
+    },
     "metadataFirst": true,
     "artifactCount": 20,
     "exactReferenceNavigation": {
@@ -425,6 +433,10 @@
   },
   "webkit": {
     "browserName": "webkit",
+    "webglPreflight": {
+      "available": true,
+      "kind": "webgl2"
+    },
     "metadataFirst": true,
     "artifactCount": 20,
     "exactReferenceNavigation": {

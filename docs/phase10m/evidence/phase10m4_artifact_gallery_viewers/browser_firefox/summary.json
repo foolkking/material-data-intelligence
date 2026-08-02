@@ -1,5 +1,9 @@
 {
   "browserName": "firefox",
+  "webglPreflight": {
+    "available": true,
+    "kind": "webgl2"
+  },
   "metadataFirst": true,
   "artifactCount": 20,
   "exactReferenceNavigation": {
