@@ -96,6 +96,40 @@ def test_phase10m5_postgres_redis_minio_report_recipe_composition(
             "sizeBytes": len(payload), "contentType": "application/json", "contentHash": checksum,
             "sha256": checksum, "metadata": {"toolId": "table.numeric_summary", "toolVersion": "1.0", "adapterVersion": "1.0", "rawPayload": "PRIVATE_M5_PAYLOAD"},
         })
+        foreign_project_id = f"project_foreign_{suffix}"
+        foreign_dataset_id = f"dataset_foreign_{suffix}"
+        foreign_plan_id = f"plan_foreign_{suffix}"
+        foreign_job_id = f"job_foreign_{suffix}"
+        foreign_call_id = f"call_foreign_{suffix}"
+        foreign_artifact_id = f"artifact_foreign_{suffix}"
+        repos.projects.save({"id": foreign_project_id, "name": "Foreign M5 service", "createdBy": "user_local"})
+        repos.datasets.save({"id": foreign_dataset_id, "projectId": foreign_project_id, "name": "Foreign M5 data", "status": "profile_ready", "createdBy": "user_local"})
+        foreign_plan = {
+            **plan,
+            "datasetId": foreign_dataset_id,
+            "profileId": f"profile_foreign_{suffix}",
+            "steps": [{
+                **plan["steps"][0],
+                "inputRefs": [{
+                    "refType": "normalized_object", "ref": "table_foreign",
+                    "datasetId": foreign_dataset_id, "objectId": "table_foreign", "objectType": "DataFrame",
+                }],
+            }],
+        }
+        repos.analysis_plans.save_plan({
+            "id": foreign_plan_id, "projectId": foreign_project_id, "datasetId": foreign_dataset_id,
+            "profileId": f"profile_foreign_{suffix}", "analysisPlan": foreign_plan,
+            "planHash": compute_plan_hash(foreign_plan), "validationStatus": "validated", "createdBy": "user_local",
+        })
+        repos.jobs.save({"id": foreign_job_id, "projectId": foreign_project_id, "datasetId": foreign_dataset_id, "planId": foreign_plan_id, "status": "completed", "kind": "analysis", "createdBy": "user_local"})
+        repos.tool_calls.save({"id": foreign_call_id, "jobId": foreign_job_id, "stepId": "step_summary", "toolId": "table.numeric_summary", "status": "completed", "params": {"columns": ["value"]}})
+        repos.artifacts.save({
+            "id": foreign_artifact_id, "projectId": foreign_project_id, "datasetId": foreign_dataset_id,
+            "jobId": foreign_job_id, "toolCallId": foreign_call_id, "type": "table_json", "version": "1",
+            "name": "foreign-table.json", "storageKey": object_key, "storageProvider": "minio", "bucket": bucket,
+            "sizeBytes": len(payload), "contentType": "application/json", "contentHash": checksum,
+            "sha256": checksum, "metadata": {"toolId": "table.numeric_summary", "toolVersion": "1.0", "adapterVersion": "1.0"},
+        })
         workspace_snapshot, created = WorkspaceProjectionService(repos).project_job(source_job_id=job_id, created_by="user_local", title="M5 service Workspace")
         assert created is True
         workspace = workspace_snapshot.body["workspace"]
@@ -158,7 +192,12 @@ def test_phase10m5_postgres_redis_minio_report_recipe_composition(
             assert recipe.json()["recipe"]["executionAuthorized"] is False
             assert export_json.content.endswith(b"\n") and export_markdown.content.endswith(b"\n")
 
-            injected = {**request, "selectedArtifactIds": [f"artifact_foreign_{suffix}"], "itemOrder": [f"artifact_foreign_{suffix}"]}
+            injected = {
+                **request,
+                "selectedArtifactIds": [foreign_artifact_id],
+                "itemOrder": [foreign_artifact_id],
+                "captions": [],
+            }
             rejected = client.post(f"/workspaces/{workspace_id}/report-compositions/preview", json=injected)
             assert rejected.status_code == 404
             assert rejected.json()["detail"]["code"] == "REPORT_SOURCE_NOT_FOUND"
