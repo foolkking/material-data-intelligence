@@ -1,0 +1,17 @@
+{
+  "authority": [
+    "persisted Job",
+    "persisted ToolCall",
+    "dependency execution",
+    "Artifact metadata",
+    "interpretation record"
+  ],
+  "automaticRerun": 0,
+  "boundedRevalidation": true,
+  "jobGrowth": 0,
+  "planGrowth": 0,
+  "queueGrowth": 0,
+  "redisSoleAuthority": false,
+  "toolCallGrowth": 0,
+  "visibilityRevalidation": true
+}

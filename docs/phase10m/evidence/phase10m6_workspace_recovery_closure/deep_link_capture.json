@@ -1,0 +1,10 @@
+{
+  "invalidExplicitState": "typed error; no fallback",
+  "queryAuthority": [
+    "panel",
+    "versioned exact selection"
+  ],
+  "route": "/workspaces/{workspaceId}",
+  "transientStateExcluded": true,
+  "urlSelectionCapBytes": 2048
+}

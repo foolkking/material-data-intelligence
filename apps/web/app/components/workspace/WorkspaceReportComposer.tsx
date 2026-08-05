@@ -33,7 +33,7 @@ const FILTER_ROLE: Record<Exclude<SourceFilter, "ALL">, ReportSourceRole> = {
   PROVENANCE: "REPORT_PROVENANCE_SOURCE",
 };
 
-export function WorkspaceReportComposer({ workspace }: { workspace: ScientificWorkspace }) {
+export function WorkspaceReportComposer({ workspace, onDraftDirtyChange }: { workspace: ScientificWorkspace; onDraftDirtyChange?: (dirty: boolean) => void }) {
   const [inventory, setInventory] = useState<ReportSourceInventory | null>(null);
   const [history, setHistory] = useState<ReportHistoryItem[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -52,6 +52,7 @@ export function WorkspaceReportComposer({ workspace }: { workspace: ScientificWo
   const submissionSequence = useRef(0);
   const mobileSourceTriggerRef = useRef<HTMLButtonElement | null>(null);
   const mobileSourceCloseRef = useRef<HTMLButtonElement | null>(null);
+  const [savedDraftSignature, setSavedDraftSignature] = useState(() => JSON.stringify({ title: `${workspace.title} report`, selectedIds: [], captions: {} }));
 
   const refreshHistory = useCallback(async (signal?: AbortSignal) => {
     const result = await listReportCompositions(workspace.workspaceId, signal);
@@ -105,6 +106,23 @@ export function WorkspaceReportComposer({ workspace }: { workspace: ScientificWo
     if (filter === "ALL") return true;
     return source.role === FILTER_ROLE[filter];
   }), [filter, inventory]);
+
+  const draftSignature = useMemo(() => JSON.stringify({ title, selectedIds, captions }), [captions, selectedIds, title]);
+  const draftDirty = draftSignature !== savedDraftSignature;
+
+  useEffect(() => {
+    onDraftDirtyChange?.(draftDirty);
+    const warn = (event: BeforeUnloadEvent) => {
+      if (!draftDirty) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => {
+      window.removeEventListener("beforeunload", warn);
+      onDraftDirtyChange?.(false);
+    };
+  }, [draftDirty, onDraftDirtyChange]);
 
   const requestPayload = useCallback((): ReportCompositionRequest => {
     const panels: string[] = [];
@@ -201,6 +219,7 @@ export function WorkspaceReportComposer({ workspace }: { workspace: ScientificWo
       if (controller.signal.aborted) return;
       await refreshHistory(controller.signal);
       setActiveReportId(result.reportId);
+      setSavedDraftSignature(draftSignature);
       setState("READY");
       setMessage(`${result.outcome}; ${result.idempotentReplay ? "idempotent replay" : "immutable pair saved"}`);
       await openHistory(result.reportId);
@@ -268,6 +287,10 @@ export function WorkspaceReportComposer({ workspace }: { workspace: ScientificWo
       {(["COMPOSE", "PREVIEW", "HISTORY"] as ComposerView[]).map((item) => <button key={item} type="button" role="tab" aria-selected={view === item} onClick={() => setView(item)}>{item.charAt(0) + item.slice(1).toLowerCase()}</button>)}
     </div>
     <p className={`workspace-report-status tone-${state === "FAILED" ? "danger" : "muted"}`} role={state === "FAILED" ? "alert" : "status"}>{message}</p>
+    <p className="workspace-report-draft-notice" role="note">
+      {draftDirty ? "Unsaved report draft. " : "Report draft is session-only. "}
+      Draft is not saved until Finalize. Refreshing or closing this page discards the unfinalized draft.
+    </p>
 
     {view === "COMPOSE" ? <div className="workspace-report-compose-grid">
       {mobileSourcesOpen ? <div className="workspace-report-mobile-backdrop" onMouseDown={(event) => { if (event.currentTarget === event.target) { setMobileSourcesOpen(false); mobileSourceTriggerRef.current?.focus(); } }} /> : null}

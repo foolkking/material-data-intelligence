@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2026-08-05 - Phase 10M-6 Local Implementation
+
+- Added explicit Workspace Save over the existing durable contract with
+  canonical dirty comparison, no-op suppression, quoted ETag/If-Match,
+  abortable submission, accessible status, conflict preservation/confirmation,
+  and revision-cap handling.
+- Added bounded nonterminal Job revalidation, visibility recovery, exact
+  URL/persisted fallback precedence, stale response suppression, and retained
+  partial/stale/missing/historical presentation without rerun or rebinding.
+- Added session-only Report draft disclosure/navigation warning, finalized
+  Report/Recipe recovery, mobile focus traps/return, 44px controls, responsive
+  wrapping, first-time guidance, service-backed test, browser runner, and
+  hashed evidence.
+- No database, migration, public endpoint, dependency, lockfile, contract,
+  scientific calculation, execution authority, or LLM call site was added.
+
 ## 2026-08-05 - Phase 10M-5 Local Implementation
 
 - Added four strict composition contracts, exact source eligibility over all 42

@@ -73,7 +73,7 @@ Execution authority: each phase requires a separate reviewer prompt.
 - **Entry:** archived 10M-5.
 - **Exit:** exact-SHA lifecycle and 10M-7 reviewer gate.
 - **Non-scope:** collaboration/tenancy, distributed editing, production-capacity claims.
-- **Acceptance IDs:** `M6-A01` through `M6-A08`.
+- **Acceptance IDs:** `M6-A01` `EXPLICIT_WORKSPACE_SAVE_AND_CONCURRENCY`; `M6-A02` `DETERMINISTIC_RELOAD_AND_LAYOUT_RESTORATION`; `M6-A03` `DEEP_LINK_REFRESH_AND_HISTORY_NAVIGATION`; `M6-A04` `JOB_SOURCE_PARTIAL_AND_HISTORICAL_RECOVERY`; `M6-A05` `REPORT_RECIPE_RECOVERY_AND_DRAFT_HONESTY`; `M6-A06` `USER_FACING_STATES_LONG_CONTENT_AND_TERMINOLOGY`; `M6-A07` `RESPONSIVE_MOBILE_AND_ACCESSIBILITY_CLOSURE`; `M6-A08` `PERFORMANCE_SECURITY_EVIDENCE_AND_VERIFIED_LIFECYCLE`.
 
 ## Phase 10M-7: Workspace Integration + Evidence Closure
 

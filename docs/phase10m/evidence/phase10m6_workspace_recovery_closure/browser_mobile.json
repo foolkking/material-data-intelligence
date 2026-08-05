@@ -1,0 +1,30 @@
+{
+  "browser": "chromium",
+  "browserVersion": "129.0.6668.29",
+  "viewport": [
+    390,
+    844
+  ],
+  "route": "/workspaces/workspace_report?panel=panel_report",
+  "commit": "LOCAL_WORKTREE",
+  "captureTime": "2026-08-05T14:31:01.463Z",
+  "captureMode": "LOCAL_LIVE_REPLAY",
+  "explicitSave": true,
+  "sourceSheet": true,
+  "focusRestored": true,
+  "preview": true,
+  "history": true,
+  "initialArtifactPayloadRequests": 0,
+  "reportPreviewWebglContexts": 0,
+  "overflow": {
+    "body": 0,
+    "root": 0
+  },
+  "minTouchTarget": 44,
+  "expectedNegativeResponses": [],
+  "expectedConsoleErrors": [],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failedResponses": [],
+  "externalRequests": []
+}

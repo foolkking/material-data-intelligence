@@ -71,11 +71,14 @@ application-owned renderer registry, metadata-first Artifact Gallery, existing
 scientific viewer adapters, M3 selection reuse, and bounded heavy-viewer
 lifecycle at corrected implementation `6287785c`; exact-SHA CI run
 `30751689618` passed Unit, Frontend/browser/build, and PostgreSQL/Redis/MinIO
-with zero skipped service tests. Reviewer-authorized Phase 10M-5 now implements
-strict composition contracts, exact source projection, deterministic Reports,
-non-executable Plan 0.1/0.2 Recipes, immutable existing-table persistence,
-Workspace UI/history, and canonical JSON/Markdown export; its exact-SHA
-lifecycle is in progress. Recovery remains reviewer-gated Phase 10M-6 scope.
+with zero skipped service tests. Phase 10M-5 is archived at
+`56bec17792fff86a99c3d280ab754a69fff6c51b` after corrected implementation,
+completion, and queue-archive exact-SHA CI. Reviewer-authorized Phase 10M-6
+now implements explicit Workspace Save, conflict/revision-cap UX,
+deterministic reload and exact navigation, persisted Job/source and finalized
+delivery recovery, honest session-only drafts, and responsive/accessibility/
+lifecycle closure. Its implementation lifecycle is in progress; Phase 10M-7
+remains reviewer-gated.
 
 ### Phase 10N - Professional Scientific Completion
 

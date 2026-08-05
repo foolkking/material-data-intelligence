@@ -1,5 +1,19 @@
 # TASK_BOARD
 
+## 2026-08-05 Phase 10M-6 In Progress
+
+- [x] Verify M5 corrected implementation/completion/archive and admit M6 as
+  the sole active executable task.
+- [x] Complete state-ownership, Save/reload/recovery, API, Job/source,
+  Report/Recipe, responsive, accessibility, cancellation, and lifecycle audit.
+- [x] Implement explicit Save, no-op, conflict/cap, bounded Job observation,
+  draft honesty, mobile/focus, tests, browser runner, evidence, and docs.
+- [x] Pass focused frontend `34 passed`, full frontend `411 passed`, evidence `4 passed`, and Chromium/
+  Firefox/WebKit/390x844 local browser replay.
+- [ ] Pass full backend/frontend/typecheck/build/local integrity regression.
+- [ ] Pass implementation, completion-record, and queue-archive exact-SHA CI.
+- [ ] Keep Phase 10M-7 reviewer-gated and absent from the executable queue.
+
 ## 2026-08-05 Phase 10M-5 In Progress
 
 - [x] Verify M4 archive and admit M5 as the sole active task.

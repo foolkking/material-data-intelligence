@@ -1,0 +1,77 @@
+{
+  "duplicate": 0,
+  "expected": 8,
+  "extra": 0,
+  "implemented": 8,
+  "items": [
+    {
+      "evidence": [
+        "save_success_capture.json",
+        "save_conflict_capture.json",
+        "revision_cap_capture.json"
+      ],
+      "id": "M6-A01",
+      "requirement": "EXPLICIT_WORKSPACE_SAVE_AND_CONCURRENCY"
+    },
+    {
+      "evidence": [
+        "reload_capture.json",
+        "state_ownership_inventory.md"
+      ],
+      "id": "M6-A02",
+      "requirement": "DETERMINISTIC_RELOAD_AND_LAYOUT_RESTORATION"
+    },
+    {
+      "evidence": [
+        "deep_link_capture.json",
+        "back_forward_capture.json"
+      ],
+      "id": "M6-A03",
+      "requirement": "DEEP_LINK_REFRESH_AND_HISTORY_NAVIGATION"
+    },
+    {
+      "evidence": [
+        "running_job_recovery_capture.json",
+        "partial_recovery_capture.json",
+        "historical_job_capture.json"
+      ],
+      "id": "M6-A04",
+      "requirement": "JOB_SOURCE_PARTIAL_AND_HISTORICAL_RECOVERY"
+    },
+    {
+      "evidence": [
+        "report_recipe_recovery_capture.json",
+        "draft_loss_behavior.md"
+      ],
+      "id": "M6-A05",
+      "requirement": "REPORT_RECIPE_RECOVERY_AND_DRAFT_HONESTY"
+    },
+    {
+      "evidence": [
+        "accessibility_summary.md",
+        "browser_matrix.md"
+      ],
+      "id": "M6-A06",
+      "requirement": "USER_FACING_STATES_LONG_CONTENT_AND_TERMINOLOGY"
+    },
+    {
+      "evidence": [
+        "mobile_metrics.json",
+        "screenshots/mobile_report.png"
+      ],
+      "id": "M6-A07",
+      "requirement": "RESPONSIVE_MOBILE_AND_ACCESSIBILITY_CLOSURE"
+    },
+    {
+      "evidence": [
+        "performance.json",
+        "security_summary.md",
+        "service_backed_summary.md",
+        "manifest.json"
+      ],
+      "id": "M6-A08",
+      "requirement": "PERFORMANCE_SECURITY_EVIDENCE_AND_VERIFIED_LIFECYCLE"
+    }
+  ],
+  "missing": 0
+}

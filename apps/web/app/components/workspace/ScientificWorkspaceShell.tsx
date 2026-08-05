@@ -43,8 +43,16 @@ import {
 } from "./workspace-selection-runtime";
 import { WorkspaceArtifactGallery } from "./WorkspaceArtifactGallery";
 import { WorkspaceReportComposer } from "./WorkspaceReportComposer";
+import {
+  durableDraftFromWorkspace,
+  workspaceDraftIsDirty,
+  workspaceNeedsObservation,
+  workspacePatchForDraft,
+  type WorkspaceDurableDraft,
+} from "./workspace-recovery-model";
 
 type LoadState = "LOADING" | "READY" | "NOT_FOUND" | "ERROR";
+type SaveState = "SAVED" | "DIRTY" | "SAVING" | "CONFLICT" | "CAP_EXCEEDED" | "ERROR";
 
 export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string }) {
   const [snapshot, setSnapshot] = useState<WorkspaceSnapshot | null>(null);
@@ -61,10 +69,37 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
   const [selectionMessage, setSelectionMessage] = useState("No canonical selection is active.");
   const [deliveries, setDeliveries] = useState<Record<string, WorkspaceSelectionDelivery>>({});
   const [pinState, setPinState] = useState<"IDLE" | "SAVING" | "SAVED" | "CONFLICT" | "ERROR">("IDLE");
+  const [durableBase, setDurableBase] = useState<WorkspaceDurableDraft | null>(null);
+  const [durableDraft, setDurableDraft] = useState<WorkspaceDurableDraft | null>(null);
+  const [saveState, setSaveState] = useState<SaveState>("SAVED");
+  const [saveMessage, setSaveMessage] = useState("Workspace is saved.");
+  const [conflictSnapshot, setConflictSnapshot] = useState<WorkspaceSnapshot | null>(null);
+  const [conflictEtag, setConflictEtag] = useState<string | null>(null);
+  const [reportDraftDirty, setReportDraftDirty] = useState(false);
+  const [recoveryNotice, setRecoveryNotice] = useState<string | null>(null);
+  const [recoveryError, setRecoveryError] = useState<string | null>(null);
   const inspectorCloseRef = useRef<HTMLButtonElement | null>(null);
   const inspectorTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const contextCloseRef = useRef<HTMLButtonElement | null>(null);
+  const contextTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const saveAlertRef = useRef<HTMLParagraphElement | null>(null);
   const requestIdRef = useRef(0);
   const selectionStoreRef = useRef<WorkspaceSelectionStore | null>(null);
+  const saveControllerRef = useRef<AbortController | null>(null);
+  const revalidateControllerRef = useRef<AbortController | null>(null);
+  const revalidateNowRef = useRef<() => void>(() => undefined);
+
+  const workspaceDirty = Boolean(durableDraft && durableBase && workspaceDraftIsDirty(durableDraft, durableBase));
+  const workspaceTitleValid = Boolean(durableDraft?.title.trim());
+  const workspaceDirtyRef = useRef(workspaceDirty);
+  workspaceDirtyRef.current = workspaceDirty;
+
+  useEffect(() => {
+    if (!workspaceDirty && saveState === "DIRTY") {
+      setSaveState("SAVED");
+      setSaveMessage("Workspace is saved.");
+    }
+  }, [saveState, workspaceDirty]);
 
   const applyUrlState = useCallback((nextSnapshot: WorkspaceSnapshot) => {
     const requested = new URLSearchParams(window.location.search).get("panel");
@@ -109,6 +144,13 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
         if (requestId !== requestIdRef.current || !response.data) return;
         setSnapshot(response.data);
         setEtag(response.etag);
+        const base = durableDraftFromWorkspace(response.data.workspace);
+        setDurableBase(base);
+        setDurableDraft(base);
+        setSaveState("SAVED");
+        setSaveMessage("Workspace is saved.");
+        setConflictSnapshot(null);
+        setConflictEtag(null);
         applyUrlState(response.data);
         setLoadState("READY");
       })
@@ -123,6 +165,11 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
 
   useEffect(() => load(), [load]);
 
+  useEffect(() => () => {
+    saveControllerRef.current?.abort();
+    revalidateControllerRef.current?.abort();
+  }, []);
+
   useEffect(() => {
     const onPopState = () => {
       if (snapshot) applyUrlState(snapshot);
@@ -130,6 +177,63 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, [applyUrlState, snapshot]);
+
+  useEffect(() => {
+    if (!snapshot || !etag || !workspaceNeedsObservation(snapshot)) return;
+    let disposed = false;
+    const revalidate = () => {
+      if (disposed || document.visibilityState === "hidden") return;
+      revalidateControllerRef.current?.abort();
+      const controller = new AbortController();
+      revalidateControllerRef.current = controller;
+      void getWorkspace(workspaceId, { etag, signal: controller.signal }).then((response) => {
+        if (disposed || controller.signal.aborted || !response.data) return;
+        setRecoveryError(null);
+        const next = response.data;
+        if (workspaceDirtyRef.current && durableBase && next.workspace.revision !== snapshot.workspace.revision) {
+          setConflictSnapshot(next);
+          setConflictEtag(response.etag);
+          setSaveState("CONFLICT");
+          setSaveMessage(`Server revision ${next.workspace.revision} changed while local edits remain based on revision ${snapshot.workspace.revision}.`);
+          return;
+        }
+        const previousArtifacts = snapshot.workspace.artifactCount;
+        setSnapshot(next);
+        setEtag(response.etag);
+        if (!workspaceDirtyRef.current) {
+          const base = durableDraftFromWorkspace(next.workspace);
+          setDurableBase(base);
+          setDurableDraft(base);
+        }
+        if (!workspaceNeedsObservation(next)) setRecoveryNotice("Job reached a terminal persisted state.");
+        else if (next.workspace.artifactCount > previousArtifacts) setRecoveryNotice("A persisted Artifact became available.");
+      }).catch((error: WorkspaceApiError | Error) => {
+        if (disposed || controller.signal.aborted) return;
+        setRecoveryError(`Recovery revalidation failed. ${boundedErrorMessage(error.message)} Previously validated panels remain available.`);
+      });
+    };
+    revalidateNowRef.current = revalidate;
+    const timer = window.setInterval(revalidate, 4000);
+    const onVisibility = () => { if (document.visibilityState === "visible") revalidate(); };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      disposed = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibility);
+      revalidateControllerRef.current?.abort();
+      revalidateNowRef.current = () => undefined;
+    };
+  }, [durableBase, etag, snapshot, workspaceId]);
+
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => {
+      if (!workspaceDirty && !reportDraftDirty) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [reportDraftDirty, workspaceDirty]);
 
   useEffect(() => {
     if (!snapshot) return;
@@ -171,17 +275,96 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [inspectorOpen]);
 
+  useEffect(() => {
+    if (!mobileContextOpen) return;
+    contextCloseRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileContextOpen(false);
+        contextTriggerRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileContextOpen]);
+
   const visiblePanels = useMemo(() => (snapshot ? orderedVisiblePanels(snapshot) : []), [snapshot]);
   const activePanel = visiblePanels.find((panel) => panel.panelId === activePanelId) || null;
 
   const selectPanel = useCallback((panel: WorkspacePanel) => {
+    if (reportDraftDirty && activePanel?.panelKind === "REPORT" && panel.panelId !== activePanel.panelId
+      && !window.confirm("Leave Report and discard the unfinalized session draft?")) return;
     const next = new URL(window.location.href);
     next.searchParams.set("panel", panel.panelId);
     window.history.pushState({ panelId: panel.panelId }, "", next);
     setInvalidPanelId(null);
     setActivePanelId(panel.panelId);
+    setDurableDraft((current) => current ? Object.freeze({ ...current, activePanelId: panel.panelId }) : current);
+    setSaveState((current) => current === "CAP_EXCEEDED" || current === "CONFLICT" ? current : "DIRTY");
+    setSaveMessage("Unsaved Workspace changes.");
     setMobileContextOpen(false);
-  }, []);
+  }, [activePanel, reportDraftDirty]);
+
+  const saveWorkspace = useCallback(() => {
+    if (!snapshot || !etag || !durableBase || !durableDraft || snapshot.workspace.readOnly || saveState === "SAVING") return;
+    const patch = workspacePatchForDraft(durableDraft, durableBase);
+    if (!patch) {
+      setSaveState("SAVED");
+      setSaveMessage("No durable changes to save.");
+      return;
+    }
+    saveControllerRef.current?.abort();
+    const controller = new AbortController();
+    saveControllerRef.current = controller;
+    setSaveState("SAVING");
+    setSaveMessage("Saving Workspace.");
+    void patchWorkspace(snapshot.workspace.workspaceId, etag, patch, controller.signal).then((response) => {
+      if (controller.signal.aborted || !response.data) return;
+      const base = durableDraftFromWorkspace(response.data.workspace);
+      setSnapshot(response.data);
+      setEtag(response.etag);
+      setDurableBase(base);
+      setDurableDraft(base);
+      setConflictSnapshot(null);
+      setConflictEtag(null);
+      setSaveState("SAVED");
+      setSaveMessage(`Workspace saved at revision ${response.data.workspace.revision}.`);
+    }).catch((error: WorkspaceApiError | Error) => {
+      if (controller.signal.aborted) return;
+      const code = "detail" in error ? error.detail?.code : null;
+      if (("status" in error && error.status === 412) || code === "REVISION_MISMATCH") {
+        setSaveState("CONFLICT");
+        setSaveMessage(`Revision conflict. Local edits from revision ${snapshot.workspace.revision} are preserved while the current server revision is loaded.`);
+        void getWorkspace(snapshot.workspace.workspaceId, { signal: controller.signal }).then((latest) => {
+          if (!controller.signal.aborted && latest.data) {
+            setConflictSnapshot(latest.data);
+            setConflictEtag(latest.etag);
+          }
+        }).catch(() => undefined);
+      } else if (code === "REVISION_CAP_EXCEEDED") {
+        setSaveState("CAP_EXCEEDED");
+        setSaveMessage("Layout revision cap reached. Unsaved edits are preserved; the Workspace remains readable.");
+      } else {
+        setSaveState("ERROR");
+        setSaveMessage(`Save failed. ${boundedErrorMessage(error.message)} Local edits are preserved.`);
+      }
+      window.setTimeout(() => saveAlertRef.current?.focus(), 0);
+    });
+  }, [durableBase, durableDraft, etag, saveState, snapshot]);
+
+  const reloadServerVersion = useCallback(() => {
+    if (!conflictSnapshot || !window.confirm("Discard local Workspace edits and reload the current server revision?")) return;
+    const base = durableDraftFromWorkspace(conflictSnapshot.workspace);
+    setSnapshot(conflictSnapshot);
+    setDurableBase(base);
+    setDurableDraft(base);
+    setEtag(conflictEtag);
+    setConflictSnapshot(null);
+    setConflictEtag(null);
+    setSaveState("SAVED");
+    setSaveMessage(`Server revision ${conflictSnapshot.workspace.revision} loaded. Local edits were discarded by explicit confirmation.`);
+    applyUrlState(conflictSnapshot);
+  }, [applyUrlState, conflictEtag, conflictSnapshot]);
 
   const activateSelection = useCallback((nextSelection: WorkspaceSelectionContext, originPanelId: string) => {
     try {
@@ -262,7 +445,9 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
     <main className="scientific-workspace" data-testid="scientific-workspace-shell">
       <header className="workspace-header">
         <div className="workspace-header-title">
-          <a className="workspace-back-link" href="/" aria-label="Back to PlannerWorkbench">Back to planner</a>
+          <a className="workspace-back-link" href="/" aria-label="Back to PlannerWorkbench" onClick={(event) => {
+            if ((workspaceDirty || reportDraftDirty) && !window.confirm("Leave Workspace and discard unsaved changes?")) event.preventDefault();
+          }}>Back to planner</a>
           <span className="eyebrow">Scientific Workspace 1.0</span>
           <h1>{workspace.title}</h1>
           <p>{workspaceGoalSummary(workspace)} · Job {compactIdentity(workspace.sourceJobId)}</p>
@@ -273,10 +458,35 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
           <small>Plan {workspace.planSchemaVersion || "legacy"} · revision {workspace.revision}</small>
         </div>
         <div className="workspace-header-actions">
-          <button type="button" className="secondary workspace-mobile-only" onClick={() => setMobileContextOpen(true)} aria-label="Open data context">Context</button>
+          <button ref={contextTriggerRef} type="button" className="secondary workspace-mobile-only" onClick={() => setMobileContextOpen(true)} aria-label="Open data context">Context</button>
           <button ref={inspectorTriggerRef} type="button" className="secondary" onClick={() => setInspectorOpen(true)} aria-haspopup="dialog">Inspector</button>
         </div>
       </header>
+
+      <section className="workspace-save-bar" aria-label="Workspace save controls">
+        <label htmlFor="workspace-title-input"><span>Workspace title</span><input id="workspace-title-input" value={durableDraft?.title || ""} maxLength={256} disabled={workspace.readOnly || saveState === "SAVING"} onChange={(event) => {
+          const title = event.currentTarget.value;
+          setDurableDraft((current) => current ? Object.freeze({ ...current, title }) : current);
+          setSaveState((current) => current === "CAP_EXCEEDED" || current === "CONFLICT" ? current : "DIRTY");
+          setSaveMessage("Unsaved Workspace changes.");
+        }} /></label>
+        <div className="workspace-save-actions">
+          <span className={`workspace-save-state tone-${saveState === "ERROR" || saveState === "CONFLICT" || saveState === "CAP_EXCEEDED" ? "danger" : workspaceDirty ? "warning" : "success"}`}>{workspaceDirty ? "Unsaved changes" : "Saved"}</span>
+          <button type="button" onClick={saveWorkspace} disabled={workspace.readOnly || !workspaceDirty || !workspaceTitleValid || saveState === "SAVING" || saveState === "CAP_EXCEEDED"}>{saveState === "SAVING" ? "Saving" : "Save"}</button>
+        </div>
+        <p ref={saveAlertRef} tabIndex={saveState === "CONFLICT" || saveState === "CAP_EXCEEDED" || saveState === "ERROR" ? -1 : undefined} className="workspace-save-message" role={saveState === "CONFLICT" || saveState === "CAP_EXCEEDED" || saveState === "ERROR" ? "alert" : "status"} aria-live="polite">{saveMessage}</p>
+        {!workspaceTitleValid ? <p className="workspace-cap-note" role="alert">Workspace title is required.</p> : null}
+        {saveState === "CONFLICT" ? <div className="workspace-conflict-actions"><span>Local base revision {workspace.revision}; server revision {conflictSnapshot?.workspace.revision ?? "loading"}.</span><button type="button" className="secondary" disabled={!conflictSnapshot || !conflictEtag} onClick={reloadServerVersion}>Reload server version</button><button type="button" className="secondary" onClick={saveWorkspace}>Retry save</button></div> : null}
+        {saveState === "CAP_EXCEEDED" ? <p className="workspace-cap-note">Revision history remains intact. Results, provenance, and Report history stay read-only and available.</p> : null}
+      </section>
+
+      <details className="workspace-guide">
+        <summary>Workspace guide</summary>
+        <p>Use Data, Plan, Execution, Results, Findings, Evidence, Provenance, and Report to inspect exact persisted analysis records. Pin an exact selection explicitly; use Save for allowed Workspace fields and Finalize for an immutable Report and Recipe.</p>
+      </details>
+
+      {recoveryError ? <section className="workspace-recovery-alert" role="alert"><span>{recoveryError}</span><button type="button" className="secondary" onClick={() => revalidateNowRef.current()}>Retry recovery check</button></section> : null}
+      {!recoveryError && recoveryNotice ? <p className="workspace-recovery-notice" role="status" aria-live="polite">{recoveryNotice}</p> : null}
 
       <section className="workspace-selection-banner" role="status" aria-live="polite" data-testid="workspace-selection-status">
         <strong>Canonical selection</strong><span>{selectionMessage}</span>
@@ -318,7 +528,7 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
         </nav>
 
         <section className="workspace-main-panel" aria-labelledby="workspace-active-panel-title">
-          {activePanel ? <WorkspacePanelSurface panel={activePanel} workspace={workspace} snapshot={snapshot} delivery={deliveries[activePanel.panelId] || null} onActivateSelection={(nextSelection, panelId) => activateSelection(nextSelection, panelId)} onNavigateArtifactReference={(nextSelection, destination, panelId) => navigateArtifactReference(nextSelection, destination, panelId)} onSelectArtifact={(panel) => {
+          {activePanel ? <WorkspacePanelSurface panel={activePanel} workspace={workspace} snapshot={snapshot} delivery={deliveries[activePanel.panelId] || null} onReportDraftDirtyChange={setReportDraftDirty} onActivateSelection={(nextSelection, panelId) => activateSelection(nextSelection, panelId)} onNavigateArtifactReference={(nextSelection, destination, panelId) => navigateArtifactReference(nextSelection, destination, panelId)} onSelectArtifact={(panel) => {
             const nextSelection = artifactSelectionFromPanel(panel, workspace);
             if (nextSelection) activateSelection(nextSelection, panel.panelId);
           }} /> : <WorkspaceEmptyState panelCount={visiblePanels.length} />}
@@ -326,8 +536,8 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
       </div>
 
       {mobileContextOpen ? (
-        <div className="workspace-mobile-drawer" role="dialog" aria-modal="true" aria-label="Data context drawer">
-          <div className="workspace-drawer-header"><h2>Data context</h2><button type="button" className="workspace-icon-button" aria-label="Close data context" onClick={() => setMobileContextOpen(false)}>X</button></div>
+        <div className="workspace-mobile-drawer" role="dialog" aria-modal="true" aria-label="Data context drawer" onKeyDown={trapDialogFocus}>
+          <div className="workspace-drawer-header"><h2>Data context</h2><button ref={contextCloseRef} type="button" className="workspace-icon-button" aria-label="Close data context" onClick={() => { setMobileContextOpen(false); contextTriggerRef.current?.focus(); }}>X</button></div>
           <WorkspaceDataContext snapshot={snapshot} />
           <div className="workspace-mobile-panel-switcher"><h3>Panels</h3>{visiblePanels.map((panel) => <button key={panel.panelId} type="button" className="secondary" onClick={() => selectPanel(panel)}>{panel.title}</button>)}</div>
         </div>
@@ -335,7 +545,7 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
 
       {inspectorOpen ? (
         <div className="workspace-inspector-backdrop" onMouseDown={(event) => event.currentTarget === event.target && setInspectorOpen(false)}>
-          <aside className="workspace-inspector" role="dialog" aria-modal="true" aria-labelledby="workspace-inspector-title">
+          <aside className="workspace-inspector" role="dialog" aria-modal="true" aria-labelledby="workspace-inspector-title" onKeyDown={trapDialogFocus}>
             <div className="workspace-drawer-header"><h2 id="workspace-inspector-title">Context inspector</h2><button ref={inspectorCloseRef} type="button" className="workspace-icon-button" aria-label="Close inspector" onClick={() => { setInspectorOpen(false); inspectorTriggerRef.current?.focus(); }}>X</button></div>
             <p className="subtle">Exact source metadata and canonical cross-panel selection state.</p>
             <WorkspaceSelectionInspector selection={selection} originPanelId={selectionOriginPanelId} deliveries={deliveries} panels={visiblePanels} pinState={pinState} readOnly={workspace.readOnly} onClear={clearSelection} onCopy={copySelectionLink} onPin={pinSelection} onSelectPanel={selectPanel} />
@@ -347,7 +557,7 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
   );
 }
 
-function WorkspacePanelSurface({ panel, workspace, snapshot, delivery, onActivateSelection, onNavigateArtifactReference, onSelectArtifact }: { panel: WorkspacePanel; workspace: WorkspaceSnapshot["workspace"]; snapshot: WorkspaceSnapshot; delivery: WorkspaceSelectionDelivery | null; onActivateSelection: (selection: WorkspaceSelectionContext, panelId: string) => void; onNavigateArtifactReference: (selection: WorkspaceSelectionContext, destination: "EVIDENCE" | "PROVENANCE", panelId: string) => void; onSelectArtifact: (panel: WorkspacePanel) => void }) {
+function WorkspacePanelSurface({ panel, workspace, snapshot, delivery, onReportDraftDirtyChange, onActivateSelection, onNavigateArtifactReference, onSelectArtifact }: { panel: WorkspacePanel; workspace: WorkspaceSnapshot["workspace"]; snapshot: WorkspaceSnapshot; delivery: WorkspaceSelectionDelivery | null; onReportDraftDirtyChange: (dirty: boolean) => void; onActivateSelection: (selection: WorkspaceSelectionContext, panelId: string) => void; onNavigateArtifactReference: (selection: WorkspaceSelectionContext, destination: "EVIDENCE" | "PROVENANCE", panelId: string) => void; onSelectArtifact: (panel: WorkspacePanel) => void }) {
   const selectableArtifact = artifactSelectionFromPanel(panel, workspace);
   return (
     <article className="workspace-panel-surface" data-testid={`workspace-panel-${panel.panelKind.toLowerCase()}`}>
@@ -373,7 +583,7 @@ function WorkspacePanelSurface({ panel, workspace, snapshot, delivery, onActivat
       {panel.panelKind === "PLAN" ? <WorkspacePlanSummary snapshot={snapshot} /> : null}
       {panel.panelKind === "EXECUTION" ? <WorkspaceExecutionSummary snapshot={snapshot} /> : null}
       {["FINDINGS", "EVIDENCE", "PROVENANCE"].includes(panel.panelKind) ? <WorkspaceReferenceSummary panel={panel} workspace={workspace} snapshot={snapshot} delivery={delivery} onSelection={(selection) => onActivateSelection(selection, panel.panelId)} /> : null}
-      {panel.panelKind === "REPORT" ? <WorkspaceReportComposer workspace={workspace} /> : null}
+      {panel.panelKind === "REPORT" ? <WorkspaceReportComposer workspace={workspace} onDraftDirtyChange={onReportDraftDirtyChange} /> : null}
       {panel.panelKind === "SCIENTIFIC_RESULT" ? <WorkspaceArtifactGallery workspace={workspace} panel={panel} delivery={delivery} onSelection={(selection) => onActivateSelection(selection, panel.panelId)} onNavigateReference={(selection, destination) => onNavigateArtifactReference(selection, destination, panel.panelId)} /> : null}
       {selectableArtifact ? <button type="button" className="secondary workspace-selection-command" onClick={() => onSelectArtifact(panel)} data-testid={`workspace-select-artifact-${panel.panelId}`}>Select exact artifact</button> : null}
       <details className="workspace-audit-json"><summary>Audit JSON</summary><pre>{JSON.stringify({ panel, sourceSummary: snapshot.sourceSummary }, null, 2)}</pre></details>
@@ -484,4 +694,19 @@ function Metadata({ label, value }: { label: string; value: string }) {
 function boundedErrorMessage(value: string): string {
   const safe = value.replace(/[\r\n\t]+/g, " ").slice(0, 240);
   return safe || "Workspace metadata could not be loaded.";
+}
+
+function trapDialogFocus(event: React.KeyboardEvent<HTMLElement>) {
+  if (event.key !== "Tab") return;
+  const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>("button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex='-1'])"));
+  if (!controls.length) return;
+  const first = controls[0];
+  const last = controls[controls.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
 }

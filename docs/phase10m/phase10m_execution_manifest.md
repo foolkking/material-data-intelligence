@@ -39,6 +39,23 @@ safe export, partial/compatibility/accessibility/performance/security, and
 end-to-end verified lifecycle. The exact names and set are mirrored in the
 acceptance plan, backlog, and M5 evidence map.
 
+M6 owns exactly `M6-A01`, `M6-A02`, `M6-A03`, `M6-A04`, `M6-A05`, `M6-A06`,
+`M6-A07`, and `M6-A08`: explicit Save/concurrency, deterministic reload/layout,
+deep-link/history navigation, Job/source/partial/historical recovery,
+Report/Recipe recovery with session-draft honesty, user-facing state and long
+content closure, responsive/accessibility closure, and performance/security/
+verified lifecycle. The exact names and set are mirrored in the acceptance
+plan, backlog, TASKS block, and M6 evidence map.
+
+The exact M6 requirement names are `EXPLICIT_WORKSPACE_SAVE_AND_CONCURRENCY`,
+`DETERMINISTIC_RELOAD_AND_LAYOUT_RESTORATION`,
+`DEEP_LINK_REFRESH_AND_HISTORY_NAVIGATION`,
+`JOB_SOURCE_PARTIAL_AND_HISTORICAL_RECOVERY`,
+`REPORT_RECIPE_RECOVERY_AND_DRAFT_HONESTY`,
+`USER_FACING_STATES_LONG_CONTENT_AND_TERMINOLOGY`,
+`RESPONSIVE_MOBILE_AND_ACCESSIBILITY_CLOSURE`, and
+`PERFORMANCE_SECURITY_EVIDENCE_AND_VERIFIED_LIFECYCLE` in ID order.
+
 ## Required commands
 
 Use repository-current equivalents of:

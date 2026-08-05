@@ -147,6 +147,20 @@ describe("Phase 10M-5 WorkspaceReportComposer", () => {
     expect(screen.queryByRole("dialog", { name: "Source inventory" })).toBeNull();
     expect(trigger).toHaveFocus();
   });
+
+  it("labels the draft as session-only and protects dirty drafts from refresh", async () => {
+    const onDirty = vi.fn();
+    const user = userEvent.setup();
+    render(<WorkspaceReportComposer workspace={workspaceSnapshotFixture().workspace} onDraftDirtyChange={onDirty} />);
+    await screen.findByText("3 exact sources; 1 mandatory disclosures");
+    expect(screen.getByText(/Draft is not saved until Finalize/u)).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "Add artifact_plot to report" }));
+    await waitFor(() => expect(onDirty).toHaveBeenLastCalledWith(true));
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(screen.getByText(/Unsaved report draft/u)).not.toBeNull();
+  });
 });
 
 function source(overrides: Partial<ReportSourceReference>): ReportSourceReference {

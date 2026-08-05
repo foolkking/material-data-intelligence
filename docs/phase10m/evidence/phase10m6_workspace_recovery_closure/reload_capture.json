@@ -1,0 +1,15 @@
+{
+  "hiddenWrites": 0,
+  "loadOrder": [
+    "workspace metadata",
+    "panel metadata",
+    "URL panel",
+    "URL selection",
+    "persisted fallbacks",
+    "active lightweight panel",
+    "active heavy payload on demand"
+  ],
+  "panelOrderRestored": true,
+  "revisionRestored": true,
+  "titleRestored": true
+}

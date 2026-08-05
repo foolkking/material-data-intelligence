@@ -1,0 +1,7 @@
+{
+  "identityUpgrade": 0,
+  "legacyArtifact": "typed inert fallback",
+  "missingInterpretation": "findings unavailable; no LLM",
+  "plan01": "read-only; dependency not invented",
+  "plan02": "exact graph and bindings"
+}

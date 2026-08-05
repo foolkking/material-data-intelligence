@@ -93,6 +93,19 @@ verified completion/archive lifecycle:
 - [`phase10m/phase10m5_export_contract.md`](phase10m/phase10m5_export_contract.md): canonical JSON and inert Markdown export.
 - [`phase10m/phase10m5_acceptance_evidence_map.md`](phase10m/phase10m5_acceptance_evidence_map.md): exact seven acceptance IDs and retained evidence.
 - [`phase10m/phase10m5_next_scope.md`](phase10m/phase10m5_next_scope.md): M6 reviewer gate only; no executable M6 task.
+- [`phase10m/phase10m6_entry_audit.md`](phase10m/phase10m6_entry_audit.md): M5 archive, state authority, and no-change readiness audit.
+- [`phase10m/phase10m6_state_ownership.md`](phase10m/phase10m6_state_ownership.md): server, URL, and memory ownership hierarchy.
+- [`phase10m/phase10m6_save_and_concurrency.md`](phase10m/phase10m6_save_and_concurrency.md): explicit Save, no-op, conflict, and revision-cap behavior.
+- [`phase10m/phase10m6_reload_and_layout_restoration.md`](phase10m/phase10m6_reload_and_layout_restoration.md): deterministic reload and fallback precedence.
+- [`phase10m/phase10m6_deep_link_and_history.md`](phase10m/phase10m6_deep_link_and_history.md): canonical URL, refresh, and Back/Forward recovery.
+- [`phase10m/phase10m6_job_and_source_recovery.md`](phase10m/phase10m6_job_and_source_recovery.md): persisted Job/partial/stale/missing/historical recovery.
+- [`phase10m/phase10m6_report_recipe_recovery.md`](phase10m/phase10m6_report_recipe_recovery.md): finalized delivery recovery and session-draft honesty.
+- [`phase10m/phase10m6_responsive_mobile_accessibility.md`](phase10m/phase10m6_responsive_mobile_accessibility.md): desktop/mobile/focus/keyboard closure.
+- [`phase10m/phase10m6_performance_and_lifecycle.md`](phase10m/phase10m6_performance_and_lifecycle.md): metadata-first, cancellation, cache, and WebGL invariants.
+- [`phase10m/phase10m6_security_and_compatibility.md`](phase10m/phase10m6_security_and_compatibility.md): inert recovery and unchanged authority boundary.
+- [`phase10m/phase10m6_acceptance_evidence_map.md`](phase10m/phase10m6_acceptance_evidence_map.md): exact eight acceptance IDs and retained proof.
+- [`phase10m/phase10m6_next_scope.md`](phase10m/phase10m6_next_scope.md): M7 reviewer gate only; no executable M7 task.
+- [`phase10m/evidence/phase10m6_workspace_recovery_closure/`](phase10m/evidence/phase10m6_workspace_recovery_closure/): browser, Save/conflict/reload/recovery, mobile, lifecycle, security, and manifest evidence.
 - [`phase10m/evidence/phase10m3_canonical_selection/`](phase10m/evidence/phase10m3_canonical_selection/): retained M3 evidence.
 
 ## Phase 10K Material Intelligence

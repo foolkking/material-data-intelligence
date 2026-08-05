@@ -1,5 +1,21 @@
 # PROJECT_BRIEF
 
+## 2026-08-05 Phase 10M-6 Local Implementation Under Verification
+
+Phase 10M-5 is archived at `56bec17792fff86a99c3d280ab754a69fff6c51b`
+with queue-archive CI `30991896855`. The sole active M6 task adds explicit
+Workspace Save over existing PATCH/ETag authority, no-op suppression,
+typed concurrency/revision-cap UX, deterministic reload and exact URL/fallback
+precedence, bounded nonterminal Job observation, persisted partial/stale/
+missing/historical recovery, finalized Report/Recipe reload, honest session-
+only drafts, and responsive/accessibility closure.
+
+No database, migration, public endpoint, dependency, lockfile, shared
+contract, scientific authority, or LLM call site changes. Focused frontend,
+M6 evidence integrity, and Chromium/Firefox/WebKit/390x844 local replay pass.
+Full regression and three exact-SHA CI gates remain. Phase 10M-7 is reviewer-
+gated and not queued.
+
 ## 2026-08-05 Phase 10M-5 Local Implementation Under Verification
 
 Phase 10M-4 is archived at `7f84472d3cd0ca1e8a90eb56a69987bf4c2dadd7`

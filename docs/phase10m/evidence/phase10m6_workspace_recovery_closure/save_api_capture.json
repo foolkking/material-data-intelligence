@@ -1,0 +1,14 @@
+{
+  "allowedFields": [
+    "title",
+    "activePanelId"
+  ],
+  "headers": [
+    "If-Match: quoted ETag"
+  ],
+  "immutableSourceFields": "not submitted",
+  "noOpPatchRequests": 0,
+  "noOpRevisionGrowth": 0,
+  "route": "PATCH /workspaces/{workspaceId}",
+  "unknownFields": "rejected"
+}

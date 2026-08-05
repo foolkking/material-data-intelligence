@@ -43,14 +43,14 @@ Every acceptance ID belongs to exactly one backlog phase. Every backlog phase na
 | M5-A05 | Preview/export | `DETERMINISTIC_PREVIEW_AND_SAFE_EXPORT`: zero-write preview plus canonical JSON and inert Markdown |
 | M5-A06 | Closure qualities | `PARTIAL_COMPATIBILITY_ACCESSIBILITY_PERFORMANCE_SECURITY`: typed edge states, caps, mobile, a11y, security |
 | M5-A07 | Evidence/lifecycle | `END_TO_END_EVIDENCE_AND_VERIFIED_LIFECYCLE`: browser/service evidence and three exact-SHA CI gates |
-| M6-A01 | Save/reload | Mutable state restores exactly; scientific sources remain references |
-| M6-A02 | Recovery | 128 append-only revisions, deterministic rollback, conflicting writes rejected |
-| M6-A03 | Staleness | Dataset/Profile/artifact/Job/interpretation/schema loss has typed behavior |
-| M6-A04 | Caps | 32 panels and bounded snapshots reject overflow without truncation |
-| M6-A05 | Responsive | Sealed mobile strategy at 390x844 and 200% zoom, no document overflow |
-| M6-A06 | Accessibility | Keyboard/focus/touch/ARIA/text alternatives/reduced-motion closure |
-| M6-A07 | Performance | Metadata/panel targets, four-request cap, cancellation and cache invalidation |
-| M6-A08 | Resource lifecycle | 20 panel switches show no monotonic canvas/context/listener/object-URL growth |
+| M6-A01 | Save/concurrency | `EXPLICIT_WORKSPACE_SAVE_AND_CONCURRENCY`: approved durable fields, no-op suppression, quoted ETag/If-Match, typed conflict and revision-cap UX |
+| M6-A02 | Reload/layout | `DETERMINISTIC_RELOAD_AND_LAYOUT_RESTORATION`: server revision, panel order, active-panel fallback, and pinned selection restore without hidden writes |
+| M6-A03 | Navigation | `DEEP_LINK_REFRESH_AND_HISTORY_NAVIGATION`: exact panel/selection URL precedence, refresh, Back/Forward, and typed invalid state |
+| M6-A04 | Job/source recovery | `JOB_SOURCE_PARTIAL_AND_HISTORICAL_RECOVERY`: persisted Job/ToolCall/Artifact authority, partial/failed/blocked/stale/missing/legacy state, no rerun |
+| M6-A05 | Report/Recipe recovery | `REPORT_RECIPE_RECOVERY_AND_DRAFT_HONESTY`: immutable pair reload/export and explicit session-only draft loss boundary |
+| M6-A06 | Product states/content | `USER_FACING_STATES_LONG_CONTENT_AND_TERMINOLOGY`: distinct status/error/empty/loading language and bounded long-content presentation |
+| M6-A07 | Responsive/accessibility | `RESPONSIVE_MOBILE_AND_ACCESSIBILITY_CLOSURE`: one active mobile panel, drawers/sheets, keyboard/focus/live regions, 44px targets, reflow |
+| M6-A08 | Performance/security/lifecycle | `PERFORMANCE_SECURITY_EVIDENCE_AND_VERIFIED_LIFECYCLE`: metadata-first loading, cancellation, WebGL invariants, inert security, service/browser evidence, exact-SHA gates |
 | M7-A01 | Service-backed | PostgreSQL + Redis + MinIO full Workspace lifecycle, 0 skipped/failed |
 | M7-A02 | Scientific integrity | Adapter -> Runtime -> Artifact -> renderer/evidence authority remains exact |
 | M7-A03 | Historical compatibility | 0.1/0.2, modern/legacy/partial/missing-source cases retained |

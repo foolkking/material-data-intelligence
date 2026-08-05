@@ -1,0 +1,9 @@
+{
+  "exactRecipePair": true,
+  "exactReportDetail": true,
+  "immutableHistoryReload": true,
+  "jsonExport": true,
+  "latestPairSubstitution": 0,
+  "markdownExport": true,
+  "semanticHashesRetained": true
+}

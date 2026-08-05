@@ -1,9 +1,9 @@
 # Phase 10M Unified Scientific Workspace
 
-Status: Phase 10M-1 through Phase 10M-4 are archived. Reviewer-authorized
-Phase 10M-5 deterministic Scientific Report + Recipe composition passed its
-corrected implementation exact-SHA CI and awaits completion-record CI and the
-verified queue archive.
+Status: Phase 10M-1 through Phase 10M-5 are archived. Reviewer-authorized
+Phase 10M-6 Workspace save/reload/recovery/responsive implementation and local
+browser evidence are complete and await full regression and the three exact-SHA
+CI lifecycle gates.
 
 ## Reading order
 
@@ -53,7 +53,19 @@ verified queue archive.
 44. [M5 security/authorization](phase10m5_security_and_authorization.md)
 45. [M5 acceptance/evidence](phase10m5_acceptance_evidence_map.md)
 46. [M5 completion state](phase10m5_completion.md)
-47. [M6 reviewer gate](phase10m5_next_scope.md)
+47. [M5 completion state](phase10m5_completion.md)
+48. [M6 entry audit](phase10m6_entry_audit.md)
+49. [M6 state ownership](phase10m6_state_ownership.md)
+50. [M6 Save and concurrency](phase10m6_save_and_concurrency.md)
+51. [M6 reload and layout restoration](phase10m6_reload_and_layout_restoration.md)
+52. [M6 deep link and history](phase10m6_deep_link_and_history.md)
+53. [M6 Job and source recovery](phase10m6_job_and_source_recovery.md)
+54. [M6 Report/Recipe recovery](phase10m6_report_recipe_recovery.md)
+55. [M6 responsive/mobile/accessibility](phase10m6_responsive_mobile_accessibility.md)
+56. [M6 performance and lifecycle](phase10m6_performance_and_lifecycle.md)
+57. [M6 security and compatibility](phase10m6_security_and_compatibility.md)
+58. [M6 acceptance/evidence](phase10m6_acceptance_evidence_map.md)
+59. [M7 reviewer gate](phase10m6_next_scope.md)
 
 ## Status vocabulary
 
@@ -70,4 +82,7 @@ selection. M4 adds application-owned exact contract-to-renderer mapping,
 metadata-first Gallery loading, existing viewer integration, and bounded WebGL
 lifecycle without changing those contracts. M5 reuses existing Report/Recipe
 persistence for deterministic composition and has no execution or LLM authority.
-M6 remains reviewer-gated.
+M6 closes explicit durable Save, deterministic reload, exact navigation,
+persisted Job/source recovery, finalized delivery recovery, session-draft
+honesty, and responsive/accessibility behavior without changing prior
+contracts. M7 remains reviewer-gated.

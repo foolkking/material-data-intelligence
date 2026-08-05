@@ -1,0 +1,249 @@
+{
+  "algorithm": "sha256-lf-normalized-text-and-raw-png-v1",
+  "entries": [
+    {
+      "bytes": 1865,
+      "hashMode": "lf_normalized_text",
+      "path": "acceptance_mapping.json",
+      "sha256": "10aa1d40328df073d7ec51c05acc6ded83049009a8966f5cac4f39d350a75f92"
+    },
+    {
+      "bytes": 413,
+      "hashMode": "lf_normalized_text",
+      "path": "accessibility_summary.md",
+      "sha256": "f17feaeb9fc1768bc83080fd7a4b98646ae81a001312a9236d80361f0e174fc7"
+    },
+    {
+      "bytes": 172,
+      "hashMode": "lf_normalized_text",
+      "path": "back_forward_capture.json",
+      "sha256": "54c4a86d33f73e5da19939746c6972c1a59d490a3d93c20b7db7d33629d742e0"
+    },
+    {
+      "bytes": 604,
+      "hashMode": "lf_normalized_text",
+      "path": "baseline.txt",
+      "sha256": "8805ee4e45ffe7440642a117569acdf28323e363397c703dd924f007f8a5585c"
+    },
+    {
+      "bytes": 1262,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_chromium.json",
+      "sha256": "e2aad338f80159ccfcbc2557fde5015297bd727e4e205fa7a592004343243dae"
+    },
+    {
+      "bytes": 1155,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_firefox.json",
+      "sha256": "cb4ccce3260cd3e042eef8611beea23016b6ed9403fb8517069d60c7f9747c90"
+    },
+    {
+      "bytes": 3991,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_matrix.json",
+      "sha256": "e627d2fc523cb682d171537f914fb9991ef1b51cea74debab7b3875d0b9eac0a"
+    },
+    {
+      "bytes": 492,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_matrix.md",
+      "sha256": "c77d39356e79e2d45aae608534b74606319dc6967cf268f4e0e9080cc237431b"
+    },
+    {
+      "bytes": 696,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_mobile.json",
+      "sha256": "75d3edc8929c465575cb30ad96c99606538c17d75b85c502061b78ec48eb8613"
+    },
+    {
+      "bytes": 1251,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_webkit.json",
+      "sha256": "307a4bd4bc3b18ed7c7f4ff5e4cc2f6d362c612303d6f0c7b906de68c7187417"
+    },
+    {
+      "bytes": 107,
+      "hashMode": "lf_normalized_text",
+      "path": "console_summary.json",
+      "sha256": "a2247d77f3d771c31a5a16fdce84553c84be91dd7935960155517b5314deb32c"
+    },
+    {
+      "bytes": 235,
+      "hashMode": "lf_normalized_text",
+      "path": "deep_link_capture.json",
+      "sha256": "92aff354fd73f1b090ab3e2dcd17f0c20d8c420fed1a4a2aa139a0522d896b0a"
+    },
+    {
+      "bytes": 388,
+      "hashMode": "lf_normalized_text",
+      "path": "draft_loss_behavior.md",
+      "sha256": "05bb12616853dc26f3b847a14fe4e0a67b9f12270e50d3fa4ed818683bdf6669"
+    },
+    {
+      "bytes": 330,
+      "hashMode": "lf_normalized_text",
+      "path": "entry_gate.md",
+      "sha256": "3cf0c36bfb09ac0d6583bd4486cdfebeb0c00fa50bcece3798c1236ec313f98e"
+    },
+    {
+      "bytes": 340,
+      "hashMode": "lf_normalized_text",
+      "path": "git_history.txt",
+      "sha256": "518f3af98c1e0f30b114164d7053cd7c53e67512346e9e143fd36c5ac38e0823"
+    },
+    {
+      "bytes": 220,
+      "hashMode": "lf_normalized_text",
+      "path": "historical_job_capture.json",
+      "sha256": "424dd49e3db754b14fab299d3c808aea9871073cf351f6aa086fa31d74dcbd60"
+    },
+    {
+      "bytes": 194,
+      "hashMode": "lf_normalized_text",
+      "path": "missing_artifact_capture.json",
+      "sha256": "590eb16d6c91fa9d46a74972a2b91394d5d70ccca3d94229c2998f9f3388adfe"
+    },
+    {
+      "bytes": 222,
+      "hashMode": "lf_normalized_text",
+      "path": "mobile_metrics.json",
+      "sha256": "28945bf0665733c7f86ddbdc626aaaded552ac896138a41f108dffa23515b5fc"
+    },
+    {
+      "bytes": 170,
+      "hashMode": "lf_normalized_text",
+      "path": "network_summary.json",
+      "sha256": "9e22e4817681b922e6a5e969c7e086a5878f3284a1543e3bd365e0ef95691f39"
+    },
+    {
+      "bytes": 174,
+      "hashMode": "lf_normalized_text",
+      "path": "partial_recovery_capture.json",
+      "sha256": "b649274fdaa7c077d6768038d0a6a8c4a0483524319f1ea800a2e410784ede67"
+    },
+    {
+      "bytes": 517,
+      "hashMode": "lf_normalized_text",
+      "path": "performance.json",
+      "sha256": "6f99e8fbe9f0bd69b875013234c6680ed2f9877cf4822dcadb4eeeecb5bdb066"
+    },
+    {
+      "bytes": 311,
+      "hashMode": "lf_normalized_text",
+      "path": "reload_capture.json",
+      "sha256": "392a90fa4886eed38c998054964c32f1021c81c5795e718d5e383e746d696449"
+    },
+    {
+      "bytes": 206,
+      "hashMode": "lf_normalized_text",
+      "path": "report_recipe_recovery_capture.json",
+      "sha256": "80388f9fe48a5bfae1150effd9f1d2d0936de3a28cfa978eae9002f79be24ec2"
+    },
+    {
+      "bytes": 349,
+      "hashMode": "lf_normalized_text",
+      "path": "request_cancellation.json",
+      "sha256": "dd05febb6d7c4e3213343145411d30dfbd7432ecfe6ef8df7cc209db8051a4a9"
+    },
+    {
+      "bytes": 187,
+      "hashMode": "lf_normalized_text",
+      "path": "revision_cap_capture.json",
+      "sha256": "d20809ef0c29f4672571216ff879f7133a745ea440c5b1ec69b7498361063013"
+    },
+    {
+      "bytes": 352,
+      "hashMode": "lf_normalized_text",
+      "path": "running_job_recovery_capture.json",
+      "sha256": "ed87511aab2a210e99818143925230c76f9cffd36fce1e1815680844f0cce012"
+    },
+    {
+      "bytes": 284,
+      "hashMode": "lf_normalized_text",
+      "path": "save_api_capture.json",
+      "sha256": "5b6bb7486f38d28da1f649c94d858850e313c2c93ee9253cf6ca118187e18d0c"
+    },
+    {
+      "bytes": 206,
+      "hashMode": "lf_normalized_text",
+      "path": "save_conflict_capture.json",
+      "sha256": "c5813c6087116d8d16eb70f0010bfd0383cc8f533850e9d8692d2b833ad0aa53"
+    },
+    {
+      "bytes": 181,
+      "hashMode": "lf_normalized_text",
+      "path": "save_success_capture.json",
+      "sha256": "d197f4f0a2013d661f64edc423d01b6cc5b015c2995ffe11d34e2556ce7f0838"
+    },
+    {
+      "bytes": 185701,
+      "hashMode": "raw_binary",
+      "path": "screenshots/chromium_report.png",
+      "sha256": "594a0b2db80db505bc97eded6999e3031097c5a4c3839b06609a573879bf5ed3"
+    },
+    {
+      "bytes": 235591,
+      "hashMode": "raw_binary",
+      "path": "screenshots/firefox_report.png",
+      "sha256": "393eb95e60461a9b7c747f222566d4033f230b203f935c6c2682fca8bc9f28ad"
+    },
+    {
+      "bytes": 58838,
+      "hashMode": "raw_binary",
+      "path": "screenshots/mobile_report.png",
+      "sha256": "b1d089c98e4bbac60c142392be7988cf57cf78c99ee411a269067f5d192c73a9"
+    },
+    {
+      "bytes": 135875,
+      "hashMode": "raw_binary",
+      "path": "screenshots/webkit_report.png",
+      "sha256": "d33eb71f40ba5b9de1af23acb436700f2618f877537c2e2949f648fcab06a1f7"
+    },
+    {
+      "bytes": 1168,
+      "hashMode": "lf_normalized_text",
+      "path": "security_summary.md",
+      "sha256": "3952a224ab3181c5fba5832fd4c9a8582d19735701ccf272dca55f5ff07cde29"
+    },
+    {
+      "bytes": 273,
+      "hashMode": "lf_normalized_text",
+      "path": "service_backed_summary.md",
+      "sha256": "5e4ec134cd6ef9f77dac5780d6904b1520c7b9734aaef6ab6ff1ef4891e7c094"
+    },
+    {
+      "bytes": 169,
+      "hashMode": "lf_normalized_text",
+      "path": "stale_source_capture.json",
+      "sha256": "77f1601ab1211d65dbed0d4249d71ce863c5e57d8bbab48f9e9f83cf2849e780"
+    },
+    {
+      "bytes": 641,
+      "hashMode": "lf_normalized_text",
+      "path": "state_ownership_inventory.md",
+      "sha256": "5e825507ec89e1aba4bb8056b0e3f98a13179774c82db89030d01281fc9d31d0"
+    },
+    {
+      "bytes": 114,
+      "hashMode": "lf_normalized_text",
+      "path": "task_state.txt",
+      "sha256": "e88bd94afd222889e9e8168b5ecc5cb3d62e1fc9f0d963d30bccead5e31c8c26"
+    },
+    {
+      "bytes": 393,
+      "hashMode": "lf_normalized_text",
+      "path": "test_summary.txt",
+      "sha256": "1ae29f2153269c7f6568384ad769c47386d29afb56b961e168dd7902954e117c"
+    },
+    {
+      "bytes": 281,
+      "hashMode": "lf_normalized_text",
+      "path": "webgl_lifecycle.json",
+      "sha256": "7fd3c707b76e4e8e3430be58ef648d1519a23847974d4db867f2d7d2d9463608"
+    }
+  ],
+  "hashMismatch": 0,
+  "missing": 0,
+  "schemaVersion": "phase10m6.evidence_manifest.v1",
+  "unexpected": 0
+}

@@ -1,5 +1,22 @@
 # DESIGN_PROGRESS
 
+## 2026-08-05 Phase 10M-6 Workspace Recovery Locally Implemented
+
+- Added canonical durable draft comparison, explicit PATCH/If-Match Save,
+  no-op suppression, request abort, success state, typed 412 conflict with
+  explicit server reload, and revision-cap read-only behavior.
+- Added deterministic URL/persisted fallback resolution, bounded running-Job
+  GET revalidation, visibility refresh, stale-response protection, and no
+  hidden writes or execution growth.
+- Added explicit session-only Report draft disclosure and navigation warning,
+  finalized Report/Recipe reload, mobile drawer/sheet focus behavior, 44px
+  controls, long-text wrapping, and first-time Workspace guidance.
+- Focused frontend `34 passed`, full frontend `411 passed`, evidence `4 passed`, and local Chromium,
+  Firefox, WebKit, and Chromium 390x844 recovery replay pass with zero
+  unexpected console/page/network failures and zero overflow.
+- No schema/migration/API/dependency/contract/science/LLM authority changed.
+  Full regression and exact-SHA lifecycle remain; M7 is reviewer-gated.
+
 ## 2026-08-05 Phase 10M-5 Scientific Report/Recipe Locally Implemented
 
 - Added strict Python/JSON Schema/TypeScript composition contracts, canonical

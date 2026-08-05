@@ -239,6 +239,93 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(await screen.findByRole("heading", { name: "Workspace unavailable" })).not.toBeNull();
     expect(screen.getByText("private stack message")).not.toBeNull();
   });
+
+  it("suppresses no-op saves and persists only approved durable changes with If-Match", async () => {
+    const user = userEvent.setup();
+    const saved = workspaceSnapshotFixture();
+    saved.workspace.title = "Saved recovery title";
+    saved.workspace.revision = 2;
+    patchWorkspaceMock.mockResolvedValue({ data: saved, status: 200, etag: "etag-2", idempotentReplay: null });
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    const save = await screen.findByRole("button", { name: "Save" });
+    expect(save).toBeDisabled();
+    expect(patchWorkspaceMock).not.toHaveBeenCalled();
+    await user.clear(screen.getByLabelText("Workspace title"));
+    await user.type(screen.getByLabelText("Workspace title"), "Saved recovery title");
+    expect(screen.getByText("Unsaved changes")).not.toBeNull();
+    await user.click(save);
+    await waitFor(() => expect(screen.getByText("Workspace saved at revision 2.")).not.toBeNull());
+    expect(patchWorkspaceMock).toHaveBeenCalledWith("workspace_demo", "etag", { title: "Saved recovery title" }, expect.any(AbortSignal));
+  });
+
+  it("preserves local edits on conflict and reloads the exact server revision only after confirmation", async () => {
+    const user = userEvent.setup();
+    const server = workspaceSnapshotFixture();
+    server.workspace.title = "Server title";
+    server.workspace.revision = 2;
+    patchWorkspaceMock.mockRejectedValue(Object.assign(new Error("conflict"), { status: 412, detail: { code: "REVISION_MISMATCH", message: "conflict", retryable: true } }));
+    getWorkspaceMock.mockResolvedValueOnce({ data: workspaceSnapshotFixture(), status: 200, etag: "etag", idempotentReplay: null }).mockResolvedValueOnce({ data: server, status: 200, etag: "etag-2", idempotentReplay: null });
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(true);
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    const title = await screen.findByLabelText("Workspace title");
+    await user.clear(title);
+    await user.type(title, "Local title");
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    expect(await screen.findByText(/Local edits from revision 1 are preserved/u)).not.toBeNull();
+    expect(title).toHaveValue("Local title");
+    await user.click(await screen.findByRole("button", { name: "Reload server version" }));
+    expect(confirm).toHaveBeenCalledTimes(1);
+    expect(title).toHaveValue("Server title");
+    expect(screen.getByText(/Server revision 2 loaded/u)).not.toBeNull();
+  });
+
+  it("keeps the Workspace readable and local edits intact at the revision cap", async () => {
+    const user = userEvent.setup();
+    patchWorkspaceMock.mockRejectedValue(Object.assign(new Error("cap"), { status: 422, detail: { code: "REVISION_CAP_EXCEEDED", message: "cap", retryable: false } }));
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    const title = await screen.findByLabelText("Workspace title");
+    await user.clear(title);
+    await user.type(title, "Unsaved at cap");
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    expect(await screen.findByText(/Layout revision cap reached/u)).not.toBeNull();
+    expect(title).toHaveValue("Unsaved at cap");
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+    expect(screen.getByRole("heading", { name: "Analysis overview" })).not.toBeNull();
+  });
+
+  it("revalidates a nonterminal Job projection from server facts without a hidden write", async () => {
+    const running = workspaceSnapshotFixture("RUNNING");
+    const complete = workspaceSnapshotFixture("COMPLETE");
+    complete.workspace.artifactCount = 3;
+    getWorkspaceMock.mockResolvedValueOnce({ data: running, status: 200, etag: "etag-running", idempotentReplay: null }).mockResolvedValueOnce({ data: complete, status: 200, etag: "etag-complete", idempotentReplay: null });
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await screen.findAllByText("RUNNING");
+    await waitFor(() => expect(getWorkspaceMock).toHaveBeenCalledTimes(1));
+    document.dispatchEvent(new Event("visibilitychange"));
+    await waitFor(() => expect(screen.getAllByText("COMPLETE").length).toBeGreaterThan(0), { timeout: 5000 });
+    expect(getWorkspaceMock).toHaveBeenLastCalledWith("workspace_demo", expect.objectContaining({ etag: "etag-running", signal: expect.any(AbortSignal) }));
+    expect(patchWorkspaceMock).not.toHaveBeenCalled();
+  });
+
+  it("keeps validated panels readable and offers an explicit retry after recovery revalidation fails", async () => {
+    const user = userEvent.setup();
+    const running = workspaceSnapshotFixture("RUNNING");
+    const complete = workspaceSnapshotFixture("COMPLETE");
+    getWorkspaceMock
+      .mockResolvedValueOnce({ data: running, status: 200, etag: "etag-running", idempotentReplay: null })
+      .mockRejectedValueOnce(new Error("temporary API failure"))
+      .mockResolvedValueOnce({ data: complete, status: 200, etag: "etag-complete", idempotentReplay: null });
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await screen.findAllByText("RUNNING");
+    await waitFor(() => expect(getWorkspaceMock).toHaveBeenCalledTimes(1));
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(await screen.findByText(/Recovery revalidation failed/u, undefined, { timeout: 5000 })).not.toBeNull();
+    expect(screen.getByRole("heading", { name: "Analysis overview" })).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "Retry recovery check" }));
+    expect(await screen.findByText("Job reached a terminal persisted state.")).not.toBeNull();
+    expect(screen.getAllByText("COMPLETE").length).toBeGreaterThan(0);
+    expect(patchWorkspaceMock).not.toHaveBeenCalled();
+  });
 });
 
 function datasetSelection() {

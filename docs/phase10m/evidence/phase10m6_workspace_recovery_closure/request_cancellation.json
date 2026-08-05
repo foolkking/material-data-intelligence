@@ -1,0 +1,21 @@
+{
+  "abortOn": [
+    "route change",
+    "panel change",
+    "Artifact change",
+    "revision change",
+    "checksum change",
+    "unmount",
+    "history change"
+  ],
+  "cacheIdentity": [
+    "workspaceId",
+    "revision",
+    "panelId",
+    "artifactId",
+    "checksum",
+    "contract/version",
+    "source hash"
+  ],
+  "staleResponseCommits": 0
+}

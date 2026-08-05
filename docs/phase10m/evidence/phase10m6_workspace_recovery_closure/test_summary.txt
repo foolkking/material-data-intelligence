@@ -1,0 +1,10 @@
+Focused frontend: 34 passed
+Full frontend: 411 passed
+Full backend: 1148 passed, 43 skipped
+Typecheck: PASS
+Build: PASS (existing Plotly/glslify warnings)
+Browser: Chromium, Firefox, WebKit, Chromium 390x844 PASS
+Evidence integrity: 4 passed
+Local service-backed: UNAVAILABLE (1 skipped; CI zero-skip required)
+npm audit: UNAVAILABLE (configured mirror 404 NOT_IMPLEMENTED)
+REAL_LLM_CALLS = 0

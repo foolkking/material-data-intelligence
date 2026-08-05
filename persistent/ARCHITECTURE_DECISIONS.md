@@ -1,5 +1,23 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-05 ADR Addendum: Phase 10M-6 Recovery Ownership
+
+- Server persistence remains the sole durable Workspace authority; explicit
+  Save reuses existing PATCH with quoted ETag/If-Match and append-only bounded
+  revisions. A no-op never writes.
+- URL independently owns exact panel and versioned selection navigation.
+  Persisted active-panel/pinned fallbacks apply only when the corresponding URL
+  field is absent; explicit invalid state is never silently rebound.
+- Camera, hover, playback, filters, dialogs, local durable edits, and
+  unfinalized Report drafts remain memory-only. No localStorage/sessionStorage/
+  IndexedDB canonical copy is authorized.
+- Recovery reads persisted Job/ToolCall/dependency/Artifact/interpretation and
+  Report/Recipe facts. Redis events are not sole authority, and recovery never
+  creates Plan, Job, ToolCall, queue message, Artifact, claim, or LLM request.
+- Conflict preserves local edits until explicit confirmed server reload.
+  Revision-cap handling never deletes history or creates a replacement
+  Workspace. M1-M5 contracts and M4 lifecycle ownership remain unchanged.
+
 ## 2026-08-05 ADR Addendum: Phase 10M-5 Deterministic Delivery Snapshots
 
 **Decision:** Reuse existing Report and Recipe persistence for one immutable,

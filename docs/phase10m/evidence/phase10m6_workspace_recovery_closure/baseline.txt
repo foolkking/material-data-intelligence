@@ -1,0 +1,12 @@
+PHASE_10M6_ENTRY_GATE = PASS
+repository = Material Data Intelligence
+branch = master
+initial HEAD = 56bec17792fff86a99c3d280ab754a69fff6c51b
+initial origin/master = 56bec17792fff86a99c3d280ab754a69fff6c51b
+worktree at entry = clean
+migration head = 0007_phase10m1_workspace_domain
+M5 corrected implementation = f294fbd305385eb3fd129ab1f815daaca03d15fa / CI 30990265619 success
+M5 completion = aaef8bf254de3569f4411a85138dfb0c8c79497f / CI 30991190818 success
+M5 archive = 56bec17792fff86a99c3d280ab754a69fff6c51b / CI 30991896855 success
+TASK_BLOCK_COUNT before admission = 0
+M6 acceptance = 8 exact IDs

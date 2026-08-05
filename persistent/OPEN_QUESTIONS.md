@@ -1,5 +1,19 @@
 # OPEN_QUESTIONS
 
+## 2026-08-05 Phase 10M-6 Lifecycle Gates
+
+No architecture redesign blocks M6. Existing Workspace GET/PATCH/ETag,
+persisted Job projection, and M5 immutable history support the mandatory scope
+without migration, endpoint, dependency, contract, or browser-store authority.
+Local focused, evidence, and four-browser checks pass. Full regression,
+PostgreSQL/Redis/MinIO zero-skipped exact-SHA CI, completion record, and queue
+archive remain lifecycle gates.
+
+Physical assistive-technology/device-lab coverage and production-capacity
+claims remain outside automated evidence. Offline, collaboration, automatic
+merge/rerun, and durable Report drafts remain explicit non-scope. Phase 10M-7
+requires a separate reviewer prompt and is not queued.
+
 ## 2026-08-05 Phase 10M-5 Lifecycle Gates
 
 No architecture redesign blocks M5. Existing Report/Recipe JSON persistence
