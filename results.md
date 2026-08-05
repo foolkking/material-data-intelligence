@@ -4705,3 +4705,425 @@ Do not create, queue, or execute Phase 10M-6.
 - Queue-archive SHA/CI: not created / pending.
 - Expected post-commit: `HEAD == origin/master`, clean, migration head 0007,
   M5 completed block retained, task count one, no M6 executable task.
+
+# Phase 10M-6 Workspace Save / Reload / Recovery / Responsive Closure Result
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
+```
+
+## 2. Baseline and Entry Gate
+
+- M5 corrected implementation: `f294fbd305385eb3fd129ab1f815daaca03d15fa`, CI `30990265619`, success.
+- M5 completion: `aaef8bf254de3569f4411a85138dfb0c8c79497f`, CI `30991190818`, success.
+- M5 archive: `56bec17792fff86a99c3d280ab754a69fff6c51b`, CI `30991896855`, success.
+- Initial HEAD/origin: M5 archive SHA; branch `master`; worktree clean.
+- Migration head: `0007_phase10m1_workspace_domain`; initial task count: 0.
+- M6 admitted as the sole executable task; M7 executable task absent.
+
+## 3. M0-M5 Decision Compliance
+
+All sealed Workspace, Panel, Selection, renderer, Report/Recipe, persistence,
+source, security, and phase-order authorities remain unchanged.
+
+## 4. Save/Reload/Recovery Authority Audit
+
+Existing Workspace GET/PATCH/ETag, persisted Job/ToolCall/Artifact records,
+Artifact storage, and immutable Report/Recipe history support M6 without a new
+authority. Redis events are observational, not the recovery authority.
+
+## 5. Canonical State Ownership
+
+- Server persisted: Workspace title/revision/layout/panel order/saved fallback,
+  explicit pinned selection, immutable source bindings, finalized Report/Recipe.
+- URL: exact `panel` and versioned canonical selection.
+- Memory: pending durable edits, camera/hover/playback/filter/dialog state and
+  unfinalized Report draft.
+- `LOCAL_STORAGE_CANONICAL_AUTHORITY = NONE`
+- `SESSION_STORAGE_CANONICAL_AUTHORITY = NONE`
+- `OFFLINE_CANONICAL_WORKSPACE_COPY = NONE`
+
+## 6. Explicit Workspace Save
+
+Save uses the current quoted ETag with `If-Match`, submits only sealed mutable
+fields, aborts obsolete requests, suppresses duplicate submission, and applies
+the server-returned revision/ETag only after success.
+
+## 7. Dirty-State Semantics
+
+Dirty state compares canonical durable fields only. No-op Save issues no PATCH
+and creates no revision; Report draft dirty state remains independent.
+
+```text
+WORKSPACE_NOOP_SAVE_REQUESTS = 0
+WORKSPACE_NOOP_SAVE_REVISION_GROWTH = 0
+```
+
+## 8. Optimistic Concurrency
+
+Typed 412 handling preserves local edits, reports base/server revision, and
+requires explicit confirmation before loading server state.
+
+```text
+WORKSPACE_CONFLICT_SILENT_OVERWRITE = 0
+WORKSPACE_CONFLICT_AUTOMATIC_MERGE = 0
+WORKSPACE_CONFLICT_LOCAL_EDIT_LOSS_WITHOUT_CONFIRMATION = 0
+```
+
+## 9. Revision Cap
+
+```text
+MAX_LAYOUT_REVISIONS = 128
+WORKSPACE_REVISION_CAP_HISTORY_DELETION = 0
+WORKSPACE_REVISION_CAP_AUTOMATIC_WORKSPACE_REPLACEMENT = 0
+```
+
+The 129th revision is rejected with typed UX while Workspace and Report reads
+remain available and unsaved edits remain in memory.
+
+## 10. Reload and Layout Restoration
+
+Reload restores exact Workspace revision, panel membership/order, durable
+title/layout, valid saved panel fallback, pinned fallback, and finalized
+Report/Recipe history without loading inactive heavy payloads.
+
+## 11. Panel Resolution Precedence
+
+Valid explicit URL panel, then valid persisted fallback when URL is absent,
+then deterministic default. An invalid explicit panel produces a typed error
+and never silently falls back.
+
+## 12. Selection Resolution Precedence
+
+Valid explicit URL selection, then valid pinned fallback only when URL
+selection is absent, otherwise none. Invalid/stale explicit selection remains
+typed and is never rebound by latest, nearest, label, or index.
+
+## 13. Deep Link
+
+Deep links contain exact Workspace, panel, and bounded canonical selection
+only. Transient state, payloads, signed URLs, paths, and secrets are excluded;
+over-cap state is rejected without truncation.
+
+## 14. Refresh / Back / Forward
+
+Refresh and history navigation restore exact route state, reject stale async
+commits, and create no PATCH, Pin, revision, Report, Recipe, Plan, Job, or queue
+write. `WORKSPACE_RELOAD_HIDDEN_WRITES = 0`.
+
+## 15. Running / Interrupted Job Recovery
+
+Nonterminal status is revalidated through bounded persisted GET observation,
+visibility recovery, cancellation, and terminal-stop behavior. Missing Redis
+events fall back to PostgreSQL Job/ToolCall/dependency/Artifact authority.
+
+```text
+WORKSPACE_REFRESH_PLAN_CREATION_GROWTH = 0
+WORKSPACE_REFRESH_JOB_CREATION_GROWTH = 0
+WORKSPACE_REFRESH_TOOLCALL_CREATION_GROWTH = 0
+WORKSPACE_REFRESH_QUEUE_MESSAGE_GROWTH = 0
+WORKSPACE_RECOVERY_AUTOMATIC_RERUN = 0
+```
+
+## 16. Partial / Failed / Blocked Recovery
+
+Successful independent panels remain readable; failed and blocked scope,
+missing outputs, warnings, and limitations remain visible without invented
+claims or rewritten runtime authority.
+
+## 17. Stale / Missing / Deleted Source Recovery
+
+Typed states cover stale Dataset/Profile/resource/checksum, missing metadata or
+MinIO payload, missing interpretation, foreign scope, and unavailable source.
+
+```text
+STALE_SOURCE_LATEST_REBINDING = 0
+```
+
+## 18. Historical Compatibility
+
+AnalysisPlan 0.1 remains `LEGACY_READ_ONLY` without invented dependencies;
+Plan 0.2 preserves exact graph/bindings. Legacy Artifact and Report/Recipe
+records remain read-only with typed unavailable fields and unchanged hashes.
+
+## 19. Finalized Report / Recipe Recovery
+
+Exact immutable history, Report detail, paired Recipe, semantic hashes,
+warnings/limitations, and JSON/Markdown exports survive close/reopen and do not
+resolve through a latest-record heuristic.
+
+## 20. Session Draft Honesty
+
+```text
+REPORT_DRAFT_PERSISTENCE = SESSION_ONLY
+REPORT_DRAFT_SERVER_WRITES = 0
+REPORT_DRAFT_LOCALSTORAGE_WRITES = 0
+REPORT_DRAFT_AUTOMATIC_FINALIZE = 0
+```
+
+Persistent disclosure and navigation/unload protection state that refresh or
+close discards an unfinalized draft.
+
+## 21. First-Time / Empty / Loading / Error UX
+
+Workspace guidance and distinct metadata/panel/Artifact/interpretation/Report/
+Save/revalidation states replace blank or generic-error presentation.
+
+## 22. Terminology and Information Hierarchy
+
+Goal, scope, status, results, warnings, findings/evidence, Report, and recovery
+actions lead the UI; audit JSON and exact developer detail remain subordinate.
+
+## 23. Responsive Desktop
+
+The sealed header, side navigation, active central panel, and single Inspector
+remain; M6 adds Save/recovery state without redesigning the desktop shell.
+
+## 24. Mobile
+
+```text
+mobile viewport = 390x844
+horizontal overflow = 0
+minimum touch target = 44x44 CSS px
+```
+
+One active panel, context drawer, panel switcher, Inspector bottom sheet, and
+single-surface Report workflow provide focus trap/return and long-text wrapping.
+
+## 25. Accessibility
+
+Semantic landmarks/headings, keyboard panel/Save/conflict/Report workflows,
+visible focus, dialog/sheet focus containment, live status, non-color states,
+text/table/WebGL alternatives, reduced motion, and reflow are covered.
+
+## 26. Long Content / Large Artifact
+
+Long titles, warnings, provenance, IDs, tables, audit JSON, 32 panels, 128
+revisions, and near-cap metadata remain bounded, wrapped, collapsible, or
+internally scrollable without hiding mandatory disclosures.
+
+## 27. Loading / Cancellation / Cache
+
+Cache and request identity include exact Workspace revision, panel, Artifact
+checksum/contract, and source hash. Route/panel/revision/checksum/unmount changes
+abort or suppress obsolete work.
+
+```text
+INITIAL_HEAVY_ARTIFACT_PAYLOAD_REQUESTS = 0
+INACTIVE_HEAVY_ARTIFACT_PAYLOAD_REQUESTS = 0
+STALE_RESPONSE_STATE_COMMITS = 0
+```
+
+## 28. WebGL Lifecycle
+
+```text
+MAX_ACTIVE_HEAVY_VIEWERS = 1
+WEBGL_CONTEXT_GROWTH = 0
+LISTENER_GROWTH = 0
+OBSERVER_GROWTH = 0
+DUPLICATE_CANVAS = 0
+REPORT_PREVIEW_WEBGL_CONTEXTS = 0
+```
+
+## 29. API and Persistence
+
+Existing Workspace POST/GET/PATCH/project list/panel/layout-history routes,
+Job/Artifact/interpretation reads, and seven M5 Report composition routes are
+reused unchanged.
+
+```text
+new public endpoints = 0
+new tables = 0
+migration = unchanged
+migration head = 0007_phase10m1_workspace_domain
+```
+
+## 30. Scientific Integrity
+
+```text
+WORKSPACE_COPIED_ARTIFACT_PAYLOADS = 0
+FRONTEND_DUPLICATE_SCIENTIFIC_AUTHORITY = NONE
+FRONTEND_SCIENTIFIC_RECOMPUTATION = NONE
+WORKSPACE_RECOVERY_GENERATED_SCIENTIFIC_VALUES = 0
+WORKSPACE_RECOVERY_GENERATED_SCIENTIFIC_CLAIMS = 0
+RECOMMENDATION_EXECUTION_AUTHORITY = NONE
+```
+
+## 31. LLM / DeepSeek Compliance
+
+```text
+NEW_LLM_CALL_SITES = 0
+M6_SAVE_RELOAD_RECOVERY_REQUIRES_LLM = NO
+REAL_LLM_CALLS = 0
+DEEPSEEK_POLICY_REGRESSION = PASS
+```
+
+The permanent real-provider policy remains DeepSeek-only with sole key source
+`DEEPSEEK_KEY`; M6 made no provider request.
+
+## 32. Security
+
+```text
+NO_WORKSPACE_RECOVERY_ARBITRARY_CODE_EXECUTION = PASS
+NO_WORKSPACE_RECOVERY_SHELL_AUTHORITY = PASS
+NO_WORKSPACE_RECOVERY_FILESYSTEM_AUTHORITY = PASS
+NO_WORKSPACE_RECOVERY_ARTIFACT_JAVASCRIPT = PASS
+NO_WORKSPACE_RECOVERY_ARTIFACT_HTML_EXECUTION = PASS
+NO_WORKSPACE_RECOVERY_IFRAME_EXECUTION = PASS
+NO_WORKSPACE_RECOVERY_DYNAMIC_MODULE_EXECUTION = PASS
+NO_WORKSPACE_RECOVERY_EXTERNAL_URL_EXECUTION = PASS
+NO_WORKSPACE_RECOVERY_CROSS_PROJECT_ACCESS = PASS
+NO_WORKSPACE_RECOVERY_CROSS_JOB_ARTIFACT_INJECTION = PASS
+NO_WORKSPACE_RECOVERY_STALE_IDENTITY_REBINDING = PASS
+NO_WORKSPACE_RECOVERY_CHECKSUM_BYPASS = PASS
+NO_WORKSPACE_RECOVERY_SECRET_DISCLOSURE = PASS
+NO_WORKSPACE_RECOVERY_PRIVATE_PATH_DISCLOSURE = PASS
+NO_WORKSPACE_RECOVERY_STACK_DISCLOSURE = PASS
+NO_WORKSPACE_RECOVERY_AUTOMATIC_RERUN = PASS
+NO_WORKSPACE_RECOVERY_PLAN_CREATION = PASS
+NO_WORKSPACE_RECOVERY_JOB_CREATION = PASS
+NO_WORKSPACE_RECOVERY_QUEUE_AUTHORITY = PASS
+NO_LOCALSTORAGE_CANONICAL_BACKUP = PASS
+NO_SECRET_PATTERN_HITS = PASS
+```
+
+## 33. Acceptance IDs
+
+```text
+expected = 8
+implemented = 8
+missing = 0
+extra = 0
+duplicate = 0
+```
+
+- M6-A01: recovery model/Shell Save tests; save/conflict/cap captures.
+- M6-A02: exact snapshot/fallback tests; reload/state-ownership evidence.
+- M6-A03: M3/M6 URL/history tests; deep-link/Back/Forward browser evidence.
+- M6-A04: persisted recovery service test; running/partial/stale/history captures.
+- M6-A05: composer/Shell tests; Report/Recipe and draft-loss evidence.
+- M6-A06: typed component states; browser/accessibility evidence.
+- M6-A07: focus/mobile implementation; 390x844 capture and metrics.
+- M6-A08: lifecycle/security/evidence tests; exact-SHA service and CI gates.
+
+## 34. Tests
+
+- Focused frontend: 34 passed; full frontend: 411 passed.
+- Full backend: 1148 passed, 43 skipped; focused backend: 69 passed.
+- Evidence integrity: 4 passed; `uv lock --check`, diff check, docs and secret
+  scan passed; typecheck and production build passed.
+- Local Chromium/Firefox/WebKit/390x844 replay passed.
+- Local service-backed: `UNAVAILABLE` (Docker/flag unavailable), not reported as pass.
+- CI service-backed: 41 passed, 0 skipped, 0 failed, 0 errors.
+- Configured npm audit mirror: `404_NOT_IMPLEMENTED`; `npm audit = UNAVAILABLE`.
+
+## 35. Browser Matrix
+
+Chromium 129, Firefox 130, WebKit 18 at 1440x1050 and Chromium 129 at
+390x844 passed Save/conflict/reload, Report recovery, accessibility, network,
+console, and overflow assertions with zero unexpected errors/external requests.
+
+## 36. Service-Backed Evidence
+
+Exact-SHA CI used PostgreSQL, Redis, MinIO, migration head 0007, persisted
+current Plan 0.2/Job/ToolCall/Artifact/Workspace, explicit Save, typed conflict,
+revision cap, missing-event terminal recovery, checksum, and no execution-object
+growth. Summary: `41 passed, 0 skipped, 0 failed, 0 errors`.
+
+## 37. Performance
+
+Development/browser evidence, not a production capacity claim: metadata-first
+load, no inactive heavy requests, no hidden/no-op writes, no stale commits, one
+active heavy Viewer, and zero context/listener/observer/canvas growth.
+
+## 38. Production Behavior Changes
+
+Users can explicitly Save allowed durable state, see dirty/saved/conflict/cap
+status, reopen deterministic state, use exact links/history, recover running,
+partial, failed, blocked, stale, missing, historical and finalized Report/Recipe
+views, and work on desktop/mobile with keyboard and screen-reader support.
+
+## 39. Files Changed
+
+Workspace shell/Report composer/recovery model/styles; tests and CI; browser,
+service, evidence runners; Phase 10M docs/evidence; persistent and task records.
+
+```text
+database schema = unchanged
+migration = unchanged
+migration head = 0007_phase10m1_workspace_domain
+dependencies = unchanged
+lockfile = unchanged
+Workspace contracts = unchanged
+Panel contract = unchanged
+Selection contract = unchanged
+Report/Recipe contracts = unchanged
+renderer registry authority = unchanged
+scientific Adapter authority = unchanged
+```
+
+## 40. Commit / CI History
+
+- `3bae949559c1049e0bcfd5de21d4d375e1a488aa`, CI `31017695192`: Unit/Frontend passed; service fixture lacked legacy support tables.
+- `c7db3ca4a651847b49a994eb7e4ad9a21d32eca7`, CI `31018789969`: Unit/Frontend passed; fixture expected RUNNING for correct Plan 0.1 legacy projection.
+- `ec2a7e572510be08a7d02c5fcd338807b39ba9e3`, CI `31019983444`: Unit/Frontend passed; service fixture actor mismatched TestClient authorization.
+- Corrected implementation `65e80ba915140e29db08dc053c1d218206daaa03`, CI `31020968546`: success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: not created before completion-record CI.
+
+## 41. Explicit Non-Scope
+
+M7/final closure, Phase 10N+, schema/migration/public API/contracts,
+localStorage/sessionStorage/IndexedDB authority, durable drafts, offline,
+collaboration/merge, multi-Job/cross-Workspace aggregation, latest rebinding,
+rerun/execution, new science, frontend recomputation, LLM recovery, new provider,
+arbitrary code/shell/filesystem, RAG/memory/multi-agent/plugins are not implemented.
+
+## 42. Phase 10M Readiness
+
+```text
+Phase 10M-6:
+READY_WITH_EXPLICIT_LIMITS
+
+Phase 10M-7:
+REVIEWER_GATE
+```
+
+Phase 10M as a whole is not declared complete.
+
+## 43. Queue State
+
+```text
+Phase 10M-6:
+COMPLETE / AWAITING_VERIFIED_QUEUE_ARCHIVE
+
+Phase 10M-7:
+REVIEWER_GATE / AWAITING REVIEWER PROMPT
+
+TASK_BLOCK_COUNT = 1
+```
+
+## 44. Automatic M7 Entry
+
+```text
+NO
+PHASE_10M7_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 45. Next Action
+
+```text
+Verify this completion-record exact-SHA CI, then archive only Phase 10M-6.
+Do not create, queue, or execute Phase 10M-7.
+```
+
+## 46. Final Repository State
+
+- Implementation SHA: `65e80ba915140e29db08dc053c1d218206daaa03`.
+- Implementation exact-SHA CI: `31020968546`, success.
+- Completion-record SHA/CI: this commit / pending.
+- Queue-archive SHA/CI: not created / pending.
+- Expected post-commit: `HEAD == origin/master`, branch `master`, clean,
+  migration head 0007, M6 block retained, task count one, M7 task absent.

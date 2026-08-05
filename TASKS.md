@@ -1,7 +1,7 @@
 # Task Queue
 
 ---TASK---
-Status: IN_PROGRESS
+Status: COMPLETE / AWAITING_VERIFIED_QUEUE_ARCHIVE
 # Phase 10M-6
 Workspace Save / Reload / Recovery / Responsive Closure
 
@@ -39,6 +39,26 @@ Frozen execution boundaries:
 - Complete focused/full/browser/service-backed/evidence/security checks and
   implementation, completion-record, and queue-archive exact-SHA CI lifecycle.
 - Do not create, queue, or execute Phase 10M-7 automatically.
+
+Completion time: 2026-08-05T23:44:05+08:00
+
+Changed files:
+- Workspace shell, Report composer, recovery model, responsive styles, tests,
+  browser/service/evidence runners, Phase 10M docs/evidence, CI, and persistent
+  project records.
+
+Summary:
+- Closed explicit Save, no-op suppression, ETag conflict/revision-cap UX,
+  deterministic reload/deep-link recovery, bounded Job/source observation,
+  finalized Report/Recipe reload, session-only draft honesty, and responsive
+  accessibility behavior without changing sealed contracts or authorities.
+
+Tests:
+- Local: frontend 411 passed; backend 1148 passed, 43 skipped; focused backend
+  69 passed; evidence 4 passed; typecheck/build and four-browser replay passed.
+- Exact-SHA implementation CI: `65e80ba915140e29db08dc053c1d218206daaa03`,
+  run `31020968546`, success; service-backed 41 passed, 0 skipped/failed/errors.
+- Completion-record and queue-archive exact-SHA CI remain lifecycle gates.
 ---END---
 
 Phase 10M-7:

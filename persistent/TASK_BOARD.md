@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-## 2026-08-05 Phase 10M-6 In Progress
+## 2026-08-05 Phase 10M-6 Complete, Awaiting Verified Archive
 
 - [x] Verify M5 corrected implementation/completion/archive and admit M6 as
   the sole active executable task.
@@ -10,9 +10,10 @@
   draft honesty, mobile/focus, tests, browser runner, evidence, and docs.
 - [x] Pass focused frontend `34 passed`, full frontend `411 passed`, evidence `4 passed`, and Chromium/
   Firefox/WebKit/390x844 local browser replay.
-- [ ] Pass full backend/frontend/typecheck/build/local integrity regression.
-- [ ] Pass implementation, completion-record, and queue-archive exact-SHA CI.
-- [ ] Keep Phase 10M-7 reviewer-gated and absent from the executable queue.
+- [x] Pass full backend/frontend/typecheck/build/local integrity regression.
+- [x] Pass implementation exact-SHA CI `31020968546` for `65e80ba915140e29db08dc053c1d218206daaa03`.
+- [ ] Pass completion-record and queue-archive exact-SHA CI.
+- [x] Keep Phase 10M-7 reviewer-gated and absent from the executable queue.
 
 ## 2026-08-05 Phase 10M-5 In Progress
 

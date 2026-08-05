@@ -1,5 +1,15 @@
 # DESIGN_PROGRESS
 
+## 2026-08-05 Phase 10M-6 Implementation Verified
+
+- Corrected implementation `65e80ba915140e29db08dc053c1d218206daaa03`
+  passed exact-SHA CI `31020968546`: Unit, frontend typecheck/build, all Phase
+  10 browser replays, migration, evidence, and PostgreSQL/Redis/MinIO service
+  integration succeeded.
+- Service-backed summary is `41 passed, 0 skipped, 0 failed, 0 errors`.
+- M6 is complete awaiting completion-record and verified queue-archive CI;
+  M7 remains reviewer-gated and has no executable task.
+
 ## 2026-08-05 Phase 10M-6 CI Fixture Corrections
 
 - Initial implementation `3bae949559c1049e0bcfd5de21d4d375e1a488aa`

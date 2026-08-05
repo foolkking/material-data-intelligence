@@ -5,9 +5,10 @@
 No architecture redesign blocks M6. Existing Workspace GET/PATCH/ETag,
 persisted Job projection, and M5 immutable history support the mandatory scope
 without migration, endpoint, dependency, contract, or browser-store authority.
-Local focused, evidence, and four-browser checks pass. Full regression,
-PostgreSQL/Redis/MinIO zero-skipped exact-SHA CI, completion record, and queue
-archive remain lifecycle gates.
+Local focused, evidence, and four-browser checks pass. Implementation
+`65e80ba915140e29db08dc053c1d218206daaa03` passed exact-SHA CI `31020968546`,
+including PostgreSQL/Redis/MinIO `41 passed, 0 skipped`. Completion-record and
+queue-archive exact-SHA CI remain lifecycle gates.
 
 Physical assistive-technology/device-lab coverage and production-capacity
 claims remain outside automated evidence. Offline, collaboration, automatic

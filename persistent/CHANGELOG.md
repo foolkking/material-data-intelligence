@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-08-05 - Phase 10M-6 Implementation CI Verified
+
+- Corrected implementation `65e80ba915140e29db08dc053c1d218206daaa03`
+  passed exact-SHA CI `31020968546` across Unit, frontend typecheck/build,
+  Chromium/Firefox/WebKit/390x844 replay, migration, evidence integrity, and
+  PostgreSQL/Redis/MinIO service-backed integration.
+- Service integration completed `41 passed, 0 skipped, 0 failed, 0 errors`.
+- Completion-record and verified queue archive remain; Phase 10M-7 is not
+  queued or executable.
+
 ## 2026-08-05 - Phase 10M-6 CI Fixture Correction
 
 - Recorded failed implementation `3bae949559c1049e0bcfd5de21d4d375e1a488aa`

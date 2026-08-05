@@ -1,6 +1,6 @@
 # PROJECT_BRIEF
 
-## 2026-08-05 Phase 10M-6 Local Implementation Under Verification
+## 2026-08-05 Phase 10M-6 Complete, Awaiting Verified Archive
 
 Phase 10M-5 is archived at `56bec17792fff86a99c3d280ab754a69fff6c51b`
 with queue-archive CI `30991896855`. The sole active M6 task adds explicit
@@ -11,10 +11,11 @@ missing/historical recovery, finalized Report/Recipe reload, honest session-
 only drafts, and responsive/accessibility closure.
 
 No database, migration, public endpoint, dependency, lockfile, shared
-contract, scientific authority, or LLM call site changes. Focused frontend,
-M6 evidence integrity, and Chromium/Firefox/WebKit/390x844 local replay pass.
-Full regression and three exact-SHA CI gates remain. Phase 10M-7 is reviewer-
-gated and not queued.
+contract, scientific authority, or LLM call site changes. Corrected
+implementation `65e80ba915140e29db08dc053c1d218206daaa03` passed exact-SHA CI
+`31020968546`, including Unit, typecheck/build, four-browser replay, migration,
+and PostgreSQL/Redis/MinIO `41 passed, 0 skipped`. Completion-record and queue-
+archive CI remain. Phase 10M-7 is reviewer-gated and not queued.
 
 ## 2026-08-05 Phase 10M-5 Local Implementation Under Verification
 

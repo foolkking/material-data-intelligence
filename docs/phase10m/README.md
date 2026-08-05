@@ -1,9 +1,10 @@
 # Phase 10M Unified Scientific Workspace
 
-Status: Phase 10M-1 through Phase 10M-5 are archived. Reviewer-authorized
-Phase 10M-6 Workspace save/reload/recovery/responsive implementation and local
-browser evidence are complete and await full regression and the three exact-SHA
-CI lifecycle gates.
+Status: Phase 10M-1 through Phase 10M-5 are archived. Phase 10M-6 corrected
+implementation `65e80ba915140e29db08dc053c1d218206daaa03` passed exact-SHA CI
+`31020968546`, including full regression, browser replay, migration, and
+service-backed zero-skipped gates. Completion-record and queue-archive CI
+remain; Phase 10M-7 is reviewer-gated and not queued.
 
 ## Reading order
 
