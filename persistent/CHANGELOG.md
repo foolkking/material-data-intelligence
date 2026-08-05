@@ -4,8 +4,11 @@
 
 - Recorded failed implementation `3bae949559c1049e0bcfd5de21d4d375e1a488aa`
   / run `31017695192` and aligned the new service-backed isolated-schema
-  fixture with the existing M5 legacy support-table setup. Production behavior,
-  migration 0007, dependencies, and contracts are unchanged.
+  fixture with the existing M5 legacy support-table setup. Follow-up
+  `c7db3ca4a651847b49a994eb7e4ad9a21d32eca7` / run `31018789969` exposed the
+  fixture's correct Plan 0.1 read-only status; current running recovery now uses
+  the M1 exact Plan 0.2 identity setup. Production behavior, migration 0007,
+  dependencies, and contracts are unchanged.
 
 ## 2026-08-05 - Phase 10M-6 Local Implementation
 

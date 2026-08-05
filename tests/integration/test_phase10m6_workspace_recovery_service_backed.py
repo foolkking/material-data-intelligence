@@ -13,10 +13,13 @@ from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.schema import CreateSchema, DropSchema
 
 from mdi_api.main import create_app
-from mdi_api.repositories import SqlAlchemyRepositoryBundle, compute_plan_hash
+from mdi_api.repositories import SqlAlchemyRepositoryBundle
+from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
 from mdi_api.workspaces import WorkspaceProjectionService
+from mdi_llm import MockLLMProvider
 
 from tests.integration.test_phase10m1_workspace_service_backed import (
+    _exact_phonon_profile,
     _minio_client,
     _redis_smoke,
     _required_postgres_url,
@@ -66,46 +69,47 @@ def test_phase10m6_postgres_redis_minio_workspace_save_reload_recovery(
         repos = SqlAlchemyRepositoryBundle.create(engine)
         project_id = f"project_m6_{suffix}"
         dataset_id = f"dataset_m6_{suffix}"
-        plan_id = f"plan_m6_{suffix}"
-        job_id = f"job_m6_{suffix}"
         call_id = f"call_m6_{suffix}"
         artifact_id = f"artifact_m6_{suffix}"
-        repos.projects.save({"id": project_id, "name": "M6 recovery", "createdBy": "user_local"})
-        repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": "M6 data", "status": "profile_ready", "createdBy": "user_local"})
-        plan = {
-            "schemaVersion": "0.1",
-            "goal": "Observe exact persisted recovery state.",
-            "datasetId": dataset_id,
-            "profileId": f"profile_m6_{suffix}",
-            "toolRegistryVersion": "1.0",
-            "assumptions": [],
-            "warnings": [],
-            "steps": [{
-                "stepId": "step_recovery",
-                "toolId": "table.numeric_summary",
-                "purpose": "Persist a bounded result.",
-                "reason": "Recovery fixture.",
-                "inputRefs": [{"refType": "normalized_object", "ref": "table_1", "datasetId": dataset_id, "objectId": "table_1", "objectType": "DataFrame"}],
-                "params": {"columns": ["value"]},
-                "output": {"artifactTypes": ["table_json"]},
-            }],
-            "expectedArtifacts": [{"name": "summary", "type": "table_json", "fromStepId": "step_recovery"}],
-        }
-        plan_hash = compute_plan_hash(plan)
-        repos.analysis_plans.save_plan({"id": plan_id, "projectId": project_id, "datasetId": dataset_id, "profileId": f"profile_m6_{suffix}", "analysisPlan": plan, "planHash": plan_hash, "validationStatus": "validated", "createdBy": "user_local"})
-        repos.jobs.save({"id": job_id, "projectId": project_id, "datasetId": dataset_id, "planId": plan_id, "status": "running", "kind": "analysis", "createdBy": "user_local"})
-        repos.tool_calls.save({"id": call_id, "jobId": job_id, "stepId": "step_recovery", "toolId": "table.numeric_summary", "status": "running", "params": {"columns": ["value"]}})
+        actor_id = f"phase10m6_ci_{suffix}"
+        profile_id = f"profile_m6_{suffix}"
+        repos.projects.save({"id": project_id, "name": "M6 recovery", "createdBy": actor_id})
+        repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": "M6 data", "status": "profile_ready", "createdBy": actor_id})
+        repos.data_profiles.save(_exact_phonon_profile(dataset_id=dataset_id, profile_id=profile_id, suffix=suffix))
+        planned = planner_jobs(
+            PlannerJobsRequest(
+                userPrompt="Create a combined phonon band and density of states product.",
+                projectId=project_id,
+                datasetId=dataset_id,
+                profileId=profile_id,
+                intentSchemaVersion="1.0",
+                selectedResourceIds=["phonon_band_1", "phonon_dos_1"],
+                provider="mock",
+            ),
+            provider=MockLLMProvider(fixed_plan={"invalid": "legacy planner path must not execute"}),
+            repositories=repos,
+        )
+        assert planned.ok is True
+        assert planned.job_id and planned.plan_id
+        job_id = planned.job_id
+        plan_id = planned.plan_id
+        plan_record = repos.analysis_plans.get_plan(plan_id)
+        plan = plan_record["analysisPlan"]
+        step = plan["steps"][0]
+        repos.jobs.set_status(job_id, "queued")
+        repos.jobs.set_status(job_id, "running")
+        repos.tool_calls.save({"id": call_id, "jobId": job_id, "stepId": step["stepId"], "toolId": step["toolId"], "status": "running", "params": step["params"]})
         repos.artifacts.save({
             "id": artifact_id, "projectId": project_id, "datasetId": dataset_id,
             "jobId": job_id, "toolCallId": call_id, "type": "table_json", "version": "1",
             "name": "ignored-recovery-name.html", "storageKey": object_key,
             "storageProvider": "minio", "bucket": bucket, "sizeBytes": len(payload),
             "contentType": "application/json", "contentHash": checksum, "sha256": checksum,
-            "metadata": {"toolId": "table.numeric_summary", "toolVersion": "1.0", "adapterVersion": "1.0"},
+            "metadata": {"toolId": step["toolId"], "toolVersion": "1.0", "adapterVersion": "1.0"},
         })
 
         service = WorkspaceProjectionService(repos)
-        projected, created = service.project_job(source_job_id=job_id, created_by="user_local", title="M6 running Workspace")
+        projected, created = service.project_job(source_job_id=job_id, created_by=actor_id, title="M6 running Workspace")
         assert created is True
         workspace_id = projected.body["workspace"]["workspaceId"]
         before_execution = (

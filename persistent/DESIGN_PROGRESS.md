@@ -1,12 +1,15 @@
 # DESIGN_PROGRESS
 
-## 2026-08-05 Phase 10M-6 CI Fixture Correction
+## 2026-08-05 Phase 10M-6 CI Fixture Corrections
 
 - Initial implementation `3bae949559c1049e0bcfd5de21d4d375e1a488aa`
   passed Unit and Frontend in CI `31017695192`; service-backed detected a
   fixture-only missing `organizations/users` support-table setup before the M6
-  assertions. The corrected fixture now matches the established M5 isolated
-  schema setup; no production schema or migration changed.
+  assertions. Correction `c7db3ca4a651847b49a994eb7e4ad9a21d32eca7`
+  / CI `31018789969` then confirmed Plan 0.1 is correctly projected as
+  `LEGACY_READ_ONLY`, not `RUNNING`. The current-source recovery fixture now
+  uses the established M1 Profile/Intent/Eligibility/Decision/Plan 0.2 setup;
+  no production schema, migration, or projection rule changed.
 
 ## 2026-08-05 Phase 10M-6 Workspace Recovery Locally Implemented
 
