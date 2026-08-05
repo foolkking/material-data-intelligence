@@ -1958,6 +1958,28 @@ No Artifact payload is copied into Workspace persistence, no selection schema
 is expanded, and no frontend scientific recomputation or LLM authority is
 introduced.
 
+## Phase 10M-5 Report and Recipe Composition Contracts
+
+Phase 10M-5 adds strict DTO contracts `ReportCompositionRequest 1.0`,
+`ReportCompositionSnapshot 1.0`, `RecipeReplayManifest 1.0`, and
+`ReportExportManifest 1.0` across Python, checked-in JSON Schema, and
+TypeScript. They reuse the existing `reports.report_json` and
+`visualization_recipes.recipe_json` authorities; no table, column, index, or
+migration is added and migration head remains `0007_phase10m1_workspace_domain`.
+
+The contracts reject unknown fields, duplicate JSON keys, non-finite numbers,
+invalid exact IDs/hashes/enums, depth above 14, request bytes above 524,288,
+export bytes above 2,097,152, and every declared item/string cap. Canonical
+semantic hashes include exact source identities, Workspace revision, Plan,
+selected source order, captions, disclosures, and Recipe bindings while
+excluding persistence IDs, timestamps, request traces, browser state,
+temporary URLs, and secrets.
+
+`RecipeReplayManifest 1.0` distinguishes Plan 0.1 independent/sequential
+semantics from Plan 0.2 typed Artifact dependency bindings. Its execution,
+Plan, Job, queue, and automatic replay flags are always false. These DTOs add
+no scientific, Workspace, selection, renderer, provider, or execution authority.
+
 ## Phase 10L-5 Natural-Language Evidence Contracts
 
 Phase 10L-5 adds versioned evidence-run contracts without changing scientific

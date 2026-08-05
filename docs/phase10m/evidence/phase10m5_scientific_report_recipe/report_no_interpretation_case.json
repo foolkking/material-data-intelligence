@@ -1,0 +1,12 @@
+{
+  "groundedFindings": {
+    "items": [
+      "GROUNDED_FINDINGS_UNAVAILABLE"
+    ],
+    "sectionId": "GROUNDED_FINDINGS",
+    "status": "UNAVAILABLE",
+    "title": "Grounded Findings"
+  },
+  "predictedOutcome": "REPORT_READY_WITH_LIMITS",
+  "rawArtifactFindingGeneration": 0
+}

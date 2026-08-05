@@ -1,5 +1,15 @@
 # TASK_BOARD
 
+## 2026-08-05 Phase 10M-5 In Progress
+
+- [x] Verify M4 archive and admit M5 as the sole active task.
+- [x] Implement contracts, source projector, deterministic Report/Recipe,
+  existing persistence integration, APIs, UI, export, tests, and evidence.
+- [x] Pass focused backend/frontend and Chromium/Firefox/WebKit/mobile replay.
+- [ ] Pass full local regression and implementation exact-SHA CI.
+- [ ] Record completion and archive only after their exact-SHA CI succeeds.
+- [ ] Keep Phase 10M-6 reviewer-gated with no executable task.
+
 ## 2026-08-02 Phase 10M-4 Complete, Awaiting Verified Archive
 
 - [x] M3 verified archive restored and M4 admitted as the sole active task.

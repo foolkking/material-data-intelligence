@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-08-05 Phase 10M-5 Lifecycle Gates
+
+No architecture redesign blocks M5. Existing Report/Recipe JSON persistence
+supports the sealed immutable pair without migration or dependency changes.
+Local implementation and browser evidence are complete; full regression,
+service-backed exact-SHA CI, completion record, and verified queue archive
+remain lifecycle gates. Session draft recovery is intentionally M6 scope.
+Phase 10M-6 remains reviewer-gated and is not queued.
+
 ## 2026-08-02 Phase 10M-4 Lifecycle Gates
 
 No architecture redesign is open. Corrected implementation `6287785c` passed

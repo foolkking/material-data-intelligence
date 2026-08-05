@@ -1,5 +1,19 @@
 # PROJECT_BRIEF
 
+## 2026-08-05 Phase 10M-5 Local Implementation Under Verification
+
+Phase 10M-4 is archived at `7f84472d3cd0ca1e8a90eb56a69987bf4c2dadd7`
+with exact-SHA CI `30752905104`. The sole active reviewer-authorized M5 task
+adds strict Report/Recipe composition DTOs, exact 42-contract source
+projection, deterministic 12-section Reports, exact non-executable Plan 0.1/
+0.2 Recipes, existing-table atomic/idempotent persistence, seven additive APIs,
+Workspace composition/history UI, and canonical JSON/Markdown export.
+
+No migration, database schema, dependency, lockfile, scientific Adapter,
+Workspace/Selection contract, renderer authority, or LLM call site changes.
+Local focused and four-browser evidence passes; full regression and exact-SHA
+lifecycle remain. Phase 10M-6 is reviewer-gated and not queued.
+
 ## 2026-08-02 Phase 10M-4 Complete, Awaiting Verified Archive
 
 Phase 10M-3 is archived at `86fb69238f1c69e172ad1010cd70ff2c486f2a1c`

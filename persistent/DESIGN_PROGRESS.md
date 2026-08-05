@@ -1,5 +1,20 @@
 # DESIGN_PROGRESS
 
+## 2026-08-05 Phase 10M-5 Scientific Report/Recipe Locally Implemented
+
+- Added strict Python/JSON Schema/TypeScript composition contracts, canonical
+  hashes, duplicate-key/depth/size/cap validation, and immutable pair identity.
+- Reused existing Report/Recipe repositories and Unit of Work for atomic,
+  idempotent snapshots; preview writes nothing and Recipes cannot execute.
+- Added exact Workspace source eligibility, 12-section deterministic Reports,
+  Plan 0.1/0.2 Recipe projection, seven APIs, JSON/Markdown export, and legacy
+  read-only behavior without payload copying or latest rebinding.
+- Added Workspace source picker, session draft, preview/finalize, history,
+  Recipe detail, exports, keyboard reorder, and mobile focus/overflow behavior.
+- Local focused tests and Chromium/Firefox/WebKit/390x844 evidence pass with
+  zero external/page/console failures. Full regression/exact-SHA CI remain.
+- `NEW_LLM_CALL_SITES = 0`, `REAL_LLM_CALLS = 0`; M6 is reviewer-gated.
+
 ## 2026-08-02 Phase 10M-4 Typed Artifact Gallery Complete, Awaiting Archive
 
 - Added a complete exact type/version registry for all 42 shared Artifact

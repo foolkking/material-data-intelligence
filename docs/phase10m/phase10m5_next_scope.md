@@ -1,12 +1,14 @@
-# Phase 10M-5 Reviewer Gate
+# Phase 10M-6 Reviewer Gate
 
-Phase 10M-5 owns Scientific Report and Recipe composition. It remains a gap,
-not an executable task.
+```text
+Phase 10M-6:
+Save / Reload / Recovery / Responsive Closure
+REVIEWER_GATE / AWAITING REVIEWER PROMPT
+```
 
-Entry requires reviewer acceptance of the final M4 implementation, exact
-renderer inventory and classifications, selection emitter/consumer matrix,
-partial/legacy behavior, WebGL/browser/service evidence, implementation and
-completion-record exact-SHA CI, and verified queue archive.
+M6 is not an executable task. It requires reviewer evaluation of the verified
+M5 contracts, persisted pair semantics, session-only draft behavior, immutable
+history, exports, source eligibility, partial/stale/legacy behavior, Workspace
+revision conflicts, browser/mobile evidence, and all three exact-SHA CI gates.
 
-M5 may not be inferred from the local M4 implementation or this document. Do
-not create, queue, or execute M5 automatically.
+Do not create, queue, or execute Phase 10M-6 automatically.

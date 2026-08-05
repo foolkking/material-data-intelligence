@@ -1,0 +1,22 @@
+{
+  "canonicalHashStable": true,
+  "contracts": [
+    "ReportCompositionRequest 1.0",
+    "ReportCompositionSnapshot 1.0",
+    "RecipeReplayManifest 1.0",
+    "ReportExportManifest 1.0"
+  ],
+  "depthCap": 14,
+  "duplicateKeyParser": true,
+  "exportCapBytes": 2097152,
+  "jsonSchemas": [
+    "report-composition-request-v1.schema.json",
+    "report-composition-snapshot-v1.schema.json",
+    "recipe-replay-manifest-v1.schema.json",
+    "report-export-manifest-v1.schema.json"
+  ],
+  "python": "packages/schemas/mdi_schemas/report_composition.py",
+  "requestCapBytes": 524288,
+  "strictUnknownFields": true,
+  "typescript": "apps/web/app/lib/report-composition-api.ts"
+}

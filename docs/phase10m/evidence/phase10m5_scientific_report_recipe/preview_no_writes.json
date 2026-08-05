@@ -1,0 +1,22 @@
+{
+  "after": {
+    "artifacts": 1,
+    "jobs": 1,
+    "recipes": 0,
+    "reports": 0,
+    "toolCalls": 1
+  },
+  "before": {
+    "artifacts": 1,
+    "jobs": 1,
+    "recipes": 0,
+    "reports": 0,
+    "toolCalls": 1
+  },
+  "equal": true,
+  "jobCreation": 0,
+  "queueMessageCreation": 0,
+  "recipeWrites": 0,
+  "reportWrites": 0,
+  "toolCallCreation": 0
+}

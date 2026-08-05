@@ -1,0 +1,71 @@
+{
+  "duplicate": 0,
+  "expected": 7,
+  "extra": 0,
+  "implemented": 7,
+  "items": [
+    {
+      "evidence": [
+        "authority_audit.json",
+        "report_recipe_contracts.json"
+      ],
+      "id": "M5-A01",
+      "requirement": "REPORT_RECIPE_AUTHORITY_AND_CONTRACTS"
+    },
+    {
+      "evidence": [
+        "report_complete_case.json",
+        "report_partial_case.json"
+      ],
+      "id": "M5-A02",
+      "requirement": "SCIENTIFIC_REPORT_COMPOSITION"
+    },
+    {
+      "evidence": [
+        "recipe_plan01.json",
+        "recipe_plan02.json",
+        "recipe_determinism.json"
+      ],
+      "id": "M5-A03",
+      "requirement": "EXACT_RECIPE_REPLAY_MANIFEST"
+    },
+    {
+      "evidence": [
+        "browser_chromium.json",
+        "browser_mobile.json",
+        "idempotency.json"
+      ],
+      "id": "M5-A04",
+      "requirement": "WORKSPACE_COMPOSITION_UI_AND_HISTORY"
+    },
+    {
+      "evidence": [
+        "preview_no_writes.json",
+        "export_json.json",
+        "export_markdown.md"
+      ],
+      "id": "M5-A05",
+      "requirement": "DETERMINISTIC_PREVIEW_AND_SAFE_EXPORT"
+    },
+    {
+      "evidence": [
+        "report_stale_missing_legacy_case.json",
+        "performance.json",
+        "security.json"
+      ],
+      "id": "M5-A06",
+      "requirement": "PARTIAL_COMPATIBILITY_ACCESSIBILITY_PERFORMANCE_SECURITY"
+    },
+    {
+      "evidence": [
+        "service_backed.json",
+        "browser_firefox.json",
+        "browser_webkit.json",
+        "manifest.json"
+      ],
+      "id": "M5-A07",
+      "requirement": "END_TO_END_EVIDENCE_AND_VERIFIED_LIFECYCLE"
+    }
+  ],
+  "missing": 0
+}

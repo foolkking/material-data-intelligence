@@ -1,5 +1,20 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-05 ADR Addendum: Phase 10M-5 Deterministic Delivery Snapshots
+
+**Decision:** Reuse existing Report and Recipe persistence for one immutable,
+transactional pair per finalized composition. Project exact Workspace/Job/Plan/
+Artifact/Claim/Evidence authorities into strict versioned DTOs; use deterministic
+templates for preview and canonical JSON/Markdown export. Preserve mandatory
+failure/limitation disclosures and exact Plan 0.1/0.2 semantics.
+
+**Consequences:** Report creates no scientific values or claims. Recipe is
+declarative and has no execution, Plan, Job, ToolCall, queue, Adapter, or replay
+authority. Filenames, labels, MIME guesses, canvas/screenshots, and latest
+versions grant no source authority. M5 adds no table, migration, dependency,
+Workspace/Selection contract, renderer authority, or LLM call site. Phase
+10M-6 remains independently reviewer-gated.
+
 ## 2026-08-02 ADR Addendum: Phase 10M-4 Exact Renderer Authority
 
 **Decision:** Use one finite, application-owned registry keyed by exact

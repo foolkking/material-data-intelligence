@@ -1,0 +1,239 @@
+{
+  "foreignClaimRejection": "REPORT_SOURCE_NOT_FOUND",
+  "interpretationId": "interpretation_f0f43fe35b1eeed5a0de55b6e682ba82",
+  "outcome": "REPORT_READY_WITH_LIMITS",
+  "realLlmCalls": 0,
+  "recipeNoExecution": {
+    "automaticReplay": false,
+    "executionAuthorized": false,
+    "jobCreated": false,
+    "planCreated": false,
+    "queueMessageCreated": false
+  },
+  "report": {
+    "analysisGoal": "Summarize exact dataset statistics.",
+    "compositionHash": "0e36e90cba73c1eeb273ba77e5cd700021d526c72512700f50159c98620bd847",
+    "createdAt": "2026-08-05T04:15:19.934432Z",
+    "datasetId": "dataset_l4_api",
+    "datasetVersion": null,
+    "executionAuthorized": false,
+    "limitations": [],
+    "mandatoryDisclosures": [
+      {
+        "artifactChecksum": null,
+        "artifactId": null,
+        "claimId": null,
+        "contract": "report.disclosure",
+        "contractVersion": "1.0",
+        "datasetId": "dataset_l4_api",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "AnalysisPlan 0.1 is projected without dependency reinterpretation.",
+        "interpretationId": null,
+        "jobId": "job_l4_api",
+        "panelId": null,
+        "projectId": "project_l4_api",
+        "reason": "WORKSPACE_LEGACY_PLAN_READ_ONLY",
+        "representation": "DISCLOSURE",
+        "role": "REPORT_DISCLOSURE_ONLY",
+        "sourceHash": "9bdd5264f66cb79127ac1030de967e0bc3ec4faa60dffb92448e71e8b3fc9c9f",
+        "sourceId": "disclosure_9bdd5264f66cb79127ac1030de967e0b",
+        "sourceKind": "DISCLOSURE",
+        "state": "MANDATORY",
+        "stepId": null,
+        "toolCallId": null
+      }
+    ],
+    "outcome": "REPORT_PREVIEW_READY",
+    "projectId": "project_l4_api",
+    "recipeId": "recipe_preview_718644c9a36d9b988073bb1fa231965c",
+    "reportHash": "69f87eee05d13afd34b37c320f9c4e40e0039c19d146b46bfdb0c4f1f94e28b9",
+    "reportId": "report_preview_718644c9a36d9b988073bb1fa231965c",
+    "schemaVersion": "1.0",
+    "scientificAuthority": false,
+    "sections": [
+      {
+        "items": [
+          "Grounded report"
+        ],
+        "sectionId": "TITLE",
+        "status": "READY",
+        "title": "Title"
+      },
+      {
+        "items": [
+          "Summarize exact dataset statistics."
+        ],
+        "sectionId": "ANALYSIS_GOAL",
+        "status": "READY",
+        "title": "Analysis Goal"
+      },
+      {
+        "items": [
+          "Project project_l4_api; Dataset dataset_l4_api version unavailable; Profile unavailable hash unavailable."
+        ],
+        "sectionId": "DATASET_RESOURCE_SCOPE",
+        "status": "READY",
+        "title": "Dataset and Resource Scope"
+      },
+      {
+        "items": [
+          "Step step_summary: tool table.numeric_summary; exact parameters and bindings are retained in Recipe recipe_preview_718644c9a36d9b988073bb1fa231965c."
+        ],
+        "sectionId": "METHODS_PLAN",
+        "status": "READY",
+        "title": "Methods and Plan"
+      },
+      {
+        "items": [
+          "Persisted execution outcome: completed."
+        ],
+        "sectionId": "EXECUTION_STATUS",
+        "status": "READY",
+        "title": "Execution Status"
+      },
+      {
+        "items": [
+          "ARTIFACT artifact_l4_api (table_json@1; checksum c73984d12490e995a34709c66d333d04b8ad6f10dbbc197178fbb47af59dbd63)"
+        ],
+        "sectionId": "SELECTED_RESULTS",
+        "status": "READY",
+        "title": "Selected Results"
+      },
+      {
+        "items": [
+          "dataset reported count: 4."
+        ],
+        "sectionId": "GROUNDED_FINDINGS",
+        "status": "READY",
+        "title": "Grounded Findings"
+      },
+      {
+        "items": [
+          "AnalysisPlan 0.1 is projected without dependency reinterpretation."
+        ],
+        "sectionId": "WARNINGS_LIMITATIONS",
+        "status": "LIMITED",
+        "title": "Warnings and Limitations"
+      },
+      {
+        "items": [],
+        "sectionId": "FAILED_BLOCKED_MISSING",
+        "status": "EMPTY",
+        "title": "Failed, Blocked and Missing Scope"
+      },
+      {
+        "items": [
+          "Evidence evidence_1335bffe710b795f394e4d3abda5aa36 from Artifact artifact_l4_api (c73984d12490e995a34709c66d333d04b8ad6f10dbbc197178fbb47af59dbd63)."
+        ],
+        "sectionId": "EVIDENCE_PROVENANCE",
+        "status": "READY",
+        "title": "Evidence and Provenance"
+      },
+      {
+        "items": [
+          "Plan schema 0.1.",
+          "Application source Workspace workspace_c92fdc4a37a7cb2fe692203405b76b73 revision 0.",
+          "REFERENCE_METADATA_NOT_AVAILABLE"
+        ],
+        "sectionId": "ENVIRONMENT_REFERENCES",
+        "status": "READY",
+        "title": "Environment and References"
+      },
+      {
+        "items": [
+          "Recipe recipe_preview_718644c9a36d9b988073bb1fa231965c; declarative only; executionAuthorized=false."
+        ],
+        "sectionId": "EXACT_RERUN_RECIPE",
+        "status": "READY",
+        "title": "Exact Rerun Recipe Reference"
+      }
+    ],
+    "selectedSources": [
+      {
+        "artifactChecksum": "c73984d12490e995a34709c66d333d04b8ad6f10dbbc197178fbb47af59dbd63",
+        "artifactId": "artifact_l4_api",
+        "claimId": null,
+        "contract": "table_json",
+        "contractVersion": "1",
+        "datasetId": "dataset_l4_api",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "Validated bounded table representation.",
+        "interpretationId": null,
+        "jobId": "job_l4_api",
+        "panelId": null,
+        "projectId": "project_l4_api",
+        "reason": null,
+        "representation": "BOUNDED_TABLE",
+        "role": "REPORT_TABLE_SOURCE",
+        "sourceHash": "c73984d12490e995a34709c66d333d04b8ad6f10dbbc197178fbb47af59dbd63",
+        "sourceId": "artifact_l4_api",
+        "sourceKind": "ARTIFACT",
+        "state": "ELIGIBLE",
+        "stepId": "step_summary",
+        "toolCallId": "tool_call_l4_api"
+      },
+      {
+        "artifactChecksum": null,
+        "artifactId": null,
+        "claimId": "claim_1fa7ccbf49339c39c61a88cf42c392ba",
+        "contract": "ScientificClaim",
+        "contractVersion": "1.0",
+        "datasetId": "dataset_l4_api",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "dataset reported count: 4.",
+        "interpretationId": "interpretation_f0f43fe35b1eeed5a0de55b6e682ba82",
+        "jobId": "job_l4_api",
+        "panelId": null,
+        "projectId": "project_l4_api",
+        "reason": null,
+        "representation": "CLAIM",
+        "role": "REPORT_FINDING_SOURCE",
+        "sourceHash": "f0f43fe35b1eeed5a0de55b6e682ba82459635137676578a3026965d7112deb0",
+        "sourceId": "claim_1fa7ccbf49339c39c61a88cf42c392ba",
+        "sourceKind": "SCIENTIFIC_CLAIM",
+        "state": "ELIGIBLE",
+        "stepId": null,
+        "toolCallId": null
+      },
+      {
+        "artifactChecksum": "c73984d12490e995a34709c66d333d04b8ad6f10dbbc197178fbb47af59dbd63",
+        "artifactId": "artifact_l4_api",
+        "claimId": null,
+        "contract": "ScientificEvidenceItem",
+        "contractVersion": "1.0",
+        "datasetId": "dataset_l4_api",
+        "datasetVersion": "legacy-plan:plan_l4_api",
+        "evidenceItemId": "evidence_1335bffe710b795f394e4d3abda5aa36",
+        "fallback": "4",
+        "interpretationId": "interpretation_f0f43fe35b1eeed5a0de55b6e682ba82",
+        "jobId": "job_l4_api",
+        "panelId": null,
+        "projectId": "project_l4_api",
+        "reason": null,
+        "representation": "EVIDENCE",
+        "role": "REPORT_EVIDENCE_SOURCE",
+        "sourceHash": "c73984d12490e995a34709c66d333d04b8ad6f10dbbc197178fbb47af59dbd63",
+        "sourceId": "evidence_1335bffe710b795f394e4d3abda5aa36",
+        "sourceKind": "EVIDENCE_ITEM",
+        "state": "ELIGIBLE",
+        "stepId": "step_summary",
+        "toolCallId": "tool_call_l4_api"
+      }
+    ],
+    "sourceJobId": "job_l4_api",
+    "sourcePlanHash": "892d064cf5f1d0d000715ef162688979ff848e79ce48dc285768279b37bd162f",
+    "sourcePlanId": "plan_l4_api",
+    "sourcePlanSchemaVersion": "0.1",
+    "title": "Grounded report",
+    "warnings": [
+      "AnalysisPlan 0.1 is projected without dependency reinterpretation."
+    ],
+    "workspaceId": "workspace_c92fdc4a37a7cb2fe692203405b76b73",
+    "workspaceRevision": 0
+  },
+  "selectedClaimId": "claim_1fa7ccbf49339c39c61a88cf42c392ba",
+  "selectedEvidenceItemId": "evidence_1335bffe710b795f394e4d3abda5aa36"
+}

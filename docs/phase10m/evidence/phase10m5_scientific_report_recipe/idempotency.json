@@ -1,0 +1,42 @@
+{
+  "first": {
+    "compositionHash": "379cd8ba9786d2ae7b1a8ecdef5ef05a6736457ae6eb96f4cee9f7b779cfad13",
+    "idempotentReplay": false,
+    "immutable": true,
+    "noExecution": {
+      "jobCreated": false,
+      "planCreated": false,
+      "queueMessageCreated": false,
+      "toolCallCreated": false
+    },
+    "outcome": "REPORT_READY_WITH_LIMITS",
+    "recipeHash": "8f267987494e4cec60694a1ba2f503427b9d81d00098a91750ff0b078cfcdb2c",
+    "recipeId": "recipe_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "reportHash": "b6c3538f240d22f3763f896ca11adb8e65c91b6e65930f1c0ec9385b6c1a96b0",
+    "reportId": "report_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "workspaceId": "workspace_72af2d3911be2a637d2087e7cbfea0c3",
+    "workspaceRevision": 0
+  },
+  "recipeRecordCount": 1,
+  "replay": {
+    "compositionHash": "379cd8ba9786d2ae7b1a8ecdef5ef05a6736457ae6eb96f4cee9f7b779cfad13",
+    "idempotentReplay": true,
+    "immutable": true,
+    "noExecution": {
+      "jobCreated": false,
+      "planCreated": false,
+      "queueMessageCreated": false,
+      "toolCallCreated": false
+    },
+    "outcome": "REPORT_READY_WITH_LIMITS",
+    "recipeHash": "8f267987494e4cec60694a1ba2f503427b9d81d00098a91750ff0b078cfcdb2c",
+    "recipeId": "recipe_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "reportHash": "b6c3538f240d22f3763f896ca11adb8e65c91b6e65930f1c0ec9385b6c1a96b0",
+    "reportId": "report_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "workspaceId": "workspace_72af2d3911be2a637d2087e7cbfea0c3",
+    "workspaceRevision": 0
+  },
+  "reportRecordCount": 1,
+  "sameRecipeId": true,
+  "sameReportId": true
+}

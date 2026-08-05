@@ -1,0 +1,7 @@
+{
+  "equal": true,
+  "plan01DependencyModel": "NONE_OR_SEQUENTIAL_INDEPENDENT",
+  "plan01FirstHash": "35db5499baaf84dab15abe6ecfc4cf6d41be3777874ec5af148b65b7a9503e5a",
+  "plan01SecondHash": "35db5499baaf84dab15abe6ecfc4cf6d41be3777874ec5af148b65b7a9503e5a",
+  "plan02DependencyModel": "TYPED_ARTIFACT_BINDINGS"
+}

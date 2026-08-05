@@ -1,0 +1,8 @@
+{
+  "ciRequired": true,
+  "expectedSkipped": 0,
+  "expectedTest": "test_phase10m5_postgres_redis_minio_report_recipe_composition",
+  "local": "UNAVAILABLE",
+  "migrationHead": "0007_phase10m1_workspace_domain",
+  "reason": "Docker executable is unavailable in the local environment; CI runs with MDI_RUN_INTEGRATION=1 and zero-skip enforcement"
+}

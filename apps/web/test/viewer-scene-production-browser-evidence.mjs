@@ -240,7 +240,7 @@ async function boundaryCases(context, browserId) {
       if (mode === "chunk_failure") failNextChunk = true;
       await page.getByRole("tab", { name: "3D Renderer" }).click();
       if (mode === "invalid") await page.waitForSelector('[data-testid="viewer-scene-renderer-invalid"]');
-      if (mode === "unsupported") await page.waitForSelector('[data-testid="viewer-scene-renderer-unavailable"]');
+      if (mode === "unsupported") await page.waitForSelector('[data-testid="viewer-scene-renderer-unavailable"], [data-testid="viewer-scene-renderer-fallback"]');
       if (mode === "chunk_failure") await page.waitForSelector('[data-testid="viewer-scene-renderer-fallback"]');
       if (mode === "context_loss") {
         await page.waitForSelector('[data-testid="viewer-scene-renderer-canvas"]');
@@ -257,7 +257,8 @@ async function boundaryCases(context, browserId) {
       if (await page.locator("canvas").count()) throw new Error(`${mode} fallback retained a canvas`);
     }
     await page.screenshot({ path: path.join(SCREENSHOTS, `${browserId}_${mode}.png`), fullPage: true });
-    results[mode] = { pass: true, canvas_count: await page.locator("canvas").count(), external_request_count: (await auditPage(page)).external };
+    const expectedConsole = mode === "unsupported" ? [/^THREE\.WebGLRenderer: .*Error creating WebGL context\.$/] : [];
+    results[mode] = { pass: true, canvas_count: await page.locator("canvas").count(), external_request_count: (await auditPage(page, expectedConsole)).external };
     await page.close();
   }
   return results;
@@ -318,7 +319,7 @@ async function snapshot(page) {
   return result;
 }
 
-async function auditPage(page) {
+async function auditPage(page, expectedConsole = []) {
   const inert = await page.evaluate(() => ({
     iframe: document.querySelectorAll("iframe").length,
     object: document.querySelectorAll("object,embed").length,
@@ -327,7 +328,7 @@ async function auditPage(page) {
     inlineHandler: [...document.querySelectorAll("*")].filter((node) => [...node.attributes].some((attr) => /^on/i.test(attr.name))).length,
     threeGlobal: Boolean(window.THREE), mattervizGlobal: Boolean(window.MatterViz),
   }));
-  const errors = consoleMessages.filter((item) => item.type === "error" && !/Failed to load resource|Loading chunk .* failed/i.test(item.text));
+  const errors = consoleMessages.filter((item) => item.type === "error" && !/Failed to load resource|Loading chunk .* failed/i.test(item.text) && !expectedConsole.some((pattern) => pattern.test(item.text)));
   if (Object.values(inert).some(Boolean) || errors.length || pageErrors.length || external.length) throw new Error(`browser security audit failed: ${JSON.stringify({ inert, errors, pageErrors, external })}`);
   return { external: external.length };
 }

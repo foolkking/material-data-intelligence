@@ -508,6 +508,15 @@ class WorkspaceProjectionService:
         body["projectionHash"] = etag
         return WorkspaceSnapshot(body=body, etag=etag)
 
+    def read_source_projection(self, workspace_id: str) -> _SourceProjection:
+        """Return exact metadata-only source records without projecting or writing state."""
+        stored = self.get_stored_workspace(workspace_id)
+        return self._collect_source(
+            stored.sourceJobId,
+            allow_missing_job=True,
+            fallback_project_id=stored.projectId,
+        )
+
     def patch_workspace(
         self,
         *,

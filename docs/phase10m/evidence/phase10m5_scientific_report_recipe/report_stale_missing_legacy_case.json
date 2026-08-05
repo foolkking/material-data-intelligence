@@ -1,0 +1,66 @@
+{
+  "legacy": {
+    "legacyReadOnly": true,
+    "silentUpgrade": false,
+    "state": "LEGACY_READ_ONLY"
+  },
+  "missing": {
+    "error": "REPORT_SOURCE_NOT_FOUND",
+    "latestRebinding": false,
+    "selectedId": "artifact_missing"
+  },
+  "stale": {
+    "latestRebinding": false,
+    "source": {
+      "artifactChecksum": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "artifactId": "artifact_m5_evidence_stale",
+      "claimId": null,
+      "contract": "phonon_band_json",
+      "contractVersion": "1",
+      "datasetId": "dataset_1",
+      "datasetVersion": "dataset_version_2",
+      "evidenceItemId": null,
+      "fallback": "Backend-produced phonon band data with table fallback.",
+      "interpretationId": null,
+      "jobId": "job_m5_evidence_stale",
+      "panelId": null,
+      "projectId": "project_1",
+      "reason": null,
+      "representation": "STATIC_FIGURE",
+      "role": "REPORT_FIGURE_SOURCE",
+      "sourceHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceId": "artifact_m5_evidence_stale",
+      "sourceKind": "ARTIFACT",
+      "state": "STALE",
+      "stepId": null,
+      "toolCallId": "call_stale"
+    }
+  },
+  "unsupported": {
+    "selectionError": "REPORT_SELECTION_UNSUPPORTED",
+    "source": {
+      "artifactChecksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "artifactId": "artifact_m5",
+      "claimId": null,
+      "contract": "unknown_contract",
+      "contractVersion": "1",
+      "datasetId": "dataset_m5",
+      "datasetVersion": null,
+      "evidenceItemId": null,
+      "fallback": "Unknown Artifact contract; no renderer or Report role is guessed.",
+      "interpretationId": null,
+      "jobId": "job_m5",
+      "panelId": null,
+      "projectId": "project_m5",
+      "reason": "CONTRACT_UNSUPPORTED",
+      "representation": "NONE",
+      "role": "REPORT_UNSUPPORTED",
+      "sourceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sourceId": "artifact_m5",
+      "sourceKind": "ARTIFACT",
+      "state": "UNSUPPORTED",
+      "stepId": "step_summary",
+      "toolCallId": "call_m5"
+    }
+  }
+}

@@ -83,7 +83,16 @@ verified completion/archive lifecycle:
 - [`phase10m/phase10m4_accessibility_performance_security.md`](phase10m/phase10m4_accessibility_performance_security.md): loading, mobile, accessibility, and inert rendering boundaries.
 - [`phase10m/phase10m4_evidence.md`](phase10m/phase10m4_evidence.md): local evidence and pending exact-SHA gates.
 - [`phase10m/phase10m4_completion.md`](phase10m/phase10m4_completion.md): in-progress lifecycle state without a premature completion claim.
-- [`phase10m/phase10m5_next_scope.md`](phase10m/phase10m5_next_scope.md): reviewer gate only; no executable M5 task.
+- [`phase10m/phase10m5_report_recipe_entry_audit.md`](phase10m/phase10m5_report_recipe_entry_audit.md): verified persistence/authority/no-migration readiness.
+- [`phase10m/phase10m5_composition_contracts.md`](phase10m/phase10m5_composition_contracts.md): strict Report/Recipe request, snapshot, replay, and export contracts.
+- [`phase10m/phase10m5_report_content_contract.md`](phase10m/phase10m5_report_content_contract.md): mandatory deterministic Report sections and disclosures.
+- [`phase10m/phase10m5_recipe_replay_manifest.md`](phase10m/phase10m5_recipe_replay_manifest.md): exact declarative Plan 0.1/0.2 Recipe boundary.
+- [`phase10m/phase10m5_source_eligibility_matrix.md`](phase10m/phase10m5_source_eligibility_matrix.md): exact Workspace source roles and fallbacks.
+- [`phase10m/phase10m5_api_contract.md`](phase10m/phase10m5_api_contract.md): additive composition, history, Recipe, and export routes.
+- [`phase10m/phase10m5_workspace_ui_contract.md`](phase10m/phase10m5_workspace_ui_contract.md): draft, preview, finalize, history, mobile, and accessibility behavior.
+- [`phase10m/phase10m5_export_contract.md`](phase10m/phase10m5_export_contract.md): canonical JSON and inert Markdown export.
+- [`phase10m/phase10m5_acceptance_evidence_map.md`](phase10m/phase10m5_acceptance_evidence_map.md): exact seven acceptance IDs and retained evidence.
+- [`phase10m/phase10m5_next_scope.md`](phase10m/phase10m5_next_scope.md): M6 reviewer gate only; no executable M6 task.
 - [`phase10m/evidence/phase10m3_canonical_selection/`](phase10m/evidence/phase10m3_canonical_selection/): retained M3 evidence.
 
 ## Phase 10K Material Intelligence

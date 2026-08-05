@@ -36,13 +36,13 @@ Every acceptance ID belongs to exactly one backlog phase. Every backlog phase na
 | M4-A06 | Loading | Metadata first, active-panel lazy payload, cancellation and request cap |
 | M4-A07 | WebGL | Context loss/recovery and unmount dispose canvas resources without growth |
 | M4-A08 | Browser/service | Browser matrix/mobile plus MinIO-backed artifact retrieval, 0 skipped |
-| M5-A01 | Report contract | Strict versioned composition with exact panel/claim/evidence/lineage refs |
-| M5-A02 | Report disclosure | Failed/blocked/partial states retained in view and every export |
-| M5-A03 | Export | Deterministic inert Markdown/HTML/PDF outputs and hashes |
-| M5-A04 | Recipe contract | Exact data/Profile/Intent/Plan/tool/params/dependencies/artifact/renderer versions |
-| M5-A05 | Replay boundary | Replay starts reviewed canonical request; stale/unsupported recipe blocked |
-| M5-A06 | Recommendation | No recommendation creates plan, Job, ToolCall, or enqueue action |
-| M5-A07 | API/browser/service | Composition CRUD/export, UI selection, reload, PostgreSQL/MinIO, 0 skipped |
+| M5-A01 | Authority/contracts | `REPORT_RECIPE_AUTHORITY_AND_CONTRACTS`: strict DTOs reuse existing immutable Report/Recipe persistence |
+| M5-A02 | Report | `SCIENTIFIC_REPORT_COMPOSITION`: deterministic sections, exact sources, findings, and mandatory disclosures |
+| M5-A03 | Recipe | `EXACT_RECIPE_REPLAY_MANIFEST`: exact Plan 0.1/0.2 tools, params, dependencies, bindings, and no-execution flags |
+| M5-A04 | Workspace UI | `WORKSPACE_COMPOSITION_UI_AND_HISTORY`: session draft, preview, finalize, immutable history, Recipe detail |
+| M5-A05 | Preview/export | `DETERMINISTIC_PREVIEW_AND_SAFE_EXPORT`: zero-write preview plus canonical JSON and inert Markdown |
+| M5-A06 | Closure qualities | `PARTIAL_COMPATIBILITY_ACCESSIBILITY_PERFORMANCE_SECURITY`: typed edge states, caps, mobile, a11y, security |
+| M5-A07 | Evidence/lifecycle | `END_TO_END_EVIDENCE_AND_VERIFIED_LIFECYCLE`: browser/service evidence and three exact-SHA CI gates |
 | M6-A01 | Save/reload | Mutable state restores exactly; scientific sources remain references |
 | M6-A02 | Recovery | 128 append-only revisions, deterministic rollback, conflicting writes rejected |
 | M6-A03 | Staleness | Dataset/Profile/artifact/Job/interpretation/schema loss has typed behavior |

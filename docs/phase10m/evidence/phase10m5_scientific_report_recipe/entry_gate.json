@@ -1,0 +1,19 @@
+{
+  "branch": "master",
+  "entryGate": "PASS",
+  "initialHead": "7f84472d3cd0ca1e8a90eb56a69987bf4c2dadd7",
+  "initialOriginMaster": "7f84472d3cd0ca1e8a90eb56a69987bf4c2dadd7",
+  "m4": {
+    "archive": "7f84472d3cd0ca1e8a90eb56a69987bf4c2dadd7",
+    "archiveCi": 30752905104,
+    "completion": "ee0e913625b627e891e1627f204ebf8e14cfb7c9",
+    "completionCi": 30752527117,
+    "implementation": "6287785c26e7bfdb91664fb10e78aa3de87161f7",
+    "implementationCi": 30751689618
+  },
+  "migrationHead": "0007_phase10m1_workspace_domain",
+  "phase": "10M-5",
+  "repository": "Material Data Intelligence",
+  "taskBlocksBeforeAdmission": 0,
+  "worktreeAtEntry": "clean"
+}

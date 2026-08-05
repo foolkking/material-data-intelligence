@@ -1,0 +1,14 @@
+{
+  "atomicPair": "existing UnitOfWork transaction",
+  "newColumns": 0,
+  "newDependencies": 0,
+  "newIndexes": 0,
+  "newLlmCallSites": 0,
+  "newMigration": false,
+  "newTables": 0,
+  "readiness": "READY_FOR_IMPLEMENTATION",
+  "recipeAuthority": "existing visualization_recipes table and repository recipe_json",
+  "recipeCompositionProvider": "NONE",
+  "reportAuthority": "existing reports table and repository report_json",
+  "reportCompositionProvider": "NONE"
+}

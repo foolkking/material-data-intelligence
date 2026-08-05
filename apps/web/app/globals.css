@@ -561,12 +561,274 @@ button:disabled {
 .workspace-table-scroll table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .workspace-table-scroll th, .workspace-table-scroll td { border: 1px solid var(--border); padding: 6px 8px; text-align: left; }
 
+.workspace-report-composer,
+.workspace-report-source-picker,
+.workspace-report-draft,
+.workspace-report-preview,
+.workspace-report-history,
+.workspace-report-detail,
+.workspace-report-document,
+.workspace-recipe-summary {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+}
+
+.workspace-report-composer {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.workspace-report-heading,
+.workspace-report-section-heading,
+.workspace-report-actions,
+.workspace-report-order-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.workspace-report-heading p,
+.workspace-report-section-heading span,
+.workspace-report-source-list span,
+.workspace-report-selected-list span,
+.workspace-report-history span,
+.workspace-report-history small {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+
+.workspace-report-integrity {
+  border: 1px solid var(--border);
+  padding: 6px 9px;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.workspace-report-tabs,
+.workspace-report-filters {
+  display: flex;
+  max-width: 100%;
+  gap: 4px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.workspace-report-tabs button,
+.workspace-report-filters button {
+  min-height: 44px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.workspace-report-tabs button[aria-selected="true"],
+.workspace-report-filters button.active {
+  border-bottom-color: var(--accent);
+  color: var(--text);
+}
+
+.workspace-report-status,
+.workspace-report-no-write {
+  margin: 0;
+  border-left: 3px solid #6d9dad;
+  background: var(--accent-soft);
+  padding: 9px 11px;
+  overflow-wrap: anywhere;
+}
+
+.workspace-report-status.tone-danger {
+  border-color: #b94b4b;
+  background: #fff0f0;
+}
+
+.workspace-report-compose-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 18px;
+}
+
+.workspace-report-source-picker {
+  align-content: start;
+  border-right: 1px solid var(--border);
+  padding-right: 18px;
+}
+
+.workspace-report-source-list,
+.workspace-report-selected-list,
+.workspace-report-history > ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workspace-report-source-list {
+  max-height: 620px;
+  overflow: auto;
+}
+
+.workspace-report-source-list > li,
+.workspace-report-selected-list > li,
+.workspace-report-history > ul > li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 2px;
+}
+
+.workspace-report-source-list > li > div,
+.workspace-report-selected-list > li > div:first-child,
+.workspace-report-history > ul > li > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.workspace-report-source-list small,
+.workspace-report-selected-list strong,
+.workspace-report-history strong {
+  overflow-wrap: anywhere;
+}
+
+.workspace-report-source-list button,
+.workspace-report-order-actions button,
+.workspace-report-actions button,
+.workspace-report-history button {
+  min-height: 44px;
+}
+
+.workspace-report-draft > label,
+.workspace-report-selected-list label {
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.workspace-report-draft input,
+.workspace-report-selected-list input {
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.workspace-report-selected-list > li {
+  grid-template-columns: minmax(110px, 0.65fr) minmax(160px, 1fr) auto;
+}
+
+.workspace-report-mandatory {
+  border-left: 4px solid #d6ae58;
+  background: var(--warning-soft);
+  padding: 10px 12px;
+}
+
+.workspace-report-mandatory ul,
+.workspace-report-document ul {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+
+.workspace-report-document > header {
+  border-bottom: 2px solid var(--text);
+  padding-bottom: 12px;
+}
+
+.workspace-report-document > header span,
+.workspace-report-document > section > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.workspace-report-document > section {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0 14px;
+}
+
+.workspace-report-document li,
+.workspace-report-document p,
+.workspace-report-mandatory li {
+  overflow-wrap: anywhere;
+}
+
+.workspace-recipe-summary {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.workspace-recipe-summary summary {
+  cursor: pointer;
+  font-weight: 750;
+}
+
+.workspace-recipe-summary dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: var(--border);
+}
+
+.workspace-recipe-summary dl > div {
+  min-width: 0;
+  background: var(--panel);
+  padding: 9px;
+}
+
+.workspace-recipe-summary dt { color: var(--muted); font-size: 11px; }
+.workspace-recipe-summary dd { margin: 4px 0 0; overflow-wrap: anywhere; }
+
+.workspace-report-history > ul > li.active {
+  border-left: 3px solid var(--accent);
+  padding-left: 9px;
+}
+
+.workspace-report-detail pre {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  padding: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.workspace-report-mobile-source-trigger,
+.workspace-report-mobile-close,
+.workspace-report-mobile-backdrop {
+  display: none;
+}
+
 @media (max-width: 560px) {
   .workspace-gallery-heading,
   .workspace-active-artifact > header,
   .workspace-artifact-card-heading { align-items: flex-start; flex-direction: column; }
   .workspace-artifact-card-heading > span { max-width: 100%; text-align: left; }
   .workspace-artifact-list { grid-template-columns: minmax(0, 1fr); }
+  .workspace-report-heading,
+  .workspace-report-section-heading { align-items: flex-start; flex-direction: column; }
+  .workspace-report-compose-grid { grid-template-columns: minmax(0, 1fr); }
+  .workspace-report-mobile-source-trigger,
+  .workspace-report-mobile-close { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+  .workspace-report-mobile-source-trigger { width: 100%; }
+  .workspace-report-mobile-backdrop { display: block; position: fixed; inset: 0; z-index: 79; background: rgba(18, 26, 31, 0.42); }
+  .workspace-report-source-picker { display: none; border-right: 0; padding: 16px; }
+  .workspace-report-source-picker.mobile-open { display: grid; position: fixed; inset: auto 0 0; z-index: 80; max-height: min(82vh, 720px); overflow: auto; border-top: 1px solid var(--border); background: var(--panel); box-shadow: 0 -8px 30px rgba(18, 26, 31, 0.2); }
+  .workspace-report-selected-list > li { grid-template-columns: minmax(0, 1fr); }
+  .workspace-report-order-actions,
+  .workspace-report-actions { align-items: stretch; flex-direction: column; }
+  .workspace-report-order-actions button,
+  .workspace-report-actions button { width: 100%; }
 }
 
 .workspace-empty-state,

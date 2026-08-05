@@ -1,9 +1,8 @@
 # Phase 10M Unified Scientific Workspace
 
-Status: Phase 10M-1 through Phase 10M-3 are archived. Phase 10M-4 typed
-Artifact Gallery and scientific viewer integration is complete at corrected
-implementation `6287785c` with exact-SHA CI `30751689618` success;
-completion-record and queue-archive exact-SHA CI remain required.
+Status: Phase 10M-1 through Phase 10M-4 are archived. Reviewer-authorized
+Phase 10M-5 deterministic Scientific Report + Recipe composition is implemented
+locally and is completing regression/evidence and the three exact-SHA CI gates.
 
 ## Reading order
 
@@ -40,7 +39,19 @@ completion-record and queue-archive exact-SHA CI remain required.
 31. [M4 accessibility/performance/security](phase10m4_accessibility_performance_security.md)
 32. [M4 evidence](phase10m4_evidence.md)
 33. [M4 completion state](phase10m4_completion.md)
-34. [M5 reviewer gate](phase10m5_next_scope.md)
+34. [M5 entry audit](phase10m5_report_recipe_entry_audit.md)
+35. [M5 authority map](phase10m5_report_recipe_authority_map.md)
+36. [M5 composition contracts](phase10m5_composition_contracts.md)
+37. [M5 Report content](phase10m5_report_content_contract.md)
+38. [M5 Recipe manifest](phase10m5_recipe_replay_manifest.md)
+39. [M5 source eligibility](phase10m5_source_eligibility_matrix.md)
+40. [M5 API](phase10m5_api_contract.md)
+41. [M5 Workspace UI](phase10m5_workspace_ui_contract.md)
+42. [M5 export](phase10m5_export_contract.md)
+43. [M5 compatibility/failures](phase10m5_compatibility_and_failure_matrix.md)
+44. [M5 security/authorization](phase10m5_security_and_authorization.md)
+45. [M5 acceptance/evidence](phase10m5_acceptance_evidence_map.md)
+46. [M6 reviewer gate](phase10m5_next_scope.md)
 
 ## Status vocabulary
 
@@ -55,4 +66,6 @@ Phase 10M-0 remains the sealed architecture authority. M1 owns the persisted
 domain and API, M2 owns the metadata shell, and M3 activates exact canonical
 selection. M4 adds application-owned exact contract-to-renderer mapping,
 metadata-first Gallery loading, existing viewer integration, and bounded WebGL
-lifecycle without changing those contracts. M5 remains reviewer-gated.
+lifecycle without changing those contracts. M5 reuses existing Report/Recipe
+persistence for deterministic composition and has no execution or LLM authority.
+M6 remains reviewer-gated.

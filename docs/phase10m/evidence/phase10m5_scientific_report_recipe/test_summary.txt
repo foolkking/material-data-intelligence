@@ -1,0 +1,11 @@
+Focused backend: 29 passed
+Focused frontend: 6 passed
+Full backend: 1144 passed, 42 skipped (integration services unavailable locally)
+Full frontend: 63 files, 402 passed
+Typecheck: passed
+Build: passed (existing Plotly/glslify critical-dependency warnings)
+Phase 10 closure regression/browser/evidence: passed
+Browser local: Chromium, Firefox, WebKit, Chromium 390x844 passed
+Service-backed local: UNAVAILABLE (Docker executable unavailable; CI required)
+npm audit: UNAVAILABLE (registry endpoint returned 404 NOT_IMPLEMENTED)
+REAL_LLM_CALLS = 0

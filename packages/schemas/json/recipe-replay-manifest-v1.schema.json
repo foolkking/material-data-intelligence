@@ -1,0 +1,758 @@
+{
+  "$defs": {
+    "RecipeOutcome": {
+      "enum": [
+        "RECIPE_READY",
+        "RECIPE_READY_WITH_LIMITS",
+        "RECIPE_SOURCE_INTEGRITY_FAILED",
+        "RECIPE_VALIDATION_FAILED"
+      ],
+      "title": "RecipeOutcome",
+      "type": "string"
+    },
+    "RecipeStep": {
+      "additionalProperties": false,
+      "properties": {
+        "adapterVersion": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adapterversion"
+        },
+        "expectedOutputContracts": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Expectedoutputcontracts",
+          "type": "array"
+        },
+        "inputRefs": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "maxItems": 16,
+          "title": "Inputrefs",
+          "type": "array"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "stepId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Stepid",
+          "type": "string"
+        },
+        "toolId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Toolid",
+          "type": "string"
+        },
+        "toolVersion": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Toolversion"
+        }
+      },
+      "required": [
+        "stepId",
+        "toolId"
+      ],
+      "title": "RecipeStep",
+      "type": "object"
+    },
+    "ReportSourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactChecksum": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactchecksum"
+        },
+        "artifactId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactid"
+        },
+        "claimId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Claimid"
+        },
+        "contract": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contract"
+        },
+        "contractVersion": {
+          "anyOf": [
+            {
+              "maxLength": 32,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contractversion"
+        },
+        "datasetId": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datasetid"
+        },
+        "datasetVersion": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datasetversion"
+        },
+        "evidenceItemId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evidenceitemid"
+        },
+        "fallback": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fallback"
+        },
+        "interpretationId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interpretationid"
+        },
+        "jobId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Jobid",
+          "type": "string"
+        },
+        "panelId": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Panelid"
+        },
+        "projectId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Projectid",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "representation": {
+          "enum": [
+            "STATIC_FIGURE",
+            "BOUNDED_TABLE",
+            "CLAIM",
+            "EVIDENCE",
+            "PROVENANCE",
+            "DISCLOSURE",
+            "METADATA",
+            "NONE"
+          ],
+          "title": "Representation",
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/ReportSourceRole"
+        },
+        "sourceHash": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sourcehash"
+        },
+        "sourceId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "sourceKind": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Sourcekind",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/ReportSourceState"
+        },
+        "stepId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stepid"
+        },
+        "toolCallId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Toolcallid"
+        }
+      },
+      "required": [
+        "sourceKind",
+        "sourceId",
+        "projectId",
+        "jobId",
+        "role",
+        "state",
+        "representation"
+      ],
+      "title": "ReportSourceReference",
+      "type": "object"
+    },
+    "ReportSourceRole": {
+      "enum": [
+        "REPORT_FIGURE_SOURCE",
+        "REPORT_TABLE_SOURCE",
+        "REPORT_FINDING_SOURCE",
+        "REPORT_EVIDENCE_SOURCE",
+        "REPORT_PROVENANCE_SOURCE",
+        "REPORT_DISCLOSURE_ONLY",
+        "REPORT_METADATA_ONLY",
+        "REPORT_UNSUPPORTED"
+      ],
+      "title": "ReportSourceRole",
+      "type": "string"
+    },
+    "ReportSourceState": {
+      "enum": [
+        "ELIGIBLE",
+        "MANDATORY",
+        "METADATA_ONLY",
+        "UNAVAILABLE",
+        "STALE",
+        "UNSUPPORTED",
+        "SOURCE_INTEGRITY_FAILED"
+      ],
+      "title": "ReportSourceState",
+      "type": "string"
+    }
+  },
+  "$id": "https://mdi.local/schemas/recipe-replay-manifest-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "analysisPlanHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Analysisplanhash",
+      "type": "string"
+    },
+    "analysisPlanId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Analysisplanid",
+      "type": "string"
+    },
+    "automaticReplay": {
+      "const": false,
+      "default": false,
+      "title": "Automaticreplay",
+      "type": "boolean"
+    },
+    "compositionHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Compositionhash",
+      "type": "string"
+    },
+    "createdAt": {
+      "format": "date-time",
+      "title": "Createdat",
+      "type": "string"
+    },
+    "datasetHash": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Datasethash"
+    },
+    "datasetId": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Datasetid"
+    },
+    "datasetVersion": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Datasetversion"
+    },
+    "dependencyBindings": {
+      "default": [],
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "maxItems": 6,
+      "title": "Dependencybindings",
+      "type": "array"
+    },
+    "dependencyModel": {
+      "enum": [
+        "NONE_OR_SEQUENTIAL_INDEPENDENT",
+        "TYPED_ARTIFACT_BINDINGS"
+      ],
+      "title": "Dependencymodel",
+      "type": "string"
+    },
+    "eligibilityResolutionHash": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Eligibilityresolutionhash"
+    },
+    "eligibilityResolutionId": {
+      "anyOf": [
+        {
+          "maxLength": 96,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Eligibilityresolutionid"
+    },
+    "environmentProvenance": {
+      "additionalProperties": true,
+      "title": "Environmentprovenance",
+      "type": "object"
+    },
+    "executionAuthorized": {
+      "const": false,
+      "default": false,
+      "title": "Executionauthorized",
+      "type": "boolean"
+    },
+    "executionOutcome": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Executionoutcome",
+      "type": "string"
+    },
+    "graphHash": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Graphhash"
+    },
+    "intentHash": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Intenthash"
+    },
+    "intentId": {
+      "anyOf": [
+        {
+          "maxLength": 96,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Intentid"
+    },
+    "jobCreated": {
+      "const": false,
+      "default": false,
+      "title": "Jobcreated",
+      "type": "boolean"
+    },
+    "limitations": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "originalArtifacts": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ReportSourceReference"
+      },
+      "maxItems": 64,
+      "title": "Originalartifacts",
+      "type": "array"
+    },
+    "outcome": {
+      "$ref": "#/$defs/RecipeOutcome"
+    },
+    "planCreated": {
+      "const": false,
+      "default": false,
+      "title": "Plancreated",
+      "type": "boolean"
+    },
+    "planSchemaVersion": {
+      "enum": [
+        "0.1",
+        "0.2"
+      ],
+      "title": "Planschemaversion",
+      "type": "string"
+    },
+    "plannerDecisionHash": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Plannerdecisionhash"
+    },
+    "plannerDecisionId": {
+      "anyOf": [
+        {
+          "maxLength": 96,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Plannerdecisionid"
+    },
+    "profileHash": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Profilehash"
+    },
+    "profileId": {
+      "anyOf": [
+        {
+          "maxLength": 96,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Profileid"
+    },
+    "profileVersion": {
+      "anyOf": [
+        {
+          "maxLength": 32,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Profileversion"
+    },
+    "projectId": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Projectid",
+      "type": "string"
+    },
+    "providerProvenance": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Providerprovenance"
+    },
+    "queueMessageCreated": {
+      "const": false,
+      "default": false,
+      "title": "Queuemessagecreated",
+      "type": "boolean"
+    },
+    "recipeHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Recipehash",
+      "type": "string"
+    },
+    "recipeId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Recipeid",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "sourceReportHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Sourcereporthash",
+      "type": "string"
+    },
+    "sourceReportId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Sourcereportid",
+      "type": "string"
+    },
+    "sourceResourceBindings": {
+      "default": [],
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "maxItems": 16,
+      "title": "Sourceresourcebindings",
+      "type": "array"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/RecipeStep"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Steps",
+      "type": "array"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 128,
+      "title": "Warnings",
+      "type": "array"
+    },
+    "workspaceId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Workspaceid",
+      "type": "string"
+    },
+    "workspaceRevision": {
+      "minimum": 0,
+      "title": "Workspacerevision",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "recipeId",
+    "recipeHash",
+    "compositionHash",
+    "sourceReportId",
+    "sourceReportHash",
+    "workspaceId",
+    "workspaceRevision",
+    "projectId",
+    "analysisPlanId",
+    "analysisPlanHash",
+    "planSchemaVersion",
+    "dependencyModel",
+    "steps",
+    "executionOutcome",
+    "outcome",
+    "createdAt"
+  ],
+  "title": "RecipeReplayManifest",
+  "type": "object"
+}

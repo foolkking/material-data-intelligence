@@ -1,0 +1,573 @@
+{
+  "$defs": {
+    "ReportOutcome": {
+      "enum": [
+        "REPORT_PREVIEW_READY",
+        "REPORT_READY",
+        "REPORT_READY_WITH_LIMITS",
+        "REPORT_NO_SCIENTIFIC_RESULTS",
+        "REPORT_SOURCE_STALE",
+        "REPORT_SOURCE_INTEGRITY_FAILED",
+        "REPORT_VALIDATION_FAILED",
+        "REPORT_CAP_EXCEEDED",
+        "REPORT_AUTHORIZATION_FAILED"
+      ],
+      "title": "ReportOutcome",
+      "type": "string"
+    },
+    "ReportSection": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 256,
+          "title": "Items",
+          "type": "array"
+        },
+        "sectionId": {
+          "enum": [
+            "TITLE",
+            "ANALYSIS_GOAL",
+            "DATASET_RESOURCE_SCOPE",
+            "METHODS_PLAN",
+            "EXECUTION_STATUS",
+            "SELECTED_RESULTS",
+            "GROUNDED_FINDINGS",
+            "WARNINGS_LIMITATIONS",
+            "FAILED_BLOCKED_MISSING",
+            "EVIDENCE_PROVENANCE",
+            "ENVIRONMENT_REFERENCES",
+            "EXACT_RERUN_RECIPE"
+          ],
+          "title": "Sectionid",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "READY",
+            "LIMITED",
+            "UNAVAILABLE",
+            "EMPTY"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sectionId",
+        "title",
+        "status"
+      ],
+      "title": "ReportSection",
+      "type": "object"
+    },
+    "ReportSourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactChecksum": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactchecksum"
+        },
+        "artifactId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactid"
+        },
+        "claimId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Claimid"
+        },
+        "contract": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contract"
+        },
+        "contractVersion": {
+          "anyOf": [
+            {
+              "maxLength": 32,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contractversion"
+        },
+        "datasetId": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datasetid"
+        },
+        "datasetVersion": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datasetversion"
+        },
+        "evidenceItemId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evidenceitemid"
+        },
+        "fallback": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fallback"
+        },
+        "interpretationId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interpretationid"
+        },
+        "jobId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Jobid",
+          "type": "string"
+        },
+        "panelId": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Panelid"
+        },
+        "projectId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Projectid",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "representation": {
+          "enum": [
+            "STATIC_FIGURE",
+            "BOUNDED_TABLE",
+            "CLAIM",
+            "EVIDENCE",
+            "PROVENANCE",
+            "DISCLOSURE",
+            "METADATA",
+            "NONE"
+          ],
+          "title": "Representation",
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/ReportSourceRole"
+        },
+        "sourceHash": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sourcehash"
+        },
+        "sourceId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "sourceKind": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Sourcekind",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/ReportSourceState"
+        },
+        "stepId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stepid"
+        },
+        "toolCallId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Toolcallid"
+        }
+      },
+      "required": [
+        "sourceKind",
+        "sourceId",
+        "projectId",
+        "jobId",
+        "role",
+        "state",
+        "representation"
+      ],
+      "title": "ReportSourceReference",
+      "type": "object"
+    },
+    "ReportSourceRole": {
+      "enum": [
+        "REPORT_FIGURE_SOURCE",
+        "REPORT_TABLE_SOURCE",
+        "REPORT_FINDING_SOURCE",
+        "REPORT_EVIDENCE_SOURCE",
+        "REPORT_PROVENANCE_SOURCE",
+        "REPORT_DISCLOSURE_ONLY",
+        "REPORT_METADATA_ONLY",
+        "REPORT_UNSUPPORTED"
+      ],
+      "title": "ReportSourceRole",
+      "type": "string"
+    },
+    "ReportSourceState": {
+      "enum": [
+        "ELIGIBLE",
+        "MANDATORY",
+        "METADATA_ONLY",
+        "UNAVAILABLE",
+        "STALE",
+        "UNSUPPORTED",
+        "SOURCE_INTEGRITY_FAILED"
+      ],
+      "title": "ReportSourceState",
+      "type": "string"
+    }
+  },
+  "$id": "https://mdi.local/schemas/report-composition-snapshot-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "analysisGoal": {
+      "maxLength": 4096,
+      "title": "Analysisgoal",
+      "type": "string"
+    },
+    "compositionHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Compositionhash",
+      "type": "string"
+    },
+    "createdAt": {
+      "format": "date-time",
+      "title": "Createdat",
+      "type": "string"
+    },
+    "datasetId": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Datasetid"
+    },
+    "datasetVersion": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Datasetversion"
+    },
+    "executionAuthorized": {
+      "const": false,
+      "default": false,
+      "title": "Executionauthorized",
+      "type": "boolean"
+    },
+    "limitations": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "mandatoryDisclosures": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ReportSourceReference"
+      },
+      "maxItems": 192,
+      "title": "Mandatorydisclosures",
+      "type": "array"
+    },
+    "outcome": {
+      "$ref": "#/$defs/ReportOutcome"
+    },
+    "projectId": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Projectid",
+      "type": "string"
+    },
+    "recipeId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Recipeid",
+      "type": "string"
+    },
+    "reportHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Reporthash",
+      "type": "string"
+    },
+    "reportId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Reportid",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "scientificAuthority": {
+      "const": false,
+      "default": false,
+      "title": "Scientificauthority",
+      "type": "boolean"
+    },
+    "sections": {
+      "items": {
+        "$ref": "#/$defs/ReportSection"
+      },
+      "maxItems": 12,
+      "minItems": 12,
+      "title": "Sections",
+      "type": "array"
+    },
+    "selectedSources": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ReportSourceReference"
+      },
+      "maxItems": 256,
+      "title": "Selectedsources",
+      "type": "array"
+    },
+    "sourceJobId": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Sourcejobid",
+      "type": "string"
+    },
+    "sourcePlanHash": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sourceplanhash"
+    },
+    "sourcePlanId": {
+      "anyOf": [
+        {
+          "maxLength": 96,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sourceplanid"
+    },
+    "sourcePlanSchemaVersion": {
+      "anyOf": [
+        {
+          "enum": [
+            "0.1",
+            "0.2"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sourceplanschemaversion"
+    },
+    "title": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 128,
+      "title": "Warnings",
+      "type": "array"
+    },
+    "workspaceId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Workspaceid",
+      "type": "string"
+    },
+    "workspaceRevision": {
+      "minimum": 0,
+      "title": "Workspacerevision",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "reportId",
+    "reportHash",
+    "compositionHash",
+    "recipeId",
+    "workspaceId",
+    "workspaceRevision",
+    "projectId",
+    "sourceJobId",
+    "title",
+    "analysisGoal",
+    "outcome",
+    "sections",
+    "createdAt"
+  ],
+  "title": "ReportCompositionSnapshot",
+  "type": "object"
+}

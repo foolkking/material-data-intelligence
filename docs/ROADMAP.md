@@ -66,14 +66,16 @@ and explicit historical projection. Phase 10M-2 archived the additive
 URL state, Planner transition/history, and responsive state surfaces. Phase
 10M-3 archived strict `WorkspaceSelectionContext 1.0` URL/runtime behavior,
 exact compatibility, panel subscriptions, Inspector navigation, explicit Pin,
-and typed unavailable identities. Phase 10M-4 completed its exact
+and typed unavailable identities. Phase 10M-4 is archived after its exact
 application-owned renderer registry, metadata-first Artifact Gallery, existing
 scientific viewer adapters, M3 selection reuse, and bounded heavy-viewer
 lifecycle at corrected implementation `6287785c`; exact-SHA CI run
 `30751689618` passed Unit, Frontend/browser/build, and PostgreSQL/Redis/MinIO
-with zero skipped service tests. Completion-record and queue archive remain.
-Report/Recipe composition and recovery remain reviewer-gated Phase 10M-5+
-scope.
+with zero skipped service tests. Reviewer-authorized Phase 10M-5 now implements
+strict composition contracts, exact source projection, deterministic Reports,
+non-executable Plan 0.1/0.2 Recipes, immutable existing-table persistence,
+Workspace UI/history, and canonical JSON/Markdown export; its exact-SHA
+lifecycle is in progress. Recovery remains reviewer-gated Phase 10M-6 scope.
 
 ### Phase 10N - Professional Scientific Completion
 

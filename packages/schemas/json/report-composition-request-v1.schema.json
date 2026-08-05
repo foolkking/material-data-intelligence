@@ -1,0 +1,135 @@
+{
+  "$defs": {
+    "ReportCaption": {
+      "additionalProperties": false,
+      "properties": {
+        "sourceId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 2048,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourceId",
+        "text"
+      ],
+      "title": "ReportCaption",
+      "type": "object"
+    },
+    "ReportExportFormat": {
+      "enum": [
+        "json",
+        "markdown"
+      ],
+      "title": "ReportExportFormat",
+      "type": "string"
+    }
+  },
+  "$id": "https://mdi.local/schemas/report-composition-request-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "captions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ReportCaption"
+      },
+      "maxItems": 64,
+      "title": "Captions",
+      "type": "array"
+    },
+    "expectedWorkspaceRevision": {
+      "minimum": 0,
+      "title": "Expectedworkspacerevision",
+      "type": "integer"
+    },
+    "exportFormats": {
+      "default": [
+        "json",
+        "markdown"
+      ],
+      "items": {
+        "$ref": "#/$defs/ReportExportFormat"
+      },
+      "maxItems": 2,
+      "title": "Exportformats",
+      "type": "array"
+    },
+    "itemOrder": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Itemorder",
+      "type": "array"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "selectedArtifactIds": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Selectedartifactids",
+      "type": "array"
+    },
+    "selectedClaimIds": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Selectedclaimids",
+      "type": "array"
+    },
+    "selectedEvidenceItemIds": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Selectedevidenceitemids",
+      "type": "array"
+    },
+    "selectedPanelIds": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Selectedpanelids",
+      "type": "array"
+    },
+    "title": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "workspaceId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Workspaceid",
+      "type": "string"
+    }
+  },
+  "required": [
+    "workspaceId",
+    "expectedWorkspaceRevision",
+    "title"
+  ],
+  "title": "ReportCompositionRequest",
+  "type": "object"
+}

@@ -1,0 +1,13 @@
+{
+  "canonicalJsonExportBytes": 11025,
+  "finalizeMs": 22.074,
+  "idempotentDuplicateRecordGrowth": 0,
+  "initialHeavyArtifactPayloadRequests": 0,
+  "inventorySources": 7,
+  "markdownExportBytes": 2097,
+  "previewMs": 16.489,
+  "reportPreviewWebglContexts": 0,
+  "requestBytes": 335,
+  "scope": "development acceptance evidence; not a production capacity claim",
+  "sourceInventoryMs": 12.235
+}

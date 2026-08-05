@@ -1,0 +1,222 @@
+{
+  "schemaVersion": "phase10m5.evidence_manifest.v1",
+  "rule": "LF-normalized UTF-8 text; raw PNG bytes",
+  "entries": [
+    {
+      "path": "acceptance_mapping.json",
+      "bytes": 1624,
+      "hashMode": "lf_normalized_text",
+      "sha256": "5a8d50c1e67d7dca5badf53ac97e3bc6c2b997b780255eedd948ff1df643df52"
+    },
+    {
+      "path": "authority_audit.json",
+      "bytes": 466,
+      "hashMode": "lf_normalized_text",
+      "sha256": "bcbb21f11263f907a907cfa6ae88ee9d56caa0f9bc9de8bfaa9a8c74e3231f8a"
+    },
+    {
+      "path": "authorization.json",
+      "bytes": 248,
+      "hashMode": "lf_normalized_text",
+      "sha256": "da7e004c0e9262c717c1108b758946ac3bfa85c6d1988e6151113742e26ef08f"
+    },
+    {
+      "path": "browser_chromium.json",
+      "bytes": 596,
+      "hashMode": "lf_normalized_text",
+      "sha256": "bd7763231914dcaaa3fa27429695c6b13e8c4f23dc8aca5b97b12dd86d4f27cf"
+    },
+    {
+      "path": "browser_firefox.json",
+      "bytes": 595,
+      "hashMode": "lf_normalized_text",
+      "sha256": "e67f1189464baf8c5109ec8483457c8e5a1fea1d962195c8aa6825d9b64db11d"
+    },
+    {
+      "path": "browser_matrix.json",
+      "bytes": 1986,
+      "hashMode": "lf_normalized_text",
+      "sha256": "53e61fd74e58084c03f0daf100a2776d758968af015854074b1ee3877aa0780f"
+    },
+    {
+      "path": "browser_mobile.json",
+      "bytes": 394,
+      "hashMode": "lf_normalized_text",
+      "sha256": "152dc357f016e172ab65a163e9a16573e96cbe6cc0853cc25b0771f3ed67e1dd"
+    },
+    {
+      "path": "browser_webkit.json",
+      "bytes": 594,
+      "hashMode": "lf_normalized_text",
+      "sha256": "9597b51a8cbb4a4ac77af8b27a2b8fac06380f09938e2b85187ba6ad30fadc76"
+    },
+    {
+      "path": "console_summary.json",
+      "bytes": 107,
+      "hashMode": "lf_normalized_text",
+      "sha256": "380795a2b3341e4ab062375f7e1fbed225b4714b7dab62e0e01ba872b391dea1"
+    },
+    {
+      "path": "entry_gate.json",
+      "bytes": 663,
+      "hashMode": "lf_normalized_text",
+      "sha256": "20f64be057a855e32d5f8f20ff27a9c74f293552db4377a655646ab4dca2adf6"
+    },
+    {
+      "path": "export_json.json",
+      "bytes": 14525,
+      "hashMode": "lf_normalized_text",
+      "sha256": "12fb385d858a8aa1ef26f82eb60b75c898b4a1bd22b86733b8f0d59468bf3467"
+    },
+    {
+      "path": "export_manifest.json",
+      "bytes": 3788,
+      "hashMode": "lf_normalized_text",
+      "sha256": "985a3de94dc2670d2938686317b672ff290c83fb122ea887ff2a0fc2625e1285"
+    },
+    {
+      "path": "export_markdown.md",
+      "bytes": 2097,
+      "hashMode": "lf_normalized_text",
+      "sha256": "088bca861ecc2df9b4881739166c873949e67a0478e5f3063c1a0f316d2bda7a"
+    },
+    {
+      "path": "idempotency.json",
+      "bytes": 1579,
+      "hashMode": "lf_normalized_text",
+      "sha256": "f66af01bac4e5daa710e42383f43e13a02bfae73b35be9fde3e40329f7ba7ee5"
+    },
+    {
+      "path": "network_summary.json",
+      "bytes": 170,
+      "hashMode": "lf_normalized_text",
+      "sha256": "ee2505a35fe7157415184f314b76a8058097324ff91a47e4bf5ad0b8d161d764"
+    },
+    {
+      "path": "performance.json",
+      "bytes": 395,
+      "hashMode": "lf_normalized_text",
+      "sha256": "b273e7e4f5cb78143ceeac7ab8bef945cb08cb41cc68a934c8e149fd1dbb3d96"
+    },
+    {
+      "path": "persistence_atomicity.json",
+      "bytes": 185,
+      "hashMode": "lf_normalized_text",
+      "sha256": "a81b7367c3fc81a23efdc2ffdf78b5a10b2fbf2694918bec0ce5678aa02e2e15"
+    },
+    {
+      "path": "preview_no_writes.json",
+      "bytes": 353,
+      "hashMode": "lf_normalized_text",
+      "sha256": "29139a1b8e3d5e81a383cb0015fb95a33da6fc9af3f074c0f91fcc5cfda88e67"
+    },
+    {
+      "path": "recipe_determinism.json",
+      "bytes": 314,
+      "hashMode": "lf_normalized_text",
+      "sha256": "c0a87503a9aa50ac0dc8734577a57418da5ab5c3540722dfb2d0ab7420dc93a1"
+    },
+    {
+      "path": "recipe_plan01.json",
+      "bytes": 3393,
+      "hashMode": "lf_normalized_text",
+      "sha256": "9646ef3dc0e92c8cbf75a6865489d72521226fd039b65b250981d362d4e5937b"
+    },
+    {
+      "path": "recipe_plan02.json",
+      "bytes": 5944,
+      "hashMode": "lf_normalized_text",
+      "sha256": "9e4ba8d6c96f7b6a49208af8d433e2b4c77874a70f7f279d5790c4a25424f514"
+    },
+    {
+      "path": "report_complete_case.json",
+      "bytes": 8434,
+      "hashMode": "lf_normalized_text",
+      "sha256": "acd1da1f0b1aa34c38dad366c8e66f041267d566f241dfeacf0acc5669eef9c4"
+    },
+    {
+      "path": "report_no_interpretation_case.json",
+      "bytes": 279,
+      "hashMode": "lf_normalized_text",
+      "sha256": "e346e53d89b07259fdc69849f2fdd01ac58b69268965d92c21af5354634148d8"
+    },
+    {
+      "path": "report_partial_case.json",
+      "bytes": 2743,
+      "hashMode": "lf_normalized_text",
+      "sha256": "91ebf90a26d39558db8a477a43f15e61705696517fac3a75ff4bb8d0707faf3e"
+    },
+    {
+      "path": "report_plan01_case.json",
+      "bytes": 6532,
+      "hashMode": "lf_normalized_text",
+      "sha256": "65ea2644c5d5cf8332bafbe72ab5e137f42862f9c602ae6170409a57dcbe6071"
+    },
+    {
+      "path": "report_recipe_contracts.json",
+      "bytes": 669,
+      "hashMode": "lf_normalized_text",
+      "sha256": "1efeb15bc8727fe3f7a6e6703784f877e44d5137a003370edde7607d9fad48d5"
+    },
+    {
+      "path": "report_stale_missing_legacy_case.json",
+      "bytes": 2166,
+      "hashMode": "lf_normalized_text",
+      "sha256": "33f342c764f82786e5e723554009958bbd4df01fcde246c3e4671788237c2253"
+    },
+    {
+      "path": "screenshots/chromium_report.png",
+      "bytes": 174426,
+      "hashMode": "raw_binary",
+      "sha256": "fe2555a7704648b7c5eebd3b5c006aa95fa3d87fc553aad49c998523d6ab7e0c"
+    },
+    {
+      "path": "screenshots/firefox_report.png",
+      "bytes": 221524,
+      "hashMode": "raw_binary",
+      "sha256": "3b7f7f0d49b72a6068b79c4445737ee4a094c5965a784142b07e103398ab19cd"
+    },
+    {
+      "path": "screenshots/mobile_report.png",
+      "bytes": 60920,
+      "hashMode": "raw_binary",
+      "sha256": "069b032f71e7e7dc071d5eb71bcd14f1e63c08ba61fba79c4c30f7909f7d64a3"
+    },
+    {
+      "path": "screenshots/webkit_report.png",
+      "bytes": 127127,
+      "hashMode": "raw_binary",
+      "sha256": "9763c041a766a79629a30fd4d246665cb56cc38e92d6b26072f1a02b1e9b2c77"
+    },
+    {
+      "path": "secret_scan.txt",
+      "bytes": 119,
+      "hashMode": "lf_normalized_text",
+      "sha256": "e667a0bb69331d051766c121bea989414493f657355c239fd20e8712108b9e95"
+    },
+    {
+      "path": "security.json",
+      "bytes": 1187,
+      "hashMode": "lf_normalized_text",
+      "sha256": "fb608934998b232ddf5909423240deedefad33a89f67b01e7fe94c51ee1a0b13"
+    },
+    {
+      "path": "service_backed.json",
+      "bytes": 347,
+      "hashMode": "lf_normalized_text",
+      "sha256": "2142e67cd38661a6bfe6c0704f920fa5f797240c820b5ceadaedf38c25e26805"
+    },
+    {
+      "path": "source_eligibility_matrix.json",
+      "bytes": 10329,
+      "hashMode": "lf_normalized_text",
+      "sha256": "5ed044b92e4e34386bc0d9b2a43975b6dc1943f3a9c0117c5089c2c7f0dfedd5"
+    },
+    {
+      "path": "test_summary.txt",
+      "bytes": 547,
+      "hashMode": "lf_normalized_text",
+      "sha256": "4cbdd6be3eae2541193dfbbfcfaeeac832bc5a5fef1787e1a0feef08c80ecee5"
+    }
+  ]
+}

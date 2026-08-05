@@ -1,0 +1,429 @@
+{
+  "$defs": {
+    "ReportExportFormat": {
+      "enum": [
+        "json",
+        "markdown"
+      ],
+      "title": "ReportExportFormat",
+      "type": "string"
+    },
+    "ReportSourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactChecksum": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactchecksum"
+        },
+        "artifactId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactid"
+        },
+        "claimId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Claimid"
+        },
+        "contract": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contract"
+        },
+        "contractVersion": {
+          "anyOf": [
+            {
+              "maxLength": 32,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contractversion"
+        },
+        "datasetId": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datasetid"
+        },
+        "datasetVersion": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datasetversion"
+        },
+        "evidenceItemId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evidenceitemid"
+        },
+        "fallback": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fallback"
+        },
+        "interpretationId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interpretationid"
+        },
+        "jobId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Jobid",
+          "type": "string"
+        },
+        "panelId": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Panelid"
+        },
+        "projectId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Projectid",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "representation": {
+          "enum": [
+            "STATIC_FIGURE",
+            "BOUNDED_TABLE",
+            "CLAIM",
+            "EVIDENCE",
+            "PROVENANCE",
+            "DISCLOSURE",
+            "METADATA",
+            "NONE"
+          ],
+          "title": "Representation",
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/ReportSourceRole"
+        },
+        "sourceHash": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sourcehash"
+        },
+        "sourceId": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "sourceKind": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Sourcekind",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/ReportSourceState"
+        },
+        "stepId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stepid"
+        },
+        "toolCallId": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Toolcallid"
+        }
+      },
+      "required": [
+        "sourceKind",
+        "sourceId",
+        "projectId",
+        "jobId",
+        "role",
+        "state",
+        "representation"
+      ],
+      "title": "ReportSourceReference",
+      "type": "object"
+    },
+    "ReportSourceRole": {
+      "enum": [
+        "REPORT_FIGURE_SOURCE",
+        "REPORT_TABLE_SOURCE",
+        "REPORT_FINDING_SOURCE",
+        "REPORT_EVIDENCE_SOURCE",
+        "REPORT_PROVENANCE_SOURCE",
+        "REPORT_DISCLOSURE_ONLY",
+        "REPORT_METADATA_ONLY",
+        "REPORT_UNSUPPORTED"
+      ],
+      "title": "ReportSourceRole",
+      "type": "string"
+    },
+    "ReportSourceState": {
+      "enum": [
+        "ELIGIBLE",
+        "MANDATORY",
+        "METADATA_ONLY",
+        "UNAVAILABLE",
+        "STALE",
+        "UNSUPPORTED",
+        "SOURCE_INTEGRITY_FAILED"
+      ],
+      "title": "ReportSourceState",
+      "type": "string"
+    }
+  },
+  "$id": "https://mdi.local/schemas/report-export-manifest-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authorizationScope": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Authorizationscope",
+      "type": "string"
+    },
+    "byteSize": {
+      "maximum": 2097152,
+      "minimum": 0,
+      "title": "Bytesize",
+      "type": "integer"
+    },
+    "contentChecksum": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Contentchecksum",
+      "type": "string"
+    },
+    "coverage": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Coverage",
+      "type": "string"
+    },
+    "executionAuthorized": {
+      "const": false,
+      "default": false,
+      "title": "Executionauthorized",
+      "type": "boolean"
+    },
+    "exportHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Exporthash",
+      "type": "string"
+    },
+    "exportId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Exportid",
+      "type": "string"
+    },
+    "format": {
+      "$ref": "#/$defs/ReportExportFormat"
+    },
+    "generatedAt": {
+      "format": "date-time",
+      "title": "Generatedat",
+      "type": "string"
+    },
+    "omittedPayloadReasons": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Omittedpayloadreasons",
+      "type": "array"
+    },
+    "projectId": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Projectid",
+      "type": "string"
+    },
+    "recipeHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Recipehash",
+      "type": "string"
+    },
+    "recipeId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Recipeid",
+      "type": "string"
+    },
+    "rendererContract": {
+      "const": "report_export.v1",
+      "default": "report_export.v1",
+      "title": "Renderercontract",
+      "type": "string"
+    },
+    "reportHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Reporthash",
+      "type": "string"
+    },
+    "reportId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Reportid",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "sourceReferences": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ReportSourceReference"
+      },
+      "maxItems": 256,
+      "title": "Sourcereferences",
+      "type": "array"
+    },
+    "workspaceId": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Workspaceid",
+      "type": "string"
+    }
+  },
+  "required": [
+    "exportId",
+    "exportHash",
+    "reportId",
+    "reportHash",
+    "recipeId",
+    "recipeHash",
+    "workspaceId",
+    "projectId",
+    "format",
+    "contentChecksum",
+    "byteSize",
+    "authorizationScope",
+    "coverage",
+    "generatedAt"
+  ],
+  "title": "ReportExportManifest",
+  "type": "object"
+}

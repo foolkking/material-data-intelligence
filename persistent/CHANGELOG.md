@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 2026-08-05 - Phase 10M-5 Local Implementation
+
+- Added four strict composition contracts, exact source eligibility over all 42
+  M4 contracts, deterministic Report/Recipe composers, and safe exports.
+- Reused existing Report/Recipe persistence for immutable atomic pairs with
+  revision checks, idempotency, legacy reads, and no database migration.
+- Added seven Workspace APIs and a responsive accessible Report composition,
+  preview, history, Recipe inspection, and export surface.
+- Added focused/service/browser/evidence tests. Four-browser local replay passes
+  with zero initial heavy payloads, preview writes, WebGL contexts, external
+  requests, console errors, or page errors.
+- No dependency, lockfile, scientific calculation, execution authority, or LLM
+  call-site change. Full regression and exact-SHA lifecycle remain.
+
 ## 2026-08-02 - Phase 10M-4 Corrected Implementation Exact-SHA CI Complete
 
 - Added an exact, application-owned renderer registry for all 42 shared

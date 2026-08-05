@@ -1,0 +1,408 @@
+{
+  "exportManifest": {
+    "authorizationScope": "project:project_m5/workspace:workspace_72af2d3911be2a637d2087e7cbfea0c3",
+    "byteSize": 7871,
+    "contentChecksum": "367c7ed31f304042203683121acb878efcf9ad87dd7ec32f30a833db0aff4645",
+    "coverage": "1 selected sources and 2 mandatory disclosures.",
+    "executionAuthorized": false,
+    "exportHash": "c86d8859833c57d5e43123514a560880410fb40f45aa1bc1a07ece6cef396826",
+    "exportId": "export_c86d8859833c57d5e43123514a560880",
+    "format": "json",
+    "generatedAt": "2026-08-05T04:15:19.395800Z",
+    "omittedPayloadReasons": [
+      "Artifact payload bytes are referenced by exact identity and checksum, not embedded.",
+      "WebGL canvas, camera state, browser screenshots, external assets and temporary URLs are excluded."
+    ],
+    "projectId": "project_m5",
+    "recipeHash": "8f267987494e4cec60694a1ba2f503427b9d81d00098a91750ff0b078cfcdb2c",
+    "recipeId": "recipe_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "rendererContract": "report_export.v1",
+    "reportHash": "b6c3538f240d22f3763f896ca11adb8e65c91b6e65930f1c0ec9385b6c1a96b0",
+    "reportId": "report_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "schemaVersion": "1.0",
+    "sourceReferences": [
+      {
+        "artifactChecksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "artifactId": "artifact_m5",
+        "claimId": null,
+        "contract": "table_json",
+        "contractVersion": "1",
+        "datasetId": "dataset_m5",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "Validated bounded table representation.",
+        "interpretationId": null,
+        "jobId": "job_m5",
+        "panelId": null,
+        "projectId": "project_m5",
+        "reason": null,
+        "representation": "BOUNDED_TABLE",
+        "role": "REPORT_TABLE_SOURCE",
+        "sourceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sourceId": "artifact_m5",
+        "sourceKind": "ARTIFACT",
+        "state": "ELIGIBLE",
+        "stepId": "step_summary",
+        "toolCallId": "call_m5"
+      },
+      {
+        "artifactChecksum": null,
+        "artifactId": null,
+        "claimId": null,
+        "contract": "report.disclosure",
+        "contractVersion": "1.0",
+        "datasetId": "dataset_m5",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "No validated grounded interpretation is available; no findings were generated from raw Artifact content.",
+        "interpretationId": null,
+        "jobId": "job_m5",
+        "panelId": null,
+        "projectId": "project_m5",
+        "reason": "GROUNDED_FINDINGS_UNAVAILABLE",
+        "representation": "DISCLOSURE",
+        "role": "REPORT_DISCLOSURE_ONLY",
+        "sourceHash": "054f300d02e21548f6031a0c020d50ce1a44896b03272a5ca84fb26f3cf57810",
+        "sourceId": "disclosure_054f300d02e21548f6031a0c020d50ce",
+        "sourceKind": "DISCLOSURE",
+        "state": "MANDATORY",
+        "stepId": null,
+        "toolCallId": null
+      },
+      {
+        "artifactChecksum": null,
+        "artifactId": null,
+        "claimId": null,
+        "contract": "report.disclosure",
+        "contractVersion": "1.0",
+        "datasetId": "dataset_m5",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "AnalysisPlan 0.1 is projected without dependency reinterpretation.",
+        "interpretationId": null,
+        "jobId": "job_m5",
+        "panelId": null,
+        "projectId": "project_m5",
+        "reason": "WORKSPACE_LEGACY_PLAN_READ_ONLY",
+        "representation": "DISCLOSURE",
+        "role": "REPORT_DISCLOSURE_ONLY",
+        "sourceHash": "826199ca29fd01cd9fd8d50cb68354d2bb69b6bfc216f65f507bc6b37345f0cd",
+        "sourceId": "disclosure_826199ca29fd01cd9fd8d50cb68354d2",
+        "sourceKind": "DISCLOSURE",
+        "state": "MANDATORY",
+        "stepId": null,
+        "toolCallId": null
+      }
+    ],
+    "workspaceId": "workspace_72af2d3911be2a637d2087e7cbfea0c3"
+  },
+  "recipe": {
+    "analysisPlanHash": "6a75b626e3b7b823182d04eb6ad559d9873829e354bbe0d7d770fa4215f5cdc9",
+    "analysisPlanId": "plan_m5",
+    "automaticReplay": false,
+    "compositionHash": "379cd8ba9786d2ae7b1a8ecdef5ef05a6736457ae6eb96f4cee9f7b779cfad13",
+    "createdAt": "2026-08-05T04:15:19.395800Z",
+    "datasetHash": null,
+    "datasetId": "dataset_m5",
+    "datasetVersion": null,
+    "dependencyBindings": [],
+    "dependencyModel": "NONE_OR_SEQUENTIAL_INDEPENDENT",
+    "eligibilityResolutionHash": null,
+    "eligibilityResolutionId": null,
+    "environmentProvenance": {
+      "planSchemaVersion": "0.1",
+      "runtimeVersion": null,
+      "sourceExecutionTimestamp": null,
+      "toolRegistryVersion": "1.0"
+    },
+    "executionAuthorized": false,
+    "executionOutcome": "completed",
+    "graphHash": null,
+    "intentHash": null,
+    "intentId": null,
+    "jobCreated": false,
+    "limitations": [],
+    "originalArtifacts": [
+      {
+        "artifactChecksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "artifactId": "artifact_m5",
+        "claimId": null,
+        "contract": "table_json",
+        "contractVersion": "1",
+        "datasetId": "dataset_m5",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "Validated bounded table representation.",
+        "interpretationId": null,
+        "jobId": "job_m5",
+        "panelId": null,
+        "projectId": "project_m5",
+        "reason": null,
+        "representation": "BOUNDED_TABLE",
+        "role": "REPORT_TABLE_SOURCE",
+        "sourceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sourceId": "artifact_m5",
+        "sourceKind": "ARTIFACT",
+        "state": "ELIGIBLE",
+        "stepId": "step_summary",
+        "toolCallId": "call_m5"
+      }
+    ],
+    "outcome": "RECIPE_READY_WITH_LIMITS",
+    "planCreated": false,
+    "planSchemaVersion": "0.1",
+    "plannerDecisionHash": null,
+    "plannerDecisionId": null,
+    "profileHash": null,
+    "profileId": null,
+    "profileVersion": null,
+    "projectId": "project_m5",
+    "providerProvenance": null,
+    "queueMessageCreated": false,
+    "recipeHash": "8f267987494e4cec60694a1ba2f503427b9d81d00098a91750ff0b078cfcdb2c",
+    "recipeId": "recipe_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "schemaVersion": "1.0",
+    "sourceReportHash": "b6c3538f240d22f3763f896ca11adb8e65c91b6e65930f1c0ec9385b6c1a96b0",
+    "sourceReportId": "report_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "sourceResourceBindings": [
+      {
+        "columnName": null,
+        "fieldRole": null,
+        "objectType": "DataFrame",
+        "ref": "table_m5",
+        "refType": "normalized_object"
+      }
+    ],
+    "steps": [
+      {
+        "adapterVersion": "1.0",
+        "expectedOutputContracts": [
+          "table_json"
+        ],
+        "inputRefs": [
+          {
+            "columnName": null,
+            "fieldRole": null,
+            "objectType": "DataFrame",
+            "ref": "table_m5",
+            "refType": "normalized_object"
+          }
+        ],
+        "params": {
+          "columns": [
+            "formation_energy"
+          ]
+        },
+        "stepId": "step_summary",
+        "toolId": "table.numeric_summary",
+        "toolVersion": "1.0"
+      }
+    ],
+    "warnings": [
+      "No validated grounded interpretation is available; no findings were generated from raw Artifact content.",
+      "AnalysisPlan 0.1 is projected without dependency reinterpretation."
+    ],
+    "workspaceId": "workspace_72af2d3911be2a637d2087e7cbfea0c3",
+    "workspaceRevision": 0
+  },
+  "report": {
+    "analysisGoal": "Summarize exact dataset statistics.",
+    "compositionHash": "379cd8ba9786d2ae7b1a8ecdef5ef05a6736457ae6eb96f4cee9f7b779cfad13",
+    "createdAt": "2026-08-05T04:15:19.395800Z",
+    "datasetId": "dataset_m5",
+    "datasetVersion": null,
+    "executionAuthorized": false,
+    "limitations": [],
+    "mandatoryDisclosures": [
+      {
+        "artifactChecksum": null,
+        "artifactId": null,
+        "claimId": null,
+        "contract": "report.disclosure",
+        "contractVersion": "1.0",
+        "datasetId": "dataset_m5",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "No validated grounded interpretation is available; no findings were generated from raw Artifact content.",
+        "interpretationId": null,
+        "jobId": "job_m5",
+        "panelId": null,
+        "projectId": "project_m5",
+        "reason": "GROUNDED_FINDINGS_UNAVAILABLE",
+        "representation": "DISCLOSURE",
+        "role": "REPORT_DISCLOSURE_ONLY",
+        "sourceHash": "054f300d02e21548f6031a0c020d50ce1a44896b03272a5ca84fb26f3cf57810",
+        "sourceId": "disclosure_054f300d02e21548f6031a0c020d50ce",
+        "sourceKind": "DISCLOSURE",
+        "state": "MANDATORY",
+        "stepId": null,
+        "toolCallId": null
+      },
+      {
+        "artifactChecksum": null,
+        "artifactId": null,
+        "claimId": null,
+        "contract": "report.disclosure",
+        "contractVersion": "1.0",
+        "datasetId": "dataset_m5",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "AnalysisPlan 0.1 is projected without dependency reinterpretation.",
+        "interpretationId": null,
+        "jobId": "job_m5",
+        "panelId": null,
+        "projectId": "project_m5",
+        "reason": "WORKSPACE_LEGACY_PLAN_READ_ONLY",
+        "representation": "DISCLOSURE",
+        "role": "REPORT_DISCLOSURE_ONLY",
+        "sourceHash": "826199ca29fd01cd9fd8d50cb68354d2bb69b6bfc216f65f507bc6b37345f0cd",
+        "sourceId": "disclosure_826199ca29fd01cd9fd8d50cb68354d2",
+        "sourceKind": "DISCLOSURE",
+        "state": "MANDATORY",
+        "stepId": null,
+        "toolCallId": null
+      }
+    ],
+    "outcome": "REPORT_READY_WITH_LIMITS",
+    "projectId": "project_m5",
+    "recipeId": "recipe_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "reportHash": "b6c3538f240d22f3763f896ca11adb8e65c91b6e65930f1c0ec9385b6c1a96b0",
+    "reportId": "report_65a64fa7d5088311eb9d97ec8a2a97d2",
+    "schemaVersion": "1.0",
+    "scientificAuthority": false,
+    "sections": [
+      {
+        "items": [
+          "Exact scientific report"
+        ],
+        "sectionId": "TITLE",
+        "status": "READY",
+        "title": "Title"
+      },
+      {
+        "items": [
+          "Summarize exact dataset statistics."
+        ],
+        "sectionId": "ANALYSIS_GOAL",
+        "status": "READY",
+        "title": "Analysis Goal"
+      },
+      {
+        "items": [
+          "Project project_m5; Dataset dataset_m5 version unavailable; Profile unavailable hash unavailable."
+        ],
+        "sectionId": "DATASET_RESOURCE_SCOPE",
+        "status": "READY",
+        "title": "Dataset and Resource Scope"
+      },
+      {
+        "items": [
+          "Step step_summary: tool table.numeric_summary; exact parameters and bindings are retained in Recipe recipe_65a64fa7d5088311eb9d97ec8a2a97d2."
+        ],
+        "sectionId": "METHODS_PLAN",
+        "status": "READY",
+        "title": "Methods and Plan"
+      },
+      {
+        "items": [
+          "Persisted execution outcome: completed."
+        ],
+        "sectionId": "EXECUTION_STATUS",
+        "status": "READY",
+        "title": "Execution Status"
+      },
+      {
+        "items": [
+          "ARTIFACT artifact_m5 (table_json@1; checksum aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)"
+        ],
+        "sectionId": "SELECTED_RESULTS",
+        "status": "READY",
+        "title": "Selected Results"
+      },
+      {
+        "items": [
+          "GROUNDED_FINDINGS_UNAVAILABLE"
+        ],
+        "sectionId": "GROUNDED_FINDINGS",
+        "status": "UNAVAILABLE",
+        "title": "Grounded Findings"
+      },
+      {
+        "items": [
+          "No validated grounded interpretation is available; no findings were generated from raw Artifact content.",
+          "AnalysisPlan 0.1 is projected without dependency reinterpretation."
+        ],
+        "sectionId": "WARNINGS_LIMITATIONS",
+        "status": "LIMITED",
+        "title": "Warnings and Limitations"
+      },
+      {
+        "items": [],
+        "sectionId": "FAILED_BLOCKED_MISSING",
+        "status": "EMPTY",
+        "title": "Failed, Blocked and Missing Scope"
+      },
+      {
+        "items": [],
+        "sectionId": "EVIDENCE_PROVENANCE",
+        "status": "EMPTY",
+        "title": "Evidence and Provenance"
+      },
+      {
+        "items": [
+          "Plan schema 0.1.",
+          "Application source Workspace workspace_72af2d3911be2a637d2087e7cbfea0c3 revision 0.",
+          "REFERENCE_METADATA_NOT_AVAILABLE"
+        ],
+        "sectionId": "ENVIRONMENT_REFERENCES",
+        "status": "READY",
+        "title": "Environment and References"
+      },
+      {
+        "items": [
+          "Recipe recipe_65a64fa7d5088311eb9d97ec8a2a97d2; declarative only; executionAuthorized=false."
+        ],
+        "sectionId": "EXACT_RERUN_RECIPE",
+        "status": "READY",
+        "title": "Exact Rerun Recipe Reference"
+      }
+    ],
+    "selectedSources": [
+      {
+        "artifactChecksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "artifactId": "artifact_m5",
+        "claimId": null,
+        "contract": "table_json",
+        "contractVersion": "1",
+        "datasetId": "dataset_m5",
+        "datasetVersion": null,
+        "evidenceItemId": null,
+        "fallback": "Validated bounded table representation.",
+        "interpretationId": null,
+        "jobId": "job_m5",
+        "panelId": null,
+        "projectId": "project_m5",
+        "reason": null,
+        "representation": "BOUNDED_TABLE",
+        "role": "REPORT_TABLE_SOURCE",
+        "sourceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sourceId": "artifact_m5",
+        "sourceKind": "ARTIFACT",
+        "state": "ELIGIBLE",
+        "stepId": "step_summary",
+        "toolCallId": "call_m5"
+      }
+    ],
+    "sourceJobId": "job_m5",
+    "sourcePlanHash": "6a75b626e3b7b823182d04eb6ad559d9873829e354bbe0d7d770fa4215f5cdc9",
+    "sourcePlanId": "plan_m5",
+    "sourcePlanSchemaVersion": "0.1",
+    "title": "Exact scientific report",
+    "warnings": [
+      "No validated grounded interpretation is available; no findings were generated from raw Artifact content.",
+      "AnalysisPlan 0.1 is projected without dependency reinterpretation."
+    ],
+    "workspaceId": "workspace_72af2d3911be2a637d2087e7cbfea0c3",
+    "workspaceRevision": 0
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "finalizedRecipeCount": 1,
+  "finalizedReportCount": 1,
+  "pairExact": true,
+  "rollbackFailure": "INJECTED_WRITE_FAILURE",
+  "rollbackRecipeCount": 0,
+  "rollbackReportCount": 0
+}

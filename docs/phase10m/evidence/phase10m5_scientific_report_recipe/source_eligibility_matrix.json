@@ -1,0 +1,304 @@
+{
+  "artifactContractCount": 42,
+  "entries": [
+    {
+      "artifactContract": "analysis_plan_json",
+      "contractVersion": "1",
+      "fallback": "Persisted AnalysisPlan provenance.",
+      "reportRole": "REPORT_PROVENANCE_SOURCE",
+      "representation": "PROVENANCE"
+    },
+    {
+      "artifactContract": "brillouin_zone_json",
+      "contractVersion": "1",
+      "fallback": "Brillouin-zone identity and approved text fallback.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "brillouin_zone_manifest_json",
+      "contractVersion": "1",
+      "fallback": "Brillouin-zone manifest provenance.",
+      "reportRole": "REPORT_PROVENANCE_SOURCE",
+      "representation": "PROVENANCE"
+    },
+    {
+      "artifactContract": "figure_pdf",
+      "contractVersion": "1",
+      "fallback": "Persisted figure metadata; PDF embedding is outside mandatory M5 export.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "figure_svg",
+      "contractVersion": "1",
+      "fallback": "SVG is retained as an inert download because scripts and event handlers are not trusted.",
+      "reportRole": "REPORT_UNSUPPORTED",
+      "representation": "NONE"
+    },
+    {
+      "artifactContract": "kpath_json",
+      "contractVersion": "1",
+      "fallback": "Persisted k-path metadata; no frontend path reconstruction.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "matterviz_html",
+      "contractVersion": "1",
+      "fallback": "Executable viewer HTML is not a Report source.",
+      "reportRole": "REPORT_UNSUPPORTED",
+      "representation": "NONE"
+    },
+    {
+      "artifactContract": "matterviz_snapshot_png",
+      "contractVersion": "1",
+      "fallback": "Persisted static viewer snapshot.",
+      "reportRole": "REPORT_FIGURE_SOURCE",
+      "representation": "STATIC_FIGURE"
+    },
+    {
+      "artifactContract": "metrics_json",
+      "contractVersion": "1",
+      "fallback": "Backend-produced metrics table.",
+      "reportRole": "REPORT_TABLE_SOURCE",
+      "representation": "BOUNDED_TABLE"
+    },
+    {
+      "artifactContract": "phonon_animation_json",
+      "contractVersion": "1",
+      "fallback": "Animation identity only; an active WebGL frame is not Report authority.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "phonon_animation_manifest_json",
+      "contractVersion": "1",
+      "fallback": "Animation manifest provenance.",
+      "reportRole": "REPORT_PROVENANCE_SOURCE",
+      "representation": "PROVENANCE"
+    },
+    {
+      "artifactContract": "phonon_animation_summary_json",
+      "contractVersion": "1",
+      "fallback": "Validated animation summary metadata.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "phonon_band_dos_json",
+      "contractVersion": "1",
+      "fallback": "Backend-produced combined phonon band/DOS data with table fallback.",
+      "reportRole": "REPORT_FIGURE_SOURCE",
+      "representation": "STATIC_FIGURE"
+    },
+    {
+      "artifactContract": "phonon_band_json",
+      "contractVersion": "1",
+      "fallback": "Backend-produced phonon band data with table fallback.",
+      "reportRole": "REPORT_FIGURE_SOURCE",
+      "representation": "STATIC_FIGURE"
+    },
+    {
+      "artifactContract": "phonon_compatibility_json",
+      "contractVersion": "1",
+      "fallback": "Phonon compatibility metadata.",
+      "reportRole": "REPORT_PROVENANCE_SOURCE",
+      "representation": "PROVENANCE"
+    },
+    {
+      "artifactContract": "phonon_dos_json",
+      "contractVersion": "1",
+      "fallback": "Backend-produced phonon DOS data with table fallback.",
+      "reportRole": "REPORT_FIGURE_SOURCE",
+      "representation": "STATIC_FIGURE"
+    },
+    {
+      "artifactContract": "phonon_manifest_json",
+      "contractVersion": "1",
+      "fallback": "Phonon manifest provenance.",
+      "reportRole": "REPORT_PROVENANCE_SOURCE",
+      "representation": "PROVENANCE"
+    },
+    {
+      "artifactContract": "phonon_report_json",
+      "contractVersion": "1",
+      "fallback": "Validated phonon report metadata.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "phonon_summary_json",
+      "contractVersion": "1",
+      "fallback": "Validated phonon summary metadata.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "plotly_html",
+      "contractVersion": "1",
+      "fallback": "Executable HTML is not a Report source.",
+      "reportRole": "REPORT_UNSUPPORTED",
+      "representation": "NONE"
+    },
+    {
+      "artifactContract": "plotly_json",
+      "contractVersion": "1",
+      "fallback": "Backend-produced plot with a numeric/table fallback.",
+      "reportRole": "REPORT_FIGURE_SOURCE",
+      "representation": "STATIC_FIGURE"
+    },
+    {
+      "artifactContract": "preview_png",
+      "contractVersion": "1",
+      "fallback": "Persisted static preview.",
+      "reportRole": "REPORT_FIGURE_SOURCE",
+      "representation": "STATIC_FIGURE"
+    },
+    {
+      "artifactContract": "quality_issues_json",
+      "contractVersion": "1",
+      "fallback": "Backend-produced data-quality table.",
+      "reportRole": "REPORT_TABLE_SOURCE",
+      "representation": "BOUNDED_TABLE"
+    },
+    {
+      "artifactContract": "recipe_json",
+      "contractVersion": "1",
+      "fallback": "Existing Recipe provenance.",
+      "reportRole": "REPORT_PROVENANCE_SOURCE",
+      "representation": "PROVENANCE"
+    },
+    {
+      "artifactContract": "reciprocal_lattice_json",
+      "contractVersion": "1",
+      "fallback": "Reciprocal-lattice identity and approved text fallback.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "report_html",
+      "contractVersion": "1",
+      "fallback": "Executable Report HTML is retained only as an inert legacy download.",
+      "reportRole": "REPORT_UNSUPPORTED",
+      "representation": "NONE"
+    },
+    {
+      "artifactContract": "report_md",
+      "contractVersion": "1",
+      "fallback": "Historical report text remains metadata and is not claim authority.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "structure_json",
+      "contractVersion": "1",
+      "fallback": "Structure identity and approved text fallback; WebGL canvas is not authority.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "summary_md",
+      "contractVersion": "1",
+      "fallback": "Unvalidated summary prose is not a scientific finding.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "table_csv",
+      "contractVersion": "1",
+      "fallback": "Persisted formal table download with identity and coverage.",
+      "reportRole": "REPORT_TABLE_SOURCE",
+      "representation": "BOUNDED_TABLE"
+    },
+    {
+      "artifactContract": "table_json",
+      "contractVersion": "1",
+      "fallback": "Validated bounded table representation.",
+      "reportRole": "REPORT_TABLE_SOURCE",
+      "representation": "BOUNDED_TABLE"
+    },
+    {
+      "artifactContract": "trajectory_json",
+      "contractVersion": "1",
+      "fallback": "Trajectory identity and approved text fallback; current frame is not authority.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "trajectory_manifest_json",
+      "contractVersion": "1",
+      "fallback": "Trajectory manifest provenance.",
+      "reportRole": "REPORT_PROVENANCE_SOURCE",
+      "representation": "PROVENANCE"
+    },
+    {
+      "artifactContract": "trajectory_report_json",
+      "contractVersion": "1",
+      "fallback": "Validated trajectory report metadata.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "trajectory_summary_json",
+      "contractVersion": "1",
+      "fallback": "Validated trajectory summary metadata.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "volumetric_binary",
+      "contractVersion": "1",
+      "fallback": "Binary payload is omitted; exact checksum and metadata remain.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "volumetric_dataset_json",
+      "contractVersion": "1",
+      "fallback": "Volumetric dataset metadata.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "volumetric_field_json",
+      "contractVersion": "1",
+      "fallback": "Volumetric quantity and source identity.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "volumetric_grid_json",
+      "contractVersion": "1",
+      "fallback": "Volumetric field identity; WebGL canvas is not authority.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "volumetric_manifest_json",
+      "contractVersion": "1",
+      "fallback": "Volumetric manifest provenance.",
+      "reportRole": "REPORT_PROVENANCE_SOURCE",
+      "representation": "PROVENANCE"
+    },
+    {
+      "artifactContract": "volumetric_payload_json",
+      "contractVersion": "1",
+      "fallback": "Volumetric payload identity only.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    },
+    {
+      "artifactContract": "volumetric_structure_overlay_json",
+      "contractVersion": "1",
+      "fallback": "Persisted overlay identity; no browser recomputation.",
+      "reportRole": "REPORT_METADATA_ONLY",
+      "representation": "METADATA"
+    }
+  ],
+  "filenameAuthority": false,
+  "fuzzyAuthority": false,
+  "mappingAuthority": "exact Artifact contract/version only",
+  "mimeOnlyAuthority": false,
+  "titleAuthority": false
+}

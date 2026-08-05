@@ -32,6 +32,13 @@ Backend work follows current contract/repository/service/API conventions under `
 
 Execute M1 domain/persistence, M2 shell, M3 selection, M4 typed renderers, M5 report/recipe, M6 recovery/responsive closure, and M7 integration closure. Each phase requires its own reviewer prompt and verified implementation/completion/archive lifecycle.
 
+M5 owns exactly `M5-A01`, `M5-A02`, `M5-A03`, `M5-A04`, `M5-A05`, `M5-A06`,
+and `M5-A07`: authority/contracts, scientific Report composition, exact Recipe
+replay manifest, Workspace composition UI and history, deterministic preview/
+safe export, partial/compatibility/accessibility/performance/security, and
+end-to-end verified lifecycle. The exact names and set are mirrored in the
+acceptance plan, backlog, and M5 evidence map.
+
 ## Required commands
 
 Use repository-current equivalents of:

@@ -266,6 +266,9 @@ class RecipeRepository(Protocol):
     def save(self, recipe: VisualizationRecipe | Mapping[str, Any]) -> dict[str, Any]:
         ...
 
+    def create_immutable(self, recipe: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
     def get(self, recipe_id: str) -> dict[str, Any]:
         ...
 
@@ -275,6 +278,9 @@ class RecipeRepository(Protocol):
 
 class ReportRepository(Protocol):
     def save(self, report: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def create_immutable(self, report: Mapping[str, Any]) -> dict[str, Any]:
         ...
 
     def get(self, report_id: str) -> dict[str, Any]:
@@ -309,6 +315,9 @@ class ScientificInterpretationRepository(Protocol):
         ...
 
     def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
+        ...
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
         ...
 
 
@@ -441,6 +450,7 @@ class InMemoryRepositoryBundle:
 class _InMemoryRecordRepository:
     def __init__(self) -> None:
         self.records: dict[str, dict[str, Any]] = {}
+        self._record_lock = RLock()
 
     def _save(self, record: Mapping[str, Any], *, record_id: str) -> dict[str, Any]:
         stored = _json_copy(record)
@@ -886,6 +896,16 @@ class InMemoryRecipeRepository(_InMemoryRecordRepository):
         record = _model_to_record(recipe)
         return self._save(record, record_id=_required_id(record, "recipeId"))
 
+    def create_immutable(self, recipe: Mapping[str, Any]) -> dict[str, Any]:
+        record = _json_copy(recipe)
+        recipe_id = _required_id(record, "recipeId")
+        with self._record_lock:
+            existing = self.records.get(recipe_id)
+            if existing is not None:
+                _assert_immutable_delivery_compatible(existing, record, kind="Recipe")
+                return _json_copy(existing)
+            return self._save(record, record_id=recipe_id)
+
     def get(self, recipe_id: str) -> dict[str, Any]:
         return self._get(recipe_id)
 
@@ -899,6 +919,16 @@ class InMemoryRecipeRepository(_InMemoryRecordRepository):
 class InMemoryReportRepository(_InMemoryRecordRepository):
     def save(self, report: Mapping[str, Any]) -> dict[str, Any]:
         return self._save(report, record_id=_required_id(report, "reportId"))
+
+    def create_immutable(self, report: Mapping[str, Any]) -> dict[str, Any]:
+        record = _json_copy(report)
+        report_id = _required_id(record, "reportId")
+        with self._record_lock:
+            existing = self.records.get(report_id)
+            if existing is not None:
+                _assert_immutable_delivery_compatible(existing, record, kind="Report")
+                return _json_copy(existing)
+            return self._save(record, record_id=report_id)
 
     def get(self, report_id: str) -> dict[str, Any]:
         return self._get(report_id)
@@ -2135,6 +2165,32 @@ class SqlAlchemyRecipeRepository(_SqlAlchemyRepository):
         self._with_connection(run)
         return self.get(recipe_id)
 
+    def create_immutable(self, recipe: Mapping[str, Any]) -> dict[str, Any]:
+        record = _json_copy(recipe)
+        recipe_id = _required_id(record, "recipeId")
+        created_by = str(record.get("createdBy") or record.get("created_by") or "user_local")
+        values = {
+            "id": recipe_id,
+            "project_id": str(record["projectId"]),
+            "source_job_id": record.get("sourceJobId"),
+            "name": str(record.get("name") or recipe_id),
+            "recipe_json": record,
+            "created_by": created_by,
+        }
+
+        def run(connection: Connection) -> None:
+            existing = connection.execute(
+                select(visualization_recipes.c.recipe_json).where(visualization_recipes.c.id == recipe_id)
+            ).scalar_one_or_none()
+            if existing is not None:
+                _assert_immutable_delivery_compatible(_json_copy(existing), record, kind="Recipe")
+                return
+            _ensure_user(connection, user_id=created_by)
+            connection.execute(insert(visualization_recipes).values(**values))
+
+        self._with_connection(run)
+        return self.get(recipe_id)
+
     def get(self, recipe_id: str) -> dict[str, Any]:
         row = self._fetch_one_dict(select(visualization_recipes).where(visualization_recipes.c.id == recipe_id))
         return _recipe_from_row(row)
@@ -2181,6 +2237,39 @@ class SqlAlchemyReportRepository(_SqlAlchemyRepository):
         def run(connection: Connection) -> None:
             _ensure_user(connection, user_id=created_by)
             connection.execute(delete(reports).where(reports.c.id == report_id))
+            connection.execute(insert(reports).values(**values))
+
+        self._with_connection(run)
+        return self.get(report_id)
+
+    def create_immutable(self, report: Mapping[str, Any]) -> dict[str, Any]:
+        record = _json_copy(report)
+        report_id = _required_id(record, "reportId")
+        created_by = str(record.get("createdBy") or record.get("created_by") or "user_local")
+        job_id_value = record.get("jobId") or record.get("sourceJobId")
+        if not job_id_value:
+            raise ValueError("Report record is missing jobId/sourceJobId")
+        values = {
+            "id": report_id,
+            "project_id": str(record["projectId"]),
+            "dataset_id": record.get("datasetId"),
+            "job_id": str(job_id_value),
+            "version": str(record.get("version") or "1"),
+            "title": str(record.get("title") or record.get("name") or report_id),
+            "markdown_key": record.get("markdownKey") or record.get("markdownArtifactKey"),
+            "html_key": record.get("htmlKey") or record.get("htmlArtifactKey"),
+            "report_json": record,
+            "created_by": created_by,
+        }
+
+        def run(connection: Connection) -> None:
+            existing = connection.execute(
+                select(reports.c.report_json).where(reports.c.id == report_id)
+            ).scalar_one_or_none()
+            if existing is not None:
+                _assert_immutable_delivery_compatible(_json_copy(existing), record, kind="Report")
+                return
+            _ensure_user(connection, user_id=created_by)
             connection.execute(insert(reports).values(**values))
 
         self._with_connection(run)
@@ -4373,6 +4462,25 @@ def _iso(value: Any) -> str:
             value = value.replace(tzinfo=timezone.utc)
         return value.astimezone(timezone.utc).isoformat()
     return str(value)
+
+
+def _assert_immutable_delivery_compatible(
+    existing: Mapping[str, Any],
+    candidate: Mapping[str, Any],
+    *,
+    kind: str,
+) -> None:
+    identity_fields = (
+        "requestHash",
+        "compositionHash",
+        "reportId",
+        "recipeId",
+        "projectId",
+        "sourceJobId",
+        "workspaceId",
+    )
+    if any(existing.get(field) != candidate.get(field) for field in identity_fields):
+        raise ValueError(f"{kind} immutable snapshot conflict")
 
 
 def _utc_now() -> str:

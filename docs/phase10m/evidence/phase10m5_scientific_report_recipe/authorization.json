@@ -1,0 +1,7 @@
+{
+  "crossProjectArtifact": "REPORT_SOURCE_INTEGRITY_FAILED",
+  "foreignClaim": "REPORT_SOURCE_NOT_FOUND",
+  "typedErrorsOnly": true,
+  "workspaceIdIsNotSufficientAuthorization": true,
+  "workspaceRevisionConflict": "WORKSPACE_REVISION_CONFLICT"
+}

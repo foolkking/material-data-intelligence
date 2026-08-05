@@ -54,14 +54,14 @@ Execution authority: each phase requires a separate reviewer prompt.
 ## Phase 10M-5: Scientific Report + Recipe Composition
 
 - **Goal:** productize existing Report/Recipe ownership inside Workspace.
-- **Production changes:** `WorkspaceReportComposition 1.0`, `WorkspaceRecipe 1.0`, report selection UI, deterministic exports, recipe read/replay-review flow.
+- **Production changes:** `ReportCompositionRequest 1.0`, `ReportCompositionSnapshot 1.0`, `RecipeReplayManifest 1.0`, `ReportExportManifest 1.0`, exact source selection UI, deterministic preview/export, and immutable history.
 - **Database/API:** reuse existing report/recipe tables and JSON fields; additive composition/read/export endpoints.
-- **Compatibility:** old reports/recipes readable; unsupported recipes read-only; recommendation remains non-executable.
-- **Tests/evidence:** partial/failed disclosure, evidence/lineage, deterministic export, no recommendation execution, no stale replay, browser/export/service-backed.
+- **Compatibility:** old reports/recipes readable; unsupported recipes read-only; Recipe and recommendation remain non-executable.
+- **Tests/evidence:** partial/failed disclosure, exact Evidence/lineage, Plan 0.1/0.2 Recipe determinism, zero-write preview, JSON/Markdown export, browser/service-backed.
 - **Entry:** archived 10M-4.
 - **Exit:** exact-SHA lifecycle and 10M-6 reviewer gate.
-- **Non-scope:** document editor, arbitrary template code, automatic rerun.
-- **Acceptance IDs:** `M5-A01` through `M5-A07`.
+- **Non-scope:** document editor, arbitrary template code, PDF/HTML mandatory export, execution, or automatic rerun.
+- **Acceptance IDs:** `M5-A01` `REPORT_RECIPE_AUTHORITY_AND_CONTRACTS`; `M5-A02` `SCIENTIFIC_REPORT_COMPOSITION`; `M5-A03` `EXACT_RECIPE_REPLAY_MANIFEST`; `M5-A04` `WORKSPACE_COMPOSITION_UI_AND_HISTORY`; `M5-A05` `DETERMINISTIC_PREVIEW_AND_SAFE_EXPORT`; `M5-A06` `PARTIAL_COMPATIBILITY_ACCESSIBILITY_PERFORMANCE_SECURITY`; `M5-A07` `END_TO_END_EVIDENCE_AND_VERIFIED_LIFECYCLE`.
 
 ## Phase 10M-6: Save, Reload, Recovery, and Responsive Closure
 

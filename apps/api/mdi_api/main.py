@@ -60,6 +60,15 @@ from mdi_api.routers.planner_providers import (
     test_planner_provider_route,
 )
 from mdi_api.routers.projects import ProjectSummary
+from mdi_api.routers.report_compositions import (
+    export_report_composition,
+    finalize_report_composition,
+    get_report_composition,
+    get_report_composition_recipe,
+    get_report_composition_sources,
+    list_report_compositions,
+    preview_report_composition,
+)
 from mdi_api.routers.secrets import (
     CreateSecretRequest,
     SecretSummary,
@@ -166,6 +175,14 @@ ROUTES: tuple[RouteSpec, ...] = (
         ("GET",),
         ("workspaces",),
     ),
+    # Phase 10M-5: deterministic Report/Recipe composition over exact Workspace sources
+    RouteSpec("/workspaces/{workspace_id}/report-composition/sources", get_report_composition_sources, ("GET",), ("workspaces", "reports")),
+    RouteSpec("/workspaces/{workspace_id}/report-compositions/preview", preview_report_composition, ("POST",), ("workspaces", "reports")),
+    RouteSpec("/workspaces/{workspace_id}/report-compositions", finalize_report_composition, ("POST",), ("workspaces", "reports")),
+    RouteSpec("/workspaces/{workspace_id}/report-compositions", list_report_compositions, ("GET",), ("workspaces", "reports")),
+    RouteSpec("/workspaces/{workspace_id}/report-compositions/{report_id}", get_report_composition, ("GET",), ("workspaces", "reports")),
+    RouteSpec("/workspaces/{workspace_id}/report-compositions/{report_id}/recipe", get_report_composition_recipe, ("GET",), ("workspaces", "reports")),
+    RouteSpec("/workspaces/{workspace_id}/report-compositions/{report_id}/exports/{format}", export_report_composition, ("GET",), ("workspaces", "reports")),
     # Phase 7: Secrets API
     RouteSpec("/me/secrets", create_secret, ("POST",), ("secrets",)),
     RouteSpec("/me/secrets", list_secrets, ("GET",), ("secrets",), list[SecretSummary]),

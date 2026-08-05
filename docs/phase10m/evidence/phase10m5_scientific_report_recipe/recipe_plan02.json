@@ -1,0 +1,182 @@
+{
+  "analysisPlanHash": "ec940a775faf4a3f82612f06c009f97efc15af66952c97a85204e675711180e2",
+  "analysisPlanId": "plan_job_m5_evidence_plan02",
+  "automaticReplay": false,
+  "compositionHash": "3d480ab282bb3165506572e25b7c3ebe0107366c06377d4445261ff776de6721",
+  "createdAt": "2026-08-05T04:15:19.785760Z",
+  "datasetHash": null,
+  "datasetId": "dataset_1",
+  "datasetVersion": "dataset_version_2",
+  "dependencyBindings": [
+    {
+      "artifactContractVersion": "phase10h.phonon_band.v1",
+      "artifactKind": "phonon_band_json",
+      "bindingId": "binding_303aad4395ff146fbb2d52f831690216",
+      "cardinality": "EXACTLY_ONE",
+      "consumerInputPort": "band",
+      "consumerStepId": "step_002",
+      "mediaType": "application/json",
+      "producerOutputPort": "canonical-band",
+      "producerStepId": "step_001"
+    },
+    {
+      "artifactContractVersion": "phase10h.phonon_dos.v1",
+      "artifactKind": "phonon_dos_json",
+      "bindingId": "binding_0fa32a7e77acf87d9c8b926906d17173",
+      "cardinality": "EXACTLY_ONE",
+      "consumerInputPort": "dos",
+      "consumerStepId": "step_002",
+      "mediaType": "application/json",
+      "producerOutputPort": "canonical-dos",
+      "producerStepId": "step_003"
+    }
+  ],
+  "dependencyModel": "TYPED_ARTIFACT_BINDINGS",
+  "eligibilityResolutionHash": "a6c54ab99eda30efe61ed8ed0e7862efac751ec236b1ab02cc1f47d25427230f",
+  "eligibilityResolutionId": "resolution_a6c54ab99eda30efe61ed8ed",
+  "environmentProvenance": {
+    "planSchemaVersion": "0.2",
+    "runtimeVersion": null,
+    "sourceExecutionTimestamp": null,
+    "toolRegistryVersion": "0.1.0"
+  },
+  "executionAuthorized": false,
+  "executionOutcome": "completed",
+  "graphHash": "815f559ff6d4cf559a69e938cf3c4e66ec10eeecaf9a7b64d457bd602163f52f",
+  "intentHash": "0aadbed732aa1e83536eb9f0f4ab5e8f9b8cde8d257f2aec1ba6cb5861ab7566",
+  "intentId": "intent_0aadbed732aa1e83536eb9f0",
+  "jobCreated": false,
+  "limitations": [],
+  "originalArtifacts": [
+    {
+      "artifactChecksum": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "artifactId": "artifact_m5_evidence_plan02",
+      "claimId": null,
+      "contract": "phonon_band_json",
+      "contractVersion": "1",
+      "datasetId": "dataset_1",
+      "datasetVersion": "dataset_version_2",
+      "evidenceItemId": null,
+      "fallback": "Backend-produced phonon band data with table fallback.",
+      "interpretationId": null,
+      "jobId": "job_m5_evidence_plan02",
+      "panelId": null,
+      "projectId": "project_1",
+      "reason": null,
+      "representation": "STATIC_FIGURE",
+      "role": "REPORT_FIGURE_SOURCE",
+      "sourceHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "sourceId": "artifact_m5_evidence_plan02",
+      "sourceKind": "ARTIFACT",
+      "state": "ELIGIBLE",
+      "stepId": "step_001",
+      "toolCallId": "call_m5_evidence_plan02"
+    }
+  ],
+  "outcome": "RECIPE_READY_WITH_LIMITS",
+  "planCreated": false,
+  "planSchemaVersion": "0.2",
+  "plannerDecisionHash": "a727079cc7f9f98484147f64ede8d817dd848cb84167f6904d36e50922e36179",
+  "plannerDecisionId": "decision_a727079cc7f9f98484147f64",
+  "profileHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "profileId": "profile_1",
+  "profileVersion": "0.1",
+  "projectId": "project_1",
+  "providerProvenance": null,
+  "queueMessageCreated": false,
+  "recipeHash": "93bfbc6d0e8ce875a4c419583b8813df6f94cb3694a5276ba50f2bef6a7f91b4",
+  "recipeId": "recipe_preview_a858462afc7ba238aeb449e6b1abc31a",
+  "schemaVersion": "1.0",
+  "sourceReportHash": "f79300104dd85ba1ab1b37ca120b1aa1b09507d728bc6b5cd7c2968f23e0bd72",
+  "sourceReportId": "report_preview_a858462afc7ba238aeb449e6b1abc31a",
+  "sourceResourceBindings": [
+    {
+      "columnName": null,
+      "fieldRole": "band",
+      "objectType": "PhononBand",
+      "ref": "phonon_band_1",
+      "refType": "normalized_object"
+    },
+    {
+      "columnName": null,
+      "fieldRole": "dos",
+      "objectType": "PhononDos",
+      "ref": "phonon_dos_1",
+      "refType": "normalized_object"
+    }
+  ],
+  "steps": [
+    {
+      "adapterVersion": "1.0",
+      "expectedOutputContracts": [
+        "phonon_band_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "plotly_json",
+        "table_json",
+        "recipe_json"
+      ],
+      "inputRefs": [
+        {
+          "columnName": null,
+          "fieldRole": "band",
+          "objectType": "PhononBand",
+          "ref": "phonon_band_1",
+          "refType": "normalized_object"
+        }
+      ],
+      "params": {},
+      "stepId": "step_001",
+      "toolId": "phonon.band",
+      "toolVersion": "1.0"
+    },
+    {
+      "adapterVersion": null,
+      "expectedOutputContracts": [
+        "phonon_band_dos_json",
+        "phonon_summary_json",
+        "phonon_compatibility_json",
+        "plotly_json",
+        "table_json",
+        "phonon_manifest_json",
+        "recipe_json"
+      ],
+      "inputRefs": [],
+      "params": {},
+      "stepId": "step_002",
+      "toolId": "phonon.band_dos",
+      "toolVersion": null
+    },
+    {
+      "adapterVersion": null,
+      "expectedOutputContracts": [
+        "phonon_dos_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "plotly_json",
+        "table_json",
+        "recipe_json"
+      ],
+      "inputRefs": [
+        {
+          "columnName": null,
+          "fieldRole": "dos",
+          "objectType": "PhononDos",
+          "ref": "phonon_dos_1",
+          "refType": "normalized_object"
+        }
+      ],
+      "params": {},
+      "stepId": "step_003",
+      "toolId": "phonon.dos",
+      "toolVersion": null
+    }
+  ],
+  "warnings": [
+    "No validated grounded interpretation is available; no findings were generated from raw Artifact content."
+  ],
+  "workspaceId": "workspace_9551ccb1134add8c6d831ad93c93bc91",
+  "workspaceRevision": 0
+}
