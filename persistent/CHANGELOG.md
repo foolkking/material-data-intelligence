@@ -7,8 +7,11 @@
   fixture with the existing M5 legacy support-table setup. Follow-up
   `c7db3ca4a651847b49a994eb7e4ad9a21d32eca7` / run `31018789969` exposed the
   fixture's correct Plan 0.1 read-only status; current running recovery now uses
-  the M1 exact Plan 0.2 identity setup. Production behavior, migration 0007,
-  dependencies, and contracts are unchanged.
+  the M1 exact Plan 0.2 identity setup. Follow-up
+  `ec2a7e572510be08a7d02c5fcd338807b39ba9e3` / run `31019983444` exposed a
+  fixture/TestClient actor mismatch; the fixture now uses the existing
+  `user_local` authorization context. Production behavior, migration 0007,
+  dependencies, contracts, and authorization rules are unchanged.
 
 ## 2026-08-05 - Phase 10M-6 Local Implementation
 

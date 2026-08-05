@@ -71,7 +71,7 @@ def test_phase10m6_postgres_redis_minio_workspace_save_reload_recovery(
         dataset_id = f"dataset_m6_{suffix}"
         call_id = f"call_m6_{suffix}"
         artifact_id = f"artifact_m6_{suffix}"
-        actor_id = f"phase10m6_ci_{suffix}"
+        actor_id = "user_local"
         profile_id = f"profile_m6_{suffix}"
         repos.projects.save({"id": project_id, "name": "M6 recovery", "createdBy": actor_id})
         repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": "M6 data", "status": "profile_ready", "createdBy": actor_id})

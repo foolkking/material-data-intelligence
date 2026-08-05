@@ -4,3 +4,4 @@ M5 completion aaef8bf254de3569f4411a85138dfb0c8c79497f / CI 30991190818 success
 M5 archive 56bec17792fff86a99c3d280ab754a69fff6c51b / CI 30991896855 success
 M6 initial implementation 3bae949559c1049e0bcfd5de21d4d375e1a488aa / CI 31017695192 (service fixture support tables missing; Unit and Frontend passed)
 M6 fixture correction c7db3ca4a651847b49a994eb7e4ad9a21d32eca7 / CI 31018789969 (legacy Plan 0.1 correctly projected read-only; Unit and Frontend passed)
+M6 current-source correction ec2a7e572510be08a7d02c5fcd338807b39ba9e3 / CI 31019983444 (service fixture actor differed from TestClient authorization context)

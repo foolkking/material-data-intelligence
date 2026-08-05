@@ -86,10 +86,10 @@
       "sha256": "3cf0c36bfb09ac0d6583bd4486cdfebeb0c00fa50bcece3798c1236ec313f98e"
     },
     {
-      "bytes": 645,
+      "bytes": 803,
       "hashMode": "lf_normalized_text",
       "path": "git_history.txt",
-      "sha256": "b4570f84ad2fb3a54c0b8ecba1dc3ea6d6cddb7a280d7a020d82d4d4c1bc5172"
+      "sha256": "3a665549c1ac2d0ae2d9ae0d3d0c09ae7f9151422486d49df40d68b0120c0948"
     },
     {
       "bytes": 220,

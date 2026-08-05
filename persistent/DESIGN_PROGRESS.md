@@ -8,8 +8,11 @@
   assertions. Correction `c7db3ca4a651847b49a994eb7e4ad9a21d32eca7`
   / CI `31018789969` then confirmed Plan 0.1 is correctly projected as
   `LEGACY_READ_ONLY`, not `RUNNING`. The current-source recovery fixture now
-  uses the established M1 Profile/Intent/Eligibility/Decision/Plan 0.2 setup;
-  no production schema, migration, or projection rule changed.
+  uses the established M1 Profile/Intent/Eligibility/Decision/Plan 0.2 setup.
+  Commit `ec2a7e572510be08a7d02c5fcd338807b39ba9e3` / CI `31019983444`
+  then exposed a fixture actor mismatch with TestClient's `user_local`
+  authorization context; the fixture now uses that exact existing actor. No
+  production schema, migration, projection rule, or authorization rule changed.
 
 ## 2026-08-05 Phase 10M-6 Workspace Recovery Locally Implemented
 
