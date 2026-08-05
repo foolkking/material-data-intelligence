@@ -4326,3 +4326,382 @@ Do not create, queue, or execute Phase 10M-5.
 - Queue-archive SHA/CI: not created / pending.
 - Expected post-commit: `HEAD == origin/master`, clean, migration head 0007,
   M4 completed block retained, task count 1, no M5 executable task.
+
+# Phase 10M-5 Scientific Report + Recipe Composition Result
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
+```
+
+## 2. Baseline and Entry Gate
+
+- M4 implementation: `6287785c26e7bfdb91664fb10e78aa3de87161f7`, CI `30751689618` success.
+- M4 completion: `ee0e913625b627e891e1627f204ebf8e14cfb7c9`, CI `30752527117` success.
+- M4 archive: `7f84472d3cd0ca1e8a90eb56a69987bf4c2dadd7`, CI `30752905104` success.
+- Initial HEAD/origin: M4 archive SHA; branch `master`; clean worktree; migration head 0007; task count zero before admission.
+
+## 3. M0-M4 Decision Compliance
+
+Workspace identity/persistence, shell, canonical selection, renderer registry,
+Gallery, viewers, WebGL lifecycle, Artifact authority, and historical API
+semantics remain unchanged. M5 is additive composition only.
+
+## 4. Report / Recipe Authority Audit
+
+Existing `reports.report_json` and `visualization_recipes.recipe_json` remain
+the sole persistence authorities. Reports are selected delivery snapshots;
+Recipes are exact declarative, non-executable replay manifests.
+
+## 5. Existing Persistence Reuse
+
+```text
+new report tables = 0
+new recipe tables = 0
+migration = unchanged
+migration head = 0007_phase10m1_workspace_domain
+```
+
+The existing UnitOfWork transaction atomically creates the exact pair.
+
+## 6. Composition Contracts
+
+Implemented strict `ReportCompositionRequest 1.0`,
+`ReportCompositionSnapshot 1.0`, `RecipeReplayManifest 1.0`, and
+`ReportExportManifest 1.0` in Python, checked JSON Schema, and TypeScript.
+Unknown/duplicate fields, non-finite values, invalid IDs/enums, excessive
+depth/bytes/counts, and executable text are rejected.
+
+## 7. Canonical Identity and Hashing
+
+Canonical semantic hashes include exact Workspace revision, Project/Dataset/
+Job/Plan, ordered selected Panels/Artifacts/Claims/Evidence, checksums,
+captions, disclosures, and Recipe bindings. Runtime IDs, timestamps, browser
+state, temporary URLs, and secrets are excluded.
+
+## 8. Source Eligibility Classification
+
+The deterministic projector emits `REPORT_FIGURE_SOURCE`,
+`REPORT_TABLE_SOURCE`, `REPORT_FINDING_SOURCE`, `REPORT_EVIDENCE_SOURCE`,
+`REPORT_PROVENANCE_SOURCE`, `REPORT_DISCLOSURE_ONLY`,
+`REPORT_METADATA_ONLY`, or `REPORT_UNSUPPORTED` from exact contract/version,
+scope, checksum, lineage, and validated interpretation membership. Filename,
+title, MIME-only, array-position, fuzzy, and latest-version inference are absent.
+
+## 9. Scientific Report Composition
+
+Every Report deterministically renders all twelve mandatory sections: title,
+goal, scope, methods/plan, execution, results, findings, warnings/limitations,
+failed/blocked/missing scope, evidence/provenance, environment/references, and
+exact Recipe reference. Empty sections retain typed unavailable state.
+
+## 10. Exact Recipe Replay Manifest
+
+Recipes preserve exact Project/Dataset/Profile/Intent/Eligibility/Decision/
+Plan, tools, versions, params, bindings, expected outputs, original Artifact
+IDs/checksums, outcome, provenance, warnings, and semantic hash. All execution,
+Plan, Job, queue, and automatic replay flags are false.
+
+## 11. AnalysisPlan 0.1 Support
+
+Plan 0.1 remains `planSchemaVersion = 0.1` with no invented dependency graph
+or Artifact binding. Exact ordered independent/sequential steps and params are retained.
+
+## 12. AnalysisPlan 0.2 / Dependency Support
+
+Plan 0.2 preserves graph hash, dependency edges, ports, producer/consumer
+bindings, contract/version/checksum lineage, independent branches, and
+failed/blocked descendants.
+
+## 13. M3 Selection and M4 Gallery Integration
+
+Gallery and eligible Panels add exact source refs to a session draft. The M3
+selection authority is not replaced or persisted; unsupported Viewer
+sub-selection falls back to whole Artifact, Panel, metadata, or approved numeric/text representation.
+
+## 14. Figures / Tables / Viewer Fallbacks
+
+Formal static/numeric/table projections are eligible. WebGL-only Structure,
+Trajectory, BZ, and Volumetric states use exact metadata and approved fallback.
+
+```text
+WEBGL_CANVAS_REPORT_AUTHORITY = NONE
+BROWSER_SCREENSHOT_SCIENTIFIC_AUTHORITY = NONE
+```
+
+## 15. Findings / Evidence / Interpretation
+
+Only persisted grounded ScientificClaims and exact Evidence membership may be
+selected. Numeric values, units, subjects, confidence, supporting/limiting
+Evidence, and provider/deterministic provenance are unchanged.
+
+## 16. Mandatory Warnings / Limitations / Failures
+
+Source warnings, interpretation limitations, partial coverage, failed steps,
+blocked dependencies, missing desired outputs, stale/unsupported sources, and
+validation/provider failures are mandatory and cannot be removed.
+
+## 17. Partial / All-Failed / No-Interpretation States
+
+Partial execution produces `REPORT_READY_WITH_LIMITS`; all-failed produces
+`REPORT_NO_SCIENTIFIC_RESULTS`; no-interpretation retains methods/Artifacts/
+provenance with grounded findings typed unavailable. No positive claim is invented.
+
+## 18. Stale / Missing / Legacy States
+
+Stale identity never rebinds to latest. Missing selected results fail or must
+be removed while their disclosure remains. Legacy Report/Recipe records remain
+read-only with unchanged hashes and typed unavailable fields.
+
+## 19. Preview
+
+```text
+PREVIEW_REPORT_WRITES = 0
+PREVIEW_RECIPE_WRITES = 0
+PREVIEW_JOB_CREATION = 0
+```
+
+Preview revalidates exact sources and deterministically returns Report, Recipe
+summary, outcome, caps, and errors without persistence or execution authority.
+
+## 20. Persistence / Atomicity / Idempotency
+
+Finalize revalidates Workspace revision and all exact sources, then creates
+the linked Report/Recipe pair in one transaction. Same idempotency key and
+semantic request returns the same pair; semantic conflict is typed and creates
+no row. Rollback leaves both counts unchanged.
+
+## 21. History
+
+History lists every immutable snapshot by exact IDs, versions, semantic hashes,
+source Job, Workspace revision, outcome, limitations, exports, and legacy state.
+
+## 22. Export
+
+Canonical JSON and UTF-8 LF-normalized Markdown are deterministically rendered
+from the persisted snapshot, with exact refs, warnings, limitations, no-execution
+flags, safe server filenames, authorization, byte caps, and content hashes.
+
+## 23. API
+
+- `GET /workspaces/{workspaceId}/report-composition/sources`
+- `POST /workspaces/{workspaceId}/report-compositions/preview`
+- `POST /workspaces/{workspaceId}/report-compositions`
+- `GET /workspaces/{workspaceId}/report-compositions`
+- `GET /workspaces/{workspaceId}/report-compositions/{reportId}`
+- `GET /workspaces/{workspaceId}/report-compositions/{reportId}/recipe`
+- `GET /workspaces/{workspaceId}/report-compositions/{reportId}/exports/{format}`
+
+All routes are additive, metadata-first, scope checked, and return typed errors.
+
+## 24. Workspace Frontend
+
+The existing Report Panel now provides source inventory, session draft,
+bounded captions/order controls, mandatory disclosures, preview, explicit
+finalize, immutable history/detail, Recipe inspection, and JSON/Markdown export.
+
+## 25. Authorization
+
+Every read/write validates Project -> Workspace -> Job -> Panel/Artifact/
+Claim/Evidence -> Report/Recipe pair. Corrected service-backed evidence uses a
+real foreign Project/Job/Artifact and receives typed rejection.
+
+## 26. Scientific Integrity
+
+```text
+REPORT_GENERATED_SCIENTIFIC_VALUES = 0
+REPORT_GENERATED_SCIENTIFIC_CLAIMS = 0
+REPORT_SCIENTIFIC_RECOMPUTATION = 0
+WORKSPACE_COPIED_ARTIFACT_PAYLOADS = 0
+RECIPE_EXECUTION_AUTHORITY = NONE
+RECIPE_PLAN_CREATION_AUTHORITY = NONE
+RECIPE_JOB_CREATION_AUTHORITY = NONE
+RECIPE_QUEUE_AUTHORITY = NONE
+```
+
+## 27. LLM / DeepSeek Compliance
+
+```text
+NEW_LLM_CALL_SITES = 0
+M5_REPORT_COMPOSITION_REQUIRES_LLM = NO
+M5_RECIPE_COMPOSITION_REQUIRES_LLM = NO
+REAL_LLM_CALLS = 0
+DEEPSEEK_POLICY_REGRESSION = PASS
+```
+
+Existing persisted provider-produced interpretation is read-only evidence;
+Report and Recipe composition providers are `NONE`.
+
+## 28. Accessibility
+
+Semantic headings, labels, status/warning announcements, keyboard selection
+and reorder controls, focus-visible behavior, tables, figure alternatives,
+reduced motion, reflow, and named export controls pass automated evidence.
+
+## 29. Mobile / Responsive
+
+Chromium 390x844 passes single-surface source/draft/preview/history navigation,
+44px targets, focus return, warning announcements, and zero horizontal overflow.
+
+## 30. Browser Matrix
+
+Chromium, Firefox, WebKit, and Chromium 390x844 pass complete/partial/no-
+interpretation/stale/legacy/injection/idempotency/export cases. Console errors,
+page errors, failed responses, and unapproved external requests are zero.
+
+## 31. Performance
+
+Development acceptance evidence, not a production capacity claim: source
+inventory 12.235 ms, preview 16.489 ms, finalize 22.074 ms; request 335 bytes,
+JSON export 11,025 bytes, Markdown 2,097 bytes.
+
+```text
+INITIAL_HEAVY_ARTIFACT_PAYLOAD_REQUESTS = 0
+REPORT_PREVIEW_WEBGL_CONTEXTS = 0
+DUPLICATE_RECORD_GROWTH_ON_IDEMPOTENT_SUBMIT = 0
+```
+
+## 32. Security
+
+```text
+ARTIFACT_CONTENT_IS_INERT_DATA = PASS
+NO_REPORT_ARBITRARY_CODE_EXECUTION = PASS
+NO_REPORT_SHELL_OR_FILESYSTEM_AUTHORITY = PASS
+NO_REPORT_PROVIDER_AUTHORITY = PASS
+NO_RECIPE_EXECUTION_AUTHORITY = PASS
+NO_RECIPE_PLAN_CREATION_AUTHORITY = PASS
+NO_RECIPE_JOB_CREATION_AUTHORITY = PASS
+NO_RECIPE_QUEUE_AUTHORITY = PASS
+NO_REPORT_ARTIFACT_JAVASCRIPT = PASS
+NO_REPORT_ARTIFACT_HTML_EXECUTION = PASS
+NO_REPORT_EXTERNAL_ARTIFACT_URL_EXECUTION = PASS
+NO_CROSS_PROJECT_REPORT_SOURCE = PASS
+NO_STALE_REPORT_SOURCE_REBINDING = PASS
+NO_REPORT_SCIENTIFIC_RECOMPUTATION = PASS
+NO_REPORT_GENERATED_SCIENTIFIC_CLAIMS = PASS
+NO_SECRET_PATTERN_HITS = PASS
+```
+
+## 33. Acceptance IDs
+
+```text
+expected = 7
+implemented = 7
+missing = 0
+extra = 0
+duplicate = 0
+```
+
+- M5-A01: contracts/authority, contract and evidence tests.
+- M5-A02: deterministic Report composer, complete/partial/no-result tests.
+- M5-A03: exact Plan 0.1/0.2 Recipe, determinism tests.
+- M5-A04: Workspace composition/history UI and browser evidence.
+- M5-A05: no-write preview and canonical safe exports.
+- M5-A06: failure/compatibility/accessibility/performance/security matrix.
+- M5-A07: service-backed/browser/evidence and three-commit lifecycle.
+
+## 34. Tests
+
+- Focused M5 backend/evidence: 29 passed.
+- Full backend local: 1144 passed, 42 service-gated skips, 63 warnings.
+- Full frontend local: 402 passed across 63 files; typecheck/build passed.
+- Chromium/Firefox/WebKit/mobile browser evidence passed.
+- Corrected CI `30990265619`: Unit, frontend/typecheck/build/browser, service-backed, no-skipped, closure/evidence success.
+- Service-backed: 40 passed, 0 skipped, 0 failed, 0 errors.
+- `uv lock --check`, dependency tree, docs links, TASKS/acceptance/evidence integrity, and secret scan passed.
+- `npm audit = UNAVAILABLE`: configured mirror returned `404_NOT_IMPLEMENTED`; not reported clean.
+
+## 35. Service-Backed Evidence
+
+PostgreSQL migration head 0007, Redis, MinIO payload/checksum, persisted
+Workspace/Job/Plan/Artifact/Evidence/Interpretation, metadata inventory,
+no-write preview, atomic pair, idempotency, rollback, history/export,
+cross-project rejection, and zero execution-object growth passed in CI.
+`LOCAL_SERVICE_BACKED = UNAVAILABLE`; CI is the zero-skipped authority.
+
+## 36. Production Behavior Changes
+
+Workspace Report Panel can inventory eligible sources, compose and preview a
+deterministic draft, explicitly finalize an immutable Report/Recipe pair,
+inspect history and exact Recipe bindings, and export canonical JSON/Markdown.
+Mandatory disclosures remain; no Plan/Job/ToolCall/queue is created.
+
+## 37. Files Changed
+
+Backend contracts/services/repositories/API, checked schemas, TypeScript/API
+client, Workspace Report UI/styles, focused/service/browser tests, CI gate,
+evidence, docs, persistent status, TASKS, and this result.
+
+```text
+database schema = unchanged
+migration = unchanged
+dependencies = unchanged
+lockfile = unchanged
+Workspace contracts = unchanged
+Selection contract = unchanged
+renderer registry authority = unchanged
+scientific Adapter authority = unchanged
+```
+
+## 38. Commit / CI History
+
+- Initial implementation `084ebd29a462ee7232a335d728ef67d4f27b7395`, run `30989213715`: Unit and Frontend succeeded; service-backed failed because the negative fixture's stale caption caused DTO 422 before scope validation.
+- Corrected implementation `f294fbd305385eb3fd129ab1f815daaca03d15fa`, run `30990265619`: all required jobs success; 40 service tests, zero skipped.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: not created before completion-record CI.
+
+## 39. Explicit Non-Scope
+
+Not implemented: M6 recovery/responsive closure; M7 final closure; new tables/
+migration; collaboration; multi-Job/cross-Workspace Report; rich-text/WYSIWYG;
+mandatory PDF/DOCX/LaTeX/PPTX; remote publishing; notebook/script export;
+Report-generated science; frontend recomputation; LLM writing/captions/
+citations; Recipe execution/rerun; Plan/Job/ToolCall/queue/Adapter execution;
+new science/Phase 10N/11/12; RAG/memory/multi-agent/plugins/enterprise;
+arbitrary Python/shell/filesystem; external science API; new provider/SDK/dependency.
+
+## 40. Phase 10M Readiness
+
+```text
+Phase 10M-5:
+READY_WITH_EXPLICIT_LIMITS
+
+Phase 10M-6:
+REVIEWER_GATE
+```
+
+## 41. Queue State
+
+```text
+Phase 10M-5:
+COMPLETE / AWAITING_VERIFIED_QUEUE_ARCHIVE
+
+Phase 10M-6:
+REVIEWER_GATE / AWAITING REVIEWER PROMPT
+
+TASK_BLOCK_COUNT = 1
+```
+
+## 42. Automatic M6 Entry
+
+```text
+NO
+PHASE_10M6_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 43. Next Action
+
+```text
+Verify this completion-record exact-SHA CI, then archive only Phase 10M-5.
+Do not create, queue, or execute Phase 10M-6.
+```
+
+## 44. Final Repository State
+
+- Corrected implementation SHA: `f294fbd305385eb3fd129ab1f815daaca03d15fa`.
+- Implementation exact-SHA CI: `30990265619`, success.
+- Completion-record SHA/CI: this commit / pending.
+- Queue-archive SHA/CI: not created / pending.
+- Expected post-commit: `HEAD == origin/master`, clean, migration head 0007,
+  M5 completed block retained, task count one, no M6 executable task.

@@ -2265,3 +2265,16 @@
   manifest, and browser replay evidence.
 - Earlier live contract failures remain preserved as sanitized diagnostics; no
   simulated result was relabeled as live success.
+
+## 2026-08-05 Phase 10M-5 Scientific Report + Recipe Composition
+
+- Added strict Report, immutable snapshot, exact Recipe replay, and export
+  manifest contracts across Python, JSON Schema, and TypeScript.
+- Added metadata-first source eligibility, deterministic preview/finalize/
+  history, canonical JSON/Markdown export, and Workspace composition UI.
+- Reused existing Report/Recipe persistence for atomic, idempotent pairs with
+  Plan 0.1 and Plan 0.2 dependency/binding preservation.
+- Corrected implementation `f294fbd305385eb3fd129ab1f815daaca03d15fa`
+  passed exact-SHA CI `30990265619`, including 40/40 service tests.
+- No migration, dependency, scientific calculation, execution authority, or
+  LLM call site was added.

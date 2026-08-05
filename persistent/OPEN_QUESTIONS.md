@@ -1088,3 +1088,9 @@ unless also listed in Active Questions. Future-only topics are governed by
 - A work-function product requires independently validated vacuum and Fermi reference artifacts; neither is inferred from LOCPOT.
 - Macroscopic averaging, cross-calculation alignment, mixed-periodicity slab semantics, arbitrary slices, and direct volume rendering require separate contracts.
 - Local implementation checks are closed: 258 frontend tests, 722 backend passes with 24 intentional skips, production build, and real Chromium/Firefox/WebKit/mobile evidence. Docker is unavailable locally for service-backed zero-skip integration; current-HEAD CI is required. The configured npm audit mirror returns `404 NOT_IMPLEMENTED`.
+
+## Phase 10M-5 follow-up
+
+- Phase 10M-6 remains reviewer-gated for save/reload/recovery/responsive closure; M5 session drafts intentionally have no refresh-recovery promise.
+- PDF, DOCX, LaTeX, PowerPoint, remote publishing, multi-Job aggregation, and Recipe execution remain outside M5.
+- Physical assistive-technology and broad physical-device testing remain outside automated browser evidence.

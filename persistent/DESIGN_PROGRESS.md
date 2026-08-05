@@ -1915,3 +1915,11 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Reused the Phase 10J-2 Worker/Three.js renderer and captured Chromium/Firefox/WebKit/mobile runtime, profile, performance, accessibility, network, and security evidence.
 - Vacuum/work-function/Fermi alignment, cross-calculation alignment, macroscopic averaging, arbitrary slice/path, and direct volume remain deferred.
 - Local closure after the final runner hardening passed 258 frontend tests and `722 passed, 24 skipped, 62 warnings` backend tests, typecheck, production build, the historical volumetric/charge-spin/Phase 10 browser pack, and the Phase 10J-4 Chromium/Firefox/WebKit/mobile evidence. The live evidence records one WebGL2 canvas per browser, zero console/page errors, zero external requests, source-contour preservation, three profiles, point difference, PNG signature, and the bounded `128^3` float64 near-cap test. Docker-backed service integration remains a current-HEAD CI gate; the configured npm audit endpoint remains unavailable.
+
+## 2026-08-05 Phase 10M-5 Scientific Report + Recipe Composition
+
+- Strict composition contracts, canonical hashes, deterministic Report, and exact Plan 0.1/0.2 Recipe are implemented.
+- Existing Report/Recipe persistence provides atomic, idempotent immutable pairs; no migration or new table was added.
+- Workspace preview/finalize/history/Recipe/JSON/Markdown UI and APIs are implemented.
+- Corrected implementation `f294fbd305385eb3fd129ab1f815daaca03d15fa` passed CI `30990265619`, including 40 service tests with zero skipped.
+- Completion-record exact-SHA CI and verified queue archive remain; Phase 10M-6 is reviewer-gated.

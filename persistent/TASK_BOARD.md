@@ -2285,3 +2285,11 @@ current board above.
 - [x] Capture live QueueWorkerRuntime ELFCAR, PARCHG, and explicitly identified CUBE artifacts plus Chromium/Firefox/WebKit evidence with zero external requests.
 - [x] Implementation commit `a5ba567528c13ca1b3c0bb83856fe202bcdf4898` passed CI run `30135550496`, including unit, frontend typecheck/build, service-backed integration, and no-skipped assertion.
 - [x] Completion-record commit `75b2d74a1f263338f12bffe02f3ee89536625c17` passed CI run `30135836995`; the verified completed Phase 10J-5 queue block is archived in `results.md` and removed from `TASKS.md`.
+
+## Phase 10M-5 Scientific Report + Recipe Composition
+
+- [x] Implementation and local/browser/evidence regression complete.
+- [x] Corrected implementation exact-SHA CI `30990265619` success for `f294fbd305385eb3fd129ab1f815daaca03d15fa`.
+- [x] PostgreSQL/Redis/MinIO: 40 passed, 0 skipped, 0 failed, 0 errors.
+- [ ] Completion record awaits exact-SHA CI; queue archive follows only after success.
+- [ ] Phase 10M-6 remains reviewer-gated.

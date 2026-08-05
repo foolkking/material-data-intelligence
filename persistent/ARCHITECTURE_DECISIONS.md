@@ -4363,3 +4363,15 @@ authorized.
   per-case call cap and sanitized failure provenance.
 - DeepSeek cannot select new tools, alter plans, execute code, access raw
   artifacts, or trigger recommendations. Phase 10M remains reviewer-gated.
+
+## 2026-08-05 Phase 10M-5 ADR: deterministic delivery snapshots
+
+- Existing Report and Recipe persistence remains the sole database authority;
+  M5 adds versioned composition payloads without schema or migration changes.
+- Preview is read-only. Finalize atomically persists one immutable Report and
+  one exact declarative Recipe linked by exact IDs and semantic identity.
+- Report content deterministically projects validated sources. Recipe records
+  exact Plan 0.1/0.2 inputs and outcomes but has no execution, Plan, Job,
+  ToolCall, queue, Adapter, provider, shell, or filesystem authority.
+- Mandatory warnings, limitations, failures, blocked scope, stale state, and
+  limiting evidence cannot be removed from finalized snapshots.

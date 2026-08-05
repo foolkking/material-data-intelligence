@@ -1,8 +1,9 @@
 # Phase 10M Unified Scientific Workspace
 
 Status: Phase 10M-1 through Phase 10M-4 are archived. Reviewer-authorized
-Phase 10M-5 deterministic Scientific Report + Recipe composition is implemented
-locally and is completing regression/evidence and the three exact-SHA CI gates.
+Phase 10M-5 deterministic Scientific Report + Recipe composition passed its
+corrected implementation exact-SHA CI and awaits completion-record CI and the
+verified queue archive.
 
 ## Reading order
 
@@ -51,7 +52,8 @@ locally and is completing regression/evidence and the three exact-SHA CI gates.
 43. [M5 compatibility/failures](phase10m5_compatibility_and_failure_matrix.md)
 44. [M5 security/authorization](phase10m5_security_and_authorization.md)
 45. [M5 acceptance/evidence](phase10m5_acceptance_evidence_map.md)
-46. [M6 reviewer gate](phase10m5_next_scope.md)
+46. [M5 completion state](phase10m5_completion.md)
+47. [M6 reviewer gate](phase10m5_next_scope.md)
 
 ## Status vocabulary
 
