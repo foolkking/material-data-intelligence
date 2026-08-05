@@ -1,5 +1,13 @@
 # DESIGN_PROGRESS
 
+## 2026-08-05 Phase 10M-6 CI Fixture Correction
+
+- Initial implementation `3bae949559c1049e0bcfd5de21d4d375e1a488aa`
+  passed Unit and Frontend in CI `31017695192`; service-backed detected a
+  fixture-only missing `organizations/users` support-table setup before the M6
+  assertions. The corrected fixture now matches the established M5 isolated
+  schema setup; no production schema or migration changed.
+
 ## 2026-08-05 Phase 10M-6 Workspace Recovery Locally Implemented
 
 - Added canonical durable draft comparison, explicit PATCH/If-Match Save,
