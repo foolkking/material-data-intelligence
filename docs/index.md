@@ -18,6 +18,26 @@
 Historical phase planning and evidence are retained below. They are not
 authoritative for future scope when they conflict with `ROADMAP.md`.
 
+## Phase 10N Professional Scientific Completion
+
+Phase 10N-0 is a documentation-only capability audit and scope seal. It adds
+no production science, runtime contract, API, migration, dependency, Viewer,
+or executable N1 task. Canonical N0 documents:
+
+- [`phase10n/phase10n0_professional_scientific_capability_gap_audit.md`](phase10n/phase10n0_professional_scientific_capability_gap_audit.md)
+- [`phase10n/phase10n0_current_capability_inventory.md`](phase10n/phase10n0_current_capability_inventory.md)
+- [`phase10n/phase10n0_dependency_version_license_matrix.md`](phase10n/phase10n0_dependency_version_license_matrix.md)
+- [`phase10n/phase10n0_identity_units_authority_wording_seal.md`](phase10n/phase10n0_identity_units_authority_wording_seal.md)
+- [`phase10n/phase10n0_reference_fixture_and_tolerance_policy.md`](phase10n/phase10n0_reference_fixture_and_tolerance_policy.md)
+- [`phase10n/phase10n0_data_profile_registry_planner_contract_audit.md`](phase10n/phase10n0_data_profile_registry_planner_contract_audit.md)
+- [`phase10n/phase10n0_workspace_interpretation_report_integration.md`](phase10n/phase10n0_workspace_interpretation_report_integration.md)
+- [`phase10n/phase10n0_decision_log.md`](phase10n/phase10n0_decision_log.md)
+- [`phase10n/phase10n_implementation_backlog.md`](phase10n/phase10n_implementation_backlog.md)
+- [`phase10n/phase10n_acceptance_and_test_plan.md`](phase10n/phase10n_acceptance_and_test_plan.md)
+- [`phase10n/phase10n_execution_lock.md`](phase10n/phase10n_execution_lock.md)
+- [`phase10n/phase10n_execution_manifest.md`](phase10n/phase10n_execution_manifest.md)
+- [`phase10n/evidence/phase10n0_professional_scientific_gap_audit/`](phase10n/evidence/phase10n0_professional_scientific_gap_audit/)
+
 Current Phase 10L-5 closure references:
 
 - [`phase10l/phase10l5_natural_language_evidence_architecture.md`](phase10l/phase10l5_natural_language_evidence_architecture.md)

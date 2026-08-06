@@ -1,5 +1,14 @@
 # PROJECT_BRIEF
 
+## 2026-08-06 Phase 10N-0 Audit Scope
+
+Phase 10M is archived at corrected commit `88e8ba8`. Phase 10N-0 prepared a
+documentation-only scientific capability/dependency/identity/units/wording
+audit and N1-N6 proposals, pending exact-SHA CI before the completion record.
+Production behavior,
+database, migration, API, runtime contracts, dependencies, lockfile, Tool
+Registry, Adapters, Viewers and LLM paths are unchanged. N1 is not queued.
+
 ## 2026-08-06 Phase 10M-7 Implementation Verified
 
 Evidence-only implementation `21ea4559e097cec649515b35c7f45b63f8eb8511`

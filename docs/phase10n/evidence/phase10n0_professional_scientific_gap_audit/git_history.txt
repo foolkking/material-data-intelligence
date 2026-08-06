@@ -1,0 +1,12 @@
+88e8ba8 (HEAD -> master, origin/master) Fix Phase 10M-7 archive integrity
+5fc11b0 Archive Phase 10M-7 task
+95d4488 Record Phase 10M-7 completion
+21ea455 Close Phase 10M workspace integration evidence
+200212b chore(queue): archive phase 10m6 task
+aec09ce docs: record phase 10m6 completion
+65e80ba test(workspace): align recovery fixture authorization
+ec2a7e5 test(workspace): use current source recovery fixture
+c7db3ca test(workspace): fix phase 10m6 service fixture
+3bae949 feat(workspace): close phase 10m6 recovery UX
+56bec17 Archive Phase 10M-5 task
+aaef8bf Record Phase 10M-5 completion

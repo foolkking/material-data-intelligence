@@ -1,0 +1,57 @@
+{
+  "source": "pyproject.toml + uv.lock",
+  "dependencies": [
+    {
+      "name": "pymatgen",
+      "version": "2026.5.4",
+      "core": "2026.5.18"
+    },
+    {
+      "name": "ase",
+      "version": "3.29.0"
+    },
+    {
+      "name": "numpy",
+      "versions": [
+        "2.4.6",
+        "2.5.0"
+      ]
+    },
+    {
+      "name": "scipy",
+      "versions": [
+        "1.17.1",
+        "1.18.0"
+      ]
+    },
+    {
+      "name": "pandas",
+      "version": "3.0.3"
+    },
+    {
+      "name": "plotly",
+      "version": "6.8.0"
+    },
+    {
+      "name": "scikit-learn",
+      "version": "1.9.0"
+    },
+    {
+      "name": "spglib",
+      "version": "2.7.0"
+    },
+    {
+      "name": "pymatviz",
+      "version": "0.18.0"
+    },
+    {
+      "name": "phonopy",
+      "status": "not top-level locked"
+    },
+    {
+      "name": "seekpath",
+      "status": "not top-level locked"
+    }
+  ],
+  "changes": 0
+}

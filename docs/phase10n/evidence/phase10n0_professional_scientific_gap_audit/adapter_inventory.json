@@ -1,0 +1,14 @@
+{
+  "current_scientific_adapters": [
+    "CoordinationHistAdapter",
+    "XrdPatternAdapter",
+    "RdfAdapter",
+    "TrajectoryImportAdapter",
+    "TrajectoryViewerAdapter",
+    "PhononBandAdapter",
+    "PhononDosAdapter",
+    "BrillouinZoneAdapter",
+    "VolumetricDataAdapter"
+  ],
+  "n1_n5_adapters": []
+}

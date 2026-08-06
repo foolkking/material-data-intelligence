@@ -1,0 +1,14 @@
+{
+  "contract": "ScientificWorkspace 1.0 / WorkspacePanel 1.0",
+  "current_surfaces": [
+    "Data",
+    "Plan",
+    "Execution",
+    "Results",
+    "Findings",
+    "Evidence",
+    "Provenance",
+    "Report"
+  ],
+  "new_panels": 0
+}

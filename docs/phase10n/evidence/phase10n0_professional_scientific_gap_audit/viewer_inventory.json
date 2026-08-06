@@ -1,0 +1,17 @@
+{
+  "rendererRegistry": "apps/web/app/components/workspace/workspace-renderer-registry.ts",
+  "formalViewers": [
+    "DATASET",
+    "ML",
+    "COMPOSITION",
+    "STRUCTURE",
+    "TRAJECTORY",
+    "PHONON_BAND",
+    "PHONON_DOS",
+    "PHONON_COMBINED",
+    "BRILLOUIN_ZONE",
+    "VOLUMETRIC"
+  ],
+  "electronicViewer": false,
+  "experimental_xrd_comparison_viewer": false
+}

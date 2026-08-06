@@ -1452,3 +1452,10 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Default CI and deterministic/fake regression paths remain
   `REAL_LLM_CALLS = 0`; the five-case live suite is separately captured,
   sanitized, and auditable.
+# Phase 10N-0 Registry Proposal Boundary
+
+- Current Registry remains `0.1.0` with 53 tools; no N1-N5 tool is registered.
+- Proposed future IDs are documented only in the N0 Profile/Registry audit.
+- Eligibility must gate data readiness and scientific validity before Planner
+  visibility. AnalysisPlan 0.1/0.2 remains sufficient; no generic DAG change.
+- N0 adds no Adapter, output contract, dependency, runtime permission or LLM path.

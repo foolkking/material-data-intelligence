@@ -1,0 +1,14 @@
+{
+  "current_contract_families": [
+    "structure",
+    "trajectory",
+    "phonon",
+    "brillouin_zone",
+    "volumetric",
+    "table",
+    "plot",
+    "report",
+    "recipe"
+  ],
+  "professional_n1_n5_contracts": []
+}

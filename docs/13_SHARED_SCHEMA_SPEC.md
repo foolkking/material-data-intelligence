@@ -2005,3 +2005,12 @@ The real provider contract is fixed to DeepSeek at `https://api.deepseek.com`
 with `DEEPSEEK_KEY` as the only key source. Default CI evidence has zero real
 LLM calls. Provider payloads, credentials, paths, and raw artifacts are never
 stored in these contracts.
+# Phase 10N-0 Proposal Boundary
+
+Phase 10N-0 registers no production schema. Its documentation proposes an
+additive `DataProfile 2.1` readiness extension and new versioned Artifact
+contracts owned by N1-N5, subject to reviewer approval. Until an owning phase
+implements and validates those contracts, current `DataProfile 2.0`, Artifact,
+Workspace, Selection, Interpretation, Report and Recipe schemas remain the
+only production authority. Historical 2.0 Profiles remain readable; missing
+future facts must produce typed ineligibility rather than inferred values.

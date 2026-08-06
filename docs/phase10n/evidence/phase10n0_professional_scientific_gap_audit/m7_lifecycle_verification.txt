@@ -1,0 +1,5 @@
+M7 implementation=21ea4559e097cec649515b35c7f45b63f8eb8511 CI=31065250027 success
+M7 completion=95d448815838848e9c8089e8653afc57ab8c740d CI=31067470666 success
+M7 failed archive candidate=5fc11b0465113ce7ad31fec3fa9d7e42d8d623c8 CI=31068038057 failed lifecycle assertion
+M7 corrected archive=88e8ba86079fabb96670c497b63eec8c1cc95a7c CI=31068772689 success
+archive_used_as_authority=corrected archive only

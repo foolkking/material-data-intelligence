@@ -1,0 +1,255 @@
+{
+  "algorithm": "sha256-lf-normalized-text-v1",
+  "entries": [
+    {
+      "path": "acceptance_registry.md",
+      "bytes": 3382,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "fe9ba27615a56eb41dda8f0e72da963d6fcc292ef70cb1d5c78cd005a877fff5"
+    },
+    {
+      "path": "adapter_inventory.json",
+      "bytes": 308,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "5d2b00de91b33d6082557045474b0525f18148f864ceea02a9ae4da6f07eb774"
+    },
+    {
+      "path": "artifact_inventory.json",
+      "bytes": 220,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "e7930016a100ce2aa423e4d0225b5e858e5a47101526d7d1b467975948cdd1e2"
+    },
+    {
+      "path": "baseline.txt",
+      "bytes": 255,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "34079e0d4ad54e9f4491c4e11c506ae6d084db136a60f4fc1fcbf17460645fa9"
+    },
+    {
+      "path": "browser_replay.md",
+      "bytes": 192,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "4d443b3ce372ef053422e026035d37e650f58971dd7f6c596d7ff11577602a84"
+    },
+    {
+      "path": "current_capability_matrix.md",
+      "bytes": 3933,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "2a1294f0972b48f6f1938bba25826f659fd143cfd7c4157cd867e03a458093ce"
+    },
+    {
+      "path": "decision_registry.md",
+      "bytes": 3856,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "e3050e7d796c4d0afdb1a90dcf8034f0087049d97726fe3053519f5dc33ebc27"
+    },
+    {
+      "path": "dependency_inventory.json",
+      "bytes": 907,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "63769c2686d8d1b0372add65b01ec974e5e7fd46b6fa58d27bba48875144698f"
+    },
+    {
+      "path": "dependency_license_matrix.md",
+      "bytes": 3283,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "fabb019d2d80e9901de42a131b2c5629c5e221ae5c372458a7d69299838ae19b"
+    },
+    {
+      "path": "docs_link_check.txt",
+      "bytes": 103,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "412db8c0f3ba3cd7822c983ed5f3888b7c612a43dc82c4afec2f6b25aef05dbe"
+    },
+    {
+      "path": "git_history.txt",
+      "bytes": 593,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "bacf54198c36c8169338960f8ee3bb3fc03459c506a68154b667dc3c60ebae8c"
+    },
+    {
+      "path": "identity_audit.md",
+      "bytes": 3760,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "a54c40a2374d12c3b64f0449fff289e4a1bbb6ee39bebd3b6fd760200a4dda21"
+    },
+    {
+      "path": "interpretation_projector_inventory.json",
+      "bytes": 144,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "d09fa778679efeb7cee2ceeef47fcc1f31fd867c76031e124d7a464c7747df75"
+    },
+    {
+      "path": "long_list_classification.md",
+      "bytes": 2819,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "ebe80d1f14ad04a9a3b40670df1c6e50dd656d81ab50f446a24b8722d613473d"
+    },
+    {
+      "path": "m7_lifecycle_verification.txt",
+      "bytes": 405,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "3515fd8efc4a95c9a2d14e229b2bafc96c5afdb8f9fc3e695021679d6f224387"
+    },
+    {
+      "path": "migration_api_dependency_decisions.md",
+      "bytes": 4148,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "b8636c47b95a95e5a577b2b0ecbb793edb0fa6c709a3cc0958277fcd6c0f82bd"
+    },
+    {
+      "path": "n1_scope_evidence.md",
+      "bytes": 2380,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "1c2d66f0e579cac32df62b60036a2362b86747195fd335fcf466fe63039e5fc2"
+    },
+    {
+      "path": "n2_scope_evidence.md",
+      "bytes": 1591,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "39c3b253e00b3cb054e661cb47b9fcd491734c8b2e95f53194b3bcdedfa902ab"
+    },
+    {
+      "path": "n3_scope_evidence.md",
+      "bytes": 1727,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "2ddf8d26f0b73f255f3c937a6b8d7685615037de1a51e695446a8fec7ad1200e"
+    },
+    {
+      "path": "n4_scope_evidence.md",
+      "bytes": 1839,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "a7d8853ff0c1f1de4e5a7d5ea274341a048669c47c57bc7fff5d5184d320c237"
+    },
+    {
+      "path": "n5_scope_evidence.md",
+      "bytes": 1943,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "0e8a0545436f85839dc8b371a865cc5ca7f36266b2e0b5a9666e41d40097bb99"
+    },
+    {
+      "path": "n6_scope_evidence.md",
+      "bytes": 977,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "442b457e651b0b6328ce18e8e42ca4754a8bd5974f2bcd8c746a23befaf5aaf1"
+    },
+    {
+      "path": "npm_audit.md",
+      "bytes": 144,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "16e7816b9980093c20f9c49a1d1def41ddd5fc1f07342b5a3612388d544a698b"
+    },
+    {
+      "path": "performance_cap_plan.md",
+      "bytes": 2221,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "c1718a2e963bc7d0ed1559917bd5990945278ac7161780bf55481147f5e96b42"
+    },
+    {
+      "path": "profile_fact_inventory.json",
+      "bytes": 293,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "369ee86199888bf2726105a4602df4d5e4d572c172583a82e5c8850270a8d6db"
+    },
+    {
+      "path": "reference_fixture_inventory.md",
+      "bytes": 2951,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "b84e79e5f632c92ca065b711144908b3e12ac67d92cad6813f6fa70adf577284"
+    },
+    {
+      "path": "registry_inventory.json",
+      "bytes": 320,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "1b872400706b78a50a87f42c90dae7c421aa0dce50194ec07cd666ac0a43186b"
+    },
+    {
+      "path": "report_recipe_inventory.json",
+      "bytes": 140,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "a38e46e91bf744a7776139fbddbbd2704288e596dd39972cdd472f53f9532b79"
+    },
+    {
+      "path": "repository_status.txt",
+      "bytes": 169,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "f8abab2bcaf7b3e6aeda078382c2333c3d0943e51a7f1bbfd40313d08e3d0300"
+    },
+    {
+      "path": "runtime_import_versions.txt",
+      "bytes": 274,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "cd7d53b5b2ad3f93fc881d1bab93dc750aec20993616e31589cef1e4d7512141"
+    },
+    {
+      "path": "screenshots/README.md",
+      "bytes": 149,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "fb0a171b4d49a6a1221456f05e80597af5b7158f92e8727132dd932b95a17a69"
+    },
+    {
+      "path": "secret_scan.txt",
+      "bytes": 103,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "38afd786c3cbba22547c8db7552fc0ee43af8b11c22e1279db9d605b5b9c01ca"
+    },
+    {
+      "path": "security_boundary.md",
+      "bytes": 2221,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "c1718a2e963bc7d0ed1559917bd5990945278ac7161780bf55481147f5e96b42"
+    },
+    {
+      "path": "service_backed_summary.md",
+      "bytes": 295,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "d22a44bf03a5ae015fd36934c1908d4dd5782d7490d9ec84d402cd8031cb923c"
+    },
+    {
+      "path": "tolerance_plan.md",
+      "bytes": 2951,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "b84e79e5f632c92ca065b711144908b3e12ac67d92cad6813f6fa70adf577284"
+    },
+    {
+      "path": "units_audit.md",
+      "bytes": 3760,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "a54c40a2374d12c3b64f0449fff289e4a1bbb6ee39bebd3b6fd760200a4dda21"
+    },
+    {
+      "path": "upstream_source_inventory.md",
+      "bytes": 282,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "5219d2cc9bb8188b9f2fe457ef329f2ec86db5204617e1c86d849bb33aa9e0f3"
+    },
+    {
+      "path": "verification_summary.md",
+      "bytes": 528,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "f5770fe4f1b41e8890c300d4e75c24060608230d355b41eaa58d97dea374fd39"
+    },
+    {
+      "path": "viewer_inventory.json",
+      "bytes": 373,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "17916272192df4507c07f93e8bb8a41ee3ada6197ad0295d736b122fcc4dfa29"
+    },
+    {
+      "path": "wording_audit.md",
+      "bytes": 3760,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "a54c40a2374d12c3b64f0449fff289e4a1bbb6ee39bebd3b6fd760200a4dda21"
+    },
+    {
+      "path": "workspace_panel_inventory.json",
+      "bytes": 232,
+      "hashMode": "sha256-lf-normalized-text",
+      "sha256": "6d23ca4f54e8aee9a5362852922a727a87b623cdf79df5fdf1697fd9fca8cf18"
+    }
+  ],
+  "required_entries": 41,
+  "missing_entries": 0,
+  "duplicate_entries": 0,
+  "secret_entries": 0
+}

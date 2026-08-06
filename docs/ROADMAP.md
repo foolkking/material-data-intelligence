@@ -45,8 +45,8 @@ live gate covers all five natural-language cases through DeepSeek with
 `DEEPSEEK_KEY`; a separate 40-case real-DeepSeek replay covers useful retained
 historical browser/Mock-LLM semantics and documents exclusions by reason.
 Deterministic/fake paths remain default-CI only. Phase 10M-0 is a directly
-reviewer-authorized audit and information-architecture seal. It changes no
-production behavior and does not authorize Phase 10M-1.
+reviewer-authorized audit and information-architecture seal. It changed no
+production behavior and authorized M1 only through a later reviewer prompt.
 
 ### Phase 10M - Unified Scientific Workspace
 
@@ -75,13 +75,16 @@ with zero skipped service tests. Phase 10M-5 is archived at
 `56bec17792fff86a99c3d280ab754a69fff6c51b`. Phase 10M-6 is archived at
 `200212b164041e38626d6b948c7fe64c772ca6ce` after implementation,
 completion-record, and queue-archive exact-SHA CI. Reviewer-authorized M7 has
-completed corrected acceptance reconciliation and local integration/browser/
+completed corrected acceptance reconciliation and integration/browser/service
 evidence closure without schema, API, dependency, contract, scientific, or LLM
-expansion. Its three exact-SHA CI lifecycle gates remain; Phase 10M is not
-finally archived until all three pass. Phase 10N-0 remains reviewer-gated.
+expansion. Implementation `21ea4559` passed CI `31065250027`; completion
+`95d4488` passed CI `31067470666`; failed archive candidate `5fc11b0` is retained
+as history, and corrected archive `88e8ba8` passed CI `31068772689`. Phase 10M
+is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`.
 
 ### Phase 10N - Professional Scientific Completion
 
+* 10N-0: professional scientific capability gap audit and scope seal.
 * 10N-1: CrystalNN and VoronoiNN with explicit algorithm provenance.
 * 10N-2: local environments and coordination polyhedra.
 * 10N-3: experimental XRD comparison and peak matching.
@@ -90,6 +93,11 @@ finally archived until all three pass. Phase 10N-0 remains reviewer-gated.
 * 10N-6: professional scientific capability evidence closure.
 
 Fermi Surface is not part of Phase 10N or the initial release.
+
+Current status: Phase 10N-0 has prepared its documentation-only audit and scope
+seal and is `AUDIT_COMPLETE / AWAITING_EXACT_SHA_CI`. N1 remains
+`REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`. N0 changed no production source, dependency, lock,
+runtime contract, API, migration, Tool Registry, Adapter, Viewer, or LLM path.
 
 ### Phase 11 - Scientific Validation and Honest Coverage
 

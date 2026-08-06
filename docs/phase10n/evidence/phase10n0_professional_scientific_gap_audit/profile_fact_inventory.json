@@ -1,0 +1,14 @@
+{
+  "profileContractVersion": "2.0",
+  "currentFacts": [
+    "structureSummary",
+    "trajectorySummary",
+    "phononSummary",
+    "resourceSemantics",
+    "analysisReadiness",
+    "sampleIdentity",
+    "profileCoverage"
+  ],
+  "proposedAdditiveVersion": "2.1",
+  "implementationChanges": 0
+}

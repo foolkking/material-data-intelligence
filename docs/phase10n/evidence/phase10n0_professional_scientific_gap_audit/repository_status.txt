@@ -1,0 +1,5 @@
+branch=master
+head=88e8ba86079fabb96670c497b63eec8c1cc95a7c
+origin_master=88e8ba86079fabb96670c497b63eec8c1cc95a7c
+clean_at_entry=YES
+current_generation_status_lines=75

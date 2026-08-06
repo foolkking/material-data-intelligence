@@ -1,0 +1,15 @@
+{
+  "registryVersion": "0.1.0",
+  "toolCount": 53,
+  "n1_n5_registered": false,
+  "representative_existing": [
+    "structure.coordination_hist",
+    "structure.xrd",
+    "structure.rdf",
+    "trajectory.viewer",
+    "phonon.band",
+    "phonon.dos",
+    "structure.brillouin_zone",
+    "structure.volumetric_data"
+  ]
+}

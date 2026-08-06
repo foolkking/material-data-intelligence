@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## 2026-08-06 Phase 10N Reviewer Decisions
+
+N0 has no implementation blocker. Reviewer approval is required for additive
+DataProfile 2.1 readiness facts, future N1-N5 Artifact/Tool contracts, locked-
+library parameter defaults, exact fixture tolerances/caps and input-format
+allowlists. N1 remains non-executable until a separate prompt.
+
 ## 2026-08-06 Phase 10M-7 Verified Lifecycle Remainder
 
 No implementation or sealed-contract question remains. Implementation

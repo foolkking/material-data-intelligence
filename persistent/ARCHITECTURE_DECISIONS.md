@@ -1,5 +1,15 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-06 ADR Addendum: Phase 10N Scientific Authority
+
+N0 retains DataProfile -> Eligibility -> AnalysisPlan -> PlanValidator ->
+QueueWorkerRuntime -> registered Adapter -> persisted Artifact -> bounded
+Interpretation -> Workspace -> Report/Recipe. Future professional science
+must use exact source/hash identity, canonical units, algorithm-qualified
+wording and inert versioned Artifacts. Browser, LLM, Workspace, Report and
+Recipe do not compute scientific values. Decisions N-D001 through N-D033 in
+`docs/phase10n/phase10n0_decision_log.md` await reviewer approval.
+
 ## 2026-08-06 ADR Addendum: Phase 10M-7 Verified Closure Boundary
 
 M7 remains evidence-only: production behavior, schema, migration, public API,

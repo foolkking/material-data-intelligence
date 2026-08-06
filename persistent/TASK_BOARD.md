@@ -1,5 +1,15 @@
 # TASK_BOARD
 
+## 2026-08-06 Phase 10N-0 Audit Prepared, Awaiting Exact-SHA CI
+
+- [x] Verify corrected M7 archive and clean zero-task entry.
+- [x] Audit current scientific foundations, locked dependencies and licenses.
+- [x] Seal identity, units, wording, fixtures, tolerances, caps and security.
+- [x] Define N1-N6 scopes and exact 12-entry N0 acceptance registry.
+- [x] Keep production behavior and `TASKS.md` unchanged.
+- [x] Keep N1 reviewer-gated, not queued and not executable.
+- [ ] Append the completion record only after audit/planning exact-SHA CI succeeds.
+
 ## 2026-08-06 Phase 10M-7 Complete, Awaiting Verified Archive
 
 - [x] Verify M6 implementation/completion/archive exact-SHA CI and clean entry.

@@ -1,0 +1,14 @@
+runtime_import_available=YES
+pymatgen=2026.5.4
+pymatgen-core=2026.5.18
+ase=3.29.0
+numpy=2.4.6
+scipy=1.17.1
+pandas=3.0.3
+plotly=6.8.0
+scikit-learn=1.9.0
+spglib=2.7.0
+pymatviz=0.18.0
+phonopy=not top-level locked
+seekpath=not top-level locked
+uv.lock remains version authority
