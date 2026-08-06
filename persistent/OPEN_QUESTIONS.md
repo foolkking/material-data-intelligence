@@ -1,5 +1,13 @@
 # OPEN_QUESTIONS
 
+## 2026-08-06 Phase 10M-7 Verified Lifecycle Remainder
+
+No implementation or sealed-contract question remains. Implementation
+`21ea4559e097cec649515b35c7f45b63f8eb8511` passed exact-SHA CI
+`31065250027` attempt 2 with service-backed `42 passed, 0 skipped`. Only the
+completion-record and queue-archive exact-SHA CI gates remain. Phase 10N-0
+requires a separate reviewer prompt.
+
 ## 2026-08-06 Phase 10M-7 Lifecycle Gates
 
 No sealed-contract or implementation question blocks M7. Remaining work is

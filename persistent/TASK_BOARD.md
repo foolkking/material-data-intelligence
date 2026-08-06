@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-## 2026-08-06 Phase 10M-7 In Progress
+## 2026-08-06 Phase 10M-7 Complete, Awaiting Verified Archive
 
 - [x] Verify M6 implementation/completion/archive exact-SHA CI and clean entry.
 - [x] Reconcile the exact eight-entry M7 acceptance registry.
@@ -9,8 +9,9 @@
 - [x] Add browser, service-backed, performance, security, evidence, and Phase
   10M final documentation gates.
 - [x] Pass focused M7 tests and four-target local browser replay.
-- [ ] Pass full local regression and implementation exact-SHA CI.
-- [ ] Append completion record only after implementation CI succeeds.
+- [x] Pass full local regression and implementation exact-SHA CI
+  `31065250027` attempt 2 for `21ea4559e097cec649515b35c7f45b63f8eb8511`.
+- [x] Append completion record only after implementation CI succeeds.
 - [ ] Archive the M7 task only after completion-record CI succeeds.
 - [x] Keep Phase 10N-0 reviewer-gated and absent from the executable queue.
 

@@ -1,5 +1,16 @@
 # DESIGN_PROGRESS
 
+## 2026-08-06 Phase 10M-7 Implementation CI Verified
+
+- Evidence-only implementation `21ea4559e097cec649515b35c7f45b63f8eb8511`
+  passed exact-SHA CI `31065250027` attempt 2.
+- PostgreSQL/Redis/MinIO completed `42 passed, 0 skipped, 0 failed, 0 errors`;
+  Unit, frontend, typecheck, build, all browser replays, migration, acceptance,
+  evidence, and security gates passed.
+- Attempt 1 was cancelled after browser dependency download stalled; attempt 2
+  ran the unchanged coverage successfully.
+- Completion-record and queue-archive CI remain. Phase 10N-0 is not executable.
+
 ## 2026-08-06 Phase 10M-7 Local Closure Complete
 
 - Reconciled the exact M7-A01 through M7-A08 canonical registry across the

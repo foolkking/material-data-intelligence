@@ -5127,3 +5127,451 @@ Do not create, queue, or execute Phase 10M-7.
 - Queue-archive SHA/CI: not created / pending.
 - Expected post-commit: `HEAD == origin/master`, branch `master`, clean,
   migration head 0007, M6 block retained, task count one, M7 task absent.
+
+# Phase 10M-7 Workspace Integration + Browser/API/Service Evidence Closure Result
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
+```
+
+Phase 10M-7 integration closure is complete. The M7 task remains present until
+this completion-record exact-SHA CI succeeds and the separate queue-archive
+commit is verified.
+
+## 2. M6 Baseline
+
+- Implementation: `65e80ba915140e29db08dc053c1d218206daaa03`, CI
+  `31020968546`, success.
+- Completion: `aec09cebb33ae9673063a22f8fc772737c9a47b4`, CI
+  `31022245082`, success.
+- Archive: `200212b164041e38626d6b948c7fe64c772ca6ce`, CI
+  `31060008583`, success.
+- Entry HEAD/origin: M6 archive SHA; branch `master`; clean worktree; migration
+  head `0007_phase10m1_workspace_domain`; task count zero.
+
+## 3. Corrected Entry Gate
+
+```text
+PHASE_10M7_ENTRY_GATE = PASS_WITH_AUTHORIZED_DOCUMENT_RECONCILIATION
+PHASE_10M7_ACCEPTANCE_SOURCE = ACCEPTANCE_AND_TEST_PLAN
+PHASE_10M7_QUEUE_ADMISSION = AUTHORIZED
+PHASE_10M7_READINESS = READY_FOR_R0_RECONCILIATION
+ACCEPTANCE_RECONCILIATION_WAS_PART_OF_M7 = YES
+PREVIOUS_ACCEPTANCE_GATE_BLOCK_WAS_SUPERSEDED = YES
+```
+
+The known backlog/lock/manifest drift matched the corrected reviewer prompt.
+No implementation, lifecycle, or contract gate failed at entry.
+
+## 4. Acceptance Source Authority
+
+`docs/phase10m/phase10m_acceptance_and_test_plan.md` was the temporary canonical
+source for exact M7 IDs, titles, and responsibilities. Its registry contained
+exactly eight non-conflicting definitions.
+
+## 5. Four-Document Reconciliation
+
+The exact registry was synchronized into the acceptance plan, implementation
+backlog, execution lock, and execution manifest. A marker-bounded validator
+parses only canonical registry sections and treats references elsewhere as
+informational.
+
+## 6. Exact M7 Acceptance Registry
+
+- M7-A01 `Service-backed`: PostgreSQL + Redis + MinIO full Workspace lifecycle, 0 skipped/failed.
+- M7-A02 `Scientific integrity`: Adapter -> Runtime -> Artifact -> renderer/evidence authority remains exact.
+- M7-A03 `Historical compatibility`: 0.1/0.2, modern/legacy/partial/missing-source cases retained.
+- M7-A04 `Full tests`: Backend/frontend/typecheck/build/lock/migration/closure all pass.
+- M7-A05 `Browser`: Chromium/Firefox/WebKit/mobile/accessibility/WebGL current evidence passes.
+- M7-A06 `Security`: All Workspace security markers and secret scan pass.
+- M7-A07 `Evidence`: Sanitized API/DOM/network/console/screenshots/performance manifest verifies.
+- M7-A08 `Lifecycle`: Implementation, completion, and verified queue archive exact-SHA CI pass.
+
+## 7. Acceptance Integrity Semantics
+
+```text
+M7 canonical source = phase10m_acceptance_and_test_plan.md
+expected IDs = 8
+implemented IDs = 8
+missing IDs = 0
+extra IDs = 0
+duplicate canonical registry entries = 0
+conflicting canonical definitions = 0
+canonical registry shorthand entries = 0
+document-wide references = informational only
+```
+
+## 8. Pipeline Authority Map
+
+The verified path is source registration -> DataProfile 2.0 -> AnalysisIntent
+1.0 -> EligibilityResolution 1.0 -> Planner decision -> AnalysisPlan 0.1/0.2
+-> PlanValidator -> Job/ToolCall/dependency execution -> Artifact/lineage ->
+interpretation/claims/evidence -> ScientificWorkspace 1.0 -> typed panels,
+selection, and Inspector -> Report/Recipe -> Save/reopen.
+
+DataProfile owns data semantics; Eligibility owns capability applicability;
+Plan owns declared execution; Runtime orchestrates; Adapter calculates;
+Artifact persists scientific results; interpretation owns grounded narrative;
+Workspace owns reference/navigation/presentation; Report is an immutable
+delivery snapshot; Recipe is declarative and non-executable.
+
+## 9. Identity Continuity
+
+The retained verified DeepSeek phonon case preserves exact Project,
+Dataset/version, Profile/hash, Intent/hash, Eligibility/hash, Decision/hash,
+Plan/hash/schema, graph/bindings, Job, three ToolCalls, 21 Artifact checksums,
+EvidenceBundle/hash, and Interpretation/hash through current Workspace and
+Report/Recipe repositories. Filename, MIME, display label, array index, row
+order, latest, nearest, and fuzzy matching provide no identity authority.
+
+```text
+retained real DeepSeek calls = 16
+M7_NEW_REAL_LLM_CALLS = 0
+NEW_LLM_CALL_SITES = 0
+NO_PROVIDER_FALLBACK = PASS
+DEEPSEEK_KEY_SECRET_DISCLOSURE = 0
+```
+
+## 10. AnalysisPlan 0.1
+
+Historical Plan 0.1 remains readable as ordered independent/sequential work.
+Workspace and Report/Recipe projection invent no dependency graph or Artifact
+binding. Historical records remain read-only where modern identity is absent.
+
+## 11. AnalysisPlan 0.2
+
+The retained replay preserves exact graph hash, two formal bindings,
+producer/consumer ports, ToolCalls, Artifact contracts/checksums, immutable
+lineage, Workspace panels, and Recipe dependency representation.
+
+## 12. Dependency Success
+
+Topological dependency execution, producer outputs, consumer inputs,
+successful Artifact lineage, panel projection, and exact Recipe graph are
+covered by L3, M4-M6 regressions and the M7 retained replay.
+
+## 13. Partial / Failed / Blocked
+
+Regression evidence preserves successful independent branches, failed
+ToolCalls, blocked descendants, missing desired outputs, and mandatory Report
+disclosures. No branch is omitted or rerun.
+
+```text
+SUCCESSFUL_BRANCH_ARTIFACT_LOSS = 0
+FAILED_BRANCH_OMISSION = 0
+BLOCKED_DEPENDENCY_OMISSION = 0
+AUTOMATIC_RERUN = 0
+LEGACY_DEPENDENCY_INVENTION = 0
+```
+
+## 14. Viewer Matrix
+
+Dataset Materials Explorer, Materials ML, Composition Space, Structure,
+Trajectory, Phonon, Brillouin Zone, Volumetric, generic numeric/table,
+metadata-only, inert legacy fallback, and unsupported contract/version paths
+retain their M4 exact contract/version dispositions. Unknown versions do not
+guess renderers. WebGL canvas and browser screenshots are not scientific
+authority.
+
+## 15. Selection / Inspector
+
+Canonical versioned exact selection retains source Artifact hash, stable sample
+or scientific object identity, origin panel, compatibility result, Inspector
+identity, URL round trip, Back/Forward, and explicit Pin/Clear/Copy. Only sealed
+formal mappings are exercised.
+
+```text
+SELECTION_ARRAY_INDEX_AUTHORITY = NONE
+SELECTION_DISPLAY_LABEL_AUTHORITY = NONE
+SELECTION_FILENAME_AUTHORITY = NONE
+SELECTION_FUZZY_MATCHING = NONE
+SELECTION_LATEST_REBINDING = NONE
+```
+
+## 16. Interpretation / Evidence
+
+Grounded interpretation remains bound to exact Job, Plan, Artifacts, claims,
+evidence IDs, source checksums, limitations, and failed/blocked scope. Missing
+interpretation yields typed unavailable findings without an automatic LLM
+call or invented conclusion.
+
+## 17. Report / Recipe
+
+Current Workspace sources produce deterministic no-write preview, explicit
+atomic finalize, idempotent immutable history, exact paired Recipe, canonical
+JSON, and UTF-8 LF Markdown. The Recipe retains Profile, Intent, Eligibility,
+Plan version, tools/params/bindings/dependencies/contracts and all no-execution
+flags.
+
+```text
+PREVIEW_REPORT_WRITES = 0
+PREVIEW_RECIPE_WRITES = 0
+REPORT_GENERATED_SCIENTIFIC_VALUES = 0
+REPORT_GENERATED_SCIENTIFIC_CLAIMS = 0
+REPORT_SCIENTIFIC_RECOMPUTATION = 0
+RECIPE_EXECUTION_AUTHORITY = NONE
+RECIPE_PLAN_CREATION_AUTHORITY = NONE
+RECIPE_JOB_CREATION_AUTHORITY = NONE
+RECIPE_QUEUE_AUTHORITY = NONE
+```
+
+## 18. Save / Reopen
+
+Existing PATCH/quoted ETag/If-Match authority verifies explicit Save, revision
+advance, no-op suppression, two-client conflict with local edit preservation,
+confirmed server reload, close/reopen, deterministic layout and pinned fallback,
+deep link, Back/Forward, and zero hidden writes.
+
+## 19. Stale / Missing / Historical
+
+Typed recovery covers stale Dataset/Profile/resource, checksum mismatch,
+missing Artifact metadata or MinIO bytes, missing interpretation, foreign scope,
+Plan 0.1, legacy contracts, and historical Report/Recipe. Unaffected panels
+remain readable; no latest rebinding, replacement Artifact, or identity upgrade
+occurs.
+
+## 20. API Matrix
+
+No route was added. Existing routes verified include:
+
+- `POST /datasets/{dataset_id}/files`, `POST /datasets/{dataset_id}/profile`;
+- `POST /planner/intents`, `POST /planner/intents/{intent_id}/clarification`;
+- `POST /planner/jobs`, `GET /planner/jobs/{job_id}` and `/events`,
+  `/artifacts`, `/interpretations`;
+- `POST /workspaces`, `GET/PATCH /workspaces/{workspace_id}`;
+- `GET /workspaces/{workspace_id}/panels` and `/layout-revisions`;
+- all seven existing Workspace Report composition/history/Recipe/export routes.
+
+Strict DTO, scope, ETag, checksum, idempotency, malformed input, duplicate key,
+oversize, foreign scope, stale hash, and no-hidden-write behavior remain sealed.
+
+## 21. PostgreSQL
+
+Migration head 0007 and 27 expected tables were verified. Profile, Intent,
+decision, Plan, Job, ToolCall, dependency, Artifact metadata, interpretation,
+Workspace, panels, revisions, Report, and Recipe persistence remain current
+authorities.
+
+## 22. Redis
+
+Queue/event availability and status observation pass. Redis is not durable
+scientific authority; missing-event recovery reads persisted PostgreSQL state
+and never duplicates enqueue.
+
+## 23. MinIO
+
+Artifact byte persistence, exact checksum retrieval, authorization, missing
+object state, and tamper rejection pass without storage-key disclosure.
+
+## 24. Browser Matrix
+
+Chromium, Firefox, WebKit, and Chromium mobile all passed current M7 replay.
+M2-M6 selection, Gallery/Viewer, Report/Recipe, Save/recovery runners passed in
+the same exact-SHA CI.
+
+```text
+unexpected console errors = 0
+unexpected page errors = 0
+unexpected failed responses = 0
+unapproved external requests = 0
+```
+
+## 25. Mobile
+
+```text
+viewport = 390x844
+horizontal overflow = 0
+minimum touch target = 44x44 CSS px
+```
+
+The one-active-panel model, context drawer, panel switcher, Inspector bottom
+sheet, Report single-surface flow, Save, recovery, long text, and exact identity
+wrapping remain intact.
+
+## 26. Accessibility
+
+Keyboard core flows, logical headings/landmarks, visible focus, route/panel
+focus placement, drawer/dialog/sheet traps and return, live announcements,
+non-color states, table/chart/WebGL alternatives, reduced motion, and 200%
+reflow pass the retained M3-M6 and current browser gates.
+
+## 27. Performance
+
+```text
+INITIAL_HEAVY_ARTIFACT_PAYLOAD_REQUESTS = 0
+INACTIVE_HEAVY_ARTIFACT_PAYLOAD_REQUESTS = 0
+ADJACENT_HEAVY_PANEL_PREFETCH = 0
+MAX_ACTIVE_HEAVY_VIEWERS = 1
+STALE_RESPONSE_STATE_COMMITS = 0
+```
+
+These are development acceptance results, not production capacity claims.
+
+## 28. WebGL Lifecycle
+
+The existing 50-cycle M4 runner remains authoritative; M7 adds no WebGL owner.
+
+```text
+WEBGL_CONTEXT_GROWTH = 0
+LISTENER_GROWTH = 0
+OBSERVER_GROWTH = 0
+ANIMATION_LOOP_GROWTH = 0
+DUPLICATE_CANVAS = 0
+DUPLICATE_PAYLOAD_REQUEST_GROWTH = 0
+REPORT_PREVIEW_WEBGL_CONTEXTS = 0
+```
+
+## 29. Scientific Integrity
+
+```text
+WORKSPACE_COPIED_ARTIFACT_PAYLOADS = 0
+FRONTEND_DUPLICATE_SCIENTIFIC_AUTHORITY = NONE
+FRONTEND_SCIENTIFIC_RECOMPUTATION = NONE
+WORKSPACE_GENERATED_SCIENTIFIC_VALUES = 0
+WORKSPACE_GENERATED_SCIENTIFIC_CLAIMS = 0
+REPORT_GENERATED_SCIENTIFIC_VALUES = 0
+REPORT_GENERATED_SCIENTIFIC_CLAIMS = 0
+STALE_SOURCE_LATEST_REBINDING = 0
+RECOMMENDATION_EXECUTION_AUTHORITY = NONE
+```
+
+## 30. Security
+
+```text
+NO_WORKSPACE_ARBITRARY_CODE_EXECUTION = PASS
+NO_WORKSPACE_SHELL_AUTHORITY = PASS
+NO_WORKSPACE_FILESYSTEM_AUTHORITY = PASS
+NO_ARTIFACT_JAVASCRIPT_EXECUTION = PASS
+NO_ARTIFACT_HTML_EXECUTION = PASS
+NO_ARTIFACT_IFRAME_EXECUTION = PASS
+NO_ARTIFACT_DYNAMIC_MODULE_EXECUTION = PASS
+NO_EXTERNAL_ARTIFACT_URL_EXECUTION = PASS
+NO_CROSS_PROJECT_ACCESS = PASS
+NO_CROSS_WORKSPACE_ACCESS = PASS
+NO_CROSS_JOB_ARTIFACT_INJECTION = PASS
+NO_CROSS_PROJECT_REPORT_SOURCE = PASS
+NO_STALE_IDENTITY_REBINDING = PASS
+NO_CHECKSUM_BYPASS = PASS
+NO_SECRET_DISCLOSURE = PASS
+NO_PRIVATE_PATH_DISCLOSURE = PASS
+NO_STACK_DISCLOSURE = PASS
+NO_STORAGE_KEY_DISCLOSURE = PASS
+NO_RECOVERY_PLAN_CREATION = PASS
+NO_RECOVERY_JOB_CREATION = PASS
+NO_RECOVERY_TOOLCALL_CREATION = PASS
+NO_RECOVERY_QUEUE_AUTHORITY = PASS
+NO_PROVIDER_FALLBACK = PASS
+NO_SECRET_PATTERN_HITS = PASS
+```
+
+Artifact, Report, Recipe, URL, title, caption, warning, and provenance strings
+remain inert. No localStorage/sessionStorage canonical backup is introduced.
+
+## 31. Tests
+
+- Focused Phase 10M backend: `78 passed`; focused final M7: `12 passed`.
+- Full backend: `1156 passed`, one documented local-environment skip, 43
+  integration tests deselected for the separate service gate.
+- Full frontend: `411 passed`; typecheck PASS; build PASS with existing
+  Plotly/glslify warnings.
+- Browser: Chromium/Firefox/WebKit/390x844 PASS.
+- Service-backed exact-SHA CI: `42 passed, 0 skipped, 0 failed, 0 errors`.
+- Migration, no-skipped, lock, acceptance, evidence manifest, docs links,
+  TASKS structure, closure integrity, and secret scan: PASS.
+- Local service-backed: UNAVAILABLE because Docker was unavailable; CI is the
+  service authority.
+- `npm audit`: UNAVAILABLE because the configured mirror returned
+  `404_NOT_IMPLEMENTED`; it is not reported clean.
+
+## 32. Files Changed
+
+M7 changed tests, browser/service/evidence runners, CI integrity checks,
+canonical documentation, evidence, and persistent lifecycle records. Production
+source changes are zero.
+
+```text
+database schema = unchanged
+migration = unchanged
+migration head = 0007_phase10m1_workspace_domain
+public API contracts = unchanged
+dependencies = unchanged
+lockfile = unchanged
+Workspace contracts = unchanged
+Selection contract = unchanged
+Report/Recipe contracts = unchanged
+AnalysisPlan contracts = unchanged
+renderer registry authority = unchanged
+scientific Adapter authority = unchanged
+```
+
+## 33. Production Behavior Changes
+
+```text
+Production behavior changes: NONE
+```
+
+M7 is evidence-only closure; it does not add a Workspace feature or scientific
+capability.
+
+## 34. Phase 10M Final Capability Matrix
+
+Workspace persistence/shell, typed Gallery, Dataset Explorer, Materials ML,
+Composition Space, Report, Recipe, Save, and Reload are READY. Canonical
+selection, scientific Viewers, interpretation, recovery, and accessibility are
+READY_WITH_EXPLICIT_LIMITS. Legacy records are LEGACY_READ_ONLY; unknown
+contracts are UNSUPPORTED with inert metadata. The full table is retained in
+`docs/phase10m/phase10m_final_capability_matrix.md`.
+
+## 35. Known Limitations
+
+One Workspace per Job; no multi-Job/cross-Workspace aggregation or selection;
+no collaboration, offline-first authority, durable unfinalized Report draft,
+generic workflow editor, arbitrary DAG, runtime replanning, automatic rerun,
+Recipe execution, frontend/Report science generation, or identity upgrade.
+Missing/tampered/stale sources remain unavailable rather than rebound.
+
+## 36. Commit / CI History
+
+- Implementation: `21ea4559e097cec649515b35c7f45b63f8eb8511`.
+- CI `31065250027` attempt 1: cancelled after the unchanged Playwright browser
+  runtime download stalled for 31 minutes; Unit and service jobs had passed.
+- CI `31065250027` attempt 2: success with unchanged SHA and coverage.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: not created before completion-record CI.
+
+## 37. Queue State
+
+```text
+Phase 10M-7:
+PASS / COMPLETE / AWAITING_VERIFIED_QUEUE_ARCHIVE
+
+Phase 10M:
+COMPLETE / READY_WITH_EXPLICIT_LIMITS / AWAITING_VERIFIED_ARCHIVE
+
+Phase 10N-0:
+REVIEWER_GATE / AWAITING REVIEWER PROMPT
+
+TASK_BLOCK_COUNT = 1
+```
+
+## 38. Phase 10N Non-Entry
+
+```text
+NO
+PHASE_10N0_EXECUTABLE_TASK_CREATED = NO
+```
+
+Phase 10N science, contracts, migration, API, dependencies, tools, automatic
+execution, RAG, memory, multi-agent, and plugin work were not started.
+
+## 39. Final Repository State
+
+- Implementation SHA/CI: `21ea4559e097cec649515b35c7f45b63f8eb8511` /
+  `31065250027` attempt 2, success.
+- Completion-record SHA/CI: this commit / pending.
+- Queue-archive SHA/CI: not created / pending.
+- Expected after this commit: `HEAD == origin/master`, branch `master`, clean
+  worktree, migration head 0007, M7 task retained as complete awaiting archive,
+  task count one, Phase 10N executable task absent.

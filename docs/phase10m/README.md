@@ -1,10 +1,9 @@
 # Phase 10M Unified Scientific Workspace
 
 Status: Phase 10M-1 through Phase 10M-6 are archived. Phase 10M-7 corrected
-entry and acceptance reconciliation passed, and local integration/browser/
-evidence closure is complete. Its implementation, completion-record, and
-queue-archive exact-SHA CI gates remain. Phase 10N-0 is reviewer-gated, not
-queued, and not executable.
+entry, acceptance reconciliation, integration closure, and implementation
+exact-SHA CI are complete. Completion-record and queue-archive exact-SHA CI
+remain. Phase 10N-0 is reviewer-gated, not queued, and not executable.
 
 ## Reading order
 

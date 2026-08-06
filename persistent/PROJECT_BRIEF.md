@@ -1,5 +1,18 @@
 # PROJECT_BRIEF
 
+## 2026-08-06 Phase 10M-7 Implementation Verified
+
+Evidence-only implementation `21ea4559e097cec649515b35c7f45b63f8eb8511`
+passed exact-SHA CI `31065250027` attempt 2. Unit, frontend, typecheck, build,
+Chromium/Firefox/WebKit/390x844 replay, evidence integrity, migration 0007,
+and PostgreSQL/Redis/MinIO `42 passed, 0 skipped, 0 failed, 0 errors` all
+succeeded. Attempt 1 was cancelled after its unchanged browser-runtime download
+step stalled; no code correction or coverage reduction was made.
+
+M7 is complete awaiting completion-record and verified queue-archive CI. The
+task remains queued until those gates pass. Phase 10N-0 remains reviewer-gated,
+not queued, and not executable.
+
 ## 2026-08-06 Phase 10M-7 Local Integration Closure
 
 Phase 10M-6 is verified and archived at

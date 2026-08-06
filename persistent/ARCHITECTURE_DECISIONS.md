@@ -1,5 +1,14 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-06 ADR Addendum: Phase 10M-7 Verified Closure Boundary
+
+M7 remains evidence-only: production behavior, schema, migration, public API,
+contracts, Tool Registry, Adapters, dependencies, and scientific authorities
+are unchanged. Exact-SHA CI `31065250027` attempt 2 verifies the reconciled
+registry and full integration closure. A cancelled first attempt caused by a
+browser-runtime download stall is infrastructure history, not permission to
+skip browser evidence; the unchanged second attempt passed all targets.
+
 ## 2026-08-06 ADR Addendum: Phase 10M-7 Evidence-Only Integration
 
 M7 introduces no product authority. The retained real DeepSeek records remain

@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2026-08-06 - Phase 10M-7 Implementation CI Verified
+
+- Evidence-only implementation `21ea4559e097cec649515b35c7f45b63f8eb8511`
+  passed exact-SHA CI `31065250027` attempt 2, including all browser replays,
+  frontend/typecheck/build, Unit, migration, and evidence gates.
+- PostgreSQL/Redis/MinIO completed `42 passed, 0 skipped, 0 failed, 0 errors`.
+- Attempt 1 was cancelled after the unchanged browser-runtime download step
+  stalled. Attempt 2 passed without implementation or coverage changes.
+- Completion-record and verified queue archive remain; Phase 10N-0 is not
+  queued or executable.
+
 ## 2026-08-06 - Phase 10M-7 Local Integration Closure
 
 - Authorized and completed R0 reconciliation of the canonical M7 acceptance
