@@ -94,8 +94,8 @@ is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`.
 
 Fermi Surface is not part of Phase 10N or the initial release.
 
-Current status: Phase 10N-0 has prepared its documentation-only audit and scope
-seal and is `AUDIT_COMPLETE / AWAITING_EXACT_SHA_CI`. N1 remains
+Current status: Phase 10N-0 completed its documentation-only audit and scope
+seal and is `COMPLETE / REVIEWER_APPROVAL_REQUIRED`. N1 remains
 `REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`. N0 changed no production source, dependency, lock,
 runtime contract, API, migration, Tool Registry, Adapter, Viewer, or LLM path.
 

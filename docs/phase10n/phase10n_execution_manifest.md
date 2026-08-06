@@ -1,6 +1,6 @@
 # Phase 10N Execution Manifest
 
-Manifest status: `N0 AUDIT_COMPLETE / AWAITING_EXACT_SHA_CI`; N1 is not executable.
+Manifest status: `N0 COMPLETE / REVIEWER_APPROVAL_REQUIRED`; N1 is not executable.
 
 ## Canonical Phase 10N-0 Acceptance Registry
 

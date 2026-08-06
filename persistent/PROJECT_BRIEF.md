@@ -2,10 +2,10 @@
 
 ## 2026-08-06 Phase 10N-0 Audit Scope
 
-Phase 10M is archived at corrected commit `88e8ba8`. Phase 10N-0 prepared a
+Phase 10M is archived at corrected commit `88e8ba8`. Phase 10N-0 completed a
 documentation-only scientific capability/dependency/identity/units/wording
-audit and N1-N6 proposals, pending exact-SHA CI before the completion record.
-Production behavior,
+audit and N1-N6 scope seal. Audit/planning commit `8f12bdc` passed exact-SHA CI
+`31074886038`. Production behavior,
 database, migration, API, runtime contracts, dependencies, lockfile, Tool
 Registry, Adapters, Viewers and LLM paths are unchanged. N1 is not queued.
 

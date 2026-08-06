@@ -1,12 +1,14 @@
 # CHANGELOG
 
-## 2026-08-06 - Phase 10N-0 Professional Capability Audit Prepared
+## 2026-08-06 - Phase 10N-0 Professional Capability Audit Complete
 
 - Added the documentation-only N0 capability, dependency/license, identity,
   units, wording, reference, tolerance, cap, security and N1-N6 scope seal.
 - Added exact N0 acceptance and decision registries plus hashed audit evidence.
 - No production source, schema implementation, migration, API, dependency,
   lockfile, Registry, Adapter, Viewer, LLM or `TASKS.md` change.
+- Audit/planning commit `8f12bdc` passed exact-SHA CI `31074886038`; N1 remains
+  reviewer-gated and absent from the executable queue.
 
 ## 2026-08-06 - Phase 10M-7 Queue Archive Integrity Correction
 

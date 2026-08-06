@@ -1,11 +1,12 @@
 # DESIGN_PROGRESS
 
-## 2026-08-06 Phase 10N-0 Audit Prepared
+## 2026-08-06 Phase 10N-0 Scope Seal Complete
 
 - Current Registry/Adapter/Artifact/Profile/Viewer/Report foundations audited.
 - N1-N6 identity, units, wording, fixture, tolerance, cap and security proposals sealed.
 - Exact N0 acceptance set: 12/12; decisions N-D001 through N-D033.
-- Status: `AUDIT_COMPLETE / AWAITING_EXACT_SHA_CI`; N1 remains reviewer-gated.
+- Audit/planning `8f12bdc` passed exact-SHA CI `31074886038`.
+- Status: `COMPLETE / REVIEWER_APPROVAL_REQUIRED`; N1 remains reviewer-gated.
 
 ## 2026-08-06 Phase 10M-7 Implementation CI Verified
 

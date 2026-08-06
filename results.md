@@ -5589,3 +5589,328 @@ execution, RAG, memory, multi-agent, and plugin work were not started.
   archive; preserve balanced delimiters, reject any executable Phase 10N task,
   and require the Phase 10N-0 reviewer gate.
 - Corrected queue-archive SHA/CI: this commit / pending exact-SHA CI.
+# Phase 10N-0 Professional Scientific Capability Gap Audit + Scope Seal Result
+
+## 1. Conclusion
+
+```text
+PASS / COMPLETE / REVIEWER_APPROVAL_REQUIRED
+```
+
+## 2. Baseline
+
+- M7 implementation: `21ea4559e097cec649515b35c7f45b63f8eb8511`, CI
+  `31065250027` attempt 2, success.
+- M7 completion: `95d448815838848e9c8089e8653afc57ab8c740d`, CI
+  `31067470666`, success.
+- Failed archive candidate: `5fc11b0465113ce7ad31fec3fa9d7e42d8d623c8`,
+  CI `31068038057`, Unit lifecycle assertion failed while service/browser/build passed.
+- Corrected archive authority: `88e8ba86079fabb96670c497b63eec8c1cc95a7c`,
+  CI `31068772689`, success.
+- Entry: HEAD and origin/master `88e8ba8`, branch `master`, clean worktree,
+  migration `0007_phase10m1_workspace_domain`, task count zero.
+
+## 3. Production Behavior Changes
+
+```text
+Production Behavior Changes:
+NONE
+```
+
+## 4. Current Professional Scientific Maturity
+
+The platform has production-ready composition, Dataset Materials Explorer,
+Materials ML, Composition Space, phonon and BZ foundations; structure,
+trajectory, theoretical XRD, static RDF and volumetric capabilities are ready
+with explicit limits. N1-N5 professional products are not yet implemented.
+
+## 5. Current Capability Inventory
+
+The audited inventory covers 53 Registry tools, current Adapters, Artifact
+families, Profile 2.0, renderers, interpretation, Workspace and Report/Recipe.
+Registry-only mappings, parsers, Viewers and fixtures are not counted as
+production scientific authority.
+
+## 6. Dependency Versions
+
+Locked/runtime versions include pymatgen `2026.5.4`, pymatgen-core `2026.5.18`,
+ASE `3.29.0`, NumPy `2.4.6`/`2.5.0` marker branches, SciPy `1.17.1`/`1.18.0`,
+pandas `3.0.3`, Plotly `6.8.0`, scikit-learn `1.9.0`, spglib `2.7.0`, pymatviz
+`0.18.0`, and Three.js `0.185.1`. Phonopy and seekpath are not top-level locked.
+
+## 7. Dependency Licenses
+
+The audit records pymatgen/Plotly MIT, ASE LGPL-2.1-or-later, pandas and
+scikit-learn BSD, spglib BSD-3, and the declared mixed permissive NumPy/SciPy
+metadata. No package was installed, upgraded or enabled.
+
+## 8. Upstream Capability Audit
+
+`UPSTREAM_ONLINE_VERIFICATION = UNAVAILABLE`. Locked files, runtime metadata,
+current source/tests and official release metadata already retrieved were used.
+Upstream library support is never represented as repository implementation.
+
+## 9. Existing Registry / Adapter / Artifact Surface
+
+Current authorities include structure summary/viewing, distance-cutoff
+coordination histogram, theoretical XRD, static RDF, trajectory import/viewing,
+phonon band/DOS, BZ, volumetric, Dataset/ML/Composition, interpretation and
+Workspace delivery. N1-N5 Tools, Adapters and Artifact contracts remain absent.
+
+## 10. DataProfile Readiness
+
+Profile 2.0 provides structure, trajectory, phonon, volumetric, resource,
+readiness and sample-identity facts. An additive backward-compatible Profile
+2.1 proposal is assigned to future phases for stable site, experimental XRD,
+trajectory validity and electronic readiness facts; no N0 contract was registered.
+
+## 11. Workspace / Viewer Readiness
+
+Existing metadata-first Workspace and strict renderer registry are reusable.
+Future N1-N5 panels must preserve active-only heavy loading, inert fallback,
+exact selection, Inspector detail, mobile presentation and static alternatives.
+
+## 12. Interpretation / Report / Recipe Readiness
+
+Bounded projectors remain the only LLM-visible fact surface. Reports compose
+persisted facts without recomputation; Recipes retain exact declarations and
+have no Plan, Job, queue or execution authority.
+
+## 13. Identity Seal
+
+Structure/site, periodic neighbor, trajectory atom/frame/time, experimental
+peak and electronic spin/k-point/band/channel identities are source-hash bound.
+Filename, MIME, display label, row/index, nearest, fuzzy and latest matching are prohibited.
+
+## 14. Units Seal
+
+Canonical proposals cover angstrom, degrees, dimensionless coordination/RDF,
+picoseconds, angstrom squared, angstrom squared per picosecond, electronvolts,
+states per electronvolt and reciprocal units. Conversion is deterministic,
+server-side, provenance-recorded and never silently assumed.
+
+## 15. Scientific Wording Seal
+
+Claims are algorithm- and policy-qualified. Absolute chemical bonding,
+experimental phase confirmation, unqualified bulk diffusion, GW correction and
+platform-generated electronic structure claims are prohibited.
+
+## 16. Reference Fixture Hierarchy
+
+The sealed order is direct checked-in numeric fixtures, exact-version official
+fixtures, controlled analytic fixtures, cross-library references, licensed
+public data, then mapping-only evidence. Screenshots are not numeric authority.
+
+## 17. Numeric Tolerance Policy
+
+Each future capability owns quantity-specific absolute/relative, positional,
+angular, peak, energy, fit and deterministic-order tolerances with units,
+source, platform variance and explicit failure meaning. No pass-driven tuning is allowed.
+
+## 18. Performance Cap Plan
+
+Bounded proposed caps cover N1 structures/sites/neighbors, N2 centers/faces,
+N3 points/peaks/bytes, N4 frames/atoms/bins/windows/fits and N5 bands/k-points/
+DOS/projections. Future phases must measure small, medium and near-cap fixtures.
+
+## 19. Security Boundary
+
+All inputs remain inert and bounded with UTF-8, depth/size, finite-number,
+duplicate/prototype-key, decompression and timeout controls. No Python, shell,
+filesystem, notebook, script, external scientific API, HTML/JS/module/URL,
+cross-project binding, checksum bypass, secret/path/stack or Recipe execution is authorized.
+
+## 20. N1 Coordination Scope
+
+CrystalNN/VoronoiNN proposals bind exact pymatgen versions, explicit parameters,
+periodic-image neighbors, weights, coverage and diagnostics. The scientific term
+is `algorithm-derived local coordination`; the distance-cutoff histogram coexists.
+
+## 21. N2 Local Environment / Polyhedra Scope
+
+N2 consumes exact N1 Artifacts through Plan 0.2 and proposes versioned reference
+geometry, class/score, vertices/faces and distortion metrics. Bond valence and
+oxidation-state inference remain out of scope.
+
+## 22. N3 Experimental XRD Scope
+
+N3 separates experimental ingestion from existing theoretical XRD and seals
+normalization, optional preprocessing, SciPy peak detection, deterministic
+one-to-one matching and mismatch disclosure. Rietveld, refinement, phase search
+and confirmation claims are excluded.
+
+## 23. N4 Trajectory Analytics Scope
+
+N4 seals whole/window/species RDF, server-side unwrapped MSD, directional MSD
+and diagnostics-bounded diffusion fitting. Stable atom identity, explicit time,
+cell policy and no silent ballistic/transient fitting are mandatory.
+
+## 24. N5 Electronic Band / DOS Scope
+
+N5 only consumes bounded supplied electronic output. It seals energy/Fermi,
+spin, k-path, band, total DOS and completeness-qualified element/orbital DOS
+projection semantics. Projected bands, Fermi surface and electronic calculation remain future scope.
+
+## 25. N6 Integration / Evidence Scope
+
+N6 is integration/evidence only across Profile, Intent, Eligibility, Plan,
+Runtime, Artifact, interpretation, Workspace and Report/Recipe for N1-N5. It is
+not a catch-all feature phase.
+
+## 26. Long-List Classification
+
+Fermi surface, Bader/charge topology, Rietveld and phase-fraction refinement,
+automatic DFT, defects/surfaces and advanced research capabilities remain
+`FUTURE_SCOPE` or outside N1-N6. No Future Scope item was promoted.
+
+## 27. Migration Decisions
+
+N1-N6 propose no database table, column or migration. Migration head remains
+`0007_phase10m1_workspace_domain`.
+
+## 28. Public API Decisions
+
+N1-N6 reuse existing Registry/Plan/Job/Artifact/Workspace APIs. New public API
+families are `NO` for every phase.
+
+## 29. Contract / DataProfile Decisions
+
+Future versioned Registry/Artifact and additive Profile 2.1 contracts are
+`YES_PROPOSED_FOR_REVIEW` with phase ownership and backward compatibility. N0
+registered no runtime contract.
+
+## 30. Dependency Decisions
+
+Current locked pymatgen/NumPy/SciPy/pandas/Plotly are sufficient for the sealed
+proposals. New dependency and lockfile changes are `NO` for N1-N6.
+
+## 31. Implementation Sequence
+
+The reviewer sequence is sealed unchanged: N1 coordination, N2 local
+environment/polyhedra, N3 experimental XRD, N4 trajectory analytics, N5
+electronic Band/DOS, N6 integration/evidence.
+
+## 32. Decision Registry
+
+N-D001 through N-D033 are contiguous. All required decisions are:
+
+```text
+SEALED_FOR_REVIEWER_APPROVAL
+```
+
+## 33. Acceptance IDs
+
+```text
+expected = 12
+implemented = 12
+missing = 0
+extra = 0
+duplicate registry entries = 0
+conflicting definitions = 0
+canonical registry shorthand entries = 0
+```
+
+The exact registry is:
+
+1. `N0-A01 BASELINE_AND_REPOSITORY_FACT_AUDIT`
+2. `N0-A02 DEPENDENCY_VERSION_LICENSE_AND_UPSTREAM_CAPABILITY_AUDIT`
+3. `N0-A03 CURRENT_PROFESSIONAL_SCIENTIFIC_CAPABILITY_INVENTORY`
+4. `N0-A04 IDENTITY_UNITS_AUTHORITY_AND_SCIENTIFIC_WORDING_SEAL`
+5. `N0-A05 N1_COORDINATION_SCOPE_SEAL`
+6. `N0-A06 N2_LOCAL_ENVIRONMENT_AND_POLYHEDRA_SCOPE_SEAL`
+7. `N0-A07 N3_EXPERIMENTAL_XRD_COMPARISON_SCOPE_SEAL`
+8. `N0-A08 N4_TRAJECTORY_ANALYTICS_SCOPE_SEAL`
+9. `N0-A09 N5_ELECTRONIC_BAND_AND_DOS_SCOPE_SEAL`
+10. `N0-A10 CROSS_CUTTING_CONTRACT_REFERENCE_TOLERANCE_PERFORMANCE_AND_SECURITY_SEAL`
+11. `N0-A11 N1_TO_N6_IMPLEMENTATION_SEQUENCE_ACCEPTANCE_AND_EXECUTION_LOCK`
+12. `N0-A12 AUDIT_EVIDENCE_DOCUMENTATION_EXACT_SHA_LIFECYCLE_AND_REVIEWER_GATE`
+
+These titles are identical in the backlog, acceptance plan, execution lock and manifest.
+
+## 34. Tests
+
+- Focused N0 integrity: `6 passed`.
+- Local backend: `1162 passed, 44 skipped, 0 failed`; service/environment skips
+  are not represented as service PASS.
+- Exact-SHA Unit: `1162 passed, 1 documented local-environment skip, 43 deselected`.
+- Frontend: `411 passed`; typecheck and production build PASS.
+- Browser replay: Chromium, Firefox, WebKit and Chromium 390x844 PASS.
+- Exact-SHA service-backed: `42 passed, 0 skipped, 0 failed, 0 errors`.
+- Migration, no-skipped, lock, evidence, acceptance, decision, docs, TASKS and
+  secret gates: PASS.
+- Local service-backed: UNAVAILABLE because Docker is absent; CI is authority.
+- `npm audit`: UNAVAILABLE because configured mirror returned `404_NOT_IMPLEMENTED`.
+
+## 35. Evidence
+
+The N0 evidence directory contains 41 LF-normalized hashed entries covering
+baseline, lifecycle, dependencies/licenses, inventories, identity/units/wording,
+fixtures/tolerances/caps/security, N1-N6 scopes and integrity summaries. Missing,
+duplicate, secret, Authorization, private-path and stack entries are zero.
+
+## 36. Files Changed
+
+```text
+production source = unchanged
+database schema = unchanged
+migration = unchanged
+migration head = 0007_phase10m1_workspace_domain
+public API = unchanged
+runtime contracts = unchanged
+dependencies = unchanged
+lockfile = unchanged
+TASKS.md = unchanged
+```
+
+## 37. Commit / CI
+
+- Failed audit attempts: none. A pre-commit EOF whitespace check blocked commit
+  creation and was corrected before any SHA existed.
+- Audit/planning: `8f12bdc13720aae9b022301fbe8b0624245b131d`.
+- Audit/planning exact-SHA CI: `31074886038`, success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+
+## 38. Explicit Non-Scope
+
+N1-N6 production tools, Adapters, parsers, Artifacts, Profile implementation,
+Viewers, projectors and Report behavior were not implemented. No new science,
+DB/API/dependency/LLM/execution authority was added.
+
+## 39. Phase 10N Readiness
+
+```text
+Phase 10N-0:
+COMPLETE / REVIEWER_APPROVAL_REQUIRED
+
+Phase 10N-1:
+REVIEWER_GATE
+```
+
+## 40. Queue State
+
+```text
+TASK_BLOCK_COUNT = 0
+
+Phase 10N-1:
+REVIEWER_GATE / AWAITING REVIEWER PROMPT
+```
+
+## 41. Automatic N1 Entry
+
+```text
+NO
+PHASE_10N1_EXECUTABLE_TASK_CREATED = NO
+```
+
+## 42. Final Repository State
+
+- Audit/planning SHA/CI: `8f12bdc13720aae9b022301fbe8b0624245b131d` /
+  `31074886038`, success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Expected after this commit: HEAD equals origin/master, branch `master`, clean
+  worktree, migration head 0007, task count zero, N1 task absent.
+
+## 43. Next Action
+
+Return the complete Phase 10N-0 audit and scope seal to the reviewer. Do not
+create, queue, or execute Phase 10N-1.
