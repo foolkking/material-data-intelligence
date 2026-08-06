@@ -125,6 +125,14 @@ def test_phase10m7_document_links_and_phase10n_gate() -> None:
     assert "NOT QUEUED" in next_scope
     assert "NOT EXECUTABLE" in next_scope
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert tasks.count("---TASK---") == tasks.count("---END---") == 1
-    assert "# Phase 10M-7" in tasks
-    assert "---TASK---\nPhase 10N" not in tasks
+    task_count = tasks.count("---TASK---")
+    assert task_count == tasks.count("---END---")
+    assert task_count in {0, 1}
+    if task_count:
+        assert "# Phase 10M-7" in tasks
+    else:
+        assert "# Phase 10M-7" not in tasks
+    assert "Phase 10N-0:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+    task_blocks = re.findall(r"(?ms)^---TASK---\n.*?^---END---$", tasks)
+    assert len(task_blocks) == task_count
+    assert all("Phase 10N" not in block for block in task_blocks)

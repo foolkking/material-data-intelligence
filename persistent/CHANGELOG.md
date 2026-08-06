@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-08-06 - Phase 10M-7 Queue Archive Integrity Correction
+
+- Queue-archive candidate `5fc11b0465113ce7ad31fec3fa9d7e42d8d623c8`
+  correctly removed the M7 task, while CI `31068038057` exposed that the M7
+  evidence test only accepted the pre-archive one-task state.
+- The bounded test now accepts exactly the two legal M7 lifecycle states: one
+  M7 task before archive or zero tasks after archive, while always requiring
+  the non-executable Phase 10N-0 reviewer gate. Service-backed and frontend/
+  browser/build jobs already passed on the failed candidate.
+
 ## 2026-08-06 - Phase 10M-7 Implementation CI Verified
 
 - Evidence-only implementation `21ea4559e097cec649515b35c7f45b63f8eb8511`

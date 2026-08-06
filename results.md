@@ -5575,3 +5575,17 @@ execution, RAG, memory, multi-agent, and plugin work were not started.
 - Expected after this commit: `HEAD == origin/master`, branch `master`, clean
   worktree, migration head 0007, M7 task retained as complete awaiting archive,
   task count one, Phase 10N executable task absent.
+
+# Phase 10M-7 Queue Archive Integrity Correction Record
+
+- Queue-archive candidate: `5fc11b0465113ce7ad31fec3fa9d7e42d8d623c8`.
+- Exact-SHA CI: `31068038057`, failed in Unit only because
+  `test_phase10m7_document_links_and_phase10n_gate` required one active M7 task
+  after the verified archive deletion. Frontend/browser/build and
+  PostgreSQL/Redis/MinIO passed.
+- Root cause: lifecycle integrity test covered implementation/completion state
+  but not the sealed zero-task archive state.
+- Correction: accept exactly one M7 task before archive or zero tasks after
+  archive; preserve balanced delimiters, reject any executable Phase 10N task,
+  and require the Phase 10N-0 reviewer gate.
+- Corrected queue-archive SHA/CI: this commit / pending exact-SHA CI.
