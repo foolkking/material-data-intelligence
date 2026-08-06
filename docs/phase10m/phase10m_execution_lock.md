@@ -44,6 +44,21 @@ Every row contains the decision, evidence/rationale, rejected alternatives, affe
 | M-D024 | Preserve tombstone/stale source refs | Source deletion/version change must remain auditable | Cascade Workspace delete; remap latest | Status projection/read-only panels | M6-A03; no stale identity rebinding | SEALED_FOR_REVIEWER_APPROVAL |
 | M-D025 | Execute M1 through M7 in sealed order | Contracts precede shell, selection, renderers, delivery, closure | Parallel architecture streams; one large phase | Seven reviewer-gated phases | M1-A01, M1-A02, M1-A03, M1-A04, M1-A05, M1-A06, M1-A07, M1-A08, M2-A01, M2-A02, M2-A03, M2-A04, M2-A05, M2-A06, M2-A07, M3-A01, M3-A02, M3-A03, M3-A04, M3-A05, M3-A06, M3-A07, M4-A01, M4-A02, M4-A03, M4-A04, M4-A05, M4-A06, M4-A07, M4-A08, M5-A01, M5-A02, M5-A03, M5-A04, M5-A05, M5-A06, M5-A07, M6-A01, M6-A02, M6-A03, M6-A04, M6-A05, M6-A06, M6-A07, M6-A08, M7-A01, M7-A02, M7-A03, M7-A04, M7-A05, M7-A06, M7-A07, M7-A08; exact-SHA lifecycle | SEALED_FOR_REVIEWER_APPROVAL |
 
+<!-- phase10m7-acceptance-registry:start -->
+## Canonical Phase 10M-7 Acceptance Registry
+
+| ID | Canonical title | Canonical responsibility |
+| --- | --- | --- |
+| M7-A01 | Service-backed | PostgreSQL + Redis + MinIO full Workspace lifecycle, 0 skipped/failed |
+| M7-A02 | Scientific integrity | Adapter -> Runtime -> Artifact -> renderer/evidence authority remains exact |
+| M7-A03 | Historical compatibility | 0.1/0.2, modern/legacy/partial/missing-source cases retained |
+| M7-A04 | Full tests | Backend/frontend/typecheck/build/lock/migration/closure all pass |
+| M7-A05 | Browser | Chromium/Firefox/WebKit/mobile/accessibility/WebGL current evidence passes |
+| M7-A06 | Security | All Workspace security markers and secret scan pass |
+| M7-A07 | Evidence | Sanitized API/DOM/network/console/screenshots/performance manifest verifies |
+| M7-A08 | Lifecycle | Implementation, completion, and verified queue archive exact-SHA CI pass |
+<!-- phase10m7-acceptance-registry:end -->
+
 ## Stop conditions
 
 Stop and return to the reviewer for: a required scientific identity absent from current authority; migration conflict with a newer head; authorization model unable to protect source refs; need to modify Intent/Plan/Runtime/Artifact semantics; need for active artifact content; phase overlap that changes a sealed decision; or Phase 10N scientific expansion.

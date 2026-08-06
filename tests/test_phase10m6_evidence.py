@@ -133,10 +133,12 @@ def test_phase10m6_required_inventory_acceptance_authorities_and_screenshots() -
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert tasks.count("---TASK---") == tasks.count("---END---")
     assert tasks.count("---TASK---") in {0, 1}
-    if "---TASK---" in tasks:
+    if "# Phase 10M-6" in tasks:
         assert "Phase 10M-6" in tasks
         assert all(acceptance_id in tasks for acceptance_id in ACCEPTANCE)
-    assert "# Phase 10M-7" not in tasks
+    elif "---TASK---" in tasks:
+        assert "# Phase 10M-7" in tasks
+    assert "---TASK---\nPhase 10N" not in tasks
 
 
 def test_phase10m6_document_links_resolve() -> None:

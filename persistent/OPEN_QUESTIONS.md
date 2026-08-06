@@ -1,5 +1,13 @@
 # OPEN_QUESTIONS
 
+## 2026-08-06 Phase 10M-7 Lifecycle Gates
+
+No sealed-contract or implementation question blocks M7. Remaining work is
+the exact-SHA implementation, completion-record, and queue-archive CI
+lifecycle. Phase 10N-0 remains a separate reviewer gate. Multi-Job Workspace,
+collaboration, offline authority, durable drafts, automatic rerun, new science,
+and Recipe execution remain explicit non-scope rather than M7 gaps.
+
 ## 2026-08-05 Phase 10M-6 Lifecycle Gates
 
 No architecture redesign blocks M6. Existing Workspace GET/PATCH/ETag,

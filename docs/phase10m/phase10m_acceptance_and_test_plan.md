@@ -51,6 +51,12 @@ Every acceptance ID belongs to exactly one backlog phase. Every backlog phase na
 | M6-A06 | Product states/content | `USER_FACING_STATES_LONG_CONTENT_AND_TERMINOLOGY`: distinct status/error/empty/loading language and bounded long-content presentation |
 | M6-A07 | Responsive/accessibility | `RESPONSIVE_MOBILE_AND_ACCESSIBILITY_CLOSURE`: one active mobile panel, drawers/sheets, keyboard/focus/live regions, 44px targets, reflow |
 | M6-A08 | Performance/security/lifecycle | `PERFORMANCE_SECURITY_EVIDENCE_AND_VERIFIED_LIFECYCLE`: metadata-first loading, cancellation, WebGL invariants, inert security, service/browser evidence, exact-SHA gates |
+
+<!-- phase10m7-acceptance-registry:start -->
+## Canonical Phase 10M-7 Acceptance Registry
+
+| ID | Canonical title | Canonical responsibility |
+| --- | --- | --- |
 | M7-A01 | Service-backed | PostgreSQL + Redis + MinIO full Workspace lifecycle, 0 skipped/failed |
 | M7-A02 | Scientific integrity | Adapter -> Runtime -> Artifact -> renderer/evidence authority remains exact |
 | M7-A03 | Historical compatibility | 0.1/0.2, modern/legacy/partial/missing-source cases retained |
@@ -59,5 +65,6 @@ Every acceptance ID belongs to exactly one backlog phase. Every backlog phase na
 | M7-A06 | Security | All Workspace security markers and secret scan pass |
 | M7-A07 | Evidence | Sanitized API/DOM/network/console/screenshots/performance manifest verifies |
 | M7-A08 | Lifecycle | Implementation, completion, and verified queue archive exact-SHA CI pass |
+<!-- phase10m7-acceptance-registry:end -->
 
 No acceptance result from a fixture-only or historical screenshot is labeled as current product proof. Service-backed skips are failures for phases that require service evidence.

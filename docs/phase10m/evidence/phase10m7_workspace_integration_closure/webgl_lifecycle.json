@@ -1,0 +1,12 @@
+{
+  "ANIMATION_LOOP_GROWTH": 0,
+  "DUPLICATE_CANVAS": 0,
+  "DUPLICATE_PAYLOAD_REQUEST_GROWTH": 0,
+  "LISTENER_GROWTH": 0,
+  "MAX_ACTIVE_HEAVY_VIEWERS": 1,
+  "OBSERVER_GROWTH": 0,
+  "REPORT_PREVIEW_WEBGL_CONTEXTS": 0,
+  "WEBGL_CONTEXT_GROWTH": 0,
+  "authority": "M4 lifecycle runner retained and replayed in the same exact-SHA CI",
+  "cycles": 50
+}

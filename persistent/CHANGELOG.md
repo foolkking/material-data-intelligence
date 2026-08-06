@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-08-06 - Phase 10M-7 Local Integration Closure
+
+- Authorized and completed R0 reconciliation of the canonical M7 acceptance
+  registry; duplicate detection is scoped to registry definitions, not legal
+  references elsewhere in the documents.
+- Added retained real-DeepSeek Plan 0.2 replay through current Workspace and
+  Report/Recipe authorities with zero new LLM calls and no provider fallback.
+- Added current Chromium/Firefox/WebKit/mobile aggregation, service-backed
+  PostgreSQL/Redis/MinIO gate, deterministic evidence manifest, final Phase
+  10M capability matrix, and known limitations.
+- No production source, schema, migration, public API, contract, dependency,
+  tool, Adapter, scientific algorithm, or lockfile change.
+
 ## 2026-08-05 - Phase 10M-6 Implementation CI Verified
 
 - Corrected implementation `65e80ba915140e29db08dc053c1d218206daaa03`

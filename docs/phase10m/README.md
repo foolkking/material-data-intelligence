@@ -1,10 +1,10 @@
 # Phase 10M Unified Scientific Workspace
 
-Status: Phase 10M-1 through Phase 10M-5 are archived. Phase 10M-6 corrected
-implementation `65e80ba915140e29db08dc053c1d218206daaa03` passed exact-SHA CI
-`31020968546`, including full regression, browser replay, migration, and
-service-backed zero-skipped gates. Completion-record and queue-archive CI
-remain; Phase 10M-7 is reviewer-gated and not queued.
+Status: Phase 10M-1 through Phase 10M-6 are archived. Phase 10M-7 corrected
+entry and acceptance reconciliation passed, and local integration/browser/
+evidence closure is complete. Its implementation, completion-record, and
+queue-archive exact-SHA CI gates remain. Phase 10N-0 is reviewer-gated, not
+queued, and not executable.
 
 ## Reading order
 
@@ -67,6 +67,17 @@ remain; Phase 10M-7 is reviewer-gated and not queued.
 57. [M6 security and compatibility](phase10m6_security_and_compatibility.md)
 58. [M6 acceptance/evidence](phase10m6_acceptance_evidence_map.md)
 59. [M7 reviewer gate](phase10m6_next_scope.md)
+60. [M7 corrected entry audit](phase10m7_entry_audit.md)
+61. [M7 acceptance reconciliation](phase10m7_acceptance_reconciliation.md)
+62. [M7 integration scenarios](phase10m7_integration_scenario_matrix.md)
+63. [M7 API/service closure](phase10m7_api_service_closure.md)
+64. [M7 browser/mobile/accessibility](phase10m7_browser_mobile_accessibility.md)
+65. [M7 performance/lifecycle/security](phase10m7_performance_lifecycle_security.md)
+66. [M7 acceptance/evidence](phase10m7_acceptance_evidence_map.md)
+67. [Final capability matrix](phase10m_final_capability_matrix.md)
+68. [Final known limitations](phase10m_final_known_limitations.md)
+69. [Prepared completion record](phase10m_completion.md)
+70. [Phase 10N-0 reviewer gate](phase10n0_next_scope.md)
 
 ## Status vocabulary
 
@@ -86,4 +97,6 @@ persistence for deterministic composition and has no execution or LLM authority.
 M6 closes explicit durable Save, deterministic reload, exact navigation,
 persisted Job/source recovery, finalized delivery recovery, session-draft
 honesty, and responsive/accessibility behavior without changing prior
-contracts. M7 remains reviewer-gated.
+contracts. M7 reconciles its canonical registry and closes current integration,
+browser, service, evidence, identity-continuity, lifecycle, and Phase 10M
+documentation without adding product authority.

@@ -1,5 +1,19 @@
 # TASK_BOARD
 
+## 2026-08-06 Phase 10M-7 In Progress
+
+- [x] Verify M6 implementation/completion/archive exact-SHA CI and clean entry.
+- [x] Reconcile the exact eight-entry M7 acceptance registry.
+- [x] Close retained DeepSeek identity replay through Workspace, Save/reopen,
+  and Report/Recipe without provider or Adapter execution.
+- [x] Add browser, service-backed, performance, security, evidence, and Phase
+  10M final documentation gates.
+- [x] Pass focused M7 tests and four-target local browser replay.
+- [ ] Pass full local regression and implementation exact-SHA CI.
+- [ ] Append completion record only after implementation CI succeeds.
+- [ ] Archive the M7 task only after completion-record CI succeeds.
+- [x] Keep Phase 10N-0 reviewer-gated and absent from the executable queue.
+
 ## 2026-08-05 Phase 10M-6 Complete, Awaiting Verified Archive
 
 - [x] Verify M5 corrected implementation/completion/archive and admit M6 as

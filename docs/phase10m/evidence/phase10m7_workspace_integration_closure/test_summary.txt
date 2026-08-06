@@ -1,0 +1,9 @@
+Focused Phase 10M backend: 78 passed
+Full backend (not integration): 1156 passed, 1 local-environment skip, 43 integration tests deselected
+Full frontend: 411 passed
+Typecheck: PASS
+Build: PASS with existing Plotly/glslify warnings
+Browser: Chromium, Firefox, WebKit, Chromium 390x844 PASS
+Local service-backed: UNAVAILABLE (Docker unavailable; CI zero-skip required)
+npm audit: UNAVAILABLE (configured mirror 404 NOT_IMPLEMENTED)
+M7_NEW_REAL_LLM_CALLS = 0

@@ -1,0 +1,46 @@
+{
+  "browser": "firefox",
+  "browserVersion": "130.0",
+  "viewport": [
+    1440,
+    1050
+  ],
+  "route": "/workspaces/workspace_report?panel=panel_report",
+  "commit": "LOCAL_WORKTREE",
+  "captureTime": "2026-08-06T01:56:22.352Z",
+  "captureMode": "LOCAL_LIVE_REPLAY",
+  "metadataFirst": true,
+  "explicitSave": true,
+  "conflictLocalEditsPreserved": true,
+  "confirmedServerReload": true,
+  "backForwardRestored": true,
+  "reloadHiddenWrites": 0,
+  "finalizedPairReloaded": true,
+  "initialArtifactPayloadRequests": 0,
+  "reportPreviewWebglContexts": 0,
+  "selectedSources": 2,
+  "mandatoryDisclosures": 2,
+  "previewWrites": 0,
+  "finalizePair": true,
+  "idempotentHistoryCount": 1,
+  "downloads": {
+    "json": {
+      "suggestedFilename": "scientific-report-report_saved.json"
+    },
+    "markdown": {
+      "suggestedFilename": "scientific-report-report_saved.md"
+    }
+  },
+  "overflow": {
+    "body": 0,
+    "root": 0
+  },
+  "expectedNegativeResponses": [
+    "412 http://localhost:8000/workspaces/workspace_report"
+  ],
+  "expectedConsoleErrors": [],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failedResponses": [],
+  "externalRequests": []
+}

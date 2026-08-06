@@ -1980,6 +1980,16 @@ semantics from Plan 0.2 typed Artifact dependency bindings. Its execution,
 Plan, Job, queue, and automatic replay flags are always false. These DTOs add
 no scientific, Workspace, selection, renderer, provider, or execution authority.
 
+## Phase 10M-7 Integration Closure Addendum
+
+Phase 10M-7 adds no shared schema or contract version. It verifies unchanged
+`ScientificWorkspace 1.0`, `WorkspacePanel 1.0`,
+`WorkspaceSelectionContext 1.0`, AnalysisPlan 0.1/0.2, and all four M5
+Report/Recipe contracts through retained exact-identity replay, current
+browser/service gates, and canonical evidence hashing. The M7 evidence
+manifest is a verification artifact, not a persistence or scientific
+authority.
+
 ## Phase 10L-5 Natural-Language Evidence Contracts
 
 Phase 10L-5 adds versioned evidence-run contracts without changing scientific

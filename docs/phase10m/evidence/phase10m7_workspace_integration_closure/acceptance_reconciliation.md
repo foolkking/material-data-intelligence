@@ -1,0 +1,17 @@
+# Acceptance Reconciliation
+
+`ACCEPTANCE_RECONCILIATION_WAS_PART_OF_M7 = YES`
+
+`PREVIOUS_ACCEPTANCE_GATE_BLOCK_WAS_SUPERSEDED = YES`
+
+`M7_CANONICAL_ACCEPTANCE_COUNT = 8`
+
+`M7_DOCUMENTS_RECONCILED = 4`
+
+`M7_DUPLICATE_REGISTRY_ENTRIES = 0`
+
+`M7_CONFLICTING_DEFINITIONS = 0`
+
+`M7_CANONICAL_REGISTRY_SHORTHAND_ENTRIES = 0`
+
+Registry references outside the marked canonical section are informational and are not duplicate definitions.

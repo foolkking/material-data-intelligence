@@ -1,5 +1,21 @@
 # PROJECT_BRIEF
 
+## 2026-08-06 Phase 10M-7 Local Integration Closure
+
+Phase 10M-6 is verified and archived at
+`200212b164041e38626d6b948c7fe64c772ca6ce` with CI `31060008583`. The sole
+active M7 task reconciles the exact eight-entry acceptance registry and closes
+the existing Profile/Intent/Eligibility/Plan/Runtime/Artifact/interpretation/
+Workspace/Viewer/Report/Recipe/Save/reopen chain. Retained real DeepSeek
+phonon records replay through current repositories, Workspace projection,
+Save, and Report/Recipe composition without a new provider call.
+
+Local focused integration, evidence integrity, and Chromium/Firefox/WebKit/
+390x844 replay pass. No production source, database, migration, API, contract,
+dependency, lockfile, scientific tool, or LLM call-site change is required.
+The implementation exact-SHA CI and subsequent completion/archive gates remain.
+Phase 10N-0 is reviewer-gated and not queued.
+
 ## 2026-08-05 Phase 10M-6 Complete, Awaiting Verified Archive
 
 Phase 10M-5 is archived at `56bec17792fff86a99c3d280ab754a69fff6c51b`

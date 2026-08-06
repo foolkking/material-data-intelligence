@@ -31,11 +31,9 @@ Current Phase 10L-5 closure references:
 
 ## Phase 10M Unified Scientific Workspace
 
-Phase 10M-0 sealed the architecture; M1 archived the reference-only persisted
-domain/API; M2 archived the additive metadata shell; M3 archived exact
-canonical selection and cross-panel navigation; M4 completed the typed
-Artifact Gallery and existing scientific viewer integration and awaits its
-verified completion/archive lifecycle:
+Phase 10M-0 sealed the architecture; M1-M6 are archived. M7 has completed its
+corrected acceptance reconciliation and local integration/browser/evidence
+closure and awaits its three exact-SHA CI gates:
 
 - [`phase10m/README.md`](phase10m/README.md): Phase 10M canonical documentation entry.
 - [`phase10m/phase10m0_workspace_fact_audit.md`](phase10m/phase10m0_workspace_fact_audit.md): current product maturity and authority audit.
@@ -106,6 +104,18 @@ verified completion/archive lifecycle:
 - [`phase10m/phase10m6_acceptance_evidence_map.md`](phase10m/phase10m6_acceptance_evidence_map.md): exact eight acceptance IDs and retained proof.
 - [`phase10m/phase10m6_next_scope.md`](phase10m/phase10m6_next_scope.md): M7 reviewer gate only; no executable M7 task.
 - [`phase10m/evidence/phase10m6_workspace_recovery_closure/`](phase10m/evidence/phase10m6_workspace_recovery_closure/): browser, Save/conflict/reload/recovery, mobile, lifecycle, security, and manifest evidence.
+- [`phase10m/phase10m7_entry_audit.md`](phase10m/phase10m7_entry_audit.md): corrected gate and verified M6 baseline.
+- [`phase10m/phase10m7_acceptance_reconciliation.md`](phase10m/phase10m7_acceptance_reconciliation.md): marker-scoped exact eight-entry registry reconciliation.
+- [`phase10m/phase10m7_integration_scenario_matrix.md`](phase10m/phase10m7_integration_scenario_matrix.md): complete, dependency, historical, Viewer, recovery, Report, mobile, and security cases.
+- [`phase10m/phase10m7_api_service_closure.md`](phase10m/phase10m7_api_service_closure.md): existing-route and PostgreSQL/Redis/MinIO closure.
+- [`phase10m/phase10m7_browser_mobile_accessibility.md`](phase10m/phase10m7_browser_mobile_accessibility.md): current four-target browser evidence.
+- [`phase10m/phase10m7_performance_lifecycle_security.md`](phase10m/phase10m7_performance_lifecycle_security.md): lazy loading, WebGL lifecycle, and inert security markers.
+- [`phase10m/phase10m7_acceptance_evidence_map.md`](phase10m/phase10m7_acceptance_evidence_map.md): exact M7 traceability.
+- [`phase10m/phase10m_final_capability_matrix.md`](phase10m/phase10m_final_capability_matrix.md): final Workspace capability and limits matrix.
+- [`phase10m/phase10m_final_known_limitations.md`](phase10m/phase10m_final_known_limitations.md): explicit bounded product limits.
+- [`phase10m/phase10m_completion.md`](phase10m/phase10m_completion.md): prepared completion contract pending verified archive.
+- [`phase10m/phase10n0_next_scope.md`](phase10m/phase10n0_next_scope.md): Phase 10N-0 reviewer gate only.
+- [`phase10m/evidence/phase10m7_workspace_integration_closure/`](phase10m/evidence/phase10m7_workspace_integration_closure/): acceptance, identity, browser, service, performance, security, screenshots, and manifest evidence.
 - [`phase10m/evidence/phase10m3_canonical_selection/`](phase10m/evidence/phase10m3_canonical_selection/): retained M3 evidence.
 
 ## Phase 10K Material Intelligence

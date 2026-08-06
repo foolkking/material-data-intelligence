@@ -72,13 +72,13 @@ scientific viewer adapters, M3 selection reuse, and bounded heavy-viewer
 lifecycle at corrected implementation `6287785c`; exact-SHA CI run
 `30751689618` passed Unit, Frontend/browser/build, and PostgreSQL/Redis/MinIO
 with zero skipped service tests. Phase 10M-5 is archived at
-`56bec17792fff86a99c3d280ab754a69fff6c51b` after corrected implementation,
-completion, and queue-archive exact-SHA CI. Reviewer-authorized Phase 10M-6
-now implements explicit Workspace Save, conflict/revision-cap UX,
-deterministic reload and exact navigation, persisted Job/source and finalized
-delivery recovery, honest session-only drafts, and responsive/accessibility/
-lifecycle closure. Its implementation lifecycle is in progress; Phase 10M-7
-remains reviewer-gated.
+`56bec17792fff86a99c3d280ab754a69fff6c51b`. Phase 10M-6 is archived at
+`200212b164041e38626d6b948c7fe64c772ca6ce` after implementation,
+completion-record, and queue-archive exact-SHA CI. Reviewer-authorized M7 has
+completed corrected acceptance reconciliation and local integration/browser/
+evidence closure without schema, API, dependency, contract, scientific, or LLM
+expansion. Its three exact-SHA CI lifecycle gates remain; Phase 10M is not
+finally archived until all three pass. Phase 10N-0 remains reviewer-gated.
 
 ### Phase 10N - Professional Scientific Completion
 

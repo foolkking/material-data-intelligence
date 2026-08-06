@@ -1,0 +1,13 @@
+{
+  "focusReturned": true,
+  "horizontalOverflow": {
+    "body": 0,
+    "root": 0
+  },
+  "minimumTouchTargetCssPx": 44,
+  "oneActiveSurface": true,
+  "viewport": [
+    390,
+    844
+  ]
+}

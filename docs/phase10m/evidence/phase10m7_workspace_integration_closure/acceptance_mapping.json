@@ -1,0 +1,52 @@
+{
+  "canonicalRegistryShorthandEntries": 0,
+  "canonicalSource": "phase10m_acceptance_and_test_plan.md",
+  "conflictingDefinitions": 0,
+  "duplicateCanonicalRegistryEntries": 0,
+  "expected": 8,
+  "extra": 0,
+  "implemented": 8,
+  "items": [
+    {
+      "id": "M7-A01",
+      "responsibility": "PostgreSQL + Redis + MinIO full Workspace lifecycle, 0 skipped/failed",
+      "title": "Service-backed"
+    },
+    {
+      "id": "M7-A02",
+      "responsibility": "Adapter -> Runtime -> Artifact -> renderer/evidence authority remains exact",
+      "title": "Scientific integrity"
+    },
+    {
+      "id": "M7-A03",
+      "responsibility": "0.1/0.2, modern/legacy/partial/missing-source cases retained",
+      "title": "Historical compatibility"
+    },
+    {
+      "id": "M7-A04",
+      "responsibility": "Backend/frontend/typecheck/build/lock/migration/closure all pass",
+      "title": "Full tests"
+    },
+    {
+      "id": "M7-A05",
+      "responsibility": "Chromium/Firefox/WebKit/mobile/accessibility/WebGL current evidence passes",
+      "title": "Browser"
+    },
+    {
+      "id": "M7-A06",
+      "responsibility": "All Workspace security markers and secret scan pass",
+      "title": "Security"
+    },
+    {
+      "id": "M7-A07",
+      "responsibility": "Sanitized API/DOM/network/console/screenshots/performance manifest verifies",
+      "title": "Evidence"
+    },
+    {
+      "id": "M7-A08",
+      "responsibility": "Implementation, completion, and verified queue archive exact-SHA CI pass",
+      "title": "Lifecycle"
+    }
+  ],
+  "missing": 0
+}

@@ -1,5 +1,13 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-08-06 Phase 10M-7 Integration Boundary
+
+M7 adds or changes zero Tool Registry entries, ports, versions, planner
+metadata, Adapters, or scientific algorithms. Integration evidence reuses the
+existing exact eligible tool set and verifies provider-visible IDs equal the
+persisted eligibility set. Renderer and Report roles remain contract/version
+dispatch authorities and never infer from filename, MIME, label, or row order.
+
 ## 2026-08-02 Phase 10M-4 Renderer Boundary
 
 - The Workspace renderer registry is application-owned presentation metadata,

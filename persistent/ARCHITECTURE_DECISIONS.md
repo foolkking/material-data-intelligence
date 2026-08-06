@@ -1,5 +1,18 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-06 ADR Addendum: Phase 10M-7 Evidence-Only Integration
+
+M7 introduces no product authority. The retained real DeepSeek records remain
+provider evidence; replay stores them through existing repository contracts
+and invokes only existing Workspace/Report composition paths. Sanitized private
+storage locators are replaced only by inert in-memory test locators and are
+excluded from semantic identity. Current browser and service runners remain
+separate authorities and converge only through exact-SHA CI and hashed evidence.
+
+The acceptance registry parser is bounded by explicit section markers. Legal
+references outside that section are not duplicate definitions. Phase 10N-0
+cannot enter the queue without a new reviewer prompt.
+
 ## 2026-08-05 ADR Addendum: Phase 10M-6 Recovery Ownership
 
 - Server persistence remains the sole durable Workspace authority; explicit

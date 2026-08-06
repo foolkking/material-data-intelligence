@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "phase10m7.browser_closure.v1",
+  "currentRun": {
+    "chromium": true,
+    "firefox": true,
+    "webkit": true,
+    "mobile390x844": true,
+    "saveConflictReopen": true,
+    "reportRecipeRecovery": true
+  },
+  "sameCiRegressionRunners": {
+    "canonicalSelectionM3": "workspace-selection-browser-evidence.mjs",
+    "artifactGalleryM4": "workspace-artifact-gallery-browser-evidence.mjs",
+    "reportRecipeM5": "workspace-report-recipe-browser-evidence.mjs",
+    "recoveryM6": "workspace-recovery-browser-evidence.mjs"
+  },
+  "unexpectedConsoleErrors": 0,
+  "unexpectedPageErrors": 0,
+  "unexpectedFailedResponses": 0,
+  "unapprovedExternalRequests": 0,
+  "initialHeavyArtifactPayloadRequests": 0,
+  "inactiveHeavyArtifactPayloadRequests": 0,
+  "reportPreviewWebglContexts": 0,
+  "mobileHorizontalOverflow": 0,
+  "minimumTouchTargetCssPx": 44,
+  "commit": "LOCAL_WORKTREE",
+  "captureTime": "2026-08-06T01:56:38.463Z"
+}

@@ -1,5 +1,18 @@
 # DESIGN_PROGRESS
 
+## 2026-08-06 Phase 10M-7 Local Closure Complete
+
+- Reconciled the exact M7-A01 through M7-A08 canonical registry across the
+  acceptance plan, backlog, execution lock, and execution manifest using a
+  marker-scoped validator.
+- Added an exact retained-DeepSeek replay test that preserves Profile, Intent,
+  Eligibility, Decision, Plan 0.2 graph, ToolCalls, Artifact checksums,
+  interpretation/evidence, Workspace Save/reopen, and Report/Recipe identity.
+- Added the M7 four-target browser aggregate, PostgreSQL/Redis/MinIO aggregate
+  service gate, evidence generator, manifest validation, final capability
+  matrix, and explicit limits.
+- Production behavior and sealed contracts are unchanged. Exact-SHA CI remains.
+
 ## 2026-08-05 Phase 10M-6 Implementation Verified
 
 - Corrected implementation `65e80ba915140e29db08dc053c1d218206daaa03`

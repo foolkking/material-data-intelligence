@@ -1,0 +1,213 @@
+{
+  "algorithm": "sha256-lf-normalized-text-and-raw-png-v1",
+  "entries": [
+    {
+      "bytes": 1551,
+      "hashMode": "lf_normalized_text",
+      "path": "acceptance_mapping.json",
+      "sha256": "bc74d7c051f3f5623481edb8dedd1b65274731defda87fc83774ef8867b3a9bc"
+    },
+    {
+      "bytes": 430,
+      "hashMode": "lf_normalized_text",
+      "path": "acceptance_reconciliation.md",
+      "sha256": "0dd51dc07ba7ae36b0c9a0c961fc2c97f2834072bc103bb610c928d656c9131d"
+    },
+    {
+      "bytes": 414,
+      "hashMode": "lf_normalized_text",
+      "path": "acceptance_registry_diff.md",
+      "sha256": "7b7fa6316015e11c25ae214d2c895b1b931de66c25685b9b12075c4c05a441c7"
+    },
+    {
+      "bytes": 931,
+      "hashMode": "lf_normalized_text",
+      "path": "acceptance_source_extraction.md",
+      "sha256": "e15502288fa81429a2f6a455856992cf208652b2c798547cc130e934f582d4ad"
+    },
+    {
+      "bytes": 391,
+      "hashMode": "lf_normalized_text",
+      "path": "accessibility_summary.md",
+      "sha256": "1d5c0c305a74af910cfcaae8a706c8c234230f1ce2a1e16eed9b763245e9711f"
+    },
+    {
+      "bytes": 1451,
+      "hashMode": "lf_normalized_text",
+      "path": "api_matrix.md",
+      "sha256": "0165368b7618e78c9072655d66645712e0a0f56f94882f000ef3974c9e440b95"
+    },
+    {
+      "bytes": 1007,
+      "hashMode": "lf_normalized_text",
+      "path": "authority_map.md",
+      "sha256": "df7667c58d0c60225a25950560a926dcb2c87cdf0da90bb8b1343ed2c0050ba7"
+    },
+    {
+      "bytes": 637,
+      "hashMode": "lf_normalized_text",
+      "path": "baseline.txt",
+      "sha256": "a6626c3a7a62184cc37c88c9b1a2d80c380e75378a73f0e835e37affaf31dba5"
+    },
+    {
+      "bytes": 1262,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_chromium.json",
+      "sha256": "a4b88d3af43afaadfb51da64244acca84314807c2dbaa4aded9573c1078260bb"
+    },
+    {
+      "bytes": 941,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_closure.json",
+      "sha256": "435708d241422f00ecd1429b5d0f2f4c6f31909f4ef7970b03a852277c0c86c9"
+    },
+    {
+      "bytes": 1155,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_firefox.json",
+      "sha256": "e8ac156bb16166c5b6d299dce7ad646eafde1640013b5ece5b33dc3087352b22"
+    },
+    {
+      "bytes": 3991,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_matrix.json",
+      "sha256": "dfed8345653f83a5a2887bc8c8e9519d351117ce498a51438385664d689e75ed"
+    },
+    {
+      "bytes": 441,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_matrix.md",
+      "sha256": "6759127e6c69a90ce05dfa8fab0b48ea48f90efb07e5ae94da3ebf42d3851a5b"
+    },
+    {
+      "bytes": 696,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_mobile.json",
+      "sha256": "cc76ea964dfd2e173934e3da9fcf8c7c330a81d978f59505837a42bd930a3f84"
+    },
+    {
+      "bytes": 1251,
+      "hashMode": "lf_normalized_text",
+      "path": "browser_webkit.json",
+      "sha256": "6f886be27b58b79ecaa1a424c360a4ec963f3ef1aaee17086feaa186d7500571"
+    },
+    {
+      "bytes": 107,
+      "hashMode": "lf_normalized_text",
+      "path": "console_summary.json",
+      "sha256": "a2247d77f3d771c31a5a16fdce84553c84be91dd7935960155517b5314deb32c"
+    },
+    {
+      "bytes": 398,
+      "hashMode": "lf_normalized_text",
+      "path": "entry_gate.md",
+      "sha256": "53512aff7bcd07874135c5739eed85eb6acb54405e622506cbcdedc042ecdf87"
+    },
+    {
+      "bytes": 241,
+      "hashMode": "lf_normalized_text",
+      "path": "git_history.txt",
+      "sha256": "c08ce104bf440d57dac78cf1647f2c2ae7e90ebe7508d93edd8fc71f040c1791"
+    },
+    {
+      "bytes": 1616,
+      "hashMode": "lf_normalized_text",
+      "path": "identity_continuity.md",
+      "sha256": "2128f510083ca8c5b0caeea5fc753b9c0d140065ea347b89434c8748230d0c0a"
+    },
+    {
+      "bytes": 408,
+      "hashMode": "lf_normalized_text",
+      "path": "known_limitations.md",
+      "sha256": "24cac23308650480c5731cf03b9d31ff0e9f5bdc58cfdef7c924ee74ea3abc3e"
+    },
+    {
+      "bytes": 187,
+      "hashMode": "lf_normalized_text",
+      "path": "mobile_metrics.json",
+      "sha256": "b526477225df4c1fa4dc5079b842e98290a8fef064a83bb71b3381d6c496462d"
+    },
+    {
+      "bytes": 170,
+      "hashMode": "lf_normalized_text",
+      "path": "network_summary.json",
+      "sha256": "9e22e4817681b922e6a5e969c7e086a5878f3284a1543e3bd365e0ef95691f39"
+    },
+    {
+      "bytes": 366,
+      "hashMode": "lf_normalized_text",
+      "path": "performance.json",
+      "sha256": "38853051e188710bda53771a873b42fe1490017d72ab0ed87c64a70eec58a61f"
+    },
+    {
+      "bytes": 1088,
+      "hashMode": "lf_normalized_text",
+      "path": "scenario_matrix.md",
+      "sha256": "b0c194182f4bfaef622ac6cb40b44bc8b0542878931d5f7826cbb2b20a7943ad"
+    },
+    {
+      "bytes": 526,
+      "hashMode": "lf_normalized_text",
+      "path": "scientific_integrity.md",
+      "sha256": "7929bae65181b7249592cde761597908c54e0ea8e3c7190071c491f9037198c0"
+    },
+    {
+      "bytes": 185701,
+      "hashMode": "raw_binary",
+      "path": "screenshots/chromium_report.png",
+      "sha256": "594a0b2db80db505bc97eded6999e3031097c5a4c3839b06609a573879bf5ed3"
+    },
+    {
+      "bytes": 235591,
+      "hashMode": "raw_binary",
+      "path": "screenshots/firefox_report.png",
+      "sha256": "393eb95e60461a9b7c747f222566d4033f230b203f935c6c2682fca8bc9f28ad"
+    },
+    {
+      "bytes": 58838,
+      "hashMode": "raw_binary",
+      "path": "screenshots/mobile_report.png",
+      "sha256": "b1d089c98e4bbac60c142392be7988cf57cf78c99ee411a269067f5d192c73a9"
+    },
+    {
+      "bytes": 135875,
+      "hashMode": "raw_binary",
+      "path": "screenshots/webkit_report.png",
+      "sha256": "d33eb71f40ba5b9de1af23acb436700f2618f877537c2e2949f648fcab06a1f7"
+    },
+    {
+      "bytes": 983,
+      "hashMode": "lf_normalized_text",
+      "path": "security_summary.md",
+      "sha256": "1cc874e0e216a5e13ffee217ebcfcbe995618dba33d060811893d093d5dcb754"
+    },
+    {
+      "bytes": 473,
+      "hashMode": "lf_normalized_text",
+      "path": "service_backed_summary.md",
+      "sha256": "d6d8bac2100417877b9efcf1f51ca4d8458c20afce1d5891792db24607c109c0"
+    },
+    {
+      "bytes": 133,
+      "hashMode": "lf_normalized_text",
+      "path": "task_state.txt",
+      "sha256": "d4d698723c0f8b06f305bbad1fffc5ef776f02c932ff4ff2416e8567d8d9d91c"
+    },
+    {
+      "bytes": 457,
+      "hashMode": "lf_normalized_text",
+      "path": "test_summary.txt",
+      "sha256": "5d4c2d5f7163a59d864b7f1ccc7e14e1ff13302aff4c708d7bb9b6a380fbeff1"
+    },
+    {
+      "bytes": 348,
+      "hashMode": "lf_normalized_text",
+      "path": "webgl_lifecycle.json",
+      "sha256": "e1fd5af20b198f160ff0b4a434983c3efdef10a5b99e2845355ffca3254fc413"
+    }
+  ],
+  "hashMismatch": 0,
+  "missing": 0,
+  "schemaVersion": "phase10m7.evidence_manifest.v1",
+  "unexpected": 0
+}

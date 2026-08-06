@@ -56,6 +56,34 @@ The exact M6 requirement names are `EXPLICIT_WORKSPACE_SAVE_AND_CONCURRENCY`,
 `RESPONSIVE_MOBILE_AND_ACCESSIBILITY_CLOSURE`, and
 `PERFORMANCE_SECURITY_EVIDENCE_AND_VERIFIED_LIFECYCLE` in ID order.
 
+<!-- phase10m7-acceptance-registry:start -->
+## Canonical Phase 10M-7 Acceptance Registry
+
+| ID | Canonical title | Canonical responsibility |
+| --- | --- | --- |
+| M7-A01 | Service-backed | PostgreSQL + Redis + MinIO full Workspace lifecycle, 0 skipped/failed |
+| M7-A02 | Scientific integrity | Adapter -> Runtime -> Artifact -> renderer/evidence authority remains exact |
+| M7-A03 | Historical compatibility | 0.1/0.2, modern/legacy/partial/missing-source cases retained |
+| M7-A04 | Full tests | Backend/frontend/typecheck/build/lock/migration/closure all pass |
+| M7-A05 | Browser | Chromium/Firefox/WebKit/mobile/accessibility/WebGL current evidence passes |
+| M7-A06 | Security | All Workspace security markers and secret scan pass |
+| M7-A07 | Evidence | Sanitized API/DOM/network/console/screenshots/performance manifest verifies |
+| M7-A08 | Lifecycle | Implementation, completion, and verified queue archive exact-SHA CI pass |
+<!-- phase10m7-acceptance-registry:end -->
+
+## Phase 10M-7 Traceability
+
+| ID | Source scope | Test scope | Browser scope | Service scope | Evidence/security scope | Exit gate |
+| --- | --- | --- | --- | --- | --- | --- |
+| M7-A01 | Persisted Workspace lifecycle | Service integration | Workspace lifecycle smoke | PostgreSQL/Redis/MinIO | Service summary and no-skipped assertion | Service jobs pass |
+| M7-A02 | Adapter-to-evidence authority | Integrity and identity | Typed panels and Inspector | Artifact/checksum retrieval | Scientific-integrity markers | No authority drift |
+| M7-A03 | Plan 0.1/0.2 and source states | Historical/partial recovery | Legacy/stale presentation | Persisted historical records | Compatibility matrix | No identity invention |
+| M7-A04 | Repository-wide implementation | Full regression | Browser runner prerequisites | Migration and integration | Lock/closure checks | All suites pass |
+| M7-A05 | Workspace user journey | Frontend integration | Chromium/Firefox/WebKit/mobile | API-backed fixtures | Accessibility/WebGL captures | Browser matrix passes |
+| M7-A06 | Authorization and inert content | Adversarial tests | Inert UI behavior | Cross-scope rejection | Security and secret scan | All markers pass |
+| M7-A07 | Retained closure proof | Manifest integrity | DOM/network/console/screenshots | API/service captures | Sanitized hashes and performance | Manifest verifies |
+| M7-A08 | Phase closure records | Lifecycle checks | Browser gate retained | Service gate retained | Acceptance/result/archive records | Three exact-SHA CI gates |
+
 ## Required commands
 
 Use repository-current equivalents of:
