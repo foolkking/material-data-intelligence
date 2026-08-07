@@ -58,8 +58,12 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
     ):
         assert marker in scope
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert tasks.count("---TASK---") == tasks.count("---END---") == 1
-    assert "Status: IN_PROGRESS" in tasks
+    assert tasks.count("---TASK---") == tasks.count("---END---")
+    assert tasks.count("---TASK---") in {0, 1}
+    if tasks.count("---TASK---") == 1:
+        assert "Phase 10N-1" in tasks and "Status: IN_PROGRESS" in tasks
+    else:
+        assert "Phase 10N-1" not in tasks
     assert "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
 
 

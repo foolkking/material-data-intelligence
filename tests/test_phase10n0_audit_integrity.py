@@ -65,7 +65,7 @@ def test_n0_does_not_admit_an_executable_task() -> None:
     if "Phase 10N-1" in tasks:
         assert "Phase 10N-2:\nREVIEWER_GATE" in tasks
     else:
-        assert "Phase 10N-2" not in tasks
+        assert "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
 
 
 def test_n0_decision_registry_is_contiguous_and_review_gated() -> None:
