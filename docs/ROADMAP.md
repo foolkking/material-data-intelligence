@@ -127,6 +127,14 @@ Future Scope cannot enter `TASKS.md` without explicit reviewer/user approval.
 Not Planned capabilities cannot return to the roadmap merely because they are
 technically possible.
 
+### Phase 10N - Professional Scientific Completion
+
+Phase 10N-0 is complete as a reviewer-approved capability audit. Phase 10N-1
+is the active implementation scope for algorithm-derived CrystalNN and
+VoronoiNN coordination. It adds two registered tools while preserving the
+existing Runtime, Artifact, Workspace, Report and Recipe authorities. Phase
+10N-2 remains a reviewer gate and has no executable task.
+
 ## Historical Numbering Reconciliation
 
 An earlier plan assigned J-5 to Electronic Band/DOS and J-6 to Fermi Surface.

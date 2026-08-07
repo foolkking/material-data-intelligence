@@ -4,10 +4,12 @@ from collections import Counter
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 from statistics import median
 from typing import Any
 
 from mdi_schemas import DataProfile, MaterialObjectType
+from pymatgen.core import Structure
 
 from .models import NormalizedObjectDraft, ParseResult
 from .semantic_profile import (
@@ -55,6 +57,8 @@ def build_data_profile(
     readiness = analysis_readiness(semantic_columns, semantic_groups, resources, platform_tool_ids)
     coverage = _combined_coverage(coverage_records)
     identity = sample_identity(semantic_columns, profiled_dataframes)
+    coordination_readiness = _coordination_readiness(profiled_objects)
+    profile_contract_version = "2.1" if coordination_readiness["structures"] else "2.0"
 
     semantic_payload = {
         "datasetId": dataset_id,
@@ -86,7 +90,7 @@ def build_data_profile(
         trajectorySummary=_trajectory_summary(objects),
         qualityIssues=quality_issues,
         recommendedTasks=_recommended_tasks(structure_objects, dataframe_objects),
-        profileContractVersion="2.0",
+        profileContractVersion=profile_contract_version,
         semanticRulesVersion=SEMANTIC_RULES_VERSION,
         semanticHash=semantic_hash,
         semanticColumns=semantic_columns,
@@ -95,8 +99,75 @@ def build_data_profile(
         analysisReadiness=readiness,
         sampleIdentity=identity,
         profileCoverage=coverage,
+        coordinationReadiness=coordination_readiness if profile_contract_version == "2.1" else None,
         createdAt=datetime.now(timezone.utc).isoformat(),
     )
+
+
+def _coordination_readiness(objects: list[NormalizedObjectDraft]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for obj in objects:
+        if obj.object_type != MaterialObjectType.Structure:
+            continue
+        reasons: list[str] = []
+        periodic = obj.metadata.get("periodicity") == "periodic"
+        lattice_volume = obj.metadata.get("latticeVolume")
+        lattice_status = "VALID" if isinstance(lattice_volume, (int, float)) and math.isfinite(float(lattice_volume)) and float(lattice_volume) > 0 else "INVALID"
+        disorder_status = "UNKNOWN"
+        partial_status = "UNKNOWN"
+        species_status = "UNSUPPORTED"
+        try:
+            structure = Structure.from_dict(obj.payload)
+            disordered = any(not site.is_ordered for site in structure)
+            partial = any(not math.isclose(float(site.species.num_atoms), 1.0, abs_tol=1e-12) for site in structure)
+            disorder_status = "DISORDERED" if disordered else "ORDERED"
+            partial_status = "PRESENT" if partial else "ABSENT"
+            species_status = "DISORDERED" if disordered else ("PARTIAL_OCCUPANCY" if partial else "ORDERED_FULL_OCCUPANCY")
+        except (TypeError, ValueError, KeyError):
+            reasons.append("STRUCTURE_SEMANTICS_UNREADABLE")
+        if not periodic:
+            reasons.append("PERIODIC_STRUCTURE_REQUIRED")
+        if lattice_status != "VALID":
+            reasons.append("VALID_LATTICE_REQUIRED")
+        if disorder_status == "DISORDERED":
+            reasons.append("DISORDERED_SITES_UNSUPPORTED")
+        if partial_status == "PRESENT":
+            reasons.append("PARTIAL_OCCUPANCY_UNSUPPORTED")
+        if int(obj.metadata.get("nAtoms") or 0) > 5000:
+            reasons.append("COORDINATION_SITE_CAP_EXCEEDED")
+        status = "READY" if not reasons else ("UNSUPPORTED_DATA_KIND" if not periodic else "AMBIGUOUS")
+        records.append(
+            {
+                "objectId": obj.id,
+                "objectHash": obj.hash,
+                "periodic": periodic,
+                "latticeStatus": lattice_status,
+                "siteCount": int(obj.metadata.get("nAtoms") or 0),
+                "speciesOccupancyStatus": species_status,
+                "disorderStatus": disorder_status,
+                "partialOccupancyStatus": partial_status,
+                "coordinationInputStatus": status,
+                "reasons": sorted(set(reasons)),
+            }
+        )
+    eligible = sum(1 for record in records if record["coordinationInputStatus"] == "READY")
+    if not records:
+        overall = "MISSING_REQUIRED_DATA"
+        reasons = ["PERIODIC_STRUCTURE_REQUIRED"]
+    elif eligible:
+        overall = "READY"
+        reasons = []
+    else:
+        overall = "AMBIGUOUS"
+        reasons = sorted({reason for record in records for reason in record["reasons"]})
+    return {
+        "contractVersion": "1.0",
+        "periodicStructurePresent": any(record["periodic"] for record in records),
+        "eligibleStructureCount": min(eligible, 32),
+        "structures": records[:32],
+        "status": overall,
+        "reasons": reasons,
+    }
 
 
 def _dataset_type(

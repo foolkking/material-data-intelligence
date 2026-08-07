@@ -1,9 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 
+import type { Artifact } from "../../lib/planner-api";
 import type { WorkspacePanel } from "../../lib/workspace-api";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
 import { validateWorkspaceSelectionContext } from "./workspace-selection-contract";
-import { artifactSelectionFromPanel, claimSelection, datasetSampleSelection, evidenceItemSelection, resolvePanelSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
+import { artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleSelection, evidenceItemSelection, resolvePanelSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
 
 const HASH = "a".repeat(64);
 
@@ -73,6 +74,14 @@ describe("Phase 10M-3 exact selection runtime", () => {
       sampleKey: "display-row-0",
     })).toThrowError("SELECTION_SAMPLE_IDENTITY_INVALID");
     expect(() => new WorkspaceSelectionStore(snapshot.workspace, mutate(selection, { datasetVersion: "v2" }))).toThrowError("SELECTION_STALE_DATASET_VERSION");
+  });
+
+  it("binds a coordination site to exact structure and Artifact identities", () => {
+    const snapshot = workspaceSnapshotFixture();
+    const artifact: Artifact = { id: "artifact_coord", artifactId: "artifact_coord", jobId: snapshot.workspace.sourceJobId, type: "table_json", version: "1", name: "coordination.json", sizeBytes: 10, sha256: HASH, metadata: { projectId: snapshot.workspace.projectId } };
+    const selection = coordinationSiteSelection(snapshot.workspace, artifact, { sourceResourceId: "resource_1", structureHash: HASH, siteId: `site:${HASH}:0` });
+    expect(selection).toMatchObject({ primary: { kind: "PERIODIC_SITE", objectId: "resource_1", structureId: HASH, siteId: `site:${HASH}:0`, artifactId: "artifact_coord", artifactChecksum: HASH } });
+    expect(() => coordinationSiteSelection(snapshot.workspace, artifact, { sourceResourceId: "", structureHash: HASH, siteId: `site:${HASH}:0` })).toThrowError("SELECTION_COORDINATION_IDENTITY_INVALID");
   });
 
   it("constructs exact grounded evidence and claim identities without display-label authority", () => {

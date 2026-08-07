@@ -93,6 +93,8 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
             "structure.viewer_scene",
             "structure.viewer_3d",
             "structure.coordination_hist",
+            "structure.coordination_crystalnn",
+            "structure.coordination_voronoinn",
             "structure.xrd",
             "structure.rdf",
         }:

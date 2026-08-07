@@ -18,6 +18,20 @@
 Historical phase planning and evidence are retained below. They are not
 authoritative for future scope when they conflict with `ROADMAP.md`.
 
+Phase 10N-1 coordination contracts and evidence: `phase10n/phase10n1_coordination_contract.md`,
+`phase10n/phase10n1_algorithm_parameter_contract.md`,
+`phase10n/phase10n1_identity_and_provenance.md`,
+`phase10n/phase10n1_artifact_contract.md`,
+`phase10n/phase10n1_registry_profile_planner_integration.md`,
+`phase10n/phase10n1_workspace_selection_interpretation.md`,
+`phase10n/phase10n1_reference_and_tolerance_evidence.md`,
+`phase10n/phase10n1_performance_security_accessibility.md`,
+`phase10n/phase10n1_acceptance_evidence_map.md`, and
+`phase10n/evidence/phase10n1_crystalnn_voronoinn_coordination/`.
+
+N1 implementation status and the next reviewer gate are recorded in
+`phase10n/phase10n1_completion.md` and `phase10n/phase10n2_next_scope.md`.
+
 ## Phase 10N Professional Scientific Completion
 
 Phase 10N-0 is a documentation-only capability audit and scope seal. It adds

@@ -89,6 +89,8 @@ ARTIFACT_PROJECTOR_CONTRACTS: Mapping[tuple[str, str], ArtifactProjectorContract
             ("phase10k3.materials_ml_regression.v1",),
         ),
         ArtifactProjectorContract("structure.summary", "structure_json", "platform.structure.summary", ("platform.structure.summary.v1",)),
+        ArtifactProjectorContract("structure.coordination_crystalnn", "table_json", "phase10n1.crystalnn_coordination", ("phase10n1.crystalnn_coordination.v1",)),
+        ArtifactProjectorContract("structure.coordination_voronoinn", "table_json", "phase10n1.voronoinn_coordination", ("phase10n1.voronoinn_coordination.v1",)),
         ArtifactProjectorContract("phonon.band", "phonon_band_json", "phase10h.phonon", (PHONON_BAND_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.band", "phonon_summary_json", "phase10h.phonon", (PHONON_SUMMARY_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.dos", "phonon_dos_json", "phase10h.phonon", (PHONON_DOS_SCHEMA_VERSION,)),
@@ -333,6 +335,8 @@ def project_artifact(source: InterpretationSource, candidate: ArtifactProjection
         return _project_ml_regression_evaluation(source, candidate)
     if artifact_type == "structure_json" and tool_id == "structure.summary":
         return _project_structure_summary(source, candidate)
+    if artifact_type == "table_json" and tool_id in {"structure.coordination_crystalnn", "structure.coordination_voronoinn"}:
+        return _project_coordination_summary(source, candidate)
     if artifact_type in {"phonon_band_json", "phonon_dos_json", "phonon_band_dos_json", "phonon_summary_json"} and tool_id in {"phonon.band", "phonon.dos", "phonon.band_dos"}:
         return _project_phonon_summary(source, candidate)
     if artifact_type == "volumetric_field_json" and tool_id == "structure.volumetric_data":
@@ -974,6 +978,64 @@ def _project_structure_summary(source: InterpretationSource, candidate: Artifact
         for key, unit in (("a", "angstrom"), ("b", "angstrom"), ("c", "angstrom"), ("volume", "angstrom^3")):
             if key in lattice and _finite(lattice[key]):
                 items.append(_item(source, candidate, f"structure.lattice.{key}", EvidenceKind.scalar, subject, "lattice_parameter", lattice[key], unit=unit, field=f"structures.lattice.{key}", entity=str(record["structureId"])))
+    return items
+
+
+def _project_coordination_summary(source: InterpretationSource, candidate: ArtifactProjectionInput) -> list[ScientificEvidenceItem]:
+    payload = candidate.payload
+    tool_id = str(candidate.tool_call.get("toolId") or candidate.tool_call.get("tool_id") or "")
+    expected_type = "structure.coordination_crystalnn" if tool_id.endswith("crystalnn") else "structure.coordination_voronoinn"
+    if (
+        not isinstance(payload, dict)
+        or payload.get("artifactType") != expected_type
+        or payload.get("schema_version") not in {"phase10n1.crystalnn_coordination.v1", "phase10n1.voronoinn_coordination.v1"}
+        or not isinstance(payload.get("coverage"), dict)
+        or not isinstance(payload.get("siteResults"), list)
+    ):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Coordination Artifact contract is invalid.")
+    coverage = payload["coverage"]
+    required_counts = ("totalSites", "eligibleSites", "successfulSites", "unsupportedSites", "failedSites")
+    if any(not _nonnegative_int(coverage.get(key)) for key in required_counts):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Coordination coverage counts are invalid.")
+    ratio = coverage.get("ratio")
+    if not _finite(ratio) or not 0 <= ratio <= 1:
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Coordination coverage ratio is invalid.")
+    algorithm = payload.get("algorithm")
+    if not isinstance(algorithm, dict) or not _safe_semantic_name(algorithm.get("algorithmId")) or not _safe_semantic_name(algorithm.get("algorithmVersion")):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Coordination algorithm identity is invalid.")
+    scope = payload.get("scope")
+    structure_hash = ""
+    if isinstance(scope, dict):
+        structure_hash = str(scope.get("sourceResourceHash") or "")
+    subject = f"coordination:{algorithm['algorithmId']}"
+    items = [
+        _item(source, candidate, "coordination.algorithm", EvidenceKind.category, subject, "algorithm", algorithm["algorithmId"], field="algorithm.algorithmId", entity=subject),
+        _item(source, candidate, "coordination.coverage", EvidenceKind.scalar, subject, "ratio", ratio, field="coverage.ratio", entity=subject),
+        _item(source, candidate, "coordination.total_sites", EvidenceKind.count, subject, "count", coverage["totalSites"], field="coverage.totalSites", entity=subject),
+        _item(source, candidate, "coordination.successful_sites", EvidenceKind.count, subject, "count", coverage["successfulSites"], field="coverage.successfulSites", entity=subject),
+    ]
+    values: list[float] = []
+    distances: list[float] = []
+    for record in payload["siteResults"][:64]:
+        if not isinstance(record, dict) or not _safe_semantic_name(record.get("siteId")) or record.get("structureHash") != structure_hash:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Coordination site identity is invalid.")
+        value = record.get("coordinationValue")
+        if _finite(value):
+            values.append(float(value))
+        neighbors = record.get("neighbors")
+        if not isinstance(neighbors, list):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Coordination neighbor rows are invalid.")
+        for neighbor in neighbors[:128]:
+            if not isinstance(neighbor, dict) or not _safe_coordination_identity(neighbor.get("neighborIdentity")):
+                raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Coordination neighbor identity is invalid.")
+            distance = neighbor.get("distance")
+            if not _finite(distance) or distance < 0 or neighbor.get("distanceUnit") != "angstrom":
+                raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Coordination distance is invalid.")
+            distances.append(float(distance))
+    if values:
+        items.append(_item(source, candidate, "coordination.value_range", EvidenceKind.range, subject, "coordination_value", None, minimum=min(values), maximum=max(values), field="siteResults.coordinationValue", entity=subject))
+    if distances:
+        items.append(_item(source, candidate, "coordination.distance_range", EvidenceKind.range, subject, "distance", None, minimum=min(distances), maximum=max(distances), unit="angstrom", field="siteResults.neighbors.distance", entity=subject))
     return items
 
 
@@ -1667,6 +1729,10 @@ def _safe_semantic_name(value: Any) -> bool:
         and ">" not in value
         and not _CREDENTIAL_SHAPED.search(value)
     )
+
+
+def _safe_coordination_identity(value: Any) -> bool:
+    return isinstance(value, str) and 1 <= len(value) <= 512 and re.fullmatch(r"[A-Za-z0-9_.:,+-]+", value) is not None
 
 
 def _provider_safe_value(value: Any, *, depth: int = 0) -> bool:

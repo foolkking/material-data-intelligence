@@ -34,6 +34,7 @@ from .pymatviz import (
     ChemSysSunburstAdapter,
     ChemSysTreemapAdapter,
     CoordinationHistAdapter,
+    CrystalNNCoordinationAdapter,
     DensityScatterAdapter,
     ElementsHistAdapter,
     FormulaStatisticsAdapter,
@@ -43,6 +44,7 @@ from .pymatviz import (
     PhononDosAdapter,
     RdfAdapter,
     XrdPatternAdapter,
+    VoronoiNNCoordinationAdapter,
 )
 from .pymatviz.ptable_heatmap import PTableHeatmapAdapter
 from .pymatviz.structure_3d import Structure3DAdapter
@@ -59,6 +61,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     DatasetMaterialsExplorerAdapter.__name__: DatasetMaterialsExplorerAdapter,
     CorrelationAdapter.__name__: CorrelationAdapter,
     CoordinationHistAdapter.__name__: CoordinationHistAdapter,
+    CrystalNNCoordinationAdapter.__name__: CrystalNNCoordinationAdapter,
     DensityScatterAdapter.__name__: DensityScatterAdapter,
     DistributionSummaryAdapter.__name__: DistributionSummaryAdapter,
     ElementsHistAdapter.__name__: ElementsHistAdapter,
@@ -89,6 +92,7 @@ ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
     UncertaintyEvaluationAdapter.__name__: UncertaintyEvaluationAdapter,
     VolumetricDataAdapter.__name__: VolumetricDataAdapter,
     XrdPatternAdapter.__name__: XrdPatternAdapter,
+    VoronoiNNCoordinationAdapter.__name__: VoronoiNNCoordinationAdapter,
     ScatterAdapter.__name__: ScatterAdapter,
 }
 

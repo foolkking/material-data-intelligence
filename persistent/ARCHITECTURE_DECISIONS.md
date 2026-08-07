@@ -4425,3 +4425,13 @@ authorized.
   ToolCall, queue, Adapter, provider, shell, or filesystem authority.
 - Mandatory warnings, limitations, failures, blocked scope, stale state, and
   limiting evidence cannot be removed from finalized snapshots.
+
+## N1-RD001 through N1-RD009 - CrystalNN / VoronoiNN Coordination
+
+- CrystalNN and VoronoiNN remain separate scientific authorities behind registered
+  server-side adapters. Comparison is a deterministic consumer projection only.
+- DataProfile 2.1 is additive and historical 2.0 profiles remain readable.
+- Results bind exact immutable structure hashes, structure-bound site identities,
+  algorithm-qualified periodic neighbor identities and resolved parameter hashes.
+- Existing generic persistence, APIs, migrations and dependency locks are reused;
+  frontend, Workspace, Report, Recipe and LLM do not recompute coordination.

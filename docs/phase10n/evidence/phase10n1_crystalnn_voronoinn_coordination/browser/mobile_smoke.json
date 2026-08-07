@@ -1,0 +1,19 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "oneActiveViewer": true,
+  "activeCanvases": 0,
+  "focusedClose": true,
+  "focusRestored": true,
+  "overflow": {
+    "body": 0,
+    "root": 0
+  },
+  "minTouchTarget": 45,
+  "consoleErrors": [],
+  "pageErrors": [],
+  "externalRequests": [],
+  "contentRequests": 1
+}

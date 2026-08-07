@@ -1459,3 +1459,14 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Eligibility must gate data readiness and scientific validity before Planner
   visibility. AnalysisPlan 0.1/0.2 remains sufficient; no generic DAG change.
 - N0 adds no Adapter, output contract, dependency, runtime permission or LLM path.
+
+# Phase 10N-1 Coordination
+
+- Registry count is 55: the approved additions are
+  `structure.coordination_crystalnn@0.1.0` and
+  `structure.coordination_voronoinn@0.1.0`.
+- Both tools use the locked pymatgen 2026.5.4 API through separate backend
+  Adapters. Their persisted Artifacts retain algorithm-specific semantics,
+  exact structure/site identity and periodic image vectors.
+- CrystalNN/VoronoiNN comparison is a deterministic consumer presentation and
+  is not registered as a third scientific Tool. N2 remains reviewer-gated.

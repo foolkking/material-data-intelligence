@@ -3,9 +3,10 @@
 CrystalNN / VoronoiNN Coordination
 
 ```text
-REVIEWER_GATE
-NOT QUEUED
-NOT EXECUTABLE
+REVIEWER_APPROVAL_GRANTED
+ACTIVE_IMPLEMENTATION_SCOPE
+N1-R0_CONTRACT_CLOSURE_COMPLETED
 ```
 
-No Phase 10N-1 executable task exists.
+The current N1 task remains active until its three-commit exact-SHA lifecycle
+closes. Phase 10N-2 is the next reviewer gate; see `phase10n2_next_scope.md`.

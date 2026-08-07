@@ -430,6 +430,7 @@ class Phase2ProductRuntime:
             )
             plan_source = "deterministic"
         plan_summary = summarize_plan(plan, self.registry)
+        plan_identity = content_hash(stable_json_dumps(plan.model_dump(mode="json")))
         record = JobRunRecord(
             id=job_id,
             project_id=request.projectId,
@@ -485,6 +486,8 @@ class Phase2ProductRuntime:
                     registry_version=self.registry.version,
                     artifact_root=self.artifact_root,
                     tool_call_id=f"tool_call_{index:02d}_{_safe_id(tool.toolId)}",
+                    plan_id=plan_identity,
+                    plan_version=plan.schemaVersion,
                     object_store=dataset.object_store,
                     resource_limits=tool.resourceLimits,
                 )

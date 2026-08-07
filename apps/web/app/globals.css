@@ -664,6 +664,12 @@ button:disabled {
 .workspace-table-scroll { max-width: 100%; overflow: auto; }
 .workspace-table-scroll table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .workspace-table-scroll th, .workspace-table-scroll td { border: 1px solid var(--border); padding: 6px 8px; text-align: left; }
+.coordination-result > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.coordination-result h5, .coordination-result h6 { margin: 0 0 8px; }
+.coordination-algorithm-switch { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.coordination-algorithm-switch button, .coordination-site-button { min-width: 45px; min-height: 45px; }
+.coordination-result tr.active { background: #edf7ef; }
+.coordination-result td code, .coordination-result dd code { overflow-wrap: anywhere; }
 
 .workspace-report-composer,
 .workspace-report-source-picker,
@@ -1178,8 +1184,8 @@ button:disabled {
   }
 
   .workspace-header-actions button {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 45px;
+    min-height: 45px;
     flex: 1;
   }
 
@@ -1275,6 +1281,11 @@ button:disabled {
     border-left: 0;
     border-radius: 8px 8px 0 0;
     box-shadow: 0 -10px 30px rgba(18, 27, 39, 0.16);
+  }
+
+  .scientific-workspace button {
+    min-width: 45px;
+    min-height: 45px;
   }
 }
 
@@ -3187,4 +3198,11 @@ pre {
   .band-bz-panel, .band-bz-shared-inspector { width: 100%; }
   .band-bz-linked-view .mobile-hidden { display: none; }
   .band-bz-chart { min-height: 220px; }
+}
+
+@media (max-width: 760px) {
+  .scientific-workspace button {
+    min-width: 45px;
+    min-height: 45px;
+  }
 }

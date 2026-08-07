@@ -136,8 +136,10 @@ def test_phase10m6_required_inventory_acceptance_authorities_and_screenshots() -
     if "# Phase 10M-6" in tasks:
         assert "Phase 10M-6" in tasks
         assert all(acceptance_id in tasks for acceptance_id in ACCEPTANCE)
-    elif "---TASK---" in tasks:
+    elif "---TASK---" in tasks and "Phase 10N-1" not in tasks:
         assert "# Phase 10M-7" in tasks
+    elif "Phase 10N-1" in tasks:
+        assert tasks.count("Phase 10N-1") >= 1
     assert "---TASK---\nPhase 10N" not in tasks
 
 

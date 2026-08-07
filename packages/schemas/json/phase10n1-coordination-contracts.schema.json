@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdi.local/schemas/phase10n1-coordination-contracts.schema.json",
+  "title": "Phase 10N-1 Coordination Contracts",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/crystalnnArtifact" },
+    { "$ref": "#/$defs/voronoinnArtifact" }
+  ],
+  "$defs": {
+    "commonLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_structures": { "type": "integer", "minimum": 1, "maximum": 32, "default": 32 },
+        "max_sites": { "type": "integer", "minimum": 1, "maximum": 5000, "default": 5000 },
+        "max_neighbors_per_site": { "type": "integer", "minimum": 1, "maximum": 1000, "default": 1000 },
+        "max_retained_rows": { "type": "integer", "minimum": 1, "maximum": 50000, "default": 50000 }
+      }
+    },
+    "crystalnnParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "weighted_cn": { "type": "boolean", "default": true },
+        "distance_cutoff_low": { "type": "number", "minimum": 0, "maximum": 5, "default": 0.5 },
+        "distance_cutoff_high": { "type": "number", "minimum": 0, "maximum": 5, "default": 1.0 },
+        "x_diff_weight": { "type": "number", "minimum": 0, "maximum": 10, "default": 3.0 },
+        "porous_adjustment": { "type": "boolean", "default": true },
+        "search_cutoff_angstrom": { "type": "number", "minimum": 1, "maximum": 20, "default": 7.0 },
+        "max_structures": { "type": "integer", "minimum": 1, "maximum": 32, "default": 32 },
+        "max_sites": { "type": "integer", "minimum": 1, "maximum": 5000, "default": 5000 },
+        "max_neighbors_per_site": { "type": "integer", "minimum": 1, "maximum": 1000, "default": 1000 },
+        "max_retained_rows": { "type": "integer", "minimum": 1, "maximum": 50000, "default": 50000 }
+      }
+    },
+    "voronoinnParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tol": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.0 },
+        "cutoff_angstrom": { "type": "number", "minimum": 1, "maximum": 20, "default": 13.0 },
+        "allow_pathological": { "type": "boolean", "default": false },
+        "max_structures": { "type": "integer", "minimum": 1, "maximum": 32, "default": 32 },
+        "max_sites": { "type": "integer", "minimum": 1, "maximum": 5000, "default": 5000 },
+        "max_neighbors_per_site": { "type": "integer", "minimum": 1, "maximum": 1000, "default": 1000 },
+        "max_retained_rows": { "type": "integer", "minimum": 1, "maximum": 50000, "default": 50000 }
+      }
+    },
+    "periodicImage": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "neighbor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["neighborIdentity", "neighborSiteId", "neighborSiteIndex", "periodicImage", "distance", "distanceUnit", "weight"],
+      "properties": {
+        "neighborIdentity": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "neighborSiteId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "neighborSiteIndex": { "type": "integer", "minimum": 0 },
+        "periodicImage": { "$ref": "#/$defs/periodicImage" },
+        "distance": { "type": "number", "minimum": 0 },
+        "distanceUnit": { "const": "angstrom" },
+        "weight": { "type": "number", "minimum": 0 }
+      }
+    },
+    "siteResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["structureHash", "siteId", "siteIndex", "species", "fractionalCoordinates", "coordinationSemantics", "coordinationValue", "neighborCount", "neighbors"],
+      "properties": {
+        "structureHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "siteId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "siteIndex": { "type": "integer", "minimum": 0 },
+        "species": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "fractionalCoordinates": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+        "coordinationSemantics": { "enum": ["crystalnn_weight_sum", "voronoinn_solid_angle_weight_sum"] },
+        "coordinationValue": { "type": "number", "minimum": 0 },
+        "neighborCount": { "type": "integer", "minimum": 0 },
+        "neighbors": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/neighbor" } }
+      }
+    },
+    "commonArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactType", "schema_version", "tool", "algorithm", "library", "resolvedParameters", "fixedParameters", "parameterHash", "scope", "structures", "siteResults", "coverage", "warnings", "unsupportedSites", "runtimeDiagnostics", "provenance", "limits", "security"],
+      "properties": {
+        "artifactType": { "type": "string" },
+        "schema_version": { "type": "string" },
+        "tool": { "type": "object" },
+        "algorithm": { "type": "object" },
+        "library": { "type": "object" },
+        "resolvedParameters": { "type": "object" },
+        "fixedParameters": { "type": "object" },
+        "parameterHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "scope": { "type": "object" },
+        "structures": { "type": "array", "minItems": 1, "maxItems": 32 },
+        "siteResults": { "type": "array", "maxItems": 5000, "items": { "$ref": "#/$defs/siteResult" } },
+        "coverage": { "type": "object" },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "unsupportedSites": { "type": "array", "items": { "type": "object" } },
+        "runtimeDiagnostics": { "type": "object" },
+        "provenance": { "type": "object" },
+        "limits": { "type": "object" },
+        "security": { "type": "object" }
+      }
+    },
+    "crystalnnArtifact": {
+      "allOf": [
+        { "$ref": "#/$defs/commonArtifact" },
+        { "properties": { "artifactType": { "const": "structure.coordination_crystalnn" }, "schema_version": { "const": "phase10n1.crystalnn_coordination.v1" }, "resolvedParameters": { "$ref": "#/$defs/crystalnnParams" } } }
+      ]
+    },
+    "voronoinnArtifact": {
+      "allOf": [
+        { "$ref": "#/$defs/commonArtifact" },
+        { "properties": { "artifactType": { "const": "structure.coordination_voronoinn" }, "schema_version": { "const": "phase10n1.voronoinn_coordination.v1" }, "resolvedParameters": { "$ref": "#/$defs/voronoinnParams" } } }
+      ]
+    }
+  }
+}

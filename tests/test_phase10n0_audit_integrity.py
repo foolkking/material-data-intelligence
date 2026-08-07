@@ -58,8 +58,14 @@ def test_n0_registry_has_no_extra_canonical_ids() -> None:
 
 def test_n0_does_not_admit_an_executable_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert "---TASK---" not in tasks
-    assert "Phase 10N-1" not in tasks
+    # N0 itself never admitted a task; the corrective N1 authorization may
+    # subsequently admit the sole N1 task while N2 remains a reviewer gate.
+    assert tasks.count("---TASK---") == tasks.count("---END---")
+    assert tasks.count("---TASK---") in {0, 1}
+    if "Phase 10N-1" in tasks:
+        assert "Phase 10N-2:\nREVIEWER_GATE" in tasks
+    else:
+        assert "Phase 10N-2" not in tasks
 
 
 def test_n0_decision_registry_is_contiguous_and_review_gated() -> None:
@@ -123,4 +129,7 @@ def test_n0_required_docs_are_present_and_scope_is_non_executable() -> None:
     }
     assert required <= {path.name for path in DOCS.glob("*.md")}
     next_scope = (DOCS / "phase10n1_next_scope.md").read_text(encoding="utf-8")
-    assert "REVIEWER_GATE" in next_scope and "NOT QUEUED" in next_scope and "NOT EXECUTABLE" in next_scope
+    if "ACTIVE_IMPLEMENTATION_SCOPE" in next_scope:
+        assert "REVIEWER_APPROVAL_GRANTED" in next_scope
+    else:
+        assert "REVIEWER_GATE" in next_scope and "NOT QUEUED" in next_scope and "NOT EXECUTABLE" in next_scope

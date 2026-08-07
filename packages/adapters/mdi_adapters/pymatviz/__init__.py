@@ -3,6 +3,7 @@
 from .chem_sys_treemap import ChemSysTreemapAdapter
 from .chem_sys_sunburst import ChemSysSunburstAdapter
 from .coordination_hist import CoordinationHistAdapter
+from .coordination_nn import CrystalNNCoordinationAdapter, VoronoiNNCoordinationAdapter
 from .density_scatter import DensityScatterAdapter
 from .elements_hist import ElementsHistAdapter
 from .formula_statistics import FormulaStatisticsAdapter
@@ -19,6 +20,7 @@ __all__ = [
     "ChemSysSunburstAdapter",
     "ChemSysTreemapAdapter",
     "CoordinationHistAdapter",
+    "CrystalNNCoordinationAdapter",
     "DensityScatterAdapter",
     "ElementsHistAdapter",
     "FormulaStatisticsAdapter",
@@ -30,4 +32,5 @@ __all__ = [
     "RdfAdapter",
     "Structure3DAdapter",
     "XrdPatternAdapter",
+    "VoronoiNNCoordinationAdapter",
 ]

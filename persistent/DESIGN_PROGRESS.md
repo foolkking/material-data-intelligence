@@ -1996,3 +1996,18 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Workspace preview/finalize/history/Recipe/JSON/Markdown UI and APIs are implemented.
 - Corrected implementation `f294fbd305385eb3fd129ab1f815daaca03d15fa` passed CI `30990265619`, including 40 service tests with zero skipped.
 - Completion-record exact-SHA CI and verified queue archive remain; Phase 10M-6 is reviewer-gated.
+
+## 2026-08-06 Phase 10N-1 CrystalNN / VoronoiNN Coordination
+
+- N1-R0 exact contract closure is implemented: two stable registry tools, additive
+  DataProfile 2.1 readiness, strict algorithm-specific parameters and separate
+  coordination Artifact contracts.
+- Backend Adapters execute locked pymatgen CrystalNN and VoronoiNN independently;
+  periodic-image identity, checksums, bounded coverage and algorithm-qualified
+  semantics are persisted through existing Runtime/Artifact authorities.
+- Workspace coordination rendering is metadata-first and inert, with deterministic
+  consumer-side comparison, exact site selection, Inspector and table fallback.
+- Local closure: 1175 backend tests passed, 412 frontend tests passed, typecheck,
+  build, lock check, N1 browser Chromium/Firefox/WebKit/mobile fixture replay and
+  evidence integrity passed. Docker is unavailable locally; service-backed closure
+  is an exact-SHA CI gate.

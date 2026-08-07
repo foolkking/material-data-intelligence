@@ -172,8 +172,8 @@ class AnalysisIntentValidator:
         expected_hash = compute_analysis_intent_hash(validated)
         if validated.intentHash != expected_hash or validated.intentId != deterministic_intent_id(expected_hash):
             raise AnalysisIntentError("AnalysisIntent identity does not match canonical content.", code="INTENT_HASH_MISMATCH")
-        if profile.profileContractVersion != "2.0" or not profile.semanticHash:
-            raise AnalysisIntentError("DataProfile 2.0 semantic identity is required.", code="PROFILE_2_REQUIRED")
+        if profile.profileContractVersion not in {"2.0", "2.1"} or not profile.semanticHash:
+            raise AnalysisIntentError("DataProfile 2.0 or 2.1 semantic identity is required.", code="PROFILE_2_REQUIRED")
         if validated.datasetId != profile.datasetId or validated.profileId != profile.profileId:
             raise AnalysisIntentError("AnalysisIntent dataset/profile identity is stale.", code="STALE_PROFILE")
         if validated.dataScope.profileSemanticHash != profile.semanticHash:
@@ -759,8 +759,8 @@ def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: D
 def _validate_request_identity(request: AnalysisIntentRequest, profile: DataProfile) -> None:
     if request.dataset_id != profile.datasetId or request.profile_id != profile.profileId:
         raise AnalysisIntentError("Requested dataset/profile does not match the exact profile.", code="STALE_PROFILE")
-    if profile.profileContractVersion != "2.0" or not profile.semanticHash:
-        raise AnalysisIntentError("DataProfile 2.0 semantic identity is required.", code="PROFILE_2_REQUIRED")
+    if profile.profileContractVersion not in {"2.0", "2.1"} or not profile.semanticHash:
+        raise AnalysisIntentError("DataProfile 2.0 or 2.1 semantic identity is required.", code="PROFILE_2_REQUIRED")
     if len(request.selected_resource_ids) > ANALYSIS_INTENT_MAX_RESOURCE_REFS:
         raise AnalysisIntentError("Selected resources exceed the cap.", code="INTENT_RESOURCE_CAP_EXCEEDED")
     if len(set(request.selected_resource_ids)) != len(request.selected_resource_ids):

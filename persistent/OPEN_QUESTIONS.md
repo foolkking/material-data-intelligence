@@ -1132,3 +1132,12 @@ unless also listed in Active Questions. Future-only topics are governed by
 - Phase 10M-6 remains reviewer-gated for save/reload/recovery/responsive closure; M5 session drafts intentionally have no refresh-recovery promise.
 - PDF, DOCX, LaTeX, PowerPoint, remote publishing, multi-Job aggregation, and Recipe execution remain outside M5.
 - Physical assistive-technology and broad physical-device testing remain outside automated browser evidence.
+
+## Phase 10N-1 Closure
+
+- CrystalNN and VoronoiNN are separate registered tools with exact source and
+  periodic-neighbor identity. No algorithm fallback or result substitution is
+  allowed.
+- Local environment classification, coordination polyhedra, experimental XRD,
+  trajectory analytics, and electronic Band/DOS remain owned by later reviewer
+  gates. No implementation-critical N1 question remains open.

@@ -143,6 +143,19 @@ jobs:
             --output-dir "${RUNNER_TEMP}/phase10m4-browser-replay"
         working-directory: apps/web
 
+      - name: Replay Phase 10N-1 coordination browser evidence
+        env:
+          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
+          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
+          MDI_PHASE10M4_EVIDENCE_PORT: "3229"
+          MDI_PHASE10M4_HEADLESS: "false"
+        run: |
+          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures --n1-coordination-only
+          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
+            --n1-coordination-only \
+            --output-dir "${RUNNER_TEMP}/phase10n1-coordination-browser-replay"
+        working-directory: apps/web
+
       - name: Replay Phase 10M-5 Report and Recipe browser evidence
         env:
           DEEPSEEK_KEY: ""
@@ -376,7 +389,7 @@ jobs:
       - name: Run integration tests (capture output)
         run: |
           set +e
-          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py tests/integration/test_phase10m1_workspace_service_backed.py tests/integration/test_phase10m5_report_recipe_service_backed.py tests/integration/test_phase10m6_workspace_recovery_service_backed.py tests/integration/test_phase10m7_workspace_integration_service_backed.py -vv -m integration \
+          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py tests/integration/test_phase10m1_workspace_service_backed.py tests/integration/test_phase10m5_report_recipe_service_backed.py tests/integration/test_phase10m6_workspace_recovery_service_backed.py tests/integration/test_phase10m7_workspace_integration_service_backed.py tests/integration/test_phase10n1_coordination_service_backed.py -vv -m integration \
             --tb=long --color=yes 2>&1 | tee integration.log
           PYTEST_EXIT=${PIPESTATUS[0]}
           set -e
@@ -424,10 +437,10 @@ jobs:
           fi
 
           # P0: every explicitly selected integration test must be collected and pass.
-          if [ "${PASSED:-0}" -lt 42 ]; then
+          if [ "${PASSED:-0}" -lt 43 ]; then
             echo ""
-            echo "ERROR: Only ${PASSED:-0}/42 integration tests passed."
-            echo "Expected: at least 42 passed (M6 baseline 41 plus M7 closure)."
+            echo "ERROR: Only ${PASSED:-0}/43 integration tests passed."
+            echo "Expected: at least 43 passed (M7 baseline 42 plus N1 coordination closure)."
             exit 1
           fi
 
@@ -441,6 +454,7 @@ jobs:
             test_phase10m5_postgres_redis_minio_report_recipe_composition \
             test_phase10m6_postgres_redis_minio_workspace_save_reload_recovery \
             test_phase10m7_postgres_redis_minio_workspace_integration_closure \
+            test_phase10n1_postgres_redis_minio_coordination_artifact_closure \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[dataset\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[structure\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[materials_ml\]' \

@@ -2014,3 +2014,18 @@ implements and validates those contracts, current `DataProfile 2.0`, Artifact,
 Workspace, Selection, Interpretation, Report and Recipe schemas remain the
 only production authority. Historical 2.0 Profiles remain readable; missing
 future facts must produce typed ineligibility rather than inferred values.
+
+## Phase 10N-1 Coordination Contracts
+
+Phase 10N-1 adds an additive `DataProfile 2.1` readiness representation and two
+algorithm-specific coordination Artifact contracts. The registered tools are
+`structure.coordination_crystalnn@0.1.0` and
+`structure.coordination_voronoinn@0.1.0`. Each result retains the exact source
+resource and structure hash, site identity, periodic image vector, algorithm
+metadata, resolved parameter hash, coverage, warnings and checksum. The two
+algorithms remain separate scientific authorities; comparison is a deterministic
+consumer presentation and is not a third Tool.
+
+The contracts use existing generic Plan, Job, ToolCall, Artifact, MinIO,
+Workspace, Selection, Report and Recipe persistence. No table, column,
+migration, public API family, dependency or lockfile change is introduced.

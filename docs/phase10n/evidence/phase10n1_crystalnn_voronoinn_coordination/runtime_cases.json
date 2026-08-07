@@ -1,0 +1,9 @@
+{
+  "adapterAuthority": true,
+  "algorithmIsolation": true,
+  "arbitraryFilesystem": false,
+  "fallback": false,
+  "network": false,
+  "resultSubstitution": false,
+  "shell": false
+}

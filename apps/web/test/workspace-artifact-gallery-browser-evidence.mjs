@@ -13,6 +13,7 @@ const ORIGIN = `http://127.0.0.1:${PORT}`;
 const API_ORIGIN = "http://localhost:8000";
 const HASH = "a".repeat(64);
 const CHECK_ONLY = process.argv.includes("--validate-fixtures");
+const N1_ONLY = process.argv.includes("--n1-coordination-only");
 
 async function main() {
   const artifacts = await artifactFixtures();
@@ -59,6 +60,22 @@ async function runDesktop(browser, browserName, artifacts) {
   if ((await page.locator(".workspace-artifact-card").count()) !== artifacts.length) throw new Error(`${browserName}: Gallery inventory mismatch`);
   await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_gallery.png`), fullPage: true });
 
+  if (N1_ONLY) {
+    const cases = {};
+    for (const name of ["CrystalNN Coordination", "VoronoiNN Coordination"]) {
+      const before = calls.filter((call) => call.includes("/content")).length;
+      await page.getByRole("button", { name: `Open ${name}` }).click({ force: true });
+      await page.getByText(/bounded payload record/u).waitFor({ timeout: 30000 });
+      cases[name] = await waitForFormalRenderer(page, name);
+      if (calls.filter((call) => call.includes("/content")).length <= before) throw new Error(`${browserName}: ${name} did not lazy-load a payload`);
+      await page.getByRole("button", { name: "Close viewer" }).click({ force: true });
+    }
+    const overflow = await page.evaluate(() => ({ body: document.body.scrollWidth - document.body.clientWidth, root: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
+    if (audit.consoleErrors.length || audit.pageErrors.length || audit.failedResponses.length || audit.externalRequests.length) throw new Error(`${browserName}: N1 browser audit failed ${JSON.stringify(audit)}`);
+    await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_coordination.png`), fullPage: true });
+    await context.close();
+    return { browserName, n1Coordination: true, cases, overflow, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, externalRequests: audit.externalRequests };
+  }
   const exactReferenceNavigation = await exerciseExactReferenceNavigation(page, artifacts[0], browserName);
   const partialWarning = page.locator(".workspace-panel-warning").filter({ hasText: "successful source branches" });
   if (!(await partialWarning.isVisible())) throw new Error(`${browserName}: partial-result isolation warning is absent`);
@@ -141,6 +158,15 @@ async function waitForFormalRenderer(page, name) {
   if (name === "Dataset Explorer") await active.getByTestId("dataset-materials-explorer").waitFor({ timeout: 30000 });
   else if (name === "Regression Evaluation") await active.getByTestId("materials-ml-evaluation").waitFor({ timeout: 30000 });
   else if (name === "Composition Space") await active.getByTestId("composition-space-explorer").waitFor({ timeout: 30000 });
+  else if (name === "CrystalNN Coordination" || name === "VoronoiNN Coordination") {
+    const panel = active.getByTestId("coordination-result-panel");
+    await panel.waitFor({ timeout: 30000 });
+    await panel.getByText("not definitive chemical bonding").waitFor({ timeout: 30000 });
+    await panel.getByRole("button", { name: /CrystalNN|VoronoiNN/u }).first().focus();
+    await page.keyboard.press("Tab");
+    await panel.getByRole("button", { name: "0" }).click();
+    await panel.getByRole("region", { name: "Selected site coordination Inspector" }).waitFor({ timeout: 30000 });
+  }
   else if (name === "Structure Scene") {
     await active.getByTestId("viewer-scene-renderer-state").filter({ hasText: "rendered" }).waitFor({ timeout: 30000 });
     await active.locator("[data-testid=viewer-scene-renderer-valid] canvas").waitFor({ timeout: 30000 });
@@ -188,9 +214,9 @@ async function runMobile(browser, artifacts) {
   await page.goto(`${ORIGIN}/workspaces/workspace_gallery?panel=panel_scientific_result`, { waitUntil: "networkidle" });
   await page.getByTestId("workspace-artifact-gallery").waitFor();
   await page.locator(".workspace-artifact-card").nth(artifacts.length - 1).waitFor({ timeout: 30000 });
-  await page.getByRole("button", { name: "Open Structure Scene" }).click();
+  await page.getByRole("button", { name: `Open ${N1_ONLY ? "CrystalNN Coordination" : "Structure Scene"}` }).click({ force: true });
   await page.getByText(/bounded payload record/u).waitFor({ timeout: 30000 });
-  await waitForFormalRenderer(page, "Structure Scene");
+  await waitForFormalRenderer(page, N1_ONLY ? "CrystalNN Coordination" : "Structure Scene");
   const activeCanvases = await page.locator(".workspace-active-artifact canvas").count();
   await page.getByRole("button", { name: "Inspector" }).click();
   const inspector = page.getByRole("dialog", { name: "Context inspector" });
@@ -200,8 +226,11 @@ async function runMobile(browser, artifacts) {
   await page.keyboard.press("Escape");
   const focusRestored = await page.getByRole("button", { name: "Inspector" }).evaluate((element) => element === document.activeElement);
   const overflow = await page.evaluate(() => ({ body: document.body.scrollWidth - document.body.clientWidth, root: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
-  const minTouchTarget = await page.locator(".scientific-workspace button:visible").evaluateAll((items) => Math.min(...items.map((item) => Math.min(item.getBoundingClientRect().width, item.getBoundingClientRect().height))));
-  if (activeCanvases > 1 || overflow.body > 0 || overflow.root > 0 || minTouchTarget < 44) throw new Error(`mobile lifecycle/responsive gate failed ${JSON.stringify({ activeCanvases, overflow, minTouchTarget })}`);
+  const touchAudit = await page.locator(".scientific-workspace button:visible").evaluateAll((items) => items
+    .map((item) => ({ label: item.getAttribute("aria-label") || item.textContent?.trim() || item.className, width: item.getBoundingClientRect().width, height: item.getBoundingClientRect().height }))
+    .sort((left, right) => Math.min(left.width, left.height) - Math.min(right.width, right.height))[0]);
+  const minTouchTarget = Math.min(touchAudit.width, touchAudit.height);
+  if (activeCanvases > 1 || overflow.body > 0 || overflow.root > 0 || minTouchTarget < 44) throw new Error(`mobile lifecycle/responsive gate failed ${JSON.stringify({ activeCanvases, overflow, minTouchTarget, touchAudit })}`);
   if (audit.consoleErrors.length || audit.pageErrors.length || audit.failedResponses.length || audit.externalRequests.length) throw new Error(`mobile browser audit failed ${JSON.stringify(audit)}`);
   await context.close();
   return { viewport: [390, 844], oneActiveViewer: activeCanvases <= 1, activeCanvases, focusedClose, focusRestored, overflow, minTouchTarget, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, externalRequests: audit.externalRequests, contentRequests: calls.filter((call) => call.includes("/content")).length };
@@ -324,6 +353,10 @@ async function artifactFixtures() {
     ["kpath", "kpath_json", "K Path", "call_bz", "docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/kpath.json"],
     ["bz_manifest", "brillouin_zone_manifest_json", "BZ Manifest", "call_bz", "docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/manifest.json"],
   ];
+  if (N1_ONLY) sources.splice(3, 0,
+    ["coordination_crystalnn", "table_json", "CrystalNN Coordination", "call_coordination_crystalnn", "docs/phase10n/evidence/phase10n1_crystalnn_voronoinn_coordination/artifact_contract_samples/crystalnn_coordination.json"],
+    ["coordination_voronoinn", "table_json", "VoronoiNN Coordination", "call_coordination_voronoinn", "docs/phase10n/evidence/phase10n1_crystalnn_voronoinn_coordination/artifact_contract_samples/voronoinn_coordination.json"],
+  );
   const items = [];
   for (const [id, type, name, toolCallId, relative] of sources) items.push(artifact(id, type, name, toolCallId, await readFile(path.join(ROOT, relative))));
   const volumeFixture = JSON.parse(await readFile(path.join(ROOT, "docs/phase10j/fixtures/volumetric_contract/cubic_constant_scalar.json"), "utf8"));

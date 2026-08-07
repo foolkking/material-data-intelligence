@@ -1,0 +1,18 @@
+{
+  "INACTIVE_COORDINATION_PAYLOAD_REQUESTS": 0,
+  "INITIAL_HEAVY_PAYLOAD_REQUESTS": 0,
+  "STALE_RESPONSE_STATE_COMMITS": 0,
+  "caps": {
+    "artifactBytes": 16777216,
+    "neighborsPerSite": 1000,
+    "retainedRows": 50000,
+    "sites": 5000,
+    "structures": 32,
+    "timeoutSeconds": 120
+  },
+  "crystalnnPayloadBytes": 6270,
+  "crystalnnSeconds": 0.027882900001714006,
+  "scope": "development evidence, not production capacity",
+  "voronoinnPayloadBytes": 14147,
+  "voronoinnSeconds": 0.050415300007443875
+}

@@ -1,0 +1,12 @@
+{
+  "boundedFacts": [
+    "algorithm",
+    "coverage",
+    "coordination range",
+    "distance range",
+    "warnings"
+  ],
+  "fullNeighborPayloadVisibleToLlm": false,
+  "generatedBondClaims": 0,
+  "generatedScientificValues": 0
+}

@@ -70,6 +70,8 @@ class ToolExecutionContext:
     registry_version: str
     artifact_root: Path
     tool_call_id: str = "tool_call_local"
+    plan_id: str | None = None
+    plan_version: str | None = None
     object_store: Mapping[str, Any] = field(default_factory=dict)
     resource_limits: dict[str, int] = field(default_factory=dict)
 

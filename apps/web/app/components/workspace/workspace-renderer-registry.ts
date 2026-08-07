@@ -28,7 +28,7 @@ export type RendererComponent =
   | "GENERIC_PLOT" | "GENERIC_TABLE" | "TEXT" | "JSON" | "STATIC_METADATA"
   | "DATASET" | "ML" | "COMPOSITION" | "STRUCTURE" | "TRAJECTORY"
   | "PHONON_BAND" | "PHONON_DOS" | "PHONON_COMBINED" | "PHONON_ANIMATION"
-  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "DOWNLOAD_ONLY";
+  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "COORDINATION" | "DOWNLOAD_ONLY";
 export type RendererPayloadMode = "JSON" | "TEXT" | "BUNDLE" | "METADATA_ONLY" | "DOWNLOAD_ONLY";
 
 export type WorkspaceRendererDescriptor = Readonly<{
@@ -163,7 +163,7 @@ export function resolveLoadedArtifactRenderer(artifact: Artifact): RendererResol
   const base = resolveArtifactRenderer(artifact);
   if (!base.descriptor || artifact.type !== "table_json") return base;
   const payload = asRecord(artifact.content ?? artifact.payload);
-  const schema = typeof payload?.schemaVersion === "string" ? payload.schemaVersion : "";
+  const schema = typeof payload?.schemaVersion === "string" ? payload.schemaVersion : typeof payload?.schema_version === "string" ? payload.schema_version : "";
   const artifactType = typeof payload?.artifactType === "string" ? payload.artifactType : "";
   const product = PRODUCT_RENDERERS.get(`${schema}\u0000${artifactType}`);
   if (!product) return base;
@@ -176,6 +176,8 @@ const PRODUCT_RENDERERS = new Map<string, Partial<WorkspaceRendererDescriptor>>(
   ["phase10k3.materials_ml_regression.v1\u0000ml.regression_evaluation", { component: "ML", rendererContract: "workspace.materials-ml", selectionInputs: DATASET_SELECTIONS, selectionOutputs: ARTIFACT_SELECTION }],
   ["phase10k3.materials_ml_uncertainty.v1\u0000ml.uncertainty_evaluation", { component: "ML", rendererContract: "workspace.materials-ml", selectionInputs: DATASET_SELECTIONS, selectionOutputs: ARTIFACT_SELECTION }],
   ["phase10k3.materials_ml_classification.v1\u0000ml.classification_evaluation", { component: "ML", rendererContract: "workspace.materials-ml", selectionInputs: DATASET_SELECTIONS, selectionOutputs: ARTIFACT_SELECTION }],
+  ["phase10n1.crystalnn_coordination.v1\u0000structure.coordination_crystalnn", { component: "COORDINATION", rendererContract: "workspace.coordination", selectionInputs: ["PERIODIC_SITE", "ARTIFACT"], selectionOutputs: ["PERIODIC_SITE", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 50_000 }],
+  ["phase10n1.voronoinn_coordination.v1\u0000structure.coordination_voronoinn", { component: "COORDINATION", rendererContract: "workspace.coordination", selectionInputs: ["PERIODIC_SITE", "ARTIFACT"], selectionOutputs: ["PERIODIC_SITE", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 50_000 }],
 ]);
 
 export function artifactIdentity(artifact: Artifact): string | null { return artifact.artifactId ?? artifact.id ?? null; }

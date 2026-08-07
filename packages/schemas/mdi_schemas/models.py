@@ -371,6 +371,28 @@ class DataProfileCoverage(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class DataProfileCoordinationStructureReadiness(BaseModel):
+    objectId: str
+    objectHash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    periodic: bool
+    latticeStatus: Literal["VALID", "MISSING", "INVALID"]
+    siteCount: int = Field(ge=0)
+    speciesOccupancyStatus: Literal["ORDERED_FULL_OCCUPANCY", "DISORDERED", "PARTIAL_OCCUPANCY", "UNSUPPORTED"]
+    disorderStatus: Literal["ORDERED", "DISORDERED", "UNKNOWN"]
+    partialOccupancyStatus: Literal["ABSENT", "PRESENT", "UNKNOWN"]
+    coordinationInputStatus: Literal["READY", "MISSING_REQUIRED_DATA", "AMBIGUOUS", "UNSUPPORTED_DATA_KIND"]
+    reasons: list[str] = Field(default_factory=list)
+
+
+class DataProfileCoordinationReadiness(BaseModel):
+    contractVersion: Literal["1.0"] = "1.0"
+    periodicStructurePresent: bool
+    eligibleStructureCount: int = Field(ge=0, le=32)
+    structures: list[DataProfileCoordinationStructureReadiness] = Field(default_factory=list, max_length=32)
+    status: Literal["READY", "MISSING_REQUIRED_DATA", "AMBIGUOUS", "UNSUPPORTED_DATA_KIND"]
+    reasons: list[str] = Field(default_factory=list)
+
+
 class DataProfile(BaseModel):
     schemaVersion: Literal["0.1"] = "0.1"
     profileId: str
@@ -385,7 +407,7 @@ class DataProfile(BaseModel):
     trajectorySummary: dict[str, Any] | None = None
     qualityIssues: list[dict[str, Any]] = Field(default_factory=list)
     recommendedTasks: list[dict[str, Any]] = Field(default_factory=list)
-    profileContractVersion: Literal["2.0"] | None = None
+    profileContractVersion: Literal["2.0", "2.1"] | None = None
     semanticRulesVersion: str | None = None
     semanticHash: str | None = None
     semanticColumns: list[DataProfileSemanticColumn] = Field(default_factory=list)
@@ -394,6 +416,7 @@ class DataProfile(BaseModel):
     analysisReadiness: list[DataProfileAnalysisReadiness] = Field(default_factory=list)
     sampleIdentity: DataProfileSampleIdentity | None = None
     profileCoverage: DataProfileCoverage | None = None
+    coordinationReadiness: DataProfileCoordinationReadiness | None = None
     createdAt: str
 
 

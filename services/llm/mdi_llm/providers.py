@@ -179,6 +179,8 @@ class MockLLMProvider:
                     {"name": "brillouin_zone_manifest.json", "type": "brillouin_zone_manifest_json", "fromStepId": "step_001"},
                 ],
             )
+        elif coordination_tools := _select_coordination_nn_tools(request, tools, data_profile):
+            plan = _mock_coordination_nn_plan(request, data_profile, coordination_tools)
         elif _should_generate_viewer_scene(request, tools, data_profile):
             plan = _mock_structure_plan(
                 request,
@@ -1370,6 +1372,92 @@ def _mock_structure_plan(
     return _single_step_plan(request, step, expected)
 
 
+def _select_coordination_nn_tools(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> list[str]:
+    if not _has_structure_input(data_profile):
+        return []
+    prompt = request.user_prompt.lower()
+    crystal = "crystalnn" in prompt
+    voronoi = "voronoinn" in prompt or "voronoi nn" in prompt
+    comparison = any(marker in prompt for marker in ("compare", "comparison", "versus", " vs "))
+    selected: list[str] = []
+    if crystal or comparison:
+        selected.append("structure.coordination_crystalnn")
+    if voronoi or comparison:
+        selected.append("structure.coordination_voronoinn")
+    return [tool_id for tool_id in selected if _has_tool(tools, tool_id)]
+
+
+def _mock_coordination_nn_plan(
+    request: PlannerRequest,
+    data_profile: DataProfile,
+    tool_ids: list[str],
+) -> dict[str, Any]:
+    defaults = {
+        "structure.coordination_crystalnn": {
+            "weighted_cn": True,
+            "distance_cutoff_low": 0.5,
+            "distance_cutoff_high": 1.0,
+            "x_diff_weight": 3.0,
+            "porous_adjustment": True,
+            "search_cutoff_angstrom": 7.0,
+            "max_structures": 32,
+            "max_sites": 5000,
+            "max_neighbors_per_site": 1000,
+            "max_retained_rows": 50000,
+        },
+        "structure.coordination_voronoinn": {
+            "tol": 0.0,
+            "cutoff_angstrom": 13.0,
+            "allow_pathological": False,
+            "max_structures": 32,
+            "max_sites": 5000,
+            "max_neighbors_per_site": 1000,
+            "max_retained_rows": 50000,
+        },
+    }
+    names = {
+        "structure.coordination_crystalnn": "crystalnn_coordination.json",
+        "structure.coordination_voronoinn": "voronoinn_coordination.json",
+    }
+    steps: list[dict[str, Any]] = []
+    expected: list[dict[str, Any]] = []
+    for index, tool_id in enumerate(tool_ids, start=1):
+        step_id = f"step_{index:03d}"
+        algorithm = "CrystalNN" if tool_id.endswith("crystalnn") else "VoronoiNN"
+        steps.append({
+            "stepId": step_id,
+            "toolId": tool_id,
+            "purpose": f"Compute {algorithm}-derived coordination under bounded, persisted parameters.",
+            "reason": _structure_reason(request, data_profile, tool_id),
+            "inputRefs": [{"refType": "normalized_object", "ref": "structures", "objectType": "Structure"}],
+            "params": defaults[tool_id],
+            "output": {"artifactTypes": ["table_json", "summary_md", "recipe_json"]},
+        })
+        expected.extend([
+            {"name": names[tool_id], "type": "table_json", "fromStepId": step_id},
+            {"name": "summary.md", "type": "summary_md", "fromStepId": step_id},
+            {"name": "recipe.json", "type": "recipe_json", "fromStepId": step_id},
+        ])
+    warnings = []
+    if len(steps) == 2:
+        warnings.append("CrystalNN and VoronoiNN results retain algorithm-specific semantics; comparison does not select a correct algorithm.")
+    return {
+        "schemaVersion": "0.1",
+        "goal": request.user_prompt,
+        "datasetId": request.dataset_id,
+        "profileId": request.profile_id,
+        "toolRegistryVersion": request.tool_registry_version,
+        "assumptions": ["Coordination is algorithm-derived and is not definitive chemical bonding."],
+        "warnings": warnings,
+        "steps": steps,
+        "expectedArtifacts": expected,
+    }
+
+
 def _should_generate_viewer_export_package(
     request: PlannerRequest,
     tools: list[RegisteredTool],
@@ -1657,7 +1745,7 @@ def _should_generate_dataset_materials_explorer(
     tools: list[RegisteredTool],
     data_profile: DataProfile,
 ) -> bool:
-    if not _has_tool(tools, "dataset.materials_explorer") or data_profile.profileContractVersion != "2.0":
+    if not _has_tool(tools, "dataset.materials_explorer") or data_profile.profileContractVersion not in {"2.0", "2.1"}:
         return False
     prompt = request.user_prompt.lower()
     excluded = (
@@ -1694,7 +1782,7 @@ def _should_generate_composition_space(
     tools: list[RegisteredTool],
     data_profile: DataProfile,
 ) -> bool:
-    if not _has_tool(tools, "dataset.composition_space") or data_profile.profileContractVersion != "2.0":
+    if not _has_tool(tools, "dataset.composition_space") or data_profile.profileContractVersion not in {"2.0", "2.1"}:
         return False
     prompt = request.user_prompt.lower()
     markers = (
@@ -1725,7 +1813,7 @@ def _select_materials_ml_tool(
     tools: list[RegisteredTool],
     data_profile: DataProfile,
 ) -> str | None:
-    if data_profile.profileContractVersion != "2.0":
+    if data_profile.profileContractVersion not in {"2.0", "2.1"}:
         return None
     prompt = request.user_prompt.lower()
     candidates = (
@@ -1769,7 +1857,7 @@ def _should_generate_ambiguous_ml_diagnostic(
     tools: list[RegisteredTool],
     data_profile: DataProfile,
 ) -> bool:
-    if data_profile.profileContractVersion != "2.0" or not _has_tool(tools, "dataset.materials_explorer"):
+    if data_profile.profileContractVersion not in {"2.0", "2.1"} or not _has_tool(tools, "dataset.materials_explorer"):
         return False
     prompt = request.user_prompt.lower()
     markers = (

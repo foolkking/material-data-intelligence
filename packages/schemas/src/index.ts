@@ -996,7 +996,7 @@ export type DataProfile = {
   trajectorySummary?: Record<string, unknown>;
   qualityIssues: Array<Record<string, unknown>>;
   recommendedTasks: Array<Record<string, unknown>>;
-  profileContractVersion?: "2.0";
+  profileContractVersion?: "2.0" | "2.1";
   semanticRulesVersion?: string;
   semanticHash?: string;
   semanticColumns?: DataProfileSemanticColumn[];
@@ -1005,7 +1005,30 @@ export type DataProfile = {
   analysisReadiness?: DataProfileAnalysisReadiness[];
   sampleIdentity?: DataProfileSampleIdentity;
   profileCoverage?: DataProfileCoverage;
+  coordinationReadiness?: DataProfileCoordinationReadiness;
   createdAt: string;
+};
+
+export type DataProfileCoordinationStructureReadiness = {
+  objectId: string;
+  objectHash: string;
+  periodic: boolean;
+  latticeStatus: "VALID" | "MISSING" | "INVALID";
+  siteCount: number;
+  speciesOccupancyStatus: "ORDERED_FULL_OCCUPANCY" | "DISORDERED" | "PARTIAL_OCCUPANCY" | "UNSUPPORTED";
+  disorderStatus: "ORDERED" | "DISORDERED" | "UNKNOWN";
+  partialOccupancyStatus: "ABSENT" | "PRESENT" | "UNKNOWN";
+  coordinationInputStatus: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  reasons: string[];
+};
+
+export type DataProfileCoordinationReadiness = {
+  contractVersion: "1.0";
+  periodicStructurePresent: boolean;
+  eligibleStructureCount: number;
+  structures: DataProfileCoordinationStructureReadiness[];
+  status: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  reasons: string[];
 };
 
 export type DataProfileSemanticAuthority =

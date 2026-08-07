@@ -1,0 +1,16 @@
+{
+  "addedCount": 2,
+  "baselineCount": 53,
+  "comparisonToolCount": 0,
+  "finalCount": 55,
+  "tools": [
+    {
+      "toolId": "structure.coordination_crystalnn",
+      "version": "0.1.0"
+    },
+    {
+      "toolId": "structure.coordination_voronoinn",
+      "version": "0.1.0"
+    }
+  ]
+}

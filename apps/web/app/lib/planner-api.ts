@@ -636,7 +636,7 @@ export type DataProfileSummary = {
     formulaStats?: { total?: number; uniqueCount?: number };
   };
   objects?: Array<{ objectType?: string; count?: number; objectHash?: string }>;
-  profileContractVersion?: "2.0";
+  profileContractVersion?: "2.0" | "2.1";
   semanticRulesVersion?: string;
   semanticHash?: string;
   semanticColumns?: Array<{

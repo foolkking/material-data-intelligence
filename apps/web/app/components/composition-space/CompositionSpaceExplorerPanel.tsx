@@ -287,7 +287,7 @@ function Field({ label, value }: { label: string; value: string }) {
 export function validateCompositionSpacePayload(payload: JsonRecord | null): ValidationResult {
   if (!payload || payload.schemaVersion !== SCHEMA_VERSION || payload.artifactType !== "dataset.composition_space") return { ok: false, reason: "COMPOSITION_SPACE_SCHEMA_UNSUPPORTED" };
   const dataset = record(payload.dataset);
-  if (!safeText(dataset.datasetId) || !safeText(dataset.profileId) || dataset.profileContractVersion !== "2.0" || !hashText(dataset.semanticHash)) return { ok: false, reason: "COMPOSITION_SPACE_PROFILE_BINDING_INVALID" };
+  if (!safeText(dataset.datasetId) || !safeText(dataset.profileId) || typeof dataset.profileContractVersion !== "string" || !["2.0", "2.1"].includes(dataset.profileContractVersion) || !hashText(dataset.semanticHash)) return { ok: false, reason: "COMPOSITION_SPACE_PROFILE_BINDING_INVALID" };
   const security = record(payload.security);
   if (security.artifactJavaScript !== false || security.externalUrls !== false || security.externalAssets !== false || security.executableContent !== false) return { ok: false, reason: "COMPOSITION_SPACE_SECURITY_DECLARATION_INVALID" };
 

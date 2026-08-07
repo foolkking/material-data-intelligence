@@ -266,6 +266,15 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxBonds": 20000,
             "maxPackageBytes": 5_000_000,
         }
+    if tool_id in {"structure.coordination_crystalnn", "structure.coordination_voronoinn"}:
+        return {
+            "maxStructures": 32,
+            "maxAtomsPerStructure": 5000,
+            "maxSites": 5000,
+            "maxNeighborsPerSite": 1000,
+            "maxRetainedRows": 50000,
+            "maxArtifactBytes": 16777216,
+        }
     if tool_id == "structure.coordination_hist":
         return {
             "maxStructures": 8,
@@ -538,6 +547,37 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    common_coordination_limits = {
+        "max_structures": {"type": "integer", "minimum": 1, "maximum": 32, "default": 32},
+        "max_sites": {"type": "integer", "minimum": 1, "maximum": 5000, "default": 5000},
+        "max_neighbors_per_site": {"type": "integer", "minimum": 1, "maximum": 1000, "default": 1000},
+        "max_retained_rows": {"type": "integer", "minimum": 1, "maximum": 50000, "default": 50000},
+    }
+    if tool_id == "structure.coordination_crystalnn":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "weighted_cn": {"type": "boolean", "default": True},
+                "distance_cutoff_low": {"type": "number", "minimum": 0.0, "maximum": 5.0, "default": 0.5},
+                "distance_cutoff_high": {"type": "number", "minimum": 0.0, "maximum": 5.0, "default": 1.0},
+                "x_diff_weight": {"type": "number", "minimum": 0.0, "maximum": 10.0, "default": 3.0},
+                "porous_adjustment": {"type": "boolean", "default": True},
+                "search_cutoff_angstrom": {"type": "number", "minimum": 1.0, "maximum": 20.0, "default": 7.0},
+                **common_coordination_limits,
+            },
+        }
+    if tool_id == "structure.coordination_voronoinn":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "tol": {"type": "number", "minimum": 0.0, "maximum": 1.0, "default": 0.0},
+                "cutoff_angstrom": {"type": "number", "minimum": 1.0, "maximum": 20.0, "default": 13.0},
+                "allow_pathological": {"type": "boolean", "default": False},
+                **common_coordination_limits,
+            },
+        }
     if tool_id == "dataset.composition_space":
         scalar = {"anyOf": [{"type": "string", "maxLength": 256}, {"type": "number"}, {"type": "boolean"}]}
         return {

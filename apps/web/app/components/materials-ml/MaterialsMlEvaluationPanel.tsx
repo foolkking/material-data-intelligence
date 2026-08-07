@@ -203,7 +203,7 @@ export function validateMaterialsMlPayload(payload: JsonRecord | null, product: 
   const dataset = record(payload.dataset);
   const security = record(payload.security);
   const evaluations = records(payload.evaluations);
-  if (dataset.profileContractVersion !== "2.0" || !text(dataset.semanticHash)) return { ok: false, reason: "MATERIALS_ML_PROFILE_BINDING_INVALID" };
+  if (typeof dataset.profileContractVersion !== "string" || !["2.0", "2.1"].includes(dataset.profileContractVersion) || !text(dataset.semanticHash)) return { ok: false, reason: "MATERIALS_ML_PROFILE_BINDING_INVALID" };
   if (security.artifactJavaScript !== false || security.externalUrls !== false || security.externalAssets !== false || security.executableContent !== false) return { ok: false, reason: "MATERIALS_ML_SECURITY_DECLARATION_INVALID" };
   if (!evaluations.length || evaluations.length > CAPS.evaluations) return { ok: false, reason: "MATERIALS_ML_PREVIEW_CAP_EXCEEDED" };
   const overCap = evaluations.some((item) => records(item.parityPoints).length > CAPS.points

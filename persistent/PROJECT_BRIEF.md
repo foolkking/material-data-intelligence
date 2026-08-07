@@ -1,5 +1,14 @@
 # PROJECT_BRIEF
 
+## 2026-08-07 Phase 10N-1 Implementation
+
+Phase 10N-1 implements two bounded, algorithm-derived coordination products:
+`structure.coordination_crystalnn@0.1.0` and
+`structure.coordination_voronoinn@0.1.0`. They execute through registered
+backend Adapters and the existing Plan, Job, Artifact and Workspace authorities.
+Comparison consumes two exact persisted Artifacts and is not a third Tool.
+Phase 10N-2 remains a reviewer gate with no executable task.
+
 ## 2026-08-06 Phase 10N-0 Audit Scope
 
 Phase 10M is archived at corrected commit `88e8ba8`. Phase 10N-0 completed a

@@ -1,0 +1,1 @@
+N1 documentation link check is enforced by test_phase10n1_evidence_integrity.py.

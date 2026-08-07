@@ -1,0 +1,492 @@
+{
+  "algorithm": {
+    "algorithmId": "pymatgen.voronoinn",
+    "algorithmVersion": "2026.5.4"
+  },
+  "artifactType": "structure.coordination_voronoinn",
+  "coverage": {
+    "eligibleSites": 2,
+    "failedSites": 0,
+    "ratio": 1.0,
+    "retainedNeighborRows": 28,
+    "status": "COMPLETE",
+    "successfulSites": 2,
+    "totalSites": 2,
+    "unsupportedSites": 0,
+    "zeroNeighborSites": 0
+  },
+  "fixedParameters": {
+    "compute_adj_neighbors": true,
+    "extra_nn_info": true,
+    "weight": "solid_angle"
+  },
+  "library": {
+    "coreVersion": "2026.5.18",
+    "license": "MIT",
+    "name": "pymatgen",
+    "version": "2026.5.4"
+  },
+  "limits": {
+    "max_artifact_bytes": 16777216,
+    "max_neighbors_per_site": 1000,
+    "max_retained_rows": 50000,
+    "max_sites": 5000,
+    "max_structures": 32,
+    "timeout_seconds": 120
+  },
+  "parameterHash": "b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf",
+  "provenance": {
+    "authority": "registered_backend_adapter",
+    "comparisonAuthority": "deterministic_consumer_presentation_only",
+    "inputHashes": [
+      "2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2"
+    ],
+    "resolvedParameterHash": "b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf"
+  },
+  "resolvedParameters": {
+    "allow_pathological": false,
+    "cutoff_angstrom": 13.0,
+    "max_neighbors_per_site": 1000,
+    "max_retained_rows": 50000,
+    "max_sites": 5000,
+    "max_structures": 32,
+    "tol": 0.0
+  },
+  "runtimeDiagnostics": {
+    "algorithmFallback": false,
+    "frontendRecomputation": false,
+    "resultSubstitution": false
+  },
+  "schema_version": "phase10n1.voronoinn_coordination.v1",
+  "scope": {
+    "datasetId": "dataset_n1_evidence",
+    "jobId": "job_n1_evidence",
+    "planId": "plan_n1_evidence",
+    "planVersion": "0.1",
+    "projectId": "project_n1_evidence",
+    "sourceResourceHash": "2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2",
+    "sourceResourceId": "structure_resource",
+    "toolCallId": "call_voronoinn"
+  },
+  "security": {
+    "arbitraryCodeExecution": false,
+    "containsHtml": false,
+    "containsJavascript": false,
+    "externalUrls": []
+  },
+  "siteResults": [
+    {
+      "coordinationSemantics": "voronoinn_solid_angle_weight_sum",
+      "coordinationValue": 3.391744576162,
+      "fractionalCoordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "neighborCount": 14,
+      "neighbors": [
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:0:-1,0,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            -1,
+            0,
+            0
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:0:0,-1,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            0,
+            -1,
+            0
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:0:0,0,-1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            0,
+            0,
+            -1
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:0:0,0,1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            0,
+            0,
+            1
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:0:0,1,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            0,
+            1,
+            0
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:0:1,0,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            1,
+            0,
+            0
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 4.637566037266,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:1:-1,-1,-1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            -1,
+            -1,
+            -1
+          ],
+          "weight": 0.049656945549
+        },
+        {
+          "distance": 3.89031730711,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:1:-1,-1,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            -1,
+            -1,
+            0
+          ],
+          "weight": 0.151960304441
+        },
+        {
+          "distance": 3.89031730711,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:1:-1,0,-1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            -1,
+            0,
+            -1
+          ],
+          "weight": 0.151960304441
+        },
+        {
+          "distance": 2.960087625392,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:1:-1,0,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            -1,
+            0,
+            0
+          ],
+          "weight": 0.442946646158
+        },
+        {
+          "distance": 3.89031730711,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:1:0,-1,-1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            0,
+            -1,
+            -1
+          ],
+          "weight": 0.151960304441
+        },
+        {
+          "distance": 2.960087625392,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:1:0,-1,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            0,
+            -1,
+            0
+          ],
+          "weight": 0.442946646158
+        },
+        {
+          "distance": 2.960087625392,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:1:0,0,-1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            0,
+            0,
+            -1
+          ],
+          "weight": 0.442946646158
+        },
+        {
+          "distance": 1.545855345755,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0:1:0,0,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            0,
+            0,
+            0
+          ],
+          "weight": 1.0
+        }
+      ],
+      "siteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+      "siteIndex": 0,
+      "species": "Si1",
+      "structureHash": "2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2"
+    },
+    {
+      "coordinationSemantics": "voronoinn_solid_angle_weight_sum",
+      "coordinationValue": 3.391744576162,
+      "fractionalCoordinates": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "neighborCount": 14,
+      "neighbors": [
+        {
+          "distance": 1.545855345755,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:0:0,0,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            0,
+            0,
+            0
+          ],
+          "weight": 1.0
+        },
+        {
+          "distance": 2.960087625392,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:0:0,0,1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            0,
+            0,
+            1
+          ],
+          "weight": 0.442946646158
+        },
+        {
+          "distance": 2.960087625392,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:0:0,1,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            0,
+            1,
+            0
+          ],
+          "weight": 0.442946646158
+        },
+        {
+          "distance": 3.89031730711,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:0:0,1,1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            0,
+            1,
+            1
+          ],
+          "weight": 0.151960304441
+        },
+        {
+          "distance": 2.960087625392,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:0:1,0,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            1,
+            0,
+            0
+          ],
+          "weight": 0.442946646158
+        },
+        {
+          "distance": 3.89031730711,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:0:1,0,1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            1,
+            0,
+            1
+          ],
+          "weight": 0.151960304441
+        },
+        {
+          "distance": 3.89031730711,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:0:1,1,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            1,
+            1,
+            0
+          ],
+          "weight": 0.151960304441
+        },
+        {
+          "distance": 4.637566037266,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:0:1,1,1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:0",
+          "neighborSiteIndex": 0,
+          "periodicImage": [
+            1,
+            1,
+            1
+          ],
+          "weight": 0.049656945549
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:1:-1,0,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            -1,
+            0,
+            0
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:1:0,-1,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            0,
+            -1,
+            0
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:1:0,0,-1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            0,
+            0,
+            -1
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:1:0,0,1",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            0,
+            0,
+            1
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:1:0,1,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            0,
+            1,
+            0
+          ],
+          "weight": 0.092894463136
+        },
+        {
+          "distance": 3.57,
+          "distanceUnit": "angstrom",
+          "neighborIdentity": "neighbor:pymatgen.voronoinn:b68f2238e5ebae59e071a9d8c4951af6bafaaf6d15c4ebe288db15968a8228cf:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1:1:1,0,0",
+          "neighborSiteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+          "neighborSiteIndex": 1,
+          "periodicImage": [
+            1,
+            0,
+            0
+          ],
+          "weight": 0.092894463136
+        }
+      ],
+      "siteId": "site:2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2:1",
+      "siteIndex": 1,
+      "species": "Si1",
+      "structureHash": "2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2"
+    }
+  ],
+  "structures": [
+    {
+      "formula": "Si",
+      "siteCount": 2,
+      "sourceResourceHash": "2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2",
+      "sourceResourceId": "structure_resource",
+      "structureHash": "2742b82b67dc574d31e9422afce54544c545ea4ca0a51f45fecc0c9bc7c5ebc2",
+      "structureId": "Si"
+    }
+  ],
+  "tool": {
+    "adapterVersion": "0.1.0",
+    "toolId": "structure.coordination_voronoinn",
+    "toolVersion": "0.1.0"
+  },
+  "unsupportedSites": [],
+  "warnings": []
+}

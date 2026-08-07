@@ -477,6 +477,21 @@ def test_llm_intent_prompt_includes_a_complete_typed_clarification_template() ->
     assert "clarification must always be an object" in messages[0]["content"]
 
 
+def test_request_identity_accepts_profile_20_and_21_and_rejects_unknown_version() -> None:
+    request = _request("Analyze this dataset.")
+    profile_20 = _profile()
+    profile_21 = profile_20.model_copy(update={"profileContractVersion": "2.1"})
+    builder = DeterministicAnalysisIntentBuilder()
+
+    for profile in (profile_20, profile_21):
+        assert builder.build(request, profile=profile).profileId == profile.profileId
+
+    unknown = profile_20.model_copy(update={"profileContractVersion": "9.9"})
+    with pytest.raises(AnalysisIntentError, match="2.0 or 2.1") as error:
+        builder.build(request, profile=unknown)
+    assert error.value.code == "PROFILE_2_REQUIRED"
+
+
 def test_strict_llm_intent_identity_is_computed_from_canonical_validated_contract() -> None:
     profile = _profile(targets=(), uncertainty=False)
     request = _request("Analyze this dataset.")

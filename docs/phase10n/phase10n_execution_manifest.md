@@ -45,3 +45,31 @@ Manifest status: `N0 COMPLETE / REVIEWER_APPROVAL_REQUIRED`; N1 is not executabl
 | N0-A10 | cross-cutting docs | caps/security check | inert fallback | generic persistence | policy evidence | complete markers | seal complete |
 | N0-A11 | backlog/lock | sequence integrity | n/a | n/a | decision registry | no authority expansion | locked sequence |
 | N0-A12 | all N0 docs | manifest/docs/secret | replay regression | full CI | manifest | no secrets | two CI commits |
+
+## Canonical Phase 10N-1 Acceptance Registry
+
+1. `N1-A01 BASELINE_AUTHORITY_ACCEPTANCE_AND_EXACT_CONTRACT_CLOSURE` - verify the N0 lifecycle and decisions, entry baseline, exact acceptance registry, Tool IDs and versions, implementation contracts, documentation reconciliation and queue admission.
+2. `N1-A02 DATAPROFILE_REGISTRY_PARAMETER_AND_ARTIFACT_CONTRACTS` - verify additive DataProfile 2.1, exactly two Registry entries, strict algorithm-specific parameter schemas, two unambiguous Artifact contracts, backward compatibility, and no unauthorized migration, API family, dependency or lockfile change.
+3. `N1-A03 CRYSTALNN_COORDINATION_EXECUTION` - verify the exact locked CrystalNN algorithm, registered Adapter, bounded parameters, periodic-structure execution, per-site coordination, neighbor identities and weights, coverage, typed errors and reference fixtures.
+4. `N1-A04 VORONOINN_COORDINATION_EXECUTION` - verify the exact locked VoronoiNN algorithm, registered Adapter, bounded parameters, periodic-structure execution, per-site coordination, neighbor identities, periodic images, distances and weights, pathological-cell errors and reference fixtures.
+5. `N1-A05 EXACT_STRUCTURE_SITE_NEIGHBOR_PERIODIC_IMAGE_IDENTITY_AND_DETERMINISM` - verify exact structure identity, structure-bound site identity, periodic-neighbor identity, deterministic ordering, parameter hash, stable checksum and the absence of fuzzy, latest or index-only rebinding.
+6. `N1-A06 ELIGIBILITY_PLANNER_PLANVALIDATOR_RUNTIME_PERSISTENCE_AND_NO_FALLBACK` - verify Profile, Eligibility, Planner, AnalysisPlan, PlanValidator, QueueWorkerRuntime, PostgreSQL, Redis and MinIO integration, partial/failure behavior, algorithm isolation, no fallback and no result substitution.
+7. `N1-A07 WORKSPACE_STRUCTURE_VIEWER_SELECTION_AND_INSPECTOR_INTEGRATION` - verify Workspace coordination tables, Structure Viewer overlay, periodic-image rendering, canonical selection, URL restoration, Inspector, mobile and accessibility alternatives, and Viewer lifecycle cleanup.
+8. `N1-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_WORDING` - verify bounded interpretation facts, algorithm-qualified wording, disagreement disclosure, Report/Recipe provenance, no recomputation, no definitive-bond claims and no execution authority.
+9. `N1-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE` - verify direct numeric fixtures, exact locked-version references, quantity-specific tolerances, small/medium/near-cap performance, Chromium/Firefox/WebKit/390x844, PostgreSQL/Redis/MinIO, accessibility, security, secret scan and evidence manifest.
+10. `N1-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N2_REVIEWER_GATE` - verify the implementation, completion-record and queue-archive commits and exact-SHA CI, restoration of `TASK_BLOCK_COUNT = 0`, and the Phase 10N-2 reviewer gate.
+
+## N1 Traceability
+
+| ID | Source scope | Test scope | Browser scope | Service scope | Evidence scope | Security scope | Exit gate |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| N1-A01 | N0 decisions/R0 | contract integrity | n/a | n/a | entry/R0 | clean baseline | R0 PASS |
+| N1-A02 | Profile/Registry/contracts | schema compatibility | Profile surface | generic persistence | contract samples | strict input | contracts exact |
+| N1-A03 | CrystalNN Adapter | direct fixtures | result panel | runtime storage | CrystalNN results | bounded execution | complete |
+| N1-A04 | VoronoiNN Adapter | direct fixtures | result panel | runtime storage | VoronoiNN results | pathological cells | complete |
+| N1-A05 | identity seal | exact/deterministic | selection restore | checksum | identity records | no fuzzy/latest | exact identity |
+| N1-A06 | planner/runtime | plan/failure/no fallback | job state | PostgreSQL/Redis/MinIO | runtime cases | scope isolation | integration PASS |
+| N1-A07 | Workspace/Viewer | renderer/selection | browser/mobile/a11y | Artifact API | UI captures | inert payload | UI PASS |
+| N1-A08 | projector/report | wording/provenance | report journey | immutable records | report/recipe | no execution | delivery PASS |
+| N1-A09 | refs/caps/security | full matrix | all browsers | zero skipped | manifest | complete markers | evidence PASS |
+| N1-A10 | lifecycle | lifecycle checks | CI replay | CI services | commit history | secret scan | verified archive |

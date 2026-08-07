@@ -1,0 +1,23 @@
+{
+  "browserName": "webkit",
+  "n1Coordination": true,
+  "cases": {
+    "CrystalNN Coordination": {
+      "rendererReady": true,
+      "canvasCount": 0,
+      "typedFallback": false
+    },
+    "VoronoiNN Coordination": {
+      "rendererReady": true,
+      "canvasCount": 0,
+      "typedFallback": false
+    }
+  },
+  "overflow": {
+    "body": 0,
+    "root": 0
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "externalRequests": []
+}

@@ -28,6 +28,10 @@ describe("Phase 10M-4 typed renderer registry", () => {
     expect(resolveLoadedArtifactRenderer(base).descriptor?.component).toBe("GENERIC_TABLE");
     const exact = artifact({ type: "table_json", content: { schemaVersion: "phase10k2.dataset_materials_explorer.v1", artifactType: "dataset.materials_explorer" } });
     expect(resolveLoadedArtifactRenderer(exact).descriptor?.component).toBe("DATASET");
+    const coordination = artifact({ type: "table_json", content: { schema_version: "phase10n1.crystalnn_coordination.v1", artifactType: "structure.coordination_crystalnn" } });
+    expect(resolveLoadedArtifactRenderer(coordination).descriptor).toMatchObject({ component: "COORDINATION", heavy: false, accessibilityFallback: "TABLE" });
+    const wrongAlgorithm = artifact({ type: "table_json", content: { schema_version: "phase10n1.crystalnn_coordination.v1", artifactType: "structure.coordination_voronoinn" } });
+    expect(resolveLoadedArtifactRenderer(wrongAlgorithm).descriptor?.component).toBe("GENERIC_TABLE");
   });
 
   it("declares bounded heavy viewers and inert accessibility fallbacks", () => {

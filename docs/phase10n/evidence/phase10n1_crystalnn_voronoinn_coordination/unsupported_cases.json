@@ -1,0 +1,8 @@
+{
+  "checksum": "SOURCE_CHECKSUM_MISMATCH",
+  "disorder": "UNSUPPORTED_DISORDER",
+  "invalidLattice": "INVALID_LATTICE",
+  "missingLattice": "MISSING_LATTICE",
+  "nonPeriodic": "UNSUPPORTED_NON_PERIODIC_STRUCTURE",
+  "overCap": "STRUCTURE_TOO_LARGE"
+}

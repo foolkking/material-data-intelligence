@@ -138,7 +138,7 @@ export function materialDatasetBinding(payload: JsonRecord | null): MaterialData
     datasetContentHash: safeString(dataset.datasetContentHash),
     resourceSignature: resourceBindingSignature(dataset.resourceBindings),
   };
-  if (!binding.datasetId || !binding.datasetVersion || !binding.profileId || binding.profileContractVersion !== "2.0" || !HASH_PATTERN.test(binding.semanticHash)) return null;
+  if (!binding.datasetId || !binding.datasetVersion || !binding.profileId || !["2.0", "2.1"].includes(binding.profileContractVersion) || !HASH_PATTERN.test(binding.semanticHash)) return null;
   if (!HASH_PATTERN.test(binding.datasetContentHash)) return null;
   if (!binding.resourceSignature || binding.resourceSignature === "INVALID") return null;
   return binding;

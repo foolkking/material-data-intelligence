@@ -1,0 +1,15 @@
+{
+  "comparison": [
+    "structure.coordination_crystalnn",
+    "structure.coordination_voronoinn"
+  ],
+  "comparisonTool": null,
+  "crystalnn": [
+    "structure.coordination_crystalnn"
+  ],
+  "newLlmCallSites": 0,
+  "realLlmCalls": 0,
+  "voronoinn": [
+    "structure.coordination_voronoinn"
+  ]
+}

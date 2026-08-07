@@ -1,0 +1,11 @@
+{
+  "ANIMATION_LOOP_GROWTH": 0,
+  "DUPLICATE_CANVAS": 0,
+  "LISTENER_GROWTH": 0,
+  "OBSERVER_GROWTH": 0,
+  "WEBGL_CONTEXT_GROWTH": 0,
+  "coordinationRendererHeavy": false,
+  "coordinationRendererWebglContexts": 0,
+  "heavyViewerAuthority": "existing M4 lifecycle gate",
+  "requiredHeavyViewerCycles": 50
+}

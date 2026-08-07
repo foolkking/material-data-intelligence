@@ -281,7 +281,7 @@ function DataTable({ columns, rows, empty }: { columns: string[]; rows: string[]
 
 export function validateDatasetExplorerPayload(payload: JsonRecord | null): { ok: true; payload: JsonRecord } | { ok: false; reason: string } {
   if (!payload || payload.schemaVersion !== "phase10k2.dataset_materials_explorer.v1") return { ok: false, reason: "DATASET_EXPLORER_SCHEMA_UNSUPPORTED" };
-  if (!record(payload.dataset).profileId || record(payload.dataset).profileContractVersion !== "2.0") return { ok: false, reason: "DATASET_EXPLORER_PROFILE_BINDING_INVALID" };
+  if (!record(payload.dataset).profileId || !["2.0", "2.1"].includes(String(record(payload.dataset).profileContractVersion))) return { ok: false, reason: "DATASET_EXPLORER_PROFILE_BINDING_INVALID" };
   const composition = record(payload.composition);
   const structures = record(payload.structures);
   const properties = records(record(payload.properties).properties);

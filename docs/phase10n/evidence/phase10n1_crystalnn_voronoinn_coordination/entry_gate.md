@@ -1,0 +1,9 @@
+# Entry Gate
+
+`PHASE_10N1_ENTRY_GATE = PASS_WITH_AUTHORIZED_R0_CONTRACT_CLOSURE`
+
+`PHASE_10N0_REVIEWER_APPROVAL = VERIFIED`
+
+`PHASE_10N1_QUEUE_ADMISSION = AUTHORIZED`
+
+No migration, API family, dependency or lockfile change is required.

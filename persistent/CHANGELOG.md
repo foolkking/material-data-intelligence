@@ -28,6 +28,15 @@
 - PostgreSQL/Redis/MinIO completed `42 passed, 0 skipped, 0 failed, 0 errors`.
 - Attempt 1 was cancelled after the unchanged browser-runtime download step
   stalled. Attempt 2 passed without implementation or coverage changes.
+
+## 2026-08-06 - Phase 10N-1 Coordination Implementation In Progress
+
+- Added reviewer-authorized CrystalNN and VoronoiNN tools with separate adapters,
+  strict parameters, Profile 2.1 readiness and algorithm-specific artifacts.
+- Added exact site/neighbor/periodic-image identity, deterministic bounded
+  interpretation, Workspace table/Inspector rendering and browser fixtures.
+- Registry advances from 53 to 55; comparison remains consumer-side presentation.
+- No database, migration, public API family, dependency, lockfile or LLM change.
 - Completion-record and verified queue archive remain; Phase 10N-0 is not
   queued or executable.
 

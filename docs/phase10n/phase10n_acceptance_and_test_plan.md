@@ -59,3 +59,50 @@ duplicate registry entries = 0
 conflicting definitions = 0
 canonical registry shorthand entries = 0
 ```
+
+## Canonical Phase 10N-1 Acceptance Registry
+
+The registry below is the only canonical N1 definition in this document. References
+outside this section are informational and are not duplicate registry entries.
+
+1. `N1-A01 BASELINE_AUTHORITY_ACCEPTANCE_AND_EXACT_CONTRACT_CLOSURE` - verify the N0
+   lifecycle and decisions, entry baseline, exact acceptance registry, Tool IDs and
+   versions, implementation contracts, documentation reconciliation and queue admission.
+2. `N1-A02 DATAPROFILE_REGISTRY_PARAMETER_AND_ARTIFACT_CONTRACTS` - verify additive
+   DataProfile 2.1, exactly two Registry entries, strict algorithm-specific parameter
+   schemas, two unambiguous Artifact contracts, backward compatibility, and no
+   unauthorized migration, API family, dependency or lockfile change.
+3. `N1-A03 CRYSTALNN_COORDINATION_EXECUTION` - verify the exact locked CrystalNN
+   algorithm, registered Adapter, bounded parameters, periodic-structure execution,
+   per-site coordination, neighbor identities and weights, coverage, typed errors and
+   reference fixtures.
+4. `N1-A04 VORONOINN_COORDINATION_EXECUTION` - verify the exact locked VoronoiNN
+   algorithm, registered Adapter, bounded parameters, periodic-structure execution,
+   per-site coordination, neighbor identities, periodic images, distances and weights,
+   pathological-cell errors and reference fixtures.
+5. `N1-A05 EXACT_STRUCTURE_SITE_NEIGHBOR_PERIODIC_IMAGE_IDENTITY_AND_DETERMINISM` -
+   verify exact structure identity, structure-bound site identity, periodic-neighbor
+   identity, deterministic ordering, parameter hash, stable checksum and the absence of
+   fuzzy, latest or index-only rebinding.
+6. `N1-A06 ELIGIBILITY_PLANNER_PLANVALIDATOR_RUNTIME_PERSISTENCE_AND_NO_FALLBACK` -
+   verify Profile, Eligibility, Planner, AnalysisPlan, PlanValidator, QueueWorkerRuntime,
+   PostgreSQL, Redis and MinIO integration, partial/failure behavior, algorithm isolation,
+   no fallback and no result substitution.
+7. `N1-A07 WORKSPACE_STRUCTURE_VIEWER_SELECTION_AND_INSPECTOR_INTEGRATION` - verify
+   Workspace coordination tables, Structure Viewer overlay, periodic-image rendering,
+   canonical selection, URL restoration, Inspector, mobile and accessibility alternatives,
+   and Viewer lifecycle cleanup.
+8. `N1-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_WORDING` - verify
+   bounded interpretation facts, algorithm-qualified wording, disagreement disclosure,
+   Report/Recipe provenance, no recomputation, no definitive-bond claims and no execution
+   authority.
+9. `N1-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE`
+   - verify direct numeric fixtures, exact locked-version references, quantity-specific
+   tolerances, small/medium/near-cap performance, Chromium/Firefox/WebKit/390x844,
+   PostgreSQL/Redis/MinIO, accessibility, security, secret scan and evidence manifest.
+10. `N1-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N2_REVIEWER_GATE` - verify the
+    implementation, completion-record and queue-archive commits and exact-SHA CI,
+    restoration of `TASK_BLOCK_COUNT = 0`, and the Phase 10N-2 reviewer gate.
+
+The N1 integrity target is exactly ten entries with zero missing, extra, duplicate,
+conflicting or shorthand registry entries. Document-wide references are informational.

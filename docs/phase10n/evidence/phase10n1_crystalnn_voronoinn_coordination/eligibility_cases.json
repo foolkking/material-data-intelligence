@@ -1,0 +1,7 @@
+{
+  "disorder": "INELIGIBLE_AMBIGUOUS_SEMANTICS",
+  "eligibilityExecutesAlgorithm": false,
+  "missingLattice": "INELIGIBLE_MISSING_DATA",
+  "nonPeriodic": "INELIGIBLE_UNSUPPORTED_RESOURCE",
+  "readyPeriodicStructure": "ELIGIBLE"
+}

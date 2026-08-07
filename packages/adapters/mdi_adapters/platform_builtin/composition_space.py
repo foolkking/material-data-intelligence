@@ -88,7 +88,7 @@ class CompositionSpaceAdapter(BaseToolAdapter):
             else:
                 raise _input_error("Composition space received an unsupported input.", "unsupported_input", ref=ref)
 
-        if profile is None or profile.profileContractVersion != "2.0":
+        if profile is None or profile.profileContractVersion not in {"2.0", "2.1"}:
             raise _input_error("Material Data Profile 2.0 is required.", "profile_contract_unsupported")
         if profile.datasetId != context.dataset_id:
             raise _input_error("Profile dataset identity does not match execution context.", "profile_dataset_mismatch")

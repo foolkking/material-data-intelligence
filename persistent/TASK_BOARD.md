@@ -2334,3 +2334,14 @@ current board above.
 - [x] PostgreSQL/Redis/MinIO: 40 passed, 0 skipped, 0 failed, 0 errors.
 - [ ] Completion record awaits exact-SHA CI; queue archive follows only after success.
 - [ ] Phase 10M-6 remains reviewer-gated.
+
+## Phase 10N-1 CrystalNN / VoronoiNN Coordination
+
+- [x] N1-R0 contract closure and exact ten-entry acceptance registry.
+- [x] Add exactly two tools: `structure.coordination_crystalnn@0.1.0` and
+  `structure.coordination_voronoinn@0.1.0`; final Registry count 55.
+- [x] Implement independent locked-pymatgen Adapters, exact identities,
+  periodic-image relations, bounded artifacts, Planner/Runtime and Workspace surface.
+- [x] Add unit, frontend, browser fixture, security and evidence integrity coverage.
+- [ ] Complete implementation, completion-record and queue-archive exact-SHA CI;
+  keep Phase 10N-2 reviewer-gated and non-executable.

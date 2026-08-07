@@ -1,0 +1,17 @@
+{
+  "contractVersion": "2.1",
+  "facts": [
+    "periodic",
+    "latticeStatus",
+    "siteCount",
+    "speciesOccupancyStatus",
+    "disorderStatus",
+    "partialOccupancyStatus",
+    "sourceResourceId",
+    "sourceResourceHash",
+    "coordinationInputStatus",
+    "reasons"
+  ],
+  "profile20Readable": true,
+  "profileRunsAlgorithms": false
+}
