@@ -1184,8 +1184,8 @@ button:disabled {
   }
 
   .workspace-header-actions button {
-    min-width: 45px;
-    min-height: 45px;
+    min-width: 44px;
+    min-height: 44px;
     flex: 1;
   }
 
@@ -1283,10 +1283,6 @@ button:disabled {
     box-shadow: 0 -10px 30px rgba(18, 27, 39, 0.16);
   }
 
-  .scientific-workspace button {
-    min-width: 45px;
-    min-height: 45px;
-  }
 }
 
 h1,
@@ -3198,11 +3194,4 @@ pre {
   .band-bz-panel, .band-bz-shared-inspector { width: 100%; }
   .band-bz-linked-view .mobile-hidden { display: none; }
   .band-bz-chart { min-height: 220px; }
-}
-
-@media (max-width: 760px) {
-  .scientific-workspace button {
-    min-width: 45px;
-    min-height: 45px;
-  }
 }

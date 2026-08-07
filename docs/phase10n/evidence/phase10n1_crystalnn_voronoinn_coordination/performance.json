@@ -11,8 +11,8 @@
     "timeoutSeconds": 120
   },
   "crystalnnPayloadBytes": 6270,
-  "crystalnnSeconds": 0.027882900001714006,
+  "crystalnnSeconds": 0.06159040000056848,
   "scope": "development evidence, not production capacity",
   "voronoinnPayloadBytes": 14147,
-  "voronoinnSeconds": 0.050415300007443875
+  "voronoinnSeconds": 0.06458649999694899
 }

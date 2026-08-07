@@ -65,7 +65,7 @@
       "bytes": 307,
       "hashMode": "lf_normalized_text",
       "path": "browser/browser_mobile/summary.json",
-      "sha256": "a46712ee29b1dd816c92e6e9dd5ad690655f4e8dbcbb7982760c7971391f71b5"
+      "sha256": "3960db3da15707172ead4be53613c563eaa5baeb072f6fcbeca83cbd3a66cd44"
     },
     {
       "bytes": 434,
@@ -83,7 +83,7 @@
       "bytes": 307,
       "hashMode": "lf_normalized_text",
       "path": "browser/mobile_smoke.json",
-      "sha256": "a46712ee29b1dd816c92e6e9dd5ad690655f4e8dbcbb7982760c7971391f71b5"
+      "sha256": "3960db3da15707172ead4be53613c563eaa5baeb072f6fcbeca83cbd3a66cd44"
     },
     {
       "bytes": 173,
@@ -92,10 +92,10 @@
       "sha256": "39d5eb72e67ee4741d12e4c39f2dbcb799d625fe381eecea2b9e87ea2ace18cf"
     },
     {
-      "bytes": 502464,
+      "bytes": 502469,
       "hashMode": "lf_normalized_text",
       "path": "browser/screenshots/chromium_coordination.png",
-      "sha256": "c900c937956640bbc3c8ace4d4c0c1ba53948476eef5ddc23332aec09670916b"
+      "sha256": "7ccab140b01de9a3ff9ad8dc44b1b09d8d757238dd766db39588a1a5fa0c195b"
     },
     {
       "bytes": 499166,
@@ -104,16 +104,16 @@
       "sha256": "7ee466140b401f8739d08f18c49e54dd47ebdddd3aca2fa686bddc26b4133bdf"
     },
     {
-      "bytes": 551963,
+      "bytes": 551797,
       "hashMode": "lf_normalized_text",
       "path": "browser/screenshots/chromium_mobile_gallery.png",
-      "sha256": "7fd5e2737504c26b640c5cb637946425f19a0a43e356552bbc1a84b6ac3bf014"
+      "sha256": "265b82d39c06bf3c40d61cdd9f84d3a8466ae320228f45a67e1d0f42d9c6f5d7"
     },
     {
-      "bytes": 565969,
+      "bytes": 565792,
       "hashMode": "lf_normalized_text",
       "path": "browser/screenshots/firefox_coordination.png",
-      "sha256": "fead2f291efe6a4cc767f439c880383996d4723296f8cb19bd06dd1d618fc0a4"
+      "sha256": "2bd38b846e68ef47d27c4220d1e43022c366845d97ac5ba358d1386082416cef"
     },
     {
       "bytes": 563283,
@@ -122,10 +122,10 @@
       "sha256": "420f6941fed07aba19393c68f01bff8ea3872f57b93cc54f5c546f45cf44ddd6"
     },
     {
-      "bytes": 337581,
+      "bytes": 337678,
       "hashMode": "lf_normalized_text",
       "path": "browser/screenshots/webkit_coordination.png",
-      "sha256": "88505f7dcdb86eae1afa983cc99cdbd85d8b4da0b4f547a1c864f7e48a7122c1"
+      "sha256": "00dd70c2c5f8cffef7dee77aa7d6c1ff0157e4043c9a36afa8603582f25f5fda"
     },
     {
       "bytes": 335579,
@@ -212,10 +212,10 @@
       "sha256": "73b724a1a978cd8c07f1d94d614ab875f3d07681bbea27b8ffff34add8d7901d"
     },
     {
-      "bytes": 513,
+      "bytes": 511,
       "hashMode": "lf_normalized_text",
       "path": "performance.json",
-      "sha256": "d5169f6a77290d5bc4490c19fdb1e7b151e42cffd936306090cbbfaf1ea555d1"
+      "sha256": "e09613eb12d5874c647d41c86057763ae8c81403757efd386cf4e6f7eb28e044"
     },
     {
       "bytes": 788,
