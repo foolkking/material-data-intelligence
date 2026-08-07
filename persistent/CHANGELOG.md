@@ -2370,3 +2370,13 @@
   passed exact-SHA CI `30990265619`, including 40/40 service tests.
 - No migration, dependency, scientific calculation, execution authority, or
   LLM call site was added.
+
+## 2026-08-07 Phase 10N-1 CrystalNN / VoronoiNN Coordination
+
+- Added the two approved, independent locked-pymatgen coordination tools with
+  exact periodic site/neighbor identity, bounded parameters, persisted Artifacts,
+  Workspace presentation and algorithm-qualified scientific wording.
+- Implementation CI `31147539225` passed all backend/frontend/browser/build and
+  43 zero-skipped service-backed checks. Completion-record CI remains pending.
+- No migration, dependency, public API family or LLM call site was added; N2 was
+  not queued or executed.

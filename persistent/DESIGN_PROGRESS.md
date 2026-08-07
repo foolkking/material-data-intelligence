@@ -2011,3 +2011,12 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   build, lock check, N1 browser Chromium/Firefox/WebKit/mobile fixture replay and
   evidence integrity passed. Docker is unavailable locally; service-backed closure
   is an exact-SHA CI gate.
+
+## 2026-08-07 Phase 10N-1 completion record
+
+- Corrected implementation `08b5eec39bed4fcc93d0a4ef36eb385ba0e9ecc4` passed exact-SHA
+  CI `31147539225`.
+- CI service-backed closure passed `43/43` with zero skipped, failed, or error cases;
+  browser replay and production build passed.
+- Completion record is awaiting its exact-SHA CI; the N2 reviewer gate remains
+  non-executable and no N2 task exists.

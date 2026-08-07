@@ -369,3 +369,7 @@ Registry, and Adapter execution.
 Phase 0-11 核心设计阶段已完成，`docs/11_MATERIAL_DOMAIN_EXTENSIONS.md` 作为专业材料领域扩展补充文件已补齐；Design Review Fixes 已补充共享 Schema、前端组件/状态规格和实现前一致性修正。
 
 下一阶段：按 `docs/12_MVP_ROADMAP.md` 进入代码实现准备。
+
+Current execution state: Phase 10N-1 CrystalNN / VoronoiNN Coordination has
+passed its corrected implementation exact-SHA CI and is awaiting completion-record
+CI. Phase 10N-2 remains a reviewer gate; no executable N2 task exists.

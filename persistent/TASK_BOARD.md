@@ -2345,3 +2345,6 @@ current board above.
 - [x] Add unit, frontend, browser fixture, security and evidence integrity coverage.
 - [ ] Complete implementation, completion-record and queue-archive exact-SHA CI;
   keep Phase 10N-2 reviewer-gated and non-executable.
+- [x] Implementation commit `08b5eec39bed4fcc93d0a4ef36eb385ba0e9ecc4` passed
+  exact-SHA CI `31147539225`.
+- [ ] Completion-record exact-SHA CI and queue archive remain pending.

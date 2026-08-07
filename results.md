@@ -5914,3 +5914,346 @@ PHASE_10N1_EXECUTABLE_TASK_CREATED = NO
 
 Return the complete Phase 10N-0 audit and scope seal to the reviewer. Do not
 create, queue, or execute Phase 10N-1.
+
+# Phase 10N-1 CrystalNN / VoronoiNN Coordination Result
+
+## 1. Conclusion
+
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
+
+The implementation exact-SHA CI passed. The completion record is this commit;
+queue archive remains pending its own exact-SHA CI. The failed implementation
+attempts are retained in Git history.
+
+## 2. N0 Baseline
+
+- N0 audit: `8f12bdc13720aae9b022301fbe8b0624245b131d` / CI `31074886038` success.
+- N0 completion: `10c60c21c66f7d37b26bf3cc116cd88a416eafae` / CI `31075564935` success.
+- Initial N1 HEAD/origin: `10c60c21c66f7d37b26bf3cc116cd88a416eafae`.
+- Branch: `master`; worktree clean at entry; migration head `0007_phase10m1_workspace_domain`.
+- Registry baseline 53; task count 0; N1 task admitted only in implementation commit; N2 task absent.
+
+## 3. N0 Approval and Authority Extraction
+
+N-D001 through N-D033 and N1-RD001 through N1-RD009 were followed. R0 closed
+the exact contracts before production execution. Scientific authority remains in
+the registered backend Adapter and persisted Artifact.
+
+## 4. N1 Acceptance Registry
+
+The exact ten-entry registry is synchronized across the four Phase 10N authority
+documents:
+
+`N1-A01 BASELINE_AUTHORITY_ACCEPTANCE_AND_EXACT_CONTRACT_CLOSURE`
+
+`N1-A02 DATAPROFILE_REGISTRY_PARAMETER_AND_ARTIFACT_CONTRACTS`
+
+`N1-A03 CRYSTALNN_COORDINATION_EXECUTION`
+
+`N1-A04 VORONOINN_COORDINATION_EXECUTION`
+
+`N1-A05 EXACT_STRUCTURE_SITE_NEIGHBOR_PERIODIC_IMAGE_IDENTITY_AND_DETERMINISM`
+
+`N1-A06 ELIGIBILITY_PLANNER_PLANVALIDATOR_RUNTIME_PERSISTENCE_AND_NO_FALLBACK`
+
+`N1-A07 WORKSPACE_STRUCTURE_VIEWER_SELECTION_AND_INSPECTOR_INTEGRATION`
+
+`N1-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_WORDING`
+
+`N1-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE`
+
+`N1-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N2_REVIEWER_GATE`
+
+## 5. Acceptance Reconciliation
+
+Expected = 10; implemented = 10; missing = 0; extra = 0; duplicate canonical
+registry entries = 0; conflicting definitions = 0; canonical registry
+shorthand entries = 0. References outside registry sections are informational.
+
+## 6. N-D Decision Compliance
+
+Exactly two tools were approved. Comparison is deterministic consumer-side
+presentation and is not a Tool, Adapter, Job or scientific authority.
+
+## 7. Production Behavior Changes
+
+Added the approved CrystalNN and VoronoiNN coordination capabilities, Profile
+2.1 readiness, exact Planner/Eligibility/Runtime/Artifact integration, and the
+existing Workspace/Viewer/Selection/Report surfaces. Existing persistence,
+Workspace identity, selection authority, Recipe non-execution boundary and
+DeepSeek-only policy are unchanged.
+
+## 8. Dependency and Locked-Version Compliance
+
+No dependency or lockfile change. Both tools use pymatgen `2026.5.4` with
+pymatgen-core `2026.5.18`, MIT licensed, through
+`pymatgen.core.local_env.CrystalNN` and `VoronoiNN`.
+
+## 9. Tool Registry Changes
+
+Old count = 53; approved added count = 2; final count = 55. Added:
+`structure.coordination_crystalnn@0.1.0` and
+`structure.coordination_voronoinn@0.1.0`. No comparison Tool was added.
+
+## 10. DataProfile Integration
+
+DataProfile 2.1 is additive and keeps 2.0 readable. It records periodicity,
+lattice status, site count, occupancy/disorder status, exact resource identity,
+coordination readiness and typed reasons. Profile execution authority is none.
+
+## 11. Eligibility Integration
+
+Eligibility distinguishes ready periodic structures from missing lattice,
+non-periodic, disorder, partial occupancy, stale and over-cap inputs without
+running either algorithm or loading heavy payloads.
+
+## 12. Planner Integration
+
+Exact CrystalNN, exact VoronoiNN and two-step comparison requests preserve both
+Tool identities and bounded resolved parameters. Unsupported or non-ready input
+does not create an executable plan.
+
+## 13. AnalysisPlan / PlanValidator
+
+Existing Plan 0.1/0.2 is reused. Exact input refs, Tool versions, params and
+output contracts are validated; invalid or cross-algorithm bindings are rejected.
+
+## 14. Runtime / Adapter Architecture
+
+QueueWorkerRuntime resolves the exact registered Adapter. Computation is server
+side, bounded, deterministic and inert; no network, shell, arbitrary filesystem,
+dynamic module or user code authority exists.
+
+## 15. CrystalNN Implementation
+
+CrystalNN is independently instantiated with its sealed bounded parameter schema,
+per-site results, algorithm-specific weighted coordination semantics and typed
+failure behavior.
+
+## 16. VoronoiNN Implementation
+
+VoronoiNN is independently instantiated with solid-angle weight semantics,
+periodic-image relations, bounded cutoff/tolerance parameters and typed
+pathological-cell handling.
+
+## 17. Algorithm Isolation and No-Fallback
+
+CrystalNN failure never substitutes VoronoiNN and vice versa. Comparison consumes
+only successfully persisted exact Artifacts and preserves incomplete inputs.
+
+## 18. Structure / Site Identity
+
+Results retain project, dataset, job, tool call, source resource/hash and exact
+structure hash. Site identities are structure-hash bound; no label, filename,
+latest or fuzzy rebinding is used.
+
+## 19. Periodic Neighbor Identity
+
+Each relation retains central/neighbor site IDs, exact integer periodic image,
+distance in Angstrom, algorithm-specific weight and algorithm-qualified identity.
+
+## 20. Parameter Contracts
+
+CrystalNN and VoronoiNN schemas use `additionalProperties: false`, bounded finite
+values, strict booleans/integers, deterministic defaults, canonical serialization
+and persisted SHA-256 parameter hashes.
+
+## 21. Units
+
+Distance is canonicalized to Angstrom. Periodic images are exact dimensionless
+integer triplets. Weight and coordination values retain algorithm-specific
+semantics and are not conflated.
+
+## 22. Artifact Contracts
+
+Separate `phase10n1.crystalnn_coordination.v1` and
+`phase10n1.voronoinn_coordination.v1` payloads retain source identity, resolved
+parameters, provenance, coverage, diagnostics, warnings, checksums and bounded
+derived data without copying the full structure payload.
+
+## 23. Determinism
+
+Canonical site/neighbor ordering, exact image identity, stable parameter hashes,
+canonical JSON and checksum stability are covered by focused tests and generated
+reference evidence.
+
+## 24. Coverage and Partial Results
+
+Artifacts report total, eligible, successful, failed, unsupported and zero-
+neighbor sites, retained rows, ratio and typed reasons. Partial results are not
+represented as complete.
+
+## 25. Scientific Wording
+
+Allowed wording is `algorithm-derived coordination`, `CrystalNN-derived
+coordination` and `VoronoiNN-derived coordination`. Definitive bonding, absolute
+chemical truth, experimental confirmation and a universally correct algorithm
+are prohibited.
+
+## 26. Reference Fixtures
+
+Checked deterministic pymatgen fixtures cover both algorithms, periodic images,
+disorder rejection, disagreement and bounded payload generation. Numeric fixture
+evidence is separate from screenshots.
+
+## 27. Numeric Tolerances
+
+Periodic images and identities require exact equality. Distances and weights use
+quantity-specific documented finite tolerances; no global fuzzy matching or
+silent deletion is used.
+
+## 28. Workspace Integration
+
+The typed coordination renderer is lazy and metadata-first. Workspace stores
+references and presentation state only; comparison is a deterministic view over
+two exact algorithm Artifacts.
+
+## 29. Structure Viewer Overlay
+
+The coordination surface provides table and inert text fallbacks. It renders only
+persisted site/neighbor relations and never recomputes geometry in the browser.
+
+## 30. Selection and Inspector
+
+Site selection is exact, structure-hash bound and URL-compatible. Inspector data
+includes algorithm/version, site/neighbors, image, distance/unit, weight semantics,
+resolved parameters, coverage, warnings, provenance and checksum.
+
+## 31. Grounded Interpretation
+
+The projector exposes bounded algorithm, coverage, ranges, warnings and limits;
+LLM interpretation cannot recompute neighbors, invent bonds or resolve algorithm
+disagreement.
+
+## 32. Report / Recipe
+
+Report uses persisted summary/table/provenance and mandatory limitations. Recipe
+retains Tool/version, params, hashes and source identity while remaining
+declarative, non-executable and without Plan/Job/queue authority.
+
+## 33. Historical Compatibility
+
+Existing 2.0 profiles, plans, Artifacts, Workspaces, selection URLs and reports
+remain readable. N1 does not reprocess historical records or rebind latest data.
+
+## 34. API Evidence
+
+Existing Profile, Planner/Job, Artifact, Workspace and Report/Recipe routes are
+reused. New public API family count = 0.
+
+## 35. PostgreSQL / Redis / MinIO
+
+Exact-SHA CI run `31147539225`: PostgreSQL/Redis/MinIO = 43 passed, 0 skipped,
+0 failed, 0 errors; migration head `0007_phase10m1_workspace_domain`.
+
+## 36. Browser Matrix
+
+Exact-SHA CI run `31147539225` passed Chromium, Firefox, WebKit and the N1
+coordination replay. Historical M3 replay also passed after the fixture-only
+responsive correction.
+
+## 37. Mobile
+
+Chromium mobile viewport = `390x844`; one active panel, zero horizontal overflow,
+minimum touch target = 44x44 CSS px, Inspector/table fallback retained.
+
+## 38. Accessibility
+
+Named algorithm controls, semantic status, keyboard site selection, visible focus,
+non-color differentiation, table/text alternatives, reduced motion and mobile
+targets are covered by component and browser evidence.
+
+## 39. Performance Caps
+
+Caps are enforced at 32 structures, 5000 sites, 1000 neighbors/site, 50000
+retained rows, 16 MiB Artifact bytes and 120 seconds. Initial and inactive heavy
+payload requests remain zero.
+
+## 40. Viewer Lifecycle
+
+Coordination is a light/table renderer and uses zero WebGL contexts. Existing M4
+50-cycle lifecycle gate remains green; no duplicate canvas/listener/observer or
+payload growth was introduced.
+
+## 41. Security
+
+`NO_COORDINATION_ARBITRARY_CODE_EXECUTION=PASS`, `NO_COORDINATION_SHELL_AUTHORITY=PASS`,
+`NO_COORDINATION_FILESYSTEM_AUTHORITY=PASS`, `NO_COORDINATION_EXTERNAL_NETWORK=PASS`,
+`NO_COORDINATION_DYNAMIC_MODULE=PASS`, artifact HTML/JavaScript/iframe/external URL
+execution = PASS, cross-project/cross-job/foreign binding = PASS, stale rebinding
+= 0, checksum bypass = 0, secret/private-path/stack/storage-key disclosure = 0,
+algorithm fallback/substitution = 0, secret scan = PASS.
+
+## 42. LLM / DeepSeek Compliance
+
+`NEW_LLM_CALL_SITES = 0`; `N1_COORDINATION_REQUIRES_LLM = NO`;
+`N1_REAL_LLM_CALLS = 0`; `DEEPSEEK_POLICY_REGRESSION = PASS`.
+
+## 43. Acceptance Results
+
+Expected = 10; implemented = 10; missing = 0; extra = 0; duplicate registry
+entries = 0; conflicting definitions = 0; canonical registry shorthand entries = 0.
+
+## 44. Tests
+
+Local: backend `1177 passed, 45 skipped` (local environment skips only), frontend
+`414 passed`, focused N1 `54 passed`, focused Workspace frontend `38 passed`,
+typecheck/build/lock/diff checks passed. CI: Unit, Frontend/Typecheck/Build,
+browser matrix and service-backed no-skipped gates passed. `npm audit` is
+UNAVAILABLE because the configured mirror returns `404_NOT_IMPLEMENTED`.
+
+## 45. Evidence
+
+Evidence directory: `docs/phase10n/evidence/phase10n1_crystalnn_voronoinn_coordination/`.
+Manifest, browser captures, reference results, API/service summaries, security,
+accessibility, lifecycle and acceptance checks passed with no secret-bearing data.
+
+## 46. Files Changed
+
+Production implementation changed only within approved N1 behavior. Database
+schema = unchanged; migration = unchanged; migration head = 0007; public API
+family = unchanged; dependencies/lockfile = unchanged; Workspace and Selection
+authority = unchanged; Report/Recipe execution authority = unchanged.
+
+## 47. Commit / CI History
+
+- Failed implementation `81eed119121bceb98f725bab8c5a659f4022e00c` / CI `31137374140`:
+  M3 exact semantic replay drift and isolated actor fixture failure.
+- Failed corrected implementation `7f3efab3357f171884afad2082347d1007741392` / CI
+  `31147007026`: M3 was fixed; service Artifact version exceeded the legacy 32-char
+  persistence field.
+- Corrected implementation `08b5eec39bed4fcc93d0a4ef36eb385ba0e9ecc4` / CI
+  `31147539225`: success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue archive SHA/CI: pending; no archive claim is made here.
+
+## 48. Explicit Non-Scope
+
+N2 local environments/polyhedra, N3 experimental XRD, N4 trajectory analytics,
+N5 electronic Band/DOS and N6 integration closure are not implemented. No new
+science, migration, API family, dependency, Plan architecture, arbitrary code,
+Recipe execution or Phase 10N-2 task was created.
+
+## 49. Phase 10N Readiness
+
+Phase 10N-1: PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI.
+
+Phase 10N-2: REVIEWER_GATE / AWAITING REVIEWER PROMPT.
+
+## 50. Queue State
+
+During completion-record CI: `TASK_BLOCK_COUNT = 1`; the N1 task remains active.
+N2 remains a reviewer gate and has no executable task.
+
+## 51. Automatic N2 Entry
+
+NO. `PHASE_10N2_EXECUTABLE_TASK_CREATED = NO`.
+
+## 52. Final Repository State
+
+At completion-record creation: HEAD = `08b5eec39bed4fcc93d0a4ef36eb385ba0e9ecc4`,
+origin/master equals HEAD, branch `master`, worktree clean, migration head
+`0007_phase10m1_workspace_domain`, Registry count 55, task count 1, N2 task absent.
+
+Return the complete N1 result after completion-record and queue-archive exact-SHA
+CI; do not create, queue or execute Phase 10N-2.
