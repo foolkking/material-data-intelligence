@@ -126,7 +126,7 @@ def test_phase10n1_postgres_redis_minio_coordination_artifact_closure(
             "jobId": context.job_id,
             "toolCallId": context.tool_call_id,
             "type": "table_json",
-            "version": "phase10n1.crystalnn_coordination.v1",
+            "version": table.version,
             "name": "crystalnn-coordination.json",
             "storageKey": object_key,
             "storageProvider": "minio",
