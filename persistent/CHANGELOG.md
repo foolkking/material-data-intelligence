@@ -2406,6 +2406,12 @@
   lockfile and LLM call sites remain unchanged; N3 is not queued.
 ## 2026-08-09 - Phase 10N-3 Implementation
 
+- Initial implementation SHA `1faa25582107ac3d34efea2e75b61ae3d0f9be13`
+  failed CI `31269467363` only because the Phase 10M-3 service regression still
+  expected the pre-N3 seven-kind selection list; 44 service tests and all unit,
+  frontend, browser, typecheck and build gates passed. The immutable failed
+  attempt remains recorded while the exact selection assertion is corrected.
+
 - Added strict experimental XRD import semantics and additive DataProfile 2.2.
 - Added one registered N3 Adapter with independent peak detection, exact
   theoretical XRD binding, bounded one-to-one matching and complete unmatched

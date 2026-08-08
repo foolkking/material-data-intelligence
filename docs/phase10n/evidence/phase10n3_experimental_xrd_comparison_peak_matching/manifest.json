@@ -137,6 +137,11 @@
                         "sha256":  "bdadb6d910f59e31a3d7cb3eb013eb62729ab8da82d73de7e6c9fe97999ce472"
                     },
                     {
+                        "path":  "implementation_ci_attempts.md",
+                        "bytes":  636,
+                        "sha256":  "42b0afd2321c4f13f8d81ce26f81fe573bb8ff0ca9b9d54013dc877b9e2c28de"
+                    },
+                    {
                         "path":  "interpretation.json",
                         "bytes":  215,
                         "sha256":  "3ac1a4dd0af99986c8b8b0fea9d4d1741424c691f9b78e391aa1ca5df450d1c7"
