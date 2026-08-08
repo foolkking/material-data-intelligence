@@ -95,6 +95,7 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
             "structure.coordination_hist",
             "structure.coordination_crystalnn",
             "structure.coordination_voronoinn",
+            "structure.local_environment_polyhedra",
             "structure.xrd",
             "structure.rdf",
         }:

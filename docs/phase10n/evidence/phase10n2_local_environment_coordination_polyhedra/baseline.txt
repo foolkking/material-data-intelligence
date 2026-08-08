@@ -1,0 +1,8 @@
+Phase 10N-2 baseline
+N1 verified archive: a9319c2da44f8794ef7a66347d8f7a0dffe4aa5b
+Registry baseline: 55
+N1 tools: structure.coordination_crystalnn@0.1.0, structure.coordination_voronoinn@0.1.0
+DataProfile: 2.1
+Migration head: 0007_phase10m1_workspace_domain
+Database/API/dependencies/lockfile: unchanged
+Production behavior before N2: N2 absent

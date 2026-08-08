@@ -463,6 +463,27 @@ class CapabilityContextValidator:
 
 
 def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandidateProjection) -> list[str]:
+    goal = intent.rawGoal.casefold()
+    if any(marker in goal for marker in ("local environment", "coordination polyhed", "local geometry")):
+        n2 = "structure.local_environment_polyhedra"
+        if "crystalnn" in goal:
+            producer = "structure.coordination_crystalnn"
+        elif "voronoinn" in goal or "voronoi nn" in goal:
+            producer = "structure.coordination_voronoinn"
+        else:
+            raise CapabilityPlanningError(
+                "Local-environment analysis requires an explicit CrystalNN or VoronoiNN coordination source.",
+                code="COORDINATION_ALGORITHM_CLARIFICATION_REQUIRED",
+                outcome=CapabilityPlanningOutcome.capability_mismatch,
+            )
+        eligible = {item.toolId for item in projection.candidates}
+        if {producer, n2}.issubset(eligible):
+            return sorted([producer, n2])
+        raise CapabilityPlanningError(
+            "The requested local-environment dependency chain is not eligible.",
+            code="DEPENDENCY_PRODUCER_NOT_ELIGIBLE",
+            outcome=CapabilityPlanningOutcome.capability_mismatch,
+        )
     remaining_intents = set(intent.scientificIntents)
     remaining_needs = set(intent.requiredCapabilityNeeds)
     selected: list[ProjectedCandidate] = []

@@ -13,6 +13,10 @@ export const WORKSPACE_SELECTION_KINDS = [
   "MATERIAL_OBJECT",
   "STRUCTURE",
   "PERIODIC_SITE",
+  "LOCAL_ENVIRONMENT",
+  "COORDINATION_POLYHEDRON",
+  "POLYHEDRON_VERTEX",
+  "POLYHEDRON_FACE",
   "TRAJECTORY_ATOM",
   "TRAJECTORY_FRAME",
   "PHONON_Q_POINT",
@@ -39,6 +43,7 @@ const VALUE_FIELDS = [
   "toolCallId", "bundleId", "bundleHash", "evidenceItemId", "sourceArtifactId",
   "sourceArtifactChecksum", "fieldLocator", "interpretationId", "interpretationHash",
   "claimId",
+  "environmentId", "polyhedronId", "vertexId", "faceId", "geometryReferenceId",
 ] as const;
 
 type SelectionValueField = (typeof VALUE_FIELDS)[number];
@@ -48,6 +53,10 @@ const REQUIRED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> =
   MATERIAL_OBJECT: ["datasetId", "datasetVersion", "objectId"],
   STRUCTURE: ["datasetId", "datasetVersion", "objectId", "structureId"],
   PERIODIC_SITE: ["datasetId", "datasetVersion", "objectId", "structureId", "siteId"],
+  LOCAL_ENVIRONMENT: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId"],
+  COORDINATION_POLYHEDRON: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "polyhedronId"],
+  POLYHEDRON_VERTEX: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "vertexId"],
+  POLYHEDRON_FACE: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "faceId"],
   TRAJECTORY_ATOM: ["datasetId", "datasetVersion", "trajectoryId", "atomId"],
   TRAJECTORY_FRAME: ["datasetId", "datasetVersion", "trajectoryId", "frameId"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"],
@@ -64,6 +73,10 @@ const ALLOWED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> = 
   MATERIAL_OBJECT: ["datasetId", "datasetVersion", "objectId", "sampleRef", "artifactId", "artifactChecksum"],
   STRUCTURE: ["datasetId", "datasetVersion", "objectId", "structureId", "artifactId", "artifactChecksum"],
   PERIODIC_SITE: ["datasetId", "datasetVersion", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum"],
+  LOCAL_ENVIRONMENT: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "geometryReferenceId"],
+  COORDINATION_POLYHEDRON: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "polyhedronId", "geometryReferenceId"],
+  POLYHEDRON_VERTEX: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "vertexId"],
+  POLYHEDRON_FACE: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "faceId"],
   TRAJECTORY_ATOM: ["datasetId", "datasetVersion", "trajectoryId", "atomId", "artifactId", "artifactChecksum"],
   TRAJECTORY_FRAME: ["datasetId", "datasetVersion", "trajectoryId", "frameId", "artifactId", "artifactChecksum"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"],
@@ -80,7 +93,9 @@ const ID_FIELDS = new Set<SelectionValueField>([
   "atomId", "frameId", "phononArtifactId", "qPointId", "branchId", "reciprocalArtifactId",
   "reciprocalPointId", "segmentId", "fieldId", "regionId", "artifactId", "toolCallId",
   "bundleId", "evidenceItemId", "sourceArtifactId", "interpretationId", "claimId",
+  "environmentId", "polyhedronId", "geometryReferenceId",
 ]);
+const N2_ID_FIELDS = new Set<SelectionValueField>(["vertexId", "faceId"]);
 const HASH_FIELDS = new Set<SelectionValueField>([
   "artifactChecksum", "bundleHash", "sourceArtifactChecksum", "interpretationHash",
 ]);
@@ -114,7 +129,7 @@ export function validateWorkspaceSelectionRef(value: unknown): WorkspaceSelectio
     sourceScopeHash,
     projectId,
   };
-  for (const field of VALUE_FIELDS) normalized[field] = nullableString(input[field], field);
+  for (const field of VALUE_FIELDS) normalized[field] = nullableString(input[field], field, field === "faceId" ? 3_072 : field === "vertexId" ? 1_024 : 160);
   for (const field of REQUIRED[kind]) {
     if (!normalized[field]) invalid(`${kind} is missing ${field}.`);
   }
@@ -124,6 +139,7 @@ export function validateWorkspaceSelectionRef(value: unknown): WorkspaceSelectio
     if (current !== null && !allowed.has(field)) invalid(`${kind} cannot contain ${field}.`);
     if (current === null) continue;
     if (ID_FIELDS.has(field)) normalized[field] = exactId(current, field, field === "datasetId" || field === "jobId" || field === "toolCallId" ? 64 : 96);
+    if (N2_ID_FIELDS.has(field) && !/^[A-Za-z0-9][A-Za-z0-9_.:,|@/-]*$/u.test(String(current))) invalid(`${field} is not an exact N2 identity.`);
     if (HASH_FIELDS.has(field)) normalized[field] = exactHash(current, field);
   }
   if (normalized.artifactContract !== null && !CONTRACT.test(String(normalized.artifactContract))) invalid("artifactContract is invalid.");
@@ -223,9 +239,9 @@ function rejectUnknown(value: Record<string, unknown>, allowed: Set<string>): vo
   }
 }
 
-function nullableString(value: unknown, field: string): string | null {
+function nullableString(value: unknown, field: string, maximum = 160): string | null {
   if (value === null || value === undefined) return null;
-  if (typeof value !== "string" || value.length === 0 || value.length > 160) invalid(`${field} must be a bounded string.`);
+  if (typeof value !== "string" || value.length === 0 || value.length > maximum) invalid(`${field} must be a bounded string.`);
   return value;
 }
 

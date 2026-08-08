@@ -73,6 +73,7 @@ class ToolExecutionContext:
     plan_id: str | None = None
     plan_version: str | None = None
     object_store: Mapping[str, Any] = field(default_factory=dict)
+    artifact_bindings: Mapping[str, Mapping[str, Any]] = field(default_factory=dict)
     resource_limits: dict[str, int] = field(default_factory=dict)
 
     def resolve_input_refs(self, input_refs: list[Any]) -> list[Any]:

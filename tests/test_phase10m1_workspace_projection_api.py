@@ -186,6 +186,10 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
         "DATASET_SAMPLE",
         "MATERIAL_OBJECT",
         "ARTIFACT",
+        "LOCAL_ENVIRONMENT",
+        "COORDINATION_POLYHEDRON",
+        "POLYHEDRON_VERTEX",
+        "POLYHEDRON_FACE",
     ]
     assert result_panel["acceptedSelectionKinds"] == [
         "DATASET_SAMPLE",
@@ -194,6 +198,10 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
         "PERIODIC_SITE",
         "TRAJECTORY_ATOM",
         "TRAJECTORY_FRAME",
+        "LOCAL_ENVIRONMENT",
+        "COORDINATION_POLYHEDRON",
+        "POLYHEDRON_VERTEX",
+        "POLYHEDRON_FACE",
         "PHONON_Q_POINT",
         "PHONON_BRANCH",
         "RECIPROCAL_POINT",
@@ -249,6 +257,10 @@ def test_historical_empty_panel_declarations_are_read_projected_without_write() 
         "DATASET_SAMPLE",
         "MATERIAL_OBJECT",
         "ARTIFACT",
+        "LOCAL_ENVIRONMENT",
+        "COORDINATION_POLYHEDRON",
+        "POLYHEDRON_VERTEX",
+        "POLYHEDRON_FACE",
     ]
     assert projected_result["contractProvenance"] == "phase10m3.selection_registry.v1"
     persisted = repos.workspaces.get_panel(workspace_id, result["panelId"], project_id="project_1")

@@ -1470,3 +1470,16 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
   exact structure/site identity and periodic image vectors.
 - CrystalNN/VoronoiNN comparison is a deterministic consumer presentation and
   is not registered as a third scientific Tool. N2 remains reviewer-gated.
+
+# Phase 10N-2 Local Environment + Coordination Polyhedra
+
+- Registry count is 56 after adding exactly
+  `structure.local_environment_polyhedra@0.1.0`.
+- The Tool accepts one Structure and one exact N1 coordination Artifact binding;
+  output is `phase10n2.local_environment_polyhedra.v1` plus bounded summary and
+  non-executable Recipe artifacts.
+- Eligibility and Planner preserve the explicit CrystalNN/VoronoiNN producer
+  choice. AnalysisPlan 0.2 binds the exact N1 output; missing or failed producers
+  block N2 and never select another algorithm.
+- Environment/polyhedron comparison is deterministic presentation only, with no
+  additional Tool, Adapter or scientific authority. N3 remains reviewer-gated.

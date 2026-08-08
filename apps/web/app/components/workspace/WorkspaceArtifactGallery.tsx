@@ -29,6 +29,7 @@ const BrillouinZonePreviewPanel = lazy(() => import("../brillouin-zone/Brillouin
 const VolumetricPreviewPanel = lazy(() => import("../volumetric-viewer/VolumetricPreviewPanel").then((module) => ({ default: module.VolumetricPreviewPanel })));
 const WorkspaceGenericPlot = lazy(() => import("./WorkspaceGenericPlot").then((module) => ({ default: module.WorkspaceGenericPlot })));
 const CoordinationResultPanel = lazy(() => import("./CoordinationResultPanel").then((module) => ({ default: module.CoordinationResultPanel })));
+const LocalEnvironmentPolyhedraPanel = lazy(() => import("./LocalEnvironmentPolyhedraPanel").then((module) => ({ default: module.LocalEnvironmentPolyhedraPanel })));
 
 export const MAX_METADATA_ARTIFACTS = 256;
 const MAX_JSON_PREVIEW_CHARS = 80_000;
@@ -211,6 +212,7 @@ function WorkspaceArtifactRenderer({ selected, artifacts, workspace, delivery, o
     case "BRILLOUIN_ZONE": return <LazyBoundary><BrillouinZonePreviewPanel artifacts={bundle} /></LazyBoundary>;
     case "VOLUMETRIC": return <LazyBoundary><VolumetricPreviewPanel artifacts={bundle} /></LazyBoundary>;
     case "COORDINATION": return <LazyBoundary><CoordinationResultPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
+    case "LOCAL_ENVIRONMENT": return <LazyBoundary><LocalEnvironmentPolyhedraPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
     case "TEXT": return <TextFallback content={loadedSelected.content} />;
     case "GENERIC_TABLE": return <TableFallback content={loadedSelected.content} descriptor={descriptor} />;
     case "GENERIC_PLOT": return <PlotFallback content={loadedSelected.content} descriptor={descriptor} />;

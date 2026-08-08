@@ -4,6 +4,7 @@ from .chem_sys_treemap import ChemSysTreemapAdapter
 from .chem_sys_sunburst import ChemSysSunburstAdapter
 from .coordination_hist import CoordinationHistAdapter
 from .coordination_nn import CrystalNNCoordinationAdapter, VoronoiNNCoordinationAdapter
+from .local_environment_polyhedra import LocalEnvironmentPolyhedraAdapter
 from .density_scatter import DensityScatterAdapter
 from .elements_hist import ElementsHistAdapter
 from .formula_statistics import FormulaStatisticsAdapter
@@ -24,6 +25,7 @@ __all__ = [
     "DensityScatterAdapter",
     "ElementsHistAdapter",
     "FormulaStatisticsAdapter",
+    "LocalEnvironmentPolyhedraAdapter",
     "PhononBandAdapter",
     "PhononBandDosAdapter",
     "PhononAnimationAdapter",

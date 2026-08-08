@@ -1388,6 +1388,10 @@ export const WORKSPACE_SELECTION_KIND_VALUES = [
   "MATERIAL_OBJECT",
   "STRUCTURE",
   "PERIODIC_SITE",
+  "LOCAL_ENVIRONMENT",
+  "COORDINATION_POLYHEDRON",
+  "POLYHEDRON_VERTEX",
+  "POLYHEDRON_FACE",
   "TRAJECTORY_ATOM",
   "TRAJECTORY_FRAME",
   "PHONON_Q_POINT",
@@ -1494,6 +1498,11 @@ type WorkspaceSelectionValueFields = {
   sampleRef: string | null;
   structureId: string | null;
   siteId: string | null;
+  environmentId: string | null;
+  polyhedronId: string | null;
+  vertexId: string | null;
+  faceId: string | null;
+  geometryReferenceId: string | null;
   trajectoryId: string | null;
   atomId: string | null;
   frameId: string | null;
@@ -1566,6 +1575,34 @@ export type WorkspacePeriodicSiteSelectionRef = WorkspaceSelectionRefFor<
   | "artifactId" | "artifactChecksum"
 >;
 
+type WorkspaceN2CommonFields =
+  | "datasetId" | "datasetVersion" | "jobId" | "objectId" | "structureId" | "siteId"
+  | "artifactId" | "artifactChecksum" | "sourceArtifactId" | "sourceArtifactChecksum";
+
+export type WorkspaceLocalEnvironmentSelectionRef = WorkspaceSelectionRefFor<
+  "LOCAL_ENVIRONMENT",
+  WorkspaceN2CommonFields | "environmentId",
+  WorkspaceN2CommonFields | "environmentId" | "geometryReferenceId"
+>;
+
+export type WorkspaceCoordinationPolyhedronSelectionRef = WorkspaceSelectionRefFor<
+  "COORDINATION_POLYHEDRON",
+  WorkspaceN2CommonFields | "environmentId" | "polyhedronId",
+  WorkspaceN2CommonFields | "environmentId" | "polyhedronId" | "geometryReferenceId"
+>;
+
+export type WorkspacePolyhedronVertexSelectionRef = WorkspaceSelectionRefFor<
+  "POLYHEDRON_VERTEX",
+  WorkspaceN2CommonFields | "polyhedronId" | "vertexId",
+  WorkspaceN2CommonFields | "polyhedronId" | "vertexId"
+>;
+
+export type WorkspacePolyhedronFaceSelectionRef = WorkspaceSelectionRefFor<
+  "POLYHEDRON_FACE",
+  WorkspaceN2CommonFields | "polyhedronId" | "faceId",
+  WorkspaceN2CommonFields | "polyhedronId" | "faceId"
+>;
+
 export type WorkspaceTrajectoryAtomSelectionRef = WorkspaceSelectionRefFor<
   "TRAJECTORY_ATOM",
   "datasetId" | "datasetVersion" | "trajectoryId" | "atomId",
@@ -1630,6 +1667,10 @@ export type WorkspaceSelectionRef =
   | WorkspaceMaterialObjectSelectionRef
   | WorkspaceStructureSelectionRef
   | WorkspacePeriodicSiteSelectionRef
+  | WorkspaceLocalEnvironmentSelectionRef
+  | WorkspaceCoordinationPolyhedronSelectionRef
+  | WorkspacePolyhedronVertexSelectionRef
+  | WorkspacePolyhedronFaceSelectionRef
   | WorkspaceTrajectoryAtomSelectionRef
   | WorkspaceTrajectoryFrameSelectionRef
   | WorkspacePhononQPointSelectionRef

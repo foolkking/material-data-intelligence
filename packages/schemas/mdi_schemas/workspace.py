@@ -28,6 +28,7 @@ WORKSPACE_MAX_WARNINGS = 64
 WORKSPACE_MAX_DIAGNOSTICS = 64
 
 _ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,95}$")
+_N2_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:,|@/-]{0,3071}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _CONTRACT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$")
 _MEDIA_TYPE = re.compile(r"^[a-z0-9][a-z0-9.+-]{0,63}/[a-z0-9][a-z0-9.+-]{0,63}$")
@@ -103,6 +104,10 @@ class WorkspaceSelectionKind(StrEnum):
     MATERIAL_OBJECT = "MATERIAL_OBJECT"
     STRUCTURE = "STRUCTURE"
     PERIODIC_SITE = "PERIODIC_SITE"
+    LOCAL_ENVIRONMENT = "LOCAL_ENVIRONMENT"
+    COORDINATION_POLYHEDRON = "COORDINATION_POLYHEDRON"
+    POLYHEDRON_VERTEX = "POLYHEDRON_VERTEX"
+    POLYHEDRON_FACE = "POLYHEDRON_FACE"
     TRAJECTORY_ATOM = "TRAJECTORY_ATOM"
     TRAJECTORY_FRAME = "TRAJECTORY_FRAME"
     PHONON_Q_POINT = "PHONON_Q_POINT"
@@ -231,8 +236,8 @@ class WorkspacePanel(StrictWorkspaceModel):
     sourceReferenceHash: str
     rendererContract: str = Field(min_length=1, max_length=128)
     state: WorkspacePanelState
-    acceptedSelectionKinds: tuple[WorkspaceSelectionKind, ...] = Field(default_factory=tuple, max_length=13)
-    emittedSelectionKinds: tuple[WorkspaceSelectionKind, ...] = Field(default_factory=tuple, max_length=13)
+    acceptedSelectionKinds: tuple[WorkspaceSelectionKind, ...] = Field(default_factory=tuple, max_length=17)
+    emittedSelectionKinds: tuple[WorkspaceSelectionKind, ...] = Field(default_factory=tuple, max_length=17)
     evidenceRefs: tuple[str, ...] = Field(default_factory=tuple, max_length=32)
     provenanceRefs: tuple[str, ...] = Field(default_factory=tuple, max_length=32)
     capabilityRequirement: str | None = Field(default=None, max_length=96)
@@ -302,6 +307,11 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
     sampleRef: str | None = Field(default=None, max_length=96)
     structureId: str | None = Field(default=None, max_length=96)
     siteId: str | None = Field(default=None, max_length=96)
+    environmentId: str | None = Field(default=None, max_length=96)
+    polyhedronId: str | None = Field(default=None, max_length=96)
+    vertexId: str | None = Field(default=None, max_length=1024)
+    faceId: str | None = Field(default=None, max_length=3072)
+    geometryReferenceId: str | None = Field(default=None, max_length=96)
     trajectoryId: str | None = Field(default=None, max_length=96)
     atomId: str | None = Field(default=None, max_length=96)
     frameId: str | None = Field(default=None, max_length=96)
@@ -334,10 +344,18 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
         "reciprocalArtifactId", "reciprocalPointId", "segmentId", "fieldId", "regionId",
         "artifactId", "toolCallId", "bundleId", "evidenceItemId", "sourceArtifactId",
         "interpretationId", "claimId",
+        "environmentId", "polyhedronId", "geometryReferenceId",
     )
     @classmethod
     def validate_ids(cls, value: str | None) -> str | None:
         return _validate_id(value)
+
+    @field_validator("vertexId", "faceId")
+    @classmethod
+    def validate_n2_ids(cls, value: str | None) -> str | None:
+        if value is not None and not _N2_ID.fullmatch(value):
+            raise ValueError("N2 selection identity is invalid")
+        return value
 
     @field_validator("sourceScopeHash", "artifactChecksum", "bundleHash", "sourceArtifactChecksum", "interpretationHash")
     @classmethod
@@ -367,6 +385,10 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.MATERIAL_OBJECT: {"datasetId", "datasetVersion", "objectId"},
             WorkspaceSelectionKind.STRUCTURE: {"datasetId", "datasetVersion", "objectId", "structureId"},
             WorkspaceSelectionKind.PERIODIC_SITE: {"datasetId", "datasetVersion", "objectId", "structureId", "siteId"},
+            WorkspaceSelectionKind.LOCAL_ENVIRONMENT: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId"},
+            WorkspaceSelectionKind.COORDINATION_POLYHEDRON: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "polyhedronId"},
+            WorkspaceSelectionKind.POLYHEDRON_VERTEX: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "vertexId"},
+            WorkspaceSelectionKind.POLYHEDRON_FACE: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "faceId"},
             WorkspaceSelectionKind.TRAJECTORY_ATOM: {"datasetId", "datasetVersion", "trajectoryId", "atomId"},
             WorkspaceSelectionKind.TRAJECTORY_FRAME: {"datasetId", "datasetVersion", "trajectoryId", "frameId"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"},
@@ -386,6 +408,10 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.MATERIAL_OBJECT: {"datasetId", "datasetVersion", "objectId", "sampleRef", "artifactId", "artifactChecksum"},
             WorkspaceSelectionKind.STRUCTURE: {"datasetId", "datasetVersion", "objectId", "structureId", "artifactId", "artifactChecksum"},
             WorkspaceSelectionKind.PERIODIC_SITE: {"datasetId", "datasetVersion", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum"},
+            WorkspaceSelectionKind.LOCAL_ENVIRONMENT: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "geometryReferenceId"},
+            WorkspaceSelectionKind.COORDINATION_POLYHEDRON: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "polyhedronId", "geometryReferenceId"},
+            WorkspaceSelectionKind.POLYHEDRON_VERTEX: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "vertexId"},
+            WorkspaceSelectionKind.POLYHEDRON_FACE: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "faceId"},
             WorkspaceSelectionKind.TRAJECTORY_ATOM: {"datasetId", "datasetVersion", "trajectoryId", "atomId", "artifactId", "artifactChecksum"},
             WorkspaceSelectionKind.TRAJECTORY_FRAME: {"datasetId", "datasetVersion", "trajectoryId", "frameId", "artifactId", "artifactChecksum"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"},

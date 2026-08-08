@@ -1,0 +1,6 @@
+pymatgen=2026.5.4
+pymatgen-core=2026.5.18
+numpy=2.4.6
+scipy=1.17.1
+ConvexHull import=scipy.spatial.ConvexHull
+license=pymatgen MIT; NumPy BSD-3-Clause; SciPy BSD-3-Clause

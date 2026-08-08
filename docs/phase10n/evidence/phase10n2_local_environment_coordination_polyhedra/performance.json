@@ -1,0 +1,1 @@
+{"caps":{"maxEvaluatedSites":5000,"maxNeighborsPerSite":64,"maxGeometryReferencesPerSite":32,"maxPolyhedronVertices":64,"maxFaces":128,"maxOutputBytes":16777216,"timeoutSeconds":180},"initialHeavyPayloadRequests":0,"inactiveHeavyPayloadRequests":0,"adjacentPrefetch":0,"developmentBenchmark":"focused small/medium/near-cap and over-cap rejection tests"}

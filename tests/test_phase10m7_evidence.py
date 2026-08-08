@@ -128,13 +128,22 @@ def test_phase10m7_document_links_and_phase10n_gate() -> None:
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     assert task_count in {0, 1}
-    if task_count and "Phase 10N-1" not in tasks:
+    if task_count and "Task: Phase 10N-2" in tasks:
+        assert "Phase 10N-3:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+    elif task_count and "Phase 10N-1" not in tasks:
         assert "# Phase 10M-7" in tasks
     elif task_count:
         assert "Phase 10N-1 CrystalNN / VoronoiNN Coordination" in tasks
     else:
         assert "# Phase 10M-7" not in tasks
-    assert "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+    assert (
+        "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+        or "Task: Phase 10N-2" in tasks
+    )
     task_blocks = re.findall(r"(?ms)^---TASK---\n.*?^---END---$", tasks)
     assert len(task_blocks) == task_count
-    assert all("Phase 10N-1 CrystalNN / VoronoiNN Coordination" in block for block in task_blocks)
+    assert all(
+        "Phase 10N-1 CrystalNN / VoronoiNN Coordination" in block
+        or "Phase 10N-2 Local Environment + Coordination Polyhedra" in block
+        for block in task_blocks
+    )

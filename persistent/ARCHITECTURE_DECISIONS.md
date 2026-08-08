@@ -4435,3 +4435,21 @@ authorized.
   algorithm-qualified periodic neighbor identities and resolved parameter hashes.
 - Existing generic persistence, APIs, migrations and dependency locks are reused;
   frontend, Workspace, Report, Recipe and LLM do not recompute coordination.
+
+## 2026-08-08 Phase 10N-2 ADR - Exact N1 Consumer Geometry Authority
+
+- `structure.local_environment_polyhedra@0.1.0` is the sole N2 Tool and consumes
+  exactly one persisted N1 Artifact plus its ID, checksum, contract, producer,
+  algorithm, parameter hash and immutable structure identity.
+- N2 never discovers neighbors. The N1 periodic neighbor relation set remains
+  unchanged and algorithm-specific; dependency failure blocks the N2 descendant
+  without CrystalNN/VoronoiNN fallback or substitution.
+- `mdi.angular_spectrum_reference_match@1.0.0` classifies a bounded allowlisted
+  geometry catalog using deterministic pairwise cosine spectra. Ambiguity and
+  unsupported coordination numbers remain explicit.
+- Scientific polyhedron faces are constructed server-side by the locked
+  `scipy.spatial.ConvexHull@1.17.1`; frontend triangulation/projection has no
+  scientific authority. Degenerate and coplanar inputs retain typed partial state.
+- DataProfile remains 2.1. Generic Artifact/Workspace/Report persistence and the
+  existing API families are reused with no migration, dependency, lockfile, LLM,
+  oxidation-state, bond-valence or Recipe execution authority.

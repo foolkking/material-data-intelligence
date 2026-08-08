@@ -1,0 +1,41 @@
+{
+  "artifactType": "structure.local_environment_polyhedra",
+  "schema_version": "phase10n2.local_environment_polyhedra.v1",
+  "tool": {"toolId": "structure.local_environment_polyhedra", "toolVersion": "0.1.0", "adapterVersion": "0.1.0"},
+  "algorithm": {"classification": "mdi.angular_spectrum_reference_match@1.0.0", "faceConstruction": "scipy.spatial.ConvexHull@1.17.1"},
+  "referenceCatalog": {"catalogId": "mdi.local_geometry_reference_catalog", "catalogVersion": "1.0.0", "geometryIds": ["tetrahedral"]},
+  "resolvedParameters": {"site_indices": [0], "geometry_reference_ids": ["tetrahedral"], "classification_max_distance": 0.35, "classification_tie_tolerance": 0.01, "include_faces": true, "max_evaluated_sites": 5000, "max_neighbors_per_site": 64, "max_geometry_references_per_site": 32, "max_polyhedron_vertices": 64, "max_faces": 128, "max_output_bytes": 16777216},
+  "parameterHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "scope": {"projectId": "project_local", "datasetId": "dataset_demo", "jobId": "job_gallery", "planId": "plan_demo", "planVersion": "0.2", "toolCallId": "call_local_environment", "sourceResourceId": "structure_resource", "sourceResourceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "structureHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+  "sourceCoordination": {"artifactId": "artifact_coordination_crystalnn", "artifactChecksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "contractVersion": "phase10n1.crystalnn_coordination.v1", "toolId": "structure.coordination_crystalnn", "toolVersion": "0.1.0", "algorithmId": "pymatgen.crystalnn", "algorithmVersion": "2026.5.4", "parameterHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+  "siteResults": [{
+    "environmentIdentity": "environment:browser_fixture",
+    "polyhedronIdentity": "polyhedron:browser_fixture",
+    "structureHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "siteId": "site:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:0",
+    "siteIndex": 0,
+    "sourceCoordinationSemantics": "crystalnn_weight_sum",
+    "sourceCoordinationValue": 4.0,
+    "neighborRelationIdentities": ["neighbor:0", "neighbor:1", "neighbor:2", "neighbor:3"],
+    "classification": {"status": "CLASSIFIED", "referenceGeometryId": "tetrahedral", "referenceGeometryVersion": "1.0.0", "geometryDistanceRms": 0.0, "geometryScore": 1.0, "alternatives": [], "tieTolerance": 0.01, "maximumDistance": 0.35},
+    "polyhedron": {"status": "AVAILABLE", "vertices": [
+      {"vertexIdentity": "vertex:neighbor:0", "neighborIdentity": "neighbor:0", "neighborSiteId": "site:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:1", "periodicImage": [0, 0, 0], "relativeCartesian": [1, 1, 1], "distance": 1.7320508, "distanceUnit": "angstrom"},
+      {"vertexIdentity": "vertex:neighbor:1", "neighborIdentity": "neighbor:1", "neighborSiteId": "site:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2", "periodicImage": [0, 0, 0], "relativeCartesian": [1, -1, -1], "distance": 1.7320508, "distanceUnit": "angstrom"},
+      {"vertexIdentity": "vertex:neighbor:2", "neighborIdentity": "neighbor:2", "neighborSiteId": "site:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:3", "periodicImage": [0, 0, 0], "relativeCartesian": [-1, 1, -1], "distance": 1.7320508, "distanceUnit": "angstrom"},
+      {"vertexIdentity": "vertex:neighbor:3", "neighborIdentity": "neighbor:3", "neighborSiteId": "site:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:4", "periodicImage": [0, 0, 0], "relativeCartesian": [-1, -1, 1], "distance": 1.7320508, "distanceUnit": "angstrom"}
+    ], "faces": [
+      {"faceIdentity": "face:0", "vertexIdentities": ["vertex:neighbor:0", "vertex:neighbor:1", "vertex:neighbor:2"]},
+      {"faceIdentity": "face:1", "vertexIdentities": ["vertex:neighbor:0", "vertex:neighbor:1", "vertex:neighbor:3"]},
+      {"faceIdentity": "face:2", "vertexIdentities": ["vertex:neighbor:0", "vertex:neighbor:2", "vertex:neighbor:3"]},
+      {"faceIdentity": "face:3", "vertexIdentities": ["vertex:neighbor:1", "vertex:neighbor:2", "vertex:neighbor:3"]}
+    ], "unavailableReason": null},
+    "distortionMetrics": {"radialDistanceMean": 1.7320508, "radialDistanceSpread": 0.0, "radialDistanceUnit": "angstrom", "bondLengthDistortionIndex": 0.0, "angularRmsDeviation": 0.0, "angularRmsDeviationUnit": "degree", "geometryDistanceRms": 0.0, "geometryScore": 1.0, "polyhedronVolume": 0.0, "polyhedronVolumeUnit": "angstrom^3", "polyhedronSurfaceArea": 0.0, "polyhedronSurfaceAreaUnit": "angstrom^2"},
+    "warnings": []
+  }],
+  "coverage": {"status": "COMPLETE", "requestedSites": 1, "evaluatedSites": 1, "unavailableSites": 0, "classifiedSites": 1, "ambiguousSites": 0, "unclassifiedSites": 0, "ratio": 1.0, "unavailable": []},
+  "warnings": [],
+  "runtimeDiagnostics": {"n1NeighborRecomputation": false, "independentNeighborSearch": false, "coordinationAlgorithmFallback": false, "resultSubstitution": false, "boundedPairwiseMatching": true},
+  "provenance": {"authority": "registered_backend_adapter", "sourceArtifactId": "artifact_coordination_crystalnn", "sourceArtifactChecksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "comparisonAuthority": "deterministic_consumer_presentation_only"},
+  "limits": {"maxEvaluatedSites": 5000, "maxNeighborsPerSite": 64, "maxGeometryReferencesPerSite": 32, "maxPolyhedronVertices": 64, "maxFaces": 128, "maxOutputBytes": 16777216, "timeoutSeconds": 180},
+  "security": {"containsJavascript": false, "containsHtml": false, "externalUrls": [], "arbitraryCodeExecution": false}
+}

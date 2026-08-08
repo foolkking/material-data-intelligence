@@ -230,6 +230,58 @@ export function coordinationSiteSelection(
   });
 }
 
+export function localEnvironmentSelection(
+  workspace: ScientificWorkspace,
+  artifact: Artifact,
+  identity: Readonly<{
+    kind: "LOCAL_ENVIRONMENT" | "COORDINATION_POLYHEDRON" | "POLYHEDRON_VERTEX" | "POLYHEDRON_FACE";
+    sourceResourceId: string;
+    structureHash: string;
+    siteId: string;
+    sourceArtifactId: string;
+    sourceArtifactChecksum: string;
+    environmentId?: string;
+    polyhedronId?: string;
+    vertexId?: string;
+    faceId?: string;
+    geometryReferenceId?: string | null;
+  }>,
+): WorkspaceSelectionContext {
+  const artifactId = artifactIdentity(artifact);
+  const checksum = artifactChecksum(artifact);
+  if (!workspace.datasetId || !workspace.datasetVersion || !artifactId || !checksum) throw new Error("SELECTION_N2_SCOPE_UNAVAILABLE");
+  if (!identity.sourceResourceId || !identity.structureHash || !identity.siteId || !identity.sourceArtifactId || !identity.sourceArtifactChecksum) throw new Error("SELECTION_N2_IDENTITY_INVALID");
+  return validateWorkspaceSelectionContext({
+    schemaVersion: "1.0",
+    sourceScopeHash: workspace.sourceReferenceHash,
+    primary: {
+      selectionSchemaVersion: "1.0",
+      kind: identity.kind,
+      sourceScopeHash: workspace.sourceReferenceHash,
+      projectId: workspace.projectId,
+      datasetId: workspace.datasetId,
+      datasetVersion: workspace.datasetVersion,
+      jobId: workspace.sourceJobId,
+      objectId: identity.sourceResourceId,
+      structureId: identity.structureHash,
+      siteId: identity.siteId,
+      artifactId,
+      artifactChecksum: checksum,
+      sourceArtifactId: identity.sourceArtifactId,
+      sourceArtifactChecksum: identity.sourceArtifactChecksum,
+      environmentId: identity.environmentId ?? null,
+      polyhedronId: identity.polyhedronId ?? null,
+      vertexId: identity.vertexId ?? null,
+      faceId: identity.faceId ?? null,
+      geometryReferenceId: identity.geometryReferenceId ?? null,
+    },
+    secondary: [],
+    propagation: "EXACT_COMPATIBLE_ONLY",
+    compatibility: "EXACT",
+    cleared: false,
+  });
+}
+
 export function evidenceItemSelection(
   workspace: ScientificWorkspace,
   interpretation: GroundedScientificInterpretation,

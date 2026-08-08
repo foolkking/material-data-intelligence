@@ -1,0 +1,1 @@
+{"cases":["insufficient vertices","coplanar vertices","degenerate hull","non-finite geometry"],"policy":"typed unavailable face state; no silent vertex deletion or coordinate perturbation"}

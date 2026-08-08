@@ -91,6 +91,12 @@ ARTIFACT_PROJECTOR_CONTRACTS: Mapping[tuple[str, str], ArtifactProjectorContract
         ArtifactProjectorContract("structure.summary", "structure_json", "platform.structure.summary", ("platform.structure.summary.v1",)),
         ArtifactProjectorContract("structure.coordination_crystalnn", "table_json", "phase10n1.crystalnn_coordination", ("phase10n1.crystalnn_coordination.v1",)),
         ArtifactProjectorContract("structure.coordination_voronoinn", "table_json", "phase10n1.voronoinn_coordination", ("phase10n1.voronoinn_coordination.v1",)),
+        ArtifactProjectorContract(
+            "structure.local_environment_polyhedra",
+            "table_json",
+            "phase10n2.local_environment_polyhedra",
+            ("phase10n2.local_environment_polyhedra.v1",),
+        ),
         ArtifactProjectorContract("phonon.band", "phonon_band_json", "phase10h.phonon", (PHONON_BAND_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.band", "phonon_summary_json", "phase10h.phonon", (PHONON_SUMMARY_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.dos", "phonon_dos_json", "phase10h.phonon", (PHONON_DOS_SCHEMA_VERSION,)),
@@ -337,6 +343,8 @@ def project_artifact(source: InterpretationSource, candidate: ArtifactProjection
         return _project_structure_summary(source, candidate)
     if artifact_type == "table_json" and tool_id in {"structure.coordination_crystalnn", "structure.coordination_voronoinn"}:
         return _project_coordination_summary(source, candidate)
+    if artifact_type == "table_json" and tool_id == "structure.local_environment_polyhedra":
+        return _project_local_environment_summary(source, candidate)
     if artifact_type in {"phonon_band_json", "phonon_dos_json", "phonon_band_dos_json", "phonon_summary_json"} and tool_id in {"phonon.band", "phonon.dos", "phonon.band_dos"}:
         return _project_phonon_summary(source, candidate)
     if artifact_type == "volumetric_field_json" and tool_id == "structure.volumetric_data":
@@ -1036,6 +1044,61 @@ def _project_coordination_summary(source: InterpretationSource, candidate: Artif
         items.append(_item(source, candidate, "coordination.value_range", EvidenceKind.range, subject, "coordination_value", None, minimum=min(values), maximum=max(values), field="siteResults.coordinationValue", entity=subject))
     if distances:
         items.append(_item(source, candidate, "coordination.distance_range", EvidenceKind.range, subject, "distance", None, minimum=min(distances), maximum=max(distances), unit="angstrom", field="siteResults.neighbors.distance", entity=subject))
+    return items
+
+
+def _project_local_environment_summary(source: InterpretationSource, candidate: ArtifactProjectionInput) -> list[ScientificEvidenceItem]:
+    payload = candidate.payload
+    coverage = payload.get("coverage") if isinstance(payload, dict) else None
+    source_coordination = payload.get("sourceCoordination") if isinstance(payload, dict) else None
+    site_results = payload.get("siteResults") if isinstance(payload, dict) else None
+    if (
+        payload.get("artifactType") != "structure.local_environment_polyhedra"
+        or payload.get("schema_version") != "phase10n2.local_environment_polyhedra.v1"
+        or not isinstance(coverage, dict)
+        or not isinstance(source_coordination, dict)
+        or not isinstance(site_results, list)
+    ):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Local-environment Artifact contract is invalid.")
+    required_counts = ("requestedSites", "evaluatedSites", "unavailableSites", "classifiedSites", "ambiguousSites", "unclassifiedSites")
+    if any(not _nonnegative_int(coverage.get(key)) for key in required_counts):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Local-environment coverage counts are invalid.")
+    ratio = coverage.get("ratio")
+    if not _finite(ratio) or not 0 <= ratio <= 1 or coverage["evaluatedSites"] != len(site_results):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Local-environment coverage is inconsistent.")
+    source_algorithm = source_coordination.get("algorithmId")
+    if not _safe_semantic_name(source_algorithm):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Source coordination algorithm identity is invalid.")
+
+    subject = f"local-environment:{source_algorithm}"
+    items = [
+        _item(source, candidate, "local_environment.source_algorithm", EvidenceKind.category, subject, "algorithm", source_algorithm, field="sourceCoordination.algorithmId", entity=subject),
+        _item(source, candidate, "local_environment.coverage", EvidenceKind.scalar, subject, "ratio", ratio, field="coverage.ratio", entity=subject),
+        _item(source, candidate, "local_environment.evaluated_sites", EvidenceKind.count, subject, "count", coverage["evaluatedSites"], field="coverage.evaluatedSites", entity=subject),
+        _item(source, candidate, "local_environment.classified_sites", EvidenceKind.count, subject, "count", coverage["classifiedSites"], field="coverage.classifiedSites", entity=subject),
+        _item(source, candidate, "local_environment.ambiguous_sites", EvidenceKind.count, subject, "count", coverage["ambiguousSites"], field="coverage.ambiguousSites", entity=subject),
+        _item(source, candidate, "local_environment.unclassified_sites", EvidenceKind.count, subject, "count", coverage["unclassifiedSites"], field="coverage.unclassifiedSites", entity=subject),
+    ]
+    reference_counts: dict[str, int] = {}
+    geometry_distances: list[float] = []
+    for record in site_results[:64]:
+        classification = record.get("classification") if isinstance(record, dict) else None
+        if not isinstance(classification, dict) or classification.get("status") not in {"CLASSIFIED", "AMBIGUOUS", "UNCLASSIFIED", "UNSUPPORTED"}:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Local-environment classification is invalid.")
+        reference_id = classification.get("referenceGeometryId")
+        if reference_id is not None:
+            if not _safe_semantic_name(reference_id):
+                raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Reference geometry identity is invalid.")
+            reference_counts[str(reference_id)] = reference_counts.get(str(reference_id), 0) + 1
+        distance = classification.get("geometryDistanceRms")
+        if distance is not None:
+            if not _finite(distance) or distance < 0:
+                raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Geometry distance is invalid.")
+            geometry_distances.append(float(distance))
+    for reference_id, count in sorted(reference_counts.items())[:16]:
+        items.append(_item(source, candidate, "local_environment.reference_count", EvidenceKind.count, f"{subject}:{reference_id}", "count", count, field="siteResults.classification.referenceGeometryId", entity=reference_id))
+    if geometry_distances:
+        items.append(_item(source, candidate, "local_environment.geometry_distance_range", EvidenceKind.range, subject, "geometry_distance", None, minimum=min(geometry_distances), maximum=max(geometry_distances), field="siteResults.classification.geometryDistanceRms", entity=subject))
     return items
 
 

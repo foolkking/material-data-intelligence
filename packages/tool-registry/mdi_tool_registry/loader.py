@@ -275,6 +275,17 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxRetainedRows": 50000,
             "maxArtifactBytes": 16777216,
         }
+    if tool_id == "structure.local_environment_polyhedra":
+        return {
+            "maxStructures": 1,
+            "maxAtomsPerStructure": 5000,
+            "maxEvaluatedSites": 5000,
+            "maxNeighborsPerSite": 64,
+            "maxGeometryReferencesPerSite": 32,
+            "maxPolyhedronVertices": 64,
+            "maxFaces": 128,
+            "maxArtifactBytes": 16777216,
+        }
     if tool_id == "structure.coordination_hist":
         return {
             "maxStructures": 8,
@@ -576,6 +587,29 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "cutoff_angstrom": {"type": "number", "minimum": 1.0, "maximum": 20.0, "default": 13.0},
                 "allow_pathological": {"type": "boolean", "default": False},
                 **common_coordination_limits,
+            },
+        }
+    if tool_id == "structure.local_environment_polyhedra":
+        geometry_ids = [
+            "linear", "trigonal_planar", "tetrahedral", "square_planar",
+            "trigonal_bipyramidal", "square_pyramidal", "octahedral",
+            "pentagonal_bipyramidal", "cubic",
+        ]
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "site_indices": {"type": "array", "maxItems": 5000, "uniqueItems": True, "items": {"type": "integer", "minimum": 0, "maximum": 4999}, "default": []},
+                "geometry_reference_ids": {"type": "array", "maxItems": 9, "uniqueItems": True, "items": {"enum": geometry_ids}, "default": []},
+                "classification_max_distance": {"type": "number", "minimum": 0.0, "maximum": 2.0, "default": 0.35},
+                "classification_tie_tolerance": {"type": "number", "minimum": 0.0, "maximum": 0.25, "default": 0.01},
+                "include_faces": {"type": "boolean", "default": True},
+                "max_evaluated_sites": {"type": "integer", "minimum": 1, "maximum": 5000, "default": 5000},
+                "max_neighbors_per_site": {"type": "integer", "minimum": 1, "maximum": 64, "default": 64},
+                "max_geometry_references_per_site": {"type": "integer", "minimum": 1, "maximum": 32, "default": 32},
+                "max_polyhedron_vertices": {"type": "integer", "minimum": 1, "maximum": 64, "default": 64},
+                "max_faces": {"type": "integer", "minimum": 1, "maximum": 128, "default": 128},
+                "max_output_bytes": {"type": "integer", "minimum": 1024, "maximum": 16777216, "default": 16777216},
             },
         }
     if tool_id == "dataset.composition_space":

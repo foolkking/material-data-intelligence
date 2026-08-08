@@ -125,6 +125,19 @@ tools:
       - summary_md
       - recipe_json
 
+  - tool_id: structure.local_environment_polyhedra
+    source_package: platform
+    source_function: angular_spectrum_reference_match_and_scipy_convex_hull
+    implementation_source: pymatviz_composed
+    stage: mvp
+    adapter: LocalEnvironmentPolyhedraAdapter
+    display_target: structure
+    notes: "Geometry-derived local environment and coordination polyhedra from one exact persisted N1 coordination Artifact; no neighbor rediscovery or definitive bonding authority."
+    artifact_types:
+      - table_json
+      - summary_md
+      - recipe_json
+
   - tool_id: ml.density_scatter
     source_package: pymatviz
     source_function: density_scatter

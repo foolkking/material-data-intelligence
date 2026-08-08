@@ -104,5 +104,38 @@ outside this section are informational and are not duplicate registry entries.
     implementation, completion-record and queue-archive commits and exact-SHA CI,
     restoration of `TASK_BLOCK_COUNT = 0`, and the Phase 10N-2 reviewer gate.
 
+## Canonical Phase 10N-2 Acceptance Registry
+
+1. `N2-A01 BASELINE_N1_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE` - verify the N1 archive,
+   exact N1 contracts, N2-R0 closure, one Tool, one Artifact family, decision compliance,
+   acceptance reconciliation and queue admission.
+2. `N2-A02 N1_COORDINATION_ARTIFACT_DEPENDENCY_AND_NO_RECOMPUTATION` - verify exact
+   CrystalNN/VoronoiNN Artifact ports, checksums, structure/site/neighbor lineage,
+   AnalysisPlan 0.2 binding, no neighbor rediscovery, no fallback and no substitution.
+3. `N2-A03 LOCAL_ENVIRONMENT_GEOMETRY_CLASSIFICATION` - verify the bounded reference
+   catalog, exact angular-spectrum method, classified/ambiguous/unclassified states,
+   source-algorithm attribution, coverage, warnings and controlled fixtures.
+4. `N2-A04 COORDINATION_POLYHEDRON_GEOMETRY_AND_DISTORTION` - verify exact persisted
+   vertices/faces, deterministic convex hull, radial/angular distortion metrics, area,
+   volume, units and honest degenerate/partial component states.
+5. `N2-A05 EXACT_SITE_NEIGHBOR_POLYHEDRON_IDENTITY_AND_DETERMINISM` - verify immutable
+   structure/site/source-Artifact binding, exact periodic images, canonical vertices and
+   faces, parameter hash, stable ordering/checksum and no fuzzy/latest rebinding.
+6. `N2-A06 PROFILE_ELIGIBILITY_PLANNER_PLAN_DEPENDENCY_RUNTIME_AND_PERSISTENCE` - verify
+   DataProfile 2.1 reuse, Eligibility, clarification, Planner, PlanValidator, Runtime,
+   PostgreSQL/Redis/MinIO, failure blocking, branch isolation and generic persistence.
+7. `N2-A07 WORKSPACE_STRUCTURE_VIEWER_SELECTION_AND_INSPECTOR_INTEGRATION` - verify the
+   environment/metric tables, persisted polyhedron overlay, N1/N2 exact selection,
+   Inspector, URL restoration, mobile/accessibility fallback and lifecycle cleanup.
+8. `N2-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_WORDING` - verify bounded
+   projector facts, source-algorithm disagreement disclosure, Report/Recipe lineage, no
+   recomputation, no definitive-bond claims and no Recipe execution authority.
+9. `N2-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE`
+   - verify direct fixtures, quantity-specific tolerances, caps, browsers/mobile,
+   accessibility, lifecycle, service-backed evidence, security and secret scans.
+10. `N2-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N3_REVIEWER_GATE` - verify implementation,
+    completion-record and queue-archive exact-SHA CI, Registry 56, task count zero and
+    Phase 10N-3 remaining a non-executable reviewer gate.
+
 The N1 integrity target is exactly ten entries with zero missing, extra, duplicate,
 conflicting or shorthand registry entries. Document-wide references are informational.

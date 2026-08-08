@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdi.local/schemas/phase10n2-local-environment-polyhedra.schema.json",
+  "title": "Phase 10N-2 Local Environment And Coordination Polyhedra",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["artifactType", "schema_version", "tool", "algorithm", "referenceCatalog", "resolvedParameters", "parameterHash", "scope", "sourceCoordination", "siteResults", "coverage", "warnings", "runtimeDiagnostics", "provenance", "limits", "security"],
+  "properties": {
+    "artifactType": { "const": "structure.local_environment_polyhedra" },
+    "schema_version": { "const": "phase10n2.local_environment_polyhedra.v1" },
+    "tool": { "$ref": "#/$defs/tool" },
+    "algorithm": { "$ref": "#/$defs/algorithm" },
+    "referenceCatalog": { "$ref": "#/$defs/catalog" },
+    "resolvedParameters": { "$ref": "#/$defs/params" },
+    "parameterHash": { "$ref": "#/$defs/hash" },
+    "scope": { "$ref": "#/$defs/scope" },
+    "sourceCoordination": { "$ref": "#/$defs/sourceCoordination" },
+    "siteResults": { "type": "array", "maxItems": 5000, "items": { "$ref": "#/$defs/siteResult" } },
+    "coverage": { "type": "object" },
+    "warnings": { "type": "array", "maxItems": 1000, "items": { "type": "string", "maxLength": 512 } },
+    "runtimeDiagnostics": { "type": "object" },
+    "provenance": { "type": "object" },
+    "limits": { "type": "object" },
+    "security": { "type": "object" }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "periodicImage": {
+      "type": "array", "minItems": 3, "maxItems": 3, "items": false,
+      "prefixItems": [
+        { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 }
+      ]
+    },
+    "vector3": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "number" } },
+    "tool": {
+      "type": "object", "additionalProperties": false,
+      "required": ["toolId", "toolVersion", "adapterVersion"],
+      "properties": {
+        "toolId": { "const": "structure.local_environment_polyhedra" },
+        "toolVersion": { "const": "0.1.0" },
+        "adapterVersion": { "const": "0.1.0" }
+      }
+    },
+    "algorithm": {
+      "type": "object", "additionalProperties": false,
+      "required": ["classification", "faceConstruction"],
+      "properties": {
+        "classification": { "const": "mdi.angular_spectrum_reference_match@1.0.0" },
+        "faceConstruction": { "const": "scipy.spatial.ConvexHull@1.17.1" }
+      }
+    },
+    "catalog": {
+      "type": "object", "additionalProperties": false,
+      "required": ["catalogId", "catalogVersion", "geometryIds"],
+      "properties": {
+        "catalogId": { "const": "mdi.local_geometry_reference_catalog" },
+        "catalogVersion": { "const": "1.0.0" },
+        "geometryIds": { "type": "array", "minItems": 1, "maxItems": 9, "uniqueItems": true, "items": { "$ref": "#/$defs/geometryId" } }
+      }
+    },
+    "geometryId": { "enum": ["linear", "trigonal_planar", "tetrahedral", "square_planar", "trigonal_bipyramidal", "square_pyramidal", "octahedral", "pentagonal_bipyramidal", "cubic"] },
+    "params": {
+      "type": "object", "additionalProperties": false,
+      "required": ["site_indices", "geometry_reference_ids", "classification_max_distance", "classification_tie_tolerance", "include_faces", "max_evaluated_sites", "max_neighbors_per_site", "max_geometry_references_per_site", "max_polyhedron_vertices", "max_faces", "max_output_bytes"],
+      "properties": {
+        "site_indices": { "type": "array", "maxItems": 5000, "uniqueItems": true, "items": { "type": "integer", "minimum": 0, "maximum": 4999 }, "default": [] },
+        "geometry_reference_ids": { "type": "array", "maxItems": 9, "uniqueItems": true, "items": { "$ref": "#/$defs/geometryId" }, "default": [] },
+        "classification_max_distance": { "type": "number", "minimum": 0, "maximum": 2, "default": 0.35 },
+        "classification_tie_tolerance": { "type": "number", "minimum": 0, "maximum": 0.25, "default": 0.01 },
+        "include_faces": { "type": "boolean", "default": true },
+        "max_evaluated_sites": { "type": "integer", "minimum": 1, "maximum": 5000, "default": 5000 },
+        "max_neighbors_per_site": { "type": "integer", "minimum": 1, "maximum": 64, "default": 64 },
+        "max_geometry_references_per_site": { "type": "integer", "minimum": 1, "maximum": 32, "default": 32 },
+        "max_polyhedron_vertices": { "type": "integer", "minimum": 1, "maximum": 64, "default": 64 },
+        "max_faces": { "type": "integer", "minimum": 1, "maximum": 128, "default": 128 },
+        "max_output_bytes": { "type": "integer", "minimum": 1024, "maximum": 16777216, "default": 16777216 }
+      }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["projectId", "datasetId", "jobId", "planId", "planVersion", "toolCallId", "sourceResourceId", "sourceResourceHash", "structureHash"],
+      "properties": {
+        "projectId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "datasetId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "jobId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "planId": { "type": ["string", "null"], "maxLength": 256 },
+        "planVersion": { "type": ["string", "null"], "maxLength": 32 },
+        "toolCallId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "sourceResourceId": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "sourceResourceHash": { "$ref": "#/$defs/hash" },
+        "structureHash": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "sourceCoordination": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifactId", "artifactChecksum", "contractVersion", "toolId", "toolVersion", "algorithmId", "algorithmVersion", "parameterHash"],
+      "properties": {
+        "artifactId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "artifactChecksum": { "$ref": "#/$defs/hash" },
+        "contractVersion": { "enum": ["phase10n1.crystalnn_coordination.v1", "phase10n1.voronoinn_coordination.v1"] },
+        "toolId": { "enum": ["structure.coordination_crystalnn", "structure.coordination_voronoinn"] },
+        "toolVersion": { "const": "0.1.0" },
+        "algorithmId": { "enum": ["pymatgen.crystalnn", "pymatgen.voronoinn"] },
+        "algorithmVersion": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "parameterHash": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "vertex": {
+      "type": "object", "additionalProperties": false,
+      "required": ["vertexIdentity", "neighborIdentity", "neighborSiteId", "periodicImage", "relativeCartesian", "distance", "distanceUnit"],
+      "properties": {
+        "vertexIdentity": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "neighborIdentity": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "neighborSiteId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "periodicImage": { "$ref": "#/$defs/periodicImage" },
+        "relativeCartesian": { "$ref": "#/$defs/vector3" },
+        "distance": { "type": "number", "minimum": 0 },
+        "distanceUnit": { "const": "angstrom" }
+      }
+    },
+    "face": {
+      "type": "object", "additionalProperties": false,
+      "required": ["faceIdentity", "vertexIdentities"],
+      "properties": {
+        "faceIdentity": { "type": "string", "minLength": 1, "maxLength": 3072 },
+        "vertexIdentities": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "string", "minLength": 1, "maxLength": 1024 } }
+      }
+    },
+    "siteResult": {
+      "type": "object", "additionalProperties": false,
+      "required": ["environmentIdentity", "polyhedronIdentity", "structureHash", "siteId", "siteIndex", "sourceCoordinationSemantics", "sourceCoordinationValue", "neighborRelationIdentities", "classification", "polyhedron", "distortionMetrics", "warnings"],
+      "properties": {
+        "environmentIdentity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "polyhedronIdentity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "structureHash": { "$ref": "#/$defs/hash" },
+        "siteId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "siteIndex": { "type": "integer", "minimum": 0, "maximum": 4999 },
+        "sourceCoordinationSemantics": { "enum": ["crystalnn_weight_sum", "voronoinn_solid_angle_weight_sum"] },
+        "sourceCoordinationValue": { "type": "number", "minimum": 0 },
+        "neighborRelationIdentities": { "type": "array", "maxItems": 64, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 1024 } },
+        "classification": { "type": "object" },
+        "polyhedron": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "vertices", "faces", "unavailableReason"],
+          "properties": {
+            "status": { "enum": ["AVAILABLE", "UNAVAILABLE"] },
+            "vertices": { "type": "array", "maxItems": 64, "items": { "$ref": "#/$defs/vertex" } },
+            "faces": { "type": "array", "maxItems": 128, "items": { "$ref": "#/$defs/face" } },
+            "unavailableReason": { "type": ["string", "null"], "maxLength": 128 }
+          }
+        },
+        "distortionMetrics": { "type": "object" },
+        "warnings": { "type": "array", "maxItems": 64, "items": { "type": "string", "maxLength": 512 } }
+      }
+    }
+  }
+}

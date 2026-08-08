@@ -28,7 +28,7 @@ export type RendererComponent =
   | "GENERIC_PLOT" | "GENERIC_TABLE" | "TEXT" | "JSON" | "STATIC_METADATA"
   | "DATASET" | "ML" | "COMPOSITION" | "STRUCTURE" | "TRAJECTORY"
   | "PHONON_BAND" | "PHONON_DOS" | "PHONON_COMBINED" | "PHONON_ANIMATION"
-  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "COORDINATION" | "DOWNLOAD_ONLY";
+  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "COORDINATION" | "DOWNLOAD_ONLY" | "LOCAL_ENVIRONMENT";
 export type RendererPayloadMode = "JSON" | "TEXT" | "BUNDLE" | "METADATA_ONLY" | "DOWNLOAD_ONLY";
 
 export type WorkspaceRendererDescriptor = Readonly<{
@@ -178,6 +178,7 @@ const PRODUCT_RENDERERS = new Map<string, Partial<WorkspaceRendererDescriptor>>(
   ["phase10k3.materials_ml_classification.v1\u0000ml.classification_evaluation", { component: "ML", rendererContract: "workspace.materials-ml", selectionInputs: DATASET_SELECTIONS, selectionOutputs: ARTIFACT_SELECTION }],
   ["phase10n1.crystalnn_coordination.v1\u0000structure.coordination_crystalnn", { component: "COORDINATION", rendererContract: "workspace.coordination", selectionInputs: ["PERIODIC_SITE", "ARTIFACT"], selectionOutputs: ["PERIODIC_SITE", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 50_000 }],
   ["phase10n1.voronoinn_coordination.v1\u0000structure.coordination_voronoinn", { component: "COORDINATION", rendererContract: "workspace.coordination", selectionInputs: ["PERIODIC_SITE", "ARTIFACT"], selectionOutputs: ["PERIODIC_SITE", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 50_000 }],
+  ["phase10n2.local_environment_polyhedra.v1\u0000structure.local_environment_polyhedra", { component: "LOCAL_ENVIRONMENT", rendererContract: "workspace.local-environment-polyhedra", selectionInputs: ["PERIODIC_SITE", "LOCAL_ENVIRONMENT", "COORDINATION_POLYHEDRON", "POLYHEDRON_VERTEX", "POLYHEDRON_FACE", "ARTIFACT"], selectionOutputs: ["PERIODIC_SITE", "LOCAL_ENVIRONMENT", "COORDINATION_POLYHEDRON", "POLYHEDRON_VERTEX", "POLYHEDRON_FACE", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 5_000 }],
 ]);
 
 export function artifactIdentity(artifact: Artifact): string | null { return artifact.artifactId ?? artifact.id ?? null; }

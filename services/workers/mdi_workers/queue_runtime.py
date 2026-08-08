@@ -70,6 +70,8 @@ class QueueWorkerContext:
     dataset_id: str | None
     tool_call_id: str
     artifact_storage: ArtifactStorage
+    plan_id: str | None = None
+    plan_version: str | None = None
 
 
 @dataclass(frozen=True)
@@ -319,6 +321,7 @@ class QueueWorkerRuntime:
                 continue
 
             step_store = dict(object_store)
+            step_store["__mdi_artifact_bindings__"] = {}
             step_payload = step.model_dump(mode="json")
             incoming_refs: list[ResolvedArtifactInputRef] = []
             binding_failure: tuple[str, str] | None = None
@@ -342,6 +345,7 @@ class QueueWorkerRuntime:
                         ),
                     )
                     step_store[resolved.materializedObjectRef] = materialized
+                    step_store["__mdi_artifact_bindings__"][resolved.materializedObjectRef] = resolved.model_dump(mode="json")
                     step_payload["inputRefs"].append(
                         {
                             "refType": "artifact",
@@ -850,6 +854,8 @@ class QueueWorkerRuntime:
                     dataset_id=str(dataset_id) if dataset_id else None,
                     tool_call_id=tool_call_id,
                     artifact_storage=self.artifact_storage,
+                    plan_id=str((plan_record or {}).get("id") or (plan_record or {}).get("planId") or "") or None,
+                    plan_version=str(((plan_record or {}).get("analysisPlan") or {}).get("schemaVersion") or "") or None,
                 ),
                 object_store=object_store,
             )
@@ -934,8 +940,11 @@ class QueueWorkerRuntime:
             adapter_version="0.1.0",
             registry_version=self.registry.version,
             tool_call_id=context.tool_call_id,
+            plan_id=context.plan_id,
+            plan_version=context.plan_version,
             artifact_root=self.artifact_root,
             object_store=object_store or {},
+            artifact_bindings=(object_store or {}).get("__mdi_artifact_bindings__", {}),
             resource_limits=tool.resourceLimits,
         )
         return execute_tool_request(adapter_context, request, registry=self.registry)

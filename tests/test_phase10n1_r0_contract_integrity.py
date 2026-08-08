@@ -61,10 +61,17 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
     assert tasks.count("---TASK---") == tasks.count("---END---")
     assert tasks.count("---TASK---") in {0, 1}
     if tasks.count("---TASK---") == 1:
-        assert "Phase 10N-1" in tasks and "Status: IN_PROGRESS" in tasks
+        assert any(phase in tasks for phase in ("Phase 10N-1", "Phase 10N-2"))
+        assert "Status: IN_PROGRESS" in tasks
     else:
         assert "Phase 10N-1" not in tasks
-    assert "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+    assert any(
+        marker in tasks
+        for marker in (
+            "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT",
+            "Phase 10N-2:\nIN_PROGRESS / AWAITING_IMPLEMENTATION",
+        )
+    )
 
 
 def test_checked_coordination_schema_is_strict_and_algorithm_specific() -> None:

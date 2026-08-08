@@ -1,0 +1,1 @@
+{"browser":"Chromium","cycles":50,"webglContextGrowth":0,"listenerGrowth":0,"resizeObserverGrowth":0,"intersectionObserverGrowth":0,"animationLoopGrowth":0,"duplicateCanvas":0,"payloadRequestsBefore":1,"payloadRequestsAfter":1,"duplicatePayloadRequestGrowth":0,"staleOverlayCommits":0,"renderAuthority":"persisted N2 Artifact","source":"browser/browser_matrix.json"}

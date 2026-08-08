@@ -179,6 +179,8 @@ class MockLLMProvider:
                     {"name": "brillouin_zone_manifest.json", "type": "brillouin_zone_manifest_json", "fromStepId": "step_001"},
                 ],
             )
+        elif local_environment_tools := _select_local_environment_tools(request, tools, data_profile):
+            plan = _mock_local_environment_plan(request, data_profile, local_environment_tools)
         elif coordination_tools := _select_coordination_nn_tools(request, tools, data_profile):
             plan = _mock_coordination_nn_plan(request, data_profile, coordination_tools)
         elif _should_generate_viewer_scene(request, tools, data_profile):
@@ -1389,6 +1391,61 @@ def _select_coordination_nn_tools(
     if voronoi or comparison:
         selected.append("structure.coordination_voronoinn")
     return [tool_id for tool_id in selected if _has_tool(tools, tool_id)]
+
+
+def _select_local_environment_tools(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> list[str]:
+    if not _has_structure_input(data_profile) or not _has_tool(tools, "structure.local_environment_polyhedra"):
+        return []
+    prompt = request.user_prompt.casefold()
+    if not any(marker in prompt for marker in ("local environment", "coordination polyhed", "local geometry")):
+        return []
+    if "crystalnn" in prompt:
+        producer = "structure.coordination_crystalnn"
+    elif "voronoinn" in prompt or "voronoi nn" in prompt:
+        producer = "structure.coordination_voronoinn"
+    else:
+        return []
+    return [producer, "structure.local_environment_polyhedra"] if _has_tool(tools, producer) else []
+
+
+def _mock_local_environment_plan(
+    request: PlannerRequest,
+    data_profile: DataProfile,
+    tool_ids: list[str],
+) -> dict[str, Any]:
+    producer_id, consumer_id = tool_ids
+    producer = _mock_coordination_nn_plan(request, data_profile, [producer_id])
+    producer_step = producer["steps"][0]
+    producer_step["stepId"] = "step_001"
+    consumer_step = {
+        "stepId": "step_002",
+        "toolId": consumer_id,
+        "purpose": "Classify geometry-derived local environments and construct coordination polyhedra from the exact persisted N1 neighbor set.",
+        "reason": _structure_reason(request, data_profile, consumer_id),
+        "inputRefs": [{"refType": "normalized_object", "ref": "structures", "objectType": "Structure"}],
+        "params": {},
+        "output": {"artifactTypes": ["table_json", "summary_md", "recipe_json"]},
+    }
+    return {
+        "schemaVersion": "0.1",
+        "goal": request.user_prompt,
+        "datasetId": request.dataset_id,
+        "profileId": request.profile_id,
+        "toolRegistryVersion": request.tool_registry_version,
+        "assumptions": ["Local environment is geometry-derived from one exact persisted N1 coordination Artifact."],
+        "warnings": ["The result is source-algorithm-dependent and is not definitive bonding chemistry."],
+        "steps": [producer_step, consumer_step],
+        "expectedArtifacts": [
+            {"name": producer["expectedArtifacts"][0]["name"], "type": "table_json", "fromStepId": "step_001"},
+            {"name": "local_environment_polyhedra.json", "type": "table_json", "fromStepId": "step_002"},
+            {"name": "summary.md", "type": "summary_md", "fromStepId": "step_002"},
+            {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_002"},
+        ],
+    }
 
 
 def _mock_coordination_nn_plan(

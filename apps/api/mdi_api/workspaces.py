@@ -37,6 +37,12 @@ _DATA_SELECTION_KINDS = (
     WorkspaceSelectionKind.TRAJECTORY_ATOM,
     WorkspaceSelectionKind.TRAJECTORY_FRAME,
 )
+_N2_SELECTION_KINDS = (
+    WorkspaceSelectionKind.LOCAL_ENVIRONMENT,
+    WorkspaceSelectionKind.COORDINATION_POLYHEDRON,
+    WorkspaceSelectionKind.POLYHEDRON_VERTEX,
+    WorkspaceSelectionKind.POLYHEDRON_FACE,
+)
 _ARTIFACT_DERIVED_SELECTION_KINDS = (
     WorkspaceSelectionKind.PHONON_Q_POINT,
     WorkspaceSelectionKind.PHONON_BRANCH,
@@ -62,11 +68,15 @@ _PANEL_SELECTION_DECLARATIONS: dict[
     "workspace.plan/1.0": ((), ()),
     "workspace.execution/1.0": ((WorkspaceSelectionKind.ARTIFACT,), ()),
     "workspace.artifact-metadata/1.0": (
-        (*_DATA_SELECTION_KINDS, *_ARTIFACT_DERIVED_SELECTION_KINDS),
+        (*_DATA_SELECTION_KINDS, *_N2_SELECTION_KINDS, *_ARTIFACT_DERIVED_SELECTION_KINDS),
         (
             WorkspaceSelectionKind.DATASET_SAMPLE,
             WorkspaceSelectionKind.MATERIAL_OBJECT,
             WorkspaceSelectionKind.ARTIFACT,
+            WorkspaceSelectionKind.LOCAL_ENVIRONMENT,
+            WorkspaceSelectionKind.COORDINATION_POLYHEDRON,
+            WorkspaceSelectionKind.POLYHEDRON_VERTEX,
+            WorkspaceSelectionKind.POLYHEDRON_FACE,
         ),
     ),
     "workspace.findings/1.0": (

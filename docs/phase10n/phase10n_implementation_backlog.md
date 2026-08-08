@@ -55,3 +55,20 @@ The registry below is copied from the acceptance plan and is defined once in thi
 
 N1 admits exactly two tools and no comparison Tool. Its implementation lifecycle retains
 one active N1 task until the verified queue archive; N2 remains reviewer-gated.
+
+## Canonical Phase 10N-2 Acceptance Registry
+
+1. `N2-A01 BASELINE_N1_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE` - N1 authority and N2-R0 exact contract closure.
+2. `N2-A02 N1_COORDINATION_ARTIFACT_DEPENDENCY_AND_NO_RECOMPUTATION` - exact N1 Artifact dependency without neighbor recomputation or fallback.
+3. `N2-A03 LOCAL_ENVIRONMENT_GEOMETRY_CLASSIFICATION` - bounded reference-catalog geometry classification with honest ambiguity.
+4. `N2-A04 COORDINATION_POLYHEDRON_GEOMETRY_AND_DISTORTION` - deterministic polyhedra, faces and approved distortion metrics.
+5. `N2-A05 EXACT_SITE_NEIGHBOR_POLYHEDRON_IDENTITY_AND_DETERMINISM` - exact lineage identities, canonical ordering and stable hashes.
+6. `N2-A06 PROFILE_ELIGIBILITY_PLANNER_PLAN_DEPENDENCY_RUNTIME_AND_PERSISTENCE` - existing Profile/Plan 0.2/Runtime/persistence integration.
+7. `N2-A07 WORKSPACE_STRUCTURE_VIEWER_SELECTION_AND_INSPECTOR_INTEGRATION` - Workspace tables, persisted overlay, exact selection and Inspector.
+8. `N2-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_WORDING` - bounded facts, lineage and false-claim controls.
+9. `N2-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE` - scientific and product evidence closure.
+10. `N2-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N3_REVIEWER_GATE` - verified lifecycle and N3 non-entry.
+
+Implementation sequence: N2-R0 closure -> one registered Adapter/Tool -> exact N1 ports ->
+Plan 0.2/Runtime -> Artifact -> Workspace/selection -> interpretation/Report -> evidence ->
+three-commit lifecycle. Registry 55 -> 56; no migration, API family, dependency or N3 task.

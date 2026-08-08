@@ -32,6 +32,17 @@ Phase 10N-1 coordination contracts and evidence: `phase10n/phase10n1_coordinatio
 N1 implementation status and the next reviewer gate are recorded in
 `phase10n/phase10n1_completion.md` and `phase10n/phase10n2_next_scope.md`.
 
+Phase 10N-2 local-environment and coordination-polyhedra contracts and
+evidence: `phase10n/phase10n2_local_environment_polyhedra_contract.md`,
+`phase10n/phase10n2_geometry_reference_catalog.md`,
+`phase10n/phase10n2_parameter_contract.md`,
+`phase10n/phase10n2_artifact_contract.md`,
+`phase10n/phase10n2_registry_planner_dependency_integration.md`,
+`phase10n/phase10n2_workspace_selection_interpretation.md`,
+`phase10n/phase10n2_reference_tolerance_evidence.md`,
+`phase10n/phase10n2_performance_security_accessibility.md`, and
+`phase10n/evidence/phase10n2_local_environment_coordination_polyhedra/`.
+
 ## Phase 10N Professional Scientific Completion
 
 Phase 10N-0 is a documentation-only capability audit and scope seal. It adds

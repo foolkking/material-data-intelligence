@@ -62,3 +62,21 @@ N1-N6 cannot execute until each reviewer gate is explicitly opened.
 - DataProfile 2.1 is additive; generic persistence is reused without schema or migration.
 - Pymatgen remains locked; no dependency, lockfile, API family or Plan version changes.
 - N2 remains non-executable and absent from `TASKS.md`.
+
+## Canonical Phase 10N-2 Acceptance Registry
+
+1. `N2-A01 BASELINE_N1_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE` - lock N1 baseline and N2-R0 contracts.
+2. `N2-A02 N1_COORDINATION_ARTIFACT_DEPENDENCY_AND_NO_RECOMPUTATION` - lock exact N1 input authority and zero recomputation/fallback.
+3. `N2-A03 LOCAL_ENVIRONMENT_GEOMETRY_CLASSIFICATION` - lock bounded catalog and classification states.
+4. `N2-A04 COORDINATION_POLYHEDRON_GEOMETRY_AND_DISTORTION` - lock deterministic faces and exact metrics.
+5. `N2-A05 EXACT_SITE_NEIGHBOR_POLYHEDRON_IDENTITY_AND_DETERMINISM` - lock identities and canonical serialization.
+6. `N2-A06 PROFILE_ELIGIBILITY_PLANNER_PLAN_DEPENDENCY_RUNTIME_AND_PERSISTENCE` - lock existing authority-chain integration.
+7. `N2-A07 WORKSPACE_STRUCTURE_VIEWER_SELECTION_AND_INSPECTOR_INTEGRATION` - lock persisted-data-only UI and exact selection.
+8. `N2-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_WORDING` - lock bounded projection and non-executable delivery.
+9. `N2-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE` - lock evidence gates.
+10. `N2-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N3_REVIEWER_GATE` - lock lifecycle and N3 non-entry.
+
+N2 execution is locked to `structure.local_environment_polyhedra@0.1.0`, Registry 56,
+`phase10n2.local_environment_polyhedra.v1`, DataProfile 2.1 and AnalysisPlan 0.2 exact
+N1 Artifact ports. No independent neighbor search, ChemEnv coordination authority,
+oxidation-state inference, migration, API family, dependency or lockfile change is allowed.

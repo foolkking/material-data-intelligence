@@ -32,6 +32,8 @@ describe("Phase 10M-4 typed renderer registry", () => {
     expect(resolveLoadedArtifactRenderer(coordination).descriptor).toMatchObject({ component: "COORDINATION", heavy: false, accessibilityFallback: "TABLE" });
     const wrongAlgorithm = artifact({ type: "table_json", content: { schema_version: "phase10n1.crystalnn_coordination.v1", artifactType: "structure.coordination_voronoinn" } });
     expect(resolveLoadedArtifactRenderer(wrongAlgorithm).descriptor?.component).toBe("GENERIC_TABLE");
+    const localEnvironment = artifact({ type: "table_json", content: { schema_version: "phase10n2.local_environment_polyhedra.v1", artifactType: "structure.local_environment_polyhedra" } });
+    expect(resolveLoadedArtifactRenderer(localEnvironment).descriptor).toMatchObject({ component: "LOCAL_ENVIRONMENT", accessibilityFallback: "TABLE" });
   });
 
   it("declares bounded heavy viewers and inert accessibility fallbacks", () => {

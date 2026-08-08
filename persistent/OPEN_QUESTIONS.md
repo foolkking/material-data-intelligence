@@ -1141,3 +1141,13 @@ unless also listed in Active Questions. Future-only topics are governed by
 - Local environment classification, coordination polyhedra, experimental XRD,
   trajectory analytics, and electronic Band/DOS remain owned by later reviewer
   gates. No implementation-critical N1 question remains open.
+
+## Phase 10N-2 Closure
+
+- No implementation-critical N2 contract question remains open. Geometry labels
+  remain reference-method classifications over exact N1 neighbor sets, not chemical
+  bonding or oxidation-state authority.
+- Experimental XRD comparison and peak matching remain exclusively owned by the
+  Phase 10N-3 reviewer gate; no N3 executable task exists.
+- Physical assistive-technology and broad physical-device coverage remain outside
+  automated browser evidence.

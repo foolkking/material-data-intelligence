@@ -59,6 +59,32 @@ Manifest status: `N0 COMPLETE / REVIEWER_APPROVAL_REQUIRED`; N1 is not executabl
 9. `N1-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE` - verify direct numeric fixtures, exact locked-version references, quantity-specific tolerances, small/medium/near-cap performance, Chromium/Firefox/WebKit/390x844, PostgreSQL/Redis/MinIO, accessibility, security, secret scan and evidence manifest.
 10. `N1-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N2_REVIEWER_GATE` - verify the implementation, completion-record and queue-archive commits and exact-SHA CI, restoration of `TASK_BLOCK_COUNT = 0`, and the Phase 10N-2 reviewer gate.
 
+## Canonical Phase 10N-2 Acceptance Registry
+
+1. `N2-A01 BASELINE_N1_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE` - baseline, R0 docs, contract integrity and queue evidence.
+2. `N2-A02 N1_COORDINATION_ARTIFACT_DEPENDENCY_AND_NO_RECOMPUTATION` - ports, binding, lineage, checksum and no-recomputation evidence.
+3. `N2-A03 LOCAL_ENVIRONMENT_GEOMETRY_CLASSIFICATION` - catalog, algorithm, ambiguity and fixture evidence.
+4. `N2-A04 COORDINATION_POLYHEDRON_GEOMETRY_AND_DISTORTION` - vertices, faces, metric and degeneracy evidence.
+5. `N2-A05 EXACT_SITE_NEIGHBOR_POLYHEDRON_IDENTITY_AND_DETERMINISM` - identity, ordering, hash and stale-rejection evidence.
+6. `N2-A06 PROFILE_ELIGIBILITY_PLANNER_PLAN_DEPENDENCY_RUNTIME_AND_PERSISTENCE` - Profile, planning, runtime and service evidence.
+7. `N2-A07 WORKSPACE_STRUCTURE_VIEWER_SELECTION_AND_INSPECTOR_INTEGRATION` - renderer, selection, browser/mobile and lifecycle evidence.
+8. `N2-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_WORDING` - projector, Report/Recipe and wording evidence.
+9. `N2-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE` - reference, tolerance, cap, accessibility and security evidence.
+10. `N2-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N3_REVIEWER_GATE` - exact-SHA lifecycle, queue archive and N3 gate evidence.
+
+| ID | Source scope | Test scope | Browser scope | Service scope | Security scope | Exit gate |
+| --- | --- | --- | --- | --- | --- | --- |
+| N2-A01 | R0 contracts | integrity | n/a | n/a | authority | contracts frozen |
+| N2-A02 | N1 ports/runtime binding | dependency/negative | lineage | artifact checksum | no recomputation | exact binding |
+| N2-A03 | geometry classifier | references/ambiguity | tables | persisted payload | inert inputs | classification honest |
+| N2-A04 | hull/metrics | ideal/distorted/degenerate | overlay/table | persisted payload | bounded geometry | metrics exact |
+| N2-A05 | identities | determinism/stale | selection restore | checksum/scope | no fuzzy binding | stable hashes |
+| N2-A06 | planner/runtime | Plan 0.2/partial | running/partial | PostgreSQL/Redis/MinIO | no fallback | chain complete |
+| N2-A07 | Workspace | renderer/selection | four-browser/mobile | API readback | no frontend science | accessible UI |
+| N2-A08 | projector/report | facts/exports | Report/Inspector | persisted lineage | false-claim audit | delivery bounded |
+| N2-A09 | evidence | full regression | lifecycle/a11y | zero skipped | secret scan | evidence complete |
+| N2-A10 | lifecycle | lifecycle assertions | CI replay | CI services | N3 absent | verified archive |
+
 ## N1 Traceability
 
 | ID | Source scope | Test scope | Browser scope | Service scope | Evidence scope | Security scope | Exit gate |

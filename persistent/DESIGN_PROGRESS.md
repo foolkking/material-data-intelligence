@@ -2020,3 +2020,18 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   browser replay and production build passed.
 - Completion record is awaiting its exact-SHA CI; the N2 reviewer gate remains
   non-executable and no N2 task exists.
+
+## 2026-08-08 Phase 10N-2 Local Environment + Coordination Polyhedra
+
+- N1 is archived by verified queue commit `a9319c2da44f8794ef7a66347d8f7a0dffe4aa5b`.
+- Added the sole approved `structure.local_environment_polyhedra@0.1.0` Tool;
+  Registry count is 56.
+- The backend Adapter consumes one exact persisted CrystalNN or VoronoiNN
+  coordination Artifact through AnalysisPlan 0.2 binding metadata. It never
+  discovers, substitutes, merges, or falls back between N1 neighbor sets.
+- Added bounded angular-spectrum geometry classification, an allowlisted reference
+  catalog, deterministic SciPy ConvexHull faces, explicit partial/ambiguous states,
+  distortion metrics, exact lineage, inert artifacts, and declarative Recipe output.
+- Added metadata-first Workspace rendering, persisted polyhedron SVG projection,
+  exact site selection, Inspector, bounded interpretation, browser/mobile and
+  lifecycle evidence. N3 remains reviewer-gated and absent from the queue.

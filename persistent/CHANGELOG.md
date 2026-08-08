@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-08-08 - Phase 10N-2 Implementation
+
+- Added one registered N2 Tool and Adapter for geometry-derived local-environment
+  classification and coordination polyhedra over exact persisted N1 Artifacts.
+- Added strict parameters and Artifact contract, exact N1 checksum/identity binding,
+  bounded reference matching, deterministic ConvexHull faces, metrics and typed
+  partial/ambiguous results without neighbor recomputation or algorithm fallback.
+- Added Workspace panel, persisted geometry projection, exact selection, Inspector,
+  bounded interpretation, Report/Recipe projection, service-backed test and real
+  Chromium/Firefox/WebKit/mobile/lifecycle evidence.
+- Database, migration head, public API families, dependencies, lockfile, DataProfile
+  2.1, DeepSeek policy and Recipe execution boundary remain unchanged.
+
 ## 2026-08-06 - Phase 10N-0 Professional Capability Audit Complete
 
 - Added the documentation-only N0 capability, dependency/license, identity,

@@ -124,7 +124,9 @@ def compose_analysis_plan_02(
         ),
     )
     steps = [
-        step.model_copy(update={"inputRefs": []}) if step.stepId in consumer_steps else step
+        step.model_copy(update={"inputRefs": []})
+        if step.stepId in consumer_steps and step.toolId != "structure.local_environment_polyhedra"
+        else step
         for step in base_plan.steps
     ]
     plan = AnalysisPlanV02.model_validate(

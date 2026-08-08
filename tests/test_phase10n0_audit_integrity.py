@@ -62,7 +62,9 @@ def test_n0_does_not_admit_an_executable_task() -> None:
     # subsequently admit the sole N1 task while N2 remains a reviewer gate.
     assert tasks.count("---TASK---") == tasks.count("---END---")
     assert tasks.count("---TASK---") in {0, 1}
-    if "Phase 10N-1" in tasks:
+    if "Task: Phase 10N-2" in tasks:
+        assert "Phase 10N-3:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+    elif "Phase 10N-1" in tasks:
         assert "Phase 10N-2:\nREVIEWER_GATE" in tasks
     else:
         assert "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks

@@ -2029,3 +2029,25 @@ consumer presentation and is not a third Tool.
 The contracts use existing generic Plan, Job, ToolCall, Artifact, MinIO,
 Workspace, Selection, Report and Recipe persistence. No table, column,
 migration, public API family, dependency or lockfile change is introduced.
+
+## Phase 10N-2 Local Environment and Polyhedra Contracts
+
+Phase 10N-2 adds one bounded `structure.local_environment_polyhedra@0.1.0`
+consumer Tool and the inert `phase10n2.local_environment_polyhedra.v1` Artifact
+family. It consumes exactly one persisted N1 coordination Artifact and never
+discovers or recomputes neighbors. The Artifact retains source coordination
+identity/checksum, geometry catalog/version, deterministic classification,
+polyhedron vertices/faces, bounded distortion metrics, coverage and typed
+unavailable reasons. DataProfile remains 2.1; generic Artifact persistence,
+Workspace panels, selection, Report and non-executable Recipe authorities are
+reused. No database, migration, public API family, dependency or lockfile
+change is introduced. Bond-valence analysis, oxidation-state inference and
+definitive bonding claims remain out of scope.
+
+`WorkspaceSelectionContext 1.0` receives an additive union extension for the
+exact kinds `LOCAL_ENVIRONMENT`, `COORDINATION_POLYHEDRON`,
+`POLYHEDRON_VERTEX`, and `POLYHEDRON_FACE`. Their required identity fields bind
+the persisted N2 Artifact/checksum, source N1 Artifact/checksum, immutable
+structure/site identity, and kind-specific persisted identity. Existing 1.0
+selection payloads remain valid; no contract version, persistence authority, or
+fuzzy/latest binding behavior changes.

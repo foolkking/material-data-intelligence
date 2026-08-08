@@ -1,0 +1,1 @@
+{"fixtureStatus":"SYNTHETIC_CONTROLLED","metrics":["geometryDistanceRms","geometryScore","angularRmsDeviation","radialDistanceMean","radialDistanceSpread","bondLengthDistortionIndex"],"interpretation":"geometry distortion only; no stability claim"}

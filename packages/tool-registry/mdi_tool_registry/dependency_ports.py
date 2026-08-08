@@ -28,6 +28,12 @@ from .planner_metadata import build_registry_snapshot
 _JSON_MEDIA = ["application/json"]
 _PHONON_MAX_BYTES = 16_000_000
 _PROVENANCE_FIELDS = ["schemaVersion", "structureIdentity", "toolCallId", "toolId"]
+_N1_COORDINATION_CONTRACTS = {
+    "structure.coordination_crystalnn": "phase10n1.crystalnn_coordination.v1",
+    "structure.coordination_voronoinn": "phase10n1.voronoinn_coordination.v1",
+}
+_N2_CONTRACT = "phase10n2.local_environment_polyhedra.v1"
+_N2_MAX_BYTES = 16_777_216
 
 
 def build_tool_artifact_port_metadata(tool: Any) -> ToolArtifactPortMetadata:
@@ -89,6 +95,42 @@ def build_tool_artifact_port_metadata(tool: Any) -> ToolArtifactPortMetadata:
                 mediaTypes=_JSON_MEDIA,
                 maxBytes=_PHONON_MAX_BYTES,
                 requiredProvenanceFields=_PROVENANCE_FIELDS,
+            )
+        ]
+    elif tool.toolId in _N1_COORDINATION_CONTRACTS:
+        output_ports = [
+            ArtifactOutputPort(
+                portId="coordination-table",
+                artifactKind=ArtifactType.table_json,
+                contractFamily="phase10n1.coordination",
+                contractVersions=[_N1_COORDINATION_CONTRACTS[tool.toolId]],
+                mediaTypes=_JSON_MEDIA,
+                maxBytes=_N2_MAX_BYTES,
+                requiredProvenanceFields=["schemaVersion", "toolCallId", "toolId"],
+            )
+        ]
+    elif tool.toolId == "structure.local_environment_polyhedra":
+        input_ports = [
+            ArtifactInputPort(
+                portId="coordination",
+                acceptedArtifactKinds=[ArtifactType.table_json],
+                acceptedContractVersions=sorted(_N1_COORDINATION_CONTRACTS.values()),
+                mediaTypes=_JSON_MEDIA,
+                maxBytes=_N2_MAX_BYTES,
+                requiredSemanticRoles=["coordination_neighbors"],
+                inputFieldRole="coordination_artifact",
+                inputObjectType="Structure",
+            )
+        ]
+        output_ports = [
+            ArtifactOutputPort(
+                portId="local-environment-polyhedra",
+                artifactKind=ArtifactType.table_json,
+                contractFamily="phase10n2.local_environment_polyhedra",
+                contractVersions=[_N2_CONTRACT],
+                mediaTypes=_JSON_MEDIA,
+                maxBytes=_N2_MAX_BYTES,
+                requiredProvenanceFields=["schemaVersion", "sourceArtifactChecksum", "sourceArtifactId", "toolCallId", "toolId"],
             )
         ]
     return ToolArtifactPortMetadata(

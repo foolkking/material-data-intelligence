@@ -2343,8 +2343,19 @@ current board above.
 - [x] Implement independent locked-pymatgen Adapters, exact identities,
   periodic-image relations, bounded artifacts, Planner/Runtime and Workspace surface.
 - [x] Add unit, frontend, browser fixture, security and evidence integrity coverage.
-- [ ] Complete implementation, completion-record and queue-archive exact-SHA CI;
-  keep Phase 10N-2 reviewer-gated and non-executable.
+- [x] Complete implementation, completion-record and queue-archive exact-SHA CI.
 - [x] Implementation commit `08b5eec39bed4fcc93d0a4ef36eb385ba0e9ecc4` passed
   exact-SHA CI `31147539225`.
-- [ ] Completion-record exact-SHA CI and queue archive remain pending.
+- [x] Completion record `3c937c4ecf98358e44687538396facc827ec3a4b` and
+  verified archive `a9319c2da44f8794ef7a66347d8f7a0dffe4aa5b` passed exact-SHA CI.
+
+## Phase 10N-2 Local Environment + Coordination Polyhedra
+
+- [x] Complete N2-R0 exact contract and ten-ID acceptance closure.
+- [x] Register exactly `structure.local_environment_polyhedra@0.1.0` (55 -> 56).
+- [x] Consume exact N1 coordination Artifacts through AnalysisPlan 0.2 without neighbor recomputation or fallback.
+- [x] Implement bounded reference classification, deterministic faces, metrics, ambiguity and partial states.
+- [x] Integrate Runtime, Artifact, Workspace, selection, Inspector, interpretation and Report/Recipe authorities.
+- [x] Capture Chromium/Firefox/WebKit/390x844 and 50-cycle lifecycle evidence.
+- [ ] Complete implementation, completion-record and queue-archive exact-SHA CI.
+- [ ] Keep Phase 10N-3 reviewer-gated and non-executable.

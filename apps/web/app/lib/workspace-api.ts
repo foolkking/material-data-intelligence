@@ -41,6 +41,10 @@ export type WorkspaceSelectionKind =
   | "MATERIAL_OBJECT"
   | "STRUCTURE"
   | "PERIODIC_SITE"
+  | "LOCAL_ENVIRONMENT"
+  | "COORDINATION_POLYHEDRON"
+  | "POLYHEDRON_VERTEX"
+  | "POLYHEDRON_FACE"
   | "TRAJECTORY_ATOM"
   | "TRAJECTORY_FRAME"
   | "PHONON_Q_POINT"
@@ -116,6 +120,11 @@ export type WorkspaceSelectionRef = {
   sampleRef: string | null;
   structureId: string | null;
   siteId: string | null;
+  environmentId: string | null;
+  polyhedronId: string | null;
+  vertexId: string | null;
+  faceId: string | null;
+  geometryReferenceId: string | null;
   trajectoryId: string | null;
   atomId: string | null;
   frameId: string | null;

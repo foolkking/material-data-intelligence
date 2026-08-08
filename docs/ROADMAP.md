@@ -129,11 +129,11 @@ technically possible.
 
 ### Phase 10N - Professional Scientific Completion
 
-Phase 10N-0 is complete as a reviewer-approved capability audit. Phase 10N-1
-is the active implementation scope for algorithm-derived CrystalNN and
-VoronoiNN coordination. It adds two registered tools while preserving the
-existing Runtime, Artifact, Workspace, Report and Recipe authorities. Phase
-10N-2 remains a reviewer gate and has no executable task.
+Phase 10N-0 and Phase 10N-1 are complete. Phase 10N-2 is the active
+implementation scope for geometry-derived local environments and coordination
+polyhedra consuming exact N1 Artifacts. It adds one registered tool while
+preserving the existing Runtime, Artifact, Workspace, Report and Recipe
+authorities. Phase 10N-3 remains a reviewer gate and has no executable task.
 
 ## Historical Numbering Reconciliation
 
