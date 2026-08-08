@@ -139,6 +139,7 @@ def test_phase10m7_document_links_and_phase10n_gate() -> None:
     assert (
         "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
         or "Task: Phase 10N-2" in tasks
+        or "Phase 10N-2:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
     )
     task_blocks = re.findall(r"(?ms)^---TASK---\n.*?^---END---$", tasks)
     assert len(task_blocks) == task_count

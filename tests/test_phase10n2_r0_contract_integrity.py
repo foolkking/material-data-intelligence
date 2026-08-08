@@ -56,9 +56,14 @@ def test_n2_r0_scope_is_exact_and_bounded() -> None:
     ):
         assert marker in scope
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert tasks.count("---TASK---") == tasks.count("---END---") == 1
-    assert "Phase 10N-2 Local Environment + Coordination Polyhedra" in tasks
-    assert "Phase 10N-3:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+    task_count = tasks.count("---TASK---")
+    assert task_count == tasks.count("---END---")
+    if task_count:
+        assert task_count == 1
+        assert "Phase 10N-2 Local Environment + Coordination Polyhedra" in tasks
+        assert "Phase 10N-3:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+    else:
+        assert "Phase 10N-2:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
 
 
 def test_checked_n2_schema_is_strict_single_family_and_exact_n1_bound() -> None:

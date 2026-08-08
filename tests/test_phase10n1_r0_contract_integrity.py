@@ -70,6 +70,7 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
         for marker in (
             "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT",
             "Phase 10N-2:\nIN_PROGRESS / AWAITING_IMPLEMENTATION",
+            "Phase 10N-2:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT",
         )
     )
 
