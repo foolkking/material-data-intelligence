@@ -2357,5 +2357,7 @@ current board above.
 - [x] Implement bounded reference classification, deterministic faces, metrics, ambiguity and partial states.
 - [x] Integrate Runtime, Artifact, Workspace, selection, Inspector, interpretation and Report/Recipe authorities.
 - [x] Capture Chromium/Firefox/WebKit/390x844 and 50-cycle lifecycle evidence.
-- [ ] Complete implementation, completion-record and queue-archive exact-SHA CI.
+- [x] Corrected implementation `2b4dacf400400f5d1a68352d358346b4638d6cb9`
+  passed exact-SHA CI `31258820229` with 44/44 service-backed checks.
+- [ ] Complete completion-record and queue-archive exact-SHA CI.
 - [ ] Keep Phase 10N-3 reviewer-gated and non-executable.

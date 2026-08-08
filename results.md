@@ -6257,3 +6257,340 @@ origin/master equals HEAD, branch `master`, worktree clean, migration head
 
 Return the complete N1 result after completion-record and queue-archive exact-SHA
 CI; do not create, queue or execute Phase 10N-2.
+
+# Phase 10N-2 Local Environment + Coordination Polyhedra Result
+
+## 1. Conclusion
+
+PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI.
+
+## 2. N1 Baseline
+
+N1 implementation `08b5eec39bed4fcc93d0a4ef36eb385ba0e9ecc4` / CI
+`31147539225`, completion `3c937c4ecf98358e44687538396facc827ec3a4b` /
+CI `31148371587`, and verified archive
+`a9319c2da44f8794ef7a66347d8f7a0dffe4aa5b` / CI `31156152013` are successful
+ancestors. Entry was clean master at the archive SHA, migration head 0007,
+Registry 55 and zero tasks.
+
+## 3. Entry Gate
+
+`PHASE_10N2_ENTRY_GATE=PASS`; N1 authority and reviewer approval were verified,
+N2/N3 production and executable tasks were absent, and R0/queue admission were
+authorized.
+
+## 4. N2-R0 Contract Closure
+
+R0 froze the single Tool, strict params, catalog, Artifact, identities, metrics,
+errors, fixtures, tolerances, caps and no-recomputation boundary with zero
+implementation-critical TBDs.
+
+## 5. Acceptance Registry
+
+The four canonical documents define the same ten entries: `N2-A01` baseline/R0;
+`N2-A02` N1 dependency; `N2-A03` classification; `N2-A04` polyhedra/metrics;
+`N2-A05` identity/determinism; `N2-A06` planning/runtime/persistence; `N2-A07`
+Workspace/Viewer/selection; `N2-A08` interpretation/Report; `N2-A09` evidence;
+and `N2-A10` lifecycle/N3 gate.
+
+## 6. N-D Decision Compliance
+
+Existing scientific authority, identity, unit, persistence, Plan 0.2, Workspace,
+Report/Recipe, security and phase-order decisions remain intact.
+
+## 7. Production Behavior Changes
+
+The platform now computes geometry-derived local environments and coordination
+polyhedra from exact persisted N1 results and presents them through existing
+planning, Runtime, Artifact, Workspace and delivery authorities.
+
+## 8. Registry Change 55 To 56
+
+Exactly `structure.local_environment_polyhedra@0.1.0` was added. Final Registry
+count = 56; comparison Tool and additional scientific Tool count = 0.
+
+## 9. N1 Dependency Authority
+
+N2 binds N1 Artifact ID/checksum, contract, producer Tool/version, algorithm,
+structure hash and parameter hash. CrystalNN-derived and VoronoiNN-derived N2
+results remain independently attributable.
+
+## 10. No N1 Recomputation
+
+`N2_RECOMPUTED_N1_NEIGHBORS=0`; `N2_INDEPENDENT_NEIGHBOR_SEARCH=0`;
+`N2_COORDINATION_ALGORITHM_FALLBACK=0`. N2 consumes and never rewrites N1 rows.
+
+## 11. Algorithm And Version
+
+Classification uses `mdi.angular_spectrum_reference_match@1.0.0`; deterministic
+face construction uses locked `scipy.spatial.ConvexHull@1.17.1`. Both operate
+server-side over bounded exact N1 neighbor geometry.
+
+## 12. Geometry Reference Catalog
+
+The versioned allowlist contains validated bounded references only; custom code,
+coordinates, modules and unverified geometry identifiers are rejected.
+
+## 13. Parameter Contracts
+
+Python, JSON Schema and TypeScript contracts reject extra properties and
+non-finite/unbounded values, resolve canonical defaults and persist parameter
+hashes.
+
+## 14. Local Environment Classification
+
+Per-site results retain reference candidates, scores, status, source algorithm,
+coverage and warnings. Tie handling exposes alternatives or ambiguity rather
+than selecting by iteration order.
+
+## 15. Polyhedron Construction
+
+Vertices retain exact N1 neighbor-relation and periodic-image identity. Backend
+faces are canonicalized from deterministic bounded hull output; the browser does
+not create scientific face authority.
+
+## 16. Distortion Metrics
+
+Approved radial spread, bond-length distortion, angular deviation and bounded
+polyhedron volume/area metrics retain explicit definitions and units. No
+stability, bond-strength or chemistry score is emitted.
+
+## 17. Structure, Site And Neighbor Identity
+
+Project, Job, structure/resource hashes, structure-bound site identities and
+algorithm-qualified N1 neighbor identities are exact. Filename, display label,
+latest, row position and fuzzy geometry are never authority.
+
+## 18. Polyhedron Identity
+
+Polyhedron identity binds the N2 Artifact, source N1 checksum, central site,
+canonical neighbor-relation set, periodic images, contract and parameter hash.
+
+## 19. Determinism
+
+Site, neighbor, vertex, face, candidate and warning orders are canonical; stable
+parameter/content hashes are regression-tested without browser-order dependence.
+
+## 20. Ambiguity
+
+Near-equal candidates preserve scores and alternatives under the sealed tie
+tolerance. Numeric minima are not represented as chemical truth.
+
+## 21. Degenerate And Partial Behavior
+
+Insufficient, coplanar, duplicate and degenerate vertices produce typed component
+states. Classification or metrics may remain available only where the contract
+explicitly permits partial output; no face or label is invented.
+
+## 22. Scientific Wording
+
+UI and delivery use `geometry-derived local environment` and `coordination
+polyhedron constructed from the persisted neighbor set`. Definitive bonding,
+hybridization, oxidation state, stability and experimental confirmation are
+prohibited.
+
+## 23. Profile And Eligibility
+
+DataProfile remains 2.1. Eligibility combines periodic-structure readiness with
+exact N1 availability or producibility, contract/checksum compatibility, identity
+and caps; Profile contains no N2 computed result.
+
+## 24. Planner
+
+Exact CrystalNN or VoronoiNN requests preserve the requested producer. Ambiguous
+algorithm requests require clarification; no latest/first/preferred result is
+selected.
+
+## 25. Plan 0.2 Dependency
+
+N1 producer output binds the N2 consumer through existing bounded AnalysisPlan
+0.2 ports. An exact persisted N1 Artifact can be reused without rerunning N1.
+
+## 26. PlanValidator
+
+Validation rejects wrong Tool/contract/checksum/structure/project/job bindings,
+unbounded params and unsupported dependency outputs without plan repair.
+
+## 27. Runtime
+
+QueueWorkerRuntime resolves the registered Adapter, verifies immutable inputs,
+enforces caps and persists inert output. Failed N1 descendants are BLOCKED and
+independent successful branches are retained without fallback.
+
+## 28. Artifact Contracts
+
+`phase10n2.local_environment_polyhedra.v1` stores bounded N2-derived site,
+classification, vertex, face, metric, coverage and diagnostic data plus exact
+lineage; it copies neither full structure nor full N1 payload.
+
+## 29. PostgreSQL
+
+Exact-SHA CI `31258820229` verified Job/ToolCall/Artifact/Workspace/Report state
+through PostgreSQL with current migration head.
+
+## 30. Redis
+
+The same CI verified queue/events and dependency state without recovery-created
+plans, jobs or ToolCalls.
+
+## 31. MinIO
+
+The same CI verified N1/N2 payload persistence, checksums and exact retrieval.
+Service summary: 44 passed, 0 skipped, 0 failed, 0 errors.
+
+## 32. Workspace
+
+The metadata-first local-environment panel provides environment and metric tables,
+source provenance, deterministic source comparison and an inert polyhedron SVG
+projection without copying scientific payload into Workspace state.
+
+## 33. Structure Viewer
+
+Persisted central sites, vertices, faces and N1 relations are shown distinctly.
+No frontend neighbor, face, classification or distortion computation exists.
+
+## 34. Selection
+
+Exact Artifact, environment, polyhedron, vertex and face selections bind project,
+job, checksum, structure, site and source N1 identity. Legacy Selection 1.0 URL
+tokens remain canonical and Back/Forward restoration passes.
+
+## 35. Inspector
+
+Inspector surfaces N2 and N1 Tool/algorithm versions, checksums, structure/site,
+reference scores/status, neighbor images, faces, metrics, units, params, coverage,
+warnings, limitations and provenance.
+
+## 36. Interpretation
+
+The deterministic projector exposes bounded distributions, coverage, metrics,
+warnings and selected-site facts. LLM authority excludes classification, hulls,
+metrics, chemistry and algorithm choice.
+
+## 37. Algorithm-Source Comparison
+
+Consumer-side tables preserve side-by-side CrystalNN/VoronoiNN-derived results,
+including disagreement and incomplete inputs. They do not average, merge, rank or
+create a new scientific authority.
+
+## 38. Report And Recipe
+
+Report composes persisted figures/tables, lineage, warnings and limits without
+recomputation. Recipe records exact N1/N2 dependency bindings and remains
+declarative, non-executable and without Plan/Job/queue authority.
+
+## 39. Historical Compatibility
+
+Historical N1 Artifacts, Workspaces, reports and pre-N2 selection URLs remain
+readable. Missing N2 is NOT_AVAILABLE and never triggers backfill or read-time
+computation.
+
+## 40. References
+
+Direct controlled tetrahedral, octahedral, lower-coordination, distorted,
+ambiguous, periodic, degenerate, algorithm-source and near-cap fixtures are stored
+with source/version/license/hash provenance.
+
+## 41. Tolerances
+
+Identity, periodic image, reference version and checksum use exact equality.
+Coordinates, distances, angles, scores, distortion, volume, area and ties use
+quantity-specific documented tolerances; no global fuzzy match exists.
+
+## 42. Performance
+
+Small, medium, near-cap and over-cap cases cover evaluated sites, neighbors,
+candidates, vertices, faces, time, memory and bytes. Explicit caps prevent
+unbounded permutations and output growth.
+
+## 43. Viewer Lifecycle
+
+Fifty view/source/site switch cycles produced zero WebGL, listener, observer,
+animation-loop, canvas, payload-request or stale-overlay growth.
+
+## 44. Accessibility
+
+Keyboard site/environment navigation, named controls, visible focus, non-color
+states, text/table alternatives, 44px mobile targets, 200% reflow and reduced
+motion are covered; WebGL is not required to read scientific values.
+
+## 45. Security
+
+No arbitrary code, shell, filesystem, notebook, external network or dynamic
+module authority exists. Artifact HTML/JS/iframe/URL execution, cross-project/job
+binding, stale/fuzzy rebinding, checksum bypass, oxidation inference, bond valence,
+definitive-bond claims and secret/path/stack/storage-key disclosure all remain
+prohibited and tested.
+
+## 46. LLM And DeepSeek
+
+`NEW_LLM_CALL_SITES=0`; `N2_REQUIRES_LLM=NO`; `N2_REAL_LLM_CALLS=0`;
+`DEEPSEEK_POLICY_REGRESSION=PASS`.
+
+## 47. Tests
+
+Local backend: 1196 passed, 1 documented environment skip, 45 integration
+deselected; frontend: 424 passed before the compatibility regression test and 23
+selection tests after it; focused N2 backend 25 passed and focused N2 frontend 32
+passed. Typecheck, build, lock, migration, evidence and diff checks passed.
+
+## 48. Browser Matrix
+
+CI `31258820229` passed Chromium, Firefox, WebKit and Chromium 390x844 N2 replay,
+plus prior Workspace replays. Console/page errors, unexpected failed responses,
+unapproved external requests and mobile overflow = 0.
+
+## 49. Evidence
+
+`docs/phase10n/evidence/phase10n2_local_environment_coordination_polyhedra/`
+contains authority, contracts, fixtures, Runtime, Workspace, browser, lifecycle,
+accessibility, security and manifest evidence with 57 normalized entries and zero
+secret-bearing content.
+
+## 50. Files Changed
+
+Production changes are limited to approved N2 contracts, one Registry entry,
+Adapter/planning/runtime integrations and typed Workspace presentation. Database
+schema = unchanged; migration = unchanged; migration head =
+`0007_phase10m1_workspace_domain`; public API family = unchanged; dependencies =
+unchanged; lockfile = unchanged; DataProfile remains 2.1.
+
+## 51. Commit And CI History
+
+- Initial implementation `6cb7a534faab5a63f1aa197dc9c202e62d8983aa` / CI
+  `31253016285`: failed M3 additive selection compatibility and service fixture.
+- Corrected implementation `2b4dacf400400f5d1a68352d358346b4638d6cb9` / CI
+  `31258820229`: success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: pending; no archive success is claimed here.
+
+## 52. Explicit Non-Scope
+
+N3 XRD, N4 trajectory analytics, N5 electronic products, additional neighbor or
+environment algorithms, oxidation state, bond valence, DFT, generic workflows,
+automatic rerun, arbitrary execution and external scientific APIs are absent.
+
+## 53. Acceptance Results
+
+Expected = 10; implemented = 10; missing = 0; extra = 0; duplicate registry
+entries = 0; conflicting definitions = 0; canonical registry shorthand entries
+= 0.
+
+## 54. Queue State
+
+During completion-record CI, `TASK_BLOCK_COUNT=1`; the N2 task remains active.
+Phase 10N-3 is reviewer-gated and has no executable task.
+
+## 55. Automatic N3 Entry
+
+NO. `PHASE_10N3_EXECUTABLE_TASK_CREATED=NO`.
+
+## 56. Final Repository State
+
+At completion-record creation, implementation authority is
+`2b4dacf400400f5d1a68352d358346b4638d6cb9` / CI `31258820229`, branch master,
+HEAD equals origin/master, migration head 0007, Registry 56, task count 1 and N3
+task absent. Completion and archive SHAs remain pending their exact-SHA gates.
+
+Return the complete N2 result only after completion-record and queue-archive
+exact-SHA CI. Do not create, queue or execute Phase 10N-3.

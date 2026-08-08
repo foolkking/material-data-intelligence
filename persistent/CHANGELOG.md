@@ -2393,3 +2393,14 @@
   43 zero-skipped service-backed checks. Completion-record CI remains pending.
 - No migration, dependency, public API family or LLM call site was added; N2 was
   not queued or executed.
+
+## 2026-08-08 Phase 10N-2 Local Environment + Coordination Polyhedra
+
+- Added the single approved local-environment/polyhedra tool as an exact consumer
+  of persisted N1 coordination Artifacts, with bounded geometry references,
+  deterministic faces, distortion metrics, explicit ambiguity and partial states.
+- Corrected implementation `2b4dacf400400f5d1a68352d358346b4638d6cb9` passed CI
+  `31258820229`, including 44 zero-skipped service-backed tests and the complete
+  Chromium/Firefox/WebKit/mobile replay matrix.
+- Registry count is 56. Database, migration, public API families, dependencies,
+  lockfile and LLM call sites remain unchanged; N3 is not queued.

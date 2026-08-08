@@ -1,9 +1,10 @@
 # Phase 10N-2 Completion
 
-Phase 10N-2 production implementation, tests, browser evidence and service-backed CI
-registration are complete locally. The active N2 task is retained while the
-implementation exact-SHA CI is pending. This record is finalized only after the
-implementation and completion-record CI gates pass; Phase 10N-3 remains
+Phase 10N-2 production implementation, tests, browser evidence and service-backed
+closure are complete. Corrected implementation
+`2b4dacf400400f5d1a68352d358346b4638d6cb9` passed exact-SHA CI
+`31258820229`, including 44 service-backed tests with zero skips. The active N2
+task is retained while the completion-record CI is pending; Phase 10N-3 remains
 `REVIEWER_GATE / AWAITING REVIEWER PROMPT` and is never queued here.
 
 Current implementation markers:

@@ -371,7 +371,7 @@ Phase 0-11 核心设计阶段已完成，`docs/11_MATERIAL_DOMAIN_EXTENSIONS.md`
 下一阶段：按 `docs/12_MVP_ROADMAP.md` 进入代码实现准备。
 
 Current execution state: Phase 10N-1 CrystalNN / VoronoiNN Coordination is
-archived by verified queue commit `a9319c2d`. Phase 10N-2 Local Environment +
-Coordination Polyhedra is implemented locally with one active task and awaits its
-implementation exact-SHA CI lifecycle. Phase 10N-3 remains a reviewer gate and is
-not queued or executable.
+archived by verified queue commit `a9319c2d`. Phase 10N-2 corrected implementation
+`2b4dacf4` passed exact-SHA CI `31258820229`; its active task remains while the
+completion-record and queue-archive gates close. Phase 10N-3 remains a reviewer
+gate and is not queued or executable.

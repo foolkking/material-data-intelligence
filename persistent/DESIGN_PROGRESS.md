@@ -2035,3 +2035,13 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Added metadata-first Workspace rendering, persisted polyhedron SVG projection,
   exact site selection, Inspector, bounded interpretation, browser/mobile and
   lifecycle evidence. N3 remains reviewer-gated and absent from the queue.
+
+## 2026-08-08 Phase 10N-2 completion record
+
+- Initial implementation `6cb7a534faab5a63f1aa197dc9c202e62d8983aa` failed CI
+  `31253016285` on additive-selection compatibility fixtures; no scientific
+  contract or authority failed.
+- Corrected implementation `2b4dacf400400f5d1a68352d358346b4638d6cb9` passed exact-SHA
+  CI `31258820229`: backend 1196 passed, service-backed 44/44, browser matrix,
+  typecheck and build passed.
+- Completion-record CI and verified queue archive remain. N3 is not executable.
