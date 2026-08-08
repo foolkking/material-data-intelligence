@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { WorkspaceSelectionKind, WorkspaceSelectionRef } from "../../lib/workspace-api";
+import type { WorkspaceSelectionContext, WorkspaceSelectionKind, WorkspaceSelectionRef } from "../../lib/workspace-api";
 import {
   canonicalSelectionJson,
   clearedWorkspaceSelection,
@@ -32,6 +32,15 @@ describe("Phase 10M-3 canonical Workspace selection contract", () => {
     expect(() => decodeWorkspaceSelectionUrl(base64url(duplicate))).toThrowError(/invalid or non-canonical/u);
     expect(() => decodeWorkspaceSelectionUrl("not+base64")).toThrowError(/base64url/u);
     expect(() => decodeWorkspaceSelectionUrl("a".repeat(2_049))).toThrowError(/2048/u);
+  });
+
+  it("restores canonical 1.0 URL tokens created before the additive N2 identity fields", () => {
+    const context = contextFor("DATASET_SAMPLE");
+    const legacy = JSON.parse(canonicalSelectionJson(context)) as Record<string, unknown>;
+    const primary = legacy.primary as Record<string, unknown>;
+    for (const field of ["environmentId", "polyhedronId", "vertexId", "faceId", "geometryReferenceId"]) delete primary[field];
+    const raw = canonicalSelectionJson(legacy as unknown as WorkspaceSelectionContext);
+    expect(decodeWorkspaceSelectionUrl(base64url(raw))).toEqual(context);
   });
 
   it("rejects index, display-label, fuzzy, path, URL, and executable authority fields", () => {

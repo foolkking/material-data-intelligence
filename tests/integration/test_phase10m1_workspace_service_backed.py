@@ -737,6 +737,10 @@ def test_phase10m3_postgres_redis_minio_canonical_selection_and_pinning(
                 "DATASET_SAMPLE",
                 "MATERIAL_OBJECT",
                 "ARTIFACT",
+                "LOCAL_ENVIRONMENT",
+                "COORDINATION_POLYHEDRON",
+                "POLYHEDRON_VERTEX",
+                "POLYHEDRON_FACE",
             ]
             assert "ARTIFACT" in result_panel["acceptedSelectionKinds"]
             selection = WorkspaceSelectionContext(

@@ -220,7 +220,7 @@ export function decodeWorkspaceSelectionUrl(token: string): WorkspaceSelectionCo
     assertNoDuplicateJsonKeys(raw);
     const parsed = JSON.parse(raw) as unknown;
     const context = validateWorkspaceSelectionContext(parsed);
-    if (encodeWorkspaceSelectionUrl(context) !== token) throw new Error("non-canonical");
+    if (canonicalSelectionJson(parsed as WorkspaceSelectionContext) !== raw) throw new Error("non-canonical");
     return context;
   } catch (error) {
     if (error instanceof WorkspaceSelectionError) throw error;
