@@ -1,0 +1,1 @@
+{"schema":"phase10n3.experimental_xrd_resource.v1","units":{"twoTheta":"degree","wavelength":"angstrom"},"pointBounds":[3,200000],"axis":"STRICTLY_INCREASING","intensitySemantics":["counts","relative_intensity","normalized_relative_intensity","arbitrary_relative_unit"],"checkedSchema":"packages/schemas/json/phase10n3-experimental-xrd-resource.schema.json"}

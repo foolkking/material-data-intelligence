@@ -50,7 +50,7 @@ class DurableObjectStoreResolver:
         structure_resources: dict[str, Any] = {}
         formulas: list[str] = []
         dataframes: list[pd.DataFrame] = []
-        dataframe_resources: dict[str, pd.DataFrame] = {}
+        dataframe_resources: dict[str, Any] = {}
 
         for export in exports:
             metadata_key = str(export.get("metadataKey") or export.get("metadata_key") or "")
@@ -68,7 +68,8 @@ class DurableObjectStoreResolver:
                 dataframe = pd.DataFrame(payload)
                 dataframes.append(dataframe)
                 if object_id:
-                    dataframe_resources[object_id] = dataframe
+                    experimental_xrd = object_metadata.get("experimentalXrd")
+                    dataframe_resources[object_id] = _experimental_xrd_resource(dataframe, experimental_xrd) if isinstance(experimental_xrd, dict) else dataframe
                 if "formula" in dataframe.columns:
                     formulas.extend(str(value) for value in dataframe["formula"].dropna().tolist())
             elif object_type == MaterialObjectType.Structure.value:
@@ -121,3 +122,13 @@ def _normalized_exports(dataset: Mapping[str, Any]) -> list[Mapping[str, Any]]:
     metadata = dataset.get("metadata") or {}
     candidates = dataset.get("normalizedExports") or metadata.get("normalizedExports") or metadata.get("normalized_exports") or []
     return [export for export in candidates if isinstance(export, Mapping)]
+
+
+def _experimental_xrd_resource(dataframe: pd.DataFrame, metadata: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "schemaVersion": metadata["schemaVersion"], "resourceId": metadata["resourceId"],
+        "resourceVersion": metadata["resourceVersion"], "resourceHash": metadata["resourceHash"],
+        "xAxis": metadata["xAxis"], "twoTheta": [float(item) for item in dataframe["two_theta"].tolist()],
+        "intensity": [float(item) for item in dataframe["intensity"].tolist()],
+        "intensitySemantic": metadata["intensitySemantic"], "wavelength": metadata["wavelength"],
+    }

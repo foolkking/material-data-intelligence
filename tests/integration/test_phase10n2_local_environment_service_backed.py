@@ -64,7 +64,7 @@ def test_phase10n2_postgres_redis_minio_exact_n1_dependency_closure(
         registry = load_manifests()
         n1_tool = registry.get_tool_by_id("structure.coordination_crystalnn")
         n2_tool = registry.get_tool_by_id("structure.local_environment_polyhedra")
-        assert len(registry.tools) == 56
+        assert len(registry.tools) == 57
         structure = Structure(Lattice.cubic(3.57), ["Si", "Si"], [[0, 0, 0], [0.25, 0.25, 0.25]])
         project_id, dataset_id, job_id = (f"project_n2_{suffix}", f"dataset_n2_{suffix}", f"job_n2_{suffix}")
 

@@ -108,6 +108,9 @@ class WorkspaceSelectionKind(StrEnum):
     COORDINATION_POLYHEDRON = "COORDINATION_POLYHEDRON"
     POLYHEDRON_VERTEX = "POLYHEDRON_VERTEX"
     POLYHEDRON_FACE = "POLYHEDRON_FACE"
+    EXPERIMENTAL_XRD_PEAK = "EXPERIMENTAL_XRD_PEAK"
+    THEORETICAL_XRD_PEAK = "THEORETICAL_XRD_PEAK"
+    XRD_MATCH = "XRD_MATCH"
     TRAJECTORY_ATOM = "TRAJECTORY_ATOM"
     TRAJECTORY_FRAME = "TRAJECTORY_FRAME"
     PHONON_Q_POINT = "PHONON_Q_POINT"
@@ -236,8 +239,8 @@ class WorkspacePanel(StrictWorkspaceModel):
     sourceReferenceHash: str
     rendererContract: str = Field(min_length=1, max_length=128)
     state: WorkspacePanelState
-    acceptedSelectionKinds: tuple[WorkspaceSelectionKind, ...] = Field(default_factory=tuple, max_length=17)
-    emittedSelectionKinds: tuple[WorkspaceSelectionKind, ...] = Field(default_factory=tuple, max_length=17)
+    acceptedSelectionKinds: tuple[WorkspaceSelectionKind, ...] = Field(default_factory=tuple, max_length=20)
+    emittedSelectionKinds: tuple[WorkspaceSelectionKind, ...] = Field(default_factory=tuple, max_length=20)
     evidenceRefs: tuple[str, ...] = Field(default_factory=tuple, max_length=32)
     provenanceRefs: tuple[str, ...] = Field(default_factory=tuple, max_length=32)
     capabilityRequirement: str | None = Field(default=None, max_length=96)
@@ -312,6 +315,10 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
     vertexId: str | None = Field(default=None, max_length=1024)
     faceId: str | None = Field(default=None, max_length=3072)
     geometryReferenceId: str | None = Field(default=None, max_length=96)
+    experimentalResourceId: str | None = Field(default=None, max_length=96)
+    theoreticalArtifactId: str | None = Field(default=None, max_length=96)
+    peakId: str | None = Field(default=None, max_length=96)
+    matchId: str | None = Field(default=None, max_length=96)
     trajectoryId: str | None = Field(default=None, max_length=96)
     atomId: str | None = Field(default=None, max_length=96)
     frameId: str | None = Field(default=None, max_length=96)
@@ -345,6 +352,7 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
         "artifactId", "toolCallId", "bundleId", "evidenceItemId", "sourceArtifactId",
         "interpretationId", "claimId",
         "environmentId", "polyhedronId", "geometryReferenceId",
+        "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
     )
     @classmethod
     def validate_ids(cls, value: str | None) -> str | None:
@@ -389,6 +397,9 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.COORDINATION_POLYHEDRON: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "polyhedronId"},
             WorkspaceSelectionKind.POLYHEDRON_VERTEX: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "vertexId"},
             WorkspaceSelectionKind.POLYHEDRON_FACE: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "faceId"},
+            WorkspaceSelectionKind.EXPERIMENTAL_XRD_PEAK: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "peakId"},
+            WorkspaceSelectionKind.THEORETICAL_XRD_PEAK: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "theoreticalArtifactId", "peakId"},
+            WorkspaceSelectionKind.XRD_MATCH: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "matchId"},
             WorkspaceSelectionKind.TRAJECTORY_ATOM: {"datasetId", "datasetVersion", "trajectoryId", "atomId"},
             WorkspaceSelectionKind.TRAJECTORY_FRAME: {"datasetId", "datasetVersion", "trajectoryId", "frameId"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"},
@@ -412,6 +423,9 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.COORDINATION_POLYHEDRON: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "polyhedronId", "geometryReferenceId"},
             WorkspaceSelectionKind.POLYHEDRON_VERTEX: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "vertexId"},
             WorkspaceSelectionKind.POLYHEDRON_FACE: {"datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "faceId"},
+            WorkspaceSelectionKind.EXPERIMENTAL_XRD_PEAK: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId"},
+            WorkspaceSelectionKind.THEORETICAL_XRD_PEAK: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId"},
+            WorkspaceSelectionKind.XRD_MATCH: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId"},
             WorkspaceSelectionKind.TRAJECTORY_ATOM: {"datasetId", "datasetVersion", "trajectoryId", "atomId", "artifactId", "artifactChecksum"},
             WorkspaceSelectionKind.TRAJECTORY_FRAME: {"datasetId", "datasetVersion", "trajectoryId", "frameId", "artifactId", "artifactChecksum"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"},

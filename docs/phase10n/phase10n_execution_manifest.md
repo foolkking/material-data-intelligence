@@ -99,3 +99,31 @@ Manifest status: `N0 COMPLETE / REVIEWER_APPROVAL_REQUIRED`; N1 is not executabl
 | N1-A08 | projector/report | wording/provenance | report journey | immutable records | report/recipe | no execution | delivery PASS |
 | N1-A09 | refs/caps/security | full matrix | all browsers | zero skipped | manifest | complete markers | evidence PASS |
 | N1-A10 | lifecycle | lifecycle checks | CI replay | CI services | commit history | secret scan | verified archive |
+
+## Canonical Phase 10N-3 Acceptance Registry
+
+1. `N3-A01 BASELINE_THEORETICAL_XRD_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE` - N2 baseline, existing theoretical XRD authority and R0 closure.
+2. `N3-A02 EXPERIMENTAL_XRD_RESOURCE_PROFILE_UNITS_AND_SEMANTIC_VALIDATION` - resource/Profile/unit/wavelength validation.
+3. `N3-A03 EXPERIMENTAL_PEAK_DETECTION_AND_DETERMINISTIC_NORMALIZATION` - locked detector and independent deterministic normalization.
+4. `N3-A04 THEORETICAL_PEAK_BINDING_AND_BOUNDED_ONE_TO_ONE_PEAK_MATCHING` - exact theory binding and bounded one-to-one matching.
+5. `N3-A05 EXACT_PEAK_IDENTITY_RESIDUALS_COVERAGE_AND_DETERMINISM` - identity, residual, unmatched, coverage and determinism evidence.
+6. `N3-A06 ELIGIBILITY_PLANNER_PLANVALIDATOR_DEPENDENCY_RUNTIME_AND_PERSISTENCE` - dependency planning, runtime and persistence evidence.
+7. `N3-A07 WORKSPACE_XRD_OVERLAY_SELECTION_TABLES_AND_INSPECTOR` - overlay, table, selection, Inspector and browser evidence.
+8. `N3-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_CLAIM_BOUNDARY` - bounded facts, Report/Recipe and wording evidence.
+9. `N3-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE` - full scientific/product/security evidence.
+10. `N3-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N4_REVIEWER_GATE` - lifecycle, Registry 57, queue archive and N4 gate evidence.
+
+## N3 Traceability
+
+| ID | Source | Test | Browser | Service | Security | Exit gate |
+| --- | --- | --- | --- | --- | --- | --- |
+| N3-A01 | N2 archive and structure.xrd | R0 integrity | n/a | n/a | no reimplementation | R0 PASS |
+| N3-A02 | resource/Profile contract | input/unit/negative | readiness states | resource identity | untrusted data | semantic PASS |
+| N3-A03 | SciPy detector | fixtures/determinism | peak markers | runtime | no match tuning | detector PASS |
+| N3-A04 | theory Artifact | matching/ties | overlay | exact binding | no phase search | matcher PASS |
+| N3-A05 | identity seal | residual/coverage/hash | selection | checksum | no fuzzy/latest | exact result |
+| N3-A06 | Registry/Plan 0.2 | planner/runtime/failure | job state | PostgreSQL/Redis/MinIO | scope isolation | chain PASS |
+| N3-A07 | Workspace | tables/Inspector/selection | four-browser/mobile | readback | inert payload | UI PASS |
+| N3-A08 | projector/report | facts/exports | report journey | lineage | false-claim audit | delivery PASS |
+| N3-A09 | caps/security | full regression | a11y/lifecycle | zero skipped | secret scan | evidence PASS |
+| N3-A10 | lifecycle | lifecycle assertions | CI replay | CI services | N4 absent | archive PASS |

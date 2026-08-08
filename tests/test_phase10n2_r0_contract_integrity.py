@@ -60,8 +60,16 @@ def test_n2_r0_scope_is_exact_and_bounded() -> None:
     assert task_count == tasks.count("---END---")
     if task_count:
         assert task_count == 1
-        assert "Phase 10N-2 Local Environment + Coordination Polyhedra" in tasks
-        assert "Phase 10N-3:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+        assert re.search(r"(?:Task:|任务：) Phase 10N-(?:2|3) ", tasks)
+        assert "Status: IN_PROGRESS" in tasks or "状态：处理中" in tasks
+        assert any(
+            marker in tasks
+            for marker in (
+                "Phase 10N-3:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT",
+                "Phase 10N-3:\nIMPLEMENTED / AWAITING_IMPLEMENTATION_CI",
+                "Phase 10N-3:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT",
+            )
+        )
     else:
         assert "Phase 10N-2:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
 

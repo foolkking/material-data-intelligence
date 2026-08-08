@@ -464,6 +464,17 @@ class CapabilityContextValidator:
 
 def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandidateProjection) -> list[str]:
     goal = intent.rawGoal.casefold()
+    if "xrd" in goal and any(marker in goal for marker in ("experimental", "match", "correspond", "comparison")):
+        producer = "structure.xrd"
+        consumer = "structure.experimental_xrd_comparison"
+        eligible = {item.toolId for item in projection.candidates}
+        if {producer, consumer}.issubset(eligible):
+            return sorted([producer, consumer])
+        raise CapabilityPlanningError(
+            "Experimental XRD comparison requires exact eligible experimental and theoretical XRD sources.",
+            code="XRD_COMPARISON_SOURCE_NOT_ELIGIBLE",
+            outcome=CapabilityPlanningOutcome.capability_mismatch,
+        )
     if any(marker in goal for marker in ("local environment", "coordination polyhed", "local geometry")):
         n2 = "structure.local_environment_polyhedra"
         if "crystalnn" in goal:

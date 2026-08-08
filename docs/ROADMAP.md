@@ -129,11 +129,12 @@ technically possible.
 
 ### Phase 10N - Professional Scientific Completion
 
-Phase 10N-0 and Phase 10N-1 are complete. Phase 10N-2 is the active
-implementation scope for geometry-derived local environments and coordination
-polyhedra consuming exact N1 Artifacts. It adds one registered tool while
-preserving the existing Runtime, Artifact, Workspace, Report and Recipe
-authorities. Phase 10N-3 remains a reviewer gate and has no executable task.
+Phase 10N-0 through Phase 10N-2 are complete. Phase 10N-3 is the active
+implementation scope for bounded experimental/theoretical XRD peak
+correspondence. It reuses the existing theoretical XRD authority, adds one
+registered comparison tool and preserves Runtime, Artifact, Workspace, Report
+and Recipe authority. Phase 10N-4 remains reviewer-gated and has no executable
+task.
 
 ## Historical Numbering Reconciliation
 

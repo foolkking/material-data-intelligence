@@ -98,7 +98,7 @@ SQUARE_PLANAR = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0)]
 
 def test_registry_adds_exactly_one_n2_tool_and_exact_n1_ports() -> None:
     registry = load_manifests()
-    assert len(registry.tools) == 56
+    assert len(registry.tools) == 57
     tool = registry.get_tool_by_id("structure.local_environment_polyhedra")
     assert tool.version == "0.1.0"
     assert tool.adapter == "LocalEnvironmentPolyhedraAdapter"

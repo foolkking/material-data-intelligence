@@ -43,6 +43,14 @@ evidence: `phase10n/phase10n2_local_environment_polyhedra_contract.md`,
 `phase10n/phase10n2_performance_security_accessibility.md`, and
 `phase10n/evidence/phase10n2_local_environment_coordination_polyhedra/`.
 
+Phase 10N-3 experimental XRD contracts and evidence: `phase10n/phase10n3_experimental_xrd_resource_contract.md`,
+`phase10n/phase10n3_peak_detection_contract.md`,
+`phase10n/phase10n3_peak_matching_contract.md`,
+`phase10n/phase10n3_artifact_contract.md`,
+`phase10n/phase10n3_registry_profile_planner_integration.md`,
+`phase10n/phase10n3_workspace_selection_interpretation.md`, and
+`phase10n/evidence/phase10n3_experimental_xrd_comparison_peak_matching/`.
+
 ## Phase 10N Professional Scientific Completion
 
 Phase 10N-0 is a documentation-only capability audit and scope seal. It adds

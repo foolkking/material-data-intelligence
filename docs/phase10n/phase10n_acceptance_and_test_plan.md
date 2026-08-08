@@ -139,3 +139,20 @@ outside this section are informational and are not duplicate registry entries.
 
 The N1 integrity target is exactly ten entries with zero missing, extra, duplicate,
 conflicting or shorthand registry entries. Document-wide references are informational.
+
+## Canonical Phase 10N-3 Acceptance Registry
+
+This is the only canonical N3 registry. References outside this section are informational.
+
+1. `N3-A01 BASELINE_THEORETICAL_XRD_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE` - verify N2 authority, the existing persisted theoretical XRD contract, exact N3 resource and execution contracts, R0 closure, reconciliation and queue admission.
+2. `N3-A02 EXPERIMENTAL_XRD_RESOURCE_PROFILE_UNITS_AND_SEMANTIC_VALIDATION` - verify the strict experimental resource, explicit 2theta/intensity semantics, wavelength, bounded finite data and additive Profile readiness without backfill or migration.
+3. `N3-A03 EXPERIMENTAL_PEAK_DETECTION_AND_DETERMINISTIC_NORMALIZATION` - verify locked SciPy peak detection, bounded parameters, deterministic normalization, detector/resource provenance and independence from matching success.
+4. `N3-A04 THEORETICAL_PEAK_BINDING_AND_BOUNDED_ONE_TO_ONE_PEAK_MATCHING` - verify exact theoretical Artifact binding, derived stable theoretical peak identities, wavelength compatibility, bounded position matching, one-to-one assignment and tie policy.
+5. `N3-A05 EXACT_PEAK_IDENTITY_RESIDUALS_COVERAGE_AND_DETERMINISM` - verify experimental/theoretical/match identities, signed and absolute 2theta residuals, unmatched preservation, zero-match validity, coverage and canonical ordering/checksums.
+6. `N3-A06 ELIGIBILITY_PLANNER_PLANVALIDATOR_DEPENDENCY_RUNTIME_AND_PERSISTENCE` - verify resource/theory dependency readiness, exact bindings, Plan 0.2 validation, server-side Adapter execution, typed failures, generic Artifact persistence and no fallback/reimplementation.
+7. `N3-A07 WORKSPACE_XRD_OVERLAY_SELECTION_TABLES_AND_INSPECTOR` - verify metadata-first XRD panel, experimental/theoretical overlay semantics, peak and match tables, exact selection, Inspector, reload/navigation, mobile and accessible table fallback.
+8. `N3-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_CLAIM_BOUNDARY` - verify bounded projector facts, correspondence-only wording, unmatched disclosure, Report/Recipe provenance and non-executable Recipe authority.
+9. `N3-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE` - verify fixtures, quantity-specific tolerances, caps, lifecycle, browser/mobile, service-backed, accessibility, security, evidence and secret scans.
+10. `N3-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N4_REVIEWER_GATE` - verify implementation, completion-record and queue-archive exact-SHA CI, Registry 57, task count zero and N4 remains a reviewer-only gate.
+
+N3 integrity target: `expected = 10`, `implemented = 10`, `missing = 0`, `extra = 0`, `duplicate registry entries = 0`, `conflicting definitions = 0`, `canonical registry shorthand entries = 0`. A duplicate is counted only when an ID is defined more than once inside this canonical section.

@@ -80,3 +80,23 @@ N2 execution is locked to `structure.local_environment_polyhedra@0.1.0`, Registr
 `phase10n2.local_environment_polyhedra.v1`, DataProfile 2.1 and AnalysisPlan 0.2 exact
 N1 Artifact ports. No independent neighbor search, ChemEnv coordination authority,
 oxidation-state inference, migration, API family, dependency or lockfile change is allowed.
+
+## Canonical Phase 10N-3 Acceptance Registry
+
+1. `N3-A01 BASELINE_THEORETICAL_XRD_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE` - existing theoretical XRD authority and exact N3-R0 contracts.
+2. `N3-A02 EXPERIMENTAL_XRD_RESOURCE_PROFILE_UNITS_AND_SEMANTIC_VALIDATION` - strict resource semantics, Profile readiness and explicit units/wavelength.
+3. `N3-A03 EXPERIMENTAL_PEAK_DETECTION_AND_DETERMINISTIC_NORMALIZATION` - locked detector, bounded normalization and match independence.
+4. `N3-A04 THEORETICAL_PEAK_BINDING_AND_BOUNDED_ONE_TO_ONE_PEAK_MATCHING` - exact theory binding and deterministic one-to-one position matching.
+5. `N3-A05 EXACT_PEAK_IDENTITY_RESIDUALS_COVERAGE_AND_DETERMINISM` - exact identities, residuals, unmatched sets, coverage and stable output.
+6. `N3-A06 ELIGIBILITY_PLANNER_PLANVALIDATOR_DEPENDENCY_RUNTIME_AND_PERSISTENCE` - planning, validation, runtime and generic persistence.
+7. `N3-A07 WORKSPACE_XRD_OVERLAY_SELECTION_TABLES_AND_INSPECTOR` - metadata-first overlay, tables, exact selection and Inspector.
+8. `N3-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_CLAIM_BOUNDARY` - bounded interpretation, delivery and correspondence-only wording.
+9. `N3-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE` - fixtures, tolerances, caps, browser/service/security evidence.
+10. `N3-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N4_REVIEWER_GATE` - exact-SHA lifecycle, Registry 57 and N4 reviewer gate.
+
+N3 execution is locked to one Tool, `structure.experimental_xrd_comparison@0.1.0`.
+`structure.xrd` / `phase10e4.xrd_pattern.v1` remains the only theoretical XRD authority.
+Detection uses locked SciPy 1.17.1 `find_peaks` with bounded parameters and no matching
+feedback. Matching is deterministic, position-only, one-to-one and tolerance bounded.
+Zero matches are valid. No pattern shift, refinement, phase identification, migration,
+database/API family, dependency, lockfile, LLM or N4 executable task is allowed.

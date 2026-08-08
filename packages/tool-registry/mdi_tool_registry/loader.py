@@ -299,6 +299,16 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
             "maxAtomsPerStructure": 5000,
             "maxPeaks": 5000,
         }
+    if tool_id == "structure.experimental_xrd_comparison":
+        return {
+            "maxExperimentalPoints": 200000,
+            "maxTheoreticalPeaks": 20000,
+            "maxDetectedPeaks": 10000,
+            "maxMatchingCandidates": 200000,
+            "maxOutputMatches": 10000,
+            "maxArtifactBytes": 33554432,
+            "maxPlotPoints": 50000,
+        }
     if tool_id == "structure.rdf":
         return {
             "maxStructures": 8,
@@ -321,6 +331,17 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.experimental_xrd_comparison":
+        return ToolInputSchema(
+            periodicity="any",
+            inputOptions=[
+                ToolInputOption(
+                    name="experimental_resource_and_theoretical_xrd",
+                    requiredObjectTypes=[MaterialObjectType.DataFrame, MaterialObjectType.Structure],
+                    description="Use one explicit experimental XRD Resource and one exact persisted structure.xrd Artifact.",
+                )
+            ],
+        )
     if tool_id == "dataset.composition_space":
         return ToolInputSchema(
             periodicity="any",
@@ -973,6 +994,23 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "max_peaks": {"type": "integer", "minimum": 1, "maximum": 5000},
                 "include_hkl": {"type": "boolean"},
                 "plot_kind": {"enum": ["stem"]},
+            },
+        }
+    if tool_id == "structure.experimental_xrd_comparison":
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "normalization": {"enum": ["none", "max_to_1", "max_to_100"], "default": "max_to_1"},
+                "minimum_prominence": {"type": "number", "minimum": 0.0, "maximum": 1.0, "default": 0.05},
+                "minimum_relative_height": {"type": "number", "minimum": 0.0, "maximum": 1.0, "default": 0.0},
+                "minimum_peak_separation_deg": {"type": "number", "minimum": 0.0, "maximum": 10.0, "default": 0.1},
+                "max_detected_peaks": {"type": "integer", "minimum": 1, "maximum": 10000, "default": 10000},
+                "matching_tolerance_deg": {"type": "number", "minimum": 0.001, "maximum": 2.0, "default": 0.15},
+                "max_matching_candidates": {"type": "integer", "minimum": 1, "maximum": 200000, "default": 200000},
+                "max_theoretical_peaks": {"type": "integer", "minimum": 1, "maximum": 20000, "default": 20000},
+                "max_output_matches": {"type": "integer", "minimum": 1, "maximum": 10000, "default": 10000},
+                "max_output_bytes": {"type": "integer", "minimum": 1024, "maximum": 33554432, "default": 33554432},
             },
         }
     if tool_id == "structure.rdf":

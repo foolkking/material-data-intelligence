@@ -179,6 +179,8 @@ class MockLLMProvider:
                     {"name": "brillouin_zone_manifest.json", "type": "brillouin_zone_manifest_json", "fromStepId": "step_001"},
                 ],
             )
+        elif experimental_xrd_tools := _select_experimental_xrd_tools(request, tools, data_profile):
+            plan = _mock_experimental_xrd_plan(request, data_profile, experimental_xrd_tools)
         elif local_environment_tools := _select_local_environment_tools(request, tools, data_profile):
             plan = _mock_local_environment_plan(request, data_profile, local_environment_tools)
         elif coordination_tools := _select_coordination_nn_tools(request, tools, data_profile):
@@ -1410,6 +1412,74 @@ def _select_local_environment_tools(
     else:
         return []
     return [producer, "structure.local_environment_polyhedra"] if _has_tool(tools, producer) else []
+
+
+def _select_experimental_xrd_tools(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> list[str]:
+    prompt = request.user_prompt.casefold()
+    readiness = data_profile.experimentalXrdReadiness
+    if (
+        not _has_structure_input(data_profile)
+        or readiness is None
+        or readiness.status != "READY"
+        or readiness.eligibleResourceCount != 1
+        or not any(marker in prompt for marker in ("experimental xrd", "match experimental peaks", "xrd comparison", "xrd correspondence"))
+    ):
+        return []
+    selected = ["structure.xrd", "structure.experimental_xrd_comparison"]
+    return selected if all(_has_tool(tools, tool_id) for tool_id in selected) else []
+
+
+def _mock_experimental_xrd_plan(
+    request: PlannerRequest,
+    data_profile: DataProfile,
+    tool_ids: list[str],
+) -> dict[str, Any]:
+    experimental = data_profile.experimentalXrdReadiness
+    if experimental is None or len(experimental.resources) != 1:
+        raise LLMProviderError("Experimental XRD comparison requires one exact ready resource.")
+    experimental_id = experimental.resources[0].objectId
+    producer = _mock_structure_plan(
+        request,
+        data_profile=data_profile,
+        tool_id=tool_ids[0],
+        purpose="Produce the exact persisted theoretical XRD authority for bounded experimental comparison.",
+        params={"radiation": "CuKa", "two_theta_min": 0.0, "two_theta_max": 180.0, "intensity_threshold": 0.0, "peak_merge_tolerance": 0.001, "max_peaks": 5000, "include_hkl": True, "plot_kind": "stem"},
+        artifact_name="xrd_pattern.json",
+        artifact_type="table_json",
+        artifact_types=["table_json", "plotly_json", "summary_md", "recipe_json"],
+    )
+    producer_step = producer["steps"][0]
+    producer_step["stepId"] = "step_001"
+    consumer_step = {
+        "stepId": "step_002",
+        "toolId": tool_ids[1],
+        "purpose": "Detect experimental peaks independently and compare them one-to-one with exact theoretical XRD peaks.",
+        "reason": "One explicit experimental XRD resource and one exact theoretical structure are bound.",
+        "inputRefs": [
+            {"refType": "normalized_object", "ref": experimental_id, "objectType": "DataFrame"},
+            {"refType": "normalized_object", "ref": "structures", "objectType": "Structure"},
+        ],
+        "params": {"normalization": "max_to_1", "minimum_prominence": 0.05, "minimum_relative_height": 0.0, "minimum_peak_separation_deg": 0.1, "max_detected_peaks": 10000, "matching_tolerance_deg": 0.15, "max_matching_candidates": 200000, "max_theoretical_peaks": 20000, "max_output_matches": 10000, "max_output_bytes": 33554432},
+        "output": {"artifactTypes": ["table_json", "plotly_json", "summary_md", "recipe_json"]},
+    }
+    return {
+        "schemaVersion": "0.1", "goal": request.user_prompt, "datasetId": request.dataset_id,
+        "profileId": request.profile_id, "toolRegistryVersion": request.tool_registry_version,
+        "assumptions": ["Wavelength and units are explicit and must match exactly under the N3 contract."],
+        "warnings": ["This is peak correspondence under tolerance, not refinement or definitive phase identification."],
+        "steps": [producer_step, consumer_step],
+        "expectedArtifacts": [
+            {"name": "xrd_pattern.json", "type": "table_json", "fromStepId": "step_001"},
+            {"name": "experimental_xrd_comparison.json", "type": "table_json", "fromStepId": "step_002"},
+            {"name": "experimental_xrd_comparison_plot.json", "type": "plotly_json", "fromStepId": "step_002"},
+            {"name": "summary.md", "type": "summary_md", "fromStepId": "step_002"},
+            {"name": "recipe.json", "type": "recipe_json", "fromStepId": "step_002"},
+        ],
+    }
 
 
 def _mock_local_environment_plan(

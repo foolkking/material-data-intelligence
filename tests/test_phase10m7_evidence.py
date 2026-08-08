@@ -128,7 +128,9 @@ def test_phase10m7_document_links_and_phase10n_gate() -> None:
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     assert task_count in {0, 1}
-    if task_count and "Task: Phase 10N-2" in tasks:
+    if task_count and ("Task: Phase 10N-3" in tasks or "任务：Phase 10N-3" in tasks):
+        assert "Phase 10N-4:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+    elif task_count and ("Task: Phase 10N-2" in tasks or "任务：Phase 10N-2" in tasks):
         assert "Phase 10N-3:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
     elif task_count and "Phase 10N-1" not in tasks:
         assert "# Phase 10M-7" in tasks
@@ -146,5 +148,6 @@ def test_phase10m7_document_links_and_phase10n_gate() -> None:
     assert all(
         "Phase 10N-1 CrystalNN / VoronoiNN Coordination" in block
         or "Phase 10N-2 Local Environment + Coordination Polyhedra" in block
+        or "Phase 10N-3 Experimental XRD Comparison + Peak Matching" in block
         for block in task_blocks
     )

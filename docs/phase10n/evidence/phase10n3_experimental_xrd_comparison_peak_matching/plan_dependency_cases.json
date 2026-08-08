@@ -1,0 +1,1 @@
+{"schemaVersion":"0.2","producer":"structure.xrd@0.1.0","consumer":"structure.experimental_xrd_comparison@0.1.0","contract":"phase10e4.xrd_pattern.v1","cardinality":"EXACTLY_ONE","failedProducerDescendant":"BLOCKED"}

@@ -393,6 +393,31 @@ class DataProfileCoordinationReadiness(BaseModel):
     reasons: list[str] = Field(default_factory=list)
 
 
+class DataProfileExperimentalXrdResourceReadiness(BaseModel):
+    objectId: str
+    objectHash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    resourceId: str
+    resourceHash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    xAxisKind: Literal["two_theta"]
+    xAxisUnit: Literal["degree"]
+    intensitySemantic: Literal["counts", "relative_intensity", "normalized_relative_intensity", "arbitrary_relative_unit"]
+    wavelengthPresent: bool
+    wavelengthUnit: Literal["angstrom"] | None = None
+    pointCount: int = Field(ge=0, le=200000)
+    axisMonotonicity: Literal["STRICTLY_INCREASING", "INVALID", "UNKNOWN"]
+    status: Literal["READY", "MISSING_REQUIRED_DATA", "AMBIGUOUS", "UNSUPPORTED_DATA_KIND"]
+    reasons: list[str] = Field(default_factory=list)
+
+
+class DataProfileExperimentalXrdReadiness(BaseModel):
+    contractVersion: Literal["1.0"] = "1.0"
+    experimentalXrdPresent: bool
+    eligibleResourceCount: int = Field(ge=0, le=32)
+    resources: list[DataProfileExperimentalXrdResourceReadiness] = Field(default_factory=list, max_length=32)
+    status: Literal["READY", "MISSING_REQUIRED_DATA", "AMBIGUOUS", "UNSUPPORTED_DATA_KIND"]
+    reasons: list[str] = Field(default_factory=list)
+
+
 class DataProfile(BaseModel):
     schemaVersion: Literal["0.1"] = "0.1"
     profileId: str
@@ -407,7 +432,7 @@ class DataProfile(BaseModel):
     trajectorySummary: dict[str, Any] | None = None
     qualityIssues: list[dict[str, Any]] = Field(default_factory=list)
     recommendedTasks: list[dict[str, Any]] = Field(default_factory=list)
-    profileContractVersion: Literal["2.0", "2.1"] | None = None
+    profileContractVersion: Literal["2.0", "2.1", "2.2"] | None = None
     semanticRulesVersion: str | None = None
     semanticHash: str | None = None
     semanticColumns: list[DataProfileSemanticColumn] = Field(default_factory=list)
@@ -417,6 +442,7 @@ class DataProfile(BaseModel):
     sampleIdentity: DataProfileSampleIdentity | None = None
     profileCoverage: DataProfileCoverage | None = None
     coordinationReadiness: DataProfileCoordinationReadiness | None = None
+    experimentalXrdReadiness: DataProfileExperimentalXrdReadiness | None = None
     createdAt: str
 
 

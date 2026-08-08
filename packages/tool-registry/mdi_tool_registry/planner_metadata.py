@@ -96,6 +96,7 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
             "structure.coordination_crystalnn",
             "structure.coordination_voronoinn",
             "structure.local_environment_polyhedra",
+            "structure.experimental_xrd_comparison",
             "structure.xrd",
             "structure.rdf",
         }:
@@ -129,6 +130,8 @@ def _needs(tool_id: str) -> list[CapabilityNeed]:
         return [CapabilityNeed.volumetric_resource]
     if tool_id.startswith("phonon."):
         return [CapabilityNeed.phonon_resource]
+    if tool_id == "structure.experimental_xrd_comparison":
+        return [CapabilityNeed.structure_resource, CapabilityNeed.tabular_data]
     if tool_id.startswith("structure."):
         return [CapabilityNeed.structure_resource]
     raise ValueError(f"Planner capability needs are not defined for tool: {tool_id}")

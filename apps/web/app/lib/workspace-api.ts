@@ -45,6 +45,9 @@ export type WorkspaceSelectionKind =
   | "COORDINATION_POLYHEDRON"
   | "POLYHEDRON_VERTEX"
   | "POLYHEDRON_FACE"
+  | "EXPERIMENTAL_XRD_PEAK"
+  | "THEORETICAL_XRD_PEAK"
+  | "XRD_MATCH"
   | "TRAJECTORY_ATOM"
   | "TRAJECTORY_FRAME"
   | "PHONON_Q_POINT"
@@ -125,6 +128,10 @@ export type WorkspaceSelectionRef = {
   vertexId: string | null;
   faceId: string | null;
   geometryReferenceId: string | null;
+  experimentalResourceId: string | null;
+  theoreticalArtifactId: string | null;
+  peakId: string | null;
+  matchId: string | null;
   trajectoryId: string | null;
   atomId: string | null;
   frameId: string | null;

@@ -4453,3 +4453,13 @@ authorized.
 - DataProfile remains 2.1. Generic Artifact/Workspace/Report persistence and the
   existing API families are reused with no migration, dependency, lockfile, LLM,
   oxidation-state, bond-valence or Recipe execution authority.
+## 2026-08-09 Phase 10N-3 ADR - Persisted Peak-Correspondence Authority
+
+- `structure.xrd@0.1.0` / `phase10e4.xrd_pattern.v1` remains the sole
+  theoretical XRD authority; N3 never reimplements it.
+- Experimental detection is independent of matching. Matching is deterministic,
+  bounded, one-to-one and position-primary; unmatched peaks are never hidden.
+- N3 results are correspondence under an explicit tolerance, not refinement or
+  definitive phase identification.
+- DataProfile 2.2 and Selection 1.0 evolve additively through existing generic
+  persistence. No migration, API family, dependency or frontend science is added.

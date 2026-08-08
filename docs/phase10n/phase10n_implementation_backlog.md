@@ -72,3 +72,20 @@ one active N1 task until the verified queue archive; N2 remains reviewer-gated.
 Implementation sequence: N2-R0 closure -> one registered Adapter/Tool -> exact N1 ports ->
 Plan 0.2/Runtime -> Artifact -> Workspace/selection -> interpretation/Report -> evidence ->
 three-commit lifecycle. Registry 55 -> 56; no migration, API family, dependency or N3 task.
+
+## Canonical Phase 10N-3 Acceptance Registry
+
+The registry below is the only canonical N3 definition in this document; other references are informational.
+
+1. `N3-A01 BASELINE_THEORETICAL_XRD_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE` - existing theoretical XRD authority and exact N3-R0 closure.
+2. `N3-A02 EXPERIMENTAL_XRD_RESOURCE_PROFILE_UNITS_AND_SEMANTIC_VALIDATION` - strict experimental resource, semantic readiness and explicit units/wavelength.
+3. `N3-A03 EXPERIMENTAL_PEAK_DETECTION_AND_DETERMINISTIC_NORMALIZATION` - independent bounded detector and deterministic normalization.
+4. `N3-A04 THEORETICAL_PEAK_BINDING_AND_BOUNDED_ONE_TO_ONE_PEAK_MATCHING` - exact theoretical binding and bounded one-to-one position matching.
+5. `N3-A05 EXACT_PEAK_IDENTITY_RESIDUALS_COVERAGE_AND_DETERMINISM` - exact peak/match identity, residuals, coverage and stable output.
+6. `N3-A06 ELIGIBILITY_PLANNER_PLANVALIDATOR_DEPENDENCY_RUNTIME_AND_PERSISTENCE` - validated resource/theory dependency, runtime and persistence.
+7. `N3-A07 WORKSPACE_XRD_OVERLAY_SELECTION_TABLES_AND_INSPECTOR` - overlay, tables, selection, Inspector, mobile and accessible fallback.
+8. `N3-A08 GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_CLAIM_BOUNDARY` - bounded interpretation and correspondence-only delivery wording.
+9. `N3-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE` - fixtures, tolerances, caps and complete evidence.
+10. `N3-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N4_REVIEWER_GATE` - exact lifecycle, Registry 57 and N4 reviewer gate.
+
+N3 adds exactly one Tool, `structure.experimental_xrd_comparison@0.1.0`; detector and matcher are internal Adapter components. Existing `structure.xrd` / `phase10e4.xrd_pattern.v1` is the sole theoretical authority. N3 does not refine, shift, identify phases, or create an N4 task.

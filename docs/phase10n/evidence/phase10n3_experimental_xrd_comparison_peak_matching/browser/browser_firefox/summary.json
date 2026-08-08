@@ -1,0 +1,56 @@
+{
+  "browserName": "firefox",
+  "n1Coordination": false,
+  "n2LocalEnvironment": false,
+  "n3ExperimentalXrd": true,
+  "cases": {
+    "Experimental XRD Comparison": {
+      "rendererReady": true,
+      "canvasCount": 0,
+      "typedFallback": false
+    }
+  },
+  "lifecycle": {
+    "cycles": 3,
+    "baseline": {
+      "listeners": 569,
+      "resizeObservers": 1,
+      "intersectionObservers": 0,
+      "pendingAnimationFrames": 0,
+      "activeWebglContexts": 0,
+      "createdWebglContexts": 0,
+      "usedJsHeapBytes": null
+    },
+    "final": {
+      "listeners": 569,
+      "resizeObservers": 1,
+      "intersectionObservers": 0,
+      "pendingAnimationFrames": 0,
+      "activeWebglContexts": 0,
+      "createdWebglContexts": 0,
+      "usedJsHeapBytes": null
+    },
+    "growth": {
+      "listeners": 0,
+      "resizeObservers": 0,
+      "intersectionObservers": 0,
+      "pendingAnimationFrames": 0,
+      "activeWebglContexts": 0,
+      "usedJsHeapBytes": null
+    },
+    "duplicateCanvas": 0,
+    "payloadRequestsBefore": 1,
+    "payloadRequestsAfter": 1,
+    "duplicatePayloadRequestGrowth": 0,
+    "staleOverlayCommits": 0
+  },
+  "zoomReflow": null,
+  "overflow": {
+    "body": 0,
+    "root": 0
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failedResponses": [],
+  "externalRequests": []
+}

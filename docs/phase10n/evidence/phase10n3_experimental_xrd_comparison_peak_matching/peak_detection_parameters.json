@@ -1,0 +1,1 @@
+{"additionalProperties":false,"normalization":{"default":"max_to_1","enum":["none","max_to_1","max_to_100"]},"minimum_prominence":{"default":0.05,"bounds":[0,1]},"minimum_relative_height":{"default":0,"bounds":[0,1]},"minimum_peak_separation_deg":{"default":0.1,"bounds":[0,10]},"max_detected_peaks":{"default":10000,"bounds":[1,10000]}}

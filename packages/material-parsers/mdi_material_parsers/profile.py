@@ -58,7 +58,8 @@ def build_data_profile(
     coverage = _combined_coverage(coverage_records)
     identity = sample_identity(semantic_columns, profiled_dataframes)
     coordination_readiness = _coordination_readiness(profiled_objects)
-    profile_contract_version = "2.1" if coordination_readiness["structures"] else "2.0"
+    experimental_xrd_readiness = _experimental_xrd_readiness(profiled_objects)
+    profile_contract_version = "2.2" if experimental_xrd_readiness["resources"] else ("2.1" if coordination_readiness["structures"] else "2.0")
 
     semantic_payload = {
         "datasetId": dataset_id,
@@ -71,6 +72,8 @@ def build_data_profile(
         "analysisReadiness": readiness,
         "sampleIdentity": identity,
         "profileCoverage": coverage,
+        "coordinationReadiness": coordination_readiness,
+        "experimentalXrdReadiness": experimental_xrd_readiness,
     }
     semantic_hash = hashlib.sha256(
         json.dumps(semantic_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
@@ -99,7 +102,8 @@ def build_data_profile(
         analysisReadiness=readiness,
         sampleIdentity=identity,
         profileCoverage=coverage,
-        coordinationReadiness=coordination_readiness if profile_contract_version == "2.1" else None,
+        coordinationReadiness=coordination_readiness if coordination_readiness["structures"] else None,
+        experimentalXrdReadiness=experimental_xrd_readiness if profile_contract_version == "2.2" else None,
         createdAt=datetime.now(timezone.utc).isoformat(),
     )
 
@@ -167,6 +171,43 @@ def _coordination_readiness(objects: list[NormalizedObjectDraft]) -> dict[str, A
         "structures": records[:32],
         "status": overall,
         "reasons": reasons,
+    }
+
+
+def _experimental_xrd_readiness(objects: list[NormalizedObjectDraft]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for obj in objects:
+        metadata = obj.metadata.get("experimentalXrd")
+        if obj.object_type != MaterialObjectType.DataFrame or not isinstance(metadata, dict):
+            continue
+        reasons: list[str] = []
+        if metadata.get("xAxis") != {"kind": "two_theta", "unit": "degree"}:
+            reasons.append("EXPERIMENTAL_XRD_AXIS_UNSUPPORTED")
+        wavelength = metadata.get("wavelength") or {}
+        wavelength_present = isinstance(wavelength.get("value"), (int, float)) and math.isfinite(float(wavelength["value"])) and float(wavelength["value"]) > 0
+        if not wavelength_present:
+            reasons.append("XRD_WAVELENGTH_MISSING")
+        if wavelength.get("unit") != "angstrom":
+            reasons.append("XRD_WAVELENGTH_UNIT_UNSUPPORTED")
+        point_count = int(metadata.get("pointCount") or 0)
+        if not 3 <= point_count <= 200_000:
+            reasons.append("EXPERIMENTAL_XRD_POINT_COUNT_INVALID")
+        if metadata.get("axisMonotonicity") != "STRICTLY_INCREASING":
+            reasons.append("EXPERIMENTAL_XRD_AXIS_NOT_MONOTONIC")
+        status = "READY" if not reasons else "AMBIGUOUS"
+        records.append({
+            "objectId": obj.id, "objectHash": obj.hash, "resourceId": str(metadata.get("resourceId") or obj.id),
+            "resourceHash": str(metadata.get("resourceHash") or obj.hash), "xAxisKind": "two_theta",
+            "xAxisUnit": "degree", "intensitySemantic": str(metadata.get("intensitySemantic") or "arbitrary_relative_unit"),
+            "wavelengthPresent": wavelength_present, "wavelengthUnit": wavelength.get("unit") if wavelength.get("unit") == "angstrom" else None,
+            "pointCount": point_count, "axisMonotonicity": str(metadata.get("axisMonotonicity") or "UNKNOWN"),
+            "status": status, "reasons": sorted(set(reasons)),
+        })
+    eligible = sum(item["status"] == "READY" for item in records)
+    return {
+        "contractVersion": "1.0", "experimentalXrdPresent": bool(records), "eligibleResourceCount": min(eligible, 32),
+        "resources": records[:32], "status": "READY" if eligible else ("AMBIGUOUS" if records else "MISSING_REQUIRED_DATA"),
+        "reasons": [] if eligible else sorted({reason for record in records for reason in record["reasons"]}) or ["EXPERIMENTAL_XRD_MISSING"],
     }
 
 

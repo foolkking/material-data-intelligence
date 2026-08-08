@@ -1,5 +1,15 @@
 # PROJECT_BRIEF
 
+## 2026-08-09 Phase 10N-3 Implementation
+
+Phase 10N-3 implements strict experimental XRD resources, additive DataProfile
+2.2 readiness, independent SciPy 1.17.1 peak detection and bounded one-to-one
+position matching against exact persisted `structure.xrd` Artifacts. It adds
+only `structure.experimental_xrd_comparison@0.1.0` (Registry 56 -> 57), with
+Workspace, exact selection, bounded interpretation and Report/Recipe support.
+No refinement, phase identification, migration, API family, dependency,
+lockfile or LLM call site is added. Phase 10N-4 is not queued.
+
 ## 2026-08-07 Phase 10N-1 Implementation
 
 Phase 10N-1 implements two bounded, algorithm-derived coordination products:

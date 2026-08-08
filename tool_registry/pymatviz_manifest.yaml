@@ -315,6 +315,20 @@ tools:
       - recipe_json
     notes: Static simulated XRD pattern for periodic crystalline structures using CuKa radiation; excludes experimental fitting and Rietveld refinement.
 
+  - tool_id: structure.experimental_xrd_comparison
+    source_package: scipy
+    source_function: scipy.signal.find_peaks
+    implementation_source: pymatviz_composed
+    stage: mvp
+    adapter: ExperimentalXrdComparisonAdapter
+    display_target: structure
+    artifact_types:
+      - table_json
+      - plotly_json
+      - summary_md
+      - recipe_json
+    notes: Bounded comparison of one explicit experimental XRD Resource with one exact persisted structure.xrd Artifact using locked SciPy peak detection and deterministic one-to-one 2theta matching; excludes pattern shifting, refinement and phase identification.
+
   - tool_id: structure.rdf
     source_package: pymatgen
     source_function: Structure.get_all_neighbors

@@ -180,7 +180,7 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
     panels = first.body["panels"]
     overview = next(item for item in panels if item["panelKind"] == "OVERVIEW")
     result_panel = next(item for item in panels if item["panelKind"] == "SCIENTIFIC_RESULT")
-    assert len(overview["acceptedSelectionKinds"]) == 13
+    assert len(overview["acceptedSelectionKinds"]) == 20
     assert overview["emittedSelectionKinds"] == []
     assert result_panel["emittedSelectionKinds"] == [
         "DATASET_SAMPLE",
@@ -190,6 +190,9 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
         "COORDINATION_POLYHEDRON",
         "POLYHEDRON_VERTEX",
         "POLYHEDRON_FACE",
+        "EXPERIMENTAL_XRD_PEAK",
+        "THEORETICAL_XRD_PEAK",
+        "XRD_MATCH",
     ]
     assert result_panel["acceptedSelectionKinds"] == [
         "DATASET_SAMPLE",
@@ -202,6 +205,9 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
         "COORDINATION_POLYHEDRON",
         "POLYHEDRON_VERTEX",
         "POLYHEDRON_FACE",
+        "EXPERIMENTAL_XRD_PEAK",
+        "THEORETICAL_XRD_PEAK",
+        "XRD_MATCH",
         "PHONON_Q_POINT",
         "PHONON_BRANCH",
         "RECIPROCAL_POINT",
@@ -261,6 +267,9 @@ def test_historical_empty_panel_declarations_are_read_projected_without_write() 
         "COORDINATION_POLYHEDRON",
         "POLYHEDRON_VERTEX",
         "POLYHEDRON_FACE",
+        "EXPERIMENTAL_XRD_PEAK",
+        "THEORETICAL_XRD_PEAK",
+        "XRD_MATCH",
     ]
     assert projected_result["contractProvenance"] == "phase10m3.selection_registry.v1"
     persisted = repos.workspaces.get_panel(workspace_id, result["panelId"], project_id="project_1")

@@ -103,6 +103,7 @@ function selection(kind: WorkspaceSelectionKind): WorkspaceSelectionRef {
     "bundleId", "bundleHash", "evidenceItemId", "sourceArtifactId", "sourceArtifactChecksum",
     "fieldLocator", "interpretationId", "interpretationHash", "claimId",
     "environmentId", "polyhedronId", "vertexId", "faceId", "geometryReferenceId",
+    "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
   ].map((field) => [field, null]));
   Object.assign(values, {
     DATASET_SAMPLE: { datasetId: "dataset_1", datasetVersion: "v1", objectId: "object_1", sampleRef: "sample_1" },
@@ -113,6 +114,9 @@ function selection(kind: WorkspaceSelectionKind): WorkspaceSelectionRef {
     COORDINATION_POLYHEDRON: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", objectId: "object_1", structureId: "structure_1", siteId: "site_1", artifactId: "artifact_n2", artifactChecksum: HASH, sourceArtifactId: "artifact_n1", sourceArtifactChecksum: HASH, environmentId: "environment_1", polyhedronId: "polyhedron_1", geometryReferenceId: "tetrahedral" },
     POLYHEDRON_VERTEX: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", objectId: "object_1", structureId: "structure_1", siteId: "site_1", artifactId: "artifact_n2", artifactChecksum: HASH, sourceArtifactId: "artifact_n1", sourceArtifactChecksum: HASH, polyhedronId: "polyhedron_1", vertexId: "vertex:neighbor:0,0,0" },
     POLYHEDRON_FACE: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", objectId: "object_1", structureId: "structure_1", siteId: "site_1", artifactId: "artifact_n2", artifactChecksum: HASH, sourceArtifactId: "artifact_n1", sourceArtifactChecksum: HASH, polyhedronId: "polyhedron_1", faceId: "face:vertex:0|vertex:1|vertex:2" },
+    EXPERIMENTAL_XRD_PEAK: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_n3", artifactChecksum: HASH, experimentalResourceId: "experimental_xrd_1", peakId: "experimental-peak:1" },
+    THEORETICAL_XRD_PEAK: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_n3", artifactChecksum: HASH, theoreticalArtifactId: "artifact_xrd", peakId: "theoretical-peak:1" },
+    XRD_MATCH: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_n3", artifactChecksum: HASH, experimentalResourceId: "experimental_xrd_1", theoreticalArtifactId: "artifact_xrd", matchId: "xrd-match:1" },
     TRAJECTORY_ATOM: { datasetId: "dataset_1", datasetVersion: "v1", trajectoryId: "trajectory_1", atomId: "atom_1" },
     TRAJECTORY_FRAME: { datasetId: "dataset_1", datasetVersion: "v1", trajectoryId: "trajectory_1", frameId: "frame_1" },
     PHONON_Q_POINT: { datasetId: "dataset_1", datasetVersion: "v1", phononArtifactId: "artifact_phonon", artifactChecksum: HASH, qPointId: "qpoint_1" },

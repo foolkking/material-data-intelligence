@@ -93,7 +93,7 @@ def test_registry_planner_metadata_covers_actual_registry_deterministically() ->
     registry = load_manifests()
     first, metadata_by_id = build_registry_snapshot(registry)
     second, second_metadata = build_registry_snapshot(registry)
-    assert len(first.tools) == len(registry.tools) == 56
+    assert len(first.tools) == len(registry.tools) == 57
     assert first == second
     assert set(metadata_by_id) == set(second_metadata) == {item.toolId for item in registry.tools}
     assert first.tools == sorted(first.tools, key=lambda item: (item.toolId, item.toolVersion))

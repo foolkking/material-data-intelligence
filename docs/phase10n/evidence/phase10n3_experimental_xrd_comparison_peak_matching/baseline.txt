@@ -1,0 +1,12 @@
+REPOSITORY_FACT
+entry_head=4f5fa88354027a7b26842e9c71082fe567c84e13
+entry_origin_master=4f5fa88354027a7b26842e9c71082fe567c84e13
+branch=master
+worktree=clean
+migration_head=0007_phase10m1_workspace_domain
+registry_count=56
+task_block_count=0
+n2_implementation=2b4dacf400400f5d1a68352d358346b4638d6cb9 ci=31258820229 success
+n2_completion=3ffe6c5b85aca61402e4582654b0adfc0482a36b ci=31260256371 success
+n2_failed_archive=a60c3bb89a98f35c76ea3f18c58670add96aa89b ci=31260829817 failed
+n2_archive=4f5fa88354027a7b26842e9c71082fe567c84e13 ci=31261360100 success

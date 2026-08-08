@@ -2404,3 +2404,12 @@
   Chromium/Firefox/WebKit/mobile replay matrix.
 - Registry count is 56. Database, migration, public API families, dependencies,
   lockfile and LLM call sites remain unchanged; N3 is not queued.
+## 2026-08-09 - Phase 10N-3 Implementation
+
+- Added strict experimental XRD import semantics and additive DataProfile 2.2.
+- Added one registered N3 Adapter with independent peak detection, exact
+  theoretical XRD binding, bounded one-to-one matching and complete unmatched
+  evidence.
+- Added exact N3 Workspace/selection/projector support, schemas, tests and CI
+  service-backed closure. Database, migration, API family, dependencies,
+  lockfile and LLM call sites remain unchanged.

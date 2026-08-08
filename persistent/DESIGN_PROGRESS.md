@@ -2045,3 +2045,13 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   CI `31258820229`: backend 1196 passed, service-backed 44/44, browser matrix,
   typecheck and build passed.
 - Completion-record CI and verified queue archive remain. N3 is not executable.
+## 2026-08-09 Phase 10N-3 Experimental XRD Comparison
+
+- Admitted one N3 task and reconciled the exact ten-ID acceptance registry.
+- Froze R0 authority: existing `structure.xrd` Artifact, strict Resource v1,
+  DataProfile 2.2, SciPy detector, deterministic one-to-one matcher and N3 v1
+  Artifact.
+- Implemented Registry/Adapter/Profile/Plan 0.2/Runtime/Workspace/selection/
+  interpretation/Report-Recipe integration without theoretical recomputation.
+- Focused backend 10/10, focused frontend 32/32 and typecheck pass locally;
+  service/browser/full regression remain exact-SHA CI authorities.

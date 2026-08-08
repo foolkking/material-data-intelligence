@@ -100,6 +100,9 @@
           "COORDINATION_POLYHEDRON",
           "POLYHEDRON_VERTEX",
           "POLYHEDRON_FACE",
+          "EXPERIMENTAL_XRD_PEAK",
+          "THEORETICAL_XRD_PEAK",
+          "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
           "PHONON_Q_POINT",
@@ -290,6 +293,58 @@
             ],
             "default": null,
             "title": "Geometryreferenceid"
+          },
+          "experimentalResourceId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Experimentalresourceid"
+          },
+          "theoreticalArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Theoreticalartifactid"
+          },
+          "peakId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Peakid"
+          },
+          "matchId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Matchid"
           },
           "trajectoryId": {
             "anyOf": [
@@ -1220,6 +1275,9 @@
           "COORDINATION_POLYHEDRON",
           "POLYHEDRON_VERTEX",
           "POLYHEDRON_FACE",
+          "EXPERIMENTAL_XRD_PEAK",
+          "THEORETICAL_XRD_PEAK",
+          "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
           "PHONON_Q_POINT",
@@ -1410,6 +1468,58 @@
             ],
             "default": null,
             "title": "Geometryreferenceid"
+          },
+          "experimentalResourceId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Experimentalresourceid"
+          },
+          "theoreticalArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Theoreticalartifactid"
+          },
+          "peakId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Peakid"
+          },
+          "matchId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Matchid"
           },
           "trajectoryId": {
             "anyOf": [
@@ -2031,6 +2141,9 @@
           "COORDINATION_POLYHEDRON",
           "POLYHEDRON_VERTEX",
           "POLYHEDRON_FACE",
+          "EXPERIMENTAL_XRD_PEAK",
+          "THEORETICAL_XRD_PEAK",
+          "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
           "PHONON_Q_POINT",
@@ -2248,7 +2361,7 @@
         "items": {
           "$ref": "#/$defs/WorkspaceSelectionKind"
         },
-        "maxItems": 17,
+        "maxItems": 20,
         "title": "Acceptedselectionkinds",
         "type": "array"
       },
@@ -2256,7 +2369,7 @@
         "items": {
           "$ref": "#/$defs/WorkspaceSelectionKind"
         },
-        "maxItems": 17,
+        "maxItems": 20,
         "title": "Emittedselectionkinds",
         "type": "array"
       },
@@ -2459,6 +2572,9 @@
           "COORDINATION_POLYHEDRON",
           "POLYHEDRON_VERTEX",
           "POLYHEDRON_FACE",
+          "EXPERIMENTAL_XRD_PEAK",
+          "THEORETICAL_XRD_PEAK",
+          "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
           "PHONON_Q_POINT",
@@ -2649,6 +2765,58 @@
             ],
             "default": null,
             "title": "Geometryreferenceid"
+          },
+          "experimentalResourceId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Experimentalresourceid"
+          },
+          "theoreticalArtifactId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Theoreticalartifactid"
+          },
+          "peakId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Peakid"
+          },
+          "matchId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Matchid"
           },
           "trajectoryId": {
             "anyOf": [
@@ -3053,6 +3221,9 @@
           "COORDINATION_POLYHEDRON",
           "POLYHEDRON_VERTEX",
           "POLYHEDRON_FACE",
+          "EXPERIMENTAL_XRD_PEAK",
+          "THEORETICAL_XRD_PEAK",
+          "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
           "PHONON_Q_POINT",
@@ -3243,6 +3414,58 @@
         ],
         "default": null,
         "title": "Geometryreferenceid"
+      },
+      "experimentalResourceId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Experimentalresourceid"
+      },
+      "theoreticalArtifactId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Theoreticalartifactid"
+      },
+      "peakId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Peakid"
+      },
+      "matchId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Matchid"
       },
       "trajectoryId": {
         "anyOf": [

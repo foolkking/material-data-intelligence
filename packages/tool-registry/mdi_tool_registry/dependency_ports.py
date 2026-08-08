@@ -34,6 +34,9 @@ _N1_COORDINATION_CONTRACTS = {
 }
 _N2_CONTRACT = "phase10n2.local_environment_polyhedra.v1"
 _N2_MAX_BYTES = 16_777_216
+_THEORETICAL_XRD_CONTRACT = "phase10e4.xrd_pattern.v1"
+_N3_CONTRACT = "phase10n3.experimental_xrd_comparison.v1"
+_N3_MAX_BYTES = 33_554_432
 
 
 def build_tool_artifact_port_metadata(tool: Any) -> ToolArtifactPortMetadata:
@@ -107,6 +110,42 @@ def build_tool_artifact_port_metadata(tool: Any) -> ToolArtifactPortMetadata:
                 mediaTypes=_JSON_MEDIA,
                 maxBytes=_N2_MAX_BYTES,
                 requiredProvenanceFields=["schemaVersion", "toolCallId", "toolId"],
+            )
+        ]
+    elif tool.toolId == "structure.xrd":
+        output_ports = [
+            ArtifactOutputPort(
+                portId="theoretical-xrd-pattern",
+                artifactKind=ArtifactType.table_json,
+                contractFamily="phase10e4.xrd_pattern",
+                contractVersions=[_THEORETICAL_XRD_CONTRACT],
+                mediaTypes=_JSON_MEDIA,
+                maxBytes=_N3_MAX_BYTES,
+                requiredProvenanceFields=["schemaVersion", "toolCallId", "toolId"],
+            )
+        ]
+    elif tool.toolId == "structure.experimental_xrd_comparison":
+        input_ports = [
+            ArtifactInputPort(
+                portId="theoretical-xrd",
+                acceptedArtifactKinds=[ArtifactType.table_json],
+                acceptedContractVersions=[_THEORETICAL_XRD_CONTRACT],
+                mediaTypes=_JSON_MEDIA,
+                maxBytes=_N3_MAX_BYTES,
+                requiredSemanticRoles=["theoretical_xrd_peaks"],
+                inputFieldRole="theoretical_xrd_artifact",
+                inputObjectType="Structure",
+            )
+        ]
+        output_ports = [
+            ArtifactOutputPort(
+                portId="experimental-xrd-comparison",
+                artifactKind=ArtifactType.table_json,
+                contractFamily="phase10n3.experimental_xrd_comparison",
+                contractVersions=[_N3_CONTRACT],
+                mediaTypes=_JSON_MEDIA,
+                maxBytes=_N3_MAX_BYTES,
+                requiredProvenanceFields=["experimentalResourceHash", "schemaVersion", "theoreticalArtifactChecksum", "toolCallId", "toolId"],
             )
         ]
     elif tool.toolId == "structure.local_environment_polyhedra":

@@ -1,0 +1,1 @@
+{"algorithm":"mdi.xrd_ordered_position_match@1.0.0","matching_tolerance_deg":{"default":0.15,"bounds":[0.001,2]},"max_matching_candidates":200000,"max_output_matches":10000,"oneToOne":true,"primaryCost":"absolute_delta_two_theta"}

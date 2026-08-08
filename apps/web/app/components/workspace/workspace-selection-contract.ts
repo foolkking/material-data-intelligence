@@ -17,6 +17,9 @@ export const WORKSPACE_SELECTION_KINDS = [
   "COORDINATION_POLYHEDRON",
   "POLYHEDRON_VERTEX",
   "POLYHEDRON_FACE",
+  "EXPERIMENTAL_XRD_PEAK",
+  "THEORETICAL_XRD_PEAK",
+  "XRD_MATCH",
   "TRAJECTORY_ATOM",
   "TRAJECTORY_FRAME",
   "PHONON_Q_POINT",
@@ -44,6 +47,7 @@ const VALUE_FIELDS = [
   "sourceArtifactChecksum", "fieldLocator", "interpretationId", "interpretationHash",
   "claimId",
   "environmentId", "polyhedronId", "vertexId", "faceId", "geometryReferenceId",
+  "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
 ] as const;
 
 type SelectionValueField = (typeof VALUE_FIELDS)[number];
@@ -57,6 +61,9 @@ const REQUIRED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> =
   COORDINATION_POLYHEDRON: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "polyhedronId"],
   POLYHEDRON_VERTEX: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "vertexId"],
   POLYHEDRON_FACE: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "faceId"],
+  EXPERIMENTAL_XRD_PEAK: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "peakId"],
+  THEORETICAL_XRD_PEAK: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "theoreticalArtifactId", "peakId"],
+  XRD_MATCH: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "matchId"],
   TRAJECTORY_ATOM: ["datasetId", "datasetVersion", "trajectoryId", "atomId"],
   TRAJECTORY_FRAME: ["datasetId", "datasetVersion", "trajectoryId", "frameId"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"],
@@ -77,6 +84,9 @@ const ALLOWED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> = 
   COORDINATION_POLYHEDRON: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "environmentId", "polyhedronId", "geometryReferenceId"],
   POLYHEDRON_VERTEX: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "vertexId"],
   POLYHEDRON_FACE: ["datasetId", "datasetVersion", "jobId", "objectId", "structureId", "siteId", "artifactId", "artifactChecksum", "sourceArtifactId", "sourceArtifactChecksum", "polyhedronId", "faceId"],
+  EXPERIMENTAL_XRD_PEAK: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId"],
+  THEORETICAL_XRD_PEAK: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId"],
+  XRD_MATCH: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId"],
   TRAJECTORY_ATOM: ["datasetId", "datasetVersion", "trajectoryId", "atomId", "artifactId", "artifactChecksum"],
   TRAJECTORY_FRAME: ["datasetId", "datasetVersion", "trajectoryId", "frameId", "artifactId", "artifactChecksum"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"],
@@ -94,6 +104,7 @@ const ID_FIELDS = new Set<SelectionValueField>([
   "reciprocalPointId", "segmentId", "fieldId", "regionId", "artifactId", "toolCallId",
   "bundleId", "evidenceItemId", "sourceArtifactId", "interpretationId", "claimId",
   "environmentId", "polyhedronId", "geometryReferenceId",
+  "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
 ]);
 const N2_ID_FIELDS = new Set<SelectionValueField>(["vertexId", "faceId"]);
 const HASH_FIELDS = new Set<SelectionValueField>([

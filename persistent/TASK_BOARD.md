@@ -2359,5 +2359,17 @@ current board above.
 - [x] Capture Chromium/Firefox/WebKit/390x844 and 50-cycle lifecycle evidence.
 - [x] Corrected implementation `2b4dacf400400f5d1a68352d358346b4638d6cb9`
   passed exact-SHA CI `31258820229` with 44/44 service-backed checks.
-- [ ] Complete completion-record and queue-archive exact-SHA CI.
-- [ ] Keep Phase 10N-3 reviewer-gated and non-executable.
+- [x] Completion record `3ffe6c5b85aca61402e4582654b0adfc0482a36b`
+  and corrected archive `4f5fa88354027a7b26842e9c71082fe567c84e13`
+  passed exact-SHA CI.
+- [x] N3 remained reviewer-gated until its explicit reviewer authorization.
+
+## Phase 10N-3 Experimental XRD Comparison + Peak Matching
+
+- [x] Admit exactly one N3 task; keep N4 non-executable.
+- [x] Close strict Resource/Profile/detector/matcher/Artifact contracts.
+- [x] Register exactly `structure.experimental_xrd_comparison@0.1.0` (56 -> 57).
+- [x] Reuse exact persisted `structure.xrd` authority through Plan 0.2.
+- [x] Implement bounded Workspace, selection, interpretation and Report/Recipe projections.
+- [ ] Verify implementation, completion-record and queue-archive exact-SHA CI.
+- [ ] Keep Phase 10N-4 reviewer-gated and non-executable.

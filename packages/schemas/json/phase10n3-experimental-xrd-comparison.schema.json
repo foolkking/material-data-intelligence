@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdi.local/schemas/phase10n3-experimental-xrd-comparison.schema.json",
+  "title": "Phase 10N-3 Experimental XRD Comparison",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["artifactType", "schema_version", "tool", "scope", "experimentalResource", "theoreticalArtifact", "units", "normalization", "peakDetector", "matcher", "resolvedParameters", "parameterHash", "experimentalSeries", "experimentalPeaks", "theoreticalPeaks", "matches", "unmatchedExperimentalPeaks", "unmatchedTheoreticalPeaks", "residualSummary", "coverage", "warnings", "limitations", "runtimeDiagnostics", "provenance", "security"],
+  "properties": {
+    "artifactType": { "const": "structure.experimental_xrd_comparison" },
+    "schema_version": { "const": "phase10n3.experimental_xrd_comparison.v1" },
+    "tool": { "type": "object", "additionalProperties": false, "required": ["toolId", "toolVersion", "adapterVersion"], "properties": { "toolId": { "const": "structure.experimental_xrd_comparison" }, "toolVersion": { "const": "0.1.0" }, "adapterVersion": { "const": "0.1.0" } } },
+    "scope": { "type": "object", "required": ["projectId", "datasetId", "jobId", "toolCallId"] },
+    "experimentalResource": { "type": "object", "required": ["resourceId", "resourceVersion", "resourceHash", "pointCount", "twoThetaUnit", "intensitySemantic", "wavelength", "wavelengthUnit"], "properties": { "resourceHash": { "$ref": "#/$defs/hash" }, "pointCount": { "type": "integer", "minimum": 3, "maximum": 200000 }, "twoThetaUnit": { "const": "degree" }, "wavelengthUnit": { "const": "angstrom" } } },
+    "theoreticalArtifact": { "type": "object", "required": ["artifactId", "artifactChecksum", "artifactContractVersion", "toolId", "toolVersion", "structureIdentities", "wavelength", "wavelengthUnit"], "properties": { "artifactChecksum": { "$ref": "#/$defs/hash" }, "artifactContractVersion": { "const": "phase10e4.xrd_pattern.v1" }, "toolId": { "const": "structure.xrd" }, "toolVersion": { "const": "0.1.0" }, "wavelengthUnit": { "const": "angstrom" } } },
+    "units": { "type": "object", "additionalProperties": false, "required": ["twoTheta", "wavelength", "residual"], "properties": { "twoTheta": { "const": "degree" }, "wavelength": { "const": "angstrom" }, "residual": { "const": "degree" } } },
+    "normalization": { "enum": ["none", "max_to_1", "max_to_100"] },
+    "peakDetector": { "type": "object", "required": ["algorithmId", "library", "libraryVersion", "parameters", "parameterHash", "independentOfTheoreticalMatching"], "properties": { "algorithmId": { "const": "mdi.experimental_xrd_peak_detection@1.0.0" }, "library": { "const": "scipy" }, "libraryVersion": { "const": "1.17.1" }, "parameterHash": { "$ref": "#/$defs/hash" }, "independentOfTheoreticalMatching": { "const": true } } },
+    "matcher": { "type": "object", "required": ["algorithmId", "parameters", "parameterHash", "oneToOne", "primaryCost", "intensityAuthority", "candidateCount"], "properties": { "algorithmId": { "const": "mdi.xrd_ordered_position_match@1.0.0" }, "parameterHash": { "$ref": "#/$defs/hash" }, "oneToOne": { "const": true }, "primaryCost": { "const": "absolute_delta_two_theta" }, "intensityAuthority": { "const": false } } },
+    "resolvedParameters": { "type": "object" },
+    "parameterHash": { "$ref": "#/$defs/hash" },
+    "experimentalSeries": { "type": "object", "additionalProperties": false, "required": ["twoTheta", "normalizedIntensity", "sourcePointCount", "displayDownsampled"], "properties": { "twoTheta": { "type": "array", "maxItems": 50000, "items": { "type": "number" } }, "normalizedIntensity": { "type": "array", "maxItems": 50000, "items": { "type": "number" } }, "sourcePointCount": { "type": "integer", "minimum": 3, "maximum": 200000 }, "displayDownsampled": { "type": "boolean" } } },
+    "experimentalPeaks": { "type": "array", "maxItems": 10000, "items": { "$ref": "#/$defs/experimentalPeak" } },
+    "theoreticalPeaks": { "type": "array", "maxItems": 20000, "items": { "$ref": "#/$defs/theoreticalPeak" } },
+    "matches": { "type": "array", "maxItems": 10000, "items": { "$ref": "#/$defs/match" } },
+    "unmatchedExperimentalPeaks": { "type": "array", "maxItems": 10000, "items": { "$ref": "#/$defs/experimentalPeak" } },
+    "unmatchedTheoreticalPeaks": { "type": "array", "maxItems": 20000, "items": { "$ref": "#/$defs/theoreticalPeak" } },
+    "residualSummary": { "type": "object" },
+    "coverage": { "type": "object" },
+    "warnings": { "type": "array", "maxItems": 1000, "items": { "type": "string", "maxLength": 512 } },
+    "limitations": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "type": "string", "maxLength": 512 } },
+    "runtimeDiagnostics": { "type": "object" },
+    "provenance": { "type": "object" },
+    "security": { "type": "object" }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "experimentalPeak": { "type": "object", "required": ["peakId", "ordinal", "sourceIndex", "twoTheta", "originalIntensity", "normalizedIntensity", "prominence", "twoThetaUnit", "detectorParameterHash"], "properties": { "peakId": { "type": "string", "maxLength": 96 }, "twoTheta": { "type": "number", "minimum": 0, "maximum": 180 }, "twoThetaUnit": { "const": "degree" }, "detectorParameterHash": { "$ref": "#/$defs/hash" } } },
+    "theoreticalPeak": { "type": "object", "required": ["peakId", "structureId", "twoTheta", "relativeIntensity", "dSpacing", "dSpacingUnit", "hkls", "twoThetaUnit", "sourceArtifactId", "sourceArtifactChecksum"], "properties": { "peakId": { "type": "string", "maxLength": 96 }, "twoTheta": { "type": "number", "minimum": 0, "maximum": 180 }, "twoThetaUnit": { "const": "degree" }, "dSpacingUnit": { "const": "angstrom" }, "sourceArtifactChecksum": { "$ref": "#/$defs/hash" } } },
+    "match": { "type": "object", "required": ["matchId", "experimentalPeakId", "theoreticalPeakId", "experimentalTwoTheta", "experimentalIntensity", "theoreticalTwoTheta", "theoreticalIntensity", "theoreticalHkls", "signedDeltaTwoTheta", "absoluteDeltaTwoTheta", "twoThetaUnit", "matchingTolerance", "matchingAlgorithm", "matchingParameterHash"], "properties": { "matchId": { "type": "string", "maxLength": 96 }, "twoThetaUnit": { "const": "degree" }, "matchingAlgorithm": { "const": "mdi.xrd_ordered_position_match@1.0.0" }, "matchingParameterHash": { "$ref": "#/$defs/hash" } } }
+  }
+}

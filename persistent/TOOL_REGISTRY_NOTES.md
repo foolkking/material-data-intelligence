@@ -1483,3 +1483,12 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
   block N2 and never select another algorithm.
 - Environment/polyhedron comparison is deterministic presentation only, with no
   additional Tool, Adapter or scientific authority. N3 remains reviewer-gated.
+## Phase 10N-3 Experimental XRD Comparison
+
+- Added exactly `structure.experimental_xrd_comparison@0.1.0`; Registry count 57.
+- Input: one strict experimental XRD DataFrame resource plus one exact
+  `structure.xrd` table Artifact dependency.
+- Output contract: `phase10n3.experimental_xrd_comparison.v1`; display plot,
+  bounded summary and declarative Recipe are secondary inert products.
+- Adapter: `ExperimentalXrdComparisonAdapter`; detector/matcher are internal
+  components and are not Registry tools.

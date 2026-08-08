@@ -858,8 +858,12 @@ def build_object_store(
         object_store["profile"] = profile
     for obj in objects:
         if obj.object_type == MaterialObjectType.DataFrame:
-            object_store[obj.id] = pd.DataFrame(obj.payload)
+            dataframe = pd.DataFrame(obj.payload)
+            experimental_xrd = obj.metadata.get("experimentalXrd")
+            object_store[obj.id] = _experimental_xrd_resource(dataframe, experimental_xrd) if isinstance(experimental_xrd, dict) else dataframe
             object_refs.setdefault("dataset_table", obj.id)
+            if isinstance(experimental_xrd, dict):
+                object_refs.setdefault("experimental_xrd", obj.id)
         elif obj.object_type == MaterialObjectType.Structure:
             object_store[obj.id] = obj.payload
             structure_resources[obj.id] = obj.payload
@@ -884,6 +888,20 @@ def build_object_store(
         object_refs["ml_table"] = "ml_table"
         object_store["ml_table"] = dataframes[0]
     return object_store, object_refs
+
+
+def _experimental_xrd_resource(dataframe: pd.DataFrame, metadata: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "schemaVersion": metadata["schemaVersion"],
+        "resourceId": metadata["resourceId"],
+        "resourceVersion": metadata["resourceVersion"],
+        "resourceHash": metadata["resourceHash"],
+        "xAxis": metadata["xAxis"],
+        "twoTheta": [float(item) for item in dataframe["two_theta"].tolist()],
+        "intensity": [float(item) for item in dataframe["intensity"].tolist()],
+        "intensitySemantic": metadata["intensitySemantic"],
+        "wavelength": metadata["wavelength"],
+    }
 
 
 def list_phase2_projects() -> list[dict[str, Any]]:

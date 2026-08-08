@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdi.local/schemas/phase10n3-experimental-xrd-resource.schema.json",
+  "title": "Phase 10N-3 Experimental XRD Resource",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "resourceId", "resourceVersion", "resourceHash", "xAxis", "twoTheta", "intensity", "intensitySemantic", "wavelength"],
+  "properties": {
+    "schemaVersion": { "const": "phase10n3.experimental_xrd_resource.v1" },
+    "resourceId": { "type": "string", "minLength": 1, "maxLength": 96, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$" },
+    "resourceVersion": { "type": "string", "minLength": 1, "maxLength": 32 },
+    "resourceHash": { "$ref": "#/$defs/hash" },
+    "xAxis": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "unit"],
+      "properties": { "kind": { "const": "two_theta" }, "unit": { "const": "degree" } }
+    },
+    "twoTheta": { "type": "array", "minItems": 3, "maxItems": 200000, "items": { "type": "number", "minimum": 0, "maximum": 180 } },
+    "intensity": { "type": "array", "minItems": 3, "maxItems": 200000, "items": { "type": "number", "minimum": 0 } },
+    "intensitySemantic": { "enum": ["counts", "relative_intensity", "normalized_relative_intensity", "arbitrary_relative_unit"] },
+    "wavelength": {
+      "type": "object", "additionalProperties": false, "required": ["value", "unit"],
+      "properties": { "value": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 }, "unit": { "const": "angstrom" } }
+    },
+    "metadata": { "type": "object", "maxProperties": 32 }
+  },
+  "$defs": { "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }
+}

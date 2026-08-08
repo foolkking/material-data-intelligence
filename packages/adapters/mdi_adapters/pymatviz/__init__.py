@@ -7,6 +7,7 @@ from .coordination_nn import CrystalNNCoordinationAdapter, VoronoiNNCoordination
 from .local_environment_polyhedra import LocalEnvironmentPolyhedraAdapter
 from .density_scatter import DensityScatterAdapter
 from .elements_hist import ElementsHistAdapter
+from .experimental_xrd_comparison import ExperimentalXrdComparisonAdapter
 from .formula_statistics import FormulaStatisticsAdapter
 from .phonon_band import PhononBandAdapter
 from .phonon_band_dos import PhononBandDosAdapter
@@ -24,6 +25,7 @@ __all__ = [
     "CrystalNNCoordinationAdapter",
     "DensityScatterAdapter",
     "ElementsHistAdapter",
+    "ExperimentalXrdComparisonAdapter",
     "FormulaStatisticsAdapter",
     "LocalEnvironmentPolyhedraAdapter",
     "PhononBandAdapter",

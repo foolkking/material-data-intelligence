@@ -49,4 +49,4 @@ def test_n2_ci_requires_browser_and_zero_skip_service_closure() -> None:
     assert "--n2-local-environment-only" in workflow
     assert "test_phase10n2_local_environment_service_backed.py" in workflow
     assert "test_phase10n2_postgres_redis_minio_exact_n1_dependency_closure" in workflow
-    assert 'if [ "${PASSED:-0}" -lt 44 ]; then' in workflow
+    assert 'if [ "${PASSED:-0}" -lt 45 ]; then' in workflow

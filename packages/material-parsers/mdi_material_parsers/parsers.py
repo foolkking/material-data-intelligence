@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import tempfile
 import zipfile
 from pathlib import Path
@@ -236,8 +237,10 @@ def _parse_zip_archive(
 
 
 def _parse_json_limited(file_path: Path, *, dataset_id: str, file_id: str) -> ParseResult:
-    data = json.loads(file_path.read_text(encoding="utf-8"))
-    if _looks_like_structure_dict(data):
+    data = json.loads(file_path.read_text(encoding="utf-8"), object_pairs_hook=_reject_duplicate_keys)
+    if _looks_like_experimental_xrd(data):
+        objects = [_experimental_xrd_object(data, dataset_id, file_id)]
+    elif _looks_like_structure_dict(data):
         structure = Structure.from_dict(data)
         objects = [_structure_object(structure, dataset_id, file_id, "json_limited")]
     elif _looks_like_table_json(data):
@@ -324,7 +327,7 @@ def _atoms_object(atoms: Atoms, dataset_id: str, file_id: str, detected_format: 
     )
 
 
-def _dataframe_object(dataframe: pd.DataFrame, dataset_id: str, file_id: str, detected_format: str) -> NormalizedObjectDraft:
+def _dataframe_object(dataframe: pd.DataFrame, dataset_id: str, file_id: str, detected_format: str, *, extra_metadata: dict[str, Any] | None = None) -> NormalizedObjectDraft:
     payload = dataframe.to_dict(orient="records")
     digest = content_hash(stable_json_dumps(payload))
     object_id = f"obj_dataframe_{digest[:12]}"
@@ -333,6 +336,7 @@ def _dataframe_object(dataframe: pd.DataFrame, dataset_id: str, file_id: str, de
         "nColumns": int(dataframe.shape[1]),
         "columns": [_column_metadata(dataframe, column) for column in dataframe.columns],
         "detectedFormat": detected_format,
+        **(extra_metadata or {}),
     }
     return NormalizedObjectDraft(
         id=object_id,
@@ -451,6 +455,61 @@ def _dtype_name(series: pd.Series) -> str:
 
 def _looks_like_structure_dict(data: Any) -> bool:
     return isinstance(data, dict) and "lattice" in data and "sites" in data
+
+
+def _looks_like_experimental_xrd(data: Any) -> bool:
+    return isinstance(data, dict) and data.get("schemaVersion") == "phase10n3.experimental_xrd_resource.v1"
+
+
+def _experimental_xrd_object(data: dict[str, Any], dataset_id: str, file_id: str) -> NormalizedObjectDraft:
+    required = {"schemaVersion", "resourceId", "resourceVersion", "resourceHash", "xAxis", "twoTheta", "intensity", "intensitySemantic", "wavelength"}
+    if set(data) - (required | {"metadata"}) or not required.issubset(data):
+        raise ValueError("Experimental XRD Resource fields are strict.")
+    if data["xAxis"] != {"kind": "two_theta", "unit": "degree"}:
+        raise ValueError("Experimental XRD requires explicit degree two_theta.")
+    if data["wavelength"].get("unit") != "angstrom":
+        raise ValueError("Experimental XRD requires explicit Angstrom wavelength.")
+    x = data["twoTheta"]
+    y = data["intensity"]
+    if not isinstance(x, list) or not isinstance(y, list) or len(x) != len(y) or not 3 <= len(x) <= 200_000:
+        raise ValueError("Experimental XRD arrays are invalid or outside the point cap.")
+    numeric = [*x, *y, data["wavelength"].get("value")]
+    if any(isinstance(item, bool) or not isinstance(item, (int, float)) or not math.isfinite(float(item)) for item in numeric):
+        raise ValueError("Experimental XRD numeric values must be finite.")
+    if any(float(left) >= float(right) for left, right in zip(x, x[1:])):
+        raise ValueError("Experimental XRD twoTheta must be strictly increasing.")
+    if min(float(item) for item in x) < 0 or max(float(item) for item in x) > 180:
+        raise ValueError("Experimental XRD twoTheta is outside 0 to 180 degree.")
+    if any(float(item) < 0 for item in y) or max(float(item) for item in y) <= 0:
+        raise ValueError("Experimental XRD intensity must be non-negative and not zero-only.")
+    if data["intensitySemantic"] not in {"counts", "relative_intensity", "normalized_relative_intensity", "arbitrary_relative_unit"}:
+        raise ValueError("Experimental XRD intensity semantic is unsupported.")
+    if float(data["wavelength"]["value"]) <= 0:
+        raise ValueError("Experimental XRD wavelength must be positive.")
+    material = {key: data[key] for key in ("schemaVersion", "resourceId", "resourceVersion", "xAxis", "twoTheta", "intensity", "intensitySemantic", "wavelength")}
+    digest = content_hash(stable_json_dumps(material))
+    if data["resourceHash"] != digest:
+        raise ValueError("Experimental XRD resourceHash does not match exact scientific content.")
+    dataframe = pd.DataFrame({"two_theta": [float(item) for item in x], "intensity": [float(item) for item in y]})
+    return _dataframe_object(
+        dataframe, dataset_id, file_id, "json_limited",
+        extra_metadata={"experimentalXrd": {
+            "schemaVersion": data["schemaVersion"], "resourceId": data["resourceId"], "resourceVersion": data["resourceVersion"],
+            "resourceHash": digest, "xAxis": data["xAxis"], "intensitySemantic": data["intensitySemantic"],
+            "wavelength": data["wavelength"], "pointCount": len(x), "axisMonotonicity": "STRICTLY_INCREASING",
+        }},
+    )
+
+
+def _reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"Duplicate JSON key is not allowed: {key}")
+        if key in {"__proto__", "prototype", "constructor"}:
+            raise ValueError("Prototype-shaped JSON keys are not allowed.")
+        result[key] = value
+    return result
 
 
 def _looks_like_table_json(data: Any) -> bool:

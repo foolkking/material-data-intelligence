@@ -35,7 +35,6 @@ from mdi_schemas import (
     ClaimConfidence,
     ClaimPredicate,
     ClaimType,
-    EvidenceFieldLocator,
     EvidenceKind,
     EvidenceValue,
     GroundedScientificInterpretation,
@@ -47,11 +46,9 @@ from mdi_schemas import (
     ScientificClaim,
     ScientificEvidenceBundle,
     ScientificEvidenceItem,
-    ScientificRecommendation,
     deterministic_interpretation_id,
     interpretation_semantic_hash,
     strict_interpretation_json_loads,
-    validate_interpretation_json_bounds,
 )
 
 
@@ -97,6 +94,12 @@ ARTIFACT_PROJECTOR_CONTRACTS: Mapping[tuple[str, str], ArtifactProjectorContract
             "phase10n2.local_environment_polyhedra",
             ("phase10n2.local_environment_polyhedra.v1",),
         ),
+        ArtifactProjectorContract(
+            "structure.experimental_xrd_comparison",
+            "table_json",
+            "phase10n3.experimental_xrd_comparison",
+            ("phase10n3.experimental_xrd_comparison.v1",),
+        ),
         ArtifactProjectorContract("phonon.band", "phonon_band_json", "phase10h.phonon", (PHONON_BAND_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.band", "phonon_summary_json", "phase10h.phonon", (PHONON_SUMMARY_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.dos", "phonon_dos_json", "phase10h.phonon", (PHONON_DOS_SCHEMA_VERSION,)),
@@ -122,6 +125,9 @@ FORBIDDEN_CONCLUSIONS = (
     "industrial value",
     "best material",
     "chemical bond",
+    "experiment confirms the structure",
+    "phase purity is confirmed",
+    "definitive phase identification",
 )
 _NUMBER = re.compile(r"(?<![A-Za-z0-9_])[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?:[eE][-+]?\d+)?%?")
 _PATH_OR_URL = re.compile(r"(?:https?://|file://|javascript:|[A-Za-z]:\\|(?:^|\s)/(?:home|tmp|var|etc)/)", re.IGNORECASE)
@@ -345,6 +351,8 @@ def project_artifact(source: InterpretationSource, candidate: ArtifactProjection
         return _project_coordination_summary(source, candidate)
     if artifact_type == "table_json" and tool_id == "structure.local_environment_polyhedra":
         return _project_local_environment_summary(source, candidate)
+    if artifact_type == "table_json" and tool_id == "structure.experimental_xrd_comparison":
+        return _project_experimental_xrd_summary(source, candidate)
     if artifact_type in {"phonon_band_json", "phonon_dos_json", "phonon_band_dos_json", "phonon_summary_json"} and tool_id in {"phonon.band", "phonon.dos", "phonon.band_dos"}:
         return _project_phonon_summary(source, candidate)
     if artifact_type == "volumetric_field_json" and tool_id == "structure.volumetric_data":
@@ -1099,6 +1107,55 @@ def _project_local_environment_summary(source: InterpretationSource, candidate: 
         items.append(_item(source, candidate, "local_environment.reference_count", EvidenceKind.count, f"{subject}:{reference_id}", "count", count, field="siteResults.classification.referenceGeometryId", entity=reference_id))
     if geometry_distances:
         items.append(_item(source, candidate, "local_environment.geometry_distance_range", EvidenceKind.range, subject, "geometry_distance", None, minimum=min(geometry_distances), maximum=max(geometry_distances), field="siteResults.classification.geometryDistanceRms", entity=subject))
+    return items
+
+
+def _project_experimental_xrd_summary(source: InterpretationSource, candidate: ArtifactProjectionInput) -> list[ScientificEvidenceItem]:
+    payload = candidate.payload
+    coverage = payload.get("coverage") if isinstance(payload, dict) else None
+    residuals = payload.get("residualSummary") if isinstance(payload, dict) else None
+    experimental = payload.get("experimentalResource") if isinstance(payload, dict) else None
+    matcher = payload.get("matcher") if isinstance(payload, dict) else None
+    if (
+        payload.get("artifactType") != "structure.experimental_xrd_comparison"
+        or payload.get("schema_version") != "phase10n3.experimental_xrd_comparison.v1"
+        or not isinstance(coverage, dict)
+        or not isinstance(residuals, dict)
+        or not isinstance(experimental, dict)
+        or not isinstance(matcher, dict)
+    ):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Experimental XRD comparison Artifact contract is invalid.")
+    count_fields = (
+        "experimentalPoints", "experimentalDetectedPeaks", "theoreticalPeaksConsidered",
+        "matchedPairs", "unmatchedExperimentalPeaks", "unmatchedTheoreticalPeaks", "excludedPoints",
+    )
+    if any(not _nonnegative_int(coverage.get(field)) for field in count_fields):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Experimental XRD coverage counts are invalid.")
+    if coverage["matchedPairs"] + coverage["unmatchedExperimentalPeaks"] != coverage["experimentalDetectedPeaks"]:
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Experimental XRD peak coverage is inconsistent.")
+    if coverage["matchedPairs"] + coverage["unmatchedTheoreticalPeaks"] != coverage["theoreticalPeaksConsidered"]:
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Theoretical XRD peak coverage is inconsistent.")
+    parameters = matcher.get("parameters")
+    tolerance = parameters.get("matching_tolerance_deg") if isinstance(parameters, dict) else None
+    wavelength = experimental.get("wavelength")
+    if not _finite(tolerance) or not 0.001 <= tolerance <= 2 or not _finite(wavelength) or wavelength <= 0:
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Experimental XRD units or matching tolerance are invalid.")
+    subject = f"experimental-xrd:{experimental.get('resourceHash')}"
+    items = [
+        _item(source, candidate, "xrd.experimental_detected_peaks", EvidenceKind.count, subject, "count", coverage["experimentalDetectedPeaks"], field="coverage.experimentalDetectedPeaks", entity=subject),
+        _item(source, candidate, "xrd.theoretical_peaks", EvidenceKind.count, subject, "count", coverage["theoreticalPeaksConsidered"], field="coverage.theoreticalPeaksConsidered", entity=subject),
+        _item(source, candidate, "xrd.matched_pairs", EvidenceKind.count, subject, "count", coverage["matchedPairs"], field="coverage.matchedPairs", entity=subject),
+        _item(source, candidate, "xrd.unmatched_experimental", EvidenceKind.count, subject, "count", coverage["unmatchedExperimentalPeaks"], field="coverage.unmatchedExperimentalPeaks", entity=subject),
+        _item(source, candidate, "xrd.unmatched_theoretical", EvidenceKind.count, subject, "count", coverage["unmatchedTheoreticalPeaks"], field="coverage.unmatchedTheoreticalPeaks", entity=subject),
+        _item(source, candidate, "xrd.matching_tolerance", EvidenceKind.scalar, subject, "matching_tolerance", tolerance, unit="degree", field="matcher.parameters.matching_tolerance_deg", entity=subject),
+        _item(source, candidate, "xrd.wavelength", EvidenceKind.scalar, subject, "wavelength", wavelength, unit="angstrom", field="experimentalResource.wavelength", entity=subject),
+    ]
+    for field, role in (("maeDeltaTwoTheta", "mae"), ("rmseDeltaTwoTheta", "rmse"), ("maxAbsoluteDeltaTwoTheta", "maximum_residual")):
+        value = residuals.get(field)
+        if value is not None:
+            if not _finite(value) or value < 0:
+                raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Experimental XRD residual statistics are invalid.")
+            items.append(_item(source, candidate, f"xrd.residual.{role}", EvidenceKind.scalar, subject, role, value, unit="degree", field=f"residualSummary.{field}", entity=subject))
     return items
 
 

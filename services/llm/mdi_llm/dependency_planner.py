@@ -123,12 +123,14 @@ def compose_analysis_plan_02(
             item.producerStepId, item.producerOutputPort, item.consumerStepId, item.consumerInputPort, item.bindingId
         ),
     )
-    steps = [
-        step.model_copy(update={"inputRefs": []})
-        if step.stepId in consumer_steps and step.toolId != "structure.local_environment_polyhedra"
-        else step
-        for step in base_plan.steps
-    ]
+    steps = []
+    for step in base_plan.steps:
+        if step.stepId not in consumer_steps or step.toolId == "structure.local_environment_polyhedra":
+            steps.append(step)
+        elif step.toolId == "structure.experimental_xrd_comparison":
+            steps.append(step.model_copy(update={"inputRefs": [ref for ref in step.inputRefs if ref.objectType.value == "DataFrame"]}))
+        else:
+            steps.append(step.model_copy(update={"inputRefs": []}))
     plan = AnalysisPlanV02.model_validate(
         {
             **base_plan.model_dump(mode="json"),

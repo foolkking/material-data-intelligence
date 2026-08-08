@@ -1151,3 +1151,10 @@ unless also listed in Active Questions. Future-only topics are governed by
   Phase 10N-3 reviewer gate; no N3 executable task exists.
 - Physical assistive-technology and broad physical-device coverage remain outside
   automated browser evidence.
+## Phase 10N-3 Closure
+
+- No implementation-critical N3 question remains. Exact-SHA CI is the pending
+  lifecycle authority.
+- Zero-shift fitting, smoothing, background fitting, Rietveld refinement and
+  phase identification remain explicitly outside N3.
+- Phase 10N-4 remains a reviewer gate; no executable N4 task exists.

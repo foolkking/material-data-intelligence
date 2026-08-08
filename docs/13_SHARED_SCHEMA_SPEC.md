@@ -2051,3 +2051,21 @@ the persisted N2 Artifact/checksum, source N1 Artifact/checksum, immutable
 structure/site identity, and kind-specific persisted identity. Existing 1.0
 selection payloads remain valid; no contract version, persistence authority, or
 fuzzy/latest binding behavior changes.
+
+## Phase 10N-3 Experimental XRD Comparison Contracts
+
+`phase10n3.experimental_xrd_resource.v1` is a strict inert resource with exact
+resource hash, explicit degree 2theta axis, angstrom wavelength, bounded finite
+arrays and declared intensity semantics. DataProfile 2.2 additively records
+these readiness facts while preserving 2.1 readability and generic JSON
+persistence.
+
+`structure.experimental_xrd_comparison@0.1.0` consumes this resource plus one
+exact persisted `structure.xrd@0.1.0` / `phase10e4.xrd_pattern.v1` Artifact and
+emits `phase10n3.experimental_xrd_comparison.v1`. The Artifact records detector
+and matcher identities/parameter hashes, exact peak and match identities,
+matched and both unmatched sets, delta-2theta summaries, warnings and limits.
+Workspace Selection 1.0 additively accepts `EXPERIMENTAL_XRD_PEAK`,
+`THEORETICAL_XRD_PEAK` and `XRD_MATCH`. No migration, public API family,
+dependency, lockfile, scientific frontend authority or Recipe execution
+authority changes.

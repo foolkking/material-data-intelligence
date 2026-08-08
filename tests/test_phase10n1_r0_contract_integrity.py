@@ -61,8 +61,8 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
     assert tasks.count("---TASK---") == tasks.count("---END---")
     assert tasks.count("---TASK---") in {0, 1}
     if tasks.count("---TASK---") == 1:
-        assert any(phase in tasks for phase in ("Phase 10N-1", "Phase 10N-2"))
-        assert "Status: IN_PROGRESS" in tasks
+        assert re.search(r"(?:Task:|任务：) Phase 10N-(?:1|2|3) ", tasks)
+        assert "Status: IN_PROGRESS" in tasks or "状态：处理中" in tasks
     else:
         assert "Phase 10N-1" not in tasks
     assert any(
@@ -71,6 +71,7 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
             "Phase 10N-2:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT",
             "Phase 10N-2:\nIN_PROGRESS / AWAITING_IMPLEMENTATION",
             "Phase 10N-2:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT",
+            "Phase 10N-2:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT\n\nPhase 10N-3:",
         )
     )
 

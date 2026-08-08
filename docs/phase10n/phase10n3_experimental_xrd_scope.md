@@ -1,5 +1,12 @@
 # Phase 10N-3 Scope: Experimental XRD Comparison + Peak Matching
 
+> N3-R0 authority correction: the approved Tool is exactly
+> `structure.experimental_xrd_comparison@0.1.0`. Detection, normalization and matching
+> are internal Adapter components, not Registry Tools. Existing `structure.xrd` /
+> `phase10e4.xrd_pattern.v1` is the only theoretical authority. Exact contracts are
+> sealed in `phase10n3_r0_contract_closure.md`; older candidate Tool IDs below are
+> historical proposals and are not executable authority.
+
 Status: `REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`.
 
 N3 distinguishes existing theoretical XRD generation from a new bounded experimental

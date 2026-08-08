@@ -996,7 +996,7 @@ export type DataProfile = {
   trajectorySummary?: Record<string, unknown>;
   qualityIssues: Array<Record<string, unknown>>;
   recommendedTasks: Array<Record<string, unknown>>;
-  profileContractVersion?: "2.0" | "2.1";
+  profileContractVersion?: "2.0" | "2.1" | "2.2";
   semanticRulesVersion?: string;
   semanticHash?: string;
   semanticColumns?: DataProfileSemanticColumn[];
@@ -1006,6 +1006,7 @@ export type DataProfile = {
   sampleIdentity?: DataProfileSampleIdentity;
   profileCoverage?: DataProfileCoverage;
   coordinationReadiness?: DataProfileCoordinationReadiness;
+  experimentalXrdReadiness?: DataProfileExperimentalXrdReadiness;
   createdAt: string;
 };
 
@@ -1027,6 +1028,31 @@ export type DataProfileCoordinationReadiness = {
   periodicStructurePresent: boolean;
   eligibleStructureCount: number;
   structures: DataProfileCoordinationStructureReadiness[];
+  status: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  reasons: string[];
+};
+
+export type DataProfileExperimentalXrdResourceReadiness = {
+  objectId: string;
+  objectHash: string;
+  resourceId: string;
+  resourceHash: string;
+  xAxisKind: "two_theta";
+  xAxisUnit: "degree";
+  intensitySemantic: "counts" | "relative_intensity" | "normalized_relative_intensity" | "arbitrary_relative_unit";
+  wavelengthPresent: boolean;
+  wavelengthUnit: "angstrom" | null;
+  pointCount: number;
+  axisMonotonicity: "STRICTLY_INCREASING" | "INVALID" | "UNKNOWN";
+  status: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  reasons: string[];
+};
+
+export type DataProfileExperimentalXrdReadiness = {
+  contractVersion: "1.0";
+  experimentalXrdPresent: boolean;
+  eligibleResourceCount: number;
+  resources: DataProfileExperimentalXrdResourceReadiness[];
   status: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
   reasons: string[];
 };
@@ -1389,6 +1415,9 @@ export const WORKSPACE_SELECTION_KIND_VALUES = [
   "STRUCTURE",
   "PERIODIC_SITE",
   "LOCAL_ENVIRONMENT",
+  "EXPERIMENTAL_XRD_PEAK",
+  "THEORETICAL_XRD_PEAK",
+  "XRD_MATCH",
   "COORDINATION_POLYHEDRON",
   "POLYHEDRON_VERTEX",
   "POLYHEDRON_FACE",
@@ -1503,6 +1532,10 @@ type WorkspaceSelectionValueFields = {
   vertexId: string | null;
   faceId: string | null;
   geometryReferenceId: string | null;
+  experimentalResourceId: string | null;
+  theoreticalArtifactId: string | null;
+  peakId: string | null;
+  matchId: string | null;
   trajectoryId: string | null;
   atomId: string | null;
   frameId: string | null;
@@ -1603,6 +1636,27 @@ export type WorkspacePolyhedronFaceSelectionRef = WorkspaceSelectionRefFor<
   WorkspaceN2CommonFields | "polyhedronId" | "faceId"
 >;
 
+type WorkspaceN3CommonFields =
+  | "datasetId" | "datasetVersion" | "jobId" | "artifactId" | "artifactChecksum";
+
+export type WorkspaceExperimentalXrdPeakSelectionRef = WorkspaceSelectionRefFor<
+  "EXPERIMENTAL_XRD_PEAK",
+  WorkspaceN3CommonFields | "experimentalResourceId" | "peakId",
+  WorkspaceN3CommonFields | "experimentalResourceId" | "theoreticalArtifactId" | "peakId"
+>;
+
+export type WorkspaceTheoreticalXrdPeakSelectionRef = WorkspaceSelectionRefFor<
+  "THEORETICAL_XRD_PEAK",
+  WorkspaceN3CommonFields | "theoreticalArtifactId" | "peakId",
+  WorkspaceN3CommonFields | "experimentalResourceId" | "theoreticalArtifactId" | "peakId"
+>;
+
+export type WorkspaceXrdMatchSelectionRef = WorkspaceSelectionRefFor<
+  "XRD_MATCH",
+  WorkspaceN3CommonFields | "experimentalResourceId" | "theoreticalArtifactId" | "matchId",
+  WorkspaceN3CommonFields | "experimentalResourceId" | "theoreticalArtifactId" | "peakId" | "matchId"
+>;
+
 export type WorkspaceTrajectoryAtomSelectionRef = WorkspaceSelectionRefFor<
   "TRAJECTORY_ATOM",
   "datasetId" | "datasetVersion" | "trajectoryId" | "atomId",
@@ -1671,6 +1725,9 @@ export type WorkspaceSelectionRef =
   | WorkspaceCoordinationPolyhedronSelectionRef
   | WorkspacePolyhedronVertexSelectionRef
   | WorkspacePolyhedronFaceSelectionRef
+  | WorkspaceExperimentalXrdPeakSelectionRef
+  | WorkspaceTheoreticalXrdPeakSelectionRef
+  | WorkspaceXrdMatchSelectionRef
   | WorkspaceTrajectoryAtomSelectionRef
   | WorkspaceTrajectoryFrameSelectionRef
   | WorkspacePhononQPointSelectionRef
