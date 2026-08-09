@@ -1,0 +1,10 @@
+{
+  "browsers": [
+    "Chromium",
+    "Firefox",
+    "WebKit",
+    "Chromium 390x844"
+  ],
+  "frontendRecomputation": 0,
+  "numericAuthority": "NONE"
+}

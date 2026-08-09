@@ -1,5 +1,9 @@
 # Phase 11 Execution Manifest
 
+## Phase 11-3
+
+`scripts/run_phase11_3_reproducibility.py` is a validation-only cross-platform runner. GitHub CI runs it on Linux and Windows, compares exact identities/units/invariant hashes, and uploads ephemeral evidence. `scripts/generate_phase11_3_evidence.py` generates the retained governance/evidence index and Phase 11-4 input handoff.
+
 ## Phase 11-0 Acceptance Registry
 
 ```text

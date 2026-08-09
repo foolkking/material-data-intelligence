@@ -1,5 +1,9 @@
 # Phase 11 Execution Lock
 
+## Phase 11-3 Lock
+
+Exactly eight Phase 11-2 invariant cases are admitted. Linux and Windows use Python 3.11 and the unchanged repository `uv.lock`. No reference, expected value, tolerance, scientific algorithm, production contract, Registry entry, Profile, Plan, Artifact family, API, migration, or dependency may change.
+
 ## Phase 11-0 Acceptance Registry
 
 ```text

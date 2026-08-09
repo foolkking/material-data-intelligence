@@ -1,0 +1,6 @@
+{
+  "authority": "implementation exact-SHA Linux CI artifact",
+  "lockSha256": "8daef719deaebad4efdb6c734e425bad6a21c7f1e80ae2cf81fa08188b2dc11e",
+  "python": "3.11",
+  "status": "REQUIRED_AT_IMPLEMENTATION_CI"
+}

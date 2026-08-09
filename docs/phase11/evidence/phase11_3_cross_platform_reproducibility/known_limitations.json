@@ -1,0 +1,7 @@
+{
+  "limitations": [
+    "Eight cases validate sealed invariants, not numeric cross-platform values.",
+    "Four Phase 11-2 reference-limited cases remain excluded.",
+    "macOS is not a current release target."
+  ]
+}

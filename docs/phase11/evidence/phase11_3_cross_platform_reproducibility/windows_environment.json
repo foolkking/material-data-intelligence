@@ -1,0 +1,12 @@
+{
+  "hostPlatform": "win32",
+  "lockHash": "8daef719deaebad4efdb6c734e425bad6a21c7f1e80ae2cf81fa08188b2dc11e",
+  "machine": "AMD64",
+  "platform": "windows",
+  "python": "3.11.7",
+  "release": "10",
+  "repositoryCommit": "e7b21659ddadad0dcb64edfc7b4c16979245f069",
+  "schemaVersion": "phase11-3-environment-manifest/1.0",
+  "scientificDependencySource": "uv.lock / current locked repository environment",
+  "system": "Windows"
+}

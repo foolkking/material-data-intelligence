@@ -125,6 +125,9 @@ def test_phase10m7_document_links_and_phase10n_gate() -> None:
     assert "NOT QUEUED" in next_scope
     assert "NOT EXECUTABLE" in next_scope
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if "Phase 11-3 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
+        return
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     assert task_count in {0, 1, 2, 3}

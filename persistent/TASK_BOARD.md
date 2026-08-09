@@ -1,5 +1,13 @@
 # TASK_BOARD
 
+## Phase 11-3 Cross-Platform Reproducibility
+
+- [x] Admit eight sealed invariant cases and preserve four reference-limited exclusions.
+- [x] Add Linux and Windows validation-only CI replay under the same lock.
+- [x] Classify scientific identity/unit variance separately from browser display variance.
+- [x] Keep V4 promotions at zero and generate the Phase 11-4 honest-coverage handoff.
+- [ ] Pass the single required implementation exact-SHA CI, then directly record and archive.
+
 ## Phase 11-2 Cross-Capability Golden Scientific Benchmark Suite
 
 - [x] Execute the sealed Phase 11-1 benchmark handoff through the registered-contract evidence path.

@@ -4505,3 +4505,5 @@ Retained fixture bytes are reused by checksum and described through immutable pr
 Golden evidence keeps expected, actual, and comparison records separate. Reference-limited cases are explicit N/A and cannot promote validation levels or enter cross-platform reproducibility.
 
 Phase 11-2 implementation CI `31328760532` is the only CI confirmation required for this task; completion and queue-archive documentation commits are direct lifecycle commits.
+
+Phase 11-3 uses validation-only Linux and Windows CI jobs under the same `uv.lock`. Platform agreement never substitutes for reference validation, and browser variance remains presentation-only.

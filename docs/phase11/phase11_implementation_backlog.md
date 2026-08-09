@@ -43,6 +43,7 @@ The Phase 11-1 evidence pack is generated under `evidence/phase11_1_reference_pr
 - macOS: `NOT_RELEASE_TARGET` unless separately established.
 - browsers: Chromium, Firefox, WebKit, Chromium 390x844.
 - outputs: `EXACT`, `TOLERANCE_BOUNDED`, `DISPLAY_ONLY_VARIANCE`, `UNSUPPORTED_PLATFORM`, or `KNOWN_LIMITATION`.
+- Status: implementation added validation-only Linux/Windows replay for eight sealed invariant cases, preserves zero V4 promotions, and emits the Phase 11-4 input handoff.
 
 ## Phase 11-4: Honest Coverage
 

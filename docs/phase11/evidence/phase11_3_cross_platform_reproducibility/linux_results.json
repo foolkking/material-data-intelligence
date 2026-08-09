@@ -1,0 +1,19 @@
+{
+  "authority": "implementation exact-SHA Linux CI artifact",
+  "caseCount": 8,
+  "caseIds": [
+    "P11B-001",
+    "P11B-002",
+    "P11B-003",
+    "P11B-004",
+    "P11B-005",
+    "P11B-008",
+    "P11B-010",
+    "P11B-011"
+  ],
+  "numericClaims": 0,
+  "referenceMutation": 0,
+  "scientificScope": "sealed Phase 11-2 invariant cases only",
+  "status": "REQUIRED_AT_IMPLEMENTATION_CI",
+  "toleranceChange": 0
+}

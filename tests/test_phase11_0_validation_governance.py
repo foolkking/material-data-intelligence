@@ -145,7 +145,12 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
     blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
     assert len(blocks) in {0, 1, 2, 3}
     if len(blocks) == 1:
-        assert "Phase 11-0 Validation Baseline Reconciliation + Governance Seal" in blocks[0]
+        assert (
+            "Phase 11-0 Validation Baseline Reconciliation + Governance Seal" in blocks[0]
+            or "Phase 11-3 Reviewer Prompt" in blocks[0]
+        )
+        if "Phase 11-3 Reviewer Prompt" in blocks[0]:
+            assert "状态：处理中" in blocks[0]
         assert "Task: Phase 11-1" not in blocks[0]
         assert "Task: Phase 12" not in blocks[0]
         assert "Task: Phase 13" not in blocks[0]

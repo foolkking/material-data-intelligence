@@ -2493,3 +2493,4 @@
 - Added deterministic source, license, transformation, independence, fixture, and Phase 11-2 handoff evidence without production changes.
 - Started Phase 11-2 bounded golden benchmark replay with explicit reference-limited cases and no validation-level promotion.
 - Completed Phase 11-2 golden benchmark replay with 12 evidence records, 8 invariant passes, 4 reference-limited N/A cases, and implementation CI `31328760532` PASS; no production scientific behavior changed.
+- Started Phase 11-3 with validation-only Linux/Windows replay jobs and deterministic variance evidence for the eight admitted invariant cases.

@@ -1537,3 +1537,5 @@ Registry remains exactly 62. Phase 11-1 adds no Tool, Adapter, Artifact family, 
 Phase 11-2 also keeps the Registry at 62 and records benchmark results only under `docs/phase11/evidence`; no benchmark-only Tool exists.
 
 The Phase 11-2 evidence suite does not alter Tool metadata or scientific authority and reports reference-limited cases honestly as N/A.
+
+Phase 11-3 adds no Tool or Adapter. Its runner validates sealed evidence identities and emits no scientific result Artifact.

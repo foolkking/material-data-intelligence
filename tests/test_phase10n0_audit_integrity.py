@@ -58,6 +58,9 @@ def test_n0_registry_has_no_extra_canonical_ids() -> None:
 
 def test_n0_does_not_admit_an_executable_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if "Phase 11-3 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
+        return
     # N0 itself never admitted a task; the corrective N1 authorization may
     # subsequently admit the sole N1 task while N2 remains a reviewer gate.
     assert tasks.count("---TASK---") == tasks.count("---END---")

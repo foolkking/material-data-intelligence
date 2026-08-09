@@ -44,6 +44,60 @@ jobs:
         run: uv lock --check
 
   # ── Frontend typecheck + build ──────────────────────────────────────
+  phase11-reproducibility-linux:
+    name: Phase 11-3 Scientific Replay (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
+      - name: Install locked dependencies
+        run: uv sync --frozen --extra test
+      - name: Replay sealed invariant cases
+        run: uv run python scripts/run_phase11_3_reproducibility.py --platform linux --output-dir "${RUNNER_TEMP}/phase11-3-linux"
+      - name: Upload Linux reproducibility evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase11-3-linux-replay
+          path: ${{ runner.temp }}/phase11-3-linux
+          if-no-files-found: error
+
+  phase11-reproducibility-windows:
+    name: Phase 11-3 Scientific Replay (Windows)
+    runs-on: windows-latest
+    needs: phase11-reproducibility-linux
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
+      - name: Install locked dependencies
+        run: uv sync --frozen --extra test
+      - name: Replay sealed invariant cases
+        run: uv run python scripts/run_phase11_3_reproducibility.py --platform windows --output-dir "$env:RUNNER_TEMP\phase11-3-windows"
+      - name: Download Linux reproducibility evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: phase11-3-linux-replay
+          path: ${{ runner.temp }}/phase11-3-linux
+      - name: Compare Linux and Windows evidence
+        run: >-
+          uv run python scripts/run_phase11_3_reproducibility.py
+          --compare-linux "$env:RUNNER_TEMP\phase11-3-linux\linux_replay.json"
+          --compare-windows "$env:RUNNER_TEMP\phase11-3-windows\windows_replay.json"
+          --output-dir "$env:RUNNER_TEMP\phase11-3-cross-platform"
+      - name: Upload cross-platform evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase11-3-cross-platform-replay
+          path: |
+            ${{ runner.temp }}/phase11-3-windows
+            ${{ runner.temp }}/phase11-3-cross-platform
+          if-no-files-found: error
+
   frontend:
     name: Frontend Typecheck & Build
     runs-on: ubuntu-latest

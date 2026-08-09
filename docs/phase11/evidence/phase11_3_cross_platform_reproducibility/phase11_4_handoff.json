@@ -1,0 +1,252 @@
+{
+  "caseCount": 8,
+  "caseIds": [
+    "P11B-001",
+    "P11B-002",
+    "P11B-003",
+    "P11B-004",
+    "P11B-005",
+    "P11B-008",
+    "P11B-010",
+    "P11B-011"
+  ],
+  "numericClaims": 0,
+  "records": [
+    {
+      "11_2Verdict": "PASS_INVARIANT",
+      "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+      "benchmarkId": "P11B-001",
+      "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+      "coverageEligibilityFacts": [
+        "identity exact",
+        "units exact",
+        "no reference mutation"
+      ],
+      "evidenceRefs": [
+        "benchmarks/P11B-001/comparison.json"
+      ],
+      "inputSupportRelationship": "SEALED_FIXTURE",
+      "knownLimitations": [
+        "invariant-only; no numeric value"
+      ],
+      "officialExampleRelationship": "SELF_REFERENCE",
+      "referenceProvenanceStatus": "OFFICIAL_LIBRARY_REFERENCE",
+      "remainingGaps": [
+        "numeric cross-platform value not present"
+      ],
+      "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+      "serviceStatus": "REGRESSION_ONLY",
+      "toolId": "structure.coordination_*",
+      "toolVersion": "0.1.0",
+      "v4Status": "NOT_PROMOTED",
+      "validationLevel": "V2"
+    },
+    {
+      "11_2Verdict": "PASS_INVARIANT",
+      "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+      "benchmarkId": "P11B-002",
+      "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+      "coverageEligibilityFacts": [
+        "identity exact",
+        "units exact",
+        "no reference mutation"
+      ],
+      "evidenceRefs": [
+        "benchmarks/P11B-002/comparison.json"
+      ],
+      "inputSupportRelationship": "SEALED_FIXTURE",
+      "knownLimitations": [
+        "invariant-only; no numeric value"
+      ],
+      "officialExampleRelationship": "SELF_REFERENCE",
+      "referenceProvenanceStatus": "INDEPENDENT_CROSS_LIBRARY_REFERENCE",
+      "remainingGaps": [
+        "numeric cross-platform value not present"
+      ],
+      "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+      "serviceStatus": "REGRESSION_ONLY",
+      "toolId": "structure.local_environment_polyhedra",
+      "toolVersion": "0.1.0",
+      "v4Status": "NOT_PROMOTED",
+      "validationLevel": "V2"
+    },
+    {
+      "11_2Verdict": "PASS_INVARIANT",
+      "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+      "benchmarkId": "P11B-003",
+      "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+      "coverageEligibilityFacts": [
+        "identity exact",
+        "units exact",
+        "no reference mutation"
+      ],
+      "evidenceRefs": [
+        "benchmarks/P11B-003/comparison.json"
+      ],
+      "inputSupportRelationship": "SEALED_FIXTURE",
+      "knownLimitations": [
+        "invariant-only; no numeric value"
+      ],
+      "officialExampleRelationship": "SELF_REFERENCE",
+      "referenceProvenanceStatus": "ANALYTIC_REFERENCE",
+      "remainingGaps": [
+        "numeric cross-platform value not present"
+      ],
+      "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+      "serviceStatus": "REGRESSION_ONLY",
+      "toolId": "structure.experimental_xrd_comparison",
+      "toolVersion": "0.1.0",
+      "v4Status": "NOT_PROMOTED",
+      "validationLevel": "V2"
+    },
+    {
+      "11_2Verdict": "PASS_INVARIANT",
+      "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+      "benchmarkId": "P11B-004",
+      "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+      "coverageEligibilityFacts": [
+        "identity exact",
+        "units exact",
+        "no reference mutation"
+      ],
+      "evidenceRefs": [
+        "benchmarks/P11B-004/comparison.json"
+      ],
+      "inputSupportRelationship": "SEALED_FIXTURE",
+      "knownLimitations": [
+        "invariant-only; no numeric value"
+      ],
+      "officialExampleRelationship": "SELF_REFERENCE",
+      "referenceProvenanceStatus": "ANALYTIC_REFERENCE",
+      "remainingGaps": [
+        "numeric cross-platform value not present"
+      ],
+      "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+      "serviceStatus": "REGRESSION_ONLY",
+      "toolId": "trajectory.rdf",
+      "toolVersion": "0.1.0",
+      "v4Status": "NOT_PROMOTED",
+      "validationLevel": "V2"
+    },
+    {
+      "11_2Verdict": "PASS_INVARIANT",
+      "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+      "benchmarkId": "P11B-005",
+      "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+      "coverageEligibilityFacts": [
+        "identity exact",
+        "units exact",
+        "no reference mutation"
+      ],
+      "evidenceRefs": [
+        "benchmarks/P11B-005/comparison.json"
+      ],
+      "inputSupportRelationship": "SEALED_FIXTURE",
+      "knownLimitations": [
+        "invariant-only; no numeric value"
+      ],
+      "officialExampleRelationship": "SELF_REFERENCE",
+      "referenceProvenanceStatus": "ANALYTIC_REFERENCE",
+      "remainingGaps": [
+        "numeric cross-platform value not present"
+      ],
+      "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+      "serviceStatus": "REGRESSION_ONLY",
+      "toolId": "trajectory.msd/diffusion",
+      "toolVersion": "0.1.0",
+      "v4Status": "NOT_PROMOTED",
+      "validationLevel": "V2"
+    },
+    {
+      "11_2Verdict": "PASS_INVARIANT",
+      "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+      "benchmarkId": "P11B-008",
+      "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+      "coverageEligibilityFacts": [
+        "identity exact",
+        "units exact",
+        "no reference mutation"
+      ],
+      "evidenceRefs": [
+        "benchmarks/P11B-008/comparison.json"
+      ],
+      "inputSupportRelationship": "SEALED_FIXTURE",
+      "knownLimitations": [
+        "invariant-only; no numeric value"
+      ],
+      "officialExampleRelationship": "SELF_REFERENCE",
+      "referenceProvenanceStatus": "ANALYTIC_REFERENCE",
+      "remainingGaps": [
+        "numeric cross-platform value not present"
+      ],
+      "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+      "serviceStatus": "REGRESSION_ONLY",
+      "toolId": "structure.brillouin_zone",
+      "toolVersion": "0.1.0",
+      "v4Status": "NOT_PROMOTED",
+      "validationLevel": "V2"
+    },
+    {
+      "11_2Verdict": "PASS_INVARIANT",
+      "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+      "benchmarkId": "P11B-010",
+      "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+      "coverageEligibilityFacts": [
+        "identity exact",
+        "units exact",
+        "no reference mutation"
+      ],
+      "evidenceRefs": [
+        "benchmarks/P11B-010/comparison.json"
+      ],
+      "inputSupportRelationship": "SEALED_FIXTURE",
+      "knownLimitations": [
+        "invariant-only; no numeric value"
+      ],
+      "officialExampleRelationship": "SELF_REFERENCE",
+      "referenceProvenanceStatus": "ANALYTIC_REFERENCE",
+      "remainingGaps": [
+        "numeric cross-platform value not present"
+      ],
+      "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+      "serviceStatus": "REGRESSION_ONLY",
+      "toolId": "materials ML and composition",
+      "toolVersion": "0.1.0",
+      "v4Status": "NOT_PROMOTED",
+      "validationLevel": "V2"
+    },
+    {
+      "11_2Verdict": "PASS_INVARIANT",
+      "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+      "benchmarkId": "P11B-011",
+      "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+      "coverageEligibilityFacts": [
+        "identity exact",
+        "units exact",
+        "no reference mutation"
+      ],
+      "evidenceRefs": [
+        "benchmarks/P11B-011/comparison.json"
+      ],
+      "inputSupportRelationship": "SEALED_FIXTURE",
+      "knownLimitations": [
+        "invariant-only; no numeric value"
+      ],
+      "officialExampleRelationship": "SELF_REFERENCE",
+      "referenceProvenanceStatus": "INDEPENDENT_CROSS_LIBRARY_REFERENCE",
+      "remainingGaps": [
+        "numeric cross-platform value not present"
+      ],
+      "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+      "serviceStatus": "REGRESSION_ONLY",
+      "toolId": "all quantitative release tools",
+      "toolVersion": "0.1.0",
+      "v4Status": "NOT_PROMOTED",
+      "validationLevel": "V2"
+    }
+  ],
+  "referenceMutation": 0,
+  "schemaVersion": "phase11-4-honest-coverage-input/1.0",
+  "scientificScope": "sealed Phase 11-2 invariant cases only",
+  "toleranceChange": 0
+}

@@ -1,5 +1,9 @@
 # Phase 11 Acceptance and Test Plan
 
+## Phase 11-3 Acceptance Registry
+
+The exact registry is `P11V3-A01` through `P11V3-A10`: sealed handoff entry; Linux/Windows lock parity; Linux replay; Windows replay; variance classification; identity/unit/determinism; browser presentation invariants; honest V4 disposition; no-production-change/security/service/evidence; and exact-SHA lifecycle with the Phase 11-4 reviewer gate.
+
 ## Phase 11-0 Acceptance Registry
 
 ```text

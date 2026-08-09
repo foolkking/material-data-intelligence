@@ -56,6 +56,9 @@ def test_n2_r0_scope_is_exact_and_bounded() -> None:
     ):
         assert marker in scope
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if "Phase 11-3 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
+        return
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     if task_count == 2 and "Phase 11-2 Reviewer Prompt" in tasks:

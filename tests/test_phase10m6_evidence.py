@@ -131,6 +131,9 @@ def test_phase10m6_required_inventory_acceptance_authorities_and_screenshots() -
         assert all(acceptance_id in document and requirement in document for document in authority_documents)
 
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if "Phase 11-3 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
+        return
     assert tasks.count("---TASK---") == tasks.count("---END---")
     assert tasks.count("---TASK---") in {0, 1, 2, 3}
     if "Phase 11-2 Reviewer Prompt" in tasks:

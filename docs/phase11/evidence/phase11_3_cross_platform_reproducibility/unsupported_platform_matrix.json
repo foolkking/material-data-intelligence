@@ -1,0 +1,5 @@
+{
+  "linux": "REQUIRED",
+  "macos": "NOT_CURRENT_RELEASE_TARGET",
+  "windows": "REQUIRED"
+}

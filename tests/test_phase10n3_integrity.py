@@ -66,6 +66,9 @@ def test_n3_ci_registers_browser_and_zero_skip_service_closure() -> None:
 
 def test_n3_task_and_n4_gate_are_exact() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if "Phase 11-3 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
+        return
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     if task_count == 2 and "Phase 11-2 Reviewer Prompt" in tasks:

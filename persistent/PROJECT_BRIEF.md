@@ -442,3 +442,5 @@ verified queue-archive CI; Phase 11 remains non-executable.
 Phase 11-1 provenance and fixture consolidation is complete after implementation CI success. Phase 11-2 golden benchmark execution is now active using the sealed handoff. It preserves Registry 62, DataProfile 2.4, and the sealed scientific contracts.
 
 Phase 11-2 implementation passed exact-SHA CI `31328760532`. The bounded suite records 12 cases: 8 invariant passes and 4 explicit reference-limited N/A cases. Phase 11-2 is complete pending direct queue archive; Phase 11-3 remains reviewer-gated and non-executable.
+
+Phase 11-3 is now active. It adds validation-only Linux/Windows replay jobs for the eight invariant handoff records, keeps numeric cross-platform claims unavailable, and changes no production scientific authority.

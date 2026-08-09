@@ -1,0 +1,5 @@
+{
+  "linux": "ubuntu-latest CI / Python 3.11 / uv.lock",
+  "macos": "NOT_CURRENT_RELEASE_TARGET",
+  "windows": "windows-latest CI / Python 3.11 / uv.lock"
+}
