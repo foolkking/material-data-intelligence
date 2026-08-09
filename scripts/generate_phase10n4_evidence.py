@@ -26,6 +26,10 @@ def write(path: str, value: object) -> None:
         target.write_text(json.dumps(value, indent=2, sort_keys=True, ensure_ascii=True) + "\n", encoding="utf-8")
 
 
+def canonical_evidence_bytes(path: Path) -> bytes:
+    return path.read_bytes().replace(b"\r\n", b"\n")
+
+
 def artifact(root: Path, tool: str, source: dict, params: dict, bindings: dict | None = None) -> tuple[dict, object]:
     adapters = {"trajectory.rdf": "TrajectoryRdfAdapter", "trajectory.msd": "TrajectoryMsdAdapter", "trajectory.diffusion": "TrajectoryDiffusionAdapter"}
     context = ToolExecutionContext(job_id="job_n4_evidence", project_id="project_n4", dataset_id="dataset_n4", tool_id=tool, tool_version="0.1.0", adapter_version="0.1.0", registry_version="evidence", artifact_root=root, tool_call_id=f"call_{tool.replace('.', '_')}", plan_id="plan_n4", plan_version="0.2", object_store={"input": source}, artifact_bindings=bindings or {})
@@ -119,7 +123,7 @@ def main() -> None:
     )
 
     files = sorted(path for path in OUT.rglob("*") if path.is_file() and path.name != "manifest.json" and ".runtime" not in path.parts)
-    write("manifest.json", {"schemaVersion": "phase10n4.evidence_manifest.v1", "entries": [{"path": path.relative_to(OUT).as_posix(), "sha256": sha256(path.read_bytes()).hexdigest(), "bytes": path.stat().st_size} for path in files], "realLlmCalls": 0, "newLlmCallSites": 0})
+    write("manifest.json", {"schemaVersion": "phase10n4.evidence_manifest.v1", "entries": [{"path": path.relative_to(OUT).as_posix(), "sha256": sha256(canonical_evidence_bytes(path)).hexdigest(), "bytes": len(canonical_evidence_bytes(path))} for path in files], "realLlmCalls": 0, "newLlmCallSites": 0})
 
 
 if __name__ == "__main__":

@@ -51,8 +51,9 @@ def test_n4_evidence_inventory_and_manifest_integrity() -> None:
     for entry in manifest["entries"]:
         path = EVIDENCE / entry["path"]
         assert path.is_file()
-        assert sha256(path.read_bytes()).hexdigest() == entry["sha256"]
-        assert path.stat().st_size == entry["bytes"]
+        canonical = path.read_bytes().replace(b"\r\n", b"\n")
+        assert sha256(canonical).hexdigest() == entry["sha256"]
+        assert len(canonical) == entry["bytes"]
 
 
 def test_n4_scientific_negative_and_positive_controls_are_honest() -> None:
