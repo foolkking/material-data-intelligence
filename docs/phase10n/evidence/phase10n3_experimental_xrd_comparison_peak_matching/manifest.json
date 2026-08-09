@@ -112,6 +112,11 @@
                         "sha256":  "2e7b5365b67e81cd0859596410d48b6be9552f3be470df576b00e3fced9b2053"
                     },
                     {
+                        "path":  "completion_ci_attempts.md",
+                        "bytes":  650,
+                        "sha256":  "c10f2d53d1df63f67bd66a57ba92f95abac4ad9e0894438eaa29a8526f16c9af"
+                    },
+                    {
                         "path":  "docs_link_check.txt",
                         "bytes":  67,
                         "sha256":  "3e4abee9de341e283d49c658103615e031e30bb4367ccda792dec09c78102806"

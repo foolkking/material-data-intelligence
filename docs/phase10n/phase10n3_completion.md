@@ -15,4 +15,10 @@ frontend 430 passed, typecheck, production build, Chromium, Firefox, WebKit and
 Chromium 390x844 replay all passed. The completion record now awaits its own
 exact-SHA CI; the N3 task remains active until the verified queue archive.
 
+Completion-record candidate `e805b8c8d41e69254da21b3209c600f8dce9aa34`
+failed CI `31288217113`: frontend, browser, build and service-backed 45/45 passed;
+Unit reported one stale N2 lifecycle assertion that did not yet allow the legal
+N3 completion-record state. A compatibility-test-only correction follows while
+the N3 task remains active.
+
 Registry count is 57. Database schema, migration head `0007_phase10m1_workspace_domain`, public API families, dependencies and lockfile are unchanged. N3 performs no theoretical XRD reimplementation, match-optimized detection, pattern shift, refinement or automatic phase identification. Phase 10N-4 remains reviewer-gated and is not queued.

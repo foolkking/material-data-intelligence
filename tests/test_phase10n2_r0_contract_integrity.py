@@ -67,6 +67,7 @@ def test_n2_r0_scope_is_exact_and_bounded() -> None:
             for marker in (
                 "Phase 10N-3:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT",
                 "Phase 10N-3:\nIMPLEMENTED / AWAITING_IMPLEMENTATION_CI",
+                "Phase 10N-3:\nPASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI",
                 "Phase 10N-3:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT",
             )
         )

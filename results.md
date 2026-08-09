@@ -3561,7 +3561,10 @@ lockfile = unchanged
   isolated PostgreSQL search path could fall through to public migration state.
 - Corrected implementation `d18097101cdf999b76be1f2da1cf4f3d67fb9c48`, run
   `30729180057`: Unit, Frontend, and service-backed all success.
-- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Failed completion-record candidate `e805b8c8d41e69254da21b3209c600f8dce9aa34`
+  / CI `31288217113`: one stale N2 lifecycle assertion; frontend/browser/build
+  and service-backed 45/45 passed.
+- Corrected completion-record SHA/CI: this commit / pending exact-SHA CI.
 - Queue-archive SHA/CI: not created before completion-record CI.
 
 ## 32. Explicit Non-Scope

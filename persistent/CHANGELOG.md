@@ -2410,6 +2410,10 @@
   passed exact-SHA CI `31270117864`: backend 1210 passed, frontend 430 passed,
   service-backed 45 passed with zero skipped/failed/errors, typecheck, build and
   Chromium/Firefox/WebKit/390x844 replay all passed.
+- Completion-record candidate `e805b8c8d41e69254da21b3209c600f8dce9aa34`
+  failed CI `31288217113` only because the retained N2 lifecycle assertion did
+  not allow the legal N3 completion-record state; all frontend/browser/build and
+  45/45 service-backed gates passed. The assertion is corrected additively.
 
 - Initial implementation SHA `1faa25582107ac3d34efea2e75b61ae3d0f9be13`
   failed CI `31269467363` only because the Phase 10M-3 service regression still
