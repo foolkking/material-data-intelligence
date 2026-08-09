@@ -13,6 +13,8 @@
   dependencies, lockfile, Runtime, Planner, renderers, and LLM behavior are unchanged.
 - Implementation `312fd4445d404f0f89c061fbdc055789912dc552` passed exact-SHA CI
   `31324356338`; the completion record is now retained before queue archive.
+- Completion record `dee197d39e194277351a34fcd063b3de97729534` was committed and the
+  Phase 11-0 task was removed in a separate direct queue archive; no future task was created.
 
 ## 2026-08-08 - Phase 10N-2 Implementation
 

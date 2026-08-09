@@ -10,6 +10,7 @@
 - [x] Seal Phase 11-1 through 11-5, Phase 12 UI/UX, and Phase 13 closure boundaries.
 - [x] Verify implementation `312fd4445d404f0f89c061fbdc055789912dc552` in exact-SHA CI `31324356338`.
 - [x] Write the Phase 11-0 completion record; queue archive remains the final direct commit.
+- [x] Remove only the Phase 11-0 task; leave Phase 11-1, Phase 12, and Phase 13 non-executable.
 
 No new science, Tool, Artifact family, Profile/Plan version, migration, API,
 dependency, renderer, Planner capability, Runtime behavior, or LLM authority is introduced.

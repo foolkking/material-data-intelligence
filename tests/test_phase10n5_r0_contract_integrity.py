@@ -75,7 +75,10 @@ def test_n5_queue_state_remains_compatible_through_n6_archive() -> None:
             "Phase 10N-6:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
             or (
                 "Phase 10N-6:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
-                and "Phase 11:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+                and (
+                    "Phase 11:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+                    or "Phase 11:\nIN_PROGRESS / GOVERNANCE_SEALED" in tasks
+                )
             )
         )
     assert tasks.count("Task: Phase 10N-6") <= 1

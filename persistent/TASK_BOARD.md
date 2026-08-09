@@ -8,7 +8,7 @@
 - [x] Freeze validation levels, reference authority, fixture governance, variance taxonomy, and revalidation triggers.
 - [x] Approve roadmap numbering: Phase 11 validation, Phase 12 UI/UX, Phase 13 final closure.
 - [x] Pass implementation exact-SHA CI `31324356338`.
-- [ ] Archive only Phase 11-0 in the final direct queue commit.
+- [x] Archive only Phase 11-0 in the final direct queue commit.
 - [x] Keep Phase 11-1, Phase 12, and Phase 13 absent from the executable queue.
 
 ## 2026-08-09 Phase 10N-4 Trajectory RDF / MSD / Diffusion
