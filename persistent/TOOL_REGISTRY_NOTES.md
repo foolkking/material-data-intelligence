@@ -1530,3 +1530,6 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - All nine N1-N5 professional Tools have Planner metadata, typed output ports,
   registered Adapters, persisted Artifact contracts and deterministic projectors.
 - N2, N3 and Diffusion retain exact typed dependency inputs; no fallback or recomputation is added.
+## Phase 11-1 Registry Freeze
+
+Registry remains exactly 62. Phase 11-1 adds no Tool, Adapter, Artifact family, or DataProfile field; its generated evidence only links existing Tool/version contracts to prepared benchmark inputs.

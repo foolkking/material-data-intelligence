@@ -4496,3 +4496,6 @@ authorized.
 - Registry 62, DataProfile 2.4 and all N1-N5 scientific contracts remain sealed.
 - Closure uses multiple capability-specific Plans, never a run-everything Tool or mega-plan.
 - Evidence matrices are documentation artifacts and not runtime schemas.
+## Phase 11-1 Decision
+
+Retained fixture bytes are reused by checksum and described through immutable provenance sidecars. Preparation does not create a new scientific authority, alter tolerances, or promote validation level.

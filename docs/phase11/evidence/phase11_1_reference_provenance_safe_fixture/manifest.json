@@ -1,0 +1,126 @@
+{
+  "duplicateLogicalFixtureIdentity": 0,
+  "entries": [
+    {
+      "bytes": 957,
+      "path": "acceptance_registry.json",
+      "sha256": "ca34b4e8fa39ec5659a1b828bb4afdd605f8a36793385a9a8d8a66cfc5f99845"
+    },
+    {
+      "bytes": 234,
+      "path": "baseline.txt",
+      "sha256": "173585663382217d1b181029f914199216340ddf08e91e82b2070d195d5faa9f"
+    },
+    {
+      "bytes": 74,
+      "path": "docs_link_check.txt",
+      "sha256": "c1afb7220f65884777dd62331f01bb3945256c8b8ce7be4f243e95705326033f"
+    },
+    {
+      "bytes": 1961,
+      "path": "duplicate_reference_audit.json",
+      "sha256": "08f1400db94847e92f0f7356cd9e16aabac9ef8cab4d2081cc433c6b662a52e8"
+    },
+    {
+      "bytes": 440,
+      "path": "entry_gate.md",
+      "sha256": "2c7937f3b1c7344934950939cc25696cc7f57a937f25e6afaf6e36557b2a7f37"
+    },
+    {
+      "bytes": 48027,
+      "path": "fixture_checksum_registry.json",
+      "sha256": "ee6218999fa9df445a9293db0e89ae1e9eff7a048cdee4281322d6437d032fbd"
+    },
+    {
+      "bytes": 193534,
+      "path": "fixture_registry.json",
+      "sha256": "4ee05e436c028f34b260fd684f833f8f62ad937907d895eac926f5794dff9b18"
+    },
+    {
+      "bytes": 3139,
+      "path": "license_disposition_matrix.json",
+      "sha256": "e4bc0a1ee2af4a8f99894a16e119812e102a6bf0b863e3232cc58be197b36001"
+    },
+    {
+      "bytes": 190,
+      "path": "network_acquisition_audit.json",
+      "sha256": "0bdb452d26c3ac487b278fc1f15a43db45e15b8e2b4782308ef8f17bec9d1834"
+    },
+    {
+      "bytes": 262,
+      "path": "no_numeric_validation_audit.md",
+      "sha256": "7e971f6d55ac75c7219a563e000a403d3b1392555abf7e0b8b65a0ae5cb4ab71"
+    },
+    {
+      "bytes": 312,
+      "path": "no_production_change_audit.md",
+      "sha256": "2475fabaee5bf2021dac59cb6fa0d0597c69440713353ce4ec71bb4dc8bffcf7"
+    },
+    {
+      "bytes": 17963,
+      "path": "official_example_extraction_status.json",
+      "sha256": "3200d7c3f4c740cbba896b7c09bcbd342a0fc8be57498f74956ce94eb1b68ff4"
+    },
+    {
+      "bytes": 6075,
+      "path": "phase11_0_backlog_reconciliation.json",
+      "sha256": "39170456b925759bca6ac174693507f0873cc525d786e5895979a17b48c80b4b"
+    },
+    {
+      "bytes": 11065,
+      "path": "phase11_2_benchmark_input_manifest.json",
+      "sha256": "5804c5d5a1669ef6c10f0e8d76ccb1e54a7e80e8fe298f3827fed99f10f01dd6"
+    },
+    {
+      "bytes": 2724,
+      "path": "raw_retention_matrix.json",
+      "sha256": "bb8bff68459a8cb07e32bb5c49d5ee3dd373eb875f365c4edd80d648ccd5d255"
+    },
+    {
+      "bytes": 214,
+      "path": "reference_acquisition_manifest.json",
+      "sha256": "8e224503eb5b9c58f9366608313ff70f9d726fff96b8ca5952240e097b8e9791"
+    },
+    {
+      "bytes": 3427,
+      "path": "reference_independence_matrix.json",
+      "sha256": "0192da9543ceeb2a4ba44f2e4b0308f8ac26f951c5b054f63e18643b662a4cab"
+    },
+    {
+      "bytes": 21886,
+      "path": "reference_provenance_registry.json",
+      "sha256": "194128fb73ff7cbda6b77c25c4088ab481ae6cb7ac7110b9b43b7aadf0d336d0"
+    },
+    {
+      "bytes": 49,
+      "path": "secret_scan.txt",
+      "sha256": "a89f9cc6761ac3b60318aa96025f8d6885ca0ce2bcb6b7c14fcafda655724592"
+    },
+    {
+      "bytes": 340,
+      "path": "security.md",
+      "sha256": "545df164c8d3526127657d74d388e254c15b33b87d0cb12c1e8be228f3d1664a"
+    },
+    {
+      "bytes": 2805,
+      "path": "source_checksum_registry.json",
+      "sha256": "650f33eaa1719e7700b68ef3772f6ddc9c3581406af988b4eb402dce118dbbdc"
+    },
+    {
+      "bytes": 832,
+      "path": "transformation_registry.json",
+      "sha256": "6f138419400155687872eac88d30ad90d441edaedd13d0f9de5618a1f465d37f"
+    },
+    {
+      "bytes": 1719,
+      "path": "unresolved_reference_matrix.json",
+      "sha256": "1c309f549da176bc02c8752a3724ef0b64066492a3aa49282ddc4382ffe6017b"
+    }
+  ],
+  "entryCount": 23,
+  "hashMismatch": 0,
+  "missingFiles": 0,
+  "schemaVersion": "phase11-evidence-manifest/1.0",
+  "secretBearingEvidence": 0,
+  "untrackedAuthoritativeFixture": 0
+}

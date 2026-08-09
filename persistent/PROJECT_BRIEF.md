@@ -437,3 +437,6 @@ Profile versions, migrations, APIs or dependencies. Phase 11 is not queued.
 Corrected N6 implementation `eda7cda4d14207abaf97a0a88cc263b0d1ad3319`
 passed exact-SHA CI `31316556495`. The task remains only for completion-record and
 verified queue-archive CI; Phase 11 remains non-executable.
+## Phase 11-1 State
+
+Phase 11-1 is admitted and its provenance/fixture consolidation work is in progress. It preserves Registry 62, DataProfile 2.4, and the sealed scientific contracts. Numeric validation remains Phase 11-2 scope.

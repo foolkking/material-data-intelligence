@@ -32,6 +32,10 @@ No numeric PASS is declared in 11-1. No notebook, downloaded script, or external
 
 Existing evidence is reused when hashes, contracts, units, tolerances, and locked authority dependencies match.
 
+## Phase 11-1 Completion Handoff
+
+The Phase 11-1 evidence pack is generated under `evidence/phase11_1_reference_provenance_safe_fixture/`. It reconciles all 12 Phase 11-0 gaps, retains the observed repository counts (46 reference-like, 170 retained fixtures, 55 official/example records), preserves the Phase 11-0 tolerance registry, and supplies a typed 11-2 benchmark input manifest. No numeric validation or validation-level promotion occurs here.
+
 ## Phase 11-3: Reproducibility Matrix
 
 - OS: locked Linux CI and locked Windows primary runtime.

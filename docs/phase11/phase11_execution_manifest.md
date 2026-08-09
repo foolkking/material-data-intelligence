@@ -18,3 +18,7 @@ P11V0-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_11_1_REVIEWER_GATE
 Execution order: verify N6 archive and clean baseline; admit one task; generate Registry/Artifact/input/evidence/reference/fixture/tolerance/variance/gap inventories; reconcile documentation and roadmap; run deterministic and full regression; commit and verify implementation SHA; append completion record and verify; remove only Phase 11-0 task and verify archive.
 
 The audit generator reads repository contracts and metadata only. It performs no scientific computation, network retrieval, notebook execution, downloaded-script execution, or production source generation.
+
+## Phase 11-1 Execution
+
+`scripts/generate_phase11_1_provenance.py` reuses retained bytes, verifies their checksums, and writes the provenance, license, transformation, independence, fixture, and 11-2 handoff evidence pack. It performs no external retrieval and no numeric comparison. Acceptance IDs are recorded in `acceptance_registry.json`.

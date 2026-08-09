@@ -2419,3 +2419,7 @@ current board above.
 - [x] Verify corrected implementation `eda7cda4d14207abaf97a0a88cc263b0d1ad3319`
   in exact-SHA CI `31316556495`.
 - [ ] Verify completion-record and queue-archive exact-SHA CI.
+## Phase 11-1
+
+- [ ] Phase 11-1 Reference Provenance + Safe Fixture Consolidation is in progress; its task remains the only active queue item.
+- [ ] Phase 11-2 remains reviewer-gated and has no executable task.

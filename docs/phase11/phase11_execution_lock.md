@@ -20,3 +20,7 @@ Phase 11-0 is audit-only. Registry 62, DataProfile 2.4, AnalysisPlan 0.1/0.2, mi
 No scientific discrepancy may be repaired here. A wrong value, unit, formula, threshold, or persisted semantic is `SCIENTIFIC_CONTRACT_DEFECT_FOUND / REVIEWER_REQUIRED`. Documentation drift, evidence paths, classification, duplicate rows, and audit validators are within scope.
 
 Phase 11-1, Phase 12, Phase 13, and Phase 14 are not executable. Only one Phase 11-0 TASKS block may exist until verified archive.
+
+## Phase 11-1 Lock
+
+Phase 11-1 keeps Registry 62, DataProfile 2.4, migration 0007, tolerances, scientific Artifact semantics, Planner, Runtime, APIs, dependencies, and lockfile unchanged. It may add provenance metadata, immutable fixture registries, deterministic audit tooling, tests, and documentation. It may not declare numeric scientific PASS, promote validation levels, execute external code, or create the Phase 11-2 task.

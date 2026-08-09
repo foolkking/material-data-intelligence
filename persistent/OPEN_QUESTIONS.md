@@ -1184,3 +1184,7 @@ future or excluded scope. Phase 10N-6 requires a new reviewer prompt.
 No implementation-critical integration question remains after R0. Phase 11 and
 all unapproved future science remain reviewer-gated. Exact-SHA lifecycle closure
 is the only remaining work.
+## Phase 11-1
+
+- Official-example redistribution and source-license review remains explicitly recorded for later review; no external bytes were vendored.
+- Scientific numeric comparison remains deferred to Phase 11-2.

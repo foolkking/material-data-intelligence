@@ -1,0 +1,29 @@
+{
+  "recordCount": 1,
+  "records": [
+    {
+      "deterministicReplayStatus": "PASS",
+      "inputChecksum": "recorded-per-fixture",
+      "inputReferenceId": "retained-inventory",
+      "numericMutation": false,
+      "operationClass": "identity-reuse-and-metadata-sidecar",
+      "operations": [
+        "bounded metadata registration",
+        "UTF-8 JSON manifest serialization"
+      ],
+      "orderingMutation": false,
+      "outputFixtureId": "P11FIX-RETAINED-*",
+      "removedFields": [],
+      "retainedFields": [
+        "path",
+        "source checksum",
+        "license status",
+        "reference status"
+      ],
+      "toolScriptIdentity": "scripts/generate_phase11_1_provenance.py",
+      "transformationId": "P11TRANS-IDENTITY-001",
+      "transformationVersion": "1.0.0",
+      "unitMutation": false
+    }
+  ]
+}

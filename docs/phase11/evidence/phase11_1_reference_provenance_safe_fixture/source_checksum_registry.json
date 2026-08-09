@@ -1,0 +1,77 @@
+{
+  "algorithm": "SHA-256",
+  "sources": [
+    {
+      "bytes": 897,
+      "checksum": "4e16884e7f1f45ad5d306e92bd97cd9201629cf16740545e9933008843f89a07",
+      "referenceId": "P11REF-001",
+      "source": "docs/phase10n/phase10n1_reference_and_tolerance_evidence.md"
+    },
+    {
+      "bytes": 948,
+      "checksum": "66be8f544507741779816cf5ab993803e831127ababa1ef036276e3ada7be35d",
+      "referenceId": "P11REF-002",
+      "source": "docs/phase10n/phase10n2_geometry_reference_catalog.md"
+    },
+    {
+      "bytes": 657,
+      "checksum": "5f4f41474e9e1583b73032fffeeed0c62becc57866b353fa04d0df7d63a61b68",
+      "referenceId": "P11REF-003",
+      "source": "docs/phase10n/phase10n3_reference_tolerance_evidence.md"
+    },
+    {
+      "bytes": 1174,
+      "checksum": "59d196ba7c11a9f1725fa07264fc419ce51e3b16e6207d34cdc381733afc456c",
+      "referenceId": "P11REF-004",
+      "source": "docs/phase10n/phase10n4_rdf_contract.md"
+    },
+    {
+      "bytes": 924,
+      "checksum": "e07f30b1b5036660e6ddeb56e6f9302003cf2f8dcc0280229a098258c6edbb15",
+      "referenceId": "P11REF-005",
+      "source": "docs/phase10n/phase10n4_msd_contract.md"
+    },
+    {
+      "bytes": 453,
+      "checksum": "f91e2cd906e36ffbe60b676ff9de465db1e230113306c28880672c0ba63dbbaa",
+      "referenceId": "P11REF-006",
+      "source": "docs/phase10n/phase10n5_reference_tolerance_evidence.md"
+    },
+    {
+      "bytes": 2692,
+      "checksum": "bdcd299d8b840102b6351d86a66e00dc37ab76bbda0aa95d108bb06890c84bce",
+      "referenceId": "P11REF-007",
+      "source": "docs/phase10h/evidence/phase10h5_phonon_animation/reference/displacement_phases.json"
+    },
+    {
+      "bytes": 1105,
+      "checksum": "feb632f29e03c091dc77dc19c3278e31d82fbc395a225911093e1f2f73086e7d",
+      "referenceId": "P11REF-008",
+      "source": "docs/phase10i/evidence/phase10i_brillouin_zone_contract/bcc_fcc_reference.json"
+    },
+    {
+      "bytes": 376,
+      "checksum": "ff8d7c515285886c18fe9aec64f42503bf733a9daeb38583c108f137cca3a96b",
+      "referenceId": "P11REF-009",
+      "source": "docs/phase10j/evidence/phase10j1_volumetric_parser_adapter/reference_calculations.json"
+    },
+    {
+      "bytes": 1553,
+      "checksum": "682c241996360c157b5a09daf2b1435081fe8f90a07018ac522b23c1c54b9e38",
+      "referenceId": "P11REF-010",
+      "source": "docs/phase10k/phase10k2_evidence.md"
+    },
+    {
+      "bytes": 616,
+      "checksum": "45fa1eeb184114f007108c7a2f94e33d8576f5855be5c56383a896f807f9b3cd",
+      "referenceId": "P11REF-011",
+      "source": "docs/phase11/phase11_0_completion.md"
+    },
+    {
+      "bytes": 5714,
+      "checksum": "3f5dcba56602cd1645b95a42ee268f9f12dd75887fe7095e1f61e3f41acc4882",
+      "referenceId": "P11REF-012",
+      "source": "docs/phase10f/phase10f2_official_coverage_gap_analysis.md"
+    }
+  ]
+}
