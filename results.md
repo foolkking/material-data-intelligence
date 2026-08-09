@@ -3561,10 +3561,7 @@ lockfile = unchanged
   isolated PostgreSQL search path could fall through to public migration state.
 - Corrected implementation `d18097101cdf999b76be1f2da1cf4f3d67fb9c48`, run
   `30729180057`: Unit, Frontend, and service-backed all success.
-- Failed completion-record candidate `e805b8c8d41e69254da21b3209c600f8dce9aa34`
-  / CI `31288217113`: one stale N2 lifecycle assertion; frontend/browser/build
-  and service-backed 45/45 passed.
-- Corrected completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
 - Queue-archive SHA/CI: not created before completion-record CI.
 
 ## 32. Explicit Non-Scope
@@ -6914,8 +6911,12 @@ entries = 0; conflicting definitions = 0; canonical registry shorthand entries =
   `31269467363`: failed one stale service selection-list assertion; all other jobs passed.
 - Corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50` /
   CI `31270117864`: success.
-- Completion-record SHA/CI: this commit / pending exact-SHA CI.
-- Queue-archive SHA/CI: pending; no archive success is claimed here.
+- Failed completion-record candidate `e805b8c8d41e69254da21b3209c600f8dce9aa34`
+  / CI `31288217113`: one stale N2 lifecycle assertion; frontend/browser/build
+  and service-backed 45/45 passed.
+- Corrected completion record `c7547903faef191c97f35ca0ae2ad1ad1678193f` /
+  CI `31288792343`: success.
+- Queue-archive SHA/CI: this commit / pending exact-SHA CI.
 
 ## 65. Explicit Non-Scope
 
@@ -6926,8 +6927,8 @@ N4/N5 science, database search, external APIs and arbitrary execution are absent
 
 ## 66. Queue State
 
-During completion-record CI, `TASK_BLOCK_COUNT=1`; the N3 task remains active.
-Phase 10N-4 is reviewer-gated and has no executable task.
+After the queue-archive candidate, `TASK_BLOCK_COUNT=0`; the completed N3 task is
+removed. Phase 10N-4 remains reviewer-gated and has no executable task.
 
 ## 67. Automatic N4 Entry
 
@@ -6935,7 +6936,8 @@ NO. `PHASE_10N4_EXECUTABLE_TASK_CREATED=NO`.
 
 ## 68. Final Repository State
 
-At completion-record creation, implementation authority is
+At queue-archive creation, implementation authority is
 `5aef027d312f462eea72a1ced10b33e4f4664a50` / CI `31270117864`, branch master,
-migration head 0007, Registry 57 and task count 1. Completion and archive SHAs
-remain pending their exact-SHA gates; N4 task is absent.
+migration head 0007, Registry 57 and task count 0. Completion authority is
+`c7547903faef191c97f35ca0ae2ad1ad1678193f` / CI `31288792343`; queue-archive
+exact-SHA verification is pending and N4 task is absent.

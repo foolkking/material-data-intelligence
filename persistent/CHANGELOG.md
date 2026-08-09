@@ -2414,6 +2414,9 @@
   failed CI `31288217113` only because the retained N2 lifecycle assertion did
   not allow the legal N3 completion-record state; all frontend/browser/build and
   45/45 service-backed gates passed. The assertion is corrected additively.
+- Corrected completion record `c7547903faef191c97f35ca0ae2ad1ad1678193f`
+  passed exact-SHA CI `31288792343`; the queue-archive candidate removes only N3
+  and leaves N4 reviewer-gated and non-executable.
 
 - Initial implementation SHA `1faa25582107ac3d34efea2e75b61ae3d0f9be13`
   failed CI `31269467363` only because the Phase 10M-3 service regression still

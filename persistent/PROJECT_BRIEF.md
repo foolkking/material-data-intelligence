@@ -12,6 +12,9 @@ lockfile or LLM call site is added. Phase 10N-4 is not queued.
 Corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50`
 passed exact-SHA CI `31270117864`; the completion-record and queue-archive gates
 remain, with the single N3 task retained and N4 non-executable.
+Corrected completion record `c7547903faef191c97f35ca0ae2ad1ad1678193f`
+passed CI `31288792343`; the N3 task is archived by the queue-archive candidate,
+and N4 remains reviewer-gated with no executable task.
 
 ## 2026-08-07 Phase 10N-1 Implementation
 

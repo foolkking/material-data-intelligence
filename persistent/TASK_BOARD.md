@@ -2373,5 +2373,8 @@ current board above.
 - [x] Implement bounded Workspace, selection, interpretation and Report/Recipe projections.
 - [x] Verify corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50`
   with exact-SHA CI `31270117864` (45/45 service-backed, zero skipped).
-- [ ] Verify completion-record and queue-archive exact-SHA CI.
-- [ ] Keep Phase 10N-4 reviewer-gated and non-executable.
+- [x] Verify corrected completion record `c7547903faef191c97f35ca0ae2ad1ad1678193f`
+  with exact-SHA CI `31288792343`.
+- [x] Remove only the completed N3 queue block; retain the N4 reviewer gate.
+- [ ] Verify the queue-archive candidate exact-SHA CI.
+- [x] Keep Phase 10N-4 reviewer-gated and non-executable.

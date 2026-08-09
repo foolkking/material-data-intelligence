@@ -1,6 +1,6 @@
 # Phase 10N-3 Completion State
 
-Current implementation state: `PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI`.
+Current implementation state: `PASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 
 Implementation attempt `1faa25582107ac3d34efea2e75b61ae3d0f9be13` failed CI
 `31269467363`: Unit and full frontend/browser/build jobs passed; service-backed
@@ -20,5 +20,10 @@ failed CI `31288217113`: frontend, browser, build and service-backed 45/45 passe
 Unit reported one stale N2 lifecycle assertion that did not yet allow the legal
 N3 completion-record state. A compatibility-test-only correction follows while
 the N3 task remains active.
+
+Corrected completion record `c7547903faef191c97f35ca0ae2ad1ad1678193f`
+passed exact-SHA CI `31288792343`: backend, frontend, all browser/build gates and
+service-backed 45/45 passed. The N3 task is removed by the queue-archive candidate;
+N4 remains reviewer-gated and non-executable.
 
 Registry count is 57. Database schema, migration head `0007_phase10m1_workspace_domain`, public API families, dependencies and lockfile are unchanged. N3 performs no theoretical XRD reimplementation, match-optimized detection, pattern shift, refinement or automatic phase identification. Phase 10N-4 remains reviewer-gated and is not queued.

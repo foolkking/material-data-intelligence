@@ -2058,4 +2058,7 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50`
   passed exact-SHA CI `31270117864`: backend 1210, frontend 430,
   service-backed 45/45, typecheck, build and all browser/mobile replays passed.
-- The completion record awaits exact-SHA CI; N4 remains reviewer-gated.
+- Failed completion candidate `e805b8c8d41e69254da21b3209c600f8dce9aa34`
+  / CI `31288217113` remains immutable history; corrected completion
+  `c7547903faef191c97f35ca0ae2ad1ad1678193f` / CI `31288792343` passed.
+- The N3 queue block is removed by the archive candidate; N4 remains reviewer-gated.

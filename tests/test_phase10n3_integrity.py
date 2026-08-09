@@ -65,7 +65,12 @@ def test_n3_ci_registers_browser_and_zero_skip_service_closure() -> None:
 
 def test_n3_task_and_n4_gate_are_exact() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert tasks.count("---TASK---") == tasks.count("---END---") == 1
-    assert "Phase 10N-3 Experimental XRD Comparison + Peak Matching" in tasks
+    task_count = tasks.count("---TASK---")
+    assert task_count == tasks.count("---END---")
+    if task_count:
+        assert task_count == 1
+        assert "Phase 10N-3 Experimental XRD Comparison + Peak Matching" in tasks
+    else:
+        assert "Phase 10N-3:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
     assert "Phase 10N-4:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
     assert "Phase 10N-4 Trajectory" not in tasks

@@ -113,8 +113,8 @@
                     },
                     {
                         "path":  "completion_ci_attempts.md",
-                        "bytes":  650,
-                        "sha256":  "c10f2d53d1df63f67bd66a57ba92f95abac4ad9e0894438eaa29a8526f16c9af"
+                        "bytes":  979,
+                        "sha256":  "e09500973df42075791fc02b307620d9fd97ea49df30f5042605bc872db4e2d5"
                     },
                     {
                         "path":  "docs_link_check.txt",
