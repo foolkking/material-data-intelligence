@@ -407,3 +407,9 @@ archived by verified queue commit `a9319c2d`. Phase 10N-2 corrected implementati
 `2b4dacf4` passed exact-SHA CI `31258820229`; its active task remains while the
 completion-record and queue-archive gates close. Phase 10N-3 remains a reviewer
 gate and is not queued or executable.
+## Phase 10N-5 Active Scope (2026-08-09)
+
+N5 is the one active authorized task. It adds supplied-output-only Band and DOS
+validation/presentation through two Registry Tools (60 -> 62), DataProfile 2.4,
+exact Artifacts and Workspace integration. DFT, GW, Fermi surfaces, projected
+bands and electronic generation from structures remain prohibited. N6 is not queued.

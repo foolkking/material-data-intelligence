@@ -14,6 +14,12 @@ from pymatgen.core import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
 from mdi_artifact_core import content_hash, stable_json_dumps
+from mdi_artifact_core.electronic_contract import (
+    BAND_RESOURCE_SCHEMA,
+    DOS_RESOURCE_SCHEMA,
+    validate_electronic_band_resource,
+    validate_electronic_dos_resource,
+)
 from mdi_schemas import MaterialObjectType
 
 from .detector import detect_format
@@ -238,7 +244,9 @@ def _parse_zip_archive(
 
 def _parse_json_limited(file_path: Path, *, dataset_id: str, file_id: str) -> ParseResult:
     data = json.loads(file_path.read_text(encoding="utf-8"), object_pairs_hook=_reject_duplicate_keys)
-    if _looks_like_experimental_xrd(data):
+    if _looks_like_electronic_resource(data):
+        objects = [_electronic_resource_object(data, dataset_id, file_id)]
+    elif _looks_like_experimental_xrd(data):
         objects = [_experimental_xrd_object(data, dataset_id, file_id)]
     elif _looks_like_structure_dict(data):
         structure = Structure.from_dict(data)
@@ -459,6 +467,48 @@ def _looks_like_structure_dict(data: Any) -> bool:
 
 def _looks_like_experimental_xrd(data: Any) -> bool:
     return isinstance(data, dict) and data.get("schemaVersion") == "phase10n3.experimental_xrd_resource.v1"
+
+
+def _looks_like_electronic_resource(data: Any) -> bool:
+    return isinstance(data, dict) and data.get("schemaVersion") in {BAND_RESOURCE_SCHEMA, DOS_RESOURCE_SCHEMA}
+
+
+def _electronic_resource_object(data: dict[str, Any], dataset_id: str, file_id: str) -> NormalizedObjectDraft:
+    is_band = data.get("schemaVersion") == BAND_RESOURCE_SCHEMA
+    validation = validate_electronic_band_resource(data) if is_band else validate_electronic_dos_resource(data)
+    if not validation.valid:
+        raise ValueError(f"Electronic resource validation failed: {', '.join(validation.errors)}")
+    digest = data["resourceHash"]
+    object_id = f"obj_electronic_{'band' if is_band else 'dos'}_{digest[:12]}"
+    metadata = {
+        "detectedFormat": "json_limited",
+        "electronicResource": {
+            "schemaVersion": data["schemaVersion"],
+            "resourceId": data["resourceId"],
+            "resourceHash": digest,
+            "calculationIdentity": data["calculationIdentity"],
+            "energyUnit": data["energyUnit"],
+            "energyReference": data["energyReference"],
+            "fermiAvailable": data.get("fermiEnergyEv") is not None,
+            "spinMode": data["spinMode"],
+            "resourceKind": "band" if is_band else "dos",
+            "kpointCount": len(data["kpoints"]) if is_band else None,
+            "bandCount": len(data["bands"]) if is_band else None,
+            "dosPointCount": None if is_band else len(data["energiesEv"]),
+            "projectionCount": None if is_band else len(data.get("projections", [])),
+            "projectionCompleteness": None if is_band else data["projectionCompleteness"],
+        },
+    }
+    return NormalizedObjectDraft(
+        id=object_id,
+        dataset_id=dataset_id,
+        object_type=MaterialObjectType.ElectronicBand if is_band else MaterialObjectType.ElectronicDos,
+        source_file_ids=[file_id],
+        storage_key=f"normalized/{object_id}/electronic.json",
+        metadata=metadata,
+        hash=digest,
+        payload=data,
+    )
 
 
 def _experimental_xrd_object(data: dict[str, Any], dataset_id: str, file_id: str) -> NormalizedObjectDraft:

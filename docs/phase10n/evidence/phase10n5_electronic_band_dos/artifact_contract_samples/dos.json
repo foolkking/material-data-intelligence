@@ -1,0 +1,131 @@
+{
+  "algorithm": {
+    "algorithmId": "mdi.supplied_dos_validation@1.0.0",
+    "interpolation": false,
+    "projectionSummation": false,
+    "smoothing": false,
+    "version": "1.0.0"
+  },
+  "artifactType": "electronic.dos",
+  "auditedLockedStack": {
+    "numpy": "2.4.6",
+    "pymatgen": "2026.5.4",
+    "scipy": "1.17.1"
+  },
+  "coverage": {
+    "energyPointCount": 3,
+    "projectionCount": 1,
+    "providedElements": [],
+    "providedOrbitals": [
+      "s"
+    ],
+    "totalChannelCount": 1
+  },
+  "dosUnitSemantic": "states_per_ev_cell",
+  "energiesEv": [
+    -1.0,
+    0.0,
+    1.0
+  ],
+  "energy": {
+    "fermiEnergyEv": 0.0,
+    "frontendAlignmentAuthority": false,
+    "reference": "source_absolute",
+    "sourceUnit": "eV",
+    "unit": "eV"
+  },
+  "energyPointIds": [
+    "dos-point:762b1dea94eca3313936d5e33741b811ea3468a8ab98224ef6da331d8b018320",
+    "dos-point:f04e78ab778d9f9455c832c2ce2312fcab89222be57493fd6f77f1b494ba4017",
+    "dos-point:839e901e9179b6cf20fa9db4767807ed83a35e841f2ce3581fd08e1b465e25a2"
+  ],
+  "limitations": [
+    "DOS values are supplied data. Partial or unknown projection coverage describes only provided channels; no total, electron count, bonding, magnetism or band character is inferred."
+  ],
+  "parameterHash": "e4f8743d5e9cf37d243e46085c59ed45a38512f47a1aa1598735a4aa9a2b64ce",
+  "projectionCompleteness": "PARTIAL",
+  "projections": [
+    {
+      "channelId": "si_s",
+      "channelIdentity": "dos-channel:7eddaf0fc07ef1912f778a6eb7397d93115c73d25efcb54a48c5f92cd09ef11d",
+      "label": "s",
+      "projectionKind": "orbital",
+      "spinChannel": "none",
+      "values": [
+        0.4,
+        0.04,
+        0.8
+      ]
+    }
+  ],
+  "resolvedParameters": {
+    "energy_reference": "source",
+    "include_element_projections": true,
+    "include_orbital_projections": true,
+    "max_plot_points": 500000,
+    "max_projection_channels": 512
+  },
+  "runtimeDiagnostics": {
+    "dosGenerationFromBands": false,
+    "dosGenerationFromStructure": false,
+    "frontendDosRecomputation": false,
+    "frontendSpinMerging": false
+  },
+  "schemaVersion": "phase10n5.electronic_dos.v1",
+  "scope": {
+    "datasetId": "dataset_n5",
+    "jobId": "job_n5_evidence",
+    "planId": "plan_n5",
+    "planVersion": "0.2",
+    "projectId": "project_n5",
+    "toolCallId": "call_electronic_dos"
+  },
+  "security": {
+    "arbitraryCodeExecution": false,
+    "containsHtml": false,
+    "containsJavascript": false,
+    "dftExecution": false,
+    "externalScientificNetwork": false,
+    "externalUrls": []
+  },
+  "sourceResource": {
+    "calculationIdentity": "calc_controlled",
+    "resourceContract": "phase10n5.electronic_dos_resource.v1",
+    "resourceHash": "7b5afc1a3e8db985eacde4f483eabbd8aae1585830f0380e3c7a0738a1ecbfe5",
+    "resourceId": "dos_controlled",
+    "resourceVersion": "1",
+    "sourceMetadata": {
+      "code": "controlled",
+      "method": "fixture"
+    },
+    "structureIdentity": {
+      "structureHash": "1111111111111111111111111111111111111111111111111111111111111111",
+      "structureId": "structure_1"
+    }
+  },
+  "spin": {
+    "channels": [
+      "none"
+    ],
+    "frontendMergeAuthority": false,
+    "mode": "non_spin_polarized"
+  },
+  "tool": {
+    "adapterVersion": "0.1.0",
+    "toolId": "electronic.dos",
+    "toolVersion": "0.1.0"
+  },
+  "totalDos": [
+    {
+      "channelId": "total",
+      "channelIdentity": "dos-channel:229b9fb36ca7c905d80b059ed3f88eb28f8f58aa08840262f01b07c479380ec2",
+      "spinChannel": "none",
+      "values": [
+        1.0,
+        0.1,
+        2.0
+      ]
+    }
+  ],
+  "warnings": []
+}

@@ -2390,3 +2390,11 @@ current board above.
 - [x] Remove only the completed N3 queue block; retain the N4 reviewer gate.
 - [ ] Verify the queue-archive candidate exact-SHA CI.
 - [x] Keep Phase 10N-4 reviewer-gated and non-executable.
+## Phase 10N-5 Electronic Band Structure + DOS
+
+- [x] Admit exactly one N5 task; keep N6 non-executable.
+- [x] Close exact resource, energy/Fermi/spin, gap, DOS completeness and Artifact contracts.
+- [x] Register exactly `electronic.band_structure@0.1.0` and `electronic.dos@0.1.0` (60 -> 62).
+- [x] Integrate Profile 2.4, Planner, Runtime, Workspace, selection, interpretation and Report/Recipe projections.
+- [ ] Verify implementation, completion-record and queue-archive exact-SHA CI.
+- [x] Keep Phase 10N-6 reviewer-gated and non-executable.

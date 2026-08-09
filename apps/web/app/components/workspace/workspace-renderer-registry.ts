@@ -28,7 +28,7 @@ export type RendererComponent =
   | "GENERIC_PLOT" | "GENERIC_TABLE" | "TEXT" | "JSON" | "STATIC_METADATA"
   | "DATASET" | "ML" | "COMPOSITION" | "STRUCTURE" | "TRAJECTORY"
   | "PHONON_BAND" | "PHONON_DOS" | "PHONON_COMBINED" | "PHONON_ANIMATION"
-  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "COORDINATION" | "DOWNLOAD_ONLY" | "LOCAL_ENVIRONMENT" | "EXPERIMENTAL_XRD" | "TRAJECTORY_ANALYTICS";
+  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "COORDINATION" | "DOWNLOAD_ONLY" | "LOCAL_ENVIRONMENT" | "EXPERIMENTAL_XRD" | "TRAJECTORY_ANALYTICS" | "ELECTRONIC";
 export type RendererPayloadMode = "JSON" | "TEXT" | "BUNDLE" | "METADATA_ONLY" | "DOWNLOAD_ONLY";
 
 export type WorkspaceRendererDescriptor = Readonly<{
@@ -183,6 +183,8 @@ const PRODUCT_RENDERERS = new Map<string, Partial<WorkspaceRendererDescriptor>>(
   ["phase10n4.trajectory_rdf.v1\u0000trajectory.rdf", { component: "TRAJECTORY_ANALYTICS", rendererContract: "workspace.trajectory-analytics", selectionInputs: ["TRAJECTORY_FRAME", "TRAJECTORY_ATOM", "TRAJECTORY_RDF_PAIR", "TRAJECTORY_RDF_BIN", "ARTIFACT"], selectionOutputs: ["TRAJECTORY_RDF_PAIR", "TRAJECTORY_RDF_BIN", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 2_048, maximumPoints: 2_048, maximumPayloadBytes: 33_554_432 }],
   ["phase10n4.trajectory_msd.v1\u0000trajectory.msd", { component: "TRAJECTORY_ANALYTICS", rendererContract: "workspace.trajectory-analytics", selectionInputs: ["TRAJECTORY_FRAME", "TRAJECTORY_ATOM", "TRAJECTORY_MSD_SPECIES", "TRAJECTORY_MSD_LAG", "ARTIFACT"], selectionOutputs: ["TRAJECTORY_MSD_SPECIES", "TRAJECTORY_MSD_LAG", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 2_048, maximumPoints: 8_192, maximumPayloadBytes: 33_554_432 }],
   ["phase10n4.trajectory_diffusion.v1\u0000trajectory.diffusion", { component: "TRAJECTORY_ANALYTICS", rendererContract: "workspace.trajectory-analytics", selectionInputs: ["TRAJECTORY_DIFFUSION_WINDOW", "TRAJECTORY_DIFFUSION_DIAGNOSTIC", "ARTIFACT"], selectionOutputs: ["TRAJECTORY_DIFFUSION_WINDOW", "TRAJECTORY_DIFFUSION_DIAGNOSTIC", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 4_096, maximumPoints: 8_192, maximumPayloadBytes: 33_554_432 }],
+  ["phase10n5.electronic_band_structure.v1\u0000electronic.band_structure", { component: "ELECTRONIC", rendererContract: "workspace.electronic-structure", selectionInputs: ["ELECTRONIC_KPOINT", "ELECTRONIC_BAND", "ELECTRONIC_BAND_STATE", "ELECTRONIC_BAND_EDGE", "ELECTRONIC_BAND_GAP", "ARTIFACT"], selectionOutputs: ["ELECTRONIC_KPOINT", "ELECTRONIC_BAND", "ELECTRONIC_BAND_STATE", "ELECTRONIC_BAND_EDGE", "ELECTRONIC_BAND_GAP", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 500_000, maximumPoints: 500_000, maximumPayloadBytes: 67_108_864 }],
+  ["phase10n5.electronic_dos.v1\u0000electronic.dos", { component: "ELECTRONIC", rendererContract: "workspace.electronic-structure", selectionInputs: ["ELECTRONIC_DOS_CHANNEL", "ELECTRONIC_DOS_PROJECTION", "ELECTRONIC_DOS_POINT", "ARTIFACT"], selectionOutputs: ["ELECTRONIC_DOS_CHANNEL", "ELECTRONIC_DOS_PROJECTION", "ELECTRONIC_DOS_POINT", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 500_000, maximumPoints: 500_000, maximumPayloadBytes: 67_108_864 }],
 ]);
 
 export function artifactIdentity(artifact: Artifact): string | null { return artifact.artifactId ?? artifact.id ?? null; }

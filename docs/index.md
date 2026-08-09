@@ -696,3 +696,17 @@ and
 | [`phase10n/phase10n4_completion.md`](phase10n/phase10n4_completion.md) | N4 implementation lifecycle state |
 | [`phase10n/phase10n5_next_scope.md`](phase10n/phase10n5_next_scope.md) | N5 reviewer gate only; not queued or executable |
 | [`phase10n/evidence/phase10n4_trajectory_rdf_msd_diffusion/`](phase10n/evidence/phase10n4_trajectory_rdf_msd_diffusion/) | N4 scientific, runtime, Workspace, browser, service and security evidence |
+| [`phase10n/phase10n5_electronic_resource_contract.md`](phase10n/phase10n5_electronic_resource_contract.md) | Strict supplied Band and DOS resource families |
+| [`phase10n/phase10n5_band_structure_contract.md`](phase10n/phase10n5_band_structure_contract.md) | K-point, path, spin and supplied-band contracts |
+| [`phase10n/phase10n5_band_gap_classification_contract.md`](phase10n/phase10n5_band_gap_classification_contract.md) | Sampled-data gap, VBM/CBM and bounded classification policy |
+| [`phase10n/phase10n5_dos_projection_contract.md`](phase10n/phase10n5_dos_projection_contract.md) | Total DOS and completeness-qualified projections |
+| [`phase10n/phase10n5_identity_units_provenance.md`](phase10n/phase10n5_identity_units_provenance.md) | Exact source, energy, spin and electronic sub-result identity |
+| [`phase10n/phase10n5_artifact_contracts.md`](phase10n/phase10n5_artifact_contracts.md) | Band and DOS Artifact families |
+| [`phase10n/phase10n5_registry_profile_planner_integration.md`](phase10n/phase10n5_registry_profile_planner_integration.md) | Registry 62, DataProfile 2.4 and execution integration |
+| [`phase10n/phase10n5_workspace_selection_interpretation.md`](phase10n/phase10n5_workspace_selection_interpretation.md) | Electronic Workspace, exact selection and bounded interpretation |
+| [`phase10n/phase10n5_reference_tolerance_evidence.md`](phase10n/phase10n5_reference_tolerance_evidence.md) | Electronic fixtures and tolerances |
+| [`phase10n/phase10n5_performance_security_accessibility.md`](phase10n/phase10n5_performance_security_accessibility.md) | Caps, lifecycle, accessibility and no-calculation security |
+| [`phase10n/phase10n5_acceptance_evidence_map.md`](phase10n/phase10n5_acceptance_evidence_map.md) | N5-A01 through N5-A10 evidence ownership |
+| [`phase10n/phase10n5_completion.md`](phase10n/phase10n5_completion.md) | N5 lifecycle state |
+| [`phase10n/phase10n6_next_scope.md`](phase10n/phase10n6_next_scope.md) | N6 reviewer gate only; not queued or executable |
+| [`phase10n/evidence/phase10n5_electronic_band_dos/`](phase10n/evidence/phase10n5_electronic_band_dos/) | N5 scientific, Workspace, browser, service and security evidence |

@@ -1,0 +1,6 @@
+{
+  "complete": "full provided composition statements allowed",
+  "controlledResult": "PARTIAL",
+  "partial": "provided channels only",
+  "unknown": "provided channels only"
+}

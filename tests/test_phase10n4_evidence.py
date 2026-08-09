@@ -18,7 +18,7 @@ def test_n4_canonical_acceptance_registry_is_exact_and_complete() -> None:
     definitions = re.findall(r"^\| (N4-A\d{2}) \| ([A-Z0-9_]+) \|", section, re.MULTILINE)
     assert [item[0] for item in definitions[:10]] == [f"N4-A{i:02d}" for i in range(1, 11)]
     assert len({item[0] for item in definitions[:10]}) == 10
-    assert len(load_manifests().tools) == 60
+    assert len(load_manifests().tools) == 62
 
 
 def test_n4_evidence_inventory_and_manifest_integrity() -> None:
@@ -70,10 +70,7 @@ def test_n4_scientific_negative_and_positive_controls_are_honest() -> None:
 def test_n4_queue_state_preserves_the_n5_reviewer_gate() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert tasks.count("---TASK---") == tasks.count("---END---")
-    if "Task: Phase 10N-4" in tasks:
-        assert tasks.count("---TASK---") == 1
-    else:
-        assert tasks.count("---TASK---") == 0
-        assert "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
-        assert "Phase 10N-5:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
-    assert "Task: Phase 10N-5" not in tasks
+    assert "Task: Phase 10N-4" not in tasks
+    assert "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
+    assert tasks.count("---TASK---") == (1 if "Task: Phase 10N-5" in tasks else 0)
+    assert "Task: Phase 10N-6" not in tasks

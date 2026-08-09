@@ -1,0 +1,15 @@
+{
+  "frontendRecomputation": false,
+  "renderer": "workspace.electronic-structure",
+  "selectionKinds": [
+    "ELECTRONIC_KPOINT",
+    "ELECTRONIC_BAND",
+    "ELECTRONIC_BAND_STATE",
+    "ELECTRONIC_BAND_EDGE",
+    "ELECTRONIC_BAND_GAP",
+    "ELECTRONIC_DOS_CHANNEL",
+    "ELECTRONIC_DOS_PROJECTION",
+    "ELECTRONIC_DOS_POINT"
+  ],
+  "tableAlternative": true
+}

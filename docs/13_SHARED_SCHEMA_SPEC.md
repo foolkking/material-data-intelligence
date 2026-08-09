@@ -2088,3 +2088,17 @@ Workspace Selection 1.0 additively supports exact trajectory RDF pair/bin,
 MSD species/lag, and diffusion fit-window/diagnostic identities. Each binds
 dataset version, Job, trajectory hash, Artifact ID/checksum, and persisted
 sub-result identity; chart pixels and table rows are never persisted authority.
+
+## Phase 10N-5 Supplied Electronic Contracts
+
+DataProfile 2.4 additively exposes strict Band/DOS readiness facts while all
+historical versions remain readable. `phase10n5.electronic_band_resource.v1`
+and `phase10n5.electronic_dos_resource.v1` bind immutable source hashes,
+calculation identity, eV/reference/Fermi semantics, spin and bounded arrays.
+
+`electronic.band_structure@0.1.0` emits
+`phase10n5.electronic_band_structure.v1`; `electronic.dos@0.1.0` emits
+`phase10n5.electronic_dos.v1`. Workspace Selection 1.0 additively supports
+exact electronic k-point, band, state, edge, gap, DOS channel, projection and
+energy-point identities. Band+DOS combined presentation is not an Artifact or
+Tool and cannot align incompatible sources in the browser.

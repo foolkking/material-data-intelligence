@@ -1505,3 +1505,12 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 - Unwrapping, species/window behavior, directional MSD and OLS fitting are
   internal bounded components, not additional Tools. Static `structure.rdf`
   remains unchanged. N5 remains reviewer-gated.
+
+## Phase 10N-5 Electronic Band Structure + DOS
+
+- Registry count is 62 after exactly two additions:
+  `electronic.band_structure@0.1.0` and `electronic.dos@0.1.0`.
+- Inputs are strict supplied Band/DOS resources; outputs are
+  `phase10n5.electronic_band_structure.v1` and `phase10n5.electronic_dos.v1`.
+- Combined Band+DOS is presentation-only. No DFT/GW, DOS generation from bands,
+  projected-band analysis or Fermi-surface authority exists. N6 is reviewer-gated.

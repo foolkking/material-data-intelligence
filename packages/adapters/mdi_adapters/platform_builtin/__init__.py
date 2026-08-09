@@ -18,6 +18,7 @@ from .dataset_materials_explorer import (
     DatasetMaterialsExplorerAdapter,
 )
 from .error_distribution import ErrorDistributionAdapter
+from .electronic import ElectronicBandStructureAdapter, ElectronicDosAdapter
 from .materials_ml_evaluation import (
     CLASSIFICATION_SCHEMA_VERSION,
     CLASSIFICATION_TOOL_ID,
@@ -80,6 +81,8 @@ __all__ = [
     "CorrelationAdapter",
     "DistributionSummaryAdapter",
     "ErrorDistributionAdapter",
+    "ElectronicBandStructureAdapter",
+    "ElectronicDosAdapter",
     "HistogramAdapter",
     "LatticeSummaryAdapter",
     "NumericSummaryAdapter",

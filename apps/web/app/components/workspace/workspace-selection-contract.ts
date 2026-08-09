@@ -28,6 +28,14 @@ export const WORKSPACE_SELECTION_KINDS = [
   "TRAJECTORY_MSD_LAG",
   "TRAJECTORY_DIFFUSION_WINDOW",
   "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
+  "ELECTRONIC_KPOINT",
+  "ELECTRONIC_BAND",
+  "ELECTRONIC_BAND_STATE",
+  "ELECTRONIC_BAND_EDGE",
+  "ELECTRONIC_BAND_GAP",
+  "ELECTRONIC_DOS_CHANNEL",
+  "ELECTRONIC_DOS_PROJECTION",
+  "ELECTRONIC_DOS_POINT",
   "PHONON_Q_POINT",
   "PHONON_BRANCH",
   "RECIPROCAL_POINT",
@@ -55,6 +63,7 @@ const VALUE_FIELDS = [
   "environmentId", "polyhedronId", "vertexId", "faceId", "geometryReferenceId",
   "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
   "speciesPairId", "rdfBinId", "msdSeriesId", "msdLagId", "diffusionWindowId", "diffusionDiagnosticId",
+  "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId", "dosChannelId", "projectionId", "energyPointId",
 ] as const;
 
 type SelectionValueField = (typeof VALUE_FIELDS)[number];
@@ -79,6 +88,14 @@ const REQUIRED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> =
   TRAJECTORY_MSD_LAG: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId", "msdLagId"],
   TRAJECTORY_DIFFUSION_WINDOW: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId"],
   TRAJECTORY_DIFFUSION_DIAGNOSTIC: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId", "diffusionDiagnosticId"],
+  ELECTRONIC_KPOINT: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "kpointId"],
+  ELECTRONIC_BAND: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "bandId"],
+  ELECTRONIC_BAND_STATE: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId"],
+  ELECTRONIC_BAND_EDGE: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "bandEdgeId"],
+  ELECTRONIC_BAND_GAP: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId"],
+  ELECTRONIC_DOS_CHANNEL: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId"],
+  ELECTRONIC_DOS_PROJECTION: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId"],
+  ELECTRONIC_DOS_POINT: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "energyPointId"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"],
   PHONON_BRANCH: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId"],
   RECIPROCAL_POINT: ["datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId"],
@@ -108,6 +125,14 @@ const ALLOWED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> = 
   TRAJECTORY_MSD_LAG: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId", "msdLagId"],
   TRAJECTORY_DIFFUSION_WINDOW: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId"],
   TRAJECTORY_DIFFUSION_DIAGNOSTIC: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId", "diffusionDiagnosticId"],
+  ELECTRONIC_KPOINT: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "kpointId", "segmentId"],
+  ELECTRONIC_BAND: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "bandId"],
+  ELECTRONIC_BAND_STATE: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId"],
+  ELECTRONIC_BAND_EDGE: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId"],
+  ELECTRONIC_BAND_GAP: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "bandEdgeId"],
+  ELECTRONIC_DOS_CHANNEL: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId"],
+  ELECTRONIC_DOS_PROJECTION: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId"],
+  ELECTRONIC_DOS_POINT: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId", "energyPointId"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"],
   PHONON_BRANCH: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId", "qPointId"],
   RECIPROCAL_POINT: ["datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId", "segmentId"],
@@ -125,6 +150,7 @@ const ID_FIELDS = new Set<SelectionValueField>([
   "environmentId", "polyhedronId", "geometryReferenceId",
   "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
   "speciesPairId", "rdfBinId", "msdSeriesId", "msdLagId", "diffusionWindowId", "diffusionDiagnosticId",
+  "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId", "dosChannelId", "projectionId", "energyPointId",
 ]);
 const N2_ID_FIELDS = new Set<SelectionValueField>(["vertexId", "faceId"]);
 const HASH_FIELDS = new Set<SelectionValueField>([
@@ -232,7 +258,13 @@ export function selectionsEqual(left: WorkspaceSelectionContext | null, right: W
 }
 
 export function encodeWorkspaceSelectionUrl(value: WorkspaceSelectionContext): string {
-  const bytes = utf8(canonicalSelectionJson(validateWorkspaceSelectionContext(value)));
+  const context = validateWorkspaceSelectionContext(value);
+  const compact = JSON.parse(canonicalSelectionJson(context)) as Record<string, unknown>;
+  const electronicFields = ["electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId", "dosChannelId", "projectionId", "energyPointId"];
+  for (const ref of [compact.primary, ...((compact.secondary as unknown[]) ?? [])]) {
+    if (ref && typeof ref === "object" && !Array.isArray(ref)) for (const field of electronicFields) if ((ref as Record<string, unknown>)[field] === null) delete (ref as Record<string, unknown>)[field];
+  }
+  const bytes = utf8(canonicalSelectionJson(compact as unknown as WorkspaceSelectionContext));
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
   const token = btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/u, "");
@@ -251,7 +283,7 @@ export function decodeWorkspaceSelectionUrl(token: string): WorkspaceSelectionCo
     assertNoDuplicateJsonKeys(raw);
     const parsed = JSON.parse(raw) as unknown;
     const context = validateWorkspaceSelectionContext(parsed);
-    if (canonicalSelectionJson(parsed as WorkspaceSelectionContext) !== raw) throw new Error("non-canonical");
+    if (encodeWorkspaceSelectionUrl(context) !== token && canonicalSelectionJson(parsed as WorkspaceSelectionContext) !== raw) throw new Error("non-canonical");
     return context;
   } catch (error) {
     if (error instanceof WorkspaceSelectionError) throw error;

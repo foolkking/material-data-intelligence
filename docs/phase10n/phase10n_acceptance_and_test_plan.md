@@ -174,3 +174,22 @@ This section is the sole canonical N4 registry. Full-text references outside thi
 | N4-A10 | THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N5_REVIEWER_GATE | Verify implementation, completion and queue-archive exact-SHA CI; task count returns to zero; N5 remains reviewer-gated and absent from the executable queue. | lifecycle record |
 
 Integrity: expected = 10; implemented = 10; missing = 0; extra = 0; duplicate registry entries = 0; conflicting definitions = 0; canonical registry shorthand entries = 0.
+
+## Canonical Phase 10N-5 Acceptance Registry
+
+This section is the sole canonical N5 registry. References elsewhere are traceability only.
+
+| ID | Exact title | Exact definition |
+| --- | --- | --- |
+| N5-A01 | BASELINE_ELECTRONIC_RESOURCE_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE | Verify N4 exact-SHA authority, baseline, electronic capability audit, N5-R0, one task and N6 gate. |
+| N5-A02 | ELECTRONIC_RESOURCE_ENERGY_FERMI_SPIN_KPOINT_AND_DOS_SEMANTICS | Verify strict supplied resources, eV/reference/Fermi/spin semantics, reciprocal path, DOS units and Profile 2.4. |
+| N5-A03 | BAND_STRUCTURE_PATH_BANDS_GAP_AND_BOUNDED_CLASSIFICATION | Verify supplied ordering, path breaks, identities, gap/VBM/CBM/directness and threshold-qualified classification. |
+| N5-A04 | TOTAL_DOS_AND_COMPLETENESS_QUALIFIED_ELEMENT_ORBITAL_DOS | Verify supplied total DOS, spin, formal projections and honest completeness without invented totals. |
+| N5-A05 | EXACT_ELECTRONIC_IDENTITY_UNITS_PROVENANCE_AND_DETERMINISM | Verify source-bound identities, ordering, parameter hashes, checksums, units and no fuzzy/latest rebinding. |
+| N5-A06 | PROFILE_ELIGIBILITY_PLANNER_PLANVALIDATOR_RUNTIME_AND_PERSISTENCE | Verify Profile compatibility, eligibility, clarification, Plan validation, Adapter isolation and service persistence. |
+| N5-A07 | WORKSPACE_BAND_DOS_COMBINED_VIEW_SELECTION_AND_INSPECTOR | Verify Band, DOS and compatible combined views, exact selection, Inspector, accessibility and lifecycle. |
+| N5-A08 | GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_SCIENTIFIC_CLAIM_BOUNDARY | Verify bounded facts, supplied-source wording, non-executable Recipe and no DFT/GW/material-truth claim. |
+| N5-A09 | REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE | Verify fixtures, tolerances, caps, browsers, accessibility, services, security, evidence and secrets. |
+| N5-A10 | THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N6_REVIEWER_GATE | Verify implementation/completion/archive exact-SHA CI, Registry 62, task archive and N6 gate. |
+
+N5 integrity: expected = 10; implemented = 10; missing = 0; extra = 0; duplicate registry entries = 0; conflicting definitions = 0; canonical registry shorthand entries = 0.

@@ -1,0 +1,21 @@
+{
+  "checksum": "54e14162dbeb18445f64f14fd068d1135342513ea2694d38b90a542fdefea3d0",
+  "energyPoints": [
+    -1.0,
+    0.0,
+    1.0
+  ],
+  "status": "SYNTHETIC_CONTROLLED",
+  "totalDos": [
+    {
+      "channelId": "total",
+      "channelIdentity": "dos-channel:229b9fb36ca7c905d80b059ed3f88eb28f8f58aa08840262f01b07c479380ec2",
+      "spinChannel": "none",
+      "values": [
+        1.0,
+        0.1,
+        2.0
+      ]
+    }
+  ]
+}

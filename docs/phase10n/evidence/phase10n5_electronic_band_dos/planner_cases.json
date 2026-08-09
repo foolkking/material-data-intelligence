@@ -1,0 +1,13 @@
+{
+  "band": [
+    "electronic.band_structure"
+  ],
+  "combined": [
+    "electronic.band_structure",
+    "electronic.dos"
+  ],
+  "dos": [
+    "electronic.dos"
+  ],
+  "multipleSources": "NEEDS_CLARIFICATION"
+}

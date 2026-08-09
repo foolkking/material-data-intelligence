@@ -103,6 +103,8 @@ ARTIFACT_PROJECTOR_CONTRACTS: Mapping[tuple[str, str], ArtifactProjectorContract
         ArtifactProjectorContract("trajectory.rdf", "table_json", "phase10n4.trajectory_rdf", ("phase10n4.trajectory_rdf.v1",)),
         ArtifactProjectorContract("trajectory.msd", "table_json", "phase10n4.trajectory_msd", ("phase10n4.trajectory_msd.v1",)),
         ArtifactProjectorContract("trajectory.diffusion", "table_json", "phase10n4.trajectory_diffusion", ("phase10n4.trajectory_diffusion.v1",)),
+        ArtifactProjectorContract("electronic.band_structure", "table_json", "phase10n5.electronic_band_structure", ("phase10n5.electronic_band_structure.v1",)),
+        ArtifactProjectorContract("electronic.dos", "table_json", "phase10n5.electronic_dos", ("phase10n5.electronic_dos.v1",)),
         ArtifactProjectorContract("phonon.band", "phonon_band_json", "phase10h.phonon", (PHONON_BAND_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.band", "phonon_summary_json", "phase10h.phonon", (PHONON_SUMMARY_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.dos", "phonon_dos_json", "phase10h.phonon", (PHONON_DOS_SCHEMA_VERSION,)),
@@ -128,6 +130,10 @@ FORBIDDEN_CONCLUSIONS = (
     "industrial value",
     "best material",
     "chemical bond",
+    "true band gap",
+    "definitely metallic",
+    "definitely a semiconductor",
+    "electronic structure calculated by the platform",
     "experiment confirms the structure",
     "phase purity is confirmed",
     "definitive phase identification",
@@ -358,6 +364,8 @@ def project_artifact(source: InterpretationSource, candidate: ArtifactProjection
         return _project_experimental_xrd_summary(source, candidate)
     if artifact_type == "table_json" and tool_id in {"trajectory.rdf", "trajectory.msd", "trajectory.diffusion"}:
         return _project_trajectory_analytics(source, candidate)
+    if artifact_type == "table_json" and tool_id in {"electronic.band_structure", "electronic.dos"}:
+        return _project_electronic_summary(source, candidate)
     if artifact_type in {"phonon_band_json", "phonon_dos_json", "phonon_band_dos_json", "phonon_summary_json"} and tool_id in {"phonon.band", "phonon.dos", "phonon.band_dos"}:
         return _project_phonon_summary(source, candidate)
     if artifact_type == "volumetric_field_json" and tool_id == "structure.volumetric_data":
@@ -1161,6 +1169,43 @@ def _project_experimental_xrd_summary(source: InterpretationSource, candidate: A
             if not _finite(value) or value < 0:
                 raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Experimental XRD residual statistics are invalid.")
             items.append(_item(source, candidate, f"xrd.residual.{role}", EvidenceKind.scalar, subject, role, value, unit="degree", field=f"residualSummary.{field}", entity=subject))
+    return items
+
+
+def _project_electronic_summary(source: InterpretationSource, candidate: ArtifactProjectionInput) -> list[ScientificEvidenceItem]:
+    payload = candidate.payload
+    schema = payload.get("schemaVersion")
+    source_resource = payload.get("sourceResource")
+    coverage = payload.get("coverage")
+    if not isinstance(source_resource, dict) or not isinstance(coverage, dict) or not isinstance(source_resource.get("resourceHash"), str):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Electronic Artifact identity or coverage is invalid.")
+    resource_hash = source_resource["resourceHash"]
+    subject = f"electronic-resource:{resource_hash}"
+    items: list[ScientificEvidenceItem] = []
+    if schema == "phase10n5.electronic_band_structure.v1":
+        gap = payload.get("gap")
+        if not isinstance(gap, dict) or not _nonnegative_int(coverage.get("kpointCount")) or not _nonnegative_int(coverage.get("bandCount")):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Electronic Band coverage or gap facts are invalid.")
+        items.extend([
+            _item(source, candidate, "electronic.band.kpoint_count", EvidenceKind.count, subject, "count", coverage["kpointCount"], field="coverage.kpointCount", entity=resource_hash),
+            _item(source, candidate, "electronic.band.band_count", EvidenceKind.count, subject, "count", coverage["bandCount"], field="coverage.bandCount", entity=resource_hash),
+            _item(source, candidate, "electronic.band.classification", EvidenceKind.category, subject, "category", str(gap.get("classification")), field="gap.classification", entity=resource_hash),
+        ])
+        if gap.get("valueEv") is not None:
+            if not _finite(gap["valueEv"]) or float(gap["valueEv"]) < 0:
+                raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Electronic Band gap value is invalid.")
+            items.append(_item(source, candidate, "electronic.band.sampled_gap", EvidenceKind.scalar, subject, "sampled_gap", gap["valueEv"], unit="eV", field="gap.valueEv", entity=resource_hash))
+    elif schema == "phase10n5.electronic_dos.v1":
+        completeness = payload.get("projectionCompleteness")
+        if completeness not in {"COMPLETE", "PARTIAL", "UNKNOWN"} or not _nonnegative_int(coverage.get("energyPointCount")):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Electronic DOS coverage is invalid.")
+        items.extend([
+            _item(source, candidate, "electronic.dos.energy_point_count", EvidenceKind.count, subject, "count", coverage["energyPointCount"], field="coverage.energyPointCount", entity=resource_hash),
+            _item(source, candidate, "electronic.dos.projection_completeness", EvidenceKind.category, subject, "category", completeness, field="projectionCompleteness", entity=resource_hash),
+            _item(source, candidate, "electronic.dos.unit_semantic", EvidenceKind.category, subject, "unit", str(payload.get("dosUnitSemantic")), field="dosUnitSemantic", entity=resource_hash),
+        ])
+    else:
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Electronic Artifact contract is unsupported.")
     return items
 
 

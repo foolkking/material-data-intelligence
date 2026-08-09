@@ -1,131 +1,6 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://material-data-intelligence.local/schemas/registered-tool.schema.json",
-  "title": "RegisteredTool",
-  "type": "object",
-  "required": [
-    "toolId",
-    "name",
-    "category",
-    "domain",
-    "implementationSource",
-    "description",
-    "version",
-    "adapter",
-    "inputSchema",
-    "paramsSchema",
-    "outputSchema",
-    "artifactTypes",
-    "costLevel",
-    "defaultTimeoutSec",
-    "maxTimeoutSec",
-    "cachePolicy",
-    "permissions",
-    "resourceLimits"
-  ],
-  "properties": {
-    "toolId": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$" },
-    "name": { "type": "string" },
-    "category": { "enum": ["visualization", "analysis", "parser", "report", "utility"] },
-    "domain": {
-      "enum": [
-        "dataset",
-        "table",
-        "viz",
-        "composition",
-        "structure",
-        "trajectory",
-        "phonon",
-        "electronic",
-        "simulation",
-        "ml",
-        "generation",
-        "external"
-      ]
-    },
-    "implementationSource": {
-      "enum": [
-        "pymatviz",
-        "pymatviz_composed",
-        "matterviz",
-        "plotly_custom",
-        "platform_builtin",
-        "plugin"
-      ]
-    },
-    "description": { "type": "string" },
-    "version": { "type": "string" },
-    "adapter": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9_]*Adapter$" },
-    "stage": { "enum": ["mvp", "v1", "v2"] },
-    "inputSchema": {
-      "type": "object",
-      "required": ["inputOptions"],
-      "properties": {
-        "inputOptions": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["name", "description"],
-            "properties": {
-              "name": { "type": "string" },
-              "requiredObjectTypes": {
-                "type": "array",
-                "items": {
-                  "enum": [
-                    "Composition",
-                    "Structure",
-                    "Atoms",
-                    "Molecule",
-                    "DataFrame",
-                    "PhononBand",
-                    "PhononDos",
-                    "PhononEigenvector",
-                    "Trajectory",
-                    "VolumetricData",
-                    "ElementValueMap",
-                    "RawUnsupported"
-                  ]
-                }
-              },
-              "requiredFields": { "type": "array", "items": { "type": "object" } },
-              "description": { "type": "string" }
-            }
-          }
-        },
-        "periodicity": {
-          "anyOf": [
-            { "enum": ["periodic_required", "non_periodic_allowed", "any"] },
-            { "type": "null" }
-          ]
-        }
-      }
-    },
-    "paramsSchema": { "type": "object" },
-    "outputSchema": {
-      "type": "object",
-      "required": ["primaryArtifactType", "secondaryArtifactTypes", "displayTarget"],
-      "properties": {
-        "primaryArtifactType": { "$ref": "#/$defs/artifactType" },
-        "secondaryArtifactTypes": {
-          "type": "array",
-          "items": { "$ref": "#/$defs/artifactType" }
-        },
-        "displayTarget": {
-          "enum": ["overview", "composition", "structure", "trajectory", "volumetric", "phonon", "ml", "artifacts", "report"]
-        }
-      }
-    },
-    "artifactTypes": { "type": "array", "items": { "$ref": "#/$defs/artifactType" } },
-    "costLevel": { "enum": ["low", "medium", "high"] },
-    "defaultTimeoutSec": { "type": "integer", "minimum": 1 },
-    "maxTimeoutSec": { "type": "integer", "minimum": 1 },
-    "cachePolicy": { "enum": ["reuse", "refresh", "no_cache"] },
-    "permissions": { "type": "array", "items": { "type": "string" } },
-    "resourceLimits": { "type": "object" },
-    "source": { "type": "object" }
-  },
   "$defs": {
-    "artifactType": {
+    "ArtifactType": {
       "enum": [
         "plotly_json",
         "plotly_html",
@@ -169,7 +44,295 @@
         "report_html",
         "recipe_json",
         "analysis_plan_json"
-      ]
+      ],
+      "title": "ArtifactType",
+      "type": "string"
+    },
+    "DisplayTarget": {
+      "enum": [
+        "overview",
+        "composition",
+        "structure",
+        "trajectory",
+        "volumetric",
+        "phonon",
+        "electronic",
+        "ml",
+        "artifacts",
+        "report"
+      ],
+      "title": "DisplayTarget",
+      "type": "string"
+    },
+    "ImplementationSource": {
+      "enum": [
+        "pymatviz",
+        "pymatviz_composed",
+        "matterviz",
+        "plotly_custom",
+        "platform_builtin",
+        "plugin"
+      ],
+      "title": "ImplementationSource",
+      "type": "string"
+    },
+    "MaterialObjectType": {
+      "enum": [
+        "Composition",
+        "Structure",
+        "Atoms",
+        "Molecule",
+        "DataFrame",
+        "PhononBand",
+        "PhononDos",
+        "PhononEigenvector",
+        "Trajectory",
+        "ElectronicBand",
+        "ElectronicDos",
+        "VolumetricData",
+        "ElementValueMap",
+        "RawUnsupported"
+      ],
+      "title": "MaterialObjectType",
+      "type": "string"
+    },
+    "ToolCategory": {
+      "enum": [
+        "visualization",
+        "analysis",
+        "parser",
+        "report",
+        "utility"
+      ],
+      "title": "ToolCategory",
+      "type": "string"
+    },
+    "ToolDomain": {
+      "enum": [
+        "dataset",
+        "table",
+        "viz",
+        "composition",
+        "structure",
+        "trajectory",
+        "phonon",
+        "electronic",
+        "simulation",
+        "ml",
+        "generation",
+        "external"
+      ],
+      "title": "ToolDomain",
+      "type": "string"
+    },
+    "ToolInputOption": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "requiredObjectTypes": {
+          "items": {
+            "$ref": "#/$defs/MaterialObjectType"
+          },
+          "title": "Requiredobjecttypes",
+          "type": "array"
+        },
+        "requiredFields": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Requiredfields",
+          "type": "array"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "description"
+      ],
+      "title": "ToolInputOption",
+      "type": "object"
+    },
+    "ToolInputSchema": {
+      "properties": {
+        "inputOptions": {
+          "items": {
+            "$ref": "#/$defs/ToolInputOption"
+          },
+          "title": "Inputoptions",
+          "type": "array"
+        },
+        "periodicity": {
+          "anyOf": [
+            {
+              "enum": [
+                "periodic_required",
+                "non_periodic_allowed",
+                "any"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Periodicity"
+        }
+      },
+      "title": "ToolInputSchema",
+      "type": "object"
+    },
+    "ToolOutputSchema": {
+      "properties": {
+        "primaryArtifactType": {
+          "$ref": "#/$defs/ArtifactType"
+        },
+        "secondaryArtifactTypes": {
+          "items": {
+            "$ref": "#/$defs/ArtifactType"
+          },
+          "title": "Secondaryartifacttypes",
+          "type": "array"
+        },
+        "displayTarget": {
+          "$ref": "#/$defs/DisplayTarget"
+        }
+      },
+      "required": [
+        "primaryArtifactType",
+        "displayTarget"
+      ],
+      "title": "ToolOutputSchema",
+      "type": "object"
     }
-  }
+  },
+  "properties": {
+    "toolId": {
+      "title": "Toolid",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "category": {
+      "$ref": "#/$defs/ToolCategory"
+    },
+    "domain": {
+      "$ref": "#/$defs/ToolDomain"
+    },
+    "implementationSource": {
+      "$ref": "#/$defs/ImplementationSource"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    },
+    "adapter": {
+      "title": "Adapter",
+      "type": "string"
+    },
+    "inputSchema": {
+      "$ref": "#/$defs/ToolInputSchema"
+    },
+    "paramsSchema": {
+      "additionalProperties": true,
+      "title": "Paramsschema",
+      "type": "object"
+    },
+    "outputSchema": {
+      "$ref": "#/$defs/ToolOutputSchema"
+    },
+    "artifactTypes": {
+      "items": {
+        "$ref": "#/$defs/ArtifactType"
+      },
+      "title": "Artifacttypes",
+      "type": "array"
+    },
+    "costLevel": {
+      "default": "low",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "Costlevel",
+      "type": "string"
+    },
+    "defaultTimeoutSec": {
+      "default": 30,
+      "title": "Defaulttimeoutsec",
+      "type": "integer"
+    },
+    "maxTimeoutSec": {
+      "default": 120,
+      "title": "Maxtimeoutsec",
+      "type": "integer"
+    },
+    "cachePolicy": {
+      "default": "reuse",
+      "enum": [
+        "reuse",
+        "refresh",
+        "no_cache"
+      ],
+      "title": "Cachepolicy",
+      "type": "string"
+    },
+    "permissions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Permissions",
+      "type": "array"
+    },
+    "resourceLimits": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Resourcelimits",
+      "type": "object"
+    },
+    "source": {
+      "additionalProperties": true,
+      "title": "Source",
+      "type": "object"
+    },
+    "stage": {
+      "default": "mvp",
+      "enum": [
+        "mvp",
+        "v1",
+        "v2"
+      ],
+      "title": "Stage",
+      "type": "string"
+    }
+  },
+  "required": [
+    "toolId",
+    "name",
+    "category",
+    "domain",
+    "implementationSource",
+    "description",
+    "version",
+    "adapter",
+    "inputSchema",
+    "outputSchema",
+    "artifactTypes"
+  ],
+  "title": "RegisteredTool",
+  "type": "object"
 }

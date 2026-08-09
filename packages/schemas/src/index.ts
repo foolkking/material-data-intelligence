@@ -44,6 +44,7 @@ export type DisplayTarget =
   | "structure"
   | "trajectory"
   | "phonon"
+  | "electronic"
   | "ml"
   | "artifacts"
   | "report";
@@ -82,6 +83,8 @@ export type MaterialObjectType =
   | "PhononDos"
   | "PhononEigenvector"
   | "Trajectory"
+  | "ElectronicBand"
+  | "ElectronicDos"
   | "ElementValueMap"
   | "RawUnsupported";
 
@@ -526,6 +529,7 @@ export type ScientificIntent =
   | "structure_analysis"
   | "trajectory_analysis"
   | "phonon_analysis"
+  | "electronic_structure_analysis"
   | "reciprocal_space_analysis"
   | "volumetric_analysis"
   | "ml_regression_evaluation"
@@ -558,6 +562,7 @@ export type AnalysisIntentCapabilityNeed =
   | "structure_resource"
   | "trajectory_resource"
   | "phonon_resource"
+  | "electronic_resource"
   | "reciprocal_space_resource"
   | "volumetric_resource"
   | "regression_semantics"
@@ -996,7 +1001,7 @@ export type DataProfile = {
   trajectorySummary?: Record<string, unknown>;
   qualityIssues: Array<Record<string, unknown>>;
   recommendedTasks: Array<Record<string, unknown>>;
-  profileContractVersion?: "2.0" | "2.1" | "2.2" | "2.3";
+  profileContractVersion?: "2.0" | "2.1" | "2.2" | "2.3" | "2.4";
   semanticRulesVersion?: string;
   semanticHash?: string;
   semanticColumns?: DataProfileSemanticColumn[];
@@ -1008,6 +1013,7 @@ export type DataProfile = {
   coordinationReadiness?: DataProfileCoordinationReadiness;
   experimentalXrdReadiness?: DataProfileExperimentalXrdReadiness;
   trajectoryReadiness?: DataProfileTrajectoryReadiness;
+  electronicReadiness?: DataProfileElectronicReadiness;
   createdAt: string;
 };
 
@@ -1085,6 +1091,35 @@ export type DataProfileTrajectoryReadiness = {
   trajectoryPresent: boolean;
   eligibleResourceCount: number;
   resources: DataProfileTrajectoryResourceReadiness[];
+  status: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  reasons: string[];
+};
+
+export type DataProfileElectronicResourceReadiness = {
+  objectId: string;
+  objectHash: string;
+  resourceKind: "band" | "dos";
+  resourceId: string;
+  resourceHash: string;
+  energyUnit: "eV";
+  energyReference: "source_absolute" | "fermi_referenced";
+  fermiAvailable: boolean;
+  spinMode: "non_spin_polarized" | "spin_polarized";
+  kpointCount?: number;
+  bandCount?: number;
+  dosPointCount?: number;
+  projectionCount?: number;
+  projectionCompleteness?: "COMPLETE" | "PARTIAL" | "UNKNOWN";
+  electronicInputStatus: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  reasons: string[];
+};
+
+export type DataProfileElectronicReadiness = {
+  contractVersion: "1.0";
+  electronicBandResourcePresent: boolean;
+  electronicDosResourcePresent: boolean;
+  eligibleResourceCount: number;
+  resources: DataProfileElectronicResourceReadiness[];
   status: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
   reasons: string[];
 };
@@ -1461,6 +1496,14 @@ export const WORKSPACE_SELECTION_KIND_VALUES = [
   "TRAJECTORY_MSD_LAG",
   "TRAJECTORY_DIFFUSION_WINDOW",
   "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
+  "ELECTRONIC_KPOINT",
+  "ELECTRONIC_BAND",
+  "ELECTRONIC_BAND_STATE",
+  "ELECTRONIC_BAND_EDGE",
+  "ELECTRONIC_BAND_GAP",
+  "ELECTRONIC_DOS_CHANNEL",
+  "ELECTRONIC_DOS_PROJECTION",
+  "ELECTRONIC_DOS_POINT",
   "PHONON_Q_POINT",
   "PHONON_BRANCH",
   "RECIPROCAL_POINT",
@@ -1583,6 +1626,15 @@ type WorkspaceSelectionValueFields = {
   msdLagId: string | null;
   diffusionWindowId: string | null;
   diffusionDiagnosticId: string | null;
+  electronicResourceId: string | null;
+  spinChannelId: string | null;
+  kpointId: string | null;
+  bandId: string | null;
+  bandStateId: string | null;
+  bandEdgeId: string | null;
+  dosChannelId: string | null;
+  projectionId: string | null;
+  energyPointId: string | null;
   phononArtifactId: string | null;
   qPointId: string | null;
   branchId: string | null;
@@ -1735,6 +1787,33 @@ export type WorkspaceTrajectoryDiffusionDiagnosticSelectionRef = WorkspaceSelect
   "TRAJECTORY_DIFFUSION_DIAGNOSTIC", WorkspaceN4CommonFields | "diffusionWindowId" | "diffusionDiagnosticId", WorkspaceN4CommonFields | "diffusionWindowId" | "diffusionDiagnosticId"
 >;
 
+type WorkspaceN5CommonFields =
+  | "datasetId" | "datasetVersion" | "jobId" | "artifactId" | "artifactChecksum" | "electronicResourceId";
+export type WorkspaceElectronicKpointSelectionRef = WorkspaceSelectionRefFor<
+  "ELECTRONIC_KPOINT", WorkspaceN5CommonFields | "kpointId", WorkspaceN5CommonFields | "kpointId" | "segmentId"
+>;
+export type WorkspaceElectronicBandSelectionRef = WorkspaceSelectionRefFor<
+  "ELECTRONIC_BAND", WorkspaceN5CommonFields | "spinChannelId" | "bandId", WorkspaceN5CommonFields | "spinChannelId" | "bandId"
+>;
+export type WorkspaceElectronicBandStateSelectionRef = WorkspaceSelectionRefFor<
+  "ELECTRONIC_BAND_STATE", WorkspaceN5CommonFields | "spinChannelId" | "kpointId" | "bandId" | "bandStateId", WorkspaceN5CommonFields | "spinChannelId" | "kpointId" | "bandId" | "bandStateId"
+>;
+export type WorkspaceElectronicBandEdgeSelectionRef = WorkspaceSelectionRefFor<
+  "ELECTRONIC_BAND_EDGE", WorkspaceN5CommonFields | "bandEdgeId", WorkspaceN5CommonFields | "spinChannelId" | "kpointId" | "bandId" | "bandStateId" | "bandEdgeId"
+>;
+export type WorkspaceElectronicBandGapSelectionRef = WorkspaceSelectionRefFor<
+  "ELECTRONIC_BAND_GAP", WorkspaceN5CommonFields, WorkspaceN5CommonFields | "bandEdgeId"
+>;
+export type WorkspaceElectronicDosChannelSelectionRef = WorkspaceSelectionRefFor<
+  "ELECTRONIC_DOS_CHANNEL", WorkspaceN5CommonFields | "spinChannelId" | "dosChannelId", WorkspaceN5CommonFields | "spinChannelId" | "dosChannelId"
+>;
+export type WorkspaceElectronicDosProjectionSelectionRef = WorkspaceSelectionRefFor<
+  "ELECTRONIC_DOS_PROJECTION", WorkspaceN5CommonFields | "spinChannelId" | "dosChannelId" | "projectionId", WorkspaceN5CommonFields | "spinChannelId" | "dosChannelId" | "projectionId"
+>;
+export type WorkspaceElectronicDosPointSelectionRef = WorkspaceSelectionRefFor<
+  "ELECTRONIC_DOS_POINT", WorkspaceN5CommonFields | "spinChannelId" | "dosChannelId" | "energyPointId", WorkspaceN5CommonFields | "spinChannelId" | "dosChannelId" | "projectionId" | "energyPointId"
+>;
+
 export type WorkspacePhononQPointSelectionRef = WorkspaceSelectionRefFor<
   "PHONON_Q_POINT",
   "datasetId" | "datasetVersion" | "phononArtifactId" | "artifactChecksum" | "qPointId",
@@ -1802,6 +1881,14 @@ export type WorkspaceSelectionRef =
   | WorkspaceTrajectoryMsdLagSelectionRef
   | WorkspaceTrajectoryDiffusionWindowSelectionRef
   | WorkspaceTrajectoryDiffusionDiagnosticSelectionRef
+  | WorkspaceElectronicKpointSelectionRef
+  | WorkspaceElectronicBandSelectionRef
+  | WorkspaceElectronicBandStateSelectionRef
+  | WorkspaceElectronicBandEdgeSelectionRef
+  | WorkspaceElectronicBandGapSelectionRef
+  | WorkspaceElectronicDosChannelSelectionRef
+  | WorkspaceElectronicDosProjectionSelectionRef
+  | WorkspaceElectronicDosPointSelectionRef
   | WorkspacePhononQPointSelectionRef
   | WorkspacePhononBranchSelectionRef
   | WorkspaceReciprocalPointSelectionRef

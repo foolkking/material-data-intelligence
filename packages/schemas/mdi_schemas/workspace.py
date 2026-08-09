@@ -119,6 +119,14 @@ class WorkspaceSelectionKind(StrEnum):
     TRAJECTORY_MSD_LAG = "TRAJECTORY_MSD_LAG"
     TRAJECTORY_DIFFUSION_WINDOW = "TRAJECTORY_DIFFUSION_WINDOW"
     TRAJECTORY_DIFFUSION_DIAGNOSTIC = "TRAJECTORY_DIFFUSION_DIAGNOSTIC"
+    ELECTRONIC_KPOINT = "ELECTRONIC_KPOINT"
+    ELECTRONIC_BAND = "ELECTRONIC_BAND"
+    ELECTRONIC_BAND_STATE = "ELECTRONIC_BAND_STATE"
+    ELECTRONIC_BAND_EDGE = "ELECTRONIC_BAND_EDGE"
+    ELECTRONIC_BAND_GAP = "ELECTRONIC_BAND_GAP"
+    ELECTRONIC_DOS_CHANNEL = "ELECTRONIC_DOS_CHANNEL"
+    ELECTRONIC_DOS_PROJECTION = "ELECTRONIC_DOS_PROJECTION"
+    ELECTRONIC_DOS_POINT = "ELECTRONIC_DOS_POINT"
     PHONON_Q_POINT = "PHONON_Q_POINT"
     PHONON_BRANCH = "PHONON_BRANCH"
     RECIPROCAL_POINT = "RECIPROCAL_POINT"
@@ -334,6 +342,15 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
     msdLagId: str | None = Field(default=None, max_length=96)
     diffusionWindowId: str | None = Field(default=None, max_length=96)
     diffusionDiagnosticId: str | None = Field(default=None, max_length=96)
+    electronicResourceId: str | None = Field(default=None, max_length=96)
+    spinChannelId: str | None = Field(default=None, max_length=96)
+    kpointId: str | None = Field(default=None, max_length=96)
+    bandId: str | None = Field(default=None, max_length=96)
+    bandStateId: str | None = Field(default=None, max_length=96)
+    bandEdgeId: str | None = Field(default=None, max_length=96)
+    dosChannelId: str | None = Field(default=None, max_length=96)
+    projectionId: str | None = Field(default=None, max_length=96)
+    energyPointId: str | None = Field(default=None, max_length=96)
     phononArtifactId: str | None = Field(default=None, max_length=96)
     qPointId: str | None = Field(default=None, max_length=96)
     branchId: str | None = Field(default=None, max_length=96)
@@ -361,6 +378,7 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
         "projectId", "datasetId", "jobId", "objectId", "sampleRef", "structureId", "siteId",
         "trajectoryId", "atomId", "frameId", "speciesPairId", "rdfBinId", "msdSeriesId", "msdLagId",
         "diffusionWindowId", "diffusionDiagnosticId", "phononArtifactId", "qPointId", "branchId",
+        "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId", "dosChannelId", "projectionId", "energyPointId",
         "reciprocalArtifactId", "reciprocalPointId", "segmentId", "fieldId", "regionId",
         "artifactId", "toolCallId", "bundleId", "evidenceItemId", "sourceArtifactId",
         "interpretationId", "claimId",
@@ -421,6 +439,14 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.TRAJECTORY_MSD_LAG: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId", "msdLagId"},
             WorkspaceSelectionKind.TRAJECTORY_DIFFUSION_WINDOW: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId"},
             WorkspaceSelectionKind.TRAJECTORY_DIFFUSION_DIAGNOSTIC: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId", "diffusionDiagnosticId"},
+            WorkspaceSelectionKind.ELECTRONIC_KPOINT: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "kpointId"},
+            WorkspaceSelectionKind.ELECTRONIC_BAND: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "bandId"},
+            WorkspaceSelectionKind.ELECTRONIC_BAND_STATE: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId"},
+            WorkspaceSelectionKind.ELECTRONIC_BAND_EDGE: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "bandEdgeId"},
+            WorkspaceSelectionKind.ELECTRONIC_BAND_GAP: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId"},
+            WorkspaceSelectionKind.ELECTRONIC_DOS_CHANNEL: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId"},
+            WorkspaceSelectionKind.ELECTRONIC_DOS_PROJECTION: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId"},
+            WorkspaceSelectionKind.ELECTRONIC_DOS_POINT: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "energyPointId"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"},
             WorkspaceSelectionKind.PHONON_BRANCH: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId"},
             WorkspaceSelectionKind.RECIPROCAL_POINT: {"datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId"},
@@ -453,6 +479,14 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.TRAJECTORY_MSD_LAG: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId", "msdLagId"},
             WorkspaceSelectionKind.TRAJECTORY_DIFFUSION_WINDOW: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId"},
             WorkspaceSelectionKind.TRAJECTORY_DIFFUSION_DIAGNOSTIC: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId", "diffusionDiagnosticId"},
+            WorkspaceSelectionKind.ELECTRONIC_KPOINT: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "kpointId", "segmentId"},
+            WorkspaceSelectionKind.ELECTRONIC_BAND: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "bandId"},
+            WorkspaceSelectionKind.ELECTRONIC_BAND_STATE: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId"},
+            WorkspaceSelectionKind.ELECTRONIC_BAND_EDGE: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId"},
+            WorkspaceSelectionKind.ELECTRONIC_BAND_GAP: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "bandEdgeId"},
+            WorkspaceSelectionKind.ELECTRONIC_DOS_CHANNEL: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId"},
+            WorkspaceSelectionKind.ELECTRONIC_DOS_PROJECTION: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId"},
+            WorkspaceSelectionKind.ELECTRONIC_DOS_POINT: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId", "energyPointId"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"},
             WorkspaceSelectionKind.PHONON_BRANCH: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId", "qPointId"},
             WorkspaceSelectionKind.RECIPROCAL_POINT: {"datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId", "segmentId"},
@@ -746,7 +780,17 @@ def make_layout_revision(
 
 
 def encode_workspace_selection_url(context: WorkspaceSelectionContext) -> str:
-    raw = canonical_workspace_json(context).encode("utf-8")
+    payload = context.model_dump(mode="json")
+    electronic_fields = {
+        "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId",
+        "bandEdgeId", "dosChannelId", "projectionId", "energyPointId",
+    }
+    for ref in [payload.get("primary"), *payload.get("secondary", [])]:
+        if isinstance(ref, dict):
+            for field in electronic_fields:
+                if ref.get(field) is None:
+                    ref.pop(field, None)
+    raw = canonical_workspace_json(payload).encode("utf-8")
     token = base64.urlsafe_b64encode(raw).rstrip(b"=").decode("ascii")
     if len(token.encode("ascii")) > WORKSPACE_MAX_SELECTION_URL_BYTES:
         raise ValueError("SELECTION_URL_CAP_EXCEEDED")

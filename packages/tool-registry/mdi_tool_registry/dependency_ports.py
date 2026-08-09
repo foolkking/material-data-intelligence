@@ -41,6 +41,9 @@ _N4_RDF_CONTRACT = "phase10n4.trajectory_rdf.v1"
 _N4_MSD_CONTRACT = "phase10n4.trajectory_msd.v1"
 _N4_DIFFUSION_CONTRACT = "phase10n4.trajectory_diffusion.v1"
 _N4_MAX_BYTES = 33_554_432
+_N5_BAND_CONTRACT = "phase10n5.electronic_band_structure.v1"
+_N5_DOS_CONTRACT = "phase10n5.electronic_dos.v1"
+_N5_MAX_BYTES = 67_108_864
 
 
 def build_tool_artifact_port_metadata(tool: Any) -> ToolArtifactPortMetadata:
@@ -183,6 +186,10 @@ def build_tool_artifact_port_metadata(tool: Any) -> ToolArtifactPortMetadata:
     elif tool.toolId == "trajectory.diffusion":
         input_ports = [ArtifactInputPort(portId="msd", acceptedArtifactKinds=[ArtifactType.table_json], acceptedContractVersions=[_N4_MSD_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N4_MAX_BYTES, requiredSemanticRoles=["trajectory_msd"], inputFieldRole="msd_artifact", inputObjectType="Trajectory")]
         output_ports = [ArtifactOutputPort(portId="trajectory-diffusion", artifactKind=ArtifactType.table_json, contractFamily="phase10n4.trajectory_diffusion", contractVersions=[_N4_DIFFUSION_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N4_MAX_BYTES, requiredProvenanceFields=["schemaVersion", "sourceMsdArtifactChecksum", "toolCallId", "toolId"])]
+    elif tool.toolId == "electronic.band_structure":
+        output_ports = [ArtifactOutputPort(portId="electronic-band-structure", artifactKind=ArtifactType.table_json, contractFamily="phase10n5.electronic_band_structure", contractVersions=[_N5_BAND_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N5_MAX_BYTES, requiredProvenanceFields=["calculationIdentity", "electronicResourceHash", "schemaVersion", "toolCallId", "toolId"])]
+    elif tool.toolId == "electronic.dos":
+        output_ports = [ArtifactOutputPort(portId="electronic-dos", artifactKind=ArtifactType.table_json, contractFamily="phase10n5.electronic_dos", contractVersions=[_N5_DOS_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N5_MAX_BYTES, requiredProvenanceFields=["calculationIdentity", "electronicResourceHash", "schemaVersion", "toolCallId", "toolId"])]
     return ToolArtifactPortMetadata(
         toolId=tool.toolId,
         toolVersion=tool.version,

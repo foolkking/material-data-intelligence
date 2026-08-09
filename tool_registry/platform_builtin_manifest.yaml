@@ -398,3 +398,31 @@ tools:
       - summary_md
       - recipe_json
     notes: Explicit-window diffusion diagnostics consuming only an exact persisted trajectory.msd Artifact; no raw trajectory read, MSD recomputation or automatic fit-window selection.
+
+  - tool_id: electronic.band_structure
+    source_package: mdi_adapters
+    source_function: ElectronicBandStructureAdapter
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: ElectronicBandStructureAdapter
+    display_target: electronic
+    artifact_types:
+      - table_json
+      - plotly_json
+      - summary_md
+      - recipe_json
+    notes: Strict bounded supplied band resource validation and sampled-data gap facts; no DFT, GW, interpolation, projected bands or Fermi surface.
+
+  - tool_id: electronic.dos
+    source_package: mdi_adapters
+    source_function: ElectronicDosAdapter
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: ElectronicDosAdapter
+    display_target: electronic
+    artifact_types:
+      - table_json
+      - plotly_json
+      - summary_md
+      - recipe_json
+    notes: Strict bounded supplied total/projected DOS validation with explicit projection completeness; no DOS generation, smoothing or projection synthesis.

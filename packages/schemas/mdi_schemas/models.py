@@ -58,6 +58,7 @@ class DisplayTarget(str, Enum):
     trajectory = "trajectory"
     volumetric = "volumetric"
     phonon = "phonon"
+    electronic = "electronic"
     ml = "ml"
     artifacts = "artifacts"
     report = "report"
@@ -105,6 +106,8 @@ class MaterialObjectType(str, Enum):
     PhononDos = "PhononDos"
     PhononEigenvector = "PhononEigenvector"
     Trajectory = "Trajectory"
+    ElectronicBand = "ElectronicBand"
+    ElectronicDos = "ElectronicDos"
     VolumetricData = "VolumetricData"
     ElementValueMap = "ElementValueMap"
     RawUnsupported = "RawUnsupported"
@@ -449,6 +452,35 @@ class DataProfileTrajectoryReadiness(BaseModel):
     reasons: list[str] = Field(default_factory=list)
 
 
+class DataProfileElectronicResourceReadiness(BaseModel):
+    objectId: str
+    objectHash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    resourceKind: Literal["band", "dos"]
+    resourceId: str
+    resourceHash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    energyUnit: Literal["eV"]
+    energyReference: Literal["source_absolute", "fermi_referenced"]
+    fermiAvailable: bool
+    spinMode: Literal["non_spin_polarized", "spin_polarized"]
+    kpointCount: int | None = Field(default=None, ge=0, le=65536)
+    bandCount: int | None = Field(default=None, ge=0, le=4096)
+    dosPointCount: int | None = Field(default=None, ge=0, le=262144)
+    projectionCount: int | None = Field(default=None, ge=0, le=512)
+    projectionCompleteness: Literal["COMPLETE", "PARTIAL", "UNKNOWN"] | None = None
+    electronicInputStatus: Literal["READY", "MISSING_REQUIRED_DATA", "AMBIGUOUS", "UNSUPPORTED_DATA_KIND"]
+    reasons: list[str] = Field(default_factory=list)
+
+
+class DataProfileElectronicReadiness(BaseModel):
+    contractVersion: Literal["1.0"] = "1.0"
+    electronicBandResourcePresent: bool
+    electronicDosResourcePresent: bool
+    eligibleResourceCount: int = Field(ge=0, le=32)
+    resources: list[DataProfileElectronicResourceReadiness] = Field(default_factory=list, max_length=32)
+    status: Literal["READY", "MISSING_REQUIRED_DATA", "AMBIGUOUS", "UNSUPPORTED_DATA_KIND"]
+    reasons: list[str] = Field(default_factory=list)
+
+
 class DataProfile(BaseModel):
     schemaVersion: Literal["0.1"] = "0.1"
     profileId: str
@@ -463,7 +495,7 @@ class DataProfile(BaseModel):
     trajectorySummary: dict[str, Any] | None = None
     qualityIssues: list[dict[str, Any]] = Field(default_factory=list)
     recommendedTasks: list[dict[str, Any]] = Field(default_factory=list)
-    profileContractVersion: Literal["2.0", "2.1", "2.2", "2.3"] | None = None
+    profileContractVersion: Literal["2.0", "2.1", "2.2", "2.3", "2.4"] | None = None
     semanticRulesVersion: str | None = None
     semanticHash: str | None = None
     semanticColumns: list[DataProfileSemanticColumn] = Field(default_factory=list)
@@ -475,6 +507,7 @@ class DataProfile(BaseModel):
     coordinationReadiness: DataProfileCoordinationReadiness | None = None
     experimentalXrdReadiness: DataProfileExperimentalXrdReadiness | None = None
     trajectoryReadiness: DataProfileTrajectoryReadiness | None = None
+    electronicReadiness: DataProfileElectronicReadiness | None = None
     createdAt: str
 
 

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "phase10n5-electronic-artifacts.schema.json",
+  "oneOf": [
+    { "$ref": "#/$defs/bandArtifact" },
+    { "$ref": "#/$defs/dosArtifact" }
+  ],
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "strings": { "type": "array", "items": { "type": "string" } },
+    "tool": {
+      "type": "object", "additionalProperties": false,
+      "required": ["toolId", "toolVersion", "adapterVersion"],
+      "properties": { "toolId": { "type": "string" }, "toolVersion": { "const": "0.1.0" }, "adapterVersion": { "const": "0.1.0" } }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["projectId", "datasetId", "jobId", "planId", "planVersion", "toolCallId"],
+      "properties": { "projectId": { "type": "string" }, "datasetId": { "type": "string" }, "jobId": { "type": "string" }, "planId": { "type": "string" }, "planVersion": { "const": "0.2" }, "toolCallId": { "type": "string" } }
+    },
+    "sourceResource": {
+      "type": "object", "additionalProperties": false,
+      "required": ["resourceId", "resourceVersion", "resourceHash", "resourceContract", "calculationIdentity", "structureIdentity", "sourceMetadata"],
+      "properties": { "resourceId": { "type": "string" }, "resourceVersion": { "type": "string" }, "resourceHash": { "$ref": "#/$defs/hash" }, "resourceContract": { "type": "string" }, "calculationIdentity": { "type": "string" }, "structureIdentity": { "type": ["object", "null"] }, "sourceMetadata": { "type": "object" } }
+    },
+    "energy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["unit", "sourceUnit", "reference", "fermiEnergyEv", "frontendAlignmentAuthority"],
+      "properties": { "unit": { "const": "eV" }, "sourceUnit": { "const": "eV" }, "reference": { "enum": ["source_absolute", "fermi_referenced"] }, "fermiEnergyEv": { "type": ["number", "null"] }, "frontendAlignmentAuthority": { "const": false } }
+    },
+    "spin": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "channels", "frontendMergeAuthority"],
+      "properties": { "mode": { "enum": ["non_spin_polarized", "spin_polarized"] }, "channels": { "type": "array", "items": { "enum": ["none", "up", "down"] }, "minItems": 1, "maxItems": 2 }, "frontendMergeAuthority": { "const": false } }
+    },
+    "security": {
+      "type": "object", "additionalProperties": false,
+      "required": ["containsHtml", "containsJavascript", "externalUrls", "arbitraryCodeExecution", "dftExecution", "externalScientificNetwork"],
+      "properties": { "containsHtml": { "const": false }, "containsJavascript": { "const": false }, "externalUrls": { "type": "array", "maxItems": 0 }, "arbitraryCodeExecution": { "const": false }, "dftExecution": { "const": false }, "externalScientificNetwork": { "const": false } }
+    },
+    "bandArtifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifactType", "schemaVersion", "tool", "scope", "sourceResource", "energy", "spin", "resolvedParameters", "parameterHash", "auditedLockedStack", "warnings", "limitations", "security", "algorithm", "kpoints", "pathSegments", "bands", "states", "gap", "coverage", "runtimeDiagnostics"],
+      "properties": {
+        "artifactType": { "const": "electronic.band_structure" }, "schemaVersion": { "const": "phase10n5.electronic_band_structure.v1" },
+        "tool": { "$ref": "#/$defs/tool" }, "scope": { "$ref": "#/$defs/scope" }, "sourceResource": { "$ref": "#/$defs/sourceResource" }, "energy": { "$ref": "#/$defs/energy" }, "spin": { "$ref": "#/$defs/spin" },
+        "resolvedParameters": { "type": "object" }, "parameterHash": { "$ref": "#/$defs/hash" }, "auditedLockedStack": { "type": "object" }, "warnings": { "$ref": "#/$defs/strings" }, "limitations": { "$ref": "#/$defs/strings" }, "security": { "$ref": "#/$defs/security" },
+        "algorithm": { "type": "object" }, "kpoints": { "type": "array", "minItems": 1, "maxItems": 65536 }, "pathSegments": { "type": "array", "minItems": 1, "maxItems": 1024 }, "bands": { "type": "array", "minItems": 1, "maxItems": 4096 }, "states": { "type": "array", "maxItems": 4000000 }, "gap": { "type": "object" }, "coverage": { "type": "object" }, "runtimeDiagnostics": { "type": "object" }
+      }
+    },
+    "dosArtifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifactType", "schemaVersion", "tool", "scope", "sourceResource", "energy", "spin", "resolvedParameters", "parameterHash", "auditedLockedStack", "warnings", "limitations", "security", "algorithm", "dosUnitSemantic", "energiesEv", "energyPointIds", "totalDos", "projections", "projectionCompleteness", "coverage", "runtimeDiagnostics"],
+      "properties": {
+        "artifactType": { "const": "electronic.dos" }, "schemaVersion": { "const": "phase10n5.electronic_dos.v1" },
+        "tool": { "$ref": "#/$defs/tool" }, "scope": { "$ref": "#/$defs/scope" }, "sourceResource": { "$ref": "#/$defs/sourceResource" }, "energy": { "$ref": "#/$defs/energy" }, "spin": { "$ref": "#/$defs/spin" },
+        "resolvedParameters": { "type": "object" }, "parameterHash": { "$ref": "#/$defs/hash" }, "auditedLockedStack": { "type": "object" }, "warnings": { "$ref": "#/$defs/strings" }, "limitations": { "$ref": "#/$defs/strings" }, "security": { "$ref": "#/$defs/security" },
+        "algorithm": { "type": "object" }, "dosUnitSemantic": { "enum": ["states_per_ev", "states_per_ev_cell", "states_per_ev_formula_unit", "source_relative"] }, "energiesEv": { "type": "array", "minItems": 2, "maxItems": 262144, "items": { "type": "number" } }, "energyPointIds": { "type": "array", "minItems": 2, "maxItems": 262144, "items": { "type": "string" } }, "totalDos": { "type": "array", "minItems": 1 }, "projections": { "type": "array", "maxItems": 512 }, "projectionCompleteness": { "enum": ["COMPLETE", "PARTIAL", "UNKNOWN"] }, "coverage": { "type": "object" }, "runtimeDiagnostics": { "type": "object" }
+      }
+    }
+  }
+}

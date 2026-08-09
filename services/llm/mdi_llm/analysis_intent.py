@@ -172,8 +172,8 @@ class AnalysisIntentValidator:
         expected_hash = compute_analysis_intent_hash(validated)
         if validated.intentHash != expected_hash or validated.intentId != deterministic_intent_id(expected_hash):
             raise AnalysisIntentError("AnalysisIntent identity does not match canonical content.", code="INTENT_HASH_MISMATCH")
-        if profile.profileContractVersion not in {"2.0", "2.1"} or not profile.semanticHash:
-            raise AnalysisIntentError("DataProfile 2.0 or 2.1 semantic identity is required.", code="PROFILE_2_REQUIRED")
+        if profile.profileContractVersion not in {"2.0", "2.1", "2.2", "2.3", "2.4"} or not profile.semanticHash:
+            raise AnalysisIntentError("DataProfile 2.0 through 2.4 semantic identity is required.", code="PROFILE_2_REQUIRED")
         if validated.datasetId != profile.datasetId or validated.profileId != profile.profileId:
             raise AnalysisIntentError("AnalysisIntent dataset/profile identity is stale.", code="STALE_PROFILE")
         if validated.dataScope.profileSemanticHash != profile.semanticHash:
@@ -759,8 +759,8 @@ def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: D
 def _validate_request_identity(request: AnalysisIntentRequest, profile: DataProfile) -> None:
     if request.dataset_id != profile.datasetId or request.profile_id != profile.profileId:
         raise AnalysisIntentError("Requested dataset/profile does not match the exact profile.", code="STALE_PROFILE")
-    if profile.profileContractVersion not in {"2.0", "2.1"} or not profile.semanticHash:
-        raise AnalysisIntentError("DataProfile 2.0 or 2.1 semantic identity is required.", code="PROFILE_2_REQUIRED")
+    if profile.profileContractVersion not in {"2.0", "2.1", "2.2", "2.3", "2.4"} or not profile.semanticHash:
+        raise AnalysisIntentError("DataProfile 2.0 through 2.4 semantic identity is required.", code="PROFILE_2_REQUIRED")
     if len(request.selected_resource_ids) > ANALYSIS_INTENT_MAX_RESOURCE_REFS:
         raise AnalysisIntentError("Selected resources exceed the cap.", code="INTENT_RESOURCE_CAP_EXCEEDED")
     if len(set(request.selected_resource_ids)) != len(request.selected_resource_ids):
@@ -786,6 +786,7 @@ def _required_needs_for_intents(intents: Sequence[ScientificIntent]) -> set[Capa
         ScientificIntent.structure_analysis: (CapabilityNeed.structure_resource,),
         ScientificIntent.trajectory_analysis: (CapabilityNeed.trajectory_resource,),
         ScientificIntent.phonon_analysis: (CapabilityNeed.phonon_resource,),
+        ScientificIntent.electronic_structure_analysis: (CapabilityNeed.electronic_resource,),
         ScientificIntent.reciprocal_space_analysis: (CapabilityNeed.reciprocal_space_resource,),
         ScientificIntent.volumetric_analysis: (CapabilityNeed.volumetric_resource,),
         ScientificIntent.ml_regression_evaluation: (CapabilityNeed.regression_semantics,),
@@ -826,6 +827,11 @@ def _unavailable_profile_needs(profile: DataProfile, needs: set[CapabilityNeed])
         CapabilityNeed.structure_resource: any(_resource_matches(item.kind, item.capabilities, "structure") for item in profile.resourceSemantics),
         CapabilityNeed.trajectory_resource: any(_resource_matches(item.kind, item.capabilities, "trajectory") for item in profile.resourceSemantics),
         CapabilityNeed.phonon_resource: any(_resource_matches(item.kind, item.capabilities, "phonon") for item in profile.resourceSemantics),
+        CapabilityNeed.electronic_resource: (
+            profile.electronicReadiness is not None
+            and profile.electronicReadiness.status == "READY"
+            and bool(profile.electronicReadiness.resources)
+        ),
         CapabilityNeed.reciprocal_space_resource: any(_resource_matches(item.kind, item.capabilities, "reciprocal") for item in profile.resourceSemantics),
         CapabilityNeed.volumetric_resource: any(_resource_matches(item.kind, item.capabilities, "volumetric") for item in profile.resourceSemantics),
         CapabilityNeed.regression_semantics: "regression" in group_kinds,
@@ -1001,6 +1007,10 @@ def _classify_goal(goal: str) -> _Classification:
         required.append(CapabilityNeed.classification_semantics)
         ml_kind = "classification"
         outputs.append(DesiredOutput.metrics)
+    if not _contains(value, "phonon", "澹板瓙") and _contains(value, "band structure", "band gap", "electronic dos", "density of states", "projected dos", "electronic structure"):
+        add_intent(ScientificIntent.electronic_structure_analysis)
+        required.append(CapabilityNeed.electronic_resource)
+        required_kind = "electronic"
     if ml_kind is None and _contains(
         value,
         "machine learning model",
@@ -1040,6 +1050,11 @@ def _classify_goal(goal: str) -> _Classification:
     if _contains(value, "report", "export", "download", "报告", "导出", "下载"):
         add_intent(ScientificIntent.report_or_export)
         outputs.extend([DesiredOutput.report, DesiredOutput.downloadable_artifact, DesiredOutput.recipe])
+    if ScientificIntent.electronic_structure_analysis in intents:
+        intents = [item for item in intents if item != ScientificIntent.structure_analysis]
+        required = [item for item in required if item != CapabilityNeed.structure_resource]
+        outputs = [item for item in outputs if item != DesiredOutput.three_dimensional_view]
+        required_kind = "electronic"
     if intents and DesiredOutput.plot not in outputs and not structure_review:
         outputs.extend([DesiredOutput.plot, DesiredOutput.table])
     return _Classification(
@@ -1257,6 +1272,7 @@ def _resource_matches(kind: str, capabilities: Sequence[str], required_kind: str
         "structure": {"structure"},
         "trajectory": {"trajectory"},
         "phonon": {"phonon"},
+        "electronic": {"electronicband", "electronicdos"},
         "reciprocal": {"reciprocal", "brillouin_zone"},
         "volumetric": {"volumetric", "volume", "cube"},
     }

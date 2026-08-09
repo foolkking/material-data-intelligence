@@ -68,12 +68,15 @@ def test_n3_task_and_n4_gate_are_exact() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
-    if task_count and "Task: Phase 10N-4" not in tasks:
+    if task_count and "Task: Phase 10N-5" in tasks:
+        assert "Phase 10N-3:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
+        assert "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
+    elif task_count and "Task: Phase 10N-4" not in tasks:
         assert task_count == 1
         assert "Phase 10N-3 Experimental XRD Comparison + Peak Matching" in tasks
     else:
         assert "Phase 10N-3:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
-    if task_count:
+    if task_count and "Task: Phase 10N-5" not in tasks:
         assert "Task: Phase 10N-4 Trajectory RDF / MSD / Diffusion" in tasks
     else:
         assert "Phase 10N-4:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks or "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks

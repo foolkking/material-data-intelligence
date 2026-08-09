@@ -2072,3 +2072,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Failed implementation candidate `3ae66528a7bffa596793fe6d72ea0e600819be8b` / CI `31298574230` retained immutable history: service-backed 46/46 and frontend/browser passed, while the unit job found Windows CRLF versus Linux LF evidence-manifest hashing. The correction canonicalizes evidence bytes to LF.
 - Corrected implementation `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92` passed exact-SHA CI `31299086998`; the completion record is now the active lifecycle gate and the N4 task remains queued.
 - Completion record `ca5208feec772e45397f4afbb80419aa6263978f` passed exact-SHA CI `31299648506`; the queue-archive candidate removes the N4 task and leaves N5 at its reviewer gate.
+## 2026-08-09 - Phase 10N-5 Implementation Candidate
+
+- Closed N5-R0 with 10/10 acceptance IDs and zero implementation-critical TBDs.
+- Implemented strict supplied Band/DOS resources, two Adapters, Profile 2.4,
+  Planner/Runtime/Artifact and electronic Workspace/selection/interpretation.
+- Registry is 62; schema, migration, public API, dependencies and lockfile are unchanged.
+- Implementation exact-SHA CI is the next lifecycle gate; N6 remains reviewer-only.

@@ -1,0 +1,13 @@
+{
+  "compatible": {
+    "errors": [],
+    "valid": true
+  },
+  "frontendAlignmentAuthority": false,
+  "sourceMismatch": {
+    "errors": [
+      "BAND_DOS_SOURCE_MISMATCH"
+    ],
+    "valid": false
+  }
+}

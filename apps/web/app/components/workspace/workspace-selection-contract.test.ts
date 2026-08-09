@@ -105,6 +105,8 @@ function selection(kind: WorkspaceSelectionKind): WorkspaceSelectionRef {
     "environmentId", "polyhedronId", "vertexId", "faceId", "geometryReferenceId",
     "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
     "speciesPairId", "rdfBinId", "msdSeriesId", "msdLagId", "diffusionWindowId", "diffusionDiagnosticId",
+    "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId",
+    "dosChannelId", "projectionId", "energyPointId",
   ].map((field) => [field, null]));
   Object.assign(values, {
     DATASET_SAMPLE: { datasetId: "dataset_1", datasetVersion: "v1", objectId: "object_1", sampleRef: "sample_1" },
@@ -126,6 +128,14 @@ function selection(kind: WorkspaceSelectionKind): WorkspaceSelectionRef {
     TRAJECTORY_MSD_LAG: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", trajectoryId: "trajectory_1", artifactId: "artifact_msd", artifactChecksum: HASH, msdSeriesId: "species_Li", msdLagId: "lag_12" },
     TRAJECTORY_DIFFUSION_WINDOW: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", trajectoryId: "trajectory_1", artifactId: "artifact_diffusion", artifactChecksum: HASH, diffusionWindowId: "window_2-8ps" },
     TRAJECTORY_DIFFUSION_DIAGNOSTIC: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", trajectoryId: "trajectory_1", artifactId: "artifact_diffusion", artifactChecksum: HASH, diffusionWindowId: "window_2-8ps", diffusionDiagnosticId: "DIFFUSIVE_WINDOW_ACCEPTED" },
+    ELECTRONIC_KPOINT: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_band", artifactChecksum: HASH, electronicResourceId: "electronic_band_1", kpointId: "kpoint_1" },
+    ELECTRONIC_BAND: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_band", artifactChecksum: HASH, electronicResourceId: "electronic_band_1", spinChannelId: "none", bandId: "band_1" },
+    ELECTRONIC_BAND_STATE: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_band", artifactChecksum: HASH, electronicResourceId: "electronic_band_1", spinChannelId: "none", kpointId: "kpoint_1", bandId: "band_1", bandStateId: "state_1" },
+    ELECTRONIC_BAND_EDGE: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_band", artifactChecksum: HASH, electronicResourceId: "electronic_band_1", bandEdgeId: "vbm" },
+    ELECTRONIC_BAND_GAP: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_band", artifactChecksum: HASH, electronicResourceId: "electronic_band_1" },
+    ELECTRONIC_DOS_CHANNEL: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_dos", artifactChecksum: HASH, electronicResourceId: "electronic_dos_1", spinChannelId: "none", dosChannelId: "total" },
+    ELECTRONIC_DOS_PROJECTION: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_dos", artifactChecksum: HASH, electronicResourceId: "electronic_dos_1", spinChannelId: "none", dosChannelId: "element:Si", projectionId: "projection_si" },
+    ELECTRONIC_DOS_POINT: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_dos", artifactChecksum: HASH, electronicResourceId: "electronic_dos_1", spinChannelId: "none", dosChannelId: "total", energyPointId: "energy_1" },
     PHONON_Q_POINT: { datasetId: "dataset_1", datasetVersion: "v1", phononArtifactId: "artifact_phonon", artifactChecksum: HASH, qPointId: "qpoint_1" },
     PHONON_BRANCH: { datasetId: "dataset_1", datasetVersion: "v1", phononArtifactId: "artifact_phonon", artifactChecksum: HASH, branchId: "branch_1" },
     RECIPROCAL_POINT: { datasetId: "dataset_1", datasetVersion: "v1", reciprocalArtifactId: "artifact_bz", artifactChecksum: HASH, reciprocalPointId: "point_gamma" },

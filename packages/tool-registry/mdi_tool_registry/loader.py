@@ -359,6 +359,24 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
                 )
             ],
         )
+    if tool_id == "electronic.band_structure":
+        return ToolInputSchema(
+            periodicity="any",
+            inputOptions=[ToolInputOption(
+                name="supplied_electronic_band_resource",
+                requiredObjectTypes=[MaterialObjectType.ElectronicBand],
+                description="Use exactly one immutable phase10n5.electronic_band_resource.v1 object.",
+            )],
+        )
+    if tool_id == "electronic.dos":
+        return ToolInputSchema(
+            periodicity="any",
+            inputOptions=[ToolInputOption(
+                name="supplied_electronic_dos_resource",
+                requiredObjectTypes=[MaterialObjectType.ElectronicDos],
+                description="Use exactly one immutable phase10n5.electronic_dos_resource.v1 object.",
+            )],
+        )
     if tool_id == "dataset.composition_space":
         return ToolInputSchema(
             periodicity="any",
@@ -596,6 +614,22 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    if tool_id == "electronic.band_structure":
+        return {"type": "object", "additionalProperties": False, "properties": {
+            "energy_reference": {"enum": ["source", "fermi"], "default": "source"},
+            "gap_threshold_ev": {"type": "number", "minimum": 0, "maximum": 1, "default": 0.00001},
+            "occupancy_threshold": {"type": "number", "minimum": 0, "maximum": 1, "default": 0.5},
+            "energy_tolerance_ev": {"type": "number", "minimum": 0, "maximum": 0.001, "default": 0.00000001},
+            "max_plot_points": {"type": "integer", "minimum": 1, "maximum": 500000, "default": 500000},
+        }}
+    if tool_id == "electronic.dos":
+        return {"type": "object", "additionalProperties": False, "properties": {
+            "energy_reference": {"enum": ["source", "fermi"], "default": "source"},
+            "include_element_projections": {"type": "boolean", "default": True},
+            "include_orbital_projections": {"type": "boolean", "default": True},
+            "max_projection_channels": {"type": "integer", "minimum": 0, "maximum": 512, "default": 512},
+            "max_plot_points": {"type": "integer", "minimum": 1, "maximum": 500000, "default": 500000},
+        }}
     if tool_id == "trajectory.rdf":
         return {"type": "object", "additionalProperties": False, "properties": {
             "r_min_angstrom": {"type": "number", "minimum": 0, "maximum": 30, "default": 0}, "r_max_angstrom": {"type": "number", "minimum": 0.01, "maximum": 30, "default": 2}, "bin_count": {"type": "integer", "minimum": 1, "maximum": 2048, "default": 200}, "species_a": {"type": "string", "maxLength": 32}, "species_b": {"type": "string", "maxLength": 32}, "window_mode": {"enum": ["whole", "frame", "time"], "default": "whole"}, "frame_start": {"type": "integer", "minimum": 0, "maximum": 9999, "default": 0}, "frame_end": {"type": "integer", "minimum": 1, "maximum": 10000, "default": 10000}, "time_start_ps": {"type": "number", "minimum": 0, "maximum": 1e12, "default": 0}, "time_end_ps": {"type": "number", "minimum": 0, "maximum": 1e12, "default": 1e12}, "max_pair_evaluations": {"type": "integer", "minimum": 1, "maximum": 2000000, "default": 2000000}

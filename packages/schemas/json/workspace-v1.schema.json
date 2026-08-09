@@ -111,6 +111,14 @@
           "TRAJECTORY_MSD_LAG",
           "TRAJECTORY_DIFFUSION_WINDOW",
           "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
+          "ELECTRONIC_KPOINT",
+          "ELECTRONIC_BAND",
+          "ELECTRONIC_BAND_STATE",
+          "ELECTRONIC_BAND_EDGE",
+          "ELECTRONIC_BAND_GAP",
+          "ELECTRONIC_DOS_CHANNEL",
+          "ELECTRONIC_DOS_PROJECTION",
+          "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -468,6 +476,123 @@
             ],
             "default": null,
             "title": "Diffusiondiagnosticid"
+          },
+          "electronicResourceId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Electronicresourceid"
+          },
+          "spinChannelId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Spinchannelid"
+          },
+          "kpointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Kpointid"
+          },
+          "bandId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bandid"
+          },
+          "bandStateId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bandstateid"
+          },
+          "bandEdgeId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bandedgeid"
+          },
+          "dosChannelId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Doschannelid"
+          },
+          "projectionId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Projectionid"
+          },
+          "energyPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Energypointid"
           },
           "phononArtifactId": {
             "anyOf": [
@@ -1370,6 +1495,14 @@
           "TRAJECTORY_MSD_LAG",
           "TRAJECTORY_DIFFUSION_WINDOW",
           "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
+          "ELECTRONIC_KPOINT",
+          "ELECTRONIC_BAND",
+          "ELECTRONIC_BAND_STATE",
+          "ELECTRONIC_BAND_EDGE",
+          "ELECTRONIC_BAND_GAP",
+          "ELECTRONIC_DOS_CHANNEL",
+          "ELECTRONIC_DOS_PROJECTION",
+          "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -1727,6 +1860,123 @@
             ],
             "default": null,
             "title": "Diffusiondiagnosticid"
+          },
+          "electronicResourceId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Electronicresourceid"
+          },
+          "spinChannelId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Spinchannelid"
+          },
+          "kpointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Kpointid"
+          },
+          "bandId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bandid"
+          },
+          "bandStateId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bandstateid"
+          },
+          "bandEdgeId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bandedgeid"
+          },
+          "dosChannelId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Doschannelid"
+          },
+          "projectionId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Projectionid"
+          },
+          "energyPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Energypointid"
           },
           "phononArtifactId": {
             "anyOf": [
@@ -2320,6 +2570,14 @@
           "TRAJECTORY_MSD_LAG",
           "TRAJECTORY_DIFFUSION_WINDOW",
           "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
+          "ELECTRONIC_KPOINT",
+          "ELECTRONIC_BAND",
+          "ELECTRONIC_BAND_STATE",
+          "ELECTRONIC_BAND_EDGE",
+          "ELECTRONIC_BAND_GAP",
+          "ELECTRONIC_DOS_CHANNEL",
+          "ELECTRONIC_DOS_PROJECTION",
+          "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -2757,6 +3015,14 @@
           "TRAJECTORY_MSD_LAG",
           "TRAJECTORY_DIFFUSION_WINDOW",
           "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
+          "ELECTRONIC_KPOINT",
+          "ELECTRONIC_BAND",
+          "ELECTRONIC_BAND_STATE",
+          "ELECTRONIC_BAND_EDGE",
+          "ELECTRONIC_BAND_GAP",
+          "ELECTRONIC_DOS_CHANNEL",
+          "ELECTRONIC_DOS_PROJECTION",
+          "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -3114,6 +3380,123 @@
             ],
             "default": null,
             "title": "Diffusiondiagnosticid"
+          },
+          "electronicResourceId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Electronicresourceid"
+          },
+          "spinChannelId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Spinchannelid"
+          },
+          "kpointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Kpointid"
+          },
+          "bandId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bandid"
+          },
+          "bandStateId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bandstateid"
+          },
+          "bandEdgeId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bandedgeid"
+          },
+          "dosChannelId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Doschannelid"
+          },
+          "projectionId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Projectionid"
+          },
+          "energyPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Energypointid"
           },
           "phononArtifactId": {
             "anyOf": [
@@ -3490,6 +3873,14 @@
           "TRAJECTORY_MSD_LAG",
           "TRAJECTORY_DIFFUSION_WINDOW",
           "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
+          "ELECTRONIC_KPOINT",
+          "ELECTRONIC_BAND",
+          "ELECTRONIC_BAND_STATE",
+          "ELECTRONIC_BAND_EDGE",
+          "ELECTRONIC_BAND_GAP",
+          "ELECTRONIC_DOS_CHANNEL",
+          "ELECTRONIC_DOS_PROJECTION",
+          "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -3847,6 +4238,123 @@
         ],
         "default": null,
         "title": "Diffusiondiagnosticid"
+      },
+      "electronicResourceId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Electronicresourceid"
+      },
+      "spinChannelId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Spinchannelid"
+      },
+      "kpointId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Kpointid"
+      },
+      "bandId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Bandid"
+      },
+      "bandStateId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Bandstateid"
+      },
+      "bandEdgeId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Bandedgeid"
+      },
+      "dosChannelId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Doschannelid"
+      },
+      "projectionId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Projectionid"
+      },
+      "energyPointId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Energypointid"
       },
       "phononArtifactId": {
         "anyOf": [

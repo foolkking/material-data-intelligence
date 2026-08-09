@@ -70,9 +70,9 @@ def test_phase10l4_evidence_manifest_and_required_inventory() -> None:
     assert re.fullmatch(r"[0-9a-f]{64}", inventory["registrySnapshotHash"])
     assert snapshot.snapshotId.startswith("registry_")
     assert re.fullmatch(r"[0-9a-f]{64}", snapshot.snapshotHash)
-    # Phase 10N-1 through N4 add seven available scientific tools while preserving
+    # Phase 10N-1 through N5 add nine available scientific tools while preserving
     # the historical Phase 10L evidence inventory.
-    assert inventory["toolCount"] + 7 == len(available)
+    assert inventory["toolCount"] + 9 == len(available)
     assert {item["toolId"] for item in inventory["tools"]} == set(available) - {
         "structure.coordination_crystalnn",
         "structure.coordination_voronoinn",
@@ -81,6 +81,8 @@ def test_phase10l4_evidence_manifest_and_required_inventory() -> None:
             "trajectory.rdf",
             "trajectory.msd",
             "trajectory.diffusion",
+            "electronic.band_structure",
+            "electronic.dos",
         }
     for item in inventory["tools"]:
         assert item["aggregateState"] == item["state"]

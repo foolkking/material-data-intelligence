@@ -103,3 +103,12 @@ database/API family, dependency, lockfile, LLM or N4 executable task is allowed.
 # Phase 10N-4 Execution Lock
 
 Authorized phase: Phase 10N-4 only. Tool inventory is exactly `trajectory.rdf@0.1.0`, `trajectory.msd@0.1.0`, and `trajectory.diffusion@0.1.0`; expected Registry count is 60. Canonical acceptance is N4-A01 through N4-A10. Database schema, migration head, public API family, dependencies and lockfile remain unchanged. Wrapped coordinates are never MSD authority; Diffusion never reads trajectory coordinates or recomputes MSD; fit windows are explicit; N5 remains `REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`.
+
+# Phase 10N-5 Execution Lock
+
+N5 is the only authorized phase. Exact Tools are `electronic.band_structure@0.1.0` and
+`electronic.dos@0.1.0`; expected Registry is 62 and canonical acceptance is N5-A01 through
+N5-A10. Combined Band+DOS Tool/Adapter/scientific-authority count is zero. Supplied
+electronic resources are the only authority. Database, migration head
+`0007_phase10m1_workspace_domain`, API family, dependencies and lockfile remain unchanged.
+N6 is `REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`.

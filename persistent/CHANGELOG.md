@@ -2440,3 +2440,8 @@
 - Added DataProfile 2.3 trajectory readiness, strict parameters, three Artifact families, exact MSD dependency binding, server-side unwrapping, RDF/MSD/diffusion adapters and deterministic diagnostics.
 - Added Workspace renderer and exact RDF/MSD/diffusion selections, bounded interpretation, declarative Recipe provenance, service-backed closure and evidence.
 - Preserved static RDF, migration head 0007, API/dependency/lockfile boundaries, no frontend science and zero new LLM call sites. N5 remains reviewer-gated.
+## 2026-08-09 - Phase 10N-5 implementation candidate
+
+- Added two supplied-output electronic Tools and strict Band/DOS resource and Artifact contracts.
+- Added DataProfile 2.4 readiness, deterministic sampled-band gap facts, honest DOS projection completeness, and electronic Workspace selection.
+- Added no-DFT/no-GW/no-frontend-science security and evidence coverage without migration, API or dependency changes.

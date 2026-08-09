@@ -141,3 +141,18 @@ Manifest status: `N0 COMPLETE / REVIEWER_APPROVAL_REQUIRED`; N1 is not executabl
 | N4-A08 | interpretation/Report/Recipe evidence |
 | N4-A09 | reference/tolerance/performance/accessibility/security manifest |
 | N4-A10 | three exact-SHA CI lifecycle records and N5 gate |
+
+# Phase 10N-5 Traceability
+
+| Acceptance | Owner |
+| --- | --- |
+| N5-A01 | N4 authority, entry, R0 and queue |
+| N5-A02 | resources, units/reference/Fermi/spin and Profile 2.4 |
+| N5-A03 | Band Adapter and gap/classification fixtures |
+| N5-A04 | DOS Adapter and completeness fixtures |
+| N5-A05 | exact identity, determinism and stale rejection |
+| N5-A06 | Profile/Eligibility/Planner/Validator/Runtime/services |
+| N5-A07 | Workspace/combined/selection/Inspector/browser |
+| N5-A08 | projector, Report/Recipe and wording |
+| N5-A09 | references/caps/accessibility/security/evidence |
+| N5-A10 | exact-SHA lifecycle, queue archive and N6 gate |

@@ -61,7 +61,8 @@ def build_data_profile(
     coordination_readiness = _coordination_readiness(profiled_objects)
     experimental_xrd_readiness = _experimental_xrd_readiness(profiled_objects)
     trajectory_readiness = _trajectory_readiness(profiled_objects)
-    profile_contract_version = "2.3" if trajectory_readiness["resources"] else ("2.2" if experimental_xrd_readiness["resources"] else ("2.1" if coordination_readiness["structures"] else "2.0"))
+    electronic_readiness = _electronic_readiness(profiled_objects)
+    profile_contract_version = "2.4" if electronic_readiness["resources"] else ("2.3" if trajectory_readiness["resources"] else ("2.2" if experimental_xrd_readiness["resources"] else ("2.1" if coordination_readiness["structures"] else "2.0")))
 
     semantic_payload = {
         "datasetId": dataset_id,
@@ -77,6 +78,7 @@ def build_data_profile(
         "coordinationReadiness": coordination_readiness,
         "experimentalXrdReadiness": experimental_xrd_readiness,
         "trajectoryReadiness": trajectory_readiness,
+        "electronicReadiness": electronic_readiness,
     }
     semantic_hash = hashlib.sha256(
         json.dumps(semantic_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
@@ -107,9 +109,47 @@ def build_data_profile(
         profileCoverage=coverage,
         coordinationReadiness=coordination_readiness if coordination_readiness["structures"] else None,
         experimentalXrdReadiness=experimental_xrd_readiness if experimental_xrd_readiness["resources"] else None,
-        trajectoryReadiness=trajectory_readiness if profile_contract_version == "2.3" else None,
+        trajectoryReadiness=trajectory_readiness if trajectory_readiness["resources"] else None,
+        electronicReadiness=electronic_readiness if electronic_readiness["resources"] else None,
         createdAt=datetime.now(timezone.utc).isoformat(),
     )
+
+
+def _electronic_readiness(objects: list[NormalizedObjectDraft]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for obj in objects:
+        if obj.object_type not in {MaterialObjectType.ElectronicBand, MaterialObjectType.ElectronicDos} or not isinstance(obj.payload, dict):
+            continue
+        payload = obj.payload
+        is_band = obj.object_type == MaterialObjectType.ElectronicBand
+        records.append({
+            "objectId": obj.id,
+            "objectHash": obj.hash,
+            "resourceKind": "band" if is_band else "dos",
+            "resourceId": str(payload.get("resourceId") or obj.id),
+            "resourceHash": str(payload.get("resourceHash") or obj.hash),
+            "energyUnit": payload.get("energyUnit", "eV"),
+            "energyReference": payload.get("energyReference", "source_absolute"),
+            "fermiAvailable": payload.get("fermiEnergyEv") is not None,
+            "spinMode": payload.get("spinMode", "non_spin_polarized"),
+            "kpointCount": len(payload.get("kpoints", [])) if is_band else None,
+            "bandCount": len(payload.get("bands", [])) if is_band else None,
+            "dosPointCount": None if is_band else len(payload.get("energiesEv", [])),
+            "projectionCount": None if is_band else len(payload.get("projections", [])),
+            "projectionCompleteness": None if is_band else payload.get("projectionCompleteness", "UNKNOWN"),
+            "electronicInputStatus": "READY",
+            "reasons": [],
+        })
+    records.sort(key=lambda item: (item["resourceKind"], item["resourceId"], item["resourceHash"]))
+    return {
+        "contractVersion": "1.0",
+        "electronicBandResourcePresent": any(item["resourceKind"] == "band" for item in records),
+        "electronicDosResourcePresent": any(item["resourceKind"] == "dos" for item in records),
+        "eligibleResourceCount": len(records),
+        "resources": records,
+        "status": "READY" if records else "MISSING_REQUIRED_DATA",
+        "reasons": [] if records else ["ELECTRONIC_RESOURCE_MISSING"],
+    }
 
 
 def _trajectory_readiness(objects: list[NormalizedObjectDraft]) -> dict[str, Any]:

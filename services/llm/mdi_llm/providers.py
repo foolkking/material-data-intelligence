@@ -142,6 +142,8 @@ class MockLLMProvider:
             plan = _mock_phonon_dos_plan(request)
         elif _should_generate_phonon_band(request, tools, data_profile):
             plan = _mock_phonon_band_plan(request)
+        elif electronic_tools := _select_electronic_tools(request, tools, data_profile):
+            plan = _mock_electronic_plan(request, data_profile, electronic_tools)
         elif trajectory_analytics_tools := _select_trajectory_analytics_tools(request, tools, data_profile):
             plan = _mock_trajectory_analytics_plan(request, trajectory_analytics_tools)
         elif _should_generate_trajectory_viewer(request, tools, data_profile):
@@ -1452,6 +1454,63 @@ def _select_trajectory_analytics_tools(
     else:
         return []
     return selected if all(_has_tool(tools, tool_id) for tool_id in selected) else []
+
+
+def _select_electronic_tools(request: PlannerRequest, tools: list[RegisteredTool], data_profile: DataProfile) -> list[str]:
+    prompt = request.user_prompt.casefold()
+    markers = ("band structure", "band gap", "electronic dos", "density of states", "projected dos", "electronic structure")
+    if not any(marker in prompt for marker in markers):
+        return []
+    readiness = data_profile.electronicReadiness
+    if readiness is None or readiness.status != "READY":
+        return []
+    combined = "band" in prompt and "dos" in prompt
+    wants_band = combined or any(marker in prompt for marker in ("band structure", "band gap", "electronic structure", "band and dos", "band + dos"))
+    wants_dos = combined or any(marker in prompt for marker in ("electronic dos", "density of states", "projected dos", "electronic structure", "band and dos", "band + dos"))
+    selected = (["electronic.band_structure"] if wants_band else []) + (["electronic.dos"] if wants_dos else [])
+    kinds = {"electronic.band_structure": "band", "electronic.dos": "dos"}
+    for tool_id in selected:
+        resources = [item for item in readiness.resources if item.resourceKind == kinds[tool_id]]
+        if len(resources) > 1:
+            raise LLMProviderError(f"Electronic planning requires clarification among multiple {kinds[tool_id]} resources.")
+        if len(resources) != 1:
+            return []
+    return selected if selected and all(_has_tool(tools, tool_id) for tool_id in selected) else []
+
+
+def _mock_electronic_plan(request: PlannerRequest, data_profile: DataProfile, tool_ids: list[str]) -> dict[str, Any]:
+    readiness = data_profile.electronicReadiness
+    if readiness is None:
+        raise LLMProviderError("Electronic planning requires exact Profile 2.4 readiness.")
+    steps: list[dict[str, Any]] = []
+    expected: list[dict[str, str]] = []
+    for index, tool_id in enumerate(tool_ids, start=1):
+        kind = "band" if tool_id == "electronic.band_structure" else "dos"
+        resource = next(item for item in readiness.resources if item.resourceKind == kind)
+        step_id = f"step_{index:03d}"
+        params = ({"energy_reference": "source", "gap_threshold_ev": 1e-5, "occupancy_threshold": 0.5, "energy_tolerance_ev": 1e-8, "max_plot_points": 500000}
+                  if kind == "band" else {"energy_reference": "source", "include_element_projections": True, "include_orbital_projections": True, "max_projection_channels": 512, "max_plot_points": 500000})
+        steps.append({
+            "stepId": step_id, "toolId": tool_id,
+            "purpose": f"Validate and present the exact supplied electronic {kind} resource.",
+            "reason": "Profile 2.4 binds one exact compatible supplied resource; no electronic calculation is requested.",
+            "inputRefs": [{"refType": "normalized_object", "ref": resource.objectId, "objectType": "ElectronicBand" if kind == "band" else "ElectronicDos"}],
+            "params": params, "output": {"artifactTypes": ["table_json", "plotly_json", "summary_md", "recipe_json"]},
+        })
+        stem = "electronic_band_structure" if kind == "band" else "electronic_dos"
+        expected.extend([
+            {"name": f"{stem}.json", "type": "table_json", "fromStepId": step_id},
+            {"name": f"{stem}_plot.json", "type": "plotly_json", "fromStepId": step_id},
+            {"name": "summary.md", "type": "summary_md", "fromStepId": step_id},
+            {"name": "recipe.json", "type": "recipe_json", "fromStepId": step_id},
+        ])
+    return {
+        "schemaVersion": "0.1", "goal": request.user_prompt, "datasetId": request.dataset_id,
+        "profileId": request.profile_id, "toolRegistryVersion": request.tool_registry_version,
+        "assumptions": ["Electronic outputs are supplied, immutable and exact-Profile-bound."],
+        "warnings": ["The platform validates supplied data and does not perform DFT, GW or Fermi-surface calculations."],
+        "steps": steps, "expectedArtifacts": expected,
+    }
 
 
 def _mock_trajectory_analytics_plan(request: PlannerRequest, tool_ids: list[str]) -> dict[str, Any]:

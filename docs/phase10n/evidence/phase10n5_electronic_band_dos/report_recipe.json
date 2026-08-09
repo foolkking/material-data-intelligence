@@ -1,0 +1,7 @@
+{
+  "bandHash": "b5d4a753ac0901c6e82de9628428229ee354bf89410f12ac50b714842a39d35b",
+  "dosHash": "54e14162dbeb18445f64f14fd068d1135342513ea2694d38b90a542fdefea3d0",
+  "executionAuthority": false,
+  "recipe": "declarative_non_executable",
+  "report": "persisted Artifact composition with supplied-output limitation"
+}

@@ -4470,3 +4470,10 @@ authorized.
 - MSD uses server-side fixed-cell unwrapping and multiple time origins. Wrapped browser coordinates have no scientific authority.
 - Diffusion consumes only exact persisted MSD through AnalysisPlan 0.2, requires an explicit fit window, and emits a qualified estimate only when frozen R-squared, alpha, duration, point and origin diagnostics pass.
 - DataProfile 2.3 is additive JSON readiness. No migration, API family, dependency, lockfile, arbitrary execution, automatic fit-window selection, variable-cell MSD, or N5 task is authorized.
+## Phase 10N-5 Supplied Electronic Authority
+
+- Exactly two scientific Tools consume strict supplied electronic resources.
+- Band+DOS compatibility is deterministic consumer presentation, never a third Tool.
+- Gap/VBM/CBM are bounded sampled-data derivations; Fermi is never invented.
+- Total DOS must be supplied; projection completeness is COMPLETE/PARTIAL/UNKNOWN.
+- Frontend, LLM and Recipe have no electronic calculation, alignment or recomputation authority.

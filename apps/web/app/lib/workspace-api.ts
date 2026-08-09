@@ -56,6 +56,14 @@ export type WorkspaceSelectionKind =
   | "TRAJECTORY_MSD_LAG"
   | "TRAJECTORY_DIFFUSION_WINDOW"
   | "TRAJECTORY_DIFFUSION_DIAGNOSTIC"
+  | "ELECTRONIC_KPOINT"
+  | "ELECTRONIC_BAND"
+  | "ELECTRONIC_BAND_STATE"
+  | "ELECTRONIC_BAND_EDGE"
+  | "ELECTRONIC_BAND_GAP"
+  | "ELECTRONIC_DOS_CHANNEL"
+  | "ELECTRONIC_DOS_PROJECTION"
+  | "ELECTRONIC_DOS_POINT"
   | "PHONON_Q_POINT"
   | "PHONON_BRANCH"
   | "RECIPROCAL_POINT"
@@ -147,6 +155,15 @@ export type WorkspaceSelectionRef = {
   msdLagId: string | null;
   diffusionWindowId: string | null;
   diffusionDiagnosticId: string | null;
+  electronicResourceId: string | null;
+  spinChannelId: string | null;
+  kpointId: string | null;
+  bandId: string | null;
+  bandStateId: string | null;
+  bandEdgeId: string | null;
+  dosChannelId: string | null;
+  projectionId: string | null;
+  energyPointId: string | null;
   phononArtifactId: string | null;
   qPointId: string | null;
   branchId: string | null;

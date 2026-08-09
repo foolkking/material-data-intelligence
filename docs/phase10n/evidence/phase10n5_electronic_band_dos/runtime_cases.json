@@ -1,0 +1,11 @@
+{
+  "dft": false,
+  "dynamicModule": false,
+  "externalNetwork": false,
+  "frontendScientificAuthority": false,
+  "gw": false,
+  "registeredAdapters": [
+    "ElectronicBandStructureAdapter",
+    "ElectronicDosAdapter"
+  ]
+}

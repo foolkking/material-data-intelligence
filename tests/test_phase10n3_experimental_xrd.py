@@ -75,7 +75,7 @@ def _run(tmp_path: Path, *, resource: dict[str, Any] | None = None, theory: dict
 
 def test_registry_adds_one_n3_tool_and_exact_theoretical_dependency() -> None:
     registry = load_manifests()
-    assert len(registry.tools) == 60
+    assert len(registry.tools) == 62
     tool = registry.get_tool_by_id("structure.experimental_xrd_comparison")
     assert tool.version == "0.1.0" and tool.adapter == "ExperimentalXrdComparisonAdapter"
     matrix = build_artifact_compatibility_matrix(registry, selected_tool_ids=["structure.experimental_xrd_comparison", "structure.xrd"])

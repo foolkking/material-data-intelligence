@@ -1164,3 +1164,8 @@ unless also listed in Active Questions. Future-only topics are governed by
 - Completion-record and queue-archive exact-SHA CI remain lifecycle work after implementation CI. Phase 10N-5 remains reviewer-gated and absent from `TASKS.md`.
 - Corrected implementation CI `31299086998` is closed; only completion-record and verified queue-archive CI remain.
 - Completion-record CI `31299648506` is closed; only queue-archive exact-SHA verification remains. N5 has no executable task.
+## Phase 10N-5 Closure
+
+No implementation-critical N5 questions remain. Fermi surfaces, projected
+bands, effective mass, transport and electronic calculation execution remain
+future or excluded scope. Phase 10N-6 requires a new reviewer prompt.

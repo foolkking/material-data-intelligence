@@ -277,6 +277,8 @@
           "PhononDos",
           "PhononEigenvector",
           "Trajectory",
+          "ElectronicBand",
+          "ElectronicDos",
           "VolumetricData",
           "ElementValueMap",
           "RawUnsupported"

@@ -1,0 +1,17 @@
+{
+  "caps": {
+    "artifactBytes": 67108864,
+    "bands": 4096,
+    "dosPoints": 500000,
+    "kpoints": 20000,
+    "pathSegments": 4096,
+    "projectionChannels": 512,
+    "spinChannels": 2,
+    "timeoutSeconds": 120
+  },
+  "developmentMeasurementNotCapacityGuarantee": true,
+  "seconds": {
+    "band": 0.02019429998472333,
+    "dos": 0.01926239999011159
+  }
+}

@@ -88,6 +88,8 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
         return [ScientificIntent.volumetric_analysis, ScientificIntent.visualization]
     if tool_id.startswith("phonon."):
         return [ScientificIntent.phonon_analysis, ScientificIntent.visualization]
+    if tool_id.startswith("electronic."):
+        return [ScientificIntent.electronic_structure_analysis, ScientificIntent.comparison, ScientificIntent.visualization]
     if tool_id.startswith("structure."):
         values = [ScientificIntent.structure_analysis]
         if tool_id in {
@@ -134,6 +136,8 @@ def _needs(tool_id: str) -> list[CapabilityNeed]:
         return [CapabilityNeed.volumetric_resource]
     if tool_id.startswith("phonon."):
         return [CapabilityNeed.phonon_resource]
+    if tool_id.startswith("electronic."):
+        return [CapabilityNeed.electronic_resource]
     if tool_id == "structure.experimental_xrd_comparison":
         return [CapabilityNeed.structure_resource, CapabilityNeed.tabular_data]
     if tool_id.startswith("structure."):

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "phase10n5-electronic-resources.schema.json",
+  "oneOf": [
+    { "$ref": "#/$defs/band" },
+    { "$ref": "#/$defs/dos" }
+  ],
+  "$defs": {
+    "identity": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,95}$" },
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "common": {
+      "type": "object",
+      "required": ["schemaVersion", "resourceId", "resourceVersion", "resourceHash", "calculationIdentity", "energyUnit", "energyReference", "spinMode"],
+      "properties": {
+        "schemaVersion": { "type": "string" },
+        "resourceId": { "$ref": "#/$defs/identity" },
+        "resourceVersion": { "$ref": "#/$defs/identity" },
+        "resourceHash": { "$ref": "#/$defs/hash" },
+        "calculationIdentity": { "$ref": "#/$defs/identity" },
+        "energyUnit": { "const": "eV" },
+        "energyReference": { "enum": ["source_absolute", "fermi_referenced"] },
+        "fermiEnergyEv": { "type": "number" },
+        "spinMode": { "enum": ["non_spin_polarized", "spin_polarized"] }
+      }
+    },
+    "band": {
+      "allOf": [
+        { "$ref": "#/$defs/common" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["schemaVersion", "resourceId", "resourceVersion", "resourceHash", "calculationIdentity", "energyUnit", "energyReference", "spinMode", "reciprocalCoordinates", "kpoints", "pathSegments", "bands"],
+          "properties": {
+            "schemaVersion": { "const": "phase10n5.electronic_band_resource.v1" },
+            "resourceId": { "$ref": "#/$defs/identity" }, "resourceVersion": { "$ref": "#/$defs/identity" }, "resourceHash": { "$ref": "#/$defs/hash" }, "calculationIdentity": { "$ref": "#/$defs/identity" },
+            "sourceMetadata": { "type": "object", "additionalProperties": false, "properties": { "code": { "type": "string", "maxLength": 128 }, "codeVersion": { "type": "string", "maxLength": 128 }, "method": { "type": "string", "maxLength": 128 } } },
+            "structureIdentity": { "type": "object", "additionalProperties": false, "required": ["structureId", "structureHash"], "properties": { "structureId": { "$ref": "#/$defs/identity" }, "structureHash": { "$ref": "#/$defs/hash" } } },
+            "energyUnit": { "const": "eV" }, "energyReference": { "enum": ["source_absolute", "fermi_referenced"] }, "fermiEnergyEv": { "type": "number" }, "spinMode": { "enum": ["non_spin_polarized", "spin_polarized"] },
+            "reciprocalCoordinates": { "const": "fractional_reciprocal" },
+            "kpoints": { "type": "array", "minItems": 1, "maxItems": 65536, "items": { "type": "object", "additionalProperties": false, "required": ["kpointId", "fractionalCoordinates", "pathDistance", "segmentId"], "properties": { "kpointId": { "$ref": "#/$defs/identity" }, "fractionalCoordinates": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "number" } }, "pathDistance": { "type": "number" }, "segmentId": { "$ref": "#/$defs/identity" }, "label": { "type": "string", "maxLength": 32 } } } },
+            "pathSegments": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "type": "object", "additionalProperties": false, "required": ["segmentId", "startKpointId", "endKpointId", "breakAfter"], "properties": { "segmentId": { "$ref": "#/$defs/identity" }, "startKpointId": { "$ref": "#/$defs/identity" }, "endKpointId": { "$ref": "#/$defs/identity" }, "breakAfter": { "type": "boolean" } } } },
+            "bands": { "type": "array", "minItems": 1, "maxItems": 4096, "items": { "type": "object", "additionalProperties": false, "required": ["bandId", "spinChannel", "energiesEv"], "properties": { "bandId": { "$ref": "#/$defs/identity" }, "spinChannel": { "enum": ["none", "up", "down"] }, "energiesEv": { "type": "array", "items": { "type": "number" } }, "occupations": { "type": "array", "items": { "type": "number", "minimum": 0, "maximum": 1 } } } } }
+          }
+        }
+      ]
+    },
+    "dos": {
+      "allOf": [
+        { "$ref": "#/$defs/common" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["schemaVersion", "resourceId", "resourceVersion", "resourceHash", "calculationIdentity", "energyUnit", "energyReference", "spinMode", "dosUnitSemantic", "energiesEv", "totalDos", "projectionCompleteness"],
+          "properties": {
+            "schemaVersion": { "const": "phase10n5.electronic_dos_resource.v1" },
+            "resourceId": { "$ref": "#/$defs/identity" }, "resourceVersion": { "$ref": "#/$defs/identity" }, "resourceHash": { "$ref": "#/$defs/hash" }, "calculationIdentity": { "$ref": "#/$defs/identity" },
+            "sourceMetadata": { "type": "object", "additionalProperties": false, "properties": { "code": { "type": "string", "maxLength": 128 }, "codeVersion": { "type": "string", "maxLength": 128 }, "method": { "type": "string", "maxLength": 128 } } },
+            "structureIdentity": { "type": "object", "additionalProperties": false, "required": ["structureId", "structureHash"], "properties": { "structureId": { "$ref": "#/$defs/identity" }, "structureHash": { "$ref": "#/$defs/hash" } } }, "energyUnit": { "const": "eV" }, "energyReference": { "enum": ["source_absolute", "fermi_referenced"] }, "fermiEnergyEv": { "type": "number" }, "spinMode": { "enum": ["non_spin_polarized", "spin_polarized"] },
+            "dosUnitSemantic": { "enum": ["states_per_ev", "states_per_ev_cell", "states_per_ev_formula_unit", "source_relative"] },
+            "energiesEv": { "type": "array", "minItems": 2, "maxItems": 262144, "items": { "type": "number" } },
+            "totalDos": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/dosChannel" } },
+            "projections": { "type": "array", "maxItems": 512, "items": { "$ref": "#/$defs/projection" } },
+            "projectionCompleteness": { "enum": ["COMPLETE", "PARTIAL", "UNKNOWN"] }
+          }
+        }
+      ]
+    },
+    "dosChannel": { "type": "object", "additionalProperties": false, "required": ["channelId", "spinChannel", "values"], "properties": { "channelId": { "$ref": "#/$defs/identity" }, "spinChannel": { "enum": ["none", "up", "down"] }, "values": { "type": "array", "items": { "type": "number" } } } },
+    "projection": { "type": "object", "additionalProperties": false, "required": ["channelId", "spinChannel", "projectionKind", "label", "values"], "properties": { "channelId": { "$ref": "#/$defs/identity" }, "spinChannel": { "enum": ["none", "up", "down"] }, "projectionKind": { "enum": ["element", "orbital"] }, "label": { "$ref": "#/$defs/identity" }, "values": { "type": "array", "items": { "type": "number" } } } }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "energy_reference": "source",
+  "energy_tolerance_ev": 1e-08,
+  "gap_threshold_ev": 1e-05,
+  "max_plot_points": 500000,
+  "occupancy_threshold": 0.5
+}
