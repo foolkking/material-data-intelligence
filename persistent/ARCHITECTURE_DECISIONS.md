@@ -1,5 +1,17 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-09 ADR: Multi-Axis Validation Authority
+
+Validation status is multi-axis. Regression, browser, service-backed, Artifact,
+reference, numeric, and reproducibility evidence remain independent. Screenshot,
+mapping, fixture existence, self-reference, and evidence recency cannot establish
+independent numeric authority. Tolerances are quantity-specific and owned; exact
+scientific identity never uses fuzzy matching.
+
+Phase 11 is scientific validation, Phase 12 is comprehensive UI/UX redesign, and
+Phase 13 is final product closure. The former Phase 12 final-closure numbering is
+superseded without rewriting history. These phases create no new science by default.
+
 ## 2026-08-06 ADR Addendum: Phase 10N Scientific Authority
 
 N0 retains DataProfile -> Eligibility -> AnalysisPlan -> PlanValidator ->

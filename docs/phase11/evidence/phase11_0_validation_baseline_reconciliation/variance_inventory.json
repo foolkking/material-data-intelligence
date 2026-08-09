@@ -1,0 +1,25 @@
+{
+  "primaryEnvironment": "CURRENT_LOCKED_REPOSITORY_ENVIRONMENT",
+  "targets": {
+    "browsers": [
+      "Chromium",
+      "Firefox",
+      "WebKit",
+      "Chromium 390x844"
+    ],
+    "notReleaseTarget": [
+      "macOS unless repository support is separately established"
+    ],
+    "operatingSystems": [
+      "Linux CI",
+      "Windows primary development/runtime"
+    ]
+  },
+  "taxonomy": [
+    "EXACT",
+    "TOLERANCE_BOUNDED",
+    "DISPLAY_ONLY_VARIANCE",
+    "UNSUPPORTED_PLATFORM",
+    "KNOWN_LIMITATION"
+  ]
+}

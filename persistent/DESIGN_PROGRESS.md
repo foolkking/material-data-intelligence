@@ -1,5 +1,18 @@
 # DESIGN_PROGRESS
 
+## 2026-08-09 Phase 11-0 Validation Baseline Reconciliation
+
+- [x] Verify the N6 implementation/completion/archive authority and clean entry baseline.
+- [x] Admit exactly one Phase 11-0 audit task with no future task creation.
+- [x] Inventory all 62 Registry Tools with separate validation axes.
+- [x] Inventory parser/resource/input support without claiming library-only formats.
+- [x] Index retained evidence, references, fixtures, official examples, tolerances, and gaps.
+- [x] Seal Phase 11-1 through 11-5, Phase 12 UI/UX, and Phase 13 closure boundaries.
+- [ ] Complete implementation, completion-record, and verified queue-archive exact-SHA CI.
+
+No new science, Tool, Artifact family, Profile/Plan version, migration, API,
+dependency, renderer, Planner capability, Runtime behavior, or LLM authority is introduced.
+
 ## 2026-08-06 Phase 10N-0 Scope Seal Complete
 
 - Current Registry/Adapter/Artifact/Profile/Viewer/Report foundations audited.

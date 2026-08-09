@@ -1,5 +1,19 @@
 # PROJECT_BRIEF
 
+## 2026-08-09 Phase 11-0 Validation Governance
+
+Phase 10N is complete at verified queue archive
+`d4d625b57449f9a451d5e27a6eb903625d221bc7`. Phase 11-0 is the sole active
+audit task. It inventories all 62 Registry Tools and current input, evidence,
+reference, fixture, tolerance, and validation-gap authorities without production
+behavior changes. Registry remains 62, DataProfile remains 2.4, and migration
+head remains `0007_phase10m1_workspace_domain`.
+
+The approved current route is Phase 11 scientific validation, Phase 12
+comprehensive UI/UX product experience redesign, and Phase 13 final product
+closure. Future Scope remains unqueued, no Phase 14 exists, and Phase 11-1 is
+reviewer-gated.
+
 ## 2026-08-09 Phase 10N-4 Implementation
 
 Phase 10N-4 is the sole active task. It adds exactly `trajectory.rdf@0.1.0`,

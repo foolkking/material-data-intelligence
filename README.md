@@ -65,7 +65,8 @@ reviewer-supplied task prompt.
 
 The remaining initial-release route is 10K Material Intelligence, 10L Intelligent
 Analysis Agent, 10M Unified Scientific Workspace, 10N Professional Scientific
-Completion, Phase 11 validation, and Phase 12 final product closure. Fermi
+Completion, Phase 11 validation, Phase 12 comprehensive UI/UX redesign, and
+Phase 13 final product closure. Fermi
 Surface is Future Scope. Enterprise SaaS, deployment productization, and a
 plugin marketplace are Not Planned.
 

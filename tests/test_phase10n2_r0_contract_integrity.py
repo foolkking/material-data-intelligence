@@ -60,9 +60,10 @@ def test_n2_r0_scope_is_exact_and_bounded() -> None:
     assert task_count == tasks.count("---END---")
     if task_count:
         assert task_count == 1
-        assert re.search(r"(?:Task:|任务：) Phase 10N-(?:2|3|4|5|6) ", tasks)
+        assert re.search(r"(?:Task:|任务：) Phase (?:10N-(?:2|3|4|5|6)|11-0) ", tasks)
         assert (
             "Status: IN_PROGRESS" in tasks
+            or "Status: AUDIT_COMPLETE / AWAITING_IMPLEMENTATION_CI" in tasks
             or "Status: PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI" in tasks
             or "状态：处理中" in tasks
         )

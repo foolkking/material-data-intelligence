@@ -1,0 +1,957 @@
+{
+  "artifacts": [
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "ChemSysSunburstAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.chem_sys_sunburst",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "ChemSysTreemapAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.chem_sys_treemap",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "CompositionClusterAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.cluster_2d",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "CompositionClusterAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.cluster_3d",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "ElementsHistAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.elements_hist",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "FormulaStatisticsAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.formula_statistics",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "PTableHeatmapAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.ptable_heatmap",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "PTableHeatmapSplitsAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.ptable_heatmap_splits",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "PTableHistsAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.ptable_hists",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "PTableScatterAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.ptable_scatter",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "CompositionSummaryAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "composition.summary",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "composition",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "CompositionSpaceAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "dataset.composition_space",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "overview",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "DatasetMaterialsExplorerAdapter",
+      "secondaryArtifactTypes": [
+        "quality_issues_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "dataset.materials_explorer",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "electronic",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "ElectronicBandStructureAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "electronic.band_structure",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "electronic",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "ElectronicDosAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "electronic.dos",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "metrics_json",
+      "producerAdapter": "BasicMetricsAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.basic_metrics",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "ClassificationEvaluationAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.classification_evaluation",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "DensityScatterAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.density_scatter",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "ErrorByChemSysAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.error_by_chem_sys",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "ErrorByElementAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.error_by_element",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "ErrorDistributionAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "metrics_json",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.error_distribution",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "OutlierTableAdapter",
+      "secondaryArtifactTypes": [
+        "table_csv",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.outlier_table",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "ParityPlotAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.parity_plot",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "RegressionEvaluationAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.regression_evaluation",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "UncertaintyCalibrationAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "metrics_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.uncertainty_calibration",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "UncertaintyEvaluationAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "ml.uncertainty_evaluation",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "phonon",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "phonon_animation_json",
+      "producerAdapter": "PhononAnimationAdapter",
+      "secondaryArtifactTypes": [
+        "phonon_animation_summary_json",
+        "phonon_animation_manifest_json",
+        "recipe_json"
+      ],
+      "toolId": "phonon.animation",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "phonon",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "phonon_band_json",
+      "producerAdapter": "PhononBandAdapter",
+      "secondaryArtifactTypes": [
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "plotly_json",
+        "table_json",
+        "recipe_json"
+      ],
+      "toolId": "phonon.band",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "phonon",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "phonon_band_dos_json",
+      "producerAdapter": "PhononBandDosAdapter",
+      "secondaryArtifactTypes": [
+        "phonon_summary_json",
+        "phonon_compatibility_json",
+        "plotly_json",
+        "table_json",
+        "phonon_manifest_json",
+        "recipe_json"
+      ],
+      "toolId": "phonon.band_dos",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "phonon",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "phonon_dos_json",
+      "producerAdapter": "PhononDosAdapter",
+      "secondaryArtifactTypes": [
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "plotly_json",
+        "table_json",
+        "recipe_json"
+      ],
+      "toolId": "phonon.dos",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "reciprocal_lattice_json",
+      "producerAdapter": "BrillouinZoneAdapter",
+      "secondaryArtifactTypes": [
+        "brillouin_zone_json",
+        "kpath_json",
+        "brillouin_zone_manifest_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.brillouin_zone",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "ChemEnvSunburstAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.chem_env_sunburst",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "StructureCompositionAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.composition_from_structure",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "CrystalNNCoordinationAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.coordination_crystalnn",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "CoordinationHistAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.coordination_hist",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "VoronoiNNCoordinationAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.coordination_voronoinn",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "ExperimentalXrdComparisonAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.experimental_xrd_comparison",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "LatticeSummaryAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.lattice_summary",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "LocalEnvironmentPolyhedraAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.local_environment_polyhedra",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "structure_json",
+      "producerAdapter": "StructurePreviewMetadataAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.preview_metadata",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "RdfAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.rdf",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "SpacegroupSummaryAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.spacegroup_summary",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": false,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "Structure2DAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.structure_2d",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "Structure3DAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.structure_3d",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "structure_json",
+      "producerAdapter": "StructureSummaryAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.summary",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "trajectory",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "trajectory_json",
+      "producerAdapter": "TrajectoryImportAdapter",
+      "secondaryArtifactTypes": [
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json"
+      ],
+      "toolId": "structure.trajectory_import",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "trajectory",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "trajectory_json",
+      "producerAdapter": "TrajectoryViewerAdapter",
+      "secondaryArtifactTypes": [
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json"
+      ],
+      "toolId": "structure.trajectory_viewer",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "structure_json",
+      "producerAdapter": "StructureViewer3DAdapter",
+      "secondaryArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.viewer_3d",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "structure_json",
+      "producerAdapter": "StructureViewerExportPackageAdapter",
+      "secondaryArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.viewer_export_package",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "structure_json",
+      "producerAdapter": "StructureViewerSceneAdapter",
+      "secondaryArtifactTypes": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.viewer_scene",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "structure_json",
+      "producerAdapter": "StructureViewerSceneMetadataAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.viewer_scene_metadata",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "volumetric",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "volumetric_grid_json",
+      "producerAdapter": "VolumetricDataAdapter",
+      "secondaryArtifactTypes": [
+        "volumetric_payload_json",
+        "volumetric_field_json",
+        "volumetric_dataset_json",
+        "volumetric_manifest_json",
+        "volumetric_binary",
+        "volumetric_structure_overlay_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.volumetric_data",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "pymatviz_manifest.yaml",
+      "displayTarget": "structure",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "XrdPatternAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "structure.xrd",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "overview",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "DistributionSummaryAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "table.distribution_summary",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "overview",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "NumericSummaryAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "table.numeric_summary",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "trajectory",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "TrajectoryDiffusionAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "trajectory.diffusion",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "trajectory",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "TrajectoryMsdAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "trajectory.msd",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "trajectory",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "TrajectoryRdfAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "trajectory.rdf",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "matterviz_manifest.yaml",
+      "displayTarget": "trajectory",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "matterviz_html",
+      "producerAdapter": "TrajectoryViewerAdapter",
+      "secondaryArtifactTypes": [
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "trajectory.viewer",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "table_json",
+      "producerAdapter": "CorrelationAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_json",
+        "plotly_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "viz.correlation",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "HistogramAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "viz.histogram",
+      "version": "0.1.0"
+    },
+    {
+      "adapterRegistered": true,
+      "contractSource": "platform_builtin_manifest.yaml",
+      "displayTarget": "ml",
+      "identityRequirement": "EXACT_TOOL_VERSION_RESOURCE_HASH_AND_ARTIFACT_CHECKSUM",
+      "primaryArtifactType": "plotly_json",
+      "producerAdapter": "ScatterAdapter",
+      "secondaryArtifactTypes": [
+        "plotly_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "toolId": "viz.scatter",
+      "version": "0.1.0"
+    }
+  ],
+  "rowCount": 62
+}

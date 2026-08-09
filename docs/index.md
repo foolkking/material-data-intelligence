@@ -7,7 +7,7 @@
 - [`01_PRODUCT_REQUIREMENTS.md`](01_PRODUCT_REQUIREMENTS.md): current initial
   release requirements and professional completion boundary.
 - [`ROADMAP.md`](ROADMAP.md): the only authoritative post-J6 roadmap, from
-  Phase 10K Material Intelligence through Phase 12 final closure.
+  Phase 10K Material Intelligence through Phase 13 final closure.
 - [`CAPABILITY_STATUS_MATRIX.md`](CAPABILITY_STATUS_MATRIX.md): current
   READY/PARTIAL_READY/PLANNED/FUTURE/NOT_PLANNED truth.
 - [`FUTURE_SCOPE.md`](FUTURE_SCOPE.md): domain-relevant, non-blocking,
@@ -17,6 +17,17 @@
 
 Historical phase planning and evidence are retained below. They are not
 authoritative for future scope when they conflict with `ROADMAP.md`.
+
+## Phase 11 Scientific Validation
+
+- [`phase11/phase11_0_validation_baseline_reconciliation.md`](phase11/phase11_0_validation_baseline_reconciliation.md): Phase 10N baseline and audit conclusion.
+- [`phase11/phase11_validation_governance.md`](phase11/phase11_validation_governance.md): multi-axis validation and honest coverage authority.
+- [`phase11/phase11_tool_validation_matrix.md`](phase11/phase11_tool_validation_matrix.md): all 62 Registry Tools.
+- [`phase11/phase11_input_support_matrix.md`](phase11/phase11_input_support_matrix.md): parser/resource/platform support truth.
+- [`phase11/phase11_reference_evidence_inventory.md`](phase11/phase11_reference_evidence_inventory.md): retained evidence, fixture, and official-example provenance.
+- [`phase11/phase11_tolerance_registry.md`](phase11/phase11_tolerance_registry.md): quantity-specific tolerance ownership.
+- [`phase11/phase11_implementation_backlog.md`](phase11/phase11_implementation_backlog.md): exact Phase 11-1 through 11-5 scope.
+- [`phase11/evidence/phase11_0_validation_baseline_reconciliation/manifest.json`](phase11/evidence/phase11_0_validation_baseline_reconciliation/manifest.json): normalized Phase 11-0 evidence manifest.
 
 Phase 10N-1 coordination contracts and evidence: `phase10n/phase10n1_coordination_contract.md`,
 `phase10n/phase10n1_algorithm_parameter_contract.md`,

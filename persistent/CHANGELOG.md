@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-08-09 - Phase 11-0 Validation Governance Audit
+
+- Reconciled the verified Phase 10N archive into an audit-only Phase 11 baseline.
+- Added deterministic 62-Tool, Artifact, input, evidence, reference, fixture,
+  tolerance, variance, official-example, and validation-gap inventories.
+- Sealed multi-axis validation governance: software/browser/service evidence does
+  not imply independent numeric scientific validation.
+- Revised the canonical roadmap to Phase 11 validation, Phase 12 comprehensive
+  UI/UX redesign, and Phase 13 final product closure; no Phase 14 was created.
+- Production science, Registry 62, DataProfile 2.4, migration 0007, APIs,
+  dependencies, lockfile, Runtime, Planner, renderers, and LLM behavior are unchanged.
+
 ## 2026-08-08 - Phase 10N-2 Implementation
 
 - Added one registered N2 Tool and Adapter for geometry-derived local-environment

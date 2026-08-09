@@ -128,7 +128,9 @@ def test_phase10m7_document_links_and_phase10n_gate() -> None:
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     assert task_count in {0, 1}
-    if task_count and ("Task: Phase 10N-6" in tasks or "任务：Phase 10N-6" in tasks):
+    if task_count and "Task: Phase 11-0" in tasks:
+        assert "Phase 10N-6:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
+    elif task_count and ("Task: Phase 10N-6" in tasks or "任务：Phase 10N-6" in tasks):
         assert "Phase 10N-5:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
     elif task_count and "Task: Phase 10N-5" in tasks:
         assert "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
@@ -158,5 +160,6 @@ def test_phase10m7_document_links_and_phase10n_gate() -> None:
         or "Phase 10N-4 Trajectory RDF / MSD / Diffusion" in block
             or "Phase 10N-5 Electronic Band Structure + DOS" in block
             or "Phase 10N-6 Professional Capability Integration + Evidence Closure" in block
+            or "Phase 11-0 Validation Baseline Reconciliation + Governance Seal" in block
         for block in task_blocks
     )

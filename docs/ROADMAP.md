@@ -94,26 +94,50 @@ is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`.
 
 Fermi Surface is not part of Phase 10N or the initial release.
 
-Current status: Phase 10N-0 through 10N-4 are archived. Phase 10N-5 is the one
-active authorized task and adds two supplied-output-only electronic Tools.
-Phase 10N-6 remains `REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`.
+Current status: Phase 10N-0 through 10N-6 are complete and evidence-closed as
+`COMPLETE / READY_WITH_EXPLICIT_LIMITS`. Phase 11-0 is the sole active audit and
+governance task. Phase 11-1 is reviewer-gated; Phase 12 and Phase 13 are approved
+roadmap only and have no executable tasks.
 
-### Phase 11 - Scientific Validation and Honest Coverage
+### Phase 11 - Scientific Validation, Provenance, Reproducibility, and Honest Coverage
 
-* 11A: benchmark governance.
-* 11B: safe static example and fixture extraction.
-* 11C: reference validation for initial-release capabilities.
-* 11D: official capability coverage closure using explicit states:
-  `OFFICIAL_VERIFIED`, `DIRECT_VERIFIED`, `REFERENCE_VERIFIED`,
-  `MAPPING_ONLY`, `EXTRACTION_REQUIRED`, `FUTURE_SCOPE`, or `UNSUPPORTED`.
+* 11-0: Validation Baseline Reconciliation + Governance Seal.
+* 11-1: Reference Provenance + Safe Fixture Consolidation.
+* 11-2: Cross-Capability Golden Scientific Benchmark Suite.
+* 11-3: Cross-Platform Reproducibility + Variance Characterization.
+* 11-4: Honest Tool / Input / Example Coverage Matrix.
+* 11-5: Scientific Validation Closure + Release Candidate Gate.
 
-### Phase 12 - Final Product Closure
+Phase 11 adds no science by default. Registry remains 62 and DataProfile remains
+2.4 unless a scientific defect is separately reviewed and authorized.
 
-* 12-1: five complete end-to-end demo packs.
-* 12-2: user and scientific documentation.
-* 12-3: focused final UI polish.
-* 12-4: full platform regression.
-* 12-5: final readiness and baseline freeze.
+### Phase 12 - Comprehensive UI/UX Product Experience Redesign
+
+* 12-0: Current UX Reality Audit + Product Experience Seal.
+* 12-1: Design System 2.0 + Visual Language.
+* 12-2: Global Navigation + Planner / Agent Experience.
+* 12-3: Scientific Workspace + Viewer Experience Redesign.
+* 12-4: Findings / Evidence / Inspector / Provenance Experience.
+* 12-5: Report / Recipe Experience Redesign.
+* 12-6: Responsive / Mobile / Accessibility Closure.
+* 12-7: Cross-Product UX Validation + Design Evidence Closure.
+
+Phase 12 adds no scientific Tool, algorithm, Profile version, AnalysisPlan version,
+or scientific Artifact authority by default.
+
+### Phase 13 - Final Product Closure
+
+* 13-0: Final Fact Alignment + Release Scope Seal.
+* 13-1: Release-Critical Integration Gap Closure.
+* 13-2: Seven Canonical End-to-End Demonstrations.
+* 13-3: Documentation + Reproducibility Package.
+* 13-4: Targeted Final Product Polish.
+* 13-5: Final Regression + Release Acceptance.
+* 13-6: Final Archive + Presentation Package.
+
+The former `Phase 12 - Final Product Closure` numbering is
+`SUPERSEDED_BY_APPROVED_ROADMAP_REVISION`. Historical records remain unchanged.
+No Phase 14 is created.
 
 ## Scope Authority
 
@@ -128,13 +152,13 @@ technically possible.
 
 ### Phase 10N - Professional Scientific Completion
 
-Phase 10N-0 through Phase 10N-4 are complete. N5 consumes strict supplied Band
+Phase 10N-0 through Phase 10N-6 are complete. N5 consumes strict supplied Band
 and DOS resources through independent registered Adapters; it performs no DFT,
 GW, DOS generation, projected-band analysis or Fermi-surface generation.
-Combined Band+DOS is deterministic presentation, not a third Tool. N6 remains
-the single active integration/evidence closure task. It adds no science, Tool,
-Artifact family, Profile version, migration, API or dependency. Phase 11 remains
-reviewer-gated and has no executable task.
+Combined Band+DOS is deterministic presentation, not a third Tool. N6 closed
+integration/evidence without new science, Tool, Artifact family, Profile version,
+migration, API or dependency. Phase 11-0 now audits validation authority and
+evidence honesty; Phase 11-1 remains reviewer-gated.
 
 ## Historical Numbering Reconciliation
 

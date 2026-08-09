@@ -56,7 +56,10 @@ def test_n5_r0_required_contract_documents_exist_without_critical_tbd() -> None:
 def test_n5_queue_state_remains_compatible_through_n6_archive() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert tasks.count("---TASK---") == tasks.count("---END---")
-    if "Task: Phase 10N-6" in tasks or "任务：Phase 10N-6" in tasks:
+    if "Task: Phase 11-0" in tasks:
+        assert tasks.count("---TASK---") == 1
+        assert "Phase 10N-6:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
+    elif "Task: Phase 10N-6" in tasks or "任务：Phase 10N-6" in tasks:
         assert tasks.count("---TASK---") == 1
         assert "Phase 10N-5:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
     elif "Task: Phase 10N-5" in tasks:

@@ -119,7 +119,10 @@ def test_n6_queue_lifecycle_and_no_phase11_task() -> None:
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     assert task_count in {0, 1}
-    if task_count:
+    if task_count and "Task: Phase 11-0" in tasks:
+        assert "Phase 10N-6:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
+        assert "Task: Phase 11-1" not in tasks
+    elif task_count:
         assert "Task: Phase 10N-6 Professional Capability Integration + Evidence Closure" in tasks
         assert any(
             state in tasks
@@ -128,7 +131,7 @@ def test_n6_queue_lifecycle_and_no_phase11_task() -> None:
                 "Status: PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI",
             )
         )
-    assert "Task: Phase 11" not in tasks
+    assert "Task: Phase 11-1" not in tasks
 
 
 def test_n6_final_boundary_docs_do_not_queue_phase11() -> None:

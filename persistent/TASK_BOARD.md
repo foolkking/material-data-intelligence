@@ -1,5 +1,15 @@
 # TASK_BOARD
 
+## Phase 11-0 Validation Baseline Reconciliation + Governance Seal
+
+- [x] Verify Phase 10N verified archive authority and the 62/2.4/0007 baseline.
+- [x] Admit exactly one audit-only Phase 11-0 task.
+- [x] Reconcile Tool, Artifact, Adapter, input, evidence, fixture, reference, tolerance, and gap inventories.
+- [x] Freeze validation levels, reference authority, fixture governance, variance taxonomy, and revalidation triggers.
+- [x] Approve roadmap numbering: Phase 11 validation, Phase 12 UI/UX, Phase 13 final closure.
+- [ ] Pass three exact-SHA lifecycle gates and archive only Phase 11-0.
+- [x] Keep Phase 11-1, Phase 12, and Phase 13 absent from the executable queue.
+
 ## 2026-08-09 Phase 10N-4 Trajectory RDF / MSD / Diffusion
 
 - [x] Verify N3 implementation/completion/archive authority and clean Registry-57 entry.

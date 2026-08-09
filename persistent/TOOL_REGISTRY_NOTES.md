@@ -1,5 +1,14 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-08-09 Phase 11-0 Registry Validation Inventory
+
+The live Registry remains exactly 62 Tools at DataProfile 2.4. Phase 11-0 adds no
+Tool or Registry semantic. Its 62-row evidence matrix is generated from the three
+live manifests and separately records Adapter registration, Artifact declarations,
+scientific role, validation level, reference strength, browser/service status,
+reproducibility, limits, and gaps. Registry declaration without a registered
+Adapter is not represented as executable scientific authority.
+
 ## 2026-08-06 Phase 10M-7 Integration Boundary
 
 M7 adds or changes zero Tool Registry entries, ports, versions, planner

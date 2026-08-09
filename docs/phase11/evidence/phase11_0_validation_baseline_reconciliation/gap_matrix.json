@@ -1,0 +1,138 @@
+{
+  "gapCount": 12,
+  "gaps": [
+    {
+      "blockingRelease": false,
+      "capability": "structure.coordination_*",
+      "currentEvidence": "OFFICIAL_LIBRARY_REFERENCE self-reference",
+      "gapId": "GAP-11-001",
+      "missingEvidence": "independent provenance review and immutable source fixture",
+      "priority": "P1",
+      "recommendedReferenceType": "OFFICIAL_LIBRARY_REFERENCE",
+      "targetPhase": "11-1",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "structure.local_environment_polyhedra",
+      "currentEvidence": "controlled synthetic and internal geometry checks",
+      "gapId": "GAP-11-002",
+      "missingEvidence": "independent geometry/ConvexHull reference case",
+      "priority": "P1",
+      "recommendedReferenceType": "INDEPENDENT_CROSS_LIBRARY_REFERENCE",
+      "targetPhase": "11-2",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "structure.experimental_xrd_comparison",
+      "currentEvidence": "controlled detector/matcher fixtures",
+      "gapId": "GAP-11-003",
+      "missingEvidence": "analytic golden matcher and detector boundary suite",
+      "priority": "P1",
+      "recommendedReferenceType": "ANALYTIC_REFERENCE",
+      "targetPhase": "11-2",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "trajectory.rdf",
+      "currentEvidence": "controlled lattice/window/species fixtures",
+      "gapId": "GAP-11-004",
+      "missingEvidence": "independent RDF normalization benchmark",
+      "priority": "P1",
+      "recommendedReferenceType": "ANALYTIC_REFERENCE",
+      "targetPhase": "11-2",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "trajectory.msd/diffusion",
+      "currentEvidence": "analytic motion and random-walk fixtures",
+      "gapId": "GAP-11-005",
+      "missingEvidence": "cross-platform variance characterization",
+      "priority": "P1",
+      "recommendedReferenceType": "ANALYTIC_REFERENCE",
+      "targetPhase": "11-3",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "electronic.band_structure/electronic.dos",
+      "currentEvidence": "controlled supplied electronic fixtures",
+      "gapId": "GAP-11-006",
+      "missingEvidence": "source provenance and redistribution status for release fixtures",
+      "priority": "P1",
+      "recommendedReferenceType": "OFFICIAL_PROJECT_EXAMPLE",
+      "targetPhase": "11-1",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "phonon.*",
+      "currentEvidence": "retained official-example mapping and internal expected values",
+      "gapId": "GAP-11-007",
+      "missingEvidence": "consolidated source hashes, license, and independent expected-value provenance",
+      "priority": "P1",
+      "recommendedReferenceType": "OFFICIAL_PROJECT_EXAMPLE",
+      "targetPhase": "11-1",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "structure.brillouin_zone",
+      "currentEvidence": "contract and controlled geometry fixtures",
+      "gapId": "GAP-11-008",
+      "missingEvidence": "independent reciprocal-cell invariant benchmark",
+      "priority": "P2",
+      "recommendedReferenceType": "ANALYTIC_REFERENCE",
+      "targetPhase": "11-2",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "structure.volumetric_data",
+      "currentEvidence": "parser/contract/browser evidence",
+      "gapId": "GAP-11-009",
+      "missingEvidence": "fixture license and source provenance consolidation",
+      "priority": "P2",
+      "recommendedReferenceType": "OFFICIAL_PROJECT_EXAMPLE",
+      "targetPhase": "11-1",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "materials ML and composition",
+      "currentEvidence": "internal regression plus selected analytic metrics",
+      "gapId": "GAP-11-010",
+      "missingEvidence": "cross-capability golden metrics and seed/sign invariants",
+      "priority": "P1",
+      "recommendedReferenceType": "ANALYTIC_REFERENCE",
+      "targetPhase": "11-2",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "all quantitative release tools",
+      "currentEvidence": "current locked environment evidence",
+      "gapId": "GAP-11-011",
+      "missingEvidence": "Linux/Windows locked-environment variance matrix",
+      "priority": "P1",
+      "recommendedReferenceType": "INDEPENDENT_CROSS_LIBRARY_REFERENCE",
+      "targetPhase": "11-3",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    },
+    {
+      "blockingRelease": false,
+      "capability": "historical official examples",
+      "currentEvidence": "mapping/direct-upload inventories",
+      "gapId": "GAP-11-012",
+      "missingEvidence": "deduplicated honest Tool/Input/Example coverage verdicts",
+      "priority": "P2",
+      "recommendedReferenceType": "OFFICIAL_PROJECT_EXAMPLE",
+      "targetPhase": "11-4",
+      "whyNeeded": "Required to distinguish regression strength from independent scientific validation."
+    }
+  ],
+  "p0Count": 0
+}

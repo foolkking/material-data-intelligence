@@ -1,0 +1,376 @@
+{
+  "inputs": [
+    {
+      "MIME": [
+        "text/csv",
+        "application/csv"
+      ],
+      "eligibleTools": [
+        "table.*",
+        "viz.*",
+        "ml.*",
+        "dataset.*"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/parsers.py"
+      ],
+      "extensions": [
+        ".csv"
+      ],
+      "identity": "resource ID/version/content hash",
+      "inputFamily": "CSV table",
+      "limits": [
+        "bounded upload and row caps"
+      ],
+      "parser": "pandas.read_csv via CsvParser",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "DataFrame",
+      "supportVerdict": "DIRECT_SUPPORTED",
+      "unitSemantics": "column metadata or unknown",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "application/json"
+      ],
+      "eligibleTools": [
+        "contract-dependent"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/parsers.py"
+      ],
+      "extensions": [
+        ".json"
+      ],
+      "identity": "resource ID/version/content hash plus typed identities",
+      "inputFamily": "JSON canonical resources",
+      "limits": [
+        "strict schemas",
+        "bounded arrays"
+      ],
+      "parser": "JsonParser with duplicate-key rejection",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "typed table/structure/trajectory/XRD/electronic JSON",
+      "supportVerdict": "SUPPORTED_WITH_LIMITS",
+      "unitSemantics": "explicit per contract",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "chemical/x-cif",
+        "text/plain with sniffing"
+      ],
+      "eligibleTools": [
+        "structure.*"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py"
+      ],
+      "extensions": [
+        ".cif"
+      ],
+      "identity": "content hash plus structure/site identity",
+      "inputFamily": "CIF structure",
+      "limits": [
+        "single supported structure resource"
+      ],
+      "parser": "pymatgen Structure",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "Structure",
+      "supportVerdict": "DIRECT_SUPPORTED",
+      "unitSemantics": "angstrom/fractional",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "text/plain with name/content sniffing"
+      ],
+      "eligibleTools": [
+        "structure.*"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py"
+      ],
+      "extensions": [],
+      "identity": "content hash plus structure/site identity",
+      "inputFamily": "VASP POSCAR/CONTCAR structure",
+      "limits": [
+        "recognized canonical names/prefixes"
+      ],
+      "parser": "pymatgen Structure",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "Structure",
+      "supportVerdict": "DIRECT_SUPPORTED",
+      "unitSemantics": "angstrom/fractional",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "chemical/x-xyz",
+        "text/plain"
+      ],
+      "eligibleTools": [
+        "structure.*"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/parsers.py"
+      ],
+      "extensions": [
+        ".xyz"
+      ],
+      "identity": "content hash plus stable atom ordinal within immutable resource",
+      "inputFamily": "XYZ structure",
+      "limits": [
+        "single-frame structure semantics"
+      ],
+      "parser": "ASE Atoms",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "Structure/Atoms",
+      "supportVerdict": "SUPPORTED_WITH_LIMITS",
+      "unitSemantics": "angstrom",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "text/plain"
+      ],
+      "eligibleTools": [
+        "trajectory.rdf",
+        "trajectory.msd",
+        "trajectory.diffusion",
+        "structure.trajectory_viewer"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/trajectory.py"
+      ],
+      "extensions": [
+        ".extxyz"
+      ],
+      "identity": "trajectory hash plus frame/atom identity",
+      "inputFamily": "EXTXYZ trajectory",
+      "limits": [
+        "physical time required for MSD/diffusion",
+        "stable atom order required"
+      ],
+      "parser": "ASE extxyz",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "canonical trajectory when multiple frames",
+      "supportVerdict": "SUPPORTED_WITH_LIMITS",
+      "unitSemantics": "explicit trajectory contract",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "text/plain with canonical name sniffing"
+      ],
+      "eligibleTools": [
+        "structure.volumetric_data"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/volumetric.py"
+      ],
+      "extensions": [],
+      "identity": "source hash plus field/grid identity",
+      "inputFamily": "VASP volumetric grid",
+      "limits": [
+        "CHGCAR/CHG/LOCPOT/ELFCAR/PARCHG names",
+        "voxel/source caps"
+      ],
+      "parser": "bounded VASP volumetric parser",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "volumetric-field/v1",
+      "supportVerdict": "SUPPORTED_WITH_LIMITS",
+      "unitSemantics": "source-qualified field units",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "text/plain"
+      ],
+      "eligibleTools": [
+        "structure.volumetric_data"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/volumetric.py"
+      ],
+      "extensions": [
+        ".cube"
+      ],
+      "identity": "source hash plus field/grid identity",
+      "inputFamily": "Gaussian CUBE",
+      "limits": [
+        "single dataset",
+        "multi-orbital unsupported"
+      ],
+      "parser": "bounded single-dataset CUBE parser",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "volumetric-field/v1",
+      "supportVerdict": "SUPPORTED_WITH_LIMITS",
+      "unitSemantics": "source-qualified field units",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "application/zip"
+      ],
+      "eligibleTools": [
+        "member-dependent"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/parsers.py"
+      ],
+      "extensions": [
+        ".zip"
+      ],
+      "identity": "container/member hashes",
+      "inputFamily": "ZIP container",
+      "limits": [
+        "100 files",
+        "50 MB uncompressed",
+        "depth 5",
+        "safe paths"
+      ],
+      "parser": "safe recursive archive dispatcher",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "contained supported resources",
+      "supportVerdict": "SUPPORTED_WITH_LIMITS",
+      "unitSemantics": "member contract",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "spreadsheet MIME"
+      ],
+      "eligibleTools": [],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py"
+      ],
+      "extensions": [
+        ".xlsx",
+        ".xls"
+      ],
+      "identity": null,
+      "inputFamily": "XLSX/Excel",
+      "limits": [],
+      "parser": null,
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": null,
+      "supportVerdict": "UNSUPPORTED",
+      "unitSemantics": null,
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "application/vnd.apache.parquet"
+      ],
+      "eligibleTools": [],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py"
+      ],
+      "extensions": [
+        ".parquet"
+      ],
+      "identity": null,
+      "inputFamily": "Parquet",
+      "limits": [],
+      "parser": null,
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": null,
+      "supportVerdict": "UNSUPPORTED",
+      "unitSemantics": null,
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [],
+      "eligibleTools": [],
+      "evidenceRefs": [
+        "docs/FUTURE_SCOPE.md"
+      ],
+      "extensions": [
+        ".lammpstrj",
+        ".dump"
+      ],
+      "identity": null,
+      "inputFamily": "LAMMPS trajectory",
+      "limits": [],
+      "parser": null,
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": null,
+      "supportVerdict": "UNSUPPORTED",
+      "unitSemantics": null,
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "application/json",
+        "text/yaml"
+      ],
+      "eligibleTools": [
+        "phonon.band",
+        "phonon.dos",
+        "phonon.band_dos"
+      ],
+      "evidenceRefs": [
+        "docs/phase10f/official_examples_direct_verification"
+      ],
+      "extensions": [
+        ".yaml",
+        ".yml",
+        ".json"
+      ],
+      "identity": "mapping-defined",
+      "inputFamily": "Phonon YAML/JSON",
+      "limits": [
+        "not a claimed generic upload path"
+      ],
+      "parser": "No generic direct-upload parser; normalized Tool mapping only",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "Tool-specific normalized phonon payload",
+      "supportVerdict": "MAPPING_ONLY",
+      "unitSemantics": "mapping-defined",
+      "workspaceSupport": "Artifact renderer dependent"
+    },
+    {
+      "MIME": [
+        "application/json"
+      ],
+      "eligibleTools": [
+        "electronic.band_structure",
+        "electronic.dos"
+      ],
+      "evidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/parsers.py"
+      ],
+      "extensions": [
+        ".json"
+      ],
+      "identity": "source resource hash plus calculation/k-point/band/channel identities",
+      "inputFamily": "Supplied electronic Band/DOS JSON",
+      "limits": [
+        "no raw calculation directory",
+        "no DFT execution"
+      ],
+      "parser": "strict canonical electronic resource mapper",
+      "plannerSupport": "Capability-specific",
+      "profileSupport": "DataProfile 2.4 where resource semantics are recognized",
+      "resourceContract": "electronic-band-resource/0.1.0 or electronic-dos-resource/0.1.0",
+      "supportVerdict": "SUPPORTED_WITH_LIMITS",
+      "unitSemantics": "explicit eV and source-qualified DOS",
+      "workspaceSupport": "Artifact renderer dependent"
+    }
+  ],
+  "rowCount": 14
+}

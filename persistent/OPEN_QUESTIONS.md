@@ -1,5 +1,14 @@
 # OPEN_QUESTIONS
 
+## 2026-08-09 Phase 11 Validation Questions
+
+No Phase 11-0 implementation-critical question remains. The exact non-blocking
+validation gaps are assigned to Phase 11-1 through 11-4, including source/license
+provenance, independent geometry/XRD/RDF benchmarks, and Linux/Windows variance.
+Phase 11-1 requires a new reviewer prompt. Any discovered wrong scientific value,
+unit, formula, threshold, or persisted semantic remains reviewer-required and may
+not be repaired under the audit authority.
+
 ## 2026-08-06 Phase 10N Reviewer Decisions
 
 N0 has no implementation blocker. Reviewer approval is required for additive

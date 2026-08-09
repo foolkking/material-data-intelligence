@@ -1,0 +1,22 @@
+{
+  "invalidating": [
+    "Tool scientific version change",
+    "algorithm change",
+    "parameter-default semantic change",
+    "Artifact scientific contract change",
+    "unit/reference semantic change",
+    "scientific parser semantic change",
+    "computation-authority dependency version change",
+    "fixture expected-value change",
+    "tolerance change",
+    "identity model change"
+  ],
+  "numericNonInvalidating": [
+    "CSS-only change",
+    "typography",
+    "layout",
+    "non-scientific wording",
+    "presentation order"
+  ],
+  "presentationRegressionStillRequired": true
+}

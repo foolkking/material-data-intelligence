@@ -2109,3 +2109,12 @@ N6 introduces no production schema. DataProfile remains 2.4, Registry remains 62
 and all N1-N5 Artifact and Selection contracts retain their sealed meanings. The
 `Phase10NProfessionalCapabilityMatrix` and identity/unit matrices are evidence-only
 JSON and have no runtime or scientific authority.
+
+## Phase 11 Validation Governance Boundary
+
+Phase 11-0 introduces no production schema. Tool/Input validation matrices,
+reference, fixture, tolerance, variance, and gap registries are evidence-only.
+They do not change Registry 62, DataProfile 2.4, AnalysisPlan 0.1/0.2, Artifact
+contracts, Runtime authority, APIs, or database persistence. Browser, service,
+mapping, fixture-existence, and self-reference states remain separate from
+independent numeric validation.
