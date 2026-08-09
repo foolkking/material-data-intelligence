@@ -439,4 +439,4 @@ passed exact-SHA CI `31316556495`. The task remains only for completion-record a
 verified queue-archive CI; Phase 11 remains non-executable.
 ## Phase 11-1 State
 
-Phase 11-1 provenance and fixture consolidation is complete after implementation CI success. It preserves Registry 62, DataProfile 2.4, and the sealed scientific contracts. Numeric validation remains Phase 11-2 scope.
+Phase 11-1 provenance and fixture consolidation is complete after implementation CI success. Phase 11-2 golden benchmark execution is now active using the sealed handoff. It preserves Registry 62, DataProfile 2.4, and the sealed scientific contracts.

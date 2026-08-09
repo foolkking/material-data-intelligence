@@ -22,3 +22,7 @@ The audit generator reads repository contracts and metadata only. It performs no
 ## Phase 11-1 Execution
 
 `scripts/generate_phase11_1_provenance.py` reuses retained bytes, verifies their checksums, and writes the provenance, license, transformation, independence, fixture, and 11-2 handoff evidence pack. It performs no external retrieval and no numeric comparison. Acceptance IDs are recorded in `acceptance_registry.json`.
+
+## Phase 11-2 Execution
+
+`scripts/run_phase11_2_golden_benchmarks.py` validates the sealed handoff, checks fixture/source checksums and tolerance IDs, emits separate expected/actual/comparison records, preserves reference-limited N/A cases, and writes the Phase 11-3 input handoff. It adds no scientific production authority.

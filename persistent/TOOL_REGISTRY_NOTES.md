@@ -1533,3 +1533,5 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 ## Phase 11-1 Registry Freeze
 
 Registry remains exactly 62. Phase 11-1 adds no Tool, Adapter, Artifact family, or DataProfile field; its generated evidence only links existing Tool/version contracts to prepared benchmark inputs.
+
+Phase 11-2 also keeps the Registry at 62 and records benchmark results only under `docs/phase11/evidence`; no benchmark-only Tool exists.

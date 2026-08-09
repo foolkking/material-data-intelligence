@@ -39,6 +39,21 @@ GAP_SOURCE_TOKENS = {
     "GAP-11-012": ("phase10f", "official"),
 }
 
+GAP_TOLERANCES = {
+    "GAP-11-001": "n1.coordination.numeric.v1",
+    "GAP-11-002": "n2.classification.tie.v1",
+    "GAP-11-003": "n3.match.position.v1",
+    "GAP-11-004": "n4.time.constant.v1",
+    "GAP-11-005": "n4.diffusion.regime.v1",
+    "GAP-11-006": "n5.energy.v1",
+    "GAP-11-007": "phonon.frequency.zero.v1",
+    "GAP-11-008": "brillouin.symmetry.v1",
+    "GAP-11-009": "identity.exact.v1",
+    "GAP-11-010": "identity.exact.v1",
+    "GAP-11-011": "identity.exact.v1",
+    "GAP-11-012": "identity.exact.v1",
+}
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -195,7 +210,7 @@ def main() -> None:
             "fixtureChecksum": reference["sourceChecksum"],
             "expectedContentSource": reference["expectedContentDescription"],
             "units": reference["unitSemantics"],
-            "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+            "toleranceId": GAP_TOLERANCES[reference["phase11GapIds"][0]],
             "caseRole": "positive-and-negative-cases-defined-by-gap",
             "referenceStrength": reference["referenceType"],
             "independence": reference["referenceIndependence"],

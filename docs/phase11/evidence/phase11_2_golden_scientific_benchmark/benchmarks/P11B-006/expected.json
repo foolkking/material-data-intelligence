@@ -1,0 +1,9 @@
+{
+  "benchmarkId": "P11B-006",
+  "expectedTruth": "source provenance and redistribution status for release fixtures",
+  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
+  "fixtureChecksum": "f91e2cd906e36ffbe60b676ff9de465db1e230113306c28880672c0ba63dbbaa",
+  "fixtureId": "P11FIX-006",
+  "referenceId": "P11REF-006",
+  "toleranceId": "n5.energy.v1"
+}

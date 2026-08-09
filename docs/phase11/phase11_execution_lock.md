@@ -24,3 +24,7 @@ Phase 11-1, Phase 12, Phase 13, and Phase 14 are not executable. Only one Phase 
 ## Phase 11-1 Lock
 
 Phase 11-1 keeps Registry 62, DataProfile 2.4, migration 0007, tolerances, scientific Artifact semantics, Planner, Runtime, APIs, dependencies, and lockfile unchanged. It may add provenance metadata, immutable fixture registries, deterministic audit tooling, tests, and documentation. It may not declare numeric scientific PASS, promote validation levels, execute external code, or create the Phase 11-2 task.
+
+## Phase 11-2 Lock
+
+Phase 11-2 consumes only the sealed Phase 11-1 handoff and existing locked dependencies. Expected and actual records remain separate; reference-limited cases are N/A, not PASS. No new Tool, algorithm, Artifact family, DataProfile/AnalysisPlan version, migration, API family, dependency, tolerance, or frontend scientific authority may be introduced.

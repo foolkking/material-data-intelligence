@@ -61,8 +61,11 @@ def test_n0_does_not_admit_an_executable_task() -> None:
     # N0 itself never admitted a task; the corrective N1 authorization may
     # subsequently admit the sole N1 task while N2 remains a reviewer gate.
     assert tasks.count("---TASK---") == tasks.count("---END---")
-    assert tasks.count("---TASK---") in {0, 1, 3}
-    if "Phase 11-1 Reviewer Prompt" in tasks:
+    assert tasks.count("---TASK---") in {0, 1, 2, 3}
+    if "Phase 11-2 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 2
+        assert "状态：处理中" in tasks
+    elif "Phase 11-1 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 3
         assert "状态：处理中" in tasks
     elif "Task: Phase 10N-2" in tasks:

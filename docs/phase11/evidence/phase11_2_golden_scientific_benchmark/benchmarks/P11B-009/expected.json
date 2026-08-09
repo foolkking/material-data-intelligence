@@ -1,0 +1,9 @@
+{
+  "benchmarkId": "P11B-009",
+  "expectedTruth": "fixture license and source provenance consolidation",
+  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
+  "fixtureChecksum": "ff8d7c515285886c18fe9aec64f42503bf733a9daeb38583c108f137cca3a96b",
+  "fixtureId": "P11FIX-009",
+  "referenceId": "P11REF-009",
+  "toleranceId": "identity.exact.v1"
+}

@@ -1,0 +1,9 @@
+{
+  "benchmarkId": "P11B-004",
+  "expectedTruth": "independent RDF normalization benchmark",
+  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
+  "fixtureChecksum": "59d196ba7c11a9f1725fa07264fc419ce51e3b16e6207d34cdc381733afc456c",
+  "fixtureId": "P11FIX-004",
+  "referenceId": "P11REF-004",
+  "toleranceId": "n4.time.constant.v1"
+}

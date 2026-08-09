@@ -1,0 +1,9 @@
+{
+  "benchmarkId": "P11B-002",
+  "expectedTruth": "independent geometry/ConvexHull reference case",
+  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
+  "fixtureChecksum": "66be8f544507741779816cf5ab993803e831127ababa1ef036276e3ada7be35d",
+  "fixtureId": "P11FIX-002",
+  "referenceId": "P11REF-002",
+  "toleranceId": "n2.classification.tie.v1"
+}

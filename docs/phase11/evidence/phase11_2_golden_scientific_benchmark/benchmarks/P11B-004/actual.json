@@ -1,0 +1,9 @@
+{
+  "benchmarkId": "P11B-004",
+  "executionAuthority": "registered-contract-replay-evidence",
+  "identityValidated": true,
+  "numericValue": null,
+  "referenceLimitation": false,
+  "sourceFixtureChecksum": "59d196ba7c11a9f1725fa07264fc419ce51e3b16e6207d34cdc381733afc456c",
+  "unitSemanticsValidated": true
+}

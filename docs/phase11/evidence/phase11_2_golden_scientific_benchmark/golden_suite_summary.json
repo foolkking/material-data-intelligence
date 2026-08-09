@@ -1,0 +1,12 @@
+{
+  "aggregateStatus": "PASS_WITH_NONBLOCKING_LIMITATIONS",
+  "benchmarkCount": 12,
+  "blockedCount": 0,
+  "expectedValueMutationAfterComparison": 0,
+  "failCount": 0,
+  "notApplicableCount": 4,
+  "passCount": 8,
+  "referenceFixtureMutations": 0,
+  "suiteVersion": "phase11-2-golden-scientific-benchmark/1.0",
+  "validationLevelPromotions": 0
+}

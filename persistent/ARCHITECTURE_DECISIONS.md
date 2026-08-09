@@ -4499,3 +4499,7 @@ authorized.
 ## Phase 11-1 Decision
 
 Retained fixture bytes are reused by checksum and described through immutable provenance sidecars. Preparation does not create a new scientific authority, alter tolerances, or promote validation level.
+
+## Phase 11-2 Decision
+
+Golden evidence keeps expected, actual, and comparison records separate. Reference-limited cases are explicit N/A and cannot promote validation levels or enter cross-platform reproducibility.

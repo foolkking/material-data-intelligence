@@ -1,0 +1,14 @@
+{
+  "newToleranceCount": 0,
+  "toleranceIds": [
+    "brillouin.symmetry.v1",
+    "identity.exact.v1",
+    "n1.coordination.numeric.v1",
+    "n2.classification.tie.v1",
+    "n3.match.position.v1",
+    "n4.diffusion.regime.v1",
+    "n4.time.constant.v1",
+    "n5.energy.v1",
+    "phonon.frequency.zero.v1"
+  ]
+}

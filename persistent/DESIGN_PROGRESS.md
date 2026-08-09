@@ -2123,4 +2123,4 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   Phase 11 remains reviewer-gated and non-executable.
 ## Phase 11-1 Reference Provenance
 
-Completed a deterministic provenance and fixture handoff pack from retained repository evidence. No external source was downloaded and no production scientific behavior changed. Actual retained indexes are recorded as 46 reference-like, 170 fixtures, and 55 official/example records.
+Completed the deterministic provenance and fixture handoff pack and started bounded Phase 11-2 golden replay. No external source was downloaded and no production scientific behavior changed. The current suite records 8 invariant replays and 4 reference-limited N/A cases.

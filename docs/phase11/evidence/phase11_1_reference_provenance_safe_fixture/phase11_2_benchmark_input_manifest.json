@@ -16,7 +16,7 @@
       "readiness": "READY_FOR_11_2",
       "referenceId": "P11REF-001",
       "referenceStrength": "OFFICIAL_LIBRARY_REFERENCE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "n1.coordination.numeric.v1",
       "toolId": "structure.coordination_*",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -35,7 +35,7 @@
       "readiness": "READY_FOR_11_2",
       "referenceId": "P11REF-002",
       "referenceStrength": "INDEPENDENT_CROSS_LIBRARY_REFERENCE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "n2.classification.tie.v1",
       "toolId": "structure.local_environment_polyhedra",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -54,7 +54,7 @@
       "readiness": "READY_FOR_11_2",
       "referenceId": "P11REF-003",
       "referenceStrength": "ANALYTIC_REFERENCE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "n3.match.position.v1",
       "toolId": "structure.experimental_xrd_comparison",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -73,7 +73,7 @@
       "readiness": "READY_FOR_11_2",
       "referenceId": "P11REF-004",
       "referenceStrength": "ANALYTIC_REFERENCE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "n4.time.constant.v1",
       "toolId": "trajectory.rdf",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -92,7 +92,7 @@
       "readiness": "READY_FOR_11_2",
       "referenceId": "P11REF-005",
       "referenceStrength": "ANALYTIC_REFERENCE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "n4.diffusion.regime.v1",
       "toolId": "trajectory.msd/diffusion",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -111,7 +111,7 @@
       "readiness": "READY_WITH_REFERENCE_LIMITATION",
       "referenceId": "P11REF-006",
       "referenceStrength": "OFFICIAL_PROJECT_EXAMPLE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "n5.energy.v1",
       "toolId": "electronic.band_structure/electronic.dos",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -130,7 +130,7 @@
       "readiness": "READY_WITH_REFERENCE_LIMITATION",
       "referenceId": "P11REF-007",
       "referenceStrength": "OFFICIAL_PROJECT_EXAMPLE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "phonon.frequency.zero.v1",
       "toolId": "phonon.*",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -149,7 +149,7 @@
       "readiness": "READY_FOR_11_2",
       "referenceId": "P11REF-008",
       "referenceStrength": "ANALYTIC_REFERENCE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "brillouin.symmetry.v1",
       "toolId": "structure.brillouin_zone",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -168,7 +168,7 @@
       "readiness": "READY_WITH_REFERENCE_LIMITATION",
       "referenceId": "P11REF-009",
       "referenceStrength": "OFFICIAL_PROJECT_EXAMPLE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "identity.exact.v1",
       "toolId": "structure.volumetric_data",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -187,7 +187,7 @@
       "readiness": "READY_FOR_11_2",
       "referenceId": "P11REF-010",
       "referenceStrength": "ANALYTIC_REFERENCE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "identity.exact.v1",
       "toolId": "materials ML and composition",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -206,7 +206,7 @@
       "readiness": "READY_FOR_11_2",
       "referenceId": "P11REF-011",
       "referenceStrength": "INDEPENDENT_CROSS_LIBRARY_REFERENCE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "identity.exact.v1",
       "toolId": "all quantitative release tools",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."
@@ -225,7 +225,7 @@
       "readiness": "READY_WITH_REFERENCE_LIMITATION",
       "referenceId": "P11REF-012",
       "referenceStrength": "OFFICIAL_PROJECT_EXAMPLE",
-      "toleranceId": "reuse-phase11-0-contract-owned-tolerance",
+      "toleranceId": "identity.exact.v1",
       "toolId": "historical official examples",
       "toolVersion": "0.1.0",
       "units": "Inherited from sealed Phase 10N contract; no unit conversion performed."

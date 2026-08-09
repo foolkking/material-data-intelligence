@@ -59,7 +59,7 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
         assert marker in scope
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert tasks.count("---TASK---") == tasks.count("---END---")
-    assert tasks.count("---TASK---") in {0, 1, 3}
+    assert tasks.count("---TASK---") in {0, 1, 2, 3}
     if tasks.count("---TASK---") == 1:
         assert re.search(r"(?:Task:|任务：) Phase (?:10N-(?:1|2|3|4|5|6)|11-0) ", tasks)
         assert (
@@ -71,6 +71,10 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
         )
     elif "Phase 11-1 Reviewer Prompt" not in tasks:
         assert "Phase 10N-1" not in tasks
+    if "Phase 11-2 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 2
+        assert "状态：处理中" in tasks
+        return
     if "Phase 11-1 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 3
         assert "状态：处理中" in tasks

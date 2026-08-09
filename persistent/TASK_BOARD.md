@@ -2421,5 +2421,5 @@ current board above.
 - [ ] Verify completion-record and queue-archive exact-SHA CI.
 ## Phase 11-1
 
-- [x] Phase 11-1 Reference Provenance + Safe Fixture Consolidation completed; provenance/fixture handoff is sealed and its task is ready for archive.
-- [ ] Phase 11-2 remains reviewer-gated and has no executable task.
+- [x] Phase 11-1 Reference Provenance + Safe Fixture Consolidation completed and archived.
+- [ ] Phase 11-2 Cross-Capability Golden Scientific Benchmark Suite is in progress; its task remains the only active queue item.

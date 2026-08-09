@@ -2491,3 +2491,4 @@
 
 - Started Phase 11-1 provenance and safe fixture consolidation.
 - Added deterministic source, license, transformation, independence, fixture, and Phase 11-2 handoff evidence without production changes.
+- Started Phase 11-2 bounded golden benchmark replay with explicit reference-limited cases and no validation-level promotion.

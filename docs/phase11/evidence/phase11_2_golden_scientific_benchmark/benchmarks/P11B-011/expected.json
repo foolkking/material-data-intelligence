@@ -1,0 +1,9 @@
+{
+  "benchmarkId": "P11B-011",
+  "expectedTruth": "Linux/Windows locked-environment variance matrix",
+  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
+  "fixtureChecksum": "45fa1eeb184114f007108c7a2f94e33d8576f5855be5c56383a896f807f9b3cd",
+  "fixtureId": "P11FIX-011",
+  "referenceId": "P11REF-011",
+  "toleranceId": "identity.exact.v1"
+}

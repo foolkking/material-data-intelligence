@@ -143,7 +143,7 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
     assert "SUPERSEDED_BY_APPROVED_ROADMAP_REVISION" in roadmap
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
-    assert len(blocks) in {0, 1, 3}
+    assert len(blocks) in {0, 1, 2, 3}
     if len(blocks) == 1:
         assert "Phase 11-0 Validation Baseline Reconciliation + Governance Seal" in blocks[0]
         assert "Task: Phase 11-1" not in blocks[0]
@@ -154,6 +154,10 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
         assert "状态：处理中" in blocks[0]
         assert "Phase 11-2 Reviewer Prompt" in blocks[1]
         assert "Phase 11-3 Reviewer Prompt" in blocks[2]
+    if len(blocks) == 2:
+        assert "Phase 11-2 Reviewer Prompt" in blocks[0]
+        assert "状态：处理中" in blocks[0]
+        assert "Phase 11-3 Reviewer Prompt" in blocks[1]
 
 
 def test_no_production_contract_change_markers() -> None:

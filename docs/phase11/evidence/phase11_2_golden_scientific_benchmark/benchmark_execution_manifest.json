@@ -1,0 +1,20 @@
+{
+  "benchmarkIds": [
+    "P11B-001",
+    "P11B-002",
+    "P11B-003",
+    "P11B-004",
+    "P11B-005",
+    "P11B-006",
+    "P11B-007",
+    "P11B-008",
+    "P11B-009",
+    "P11B-010",
+    "P11B-011",
+    "P11B-012"
+  ],
+  "expectedValueFrozenBeforeComparison": true,
+  "externalDownloads": 0,
+  "ordering": "benchmarkId lexical order",
+  "suiteVersion": "phase11-2-golden-scientific-benchmark/1.0"
+}

@@ -1,0 +1,9 @@
+{
+  "benchmarkId": "P11B-008",
+  "expectedTruth": "independent reciprocal-cell invariant benchmark",
+  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
+  "fixtureChecksum": "feb632f29e03c091dc77dc19c3278e31d82fbc395a225911093e1f2f73086e7d",
+  "fixtureId": "P11FIX-008",
+  "referenceId": "P11REF-008",
+  "toleranceId": "brillouin.symmetry.v1"
+}
