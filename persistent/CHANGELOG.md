@@ -2463,3 +2463,6 @@
 - Added no science or Tool; added aggregate N1-N5 contract, dependency, identity, unit and delivery validation.
 - Added normalized N6 evidence, cross-capability regressions and service/browser closure gates.
 - Kept Registry 62, DataProfile 2.4, migration, API, dependencies and lockfile unchanged.
+- Recorded failed implementation candidate `ea156ed8` / CI `31315296903`; fixed Linux
+  browser-server process-group cleanup and moved build before replay to prevent resource
+  accumulation while preserving all browser coverage.
