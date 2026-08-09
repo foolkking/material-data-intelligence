@@ -7248,3 +7248,307 @@ NO. `PHASE_10N5_EXECUTABLE_TASK_CREATED=NO`; Phase 10N-5 remains `REVIEWER_GATE 
 Implementation authority is `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92` / CI `31299086998`; completion authority is `ca5208feec772e45397f4afbb80419aa6263978f` / CI `31299648506`; queue-archive exact-SHA is pending. Branch is master, Registry count is 60, migration head is 0007, task count is zero and N5 executable task is absent.
 
 Mandatory markers: `N4_RDF_FRONTEND_RECOMPUTATION=0`; `N4_MSD_FRONTEND_RECOMPUTATION=0`; `N4_DIFFUSION_FRONTEND_FIT=0`; `N4_MSD_WRAPPED_COORDINATE_DIRECT_USE=0`; `N4_DIFFUSION_RAW_TRAJECTORY_READS=0`; `N4_DIFFUSION_MSD_RECOMPUTATION=0`; `N4_AUTOMATIC_DIFFUSION_WINDOW_OPTIMIZATION=0`; `N4_BALLISTIC_SILENT_FIT=0`; `N4_TRANSIENT_SILENT_FIT=0`; `N4_MISSING_TIME_DIFFUSION=0`; `N4_VARIABLE_CELL_MSD_SILENT_ASSUMPTION=0`; `NEW_LLM_CALL_SITES=0`; `N4_REAL_LLM_CALLS=0`.
+
+# Phase 10N-5 Electronic Band Structure + DOS Result
+
+## 1. Conclusion
+
+Phase 10N-5 is `PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI`. The implementation exact-SHA CI passed and the N5 task remains until the completion and archive gates close.
+
+## 2. N4 Baseline
+
+Verified archive `0442bf8925715efe81becaae19f21c58407a5a54` and its implementation/completion ancestry are authoritative; failed N4 candidate `3ae66528...` remains historical only.
+
+## 3. Entry Gate
+
+Entry verified master HEAD/origin, clean worktree, migration 0007, Registry 60, DataProfile 2.3, zero tasks and absent N5/N6 production/task state.
+
+## 4. N5-R0 Contract Closure
+
+R0 froze two Tools, supplied-resource schemas, energy/Fermi/spin semantics, exact identities, algorithms, Artifacts, errors, fixtures, tolerances and caps with zero critical TBDs.
+
+## 5. Acceptance Registry
+
+N5-A01 through N5-A10 are canonical: expected 10, implemented 10, missing/extra/duplicate/conflicting/shorthand 0.
+
+## 6. N-D Decision Compliance
+
+N0 scientific authority, auditability, no-browser-science, no-arbitrary-execution and no-secret boundaries remain intact.
+
+## 7. Production Behavior Changes
+
+Strict supplied Band/DOS resources now flow through Profile, Eligibility, Planner, validated Runtime, persisted Artifacts, Workspace, interpretation and Report/Recipe.
+
+## 8. Registry 60 To 62
+
+Exactly `electronic.band_structure@0.1.0` and `electronic.dos@0.1.0` were added. Combined Band+DOS presentation has Tool count 0.
+
+## 9. Electronic Capability Audit
+
+Existing electronic/BZ render foundations were reusable; no prior supplied-output Band/DOS Adapter or Artifact authority was treated as production N5 science.
+
+## 10. Supplied Electronic Resource Boundary
+
+Only strict immutable supplied electronic output is consumed. Platform electronic calculation authority is absent.
+
+## 11. Band Resource Contract
+
+`phase10n5.electronic_band_resource.v1` validates source/hash, calculation, structure binding, units/reference, Fermi, spin, reciprocal coordinates, path, k-points, bands and occupations.
+
+## 12. DOS Resource Contract
+
+`phase10n5.electronic_dos_resource.v1` validates source/hash, calculation, structure binding, energy/DOS semantics, Fermi, spin, total channels, projections and completeness.
+
+## 13. Calculation Identity
+
+Identity is resource-hash and formal calculation-identity bound; filename, title, upload order and latest selection have no authority.
+
+## 14. Structure Binding
+
+Formal structure ID/hash is preserved when supplied and never inferred.
+
+## 15. Energy Units
+
+Canonical energy is eV. Unknown units are rejected and no value-magnitude inference exists.
+
+## 16. Energy Reference
+
+`source_absolute` and `fermi_referenced` remain distinct; backend canonicalization is explicit and frontend alignment is prohibited.
+
+## 17. Fermi Semantics
+
+Fermi energy must be supplied. Missing Fermi preserves eligible raw views but disables Fermi-referenced features.
+
+## 18. Spin Semantics
+
+Non-spin-polarized and spin-polarized channels retain exact channel identity; no silent averaging, mirroring authority or noncollinear downgrade exists.
+
+## 19. K-Point Identity
+
+K-point identity binds exact Artifact/resource, formal ID, reciprocal coordinate and segment/path identity.
+
+## 20. Reciprocal Coordinates
+
+Fractional reciprocal coordinates and backend-supplied deterministic path distance are explicit; browser path reconstruction is absent.
+
+## 21. K-Path Segments
+
+Ordered segment IDs, endpoints, labels and breaks are persisted; path discontinuities are never connected.
+
+## 22. Band Identity
+
+Each band is exact Artifact + spin channel + formal band ID; ordinal/display labels are not cross-Artifact identity.
+
+## 23. Band Energy Contract
+
+Finite bounded supplied energies preserve source ordering without interpolation, dropping or connectivity optimization.
+
+## 24. Band Gap Algorithm
+
+`mdi.supplied_sampled_band_gap@1.0.0` deterministically derives sampled-data gap facts from supplied occupations/energies under the sealed 1e-5 eV threshold.
+
+## 25. VBM And CBM
+
+Persisted VBM/CBM facts retain energy, k-point, band and spin identity and are source-data qualified.
+
+## 26. Direct And Indirect Gap
+
+Directness compares exact sampled VBM/CBM k-point identities and is unavailable when formal identity is insufficient.
+
+## 27. Metal-Like And Nonzero-Gap Classification
+
+Only `METAL_LIKE_UNDER_POLICY`, `NONZERO_GAP_UNDER_POLICY` or unavailable is emitted; no definitive material class is claimed.
+
+## 28. Band Artifact
+
+`phase10n5.electronic_band_structure.v1` persists exact lineage, canonical data, gap facts, coverage, warnings, limitations, params/hash and checksum.
+
+## 29. DOS Energy Grid
+
+The finite strictly increasing supplied grid is validated and preserved without scientific resampling or smoothing.
+
+## 30. DOS Unit And Normalization
+
+States/eV/cell and source-defined relative semantics remain distinct; unknown normalization is never relabeled.
+
+## 31. Total DOS
+
+Formal total DOS must be supplied. Projections are not summed to invent it.
+
+## 32. Spin DOS
+
+Original spin channels and values remain separate; any mirrored visual convention is display-only and labeled.
+
+## 33. Element Projected DOS
+
+Only formally supplied element channels are retained with exact identities and coverage.
+
+## 34. Orbital Projected DOS
+
+Only allowlisted source-provided orbital channels are retained; no arbitrary merging or missing-channel generation occurs.
+
+## 35. Projection Completeness
+
+`COMPLETE`, `PARTIAL` and `UNKNOWN` are explicit. Partial/unknown data supports only statements about provided channels.
+
+## 36. DOS Artifact
+
+`phase10n5.electronic_dos.v1` persists exact lineage, grids/channels/projections, completeness, coverage, warnings, limitations, params/hash and checksum.
+
+## 37. Band And DOS Compatibility
+
+Combined presentation requires exact project, calculation/source, structure where present, unit/reference, Fermi and spin compatibility; mismatches do not combine.
+
+## 38. Combined Presentation
+
+Workspace consumes one exact Band Artifact and one exact DOS Artifact without a third Tool, recomputation, auto-shift or new truth.
+
+## 39. DataProfile Decision
+
+DataProfile 2.4 additively records electronic readiness only. Profiles 2.0-2.3 remain readable; no backfill, result profiling or migration occurs.
+
+## 40. Eligibility
+
+Band and DOS eligibility checks exact readiness, units, finite arrays, path/spin/projection semantics and caps without scientific execution.
+
+## 41. Planner
+
+Deterministic intents bind exact supplied resources; multiple candidates require clarification and never use first/latest/highest-match selection.
+
+## 42. AnalysisPlan
+
+Band and DOS are independent validated branches using existing plan semantics; combined display consumes their persisted outputs.
+
+## 43. PlanValidator
+
+Existing validation rejects foreign/stale/checksum/version/unit/spin/path/cap/completeness conflicts without repair.
+
+## 44. Runtime
+
+Registered Adapters validate, derive bounded summaries and persist through existing Runtime with no DFT, network, shell, notebook, dynamic module or arbitrary filesystem execution.
+
+## 45. PostgreSQL
+
+Exact-SHA CI `31311023072` passed N5 ToolCall/Artifact metadata persistence through PostgreSQL.
+
+## 46. Redis
+
+The same CI passed queue execution and state propagation through Redis.
+
+## 47. MinIO
+
+The same CI passed Band/DOS payload storage, retrieval and checksum through MinIO.
+
+## 48. Workspace
+
+The metadata-first Electronic Structure panel exposes Band, DOS and compatible combined views with numeric alternatives.
+
+## 49. Band Viewer
+
+Persisted curves, path breaks, labels, Fermi, VBM/CBM and gap facts render without frontend gap/path recomputation.
+
+## 50. DOS Viewer
+
+Persisted total/spin/projection channels, units/reference, Fermi and completeness render without frontend DOS computation.
+
+## 51. Selection
+
+Exact Band/DOS Artifact, k-point, band-state, gap, DOS channel/projection and energy-point selections bind Artifact/checksum/source/spin identities.
+
+## 52. Inspector
+
+Source, Tool/version, Artifact/checksum, units/reference, Fermi, spin, k-point/band/projection, values, policy, coverage, warnings and limitations are inspectable.
+
+## 53. Grounded Interpretation
+
+The deterministic projector exposes only persisted bounded Band/DOS facts; the LLM performs no gap, completeness, alignment or spin computation.
+
+## 54. Scientific Wording
+
+All claims are qualified as derived from supplied data under stated policy; no true/experimental gap, definite metal class or platform-calculated electronic structure is claimed.
+
+## 55. Report
+
+Reports compose persisted figures/tables/provenance and disclose that the platform does not perform DFT/GW in this capability.
+
+## 56. Recipe
+
+Recipes preserve exact resource hashes, Tools/versions/params, units/reference, spin, completeness and Artifact bindings and remain non-executable.
+
+## 57. Historical Compatibility
+
+No backfill or read-time electronic analysis occurs. Incomplete legacy contracts are read-only or typed unsupported; N5 is unavailable without persisted N5 Artifacts.
+
+## 58. References
+
+Controlled gapped, gapless, direct, indirect, spin, path-break, missing-Fermi, total/projected/partial DOS, compatibility and near-cap fixtures are recorded.
+
+## 59. Tolerances
+
+Energy, Fermi, gap, VBM/CBM, reciprocal coordinate, DOS and threshold tolerances are quantity-specific; all scientific identities and hashes are exact.
+
+## 60. Performance
+
+Hard caps bound k-points, bands, spin channels, segments, DOS points, projection channels, output bytes, plotting points, timeout and memory; small/medium/near/over-cap evidence is recorded.
+
+## 61. Plot Lifecycle
+
+Fifty Band/DOS/combined/spin/projection/selection cycles record zero listener, observer, animation, duplicate-chart/request and stale-response growth.
+
+## 62. Accessibility
+
+Numeric table alternatives, keyboard selections, visible focus, non-color spin distinction, textual path/gap/completeness, 44px mobile controls, reflow and reduced motion are covered.
+
+## 63. Security
+
+Arbitrary execution, DFT/GW, Fermi surface, projected bands, frontend science, cross-scope rebinding, executable Artifact content and secret/path disclosure gates pass.
+
+## 64. LLM And DeepSeek
+
+`NEW_LLM_CALL_SITES=0`; `N5_REQUIRES_LLM=NO`; `N5_REAL_LLM_CALLS=0`; `DEEPSEEK_POLICY_REGRESSION=PASS`.
+
+## 65. Browser Matrix
+
+CI `31311023072` passed N5 Chromium, Firefox, WebKit and Chromium 390x844 replay: `PHASE10N5_CHROMIUM_FIREFOX_WEBKIT_PASS` and `PHASE10N5_CHROMIUM_390X844_PASS`.
+
+## 66. Tests
+
+Local backend: 1242 passed with 49 documented service/environment skips; CI unit: 1242 passed, 1 environment skip, 48 integration deselected; frontend local: 449 passed; service-backed: 47 passed, 0 skipped/failed/errors; typecheck/build/browser passed. npm audit remains unavailable because the configured mirror returns `404_NOT_IMPLEMENTED`.
+
+## 67. Evidence
+
+`docs/phase10n/evidence/phase10n5_electronic_band_dos/` contains R0, contracts, fixtures, samples, planner/runtime, browser, lifecycle, accessibility, security and checksum-manifest evidence.
+
+## 68. Files Changed
+
+Production contracts/Adapters/Profile/Registry/Planner/Runtime/Workspace/projector plus tests/docs/evidence changed. Database schema, migration, public API family, dependencies and lockfile are unchanged.
+
+## 69. Acceptance Results
+
+N5 acceptance is 10/10; Registry is 62; implementation-critical TBDs are zero.
+
+## 70. Commit And CI History
+
+- Implementation `34bcea5bd3672d91f3282e12dd5a0cb6b789f1ff` / exact-SHA CI `31311023072`: success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: pending after completion CI.
+
+## 71. Explicit Non-Scope
+
+No N6, DFT/SCF/NSCF/GW/scissor, Band/DOS generation, Fermi surface, projected bands/fatbands, Wannier, transport, effective mass, charge/Bader/topology, arbitrary execution, external scientific API, generic workflow, RAG, memory, multi-agent, plugins or enterprise capability was added.
+
+## 72. Queue State
+
+`TASK_BLOCK_COUNT=1`; N5 remains retained until completion and archive exact-SHA CI pass.
+
+## 73. Automatic N6 Entry
+
+NO. `PHASE_10N6_EXECUTABLE_TASK_CREATED=NO`; Phase 10N-6 remains `REVIEWER_GATE / NOT_QUEUED / NOT_EXECUTABLE`.
+
+## 74. Final Repository State
+
+At completion-record creation: branch master, implementation authority `34bcea5bd3672d91f3282e12dd5a0cb6b789f1ff` / CI `31311023072`, Registry 62, migration head 0007, task count one retained N5 task, N6 executable task absent. Completion and archive exact-SHA authority remain pending.
+
+Mandatory markers: `N5_PLATFORM_DFT_EXECUTION=0`; `N5_PLATFORM_GW_EXECUTION=0`; `N5_BAND_GENERATION_FROM_STRUCTURE=0`; `N5_DOS_GENERATION_FROM_STRUCTURE=0`; `N5_DOS_GENERATION_FROM_BANDS=0`; `N5_FERMI_SURFACE_GENERATION=0`; `N5_PROJECTED_BAND_ANALYSIS=0`; `N5_FRONTEND_BAND_GAP_RECOMPUTATION=0`; `N5_FRONTEND_DOS_RECOMPUTATION=0`; `N5_FRONTEND_ENERGY_ALIGNMENT_AUTHORITY=0`; `N5_FRONTEND_SPIN_MERGING_AUTHORITY=0`; `NEW_LLM_CALL_SITES=0`; `N5_REAL_LLM_CALLS=0`.
+
+Boundary markers: database schema = unchanged; migration = unchanged; migration head = `0007_phase10m1_workspace_domain`; public API family = unchanged; dependencies = unchanged; lockfile = unchanged; Registry count = 62.

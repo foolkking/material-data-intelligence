@@ -2445,3 +2445,11 @@
 - Added two supplied-output electronic Tools and strict Band/DOS resource and Artifact contracts.
 - Added DataProfile 2.4 readiness, deterministic sampled-band gap facts, honest DOS projection completeness, and electronic Workspace selection.
 - Added no-DFT/no-GW/no-frontend-science security and evidence coverage without migration, API or dependency changes.
+
+## 2026-08-09 - Phase 10N-5 completion record
+
+- Implementation `34bcea5bd3672d91f3282e12dd5a0cb6b789f1ff` passed exact-SHA CI
+  `31311023072`, including 1242 backend tests, 47/47 service-backed tests with
+  zero skipped, the N5 browser/mobile matrix, typecheck and production build.
+- Recorded the full N5 result while retaining the N5 task for completion-record
+  and queue-archive CI. N6 remains reviewer-gated and absent from the queue.

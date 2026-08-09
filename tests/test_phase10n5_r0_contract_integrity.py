@@ -58,7 +58,10 @@ def test_n5_is_the_only_active_task_and_n6_is_absent() -> None:
     assert tasks.count("---TASK---") == 1
     assert tasks.count("---END---") == 1
     assert "Task: Phase 10N-5" in tasks
-    assert "Status: IN_PROGRESS" in tasks
+    assert (
+        "Status: IN_PROGRESS" in tasks
+        or "Status: PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI" in tasks
+    )
     assert "Task: Phase 10N-6" not in tasks
 
 

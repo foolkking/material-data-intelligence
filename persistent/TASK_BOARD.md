@@ -2396,5 +2396,6 @@ current board above.
 - [x] Close exact resource, energy/Fermi/spin, gap, DOS completeness and Artifact contracts.
 - [x] Register exactly `electronic.band_structure@0.1.0` and `electronic.dos@0.1.0` (60 -> 62).
 - [x] Integrate Profile 2.4, Planner, Runtime, Workspace, selection, interpretation and Report/Recipe projections.
-- [ ] Verify implementation, completion-record and queue-archive exact-SHA CI.
+- [x] Verify implementation `34bcea5bd3672d91f3282e12dd5a0cb6b789f1ff` in exact-SHA CI `31311023072`.
+- [ ] Verify completion-record and queue-archive exact-SHA CI.
 - [x] Keep Phase 10N-6 reviewer-gated and non-executable.

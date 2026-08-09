@@ -2079,3 +2079,11 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   Planner/Runtime/Artifact and electronic Workspace/selection/interpretation.
 - Registry is 62; schema, migration, public API, dependencies and lockfile are unchanged.
 - Implementation exact-SHA CI is the next lifecycle gate; N6 remains reviewer-only.
+
+## 2026-08-09 - Phase 10N-5 Completion Record
+
+- Implementation `34bcea5bd3672d91f3282e12dd5a0cb6b789f1ff` passed exact-SHA CI
+  `31311023072`: backend 1242, service-backed 47/47 with zero skipped,
+  N5 Chromium/Firefox/WebKit/390x844 replay, typecheck and build passed.
+- The N5 task remains queued while completion-record and queue-archive exact-SHA
+  CI close. N6 remains reviewer-gated and non-executable.
