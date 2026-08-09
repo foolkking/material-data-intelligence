@@ -9,6 +9,9 @@ only `structure.experimental_xrd_comparison@0.1.0` (Registry 56 -> 57), with
 Workspace, exact selection, bounded interpretation and Report/Recipe support.
 No refinement, phase identification, migration, API family, dependency,
 lockfile or LLM call site is added. Phase 10N-4 is not queued.
+Corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50`
+passed exact-SHA CI `31270117864`; the completion-record and queue-archive gates
+remain, with the single N3 task retained and N4 non-executable.
 
 ## 2026-08-07 Phase 10N-1 Implementation
 

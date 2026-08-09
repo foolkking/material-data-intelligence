@@ -13,3 +13,14 @@
   including `EXPERIMENTAL_XRD_PEAK`, `THEORETICAL_XRD_PEAK`, and `XRD_MATCH`.
 - Correction scope: compatibility assertion only; no scientific behavior,
   contract, database, migration, API family, dependency, or lockfile change.
+
+## Attempt 2
+
+- SHA: `5aef027d312f462eea72a1ced10b33e4f4664a50`
+- CI: `31270117864`
+- Result: `SUCCESS`
+- Backend: 1210 passed, 1 documented environment skip, 46 deselected
+- Frontend: 430 passed
+- Service-backed: 45 passed, 0 skipped, 0 failed, 0 errors
+- Chromium, Firefox, WebKit, and Chromium 390x844 replay: PASS
+- Typecheck, production build, lock, migration, evidence and no-skipped gates: PASS

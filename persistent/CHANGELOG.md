@@ -2406,6 +2406,11 @@
   lockfile and LLM call sites remain unchanged; N3 is not queued.
 ## 2026-08-09 - Phase 10N-3 Implementation
 
+- Corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50`
+  passed exact-SHA CI `31270117864`: backend 1210 passed, frontend 430 passed,
+  service-backed 45 passed with zero skipped/failed/errors, typecheck, build and
+  Chromium/Firefox/WebKit/390x844 replay all passed.
+
 - Initial implementation SHA `1faa25582107ac3d34efea2e75b61ae3d0f9be13`
   failed CI `31269467363` only because the Phase 10M-3 service regression still
   expected the pre-N3 seven-kind selection list; 44 service tests and all unit,

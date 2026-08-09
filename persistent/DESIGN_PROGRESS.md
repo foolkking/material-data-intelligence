@@ -2053,5 +2053,9 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   Artifact.
 - Implemented Registry/Adapter/Profile/Plan 0.2/Runtime/Workspace/selection/
   interpretation/Report-Recipe integration without theoretical recomputation.
-- Focused backend 10/10, focused frontend 32/32 and typecheck pass locally;
-  service/browser/full regression remain exact-SHA CI authorities.
+- Initial implementation `1faa25582107ac3d34efea2e75b61ae3d0f9be13`
+  failed CI `31269467363` on one stale service compatibility assertion.
+- Corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50`
+  passed exact-SHA CI `31270117864`: backend 1210, frontend 430,
+  service-backed 45/45, typecheck, build and all browser/mobile replays passed.
+- The completion record awaits exact-SHA CI; N4 remains reviewer-gated.

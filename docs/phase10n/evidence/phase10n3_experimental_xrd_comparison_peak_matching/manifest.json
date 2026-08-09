@@ -1,7 +1,7 @@
 {
-    "schemaVersion":  "1.0",
+    "schemaVersion":  "phase10n3.evidence_manifest.v1",
     "phase":  "Phase 10N-3",
-    "normalization":  "LF-normalized bytes",
+    "normalization":  "LF-normalized text bytes",
     "missingEntries":  0,
     "duplicateEntries":  0,
     "secretEntries":  0,
@@ -138,8 +138,8 @@
                     },
                     {
                         "path":  "implementation_ci_attempts.md",
-                        "bytes":  636,
-                        "sha256":  "42b0afd2321c4f13f8d81ce26f81fe573bb8ff0ca9b9d54013dc877b9e2c28de"
+                        "bytes":  1039,
+                        "sha256":  "3dfa5881156332bfe2667789191bb4ddee92661da2cce9539d39c8955b0931b1"
                     },
                     {
                         "path":  "interpretation.json",

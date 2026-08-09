@@ -6594,3 +6594,345 @@ task absent. Completion and archive SHAs remain pending their exact-SHA gates.
 
 Return the complete N2 result only after completion-record and queue-archive
 exact-SHA CI. Do not create, queue or execute Phase 10N-3.
+
+# Phase 10N-3 Experimental XRD Comparison + Peak Matching Result
+
+## 1. Conclusion
+
+`PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI`.
+
+## 2. N2 Baseline
+
+N2 implementation `2b4dacf400400f5d1a68352d358346b4638d6cb9` / CI
+`31258820229`, completion `3ffe6c5b85aca61402e4582654b0adfc0482a36b` /
+CI `31260256371`, failed archive `a60c3bb89a98f35c76ea3f18c58670add96aa89b`
+/ CI `31260829817`, and corrected archive
+`4f5fa88354027a7b26842e9c71082fe567c84e13` / CI `31261360100` were
+verified. Entry was clean master at the corrected archive, Registry 56 and task count 0.
+
+## 3. Entry Gate
+
+`PHASE_10N3_ENTRY_GATE=PASS`; N2 approval, ancestry, migration 0007, clean
+HEAD/origin, queue, Registry and absence of N3/N4 production/tasks were verified.
+
+## 4. N3-R0 Contract Closure
+
+`PHASE_10N3_R0_CONTRACT_CLOSURE=PASS`; Tool, Resource, Profile, detector,
+matcher, Artifact, identities, errors, references, tolerances and caps are exact,
+with zero implementation-critical TBDs.
+
+## 5. Acceptance Registry
+
+N3-A01 through N3-A10 use the exact reviewer titles and definitions in all four
+canonical documents.
+
+## 6. N-D Decision Compliance
+
+The existing authority chain, additive versioning, inert Artifact, exact binding,
+server-side science, declarative Recipe and reviewer-gated phase order are preserved.
+
+## 7. Production Behavior Changes
+
+Added the approved experimental XRD resource/readiness, comparison Tool/Adapter,
+Plan 0.2 integration, persisted result, Workspace surfaces and bounded delivery projections.
+
+## 8. Registry 56 To 57
+
+Exactly `structure.experimental_xrd_comparison@0.1.0` was added; final count is 57.
+
+## 9. Theoretical XRD Authority
+
+N3 consumes `structure.xrd@0.1.0` output contract `phase10e4.xrd_pattern.v1`.
+`N3_THEORETICAL_XRD_REIMPLEMENTATION=0`.
+
+## 10. Experimental XRD Resource Contract
+
+`phase10n3.experimental_xrd_resource.v1` strictly binds versioned resource ID,
+hash, degree-2theta axis, intensity semantics, angstrom wavelength and bounded points.
+
+## 11. Units
+
+Canonical units are degree 2theta and angstrom; no magnitude, filename or material-based inference exists.
+
+## 12. Wavelength Semantics
+
+Wavelength is explicit, finite, positive and bounded; mismatches are rejected without reprojection.
+
+## 13. DataProfile Decision
+
+DataProfile 2.2 is an additive, backward-compatible semantic extension. It stores
+readiness facts only; Profile 2.1 remains readable and no bulk backfill occurs.
+
+## 14. Eligibility
+
+Eligibility distinguishes missing/ambiguous experimental semantics, producible or
+persisted theory, wavelength mismatch, cap violations and platform availability.
+
+## 15. Planner
+
+Deterministic intents bind exact experimental and theoretical sources, tolerance
+and detector parameters; multiple eligible sources require clarification.
+
+## 16. AnalysisPlan 0.2
+
+Existing theoretical Artifacts bind directly, or `structure.xrd` produces an exact
+dependency consumed by N3. No generic DAG change was introduced.
+
+## 17. PlanValidator
+
+Wrong project/job/resource/Artifact/checksum/wavelength/contract/version and
+unbounded parameters are rejected without automatic repair.
+
+## 18. Experimental Data Validation
+
+Strict validation covers finite equal-length monotonic arrays, explicit units,
+minimum/maximum point counts, ranges, zero-only intensity and oversized input.
+
+## 19. Normalization
+
+The bounded allowlist is explicit and deterministic; source intensity semantics
+remain distinct from normalized display values.
+
+## 20. Peak Detection Algorithm
+
+`mdi.experimental_xrd_peak_detection@1.0.0` uses locked SciPy 1.17.1
+`scipy.signal.find_peaks` server-side.
+
+## 21. Peak Detection Params
+
+Strict bounded prominence, relative-height, separation and count fields reject
+unknown, non-finite and out-of-range values; resolved defaults and hash persist.
+
+## 22. Match-Independence Of Detection
+
+Detection runs before and independently of theoretical matching.
+`N3_MATCH_OPTIMIZED_PEAK_DETECTION=0`.
+
+## 23. Theoretical Peak Contract
+
+Exact persisted peak IDs, degree positions, relative intensities, hkl and
+multiplicity are consumed with Tool/Artifact/wavelength/structure lineage.
+
+## 24. hkl Semantics
+
+N3 preserves theoretical hkl metadata and never recomputes indexing or labels an
+experimental peak as definitively indexed.
+
+## 25. Peak Matching Algorithm
+
+`mdi.xrd_ordered_position_match@1.0.0` performs bounded deterministic one-to-one
+position matching under an explicit degree-2theta tolerance.
+
+## 26. One-To-One Constraint
+
+Each experimental and theoretical peak participates in at most one pair.
+
+## 27. Tie Handling
+
+Canonical cost and identity ordering resolves exact ties deterministically without input-order authority.
+
+## 28. Experimental Peak Identity
+
+Identity binds resource hash, detector version/hash, canonical ordinal and exact detected position.
+
+## 29. Theoretical Peak Identity
+
+Identity binds theoretical Artifact checksum, producer, structure and formal peak ID.
+
+## 30. Match Identity
+
+Identity binds both exact peak identities, matcher version/hash, tolerance and N3 Artifact lineage.
+
+## 31. Matched Peaks
+
+Each pair retains both positions/intensities, theoretical hkl, signed and absolute delta 2theta.
+
+## 32. Unmatched Experimental Peaks
+
+All unmatched detected experimental peaks remain persisted and visible.
+
+## 33. Unmatched Theoretical Peaks
+
+All unmatched theoretical peaks remain persisted and visible.
+
+## 34. Delta 2theta Residuals
+
+Approved count/fractions, mean signed delta, MAE, RMSE, maximum and median absolute
+delta are emitted only under their defined sample semantics; no refinement statistic exists.
+
+## 35. Coverage
+
+Point, detected, theoretical, matched, unmatched and excluded counts and fractions are explicit.
+
+## 36. Zero-Match Behavior
+
+Zero matches is a successful bounded comparison with explicit limitations, not a runtime failure.
+
+## 37. Artifact Contract
+
+`phase10n3.experimental_xrd_comparison.v1` stores exact refs plus bounded derived
+series, peaks, matches, residuals, coverage, warnings and provenance without source duplication.
+
+## 38. Determinism
+
+Canonical point/peak/match/unmatched/warning order, serialization, hashes and checksums are tested.
+
+## 39. Runtime
+
+QueueWorkerRuntime resolves exact inputs, validates identity/checksum/units/caps,
+runs the registered Adapter and persists inert output without network or arbitrary execution.
+
+## 40. PostgreSQL
+
+Exact-SHA CI `31270117864` verified job, ToolCall, dependency, Workspace and delivery persistence.
+
+## 41. Redis
+
+The same CI verified queue/events and blocked-descendant behavior without replanning.
+
+## 42. MinIO
+
+The same CI verified payload/checksum persistence and exact retrieval. Service
+summary: 45 passed, 0 skipped, 0 failed, 0 errors.
+
+## 43. Workspace
+
+The metadata-first N3 panel exposes overlay, matched/unmatched tables, residuals,
+warnings and provenance without browser scientific recomputation.
+
+## 44. Overlay Plot
+
+Experimental series, theoretical sticks, detected/matched/unmatched markers use
+shape/text as well as color, with accessible table alternatives.
+
+## 45. Selection
+
+Exact experimental peak, theoretical peak and match selections bind project, job,
+Artifact checksum, resources and peak identity; row/nearest/latest rebinding is absent.
+
+## 46. Inspector
+
+Inspector exposes exact sources, wavelengths, algorithms, params/hashes, peaks,
+hkl, delta, coverage, warnings, limits and provenance.
+
+## 47. Grounded Interpretation
+
+The deterministic projector emits bounded counts, fractions, residuals, selected
+facts, wavelength, tolerance and warnings; the LLM performs no detection or matching.
+
+## 48. Scientific Wording
+
+All surfaces state peak correspondence under the declared tolerance and explicitly
+exclude refinement and definitive phase identification.
+
+## 49. Report
+
+Report composes persisted overlay/tables/residuals/coverage/provenance and the mandatory limitation statement.
+
+## 50. Recipe
+
+Recipe records exact source hashes, Tool/Artifact versions, detector/matcher params
+and dependency bindings while remaining declarative and non-executable.
+
+## 51. Historical Compatibility
+
+No N3 backfill or read-time computation occurs; historical theory, Workspace,
+Report, Recipe and selection contracts remain readable.
+
+## 52. Reference Fixtures
+
+Controlled perfect, shifted, missing, extra, competing, boundary, zero/single,
+wavelength, unit, noisy, threshold and near-cap fixtures carry provenance.
+
+## 53. Tolerances
+
+Detection, matching, ties, residual regression, normalization and cross-platform
+floating tolerances are quantity-specific; identities and checksums are exact.
+
+## 54. Performance
+
+Small, medium, near-cap and over-cap evidence verifies hard bounds for points,
+peaks, candidates, matches, payload, plot points and timeout.
+
+## 55. Plot Lifecycle
+
+Fifty source/panel/selection cycles produced zero listener, observer, animation,
+chart, request or stale-response growth.
+
+## 56. Accessibility
+
+Keyboard tables/selections, visible focus, non-color states, accessible legend and
+summary, 44px mobile targets, 200% reflow and reduced motion pass.
+
+## 57. Security
+
+Untrusted data caps, finite/strict parsing, exact scope/checksum binding, inert
+Artifacts and no code/shell/filesystem/network authority pass the N3 matrix.
+
+## 58. LLM And DeepSeek
+
+`NEW_LLM_CALL_SITES=0`; `N3_REQUIRES_LLM=NO`; `N3_REAL_LLM_CALLS=0`;
+`DEEPSEEK_POLICY_REGRESSION=PASS`.
+
+## 59. Browser Matrix
+
+CI `31270117864` passed Chromium, Firefox, WebKit and Chromium 390x844 replay,
+with zero console/page errors, unexpected responses, external requests or mobile overflow.
+
+## 60. Tests
+
+Corrected exact-SHA CI: backend 1210 passed, one documented environment skip and
+46 deselected; frontend 430 passed; service-backed 45 passed with zero skipped,
+failed or errors; typecheck, build, lock, migration, evidence and browsers passed.
+Local Docker service-backed execution was unavailable; CI is the service authority.
+`npm audit` remained UNAVAILABLE because the configured mirror returns 404_NOT_IMPLEMENTED.
+
+## 61. Evidence
+
+`docs/phase10n/evidence/phase10n3_experimental_xrd_comparison_peak_matching/`
+contains authority, contracts, fixtures, runtime, browser, lifecycle, accessibility,
+security and LF-normalized manifest evidence with zero missing/duplicate/secret entries.
+
+## 62. Files Changed
+
+Production changes are limited to approved N3 contracts and integrations.
+Database schema = unchanged; migration = unchanged; migration head =
+`0007_phase10m1_workspace_domain`; public API family = unchanged; dependencies =
+unchanged; lockfile = unchanged.
+
+## 63. Acceptance Results
+
+Expected = 10; implemented = 10; missing = 0; extra = 0; duplicate registry
+entries = 0; conflicting definitions = 0; canonical registry shorthand entries = 0.
+
+## 64. Commit And CI History
+
+- Initial implementation `1faa25582107ac3d34efea2e75b61ae3d0f9be13` / CI
+  `31269467363`: failed one stale service selection-list assertion; all other jobs passed.
+- Corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50` /
+  CI `31270117864`: success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: pending; no archive success is claimed here.
+
+## 65. Explicit Non-Scope
+
+`N3_AUTOMATIC_PATTERN_SHIFT=0`; `N3_LATTICE_REFINEMENT=0`;
+`N3_STRUCTURE_REFINEMENT=0`; `N3_RIETVELD_REFINEMENT=0`;
+`N3_PHASE_FRACTION_REFINEMENT=0`; `N3_AUTOMATIC_PHASE_IDENTIFICATION=0`.
+N4/N5 science, database search, external APIs and arbitrary execution are absent.
+
+## 66. Queue State
+
+During completion-record CI, `TASK_BLOCK_COUNT=1`; the N3 task remains active.
+Phase 10N-4 is reviewer-gated and has no executable task.
+
+## 67. Automatic N4 Entry
+
+NO. `PHASE_10N4_EXECUTABLE_TASK_CREATED=NO`.
+
+## 68. Final Repository State
+
+At completion-record creation, implementation authority is
+`5aef027d312f462eea72a1ced10b33e4f4664a50` / CI `31270117864`, branch master,
+migration head 0007, Registry 57 and task count 1. Completion and archive SHAs
+remain pending their exact-SHA gates; N4 task is absent.

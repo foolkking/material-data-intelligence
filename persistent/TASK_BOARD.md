@@ -2371,5 +2371,7 @@ current board above.
 - [x] Register exactly `structure.experimental_xrd_comparison@0.1.0` (56 -> 57).
 - [x] Reuse exact persisted `structure.xrd` authority through Plan 0.2.
 - [x] Implement bounded Workspace, selection, interpretation and Report/Recipe projections.
-- [ ] Verify implementation, completion-record and queue-archive exact-SHA CI.
+- [x] Verify corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50`
+  with exact-SHA CI `31270117864` (45/45 service-backed, zero skipped).
+- [ ] Verify completion-record and queue-archive exact-SHA CI.
 - [ ] Keep Phase 10N-4 reviewer-gated and non-executable.
