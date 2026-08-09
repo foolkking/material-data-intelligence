@@ -2087,3 +2087,7 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   N5 Chromium/Firefox/WebKit/390x844 replay, typecheck and build passed.
 - The N5 task remains queued while completion-record and queue-archive exact-SHA
   CI close. N6 remains reviewer-gated and non-executable.
+- Completion candidate `49da783610887c29ee01307884f45f2d9096b287` failed CI
+  `31311662979` only on two retained queue-status compatibility assertions;
+  service-backed and frontend/browser/build passed. The corrected candidate
+  retains the immutable failed SHA/run.

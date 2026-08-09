@@ -2453,3 +2453,7 @@
   zero skipped, the N5 browser/mobile matrix, typecheck and production build.
 - Recorded the full N5 result while retaining the N5 task for completion-record
   and queue-archive CI. N6 remains reviewer-gated and absent from the queue.
+- Completion candidate `49da783610887c29ee01307884f45f2d9096b287` / CI
+  `31311662979` failed only because retained N1/N2 task tests did not allow the
+  approved completion-waiting status; service and frontend jobs passed. The
+  compatibility assertions are corrected additively without rewriting history.

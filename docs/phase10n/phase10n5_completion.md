@@ -9,4 +9,9 @@ WebKit and Chromium 390x844 N5 replays passed in CI.
 
 The completion-record and queue-archive exact-SHA gates remain. The N5 task is
 retained until both gates pass.
+
+Completion candidate `49da783610887c29ee01307884f45f2d9096b287` failed CI
+`31311662979` because two retained N1/N2 queue compatibility assertions did not
+allow the approved N5 completion-waiting status. Service-backed and frontend
+jobs passed. The correction is additive and the failed candidate remains history.
 Phase 10N-6 remains reviewer-gated, not queued and not executable.

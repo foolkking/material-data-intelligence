@@ -7530,7 +7530,8 @@ N5 acceptance is 10/10; Registry is 62; implementation-critical TBDs are zero.
 ## 70. Commit And CI History
 
 - Implementation `34bcea5bd3672d91f3282e12dd5a0cb6b789f1ff` / exact-SHA CI `31311023072`: success.
-- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Failed completion candidate `49da783610887c29ee01307884f45f2d9096b287` / CI `31311662979`: unit job found two retained N1/N2 queue assertions that did not allow the approved N5 completion-waiting status; service-backed and frontend/browser/build jobs passed.
+- Corrected completion-record SHA/CI: this commit / pending exact-SHA CI.
 - Queue-archive SHA/CI: pending after completion CI.
 
 ## 71. Explicit Non-Scope
