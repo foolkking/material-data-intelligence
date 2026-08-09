@@ -53,7 +53,7 @@ def test_n5_r0_required_contract_documents_exist_without_critical_tbd() -> None:
     assert "REVIEWER_GATE" in next_scope and "NOT QUEUED" in next_scope and "NOT EXECUTABLE" in next_scope
 
 
-def test_n5_is_the_only_active_task_or_exactly_archived_and_n6_is_absent() -> None:
+def test_n5_queue_state_remains_compatible_through_n6_archive() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert tasks.count("---TASK---") == tasks.count("---END---")
     if "Task: Phase 10N-6" in tasks or "任务：Phase 10N-6" in tasks:
@@ -68,7 +68,13 @@ def test_n5_is_the_only_active_task_or_exactly_archived_and_n6_is_absent() -> No
     else:
         assert tasks.count("---TASK---") == 0
         assert "Phase 10N-5:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
-        assert "Phase 10N-6:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+        assert (
+            "Phase 10N-6:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+            or (
+                "Phase 10N-6:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
+                and "Phase 11:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+            )
+        )
     assert tasks.count("Task: Phase 10N-6") <= 1
 
 
