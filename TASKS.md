@@ -1,6 +1,12 @@
 
 ---TASK---
- 状态：处理中
+ 状态：已完成
+
+完成时间：2026-08-10
+修改文件：.github/workflows/ci.yml、scripts/run_phase11_3_reproducibility.py、scripts/generate_phase11_3_evidence.py、tests/、docs/phase11/、persistent/、TASKS.md、results.md
+修改摘要：完成八个封板 invariant case 的 Linux/Windows locked-environment replay，加入 line-ending-independent lock identity、方差分类、浏览器展示边界和 Phase 11-4 handoff；无生产科学语义变化。
+测试结果：本地后端 1278 passed/1 skipped（非必需矩阵）、focused 74 passed、前端 449 passed、typecheck/build PASS；implementation CI 31332350363 全部 5 个 required jobs PASS。
+提交状态：失败历史 20fa30e、937b940 已保留；成功 implementation e89dfaf23e376a7ae79432f9806d7a4bd3eaecac；完成记录待直接提交；队列归档待直接提交。
 
 # Phase 11-3 Reviewer Prompt
 

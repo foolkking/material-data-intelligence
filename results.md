@@ -8138,3 +8138,60 @@ DATAPROFILE_AFTER_11_2 = 2.4
 ### Queue State
 
 Phase 11-2 is complete and awaits direct verified queue archive. Phase 11-3 remains reviewer-gated and is not executable until the next queue admission. No Phase 12 or Phase 13 task was created.
+## Phase 11-3 Cross-Platform Reproducibility and Variance Characterization Result
+
+Status: PASS / COMPLETE / AWAITING VERIFIED QUEUE ARCHIVE
+
+Phase 11-3 used the sealed Phase 11-2 reproducibility handoff without changing production science. Corrected implementation `e89dfaf23e376a7ae79432f9806d7a4bd3eaecac` passed exact-SHA CI `31332350363` after retaining two failed historical candidates (`20fa30e`, `937b940`) and correcting only cross-platform evidence harness behavior.
+
+### Scope and Environment
+
+- Eight `PASS_INVARIANT` cases were admitted; the four Phase 11-2 reference-limited cases remained excluded.
+- Linux `ubuntu-latest` and Windows `windows-latest` each replayed the sealed handoff under Python 3.11 and the unchanged `uv.lock`.
+- The lock semantic hash canonicalizes LF/CRLF for text representation only. Fixture/resource scientific checksums remain exact.
+- macOS remains `NOT_CURRENT_RELEASE_TARGET`.
+
+### Results
+
+Linux and Windows independently passed all eight sealed invariant reference checks. Cross-platform benchmark, reference, fixture, tolerance, and unit identities are exact; persisted invariant output hashes are exact. The input handoff contains no sealed numeric expected values, therefore numeric cross-platform comparison is `NOT_APPLICABLE` and no V4 validation level is promoted.
+
+Browser evidence remains presentation-only across Chromium, Firefox, WebKit, and Chromium 390x844. It cannot establish numeric scientific truth and frontend scientific recomputation remains zero. PostgreSQL, Redis, and MinIO evidence remains persistence/lineage evidence rather than numeric validation.
+
+### Evidence and Verification
+
+Evidence root: `docs/phase11/evidence/phase11_3_cross_platform_reproducibility/`. It contains the environment, lock, identity, unit, variance, browser, limitation, security, no-mutation, and Phase 11-4 handoff records. The Phase 11-4 handoff is an input only, not a final coverage verdict.
+
+Local verification: backend `1278 passed, 1 skipped, 49 deselected`; the skipped test is outside the required Phase 11-3 scientific matrix. Focused Phase 11 lifecycle/reproducibility tests: `74 passed`. Frontend: `449 passed`; typecheck and production build passed. CI `31332350363` passed all five required jobs: Linux replay, Windows replay, unit, service-backed integration, and frontend/browser/typecheck/build.
+
+### Boundaries and Markers
+
+```text
+PHASE11_3_NEW_SCIENTIFIC_TOOLS = 0
+PHASE11_3_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE11_3_NEW_ARTIFACT_FAMILIES = 0
+PHASE11_3_NEW_DATAPROFILE_VERSION = 0
+PHASE11_3_NEW_ANALYSISPLAN_VERSION = 0
+PHASE11_3_NEW_PUBLIC_API_FAMILIES = 0
+PHASE11_3_NEW_DATABASE_MIGRATIONS = 0
+PHASE11_3_NEW_DEPENDENCIES = 0
+PHASE11_3_NEW_LLM_CALL_SITES = 0
+PHASE11_3_REAL_LLM_CALLS = 0
+PHASE11_3_EXTERNAL_REFERENCE_DOWNLOADS = 0
+PHASE11_3_EXTERNAL_SCIENTIFIC_API_CALLS = 0
+PHASE11_3_SCIENTIFIC_TOLERANCE_CHANGES = 0
+REGISTRY_BEFORE_11_3 = 62
+REGISTRY_AFTER_11_3 = 62
+DATAPROFILE_BEFORE_11_3 = 2.4
+DATAPROFILE_AFTER_11_3 = 2.4
+LINUX_EQUALS_SCIENTIFIC_TRUTH = NO
+WINDOWS_EQUALS_SCIENTIFIC_TRUTH = NO
+CROSS_PLATFORM_AGREEMENT_EQUALS_REFERENCE_PASS = NO
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+BROWSER_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+SERVICE_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+PASS_DRIVEN_TOLERANCE_CHANGE = PROHIBITED
+```
+
+### Queue State
+
+Phase 11-3 is complete pending direct queue archive. Phase 11-4 remains reviewer-gated, not queued, and not executable. No Phase 12 or Phase 13 task was created.

@@ -2124,6 +2124,7 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 ## Phase 11-2 Golden Benchmark Completion
 
 - Phase 11-3 admitted the eight invariant records and added locked Linux/Windows CI replay, exact identity/unit comparison, browser display-only variance, and a no-promotion Phase 11-4 handoff.
+- Corrected implementation `e89dfaf` passed CI `31332350363`; no V4 promotion or numeric cross-platform claim was made.
 
 - Implementation `5e2f5f07346b7c7d6b7e8d360289cce4ad95ac92` passed exact-SHA CI `31328760532`.
 - The suite has 12 cases: 8 invariant passes and 4 explicit reference-limited N/A cases; no validation level was promoted.

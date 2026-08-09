@@ -4507,3 +4507,5 @@ Golden evidence keeps expected, actual, and comparison records separate. Referen
 Phase 11-2 implementation CI `31328760532` is the only CI confirmation required for this task; completion and queue-archive documentation commits are direct lifecycle commits.
 
 Phase 11-3 uses validation-only Linux and Windows CI jobs under the same `uv.lock`. Platform agreement never substitutes for reference validation, and browser variance remains presentation-only.
+
+The line-ending-independent lock semantic hash is evidence-only: it normalizes textual lock representation while preserving exact binary scientific fixture checksums.

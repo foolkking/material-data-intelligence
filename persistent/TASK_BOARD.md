@@ -6,7 +6,7 @@
 - [x] Add Linux and Windows validation-only CI replay under the same lock.
 - [x] Classify scientific identity/unit variance separately from browser display variance.
 - [x] Keep V4 promotions at zero and generate the Phase 11-4 honest-coverage handoff.
-- [ ] Pass the single required implementation exact-SHA CI, then directly record and archive.
+- [x] Pass implementation exact-SHA CI `31332350363`, then directly record and archive.
 
 ## Phase 11-2 Cross-Capability Golden Scientific Benchmark Suite
 
