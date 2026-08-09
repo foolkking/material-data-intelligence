@@ -15,9 +15,9 @@ PASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT
 Phase 10N-6:
 ---TASK---
 Task: Phase 10N-6 Professional Capability Integration + Evidence Closure
-状态：处理中
+Status: PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI
 
-授权基线：
+Authorized baseline:
 - N5 verified queue archive: 2496d7a9ceb61d016f0f8d6a7f3fdd4572df3295
 - Registry baseline/final: 62 / 62
 - DataProfile baseline/final: 2.4 / 2.4
@@ -26,7 +26,7 @@ Task: Phase 10N-6 Professional Capability Integration + Evidence Closure
 - ACTIVE_TASK: Phase 10N-6
 - PHASE11_EXECUTABLE_TASK_COUNT: 0
 
-Acceptance registry：
+Acceptance registry:
 - N6-A01 N1_TO_N5_BASELINE_REGISTRY_PROFILE_AND_INTEGRATION_MATRIX_CLOSURE
 - N6-A02 PROFILE_INTENT_ELIGIBILITY_PLANNER_AND_EXACT_BINDING_COVERAGE
 - N6-A03 PLANVALIDATOR_RUNTIME_DEPENDENCY_ARTIFACT_AND_LINEAGE_CLOSURE
@@ -38,12 +38,12 @@ Acceptance registry：
 - N6-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_SERVICE_AND_EVIDENCE_CLOSURE
 - N6-A10 THREE_COMMIT_EXACT_SHA_PHASE10N_FINAL_CLOSURE_AND_PHASE11_REVIEWER_GATE
 
-执行约束：
-- 仅执行 integration fixes、cross-capability regression、evidence 与 documentation closure。
-- N6_NEW_SCIENCE = 0；N6_NEW_REGISTRY_TOOLS = 0；N6_NEW_ARTIFACT_FAMILIES = 0。
-- N6_NEW_DATAPROFILE_VERSION = 0；N6_NEW_ALGORITHMS = 0。
-- database migration、public API family、dependency 与 lockfile 均不得改变。
-- 保留 AnalysisPlan 0.1 compatibility；依赖能力继续使用 AnalysisPlan 0.2 exact Artifact ports。
-- 完成 implementation、completion record、verified queue archive 三提交 exact-SHA CI lifecycle。
-- Phase 11 保持 REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE。
+Execution constraints:
+- Integration fixes, cross-capability regression, evidence, and documentation closure only.
+- N6_NEW_SCIENCE = 0; N6_NEW_REGISTRY_TOOLS = 0; N6_NEW_ARTIFACT_FAMILIES = 0.
+- N6_NEW_DATAPROFILE_VERSION = 0; N6_NEW_ALGORITHMS = 0.
+- Database migration, public API family, dependency, and lockfile remain unchanged.
+- AnalysisPlan 0.1 compatibility remains; dependencies use AnalysisPlan 0.2 exact Artifact ports.
+- Completion-record exact-SHA CI must pass before the verified queue archive.
+- Phase 11 remains REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE.
 ---END---

@@ -419,3 +419,7 @@ bands and electronic generation from structures remain prohibited. N6 is not que
 N6 is the sole active task. It closes N1-N5 integration, cross-capability regression,
 browser/service evidence and documentation without new science, Tools, Artifacts,
 Profile versions, migrations, APIs or dependencies. Phase 11 is not queued.
+
+Corrected N6 implementation `eda7cda4d14207abaf97a0a88cc263b0d1ad3319`
+passed exact-SHA CI `31316556495`. The task remains only for completion-record and
+verified queue-archive CI; Phase 11 remains non-executable.

@@ -114,12 +114,21 @@ def test_n6_security_and_scientific_negative_markers_are_closed() -> None:
     assert load("n5_electronic_end_to_end/cases.json")["dft"] == 0
 
 
-def test_n6_queue_has_exactly_one_active_task_and_no_phase11_task() -> None:
+def test_n6_queue_lifecycle_and_no_phase11_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert tasks.count("---TASK---") == tasks.count("---END---") == 1
-    assert "Task: Phase 10N-6 Professional Capability Integration + Evidence Closure" in tasks
-    assert "状态：处理中" in tasks
-    assert "任务：Phase 11" not in tasks
+    task_count = tasks.count("---TASK---")
+    assert task_count == tasks.count("---END---")
+    assert task_count in {0, 1}
+    if task_count:
+        assert "Task: Phase 10N-6 Professional Capability Integration + Evidence Closure" in tasks
+        assert any(
+            state in tasks
+            for state in (
+                "Status: IN_PROGRESS",
+                "Status: PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI",
+            )
+        )
+    assert "Task: Phase 11" not in tasks
 
 
 def test_n6_final_boundary_docs_do_not_queue_phase11() -> None:

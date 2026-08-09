@@ -2466,3 +2466,8 @@
 - Recorded failed implementation candidate `ea156ed8` / CI `31315296903`; fixed Linux
   browser-server process-group cleanup and moved build before replay to prevent resource
   accumulation while preserving all browser coverage.
+- Corrected N6 implementation `eda7cda4d14207abaf97a0a88cc263b0d1ad3319` passed exact-SHA
+  CI `31316556495`, including backend 1252, frontend 449, service-backed 48/48,
+  typecheck/build and the complete N1-N6 browser replay matrix.
+- Added the N6 completion record while retaining its task for completion-record CI;
+  Registry 62, DataProfile 2.4, migration 0007 and all no-new-science boundaries remain.

@@ -2404,5 +2404,7 @@ current board above.
 
 - [x] Admit exactly one N6 task; keep Phase 11 non-executable.
 - [x] Freeze the nine-Tool capability, dependency, Artifact, identity and unit matrices.
-- [ ] Verify N1-N5 aggregate backend, service-backed and browser closure.
-- [ ] Verify implementation, completion-record and queue-archive exact-SHA CI.
+- [x] Verify N1-N5 aggregate backend, service-backed and browser closure.
+- [x] Verify corrected implementation `eda7cda4d14207abaf97a0a88cc263b0d1ad3319`
+  in exact-SHA CI `31316556495`.
+- [ ] Verify completion-record and queue-archive exact-SHA CI.

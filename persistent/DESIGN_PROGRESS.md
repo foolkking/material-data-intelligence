@@ -2101,3 +2101,8 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   services and every browser replay, but the final build was canceled after browser
   server resource accumulation. Linux process-group cleanup and build ordering are
   corrected forward without reducing coverage.
+- Corrected implementation `eda7cda4d14207abaf97a0a88cc263b0d1ad3319` passed exact-SHA
+  CI `31316556495`: backend 1252, frontend 449, service-backed 48/48 with zero
+  skips/failures/errors, typecheck, build and all professional browser replays passed.
+- N6 is complete and retains its sole queue task while completion-record CI is pending;
+  Phase 11 remains reviewer-gated and non-executable.

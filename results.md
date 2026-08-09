@@ -7553,3 +7553,221 @@ At completion-record creation: branch master, implementation authority `34bcea5b
 Mandatory markers: `N5_PLATFORM_DFT_EXECUTION=0`; `N5_PLATFORM_GW_EXECUTION=0`; `N5_BAND_GENERATION_FROM_STRUCTURE=0`; `N5_DOS_GENERATION_FROM_STRUCTURE=0`; `N5_DOS_GENERATION_FROM_BANDS=0`; `N5_FERMI_SURFACE_GENERATION=0`; `N5_PROJECTED_BAND_ANALYSIS=0`; `N5_FRONTEND_BAND_GAP_RECOMPUTATION=0`; `N5_FRONTEND_DOS_RECOMPUTATION=0`; `N5_FRONTEND_ENERGY_ALIGNMENT_AUTHORITY=0`; `N5_FRONTEND_SPIN_MERGING_AUTHORITY=0`; `NEW_LLM_CALL_SITES=0`; `N5_REAL_LLM_CALLS=0`.
 
 Boundary markers: database schema = unchanged; migration = unchanged; migration head = `0007_phase10m1_workspace_domain`; public API family = unchanged; dependencies = unchanged; lockfile = unchanged; Registry count = 62.
+
+# Phase 10N-6 Professional Capability Integration + Evidence Closure Result
+
+## 1. Conclusion
+N6 integration and evidence implementation is complete within sealed N1-N5 scientific contracts. Corrected implementation exact-SHA CI passed; completion-record and archive CI remain lifecycle gates.
+
+## 2. N5 Baseline
+Verified N5 archive `2496d7a9ceb61d016f0f8d6a7f3fdd4572df3295` / CI `31312979614` is the sole entry authority. Failed completion `49da783610887c29ee01307884f45f2d9096b287` is historical only.
+
+## 3. Entry Gate
+Master, HEAD/origin equality, clean worktree, ancestry, Registry 62, DataProfile 2.4, migration 0007 and zero queued tasks passed at entry.
+
+## 4. N6-R0 Integration Closure
+The nine-Tool inventory, integration/evidence matrices and zero-new-science boundary are exact; implementation-critical TBDs are zero.
+
+## 5. Acceptance Registry
+N6-A01 through N6-A10 are implemented exactly once in each canonical authority document: 10/10, missing/extra/duplicate/conflicting zero.
+
+## 6. Phase 10N Tool Inventory
+N1 contributes CrystalNN/VoronoiNN; N2 local environment; N3 XRD comparison; N4 RDF/MSD/diffusion; N5 Band/DOS: nine professional Tools total.
+
+## 7. Registry 62 Preservation
+`REGISTRY_BEFORE_N6 = 62`; `REGISTRY_AFTER_N6 = 62`; N6 adds no Tool.
+
+## 8. DataProfile 2.4 Closure
+Profiles 2.0-2.4 remain readable and 2.4 covers all approved readiness facts without results or backfill. `DATAPROFILE_BEFORE_N6 = 2.4`; `DATAPROFILE_AFTER_N6 = 2.4`.
+
+## 9. N1-N5 Capability Matrix
+Every professional Tool maps Profile facts, Eligibility, Planner metadata, ports, Adapter, Artifact, identity, units, renderer, selection, projector, Report/Recipe and evidence; unmapped Tools are zero.
+
+## 10. AnalysisIntent Coverage
+Coordination, local environment, XRD, RDF, MSD, diffusion, Band/gap, DOS/projected DOS and clarification/unsupported/mismatch routes are covered.
+
+## 11. Eligibility Coverage
+Exact prerequisites and typed unavailable/incompatible states are validated without executing scientific algorithms.
+
+## 12. Planner Coverage
+Capability-aware routing uses Intent, Profile, metadata, Eligibility and exact bindings; negative cross-domain routing passes.
+
+## 13. Source Ambiguity Behavior
+Multiple structures, XRD resources, trajectories or electronic resources produce clarification, never latest/first/best binding.
+
+## 14. AnalysisPlan 0.1 Compatibility
+Plan 0.1 remains readable and unchanged.
+
+## 15. AnalysisPlan 0.2 Dependency Closure
+N1-to-N2, theoretical-XRD-to-N3 and MSD-to-diffusion ports preserve producer output contract, checksum and consumer input identity.
+
+## 16. PlanValidator Closure
+Wrong scope, identity, checksum, Tool/contract version and stale/foreign sources are typed rejected without repair.
+
+## 17. QueueWorkerRuntime Closure
+Positive cases persist Intent, Eligibility, Plan, Job, ToolCall, Adapter output, Artifact, lineage and terminal state through the real Runtime.
+
+## 18. Partial Execution Closure
+Producer failure blocks descendants while independent branches remain available; no fallback, replan or silent rerun occurs.
+
+## 19. Artifact Contract Inventory
+All N1-N5 Artifact families expose exact type/version, producer, sources, params, units, coverage, warnings, limitations, checksum and lineage.
+
+## 20. Artifact Lineage
+Artifact dependencies are checksum-bound and source-scoped; recomputation does not cross sealed dependency boundaries.
+
+## 21. Identity Matrix
+Structure/site/neighbor/environment/polyhedron, XRD, trajectory and electronic identities are exact; array position, display label, filename, nearest/fuzzy and latest authority are none.
+
+## 22. Unit Matrix
+Angstrom, degree, dimensionless coordination/RDF, ps, angstrom^2, angstrom^2/ps, eV and source-qualified DOS/reciprocal semantics are explicit.
+
+## 23. Scientific Wording Audit
+Production wording remains algorithm/source/tolerance/window-qualified; definitive bonding, phase confirmation, unconditional diffusion and platform-DFT claims are rejected.
+
+## 24. N1 Coordination E2E
+Periodic structure through Profile/Intent/Eligibility/Planner/Runtime/Artifact/Workspace/interpretation/Report/Recipe passes.
+
+## 25. N1 Algorithm Independence
+CrystalNN and VoronoiNN remain distinct authorities with no merge, rank or winner selection.
+
+## 26. N2 Local Environment E2E
+Exact N1 Artifact dependency through polyhedron Artifact and delivery surfaces passes.
+
+## 27. N1-to-N2 Dependency Integrity
+`N2_RECOMPUTED_N1_NEIGHBORS = 0`; `N2_INDEPENDENT_NEIGHBOR_SEARCH = 0`; `N2_COORDINATION_ALGORITHM_FALLBACK = 0`.
+
+## 28. N3 Experimental XRD E2E
+Experimental resource plus exact theoretical Artifact produces matched/unmatched peaks, residuals and persisted delivery evidence.
+
+## 29. N3 Zero-Match / Wavelength Negative Cases
+Zero matches is a valid scientific result; wavelength mismatch is typed incompatible. `N3_THEORETICAL_XRD_REIMPLEMENTATION = 0`; `N3_AUTOMATIC_PATTERN_SHIFT = 0`; `N3_RIETVELD_REFINEMENT = 0`; `N3_AUTOMATIC_PHASE_IDENTIFICATION = 0`.
+
+## 30. N4 RDF E2E
+Exact trajectory species/window RDF passes Profile through Report/Recipe with persisted bins, normalization and coverage.
+
+## 31. N4 MSD E2E
+Server-side unwrapping, physical time, total/species/directional MSD and origin coverage pass.
+
+## 32. N4 Diffusion E2E
+Diffusion consumes exact persisted MSD with explicit fit window and diagnostics. `N4_DIFFUSION_RAW_TRAJECTORY_READS = 0`; `N4_DIFFUSION_MSD_RECOMPUTATION = 0`.
+
+## 33. N4 Ballistic Negative Case
+MSD remains valid while qualification is unavailable: `N4_MSD_WRAPPED_COORDINATE_DIRECT_USE = 0`; `N4_AUTOMATIC_DIFFUSION_WINDOW_OPTIMIZATION = 0`; `N4_BALLISTIC_SILENT_FIT = 0`; `N4_MISSING_TIME_DIFFUSION = 0`.
+
+## 34. N5 Band E2E
+Supplied Band Resource produces exact Band Artifact, sampled gap/VBM/CBM/directness/classification and delivery evidence.
+
+## 35. N5 DOS E2E
+Supplied DOS Resource preserves total/spin/projection completeness and exact delivery evidence.
+
+## 36. N5 Band+DOS Combined Presentation
+Compatible persisted Artifacts combine without a third Tool or browser alignment; incompatible sources do not combine.
+
+## 37. Workspace Integration
+Each Job retains one metadata-first Workspace; inactive heavy payload requests are zero and active loads are cancellable with stale suppression.
+
+## 38. Canonical Selection
+All stable selections are exact; renderers without stable identities remain consumer-only and prohibited cross-science mappings are absent.
+
+## 39. Inspector
+Professional panels expose Tool/version, Artifact/checksum, source hashes, algorithms, params, units, coverage, warnings, limitations and lineage.
+
+## 40. Grounded Interpretation
+Each Artifact family has deterministic bounded projection or an explicit disposition; providers receive facts rather than raw scientific authority.
+
+## 41. Grounding Negative Cases
+Invented values/units/entities/thresholds and bonding, confirmation, unqualified diffusion or platform-DFT claims are rejected.
+
+## 42. Report Closure
+Reports compose persisted facts with coverage/warnings/limitations/provenance. `REPORT_GENERATED_SCIENTIFIC_VALUES = 0`; `REPORT_GENERATED_SCIENTIFIC_CLAIMS = 0`; `REPORT_SCIENTIFIC_RECOMPUTATION = 0`.
+
+## 43. Recipe Closure
+Recipes preserve Profile/Intent/Eligibility/Plan/Tool/params/dependencies/contracts/sources and remain declarative. `RECIPE_EXECUTION_AUTHORITY = NONE`; plan/job/queue authority is none.
+
+## 44. Historical Compatibility
+Profiles 2.0-2.4, Plans 0.1/0.2, historical Jobs/Workspaces/Artifacts/Reports/Recipes remain readable without backfill or read-time science; historical rebinding is zero.
+
+## 45. Phase 10K/L/M Regression
+Generic Profile, Explorer, ML, Composition, Intent, Eligibility, Plans, interpretation, Workspace/selection/gallery and Report/Recipe regressions pass; one-Workspace-per-Job and migration authority are unchanged.
+
+## 46. PostgreSQL
+Exact-SHA CI persisted and scoped professional resources, ToolCalls, Artifacts, dependencies and Workspaces successfully.
+
+## 47. Redis
+Queue/runtime and dependency behavior passed service-backed closure.
+
+## 48. MinIO
+Artifact payload/checksum persistence and retrieval passed service-backed closure.
+
+## 49. Browser Matrix
+Chromium, Firefox and WebKit professional-family replays pass with zero console/page/unexpected-response/external-request errors.
+
+## 50. Mobile
+Chromium 390x844 covers structure, XRD, trajectory and electronic families without horizontal overflow.
+
+## 51. Accessibility
+Keyboard/focus, named controls, non-color state, tables/text alternatives, 44px targets, 200% reflow and reduced motion pass.
+
+## 52. Performance
+Small/medium/near-cap/over-cap evidence and bounded E2E timings/Artifact bytes/load/projection/report metrics are retained as development evidence, not an SLA.
+
+## 53. Viewer Lifecycle
+Fifty cross-panel cycles show zero WebGL/listener/observer/animation/canvas/chart/request/stale-response growth.
+
+## 54. Security
+Arbitrary code, shell/filesystem/notebook/network/dynamic module, executable Artifact content, cross-scope/stale/latest/fuzzy binding and secret/path/stack/storage disclosure gates pass.
+
+## 55. LLM / DeepSeek
+`N6_NEW_LLM_CALL_SITES = 0`; `N6_REAL_LLM_CALLS_DEFAULT_CI = 0`; N6 requires no LLM and DeepSeek policy regression passes.
+
+## 56. References / Fixtures
+N1-N5 retained references plus newly replayed critical positive and negative integration fixtures are inventoried in the N6 manifest.
+
+## 57. Tolerance Closure
+Existing quantity-specific tolerances are preserved; N6 changes no formula, threshold, default or scientific parameter.
+
+## 58. Evidence Inventory
+The N6 evidence tree contains baseline/R0/acceptance, capability/tool/Profile/Planner/Plan/Artifact/identity/unit matrices, E2E/negative/historical/delivery/service/browser/performance/accessibility/security records.
+
+## 59. Evidence Manifest Integrity
+Normalized manifest validation reports entries present, missing/extra/hash mismatch/secret-bearing evidence zero; screenshots are not numeric authority.
+
+## 60. Documentation Closure
+N6 contracts, matrices, evidence map, completion, final summary and Phase 11 reviewer gate are documented; canonical and persistent authorities are synchronized.
+
+## 61. Files Changed
+N6 changed integration tests, aggregate CI/browser/service gates, evidence and documentation only; no scientific production authority was added.
+
+## 62. Production Behavior Changes
+Linux browser-server process-group cleanup and CI build ordering prevent lifecycle resource accumulation without changing scientific behavior or test coverage.
+
+## 63. Acceptance Results
+N6 acceptance 10/10; backend 1252 passed, frontend 449 passed, service-backed 48 passed with zero skipped/failed/errors, browser/typecheck/build/lock/security/evidence passed. npm audit is UNAVAILABLE because the configured mirror returns `404_NOT_IMPLEMENTED`.
+
+## 64. Phase 10N Final Readiness
+Coordination, Local Environment/Polyhedra, Experimental XRD, trajectory RDF/MSD/Diffusion and electronic Band/DOS are each `READY_WITH_EXPLICIT_LIMITS`.
+
+## 65. Commit / CI History
+- Failed implementation `ea156ed898ce7c2ed539a026f2983b239e444d8a` / CI `31315296903`: build cancellation after accumulated browser servers; retained historical only.
+- Corrected implementation `eda7cda4d14207abaf97a0a88cc263b0d1ad3319` / CI `31316556495`: success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Verified queue-archive SHA/CI: pending after completion CI.
+
+## 66. Explicit Remaining Limits
+No bond-valence/oxidation inference, Rietveld/refinement/phase fraction/automatic phase identification, unsupported variable-cell MSD, Green-Kubo/VACF/Arrhenius, DFT/GW/Fermi surface/projected bands/Bader/defects/surfaces, arbitrary execution, generic workflow or autonomous scientific agent.
+
+## 67. Queue State
+`TASK_BLOCK_COUNT = 1`; the completed N6 task remains until completion-record and archive exact-SHA CI pass.
+
+## 68. Phase 11 Gate
+Phase 11 is `REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`; `PHASE11_EXECUTABLE_TASK_CREATED = NO`.
+
+## 69. Final Repository State
+At completion-record creation: master, implementation authority `eda7cda4d14207abaf97a0a88cc263b0d1ad3319` / CI `31316556495`, Registry 62, DataProfile 2.4, migration head 0007, one retained N6 task. The verified archive gate remains pending.
+
+Mandatory N6 markers: `N6_NEW_SCIENTIFIC_TOOLS = 0`; `N6_NEW_SCIENTIFIC_ALGORITHMS = 0`; `N6_NEW_ARTIFACT_FAMILIES = 0`; `N6_NEW_DATAPROFILE_VERSION = 0`; `N6_NEW_PUBLIC_API_FAMILIES = 0`; `N6_NEW_DATABASE_MIGRATIONS = 0`; `N6_NEW_DEPENDENCIES = 0`; `N6_NEW_LLM_CALL_SITES = 0`; `N6_REAL_LLM_CALLS_DEFAULT_CI = 0`.
+
+Authority markers: `FRONTEND_DUPLICATE_SCIENTIFIC_AUTHORITY = NONE`; `FRONTEND_SCIENTIFIC_RECOMPUTATION = NONE`; `WORKSPACE_SCIENTIFIC_AUTHORITY = NONE`; `REPORT_SCIENTIFIC_RECOMPUTATION = 0`; `RECIPE_EXECUTION_AUTHORITY = NONE`; `N5_PLATFORM_DFT_EXECUTION = 0`; `N5_PLATFORM_GW_EXECUTION = 0`; `N5_BAND_GENERATION_FROM_STRUCTURE = 0`; `N5_DOS_GENERATION_FROM_STRUCTURE = 0`; `N5_FERMI_SURFACE_GENERATION = 0`; `N5_PROJECTED_BAND_ANALYSIS = 0`.
+
+Repository boundaries: database schema = unchanged; migration = unchanged; migration head = `0007_phase10m1_workspace_domain`; public API family = unchanged; dependencies = unchanged; lockfile = unchanged; Registry count = 62; DataProfile = 2.4.
