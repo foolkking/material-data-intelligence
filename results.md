@@ -8003,3 +8003,83 @@ Honesty markers: `BROWSER_PASS_EQUALS_NUMERIC_REFERENCE_PASS = NO`; `SERVICE_PAS
 Roadmap markers: `PHASE_11 = SCIENTIFIC_VALIDATION`; `PHASE_12 = COMPREHENSIVE_UI_UX_PRODUCT_EXPERIENCE_REDESIGN`; `PHASE_13 = FINAL_PRODUCT_CLOSURE`; `OLD_PHASE12_FINAL_CLOSURE_NUMBERING = SUPERSEDED`; `FUTURE_SCOPE = DOCUMENTED_NOT_QUEUED`; `PHASE14 = NOT_CREATED`.
 
 Queue archive addendum: completion record `dee197d39e194277351a34fcd063b3de97729534`; queue archive = this commit. `TASK_BLOCK_COUNT = 0`; Phase 11-1 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 12/13 are roadmap-approved, not queued, and not executable. The implementation CI is the sole waited/verified CI per explicit user direction.
+
+# Phase 11-1 Reference Provenance + Safe Fixture Consolidation Result
+
+## 1. Conclusion
+Reference and fixture inputs required for the approved Phase 11-2 benchmark scope are provenance-sealed and safely prepared. Scientific Tools are not declared validated in this phase.
+
+## 2. Phase 11-0 Baseline
+Entry authority is `ef40ade537820e88bbe2d259a9b4ccb9cd04ac1c`; Registry 62, DataProfile 2.4, migration 0007, and a clean queue baseline were verified.
+
+## 3. Entry Gate
+`PHASE_11_1_ENTRY_GATE = PASS`; the first task was admitted as the only active task.
+
+## 4. Phase 11-0 Backlog Reconciliation
+All 12 retained gap records were reconciled without downgrading priorities or changing scientific semantics. Actual retained counts are 46 reference-like, 170 fixtures, and 55 official/example records.
+
+## 5. Production Behavior Changes
+None. No production scientific source was changed.
+
+## 6-15. Reference Acquisition, Version, Checksums, Retention, License
+No external reference download was required. Existing repository evidence was reused with SHA-256 source identity, retained-evidence version pinning, raw-retention disposition, and explicit license/redistribution status. Official-example records remain reference-only where redistribution is unclear.
+
+## 16-20. License Review, Reuse, Deduplication, Independence
+Same checksums are classified as reused, not independent evidence. Same-library expected data is `SELF_REFERENCE`; official/example provenance with unresolved licensing is `UNRESOLVED`. No filename or recency authority is used.
+
+## 21-30. Fixture Reuse, Identity, Checksums, Transformations
+170 retained fixture records are reused without in-place rewrite. Twelve benchmark handoff views have distinct fixture identities and link back to retained source bytes. `P11TRANS-IDENTITY-001@1.0.0` is metadata-only, deterministic, and has `numericMutation=false`, `unitMutation=false`, and `orderingMutation=false`.
+
+## 31-36. Capability Reference Preparation
+N1 coordination, N2 geometry, N3 XRD, N4 trajectory, N5 electronic, phonon, volumetric, ML/composition, and earlier retained evidence are linked to typed provenance records. No numeric comparison was executed.
+
+## 37. Official Example Reconciliation
+55 official/example records remain retained historical mapping or reference-only evidence. `OFFICIAL_EXAMPLE_EXISTS != REFERENCE_VERIFIED`.
+
+## 38. Input Support Non-Change Verification
+Input verdicts are unchanged: CSV/CIF/POSCAR direct supported; canonical JSON, XYZ/EXTXYZ, volumetric, ZIP, and supplied electronic JSON supported with limits; phonon mapping-only; XLSX, Parquet, and LAMMPS trajectory unsupported.
+
+## 39-41. Numeric, Level, and Coverage Boundaries
+`PHASE11_1_NUMERIC_SCIENTIFIC_PASS_DECLARATIONS = 0`; validation-level promotions = 0; honest coverage promotions = 0. Phase 11-2 owns platform-output comparison.
+
+## 42. Tolerance Non-Change
+`TOLERANCE_CHANGES = 0`; the Phase 11-0 tolerance registry remains authoritative and pass-driven widening remains prohibited.
+
+## 43-47. Gaps, Priorities, Unresolved Items
+P0 remains 0. P1/P2 provenance, license, independent benchmark, variance, and coverage gaps remain typed in the generated unresolved matrix; no current scientific discrepancy was invented or hidden.
+
+## 48-50. Phase 11-2 Benchmark Input Manifest
+`phase11_2_benchmark_input_manifest.json` contains 12 exact handoff records, each with gap, Tool/version, reference, fixture/version/checksum, units, tolerance reference, case role, independence, readiness, and blocking reason. `IMPLEMENTATION_CRITICAL_TBD = 0`.
+
+## 51-56. Registries and Evidence Manifest
+Reference, fixture, checksum, license, raw-retention, transformation, independence, duplicate, official-example, acquisition, and benchmark manifests are under `docs/phase11/evidence/phase11_1_reference_provenance_safe_fixture/`. Manifest hashes and required-file checks passed.
+
+## 57. Network Acquisition Audit
+External downloads = 0; external scientific API calls = 0; downloaded scripts = 0; notebooks = 0; unapproved external requests = 0.
+
+## 58-60. Security, LLM, Database/API/Dependencies
+No arbitrary execution or LLM authority was added. Registry remains 62; DataProfile 2.4; migration 0007; database/API/dependencies/lockfile unchanged.
+
+## 61. Registry / DataProfile Freeze
+`REGISTRY_BEFORE_11_1 = 62`, `REGISTRY_AFTER_11_1 = 62`, `DATAPROFILE_BEFORE_11_1 = 2.4`, `DATAPROFILE_AFTER_11_1 = 2.4`.
+
+## 62-65. Tests, Browser, Service, npm Audit
+Focused governance/provenance tests passed (65 passed in the final focused set). Implementation CI `31327344030` passed Unit (1259 passed, 1 skipped), Service-backed, Frontend typecheck/build, and browser replay. Local full pytest timed out at 124 seconds without assertion output. npm audit remains subject to the repository mirror's existing unavailable policy and was not used as a PASS claim.
+
+## 66. Files Changed
+Added the Phase 11-1 evidence pack, provenance generator, tests, eight Phase 11 documents, canonical plan/lock/backlog updates, persistent state entries, and queue/result records. No production source, schema, migration, dependency, or lockfile changed.
+
+## 67. Acceptance Registry
+P11V1-A01 through P11V1-A10 are implemented exactly once; missing, extra, duplicate, conflicting, and shorthand counts are zero.
+
+## 68-71. Commit, CI, Completion, Archive
+Initial candidate `0ab99b9` failed historical queue assertions; `a9e15a3` was a fix-forward candidate with a syntax error; final implementation `cfb87369ac2af00f4a631654b841dffee8faf024` passed CI `31327344030`. Completion and queue archive are direct documentation/state commits per user instruction, with no additional CI wait.
+
+## 72. Queue State
+Phase 11-1 is completed and its block is pending archive; Phase 11-2 and Phase 11-3 remain queued in `TASKS.md` as reviewer prompts and are not executed in this task.
+
+## 73. Phase 11-2 Gate
+Phase 11-2 is reviewer-gated until a new reviewer authorization. Its benchmark inputs are prepared, but no scientific PASS is inferred.
+
+## 74. Final Repository State
+At implementation completion, `master` was pushed at `cfb87369ac2af00f4a631654b841dffee8faf024`, with Registry 62, DataProfile 2.4, migration 0007, and no production behavior change. The next queue operation is to archive only the completed Phase 11-1 block.
