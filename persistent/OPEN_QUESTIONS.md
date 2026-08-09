@@ -1162,3 +1162,4 @@ unless also listed in Active Questions. Future-only topics are governed by
 
 - No implementation-critical N4 question remains after R0. Variable-cell MSD, irregular-time diffusion, COM drift correction, automatic fit-window selection, VACF/Green-Kubo, Arrhenius analysis and reactive trajectories are explicitly deferred.
 - Completion-record and queue-archive exact-SHA CI remain lifecycle work after implementation CI. Phase 10N-5 remains reviewer-gated and absent from `TASKS.md`.
+- Corrected implementation CI `31299086998` is closed; only completion-record and verified queue-archive CI remain.

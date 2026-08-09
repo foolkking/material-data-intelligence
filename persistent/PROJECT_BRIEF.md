@@ -10,6 +10,8 @@ OLS Einstein diagnostics. Diffusion consumes only an exact persisted MSD
 Artifact. Database, migration head 0007, API families, dependencies, lockfiles,
 scientific authority, Workspace authority, and LLM call sites remain unchanged.
 N5 is reviewer-gated, not queued, and not executable.
+Corrected N4 implementation `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92`
+passed exact-SHA CI `31299086998`; completion-record and queue-archive CI remain.
 
 ## 2026-08-09 Phase 10N-3 Implementation
 

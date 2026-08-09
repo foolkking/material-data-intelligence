@@ -8,7 +8,7 @@
 - [x] Implement three exact Registry Tools, DataProfile 2.3, Plan 0.2 dependency, Runtime and Artifacts.
 - [x] Add Workspace tables, exact N4 selection, bounded interpretation, Report/Recipe and service evidence.
 - [x] Pass local full regression: backend 1221, frontend 438, typecheck/build, browser matrix, lock and evidence integrity.
-- [ ] Pass implementation exact-SHA CI, including 46 zero-skip service-backed tests.
+- [x] Pass corrected implementation exact-SHA CI `31299086998`, including 46 zero-skip service-backed tests.
 - [ ] Append completion record and archive the task only after their exact-SHA CI gates pass.
 - [x] Keep Phase 10N-5 reviewer-gated and absent from the executable queue.
 

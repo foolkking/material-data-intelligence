@@ -6941,3 +6941,310 @@ At queue-archive creation, implementation authority is
 migration head 0007, Registry 57 and task count 0. Completion authority is
 `c7547903faef191c97f35ca0ae2ad1ad1678193f` / CI `31288792343`; queue-archive
 exact-SHA verification is pending and N4 task is absent.
+
+# Phase 10N-4 Trajectory RDF / MSD / Diffusion Result
+
+## 1. Conclusion
+
+`PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI`.
+
+## 2. N3 Baseline
+
+N3 implementation `5aef027d312f462eea72a1ced10b33e4f4664a50` / CI `31270117864`, completion `c7547903faef191c97f35ca0ae2ad1ad1678193f` / CI `31288792343`, and archive `0a33d84ea7c97b423f825f0c9784c57f1acfac3b` / CI `31289319532` were verified. Entry Registry was 57 and task count was zero.
+
+## 3. Entry Gate
+
+Master HEAD equaled origin, the worktree was clean, migration head was `0007_phase10m1_workspace_domain`, DataProfile was 2.2, and N4/N5 production/tasks were absent. `PHASE_10N4_ENTRY_GATE=PASS`.
+
+## 4. N4-R0 Contract Closure
+
+The three Tools, trajectory/time/cell/PBC authority, ASE/NumPy algorithms, strict params, Artifacts, identities, errors, references, tolerances and caps are exact; implementation-critical TBD count is zero.
+
+## 5. Acceptance Registry
+
+N4-A01 through N4-A10 are canonical and synchronized across acceptance, backlog, lock and manifest documents.
+
+## 6. N-D Decision Compliance
+
+The N0 scientific authority, bounded execution, exact identity, no-recomputation, wording, persistence and phase-order decisions remain intact.
+
+## 7. Production Behavior Changes
+
+Added approved trajectory RDF, server-unwrapped MSD, explicit-window diffusion diagnostics, additive readiness/planning, persisted Artifacts and Workspace/interpretation/Report integrations only.
+
+## 8. Registry 57 To 60
+
+Added exactly `trajectory.rdf@0.1.0`, `trajectory.msd@0.1.0`, and `trajectory.diffusion@0.1.0`; final Registry count is 60.
+
+## 9. Existing Trajectory Authority Audit
+
+Input authority is immutable `phase10g.trajectory.v1` with exact trajectory hash, stable atom order/IDs, frames, coordinates, units, cells, PBC and physical time.
+
+## 10. Static RDF Boundary
+
+Existing `structure.rdf` is unchanged. N4 trajectory RDF is an independent persisted authority and never averages frontend static-RDF output.
+
+## 11. Trajectory Resource Contract
+
+The strict resource validates bounded frames/atoms, stable atom records, explicit coordinate/wrapping semantics, cells/PBC and time metadata.
+
+## 12. Frame Identity
+
+Frame identity is trajectory hash plus formal frame index; playback index is not scientific authority.
+
+## 13. Atom Identity
+
+Atom identity is bound to the immutable trajectory and invariant atom record/order. Nearest-coordinate tracking is absent.
+
+## 14. Species Identity
+
+Species stability is validated across the immutable trajectory; mutation/reactive tracking is unsupported.
+
+## 15. Time Semantics
+
+Physical time is explicit, finite and strictly increasing, converted from fs to canonical ps where declared. MSD/diffusion reject missing or irregular production time.
+
+## 16. Cell And PBC Semantics
+
+Fixed/per-frame cells and exact three-axis PBC are explicit; partial PBC affects only enabled axes.
+
+## 17. Variable-Cell Policy
+
+RDF accepts validated per-frame cells only when every frame supports the requested safe radius. Initial MSD/diffusion reject variable cells.
+
+## 18. Coordinate Semantics
+
+Fractional versus Cartesian and wrapped versus unwrapped input are explicit contract fields and are never inferred from numeric range.
+
+## 19. Unwrapping Algorithm
+
+`mdi.fixed_cell_fractional_minimum_image@1.0.0` unwraps server-side with fixed-cell fractional continuity, triclinic mapping and partial-PBC handling.
+
+## 20. Unwrapping Ambiguity
+
+Post-wrap fractional steps at or above 0.49 produce `UNWRAPPING_AMBIGUOUS`; no perturbation, fallback or nearest-atom tracking occurs.
+
+## 21. RDF Algorithm
+
+`mdi.trajectory_rdf_ase_mic_unordered_pair_density@1.0.0` uses locked ASE 3.29.0 geometric minimum images and NumPy 2.4.6 bounded histograms.
+
+## 22. RDF Normalization
+
+Per-frame unordered-pair number-density and exact shell-volume normalization yields dimensionless `g(r)` with `r` in angstrom.
+
+## 23. Species-Pair RDF
+
+All-species, same-species and unordered cross-species pairs preserve explicit pair identity and self/double-count policy.
+
+## 24. Window RDF
+
+Whole, frame and physical-time windows use inclusive start/exclusive end and persist exact included frame identities and coverage.
+
+## 25. RDF Safe Radius
+
+Requested `rMax` must not exceed half the minimum periodic face spacing for any included frame; it is never silently clipped.
+
+## 26. RDF Artifact
+
+`phase10n4.trajectory_rdf.v1` persists source identity, params/hash, pair/window, exact bins, normalized values, counts, coverage, diagnostics and checksum.
+
+## 27. MSD Estimator
+
+`mdi.multiple_time_origin_msd@1.0.0` averages exact selected atoms and bounded time origins for each physical lag.
+
+## 28. Total MSD
+
+Total Cartesian MSD is persisted in angstrom squared with lag time in ps.
+
+## 29. Species MSD
+
+One exact species or all atoms is selected through formal trajectory species identity.
+
+## 30. Directional MSD
+
+Persisted x/y/z Cartesian components remain distinct and are not relabeled crystallographic a/b/c.
+
+## 31. MSD Origin Coverage
+
+Every lag records its origin count and coverage; low fit coverage prevents diffusion qualification.
+
+## 32. Drift Correction Policy
+
+Drift correction is explicitly `none`; no mass or center-of-mass authority is invented.
+
+## 33. MSD Artifact
+
+`phase10n4.trajectory_msd.v1` persists source, unwrapping policy/diagnostics, estimator, species, lag IDs/times, total/directional values, origins, limitations and checksum.
+
+## 34. MSD To Diffusion Dependency
+
+Diffusion consumes one exact persisted MSD Artifact through AnalysisPlan 0.2 binding by ID, contract, producer, checksum and trajectory lineage.
+
+## 35. Fit Window
+
+Start/end are explicit finite ps parameters. Missing windows require clarification; no automatic best-window selection exists.
+
+## 36. Diffusion Regression
+
+`mdi.explicit_window_ols_einstein@1.0.0` uses bounded NumPy OLS, `D=slope/6` for total and `D_axis=slope/2` for Cartesian directions.
+
+## 37. Diffusive-Regime Diagnostics
+
+Qualification requires minimum points/duration/origin coverage, positive slope, minimum R-squared, signal and a configured log-log alpha range.
+
+## 38. Ballistic And Transient Rejection
+
+Controlled constant-velocity MSD is `BALLISTIC_LIKE_WINDOW`; non-diffusive, poor, short or low-coverage windows retain diagnostics but no D estimate.
+
+## 39. Diffusion Artifact
+
+`phase10n4.trajectory_diffusion.v1` persists exact MSD lineage, fit window, fit values, diagnostics/status, qualified estimate or unavailable state, units and limitations.
+
+## 40. Units
+
+Distance is angstrom, time ps, MSD angstrom squared, RDF dimensionless and diffusion angstrom squared per ps.
+
+## 41. DataProfile Decision
+
+DataProfile 2.3 is an additive JSON-contract evolution for trajectory readiness facts. Profiles 2.2 and historical profiles remain readable; no result is profiled.
+
+## 42. Eligibility
+
+RDF, MSD and diffusion independently check their exact data/dependency prerequisites and caps without running scientific algorithms.
+
+## 43. Planner
+
+Deterministic intents cover whole/window/species RDF, total/species/directional MSD and explicit-window diffusion; ambiguous source/species/window requests do not choose latest/first.
+
+## 44. AnalysisPlan 0.2
+
+RDF/MSD bind trajectories directly; diffusion composes `trajectory.msd -> exact MSD Artifact -> trajectory.diffusion` or reuses an exactly compatible persisted MSD Artifact.
+
+## 45. PlanValidator
+
+Existing typed dependency validation rejects foreign/stale/checksum/contract/version/source/parameter mismatches and direct trajectory-to-diffusion bindings.
+
+## 46. Runtime
+
+Registered Adapters resolve bounded existing resources/Artifacts, compute server-side and persist through existing Runtime/Artifact authority with no network, shell, notebook or arbitrary path/code.
+
+## 47. PostgreSQL
+
+Exact-SHA CI `31299086998` passed N4 ToolCall/Artifact and dependency persistence through PostgreSQL.
+
+## 48. Redis
+
+Exact-SHA CI passed queue execution and typed dependency state through Redis.
+
+## 49. MinIO
+
+Exact-SHA CI passed exact MSD payload retrieval/checksum and N4 Artifact round trips through MinIO.
+
+## 50. Workspace
+
+The metadata-first Trajectory Analytics panel provides RDF, MSD and diffusion views with numeric tables and no frontend scientific computation.
+
+## 51. Trajectory Viewer Integration
+
+Exact trajectory identities link navigation and selection only; rendered positions never become displacement/RDF/MSD authority.
+
+## 52. Selection
+
+Six exact N4 kinds cover RDF pair/bin, MSD species/lag and diffusion window/diagnostic with Project/Workspace/Job/Artifact/checksum identity.
+
+## 53. Inspector
+
+Persisted algorithms, source trajectory/MSD, params/hash, units, values, origins, fit diagnostics, coverage, warnings and limitations are inspectable.
+
+## 54. Interpretation
+
+The deterministic projector exposes bounded persisted RDF/MSD/diffusion facts only; it performs no unwrapping, calculation, fitting or threshold selection.
+
+## 55. Scientific Wording
+
+Claims remain window-, estimator- and diagnostic-qualified; RDF peaks are not automatic bonds/shells and D is not an unconditional long-time bulk constant.
+
+## 56. Report
+
+Reports compose persisted plots/tables/diagnostics/provenance and disclose the explicit-window diffusion limitation; failed qualification emits no positive D conclusion.
+
+## 57. Recipe
+
+Recipes preserve exact trajectory, Tools/versions/params, unwrapping, MSD Artifact/checksum, fit window and dependency bindings and remain non-executable.
+
+## 58. Historical Compatibility
+
+No bulk backfill or read-time analytics occurs. Historical trajectory/Workspace/Report data remains readable and N4 is `NOT_AVAILABLE` without exact persisted N4 Artifacts.
+
+## 59. References
+
+Controlled lattice, boundary crossing, triclinic/partial-PBC, stationary, ballistic, random-walk, anisotropic/species, missing-time, variable-cell and fit fixtures are recorded.
+
+## 60. Tolerances
+
+Cell, coordinate, minimum-image, RDF, MSD, fit, R-squared, alpha and D tolerances are quantity-specific; trajectory/frame/atom/Artifact/Tool/parameter identities are exact.
+
+## 61. Performance
+
+Hard caps cover 200 frames, 5,000 atoms, 2,000,000 pair evaluations, 2,048 bins/lags, 4,096 origins, 10,000 fit points and 32 MiB Artifacts. Measurements are not capacity guarantees.
+
+## 62. Viewer Lifecycle
+
+Fifty view/species/window/selection cycles recorded zero WebGL/listener/observer/animation/canvas/chart/request/stale-response growth.
+
+## 63. Accessibility
+
+Complete RDF/MSD/fit tables, keyboard controls, visible focus, non-color series/status, 44px mobile controls, 200% reflow and reduced motion are covered.
+
+## 64. Security
+
+No arbitrary code, shell, filesystem, notebook, network or dynamic module authority exists. Scope/checksum binding, inert Artifacts, no frontend science and no automatic fit optimization pass.
+
+## 65. LLM And DeepSeek
+
+`NEW_LLM_CALL_SITES=0`; `N4_REQUIRES_LLM=NO`; `N4_REAL_LLM_CALLS=0`; `DEEPSEEK_POLICY_REGRESSION=PASS`.
+
+## 66. Browser Matrix
+
+Chromium, Firefox, WebKit and Chromium 390x844 passed locally and in CI `31299086998`, including N4 views, exact selections, lifecycle, accessibility and zero unapproved external requests.
+
+## 67. Tests
+
+Local backend: 1221 passed with 48 documented service/environment skips; frontend: 438 passed; typecheck/build passed. CI unit: 1220 passed, 1 documented environment skip, 47 integration deselected; service-backed: 46 passed, 0 skipped/failed/errors; all browser/build jobs passed. `npm audit=UNAVAILABLE` because the configured mirror returns `404_NOT_IMPLEMENTED`.
+
+## 68. Evidence
+
+`docs/phase10n/evidence/phase10n4_trajectory_rdf_msd_diffusion/` contains contracts, fixtures, persisted samples, runtime, browser, lifecycle, accessibility, security and LF-normalized hash manifest evidence.
+
+## 69. Files Changed
+
+Database schema = unchanged; migration = unchanged; migration head = `0007_phase10m1_workspace_domain`; public API family = unchanged; dependencies = unchanged; lockfile = unchanged; Workspace/Selection/Report/Recipe execution authorities are unchanged.
+
+## 70. Acceptance Results
+
+Expected = 10; implemented = 10; missing = 0; extra = 0; duplicate registry entries = 0; conflicting definitions = 0; canonical registry shorthand entries = 0.
+
+## 71. Commit And CI History
+
+- Failed implementation `3ae66528a7bffa596793fe6d72ea0e600819be8b` / CI `31298574230`: unit evidence hash failed across CRLF/LF; service 46/46 and frontend/browser passed.
+- Corrected implementation `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92` / CI `31299086998`: success.
+- Completion-record SHA/CI: this commit / pending exact-SHA CI.
+- Queue-archive SHA/CI: pending after completion-record CI.
+
+## 72. Explicit Non-Scope
+
+No N5 Band/DOS/Fermi surface, Green-Kubo/VACF, Arrhenius, automatic fit window, variable-cell MSD, reaction/hop analysis, simulation/DFT/refinement, arbitrary execution, external scientific API, generic workflow, RAG, memory, multi-agent, plugin or enterprise capability was added.
+
+## 73. Queue State
+
+`TASK_BLOCK_COUNT=1`; the completed N4 task is retained pending completion-record exact-SHA CI.
+
+## 74. Automatic N5 Entry
+
+NO. `PHASE_10N5_EXECUTABLE_TASK_CREATED=NO`; Phase 10N-5 remains `REVIEWER_GATE / NOT_QUEUED / NOT_EXECUTABLE`.
+
+## 75. Final Repository State
+
+Implementation authority is `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92` / CI `31299086998`; completion-record exact-SHA is pending. Branch is master, Registry count is 60, migration head is 0007, the N4 task count is one and N5 task is absent.
+
+Mandatory markers: `N4_RDF_FRONTEND_RECOMPUTATION=0`; `N4_MSD_FRONTEND_RECOMPUTATION=0`; `N4_DIFFUSION_FRONTEND_FIT=0`; `N4_MSD_WRAPPED_COORDINATE_DIRECT_USE=0`; `N4_DIFFUSION_RAW_TRAJECTORY_READS=0`; `N4_DIFFUSION_MSD_RECOMPUTATION=0`; `N4_AUTOMATIC_DIFFUSION_WINDOW_OPTIMIZATION=0`; `N4_BALLISTIC_SILENT_FIT=0`; `N4_TRANSIENT_SILENT_FIT=0`; `N4_MISSING_TIME_DIFFUSION=0`; `N4_VARIABLE_CELL_MSD_SILENT_ASSUMPTION=0`; `NEW_LLM_CALL_SITES=0`; `N4_REAL_LLM_CALLS=0`.
