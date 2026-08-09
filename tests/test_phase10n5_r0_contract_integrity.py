@@ -56,7 +56,10 @@ def test_n5_r0_required_contract_documents_exist_without_critical_tbd() -> None:
 def test_n5_is_the_only_active_task_or_exactly_archived_and_n6_is_absent() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert tasks.count("---TASK---") == tasks.count("---END---")
-    if "Task: Phase 10N-5" in tasks:
+    if "Task: Phase 10N-6" in tasks or "任务：Phase 10N-6" in tasks:
+        assert tasks.count("---TASK---") == 1
+        assert "Phase 10N-5:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
+    elif "Task: Phase 10N-5" in tasks:
         assert tasks.count("---TASK---") == 1
         assert (
             "Status: IN_PROGRESS" in tasks
@@ -66,7 +69,7 @@ def test_n5_is_the_only_active_task_or_exactly_archived_and_n6_is_absent() -> No
         assert tasks.count("---TASK---") == 0
         assert "Phase 10N-5:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
         assert "Phase 10N-6:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
-    assert "Task: Phase 10N-6" not in tasks
+    assert tasks.count("Task: Phase 10N-6") <= 1
 
 
 def test_n5_ci_requires_browser_and_service_closure() -> None:

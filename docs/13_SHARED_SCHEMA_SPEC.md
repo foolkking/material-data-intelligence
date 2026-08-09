@@ -2102,3 +2102,10 @@ calculation identity, eV/reference/Fermi semantics, spin and bounded arrays.
 exact electronic k-point, band, state, edge, gap, DOS channel, projection and
 energy-point identities. Band+DOS combined presentation is not an Artifact or
 Tool and cannot align incompatible sources in the browser.
+
+## Phase 10N-6 Integration Closure
+
+N6 introduces no production schema. DataProfile remains 2.4, Registry remains 62,
+and all N1-N5 Artifact and Selection contracts retain their sealed meanings. The
+`Phase10NProfessionalCapabilityMatrix` and identity/unit matrices are evidence-only
+JSON and have no runtime or scientific authority.

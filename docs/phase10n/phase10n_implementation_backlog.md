@@ -99,3 +99,23 @@ N5 is admitted as one task and canonical acceptance is exactly N5-A01 through N5
 It adds only `electronic.band_structure@0.1.0` and `electronic.dos@0.1.0`, advancing
 Registry 60 to 62. Combined Band+DOS is consumer presentation, Profile 2.4 is additive,
 and database/migration/API/dependency/lockfile remain unchanged. N6 is reviewer-gated.
+
+## Phase 10N-6 Authorized Integration Closure
+
+N6 is admitted as one evidence/integration task governed by the canonical registry below. It
+adds zero Tools, science, algorithms, Artifact families or DataProfile versions and keeps
+Registry 62 and Profile 2.4 exact. Only wiring corrections, regression tests, evidence and
+documentation are permitted. Phase 11 is reviewer-gated, not queued and not executable.
+
+## Canonical Phase 10N-6 Acceptance Registry
+
+1. `N6-A01 N1_TO_N5_BASELINE_REGISTRY_PROFILE_AND_INTEGRATION_MATRIX_CLOSURE`
+2. `N6-A02 PROFILE_INTENT_ELIGIBILITY_PLANNER_AND_EXACT_BINDING_COVERAGE`
+3. `N6-A03 PLANVALIDATOR_RUNTIME_DEPENDENCY_ARTIFACT_AND_LINEAGE_CLOSURE`
+4. `N6-A04 N1_N2_COORDINATION_LOCAL_ENVIRONMENT_END_TO_END_CLOSURE`
+5. `N6-A05 N3_EXPERIMENTAL_XRD_END_TO_END_CLOSURE`
+6. `N6-A06 N4_TRAJECTORY_RDF_MSD_DIFFUSION_END_TO_END_CLOSURE`
+7. `N6-A07 N5_ELECTRONIC_BAND_DOS_END_TO_END_CLOSURE`
+8. `N6-A08 WORKSPACE_SELECTION_INSPECTOR_INTERPRETATION_REPORT_AND_RECIPE_CLOSURE`
+9. `N6-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_SERVICE_AND_EVIDENCE_CLOSURE`
+10. `N6-A10 THREE_COMMIT_EXACT_SHA_PHASE10N_FINAL_CLOSURE_AND_PHASE11_REVIEWER_GATE`

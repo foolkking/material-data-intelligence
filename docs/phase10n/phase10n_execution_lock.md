@@ -112,3 +112,25 @@ N5-A10. Combined Band+DOS Tool/Adapter/scientific-authority count is zero. Suppl
 electronic resources are the only authority. Database, migration head
 `0007_phase10m1_workspace_domain`, API family, dependencies and lockfile remain unchanged.
 N6 is `REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`.
+
+# Phase 10N-6 Execution Lock
+
+N6 is the only authorized phase. Canonical acceptance is the exact registry below. N6
+creates no Tool, algorithm, Artifact family, Profile version, migration, API family,
+dependency or lockfile change. Registry remains 62 and DataProfile remains 2.4. The only
+allowed production changes are wiring, renderer/projector/selection/Report/Recipe and
+accessibility fixes that reuse sealed N1-N5 semantics. Phase 11 remains reviewer-gated,
+not queued and not executable.
+
+## Canonical Phase 10N-6 Acceptance Registry
+
+1. `N6-A01 N1_TO_N5_BASELINE_REGISTRY_PROFILE_AND_INTEGRATION_MATRIX_CLOSURE`
+2. `N6-A02 PROFILE_INTENT_ELIGIBILITY_PLANNER_AND_EXACT_BINDING_COVERAGE`
+3. `N6-A03 PLANVALIDATOR_RUNTIME_DEPENDENCY_ARTIFACT_AND_LINEAGE_CLOSURE`
+4. `N6-A04 N1_N2_COORDINATION_LOCAL_ENVIRONMENT_END_TO_END_CLOSURE`
+5. `N6-A05 N3_EXPERIMENTAL_XRD_END_TO_END_CLOSURE`
+6. `N6-A06 N4_TRAJECTORY_RDF_MSD_DIFFUSION_END_TO_END_CLOSURE`
+7. `N6-A07 N5_ELECTRONIC_BAND_DOS_END_TO_END_CLOSURE`
+8. `N6-A08 WORKSPACE_SELECTION_INSPECTOR_INTERPRETATION_REPORT_AND_RECIPE_CLOSURE`
+9. `N6-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_SERVICE_AND_EVIDENCE_CLOSURE`
+10. `N6-A10 THREE_COMMIT_EXACT_SHA_PHASE10N_FINAL_CLOSURE_AND_PHASE11_REVIEWER_GATE`

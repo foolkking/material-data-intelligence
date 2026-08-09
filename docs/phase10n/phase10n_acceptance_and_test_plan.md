@@ -193,3 +193,22 @@ This section is the sole canonical N5 registry. References elsewhere are traceab
 | N5-A10 | THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N6_REVIEWER_GATE | Verify implementation/completion/archive exact-SHA CI, Registry 62, task archive and N6 gate. |
 
 N5 integrity: expected = 10; implemented = 10; missing = 0; extra = 0; duplicate registry entries = 0; conflicting definitions = 0; canonical registry shorthand entries = 0.
+
+## Canonical Phase 10N-6 Acceptance Registry
+
+This table is the sole canonical N6 registry. References elsewhere are traceability only.
+
+| ID | Exact title | Exact definition |
+| --- | --- | --- |
+| N6-A01 | N1_TO_N5_BASELINE_REGISTRY_PROFILE_AND_INTEGRATION_MATRIX_CLOSURE | Verify N5 authority, Registry 62, Profile 2.4 and the complete nine-Tool integration inventory. |
+| N6-A02 | PROFILE_INTENT_ELIGIBILITY_PLANNER_AND_EXACT_BINDING_COVERAGE | Verify Profile, Intent, Eligibility, ambiguity handling, Planner metadata and exact resource bindings. |
+| N6-A03 | PLANVALIDATOR_RUNTIME_DEPENDENCY_ARTIFACT_AND_LINEAGE_CLOSURE | Verify Plan 0.1/0.2, validator, QueueWorkerRuntime, exact ports, persistence, lineage and partial execution. |
+| N6-A04 | N1_N2_COORDINATION_LOCAL_ENVIRONMENT_END_TO_END_CLOSURE | Verify algorithm-independent N1 authority and exact N1-to-N2 E2E dependency without recomputation. |
+| N6-A05 | N3_EXPERIMENTAL_XRD_END_TO_END_CLOSURE | Verify theoretical authority, matched/unmatched peaks, zero-match validity and wavelength rejection. |
+| N6-A06 | N4_TRAJECTORY_RDF_MSD_DIFFUSION_END_TO_END_CLOSURE | Verify RDF, server-unwrapped MSD, persisted MSD dependency, diagnostics and ballistic rejection. |
+| N6-A07 | N5_ELECTRONIC_BAND_DOS_END_TO_END_CLOSURE | Verify supplied Band/DOS E2E, compatibility-only combined presentation and no electronic calculation. |
+| N6-A08 | WORKSPACE_SELECTION_INSPECTOR_INTERPRETATION_REPORT_AND_RECIPE_CLOSURE | Verify metadata-first panels, exact selection, Inspector, projectors, Report and inert Recipe. |
+| N6-A09 | REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_SERVICE_AND_EVIDENCE_CLOSURE | Verify retained references/tolerances plus aggregate browser, service, lifecycle, accessibility, security and manifest evidence. |
+| N6-A10 | THREE_COMMIT_EXACT_SHA_PHASE10N_FINAL_CLOSURE_AND_PHASE11_REVIEWER_GATE | Verify the three exact-SHA gates, task archive, Phase 10N final state and absent Phase 11 task. |
+
+N6 integrity: expected = 10; implemented = 10; missing = 0; extra = 0; duplicate = 0; conflicting = 0; canonical shorthand entries = 0.

@@ -1,0 +1,371 @@
+{
+  "tools": [
+    {
+      "dependencyCompositionAllowed": true,
+      "inputPorts": [],
+      "outputPorts": [
+        {
+          "artifactKind": "table_json",
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "contractFamily": "phase10n1.coordination",
+          "contractVersions": [
+            "phase10n1.crystalnn_coordination.v1"
+          ],
+          "deterministic": true,
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "maxBytes": 16777216,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "coordination-table",
+          "requiredProvenanceFields": [
+            "schemaVersion",
+            "toolCallId",
+            "toolId"
+          ]
+        }
+      ],
+      "schemaVersion": "1.1",
+      "toolId": "structure.coordination_crystalnn",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "dependencyCompositionAllowed": true,
+      "inputPorts": [],
+      "outputPorts": [
+        {
+          "artifactKind": "table_json",
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "contractFamily": "phase10n1.coordination",
+          "contractVersions": [
+            "phase10n1.voronoinn_coordination.v1"
+          ],
+          "deterministic": true,
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "maxBytes": 16777216,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "coordination-table",
+          "requiredProvenanceFields": [
+            "schemaVersion",
+            "toolCallId",
+            "toolId"
+          ]
+        }
+      ],
+      "schemaVersion": "1.1",
+      "toolId": "structure.coordination_voronoinn",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "dependencyCompositionAllowed": true,
+      "inputPorts": [
+        {
+          "acceptedArtifactKinds": [
+            "table_json"
+          ],
+          "acceptedContractVersions": [
+            "phase10n1.crystalnn_coordination.v1",
+            "phase10n1.voronoinn_coordination.v1"
+          ],
+          "baseResourceRequired": false,
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "inputFieldRole": "coordination_artifact",
+          "inputObjectType": "Structure",
+          "materializationPermitted": true,
+          "maxBytes": 16777216,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "coordination",
+          "requiredSemanticRoles": [
+            "coordination_neighbors"
+          ]
+        }
+      ],
+      "outputPorts": [
+        {
+          "artifactKind": "table_json",
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "contractFamily": "phase10n2.local_environment_polyhedra",
+          "contractVersions": [
+            "phase10n2.local_environment_polyhedra.v1"
+          ],
+          "deterministic": true,
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "maxBytes": 16777216,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "local-environment-polyhedra",
+          "requiredProvenanceFields": [
+            "schemaVersion",
+            "sourceArtifactChecksum",
+            "sourceArtifactId",
+            "toolCallId",
+            "toolId"
+          ]
+        }
+      ],
+      "schemaVersion": "1.1",
+      "toolId": "structure.local_environment_polyhedra",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "dependencyCompositionAllowed": true,
+      "inputPorts": [
+        {
+          "acceptedArtifactKinds": [
+            "table_json"
+          ],
+          "acceptedContractVersions": [
+            "phase10e4.xrd_pattern.v1"
+          ],
+          "baseResourceRequired": false,
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "inputFieldRole": "theoretical_xrd_artifact",
+          "inputObjectType": "Structure",
+          "materializationPermitted": true,
+          "maxBytes": 33554432,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "theoretical-xrd",
+          "requiredSemanticRoles": [
+            "theoretical_xrd_peaks"
+          ]
+        }
+      ],
+      "outputPorts": [
+        {
+          "artifactKind": "table_json",
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "contractFamily": "phase10n3.experimental_xrd_comparison",
+          "contractVersions": [
+            "phase10n3.experimental_xrd_comparison.v1"
+          ],
+          "deterministic": true,
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "maxBytes": 33554432,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "experimental-xrd-comparison",
+          "requiredProvenanceFields": [
+            "experimentalResourceHash",
+            "schemaVersion",
+            "theoreticalArtifactChecksum",
+            "toolCallId",
+            "toolId"
+          ]
+        }
+      ],
+      "schemaVersion": "1.1",
+      "toolId": "structure.experimental_xrd_comparison",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "dependencyCompositionAllowed": true,
+      "inputPorts": [],
+      "outputPorts": [
+        {
+          "artifactKind": "table_json",
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "contractFamily": "phase10n4.trajectory_rdf",
+          "contractVersions": [
+            "phase10n4.trajectory_rdf.v1"
+          ],
+          "deterministic": true,
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "maxBytes": 33554432,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "trajectory-rdf",
+          "requiredProvenanceFields": [
+            "schemaVersion",
+            "toolCallId",
+            "toolId",
+            "trajectoryHash"
+          ]
+        }
+      ],
+      "schemaVersion": "1.1",
+      "toolId": "trajectory.rdf",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "dependencyCompositionAllowed": true,
+      "inputPorts": [],
+      "outputPorts": [
+        {
+          "artifactKind": "table_json",
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "contractFamily": "phase10n4.trajectory_msd",
+          "contractVersions": [
+            "phase10n4.trajectory_msd.v1"
+          ],
+          "deterministic": true,
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "maxBytes": 33554432,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "trajectory-msd",
+          "requiredProvenanceFields": [
+            "schemaVersion",
+            "toolCallId",
+            "toolId",
+            "trajectoryHash"
+          ]
+        }
+      ],
+      "schemaVersion": "1.1",
+      "toolId": "trajectory.msd",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "dependencyCompositionAllowed": true,
+      "inputPorts": [
+        {
+          "acceptedArtifactKinds": [
+            "table_json"
+          ],
+          "acceptedContractVersions": [
+            "phase10n4.trajectory_msd.v1"
+          ],
+          "baseResourceRequired": false,
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "inputFieldRole": "msd_artifact",
+          "inputObjectType": "Trajectory",
+          "materializationPermitted": true,
+          "maxBytes": 33554432,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "msd",
+          "requiredSemanticRoles": [
+            "trajectory_msd"
+          ]
+        }
+      ],
+      "outputPorts": [
+        {
+          "artifactKind": "table_json",
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "contractFamily": "phase10n4.trajectory_diffusion",
+          "contractVersions": [
+            "phase10n4.trajectory_diffusion.v1"
+          ],
+          "deterministic": true,
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "maxBytes": 33554432,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "trajectory-diffusion",
+          "requiredProvenanceFields": [
+            "schemaVersion",
+            "sourceMsdArtifactChecksum",
+            "toolCallId",
+            "toolId"
+          ]
+        }
+      ],
+      "schemaVersion": "1.1",
+      "toolId": "trajectory.diffusion",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "dependencyCompositionAllowed": true,
+      "inputPorts": [],
+      "outputPorts": [
+        {
+          "artifactKind": "table_json",
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "contractFamily": "phase10n5.electronic_band_structure",
+          "contractVersions": [
+            "phase10n5.electronic_band_structure.v1"
+          ],
+          "deterministic": true,
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "maxBytes": 67108864,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "electronic-band-structure",
+          "requiredProvenanceFields": [
+            "calculationIdentity",
+            "electronicResourceHash",
+            "schemaVersion",
+            "toolCallId",
+            "toolId"
+          ]
+        }
+      ],
+      "schemaVersion": "1.1",
+      "toolId": "electronic.band_structure",
+      "toolVersion": "0.1.0"
+    },
+    {
+      "dependencyCompositionAllowed": true,
+      "inputPorts": [],
+      "outputPorts": [
+        {
+          "artifactKind": "table_json",
+          "cardinality": "EXACTLY_ONE",
+          "contentTrust": "INERT_DATA",
+          "contractFamily": "phase10n5.electronic_dos",
+          "contractVersions": [
+            "phase10n5.electronic_dos.v1"
+          ],
+          "deterministic": true,
+          "identityPolicy": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+          "maxBytes": 67108864,
+          "mediaTypes": [
+            "application/json"
+          ],
+          "plannerVisible": true,
+          "portId": "electronic-dos",
+          "requiredProvenanceFields": [
+            "calculationIdentity",
+            "electronicResourceHash",
+            "schemaVersion",
+            "toolCallId",
+            "toolId"
+          ]
+        }
+      ],
+      "schemaVersion": "1.1",
+      "toolId": "electronic.dos",
+      "toolVersion": "0.1.0"
+    }
+  ],
+  "unmapped": 0
+}

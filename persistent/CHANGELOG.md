@@ -2457,3 +2457,9 @@
   `31311662979` failed only because retained N1/N2 task tests did not allow the
   approved completion-waiting status; service and frontend jobs passed. The
   compatibility assertions are corrected additively without rewriting history.
+
+## 2026-08-09 - Phase 10N-6 integration and evidence closure
+
+- Added no science or Tool; added aggregate N1-N5 contract, dependency, identity, unit and delivery validation.
+- Added normalized N6 evidence, cross-capability regressions and service/browser closure gates.
+- Kept Registry 62, DataProfile 2.4, migration, API, dependencies and lockfile unchanged.

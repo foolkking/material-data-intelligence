@@ -1,0 +1,10 @@
+{
+  "coordinationAuthorities": [
+    "CrystalNN",
+    "VoronoiNN"
+  ],
+  "independent": true,
+  "n1ToN2ExactDependency": true,
+  "n2NeighborRecomputation": 0,
+  "runtime": "QueueWorkerRuntime"
+}

@@ -156,3 +156,31 @@ Manifest status: `N0 COMPLETE / REVIEWER_APPROVAL_REQUIRED`; N1 is not executabl
 | N5-A08 | projector, Report/Recipe and wording |
 | N5-A09 | references/caps/accessibility/security/evidence |
 | N5-A10 | exact-SHA lifecycle, queue archive and N6 gate |
+
+# Phase 10N-6 Traceability
+
+| Acceptance | Owner |
+| --- | --- |
+| N6-A01 | N5 authority, Registry/Profile and nine-Tool inventory |
+| N6-A02 | Profile/Intent/Eligibility/Planner matrices |
+| N6-A03 | Plan/Validator/Runtime/ports/Artifact/lineage closure |
+| N6-A04 | N1/N2 E2E and algorithm independence |
+| N6-A05 | N3 E2E and scientific negatives |
+| N6-A06 | N4 RDF/MSD/Diffusion E2E and ballistic negative |
+| N6-A07 | N5 Band/DOS E2E and compatibility |
+| N6-A08 | Workspace/selection/Inspector/projector/Report/Recipe |
+| N6-A09 | browser/service/performance/accessibility/security/manifest |
+| N6-A10 | exact-SHA lifecycle and Phase 11 gate |
+
+## Canonical Phase 10N-6 Acceptance Registry
+
+1. `N6-A01 N1_TO_N5_BASELINE_REGISTRY_PROFILE_AND_INTEGRATION_MATRIX_CLOSURE`
+2. `N6-A02 PROFILE_INTENT_ELIGIBILITY_PLANNER_AND_EXACT_BINDING_COVERAGE`
+3. `N6-A03 PLANVALIDATOR_RUNTIME_DEPENDENCY_ARTIFACT_AND_LINEAGE_CLOSURE`
+4. `N6-A04 N1_N2_COORDINATION_LOCAL_ENVIRONMENT_END_TO_END_CLOSURE`
+5. `N6-A05 N3_EXPERIMENTAL_XRD_END_TO_END_CLOSURE`
+6. `N6-A06 N4_TRAJECTORY_RDF_MSD_DIFFUSION_END_TO_END_CLOSURE`
+7. `N6-A07 N5_ELECTRONIC_BAND_DOS_END_TO_END_CLOSURE`
+8. `N6-A08 WORKSPACE_SELECTION_INSPECTOR_INTERPRETATION_REPORT_AND_RECIPE_CLOSURE`
+9. `N6-A09 REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_SERVICE_AND_EVIDENCE_CLOSURE`
+10. `N6-A10 THREE_COMMIT_EXACT_SHA_PHASE10N_FINAL_CLOSURE_AND_PHASE11_REVIEWER_GATE`

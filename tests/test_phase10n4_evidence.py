@@ -72,5 +72,6 @@ def test_n4_queue_state_preserves_the_n5_reviewer_gate() -> None:
     assert tasks.count("---TASK---") == tasks.count("---END---")
     assert "Task: Phase 10N-4" not in tasks
     assert "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
-    assert tasks.count("---TASK---") == (1 if "Task: Phase 10N-5" in tasks else 0)
-    assert "Task: Phase 10N-6" not in tasks
+    active_later_phase = any(marker in tasks for marker in ("Task: Phase 10N-5", "Task: Phase 10N-6", "任务：Phase 10N-6"))
+    assert tasks.count("---TASK---") == (1 if active_later_phase else 0)
+    assert tasks.count("Task: Phase 10N-6") <= 1

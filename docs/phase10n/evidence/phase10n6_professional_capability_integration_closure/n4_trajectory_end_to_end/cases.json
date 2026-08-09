@@ -1,0 +1,8 @@
+{
+  "ballisticAccepted": false,
+  "diffusionDependency": "exact_persisted_msd",
+  "msd": true,
+  "rawTrajectoryReadsByDiffusion": 0,
+  "rdf": true,
+  "runtime": "QueueWorkerRuntime"
+}

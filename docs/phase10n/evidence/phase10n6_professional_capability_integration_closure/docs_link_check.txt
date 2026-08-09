@@ -1,0 +1,2 @@
+DOCS_LINK_CHECK = PASS
+All required N6 closure documents are indexed.

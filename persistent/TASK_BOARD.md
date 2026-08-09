@@ -2399,3 +2399,10 @@ current board above.
 - [x] Verify implementation `34bcea5bd3672d91f3282e12dd5a0cb6b789f1ff` in exact-SHA CI `31311023072`.
 - [ ] Verify completion-record and queue-archive exact-SHA CI.
 - [x] Keep Phase 10N-6 reviewer-gated and non-executable.
+
+## Phase 10N-6 Professional Capability Integration + Evidence Closure
+
+- [x] Admit exactly one N6 task; keep Phase 11 non-executable.
+- [x] Freeze the nine-Tool capability, dependency, Artifact, identity and unit matrices.
+- [ ] Verify N1-N5 aggregate backend, service-backed and browser closure.
+- [ ] Verify implementation, completion-record and queue-archive exact-SHA CI.

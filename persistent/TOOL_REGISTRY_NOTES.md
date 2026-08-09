@@ -1514,3 +1514,10 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
   `phase10n5.electronic_band_structure.v1` and `phase10n5.electronic_dos.v1`.
 - Combined Band+DOS is presentation-only. No DFT/GW, DOS generation from bands,
   projected-band analysis or Fermi-surface authority exists. N6 is reviewer-gated.
+
+## Phase 10N-6 Registry Closure
+
+- Registry remains exactly 62; N6 adds zero Tools.
+- All nine N1-N5 professional Tools have Planner metadata, typed output ports,
+  registered Adapters, persisted Artifact contracts and deterministic projectors.
+- N2, N3 and Diffusion retain exact typed dependency inputs; no fallback or recomputation is added.

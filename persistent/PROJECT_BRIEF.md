@@ -413,3 +413,9 @@ N5 is the one active authorized task. It adds supplied-output-only Band and DOS
 validation/presentation through two Registry Tools (60 -> 62), DataProfile 2.4,
 exact Artifacts and Workspace integration. DFT, GW, Fermi surfaces, projected
 bands and electronic generation from structures remain prohibited. N6 is not queued.
+
+## Phase 10N-6 Active Scope (2026-08-09)
+
+N6 is the sole active task. It closes N1-N5 integration, cross-capability regression,
+browser/service evidence and documentation without new science, Tools, Artifacts,
+Profile versions, migrations, APIs or dependencies. Phase 11 is not queued.

@@ -18,6 +18,7 @@ const N2_ONLY = process.argv.includes("--n2-local-environment-only");
 const N3_ONLY = process.argv.includes("--n3-experimental-xrd-only");
 const N4_ONLY = process.argv.includes("--n4-trajectory-analytics-only");
 const N5_ONLY = process.argv.includes("--n5-electronic-only");
+const N6_ONLY = process.argv.includes("--n6-professional-closure-only");
 
 async function main() {
   const artifacts = await artifactFixtures();
@@ -44,8 +45,8 @@ async function main() {
     await writeJson("mobile_smoke.json", mobile);
     await writeJson("network_summary.json", { externalRequestCount: 0, allowedOrigins: [ORIGIN, API_ORIGIN], marker: "NO_PHASE10M4_UNAPPROVED_EXTERNAL_REQUESTS" });
     await writeJson("console_summary.json", { consoleErrors: [], pageErrors: [], marker: "NO_PHASE10M4_BROWSER_CONSOLE_ERRORS" });
-    console.log(N5_ONLY ? "PHASE10N5_CHROMIUM_FIREFOX_WEBKIT_PASS" : N4_ONLY ? "PHASE10N4_CHROMIUM_FIREFOX_WEBKIT_PASS" : N3_ONLY ? "PHASE10N3_CHROMIUM_FIREFOX_WEBKIT_PASS" : N2_ONLY ? "PHASE10N2_CHROMIUM_FIREFOX_WEBKIT_PASS" : "PHASE10M4_CHROMIUM_FIREFOX_WEBKIT_PASS");
-    console.log(N5_ONLY ? "PHASE10N5_CHROMIUM_390X844_PASS" : N4_ONLY ? "PHASE10N4_CHROMIUM_390X844_PASS" : N3_ONLY ? "PHASE10N3_CHROMIUM_390X844_PASS" : N2_ONLY ? "PHASE10N2_CHROMIUM_390X844_PASS" : "PHASE10M4_CHROMIUM_390X844_PASS");
+    console.log(N6_ONLY ? "PHASE10N6_CHROMIUM_FIREFOX_WEBKIT_PASS" : N5_ONLY ? "PHASE10N5_CHROMIUM_FIREFOX_WEBKIT_PASS" : N4_ONLY ? "PHASE10N4_CHROMIUM_FIREFOX_WEBKIT_PASS" : N3_ONLY ? "PHASE10N3_CHROMIUM_FIREFOX_WEBKIT_PASS" : N2_ONLY ? "PHASE10N2_CHROMIUM_FIREFOX_WEBKIT_PASS" : "PHASE10M4_CHROMIUM_FIREFOX_WEBKIT_PASS");
+    console.log(N6_ONLY ? "PHASE10N6_CHROMIUM_390X844_PASS" : N5_ONLY ? "PHASE10N5_CHROMIUM_390X844_PASS" : N4_ONLY ? "PHASE10N4_CHROMIUM_390X844_PASS" : N3_ONLY ? "PHASE10N3_CHROMIUM_390X844_PASS" : N2_ONLY ? "PHASE10N2_CHROMIUM_390X844_PASS" : "PHASE10M4_CHROMIUM_390X844_PASS");
   } finally { await stopServer(server); }
 }
 
@@ -64,30 +65,31 @@ async function runDesktop(browser, browserName, artifacts) {
   if ((await page.locator(".workspace-artifact-card").count()) !== artifacts.length) throw new Error(`${browserName}: Gallery inventory mismatch`);
   await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_gallery.png`), fullPage: true });
 
-  if (N1_ONLY || N2_ONLY || N3_ONLY || N4_ONLY || N5_ONLY) {
+  if (N1_ONLY || N2_ONLY || N3_ONLY || N4_ONLY || N5_ONLY || N6_ONLY) {
     const cases = {};
-    const names = N5_ONLY ? ["Electronic Band Structure", "Electronic DOS"] : N4_ONLY ? ["Trajectory RDF", "Trajectory MSD", "Trajectory Diffusion"] : N3_ONLY ? ["Experimental XRD Comparison"] : N2_ONLY ? ["Local Environment Polyhedra"] : ["CrystalNN Coordination", "VoronoiNN Coordination"];
+    const names = N6_ONLY ? ["CrystalNN Coordination", "VoronoiNN Coordination", "Local Environment Polyhedra", "Experimental XRD Comparison", "Trajectory RDF", "Trajectory MSD", "Trajectory Diffusion", "Electronic Band Structure", "Electronic DOS"] : N5_ONLY ? ["Electronic Band Structure", "Electronic DOS"] : N4_ONLY ? ["Trajectory RDF", "Trajectory MSD", "Trajectory Diffusion"] : N3_ONLY ? ["Experimental XRD Comparison"] : N2_ONLY ? ["Local Environment Polyhedra"] : ["CrystalNN Coordination", "VoronoiNN Coordination"];
     for (const name of names) {
       const before = calls.filter((call) => call.includes("/content")).length;
       await page.getByRole("button", { name: `Open ${name}` }).click({ force: true });
       await page.getByText(/bounded payload record/u).waitFor({ timeout: 30000 });
       cases[name] = await waitForFormalRenderer(page, name);
       if (calls.filter((call) => call.includes("/content")).length <= before) throw new Error(`${browserName}: ${name} did not lazy-load a payload`);
-      if (N2_ONLY || N3_ONLY || N4_ONLY || N5_ONLY) await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_${N5_ONLY ? "electronic" : N4_ONLY ? "trajectory_analytics" : N3_ONLY ? "experimental_xrd" : "local_environment"}.png`), fullPage: true });
+      if (N2_ONLY || N3_ONLY || N4_ONLY || N5_ONLY || N6_ONLY) await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_${N6_ONLY ? "professional_closure" : N5_ONLY ? "electronic" : N4_ONLY ? "trajectory_analytics" : N3_ONLY ? "experimental_xrd" : "local_environment"}.png`), fullPage: true });
       await page.getByRole("button", { name: "Close viewer" }).click({ force: true });
     }
     let lifecycle = null;
     let zoomReflow = null;
-    if (N2_ONLY || N3_ONLY || N4_ONLY || N5_ONLY) {
-      const lifecycleCase = N5_ONLY ? "Electronic DOS" : N4_ONLY ? "Trajectory Diffusion" : N3_ONLY ? "Experimental XRD Comparison" : "Local Environment Polyhedra";
+    if (N2_ONLY || N3_ONLY || N4_ONLY || N5_ONLY || N6_ONLY) {
+      const lifecycleCase = N6_ONLY ? "Electronic DOS" : N5_ONLY ? "Electronic DOS" : N4_ONLY ? "Trajectory Diffusion" : N3_ONLY ? "Experimental XRD Comparison" : "Local Environment Polyhedra";
       const baseline = await lifecycleSnapshot(page);
       const cycles = browserName === "chromium" ? 50 : 3;
       const payloadRequestsBefore = calls.filter((call) => call.includes("/content")).length;
       let duplicateCanvas = 0;
       for (let cycle = 0; cycle < cycles; cycle += 1) {
-        await page.getByRole("button", { name: `Open ${lifecycleCase}` }).click({ force: true });
+        const cycleCase = N6_ONLY ? names[cycle % names.length] : lifecycleCase;
+        await page.getByRole("button", { name: `Open ${cycleCase}` }).click({ force: true });
         await page.getByText(/bounded payload record/u).waitFor({ timeout: 30000 });
-        await waitForFormalRenderer(page, lifecycleCase);
+        await waitForFormalRenderer(page, cycleCase);
         duplicateCanvas = Math.max(duplicateCanvas, await page.locator(".workspace-active-artifact canvas").count());
         await page.getByRole("button", { name: "Close viewer" }).click({ force: true });
       }
@@ -96,7 +98,7 @@ async function runDesktop(browser, browserName, artifacts) {
       const growth = lifecycleDelta(baseline, final);
       const payloadRequestsAfter = calls.filter((call) => call.includes("/content")).length;
       const duplicatePayloadRequestGrowth = payloadRequestsAfter - payloadRequestsBefore;
-      if (growth.listeners !== 0 || growth.resizeObservers !== 0 || growth.intersectionObservers !== 0 || growth.pendingAnimationFrames !== 0 || final.activeWebglContexts !== 0 || duplicateCanvas !== 0 || duplicatePayloadRequestGrowth !== 0) throw new Error(`${browserName}: ${N5_ONLY ? "N5" : N4_ONLY ? "N4" : N3_ONLY ? "N3" : "N2"} lifecycle growth ${JSON.stringify({ growth, final, duplicateCanvas, duplicatePayloadRequestGrowth })}`);
+      if (growth.listeners !== 0 || growth.resizeObservers !== 0 || growth.intersectionObservers !== 0 || growth.pendingAnimationFrames !== 0 || final.activeWebglContexts !== 0 || duplicateCanvas !== 0 || duplicatePayloadRequestGrowth !== 0) throw new Error(`${browserName}: ${N6_ONLY ? "N6" : N5_ONLY ? "N5" : N4_ONLY ? "N4" : N3_ONLY ? "N3" : "N2"} lifecycle growth ${JSON.stringify({ growth, final, duplicateCanvas, duplicatePayloadRequestGrowth })}`);
       lifecycle = { cycles, baseline, final, growth, duplicateCanvas, payloadRequestsBefore, payloadRequestsAfter, duplicatePayloadRequestGrowth, staleOverlayCommits: 0 };
       if (browserName === "chromium") {
         await page.setViewportSize({ width: 720, height: 525 });
@@ -114,7 +116,7 @@ async function runDesktop(browser, browserName, artifacts) {
     if (overflow.body > 0 || overflow.root > 0 || audit.consoleErrors.length || audit.pageErrors.length || audit.failedResponses.length || audit.externalRequests.length) throw new Error(`${browserName}: ${N5_ONLY ? "N5" : N4_ONLY ? "N4" : N3_ONLY ? "N3" : N2_ONLY ? "N2" : "N1"} browser audit failed ${JSON.stringify({ overflow, audit })}`);
     if (!N2_ONLY && !N3_ONLY && !N4_ONLY && !N5_ONLY) await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_coordination.png`), fullPage: true });
     await context.close();
-    return { browserName, n1Coordination: N1_ONLY, n2LocalEnvironment: N2_ONLY, n3ExperimentalXrd: N3_ONLY, n4TrajectoryAnalytics: N4_ONLY, n5Electronic: N5_ONLY, cases, lifecycle, zoomReflow, overflow, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, failedResponses: audit.failedResponses, externalRequests: audit.externalRequests };
+    return { browserName, n1Coordination: N1_ONLY || N6_ONLY, n2LocalEnvironment: N2_ONLY || N6_ONLY, n3ExperimentalXrd: N3_ONLY || N6_ONLY, n4TrajectoryAnalytics: N4_ONLY || N6_ONLY, n5Electronic: N5_ONLY || N6_ONLY, n6ProfessionalClosure: N6_ONLY, cases, lifecycle, zoomReflow, overflow, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, failedResponses: audit.failedResponses, externalRequests: audit.externalRequests };
   }
   const exactReferenceNavigation = await exerciseExactReferenceNavigation(page, artifacts[0], browserName);
   const partialWarning = page.locator(".workspace-panel-warning").filter({ hasText: "successful source branches" });
@@ -299,10 +301,13 @@ async function runMobile(browser, artifacts) {
   await page.goto(`${ORIGIN}/workspaces/workspace_gallery?panel=panel_scientific_result`, { waitUntil: "networkidle" });
   await page.getByTestId("workspace-artifact-gallery").waitFor();
   await page.locator(".workspace-artifact-card").nth(artifacts.length - 1).waitFor({ timeout: 30000 });
-  const mobileCase = N5_ONLY ? "Electronic DOS" : N4_ONLY ? "Trajectory Diffusion" : N3_ONLY ? "Experimental XRD Comparison" : N2_ONLY ? "Local Environment Polyhedra" : N1_ONLY ? "CrystalNN Coordination" : "Structure Scene";
-  await page.getByRole("button", { name: `Open ${mobileCase}` }).click({ force: true });
-  await page.getByText(/bounded payload record/u).waitFor({ timeout: 30000 });
-  await waitForFormalRenderer(page, mobileCase);
+  const mobileCases = N6_ONLY ? ["CrystalNN Coordination", "Experimental XRD Comparison", "Trajectory Diffusion", "Electronic DOS"] : [N5_ONLY ? "Electronic DOS" : N4_ONLY ? "Trajectory Diffusion" : N3_ONLY ? "Experimental XRD Comparison" : N2_ONLY ? "Local Environment Polyhedra" : N1_ONLY ? "CrystalNN Coordination" : "Structure Scene"];
+  for (const mobileCase of mobileCases) {
+    await page.getByRole("button", { name: `Open ${mobileCase}` }).click({ force: true });
+    await page.getByText(/bounded payload record/u).waitFor({ timeout: 30000 });
+    await waitForFormalRenderer(page, mobileCase);
+    if (mobileCase !== mobileCases.at(-1)) await page.getByRole("button", { name: "Close viewer" }).click({ force: true });
+  }
   const activeCanvases = await page.locator(".workspace-active-artifact canvas").count();
   await page.getByRole("button", { name: "Inspector" }).click();
   const inspector = page.getByRole("dialog", { name: "Context inspector" });
@@ -319,7 +324,7 @@ async function runMobile(browser, artifacts) {
   if (activeCanvases > 1 || overflow.body > 0 || overflow.root > 0 || minTouchTarget < 44) throw new Error(`mobile lifecycle/responsive gate failed ${JSON.stringify({ activeCanvases, overflow, minTouchTarget, touchAudit })}`);
   if (audit.consoleErrors.length || audit.pageErrors.length || audit.failedResponses.length || audit.externalRequests.length) throw new Error(`mobile browser audit failed ${JSON.stringify(audit)}`);
   await context.close();
-  return { viewport: [390, 844], oneActiveViewer: activeCanvases <= 1, activeCanvases, focusedClose, focusRestored, overflow, minTouchTarget, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, externalRequests: audit.externalRequests, contentRequests: calls.filter((call) => call.includes("/content")).length };
+  return { viewport: [390, 844], professionalCases: mobileCases, oneActiveViewer: activeCanvases <= 1, activeCanvases, focusedClose, focusRestored, overflow, minTouchTarget, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, externalRequests: audit.externalRequests, contentRequests: calls.filter((call) => call.includes("/content")).length };
 }
 
 async function installApiFixture(page, calls, artifacts) {
@@ -439,22 +444,22 @@ async function artifactFixtures() {
     ["kpath", "kpath_json", "K Path", "call_bz", "docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/kpath.json"],
     ["bz_manifest", "brillouin_zone_manifest_json", "BZ Manifest", "call_bz", "docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/manifest.json"],
   ];
-  if (N1_ONLY) sources.splice(3, 0,
+  if (N1_ONLY || N6_ONLY) sources.splice(3, 0,
     ["coordination_crystalnn", "table_json", "CrystalNN Coordination", "call_coordination_crystalnn", "docs/phase10n/evidence/phase10n1_crystalnn_voronoinn_coordination/artifact_contract_samples/crystalnn_coordination.json"],
     ["coordination_voronoinn", "table_json", "VoronoiNN Coordination", "call_coordination_voronoinn", "docs/phase10n/evidence/phase10n1_crystalnn_voronoinn_coordination/artifact_contract_samples/voronoinn_coordination.json"],
   );
-  if (N2_ONLY) sources.splice(3, 0,
+  if (N2_ONLY || N6_ONLY) sources.splice(3, 0,
     ["local_environment_polyhedra", "table_json", "Local Environment Polyhedra", "call_local_environment", "docs/phase10n/evidence/phase10n2_local_environment_coordination_polyhedra/browser/n2_local_environment_polyhedra.json"],
   );
-  if (N3_ONLY) sources.splice(3, 0,
+  if (N3_ONLY || N6_ONLY) sources.splice(3, 0,
     ["experimental_xrd_comparison", "table_json", "Experimental XRD Comparison", "call_experimental_xrd", "docs/phase10n/evidence/phase10n3_experimental_xrd_comparison_peak_matching/artifact_contract_samples/comparison.json"],
   );
-  if (N4_ONLY) sources.splice(3, 0,
+  if (N4_ONLY || N6_ONLY) sources.splice(3, 0,
     ["trajectory_rdf", "table_json", "Trajectory RDF", "call_trajectory_rdf", "docs/phase10n/evidence/phase10n4_trajectory_rdf_msd_diffusion/artifact_contract_samples/rdf.json"],
     ["trajectory_msd", "table_json", "Trajectory MSD", "call_trajectory_msd", "docs/phase10n/evidence/phase10n4_trajectory_rdf_msd_diffusion/artifact_contract_samples/msd.json"],
     ["trajectory_diffusion", "table_json", "Trajectory Diffusion", "call_trajectory_diffusion", "docs/phase10n/evidence/phase10n4_trajectory_rdf_msd_diffusion/artifact_contract_samples/diffusion.json"],
   );
-  if (N5_ONLY) sources.splice(3, 0,
+  if (N5_ONLY || N6_ONLY) sources.splice(3, 0,
     ["electronic_band", "table_json", "Electronic Band Structure", "call_electronic_band", "docs/phase10n/evidence/phase10n5_electronic_band_dos/artifact_contract_samples/band.json"],
     ["electronic_dos", "table_json", "Electronic DOS", "call_electronic_dos", "docs/phase10n/evidence/phase10n5_electronic_band_dos/artifact_contract_samples/dos.json"],
   );

@@ -710,3 +710,14 @@ and
 | [`phase10n/phase10n5_completion.md`](phase10n/phase10n5_completion.md) | N5 lifecycle state |
 | [`phase10n/phase10n6_next_scope.md`](phase10n/phase10n6_next_scope.md) | N6 reviewer gate only; not queued or executable |
 | [`phase10n/evidence/phase10n5_electronic_band_dos/`](phase10n/evidence/phase10n5_electronic_band_dos/) | N5 scientific, Workspace, browser, service and security evidence |
+| [`phase10n/phase10n6_professional_integration_contract.md`](phase10n/phase10n6_professional_integration_contract.md) | N1-N5 integration authority and zero-new-science boundary |
+| [`phase10n/phase10n6_professional_capability_matrix.md`](phase10n/phase10n6_professional_capability_matrix.md) | Nine-Tool Profile-to-delivery mapping |
+| [`phase10n/phase10n6_end_to_end_evidence_matrix.md`](phase10n/phase10n6_end_to_end_evidence_matrix.md) | Cross-capability positive and negative E2E closure |
+| [`phase10n/phase10n6_cross_capability_identity_and_units.md`](phase10n/phase10n6_cross_capability_identity_and_units.md) | Exact identity and canonical unit closure |
+| [`phase10n/phase10n6_workspace_interpretation_report_closure.md`](phase10n/phase10n6_workspace_interpretation_report_closure.md) | Workspace through Report/Recipe authority closure |
+| [`phase10n/phase10n6_security_performance_accessibility_closure.md`](phase10n/phase10n6_security_performance_accessibility_closure.md) | Aggregate non-functional closure |
+| [`phase10n/phase10n6_acceptance_evidence_map.md`](phase10n/phase10n6_acceptance_evidence_map.md) | N6-A01 through N6-A10 evidence ownership |
+| [`phase10n/phase10n6_completion.md`](phase10n/phase10n6_completion.md) | N6 lifecycle state |
+| [`phase10n/phase10n_final_summary.md`](phase10n/phase10n_final_summary.md) | Phase 10N Initial Release readiness with limits |
+| [`phase10n/phase11_next_scope.md`](phase10n/phase11_next_scope.md) | Phase 11 reviewer gate only |
+| [`phase10n/evidence/phase10n6_professional_capability_integration_closure/`](phase10n/evidence/phase10n6_professional_capability_integration_closure/) | N6 integration, browser, service and manifest evidence |

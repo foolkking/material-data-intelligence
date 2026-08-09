@@ -2091,3 +2091,9 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   `31311662979` only on two retained queue-status compatibility assertions;
   service-backed and frontend/browser/build passed. The corrected candidate
   retains the immutable failed SHA/run.
+
+## 2026-08-09 - Phase 10N-6 Integration Closure
+
+- Verified N5 archive `2496d7a9` as entry authority, Registry 62, Profile 2.4 and a clean queue.
+- Admitted exactly one N6 task and froze N6-A01 through N6-A10.
+- Added aggregate matrices, cross-capability tests, service/browser gates and normalized evidence; no scientific contract changed.

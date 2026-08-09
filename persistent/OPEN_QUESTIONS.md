@@ -1169,3 +1169,9 @@ unless also listed in Active Questions. Future-only topics are governed by
 No implementation-critical N5 questions remain. Fermi surfaces, projected
 bands, effective mass, transport and electronic calculation execution remain
 future or excluded scope. Phase 10N-6 requires a new reviewer prompt.
+
+## Phase 10N-6 Closure
+
+No implementation-critical integration question remains after R0. Phase 11 and
+all unapproved future science remain reviewer-gated. Exact-SHA lifecycle closure
+is the only remaining work.

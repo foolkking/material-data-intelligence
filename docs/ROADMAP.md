@@ -132,6 +132,8 @@ Phase 10N-0 through Phase 10N-4 are complete. N5 consumes strict supplied Band
 and DOS resources through independent registered Adapters; it performs no DFT,
 GW, DOS generation, projected-band analysis or Fermi-surface generation.
 Combined Band+DOS is deterministic presentation, not a third Tool. N6 remains
+the single active integration/evidence closure task. It adds no science, Tool,
+Artifact family, Profile version, migration, API or dependency. Phase 11 remains
 reviewer-gated and has no executable task.
 
 ## Historical Numbering Reconciliation

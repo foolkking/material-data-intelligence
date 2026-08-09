@@ -4477,3 +4477,10 @@ authorized.
 - Gap/VBM/CBM are bounded sampled-data derivations; Fermi is never invented.
 - Total DOS must be supplied; projection completeness is COMPLETE/PARTIAL/UNKNOWN.
 - Frontend, LLM and Recipe have no electronic calculation, alignment or recomputation authority.
+
+## Phase 10N-6 Integration Authority
+
+- N6 is evidence/integration only and creates no scientific authority.
+- Registry 62, DataProfile 2.4 and all N1-N5 scientific contracts remain sealed.
+- Closure uses multiple capability-specific Plans, never a run-everything Tool or mega-plan.
+- Evidence matrices are documentation artifacts and not runtime schemas.

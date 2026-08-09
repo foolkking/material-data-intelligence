@@ -136,6 +136,8 @@ def test_phase10m6_required_inventory_acceptance_authorities_and_screenshots() -
     if "# Phase 10M-6" in tasks:
         assert "Phase 10M-6" in tasks
         assert all(acceptance_id in tasks for acceptance_id in ACCEPTANCE)
+    elif "Task: Phase 10N-6" in tasks:
+        assert "Phase 10N-5:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
     elif "Task: Phase 10N-5" in tasks:
         assert "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
     elif "Task: Phase 10N-4" in tasks:

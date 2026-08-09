@@ -61,7 +61,7 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
     assert tasks.count("---TASK---") == tasks.count("---END---")
     assert tasks.count("---TASK---") in {0, 1}
     if tasks.count("---TASK---") == 1:
-        assert re.search(r"(?:Task:|任务：) Phase 10N-(?:1|2|3|4|5) ", tasks)
+        assert re.search(r"(?:Task:|任务：) Phase 10N-(?:1|2|3|4|5|6) ", tasks)
         assert (
             "Status: IN_PROGRESS" in tasks
             or "Status: PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI" in tasks
