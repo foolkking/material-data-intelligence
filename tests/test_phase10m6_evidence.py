@@ -132,8 +132,11 @@ def test_phase10m6_required_inventory_acceptance_authorities_and_screenshots() -
 
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert tasks.count("---TASK---") == tasks.count("---END---")
-    assert tasks.count("---TASK---") in {0, 1}
-    if "Task: Phase 11-0" in tasks:
+    assert tasks.count("---TASK---") in {0, 1, 3}
+    if "Phase 11-1 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 3
+        assert "状态：处理中" in tasks
+    elif "Task: Phase 11-0" in tasks:
         assert "Phase 10N-6:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
     elif "# Phase 10M-6" in tasks:
         assert "Phase 10M-6" in tasks

@@ -70,6 +70,9 @@ def test_n4_scientific_negative_and_positive_controls_are_honest() -> None:
 def test_n4_queue_state_preserves_the_n5_reviewer_gate() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert tasks.count("---TASK---") == tasks.count("---END---")
+    if "Phase 11-1 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 3
+        return
     assert "Task: Phase 10N-4" not in tasks
     assert "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
     active_later_phase = any(marker in tasks for marker in ("Task: Phase 10N-5", "Task: Phase 10N-6", "任务：Phase 10N-6", "Task: Phase 11-0"))

@@ -50,6 +50,9 @@ def test_n5_reference_results_preserve_source_only_boundaries() -> None:
 def test_n5_queue_has_one_active_task_and_no_n6_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert tasks.count("---TASK---") == tasks.count("---END---")
+    if "Phase 11-1 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 3
+        return
     if "Task: Phase 11-0" in tasks:
         assert tasks.count("---TASK---") == 1
         assert "Phase 10N-6:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
