@@ -143,12 +143,12 @@
     {
       "bytes": 429,
       "path": "windows_environment.json",
-      "sha256": "377973d9405903ada1c2ef9773016b133a9367684314cfcc137afa03a95b67b1"
+      "sha256": "aad6de0e1583a8e2c6878253e63a4ef0ed360c35481a7077c41ba12c767b2efb"
     },
     {
       "bytes": 4326,
       "path": "windows_replay.json",
-      "sha256": "1eba5d564ab6497766b936c01cb9a30bc15d45592b26e6d302e5ddcddb937d6f"
+      "sha256": "1a6682dd91eb8423eb7d9347683282a1f3f4b58c15fe0f7d6162505966e5afe3"
     },
     {
       "bytes": 381,

@@ -5,7 +5,7 @@
   "platform": "windows",
   "python": "3.11.7",
   "release": "10",
-  "repositoryCommit": "e7b21659ddadad0dcb64edfc7b4c16979245f069",
+  "repositoryCommit": "937b940994cff753ae370375912b065459ef6935",
   "schemaVersion": "phase11-3-environment-manifest/1.0",
   "scientificDependencySource": "uv.lock / current locked repository environment",
   "system": "Windows"
