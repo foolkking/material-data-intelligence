@@ -42,8 +42,11 @@ def test_retained_evidence_manifest_is_complete():
     assert actual == expected
     for entry in manifest["entries"]:
         path = evidence / entry["path"]
-        assert path.stat().st_size == entry["bytes"]
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == entry["sha256"]
+        data = path.read_bytes()
+        if path.suffix.lower() in {".md", ".txt", ".json"}:
+            data = data.replace(b"\r\n", b"\n")
+        assert len(data) == entry["bytes"]
+        assert hashlib.sha256(data).hexdigest() == entry["sha256"]
 
 
 def test_ci_has_required_linux_and_windows_replays():

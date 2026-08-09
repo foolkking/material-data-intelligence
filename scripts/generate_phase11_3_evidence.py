@@ -25,7 +25,17 @@ def write_text(name: str, value: str) -> None:
 
 
 def digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    data = path.read_bytes()
+    if path.suffix.lower() in {".md", ".txt", ".json"}:
+        data = data.replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
+
+
+def normalized_bytes(path: Path) -> bytes:
+    data = path.read_bytes()
+    if path.suffix.lower() in {".md", ".txt", ".json"}:
+        data = data.replace(b"\r\n", b"\n")
+    return data
 
 
 def main() -> None:
@@ -87,7 +97,7 @@ def main() -> None:
     write_json("phase11_4_handoff.json", {"schemaVersion": "phase11-4-honest-coverage-input/1.0", **base, "records": [{"benchmarkId": row["benchmarkId"], "toolId": input_by_id[row["benchmarkId"]]["toolId"], "toolVersion": input_by_id[row["benchmarkId"]]["toolVersion"], "roleClass": "SCIENTIFIC_VALIDATION_INPUT", "validationLevel": "V2", "referenceProvenanceStatus": input_by_id[row["benchmarkId"]]["referenceStrength"], "11_2Verdict": "PASS_INVARIANT", "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI", "v4Status": "NOT_PROMOTED", "browserStatus": "CANONICAL_MATRIX_REQUIRED", "serviceStatus": "REGRESSION_ONLY", "inputSupportRelationship": "SEALED_FIXTURE", "officialExampleRelationship": input_by_id[row["benchmarkId"]]["independence"], "knownLimitations": ["invariant-only; no numeric value"], "remainingGaps": ["numeric cross-platform value not present"], "evidenceRefs": [f"benchmarks/{row['benchmarkId']}/comparison.json"], "coverageEligibilityFacts": ["identity exact", "units exact", "no reference mutation"]} for row in common_rows]})
     write_text("secret_scan.txt", "NO_SECRET_PATTERN_HITS = PASS")
     files = sorted(path for path in OUT.rglob("*") if path.is_file() and path.name != "manifest.json")
-    write_json("manifest.json", {"entries": [{"path": path.relative_to(OUT).as_posix(), "bytes": path.stat().st_size, "sha256": digest(path)} for path in files]})
+    write_json("manifest.json", {"entries": [{"path": path.relative_to(OUT).as_posix(), "bytes": len(normalized_bytes(path)), "sha256": digest(path)} for path in files]})
 
 
 if __name__ == "__main__":
