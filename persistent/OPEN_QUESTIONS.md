@@ -1189,3 +1189,4 @@ is the only remaining work.
 - Official-example redistribution and source-license review remains explicitly recorded for later review; no external bytes were vendored.
 - Scientific numeric comparison remains deferred to Phase 11-2.
 - Four official/reference-limited benchmark inputs remain N/A until their provenance is independently resolved; they are excluded from the Phase 11-3 handoff.
+- Phase 11-2 preserves this limitation: no numeric value is manufactured for the four N/A cases; Phase 11-3 must characterize only the eight reproducibility-ready cases.

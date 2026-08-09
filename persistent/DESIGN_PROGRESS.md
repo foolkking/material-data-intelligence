@@ -2121,6 +2121,12 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   skips/failures/errors, typecheck, build and all professional browser replays passed.
 - N6 is complete and retains its sole queue task while completion-record CI is pending;
   Phase 11 remains reviewer-gated and non-executable.
+## Phase 11-2 Golden Benchmark Completion
+
+- Implementation `5e2f5f07346b7c7d6b7e8d360289cce4ad95ac92` passed exact-SHA CI `31328760532`.
+- The suite has 12 cases: 8 invariant passes and 4 explicit reference-limited N/A cases; no validation level was promoted.
+- Phase 11-3 remains reviewer-gated and non-executable.
+
 ## Phase 11-1 Reference Provenance
 
 Completed the deterministic provenance and fixture handoff pack and started bounded Phase 11-2 golden replay. No external source was downloaded and no production scientific behavior changed. The current suite records 8 invariant replays and 4 reference-limited N/A cases.

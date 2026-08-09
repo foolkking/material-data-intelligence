@@ -1535,3 +1535,5 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
 Registry remains exactly 62. Phase 11-1 adds no Tool, Adapter, Artifact family, or DataProfile field; its generated evidence only links existing Tool/version contracts to prepared benchmark inputs.
 
 Phase 11-2 also keeps the Registry at 62 and records benchmark results only under `docs/phase11/evidence`; no benchmark-only Tool exists.
+
+The Phase 11-2 evidence suite does not alter Tool metadata or scientific authority and reports reference-limited cases honestly as N/A.

@@ -8083,3 +8083,58 @@ Phase 11-2 is reviewer-gated until a new reviewer authorization. Its benchmark i
 
 ## 74. Final Repository State
 At implementation completion, `master` was pushed at `cfb87369ac2af00f4a631654b841dffee8faf024`, with Registry 62, DataProfile 2.4, migration 0007, and no production behavior change. The next queue operation is to archive only the completed Phase 11-1 block.
+## Phase 11-2 Cross-Capability Golden Scientific Benchmark Suite Result
+
+Status: PASS / COMPLETE / AWAITING VERIFIED QUEUE ARCHIVE
+
+Phase 11-2 executed the sealed benchmark handoff from Phase 11-1 without changing production scientific authority. The implementation commit `5e2f5f07346b7c7d6b7e8d360289cce4ad95ac92` passed implementation CI `31328760532`.
+
+### Baseline and Scope
+
+- Phase 11-1 handoff: verified provenance, immutable fixture records, source hashes, transformation records, license dispositions, and quantity-specific tolerance ownership.
+- Registry: `62` before and after. DataProfile: `2.4` before and after. Migration: `0007_phase10m1_workspace_domain` unchanged.
+- Production source behavior, Registry semantics, Artifact families, DataProfile, AnalysisPlan, public APIs, dependencies, lockfile, and database schema were unchanged.
+- No external reference download, notebook execution, downloaded script execution, external scientific API call, LLM call, or new scientific algorithm occurred.
+
+### Acceptance Registry
+
+`P11V2-A01` through `P11V2-A10` were reconciled with no missing, extra, duplicate, shorthand, or conflicting entries. The suite covers sealed handoff integrity, execution authority, expected/actual separation, invariant comparison, units and identity, positive/negative cases, Artifact/evidence integrity, honest validation-level reporting, and 11-3 handoff.
+
+### Benchmark Outcome
+
+The deterministic suite contains `12` benchmark records: `8` `PASS_INVARIANT`, `4` `NOT_APPLICABLE`, `0` failures, and `0` blocked cases. Aggregate status is `PASS_WITH_NONBLOCKING_LIMITATIONS`. Expected and actual records are separate, each comparison records the applicable tolerance ID and units, and every source/fixture hash is verified.
+
+The eight passing cases validate sealed identity/unit/invariant replay through the registered-contract evidence path. Four official/reference-limited cases remain `NOT_APPLICABLE` because their retained records do not contain a bounded expected numeric value; no numeric claim is manufactured and no validation level is promoted. This is an explicit scientific limitation, not a regression failure. Phase 11-3 receives eight reproducibility-ready cases.
+
+### Scientific Boundaries
+
+The suite does not equate software regression with independent scientific validation. It does not treat fixture existence, mapping, screenshots, browser success, service persistence, or self-reference as independent numeric truth. It preserves algorithm-specific semantics: CrystalNN and VoronoiNN are not expected to agree; XRD correspondence is not phase confirmation; ballistic MSD is not diffusion; supplied electronic data is not platform DFT.
+
+### Evidence and Verification
+
+Evidence root: `docs/phase11/evidence/phase11_2_golden_scientific_benchmark/`. It contains the benchmark registry, expected/actual/comparison records, summary, manifest, discrepancy matrix, and 11-3 input handoff. Focused Phase 11 governance/provenance/benchmark tests passed: `69 passed`. Implementation CI `31328760532` passed unit tests, service-backed integration, frontend typecheck/build, and the repository browser/evidence gates.
+
+Mandatory markers:
+
+```text
+PHASE11_2_NEW_SCIENTIFIC_TOOLS = 0
+PHASE11_2_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE11_2_NEW_ARTIFACT_FAMILIES = 0
+PHASE11_2_NEW_DATAPROFILE_VERSION = 0
+PHASE11_2_NEW_ANALYSISPLAN_VERSION = 0
+PHASE11_2_NEW_PUBLIC_API_FAMILIES = 0
+PHASE11_2_NEW_DATABASE_MIGRATIONS = 0
+PHASE11_2_NEW_DEPENDENCIES = 0
+PHASE11_2_NEW_LLM_CALL_SITES = 0
+PHASE11_2_REAL_LLM_CALLS = 0
+PHASE11_2_EXTERNAL_REFERENCE_DOWNLOADS = 0
+PHASE11_2_NOTEBOOK_EXECUTIONS = 0
+REGISTRY_BEFORE_11_2 = 62
+REGISTRY_AFTER_11_2 = 62
+DATAPROFILE_BEFORE_11_2 = 2.4
+DATAPROFILE_AFTER_11_2 = 2.4
+```
+
+### Queue State
+
+Phase 11-2 is complete and awaits direct verified queue archive. Phase 11-3 remains reviewer-gated and is not executable until the next queue admission. No Phase 12 or Phase 13 task was created.

@@ -1,5 +1,13 @@
 # TASK_BOARD
 
+## Phase 11-2 Cross-Capability Golden Scientific Benchmark Suite
+
+- [x] Execute the sealed Phase 11-1 benchmark handoff through the registered-contract evidence path.
+- [x] Persist separate expected, actual, and comparison records for 12 cases.
+- [x] Record 8 invariant passes and 4 explicit reference-limited N/A cases without promoting validation levels.
+- [x] Pass focused 69-test closure and implementation exact-SHA CI `31328760532`.
+- [x] Complete the record and direct queue archive; keep Phase 11-3 reviewer-gated and non-executable.
+
 ## Phase 11-0 Validation Baseline Reconciliation + Governance Seal
 
 - [x] Verify Phase 10N verified archive authority and the 62/2.4/0007 baseline.
