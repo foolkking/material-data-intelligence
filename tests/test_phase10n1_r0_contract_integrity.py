@@ -65,6 +65,7 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
         assert (
             "Status: IN_PROGRESS" in tasks
             or "Status: AUDIT_COMPLETE / AWAITING_IMPLEMENTATION_CI" in tasks
+            or "Status: PASS / COMPLETE / AWAITING_QUEUE_ARCHIVE_COMMIT" in tasks
             or "Status: PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI" in tasks
             or "状态：处理中" in tasks
         )

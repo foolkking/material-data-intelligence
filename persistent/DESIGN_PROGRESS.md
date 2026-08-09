@@ -8,7 +8,8 @@
 - [x] Inventory parser/resource/input support without claiming library-only formats.
 - [x] Index retained evidence, references, fixtures, official examples, tolerances, and gaps.
 - [x] Seal Phase 11-1 through 11-5, Phase 12 UI/UX, and Phase 13 closure boundaries.
-- [ ] Complete implementation, completion-record, and verified queue-archive exact-SHA CI.
+- [x] Verify implementation `312fd4445d404f0f89c061fbdc055789912dc552` in exact-SHA CI `31324356338`.
+- [x] Write the Phase 11-0 completion record; queue archive remains the final direct commit.
 
 No new science, Tool, Artifact family, Profile/Plan version, migration, API,
 dependency, renderer, Planner capability, Runtime behavior, or LLM authority is introduced.

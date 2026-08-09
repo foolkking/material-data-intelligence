@@ -7771,3 +7771,233 @@ Mandatory N6 markers: `N6_NEW_SCIENTIFIC_TOOLS = 0`; `N6_NEW_SCIENTIFIC_ALGORITH
 Authority markers: `FRONTEND_DUPLICATE_SCIENTIFIC_AUTHORITY = NONE`; `FRONTEND_SCIENTIFIC_RECOMPUTATION = NONE`; `WORKSPACE_SCIENTIFIC_AUTHORITY = NONE`; `REPORT_SCIENTIFIC_RECOMPUTATION = 0`; `RECIPE_EXECUTION_AUTHORITY = NONE`; `N5_PLATFORM_DFT_EXECUTION = 0`; `N5_PLATFORM_GW_EXECUTION = 0`; `N5_BAND_GENERATION_FROM_STRUCTURE = 0`; `N5_DOS_GENERATION_FROM_STRUCTURE = 0`; `N5_FERMI_SURFACE_GENERATION = 0`; `N5_PROJECTED_BAND_ANALYSIS = 0`.
 
 Repository boundaries: database schema = unchanged; migration = unchanged; migration head = `0007_phase10m1_workspace_domain`; public API family = unchanged; dependencies = unchanged; lockfile = unchanged; Registry count = 62; DataProfile = 2.4.
+
+# Phase 11-0 Validation Baseline Reconciliation + Governance Seal Result
+
+## 1. Conclusion
+PASS. Phase 11-0 reconciled the current validation baseline and sealed governance without production scientific changes. Implementation `312fd4445d404f0f89c061fbdc055789912dc552` passed exact-SHA CI `31324356338`.
+
+## 2. Phase 10N Baseline
+N6 verified archive `d4d625b57449f9a451d5e27a6eb903625d221bc7` is the sole entry authority; failed N6 `ea156ed...` remains historical only.
+
+## 3. Entry Gate
+Master, clean entry worktree, `HEAD == origin/master`, N6 ancestry, Registry 62, DataProfile 2.4, migration 0007, and zero queued tasks passed before admission.
+
+## 4. Gate J6-R Roadmap Authority Reconciliation
+Repository/current reviewer authority supersedes stale phase-generated next-scope numbering without rewriting history.
+
+## 5. Approved Phase 11 / 12 / 13 Roadmap
+Phase 11 is scientific validation; Phase 12 is comprehensive UI/UX redesign; Phase 13 is final product closure. Old Phase 12 final-closure numbering is superseded.
+
+## 6. Production Behavior Changes
+`PRODUCTION_BEHAVIOR_CHANGES = NONE`; only docs, persistent state, evidence, deterministic audit tooling, and audit consistency tests changed.
+
+## 7. Registry Inventory
+All 62 live Registry entries were read from the three manifests and reconciled against Adapter declarations.
+
+## 8. Registry Count 62 Verification
+`REGISTRY_BEFORE_11_0 = 62`; `REGISTRY_AFTER_11_0 = 62`; unique rows 62; duplicate/unclassified rows 0.
+
+## 9. Tool Role Classification
+Rows cover scientific numeric/geometry/classification/transformation, data intelligence, materials ML, composition, visualization-data, product composition, presentation, and metadata/utility roles.
+
+## 10. Validation Dimension Model
+Software execution, scientific reference, numeric validation, Artifact contract, platform integration, browser presentation, reproducibility, and known limitations are independent axes.
+
+## 11. Current Validation Level Distribution
+28 rows are conservatively V2 controlled-reference and 34 V1 runtime/Artifact; Phase 11-0 promotes none to V3/V4.
+
+## 12. Existing Evidence Inventory
+Ten Phase 10 evidence roots were indexed with file, manifest, browser, service, and reference indicators.
+
+## 13. Existing Reference Inventory
+43 reference-like retained records were hashed and classified; no reference was downloaded.
+
+## 14. Reference Provenance Classification
+Analytic, official-library/project, independent cross-library, controlled synthetic, internal expected, mapping-only, and no-reference types are sealed.
+
+## 15. Reference Independence Audit
+Self-reference remains regression evidence only; reference authority follows provenance/hash/contract, not recency.
+
+## 16. Existing Fixture Inventory
+169 fixture records were indexed with stable path/hash and review disposition.
+
+## 17. Fixture Immutability Policy
+Authoritative fixtures cannot be overwritten in place; source/value/transformation changes require a new version.
+
+## 18. Fixture License Status
+Repository-internal versus `LICENSE_REVIEW_REQUIRED` is recorded; no legal status is inferred.
+
+## 19. Official Example Historical Inventory
+54 official/example records were indexed, including retained Phase 10F mappings.
+
+## 20. Current Official Example Status
+Records distinguish current, retained historical, mapping-only, extraction-required, and superseded status; none was executed here.
+
+## 21. Input / Resource / Parser Inventory
+Upload/sniffing, parser, Resource, Profile, Planner, Runtime, Workspace, caps, and negative paths were audited.
+
+## 22. Supported Input Matrix
+CSV/CIF/POSCAR are direct; canonical JSON, XYZ/EXTXYZ, volumetric, ZIP, and supplied electronic JSON are bounded; phonon direct upload is mapping-only; XLSX, Parquet, and LAMMPS trajectory are unsupported.
+
+## 23. DataProfile 2.4 Input Coverage
+Profile 2.4 remains unchanged and records readiness only, never validation results.
+
+## 24. Planner / Eligibility Input Coverage
+Support requires an actual parser/resource/profile path; library theoretical format support is insufficient.
+
+## 25. Runtime / Workspace Input Coverage
+Runtime and renderer disposition are separate from parsing and mapping status.
+
+## 26. Scientific Numeric Validation Inventory
+Numeric Tools retain analytic/controlled/internal distinctions and quantity-owned tolerances.
+
+## 27. Scientific Geometry Validation Inventory
+Structure, local geometry, reciprocal-cell, and periodic identity evidence remains explicit; independent gaps are assigned.
+
+## 28. Product / Presentation Validation Inventory
+These require contract, exact source, no recomputation, deterministic rendering, accessibility, and security rather than invented numeric benchmarks.
+
+## 29. N1 Validation Baseline
+CrystalNN/VoronoiNN algorithm identity, neighbors, weights, coordination, distance, determinism, and disagreement semantics are inventoried; mutual equality is not required.
+
+## 30. N2 Validation Baseline
+Exact N1 dependency, geometry, distortion, hull, tie, periodic identity, and synthetic controls are retained.
+
+## 31. N3 Validation Baseline
+Input validation, detection, normalization, one-to-one matching, ties, residuals, unmatched sets, zero-match, wavelength mismatch, and coverage are retained. Correspondence is not phase confirmation.
+
+## 32. N4 Validation Baseline
+Unwrapping, PBC, RDF, MSD, directional/origin coverage, diffusion diagnostics, ballistic rejection, random walk, missing time, and variable-cell policy are classified by evidence strength.
+
+## 33. N5 Validation Baseline
+Energy/Fermi/spin/path/band/gap/DOS/projection/compatibility controls validate supplied output, not platform DFT.
+
+## 34. Earlier Initial-Release Science Validation Baseline
+Composition, statistics, Dataset Explorer, ML, PCA/KMeans, structure summaries, static RDF/XRD, trajectory presentation, phonon, BZ, and volumetric capabilities are included.
+
+## 35. Tolerance Inventory
+Identity exactness plus N1-N5, phonon, and BZ quantity-specific policies are indexed.
+
+## 36. Tolerance Ownership
+Every tolerance records contract, metric, unit, provenance, reason, owner, justification, variance relevance, and review state.
+
+## 37. Exact Identity Rules
+Tool/version, hashes, checksums, Plan bindings, site/atom/frame/k-point/band/evidence identities remain exact.
+
+## 38. Variance Classification
+Only `EXACT`, `TOLERANCE_BOUNDED`, `DISPLAY_ONLY_VARIANCE`, `UNSUPPORTED_PLATFORM`, and `KNOWN_LIMITATION` are allowed.
+
+## 39. Revalidation Triggers
+Scientific versions/algorithms/default semantics/contracts/units/parsers/authority dependencies/fixtures/tolerances/identity changes invalidate relevant validation.
+
+## 40. Locked Environment Policy
+Primary scientific environment is the current repository lock; arbitrary dependency-version compatibility is not claimed.
+
+## 41. Cross-Platform Target Matrix
+Locked Linux CI and Windows are targets; macOS is not a current release target absent separate support evidence.
+
+## 42. Browser Validation Boundary
+Chromium, Firefox, WebKit, and 390x844 validate presentation/interaction/no recomputation, not numeric truth.
+
+## 43. Service Validation Boundary
+PostgreSQL/Redis/MinIO validate persistence, queue, Artifact storage, identity, lineage, scope, and checksum, not numeric truth.
+
+## 44. Screenshot Authority Boundary
+`SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE`.
+
+## 45. Validation Gaps
+Twelve concrete provenance, independent benchmark, variance, and honest coverage gaps were recorded; no catch-all gap exists.
+
+## 46. Gap Prioritization
+P0=0; release-relevant P1 and supporting P2 gaps are assigned to exact Phase 11 stages.
+
+## 47. Phase 11-1 Backlog
+Exact official/static sources, fixtures, source/license checksums, and transformation requirements are sealed; no numeric PASS is authorized.
+
+## 48. Phase 11-2 Backlog
+Exact Tool/version, fixture, expected invariant/value, unit, tolerance, positive/negative case, and 11-1 dependency fields are documented.
+
+## 49. Phase 11-3 Matrix
+Locked Linux/Windows scientific variance and four-browser presentation invariants use the sealed variance taxonomy.
+
+## 50. Phase 11-4 Coverage Rules
+`DIRECT_VERIFIED`, `OFFICIAL_DERIVED_VERIFIED`, `REFERENCE_VERIFIED`, `MAPPING_ONLY`, `EXTRACTION_REQUIRED`, `FUTURE_SCOPE`, and `UNSUPPORTED` have exact evidence criteria.
+
+## 51. Phase 11-5 Closure Criteria
+Reference, golden benchmark, tolerance, variance, Tool/input/example coverage, reproducibility, limitations, manifest, and acceptance deliverables are mandatory.
+
+## 52. Phase 12 UI/UX Scope Seal
+Phase 12 covers IA/design system/navigation/Planner/Workspace/viewers/findings/Inspector/Report/Recipe/responsive/accessibility only; new scientific authority defaults to zero.
+
+## 53. Phase 13 Final Product Closure Scope Seal
+Phase 13 covers fact alignment, integration gaps, seven E2E demos, docs/reproducibility, polish, regression, and archive/presentation.
+
+## 54. Future Scope Guard
+Fermi surface, projected bands, Rietveld, DFT/GW, Bader, defects/surfaces, advanced transport/trajectory science, and arbitrary Python remain unqueued.
+
+## 55. Not Planned Guard
+Generic workflow/DAG/notebook/replanning/RAG/plugins/SaaS/billing/enterprise/Kubernetes/distributed scheduler/KMS and unrestricted providers remain excluded.
+
+## 56. Canonical Authority Order
+Goal/requirements -> ROADMAP -> persistent state -> TASKS -> reviewer prompt -> generated next-scope suggestion.
+
+## 57. Acceptance Registry
+P11V0-A01 through P11V0-A10: expected/implemented 10/10; missing/extra/duplicate/conflicting/shorthand 0.
+
+## 58. Evidence Inventory
+Structured Registry, Artifact, input, parser, evidence, reference, fixture, official-example, tolerance, variance, gaps, levels, triggers, acceptance, and roadmap files are retained.
+
+## 59. Evidence Manifest
+Normalized manifest has entries >0, missing/hash/secret-bearing evidence 0; docs links and Phase 11 secret-pattern checks pass.
+
+## 60. Documentation Changes
+Phase 11 governance documents, ROADMAP, docs index, README, and shared-schema evidence-only boundary were updated.
+
+## 61. Persistent State Changes
+PROJECT_BRIEF, DESIGN_PROGRESS, TASK_BOARD, CHANGELOG, OPEN_QUESTIONS, ADRs, and Registry notes record Phase 10N completion and the new route.
+
+## 62. Security
+No arbitrary code/scientific shell generation/notebook/downloaded script/external scientific API/reference download/frontend recomputation/LLM authority; secret-pattern scan passed.
+
+## 63. LLM / DeepSeek
+`NEW_LLM_CALL_SITES = 0`; `PHASE11_0_REQUIRES_LLM = NO`; `REAL_LLM_CALLS = 0`; existing DeepSeek-only policy regressed only.
+
+## 64. Database / API / Dependency Freeze
+Database schema, migration 0007, public API family, dependencies, lockfile, Registry, and DataProfile are unchanged.
+
+## 65. Tests
+Local: backend 1263 passed; frontend 449 passed; typecheck/build/lock/diff/evidence passed. CI `31324356338` passed Unit, Frontend/browser/build, and service-backed jobs.
+
+## 66. Browser Regression
+Exact-SHA CI Frontend/browser replay job passed Chromium, Firefox, WebKit, and mobile retained matrix.
+
+## 67. Service-Backed Regression
+Exact-SHA CI PostgreSQL/Redis/MinIO job passed with its zero-skip gate.
+
+## 68. npm Audit Status
+`npm audit = UNAVAILABLE`; configured mirror returned `404_NOT_IMPLEMENTED`. Dependency lock consistency and security tests passed.
+
+## 69. Files Changed
+Docs, persistent state, evidence, one deterministic audit generator, and audit/TASKS compatibility tests only; production source changes 0.
+
+## 70. Commit / CI History
+Implementation `312fd4445d404f0f89c061fbdc055789912dc552` / CI `31324356338`: success. Completion record: this commit. Per explicit user direction, later documentation/queue commits are submitted without waiting for additional CI.
+
+## 71. Queue State
+At completion-record creation, exactly one completed Phase 11-0 task remains pending queue archive.
+
+## 72. Automatic 11-1 Entry
+`PHASE_11_1_EXECUTABLE_TASK_CREATED = NO`; Phase 11-1 remains reviewer-gated.
+
+## 73. Final Repository State
+Registry 62, DataProfile 2.4, migration 0007, master. Queue archive follows as a separate direct commit; Phase 12/13 remain approved roadmap only.
+
+## 74. Reviewer Decision Required for 11-1
+Phase 11-1 requires a new reviewer prompt before any reference acquisition, extraction, fixture consolidation, or task admission.
+
+Mandatory markers: `PHASE11_0_NEW_SCIENTIFIC_TOOLS = 0`; `PHASE11_0_NEW_SCIENTIFIC_ALGORITHMS = 0`; `PHASE11_0_NEW_ARTIFACT_FAMILIES = 0`; `PHASE11_0_NEW_DATAPROFILE_VERSION = 0`; `PHASE11_0_NEW_ANALYSISPLAN_VERSION = 0`; `PHASE11_0_NEW_PUBLIC_API_FAMILIES = 0`; `PHASE11_0_NEW_DATABASE_MIGRATIONS = 0`; `PHASE11_0_NEW_DEPENDENCIES = 0`; `PHASE11_0_NEW_LLM_CALL_SITES = 0`; `PHASE11_0_REAL_LLM_CALLS = 0`; `PHASE11_0_EXTERNAL_REFERENCE_DOWNLOADS = 0`; `PHASE11_0_NOTEBOOK_EXECUTIONS = 0`; `PHASE11_0_DOWNLOADED_SCRIPT_EXECUTIONS = 0`.
+
+Honesty markers: `BROWSER_PASS_EQUALS_NUMERIC_REFERENCE_PASS = NO`; `SERVICE_PASS_EQUALS_NUMERIC_REFERENCE_PASS = NO`; `FIXTURE_EXISTS_EQUALS_REFERENCE_VERIFIED = NO`; `MAPPING_EQUALS_VERIFIED = NO`; `SELF_REFERENCE_EQUALS_INDEPENDENT_REFERENCE = NO`; `LATEST_EVIDENCE_WINS_AUTHORITY = NO`; `GLOBAL_SCIENTIFIC_EPSILON = NONE`; `PASS_DRIVEN_TOLERANCE_CHANGE = PROHIBITED`.
+
+Roadmap markers: `PHASE_11 = SCIENTIFIC_VALIDATION`; `PHASE_12 = COMPREHENSIVE_UI_UX_PRODUCT_EXPERIENCE_REDESIGN`; `PHASE_13 = FINAL_PRODUCT_CLOSURE`; `OLD_PHASE12_FINAL_CLOSURE_NUMBERING = SUPERSEDED`; `FUTURE_SCOPE = DOCUMENTED_NOT_QUEUED`; `PHASE14 = NOT_CREATED`.
