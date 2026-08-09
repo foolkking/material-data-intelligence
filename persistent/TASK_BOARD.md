@@ -9,7 +9,7 @@
 - [x] Add Workspace tables, exact N4 selection, bounded interpretation, Report/Recipe and service evidence.
 - [x] Pass local full regression: backend 1221, frontend 438, typecheck/build, browser matrix, lock and evidence integrity.
 - [x] Pass corrected implementation exact-SHA CI `31299086998`, including 46 zero-skip service-backed tests.
-- [ ] Append completion record and archive the task only after their exact-SHA CI gates pass.
+- [x] Completion record `ca5208f` passed CI `31299648506`; remove only the N4 task in the verified archive candidate.
 - [x] Keep Phase 10N-5 reviewer-gated and absent from the executable queue.
 
 ## 2026-08-06 Phase 10N-0 Complete, Reviewer Approval Required

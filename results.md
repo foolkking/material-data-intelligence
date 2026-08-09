@@ -6599,7 +6599,7 @@ exact-SHA CI. Do not create, queue or execute Phase 10N-3.
 
 ## 1. Conclusion
 
-`PASS / COMPLETE / AWAITING_COMPLETION_RECORD_CI`.
+`PASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
 
 ## 2. N2 Baseline
 
@@ -7228,8 +7228,8 @@ Expected = 10; implemented = 10; missing = 0; extra = 0; duplicate registry entr
 
 - Failed implementation `3ae66528a7bffa596793fe6d72ea0e600819be8b` / CI `31298574230`: unit evidence hash failed across CRLF/LF; service 46/46 and frontend/browser passed.
 - Corrected implementation `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92` / CI `31299086998`: success.
-- Completion-record SHA/CI: this commit / pending exact-SHA CI.
-- Queue-archive SHA/CI: pending after completion-record CI.
+- Completion record `ca5208feec772e45397f4afbb80419aa6263978f` / CI `31299648506`: success.
+- Queue-archive SHA/CI: this commit / pending exact-SHA CI.
 
 ## 72. Explicit Non-Scope
 
@@ -7237,7 +7237,7 @@ No N5 Band/DOS/Fermi surface, Green-Kubo/VACF, Arrhenius, automatic fit window, 
 
 ## 73. Queue State
 
-`TASK_BLOCK_COUNT=1`; the completed N4 task is retained pending completion-record exact-SHA CI.
+`TASK_BLOCK_COUNT=0`; the completed N4 task is removed and N5 remains reviewer-gated.
 
 ## 74. Automatic N5 Entry
 
@@ -7245,6 +7245,6 @@ NO. `PHASE_10N5_EXECUTABLE_TASK_CREATED=NO`; Phase 10N-5 remains `REVIEWER_GATE 
 
 ## 75. Final Repository State
 
-Implementation authority is `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92` / CI `31299086998`; completion-record exact-SHA is pending. Branch is master, Registry count is 60, migration head is 0007, the N4 task count is one and N5 task is absent.
+Implementation authority is `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92` / CI `31299086998`; completion authority is `ca5208feec772e45397f4afbb80419aa6263978f` / CI `31299648506`; queue-archive exact-SHA is pending. Branch is master, Registry count is 60, migration head is 0007, task count is zero and N5 executable task is absent.
 
 Mandatory markers: `N4_RDF_FRONTEND_RECOMPUTATION=0`; `N4_MSD_FRONTEND_RECOMPUTATION=0`; `N4_DIFFUSION_FRONTEND_FIT=0`; `N4_MSD_WRAPPED_COORDINATE_DIRECT_USE=0`; `N4_DIFFUSION_RAW_TRAJECTORY_READS=0`; `N4_DIFFUSION_MSD_RECOMPUTATION=0`; `N4_AUTOMATIC_DIFFUSION_WINDOW_OPTIMIZATION=0`; `N4_BALLISTIC_SILENT_FIT=0`; `N4_TRANSIENT_SILENT_FIT=0`; `N4_MISSING_TIME_DIFFUSION=0`; `N4_VARIABLE_CELL_MSD_SILENT_ASSUMPTION=0`; `NEW_LLM_CALL_SITES=0`; `N4_REAL_LLM_CALLS=0`.

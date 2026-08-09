@@ -2434,6 +2434,7 @@
 ## 2026-08-09 - Phase 10N-4 Trajectory Analytics Implementation
 
 - Corrected implementation `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92` passed exact-SHA CI `31299086998`; completion record created with the N4 task retained.
+- Completion record `ca5208feec772e45397f4afbb80419aa6263978f` passed CI `31299648506`; queue archive removes only the verified N4 task and leaves N5 gated.
 
 - Added `trajectory.rdf`, `trajectory.msd`, and `trajectory.diffusion` at 0.1.0; Registry is 60.
 - Added DataProfile 2.3 trajectory readiness, strict parameters, three Artifact families, exact MSD dependency binding, server-side unwrapping, RDF/MSD/diffusion adapters and deterministic diagnostics.

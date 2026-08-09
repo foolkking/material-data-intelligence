@@ -12,6 +12,9 @@ scientific authority, Workspace authority, and LLM call sites remain unchanged.
 N5 is reviewer-gated, not queued, and not executable.
 Corrected N4 implementation `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92`
 passed exact-SHA CI `31299086998`; completion-record and queue-archive CI remain.
+Completion record `ca5208feec772e45397f4afbb80419aa6263978f` passed CI
+`31299648506`; the N4 queue block is removed by the archive candidate and N5
+remains reviewer-gated.
 
 ## 2026-08-09 Phase 10N-3 Implementation
 

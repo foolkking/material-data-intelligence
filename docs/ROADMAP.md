@@ -94,10 +94,10 @@ is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`.
 
 Fermi Surface is not part of Phase 10N or the initial release.
 
-Current status: Phase 10N-0 through 10N-3 are archived. Phase 10N-4 is the
-sole active implementation scope and adds bounded trajectory RDF, server-side
-unwrapped MSD, and explicit-window diffusion diagnostics through three exact
-Tools. Phase 10N-5 remains `REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`.
+Current status: Phase 10N-0 through 10N-4 are archived. Phase 10N-4 added
+bounded trajectory RDF, server-side unwrapped MSD, and explicit-window
+diffusion diagnostics through three exact Tools. Phase 10N-5 remains
+`REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`.
 
 ### Phase 11 - Scientific Validation and Honest Coverage
 
@@ -129,11 +129,10 @@ technically possible.
 
 ### Phase 10N - Professional Scientific Completion
 
-Phase 10N-0 through Phase 10N-3 are complete. Phase 10N-4 is active under the
-reviewer-approved RDF/MSD/diffusion scope. It preserves the phase10g trajectory
-authority, keeps static RDF separate, requires server-side unwrapping for MSD,
-and binds diffusion only to an exact persisted MSD Artifact through AnalysisPlan
-0.2. N5 remains reviewer-gated and has no executable task.
+Phase 10N-0 through Phase 10N-4 are complete. N4 preserves the phase10g
+trajectory authority, keeps static RDF separate, requires server-side
+unwrapping for MSD, and binds diffusion only to an exact persisted MSD Artifact
+through AnalysisPlan 0.2. N5 remains reviewer-gated and has no executable task.
 
 ## Historical Numbering Reconciliation
 

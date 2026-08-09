@@ -65,3 +65,15 @@ def test_n4_scientific_negative_and_positive_controls_are_honest() -> None:
     assert random_walk["diagnostic"] == "DIFFUSIVE_WINDOW_ACCEPTED"
     assert abs(random_walk["actualD"] - 0.1) <= 1e-9
     assert runtime["noNetwork"] is True and runtime["noFallback"] is True
+
+
+def test_n4_queue_state_preserves_the_n5_reviewer_gate() -> None:
+    tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    assert tasks.count("---TASK---") == tasks.count("---END---")
+    if "Task: Phase 10N-4" in tasks:
+        assert tasks.count("---TASK---") == 1
+    else:
+        assert tasks.count("---TASK---") == 0
+        assert "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
+        assert "Phase 10N-5:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
+    assert "Task: Phase 10N-5" not in tasks
